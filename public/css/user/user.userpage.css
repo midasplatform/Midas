@@ -1,0 +1,46 @@
+div.userThumbnail{
+  float:left;
+}
+
+div.userInfo{
+  height: 60px;
+
+}
+
+div.userAction{
+  border-bottom: 1px solid white;
+  padding-bottom: 10px;
+}
+
+div.userAction ul,div.userCommunities ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+div.userCommunities{
+  border-bottom: 1px solid white;
+  border-top: 1px solid #DAD8D4;
+  padding-bottom: 10px;
+}
+
+div.userStats{
+  border-top: 1px solid #DAD8D4;
+}
+
+div.viewAction{
+  display:none;
+}
+
+div.viewInfo{
+  display:none;
+}
+
+div.userInfo .userName{
+  font-weight: bold;
+  font-size: 16px;
+}
+
+div.userInfo .userCompany{
+  font-weight: bold;
+}

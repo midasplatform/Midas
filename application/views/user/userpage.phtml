@@ -1,0 +1,110 @@
+<?php
+$this->headScript()->appendFile($this->webroot . '/public/js/user/user.userpage.js');
+$this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/user/user.userpage.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.genericPage.css" />
+<div class="viewMain">
+  <div class="userThumbnail">
+  <?php
+  $thumbnail=$this->user->getThumbnail();
+  if(!empty($thumbnail))
+    {
+    echo "<img src='{$this->webroot}data/thumbnail/{$thumbnail}' alt=''/>";
+    }
+  else
+    {
+    echo "<img src='{$this->webroot}/public/images/icons/unknownUser.png' alt=''/>";
+    }
+  ?>
+  </div>
+  <div class="userInfo">
+    <div class="userName"><?php echo $this->user->getFullName();?></div>
+    <div class="userCompany"><?php echo $this->user->getCompany();?></div>
+  </div>
+
+  <div id="tabs">
+  <ul>
+    <li><a href="#tabs-1"><?php echo $this->t("Feed")?></a></li>
+    <li><a href="#tabs-2"><?php echo $this->t('Info');?></a></li>
+    <li><a href="#tabs-3"><?php echo $this->t('Data');?></a></li>
+  </ul>
+  <div id="tabs-1">
+     <?
+      echo $this->element('feed');
+      ?>
+  </div>
+  <div id="tabs-2">
+    ???
+  </div>
+    <div id="tabs-3">
+<img class="tableLoading" alt=""  src="<?php echo $this->webroot?>/public/images/icons/loading.gif" />
+<table id="browseTable" class="midasTree">
+  <thead>
+    <tr>
+      <th class="thData">Data</th>
+      <th class="thSize">Size</th>
+      <th class="thDate">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+      <?php
+      $node=1;
+
+      foreach ( $this->folders as $folder )
+        {
+        echo "<tr id='node--$node' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
+        echo "  <td><span class='folder'>{$folder->getName()}</span></td>";
+        echo "  <td><span>Test</span></td>";
+        echo "  <td><span>Test</span></td>";
+        echo "</tr>";
+        $node++;
+        }
+      ?>
+
+    </tbody>
+</table>
+  </div>
+</div>
+
+</div>
+<div class="viewSideBar">
+  <div class="sideElementFirst userAction">
+    <h1>Actions</h1>
+    <ul>
+    </ul>
+  </div>
+   <div class="sideElement userCommunities">
+    <h1>Communities</h1>    
+    <ul>
+    <?php 
+      foreach($this->userCommunities as $community)
+        {
+        echo "<li><a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></li>";
+        }
+    ?>
+      </ul>
+   </div>
+   <div class="sideElementLast userStats">
+    <h1>Stats</h1>  
+
+   </div>
+  
+    <div class="sideElementFirst viewAction">
+    <h1>Actions</h1>
+      <ul>
+        <li>
+
+        </li>
+      </ul>
+    </div>
+    <div class="sideElementLast viewInfo">
+      <h1>Info</h1>    
+      <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->webroot?>/public/images/icons/loading.gif"/>
+      <div class="ajaxInfoElement">
+      </div>
+    </div>
+</div>
+
+
+

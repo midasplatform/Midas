@@ -1,0 +1,61 @@
+form.importForm dl {
+margin-top: 25px;
+border: 0px;
+width: 800px;
+}
+
+form.importForm dl dt {
+float: left;
+text-align: right;
+width: 200px;
+height: 25px;
+font-weight: bold;
+margin-top: 5px;
+padding-bottom: 5px;
+border-bottom: 1px solid #EEEEEE;
+}
+
+form.importForm dl dd {
+float: left;
+width: 550px;
+display:inline;
+height: 25px;
+text-align: left;
+margin-left: 0px;
+margin-top: 5px;
+padding-left: 20px;
+padding-bottom: 5px;
+border-bottom: 1px solid #EEEEEE;
+}
+
+#submit-label {
+   border-bottom: 0px;
+}
+
+#submit-element {
+  border-bottom: 0px;
+}
+
+.browse-button{
+position: relative;
+top: -32px;
+left: 630px;
+}
+
+#progress {
+clear: both;
+position:relative;
+bottom: -20px;
+left: 110px;
+height: 10px;
+width: 600px;
+}
+
+#progress_status {
+clear: both;
+position:relative;
+left: 110px;
+bottom: -30px;
+width: 600px;
+text-align: center;
+}

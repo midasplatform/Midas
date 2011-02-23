@@ -1,0 +1,198 @@
+<?php
+/*=========================================================================
+Program:   MIDAS Server
+Language:  PHP/HTML/Java/Javascript/SQL
+Date:      $Date: 2010-01-17 21:32:26 -0500 (Sun, 17 Jan 2010) $
+Version:   $Revision: 1186 $
+
+Copyright (c) Kitware Inc. 28 Corporate Drive. All rights reserved.
+Clifton Park, NY, 12065, USA.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<?php
+/**
+ * File picker - display a tree view to choose a file or a folder on the local computer
+ * All the html elements have the prefix 'fp-' (for File Picker)
+ * @param $script : php script to call (default: 'admin/filePicker')
+ * @param $fileFilter : JS regular expression to validate filenames (default: '' ie accept all)
+ *                      Use '[.]xml$' to allow only xml file.
+ *                      More resources about JS regular expression:
+ *                      http://www.javascriptkit.com/javatutors/redev2.shtml
+ *                      http://www.regular-expressions.info/javascript.html
+ *                      http://www.regular-expressions.info/javascriptexample.html
+ * @param $fileFilterErrorMsg : Message to display when regular expression is false
+ * @param $destSelector : jquery selector to insert the filename when user click on 'OK'
+ * 
+**/
+?>
+<?php
+  // assign unique identifier to this element
+  if( is_numeric( Configure::read('filePickerId') ) )
+    {
+    Configure::write('filePickerId', Configure::read('filePickerId')+1);
+    }
+  else
+    {
+    Configure::write('filePickerId', 1);
+    }
+  $fp_uuid = Configure::read('filePickerId');
+
+  
+  if( ! isset($script) ) $script = $this->webroot . 'admin/filePicker';
+  if( ! isset($width) ) $width = 400;
+  if( ! isset($height) ) $height = 400;
+  if( ! isset($fileFilter) ) $fileFilter = '';
+  if( ! isset($fileFilterErrorMsg) ) $fileFilterErrorMsg = 'Incorrect file type';
+  if( ! isset($destSelector) ) $destSelector = 'body>XX'; // default selector return 0 elements
+  if( ! isset($msg) ) $msg = '';
+  
+  // Find root:
+  /*if( strpos( strtolower(PHP_OS), 'win') !== false )
+      {
+      $root = 'c:/';
+      }
+    else
+      {
+      $root = '/';
+      }*/
+  $root = '';
+  
+?>
+
+<!-- FILE PICKER -->
+<link rel="stylesheet" type="text/css" href="<?php echo $this->webroot?>css/jqueryFileTree.css" media="screen" /> 
+<style>
+.fp-container {
+      } 
+      
+/* The fp-XXX-pannel is the div that gets lighted */
+#fp-<?php echo $fp_uuid?>-panel {
+        display:none;  
+        position:fixed;
+        top:100px;  
+        left:50%;  
+        margin-left:-200px;  
+        width:<?php echo $width?>px;  
+        background:#FFFFFF;  
+        padding:10px 15px 10px 15px;  
+        border:2px solid #CCCCCC;  
+        z-index:1001;
+        }
+        
+/* The fp-XXX-pannel is the div that covers the rest of the page */ 
+#fp-<?php echo $fp_uuid?>-background {  
+         display:none;  
+         background:#000000;  
+         opacity:0.5;  
+         filter:alpha(opacity=90);  
+         position:absolute;  
+         top:0px;  
+         left:0px;  
+         min-width:100%;  
+         min-height:100%;  
+         z-index:1000;  
+        } 
+       
+.fp-fileTree {
+        width: <?php echo $width?>px;
+        height: 300px;
+        border-top: solid 1px #BBB;
+        border-left: solid 1px #BBB;
+        border-bottom: solid 1px #FFF;
+        border-right: solid 1px #FFF;
+        background: #FFF;
+        overflow: scroll;
+        padding: 5px;
+        text-align: left;
+      }
+      
+.fp-inputFile {
+        position: relative;
+        width: <?php echo $width+5?>px;
+      }
+      
+.fp-inputButton {
+        position: relative;
+        float: left;
+        display: block;
+        width: 100px;
+        margin: 3px 40px;
+      }
+      
+.fp-open {
+      }      
+</style>
+
+<?php if($fp_uuid == 1) {?>
+<script type="text/javascript" src="<?php echo $this->webroot?>js/jquery/jqueryFileTree.js"></script>
+<?php }?>
+<script type="text/javascript">
+$(document).ready( function() {
+   // Cancel button: hide
+   $("#fp-<?php echo $fp_uuid?>-inputButtonCancel").click(function(){
+       $("#fp-<?php echo $fp_uuid?>-panel, #fp-<?php echo $fp_uuid?>-background").fadeOut(300);
+       return false;
+       });
+  // Open button: show
+   $("#fp-<?php echo $fp_uuid?>-open").click(function(){
+       $("#fp-<?php echo $fp_uuid?>-panel, #fp-<?php echo $fp_uuid?>-background").fadeIn(300);
+       return false;
+       });
+
+   $('#fp-<?php echo $fp_uuid?>-fileTree').fileTree(
+        {
+          root: '', 
+          script: '<?php echo $script?>' 
+        }, 
+        function(file) {
+          $("#fp-<?php echo $fp_uuid?>-inputFile").val('<?php echo $root?>' + file);
+          },
+        function(dir) {
+          $("#fp-<?php echo $fp_uuid?>-inputFile").val('<?php echo $root?>' + dir);
+          }
+      );
+
+   // Validate button
+   $("#fp-<?php echo $fp_uuid?>-inputButtonOK").click(function(){
+       // extract file name
+       var file = $("#fp-<?php echo $fp_uuid?>-inputFile").val();
+       var re = new RegExp("<?php echo $fileFilter?>");
+       if(file.match(re))
+         {
+         // if destSelector is valid set its value to file
+         if( $("<?php echo $destSelector?>").length !== 0 )
+           {
+           $("<?php echo $destSelector?>").val(file); 
+           $("#fp-<?php echo $fp_uuid?>-panel, #fp-<?php echo $fp_uuid?>-background").fadeOut(300);
+           }
+         }
+       else if("<?php echo $fileFilterErrorMsg?>")
+         {
+         alert("<?php echo $fileFilterErrorMsg?>");
+         }
+       return false; // important to return false to prevent a form that include
+                     // this element to be submitted when the user just want to
+                     // select a file.       
+     });
+
+   //$("#fp-<?php echo $fp_uuid?>-panel").draggable();
+});
+</script>
+<input type="submit" id="fp-<?php echo $fp_uuid?>-open" class="fp-open" value="Choose"></input>
+<div id="fp-<?php echo $fp_uuid?>-container" class="fp-container">
+  
+  <div id="fp-<?php echo $fp_uuid?>-background"></div>
+  <div id="fp-<?php echo $fp_uuid?>-panel">
+    <b><?php echo $msg; ?></b>
+    <div id="fp-<?php echo $fp_uuid?>-fileTree" class="fp-fileTree"></div>
+    <input id="fp-<?php echo $fp_uuid?>-inputFile" class="fp-inputFile" type="text" disabled></input>
+    <input id="fp-<?php echo $fp_uuid?>-inputButtonCancel" class="fp-inputButton" type="submit" value="Cancel"></input>
+    <input id="fp-<?php echo $fp_uuid?>-inputButtonOK" class="fp-inputButton" type="submit" value="Ok"></input>
+  </div>
+</div>
+<!-- FILE PICKER -->

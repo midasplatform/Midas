@@ -1,0 +1,24 @@
+<?php
+  $this->headScript()->appendFile($this->webroot.'/public/js/community/community.index.js');
+?>
+<div class="viewMain">
+  <?php echo $this->element('feed')?>
+</div>
+<div class="viewSideBar">
+  <div class="sideElementFirst feedNotification">
+    <h1>Notifications</h1>
+  </div>
+  <div class="sideElement feedPub">
+    <h1>Pub</h1>
+  </div>
+  <div class="sideElement feedThumbnail">
+    <h1>Thumbnails</h1>
+  </div>
+  <div class="sideElementLast feedStats">
+    <h1>Stats</h1>
+  </div>
+</div>
+
+
+
+

@@ -1,0 +1,5 @@
+<?php
+define("MIDAS_COMMUNITY_PUBLIC", 0);
+define("MIDAS_COMMUNITY_SEMIPRIVATE", 1);
+define("MIDAS_COMMUNITY_PRIVATE", 2);
+?>

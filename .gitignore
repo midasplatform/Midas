@@ -1,0 +1,11 @@
+
+/nbproject
+/.project
+/.buildpath
+/.settings
+/application/configs/database.local.ini
+/application/configs/application.local.ini
+/application/configs/core.local.ini
+/tests/log/coverage
+/tests/log/testdox.html
+/.zfproject.xml

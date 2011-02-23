@@ -1,0 +1,61 @@
+<?php
+  $this->headScript()->appendFile($this->webroot.'/public/js/browse/browse.index.js');
+  $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser.js');
+?>
+<div class="viewMain">
+  <img class="tableLoading" alt="" src="<?php echo $this->webroot?>/public/images/icons/loading.gif"/>
+  <table id="browseTable" class="midasTree">
+    <thead>
+      <tr>
+        <th class="thData">Data</th>
+        <th class="thSize">Size</th>
+        <th class="thDate">Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php
+      $node=1;  
+      foreach($this->folders as $folder)
+        {
+        echo "<tr id='node--$node' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
+        echo "  <td><span class='folder'>{$folder->getName()}</span></td>";
+        echo "  <td><span>Test</span></td>";
+        echo "  <td><span>Test</span></td>";
+        echo "</tr>";
+        $node++;
+        }
+      
+      foreach($this->items as $item)
+        {
+        echo "<tr id='node--$node' class='' type='item' element='{$item->getItemId()}' >";
+        echo "  <td><span class='file'>{$item->getName()}</span></td>";
+        echo "  <td><span>Test</span></td>";
+        echo "  <td><span>Test</span></td>";
+        echo "</tr>";
+        $node++;
+        }
+      ?>          
+       
+    </tbody>
+  </table>
+</div>
+<div class="viewSideBar">
+  <div class="sideElementFirst viewAction">
+    <h1>Actions</h1>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+  </div>
+  <div class="sideElementLast viewInfo">
+    <h1>Info</h1>    
+    <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->webroot?>/public/images/icons/loading.gif"/>
+    <div class="ajaxInfoElement">
+    </div>
+  </div>
+</div>
+
+
+
+

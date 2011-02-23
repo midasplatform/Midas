@@ -1,0 +1,33 @@
+/** Tabs*/
+div.ui-tabs{
+  padding: 0px 0px 0px 0px !important;
+  border: 0px;
+}
+
+div#tabs .ui-tabs-nav{
+  border:0px !important;
+  background: none !important;
+}
+
+div#tabs .ui-tabs-nav{
+  border-bottom: 1px dotted grey;
+}
+
+div#tabs .ui-state-default{
+  border: 1px solid #79B7E7 !important;
+}
+
+div#tabs .ui-tabs-selected,div#tabs .ui-tabs-selected a{
+  color:#1D5987 !important;
+  font-weight: bold;
+  height:29px!important;
+}
+
+div#tabs .ui-state-default{
+  height: 30px;
+}
+
+div#tabs .ui-tabs-panel {
+  position:relative !important;
+  left:-19px!important;
+}

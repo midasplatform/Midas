@@ -1,0 +1,21 @@
+div.feedContainer {
+
+}
+
+div.feedContainer div.feedElement{
+  min-height: 50px;
+  border-bottom: 1px dotted #e4e4e4;
+  position: relative;
+}
+
+div.feedContainer div.feedUserImage{
+  float:left;
+}
+
+div.feedContainer div.feedDate{
+  position: absolute;
+  bottom: 0px;
+  right:0px;
+  color: grey;
+  font-size: 10px;
+}

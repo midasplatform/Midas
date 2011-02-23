@@ -1,0 +1,50 @@
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<link href="<?php echo $this->webroot?>/public/css/user/user.register.css" rel="stylesheet" type="text/css" />
+<div class="registerContent">  
+  <div class="registerInfo">
+    Bla Bla
+  </div>
+  <div class="register">
+    <form id="registerForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
+     <div class="registerError">
+       <span></span><br/>
+     </div>
+      <div >
+        <label for="email"><?php echo $this->t("E-mail")?></label>
+        <?php echo $this->form['email']?>
+      </div>
+      <div >
+        <label for="firstname"><?php echo $this->t("Firstname")?></label>
+        <?php echo $this->form['firstname']?>
+      </div>
+      <div>
+        <label for="lastname"><?php echo $this->t("Lastname")?></label>
+        <?php echo $this->form['lastname']?>
+      </div>
+      <div>
+        <label for="password1"><?php echo $this->t("Password")?></label>
+        <?php echo $this->form['password1']?>
+      </div>
+      <div>
+        <label for="password2"><?php echo $this->t("Confirm Password")?></label>
+        <?php echo $this->form['password2']?>
+      </div>
+      <div>
+        <label for="conditions"></label>
+        <?php echo $this->t("I read and accepted the")?><br/><a class='termOfService' href='#'><?php echo $this->t('terms of service')?></a><?php echo $this->form['conditions']?>
+      </div>
+      <div>
+         <?php echo $this->form['submit']?>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="jsonRegister"  style="display:none;">
+  <?php echo $this->jsonRegister?>
+</div>
+
+<?php
+echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/user/user.register.js"></script>';
+?>

@@ -1,0 +1,32 @@
+<?php
+  $this->headScript()->appendFile($this->webroot.'/public/js/community/community.index.js');
+?>
+<div class="viewMain">
+  <?php
+  if($this->logged)
+    {
+    foreach($this->userCommunities as $community)
+      {
+      echo "<a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a><br/>";
+      }
+    }
+  ?>
+</div>
+<div class="viewSideBar">
+  <div class="sideElementFirst viewAction">
+    <h1>Actions</h1>
+    <ul>
+      <li>
+        <a class="createCommunity" ><?php echo $this->t("Create a community");?></a>
+      </li>
+    </ul>
+  </div>
+  <div class="sideElementLast viewInfo">
+    <h1>Info</h1>    
+    bla
+  </div>
+</div>
+
+
+
+

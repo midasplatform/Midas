@@ -1,0 +1,34 @@
+<?php if(isset($this->errormessage)) { echo $this->errormessage; } ?>
+<?php if(isset($this->statusmessage)) { echo $this->statusmessage; } ?>
+
+<?php 
+  $this->headScript()->appendFile($this->webroot.'/public/js/import/import.index.js');
+  $this->headScript()->appendFile($this->webroot.'/public/js/jquery/jquery.form.js');
+  $this->headScript()->appendFile($this->webroot.'/public/js/jquery/jquery.cluetip.js');
+  
+  $this->headLink()->appendStylesheet($this->webroot.'/public/css/jquery/jquery.filetree.css');
+  $this->headLink()->appendStylesheet($this->webroot.'/public/css/jquery/jquery.cluetip.css');
+  $this->headLink()->appendStylesheet($this->webroot.'/public/css/import/import.index.css');
+  $this->headLink()->appendStylesheet($this->webroot.'/public/css/assetstore/assetstore.add.css');
+  
+  echo $this->importForm;
+?>
+
+<div id=progress style="display:none"></div>
+<div id=progress_status></div>
+
+<?php echo $this->element('serversidefilechooser', 
+                     array('id'=>'inputdirectorybutton',
+                           'fileFilterErrorMsg' => 'Select the local XML directory on the server',
+                           'destSelector' => '#inputdirectory',
+                     )) 
+                    ?>
+
+
+<div id="newassetstore-form"  style="display:none">
+   <?php echo $this->assetstoreForm; ?>
+</div>
+
+<script language="javascript">
+var assetstores = eval(<?php echo json_encode($this->assetstores)?>);
+</script>

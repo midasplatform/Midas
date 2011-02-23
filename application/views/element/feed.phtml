@@ -1,0 +1,91 @@
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.feed.css" />
+
+<?
+  $feeds=$this->feeds;
+  if(!isset($feeds)||empty($feeds))
+    {
+    return;
+    }
+
+  echo "<div class='feedContainer'>";
+  foreach($feeds as $key => $feed)
+    {
+    echo "<div class='feedElement'>";
+    echo createFeedElement($this,$feed);
+    echo "</div>";
+    }
+  echo "</div>";
+
+  function createFeedElement(&$view,$feed)
+    {
+    $type=$feed->getType();
+    echo "<div class='feedUserImage'>";
+    $thumbnail=$feed->getUser()->getThumbnail();
+    if(!empty($thumbnail))
+      {
+      echo "<img src='{$view->webroot}data/thumbnail/{$thumbnail}' alt=''/>";
+      }
+    else
+      {
+      echo "<img src='{$view->webroot}/public/images/icons/unknownUser.png' alt=''/>";
+      }
+    echo "</div>";
+    echo "<div class='feedInfo'>";
+    echo "<a href='{$view->webroot}/user/{$feed->getUser()->getKey()}'>{$feed->getUser()->getFullName()}</a> ";
+    switch($type)
+      {
+      case MIDAS_FEED_CREATE_COMMUNITY:
+        echo "{$view->t("added the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getKey()}'>{$feed->getRessource()->getName()}</a>";
+        break;
+      case MIDAS_FEED_UPDATE_COMMUNITY:
+      case MIDAS_FEED_CREATE_FOLDER:
+      case MIDAS_FEED_CREATE_ITEM:
+        echo "{$view->t("added the item")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>{$feed->getRessource()->getName()}</a>";
+        break;
+      case MIDAS_FEED_CREATE_LINK_ITEM:
+        echo "{$view->t("added the link")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>{$feed->getRessource()->getName()}</a>";
+        break;
+      case MIDAS_FEED_CREATE_REVISION:
+      case MIDAS_FEED_CREATE_USER:
+        echo "{$view->t("registered")}";
+        break;
+      case MIDAS_FEED_DELETE_COMMUNITY:
+      case MIDAS_FEED_DELETE_FOLDER:
+      case MIDAS_FEED_DELETE_ITEM:
+      default:
+        break;
+      }
+    echo "</div>";
+    echo "<div class='feedDate'>";
+    echo  ago($view,strtotime($feed->getDate()));
+    echo "</div>";
+    echo "<div style='clear:left;'></div>";
+    }
+    
+ function ago(&$view,$timestamp)
+   {
+   $difference = time() - $timestamp;
+   $periods = array("second", "minute", "hour", "day", "week", "month", "years", "decade");
+   $periodsFr = array("seconde", "minute", "heure", "jour", "semaine", "mois", "année", "décades");
+   $lengths = array("60","60","24","7","4.35","12","10");
+   for($j = 0; $difference >= $lengths[$j]; $j++)
+   $difference /= $lengths[$j];
+   $difference = round($difference);
+   if($difference != 1)
+     {
+     $periods[$j].= "s";
+     if($periodsFr[$j]!='mois') $periodsFr[$j].= "s";
+     }
+   if($view->lang=='fr')
+     {
+     $text = "Il y a $difference $periodsFr[$j]";
+     }
+   else
+     {
+     $text = "$difference $periods[$j] ago";
+     }
+   return $text;
+   }
+    
+ ?>
+

@@ -1,0 +1,31 @@
+<?php
+  $this->headScript()->appendFile($this->webroot.'/public/js/community/community.index.js');
+?>
+<div class="viewMain">
+<?php 
+  echo $this->communityDao->getName();
+  ?>
+  
+  <br/>  <br/>
+  Feed:
+  <br/>
+    <? echo $this->element('feed'); ?>
+</div>
+<div class="viewSideBar">
+  <div class="sideElementFirst viewAction">
+    <h1>Actions</h1>
+    <ul>
+      <li>
+        <a  >tesst</a>
+      </li>
+    </ul>
+  </div>
+  <div class="sideElementLast viewInfo">
+    <h1>Info</h1>    
+    bla
+  </div>
+</div>
+
+
+
+

@@ -1,0 +1,73 @@
+<link href="<?php echo $this->webroot?>/public/css/upload/upload.simpleupload.css" rel="stylesheet" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+    <?php
+        if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+          {
+          echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/swfupload/js/swfupload.js,swfupload.queue.js,fileprogress.js,handlers.js"></script>';
+          }
+        else
+          {
+          ?>
+          <script type="text/javascript" src="<?php echo $this->webroot?>/public/js/swfupload/js/swfupload.js"></script>
+          <script type="text/javascript" src="<?php echo $this->webroot?>/public/js/swfupload/js/swfupload.queue.js"></script>
+          <script type="text/javascript" src="<?php echo $this->webroot?>/public/js/swfupload/js/fileprogress.js"></script>
+          <script type="text/javascript" src="<?php echo $this->webroot?>/public/js/swfupload/js/handlers.js"></script>
+          <?php
+          }
+    ?>
+
+<script type="text/javascript" src="<?php echo $this->webroot?>/public/js/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="<?php echo $this->webroot?>/public/js/upload/upload.simpleupload.js"></script>
+
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">Simple</a></li>
+    <li><a href="<?php echo $this->webroot?>/upload/javaupload"><?php echo $this->t('Large Files');?></a></li>
+    <li><a href="#tabs-3"><?php echo $this->t('Links');?></a></li>
+  </ul>
+  <div id="tabs-1">
+ 
+    <form id="form1" action="index.php" method="post" enctype="multipart/form-data">
+      <span id="spanButtonPlaceHolder"></span>
+      <div>
+      <div class="fieldset flash" id="fsUploadProgress">
+      </div>
+      </div> 
+      <select class="privacyUpload">
+        <option value="public">Public</option>
+        <option value="private">Private</option>
+      </select>
+      <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
+    </form>    
+  </div>
+    <div id="tabs-3">
+
+      <form id="linkForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
+        <div >
+          <?php echo $this->form['url']?>
+        </div>
+        <div>
+          <?php echo $this->form['submit']?>
+        </div>
+      </form>
+  </div>
+</div>
+
+<div>
+  <?php echo $this->t('Number of uploaded files');?> <span class="globalUploadedCount">0</span>
+</div>
+<div class="reviewUploaded">
+  <form method="post" action="<?php echo $this->webroot?>/browse/uploaded">
+    <input class="globalButton" type="submit" value="<?php echo $this->t('Review uploaded files');?>" />
+  </form>
+</div>
+<input type="hidden" class="buttonBrowse" value="<?php echo $this->t('Browse');?>"/>
+<input type="hidden" class="sessionId" value="<?php echo session_id();?>"/>
+<input type="hidden" class="maxSizeFile" value="<?php echo $this->maxSizeFile;?>"/>
+<input type="hidden" class="uploadedSimple" value="0"/>
+<input type="hidden" class="uploadedJava" value="0"/>
+<input type="hidden" class="uploadedLinks" value="0"/>
+
+
+

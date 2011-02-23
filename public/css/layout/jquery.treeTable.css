@@ -1,0 +1,118 @@
+/* jQuery TreeTable Core 2.0 stylesheet
+ *
+ * This file contains styles that are used to display the tree table. Each tree
+ * table is assigned the +treeTable+ class.
+ * ========================================================================= */
+
+/* jquery.treeTable.collapsible
+ * ------------------------------------------------------------------------- */
+.treeTable tr td .expander {
+  background-position: left center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  padding: 0;
+  zoom: 1; /* IE7 Hack */
+}
+
+.treeTable tr.collapsed td .expander {
+  background-image: url(../../images/TreeTable/toggle-expand-dark.png);
+}
+
+.treeTable tr.expanded td .expander {
+  background-image: url(../../images/TreeTable/toggle-collapse-dark.png);
+}
+
+/* jquery.treeTable.sortable
+ * ------------------------------------------------------------------------- */
+.treeTable tr.selected, .treeTable tr.accept {
+  background-color: #6f99b7 !important;
+}
+
+.treeTable tr.collapsed.selected td .expander, .treeTable tr.collapsed.accept td .expander {
+  background-image: url(../../images/TreeTable/toggle-expand-light.png);
+}
+
+.treeTable tr.expanded.selected td .expander, .treeTable tr.expanded.accept td .expander {
+  background-image: url(../../images/TreeTable/toggle-collapse-light.png);
+}
+
+.treeTable .ui-draggable-dragging {
+  color: #000;
+  z-index: 1;
+}
+
+
+/* Body
+ * ------------------------------------------------------------------------- */
+table.midasTree{
+  width:580px;
+  display:none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select:none;
+}
+
+table.midasTree th{
+  background-color: #56758b;
+  color:black;
+}
+
+table.midasTree th.thData{
+  width:400px;
+}
+table.midasTree th.thDate{
+  width:90px;
+}
+table.midasTree th.thSize{
+  width:90px;
+}
+
+table.midasTree td{
+  border-bottom: 1px  #CCD7E0 dotted;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select:none;
+}
+
+table.midasTree tr:hover{
+  background-color: #F3F1EC;
+}
+
+table.midasTree tbody tr td {
+  cursor: default;
+  padding-left: 1.5em;
+}
+
+table.midasTree tbody tr.even {
+  background: #f3f3f3;
+}
+
+table.midasTree tbody tr.odd {
+  background: #fff;
+}
+
+table.midasTree span {
+  background-position: center left;
+  background-repeat: no-repeat;
+  padding: .2em 0 .2em 1.5em;
+}
+
+table.midasTree span.file {
+  background-image: url(../../images/TreeTable/page_white_text.png);
+}
+
+table.midasTree span.folder {
+  background-image: url(../../images/TreeTable/folder.png);
+}
+
+table.midasTree span.loading {
+  background-image: url(../../images/icons/loading.gif);
+}
+
+table.midasTree span.community {
+  background-image: url(../../images/icons/community.png);
+}
+
+img.tableLoading{
+  float:right;
+}

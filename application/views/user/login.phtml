@@ -1,0 +1,32 @@
+<?php
+echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/user/user.login.js"></script>';
+?>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+ <form id="loginForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
+     <div class="loginError">
+       <span><?php echo $this->t('Your e-mail or password is invalid - please try again'); ?>.</span><br/>
+     </div>
+     <div class="loginError">
+       <img id="loginLoading" alt="" src="<?php echo  $this->webroot?>/public/images/icons/loading.gif" />
+     </div>
+      <div >
+        <label for="email"><?php echo $this->t("E-mail")?></label>
+        <?php echo $this->form['email']?>
+      </div>
+      <div>
+        <label for="password"><?php echo $this->t("Password")?></label>
+        <?php echo $this->form['password']?>
+      </div>
+      <div class="rememberMe">
+        <?php echo $this->form['remerberMe']?>
+        <label for="remerberMe"><?php echo $this->t("Remember Me")?></label>
+      </div>
+      <div class="links">
+        <a class="registerLink"> <?php echo $this->t("Register")?></a>, <a href="#"><?php echo $this->t("Forgot your password")?>?</a>
+      </div>
+      <input type="hidden" name="previousuri" value=""/>
+         <?php echo $this->form['submit']?>
+    </form>
+
+

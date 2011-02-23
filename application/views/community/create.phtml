@@ -1,0 +1,25 @@
+<link href="<?php echo $this->webroot?>/public/css/community/community.create.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<?php echo $this->webroot?>/public/js/community/community.create.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<form id="createCommunityForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
+  <div class="createNameElement">
+    <label for="name"><?php echo $this->t('Nom')?></label>
+    <?php echo $this->form['name']?>
+  </div>
+  <div>
+    <label for="description"><?php echo $this->t('Description')?></label>
+    <?php echo $this->form['description']?>
+  </div>
+  <div class="radioElement">
+    <label for="privacy"><?php echo $this->t('Privacy')?></label>
+    <?php echo $this->form['privacy']?>
+  </div>
+  <div>
+    <?php echo $this->form['submit']?>
+  </div>
+</form>
+
+
+
+
