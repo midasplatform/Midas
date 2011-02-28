@@ -1,4 +1,16 @@
 <?php
+
+if (function_exists('apache_get_modules')) {
+  $modules = apache_get_modules();
+  $mod_rewrite = in_array('mod_rewrite', $modules);
+} else {
+  $mod_rewrite =  getenv('HTTP_MOD_REWRITE')=='On' ? true : false ;
+}
+
+if(!$mod_rewrite)
+  {
+  echo "Please install/enable the module rewrite";exit;
+  }
 error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', 'on');
 set_include_path('.'
