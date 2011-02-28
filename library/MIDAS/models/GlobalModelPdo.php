@@ -157,9 +157,9 @@ class MIDAS_GlobalModelPdo extends Zend_Db_Table_Abstract
       $model = $obj->getModel();
       foreach ($model->_mainData as $name => $option)
         {
-        if (isset($data->$name))
+        if (isset($data[$name]))
           {
-          $obj->$name = $data->$name;
+          $obj->$name = $data[$name];
           }
         }
       $obj->saved=true;

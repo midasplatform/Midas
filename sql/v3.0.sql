@@ -141,6 +141,7 @@ CREATE TABLE IF NOT EXISTS `item` (
   `description` varchar(20) NOT NULL,
   `type` int(11) NOT NULL,
   `thumbnail` varchar(255) NOT NULL,
+  `sizebytes` BIGINT( 20 ) NOT NULL DEFAULT  '0',
   PRIMARY KEY (`item_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=37 ;
 

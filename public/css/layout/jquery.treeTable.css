@@ -25,15 +25,19 @@
 /* jquery.treeTable.sortable
  * ------------------------------------------------------------------------- */
 .treeTable tr.selected, .treeTable tr.accept {
-  background-color: #6f99b7 !important;
+  background-color: #F6F9FE !important;
+  border: 1px solid grey;
+}
+
+.treeTable tr.selected td{
 }
 
 .treeTable tr.collapsed.selected td .expander, .treeTable tr.collapsed.accept td .expander {
-  background-image: url(../../images/TreeTable/toggle-expand-light.png);
+  background-image: url(../../images/TreeTable/toggle-expand-dark.png);
 }
 
 .treeTable tr.expanded.selected td .expander, .treeTable tr.expanded.accept td .expander {
-  background-image: url(../../images/TreeTable/toggle-collapse-light.png);
+  background-image: url(../../images/TreeTable/toggle-collapse-dark.png);
 }
 
 .treeTable .ui-draggable-dragging {
@@ -50,21 +54,31 @@ table.midasTree{
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select:none;
+  border-collapse:collapse;
 }
 
 table.midasTree th{
-  background-color: #56758b;
-  color:black;
+  color: black;
+  border-bottom: 1px black dotted;
+
 }
 
 table.midasTree th.thData{
-  width:400px;
+  width:480px;
+  border-right: 1px grey dotted;
+  padding-left: 36px;
 }
 table.midasTree th.thDate{
-  width:90px;
+  width:120px;
+  padding-left: 10px;
 }
 table.midasTree th.thSize{
-  width:90px;
+  width:80px;
+  border-right: 1px grey dotted;
+  padding-left: 10px;
+}
+table.midasTree th.thCheckbox{
+  width:20px;
 }
 
 table.midasTree td{
@@ -80,7 +94,11 @@ table.midasTree tr:hover{
 
 table.midasTree tbody tr td {
   cursor: default;
-  padding-left: 1.5em;
+}
+
+table.midasTree tbody tr td.treeBrowseElement {
+  cursor: default;
+  padding-left: 1.5em !important ;
 }
 
 table.midasTree tbody tr.even {

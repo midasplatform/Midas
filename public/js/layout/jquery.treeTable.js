@@ -33,9 +33,11 @@
         }
       });
       initializeAjax($(this),true);
+
     });
     
     initEvent();
+    getElementsSize();
     return tmp;
   };
   
@@ -231,6 +233,35 @@
         initEvent();
       });
     }
+    getElementsSize();
+  }
+  
+  function getElementsSize()
+  {
+    var elements='';
+    var nb=0;
+    $('img.folderLoading').each(function()
+      {      
+        nb++;
+        if(nb<200)
+          {
+          elements+=$(this).attr('element')+'-';
+          }
+      });
+    if(elements!='')
+      {
+        $.post(json.global.webroot+'/browse/getfolderssize',{folders: elements} , function(data) {
+          arrayElement=jQuery.parseJSON(data);
+          $.each(arrayElement, function(index, value) { 
+              var img=$('img.folderLoading[element='+value.id+']');
+              img.after(value.size);
+              img.parents('tr').find('td:first span:last').append(' ('+value.count+')');
+              img.remove();
+              getElementsSize();
+          });
+        });
+      }
+
   }
   
   function createElementsAjax(node,elements,first)
@@ -243,16 +274,19 @@
     $.each(elements['folders'], function(index, value) {
       html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder' element='"+value['folder_id']+"'>";
       html+=     "  <td><span class='folder'>"+value['name']+"</span></td>";
-      html+=     "  <td><span>Test</span></td>";
-      html+=     "  <td><span>Test</span></td>";
+      html+=     "  <td><span>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.webroot+'/public/images/icons/loading.gif"/>'+"</span></td>";
+      html+=     "  <td><span>"+value['creation']+"</span></td>";
+      html+=     "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='"+value['folder_id']+"'/></td>";
       html+=     "</tr>";
       i++;
       });
+      
     $.each(elements['items'], function(index, value) { 
       html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"'  type='item' element='"+value['item_id']+"'>";
       html+=     "  <td><span class='file'>"+value['name']+"</span></td>";
-      html+=     "  <td><span>Test</span></td>";
-      html+=     "  <td><span>Test</span></td>";
+      html+=     "  <td><span>"+value['size']+"</span></td>";
+      html+=     "  <td><span>"+value['creation']+"</span></td>";
+      html+=     "  <td><input type='checkbox' class='treeCheckbox' type='item' element='"+value['item_id']+"'/></td>";
       html+=     "</tr>";       
       i++;
       });
@@ -263,7 +297,7 @@
     childrenOf(node).each(function() {
       if(first)
         {
-        $(this).children("td")[options.treeColumn].style.paddingLeft = (padding-17) + "px";
+        $(this).children("td")[options.treeColumn].style.paddingLeft = (padding-12) + "px";
         }
       else
         {

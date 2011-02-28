@@ -15,6 +15,8 @@ $(function() {
     });
   
   
+  
+  
   $("a.registerLink").click(function()
     {
     showOrHideDynamicBar('register');
@@ -105,7 +107,9 @@ $(function() {
       }
     });
   
-  
+  $('#menuUserInfo').click(function(){
+      globalAuthAsk(json.global.webroot+'/user/userpage');
+  });
   $("div.TopDynamicBar .closeButton").click(function()
   {
     if(!$("div.TopDynamicBar").is(':hidden'))
@@ -129,6 +133,26 @@ $(function() {
     }
   });
 });
+
+function globalAuthAsk(url)
+{
+    if(json.global.logged)
+      {
+      window.location.replace(url);
+      }
+    else
+      {
+      createNotive(json.login.titleUploadLogin,4000)
+      $("div.TopDynamicBar").show('blind');
+      loadAjaxDynamicBar('login','/user/login');
+      }
+}
+
+function createNotive(text,delay)
+{
+    $(".viewNotice").html(text);  
+  	$(".viewNotice").fadeIn(100).delay(delay).fadeOut(100);
+}
 
 function loadAjaxDynamicBar(name,url)
 {

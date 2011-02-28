@@ -23,5 +23,17 @@ class BitstreamModel extends AppModelPdo
       'assetstore' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Assetstore', 'parent_column'=> 'assetstore_id', 'child_column' => 'assetstore_id'),
     );
 
+  /** do not use, use method addBitstream in ItemRevision Model*/
+  public function save($dao)
+    {
+    $stack=debug_backtrace();
+    if($stack[1]['class']=="ItemRevisionModel"&&$stack[1]['function']=='addBitstream')
+      {
+      return parent::save($dao);
+      }
+    throw new Zend_Exception(" Do not use, use method addBitstream in ItemRevision Model.");
+    }//end Save
+    
+
 }  // end class
 ?>

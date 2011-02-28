@@ -41,11 +41,10 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
 <img class="tableLoading" alt=""  src="<?php echo $this->webroot?>/public/images/icons/loading.gif" />
 <table id="browseTable" class="midasTree">
   <thead>
-    <tr>
-      <th class="thData">Data</th>
-      <th class="thSize">Size</th>
-      <th class="thDate">Date</th>
-    </tr>
+        <th class="thData"><?php echo $this->t('Name');?></th>
+        <th class="thSize"><?php echo $this->t('Size');?></th>
+        <th class="thDate"><?php echo $this->t('Modified');?></th>
+        <th class="thCheckbox"></th>
   </thead>
   <tbody>
       <?php

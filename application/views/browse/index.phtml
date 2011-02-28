@@ -7,9 +7,10 @@
   <table id="browseTable" class="midasTree">
     <thead>
       <tr>
-        <th class="thData">Data</th>
-        <th class="thSize">Size</th>
-        <th class="thDate">Date</th>
+        <th class="thData"><?php echo $this->t('Name');?></th>
+        <th class="thSize"><?php echo $this->t('Size');?></th>
+        <th class="thDate"><?php echo $this->t('Modified');?></th>
+        <th class="thCheckbox"></th>
       </tr>
     </thead>
     <tbody>
@@ -19,9 +20,10 @@
         {
         $folder=$community->getFolder();
         echo "<tr id='node--$node' class='parent' type='community' element='{$community->getCommunityId()}' ajax='{$folder->getFolderId()}'>";
-        echo "  <td><span class='community'>{$community->getName()}</span></td>";
-        echo "  <td><span>Test</span></td>";
-        echo "  <td><span>Test</span></td>";
+        echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
+        echo "  <td><span><img class='folderLoading'  element='{$folder->getFolderId()}' alt=' src='{$this->webroot}/public/images/icons/loading.gif'/></span></td>";
+        echo "  <td><span>{$this->Date->ago($folder->getDate(),true)}</span></td>";
+        echo "  <td><input type='checkbox' class='treeCheckbox' type='community' element='{$community->getCommunityId()}' /></td>";
         echo "</tr>";
         $node++;
         }  

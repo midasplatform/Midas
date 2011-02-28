@@ -17,6 +17,7 @@ class ItemRevisionModel extends AppModelPdo
     'changes' =>  array('type'=>MIDAS_DATA),
     'user_id' => array('type'=>MIDAS_DATA),
     'bitstreams' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model'=>'Bitstream', 'parent_column'=> 'itemrevision_id', 'child_column' => 'itemrevision_id'),
+    'item' =>  array('type'=>MIDAS_MANY_TO_ONE, 'model'=>'Item', 'parent_column'=> 'item_id', 'child_column' => 'item_id'),
     );
 
   /** Returns the latest revision of a model */
@@ -24,6 +25,14 @@ class ItemRevisionModel extends AppModelPdo
     {
     $row = $this->fetchRow($this->select()->from($this->_name)->where('item_id=?',$itemdao->getItemId())->order('revision DESC')->limit(1));
     return $this->initDao('ItemRevision',$row);
+    }
+    
+      /** Returns the of the revision in Bytes */
+  function getSize($revision)
+    {
+    $row = $this->fetchRow($this->select()
+                            ->setIntegrityCheck(false)->from('bitstream', array('sum(sizebytes) as sum'))->where('itemrevision_id=?',$revision->getKey()));
+    return $row['sum'];
     }
 
   /** Return a bitstream by name */
@@ -41,11 +50,16 @@ class ItemRevisionModel extends AppModelPdo
     {
     $modelLoad = new MIDAS_ModelLoader();
     $BitstreamModel = $modelLoad->loadModel('Bitstream');
+    $ItemModel = $modelLoad->loadModel('Item');
 
     $bitstreamDao->setItemrevisionId($itemRevisionDao->getItemrevisionId());
 
     // Save the bistream
     $BitstreamModel->save($bitstreamDao);
+    
+    $item=$itemRevisionDao->getItem($bitstreamDao);
+    $item->setSizebytes($this->getSize($itemRevisionDao));
+    $ItemModel->save($item);
     } // end addBitstream
 
 } // end class

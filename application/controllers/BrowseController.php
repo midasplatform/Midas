@@ -7,7 +7,7 @@ class BrowseController extends AppController
 {
   public $_models=array('Folder','User','Community','Folder','Item');
   public $_daos=array('Folder','User','Community','Folder','Item');
-  public $_components=array();
+  public $_components=array('Date','Utility');
 
   /** Init Controller */
   function init()
@@ -24,6 +24,8 @@ class BrowseController extends AppController
 
     $communities=$this->User->getUserCommunities($this->userSession->Dao);
     $header.="> Data";
+    
+    $this->view->Date=$this->Component->Date;
     
     $this->view->communities=$communities;
     $this->view->header=substr($header,2);
@@ -70,6 +72,7 @@ class BrowseController extends AppController
       $tmp=array();
       $tmp['folder_id']=$folder->getFolderId();
       $tmp['name']=$folder->getName();
+      $tmp['creation']=$this->Component->Date->ago($folder->getDate(),true);
       $jsonContent[$folder->getParentId()]['folders'][]=$tmp;
       unset($tmp);
       }
@@ -79,10 +82,39 @@ class BrowseController extends AppController
       $tmp['item_id']=$item->getItemId();
       $tmp['name']=$item->getName();
       $tmp['parent_id']=$item->parent_id;
+      $itemRevision=$this->Item->getLastRevision($item);
+      $tmp['creation']=$this->Component->Date->ago($itemRevision->getDate(),true);
+      $tmp['size']=$this->Component->Utility->formatSize($item->getSizebytes());
       $jsonContent[$item->parent_id]['items'][]=$tmp;
       unset($tmp);
       }
     echo JsonComponent::encode($jsonContent);
+    }//end getfolderscontent
+    
+   /** get getfolders Items' size */
+   public function getfolderssizeAction()
+    {
+    if(!$this->getRequest()->isXmlHttpRequest())
+     {
+     throw new Zend_Exception("Why are you here ? Should be ajax.");
+     }     
+     
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    $folderIds=$this->_getParam('folders');
+    if(!isset($folderIds))
+     {
+     throw new Zend_Exception("Please set the folder Id");
+     }
+    $folderIds=explode('-',$folderIds);
+    $folders= $this->Folder->load($folderIds);
+    $folders=$this->Folder->getSizeFiltered($folders,$this->userSession->Dao);
+    $return=array();
+    foreach($folders as $folder)
+      {
+      $return[]=array('id'=>$folder->getKey(),'count'=>$folder->count,'size'=>$this->Component->Utility->formatSize($folder->size));
+      }
+    echo JsonComponent::encode($return);
     }//end getfolderscontent
 
    /** get element info (ajax function for the treetable) */

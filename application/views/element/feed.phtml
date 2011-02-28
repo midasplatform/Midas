@@ -57,35 +57,11 @@
       }
     echo "</div>";
     echo "<div class='feedDate'>";
-    echo  ago($view,strtotime($feed->getDate()));
+    echo  $view->Dateago(strtotime($feed->getDate()));
     echo "</div>";
     echo "<div style='clear:left;'></div>";
     }
-    
- function ago(&$view,$timestamp)
-   {
-   $difference = time() - $timestamp;
-   $periods = array("second", "minute", "hour", "day", "week", "month", "years", "decade");
-   $periodsFr = array("seconde", "minute", "heure", "jour", "semaine", "mois", "année", "décades");
-   $lengths = array("60","60","24","7","4.35","12","10");
-   for($j = 0; $difference >= $lengths[$j]; $j++)
-   $difference /= $lengths[$j];
-   $difference = round($difference);
-   if($difference != 1)
-     {
-     $periods[$j].= "s";
-     if($periodsFr[$j]!='mois') $periodsFr[$j].= "s";
-     }
-   if($view->lang=='fr')
-     {
-     $text = "Il y a $difference $periodsFr[$j]";
-     }
-   else
-     {
-     $text = "$difference $periods[$j] ago";
-     }
-   return $text;
-   }
+  
     
  ?>
 

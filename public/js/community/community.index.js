@@ -7,7 +7,7 @@ $('a.createCommunity').click(function()
     }
   else
     {
-    showDialogWithContent(json.community.titleCreateLogin, json.community.contentCreateLogin,true);
+    createNotive(json.community.contentCreateLogin,4000)
     $("div.TopDynamicBar").show('blind');
     loadAjaxDynamicBar('login','/user/login');
     }

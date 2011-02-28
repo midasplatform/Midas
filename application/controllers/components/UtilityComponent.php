@@ -13,6 +13,31 @@ class UtilityComponent extends AppComponent
       }
     return md5_file($filename);
     }
+    
+  /** format filz size*/
+  static public function formatSize($sizeInByte)
+    {
+    $dataNorme='B';
+    if(Zend_Registry::get('configGlobal')->application->lang=='fr')
+      {
+      $dataNorme='o';
+      }
+    if (strlen($sizeInByte) <= 9 && strlen($sizeInByte) >= 7)
+      { 
+      $sizeInByte = number_format($sizeInByte / 1048576,1); 
+      return "$sizeInByte M$dataNorme"; 
+      } 
+    elseif (strlen($sizeInByte) >= 10) 
+      { 
+      $sizeInByte = number_format($sizeInByte / 1073741824,1); 
+      return "$sizeInByte G$dataNorme"; 
+      } 
+    else 
+      { 
+      $sizeInByte = number_format($sizeInByte / 1024,1); 
+      return "$sizeInByte K$dataNorme"; 
+      } 
+    }
 
   /** Safe delete function. Checks if the file can be deleted. */
   static public function safedelete($filename)
