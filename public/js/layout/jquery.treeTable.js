@@ -236,6 +236,8 @@
     getElementsSize();
   }
   
+  
+  var ajaxSizeRequest='';
   function getElementsSize()
   {
     var elements='';
@@ -250,7 +252,11 @@
       });
     if(elements!='')
       {
-        $.post(json.global.webroot+'/browse/getfolderssize',{folders: elements} , function(data) {
+        if(ajaxSizeRequest!='')
+          {        
+          ajaxSizeRequest.abort();
+          }
+        ajaxSizeRequest=$.post(json.global.webroot+'/browse/getfolderssize',{folders: elements} , function(data) {
           arrayElement=jQuery.parseJSON(data);
           $.each(arrayElement, function(index, value) { 
               var img=$('img.folderLoading[element='+value.id+']');

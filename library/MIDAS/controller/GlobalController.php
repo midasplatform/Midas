@@ -67,12 +67,9 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       $time_end = microtime(true);
       $writer = new Zend_Log_Writer_Firebug();
       $logger = new Zend_Log($writer);
-      $logger->info('---Timers---');
-      $logger->info("Controller timer:" . ($time_end - $this->_controllerTimer));
-      $logger->info("Global timer:" . ($time_end - START_TIME));
+      $logger->info("---Timers--- Controller timer:" . round(1000*($time_end - $this->_controllerTimer),3)." ms - Global timer:" . round(1000*($time_end - START_TIME),3)." ms");
 
-      $logger->info("---Memory Usage---");
-      $logger->info((memory_get_usage() / (1024 * 1024)) . " MB");
+      $logger->info("---Memory Usage---".round((memory_get_usage() / (1024 * 1024)),3) . " MB");
       }
 
     if (Zend_Registry::get("configDatabase")->database->profiler == 1)
@@ -140,7 +137,6 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     {
     $writer = new Zend_Log_Writer_Firebug();
     $logger = new Zend_Log($writer);
-    $logger->log('---Profiler---', Zend_Log::INFO);
     $configDatabase = Zend_Registry::get('configDatabase');
     if ($configDatabase->database->profiler != '1')
       {
@@ -152,7 +148,6 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     $queryCount = $profiler->getTotalNumQueries();
     if ($queryCount == 0)
       {
-      $logger->log('No query', Zend_Log::INFO);
       return;
       }
     $longestTime = 0;
@@ -166,18 +161,13 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         }
       }
 
-    $logger->log('Executed ' . $queryCount . ' queries in ' . $totalTime .
-    ' seconds', Zend_Log::INFO);
-    $logger->log('Average query length: ' . $totalTime / $queryCount .
-    ' seconds', Zend_Log::INFO);
-    $logger->log('Queries per second: ' . $queryCount / $totalTime, Zend_Log::INFO);
-    $logger->log('Longest query length: ' . $longestTime, Zend_Log::INFO);
-    $logger->log("Longest query: " . $longestQuery, Zend_Log::INFO);
-    $logger->log("List:", Zend_Log::INFO);
+    $stats='--- Profiler --- Executed ' . $queryCount . ' queries in ' . round(1000*$totalTime,3) .' ms';
+    $stats.= ' Longest query length: ' . round(1000*$longestTime,3).' ms : '.$longestQuery;
+    $logger->log(str_replace("'","`",$stats), Zend_Log::INFO);
 
     foreach ($profiler->getQueryProfiles() as $query)
       {
-      $logger->log($query->getElapsedSecs() . " | " . $query->getQuery(), Zend_Log::INFO);
+      $logger->log(str_replace("'","`",round(1000*($query->getElapsedSecs()),3). " ms | " . $query->getQuery()), Zend_Log::INFO);
       }
     }
 

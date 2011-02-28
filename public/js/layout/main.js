@@ -1,6 +1,12 @@
 var json
 var itemselected = false;
 
+if (typeof console != "object") {
+	var console = {
+		'log':function(){}
+	};
+}
+
 $(function() { 
   json = jQuery.parseJSON($('div.jsonContent').html());
   if(!json.global.logged)
