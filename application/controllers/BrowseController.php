@@ -32,6 +32,7 @@ class BrowseController extends AppController
 
     $javascriptText=array();
     $javascriptText['view']=$this->t('View');
+    $javascriptText['download']=$this->t('Download');
     $javascriptText['edit']=$this->t('Edit');
     $javascriptText['delete']=$this->t('Delete');
     $javascriptText['share']=$this->t('Share');

@@ -19,6 +19,59 @@ class ItemModel extends AppModelPdo
       'keywords' => array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'ItemKeyword', 'table' => 'item2keyword', 'parent_column'=> 'item_id', 'child_column' => 'keyword_id'),
       );
 
+  /** check if the policy is valid*/
+  function policyCheck($itemdao,$userDao=null,$policy=0)
+    {
+    if(!$itemdao instanceof  ItemDao||!is_numeric($policy))
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    if($userDao==null)
+      {
+      $userId= -1;
+      }
+    else if(!$userDao instanceof UserDao)
+      {
+      throw new Zend_Exception("Should be an user.");
+      }
+    else
+      {
+      $userId = $userDao->getUserId();
+      }
+      
+     $subqueryUser= $this->select()
+                          ->setIntegrityCheck(false)
+                          ->from(array('p' => 'itempolicyuser'),
+                                 array('item_id'))
+                          ->where('policy >= ?', $policy)
+                          ->where('p.item_id >= ?', $itemdao->getKey())
+                          ->where('user_id = ? ',$userId);
+
+     $subqueryGroup = $this->select()
+                    ->setIntegrityCheck(false)
+                    ->from(array('p' => 'itempolicygroup'),
+                           array('item_id'))
+                    ->where('policy >= ?', $policy)
+                    ->where('p.item_id >= ?', $itemdao->getKey())
+                    ->where('( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                              group_id IN (' .new Zend_Db_Expr(
+                              $this->select()
+                                   ->setIntegrityCheck(false)
+                                   ->from(array('u2g' => 'user2group'),
+                                          array('group_id'))
+                                   ->where('u2g.user_id = ?' , $userId)
+                                   .'))' ));
+
+    $sql = $this->select()
+            ->union(array($subqueryUser, $subqueryGroup));
+    $rowset = $this->fetchAll($sql);
+    if(count($rowset)>0)
+      {
+      return true;
+      }
+    return false;
+    }//end policyCheck
+    
   /** Get the last revision
    * @return ItemRevisionDao*/
   function getLastRevision($itemdao)
@@ -30,6 +83,22 @@ class ItemModel extends AppModelPdo
     return $this->initDao('ItemRevision', $this->fetchRow($this->select()->from('itemrevision')
                                               ->where('item_id = ?', $itemdao->getItemId())
                                               ->order(array('revision DESC'))
+                                              ->limit(1)
+                                              ->setIntegrityCheck(false)
+                                              ));
+    }
+    
+    /** Get  revision
+   * @return ItemRevisionDao*/
+  function getRevision($itemdao,$number)
+    {
+    if(!$itemdao instanceof  ItemDao||!$itemdao->saved)
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    return $this->initDao('ItemRevision', $this->fetchRow($this->select()->from('itemrevision')
+                                              ->where('item_id = ?', $itemdao->getItemId())
+                                              ->where('revision = ?', $number)
                                               ->limit(1)
                                               ->setIntegrityCheck(false)
                                               ));

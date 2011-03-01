@@ -23,6 +23,59 @@ class FolderModel extends AppModelPdo
     'parent' => array('type'=>MIDAS_MANY_TO_ONE, 'model'=>'Folder', 'parent_column'=> 'parent_id', 'child_column' => 'folder_id'),
     );
 
+    /** check if the policy is valid*/
+  function policyCheck($folderDao,$userDao=null,$policy=0)
+    {
+    if(!$folderDao instanceof  FolderDao||!is_numeric($policy))
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    if($userDao==null)
+      {
+      $userId= -1;
+      }
+    else if(!$userDao instanceof UserDao)
+      {
+      throw new Zend_Exception("Should be an user.");
+      }
+    else
+      {
+      $userId = $userDao->getUserId();
+      }
+      
+     $subqueryUser= $this->select()
+                          ->setIntegrityCheck(false)
+                          ->from(array('p' => 'folderpolicyuser'),
+                                 array('folder_id'))
+                          ->where('policy >= ?', $policy)
+                          ->where('p.folder_id >= ?', $folderDao->getKey())
+                          ->where('user_id = ? ',$userId);
+
+     $subqueryGroup = $this->select()
+                    ->setIntegrityCheck(false)
+                    ->from(array('p' => 'folderpolicygroup'),
+                           array('folder_id'))
+                    ->where('policy >= ?', $policy)
+                    ->where('p.folder_id >= ?', $folderDao->getKey())
+                    ->where('( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                              group_id IN (' .new Zend_Db_Expr(
+                              $this->select()
+                                   ->setIntegrityCheck(false)
+                                   ->from(array('u2g' => 'user2group'),
+                                          array('group_id'))
+                                   ->where('u2g.user_id = ?' , $userId)
+                                   .'))' ));
+
+    $sql = $this->select()
+            ->union(array($subqueryUser, $subqueryGroup));
+    $rowset = $this->fetchAll($sql);
+    if(count($rowset)>0)
+      {
+      return true;
+      }
+    return false;
+    }//end policyCheck
+    
   /** get the size and the number of item in a folder*/
   public function getSizeFiltered($folders,$userDao=null,$policy=0)
     {

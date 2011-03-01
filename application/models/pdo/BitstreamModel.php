@@ -30,7 +30,6 @@ class BitstreamModel extends AppModelPdo
     $bitstreamDao = new BitstreamDao;
     $bitstreamDao->setName($name);
     $bitstreamDao->setPath($path);
-    $bitstreamDao->fillPropertiesFromPath();
 
     $tmpPath=$assetstoreDao->getPath().'/'.rand(1, 1000);
     if(!file_exists($assetstoreDao->getPath()))
@@ -55,7 +54,8 @@ class BitstreamModel extends AppModelPdo
       {
       throw new Zend_Exception("Unable to move file ".$path.' to '.$fullPath);
       }
-    $bitstreamDao->setPath($fullPath);      
+    $bitstreamDao->setPath($fullPath);    
+    $bitstreamDao->fillPropertiesFromPath();
     $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
     return $bitstreamDao;
     }

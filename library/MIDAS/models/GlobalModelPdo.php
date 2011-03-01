@@ -533,6 +533,10 @@ class MIDAS_GlobalModelPdo extends Zend_Db_Table_Abstract
             unset($key[$k]);
             }
           }
+        if(empty($key))
+          {
+          return array();
+          }
         $rowset = $this->fetchAll($this->select()->where($this->_key . ' IN (?)', $key));
         $return = array();
         foreach ($rowset as $row)

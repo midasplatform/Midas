@@ -53,6 +53,7 @@
         if(type=='folder')
           {
             html+='<li><a href="'+json.global.webroot+'/folder/'+element+'">'+json.browse.view+'</a></li>';
+            html+='<li><a href="'+json.global.webroot+'/download?folders='+element+'">'+json.browse.download+'</a></li>';
             html+='<li><a>'+json.browse.edit+'</a></li>';
             html+='<li><a>'+json.browse['delete']+'</a></li>';
             html+='<li><a>'+json.browse.move+'</a></li>';
@@ -62,6 +63,7 @@
         if(type=='item')
           {
             html+='<li><a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
+            html+='<li><a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.download+'</a></li>';
             html+='<li><a>'+json.browse.edit+'</a></li>';
             html+='<li><a>'+json.browse['delete']+'</a></li>';
             html+='<li><a>'+json.browse.move+'</a></li>';

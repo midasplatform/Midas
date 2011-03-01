@@ -23,7 +23,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
    */
   protected function _initConfig()
     {
-    date_default_timezone_set('Europe/Paris');
     Zend_Loader::loadClass( "UserDao", BASE_PATH . '/application/models/dao');
     Zend_Loader::loadClass( "ItemDao", BASE_PATH . '/application/models/dao');
     if (isset($_POST['sid']))    
@@ -39,6 +38,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     $config = new Zend_Config_Ini(APPLICATION_CONFIG, $configGlobal->environment);
     Zend_Registry::set('config', $config);
+    
+    date_default_timezone_set('Europe/Paris');
     // InitDatabase
     $configDatabase = new Zend_Config_Ini(DATABASE_CONFIG, $configGlobal->environment);
     if ($configDatabase->database->type == 'pdo')
