@@ -15,7 +15,7 @@ width: 200px;
 }
 
 
-form.genericForm input[type=submit]
+form.genericForm input[type=submit],form.genericForm input[type=button]
 {
 margin-left: 116px;
 background: #F6F9FE url(images/ui-bg_glass_85_f6f9fe_1x400.png) repeat-x 50% 50%;
@@ -36,13 +36,28 @@ zoom: 1;
 line-height: 1.4;
 }
 
-form.genericForm input[type=submit]:hover
+form.genericForm input[type=submit]:hover,form.genericForm input[type=button]:hover
 {
 color: #1d5987; text-decoration: none;
 background: #cbd9e3;
 background-image: none;
-
 }
+
+
+form.genericForm input[type=submit][disabled],form.genericForm input[type=button][disabled]
+{
+color: grey; text-decoration: none;
+background: #dbdbdb;
+background-image: none;
+}
+
+form.genericForm input[type=submit][disabled]:hover,form.genericForm input[type=button][disabled]:hover
+{
+color: grey!important; text-decoration: none;
+background: #dbdbdb!important;
+background-image: none;
+}
+
 
 
 /*-------------------------------------------------
@@ -87,7 +102,7 @@ form.genericForm input[type=text]:hover,form.genericForm input[type=password]:ho
 }
 
 
-form.genericForm div input[type=submit], input.globalButton
+form.genericForm div input[type=submit], input.globalButton ,form.genericForm input[type=button]
 {
 margin-left: 208px;
 background: #F6F9FE url(images/ui-bg_glass_85_f6f9fe_1x400.png) repeat-x 50% 50%;

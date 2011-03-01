@@ -44,38 +44,9 @@ class UserController extends AppController
         {
         throw new Zend_Exception("User already exists.");
         }
-      $userDao=new UserDao();
-      $userDao->setFirstname(ucfirst($form->getValue('firstname')));
-      $userDao->setLastname(ucfirst($form->getValue('lastname')));
-      $userDao->setEmail(strtolower($form->getValue('email')));
-      $userDao->setCreation(date('c'));
-      $userDao->setPassword(md5($form->getValue('password1')));
-      $this->User->save($userDao);
-
-      $anonymousGroup=$this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
-
-      $folderGlobal=$this->Folder->createFolder('user_' . $userDao->getKey(),'Main folder of ' . $userDao->getFullName(),MIDAS_FOLDER_USERPARENT);
-      $folderPrivate=$this->Folder->createFolder('Private','Private folder of ' . $userDao->getFullName(),$folderGlobal);
-      $folderPublic=$this->Folder->createFolder('Public','Public folder of ' . $userDao->getFullName(),$folderGlobal);
-
-      $this->Folderpolicygroup->createPolicy($anonymousGroup,$folderPublic,MIDAS_POLICY_READ);
-      $this->Folderpolicyuser->createPolicy($userDao,$folderPrivate,MIDAS_POLICY_ADMIN);
-      $this->Folderpolicyuser->createPolicy($userDao,$folderGlobal,MIDAS_POLICY_ADMIN);
-      $this->Folderpolicyuser->createPolicy($userDao,$folderPublic,MIDAS_POLICY_ADMIN);
-
-      $userDao->setFolderId($folderGlobal->getKey());
-      $userDao->setPublicfolderId($folderPublic->getKey());
-      $userDao->setPrivatefolderId($folderPrivate->getKey());
-
-      $this->User->save($userDao);
-      $this->userSession->Dao=$userDao;
-      $this->getLogger()->info(__METHOD__ . " Registration: " . $userDao->getFullName() . " " . $userDao->getKey());
-
-      $feed=$this->Feed->createFeed($userDao,MIDAS_FEED_CREATE_USER,$userDao);
-      $anonymousGroup=$this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
-      $this->Feedpolicygroup->createPolicy($anonymousGroup,$feed,MIDAS_POLICY_READ);
-      $this->Feedpolicyuser->createPolicy($userDao,$feed,MIDAS_POLICY_ADMIN);
-
+        
+      $this->userSession->Dao=$this->User->createUser($form->getValue('email'),$form->getValue('password1'),$form->getValue('firstname'),$form->getValue('lastname'));
+      
       $this->_redirect("/");
       }
     $this->view->form=$this->getFormAsArray($form);
@@ -100,7 +71,8 @@ class UserController extends AppController
       if($form->isValid($this->getRequest()->getPost()))
         {
         $userDao=$this->User->getByEmail($form->getValue('email'));
-        if($userDao != false && md5($form->getValue('password')) == $userDao->getPassword())
+        $passwordPrefix=Zend_Registry::get('configGlobal')->password->prefix;
+        if($userDao != false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
           {
           $this->userSession->Dao=$userDao;
           $remember=$form->getValue('remerberMe');
@@ -171,15 +143,16 @@ class UserController extends AppController
           echo "false";
           }
         return;
-      case 'login' :
+      case 'login' :        
         $password=$this->_getParam("password");
         if(!is_string($password))
           {
           echo 'false';
           return;
           }
+        $passwordPrefix=Zend_Registry::get('configGlobal')->password->prefix;
         $userDao=$this->User->getByEmail($entry);
-        if($userDao != false && md5($password) == $userDao->getPassword())
+        if($userDao != false && md5($passwordPrefix.$password) == $userDao->getPassword())
           {
           echo 'true';
           return;

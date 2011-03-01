@@ -38,12 +38,12 @@ CREATE TABLE IF NOT EXISTS `bitstream` (
   `bitstream_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `itemrevision_id` bigint(20) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `mimetype` varchar(10) NOT NULL,
+  `mimetype` varchar(30) NOT NULL,
   `sizebytes` bigint(20) NOT NULL,
   `checksum` varchar(64) NOT NULL,
   `path` varchar(512) NOT NULL,
   `assetstore_id` int(11) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
   PRIMARY KEY (`bitstream_id`),
   KEY `itemrevision_id` (`itemrevision_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=680 ;
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `folder` (
   `parent_id` bigint(20) NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL,
   `description` text NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
   PRIMARY KEY (`folder_id`),
   KEY `parent_id` (`parent_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Describes a directory' AUTO_INCREMENT=23 ;
@@ -204,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `itemrevision` (
   `itemrevision_id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` bigint(20) NOT NULL,
   `revision` int(11) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
   `changes` text NOT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`itemrevision_id`),
@@ -300,6 +300,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `lastname` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `privacy` tinyint NOT NULL DEFAULT 0,
+  `admin` tinyint NOT NULL DEFAULT 0,
   `folder_id` bigint(20) NOT NULL,
   `creation` timestamp NOT NULL ,
   `publicfolder_id` bigint(20) NOT NULL,

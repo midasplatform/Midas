@@ -23,6 +23,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
    */
   protected function _initConfig()
     {
+    date_default_timezone_set('Europe/Paris');
     Zend_Loader::loadClass( "UserDao", BASE_PATH . '/application/models/dao');
     Zend_Loader::loadClass( "ItemDao", BASE_PATH . '/application/models/dao');
     if (isset($_POST['sid']))    

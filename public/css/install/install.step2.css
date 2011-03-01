@@ -1,0 +1,13 @@
+.dbForm{
+  display:none;
+}
+#dbResult{
+  position: relative;
+}
+
+#dbResult div{
+  position: absolute;
+  width: 400px;
+  left: 350px;
+  top: -20px;
+}

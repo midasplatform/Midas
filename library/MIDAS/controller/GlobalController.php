@@ -152,22 +152,28 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       }
     $longestTime = 0;
     $longestQuery = null;
-    foreach ($profiler->getQueryProfiles() as $query)
+    if(isset($profiler)&&!empty($profiler))
       {
-      if ($query->getElapsedSecs() > $longestTime)
+      $querys=$profiler->getQueryProfiles();
+      if(!empty($querys))
         {
-        $longestTime = $query->getElapsedSecs();
-        $longestQuery = $query->getQuery();
+        foreach ($profiler->getQueryProfiles() as $query)
+          {
+          if ($query->getElapsedSecs() > $longestTime)
+            {
+            $longestTime = $query->getElapsedSecs();
+            $longestQuery = $query->getQuery();
+            }
+          }
+        $stats='--- Profiler --- Executed ' . $queryCount . ' queries in ' . round(1000*$totalTime,3) .' ms';
+        $stats.= ' Longest query length: ' . round(1000*$longestTime,3).' ms : '.$longestQuery;
+        $logger->log(str_replace("'","`",$stats), Zend_Log::INFO);
+
+        foreach ($profiler->getQueryProfiles() as $query)
+          {
+          $logger->log(str_replace("'","`",round(1000*($query->getElapsedSecs()),3). " ms | " . $query->getQuery()), Zend_Log::INFO);
+          }
         }
-      }
-
-    $stats='--- Profiler --- Executed ' . $queryCount . ' queries in ' . round(1000*$totalTime,3) .' ms';
-    $stats.= ' Longest query length: ' . round(1000*$longestTime,3).' ms : '.$longestQuery;
-    $logger->log(str_replace("'","`",$stats), Zend_Log::INFO);
-
-    foreach ($profiler->getQueryProfiles() as $query)
-      {
-      $logger->log(str_replace("'","`",round(1000*($query->getElapsedSecs()),3). " ms | " . $query->getQuery()), Zend_Log::INFO);
       }
     }
 

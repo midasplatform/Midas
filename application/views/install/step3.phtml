@@ -1,0 +1,46 @@
+<link href="<?php echo $this->webroot?>/public/css/install/install.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->webroot?>/public/css/install/install.step3.css" rel="stylesheet" type="text/css" />
+
+<?php
+  $this->headScript()->appendFile($this->webroot.'/public/js/install/install.step3.js');
+?>
+
+<div class="viewMain"> 
+
+     <h3>Configuration:</h3>
+  
+     <?php
+      echo "<form class='genericForm' method='{$this->form['method']}'  action='{$this->form['action']}'>";
+      echo "
+              <div>
+                <label for='name'>Application name</label>
+                {$this->form['name']}
+              </div>
+              <div>
+                <label for='lang'>Language</label>
+                {$this->form['lang']}
+              </div>
+              <div>
+                <label for='environment'>Environment</label>
+                {$this->form['environment']}
+              </div>
+              <div>
+                <label for='environment'>Timezone</label>
+                {$this->form['timezone']}
+              </div>
+              <div>
+                <label for='smartoptimizer'>CSS and Javascript optimizer</label>
+                {$this->form['smartoptimizer']}
+              </div>
+              <div>
+                <label for='assetstore'>Default Assetstore</label>
+                {$this->form['assetstore']}
+              </div> 
+              <div>
+                {$this->form['submit']}
+              </div>
+              </form>";
+      echo "</div>";
+     ?>
+
+</div>

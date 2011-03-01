@@ -2,7 +2,7 @@
 
 class UploadController extends AppController
   {
-  public $_models=array('User','Item','ItemRevision','Folder','Itempolicyuser','Itempolicygroup','Group','Feed',"Feedpolicygroup","Feedpolicyuser");
+  public $_models=array('User','Item','ItemRevision','Folder','Itempolicyuser','Itempolicygroup','Group','Feed',"Feedpolicygroup","Feedpolicyuser",'Bitstream','Assetstore');
   public $_daos=array('User','Item','ItemRevision','Bitstream','Folder');
   public $_components=array('Httpupload');
   public $_forms=array('Upload');
@@ -180,13 +180,11 @@ class UploadController extends AppController
       $itemRevisionDao->setChanges('Initial revision');
       $itemRevisionDao->setUser_id($userDao->getKey());
       $this->Item->addRevision($item,$itemRevisionDao);
-
-        // Add bitstreams to the revision
-      $bitstreamDao = new BitstreamDao;
-      $bitstreamDao->setName($name);
-      $bitstreamDao->setPath($path);
-      $bitstreamDao->fillPropertiesFromPath();
-      $bitstreamDao->setAssetstoreId(0); //TODO
+     
+      $defaultAssetStoreId=Zend_Registry::get('configGlobal')->defaultassetstore->id;
+      $assetstoreDao=$this->Assetstore->load($defaultAssetStoreId);
+      
+      $bitstreamDao=$this->Bitstream->initBitstream($assetstoreDao, $name, $path);
       $this->ItemRevision->addBitstream($itemRevisionDao,$bitstreamDao);
 
       $this->getLogger()->info(__METHOD__." Upload ok (".$privacy."):".$path);

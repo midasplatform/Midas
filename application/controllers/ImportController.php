@@ -7,8 +7,8 @@
 class ImportController extends AppController
   {
 
-  public $_models=array('Item','Folder','ItemRevision','Assetstore','Folderpolicyuser','Itempolicyuser','Keyword');
-  public $_daos=array('Item','Folder','ItemRevision','Bitstream','Assetstore','Keyword');
+  public $_models=array('Item','Folder','ItemRevision','Assetstore','Folderpolicyuser','Itempolicyuser','ItemKeyword');
+  public $_daos=array('Item','Folder','ItemRevision','Bitstream','Assetstore','ItemKeyword');
   public $_components=array('Upload','Utility');
   public $_forms=array('Import','Assetstore');
 

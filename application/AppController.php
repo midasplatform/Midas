@@ -118,7 +118,7 @@ class AppController extends MIDAS_GlobalController
    * Assetstrore Model
    * @var AssetstoreModel
    */
-  var $Assetstrore;
+  var $Assetstore;
   /**
    * Bitstream Model
    * @var BitstreamModel
