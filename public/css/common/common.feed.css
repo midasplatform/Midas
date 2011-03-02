@@ -3,7 +3,7 @@ div.feedContainer {
 }
 
 div.feedContainer div.feedElement{
-  min-height: 50px;
+  min-height: 30px;
   border-bottom: 1px dotted #e4e4e4;
   position: relative;
 }
@@ -18,4 +18,20 @@ div.feedContainer div.feedDate{
   right:0px;
   color: grey;
   font-size: 10px;
+}
+
+img.feedDeleteLink{
+  display:none;
+  width:10px;
+  height: 10px;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+}
+div.feedDelete{
+  position: absolute;
+  top: 0px;
+  right:0px;
+  width:10px;
+  height: 10px;
 }

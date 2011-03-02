@@ -21,8 +21,8 @@
         $folder=$community->getFolder();
         echo "<tr id='node--$node' class='parent' type='community' element='{$community->getCommunityId()}' ajax='{$folder->getFolderId()}'>";
         echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
-        echo "  <td><span><img class='folderLoading'  element='{$folder->getFolderId()}' alt=' src='{$this->webroot}/public/images/icons/loading.gif'/></span></td>";
-        echo "  <td><span>{$this->Date->ago($folder->getDate(),true)}</span></td>";
+        echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->webroot}/public/images/icons/loading.gif'/></td>";
+        echo "  <td>{$this->Date->ago($folder->getDate(),true)}</td>";
         echo "  <td><input type='checkbox' class='treeCheckbox' type='community' element='{$community->getCommunityId()}' /></td>";
         echo "</tr>";
         $node++;

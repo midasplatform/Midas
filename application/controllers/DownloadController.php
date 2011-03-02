@@ -18,6 +18,7 @@ class DownloadController extends AppController
    */
   public function indexAction()
     {
+    set_time_limit(0);
     $this->_helper->layout->disableLayout();
     $itemIds=$this->_getParam('items');
     $folderIds=$this->_getParam('folders');
@@ -119,7 +120,7 @@ class DownloadController extends AppController
         $zip = new ZipStream($name.'.zip');
         foreach ($bitstreams as $bitstream)
           {
-          $zip->add_file_from_path('test/'.$bitstream->getName(), $bitstream->getPath());
+          $zip->add_file_from_path($bitstream->getName(), $bitstream->getPath());
           }
         $zip->finish();
         }

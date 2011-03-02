@@ -21,6 +21,34 @@ class FeedController extends AppController
     $this->view->feeds=$this->Feed->getGlobalFeeds($this->userSession->Dao);
     }
     
+     /** get getfolders Items' size */
+  public function deleteajaxAction()
+    {
+    if(!$this->getRequest()->isXmlHttpRequest())
+     {
+     throw new Zend_Exception("Why are you here ? Should be ajax.");
+     }     
+     
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    
+    $feedId=$this->_getParam('feed');
+    if(!isset($feedId)||!is_numeric($feedId))
+     {
+     throw new Zend_Exception("Please set the folder Id");
+     }
+    $feed= $this->Feed->load($feedId);
+    if($feed==false)
+      {
+      return;
+      }    
+    if(!$this->Feed->policyCheck($feed,$this->userSession->Dao,2))
+      {
+      return;
+      }
+    $this->Feed->delete($feed);      
+    }//end getfolderscontent
+    
 } // end class
 
   

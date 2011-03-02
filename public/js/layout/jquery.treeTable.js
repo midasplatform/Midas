@@ -17,6 +17,7 @@
     globalElement=this;
     var tmp =this.each(function() {
       
+      
       $(this).addClass("treeTable").find("tbody tr").each(function() {
         // Initialize root nodes only if possible
         if(!options.expandable || $(this)[0].className.search(options.childPrefix) == -1) {
@@ -24,7 +25,7 @@
           // value of the first root node. This way I only have to call +css+ 
           // once.
           if (isNaN(defaultPaddingLeft)) {
-            defaultPaddingLeft = parseInt($($(this).children("td")[options.treeColumn]).css('padding-left'), 10);
+            defaultPaddingLeft = parseInt($($(this).children("td:first")[options.treeColumn]).css('padding-left'), 10);
           }
           
           initialize($(this));
@@ -166,7 +167,7 @@
   }
   
   function indent(node, value) {
-    var cell = $(node.children("td")[options.treeColumn]);
+    var cell = $(node.children("td:first")[options.treeColumn]);
     cell[0].style.paddingLeft = getPaddingLeft(cell) + value + "px";
     
     childrenOf(node).each(function() {
@@ -280,8 +281,8 @@
     $.each(elements['folders'], function(index, value) {
       html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder' element='"+value['folder_id']+"'>";
       html+=     "  <td><span class='folder'>"+value['name']+"</span></td>";
-      html+=     "  <td><span>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.webroot+'/public/images/icons/loading.gif"/>'+"</span></td>";
-      html+=     "  <td><span>"+value['creation']+"</span></td>";
+      html+=     "  <td>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.webroot+'/public/images/icons/loading.gif"/>'+"</td>";
+      html+=     "  <td>"+value['creation']+"</td>";
       html+=     "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='"+value['folder_id']+"'/></td>";
       html+=     "</tr>";
       i++;
@@ -290,8 +291,8 @@
     $.each(elements['items'], function(index, value) { 
       html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"'  type='item' element='"+value['item_id']+"'>";
       html+=     "  <td><span class='file'>"+value['name']+"</span></td>";
-      html+=     "  <td><span>"+value['size']+"</span></td>";
-      html+=     "  <td><span>"+value['creation']+"</span></td>";
+      html+=     "  <td>"+value['size']+"</td>";
+      html+=     "  <td>"+value['creation']+"</td>";
       html+=     "  <td><input type='checkbox' class='treeCheckbox' type='item' element='"+value['item_id']+"'/></td>";
       html+=     "</tr>";       
       i++;
@@ -303,11 +304,11 @@
     childrenOf(node).each(function() {
       if(first)
         {
-        $(this).children("td")[options.treeColumn].style.paddingLeft = (padding-12) + "px";
+        $(this).children("td:first")[options.treeColumn].style.paddingLeft = (padding-12) + "px";
         }
       else
         {
-        $(this).children("td")[options.treeColumn].style.paddingLeft = (padding-12) + "px"; 
+        $(this).children("td:first")[options.treeColumn].style.paddingLeft = (padding-12) + "px"; 
         }
        if(node.hasClass('expanded'))
          {
@@ -332,11 +333,11 @@
         node.addClass("parent");
       }
       if(node.hasClass("parent")) {
-        var cell = $(node.children("td")[options.treeColumn]);
+        var cell = $(node.children("td:first")[options.treeColumn]);
         var padding = getPaddingLeft(cell) + options.indent;
         
         childNodes.each(function() {
-          $(this).children("td")[options.treeColumn].style.paddingLeft =  (padding-12) + "px";
+          $(this).children("td:first")[options.treeColumn].style.paddingLeft =  (padding-12) + "px";
         });
         
         if(options.expandable) {

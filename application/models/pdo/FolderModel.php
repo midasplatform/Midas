@@ -7,6 +7,8 @@ class FolderModel extends AppModelPdo
 {
   public $_name = 'folder';
   public $_key = 'folder_id';
+  
+
 
   public $_mainData= array(
     'folder_id'=> array('type'=>MIDAS_DATA),

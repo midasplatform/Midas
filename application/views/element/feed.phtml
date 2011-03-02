@@ -1,5 +1,9 @@
 <link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.feed.css" />
 
+<?php
+  $this->headScript()->appendFile($this->webroot.'/public/js/common/common.feed.js');
+?>
+
 <?
   $feeds=$this->feeds;
   if(!isset($feeds)||empty($feeds))
@@ -10,7 +14,7 @@
   echo "<div class='feedContainer'>";
   foreach($feeds as $key => $feed)
     {
-    echo "<div class='feedElement'>";
+    echo "<div class='feedElement'  element='{$feed->getKey()}'>";
     echo createFeedElement($this,$feed);
     echo "</div>";
     }
@@ -19,6 +23,12 @@
   function createFeedElement(&$view,$feed)
     {
     $type=$feed->getType();
+    if($feed->policy==2)
+      {
+      echo "<div class='feedDelete'>";
+      echo "<img class='feedDeleteLink' element='{$feed->getKey()}' src='{$view->webroot}/public/images/icons/close.png' alt=''/>";
+      echo "</div>";
+      }
     echo "<div class='feedUserImage'>";
     $thumbnail=$feed->getUser()->getThumbnail();
     if(!empty($thumbnail))

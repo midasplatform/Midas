@@ -66,15 +66,21 @@ class AppController extends MIDAS_GlobalController
       "webroot"=>$this->view->webroot,
       "logged"=>$this->logged,
       "currentUri"=>$this->getRequest()->REQUEST_URI,
-      "lang"=>Zend_Registry::get('configGlobal')->application->lang
+      "lang"=>Zend_Registry::get('configGlobal')->application->lang,
+      "Yes"=>$this->t('Yes'),
+      "No"=>$this->t('No')
     );
     $login=array(
       "titleUploadLogin"=>$this->t('Please log in'),
       "contentUploadLogin"=>utf8_encode($this->t('You need to be logged in to be able to upload files.'))
     );
+    
+    $feed=array(
+      "deleteFeed"=>$this->t('Do you really want to delete the feed')
+    );
 
     $this->view->json=array(
-      "global"=>$jsonGlobal,"login"=>$login
+      "global"=>$jsonGlobal,"login"=>$login,'feed'=>$feed
     );
     Zend_Loader::loadClass("JsonComponent",BASE_PATH.'/application/controllers/components');
     } // end preDispatch()

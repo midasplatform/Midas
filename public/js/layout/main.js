@@ -224,7 +224,7 @@ function showDialog(title,button)
     $( "div.MainDialog" ).dialog({
 			resizable: false,
       width:450,
-			modal: true,
+			modal: false,
       draggable:true,
       title: title		,
       buttons: { "Ok": function() { $(this).dialog("close"); } } 
@@ -236,8 +236,8 @@ function showDialog(title,button)
     $( "div.MainDialog" ).dialog({
 			resizable: false,
       width:450,
-			modal: true,
-      draggable:false,
+			modal: false,
+      draggable:true,
       title: title			
 		});
   }

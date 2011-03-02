@@ -7,6 +7,8 @@ class FeedModel extends AppModelPdo
 {
   public $_name = 'feed';
   public $_key = 'feed_id';
+  
+  public $_components = array('Sortdao');
 
   public $_mainData= array(
     'feed_id'=> array('type'=>MIDAS_DATA),
@@ -20,35 +22,47 @@ class FeedModel extends AppModelPdo
     'feedpolicyuser' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Feedpolicyuser', 'parent_column'=> 'feed_id', 'child_column' => 'feed_id'),
     );
 
-  /** get feeds (filtered by policies)
-   * @return Array of FeedDao */
-  function getGlobalFeeds($loggedUserDao,$policy=0)
+  
+  /** check if the policy is valid
+   *
+   * @param FolderDao $folderDao
+   * @param UserDao $userDao
+   * @param type $policy
+   * @return  boolean 
+   */
+  function policyCheck($feedDao,$userDao=null,$policy=0)
     {
-    if($loggedUserDao==null)
+    if(!$feedDao instanceof FeedDao||!is_numeric($policy))
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    if($userDao==null)
       {
       $userId= -1;
       }
-    else if(!$loggedUserDao instanceof UserDao)
+    else if(!$userDao instanceof UserDao)
       {
       throw new Zend_Exception("Should be an user.");
       }
     else
       {
-      $userId = $loggedUserDao->getUserId();
+      $userId = $userDao->getUserId();
       }
-
-    $subqueryUser= $this->select()
+      
+     $subqueryUser= $this->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'feedpolicyuser'),
                                  array('feed_id'))
-                          ->where('p.policy >= ?', $policy)
-                          ->where('p.user_id = ? ',$userId);
+                          ->where('policy >= ?', $policy)
+                          ->where('p.feed_id >= ?', $feedDao->getKey())
+                          ->where('user_id = ? ',$userId);
 
-    $subqueryGroup = $this->select()
+     $subqueryGroup = $this->select()
                     ->setIntegrityCheck(false)
                     ->from(array('p' => 'feedpolicygroup'),
                            array('feed_id'))
                     ->where('policy >= ?', $policy)
+                    ->where('p.feed_id >= ?', $feedDao->getKey())
                     ->where('( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                               group_id IN (' .new Zend_Db_Expr(
                               $this->select()
@@ -57,91 +71,45 @@ class FeedModel extends AppModelPdo
                                           array('group_id'))
                                    ->where('u2g.user_id = ?' , $userId)
                                    .'))' ));
+
     $sql = $this->select()
-                ->setIntegrityCheck(false)
-                ->from('feed')
-                ->where('feed_id IN ('.$subqueryUser.')' )
-                ->orWhere('feed_id IN ('.$subqueryGroup.')' );
+            ->union(array($subqueryUser, $subqueryGroup));
     $rowset = $this->fetchAll($sql);
-    $return = array();
-    foreach ($rowset as $row)
+    if(count($rowset)>0)
       {
-      $tmpDao= $this->initDao('Feed', $row);
-      $return[] = $tmpDao;
-      unset($tmpDao);
+      return true;
       }
-    return $return;
+    return false;
+    }//end policyCheck
+  
+  /** get feeds (filtered by policies)
+   * @return Array of FeedDao */
+  function getGlobalFeeds($loggedUserDao,$policy=0,$limit=20)
+    {
+    return $this->_getFeeds($loggedUserDao,null,null,$policy,$limit);
     }
   /** get feeds by user (filtered by policies)
    * @return Array of FeedDao */
-  function getFeedsByUser($loggedUserDao,$userDao,$policy=0)
+  function getFeedsByUser($loggedUserDao,$userDao,$policy=0,$limit=20)
     {
-    if(!$userDao instanceof UserDao)
-      {
-      throw new Zend_Exception("Should be an user.");
-      }
-    if($loggedUserDao==null)
-      {
-      $userId= -1;
-      }
-    else if(!$loggedUserDao instanceof UserDao)
-      {
-      throw new Zend_Exception("Should be an user.");
-      }
-    else
-      {
-      $userId = $loggedUserDao->getUserId();
-      }
-
-    $subqueryUser= $this->select()
-                          ->setIntegrityCheck(false)
-                          ->from(array('p' => 'feedpolicyuser'),
-                                 array('feed_id'))
-                          ->join(array('f' => 'feed'),
-                          $this->_db->quoteInto('f.user_id = ? ',$userDao->getKEy())
-                          .' AND p.feed_id = f.feed_id'  ,array())
-                          ->where('p.policy >= ?', $policy)
-                          ->where('p.user_id = ? ',$userId);
-
-    $subqueryGroup = $this->select()
-                    ->setIntegrityCheck(false)
-                    ->from(array('p' => 'feedpolicygroup'),
-                           array('feed_id'))
-                    ->join(array('f' => 'feed'),
-                          $this->_db->quoteInto('f.user_id = ? ',$userDao->getKEy())
-                          .' AND p.feed_id = f.feed_id'  ,array())
-                    ->where('policy >= ?', $policy)
-                    ->where('( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                              group_id IN (' .new Zend_Db_Expr(
-                              $this->select()
-                                   ->setIntegrityCheck(false)
-                                   ->from(array('u2g' => 'user2group'),
-                                          array('group_id'))
-                                   ->where('u2g.user_id = ?' , $userId)
-                                   .'))' ));
-    $sql = $this->select()
-                ->setIntegrityCheck(false)
-                ->from('feed')
-                ->where('feed_id IN ('.$subqueryUser.')' )
-                ->orWhere('feed_id IN ('.$subqueryGroup.')' );
-    $rowset = $this->fetchAll($sql);
-    $return = array();
-    foreach ($rowset as $row)
-      {
-      $tmpDao= $this->initDao('Feed', $row);
-      $return[] = $tmpDao;
-      unset($tmpDao);
-      }
-    return $return;
+    return $this->_getFeeds($loggedUserDao,$userDao,null,$policy,$limit);
     }
   /** get feeds by community (filtered by policies)
      * @return Array of FeedDao */
-  function getFeedsByCommunity($loggedUserDao,$communityDao,$policy=0)
+  function getFeedsByCommunity($loggedUserDao,$communityDao,$policy=0,$limit=20)
     {
-    if(!$communityDao instanceof CommunityDao)
-      {
-      throw new Zend_Exception("Should be a community.");
-      }
+    return $this->_getFeeds($loggedUserDao,null,$communityDao,$policy,$limit);
+    }
+    
+  /** get feed
+   * @param UserDao $loggedUserDao
+   * @param UserDao $userDao
+   * @param CommunityDao $communityDao
+   * @param type $policy
+   * @param type $limit
+   * @return type * @return Array of FeedDao */
+  private function _getFeeds($loggedUserDao,$userDao=null,$communityDao=null,$policy=0,$limit=20)
+    {
     if($loggedUserDao==null)
       {
       $userId= -1;
@@ -154,47 +122,99 @@ class FeedModel extends AppModelPdo
       {
       $userId = $loggedUserDao->getUserId();
       }
+    
+    if($userDao!=null&&!$userDao instanceof UserDao)
+      {
+      throw new Zend_Exception("Should be an user.");
+      }
 
+    if($communityDao!=null&&!$communityDao instanceof CommunityDao)
+      {
+      throw new Zend_Exception("Should be a community.");
+      }
+      
     $subqueryUser= $this->select()
                           ->setIntegrityCheck(false)
-                          ->from(array('p' => 'feedpolicyuser'),
-                                 array('feed_id'))
-                          ->join(array('f' => 'feed2community'),
-                          $this->_db->quoteInto('f.community_id = ? ',$communityDao->getKEy())
-                          .' AND p.feed_id = f.feed_id'  ,array())
+                          ->from(array('f' => 'feed'))
+                          ->join(array('p' => 'feedpolicyuser'),
+                                'f.feed_id=p.feed_id',
+                                 array('p.policy'))
                           ->where('p.policy >= ?', $policy)
-                          ->where('p.user_id = ? ',$userId);
+                          ->where('p.user_id = ? ',$userId)
+                          ->limit($limit);
 
     $subqueryGroup = $this->select()
                     ->setIntegrityCheck(false)
-                    ->from(array('p' => 'feedpolicygroup'),
-                           array('feed_id'))
-                    ->join(array('f' => 'feed2community'),
-                          $this->_db->quoteInto('f.community_id = ? ',$communityDao->getKEy())
-                          .' AND p.feed_id = f.feed_id'  ,array())
-                    ->where('policy >= ?', $policy)
-                    ->where('( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                              group_id IN (' .new Zend_Db_Expr(
+                    ->from(array('f' => 'feed'))
+                    ->join(array('p' => 'feedpolicygroup'),
+                                'f.feed_id=p.feed_id',
+                                 array('p.policy'))
+                    ->where('p.policy >= ?', $policy)
+                    ->where('( '.$this->_db->quoteInto('p.group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                              p.group_id IN (' .new Zend_Db_Expr(
                               $this->select()
                                    ->setIntegrityCheck(false)
                                    ->from(array('u2g' => 'user2group'),
                                           array('group_id'))
                                    ->where('u2g.user_id = ?' , $userId)
-                                   .'))' ));
-    $sql = $this->select()
-                ->setIntegrityCheck(false)
-                ->from('feed')
-                ->where('feed_id IN ('.$subqueryUser.')' )
-                ->orWhere('feed_id IN ('.$subqueryGroup.')' );
-    $rowset = $this->fetchAll($sql);
-    $return = array();
-    foreach ($rowset as $row)
+                                   .'))' ))
+                     ->limit($limit);
+    
+    if($userDao!=null)
       {
-      $tmpDao= $this->initDao('Feed', $row);
-      $return[] = $tmpDao;
-      unset($tmpDao);
+      $subqueryUser->where('f.user_id = ? ',$userDao->getKey());
+      $subqueryGroup->where('f.user_id = ? ',$userDao->getKey());
       }
-    return $return;
+      
+    if($communityDao!=null)
+      {
+      $subqueryUser->join(array('f2c' => 'feed2community'),
+                          $this->_db->quoteInto('f2c.community_id = ? ',$communityDao->getKey())
+                          .' AND f.feed_id = f2c.feed_id'  ,array());
+      $subqueryGroup->join(array('f2c' => 'feed2community'),
+                          $this->_db->quoteInto('f2c.community_id = ? ',$communityDao->getKey())
+                          .' AND f.feed_id =f2c.feed_id'  ,array());
+      }
+    
+    $sql = $this->select()
+            ->union(array($subqueryUser, $subqueryGroup));
+    $rowset = $this->fetchAll($sql);
+    $rowsetAnalysed=array();
+    foreach ($rowset as $keyRow=>$row)
+      {
+      foreach($rowsetAnalysed as $keyRa=>$ra)
+        {
+        if($ra->getKey()==$row['feed_id'])
+          {
+          if($ra->policy<$row['policy'])
+            {
+            $rowsetAnalysed[$keyRa]->policy=$row['policy'];
+            }
+          unset($row);
+          break;
+          }
+        }
+      if(isset($row))
+        {
+        $tmpDao= $this->initDao('Feed', $row);
+        $tmpDao->policy=$row['policy'];
+        $rowsetAnalysed[] = $tmpDao;
+        unset($tmpDao);
+        }
+      }      
+    $this->Component->Sortdao->field='date';
+    $this->Component->Sortdao->order='asc';
+    usort($rowsetAnalysed, array($this->Component->Sortdao,'sortByDate'));
+    $i=0;
+    foreach($rowsetAnalysed as $keyRa=>$r)
+      {
+      if($i>$limit)
+        {
+        unset($rowsetAnalysed[$keyRa]);
+        }
+      $i++;
+      }    
+    return $rowsetAnalysed;
     }
   /** Create a feed
    * @return FeedDao */
@@ -286,5 +306,33 @@ class FeedModel extends AppModelPdo
     $this->link('communities',$feed,$community);
     } // end function addCommunity
 
+    /** Delete Dao
+     *
+     * @param FeedDao $feeDao 
+     */
+  function delete($feeDao)
+    {
+    $this->ModelLoader = new MIDAS_ModelLoader();
+    $feedpolicygroups=$feeDao->getFeedpolicygroup();    
+    $feedpolicygroupModel=$this->ModelLoader->loadModel('Feedpolicygroup');
+    foreach($feedpolicygroups as $f)
+      {
+      $feedpolicygroupModel->delete($f);
+      }
+      
+    $feedpolicyuser=$feeDao->getFeedpolicyuser();    
+    $feedpolicyuserModel=$this->ModelLoader->loadModel('Feedpolicyuser');
+    foreach($feedpolicyuser as $f)
+      {
+      $feedpolicyuserModel->delete($f);
+      }
+      
+    $communities=$feeDao->getCommunities();
+    foreach($communities as $c)
+      {
+      parent::removeLink('communities', $feeDao, $c);
+      }
+    return parent::delete($feeDao);
+    }
 } // end class
 ?>
