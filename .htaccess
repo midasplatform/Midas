@@ -3,6 +3,7 @@
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule .* index.php
+
 </IfModule>
 
 # Security: no folder fetching
