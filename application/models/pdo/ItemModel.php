@@ -14,6 +14,7 @@ class ItemModel extends AppModelPdo
       'description' =>  array('type'=>MIDAS_DATA),
       'type' =>  array('type'=>MIDAS_DATA),
       'sizebytes'=>array('type'=>MIDAS_DATA),
+      'thumbnail'=>array('type'=>MIDAS_DATA),
       'folders' =>  array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'Folder', 'table' => 'item2folder', 'parent_column'=> 'item_id', 'child_column' => 'folder_id'),
       'revisions' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model'=>'ItemRevision', 'parent_column'=> 'item_id', 'child_column' => 'item_id'),
       'keywords' => array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'ItemKeyword', 'table' => 'item2keyword', 'parent_column'=> 'item_id', 'child_column' => 'keyword_id'),
@@ -64,6 +65,7 @@ class ItemModel extends AppModelPdo
 
     $sql = $this->select()
             ->union(array($subqueryUser, $subqueryGroup));
+
     $rowset = $this->fetchAll($sql);
     if(count($rowset)>0)
       {
@@ -71,6 +73,98 @@ class ItemModel extends AppModelPdo
       }
     return false;
     }//end policyCheck
+    
+  /** get random items
+   *
+   * @param UserDao $userDao
+   * @param type $policy
+   * @param type $limit
+   * @return array of ItemDao 
+   */
+  function getRandomItems($userDao=null,$policy=0,$limit=10,$thumbnailFilter=false)
+    {
+    if($userDao==null)
+      {
+      $userId= -1;
+      }
+    else if(!$userDao instanceof UserDao)
+      {
+      throw new Zend_Exception("Should be an user.");
+      }
+    else
+      {
+      $userId = $userDao->getUserId();
+      }
+      
+          
+    $subqueryUser= $this->select()
+                          ->setIntegrityCheck(false)
+                          ->from(array('f' => 'item'))
+                          ->join(array('p' => 'itempolicyuser'),
+                                'f.item_id=p.item_id',
+                                 array('p.policy'))
+                          ->where('p.policy >= ?', $policy)
+                          ->where('p.user_id = ? ',$userId);
+
+    $subqueryGroup = $this->select()
+                    ->setIntegrityCheck(false)
+                    ->from(array('f' => 'item'))
+                    ->join(array('p' => 'itempolicygroup'),
+                                'f.item_id=p.item_id',
+                                 array('p.policy'))
+                    ->where('p.policy >= ?', $policy)
+                    ->where('( '.$this->_db->quoteInto('p.group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                              p.group_id IN (' .new Zend_Db_Expr(
+                              $this->select()
+                                   ->setIntegrityCheck(false)
+                                   ->from(array('u2g' => 'user2group'),
+                                          array('group_id'))
+                                   ->where('u2g.user_id = ?' , $userId)
+                                   .'))' ))
+                     ->limit($limit*2)
+                     ->order( new Zend_Db_Expr('RAND() ASC') );
+    if($thumbnailFilter)
+      {
+      $subqueryUser->where('thumbnail != ?','');
+      $subqueryGroup->where('thumbnail != ?','');
+      }
+    $sql = $this->select()
+            ->union(array($subqueryUser, $subqueryGroup));
+    $rowset = $this->fetchAll($sql);
+    $rowsetAnalysed=array();
+    foreach ($rowset as $keyRow=>$row)
+      {
+      foreach($rowsetAnalysed as $keyRa=>$ra)
+        {
+        if($ra->getKey()==$row['item_id'])
+          {
+          if($ra->policy<$row['item_id'])
+            {
+            $rowsetAnalysed[$keyRa]->policy=$row['policy'];
+            }
+          unset($row);
+          break;
+          }
+        }
+      if(isset($row))
+        {
+        $tmpDao= $this->initDao('Item', $row);
+        $tmpDao->policy=$row['policy'];
+        $rowsetAnalysed[] = $tmpDao;
+        unset($tmpDao);
+        }
+      }
+    $i=1;
+    foreach($rowsetAnalysed as $keyRa=>$r)
+      {
+      if($i>$limit)
+        {
+        unset($rowsetAnalysed[$keyRa]);
+        }
+      $i++;
+      } 
+    return $rowsetAnalysed;
+    }//end get random
     
   /** Get the last revision
    * @return ItemRevisionDao*/

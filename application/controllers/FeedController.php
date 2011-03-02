@@ -5,7 +5,7 @@
  */
 class FeedController extends AppController
 {
-  public $_models=array('Feed');
+  public $_models=array('Feed','Item');
   public $_daos=array();
   public $_components=array();
     
@@ -19,6 +19,7 @@ class FeedController extends AppController
   public function indexAction()
     {
     $this->view->feeds=$this->Feed->getGlobalFeeds($this->userSession->Dao);
+    $this->view->itemThumbnails=$this->Item->getRandomItems($this->userSession->Dao,0,12,true);
     }
     
      /** get getfolders Items' size */

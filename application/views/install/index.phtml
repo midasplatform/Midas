@@ -31,7 +31,12 @@
 
     if($this->convertfound[0]==false)
       {
-      echo "<li><span style=\"color:#d48304\"> {$this->convertfound[1]}</span> </li>";
+      echo "<li><span style=\"color:#d48304\"> {$this->convertfound[1]}</span>";
+      if(strstr(PHP_OS,"WIN"))
+        {
+        echo " <br/>If you have installed Image Magick and it still doesn't work. Copy the convert.exe file to im-convert.exe in the Image Magick Folder. There may be a conflict with the windows convert application.";
+        }
+      echo "</li>";
       }
       
     if($this->writable==false)

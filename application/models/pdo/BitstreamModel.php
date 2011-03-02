@@ -7,6 +7,8 @@ class BitstreamModel extends AppModelPdo
 {
   public $_name = 'bitstream';
   public $_key = 'bitstream_id';
+  
+  public $_components = array();
 
   public $_mainData= array(
       'bitstream_id'=>  array('type'=>MIDAS_DATA),
@@ -57,6 +59,7 @@ class BitstreamModel extends AppModelPdo
     $bitstreamDao->setPath($fullPath);    
     $bitstreamDao->fillPropertiesFromPath();
     $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
+
     return $bitstreamDao;
     }
   

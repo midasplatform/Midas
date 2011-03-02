@@ -1,6 +1,7 @@
 <?php
 include_once BASE_PATH.'/library/MIDAS/init.php';
 require_once BASE_PATH.'/application/AppController.php';
+require_once BASE_PATH.'/application/AppFilters.php';
 require_once BASE_PATH.'/application/AppComponent.php';
 require_once BASE_PATH.'/application/AppForm.php';
 require_once BASE_PATH.'/application/models/AppModelPdo.php';

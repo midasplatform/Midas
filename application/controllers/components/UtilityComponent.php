@@ -91,6 +91,10 @@ class UtilityComponent extends AppComponent
     {
     // if command is successfull $ret shouldn't be empty
     @exec('convert', $output, $returnvalue);
+    if (count($output) == 0)
+      {
+      @exec('im-convert', $output, $returnvalue);
+      }
     if (count($output) > 0)
       {
       // version line should look like: "Version: ImageMagick 6.4.7 2008-12-04 Q16 http://www.imagemagick.org"
@@ -111,10 +115,6 @@ class UtilityComponent extends AppComponent
         return array(false, $text); 
         }
       return array(true, "ImageMagick ($version) found"); 
-      }
-    if(!$returnvalue)
-      {
-      return array(true, "ImageMagick found"); 
       }
     $text = "<b>ImageMagick</b> (>=6.0) is not found. Please install imagemagick from http://www.imagemagick.org"; 
     return array(false, $text);

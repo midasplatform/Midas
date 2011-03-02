@@ -8,6 +8,8 @@ class ItemRevisionModel extends AppModelPdo
   public $_name = 'itemrevision';
   public $_daoName = 'ItemRevisionDao';
   public $_key = 'itemrevision_id';
+  
+  public $_components = array('Filter');
 
   public $_mainData= array(
     'itemrevision_id'=>  array('type'=>MIDAS_DATA),
@@ -59,6 +61,22 @@ class ItemRevisionModel extends AppModelPdo
     
     $item=$itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));
+    
+    /** thumbnail*/    
+    $thumbnailCreator=$this->Component->Filter->getFilter('ThumbnailCreator');
+    $thumbnailCreator->inputFile = $bitstreamDao->getPath();
+    $thumbnailCreator->inputName = $bitstreamDao->getName();
+    $hasThumbnail = $thumbnailCreator->process();
+    $thumbnail_output_file = $thumbnailCreator->outputFile;
+    if($hasThumbnail&&  file_exists($thumbnail_output_file))
+      {
+      $oldThumbnail=$item->getThumbnail();
+      if(!empty($oldThumbnail))
+        {
+        unlink($oldThumbnail);
+        }
+      $item->setThumbnail(substr($thumbnail_output_file, strlen(BASE_PATH)+1));
+      }    
     $ItemModel->save($item);
     } // end addBitstream
 

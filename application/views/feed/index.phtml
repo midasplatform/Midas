@@ -1,6 +1,9 @@
 <?php
-  $this->headScript()->appendFile($this->webroot.'/public/js/community/community.index.js');
+  $this->headScript()->appendFile($this->webroot.'/public/js/feed/feed.index.js');
 ?>
+
+<link href="<?php echo $this->webroot?>/public/css/feed/feed.index.css" rel="stylesheet" type="text/css" />
+
 <div class="viewMain">
   <?php echo $this->element('feed')?>
 </div>
@@ -11,9 +14,20 @@
   <div class="sideElement feedPub">
     <h1>Pub</h1>
   </div>
-  <div class="sideElement feedThumbnail">
-    <h1>Thumbnails</h1>
-  </div>
+  <?php 
+  if(!empty($this->itemThumbnails))
+    {
+    echo '<div class="sideElement feedThumbnail">';
+    echo '<h1>Thumbnails</h1>';
+    foreach($this->itemThumbnails as $item)
+      {
+      echo "<a href='{$this->webroot}/item/{$item->getKey()}'>";
+      echo "<img src='{$this->webroot}/{$item->getThumbnail()}' alt=''/>"; 
+      echo "</a>";
+      }
+    echo '</div>';
+    }
+    ?>
   <div class="sideElementLast feedStats">
     <h1>Stats</h1>
   </div>
