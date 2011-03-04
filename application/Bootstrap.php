@@ -43,12 +43,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     // InitDatabase
     $configDatabase = new Zend_Config_Ini(DATABASE_CONFIG, $configGlobal->environment);
     if ($configDatabase->database->type == 'pdo')
-      {
+      {      
+      $pdoParams = array(
+            PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+        );
       $params= array(
         'host' => $configDatabase->database->params->host,
         'username' => $configDatabase->database->params->username,
         'password' => $configDatabase->database->params->password,
         'dbname' => $configDatabase->database->params->dbname,
+        'driver_options' => $pdoParams
       );
       if($configGlobal->environment=="production")
         {

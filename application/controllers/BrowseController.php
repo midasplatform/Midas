@@ -74,6 +74,7 @@ class BrowseController extends AppController
       $tmp['folder_id']=$folder->getFolderId();
       $tmp['name']=$folder->getName();
       $tmp['creation']=$this->Component->Date->ago($folder->getDate(),true);
+      $tmp['policy']=$folder->policy;
       $jsonContent[$folder->getParentId()]['folders'][]=$tmp;
       unset($tmp);
       }
@@ -86,6 +87,7 @@ class BrowseController extends AppController
       $itemRevision=$this->Item->getLastRevision($item);
       $tmp['creation']=$this->Component->Date->ago($itemRevision->getDate(),true);
       $tmp['size']=$this->Component->Utility->formatSize($item->getSizebytes());
+      $tmp['policy']=$item->policy;
       $jsonContent[$item->parent_id]['items'][]=$tmp;
       unset($tmp);
       }

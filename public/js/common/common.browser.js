@@ -39,6 +39,7 @@
     {
       var type=node.attr('type');
       var element=node.attr('element');
+      var policy=node.attr('policy');
       $('div.viewAction ul').fadeOut('fast',function()
       {
         $('div.viewAction ul').html('');
@@ -46,29 +47,46 @@
         if(type=='community')
           {
             html+='<li><a href="'+json.global.webroot+'/community/'+element+'">'+json.browse.view+'</a></li>';
-            html+='<li><a>'+json.browse.edit+'</a></li>';
-            html+='<li><a>'+json.browse.community.invit+'</a></li>';
-            html+='<li><a>'+json.browse.community.advanced+'</a></li>';
+            if(policy==2)
+              {
+              html+='<li><a>'+json.browse.edit+'</a></li>';
+              }
+            if(policy>=1)
+              {
+              html+='<li><a>'+json.browse.community.invit+'</a></li>';
+              html+='<li><a>'+json.browse.community.advanced+'</a></li>';
+              }              
           }
         if(type=='folder')
           {
             html+='<li><a href="'+json.global.webroot+'/folder/'+element+'">'+json.browse.view+'</a></li>';
             html+='<li><a href="'+json.global.webroot+'/download?folders='+element+'">'+json.browse.download+'</a></li>';
-            html+='<li><a>'+json.browse.edit+'</a></li>';
-            html+='<li><a>'+json.browse['delete']+'</a></li>';
-            html+='<li><a>'+json.browse.move+'</a></li>';
-            html+='<li><a>'+json.browse.copy+'</a></li>';
-            html+='<li><a>'+json.browse.share+'</a></li>';
+            if(policy==2)
+              {
+              html+='<li><a>'+json.browse.edit+'</a></li>';
+              html+='<li><a>'+json.browse['delete']+'</a></li>';
+              html+='<li><a>'+json.browse.move+'</a></li>';
+              html+='<li><a>'+json.browse.copy+'</a></li>';
+              }
+            if(policy>=1)
+              {
+              html+='<li><a>'+json.browse.share+'</a></li>';
+              }                
           }
         if(type=='item')
           {
             html+='<li><a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
-            html+='<li><a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.download+'</a></li>';
-            html+='<li><a>'+json.browse.edit+'</a></li>';
-            html+='<li><a>'+json.browse['delete']+'</a></li>';
-            html+='<li><a>'+json.browse.move+'</a></li>';
-            html+='<li><a>'+json.browse.copy+'</a></li>';
-            html+='<li><a>'+json.browse.share+'</a></li>';
+            if(policy==2)
+              {
+              html+='<li><a>'+json.browse.edit+'</a></li>';
+              html+='<li><a>'+json.browse['delete']+'</a></li>';
+              html+='<li><a>'+json.browse.move+'</a></li>';
+              html+='<li><a>'+json.browse.copy+'</a></li>';
+              }
+            if(policy>=1)
+              {
+              html+='<li><a>'+json.browse.share+'</a></li>';
+              }   
           }
          $('div.viewAction ul').html(html);
          $('div.viewAction ul').fadeIn('fast');

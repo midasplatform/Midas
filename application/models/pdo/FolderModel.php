@@ -8,7 +8,7 @@ class FolderModel extends AppModelPdo
   public $_name = 'folder';
   public $_key = 'folder_id';
   
-
+  public $_components = array('Sortdao');
 
   public $_mainData= array(
     'folder_id'=> array('type'=>MIDAS_DATA),
@@ -388,8 +388,10 @@ class FolderModel extends AppModelPdo
 
     $subqueryUser= $this->select()
                           ->setIntegrityCheck(false)
-                          ->from(array('p' => 'itempolicyuser'),
-                                 array('item_id'))
+                          ->from(array('f' => 'item'))
+                          ->join(array('p' => 'itempolicyuser'),
+                                'f.item_id=p.item_id',
+                                 array('p.policy'))
                           ->join(array('i' => 'item2folder'),
                                 $this->_db->quoteInto('i.folder_id IN (?)',$folderIds).'
                                 AND i.item_id = p.item_id' ,array('i.folder_id'))
@@ -398,14 +400,16 @@ class FolderModel extends AppModelPdo
 
     $subqueryGroup = $this->select()
                     ->setIntegrityCheck(false)
-                    ->from(array('p' => 'itempolicygroup'),
-                           array('item_id'))
+                    ->from(array('f' => 'item'))
+                    ->join(array('p' => 'itempolicygroup'),
+                          'f.item_id=p.item_id',
+                           array('p.policy'))
                     ->join(array('i' => 'item2folder'),
                                 $this->_db->quoteInto('i.folder_id IN (?)',$folderIds).'
                                 AND i.item_id = p.item_id' ,array('i.folder_id'))
                     ->where('policy >= ?', $policy)
-                    ->where('( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                              group_id IN (' .new Zend_Db_Expr(
+                    ->where('( '.$this->_db->quoteInto('p.group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                              p.group_id IN (' .new Zend_Db_Expr(
                               $this->select()
                                    ->setIntegrityCheck(false)
                                    ->from(array('u2g' => 'user2group'),
@@ -415,22 +419,37 @@ class FolderModel extends AppModelPdo
 
     $sql = $this->select()
             ->union(array($subqueryUser, $subqueryGroup));
+    
     $rowset = $this->fetchAll($sql);
     $items = array();
     $parents = array();
-    foreach ($rowset as $row)
+    foreach ($rowset as $keyRow=>$row)
       {
-      $items[]=$row->item_id;
-      $parents[$row->item_id]=$row->folder_id;
-      }
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $model = $this->ModelLoader->loadModel('Item');
-    $itemsDao=$model->load($items);
-    foreach($itemsDao as $k => $v)
-      {
-      $itemsDao[$k]->parent_id=$parents[$v->getItemId()];
-      }
-    return $itemsDao;
+      foreach($items as $keyIt=>$It)
+        {
+        if($It->getKey()==$row['item_id'])
+          {
+          if($It->policy<$row['policy'])
+            {
+            $items[$keyIt]->policy=$row['policy'];
+            }
+          unset($row);
+          break;
+          }
+        }
+      if(isset($row))
+        {
+        $tmpDao= $this->initDao('Item', $row);
+        $tmpDao->policy=$row['policy'];
+        $tmpDao->parent_id=$row['folder_id'];
+        $items[] = $tmpDao;
+        unset($tmpDao);
+        }
+      } 
+    $this->Component->Sortdao->field='name';
+    $this->Component->Sortdao->order='asc';
+    usort($items, array($this->Component->Sortdao,'sortByName'));
+    return $items;
     }
 
     /** getFolder with policy check */
@@ -556,21 +575,21 @@ class FolderModel extends AppModelPdo
 
     $subqueryUser= $this->select()
                           ->setIntegrityCheck(false)
-                          ->from(array('p' => 'folderpolicyuser'),
-                                 array('folder_id'))
-                          ->join(array('f' => 'folder'),
-                          $this->_db->quoteInto('f.parent_id IN (?)',$folderIds)
-                          .' AND p.folder_id = f.folder_id'  ,array())
+                          ->from(array('f' => 'folder'))
+                          ->join(array('p' => 'folderpolicyuser'),
+                                'f.folder_id=p.folder_id',
+                                 array('p.policy'))
+                          ->where ('f.parent_id IN (?)',$folderIds)
                           ->where('policy >= ?', $policy)
                           ->where('user_id = ? ',$userId);
 
     $subqueryGroup = $this->select()
                     ->setIntegrityCheck(false)
-                    ->from(array('p' => 'folderpolicygroup'),
-                           array('folder_id'))
-                    ->join(array('f' => 'folder'),
-                          $this->_db->quoteInto('f.parent_id IN (?)',$folderIds)
-                          .' AND p.folder_id = f.folder_id'  ,array())
+                    ->from(array('f' => 'folder'))
+                    ->join(array('p' => 'folderpolicygroup'),
+                          'f.folder_id=p.folder_id',
+                           array('p.policy'))
+                    ->where ('f.parent_id IN (?)',$folderIds)
                     ->where('policy >= ?', $policy)
                     ->where('( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                               group_id IN (' .new Zend_Db_Expr(
@@ -581,10 +600,8 @@ class FolderModel extends AppModelPdo
                                    ->where('u2g.user_id = ?' , $userId)
                                    .'))' ));
     $sql = $this->select()
-                ->setIntegrityCheck(false)
-                ->from('folder')
-                ->where('folder_id IN ('.$subqueryUser.')' )
-                ->orWhere('folder_id IN ('.$subqueryGroup.')' );
+            ->union(array($subqueryUser, $subqueryGroup));
+    
     $rowset = $this->fetchAll($sql);
     $return = array();
     foreach ($rowset as $row)
@@ -593,7 +610,34 @@ class FolderModel extends AppModelPdo
       $return[] = $tmpDao;
       unset($tmpDao);
       }
-    return $return;
+      
+    $folders = array();
+    foreach ($rowset as $keyRow=>$row)
+      {
+      foreach($folders as $keyIt=>$It)
+        {
+        if($It->getKey()==$row['folder_id'])
+          {
+          if($It->policy<$row['policy'])
+            {
+            $folders[$keyIt]->policy=$row['policy'];
+            }
+          unset($row);
+          break;
+          }
+        }
+      if(isset($row))
+        {
+        $tmpDao= $this->initDao('Folder', $row);
+        $tmpDao->policy=$row['policy'];
+        $folders[] = $tmpDao;
+        unset($tmpDao);
+        }
+      } 
+    $this->Component->Sortdao->field='name';
+    $this->Component->Sortdao->order='asc';
+    usort($folders, array($this->Component->Sortdao,'sortByName'));
+    return $folders;
     }
 
   /** Get the child folder

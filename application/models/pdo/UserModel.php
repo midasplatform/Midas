@@ -30,6 +30,8 @@ class UserModel extends AppModelPdo
 
   );
 
+    
+    
   /** Get user communities */
   public function getUserCommunities($userDao)
     {

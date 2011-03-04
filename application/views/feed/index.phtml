@@ -8,16 +8,21 @@
   <?php echo $this->element('feed')?>
 </div>
 <div class="viewSideBar">
-  <div class="sideElementFirst feedNotification">
-    <h1>Notifications</h1>
-  </div>
-  <div class="sideElement feedPub">
-    <h1>Pub</h1>
-  </div>
+
+  BlaBla
+  <br/>  
+    <?php
+  if(!empty($this->notifications))
+    {
+    echo   "<div class='sideElementFirst feedNotification'>
+              <h1>Notifications</h1>
+            </div>";
+    }
+    ?>
   <?php 
   if(!empty($this->itemThumbnails))
     {
-    echo '<div class="sideElement feedThumbnail">';
+    echo '<div class="'.(empty($this->notifications)?'sideElementFirst':'sideElement').' feedThumbnail">';
     echo '<h1>Thumbnails</h1>';
     foreach($this->itemThumbnails as $item)
       {
@@ -30,6 +35,13 @@
     ?>
   <div class="sideElementLast feedStats">
     <h1>Stats</h1>
+    <?php
+    echo "<ul>";
+    echo "  <li>{$this->nUsers} user".(($this->nUsers>1)?'s':'')."</li>";
+    echo "  <li>{$this->nCommunities} ".(($this->nCommunities>1)?'communities':'community')."</li>";
+    echo "  <li>{$this->nItems} item".(($this->nItems>1)?'s':'')."</li>";
+    echo "</ul>";
+    ?>
   </div>
 </div>
 

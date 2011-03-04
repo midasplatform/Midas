@@ -5,7 +5,7 @@
  */
 class FeedController extends AppController
 {
-  public $_models=array('Feed','Item');
+  public $_models=array('Feed','Item','User','Community');
   public $_daos=array();
   public $_components=array();
     
@@ -20,6 +20,10 @@ class FeedController extends AppController
     {
     $this->view->feeds=$this->Feed->getGlobalFeeds($this->userSession->Dao);
     $this->view->itemThumbnails=$this->Item->getRandomItems($this->userSession->Dao,0,12,true);
+    $this->view->nUsers=$this->User->getCountAll();
+    $this->view->nCommunities=$this->Community->getCountAll();
+    $this->view->nItems=$this->Item->getCountAll();
+    $this->view->notifications=array();
     }
     
      /** get getfolders Items' size */

@@ -279,7 +279,7 @@
     elements['items'] = jQuery.makeArray(elements['items']);
     var html='';
     $.each(elements['folders'], function(index, value) {
-      html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder' element='"+value['folder_id']+"'>";
+      html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
       html+=     "  <td><span class='folder'>"+value['name']+"</span></td>";
       html+=     "  <td>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.webroot+'/public/images/icons/loading.gif"/>'+"</td>";
       html+=     "  <td>"+value['creation']+"</td>";
@@ -289,7 +289,7 @@
       });
       
     $.each(elements['items'], function(index, value) { 
-      html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"'  type='item' element='"+value['item_id']+"'>";
+      html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"'  type='item' policy='"+value['policy']+"' element='"+value['item_id']+"'>";
       html+=     "  <td><span class='file'>"+value['name']+"</span></td>";
       html+=     "  <td>"+value['size']+"</td>";
       html+=     "  <td>"+value['creation']+"</td>";

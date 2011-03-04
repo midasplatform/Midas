@@ -26,7 +26,29 @@ class SortdaoComponent extends AppComponent
       {
       return ($a_t > $b_t ) ? 1 : -1; 
       }
-    }
+    }//end sortByDate
     
+    /** sort by name*/
+  public function sortByName($a,$b)
+    {
+    if($this->field==''||!isset($a->{$this->field}))
+      {
+      throw new Zend_Exception("Error field.");
+      }
+    $a_n = strtolower($a->{$this->field})  ; 
+    $b_n = strtolower($b->{$this->field})  ; 
+
+    if( $a_n == $b_n )
+      return 0 ; 
+    
+    if($this->order=='asc')
+      {
+      return ($a_n < $b_n) ? -1 : 1; 
+      }
+    else
+      {
+      return ($a_n < $b_n ) ? 1 : -1; 
+      }
+    }//end sortByDate
 } // end class
 ?>
