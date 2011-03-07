@@ -3,7 +3,7 @@
 ?>
 <div class="viewMain">
   <?php
-  if($this->logged)
+  if(!empty($this->userCommunities))
     {
     foreach($this->userCommunities as $community)
       {

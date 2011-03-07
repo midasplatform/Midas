@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `bitstream` (
   `checksum` varchar(64) NOT NULL,
   `path` varchar(512) NOT NULL,
   `assetstore_id` int(11) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+  `date` timestamp NULL DEFAULT NULL ,
   PRIMARY KEY (`bitstream_id`),
   KEY `itemrevision_id` (`itemrevision_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=680 ;
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `community` (
   `community_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `description` text NOT NULL,
-  `creation` timestamp NOT NULL ,
+  `creation` timestamp NULL DEFAULT NULL ,
   `privacy` tinyint NOT NULL,
   `folder_id` bigint(20) NOT NULL,
   `publicfolder_id` bigint(20) NOT NULL,
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `folder` (
   `parent_id` bigint(20) NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL,
   `description` text NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+  `date` timestamp NULL DEFAULT NULL ,
   PRIMARY KEY (`folder_id`),
   KEY `parent_id` (`parent_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Describes a directory' AUTO_INCREMENT=23 ;
@@ -138,6 +138,7 @@ INSERT INTO `group` (group_id,community_id,name) VALUES (0,0,'Anonymous');
 CREATE TABLE IF NOT EXISTS `item` (
   `item_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(250) NOT NULL,
+  `date` timestamp NULL DEFAULT NULL ,
   `description` varchar(20) NOT NULL,
   `type` int(11) NOT NULL,
   `thumbnail` varchar(255) NOT NULL,
@@ -204,7 +205,7 @@ CREATE TABLE IF NOT EXISTS `itemrevision` (
   `itemrevision_id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` bigint(20) NOT NULL,
   `revision` int(11) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+  `date` timestamp NULL DEFAULT NULL ,
   `changes` text NOT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`itemrevision_id`),
@@ -302,7 +303,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `privacy` tinyint NOT NULL DEFAULT 0,
   `admin` tinyint NOT NULL DEFAULT 0,
   `folder_id` bigint(20) NOT NULL,
-  `creation` timestamp NOT NULL ,
+  `creation` timestamp NULL DEFAULT NULL ,
   `publicfolder_id` bigint(20) NOT NULL,
   `privatefolder_id` bigint(20) NOT NULL,
   PRIMARY KEY (`user_id`),
@@ -332,7 +333,7 @@ CREATE TABLE IF NOT EXISTS `user2group` (
 
 CREATE TABLE IF NOT EXISTS `feed` (
   `feed_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `date` timestamp NOT NULL,
+  `date` timestamp NULL DEFAULT NULL,
   `user_id` bigint(20) NOT NULL,
   `type` int NOT NULL,
   `ressource` varchar(255) NOT NULL,

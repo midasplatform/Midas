@@ -29,6 +29,28 @@ class CommunityModel extends AppModelPdo
     'feeds' =>  array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'Feed', 'table' => 'feed2community', 'parent_column'=> 'community_id', 'child_column' => 'feed_id'),
   );
 
+  /* get public Communities
+   * 
+   * @return Array of Community Dao
+   */
+  function getPubicCommunities($limit=20)
+    {
+    if(!is_numeric($limit))
+      {
+      throw new Zend_Exception("Error parameter.");
+      }
+    $sql = $this->select()->from($this->_name)
+                          ->where('privacy != ?',MIDAS_COMMUNITY_PRIVATE)
+                          ->limit($limit);
+      
+    $rowset = $this->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {      
+      $return[] = $this->initDao('Community', $row);
+      }
+    return $return;
+    }
   
   /** Return a list of communities corresponding to the search */
   function getCommunitiesFromSearch($search,$userDao)
@@ -56,10 +78,10 @@ class CommunityModel extends AppModelPdo
     $return = array();
     foreach($rowset as $row)
       {
-      $tmpDao = new FolderDao();
+      $tmpDao = new CommunityDao();
       $tmpDao->count = $row['count(*)'];
       $tmpDao->setName($row->name);
-      $tmpDao->setFolderId($row->folder_id);
+      $tmpDao->setCommunityId($row->community_id);
       $return[] = $tmpDao;
       unset($tmpDao);
       }

@@ -316,7 +316,7 @@ SIDEBAR
 
 div.SideBar {
   float: left;
-  margin-left: -18%;
+  margin-left: -18% ;
   right: 215px;
   width: 150px;
 }

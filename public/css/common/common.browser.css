@@ -1,0 +1,29 @@
+div.viewHeader {
+  padding: 0px 15px !important;
+  min-height: 24px !important;
+}
+
+ul.pathBrowser{
+  display: block;
+  list-style-type: disc;
+  margin: 0;
+  padding-left: 0px;
+  float: left;
+  -webkit-margin-before: 0em;
+  -webkit-margin-after: 0em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  -webkit-padding-start: 0px;
+}
+
+ul.pathBrowser li{
+  margin: 0;
+  list-style: none;
+  float: left;
+  background-repeat: no-repeat;
+  background-position: right 0px;
+  display: list-item;
+  padding: 3px 22px 7px 10px;
+  text-shadow: 0px 1px 0px #EEE;
+  background-image: url("../../images/icons/path-divider.png");
+}

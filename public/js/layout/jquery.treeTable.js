@@ -38,7 +38,7 @@
     });
     
     initEvent();
-    getElementsSize();
+   // getElementsSize();
     return tmp;
   };
   
@@ -158,10 +158,18 @@
   };
   
   function childrenOf(node) {
+     if(node[0]==undefined)
+      {
+      return null;
+      }
     return $("table.treeTable tbody tr." + options.childPrefix + node[0].id);
   };
   
   function getPaddingLeft(node) {
+    if(node[0]==undefined)
+      {
+      return defaultPaddingLeft;
+      }
     var paddingLeft = parseInt(node[0].style.paddingLeft, 10);
     return (isNaN(paddingLeft)) ? defaultPaddingLeft : paddingLeft;
   }
@@ -237,40 +245,6 @@
     getElementsSize();
   }
   
-  
-  var ajaxSizeRequest='';
-  function getElementsSize()
-  {
-    var elements='';
-    var nb=0;
-    $('img.folderLoading').each(function()
-      {      
-        nb++;
-        if(nb<200)
-          {
-          elements+=$(this).attr('element')+'-';
-          }
-      });
-    if(elements!='')
-      {
-        if(ajaxSizeRequest!='')
-          {        
-          ajaxSizeRequest.abort();
-          }
-        ajaxSizeRequest=$.post(json.global.webroot+'/browse/getfolderssize',{folders: elements} , function(data) {
-          arrayElement=jQuery.parseJSON(data);
-          $.each(arrayElement, function(index, value) { 
-              var img=$('img.folderLoading[element='+value.id+']');
-              img.after(value.size);
-              img.parents('tr').find('td:first span:last').append(' ('+value.count+')');
-              img.remove();
-              getElementsSize();
-          });
-        });
-      }
-
-  }
-  
   function createElementsAjax(node,elements,first)
   {
     var i = 1;
@@ -297,11 +271,12 @@
       html+=     "</tr>";       
       i++;
       });
-
     node.after(html)
     var cell = $(node.children("td")[options.treeColumn]);
     var padding = getPaddingLeft(cell) + options.indent;
-    childrenOf(node).each(function() {
+    var arrayCell=childrenOf(node);
+    if(arrayCell==null)return;
+    arrayCell.each(function() {
       if(first)
         {
         $(this).children("td:first")[options.treeColumn].style.paddingLeft = (padding-12) + "px";
@@ -382,3 +357,34 @@
     }
   };
 })(jQuery);
+
+
+  
+  var ajaxSizeRequest='';
+  function getElementsSize()
+  {
+    var elements='';
+    var nb=0;
+    $('img.folderLoading').each(function()
+      {      
+        nb++;
+        if(nb<200)
+          {
+          elements+=$(this).attr('element')+'-';
+          }
+      });
+    if(elements!='')
+      {
+        ajaxSizeRequest=$.post(json.global.webroot+'/browse/getfolderssize',{folders: elements} , function(data) {
+          arrayElement=jQuery.parseJSON(data);
+          $.each(arrayElement, function(index, value) { 
+              var img=$('img.folderLoading[element='+value.id+']');
+              img.after(value.size);
+              img.parents('tr').find('td:first span:last').append(' ('+value.count+')');
+              img.remove();
+          });
+        });
+      }
+
+  }
+  

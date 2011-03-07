@@ -16,6 +16,7 @@ class FolderController extends AppController
       {
       $this->_forward('view',null,null,array('folderId'=>$actionName));
       }
+    $this->view->activemenu = 'browse'; // set the active menu
     }  // end init()
 
   /** View Action*/
@@ -38,25 +39,28 @@ class FolderController extends AppController
       {
       $folders=$this->Folder->getChildrenFoldersFiltered($folder,$this->userSession->Dao,MIDAS_POLICY_READ);
       $items=$this->Folder->getItemsFiltered($folder,$this->userSession->Dao,MIDAS_POLICY_READ);
-      $header.="> {$folder->getName()}";
+      $header.=" <li class='pathFolder'><a href='{$this->view->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a></li>";
       $parent=$folder->getParent();
       while($parent!==false)
         {
         if(strpos($parent->getName(), 'community')!==false&&$this->Folder->getCommunity($parent)!==false)
           {
           $community=$this->Folder->getCommunity($parent);
-          $header="> {$community->getName()} ".$header;
+          $header=" <li class='pathCommunity'><a href='{$this->view->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></li>".$header;
           }
         else
           {
-          $header="> {$parent->getName()} ".$header;
+          $header=" <li class='pathFolder'><a href='{$this->view->webroot}/folder/{$parent->getKey()}'>{$parent->getName()}</a></li>".$header;
           }
         $parent=$parent->getParent();
         }
+      $header="<ul class='pathBrowser'>
+               <li class='pathData'><a href='{$this->view->webroot}/browse'>Data</a></li>".$header;
+      $header.="</ul>";
       }
     $this->view->folders=$folders;
     $this->view->items=$items;
-    $this->view->header=substr($header,2);
+    $this->view->header=$header;
 
     $javascriptText=array();
     $javascriptText['view']=$this->t('View');

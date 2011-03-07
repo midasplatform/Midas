@@ -86,6 +86,7 @@ class FolderModel extends AppModelPdo
       $folders=array($folders);
       }
     $folderIds=array();
+         
     $foldersWithChild=$this->getChildrenFoldersFilteredRecursive($folders,$userDao,$policy);
     foreach($foldersWithChild as $folder)
       {
@@ -148,70 +149,58 @@ class FolderModel extends AppModelPdo
 
      $sql = $this->select()
             ->union(array($subqueryUser, $subqueryGroup));
-    $rowset = $this->fetchAll($sql);
-    
+    $rowset = $this->fetchAll($sql);    
+         
     $rowsetAnalysed=array();
-    foreach($rowset as $keyR=>$r)
+    $folderData=array();
+    foreach ($rowset as $keyRow=>$row)
       {
-      $r=$r->toArray();
-      $found=false;
-      foreach($rowsetAnalysed as $keyRr=>$rr)
+      if(!isset($folderData[$row['folder_id']]))
         {
-        if($rr['folder_id']==$r['folder_id']&&!in_array($r['item_id'], $rr['items']))
-          {
-          $rowsetAnalysed[$keyRr]['items'][]=$r['item_id'];
-          $rowsetAnalysed[$keyRr]['count']++;
-          $rowsetAnalysed[$keyRr]['sizebytes']+=$r['sizebytes'];
-          $found=true;
-          break;
-          }
+        $folderData[$row['folder_id']]=array('1',$row['sizebytes'],array($row['item_id']));        
         }
-      if(!$found)
+      elseif(isset($folderData[$row['folder_id']])&&!in_array ($row['item_id'], $folderData[$row['folder_id']][2]))
         {
-        $r['items']=array($r['item_id']);
-        $r['count']=1;
-        $rowsetAnalysed[]=$r;
+        $folderData[$row['folder_id']][0]++;
+        $folderData[$row['folder_id']][1]+=$row['sizebytes'];
+        $folderData[$row['folder_id']][2][]=$row['item_id'];
         }
       }
-    $results = array();
-    foreach($rowsetAnalysed as $row)
+
+    foreach ($rowset as $keyRow=>$row)
       {
-      foreach($results as $r)
-        {
-        if($r->getKey()==$row['folder_id'])
-          {
-          unset($row);
-          break;
-          }
-        }
-      if(isset($row))
-        {
+      if(isset($folderData[$row['folder_id']]))
+        {        
         $tmpDao= $this->initDao('Folder', $row);
-        $tmpDao->count = $row['count'];
-        $tmpDao->size = $row['sizebytes'];
-        $results[] = $tmpDao;
-        unset($tmpDao);
+        $tmpDao->count =$folderData[$row['folder_id']][0];
+        $tmpDao->size = $folderData[$row['folder_id']][1];
+        $results[$row['folder_id']] = $tmpDao;
+        unset($folderData[$row['folder_id']]);
         }
       }
-      
+    
+    foreach ($rowset as $keyRow=>$row)
+      {
+      if(isset($folderData[$row['folder_id']]))
+        {        
+        $tmpDao= $this->initDao('Folder', $row);
+        $tmpDao->count =$folderData[$row['folder_id']][0];
+        $tmpDao->size = $folderData[$row['folder_id']][1];
+        $results[$row['folder_id']] = $tmpDao;
+        unset($folderData[$row['folder_id']]);
+        }
+      }
+    
     foreach($folders as $key=>$folder)
       {
-      $folders[$key]->count=0;
-      $folders[$key]->size=0;
-      foreach($results as $result)
+      $folders[$key]->count=$results[$folder->getKey()]->count;
+      $folders[$key]->size=$results[$folder->getKey()]->size;
+      foreach($folder->allChildren as $child)
         {
-        if($folders[$key]->getKey()==$result->getKey())
+        if(isset($results[$child->getKey()]))
           {
-          $folders[$key]->count+=$result->count;
-          $folders[$key]->size+=$result->size;
-          }
-        foreach($folder->allChildren as $child)
-          {
-          if($child->getKey()==$result->getKey())
-            {
-            $folders[$key]->count+=$result->count;
-            $folders[$key]->size+=$result->size;
-            }
+          $folders[$key]->count+=$results[$child->getKey()]->count;
+          $folders[$key]->size+=$results[$child->getKey()]->size;
           }
         }       
       }
@@ -421,35 +410,33 @@ class FolderModel extends AppModelPdo
             ->union(array($subqueryUser, $subqueryGroup));
     
     $rowset = $this->fetchAll($sql);
-    $items = array();
-    $parents = array();
+    $return = array();    
+    $policyArray=array();
     foreach ($rowset as $keyRow=>$row)
       {
-      foreach($items as $keyIt=>$It)
+   
+      if(!isset($policyArray[$row['item_id']])||(isset($policyArray[$row['item_id']])&&$row['policy']>$policyArray[$row['item_id']]))
         {
-        if($It->getKey()==$row['item_id'])
-          {
-          if($It->policy<$row['policy'])
-            {
-            $items[$keyIt]->policy=$row['policy'];
-            }
-          unset($row);
-          break;
-          }
+        $policyArray[$row['item_id']]=$row['policy'];
         }
-      if(isset($row))
+      }
+    foreach ($rowset as $keyRow=>$row)
+      {
+      if(isset($policyArray[$row['item_id']]))
         {
         $tmpDao= $this->initDao('Item', $row);
-        $tmpDao->policy=$row['policy'];
+        $tmpDao->policy=$policyArray[$row['item_id']];
         $tmpDao->parent_id=$row['folder_id'];
-        $items[] = $tmpDao;
-        unset($tmpDao);
+        $return[] = $tmpDao;
+        unset($policyArray[$row['item_id']]);
         }
-      } 
+      }
+
     $this->Component->Sortdao->field='name';
     $this->Component->Sortdao->order='asc';
-    usort($items, array($this->Component->Sortdao,'sortByName'));
-    return $items;
+    usort($return, array($this->Component->Sortdao,'sortByName'));
+
+    return $return;
     }
 
     /** getFolder with policy check */
@@ -508,31 +495,28 @@ class FolderModel extends AppModelPdo
 
       $sql = $this->select()
             ->union(array($subqueryUser, $subqueryGroup));
-      $rowset = $this->fetchAll($sql);      
-
+      $rowset = $this->fetchAll($sql);     
       $return = array();
+      $policyArray=array();
       foreach ($rowset as $keyRow=>$row)
         {
-        foreach($return as $keyElement=>$element)
+        if(!isset($policyArray[$row['folder_id']])||(isset($policyArray[$row['folder_id']])&&$row['policy']>$policyArray[$row['folder_id']]))
           {
-          if(isset($row)&&$row['folder_id']==$element->getKey()&&$row['policy']>$element->policy)
-            {
-            unset($return[$keyElement]);
-            }
-          elseif(isset($row)&&$row['folder_id']==$element->getKey())
-            {
-            unset($row);
-            }
-          }
-        if(isset($row))
-          {
-          $tmpDao= $this->initDao('Folder', $row);
-          $tmpDao->policy=$row['policy'];
-          $return[] = $tmpDao;
-          unset($tmpDao);
+          $policyArray[$row['folder_id']]=$row['policy'];
           }
         }
-      $folders[$key]->allChildren=$return;
+        
+      foreach ($rowset as $keyRow=>$row)
+        {
+        if(isset($policyArray[$row['folder_id']]))
+          {
+          $tmpDao= $this->initDao('Folder', $row);
+          $tmpDao->policy=$policyArray[$row['folder_id']];
+          $return[$row['folder_id']] = $tmpDao;
+          unset($policyArray[$row['folder_id']]);
+          }
+        }
+      $folders[$key]->allChildren=$return;     
       }
     return $folders;
     }
@@ -603,41 +587,31 @@ class FolderModel extends AppModelPdo
             ->union(array($subqueryUser, $subqueryGroup));
     
     $rowset = $this->fetchAll($sql);
-    $return = array();
-    foreach ($rowset as $row)
-      {
-      $tmpDao= $this->initDao('Folder', $row);
-      $return[] = $tmpDao;
-      unset($tmpDao);
-      }
-      
-    $folders = array();
+    $return = array();      
+    $policyArray=array();
     foreach ($rowset as $keyRow=>$row)
       {
-      foreach($folders as $keyIt=>$It)
+      if(!isset($policyArray[$row['folder_id']])||(isset($policyArray[$row['folder_id']])&&$row['policy']>$policyArray[$row['folder_id']]))
         {
-        if($It->getKey()==$row['folder_id'])
-          {
-          if($It->policy<$row['policy'])
-            {
-            $folders[$keyIt]->policy=$row['policy'];
-            }
-          unset($row);
-          break;
-          }
+        $policyArray[$row['folder_id']]=$row['policy'];
         }
-      if(isset($row))
+      }
+
+    foreach ($rowset as $keyRow=>$row)
+      {
+      if(isset($policyArray[$row['folder_id']]))
         {
         $tmpDao= $this->initDao('Folder', $row);
-        $tmpDao->policy=$row['policy'];
-        $folders[] = $tmpDao;
-        unset($tmpDao);
+        $tmpDao->policy=$policyArray[$row['folder_id']];
+        $return[] = $tmpDao;
+        unset($policyArray[$row['folder_id']]);
         }
-      } 
+      }
+   
     $this->Component->Sortdao->field='name';
     $this->Component->Sortdao->order='asc';
-    usort($folders, array($this->Component->Sortdao,'sortByName'));
-    return $folders;
+    usort($return, array($this->Component->Sortdao,'sortByName'));
+    return $return;
     }
 
   /** Get the child folder

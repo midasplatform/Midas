@@ -76,6 +76,7 @@
         if(type=='item')
           {
             html+='<li><a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
+            html+='<li><a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.download+'</a></li>';
             if(policy==2)
               {
               html+='<li><a>'+json.browse.edit+'</a></li>';

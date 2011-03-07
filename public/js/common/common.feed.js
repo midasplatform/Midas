@@ -1,6 +1,6 @@
   $(document).ready(function() {
 
-    $('div.feedDelete').hover(function(){$(this).find('img').show();}, function(){$(this).find('img').hide();});
+    $('div.feedElement').hover(function(){$(this).find('div.feedDelete img').show();}, function(){$(this).find('div.feedDelete img').hide();});
     $('img.feedDeleteLink').click(function()
     {
       var html='';

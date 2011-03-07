@@ -4,7 +4,7 @@ class CommunityController extends AppController
   {
   public $_models=array('Community','Folder','Group','Folderpolicygroup','Group','User','Feed',"Feedpolicygroup","Feedpolicyuser");
   public $_daos=array('Community','Folder','Group','Folderpolicygroup','Group','User');
-  public $_components=array();
+  public $_components=array('Sortdao');
   public $_forms=array('Community');
 
   /** Init Controller */
@@ -26,10 +26,14 @@ class CommunityController extends AppController
     $this->view->json['community']['titleCreateLogin']=$this->t('Please log in');
     $this->view->json['community']['contentCreateLogin']=$this->t('You need to be logged in to be able to create a community.');
 
-    if($this->logged)
-      {
-      $this->view->userCommunities=$this->User->getUserCommunities($this->userSession->Dao);
-      }
+    $communities=$this->User->getUserCommunities($this->userSession->Dao);
+    $communities=array_merge($communities, $this->Community->getPubicCommunities());
+    $this->Component->Sortdao->field='name';
+    $this->Component->Sortdao->order='asc';
+    usort($communities, array($this->Component->Sortdao,'sortByName'));
+    $communities=$this->Component->Sortdao->arrayUniqueDao($communities );
+    
+    $this->view->userCommunities=$communities;
     }//end index
 
   /** view a community*/

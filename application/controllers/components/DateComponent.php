@@ -7,6 +7,10 @@ class DateComponent extends AppComponent
     if(!is_numeric($timestamp))
       {
       $timestamp=strtotime($timestamp);
+      if($timestamp==false)
+        {
+        return "";
+        }
       }
      $difference = time() - $timestamp;
      $periods = array("second", "minute", "hour", "day", "week", "month", "years", "decade");

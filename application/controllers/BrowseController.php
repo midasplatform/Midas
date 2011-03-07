@@ -7,7 +7,7 @@ class BrowseController extends AppController
 {
   public $_models=array('Folder','User','Community','Folder','Item');
   public $_daos=array('Folder','User','Community','Folder','Item');
-  public $_components=array('Date','Utility');
+  public $_components=array('Date','Utility','Sortdao');
 
   /** Init Controller */
   function init()
@@ -18,17 +18,27 @@ class BrowseController extends AppController
   /** Index Action*/
   public function indexAction()
     {
+    
     $communities=array();
     $items=array();
     $header="";
 
     $communities=$this->User->getUserCommunities($this->userSession->Dao);
-    $header.="> Data";
+    $communities=array_merge($communities, $this->Community->getPubicCommunities());
+    
+    $header.="<ul class='pathBrowser'>";
+    $header.=" <li class='pathData'><a href='{$this->view->webroot}/browse'>Data</a></li>";
+    $header.="</ul>";
     
     $this->view->Date=$this->Component->Date;
     
+    $this->Component->Sortdao->field='name';
+    $this->Component->Sortdao->order='asc';
+    usort($communities, array($this->Component->Sortdao,'sortByName'));
+    $communities=$this->Component->Sortdao->arrayUniqueDao($communities );
+    
     $this->view->communities=$communities;
-    $this->view->header=substr($header,2);
+    $this->view->header=$header;
 
     $javascriptText=array();
     $javascriptText['view']=$this->t('View');
@@ -48,10 +58,11 @@ class BrowseController extends AppController
   /** get getfolders content (ajax function for the treetable) */
   public function getfolderscontentAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
+ /*   if(!$this->getRequest()->isXmlHttpRequest())
      {
      throw new Zend_Exception("Why are you here ? Should be ajax.");
-     }
+     }*/
+
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $folderIds=$this->_getParam('folders');
@@ -65,6 +76,7 @@ class BrowseController extends AppController
       {
       throw new Zend_Exception("Folder doesn't exist");
       }
+      
     $folders=$this->Folder->getChildrenFoldersFiltered($parents,$this->userSession->Dao,MIDAS_POLICY_READ);
     $items=$this->Folder->getItemsFiltered($parents,$this->userSession->Dao,MIDAS_POLICY_READ);
     $jsonContent=array();
@@ -84,8 +96,7 @@ class BrowseController extends AppController
       $tmp['item_id']=$item->getItemId();
       $tmp['name']=$item->getName();
       $tmp['parent_id']=$item->parent_id;
-      $itemRevision=$this->Item->getLastRevision($item);
-      $tmp['creation']=$this->Component->Date->ago($itemRevision->getDate(),true);
+      $tmp['creation']=$this->Component->Date->ago($item->getDate(),true);
       $tmp['size']=$this->Component->Utility->formatSize($item->getSizebytes());
       $tmp['policy']=$item->policy;
       $jsonContent[$item->parent_id]['items'][]=$tmp;
@@ -100,14 +111,15 @@ class BrowseController extends AppController
     if(!$this->getRequest()->isXmlHttpRequest())
      {
      throw new Zend_Exception("Why are you here ? Should be ajax.");
-     }     
+     }    
      
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $folderIds=$this->_getParam('folders');
     if(!isset($folderIds))
      {
-     throw new Zend_Exception("Please set the folder Id");
+     echo "[]";
+     return;
      }
     $folderIds=explode('-',$folderIds);
     $folders= $this->Folder->load($folderIds);
@@ -145,7 +157,14 @@ class BrowseController extends AppController
       case 'folder':
         $folder=$this->Folder->load($id);
         $jsonContent=array_merge($jsonContent,$folder->_toArray());
-        $jsonContent['creation']=$jsonContent['date'];
+        if(isset($jsonContent['date']))
+          {
+          $jsonContent['creation']=$jsonContent['date'];
+          }        
+        else
+          {
+          $jsonContent['creation']=date('c');
+          }
         break;
       case 'item':
         $item=$this->Item->load($id);

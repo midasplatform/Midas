@@ -37,7 +37,6 @@ class SearchController extends AppController
     
     // Search for the items
     $ItemsDao = $this->ItemKeyword->getItemsFromSearch($search,$this->userSession->Dao);
-    
     // Search for the folders
     $FoldersDao = $this->Folder->getFoldersFromSearch($search,$this->userSession->Dao); 
     
@@ -176,7 +175,7 @@ class SearchController extends AppController
       echo ', "value":"'.$communityDao->getName().'"'; 
       if($communityDao->count==1)
         {
-        echo ', "communityid":"'.$communityDao->getCommunityId().'"'; 
+        echo ', "communityid":"'.$communityDao->getKey().'"'; 
         }
       echo ', "category":"Communities"';   
       $id++;

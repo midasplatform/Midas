@@ -64,7 +64,6 @@ class ItemKeywordModel extends AppModelPdo
                                           ->setIntegrityCheck(false)
                                           ->limit(14);
 
-
     $rowset = $this->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)

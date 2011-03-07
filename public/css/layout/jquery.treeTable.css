@@ -69,11 +69,11 @@ table.midasTree th.thData{
   padding-left: 36px;
 }
 table.midasTree th.thDate{
-  width:80px;
+  width:100px;
   padding-left: 10px;
 }
 table.midasTree th.thSize{
-  width:65px;
+  width:75px;
   border-right: 1px grey dotted;
   padding-left: 10px;
 }

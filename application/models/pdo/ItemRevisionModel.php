@@ -61,7 +61,7 @@ class ItemRevisionModel extends AppModelPdo
     
     $item=$itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));
-    
+    $item->setDate(date('c'));
     /** thumbnail*/    
     $thumbnailCreator=$this->Component->Filter->getFilter('ThumbnailCreator');
     $thumbnailCreator->inputFile = $bitstreamDao->getPath();

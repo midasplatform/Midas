@@ -2,8 +2,8 @@
 
 class UploadController extends AppController
   {
-  public $_models=array('User','Item','ItemRevision','Folder','Itempolicyuser','Itempolicygroup','Group','Feed',"Feedpolicygroup","Feedpolicyuser",'Bitstream','Assetstore');
-  public $_daos=array('User','Item','ItemRevision','Bitstream','Folder');
+  public $_models=array('User','Item','ItemRevision','Folder','Itempolicyuser',"ItemKeyword",'Itempolicygroup','Group','Feed',"Feedpolicygroup","Feedpolicyuser",'Bitstream','Assetstore');
+  public $_daos=array('User','Item','ItemRevision','Bitstream','Folder',"ItemKeyword");
   public $_components=array('Httpupload');
   public $_forms=array('Upload');
 
@@ -162,6 +162,12 @@ class UploadController extends AppController
       $item = new ItemDao;
       $item->setName($name);
       $this->Item->save($item);
+      
+      // Set the keyword for the item
+      $keyword = new ItemKeywordDao();
+      $keyword->setValue($name);
+      $this->ItemKeyword->insertKeyword($keyword);
+      
       $feed=$this->Feed->createFeed($this->userSession->Dao,MIDAS_FEED_CREATE_ITEM,$item);
       if(isset($privacy)&&$privacy=='public')
         {
@@ -180,6 +186,8 @@ class UploadController extends AppController
       $itemRevisionDao->setChanges('Initial revision');
       $itemRevisionDao->setUser_id($userDao->getKey());
       $this->Item->addRevision($item,$itemRevisionDao);
+
+      $this->Item->addKeyword($item,$keyword);
      
       $defaultAssetStoreId=Zend_Registry::get('configGlobal')->defaultassetstore->id;
       $assetstoreDao=$this->Assetstore->load($defaultAssetStoreId);
