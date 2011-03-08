@@ -4,6 +4,10 @@ div.ui-tabs{
   border: 0px;
 }
 
+div#tabs{
+  display: none;
+}
+
 div#tabs .ui-tabs-nav{
   border:0px !important;
   background: none !important;
@@ -14,7 +18,15 @@ div#tabs .ui-tabs-nav{
 }
 
 div#tabs .ui-state-default{
-  border: 1px solid #79B7E7 !important;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+border: 1px solid #C5DBEC!important;
+}
+
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+border: 1px solid #F3F1EC;
 }
 
 div#tabs .ui-tabs-selected,div#tabs .ui-tabs-selected a{
@@ -27,8 +39,10 @@ div#tabs .ui-state-default{
   height: 30px;
 }
 
-div#tabs .ui-tabs-panel {
-  position:relative !important;
-  left:-19px!important;
-}
 
+div#tabs .ui-tabs-panel {
+  position: relative !important;
+  left: -15px!important;
+  border-top: 1px solid #F3F1EC;
+  width: 99%;
+}

@@ -26,8 +26,7 @@ class SearchController extends AppController
     
     // Get the items corresponding to the search
     $items = $this->ItemKeyword->getItemsFromSearch($keyword,$this->userSession->Dao);
-    
-    var_dump($items);
+    $this->view->items=$items;
     }
     
   /** search live Action */

@@ -4,7 +4,7 @@ class CommunityController extends AppController
   {
   public $_models=array('Community','Folder','Group','Folderpolicygroup','Group','User','Feed',"Feedpolicygroup","Feedpolicyuser");
   public $_daos=array('Community','Folder','Group','Folderpolicygroup','Group','User');
-  public $_components=array('Sortdao');
+  public $_components=array('Sortdao','Date');
   public $_forms=array('Community');
 
   /** Init Controller */
@@ -39,9 +39,8 @@ class CommunityController extends AppController
   /** view a community*/
   function viewAction()
     {
-
+    $this->view->Date=$this->Component->Date;
     //TODO: add policy check
-    $this->view->header=$this->t("Communities");
     $communityId=$this->_getParam("communityId");
     if(!isset($communityId)||!is_numeric($communityId))
       {
@@ -54,7 +53,12 @@ class CommunityController extends AppController
       }
 
     $this->view->communityDao=$communityDao;
+    $this->view->information=array();
     $this->view->feeds=$this->Feed->getFeedsByCommunity($this->userSession->Dao,$communityDao);
+    
+    $this->view->folders=array();
+    $this->view->folders[]=$communityDao->getPublicFolder();
+    $this->view->folders[]=$communityDao->getPrivateFolder();
     }//end index
 
 

@@ -1,0 +1,13 @@
+div.viewAction, div.viewInfo, div.ajaxInfoElement{
+  display:none;
+}
+div.feedThumbnail img{
+  width: 31px;
+  height: 31px;
+  display:none;
+  margin-right: 4px;
+}
+
+div.feedThumbnail a{
+  border: 0px;
+}

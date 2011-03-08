@@ -75,12 +75,27 @@ class AppController extends MIDAS_GlobalController
       "contentUploadLogin"=>utf8_encode($this->t('You need to be logged in to be able to upload files.'))
     );
     
+    $browse=array(
+      'view'=>$this->t('View'),
+      'download'=>$this->t('Download'),
+      'edit'=>$this->t('Edit'),
+      'delete'=>$this->t('Delete'),
+      'share'=>$this->t('Share'),
+      'rename'=>$this->t('Rename'),
+      'move'=>$this->t('Move'),
+      'copy'=>$this->t('Copy'),
+      'community' => array(
+          'invit'=>$this->t('Invite collaborators'),
+          'advanced'=>$this->t('Advanced properties'),
+          )
+    );
+      
     $feed=array(
       "deleteFeed"=>$this->t('Do you really want to delete the feed')
     );
 
     $this->view->json=array(
-      "global"=>$jsonGlobal,"login"=>$login,'feed'=>$feed
+      "global"=>$jsonGlobal,"login"=>$login,'feed'=>$feed,"browse"=>$browse
     );
     Zend_Loader::loadClass("JsonComponent",BASE_PATH.'/application/controllers/components');
     } // end preDispatch()

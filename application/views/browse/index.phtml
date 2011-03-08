@@ -3,7 +3,9 @@
   $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser.js');
 ?>
 
+
 <link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/browse/browse.index.css" />
 <div class="viewMain">
   <img class="tableLoading" alt="" src="<?php echo $this->webroot?>/public/images/icons/loading.gif"/>
   <table id="browseTable" class="midasTree">
@@ -29,13 +31,12 @@
         echo "</tr>";
         $node++;
         }  
-      ?>          
-       
+      ?>        
     </tbody>
   </table>
 </div>
 <div class="viewSideBar">
-  <div class="sideElementFirst viewAction">
+  <div class="sideElementFirst viewAction" >
     <h1>Actions</h1>
     <ul>
       <li>
@@ -43,10 +44,48 @@
       </li>
     </ul>
   </div>
-  <div class="sideElementLast viewInfo">
+  <div class="sideElementLast viewInfo" >
     <h1>Info</h1>    
     <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->webroot?>/public/images/icons/loading.gif"/>
     <div class="ajaxInfoElement">
+    </div>
+  </div>
+  
+  
+  <div class="defaultSide" >
+    BlaBla
+    <br/>  
+      <?php
+    if(!empty($this->notifications))
+      {
+      echo   "<div class='sideElementFirst feedNotification'>
+                <h1>Notifications</h1>
+              </div>";
+      }
+      ?>
+    <?php 
+    if(!empty($this->itemThumbnails))
+      {
+      echo '<div class="'.(empty($this->notifications)?'sideElementFirst':'sideElement').' feedThumbnail">';
+      echo '<h1>Thumbnails</h1>';
+      foreach($this->itemThumbnails as $item)
+        {
+        echo "<a href='{$this->webroot}/item/{$item->getKey()}'>";
+        echo "<img src='{$this->webroot}/{$item->getThumbnail()}' alt=''/>"; 
+        echo "</a>";
+        }
+      echo '</div>';
+      }
+      ?>
+    <div class="sideElementLast feedStats">
+      <h1>Stats</h1>
+      <?php
+      echo "<ul>";
+      echo "  <li>{$this->nUsers} user".(($this->nUsers>1)?'s':'')."</li>";
+      echo "  <li>{$this->nCommunities} ".(($this->nCommunities>1)?'communities':'community')."</li>";
+      echo "  <li>{$this->nItems} item".(($this->nItems>1)?'s':'')."</li>";
+      echo "</ul>";
+      ?>
     </div>
   </div>
 </div>

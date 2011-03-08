@@ -6,8 +6,7 @@
  */
 class ImportController extends AppController
   {
-
-  public $_models=array('Item','Folder','ItemRevision','Assetstore','Folderpolicyuser','Itempolicyuser','ItemKeyword');
+  public $_models=array('Item','Folder','ItemRevision','Assetstore','Folderpolicyuser','Itempolicyuser','ItemKeyword','Itempolicygroup','Group','Folderpolicygroup');
   public $_daos=array('Item','Folder','ItemRevision','Bitstream','Assetstore','ItemKeyword');
   public $_components=array('Upload','Utility');
   public $_forms=array('Import','Assetstore');
@@ -115,8 +114,11 @@ class ImportController extends AppController
           $child = new FolderDao;
           $child->setName($fileInfo->getFilename());
           $child->setParentId($currentdir->getFolderId());
+          $child->setDate(date('c'));
           $this->Folder->save($child); 
-          $this->Folderpolicyuser->createPolicy($this->userSession->Dao,$child,MIDAS_POLICY_ADMIN);          
+          $this->Folderpolicyuser->createPolicy($this->userSession->Dao,$child,MIDAS_POLICY_ADMIN);    
+          $anonymousGroup=$this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
+          $this->Folderpolicygroup->createPolicy($anonymousGroup,$child,MIDAS_POLICY_READ);
           } 
         $this->_recursiveParseDirectory($fileInfo->getPathName(),$child);
         }
@@ -140,7 +142,9 @@ class ImportController extends AppController
           $this->Item->addKeyword($item,$keyword);
           
           // Set the policy of the item
-          $this->Itempolicyuser->createPolicy($this->userSession->Dao,$item,MIDAS_POLICY_ADMIN);          
+          $this->Itempolicyuser->createPolicy($this->userSession->Dao,$item,MIDAS_POLICY_ADMIN);    
+          $anonymousGroup=$this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
+          $this->Itempolicygroup->createPolicy($anonymousGroup,$item,MIDAS_POLICY_READ);
                  
           // Add the item to the current directory
           $this->Folder->addItem($currentdir,$item);
