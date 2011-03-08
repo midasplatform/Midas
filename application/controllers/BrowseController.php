@@ -13,12 +13,12 @@ class BrowseController extends AppController
   function init()
     {
     $this->view->activemenu = 'browse'; // set the active menu
+    session_write_close();
     }  // end init()
 
   /** Index Action*/
   public function indexAction()
     {
-    
     $communities=array();
     $items=array();
     $header="";
@@ -58,7 +58,7 @@ class BrowseController extends AppController
   /** get getfolders content (ajax function for the treetable) */
   public function getfolderscontentAction()
     {
- /*   if(!$this->getRequest()->isXmlHttpRequest())
+   /* if(!$this->getRequest()->isXmlHttpRequest())
      {
      throw new Zend_Exception("Why are you here ? Should be ajax.");
      }*/

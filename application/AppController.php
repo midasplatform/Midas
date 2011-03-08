@@ -195,11 +195,17 @@ class AppController extends MIDAS_GlobalController
    * @var ItemRevisionModel
    */
   var $ItemRevision;
+      /**
+   * Task Model
+   * @var TaskModel
+   */
+  var $Task;
     /**
    * User Model
    * @var UserModel
    */
   var $User;
+  
   /**end completion eclipse */
   }
 

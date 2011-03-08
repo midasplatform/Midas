@@ -1,0 +1,7 @@
+<?php
+define("MIDAS_RESOURCE_BITSTREAM", 0);
+define("MIDAS_RESOURCE_ITEM", 1);
+define("MIDAS_RESOURCE_USER", 2);
+define("MIDAS_RESOURCE_REVISION", 3);
+define("MIDAS_RESOURCE_FOLDER", 4);
+?>

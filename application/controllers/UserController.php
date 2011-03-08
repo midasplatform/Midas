@@ -87,6 +87,7 @@ class UserController extends AppController
             Zend_Session::ForgetMe();
             }
           $url=$form->getValue('url');
+          $this->userSession->lock();
           $this->getLogger()->info(__METHOD__ . " Log in : " . $userDao->getFullName());
           }
         }

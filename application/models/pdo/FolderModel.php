@@ -184,8 +184,16 @@ class FolderModel extends AppModelPdo
       if(isset($folderData[$row['folder_id']]))
         {        
         $tmpDao= $this->initDao('Folder', $row);
-        $tmpDao->count =$folderData[$row['folder_id']][0];
-        $tmpDao->size = $folderData[$row['folder_id']][1];
+        if(!isset($folderData[$row['folder_id']]))
+          {
+          $tmpDao->count =0;
+          $tmpDao->size =0;
+          }
+        else
+          {
+          $tmpDao->count =$folderData[$row['folder_id']][0];
+          $tmpDao->size = $folderData[$row['folder_id']][1];
+          }
         $results[$row['folder_id']] = $tmpDao;
         unset($folderData[$row['folder_id']]);
         }
@@ -193,8 +201,16 @@ class FolderModel extends AppModelPdo
     
     foreach($folders as $key=>$folder)
       {
-      $folders[$key]->count=$results[$folder->getKey()]->count;
-      $folders[$key]->size=$results[$folder->getKey()]->size;
+      if(!isset($results[$folder->getKey()]))
+        {
+        $folders[$key]->count=0;
+        $folders[$key]->size=0;
+        }
+      else
+        {
+        $folders[$key]->count=$results[$folder->getKey()]->count;
+        $folders[$key]->size=$results[$folder->getKey()]->size;
+        }
       foreach($folder->allChildren as $child)
         {
         if(isset($results[$child->getKey()]))

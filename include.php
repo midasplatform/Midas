@@ -16,4 +16,6 @@ include_once BASE_PATH.'/application/constant/policy.php';
 include_once BASE_PATH.'/application/constant/folder.php';
 include_once BASE_PATH.'/application/constant/feed.php';
 include_once BASE_PATH.'/application/constant/user.php';
+include_once BASE_PATH.'/application/constant/resourcetype.php';
+include_once BASE_PATH.'/application/constant/task.php';
 ?>

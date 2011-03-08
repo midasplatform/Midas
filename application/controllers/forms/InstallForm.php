@@ -78,6 +78,12 @@ class InstallForm extends AppForm
                     'fr' => 'French' 
                         ));    
     
+    $process = new Zend_Form_Element_Select('process');
+    $process ->addMultiOptions(array(
+                    'onthefly' => 'On the Fly',
+                    'cron' => 'Using an external cron job' 
+                        ));    
+    
     $timezone = new Zend_Form_Element_Select('timezone');
     $timezone ->addMultiOptions(array(
                     'America/New_York' => 'America/New_York',
@@ -101,7 +107,7 @@ class InstallForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel('Create configuration');
      
-    $form->addElements(array($timezone,$assetstore,$environment,$lang,$name,$smartoptimizer,$submit));
+    $form->addElements(array($process,$timezone,$assetstore,$environment,$lang,$name,$smartoptimizer,$submit));
     return $form;
     }
 } // end class

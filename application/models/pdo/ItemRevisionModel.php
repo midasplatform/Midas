@@ -53,6 +53,7 @@ class ItemRevisionModel extends AppModelPdo
     $modelLoad = new MIDAS_ModelLoader();
     $BitstreamModel = $modelLoad->loadModel('Bitstream');
     $ItemModel = $modelLoad->loadModel('Item');
+    $TaskModel = $modelLoad->loadModel('Task');
 
     $bitstreamDao->setItemrevisionId($itemRevisionDao->getItemrevisionId());
 
@@ -62,21 +63,29 @@ class ItemRevisionModel extends AppModelPdo
     $item=$itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));
     $item->setDate(date('c'));
-    /** thumbnail*/    
-    $thumbnailCreator=$this->Component->Filter->getFilter('ThumbnailCreator');
-    $thumbnailCreator->inputFile = $bitstreamDao->getPath();
-    $thumbnailCreator->inputName = $bitstreamDao->getName();
-    $hasThumbnail = $thumbnailCreator->process();
-    $thumbnail_output_file = $thumbnailCreator->outputFile;
-    if($hasThumbnail&&  file_exists($thumbnail_output_file))
+    /** thumbnail*/   
+    $procces=Zend_Registry::get('configGlobal')->processing;
+    if($procces=='cron')
       {
-      $oldThumbnail=$item->getThumbnail();
-      if(!empty($oldThumbnail))
+      $TaskModel->createTask(MIDAS_TASK_ITEM_THUMBNAIL,MIDAS_RESOURCE_ITEM,$item->getKey(),'');
+      }
+    else
+      {
+      $thumbnailCreator=$this->Component->Filter->getFilter('ThumbnailCreator');
+      $thumbnailCreator->inputFile = $bitstreamDao->getPath();
+      $thumbnailCreator->inputName = $bitstreamDao->getName();
+      $hasThumbnail = $thumbnailCreator->process();
+      $thumbnail_output_file = $thumbnailCreator->outputFile;
+      if($hasThumbnail&&  file_exists($thumbnail_output_file))
         {
-        unlink($oldThumbnail);
-        }
-      $item->setThumbnail(substr($thumbnail_output_file, strlen(BASE_PATH)+1));
-      }    
+        $oldThumbnail=$item->getThumbnail();
+        if(!empty($oldThumbnail))
+          {
+          unlink($oldThumbnail);
+          }
+        $item->setThumbnail(substr($thumbnail_output_file, strlen(BASE_PATH)+1));
+        }    
+      }
     $ItemModel->save($item);
     } // end addBitstream
 
