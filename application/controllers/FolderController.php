@@ -4,7 +4,7 @@ class FolderController extends AppController
   {
   public $_models=array('Folder','Folder','Item');
   public $_daos=array('Folder','Folder','Item');
-  public $_components=array();
+  public $_components=array('Utility','Date');
   public $_forms=array();
 
   /** Init Controller */
@@ -22,6 +22,7 @@ class FolderController extends AppController
   /** View Action*/
   public function viewAction()
     {
+    $this->view->Date=$this->Component->Date;
     $folder_id=$this->_getParam('folderId');
     $folder=$this->Folder->load($folder_id);
     $folders=array();
@@ -39,6 +40,10 @@ class FolderController extends AppController
       {
       $folders=$this->Folder->getChildrenFoldersFiltered($folder,$this->userSession->Dao,MIDAS_POLICY_READ);
       $items=$this->Folder->getItemsFiltered($folder,$this->userSession->Dao,MIDAS_POLICY_READ);
+      foreach($items as $key=>$i)
+        {
+        $items[$key]->size=$this->Component->Utility->formatSize($i->getSizebytes());
+        }
       $header.=" <li class='pathFolder'><a href='{$this->view->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a></li>";
       $parent=$folder->getParent();
       while($parent!==false)
@@ -58,22 +63,11 @@ class FolderController extends AppController
                <li class='pathData'><a href='{$this->view->webroot}/browse'>Data</a></li>".$header;
       $header.="</ul>";
       }
+    $this->view->mainFolder=$folder;
     $this->view->folders=$folders;
     $this->view->items=$items;
     $this->view->header=$header;
 
-    $javascriptText=array();
-    $javascriptText['view']=$this->t('View');
-    $javascriptText['edit']=$this->t('Edit');
-    $javascriptText['delete']=$this->t('Delete');
-    $javascriptText['share']=$this->t('Share');
-    $javascriptText['rename']=$this->t('Rename');
-    $javascriptText['move']=$this->t('Move');
-    $javascriptText['copy']=$this->t('Copy');
-
-    $javascriptText['community']['invit']=$this->t('Invite collaborators');
-    $javascriptText['community']['advanced']=$this->t('Advanced properties');
-    $this->view->json['browse']=$javascriptText;
     }// end View Action
 
   }//end class

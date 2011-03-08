@@ -1,27 +1,31 @@
 <?php
-  $this->headScript()->appendFile($this->webroot.'/public/js/browse/browse.index.js');
+  $this->headScript()->appendFile($this->webroot.'/public/js/folder/folder.view.js');
   $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser.js');
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/folder/folder.view.css" />
 <div class="viewMain">
   <img class="tableLoading" alt="" src="<?php echo $this->webroot?>/public/images/icons/loading.gif"/>
   <table id="browseTable" class="midasTree">
     <thead>
       <tr>
-        <th class="thData">Data</th>
-        <th class="thSize">Size</th>
-        <th class="thDate">Date</th>
+        <th class="thData"><?php echo $this->t('Name');?></th>
+        <th class="thSize"><?php echo $this->t('Size');?></th>
+        <th class="thDate"><?php echo $this->t('Modified');?></th>
+        <th class="thCheckbox"></th>
       </tr>
     </thead>
     <tbody>
       <?php
       $node=1;  
+        
       foreach($this->folders as $folder)
         {
         echo "<tr id='node--$node' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
-        echo "  <td><span class='folder'>{$folder->getName()}</span></td>";
-        echo "  <td><span>Test</span></td>";
-        echo "  <td><span>Test</span></td>";
+        echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
+        echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->webroot}/public/images/icons/loading.gif'/></td>";
+        echo "  <td>{$this->Date->ago($folder->getDate(),true)}</td>";
+        echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId()}' /></td>";
         echo "</tr>";
         $node++;
         }
@@ -29,9 +33,10 @@
       foreach($this->items as $item)
         {
         echo "<tr id='node--$node' class='' type='item' element='{$item->getItemId()}' >";
-        echo "  <td><span class='file'>{$item->getName()}</span></td>";
-        echo "  <td><span>Test</span></td>";
-        echo "  <td><span>Test</span></td>";
+        echo "  <td class='treeBrowseElement'><span class='file'>{$item->getName()}</span></td>";
+        echo "  <td>{$item->size}</td>";
+        echo "  <td>{$this->Date->ago($item->getDate(),true)}</td>";
+        echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' /></td>";
         echo "</tr>";
         $node++;
         }
@@ -58,5 +63,5 @@
 </div>
 
 
-
+<div class="defaultSideTrigger" type='folder' element='<?php echo $this->mainFolder->getFolderId() ?>'/>
 

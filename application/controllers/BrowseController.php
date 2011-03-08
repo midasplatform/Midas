@@ -39,29 +39,21 @@ class BrowseController extends AppController
     
     $this->view->communities=$communities;
     $this->view->header=$header;
-
-    $javascriptText=array();
-    $javascriptText['view']=$this->t('View');
-    $javascriptText['download']=$this->t('Download');
-    $javascriptText['edit']=$this->t('Edit');
-    $javascriptText['delete']=$this->t('Delete');
-    $javascriptText['share']=$this->t('Share');
-    $javascriptText['rename']=$this->t('Rename');
-    $javascriptText['move']=$this->t('Move');
-    $javascriptText['copy']=$this->t('Copy');
-
-    $javascriptText['community']['invit']=$this->t('Invite collaborators');
-    $javascriptText['community']['advanced']=$this->t('Advanced properties');
-    $this->view->json['browse']=$javascriptText;
+    
+    $this->view->itemThumbnails=$this->Item->getRandomItems($this->userSession->Dao,0,12,true);
+    $this->view->nUsers=$this->User->getCountAll();
+    $this->view->nCommunities=$this->Community->getCountAll();
+    $this->view->nItems=$this->Item->getCountAll();
+    $this->view->notifications=array();
     }
 
   /** get getfolders content (ajax function for the treetable) */
   public function getfolderscontentAction()
     {
-   /* if(!$this->getRequest()->isXmlHttpRequest())
+    if(!$this->getRequest()->isXmlHttpRequest())
      {
      throw new Zend_Exception("Why are you here ? Should be ajax.");
-     }*/
+     }
 
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();

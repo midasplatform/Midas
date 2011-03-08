@@ -9,9 +9,12 @@
   <div class="sideElementFirst viewAction">
     <h1>Actions</h1>
     <ul>
-      <li>
-        <a  >tesst</a>
-      </li>
+      <?php 
+      echo 
+      "<li>
+        <a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'>{$this->t('Download')}</a>
+      </li>";
+      ?>
     </ul>
   </div>
   <div class="sideElementLast viewInfo">

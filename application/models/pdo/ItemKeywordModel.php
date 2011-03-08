@@ -58,12 +58,12 @@ class ItemKeywordModel extends AppModelPdo
                                           ->join(array('i2k' => 'item2keyword'),'i.item_id=i2k.item_id')
                                           ->join(array('k' => 'itemkeyword'),'k.keyword_id=i2k.keyword_id')
                                           ->where('k.value LIKE ?','%'.$searchterm.'%')
-                                          ->where('i.item_id IN ('.$subqueryUser.')' )
-                                          ->orWhere('i.item_id IN ('.$subqueryGroup.')' )
+                                          ->where('( i.item_id IN ('.$subqueryUser.') OR
+                                            i.item_id IN ('.$subqueryGroup.'))' )
                                           ->group('i.name')
                                           ->setIntegrityCheck(false)
                                           ->limit(14);
-
+    
     $rowset = $this->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)

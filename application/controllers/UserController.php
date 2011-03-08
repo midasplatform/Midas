@@ -8,7 +8,7 @@ class UserController extends AppController
   public $_daos=array(
     'User','Folder','Folderpolicygroup','Folderpolicyuser','Group'
   );
-  public $_components=array();
+  public $_components=array('Date');
   public $_forms=array(
     'User'
   );
@@ -168,6 +168,7 @@ class UserController extends AppController
   /** user page action*/
   public function userpageAction()
     {
+    $this->view->Date=$this->Component->Date;
     $user_id=$this->_getParam("user_id");
     if(!isset($user_id) && !$this->logged)
       {
@@ -183,7 +184,7 @@ class UserController extends AppController
       {
       $userDao=$this->User->load($user_id);
       }
-
+      
     if(!$userDao instanceof UserDao)
       {
       throw new Zend_Exception("Unable to find user");
@@ -193,23 +194,12 @@ class UserController extends AppController
     $this->view->userCommunities=$this->User->getUserCommunities($userDao);
     $this->view->folders=array();
     $this->view->folders[]=$userDao->getPublicFolder();
-    if($userDao->getKey() == $this->userSession->Dao->getKey())
+    if(!empty($this->userSession->Dao)&& $userDao->getKey() == $this->userSession->Dao->getKey())
       {
       $this->view->folders[]=$userDao->getPrivateFolder();
       }
     $this->view->feeds=$this->Feed->getFeedsByUser($this->userSession->Dao,$userDao);
     
-    $javascriptText=array();
-    $javascriptText['view']=$this->t('View');
-    $javascriptText['edit']=$this->t('Edit');
-    $javascriptText['delete']=$this->t('Delete');
-    $javascriptText['share']=$this->t('Share');
-    $javascriptText['rename']=$this->t('Rename');
-    $javascriptText['move']=$this->t('Move');
-    $javascriptText['copy']=$this->t('Copy');
-
-    $javascriptText['community']['invit']=$this->t('Invite collaborators');
-    $javascriptText['community']['advanced']=$this->t('Advanced properties');
-    $this->view->json['browse']=$javascriptText;
+    $this->view->information=array();
     }
   }//end class

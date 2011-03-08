@@ -1,30 +1,122 @@
 <?php
-  $this->headScript()->appendFile($this->webroot.'/public/js/community/community.index.js');
+$this->headScript()->appendFile($this->webroot . '/public/js/community/community.view.js');
+$this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser.js');
 ?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/community/community.view.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.genericPage.css" />
 <div class="viewMain">
-<?php 
-  echo $this->communityDao->getName();
+  <div class="userThumbnail">
+  <?php
+  $thumbnail=null;
+  if(!empty($thumbnail))
+    {
+    echo "<img src='{$this->webroot}data/thumbnail/{$thumbnail}' alt=''/>";
+    }
+  else
+    {
+    echo "<img src='{$this->webroot}/public/images/icons/community-big.png' alt=''/>";
+    }
   ?>
-  
-  <br/>  <br/>
-  Feed:
-  <br/>
-    <? echo $this->element('feed'); ?>
+  </div>
+  <div class="userInfo">
+    <div class="userName"><?php echo $this->communityDao->getName();?></div>
+  </div>
+  <img class="tabsLoading" alt=""  src="<?php echo $this->webroot?>/public/images/icons/loading.gif" />
+  <div id="tabs">
+  <ul>
+    <li><a href="#tabs-1"><?php echo $this->t("Feed")?></a></li>
+    <?php
+    if(!empty($this->information))
+      {
+      ?>
+    <li><a href="#tabs-2"><?php echo $this->t('Info');?></a></li>
+    <?php
+      }
+      ?>
+    <li><a href="#tabs-3"><?php echo $this->t('Data');?></a></li>
+  </ul>
+  <div id="tabs-1">
+     <?
+      echo $this->element('feed');
+      ?>
+  </div>
+        <?php
+    if(!empty($this->information))
+      {
+      ?>
+    <div id="tabs-2">
+      ???
+    </div>
+    <?php
+      }
+      ?>
+    <div id="tabs-3">
+      <img class="tableLoading" alt=""  src="<?php echo $this->webroot?>/public/images/icons/loading.gif" />
+      <table id="browseTable" class="midasTree">
+        <thead>
+              <th class="thData"><?php echo $this->t('Name');?></th>
+              <th class="thSize"><?php echo $this->t('Size');?></th>
+              <th class="thDate"><?php echo $this->t('Modified');?></th>
+              <th class="thCheckbox"></th>
+        </thead>
+        <tbody>
+            <?php
+            $node=1;
+
+            foreach($this->folders as $folder)
+              {
+              echo "<tr id='node--$node' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
+              echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
+              echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->webroot}/public/images/icons/loading.gif'/></td>";
+              echo "  <td>{$this->Date->ago($folder->getDate(),true)}</td>";
+              echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId()}' /></td>";
+              echo "</tr>";
+              $node++;
+              } 
+            ?>
+
+          </tbody>
+      </table>
+  </div>
+</div>
+
 </div>
 <div class="viewSideBar">
-  <div class="sideElementFirst viewAction">
+  <div class="sideElementFirst userAction">
     <h1>Actions</h1>
     <ul>
-      <li>
-        <a  >tesst</a>
-      </li>
+      <li>To do</li>
     </ul>
   </div>
-  <div class="sideElementLast viewInfo">
-    <h1>Info</h1>    
-    bla
-  </div>
+   <div class="sideElement userCommunities">
+    <h1><?php echo $this->t('Members')?></h1>    
+    <ul>
+      To Do
+      </ul>
+   </div>
+   <div class="sideElementLast userStats">
+    <h1>Stats</h1>  
+    Todo
+   </div>
+  
+    <div class="sideElementFirst viewAction">
+    <h1>Actions</h1>
+      <ul>
+        <li>
+
+        </li>
+      </ul>
+    </div>
+    <div class="sideElementLast viewInfo">
+      <h1>Info</h1>    
+      <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->webroot?>/public/images/icons/loading.gif"/>
+      <div class="ajaxInfoElement">
+      </div>
+    </div>
 </div>
+
+
 
 
 
