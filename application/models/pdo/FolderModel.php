@@ -133,7 +133,7 @@ class FolderModel extends AppModelPdo
 
       $sql=$this->select()
                 ->setIntegrityCheck(false)
-                ->from(array('i' => 'item'),array('count(*)','sum(i.sizebytes)'))
+                ->from(array('i' => 'item'),array('sum(i.sizebytes)','count(i.item_id)'))
                 ->join(array('i2f' => 'item2folder'),
                          '( '.$this->_db->quoteInto('i2f.folder_id IN (?)',$subSqlFolders).'
                           OR i2f.folder_id='.$folder->getKey().'
@@ -162,7 +162,7 @@ class FolderModel extends AppModelPdo
 
 
       $row = $this->fetchRow($sql);    
-      $folders[$key]->count = $row['count(*)'];
+      $folders[$key]->count = $row['count(i.item_id)'];
       $folders[$key]->size = $row['sum(i.sizebytes)'];
       if($folders[$key]->size==null)
         {
