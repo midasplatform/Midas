@@ -113,7 +113,7 @@ class DownloadController extends AppController
         }
       else
         {
-        Zend_Loader::loadClass("ZipStream",BASE_PATH.'/library/Zipstream/');
+        Zend_Loader::loadClass("ZipStream",BASE_PATH.'/library/ZipStream/');
         $this->_helper->viewRenderer->setNoRender();
         $name=$revision->getItem()->getName(); 
         $name=substr($name, 0,50);
