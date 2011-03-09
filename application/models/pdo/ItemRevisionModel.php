@@ -58,11 +58,13 @@ class ItemRevisionModel extends AppModelPdo
     $bitstreamDao->setItemrevisionId($itemRevisionDao->getItemrevisionId());
 
     // Save the bistream
+    $bitstreamDao->setDate(date('c'));
     $BitstreamModel->save($bitstreamDao);
     
     $item=$itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));
     $item->setDate(date('c'));
+    
     /** thumbnail*/   
     $procces=Zend_Registry::get('configGlobal')->processing;
     if($procces=='cron')
