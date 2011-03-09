@@ -80,8 +80,10 @@ class ImportController extends AppController
     {
     set_time_limit(0); // No time limit since import can take a long time  
       
-    $it = new DirectoryIterator($path);
+    // We store the children in an array
+    $childdirectories = array();
     
+    $it = new DirectoryIterator($path);
     foreach($it as $fileInfo) 
       {
       if($fileInfo->isDot()) continue;
@@ -106,21 +108,8 @@ class ImportController extends AppController
           {
           continue;   
           }
-          
-        // Find if the child exists
-        $child = $this->Folder->getFolderByName($currentdir,$fileInfo->getFilename());        
-        if(!$child)
-          { 
-          $child = new FolderDao;
-          $child->setName($fileInfo->getFilename());
-          $child->setParentId($currentdir->getFolderId());
-          $child->setDate(date('c'));
-          $this->Folder->save($child); 
-          $this->Folderpolicyuser->createPolicy($this->userSession->Dao,$child,MIDAS_POLICY_ADMIN);    
-          $anonymousGroup=$this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
-          $this->Folderpolicygroup->createPolicy($anonymousGroup,$child,MIDAS_POLICY_READ);
-          } 
-        $this->_recursiveParseDirectory($fileInfo->getPathName(),$child);
+        
+        $childdirectories[] = $fileInfo->getPathName();
         }
       else // we have a file
         {
@@ -167,8 +156,7 @@ class ImportController extends AppController
           }
  
         if($newrevision)
-          {  
-            
+          { 
           // Create a revision for the item
           $itemRevisionDao = new ItemRevisionDao;
           $itemRevisionDao->setChanges('Initial revision');    
@@ -193,6 +181,27 @@ class ImportController extends AppController
         } // end isFile
       } // end foreach files/dirs in the directory
     
+    unset($it);  
+      
+    // Loop through the children directories
+    foreach($childdirectories as $childdirectory)
+      {
+      // Find if the child exists
+      $child = $this->Folder->getFolderByName($currentdir,$fileInfo->getFilename());        
+      if(!$child)
+        { 
+        $child = new FolderDao;
+        $child->setName($fileInfo->getFilename());
+        $child->setParentId($currentdir->getFolderId());
+        $child->setDate(date('c'));
+        $this->Folder->save($child); 
+        $this->Folderpolicyuser->createPolicy($this->userSession->Dao,$child,MIDAS_POLICY_ADMIN);    
+        $anonymousGroup=$this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
+        $this->Folderpolicygroup->createPolicy($anonymousGroup,$child,MIDAS_POLICY_READ);
+        }
+      $this->_recursiveParseDirectory($childdirectory,$child);
+      }
+      
     return true;
     }  // end _recursiveParseDirectory 
     
