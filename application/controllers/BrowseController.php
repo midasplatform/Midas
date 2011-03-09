@@ -100,10 +100,10 @@ class BrowseController extends AppController
    /** get getfolders Items' size */
    public function getfolderssizeAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
+  /*  if(!$this->getRequest()->isXmlHttpRequest())
      {
      throw new Zend_Exception("Why are you here ? Should be ajax.");
-     }    
+     }  */  
      
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();

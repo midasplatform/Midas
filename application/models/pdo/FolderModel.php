@@ -85,22 +85,6 @@ class FolderModel extends AppModelPdo
       {
       $folders=array($folders);
       }
-    $folderIds=array();
-         
-    $foldersWithChild=$this->getChildrenFoldersFilteredRecursive($folders,$userDao,$policy);
-    foreach($foldersWithChild as $folder)
-      {
-      if(!$folder instanceof FolderDao)
-        {
-        throw new Zend_Exception("Should be a folder" );
-        }
-      $folderIds[]=$folder->getKey();     
-      foreach($folder->allChildren as $child)
-        {
-        $folderIds[]=$child->getKey();
-        }
-      }
-      
     if($userDao==null)
       {
       $userId= -1;
@@ -113,29 +97,51 @@ class FolderModel extends AppModelPdo
       {
       $userId = $userDao->getUserId();
       }
-    
-       $subqueryUser= $this->select()
+    foreach($folders as $key => $folder)
+      { 
+      if(!$folder instanceof FolderDao)
+        {
+        throw new Zend_Exception("Should be a folder" );
+        }
+      $subqueryUser= $this->select()
+                      ->setIntegrityCheck(false)
+                      ->from(array('f' => 'folder'),array('folder_id'))
+                      ->join(array('fpu' => 'folderpolicyuser'),'
+                            f.folder_id = fpu.folder_id AND '.$this->_db->quoteInto('fpu.policy >= ?', $policy).'
+                               AND '.$this->_db->quoteInto('user_id = ? ',$userId).' ',array())
+                      ->where('left_indice > ?', $folder->getLeftIndice())
+                      ->where('right_indice < ?', $folder->getRightIndice());
+
+      $subqueryGroup = $this->select()
                     ->setIntegrityCheck(false)
-                    ->from(array('f' => 'folder'))
-                    ->join(array('i2f' => 'item2folder'),
-                          $this->_db->quoteInto('i2f.folder_id IN (?)',$folderIds).'
-                          AND i2f.folder_id = f.folder_id' ,array())
-                    ->join(array('i' => 'item'),'
-                          i.item_id = i2f.item_id' ,array('i.item_id','i.sizebytes'))
-                    ->join(array('ip' => 'itempolicyuser'),'
+                    ->from(array('f' => 'folder'),array('folder_id'))
+                    ->join(array('fpg' => 'folderpolicygroup'),'
+                                f.folder_id = fpg.folder_id  AND '.$this->_db->quoteInto('fpg.policy >= ?', $policy).'
+                                   AND ( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                                        group_id IN (' .new Zend_Db_Expr(
+                                        $this->select()
+                                             ->setIntegrityCheck(false)
+                                             ->from(array('u2g' => 'user2group'),
+                                                    array('group_id'))
+                                             ->where('u2g.user_id = ?' , $userId)
+                                             ) .'))' ,array())
+                    ->where('left_indice > ?', $folder->getLeftIndice())
+                    ->where('right_indice < ?', $folder->getRightIndice());
+
+       $subSqlFolders = $this->select()
+              ->union(array($subqueryUser, $subqueryGroup));
+
+      $sql=$this->select()
+                ->setIntegrityCheck(false)
+                ->from(array('i' => 'item'),array('count(*)','sum(i.sizebytes)'))
+                ->join(array('i2f' => 'item2folder'),
+                          $this->_db->quoteInto('i2f.folder_id IN (?)',$subSqlFolders).'
+                          AND i2f.item_id = i.item_id'
+                          ,array() )
+                ->joinLeft(array('ip' => 'itempolicyuser'),'
                           i.item_id = ip.item_id AND '.$this->_db->quoteInto('policy >= ?', $policy).'
                              AND '.$this->_db->quoteInto('user_id = ? ',$userId).' ',array())
-                    ;
-
-        $subqueryGroup = $this->select()
-                    ->setIntegrityCheck(false)
-                    ->from(array('f' => 'folder'))
-                    ->join(array('i2f' => 'item2folder'),
-                          $this->_db->quoteInto('i2f.folder_id IN (?)',$folderIds).'
-                          AND i2f.folder_id = f.folder_id' ,array())
-                    ->join(array('i' => 'item'),'
-                          i.item_id = i2f.item_id' ,array('i.item_id', 'i.sizebytes'))
-                    ->join(array('ipg' => 'itempolicygroup'),'
+                ->joinLeft(array('ipg' => 'itempolicygroup'),'
                                 i.item_id = ipg.item_id AND '.$this->_db->quoteInto('ipg.policy >= ?', $policy).'
                                    AND ( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                                         group_id IN (' .new Zend_Db_Expr(
@@ -145,80 +151,21 @@ class FolderModel extends AppModelPdo
                                                     array('group_id'))
                                              ->where('u2g.user_id = ?' , $userId)
                                              ) .'))' ,array())
-                  ;
+                ->where(
+                 '(
+                  ip.item_id is not null or
+                  ipg.item_id is not null)'
+                  )
+                ;
 
-     $sql = $this->select()
-            ->union(array($subqueryUser, $subqueryGroup));
-    $rowset = $this->fetchAll($sql);    
-         
-    $rowsetAnalysed=array();
-    $folderData=array();
-    foreach ($rowset as $keyRow=>$row)
-      {
-      if(!isset($folderData[$row['folder_id']]))
-        {
-        $folderData[$row['folder_id']]=array('1',$row['sizebytes'],array($row['item_id']));        
-        }
-      elseif(isset($folderData[$row['folder_id']])&&!in_array ($row['item_id'], $folderData[$row['folder_id']][2]))
-        {
-        $folderData[$row['folder_id']][0]++;
-        $folderData[$row['folder_id']][1]+=$row['sizebytes'];
-        $folderData[$row['folder_id']][2][]=$row['item_id'];
-        }
-      }
 
-    foreach ($rowset as $keyRow=>$row)
-      {
-      if(isset($folderData[$row['folder_id']]))
-        {        
-        $tmpDao= $this->initDao('Folder', $row);
-        $tmpDao->count =$folderData[$row['folder_id']][0];
-        $tmpDao->size = $folderData[$row['folder_id']][1];
-        $results[$row['folder_id']] = $tmpDao;
-        unset($folderData[$row['folder_id']]);
-        }
-      }
-    
-    foreach ($rowset as $keyRow=>$row)
-      {
-      if(isset($folderData[$row['folder_id']]))
-        {        
-        $tmpDao= $this->initDao('Folder', $row);
-        if(!isset($folderData[$row['folder_id']]))
-          {
-          $tmpDao->count =0;
-          $tmpDao->size =0;
-          }
-        else
-          {
-          $tmpDao->count =$folderData[$row['folder_id']][0];
-          $tmpDao->size = $folderData[$row['folder_id']][1];
-          }
-        $results[$row['folder_id']] = $tmpDao;
-        unset($folderData[$row['folder_id']]);
-        }
-      }
-    
-    foreach($folders as $key=>$folder)
-      {
-      if(!isset($results[$folder->getKey()]))
+      $row = $this->fetchRow($sql);    
+      $folders[$key]->count = $row['count(*)'];
+      $folders[$key]->size = $row['sum(i.sizebytes)'];
+      if($folders[$key]->size==null)
         {
-        $folders[$key]->count=0;
         $folders[$key]->size=0;
         }
-      else
-        {
-        $folders[$key]->count=$results[$folder->getKey()]->count;
-        $folders[$key]->size=$results[$folder->getKey()]->size;
-        }
-      foreach($folder->allChildren as $child)
-        {
-        if(isset($results[$child->getKey()]))
-          {
-          $folders[$key]->count+=$results[$child->getKey()]->count;
-          $folders[$key]->size+=$results[$child->getKey()]->size;
-          }
-        }       
       }
     return $folders;
     }
