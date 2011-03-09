@@ -104,7 +104,7 @@ class ImportController extends AppController
       if($fileInfo->isDir()) // we have a directory
         {
         if(!$this->importemptydirectories
-           && ($files = @scandir($fileInfo)) && count($files) <= 2)
+           && ($files = @scandir($fileInfo->getPathName())) && count($files) <= 2)
           {
           continue;   
           }
