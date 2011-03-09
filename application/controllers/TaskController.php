@@ -49,7 +49,7 @@ class TaskController extends AppController
                 }
              $item->setThumbnail(substr($thumbnail_output_file, strlen(BASE_PATH)+1));
              $this->Item->save($item);
-             $this->Task->delete($task);
+             
              break;
              }
            }
@@ -57,6 +57,7 @@ class TaskController extends AppController
        default:
          break;
        }
+     $this->Task->delete($task);
      }
    } // end method indexAction
 
