@@ -38,7 +38,6 @@
     });
     
     initEvent();
-   // getElementsSize();
     return tmp;
   };
   
@@ -66,6 +65,52 @@
     return this;
   };
   
+  
+    
+  var tree= new Array();
+  
+  function initializeAjax(node,first)
+  {
+  var folders='';
+  var children;
+  if(first)
+    {
+    children= node.find('.parent');
+    }
+  else
+    {
+    children=childrenOf(node);
+    }
+  children.each(function()
+      {
+      if($(this).attr('ajax')!=undefined)
+        {
+        folders+=$(this).attr('ajax')+'-';
+        $(this).attr('proccessing',true);
+        }
+      });
+  if(folders!='')
+    {    
+    $.post(json.global.webroot+'/browse/getfolderscontent',{folders: folders} , function(data) {
+          arrayElement=jQuery.parseJSON(data);
+          $.each(arrayElement, function(index, value) { 
+            tree[index]=value;
+          });
+          children.each(function()
+          {          
+          if($(this).attr('ajax')!=undefined)
+            {
+         //   $(this).removeAttr('ajax');
+         //   $(this).attr('proccessing',false);
+         //   $(this).find('td:first img.tableLoading').hide();
+            }
+          });
+        initEvent();
+      });
+    }
+    getElementsSize();
+  }
+  
   // Recursively show all node's children in a tree
   $.fn.expand = function() {
     if($(this).attr('ajax')!=undefined&&$(this).attr('proccessing')==undefined)
@@ -73,6 +118,14 @@
       initializeAjax(parentOf($(this)),false); 
       return $(this).expand();
       }
+    else if ($(this).attr('ajax')!=undefined&&tree[$(this).attr('ajax')]!=undefined)
+      {
+      createElementsAjax($(this),tree[$(this).attr('ajax')],true);
+      $(this).removeAttr('ajax');
+      $(this).attr('proccessing',false);
+      $(this).find('td:first img.tableLoading').hide();
+      }
+
 
     if($(this).attr('proccessing')=='true')
       {
@@ -202,51 +255,11 @@
           }
         });
   }
-  
-  function initializeAjax(node,first)
-  {
-  var folders='';
-  var children;
-  if(first)
-    {
-    children= node.find('.parent');
-    }
-  else
-    {
-    children=childrenOf(node);
-    }
-  children.each(function()
-      {
-      if($(this).attr('ajax')!=undefined)
-        {
-        folders+=$(this).attr('ajax')+'-';
-        $(this).attr('proccessing',true);
-        }
-      });
-  if(folders!='')
-    {    
-    $.post(json.global.webroot+'/browse/getfolderscontent',{folders: folders} , function(data) {
-          arrayElement=jQuery.parseJSON(data);
-          $.each(arrayElement, function(index, value) { 
-              createElementsAjax($('.parent[ajax='+index+']'),value,first);
-          });
-          children.each(function()
-          {          
-          if($(this).attr('ajax')!=undefined)
-            {
-            $(this).removeAttr('ajax');
-            $(this).attr('proccessing',false);
-            $(this).find('td:first img.tableLoading').hide();
-            }
-          });
-        initEvent();
-      });
-    }
-    getElementsSize();
-  }
+
   
   function createElementsAjax(node,elements,first)
   {
+    console.log(elements);
     var i = 1;
     var id=node.attr('id');
     elements['folders'] = jQuery.makeArray(elements['folders']);
@@ -364,15 +377,15 @@
   function getElementsSize()
   {
     var elements='';
-    var nb=0;
     $('img.folderLoading').each(function()
-      {      
-        nb++;
-        if(nb<200)
+        {    
+        if($(this).attr('process')==undefined)  
           {
           elements+=$(this).attr('element')+'-';
+          $(this).attr('process','true');
           }
-      });
+        }
+      );
     if(elements!='')
       {
         ajaxSizeRequest=$.post(json.global.webroot+'/browse/getfolderssize',{folders: elements} , function(data) {
