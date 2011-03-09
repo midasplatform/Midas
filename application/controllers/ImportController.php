@@ -80,9 +80,6 @@ class ImportController extends AppController
     {
     set_time_limit(0); // No time limit since import can take a long time  
       
-    // We store the children in an array
-    $childdirectories = array();
-    
     $it = new DirectoryIterator($path);
     foreach($it as $fileInfo) 
       {
@@ -109,7 +106,20 @@ class ImportController extends AppController
           continue;   
           }
         
-        $childdirectories[] = $fileInfo->getPathName();
+        // Find if the child exists
+        $child = $this->Folder->getFolderByName($currentdir,$fileInfo->getFilename());        
+        if(!$child)
+          { 
+          $child = new FolderDao;
+          $child->setName($fileInfo->getFilename());
+          $child->setParentId($currentdir->getFolderId());
+          $child->setDate(date('c'));
+          $this->Folder->save($child); 
+          $this->Folderpolicyuser->createPolicy($this->userSession->Dao,$child,MIDAS_POLICY_ADMIN);    
+          $anonymousGroup=$this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
+          $this->Folderpolicygroup->createPolicy($anonymousGroup,$child,MIDAS_POLICY_READ);
+          }
+        $this->_recursiveParseDirectory($fileInfo->getPathName(),$child);
         }
       else // we have a file
         {
@@ -181,27 +191,7 @@ class ImportController extends AppController
         } // end isFile
       } // end foreach files/dirs in the directory
     
-    unset($it);  
-      
-    // Loop through the children directories
-    foreach($childdirectories as $childdirectory)
-      {
-      // Find if the child exists
-      $child = $this->Folder->getFolderByName($currentdir,$fileInfo->getFilename());        
-      if(!$child)
-        { 
-        $child = new FolderDao;
-        $child->setName($fileInfo->getFilename());
-        $child->setParentId($currentdir->getFolderId());
-        $child->setDate(date('c'));
-        $this->Folder->save($child); 
-        $this->Folderpolicyuser->createPolicy($this->userSession->Dao,$child,MIDAS_POLICY_ADMIN);    
-        $anonymousGroup=$this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
-        $this->Folderpolicygroup->createPolicy($anonymousGroup,$child,MIDAS_POLICY_READ);
-        }
-      $this->_recursiveParseDirectory($childdirectory,$child);
-      }
-      
+    unset($it);
     return true;
     }  // end _recursiveParseDirectory 
     
