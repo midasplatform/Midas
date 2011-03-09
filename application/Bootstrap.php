@@ -76,50 +76,58 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       }
 
     Zend_Registry::set('configDatabase', $configDatabase);
-
-    if ($config->error->php == 1)
+    
+    if(is_writable(BASE_PATH."/log"))
       {
-       new Zend_Log_Formatter_Simple();
-      error_reporting(E_ALL | E_STRICT);
-      ini_set('display_errors', 'on');
-      Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(false);
-      $logger = Zend_Log::factory(array(
-        array(
-          'writerName' => 'Stream',
-          'writerParams' => array(
-            'stream' => './log/dev.log',
+      if ($config->error->php == 1)
+        {
+         new Zend_Log_Formatter_Simple();
+        error_reporting(E_ALL | E_STRICT);
+        ini_set('display_errors', 'on');
+        Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(false);
+        $logger = Zend_Log::factory(array(
+          array(
+            'writerName' => 'Stream',
+            'writerParams' => array(
+              'stream' => './log/dev.log',
+            ),
+            'filterName' => 'Priority',
+            'filterParams' => array(
+              'priority' => Zend_Log::INFO,
+            ),
           ),
-          'filterName' => 'Priority',
-          'filterParams' => array(
-            'priority' => Zend_Log::INFO,
+          array(
+            'writerName' => 'Firebug',
+            'filterName' => 'Priority',
+            'filterParams' => array(
+              'priority' => Zend_Log::INFO,
+            ),
           ),
-        ),
-        array(
-          'writerName' => 'Firebug',
-          'filterName' => 'Priority',
-          'filterParams' => array(
-            'priority' => Zend_Log::INFO,
+        ));
+        }
+      else
+        {
+        error_reporting(0);
+        ini_set('display_errors', 'off');
+        Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(true);
+        $logger = Zend_Log::factory(array(
+          array(
+            'writerName' => 'Stream',
+            'writerParams' => array(
+              'stream' => './log/prod.log',
+            ),
+            'filterName' => 'Priority',
+            'filterParams' => array(
+              'priority' => Zend_Log::WARN,
+            ),
           ),
-        ),
-      ));
+        ));
+        }
       }
     else
       {
-      error_reporting(0);
-      ini_set('display_errors', 'off');
-      Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(true);
-      $logger = Zend_Log::factory(array(
-        array(
-          'writerName' => 'Stream',
-          'writerParams' => array(
-            'stream' => './log/prod.log',
-          ),
-          'filterName' => 'Priority',
-          'filterParams' => array(
-            'priority' => Zend_Log::WARN,
-          ),
-        ),
-      ));
+      $redacteur = new Zend_Log_Writer_Stream('php://output');
+      $logger = new Zend_Log($redacteur);
       }
     Zend_Registry::set('logger', $logger);
     return $config;
