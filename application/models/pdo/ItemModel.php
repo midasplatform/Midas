@@ -97,73 +97,60 @@ class ItemModel extends AppModelPdo
       $userId = $userDao->getUserId();
       }
       
-          
-    $subqueryUser= $this->select()
-                          ->setIntegrityCheck(false)
-                          ->from(array('f' => 'item'))
-                          ->join(array('p' => 'itempolicyuser'),
-                                'f.item_id=p.item_id',
-                                 array('p.policy'))
-                          ->where('p.policy >= ?', $policy)
-                          ->where('p.user_id = ? ',$userId);
-
-    $subqueryGroup = $this->select()
-                    ->setIntegrityCheck(false)
-                    ->from(array('f' => 'item'))
-                    ->join(array('p' => 'itempolicygroup'),
-                                'f.item_id=p.item_id',
-                                 array('p.policy'))
-                    ->where('p.policy >= ?', $policy)
-                    ->where('( '.$this->_db->quoteInto('p.group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                              p.group_id IN (' .new Zend_Db_Expr(
-                              $this->select()
-                                   ->setIntegrityCheck(false)
-                                   ->from(array('u2g' => 'user2group'),
-                                          array('group_id'))
-                                   ->where('u2g.user_id = ?' , $userId)
-                                   .'))' ))
-                     ->limit($limit*2)
-                     ->order( new Zend_Db_Expr('RAND() ASC') );
+      
+    $sql=$this->select()
+        ->setIntegrityCheck(false)
+        ->from(array('i' => 'item'))
+        ->join(array('tt'=> $this->select()
+                    ->from(array('i' => 'item'),array('maxid'=>'MAX(item_id)'))
+                    ),
+            ' i.item_id >= FLOOR(tt.maxid*RAND())')
+        ->joinLeft(array('ip' => 'itempolicyuser'),'
+                  i.item_id = ip.item_id AND '.$this->_db->quoteInto('ip.policy >= ?', $policy).'
+                     AND '.$this->_db->quoteInto('user_id = ? ',$userId).' ',array('userpolicy'=>'ip.policy'))
+        ->joinLeft(array('ipg' => 'itempolicygroup'),'
+                        i.item_id = ipg.item_id AND '.$this->_db->quoteInto('ipg.policy >= ?', $policy).'
+                           AND ( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                                group_id IN (' .new Zend_Db_Expr(
+                                $this->select()
+                                     ->setIntegrityCheck(false)
+                                     ->from(array('u2g' => 'user2group'),
+                                            array('group_id'))
+                                     ->where('u2g.user_id = ?' , $userId)
+                                     ) .'))' ,array('grouppolicy'=>'ipg.policy'))
+        ->where(
+         '(
+          ip.item_id is not null or
+          ipg.item_id is not null)'
+          )
+        ->limit($limit*2)
+        ;
     if($thumbnailFilter)
       {
-      $subqueryUser->where('thumbnail != ?','');
-      $subqueryGroup->where('thumbnail != ?','');
+      $sql->where('thumbnail != ?','');
       }
-    $sql = $this->select()
-            ->union(array($subqueryUser, $subqueryGroup));
+
     $rowset = $this->fetchAll($sql);
     $rowsetAnalysed=array();
     foreach ($rowset as $keyRow=>$row)
       {
-      foreach($rowsetAnalysed as $keyRa=>$ra)
-        {
-        if($ra->getKey()==$row['item_id'])
-          {
-          if($ra->policy<$row['item_id'])
-            {
-            $rowsetAnalysed[$keyRa]->policy=$row['policy'];
-            }
-          unset($row);
-          break;
-          }
-        }
-      if(isset($row))
+      if($row['userpolicy']==null)$row['userpolicy']=0;
+      if($row['grouppolicy']==null)$row['grouppolicy']=0;
+      if(!isset($rowsetAnalysed[$row['item_id']])||($rowsetAnalysed[$row['item_id']]->policy<$row['userpolicy']&&$rowsetAnalysed[$row['item_id']]->policy<$row['grouppolicy']))
         {
         $tmpDao= $this->initDao('Item', $row);
-        $tmpDao->policy=$row['policy'];
-        $rowsetAnalysed[] = $tmpDao;
+        if($row['userpolicy']>=$row['grouppolicy'])
+          {
+          $tmpDao->policy=$row['userpolicy'];
+          }
+        else
+          {
+          $tmpDao->policy=$row['grouppolicy'];
+          }
+        $rowsetAnalysed[$row['item_id']] = $tmpDao;
         unset($tmpDao);
         }
       }
-    $i=1;
-    foreach($rowsetAnalysed as $keyRa=>$r)
-      {
-      if($i>$limit)
-        {
-        unset($rowsetAnalysed[$keyRa]);
-        }
-      $i++;
-      } 
     return $rowsetAnalysed;
     }//end get random
     

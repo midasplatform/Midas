@@ -105,6 +105,7 @@ class AppController extends MIDAS_GlobalController
     {
     parent::postDispatch();
     $this->view->json=JsonComponent::encode($this->view->json);
+    $this->view->generatedTimer= round((microtime(true) - START_TIME),3);
     if (Zend_Registry::get('config')->mode->test!=1)
       {
       header('Content-Type: text/html; charset=ISO-8859-1');
