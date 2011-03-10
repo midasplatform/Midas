@@ -259,7 +259,6 @@
   
   function createElementsAjax(node,elements,first)
   {
-    console.log(elements);
     var i = 1;
     var id=node.attr('id');
     elements['folders'] = jQuery.makeArray(elements['folders']);
