@@ -15,6 +15,7 @@
   $.fn.treeTable = function(opts) {
     options = $.extend({}, $.fn.treeTable.defaults, opts);
     globalElement=this;
+    colorLines(false);
     var tmp =this.each(function() {
       
       
@@ -34,10 +35,11 @@
         }
       });
       initializeAjax($(this),true);
-
     });
     
     initEvent();
+
+    
     return tmp;
   };
   
@@ -61,7 +63,7 @@
       
       this.style.display = "none"; // Performance! $(this).hide() is slow...
     });
-    
+    colorLines(true);
     return this;
   };
   
@@ -144,6 +146,7 @@
         $(this).show();
       });
     initializeAjax($(this),false);
+    colorLines(true);
     return this;
   };
 
@@ -255,6 +258,27 @@
           callbackDblClick($(this)); 
           }
         });
+       colorLines(true);
+  }
+  
+  function colorLines(checkHidden)
+  {
+    var grey=false;
+    $('.midasTree tr').each(function(index){
+      if(index==0)return;
+      if(!checkHidden||!$(this).is(':hidden'))
+        {
+        if(grey)
+          {
+          $(this).css('background-color','#f9f9f9');
+          grey=false; 
+          }
+        else
+          { 
+          grey=true;
+          }
+        }
+    });
   }
 
   function trimName(name,padding)
