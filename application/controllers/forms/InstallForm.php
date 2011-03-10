@@ -80,8 +80,8 @@ class InstallForm extends AppForm
     
     $process = new Zend_Form_Element_Select('process');
     $process ->addMultiOptions(array(
-                    'onthefly' => 'On the Fly',
-                    'cron' => 'Using an external cron job' 
+                    'onthefly' => 'On the fly',
+                    'cron' => 'External' 
                         ));    
     
     $timezone = new Zend_Form_Element_Select('timezone');
@@ -92,8 +92,8 @@ class InstallForm extends AppForm
     
     $environment = new Zend_Form_Element_Select('environment');
     $environment ->addMultiOptions(array(
-                    'production' => 'Production (no errors shown, faster)' ,
-                    'development' => 'Development (shows errors, slower)'                    
+                    'production' => 'Production' ,
+                    'development' => 'Development'                    
                         ));    
     
     $name = new Zend_Form_Element_Text('name');

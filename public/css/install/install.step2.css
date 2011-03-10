@@ -6,8 +6,7 @@
 }
 
 #dbResult div{
-  position: absolute;
-  width: 400px;
-  left: 350px;
-  top: -20px;
+  margin-left: 203px;
+  margin-top:4px;
+  height: 30px;
 }

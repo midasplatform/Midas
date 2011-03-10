@@ -38,7 +38,7 @@ class InstallController extends AppController
       "simplexml"  => array(false, ""), 
     );
     $this->view->phpextension_missing=$this->Component->Utility->CheckPhpExtensions($phpextensions);
-    $this->view->writable=is_writable(BASE_PATH);  
+    $this->view->writable=is_writable(BASE_PATH.'/application/configs');  
     $this->view->convertfound=$this->Component->Utility->IsImageMagickWorking();   
     $this->view->basePath=BASE_PATH;
     if(!empty($_POST)&&$this->view->writable)
@@ -170,7 +170,7 @@ class InstallController extends AppController
  
     $assetstrores=$this->Assetstore->getAll();
     $formArray['assetstore']->addMultiOptions(array(
-                    $assetstrores[0]->getKey() => $assetstrores[0]->getName().' Path: '.$assetstrores[0]->getPath()                  
+                    $assetstrores[0]->getKey() => $assetstrores[0]->getPath()                  
                         ));    
     
     $this->view->form=$formArray;

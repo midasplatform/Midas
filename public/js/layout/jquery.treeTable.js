@@ -124,6 +124,7 @@
       $(this).removeAttr('ajax');
       $(this).attr('proccessing',false);
       $(this).find('td:first img.tableLoading').hide();
+      initialize($(this));
       }
 
 

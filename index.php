@@ -20,6 +20,18 @@ set_include_path('.'
 
 define('BASE_PATH', realpath(dirname(__FILE__)));
 
+if(!is_writable(BASE_PATH."/application/configs")||!is_writable(BASE_PATH."/log")||!is_writable(BASE_PATH."/data")||!is_writable(BASE_PATH."/tmp"))
+  {
+  echo "To use Midas, the following repertories have to be writable by apache:
+        <ul>
+          <li>".BASE_PATH."/application/configs</li>
+          <li>".BASE_PATH."/log</li>
+          <li>".BASE_PATH."/data</li>
+          <li>".BASE_PATH."/tmp</li>
+        </ul>";
+  exit();
+  }
+
 define('START_TIME',microtime(true));
 
 require_once 'Zend/Loader/Autoloader.php';
@@ -28,7 +40,7 @@ require_once 'Zend/Application.php';
 $loader = Zend_Loader_Autoloader::getInstance();
 $loader->registerNamespace('App_');
 
-require_once(BASE_PATH . "/include.php");
+require_once(BASE_PATH . "/application/include.php");
 
 // Create application, bootstrap, and run
 $application = new Zend_Application('global', CORE_CONFIG);

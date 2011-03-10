@@ -1,45 +1,42 @@
-<link href="<?php echo $this->webroot?>/public/css/install/install.css" rel="stylesheet" type="text/css" />
+
 <link href="<?php echo $this->webroot?>/public/css/install/install.step3.css" rel="stylesheet" type="text/css" />
 
 <?php
   $this->headScript()->appendFile($this->webroot.'/public/js/install/install.step3.js');
 ?>
 
-<div class="viewMain"> 
 
+<div class="viewMain">
      <h3>Configuration:</h3>
   
      <?php
       echo "<form class='genericForm' method='{$this->form['method']}'  action='{$this->form['action']}'>";
       echo "
-              <div>
+              <div class='installName'>
                 <label for='name'>Application name</label>
                 {$this->form['name']}
               </div>
-              <div>
+              <div class='installLang'>
                 <label for='lang'>Language</label>
                 {$this->form['lang']}
               </div>
-              <div>
+              <div class='installEnvironment'>
                 <label for='environment'>Environment</label>
                 {$this->form['environment']}
               </div>
-               <div>
+               <div class='installProcess'>
                 <label for='process'>Select process type</label>
                 {$this->form['process']}
-                <br/>
-                Windows: task manage using command: ".BASE_PATH."/library/Executable/windows/32/wget.exe -O ".BASE_PATH."/log/task.log http://localhost{$this->webroot}/task<br/>
-                Linux: cron job using command: wget -O ".BASE_PATH."/log/task.log http://localhost{$this->webroot}/task
               </div>
-              <div>
+              <div class='installTimezone'>
                 <label for='environment'>Timezone</label>
                 {$this->form['timezone']}
               </div>
-              <div>
+              <div class='installSmartoptimizer'>
                 <label for='smartoptimizer'>CSS and Javascript optimizer</label>
                 {$this->form['smartoptimizer']}
               </div>
-              <div>
+              <div class='installAssetstrore'>
                 <label for='assetstore'>Default Assetstore</label>
                 {$this->form['assetstore']}
               </div> 
@@ -47,7 +44,21 @@
                 {$this->form['submit']}
               </div>
               </form>";
-      echo "</div>";
      ?>
+</div>
+<div class="viewSideBar">
+  <div class="sideElementFirst " >
+      <h1>Help</h1>
+      <div class="installHelp">
+        This page allow you to configure your installation.
+      </div>
+  </div>
+</div>
 
+<div class='hiddenProcces' style="display:none;">
+  <?php 
+echo "<br/>
+    Windows:".BASE_PATH."<br/>/library/Executable/windows/32/<br/>wget.exe -O <br/>".BASE_PATH."<br/>/log/task.log<br/> http://localhost{$this->webroot}/task<br/><br/>
+    Linux:  wget -O ".BASE_PATH."<br/>/log/task.log http://localhost{$this->webroot}/task";
+    ?>
 </div>
