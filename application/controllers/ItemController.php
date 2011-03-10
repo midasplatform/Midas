@@ -34,12 +34,14 @@ class ItemController extends AppController
       {
       throw new Zend_Exception("This iutem doesn't exist.");
       }
-    if(!isset($this->userSession->recentItems))
+    $request = $this->getRequest();
+    $cookieData = $request->getCookie('recentItems');
+    $recentItems=array();
+    if(isset($cookieData))
       {
-      $this->userSession->recentItems=array();
-      }
-    
-    $tmp=array_reverse($this->userSession->recentItems);
+      $recentItems= unserialize($cookieData); 
+      }    
+    $tmp=array_reverse($recentItems);
     $i=0;
     foreach($tmp as $key=>$t)
       {
@@ -54,9 +56,14 @@ class ItemController extends AppController
         unset($tmp[$key]);
         }
       }
-    $this->userSession->recentItems=array_reverse($tmp);
-    $this->userSession->recentItems[]=$itemDao;
+    $recentItems=array_reverse($tmp);
+    $recentItems[]=$itemDao;
+
+    setcookie("recentItems", serialize($recentItems), time()+60*60*24*30,'/'); //30 days
     $this->view->itemDao=$itemDao;
     }//end index
 
   }//end class
+  
+  /*    pour la récupérer 
+     */

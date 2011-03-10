@@ -40,6 +40,16 @@ a:visited {
   border:none;
 }
 
+a:active, li:active
+{
+outline: none;
+}
+
+a:focus, li:focus
+{
+-moz-outline-style: none;
+}
+
 /*-------------------------------------------------
 TOP
 -------------------------------------------------*/

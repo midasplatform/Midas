@@ -59,7 +59,13 @@ class AppController extends MIDAS_GlobalController
       $this->view->logged=false;
       $this->logged=false;
       }
-    $this->view->recentItems=$user->recentItems;
+    $cookieData =  $this->getRequest()->getCookie('recentItems');
+    $this->view->recentItems=array();
+    if(isset($cookieData))
+      {
+      $this->view->recentItems= unserialize($cookieData); 
+      } 
+      
     $this->view->lang=Zend_Registry::get('configGlobal')->application->lang;
    //create a global javascript json array
     $jsonGlobal=array(

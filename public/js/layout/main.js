@@ -138,6 +138,15 @@ $(function() {
       loadAjaxDynamicBar('login','/user/login');
     }
   });
+  
+  $(".recentItem").cluetip({
+   cluetipClass: 'jtip',
+   arrows: true,
+   cursor: 'pointer',
+   splitTitle: '|'
+  });
+
+
 });
 
 function globalAuthAsk(url)

@@ -30,7 +30,22 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       Zend_Session::setId($_POST['sid']);       
       }
     Zend_Session::start();
-    $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG,'global');
+    $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG,'global',true);
+    if(isset($_COOKIE['lang']))
+      {
+      $configGlobal->application->lang=$_COOKIE['lang'];
+      } 
+    
+    if(isset($_GET['lang']))
+      {
+      if($_GET['lang']!='en'&&$_GET['lang']!='fr')
+        {
+        $_GET['lang']='en';
+        }
+      $configGlobal->application->lang=$_GET['lang'];
+      setcookie("lang", $_GET['lang'], time()+60*60*24*30*20,'/'); //30 days *20
+      }
+   
     Zend_Registry::set('configGlobal', $configGlobal);
 
     $configCore = new Zend_Config_Ini(CORE_CONFIG,'global');

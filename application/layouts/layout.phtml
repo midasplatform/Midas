@@ -10,11 +10,12 @@
     <?php
     if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
       {
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/main.css,view.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/main.css,view.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css,jquery.cluetip.css" />';
       }
     else
       {
       echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/main.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/jquery.cluetip.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/view.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/jquery-ui.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/form.css" />';
@@ -91,6 +92,18 @@
             <li>
               <a href="#" > <?= $this->t('Help') ?></a>
             </li>
+            <li>
+              <?php if($this->lang=='fr')
+                {
+                echo '<a href="'.$this->webroot.'?lang=en"><img src="'.$this->webroot.'/public/images/icons/english.png" alt="English"/>';
+                }
+              else
+                {
+                echo '<a href="'.$this->webroot.'?lang=fr"><img src="'.$this->webroot.'/public/images/icons/french.png" alt="French"/>';
+                }
+                ?>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -136,7 +149,7 @@
               echo '<ul>';
               foreach ($recentReverse as $item)
                 {
-                echo "<li><a href='{$this->webroot}/item/{$item->getKey()}'>{$item->getName()}</a></li>";
+                echo "<li onclick=\"location.replace('{$this->webroot}/item/{$item->getKey()}');\" class='recentItem' title='".  str_replace("'", '"', $item->getName())." | todo'><a  href='{$this->webroot}/item/{$item->getKey()}'>".sliceRecentItem($item->getName())."</a></li>";
                 }
               echo '</ul>';
               }
@@ -170,11 +183,12 @@
     <?php
               if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
                 {
-                echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,jquery.treeTable.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,jquery.treeTable.js,jquery.cluetip.js"></script>';
                 }
               else
                 {
                 echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/jquery.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/jquery.cluetip.js"></script>';
                 echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/jquery-ui.js"></script>';
                 echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/main.js"></script>';
                 echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/jquery.treeTable.js"></script>';
@@ -187,3 +201,14 @@
     </div>
   </body>
 </html>
+
+<?php
+function sliceRecentItem($name)
+  {
+    if(strlen($name)>20)
+    {
+    $name=substr($name,0, 6).'...'.substr($name,strlen($name)-11);
+    }
+  return $name;
+  }
+  ?>

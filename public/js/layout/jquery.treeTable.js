@@ -130,7 +130,7 @@
 
     if($(this).attr('proccessing')=='true')
       {
-      $(this).find('td:first').prepend('<img class="tableLoading" alt="" src="'+json.global.webroot+'/public/images/icons/loading.gif"/>');
+ //     $(this).find('td:first').prepend('<img class="tableLoading" alt="" src="'+json.global.webroot+'/public/images/icons/loading.gif"/>');
       }
     $(this).removeClass("collapsed").addClass("expanded");
         childrenOf($(this)).each(function() {
