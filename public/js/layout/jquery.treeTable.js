@@ -258,9 +258,9 @@
 
   function trimName(name,padding)
   {
-    if(name.length*6+padding>350)
+    if(name.length*7+padding>350)
       { 
-      toremove=(name.length*6+padding-350)/6;  
+      toremove=(name.length*7+padding-350)/7;  
       name=name.substring(0,10)+'...'+name.substring(name.length+10+3-toremove);
       return name;
       }
