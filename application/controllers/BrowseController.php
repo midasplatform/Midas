@@ -162,13 +162,19 @@ class BrowseController extends AppController
         $item=$this->Item->load($id);
         $jsonContent=array_merge($jsonContent,$item->_toArray());
         $itemRevision=$this->Item->getLastRevision($item);
-        $jsonContent['creation']=$itemRevision->getDate();
+        $jsonContent['creation']=$this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
+        $jsonContent['uploaded']=$itemRevision->getUser()->_toArray();
+        $jsonContent['revision']=$itemRevision->_toArray();
+        $jsonContent['nbitstream']=count($itemRevision->getBitstreams());
+        $jsonContent['type']='item';
         break;
       default:
         throw new Zend_Exception("Please select the right type of element.");
         break;
       }
     $jsonContent['translation']['Created']=$this->t('Created');
+    $jsonContent['translation']['File']=$this->t('File');
+    $jsonContent['translation']['Uploaded']=$this->t('Uploaded by');
     echo JsonComponent::encode($jsonContent);
     }//end getElementInfo
 

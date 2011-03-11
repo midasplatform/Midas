@@ -128,8 +128,8 @@ $(function() {
   {
     if(json.global.logged)
     {
-      loadDialog("upload","/upload/simpleupload");
-      showDialog("Upload",false);
+     // loadDialog("upload","/upload/simpleupload");
+     // showDialog("Upload",false);
     }
     else
     {
@@ -139,16 +139,23 @@ $(function() {
     }
   });
   
-  $(".recentItem").cluetip({
-   cluetipClass: 'jtip',
-   arrows: true,
-   cursor: 'pointer',
-   splitTitle: '|'
-  });
-
-
+  if(json.global.logged)
+    {
+    $('.uploadFile').cluetip({
+     cluetipClass: 'jtip',
+     dropShadow: false,
+     hoverIntent: false,
+     activation: 'click', 
+     arrows: true, 
+     closePosition: 'title',
+     closeText: '<img src="'+json.global.webroot+'/public/images/icons/close.png" alt="close" />',  
+     positionBy:'uploadElement',
+     topOffset:        -100,   
+     leftOffset:       -550,
+     width:            600
+    });
+    }
 });
-
 function globalAuthAsk(url)
 {
     if(json.global.logged)

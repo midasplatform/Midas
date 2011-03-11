@@ -217,8 +217,12 @@
                 }
               }
             },
-            success: function(data, textStatus) {       
+            success: function(data, textStatus) {   
               cluetipContents = opts.ajaxProcess.call(link, data);
+              if(opts.positionBy == 'uploadElement')
+                {
+                cluetipContents = data;
+                }
               if (isActive) {
                 if (optionSuccess) {optionSuccess.call(link, data, textStatus, $cluetip, $cluetipInner);}
                 $cluetipInner.html(cluetipContents);
@@ -287,6 +291,15 @@
           $cluetip.unbind('mouseleave.cluetip');
         }
       }
+     if(opts.positionBy == 'uploadElement')
+        {
+        var $closeLink = $('<div id="cluetip-close"><a href="#">' + opts.closeText + '</a></div>');
+        $closeLink.prependTo($cluetipTitle) ;
+        $closeLink.bind('click.cluetip', function() {
+          cluetipClose();
+          return false;
+        });
+        }
 // now that content is loaded, finish the positioning 
       var direction = '';
       $cluetipOuter.css({zIndex: $this.data('thisInfo').zIndex, overflow: defHeight == 'auto' ? 'visible' : 'auto', height: defHeight});
@@ -295,7 +308,13 @@
       baseline = sTop + wHeight;
       if (opts.positionBy == 'fixed') {
         tipY = posY - opts.dropShadowSteps + tOffset;
-      } else if ( (posX < mouseX && Math.max(posX, 0) + tipWidth > mouseX) || opts.positionBy == 'bottomTop') {
+      }
+      else if(opts.positionBy == 'uploadElement')
+        {
+        tipY = posY+43;
+        direction = 'bottom';
+        }
+      else if ( (posX < mouseX && Math.max(posX, 0) + tipWidth > mouseX) || opts.positionBy == 'bottomTop') {
         if (posY + tipHeight + tOffset > baseline && mouseY - sTop > tipHeight + tOffset) { 
           tipY = mouseY - tipHeight - tOffset;
           direction = 'top';
@@ -316,7 +335,14 @@
       $cluetip.css({top: tipY + 'px'}).removeClass().addClass('clue-' + direction + '-' + ctClass).addClass(' cluetip-' + ctClass);
       if (opts.arrows) { // set up arrow positioning to align with element
         var bgY = (posY - tipY - opts.dropShadowSteps);
-        $cluetipArrows.css({top: (/(left|right)/.test(direction) && posX >=0 && bgY > 0) ? bgY + 'px' : /(left|right)/.test(direction) ? 0 : ''}).show();
+        if(opts.positionBy == 'uploadElement')
+          {
+          $cluetipArrows.css({left: '505px'}).show();
+          }
+        else
+          {
+            $cluetipArrows.css({top: (/(left|right)/.test(direction) && posX >=0 && bgY > 0) ? bgY + 'px' : /(left|right)/.test(direction) ? 0 : ''}).show();
+          }
       } else {
         $cluetipArrows.hide();
       }

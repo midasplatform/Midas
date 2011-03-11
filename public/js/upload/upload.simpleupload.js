@@ -48,7 +48,7 @@
       }
       
       
-		$( "#tabs" ).tabs({
+		$( "#uploadTabs" ).tabs({
 			ajaxOptions: {
         beforeSend: function()
         {
@@ -57,6 +57,7 @@
         success: function()
         {
           $('div.MainDialogLoading').hide();
+          $( "#uploadTabs" ).show();
         },
 				error: function( xhr, status, index, anchor ) {
 					$( anchor.hash ).html(
@@ -64,7 +65,7 @@
 				}
 			}
 		});
-    
+    $( "#uploadTabs" ).show();
       $('#linkForm').ajaxForm(function() { 
          // $('input[name=url]').val('http://');
           $('.uploadedLinks').val(parseInt($('.uploadedLinks').val())+1);

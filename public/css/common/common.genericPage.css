@@ -1,48 +1,51 @@
-/** Tabs*/
-div.ui-tabs{
-  padding: 0px 0px 0px 0px !important;
-  border: 0px;
-}
 
-div#tabs{
+div.tabs{
   display: none;
 }
 
-div#tabs .ui-tabs-nav{
-  border:0px !important;
-  background: none !important;
+div.genericThumbnail{
+  float:left;
 }
 
-div#tabs .ui-tabs-nav{
-  border-bottom: 1px dotted grey;
+div.genericInfo{
+  height: 45px;
+
 }
 
-div#tabs .ui-state-default{
+div.genericAction{
+  border-bottom: 1px solid white;
+  padding-bottom: 10px;
 }
 
-.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
-border: 1px solid #C5DBEC!important;
+div.genericAction ul,div.genericCommunities ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-border: 1px solid #F3F1EC;
+div.genericCommunities{
+  border-bottom: 1px solid white;
+  border-top: 1px solid #DAD8D4;
+  padding-bottom: 10px;
 }
 
-div#tabs .ui-tabs-selected,div#tabs .ui-tabs-selected a{
-  color:#1D5987 !important;
+div.genericStats{
+  border-top: 1px solid #DAD8D4;
+}
+
+div.viewAction{
+  display:none;
+}
+
+div.viewInfo{
+  display:none;
+}
+
+div.genericInfo .genericName{
   font-weight: bold;
-  height:29px!important;
+  font-size: 16px;
 }
 
-div#tabs .ui-state-default{
-  height: 30px;
-}
-
-
-div#tabs .ui-tabs-panel {
-  position: relative !important;
-  left: -15px!important;
-  border-top: 1px solid #F3F1EC;
-  width: 99%;
+div.genericInfo .genericCompany{
+  font-weight: bold;
 }

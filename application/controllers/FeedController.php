@@ -24,6 +24,7 @@ class FeedController extends AppController
     $this->view->nCommunities=$this->Community->getCountAll();
     $this->view->nItems=$this->Item->getCountAll();
     $this->view->notifications=array();
+    $this->view->header=$this->t('Feed');
     }
     
      /** get getfolders Items' size */

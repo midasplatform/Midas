@@ -6,7 +6,8 @@ div.viewHeader {
   -webkit-border-top-left-radius:6px;
   -webkit-border-top-right-radius:6px;  
   margin: 0px;
-  padding: 8px 15px;
+  padding: 3px 0px 0px 25px ;
+  min-height: 21px ;
   font-size: 14px;
   text-shadow: white 0px 1px 1px;
   color:#333ba0;
@@ -89,4 +90,68 @@ div.viewSideBar div.sideElement ul,div.viewSideBar div.sideElementFirst ul,div.v
   list-style:none;
   margin:0;
   padding: 0;
+}
+
+
+/** tabs*/
+
+/** Tabs*/
+div.ui-tabs{
+  padding: 0px 0px 0px 0px !important;
+  border: 0px;
+}
+
+
+div.tabs .ui-tabs-nav{
+  border:0px !important;
+  background: none !important;
+}
+
+div.tabs .ui-tabs-nav{
+  border-bottom: 1px dotted grey;
+}
+
+div.tabs .ui-state-default{
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+border: 1px solid #C5DBEC!important;
+}
+
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+border: 1px solid #F3F1EC;
+}
+
+.ui-widget-content{
+  background: none!important;
+}
+div.tabs .ui-tabs .ui-tabs-nav li a{
+  padding: 3px 10px!important;
+}
+.ui-tabs .ui-tabs-nav li a{
+  padding: 3px 10px!important;
+}
+
+div.tabs .ui-tabs-selected,div.tabs .ui-tabs-selected a{
+  color:#1D5987 !important;
+  font-weight: bold;
+  height:19px!important;
+}
+
+div.tabs .ui-state-default{
+  height: 20px;
+}
+
+
+div.tabs .ui-tabs-panel {
+  position: relative !important;
+  left: -15px!important;
+  border-top: 1px solid #F3F1EC;
+  width: 99%;
+}
+
+
+div.tabs{
+  display: none;
 }

@@ -20,14 +20,13 @@
 <script type="text/javascript" src="<?php echo $this->webroot?>/public/js/jquery/jquery.form.js"></script>
 <script type="text/javascript" src="<?php echo $this->webroot?>/public/js/upload/upload.simpleupload.js"></script>
 
-<div id="tabs">
+<div class="tabs" id='uploadTabs'>
   <ul>
-    <li><a href="#tabs-1">Simple</a></li>
+    <li><a href="#uploadTabs-1">Simple</a></li>
     <li><a href="<?php echo $this->webroot?>/upload/javaupload"><?php echo $this->t('Large Files');?></a></li>
-    <li><a href="#tabs-3"><?php echo $this->t('Links');?></a></li>
+    <li><a href="#uploadTabs-3"><?php echo $this->t('Links');?></a></li>
   </ul>
-  <div id="tabs-1">
- 
+  <div id="uploadTabs-1"> 
     <form id="form1" action="index.php" method="post" enctype="multipart/form-data">
       <span id="spanButtonPlaceHolder"></span>
       <div>
@@ -41,8 +40,7 @@
       <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
     </form>    
   </div>
-    <div id="tabs-3">
-
+    <div id="uploadTabs-3">
       <form id="linkForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
         <div >
           <?php echo $this->form['url']?>

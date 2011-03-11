@@ -87,7 +87,9 @@ table.midasTree td{
   -khtml-user-select: none;
   -moz-user-select:none;
 }
-
+table.midasTree tr{
+  cursor: pointer;
+}
 table.midasTree tr:hover{
   background-color: #F3F1EC;
 }

@@ -83,6 +83,7 @@ class AppController extends MIDAS_GlobalController
     
     $browse=array(
       'view'=>$this->t('View'),
+      'preview'=>$this->t('Preview'),
       'download'=>$this->t('Download'),
       'edit'=>$this->t('Edit'),
       'delete'=>$this->t('Delete'),

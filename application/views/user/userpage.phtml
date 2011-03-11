@@ -6,7 +6,7 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
 <link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.browser.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.genericPage.css" />
 <div class="viewMain">
-  <div class="userThumbnail">
+  <div class="genericThumbnail">
   <?php
   $thumbnail=$this->user->getThumbnail();
   if(!empty($thumbnail))
@@ -19,12 +19,12 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
     }
   ?>
   </div>
-  <div class="userInfo">
-    <div class="userName"><?php echo $this->user->getFullName();?></div>
-    <div class="userCompany"><?php echo $this->user->getCompany();?></div>
+  <div class="genericInfo">
+    <div class="genericName"><?php echo $this->user->getFullName();?></div>
+    <div class="genericCompany"><?php echo $this->user->getCompany();?></div>
   </div>
   <img class="tabsLoading" alt=""  src="<?php echo $this->webroot?>/public/images/icons/loading.gif" />
-  <div id="tabs">
+  <div class="tabs" id='tabsGeneric'>
   <ul>
     <li><a href="#tabs-1"><?php echo $this->t("Feed")?></a></li>
     <?php
@@ -84,13 +84,13 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
 
 </div>
 <div class="viewSideBar">
-  <div class="sideElementFirst userAction">
+  <div class="sideElementFirst genericAction">
     <h1>Actions</h1>
     <ul>
       <li>To do</li>
     </ul>
   </div>
-   <div class="sideElement userCommunities">
+   <div class="sideElement genericCommunities">
     <h1>Communities</h1>    
     <ul>
     <?php 
@@ -101,7 +101,7 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
     ?>
       </ul>
    </div>
-   <div class="sideElementLast userStats">
+   <div class="sideElementLast genericStats">
     <h1>Stats</h1>  
     Todo
    </div>

@@ -1,15 +1,15 @@
   $(document).ready(function() {
     
-    $( "#tabs" ).tabs({
+    $( "#tabsGeneric" ).tabs({
       select: function(event, ui) {
-        $('div.userAction').show();
-        $('div.userCommunities').show();
-        $('div.userStats').show();
+        $('div.genericAction').show();
+        $('div.genericCommunities').show();
+        $('div.genericStats').show();
         $('div.viewInfo').hide();
         $('div.viewAction').hide();
         }
       });
-    $("#tabs").show();
+    $("#tabsGeneric").show();
     $('img.tabsLoading').hide()
     
     $("#browseTable").treeTable();
@@ -22,9 +22,9 @@
     var ajaxSelectRequest='';
     function callbackSelect(node)
     {
-      $('div.userAction').hide();
-      $('div.userCommunities').hide();
-      $('div.userStats').hide();
+      $('div.genericAction').hide();
+      $('div.genericCommunities').hide();
+      $('div.genericStats').hide();
       $('div.viewInfo').show();
       $('div.viewAction').show();
       genericCallbackSelect(node);  

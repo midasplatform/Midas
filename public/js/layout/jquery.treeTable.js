@@ -45,7 +45,7 @@
   
   $.fn.treeTable.defaults = {
     childPrefix: "child-of-",
-    clickableNodeNames: false,
+    clickableNodeNames: true,
     expandable: true,
     indent: 19,
     initialState: "collapsed",
@@ -126,6 +126,7 @@
       $(this).removeAttr('ajax');
       $(this).attr('proccessing',false);
       $(this).find('td:first img.tableLoading').hide();
+      initEvent();
       initialize($(this));
       }
 
@@ -271,10 +272,13 @@
         if(grey)
           {
           $(this).css('background-color','#f9f9f9');
+          $(this).hover(function(){$(this).css('background-color','#F3F1EC')}, function(){$(this).css('background-color','#f9f9f9')});
           grey=false; 
           }
         else
           { 
+          $(this).css('background-color','white');
+          $(this).hover(function(){$(this).css('background-color','#F3F1EC')}, function(){$(this).css('background-color','white')});
           grey=true;
           }
         }
@@ -366,7 +370,7 @@
         childNodes.each(function() {
           $(this).children("td:first")[options.treeColumn].style.paddingLeft =  (padding-12) + "px";
         });
-        
+
         if(options.expandable) {
           cell.prepend('<span style="margin-left: -' + options.indent + 'px; padding-left: ' + options.indent + 'px" class="expander"></span>');
           $(cell[0].firstChild).click(function() {node.toggleBranch();});

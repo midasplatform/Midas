@@ -1,6 +1,26 @@
 <?php
 class DateComponent extends AppComponent
 { 
+  // format date (ex: 01/14/2011 or 14/01/2011 (fr or en)
+  static public function formatDate($timestamp)
+    {
+    if(!is_numeric($timestamp))
+      {
+      $timestamp=strtotime($timestamp);
+      if($timestamp==false)
+        {
+        return "";
+        }
+      }
+    if(Zend_Registry::get('configGlobal')->application->lang=='fr')
+       {
+       return date('d',$timestamp).'/'.date('m',$timestamp).'/'.date('Y',$timestamp);
+       }
+     else
+       {
+       return date('m',$timestamp).'/'.date('d',$timestamp).'/'.date('Y',$timestamp);
+       }
+    }
   //format the date (ex: 5 days ago)
   static public function ago($timestamp,$only_time=false)
     {
