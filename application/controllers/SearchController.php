@@ -32,10 +32,15 @@ class SearchController extends AppController
   /** search live Action */
   public function liveAction()
     {
+    // This is necessary in order to avoid session lock and being able to run two 
+    // ajax requests simultaneously
+    session_write_close();
+      
     $search = $this->getRequest()->getParam('term');
     
     // Search for the items
     $ItemsDao = $this->ItemKeyword->getItemsFromSearch($search,$this->userSession->Dao);
+    
     // Search for the folders
     $FoldersDao = $this->Folder->getFoldersFromSearch($search,$this->userSession->Dao); 
     

@@ -25,13 +25,35 @@ class ItemKeywordModel extends AppModelPdo
       }
     else if(!$userDao instanceof UserDao)
       {
-      throw new Zend_Exception("Should be an user.");
+      throw new Zend_Exception("Should be a user.");
       }
     else
       {
       $userId = $userDao->getUserId();
       }
+          
+    // Apparently it's slow to do a like in a subquery so we run it first  
+    $sql = $this->select()->from(array('itemkeyword'),array('keyword_id'))
+                   ->where('value LIKE ?','%'.$searchterm.'%');                 
+    $ids = '(';
+    $rowset = $this->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      if($ids != '(')
+        {
+        $ids .= ',';  
+        } 
+      $ids .= $row->keyword_id;
+      }
+    $ids .= ')';
 
+    // If we don't have any data we return
+    if(count($rowset) == 0)
+      {
+      return $return;  
+      }
+    
     $subqueryUser= $this->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'itempolicyuser'),
@@ -56,16 +78,15 @@ class ItemKeywordModel extends AppModelPdo
 
     $sql = $this->select()->from(array('i' => 'item'),array('item_id','name','count(*)'))
                                           ->join(array('i2k' => 'item2keyword'),'i.item_id=i2k.item_id')
-                                          ->join(array('k' => 'itemkeyword'),'k.keyword_id=i2k.keyword_id')
-                                          ->where('k.value LIKE ?','%'.$searchterm.'%')
+                                          ->where('i2k.keyword_id IN '.$ids)                                         
                                           ->where('( i.item_id IN ('.$subqueryUser.') OR
                                             i.item_id IN ('.$subqueryGroup.'))' )
                                           ->group('i.name')
                                           ->setIntegrityCheck(false)
                                           ->limit(14);
     
+
     $rowset = $this->fetchAll($sql);
-    $return = array();
     foreach($rowset as $row)
       {
       $tmpDao= new ItemDao();
