@@ -2,18 +2,45 @@
   $this->headScript()->appendFile($this->webroot.'/public/js/search/search.index.js');
 ?>
 <div class="viewMain">
+<ul>
+<li class="searchheader"><?php echo $this->t('Items')?></li>
   <?php
-  echo "<ul>";
   foreach($this->items as $item)
     {
     echo "<li> <a href='{$this->webroot}/item/{$item->getKey()}'>{$item->getName()}</a>";
     }
-  echo "</ul>";
   ?>
+</ul>
+<ul>
+<li class="searchheader"><?php echo $this->t('Folders')?></li>
+  <?php
+  foreach($this->folders as $folder)
+    {
+    echo "<li> <a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a>";
+    }
+  ?>
+</ul>
+<ul>
+<li class="searchheader"><?php echo $this->t('Communities')?></li>
+  <?php
+  foreach($this->communities as $community)
+    {
+    echo "<li> <a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a>";
+    }
+  ?>
+</ul>
+<ul>
+<li class="searchheader"><?php echo $this->t('Users')?></li>
+  <?php
+  foreach($this->users as $user)
+    {
+    echo "<li> <a href='{$this->webroot}/user/{$user->getKey()}'>{$user->getName()}</a>";
+    }
+  ?>
+</ul>
 </div>
 <div class="viewSideBar">
   blabla
-
 </div>
 
 

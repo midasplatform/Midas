@@ -20,9 +20,6 @@ $(function() {
     loadAjaxDynamicBar('login','/user/login');
     });
   
-  
-  
-  
   $("a.registerLink").click(function()
     {
     showOrHideDynamicBar('register');
@@ -36,7 +33,7 @@ $(function() {
         currentCategory = "";
       $.each( items, function( index, item ) {
         if ( item.category != currentCategory ) {
-          ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+          ul.append( '<li class="search-category">' + item.category + "</li>" );
           currentCategory = item.category;
         }
         self._renderItem( ul, item );
@@ -56,7 +53,10 @@ $(function() {
       return;
     }
 
+    $("#searchloading").show();
+    
     lastXhr = $.getJSON( $('.webroot').val()+"/search/live", request, function( data, status, xhr ) {
+      $("#searchloading").hide();
       cache[ term ] = data;
       if ( xhr === lastXhr ) {
         itemselected = false;
@@ -84,7 +84,7 @@ $(function() {
        }
      else
        {
-       window.location.replace($('.webroot').val()+'/search?q='+ui.item.value);
+       window.location.replace($('.webroot').val()+'/search/'+ui.item.value);
        }
      }
    });
@@ -109,7 +109,7 @@ $(function() {
     {
     if(e.keyCode == 13 && !itemselected) // enter key has been pressed
       {
-      window.location.replace($('.webroot').val()+'/search?q='+$('#live_search').val());
+      window.location.replace($('.webroot').val()+'/search/'+$('#live_search').val());
       }
     });
   

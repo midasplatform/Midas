@@ -124,7 +124,7 @@ border: 1px solid #F3F1EC;
 }
 
 .ui-widget-content{
-  background: none!important;
+  background: white!important;
 }
 div.tabs .ui-tabs .ui-tabs-nav li a{
   padding: 3px 10px!important;
