@@ -184,6 +184,7 @@ div.Header div.HeaderSearch{
   padding-top: 6px;
   padding-left: 35px;
   float:left;
+  position:relative;
 }
 
 div.Header div.HeaderSearch input#live_search{
@@ -200,6 +201,29 @@ div.Header div.HeaderSearch input#live_search{
   -webkit-box-shadow: #666 0 0 15px;
   box-shadow: #666 0 0 15px;
   -moz-box-shadow: 0px 0px 15px #666; 
+}
+
+#searchloading{
+ position:absolute;
+ background:  url("../../images/icons/loading-small.gif") bottom center no-repeat;
+ color:#FFFFFF;
+ text-decoration:none;
+ width: 16px;
+ height: 16px;
+ top: 12px;
+ right: 7px;
+}
+
+.search-category{
+	clear: both;
+  color: #333BA0;
+  font-weight: bold;
+  background-color: #F6F9FE;
+  line-height: 1.5;
+}
+	
+.search-items{
+  background-color: #FFFFFF;
 }
 
 div.Header div.HeaderAction{
@@ -498,3 +522,4 @@ div.HeaderLinks .menu ul{
 	div.HeaderLinks .menu p{
 		clear:left;
 		}
+		

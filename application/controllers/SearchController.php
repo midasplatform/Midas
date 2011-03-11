@@ -13,7 +13,15 @@ class SearchController extends AppController
   function init()
     { 
     $this->view->activemenu = 'feed'; // set the active menu
-    }  // end init()  
+    
+    // if the number of parameters is more than 3 then it's the liveAction
+    if(count($this->_getAllParams()) == 3)
+      {
+      $actionName=Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+      $this->_forward('index',null,null,array('q'=>$actionName));
+      }
+    }  // end init()
+
 
  /** search live Action */
   public function indexAction()
@@ -25,17 +33,34 @@ class SearchController extends AppController
     $this->view->json['search']['keyword'] = $keyword;
     
     // Get the items corresponding to the search
-    $items = $this->ItemKeyword->getItemsFromSearch($keyword,$this->userSession->Dao);
-    $this->view->items=$items;
+    $ItemsDao = $this->ItemKeyword->getItemsFromSearch($keyword,$this->userSession->Dao);
+    $this->view->items=$ItemsDao;
+    
+    // Search for the folders
+    $FoldersDao = $this->Folder->getFoldersFromSearch($keyword,$this->userSession->Dao); 
+    $this->view->folders=$FoldersDao;
+     
+    // Search for the communities
+    $CommunitiesDao = $this->Community->getCommunitiesFromSearch($keyword,$this->userSession->Dao); 
+    $this->view->communities=$CommunitiesDao;
+    
+    // Search for the users
+    $UsersDao = $this->User->getUsersFromSearch($keyword,$this->userSession->Dao); 
+    $this->view->users=$UsersDao;
     }
     
   /** search live Action */
   public function liveAction()
     {
+    // This is necessary in order to avoid session lock and being able to run two 
+    // ajax requests simultaneously
+    session_write_close();
+      
     $search = $this->getRequest()->getParam('term');
     
     // Search for the items
     $ItemsDao = $this->ItemKeyword->getItemsFromSearch($search,$this->userSession->Dao);
+    
     // Search for the folders
     $FoldersDao = $this->Folder->getFoldersFromSearch($search,$this->userSession->Dao); 
     
