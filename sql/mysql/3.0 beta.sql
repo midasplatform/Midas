@@ -319,10 +319,10 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` varchar(255) NOT NULL,
   `privacy` tinyint NOT NULL DEFAULT 0,
   `admin` tinyint NOT NULL DEFAULT 0,
-  `folder_id` bigint(20) NOT NULL,
+  `folder_id` bigint(20),
   `creation` timestamp NULL DEFAULT NULL ,
-  `publicfolder_id` bigint(20) NOT NULL,
-  `privatefolder_id` bigint(20) NOT NULL,
+  `publicfolder_id` bigint(20),
+  `privatefolder_id` bigint(20),
   PRIMARY KEY (`user_id`),
   KEY `email` (`email`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
