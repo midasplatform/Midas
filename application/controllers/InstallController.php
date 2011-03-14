@@ -95,6 +95,7 @@ class InstallController extends AppController
         switch($type)
           {
           case 'mysql':
+          case 'pgsql':
             $this->run_mysql_from_file(BASE_PATH."/sql/{$type}/{$this->view->version}.sql",
                                        $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'));
               $params= array(
@@ -118,6 +119,33 @@ class InstallController extends AppController
               $databaseConfig['development']['database.params.dbname']=$form->getValue('dbname');
 
               $db = Zend_Db::factory("PDO_MYSQL",$params);
+              Zend_Db_Table::setDefaultAdapter($db);
+              Zend_Registry::set('dbAdapter', $db);
+            break;
+         case 'pgsql':
+            $this->run_pgsql_from_file(BASE_PATH."/sql/{$type}/{$this->view->version}.sql",
+                                       $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'));
+              $params= array(
+                'host' => $form->getValue('host'),
+                'username' => $form->getValue('username'),
+                'password' => $form->getValue('password'),
+                'dbname' => $form->getValue('dbname'),
+              );
+              
+              $databaseConfig['production']['database.type']='pdo';
+              $databaseConfig['development']['database.type']='pdo';
+              $databaseConfig['production']['database.adapter']='PDO_PGSQL';
+              $databaseConfig['development']['database.adapter']='PDO_PGSQL';
+              $databaseConfig['production']['database.params.host']=$form->getValue('host');
+              $databaseConfig['development']['database.params.host']=$form->getValue('host');
+              $databaseConfig['production']['database.params.username']=$form->getValue('username');
+              $databaseConfig['development']['database.params.username']=$form->getValue('username');
+              $databaseConfig['production']['database.params.password']=$form->getValue('password');
+              $databaseConfig['development']['database.params.password']=$form->getValue('password');
+              $databaseConfig['production']['database.params.dbname']=$form->getValue('dbname');
+              $databaseConfig['development']['database.params.dbname']=$form->getValue('dbname');
+
+              $db = Zend_Db::factory("PDO_PGSQL",$params);
               Zend_Db_Table::setDefaultAdapter($db);
               Zend_Registry::set('dbAdapter', $db);
             break;
@@ -227,6 +255,15 @@ class InstallController extends AppController
           }
         $return =array(true,"The database is reachable");
         break;
+      case 'pgsql':
+        $link = @pg_connect("host=$host port=5432 dbname=$dbname user=$username password=$password");
+        if (!$link) 
+          {
+          $return= array(false, "Could not connect to the server '" . $host . "': ".pg_last_error($link));
+          break;
+          }     
+        $return =array(true,"The database is reachable");
+        break; 
       default:
         $return = array(false,"Database not defined");
         break;
@@ -267,9 +304,9 @@ class InstallController extends AppController
     return true;
     }
       /** Function to run the sql script */
-  function run_pgsql_from_file($sqlfile)
+  function run_pgsql_from_file($sqlfile,$host,$username,$password,$dbname)
     {
-    $pgdb = pg_connect($this->getDatabaseConnectionString());
+    $pgdb =$link = @pg_connect("host=$host port=5432 dbname=$dbname user=$username password=$password");
     $file_content = file($sqlfile);
     $query = "";
     $linnum = 0;
