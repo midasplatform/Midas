@@ -97,14 +97,21 @@ class ItemModel extends AppModelPdo
       $userId = $userDao->getUserId();
       }
       
-      
+    if(Zend_Registry::get('configDatabase')->database->adapter=='PDO_MYSQL')
+      {
+      $rand='RAND()';
+      }
+    else
+      {
+      $rand='random()';
+      }
     $sql=$this->select()
         ->setIntegrityCheck(false)
         ->from(array('i' => 'item'))
         ->join(array('tt'=> $this->select()
                     ->from(array('i' => 'item'),array('maxid'=>'MAX(item_id)'))
-                    ),
-            ' i.item_id >= FLOOR(tt.maxid*RAND())')
+                    ),        
+            ' i.item_id >= FLOOR(tt.maxid*'.$rand.')')
         ->joinLeft(array('ip' => 'itempolicyuser'),'
                   i.item_id = ip.item_id AND '.$this->_db->quoteInto('ip.policy >= ?', $policy).'
                      AND '.$this->_db->quoteInto('user_id = ? ',$userId).' ',array('userpolicy'=>'ip.policy'))

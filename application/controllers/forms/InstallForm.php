@@ -21,7 +21,7 @@ class InstallForm extends AppForm
           ->setRequired(true)
           ->addValidator('NotEmpty', true);
     
-    $password = new Zend_Form_Element_Text('password');
+    $password = new Zend_Form_Element_Password('password');
     
     $dbname = new Zend_Form_Element_Text('dbname');
     $dbname

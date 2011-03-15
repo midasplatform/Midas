@@ -25,43 +25,6 @@ class BitstreamModel extends AppModelPdo
       'assetstore' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Assetstore', 'parent_column'=> 'assetstore_id', 'child_column' => 'assetstore_id'),
     );
 
-  /** init the bitstream (before save it using addBitstream in ItemRevision Model*/
-  public function initBitstream($assetstoreDao,$name,$path)
-    {        
-    Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/application/models/dao');
-    $bitstreamDao = new BitstreamDao;
-    $bitstreamDao->setName($name);
-    $bitstreamDao->setPath($path);
-
-    $tmpPath=$assetstoreDao->getPath().'/'.rand(1, 1000);
-    if(!file_exists($assetstoreDao->getPath()))
-      {
-      throw new Zend_Exception("Problem assetstore path: "+$assetstoreDao->getKey());
-      }
-    if(!file_exists($tmpPath))
-      {
-      mkdir($tmpPath);
-      }
-    $tmpPath.='/'.rand(1, 1000);
-    if(!file_exists($tmpPath))
-      {
-      mkdir($tmpPath);
-      }
-    $fullPath=$tmpPath."/".rand(1,1000);
-    while(file_exists($fullPath))
-      {
-      $fullPath=$tmpPath."/".rand(1,1000);
-      }
-    if(!rename ( $path ,$fullPath))
-      {
-      throw new Zend_Exception("Unable to move file ".$path.' to '.$fullPath);
-      }
-    $bitstreamDao->setPath($fullPath);    
-    $bitstreamDao->fillPropertiesFromPath();
-    $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
-
-    return $bitstreamDao;
-    }
   
   /** do not use, use method addBitstream in ItemRevision Model*/
   public function save($dao)
