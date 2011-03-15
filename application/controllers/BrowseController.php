@@ -143,20 +143,16 @@ class BrowseController extends AppController
     switch ($element)
       {
       case 'community':
-        $community=$this->Community->load($id);
+        $community=$this->Community->load($id);        
         $jsonContent=array_merge($jsonContent,$community->_toArray());
+        $jsonContent['creation']=$this->Component->Date->formatDate(strtotime($community->getCreation()));
+        $members=$community->getMemberGroup()->getUsers();
+        $jsonContent['members']=count($members);
         break;
       case 'folder':
         $folder=$this->Folder->load($id);
         $jsonContent=array_merge($jsonContent,$folder->_toArray());
-        if(isset($jsonContent['date']))
-          {
-          $jsonContent['creation']=$jsonContent['date'];
-          }        
-        else
-          {
-          $jsonContent['creation']=date('c');
-          }
+        $jsonContent['creation']=$this->Component->Date->formatDate(strtotime($jsonContent['date']));
         break;
       case 'item':
         $item=$this->Item->load($id);
@@ -175,6 +171,7 @@ class BrowseController extends AppController
     $jsonContent['translation']['Created']=$this->t('Created');
     $jsonContent['translation']['File']=$this->t('File');
     $jsonContent['translation']['Uploaded']=$this->t('Uploaded by');
+    $jsonContent['translation']['Private']=$this->t('This community is private');
     echo JsonComponent::encode($jsonContent);
     }//end getElementInfo
 

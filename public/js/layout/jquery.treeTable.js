@@ -36,7 +36,6 @@
       });
       initializeAjax($(this),true);
     });
-    
     initEvent();
 
     
@@ -260,6 +259,13 @@
           }
         });
        colorLines(true);
+       
+   globalElement.find(".treeCheckbox").unbind('change');
+   globalElement.find(".treeCheckbox").change(function(){
+        if(typeof callbackCheckboxes == 'function') { 
+          callbackCheckboxes(globalElement); 
+          }
+   });
   }
   
   function colorLines(checkHidden)

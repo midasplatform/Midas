@@ -52,14 +52,18 @@ div.viewSideBar{
   min-height: 500px; 
 }
 
+div.viewSelected{
+  display:none;
+}
+
 div.viewNotice{
   display: none;
   position: relative;
   background-color: #45b775;
   color: #012844;
   float: right;
-  top: -28px;
-  left: -10px;
+  top: -18px;
+  left: 175px;
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 2px;

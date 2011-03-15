@@ -8,13 +8,13 @@
   <?php echo $this->element('feed')?>
 </div>
 <div class="viewSideBar">
-
-  BlaBla
-  <br/>  <br/>  
+  <div align="justify" class='sideElementFirst feedNotification'>
+MIDAS integrates multimedia server technology with Kitware?s open-source data analysis and visualization clients. The server follows open standards for data storage, access and harvesting.
+  </div>
     <?php
   if(!empty($this->notifications))
     {
-    echo   "<div class='sideElementFirst feedNotification'>
+    echo   "<div class='sideElement feedNotification'>
               <h1>Notifications</h1>
             </div>";
     }
@@ -22,7 +22,7 @@
   <?php 
   if(!empty($this->itemThumbnails))
     {
-    echo '<div class="'.(empty($this->notifications)?'sideElementFirst':'sideElement').' feedThumbnail">';
+    echo '<div class="sideElement feedThumbnail">';
     echo '<h1>Thumbnails</h1>';
     foreach($this->itemThumbnails as $item)
       {

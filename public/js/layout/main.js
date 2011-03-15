@@ -133,12 +133,13 @@ $(function() {
     }
     else
     {
-      showDialogWithContent(json.login.titleUploadLogin, json.login.contentUploadLogin,true);
+     
+      createNotive(json.login.contentUploadLogin,4000)
       $("div.TopDynamicBar").show('blind');
       loadAjaxDynamicBar('login','/user/login');
     }
   });
-  
+
   if(json.global.logged)
     {
     $('.uploadFile').cluetip({

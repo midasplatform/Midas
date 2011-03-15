@@ -11,5 +11,4 @@ $('a.createCommunity').click(function()
     $("div.TopDynamicBar").show('blind');
     loadAjaxDynamicBar('login','/user/login');
     }
-
 });

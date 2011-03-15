@@ -89,7 +89,7 @@ class DownloadController extends AppController
     
     if(empty($folders)&&empty($revisions))
       {
-      throw new Zend_Exception("Permissions problem");
+      exit();
       }
     if(empty($folders)&&count($revisions)==1)
       {

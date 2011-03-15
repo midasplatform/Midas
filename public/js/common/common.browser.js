@@ -11,13 +11,55 @@
         ajaxSelectRequest = $.ajax({
           type: "POST",
           url: json.global.webroot+'/browse/getelementinfo',
-          data: { type: node.attr('type'), id: node.attr('element') },
+          data: {type: node.attr('type'), id: node.attr('element')},
           success: function(jsonContent){
             createInfo(jsonContent);
             $('img.infoLoading').hide();
 
           }
         });       
+    }
+    
+    var arraySelected=new Array();
+    
+    function genericCallbackCheckboxes(node)
+    {
+      arraySelected=new Array();
+      arraySelected['folders']=new Array();
+      arraySelected['items']=new Array();
+      
+      var folders='';
+      var items='';
+      node.find(".treeCheckbox:checked").each(function(){
+        if($(this).parents('tr').attr('type')!='item')
+          {
+          arraySelected['folders'].push($(this).attr('element'));
+          folders+=$(this).attr('element')+'-';
+          }
+        else
+          {
+          arraySelected['items'].push($(this).attr('element'));
+          items+=$(this).attr('element')+'-';
+          }
+      }); 
+      var link=json.global.webroot+'/download?folders='+folders+'&items='+items;
+      if((arraySelected['folders'].length+arraySelected['items'].length)>0)
+        {
+        $('div.viewSelected').show();
+        var html=(arraySelected['folders'].length+arraySelected['items'].length);
+        html+=' '+json.browse.element;
+        if((arraySelected['folders'].length+arraySelected['items'].length)>1)
+          {
+           html+='s'; 
+          }
+        html+='<br/><a href="'+link+'">'+json.browse.download+'</a>'; 
+        $('div.viewSelected span').html(html); 
+        }
+      else
+        {
+        $('div.viewSelected').hide();
+        $('div.viewSelected span').html('');
+        }
     }
 
     function genericCallbackDblClick(node)
@@ -116,6 +158,18 @@
         html+='    <td>'+arrayElement.translation.Created+'</td>';
         html+='    <td>'+arrayElement.creation+'</td>';
         html+='  </tr>';
+      if(arrayElement['type']=='community')
+        {
+        html+='  <tr>';
+        html+='    <td>Member';
+        if(parseInt(arrayElement['members'])>1)
+          {
+            html+='s';
+          }
+        html+=     '</td>';
+        html+='    <td>'+arrayElement['members']+'</td>';
+        html+='  </tr>';                
+        }
       if(arrayElement['type']=='item')
         {
         html+='  <tr>';
@@ -140,9 +194,14 @@
         html+=    '</td>';
         html+='    <td>'+arrayElement['nbitstream']+'</td>';
         html+='  </tr>';
-        html+='</table>';
-        
+            
         }
+      html+='</table>';    
+      if(arrayElement['type']=='community'&&arrayElement['privacy']==2)
+        {
+         html+='<h4>'+arrayElement.translation.Private+'</h4>';     
+        }
+      
       
       if(arrayElement['thumbnail']!=undefined&&arrayElement['thumbnail']!='')
         {

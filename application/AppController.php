@@ -78,7 +78,7 @@ class AppController extends MIDAS_GlobalController
     );
     $login=array(
       "titleUploadLogin"=>$this->t('Please log in'),
-      "contentUploadLogin"=>utf8_encode($this->t('You need to be logged in to be able to upload files.'))
+      "contentUploadLogin"=>$this->t('You need to be logged in to be able to upload files.')
     );
     
     $browse=array(
@@ -91,6 +91,7 @@ class AppController extends MIDAS_GlobalController
       'rename'=>$this->t('Rename'),
       'move'=>$this->t('Move'),
       'copy'=>$this->t('Copy'),
+      'element'=>$this->t('element'),
       'community' => array(
           'invit'=>$this->t('Invite collaborators'),
           'advanced'=>$this->t('Advanced properties'),
