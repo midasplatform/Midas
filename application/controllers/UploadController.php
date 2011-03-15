@@ -4,7 +4,7 @@ class UploadController extends AppController
   {
   public $_models=array('User','Item','ItemRevision','Folder','Itempolicyuser',"ItemKeyword",'Itempolicygroup','Group','Feed',"Feedpolicygroup","Feedpolicyuser",'Bitstream','Assetstore');
   public $_daos=array('User','Item','ItemRevision','Bitstream','Folder',"ItemKeyword");
-  public $_components=array('Httpupload');
+  public $_components=array('Httpupload','Upload');
   public $_forms=array('Upload');
 
   /**
@@ -161,6 +161,10 @@ class UploadController extends AppController
       {
       $item = new ItemDao;
       $item->setName($name);
+      $item->setDate(date('c'));
+      $item->setDescription('');
+      $item->setType(0);
+      $item->setThumbnail('');
       $this->Item->save($item);
       
       // Set the keyword for the item
@@ -182,17 +186,28 @@ class UploadController extends AppController
         }
       $this->Feedpolicyuser->createPolicy($this->userSession->Dao,$feed,MIDAS_POLICY_ADMIN);
       $this->Itempolicyuser->createPolicy($userDao,$item,MIDAS_POLICY_ADMIN);
+      
       $itemRevisionDao = new ItemRevisionDao;
       $itemRevisionDao->setChanges('Initial revision');
       $itemRevisionDao->setUser_id($userDao->getKey());
+      $itemRevisionDao->setDate(date('c'));
       $this->Item->addRevision($item,$itemRevisionDao);
 
-      $this->Item->addKeyword($item,$keyword);
+      $this->Item->addKeyword($item,$keyword);      
+      
+      // Add bitstreams to the revision
+      $bitstreamDao = new BitstreamDao;
+      $bitstreamDao->setName($name);
+      $bitstreamDao->setPath($path);
+      $bitstreamDao->fillPropertiesFromPath();
      
       $defaultAssetStoreId=Zend_Registry::get('configGlobal')->defaultassetstore->id;
+      $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
       $assetstoreDao=$this->Assetstore->load($defaultAssetStoreId);
       
-      $bitstreamDao=$this->Bitstream->initBitstream($assetstoreDao, $name, $path);
+      // Upload the bitstream if necessary (based on the assetstore type)
+      $this->Component->Upload->uploadBitstream($bitstreamDao,$assetstoreDao);
+
       $this->ItemRevision->addBitstream($itemRevisionDao,$bitstreamDao);
 
       $this->getLogger()->info(__METHOD__." Upload ok (".$privacy."):".$path);
