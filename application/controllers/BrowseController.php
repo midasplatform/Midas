@@ -27,7 +27,7 @@ class BrowseController extends AppController
     $communities=array_merge($communities, $this->Community->getPubicCommunities());
     
     $header.="<ul class='pathBrowser'>";
-    $header.=" <li class='pathData'><a href='{$this->view->webroot}/browse'>Data</a></li>";
+    $header.=" <li class='pathData'><a href='{$this->view->webroot}/browse'>{$this->t('Data')}</a></li>";
     $header.="</ul>";
     
     $this->view->Date=$this->Component->Date;
@@ -45,6 +45,10 @@ class BrowseController extends AppController
     $this->view->nCommunities=$this->Community->getCountAll();
     $this->view->nItems=$this->Item->getCountAll();
     $this->view->notifications=array();
+    
+    $this->view->json['community']['createCommunity']=$this->t('Create a community');
+    $this->view->json['community']['titleCreateLogin']=$this->t('Please log in');
+    $this->view->json['community']['contentCreateLogin']=$this->t('You need to be logged in to be able to create a community.');
     }
 
   /** get getfolders content (ajax function for the treetable) */

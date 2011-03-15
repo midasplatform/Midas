@@ -139,10 +139,11 @@ $(function() {
       loadAjaxDynamicBar('login','/user/login');
     }
   });
+ 
 
   if(json.global.logged)
     {
-    $('.uploadFile').cluetip({
+    $('div.HeaderAction li.uploadFile').cluetip({
      cluetipClass: 'jtip',
      dropShadow: false,
      hoverIntent: false,

@@ -44,6 +44,13 @@
        
     </tbody>
   </table>
+  
+    <?php 
+  if(empty($this->folders)&&empty($this->items))
+    {    
+    echo "<h4>{$this->t("This folder is empty")}.</h4>";
+    }
+    ?>
 </div>
 <div class="viewSideBar">
   <div class="sideElementFirst viewAction">
@@ -66,6 +73,7 @@
   </div>
 </div>
 
+<div class="defaultSideTrigger" type='folder' element='<?php echo $this->mainFolder->getFolderId() ?>'>
+</div>
 
-<div class="defaultSideTrigger" type='folder' element='<?php echo $this->mainFolder->getFolderId() ?>'/>
 

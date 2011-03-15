@@ -44,23 +44,29 @@ class FolderController extends AppController
         {
         $items[$key]->size=$this->Component->Utility->formatSize($i->getSizebytes());
         }
-      $header.=" <li class='pathFolder'><a href='{$this->view->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a></li>";
+      $header.=" <li class='pathFolder'><img alt='' src='{$this->view->webroot}/public/images/FileTree/folder_open.png' /><span><a href='{$this->view->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a></span></li>";
       $parent=$folder->getParent();
       while($parent!==false)
         {
         if(strpos($parent->getName(), 'community')!==false&&$this->Folder->getCommunity($parent)!==false)
           {
           $community=$this->Folder->getCommunity($parent);
-          $header=" <li class='pathCommunity'><a href='{$this->view->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></li>".$header;
+          $header=" <li class='pathCommunity'><img alt='' src='{$this->view->webroot}/public/images/icons/community.png' /><span><a href='{$this->view->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></span></li>".$header;
+          }
+        elseif(strpos($parent->getName(), 'user')!==false&&$this->Folder->getUser($parent)!==false)
+          {
+          $user=$this->Folder->getUser($parent);
+          $header=" <li class='pathUser'><img alt='' src='{$this->view->webroot}/public/images/icons/unknownUser-small.png' /><span><a href='{$this->view->webroot}/user/{$user->getKey()}'>{$user->getFullName()}</a></span></li>".$header;
+ 
           }
         else
           {
-          $header=" <li class='pathFolder'><a href='{$this->view->webroot}/folder/{$parent->getKey()}'>{$parent->getName()}</a></li>".$header;
+          $header=" <li class='pathFolder'><img alt='' src='{$this->view->webroot}/public/images/FileTree/directory.png' /><span><a href='{$this->view->webroot}/folder/{$parent->getKey()}'>{$parent->getName()}</a></span></li>".$header;
           }
         $parent=$parent->getParent();
         }
       $header="<ul class='pathBrowser'>
-               <li class='pathData'><a href='{$this->view->webroot}/browse'>Data</a></li>".$header;
+               <li class='pathData'><a href='{$this->view->webroot}/browse'>{$this->t('Data')}</a></li>".$header;
       $header.="</ul>";
       }
     $this->view->mainFolder=$folder;

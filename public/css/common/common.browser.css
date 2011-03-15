@@ -23,11 +23,22 @@ ul.pathBrowser li{
   background-repeat: no-repeat;
   background-position: right 0px;
   display: list-item;
-  padding: 3px 22px 7px 10px;
+  padding: 3px 22px 7px 3px;
   text-shadow: 0px 1px 0px #EEE;
   background-image: url("../../images/icons/path-divider.png");
 }
 
+
+ul.pathBrowser li img{
+  position:relative;
+  top:0px;
+}
+
+
+ul.pathBrowser li span{
+  position:relative;
+  top:-2px;
+}
 
 
 ul.pathBrowser li a{

@@ -4,6 +4,7 @@
     $("img.tableLoading").hide();
     $("table#browseTable").show();
     genericCallbackSelect($('div.defaultSideTrigger'));
+    
   });
   
   //dependance: common/browser.js

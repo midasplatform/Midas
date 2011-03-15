@@ -272,6 +272,20 @@ class FolderModel extends AppModelPdo
                                                            ->where('folder_id = ?', $folder->getFolderId())));
     return $dao;
     }
+    
+    /** Get user if  the folder is the main folder of one*/
+  function getUser($folder)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+    $dao= $this->initDao('User', $this->fetchRow($this->select()
+                                                           ->setIntegrityCheck(false)
+                                                           ->from('user')
+                                                           ->where('folder_id = ?', $folder->getFolderId())));
+    return $dao;
+    }
 
   /** Create a folder */
   function createFolder($name,$description,$parent)
