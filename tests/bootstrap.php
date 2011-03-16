@@ -21,7 +21,7 @@ $loader = Zend_Loader_Autoloader::getInstance();
 $loader->setFallbackAutoloader(true);
 $loader->suppressNotFoundWarnings(false);
 
-require_once(BASE_PATH . "/include.php");
+require_once(BASE_PATH . "/application/include.php");
 define('START_TIME',microtime(true));
 
 Zend_Session::$_unitTestEnabled = true;

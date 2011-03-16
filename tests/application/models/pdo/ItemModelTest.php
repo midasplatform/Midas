@@ -36,6 +36,7 @@ class ItemModelTest extends DatabaseTestCase
     $this->assertEquals($revision->getKey(),$revisionTmp->getKey());
     }
 
+    /*
   public function testAddKeyword()
     {
     $itemsFile=$this->loadData('Item','default');
@@ -47,5 +48,5 @@ class ItemModelTest extends DatabaseTestCase
     $this->Item->addKeyword($itemsFile[1],$keyword);
     $keywordTmp=$this->Item->getLastRevision($itemsFile[1]);
     $this->assertEquals($keyword->getKey(),$keywordTmp->getKey());
-    }
+    }*/
   }
