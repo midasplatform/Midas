@@ -1,0 +1,12 @@
+
+div.viewAction{
+  display:block!important;
+}
+
+div.viewInfo{
+  display:block!important;
+}
+
+table#browseTable{
+  display: table!important;
+}

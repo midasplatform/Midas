@@ -205,7 +205,7 @@
       
       if(arrayElement['thumbnail']!=undefined&&arrayElement['thumbnail']!='')
         {
-        html+='<h1>'+json.browse.preview+'</h1><a href="'+json.global.webroot+'/item/'+arrayElement['item_id']+'"><img class="infoLogo alt="Data Type" src="'+json.global.webroot+'/'+arrayElement['thumbnail']+'" /></a>'; 
+        html+='<h1>'+json.browse.preview+'</h1><a href="'+json.global.webroot+'/item/'+arrayElement['item_id']+'"><img class="infoLogo" alt="" src="'+json.global.webroot+'/'+arrayElement['thumbnail']+'" /></a>'; 
         }
 
       $('div.ajaxInfoElement').html(html); 

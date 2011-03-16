@@ -4,7 +4,7 @@ class ItemController extends AppController
   {
   public $_models=array('Item');
   public $_daos=array();
-  public $_components=array();
+  public $_components=array('Date');
   public $_forms=array();
 
   /** Init Controller */
@@ -24,6 +24,7 @@ class ItemController extends AppController
     {
     //TODO: add policy check
     $this->view->header=$this->t("Item");
+    $this->view->Date=$this->Component->Date;
     $itemId=$this->_getParam("itemId");
     if(!isset($itemId)||!is_numeric($itemId))
       {
@@ -60,6 +61,10 @@ class ItemController extends AppController
     $recentItems[]=$itemDao;
 
     setcookie("recentItems", serialize($recentItems), time()+60*60*24*30,'/'); //30 days
+    $itemRevision=$this->Item->getLastRevision($itemDao);
+    $itemDao->lastrevision=$itemRevision;
+    $itemDao->revisions=$itemDao->getRevisions();
+    $itemDao->creation=$this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
     $this->view->itemDao=$itemDao;
     }//end index
 

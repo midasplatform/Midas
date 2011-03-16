@@ -45,7 +45,7 @@ Private;Privée
 Public;Publique
 Semi-private;Semi-privée
 Description;Description
-Created:Créée;
+Created;Crée
 View;Voir
 Edit;Editer
 Delete;Effacer
@@ -101,3 +101,6 @@ element;élement
 No communty  available;Pas de communauté disponible
 Create your own community;Créez la votre
 This folder is empty;Ce répertoire est vide
+by;par
+Uploaded;Uploadé
+Changes;Changements
