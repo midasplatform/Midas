@@ -1,16 +1,28 @@
 <?php
   $this->headScript()->appendFile($this->webroot.'/public/js/community/community.index.js');
 ?>
+<link href="<?php echo $this->webroot?>/public/css/community/community.index.css" rel="stylesheet" type="text/css" />
+
 <div class="viewMain">
+  <div class="communityList">
   <?php
   if(!empty($this->userCommunities))
     {
     foreach($this->userCommunities as $community)
       {
-      echo "<a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a><br/>";
+      echo "
+      <div>
+      <a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a>
+      <br/>
+        <span>
+        {$community->getDescription()}
+        </span>
+      </div>
+      ";
       }
     }
   ?>
+  </div>
 </div>
 <div class="viewSideBar">
   <div class="sideElementFirst viewAction">
@@ -27,7 +39,9 @@
   </div>
   <div class="sideElementLast viewInfo">
     <h1>Info</h1>    
-    To do
+    <?php
+    echo count($this->userCommunities).' '.(count($this->userCommunities)>1?$this->t('Communities'):$this->t('Community'));
+    ?>
   </div>
 </div>
 
