@@ -44,7 +44,7 @@
       function uploadPreStart(file)
       {
         swfu.setPostParams({"sid" : $('.sessionId').val(),"privacy": $('.privacyUpload').val() });
-        uploadStart(file);
+        //uploadStart(file);
       }
       
       

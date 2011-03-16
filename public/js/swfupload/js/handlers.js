@@ -76,7 +76,7 @@ function fileDialogComplete(numFilesSelected, numFilesQueued) {
 		}
 		
 		/* I want auto start the upload and I can do that here */
-		this.startUpload();
+		//this.startUpload();
 	} catch (ex)  {
         this.debug(ex);
 	}
