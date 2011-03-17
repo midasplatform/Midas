@@ -38,7 +38,7 @@ class MIDAS_GlobalModelPdo extends Zend_Db_Table_Abstract
         {
         $nameComponent = $component . "Component";
 
-        Zend_Loader::loadClass($nameComponent, BASE_PATH . '/application/controllers/components');
+        Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
         @$this->Component->$component = new $nameComponent();
         }
       }
@@ -150,7 +150,7 @@ class MIDAS_GlobalModelPdo extends Zend_Db_Table_Abstract
       }
 
     $name = $name . 'Dao';
-    Zend_Loader::loadClass($name, BASE_PATH.'/application/models/dao');
+    Zend_Loader::loadClass($name, BASE_PATH.'/core/models/dao');
     if (class_exists($name))
       {
       $obj = new $name();
@@ -490,7 +490,7 @@ class MIDAS_GlobalModelPdo extends Zend_Db_Table_Abstract
     /** load Dao class*/
   public function loadDaoClass($name)
     {
-    Zend_Loader::loadClass($name, BASE_PATH . '/application/models/dao');
+    Zend_Loader::loadClass($name, BASE_PATH . '/core/models/dao');
     if (!class_exists($name))
       {
       throw new Zend_Exception('Unable to load dao class ' . $name);
@@ -512,7 +512,7 @@ class MIDAS_GlobalModelPdo extends Zend_Db_Table_Abstract
       {
       $name = ucfirst($this->_name) . 'Dao';
       }
-    Zend_Loader::loadClass($name, BASE_PATH . '/application/models/dao');
+    Zend_Loader::loadClass($name, BASE_PATH . '/core/models/dao');
     if (class_exists($name))
       {
       if(!isset($this->_key)&&$key!=null)

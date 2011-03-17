@@ -21,14 +21,14 @@ $loader = Zend_Loader_Autoloader::getInstance();
 $loader->setFallbackAutoloader(true);
 $loader->suppressNotFoundWarnings(false);
 
-require_once(BASE_PATH . "/application/include.php");
+require_once(BASE_PATH . "/core/include.php");
 define('START_TIME',microtime(true));
 
 Zend_Session::$_unitTestEnabled = true;
 Zend_Session::start();
 
-require_once 'application/ControllerTestCase.php';
-require_once 'application/DatabaseTestCase.php';
+require_once 'core/ControllerTestCase.php';
+require_once 'core/DatabaseTestCase.php';
 
 
 Zend_Registry::set('logger', null);
@@ -60,7 +60,7 @@ if ($configDatabase->database->type == 'pdo')
 elseif ($configDatabase->database->type == 'cassandra')
   {
   set_include_path('.'
-  . PATH_SEPARATOR . './application/models/cassandra/'
+  . PATH_SEPARATOR . './core/models/cassandra/'
   . PATH_SEPARATOR . get_include_path());
   }
 else

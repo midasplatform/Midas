@@ -1,5 +1,11 @@
+div.ui-tabs {
+position: relative!important;
+left: 11px!important;
+}
 
-
+.cluetip-jtip #cluetip-inner {
+width:94%!important;
+}
 
 /* -- Form Styles ------------------------------- */
 form {	

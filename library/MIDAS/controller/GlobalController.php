@@ -76,7 +76,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       {
       $this->showProfiler();
       }
-      $this->view->addHelperPath(BASE_PATH."/application/views/helpers", "Zend_View_Helper_");
+      $this->view->addHelperPath(BASE_PATH."/core/views/helpers", "Zend_View_Helper_");
     }
 
   /**
@@ -104,7 +104,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       }
     foreach ($this->_daos as $dao)
       {
-      Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/application/models/dao');
+      Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/core/models/dao');
       }
 
     Zend_Registry::set('components', array());
@@ -112,7 +112,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     foreach ($this->_components as $component)
       {
       $nameComponent = $component . "Component";
-      Zend_Loader::loadClass($nameComponent, BASE_PATH . '/application/controllers/components');
+      Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
       @$this->Component->$component = new $nameComponent();
       }
 
@@ -123,7 +123,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         {
         $nameForm = $forms . "Form";
 
-        Zend_Loader::loadClass($nameForm, BASE_PATH . '/application/controllers/forms');
+        Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
         @$this->Form->$forms = new $nameForm();
         }
       }

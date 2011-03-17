@@ -117,7 +117,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       {
       foreach ($this->_daos as $dao)
         {
-        Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/application/models/dao');
+        Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/core/models/dao');
         }
       }
 
@@ -127,7 +127,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       foreach ($this->_components as $component)
         {
         $nameComponent = $component . "Component";
-        Zend_Loader::loadClass($nameComponent, BASE_PATH . '/application/controllers/components');
+        Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
         @$this->Component->$component = new $nameComponent();
         }
       }
@@ -139,7 +139,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
         {
         $nameForm = $forms . "Form";
 
-        Zend_Loader::loadClass($nameForm, BASE_PATH . '/application/controllers/forms');
+        Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
         @$this->Form->$forms = new $nameForm();
         }
       }
