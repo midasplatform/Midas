@@ -2,13 +2,13 @@
 /*
  * SmartOptimizer Configuration File
  */
-if(file_exists('../../application/configs/application.local.ini'))
+if(file_exists('../../core/configs/application.local.ini'))
 	{
-	$config=parse_ini_file('../../application/configs/application.local.ini');
+	$config=parse_ini_file('../../core/configs/application.local.ini');
 	}
 else
 	{
-	$config=parse_ini_file('../../application/configs/application.ini');
+	$config=parse_ini_file('../../core/configs/application.ini');
 	}
 if(isset($config['smartoptimizer'])&&$config['smartoptimizer']==1)
 {

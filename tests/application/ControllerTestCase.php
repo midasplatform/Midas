@@ -16,7 +16,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
    if($this->request->getControllerName()=="error")
      {
      $error = $this->request->getParam('error_handler');
-     Zend_Loader::loadClass("NotifyErrorComponent", BASE_PATH . '/application/controllers/components');
+     Zend_Loader::loadClass("NotifyErrorComponent", BASE_PATH . '/core/controllers/components');
      $errorComponent = new NotifyErrorComponent();
      $mailer = new Zend_Mail();
      $session = new Zend_Session_Namespace('Auth_User');
@@ -93,7 +93,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       {
       foreach ($this->_daos as $dao)
         {
-        Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/application/models/dao');
+        Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/core/models/dao');
         }
       }
 
@@ -103,7 +103,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       foreach ($this->_components as $component)
         {
         $nameComponent = $component . "Component";
-        Zend_Loader::loadClass($nameComponent, BASE_PATH . '/application/controllers/components');
+        Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
         @$this->Component->$component = new $nameComponent();
         }
       }
@@ -115,7 +115,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         {
         $nameForm = $forms . "Form";
 
-        Zend_Loader::loadClass($nameForm, BASE_PATH . '/application/controllers/forms');
+        Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
         @$this->Form->$forms = new $nameForm();
         }
       }

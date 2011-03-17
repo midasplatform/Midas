@@ -4,14 +4,14 @@
         </testsuite>
     <filter>
         <whitelist>
-            <directory suffix=".php">../application/controllers</directory>
-            <directory suffix=".php">../application/models/pdo</directory>
-            <directory suffix=".php">../application/models/dao</directory>
+            <directory suffix=".php">../core/controllers</directory>
+            <directory suffix=".php">../core/models/pdo</directory>
+            <directory suffix=".php">../core/models/dao</directory>
             <directory suffix=".php">../library/MIDAS</directory>
             <exclude>
-                <file>../application/Bootstrap.php</file>
-                <file>../application/controllers/ErrorController.php</file>
-                <directory suffix=".phtml">../application/</directory>
+                <file>../core/Bootstrap.php</file>
+                <file>../core/controllers/ErrorController.php</file>
+                <directory suffix=".phtml">../core/</directory>
             </exclude>
         </whitelist>
     </filter>

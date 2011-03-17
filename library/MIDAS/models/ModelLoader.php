@@ -34,7 +34,7 @@ class MIDAS_ModelLoader
     $models = Zend_Registry::get('models');
     if (!isset($models[$model]))
       {
-      Zend_Loader::loadClass($model . 'Model', BASE_PATH.'/application/models/' . $databaseType);
+      Zend_Loader::loadClass($model . 'Model', BASE_PATH.'/core/models/' . $databaseType);
       $name = $model . 'Model';
       if (class_exists($name))
         {

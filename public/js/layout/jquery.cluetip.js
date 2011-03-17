@@ -311,7 +311,7 @@
       }
       else if(opts.positionBy == 'uploadElement')
         {
-        tipY = posY+43;
+        tipY = posY+48;
         direction = 'bottom';
         }
       else if ( (posX < mouseX && Math.max(posX, 0) + tipWidth > mouseX) || opts.positionBy == 'bottomTop') {
@@ -493,7 +493,7 @@
     showTitle:        true,     // show title bar of the clueTip, even if title attribute not set
     cluetipClass:     'default',// class added to outermost clueTip div in the form of 'cluetip-' + clueTipClass.
     hoverClass:       '',       // class applied to the invoking element onmouseover and removed onmouseout
-    waitImage:        true,     // whether to show a "loading" img, which is set in jquery.cluetip.css
+    waitImage:        false,     // whether to show a "loading" img, which is set in jquery.cluetip.css
     cursor:           'help',
     arrows:           false,    // if true, displays arrow on appropriate side of clueTip
     dropShadow:       true,     // set to false if you don't want the drop-shadow effect on the clueTip

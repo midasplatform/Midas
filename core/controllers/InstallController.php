@@ -15,7 +15,7 @@ class InstallController extends AppController
    */
   function init()
     {
-    if(file_exists(BASE_PATH."/application/configs/database.local.ini")&&file_exists(BASE_PATH."/application/configs/application.local.ini"))
+    if(file_exists(BASE_PATH."/core/configs/database.local.ini")&&file_exists(BASE_PATH."/core/configs/application.local.ini"))
       {
       throw new Zend_Exception("Midas is already installed.");
       }
@@ -26,7 +26,7 @@ class InstallController extends AppController
    */
   function indexAction()
     {
-    if(file_exists(BASE_PATH."/application/configs/database.local.ini"))
+    if(file_exists(BASE_PATH."/core/configs/database.local.ini"))
       {
       $this->_redirect('/install/step3');
       }
@@ -38,7 +38,7 @@ class InstallController extends AppController
       "simplexml"  => array(false, ""), 
     );
     $this->view->phpextension_missing=$this->Component->Utility->CheckPhpExtensions($phpextensions);
-    $this->view->writable=is_writable(BASE_PATH.'/application/configs');  
+    $this->view->writable=is_writable(BASE_PATH.'/core/configs');  
     $this->view->convertfound=$this->Component->Utility->IsImageMagickWorking();   
     $this->view->basePath=BASE_PATH;
     setcookie("recentItems", '', time()+60*60*24*30,'/'); //30 days
@@ -54,7 +54,7 @@ class InstallController extends AppController
    */
   function step2Action()
     {
-    if(file_exists(BASE_PATH."/application/configs/database.local.ini"))
+    if(file_exists(BASE_PATH."/core/configs/database.local.ini"))
       {
       $this->_redirect('/install/step3');
       }
@@ -92,7 +92,7 @@ class InstallController extends AppController
       $form=$this->Form->Install->createDBForm($type);
       if($form->isValid($this->getRequest()->getPost()))
         {
-        $databaseConfig=parse_ini_file (BASE_PATH.'/application/configs/database.ini',true);
+        $databaseConfig=parse_ini_file (BASE_PATH.'/core/configs/database.ini',true);
         switch($type)
           {
           case 'mysql':
@@ -152,7 +152,7 @@ class InstallController extends AppController
           default:
             break;
           }
-        $this->Component->Utility->createInitFile(BASE_PATH.'/application/configs/database.local.ini',$databaseConfig);
+        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/database.local.ini',$databaseConfig);
         $this->User=new UserModel(); //reset Database adapter
         $this->userSession->Dao=$this->User->createUser($form->getValue('email'),$form->getValue('userpassword1'),
                                 $form->getValue('firstname'),$form->getValue('lastname'),1);
@@ -176,7 +176,7 @@ class InstallController extends AppController
    */
   function step3Action()
     {
-    if(!file_exists(BASE_PATH."/application/configs/database.local.ini"))
+    if(!file_exists(BASE_PATH."/core/configs/database.local.ini"))
       {
       $this->_redirect('/install/index');
       }
@@ -186,7 +186,7 @@ class InstallController extends AppController
       {
       throw new Zend_Exception("You should be an admin.");
       }
-    $applicationConfig=parse_ini_file (BASE_PATH.'/application/configs/application.ini',true);
+    $applicationConfig=parse_ini_file (BASE_PATH.'/core/configs/application.ini',true);
     $form=$this->Form->Install->createConfigForm();
     $formArray=$this->getFormAsArray($form);
     $formArray['name']->setValue($applicationConfig['global']['application.name']);
@@ -212,7 +212,7 @@ class InstallController extends AppController
       $applicationConfig['global']['smartoptimizer']=$form->getValue('smartoptimizer');
       $applicationConfig['global']['default.timezone']=$form->getValue('timezone');
       $applicationConfig['global']['processing']=$form->getValue('process');
-      $this->Component->Utility->createInitFile(BASE_PATH.'/application/configs/application.local.ini',$applicationConfig);
+      $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini',$applicationConfig);
       $this->_redirect("/");
       }
     } // end method step2Action   

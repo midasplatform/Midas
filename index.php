@@ -15,16 +15,16 @@ error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', 'on');
 set_include_path('.'
  . PATH_SEPARATOR . './library'
- . PATH_SEPARATOR . './application/dao/'
+ . PATH_SEPARATOR . './core/dao/'
  . PATH_SEPARATOR . get_include_path());
 
 define('BASE_PATH', realpath(dirname(__FILE__)));
 
-if(!is_writable(BASE_PATH."/application/configs")||!is_writable(BASE_PATH."/log")||!is_writable(BASE_PATH."/data")||!is_writable(BASE_PATH."/tmp"))
+if(!is_writable(BASE_PATH."/core/configs")||!is_writable(BASE_PATH."/log")||!is_writable(BASE_PATH."/data")||!is_writable(BASE_PATH."/tmp"))
   {
   echo "To use Midas, the following repertories have to be writable by apache:
         <ul>
-          <li>".BASE_PATH."/application/configs</li>
+          <li>".BASE_PATH."/core/configs</li>
           <li>".BASE_PATH."/log</li>
           <li>".BASE_PATH."/data</li>
           <li>".BASE_PATH."/tmp</li>
@@ -40,7 +40,7 @@ require_once 'Zend/Application.php';
 $loader = Zend_Loader_Autoloader::getInstance();
 $loader->registerNamespace('App_');
 
-require_once(BASE_PATH . "/application/include.php");
+require_once(BASE_PATH . "/core/include.php");
 
 // Create application, bootstrap, and run
 $application = new Zend_Application('global', CORE_CONFIG);

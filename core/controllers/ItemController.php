@@ -22,7 +22,6 @@ class ItemController extends AppController
   /** view a community*/
   function viewAction()
     {
-    //TODO: add policy check
     $this->view->header=$this->t("Item");
     $this->view->Date=$this->Component->Date;
     $itemId=$this->_getParam("itemId");
@@ -33,7 +32,11 @@ class ItemController extends AppController
     $itemDao=$this->Item->load($itemId);
     if($itemDao===false)
       {
-      throw new Zend_Exception("This iutem doesn't exist.");
+      throw new Zend_Exception("This item doesn't exist.");
+      }
+    if(!$this->Item->policyCheck($itemDao,$this->userSession->Dao))
+      {
+      throw new Zend_Exception("Problem policies.");
       }
     $request = $this->getRequest();
     $cookieData = $request->getCookie('recentItems');
