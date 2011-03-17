@@ -23,7 +23,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
    */
   protected function _initConfig()
     {
-    // Init lang
     Zend_Loader::loadClass( "UserDao", BASE_PATH . '/core/models/dao');
     Zend_Loader::loadClass( "ItemDao", BASE_PATH . '/core/models/dao');
     if (isset($_POST['sid']))    
@@ -154,7 +153,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     
     // Dans application/Bootstrap
-    protected function _initRouter()
+  protected function _initRouter()
     {
     $router = Zend_Controller_Front::getInstance()->getRouter();
 
