@@ -1,5 +1,1 @@
-*
-!.gitignore
-!.htaccess
-!application.local.ini
-!database.local.ini
+*.local.ini
