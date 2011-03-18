@@ -83,9 +83,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       }
     elseif ($configDatabase->database->type == 'cassandra')
       {
-      set_include_path('.'
-      . PATH_SEPARATOR . './core/models/cassandra/'
-      . PATH_SEPARATOR . get_include_path());
+      Zend_Loader::loadClass( "connection", BASE_PATH . '/library/phpcassa');
+      Zend_Loader::loadClass( "columnfamily", BASE_PATH . '/library/phpcassa');
+          
+      $db = new Connection('midas', array(array('host' => $configDatabase->database->params->host,
+                                                'port' => $configDatabase->database->params->port)));
+      Zend_Registry::set('dbAdapter', $db);
       }
     else
       {

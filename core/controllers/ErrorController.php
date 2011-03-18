@@ -19,7 +19,15 @@ class ErrorController extends AppController
       $mailer = new Zend_Mail();  
       $session = new Zend_Session_Namespace('Auth_User');  
       $db = Zend_Registry::get('dbAdapter');
-      $profiler = $db->getProfiler();
+      
+      if(method_exists($db,"getProfiler"))
+        {
+        $profiler = $db->getProfiler();
+        }
+      else
+        {
+        $profiler = new Zend_Db_Profiler();  
+        }  
       $environment = Zend_Registry::get('configGlobal')->environment;
       $this->_environment=$environment;
       $this->Component->NotifyError->initNotifier(
