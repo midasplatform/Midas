@@ -29,6 +29,11 @@ class InstallForm extends AppForm
           ->addValidator('NotEmpty', true)
           ->setValue('midas');
     
+    $port = new Zend_Form_Element_Text('port');
+    $port
+          ->setRequired(true)
+          ->addValidator('NotEmpty', true);
+    
 
     $email = new Zend_Form_Element_Text('email');
     $email->setRequired(true)
@@ -60,7 +65,7 @@ class InstallForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel('Set up database');
      
-    $form->addElements(array($type,$host,$username,$password,$dbname,$submit,$lastname,$firstname,$userpassword2,$userpassword1,$email));
+    $form->addElements(array($port,$type,$host,$username,$password,$dbname,$submit,$lastname,$firstname,$userpassword2,$userpassword1,$email));
     return $form;
     } //end createDBForm
     

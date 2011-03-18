@@ -97,12 +97,13 @@ class InstallController extends AppController
           {
           case 'mysql':
             $this->run_mysql_from_file(BASE_PATH."/sql/{$type}/{$this->view->version}.sql",
-                                       $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'));
+                                       $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'),$form->getValue('port'));
               $params= array(
                 'host' => $form->getValue('host'),
                 'username' => $form->getValue('username'),
                 'password' => $form->getValue('password'),
                 'dbname' => $form->getValue('dbname'),
+                'port' => $form->getValue('port'),
               );
               
               $databaseConfig['production']['database.type']='pdo';
@@ -117,6 +118,7 @@ class InstallController extends AppController
               $databaseConfig['development']['database.params.password']=$form->getValue('password');
               $databaseConfig['production']['database.params.dbname']=$form->getValue('dbname');
               $databaseConfig['development']['database.params.dbname']=$form->getValue('dbname');
+              $databaseConfig['development']['database.params.port']=$form->getValue('port');
 
               $db = Zend_Db::factory("PDO_MYSQL",$params);
               Zend_Db_Table::setDefaultAdapter($db);
@@ -124,12 +126,13 @@ class InstallController extends AppController
             break;
          case 'pgsql':
             $this->run_pgsql_from_file(BASE_PATH."/sql/{$type}/{$this->view->version}.sql",
-                                       $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'));
+                                       $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'),$form->getValue('port'));
               $params= array(
                 'host' => $form->getValue('host'),
                 'username' => $form->getValue('username'),
                 'password' => $form->getValue('password'),
                 'dbname' => $form->getValue('dbname'),
+                'port' => $form->getValue('port'),
               );
               
               $databaseConfig['production']['database.type']='pdo';
@@ -144,6 +147,7 @@ class InstallController extends AppController
               $databaseConfig['development']['database.params.password']=$form->getValue('password');
               $databaseConfig['production']['database.params.dbname']=$form->getValue('dbname');
               $databaseConfig['development']['database.params.dbname']=$form->getValue('dbname');
+              $databaseConfig['development']['database.params.port']=$form->getValue('port');              
 
               $db = Zend_Db::factory("PDO_PGSQL",$params);
               Zend_Db_Table::setDefaultAdapter($db);
@@ -168,8 +172,6 @@ class InstallController extends AppController
         }
       }
     } // end method step2Action   
-    
-    
        
     /**
    * @method step3Action()
@@ -182,9 +184,10 @@ class InstallController extends AppController
       }
     $this->view->header="Step3: Midas Configuration";
     $userDao=$this->userSession->Dao;
-    if(!$userDao->isAdmin())
+    if(!isset($userDao)||!$userDao->isAdmin())
       {
-      throw new Zend_Exception("You should be an admin.");
+      unlink(BASE_PATH."/core/configs/database.local.ini");
+      $this->_redirect('/install/index');
       }
     $applicationConfig=parse_ini_file (BASE_PATH.'/core/configs/application.ini',true);
     $form=$this->Form->Install->createConfigForm();
@@ -201,10 +204,14 @@ class InstallController extends AppController
                     $assetstrores[0]->getKey() => $assetstrores[0]->getPath()                  
                         ));    
     
-    $this->view->form=$formArray;
-    
+    $this->view->form=$formArray;  
+    $allModules=$this->Component->Utility->getAllModules();
+    $this->view->modules=$allModules;
+    $this->view->defaultModules = new Zend_Config_Ini(APPLICATION_CONFIG, 'module');
+    $this->view->databaseType =Zend_Registry::get('configDatabase')->database->adapter;
     if($this->_request->isPost()&&$form->isValid($this->getRequest()->getPost()))
       {
+
       $applicationConfig['global']['application.name']=$form->getValue('name');
       $applicationConfig['global']['application.lang']=$form->getValue('lang');
       $applicationConfig['global']['environment']=$form->getValue('environment');
@@ -212,10 +219,44 @@ class InstallController extends AppController
       $applicationConfig['global']['smartoptimizer']=$form->getValue('smartoptimizer');
       $applicationConfig['global']['default.timezone']=$form->getValue('timezone');
       $applicationConfig['global']['processing']=$form->getValue('process');
+      $applicationConfig['module']=array();
+      $modules=$this->getRequest()->getPost();
+      if(isset($modules['module']))
+        {
+        $modules=$modules['module'];
+        }
+      else
+        {
+        $modules=array();
+        }
+      foreach($modules as $key=>$module)
+        {
+        $applicationConfig['module'][$key]='true';
+        switch (Zend_Registry::get('configDatabase')->database->adapter)
+          {
+          case 'PDO_MYSQL':
+            $this->run_mysql_from_file(BASE_PATH.'/modules/'.$key.'/sql/mysql/'.$allModules[$key]->version.'.sql',
+                                       Zend_Registry::get('configDatabase')->database->params->host,
+                                       Zend_Registry::get('configDatabase')->database->params->username,
+                                       Zend_Registry::get('configDatabase')->database->params->password,
+                                       Zend_Registry::get('configDatabase')->database->params->dbname,
+                                       Zend_Registry::get('configDatabase')->database->params->port);
+            break;
+          case 'PDO_PGSQL':
+             $this->run_pgsql_from_file(BASE_PATH.'/modules/'.$key.'/sql/pgsql/'.$allModules[$key]->version.'.sql',
+                                       Zend_Registry::get('configDatabase')->database->params->host,
+                                       Zend_Registry::get('configDatabase')->database->params->username,
+                                       Zend_Registry::get('configDatabase')->database->params->password,
+                                       Zend_Registry::get('configDatabase')->database->params->dbname,
+                                       Zend_Registry::get('configDatabase')->database->params->port);
+            break;
+          }
+        }
       $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini',$applicationConfig);
       $this->_redirect("/");
       }
     } // end method step2Action   
+    
     
   /** ajax function which tests connectivity to a db */
   public function testconnexionAction()
@@ -231,10 +272,11 @@ class InstallController extends AppController
     $password=$this->_getParam('password');
     $host=$this->_getParam('host');
     $dbname=$this->_getParam('dbname');
+    $port=$this->_getParam('port');
     switch ($type)
       {
       case 'mysql':
-        $link = @mysql_connect("$host", "$username", "$password");
+        $link = @mysql_connect("$host:$port", "$username", "$password");
         if (!$link) 
           {
           $return= array(false, "Could not connect to the server '" . $host . "': ".mysql_error());
@@ -256,7 +298,7 @@ class InstallController extends AppController
         $return =array(true,"The database is reachable");
         break;
       case 'pgsql':
-        $link = @pg_connect("host=$host port=5432 dbname=$dbname user=$username password=$password");
+        $link = @pg_connect("host=$host port=$port dbname=$dbname user=$username password=$password");
         if (!$link) 
           {
           $return= array(false, "Could not connect to the server '" . $host . "': ".pg_last_error($link));
@@ -274,9 +316,9 @@ class InstallController extends AppController
     
     
           /** Function to run the sql script */
-  function run_mysql_from_file($sqlfile,$host,$username,$password,$dbname)
+  function run_mysql_from_file($sqlfile,$host,$username,$password,$dbname,$port)
     {
-    $db = @mysql_connect("$host", "$username", "$password");
+    $db = @mysql_connect("$host:$port", "$username", "$password");
     $select=@mysql_select_db($dbname,$db);
     if(!$db||!$select)
       {
@@ -304,9 +346,9 @@ class InstallController extends AppController
     return true;
     }
       /** Function to run the sql script */
-  function run_pgsql_from_file($sqlfile,$host,$username,$password,$dbname)
+  function run_pgsql_from_file($sqlfile,$host,$username,$password,$dbname,$port)
     {
-    $pgdb = @pg_connect("host=$host port=5432 dbname=$dbname user=$username password=$password");
+    $pgdb = @pg_connect("host=$host port=$port dbname=$dbname user=$username password=$password");
     $file_content = file($sqlfile);
     $query = "";
     $linnum = 0;

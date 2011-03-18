@@ -1,5 +1,5 @@
 
-CREATE TABLE IF NOT EXISTS `module_task` (
+CREATE TABLE IF NOT EXISTS `task_task` (
   `task_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `type` tinyint(4) NOT NULL,
   `resource_type` tinyint(4) NOT NULL,

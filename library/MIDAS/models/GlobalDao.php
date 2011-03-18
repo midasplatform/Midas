@@ -36,7 +36,6 @@ class MIDAS_GlobalDao
       foreach ($this->_components as $component)
         {
         $nameComponent = $component . "Component";
-
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
         @$this->Component->$component = new $nameComponent();
         }
@@ -157,8 +156,16 @@ class MIDAS_GlobalDao
     $this->ModelLoader = new MIDAS_ModelLoader();
     if ($name != null)
       {
+      if(isset($this->_module))
+        {
+        return $this->ModelLoader->loadModel($name,$this->_module);
+        }
       return $this->ModelLoader->loadModel($name);
       }
+    if(isset($this->_module))
+        {
+        return $this->ModelLoader->loadModel($this->_model,$this->_module);
+        }
     return $this->ModelLoader->loadModel($this->_model);
     }
 

@@ -48,6 +48,7 @@ if ($configDatabase->database->type == 'pdo')
     'username' => $configDatabase->database->params->username,
     'password' => $configDatabase->database->params->password,
     'dbname' => $configDatabase->database->params->dbname,
+    'port' =>$configDatabase->database->params->port,
   )
   );
   if ($configDatabase->database->profiler == '1')

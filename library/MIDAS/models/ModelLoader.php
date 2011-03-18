@@ -9,17 +9,17 @@ class MIDAS_ModelLoader
    * \fn public  loadModels()
    * \brief Loads models (array or string)
    */
-  public function loadModels($models)
+  public function loadModels($models,$module='core')
     {
     if (is_string($models))
       {
-      $this->loadModel($models);
+      $this->loadModel($models,$module);
       }
     elseif (is_array($models))
       {
       foreach ($models as $model)
         {
-        $this->loadModel($model);
+        $this->loadModel($model,$module);
         }
       }
     }
@@ -28,14 +28,22 @@ class MIDAS_ModelLoader
    * \fn public  loadModel()
    * \brief Loads a model
    */
-  public function loadModel($model)
+  public function loadModel($model,$module='core')
     {
     $databaseType = Zend_Registry::get('configDatabase')->database->type;
     $models = Zend_Registry::get('models');
     if (!isset($models[$model]))
       {
-      Zend_Loader::loadClass($model . 'Model', BASE_PATH.'/core/models/' . $databaseType);
-      $name = $model . 'Model';
+      if($module=="core")
+        {    
+        include_once BASE_PATH."/core/models/" . $databaseType."/".$model.'Model.php';
+        $name = $model . 'Model';
+        }
+      else
+        {
+        include_once BASE_PATH."/modules/{$module}/models/" . $databaseType."/".$model.'Model.php';
+        $name = ucfirst($module).'_'.$model . 'Model';
+        }
       if (class_exists($name))
         {
         $models[$model] = new $name;

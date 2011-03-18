@@ -58,12 +58,19 @@
     obj.find('.testOk').hide();
     obj.find('.testNok').hide();
     obj.find('.testError').html('');
+    if(obj.find('[name=host]').val()==''||obj.find('[name=port]').val()=="")
+      {
+      obj.find('.testNok').show();
+      obj.find('.testError').html("Please, set the port and the host.");  
+      obj.find('.testLoading').hide();
+      return;
+      }
     
           $.ajax({
           type: "POST",
           url: json.global.webroot+'/install/testconnexion',
           data: {type: obj.find('[name=type]').val(), host: obj.find('[name=host]').val(), username: obj.find('[name=username]').val(),
-            password: obj.find('[name=password]').val(),dbname: obj.find('[name=dbname]').val()},
+            password: obj.find('[name=password]').val(),dbname: obj.find('[name=dbname]').val(),port: obj.find('[name=port]').val()},
           cache:false,
           success: function(jsonContent){
             var testConnexion=jQuery.parseJSON(jsonContent);
