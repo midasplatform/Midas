@@ -143,13 +143,18 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       return;
       }
     $db = Zend_Registry::get('dbAdapter');
-    $profiler = $db->getProfiler();
-    $totalTime = $profiler->getTotalElapsedSecs();
-    $queryCount = $profiler->getTotalNumQueries();
-    if ($queryCount == 0)
-      {
-      return;
+    
+    if(method_exists($db,"getProfiler"))
+      { 
+      $profiler = $db->getProfiler();
+      $totalTime = $profiler->getTotalElapsedSecs();
+      $queryCount = $profiler->getTotalNumQueries();
+      if ($queryCount == 0)
+        {
+        return;
+        }
       }
+    
     $longestTime = 0;
     $longestQuery = null;
     if(isset($profiler)&&!empty($profiler))

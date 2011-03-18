@@ -92,7 +92,7 @@ class MIDAS_GlobalDao
     {
     if($this->_key==false)
       {
-      throw new Zend_Exception("Model PDO " . $this->getModel()->_name . ": key is not defined here.");
+      throw new Zend_Exception("Model  " . $this->getModel()->_name . ": key is not defined here.");
       }
     $key = $this->getModel()->_key;
     return $this->get($key);
@@ -105,10 +105,10 @@ class MIDAS_GlobalDao
    * @return value
    */
   public function get($var)
-    {      
+    {         
     if (!isset($this->getModel()->_mainData[$var]))
       {
-      throw new Zend_Exception("Model PDO " . $this->getModel()->_name . ": var $var is not defined here.");
+      throw new Zend_Exception("Model " . $this->getModel()->_name . ": var $var is not defined here.");
       }
     if (method_exists($this, 'get' . ucfirst($var)))
       {
@@ -138,7 +138,7 @@ class MIDAS_GlobalDao
     {
     if (!isset($this->getModel()->_mainData[$var]))
       {
-      throw new Zend_Exception("Model PDO " . $this->getModel()->_name . ": var $var is not defined here.");
+      throw new Zend_Exception("Model " . $this->getModel()->_name . ": var $var is not defined here.");
       }
     if (method_exists($this, 'set' . ucfirst($var)))
       {
