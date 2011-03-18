@@ -16,7 +16,6 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       {
       $this->_controllerTimer = microtime(true);
       }
-
     $this->loadElements();
     parent::__construct($request, $response, $invokeArgs);
     }

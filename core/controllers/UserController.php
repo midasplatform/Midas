@@ -164,7 +164,18 @@ class UserController extends AppController
       }
     } //end valid entry
 
-
+ /** settings page action*/
+  public function settingsAction()
+    {
+    if(!$this->logged)
+      {
+      $this->_helper->viewRenderer->setNoRender();
+      return false;
+      }   
+    $this->_helper->layout->disableLayout();
+    
+    }
+  
   /** user page action*/
   public function userpageAction()
     {

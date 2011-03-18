@@ -19,12 +19,12 @@ body {
 }
 
 dl {
-margin:0;
-padding: 0;
+  margin:0;
+  padding: 0;
 }
 
 dt{
-
+  
 }
 
 img{
@@ -42,12 +42,12 @@ a:visited {
 
 a:active, li:active
 {
-outline: none;
+  outline: none;
 }
 
 a:focus, li:focus
 {
--moz-outline-style: none;
+  -moz-outline-style: none;
 }
 
 /*-------------------------------------------------
@@ -81,7 +81,7 @@ div.TopDynamicBar .closeButton span{
 }
 
 div.TopDynamicBar .TopDynamicLoading{
-
+  
 }
 div.Topbar {
   font-family: 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif;
@@ -204,24 +204,24 @@ div.Header div.HeaderSearch input#live_search{
 }
 
 #searchloading{
- position:absolute;
- background:  url("../../images/icons/loading-small.gif") bottom center no-repeat;
- color:#FFFFFF;
- text-decoration:none;
- width: 16px;
- height: 16px;
- top: 12px;
- right: 7px;
+  position:absolute;
+  background:  url("../../images/icons/loading-small.gif") bottom center no-repeat;
+  color:#FFFFFF;
+  text-decoration:none;
+  width: 16px;
+  height: 16px;
+  top: 12px;
+  right: 7px;
 }
 
 .search-category{
-	clear: both;
+  clear: both;
   color: #333BA0;
   font-weight: bold;
   background-color: #F6F9FE;
   line-height: 1.5;
 }
-	
+
 .search-items{
   background-color: #FFFFFF;
 }
@@ -305,7 +305,7 @@ div.SubWrapper{
   margin: 0px;
   padding: 0px;
   width: 100%;
-
+  
 }
 
 /*-------------------------------------------------
@@ -358,7 +358,7 @@ div.SideBar {
 div.SideBar ul{
   list-style:none;
   margin:0;
-	padding:0;
+  padding:0;
 }
 
 div.SideBar ul li{
@@ -432,94 +432,64 @@ div.Footer{
 /*-------------------------------------------------
 Menu
 -------------------------------------------------*/
-div.HeaderLinks {
-  padding: 15px 30px;
+
+
+
+div.TopbarRight  li ul{
+  display:none;
+  height:auto;
+  padding:4px 0px 0px 0px;
+  margin:0px;
+  border:0px;
+  position:absolute;
+  width:120px;
+  z-index:200;
+  
+  /*top:1em;
+		/*left:0;*/
+}
+div.TopbarRight li:hover ul{
+  display:block;
 }
 
-div.HeaderLinks .menu{
-	font-size:10px;
-	font-weight:bold;
-	}
-div.HeaderLinks .menu ul{
-	list-style:none;
-	margin:0;
-	padding:0;
-	}
-	div.HeaderLinks .menu li{
-		float:left;
-		padding:0px;
-		}
-	div.HeaderLinks .menu li a{
-		color:white;
-		display:block;
-		font-weight:normal;
-		line-height:35px;
-		margin:0px;
-		padding:0px 10px;
-		text-align:center;
-		text-decoration:none;
-		}
-		div.HeaderLinks .menu li a:hover, div.HeaderLinks .menu ul li:hover a{
-			background:  url("../../images/menu/hover.gif") bottom center no-repeat;
-			color:#FFFFFF;
-			text-decoration:none;
-			}
-	div.HeaderLinks .menu li ul{
-		display:none;
-		height:auto;
-		padding:0px;
-		margin:0px;
-		border:0px;
-		position:absolute;
-		width:150px;
-		z-index:200;
-    
-		/*top:1em;
-		/*left:0;*/
-		}
-	div.HeaderLinks .menu li:hover ul{
-		display:block;
+div.TopbarRight img.arrowUser{
+  position:relative;
+  top:1px;
+}
+div.TopbarRight  li li {
+  display:block;
+  float:none;
+  margin:0px;
+  padding:0px;
+  position:relative;
+  left:-3px;
+}
+div.TopbarRight  li:hover li a{
+  background:#4B4B4B;
+  color:white;
+  
+}
 
-		}
-	div.HeaderLinks .menu li li {
-		display:block;
-		float:none;
-		margin:0px;
-		padding:0px;
-		width:150px;
-    position:relative;
-    left:-100px;
-		}
-	div.HeaderLinks .menu li:hover li a{
-		background:#333333;
-    background:white;
-    color:black;
-    border-bottom:  grey 1px solid;
-    border-left:  grey 1px solid;
-    border-right:  grey 1px solid;
-		}
-	div.HeaderLinks .menu li ul a{
-		display:block;
-		height:20px;
-		font-size:10px;
-		font-style:normal;
-		margin:0px;
-		padding:0px 0px 0px 0px;
-		text-align:left;
-    line-height:17px;
-    -webkit-box-shadow: #666 0 0 5px;
-    box-shadow: #666 0 0 5px;
-    -moz-box-shadow: 0px 0px 5px #666; 
-    
 
-		}
-		div.HeaderLinks .menu li ul a:hover, div.HeaderLinks .menu li ul li:hover a{
-			background:grey ;
-			border:0px;
-			color:#ffffff;
-			text-decoration:none;
-			}
-	div.HeaderLinks .menu p{
-		clear:left;
-		}
-		
+div.TopbarRight  li ul a{
+  color:#DDD;
+  display:block;
+  height:20px;
+  font-size:10px;
+  font-style:normal;
+  margin:0px;
+  padding:0px 0px 0px 5px;
+  text-align:left;
+  line-height:17px;
+  -webkit-box-shadow: #666 0 0 5px;
+  box-shadow: #666 0 0 5px;
+  -moz-box-shadow: 0px 0px 5px #666; 
+  
+}
+div.TopbarRight  li ul a:hover, div.TopbarRight  li ul li:hover a{
+  background:black ;
+  text-decoration:none;
+}
+div.TopbarRight  p{
+  clear:left;
+}

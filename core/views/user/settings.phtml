@@ -1,0 +1,25 @@
+<?php
+echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/user/user.settings.js"></script>';
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/user/user.settings.css" />
+
+<div id="tabsSettings">
+	<ul>
+		<li><a href="#tabs-1"><?php echo $this->t('My Account') ?></a></li>
+		<li><a href="#tabs-2"><?php echo $this->t('Password') ?></a></li>
+		<li><a href="#tabs-3"><?php echo $this->t('Settings') ?></a></li>
+		<li><a href="#tabs-4"><?php echo $this->t('Modules') ?></a></li>
+	</ul>
+	<div id="tabs-1">
+    Account
+  </div>
+	<div id="tabs-2">
+    Password
+  </div>
+	<div id="tabs-3">
+    Settings
+  </div>
+	<div id="tabs-4">
+    Module
+  </div>
+</div>

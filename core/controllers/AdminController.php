@@ -3,12 +3,17 @@
 /**
  *  AJAX request for the admin Controller
  */
-class AdminajaxController extends AppController
+class AdminController extends AppController
 {
   public $_models=array();
   public $_daos=array();
   public $_components=array();
     
+  /** index*/
+  function indexAction()
+    {
+    
+    }
   /**
    * \fn serversidefilechooser()
    * \brief called by the server-side file chooser

@@ -19,6 +19,37 @@ $(function() {
     showOrHideDynamicBar('login');
     loadAjaxDynamicBar('login','/user/login');
     });
+    
+  $("li.myAccountLink").click(function()
+    {
+    if($("div.TopDynamicBar").is(':hidden'))
+      {
+        $("div.TopDynamicBar").show('blind', function() {
+ 
+        });   
+      }
+    loadAjaxDynamicBar('settings','/user/settings');
+    });
+    
+   $("li.settingsLink").click(function()
+    {
+    if($("div.TopDynamicBar").is(':hidden'))
+      {
+        $("div.TopDynamicBar").show('blind', function() {
+        });   
+      }
+    loadAjaxDynamicBar('settings','/user/settings');
+    });
+    
+   $("li.modulesLink").click(function()
+    {
+    if($("div.TopDynamicBar").is(':hidden'))
+      {
+        $("div.TopDynamicBar").show('blind', function() {
+        });   
+      }
+    loadAjaxDynamicBar('settings','/user/settings');
+    });
   
   $("a.registerLink").click(function()
     {

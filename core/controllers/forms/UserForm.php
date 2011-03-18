@@ -83,5 +83,37 @@ class UserForm extends AppForm
 
     return $form;
     }
+    
+    
+      /** acount  form */
+  public function createAccountForm()
+    {
+    $form = new Zend_Form;
+    $form->setAction($this->webroot.'/user/settings')
+          ->setMethod('post');
+              
+    $firstname = new Zend_Form_Element_Text('firstname');
+    $firstname
+          ->setRequired(true)
+          ->addValidator('NotEmpty', true)
+          ->addValidator(new Zend_Validate_Alnum());
+    
+    $lastname = new Zend_Form_Element_Text('lastname');
+    $lastname
+          ->setRequired(true)
+          ->addValidator('NotEmpty', true)
+          ->addValidator(new Zend_Validate_Alnum());
+    
+    $compagny = new Zend_Form_Element_Text('lastname');
+    $compagny
+          ->addValidator(new Zend_Validate_Alnum());
+
+    $submit = new  Zend_Form_Element_Submit('submit');
+    $submit ->setLabel($this->t("Save"));
+    
+    $form->addElements(array($firstname,$lastname,$compagny,$submit));
+
+    return $form;
+    }
 } // end class
 ?>
