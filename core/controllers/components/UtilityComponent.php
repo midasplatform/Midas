@@ -2,6 +2,41 @@
 class UtilityComponent extends AppComponent
 { 
   
+  static public function getAllModules()
+    {
+    $modules=array();
+    if ($handle = opendir(BASE_PATH.'/modules/'))
+      {
+      while (false !== ($file = readdir($handle)))
+        {
+        if(file_exists(BASE_PATH.'/modules/'.$file.'/configs/module.ini'))
+          {
+          $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$file.'/configs/module.ini','global',true);
+          $config->db=array();
+          $handleDB = opendir(BASE_PATH.'/modules/'.$file.'/sql');
+          while (false !== ($fileDB = readdir($handleDB)))
+            {
+            if(file_exists(BASE_PATH.'/modules/'.$file.'/sql/'.$fileDB.'/'.$config->version.'.sql'))
+              {
+              switch ($fileDB)
+                {
+                case 'mysql':$config->db->PDO_MYSQL=true; break;
+                case 'pgsql':$config->db->PDO_PGSQL=true;break;
+                case 'ibm':$config->db->PDO_IBM=true;break;
+                case 'oci':$config->db->PDO_OCI=true;break;
+                case 'sqlite':$config->db->PDO_SQLITE=true;break;
+                case 'cassandra':$config->db->CASSANDRA=true;break;
+                }
+              }
+            }
+          $modules[$file]=$config;
+          }
+        }
+      closedir($handle);
+      }
+
+    return $modules;
+    }
   /** create init file*/
   static public function createInitFile($path,$data)
     {

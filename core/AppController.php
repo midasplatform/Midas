@@ -36,9 +36,18 @@ class AppController extends MIDAS_GlobalController
       Zend_Translate::setCache($cache);
       }
     $translate=new Zend_Translate('csv',BASE_PATH.'/translation/fr-main.csv','en');
-
     Zend_Registry::set('translater',$translate);
-
+    
+    $translaters=array();
+    $configs=array();
+    $modulesEnable=  Zend_Registry::get('modulesEnable');
+    foreach($modulesEnable as $module)
+      {
+      $translaters[$module]=new Zend_Translate('csv',BASE_PATH."/modules/$module/translation/fr-main.csv","en");   
+      $configs[$module]= new Zend_Config_Ini(BASE_PATH."/modules/$module/configs/module.ini", 'global');
+      }
+    Zend_Registry::set('translatersModules',$translaters);
+    Zend_Registry::set('configsModules',$configs);
     //Init Session
     $user=new Zend_Session_Namespace('Auth_User');
     if (!isset($user->initialized))
@@ -123,24 +132,8 @@ class AppController extends MIDAS_GlobalController
   /** translation */
   protected function t($text)
     {
-    if (Zend_Registry::get('configGlobal')->application->lang=='fr')
-      {
-      $translate=Zend_Registry::get('translater');
-      $new_text=$translate->_($text);
-      if ($new_text==$text&&Zend_Registry::get('config')->mode->debug==1)
-        {
-        $content=@file_get_contents(BASE_PATH."/tmp/report/translation-fr.csv");
-        if (strpos($content,$text.";")==false)
-          {
-          $translationFile=BASE_PATH."/tmp/report/translation-fr.csv";
-          $fh=fopen($translationFile,'a');
-          fwrite($fh,"\n$text;");
-          fclose($fh);
-          }
-        }
-      return $new_text;
-      }
-    return $text;
+    Zend_Loader::loadClass("InternationalizationComponent",BASE_PATH.'/core/controllers/components');
+    return InternationalizationComponent::translate($text);
     } //end method t
 
   /**completion eclipse*/
@@ -219,11 +212,6 @@ class AppController extends MIDAS_GlobalController
    * @var ItemRevisionModel
    */
   var $ItemRevision;
-      /**
-   * Task Model
-   * @var TaskModel
-   */
-  var $Task;
     /**
    * User Model
    * @var UserModel

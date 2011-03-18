@@ -42,6 +42,7 @@ class ErrorController extends AppController
       $this->_error = $error;  
 
       $this->_environment = $environment;  
+      $this->view->setScriptPath(BASE_PATH."/core/views");
      }  
   
     public function errorAction()  
@@ -81,6 +82,7 @@ class ErrorController extends AppController
         {
         $this->getLogger()->crit($this->view->message);
         }
+      
       }  
   
     private function _applicationError()  

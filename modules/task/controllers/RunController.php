@@ -3,12 +3,17 @@
  * TaskController
  * 
  */
-class TaskController extends AppController
+class Task_RunController extends Task_AppController
 {
 
   public $_models=array('Task','Item');
+  public $_moduleModels=array();
   public $_daos=array();
+  public $_moduleDaos=array();
   public $_components=array('Filter');
+  public $_moduleComponents=array();
+  public $_forms=array();
+  public $_moduleForms=array();
   
   /**
    * @method initAction()
@@ -63,6 +68,7 @@ class TaskController extends AppController
 
    function indexAction()
   {
+
   } 
     
 }//end class

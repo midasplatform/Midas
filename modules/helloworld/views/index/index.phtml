@@ -1,0 +1,28 @@
+Translation: <?php echo $this->t("Hello world");?>
+<br/>
+<br/>
+Module version (config file): <?php echo $this->version?>
+
+<br/>
+<br/>
+Test Component (is image magick working): <?php echo $this->imageMagick[0]?>
+
+<br/>
+<br/>
+Test Module Component: <?php echo $this->componentTest?>
+
+<br/>
+<br/>
+Test Core Model and Dao: <?php echo $this->users[0]->getFullName()?>
+
+<br/>
+<br/>
+Test Module Model and Dao (Key): <?php echo $this->helloModel[0]->getKey()?>
+
+<br/>
+<br/>
+Test Core Form: <?php echo (!empty($this->installForm)?'true':'false');?>
+
+<br/>
+<br/>
+Test Module Form: <?php echo (!empty($this->indexForm)?'true':'false');?>

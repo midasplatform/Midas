@@ -7,11 +7,10 @@
 
 
 <div class="viewMain">
-     <h3>Configuration:</h3>
-  
      <?php
-      echo "<form class='genericForm' method='{$this->form['method']}'  action='{$this->form['action']}'>";
       echo "
+      <form class='genericForm' method='{$this->form['method']}'  action='{$this->form['action']}'>
+      <h3>Configuration:</h3>
               <div class='installName'>
                 <label for='name'>Application name</label>
                 {$this->form['name']}
@@ -40,10 +39,42 @@
                 <label for='assetstore'>Default Assetstore</label>
                 {$this->form['assetstore']}
               </div> 
-              <div>
-                {$this->form['submit']}
-              </div>
-              </form>";
+
+       <h3>Modules:</h3>  
+           <table>
+                ";
+       foreach($this->modules as $key=>$module)
+         {
+         echo "
+           <tr class='moduleElement'>
+              <td>
+              <b>{$module->fullname}</b><br/>
+              {$module->description}
+              </td>
+              <td>";
+          if(isset($module->db->{$this->databaseType}))
+            {
+             echo " 
+               <input type='checkbox' name='module[{$key}]'   ".(($this->defaultModules->$key==1)?'checked':'')."/>";
+            }
+          else
+            {
+            echo "
+              Module not available with your database type.
+              ";
+            }
+          echo"
+              </td>              
+           </tr>
+          ";
+         }
+         echo"
+          </table>
+          <div>
+            {$this->form['submit']}
+          </div>
+       </form>";
+                
      ?>
 </div>
 <div class="viewSideBar">

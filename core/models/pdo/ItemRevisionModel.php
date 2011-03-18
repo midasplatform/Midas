@@ -54,7 +54,7 @@ class ItemRevisionModel extends AppModelPdo
     $modelLoad = new MIDAS_ModelLoader();
     $BitstreamModel = $modelLoad->loadModel('Bitstream');
     $ItemModel = $modelLoad->loadModel('Item');
-    $TaskModel = $modelLoad->loadModel('Task');
+  //  $TaskModel = $modelLoad->loadModel('Task');
 
     $bitstreamDao->setItemrevisionId($itemRevisionDao->getItemrevisionId());
 
@@ -67,7 +67,7 @@ class ItemRevisionModel extends AppModelPdo
     $item->setDate(date('c'));
     
     /** thumbnail*/   
-    $procces=Zend_Registry::get('configGlobal')->processing;
+ /*   $procces=Zend_Registry::get('configGlobal')->processing;
     if($procces=='cron')
       {
       $TaskModel->createTask(MIDAS_TASK_ITEM_THUMBNAIL,MIDAS_RESOURCE_ITEM,$item->getKey(),'');
@@ -88,7 +88,7 @@ class ItemRevisionModel extends AppModelPdo
           }
         $item->setThumbnail(substr($thumbnail_output_file, strlen(BASE_PATH)+1));
         }    
-      }
+      }*/
     $ItemModel->save($item);
     } // end addBitstream
 

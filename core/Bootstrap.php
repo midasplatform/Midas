@@ -69,6 +69,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         'username' => $configDatabase->database->params->username,
         'password' => $configDatabase->database->params->password,
         'dbname' => $configDatabase->database->params->dbname,
+        'port' =>$configDatabase->database->params->port,
         'driver_options' => $pdoParams
       );
       if($configGlobal->environment=="production")
@@ -169,20 +170,23 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     );
     $router->addRoute('webdav', $route1);    
     
-    //Init Modules
-    
-    $frontController = Zend_Controller_Front::getInstance();    
-
+    //Init Modules    
+    $frontController = Zend_Controller_Front::getInstance();  
     $frontController->addControllerDirectory(BASE_PATH . '/core/controllers');
 
+    $modules = new Zend_Config_Ini(APPLICATION_CONFIG, 'module');
     // routes modules
-    $listeModule = array(
-        array('task')
-    );
-
+    $listeModule = array();
+    foreach($modules as $key=>$module)
+      {      
+      if($module==1&&  file_exists(BASE_PATH.'/modules/'.$key))
+        {
+        $listeModule[]=$key;
+        }
+      }
     foreach ($listeModule as $m) { 
-        $route = implode('/', $m);
-        $nameModule = implode('_', $m); 
+        $route = $m;
+        $nameModule = $m; 
         $router->addRoute("$nameModule-1", 
             new Zend_Controller_Router_Route("$route/:controller/:action/*", 
                 array(
@@ -207,9 +211,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 )
             )
         );
-        $frontController->addControllerDirectory(BASE_PATH . "/modules/$route/constrollers", $nameModule);
+        $frontController->addControllerDirectory(BASE_PATH . "/modules/$route/controllers", $nameModule);
+        require_once BASE_PATH . "/modules/$route/AppController.php";             
     }
-    
+    Zend_Registry::set('modulesEnable',$listeModule);
     return $router;
     }
   }
