@@ -123,7 +123,7 @@ class UserModel extends AppModelPdo
     throw new Zend_Exception("Use createUser method.");
     }
 
- /** create user */
+  /** create user */
   public function createUser($email,$password,$firstname,$lastname,$admin=0)
     {    
     if(!is_string($email)||empty($email)||!is_string($password)||empty($password)||!is_string($firstname)

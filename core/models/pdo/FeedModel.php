@@ -22,7 +22,6 @@ class FeedModel extends AppModelPdo
     'feedpolicyuser' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Feedpolicyuser', 'parent_column'=> 'feed_id', 'child_column' => 'feed_id'),
     );
 
-  
   /** check if the policy is valid
    *
    * @param FolderDao $folderDao
@@ -80,26 +79,28 @@ class FeedModel extends AppModelPdo
       return true;
       }
     return false;
-    }//end policyCheck
+    } //end policyCheck
   
   /** get feeds (filtered by policies)
    * @return Array of FeedDao */
   function getGlobalFeeds($loggedUserDao,$policy=0,$limit=20)
     {
     return $this->_getFeeds($loggedUserDao,null,null,$policy,$limit);
-    }
+    } //end getGlobalFeeds
+    
   /** get feeds by user (filtered by policies)
    * @return Array of FeedDao */
   function getFeedsByUser($loggedUserDao,$userDao,$policy=0,$limit=20)
     {
     return $this->_getFeeds($loggedUserDao,$userDao,null,$policy,$limit);
-    }
+    } //end getFeedsByUser
+    
   /** get feeds by community (filtered by policies)
      * @return Array of FeedDao */
   function getFeedsByCommunity($loggedUserDao,$communityDao,$policy=0,$limit=20)
     {
     return $this->_getFeeds($loggedUserDao,null,$communityDao,$policy,$limit);
-    }
+    } //end getFeedsByCommunity
     
   /** get feed
    * @param UserDao $loggedUserDao
@@ -107,7 +108,7 @@ class FeedModel extends AppModelPdo
    * @param CommunityDao $communityDao
    * @param type $policy
    * @param type $limit
-   * @return type * @return Array of FeedDao */
+   * @return Array of FeedDao */
   private function _getFeeds($loggedUserDao,$userDao=null,$communityDao=null,$policy=0,$limit=20)
     {
     if($loggedUserDao==null)
@@ -195,7 +196,8 @@ class FeedModel extends AppModelPdo
     $this->Component->Sortdao->order='asc';
     usort($rowsetAnalysed, array($this->Component->Sortdao,'sortByDate'));
     return $rowsetAnalysed;    
-    }
+    } // end _getFeeds
+    
   /** Create a feed
    * @return FeedDao */
   function createFeed($userDao,$type,$ressource,$communityDao=null)
@@ -268,11 +270,11 @@ class FeedModel extends AppModelPdo
       $this->addCommunity($feed, $communityDao);
       }
     return $feed;
-    }
+    } // end createFeed()
 
 
   /** Add an item to a community
-   * @return void*/
+   * @return void */
   function addCommunity($feed,$community)
     {
     if(!$community instanceof CommunityDao)
@@ -284,12 +286,11 @@ class FeedModel extends AppModelPdo
       throw new Zend_Exception("Should be an feed.");
       }
     $this->link('communities',$feed,$community);
-    } // end function addCommunity
+    } // end addCommunity
 
-    /** Delete Dao
-     *
-     * @param FeedDao $feeDao 
-     */
+  /** Delete Dao
+   * @param FeedDao $feeDao 
+   */
   function delete($feeDao)
     {
     $this->ModelLoader = new MIDAS_ModelLoader();
@@ -313,6 +314,7 @@ class FeedModel extends AppModelPdo
       parent::removeLink('communities', $feeDao, $c);
       }
     return parent::delete($feeDao);
-    }
+    } // end delete
+    
 } // end class
 ?>
