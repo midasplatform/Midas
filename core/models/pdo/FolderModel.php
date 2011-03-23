@@ -173,7 +173,7 @@ class FolderModel extends MIDASFolderModel
                           array('left_indice >= ?'=>$leftIndice));
     $this->database->getDB()->update('folder', array('right_indice'=> new Zend_Db_Expr('right_indice - 2')),
                           array('right_indice >= ?'=>$leftIndice));
-    $this->delete( $folder);
+    parent::delete( $folder);
     unset($folder->folder_id);
     $folder->saved=false;
     return true;
