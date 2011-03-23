@@ -3,18 +3,9 @@
  * \class ItemKeywordModel
  * \brief Pdo Model
  */
-class ItemKeywordModel extends AppModelPdo
+class ItemKeywordModel extends MIDASItemKeywordModel
 {
-  public $_name = 'itemkeyword';
-  public $_daoName = 'ItemKeywordDao';
-  public $_key = 'keyword_id';
-
-  public $_mainData= array(
-    'keyword_id'=> array('type'=>MIDAS_DATA),
-    'value'=> array('type'=>MIDAS_DATA),
-    'relevance'=> array('type'=>MIDAS_DATA),
-    );
-
+  
   /** Get the keyword from the search.
    * @return Array of ItemDao */
   function getItemsFromSearch($searchterm,$userDao)
@@ -33,10 +24,10 @@ class ItemKeywordModel extends AppModelPdo
       }
           
     // Apparently it's slow to do a like in a subquery so we run it first  
-    $sql = $this->select()->from(array('itemkeyword'),array('keyword_id'))
+    $sql = $this->database->select()->from(array('itemkeyword'),array('keyword_id'))
                    ->where('value LIKE ?','%'.$searchterm.'%');                 
     $ids = '(';
-    $rowset = $this->fetchAll($sql);
+    $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
       {
@@ -54,21 +45,21 @@ class ItemKeywordModel extends AppModelPdo
       return $return;  
       }
     
-    $subqueryUser= $this->select()
+    $subqueryUser= $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'itempolicyuser'),
                                  array('item_id'))
                           ->where('policy >= ?', MIDAS_POLICY_READ)
                           ->where('user_id = ? ',$userId);
 
-    $subqueryGroup = $this->select()
+    $subqueryGroup = $this->database->select()
                     ->setIntegrityCheck(false)
                     ->from(array('p' => 'itempolicygroup'),
                            array('item_id'))
                     ->where('policy >= ?', MIDAS_POLICY_READ)
-                    ->where('( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                    ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                               group_id IN (' .new Zend_Db_Expr(
-                              $this->select()
+                              $this->database->select()
                                    ->setIntegrityCheck(false)
                                    ->from(array('u2g' => 'user2group'),
                                           array('group_id'))
@@ -76,7 +67,7 @@ class ItemKeywordModel extends AppModelPdo
                                    .'))' ));
 
 
-    $sql = $this->select()->from(array('i' => 'item'),array('item_id','name','count(*)'))
+    $sql = $this->database->select()->from(array('i' => 'item'),array('item_id','name','count(*)'))
                                           ->join(array('i2k' => 'item2keyword'),'i.item_id=i2k.item_id')
                                           ->where('i2k.keyword_id IN '.$ids)                                         
                                           ->where('( i.item_id IN ('.$subqueryUser.') OR
@@ -86,7 +77,7 @@ class ItemKeywordModel extends AppModelPdo
                                           ->limit(14);
     
 
-    $rowset = $this->fetchAll($sql);
+    $rowset = $this->database->fetchAll($sql);
     foreach($rowset as $row)
       {
       $tmpDao= new ItemDao();
@@ -109,7 +100,7 @@ class ItemKeywordModel extends AppModelPdo
       }
 
     // Check if the keyword already exists
-    $row = $this->fetchRow($this->select()->from($this->_name)
+    $row = $this->database->fetchRow($this->database->select()->from($this->_name)
                                           ->where('value=?',$keyword->getValue()));
     if($row)
       {

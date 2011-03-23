@@ -3,24 +3,8 @@
  * \class FolderpolicygroupModel
  * \brief Pdo Model
  */
-class FolderpolicygroupModel extends AppModelPdo
-  {
-  public $_name='folderpolicygroup';
-
-  public $_mainData=array(
-    'folder_id'=>array(
-    'type'=>MIDAS_DATA
-  ),'group_id'=>array(
-    'type'=>MIDAS_DATA
-  ),'policy'=>array(
-    'type'=>MIDAS_DATA
-  ),'folder'=>array(
-    'type'=>MIDAS_MANY_TO_ONE,'model'=>'Folder','parent_column'=>'folder_id','child_column'=>'folder_id'
-  ),'group'=>array(
-    'type'=>MIDAS_MANY_TO_ONE,'model'=>'Group','parent_column'=>'group_id','child_column'=>'group_id'
-  )
-  );
-
+class FolderpolicygroupModel extends MIDASFolderpolicygroupModel
+{
   /** create a policy
    * @return FolderpolicygroupDao*/
   public function createPolicy($group, $folder, $policy)
@@ -50,7 +34,7 @@ class FolderpolicygroupModel extends AppModelPdo
     $policyGroupDao->setGroupId($group->getGroupId());
     $policyGroupDao->setFolderId($folder->getFolderId());
     $policyGroupDao->setPolicy($policy);
-    $this->save($policyGroupDao);
+    $this->database->save($policyGroupDao);
     return $policyGroupDao;
     }
 
@@ -67,7 +51,7 @@ class FolderpolicygroupModel extends AppModelPdo
       {
       throw new Zend_Exception("Should be a folder.");
       }
-    return $this->initDao('Folderpolicygroup',$this->fetchRow($this->select()->where('folder_id = ?',$folder->getKey())->where('group_id = ?',$group->getKey())));
+    return $this->initDao('Folderpolicygroup',$this->database->fetchRow($this->database->select()->where('folder_id = ?',$folder->getKey())->where('group_id = ?',$group->getKey())));
     }
-  }
+}
 ?>

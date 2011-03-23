@@ -64,7 +64,6 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
         <tbody>
             <?php
             $node=1;
-
             foreach($this->folders as $folder)
               {
               echo "<tr id='node--$node' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";

@@ -3,37 +3,19 @@
  * \class ItemRevisionModel
  * \brief Pdo Model
  */
-class ItemRevisionModel extends AppModelPdo
+class ItemRevisionModel extends MIDASItemRevisionModel
 {
-  public $_name = 'itemrevision';
-  public $_daoName = 'ItemRevisionDao';
-  public $_key = 'itemrevision_id';
-  
-  public $_components = array('Filter');
-
-  public $_mainData= array(
-    'itemrevision_id'=>  array('type'=>MIDAS_DATA),
-    'item_id'=>  array('type'=>MIDAS_DATA),
-    'revision' =>  array('type'=>MIDAS_DATA),
-    'date' =>  array('type'=>MIDAS_DATA),
-    'changes' =>  array('type'=>MIDAS_DATA),
-    'user_id' => array('type'=>MIDAS_DATA),
-    'bitstreams' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model'=>'Bitstream', 'parent_column'=> 'itemrevision_id', 'child_column' => 'itemrevision_id'),
-    'item' =>  array('type'=>MIDAS_MANY_TO_ONE, 'model'=>'Item', 'parent_column'=> 'item_id', 'child_column' => 'item_id'),
-    'user' =>  array('type'=>MIDAS_MANY_TO_ONE, 'model'=>'User', 'parent_column'=> 'user_id', 'child_column' => 'user_id'),
-    );
-
   /** Returns the latest revision of a model */
   function getLatestRevision($itemdao)
     {
-    $row = $this->fetchRow($this->select()->from($this->_name)->where('item_id=?',$itemdao->getItemId())->order('revision DESC')->limit(1));
+    $row = $this->database->fetchRow($this->database->select()->from($this->_name)->where('item_id=?',$itemdao->getItemId())->order('revision DESC')->limit(1));
     return $this->initDao('ItemRevision',$row);
     }
     
-      /** Returns the of the revision in Bytes */
+  /** Returns the of the revision in Bytes */
   function getSize($revision)
     {
-    $row = $this->fetchRow($this->select()
+    $row = $this->database->fetchRow($this->database->select()
                             ->setIntegrityCheck(false)->from('bitstream', array('sum(sizebytes) as sum'))->where('itemrevision_id=?',$revision->getKey()));
     return $row['sum'];
     }
@@ -41,7 +23,7 @@ class ItemRevisionModel extends AppModelPdo
   /** Return a bitstream by name */
   function getBitstreamByName($revision,$name)
     {
-    $row = $this->fetchRow($this->select()->setIntegrityCheck(false)
+    $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
                                           ->from('bitstream')
                                           ->where('itemrevision_id=?',$revision->getItemrevisionId())
                                           ->where('name=?',$name));
