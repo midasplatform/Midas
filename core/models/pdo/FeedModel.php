@@ -297,7 +297,7 @@ class FeedModel extends MIDASFeedModel
       {
       $this->database->removeLink('communities', $feeDao, $c);
       }
-    return $this->delete($feeDao);
+    return parent::delete($feeDao);
     } // end delete
     
 } // end class

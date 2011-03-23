@@ -55,7 +55,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     {
     if (!isset($this->_mainData[$var]))
       {
-      throw new Zend_Exception("Model PDO " . $this->_name . ": var $var is not defined here.");
+      throw new Zend_Exception("Database PDO " . $this->_name . ": var $var is not defined here.");
       }
     if (method_exists($this, 'get' . ucfirst($var)))
       {
