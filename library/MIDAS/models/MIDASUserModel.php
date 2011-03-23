@@ -59,7 +59,7 @@ abstract class MIDASUserModel extends MIDASModel
     $userDao->setCreation(date('c'));
     $userDao->setPassword(md5($password));
     $userDao->setAdmin($admin);
-    $this->save($userDao);
+    parent::save($userDao);
 
     $this->ModelLoader = new MIDAS_ModelLoader();
     $groupModel=$this->ModelLoader->loadModel('Group');
@@ -85,7 +85,7 @@ abstract class MIDASUserModel extends MIDASModel
     $userDao->setPublicfolderId($folderPublic->getKey());
     $userDao->setPrivatefolderId($folderPrivate->getKey());
 
-    $this->save($userDao);
+    parent::save($userDao);
     $this->getLogger()->info(__METHOD__ . " Registration: " . $userDao->getFullName() . " " . $userDao->getKey());
 
     $feed=$feedModel->createFeed($userDao,MIDAS_FEED_CREATE_USER,$userDao);
