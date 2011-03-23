@@ -86,12 +86,12 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
         }
 
       $data=$this->getDataSet($file);
-      $dataUsers=$data->getTable($model->_name);
+      $dataUsers=$data->getTable($model->getName());
       $rows=$dataUsers->getRowCount();
       $key=array();
       for($i=0; $i<$dataUsers->getRowCount();$i++)
         {
-        $key[]=$dataUsers->getValue($i, $model->_key);
+        $key[]=$dataUsers->getValue($i, $model->getKey());
         }
       return $model->load($key);
       }
