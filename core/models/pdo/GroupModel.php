@@ -39,7 +39,7 @@ class GroupModel  extends MIDASGroupModel
       {
       throw new Zend_Exception("Should be an user.");
       }
-    $this->link('users',$group,$user);
+    $this->database->link('users',$group,$user);
     } // end function addItem
 
 }// end class

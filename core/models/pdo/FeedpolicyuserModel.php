@@ -27,7 +27,7 @@ class FeedpolicyuserModel extends MIDASFeedpolicyuserModel
       }
     if($this->getPolicy($user,$feed) !== false)
       {
-      $this->database->delete($this->getPolicy($user,$feed));
+      $this->delete($this->getPolicy($user,$feed));
       }
     $this->loadDaoClass('FeedpolicyuserDao');
     $policyUser=new FeedpolicyuserDao();

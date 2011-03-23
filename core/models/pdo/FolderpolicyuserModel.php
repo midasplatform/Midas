@@ -27,14 +27,14 @@ class FolderpolicyuserModel extends MIDASFolderpolicyuserModel
       }
     if($this->getPolicy($user, $folder)!==false)
       {
-      $this->database->delete($this->getPolicy($user, $folder));
+      $this->delete($this->getPolicy($user, $folder));
       }
     $this->loadDaoClass('FolderpolicyuserDao');
     $policyUser=new FolderpolicyuserDao();
     $policyUser->setUserId($user->getUserId());
     $policyUser->setFolderId($folder->getFolderId());
     $policyUser->setPolicy($policy);
-    $this->database->save($policyUser);
+    $this->save($policyUser);
     return $policyUser;
     }
 
