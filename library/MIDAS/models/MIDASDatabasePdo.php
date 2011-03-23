@@ -320,7 +320,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       {
       throw new Zend_Exception("The dao should be saved first ...");
       }
-    if(!isset($this->_key))
+    if(!isset($this->_key) || !$this->_key)
       {
       $query=array();
       foreach ($this->_mainData as $name => $option)
