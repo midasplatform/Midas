@@ -27,14 +27,14 @@ class FeedpolicygroupModel extends MIDASFeedpolicygroupModel
       }
     if($this->getPolicy($group,$feed) !== false)
       {
-      $this->database->delete($this->getPolicy($group,$feed));
+      $this->delete($this->getPolicy($group,$feed));
       }
     $this->loadDaoClass('FeedpolicygroupDao');
     $policyGroupDao=new FeedpolicygroupDao();
     $policyGroupDao->setGroupId($group->getGroupId());
     $policyGroupDao->setFeedId($feed->getFeedId());
     $policyGroupDao->setPolicy($policy);
-    $this->database->save($policyGroupDao);
+    $this->save($policyGroupDao);
     return $policyGroupDao;
     }
 

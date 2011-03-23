@@ -34,7 +34,7 @@ class FeedpolicyuserModel extends MIDASFeedpolicyuserModel
     $policyUser->setUserId($user->getUserId());
     $policyUser->setFeedId($feed->getFeedId());
     $policyUser->setPolicy($policy);
-    $this->database->save($policyUser);
+    $this->save($policyUser);
     return $policyUser;
     }
 

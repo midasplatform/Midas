@@ -173,7 +173,7 @@ class FolderModel extends MIDASFolderModel
                           array('left_indice >= ?'=>$leftIndice));
     $this->database->getDB()->update('folder', array('right_indice'=> new Zend_Db_Expr('right_indice - 2')),
                           array('right_indice >= ?'=>$leftIndice));
-    $this->database->delete( $folder);
+    $this->delete( $folder);
     unset($folder->folder_id);
     $folder->saved=false;
     return true;
@@ -292,7 +292,7 @@ class FolderModel extends MIDASFolderModel
       $parentId=$parent;
       }
     $folder->setParentId($parentId);
-    $this->database->save($folder);
+    $this->save($folder);
     return $folder;
     }
 
@@ -601,7 +601,7 @@ class FolderModel extends MIDASFolderModel
       {
       throw new Zend_Exception("Should be an item.");
       }
-    $this->link('items',$folder,$item);
+    $this->database->link('items',$folder,$item);
     } // end function addItem
 
   /** Return an item by its name

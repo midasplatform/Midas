@@ -36,7 +36,7 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
      return $this->_db;  
      }    
     
-   /**
+  /**
    * @method public  getValues($key)
    *  Get all the value of a model
    * @param $key
@@ -60,6 +60,32 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       throw new Zend_Exception($e); 
       }
     } // end method getValues;
+    
+  /**
+   * @method public save($dao)
+   * Saves a DAO from the database
+   * @param $dao
+   * @return true/false
+   */  
+  public function save($dao)
+    {
+      
+    } // end function save
+    
+  /**
+   * @method public delete($dao)
+   * Delete a DAO from the database
+   * @param $dao
+   * @return true/false
+   */   
+  public function delete($dao)
+    {
+    
+    
+    } // end function delete 
+    
+    
+    
     
 } // end class MIDASDatabaseCassandra
 ?>

@@ -222,7 +222,7 @@ class ItemModel extends MIDASItemModel
       {
       throw new Zend_Exception("Second argument should be a keyword");
       }
-    $this->link('keywords',$itemdao,$keyworddao);
+    $this->database->link('keywords',$itemdao,$keyworddao);
     } // end addKeyword
 
 }  // end class

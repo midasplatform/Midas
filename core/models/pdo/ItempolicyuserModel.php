@@ -27,14 +27,14 @@ class ItempolicyuserModel  extends MIDASItempolicyuserModel
       }
     if($this->getPolicy($user,$item) !== false)
       {
-      $this->database->delete($this->getPolicy($user,$item));
+      $this->delete($this->getPolicy($user,$item));
       }
     $this->loadDaoClass('ItempolicyuserDao');
     $policyUser=new ItempolicyuserDao();
     $policyUser->setUserId($user->getUserId());
     $policyUser->setItemId($item->getItemId());
     $policyUser->setPolicy($policy);
-    $this->database->save($policyUser);
+    $this->save($policyUser);
     return $policyUser;
     }
 

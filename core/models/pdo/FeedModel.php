@@ -247,7 +247,7 @@ class FeedModel extends MIDASFeedModel
         throw new Zend_Exception("Unable to defined the type of feed");
         break;
       }
-    $this->database->save($feed);
+    $this->save($feed);
 
     if($communityDao instanceof CommunityDao)
       {
@@ -269,7 +269,7 @@ class FeedModel extends MIDASFeedModel
       {
       throw new Zend_Exception("Should be an feed.");
       }
-    $this->link('communities',$feed,$community);
+    $this->database->link('communities',$feed,$community);
     } // end addCommunity
 
   /** Delete Dao

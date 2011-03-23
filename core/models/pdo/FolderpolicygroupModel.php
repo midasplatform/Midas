@@ -34,7 +34,7 @@ class FolderpolicygroupModel extends MIDASFolderpolicygroupModel
     $policyGroupDao->setGroupId($group->getGroupId());
     $policyGroupDao->setFolderId($folder->getFolderId());
     $policyGroupDao->setPolicy($policy);
-    $this->database->save($policyGroupDao);
+    $this->save($policyGroupDao);
     return $policyGroupDao;
     }
 

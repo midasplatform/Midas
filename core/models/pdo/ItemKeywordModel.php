@@ -111,7 +111,7 @@ class ItemKeywordModel extends MIDASItemKeywordModel
     else
       {
       $keyword->setRelevance(1);
-      $return = parent::save($keyword);
+      $return = $this->save($keyword);
       }
     unset($row);
     return $return;

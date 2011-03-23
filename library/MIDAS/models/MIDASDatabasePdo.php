@@ -145,7 +145,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    * @param $daoSon
    * @return sql result
    */
-  protected function link($var, $daoParent, $daoSon)
+  public function link($var, $daoParent, $daoSon)
     {
     $objs = $daoParent->get($var);
 
@@ -190,7 +190,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    * @param $daoSon
    * @return sql result
    */
-  protected function removeLink($var, $daoParent, $daoSon)
+  public function removeLink($var, $daoParent, $daoSon)
     {
     unset($daoParent->$var);
     $data = array();
@@ -305,7 +305,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     } // end method save
 
   /**
-   * @method public  delete()
+   * @method public delete()
    *  Delete in the db
    * @param $dao
    */
@@ -349,41 +349,12 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     return true;
     }//end delete
 
-
-  /**
-   * @method public compareDao($dao1,$dao2)
-   *  Compare 2 dao (onlye the MIDAS_DATA
-   * @param $dao1
-   * @param $dao2
-   * @return True if they are the same one
-   */
-  public function compareDao($dao1, $dao2)
-    {
-    if(!is_object($dao1) || !is_object($dao2))
-      {
-      return false;
-      }
-    foreach ($this->_mainData as $name => $data)
-      {
-      if ($data['type'] == MIDAS_DATA)
-        {
-        if ($dao1->get($name) !== $dao2->get($name))
-          {
-          return false;
-          }
-        }
-      }
-    return true;
-    } //end method compareDao
-
-
   /** getAllByKey() */
   public function getAllByKey($key)
     {
     return $this->fetchAll($this->select()->where($this->_key . ' IN (?)', $key));  
     }
   
-
   /** return the number row in the table
    * @return int */
   public function getCountAll()

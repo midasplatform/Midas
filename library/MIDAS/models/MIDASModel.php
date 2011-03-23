@@ -29,6 +29,18 @@ class MIDASModel
     $this->database->initialize($this->_name,$this->_key,$this->_mainData);
     }
     
+  /** Save a Dao */  
+  public function save($dao)  
+    {
+    $this->database->save($dao);
+    }
+    
+  /** Delete a Dao */  
+  public function delete($dao)  
+    {
+    $this->database->delete($dao);
+    }
+     
   /**
    * @method public  loadElements()
    *  Loads model and components
@@ -296,7 +308,6 @@ class MIDASModel
     return $this->database->getValue($var, $key, $dao);
     }
  
- 
   /** Function getValues */
   public function getValues($key)
     {
@@ -308,6 +319,32 @@ class MIDASModel
     {
     return $this->database->getCountAll(); 
     }
+
+  /**
+   * @method public compareDao($dao1,$dao2)
+   *  Compare 2 dao (onlye the MIDAS_DATA
+   * @param $dao1
+   * @param $dao2
+   * @return True if they are the same one
+   */
+  public function compareDao($dao1, $dao2)
+    {
+    if(!is_object($dao1) || !is_object($dao2))
+      {
+      return false;
+      }
+    foreach ($this->_mainData as $name => $data)
+      {
+      if ($data['type'] == MIDAS_DATA)
+        {
+        if ($dao1->get($name) !== $dao2->get($name))
+          {
+          return false;
+          }
+        }
+      }
+    return true;
+    } //end method compareDao
     
 } // end class GlobalModel
 ?>
