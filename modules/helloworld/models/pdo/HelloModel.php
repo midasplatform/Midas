@@ -8,7 +8,7 @@ class Helloworld_HelloModel extends Helloworld_HelloModelBase
    * Return all the record in the table
    * @return Array of HelloDao
    */
-  public function getAll()
+  function getAll()
     {
     $sql=$this->database->select();
     $rowset = $this->database->fetchAll($sql);

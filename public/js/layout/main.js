@@ -5,8 +5,8 @@ if (typeof console != "object") {
 	var console = {
 		'log':function(){}
 	};
-}
-
+} 
+console.log('test');
 $(function() { 
   json = jQuery.parseJSON($('div.jsonContent').html());
   if(!json.global.logged)

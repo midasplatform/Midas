@@ -12,8 +12,6 @@ class Helloworld_HelloModelBase extends Helloworld_AppModel
         );
     $this->initialize(); // required
     } // end __construct()
-  
-    abstract function getAll();
     
 } // end class AssetstoreModelBase
 ?>

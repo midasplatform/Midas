@@ -22,7 +22,7 @@ $settings['minify'] = true;
 $settings['concatenate'] = true;
 
 //specifies whether to emebed files included in css files using the data URI scheme or not 
-$settings['embed'] = true;
+$settings['embed'] = false;
 }
 else
 {
@@ -59,9 +59,6 @@ $settings['gzipExceptions'] = array('gif','jpeg','jpg','png','swf');
 
 //separator for files to be concatenated
 $settings['separator'] = ',';
-
-//specifies whether to emebed files included in css files using the data URI scheme or not 
-$settings['embed'] = true;
 
 //The maximum size of an embedded file. (use 0 for unlimited size)
 $settings['embedMaxSize'] = 5120; //5KB
