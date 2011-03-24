@@ -1,5 +1,5 @@
 <?php
-class MIDASGroupModel extends MIDASModel
+abstract class MIDASGroupModel extends MIDASModel
 {
   public function __construct()
     {
@@ -15,6 +15,29 @@ class MIDASGroupModel extends MIDASModel
       );
     $this->initialize(); // required
     } // end __construct()  
+  
+  /** Add a user to a group */
+  abstract function addUser($group,$user);
+    
+  /** create a group
+   * @return GroupDao*/
+  public function createGroup($communityDao,$name)
+    {
+    if(!$communityDao instanceof CommunityDao)
+      {
+      throw new Zend_Exception("Should be a acommunity.");
+      }
+    if(!is_string($name))
+      {
+      throw new Zend_Exception("Should be a string.");
+      }
+    $this->loadDaoClass('GroupDao');
+    $group=new GroupDao();
+    $group->setName($name);
+    $group->setCommunityId($communityDao->getCommunityId());
+    $this->save($group);
+    return $group;
+    }
 
 } // end class MIDASGroupModel
 ?>

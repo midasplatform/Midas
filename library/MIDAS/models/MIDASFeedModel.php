@@ -1,5 +1,5 @@
 <?php
-class MIDASFeedModel extends MIDASModel
+abstract class MIDASFeedModel extends MIDASModel
 {
   public function __construct()
     {
@@ -21,6 +21,28 @@ class MIDASFeedModel extends MIDASModel
     $this->initialize(); // required
     } // end __construct() 
   
-  
+  protected abstract function _getFeeds($loggedUserDao,$userDao=null,$communityDao=null,$policy=0,$limit=20);
+    
+  /** get feeds (filtered by policies)
+   * @return Array of FeedDao */
+  function getGlobalFeeds($loggedUserDao,$policy=0,$limit=20)
+    {
+    return $this->_getFeeds($loggedUserDao,null,null,$policy,$limit);
+    } //end getGlobalFeeds
+    
+  /** get feeds by user (filtered by policies)
+   * @return Array of FeedDao */
+  function getFeedsByUser($loggedUserDao,$userDao,$policy=0,$limit=20)
+    {
+    return $this->_getFeeds($loggedUserDao,$userDao,null,$policy,$limit);
+    } //end getFeedsByUser
+    
+  /** get feeds by community (filtered by policies)
+     * @return Array of FeedDao */
+  function getFeedsByCommunity($loggedUserDao,$communityDao,$policy=0,$limit=20)
+    {
+    return $this->_getFeeds($loggedUserDao,null,$communityDao,$policy,$limit);
+    } //end getFeedsByCommunity
+    
 } // end class MIDASFeedModel
 ?>

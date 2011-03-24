@@ -10,7 +10,9 @@ class UserModel extends MIDASUserModel
   /** Get a user by email */
   function getByEmail($email)
     {
-    return $this->getBy('email',$email);  
+    $row = $this->database->fetchRow($this->database->select()->where('email = ?', $email)); 
+    $dao= $this->initDao(ucfirst($this->_name),$row);
+    return $dao;
     } // end getByEmail()
     
   /** Get user communities */

@@ -34,7 +34,7 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
    function getDB()
      {
      return $this->_db;  
-     }    
+     }      
     
   /**
    * @method public  getValues($key)
@@ -67,9 +67,25 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
    * @param $dao
    * @return true/false
    */  
-  public function save($dao)
+  public function save($dataarray)
     {
+    // There is no update in Cassandra, everything is insert by key
+    if(isset($this->_key)&&isset($dataarray[$this->_key]))
+      {
+      $keyvalue = $dataarray[$this->_key];
+      unset($dataarray[$this->_key]);
       
+      $column_family = new ColumnFamily($this->_db,$this->_name);
+      $column_family->insert($keyvalue,$dataarray);
+      }
+    else
+      {      
+      $keyvalue = CassandraUtil::uuid1(); 
+      $db = Zend_Registry::get('dbAdapter');
+      $column_family = new ColumnFamily($this->_db,$this->_name);
+      $column_family->insert($keyvalue,$dataarray);       
+      }  
+    return $keyvalue;
     } // end function save
     
   /**
@@ -80,10 +96,20 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
    */   
   public function delete($dao)
     {
-    
+    throw new Zend_Exception("MIDASDatabaseCassandra: Delete not implemented yet");
     
     } // end function delete 
     
+  /** return the number row in the table
+   * @return int */
+  public function getCountAll()
+    {
+    // The idea is to use Cassandra's counter in the future (implemented in 0.8) 
+    // We could also use memcached or redis or even a file lock mechanism (if the php
+    // server is not fully distributed
+    return 0;
+    }//end getCountAll
+
     
   /**
    * @method public  get()

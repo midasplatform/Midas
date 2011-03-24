@@ -24,7 +24,7 @@ class BrowseController extends AppController
     $header="";
 
     $communities=$this->User->getUserCommunities($this->userSession->Dao);
-    $communities=array_merge($communities, $this->Community->getPubicCommunities());
+    $communities=array_merge($communities, $this->Community->getPublicCommunities());
     
     $header.="<ul class='pathBrowser'>";
     $header.=" <li class='pathData'><a href='{$this->view->webroot}/browse'>{$this->t('Data')}</a></li>";

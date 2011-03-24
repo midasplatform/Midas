@@ -178,37 +178,6 @@ class ItemModel extends MIDASItemModel
                                               ));
     }
 
-  /** Add a revision to an item
-   * @return void*/
-  function addRevision($itemdao,$revisiondao)
-    {
-    if(!$itemdao instanceof ItemDao)
-      {
-      throw new Zend_Exception("First argument should be an item" );
-      }
-    if(!$revisiondao instanceof ItemRevisionDao)
-      {
-      throw new Zend_Exception("Second argument should be an item revision" );
-      }
-
-    $modelLoad = new MIDAS_ModelLoader();
-    $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
-
-    // Should check the latest revision for this item
-    $latestrevision = $ItemRevisionModel->getLatestRevision($itemdao);
-    if(!$latestrevision) // no revision yet we assigne the value 1
-      {
-      $revisiondao->setRevision(1);
-      }
-    else
-      {
-      $revisiondao->setRevision($latestrevision->getRevision()+1);
-      }
-    $revisiondao->setItemId($itemdao->getItemId());
-
-    // TODO: Add the date but the database is doing it automatically so maybe not
-    $ItemRevisionModel->save($revisiondao);
-    } // end addRevision
 
   /** Add a keyword to an item
    * @return void*/

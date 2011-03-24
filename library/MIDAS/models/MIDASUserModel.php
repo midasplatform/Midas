@@ -31,7 +31,8 @@ abstract class MIDASUserModel extends MIDASModel
   
   /** Abstract functions */
   abstract function getByEmail($email);
-    
+  abstract function getUserCommunities($userDao);
+  
   /** don't use save*/
   public function save($dao)
     {
@@ -71,7 +72,7 @@ abstract class MIDASUserModel extends MIDASModel
     $feedpolicyuserModel=$this->ModelLoader->loadModel('Feedpolicyuser');
     
     $anonymousGroup=$groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-
+/*
     $folderGlobal=$folderModel->createFolder('user_' . $userDao->getKey(),'Main folder of ' . $userDao->getFullName(),MIDAS_FOLDER_USERPARENT);
     $folderPrivate=$folderModel->createFolder('Private','Private folder of ' . $userDao->getFullName(),$folderGlobal);
     $folderPublic=$folderModel->createFolder('Public','Public folder of ' . $userDao->getFullName(),$folderGlobal);
@@ -91,6 +92,7 @@ abstract class MIDASUserModel extends MIDASModel
     $feed=$feedModel->createFeed($userDao,MIDAS_FEED_CREATE_USER,$userDao);
     $feedpolicygroupModel->createPolicy($anonymousGroup,$feed,MIDAS_POLICY_READ);
     $feedpolicyuserModel->createPolicy($userDao,$feed,MIDAS_POLICY_ADMIN);    
+    */
     return $userDao;
     }
   

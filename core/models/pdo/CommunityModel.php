@@ -10,7 +10,9 @@ class CommunityModel extends MIDASCommunityModel
   /** Get a community by name */
   function getByName($name)
     {
-    return $this->getBy('name',$name);  
+    $row = $this->database->fetchRow($this->database->select()->where('name = ?', $name)); 
+    $dao= $this->initDao(ucfirst($this->_name),$row);
+    return $dao;
     } // end getByName()
      
   /* get public Communities

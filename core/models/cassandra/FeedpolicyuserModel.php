@@ -5,7 +5,7 @@
  */
 class FeedpolicyuserModel extends MIDASFeedpolicyuserModel
 {
-  
+
   
 } // end class
 ?>
