@@ -273,7 +273,6 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
         {
         return false;
         }
-      $dao->saved=true;
       return $insertedid;
       }
     } // end method save
