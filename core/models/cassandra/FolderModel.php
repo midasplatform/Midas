@@ -14,7 +14,7 @@ class FolderModel extends FolderModelBase
     try 
       {
       $folder = new ColumnFamily($this->database->getDB(), 'folder');
-      $folderarray = $folder->get($folderid);
+      $folderarray = $folder->get($folderid);      
       // Add the user_id
       $folderarray[$this->_key] = $folderid;
       $dao= $this->initDao('Folder',$userarray);      

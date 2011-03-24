@@ -160,6 +160,7 @@ class MIDAS_GlobalDao
    */
   public function getModel($name=null)
     {
+    require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
     $this->ModelLoader = new MIDAS_ModelLoader();
     if ($name != null)
       {
