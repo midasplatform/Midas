@@ -22,32 +22,6 @@ class AppController extends MIDAS_GlobalController
 
     // Set the version
     $this->view->version='3.0 beta';
-    // Init the translater
-    if (!$this->isDebug())
-      {
-      $frontendOptions=array(
-        'lifetime'=>86400,'automatic_serialization'=>true
-      );
-
-      $backendOptions=array(
-        'cache_dir'=>BASE_PATH.'/tmp/cache/translation'
-      );
-      $cache=Zend_Cache::factory('Core','File',$frontendOptions,$backendOptions);
-      Zend_Translate::setCache($cache);
-      }
-    $translate=new Zend_Translate('csv',BASE_PATH.'/translation/fr-main.csv','en');
-    Zend_Registry::set('translater',$translate);
-    
-    $translaters=array();
-    $configs=array();
-    $modulesEnable=  Zend_Registry::get('modulesEnable');
-    foreach($modulesEnable as $module)
-      {
-      $translaters[$module]=new Zend_Translate('csv',BASE_PATH."/modules/$module/translation/fr-main.csv","en");   
-      $configs[$module]= new Zend_Config_Ini(BASE_PATH."/modules/$module/configs/module.ini", 'global');
-      }
-    Zend_Registry::set('translatersModules',$translaters);
-    Zend_Registry::set('configsModules',$configs);
     //Init Session
     $user=new Zend_Session_Namespace('Auth_User');
     if (!isset($user->initialized))

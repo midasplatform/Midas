@@ -27,6 +27,55 @@ class MIDAS_GlobalController extends Zend_Controller_Action
    */
   public function preDispatch()
     {   
+        // Init the translater
+    if (!$this->isDebug())
+      {
+      $frontendOptions=array(
+        'lifetime'=>86400,'automatic_serialization'=>true
+      );
+
+      $backendOptions=array(
+        'cache_dir'=>BASE_PATH.'/tmp/cache/translation'
+      );
+      $cache=Zend_Cache::factory('Core','File',$frontendOptions,$backendOptions);
+      Zend_Translate::setCache($cache);
+      }
+    $translate=new Zend_Translate('csv',BASE_PATH.'/translation/fr-main.csv','en');
+    Zend_Registry::set('translater',$translate);
+    
+    $translaters=array();
+    $configs=array();
+    $modulesEnable=  Zend_Registry::get('modulesEnable');
+    foreach($modulesEnable as $module)
+      {
+      $translaters[$module]=new Zend_Translate('csv',BASE_PATH."/modules/$module/translation/fr-main.csv","en");   
+      $configs[$module]= new Zend_Config_Ini(BASE_PATH."/modules/$module/configs/module.ini", 'global');
+      }
+    Zend_Registry::set('translatersModules',$translaters);
+    Zend_Registry::set('configsModules',$configs);
+    
+    $forward=$this->_getParam("forwardModule");
+    $request = $this->getRequest();
+    $response = $this->getResponse();
+    if(!isset($forward))
+      {
+      foreach($configs as $key => $config)
+        {
+        if($config->system==1)
+          {
+          if(file_exists(BASE_PATH.'/modules/'.$key.'/controllers/'.  ucfirst($request->getControllerName()).'CoreController.php'))
+            {
+            include_once BASE_PATH.'/modules/'.$key.'/controllers/'.  ucfirst($request->getControllerName()).'CoreController.php';
+            $name=ucfirst($key).'_'.ucfirst($request->getControllerName()).'CoreController';
+            $controller=new $name($request,$response);
+            if(method_exists($controller, $request->getActionName().'Action'))
+              {
+              $this->_forward($request->getActionName(), $request->getControllerName().'Core', $key,array('forwardModule'=>true));
+              }
+            }
+          }
+        }
+      }
     parent::preDispatch();
     if (!$this->isDebug())
       {

@@ -504,7 +504,6 @@ abstract class Zend_Controller_Action implements Zend_Controller_Action_Interfac
             if (null === $this->_classMethods) {
                 $this->_classMethods = get_class_methods($this);
             }
-
             // preDispatch() didn't change the action, so we can continue
             if ($this->getInvokeArg('useCaseSensitiveActions') || in_array($action, $this->_classMethods)) {
                 if ($this->getInvokeArg('useCaseSensitiveActions')) {

@@ -1,7 +1,7 @@
 <?php
-echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/user/user.settings.js"></script>';
+echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/user/user.settings.js?'.time().'"></script>';
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/user/user.settings.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/user/user.settings.css?<?php echo time(); ?>" />
 
 <div id="tabsSettings">
 	<ul>

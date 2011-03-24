@@ -1,3 +1,4 @@
-
-Order Allow,Deny
-Deny from all
+<FilesMatch "\.(ini|sql|php|phtml|csv)$">
+Order allow,deny
+Deny from All
+</FilesMatch>

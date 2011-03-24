@@ -11,6 +11,7 @@ class ErrorController extends AppController
     public function init()  
       {  
       parent::init();  
+
       $error = $this->_getParam('error_handler');
       if(!isset($error)||empty($error))
         {

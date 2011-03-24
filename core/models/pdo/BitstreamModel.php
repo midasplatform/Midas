@@ -29,7 +29,7 @@ class BitstreamModel extends AppModelPdo
   /** do not use, use method addBitstream in ItemRevision Model*/
   public function save($dao)
     {
-    $stack=debug_backtrace();
+    $stack=debug_backtrace(false);
     if($stack[1]['class']=="ItemRevisionModel"&&$stack[1]['function']=='addBitstream')
       {
       return parent::save($dao);
