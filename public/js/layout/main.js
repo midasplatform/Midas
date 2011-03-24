@@ -6,7 +6,6 @@ if (typeof console != "object") {
 		'log':function(){}
 	};
 } 
-console.log('test');
 $(function() { 
   json = jQuery.parseJSON($('div.jsonContent').html());
   if(!json.global.logged)
