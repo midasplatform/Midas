@@ -26,7 +26,34 @@ class MIDASFolderModel extends MIDASModel
     $this->initialize(); // required
     } // end __construct() 
   
-  
+  /** Create a folder */
+  function createFolder($name,$description,$parent)
+    {
+    if(!$parent instanceof FolderDao&&!is_numeric($parent))
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+    if(!is_string($name)||!is_string($description))
+      {
+      throw new Zend_Exception("Should be a string.");
+      }
+    $this->loadDaoClass('FolderDao');
+    $folder=new FolderDao();
+    $folder->setName($name);
+    $folder->setDescription($description);
+    $folder->setDate(date('c'));
+    if($parent instanceof FolderDao)
+      {
+      $parentId=$parent->getFolderId();
+      }
+    else
+      {
+      $parentId=$parent;
+      }
+    $folder->setParentId($parentId);
+    $this->save($folder);
+    return $folder;
+    }
   
 } // end class MIDASFolderModel
 ?>

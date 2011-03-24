@@ -1,5 +1,5 @@
 <?php
-class MIDASCommunityModel extends MIDASModel
+abstract class MIDASCommunityModel extends MIDASModel
 {
   public function __construct()
     {
@@ -29,7 +29,8 @@ class MIDASCommunityModel extends MIDASModel
     $this->initialize(); // required  
     } // end __construct()
   
-  
+  abstract function getPublicCommunities($limit=20);
+  abstract function getByName($name);
   
 } // end class MIDASCommunityModel
 ?>

@@ -132,13 +132,13 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    * @param $value
    * @return dao
    */
-  public function getBy($var, $value)
+  /*public function getBy($var, $value)
     {
     return $this->fetchRow($this->select()->where($var . ' = ?', $value));
-    } //end getBy
+    } //end getBy*/
 
   /**
-   * @method  function addLink($var,$daoParent, $daoSon)
+   * @method  function link($var,$daoParent, $daoSon)
    *  create a link between 2 tables
    * @param $var name of the attribute we search
    * @param $daoParent
@@ -250,57 +250,28 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    * @param $data array with dao information
    * @return boolean
    */
-  public function save($dao)
+  public function save($dataarray)
     {
-    $instance=$this->_name."Dao";
-    if(!$dao instanceof  $instance)
+    if(isset($this->_key)&&isset($dataarray[$this->_key]))
       {
-      throw new Zend_Exception("Should be an object ($instance).");
-      }
-
-    $data = array();
-    foreach($this->_mainData as $key => $var)
-      {
-      if(isset($dao->$key))
-        {
-        $data[$key] = $dao->$key;
-        }
-      }
-
-    $dataFiltered = array();
-    foreach($data as $key => $d)
-      {
-      if(isset($this->_mainData[$key]))
-        {
-        $dataFiltered[$key] = $d;
-        }
-      }
-
-    if(isset($this->_key)&&isset($dataFiltered[$this->_key]))
-      {
-      $key = $dataFiltered[$this->_key];
-      unset($dataFiltered[$this->_key]);
-      $nupdated=$this->update($dataFiltered, array($this->_key.'=?'=>$key));
+      $key = $dataarray[$this->_key];
+      unset($dataarray[$this->_key]);
+      $nupdated=$this->update($dataarray, array($this->_key.'=?'=>$key));
       if($nupdated==0)
         {
         return false;
         }
-      return true;
+      return $key;
       }
     else
       {
-      $insertedid = $this->insert($dataFiltered);
+      $insertedid = $this->insert($dataarray);
       if(!$insertedid)
         {
         return false;
         }
       $dao->saved=true;
-      if(isset($this->_key) && !empty($this->_key))
-        {
-        $key = $this->_key;
-        $dao->$key = $insertedid;
-        }
-      return true;
+      return $insertedid;
       }
     } // end method save
 

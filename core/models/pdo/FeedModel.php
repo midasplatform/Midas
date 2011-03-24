@@ -65,26 +65,7 @@ class FeedModel extends MIDASFeedModel
     return false;
     } //end policyCheck
   
-  /** get feeds (filtered by policies)
-   * @return Array of FeedDao */
-  function getGlobalFeeds($loggedUserDao,$policy=0,$limit=20)
-    {
-    return $this->_getFeeds($loggedUserDao,null,null,$policy,$limit);
-    } //end getGlobalFeeds
-    
-  /** get feeds by user (filtered by policies)
-   * @return Array of FeedDao */
-  function getFeedsByUser($loggedUserDao,$userDao,$policy=0,$limit=20)
-    {
-    return $this->_getFeeds($loggedUserDao,$userDao,null,$policy,$limit);
-    } //end getFeedsByUser
-    
-  /** get feeds by community (filtered by policies)
-     * @return Array of FeedDao */
-  function getFeedsByCommunity($loggedUserDao,$communityDao,$policy=0,$limit=20)
-    {
-    return $this->_getFeeds($loggedUserDao,null,$communityDao,$policy,$limit);
-    } //end getFeedsByCommunity
+
     
   /** get feed
    * @param UserDao $loggedUserDao

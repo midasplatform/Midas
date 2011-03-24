@@ -32,8 +32,41 @@ class MIDASModel
   /** Save a Dao */  
   public function save($dao)  
     {
-    $this->database->save($dao);
-    }
+    $instance=$this->_name."Dao";
+    if(!$dao instanceof $instance)
+      {
+      throw new Zend_Exception("Should be an object ($instance).");
+      }
+
+    $data = array();
+    foreach($this->_mainData as $key => $var)
+      {
+      if(isset($dao->$key))
+        {
+        $data[$key] = $dao->$key;
+        }
+      }
+
+    $dataarray = array();
+    foreach($data as $key => $d)
+      {
+      if(isset($this->_mainData[$key]))
+        {
+        $dataarray[$key] = $d;
+        }
+      }
+    
+    $insertedid = $this->database->save($dataarray);  
+    if($insertedid !== false)
+      {
+      if(isset($this->_key) && !empty($this->_key))
+        {
+        $key = $this->_key;
+        $dao->$key = $insertedid;
+        }  
+      $dao->saved = true;
+      }
+    } // end save()
     
   /** Delete a Dao */  
   public function delete($dao)  
@@ -136,14 +169,15 @@ class MIDASModel
     {
     if (substr($method, 0, 5) == 'getBy')
       {
-      if (isset($this->_mainData[strtolower(substr($method, 5))]))
+      /*if (isset($this->_mainData[strtolower(substr($method, 5))]))
         {
         return $this->getBy(strtolower(substr($method, 5)), $params[0]);
         }
       else
         {
         throw new Zend_Exception("Dao:  " . __CLASS__ . " " . $this->_name . ": method $method doesn't exist (" . strtolower(substr($method, 5)) . " is not defined.");
-        }
+        }*/
+      throw new Zend_Exception("Dao:  " . __CLASS__ . " " . $this->_name . ": getBy has been deprecated. Please fix.");
       }
     elseif (substr($method, 0, 6) == 'findBy')
       {
@@ -170,7 +204,7 @@ class MIDASModel
    * @param $value
    * @return dao
    */
-  public function getBy($var, $value)
+  /*private function getBy($var, $value)
     {
     if (!isset($this->_mainData[$var]))
       {
@@ -181,7 +215,7 @@ class MIDASModel
       $dao= $this->initDao(ucfirst($this->_name), $this->database->getBy($var,$value));
       return $dao;
       }
-    } //end getBy
+    } //end getBy*/
 
    /**
    * @method public  findBy($var, $value)

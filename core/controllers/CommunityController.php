@@ -27,7 +27,7 @@ class CommunityController extends AppController
     $this->view->json['community']['contentCreateLogin']=$this->t('You need to be logged in to be able to create a community.');
 
     $communities=$this->User->getUserCommunities($this->userSession->Dao);
-    $communities=array_merge($communities, $this->Community->getPubicCommunities());
+    $communities=array_merge($communities, $this->Community->getPublicCommunities());
     $this->Component->Sortdao->field='name';
     $this->Component->Sortdao->order='asc';
     usort($communities, array($this->Component->Sortdao,'sortByName'));
