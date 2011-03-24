@@ -131,12 +131,27 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       }
     else if ($this->_mainData[$var]['type'] == MIDAS_DATA && $key!=null)
       {
-      /*$result = $this->fetchRow($this->select()->where($this->_key . ' = ?', $key));
-      if (!isset($result->$var))
+      try 
         {
-        return null;
+        $columnfamily = new ColumnFamily($this->_db,$this->_name);
+        $resultarray = $columnfamily->get($key); // retrieve only what we want      
+        if(!isset($resultarray[$var]))
+          {
+          throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_DATA not found. CF='.$this->_name.' and var='.$var);   
+          return null;
+          }
+        return $resultarray[$var];
         }
-      return $result->$var;*/
+      catch(cassandra_NotFoundException $e) 
+        {
+        throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_DATA not found.  CF='.$this->_name.' and var='.$var);  
+        return null;  
+        }      
+      catch(Exception $e) 
+        {
+        throw new Zend_Exception($e); 
+        }  
+   
       }
     else if ($this->_mainData[$var]['type'] == MIDAS_ONE_TO_MANY)
       {
@@ -147,6 +162,8 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
         {
         throw new Zend_Exception($this->_mainData[$var]['parent_column']. " is not defined in the dao: ".get_class($dao));
         }
+      throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_ONE_TO_MANY not defined yet. You can implement it if you want :)');  
+         
       //return $model->__call("findBy" . ucfirst($this->_mainData[$var]['child_column']), array($dao->get($this->_mainData[$var]['parent_column'])));
       }
     else if ($this->_mainData[$var]['type'] == MIDAS_MANY_TO_ONE)
@@ -154,10 +171,16 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
       $this->ModelLoader = new MIDAS_ModelLoader();
       $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model']);
-      //return $model->__call("getBy" . ucfirst($this->_mainData[$var]['child_column']), array($dao->get($this->_mainData[$var]['parent_column'])));
+      if(!method_exists($model, 'getBy'.ucfirst($this->_mainData[$var]['child_column'])))
+        {
+        throw new Zend_Exception(get_class($model).'::getBy'.ucfirst($this->_mainData[$var]['child_column'])." is not implemented");
+        }
+      return call_user_func(array($model,'getBy'.ucfirst($this->_mainData[$var]['child_column'])),
+                            array($dao->get($this->_mainData[$var]['parent_column'])));
       }
     else if ($this->_mainData[$var]['type'] == MIDAS_MANY_TO_MANY)
       {
+      throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_MANY_TO_MANY not defined yet. You can implement it if you want :)');  
       //return $this->getLinkedObject($var, $dao);
       }
     else

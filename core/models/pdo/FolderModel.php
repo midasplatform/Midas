@@ -11,8 +11,8 @@ class FolderModel extends FolderModelBase
   /** Get a folder by id */
   function getByFolder_id($folderid)
     {
-    $row = $this->database->fetchRow($this->database->select()->where('folder_id = ?', $folderid)); 
-    $dao= $this->initDao(ucfirst($this->_name),$row);
+    $row = $this->database->fetchRow($this->database->select()->where('folder_id = ?', $folderid));
+    $dao=$this->initDao(ucfirst($this->_name),$row);
     return $dao;
     } // end getByFolder_id()
     

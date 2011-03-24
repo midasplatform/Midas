@@ -86,10 +86,13 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
       $this->ModelLoader = new MIDAS_ModelLoader();
       $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model']);
+      if(!method_exists($model, 'getBy'.ucfirst($this->_mainData[$var]['child_column'])))
+        {
+        throw new Zend_Exception(get_class($model).'::getBy'.ucfirst($this->_mainData[$var]['child_column'])." is not implemented");
+        }
       return call_user_func(array($model,'getBy'.ucfirst($this->_mainData[$var]['child_column'])),
                             array($dao->get($this->_mainData[$var]['parent_column'])));
       
-      //$model->__call("getBy" . ucfirst($this->_mainData[$var]['child_column']), array($dao->get($this->_mainData[$var]['parent_column'])));
       }
     else if ($this->_mainData[$var]['type'] == MIDAS_MANY_TO_MANY)
       {
