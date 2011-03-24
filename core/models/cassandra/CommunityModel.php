@@ -1,9 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/CommunityModelBase.php';
+
 /**
  * \class FeedModel
  * \brief Cassandra Model
  */
-class CommunityModel extends MIDASCommunityModel
+class CommunityModel extends CommunityModelBase
 {
   function getPublicCommunities($limit=20)
     {

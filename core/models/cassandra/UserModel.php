@@ -1,9 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/UserModelBase.php';
+
 /**
  * \class UserModel
  * \brief Cassandra Model
  */
-class UserModel extends MIDASUserModel
+class UserModel extends UserModelBase
 {
   /** Get a user by email */
   function getByEmail($email)
@@ -31,6 +33,30 @@ class UserModel extends MIDASUserModel
       
     return $dao;
     } // end getByEmail()
+    
+  /** Get a user by id */
+  function getByUser_id($userid)
+    {
+    // We get from the table emailuser
+    try 
+      {
+      $user = new ColumnFamily($this->database->getDB(), 'user');
+      $userarray = $user->get($userid);
+      // Add the user_id
+      $userarray[$this->_key] = $userid;
+      $dao= $this->initDao('User',$userarray);      
+      }
+    catch(cassandra_NotFoundException $e) 
+      {
+      return false;  
+      }      
+    catch(Exception $e) 
+      {
+      throw new Zend_Exception($e); 
+      }  
+      
+    return $dao;
+    } // end getByUser_id()
     
   /** Get user communities */
   public function getUserCommunities($userDao)

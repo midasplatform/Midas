@@ -1,9 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/ItemModelBase.php';
+
 /**
  * \class ItemModel
  * \brief Cassandra Model
  */
-class ItemModel extends MIDASItemModel
+class ItemModel extends ItemModelBase
 {
   /** get random items
    *

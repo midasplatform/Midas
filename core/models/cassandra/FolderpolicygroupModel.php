@@ -1,9 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/FolderpolicygroupModelBase.php';
+
 /**
  * \class Folderpolicygroup
  * \brief Cassandra Model
  */
-class FolderpolicygroupModel extends MIDASFolderpolicygroupModel
+class FolderpolicygroupModel extends FolderpolicygroupModelBase
 {
   /** getPolicy
    * @return FolderpolicyuserDao
