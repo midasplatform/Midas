@@ -1,9 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/GroupModelBase.php';
+
 /**
  * \class GroupModel
  * \brief Cassandra Model
  */
-class GroupModel extends MIDASGroupModel
+class GroupModel extends GroupModelBase
 {
   /** Add an user to a group
    * @return void
