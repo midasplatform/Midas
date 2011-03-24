@@ -5,16 +5,18 @@
  *  Global dao methods
  */
 class MIDAS_GlobalDao
-  {
+{
+  protected $key;
+  
   /**
    * @method public  __construct()
    *  Construct dao
    */
   public function __construct()
     {
-    if (isset($this->getModel()->_key))
+    if ($this->getModel()->getKey() !== '')
       {
-      $this->_key = $this->getModel()->_key;
+      $this->_key = $this->getModel()->getKey();
       }
     else
       {
@@ -58,7 +60,9 @@ class MIDAS_GlobalDao
       {
       return false;
       }
-    foreach ($this->getModel()->_mainData as $name => $type)
+      
+    $maindata = $this->getModel()->getMainData();
+    foreach ($maindata as $name => $type)
       {
       if (isset($values->$name) && $type['type'] == MIDAS_DATA)
         {
@@ -72,7 +76,8 @@ class MIDAS_GlobalDao
   public function _toArray()
     {
     $return=array();
-    foreach ($this->getModel()->_mainData as $name => $type)
+    $maindata = $this->getModel()->getMainData();
+    foreach ($maindata as $name => $type)
       {
       if(isset($this->$name))
         {
@@ -91,9 +96,9 @@ class MIDAS_GlobalDao
     {
     if($this->_key==false)
       {
-      throw new Zend_Exception("Model  " . $this->getModel()->_name . ": key is not defined here.");
+      throw new Zend_Exception("Model  " . $this->getModel()->getName() . ": key is not defined here.");
       }
-    $key = $this->getModel()->_key;
+    $key = $this->getModel()->getKey();
     return $this->get($key);
     }
 
@@ -104,10 +109,11 @@ class MIDAS_GlobalDao
    * @return value
    */
   public function get($var)
-    {         
-    if (!isset($this->getModel()->_mainData[$var]))
+    {     
+    $maindata = $this->getModel()->getMainData();
+    if (!isset($maindata[$var]))
       {
-      throw new Zend_Exception("Model " . $this->getModel()->_name . ": var $var is not defined here.");
+      throw new Zend_Exception("Model " . $this->getModel()->getName() . ": var $var is not defined here.");
       }
     if (method_exists($this, 'get' . ucfirst($var)))
       {
@@ -135,9 +141,10 @@ class MIDAS_GlobalDao
    */
   public function set($var, $value)
     {
-    if (!isset($this->getModel()->_mainData[$var]))
+    $maindata = $this->getModel()->getMainData(); 
+    if (!isset($maindata[$var]))
       {
-      throw new Zend_Exception("Model " . $this->getModel()->_name . ": var $var is not defined here.");
+      throw new Zend_Exception("Model " . $this->getModel()->getName() . ": var $var is not defined here.");
       }
     if (method_exists($this, 'set' . ucfirst($var)))
       {
@@ -163,13 +170,12 @@ class MIDAS_GlobalDao
       return $this->ModelLoader->loadModel($name);
       }
     if(isset($this->_module))
-        {
-        return $this->ModelLoader->loadModel($this->_model,$this->_module);
-        }
+      {
+      return $this->ModelLoader->loadModel($this->_model,$this->_module);
+      }
     return $this->ModelLoader->loadModel($this->_model);
-    }
-
-//end method getModel()
+    } //end method getModel()
+    
   /**
    * @method public function getLogger()
    * Get Logger
@@ -178,9 +184,8 @@ class MIDAS_GlobalDao
   public function getLogger()
     {
     return Zend_Registry::get('logger');
-    }
-
-//end method getLogger()
+    } //end method getLogger()
+    
   /**
    * @method public  __call($method, $params)
    *  Catch if the method doesn't exists and create a method dynamically
@@ -193,7 +198,8 @@ class MIDAS_GlobalDao
     if (substr($method, 0, 3) == 'get')
       {
       $var = $this->_getRealName(substr($method, 3));
-      if (isset($this->getModel()->_mainData[$var]))
+      $maindata = $this->getModel()->getMainData();
+      if (isset($maindata[$var]))
         {
         return $this->get($var);
         }
@@ -205,7 +211,8 @@ class MIDAS_GlobalDao
     else if (substr($method, 0, 3) == 'set')
       {
       $var = $this->_getRealName(substr($method, 3));
-      if (isset($this->getModel()->_mainData[$var]))
+      $maindata = $this->getModel()->getMainData();
+      if (isset($maindata[$var]))
         {
         return $this->set($var, $params[0]);
         }
@@ -218,9 +225,8 @@ class MIDAS_GlobalDao
       {
       throw new Zend_Exception("Dao:  " . __CLASS__ . ": method $method doesn't exist.");
       }
-    }
-
-// end __call
+    } // end __call
+    
   /**
    * @method private _getRealName(
    * @param $var name
@@ -245,7 +251,5 @@ class MIDAS_GlobalDao
     return $return;
     }
 
-  }
-
-// end class
+}// end class
 ?>

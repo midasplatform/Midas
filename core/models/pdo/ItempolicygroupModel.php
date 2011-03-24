@@ -3,24 +3,8 @@
  * \class ItempolicygroupModel
  * \brief Pdo Model
  */
-class ItempolicygroupModel extends AppModelPdo
-  {
-  public $_name='itempolicygroup';
-
-  public $_mainData=array(
-    'item_id'=>array(
-    'type'=>MIDAS_DATA
-  ),'group_id'=>array(
-    'type'=>MIDAS_DATA
-  ),'policy'=>array(
-    'type'=>MIDAS_DATA
-  ),'item'=>array(
-    'type'=>MIDAS_MANY_TO_ONE,'model'=>'Item','parent_column'=>'item_id','child_column'=>'item_id'
-  ),'group'=>array(
-    'type'=>MIDAS_MANY_TO_ONE,'model'=>'Group','parent_column'=>'group_id','child_column'=>'group_id'
-  )
-  );
-
+class ItempolicygroupModel extends MIDASItempolicygroupModel
+{
   /** create a policy
    * @return ItempolicygroupDao*/
   public function createPolicy($group, $item, $policy)
@@ -67,7 +51,7 @@ class ItempolicygroupModel extends AppModelPdo
       {
       throw new Zend_Exception("Should be an item.");
       }
-    return $this->initDao('Itempolicygroup',$this->fetchRow($this->select()->where('item_id = ?',$item->getKey())->where('group_id = ?',$group->getKey())));
+    return $this->initDao('Itempolicygroup',$this->database->fetchRow($this->database->select()->where('item_id = ?',$item->getKey())->where('group_id = ?',$group->getKey())));
     }
-  }
+} // end class
 ?>

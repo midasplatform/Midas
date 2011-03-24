@@ -3,29 +3,9 @@
  * \class FolderModel
  * \brief Pdo Model
  */
-class FolderModel extends AppModelPdo
+class FolderModel extends MIDASFolderModel
 {
-  public $_name = 'folder';
-  public $_key = 'folder_id';
-  
-  public $_components = array('Sortdao');
-
-  public $_mainData= array(
-    'folder_id'=> array('type'=>MIDAS_DATA),
-    'left_indice'=> array('type'=>MIDAS_DATA),
-    'right_indice'=> array('type'=>MIDAS_DATA),
-    'parent_id'=> array('type'=>MIDAS_DATA),
-    'name'=> array('type'=>MIDAS_DATA),
-    'description' =>  array('type'=>MIDAS_DATA),
-    'date' =>  array('type'=>MIDAS_DATA),
-    'items' =>  array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'Item', 'table' => 'item2folder', 'parent_column'=> 'folder_id', 'child_column' => 'item_id'),
-    'folderpolicygroup' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Folderpolicygroup', 'parent_column'=> 'folder_id', 'child_column' => 'folder_id'),
-    'folderpolicyuser' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Folderpolicyuser', 'parent_column'=> 'folder_id', 'child_column' => 'folder_id'),
-    'folders' => array('type'=>MIDAS_ONE_TO_MANY, 'model'=>'Folder', 'parent_column'=> 'folder_id', 'child_column' => 'parent_id'),
-    'parent' => array('type'=>MIDAS_MANY_TO_ONE, 'model'=>'Folder', 'parent_column'=> 'parent_id', 'child_column' => 'folder_id'),
-    );
-
-    /** check if the policy is valid*/
+  /** check if the policy is valid*/
   function policyCheck($folderDao,$userDao=null,$policy=0)
     {
     if(!$folderDao instanceof  FolderDao||!is_numeric($policy))
@@ -45,7 +25,7 @@ class FolderModel extends AppModelPdo
       $userId = $userDao->getUserId();
       }
       
-     $subqueryUser= $this->select()
+     $subqueryUser= $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'folderpolicyuser'),
                                  array('folder_id'))
@@ -53,24 +33,24 @@ class FolderModel extends AppModelPdo
                           ->where('p.folder_id >= ?', $folderDao->getKey())
                           ->where('user_id = ? ',$userId);
 
-     $subqueryGroup = $this->select()
+     $subqueryGroup = $this->database->select()
                     ->setIntegrityCheck(false)
                     ->from(array('p' => 'folderpolicygroup'),
                            array('folder_id'))
                     ->where('policy >= ?', $policy)
                     ->where('p.folder_id >= ?', $folderDao->getKey())
-                    ->where('( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                    ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                               group_id IN (' .new Zend_Db_Expr(
-                              $this->select()
+                              $this->database->select()
                                    ->setIntegrityCheck(false)
                                    ->from(array('u2g' => 'user2group'),
                                           array('group_id'))
                                    ->where('u2g.user_id = ?' , $userId)
                                    .'))' ));
 
-    $sql = $this->select()
+    $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
-    $rowset = $this->fetchAll($sql);
+    $rowset = $this->database->fetchAll($sql);
     if(count($rowset)>0)
       {
       return true;
@@ -103,23 +83,23 @@ class FolderModel extends AppModelPdo
         {
         throw new Zend_Exception("Should be a folder" );
         }
-      $subqueryUser= $this->select()
+      $subqueryUser= $this->database->select()
                       ->setIntegrityCheck(false)
                       ->from(array('f' => 'folder'),array('folder_id'))
                       ->join(array('fpu' => 'folderpolicyuser'),'
-                            f.folder_id = fpu.folder_id AND '.$this->_db->quoteInto('fpu.policy >= ?', $policy).'
-                               AND '.$this->_db->quoteInto('user_id = ? ',$userId).' ',array())
+                            f.folder_id = fpu.folder_id AND '.$this->database->getDB()->quoteInto('fpu.policy >= ?', $policy).'
+                               AND '.$this->database->getDB()->quoteInto('user_id = ? ',$userId).' ',array())
                       ->where('left_indice > ?', $folder->getLeftIndice())
                       ->where('right_indice < ?', $folder->getRightIndice());
 
-      $subqueryGroup = $this->select()
+      $subqueryGroup = $this->database->select()
                     ->setIntegrityCheck(false)
                     ->from(array('f' => 'folder'),array('folder_id'))
                     ->join(array('fpg' => 'folderpolicygroup'),'
-                                f.folder_id = fpg.folder_id  AND '.$this->_db->quoteInto('fpg.policy >= ?', $policy).'
-                                   AND ( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                                f.folder_id = fpg.folder_id  AND '.$this->database->getDB()->quoteInto('fpg.policy >= ?', $policy).'
+                                   AND ( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                                         group_id IN (' .new Zend_Db_Expr(
-                                        $this->select()
+                                        $this->database->select()
                                              ->setIntegrityCheck(false)
                                              ->from(array('u2g' => 'user2group'),
                                                     array('group_id'))
@@ -128,26 +108,26 @@ class FolderModel extends AppModelPdo
                     ->where('left_indice > ?', $folder->getLeftIndice())
                     ->where('right_indice < ?', $folder->getRightIndice());
 
-       $subSqlFolders = $this->select()
+       $subSqlFolders = $this->database->select()
               ->union(array($subqueryUser, $subqueryGroup));
 
-      $sql=$this->select()
+      $sql=$this->database->select()
                 ->setIntegrityCheck(false)
                 ->from(array('i' => 'item'),array('sum'=>'sum(i.sizebytes)','count'=>'count(i.item_id)'))
                 ->join(array('i2f' => 'item2folder'),
-                         '( '.$this->_db->quoteInto('i2f.folder_id IN (?)',$subSqlFolders).'
+                         '( '.$this->database->getDB()->quoteInto('i2f.folder_id IN (?)',$subSqlFolders).'
                           OR i2f.folder_id='.$folder->getKey().'
                           )
                           AND i2f.item_id = i.item_id'
                           ,array() )
                 ->joinLeft(array('ip' => 'itempolicyuser'),'
-                          i.item_id = ip.item_id AND '.$this->_db->quoteInto('policy >= ?', $policy).'
-                             AND '.$this->_db->quoteInto('user_id = ? ',$userId).' ',array())
+                          i.item_id = ip.item_id AND '.$this->database->getDB()->quoteInto('policy >= ?', $policy).'
+                             AND '.$this->database->getDB()->quoteInto('user_id = ? ',$userId).' ',array())
                 ->joinLeft(array('ipg' => 'itempolicygroup'),'
-                                i.item_id = ipg.item_id AND '.$this->_db->quoteInto('ipg.policy >= ?', $policy).'
-                                   AND ( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                                i.item_id = ipg.item_id AND '.$this->database->getDB()->quoteInto('ipg.policy >= ?', $policy).'
+                                   AND ( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                                         group_id IN (' .new Zend_Db_Expr(
-                                        $this->select()
+                                        $this->database->select()
                                              ->setIntegrityCheck(false)
                                              ->from(array('u2g' => 'user2group'),
                                                     array('group_id'))
@@ -161,7 +141,7 @@ class FolderModel extends AppModelPdo
                 ;
 
 
-      $row = $this->fetchRow($sql);    
+      $row = $this->database->fetchRow($sql);    
       $folders[$key]->count = $row['count'];
       $folders[$key]->size = $row['sum'];
       if($folders[$key]->size==null)
@@ -189,9 +169,9 @@ class FolderModel extends AppModelPdo
       throw new Zend_Exception("Unable to find the key" );
       }
     $leftIndice=$folder->getLeftIndice();
-    $this->_db->update('folder', array('left_indice'=> new Zend_Db_Expr('left_indice - 2')),
+    $this->database->getDB()->update('folder', array('left_indice'=> new Zend_Db_Expr('left_indice - 2')),
                           array('left_indice >= ?'=>$leftIndice));
-    $this->_db->update('folder', array('right_indice'=> new Zend_Db_Expr('right_indice - 2')),
+    $this->database->getDB()->update('folder', array('right_indice'=> new Zend_Db_Expr('right_indice - 2')),
                           array('right_indice >= ?'=>$leftIndice));
     parent::delete( $folder);
     unset($folder->folder_id);
@@ -239,16 +219,16 @@ class FolderModel extends AppModelPdo
       unset($data['folder_id']);
       unset($data['left_indice']);
       unset($data['right_indice']);
-      $this->update($data, array('folder_id = ?'=>$key));
+      $this->database->update($data, array('folder_id = ?'=>$key));
       return $key;
       }
     else
       {
-      $this->_db->update('folder', array('right_indice'=> new Zend_Db_Expr('2 + right_indice')),
+      $this->database->getDB()->update('folder', array('right_indice'=> new Zend_Db_Expr('2 + right_indice')),
                           array('right_indice >= ?'=>$rightParent));
-      $this->_db->update('folder', array('left_indice'=> new Zend_Db_Expr('2 + left_indice')),
+      $this->database->getDB()->update('folder', array('left_indice'=> new Zend_Db_Expr('2 + left_indice')),
                           array('left_indice >= ?'=>$rightParent));
-      $insertedid = $this->insert($data);
+      $insertedid = $this->database->insert($data);
       if(!$insertedid)
         {
         return false;
@@ -266,21 +246,21 @@ class FolderModel extends AppModelPdo
       {
       throw new Zend_Exception("Should be a folder.");
       }
-    $dao= $this->initDao('Community', $this->fetchRow($this->select()
+    $dao= $this->initDao('Community', $this->database->fetchRow($this->database->select()
                                                            ->setIntegrityCheck(false)
                                                            ->from('community')
                                                            ->where('folder_id = ?', $folder->getFolderId())));
     return $dao;
     }
     
-    /** Get user if  the folder is the main folder of one*/
+  /** Get user if  the folder is the main folder of one*/
   function getUser($folder)
     {
     if(!$folder instanceof FolderDao)
       {
       throw new Zend_Exception("Should be a folder.");
       }
-    $dao= $this->initDao('User', $this->fetchRow($this->select()
+    $dao= $this->initDao('User', $this->database->fetchRow($this->database->select()
                                                            ->setIntegrityCheck(false)
                                                            ->from('user')
                                                            ->where('folder_id = ?', $folder->getFolderId())));
@@ -354,41 +334,41 @@ class FolderModel extends AppModelPdo
       $userId = $userDao->getUserId();
       }
 
-    $subqueryUser= $this->select()
+    $subqueryUser= $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('f' => 'item'))
                           ->join(array('p' => 'itempolicyuser'),
                                 'f.item_id=p.item_id',
                                  array('p.policy'))
                           ->join(array('i' => 'item2folder'),
-                                $this->_db->quoteInto('i.folder_id IN (?)',$folderIds).'
+                                $this->database->getDB()->quoteInto('i.folder_id IN (?)',$folderIds).'
                                 AND i.item_id = p.item_id' ,array('i.folder_id'))
                           ->where('policy >= ?', $policy)
                           ->where('user_id = ? ',$userId);
 
-    $subqueryGroup = $this->select()
+    $subqueryGroup = $this->database->select()
                     ->setIntegrityCheck(false)
                     ->from(array('f' => 'item'))
                     ->join(array('p' => 'itempolicygroup'),
                           'f.item_id=p.item_id',
                            array('p.policy'))
                     ->join(array('i' => 'item2folder'),
-                                $this->_db->quoteInto('i.folder_id IN (?)',$folderIds).'
+                                $this->database->getDB()->quoteInto('i.folder_id IN (?)',$folderIds).'
                                 AND i.item_id = p.item_id' ,array('i.folder_id'))
                     ->where('policy >= ?', $policy)
-                    ->where('( '.$this->_db->quoteInto('p.group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                    ->where('( '.$this->database->getDB()->quoteInto('p.group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                               p.group_id IN (' .new Zend_Db_Expr(
-                              $this->select()
+                              $this->database->select()
                                    ->setIntegrityCheck(false)
                                    ->from(array('u2g' => 'user2group'),
                                           array('group_id'))
                                    ->where('u2g.user_id = ?' , $userId)
                                    .'))' ));
 
-    $sql = $this->select()
+    $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
     
-    $rowset = $this->fetchAll($sql);
+    $rowset = $this->database->fetchAll($sql);
     $return = array();    
     $policyArray=array();
     foreach ($rowset as $keyRow=>$row)
@@ -447,23 +427,23 @@ class FolderModel extends AppModelPdo
         }
 
       
-       $subqueryUser= $this->select()
+       $subqueryUser= $this->database->select()
                       ->setIntegrityCheck(false)
                       ->from(array('f' => 'folder'))
                       ->join(array('fpu' => 'folderpolicyuser'),'
-                            f.folder_id = fpu.folder_id AND '.$this->_db->quoteInto('fpu.policy >= ?', $policy).'
-                               AND '.$this->_db->quoteInto('user_id = ? ',$userId).' ',array('policy'))
+                            f.folder_id = fpu.folder_id AND '.$this->database->getDB()->quoteInto('fpu.policy >= ?', $policy).'
+                               AND '.$this->database->getDB()->quoteInto('user_id = ? ',$userId).' ',array('policy'))
                       ->where('left_indice > ?', $folder->getLeftIndice())
                       ->where('right_indice < ?', $folder->getRightIndice());
 
-      $subqueryGroup = $this->select()
+      $subqueryGroup = $this->database->select()
                     ->setIntegrityCheck(false)
                     ->from(array('f' => 'folder'))
                     ->join(array('fpg' => 'folderpolicygroup'),'
-                                f.folder_id = fpg.folder_id  AND '.$this->_db->quoteInto('fpg.policy >= ?', $policy).'
-                                   AND ( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                                f.folder_id = fpg.folder_id  AND '.$this->database->getDB()->quoteInto('fpg.policy >= ?', $policy).'
+                                   AND ( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                                         group_id IN (' .new Zend_Db_Expr(
-                                        $this->select()
+                                        $this->database->select()
                                              ->setIntegrityCheck(false)
                                              ->from(array('u2g' => 'user2group'),
                                                     array('group_id'))
@@ -472,9 +452,9 @@ class FolderModel extends AppModelPdo
                     ->where('left_indice > ?', $folder->getLeftIndice())
                     ->where('right_indice < ?', $folder->getRightIndice());
 
-      $sql = $this->select()
+      $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
-      $rowset = $this->fetchAll($sql);     
+      $rowset = $this->database->fetchAll($sql);     
       $return = array();
       $policyArray=array();
       foreach ($rowset as $keyRow=>$row)
@@ -536,7 +516,7 @@ class FolderModel extends AppModelPdo
       $userId = $userDao->getUserId();
       }
 
-    $subqueryUser= $this->select()
+    $subqueryUser= $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('f' => 'folder'))
                           ->join(array('p' => 'folderpolicyuser'),
@@ -546,7 +526,7 @@ class FolderModel extends AppModelPdo
                           ->where('policy >= ?', $policy)
                           ->where('user_id = ? ',$userId);
 
-    $subqueryGroup = $this->select()
+    $subqueryGroup = $this->database->select()
                     ->setIntegrityCheck(false)
                     ->from(array('f' => 'folder'))
                     ->join(array('p' => 'folderpolicygroup'),
@@ -554,18 +534,18 @@ class FolderModel extends AppModelPdo
                            array('p.policy'))
                     ->where ('f.parent_id IN (?)',$folderIds)
                     ->where('policy >= ?', $policy)
-                    ->where('( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                    ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                               group_id IN (' .new Zend_Db_Expr(
-                              $this->select()
+                              $this->database->select()
                                    ->setIntegrityCheck(false)
                                    ->from(array('u2g' => 'user2group'),
                                           array('group_id'))
                                    ->where('u2g.user_id = ?' , $userId)
                                    .'))' ));
-    $sql = $this->select()
+    $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
     
-    $rowset = $this->fetchAll($sql);
+    $rowset = $this->database->fetchAll($sql);
     $return = array();      
     $policyArray=array();
     foreach ($rowset as $keyRow=>$row)
@@ -602,7 +582,7 @@ class FolderModel extends AppModelPdo
       {
       throw new Zend_Exception("Should be a folder.");
       }
-    $row = $this->fetchRow($this->select()->from($this->_name)
+    $row = $this->database->fetchRow($this->database->select()->from($this->_name)
                                           ->where('parent_id=?',$folder->getFolderId())
                                           ->where('name=?',$foldername));
     return $this->initDao('Folder',$row);
@@ -621,7 +601,7 @@ class FolderModel extends AppModelPdo
       {
       throw new Zend_Exception("Should be an item.");
       }
-    $this->link('items',$folder,$item);
+    $this->database->link('items',$folder,$item);
     } // end function addItem
 
   /** Return an item by its name
@@ -632,7 +612,7 @@ class FolderModel extends AppModelPdo
       {
       throw new Zend_Exception("Should be a folder.");
       }
-    $row = $this->fetchRow($this->select()->setIntegrityCheck(false)
+    $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
                                           ->from('item')
                                           ->join('item2folder','item2folder.item_id=item.item_id')
                                           ->where('item2folder.folder_id=?',$folder->getFolderId())
@@ -657,21 +637,21 @@ class FolderModel extends AppModelPdo
       $userId = $userDao->getUserId();
       }
 
-    $subqueryUser= $this->select()
+    $subqueryUser= $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'folderpolicyuser'),
                                  array('folder_id'))
                           ->where('policy >= ?', MIDAS_POLICY_READ)
                           ->where('user_id = ? ',$userId);
 
-    $subqueryGroup = $this->select()
+    $subqueryGroup = $this->database->select()
                     ->setIntegrityCheck(false)
                     ->from(array('p' => 'folderpolicygroup'),
                            array('folder_id'))
                     ->where('policy >= ?', MIDAS_POLICY_READ)
-                    ->where('( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                    ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                               group_id IN (' .new Zend_Db_Expr(
-                              $this->select()
+                              $this->database->select()
                                    ->setIntegrityCheck(false)
                                    ->from(array('u2g' => 'user2group'),
                                           array('group_id'))
@@ -679,15 +659,15 @@ class FolderModel extends AppModelPdo
                                    .'))' ));
 
 
-    $sql = $this->select()->from($this->_name,array('folder_id','name','count(*)'))
-                                          ->where($this->_db->quoteInto('name LIKE ?','%'.$search.'%').'
+    $sql = $this->database->select()->from($this->_name,array('folder_id','name','count(*)'))
+                                          ->where($this->database->getDB()->quoteInto('name LIKE ?','%'.$search.'%').'
                                                    AND (folder_id IN ('.$subqueryUser.')
                                                    OR folder_id IN ('.$subqueryGroup.'))')
                                           ->group('name')
                                           ->limit(14);
 
 
-    $rowset = $this->fetchAll($sql);
+    $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
       {

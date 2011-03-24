@@ -1,0 +1,14 @@
+/* Create the MIDAS keyspace */
+create keyspace midas with replication_factor = 3 and placement_strategy = 'org.apache.cassandra.locator.RackUnawareStrategy';
+
+/* Switch to the new keyspace */
+use midas;
+
+/* Create new column families */
+create column family user with column_type = 'Standard' and comparator = UTF8Type
+create column family emailuser with column_type = 'Standard' and comparator = UTF8Type
+create column family item with column_type = 'Standard' and comparator = 'UTF8Type';
+
+
+/** To import this schema. Run the following on your machine */
+/* $ bin/cassandra-cli --host localhost --batch < schema.txt */

@@ -4,31 +4,15 @@
  *  UserModel
  *  Pdo Model
  */
-class CommunityModel extends AppModelPdo
+class CommunityModel extends MIDASCommunityModel
 {
-  public $_name = 'community';
-  public $_key = 'community_id';
-  public $_mainData = array(
-    'community_id' => array('type' => MIDAS_DATA),
-    'name' => array('type' => MIDAS_DATA),
-    'description' => array('type' => MIDAS_DATA),
-    'creation' => array('type' => MIDAS_DATA),
-    'privacy' => array('type' => MIDAS_DATA),
-    'folder_id' => array('type' => MIDAS_DATA),
-    'publicfolder_id' => array('type' => MIDAS_DATA),
-    'privatefolder_id' => array('type' => MIDAS_DATA),
-    'admingroup_id' => array('type' => MIDAS_DATA),
-    'moderatorgroup_id' => array('type' => MIDAS_DATA),
-    'membergroup_id' => array('type' => MIDAS_DATA),
-    'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
-    'public_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'publicfolder_id', 'child_column' => 'folder_id'),
-    'private_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'privatefolder_id', 'child_column' => 'folder_id'),
-    'admin_group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'admingroup_id', 'child_column' => 'group_id'),
-    'moderator_group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'moderatorgroup_id', 'child_column' => 'group_id'),
-    'member_group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'membergroup_id', 'child_column' => 'group_id'),
-    'feeds' =>  array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'Feed', 'table' => 'feed2community', 'parent_column'=> 'community_id', 'child_column' => 'feed_id'),
-  );
-
+  
+  /** Get a community by name */
+  function getByName($name)
+    {
+    return $this->getBy('name',$name);  
+    } // end getByName()
+     
   /* get public Communities
    * 
    * @return Array of Community Dao
@@ -39,11 +23,11 @@ class CommunityModel extends AppModelPdo
       {
       throw new Zend_Exception("Error parameter.");
       }
-    $sql = $this->select()->from($this->_name)
+    $sql = $this->database->select()->from($this->_name)
                           ->where('privacy != ?',MIDAS_COMMUNITY_PRIVATE)
                           ->limit($limit);
       
-    $rowset = $this->fetchAll($sql);
+    $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
       {      
@@ -68,13 +52,13 @@ class CommunityModel extends AppModelPdo
       $userId = $userDao->getUserId();
       }
       
-    $sql = $this->select()->from($this->_name,array('community_id','name','count(*)'))
+    $sql = $this->database->select()->from($this->_name,array('community_id','name','count(*)'))
                                           ->where('name LIKE ?','%'.$search.'%')
                                           ->where('privacy < '.MIDAS_COMMUNITY_PRIVATE)
                                           ->group('name')
                                           ->limit(14);
       
-    $rowset = $this->fetchAll($sql);
+    $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
       {

@@ -3,23 +3,8 @@
  * \class ItemModel
  * \brief Pdo Model
  */
-class ItemModel extends AppModelPdo
+class ItemModel extends MIDASItemModel
 {
-  public $_name = 'item';
-  public $_key = 'item_id';
-
-  public $_mainData= array(
-      'item_id'=>  array('type'=>MIDAS_DATA),
-      'name' =>  array('type'=>MIDAS_DATA),
-      'description' =>  array('type'=>MIDAS_DATA),
-      'type' =>  array('type'=>MIDAS_DATA),
-      'sizebytes'=>array('type'=>MIDAS_DATA),
-      'date'=>array('type'=>MIDAS_DATA),
-      'thumbnail'=>array('type'=>MIDAS_DATA),
-      'folders' =>  array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'Folder', 'table' => 'item2folder', 'parent_column'=> 'item_id', 'child_column' => 'folder_id'),
-      'revisions' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model'=>'ItemRevision', 'parent_column'=> 'item_id', 'child_column' => 'item_id'),
-      'keywords' => array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'ItemKeyword', 'table' => 'item2keyword', 'parent_column'=> 'item_id', 'child_column' => 'keyword_id'),
-      );
 
   /** check if the policy is valid*/
   function policyCheck($itemdao,$userDao=null,$policy=0)
@@ -41,7 +26,7 @@ class ItemModel extends AppModelPdo
       $userId = $userDao->getUserId();
       }
       
-     $subqueryUser= $this->select()
+     $subqueryUser= $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'itempolicyuser'),
                                  array('item_id'))
@@ -49,25 +34,25 @@ class ItemModel extends AppModelPdo
                           ->where('p.item_id >= ?', $itemdao->getKey())
                           ->where('user_id = ? ',$userId);
 
-     $subqueryGroup = $this->select()
+     $subqueryGroup = $this->database->select()
                     ->setIntegrityCheck(false)
                     ->from(array('p' => 'itempolicygroup'),
                            array('item_id'))
                     ->where('policy >= ?', $policy)
                     ->where('p.item_id >= ?', $itemdao->getKey())
-                    ->where('( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                    ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                               group_id IN (' .new Zend_Db_Expr(
-                              $this->select()
+                              $this->database->select()
                                    ->setIntegrityCheck(false)
                                    ->from(array('u2g' => 'user2group'),
                                           array('group_id'))
                                    ->where('u2g.user_id = ?' , $userId)
                                    .'))' ));
 
-    $sql = $this->select()
+    $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
 
-    $rowset = $this->fetchAll($sql);
+    $rowset = $this->database->fetchAll($sql);
     if(count($rowset)>0)
       {
       return true;
@@ -105,21 +90,21 @@ class ItemModel extends AppModelPdo
       {
       $rand='random()';
       }
-    $sql=$this->select()
+    $sql=$this->database->select()
         ->setIntegrityCheck(false)
         ->from(array('i' => 'item'))
-        ->join(array('tt'=> $this->select()
+        ->join(array('tt'=> $this->database->select()
                     ->from(array('i' => 'item'),array('maxid'=>'MAX(item_id)'))
                     ),        
             ' i.item_id >= FLOOR(tt.maxid*'.$rand.')')
         ->joinLeft(array('ip' => 'itempolicyuser'),'
-                  i.item_id = ip.item_id AND '.$this->_db->quoteInto('ip.policy >= ?', $policy).'
-                     AND '.$this->_db->quoteInto('user_id = ? ',$userId).' ',array('userpolicy'=>'ip.policy'))
+                  i.item_id = ip.item_id AND '.$this->database->getDB()->quoteInto('ip.policy >= ?', $policy).'
+                     AND '.$this->database->getDB()->quoteInto('user_id = ? ',$userId).' ',array('userpolicy'=>'ip.policy'))
         ->joinLeft(array('ipg' => 'itempolicygroup'),'
-                        i.item_id = ipg.item_id AND '.$this->_db->quoteInto('ipg.policy >= ?', $policy).'
-                           AND ( '.$this->_db->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                        i.item_id = ipg.item_id AND '.$this->database->getDB()->quoteInto('ipg.policy >= ?', $policy).'
+                           AND ( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                                 group_id IN (' .new Zend_Db_Expr(
-                                $this->select()
+                                $this->database->select()
                                      ->setIntegrityCheck(false)
                                      ->from(array('u2g' => 'user2group'),
                                             array('group_id'))
@@ -137,7 +122,7 @@ class ItemModel extends AppModelPdo
       $sql->where('thumbnail != ?','');
       }
 
-    $rowset = $this->fetchAll($sql);
+    $rowset = $this->database->fetchAll($sql);
     $rowsetAnalysed=array();
     foreach ($rowset as $keyRow=>$row)
       {
@@ -169,7 +154,7 @@ class ItemModel extends AppModelPdo
       {
       throw new Zend_Exception("Error param.");
       }
-    return $this->initDao('ItemRevision', $this->fetchRow($this->select()->from('itemrevision')
+    return $this->initDao('ItemRevision', $this->database->fetchRow($this->database->select()->from('itemrevision')
                                               ->where('item_id = ?', $itemdao->getItemId())
                                               ->order(array('revision DESC'))
                                               ->limit(1)
@@ -185,7 +170,7 @@ class ItemModel extends AppModelPdo
       {
       throw new Zend_Exception("Error param.");
       }
-    return $this->initDao('ItemRevision', $this->fetchRow($this->select()->from('itemrevision')
+    return $this->initDao('ItemRevision', $this->database->fetchRow($this->database->select()->from('itemrevision')
                                               ->where('item_id = ?', $itemdao->getItemId())
                                               ->where('revision = ?', $number)
                                               ->limit(1)
@@ -237,7 +222,7 @@ class ItemModel extends AppModelPdo
       {
       throw new Zend_Exception("Second argument should be a keyword");
       }
-    $this->link('keywords',$itemdao,$keyworddao);
+    $this->database->link('keywords',$itemdao,$keyworddao);
     } // end addKeyword
 
 }  // end class

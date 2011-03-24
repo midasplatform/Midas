@@ -3,24 +3,8 @@
  * \class FolderpolicyuserModel
  * \brief Pdo Model
  */
-class FeedpolicyuserModel extends AppModelPdo
-  {
-  public $_name='feedpolicyuser';
-
-  public $_mainData=array(
-    'feed_id'=>array(
-    'type'=>MIDAS_DATA
-  ),'user_id'=>array(
-    'type'=>MIDAS_DATA
-  ),'policy'=>array(
-    'type'=>MIDAS_DATA
-  ),'feed'=>array(
-    'type'=>MIDAS_MANY_TO_ONE,'model'=>'Feed','parent_column'=>'feed_id','child_column'=>'feed_id'
-  ),'user'=>array(
-    'type'=>MIDAS_MANY_TO_ONE,'model'=>'User','parent_column'=>'user_id','child_column'=>'user_id'
-  )
-  );
-
+class FeedpolicyuserModel extends MIDASFeedpolicyuserModel
+{
   /** create a policy
    * @return FeedpolicyuserDao*/
   public function createPolicy($user, $feed, $policy)
@@ -67,7 +51,7 @@ class FeedpolicyuserModel extends AppModelPdo
       {
       throw new Zend_Exception("Should be a feed.");
       }
-    return $this->initDao('Feedpolicyuser',$this->fetchRow($this->select()->where('feed_id = ?',$feed->getKey())->where('user_id = ?',$user->getKey())));
+    return $this->initDao('Feedpolicyuser',$this->database->fetchRow($this->database->select()->where('feed_id = ?',$feed->getKey())->where('user_id = ?',$user->getKey())));
     }
-  }
+} // end class
 ?>
