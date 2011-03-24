@@ -1,5 +1,5 @@
 <?php
-class MIDASItemKeywordModel extends MIDASModel
+class ItemKeywordModelBase extends AppModel
 {
   public function __construct()
     {
@@ -18,5 +18,5 @@ class MIDASItemKeywordModel extends MIDASModel
   
   
   
-} // end class MIDASItemKeywordModel
+} // end class ItemKeywordModelBase
 ?>

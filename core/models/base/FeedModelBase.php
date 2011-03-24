@@ -1,5 +1,5 @@
 <?php
-abstract class MIDASFeedModel extends MIDASModel
+abstract class FeedModelBase extends AppModel
 {
   public function __construct()
     {
@@ -44,5 +44,5 @@ abstract class MIDASFeedModel extends MIDASModel
     return $this->_getFeeds($loggedUserDao,null,$communityDao,$policy,$limit);
     } //end getFeedsByCommunity
     
-} // end class MIDASFeedModel
+} // end class FeedModelBase
 ?>

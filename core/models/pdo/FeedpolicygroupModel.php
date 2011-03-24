@@ -1,9 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/FeedpolicygroupModelBase.php';
+
 /**
  * \class FeedpolicygroupModel
  * \brief Pdo Model
  */
-class FeedpolicygroupModel extends MIDASFeedpolicygroupModel
+class FeedpolicygroupModel extends FeedpolicygroupModelBase
 {
   /** create a policy
    * @return FeedpolicygroupDao*/

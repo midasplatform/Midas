@@ -23,10 +23,6 @@ class MIDAS_GlobalModule extends AppController
     
     $stack=debug_backtrace();
     $forward=$this->_getParam('forwardModule');
-    if(!isset($forward)&&strpos(get_class($stack[0]['object']),'CoreController')==false)
-      {
-      throw new Zend_Exception('You cannot access a core controller directly');
-      }
     }
     
 
@@ -66,9 +62,13 @@ class MIDAS_GlobalModule extends AppController
     $this->ModelLoader = new MIDAS_ModelLoader();
     $this->ModelLoader->loadModels($this->_moduleModels,$this->moduleName);
     $modelsArray = Zend_Registry::get('models');
-    foreach ($modelsArray as $key => $tmp)
+    foreach ($this->_moduleModels as  $value)
       {
-      $this->$key = $tmp;
+      if(isset($modelsArray[$this->moduleName.$value]))
+        {
+        $tmp=ucfirst($this->moduleName).'_'.$value;
+        $this->{$tmp} = $modelsArray[$this->moduleName.$value];
+        }
       }
     foreach ($this->_moduleDaos as $dao)
       {

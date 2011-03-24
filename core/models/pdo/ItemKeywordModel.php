@@ -1,9 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/ItemKeywordModelBase.php';
+
 /**
  * \class ItemKeywordModel
  * \brief Pdo Model
  */
-class ItemKeywordModel extends MIDASItemKeywordModel
+class ItemKeywordModel extends ItemKeywordModelBase
 {
   
   /** Get the keyword from the search.

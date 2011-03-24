@@ -1,11 +1,12 @@
 <?php
+require_once BASE_PATH.'/core/models/base/FolderpolicygroupModelBase.php';
+
 /**
  * \class FolderpolicygroupModel
  * \brief Pdo Model
  */
-class FolderpolicygroupModel extends MIDASFolderpolicygroupModel
+class FolderpolicygroupModel extends FolderpolicygroupModelBase
 {
-
   /** getPolicy
    * @return FolderpolicygroupDao
    */

@@ -1,9 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/ItemModelBase.php';
+
 /**
  * \class ItemModel
  * \brief Pdo Model
  */
-class ItemModel extends MIDASItemModel
+class ItemModel extends ItemModelBase
 {
 
   /** check if the policy is valid*/

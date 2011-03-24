@@ -1,5 +1,5 @@
 <?php
-class MIDASBitstreamModel extends MIDASModel
+class BitstreamModelBase extends AppModel
 {
   public function __construct()
     {
@@ -24,5 +24,5 @@ class MIDASBitstreamModel extends MIDASModel
     $this->initialize(); // required  
     } // end __construct()
   
-} // end class MIDASBitstreamModel
+} // end class BitstreamModelBase
 ?>

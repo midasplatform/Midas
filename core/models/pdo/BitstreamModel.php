@@ -1,9 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/BitstreamModelBase.php';
+
 /**
  * \class BitstreamModel
  * \brief Pdo Model
  */
-class BitstreamModel extends MIDASBitstreamModel
+class BitstreamModel extends BitstreamModelBase
 {
   /** do not use, use method addBitstream in ItemRevision Model*/
   public function save($dao)

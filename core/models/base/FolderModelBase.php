@@ -1,5 +1,5 @@
 <?php
-class MIDASFolderModel extends MIDASModel
+abstract class FolderModelBase extends AppModel
 {
   public function __construct()
     {
@@ -25,7 +25,10 @@ class MIDASFolderModel extends MIDASModel
       );
     $this->initialize(); // required
     } // end __construct() 
-  
+
+  /** Abstract functions */
+  abstract function getByFolder_id($folderid);
+
   /** Create a folder */
   function createFolder($name,$description,$parent)
     {
@@ -55,5 +58,5 @@ class MIDASFolderModel extends MIDASModel
     return $folder;
     }
   
-} // end class MIDASFolderModel
+} // end class FolderModelBase
 ?>

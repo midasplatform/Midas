@@ -1,5 +1,5 @@
 <?php
-abstract class MIDASUserModel extends MIDASModel
+abstract class UserModelBase extends AppModel
 {
   public function __construct()
     {
@@ -31,6 +31,7 @@ abstract class MIDASUserModel extends MIDASModel
   
   /** Abstract functions */
   abstract function getByEmail($email);
+  abstract function getByUser_id($userid);
   abstract function getUserCommunities($userDao);
   
   /** don't use save*/
@@ -96,5 +97,5 @@ abstract class MIDASUserModel extends MIDASModel
     return $userDao;
     }
   
-} // end class MIDASUserModel
+} // end class UserModelBase
 ?>
