@@ -4,8 +4,7 @@ require_once BASE_PATH.'/core/AppController.php';
 require_once BASE_PATH.'/core/AppFilters.php';
 require_once BASE_PATH.'/core/AppComponent.php';
 require_once BASE_PATH.'/core/AppForm.php';
-require_once BASE_PATH.'/core/models/AppDatabasePdo.php';
-require_once BASE_PATH.'/core/models/AppDatabaseCassandra.php';
+require_once BASE_PATH.'/core/models/AppModel.php';
 require_once BASE_PATH.'/core/models/AppDao.php';
 
 //include constant files

@@ -1,5 +1,5 @@
 <?php
-class MIDASItemRevisionModel extends MIDASModel
+class ItemRevisionModelBase extends AppModel
 {
   public function __construct()
     {
@@ -26,5 +26,5 @@ class MIDASItemRevisionModel extends MIDASModel
   
   
   
-} // end class MIDASItemRevisionModel
+} // end class ItemRevisionModelBase
 ?>

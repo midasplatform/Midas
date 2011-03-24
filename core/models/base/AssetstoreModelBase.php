@@ -1,5 +1,5 @@
 <?php
-class MIDASAssetstoreModel extends MIDASModel
+class AssetstoreModelBase extends AppModel
 {
   public function __construct()
     {
@@ -16,7 +16,6 @@ class MIDASAssetstoreModel extends MIDASModel
     $this->initialize(); // required
     } // end __construct()
   
-  
-  
-} // end class MIDASAssetstoreModel
+ 
+} // end class AssetstoreModelBase
 ?>

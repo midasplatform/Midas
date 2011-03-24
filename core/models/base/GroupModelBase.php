@@ -1,5 +1,5 @@
 <?php
-abstract class MIDASGroupModel extends MIDASModel
+abstract class GroupModelBase extends AppModel
 {
   public function __construct()
     {
@@ -39,5 +39,5 @@ abstract class MIDASGroupModel extends MIDASModel
     return $group;
     }
 
-} // end class MIDASGroupModel
+} // end class GroupModelBase
 ?>

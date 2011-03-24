@@ -1,5 +1,5 @@
 <?php
-abstract class MIDASCommunityModel extends MIDASModel
+abstract class CommunityModelBase extends AppModel
 {
   public function __construct()
     {
@@ -32,5 +32,5 @@ abstract class MIDASCommunityModel extends MIDASModel
   abstract function getPublicCommunities($limit=20);
   abstract function getByName($name);
   
-} // end class MIDASCommunityModel
+} // end class CommunityModelBase
 ?>

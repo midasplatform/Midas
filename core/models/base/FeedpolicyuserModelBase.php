@@ -1,5 +1,5 @@
 <?php
-class MIDASFeedpolicyuserModel extends MIDASModel
+class FeedpolicyuserModelBase extends AppModel
 {
   public function __construct()
     {
@@ -54,5 +54,5 @@ class MIDASFeedpolicyuserModel extends MIDASModel
     return $policyUser;
     }
   
-} // end class MIDASFeedpolicyuserModel
+} // end class FeedpolicyuserModelBase
 ?>

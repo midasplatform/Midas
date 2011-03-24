@@ -1,9 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/FeedModelBase.php';
+
 /**
  * \class FeedModel
  * \brief Pdo Model
  */
-class FeedModel extends MIDASFeedModel
+class FeedModel extends FeedModelBase
 { 
  
   /** check if the policy is valid
@@ -74,7 +76,7 @@ class FeedModel extends MIDASFeedModel
    * @param type $policy
    * @param type $limit
    * @return Array of FeedDao */
-  private function _getFeeds($loggedUserDao,$userDao=null,$communityDao=null,$policy=0,$limit=20)
+  protected function _getFeeds($loggedUserDao,$userDao=null,$communityDao=null,$policy=0,$limit=20)
     {
     if($loggedUserDao==null)
       {

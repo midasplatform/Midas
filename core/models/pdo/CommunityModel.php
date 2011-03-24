@@ -1,10 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/CommunityModelBase.php';
 
 /**
  *  UserModel
  *  Pdo Model
  */
-class CommunityModel extends MIDASCommunityModel
+class CommunityModel extends CommunityModelBase
 {
   
   /** Get a community by name */
@@ -19,7 +20,7 @@ class CommunityModel extends MIDASCommunityModel
    * 
    * @return Array of Community Dao
    */
-  function getPubicCommunities($limit=20)
+  function getPublicCommunities($limit=20)
     {
     if(!is_numeric($limit))
       {

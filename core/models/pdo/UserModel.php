@@ -1,10 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/UserModelBase.php';
 
 /**
  *  UserModel
  *  Pdo Model
  */
-class UserModel extends MIDASUserModel
+class UserModel extends UserModelBase
 {
   
   /** Get a user by email */
@@ -14,6 +15,14 @@ class UserModel extends MIDASUserModel
     $dao= $this->initDao(ucfirst($this->_name),$row);
     return $dao;
     } // end getByEmail()
+    
+  /** Get a user by email */
+  function getByUser_id($userid)
+    {
+    $row = $this->database->fetchRow($this->database->select()->where('user_id = ?', $userid)); 
+    $dao= $this->initDao(ucfirst($this->_name),$row);
+    return $dao;
+    } // end getByUser_id() 
     
   /** Get user communities */
   public function getUserCommunities($userDao)

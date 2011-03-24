@@ -1,5 +1,5 @@
 <?php
-class MIDASFolderpolicygroupModel extends MIDASModel
+class FolderpolicygroupModelBase extends AppModel
 {
   public function __construct()
     {
@@ -54,5 +54,5 @@ class MIDASFolderpolicygroupModel extends MIDASModel
     return $policyGroupDao;
     }
     
-} // end class MIDASFolderpolicygroupModel
+} // end class FolderpolicygroupModelBase
 ?>

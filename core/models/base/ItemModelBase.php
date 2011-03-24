@@ -1,5 +1,5 @@
 <?php
-class MIDASItemModel extends MIDASModel
+class ItemModelBase extends AppModel
 {
   public function __construct()
     {
@@ -54,5 +54,5 @@ class MIDASItemModel extends MIDASModel
     $ItemRevisionModel->save($revisiondao);
     } // end addRevision
   
-} // end class MIDASItemModel
+} // end class ItemModelBase
 ?>

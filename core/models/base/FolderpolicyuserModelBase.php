@@ -1,5 +1,5 @@
 <?php
-class MIDASFolderpolicyuserModel extends MIDASModel
+class FolderpolicyuserModelBase extends AppModel
 {
   public function __construct()
     {
@@ -23,5 +23,5 @@ class MIDASFolderpolicyuserModel extends MIDASModel
   
   
   
-} // end class MIDASFolderpolicyuserModel
+} // end class FolderpolicyuserModelBase
 ?>

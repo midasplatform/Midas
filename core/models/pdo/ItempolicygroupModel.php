@@ -1,9 +1,11 @@
 <?php
+require_once BASE_PATH.'/core/models/base/ItempolicygroupModelBase.php';
+
 /**
  * \class ItempolicygroupModel
  * \brief Pdo Model
  */
-class ItempolicygroupModel extends MIDASItempolicygroupModel
+class ItempolicygroupModel extends ItempolicygroupModelBase
 {
   /** create a policy
    * @return ItempolicygroupDao*/

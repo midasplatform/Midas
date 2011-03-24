@@ -177,7 +177,8 @@ class MIDASModel
         {
         throw new Zend_Exception("Dao:  " . __CLASS__ . " " . $this->_name . ": method $method doesn't exist (" . strtolower(substr($method, 5)) . " is not defined.");
         }*/
-      throw new Zend_Exception("Dao:  " . __CLASS__ . " " . $this->_name . ": getBy has been deprecated. Please fix.");
+
+      throw new Zend_Exception(__CLASS__ . " " . $this->_name . ": ".$method." has been deprecated. Please fix.");
       }
     elseif (substr($method, 0, 6) == 'findBy')
       {
