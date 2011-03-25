@@ -181,6 +181,7 @@ class UserController extends AppController
     {
     $this->view->Date=$this->Component->Date;
     $user_id=$this->_getParam("user_id");
+
     if(!isset($user_id) && !$this->logged)
       {
       $this->view->header=$this->t("You should be logged in.");

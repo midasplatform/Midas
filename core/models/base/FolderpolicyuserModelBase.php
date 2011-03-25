@@ -1,5 +1,5 @@
 <?php
-class FolderpolicyuserModelBase extends AppModel
+abstract class FolderpolicyuserModelBase extends AppModel
 {
   public function __construct()
     {
@@ -21,6 +21,9 @@ class FolderpolicyuserModelBase extends AppModel
     $this->initialize(); // required
     } // end __construct()
   
+  /** Abstract functions */
+  abstract function getPolicy($user, $folder);  
+    
   /** create a policy
    * @return FolderpolicyuserDao*/
   public function createPolicy($user, $folder, $policy)

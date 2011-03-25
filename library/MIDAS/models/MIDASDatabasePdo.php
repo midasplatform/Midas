@@ -91,7 +91,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
         throw new Zend_Exception(get_class($model).'::getBy'.ucfirst($this->_mainData[$var]['child_column'])." is not implemented");
         }
       return call_user_func(array($model,'getBy'.ucfirst($this->_mainData[$var]['child_column'])),
-                            array($dao->get($this->_mainData[$var]['parent_column'])));
+                            $dao->get($this->_mainData[$var]['parent_column']));
       
       }
     else if ($this->_mainData[$var]['type'] == MIDAS_MANY_TO_MANY)
@@ -326,9 +326,17 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     }//end delete
 
   /** getAllByKey() */
-  public function getAllByKey($key)
+  public function getAllByKey($keys)
     {
-    return $this->fetchAll($this->select()->where($this->_key . ' IN (?)', $key));  
+    // Make sure we have only numerics  
+    foreach($keys as $k=>$v)
+      {
+      if(!is_numeric($v))
+        {
+        unset($keys[$k]);
+        }
+      }        
+    return $this->fetchAll($this->select()->where($this->_key . ' IN (?)', $keys));  
     }
   
   /** return the number row in the table

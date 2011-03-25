@@ -18,6 +18,7 @@ class UserModel extends UserModelBase
       $userid = $useridarray[$this->_key];      
       $user = new ColumnFamily($this->database->getDB(), 'user');
       $userarray = $user->get($userid);
+      
       // Add the user_id
       $userarray[$this->_key] = $userid;
       $dao= $this->initDao('User',$userarray);      
@@ -42,7 +43,7 @@ class UserModel extends UserModelBase
       {
       $user = new ColumnFamily($this->database->getDB(), 'user');
       $userarray = $user->get($userid);
-      // Add the user_id
+      // Add the user_id      
       $userarray[$this->_key] = $userid;
       $dao= $this->initDao('User',$userarray);      
       }
@@ -50,7 +51,7 @@ class UserModel extends UserModelBase
       {
       return false;  
       }      
-    catch(Exception $e) 
+    catch(Exception $e)
       {
       throw new Zend_Exception($e); 
       }  

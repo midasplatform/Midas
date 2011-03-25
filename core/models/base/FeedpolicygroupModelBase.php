@@ -1,5 +1,5 @@
 <?php
-class FeedpolicygroupModelBase extends AppModel
+abstract class FeedpolicygroupModelBase extends AppModel
 {
   public function __construct()
     {
@@ -22,6 +22,41 @@ class FeedpolicygroupModelBase extends AppModel
     $this->initialize(); // required
     } // end __construct()
  
-  
+  /** Abstract functions */  
+  abstract function getPolicy($group, $feed);
+    
+  /** create a policy
+   * @return FeedpolicygroupDao*/
+  public function createPolicy($group, $feed, $policy)
+    {
+    if(!$group instanceof GroupDao)
+      {
+      throw new Zend_Exception("Should be a group.");
+      }
+    if(!$feed instanceof FeedDao)
+      {
+      throw new Zend_Exception("Should be a feedDao.");
+      }
+    if(!is_numeric($policy))
+      {
+      throw new Zend_Exception("Should be a number.");
+      }
+    if(!$group->saved && !$feed->saved)
+      {
+      throw new Zend_Exception("Save the daos first.");
+      }
+    if($this->getPolicy($group,$feed) !== false)
+      {
+      $this->delete($this->getPolicy($group,$feed));
+      }
+    $this->loadDaoClass('FeedpolicygroupDao');
+    $policyGroupDao=new FeedpolicygroupDao();
+    $policyGroupDao->setGroupId($group->getGroupId());
+    $policyGroupDao->setFeedId($feed->getFeedId());
+    $policyGroupDao->setPolicy($policy);
+    $this->save($policyGroupDao);
+    return $policyGroupDao;
+    } // end createPolicy
+    
 } // end class FeedpolicygroupModelBase
 ?>

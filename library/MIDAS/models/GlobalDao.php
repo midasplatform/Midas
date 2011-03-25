@@ -53,10 +53,10 @@ class MIDAS_GlobalDao
     {
     if(!isset($key))
       {
-      throw new Zend_Exception("Model PDO " . $this->getModel()->_name . ": key is not defined here.");
+      throw new Zend_Exception("Model " . $this->getModel()->_name . ": key is not defined here.");
       }
-    $values = $this->getModel()->getValues($key);
-    if ($values == NULL)
+    $values = $this->getModel()->getValues($key); 
+    if ($values == null)
       {
       return false;
       }
