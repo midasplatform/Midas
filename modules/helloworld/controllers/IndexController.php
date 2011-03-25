@@ -30,12 +30,13 @@ class Helloworld_IndexController extends Helloworld_AppController
      
      //test Module Dao;
      $hello = new Helloworld_HelloDao();
-     
+         
      $this->view->version=$configs[$this->moduleName]->version;
      $this->view->componentTest=$this->ModuleComponent->Hello->hello();
-     $this->view->users=$this->User->getAll();
+     $this->view->users=$this->User->load(1);
      $this->view->imageMagick=$this->Component->Utility->IsImageMagickWorking();
-     $this->view->helloModel=$this->Hello->getAll();
+     $this->view->helloModel=$this->Helloworld_Hello->getAll();
+
      $this->view->installForm=$this->Form->Install->createConfigForm();
      $this->view->indexForm=$this->ModuleForm->Index->createIndexForm();
     } 

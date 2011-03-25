@@ -212,7 +212,18 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             )
         );
         $frontController->addControllerDirectory(BASE_PATH . "/modules/$route/controllers", $nameModule);
-        require_once BASE_PATH . "/modules/$route/AppController.php";             
+        if(file_exists(BASE_PATH . "/modules/$route/AppController.php"))
+          {
+          require_once BASE_PATH . "/modules/$route/AppController.php";      
+          }
+        if(file_exists(BASE_PATH . "/modules/$route/models/AppDao.php"))
+          {
+          require_once BASE_PATH . "/modules/$route/models/AppDao.php";      
+          }
+        if(file_exists(BASE_PATH . "/modules/$route/models/AppModel.php"))
+          {
+          require_once BASE_PATH . "/modules/$route/models/AppModel.php";      
+          }
     }
     Zend_Registry::set('modulesEnable',$listeModule);
     return $router;

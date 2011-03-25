@@ -11,7 +11,7 @@ class FeedController extends AppController
     
   /** Init Controller */
   function init()
-    { 
+    {   
     $this->view->activemenu = 'feed'; // set the active menu
     }  // end init()  
     

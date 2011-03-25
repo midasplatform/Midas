@@ -128,7 +128,7 @@ class MIDASModel
    * @param $name name of the dao
    * @param $data array of values
    */
-  public function initDao($name, $data)
+  public function initDao($name, $data,$module=null)
     {
     // If no data found we return false
     if(!$data)
@@ -136,8 +136,16 @@ class MIDASModel
       return false;
       }
 
-    $name = $name . 'Dao';
-    Zend_Loader::loadClass($name, BASE_PATH.'/core/models/dao');
+    if($module==null)
+      {
+      $name = $name . 'Dao';
+      Zend_Loader::loadClass($name, BASE_PATH.'/core/models/dao');
+      }
+    else
+      {
+      require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
+      $name = ucfirst($module).'_'.$name. 'Dao';
+      }
     if (class_exists($name))
       {
       $obj = new $name();

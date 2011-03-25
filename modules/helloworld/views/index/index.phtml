@@ -13,7 +13,7 @@ Test Module Component: <?php echo $this->componentTest?>
 
 <br/>
 <br/>
-Test Core Model and Dao: <?php echo $this->users[0]->getFullName()?>
+Test Core Model and Dao: <?php echo $this->users->getFullName()?>
 
 <br/>
 <br/>
@@ -26,3 +26,7 @@ Test Core Form: <?php echo (!empty($this->installForm)?'true':'false');?>
 <br/>
 <br/>
 Test Module Form: <?php echo (!empty($this->indexForm)?'true':'false');?>
+
+<br/>
+<br/>
+Test Public folder: <img src="<?php echo $this->moduleWebroot?>/public/images/test.png" alt="test"/>

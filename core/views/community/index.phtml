@@ -23,6 +23,13 @@
     }
   ?>
   </div>
+  
+    <?php 
+  if(empty($this->userCommunities))
+    {    
+    echo "<h4>{$this->t("No communty  available")}.<a class='createCommunity' >{$this->t("Create your own community")}!</a> </h4>";
+    }
+    ?>
 </div>
 <div class="viewSideBar">
   <div class="sideElementFirst viewAction">

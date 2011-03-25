@@ -13,7 +13,16 @@ class MIDAS_GlobalModule extends AppController
     {    
 
     parent::__construct($request, $response, $invokeArgs);
+    if(!isset($this->moduleName))
+      {
+      throw new Zend_Exception("Please set the module name in AppController");
+      }
     $this->loadModuleElements();
+    $fc=Zend_Controller_Front::getInstance();
+    $this->view->moduleWebroot=$fc->getBaseUrl().'/modules/'.$this->moduleName;
+    
+    $stack=debug_backtrace();
+    $forward=$this->_getParam('forwardModule');
     }
     
 
@@ -53,9 +62,13 @@ class MIDAS_GlobalModule extends AppController
     $this->ModelLoader = new MIDAS_ModelLoader();
     $this->ModelLoader->loadModels($this->_moduleModels,$this->moduleName);
     $modelsArray = Zend_Registry::get('models');
-    foreach ($modelsArray as $key => $tmp)
+    foreach ($this->_moduleModels as  $value)
       {
-      $this->$key = $tmp;
+      if(isset($modelsArray[$this->moduleName.$value]))
+        {
+        $tmp=ucfirst($this->moduleName).'_'.$value;
+        $this->{$tmp} = $modelsArray[$this->moduleName.$value];
+        }
       }
     foreach ($this->_moduleDaos as $dao)
       {
@@ -80,5 +93,31 @@ class MIDAS_GlobalModule extends AppController
       }
     }
 
+  public function callCoreAction()
+    {
+    $request = $this->getRequest();
+    $response = $this->getResponse();
+    $controllerName=ucfirst(str_replace('Core', '', $request->getControllerName()));
+    if(file_exists(BASE_PATH.'/core/controllers/'. $controllerName.'Controller.php'))
+      {
+      include_once BASE_PATH.'/core/controllers/'. $controllerName.'Controller.php';
+      $name=$controllerName.'Controller';
+      $controller=new $name($request,$response);
+      if(method_exists($controller, $request->getActionName().'Action'))
+        {
+        $controller->userSession=$this->userSession;
+        $controller->{$request->getActionName().'Action'}();
+        return true;
+        }
+      else
+        {
+        return false;
+        }
+      }
+    else
+      {
+      return false;
+      }
+    }
 } // end class
 ?>

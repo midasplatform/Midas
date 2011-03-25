@@ -1,13 +1,25 @@
 <?php
+require_once BASE_PATH.'/modules/helloworld/models/base/HelloModel.php';
 
-class Helloworld_HelloModel extends AppModelPdo
+class Helloworld_HelloModel extends Helloworld_HelloModelBase
 {
-  public $_name = 'helloworld_hello';
-  public $_key = 'hello_id';
 
-  public $_mainData= array(
-      'hello_id'=>  array('type'=>MIDAS_DATA),
-      );
+  /**
+   * Return all the record in the table
+   * @return Array of HelloDao
+   */
+  function getAll()
+    {
+    $sql=$this->database->select();
+    $rowset = $this->database->fetchAll($sql);
+    $rowsetAnalysed=array();
+    foreach ($rowset as $keyRow=>$row)
+      {
+      $tmpDao= $this->initDao('Hello', $row,'helloworld');
+      $rowsetAnalysed[] = $tmpDao;
+      }
+    return $rowsetAnalysed;
+    }
     
 }  // end class
-?>
+?>   
