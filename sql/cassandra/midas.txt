@@ -8,8 +8,11 @@ use midas;
 create column family user with column_type = 'Standard' and comparator = UTF8Type
 create column family emailuser with column_type = 'Standard' and comparator = UTF8Type
 create column family item with column_type = 'Standard' and comparator = 'UTF8Type';
-create column family folder with column_type ='Super';
-create column family community;
+create column family folder with column_type = 'Standard' and comparator = 'UTF8Type';
+create column family community with column_type = 'Standard' and comparator = 'UTF8Type';
+create column family group with column_type = 'Standard' and comparator = 'UTF8Type';
+
+set group['0']['name'] = 'Anonymous';
 
 /** To import this schema. Run the following on your machine */
 /* $ bin/cassandra-cli --host localhost --batch < schema.txt */

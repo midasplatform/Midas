@@ -49,11 +49,15 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
     try 
       {
       $column_family = new ColumnFamily($db, $this->_name);
-      return $column_family->get($key);
+      
+      // We need to add the key
+      $array = $column_family->get($key);
+      $array[$this->_key] = $key;
+      return (object)$array;
       }
      catch(cassandra_NotFoundException $e) 
       {
-      return false;  
+      return null;  
       }  
      catch(Exception $e) 
       {
@@ -69,22 +73,29 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
    */  
   public function save($dataarray)
     {
-    // There is no update in Cassandra, everything is insert by key
-    if(isset($this->_key)&&isset($dataarray[$this->_key]))
+    try 
       {
-      $keyvalue = $dataarray[$this->_key];
-      unset($dataarray[$this->_key]);
-      
-      $column_family = new ColumnFamily($this->_db,$this->_name);
-      $column_family->insert($keyvalue,$dataarray);
-      }
-    else
-      {      
-      $keyvalue = CassandraUtil::uuid1(); 
-      $db = Zend_Registry::get('dbAdapter');
-      $column_family = new ColumnFamily($this->_db,$this->_name);
-      $column_family->insert($keyvalue,$dataarray);       
-      }  
+      // There is no update in Cassandra, everything is insert by key
+      if(isset($this->_key)&&isset($dataarray[$this->_key]))
+        {
+        $keyvalue = $dataarray[$this->_key];
+        unset($dataarray[$this->_key]);
+        
+        $column_family = new ColumnFamily($this->_db,$this->_name);
+        $column_family->insert($keyvalue,$dataarray);
+        }
+      else
+        {      
+        $keyvalue = CassandraUtil::uuid1(); 
+        $db = Zend_Registry::get('dbAdapter');
+        $column_family = new ColumnFamily($this->_db,$this->_name);
+        $column_family->insert($keyvalue,$dataarray);       
+        }  
+      } 
+    catch(Exception $e) 
+      {
+      throw new Zend_Exception($e); 
+      } 
     return $keyvalue;
     } // end function save
     
@@ -96,8 +107,41 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
    */   
   public function delete($dao)
     {
-    throw new Zend_Exception("MIDASDatabaseCassandra: Delete not implemented yet");
+    $instance=ucfirst($this->_name)."Dao";
+    if(get_class($dao) !=  $instance)
+      {
+      throw new Zend_Exception("Should be an object ($instance). It was: ".get_class($dao) );
+      }
+    if(!$dao->saved)
+      {
+      throw new Zend_Exception("The dao should be saved first ...");
+      }
     
+    if(!isset($this->_key) || !$this->_key)
+      {
+      throw new Zend_Exception("MIDASDatabaseCassandra::delete() : Cannot delete record by something other than a key." );
+      return false;
+      }
+      
+    $key=$dao->getKey();
+    if(!isset($key))
+      {
+      throw new Zend_Exception("Unable to find the key" );
+      }
+      
+    try 
+      {
+      $cf = new ColumnFamily($this->_db,$this->_name);
+      $cf->remove($key);      
+      }    
+    catch(Exception $e) 
+      {
+      throw new Zend_Exception($e); 
+      }    
+
+    unset($dao->{$dao->_key});
+    $dao->saved=false;
+    return true;
     } // end function delete 
     
   /** return the number row in the table
@@ -185,9 +229,28 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       }
     else
       {
-      throw new Zend_Exception('Unable to load data type ' . $var);
+      throw new Zend_Exception('MIDASDatabaseCassandra: getValue() Unable to load data type ' . $var);
       }
     } 
+
+  /** Helper function for cassandra */
+  function getCassandra($columnfamily,$key,$columns)
+    {
+    try 
+      {
+      $cf = new ColumnFamily($this->_db,$columnfamily);
+      return $cf->get($key,$columns);      
+      }
+    catch(cassandra_NotFoundException $e) 
+      {
+      return false;  
+      }      
+    catch(Exception $e) 
+      {
+      throw new Zend_Exception($e); 
+      }    
+    } // end getCassandra()
+    
     
 } // end class MIDASDatabaseCassandra
 ?>

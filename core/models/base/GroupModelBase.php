@@ -35,7 +35,7 @@ abstract class GroupModelBase extends AppModel
     $group=new GroupDao();
     $group->setName($name);
     $group->setCommunityId($communityDao->getCommunityId());
-    $this->save($group);
+    $this->save($group);   
     return $group;
     }
 

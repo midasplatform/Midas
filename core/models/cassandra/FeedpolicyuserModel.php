@@ -7,7 +7,7 @@ require_once BASE_PATH.'/core/models/base/FeedpolicyuserModelBase.php';
  */
 class FeedpolicyuserModel extends FeedpolicyuserModelBase
 {
-
+  
   
 } // end class
 ?>

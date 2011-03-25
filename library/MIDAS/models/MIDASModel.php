@@ -56,7 +56,8 @@ class MIDASModel
         }
       }
     
-    $insertedid = $this->database->save($dataarray);  
+    $insertedid = $this->database->save($dataarray);
+      
     if($insertedid !== false)
       {
       if(isset($this->_key) && !empty($this->_key))

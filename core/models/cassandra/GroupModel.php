@@ -21,9 +21,7 @@ class GroupModel extends GroupModelBase
       throw new Zend_Exception("Should be an user.");
       }
     
-    echo $group->getGroupId()."<br>";
-    echo $user->getUserId()."<br>"; 
-    
+      
     $column_family = new ColumnFamily($this->database->getDB(), 'group');
     
     $data = array();
@@ -31,11 +29,7 @@ class GroupModel extends GroupModelBase
     $userarray[$user->getUserId()] = 1;
     $data['users'] = $userarray;
     
-    $column_family->insert($group->getGroupId(),$data);     
-      
-    exit();  
-      
-      
+    $column_family->insert($group->getGroupId(),$data);  
     } // end function addUser
     
 }  // end class

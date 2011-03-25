@@ -17,7 +17,7 @@ class FolderModel extends FolderModelBase
       $folderarray = $folder->get($folderid);      
       // Add the user_id
       $folderarray[$this->_key] = $folderid;
-      $dao= $this->initDao('Folder',$userarray);      
+      $dao= $this->initDao('Folder',$userarray);
       }
     catch(cassandra_NotFoundException $e) 
       {
