@@ -28,7 +28,10 @@ abstract class FolderModelBase extends AppModel
 
   /** Abstract functions */
   abstract function getByFolder_id($folderid);
-
+  abstract function getChildrenFoldersFiltered($folder,$userDao=null,$policy=0);
+  abstract function getItemsFiltered($folder,$userDao=null,$policy=0);
+  abstract function getSizeFiltered($folders,$userDao=null,$policy=0);
+  
   /** Create a folder */
   function createFolder($name,$description,$parent)
     {

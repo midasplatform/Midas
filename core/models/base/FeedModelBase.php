@@ -44,5 +44,79 @@ abstract class FeedModelBase extends AppModel
     return $this->_getFeeds($loggedUserDao,null,$communityDao,$policy,$limit);
     } //end getFeedsByCommunity
     
+  /** Create a feed
+   * @return FeedDao */
+  function createFeed($userDao,$type,$ressource,$communityDao=null)
+    {
+    if(!$userDao instanceof UserDao&&!is_numeric($type)&&!is_object($ressource))
+      {
+      throw new Zend_Exception("Error parameters.");
+      }
+    $this->loadDaoClass('FeedDao');
+    $feed=new FeedDao();
+    $feed->setUserId($userDao->getKey());
+    $feed->setType($type);
+    $feed->setDate(date('c'));
+    switch($type)
+      {
+      case MIDAS_FEED_CREATE_COMMUNITY:
+      case MIDAS_FEED_UPDATE_COMMUNITY:
+        if(!$ressource instanceof CommunityDao)
+          {
+          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          }
+        $feed->setRessource($ressource->getKey());
+        break;
+      case MIDAS_FEED_CREATE_FOLDER:
+        if(!$ressource instanceof FolderDao)
+          {
+          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          }
+        $feed->setRessource($ressource->getKey());
+        break;
+      case MIDAS_FEED_CREATE_LINK_ITEM:
+      case MIDAS_FEED_CREATE_ITEM:
+         if(!$ressource instanceof ItemDao)
+          {
+          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          }
+        $feed->setRessource($ressource->getKey());
+        break;
+      case MIDAS_FEED_CREATE_REVISION:
+        if(!$ressource instanceof ItemRevisionDao)
+          {
+          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          }
+        $feed->setRessource($ressource->getKey());
+        break;
+      case MIDAS_FEED_CREATE_USER:
+        if(!$ressource instanceof UserDao)
+          {
+          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          }
+        $feed->setRessource($ressource->getKey());
+        break;
+      case MIDAS_FEED_DELETE_COMMUNITY:
+      case MIDAS_FEED_DELETE_FOLDER:
+      case MIDAS_FEED_DELETE_ITEM:
+        if(!is_string($ressource))
+          {
+          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          }
+        $feed->setRessource($ressource);
+        break;
+      default:
+        throw new Zend_Exception("Unable to defined the type of feed");
+        break;
+      }
+    $this->save($feed);
+
+    if($communityDao instanceof CommunityDao)
+      {
+      $this->addCommunity($feed, $communityDao);
+      }
+    return $feed;
+    } // end createFeed()  
+    
 } // end class FeedModelBase
 ?>

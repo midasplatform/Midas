@@ -94,7 +94,7 @@ class FolderpolicyuserModel extends FolderpolicyuserModelBase
       }    
     $dao->saved=false;
     return true;
-    }  
+    } // end delete()
       
 } // end class
 ?>

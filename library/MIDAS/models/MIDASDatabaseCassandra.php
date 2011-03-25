@@ -35,7 +35,17 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
      {
      return $this->_db;  
      }      
-    
+
+  /** Because hex2bin doesn't exist in php...*/
+  /* function hex2bin($h)
+    {
+    if (!is_string($h)) return null;
+    $r='';
+    for ($a=0; $a<strlen($h); $a+=2) { $r.=chr(hexdec($h{$a}.$h{($a+1)})); }
+    return $r;
+    } // end hex2bin;
+    */
+  
   /**
    * @method public  getValues($key)
    *  Get all the value of a model
@@ -43,12 +53,10 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
    * @return An array with all the values
    */
   public function getValues($key)
-    {
-    $db = Zend_Registry::get('dbAdapter');
-    
+    {    
     try 
       {
-      $column_family = new ColumnFamily($db, $this->_name);
+      $column_family = new ColumnFamily($this->_db, $this->_name);
       
       // We need to add the key
       $array = $column_family->get($key);
@@ -64,6 +72,45 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       throw new Zend_Exception($e); 
       }
     } // end method getValues;
+
+	/** getAllByKey() */
+  public function getAllByKey($keys)
+    {
+    /** Remove empty keys */  
+    foreach($keys as $k=>$v)
+      {
+      if(empty($v))
+        {
+        unset($keys[$k]);
+        }
+      } 
+ 
+    try 
+      {
+      $column_family = new ColumnFamily($this->_db, $this->_name);
+     
+      // We need to add the key
+      $rows = $column_family->multiget($keys);
+      $array = array();
+      foreach($rows as $key => $row)
+        {
+        $row[$this->_key] = $key;
+        $array[$key] = $row;
+        }
+
+      return $array;
+      }
+     catch(cassandra_NotFoundException $e) 
+      {
+      return null;  
+      }  
+     catch(Exception $e) 
+      {
+      throw new Zend_Exception($e); 
+      }
+
+    return $this->fetchAll($this->select()->where($this->_key . ' IN (?)', $key));  
+    }  
     
   /**
    * @method public save($dao)
@@ -86,7 +133,8 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
         }
       else
         {      
-        $keyvalue = CassandraUtil::uuid1(); 
+        $keyvalue =  bin2hex(CassandraUtil::uuid1());
+        //$keyvalue = bin2hex($key);
         $db = Zend_Registry::get('dbAdapter');
         $column_family = new ColumnFamily($this->_db,$this->_name);
         $column_family->insert($keyvalue,$dataarray);       
@@ -181,7 +229,8 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
         $resultarray = $columnfamily->get($key); // retrieve only what we want      
         if(!isset($resultarray[$var]))
           {
-          throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_DATA not found. CF='.$this->_name.' and var='.$var);   
+          //echo 'MIDASDatabaseCassandra::getValue() MIDAS_DATA not found. CF='.$this->_name.' and var='.$var;  
+          //throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_DATA not found. CF='.$this->_name.' and var='.$var);   
           return null;
           }
         return $resultarray[$var];
@@ -211,16 +260,17 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       //return $model->__call("findBy" . ucfirst($this->_mainData[$var]['child_column']), array($dao->get($this->_mainData[$var]['parent_column'])));
       }
     else if ($this->_mainData[$var]['type'] == MIDAS_MANY_TO_ONE)
-      {
+      {       
       require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
       $this->ModelLoader = new MIDAS_ModelLoader();
       $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model']);
       if(!method_exists($model, 'getBy'.ucfirst($this->_mainData[$var]['child_column'])))
         {
         throw new Zend_Exception(get_class($model).'::getBy'.ucfirst($this->_mainData[$var]['child_column'])." is not implemented");
-        }
+        }       
+                
       return call_user_func(array($model,'getBy'.ucfirst($this->_mainData[$var]['child_column'])),
-                            array($dao->get($this->_mainData[$var]['parent_column'])));
+                            $dao->get($this->_mainData[$var]['parent_column']));
       }
     else if ($this->_mainData[$var]['type'] == MIDAS_MANY_TO_MANY)
       {

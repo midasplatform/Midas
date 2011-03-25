@@ -297,17 +297,11 @@ class MIDASModel
           return array();
           }
         $cond='';
-        foreach($key as $k=>$v)
-          {
-          if (!is_numeric($v))
-            {
-            unset($key[$k]);
-            }
-          }
+        
         if(empty($key))
           {
           return array();
-          }
+          }  
         $rowset = $this->database->getAllByKey($key);
         $return = array();
         foreach ($rowset as $row)
