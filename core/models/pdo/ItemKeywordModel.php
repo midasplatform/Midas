@@ -104,6 +104,7 @@ class ItemKeywordModel extends ItemKeywordModelBase
     // Check if the keyword already exists
     $row = $this->database->fetchRow($this->database->select()->from($this->_name)
                                           ->where('value=?',$keyword->getValue()));
+    
     if($row)
       {
       $row->relevance += 1; // increase the relevance
@@ -113,7 +114,7 @@ class ItemKeywordModel extends ItemKeywordModelBase
     else
       {
       $keyword->setRelevance(1);
-      $return = $this->save($keyword);
+      $return = parent::save($keyword);
       }
     unset($row);
     return $return;

@@ -43,8 +43,11 @@ class ItemRevisionModel extends ItemRevisionModelBase
     $bitstreamDao->setItemrevisionId($itemRevisionDao->getItemrevisionId());
 
     // Save the bistream
-    $bitstreamDao->setDate(date('c'));
-    $BitstreamModel->save($bitstreamDao);
+    if(!isset($bitstreamDao->saved)||!$bitstreamDao->saved)
+      {
+      $bitstreamDao->setDate(date('c'));
+      $BitstreamModel->save($bitstreamDao);
+      }
     
     $item=$itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));

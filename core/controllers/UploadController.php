@@ -207,7 +207,13 @@ class UploadController extends AppController
       
       // Upload the bitstream if necessary (based on the assetstore type)
       $this->Component->Upload->uploadBitstream($bitstreamDao,$assetstoreDao);
-
+      $checksum=$bitstreamDao->getChecksum();
+      $tmpBitstreamDao=$this->Bitstream->getByChecksum($checksum);
+      if($tmpBitstreamDao!=false)
+        {
+        $bitstreamDao->setPath($tmpBitstreamDao->getPath());
+        $bitstreamDao->setAssetstoreId($tmpBitstreamDao->getAssetstoreId());
+        }
       $this->ItemRevision->addBitstream($itemRevisionDao,$bitstreamDao);
 
       $this->getLogger()->info(__METHOD__." Upload ok (".$privacy."):".$path);

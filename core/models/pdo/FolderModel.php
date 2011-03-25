@@ -7,14 +7,6 @@ require_once BASE_PATH.'/core/models/base/FolderModelBase.php';
  */
 class FolderModel extends FolderModelBase
 {
- 
-  /** Get a folder by id */
-  function getByFolder_id($folderid)
-    {
-    $row = $this->database->fetchRow($this->database->select()->where('folder_id = ?', $folderid));
-    $dao=$this->initDao(ucfirst($this->_name),$row);
-    return $dao;
-    } // end getByFolder_id()
     
   /** check if the policy is valid*/
   function policyCheck($folderDao,$userDao=null,$policy=0)

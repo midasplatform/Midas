@@ -86,6 +86,11 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
       $this->ModelLoader = new MIDAS_ModelLoader();
       $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model']);
+      $key = $model->getKey();
+      if($this->_mainData[$var]['child_column']==$key)
+        {
+        return $model->load($dao->get($this->_mainData[$var]['parent_column']));
+        }
       if(!method_exists($model, 'getBy'.ucfirst($this->_mainData[$var]['child_column'])))
         {
         throw new Zend_Exception(get_class($model).'::getBy'.ucfirst($this->_mainData[$var]['child_column'])." is not implemented");
@@ -336,6 +341,10 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
         unset($keys[$k]);
         }
       }        
+    if(empty($keys))
+      {
+      return array();
+      }
     return $this->fetchAll($this->select()->where($this->_key . ' IN (?)', $keys));  
     }
   

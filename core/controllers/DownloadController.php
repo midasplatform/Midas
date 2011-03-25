@@ -103,7 +103,7 @@ class DownloadController extends AppController
         {
         $bitstream=$bitstreams[0];
         $this->view->mimetype = $bitstream->getMimetype();
-        $this->view->path = $bitstream->getPath();
+        $this->view->path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
         $this->view->name =$bitstream->getName();
         if(!file_exists($this->view->path))
           {
@@ -120,7 +120,7 @@ class DownloadController extends AppController
         $zip = new ZipStream($name.'.zip');
         foreach ($bitstreams as $bitstream)
           {
-          $zip->add_file_from_path($bitstream->getName(), $bitstream->getPath());
+          $zip->add_file_from_path($bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
           }
         $zip->finish();
         }
@@ -152,7 +152,7 @@ class DownloadController extends AppController
        $bitstreams=$revision->getBitstreams();
        foreach ($bitstreams as $bitstream)
         {
-        $zip->add_file_from_path($path.'/'.$bitstream->getName(), $bitstream->getPath());
+        $zip->add_file_from_path($path.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
         }
        }
      foreach($folders as $folder)
@@ -178,7 +178,7 @@ class DownloadController extends AppController
             $bitstreams=$subRevisions->getBitstreams();
              foreach ($bitstreams as $bitstream)
               {
-              $zip->add_file_from_path($path.'/'.$bitstream->getName(), $bitstream->getPath());
+              $zip->add_file_from_path($path.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'. $bitstream->getPath());
               }
             }
           }        

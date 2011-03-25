@@ -1,5 +1,5 @@
 <?php
-class BitstreamModelBase extends AppModel
+abstract class BitstreamModelBase extends AppModel
 {
   public function __construct()
     {
@@ -19,10 +19,13 @@ class BitstreamModelBase extends AppModel
       'assetstore_id' =>  array('type'=>MIDAS_DATA),
       'date' =>  array('type'=>MIDAS_DATA),
       //'itemrevision' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'ItemRevision', 'parent_column'=> 'itemrevision_id', 'child_column' => 'itemrevision_id'),
-      'assetstore' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Assetstore', 'parent_column'=> 'assetstore_id', 'child_column' => 'assetstore_id'),
+      'assetstore' =>  array('type'=>MIDAS_MANY_TO_ONE, 'model' => 'Assetstore', 'parent_column'=> 'assetstore_id', 'child_column' => 'assetstore_id'),
       );
     $this->initialize(); // required  
     } // end __construct()
+    
+  /** Abstract functions */
+  abstract function getByChecksum($checksum);
   
 } // end class BitstreamModelBase
 ?>

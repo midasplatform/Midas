@@ -18,6 +18,12 @@ class BitstreamModel extends BitstreamModelBase
     throw new Zend_Exception(" Do not use, use method addBitstream in ItemRevision Model.");
     }//end Save
     
-
+    /** Get bitstream by checksum */
+    function getByChecksum($checksum)
+      {
+      $row = $this->database->fetchRow($this->database->select()->where('checksum = ?', $checksum)); 
+      $dao= $this->initDao(ucfirst($this->_name),$row);
+      return $dao;
+      } // end getByChecksum()
 }  // end class
 ?>
