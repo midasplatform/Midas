@@ -25,10 +25,12 @@ class CommunityModel extends CommunityModelBase
                                               "", // end
                                               $limit // row count
                                               );
+
       foreach($allcommunities as $key => $com)
         {
-        if($com['privacy'] == MIDAS_COMMUNITY_PRIVATE)
-          {                                           
+        if($com['privacy'] != MIDAS_COMMUNITY_PRIVATE)
+          {
+          $com[$this->_key] = $key;                                           
           $communities[] = $this->initDao('Community', $com);
           }
         }    

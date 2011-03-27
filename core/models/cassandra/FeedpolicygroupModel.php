@@ -20,13 +20,13 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
       {
       throw new Zend_Exception("Should be a feed.");
       }
-      
+    
     $feedid = $feed->getKey();
     $groupid = $group->getKey();
     
-    $column = 'group_'.$groupid;    
-    $feedarray = $this->database->getCassandra('feed',$feedid,array($column));
-          
+    $column = 'feed_'.$feedid;    
+    $feedarray = $this->database->getCassandra('groupfeedpolicy',$groupid,array($column));
+         
     // Massage the data to the proper format
     $newarray['feed_id'] = $feedid;
     $newarray['group_id'] = $groupid;
@@ -48,13 +48,23 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
       {
       $feedid = $dao->getFeedId();
       $groupid = $dao->getGroupId();
-      $column = 'group_'.$groupid;    
-
+      
+      // Add the feed to the UserFeedPolicy
+      $column = 'feed_'.$feedid;
       $dataarray = array();
       $dataarray[$column] = $dao->getPolicy();
       
-      $column_family = new ColumnFamily($this->database->getDB(),'feed');
-      $column_family->insert($feedid,$dataarray);  
+      $column_family = new ColumnFamily($this->database->getDB(),'groupfeedpolicy');
+      $column_family->insert($groupid,$dataarray);  
+      
+      // Add the feed to the UserFeed (this is a super column)
+      $column = 'feed_'.$feedid;
+      $dataarray = array();
+      $dataarray[$column] = array();
+      $dataarray[$column]['group_'.$groupid] = $dao->getPolicy();
+      
+      $column_family = new ColumnFamily($this->database->getDB(),'userfeed');
+      $column_family->insert($groupid,$dataarray);
       } 
     catch(Exception $e) 
       {
@@ -80,12 +90,17 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
     
     try 
       {
-      // Remove the column group from the feed 
+      // Remove the column user from the feed 
       $feedid = $dao->getFeedId();
       $groupid = $dao->getGroupId();
-      $column = 'group_'.$groupid;   
-      $cf = new ColumnFamily($this->database->getDB(),'feed');
-      $cf->remove($feedid,array($column));      
+      $column = 'feed_'.$feedid;   
+      $cf = new ColumnFamily($this->database->getDB(),'groupfeedpolicy');
+      $cf->remove($groupid,array($column)); 
+
+      // Remove from the UserFeed also
+      $column = 'feed_'.$feedid;  // super column
+      $cf = new ColumnFamily($this->database->getDB(),'userfeed');
+      $cf->remove($groupid,array('group_'.$groupid),$column);      
       }    
     catch(Exception $e) 
       {

@@ -166,7 +166,7 @@ class FeedModel extends FeedModelBase
     } // end _getFeeds
     
 
-  /** Add an item to a community
+  /** Add a community to a feed 
    * @return void */
   function addCommunity($feed,$community)
     {

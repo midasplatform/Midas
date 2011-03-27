@@ -20,12 +20,12 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
       {
       throw new Zend_Exception("Should be a feed.");
       }
-      
+     
     $feedid = $feed->getKey();
     $userid = $user->getKey();
     
-    $column = 'user_'.$userid;    
-    $feedarray = $this->database->getCassandra('feed',$feedid,array($column));
+    $column = 'feed_'.$feedid;    
+    $feedarray = $this->database->getCassandra('userfeedpolicy',$userid,array($column));
           
     // Massage the data to the proper format
     $newarray['feed_id'] = $feedid;
@@ -49,13 +49,23 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
       {
       $feedid = $dao->getFeedId();
       $userid = $dao->getUserId();
-      $column = 'user_'.$userid;    
-
+      
+      // Add the feed to the UserFeedPolicy
+      $column = 'feed_'.$feedid;
       $dataarray = array();
       $dataarray[$column] = $dao->getPolicy();
       
-      $column_family = new ColumnFamily($this->database->getDB(),'feed');
-      $column_family->insert($feedid,$dataarray);  
+      $column_family = new ColumnFamily($this->database->getDB(),'userfeedpolicy');
+      $column_family->insert($userid,$dataarray);  
+      
+      // Add the feed to the UserFeed (this is a super column)
+      $column = 'feed_'.$feedid;
+      $dataarray = array();
+      $dataarray[$column] = array();
+      $dataarray[$column]['user_'.$userid] = $dao->getPolicy();
+      
+      $column_family = new ColumnFamily($this->database->getDB(),'userfeed');
+      $column_family->insert($userid,$dataarray);
       } 
     catch(Exception $e) 
       {
@@ -84,9 +94,14 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
       // Remove the column user from the feed 
       $feedid = $dao->getFeedId();
       $userid = $dao->getUserId();
-      $column = 'user_'.$userid;   
-      $cf = new ColumnFamily($this->database->getDB(),'feed');
-      $cf->remove($feedid,array($column));      
+      $column = 'feed_'.$feedid;   
+      $cf = new ColumnFamily($this->database->getDB(),'userfeedpolicy');
+      $cf->remove($userid,array($column)); 
+
+      // Remove from the UserFeed also
+      $column = 'feed_'.$feedid;  // super column
+      $cf = new ColumnFamily($this->database->getDB(),'userfeed');
+      $cf->remove($userid,array('user_'.$userid),$column); 
       }    
     catch(Exception $e) 
       {

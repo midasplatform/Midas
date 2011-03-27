@@ -12,7 +12,7 @@ class FolderController extends AppController
     {
     $this->view->activemenu = ''; // set the active menu
     $actionName=Zend_Controller_Front::getInstance()->getRequest()->getActionName();
-    if(isset($actionName) && is_numeric($actionName))
+    if(isset($actionName) && (is_numeric($actionName) || strlen($actionName)==32)) // This is tricky! and for Cassandra for now
       {
       $this->_forward('view',null,null,array('folderId'=>$actionName));
       }

@@ -284,23 +284,39 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
     } 
 
   /** Helper function for cassandra */
-  function getCassandra($columnfamily,$key,$columns)
+  function getCassandra($columnfamily,$key,$columns=null,$column_start="",$column_finish="")
     {
     try 
       {
       $cf = new ColumnFamily($this->_db,$columnfamily);
-      return $cf->get($key,$columns);      
+      return $cf->get($key,$columns,$column_start,$column_finish);  
       }
     catch(cassandra_NotFoundException $e) 
       {
-      return false;  
+      return array();  
       }      
     catch(Exception $e) 
       {
       throw new Zend_Exception($e); 
       }    
     } // end getCassandra()
-    
+
+  function multigetCassandra($columnfamily,$keys,$columns=null,$column_start="",$column_finish="")
+    {
+    try 
+      {
+      $cf = new ColumnFamily($this->_db,$columnfamily);
+      return $cf->multiget($keys,$columns,$column_start,$column_finish);
+      }
+    catch(cassandra_NotFoundException $e) 
+      {
+      return array(); 
+      }      
+    catch(Exception $e) 
+      {
+      throw new Zend_Exception($e); 
+      }    
+    } // end getCassandra()  
     
 } // end class MIDASDatabaseCassandra
 ?>
