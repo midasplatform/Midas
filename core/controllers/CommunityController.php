@@ -50,6 +50,12 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception("This community doesn't exist  or you don't have the permissions.");
       }
+    $joinCommunity=$this->_getParam('joinCommunity'); 
+    if($this->userSession->Dao!=null&&isset($joinCommunity)&&$communityDao->getPrivacy()==MIDAS_COMMUNITY_PUBLIC)
+      {
+      $member_group=$communityDao->getMemberGroup();
+      $this->Group->addUser($member_group,$this->userSession->Dao);
+      }
 
     $this->view->communityDao=$communityDao;
     $this->view->information=array();
@@ -62,6 +68,18 @@ class CommunityController extends AppController
     $this->view->folders[]=$communityDao->getPublicFolder();
     $this->view->folders[]=$communityDao->getPrivateFolder();
     
+    $this->view->isMember=false;
+    if($this->userSession->Dao!=null)
+      {
+      foreach($this->view->members as $member)
+        {
+        if($member->getKey()==$this->userSession->Dao->getKey())
+          {
+          $this->view->isMember=true;
+          break;
+          }
+        }
+      }
     $this->view->isModerator=$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_WRITE);
     $this->view->isAdmin=$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_ADMIN);
     $this->view->json['community']=$communityDao->_toArray();

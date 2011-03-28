@@ -83,15 +83,30 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
 
 </div>
 <div class="viewSideBar">
- 
+  
   <?php
-  if($this->isModerator||$this->isAdmin)
+  if(!$this->isMember&&$this->communityDao->getPrivacy()==MIDAS_COMMUNITY_PUBLIC)
+    {
+    echo "
+    <form type='post' action=''>
+      <input name='joinCommunity' type='submit' class='globalButton' value='{$this->t('Join the community')}' />
+    </form>
+    ";
+    }
+  else if(!$this->isMember&&$this->communityDao->getPrivacy()==MIDAS_COMMUNITY_SEMIPRIVATE)
+    {
+    echo "
+      <input type='button' class='globalButton' value='{$this->t('Request to join the community')}' />
+    ";
+    }
+  
+  if($this->isModerator||$this->isAdmin||$this->isMember)
     {
     echo "  
     <div class='sideElementFirst genericAction'>
       <h1>Actions</h1>
         <ul>";
-    if($this->isAdmin)
+    if($this->isModerator)
       {
       echo "
           <li><a href=''>{$this->t('Manage Groups and Members')}</a></li>
@@ -105,12 +120,18 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
           <li><a href='javascript:;' id='communityDeleteLink'>{$this->t('Delete')}</a></li>
           ";
       }
+    if($this->isMember)
+      {
+      echo "
+          <li><a href=''>{$this->t('Leave the community')}</a></li>
+          ";
+      }
     echo 
     "  </ul>
     </div>";
     }
   ?>
-   <div class="sideElement<?php echo (!$this->isModerator&&!$this->isAdmin)?'First':''?> genericCommunities">
+   <div class="sideElement<?php echo (!$this->isModerator&&!$this->isAdmin&&!$this->isMember)?'First':''?> genericCommunities">
     <h1><?php echo $this->t('Members')?></h1>    
       <ul>
       <?php
