@@ -26,7 +26,12 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
     
     $column = 'feed_'.$feedid;    
     $feedarray = $this->database->getCassandra('userfeedpolicy',$userid,array($column));
-          
+
+    if(empty($feedarray))
+      {
+      return null;  
+      }
+    
     // Massage the data to the proper format
     $newarray['feed_id'] = $feedid;
     $newarray['user_id'] = $userid;
@@ -79,6 +84,12 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
   /** Custome delete command */
   public function delete($dao)
     {
+    // No DAO passed we just return  
+    if($dao == null)
+      {
+      return false;  
+      }  
+      
     $instance=ucfirst($this->_name)."Dao";
     if(get_class($dao) !=  $instance)
       {

@@ -116,6 +116,7 @@ abstract class FeedModelBase extends AppModel
     if($communityDao instanceof CommunityDao)
       {
       $this->addCommunity($feed, $communityDao);
+      $feed->community = $communityDao;
       }
     return $feed;
     } // end createFeed()  

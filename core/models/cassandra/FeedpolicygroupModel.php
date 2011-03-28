@@ -26,7 +26,12 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
     
     $column = 'feed_'.$feedid;    
     $feedarray = $this->database->getCassandra('groupfeedpolicy',$groupid,array($column));
-         
+
+    if(empty($feedarray))
+      {
+      return null;  
+      }
+      
     // Massage the data to the proper format
     $newarray['feed_id'] = $feedid;
     $newarray['group_id'] = $groupid;
@@ -65,6 +70,20 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
       
       $column_family = new ColumnFamily($this->database->getDB(),'userfeed');
       $column_family->insert($groupid,$dataarray);
+      
+      // Add the policy to the CommunityFeed if we have a community
+      if(isset($dao->community) && $dao->community)
+        {
+        $column = 'feed_'.$feedid;
+        $dataarray = array();
+        $dataarray[$column] = array();
+        $dataarray[$column]['group_'.$groupid] = $dao->getPolicy();
+      
+        $column_family = new ColumnFamily($this->database->getDB(),'communityfeed');
+        $column_family->insert($dao->community->getCommunityId(),$dataarray);  
+        }
+      
+      
       } 
     catch(Exception $e) 
       {
@@ -78,6 +97,12 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
   /** Custome delete command */
   public function delete($dao)
     {
+    // No DAO passed we just return  
+    if($dao == null)
+      {
+      return false;  
+      } 
+        
     $instance=ucfirst($this->_name)."Dao";
     if(get_class($dao) !=  $instance)
       {

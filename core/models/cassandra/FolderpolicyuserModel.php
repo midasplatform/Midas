@@ -28,6 +28,11 @@ class FolderpolicyuserModel extends FolderpolicyuserModelBase
     $column = 'user_'.$userid;
     $folderarray = $this->database->getCassandra('folder',$folderid,array($column));
 
+    if(empty($folderarray))
+      {
+      return null;  
+      }
+      
     // Massage the data to the proper format
     $newarray['folder_id'] = $folderid;
     $newarray['user_id'] = $userid;
@@ -69,6 +74,12 @@ class FolderpolicyuserModel extends FolderpolicyuserModelBase
   /** Custome delete command */
   public function delete($dao)
     {
+    // No DAO passed we just return  
+    if($dao == null)
+      {
+      return false;  
+      }   
+      
     $instance=ucfirst($this->_name)."Dao";
     if(get_class($dao) !=  $instance)
       {
