@@ -53,8 +53,8 @@ div#tabsSettings .ui-state-default{
 
 div#tabsSettings .ui-tabs-panel {
   position: relative !important;
-  left: -15px!important;
-  border-top: 1px solid #F3F1EC;
+  left: -75px!important;
+  border: 1px solid grey;
   width: 99%;
 }
 

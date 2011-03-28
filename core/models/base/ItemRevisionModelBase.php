@@ -24,7 +24,25 @@ class ItemRevisionModelBase extends AppModel
     $this->initialize(); // required
     } // end __construct()
   
-  
+    /** delete a revision*/
+  function delete($revisiondao)
+    {
+    if(!$revisiondao instanceof ItemRevisionDao)
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    $bitstreams=$revisiondao->getBitstreams();
+    $this->ModelLoader = new MIDAS_ModelLoader();
+    $bitstream_model=$this->ModelLoader->loadModel('Bitstream');
+    foreach($bitstreams as $bitstream)
+      {
+      $bitstream_model->delete($bitstream);
+      }
+    parent::delete($revisiondao);
+    $revisiondao->saved=false;
+    unset($revisiondao->itemrevision_id);
+    }//end delete
+    
   
 } // end class ItemRevisionModelBase
 ?>

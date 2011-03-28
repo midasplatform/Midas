@@ -83,19 +83,75 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
 
 </div>
 <div class="viewSideBar">
-  <div class="sideElementFirst genericAction">
-    <h1>Actions</h1>
-
-  </div>
-   <div class="sideElement genericCommunities">
+  
+  <?php
+  if(!$this->isMember&&$this->communityDao->getPrivacy()==MIDAS_COMMUNITY_PUBLIC)
+    {
+    echo "
+    <form type='post' action=''>
+      <input name='joinCommunity' type='submit' class='globalButton' value='{$this->t('Join the community')}' />
+    </form>
+    ";
+    }
+  else if(!$this->isMember&&$this->communityDao->getPrivacy()==MIDAS_COMMUNITY_SEMIPRIVATE)
+    {
+    echo "
+      <input type='button' class='globalButton' value='{$this->t('Request to join the community')}' />
+    ";
+    }
+  
+  if($this->isModerator||$this->isAdmin||$this->isMember)
+    {
+    echo "  
+    <div class='sideElementFirst genericAction'>
+      <h1>Actions</h1>
+        <ul>";
+    if($this->isModerator)
+      {
+      echo "
+          <li><a href=''>{$this->t('Manage Groups and Members')}</a></li>
+          <li><a >{$this->t('Manage Files')}</a></li>
+          ";
+      }
+    if($this->isAdmin)
+      {
+      echo "
+          <li><a href=''>{$this->t('Edit')}</a></li>
+          <li><a href='javascript:;' id='communityDeleteLink'>{$this->t('Delete')}</a></li>
+          ";
+      }
+    if($this->isMember)
+      {
+      echo "
+          <li><a href=''>{$this->t('Leave the community')}</a></li>
+          ";
+      }
+    echo 
+    "  </ul>
+    </div>";
+    }
+  ?>
+   <div class="sideElement<?php echo (!$this->isModerator&&!$this->isAdmin&&!$this->isMember)?'First':''?> genericCommunities">
     <h1><?php echo $this->t('Members')?></h1>    
-    <ul>
-      To Do
+      <ul>
+      <?php
+        $i=0;
+        foreach($this->members as $member)
+          {
+          if($i>10)break;
+          echo "<li><a href='{$this->webroot}/user/{$member->getKey()}'>{$member->getFullName()}</a></li>";
+          }
+      ?>
       </ul>
    </div>
    <div class="sideElementLast genericStats">
     <h1>Stats</h1>  
     
+    <?php
+      echo "<ul>";
+      echo "  <li>".count($this->members)." {$this->t("member")}".((count($this->members)>1)?'s':'')."</li>";
+      echo "</ul>";
+      ?>
    </div>
   
     <div class="sideElementFirst viewAction">

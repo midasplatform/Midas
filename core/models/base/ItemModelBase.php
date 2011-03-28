@@ -1,5 +1,5 @@
 <?php
-class ItemModelBase extends AppModel
+abstract class ItemModelBase extends AppModel
 {
   public function __construct()
     {
@@ -18,6 +18,8 @@ class ItemModelBase extends AppModel
       'folders' =>  array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'Folder', 'table' => 'item2folder', 'parent_column'=> 'item_id', 'child_column' => 'folder_id'),
       'revisions' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model'=>'ItemRevision', 'parent_column'=> 'item_id', 'child_column' => 'item_id'),
       'keywords' => array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'ItemKeyword', 'table' => 'item2keyword', 'parent_column'=> 'item_id', 'child_column' => 'keyword_id'),
+      'itempolicygroup' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Itempolicygroup', 'parent_column'=> 'item_id', 'child_column' => 'item_id'),
+      'itempolicyuser' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Itempolicyuser', 'parent_column'=> 'item_id', 'child_column' => 'item_id'),
       );
     $this->initialize(); // required
     } // end __construct()  

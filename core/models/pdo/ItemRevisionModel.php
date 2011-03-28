@@ -7,6 +7,9 @@ require_once BASE_PATH.'/core/models/base/ItemRevisionModelBase.php';
  */
 class ItemRevisionModel extends ItemRevisionModelBase
 {
+  
+
+    
   /** Returns the latest revision of a model */
   function getLatestRevision($itemdao)
     {

@@ -19,7 +19,7 @@ class BitstreamModel extends BitstreamModelBase
     }//end Save
     
     /** Get bitstream by checksum */
-    function getByChecksum($checksum)
+   function getByChecksum($checksum)
       {
       $row = $this->database->fetchRow($this->database->select()->where('checksum = ?', $checksum)); 
       $dao= $this->initDao(ucfirst($this->_name),$row);

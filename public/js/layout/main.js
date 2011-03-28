@@ -267,14 +267,17 @@ function loadDialog(name,url)
 
 function showDialog(title,button)
 {  
+  var x= $('div.HeaderSearch').position().left+150; 
+  var y= 100; 
   if(button)
   {
     $( "div.MainDialog" ).dialog({
 			resizable: false,
       width:450,
 			modal: false,
-      draggable:true,
-      title: title		,
+      draggable:false,
+      title: title,
+      position: [x,y],
       buttons: { "Ok": function() { $(this).dialog("close"); } } 
 		});
     
@@ -285,8 +288,9 @@ function showDialog(title,button)
 			resizable: false,
       width:450,
 			modal: false,
-      draggable:true,
-      title: title			
+      draggable:false,
+      title: title		,
+      position: [x,y]
 		});
   }
 }

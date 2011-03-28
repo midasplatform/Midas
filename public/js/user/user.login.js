@@ -36,8 +36,8 @@ function validLoginForm()
         }
         else
         {
-        valid=false;       
-        $("form#loginForm div.loginError span").show();
+        valid=false; 
+        createNotive($("form#loginForm div.loginError span").html(),8000);
         }
   }
 });

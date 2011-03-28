@@ -15,6 +15,30 @@
     $("#browseTable").treeTable();
     $("img.tableLoading").hide();
     $("table#browseTable").show();
+    
+    
+     $('a#communityDeleteLink').click(function()
+    {
+      var html='';
+      html+=json.community.message['deleteMessage'];
+      html+='<br/>';
+      html+='<br/>';
+      html+='<br/>';
+      html+='<input style="margin-left:140px;" class="globalButton deleteCommunityYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
+      html+='<input style="margin-left:50px;" class="globalButton deleteCommunityNo" type="button" value="'+json.global.No+'"/>';
+      
+      showDialogWithContent(json.community.message['delete'],html,false);
+      
+      $('input.deleteCommunityYes').unbind('click').click(function()
+        { 
+          location.replace(json.global.webroot+'/community/delete?communityId='+json.community.community_id);
+        });
+      $('input.deleteCommunityNo').unbind('click').click(function()
+        {
+           $( "div.MainDialog" ).dialog('close');
+        });         
+      
+    });
   });
   
   

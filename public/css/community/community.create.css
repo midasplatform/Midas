@@ -1,8 +1,15 @@
 form#createCommunityForm label{
   width: 100px !important;
 }
+
 form#createCommunityForm div.radioElement label{
-  width: auto !important;
-  float:left;
+  float: inherit!important;
+  width: 300px!important;
 }
 
+form#createCommunityForm div.radioElement ul{
+  list-style: none;
+  margin: 0px 0px 0px 100px;
+  padding: 0px 0px 0px 0px;
+  width: 300px!important;
+}

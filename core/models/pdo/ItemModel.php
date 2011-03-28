@@ -7,7 +7,64 @@ require_once BASE_PATH.'/core/models/base/ItemModelBase.php';
  */
 class ItemModel extends ItemModelBase
 {
-
+  /** Delete an item */
+  function delete($itemdao)
+    {
+    if(!$itemdao instanceof  ItemDao)
+      {
+      throw new Zend_Exception("Error param.");
+      }
+      
+    $deleteType=array(
+       MIDAS_FEED_CREATE_ITEM,MIDAS_FEED_CREATE_LINK_ITEM
+     );
+    $sql=$this->database->select()
+                          ->setIntegrityCheck(false)
+                          ->from(array('p' => 'feed'))
+                          ->where('ressource = ?', $itemdao->getKey());
+    
+    $rowset=$this->database->fetchAll($sql);
+    $this->ModelLoader = new MIDAS_ModelLoader();
+    $feed_model=$this->ModelLoader->loadModel('Feed');
+    $revision_model=$this->ModelLoader->loadModel('ItemRevision');
+    foreach($rowset as $row)
+      {
+      $feed=$this->initDao('Feed', $row);
+      if(in_array($feed->getType(), $deleteType))
+        {
+        $feed_model->delete($feed);
+        }
+      }
+    $revisions=$itemdao->getRevisions();
+    foreach($revisions as $revision)
+      {
+      $revision_model->delete($revision);
+      }
+      
+    $keywords=$itemdao->getKeywords();
+    foreach($keywords as $keyword)
+      {
+      $this->removeKeyword($itemdao,$keyword);
+      }
+      
+    $policy_group_model=$this->ModelLoader->loadModel('Itempolicygroup');
+    $policiesGroup=$itemdao->getItempolicygroup();
+    foreach($policiesGroup as $policy)
+      {
+      $policy_group_model->delete($policy);
+      }
+     
+    $policy_user_model=$this->ModelLoader->loadModel('Itempolicyuser');
+    $policiesUser=$itemdao->getItempolicyuser();
+    foreach($policiesUser as $policy)
+      {
+      $policy_user_model->delete($policy);
+      }
+    parent::delete($itemdao);
+    unset($itemdao->item_id);
+    $itemdao->saved=false;
+    }//end delete
+    
   /** check if the policy is valid*/
   function policyCheck($itemdao,$userDao=null,$policy=0)
     {
@@ -195,6 +252,20 @@ class ItemModel extends ItemModelBase
       }
     $this->database->link('keywords',$itemdao,$keyworddao);
     } // end addKeyword
-
+    
+  /** Remove a keyword to an item
+   * @return void*/
+  function removeKeyword($itemdao,$keyworddao)
+    {
+    if(!$itemdao instanceof ItemDao)
+      {
+      throw new Zend_Exception("First argument should be an item");
+      }
+    if(!$keyworddao instanceof ItemKeywordDao)
+      {
+      throw new Zend_Exception("Second argument should be a keyword");
+      }
+    $this->database->removeLink('keywords',$itemdao,$keyworddao);
+    } // end addKeyword
 }  // end class
 ?>

@@ -32,6 +32,8 @@ abstract class FolderModelBase extends AppModel
   abstract function getSizeFiltered($folders,$userDao=null,$policy=0);
   abstract function getCommunity($folder);
   abstract function getUser($folder);
+  abstract function addItem($folder,$item);
+  abstract function removeItem($folder,$item);
   
   /** Create a folder */
   function createFolder($name,$description,$parent)
@@ -61,6 +63,5 @@ abstract class FolderModelBase extends AppModel
     $this->save($folder);
     return $folder;
     }
-  
 } // end class FolderModelBase
 ?>
