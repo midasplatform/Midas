@@ -27,5 +27,22 @@ abstract class BitstreamModelBase extends AppModel
   /** Abstract functions */
   abstract function getByChecksum($checksum);
   
+  /** delete a Bitstream*/
+  function delete($bitstream)
+    {
+    if(!$bitstream instanceof BitstreamDao)
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    $checksum=$bitstream->getChecksum();
+    $path=$bitstream->getFullPath();
+    parent::delete($bitstream);
+    if($this->getByChecksum($checksum)==false)
+      {
+      unlink($path);
+      }
+    $bitstream->saved=false;
+    unset($bitstream->bitstream_id);
+    }
 } // end class BitstreamModelBase
 ?>

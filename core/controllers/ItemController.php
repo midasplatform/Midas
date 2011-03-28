@@ -38,6 +38,10 @@ class ItemController extends AppController
       {
       throw new Zend_Exception("Problem policies.");
       }
+      
+    $this->view->isAdmin=$this->Item->policyCheck($itemDao,$this->userSession->Dao,MIDAS_POLICY_ADMIN);
+    $this->view->isModerator=$this->Item->policyCheck($itemDao,$this->userSession->Dao,MIDAS_POLICY_WRITE);
+
     $request = $this->getRequest();
     $cookieData = $request->getCookie('recentItems');
     $recentItems=array();
@@ -69,8 +73,35 @@ class ItemController extends AppController
     $itemDao->revisions=$itemDao->getRevisions();
     $itemDao->creation=$this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
     $this->view->itemDao=$itemDao;
+    
+    $this->view->json['item']=$itemDao->_toArray();
+    $this->view->json['item']['message']['delete']=$this->t('Delete');
+    $this->view->json['item']['message']['deleteMessage']=$this->t('Do you really want to delete this item? It cannot be undo.');
     }//end index
 
+    
+      /** Delete an item*/
+  function deleteAction()
+    {
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    
+    $itemId=$this->_getParam("itemId");
+    if(!isset($itemId) || (!is_numeric($itemId) && strlen($itemId)!=32)) // This is tricky! and for Cassandra for now
+      {
+      throw new Zend_Exception("itemId should be a number");
+      }
+    $itemDao=$this->Item->load($itemId);
+    if($itemDao===false||!$this->Item->policyCheck($itemDao, $this->userSession->Dao,MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("This community doesn't exist or you don't have the permissions.");
+      }
+      
+    $this->Item->delete($itemDao);
+
+    $this->_redirect('/');
+    }//end delete
+    
   }//end class
   
   /*    pour la récupérer 

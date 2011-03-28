@@ -71,7 +71,7 @@ class JsonComponent extends AppComponent
         if(is_array($array)) {
             array_walk ($array, array($this,'_utf8_encode_array'));
         } else {
-            $array = utf8_encode($array);
+            $array = @utf8_encode($array);
         }
     }
  

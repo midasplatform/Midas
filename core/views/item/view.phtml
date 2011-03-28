@@ -2,6 +2,9 @@
 <link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/item/item.view.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.browser.css" />
 
+<?php
+$this->headScript()->appendFile($this->webroot . '/public/js/item/item.view.js');
+?>
 <div class="viewMain">
   <div class="genericThumbnail">
   <?php
@@ -43,11 +46,27 @@
     <ul>
       <?php 
       echo 
-      "
-      <li>
+     "<li>
         <a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'>{$this->t('Download')}</a>
       </li>        
         ";
+      if($this->isModerator)
+        {
+        echo 
+       "<li>
+          <a  >{$this->t('Copy')}</a>
+        </li>        
+          ";
+        }
+      if($this->isAdmin)
+        {
+        echo 
+       "
+        <li>
+          <a  href='javascript:;' id='itemDeleteLink'>{$this->t('Delete')}</a>
+        </li>   
+          ";
+        }
       ?>
     </ul>
   </div>
