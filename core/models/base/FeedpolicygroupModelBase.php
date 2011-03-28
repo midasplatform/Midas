@@ -53,6 +53,7 @@ abstract class FeedpolicygroupModelBase extends AppModel
     $policyGroupDao=new FeedpolicygroupDao();
     $policyGroupDao->setGroupId($group->getGroupId());
     $policyGroupDao->setFeedId($feed->getFeedId());
+    $policyGroupDao->community = $feed->community;
     $policyGroupDao->setPolicy($policy);
     $this->save($policyGroupDao);
     return $policyGroupDao;

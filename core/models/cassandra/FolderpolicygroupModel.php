@@ -25,7 +25,12 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
     
     $column = 'group_'.$groupid;    
     $folderarray = $this->database->getCassandra('folder',$folderid,array($column));
-          
+
+    if(empty($folderarray))
+      {
+      return null;  
+      }
+      
     // Massage the data to the proper format
     $newarray['folder_id'] = $folderid;
     $newarray['group_id'] = $groupid;
@@ -67,6 +72,12 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
   /** Custome delete command */
   public function delete($dao)
     {
+    // No DAO passed we just return  
+    if($dao == null)
+      {
+      return false;  
+      } 
+        
     $instance=ucfirst($this->_name)."Dao";
     if(get_class($dao) !=  $instance)
       {

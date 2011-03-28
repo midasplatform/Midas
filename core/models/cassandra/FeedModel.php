@@ -33,22 +33,59 @@ class FeedModel extends FeedModelBase
       throw new Zend_Exception("Should be a community.");
       }
     
-    // Select from the UserFeedPolicy
-    $userfeedpolicyarray = $this->database->getCassandra('userfeedpolicy',$userId);
-    
     // Get the groups from the user
     $usergrouparray = $this->database->getCassandra('user',$userId,null,"group_","group_"); // need to get only the group_* columns
-    
-    //print_r($usergrouparray);
-    
     $groupids[] = MIDAS_GROUP_ANONYMOUS_KEY;
+      
+      
+    // If we ask for the feeds for a user
+    if($userDao)
+      {
+      }
+    else if($communityDao)
+      {
+      $communityid = $communityDao->getCommunityId();
+      $communityfeed = $this->database->getCassandra('communityfeed',$communityid);
+
+      $userfeedpolicyarray = array();
+      $groupfeedpolicyarray = array();
+      
+      foreach($communityfeed as $feed => $values)
+        {
+        // Groups
+        $groups = array();
+        foreach($groupids as $groupid)
+          {
+          $groups['group_'.$groupid] = 0;  
+          }
+          
+        foreach(array_intersect_key($values,$groups) as $group => $policy)
+          {
+          if(!isset($groupfeedpolicyarray[$feed]) 
+             || $groupfeedpolicyarray[$feed][substr($feed,5)]<$policy )
+             {
+             $array[$feed] = $policy;  
+             $groupfeedpolicyarray[$feed] = $array;
+             }     
+          }
+        
+        // User
+        if(key_exists('user_'.$userId,$values))
+          {
+          $userfeedpolicyarray[$feed] = $values;  
+          }  
+        }
+      }  
+    else 
+      {    
+      // Select from the UserFeedPolicy
+      $userfeedpolicyarray = $this->database->getCassandra('userfeedpolicy',$userId);
     
-    // Select from the GroupFeedPolicy for the groups
-    // multiget
-    $groupfeedpolicyarray = $this->database->multigetCassandra('groupfeedpolicy',$groupids); // need to get only the group_* columns
-    
-    //print_r($groupfeedpolicyarray);
-    
+      // Select from the GroupFeedPolicy for the groups
+      // multiget
+      $groupfeedpolicyarray = $this->database->multigetCassandra('groupfeedpolicy',$groupids); // need to get only the group_* columns
+      }
+      
     $rowsetAnalysed=array();
     // Start with the users
     foreach($userfeedpolicyarray as $key=>$row)
@@ -61,12 +98,14 @@ class FeedModel extends FeedModelBase
       $rowsetAnalysed[$feed_id] = $dao;
       unset($dao);
       }
-
+      
     // Then the groups  
     foreach($groupfeedpolicyarray as $key=>$grouprow)
       { 
-      foreach($grouprow as $feedid=>$policy)
-        {     
+      foreach($grouprow as $feed_id=>$policy)
+        {
+        $feed_id = substr($feed_id,5);
+      
         $feedrow = $this->database->getCassandra('feed',$feed_id);         
         $feedrow['feed_id'] = $feed_id;
         
@@ -76,18 +115,18 @@ class FeedModel extends FeedModelBase
           if($dao->policy<$policy)
             {
             $rowsetAnalysed[$feed_id]->policy = $policy; 
-            }   
+            }
           }
         else 
           { 
           $dao = $this->initDao('Feed', $feedrow);
           $dao->policy = $policy;
-          $rowsetAnalysed[$feedid] = $dao;
+          $rowsetAnalysed[$feed_id] = $dao;
           unset($dao);
           }
         }
       }
-      
+     
     $this->Component->Sortdao->field='date';
     $this->Component->Sortdao->order='asc';
     usort($rowsetAnalysed, array($this->Component->Sortdao,'sortByDate'));
@@ -109,14 +148,14 @@ class FeedModel extends FeedModelBase
     
     $feedid = $feed->getFeedId();
     $communityid = $community->getCommunityId();
-    $column = 'community_'.$communityid;    
+    $column = 'feed_'.$feedid;    
 
     $dataarray = array();
-    $dataarray[$column] = date('c');
-      
-    $column_family = new ColumnFamily($this->database->getDB(),'feed');
-    $column_family->insert($feedid,$dataarray);  
-
+    $dataarray[$column] = array(); // supercolumn to be filled out when we set the policies
+    $dataarray[$column]['na'] = 'na';
+    
+    $column_family = new ColumnFamily($this->database->getDB(),'communityfeed');
+    $column_family->insert($communityid,$dataarray);
     } // end addCommunity
     
     
