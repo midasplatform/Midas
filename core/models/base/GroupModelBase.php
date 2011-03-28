@@ -18,7 +18,27 @@ abstract class GroupModelBase extends AppModel
   
   /** Add a user to a group */
   abstract function addUser($group,$user);
+  abstract function removeUser($group,$user);
+  abstract function findByCommunity($communityDao);
     
+  /** Delete a group */
+  public function deleteGroup($group)
+    {
+    if(!$group instanceof GroupDao)
+      {
+      throw new Zend_Exception("Should be a group.");
+      }
+    $users=$group->getUsers();
+    foreach($users as $user)
+      {
+      $this->removeUser($group,$user);
+      }
+    parent::delete($group);
+    unset($group->group_id);
+    $group->saved=false;
+    }//end deleteGroup
+  
+  
   /** create a group
    * @return GroupDao*/
   public function createGroup($communityDao,$name)

@@ -1,5 +1,5 @@
-<link href="<?php echo $this->webroot?>/public/css/community/community.create.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="<?php echo $this->webroot?>/public/js/community/community.create.js"></script>
+<link href="<?php echo $this->webroot?>/public/css/community/community.create.css?<?php echo time()?>" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<?php echo $this->webroot?>/public/js/community/community.create.js?<?php echo time()?>"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
 <form id="createCommunityForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
@@ -13,7 +13,25 @@
   </div>
   <div class="radioElement">
     <label for="privacy"><?php echo $this->t('Privacy')?></label>
-    <?php echo $this->form['privacy']?>
+    
+    <div class="radioElement">
+    <ul>
+      <li>
+        <label for="privacy-0">
+          <input type="radio" name="privacy" id="privacy-0" value="0" checked="checked"><?php echo $this->t('Public')?>
+        </label>  
+      </li>
+      <li>
+        <label for="privacy-2">
+          <input type="radio" name="privacy" id="privacy-2" value="2"><?php echo $this->t('Private')?>
+        </label>
+      </li>
+      <li>
+        <label for="privacy-1">
+          <input type="radio" name="privacy" id="privacy-1" value="1"><?php echo $this->t('Semi-private')?>
+        </label> 
+      </li>
+    </ul>
   </div>
   <div>
     <?php echo $this->form['submit']?>

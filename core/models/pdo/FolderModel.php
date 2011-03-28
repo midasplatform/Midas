@@ -155,8 +155,9 @@ class FolderModel extends FolderModelBase
     return $folders;
     }
  
+
   /** Custom delete function */
-  public function delete($folder)
+  function delete($folder,$recursive=false)
     {
     if(!$folder instanceof FolderDao)
       {
@@ -171,6 +172,37 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Unable to find the key" );
       }
+   
+    $this->ModelLoader = new MIDAS_ModelLoader();
+    $items=$folder->getItems();
+    foreach($items as $item)
+      {
+      $this->removeItem($folder, $item);
+      }
+      
+    if($recursive)
+      {
+      $children=$folder->getFolders();
+      foreach($children as $child)
+        {
+        $this->delete($child,true);
+        }
+      }
+      
+    $policy_group_model=$this->ModelLoader->loadModel('Folderpolicygroup');
+    $policiesGroup=$folder->getFolderpolicygroup();
+    foreach($policiesGroup as $policy)
+      {
+      $policy_group_model->delete($policy);
+      }
+     
+    $policy_user_model=$this->ModelLoader->loadModel('Folderpolicyuser');
+    $policiesUser=$folder->getFolderpolicyuser();
+    foreach($policiesUser as $policy)
+      {
+      $policy_user_model->delete($policy);
+      }
+
     $leftIndice=$folder->getLeftIndice();
     $this->database->getDB()->update('folder', array('left_indice'=> new Zend_Db_Expr('left_indice - 2')),
                           array('left_indice >= ?'=>$leftIndice));
@@ -494,6 +526,22 @@ class FolderModel extends FolderModelBase
       throw new Zend_Exception("Should be an item.");
       }
     $this->database->link('items',$folder,$item);
+    } // end function addItem
+    
+  /** Remove an item from a folder
+   * @return void
+   */
+  function removeItem($folder,$item)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+    if(!$item instanceof ItemDao)
+      {
+      throw new Zend_Exception("Should be an item.");
+      }
+    $this->database->removeLink('items',$folder,$item);
     } // end function addItem
 
   /** Return an item by its name

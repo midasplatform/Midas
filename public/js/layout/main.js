@@ -268,7 +268,6 @@ function loadDialog(name,url)
 function showDialog(title,button)
 {  
   var x= $('div.HeaderSearch').position().left+150; 
-  console.log(x);
   var y= 100; 
   if(button)
   {

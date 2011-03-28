@@ -40,28 +40,58 @@ class CommunityController extends AppController
   function viewAction()
     {
     $this->view->Date=$this->Component->Date;
-    //TODO: add policy check
     $communityId=$this->_getParam("communityId");
     if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId)!=32)) // This is tricky! and for Cassandra for now
       {
       throw new Zend_Exception("Community ID should be a number");
       }
     $communityDao=$this->Community->load($communityId);
-    if($communityDao===false)
+    if($communityDao===false||!$this->Community->policyCheck($communityDao, $this->userSession->Dao))
       {
-      throw new Zend_Exception("This community doesn't exist.");
+      throw new Zend_Exception("This community doesn't exist  or you don't have the permissions.");
       }
 
     $this->view->communityDao=$communityDao;
     $this->view->information=array();
     $this->view->feeds=$this->Feed->getFeedsByCommunity($this->userSession->Dao,$communityDao);
     
+    $group_member=$communityDao->getMemberGroup();
+    $this->view->members=$group_member->getUsers();
+    
     $this->view->folders=array();
     $this->view->folders[]=$communityDao->getPublicFolder();
     $this->view->folders[]=$communityDao->getPrivateFolder();
-    }//end index
+    
+    $this->view->isModerator=$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_WRITE);
+    $this->view->isAdmin=$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_ADMIN);
+    $this->view->json['community']=$communityDao->_toArray();
+    $this->view->json['community']['message']['delete']=$this->t('Delete');
+    $this->view->json['community']['message']['deleteMessage']=$this->t('Do you really want to delete this community? It cannot be undo.');
+    
+    }//end view
 
+  /** Delete a community*/
+  function deleteAction()
+    {
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    
+    $communityId=$this->_getParam("communityId");
+    if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId)!=32)) // This is tricky! and for Cassandra for now
+      {
+      throw new Zend_Exception("Community ID should be a number");
+      }
+    $communityDao=$this->Community->load($communityId);
+    if($communityDao===false||!$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("This community doesn't exist or you don't have the permissions.");
+      }
+      
+    $this->Community->delete($communityDao);
 
+    $this->_redirect('/');
+    }//end delete
+    
   /** create a community (ajax)*/
   function createAction()
     {
