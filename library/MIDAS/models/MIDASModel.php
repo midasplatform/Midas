@@ -202,7 +202,7 @@ class MIDASModel
       }
     else
       {
-      throw new Zend_Exception("Model:  " . __CLASS__ . " " . $this->_name . ": method $method doesn't exist.");
+      throw new Zend_Exception($this->_name."Model : method $method doesn't exist.");
       }
     }// end method __call
 

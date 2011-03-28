@@ -22,7 +22,9 @@ abstract class FeedModelBase extends AppModel
     } // end __construct() 
   
   protected abstract function _getFeeds($loggedUserDao,$userDao=null,$communityDao=null,$policy=0,$limit=20);
-    
+  protected abstract function addCommunity($feed,$community);
+
+   
   /** get feeds (filtered by policies)
    * @return Array of FeedDao */
   function getGlobalFeeds($loggedUserDao,$policy=0,$limit=20)

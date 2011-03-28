@@ -39,9 +39,9 @@ class FeedController extends AppController
     $this->_helper->viewRenderer->setNoRender();
     
     $feedId=$this->_getParam('feed');
-    if(!isset($feedId)||!is_numeric($feedId))
+    if(!isset($feedId) || (!is_numeric($feedId) && strlen($feedId)!=32)) // This is tricky! and for Cassandra for now)
      {
-     throw new Zend_Exception("Please set the folder Id");
+     throw new Zend_Exception("Please set the feed Id");
      }
     $feed= $this->Feed->load($feedId);
     if($feed==false)

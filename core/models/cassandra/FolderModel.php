@@ -13,8 +13,9 @@ class FolderModel extends FolderModelBase
     {
     try 
       {
-      $folder = new ColumnFamily($this->database->getDB(), 'folder');
-      $folderarray = $folder->get($folderid);      
+      $folder = new ColumnFamily($this->database->getDB(), 'folder');      
+      $folderarray = $folder->get($folderid);
+          
       // Add the user_id
       $folderarray[$this->_key] = $folderid;
       $dao= $this->initDao('Folder',$folderarray);
@@ -399,8 +400,48 @@ class FolderModel extends FolderModelBase
       }
       */
     return $folders;
-    }  
+    }
+      
+  /** Get community if  the folder is the main folder of one*/
+  function getCommunity($folder)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+        
+    $folderid = $folder->getFolderId();
+    $folderarray = $this->database->getCassandra('folder',$folderid,array('community_id'));
+    if($folderarray !== false)
+      {
+      $communityid = $folderarray['community_id'];
+      $communityarray = $this->database->getCassandra('community',$communityid);  
+      // Massage the data to the proper format
+      $communityarray['community_id'] = $communityid;
+      return $this->initDao('Community',$communityarray);      
+      }
+    return false;  
+    }
     
+  /** Get user if  the folder is the main folder of one */
+  function getUser($folder)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+    $folderid = $folder->getFolderId();
+    $folderarray = $this->database->getCassandra('folder',$folderid,array('user_id'));
+    if($folderarray !== false)
+      {
+      $userid = $folderarray['user_id'];
+      $userarray = $this->database->getCassandra('user',$userid);  
+      // Massage the data to the proper format
+      $userarray['user_id'] = $userid;
+      return $this->initDao('User',$userarray);      
+      }
+    return false;  
+    }  
     
 } // end class FolderModel
 ?>

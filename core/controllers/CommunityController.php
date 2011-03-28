@@ -12,7 +12,7 @@ class CommunityController extends AppController
     {
     $this->view->activemenu = 'community'; // set the active menu
     $actionName=Zend_Controller_Front::getInstance()->getRequest()->getActionName();
-    if(isset($actionName) && is_numeric($actionName))
+    if(isset($actionName) && (is_numeric($actionName) || strlen($actionName)==32)) // This is tricky! and for Cassandra for now
       {
       $this->_forward('view',null,null,array('communityId'=>$actionName));
       }
@@ -42,7 +42,7 @@ class CommunityController extends AppController
     $this->view->Date=$this->Component->Date;
     //TODO: add policy check
     $communityId=$this->_getParam("communityId");
-    if(!isset($communityId)||!is_numeric($communityId))
+    if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId)!=32)) // This is tricky! and for Cassandra for now
       {
       throw new Zend_Exception("Community ID should be a number");
       }
