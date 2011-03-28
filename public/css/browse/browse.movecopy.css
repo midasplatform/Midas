@@ -1,0 +1,12 @@
+table#moveTable{
+  width: 420px !important;
+}
+
+table#moveTable th.thData {
+width: auto!important;
+border-right: none!important;
+}
+
+table#moveTable{
+  display: none;
+}

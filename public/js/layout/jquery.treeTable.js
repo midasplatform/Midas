@@ -37,7 +37,6 @@
       initializeAjax($(this),true);
     });
     initEvent();
-
     
     return tmp;
   };
@@ -308,31 +307,39 @@
   
   function createElementsAjax(node,elements,first)
   {
-    var i = 1;
-    var id=node.attr('id');
-    elements['folders'] = jQuery.makeArray(elements['folders']);
-    elements['items'] = jQuery.makeArray(elements['items']);
-    var padding=parseInt(node.find('td:first').css('padding-left').slice(0,-2));
-    var html='';
-    $.each(elements['folders'], function(index, value) {
-      html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
-      html+=     "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";
-      html+=     "  <td>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.webroot+'/public/images/icons/loading.gif"/>'+"</td>";
-      html+=     "  <td>"+value['creation']+"</td>";
-      html+=     "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='"+value['folder_id']+"'/></td>";
-      html+=     "</tr>";
-      i++;
-      });
-      
-    $.each(elements['items'], function(index, value) { 
-      html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"'  type='item' policy='"+value['policy']+"' element='"+value['item_id']+"'>";
-      html+=     "  <td><span class='file'>"+trimName(value['name'],padding)+"</span></td>";
-      html+=     "  <td>"+value['size']+"</td>";
-      html+=     "  <td>"+value['creation']+"</td>";
-      html+=     "  <td><input type='checkbox' class='treeCheckbox' type='item' element='"+value['item_id']+"'/></td>";
-      html+=     "</tr>";       
-      i++;
-      });
+    if(typeof customElements == 'function')
+      { 
+        html=customElements(node,elements,first);         
+      }
+    else
+      {
+        var i = 1;
+        var id=node.attr('id');
+        elements['folders'] = jQuery.makeArray(elements['folders']);
+        elements['items'] = jQuery.makeArray(elements['items']);
+        var padding=parseInt(node.find('td:first').css('padding-left').slice(0,-2));
+        var html='';
+        $.each(elements['folders'], function(index, value) {
+          html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
+          html+=     "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";
+          html+=     "  <td>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.webroot+'/public/images/icons/loading.gif"/>'+"</td>";
+          html+=     "  <td>"+value['creation']+"</td>";
+          html+=     "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='"+value['folder_id']+"'/></td>";
+          html+=     "</tr>";
+          i++;
+          });
+
+        $.each(elements['items'], function(index, value) { 
+          html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"'  type='item' policy='"+value['policy']+"' element='"+value['item_id']+"'>";
+          html+=     "  <td><span class='file'>"+trimName(value['name'],padding)+"</span></td>";
+          html+=     "  <td>"+value['size']+"</td>";
+          html+=     "  <td>"+value['creation']+"</td>";
+          html+=     "  <td><input type='checkbox' class='treeCheckbox' type='item' element='"+value['item_id']+"'/></td>";
+          html+=     "</tr>";       
+          i++;
+          });
+      }
+    
     node.after(html)
     var cell = $(node.children("td")[options.treeColumn]);
     var padding = getPaddingLeft(cell) + options.indent;
@@ -365,7 +372,6 @@
       node.addClass("initialized");
       
       var childNodes = childrenOf(node);
-      
       if(!node.hasClass("parent") && childNodes.length > 0) {
         node.addClass("parent");
       }

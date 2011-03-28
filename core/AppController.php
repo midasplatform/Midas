@@ -68,6 +68,7 @@ class AppController extends MIDAS_GlobalController
       'view'=>$this->t('View'),
       'preview'=>$this->t('Preview'),
       'download'=>$this->t('Download'),
+      'manage'=>$this->t('Manage'),
       'edit'=>$this->t('Edit'),
       'delete'=>$this->t('Delete'),
       'share'=>$this->t('Share'),
