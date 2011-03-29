@@ -41,6 +41,38 @@ class FeedModel extends FeedModelBase
     // If we ask for the feeds for a user
     if($userDao)
       {
+      $userid = $userDao->getUserId();
+      $userfeed = $this->database->getCassandra('userfeed',$userid);
+
+      $userfeedpolicyarray = array();
+      $groupfeedpolicyarray = array();
+      
+      foreach($userfeed as $feed => $values)
+        {
+        // Groups
+        $groups = array();
+        foreach($groupids as $groupid)
+          {
+          $groups['group_'.$groupid] = 0;  
+          }
+          
+        foreach(array_intersect_key($values,$groups) as $group => $policy)
+          {
+          if(!isset($groupfeedpolicyarray[$feed]) 
+             || $groupfeedpolicyarray[$feed][substr($feed,5)]<$policy )
+             {
+             $array[$feed] = $policy;  
+             $groupfeedpolicyarray[$feed] = $array;
+             }     
+          }
+        
+        // User
+        if(key_exists('user_'.$userId,$values))
+          {
+          $userfeedpolicyarray[$feed] = $values;  
+          }  
+        }  
+        
       }
     else if($communityDao)
       {

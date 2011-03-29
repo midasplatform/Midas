@@ -18,6 +18,8 @@ create column family userfeedpolicy with column_type = 'Standard' and comparator
 create column family groupfeedpolicy with column_type = 'Standard' and comparator = 'UTF8Type';
 create column family userfeed with column_type = 'Super' and comparator = 'UTF8Type';
 create column family communityfeed with column_type = 'Super' and comparator = 'UTF8Type';
+create column family bitstream with column_type = 'Standard' and comparator = UTF8Type;
+create column family bitstreamchecksum with column_type = 'Standard' and comparator = UTF8Type;
 
 set group['0']['name'] = 'Anonymous';
 

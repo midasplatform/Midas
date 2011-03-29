@@ -117,6 +117,11 @@ class UserModel extends UserModelBase
     // Add to the emailuser table
     $emailuser = new ColumnFamily($this->database->getDB(), 'emailuser'); 
     $emailuser->insert($userDao->getEmail(),array($this->_key=>$userDao->user_id));
+
+    // Add the userid to the folder
+    $folder = new ColumnFamily($this->database->getDB(), 'folder'); 
+    $folder->insert($userDao->getFolderId(),array('user_id'=>$userDao->user_id));
+ 
     return $userDao;
     }
 }

@@ -80,9 +80,9 @@ class GroupModel extends GroupModelBase
     if(!$user instanceof UserDao)
       {
       throw new Zend_Exception("Should be an user.");
-      }
-    //$this->database->removeLink('users',$group,$user);
-    throw new Zend_Exception("removeUser not implemented yet");
+      }  
+    $column_family = new ColumnFamily($this->database->getDB(), 'group');
+    $column_family->remove($group->getGroupId(),array('user_'.$user->getUserId()));  
     } // end function removeUser 
 
   /** Get Users attached to a group */
