@@ -51,6 +51,99 @@ class BrowseController extends AppController
     $this->view->json['community']['contentCreateLogin']=$this->t('You need to be logged in to be able to create a community.');
     }
 
+  /** move or copy selected element*/
+  public function movecopyAction()
+    {
+    $copySubmit=$this->_getParam('copyElement');
+    $moveSubmit=$this->_getParam('moveElement');
+    if(isset($copySubmit)||isset($moveSubmit))
+      {
+      $elements=explode(';',$this->_getParam('elements'));
+      $destination=$this->_getParam('destination');
+      $folderIds=explode('-',$elements[0]);
+      $itemIds=explode('-',$elements[1]);
+      $folders= $this->Folder->load($folderIds);
+      $items= $this->Item->load($itemIds);
+      $destination=$this->Folder->load($destination);      
+      if(empty($folders)&&empty ($items))
+        {
+        throw new Zend_Exception("No element selected");
+        }
+      if($destination==false)
+        {
+        throw new Zend_Exception("Unable to load destination");
+        }
+        
+      foreach ($folders as $folder)
+        {
+        //TODO
+        if(isset($copySubmit))
+          {
+          
+          }
+        else
+          {
+          
+          }
+        }
+      foreach ($items as $item)
+        {
+        if(isset($copySubmit))
+          {
+          $this->Folder->addItem($destination,$item);
+          }
+        else
+          {
+          //TODO move
+          }
+        }
+      $this->_redirect ('/folder/'.$destination->getKey());
+      }
+
+      
+    if(!$this->getRequest()->isXmlHttpRequest())
+     {
+     throw new Zend_Exception("Why are you here ? Should be ajax.");
+     }
+    $this->_helper->layout->disableLayout();
+    $folderIds=$this->_getParam('folders');
+    $itemIds=$this->_getParam('items');
+    $move=$this->_getParam('move');
+    $this->view->folderIds=$folderIds;
+    $this->view->itemIds=$itemIds;
+    $this->view->moveEnabled=true;
+    if(isset($move))
+      {
+      $this->view->moveEnabled=false;
+      }
+    $folderIds=explode('-',$folderIds);
+    $itemIds=explode('-',$itemIds);
+    $folders= $this->Folder->load($folderIds);
+    $items= $this->Item->load($itemIds);
+    if(empty($folders)&&empty ($items))
+      {
+      throw new Zend_Exception("No element selected");
+      }
+    if(!$this->view->logged)
+      {
+      throw new Zend_Exception("Should be logged");
+      }
+    $this->view->folders=$folders;
+    $this->view->items=$items;
+    
+    $communities=$this->User->getUserCommunities($this->userSession->Dao);
+    $communities=array_merge($communities, $this->Community->getPublicCommunities());
+    $this->view->Date=$this->Component->Date;
+    
+    $this->Component->Sortdao->field='name';
+    $this->Component->Sortdao->order='asc';
+    usort($communities, array($this->Component->Sortdao,'sortByName'));
+    $communities=$this->Component->Sortdao->arrayUniqueDao($communities );
+    
+    $this->view->user=$this->userSession->Dao;
+    $this->view->communities=$communities;
+    }
+    
   /** get getfolders content (ajax function for the treetable) */
   public function getfolderscontentAction()
     {

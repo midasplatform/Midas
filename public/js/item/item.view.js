@@ -1,5 +1,9 @@
   $(document).ready(function() {
-    
+    $('a.moveCopyLink').click(function()
+      {
+        loadDialog("movecopy","/browse/movecopy/?move=false&items="+json.item.item_id);
+        showDialog(json.item.message.movecopy);
+      });
    
      $('a#itemDeleteLink').click(function()
     {

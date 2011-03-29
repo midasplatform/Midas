@@ -109,18 +109,16 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
     if($this->isModerator)
       {
       echo "
-          <li><a href=''>{$this->t('Manage Groups and Members')}</a></li>
-          <li><a >{$this->t('Manage Files')}</a></li>
+          <li><a href=''>{$this->t('Manage')}</a></li>
           ";
       }
     if($this->isAdmin)
       {
       echo "
-          <li><a href=''>{$this->t('Edit')}</a></li>
           <li><a href='javascript:;' id='communityDeleteLink'>{$this->t('Delete')}</a></li>
           ";
       }
-    if($this->isMember)
+    if($this->isMember&&!$this->isAdmin)
       {
       echo "
           <li><a href=''>{$this->t('Leave the community')}</a></li>

@@ -88,16 +88,7 @@
         var html='';
         if(type=='community')
           {
-            html+='<li><a href="'+json.global.webroot+'/community/'+element+'">'+json.browse.view+'</a></li>';
-            if(policy==2)
-              {
-              html+='<li><a>'+json.browse.edit+'</a></li>';
-              }
-            if(policy>=1)
-              {
-              html+='<li><a>'+json.browse.community.invit+'</a></li>';
-              html+='<li><a>'+json.browse.community.advanced+'</a></li>';
-              }              
+            html+='<li><a href="'+json.global.webroot+'/community/'+element+'">'+json.browse.view+'</a></li>';            
           }
         if(type=='folder')
           {
@@ -105,10 +96,7 @@
             html+='<li><a href="'+json.global.webroot+'/download?folders='+element+'">'+json.browse.download+'</a></li>';
             if(policy==2)
               {
-              html+='<li><a>'+json.browse.edit+'</a></li>';
-              html+='<li><a>'+json.browse['delete']+'</a></li>';
-              html+='<li><a>'+json.browse.move+'</a></li>';
-              html+='<li><a>'+json.browse.copy+'</a></li>';
+              html+='<li><a>'+json.browse.manage+'</a></li>';
               }
             if(policy>=1)
               {
@@ -119,13 +107,6 @@
           {
             html+='<li><a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
             html+='<li><a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.download+'</a></li>';
-            if(policy==2)
-              {
-              html+='<li><a>'+json.browse.edit+'</a></li>';
-              html+='<li><a>'+json.browse['delete']+'</a></li>';
-              html+='<li><a>'+json.browse.move+'</a></li>';
-              html+='<li><a>'+json.browse.copy+'</a></li>';
-              }
             if(policy>=1)
               {
               html+='<li><a>'+json.browse.share+'</a></li>';
