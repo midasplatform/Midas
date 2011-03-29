@@ -31,7 +31,36 @@ class FolderModel extends FolderModelBase
     return $dao;
     } // end getByFolder_id()
   
-  
+  /** Add an item */  
+  function addItem($folder,$item)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+    if(!$item instanceof ItemDao)
+      {
+      throw new Zend_Exception("Should be an item.");
+      }
+    $this->database->link('items',$folder,$item);
+    } // end function addItem
+    
+  /** Remove an item from a folder
+   * @return void
+   */
+  function removeItem($folder,$item)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+    if(!$item instanceof ItemDao)
+      {
+      throw new Zend_Exception("Should be an item.");
+      }
+    //$this->database->removeLink('items',$folder,$item);
+    } // end function addItem
+    
   
   /** Custom save function*/
   public function save($folder)

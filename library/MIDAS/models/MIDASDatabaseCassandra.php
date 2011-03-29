@@ -268,14 +268,19 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
         {
         throw new Zend_Exception(get_class($model).'::getBy'.ucfirst($this->_mainData[$var]['child_column'])." is not implemented");
         }       
-                
       return call_user_func(array($model,'getBy'.ucfirst($this->_mainData[$var]['child_column'])),
                             $dao->get($this->_mainData[$var]['parent_column']));
       }
     else if ($this->_mainData[$var]['type'] == MIDAS_MANY_TO_MANY)
       {
-      throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_MANY_TO_MANY not defined yet. You can implement it if you want :)');  
-      //return $this->getLinkedObject($var, $dao);
+      require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
+      $this->ModelLoader = new MIDAS_ModelLoader();
+      $model = $this->ModelLoader->loadModel($dao->_model);
+      if(!method_exists($model, 'get'.ucfirst($var)))
+        {
+        throw new Zend_Exception(get_class($model).'::get'.ucfirst($var)." is not implemented");
+        }
+      return call_user_func(array($model,'get'.ucfirst($var)),$dao->{$this->_mainData[$var]['parent_column']});
       }
     else
       {

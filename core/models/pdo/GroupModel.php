@@ -8,7 +8,7 @@ require_once BASE_PATH.'/core/models/base/GroupModelBase.php';
 class GroupModel  extends GroupModelBase
 {
   
-    /** Get a groups by Community */
+  /** Get a groups by Community */
   function findByCommunity($communityDao)
     {
     $rowset = $this->database->fetchAll($this->database->select()->where('community_id = ?', $communityDao->getKey())); 
@@ -50,7 +50,7 @@ class GroupModel  extends GroupModelBase
       throw new Zend_Exception("Should be an user.");
       }
     $this->database->removeLink('users',$group,$user);
-    } // end function addItem
+    } // end function removeUser
 
 }// end class
 ?>

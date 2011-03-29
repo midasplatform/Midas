@@ -7,6 +7,31 @@ require_once BASE_PATH.'/core/models/base/GroupModelBase.php';
  */
 class GroupModel extends GroupModelBase
 {
+  
+  /** Get a group by id */
+  function getByGroup_id($groupid)
+    {
+    try 
+      {
+      $group = new ColumnFamily($this->database->getDB(), 'group');      
+      $grouparray = $group->get($groupid);
+          
+      // Add the user_id
+      $grouparray[$this->_key] = $groupid;
+      $dao= $this->initDao('Group',$grouparray);
+      }
+    catch(cassandra_NotFoundException $e) 
+      {
+      return false;  
+      }      
+    catch(Exception $e) 
+      {
+      throw new Zend_Exception($e); 
+      }  
+    return $dao;
+    } // end getByGroup_id()
+    
+    
   /** Add an user to a group
    * @return void
    *  */
@@ -28,6 +53,49 @@ class GroupModel extends GroupModelBase
     
     $column_family->insert($group->getGroupId(),$data);  
     } // end function addUser
+
+  /** Get a groups by Community */
+  function findByCommunity($communityDao)
+    {
+    throw new Zend_Exception("findByCommunity not implemented yet");  
+    /*  
+    $rowset = $this->database->fetchAll($this->database->select()->where('community_id = ?', $communityDao->getKey())); 
+    $result=array();
+    foreach($rowset as $row)
+      {
+      $result[]=$this->initDao(ucfirst($this->_name),$row);
+      }
+    return $result;*/
+    } // end findByCommunity()
+      
+  /** Remove an user from a group
+   * @return void
+   *  */
+  function removeUser($group,$user)
+    {
+    if(!$group instanceof GroupDao)
+      {
+      throw new Zend_Exception("Should be a group.");
+      }
+    if(!$user instanceof UserDao)
+      {
+      throw new Zend_Exception("Should be an user.");
+      }
+    //$this->database->removeLink('users',$group,$user);
+    throw new Zend_Exception("removeUser not implemented yet");
+    } // end function removeUser 
+
+  /** Get Users attached to a group */
+  function getUsers($groupid)
+    {
+    $users = array();  
+    $usergrouparray = $this->database->getCassandra('group',$groupid,null,"user_","user_");
+    foreach($usergrouparray as $user)
+      {
+      $users[] = $this->initDao('User',$user);
+      }  
+    return $users;
+    } // end getByGroup_id()
     
 }  // end class
 ?>
