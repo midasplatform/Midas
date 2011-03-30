@@ -63,7 +63,7 @@ class ItemModel extends ItemModelBase
           ip.item_id is not null or
           ipg.item_id is not null)'
           )
-        ->limit($limit*2)
+        ->limit($limit)
         ;
     if($thumbnailFilter)
       {

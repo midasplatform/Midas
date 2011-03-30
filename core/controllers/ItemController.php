@@ -42,32 +42,35 @@ class ItemController extends AppController
     $this->view->isAdmin=$this->Item->policyCheck($itemDao,$this->userSession->Dao,MIDAS_POLICY_ADMIN);
     $this->view->isModerator=$this->Item->policyCheck($itemDao,$this->userSession->Dao,MIDAS_POLICY_WRITE);
 
-    $request = $this->getRequest();
-    $cookieData = $request->getCookie('recentItems');
-    $recentItems=array();
-    if(isset($cookieData))
+    if($this->logged)
       {
-      $recentItems= unserialize($cookieData); 
-      }    
-    $tmp=array_reverse($recentItems);
-    $i=0;
-    foreach($tmp as $key=>$t)
-      {
-      if($t->getKey()==$itemDao->getKey())
+      $request = $this->getRequest();
+      $cookieData = $request->getCookie('recentItems'.$this->userSession->Dao->getKey());
+      $recentItems=array();
+      if(isset($cookieData))
         {
-        unset($tmp[$key]);
-        continue;
-        }
-      $i++;
-      if($i>10)
+        $recentItems= unserialize($cookieData); 
+        }    
+      $tmp=array_reverse($recentItems);
+      $i=0;
+      foreach($tmp as $key=>$t)
         {
-        unset($tmp[$key]);
+        if($t->getKey()==$itemDao->getKey())
+          {
+          unset($tmp[$key]);
+          continue;
+          }
+        $i++;
+        if($i>10)
+          {
+          unset($tmp[$key]);
+          }
         }
-      }
-    $recentItems=array_reverse($tmp);
-    $recentItems[]=$itemDao;
+      $recentItems=array_reverse($tmp);
+      $recentItems[]=$itemDao;
 
-    setcookie("recentItems", serialize($recentItems), time()+60*60*24*30,'/'); //30 days
+      setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($recentItems), time()+60*60*24*30,'/'); //30 days
+      }
     $itemRevision=$this->Item->getLastRevision($itemDao);
     $itemDao->lastrevision=$itemRevision;
     $itemDao->revisions=$itemDao->getRevisions();

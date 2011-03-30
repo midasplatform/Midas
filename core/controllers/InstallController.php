@@ -41,7 +41,6 @@ class InstallController extends AppController
     $this->view->writable=is_writable(BASE_PATH.'/core/configs');  
     $this->view->convertfound=$this->Component->Utility->IsImageMagickWorking();   
     $this->view->basePath=BASE_PATH;
-    setcookie("recentItems", '', time()+60*60*24*30,'/'); //30 days
     if(!empty($_POST)&&$this->view->writable)
       {
       $this->_redirect("/install/step2");

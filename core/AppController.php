@@ -31,23 +31,24 @@ class AppController extends MIDAS_GlobalController
       }
     $user->setExpirationSeconds(60*Zend_Registry::get('configGlobal')->session->lifetime);
     $this->userSession=$user;
+    $this->view->recentItems=array();
     if ($user->Dao!=null)
       {
       $this->logged=true;
       $this->view->logged=true;
       $this->view->userDao=$user->Dao;
+      $cookieData =  $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->getKey());
+      $this->view->recentItems=array();
+      if(isset($cookieData))
+        {
+        $this->view->recentItems= unserialize($cookieData); 
+        } 
       }
     else
       {
       $this->view->logged=false;
       $this->logged=false;
       }
-    $cookieData =  $this->getRequest()->getCookie('recentItems');
-    $this->view->recentItems=array();
-    if(isset($cookieData))
-      {
-      $this->view->recentItems= unserialize($cookieData); 
-      } 
       
     $this->view->lang=Zend_Registry::get('configGlobal')->application->lang;
    //create a global javascript json array
