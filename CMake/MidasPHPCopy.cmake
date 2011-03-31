@@ -1,0 +1,45 @@
+#----------------------------------------------------------------------------
+# Copying the server php files
+file(COPY
+  ${SOURCE_DIR}/midas
+  DESTINATION
+  ${BINARY_DIR}
+  FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+  GROUP_READ GROUP_WRITE GROUP_EXECUTE 
+  WORLD_READ WORLD_WRITE WORLD_EXECUTE
+  DIRECTORY_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+  GROUP_READ GROUP_WRITE GROUP_EXECUTE 
+  WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+file(COPY
+  ${SOURCE_DIR}/cake
+  DESTINATION
+  ${BINARY_DIR})
+file(COPY
+  ${SOURCE_DIR}/docs
+  DESTINATION
+  ${BINARY_DIR})
+file(COPY
+  ${SOURCE_DIR}/models
+  DESTINATION
+  ${BINARY_DIR})
+file(COPY
+  ${SOURCE_DIR}/vendors
+  DESTINATION
+  ${BINARY_DIR})
+file(COPY
+  ${SOURCE_DIR}/index.php
+  DESTINATION
+  ${BINARY_DIR})
+file(COPY
+  ${SOURCE_DIR}/crossdomain.xml
+  DESTINATION
+  ${BINARY_DIR})
+file(COPY
+  ${SOURCE_DIR}/.htaccess
+  DESTINATION
+  ${BINARY_DIR})
+file(MAKE_DIRECTORY
+  ${Midas_BASE_DIRECTORY}/assetstore
+  ${Midas_BASE_DIRECTORY}/temp
+  ${Midas_BASE_DIRECTORY}/cache
+  ${Midas_BASE_DIRECTORY}/backup)

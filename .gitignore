@@ -9,3 +9,5 @@
 /tests/log/coverage
 /tests/log/testdox.html
 /.zfproject.xml
+/bin
+/tests/Testing
