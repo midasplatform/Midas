@@ -40,7 +40,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       $cache=Zend_Cache::factory('Core','File',$frontendOptions,$backendOptions);
       Zend_Translate::setCache($cache);
       }
-    $translate=new Zend_Translate('csv',BASE_PATH.'/translation/fr-main.csv','en');
+    $translate=new Zend_Translate('csv',BASE_PATH.'/core/translation/fr-main.csv','en');
     Zend_Registry::set('translater',$translate);
     
     $translaters=array();
