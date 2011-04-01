@@ -20,7 +20,7 @@ set( PHP_UNIT  CACHE STRING
 
 #-----------------------------------------------------------------------------
 #  This should be at the top level for warning suppression
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/CTestCustom.cmake.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/library/CMake/CTestCustom.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake )
 
 
