@@ -50,6 +50,12 @@ a:focus, li:focus
   -moz-outline-style: none;
 }
 
+img.thumbnailSmall{
+  width: 32px;
+  height: 32px;
+  margin-right: 3px;
+}
+
 /*-------------------------------------------------
 TOP
 -------------------------------------------------*/

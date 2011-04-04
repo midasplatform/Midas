@@ -23,13 +23,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
    */
   protected function _initConfig()
     {
-    Zend_Loader::loadClass( "UserDao", BASE_PATH . '/core/models/dao');
-    Zend_Loader::loadClass( "ItemDao", BASE_PATH . '/core/models/dao');
-    if (isset($_POST['sid']))    
-      { 
-      Zend_Session::setId($_POST['sid']);       
-      }
-    Zend_Session::start();
+
     $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG,'global',true);
     if(isset($_COOKIE['lang']))
       {

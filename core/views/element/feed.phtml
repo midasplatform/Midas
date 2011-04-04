@@ -33,11 +33,11 @@
     $thumbnail=$feed->getUser()->getThumbnail();
     if(!empty($thumbnail))
       {
-      echo "<img src='{$view->webroot}data/thumbnail/{$thumbnail}' alt=''/>";
+      echo "<img class='thumbnailSmall' src='{$view->webroot}/{$thumbnail}' alt=''/>";
       }
     else
       {
-      echo "<img src='{$view->webroot}/public/images/icons/unknownUser.png' alt=''/>";
+      echo "<img class='thumbnailSmall' src='{$view->webroot}/public/images/icons/unknownUser.png' alt=''/>";
       }
     echo "</div>";
     echo "<div class='feedInfo'>";

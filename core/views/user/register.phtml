@@ -1,6 +1,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
-<link href="<?php echo $this->webroot?>/public/css/user/user.register.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->webroot?>/public/css/user/user.register.css?<?php echo time();?> " rel="stylesheet" type="text/css" />
 <div class="registerContent">  
   <div class="registerInfo">
     MIDAS integrates multimedia server technology with Kitware's open-source data analysis and visualization clients. The server follows open standards for data storage, access and harvesting.
@@ -30,9 +30,9 @@
         <label for="password2"><?php echo $this->t("Confirm Password")?></label>
         <?php echo $this->form['password2']?>
       </div>
-      <div>
+      <div id="conditionsBlock">
         <label for="conditions"></label>
-        <?php echo $this->t("I read and accepted the")?><br/><a class='termOfService' href='#'><?php echo $this->t('terms of service')?></a><?php echo $this->form['conditions']?>
+         <?php echo $this->t("I read and accepted the")?> <a class='termOfService' href='#'><?php echo $this->t('terms of service')?></a><?php echo $this->form['conditions']?>
       </div>
       <div>
          <?php echo $this->form['submit']?>

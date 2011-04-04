@@ -17,6 +17,7 @@ abstract class UserModelBase extends AppModel
       'creation' => array('type' => MIDAS_DATA),
       'folder_id' => array('type' => MIDAS_DATA),
       'admin' => array('type' => MIDAS_DATA),    
+      'privacy' => array('type' => MIDAS_DATA),    
       'publicfolder_id' => array('type' => MIDAS_DATA),
       'privatefolder_id' => array('type' => MIDAS_DATA),
       'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
@@ -34,11 +35,6 @@ abstract class UserModelBase extends AppModel
   abstract function getByUser_id($userid);
   abstract function getUserCommunities($userDao);
   
-  /** don't use save*/
-  public function save($dao)
-    {
-    throw new Zend_Exception("Use createUser method.");
-    }
 
   /** create user */
   public function createUser($email,$password,$firstname,$lastname,$admin=0)

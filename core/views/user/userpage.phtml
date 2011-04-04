@@ -11,11 +11,11 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
   $thumbnail=$this->user->getThumbnail();
   if(!empty($thumbnail))
     {
-    echo "<img src='{$this->webroot}data/thumbnail/{$thumbnail}' alt=''/>";
+    echo "<img class='thumbnailSmall' src='{$this->webroot}/{$thumbnail}' alt=''/>";
     }
   else
     {
-    echo "<img src='{$this->webroot}/public/images/icons/unknownUser.png' alt=''/>";
+    echo "<img  class='thumbnailSmall' src='{$this->webroot}/public/images/icons/unknownUser.png' alt=''/>";
     }
   ?>
   </div>

@@ -20,19 +20,21 @@ div#tabsSettings .ui-tabs-nav{
 div#tabsSettings .ui-state-default{
 }
 
-.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+div#tabsSettings .ui-state-active,div#tabsSettings  .ui-widget-content .ui-state-active,div#tabsSettings  .ui-widget-header .ui-state-active {
 border: 1px solid #C5DBEC!important;
 }
 
 
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+div#tabsSettings .ui-state-default,div#tabsSettings  .ui-widget-content .ui-state-default,div#tabsSettings  .ui-widget-header .ui-state-default {
 border: 1px solid #F3F1EC;
 }
 
-.ui-widget-content{
+div#tabsSettings .ui-widget-content,div#tabsSettings{
   background: none!important;
   color:white;
 }
+
+
 div#tabsSettings .ui-tabs .ui-tabs-nav li a{
   padding: 3px 10px!important;
 }

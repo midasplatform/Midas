@@ -23,29 +23,41 @@ class AppController extends MIDAS_GlobalController
     // Set the version
     $this->view->version='3.0 beta';
     //Init Session
-    $user=new Zend_Session_Namespace('Auth_User');
-    if (!isset($user->initialized))
+    if($fc->getRequest()->getActionName()!='login'||$fc->getRequest()->getControllerName()!='user')
       {
-      Zend_Session::regenerateId();
-      $user->initialized=true;
-      }
-    $user->setExpirationSeconds(60*Zend_Registry::get('configGlobal')->session->lifetime);
-    $this->userSession=$user;
-    $this->view->recentItems=array();
-    if ($user->Dao!=null)
-      {
-      $this->logged=true;
-      $this->view->logged=true;
-      $this->view->userDao=$user->Dao;
-      $cookieData =  $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->getKey());
+      Zend_Loader::loadClass( "UserDao", BASE_PATH . '/core/models/dao');
+      Zend_Loader::loadClass( "ItemDao", BASE_PATH . '/core/models/dao');
+
+      if (isset($_POST['sid']))    
+        { 
+        Zend_Session::setId($_POST['sid']);       
+        }
+      Zend_Session::start();  
+      $user=new Zend_Session_Namespace('Auth_User');
+      $user->setExpirationSeconds(60*Zend_Registry::get('configGlobal')->session->lifetime);
+      $this->userSession=$user;
       $this->view->recentItems=array();
-      if(isset($cookieData))
+      if ($user->Dao!=null)
         {
-        $this->view->recentItems= unserialize($cookieData); 
-        } 
+        $this->logged=true;
+        $this->view->logged=true;
+        $this->view->userDao=$user->Dao;
+        $cookieData =  $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->getKey());
+        $this->view->recentItems=array();
+        if(isset($cookieData))
+          {
+          $this->view->recentItems= unserialize($cookieData); 
+          } 
+        }
+      else
+        {
+        $this->view->logged=false;
+        $this->logged=false;
+        }
       }
     else
       {
+      $this->userSession=null;
       $this->view->logged=false;
       $this->logged=false;
       }

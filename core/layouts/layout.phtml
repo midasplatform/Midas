@@ -70,11 +70,10 @@
               if($this->logged)
                 {
                 echo '
-                   <b><a href="'.$this->webroot.'/user/'.$this->userDao->getUserId().'" >'.$this->userDao->getFullName().' <img class="arrowUser" src="'.$this->webroot.'/public/images/icons/arrow-user.gif" alt ="" /></a> </b>
+                   <b><a id="topUserName" href="'.$this->webroot.'/user/'.$this->userDao->getUserId().'" >'.$this->userDao->getFullName().' <img class="arrowUser" src="'.$this->webroot.'/public/images/icons/arrow-user.gif" alt ="" /> </a> </b>
                     <ul>
                       <li onclick="location.replace(\''.$this->webroot.'/user/userpage\');"><a>'.$this->t('My Page').'</a></li>
                       <li class="myAccountLink"><a>'.$this->t('My Account').'</a></li>
-                      <li class="settingsLink"><a>'.$this->t('Settings').'</a></li>
                       <li class="modulesLink"><a>'.$this->t('Modules').'</a></li>';
                 if($this->userDao->isAdmin())
                   {

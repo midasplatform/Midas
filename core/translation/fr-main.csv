@@ -79,6 +79,7 @@ Items;Documents
 Folder;Repertoire
 Folders;Repertoires
 User;Utilisateur
+user;utilisateur
 Users;Utilisateurs
 Size;Taille
 Modified;Modifié
@@ -121,5 +122,21 @@ Leave the community;Quitter la communauté
 Manage;Gérer
 Move/Copy Item.;Déplacer/Copier Document.
 Copy Item.;Copier Document.
+item;document
 My Files;Mes Fichiers
 Please select a folder.;Sélectionnez un répertoire.
+community;communauté
+communities;communautés
+Modify my password; Modifier mon mot de passe
+My old password;Mon ancien mot de passe
+My new password;Mon nouveau mot de passe
+Confirmation;Confirmation
+Modify;Modifier
+Changes saved; Changements sauvés
+The old password is incorrect;L'ancien mot de passe est incorrecte
+The passwords are not the same;Les mot des passes sont différents
+Modify my information;Modifier mes informations
+Modify my picture;Modifier mon image
+Choose a picture;Choisir une image
+Modifier Picture;Modifier image
+My picture;Mon image

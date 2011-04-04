@@ -8,7 +8,7 @@ class UserController extends AppController
   public $_daos=array(
     'User','Folder','Folderpolicygroup','Folderpolicyuser','Group'
   );
-  public $_components=array('Date');
+  public $_components=array('Date','Filter');
   public $_forms=array(
     'User'
   );
@@ -45,7 +45,7 @@ class UserController extends AppController
         throw new Zend_Exception("User already exists.");
         }
         
-      $this->userSession->Dao=$this->User->createUser($form->getValue('email'),$form->getValue('password1'),$form->getValue('firstname'),$form->getValue('lastname'));
+      $this->userSession->Dao=$this->User->createUser(trim($form->getValue('email')),$form->getValue('password1'),trim($form->getValue('firstname')),trim($form->getValue('lastname')));
       
       $this->_redirect("/");
       }
@@ -74,7 +74,6 @@ class UserController extends AppController
         $passwordPrefix=Zend_Registry::get('configGlobal')->password->prefix;
         if($userDao != false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
           {
-          $this->userSession->Dao=$userDao;
           $remember=$form->getValue('remerberMe');
 
           if(isset($remember) && $remember == 1)
@@ -86,8 +85,12 @@ class UserController extends AppController
             {
             Zend_Session::ForgetMe();
             }
+          Zend_Session::start();  
+          $user=new Zend_Session_Namespace('Auth_User');
+          $user->setExpirationSeconds(60*Zend_Registry::get('configGlobal')->session->lifetime);
+          $user->Dao=$userDao;
           $url=$form->getValue('url');
-          $this->userSession->lock();
+          $user->lock();
           $this->getLogger()->info(__METHOD__ . " Log in : " . $userDao->getFullName());
           }
         }
@@ -174,8 +177,106 @@ class UserController extends AppController
       }   
     $this->_helper->layout->disableLayout();
     
+    $accountForm=$this->Form->User->createAccountForm($this->userSession->Dao->getFirstname(),$this->userSession->Dao->getLastname(),
+                                                $this->userSession->Dao->getCompany(),$this->userSession->Dao->getPrivacy());
+    $this->view->accountForm=$this->getFormAsArray($accountForm);
+    
+    if($this->_request->isPost())
+      {
+      $this->_helper->viewRenderer->setNoRender();
+      $submitPassword=$this->_getParam('modifyPassword');
+      $modifyAccount=$this->_getParam('modifyAccount');
+      $modifyPicture=$this->_getParam('modifyPicture');
+      if(isset($submitPassword)&&$this->logged)
+        {
+        $oldPass=$this->_getParam('oldPassword');
+        $newPass=$this->_getParam('newPassword');
+        $passwordPrefix=Zend_Registry::get('configGlobal')->password->prefix;
+        $userDao=$this->User->load($this->userSession->Dao->getKey());
+        if($userDao != false && md5($passwordPrefix.$oldPass) == $userDao->getPassword())
+          {
+          $userDao->setPassword(md5($passwordPrefix.$newPass));
+          $this->User->save($userDao);
+          $this->userSession->Dao=$userDao;
+          echo JsonComponent::encode(array(true,$this->t('Changes saved')));
+          }
+        else
+          {
+          echo JsonComponent::encode(array(false,$this->t('The old password is incorrect')));
+          }
+        }
+        
+      if(isset($modifyAccount)&&$this->logged)
+        {
+        $firtname=trim($this->_getParam('firstname'));
+        $lastname=trim($this->_getParam('lastname'));
+        $company=trim($this->_getParam('company'));
+        $privacy=$this->_getParam('privacy');
+        
+        $userDao=$this->User->load($this->userSession->Dao->getKey());
+
+        if(!isset($privacy)||($privacy!=MIDAS_USER_PRIVATE&&$privacy!=MIDAS_USER_PUBLIC))
+          {
+          echo JsonComponent::encode(array(false,'Error'));
+          }
+        if(!isset($lastname)||!isset($firtname)||empty($lastname)||empty($firtname))
+          {
+          echo JsonComponent::encode(array(false,'Error'));
+          }
+        $userDao->setFirstname($firtname);
+        $userDao->setLastname($lastname);
+        if(isset($company))
+          {
+          $userDao->setCompany($company);
+          }        
+        $userDao->setPrivacy($privacy);
+        $this->User->save($userDao);
+        $this->userSession->Dao=$userDao;        
+        echo JsonComponent::encode(array(true,$this->t('Changes saved')));
+        }
+      if(isset($modifyPicture)&&$this->logged)
+        {
+        $upload = new Zend_File_Transfer();
+        $upload->receive();
+        $path=$upload->getFileName();
+        if (!empty($path)&& file_exists($path) && $upload->getFileSize() > 0)
+          {
+          //create thumbnail
+          $thumbnailCreator=$this->Component->Filter->getFilter('ThumbnailCreator');
+          $thumbnailCreator->inputFile = $path;
+          $thumbnailCreator->inputName = basename($path);
+          $hasThumbnail = $thumbnailCreator->process();
+          $thumbnail_output_file = $thumbnailCreator->outputFile;
+          if($hasThumbnail&&  file_exists($thumbnail_output_file))
+            {
+            $userDao=$this->User->load($this->userSession->Dao->getKey());
+            $oldThumbnail=$userDao->getThumbnail();
+            if(!empty($oldThumbnail))
+              {
+              unlink(BASE_PATH.'/'.$oldThumbnail);
+              }
+            $userDao->setThumbnail(substr($thumbnail_output_file, strlen(BASE_PATH)+1));
+            $this->User->save($userDao);
+            $this->userSession->Dao=$userDao;  
+            echo JsonComponent::encode(array(true,$this->t('Changes saved'),$userDao->getThumbnail()));
+            }   
+          else
+            {
+            echo JsonComponent::encode(array(false,'Error'));
+            }
+          }
+        }
+      }
+    
+    $this->view->thumbnail=$this->userSession->Dao->getThumbnail();
+    $this->view->jsonSettings=array();
+    $this->view->jsonSettings['accountErrorFirstname']=$this->t('Please set your firstname');
+    $this->view->jsonSettings['accountErrorLastname']=$this->t('Please set your lastname');
+    $this->view->jsonSettings['passwordErrorShort']=$this->t('Password too short');
+    $this->view->jsonSettings['passwordErrorMatch']=$this->t('The passwords are not the same');
+    $this->view->jsonSettings=JsonComponent::encode($this->view->jsonSettings);
     }
-  
+    
   /** user page action*/
   public function userpageAction()
     {

@@ -1,25 +1,75 @@
 <?php
+echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/jquery/jquery.form.js"></script>';
 echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/user/user.settings.js?'.time().'"></script>';
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/user/user.settings.css?<?php echo time(); ?>" />
 
 <div id="tabsSettings">
 	<ul>
-		<li><a href="#tabs-1"><?php echo $this->t('My Account') ?></a></li>
-		<li><a href="#tabs-2"><?php echo $this->t('Password') ?></a></li>
-		<li><a href="#tabs-3"><?php echo $this->t('Settings') ?></a></li>
-		<li><a href="#tabs-4"><?php echo $this->t('Modules') ?></a></li>
+		<li><a href="#tabs-account"><?php echo $this->t('My Account') ?></a></li>
+		<li><a href="#tabs-password"><?php echo $this->t('Password') ?></a></li>
+		<li><a href="#tabs-modules"><?php echo $this->t('Modules') ?></a></li>
 	</ul>
-	<div id="tabs-1">
-    Account
+	<div id="tabs-account">
+    <h3><?php echo $this->t('Modify my information')?>:</h3>
+    <form  class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']?>">
+      <table>
+        <tr>
+          <td><?php echo $this->t('Firstname');?><?php echo $this->accountForm['firstname']?></td>
+          <td><?php echo $this->t('Lastname');?><?php echo $this->accountForm['lastname']?></td>
+        </tr>
+        <tr>
+          <td><?php echo $this->t('Company');?><?php echo $this->accountForm['company']?></td>
+        </tr>
+        <tr>
+          <td><?php echo $this->t('Privacy');?><?php echo $this->accountForm['privacy']?></td>
+        </tr>
+        <tr>
+          <td><?php echo $this->accountForm['modifyAccount']?></td>
+        </tr>
+      </table>
+    </form>
+    <h3><?php echo $this->t('My picture')?>:</h3>
+      <?php
+      $thumbnail=$this->thumbnail;
+      if(!empty($thumbnail))
+        {
+        echo "<img id='userTopThumbnail' src='{$this->webroot}/{$thumbnail}' alt=''/>";
+        }
+      else
+        {
+        echo "<img id='userTopThumbnail' src='{$this->webroot}/public/images/icons/unknownUser.png' alt=''/>";
+        }
+      ?>
+    <h3><?php echo $this->t('Modify my picture')?>:</h3>
+    <form class="genericForm" id="modifyPicture" action="<?php echo $this->webroot?>/user/settings" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="MAX_FILE_SIZE" value="1000000">
+      <?php echo $this->t('Choose a picture')?>: <input type="file" name="file" />
+      <br/>
+      <input type="submit" name='modifyPicture' value="<?php echo $this->t('Modifier Picture')?>">
+    </form>
   </div>
-	<div id="tabs-2">
-    Password
+	<div id="tabs-password">
+    <h3><?php echo $this->t('Modify my password')?>:</h3>
+    <form  class="genericForm" id="modifyPassword" method='POST' action='<?php echo $this->webroot?>/user/settings'>
+      <table>
+        <tr>
+          <td><?php echo $this->t('My old password');?><input type="password" name="oldPassword"/></td>
+        </tr>
+        <tr>
+          <td><?php echo $this->t('My new password');?><input type="password" name="newPassword"/></td>
+          <td><?php echo $this->t('Confirmation');?><input type="password" name="newPasswordConfirmation"/></td>
+        </tr>
+        <tr>
+          <td><input type='submit' name='modifyPassword' value='<?php echo $this->t('Modify');?>'/></td>
+        </tr>
+      </table>
+    </form>
   </div>
-	<div id="tabs-3">
-    Settings
-  </div>
-	<div id="tabs-4">
+	<div id="tabs-modules">
     Module
   </div>
+</div>
+<div style="display: none;" class="jsonSettingsContent">
+  <?php echo $this->jsonSettings?>
 </div>

@@ -83,10 +83,10 @@ class UserForm extends AppForm
 
     return $form;
     }
-    
+        
     
       /** acount  form */
-  public function createAccountForm()
+  public function createAccountForm($firstname_value=null,$lastname_value=null,$company_value=null,$policy_value=null)
     {
     $form = new Zend_Form;
     $form->setAction($this->webroot.'/user/settings')
@@ -104,14 +104,39 @@ class UserForm extends AppForm
           ->addValidator('NotEmpty', true)
           ->addValidator(new Zend_Validate_Alnum());
     
-    $compagny = new Zend_Form_Element_Text('lastname');
-    $compagny
+    $company = new Zend_Form_Element_Text('company');
+    $company
           ->addValidator(new Zend_Validate_Alnum());
 
-    $submit = new  Zend_Form_Element_Submit('submit');
-    $submit ->setLabel($this->t("Save"));
+    $submit = new  Zend_Form_Element_Submit('modifyAccount');
+    $submit ->setLabel($this->t("Modify"));
     
-    $form->addElements(array($firstname,$lastname,$compagny,$submit));
+    $privacy = new Zend_Form_Element_Radio('privacy');
+    $privacy->addMultiOptions( array(
+                 MIDAS_USER_PUBLIC => $this->t("Public"),
+                 MIDAS_USER_PRIVATE => $this->t("Private"),
+                  ))
+          ->setRequired(true)
+          ->setValue(MIDAS_COMMUNITY_PUBLIC);
+    
+    if($firstname_value!=null)
+      {
+      $firstname->setValue($firstname_value);
+      }
+    if($lastname_value!=null)
+      {
+      $lastname->setValue($lastname_value);
+      }
+    if($company_value!=null)
+      {
+      $company->setValue($company_value);
+      }
+    if($policy_value!=null)
+      {
+      $privacy->setValue($policy_value);
+      }
+    
+    $form->addElements(array($firstname,$lastname,$company,$privacy,$submit));
 
     return $form;
     }

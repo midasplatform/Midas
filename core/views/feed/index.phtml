@@ -37,9 +37,9 @@ MIDAS integrates multimedia server technology with Kitware's open-source data an
     <h1>Stats</h1>
     <?php
     echo "<ul>";
-    echo "  <li>{$this->nUsers} user".(($this->nUsers>1)?'s':'')."</li>";
-    echo "  <li>{$this->nCommunities} ".(($this->nCommunities>1)?'communities':'community')."</li>";
-    echo "  <li>{$this->nItems} item".(($this->nItems>1)?'s':'')."</li>";
+    echo "  <li>{$this->nUsers} {$this->t('user')}".(($this->nUsers>1)?'s':'')."</li>";
+    echo "  <li>{$this->nCommunities} ".(($this->nCommunities>1)?"{$this->t('communities')}":"{$this->t('community')}")."</li>";
+    echo "  <li>{$this->nItems} {$this->t('item')}".(($this->nItems>1)?'s':'')."</li>";
     echo "</ul>";
     ?>
   </div>
