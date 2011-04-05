@@ -1,10 +1,10 @@
 <?php
-$this->headScript()->appendFile($this->webroot . '/public/js/community/community.view.js');
-$this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser.js');
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/community/community.view.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/community/community.view.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.browser.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/community/community.view.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
 <div class="viewMain">
   <div class="genericThumbnail">
   <?php
@@ -15,14 +15,14 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
     }
   else
     {
-    echo "<img src='{$this->webroot}/public/images/icons/community-big.png' alt=''/>";
+    echo "<img src='{$this->coreWebroot}/public/images/icons/community-big.png' alt=''/>";
     }
   ?>
   </div>
   <div class="genericInfo">
     <div class="genericName"><?php echo $this->communityDao->getName();?></div>
   </div>
-  <img class="tabsLoading" alt=""  src="<?php echo $this->webroot?>/public/images/icons/loading.gif" />
+  <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <div class="tabs" id='tabsGeneric'>
   <ul>
     <li><a href="#tabs-1"><?php echo $this->t("Feed")?></a></li>
@@ -52,7 +52,7 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
       }
       ?>
     <div id="tabs-3">
-      <img class="tableLoading" alt=""  src="<?php echo $this->webroot?>/public/images/icons/loading.gif" />
+      <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
       <table id="browseTable" class="midasTree">
         <thead>
               <th class="thData"><?php echo $this->t('Name');?></th>
@@ -68,7 +68,7 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
               {
               echo "<tr id='node--$node' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
               echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
-              echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->webroot}/public/images/icons/loading.gif'/></td>";
+              echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDate(),true)}</td>";
               echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId()}' /></td>";
               echo "</tr>";
@@ -162,7 +162,7 @@ $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser
     </div>
     <div class="sideElementLast viewInfo">
       <h1>Info</h1>    
-      <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->webroot?>/public/images/icons/loading.gif"/>
+      <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
       <div class="ajaxInfoElement">
       </div>
     </div>

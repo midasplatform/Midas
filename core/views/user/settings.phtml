@@ -1,8 +1,8 @@
 <?php
-echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/jquery/jquery.form.js"></script>';
-echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/user/user.settings.js?'.time().'"></script>';
+echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/jquery/jquery.form.js"></script>';
+echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/user/user.settings.js?'.time().'"></script>';
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/user/user.settings.css?<?php echo time(); ?>" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/user/user.settings.css?<?php echo time(); ?>" />
 
 <div id="tabsSettings">
 	<ul>
@@ -38,7 +38,7 @@ echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/user/
         }
       else
         {
-        echo "<img id='userTopThumbnail' src='{$this->webroot}/public/images/icons/unknownUser.png' alt=''/>";
+        echo "<img id='userTopThumbnail' src='{$this->coreWebroot}/public/images/icons/unknownUser.png' alt=''/>";
         }
       ?>
     <h3><?php echo $this->t('Modify my picture')?>:</h3>

@@ -1,8 +1,8 @@
-<link href="<?php echo $this->webroot?>/public/css/install/install.css" rel="stylesheet" type="text/css" />
-<link href="<?php echo $this->webroot?>/public/css/install/install.step2.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot?>/public/css/install/install.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot?>/public/css/install/install.step2.css" rel="stylesheet" type="text/css" />
 
 <?php
-  $this->headScript()->appendFile($this->webroot.'/public/js/install/install.step2.js');
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/install/install.step2.js');
 ?>
 
 <div class="viewMain"> 
@@ -51,9 +51,9 @@
               <div>
                 <div id='dbResult'>
                   <div>
-                <img style='display:none;' class='testLoading'  alt='' src='{$this->webroot}/public/images/icons/loading.gif'/>
-                <img style='display:none;' class='testOk'  alt='' src='{$this->webroot}/public/images/icons/ok.png'/>
-                <img style='display:none;' class='testNok'  alt='' src='{$this->webroot}/public/images/icons/nok.png'/>             
+                <img style='display:none;' class='testLoading'  alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/>
+                <img style='display:none;' class='testOk'  alt='' src='{$this->coreWebroot}/public/images/icons/ok.png'/>
+                <img style='display:none;' class='testNok'  alt='' src='{$this->coreWebroot}/public/images/icons/nok.png'/>             
                 <span class='testError'/>
                   </div>
                 </div>

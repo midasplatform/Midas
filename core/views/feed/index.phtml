@@ -1,8 +1,8 @@
 <?php
-  $this->headScript()->appendFile($this->webroot.'/public/js/feed/feed.index.js');
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/feed/feed.index.js');
 ?>
 
-<link href="<?php echo $this->webroot?>/public/css/feed/feed.index.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot?>/public/css/feed/feed.index.css" rel="stylesheet" type="text/css" />
 
 <div class="viewMain">
   <?php echo $this->element('feed')?>

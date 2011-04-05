@@ -111,12 +111,12 @@ function checkAll(obj)
   {
     if(!checkEmail(obj.val()))
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/nok.png"/> The e-mail is not valid');
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> The e-mail is not valid');
       email=false;
     }
     else  
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/ok.png"/>');
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/ok.png"/>');
       email=true;
     }
   }
@@ -124,12 +124,12 @@ function checkAll(obj)
   {
     if(obj.val().length<1)
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/nok.png"/> Please set your firstname'); 
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> Please set your firstname'); 
       firstname=true;
     }
     else
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/ok.png"/>');
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/ok.png"/>');
       firstname=false;
     }
   }
@@ -138,12 +138,12 @@ function checkAll(obj)
   {
     if(obj.val().length<1)
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/nok.png"/> Please set your lastname '); 
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> Please set your lastname '); 
       lastname=false;
     }
     else
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/ok.png"/>');
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/ok.png"/>');
       lastname=true;
     }
   }
@@ -151,12 +151,12 @@ function checkAll(obj)
   {
     if(obj.val().length<3)
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/nok.png"/> Password too short'); 
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> Password too short'); 
       password=false;
     }
     else
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/ok.png"/>');
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/ok.png"/>');
     }
   }
   if(obj.attr('name')=='userpassword2')
@@ -169,12 +169,12 @@ function checkAll(obj)
     {
       if($('input[name=userpassword1]').val()!=obj.val())
       {
-        obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/nok.png"/> The passwords are not the same');  
+        obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> The passwords are not the same');  
         password=false;
       }
       else
       {
-        obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/ok.png"/>');
+        obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/ok.png"/>');
         password=true;
       }
     }

@@ -1,7 +1,7 @@
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.feed.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.feed.css" />
 
 <?php
-  $this->headScript()->appendFile($this->webroot.'/public/js/common/common.feed.js');
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.feed.js');
 ?>
 
 <?
@@ -26,7 +26,7 @@
     if($feed->policy==2)
       {
       echo "<div class='feedDelete'>";
-      echo "<img class='feedDeleteLink' element='{$feed->getKey()}' src='{$view->webroot}/public/images/icons/close.png' alt=''/>";
+      echo "<img class='feedDeleteLink' element='{$feed->getKey()}' src='{$view->coreWebroot}/public/images/icons/close.png' alt=''/>";
       echo "</div>";
       }
     echo "<div class='feedUserImage'>";
@@ -37,7 +37,7 @@
       }
     else
       {
-      echo "<img class='thumbnailSmall' src='{$view->webroot}/public/images/icons/unknownUser.png' alt=''/>";
+      echo "<img class='thumbnailSmall' src='{$view->coreWebroot}/public/images/icons/unknownUser.png' alt=''/>";
       }
     echo "</div>";
     echo "<div class='feedInfo'>";

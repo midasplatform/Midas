@@ -47,7 +47,14 @@ class DateComponent extends AppComponent
       
      if($only_time)
        {
-       return $difference.' '.$periodsFr[$j];
+       if(Zend_Registry::get('configGlobal')->application->lang=='fr')
+         {
+         return $difference.' '.$periodsFr[$j];
+         }
+       else
+         {
+         return $difference.' '.$periods[$j];
+         }
        }
      if(Zend_Registry::get('configGlobal')->application->lang=='fr')
        {

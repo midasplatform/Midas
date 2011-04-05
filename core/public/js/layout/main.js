@@ -180,7 +180,7 @@ $(function() {
      activation: 'click', 
      arrows: true, 
      closePosition: 'title',
-     closeText: '<img src="'+json.global.webroot+'/public/images/icons/close.png" alt="close" />',  
+     closeText: '<img src="'+json.global.coreWebroot+'/public/images/icons/close.png" alt="close" />',  
      positionBy:'uploadElement',
      topOffset:        -100,   
      leftOffset:       -550,

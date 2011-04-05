@@ -75,7 +75,7 @@ function successAccountChange(responseText, statusText, xhr, $form)
     }
   if(jsonResponse[0])
     {
-      $('a#topUserName').html($('#modifyAccount input[name=firstname]').val()+' '+$('#modifyAccount input[name=lastname]').val()+' <img class="arrowUser" src="'+json.global.webroot+'/public/images/icons/arrow-user.gif" alt ="" />');
+      $('a#topUserName').html($('#modifyAccount input[name=firstname]').val()+' '+$('#modifyAccount input[name=lastname]').val()+' <img class="arrowUser" src="'+json.global.coreWebroot+'/public/images/icons/arrow-user.gif" alt ="" />');
       createNotive(jsonResponse[1],4000);
     }
   else

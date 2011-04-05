@@ -2,12 +2,12 @@
 <?php if(isset($this->statusmessage)) { echo $this->statusmessage; } ?>
 
 <?php 
-  $this->headScript()->appendFile($this->webroot.'/public/js/import/import.index.js');
-  $this->headScript()->appendFile($this->webroot.'/public/js/jquery/jquery.form.js');
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/import/import.index.js');
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
   
-  $this->headLink()->appendStylesheet($this->webroot.'/public/css/jquery/jquery.filetree.css');
-  $this->headLink()->appendStylesheet($this->webroot.'/public/css/import/import.index.css');
-  $this->headLink()->appendStylesheet($this->webroot.'/public/css/assetstore/assetstore.add.css');
+  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.css');
+  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/import/import.index.css');
+  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/assetstore.add.css');
   
   echo $this->importForm;
 ?>

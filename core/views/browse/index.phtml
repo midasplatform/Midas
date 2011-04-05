@@ -1,13 +1,13 @@
 <?php
-  $this->headScript()->appendFile($this->webroot.'/public/js/browse/browse.index.js');
-  $this->headScript()->appendFile($this->webroot.'/public/js/common/common.browser.js');
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/browse/browse.index.js');
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 ?>
 
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.browser.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/browse/browse.index.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/browse/browse.index.css" />
 <div class="viewMain">
-  <img class="tableLoading" alt="" src="<?php echo $this->webroot?>/public/images/icons/loading.gif"/>
+  <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
   <table id="browseTable" class="midasTree">
     <thead>
       <?php 
@@ -31,7 +31,7 @@
         $folder=$community->getFolder();
         echo "<tr id='node--$node' class='parent' type='community' element='{$community->getCommunityId()}' ajax='{$folder->getFolderId()}'>";
         echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
-        echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->webroot}/public/images/icons/loading.gif'/></td>";
+        echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
         echo "  <td>{$this->Date->ago($folder->getDate(),true)}</td>";
         echo "  <td><input type='checkbox' class='treeCheckbox' type='community' element='{$community->getCommunityId()}' /></td>";
         echo "</tr>";
@@ -63,7 +63,7 @@
   </div>
   <div class="sideElementLast viewInfo" >
     <h1>Info</h1>    
-    <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->webroot?>/public/images/icons/loading.gif"/>
+    <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
     <div class="ajaxInfoElement">
     </div>
   </div>

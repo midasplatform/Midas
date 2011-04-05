@@ -1,14 +1,14 @@
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.genericPage.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/item/item.view.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/item/item.view.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
 
 <?php
-$this->headScript()->appendFile($this->webroot . '/public/js/item/item.view.js');
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.js');
 ?>
 <div class="viewMain">
   <div class="genericThumbnail">
   <?php
-    echo "<img src='{$this->webroot}/public/images/icons/document-big.png' alt=''/>";
+    echo "<img src='{$this->coreWebroot}/public/images/icons/document-big.png' alt=''/>";
   ?>
   </div>
   <div class="genericInfo">

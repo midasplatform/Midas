@@ -1,9 +1,9 @@
 <?php
-  $this->headScript()->appendFile($this->webroot.'/public/js/user/user.userpage.js');
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.userpage.js');
 ?>
 <div class="viewMain">
   <? echo $this->element('feed'); ?>
-  <img class="tableLoading" alt="" src="<?php echo $this->webroot?>/public/images/icons/loading.gif"/>
+  <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
   <table id="browseTable" class="midasTree">
     <thead>
       <tr>

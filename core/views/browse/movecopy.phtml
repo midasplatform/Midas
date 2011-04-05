@@ -1,15 +1,15 @@
 
 
 <?php
-echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/common/common.browser.js"></script>';
-echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/browse/browse.movecopy.js"></script>';
+echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/common/common.browser.js"></script>';
+echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/browse/browse.movecopy.js"></script>';
 ?>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/common/common.browser.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/public/css/browse/browse.movecopy.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/browse/browse.movecopy.css" />
 
   <h4><?php echo $this->t('Please select a folder.')?></h4>
-  <img class="tableLoading" alt="" src="<?php echo $this->webroot?>/public/images/icons/loading.gif"/>
+  <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
   <table id="moveTable" class="midasTree">
     <thead>
       <?php 

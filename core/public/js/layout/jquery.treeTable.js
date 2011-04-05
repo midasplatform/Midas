@@ -131,7 +131,7 @@
 
     if($(this).attr('proccessing')=='true')
       {
- //     $(this).find('td:first').prepend('<img class="tableLoading" alt="" src="'+json.global.webroot+'/public/images/icons/loading.gif"/>');
+ //     $(this).find('td:first').prepend('<img class="tableLoading" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>');
       }
     $(this).removeClass("collapsed").addClass("expanded");
         childrenOf($(this)).each(function() {
@@ -322,7 +322,7 @@
         $.each(elements['folders'], function(index, value) {
           html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
           html+=     "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";
-          html+=     "  <td>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.webroot+'/public/images/icons/loading.gif"/>'+"</td>";
+          html+=     "  <td>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>'+"</td>";
           html+=     "  <td>"+value['creation']+"</td>";
           html+=     "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='"+value['folder_id']+"'/></td>";
           html+=     "</tr>";

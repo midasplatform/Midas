@@ -2,14 +2,15 @@
 /*
  * SmartOptimizer Configuration File
  */
-if(file_exists('../../core/configs/application.local.ini'))
+if(file_exists('../../configs/application.local.ini'))
 	{
-	$config=parse_ini_file('../../core/configs/application.local.ini');
+	$config=parse_ini_file('../../configs/application.local.ini');
 	}
 else
 	{
-	$config=parse_ini_file('../../core/configs/application.ini');
+	$config=parse_ini_file('../../configs/application.ini');
 	}
+  
 if(isset($config['smartoptimizer'])&&$config['smartoptimizer']==1)
 {
 //use this to set gzip compression On or Off
@@ -73,7 +74,7 @@ $settings['serverCache'] = true;
 $settings['serverCacheCheck'] = true;
 
 //cache dir
-$settings['cacheDir'] = '../../tmp/cache/smartoptimizer/';
+$settings['cacheDir'] = '../../../tmp/cache/smartoptimizer/';
 
 //prefix for cache files
 $settings['cachePrefix'] = 'so_';
@@ -83,4 +84,5 @@ $settings['clientCache'] = true;
 
 //Setting this to false will force the browser to use cached files without checking for changes.
 $settings['clientCacheCheck'] = true;
+
 ?>

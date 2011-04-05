@@ -6,26 +6,26 @@
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <title><?= $this->title ?></title>
     <!-- Import CSS -->
-    <link rel="shortcut icon" href="<?php echo $this->webroot ?>/public/images/icons/favicon.ico" />
+    <link rel="shortcut icon" href="<?php echo $this->coreWebroot ?>/public/images/icons/favicon.ico" />
     <?php
     if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
       {
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/main.css,view.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css,jquery.cluetip.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/main.css,view.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css,jquery.cluetip.css" />';
       }
     else
       {
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/main.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/jquery.cluetip.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/view.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/jquery-ui.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/form.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/loginForm.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/jquery.treeTable.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/main.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery.cluetip.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/view.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery-ui.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/form.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/loginForm.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery.treeTable.css" />';
       }
     ?>
     <!--[if IE]>
-      <?php echo  '<link type="text/css" rel="stylesheet" href="' . $this->webroot . '/public/css/layout/mainIE.css" />';?>
-      <?php echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/roundCornerIE.js"></script>';?>
+      <?php echo  '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/mainIE.css" />';?>
+      <?php echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/roundCornerIE.js"></script>';?>
     <![endif]-->
     <?php echo $this->headLink();  // import the css ?>
     <?php echo $this->headStyle(); // import the css ?>
@@ -36,18 +36,18 @@
       <div class="MainDialogContent">
       </div>
       <div class="MainDialogLoading">
-        <img alt="" src="<?php echo  $this->webroot?>/public/images/icons/loading.gif" />
+        <img alt="" src="<?php echo  $this->coreWebroot?>/public/images/icons/loading.gif" />
       </div>
       <input type="hidden" class="DialogContentPage"/>
     </div>
     <div class="TopDynamicBar">
       <div class="TopDynamicClose">
-        <a class="closeButton" href="#" ><span><?php echo $this->t('Close');?></span><img alt="" src="<?php echo $this->webroot?>/public/images/icons/close.png"/> </a>
+        <a class="closeButton" href="#" ><span><?php echo $this->t('Close');?></span><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/close.png"/> </a>
       </div>
       <div class="TopDynamicContent">
       </div>
       <div class="TopDynamicLoading">
-        <img alt="" src="<?php echo  $this->webroot?>/public/images/icons/loading.gif" />
+        <img alt="" src="<?php echo  $this->coreWebroot?>/public/images/icons/loading.gif" />
       </div>
       <input type="hidden" class="DynamicContentPage"/>
     </div>
@@ -70,7 +70,7 @@
               if($this->logged)
                 {
                 echo '
-                   <b><a id="topUserName" href="'.$this->webroot.'/user/'.$this->userDao->getUserId().'" >'.$this->userDao->getFullName().' <img class="arrowUser" src="'.$this->webroot.'/public/images/icons/arrow-user.gif" alt ="" /> </a> </b>
+                   <b><a id="topUserName" href="'.$this->webroot.'/user/'.$this->userDao->getUserId().'" >'.$this->userDao->getFullName().' <img class="arrowUser" src="'.$this->coreWebroot.'/public/images/icons/arrow-user.gif" alt ="" /> </a> </b>
                     <ul>
                       <li onclick="location.replace(\''.$this->webroot.'/user/userpage\');"><a>'.$this->t('My Page').'</a></li>
                       <li class="myAccountLink"><a>'.$this->t('My Account').'</a></li>
@@ -108,11 +108,11 @@
             <li>
               <?php if($this->lang=='fr')
                 {
-                echo '<a href="'.$this->webroot.'?lang=en"><img src="'.$this->webroot.'/public/images/icons/english.png" alt="English"/>';
+                echo '<a href="'.$this->webroot.'?lang=en"><img src="'.$this->coreWebroot.'/public/images/icons/english.png" alt="English"/>';
                 }
               else
                 {
-                echo '<a href="'.$this->webroot.'?lang=fr"><img src="'.$this->webroot.'/public/images/icons/french.png" alt="French"/>';
+                echo '<a href="'.$this->webroot.'?lang=fr"><img src="'.$this->coreWebroot.'/public/images/icons/french.png" alt="French"/>';
                 }
                 ?>
               </a>
@@ -134,7 +134,7 @@
         <div class="HeaderAction">
           <ul>
             <li class="uploadFile" title="Upload" rel="<?php echo $this->webroot?>/upload/simpleupload">
-              <a href="#"><img src="<?= $this->webroot ?>/public/images/icons/addfile.png" alt="Upload a file"/>
+              <a href="#"><img src="<?= $this->coreWebroot ?>/public/images/icons/addfile.png" alt="Upload a file"/>
                 Upload
               </a>
             </li>
@@ -148,11 +148,11 @@
         <div class="MainContent">
           <div class="SideBar">
             <ul>
-              <li <?php if($this->activemenu=='feed') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/feed');" ><a href="<?php echo $this->webroot?>/feed"><img alt="" src="<?php echo $this->webroot?>/public/images/icons/feed.png" /><span> <?php echo $this->t('Feed');?></span></a></li>
-              <li <?php if($this->activemenu=='browse') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/browse');" ><a href="<?php echo $this->webroot?>/browse"><img alt="" src="<?php echo $this->webroot?>/public/images/icons/data.png" /><span> <?php echo $this->t('Data');?></span></a></li>
-              <li <?php if($this->activemenu=='community') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/community');" ><a href="<?php echo $this->webroot?>/community"><img alt="" src="<?php echo $this->webroot?>/public/images/icons/community.png" /><span> <?php echo $this->t('Communities');?></span></a></li>
-              <li id="menuUserInfo" <?php if($this->activemenu=='user') {echo 'class="active"';} ?>  ><a href="javascript:;"><img alt="" src="<?php echo $this->webroot?>/public/images/icons/upload.png" /><span> <?php echo $this->t('My Uploads');?></span></a></li>
-              <li <?php if($this->activemenu=='plugin') {echo 'class="active"';} ?> class="last"><a href="#"><img alt="" src="<?php echo $this->webroot?>/public/images/icons/plugin.png" /><span> <?php echo $this->t('Plugins');?></span></a></li>
+              <li <?php if($this->activemenu=='feed') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/feed');" ><a href="<?php echo $this->webroot?>/feed"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/feed.png" /><span> <?php echo $this->t('Feed');?></span></a></li>
+              <li <?php if($this->activemenu=='browse') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/browse');" ><a href="<?php echo $this->webroot?>/browse"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/data.png" /><span> <?php echo $this->t('Data');?></span></a></li>
+              <li <?php if($this->activemenu=='community') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/community');" ><a href="<?php echo $this->webroot?>/community"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/community.png" /><span> <?php echo $this->t('Communities');?></span></a></li>
+              <li id="menuUserInfo" <?php if($this->activemenu=='user') {echo 'class="active"';} ?>  ><a href="javascript:;"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/upload.png" /><span> <?php echo $this->t('My Uploads');?></span></a></li>
+              <li <?php if($this->activemenu=='plugin') {echo 'class="active"';} ?> class="last"><a href="#"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/plugin.png" /><span> <?php echo $this->t('Plugins');?></span></a></li>
             </ul>
             <hr/>
             <?php
@@ -197,15 +197,15 @@
     <?php
               if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
                 {
-                echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,jquery.treeTable.js,jquery.cluetip.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,jquery.treeTable.js,jquery.cluetip.js"></script>';
                 }
               else
                 {
-                echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/jquery.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/jquery.cluetip.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/jquery-ui.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/main.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/layout/jquery.treeTable.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.cluetip.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery-ui.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/main.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.treeTable.js"></script>';
                 }
     ?>
     <?php echo $this->headScript() ?>

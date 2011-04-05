@@ -1,24 +1,24 @@
-<link href="<?php echo $this->webroot?>/public/css/upload/upload.simpleupload.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot?>/public/css/upload/upload.simpleupload.css" rel="stylesheet" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
     <?php
         if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
           {
-          echo '<script type="text/javascript" src="' . $this->webroot . '/public/js/swfupload/js/swfupload.js,swfupload.queue.js,fileprogress.js,handlers.js"></script>';
+          echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/swfupload/js/swfupload.js,swfupload.queue.js,fileprogress.js,handlers.js"></script>';
           }
         else
           {
           ?>
-          <script type="text/javascript" src="<?php echo $this->webroot?>/public/js/swfupload/js/swfupload.js"></script>
-          <script type="text/javascript" src="<?php echo $this->webroot?>/public/js/swfupload/js/swfupload.queue.js"></script>
-          <script type="text/javascript" src="<?php echo $this->webroot?>/public/js/swfupload/js/fileprogress.js"></script>
-          <script type="text/javascript" src="<?php echo $this->webroot?>/public/js/swfupload/js/handlers.js"></script>
+          <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.js"></script>
+          <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.queue.js"></script>
+          <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/fileprogress.js"></script>
+          <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/handlers.js"></script>
           <?php
           }
     ?>
 
-<script type="text/javascript" src="<?php echo $this->webroot?>/public/js/jquery/jquery.form.js"></script>
-<script type="text/javascript" src="<?php echo $this->webroot?>/public/js/upload/upload.simpleupload.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.simpleupload.js"></script>
 
 <div class="tabs" id='uploadTabs'>
   <ul>

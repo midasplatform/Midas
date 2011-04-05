@@ -17,6 +17,8 @@ class AppController extends MIDAS_GlobalController
     $this->view->setEncoding('iso-8859-1');
     $fc=Zend_Controller_Front::getInstance();
     $this->view->webroot=$fc->getBaseUrl();
+    $this->coreWebroot=$this->view->webroot.'/core';
+    $this->view->coreWebroot=$this->coreWebroot;
 
     $this->view->title=Zend_Registry::get('configGlobal')->application->name;
 
@@ -66,6 +68,7 @@ class AppController extends MIDAS_GlobalController
    //create a global javascript json array
     $jsonGlobal=array(
       "webroot"=>$this->view->webroot,
+      "coreWebroot"=>$this->view->coreWebroot,
       "logged"=>$this->logged,
       "currentUri"=>$this->getRequest()->REQUEST_URI,
       "lang"=>Zend_Registry::get('configGlobal')->application->lang,

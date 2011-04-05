@@ -30,21 +30,21 @@ function checkAll(obj)
   {
     if(!checkEmail(obj.val()))
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/nok.png"/> '+jsonRegister.MessageNotValid);
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> '+jsonRegister.MessageNotValid);
       email=false;
     }
     else  
     {
-      $.post($('.webroot').val()+"/user/validentry", {entry: obj.val(), type: "dbuser"},
+      $.post(json.global.coreWebroot+"/user/validentry", {entry: obj.val(), type: "dbuser"},
       function(data){
         if(data.search('true')!=-1)
         {
-          obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/nok.png"/>'+jsonRegister.MessageNotAvailable);
+          obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/>'+jsonRegister.MessageNotAvailable);
           email=false;
         }
         else
         {
-          obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/ok.png"/>');
+          obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/ok.png"/>');
           email=true;
         }
       });
@@ -54,12 +54,12 @@ function checkAll(obj)
   {
     if(obj.val().length<1)
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/nok.png"/> '+jsonRegister.MessageFirstname); 
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> '+jsonRegister.MessageFirstname); 
       firstname=true;
     }
     else
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/ok.png"/>');
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/ok.png"/>');
       firstname=false;
     }
   }
@@ -67,12 +67,12 @@ function checkAll(obj)
   {
     if(obj.val().length<1)
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/nok.png"/> '+jsonRegister.MessageLastname); 
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> '+jsonRegister.MessageLastname); 
       lastname=false;
     }
     else
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/ok.png"/>');
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/ok.png"/>');
       lastname=true;
     }
   }
@@ -80,12 +80,12 @@ function checkAll(obj)
   {
     if(obj.val().length<3)
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/nok.png"/> '+jsonRegister.MessagePassword); 
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> '+jsonRegister.MessagePassword); 
       password=false;
     }
     else
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/ok.png"/>');
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/ok.png"/>');
     }
   }
   if(obj.attr('name')=='password2')
@@ -98,12 +98,12 @@ function checkAll(obj)
     {
       if($('input[name=password1]').val()!=obj.val())
       {
-        obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/nok.png"/> '+jsonRegister.MessagePasswords);  
+        obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> '+jsonRegister.MessagePasswords);  
         password=false;
       }
       else
       {
-        obj.parent('div').find('span').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/ok.png"/>');
+        obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/ok.png"/>');
         password=true;
       }
     }
@@ -155,11 +155,11 @@ function validRegisterForm()
       {
         if(!$(this).is(':checked'))
         {
-          $(this).parent('div').find('span:last').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/nok.png"/> '+jsonRegister.MessageTerms); 
+          $(this).parent('div').find('span:last').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> '+jsonRegister.MessageTerms); 
         }
         else
         {
-          $(this).parent('div').find('span:last').html('<img alt="" src="'+$('.webroot').val()+'/public/images/icons/ok.png"/>');
+          $(this).parent('div').find('span:last').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/ok.png"/>');
         }
       }
     });

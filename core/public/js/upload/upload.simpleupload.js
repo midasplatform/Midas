@@ -1,8 +1,8 @@
 		var swfu;
 			var settings = {
-				flash_url : $('.webroot').val()+"/public/js/swfupload/swfupload_fp10/swfupload.swf",
-				flash9_url : $('.webroot').val()+"/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
-				upload_url: $('.webroot').val()+"/upload/saveuploaded",
+				flash_url : json.global.coreWebroot+"/public/js/swfupload/swfupload_fp10/swfupload.swf",
+				flash9_url :json.global.coreWebroot+"/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
+				upload_url:json.global.coreWebroot+"/upload/saveuploaded",
 				post_params: {"sid" : $('.sessionId').val(),"privacy": $('.privacyUpload').val() },
 				file_size_limit : $('.maxSizeFile').val()+" MB",
 				file_types : "*.*",
@@ -16,7 +16,7 @@
 				debug: false,
 
 				// Button settings
-				button_image_url: $('.webroot').val()+"/public/js/swfupload/images/Button_65x29.png",
+				button_image_url: json.global.coreWebroot+"/public/js/swfupload/images/Button_65x29.png",
 				button_width: "65",
 				button_height: "20",
 				button_placeholder_id: "spanButtonPlaceHolder",

@@ -123,15 +123,15 @@
       var html='';
       if(arrayElement['type']=='community')
         {
-        html+='<img class="infoLogo" alt="Data Type" src="'+json.global.webroot+'/public/images/icons/community-big.png" />';
+        html+='<img class="infoLogo" alt="Data Type" src="'+json.global.coreWebroot+'/public/images/icons/community-big.png" />';
         }
       else if(arrayElement['type']=='folder')
         {
-        html+='<img class="infoLogo" alt="Data Type" src="'+json.global.webroot+'/public/images/icons/folder-big.png" />';
+        html+='<img class="infoLogo" alt="Data Type" src="'+json.global.coreWebroot+'/public/images/icons/folder-big.png" />';
         }
       else
         {
-        html+='<img class="infoLogo" alt="Data Type" src="'+json.global.webroot+'/public/images/icons/document-big.png" />';
+        html+='<img class="infoLogo" alt="Data Type" src="'+json.global.coreWebroot+'/public/images/icons/document-big.png" />';
         }
         html+='<span class="infoTitle" >'+arrayElement['name']+'</span>';
         html+='<table>';
