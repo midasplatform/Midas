@@ -35,7 +35,7 @@ function checkAll(obj)
     }
     else  
     {
-      $.post(json.global.coreWebroot+"/user/validentry", {entry: obj.val(), type: "dbuser"},
+      $.post(json.global.webroot+"/user/validentry", {entry: obj.val(), type: "dbuser"},
       function(data){
         if(data.search('true')!=-1)
         {

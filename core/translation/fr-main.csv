@@ -37,6 +37,7 @@ terms of service;conditions d'utilisation
 Please log in;Merci de vous authentifier
 You need to be logged in to be able to upload files.;Vous devez être authentifié pour pouvoir uploader des fichiers.
 You need to be logged in to be able to create a community.;Vous devez être authentifié pour pouvoir créer une communauté.
+You should be logged to access this page;Vous devez être authentifié pour pouvoir accéder à cette page
 Create a community;Créer une communauté
 Name;Nom
 Privacy;Confidentialité
@@ -86,6 +87,7 @@ Modified;Modifié
 Download;Télécharger
 Delete Feed;Effacer cette actualité
 Do you really want to delete the feed;Voulez-vous vraiment supprimer l'actualité
+Do you really want to delete the folder;Voulez-vous vraiment supprimer le répertoire
 Yes;Oui
 No;Non
 Plugins;Plugins
@@ -116,6 +118,7 @@ Manage Groups and Members;Gérer les Groupes et les Members
 Manage Files;Gérer les fichiers
 Do you really want to delete this community? It cannot be undo.; Voulez vous vraiment supprimer cette communité? Cette action est irréversible.
 Do you really want to delete this item? It cannot be undo.; Voulez vous vraiment supprimer ce document? Cette action est irréversible.
+Do you really want to delete this group? It cannot be undo.; Voulez vous vraiment supprimer ce groupe? Cette action est irréversible.
 Join the community;Rejoindre la communauté
 Request to join the community;Demander à être membre de la communauté
 Leave the community;Quitter la communauté
@@ -140,3 +143,16 @@ Modify my picture;Modifier mon image
 Choose a picture;Choisir une image
 Modifier Picture;Modifier image
 My picture;Mon image
+Groups;Groupes
+Files;Fichiers
+Save;Sauver
+Please, set the name.;Merci de renseigner le nom.
+Manage Community;Gérer Communauté
+Administrators;Administrateurs
+Moderators;Modérateurs
+There is no custom group.;Il n'y a pas de groupe personnalisé.
+Create a group;Créer un groupe
+Edit a group;Editer une groupe
+Community's Members;Membres de la communauté
+Group's members;Membres du groupe
+Create a new Folder;Créer un nouveau répertoire

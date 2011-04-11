@@ -51,7 +51,7 @@ function successPasswordChange(responseText, statusText, xhr, $form)
   jsonResponse = jQuery.parseJSON(responseText);
   if(jsonResponse==null)
     {
-      createNotive(Error,4000);
+      createNotive('Error',4000);
       return;
     }
   if(jsonResponse[0])
@@ -70,7 +70,7 @@ function successAccountChange(responseText, statusText, xhr, $form)
   jsonResponse = jQuery.parseJSON(responseText);
   if(jsonResponse==null)
     {
-      createNotive(Error,4000);
+      createNotive('Error',4000);
       return;
     }
   if(jsonResponse[0])
@@ -89,7 +89,7 @@ function successPictureChange(responseText, statusText, xhr, $form)
   jsonResponse = jQuery.parseJSON(responseText);
   if(jsonResponse==null)
     {
-      createNotive(Error,4000);
+      createNotive('Error',4000);
       return;
     }
   if(jsonResponse[0])

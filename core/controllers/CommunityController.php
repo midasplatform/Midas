@@ -17,7 +17,188 @@ class CommunityController extends AppController
       $this->_forward('view',null,null,array('communityId'=>$actionName));
       }
     }  // end init()
+    
+  /*manage community*/
+  function manageAction()
+    {
+    if(!$this->logged)  
+      {
+      $this->haveToBeLogged();
+      return false;
+      }
+      
+    $communityId=$this->_getParam("communityId");
+    if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId)!=32)) // This is tricky! and for Cassandra for now
+      {
+      throw new Zend_Exception("Community ID should be a number");
+      }
+    $communityDao=$this->Community->load($communityId);
+    if($communityDao===false||!$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception("This community doesn't exist  or you don't have the permissions.");
+      }    
+    
+    $formInfo=$this->Form->Community->createCreateForm();
+    $formCreateGroup=$this->Form->Community->createCreateGroupForm();
+    
+    //ajax posts
+    if($this->_request->isPost())
+      {
+      $this->_helper->layout->disableLayout();
+      $this->_helper->viewRenderer->setNoRender();
+      $modifyInfo=$this->_getParam('modifyInfo');
+      $editGroup=$this->_getParam('editGroup');
+      $deleteGroup=$this->_getParam('deleteGroup');
+      $addUser=$this->_getParam('addUser');
+      $removeUser=$this->_getParam('removeUser');
+      if(isset($removeUser)) //remove users from group
+        {
+        $group=$this->Group->load($this->_getParam('groupId'));
+        if($group==false||$group->getCommunity()->getKey()!=$communityDao->getKey())
+          {
+          echo JsonComponent::encode(array(false,$this->t('Error')));
+          }
+        else
+          {
+          $users=explode('-', $this->_getParam('users'));
+          $usersDao=$this->User->load($users);
+          foreach ($usersDao as $userDao)
+            {
+            $this->Group->removeUser($group, $userDao);            
+            }
+          echo JsonComponent::encode(array(true,$this->t('Changes saved')));
+          }
+        }
+      if(isset($addUser)) //add users to group
+        {
+        $group=$this->Group->load($this->_getParam('groupId'));
+        if($group==false||$group->getCommunity()->getKey()!=$communityDao->getKey())
+          {
+          echo JsonComponent::encode(array(false,$this->t('Error')));
+          }
+        else
+          {
+          $users=explode('-', $this->_getParam('users'));
+          $usersDao=$this->User->load($users);
+          foreach ($usersDao as $userDao)
+            {
+            $this->Group->addUser($group, $userDao);            
+            }
+          echo JsonComponent::encode(array(true,$this->t('Changes saved')));
+          }
+        }
+      if(isset($modifyInfo))
+        {
+        if($formInfo->isValid($_POST))
+          {
+          $communityDao=$this->Community->load($communityDao->getKey());
+          $communityDao->setName($formInfo->getValue('name'));
+          $communityDao->setDescription($formInfo->getValue('description'));
+          $communityDao->setPrivacy($formInfo->getValue('privacy'));
+          $this->Community->save($communityDao);
+          echo JsonComponent::encode(array(true,$this->t('Changes saved'),$formInfo->getValue('name')));
+          }
+        else
+          {
+          echo JsonComponent::encode(array(false,$this->t('Error')));
+          }
+        }
+      if(isset($editGroup))
+        {
+        if($formCreateGroup->isValid($_POST))
+          {
+          if($this->_getParam('groupId')==0)
+            {
+            $new_group=$this->Group->createGroup($communityDao,$formCreateGroup->getValue('name'));
+            echo JsonComponent::encode(array(true,$this->t('Changes saved'),$new_group->_toArray()));
+            }
+          else
+            {
+            $group=$this->Group->load($this->_getParam('groupId'));
+            if($group==false||$group->getCommunity()->getKey()!=$communityDao->getKey())
+              {
+              echo JsonComponent::encode(array(false,$this->t('Error')));
+              }
+            $group->setName($formCreateGroup->getValue('name'));
+            $this->Group->save($group);
+            echo JsonComponent::encode(array(true,$this->t('Changes saved'),$group->_toArray()));
+            }
+          }
+        else
+          {
+          echo JsonComponent::encode(array(false,$this->t('Error')));
+          }
+        }
+      
+      if(isset($deleteGroup))
+        {        
+        $group=$this->Group->load($this->_getParam('groupId'));
+        if($group==false||$group->getCommunity()->getKey()!=$communityDao->getKey())
+          {
+          echo JsonComponent::encode(array(false,$this->t('Error')));
+          }
+        else
+          {
+          $this->Group->delete($group);
+          echo JsonComponent::encode(array(true,$this->t('Changes saved')));
+          }
+        }
+      return;
+      }//end ajax posts
+      
+    //init forms
+    $formInfo->setAction($this->view->webroot.'/community/manage?communityId='.$communityId);
+    $formCreateGroup->setAction($this->view->webroot.'/community/manage?communityId='.$communityId);
+    $name=$formInfo->getElement('name');
+    $name->setValue($communityDao->getName());
+    $description=$formInfo->getElement('description');
+    $description->setValue($communityDao->getDescription());
+    $privacy=$formInfo->getElement('privacy');
+    $privacy->setValue($communityDao->getPrivacy());
+    $submit=$formInfo->getElement('submit');
+    $submit->setLabel($this->t('Save'));
+    $this->view->infoForm=$this->getFormAsArray($formInfo);
+    $this->view->createGroupForm=$this->getFormAsArray($formCreateGroup);
+      
+    //init groups and members
+    $group_member=$communityDao->getMemberGroup();
+    $admin_group=$communityDao->getAdminGroup();
+    $moderator_group=$communityDao->getModeratorGroup();
+    $this->view->members=$group_member->getUsers();
+    
+    $this->view->memberGroup=$group_member;
+    $this->view->adminGroup=$admin_group;
+    $this->view->moderatorGroup=$moderator_group;
+    $this->view->groups=$this->Group->findByCommunity($communityDao);
+    
+    foreach($this->view->groups as $key => $group)
+      {
+      if($group->getKey()==$group_member->getKey()||$group->getKey()==$admin_group->getKey()||$group->getKey()==$moderator_group->getKey())
+        {
+        unset($this->view->groups[$key]);
+        }
+      }
+    
+    //init file tree
+    $this->view->folders=array();
+    $this->view->folders[]=$communityDao->getPublicFolder();
+    $this->view->folders[]=$communityDao->getPrivateFolder();
+    $this->view->Date=$this->Component->Date;
+    
+    $this->view->header=$this->t("Manage Community");
+    $this->view->communityDao=$communityDao;
 
+    $this->view->isAdmin=$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_ADMIN);
+    $this->view->json['community']=$communityDao->_toArray();
+    $this->view->json['community']['message']['delete']=$this->t('Delete');
+    $this->view->json['community']['message']['deleteMessage']=$this->t('Do you really want to delete this community? It cannot be undo.');
+    $this->view->json['community']['message']['deleteGroupMessage']=$this->t('Do you really want to delete this group? It cannot be undo.');
+    $this->view->json['community']['message']['infoErrorName']=$this->t('Please, set the name.');
+    $this->view->json['community']['message']['createGroup']=$this->t('Create a group');
+    $this->view->json['community']['message']['editGroup']=$this->t('Edit a group');
+    }//end manageAction
+    
+    
     /** index*/
   function indexAction()
     {
@@ -82,10 +263,7 @@ class CommunityController extends AppController
       }
     $this->view->isModerator=$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_WRITE);
     $this->view->isAdmin=$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_ADMIN);
-    $this->view->json['community']=$communityDao->_toArray();
-    $this->view->json['community']['message']['delete']=$this->t('Delete');
-    $this->view->json['community']['message']['deleteMessage']=$this->t('Do you really want to delete this community? It cannot be undo.');
-    
+    $this->view->json['community']=$communityDao->_toArray();   
     }//end view
 
   /** Delete a community*/

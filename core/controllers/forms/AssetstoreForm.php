@@ -30,7 +30,7 @@ class AssetstoreForm extends AppForm
     $assetstoretype = new Zend_Form_Element_Select('type',array('id' => 'assetstoretype'));
     $assetstoretype->setLabel('Select a type')->setMultiOptions($assetstoretypes);
     // Add a loading image
-    $assetstoretype->setDescription('<div class="assetstoreLoading" style="display:none"><img src="'.$this->coreWebroot.'/public/images/icons/loading.gif"/></div>')
+    $assetstoretype->setDescription('<div class="assetstoreLoading" style="display:none"><img src="'.$this->webroot.'/core/public/images/icons/loading.gif"/></div>')
     ->setDecorators(array(
         'ViewHelper',
         array('Description', array('escape' => false, 'tag' => false)),

@@ -6,13 +6,6 @@ var uploadid;
 
 $(document).ready(function() 
 { 
-  // If we are not logged in
-  if(!json.global.logged)
-    {
-    showOrHideDynamicBar('login');
-    loadAjaxDynamicBar('login','/user/login');
-    return;
-    }
   
   // Bind the import submit to start the import
   $('#importsubmit').click(function(){startImport()});

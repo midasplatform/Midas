@@ -1,5 +1,5 @@
 <?php
-class AssetstoreModelBase extends AppModel
+abstract class AssetstoreModelBase extends AppModel
 {
   public function __construct()
     {
@@ -15,7 +15,9 @@ class AssetstoreModelBase extends AppModel
         );
     $this->initialize(); // required
     } // end __construct()
-  
+   
+  /** Abstract functions */
+  abstract function getAll();
  
 } // end class AssetstoreModelBase
 ?>

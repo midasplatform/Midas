@@ -2,7 +2,7 @@
 			var settings = {
 				flash_url : json.global.coreWebroot+"/public/js/swfupload/swfupload_fp10/swfupload.swf",
 				flash9_url :json.global.coreWebroot+"/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
-				upload_url:json.global.coreWebroot+"/upload/saveuploaded",
+				upload_url:json.global.webroot+"/upload/saveuploaded",
 				post_params: {"sid" : $('.sessionId').val(),"privacy": $('.privacyUpload').val() },
 				file_size_limit : $('.maxSizeFile').val()+" MB",
 				file_types : "*.*",
@@ -13,7 +13,7 @@
 					progressTarget : "fsUploadProgress",
 					cancelButtonId : "btnCancel"
 				},
-				debug: false,
+				debug: true,
 
 				// Button settings
 				button_image_url: json.global.coreWebroot+"/public/js/swfupload/images/Button_65x29.png",

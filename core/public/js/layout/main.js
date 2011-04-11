@@ -12,6 +12,14 @@ $(function() {
     {
     loadAjaxDynamicBar('login','/user/login');
     }
+    
+  // If we are not logged in
+  if(json.global.needToLog)
+    {
+    showOrHideDynamicBar('login');
+    loadAjaxDynamicBar('login','/user/login');
+    return;
+    }
   
   $("a.loginLink").click(function()
     {

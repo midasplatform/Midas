@@ -1,0 +1,19 @@
+<?php
+/** AJAX Action !!!! */
+  echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/folder/folder.createfolder.js?'.time().'"></script>';
+  echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/jquery/jquery.form.js"></script>';
+?>
+
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/folder/folder.createfolder.css" />
+
+<form id="createFolderForm" class="genericForm" method="POST"  action="<?php echo $this->webroot?>/folder/createFolder">
+   <input type="hidden" name="folderId" value="<?php echo $this->parentFolder->getKey()?>"/>
+      <div >
+        <label for="name"><?php echo $this->t("Name")?></label>
+        <input type='text' name="name"/>
+      </div>
+     
+      <div>
+         <input type='submit' name='createFolder' value='<?php echo $this->t('Create')?>'/>
+      </div>
+</form>

@@ -200,10 +200,10 @@ class ImportController extends AppController
    * \brief Index Action (first action when we access the application)
    */
   function indexAction()
-    {       
+    {   
     if(!$this->logged)  
       {
-      $this->view->header=$this->t("You should be logged in to import data");
+      $this->haveToBeLogged();
       return false;
       }
       

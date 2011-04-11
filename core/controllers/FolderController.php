@@ -2,7 +2,7 @@
 
 class FolderController extends AppController
   {
-  public $_models=array('Folder','Folder','Item');
+  public $_models=array('Folder','Folder','Item','Folderpolicygroup','Folderpolicyuser');
   public $_daos=array('Folder','Folder','Item');
   public $_components=array('Utility','Date');
   public $_forms=array();
@@ -14,6 +14,7 @@ class FolderController extends AppController
     $actionName=Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     if(isset($actionName) && (is_numeric($actionName) || strlen($actionName)==32)) // This is tricky! and for Cassandra for now
       {
+      
       $this->_forward('view',null,null,array('folderId'=>$actionName));
       }
     $this->view->activemenu = 'browse'; // set the active menu
@@ -73,7 +74,95 @@ class FolderController extends AppController
     $this->view->folders=$folders;
     $this->view->items=$items;
     $this->view->header=$header;
-
     }// end View Action
+    
+    
+   
+  /** delete a folder (dialog,ajax only)*/
+  public function deleteAction()
+    {
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    $folder_id=$this->_getParam('folderId');
+    $folder=$this->Folder->load($folder_id);
+    $header="";
+    if(!isset($folder_id))
+      {
+      throw new Zend_Exception("Please set the folderId.");
+      }
+    elseif($folder===false)
+      {
+      throw new Zend_Exception("The folder doesn t exist.");
+      }
+    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception("Permissions error.");
+      }
+    $this->Folder->delete($folder);
+    $folderInfo=$folder->_toArray();
+    echo JsonComponent::encode(array(true,$this->t('Changes saved'),$folderInfo));
+    }// end createfolderAction
+    
+  /** create a folder (dialog,ajax only)*/
+  public function createfolderAction()
+    {
+    $this->_helper->layout->disableLayout();
+    $folder_id=$this->_getParam('folderId');
+    $folder=$this->Folder->load($folder_id);
+    $header="";
+    if(!isset($folder_id))
+      {
+      throw new Zend_Exception("Please set the folderId.");
+      }
+    elseif($folder===false)
+      {
+      throw new Zend_Exception("The folder doesn t exist.");
+      }
+    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception("Permissions error.");
+      }
+    $this->view->parentFolder=$folder;
+    if($this->_request->isPost())
+      {
+      $this->_helper->viewRenderer->setNoRender();
+      $createFolder=$this->_getParam('createFolder');
+      if(isset($createFolder))
+        {
+        $name=$this->_getParam('name');
+        if(!isset($name))
+          {
+          echo JsonComponent::encode(array(false,$this->t('Error')));
+          }
+        else
+          {
+          $new_folder=$this->Folder->createFolder($name, '', $folder);
+          $policyGroup=$folder->getFolderpolicygroup();
+          $policyUser=$folder->getFolderpolicyuser();
+          foreach($policyGroup as $policy)
+            {
+            $group=$policy->getGroup();
+            $policyValue=$policy->getPolicy();
+            $this->Folderpolicygroup->createPolicy($group,$new_folder,$policyValue);
+            }
+          foreach($policyUser as $policy)
+            {
+            $user=$policy->getUser();
+            $policyValue=$policy->getPolicy();
+            $this->Folderpolicyuser->createPolicy($user,$new_folder,$policyValue);
+            }
+            
+          if($new_folder==false)
+            {
+            echo JsonComponent::encode(array(false,$this->t('Error')));
+            }
+          else
+            {
+            echo JsonComponent::encode(array(true,$this->t('Changes saved'),$folder->_toArray(),$new_folder->_toArray()));
+            }
+          }
+        }
+      }
+    }// end createfolderAction
 
   }//end class

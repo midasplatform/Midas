@@ -30,6 +30,25 @@ class CommunityForm extends AppForm
     $form->addElements(array($name,$description,$privacy,$submit));
     return $form;
     }
+  
+  /** create a group*/
+  public function createCreateGroupForm()
+    {
+    $form = new Zend_Form;
+
+    $form->setAction($this->webroot.'/community/manage')
+          ->setMethod('post');
+
+    $name = new Zend_Form_Element_Text('name');
+    $name ->setRequired(true)
+          ->addValidator('NotEmpty', true);
+   
+    $submit = new  Zend_Form_Element_Submit('submit');
+    $submit ->setLabel($this->t("Save"));
+    
+    $form->addElements(array($name,$submit));
+    return $form;
+    }
  
 } // end class
 ?>

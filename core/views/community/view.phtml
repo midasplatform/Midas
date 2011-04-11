@@ -1,4 +1,5 @@
 <?php
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/community/community.view.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 ?>
@@ -106,16 +107,10 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <div class='sideElementFirst genericAction'>
       <h1>Actions</h1>
         <ul>";
-    if($this->isModerator)
+    if($this->isAdmin||$this->isModerator)
       {
       echo "
-          <li><a href=''>{$this->t('Manage')}</a></li>
-          ";
-      }
-    if($this->isAdmin)
-      {
-      echo "
-          <li><a href='javascript:;' id='communityDeleteLink'>{$this->t('Delete')}</a></li>
+          <li><a href='{$this->webroot}/community/manage?communityId={$this->communityDao->getKey()}'>{$this->t('Manage')}</a></li>
           ";
       }
     if($this->isMember&&!$this->isAdmin)

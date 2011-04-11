@@ -60,6 +60,7 @@ class BrowseController extends AppController
       {
       $elements=explode(';',$this->_getParam('elements'));
       $destination=$this->_getParam('destination');
+      $ajax=$this->_getParam('ajax');
       $folderIds=explode('-',$elements[0]);
       $itemIds=explode('-',$elements[1]);
       $folders= $this->Folder->load($folderIds);
@@ -94,8 +95,22 @@ class BrowseController extends AppController
           }
         else
           {
-          //TODO move
+          $from=$this->_getParam('from');
+          $from=$this->Folder->load($from);  
+          if($destination==false)
+            {
+            throw new Zend_Exception("Unable to load destination");
+            }
+          $this->Folder->addItem($destination,$item);
+          $this->Folder->removeItem($from, $item);
           }
+        }
+      if(isset($ajax))
+        {
+        $this->_helper->layout->disableLayout();
+        $this->_helper->viewRenderer->setNoRender();
+        echo JsonComponent::encode(array(true,$this->t('Changes saved')));
+        return;
         }
       $this->_redirect ('/folder/'.$destination->getKey());
       }

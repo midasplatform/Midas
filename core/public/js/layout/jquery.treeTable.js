@@ -175,13 +175,13 @@
     // 3: +node+ should not be inserted as a child of +node+ itself.
 
     if($.inArray(node[0].id, ancestorNames) == -1 && (!parent || (destination.id != parent[0].id)) && destination.id != node[0].id) {
-      indent(node, ancestorsOf(node).length * options.indent * -1); // Remove indentation
-      
+
       if(parent) {node.removeClass(options.childPrefix + parent[0].id);}
       
       node.addClass(options.childPrefix + destination.id);
       move(node, destination); // Recursively move nodes to new location
-      indent(node, ancestorsOf(node).length * options.indent);
+      var padding = getPaddingLeft(destination) + options.indent;
+      node.children("td:first")[options.treeColumn].style.paddingLeft = (padding-12) + "px";
     }
     
     return this;
@@ -364,6 +364,9 @@
          $(this).hide();  
          }
        });
+     if(typeof callbackCreateElement == 'function') { 
+      callbackCreateElement($(this)); 
+      }
       
   }
   

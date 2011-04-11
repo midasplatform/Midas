@@ -77,6 +77,59 @@
         window.location.replace(json.global.webroot+'/item/'+node.attr('element'));
         }
     }
+    
+    function createNewFolder(id)
+    {
+      loadDialog('folderId'+id,'/folder/createfolder?folderId='+id);
+      showDialog(json.browse.createFolder,false);
+    }
+    
+    function deleteFolder(id)
+    {
+      var html='';
+      html+=json.browse['deleteMessage'];
+      html+='<br/>';
+      html+='<br/>';
+      html+='<br/>';
+      html+='<input style="margin-left:140px;" class="globalButton deleteFolderYes" element="'+id+'" type="button" value="'+json.global.Yes+'"/>';
+      html+='<input style="margin-left:50px;" class="globalButton deleteFolderNo" type="button" value="'+json.global.No+'"/>';
+      
+      showDialogWithContent(json.browse['delete'],html,false);
+      
+      $('input.deleteFolderYes').unbind('click').click(function()
+        { 
+          var node=$('table.treeTable tr.parent[element='+id+']');
+          $.post(json.global.webroot+'/folder/delete', {folderId: id},
+           function(data) {
+               jsonResponse = jQuery.parseJSON(data);
+                if(jsonResponse==null)
+                  {
+                    createNotive('Error',4000);
+                    return;
+                  }
+                if(jsonResponse[0])
+                  {
+                    createNotive(jsonResponse[1],1500);
+                    node.each(function(){
+                      childrenOf($(this)).remove();
+                    });
+                    node.remove();
+                    $( "div.MainDialog" ).dialog('close');
+                  }
+                else
+                  {
+                    createNotive(jsonResponse[1],4000);
+                  }
+           });
+
+        });
+      $('input.deleteFolderNo').unbind('click').click(function()
+        {
+           $( "div.MainDialog" ).dialog('close');
+        });         
+      
+    }
+    
     function createAction(node)
     {
       var type=node.attr('type');
@@ -94,12 +147,10 @@
           {
             html+='<li><a href="'+json.global.webroot+'/folder/'+element+'">'+json.browse.view+'</a></li>';
             html+='<li><a href="'+json.global.webroot+'/download?folders='+element+'">'+json.browse.download+'</a></li>';
-            if(policy==2)
-              {
-              html+='<li><a>'+json.browse.manage+'</a></li>';
-              }
             if(policy>=1)
               {
+              html+='<li><a onclick="deleteFolder('+element+');">'+json.browse['delete']+'</a></li>'; 
+              html+='<li><a onclick="createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
               html+='<li><a>'+json.browse.share+'</a></li>';
               }                
           }

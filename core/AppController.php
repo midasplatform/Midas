@@ -27,8 +27,8 @@ class AppController extends MIDAS_GlobalController
     //Init Session
     if($fc->getRequest()->getActionName()!='login'||$fc->getRequest()->getControllerName()!='user')
       {
-      Zend_Loader::loadClass( "UserDao", BASE_PATH . '/core/models/dao');
-      Zend_Loader::loadClass( "ItemDao", BASE_PATH . '/core/models/dao');
+      require_once BASE_PATH . '/core/models/dao/UserDao.php';
+      require_once BASE_PATH . '/core/models/dao/ItemDao.php';
 
       if (isset($_POST['sid']))    
         { 
@@ -44,7 +44,7 @@ class AppController extends MIDAS_GlobalController
         $this->logged=true;
         $this->view->logged=true;
         $this->view->userDao=$user->Dao;
-        $cookieData =  $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->getKey());
+        $cookieData =  $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->user_id);
         $this->view->recentItems=array();
         if(isset($cookieData))
           {
@@ -70,6 +70,7 @@ class AppController extends MIDAS_GlobalController
       "webroot"=>$this->view->webroot,
       "coreWebroot"=>$this->view->coreWebroot,
       "logged"=>$this->logged,
+      "needToLog"=>false,
       "currentUri"=>$this->getRequest()->REQUEST_URI,
       "lang"=>Zend_Registry::get('configGlobal')->application->lang,
       "Yes"=>$this->t('Yes'),
@@ -82,11 +83,13 @@ class AppController extends MIDAS_GlobalController
     
     $browse=array(
       'view'=>$this->t('View'),
+      'createFolder'=>$this->t('Create a new Folder'),
       'preview'=>$this->t('Preview'),
       'download'=>$this->t('Download'),
       'manage'=>$this->t('Manage'),
       'edit'=>$this->t('Edit'),
       'delete'=>$this->t('Delete'),
+      'deleteMessage'=>$this->t('Do you really want to delete the folder'),
       'share'=>$this->t('Share'),
       'rename'=>$this->t('Rename'),
       'move'=>$this->t('Move'),
@@ -120,6 +123,12 @@ class AppController extends MIDAS_GlobalController
       }
     }
 
+  public function haveToBeLogged()
+    {
+    $this->view->header=$this->t("You should be logged to access this page");
+    $this->view->json['global']['needToLog']=true;
+    $this->_helper->viewRenderer->setNoRender();
+    }
   /** translation */
   protected function t($text)
     {
