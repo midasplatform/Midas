@@ -1,46 +1,41 @@
 <?php
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/search/search.index.js');
 ?>
+<link href="<?php echo $this->coreWebroot?>/public/css/search/search.index.css" rel="stylesheet" type="text/css" />
 <div class="viewMain">
-<ul>
-<li class="searchheader"><?php echo $this->t('Items')?></li>
-  <?php
-  foreach($this->items as $item)
-    {
-    echo "<li> <a href='{$this->webroot}/item/{$item->getKey()}'>{$item->getName()}</a>";
-    }
-  ?>
-</ul>
-<ul>
-<li class="searchheader"><?php echo $this->t('Folders')?></li>
-  <?php
-  foreach($this->folders as $folder)
-    {
-    echo "<li> <a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a>";
-    }
-  ?>
-</ul>
-<ul>
-<li class="searchheader"><?php echo $this->t('Communities')?></li>
-  <?php
-  foreach($this->communities as $community)
-    {
-    echo "<li> <a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a>";
-    }
-  ?>
-</ul>
-<ul>
-<li class="searchheader"><?php echo $this->t('Users')?></li>
-  <?php
-  foreach($this->users as $user)
-    {
-    echo "<li> <a href='{$this->webroot}/user/{$user->getKey()}'>{$user->getName()}</a>";
-    }
-  ?>
-</ul>
+  <img class="searchLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+  <ul id='searchResults'>
+
+  </ul>
 </div>
 <div class="viewSideBar">
-  blabla
+  <div class='sideElementFirst' id="resultTypeLinks">
+    <ul>
+      <li><a id="allResults">
+          <img alt='' src="<?php echo $this->coreWebroot?>/public/images/FileTree/zip.png"/>
+          <?php echo $this->t('All the results')?> (<?php echo ($this->nitems+$this->nusers+$this->nfolders+$this->ncommunities)?>)</a></li>
+      <li><a id="itemResults">
+          <img alt='' src="<?php echo $this->coreWebroot?>/public/images/FileTree/txt.png"/>
+          <?php echo $this->t('Items')?></a> (<?php echo $this->nitems?>)</li>
+      <li><a id="folderResults">
+          <img alt='' src="<?php echo $this->coreWebroot?>/public/images/FileTree/directory.png"/>
+          <?php echo $this->t('Folders')?></a> (<?php echo $this->nfolders?>)</li>
+      <li><a id="communityResults">
+          <img alt='' src="<?php echo $this->coreWebroot?>/public/images/icons/community.png"/>
+          <?php echo $this->t('Communities')?></a> (<?php echo $this->ncommunities?>)</li>
+      <li><a id="userResults">
+          <img alt='' src='<?php echo $this->coreWebroot?>/public/images/icons/unknownUser-small.png'/>
+          <?php echo $this->t('Users')?></a> (<?php echo $this->nusers?>)</li>
+    </ul>
+  </div>
+  <div class="sideElementLast" id="sortTypeLinks">
+    <h1><?php echo $this->t('Sort by')?></h1>
+    <ul>
+      <li><a id="viewSort"><?php echo $this->t('Number of views')?></a></li>
+      <li><a id="nameSort"><?php echo $this->t('Name')?></a></li>
+      <li><a id="dateSort"><?php echo $this->t('Date')?></a></li>
+    </ul>
+  </div>
 </div>
 
 

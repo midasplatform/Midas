@@ -237,7 +237,8 @@ class CommunityController extends AppController
       $member_group=$communityDao->getMemberGroup();
       $this->Group->addUser($member_group,$this->userSession->Dao);
       }
-
+    
+    $this->Community->plusOneView($communityDao);
     $this->view->communityDao=$communityDao;
     $this->view->information=array();
     $this->view->feeds=$this->Feed->getFeedsByCommunity($this->userSession->Dao,$communityDao);

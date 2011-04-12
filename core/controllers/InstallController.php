@@ -71,7 +71,7 @@ class InstallController extends AppController
     
     foreach($phpextensions as $key => $t)
       {      
-      if(!file_exists(BASE_PATH."/sql/{$key}/{$this->view->version}.sql"))
+      if(!file_exists(BASE_PATH."/core/sql/{$key}/{$this->view->version}.sql"))
         {
         unset($phpextensions[$key]);
         }
@@ -95,7 +95,7 @@ class InstallController extends AppController
         switch($type)
           {
           case 'mysql':
-            $this->run_mysql_from_file(BASE_PATH."/sql/{$type}/{$this->view->version}.sql",
+            $this->run_mysql_from_file(BASE_PATH."/core/sql/{$type}/{$this->view->version}.sql",
                                        $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'),$form->getValue('port'));
               $params= array(
                 'host' => $form->getValue('host'),
@@ -124,7 +124,7 @@ class InstallController extends AppController
               Zend_Registry::set('dbAdapter', $db);
             break;
          case 'pgsql':
-            $this->run_pgsql_from_file(BASE_PATH."/sql/{$type}/{$this->view->version}.sql",
+            $this->run_pgsql_from_file(BASE_PATH."/core/sql/{$type}/{$this->view->version}.sql",
                                        $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'),$form->getValue('port'));
               $params= array(
                 'host' => $form->getValue('host'),

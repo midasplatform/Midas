@@ -1,0 +1,36 @@
+ul#searchResults{
+  display:none;
+  list-style: none;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  position:relative;
+}
+
+ul#searchResults li.searchElement{
+  margin-top: 3px;
+  min-height: 40px;
+  border-bottom: 1px dotted grey;
+  position:relative;
+}
+
+img.imageSearchResult{
+  position:relative;
+  top:2px;
+}
+
+a.nameSearchResult{
+  font-weight: bold!important;
+  margin-left: 3px;
+}
+
+span.dateSearchResult{
+  font-size: 10px;
+  position:absolute;
+  color: grey;
+  right: 10px;
+  bottom: 5px;
+}
+
+span.descriptionSearchResult{
+  margin-left: 20px;
+}

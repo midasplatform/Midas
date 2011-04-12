@@ -51,6 +51,28 @@ class SortdaoComponent extends AppComponent
       }
     }//end sortByDate
     
+      /** sort by number*/
+  public function sortByNumber($a,$b)
+    {
+    if($this->field==''||!isset($a->{$this->field}))
+      {
+      throw new Zend_Exception("Error field.");
+      }
+    $a_n = strtolower($a->{$this->field})  ; 
+    $b_n = strtolower($b->{$this->field})  ; 
+
+    if( $a_n == $b_n )
+      return 0 ; 
+    
+    if($this->order=='asc')
+      {
+      return ($a_n < $b_n) ? -1 : 1; 
+      }
+    else
+      {
+      return ($a_n < $b_n ) ? 1 : -1; 
+      }
+    }//end sortByNumber
     
   public function arrayUniqueDao($array, $keep_key_assoc = false)
     {

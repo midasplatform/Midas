@@ -13,7 +13,7 @@
 					progressTarget : "fsUploadProgress",
 					cancelButtonId : "btnCancel"
 				},
-				debug: true,
+				debug: false,
 
 				// Button settings
 				button_image_url: json.global.coreWebroot+"/public/js/swfupload/images/Button_65x29.png",

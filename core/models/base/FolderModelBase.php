@@ -17,6 +17,7 @@ abstract class FolderModelBase extends AppModel
       'name'=> array('type'=>MIDAS_DATA),
       'description' =>  array('type'=>MIDAS_DATA),
       'date' =>  array('type'=>MIDAS_DATA),
+      'view' =>  array('type'=>MIDAS_DATA),
       'items' =>  array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'Item', 'table' => 'item2folder', 'parent_column'=> 'folder_id', 'child_column' => 'item_id'),
       'folderpolicygroup' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Folderpolicygroup', 'parent_column'=> 'folder_id', 'child_column' => 'folder_id'),
       'folderpolicyuser' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Folderpolicyuser', 'parent_column'=> 'folder_id', 'child_column' => 'folder_id'),
@@ -34,6 +35,17 @@ abstract class FolderModelBase extends AppModel
   abstract function getUser($folder);
   abstract function addItem($folder,$item);
   abstract function removeItem($folder,$item);
+  
+    /** plus one view*/
+  function plusOneView($folder)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    $folder->view++;
+    $this->save($folder);
+    }//end plusOneView
   
   /** Create a folder */
   function createFolder($name,$description,$parent)

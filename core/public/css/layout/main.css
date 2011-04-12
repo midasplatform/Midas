@@ -193,6 +193,13 @@ div.Header div.HeaderSearch{
   position:relative;
 }
 
+div.Header div.HeaderSearch a#advancedSearchLink{
+  position: absolute;
+  right: 3px;
+  bottom: -13px;
+  color: #F3F1EC;
+}
+
 div.Header div.HeaderSearch input#live_search{
   background: white url(../../images/icons/search.png) no-repeat scroll 3px 4px;
   border: 1px solid white;

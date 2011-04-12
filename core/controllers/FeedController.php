@@ -26,7 +26,7 @@ class FeedController extends AppController
     $this->view->notifications=array();
     $this->view->header=$this->t('Feed');
     }
-    
+        
      /** get getfolders Items' size */
   public function deleteajaxAction()
     {

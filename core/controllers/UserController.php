@@ -302,7 +302,7 @@ class UserController extends AppController
       {
       throw new Zend_Exception("Unable to find user");
       }
-  
+    
     $this->view->user=$userDao;
     $this->view->userCommunities=$this->User->getUserCommunities($userDao);
     $this->view->folders=array();
@@ -310,6 +310,10 @@ class UserController extends AppController
     if(!empty($this->userSession->Dao)&& $userDao->getKey() == $this->userSession->Dao->getKey())
       {
       $this->view->folders[]=$userDao->getPrivateFolder();
+      }
+    else
+      {
+      $this->User->plusOneView($userDao);
       }
     $this->view->feeds=$this->Feed->getFeedsByUser($this->userSession->Dao,$userDao);
     

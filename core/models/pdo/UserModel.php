@@ -58,7 +58,7 @@ class UserModel extends UserModelBase
     } // end getUserCommunities
 
   /** Return a list of users corresponding to the search */
-  function getUsersFromSearch($search,$userDao)
+  function getUsersFromSearch($search,$userDao,$limit=14,$group=true,$order='view')
     {
     if($userDao==null)
       {
@@ -84,24 +84,50 @@ class UserModel extends UserModelBase
                           ->where('g2.user_id= ? ',$userId);
 
 
-    $sql = $this->database->select()->from(array('u'=>$this->_name),array('user_id','firstname','lastname','count(*)'))
-                                          ->where('(privacy='.MIDAS_USER_PUBLIC.' OR ('.
-                                          $subqueryUser.')>0'.') AND ('.
-                                          $this->database->getDB()->quoteInto('firstname LIKE ?','%'.$search.'%').' OR '.
-                                          $this->database->getDB()->quoteInto('lastname LIKE ?','%'.$search.'%').')')
-                                          ->group(array('firstname','lastname'))
-                                          ->limit(14)
-                                          ->setIntegrityCheck(false);
+    $sql=$this->database->select();
+    if($group)
+      {
+      $sql->from(array('u' => 'user'),array('user_id','firstname','lastname','count(*)'));
+      }
+    else
+      {
+      $sql->from(array('u' => 'user'));
+      }
+      
+    $sql  ->where('(privacy='.MIDAS_USER_PUBLIC.' OR ('.
+          $subqueryUser.')>0'.') AND ('.
+          $this->database->getDB()->quoteInto('firstname LIKE ?','%'.$search.'%').' OR '.
+          $this->database->getDB()->quoteInto('lastname LIKE ?','%'.$search.'%').')')          
+          ->limit($limit)
+          ->setIntegrityCheck(false);
 
+    if($group)
+      {
+      $sql->group(array('firstname','lastname'));
+      }      
+          
+    switch ($order)
+      {
+      case 'name':
+        $sql->order(array('lastname ASC','firstname ASC'));
+        break;
+      case 'date':
+        $sql->order(array('creation ASC'));
+        break;
+      case 'view': 
+      default:
+        $sql->order(array('view DESC'));
+        break;
+      }
     $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
       {
-      $tmpDao = new UserDao();
-      $tmpDao->count = $row['count(*)'];
-      $tmpDao->setFirstname($row->firstname);
-      $tmpDao->setLastname($row->lastname);
-      $tmpDao->setUserId($row->user_id);
+      $tmpDao=$this->initDao('User', $row);
+      if(isset($row['count(*)']))
+        {
+        $tmpDao->count = $row['count(*)'];
+        }
       $return[] = $tmpDao;
       unset($tmpDao);
       }

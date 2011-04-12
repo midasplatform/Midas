@@ -562,7 +562,7 @@ class FolderModel extends FolderModelBase
 
   /** Return a list of folders corresponding to the search
    * @return Array of FolderDao */
-  function getFoldersFromSearch($search,$userDao)
+  function getFoldersFromSearch($search,$userDao,$limit=14,$group=true,$order='view')
     {
     if($userDao==null)
       {
@@ -576,45 +576,68 @@ class FolderModel extends FolderModelBase
       {
       $userId = $userDao->getUserId();
       }
-
-    $subqueryUser= $this->database->select()
-                          ->setIntegrityCheck(false)
-                          ->from(array('p' => 'folderpolicyuser'),
-                                 array('folder_id'))
-                          ->where('policy >= ?', MIDAS_POLICY_READ)
-                          ->where('user_id = ? ',$userId);
-
-    $subqueryGroup = $this->database->select()
-                    ->setIntegrityCheck(false)
-                    ->from(array('p' => 'folderpolicygroup'),
-                           array('folder_id'))
-                    ->where('policy >= ?', MIDAS_POLICY_READ)
-                    ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                              group_id IN (' .new Zend_Db_Expr(
-                              $this->database->select()
-                                   ->setIntegrityCheck(false)
-                                   ->from(array('u2g' => 'user2group'),
-                                          array('group_id'))
-                                   ->where('u2g.user_id = ?' , $userId)
-                                   .'))' ));
-
-
-    $sql = $this->database->select()->from($this->_name,array('folder_id','name','count(*)'))
-                                          ->where($this->database->getDB()->quoteInto('name LIKE ?','%'.$search.'%').'
-                                                   AND (folder_id IN ('.$subqueryUser.')
-                                                   OR folder_id IN ('.$subqueryGroup.'))')
-                                          ->group('name')
-                                          ->limit(14);
-
-
+        
+    $sql=$this->database->select();
+    if($group)
+      {
+      $sql->from(array('f' => 'folder'),array('folder_id','name','count(*)'))->distinct();
+      }
+    else
+      {
+      $sql->from(array('f' => 'folder'))->distinct();
+      }
+     $sql->setIntegrityCheck(false)          
+          ->joinLeft(array('fpu' => 'folderpolicyuser'),'
+                    f.folder_id = fpu.folder_id AND '.$this->database->getDB()->quoteInto('fpu.policy >= ?', MIDAS_POLICY_READ).'
+                       AND '.$this->database->getDB()->quoteInto('fpu.user_id = ? ',$userId).' ',array())
+          ->joinLeft(array('fpg' => 'folderpolicygroup'),'
+                         f.folder_id = fpg.folder_id AND '.$this->database->getDB()->quoteInto('fpg.policy >= ?', MIDAS_POLICY_READ).'
+                             AND ( '.$this->database->getDB()->quoteInto('fpg.group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                                  fpg.group_id IN (' .new Zend_Db_Expr(
+                                  $this->database->select()
+                                       ->setIntegrityCheck(false)
+                                       ->from(array('u2g' => 'user2group'),
+                                              array('group_id'))
+                                       ->where('u2g.user_id = ?' , $userId)
+                                       ) .'))' ,array())
+          ->where(
+           '(
+            fpu.folder_id is not null or
+            fpg.folder_id is not null)'
+            )
+          ->where($this->database->getDB()->quoteInto('name LIKE ?','%'.$search.'%'))     
+          ->where('name != ?',"Public")  
+          ->where('name != ?',"Private")  
+          ->limit($limit)
+          ;
+    
+    if($group)
+      {
+      $sql->group('f.name');
+      }
+      
+    switch ($order)
+      {
+      case 'name':
+        $sql->order(array('f.name ASC'));
+        break;
+      case 'date':
+        $sql->order(array('f.date ASC'));
+        break;
+      case 'view': 
+      default:
+        $sql->order(array('f.view DESC'));
+        break;
+      }
     $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
       {
-      $tmpDao = new FolderDao();
-      $tmpDao->count = $row['count(*)'];
-      $tmpDao->setName($row->name);
-      $tmpDao->setFolderId($row->folder_id);
+      $tmpDao=$this->initDao('Folder', $row);
+      if(isset($row['count(*)']))
+        {
+        $tmpDao->count = $row['count(*)'];
+        }
       $return[] = $tmpDao;
       unset($tmpDao);
       }

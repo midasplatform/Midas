@@ -18,6 +18,7 @@ abstract class CommunityModelBase extends AppModel
       'admingroup_id' => array('type' => MIDAS_DATA),
       'moderatorgroup_id' => array('type' => MIDAS_DATA),
       'membergroup_id' => array('type' => MIDAS_DATA),
+      'view' => array('type' => MIDAS_DATA),
       'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
       'public_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'publicfolder_id', 'child_column' => 'folder_id'),
       'private_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'privatefolder_id', 'child_column' => 'folder_id'),
@@ -32,6 +33,16 @@ abstract class CommunityModelBase extends AppModel
   abstract function getPublicCommunities($limit=20);
   abstract function getByName($name);
   
+  /** plus one view*/
+  function plusOneView($communityDao)
+    {
+    if(!$communityDao instanceof CommunityDao)
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    $communityDao->view++;
+    $this->save($communityDao);
+    }//end plusOneView
   
     /** Delete a community */
   function delete($communityDao)

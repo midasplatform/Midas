@@ -10,7 +10,7 @@ class ItemKeywordModel extends ItemKeywordModelBase
   
   /** Get the keyword from the search.
    * @return Array of ItemDao */
-  function getItemsFromSearch($searchterm,$userDao)
+  function getItemsFromSearch($searchterm,$userDao,$limit=14,$group=true,$order='view')
     {
     if($userDao==null)
       {
@@ -47,45 +47,66 @@ class ItemKeywordModel extends ItemKeywordModelBase
       return $return;  
       }
     
-    $subqueryUser= $this->database->select()
-                          ->setIntegrityCheck(false)
-                          ->from(array('p' => 'itempolicyuser'),
-                                 array('item_id'))
-                          ->where('policy >= ?', MIDAS_POLICY_READ)
-                          ->where('user_id = ? ',$userId);
-
-    $subqueryGroup = $this->database->select()
-                    ->setIntegrityCheck(false)
-                    ->from(array('p' => 'itempolicygroup'),
-                           array('item_id'))
-                    ->where('policy >= ?', MIDAS_POLICY_READ)
-                    ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                              group_id IN (' .new Zend_Db_Expr(
-                              $this->database->select()
-                                   ->setIntegrityCheck(false)
-                                   ->from(array('u2g' => 'user2group'),
-                                          array('group_id'))
-                                   ->where('u2g.user_id = ?' , $userId)
-                                   .'))' ));
-
-
-    $sql = $this->database->select()->from(array('i' => 'item'),array('item_id','name','count(*)'))
-                                          ->join(array('i2k' => 'item2keyword'),'i.item_id=i2k.item_id')
-                                          ->where('i2k.keyword_id IN '.$ids)                                         
-                                          ->where('( i.item_id IN ('.$subqueryUser.') OR
-                                            i.item_id IN ('.$subqueryGroup.'))' )
-                                          ->group('i.name')
-                                          ->setIntegrityCheck(false)
-                                          ->limit(14);
+    $sql=$this->database->select();
+    if($group)
+      {
+      $sql->from(array('i' => 'item'),array('item_id','name','count(*)'));
+      }
+    else
+      {
+      $sql->from(array('i' => 'item'));
+      }
+      $sql->setIntegrityCheck(false)          
+          ->join(array('i2k' => 'item2keyword'),'i.item_id=i2k.item_id')
+          ->joinLeft(array('ipu' => 'itempolicyuser'),'
+                    i.item_id = ipu.item_id AND '.$this->database->getDB()->quoteInto('ipu.policy >= ?', MIDAS_POLICY_READ).'
+                       AND '.$this->database->getDB()->quoteInto('ipu.user_id = ? ',$userId).' ',array())
+          ->joinLeft(array('ipg' => 'itempolicygroup'),'
+                         i.item_id = ipg.item_id AND '.$this->database->getDB()->quoteInto('ipg.policy >= ?', MIDAS_POLICY_READ).'
+                             AND ( '.$this->database->getDB()->quoteInto('ipg.group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                                  ipg.group_id IN (' .new Zend_Db_Expr(
+                                  $this->database->select()
+                                       ->setIntegrityCheck(false)
+                                       ->from(array('u2g' => 'user2group'),
+                                              array('group_id'))
+                                       ->where('u2g.user_id = ?' , $userId)
+                                       ) .'))' ,array())
+          ->where(
+           '(
+            ipu.item_id is not null or
+            ipg.item_id is not null)'
+            )
+          ->where('i2k.keyword_id IN '.$ids)             
+          ->limit($limit)
+          ;
     
-
+    if($group)
+      {
+      $sql->group('i.name');
+      }
+      
+    switch ($order)
+      {
+      case 'name':
+        $sql->order(array('i.name ASC'));
+        break;
+      case 'date':
+        $sql->order(array('i.date ASC'));
+        break;
+      case 'view': 
+      default:
+        $sql->order(array('i.view DESC'));
+        break;
+      }
+      
     $rowset = $this->database->fetchAll($sql);
     foreach($rowset as $row)
       {
-      $tmpDao= new ItemDao();
-      $tmpDao->setItemId($row->item_id);
-      $tmpDao->setName($row->name);
-      $tmpDao->count = $row['count(*)'];
+      $tmpDao=$this->initDao('Item', $row);
+      if(isset($row['count(*)']))
+        {
+        $tmpDao->count = $row['count(*)'];
+        }
       $return[] = $tmpDao;
       unset($tmpDao);
       }

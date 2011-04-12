@@ -70,6 +70,8 @@ class FolderController extends AppController
                <li class='pathData'><a href='{$this->view->webroot}/browse'>{$this->t('Data')}</a></li>".$header;
       $header.="</ul>";
       }
+      
+    $this->Folder->plusOneView($folder);
     $this->view->mainFolder=$folder;
     $this->view->folders=$folders;
     $this->view->items=$items;

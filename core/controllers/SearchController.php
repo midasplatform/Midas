@@ -7,14 +7,14 @@ class SearchController extends AppController
 {
   public $_models=array('ItemKeyword','Item','Folder','User','Community');
   public $_daos=array('ItemKeyword','Item','Folder','USer','Community');
-  public $_components=array();
+  public $_components=array('Sortdao','Date');
     
   /** Init Controller */
   function init()
     { 
     $this->view->activemenu = 'feed'; // set the active menu
     
-    // if the number of parameters is more than 3 then it's the liveAction
+    // if the number of parameters is more than 3 then it's the liveAction or advanced search
     if(count($this->_getAllParams()) == 3)
       {
       $actionName=Zend_Controller_Front::getInstance()->getRequest()->getActionName();
@@ -32,22 +32,124 @@ class SearchController extends AppController
     $keyword = $this->getRequest()->getParam('q');
     $this->view->json['search']['keyword'] = $keyword;
     
+    $ajax=$this->_getParam('ajax');
+    $order=$this->_getParam('order');
+    if(!isset($order))
+      {
+      $order='view';
+      }
     // Get the items corresponding to the search
-    $ItemsDao = $this->ItemKeyword->getItemsFromSearch($keyword,$this->userSession->Dao);
-    $this->view->items=$ItemsDao;
+    $ItemsDao = $this->ItemKeyword->getItemsFromSearch($keyword,$this->userSession->Dao,200,false,$order);
     
     // Search for the folders
-    $FoldersDao = $this->Folder->getFoldersFromSearch($keyword,$this->userSession->Dao); 
-    $this->view->folders=$FoldersDao;
+    $FoldersDao = $this->Folder->getFoldersFromSearch($keyword,$this->userSession->Dao,15,false,$order); 
      
     // Search for the communities
-    $CommunitiesDao = $this->Community->getCommunitiesFromSearch($keyword,$this->userSession->Dao); 
-    $this->view->communities=$CommunitiesDao;
+    $CommunitiesDao = $this->Community->getCommunitiesFromSearch($keyword,$this->userSession->Dao,15,false,$order); 
     
     // Search for the users
-    $UsersDao = $this->User->getUsersFromSearch($keyword,$this->userSession->Dao); 
-    $this->view->users=$UsersDao;
-    }
+    $UsersDao = $this->User->getUsersFromSearch($keyword,$this->userSession->Dao,15,false,$order); 
+    
+    $results=$this->formatResults($order, $ItemsDao, $FoldersDao, $CommunitiesDao, $UsersDao);
+    
+    if(isset($ajax))
+      {
+      $this->_helper->layout->disableLayout();
+      $this->_helper->viewRenderer->setNoRender();
+      echo JsonComponent::encode($results);
+      }
+    else
+      {
+      $this->view->nitems=count($ItemsDao);
+      $this->view->nfolders=count($FoldersDao);
+      $this->view->ncommunities=count($CommunitiesDao);
+      $this->view->nusers=count($UsersDao);
+      $this->view->json['search']['results']=$results;
+      $this->view->json['search']['keyword'] = $keyword;
+      $this->view->json['search']['noResults'] = $this->t('No result found.');
+      $this->view->json['search']['moreResults'] = $this->t('Show more results.');
+      }
+    }//end indexAction
+    
+  /** 
+   * Format search results
+   * @param string $order
+   * @param Array $items
+   * @param Array $folders
+   * @param Array $communities
+   * @param Array $users
+   * @return Array 
+   */
+  private function formatResults($order,$items,$folders,$communities,$users)
+    {
+    foreach ($users as $key=>$user)
+      {
+      $users[$key]->name=$user->getLastname();
+      $users[$key]->date=$user->getCreation();
+      }
+    foreach ($communities as $key=>$community)
+      {
+      $communities[$key]->date=$community->getCreation();
+      }
+    $results=array_merge($folders, $items,$communities,$users);
+      
+    switch ($order)
+      {
+      case 'name':
+        $this->Component->Sortdao->field='name';
+        $this->Component->Sortdao->order='asc';
+        usort($results, array($this->Component->Sortdao,'sortByName'));
+        break;
+      case 'date':
+        $this->Component->Sortdao->field='date';
+        $this->Component->Sortdao->order='asc';
+        usort($results, array($this->Component->Sortdao,'sortByDate'));
+        break;
+      case 'view':
+        $this->Component->Sortdao->field='view';
+        $this->Component->Sortdao->order='desc';
+        usort($results, array($this->Component->Sortdao,'sortByNumber'));
+        break;
+      default:
+        throw new Zend_Exception('Error order parameter');
+        break;
+      }
+    $resultsArray=array();
+    foreach ($results as $result)
+      {
+      $tmp=$result->_toArray();
+      if($result instanceof UserDao)
+        {
+        $tmp['resultType']='user';
+        $tmp['formattedDate']=$this->Component->Date->formatDate($result->getCreation());
+        }
+      if($result instanceof ItemDao)
+        {
+        $tmp['resultType']='item';
+        $tmp['formattedDate']=$this->Component->Date->formatDate($result->getDate());
+        }
+      if($result instanceof CommunityDao)
+        {
+        $tmp['resultType']='community';
+        $tmp['formattedDate']=$this->Component->Date->formatDate($result->getCreation());
+        }
+      if($result instanceof FolderDao)
+        {
+        $tmp['resultType']='folder';
+        $tmp['formattedDate']=$this->Component->Date->formatDate($result->getDate());
+        }
+      unset($tmp['password']);
+      unset($tmp['email']);
+      $resultsArray[]=$tmp;
+      }
+    return $resultsArray;
+    }//formatResults
+    
+   /** advanced search  Action */
+  public function advancedAction()
+    {
+    $this->_helper->layout->disableLayout();
+    }//advancedAction
     
   /** search live Action */
   public function liveAction()
@@ -55,6 +157,9 @@ class SearchController extends AppController
     // This is necessary in order to avoid session lock and being able to run two 
     // ajax requests simultaneously
     session_write_close();
+
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
       
     $search = $this->getRequest()->getParam('term');
     
@@ -242,7 +347,6 @@ class SearchController extends AppController
       }   
       
     echo ']';
-    exit();  
     }
     
 } // end class

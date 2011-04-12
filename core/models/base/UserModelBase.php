@@ -20,6 +20,7 @@ abstract class UserModelBase extends AppModel
       'privacy' => array('type' => MIDAS_DATA),    
       'publicfolder_id' => array('type' => MIDAS_DATA),
       'privatefolder_id' => array('type' => MIDAS_DATA),
+      'view' => array('type' => MIDAS_DATA),
       'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
       'public_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'publicfolder_id', 'child_column' => 'folder_id'),
       'private_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'privatefolder_id', 'child_column' => 'folder_id'),
@@ -35,7 +36,17 @@ abstract class UserModelBase extends AppModel
   abstract function getByUser_id($userid);
   abstract function getUserCommunities($userDao);
   
-
+    /** plus one view*/
+  function plusOneView($userDao)
+    {
+    if(!$userDao instanceof UserDao)
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    $userDao->view++;
+    $this->save($userDao);
+    }//end plusOneView
+    
   /** create user */
   public function createUser($email,$password,$firstname,$lastname,$admin=0)
     {    

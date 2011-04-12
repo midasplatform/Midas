@@ -27,6 +27,12 @@ $(function() {
     loadAjaxDynamicBar('login','/user/login');
     });
     
+    $("a#advancedSearchLink").click(function()
+    {
+    showOrHideDynamicBar('search');
+    loadAjaxDynamicBar('search','/search/advanced?ajax=true');
+    });
+    
   $("li.myAccountLink").click(function()
     {
     if($("div.TopDynamicBar").is(':hidden'))
