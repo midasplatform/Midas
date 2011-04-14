@@ -6,7 +6,7 @@
 class SearchController extends AppController
 {
   public $_models=array('ItemKeyword','Item','Folder','User','Community');
-  public $_daos=array('ItemKeyword','Item','Folder','USer','Community');
+  public $_daos=array('ItemKeyword','Item','Folder','User','Community');
   public $_components=array('Sortdao','Date');
     
   /** Init Controller */

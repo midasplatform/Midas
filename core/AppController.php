@@ -15,7 +15,9 @@ class AppController extends MIDAS_GlobalController
     {
     parent::preDispatch();
     $this->view->setEncoding('iso-8859-1');
+    
     $fc=Zend_Controller_Front::getInstance();
+    $this->getLogger()->setEventItem('module',$fc->getRequest()->getModuleName());
     $this->view->webroot=$fc->getBaseUrl();
     $this->coreWebroot=$this->view->webroot.'/core';
     $this->view->coreWebroot=$this->coreWebroot;

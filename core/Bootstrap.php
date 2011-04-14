@@ -17,19 +17,18 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $view->doctype('XHTML1_STRICT');
     }
 
+       
   /**
    * \fn protected _initConfig()
    * \brief set the configuration  and save it in the registry
    */
   protected function _initConfig()
-    {
-
+    {    
     $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG,'global',true);
     if(isset($_COOKIE['lang']))
       {
       $configGlobal->application->lang=$_COOKIE['lang'];
       } 
-    
       
     if(isset($_GET['lang']))
       {
@@ -95,9 +94,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     // Init Log
     if(is_writable(BASE_PATH."/log"))
       {
+      $columnMapping = array(	'priority' => 'priority',
+        'message' => 'message',
+        'datetime' => 'timestamp',
+        'module'	 => 'module'
+        );
+      $writerDb = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
       if ($config->error->php == 1)
         {
-         new Zend_Log_Formatter_Simple();
+        new Zend_Log_Formatter_Simple();
         error_reporting(E_ALL | E_STRICT);
         ini_set('display_errors', 'on');
         Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(false);
@@ -139,6 +144,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
           ),
         ));
         }
+      $logger->addWriter($writerDb);
+      $logger->setEventItem('datetime',date('Y-m-d H:i:s'));
+      $logger->setEventItem('module','unknown');
       }
     else
       {
@@ -146,6 +154,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       $logger = new Zend_Log($redacteur);
       }
     Zend_Registry::set('logger', $logger);
+    
+    // Catch fatal errors
+    require_once BASE_PATH.'/core/controllers/components/NotifyErrorComponent.php';
+    $notifyErrorCompoenent=new NotifyErrorComponent();
+    ini_set('display_errors',0);
+    register_shutdown_function(array($notifyErrorCompoenent,'fatalEror'),$logger,new Zend_Mail());
+
     return $config;
     }
     

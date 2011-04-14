@@ -75,6 +75,21 @@ CREATE TABLE IF NOT EXISTS `community` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `errorlog`
+--
+
+CREATE TABLE IF NOT EXISTS `errorlog` (
+  `errorlog_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `priority` tinyint(4) NOT NULL,
+  `module` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `datetime` timestamp NULL DEFAULT NULL ,
+  PRIMARY KEY (`errorlog_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `folder`
 --
 

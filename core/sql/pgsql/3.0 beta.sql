@@ -68,6 +68,21 @@ CREATE TABLE  community (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table errorlog
+--
+
+CREATE TABLE  errorlog (
+  errorlog_id_id serial  PRIMARY KEY,
+  priority integer NOT NULL,
+  module  character varying(256) NOT NULL,
+  message text NOT NULL,
+  datetime timestamp without time zone NULL DEFAULT NULL 
+)  ;
+
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table folder
 --
 

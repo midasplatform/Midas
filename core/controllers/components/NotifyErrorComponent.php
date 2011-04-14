@@ -27,6 +27,90 @@ class NotifyErrorComponent  extends AppComponent
         $this->_profiler = $profiler;  
         $this->_server = $server;  
     }  
+    
+    public function fatalEror($logger,$mailer)
+      {
+      if(!is_null($e = error_get_last()))
+        {        
+        $environment = Zend_Registry::get('configGlobal')->environment;
+        $db = Zend_Registry::get('dbAdapter');
+        if(method_exists($db,"getProfiler"))
+          {
+          $profiler = $db->getProfiler();
+          }
+        else
+          {
+          $profiler = new Zend_Db_Profiler();  
+          }  
+         
+        switch ($environment) {  
+            case 'production':  
+                $message .= "It seems you have just encountered an unknown issue.";  
+                $message .= "Our team has been notified and will deal with the problem as soon as possible.";  
+                header('content-type: text/plain');
+                echo $message;
+                $this->_mailer=$mailer;
+                $this->_environment=$environment;
+                //$this->notify(true);
+                break;  
+            default:  
+              $this->_server=$_SERVER;
+              if($e['type']==E_NOTICE) $e['typeText']='E_NOTICE';
+              elseif($e['type']==E_ERROR ) $e['typeText']='E_ERROR';
+              elseif($e['type']==E_WARNING )$e['typeText']='E_WARNING';
+              elseif($e['type']==E_PARSE) $e['typeText ']='E_PARSE';
+              else return;
+              header('content-type: text/plain');
+              echo $this->getFatalErrorMessage($e);
+            }
+        $logger->crit($this->getFatalErrorMessage($e));
+        $logger->__destruct();
+        }
+      }
+      
+   private function curPageURL() 
+      {
+      $pageURL = 'http';
+      if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+      $pageURL .= "://";
+      if ($_SERVER["SERVER_PORT"] != "80") {
+      $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+      } else {
+      $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+      }
+      return $pageURL;
+      }
+      
+    public function getFatalErrorMessage($e)
+      {
+        $message = "Fatal Error: "; 
+        $message.=     print_r($e,true);
+        $message.=  "\n\n";
+        $message.=  "URL: ".$this->curPageURL();
+        $message.=  "\n\n";
+        if (!empty($this->_server['SERVER_ADDR'])) {  
+            $message .= "Server IP: " . $this->_server['SERVER_ADDR'] . "\n";  
+        }  
+  
+        
+        if (!empty($this->_server['HTTP_USER_AGENT'])) {  
+            $message .= "User agent: " . $this->_server['HTTP_USER_AGENT'] . "\n";  
+        }  
+  
+        if (!empty($this->_server['HTTP_X_REQUESTED_WITH'])) {  
+            $message .= "Request type: " . $this->_server['HTTP_X_REQUESTED_WITH'] . "\n";  
+        }  
+  
+        $message .= "Server time: " . date("Y-m-d H:i:s") . "\n";  
+  
+        if (!empty($this->_server['HTTP_REFERER'])) {  
+            $message .= "Referer: " . $this->_server['HTTP_REFERER'] . "\n";  
+        }  
+        $message .="Parameters (post): ".print_r($_POST,true)."\n";
+        $message .="Parameters (get): ".print_r($_GET,true)."\n";
+        
+        return $message;
+      }
   
     public function getFullErrorMessage()  
     {  
@@ -91,23 +175,29 @@ class NotifyErrorComponent  extends AppComponent
         return $message;  
     }  
   
-    public function notify()  
+    public function notify($fatal=false)  
     { 
         if (!in_array($this->_environment, array('production'))&&Zend_Registry::get('configGlobal')->alert->enable=='1') {  
             return false;  
         }  
             
         $this->_mailer->setFrom('do-not-reply@domain.com');  
-        $this->_mailer->setSubject("Exception on Application "+Zend_Registry::get('configGlobal')->application->name);  
-        $this->_mailer->setBodyText($this->getFullErrorMessage());  
+        $this->_mailer->setSubject("Exception on Application ".Zend_Registry::get('configGlobal')->application->name);  
+        if($fatal)
+          {
+          
+          }
+        else
+          {
+          $this->_mailer->setBodyText($this->getFullErrorMessage()); 
+          }
         $this->_mailer->addTo(Zend_Registry::get('configGlobal')->alert->email);  
         $return=false;
         try {
           $return = $this->_mailer->send();
           }
-        catch (Zend_Exception $e)
+        catch (Exception $e)
           {
-          $this->getLogger()->crit('Unable to send an Email ' );
           }          
        
         return $return;  
