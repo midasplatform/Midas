@@ -108,6 +108,10 @@ class UpgradeComponent extends AppComponent
   /** upgrade*/
   public function upgrade($currentVersion)
     {
+    if(!isset($currentVersion))
+      {
+      throw new Zend_Exception("Please set the current version");
+      }
     if(!is_numeric($currentVersion))
       {
       $currentVersion=$this->transformVersionToNumeric($currentVersion);

@@ -1,31 +1,16 @@
-<?php
-if(isset($this->upgraded))
-  {
-  if($this->upgraded)
-    {
-    echo "Upgraded";
-    }
-  else
-    {
-    echo "Nothing to upgrade";
-    }
-  }
-?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/admin/admin.upgrade.css" />
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/admin/admin.upgrade.js"></script>
 
-<h4>Core :</h4>
+<h3>Core :</h3>
 Current version: <?php echo $this->core['currentText']?> <br/>
 <?php
   if($this->core['current']<$this->core['target'])
     {
     echo "Need to upgrade to version: ".$this->core['targetText'];
     }
-  else
-    {
-    
-    }
 ?>
 
-<h4>Modules:</h4>
+<h3>Modules:</h3>
 <?php
 foreach($this->modules as $name=>$module)
   {
@@ -35,12 +20,11 @@ foreach($this->modules as $name=>$module)
     {
     echo "Need to upgrade to version: ".$module['targetText'];
     }
-  else
-    {
-    
-    }
+
   }
 ?>
-<form action="" method="post">
-  <input type='submit' value="Upgrade"/>
+<br/>
+<br/>
+<form id='upgradeMIDAS'  action="<?php echo $this->webroot?>/admin/upgrade" method="post">
+  <input type='submit' class="globalButton" value="Upgrade"/>
 </form>

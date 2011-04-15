@@ -1,1 +1,66 @@
-admin
+<?php
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.index.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/admin/admin.index.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<div class="viewMain">
+
+  <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+  <div class="tabs" id='tabsGeneric'>
+  <ul>
+    <li><a href="#tabs-configuration">Configuration</a></li>
+    <li><a href="#tabs-assetstore">Assetstores</a></li>
+    <li><a href="<?php echo $this->webroot?>/admin/upgrade">Upgrade</a></li>
+    <li><a href="#tabs-modules">Modules</a></li>
+  </ul>
+    <div id="tabs-configuration">
+     <?php
+      echo "
+      <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
+      <h3>Configuration:</h3>
+              <div class='installName'>
+                <label for='name'>Application name</label>
+                {$this->configForm['name']}
+              </div>
+              <div class='installLang'>
+                <label for='lang'>Language</label>
+                {$this->configForm['lang']}
+              </div>
+              <div class='installEnvironment'>
+                <label for='environment'>Environment</label>
+                {$this->configForm['environment']}
+              </div>
+              <div class='installTimezone'>
+                <label for='environment'>Timezone</label>
+                {$this->configForm['timezone']}
+              </div>
+              <div class='installSmartoptimizer'>
+                <label for='smartoptimizer'>CSS and Javascript optimizer</label>
+                {$this->configForm['smartoptimizer']}
+              </div>
+          <div>
+            {$this->configForm['submitConfig']}
+          </div>
+       </form>";
+       ?>
+    </div>
+    <div id="tabs-assetstore">
+     
+    </div>
+    <div id="tabs-modules">
+
+    </div>
+  </div>
+
+</div>
+<div class="viewSideBar">
+  
+ 
+</div>
+
+
+
+
+
+

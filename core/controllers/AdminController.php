@@ -7,12 +7,51 @@ class AdminController extends AppController
 {
   public $_models=array();
   public $_daos=array();
-  public $_components=array('Upgrade');
+  public $_components=array('Upgrade','Utility');
+  public $_forms=array('Admin');
     
   /** index*/
   function indexAction()
     {
+    if(!$this->logged||!$this->userSession->Dao->getAdmin()==1)
+      {
+      throw new Zend_Exception("You should be an administrator");
+      }
+    $this->view->header="Administration";
+    $configForm=$this->Form->Admin->createConfigForm();
     
+    $applicationConfig=parse_ini_file (BASE_PATH.'/core/configs/application.local.ini',true);
+    $formArray=$this->getFormAsArray($configForm);
+    
+    $formArray['name']->setValue($applicationConfig['global']['application.name']);
+    $formArray['environment']->setValue($applicationConfig['global']['environment']);
+    $formArray['lang']->setValue($applicationConfig['global']['application.lang']);
+    $formArray['smartoptimizer']->setValue($applicationConfig['global']['smartoptimizer']);
+    $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
+    $this->view->configForm=$formArray;
+    
+    if($this->_request->isPost())
+      {
+      $this->_helper->layout->disableLayout();
+      $this->_helper->viewRenderer->setNoRender();
+      $submitConfig=$this->_getParam('submitConfig');
+      if(isset($submitConfig))
+        {
+        $applicationConfig=parse_ini_file (BASE_PATH.'/core/configs/application.local.ini',true);
+        if(file_exists( BASE_PATH.'/core/configs/application.local.ini.old'))
+          {
+          unlink( BASE_PATH.'/core/configs/application.local.ini.old');
+          }
+        rename(BASE_PATH.'/core/configs/application.local.ini', BASE_PATH.'/core/configs/application.local.ini.old');
+        $applicationConfig['global']['application.name']=$this->_getParam('name');
+        $applicationConfig['global']['application.lang']=$this->_getParam('lang');
+        $applicationConfig['global']['environment']=$this->_getParam('environment');
+        $applicationConfig['global']['smartoptimizer']=$this->_getParam('smartoptimizer');
+        $applicationConfig['global']['default.timezone']=$this->_getParam('timezone');
+        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
+        echo JsonComponent::encode(array(true,'Changed saved'));
+        }
+      }
     }//end indexAction
     
    
@@ -23,6 +62,11 @@ class AdminController extends AppController
       {
       throw new Zend_Exception("You should be an administrator");
       }
+    if(!$this->getRequest()->isXmlHttpRequest())
+     {
+     throw new Zend_Exception("Why are you here ? Should be ajax.");
+     }
+    $this->_helper->layout->disableLayout();
 
     $db=Zend_Registry::get('dbAdapter');
     $dbtype=Zend_Registry::get('configDatabase')->database->adapter;
@@ -30,6 +74,7 @@ class AdminController extends AppController
     
     if($this->_request->isPost())
       {
+      $this->_helper->viewRenderer->setNoRender();
       $upgraded=false;
       $modulesConfig=Zend_Registry::get('configsModules');
       $modules=array();
@@ -44,6 +89,15 @@ class AdminController extends AppController
       
       $dbtype=Zend_Registry::get('configDatabase')->database->adapter;
       $modulesConfig=Zend_Registry::get('configsModules');
+      if($upgraded)
+        {
+        echo JsonComponent::encode(array(true,'Upgraded'));
+        }
+      else
+        {
+        echo JsonComponent::encode(array(true,'Nothing to upgrade'));
+        }
+      return;
       }
       
     $modules=array();
