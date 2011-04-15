@@ -60,26 +60,36 @@ class MIDAS_GlobalModule extends AppController
   public function loadModuleElements()
     {
     $this->ModelLoader = new MIDAS_ModelLoader();
-    $this->ModelLoader->loadModels($this->_moduleModels,$this->moduleName);
-    $modelsArray = Zend_Registry::get('models');
-    foreach ($this->_moduleModels as  $value)
+    if(isset($this->_moduleModels))
       {
-      if(isset($modelsArray[$this->moduleName.$value]))
+      $this->ModelLoader->loadModels($this->_moduleModels,$this->moduleName);
+      $modelsArray = Zend_Registry::get('models');
+      foreach ($this->_moduleModels as  $value)
         {
-        $tmp=ucfirst($this->moduleName).'_'.$value;
-        $this->{$tmp} = $modelsArray[$this->moduleName.$value];
+        if(isset($modelsArray[$this->moduleName.$value]))
+          {
+          $tmp=ucfirst($this->moduleName).'_'.$value;
+          $this->{$tmp} = $modelsArray[$this->moduleName.$value];
+          }
         }
       }
-    foreach ($this->_moduleDaos as $dao)
+      
+    if(isset($this->_moduleDaos))
       {
-      include_once ( BASE_PATH . "/modules/{$this->moduleName}/models/dao/{$dao}Dao.php");
+      foreach ($this->_moduleDaos as $dao)
+        {
+        include_once ( BASE_PATH . "/modules/{$this->moduleName}/models/dao/{$dao}Dao.php");
+        }
       }
 
-    foreach ($this->_moduleComponents as $component)
+    if(isset($this->_moduleComponents))
       {
-      $nameComponent = ucfirst($this->moduleName).'_'.$component . "Component";
-      include_once ( BASE_PATH . "/modules/{$this->moduleName}/controllers/components/{$component}Component.php");
-      @$this->ModuleComponent->$component = new $nameComponent();
+      foreach ($this->_moduleComponents as $component)
+        {
+        $nameComponent = ucfirst($this->moduleName).'_'.$component . "Component";
+        include_once ( BASE_PATH . "/modules/{$this->moduleName}/controllers/components/{$component}Component.php");
+        @$this->ModuleComponent->$component = new $nameComponent();
+        }
       }
       
     if(isset($this->_moduleForms))

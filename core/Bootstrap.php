@@ -144,9 +144,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
           ),
         ));
         }
-      $logger->addWriter($writerDb);
-      $logger->setEventItem('datetime',date('Y-m-d H:i:s'));
-      $logger->setEventItem('module','unknown');
+      if($configDatabase->database->params->password!='set_your_password')
+        {
+        $logger->addWriter($writerDb);
+        $logger->setEventItem('datetime',date('Y-m-d H:i:s'));
+        $logger->setEventItem('module','unknown');
+        }
       }
     else
       {
@@ -160,6 +163,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $notifyErrorCompoenent=new NotifyErrorComponent();
     ini_set('display_errors',0);
     register_shutdown_function(array($notifyErrorCompoenent,'fatalEror'),$logger,new Zend_Mail());
+    set_error_handler(array($notifyErrorCompoenent,'warningError'), E_NOTICE|E_WARNING);
 
     return $config;
     }

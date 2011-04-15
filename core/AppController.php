@@ -25,7 +25,12 @@ class AppController extends MIDAS_GlobalController
     $this->view->title=Zend_Registry::get('configGlobal')->application->name;
 
     // Set the version
-    $this->view->version='3.0 beta';
+    $this->view->version='3.0.0';
+    if(isset(Zend_Registry::get('configDatabase')->version))
+      {
+      $this->view->version=Zend_Registry::get('configDatabase')->version;
+      }
+    
     //Init Session
     if($fc->getRequest()->getActionName()!='login'||$fc->getRequest()->getControllerName()!='user')
       {

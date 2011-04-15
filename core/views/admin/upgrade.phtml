@@ -1,0 +1,46 @@
+<?php
+if(isset($this->upgraded))
+  {
+  if($this->upgraded)
+    {
+    echo "Upgraded";
+    }
+  else
+    {
+    echo "Nothing to upgrade";
+    }
+  }
+?>
+
+<h4>Core :</h4>
+Current version: <?php echo $this->core['currentText']?> <br/>
+<?php
+  if($this->core['current']<$this->core['target'])
+    {
+    echo "Need to upgrade to version: ".$this->core['targetText'];
+    }
+  else
+    {
+    
+    }
+?>
+
+<h4>Modules:</h4>
+<?php
+foreach($this->modules as $name=>$module)
+  {
+  echo "<b>{$name}</b><br/>";
+  echo "Current version: {$module['currentText']} <br/>";
+  if($module['current']<$module['target'])
+    {
+    echo "Need to upgrade to version: ".$module['targetText'];
+    }
+  else
+    {
+    
+    }
+  }
+?>
+<form action="" method="post">
+  <input type='submit' value="Upgrade"/>
+</form>

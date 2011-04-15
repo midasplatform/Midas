@@ -33,7 +33,7 @@ class NotifyErrorComponent  extends AppComponent
       if(!is_null($e = error_get_last()))
         {        
         $environment = Zend_Registry::get('configGlobal')->environment;
-        $db = Zend_Registry::get('dbAdapter');
+        $db = Zend_Registry::get('dbAdapter');        
         if(method_exists($db,"getProfiler"))
           {
           $profiler = $db->getProfiler();
@@ -42,12 +42,17 @@ class NotifyErrorComponent  extends AppComponent
           {
           $profiler = new Zend_Db_Profiler();  
           }  
-         
+        
         switch ($environment) {  
             case 'production':  
                 $message .= "It seems you have just encountered an unknown issue.";  
                 $message .= "Our team has been notified and will deal with the problem as soon as possible.";  
                 header('content-type: text/plain');
+                if($e['type']==E_NOTICE) $e['typeText']='E_NOTICE';
+                elseif($e['type']==E_ERROR ) $e['typeText']='E_ERROR';
+                elseif($e['type']==E_WARNING )$e['typeText']='E_WARNING';
+                elseif($e['type']==E_PARSE) $e['typeText ']='E_PARSE';
+                else return;
                 echo $message;
                 $this->_mailer=$mailer;
                 $this->_environment=$environment;
@@ -63,15 +68,31 @@ class NotifyErrorComponent  extends AppComponent
               header('content-type: text/plain');
               echo $this->getFatalErrorMessage($e);
             }
-        $logger->crit($this->getFatalErrorMessage($e));
-        $logger->__destruct();
+        $logger->crit($this->getFatalErrorMessage($e));        
+        }
+      $logger->__destruct();
+      }
+      
+    public function warningError($errno, $errstr, $errfile, $errline) 
+      {
+      if($errno==E_WARNING&&Zend_Registry::get('configGlobal')->environment!='production')
+        {
+        echo "Warning: ".$errstr."<br/>\n";
+        echo " on line $errline in file $errfile<br/>\n";
+        }
+      
+      if($errno==E_NOTICE&&Zend_Registry::get('configGlobal')->environment!='production')
+        {
+        echo "Notice : ".$errstr."<br/>\n";
+        echo " on line $errline in file $errfile<br/>\n";
         }
       }
+      
       
    private function curPageURL() 
       {
       $pageURL = 'http';
-      if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+      if (isset($_SERVER["HTTPS"] )&&$_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
       $pageURL .= "://";
       if ($_SERVER["SERVER_PORT"] != "80") {
       $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
@@ -107,7 +128,7 @@ class NotifyErrorComponent  extends AppComponent
             $message .= "Referer: " . $this->_server['HTTP_REFERER'] . "\n";  
         }  
         $message .="Parameters (post): ".print_r($_POST,true)."\n";
-        $message .="Parameters (get): ".print_r($_GET,true)."\n";
+        $message .="Parameters (get): ".print_r($_GET,true)."\n\n";
         
         return $message;
       }

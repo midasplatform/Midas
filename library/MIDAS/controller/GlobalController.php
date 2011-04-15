@@ -48,8 +48,15 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     $modulesEnable=  Zend_Registry::get('modulesEnable');
     foreach($modulesEnable as $module)
       {
-      $translaters[$module]=new Zend_Translate('csv',BASE_PATH."/modules/$module/translation/fr-main.csv","en");   
-      $configs[$module]= new Zend_Config_Ini(BASE_PATH."/modules/$module/configs/module.ini", 'global');
+      $translaters[$module]=new Zend_Translate('csv',BASE_PATH."/modules/$module/translation/fr-main.csv","en");  
+      if(file_exists(BASE_PATH."/modules/$module/configs/module.local.ini"))
+        {
+        $configs[$module]= new Zend_Config_Ini(BASE_PATH."/modules/$module/configs/module.local.ini", 'global');
+        }
+      else
+        {
+        $configs[$module]= new Zend_Config_Ini(BASE_PATH."/modules/$module/configs/module.ini", 'global');
+        }      
       }
     Zend_Registry::set('translatersModules',$translaters);
     Zend_Registry::set('configsModules',$configs);
@@ -136,7 +143,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     return Zend_Registry::get('logger');
     }
 
-  /**
+   /**
    * @method public  loadElements()
    *  Loads model and components
    */
@@ -144,24 +151,34 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     {
     Zend_Registry::set('models', array());
     $this->ModelLoader = new MIDAS_ModelLoader();
-    $this->ModelLoader->loadModels($this->_models);
+    if(isset($this->_models))
+      {
+      $this->ModelLoader->loadModels($this->_models);
+      }
     $modelsArray = Zend_Registry::get('models');
     foreach ($modelsArray as $key => $tmp)
       {
       $this->$key = $tmp;
       }
-    foreach ($this->_daos as $dao)
+    
+    if(isset($this->_daos))
       {
-      Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/core/models/dao');
+      foreach ($this->_daos as $dao)
+        {
+        Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/core/models/dao');
+        }
       }
 
     Zend_Registry::set('components', array());
-
-    foreach ($this->_components as $component)
+    
+    if(isset($this->_components))
       {
-      $nameComponent = $component . "Component";
-      Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
-      @$this->Component->$component = new $nameComponent();
+      foreach ($this->_components as $component)
+        {
+        $nameComponent = $component . "Component";
+        Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
+        @$this->Component->$component = new $nameComponent();
+        }
       }
 
     Zend_Registry::set('forms', array());
@@ -175,8 +192,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         @$this->Form->$forms = new $nameForm();
         }
       }
-    }
-
+    }//end loadElements
   /**
    * @method public  showProfiler()
    *  Show profiler in the firebug console

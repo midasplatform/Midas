@@ -71,7 +71,7 @@ class InstallController extends AppController
     
     foreach($phpextensions as $key => $t)
       {      
-      if(!file_exists(BASE_PATH."/core/sql/{$key}/{$this->view->version}.sql"))
+      if(!file_exists(BASE_PATH."/core/database/{$key}"))
         {
         unset($phpextensions[$key]);
         }
@@ -92,10 +92,23 @@ class InstallController extends AppController
       if($form->isValid($this->getRequest()->getPost()))
         {
         $databaseConfig=parse_ini_file (BASE_PATH.'/core/configs/database.ini',true);
+        $MyDirectory = opendir(BASE_PATH."/core/database/{$type}");
+        while($Entry = @readdir($MyDirectory))
+          {
+          if(strpos($Entry, ".sql")!=false)
+            {
+            $sqlFile=BASE_PATH."/core/database/{$type}/".$Entry;
+            }
+          }
+        if(!isset($sqlFile))
+          {
+          throw new Zend_Exception("Unable to find sql file");
+          }
+          
         switch($type)
           {
           case 'mysql':
-            $this->run_mysql_from_file(BASE_PATH."/core/sql/{$type}/{$this->view->version}.sql",
+            $this->run_mysql_from_file($sqlFile,
                                        $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'),$form->getValue('port'));
               $params= array(
                 'host' => $form->getValue('host'),
@@ -118,13 +131,14 @@ class InstallController extends AppController
               $databaseConfig['production']['database.params.dbname']=$form->getValue('dbname');
               $databaseConfig['development']['database.params.dbname']=$form->getValue('dbname');
               $databaseConfig['development']['database.params.port']=$form->getValue('port');
+              $databaseConfig['production']['database.params.port']=$form->getValue('port');
 
               $db = Zend_Db::factory("PDO_MYSQL",$params);
               Zend_Db_Table::setDefaultAdapter($db);
               Zend_Registry::set('dbAdapter', $db);
             break;
          case 'pgsql':
-            $this->run_pgsql_from_file(BASE_PATH."/core/sql/{$type}/{$this->view->version}.sql",
+            $this->run_pgsql_from_file($sqlFile,
                                        $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'),$form->getValue('port'));
               $params= array(
                 'host' => $form->getValue('host'),
@@ -147,6 +161,7 @@ class InstallController extends AppController
               $databaseConfig['production']['database.params.dbname']=$form->getValue('dbname');
               $databaseConfig['development']['database.params.dbname']=$form->getValue('dbname');
               $databaseConfig['development']['database.params.port']=$form->getValue('port');              
+              $databaseConfig['production']['database.params.port']=$form->getValue('port');              
 
               $db = Zend_Db::factory("PDO_PGSQL",$params);
               Zend_Db_Table::setDefaultAdapter($db);
@@ -155,6 +170,9 @@ class InstallController extends AppController
           default:
             break;
           }
+        $databaseConfig['production']['version']=str_replace('.sql', '', basename($sqlFile));  
+        $databaseConfig['development']['version']=str_replace('.sql', '', basename($sqlFile));  
+        
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/database.local.ini',$databaseConfig);
         $this->User=new UserModel(); //reset Database adapter
         $this->userSession->Dao=$this->User->createUser($form->getValue('email'),$form->getValue('userpassword1'),
@@ -234,7 +252,7 @@ class InstallController extends AppController
         switch (Zend_Registry::get('configDatabase')->database->adapter)
           {
           case 'PDO_MYSQL':
-            $this->run_mysql_from_file(BASE_PATH.'/modules/'.$key.'/sql/mysql/'.$allModules[$key]->version.'.sql',
+            $this->run_mysql_from_file(BASE_PATH.'/modules/'.$key.'/database/mysql/'.$allModules[$key]->version.'.sql',
                                        Zend_Registry::get('configDatabase')->database->params->host,
                                        Zend_Registry::get('configDatabase')->database->params->username,
                                        Zend_Registry::get('configDatabase')->database->params->password,
@@ -242,7 +260,7 @@ class InstallController extends AppController
                                        Zend_Registry::get('configDatabase')->database->params->port);
             break;
           case 'PDO_PGSQL':
-             $this->run_pgsql_from_file(BASE_PATH.'/modules/'.$key.'/sql/pgsql/'.$allModules[$key]->version.'.sql',
+             $this->run_pgsql_from_file(BASE_PATH.'/modules/'.$key.'/database/pgsql/'.$allModules[$key]->version.'.sql',
                                        Zend_Registry::get('configDatabase')->database->params->host,
                                        Zend_Registry::get('configDatabase')->database->params->username,
                                        Zend_Registry::get('configDatabase')->database->params->password,
@@ -250,6 +268,12 @@ class InstallController extends AppController
                                        Zend_Registry::get('configDatabase')->database->params->port);
             break;
           }
+        
+        $path=BASE_PATH.'/modules/'.$key.'/configs/module.ini';
+        $newpath=BASE_PATH.'/modules/'.$key.'/configs/module.local.ini';        
+        $data=parse_ini_file ($path,true);
+        @unlink($newpath);
+        $this->Component->Utility->createInitFile($newpath, $data);
         }
       $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini',$applicationConfig);
       $this->_redirect("/");
