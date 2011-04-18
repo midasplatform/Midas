@@ -5,7 +5,7 @@
  */
 class AdminController extends AppController
 {
-  public $_models=array();
+  public $_models=array('Errorlog');
   public $_daos=array();
   public $_components=array('Upgrade','Utility');
   public $_forms=array('Admin');
@@ -54,7 +54,87 @@ class AdminController extends AppController
       }
     }//end indexAction
     
-   
+ 
+  /** show logs*/
+  function showlogAction()
+    {
+    if(!$this->logged||!$this->userSession->Dao->getAdmin()==1)
+      {
+      throw new Zend_Exception("You should be an administrator");
+      }
+    if(!$this->getRequest()->isXmlHttpRequest())
+     {
+     throw new Zend_Exception("Why are you here ? Should be ajax.");
+     }
+    $this->_helper->layout->disableLayout();
+    
+    $start=$this->_getParam("startlog");
+    $end=$this->_getParam("endlog");
+    $module=$this->_getParam("modulelog");
+    $priority=$this->_getParam("prioritylog");
+    if(!isset($start))
+      {
+      $start=date('c',strtotime("-24 hour"));
+      }
+    else
+      {
+      $start=date('c',  strtotime($start));
+      }
+    if(!isset($end))
+      {
+      $end= date('c');
+      }
+    else
+      {
+      $end=date('c',  strtotime($end));
+      }
+    if(!isset($module))
+      {
+      $module='all';
+      }
+    if(!isset($priority))
+      {
+      $priority='all';
+      }
+      
+    $logs=$this->Errorlog->getLog($start, $end,$module,$priority);
+    foreach ($logs as $key=>$log)
+      {
+      $logs[$key]=$log->_toArray();
+      if(substr($log->getMessage(), 0, 5)=='Fatal')
+        {
+        $shortMessage=substr($log->getMessage(), strpos($log->getMessage(), "[message]")+10,40);
+        }
+      elseif(substr($log->getMessage(), 0, 6)=='Server')
+        {
+        $shortMessage=substr($log->getMessage(), strpos($log->getMessage(), "Message:")+9,40);
+        }
+      else
+        {
+        $shortMessage=substr($log->getMessage(), 0,40);
+        }
+      $logs[$key]['shortMessage']=$shortMessage.' ...';
+      }
+    $this->view->jsonLogs=JsonComponent::encode($logs);
+    $this->view->jsonLogs=htmlentities($this->view->jsonLogs);
+    
+    if($this->_request->isPost())
+      {
+      $this->_helper->viewRenderer->setNoRender();
+      echo $this->view->jsonLogs;
+      return;
+      }
+      
+    $modulesConfig=Zend_Registry::get('configsModules');
+      
+    $modules=array('all','core');
+    foreach($modulesConfig as $key=>$module)
+      {
+      $modules[]=$key;
+      }    
+    $this->view->modulesLog=$modules;
+    }//showlogAction
+    
   /** upgrade database*/
   function upgradeAction()
     {

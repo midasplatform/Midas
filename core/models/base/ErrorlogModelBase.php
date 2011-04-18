@@ -11,9 +11,12 @@ abstract class ErrorlogModelBase extends AppModel
       'module'=> array('type'=>MIDAS_DATA),
       'message'=> array('type'=>MIDAS_DATA),
       'datetime'=> array('type'=>MIDAS_DATA),
+      'priority'=> array('type'=>MIDAS_DATA),
       );
     $this->initialize(); // required
     } // end __construct()
     
+  abstract function getLog($startDate,$endDate,$module='all',$priority='all',$limit=99999);
+  
 } // end class FeedModelBase
 ?>
