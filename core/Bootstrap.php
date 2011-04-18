@@ -103,8 +103,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       if ($config->error->php == 1)
         {
         new Zend_Log_Formatter_Simple();
-        error_reporting(E_ALL | E_STRICT);
-        ini_set('display_errors', 'on');
         Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(false);
         $logger = Zend_Log::factory(array(
           array(
@@ -128,8 +126,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
       else
         {
-        error_reporting(0);
-        ini_set('display_errors', 'off');
         Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(true);
         $logger = Zend_Log::factory(array(
           array(

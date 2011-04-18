@@ -10,7 +10,7 @@ class UpgradeComponent extends AppComponent
   protected $init=false;
   
   /** init upgrade Componenet*/
-  public function init($module,$db,$dbtype)
+  public function initUpgrade($module,$db,$dbtype)
     {
     if($module=='core')
       {

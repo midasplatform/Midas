@@ -223,10 +223,10 @@ class AdminController extends AppController
       $modules=array();
       foreach($modulesConfig as $key=>$module)
         {
-        $this->Component->Upgrade->init($key,$db,$dbtype);
+        $this->Component->Upgrade->initUpgrade($key,$db,$dbtype);
         $upgraded=$upgraded||$this->Component->Upgrade->upgrade($module->version);
         }    
-      $this->Component->Upgrade->init('core',$db,$dbtype);
+      $this->Component->Upgrade->initUpgrade('core',$db,$dbtype);
       $upgraded=$upgraded||$this->Component->Upgrade->upgrade(Zend_Registry::get('configDatabase')->version);
       $this->view->upgraded=$upgraded;
       
@@ -246,7 +246,7 @@ class AdminController extends AppController
     $modules=array();
     foreach($modulesConfig as $key=>$module)
       {
-      $this->Component->Upgrade->init($key,$db,$dbtype);
+      $this->Component->Upgrade->initUpgrade($key,$db,$dbtype);
       $modules[$key]['target']=$this->Component->Upgrade->getNewestVersion();
       $modules[$key]['targetText']=$this->Component->Upgrade->getNewestVersion(true);
       $modules[$key]['currentText']=$module->version;
@@ -255,7 +255,7 @@ class AdminController extends AppController
    
     $this->view->modules=$modules;
     
-    $this->Component->Upgrade->init('core',$db,$dbtype);
+    $this->Component->Upgrade->initUpgrade('core',$db,$dbtype);
     $core['target']=$this->Component->Upgrade->getNewestVersion();
     $core['targetText']=$this->Component->Upgrade->getNewestVersion(true);
     $core['currentText']=Zend_Registry::get('configDatabase')->version;
