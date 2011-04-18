@@ -9,7 +9,7 @@ class AssetstoreController extends AppController
 
   public $_models=array('Assetstore');
   public $_daos=array('Assetstore');
-  public $_components=array();
+  public $_components=array('Utility');
   public $_forms=array('Assetstore');
   
   /**
@@ -58,7 +58,11 @@ class AssetstoreController extends AppController
       echo json_encode(array('msg' => 'The assetstore has been added.',
                        'assetstore_id' => $assetstoreDao->getAssetstoreId(),
                        'assetstore_name' => $assetstoreDao->getName(),
-                       'assetstore_type' => $assetstoreDao->getType()
+                       'assetstore_type' => $assetstoreDao->getType(),
+                       'totalSpace'=>disk_total_space($assetstoreDao->getPath()),
+                       'totalSpaceText'=>$this->Component->Utility->formatSize(disk_total_space($assetstoreDao->getPath())),
+                       'freeSpace'=>disk_free_space($assetstoreDao->getPath()),
+                       'freeSpaceText'=>$this->Component->Utility->formatSize(disk_free_space($assetstoreDao->getPath())),
                        ));  
       return true;
       }

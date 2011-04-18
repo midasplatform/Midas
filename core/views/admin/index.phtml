@@ -47,10 +47,86 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
        ?>
     </div>
     <div id="tabs-assetstore">
-     
-    </div>
-    <div id="tabs-modules">
+     <?php
+     foreach($this->assetstores as $assetstore)
+       {
+       echo "<div class='assetstoreElement'>
+              <span class='assetstoreName'><b>{$assetstore->getName()}</b></span>
+               (";
+       if($assetstore->default)
+         {
+         echo "default assetstore";
+         }
+       else
+         {
+         echo "set as default";
+         }
+       echo ")<br/>";
+       if($assetstore->totalSpaceText==false)
+         {
+         echo "<b>Unable to access assetstore<b/>";
+         }
+       else
+         {
+         echo "Total space: {$assetstore->totalSpaceText}<br/>";
+         if(($assetstore->freeSpace/$assetstore->totalSpace<0.10))
+           {
+           echo "<b>Free space: {$assetstore->freeSpaceText}. Almost full!!!</b>";
+           }
+         else
+           {
+           echo "<b>Free space: {$assetstore->freeSpaceText}</b>";
+           }
+         }  
+       echo"</div>";
+       }
+     ?>
+      
+      <a class="load-newassetstore" href="#newassetstore-form" rel="#newassetstore-form" title="<?php echo $this->t('Add a new assetstore')?>"><?php echo $this->t('Add a new assetstore')?></a>
 
+      <div id="newassetstore-form"  style="display:none">
+         <?php echo $this->assetstoreForm; ?>
+      </div>
+    </div>
+
+    <div id="tabs-modules">
+      <table>
+      <?php
+      foreach($this->modulesList as $key=>$module)
+         {
+         echo "
+           <tr class='moduleElement'>
+              <td>";
+              if(isset($module->db->{$this->databaseType}))
+                {
+                 echo " 
+                   <input type='checkbox' class='moduleCheckbox' module='{$key}' name='module[{$key}]'   ".((in_array($key, $this->modulesEnable))?'checked':'')."/>";
+                }
+              else
+                {
+                echo "
+                  Module not available with your database type.
+                  ";
+                }
+              echo"
+              </td>    
+              <td>
+              <b>{$module->fullname}</b><br/>
+              {$module->description}
+              </td>";              
+              if($module->configPage)
+                {
+              echo "
+              <td>
+                <a href='{$this->webroot}/$key/config'>View configuration</a>
+              </td>";
+                }
+              echo "
+           </tr>
+          ";
+         }
+      ?>
+      <table
     </div>
   </div>
 

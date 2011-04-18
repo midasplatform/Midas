@@ -5,10 +5,17 @@
  */
 class AdminController extends AppController
 {
-  public $_models=array('Errorlog');
+  public $_models=array('Errorlog','Assetstore');
   public $_daos=array();
   public $_components=array('Upgrade','Utility');
-  public $_forms=array('Admin');
+  public $_forms=array('Admin','Assetstore');
+  
+  function init()
+    {
+    $config=Zend_Registry::get('configGlobal'); //set admin part to english
+    $config->application->lang='en';
+    Zend_Registry::get('configGlobal',$config);
+    }
     
   /** index*/
   function indexAction()
@@ -35,6 +42,7 @@ class AdminController extends AppController
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
       $submitConfig=$this->_getParam('submitConfig');
+      $submitModule=$this->_getParam('submitModule');
       if(isset($submitConfig))
         {
         $applicationConfig=parse_ini_file (BASE_PATH.'/core/configs/application.local.ini',true);
@@ -51,7 +59,62 @@ class AdminController extends AppController
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true,'Changed saved'));
         }
+      if(isset($submitModule))
+        {
+        $moduleName=$this->_getParam('modulename');
+        $modulevalue=$this->_getParam('modulevalue');
+        $applicationConfig=parse_ini_file (BASE_PATH.'/core/configs/application.local.ini',true);
+        if(file_exists( BASE_PATH.'/core/configs/application.local.ini.old'))
+          {
+          unlink( BASE_PATH.'/core/configs/application.local.ini.old');
+          }
+        rename(BASE_PATH.'/core/configs/application.local.ini', BASE_PATH.'/core/configs/application.local.ini.old');
+        $applicationConfig['module'][$moduleName]=$modulevalue;
+        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
+        echo JsonComponent::encode(array(true,'Changed saved'));
+        }
       }
+      
+    // get assetstore data
+    $defaultAssetStoreId=Zend_Registry::get('configGlobal')->defaultassetstore->id;
+    $assetstores= $this->Assetstore->getAll();
+    foreach($assetstores as $key=>$assetstore)
+      {
+      if($assetstore->getKey()==$defaultAssetStoreId)
+        {
+        $assetstores[$key]->default=true;
+        }
+      else
+        {
+        $assetstores[$key]->default=false;
+        }
+      $assetstores[$key]->totalSpace=disk_total_space($assetstore->getPath());
+      $assetstores[$key]->totalSpaceText=$this->Component->Utility->formatSize($assetstores[$key]->totalSpace);
+      $assetstores[$key]->freeSpace=disk_free_space($assetstore->getPath());
+      $assetstores[$key]->freeSpaceText=$this->Component->Utility->formatSize($assetstores[$key]->freeSpace);
+      }
+    $this->view->assetstores=$assetstores;
+    $this->view->assetstoreForm = $this->Form->Assetstore->createAssetstoreForm();
+    
+    // get modules
+    $modulesEnable=  Zend_Registry::get('modulesEnable');
+    $allModules=$this->Component->Utility->getAllModules();
+    
+    foreach($allModules as $key=>$module)
+      {
+      if(file_exists(BASE_PATH."/modules/$key/controllers/ConfigController.php"))
+        {
+        $allModules[$key]->configPage=true;
+        }
+      else
+        {
+        $allModules[$key]->configPage=false;
+        }
+      }
+
+    $this->view->modulesList=$allModules;
+    $this->view->modulesEnable=$modulesEnable;
+    $this->view->databaseType=Zend_Registry::get('configDatabase')->database->adapter;
     }//end indexAction
     
  

@@ -77,11 +77,11 @@ class ErrorController extends AppController
       $fullMessage = $this->Component->NotifyError->getFullErrorMessage();  
       if(isset($this->fullMessage))
         {
-        $this->getLogger()->crit($this->fullMessage);
+        $this->getLogger()->warn($this->fullMessage);
         }
       else
         {
-        $this->getLogger()->crit($this->view->message);
+        $this->getLogger()->warn('URL: '.$this->Utility->curPageURL()."\n".$this->view->message);
         }
       
       }  

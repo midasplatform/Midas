@@ -42,16 +42,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
    
     Zend_Registry::set('configGlobal', $configGlobal);
 
-    $configCore = new Zend_Config_Ini(CORE_CONFIG,'global');
+    $configCore = new Zend_Config_Ini(CORE_CONFIG,'global',true);
     Zend_Registry::set('configCore', $configCore);
 
-    $config = new Zend_Config_Ini(APPLICATION_CONFIG, $configGlobal->environment);
+    $config = new Zend_Config_Ini(APPLICATION_CONFIG, $configGlobal->environment,true);
     Zend_Registry::set('config', $config);    
     date_default_timezone_set('Europe/Paris');
     
     
     // InitDatabase
-    $configDatabase = new Zend_Config_Ini(DATABASE_CONFIG, $configGlobal->environment);
+    $configDatabase = new Zend_Config_Ini(DATABASE_CONFIG, $configGlobal->environment,true);
     if ($configDatabase->database->type == 'pdo')
       {      
       $pdoParams = array(

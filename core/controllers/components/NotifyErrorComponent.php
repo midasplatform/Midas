@@ -77,15 +77,17 @@ class NotifyErrorComponent  extends AppComponent
       {
       if($errno==E_WARNING&&Zend_Registry::get('configGlobal')->environment!='production')
         {
-        echo "Warning: ".$errstr."<br/>\n";
-        echo " on line $errline in file $errfile<br/>\n";
+        $message= "Warning: ".$errstr."<br/>\n on line $errline in file $errfile<br/>\n";
+        $this->getLogger()->warn($message);
+        echo $message;
         }
       
       if($errno==E_NOTICE&&Zend_Registry::get('configGlobal')->environment!='production')
         {
-        echo "Notice : ".$errstr."<br/>\n";
-        echo " on line $errline in file $errfile<br/>\n";
-        }
+        $message= "Notice : ".$errstr."<br/>\non line $errline in file $errfile<br/>\n";
+        $this->getLogger()->warn($message);
+        echo $message;
+        }      
       }
       
       

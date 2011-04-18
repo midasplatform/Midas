@@ -1,7 +1,7 @@
 <?php
 class UtilityComponent extends AppComponent
 { 
-  
+
   static public function getAllModules()
     {
     $modules=array();

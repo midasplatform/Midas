@@ -6,3 +6,7 @@ div.viewSideBar input.globalButton{
 div.viewWrapper {
   padding-right: 40px !important;
 }
+
+div.assetstoreElement{
+  margin-bottom: 10px;
+}
