@@ -1,0 +1,42 @@
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/admin/admin.showlog.css" />
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/admin/admin.showlog.js"></script>
+
+<form id="logSelector" method="post" action="<?php echo $this->webroot?>/admin/showlog">
+  <label for="startlog">From</label>
+  <input type="text" id="startlog" name="startlog"/>
+  <label for="endlog">to</label>
+  <input type="text" id="endlog" name="endlog"/>
+  <br/>
+  <label for="modulelog">Module</label>
+  <select id="modulelog" name="modulelog">
+    <?php foreach($this->modulesLog as $module)
+      {
+      echo "<option value='{$module}'>{$module}</option>";
+      }
+      ?>
+  </select>
+  <label for="prioritylog">Priority</label>
+  <select id="prioritylog" name="prioritylog">
+    <option value="all">all</option>";
+    <option value="2">critical</option>";
+    <option value="4">warning</option>";
+    <option value="6">info</option>";
+  </select>
+  <br/>
+  <input type='submit' value='Filter' />
+</form>
+
+<br/>
+<table id="listLogs">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Priority</th>
+      <th>Module</th>
+      <th>Short Message</th>
+    </tr>    
+  </thead>
+</table>
+
+<img class="logsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+<div id="jsonLogs" style="display:none;"><?php echo $this->jsonLogs?></div>

@@ -17,7 +17,12 @@ class AppController extends MIDAS_GlobalController
     $this->view->setEncoding('iso-8859-1');
     
     $fc=Zend_Controller_Front::getInstance();
-    $this->getLogger()->setEventItem('module',$fc->getRequest()->getModuleName());
+    $module=$fc->getRequest()->getModuleName();
+    if($module=='default')
+      {
+      $module='core';
+      }
+    $this->getLogger()->setEventItem('module',$module);
     $this->view->webroot=$fc->getBaseUrl();
     $this->coreWebroot=$this->view->webroot.'/core';
     $this->view->coreWebroot=$this->coreWebroot;
@@ -146,82 +151,87 @@ class AppController extends MIDAS_GlobalController
   /**completion eclipse*/
   /**
    * Assetstrore Model
-   * @var AssetstoreModel
+   * @var AssetstoreModelBase
    */
   var $Assetstore;
   /**
    * Bitstream Model
-   * @var BitstreamModel
+   * @var BitstreamModelBase
    */
   var $Bitstream;
   /**
    * Community Model
-   * @var CommunityModel
+   * @var CommunityModelBase
    */
   var $Community;
   /**
+   * Errorlog Model
+   * @var ErrorlogModelBase
+   */
+  var $Errorlog;
+  /**
    * Feed Model
-   * @var FeedModel
+   * @var FeedModelBase
    */
   var $Feed;
   /**
    * Feedpolicygroup Model
-   * @var FeedpolicygroupModel
+   * @var FeedpolicygroupModelBase
    */
   var $Feedpolicygroup;
     /**
    * Feedpolicyuser Model
-   * @var FeedpolicyuserModel
+   * @var FeedpolicyuserModelBase
    */
   var $Feedpolicyuser;
   /**
    * Folder Model
-   * @var FolderModel
+   * @var FolderModelBase
    */
   var $Folder;
   /**
    * Folderpolicygroup Model
-   * @var FolderpolicygroupModel
+   * @var FolderpolicygroupModelBase
    */
   var $Folderpolicygroup;
     /**
    * Folderpolicyuser Model
-   * @var FolderpolicyuserModel
+   * @var FolderpolicyuserModelBase
    */
   var $Folderpolicyuser;
   /**
    * Group Model
-   * @var GroupModel
+   * @var GroupModelBase
    */
   var $Group;
    /**
    * ItemKeyword Model
-   * @var ItemKeywordModel
+   * @var ItemKeywordModelBase
    */
   var $ItemKeyword;
   /**
    * Item Model
-   * @var ItemModel
+   * @var ItemModelBase
    */
   var $Item;
   /**
    * Itempolicygroup Model
-   * @var ItempolicygroupModel
+   * @var ItempolicygroupModelBase
    */
   var $Itempolicygroup;
     /**
    * Itempolicyuser Model
-   * @var ItempolicyuserModel
+   * @var ItempolicyuserModelBase
    */
   var $Itempolicyuser;
   /**
    * ItemRevision Model
-   * @var ItemRevisionModel
+   * @var ItemRevisionModelBase
    */
   var $ItemRevision;
     /**
    * User Model
-   * @var UserModel
+   * @var UserModelBase
    */
   var $User;
   
