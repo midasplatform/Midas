@@ -12,7 +12,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
 	</ul>
 	<div id="tabs-account">
     <h3><?php echo $this->t('Modify my information')?>:</h3>
-    <form  class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']?>">
+    <form  class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']?><?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>">
       <table>
         <tr>
           <td><?php echo $this->t('Firstname');?><?php echo $this->accountForm['firstname']?></td>
@@ -42,7 +42,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
         }
       ?>
     <h3><?php echo $this->t('Modify my picture')?>:</h3>
-    <form class="genericForm" id="modifyPicture" action="<?php echo $this->webroot?>/user/settings" method="POST" enctype="multipart/form-data">
+    <form class="genericForm" id="modifyPicture" action="<?php echo $this->webroot?>/user/settings<?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>" method="POST" enctype="multipart/form-data">
       <input type="hidden" name="MAX_FILE_SIZE" value="1000000">
       <?php echo $this->t('Choose a picture')?>: <input type="file" name="file" />
       <br/>
@@ -51,11 +51,18 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
   </div>
 	<div id="tabs-password">
     <h3><?php echo $this->t('Modify my password')?>:</h3>
-    <form  class="genericForm" id="modifyPassword" method='POST' action='<?php echo $this->webroot?>/user/settings'>
+    <form  class="genericForm" id="modifyPassword" method='POST' action='<?php echo $this->webroot?>/user/settings<?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>'>
       <table>
+        <?php
+        if(!$this->userDao->isAdmin()||$this->user->isAdmin())
+          {
+          ?>
         <tr>
           <td><?php echo $this->t('My old password');?><input type="password" name="oldPassword"/></td>
         </tr>
+        <?php
+          }
+          ?>
         <tr>
           <td><?php echo $this->t('My new password');?><input type="password" name="newPassword"/></td>
           <td><?php echo $this->t('Confirmation');?><input type="password" name="newPasswordConfirmation"/></td>

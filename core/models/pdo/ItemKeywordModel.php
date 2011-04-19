@@ -12,6 +12,7 @@ class ItemKeywordModel extends ItemKeywordModelBase
    * @return Array of ItemDao */
   function getItemsFromSearch($searchterm,$userDao,$limit=14,$group=true,$order='view')
     {
+    $isAdmin=false;
     if($userDao==null)
       {
       $userId= -1;
@@ -23,6 +24,10 @@ class ItemKeywordModel extends ItemKeywordModelBase
     else
       {
       $userId = $userDao->getUserId();
+      if($userDao->isAdmin())
+        {
+        $isAdmin= true;
+        }
       }
           
     // Apparently it's slow to do a like in a subquery so we run it first  
@@ -56,9 +61,11 @@ class ItemKeywordModel extends ItemKeywordModelBase
       {
       $sql->from(array('i' => 'item'));
       }
-      $sql->setIntegrityCheck(false)          
-          ->join(array('i2k' => 'item2keyword'),'i.item_id=i2k.item_id')
-          ->joinLeft(array('ipu' => 'itempolicyuser'),'
+              
+    $sql->join(array('i2k' => 'item2keyword'),'i.item_id=i2k.item_id');
+    if(!$isAdmin)
+      {
+      $sql ->joinLeft(array('ipu' => 'itempolicyuser'),'
                     i.item_id = ipu.item_id AND '.$this->database->getDB()->quoteInto('ipu.policy >= ?', MIDAS_POLICY_READ).'
                        AND '.$this->database->getDB()->quoteInto('ipu.user_id = ? ',$userId).' ',array())
           ->joinLeft(array('ipg' => 'itempolicygroup'),'
@@ -75,7 +82,9 @@ class ItemKeywordModel extends ItemKeywordModelBase
            '(
             ipu.item_id is not null or
             ipg.item_id is not null)'
-            )
+            );
+      }
+    $sql->setIntegrityCheck(false)  
           ->where('i2k.keyword_id IN '.$ids)             
           ->limit($limit)
           ;

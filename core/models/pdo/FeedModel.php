@@ -32,6 +32,10 @@ class FeedModel extends FeedModelBase
     else
       {
       $userId = $userDao->getUserId();
+      if($userDao->isAdmin())
+        {
+        return true;
+        }
       }
       
      $subqueryUser= $this->database->select()
@@ -78,6 +82,7 @@ class FeedModel extends FeedModelBase
    * @return Array of FeedDao */
   protected function _getFeeds($loggedUserDao,$userDao=null,$communityDao=null,$policy=0,$limit=20)
     {
+    $isAdmin=false;
     if($loggedUserDao==null)
       {
       $userId= -1;
@@ -89,6 +94,10 @@ class FeedModel extends FeedModelBase
     else
       {
       $userId = $loggedUserDao->getUserId();
+      if($loggedUserDao->isAdmin())
+        {
+        $isAdmin= true;
+        }
       }
     
     if($userDao!=null&&!$userDao instanceof UserDao)
@@ -105,7 +114,10 @@ class FeedModel extends FeedModelBase
     $sql=$this->database->select()
           ->setIntegrityCheck(false)
           ->from(array('f' => 'feed'))
-          ->joinLeft(array('fpu' => 'feedpolicyuser'),'
+          ->limit($limit);
+   if(!$isAdmin)
+     {
+     $sql ->joinLeft(array('fpu' => 'feedpolicyuser'),'
                     f.feed_id = fpu.feed_id AND '.$this->database->getDB()->quoteInto('fpu.policy >= ?', $policy).'
                        AND '.$this->database->getDB()->quoteInto('fpu.user_id = ? ',$userId).' ',array('userpolicy'=>'fpu.policy'))
           ->joinLeft(array('fpg' => 'feedpolicygroup'),'
@@ -122,9 +134,8 @@ class FeedModel extends FeedModelBase
            '(
             fpu.feed_id is not null or
             fpg.feed_id is not null)'
-            )
-          ->limit($limit)
-          ;
+            );
+     }
     
     if($userDao!=null)
       {
@@ -142,14 +153,18 @@ class FeedModel extends FeedModelBase
     $rowsetAnalysed=array();
     foreach ($rowset as $keyRow=>$row)
       {
-      if($row['userpolicy']==null)$row['userpolicy']=0;
-      if($row['grouppolicy']==null)$row['grouppolicy']=0;
+      if(isset($row['userpolicy'])&&$row['userpolicy']==null)$row['userpolicy']=0;
+      if(isset($row['grouppolicy'])&&$row['grouppolicy']==null)$row['grouppolicy']=0;
       if(!isset($rowsetAnalysed[$row['feed_id']])||($rowsetAnalysed[$row['feed_id']]->policy<$row['userpolicy']&&$rowsetAnalysed[$row['feed_id']]->policy<$row['grouppolicy']))
         {
         $tmpDao= $this->initDao('Feed', $row);
-        if($row['userpolicy']>=$row['grouppolicy'])
+        if((isset($row['userpolicy'])&&isset($row['grouppolicy']))&&$row['userpolicy']>=$row['grouppolicy'])
           {
           $tmpDao->policy=$row['userpolicy'];
+          }
+        else if($isAdmin)
+          {
+          $tmpDao->policy=MIDAS_POLICY_ADMIN;
           }
         else
           {

@@ -83,6 +83,10 @@ class ItemModel extends ItemModelBase
     else
       {
       $userId = $userDao->getUserId();
+      if($userDao->isAdmin())
+        {
+        return true;
+        }
       }
       
      $subqueryUser= $this->database->select()

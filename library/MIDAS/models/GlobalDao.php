@@ -79,7 +79,7 @@ class MIDAS_GlobalDao
     $maindata = $this->getModel()->getMainData();
     foreach ($maindata as $name => $type)
       {
-      if(isset($this->$name))
+      if(isset($this->$name)&& $type['type'] == MIDAS_DATA)
         {
         $return[$name]=$this->$name;
         }

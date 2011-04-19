@@ -177,8 +177,27 @@ class UserController extends AppController
       }   
     $this->_helper->layout->disableLayout();
     
-    $accountForm=$this->Form->User->createAccountForm($this->userSession->Dao->getFirstname(),$this->userSession->Dao->getLastname(),
-                                                $this->userSession->Dao->getCompany(),$this->userSession->Dao->getPrivacy());
+    $userId=$this->_getParam('userId');
+    if(isset($userId)&&!$this->userSession->Dao->isAdmin())
+      {
+      throw new Zend_Exception('You should be an admin');
+      }
+    else if (isset($userId))
+      {
+      $userDao=$this->User->load($userId);
+      }
+    else
+      {
+      $userDao=$this->userSession->Dao;
+      }
+      
+    if(empty($userDao)||$userDao==false)
+      {
+      throw new Zend_Exception("Unable to load user");
+      }
+    
+    $accountForm=$this->Form->User->createAccountForm($userDao->getFirstname(),$userDao->getLastname(),
+                                                $userDao->getCompany(),$userDao->getPrivacy());
     $this->view->accountForm=$this->getFormAsArray($accountForm);
     
     if($this->_request->isPost())
@@ -192,12 +211,15 @@ class UserController extends AppController
         $oldPass=$this->_getParam('oldPassword');
         $newPass=$this->_getParam('newPassword');
         $passwordPrefix=Zend_Registry::get('configGlobal')->password->prefix;
-        $userDao=$this->User->load($this->userSession->Dao->getKey());
-        if($userDao != false && md5($passwordPrefix.$oldPass) == $userDao->getPassword())
+        $userDao=$this->User->load($userDao->getKey());
+        if($userDao != false && ((!$userDao->isAdmin()&&$this->userSession->Dao->isAdmin())||md5($passwordPrefix.$oldPass) == $userDao->getPassword()))
           {
           $userDao->setPassword(md5($passwordPrefix.$newPass));
           $this->User->save($userDao);
-          $this->userSession->Dao=$userDao;
+          if(!isset($userId))
+            {
+            $this->userSession->Dao=$userDao;
+            }
           echo JsonComponent::encode(array(true,$this->t('Changes saved')));
           }
         else
@@ -213,7 +235,7 @@ class UserController extends AppController
         $company=trim($this->_getParam('company'));
         $privacy=$this->_getParam('privacy');
         
-        $userDao=$this->User->load($this->userSession->Dao->getKey());
+        $userDao=$this->User->load($userDao->getKey());
 
         if(!isset($privacy)||($privacy!=MIDAS_USER_PRIVATE&&$privacy!=MIDAS_USER_PUBLIC))
           {
@@ -231,7 +253,10 @@ class UserController extends AppController
           }        
         $userDao->setPrivacy($privacy);
         $this->User->save($userDao);
-        $this->userSession->Dao=$userDao;        
+        if(!isset($userId))
+          {
+          $this->userSession->Dao=$userDao;
+          }     
         echo JsonComponent::encode(array(true,$this->t('Changes saved')));
         }
       if(isset($modifyPicture)&&$this->logged)
@@ -249,7 +274,7 @@ class UserController extends AppController
           $thumbnail_output_file = $thumbnailCreator->outputFile;
           if($hasThumbnail&&  file_exists($thumbnail_output_file))
             {
-            $userDao=$this->User->load($this->userSession->Dao->getKey());
+            $userDao=$this->User->load($userDao->getKey());
             $oldThumbnail=$userDao->getThumbnail();
             if(!empty($oldThumbnail))
               {
@@ -257,7 +282,10 @@ class UserController extends AppController
               }
             $userDao->setThumbnail(substr($thumbnail_output_file, strlen(BASE_PATH)+1));
             $this->User->save($userDao);
-            $this->userSession->Dao=$userDao;  
+            if(!isset($userId))
+              {
+              $this->userSession->Dao=$userDao;
+              }   
             echo JsonComponent::encode(array(true,$this->t('Changes saved'),$userDao->getThumbnail()));
             }   
           else
@@ -268,7 +296,8 @@ class UserController extends AppController
         }
       }
     
-    $this->view->thumbnail=$this->userSession->Dao->getThumbnail();
+    $this->view->user=$userDao;
+    $this->view->thumbnail=$userDao->getThumbnail();
     $this->view->jsonSettings=array();
     $this->view->jsonSettings['accountErrorFirstname']=$this->t('Please set your firstname');
     $this->view->jsonSettings['accountErrorLastname']=$this->t('Please set your lastname');
@@ -317,6 +346,7 @@ class UserController extends AppController
       }
     $this->view->feeds=$this->Feed->getFeedsByUser($this->userSession->Dao,$userDao);
     
+    $this->view->isViewAction=($this->logged&&($this->userSession->Dao->getKey()==$userDao->getKey()||$this->userSession->Dao->isAdmin()));
     $this->view->information=array();
     }
   }//end class

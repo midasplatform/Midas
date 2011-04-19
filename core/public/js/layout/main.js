@@ -41,7 +41,14 @@ $(function() {
  
         });   
       }
-    loadAjaxDynamicBar('settings','/user/settings');
+    if($(this).attr('userid')!=undefined)
+      {
+      loadAjaxDynamicBar('settings'+$(this).attr('userid'),'/user/settings?userId='+$(this).attr('userid'));  
+      }
+    else
+      {
+      loadAjaxDynamicBar('settings','/user/settings'); 
+      }    
     });
     
    $("li.settingsLink").click(function()

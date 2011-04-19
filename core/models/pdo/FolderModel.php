@@ -26,6 +26,10 @@ class FolderModel extends FolderModelBase
     else
       {
       $userId = $userDao->getUserId();
+      if($userDao->isAdmin())
+        {
+        return true;
+        }
       }
       
      $subqueryUser= $this->database->select()
@@ -64,6 +68,7 @@ class FolderModel extends FolderModelBase
   /** get the size and the number of item in a folder*/
   public function getSizeFiltered($folders,$userDao=null,$policy=0)
     {
+    $isAdmin=false;
     if(!is_array($folders))
       {
       $folders=array($folders);
@@ -79,6 +84,10 @@ class FolderModel extends FolderModelBase
     else
       {
       $userId = $userDao->getUserId();
+      if($userDao->isAdmin())
+        {
+        $isAdmin= true;
+        }
       }
     foreach($folders as $key => $folder)
       { 
@@ -88,17 +97,22 @@ class FolderModel extends FolderModelBase
         }
       $subqueryUser= $this->database->select()
                       ->setIntegrityCheck(false)
-                      ->from(array('f' => 'folder'),array('folder_id'))
-                      ->join(array('fpu' => 'folderpolicyuser'),'
+                      ->from(array('f' => 'folder'),array('folder_id'));
+      if(!$isAdmin)
+        {
+        $subqueryUser             ->join(array('fpu' => 'folderpolicyuser'),'
                             f.folder_id = fpu.folder_id AND '.$this->database->getDB()->quoteInto('fpu.policy >= ?', $policy).'
-                               AND '.$this->database->getDB()->quoteInto('user_id = ? ',$userId).' ',array())
-                      ->where('left_indice > ?', $folder->getLeftIndice())
+                               AND '.$this->database->getDB()->quoteInto('user_id = ? ',$userId).' ',array());
+        }
+     $subqueryUser                 ->where('left_indice > ?', $folder->getLeftIndice())
                       ->where('right_indice < ?', $folder->getRightIndice());
 
       $subqueryGroup = $this->database->select()
                     ->setIntegrityCheck(false)
-                    ->from(array('f' => 'folder'),array('folder_id'))
-                    ->join(array('fpg' => 'folderpolicygroup'),'
+                    ->from(array('f' => 'folder'),array('folder_id'));
+      if(!$isAdmin)
+        {
+        $subqueryGroup      ->join(array('fpg' => 'folderpolicygroup'),'
                                 f.folder_id = fpg.folder_id  AND '.$this->database->getDB()->quoteInto('fpg.policy >= ?', $policy).'
                                    AND ( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                                         group_id IN (' .new Zend_Db_Expr(
@@ -107,8 +121,9 @@ class FolderModel extends FolderModelBase
                                              ->from(array('u2g' => 'user2group'),
                                                     array('group_id'))
                                              ->where('u2g.user_id = ?' , $userId)
-                                             ) .'))' ,array())
-                    ->where('left_indice > ?', $folder->getLeftIndice())
+                                             ) .'))' ,array());
+        }
+      $subqueryGroup  ->where('left_indice > ?', $folder->getLeftIndice())
                     ->where('right_indice < ?', $folder->getRightIndice());
 
        $subSqlFolders = $this->database->select()
@@ -122,8 +137,10 @@ class FolderModel extends FolderModelBase
                           OR i2f.folder_id='.$folder->getKey().'
                           )
                           AND i2f.item_id = i.item_id'
-                          ,array() )
-                ->joinLeft(array('ip' => 'itempolicyuser'),'
+                          ,array() );
+      if(!$isAdmin)
+        {
+        $sql        ->joinLeft(array('ip' => 'itempolicyuser'),'
                           i.item_id = ip.item_id AND '.$this->database->getDB()->quoteInto('policy >= ?', $policy).'
                              AND '.$this->database->getDB()->quoteInto('user_id = ? ',$userId).' ',array())
                 ->joinLeft(array('ipg' => 'itempolicygroup'),'
@@ -142,6 +159,7 @@ class FolderModel extends FolderModelBase
                   ipg.item_id is not null)'
                   )
                 ;
+        }
 
 
       $row = $this->database->fetchRow($sql);    
@@ -307,6 +325,7 @@ class FolderModel extends FolderModelBase
    */
   function getItemsFiltered($folder,$userDao=null,$policy=0)
     {
+    $isAdmin=false;
     if(is_array($folder))
       {
       $folderIds=array();
@@ -338,19 +357,23 @@ class FolderModel extends FolderModelBase
     else
       {
       $userId = $userDao->getUserId();
+      if($userDao->isAdmin())
+        {
+        $isAdmin= true;
+        }
       }
-
+      
     $subqueryUser= $this->database->select()
-                          ->setIntegrityCheck(false)
-                          ->from(array('f' => 'item'))
-                          ->join(array('p' => 'itempolicyuser'),
-                                'f.item_id=p.item_id',
-                                 array('p.policy'))
-                          ->join(array('i' => 'item2folder'),
-                                $this->database->getDB()->quoteInto('i.folder_id IN (?)',$folderIds).'
-                                AND i.item_id = p.item_id' ,array('i.folder_id'))
-                          ->where('policy >= ?', $policy)
-                          ->where('user_id = ? ',$userId);
+                      ->setIntegrityCheck(false)
+                      ->from(array('f' => 'item'))
+                      ->join(array('p' => 'itempolicyuser'),
+                            'f.item_id=p.item_id',
+                             array('p.policy'))
+                      ->join(array('i' => 'item2folder'),
+                            $this->database->getDB()->quoteInto('i.folder_id IN (?)',$folderIds).'
+                            AND i.item_id = p.item_id' ,array('i.folder_id'))
+                      ->where('policy >= ?', $policy)
+                      ->where('user_id = ? ',$userId);
 
     $subqueryGroup = $this->database->select()
                     ->setIntegrityCheck(false)
@@ -371,16 +394,31 @@ class FolderModel extends FolderModelBase
                                    ->where('u2g.user_id = ?' , $userId)
                                    .'))' ));
 
+
+
     $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
+    
+    if($isAdmin)
+      {
+      $sql= $this->database->select()
+                      ->setIntegrityCheck(false)
+                      ->from(array('f' => 'item'))                          
+                      ->join(array('i' => 'item2folder'),
+                            $this->database->getDB()->quoteInto('i.folder_id IN (?)',$folderIds).'
+                            AND i.item_id = f.item_id' ,array('i.folder_id'));
+      }
     
     $rowset = $this->database->fetchAll($sql);
     $return = array();    
     $policyArray=array();
     foreach ($rowset as $keyRow=>$row)
-      {
-   
-      if(!isset($policyArray[$row['item_id']])||(isset($policyArray[$row['item_id']])&&$row['policy']>$policyArray[$row['item_id']]))
+      { 
+      if($isAdmin)
+        {
+        $policyArray[$row['item_id']]=MIDAS_POLICY_ADMIN;
+        }
+      else if(!isset($policyArray[$row['item_id']])||(isset($policyArray[$row['item_id']])&&$row['policy']>$policyArray[$row['item_id']]))
         {
         $policyArray[$row['item_id']]=$row['policy'];
         }
@@ -407,6 +445,7 @@ class FolderModel extends FolderModelBase
   /** getFolder with policy check */
   function getChildrenFoldersFiltered($folder,$userDao=null,$policy=0)
     {
+    $isAdmin=false;
     if(is_array($folder))
       {
       $folderIds=array();
@@ -438,6 +477,10 @@ class FolderModel extends FolderModelBase
     else
       {
       $userId = $userDao->getUserId();
+      if($userDao->isAdmin())
+        {
+        $isAdmin= true;
+        }
       }
 
     $subqueryUser= $this->database->select()
@@ -469,12 +512,24 @@ class FolderModel extends FolderModelBase
     $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
     
+    if($isAdmin)
+      {
+      $sql= $this->database->select()
+                          ->setIntegrityCheck(false)
+                          ->from(array('f' => 'folder'))
+                          ->where ('f.parent_id IN (?)',$folderIds);
+      }
+    
     $rowset = $this->database->fetchAll($sql);
     $return = array();      
     $policyArray=array();
     foreach ($rowset as $keyRow=>$row)
       {
-      if(!isset($policyArray[$row['folder_id']])||(isset($policyArray[$row['folder_id']])&&$row['policy']>$policyArray[$row['folder_id']]))
+      if($isAdmin)
+        {
+        $policyArray[$row['folder_id']]=MIDAS_POLICY_ADMIN;
+        }
+      else if(!isset($policyArray[$row['folder_id']])||(isset($policyArray[$row['folder_id']])&&$row['policy']>$policyArray[$row['folder_id']]))
         {
         $policyArray[$row['folder_id']]=$row['policy'];
         }
@@ -564,6 +619,7 @@ class FolderModel extends FolderModelBase
    * @return Array of FolderDao */
   function getFoldersFromSearch($search,$userDao,$limit=14,$group=true,$order='view')
     {
+    $isAdmin=false;
     if($userDao==null)
       {
       $userId= -1;
@@ -575,6 +631,10 @@ class FolderModel extends FolderModelBase
     else
       {
       $userId = $userDao->getUserId();
+      if($userDao->isAdmin())
+        {
+        $isAdmin= true;
+        }
       }
         
     $sql=$this->database->select();
@@ -586,8 +646,10 @@ class FolderModel extends FolderModelBase
       {
       $sql->from(array('f' => 'folder'))->distinct();
       }
-     $sql->setIntegrityCheck(false)          
-          ->joinLeft(array('fpu' => 'folderpolicyuser'),'
+     
+     if(!$isAdmin)
+       {
+       $sql->joinLeft(array('fpu' => 'folderpolicyuser'),'
                     f.folder_id = fpu.folder_id AND '.$this->database->getDB()->quoteInto('fpu.policy >= ?', MIDAS_POLICY_READ).'
                        AND '.$this->database->getDB()->quoteInto('fpu.user_id = ? ',$userId).' ',array())
           ->joinLeft(array('fpg' => 'folderpolicygroup'),'
@@ -604,7 +666,9 @@ class FolderModel extends FolderModelBase
            '(
             fpu.folder_id is not null or
             fpg.folder_id is not null)'
-            )
+            );
+       }          
+      $sql->setIntegrityCheck(false)
           ->where($this->database->getDB()->quoteInto('name LIKE ?','%'.$search.'%'))     
           ->where('name != ?',"Public")  
           ->where('name != ?',"Private")  

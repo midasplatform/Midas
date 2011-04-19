@@ -60,6 +60,7 @@ class UserModel extends UserModelBase
   /** Return a list of users corresponding to the search */
   function getUsersFromSearch($search,$userDao,$limit=14,$group=true,$order='view')
     {
+    $isAdmin=false;
     if($userDao==null)
       {
       $userId= -1;
@@ -71,6 +72,10 @@ class UserModel extends UserModelBase
     else
       {
       $userId = $userDao->getUserId();
+      if($userDao->isAdmin())
+        {
+        $isAdmin= true;
+        }
       }
 
     // Check that the user belong to the same group
@@ -94,12 +99,24 @@ class UserModel extends UserModelBase
       $sql->from(array('u' => 'user'));
       }
       
-    $sql  ->where('(privacy='.MIDAS_USER_PUBLIC.' OR ('.
+    if($isAdmin)
+      {
+      $sql  ->where(' ('.
+          $this->database->getDB()->quoteInto('firstname LIKE ?','%'.$search.'%').' OR '.
+          $this->database->getDB()->quoteInto('lastname LIKE ?','%'.$search.'%').')')          
+          ->limit($limit)
+          ->setIntegrityCheck(false);
+      }
+    else
+      {
+      $sql  ->where('(privacy='.MIDAS_USER_PUBLIC.' OR ('.
           $subqueryUser.')>0'.') AND ('.
           $this->database->getDB()->quoteInto('firstname LIKE ?','%'.$search.'%').' OR '.
           $this->database->getDB()->quoteInto('lastname LIKE ?','%'.$search.'%').')')          
           ->limit($limit)
           ->setIntegrityCheck(false);
+      }
+    
 
     if($group)
       {

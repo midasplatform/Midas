@@ -84,25 +84,45 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
 </div>
 <div class="viewSideBar">
+  <?php
+  if($this->isViewAction)
+    {
+    echo '
   <div class="sideElementFirst genericAction">
     <h1>Actions</h1>
-
-  </div>
-   <div class="sideElement genericCommunities">
-    <h1>Communities</h1>    
     <ul>
-    <?php 
+      <li class="myAccountLink" userid="'.$this->user->getKey().'"><a>'.$this->t('Manage Account Information').'</a></li>
+      <li>'.$this->t('Manage Files').'</li>';
+    if(isset($this->userDao)&&$this->userDao->isAdmin()&&$this->userDao->getKey()!=$this->user->getKey()&&!$this->user->isAdmin())
+      {
+      echo '
+      <li>'.$this->t('Delete user').'</li>
+        ';
+      }
+      echo'
+    </ul>
+  </div>';
+    }
+    
+    
+  
+  if(!empty($this->userCommunities))
+    {
+    echo "
+    <div class=sideElement".($this->isViewAction)?'First':''." genericCommunities>';
+    <h1>Communities</h1>    
+    <ul>";
+
       foreach($this->userCommunities as $community)
         {
         echo "<li><a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></li>";
         }
+   echo "
+     </ul>
+     </div>";
+    }
     ?>
-      </ul>
-   </div>
-   <div class="sideElementLast genericStats">
-    <h1>Stats</h1>  
-    
-   </div>
+
   
     <div class="sideElementFirst viewAction">
     <h1>Actions</h1>

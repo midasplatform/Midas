@@ -14,6 +14,19 @@ class CommunityModel extends CommunityModelBase
     $dao= $this->initDao(ucfirst($this->_name),$row);
     return $dao;
     } // end getByName()
+    
+    
+  /** Get all */
+  function getAll()
+    {
+    $rowset = $this->database->fetchAll($this->database->select()); 
+    $return = array();
+    foreach($rowset as $row)
+      {      
+      $return[] = $this->initDao('Community', $row);
+      }
+    return $return;
+    } // end getByName()
      
   /* get public Communities
    * 
@@ -68,18 +81,26 @@ class CommunityModel extends CommunityModelBase
     else
       {
       $sql->from(array('c' => 'community'));
+      }        
+          
+    if($userId!=-1 &&$userDao->isAdmin())
+      {
+      $sql->where('c.name LIKE ?','%'.$search.'%');
+      }
+     else if(!empty($communities))
+      {
+      $sql->where('c.name LIKE ?','%'.$search.'%');
+      $sql->where('(c.privacy < '.MIDAS_COMMUNITY_PRIVATE.' OR '.$this->database->getDB()->quoteInto('c.community_id IN (?)',$communities).')' );
+      }   
+    else
+      {
+      $sql->where('c.name LIKE ?','%'.$search.'%');
+      $sql->where('(c.privacy < '.MIDAS_COMMUNITY_PRIVATE.')');
       }
       
-    $sql->where('c.name LIKE ?','%'.$search.'%')
-          ->where('c.privacy < '.MIDAS_COMMUNITY_PRIVATE)
-          ->limit($limit);
-     
-    if(!empty($communities))
-       {
-       $sql->where('c.community_id IN (?)', $communities);
-       }
+    $sql->limit($limit);
       
-     if($group)
+    if($group)
       {
       $sql->group('c.name');
       }
@@ -97,7 +118,7 @@ class CommunityModel extends CommunityModelBase
         $sql->order(array('c.view DESC'));
         break;
       }
-      
+ 
     $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
