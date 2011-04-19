@@ -35,39 +35,9 @@
                 <label for='smartoptimizer'>CSS and Javascript optimizer</label>
                 {$this->form['smartoptimizer']}
               </div>
-              <div class='installAssetstrore'>
-                <label for='assetstore'>Default Assetstore</label>
-                {$this->form['assetstore']}
-              </div> 
 
-       <h3>Modules:</h3>  
-           <table>
                 ";
-       foreach($this->modules as $key=>$module)
-         {
-         echo "
-           <tr class='moduleElement'>
-              <td>
-              <b>{$module->fullname}</b><br/>
-              {$module->description}
-              </td>
-              <td>";
-          if(isset($module->db->{$this->databaseType}))
-            {
-             echo " 
-               <input type='checkbox' name='module[{$key}]'   ".(($this->defaultModules->$key==1)?'checked':'')."/>";
-            }
-          else
-            {
-            echo "
-              Module not available with your database type.
-              ";
-            }
-          echo"
-              </td>              
-           </tr>
-          ";
-         }
+
          echo"
           </table>
           <div>

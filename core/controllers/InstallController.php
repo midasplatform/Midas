@@ -108,7 +108,7 @@ class InstallController extends AppController
         switch($type)
           {
           case 'mysql':
-            $this->run_mysql_from_file($sqlFile,
+            $this->Component->Utility->run_mysql_from_file($sqlFile,
                                        $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'),$form->getValue('port'));
               $params= array(
                 'host' => $form->getValue('host'),
@@ -138,7 +138,7 @@ class InstallController extends AppController
               Zend_Registry::set('dbAdapter', $db);
             break;
          case 'pgsql':
-            $this->run_pgsql_from_file($sqlFile,
+            $this->Component->Utility->run_pgsql_from_file($sqlFile,
                                        $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'),$form->getValue('port'));
               $params= array(
                 'host' => $form->getValue('host'),
@@ -217,66 +217,30 @@ class InstallController extends AppController
     $formArray['process']->setValue($applicationConfig['global']['processing']);
  
     $assetstrores=$this->Assetstore->getAll();
-    $formArray['assetstore']->addMultiOptions(array(
-                    $assetstrores[0]->getKey() => $assetstrores[0]->getPath()                  
-                        ));    
-    
+
     $this->view->form=$formArray;  
-    $allModules=$this->Component->Utility->getAllModules();
-    $this->view->modules=$allModules;
-    $this->view->defaultModules = new Zend_Config_Ini(APPLICATION_CONFIG, 'module');
     $this->view->databaseType =Zend_Registry::get('configDatabase')->database->adapter;
     if($this->_request->isPost()&&$form->isValid($this->getRequest()->getPost()))
       {
-
+      $allModules=$this->Component->Utility->getAllModules();
+      foreach($allModules as $key=>$module)
+        {
+        $configLocal=BASE_PATH."/modules/$key/configs/module.local.ini";
+        if(file_exists($configLocal))
+          {
+          unlink($configLocal);
+          }
+        }
       $applicationConfig['global']['application.name']=$form->getValue('name');
       $applicationConfig['global']['application.lang']=$form->getValue('lang');
       $applicationConfig['global']['environment']=$form->getValue('environment');
-      $applicationConfig['global']['defaultassetstore.id']=$form->getValue('assetstore');
+      $applicationConfig['global']['defaultassetstore.id']=$assetstrores[0]->getKey();
       $applicationConfig['global']['smartoptimizer']=$form->getValue('smartoptimizer');
       $applicationConfig['global']['default.timezone']=$form->getValue('timezone');
       $applicationConfig['global']['processing']=$form->getValue('process');
-      $applicationConfig['module']=array();
-      $modules=$this->getRequest()->getPost();
-      if(isset($modules['module']))
-        {
-        $modules=$modules['module'];
-        }
-      else
-        {
-        $modules=array();
-        }
-      foreach($modules as $key=>$module)
-        {
-        $applicationConfig['module'][$key]='true';
-        switch (Zend_Registry::get('configDatabase')->database->adapter)
-          {
-          case 'PDO_MYSQL':
-            $this->run_mysql_from_file(BASE_PATH.'/modules/'.$key.'/database/mysql/'.$allModules[$key]->version.'.sql',
-                                       Zend_Registry::get('configDatabase')->database->params->host,
-                                       Zend_Registry::get('configDatabase')->database->params->username,
-                                       Zend_Registry::get('configDatabase')->database->params->password,
-                                       Zend_Registry::get('configDatabase')->database->params->dbname,
-                                       Zend_Registry::get('configDatabase')->database->params->port);
-            break;
-          case 'PDO_PGSQL':
-             $this->run_pgsql_from_file(BASE_PATH.'/modules/'.$key.'/database/pgsql/'.$allModules[$key]->version.'.sql',
-                                       Zend_Registry::get('configDatabase')->database->params->host,
-                                       Zend_Registry::get('configDatabase')->database->params->username,
-                                       Zend_Registry::get('configDatabase')->database->params->password,
-                                       Zend_Registry::get('configDatabase')->database->params->dbname,
-                                       Zend_Registry::get('configDatabase')->database->params->port);
-            break;
-          }
-        
-        $path=BASE_PATH.'/modules/'.$key.'/configs/module.ini';
-        $newpath=BASE_PATH.'/modules/'.$key.'/configs/module.local.ini';        
-        $data=parse_ini_file ($path,true);
-        @unlink($newpath);
-        $this->Component->Utility->createInitFile($newpath, $data);
-        }
+
       $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini',$applicationConfig);
-      $this->_redirect("/");
+      $this->_redirect("/admin");
       }
     } // end method step2Action   
     
@@ -337,66 +301,6 @@ class InstallController extends AppController
     }//end getElementInfo
 
     
-    
-          /** Function to run the sql script */
-  function run_mysql_from_file($sqlfile,$host,$username,$password,$dbname,$port)
-    {
-    $db = @mysql_connect("$host:$port", "$username", "$password");
-    $select=@mysql_select_db($dbname,$db);
-    if(!$db||!$select)
-      {
-      throw new Zend_Exception("Unable to connect.");
-      }
-    $requetes="";
-
-    $sql=file($sqlfile); 
-    foreach($sql as $l)
-      {
-      if (substr(trim($l),0,2)!="--")
-        { 
-        $requetes .= $l;
-        }
-      }
-
-    $reqs = explode(";",$requetes);
-    foreach($reqs as $req)
-      {	// et on les éxécute
-      if (!mysql_query($req,$db) && trim($req)!="")
-        {
-        throw new Zend_Exception("Unable to execute: ".$req );
-        }
-      }
-    return true;
-    }
-      /** Function to run the sql script */
-  function run_pgsql_from_file($sqlfile,$host,$username,$password,$dbname,$port)
-    {
-    $pgdb = @pg_connect("host=$host port=$port dbname=$dbname user=$username password=$password");
-    $file_content = file($sqlfile);
-    $query = "";
-    $linnum = 0;
-    foreach ($file_content as $sql_line)
-      {
-      $tsl = trim($sql_line);
-      if (($sql_line != "") && (substr($tsl, 0, 2) != "--") && (substr($tsl, 0, 1) != "#"))
-        {
-        $query .= $sql_line;
-        if (preg_match("/;\s*$/", $sql_line))
-          {
-          $query = str_replace(";", "", "$query");
-          $result = pg_query($query);
-          if (!$result)
-            {
-            echo "Error line:".$linnum."<br>";
-            return pg_last_error();
-            }
-          $query = "";
-          }
-        }
-      $linnum++;
-      } // end for each line
-    return true;
-    }
     
 } // end class
 

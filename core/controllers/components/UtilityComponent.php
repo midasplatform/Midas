@@ -192,5 +192,68 @@ class UtilityComponent extends AppComponent
     unlink($filename); 
     }
     
+    
+  
+    
+   /** Function to run the sql script */
+ static function run_mysql_from_file($sqlfile,$host,$username,$password,$dbname,$port)
+    {
+    $db = @mysql_connect("$host:$port", "$username", "$password");
+    $select=@mysql_select_db($dbname,$db);
+    if(!$db||!$select)
+      {
+      throw new Zend_Exception("Unable to connect.");
+      }
+    $requetes="";
+
+    $sql=file($sqlfile); 
+    foreach($sql as $l)
+      {
+      if (substr(trim($l),0,2)!="--")
+        { 
+        $requetes .= $l;
+        }
+      }
+
+    $reqs = explode(";",$requetes);
+    foreach($reqs as $req)
+      {	// et on les éxécute
+      if (!mysql_query($req,$db) && trim($req)!="")
+        {
+        throw new Zend_Exception("Unable to execute: ".$req );
+        }
+      }
+    return true;
+    }
+      /** Function to run the sql script */
+  static function run_pgsql_from_file($sqlfile,$host,$username,$password,$dbname,$port)
+    {
+    $pgdb = @pg_connect("host=$host port=$port dbname=$dbname user=$username password=$password");
+    $file_content = file($sqlfile);
+    $query = "";
+    $linnum = 0;
+    foreach ($file_content as $sql_line)
+      {
+      $tsl = trim($sql_line);
+      if (($sql_line != "") && (substr($tsl, 0, 2) != "--") && (substr($tsl, 0, 1) != "#"))
+        {
+        $query .= $sql_line;
+        if (preg_match("/;\s*$/", $sql_line))
+          {
+          $query = str_replace(";", "", "$query");
+          $result = pg_query($query);
+          if (!$result)
+            {
+            echo "Error line:".$linnum."<br>";
+            return pg_last_error();
+            }
+          $query = "";
+          }
+        }
+      $linnum++;
+      } // end for each line
+    return true;
+    }
+    
 } // end class
 ?>

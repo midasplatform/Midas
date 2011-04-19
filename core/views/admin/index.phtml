@@ -114,7 +114,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
               <b>{$module->fullname}</b><br/>
               {$module->description}
               </td>";              
-              if($module->configPage)
+              if($module->configPage&&in_array($key, $this->modulesEnable))
                 {
               echo "
               <td>

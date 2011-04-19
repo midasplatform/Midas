@@ -107,12 +107,11 @@ class InstallForm extends AppForm
     
     $smartoptimizer = new Zend_Form_Element_Checkbox("smartoptimizer");  
     
-    $assetstore = new Zend_Form_Element_Select('assetstore');
     
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel('Create configuration');
      
-    $form->addElements(array($process,$timezone,$assetstore,$environment,$lang,$name,$smartoptimizer,$submit));
+    $form->addElements(array($process,$timezone,$environment,$lang,$name,$smartoptimizer,$submit));
     return $form;
     }
 } // end class

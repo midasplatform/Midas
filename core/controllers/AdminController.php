@@ -37,6 +37,8 @@ class AdminController extends AppController
     $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
     $this->view->configForm=$formArray;
     
+    $allModules=$this->Component->Utility->getAllModules();
+    
     if($this->_request->isPost())
       {
       $this->_helper->layout->disableLayout();
@@ -68,6 +70,32 @@ class AdminController extends AppController
           {
           unlink( BASE_PATH.'/core/configs/application.local.ini.old');
           }
+        
+        $moduleConfigLocalFile=BASE_PATH."/modules/$moduleName/configs/module.local.ini";
+        $moduleConfigFile=BASE_PATH."/modules/$moduleName/configs/module.ini";
+        if(!file_exists($moduleConfigLocalFile))
+          {
+          copy($moduleConfigFile, $moduleConfigLocalFile);
+          switch (Zend_Registry::get('configDatabase')->database->adapter)
+            {
+            case 'PDO_MYSQL':
+              $this->Component->Utility->run_mysql_from_file(BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$allModules[$moduleName]->version.'.sql',
+                                         Zend_Registry::get('configDatabase')->database->params->host,
+                                         Zend_Registry::get('configDatabase')->database->params->username,
+                                         Zend_Registry::get('configDatabase')->database->params->password,
+                                         Zend_Registry::get('configDatabase')->database->params->dbname,
+                                         Zend_Registry::get('configDatabase')->database->params->port);
+              break;
+            case 'PDO_PGSQL':
+               $this->Component->Utility->run_pgsql_from_file(BASE_PATH.'/modules/'.$key.'/database/pgsql/'.$allModules[$moduleName]->version.'.sql',
+                                         Zend_Registry::get('configDatabase')->database->params->host,
+                                         Zend_Registry::get('configDatabase')->database->params->username,
+                                         Zend_Registry::get('configDatabase')->database->params->password,
+                                         Zend_Registry::get('configDatabase')->database->params->dbname,
+                                         Zend_Registry::get('configDatabase')->database->params->port);
+              break;
+            }
+          }
         rename(BASE_PATH.'/core/configs/application.local.ini', BASE_PATH.'/core/configs/application.local.ini.old');
         $applicationConfig['module'][$moduleName]=$modulevalue;
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
@@ -98,7 +126,6 @@ class AdminController extends AppController
     
     // get modules
     $modulesEnable=  Zend_Registry::get('modulesEnable');
-    $allModules=$this->Component->Utility->getAllModules();
     
     foreach($allModules as $key=>$module)
       {
