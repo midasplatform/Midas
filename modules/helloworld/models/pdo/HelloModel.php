@@ -1,5 +1,5 @@
 <?php
-require_once BASE_PATH.'/modules/helloworld/models/base/HelloModel.php';
+require_once BASE_PATH.'/modules/helloworld/models/base/HelloModelBase.php';
 
 class Helloworld_HelloModel extends Helloworld_HelloModelBase
 {

@@ -258,13 +258,25 @@ class MIDASModel
     
     
   /** load Dao class*/
-  public function loadDaoClass($name)
+  public function loadDaoClass($name,$module='core')
     {
-    Zend_Loader::loadClass($name, BASE_PATH . '/core/models/dao');
-    if (!class_exists($name))
+    if($module=='core')
       {
-      throw new Zend_Exception('Unable to load dao class ' . $name);
+      Zend_Loader::loadClass($name, BASE_PATH . '/core/models/dao');
+      if (!class_exists($name))
+        {
+        throw new Zend_Exception('Unable to load dao class ' . $name);
+        }
       }
+    else
+      {
+      require_once BASE_PATH . "/modules/$module/models/dao/$name.php";
+      if (!class_exists(ucfirst($module).'_'.$name))
+        {
+        throw new Zend_Exception('Unable to load dao class ' . ucfirst($module).'_'.$name);
+        }
+      }
+
     } 
     
     

@@ -79,20 +79,26 @@ class AdminController extends AppController
           switch (Zend_Registry::get('configDatabase')->database->adapter)
             {
             case 'PDO_MYSQL':
-              $this->Component->Utility->run_mysql_from_file(BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$allModules[$moduleName]->version.'.sql',
-                                         Zend_Registry::get('configDatabase')->database->params->host,
-                                         Zend_Registry::get('configDatabase')->database->params->username,
-                                         Zend_Registry::get('configDatabase')->database->params->password,
-                                         Zend_Registry::get('configDatabase')->database->params->dbname,
-                                         Zend_Registry::get('configDatabase')->database->params->port);
+              if(file_exists(BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$allModules[$moduleName]->version.'.sql'))
+                {
+                $this->Component->Utility->run_mysql_from_file(BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$allModules[$moduleName]->version.'.sql',
+                                           Zend_Registry::get('configDatabase')->database->params->host,
+                                           Zend_Registry::get('configDatabase')->database->params->username,
+                                           Zend_Registry::get('configDatabase')->database->params->password,
+                                           Zend_Registry::get('configDatabase')->database->params->dbname,
+                                           Zend_Registry::get('configDatabase')->database->params->port);
+                }
               break;
             case 'PDO_PGSQL':
-               $this->Component->Utility->run_pgsql_from_file(BASE_PATH.'/modules/'.$key.'/database/pgsql/'.$allModules[$moduleName]->version.'.sql',
-                                         Zend_Registry::get('configDatabase')->database->params->host,
-                                         Zend_Registry::get('configDatabase')->database->params->username,
-                                         Zend_Registry::get('configDatabase')->database->params->password,
-                                         Zend_Registry::get('configDatabase')->database->params->dbname,
-                                         Zend_Registry::get('configDatabase')->database->params->port);
+               if(file_exists(BASE_PATH.'/modules/'.$key.'/database/pgsql/'.$allModules[$moduleName]->version.'.sql'))
+                 {
+                 $this->Component->Utility->run_pgsql_from_file(BASE_PATH.'/modules/'.$key.'/database/pgsql/'.$allModules[$moduleName]->version.'.sql',
+                                           Zend_Registry::get('configDatabase')->database->params->host,
+                                           Zend_Registry::get('configDatabase')->database->params->username,
+                                           Zend_Registry::get('configDatabase')->database->params->password,
+                                           Zend_Registry::get('configDatabase')->database->params->dbname,
+                                           Zend_Registry::get('configDatabase')->database->params->port);
+                 }
               break;
             }
           }

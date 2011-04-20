@@ -36,11 +36,12 @@ class AppController extends MIDAS_GlobalController
       $this->view->version=Zend_Registry::get('configDatabase')->version;
       }
     
+    require_once BASE_PATH . '/core/models/dao/UserDao.php';
+    require_once BASE_PATH . '/core/models/dao/ItemDao.php';
     //Init Session
     if($fc->getRequest()->getActionName()!='login'||$fc->getRequest()->getControllerName()!='user')
       {
-      require_once BASE_PATH . '/core/models/dao/UserDao.php';
-      require_once BASE_PATH . '/core/models/dao/ItemDao.php';
+
 
       if (isset($_POST['sid']))    
         { 

@@ -173,7 +173,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $route1 = new Zend_Controller_Router_Route(
         Zend_Registry::get('configGlobal')->webdav->path.'/:action/*',
         array(
-            'controller' => 'webdav',
+            'module' => 'webdav',
+            'controller' => ':action',
             'action'     => ':action'
         )
     );

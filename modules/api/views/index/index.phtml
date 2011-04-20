@@ -1,0 +1,38 @@
+<?php
+/*=========================================================================
+Program:   MIDAS Server
+Language:  PHP/HTML/Java/Javascript/SQL
+Date:      $Date$
+Version:   $Revision$
+
+Copyright (c) Kitware Inc. 28 Corporate Drive. All rights reserved.
+Clifton Park, NY, 12065, USA.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<div id="api.index">
+  <h2>MIDAS Web API</h2>
+
+  <div id="api.status">Status: <span id="api.status.value"><?php echo ($this->data['api.enable'] ? "Enable" : "Disable"); ?></span></div>
+  <div id="api.methodprefix">MethodPrefix: <span id="api.methodprefix.value"><?php echo $this->data['api.methodprefix']; ?></span></div>
+  
+  <?php if ($this->data['api.enable']) { ?>
+  <div class="api.listmethods" id="api.listmethods">
+    Available methods:
+    <ul class="api.listmethods">
+      <?php 
+      foreach( $this->data['api.listmethods'] as $methodname )
+        {
+        echo "<li>".$methodname."</li>"; 
+        }
+      ?>
+    </ul>
+    </div>
+    <?php } else { ?>
+    <span class="api.warning">Midas Api disabled - Check 'config.api.php' file</span>
+    <?php } ?>
+</div>

@@ -67,7 +67,7 @@
           <ul>
             <li class="first">
               <?php
-              if($this->logged)
+              if($this->logged&&isset($this->userDao))
                 {
                 echo '
                    <b><a id="topUserName" href="'.$this->webroot.'/user/'.$this->userDao->getUserId().'" >'.$this->userDao->getFullName().' <img class="arrowUser" src="'.$this->coreWebroot.'/public/images/icons/arrow-user.gif" alt ="" /> </a> </b>
