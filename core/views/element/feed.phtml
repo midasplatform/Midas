@@ -41,7 +41,7 @@
       }
     echo "</div>";
     echo "<div class='feedInfo'>";
-    echo "<a href='{$view->webroot}/user/{$feed->getUser()->getKey()}'>{$feed->getUser()->getFullName()}</a> ";
+    echo $view->linkuser($feed->getUser()).' ';
     switch($type)
       {
       case MIDAS_FEED_CREATE_COMMUNITY:

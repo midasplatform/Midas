@@ -92,14 +92,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <h1>Actions</h1>
     <ul>
       <li class="myAccountLink" userid="'.$this->user->getKey().'"><a>'.$this->t('Manage Account Information').'</a></li>
-      <li>'.$this->t('Manage Files').'</li>';
-    if(isset($this->userDao)&&$this->userDao->isAdmin()&&$this->userDao->getKey()!=$this->user->getKey()&&!$this->user->isAdmin())
-      {
-      echo '
-      <li>'.$this->t('Delete user').'</li>
-        ';
-      }
-      echo'
+      <li><a href="'.$this->webroot.'/user/manage/?userId='.$this->user->getKey().'">'.$this->t('Manage Files').'</a></li>
     </ul>
   </div>';
     }
@@ -109,7 +102,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   if(!empty($this->userCommunities))
     {
     echo "
-    <div class=sideElement".($this->isViewAction)?'First':''." genericCommunities>';
+    <div class=sideElement".(($this->isViewAction)?'First':'')." genericCommunities>
     <h1>Communities</h1>    
     <ul>";
 

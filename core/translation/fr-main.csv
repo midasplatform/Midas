@@ -44,6 +44,8 @@ Privacy;Confidentialité
 Create;Créer
 Private;Privée
 Public;Publique
+Private (Nobody can access to my page);Privé (Personne ne peut accéder à mes informations)
+Public (Everyone can access to my information);Publique (Tout le monde peut accéder à mes informations)
 Semi-private;Semi-privée
 Description;Description
 Created;Crée
@@ -149,7 +151,9 @@ Save;Sauver
 Please, set the name.;Merci de renseigner le nom.
 Manage Community;Gérer Communauté
 Administrators;Administrateurs
+Administrator;Administrateur
 Moderators;Modérateurs
+Moderator;Modérateur
 There is no custom group.;Il n'y a pas de groupe personnalisé.
 Create a group;Créer un groupe
 Edit a group;Editer une groupe
@@ -163,3 +167,8 @@ Number of views;Nombre de vues
 No result found.;Aucun résultat trouvé pour votre recherche.
 Show more results.;Montrer plus de résultats.
 Delete user;Supprimer utilisateur
+Manage Account Information;Gérer le compte utilisateur
+Company;Société
+Please select an image file on your computer (2 MB maximum);Sélectionnez un fichier image sur votre ordinateur (2 Mo maximum)
+My communities;Mes communautés
+You don't belong to any community.;Vous ne faites parti d'aucune communauté.

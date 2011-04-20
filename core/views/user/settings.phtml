@@ -7,29 +7,39 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
 <div id="tabsSettings">
 	<ul>
 		<li><a href="#tabs-account"><?php echo $this->t('My Account') ?></a></li>
+		<li><a href="#tabs-image"><?php echo $this->t('My picture') ?></a></li>
 		<li><a href="#tabs-password"><?php echo $this->t('Password') ?></a></li>
-		<li><a href="#tabs-modules"><?php echo $this->t('Modules') ?></a></li>
+		<li><a href="#tabs-communities"><?php echo $this->t('My communities') ?></a></li>
 	</ul>
 	<div id="tabs-account">
     <h3><?php echo $this->t('Modify my information')?>:</h3>
     <form  class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']?><?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>">
       <table>
         <tr>
-          <td><?php echo $this->t('Firstname');?><?php echo $this->accountForm['firstname']?></td>
-          <td><?php echo $this->t('Lastname');?><?php echo $this->accountForm['lastname']?></td>
+          <td><span><?php echo $this->t('Firstname');?>:</span><?php echo $this->accountForm['firstname']?></td>
+          <td><span><?php echo $this->t('Lastname');?>:</span><?php echo $this->accountForm['lastname']?></td>
         </tr>
         <tr>
-          <td><?php echo $this->t('Company');?><?php echo $this->accountForm['company']?></td>
+          <td><span><?php echo $this->t('Company');?>:</span><?php echo $this->accountForm['company']?></td>
         </tr>
         <tr>
-          <td><?php echo $this->t('Privacy');?><?php echo $this->accountForm['privacy']?></td>
+          <td colspan=2><?php echo $this->t('Privacy');?>:
+          <div id='accountPrivacy'><?php echo $this->accountForm['privacy']?>
+          </div>
+          </td>
         </tr>
         <tr>
           <td><?php echo $this->accountForm['modifyAccount']?></td>
         </tr>
       </table>
     </form>
-    <h3><?php echo $this->t('My picture')?>:</h3>
+    
+  </div>
+  
+  <div id="tabs-image">
+    
+    <div id="imageActual">
+    <h4><?php echo $this->t('My picture')?>:</h4>
       <?php
       $thumbnail=$this->thumbnail;
       if(!empty($thumbnail))
@@ -41,14 +51,20 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
         echo "<img id='userTopThumbnail' src='{$this->coreWebroot}/public/images/icons/unknownUser.png' alt=''/>";
         }
       ?>
+    </div>
     <h3><?php echo $this->t('Modify my picture')?>:</h3>
     <form class="genericForm" id="modifyPicture" action="<?php echo $this->webroot?>/user/settings<?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>" method="POST" enctype="multipart/form-data">
-      <input type="hidden" name="MAX_FILE_SIZE" value="1000000">
-      <?php echo $this->t('Choose a picture')?>: <input type="file" name="file" />
+
+      <?php echo $this->t('Please select an image file on your computer (2 MB maximum)')?>
+      <input type="file" name="file" />
+      <br/>
       <br/>
       <input type="submit" name='modifyPicture' value="<?php echo $this->t('Modifier Picture')?>">
-    </form>
+      <br/>
+      <br/>      
+    </form>    
   </div>
+  
 	<div id="tabs-password">
     <h3><?php echo $this->t('Modify my password')?>:</h3>
     <form  class="genericForm" id="modifyPassword" method='POST' action='<?php echo $this->webroot?>/user/settings<?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>'>
@@ -73,8 +89,44 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
       </table>
     </form>
   </div>
-	<div id="tabs-modules">
-    Module
+	<div id="tabs-communities">
+    <?php
+    if(empty($this->communities))
+      {
+      echo $this->t('You don\'t belong to any community.');
+      }
+    else
+      {
+      echo "<h3>{$this->t('Communities')}:</h3>";
+      echo "<ul>";
+      foreach($this->communities as $community)
+        {
+        echo "<li><a style='color:white;' href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a>";
+        echo "<ul>";
+        foreach($community->groups as $group)
+          {
+          $name=$group->getName();
+          if($group->getKey()==$community->getAdmingroupId())
+            {
+            $name=$this->t("Administrator");
+            }
+          if($group->getKey()==$community->getModeratorgroupId())
+            {
+            $name=$this->t("Moderator");
+            }
+          if($group->getKey()==$community->getMembergroupId())
+            {
+            continue;
+            }
+          echo "<li>{$name}";
+          echo "</li>";
+          }
+        echo "</ul>";
+        echo "</li>";
+        }
+      echo "</ul>";
+      }
+     ?>
   </div>
 </div>
 <div style="display: none;" class="jsonSettingsContent">

@@ -8,7 +8,7 @@ class UserController extends AppController
   public $_daos=array(
     'User','Folder','Folderpolicygroup','Folderpolicyuser','Group'
   );
-  public $_components=array('Date','Filter');
+  public $_components=array('Date','Filter','Sortdao');
   public $_forms=array(
     'User'
   );
@@ -178,7 +178,7 @@ class UserController extends AppController
     $this->_helper->layout->disableLayout();
     
     $userId=$this->_getParam('userId');
-    if(isset($userId)&&!$this->userSession->Dao->isAdmin())
+    if(isset($userId)&&$userId!=$this->userSession->Dao->getKey()&&!$this->userSession->Dao->isAdmin())
       {
       throw new Zend_Exception('You should be an admin');
       }
@@ -296,6 +296,23 @@ class UserController extends AppController
         }
       }
     
+    $communities=array();
+    $groups=$userDao->getGroups();
+    foreach($groups as $group)
+      {
+      $community=$group->getCommunity();
+      if(!isset($communities[$community->getKey()]))
+        {
+        $community->groups=array();
+        $communities[$community->getKey()]=$community;
+        }
+      $communities[$community->getKey()]->groups[]=$group;
+      }
+    $this->Component->Sortdao->field='name';
+    $this->Component->Sortdao->order='asc';
+    usort($communities, array($this->Component->Sortdao,'sortByName'));
+    
+    $this->view->communities=$communities;
     $this->view->user=$userDao;
     $this->view->thumbnail=$userDao->getThumbnail();
     $this->view->jsonSettings=array();
@@ -325,6 +342,10 @@ class UserController extends AppController
     else
       {
       $userDao=$this->User->load($user_id);
+      if($userDao->getPrivacy()==MIDAS_USER_PRIVATE&&(!isset($this->userSession->Dao)||!$this->userSession->Dao->isAdmin()))
+        {
+        throw new Zend_Exception("Permission error");
+        }
       }
       
     if(!$userDao instanceof UserDao)

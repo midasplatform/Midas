@@ -4,7 +4,27 @@ div#tabsSettings{
   margin-right: auto;
 }
 
+form#modifyAccount span{
+  float:left;
+  width: 80px;
+}
 
+
+form#modifyAccount input[type="text"], form#modifyAccount input[type="password"]{
+width: 200px!important;
+}
+
+div#accountPrivacy{
+  margin-left: 100px;
+}
+
+div#accountPrivacy label{
+  width: auto!important;
+}
+
+div#imageActual{
+  float:right;
+}
 
 /** Tabs*/
 

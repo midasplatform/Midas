@@ -145,11 +145,6 @@ class SearchController extends AppController
     return $resultsArray;
     }//formatResults
     
-   /** advanced search  Action */
-  public function advancedAction()
-    {
-    $this->_helper->layout->disableLayout();
-    }//advancedAction
     
   /** search live Action */
   public function liveAction()

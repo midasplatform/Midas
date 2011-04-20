@@ -33,15 +33,6 @@ class NotifyErrorComponent  extends AppComponent
       if(!is_null($e = error_get_last()))
         {        
         $environment = Zend_Registry::get('configGlobal')->environment;
-        $db = Zend_Registry::get('dbAdapter');        
-        if(method_exists($db,"getProfiler"))
-          {
-          $profiler = $db->getProfiler();
-          }
-        else
-          {
-          $profiler = new Zend_Db_Profiler();  
-          }  
         
         switch ($environment) {  
             case 'production':  
@@ -68,9 +59,9 @@ class NotifyErrorComponent  extends AppComponent
               header('content-type: text/plain');
               echo $this->getFatalErrorMessage($e);
             }
-        $logger->crit($this->getFatalErrorMessage($e));        
-        }
-      $logger->__destruct();
+        $logger->crit($this->getFatalErrorMessage($e)); 
+        $logger->__destruct();
+        }      
       }
       
     public function warningError($errno, $errstr, $errfile, $errline) 
@@ -91,7 +82,7 @@ class NotifyErrorComponent  extends AppComponent
       }
       
       
-   private function curPageURL() 
+   public function curPageURL() 
       {
       $pageURL = 'http';
       if (isset($_SERVER["HTTPS"] )&&$_SERVER["HTTPS"] == "on") {$pageURL .= "s";}

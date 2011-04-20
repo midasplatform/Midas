@@ -31,7 +31,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
         {
         echo "<tr>";
         echo "  <td ><a href='{$this->webroot}/download/?items={$this->itemDao->getKey()},{$revision->getRevision()}'>Revision {$revision->getRevision()}</a></td>";
-        echo "  <td>{$this->Date->ago($revision->getDate(),false)} {$this->t('by')} <a href='{$this->webroot}/user/{$revision->getUserId()}'>{$revision->getUser()->getFullName()}</a></td>";
+        echo "  <td>{$this->Date->ago($revision->getDate(),false)} {$this->t('by')} {$this->linkuser($revision->getUser())} </td>";
         echo "  <td>{$revision->getChanges()}</td>";
         echo "</tr>";
         $node++;
@@ -80,7 +80,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
         </tr>
         <tr>   
           <td><?php echo $this->t('Uploaded by');?></td>  
-          <td><a href="/Midas/MIDAS3/user/<?php echo $this->itemDao->lastrevision->getUser()->getKey()?>"><?php echo $this->itemDao->lastrevision->getUser()->getFullName()?></a></td>
+          <td><?php echo $this->linkuser($this->itemDao->lastrevision->getUser())?></td>
         </tr>
         <tr> 
           <td>Revision</td>   

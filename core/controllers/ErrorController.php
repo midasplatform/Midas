@@ -3,7 +3,7 @@ class ErrorController extends AppController
 {  
     public $_models=array();
     public $_daos=array();
-    public $_components=array('NotifyError');
+    public $_components=array('NotifyError','Utility');
     public $_forms=array();
     private $_error;  
     private $_environment;  
@@ -81,7 +81,7 @@ class ErrorController extends AppController
         }
       else
         {
-        $this->getLogger()->warn('URL: '.$this->Utility->curPageURL()."\n".$this->view->message);
+        $this->getLogger()->warn('URL: '.$this->Component->NotifyError->curPageURL()."\n".$this->view->message);
         }
       
       }  

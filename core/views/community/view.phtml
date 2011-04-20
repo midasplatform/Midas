@@ -132,7 +132,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         foreach($this->members as $member)
           {
           if($i>10)break;
-          echo "<li><a href='{$this->webroot}/user/{$member->getKey()}'>{$member->getFullName()}</a></li>";
+          echo "<li>{$this->linkuser($member)}</li>";
           }
       ?>
       </ul>

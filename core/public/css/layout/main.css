@@ -56,6 +56,11 @@ img.thumbnailSmall{
   margin-right: 3px;
 }
 
+.ui-widget {
+
+  font-family: 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif !important;
+  font-size: 12px!important;
+}
 /*-------------------------------------------------
 TOP
 -------------------------------------------------*/

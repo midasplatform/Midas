@@ -165,7 +165,7 @@ $(function() {
     });
   
   $('#menuUserInfo').click(function(){
-      globalAuthAsk(json.global.webroot+'/user/userpage');
+      globalAuthAsk(json.global.webroot+'/user/userpage#tabs-3');
   });
   $("div.TopDynamicBar .closeButton").click(function()
   {
