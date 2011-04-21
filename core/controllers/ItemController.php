@@ -4,7 +4,7 @@ class ItemController extends AppController
   {
   public $_models=array('Item');
   public $_daos=array();
-  public $_components=array('Date');
+  public $_components=array('Date','Utility');
   public $_forms=array();
 
   /** Init Controller */
@@ -78,6 +78,8 @@ class ItemController extends AppController
     $itemDao->creation=$this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
     $this->view->itemDao=$itemDao;
     
+    $this->view->itemSize=$this->Component->Utility->formatSize($itemDao->getSizebytes());;
+    
     $this->view->json['item']=$itemDao->_toArray();
     $this->view->json['item']['message']['delete']=$this->t('Delete');
     $this->view->json['item']['message']['deleteMessage']=$this->t('Do you really want to delete this item? It cannot be undo.');
@@ -104,7 +106,7 @@ class ItemController extends AppController
       
     $this->Item->delete($itemDao);
 
-    $this->_redirect('/');
+    $this->_redirect('/?checkRecentItem=true');
     }//end delete
     
   }//end class

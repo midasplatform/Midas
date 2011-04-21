@@ -12,10 +12,20 @@
       {
       echo "
       <div>
-      <a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a>
+      <a class='communityTitle' href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a>
       <br/>
-        <span>
+        <span class='shortDescription' >
+        ";
+        if(strlen($community->getDescription())>270)
+          {
+          echo substr($community->getDescription(), 0,270)."... <a class='moreDescription'>{$this->t('more')}</a>";
+          }
+        echo "
+        </span>
+        <span class='fullDescription' style='display:none;'>
         {$community->getDescription()}
+        <br/>
+        <a class='lessDescription'>{$this->t('less')}</a>
         </span>
       </div>
       ";

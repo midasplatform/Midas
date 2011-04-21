@@ -113,8 +113,8 @@ class UserForm extends AppForm
     
     $privacy = new Zend_Form_Element_Radio('privacy');
     $privacy->addMultiOptions( array(
-                 MIDAS_USER_PUBLIC => $this->t("Public (Everyone can access to my information)"),
-                 MIDAS_USER_PRIVATE => $this->t("Private (Nobody can access to my page)"),
+                 MIDAS_USER_PUBLIC => $this->t("Public (Anyone can see my information)"),
+                 MIDAS_USER_PRIVATE => $this->t("Private (Nobody can see my information)"),
                   ))
           ->setRequired(true)
           ->setValue(MIDAS_COMMUNITY_PUBLIC);

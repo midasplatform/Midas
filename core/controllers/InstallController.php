@@ -240,7 +240,7 @@ class InstallController extends AppController
       $applicationConfig['global']['processing']=$form->getValue('process');
 
       $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini',$applicationConfig);
-      $this->_redirect("/admin");
+      $this->_redirect("/admin#tabs-modules");
       }
     } // end method step2Action   
     

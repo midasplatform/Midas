@@ -1,3 +1,7 @@
 tr.logSum{
   cursor: pointer;
 }
+
+.ui-widget-content{
+  border: none!important;
+}

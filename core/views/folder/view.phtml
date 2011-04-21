@@ -54,6 +54,14 @@
     ?>
 </div>
 <div class="viewSideBar">
+  <?php
+  if(empty($this->folders)&&empty($this->items))
+    {
+    echo '<div class="sideElementFirst viewInfo">';
+    }
+  else
+    {
+    echo '
   <div class="sideElementFirst viewAction">
     <h1>Actions</h1>
     <ul>
@@ -63,10 +71,13 @@
     </ul>
   </div>
   <div class="sideElement viewSelected" >
-    <h1><?php echo $this->t('Selected')?></h1>
+  <h1>'.$this->t('Selected').'</h1>
     <span></span>
   </div>
-  <div class="sideElementLast viewInfo">
+  <div class="sideElementLast viewInfo">';
+    }?>
+    
+  
     <h1>Info</h1>    
     <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
     <div class="ajaxInfoElement">

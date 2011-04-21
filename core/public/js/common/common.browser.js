@@ -157,7 +157,7 @@
         if(type=='item')
           {
             html+='<li><a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
-            html+='<li><a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.download+'</a></li>';
+            html+='<li><a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLastest+'</a></li>';
             if(policy>=1)
               {
               html+='<li><a>'+json.browse.share+'</a></li>';

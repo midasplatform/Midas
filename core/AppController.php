@@ -56,12 +56,30 @@ class AppController extends MIDAS_GlobalController
         {
         $this->logged=true;
         $this->view->logged=true;
+        $user->Dao->lastAction=date('c');
         $this->view->userDao=$user->Dao;
         $cookieData =  $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->user_id);
         $this->view->recentItems=array();
         if(isset($cookieData))
           {
           $this->view->recentItems= unserialize($cookieData); 
+          $check=$this->_getParam('checkRecentItem');
+          // check if recent items exit (every 10 minutes)
+          if(isset($check)||strtotime($user->Dao->lastAction)<strtotime("-1 minute"))
+            {
+            echo "yeah";exit;
+            $modelLoad = new MIDAS_ModelLoader();
+            $itemModel = $modelLoad->loadModel('Item');
+            foreach ($this->view->recentItems as $key => $t)
+              {
+              $item=$itemModel->load($t->getKey());
+              if($item==false)
+                {
+                unset($this->view->recentItems[$key]);
+                }
+              }
+            setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($this->view->recentItems), time()+60*60*24*30,'/'); //30 days
+            }
           } 
         }
       else
@@ -99,6 +117,7 @@ class AppController extends MIDAS_GlobalController
       'createFolder'=>$this->t('Create a new Folder'),
       'preview'=>$this->t('Preview'),
       'download'=>$this->t('Download'),
+      'downloadLastest'=>$this->t('Download lastest revision'),
       'manage'=>$this->t('Manage'),
       'edit'=>$this->t('Edit'),
       'delete'=>$this->t('Delete'),

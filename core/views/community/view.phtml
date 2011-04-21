@@ -28,7 +28,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   <ul>
     <li><a href="#tabs-1"><?php echo $this->t("Feed")?></a></li>
     <?php
-    if(!empty($this->information))
+    $description=$this->communityDao->getDescription();
+    if(!empty($description))
       {
       ?>
     <li><a href="#tabs-2"><?php echo $this->t('Info');?></a></li>
@@ -43,11 +44,13 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       ?>
   </div>
         <?php
-    if(!empty($this->information))
+    if(!empty($description))
       {
       ?>
     <div id="tabs-2">
-      ???
+      <?php
+      echo $description;
+      ?>
     </div>
     <?php
       }

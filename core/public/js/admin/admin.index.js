@@ -39,12 +39,28 @@
                     return;
                   }
                 createNotive(jsonResponse[1],1500);
+                initModulesConfigLinks();
            });
      });
-
+   initModulesConfigLinks();
   });
   
   var tabs;
+  
+function initModulesConfigLinks()
+{
+  $('input.moduleCheckbox').each(function(){
+    if($(this).is(':checked'))
+      {
+      $(this).parents('tr').find('td.configLink').show();  
+      }
+    else
+      {
+      $(this).parents('tr').find('td.configLink').hide();
+      }
+  })
+  
+}
   
 /** On assetstore add sucess */
 function assetstoreAddCallback(responseText, statusText, xhr, $form)  

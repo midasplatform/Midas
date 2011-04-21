@@ -10,9 +10,9 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
   <div class="tabs" id='tabsGeneric'>
   <ul>
     <li><a href="#tabs-configuration">Configuration</a></li>
-    <li><a href="#tabs-assetstore">Assetstores</a></li>
-    <li><a href="<?php echo $this->webroot?>/admin/upgrade">Upgrade</a></li>
     <li><a href="#tabs-modules">Modules</a></li>
+    <li><a href="#tabs-assetstore">Assetstores</a></li>
+    <li><a href="<?php echo $this->webroot?>/admin/upgrade">Upgrade</a></li>    
     <li><a href="<?php echo $this->webroot?>/admin/showlog">Logs</a></li>
   </ul>
     <div id="tabs-configuration">
@@ -77,7 +77,24 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
            {
            echo "<b>Free space: {$assetstore->freeSpaceText}</b>";
            }
-         }  
+         }
+       echo "<br/>Path: {$assetstore->getPath()}";
+       echo "<br/>Type: ";
+       switch ($assetstore->getType())
+         {
+          case MIDAS_ASSETSTORE_LOCAL:
+              echo "Local";
+              break;
+          case MIDAS_ASSETSTORE_REMOTE:
+              echo "Remote";
+              break;
+          case MIDAS_ASSETSTORE_AMAZON:
+              echo "Amazon S3";
+              break;
+          default:
+              echo $assetstore->getType();
+              break;
+         }
        echo"</div>";
        }
      ?>
@@ -114,10 +131,10 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
               <b>{$module->fullname}</b><br/>
               {$module->description}
               </td>";              
-              if($module->configPage&&in_array($key, $this->modulesEnable))
+              if($module->configPage)
                 {
               echo "
-              <td>
+              <td class='configLink' style='display:none;'>
                 <a href='{$this->webroot}/$key/config'>View configuration</a>
               </td>";
                 }

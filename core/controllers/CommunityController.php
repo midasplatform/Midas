@@ -362,7 +362,7 @@ class CommunityController extends AppController
          $this->Feedpolicygroup->createPolicy($anonymousGroup,$feed,MIDAS_POLICY_READ);
          }
 
-       $this->_redirect("/community");
+       $this->_redirect("/community/".$communityDao->getKey());
        }
      else
        {

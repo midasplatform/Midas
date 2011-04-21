@@ -7,12 +7,12 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
 <div id="tabsSettings">
 	<ul>
 		<li><a href="#tabs-account"><?php echo $this->t('My Account') ?></a></li>
-		<li><a href="#tabs-image"><?php echo $this->t('My picture') ?></a></li>
-		<li><a href="#tabs-password"><?php echo $this->t('Password') ?></a></li>
-		<li><a href="#tabs-communities"><?php echo $this->t('My communities') ?></a></li>
+		<li><a href="#tabs-image"><?php echo $this->t('My Avatar') ?></a></li>
+		<li><a href="#tabs-password"><?php echo $this->t('My Password') ?></a></li>
+		<li><a href="#tabs-communities"><?php echo $this->t('My Communities') ?></a></li>
 	</ul>
 	<div id="tabs-account">
-    <h3><?php echo $this->t('Modify my information')?>:</h3>
+    <h3><?php echo $this->t('My information')?>:</h3>
     <form  class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']?><?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>">
       <table>
         <tr>
@@ -39,7 +39,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
   <div id="tabs-image">
     
     <div id="imageActual">
-    <h4><?php echo $this->t('My picture')?>:</h4>
+    <h4><?php echo $this->t('Current Avatar')?>:</h4>
       <?php
       $thumbnail=$this->thumbnail;
       if(!empty($thumbnail))
@@ -52,21 +52,21 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
         }
       ?>
     </div>
-    <h3><?php echo $this->t('Modify my picture')?>:</h3>
+    <h3><?php echo $this->t('My Avatar')?>:</h3>
     <form class="genericForm" id="modifyPicture" action="<?php echo $this->webroot?>/user/settings<?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>" method="POST" enctype="multipart/form-data">
 
       <?php echo $this->t('Please select an image file on your computer (2 MB maximum)')?>
       <input type="file" name="file" />
       <br/>
       <br/>
-      <input type="submit" name='modifyPicture' value="<?php echo $this->t('Modifier Picture')?>">
+      <input type="submit" name='modifyPicture' value="<?php echo $this->t('Upload new avatar')?>">
       <br/>
       <br/>      
     </form>    
   </div>
   
 	<div id="tabs-password">
-    <h3><?php echo $this->t('Modify my password')?>:</h3>
+    <h3><?php echo $this->t('My Password')?>:</h3>
     <form  class="genericForm" id="modifyPassword" method='POST' action='<?php echo $this->webroot?>/user/settings<?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>'>
       <table>
         <?php
@@ -81,10 +81,10 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
           ?>
         <tr>
           <td><?php echo $this->t('My new password');?><input type="password" name="newPassword"/></td>
-          <td><?php echo $this->t('Confirmation');?><input type="password" name="newPasswordConfirmation"/></td>
+          <td><?php echo $this->t('Retype new password');?><input type="password" name="newPasswordConfirmation"/></td>
         </tr>
         <tr>
-          <td><input type='submit' name='modifyPassword' value='<?php echo $this->t('Modify');?>'/></td>
+          <td><input type='submit' name='modifyPassword' value='<?php echo $this->t('Modify password');?>'/></td>
         </tr>
       </table>
     </form>
@@ -97,7 +97,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
       }
     else
       {
-      echo "<h3>{$this->t('Communities')}:</h3>";
+      echo "<h3>{$this->t('My Communities')}:</h3>";
       echo "<ul>";
       foreach($this->communities as $community)
         {

@@ -45,7 +45,9 @@ Create;Créer
 Private;Privée
 Public;Publique
 Private (Nobody can access to my page);Privé (Personne ne peut accéder à mes informations)
+Private (Nobody can see my information);Privé (Personne ne peut voir mes informations)
 Public (Everyone can access to my information);Publique (Tout le monde peut accéder à mes informations)
+Public (Anyone can see my information);Publique (Tout le monde peut voir mes informations)
 Semi-private;Semi-privée
 Description;Description
 Created;Crée
@@ -144,7 +146,7 @@ Modify my information;Modifier mes informations
 Modify my picture;Modifier mon image
 Choose a picture;Choisir une image
 Modifier Picture;Modifier image
-My picture;Mon image
+My Avatar;Mon Avatar
 Groups;Groupes
 Files;Fichiers
 Save;Sauver
@@ -168,7 +170,17 @@ No result found.;Aucun résultat trouvé pour votre recherche.
 Show more results.;Montrer plus de résultats.
 Delete user;Supprimer utilisateur
 Manage Account Information;Gérer le compte utilisateur
+Manage Profile;Gérer Profil
 Company;Société
 Please select an image file on your computer (2 MB maximum);Sélectionnez un fichier image sur votre ordinateur (2 Mo maximum)
-My communities;Mes communautés
+My Communities;Mes Communautés
 You don't belong to any community.;Vous ne faites parti d'aucune communauté.
+less;moins
+more;plus
+Download lastest revision;Télécharger la dernière révision
+My information;Mes informations
+My Password;Mon Mot de Passe
+Current Avatar;Avatar actuel
+Upload new avatar;Uploader nouveau avatar
+Modify password;Modifier mot de passe
+Retype new password;Retapper nouveau mot de passe

@@ -52,7 +52,7 @@ class FolderController extends AppController
         if(strpos($parent->getName(), 'community')!==false&&$this->Folder->getCommunity($parent)!==false)
           {
           $community=$this->Folder->getCommunity($parent);
-          $header=" <li class='pathCommunity'><img alt='' src='{$this->view->coreWebroot}/public/images/icons/community.png' /><span><a href='{$this->view->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></span></li>".$header;
+          $header=" <li class='pathCommunity'><img alt='' src='{$this->view->coreWebroot}/public/images/icons/community.png' /><span><a href='{$this->view->webroot}/community/{$community->getKey()}#tabs-3'>{$community->getName()}</a></span></li>".$header;
           }
         elseif(strpos($parent->getName(), 'user')!==false&&$this->Folder->getUser($parent)!==false)
           {

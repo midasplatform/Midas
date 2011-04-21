@@ -13,6 +13,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
   </div>
   <div class="genericInfo">
     <div class="genericName"><?php   echo $this->itemDao->getName();  ?></div>
+    <div class="genericCompany"><?php echo $this->itemSize;?></div>
   </div>
   
   
@@ -47,7 +48,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
       <?php 
       echo 
      "<li>
-        <a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'>{$this->t('Download')}</a>
+        <a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'>{$this->t('Download lastest revision')}</a>
       </li>        
         ";
       if($this->isModerator)
