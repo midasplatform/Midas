@@ -28,59 +28,63 @@
         }
 
       echo "  {$form['type']}
-              <div>
-                <label for='host'>Host</label>
-                {$form['host']}
-              </div>
-              <div>
-                <label for='username'>Username</label>
-                {$form['username']}
-              </div>
-              <div>
-                <label for='password'>Password</label>
-                {$form['password']}
-              </div>
-              <div>
-                <label for='dbname'>Database</label>
-                {$form['dbname']}
-              </div>
-              <div>
-                <label for='port'>Port</label>
-                {$form['port']}
-              </div>
-              <div>
-                <div id='dbResult'>
-                  <div>
-                <img style='display:none;' class='testLoading'  alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/>
-                <img style='display:none;' class='testOk'  alt='' src='{$this->coreWebroot}/public/images/icons/ok.png'/>
-                <img style='display:none;' class='testNok'  alt='' src='{$this->coreWebroot}/public/images/icons/nok.png'/>             
-                <span class='testError'/>
-                  </div>
+              <div class='configDBForm'>
+                <div>
+                  <label for='host'>Host</label>
+                  {$form['host']}
                 </div>
-                
+                <div>
+                  <label for='username'>Username</label>
+                  {$form['username']}
+                </div>
+                <div>
+                  <label for='password'>Password</label>
+                  {$form['password']}
+                </div>
+                <div>
+                  <label for='dbname'>Database</label>
+                  {$form['dbname']}
+                </div>
+                <div>
+                  <label for='port'>Port</label>
+                  {$form['port']}
+                </div>
+                <div>
+                  <div id='dbResult'>
+                    <div>
+                  <img style='display:none;' class='testLoading'  alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/>
+                  <img style='display:none;' class='testOk'  alt='' src='{$this->coreWebroot}/public/images/icons/ok.png'/>
+                  <img style='display:none;' class='testNok'  alt='' src='{$this->coreWebroot}/public/images/icons/nok.png'/>             
+                  <span class='testError'/>
+                    </div>
+                  </div>
+
+                </div>
               </div>";
                 
       echo "  <h3>Set up Administrator account:</h3> 
         
-              <div >
-                <label for='email'>E-mail</label>
-                 {$form['email']}
-              </div>
-              <div >
-                <label for='firstname'>Firstname</label>
-                 {$form['firstname']}
-              </div>
-              <div>
-                <label for='lastname'>Lastname</label>
-                 {$form['lastname']}
-              </div>
-              <div>
-                <label for='userpassword1'>Password</label>
-                 {$form['userpassword1']}
-              </div>
-              <div>
-                <label for='userpassword2'>Confirm Password</label>
-                 {$form['userpassword2']}
+              <div class='adminAcountForm'>
+                <div>
+                  <label for='email'>E-mail</label>
+                   {$form['email']}
+                </div>
+                <div >
+                  <label for='firstname'>Firstname</label>
+                   {$form['firstname']}
+                </div>
+                <div>
+                  <label for='lastname'>Lastname</label>
+                   {$form['lastname']}
+                </div>
+                <div>
+                  <label for='userpassword1'>Password</label>
+                   {$form['userpassword1']}
+                </div>
+                <div>
+                  <label for='userpassword2'>Confirm Password</label>
+                   {$form['userpassword2']}
+                </div>
               </div>
               ";
               

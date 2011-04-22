@@ -77,7 +77,18 @@ class InstallController extends AppController
         }
       else
         {
-        $this->view->databaseType[$key]=$this->getFormAsArray($this->Form->Install->createDBForm($key));
+        $form=$this->Form->Install->createDBForm($key);
+        $port=$form->getElement('port');
+        switch ($key)
+          {
+          case 'mysql':
+            $port->setValue('3306');
+            break;
+          case 'pgsql':
+            $port->setValue('5432');
+            break;
+          }        
+        $this->view->databaseType[$key]=$this->getFormAsArray($form);
         }
       }
     $this->view->phpextension_missing=$this->Component->Utility->CheckPhpExtensions($phpextensions);

@@ -37,17 +37,17 @@
       {
         $(this).after('<span></span>');
       })
-    $('.dbForm input').focusout(function()
+    $('.dbForm .configDBForm input').focusout(function()
+      {
+        checkDB($(this));
+      });
+      
+    $('.dbForm .adminAcountForm input').focusout(function()
       {
         var obj=$(this);
         checkAll(obj);
-        checkDB($(this));
       });
-    
-    $('.testConnection').click(function()
-    {
-      checkDB($(this));
-    });
+
   });
   
   
