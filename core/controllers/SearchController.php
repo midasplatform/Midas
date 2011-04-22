@@ -5,7 +5,7 @@
  */
 class SearchController extends AppController
 {
-  public $_models=array('ItemKeyword','Item','Folder','User','Community');
+  public $_models=array('ItemKeyword','Item','Folder','User','Community','Group');
   public $_daos=array('ItemKeyword','Item','Folder','User','Community');
   public $_components=array('Sortdao','Date');
     
@@ -157,23 +157,61 @@ class SearchController extends AppController
     $this->_helper->viewRenderer->setNoRender();
       
     $search = $this->getRequest()->getParam('term');
+    $shareSearch = $this->getRequest()->getParam('shareSearch'); //return user group and communities
     
-    // Search for the items
-    $ItemsDao = $this->ItemKeyword->getItemsFromSearch($search,$this->userSession->Dao);
-    
-    // Search for the folders
-    $FoldersDao = $this->Folder->getFoldersFromSearch($search,$this->userSession->Dao); 
-    
-    // Search for the communities
-    $CommunitiesDao = $this->Community->getCommunitiesFromSearch($search,$this->userSession->Dao); 
-    
-    // Search for the users
-    $UsersDao = $this->User->getUsersFromSearch($search,$this->userSession->Dao); 
+    if(isset ($shareSearch))
+      {
+      $ItemsDao = array();
+      $FoldersDao = array();
+
+      // Search for the communities
+      $CommunitiesDao = $this->Community->getCommunitiesFromSearch($search,$this->userSession->Dao); 
+      
+      // Search for the groups
+      $GroupsDao = $this->Group->getGroupFromSearch($search); 
+      foreach($GroupsDao as $key=>$group)
+        {
+        if(strpos($group->getName(), 'group of community')!=false)
+          {
+          unset($GroupsDao[$key]);
+          continue;
+          }
+        if(isset($this->userSession->Dao)&&$this->userSession->Dao->isAdmin())
+          {
+          continue;
+          }
+        $community=$group->getCommunity();
+        $GroupsDao[$key]->community=$community;
+        if(!$this->Community->policyCheck($community,$this->userSession->Dao))
+          {
+          unset($GroupsDao[$key]);
+          }
+        }
+      // Search for the users
+      $UsersDao = $this->User->getUsersFromSearch($search,$this->userSession->Dao); 
+      }
+    else
+      {
+      // Search for the items
+      $ItemsDao = $this->ItemKeyword->getItemsFromSearch($search,$this->userSession->Dao);
+
+      // Search for the folders
+      $FoldersDao = $this->Folder->getFoldersFromSearch($search,$this->userSession->Dao); 
+
+      // Search for the communities
+      $CommunitiesDao = $this->Community->getCommunitiesFromSearch($search,$this->userSession->Dao); 
+
+      // Search for the users
+      $UsersDao = $this->User->getUsersFromSearch($search,$this->userSession->Dao); 
+      $GroupsDao=array();
+      }
+
     
     // Compute how many of each we should display
     $nitems = count($ItemsDao);
     $nfolders = count($FoldersDao);
     $ncommunities = count($CommunitiesDao);
+    $ngroups = count($GroupsDao);
     $nusers = count($UsersDao);
     
     $nmaxfolders = ($nfolders < 3) ? $nfolders : 3;
@@ -234,6 +272,28 @@ class SearchController extends AppController
         echo ', "itemid":"'.$itemDao->getItemId().'"'; 
         }
       echo ', "category":"Items"';   
+      $id++;
+      $n++;
+      echo '}'; 
+      }
+    // Groups
+    foreach($GroupsDao as $groupDao)
+      {
+      if($n == $ngroups)
+        {
+        break;  
+        }  
+      if($id>1)
+        {
+        echo ',';    
+        }
+      echo '{'; 
+      echo '"id":"'.$id.'"'; 
+      echo ', "label":"'.$groupDao->getName();
+      echo '"';       
+      echo ', "value":"'.$groupDao->getName().'"'; 
+      echo ', "groupid":"'.$groupDao->getKey().'"'; 
+      echo ', "category":"Groups"';   
       $id++;
       $n++;
       echo '}'; 

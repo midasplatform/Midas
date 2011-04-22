@@ -52,5 +52,26 @@ class GroupModel  extends GroupModelBase
     $this->database->removeLink('users',$group,$user);
     } // end function removeUser
 
+    
+  /** Return a list of group corresponding to the search */
+  function getGroupFromSearch($search,$limit=14)
+    {
+    $groups=array();
+
+    $sql=$this->database->select();
+    $sql->from(array('g' => 'group'));
+    $sql->where('g.name LIKE ?','%'.$search.'%'); 
+    $sql->limit($limit);
+    $sql->order(array('g.name ASC'));   
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao=$this->initDao('Group', $row);
+      $return[] = $tmpDao;
+      unset($tmpDao);
+      }
+    return $return;
+    } // end getCommunitiesFromSearch()
 }// end class
 ?>

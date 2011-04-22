@@ -57,6 +57,9 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
        "<li>
           <a href='javascript:;' class='moveCopyLink' >{$this->t('Copy')}</a>
         </li>        
+        <li>
+          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink' >{$this->t('Sharing settings')}</a>
+        </li>        
           ";
         }
       if($this->isAdmin)

@@ -122,7 +122,7 @@ class AppController extends MIDAS_GlobalController
       'edit'=>$this->t('Edit'),
       'delete'=>$this->t('Delete'),
       'deleteMessage'=>$this->t('Do you really want to delete the folder'),
-      'share'=>$this->t('Share'),
+      'share'=>$this->t('Sharing settings'),
       'rename'=>$this->t('Rename'),
       'move'=>$this->t('Move'),
       'copy'=>$this->t('Copy'),

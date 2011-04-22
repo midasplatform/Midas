@@ -35,6 +35,7 @@ abstract class FolderModelBase extends AppModel
   abstract function getUser($folder);
   abstract function addItem($folder,$item);
   abstract function removeItem($folder,$item);
+  abstract function policyCheck($folderDao,$userDao=null,$policy=0);
   
     /** plus one view*/
   function plusOneView($folder)

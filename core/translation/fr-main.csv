@@ -43,11 +43,11 @@ Name;Nom
 Privacy;Confidentialité
 Create;Créer
 Private;Privée
-Public;Publique
+Public;Public
 Private (Nobody can access to my page);Privé (Personne ne peut accéder à mes informations)
 Private (Nobody can see my information);Privé (Personne ne peut voir mes informations)
-Public (Everyone can access to my information);Publique (Tout le monde peut accéder à mes informations)
-Public (Anyone can see my information);Publique (Tout le monde peut voir mes informations)
+Public (Everyone can access to my information);Public (Tout le monde peut accéder à mes informations)
+Public (Anyone can see my information);Public (Tout le monde peut voir mes informations)
 Semi-private;Semi-privée
 Description;Description
 Created;Crée
@@ -184,3 +184,16 @@ Current Avatar;Avatar actuel
 Upload new avatar;Uploader nouveau avatar
 Modify password;Modifier mot de passe
 Retype new password;Retapper nouveau mot de passe
+Sharing settings;Paramètres de partage
+folder;répertoire
+item;docuement
+You can use the following direct link to share the;Vous pouvez utiliser le lien suivant pour partager le
+Permissions;Autorisations
+Anyone on the Internet can find and access. No sign-in required.;Tous le monde peut trouver et voir. Pas d'authentification requise.
+Only people explicitly granted permission can access. Sign-in required.;Seulement les personnes avec une autorisation ont accès. Authentification requise.
+Set Private;Rendre Privé
+Set Public;Rendre Public
+is owner;est propriétaire
+can edit;peut modifier
+can read;peut voir
+Add a permission to ...;Ajouter une autorisation à ...

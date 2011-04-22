@@ -20,6 +20,7 @@ abstract class GroupModelBase extends AppModel
   abstract function addUser($group,$user);
   abstract function removeUser($group,$user);
   abstract function findByCommunity($communityDao);
+  abstract function getGroupFromSearch($search,$limit=14);
     
   /** Delete a group */
   public function deleteGroup($group)

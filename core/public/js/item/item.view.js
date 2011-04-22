@@ -27,5 +27,10 @@
         });         
       
     });
+    
+    $('a.sharingLink').click(function(){
+      loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
+      showDialog(json.browse.share);
+    });
   });
   
