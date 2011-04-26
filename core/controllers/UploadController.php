@@ -167,11 +167,6 @@ class UploadController extends AppController
       $item->setThumbnail('');
       $this->Item->save($item);
       
-      // Set the keyword for the item
-      $keyword = new ItemKeywordDao();
-      $keyword->setValue($name);
-      $this->ItemKeyword->insertKeyword($keyword);
-      
       $feed=$this->Feed->createFeed($this->userSession->Dao,MIDAS_FEED_CREATE_ITEM,$item);
       if(isset($privacy)&&$privacy=='public')
         {
@@ -192,9 +187,29 @@ class UploadController extends AppController
       $itemRevisionDao->setUser_id($userDao->getKey());
       $itemRevisionDao->setDate(date('c'));
       $this->Item->addRevision($item,$itemRevisionDao);
-
-      $this->Item->addKeyword($item,$keyword);      
       
+      // Set the keyword for the item
+      $keyword = new ItemKeywordDao();
+      $keyword->setValue($name);
+      $this->ItemKeyword->insertKeyword($keyword);
+      $this->Item->addKeyword($item,$keyword);  
+
+      $tmp=str_replace('.', ' ', $name);
+      $tmp=str_replace('_', ' ', $tmp);
+      $tmp=str_replace('-', ' ', $tmp);
+
+      $keywords=explode(' ', $tmp);
+      if(count($keywords)>1)
+        {
+        foreach ($keywords as $key => $value)
+          {
+          $keyword = new ItemKeywordDao();
+          $keyword->setValue($value);
+          $this->ItemKeyword->insertKeyword($keyword);
+          $this->Item->addKeyword($item,$keyword);  
+          }
+        }      
+
       // Add bitstreams to the revision
       $bitstreamDao = new BitstreamDao;
       $bitstreamDao->setName($name);

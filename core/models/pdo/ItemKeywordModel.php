@@ -30,28 +30,60 @@ class ItemKeywordModel extends ItemKeywordModelBase
         }
       }
           
+    $searchterms=explode(' ', $searchterm);
     // Apparently it's slow to do a like in a subquery so we run it first  
-    $sql = $this->database->select()->from(array('itemkeyword'),array('keyword_id'))
-                   ->where('value LIKE ?','%'.$searchterm.'%');                 
-    $ids = '(';
-    $rowset = $this->database->fetchAll($sql);
-    $return = array();
-    foreach($rowset as $row)
+    $sql = $this->database->select()->from(array('i'=>'itemkeyword'),array())
+                ->setIntegrityCheck(false);
+    $sql->join(array('i2k' => 'item2keyword'),'i.keyword_id=i2k.keyword_id',array('item_id'));
+    
+    if(empty($searchterms))
       {
-      if($ids != '(')
-        {
-        $ids .= ',';  
-        } 
-      $ids .= $row->keyword_id;
-      }
-    $ids .= ')';
-
-    // If we don't have any data we return
-    if(count($rowset) == 0)
-      {
-      return $return;  
+      return array();
       }
     
+    foreach($searchterms as $key=>$term)
+      {
+      if($key==0)
+        {
+        $sql->where('value LIKE ?','%'.$term.'%'); 
+        }
+      else
+        {
+        $sql->orWhere('value LIKE ?','%'.$term.'%'); 
+        }
+      }
+                                   
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    $itemIdsCount=array();
+    $itemIds=array();
+    foreach($rowset as $row)
+      {
+      if(isset($itemIdsCount[$row->item_id]))
+        {
+        $itemIdsCount[$row->item_id]++;
+        }
+      else
+        {
+        $itemIdsCount[$row->item_id]=1;
+        }
+      }
+    foreach($itemIdsCount as $key=>$n)
+      {
+      if($n<count($searchterms))
+        {
+        unset($itemIdsCount[$key]);
+        }
+      else
+        {
+        $itemIds[]=$key;
+        }
+      }
+      
+    if(empty($itemIds))
+      {
+      return array();
+      }
     $sql=$this->database->select();
     if($group)
       {
@@ -62,7 +94,6 @@ class ItemKeywordModel extends ItemKeywordModelBase
       $sql->from(array('i' => 'item'));
       }
               
-    $sql->join(array('i2k' => 'item2keyword'),'i.item_id=i2k.item_id');
     if(!$isAdmin)
       {
       $sql ->joinLeft(array('ipu' => 'itempolicyuser'),'
@@ -85,7 +116,7 @@ class ItemKeywordModel extends ItemKeywordModelBase
             );
       }
     $sql->setIntegrityCheck(false)  
-          ->where('i2k.keyword_id IN '.$ids)             
+          ->where('i.item_id IN   (?)',$itemIds)             
           ->limit($limit)
           ;
     
@@ -107,7 +138,6 @@ class ItemKeywordModel extends ItemKeywordModelBase
         $sql->order(array('i.view DESC'));
         break;
       }
-      
     $rowset = $this->database->fetchAll($sql);
     foreach($rowset as $row)
       {
@@ -130,7 +160,7 @@ class ItemKeywordModel extends ItemKeywordModelBase
       {
       throw new Zend_Exception("Should be a keyword" );
       }
-
+      
     // Check if the keyword already exists
     $row = $this->database->fetchRow($this->database->select()->from($this->_name)
                                           ->where('value=?',$keyword->getValue()));

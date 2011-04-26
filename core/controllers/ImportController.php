@@ -133,12 +133,28 @@ class ImportController extends AppController
           $item->setName($fileInfo->getFilename());
           $this->Item->save($item);
           
+          
           // Set the keyword for the item
-          $keyword = new ItemKeywordDao;
+          $keyword = new ItemKeywordDao();
           $keyword->setValue($fileInfo->getFilename());
           $this->ItemKeyword->insertKeyword($keyword);
-          
-          $this->Item->addKeyword($item,$keyword);
+          $this->Item->addKeyword($item,$keyword);  
+
+          $tmp=str_replace('.', ' ', $fileInfo->getFilename());
+          $tmp=str_replace('_', ' ', $tmp);
+          $tmp=str_replace('-', ' ', $tmp);
+
+          $keywords=explode(' ', $tmp);
+          if(count($keywords)>1)
+            {
+            foreach ($keywords as $key => $value)
+              {
+              $keyword = new ItemKeywordDao();
+              $keyword->setValue($value);
+              $this->ItemKeyword->insertKeyword($keyword);
+              $this->Item->addKeyword($item,$keyword);  
+              }
+            }  
           
           // Set the policy of the item
           $this->Itempolicyuser->createPolicy($this->userSession->Dao,$item,MIDAS_POLICY_ADMIN);    
