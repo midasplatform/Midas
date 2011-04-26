@@ -123,6 +123,7 @@ class FolderModel extends FolderModelBase
                                              ->where('u2g.user_id = ?' , $userId)
                                              ) .'))' ,array());
         }
+        
       $subqueryGroup  ->where('left_indice > ?', $folder->getLeftIndice())
                     ->where('right_indice < ?', $folder->getRightIndice());
 
@@ -140,7 +141,7 @@ class FolderModel extends FolderModelBase
                           ,array() );
       if(!$isAdmin)
         {
-        $sql        ->joinLeft(array('ip' => 'itempolicyuser'),'
+        $sql    ->joinLeft(array('ip' => 'itempolicyuser'),'
                           i.item_id = ip.item_id AND '.$this->database->getDB()->quoteInto('policy >= ?', $policy).'
                              AND '.$this->database->getDB()->quoteInto('user_id = ? ',$userId).' ',array())
                 ->joinLeft(array('ipg' => 'itempolicygroup'),'
@@ -160,7 +161,6 @@ class FolderModel extends FolderModelBase
                   )
                 ;
         }
-
 
       $row = $this->database->fetchRow($sql);    
       $folders[$key]->count = $row['count'];

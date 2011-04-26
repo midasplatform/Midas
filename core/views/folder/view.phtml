@@ -22,7 +22,7 @@
         
       foreach($this->folders as $folder)
         {
-        echo "<tr id='node--$node' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
+        echo "<tr id='node--$node' deletable='true' policy='{$folder->policy}' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
         echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
         echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
         echo "  <td>{$this->Date->ago($folder->getDate(),true)}</td>";
@@ -33,7 +33,7 @@
       
       foreach($this->items as $item)
         {
-        echo "<tr id='node--$node' class='' type='item' element='{$item->getItemId()}' >";
+        echo "<tr id='node--$node' policy='{$item->policy}' class='' type='item' element='{$item->getItemId()}' >";
         echo "  <td class='treeBrowseElement'><span class='file'>{$item->getName()}</span></td>";
         echo "  <td>{$item->size}</td>";
         echo "  <td>{$this->Date->ago($item->getDate(),true)}</td>";
@@ -85,7 +85,15 @@
   </div>
 </div>
 
-<div class="defaultSideTrigger" type='folder' element='<?php echo $this->mainFolder->getFolderId() ?>'>
+<?php
+$policy=MIDAS_POLICY_READ;
+if($this->isModerator||$this->isAdmin)
+  {
+  $policy=MIDAS_POLICY_WRITE;
+  }
+?>
+
+<div class="defaultSideTrigger" policy='<?php echo $policy?>' type='folder' element='<?php echo $this->mainFolder->getFolderId() ?>'>
 </div>
 
 

@@ -76,6 +76,9 @@ class FolderController extends AppController
     $this->view->folders=$folders;
     $this->view->items=$items;
     $this->view->header=$header;
+    
+    $this->view->isModerator=$this->Folder->policyCheck($folder, $this->userSession->Dao,MIDAS_POLICY_WRITE);
+    $this->view->isAdmin=$this->Folder->policyCheck($folder, $this->userSession->Dao,MIDAS_POLICY_ADMIN);
     }// end View Action
     
     
@@ -99,6 +102,16 @@ class FolderController extends AppController
     elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
       throw new Zend_Exception("Permissions error.");
+      }
+      
+    $parent=$folder->getParent();
+    if($this->Folder->getCommunity($parent)!=false||$this->Folder->getCommunity($folder)!=false)
+      {
+      throw new Zend_Exception("Community Folder. You cannot delete it.");
+      }
+    if($this->Folder->getUser($parent)!=false||$this->Folder->getUser($folder)!=false)
+      {
+      throw new Zend_Exception("User Folder. You cannot delete it.");
       }
     $this->Folder->delete($folder);
     $folderInfo=$folder->_toArray();

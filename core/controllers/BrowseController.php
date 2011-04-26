@@ -197,6 +197,14 @@ class BrowseController extends AppController
       $tmp['folder_id']=$folder->getFolderId();
       $tmp['name']=$folder->getName();
       $tmp['creation']=$this->Component->Date->ago($folder->getDate(),true);
+      if($tmp['name']=='Public'||$tmp['name']=='Private')
+        {
+        $tmp['deletable']='false';
+        }
+      else
+        {
+        $tmp['deletable']='true';
+        }
       $tmp['policy']=$folder->policy;
       $jsonContent[$folder->getParentId()]['folders'][]=$tmp;
       unset($tmp);

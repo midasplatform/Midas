@@ -148,10 +148,13 @@
             html+='<li><a href="'+json.global.webroot+'/folder/'+element+'">'+json.browse.view+'</a></li>';
             html+='<li><a href="'+json.global.webroot+'/download?folders='+element+'">'+json.browse.download+'</a></li>';
             if(policy>=1)
-              {
-              html+='<li><a onclick="deleteFolder('+element+');">'+json.browse['delete']+'</a></li>'; 
+              { 
               html+='<li><a onclick="createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
-              html+='<li><a>'+json.browse.share+'</a></li>';
+              if(node.attr('deletable')!=undefined && node.attr('deletable')=='true')
+                {
+                html+='<li><a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+                html+='<li><a onclick="deleteFolder('+element+');">'+json.browse['delete']+'</a></li>'; 
+                }
               }                
           }
         if(type=='item')
@@ -160,10 +163,14 @@
             html+='<li><a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLastest+'</a></li>';
             if(policy>=1)
               {
-              html+='<li><a>'+json.browse.share+'</a></li>';
+              html+='<li><a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
               }   
           }
          $('div.viewAction ul').html(html);
+         $('a.sharingLink').click(function(){
+            loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
+            showDialog(json.browse.share);
+          });
          $('div.viewAction ul').fadeIn('fast');
       });
     }

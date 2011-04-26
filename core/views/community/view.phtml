@@ -74,10 +74,14 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         <tbody>
             <?php
             $node=1;
-
             foreach($this->folders as $folder)
               {
-              echo "<tr id='node--$node' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
+              $policy=MIDAS_POLICY_READ;
+              if($this->isModerator||$this->isAdmin)
+                {
+                $policy=MIDAS_POLICY_WRITE;
+                }
+              echo "<tr id='node--$node' policy='$policy'  class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
               echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
               echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDate(),true)}</td>";
