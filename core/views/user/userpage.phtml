@@ -37,6 +37,15 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       }
       ?>
     <li><a href="#tabs-3"><?php echo $this->t('Data');?></a></li>
+    <?php
+    if($this->isViewAction)
+      {
+      ?>
+    <li><a href="#tabs-4"><?php echo $this->t('Owned by me');?></a></li>
+    <li><a href="#tabs-5"><?php echo $this->t('Shared to me');?></a></li>
+    <?php
+      }
+      ?>
   </ul>
   <div id="tabs-1">
      <?
@@ -80,6 +89,25 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
           </tbody>
       </table>
   </div>
+        <?php
+    if($this->isViewAction)
+      {
+      ?>
+  <div id="tabs-4">
+     <?
+      $this->listFiles=$this->ownedItems;
+      echo $this->element('listfiles');
+      ?>
+  </div>
+  <div id="tabs-5">
+     <?
+      $this->listFiles=$this->shareItems;
+      echo $this->element('listfiles');
+      ?>
+  </div>
+    <?php
+      }
+      ?>
 </div>
 
 </div>
@@ -95,14 +123,12 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       <li><a href="'.$this->webroot.'/user/manage/?userId='.$this->user->getKey().'">'.$this->t('Manage Files').'</a></li>
     </ul>
   </div>';
-    }
-    
-    
+    }   
   
   if(!empty($this->userCommunities))
     {
     echo "
-    <div class=sideElement".(($this->isViewAction)?'First':'')." genericCommunities>
+    <div class='sideElement".(($this->isViewAction)?'':'First')." genericCommunities'>
     <h1>Communities</h1>    
     <ul>";
 

@@ -26,6 +26,9 @@ abstract class ItemModelBase extends AppModel
     $this->initialize(); // required
     } // end __construct()  
   
+  abstract function getOwnedByUser($userDao,$limit=20);
+  abstract function getSharedToUser($userDao,$limit=20);
+  abstract function getSharedToCommunity($communityDao,$limit=20);
     
   /** plus one view*/
   function plusOneView($itemdao)

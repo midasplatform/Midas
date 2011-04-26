@@ -7,6 +7,7 @@ require_once BASE_PATH.'/core/models/base/CommunityModelBase.php';
  */
 class CommunityModel extends CommunityModelBase
 { 
+
   /** Get a community by name */
   function getByName($name)
     {

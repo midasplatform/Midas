@@ -48,7 +48,6 @@ class UpgradeComponent extends AppComponent
       throw new Zend_Exception("Please init the component first");
       }
     $files=$this->getMigrationFiles();
-
     if(empty($files))
       {
       return 0;

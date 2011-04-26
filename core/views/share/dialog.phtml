@@ -35,14 +35,31 @@ foreach($this->groupPolicies as $policy)
   echo "            ".(($policy->communityMemberGroup)?$policy->group->getCommunity()->getName():$policy->group->getName());
   echo "          </td>";
   echo "          <td>";
-  echo "            <select class='changePermissionSelect'>";
-  if($this->isAdmin)
+  if((!$this->isAdmin&&$policy->getPolicy()==MIDAS_POLICY_ADMIN))
     {
-    echo "            <option value='".MIDAS_POLICY_ADMIN."' ".(($policy->getPolicy()==MIDAS_POLICY_ADMIN)?'selected':'').">{$this->t('is owner')}</option>";
+    switch ($policy->getPolicy())
+      {
+      case MIDAS_POLICY_ADMIN:
+        echo $this->t('is owner');
+        break;
+      case MIDAS_POLICY_WRITE:
+        echo $this->t('can edit');
+        break;
+      default:
+        break;
+      }
     }
-  echo "              <option value='".MIDAS_POLICY_WRITE."' ".(($policy->getPolicy()==MIDAS_POLICY_WRITE)?'selected':'').">{$this->t('can edit')}</option>";
-  echo "              <option value='".MIDAS_POLICY_READ."' ".(($policy->getPolicy()==MIDAS_POLICY_READ)?'selected':'').">{$this->t('can read')}</option>";
-  echo "            </select>";
+  else
+    {
+    echo "            <select class='changePermissionSelect'>";
+    if($this->isAdmin)
+      {
+      echo "            <option value='".MIDAS_POLICY_ADMIN."' ".(($policy->getPolicy()==MIDAS_POLICY_ADMIN)?'selected':'').">{$this->t('is owner')}</option>";
+      }
+    echo "              <option value='".MIDAS_POLICY_WRITE."' ".(($policy->getPolicy()==MIDAS_POLICY_WRITE)?'selected':'').">{$this->t('can edit')}</option>";
+    echo "              <option value='".MIDAS_POLICY_READ."' ".(($policy->getPolicy()==MIDAS_POLICY_READ)?'selected':'').">{$this->t('can read')}</option>";
+    echo "            </select>";
+    }
   echo "          </td>";
   echo "          <td>";
   echo "            <a class='removeShareLink'><img  src='{$this->coreWebroot}/public/images/icons/close.png' alt=''/></a>";
@@ -60,7 +77,7 @@ foreach($this->userPolicies as $policy)
   echo "            ".$policy->user->getFullName();
   echo "          </td>";
   echo "          <td>";
-  if($policy->user->getKey()==$this->userDao->getKey())
+  if((!$this->isAdmin&&$policy->getPolicy()==MIDAS_POLICY_ADMIN)||$policy->user->getKey()==$this->userDao->getKey())
     {
     switch ($policy->getPolicy())
       {

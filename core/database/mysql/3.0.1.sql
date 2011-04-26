@@ -116,6 +116,7 @@ CREATE TABLE IF NOT EXISTS `folderpolicygroup` (
   `folder_id` bigint(20) NOT NULL,
   `group_id` bigint(20) NOT NULL,
   `policy` tinyint(4) NOT NULL,
+  `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP(),
   UNIQUE KEY `folder_id` (`folder_id`,`group_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -129,6 +130,7 @@ CREATE TABLE IF NOT EXISTS `folderpolicyuser` (
   `folder_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL,
   `policy` tinyint(4) NOT NULL,
+  `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP(),
   UNIQUE KEY `folder_id` (`folder_id`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -176,6 +178,7 @@ CREATE TABLE IF NOT EXISTS `itempolicygroup` (
   `item_id` bigint(20) NOT NULL,
   `group_id` bigint(20) NOT NULL,
   `policy` tinyint(4) NOT NULL,
+  `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP(),
   UNIQUE KEY `item_id` (`item_id`,`group_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -189,6 +192,7 @@ CREATE TABLE IF NOT EXISTS `itempolicyuser` (
   `item_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL,
   `policy` tinyint(4) NOT NULL,
+  `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP(),
   UNIQUE KEY `item_id` (`item_id`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -385,6 +389,7 @@ CREATE TABLE IF NOT EXISTS `feedpolicygroup` (
   `feed_id` bigint(20) NOT NULL,
   `group_id` bigint(20) NOT NULL,
   `policy` tinyint(4) NOT NULL,
+  `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP(),
   UNIQUE KEY `feed_id` (`feed_id`,`group_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -398,5 +403,6 @@ CREATE TABLE IF NOT EXISTS `feedpolicyuser` (
   `feed_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL,
   `policy` tinyint(4) NOT NULL,
+  `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP(),
   UNIQUE KEY `feed_id` (`feed_id`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;

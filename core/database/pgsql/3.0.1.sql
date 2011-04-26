@@ -107,7 +107,8 @@ CREATE TABLE  folderpolicygroup (
   id serial  PRIMARY KEY,
   folder_id bigint NOT NULL,
   group_id bigint NOT NULL,
-  policy smallint NOT NULL
+  policy smallint NOT NULL,
+  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ;
 
 -- --------------------------------------------------------
@@ -120,7 +121,8 @@ CREATE TABLE  folderpolicyuser (
   id serial  PRIMARY KEY,
   folder_id bigint NOT NULL,
   user_id bigint NOT NULL,
-  policy smallint NOT NULL
+  policy smallint NOT NULL,
+  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ;
 
 -- --------------------------------------------------------
@@ -166,7 +168,8 @@ CREATE TABLE  itempolicygroup (
   id serial  PRIMARY KEY,
   item_id bigint NOT NULL,
   group_id bigint NOT NULL,
-  policy smallint NOT NULL
+  policy smallint NOT NULL,
+  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ;
 
 -- --------------------------------------------------------
@@ -179,7 +182,8 @@ CREATE TABLE  itempolicyuser (
   id serial  PRIMARY KEY,
   item_id bigint NOT NULL,
   user_id bigint NOT NULL,
-  policy smallint NOT NULL
+  policy smallint NOT NULL,
+  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- --------------------------------------------------------
@@ -360,7 +364,8 @@ CREATE TABLE  feedpolicygroup (
   id serial  PRIMARY KEY,
   feed_id bigint NOT NULL,
   group_id bigint NOT NULL,
-  policy smallint NOT NULL
+  policy smallint NOT NULL,
+  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- --------------------------------------------------------
@@ -373,5 +378,6 @@ CREATE TABLE  feedpolicyuser (
   id serial  PRIMARY KEY,
   feed_id bigint NOT NULL,
   user_id bigint NOT NULL,
-  policy smallint NOT NULL
+  policy smallint NOT NULL,
+  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ;

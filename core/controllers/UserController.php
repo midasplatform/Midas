@@ -2,16 +2,10 @@
 
 class UserController extends AppController
   {
-  public $_models=array(
-    'User','Folder','Folderpolicygroup','Folderpolicyuser','Group','Feed','Feedpolicygroup','Feedpolicyuser','Group'
-  );
-  public $_daos=array(
-    'User','Folder','Folderpolicygroup','Folderpolicyuser','Group'
-  );
+  public $_models=array('User','Folder','Folderpolicygroup','Folderpolicyuser','Group','Feed','Feedpolicygroup','Feedpolicyuser','Group','Item' );
+  public $_daos=array(    'User','Folder','Folderpolicygroup','Folderpolicyuser','Group'  );
   public $_components=array('Date','Filter','Sortdao');
-  public $_forms=array(
-    'User'
-  );
+  public $_forms=array(    'User'  );
 
   /** Init Controller */
   function init()
@@ -357,9 +351,11 @@ class UserController extends AppController
     $this->view->userCommunities=$this->User->getUserCommunities($userDao);
     $this->view->folders=array();
     $this->view->folders[]=$userDao->getPublicFolder();
-    if(!empty($this->userSession->Dao)&& $userDao->getKey() == $this->userSession->Dao->getKey())
+    if(!empty($this->userSession->Dao)&& ($userDao->getKey() == $this->userSession->Dao->getKey()||$this->userSession->Dao->isAdmin()))
       {
       $this->view->folders[]=$userDao->getPrivateFolder();
+      $this->view->ownedItems=$this->Item->getOwnedByUser($userDao);
+      $this->view->shareItems=$this->Item->getSharedToUser($userDao);
       }
     else
       {

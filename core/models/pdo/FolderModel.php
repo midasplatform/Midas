@@ -37,7 +37,7 @@ class FolderModel extends FolderModelBase
                           ->from(array('p' => 'folderpolicyuser'),
                                  array('folder_id'))
                           ->where('policy >= ?', $policy)
-                          ->where('p.folder_id >= ?', $folderDao->getKey())
+                          ->where('p.folder_id = ?', $folderDao->getKey())
                           ->where('user_id = ? ',$userId);
 
      $subqueryGroup = $this->database->select()
@@ -45,7 +45,7 @@ class FolderModel extends FolderModelBase
                     ->from(array('p' => 'folderpolicygroup'),
                            array('folder_id'))
                     ->where('policy >= ?', $policy)
-                    ->where('p.folder_id >= ?', $folderDao->getKey())
+                    ->where('p.folder_id = ?', $folderDao->getKey())
                     ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                               group_id IN (' .new Zend_Db_Expr(
                               $this->database->select()

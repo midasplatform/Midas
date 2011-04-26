@@ -7,6 +7,108 @@ require_once BASE_PATH.'/core/models/base/ItemModelBase.php';
  */
 class ItemModel extends ItemModelBase
 {
+  
+   /**
+   * Get Items where user policy exists and is != admin
+   * @param type $userDao
+   * @param type $limit
+   * @return Array 
+   */
+  function getSharedToCommunity($communityDao,$limit=20)
+    {
+    $groupId=$communityDao->getMemberGroup()->getKey();
+    if(!is_numeric($groupId))
+      {
+      throw new Zend_Exception('Error parameter');
+      }
+    $sql= $this->database->select()
+                  ->setIntegrityCheck(false)
+                  ->from(array('i' => 'item'))
+                  ->join(array('p' => 'itempolicygroup'),
+                        'i.item_id=p.item_id',array('p.policy','policy_date'=> 'p.date'))
+                  ->where('group_id = ? ',$groupId)
+                  ->order(array('p.date DESC'))
+                  ->limit($limit);
+    $rowset = $this->database->fetchAll($sql);
+    $results = array();
+    foreach($rowset as $row)
+      {
+      $tmp=$this->initDao('Item', $row);
+      $tmp->policy=$row['policy'];
+      $tmp->policy_date=$row['policy_date'];
+      $results[]=$tmp;
+      }
+    return $results;
+    }//end getSharedToCommunity
+    
+  /**
+   * Get Items where user policy = Admin
+   * @param type $userDao
+   * @param type $limit
+   * @return Array 
+   */
+  function getOwnedByUser($userDao,$limit=20)
+    {
+    $userId=$userDao->getKey();
+    if(!is_numeric($userId))
+      {
+      throw new Zend_Exception('Error parameter');
+      }
+    $sql= $this->database->select()
+                  ->setIntegrityCheck(false)
+                  ->from(array('i' => 'item'))
+                  ->join(array('p' => 'itempolicyuser'),
+                        'i.item_id=p.item_id',array('p.policy','policy_date'=> 'p.date'))
+                  ->where('policy = ?', MIDAS_POLICY_ADMIN)
+                  ->where('user_id = ? ',$userId)
+                  ->order(array('p.date DESC'))
+                  ->limit($limit);
+    $rowset = $this->database->fetchAll($sql);
+    $results = array();
+    foreach($rowset as $row)
+      {
+      $tmp=$this->initDao('Item', $row);
+      $tmp->policy=$row['policy'];
+      $tmp->policy_date=$row['policy_date'];
+      $results[]=$tmp;
+      }
+    return $results;
+    }//end getOwnedByUser
+    
+  /**
+   * Get Items where user policy exists and is != admin
+   * @param type $userDao
+   * @param type $limit
+   * @return Array 
+   */
+  function getSharedToUser($userDao,$limit=20)
+    {
+    $userId=$userDao->getKey();
+    if(!is_numeric($userId))
+      {
+      throw new Zend_Exception('Error parameter');
+      }
+    $sql= $this->database->select()
+                  ->setIntegrityCheck(false)
+                  ->from(array('i' => 'item'))
+                  ->join(array('p' => 'itempolicyuser'),
+                        'i.item_id=p.item_id',array('p.policy','policy_date'=> 'p.date'))
+                  ->where('policy != ?', MIDAS_POLICY_ADMIN)
+                  ->where('user_id = ? ',$userId)
+                  ->order(array('p.date DESC'))
+                  ->limit($limit);
+    $rowset = $this->database->fetchAll($sql);
+    $results = array();
+    foreach($rowset as $row)
+      {
+      $tmp=$this->initDao('Item', $row);
+      $tmp->policy=$row['policy'];
+      $tmp->policy_date=$row['policy_date'];
+      $results[]=$tmp;
+      }
+    return $results;
+    }//end getSharedToUser
+    
   /** Delete an item */
   function delete($itemdao)
     {
@@ -94,7 +196,7 @@ class ItemModel extends ItemModelBase
                           ->from(array('p' => 'itempolicyuser'),
                                  array('item_id'))
                           ->where('policy >= ?', $policy)
-                          ->where('p.item_id >= ?', $itemdao->getKey())
+                          ->where('p.item_id = ?', $itemdao->getKey())
                           ->where('user_id = ? ',$userId);
 
      $subqueryGroup = $this->database->select()
@@ -102,7 +204,7 @@ class ItemModel extends ItemModelBase
                     ->from(array('p' => 'itempolicygroup'),
                            array('item_id'))
                     ->where('policy >= ?', $policy)
-                    ->where('p.item_id >= ?', $itemdao->getKey())
+                    ->where('p.item_id = ?', $itemdao->getKey())
                     ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                               group_id IN (' .new Zend_Db_Expr(
                               $this->database->select()
@@ -114,7 +216,6 @@ class ItemModel extends ItemModelBase
 
     $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
-
     $rowset = $this->database->fetchAll($sql);
     if(count($rowset)>0)
       {

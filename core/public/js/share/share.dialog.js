@@ -158,7 +158,7 @@ $('a#setElementPrivateLink').click(function(){
   $('#live_share_search').focus(function() {
     if($('#live_share_search_value').val() == 'init')
       {
-      $('#live_share_search_value').val($('#live_search').val());
+      $('#live_share_search_value').val($('#live_share_search').val());
       $('#live_share_search').val('');
       }
     });
@@ -171,10 +171,3 @@ $('a#setElementPrivateLink').click(function(){
       }
     });
   
-  $('#live_share_search_value').keyup(function(e) 
-    {
-    if(e.keyCode == 13 && !itemShareSelected) // enter key has been pressed
-      {
-      window.location.replace($('.webroot').val()+'/search/'+$('#live_share_search').val());
-      }
-    });

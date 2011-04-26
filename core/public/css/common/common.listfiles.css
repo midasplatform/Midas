@@ -1,0 +1,22 @@
+div.listFilesContainer {
+
+}
+
+div.listFilesContainer div.fileElement{
+  min-height: 30px;
+  border-bottom: 1px dotted #e4e4e4;
+  position: relative;
+}
+
+
+div.listFilesContainer div.fileDate{
+  position: absolute;
+  bottom: 0px;
+  right:0px;
+  color: grey;
+  font-size: 10px;
+}
+
+div.listFilesContainer div.feedUserImage{
+  float:left;
+}

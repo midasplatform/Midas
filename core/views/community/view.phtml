@@ -37,6 +37,13 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       }
       ?>
     <li><a href="#tabs-3"><?php echo $this->t('Data');?></a></li>
+    <?php
+    if($this->isMember)
+      {
+      ?>
+    <li><a href="#tabs-4"><?php echo $this->t('Shared to Members');?></a></li>
+    <?php
+      }?>
   </ul>
   <div id="tabs-1">
      <?
@@ -83,6 +90,18 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
           </tbody>
       </table>
   </div>
+        <?php
+  if($this->isMember)
+    {
+    ?>
+  <div id="tabs-4">
+    <?php
+    $this->listFiles=$this->shareItems;
+    echo $this->element('listfiles');
+    ?>
+  </div>
+  <?php
+    }?>
 </div>
 
 </div>

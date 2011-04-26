@@ -43,7 +43,7 @@ class FeedModel extends FeedModelBase
                           ->from(array('p' => 'feedpolicyuser'),
                                  array('feed_id'))
                           ->where('policy >= ?', $policy)
-                          ->where('p.feed_id >= ?', $feedDao->getKey())
+                          ->where('p.feed_id = ?', $feedDao->getKey())
                           ->where('user_id = ? ',$userId);
 
      $subqueryGroup = $this->database->select()
@@ -51,7 +51,7 @@ class FeedModel extends FeedModelBase
                     ->from(array('p' => 'feedpolicygroup'),
                            array('feed_id'))
                     ->where('policy >= ?', $policy)
-                    ->where('p.feed_id >= ?', $feedDao->getKey())
+                    ->where('p.feed_id = ?', $feedDao->getKey())
                     ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
                               group_id IN (' .new Zend_Db_Expr(
                               $this->database->select()

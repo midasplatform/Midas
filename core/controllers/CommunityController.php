@@ -2,7 +2,7 @@
 
 class CommunityController extends AppController
   {
-  public $_models=array('Community','Folder','Group','Folderpolicygroup','Group','User','Feed',"Feedpolicygroup","Feedpolicyuser");
+  public $_models=array('Community','Folder','Group','Folderpolicygroup','Group','User','Feed',"Feedpolicygroup","Feedpolicyuser",'Item');
   public $_daos=array('Community','Folder','Group','Folderpolicygroup','Group','User');
   public $_components=array('Sortdao','Date');
   public $_forms=array('Community');
@@ -273,6 +273,11 @@ class CommunityController extends AppController
     $this->view->isModerator=$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_WRITE);
     $this->view->isAdmin=$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_ADMIN);
     $this->view->json['community']=$communityDao->_toArray();   
+    
+    if($this->view->isMember)
+      {
+      $this->view->shareItems=$this->Item->getSharedToCommunity($communityDao);
+      }
     }//end view
 
   /** Delete a community*/

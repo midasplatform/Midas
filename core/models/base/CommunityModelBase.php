@@ -33,6 +33,7 @@ abstract class CommunityModelBase extends AppModel
   abstract function getPublicCommunities($limit=20);
   abstract function getByName($name);
   abstract function getAll();
+
   
   /** plus one view*/
   function plusOneView($communityDao)
