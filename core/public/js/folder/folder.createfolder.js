@@ -37,11 +37,7 @@ function successCreateFolder(responseText, statusText, xhr, form)
       var node=$('table.treeTable tr[element='+jsonResponse[2].folder_id+']');
       if(node.length>0)
         {
-          node.each(function(){
-            childrenOf($(this)).remove();
-          });
-        node.attr('ajax',jsonResponse[2].folder_id);
-        node.removeAttr('proccessing');
+        node.reload();
         }
     }
   else

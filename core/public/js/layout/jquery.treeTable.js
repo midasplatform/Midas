@@ -53,7 +53,6 @@
   // Recursively hide all node's children in a tree
   $.fn.collapse = function() {
     $(this).addClass("collapsed");
-    
     childrenOf($(this)).each(function() {
       if(!$(this).hasClass("collapsed")) {
         $(this).collapse();
@@ -93,7 +92,7 @@
     {    
     $.post(json.global.webroot+'/browse/getfolderscontent',{folders: folders} , function(data) {
           arrayElement=jQuery.parseJSON(data);
-          $.each(arrayElement, function(index, value) { 
+          $.each(arrayElement, function(index, value) {             
             tree[index]=value;
           });
           children.each(function()
@@ -109,6 +108,27 @@
       });
     }
     getElementsSize();
+  }
+  
+  $.fn.reload = function (){
+        $(this).each(function(){
+            childrenOf($(this)).remove();
+          });
+        tree[$(this).attr('element')]=null;
+        var obj= $(this);
+        $(this).removeAttr('proccessing');
+        $(this).attr('ajax',$(this).attr('element'));
+        $(this).expand();
+        $.post(json.global.webroot+'/browse/getfolderscontent',{folders: $(this).attr('element')} , function(data) {
+          arrayElement=jQuery.parseJSON(data);
+          $.each(arrayElement, function(index, value) {             
+            tree[index]=value;
+          });
+        createElementsAjax(obj,tree[obj.attr('element')],true);
+        initEvent();
+        getElementsSize();
+      });
+       
   }
   
   // Recursively show all node's children in a tree
@@ -127,7 +147,6 @@
       initEvent();
       initialize($(this));
       }
-
 
     if($(this).attr('proccessing')=='true')
       {
@@ -317,7 +336,7 @@
         var id=node.attr('id');
         elements['folders'] = jQuery.makeArray(elements['folders']);
         elements['items'] = jQuery.makeArray(elements['items']);
-        var padding=parseInt(node.find('td:first').css('padding-left').slice(0,-2));
+      //  var padding=parseInt(node.find('td:first').css('padding-left').slice(0,-2));
         var html='';
         $.each(elements['folders'], function(index, value) {
           html+= "<tr id='"+id+"-"+i+"' deletable='"+value['deletable']+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
