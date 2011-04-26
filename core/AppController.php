@@ -67,12 +67,16 @@ class AppController extends MIDAS_GlobalController
           // check if recent items exit (every 10 minutes)
           if(isset($check)||strtotime($user->Dao->lastAction)<strtotime("-1 minute"))
             {
-            echo "yeah";exit;
             $modelLoad = new MIDAS_ModelLoader();
             $itemModel = $modelLoad->loadModel('Item');
             foreach ($this->view->recentItems as $key => $t)
               {
-              $item=$itemModel->load($t->getKey());
+              if(!is_array($t))
+                {
+                unset($this->view->recentItems[$key]);
+                continue;
+                }
+              $item=$itemModel->load($t['item_id']);
               if($item==false)
                 {
                 unset($this->view->recentItems[$key]);

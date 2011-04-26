@@ -162,7 +162,10 @@
               echo '<ul>';
               foreach ($recentReverse as $item)
                 {
-                echo "<li onclick=\"location.replace('{$this->webroot}/item/{$item->getKey()}');\" class='recentItem' title='".  str_replace("'", '"', $item->getName())." | todo'><a  href='{$this->webroot}/item/{$item->getKey()}'>".sliceRecentItem($item->getName())."</a></li>";
+                if(is_array($item))
+                  {
+                  echo "<li onclick=\"location.replace('{$this->webroot}/item/{$item['item_id']}');\" class='recentItem' title='".  str_replace("'", '"', $item['name'])." | todo'><a  href='{$this->webroot}/item/{$item['item_id']}'>".sliceRecentItem($item['name'])."</a></li>";
+                  }                  
                 }
               echo '</ul>';
               }
