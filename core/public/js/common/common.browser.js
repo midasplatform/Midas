@@ -111,10 +111,68 @@
                   {
                     createNotive(jsonResponse[1],1500);
                     node.each(function(){
-                      childrenOf($(this)).remove();
+                      var children = childrenOf($(this));
+                      if(children!=undefined)
+                        {
+                        children.remove();
+                        }
                     });
                     node.remove();
                     $( "div.MainDialog" ).dialog('close');
+                  }
+                else
+                  {
+                    createNotive(jsonResponse[1],4000);
+                  }
+           });
+
+        });
+      $('input.deleteFolderNo').unbind('click').click(function()
+        {
+           $( "div.MainDialog" ).dialog('close');
+        });         
+      
+    }
+    function removeItem(id)
+    {
+      var html='';
+      html+=json.browse['removeMessage'];
+      html+='<br/>';
+      html+='<br/>';
+      html+='<br/>';
+      html+='<input style="margin-left:140px;" class="globalButton deleteFolderYes" element="'+id+'" type="button" value="'+json.global.Yes+'"/>';
+      html+='<input style="margin-left:50px;" class="globalButton deleteFolderNo" type="button" value="'+json.global.No+'"/>';
+      
+      showDialogWithContent(json.browse['delete'],html,false);
+      
+      $('input.deleteFolderYes').unbind('click').click(function()
+        { 
+          var node=$('table.treeTable tr[element='+id+']');
+          var parent;
+          //get parent
+          var classNames = node.attr('class').split(' ');    
+          for(key in classNames) {
+            if(classNames[key].match("child-of-")) {
+              parent = $("#" + classNames[key].substring(9));
+            }
+          }
+          $.post(json.global.webroot+'/folder/removeitem', {folderId: parent.attr('element'), itemId: id},
+           function(data) {
+               jsonResponse = jQuery.parseJSON(data);
+                if(jsonResponse==null)
+                  {
+                    createNotive('Error',4000);
+                    return;
+                  }
+                if(jsonResponse[0])
+                  {
+                    createNotive(jsonResponse[1],1500);
+                    node.remove();
+                    $( "div.MainDialog" ).dialog('close');
+                    parent.find('span.elementCount').remove();
+                    parent.find('span.elementSize').after("<img class='folderLoading'  element='{"+parent.attr('element')+"}' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
+                    parent.find('span.elementSize').remove();
+                    getElementsSize();
                   }
                 else
                   {
@@ -164,6 +222,7 @@
             if(policy>=1)
               {
               html+='<li><a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+              html+='<li><a onclick="removeItem('+element+');">'+json.browse['removeItem']+'</a></li>'; 
               }   
           }
          $('div.viewAction ul').html(html);

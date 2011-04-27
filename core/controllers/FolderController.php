@@ -116,7 +116,42 @@ class FolderController extends AppController
     $this->Folder->delete($folder);
     $folderInfo=$folder->_toArray();
     echo JsonComponent::encode(array(true,$this->t('Changes saved'),$folderInfo));
-    }// end createfolderAction
+    }// end deleteAction
+    
+  /** remove an item from a folder (dialog,ajax only)*/
+  public function removeitemAction()
+    {
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    $folder_id=$this->_getParam('folderId');
+    $item_id=$this->_getParam('itemId');
+    $folder=$this->Folder->load($folder_id);
+    $item=$this->Item->load($item_id);
+    $header="";
+    if(!isset($folder_id))
+      {
+      throw new Zend_Exception("Please set the folderId.");
+      }
+    if(!isset($item_id))
+      {
+      throw new Zend_Exception("Please set the folderId.");
+      }
+    elseif($folder===false)
+      {
+      throw new Zend_Exception("The folder doesn t exist.");
+      }
+    elseif($item===false)
+      {
+      throw new Zend_Exception("The item doesn t exist.");
+      }
+    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception("Permissions error.");
+      }
+      
+    $this->Folder->removeItem($folder,$item);
+    echo JsonComponent::encode(array(true,$this->t('Changes saved')));
+    }// end deleteAction
     
   /** create a folder (dialog,ajax only)*/
   public function createfolderAction()

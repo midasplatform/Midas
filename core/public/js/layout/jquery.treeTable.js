@@ -70,6 +70,10 @@
   
   function initializeAjax(node,first)
   {
+  if(node==undefined)
+    {
+    return ;
+    }
   var folders='';
   var children;
   if(first)
@@ -469,8 +473,8 @@
           arrayElement=jQuery.parseJSON(data);
           $.each(arrayElement, function(index, value) { 
               var img=$('img.folderLoading[element='+value.id+']');
-              img.after(value.size);
-              img.parents('tr').find('td:first span:last').append(' ('+value.count+')');
+              img.after('<span class="elementSize">'+value.size+'</span>');
+              img.parents('tr').find('td:first span:last').append('<span style="padding-left:0px;" class="elementCount">'+' ('+value.count+')'+'</span>');
               img.remove();
           });
         });

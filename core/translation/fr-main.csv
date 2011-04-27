@@ -92,6 +92,7 @@ Download;Télécharger
 Delete Feed;Effacer cette actualité
 Do you really want to delete the feed;Voulez-vous vraiment supprimer l'actualité
 Do you really want to delete the folder;Voulez-vous vraiment supprimer le répertoire
+Do you really want to remove the item;Voulez-vous vraiment retirer le document
 Yes;Oui
 No;Non
 Plugins;Plugins
@@ -200,3 +201,4 @@ Add a permission to ...;Ajouter une autorisation à ...
 Owned by me;M'appartenant
 Shared to me;Partagés avec moi
 Shared to Members;Partagés aux Membres
+Remove Item from Folder;Enlever le document du répertoire
