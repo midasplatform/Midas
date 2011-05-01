@@ -74,7 +74,7 @@ class ItemController extends AppController
       setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($recentItems), time()+60*60*24*30,'/'); //30 days
       }
     $itemRevision=$this->Item->getLastRevision($itemDao);
-    $this->Item->plusOneView($itemDao);
+    $this->Item->incrementViewCount($itemDao);
     $itemDao->lastrevision=$itemRevision;
     $itemDao->revisions=$itemDao->getRevisions();
     $itemDao->creation=$this->Component->Date->formatDate(strtotime($itemRevision->getDate()));

@@ -306,7 +306,7 @@ class FolderModel extends FolderModelBase
     return $dao;
     }
     
-  /** Get user if  the folder is the main folder of one*/
+  /** Get user if  the folder is the main folder of one */
   function getUser($folder)
     {
     if(!$folder instanceof FolderDao)
@@ -320,6 +320,18 @@ class FolderModel extends FolderModelBase
     return $dao;
     }
 
+  /** Returns if a folder exists based on the name and description */
+  function getFolderExists($name,$parentid)
+    {
+    $dao= $this->initDao('Folder', $this->database->fetchRow($this->database->select()
+                                                           ->setIntegrityCheck(false)
+                                                           ->from('folder')
+                                                           ->where('name = ?', $name)
+                                                           ->where('parent_id = ?', $parentid)));
+    return $dao;
+    }
+    
+    
   /** getItems with policy check
    * @return
    */

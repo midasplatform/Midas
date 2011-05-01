@@ -24,7 +24,7 @@ class ItemRevisionModelBase extends AppModel
     $this->initialize(); // required
     } // end __construct()
   
-    /** delete a revision*/
+  /** delete a revision*/
   function delete($revisiondao)
     {
     if(!$revisiondao instanceof ItemRevisionDao)

@@ -3,7 +3,7 @@ abstract class CommunityModelBase extends AppModel
 {
   public function __construct()
     {
-     parent::__construct();  
+    parent::__construct();  
     $this->_name = 'community';
     $this->_key = 'community_id';
     $this->_mainData = array(
@@ -36,7 +36,7 @@ abstract class CommunityModelBase extends AppModel
 
   
   /** plus one view*/
-  function plusOneView($communityDao)
+  function incrementViewCount($communityDao)
     {
     if(!$communityDao instanceof CommunityDao)
       {
@@ -44,9 +44,92 @@ abstract class CommunityModelBase extends AppModel
       }
     $communityDao->view++;
     $this->save($communityDao);
-    }//end plusOneView
+    } //end incrementViewCount
   
-    /** Delete a community */
+  /** Create a community.
+   *  privacy: MIDAS_COMMUNITY_PUBLIC, MIDAS_COMMUNITY_SEMIPRIVATE, MIDAS_COMMUNITY_PRIVATE
+   *  */
+  function createCommunity($name,$description,$privacy,$user)
+    {
+    $name = ucfirst($name);  
+    if($this->getByName($name)!==false)
+      {
+      throw new Zend_Exception("Community already exists.");
+      }
+      
+    $this->loadDaoClass('CommunityDao');       
+    $communityDao=new CommunityDao();
+    $communityDao->setName($name);
+    $communityDao->setDescription($description);
+    $communityDao->setPrivacy($privacy);
+    $communityDao->setCreation(date('c'));
+    $this->save($communityDao);
+
+    $modelLoad = new MIDAS_ModelLoader();
+    $folderModel = $modelLoad->loadModel('Folder');
+    $groupModel = $modelLoad->loadModel('Group');
+    $feedModel = $modelLoad->loadModel('Feed');
+    $folderpolicygroupModel = $modelLoad->loadModel('Folderpolicygroup');
+    $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
+    $feedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
+    
+    $folderGlobal=$folderModel->createFolder('community_'.$communityDao->getKey(),'Main folder of the community '.$communityDao->getKey(),MIDAS_FOLDER_COMMUNITYPARENT);
+    $folderPublic=$folderModel->createFolder('Public','Public folder of the community '.$communityDao->getKey(),$folderGlobal);
+    $folderPrivate=$folderModel->createFolder('Private','Private folder of the community '.$communityDao->getKey(),$folderGlobal);
+
+    $adminGroup=$groupModel->createGroup($communityDao,'Admin group of community '.$communityDao->getKey());
+    $moderatorsGroup=$groupModel->createGroup($communityDao,'Moderators group of community '.$communityDao->getKey());
+    $memberGroup=$groupModel->createGroup($communityDao,'Members group of community '.$communityDao->getKey());
+    $anonymousGroup=$groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+
+    $communityDao->setFolderId($folderGlobal->getKey());
+    $communityDao->setPublicfolderId($folderPublic->getKey());
+    $communityDao->setPrivatefolderId($folderPrivate->getKey());
+    $communityDao->setAdmingroupId($adminGroup->getKey());
+    $communityDao->setModeratorgroupId($moderatorsGroup->getKey());
+    $communityDao->setMembergroupId($memberGroup->getKey());
+    $this->save($communityDao);
+
+    if($user != NULL)
+      {
+      $groupModel->addUser($adminGroup,$user);
+      $groupModel->addUser($memberGroup,$user);
+
+      $feed=$feedModel->createFeed($user,MIDAS_FEED_CREATE_COMMUNITY,$communityDao,$communityDao);
+      $feedpolicyuserModel->createPolicy($user,$feed,MIDAS_POLICY_ADMIN);
+      $feedpolicygroupModel->createPolicy($adminGroup,$feed,MIDAS_POLICY_ADMIN);
+      $feedpolicygroupModel->createPolicy($moderatorsGroup,$feed,MIDAS_POLICY_ADMIN);
+      $feedpolicygroupModel->createPolicy($memberGroup,$feed,MIDAS_POLICY_READ);
+      }
+      
+    $folderpolicygroupModel->createPolicy($adminGroup,$folderGlobal,MIDAS_POLICY_ADMIN);
+    $folderpolicygroupModel->createPolicy($adminGroup,$folderPublic,MIDAS_POLICY_ADMIN);
+    $folderpolicygroupModel->createPolicy($adminGroup,$folderPrivate,MIDAS_POLICY_ADMIN);
+    
+
+    $folderpolicygroupModel->createPolicy($moderatorsGroup,$folderGlobal,MIDAS_POLICY_READ);
+    $folderpolicygroupModel->createPolicy($moderatorsGroup,$folderPublic,MIDAS_POLICY_WRITE);
+    $folderpolicygroupModel->createPolicy($moderatorsGroup,$folderPrivate,MIDAS_POLICY_WRITE);
+    
+
+    $folderpolicygroupModel->createPolicy($memberGroup,$folderGlobal,MIDAS_POLICY_READ);
+    $folderpolicygroupModel->createPolicy($memberGroup,$folderPublic,MIDAS_POLICY_WRITE);
+    $folderpolicygroupModel->createPolicy($memberGroup,$folderPrivate,MIDAS_POLICY_WRITE);
+    
+
+    if($communityDao->getPrivacy()!=MIDAS_COMMUNITY_PRIVATE)
+      {
+      $folderpolicygroupModel->createPolicy($anonymousGroup,$folderPublic,MIDAS_POLICY_READ);
+      if($user != NULL)
+        {
+        $feedpolicygroupModel->createPolicy($anonymousGroup,$feed,MIDAS_POLICY_READ);
+        }
+      } 
+    return $communityDao;
+    } // end createCommunity()    
+    
+    
+  /** Delete a community */
   function delete($communityDao)
     {
     if(!$communityDao instanceof CommunityDao)
