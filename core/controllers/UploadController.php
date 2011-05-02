@@ -40,6 +40,20 @@ class UploadController extends AppController
       $this->view->form=$this->getFormAsArray($this->Form->Upload->createUploadLinkForm());
       $this->userSession->uploaded=array();
       $this->view->selectedLicense=Zend_Registry::get('configGlobal')->defaultlicense;
+      
+      $this->view->defaultUploadLocation=$this->userSession->Dao->getPrivatefolderId();
+      $this->view->defaultUploadLocationText=$this->t('My Private Folder');
+      
+      $parent=$this->_getParam('parent');
+      if(isset($parent))
+        {
+        $parent=$this->Folder->load($parent);
+        if($this->logged&&$parent!=false)
+          {
+          $this->view->defaultUploadLocation=$parent->getKey();
+          $this->view->defaultUploadLocationText=$parent->getName();
+          }
+        }
       }//end simple upload
 
 
@@ -149,10 +163,11 @@ class UploadController extends AppController
       $upload->receive();
       $path=$upload->getFileName();
       $file_size=filesize($path);
-      $privacy=$this->_getParam("privacy");
+      $parent=$this->_getParam("parent");
+      $license=$this->_getParam("license");
       if (!empty($path)&& file_exists($path) && $upload->getFileSize() > 0)
         {
-        $item=$this->createUploadedItem($this->userSession->Dao,$upload->getFilename(null,false),$upload->getFilename(),$privacy);
+        $item=$this->createUploadedItem($this->userSession->Dao,$upload->getFilename(null,false),$upload->getFilename(),$parent,$license);
         $this->userSession->uploaded[]=$item->getKey();
         
         $info= array();
@@ -163,8 +178,27 @@ class UploadController extends AppController
       }//end saveuploaded
 
       /** save upload item in the DB */
-    private function createUploadedItem($userDao,$name,$path,$privacy=null)
+    private function createUploadedItem($userDao,$name,$path,$parent=null,$license=null)
       {
+      if($userDao==null)
+        {
+        throw new Zend_Exception('Please log in');
+        }
+        
+      if($parent==null)
+        {
+        $parent=$userDao->getPrivateFolder();
+        }
+      if(is_numeric($parent))
+        {
+        $parent=$this->Folder->load($parent);
+        }
+        
+      if($parent==false||!$this->Folder->policyCheck($parent, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Zend_Exception('Parent permissions errors');
+        }
+        
       $item = new ItemDao;
       $item->setName($name);
       $item->setDate(date('c'));
@@ -173,25 +207,19 @@ class UploadController extends AppController
       $item->setThumbnail('');
       $this->Item->save($item);
       
-      $feed=$this->Feed->createFeed($this->userSession->Dao,MIDAS_FEED_CREATE_ITEM,$item);
-      if(isset($privacy)&&$privacy=='public')
-        {
-        $this->Folder->addItem($userDao->getPublicFolder(),$item);
-        $anonymousGroup=$this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
-        $this->Itempolicygroup->createPolicy($anonymousGroup,$item,MIDAS_POLICY_READ);
-        $this->Feedpolicygroup->createPolicy($anonymousGroup,$feed,MIDAS_POLICY_READ);
-        }
-      else
-        {
-        $this->Folder->addItem($userDao->getPrivateFolder(),$item);
-        }
-      $this->Feedpolicyuser->createPolicy($this->userSession->Dao,$feed,MIDAS_POLICY_ADMIN);
+      $feed=$this->Feed->createFeed($userDao,MIDAS_FEED_CREATE_ITEM,$item);
+      
+      $this->Folder->addItem($parent,$item);
+      $this->Item->copyParentPolicies($item,$parent,$feed);
+        
+      $this->Feedpolicyuser->createPolicy($userDao,$feed,MIDAS_POLICY_ADMIN);
       $this->Itempolicyuser->createPolicy($userDao,$item,MIDAS_POLICY_ADMIN);
       
       $itemRevisionDao = new ItemRevisionDao;
       $itemRevisionDao->setChanges('Initial revision');
       $itemRevisionDao->setUser_id($userDao->getKey());
       $itemRevisionDao->setDate(date('c'));
+      $itemRevisionDao->setLicense($license);
       $this->Item->addRevision($item,$itemRevisionDao);
       
       // Set the keyword for the item
@@ -237,7 +265,7 @@ class UploadController extends AppController
         }
       $this->ItemRevision->addBitstream($itemRevisionDao,$bitstreamDao);
 
-      $this->getLogger()->info(__METHOD__." Upload ok (".$privacy."):".$path);
+      $this->getLogger()->info(__METHOD__." Upload ok :".$path);
       return $item;
       }//end createUploadedItem
 

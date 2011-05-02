@@ -3,6 +3,35 @@
 <?php
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.listfiles.js');
   
+   if(!function_exists('createFileElement'))
+    {  
+    function createFileElement(&$view,$file)
+      {
+      echo "<div class='feedUserImage'>";
+      echo "<img class='thumbnailSmall' src='{$view->coreWebroot}/public/images/icons/document-big.png' alt=''/>";
+      echo "</div>";
+      echo "<div class='fileInfo'>";
+      echo " <a href='{$view->webroot}/item/{$file->getKey()}'>".trimFileName($file->getName())."</a>";
+      echo "</div>";
+      echo "<div class='fileDate'>";
+      echo  $view->Dateago(strtotime($file->policy_date));
+      echo "</div>";
+      echo "<div style='clear:left;'></div>";
+      }
+    }
+    
+   if(!function_exists('trimFileName'))
+    {  
+    function trimFileName($name)
+      {
+      if(strlen($name)>35)
+        {
+        $name=substr($name,0, 10).'...'.substr($name,strlen($name)-35);
+        }
+      return $name;
+      }
+    }
+  
   $files=$this->listFiles;
   if(empty($files))
     {
@@ -16,32 +45,7 @@
     echo createFileElement($this,$file);
     echo "</div>";
     }
-  echo "</div>";
-  
-  
-  
- function createFileElement(&$view,$file)
-    {
-    echo "<div class='feedUserImage'>";
-    echo "<img class='thumbnailSmall' src='{$view->coreWebroot}/public/images/icons/document-big.png' alt=''/>";
-    echo "</div>";
-    echo "<div class='fileInfo'>";
-    echo " <a href='{$view->webroot}/item/{$file->getKey()}'>".trimFileName($file->getName())."</a>";
-    echo "</div>";
-    echo "<div class='fileDate'>";
-    echo  $view->Dateago(strtotime($file->policy_date));
-    echo "</div>";
-    echo "<div style='clear:left;'></div>";
-    }
-    
-    
-  function trimFileName($name)
-    {
-    if(strlen($name)>35)
-      {
-      $name=substr($name,0, 10).'...'.substr($name,strlen($name)-35);
-      }
-    return $name;
-    }
+  echo "</div>"; 
+ 
     
 ?>

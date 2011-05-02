@@ -4,7 +4,7 @@
       
       function uploadPreStart(file)
       {
-        swfu.setPostParams({"sid" : $('.sessionId').val(),"privacy": $('.privacyUpload').val() });
+        swfu.setPostParams({"sid" : $('.sessionId').val(),"parent": $('#destinationId').val(),'license': $('select[name=licenseSelect]').val()});
         //uploadStart(file);
       }
       
@@ -70,7 +70,7 @@
 				flash_url : json.global.coreWebroot+"/public/js/swfupload/swfupload_fp10/swfupload.swf",
 				flash9_url :json.global.coreWebroot+"/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
 				upload_url:json.global.webroot+"/upload/saveuploaded",
-				post_params: {"sid" : $('.sessionId').val(),"privacy": $('.privacyUpload').val() },
+				post_params: {"sid" : $('.sessionId').val(),"parent": $('#destinationId').val(),'license': $('select[name=licenseSelect]').val()},
 				file_size_limit : $('.maxSizeFile').val()+" MB",
 				file_types : "*.*",
 				file_types_description : "All Files",
@@ -110,6 +110,11 @@
       
       $('#startUploadLink').click(function()
       {
+            if($('#destinationId').val()==undefined||$('#destinationId').val().length==0)
+              {
+                createNotive("Please select where you want to upload your files.", 4000);
+                return false;
+              }
          swfu.startUpload();
       });
     }
@@ -117,12 +122,14 @@
     
     function initJqueryFileupload()
     {
+      updateUploadedCount();
        //see http://aquantum-demo.appspot.com/file-upload
         $('#file_upload').fileUploadUIX({
           beforeSend: function (event, files, index, xhr, handler, callBack) {
             handler.uploadRow.find('.file_upload_start').click(function () {
                 handler.formData = {
-                    privacy: $('.privacyUpload').val()
+                    parent: $('#destinationId').val(),
+                    license: $('select[name=licenseSelect]').val()
                 };
                 callBack();
             });
@@ -135,6 +142,11 @@
         });
         
         $('#startUploadLink').click(function () {
+            if($('#destinationId').val()==undefined||$('#destinationId').val().length==0)
+              {
+                createNotive("Please select where you want to upload your files.", 4000);
+                return false;
+              }
             $('.file_upload_start button').click();
             return false;
         });
@@ -143,7 +155,7 @@
     
     
     
-    $('a#browseMIDASLink').click(function()
+    $('#browseMIDASLink').click(function()
       {
         loadDialog("select","/browse/movecopy/?selectElement=true");
         showDialog('Browse');

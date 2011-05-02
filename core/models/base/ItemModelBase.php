@@ -30,6 +30,43 @@ abstract class ItemModelBase extends AppModel
   abstract function getSharedToUser($userDao,$limit=20);
   abstract function getSharedToCommunity($communityDao,$limit=20);
     
+  /** copy parent folder policies*/
+  function copyParentPolicies($itemdao,$folderdao,$feeddao=null)
+    {
+    if(!$itemdao instanceof ItemDao||!$folderdao instanceof FolderDao)
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    $groupPolicies=$folderdao->getFolderpolicygroup();
+    $userPolicies=$folderdao->getFolderpolicyuser();
+    
+    $modelLoad = new MIDAS_ModelLoader();
+    $ItempolicygroupModel = $modelLoad->loadModel('Itempolicygroup');
+    foreach ($groupPolicies as $key => $policy)
+      {      
+      $ItempolicygroupModel->createPolicy($policy->getGroup(), $itemdao, $policy->getPolicy());
+      }
+    $ItempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
+    foreach ($userPolicies as $key => $policy)
+      {      
+      $ItempolicyuserModel->createPolicy($policy->getUser(), $itemdao, $policy->getPolicy());
+      }
+      
+    if($feeddao!=null &&$feeddao instanceof FeedDao)
+      {      
+      $FeedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
+      foreach ($groupPolicies as $key => $policy)
+        {      
+        $FeedpolicygroupModel->createPolicy($policy->getGroup(), $feeddao, $policy->getPolicy());
+        }
+      $FeedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
+      foreach ($userPolicies as $key => $policy)
+        {      
+        $FeedpolicyuserModel->createPolicy($policy->getUser(), $feeddao, $policy->getPolicy());
+        }
+      }
+    }//end copyParentPolicies
+  
   /** plus one view*/
   function incrementViewCount($itemdao)
     {

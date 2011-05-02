@@ -68,7 +68,7 @@ class DownloadController extends AppController
           {
           continue;
           }
-        $this->Item->plusOneDownload($item);
+        $this->Item->incrementDownloadCount($item);
         if(isset($tmp[1]))
           {
           $tmp=$this->Item->getRevision($item,$tmp[1]);

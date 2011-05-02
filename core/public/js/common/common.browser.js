@@ -208,6 +208,7 @@
             if(policy>=1)
               { 
               html+='<li><a onclick="createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
+              html+='<li><a rel="'+json.global.webroot+'/upload/simpleupload/?parent='+element+'" class="uploadInFolder">'+json.browse.uploadIn+'</a></li>';
               if(node.attr('deletable')!=undefined && node.attr('deletable')=='true')
                 {
                 html+='<li><a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
@@ -222,10 +223,25 @@
             if(policy>=1)
               {
               html+='<li><a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
-              html+='<li><a onclick="removeItem('+element+');">'+json.browse['removeItem']+'</a></li>'; 
+              html+='<li class="removeItemLi"><a onclick="removeItem('+element+');">'+json.browse['removeItem']+'</a></li>'; 
               }   
           }
          $('div.viewAction ul').html(html);
+         
+         $('a.uploadInFolder').cluetip({
+           cluetipClass: 'jtip',
+           dropShadow: false,
+           hoverIntent: false,
+           activation: 'click', 
+           arrows: true, 
+           closePosition: 'title',
+           closeText: '<img src="'+json.global.coreWebroot+'/public/images/icons/close.png" alt="close" />',  
+           positionBy:'uploadElement',
+           topOffset:        20,   
+           leftOffset:       -450,
+           width:            600
+          });
+         
          $('a.sharingLink').click(function(){
             loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
             showDialog(json.browse.share);

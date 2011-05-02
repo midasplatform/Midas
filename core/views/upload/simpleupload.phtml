@@ -71,24 +71,26 @@
       <b>Step 2: Where do you want to upload your files</b>
       <div>
       <br/>
-        <a id='browseMIDASLink'>Browse</a><br/>
-        <span id="destinationUpload"/>
-        <input type="hidden" name="destinationId" id="destinationId"/>
-      
+      <b>Curent selected location:</b>
+          <span id="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
+        <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>  
+        <br/>
+        <input style="margin-left:0px;" id='browseMIDASLink' class="globalButton" type="button" value="Change location" />
+        <br/>
+        <br/>
       </div>      
-      <b>Step 3: Select a copyright</b>
+      <b>Step 3: Select a license</b>
       <div>
         <?php
         echo $this->element('license')?>
       </div>     
+      <br/>
       <b>Step 4: Start the upload</b>
       <br/>
       <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
      
       <span id="btnStartUpload" >
-        <a href="#" id='startUploadLink' >
-        Start Upload
-        </a>
+        <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" value="Start Upload" />
       </span>
   
   </div>

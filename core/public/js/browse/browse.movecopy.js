@@ -6,7 +6,7 @@
      {
        $('#selectElements').click(function(){
          $('#destinationUpload').html($('#selectedDestination').html());
-         $('#destinationId').html($('#selectedDestinationHidden').val());
+         $('#destinationId').val($('#selectedDestinationHidden').val());
          $( "div.MainDialog" ).dialog('close');
          return false;
        });
@@ -26,21 +26,7 @@
     
      $('img.infoLoading').show();
       $('div.ajaxInfoElement').html('');
-      if(ajaxSelectRequest!='')
-        {        
-        ajaxSelectRequest.abort();
-        }
-        createAction(node);
-        ajaxSelectRequest = $.ajax({
-          type: "POST",
-          url: json.global.webroot+'/browse/getelementinfo',
-          data: {type: node.attr('type'), id: node.attr('element')},
-          success: function(jsonContent){
-            createInfo(jsonContent);
-            $('img.infoLoading').hide();
-
-          }
-        });       
+     
 
     function callbackDblClick(node)
     {

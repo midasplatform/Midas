@@ -100,16 +100,18 @@ class BrowseController extends AppController
         if(isset($copySubmit))
           {
           $this->Folder->addItem($destination,$item);
+          $this->Item->copyParentPolicies($item,$destination);
           }
         else
           {
           $from=$this->_getParam('from');
-          $from=$this->Folder->load($from);  
+          $from=$this->Folder->load($from);
           if($destination==false)
             {
             throw new Zend_Exception("Unable to load destination");
             }
           $this->Folder->addItem($destination,$item);
+          $this->Item->copyParentPolicies($item,$destination);
           $this->Folder->removeItem($from, $item);
           }
         }
@@ -321,10 +323,22 @@ class BrowseController extends AppController
         $this->_redirect('/');
         }
       $this->view->items=array();
+      $this->view->header=$this->t('Uploaded Files');
+      $this->view->Date=$this->Component->Date;
       foreach($this->userSession->uploaded as $item)
         {
-        $this->view->items[]=$this->Item->load($item);
+        $item=$this->Item->load($item);
+        if($item!=false)
+          {
+          $item->policy=MIDAS_POLICY_ADMIN;
+          $item->size=$this->Component->Utility->formatSize($item->getSizebytes());
+          $this->view->items[]=$item;
+          }
         }
+      $this->view->json['item']['message']['delete']=$this->t('Delete');
+      $this->view->json['item']['message']['deleteMessage']=$this->t('Do you really want to delete this item? It cannot be undo.');
+      $this->view->json['item']['message']['merge']=$this->t('Merge Files in one Item');
+      $this->view->json['item']['message']['mergeName']=$this->t('Name of the item');
       }
 } // end class
 

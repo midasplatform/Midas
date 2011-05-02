@@ -111,6 +111,8 @@ class AppController extends MIDAS_GlobalController
       "Yes"=>$this->t('Yes'),
       "No"=>$this->t('No')
     );
+    
+    
     $login=array(
       "titleUploadLogin"=>$this->t('Please log in'),
       "contentUploadLogin"=>$this->t('You need to be logged in to be able to upload files.')
@@ -118,6 +120,7 @@ class AppController extends MIDAS_GlobalController
     
     $browse=array(
       'view'=>$this->t('View'),
+      'uploadIn'=>$this->t('Upload here'),
       'createFolder'=>$this->t('Create a new Folder'),
       'preview'=>$this->t('Preview'),
       'download'=>$this->t('Download'),

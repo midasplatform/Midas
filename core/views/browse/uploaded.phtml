@@ -1,5 +1,6 @@
 <?php
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.userpage.js');
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/browse/browse.uploaded.js');
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 ?>
 <div class="viewMain">
   <? echo $this->element('feed'); ?>
@@ -18,10 +19,11 @@
   
       foreach($this->items as $item)
         {
-        echo "<tr id='node--$node'  type='file' element='{$item->getKey()}' >";
-        echo "  <td><span class='file'>{$item->getName()}</span></td>";
-        echo "  <td><span>Test</span></td>";
-        echo "  <td><span>Test</span></td>";
+        echo "<tr id='node--$node' policy='{$item->policy}' class='' type='item' element='{$item->getItemId()}' >";
+        echo "  <td class='treeBrowseElement'><span class='file'>{$item->getName()}</span></td>";
+        echo "  <td>{$item->size}</td>";
+        echo "  <td>{$this->Date->ago($item->getDate(),true)}</td>";
+        echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' /></td>";
         echo "</tr>";
         $node++;
         }
@@ -31,7 +33,23 @@
   </table>
 </div>
 <div class="viewSideBar">
-  <div class="viewAction">
+    <div class="sideElementFirst viewAction" style="display:none;">
+    <h1>Actions</h1>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+  </div>
+  <div class="sideElement viewSelected" >
+    <h1><?php echo $this->t('Selected')?></h1>
+    <span></span>
+  </div>
+  <div class="sideElementLast viewInfo" style="display:none;">
+    <h1>Info</h1>    
+    <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
+    <div class="ajaxInfoElement">
+    </div>
   </div>
 </div>
 

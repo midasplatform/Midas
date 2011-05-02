@@ -2,7 +2,7 @@
 
 class ItemController extends AppController
   {
-  public $_models=array('Item');
+  public $_models=array('Item','ItemRevision','Bitstream');
   public $_daos=array();
   public $_components=array('Date','Utility');
   public $_forms=array();
@@ -109,6 +109,61 @@ class ItemController extends AppController
     $this->Item->delete($itemDao);
 
     $this->_redirect('/?checkRecentItem=true');
+    }//end delete
+    
+    
+   /** Merge items*/
+  function mergeAction()
+    {
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    
+    $itemIds=$this->_getParam("items");
+    $name=$this->_getParam("name");
+    if(empty($name))
+      {
+      throw new Zend_Exception('Please set a name');
+      }
+    $itemIds=explode('-',$itemIds);
+    
+    $items=array();
+    foreach ($itemIds as $item)
+      {
+      $itemDao=$this->Item->load($item);
+      if($itemDao!=false&&$this->Item->policyCheck($itemDao,$this->userSession->Dao,MIDAS_POLICY_ADMIN))
+        {
+        $items[]=$itemDao;
+        }
+      }
+      
+    if(empty($items))
+      {
+      throw new Zend_Exception('Permissions error');
+      }
+      
+      
+    $mainItem=$items[0];
+    $mainItemLastResision=$this->Item->getLastRevision($mainItem);
+    foreach ($items as $key => $item)
+      {
+      if($key!=0)
+        {
+        $revision=$this->Item->getLastRevision($item);
+        $bitstreams=$revision->getBitstreams();
+        foreach($bitstreams as $b)
+          {
+          $b->setItemrevisionId($mainItemLastResision->getKey());
+          $this->Bitstream->save($b);
+          }
+        $this->Item->delete($item);
+        }
+      }
+      
+    $mainItem->setSizebytes($this->ItemRevision->getSize($mainItemLastResision));
+    $mainItem->setName($name);
+    $this->Item->save($mainItem);
+    
+    $this->_redirect('/browse/uploaded');
     }//end delete
     
   }//end class
