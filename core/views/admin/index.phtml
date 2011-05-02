@@ -40,6 +40,10 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
                 <label for='smartoptimizer'>CSS and Javascript optimizer</label>
                 {$this->configForm['smartoptimizer']}
               </div>
+              <div class='defaultLicense'>
+                <label for='licenseSelect'>Default license</label>
+                ".$this->element('license')."
+              </div>
           <div>
             {$this->configForm['submitConfig']}
           </div>

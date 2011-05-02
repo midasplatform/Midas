@@ -1,0 +1,30 @@
+<?php
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.license.js');
+
+  if(!isset($this->selectedLicense))
+    {
+    $this->selectedLicense=LICENSE_PDDL;
+    }
+  
+  echo "<div class='licenseSelectContent'>
+            <select name='licenseSelect'>
+              <optgroup label='Data'>
+                <option value='".LICENSE_RESERVED."' ".(($this->selectedLicense==LICENSE_RESERVED)?'selected':'').">Private: All right reserved</option>
+                <option value='".LICENSE_PDDL."' ".(($this->selectedLicense==LICENSE_PDDL)?'selected':'').">Public (PDDL)</option>
+                <option value='".LICENSE_ODC_BY."' ".(($this->selectedLicense==LICENSE_ODC_BY)?'selected':'').">Public: Attribution (ODC-BY)</option>
+                <option value='".LICENSE_ODBL."' ".(($this->selectedLicense==LICENSE_ODBL)?'selected':'').">Public: Attribution, Share-Alike (ODBL)</option>
+              </optgroup>
+              <optgroup label='Document'>
+                <option value='".LICENSE_RESERVED."' ".(($this->selectedLicense==LICENSE_RESERVED)?'selected':'').">Private: All right reserved</option>
+                <option value='".LICENSE_CC_ATRRIBUTION."' ".(($this->selectedLicense==LICENSE_CC_ATRRIBUTION)?'selected':'').">Public: Attribution (CC BY 3.0)</option>
+                <option value='".LICENSE_CC_ATRRIBUTION_SHAREALIKE."' ".(($this->selectedLicense==LICENSE_CC_ATRRIBUTION_SHAREALIKE)?'selected':'').">Public: Attribution, Share-Alike (CC BY-SA 3.0)</option>
+                <option value='".LICENSE_CC_NODERIVS."' ".(($this->selectedLicense==LICENSE_CC_NODERIVS)?'selected':'').">Public: Attribution, No Derivative Works CC BY-ND 3.0)</option>
+                <option value='".LICENSE_CC_NONCOMMERCIAL."' ".(($this->selectedLicense==LICENSE_CC_NONCOMMERCIAL)?'selected':'').">Public: Attribution, Non Commercial  (CC BY-NC 3.0)</option>
+                <option value='".LICENSE_CC_NONCOMMERCIAL_SHARELIKE."' ".(($this->selectedLicense==LICENSE_CC_NONCOMMERCIAL_SHARELIKE)?'selected':'').">Public: Attribution, Non Commercial, Share-Alike (CC BY-NC-SA 3.0)</option>
+                <option value='".LICENSE_CC_NONCOMMERCIAL_NODERIVS."' ".(($this->selectedLicense==LICENSE_CC_NONCOMMERCIAL_NODERIVS)?'selected':'').">Public: Attribution, Non Commercial, No Derivative Works(CC BY-NC-ND 3.0)</option>
+              </optgroup>
+            </select>
+        </div>";
+ ?>
+
+

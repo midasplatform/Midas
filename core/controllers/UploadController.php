@@ -39,6 +39,7 @@ class UploadController extends AppController
       $this->_helper->layout->disableLayout();
       $this->view->form=$this->getFormAsArray($this->Form->Upload->createUploadLinkForm());
       $this->userSession->uploaded=array();
+      $this->view->selectedLicense=Zend_Registry::get('configGlobal')->defaultlicense;
       }//end simple upload
 
 
@@ -147,12 +148,17 @@ class UploadController extends AppController
       $upload = new Zend_File_Transfer();
       $upload->receive();
       $path=$upload->getFileName();
+      $file_size=filesize($path);
       $privacy=$this->_getParam("privacy");
-
       if (!empty($path)&& file_exists($path) && $upload->getFileSize() > 0)
         {
         $item=$this->createUploadedItem($this->userSession->Dao,$upload->getFilename(null,false),$upload->getFilename(),$privacy);
         $this->userSession->uploaded[]=$item->getKey();
+        
+        $info= array();
+        $info['name']= basename($upload->getFileName());        
+        $info['size']= $file_size;
+        echo json_encode($info);
         }
       }//end saveuploaded
 

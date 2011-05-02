@@ -53,8 +53,18 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
       <input type="submit" disabled  name='moveElements' id='moveElements'  value="<?php echo $this->t('Move')?>"/>
     <?php      
       }
+    elseif($this->selectEnabled)
+      {
+      ?>
+      <input type="submit" disabled  name='selectElements' id='selectElements'  value="<?php echo $this->t('Select')?>"/>
+      <?php
+      }
+       else
+         {
       ?>
     <input type="submit" disabled id='copyElement'  name='copyElement' value="<?php echo $this->t('Copy')?>"/>
+    <?php
+        }?>
   </form>
   
   <?php 

@@ -1,4 +1,5 @@
-<link href="<?php echo $this->coreWebroot?>/public/css/upload/upload.simpleupload.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot?>/public/css/upload/upload.simpleupload.css?<?php echo time()?>" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.fileupload-ui.css?<?php echo time()?>" rel="stylesheet" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
     <?php
@@ -17,8 +18,11 @@
           }
     ?>
 
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-ui.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-uix.js"></script>
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.simpleupload.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.simpleupload.js?<?php echo time()?>"></script>
 
 <div class="tabs" id='uploadTabs'>
   <ul>
@@ -27,32 +31,66 @@
     <li><a href="#uploadTabs-3"><?php echo $this->t('Links');?></a></li>
   </ul>
   <div id="uploadTabs-1"> 
-    <form id="form1" action="index.php" method="post" enctype="multipart/form-data">
       <b>Step 1: Select files to upload</b>
       <br/>
-      <span id="spanButtonPlaceHolder"></span>
+      <div id="swfuploadContent">
+        <span id="spanButtonPlaceHolder"></span>
+        <div>
+        <div class="fieldset flash"  id="fsUploadProgress">
+        </div>
+        </div>
+      </div>
+      <div id="jqueryFileUploadContent">
+        <div id="file_upload">
+            <form action="<?php echo $this->webroot?>/upload/saveuploaded" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file[]" multiple>
+                <button type="submit">Upload</button>
+                <div class="file_upload_label">Browse or drop files</div>
+            </form>
+            <table class="files">
+                <tr class="file_upload_template" style="display:none;">
+                    <td class="file_name"></td>
+                    <td class="file_size"></td>
+                    <td class="file_upload_progress"><div></div></td>
+                    <td class="file_upload_start" style='display:none;'><button>Start</button></td>
+                    <td class="file_upload_cancel"><button></button></td>
+                </tr>
+                <tr class="file_download_template" style="display:none;">
+                    <td class="file_name"><a></a></td>
+                    <td class="file_size"></td>
+                </tr>
+                <div class="file_upload_buttons" style='display:none;'>
+                  <button class="file_upload_start">Start All</button> 
+                  <button class="file_upload_cancel">Cancel All</button> 
+                  <button class="file_download_delete">Delete All</button>
+                </div>
+            </table>
+            <div class="file_upload_overall_progress" style='display:none;'><div style="display:none;"></div></div>
+        </div>
+      </div>
+      <b>Step 2: Where do you want to upload your files</b>
       <div>
-      <div class="fieldset flash" id="fsUploadProgress">
-      </div>
-      </div>
-      <b>Step 2: Choose sharing policy</b>
       <br/>
-      <select class="privacyUpload">
-        <option value="public">Public</option>
-        <option value="private">Private</option>
-      </select>
-      <br/>
-      <b>Step 3: Start the upload</b>
+        <a id='browseMIDASLink'>Browse</a><br/>
+        <span id="destinationUpload"/>
+        <input type="hidden" name="destinationId" id="destinationId"/>
+      
+      </div>      
+      <b>Step 3: Select a copyright</b>
+      <div>
+        <?php
+        echo $this->element('license')?>
+      </div>     
+      <b>Step 4: Start the upload</b>
       <br/>
       <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
      
       <span id="btnStartUpload" >
-        <a href="#" onclick="swfu.startUpload();">
+        <a href="#" id='startUploadLink' >
         Start Upload
         </a>
       </span>
-
-    </form>    
+  
   </div>
     <div id="uploadTabs-3">
       <form id="linkForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">

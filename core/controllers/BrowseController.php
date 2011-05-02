@@ -63,6 +63,7 @@ class BrowseController extends AppController
     {
     $copySubmit=$this->_getParam('copyElement');
     $moveSubmit=$this->_getParam('moveElement');
+    $select=$this->_getParam('selectElement');
     if(isset($copySubmit)||isset($moveSubmit))
       {
       $elements=explode(';',$this->_getParam('elements'));
@@ -128,30 +129,39 @@ class BrowseController extends AppController
      throw new Zend_Exception("Why are you here ? Should be ajax.");
      }
     $this->_helper->layout->disableLayout();
-    $folderIds=$this->_getParam('folders');
-    $itemIds=$this->_getParam('items');
-    $move=$this->_getParam('move');
-    $this->view->folderIds=$folderIds;
-    $this->view->itemIds=$itemIds;
-    $this->view->moveEnabled=true;
-    if(isset($move))
+    
+    if(!isset($select))
       {
-      $this->view->moveEnabled=false;
+      $folderIds=$this->_getParam('folders');
+      $itemIds=$this->_getParam('items');
+      $move=$this->_getParam('move');
+      $this->view->folderIds=$folderIds;
+      $this->view->itemIds=$itemIds;
+      $this->view->moveEnabled=true;
+      if(isset($move))
+        {
+        $this->view->moveEnabled=false;
+        }
+      $folderIds=explode('-',$folderIds);
+      $itemIds=explode('-',$itemIds);
+      $folders= $this->Folder->load($folderIds);
+      $items= $this->Item->load($itemIds);
+      if(empty($folders)&&empty ($items))
+        {
+        throw new Zend_Exception("No element selected");
+        }
+      if(!$this->view->logged)
+        {
+        throw new Zend_Exception("Should be logged");
+        }
+      $this->view->folders=$folders;
+      $this->view->items=$items;
+      $this->view->selectEnabled=false;
       }
-    $folderIds=explode('-',$folderIds);
-    $itemIds=explode('-',$itemIds);
-    $folders= $this->Folder->load($folderIds);
-    $items= $this->Item->load($itemIds);
-    if(empty($folders)&&empty ($items))
+    else
       {
-      throw new Zend_Exception("No element selected");
+      $this->view->selectEnabled=true;
       }
-    if(!$this->view->logged)
-      {
-      throw new Zend_Exception("Should be logged");
-      }
-    $this->view->folders=$folders;
-    $this->view->items=$items;
     
     $communities=$this->User->getUserCommunities($this->userSession->Dao);
     $communities=array_merge($communities, $this->Community->getPublicCommunities());

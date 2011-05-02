@@ -7,18 +7,26 @@ left: 11px!important;
 width:94%!important;
 }
 
+
+#swfuploadContent{
+
+}
+#jqueryFileUploadContent{
+  
+}
+
 /* -- Form Styles ------------------------------- */
-form {	
+#swfuploadContent form {	
 	margin: 0;
 	padding: 0;
 }
 
 
 
-div.fieldset {
+#swfuploadContent div.fieldset {
 	border:  1px solid #afe14c;
 }
-div.fieldset span.legend {
+#swfuploadContent div.fieldset span.legend {
 	position: relative;
 	background-color: #FFF;
 	padding: 3px;
@@ -27,7 +35,7 @@ div.fieldset span.legend {
 	color: #73b304;
 }
 
-div.flash {
+#swfuploadContent div.flash {
 	width: 375px;
 	margin: 10px 0px;
 	border-color: #D9E4FF;
@@ -45,18 +53,18 @@ div.flash {
 
 }
 
-div.reviewUploaded{
+#swfuploadContent div.reviewUploaded{
   display:none;
 }
 
-div#divStatus{
+ #swfuploadContentdiv#divStatus{
   float:right;
 }
 
-button,
-input,
-select,
-textarea { 
+#swfuploadContent button,
+#swfuploadContent input,
+#swfuploadContent select,
+#swfuploadContent textarea { 
 	border-width: 1px; 
 	margin-bottom: 10px;
 	padding: 2px 3px;
@@ -64,10 +72,10 @@ textarea {
 
 
 
-input[disabled]{ border: 1px solid #ccc } /* FF 2 Fix */
+#swfuploadContent input[disabled]{ border: 1px solid #ccc } /* FF 2 Fix */
 
 
-label { 
+#swfuploadContent label { 
 	width: 150px; 
 	text-align: right; 
 	display:block;
@@ -77,17 +85,17 @@ label {
 #btnSubmit { margin: 0 0 0 155px ; }
 
 /* -- Table Styles ------------------------------- */
-td {
+#swfuploadContent td {
 	font: 10pt Helvetica, Arial, sans-serif;
 	vertical-align: top;
 }
 
-.progressWrapper {
+#swfuploadContent .progressWrapper {
 	width: 347px;
 	overflow: hidden;
 }
 
-.progressContainer {
+#swfuploadContent .progressContainer {
 	margin: 0px;
 	padding: 0px;
 	border: solid 1px #E8E8E8;
@@ -95,7 +103,7 @@ td {
 	overflow: hidden;
 }
 /* Message */
-.message {
+#swfuploadContent .message {
 	margin: 1em 0;
 	padding: 10px 20px;
 	border: solid 1px #FFDD99;
@@ -103,24 +111,24 @@ td {
 	overflow: hidden;
 }
 /* Error */
-.red {
+#swfuploadContent .red {
 	border: solid 1px #B50000;
 	background-color: #FFEBEB;
 }
 
 /* Current */
-.green {
+#swfuploadContent .green {
 	border: solid 1px #DDF0DD;
 	background-color: #EBFFEB;
 }
 
 /* Complete */
-.blue {
+#swfuploadContent .blue {
 	border: solid 1px #CEE2F2;
 	background-color: #F0F5FF;
 }
 
-.progressName {
+#swfuploadContent .progressName {
 	font-size: 8pt;
 	font-weight: 700;
 	color: #555;
@@ -133,9 +141,9 @@ td {
   
 }
 
-.progressBarInProgress,
-.progressBarComplete,
-.progressBarError {
+#swfuploadContent .progressBarInProgress,
+#swfuploadContent .progressBarComplete,
+#swfuploadContent .progressBarError {
 	font-size: 0;
 	width: 0%;
 	height: 2px;
@@ -143,19 +151,19 @@ td {
 	margin-top: 2px;
 }
 
-.progressBarComplete {
+#swfuploadContent .progressBarComplete {
 	width: 100%;
 	background-color: green;
 	visibility: hidden;
 }
 
-.progressBarError {
+#swfuploadContent .progressBarError {
 	width: 100%;
 	background-color: red;
 	visibility: hidden;
 }
 
-.progressBarStatus {
+#swfuploadContent .progressBarStatus {
 	margin-top: 2px;
 	width: 100px;
 	font-size: 7pt;
@@ -183,6 +191,6 @@ a.progressCancel:hover {
 
 
 /* -- SWFUpload Object Styles ------------------------------- */
-.swfupload {
+#swfuploadContent .swfupload {
 	vertical-align: top;
 }

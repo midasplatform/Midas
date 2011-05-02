@@ -134,7 +134,7 @@ class Api_IndexController extends Api_AppController
 
     $this->apicallbacks[$apiMethodPrefix.'upload.generatetoken']   = array(&$this, '_UploadApiGenerateToken');
     $this->apicallbacks[$apiMethodPrefix.'upload.getoffset']       = array(&$this, '_UploadApiGetOffset');
-
+/*
     $this->apicallbacks[$apiMethodPrefix.'upload.bitstream']       = array(&$this, '_UploadBitstream');
 
     $this->apicallbacks[$apiMethodPrefix.'community.create']       = array(&$this, '_CommunityCreate');
@@ -175,7 +175,9 @@ class Api_IndexController extends Api_AppController
 
     $this->apicallbacks[$apiMethodPrefix.'check.user.agreement']   = array(&$this, '_CheckUserAgreement');
 
-    $this->apicallbacks[$apiMethodPrefix.'example.reversestring']  = array(&$this, '_ExampleReverseString');
+    $this->apicallbacks[$apiMethodPrefix.'example.reversestring']  = array(&$this, '_ExampleReverseString');*/
+    
+    
 
     /*
     // Load the plugins API

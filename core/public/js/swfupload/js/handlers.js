@@ -13,12 +13,16 @@ The FileProgress class is not part of SWFUpload.
    ********************** */
 function preLoad() {
 	if (!this.support.loading) {
-		alert("You need the Flash Player 9.028 or above to use SWFUpload.");
+    $('#swfuploadContent').hide();
+    $('#jqueryFileUploadContent').show();
+		initJqueryFileupload();
 		return false;
 	}
 }
 function loadFailed() {
-	alert("Something went wrong while loading SWFUpload. If this were a real application we'd clean up and then give you an alternative");
+	$('#swfuploadContent').hide();
+  $('#jqueryFileUploadContent').show();
+		initJqueryFileupload();
 }
 
 function fileQueued(file) {
@@ -74,7 +78,8 @@ function fileDialogComplete(numFilesSelected, numFilesQueued) {
 		if (numFilesSelected > 0) {
 			document.getElementById(this.customSettings.cancelButtonId).disabled = false;
 		}
-		
+	$('#fsUploadProgress').show();
+  $('#dropFileZone').hide();
 		/* I want auto start the upload and I can do that here */
 		//this.startUpload();
 	} catch (ex)  {

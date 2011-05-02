@@ -1,5 +1,72 @@
-		var swfu;
-			var settings = {
+		
+    
+    var swfu;
+      
+      function uploadPreStart(file)
+      {
+        swfu.setPostParams({"sid" : $('.sessionId').val(),"privacy": $('.privacyUpload').val() });
+        //uploadStart(file);
+      }
+      
+      
+		$( "#uploadTabs" ).tabs({
+			ajaxOptions: {
+        beforeSend: function()
+        {
+          $('div.MainDialogLoading').show();
+        },
+        success: function()
+        {
+          $('div.MainDialogLoading').hide();
+          $( "#uploadTabs" ).show();
+        },
+				error: function( xhr, status, index, anchor ) {
+					$( anchor.hash ).html(
+						"Couldn't load this tab. We'll try to fix this as soon as possible. " );
+				}
+			}
+		});
+    $( "#uploadTabs" ).show();
+      $('#linkForm').ajaxForm(function() { 
+         // $('input[name=url]').val('http://');
+          $('.uploadedLinks').val(parseInt($('.uploadedLinks').val())+1);
+          updateUploadedCount();
+      });
+     
+     
+//   if($.browser.msie&&$.browser.version<9)
+   if($.browser.msie)
+     {
+       $('#swfuploadContent').show();
+       $('#jqueryFileUploadContent').hide();
+       initSwfupload();
+     }
+   else
+     {
+       $('#swfuploadContent').hide();
+       $('#jqueryFileUploadContent').show();
+       initJqueryFileupload();
+     }
+      
+    function updateUploadedCount()
+    {
+      var count=parseInt($('.uploadedSimple').val())+parseInt($('.uploadedLinks').val())+parseInt($('.uploadedJava').val());
+      $('.globalUploadedCount').html(count);
+      if(count>0)
+        {
+        $('.reviewUploaded').show();
+        }
+      else
+        {
+        
+        $('.reviewUploaded').hide();
+        }
+    }
+    
+    
+   function initSwfupload()
+    {
+    var settings = {
 				flash_url : json.global.coreWebroot+"/public/js/swfupload/swfupload_fp10/swfupload.swf",
 				flash9_url :json.global.coreWebroot+"/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
 				upload_url:json.global.webroot+"/upload/saveuploaded",
@@ -38,51 +105,46 @@
 				upload_complete_handler : uploadComplete,
 				queue_complete_handler : queueComplete	// Queue plugin event
 			};
-
+      $('#swfuploadContent').show();
 			swfu = new SWFUpload(settings);
       
-      function uploadPreStart(file)
+      $('#startUploadLink').click(function()
       {
-        swfu.setPostParams({"sid" : $('.sessionId').val(),"privacy": $('.privacyUpload').val() });
-        //uploadStart(file);
-      }
-      
-      
-		$( "#uploadTabs" ).tabs({
-			ajaxOptions: {
-        beforeSend: function()
-        {
-          $('div.MainDialogLoading').show();
-        },
-        success: function()
-        {
-          $('div.MainDialogLoading').hide();
-          $( "#uploadTabs" ).show();
-        },
-				error: function( xhr, status, index, anchor ) {
-					$( anchor.hash ).html(
-						"Couldn't load this tab. We'll try to fix this as soon as possible. " );
-				}
-			}
-		});
-    $( "#uploadTabs" ).show();
-      $('#linkForm').ajaxForm(function() { 
-         // $('input[name=url]').val('http://');
-          $('.uploadedLinks').val(parseInt($('.uploadedLinks').val())+1);
-          updateUploadedCount();
+         swfu.startUpload();
       });
-      
-      
-    function updateUploadedCount()
-    {
-      var count=parseInt($('.uploadedSimple').val())+parseInt($('.uploadedLinks').val())+parseInt($('.uploadedJava').val());
-      $('.globalUploadedCount').html(count);
-      if(count>0)
-        {
-        $('.reviewUploaded').show();
-        }
-      else
-        {
-        $('.reviewUploaded').hide();
-        }
     }
+    
+    
+    function initJqueryFileupload()
+    {
+       //see http://aquantum-demo.appspot.com/file-upload
+        $('#file_upload').fileUploadUIX({
+          beforeSend: function (event, files, index, xhr, handler, callBack) {
+            handler.uploadRow.find('.file_upload_start').click(function () {
+                handler.formData = {
+                    privacy: $('.privacyUpload').val()
+                };
+                callBack();
+            });
+          },
+         onComplete:  function (event, files, index, xhr, handler) {
+              $('.uploadedSimple').val(parseInt($('.uploadedSimple').val())+1);
+              updateUploadedCount();
+          },
+        sequentialUploads: true
+        });
+        
+        $('#startUploadLink').click(function () {
+            $('.file_upload_start button').click();
+            return false;
+        });
+    
+    }
+    
+    
+    
+    $('a#browseMIDASLink').click(function()
+      {
+        loadDialog("select","/browse/movecopy/?selectElement=true");
+        showDialog('Browse');
+      });
