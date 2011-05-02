@@ -36,9 +36,10 @@ abstract class FolderModelBase extends AppModel
   abstract function addItem($folder,$item);
   abstract function removeItem($folder,$item);
   abstract function policyCheck($folderDao,$userDao=null,$policy=0);
+  abstract function getFolderExists($name,$description);
   
-    /** plus one view*/
-  function plusOneView($folder)
+  /** Increment the view count */
+  function incrementViewCount($folder)
     {
     if(!$folder instanceof FolderDao)
       {
@@ -46,12 +47,12 @@ abstract class FolderModelBase extends AppModel
       }
     $folder->view++;
     $this->save($folder);
-    }//end plusOneView
+    }//end incrementViewCount
   
   /** Create a folder */
   function createFolder($name,$description,$parent)
     {
-    if(!$parent instanceof FolderDao&&!is_numeric($parent))
+    if(!$parent instanceof FolderDao && !is_numeric($parent))
       {
       throw new Zend_Exception("Should be a folder.");
       }
@@ -59,11 +60,7 @@ abstract class FolderModelBase extends AppModel
       {
       throw new Zend_Exception("Should be a string.");
       }
-    $this->loadDaoClass('FolderDao');
-    $folder=new FolderDao();
-    $folder->setName($name);
-    $folder->setDescription($description);
-    $folder->setDate(date('c'));
+      
     if($parent instanceof FolderDao)
       {
       $parentId=$parent->getFolderId();
@@ -71,7 +68,20 @@ abstract class FolderModelBase extends AppModel
     else
       {
       $parentId=$parent;
+      }  
+
+    // Check if a folder with the same name already exists for the same parent
+    if($existingfolder = $this->getFolderExists($name,$parentId))
+      {
+      return $existingfolder;
       }
+      
+    $this->loadDaoClass('FolderDao');
+    $folder=new FolderDao();
+    $folder->setName($name);
+    $folder->setDescription($description);
+    $folder->setDate(date('c'));
+    
     $folder->setParentId($parentId);
     $this->save($folder);
     return $folder;

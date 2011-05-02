@@ -7,7 +7,7 @@ class AdminController extends AppController
 {
   public $_models=array('Errorlog','Assetstore');
   public $_daos=array();
-  public $_components=array('Upgrade','Utility');
+  public $_components=array('Upgrade','Utility','MIDAS2Migration');
   public $_forms=array('Admin','Assetstore');
   
   function init()
@@ -365,8 +365,15 @@ class AdminController extends AppController
     } // end function  serversidefilechooserAction
     
     
-    
-    
+  /**
+   * \fn 
+   * \brief 
+   */
+  function migratemidas2Action()
+    {
+    $this->Component->MIDAS2Migration->migrate();
+    exit();  
+    }
     
 } // end class
 

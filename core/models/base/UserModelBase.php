@@ -37,7 +37,7 @@ abstract class UserModelBase extends AppModel
   abstract function getUserCommunities($userDao);
   
     /** plus one view*/
-  function plusOneView($userDao)
+  function incrementViewCount($userDao)
     {
     if(!$userDao instanceof UserDao)
       {
@@ -45,7 +45,7 @@ abstract class UserModelBase extends AppModel
       }
     $userDao->view++;
     $this->save($userDao);
-    }//end plusOneView
+    }//end incrementViewCount
     
   /** create user */
   public function createUser($email,$password,$firstname,$lastname,$admin=0)
@@ -55,6 +55,13 @@ abstract class UserModelBase extends AppModel
       {
       throw new Zend_Exception("Error Parameters.");
       }
+
+    // Check if the user already exists based on the email address
+    if($this->getByEmail($email) != null)
+      {
+      throw new Zend_Exception("User already exists.");
+      }
+      
     Zend_Loader::loadClass('UserDao', BASE_PATH.'/core/models/dao');
     $passwordPrefix=Zend_Registry::get('configGlobal')->password->prefix;
     if(isset($passwordPrefix)&&!empty($passwordPrefix))

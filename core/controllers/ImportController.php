@@ -133,7 +133,6 @@ class ImportController extends AppController
           $item->setName($fileInfo->getFilename());
           $this->Item->save($item);
           
-          
           // Set the keyword for the item
           $keyword = new ItemKeywordDao();
           $keyword->setValue($fileInfo->getFilename());

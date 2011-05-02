@@ -71,7 +71,7 @@ class FolderController extends AppController
       $header.="</ul>";
       }
       
-    $this->Folder->plusOneView($folder);
+    $this->Folder->incrementViewCount($folder);
     $this->view->mainFolder=$folder;
     $this->view->folders=$folders;
     $this->view->items=$items;

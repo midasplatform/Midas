@@ -31,7 +31,7 @@ abstract class ItemModelBase extends AppModel
   abstract function getSharedToCommunity($communityDao,$limit=20);
     
   /** plus one view*/
-  function plusOneView($itemdao)
+  function incrementViewCount($itemdao)
     {
     if(!$itemdao instanceof ItemDao)
       {
@@ -39,10 +39,10 @@ abstract class ItemModelBase extends AppModel
       }
     $itemdao->view++;
     $this->save($itemdao);
-    }//end plusOneView
+    }//end incrementViewCount
     
    /** plus one download*/
-  function plusOneDownload($itemdao)
+  function incrementDownloadCount($itemdao)
     {
     if(!$itemdao instanceof ItemDao)
       {
@@ -50,7 +50,7 @@ abstract class ItemModelBase extends AppModel
       }
     $itemdao->download++;
     $this->save($itemdao);
-    }//end plusOneView
+    }//end incrementDownloadCount
     
   /** Add a revision to an item
    * @return void*/
