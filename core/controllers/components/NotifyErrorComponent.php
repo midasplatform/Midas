@@ -34,7 +34,6 @@ class NotifyErrorComponent  extends AppComponent
       if(!is_null($e = error_get_last()))
         {    
         $environment = Zend_Registry::get('configGlobal')->environment;
-        
         switch ($environment) {  
             case 'production':  
                 $message .= "It seems you have just encountered an unknown issue.";  
@@ -45,6 +44,7 @@ class NotifyErrorComponent  extends AppComponent
                 elseif($e['type']==E_WARNING )$e['typeText']='E_WARNING';
                 elseif($e['type']==E_PARSE) $e['typeText ']='E_PARSE';
                 elseif($e['type']==E_RECOVERABLE_ERROR) $e['typeText ']='E_RECOVERABLE_ERROR';
+                elseif($e['type']==E_COMPILE_ERROR) $e['typeText ']='E_COMPILE_ERROR';
                 else return;
                 echo $message;
                 $this->_mailer=$mailer;
@@ -58,6 +58,7 @@ class NotifyErrorComponent  extends AppComponent
               elseif($e['type']==E_WARNING )$e['typeText']='E_WARNING';
               elseif($e['type']==E_PARSE) $e['typeText ']='E_PARSE';
               elseif($e['type']==E_RECOVERABLE_ERROR) $e['typeText ']='E_RECOVERABLE_ERROR';
+              elseif($e['type']==E_COMPILE_ERROR) $e['typeText ']='E_COMPILE_ERROR';
               else return;
               header('content-type: text/plain');
               echo $this->getFatalErrorMessage($e);

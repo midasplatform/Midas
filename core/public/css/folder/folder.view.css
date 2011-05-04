@@ -1,3 +1,11 @@
 div.defaultSideTrigger{
   display:none;
 }
+
+div.viewAction{
+  display:inherit!important;
+}
+
+div.viewInfo{
+  display:inherit!important;
+}

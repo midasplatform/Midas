@@ -3,9 +3,26 @@
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/folder/folder.view.js');
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 ?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/folder/folder.view.css" />
+
 <div class="viewMain">
+  
+  <?php
+  $descriptionMainFolder=$this->mainFolder->getDescription();
+  if(!empty($descriptionMainFolder))
+    {
+    ?>
+  <div class="tabs" id='tabsGeneric'>
+    <ul>
+      <li><a href="#tabs-1"><?php echo $this->t("Data")?></a></li>
+      <li><a href="#tabs-2"><?php echo $this->t('Info');?></a></li>
+    </ul>
+  <div id="tabs-1">
+  <?php
+    }
+  ?>
   <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
   <table id="browseTable" class="midasTree">
     <thead>
@@ -52,7 +69,21 @@
     echo "<h4>{$this->t("This folder is empty")}.</h4>";
     }
     ?>
+    <?php
+  
+  if(!empty($descriptionMainFolder))
+    {
+    ?>
+    </div>
+    <div id="tabs-2">
+      <?php echo $descriptionMainFolder?>
+    </div>
+  </div>
+  <?php
+    }
+  ?>
 </div>
+
 <div class="viewSideBar">
   <?php
   if(empty($this->folders)&&empty($this->items))

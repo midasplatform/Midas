@@ -1,0 +1,5 @@
+form#editFolderForm input[type="text"], form#editFolderForm  input[type="password"] ,form#editFolderForm textarea
+{
+  width: 350px!important;
+}
+

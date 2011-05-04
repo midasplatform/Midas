@@ -5,7 +5,7 @@ class FolderController extends AppController
   public $_models=array('Folder','Folder','Item','Folderpolicygroup','Folderpolicyuser');
   public $_daos=array('Folder','Folder','Item');
   public $_components=array('Utility','Date');
-  public $_forms=array();
+  public $_forms=array('Folder');
 
   /** Init Controller */
   function init()
@@ -19,6 +19,55 @@ class FolderController extends AppController
       }
     $this->view->activemenu = 'browse'; // set the active menu
     }  // end init()
+    
+    
+  /** Edit Folder (ajax) */
+  function editAction()
+    {
+    $this->_helper->layout->disableLayout();
+    $folder_id=$this->_getParam('folderId');
+    $folder=$this->Folder->load($folder_id);
+    if(!isset($folder_id))
+      {
+      throw new Zend_Exception("Please set the folderId.");
+      }
+    elseif($folder===false)
+      {
+      throw new Zend_Exception("The folder doesn t exist.");
+      }
+    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception("Permissions error.");
+      }    
+        
+    if($this->_request->isPost())
+      {
+      $name=$this->_getParam('name');
+      $description=$this->_getParam('description');
+      $teaser=$this->_getParam('teaser');
+      
+      if(strlen($name)>0)
+        {
+        $folder->setName($name);
+        }        
+      $folder->setDescription($description);
+      if(strlen($teaser)<251)
+        {
+        $folder->setTeaser($teaser);
+        }
+        
+      $this->Folder->save($folder);
+      $this->_redirect('/folder/'.$folder->getKey());
+      }
+    
+    $this->view->folderDao=$folder;    
+    $form = $this->Form->Folder->createEditForm();
+    $formArray = $this->getFormAsArray($form);    
+    $formArray['name']->setValue($folder->getName());
+    $formArray['description']->setValue($folder->getDescription());
+    $formArray['teaser']->setValue($folder->getTeaser());
+    $this->view->form = $formArray;
+    }
 
   /** View Action*/
   public function viewAction()

@@ -5,6 +5,8 @@
     $("table#browseTable").show();
     genericCallbackSelect($('div.defaultSideTrigger'));
     
+    $( "#tabsGeneric" ).tabs();
+    $("#tabsGeneric").show();
   });
   
   //dependance: common/browser.js

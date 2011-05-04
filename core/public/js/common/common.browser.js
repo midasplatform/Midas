@@ -133,6 +133,14 @@
         });         
       
     }
+    
+    
+    function editFolder(id)
+    {
+        loadDialog("editFolder"+id,"/folder/edit?folderId="+id);
+        showDialog(json.browse.edit,false);
+    }
+    
     function removeItem(id)
     {
       var html='';
@@ -209,9 +217,10 @@
               { 
               html+='<li><a onclick="createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
               html+='<li><a rel="'+json.global.webroot+'/upload/simpleupload/?parent='+element+'" class="uploadInFolder">'+json.browse.uploadIn+'</a></li>';
+              html+='<li><a onclick="editFolder('+element+');">'+json.browse.edit+'</a></li>';
               if(node.attr('deletable')!=undefined && node.attr('deletable')=='true')
                 {
-                html+='<li><a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+                html+='<li><a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';                
                 html+='<li><a onclick="deleteFolder('+element+');">'+json.browse['delete']+'</a></li>'; 
                 }
               }                
@@ -309,6 +318,15 @@
         html+='    <td>'+arrayElement['nbitstream']+'</td>';
         html+='  </tr>';
             
+        }
+        
+      if(arrayElement['type']=='folder')
+        {
+        html+='  <tr>';
+        html+='    <td colspan="2">';
+        html+=arrayElement['teaser'];
+        html+=     '</td>';
+        html+='  </tr>';                
         }
       html+='</table>';    
       if(arrayElement['type']=='community'&&arrayElement['privacy']==2)
