@@ -359,7 +359,7 @@ class UserController extends AppController
       }
     else
       {
-      $this->User->plusOneView($userDao);
+      $this->User->incrementViewCount($userDao);
       }
     $this->view->feeds=$this->Feed->getFeedsByUser($this->userSession->Dao,$userDao);
     

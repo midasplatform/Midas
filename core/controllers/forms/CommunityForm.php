@@ -16,18 +16,24 @@ class CommunityForm extends AppForm
     $description = new Zend_Form_Element_Textarea('description');
     
     $privacy = new Zend_Form_Element_Radio('privacy');
-    $privacy->addMultiOptions( array(
-                 MIDAS_COMMUNITY_PUBLIC => $this->t("Public (Folders are public. Everyone can join the community)"),
-                 MIDAS_COMMUNITY_PRIVATE => $this->t("Private (Folders are private. Only invited users can join the community)"),
-                 MIDAS_COMMUNITY_SEMIPRIVATE => $this->t("Semi-private (Contain public and private folders. Only invited users can join the community)")
+    $privacy->addMultiOptions( array(                 
+                 MIDAS_COMMUNITY_PRIVATE => $this->t("Private, only member can see the community"),
+                 MIDAS_COMMUNITY_PUBLIC => $this->t("Public, everyone can see the community"),
                   ))
             ->setRequired(true)
             ->setValue(MIDAS_COMMUNITY_PUBLIC);
+    
+    $canJoin = new Zend_Form_Element_Radio('canJoin');
+    $canJoin->addMultiOptions( array(
+                 MIDAS_COMMUNITY_CAN_JOIN => $this->t("Everyone can join the community"),
+                 MIDAS_COMMUNITY_INVITATION_ONLY => $this->t("Only invited users can join the community"),
+                  ))
+            ->setValue(MIDAS_COMMUNITY_CAN_JOIN);
    
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel($this->t("Create"));
     
-    $form->addElements(array($name,$description,$privacy,$submit));
+    $form->addElements(array($name,$description,$privacy,$submit,$canJoin));
     return $form;
     }
   

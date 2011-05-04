@@ -4,7 +4,7 @@ form#createCommunityForm label{
 
 form#createCommunityForm div.radioElement label{
   float: inherit!important;
-  width: 300px!important;
+  width: 400px!important;
 }
 
 form#createCommunityForm div.radioElement ul{
@@ -13,3 +13,16 @@ form#createCommunityForm div.radioElement ul{
   padding: 0px 0px 0px 0px;
   width: 300px!important;
 }
+form#createCommunityForm div.radioElement br{
+  display:none;
+}
+form#createCommunityForm div.radioElement h4{
+  margin-bottom: 4px;
+}
+
+form#createCommunityForm div.radioElement #canJoinDiv{
+  margin-left: 10px;
+  color: grey;
+}
+
+

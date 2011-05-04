@@ -64,6 +64,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       ?>
     <div id="tabs-3">
       <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+
       <table id="browseTable" class="midasTree">
         <thead>
               <th class="thData"><?php echo $this->t('Name');?></th>
@@ -112,18 +113,12 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 <div class="viewSideBar">
   
   <?php
-  if(!$this->isMember&&$this->communityDao->getPrivacy()==MIDAS_COMMUNITY_PUBLIC)
+  if(!$this->isMember&&$this->canJoin)
     {
     echo "
     <form type='post' action=''>
       <input name='joinCommunity' type='submit' class='globalButton' value='{$this->t('Join the community')}' />
     </form>
-    ";
-    }
-  else if(!$this->isMember&&$this->communityDao->getPrivacy()==MIDAS_COMMUNITY_SEMIPRIVATE)
-    {
-    echo "
-      <input type='button' class='globalButton' value='{$this->t('Request to join the community')}' />
     ";
     }
   

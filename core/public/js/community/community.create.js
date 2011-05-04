@@ -7,11 +7,11 @@ $('form.createCommunityForm').submit(function()
 
 $('div.createNameElement input').focusout(function()
 {
-  $.post($('.webroot').val()+"/community/validentry", {entry: obj.val(), type: "dbcommunityname"},
+  $.post($('.webroot').val()+"/community/validentry", {entry: $('input[name=name]').val(), type: "dbcommunityname"},
       function(data){
         if(data.search('true')!=-1)
         {
-          alert('name already exists');
+          createNotive('Name already exists', 4000);
           nameValid=false;
         }
         else
@@ -20,3 +20,24 @@ $('div.createNameElement input').focusout(function()
         }
       });
 });
+
+initCommunityPrivacy();
+
+function initCommunityPrivacy()
+{
+if($('input[name=privacy]:checked').val()== 1) //private
+  {
+    $('input[name=canJoin]').attr('disabled','disabled');
+    $('input[name=canJoin]').removeAttr('checked');
+    $('input[name=canJoin][value=0]').attr('checked', true); //invitation
+  }
+else
+  {
+    $('input[name=canJoin]').removeAttr('disabled');
+    $('input[name=canJoin]').removeAttr('checked');
+    $('input[name=canJoin][value=1]').attr('checked', true); //invitation
+  }
+  $('input[name=privacy]').change(function(){
+    initCommunityPrivacy();
+  });
+}

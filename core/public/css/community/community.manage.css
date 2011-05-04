@@ -1,15 +1,27 @@
 
-
-form#editCommunityForm div.radioElement label{
+ div.radioElement label{
   float: inherit!important;
-  width: 300px!important;
+  width: 400px!important;
 }
 
-form#editCommunityForm div.radioElement ul{
+ div.radioElement ul{
   list-style: none;
   margin: 0px 0px 0px 100px;
   padding: 0px 0px 0px 0px;
-  width: 300px!important;
+  width: 600px!important;
+}
+
+ div.radioElement h4{
+  margin-bottom: 4px;
+}
+
+ div.radioElement #canJoinDiv{
+  margin-left: 10px;
+  color: grey;
+}
+
+ div.radioElement br{
+  display:none;
 }
 
 

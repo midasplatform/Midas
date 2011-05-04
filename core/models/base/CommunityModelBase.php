@@ -18,6 +18,7 @@ abstract class CommunityModelBase extends AppModel
       'admingroup_id' => array('type' => MIDAS_DATA),
       'moderatorgroup_id' => array('type' => MIDAS_DATA),
       'membergroup_id' => array('type' => MIDAS_DATA),
+      'can_join' => array('type' => MIDAS_DATA),
       'view' => array('type' => MIDAS_DATA),
       'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
       'public_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'publicfolder_id', 'child_column' => 'folder_id'),
@@ -47,14 +48,26 @@ abstract class CommunityModelBase extends AppModel
     } //end incrementViewCount
   
   /** Create a community.
-   *  privacy: MIDAS_COMMUNITY_PUBLIC, MIDAS_COMMUNITY_SEMIPRIVATE, MIDAS_COMMUNITY_PRIVATE
+   *  privacy: MIDAS_COMMUNITY_PUBLIC, MIDAS_COMMUNITY_PRIVATE
    *  */
-  function createCommunity($name,$description,$privacy,$user)
+  function createCommunity($name,$description,$privacy,$user,$canJoin=null)
     {
     $name = ucfirst($name);  
     if($this->getByName($name)!==false)
       {
       throw new Zend_Exception("Community already exists.");
+      }
+      
+    if($canJoin==null||$privacy==MIDAS_COMMUNITY_PRIVATE)
+      {
+      if($privacy==MIDAS_COMMUNITY_PRIVATE)
+        {
+        $canJoin=MIDAS_COMMUNITY_INVITATION_ONLY;
+        }
+      else
+        {
+        $canJoin=MIDAS_COMMUNITY_CAN_JOIN;
+        }
       }
       
     $this->loadDaoClass('CommunityDao');       
@@ -63,6 +76,7 @@ abstract class CommunityModelBase extends AppModel
     $communityDao->setDescription($description);
     $communityDao->setPrivacy($privacy);
     $communityDao->setCreation(date('c'));
+    $communityDao->setCanJoin($canJoin);
     $this->save($communityDao);
 
     $modelLoad = new MIDAS_ModelLoader();

@@ -95,6 +95,7 @@ class CommunityController extends AppController
           $communityDao->setName($formInfo->getValue('name'));
           $communityDao->setDescription($formInfo->getValue('description'));
           $communityDao->setPrivacy($formInfo->getValue('privacy'));
+          $communityDao->setCanJoin($formInfo->getValue('canJoin'));
           $this->Community->save($communityDao);
           echo JsonComponent::encode(array(true,$this->t('Changes saved'),$formInfo->getValue('name')));
           }
@@ -155,6 +156,8 @@ class CommunityController extends AppController
     $description->setValue($communityDao->getDescription());
     $privacy=$formInfo->getElement('privacy');
     $privacy->setValue($communityDao->getPrivacy());
+    $canJoin=$formInfo->getElement('canJoin');
+    $canJoin->setValue($communityDao->getCanJoin());
     $submit=$formInfo->getElement('submit');
     $submit->setLabel($this->t('Save'));
     $this->view->infoForm=$this->getFormAsArray($formInfo);
@@ -240,7 +243,9 @@ class CommunityController extends AppController
       throw new Zend_Exception("This community doesn't exist  or you don't have the permissions.");
       }
     $joinCommunity=$this->_getParam('joinCommunity'); 
-    if($this->userSession->Dao!=null&&isset($joinCommunity)&&$communityDao->getPrivacy()==MIDAS_COMMUNITY_PUBLIC)
+    $canJoin=$communityDao->getCanJoin()==MIDAS_COMMUNITY_CAN_JOIN;
+    $this->view->canJoin=$canJoin;
+    if($canJoin&&$this->userSession->Dao!=null&&isset($joinCommunity)&&$communityDao->getPrivacy()==MIDAS_COMMUNITY_PUBLIC)
       {
       $member_group=$communityDao->getMemberGroup();
       $this->Group->addUser($member_group,$this->userSession->Dao);
@@ -315,8 +320,9 @@ class CommunityController extends AppController
        $name = $form->getValue('name');
        $description = $form->getValue('description');
        $privacy = $form->getValue('privacy');
+       $canJoin = $form->getValue('canJoin');
 
-       $communityDao = $this->Community->createCommunity($name,$description,$privacy,$this->userSession->Dao);
+       $communityDao = $this->Community->createCommunity($name,$description,$privacy,$this->userSession->Dao,$canJoin);
        $this->_redirect("/community/".$communityDao->getKey());
        }
      else

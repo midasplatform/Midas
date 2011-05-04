@@ -43,25 +43,11 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
           <?php echo $this->infoForm['description']?>
         </div>
         <div class="radioElement">
-          <label for="privacy"><?php echo $this->t('Privacy')?></label>
-
-          <ul>
-            <li>
-              <label for="privacy-0">
-                <input type="radio" name="privacy" id="privacy-0" value="0" checked="checked"><?php echo $this->t('Public')?>
-              </label>  
-            </li>
-            <li>
-              <label for="privacy-2">
-                <input type="radio" name="privacy" id="privacy-2" value="2"><?php echo $this->t('Private')?>
-              </label>
-            </li>
-            <li>
-              <label for="privacy-1">
-                <input type="radio" name="privacy" id="privacy-1" value="1"><?php echo $this->t('Semi-private')?>
-              </label> 
-            </li>
-          </ul>
+          <h4><?php echo $this->t('Privacy')?></h4>
+          <?php echo $this->infoForm['privacy']?>
+          <div id="canJoinDiv">
+            <?php echo $this->infoForm['canJoin']?>
+          </div>
         </div>
         <div>
           <?php echo $this->infoForm['submit']?>
@@ -175,6 +161,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
     <div id="tabs-3">
       <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+            Drag and drop to move elements.
+            <br/>
+            <br/>
       <table id="browseTable" class="midasTree">
         <thead>
               <th class="thData"><?php echo $this->t('Name');?></th>

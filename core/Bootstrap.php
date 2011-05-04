@@ -169,7 +169,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
   protected function _initRouter()
     {
     $router = Zend_Controller_Front::getInstance()->getRouter();
-
+/*
     $route1 = new Zend_Controller_Router_Route(
         Zend_Registry::get('configGlobal')->webdav->path.'/:action/*',
         array(
@@ -178,7 +178,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'action'     => ':action'
         )
     );
-    $router->addRoute('webdav', $route1);    
+    $router->addRoute('webdav', $route1);    */
     
     //Init Modules    
     $frontController = Zend_Controller_Front::getInstance();  

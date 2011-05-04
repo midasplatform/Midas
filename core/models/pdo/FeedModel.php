@@ -148,7 +148,7 @@ class FeedModel extends FeedModelBase
                           $this->database->getDB()->quoteInto('f2c.community_id = ? ',$communityDao->getKey())
                           .' AND f.feed_id = f2c.feed_id'  ,array());
       }
-    
+    $sql->order(array('f.date DESC'));
     $rowset = $this->database->fetchAll($sql);
     $rowsetAnalysed=array();
     foreach ($rowset as $keyRow=>$row)

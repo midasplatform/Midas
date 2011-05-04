@@ -1,5 +1,7 @@
   $(document).ready(function() {
     
+    initCommunityPrivacy();
+
     $( "#tabsGeneric" ).tabs({
       select: function(event, ui) {
         $('div.genericAction').show();
@@ -443,3 +445,22 @@ function successInfoChange(responseText, statusText, xhr, form)
       createNotive(jsonResponse[1],4000);
     }
 }
+
+
+function initCommunityPrivacy()
+{
+if($('input[name=privacy]:checked').val()== 1) //private
+  {
+    $('input[name=canJoin]').attr('disabled','disabled');
+    $('input[name=canJoin]').removeAttr('checked');
+    $('input[name=canJoin][value=0]').attr('checked', true); //invitation
+  }
+else
+  {
+    $('input[name=canJoin]').removeAttr('disabled');
+  }
+  $('input[name=privacy]').change(function(){
+    initCommunityPrivacy();
+  });
+}
+    
