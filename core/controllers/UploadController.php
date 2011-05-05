@@ -56,6 +56,34 @@ class UploadController extends AppController
         }
       }//end simple upload
 
+    /**  upload new revision*/
+    public function revisionAction()
+      {
+      if(!$this->logged)
+        {
+        throw new Zend_Exception("You have to be logged in to do that");
+        }
+      if(!$this->getRequest()->isXmlHttpRequest())
+        {
+        throw new Zend_Exception("Error, should be an ajax action.");
+        }
+      $this->_helper->layout->disableLayout();
+      $itemId = $this->_getParam('itemId');
+      $item = $this->Item->load($itemId);
+      
+      if($item==false)
+        {
+        throw new Zend_Exception("Unable to load item.");
+        }
+      if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+        {
+        throw new Zend_Exception("Error policies.");
+        }
+      $this->view->item=$item;
+      $itemRevision=$this->Item->getLastRevision($item);;
+      $this->view->lastrevision=$itemRevision;
+      }//end revisionAction
+
 
         /** save a link*/
     public function savelinkAction()
@@ -167,8 +195,17 @@ class UploadController extends AppController
       $license=$this->_getParam("license");
       if (!empty($path)&& file_exists($path) && $upload->getFileSize() > 0)
         {
-        $item=$this->createUploadedItem($this->userSession->Dao,$upload->getFilename(null,false),$upload->getFilename(),$parent,$license);
-        $this->userSession->uploaded[]=$item->getKey();
+        $tmp=explode('-', $parent);
+        if(count($tmp)==2) //means we upload a new revision
+          {
+          $changes=$this->_getParam("changes");
+          $this->createNewRevision($this->userSession->Dao,$upload->getFilename(null,false),$upload->getFilename(),$tmp,$license,$changes);
+          }
+        else
+          {
+          $item=$this->createUploadedItem($this->userSession->Dao,$upload->getFilename(null,false),$upload->getFilename(),$parent,$license);
+          $this->userSession->uploaded[]=$item->getKey();
+          }
         
         $info= array();
         $info['name']= basename($upload->getFileName());        
@@ -177,6 +214,98 @@ class UploadController extends AppController
         }
       }//end saveuploaded
 
+      /** save upload item in the DB */
+    private function createNewRevision($userDao,$name,$path,$item_revision,$license=null,$changes)
+      {
+      if($userDao==null)
+        {
+        throw new Zend_Exception('Please log in');
+        }
+        
+      $item = $this->Item->load($item_revision[0]);
+      
+      if($item==false)
+        {
+        throw new Zend_Exception('Unable to find item');
+        }
+      
+      $revisions = $item->getRevisions();
+      $itemRevisionDao=null;
+      foreach($revisions as $revision)
+        {
+        if($item_revision[1]==$revision->getRevision())
+          {
+          $itemRevisionDao=$revision;
+          break;
+          }
+        }
+        
+      if(!$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Zend_Exception('Parent permissions errors');
+        }
+        
+        
+      if($itemRevisionDao==null)
+        {
+        $itemRevisionDao = new ItemRevisionDao;
+        $itemRevisionDao->setChanges($changes);
+        $itemRevisionDao->setUser_id($userDao->getKey());
+        $itemRevisionDao->setDate(date('c'));
+        $itemRevisionDao->setLicense($license);
+        $this->Item->addRevision($item,$itemRevisionDao);
+        
+        $feed=$this->Feed->createFeed($userDao,MIDAS_FEED_CREATE_REVISION,$itemRevisionDao);
+      
+        $groupPolicies=$item->getItempolicygroup();
+        $userPolicies=$item->getItempolicyuser();
+
+        //copy policies
+        if($feed!=null &&$feed instanceof FeedDao)
+          {      
+          foreach ($groupPolicies as $key => $policy)
+            {      
+            $this->Feedpolicygroup->createPolicy($policy->getGroup(), $feed, $policy->getPolicy());
+            }
+          foreach ($userPolicies as $key => $policy)
+            {      
+            $this->Feedpolicyuser->createPolicy($policy->getUser(), $feed, $policy->getPolicy());
+            }
+          }
+        }
+      else
+        {
+        $itemRevisionDao->setChanges($changes);
+        $itemRevisionDao->setLicense($license);
+        $this->ItemRevision->save($itemRevisionDao);
+        }
+             
+
+      // Add bitstreams to the revision
+      $bitstreamDao = new BitstreamDao;
+      $bitstreamDao->setName($name);
+      $bitstreamDao->setPath($path);
+      $bitstreamDao->fillPropertiesFromPath();
+     
+      $defaultAssetStoreId=Zend_Registry::get('configGlobal')->defaultassetstore->id;
+      $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
+      $assetstoreDao=$this->Assetstore->load($defaultAssetStoreId);
+      
+      // Upload the bitstream if necessary (based on the assetstore type)
+      $this->Component->Upload->uploadBitstream($bitstreamDao,$assetstoreDao);
+      $checksum=$bitstreamDao->getChecksum();
+      $tmpBitstreamDao=$this->Bitstream->getByChecksum($checksum);
+      if($tmpBitstreamDao!=false)
+        {
+        $bitstreamDao->setPath($tmpBitstreamDao->getPath());
+        $bitstreamDao->setAssetstoreId($tmpBitstreamDao->getAssetstoreId());
+        }
+      $this->ItemRevision->addBitstream($itemRevisionDao,$bitstreamDao);
+
+      $this->getLogger()->info(__METHOD__." Upload ok :".$path);
+      return $item;
+      }//end createUploadedItem
+      
       /** save upload item in the DB */
     private function createUploadedItem($userDao,$name,$path,$parent=null,$license=null)
       {

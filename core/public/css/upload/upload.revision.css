@@ -1,0 +1,196 @@
+div.ui-tabs {
+position: relative!important;
+left: 11px!important;
+}
+
+.cluetip-jtip #cluetip-inner {
+width:94%!important;
+}
+
+
+#swfuploadContent{
+
+}
+#jqueryFileUploadContent{
+  
+}
+
+/* -- Form Styles ------------------------------- */
+#swfuploadContent form {	
+	margin: 0;
+	padding: 0;
+}
+
+
+
+#swfuploadContent div.fieldset {
+	border:  1px solid #afe14c;
+}
+#swfuploadContent div.fieldset span.legend {
+	position: relative;
+	background-color: #FFF;
+	padding: 3px;
+	top: -30px;
+	font: 700 14px Arial, Helvetica, sans-serif;
+	color: #73b304;
+}
+
+#swfuploadContent div.flash {
+	width: 375px;
+	margin: 10px 0px;
+	border-color: #D9E4FF;
+  overflow: auto;
+  height: 90px;
+
+	-moz-border-radius-topleft : 5px;
+	-webkit-border-top-left-radius : 5px;
+    -moz-border-radius-topright : 5px;
+    -webkit-border-top-right-radius : 5px;
+    -moz-border-radius-bottomleft : 5px;
+    -webkit-border-bottom-left-radius : 5px;
+    -moz-border-radius-bottomright : 5px;
+    -webkit-border-bottom-right-radius : 5px;
+
+}
+
+#swfuploadContent div.reviewUploaded{
+  display:none;
+}
+
+ #swfuploadContentdiv#divStatus{
+  float:right;
+}
+
+#swfuploadContent button,
+#swfuploadContent input,
+#swfuploadContent select,
+#swfuploadContent textarea { 
+	border-width: 1px; 
+	margin-bottom: 10px;
+	padding: 2px 3px;
+}
+
+
+
+#swfuploadContent input[disabled]{ border: 1px solid #ccc } /* FF 2 Fix */
+
+
+#swfuploadContent label { 
+	width: 150px; 
+	text-align: right; 
+	display:block;
+	margin-right: 5px;
+}
+
+#btnSubmit { margin: 0 0 0 155px ; }
+
+/* -- Table Styles ------------------------------- */
+#swfuploadContent td {
+	font: 10pt Helvetica, Arial, sans-serif;
+	vertical-align: top;
+}
+
+#swfuploadContent .progressWrapper {
+	width: 347px;
+	overflow: hidden;
+}
+
+#swfuploadContent .progressContainer {
+	margin: 0px;
+	padding: 0px;
+	border: solid 1px #E8E8E8;
+	background-color: #F7F7F7;
+	overflow: hidden;
+}
+/* Message */
+#swfuploadContent .message {
+	margin: 1em 0;
+	padding: 10px 20px;
+	border: solid 1px #FFDD99;
+	background-color: #FFFFCC;
+	overflow: hidden;
+}
+/* Error */
+#swfuploadContent .red {
+	border: solid 1px #B50000;
+	background-color: #FFEBEB;
+}
+
+/* Current */
+#swfuploadContent .green {
+	border: solid 1px #DDF0DD;
+	background-color: #EBFFEB;
+}
+
+/* Complete */
+#swfuploadContent .blue {
+	border: solid 1px #CEE2F2;
+	background-color: #F0F5FF;
+}
+
+#swfuploadContent .progressName {
+	font-size: 8pt;
+	font-weight: 700;
+	color: #555;
+	width: 323px;
+	height: 14px;
+	text-align: left;
+	white-space: nowrap;
+	overflow: hidden;
+  display: inline;
+  
+}
+
+#swfuploadContent .progressBarInProgress,
+#swfuploadContent .progressBarComplete,
+#swfuploadContent .progressBarError {
+	font-size: 0;
+	width: 0%;
+	height: 2px;
+	background-color: blue;
+	margin-top: 2px;
+}
+
+#swfuploadContent .progressBarComplete {
+	width: 100%;
+	background-color: green;
+	visibility: hidden;
+}
+
+#swfuploadContent .progressBarError {
+	width: 100%;
+	background-color: red;
+	visibility: hidden;
+}
+
+#swfuploadContent .progressBarStatus {
+	margin-top: 2px;
+	width: 100px;
+	font-size: 7pt;
+	font-family: Arial;
+	text-align: left;
+	white-space: nowrap;
+  display:inline;
+  margin-left: 5px;
+}
+
+a.progressCancel {
+	font-size: 0;
+	display: block;
+	height: 14px;
+	width: 14px;
+	background-image: url(../../images/icons/cancelbutton.gif);
+	background-repeat: no-repeat;
+	background-position: -14px 0px;
+	float: right;
+}
+
+a.progressCancel:hover {
+	background-position: 0px 0px;
+}
+
+
+/* -- SWFUpload Object Styles ------------------------------- */
+#swfuploadContent .swfupload {
+	vertical-align: top;
+}

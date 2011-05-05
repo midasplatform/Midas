@@ -32,5 +32,10 @@
       loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
       showDialog(json.browse.share);
     });
+    
+    $('a.uploadRevisionLink').click(function(){
+      loadDialog("uploadrevision"+$(this).attr('element'),"/upload/revision?itemId="+$(this).attr('element'));
+      showDialog($(this).html());
+    });
   });
   

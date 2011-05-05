@@ -4,7 +4,7 @@ class ItemController extends AppController
   {
   public $_models=array('Item','ItemRevision','Bitstream');
   public $_daos=array();
-  public $_components=array('Date','Utility');
+  public $_components=array('Date','Utility','Sortdao');
   public $_forms=array();
 
   /** Init Controller */
@@ -24,6 +24,7 @@ class ItemController extends AppController
     {
     $this->view->header=$this->t("Item");
     $this->view->Date=$this->Component->Date;
+    $this->view->Utility=$this->Component->Utility;
     $itemId=$this->_getParam("itemId");
     if(!isset($itemId)||!is_numeric($itemId))
       {
@@ -77,10 +78,15 @@ class ItemController extends AppController
     $this->Item->incrementViewCount($itemDao);
     $itemDao->lastrevision=$itemRevision;
     $itemDao->revisions=$itemDao->getRevisions();
+    
+    $this->Component->Sortdao->field='revision';
+    $this->Component->Sortdao->order='desc';
+    usort($itemDao->revisions, array($this->Component->Sortdao,'sortByNumber'));
+    
     $itemDao->creation=$this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
     $this->view->itemDao=$itemDao;
     
-    $this->view->itemSize=$this->Component->Utility->formatSize($itemDao->getSizebytes());;
+    $this->view->itemSize=$this->Component->Utility->formatSize($itemDao->getSizebytes());
     
     $this->view->json['item']=$itemDao->_toArray();
     $this->view->json['item']['message']['delete']=$this->t('Delete');

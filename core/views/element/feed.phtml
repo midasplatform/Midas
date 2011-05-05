@@ -56,6 +56,8 @@
         echo "{$view->t("added the link")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".trimName($feed->getRessource()->getName())."</a>";
         break;
       case MIDAS_FEED_CREATE_REVISION:
+        echo "{$view->t("added a new revision to")} <a href='{$view->webroot}/item/{$feed->getRessource()->getItem()->getKey()}'>".trimName($feed->getRessource()->getItem()->getName())."</a>";
+        break;
       case MIDAS_FEED_CREATE_USER:
         echo "{$view->t("registered")}";
         break;

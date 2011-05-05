@@ -29,6 +29,7 @@ abstract class ItemModelBase extends AppModel
   abstract function getOwnedByUser($userDao,$limit=20);
   abstract function getSharedToUser($userDao,$limit=20);
   abstract function getSharedToCommunity($communityDao,$limit=20);
+  abstract function policyCheck($itemdao,$userDao=null,$policy=0);
     
   /** copy parent folder policies*/
   function copyParentPolicies($itemdao,$folderdao,$feeddao=null)

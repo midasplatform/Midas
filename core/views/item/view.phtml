@@ -40,6 +40,32 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
       ?>        
     </tbody>
   </table>
+  
+  <h4 style="margin-bottom: 5px;"><?php echo $this->t('Last revision content')?>:</h4>
+  
+  <table id="browseTable" class="midasTree">
+    <thead>
+      <tr>
+        <th ><?php echo $this->t('Name');?></th>
+        <th ><?php echo $this->t('Size');?></th>
+        <th ><?php echo $this->t('Type');?></th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php
+      $bitstreams=$this->itemDao->lastrevision->getBitstreams();
+      foreach($bitstreams as $bitstream)
+        {
+        echo "<tr>";
+        echo "  <td >{$bitstream->getName()}</td>";
+        echo "  <td>{$this->Utility->formatSize($bitstream->getSizebytes())}  </td>";
+        echo "  <td>{$bitstream->getMimetype()}</td>";
+        echo "</tr>";
+        }  
+      ?>        
+    </tbody>
+  </table>
+  
 </div>
 <div class="viewSideBar">
   <div class="sideElementFirst viewAction">
@@ -59,6 +85,9 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
         </li>        
         <li>
           <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink' >{$this->t('Sharing settings')}</a>
+        </li>        
+        <li>
+          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='uploadRevisionLink' >{$this->t('Upload new Revision')}</a>
         </li>        
           ";
         }
