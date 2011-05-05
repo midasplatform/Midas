@@ -71,6 +71,37 @@ else
 
 Zend_Registry::set('configDatabase', $configDatabase);
 
+require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
+$upgradeComponent=new UpgradeComponent();
+$db = Zend_Registry::get('dbAdapter');
+$dbtype = Zend_Registry::get('configDatabase')->database->adapter;
+
+$upgradeComponent->initUpgrade('core', $db, $dbtype);
+$version = Zend_Registry::get('configDatabase')->version;
+if(!isset($version))
+  {
+  if(Zend_Registry::get('configDatabase')->database->adapter=='PDO_MYSQL')
+    {
+    $type='mysql';
+    }
+  else
+    {
+    $type='pgsql';
+    }
+  $MyDirectory = opendir(BASE_PATH."/core/database/{$type}");
+  while($Entry = @readdir($MyDirectory))
+    {
+    if(strpos($Entry, ".sql")!=false)
+      {
+      $sqlFile=BASE_PATH."/core/database/{$type}/".$Entry;
+      }
+    }
+
+  
+  $version=str_replace('.sql', '', basename($sqlFile));
+  }
+$upgradeComponent->upgrade($version,true);
+
 $logger = Zend_Log::factory(array(
   array(
     'writerName' => 'Stream',
@@ -92,4 +123,19 @@ $logger = Zend_Log::factory(array(
 ));
 
 Zend_Registry::set('logger', $logger);
+
+if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
+  {
+  unlink(BASE_PATH.'/tests/configs/pgsql.ini');
+  unlink(BASE_PATH.'/tests/configs/lock.pgsql.ini');
+  rename(  BASE_PATH.'/core/configs/database.local.ini',BASE_PATH.'/tests/configs/pgsql.ini');
+  rename(  BASE_PATH.'/core/configs/database.local.ini.test',BASE_PATH.'/core/configs/database.local.ini');
+  }
+if(file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini'))
+  {
+  unlink(BASE_PATH.'/tests/configs/mysql.ini');
+  unlink(BASE_PATH.'/tests/configs/lock.mysql.ini');
+  rename(  BASE_PATH.'/core/configs/database.local.ini',BASE_PATH.'/tests/configs/mysql.ini');
+  rename(  BASE_PATH.'/core/configs/database.local.ini.test',BASE_PATH.'/core/configs/database.local.ini');
+  }
 

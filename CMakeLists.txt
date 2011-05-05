@@ -8,15 +8,15 @@ cmake_minimum_required( VERSION 2.8 )
 #  Set Midas version information
 set( Midas_VERSION_MAJOR "3" )
 set( Midas_VERSION_MINOR "0" )
-include( CMake/kwsysDateStamp.cmake )
+include( library/CMake/kwsysDateStamp.cmake )
 set( Midas_VERSION_BUILD
   ${KWSYS_DATE_STAMP_YEAR}${KWSYS_DATE_STAMP_MONTH}${KWSYS_DATE_STAMP_DAY} )
 set( Midas_VERSION
   "${Midas_VERSION_MAJOR}.${Midas_VERSION_MINOR}.${Midas_VERSION_BUILD}" )
 
 
-set( PHP_UNIT  CACHE STRING
-  "Phpunit executable.")
+set( PHP  CACHE STRING
+  "Php executable.")
 
 #-----------------------------------------------------------------------------
 #  This should be at the top level for warning suppression

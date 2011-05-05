@@ -94,7 +94,7 @@ CREATE TABLE  folder (
   name  character varying(256) NOT NULL,
   description text NOT NULL,
   view bigint NOT NULL DEFAULT '0',
-  date timestamp without time zone NOT NULL
+  date timestamp without time zone  DEFAULT CURRENT_TIMESTAMP
 )  ;
 
 -- --------------------------------------------------------
@@ -149,12 +149,12 @@ INSERT INTO "group" (group_id,community_id,name) VALUES (0,0,'Anonymous');
 CREATE TABLE  item (
   item_id serial  PRIMARY KEY,
   name character varying(250) NOT NULL,
-  date timestamp without time zone NOT NULL,
+  date timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   description character varying(20) NOT NULL,
   type integer NOT NULL,
   view bigint NOT NULL DEFAULT '0',
   download bigint NOT NULL DEFAULT '0',
-  thumbnail  character varying(256) NOT NULL,
+  thumbnail  character varying(256) ,
   sizebytes bigint NOT NULL DEFAULT  '0'
 ) ;
 

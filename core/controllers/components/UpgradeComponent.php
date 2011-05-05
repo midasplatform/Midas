@@ -103,13 +103,17 @@ class UpgradeComponent extends AppComponent
       }
     return (int)$array[0]*1000000+(int)$array[1]*1000+(int)$array[2];
     }// end transformVersionToNumeric
-
+   
   /** upgrade*/
-  public function upgrade($currentVersion)
+  public function upgrade($currentVersion=null,$testing=false)
     {
-    if(!isset($currentVersion))
+    if($currentVersion==null)
       {
-      throw new Zend_Exception("Please set the current version");
+      $currentVersion=Zend_Registry::get('configDatabase')->version;
+      }
+    if($currentVersion==null)
+      {
+      throw new Zend_Exception('Version undefined');
       }
     if(!is_numeric($currentVersion))
       {
@@ -146,9 +150,17 @@ class UpgradeComponent extends AppComponent
           unlink( $path.'.old');
           }      
         rename($path, $path.'.old');
-        $data['development']['version']=$migration['versionText'];
-        $data['production']['version']=$migration['versionText'];
+        if($testing||Zend_Registry::get('configGlobal')->environment=='testing')
+          {
+          $data['testing']['version']=$migration['versionText'];
+          }
+        else
+          {
+          $data['development']['version']=$migration['versionText'];
+          $data['production']['version']=$migration['versionText'];
+          }     
         $utility->createInitFile($path, $data);
+        echo "yeah".$migration['versionText']; 
         }
       }
     else

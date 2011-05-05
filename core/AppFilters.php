@@ -9,5 +9,3 @@ class AppFilters extends MIDAS_GlobalFilter
 
 
   }
-
-?>

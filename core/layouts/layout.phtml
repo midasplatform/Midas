@@ -143,8 +143,16 @@
         </div>
       </div>
     </div>
+    
     <div class="Wrapper">
+      <?php
+      if($this->needUpgrade)
+        {
+        echo '<span style="color:red;">MIDAS need to be upgraded. <a href="'.$this->webroot.'/admin/#ui-tabs-1">Upgrade</a></span><br/><br/>';
+        }
+      ?>
       <div class=SubWrapper">
+
         <div class="MainContent">
           <div class="SideBar">
             <ul>
