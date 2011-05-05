@@ -8,6 +8,12 @@ $('form#loginForm').submit(function(){
   return valid;
 });  
 
+$('a#forgotPasswordLink').click(function()
+{
+  loadDialog("forgotpassword","/user/recoverpassword");
+  showDialog("Recover Password");
+});
+
 $('form#loginForm input[name=submit]').click(function(){  
   $("form#loginForm div.loginError img").show();
   $("form#loginForm div.loginError span").hide();

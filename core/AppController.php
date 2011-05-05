@@ -152,6 +152,23 @@ class AppController extends MIDAS_GlobalController
     Zend_Loader::loadClass("JsonComponent",BASE_PATH.'/core/controllers/components');
     } // end preDispatch()
 
+    
+  function getServerURL()
+    {
+    $currentPort="";
+    $prefix = "http://";
+
+    if($_SERVER['SERVER_PORT']!=80 && $_SERVER['SERVER_PORT']!=443)
+      {
+      $currentPort=":".$_SERVER['SERVER_PORT'];
+      }
+    if($_SERVER['SERVER_PORT']==443 || ( isset($_SERVER['HTTPS']) && !empty( $_SERVER['HTTPS'])))
+      {
+      $prefix = "https://";
+      }
+    return $prefix.$_SERVER['SERVER_NAME'].$currentPort;
+    }
+
 
   public function postDispatch()
     {
