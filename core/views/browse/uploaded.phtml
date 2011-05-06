@@ -20,7 +20,7 @@
       foreach($this->items as $item)
         {
         echo "<tr id='node--$node' policy='{$item->policy}' class='' type='item' element='{$item->getItemId()}' >";
-        echo "  <td class='treeBrowseElement'><span class='file'>{$item->getName()}</span></td>";
+        echo "  <td class='treeBrowseElement'><span class='file'>{$this->slicename($item->getName(),50)}</span></td>";
         echo "  <td>{$item->size}</td>";
         echo "  <td>{$this->Date->ago($item->getDate(),true)}</td>";
         echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' /></td>";

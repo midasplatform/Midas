@@ -60,17 +60,3 @@
     }
     
     
-    function trimName(name,padding)
-    {
-      if(name.length*7+padding>350)
-        { 
-        toremove=(name.length*7+padding-350)/8;  
-        if(toremove<13)
-          {
-          return 'error';
-          }
-        name=name.substring(0,10)+'...'+name.substring(name.length+13-toremove);
-        return name;
-        }
-    return name;
-    }

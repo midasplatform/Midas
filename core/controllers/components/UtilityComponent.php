@@ -40,6 +40,23 @@ class UtilityComponent extends AppComponent
 
     return $modules;
     }
+  
+  /** format long names*/
+  static public function sliceName($name, $nchar)
+    {
+    if(strlen($name)>$nchar)
+      { 
+      $toremove=(strlen($name))-$nchar;  
+      if($toremove<8)
+        {
+        return $name;
+        }
+      $name=substr($name, 0,5).'...'.substr($name, 8 + $toremove);
+      return $name;
+      }
+    return $name;
+    }
+    
   /** create init file*/
   static public function createInitFile($path,$data)
     {

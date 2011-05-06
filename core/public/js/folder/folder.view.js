@@ -7,6 +7,17 @@
     
     $( "#tabsGeneric" ).tabs();
     $("#tabsGeneric").show();
+    
+    if($('.pathBrowser li').length>4)
+      {
+        while($('.pathBrowser li').length>4)
+          {
+            $('.pathBrowser li:first').remove();
+          }
+          
+        $('.pathBrowser li:first').before('<li>...</li>');
+      }
+    $('.pathBrowser').show();
   });
   
   //dependance: common/browser.js

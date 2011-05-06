@@ -12,7 +12,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
   ?>
   </div>
   <div class="genericInfo">
-    <div class="genericName"><?php   echo $this->itemDao->getName();  ?></div>
+    <div class="genericName"><?php   echo $this->slicename($this->itemDao->getName(),50);  ?></div>
     <div class="genericCompany"><?php echo $this->itemSize;?></div>
   </div>
   
@@ -57,7 +57,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
       foreach($bitstreams as $bitstream)
         {
         echo "<tr>";
-        echo "  <td >{$bitstream->getName()}</td>";
+        echo "  <td >{$this->slicename($bitstream->getName(),50)}</td>";
         echo "  <td>{$this->Utility->formatSize($bitstream->getSizebytes())}  </td>";
         echo "  <td>{$bitstream->getMimetype()}</td>";
         echo "</tr>";

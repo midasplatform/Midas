@@ -172,7 +172,7 @@
                 {
                 if(is_array($item))
                   {
-                  echo "<li onclick=\"location.replace('{$this->webroot}/item/{$item['item_id']}');\" class='recentItem' title='".  str_replace("'", '"', $item['name'])." | todo'><a  href='{$this->webroot}/item/{$item['item_id']}'>".sliceRecentItem($item['name'])."</a></li>";
+                  echo "<li onclick=\"location.replace('{$this->webroot}/item/{$item['item_id']}');\" class='recentItem' title='".  str_replace("'", '"', $item['name'])." | todo'><a  href='{$this->webroot}/item/{$item['item_id']}'>".$this->slicename($item['name'],20)."</a></li>";
                   }                  
                 }
               echo '</ul>';
@@ -225,14 +225,3 @@
     </div>
   </body>
 </html>
-
-<?php
-function sliceRecentItem($name)
-  {
-    if(strlen($name)>20)
-    {
-    $name=substr($name,0, 6).'...'.substr($name,strlen($name)-11);
-    }
-  return $name;
-  }
-  ?>

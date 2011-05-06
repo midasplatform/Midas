@@ -94,24 +94,24 @@ class FolderController extends AppController
         {
         $items[$key]->size=$this->Component->Utility->formatSize($i->getSizebytes());
         }
-      $header.=" <li class='pathFolder'><img alt='' src='{$this->view->coreWebroot}/public/images/FileTree/folder_open.png' /><span><a href='{$this->view->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a></span></li>";
+      $header.=" <li class='pathFolder'><img alt='' src='{$this->view->coreWebroot}/public/images/FileTree/folder_open.png' /><span><a href='{$this->view->webroot}/folder/{$folder->getKey()}'>".$this->Component->Utility->sliceName($folder->getName(),25)."</a></span></li>";
       $parent=$folder->getParent();
       while($parent!==false)
         {
         if(strpos($parent->getName(), 'community')!==false&&$this->Folder->getCommunity($parent)!==false)
           {
           $community=$this->Folder->getCommunity($parent);
-          $header=" <li class='pathCommunity'><img alt='' src='{$this->view->coreWebroot}/public/images/icons/community.png' /><span><a href='{$this->view->webroot}/community/{$community->getKey()}#tabs-3'>{$community->getName()}</a></span></li>".$header;
+          $header=" <li class='pathCommunity'><img alt='' src='{$this->view->coreWebroot}/public/images/icons/community.png' /><span><a href='{$this->view->webroot}/community/{$community->getKey()}#tabs-3'>".$this->Component->Utility->sliceName($community->getName(),25)."</a></span></li>".$header;
           }
         elseif(strpos($parent->getName(), 'user')!==false&&$this->Folder->getUser($parent)!==false)
           {
           $user=$this->Folder->getUser($parent);
-          $header=" <li class='pathUser'><img alt='' src='{$this->view->coreWebroot}/public/images/icons/unknownUser-small.png' /><span><a href='{$this->view->webroot}/user/{$user->getKey()}'>{$user->getFullName()}</a></span></li>".$header;
+          $header=" <li class='pathUser'><img alt='' src='{$this->view->coreWebroot}/public/images/icons/unknownUser-small.png' /><span><a href='{$this->view->webroot}/user/{$user->getKey()}'>".$this->Component->Utility->sliceName($user->getFullName(),25)."</a></span></li>".$header;
  
           }
         else
           {
-          $header=" <li class='pathFolder'><img alt='' src='{$this->view->coreWebroot}/public/images/FileTree/directory.png' /><span><a href='{$this->view->webroot}/folder/{$parent->getKey()}'>{$parent->getName()}</a></span></li>".$header;
+          $header=" <li class='pathFolder'><img alt='' src='{$this->view->coreWebroot}/public/images/FileTree/directory.png' /><span><a href='{$this->view->webroot}/folder/{$parent->getKey()}'>".$this->Component->Utility->sliceName($parent->getName(),15)."</a></span></li>".$header;
           }
         $parent=$parent->getParent();
         }

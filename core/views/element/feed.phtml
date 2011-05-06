@@ -45,18 +45,18 @@
     switch($type)
       {
       case MIDAS_FEED_CREATE_COMMUNITY:
-        echo "{$view->t("added the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getKey()}'>".trimName($feed->getRessource()->getName())."</a>";
+        echo "{$view->t("added the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
         break;
       case MIDAS_FEED_UPDATE_COMMUNITY:
       case MIDAS_FEED_CREATE_FOLDER:
       case MIDAS_FEED_CREATE_ITEM:
-        echo "{$view->t("added the item")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".trimName($feed->getRessource()->getName())."</a>";
+        echo "{$view->t("added the item")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
         break;
       case MIDAS_FEED_CREATE_LINK_ITEM:
-        echo "{$view->t("added the link")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".trimName($feed->getRessource()->getName())."</a>";
+        echo "{$view->t("added the link")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
         break;
       case MIDAS_FEED_CREATE_REVISION:
-        echo "{$view->t("added a new revision to")} <a href='{$view->webroot}/item/{$feed->getRessource()->getItem()->getKey()}'>".trimName($feed->getRessource()->getItem()->getName())."</a>";
+        echo "{$view->t("added a new revision to")} <a href='{$view->webroot}/item/{$feed->getRessource()->getItem()->getKey()}'>".$view->slicename($feed->getRessource()->getItem()->getName(),30)."</a>";
         break;
       case MIDAS_FEED_CREATE_USER:
         echo "{$view->t("registered")}";
@@ -73,15 +73,6 @@
     echo "</div>";
     echo "<div style='clear:left;'></div>";
     }
-
-    function trimName($name)
-      {
-      if(strlen($name)>35)
-        {
-        $name=substr($name,0, 10).'...'.substr($name,strlen($name)-35);
-        }
-      return $name;
-      }
     
  ?>
 

@@ -313,20 +313,6 @@
     });
   }
 
-  function trimName(name,padding)
-  {
-    if(name.length*7+padding>350)
-      { 
-      toremove=(name.length*7+padding-350)/8;  
-      if(toremove<13)
-        {
-        return 'error';
-        }
-      name=name.substring(0,10)+'...'+name.substring(name.length+13-toremove);
-      return name;
-      }
-  return name;
-  }
   
   function createElementsAjax(node,elements,first)
   {
@@ -344,7 +330,7 @@
         var html='';
         $.each(elements['folders'], function(index, value) {
           html+= "<tr id='"+id+"-"+i+"' deletable='"+value['deletable']+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
-          html+=     "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";
+          html+=     "  <td><span class='folder'>"+sliceFileName(value['name'],40)+"</span></td>";
           html+=     "  <td>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>'+"</td>";
           html+=     "  <td>"+value['creation']+"</td>";
           html+=     "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='"+value['folder_id']+"'/></td>";
@@ -354,7 +340,7 @@
 
         $.each(elements['items'], function(index, value) { 
           html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"'  type='item' policy='"+value['policy']+"' element='"+value['item_id']+"'>";
-          html+=     "  <td><span class='file'>"+trimName(value['name'],padding)+"</span></td>";
+          html+=     "  <td><span class='file'>"+sliceFileName(value['name'],40)+"</span></td>";
           html+=     "  <td>"+value['size']+"</td>";
           html+=     "  <td>"+value['creation']+"</td>";
           html+=     "  <td><input type='checkbox' class='treeCheckbox' type='item' element='"+value['item_id']+"'/></td>";

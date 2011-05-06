@@ -72,6 +72,7 @@
         };
         
         this.formatFileName = function (name) {
+            name=sliceFileName(name,40);
             return name.replace(/^.*[\/\\]/, '');
         };
         
