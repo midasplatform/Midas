@@ -12,17 +12,17 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
   protected $_db;
   
   /** Initialize */
-  public function initialize($name,$key,$data)
+  public function initialize($name, $key, $data)
     {      
     $this->_name = $name;
     $this->_mainData = $data;
     $this->_key = $key;
     
-    if (!isset($this->_name))
+    if(!isset($this->_name))
       {
       throw new Zend_Exception("a Model PDO is not defined properly.");
       }
-    if (!isset($this->_mainData))
+    if(!isset($this->_mainData))
       {
       throw new Zend_Exception("Model PDO " . $this->_name . " is not defined properly.");
       }
@@ -39,9 +39,9 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
   /** Because hex2bin doesn't exist in php...*/
   /* function hex2bin($h)
     {
-    if (!is_string($h)) return null;
-    $r='';
-    for ($a=0; $a<strlen($h); $a+=2) { $r.=chr(hexdec($h{$a}.$h{($a+1)})); }
+    if(!is_string($h)) return null;
+    $r = '';
+    for ($a = 0; $a<strlen($h); $a .= 2) { $r .= chr(hexdec($h{$a}.$h{($a+1)})); }
     return $r;
     } // end hex2bin;
     */
@@ -54,7 +54,7 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
    */
   public function getValues($key)
     {    
-    try 
+    try
       {
       $column_family = new ColumnFamily($this->_db, $this->_name);
       
@@ -73,11 +73,11 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       }
     } // end method getValues;
 
-	/** getAllByKey() */
+  /** getAllByKey() */
   public function getAllByKey($keys)
     {
     /** Remove empty keys */  
-    foreach($keys as $k=>$v)
+    foreach($keys as $k => $v)
       {
       if(empty($v))
         {
@@ -85,7 +85,7 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
         }
       } 
  
-    try 
+    try
       {
       $column_family = new ColumnFamily($this->_db, $this->_name);
      
@@ -120,24 +120,24 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
    */  
   public function save($dataarray)
     {
-    try 
+    try
       {
       // There is no update in Cassandra, everything is insert by key
-      if(isset($this->_key)&&isset($dataarray[$this->_key]))
+      if(isset($this->_key) && isset($dataarray[$this->_key]))
         {
         $keyvalue = $dataarray[$this->_key];
         unset($dataarray[$this->_key]);
         
-        $column_family = new ColumnFamily($this->_db,$this->_name);
-        $column_family->insert($keyvalue,$dataarray);
+        $column_family = new ColumnFamily($this->_db, $this->_name);
+        $column_family->insert($keyvalue, $dataarray);
         }
       else
         {      
         $keyvalue =  bin2hex(CassandraUtil::uuid1());
         //$keyvalue = bin2hex($key);
         $db = Zend_Registry::get('dbAdapter');
-        $column_family = new ColumnFamily($this->_db,$this->_name);
-        $column_family->insert($keyvalue,$dataarray);       
+        $column_family = new ColumnFamily($this->_db, $this->_name);
+        $column_family->insert($keyvalue, $dataarray);       
         }  
       } 
     catch(Exception $e) 
@@ -155,10 +155,10 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
    */   
   public function delete($dao)
     {
-    $instance=ucfirst($this->_name)."Dao";
+    $instanc .= ucfirst($this->_name)."Dao";
     if(get_class($dao) !=  $instance)
       {
-      throw new Zend_Exception("Should be an object ($instance). It was: ".get_class($dao) );
+      throw new Zend_Exception("Should be an object (".$instance."). It was: ".get_class($dao) );
       }
     if(!$dao->saved)
       {
@@ -171,7 +171,7 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       return false;
       }
       
-    $key=$dao->getKey();
+    $ke .= $dao->getKey();
     if(!isset($key))
       {
       throw new Zend_Exception("Unable to find the key" );
@@ -179,7 +179,7 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       
     try 
       {
-      $cf = new ColumnFamily($this->_db,$this->_name);
+      $cf = new ColumnFamily($this->_db, $this->_name);
       $cf->remove($key);      
       }    
     catch(Exception $e) 
@@ -187,8 +187,9 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       throw new Zend_Exception($e); 
       }    
 
-    unset($dao->{$dao->_key});
-    $dao->saved=false;
+    $key = $dao->_key;
+    unset($dao->$key);
+    $dao->save .= false;
     return true;
     } // end function delete 
     
@@ -197,7 +198,7 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
   public function getCountAll()
     {
     // The idea is to use Cassandra's counter in the future (implemented in 0.8) 
-    // We could also use memcached or redis or even a file lock mechanism (if the php
+    // We could also use memcached or redis or even a file lock mechanism (ifthe php
     // server is not fully distributed
     return 0;
     }//end getCountAll
@@ -212,32 +213,32 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
    */
   public function getValue($var, $key, $dao)
     {
-    if (!isset($this->_mainData[$var]))
+    if(!isset($this->_mainData[$var]))
       {
-      throw new Zend_Exception("Database Cassandra " . $this->_name . ": var $var is not defined here.");
+      throw new Zend_Exception("Database Cassandra " . $this->_name . ": var ".$var." is not defined here.");
       }
       
-    if (method_exists($this, 'get' . ucfirst($var)))
+    if(method_exists($this, 'get' . ucfirst($var)))
       {
       return call_user_func('get' . ucfirst($var), $key, $var);
       }
-    else if ($this->_mainData[$var]['type'] == MIDAS_DATA && $key!=null)
+    else if($this->_mainData[$var]['type'] == MIDAS_DATA && $key .= null)
       {
       try 
         {
-        $columnfamily = new ColumnFamily($this->_db,$this->_name);
+        $columnfamily = new ColumnFamily($this->_db, $this->_name);
         $resultarray = $columnfamily->get($key); // retrieve only what we want      
         if(!isset($resultarray[$var]))
           {
-          //echo 'MIDASDatabaseCassandra::getValue() MIDAS_DATA not found. CF='.$this->_name.' and var='.$var;  
-          //throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_DATA not found. CF='.$this->_name.' and var='.$var);   
+          //echo 'MIDASDatabaseCassandra::getValue() MIDAS_DATA not found. CF='.$this->_name.' and va .= '.$var;  
+          //throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_DATA not found. CF='.$this->_name.' and va .= '.$var);   
           return null;
           }
         return $resultarray[$var];
         }
       catch(cassandra_NotFoundException $e) 
         {
-        throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_DATA not found.  CF='.$this->_name.' and var='.$var);  
+        throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_DATA not found.  CF='.$this->_name.' and va .= '.$var);  
         return null;  
         }      
       catch(Exception $e) 
@@ -246,7 +247,7 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
         }  
    
       }
-    else if ($this->_mainData[$var]['type'] == MIDAS_ONE_TO_MANY)
+    else if($this->_mainData[$var]['type'] == MIDAS_ONE_TO_MANY)
       {
       require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
       $this->ModelLoader = new MIDAS_ModelLoader();
@@ -255,11 +256,11 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
         {
         throw new Zend_Exception($this->_mainData[$var]['parent_column']. " is not defined in the dao: ".get_class($dao));
         }
-      throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_ONE_TO_MANY not defined yet. You can implement it if you want :)');  
+      throw new Zend_Exception('MIDASDatabaseCassandra::getValue() MIDAS_ONE_TO_MANY not defined yet. You can implement it ifyou want :)');  
          
       //return $model->__call("findBy" . ucfirst($this->_mainData[$var]['child_column']), array($dao->get($this->_mainData[$var]['parent_column'])));
       }
-    else if ($this->_mainData[$var]['type'] == MIDAS_MANY_TO_ONE)
+    else if($this->_mainData[$var]['type'] == MIDAS_MANY_TO_ONE)
       {       
       require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
       $this->ModelLoader = new MIDAS_ModelLoader();
@@ -268,10 +269,10 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
         {
         throw new Zend_Exception(get_class($model).'::getBy'.ucfirst($this->_mainData[$var]['child_column'])." is not implemented");
         }       
-      return call_user_func(array($model,'getBy'.ucfirst($this->_mainData[$var]['child_column'])),
+      return call_user_func(array($model, 'getBy'.ucfirst($this->_mainData[$var]['child_column'])),
                             $dao->get($this->_mainData[$var]['parent_column']));
       }
-    else if ($this->_mainData[$var]['type'] == MIDAS_MANY_TO_MANY)
+    else if($this->_mainData[$var]['type'] == MIDAS_MANY_TO_MANY)
       {
       require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
       $this->ModelLoader = new MIDAS_ModelLoader();
@@ -280,7 +281,8 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
         {
         throw new Zend_Exception(get_class($model).'::get'.ucfirst($var)." is not implemented");
         }
-      return call_user_func(array($model,'get'.ucfirst($var)),$dao->{$this->_mainData[$var]['parent_column']});
+      $mainColumn = $this->_mainData[$var]['parent_column'];
+      return call_user_func(array($model, 'get'.ucfirst($var)), $dao->$mainColumn);
       }
     else
       {
@@ -289,12 +291,12 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
     } 
 
   /** Helper function for cassandra */
-  function getCassandra($columnfamily,$key,$columns=null,$column_start="",$column_finish="")
+  function getCassandra($columnfamily, $key, $columns = null, $column_start = "", $column_finish = "")
     {
     try 
       {
-      $cf = new ColumnFamily($this->_db,$columnfamily);
-      return $cf->get($key,$columns,$column_start,$column_finish);  
+      $cf = new ColumnFamily($this->_db, $columnfamily);
+      return $cf->get($key, $columns, $column_start, $column_finish);  
       }
     catch(cassandra_NotFoundException $e) 
       {
@@ -306,12 +308,13 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       }    
     } // end getCassandra()
 
-  function multigetCassandra($columnfamily,$keys,$columns=null,$column_start="",$column_finish="")
+    /** multiget */
+  function multigetCassandra($columnfamily, $keys, $columns = null, $column_start = "", $column_finish = "")
     {
     try 
       {
-      $cf = new ColumnFamily($this->_db,$columnfamily);
-      return $cf->multiget($keys,$columns,$column_start,$column_finish);
+      $cf = new ColumnFamily($this->_db, $columnfamily);
+      return $cf->multiget($keys, $columns, $column_start, $column_finish);
       }
     catch(cassandra_NotFoundException $e) 
       {

@@ -1,14 +1,13 @@
 <?php
 
+require_once BASE_PATH.'/core/AppController.php';
 /**
  *  GlobalAction
  *  Provides global function to the controllers
  */
-require_once BASE_PATH.'/core/AppController.php';
 class MIDAS_GlobalModule extends AppController
   {
-
-
+  /** contructor*/
   public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
     {    
 
@@ -18,21 +17,21 @@ class MIDAS_GlobalModule extends AppController
       throw new Zend_Exception("Please set the module name in AppController");
       }
     $this->loadModuleElements();
-    $fc=Zend_Controller_Front::getInstance();
-    $this->view->moduleWebroot=$fc->getBaseUrl().'/modules/'.$this->moduleName;
+    $fc = Zend_Controller_Front::getInstance();
+    $this->view->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
     
-    $stack=debug_backtrace();
-    $forward=$this->_getParam('forwardModule');
+    $stack = debug_backtrace();
+    $forward = $this->_getParam('forwardModule');
     }
     
-
+  /** pre dispatch (zend)*/
   public function preDispatch()
     {   
     parent::preDispatch();   
-    $this->view->setScriptPath(BASE_PATH."/modules/{$this->moduleName}/views");
-    if(file_exists(BASE_PATH."/modules/{$this->moduleName}/layouts/layout.phtml"))
+    $this->view->setScriptPath(BASE_PATH."/modules/".$this->moduleName."/views");
+    if(file_exists(BASE_PATH."/modules/".$this->moduleName."/layouts/layout.phtml"))
       {
-      $this->_helper->layout->setLayoutPath(BASE_PATH."/modules/{$this->moduleName}/layouts");  
+      $this->_helper->layout->setLayoutPath(BASE_PATH."/modules/".$this->moduleName."/layouts");  
       }
     }
 
@@ -50,7 +49,7 @@ class MIDAS_GlobalModule extends AppController
     parent::postDispatch();
 
 
-    $this->view->addHelperPath(BASE_PATH."/{$this->moduleName}/views/helpers", "Zend_View_Helper_");
+    $this->view->addHelperPath(BASE_PATH."/".$this->moduleName."/views/helpers", "Zend_View_Helper_");
     }
 
   /**
@@ -62,61 +61,63 @@ class MIDAS_GlobalModule extends AppController
     $this->ModelLoader = new MIDAS_ModelLoader();
     if(isset($this->_moduleModels))
       {
-      $this->ModelLoader->loadModels($this->_moduleModels,$this->moduleName);
+      $this->ModelLoader->loadModels($this->_moduleModels, $this->moduleName);
       $modelsArray = Zend_Registry::get('models');
-      foreach ($this->_moduleModels as  $value)
+      foreach($this->_moduleModels as  $value)
         {
         if(isset($modelsArray[$this->moduleName.$value]))
           {
-          $tmp=ucfirst($this->moduleName).'_'.$value;
-          $this->{$tmp} = $modelsArray[$this->moduleName.$value];
+          $tmp = ucfirst($this->moduleName).'_'.$value;
+          $this->$tmp = $modelsArray[$this->moduleName.$value];
           }
         }
       }
       
     if(isset($this->_moduleDaos))
       {
-      foreach ($this->_moduleDaos as $dao)
+      foreach($this->_moduleDaos as $dao)
         {
-        include_once ( BASE_PATH . "/modules/{$this->moduleName}/models/dao/{$dao}Dao.php");
+        include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
         }
       }
 
     if(isset($this->_moduleComponents))
       {
-      foreach ($this->_moduleComponents as $component)
+      foreach($this->_moduleComponents as $component)
         {
         $nameComponent = ucfirst($this->moduleName).'_'.$component . "Component";
-        include_once ( BASE_PATH . "/modules/{$this->moduleName}/controllers/components/{$component}Component.php");
+        include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
         @$this->ModuleComponent->$component = new $nameComponent();
         }
       }
       
     if(isset($this->_moduleForms))
       {
-      foreach ($this->_moduleForms as $forms)
+      foreach($this->_moduleForms as $forms)
         {
         $nameForm = ucfirst($this->moduleName).'_'.$forms . "Form";
-        include_once ( BASE_PATH . "/modules/{$this->moduleName}/controllers/forms/{$forms}Form.php");
+        include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
         @$this->ModuleForm->$forms = new $nameForm();
         }
       }
     }
 
+    /** call controller core method */
   public function callCoreAction()
     {
     $request = $this->getRequest();
     $response = $this->getResponse();
-    $controllerName=ucfirst(str_replace('Core', '', $request->getControllerName()));
+    $controllerName = ucfirst(str_replace('Core', '', $request->getControllerName()));
     if(file_exists(BASE_PATH.'/core/controllers/'. $controllerName.'Controller.php'))
       {
       include_once BASE_PATH.'/core/controllers/'. $controllerName.'Controller.php';
-      $name=$controllerName.'Controller';
-      $controller=new $name($request,$response);
+      $name = $controllerName.'Controller';
+      $controller = new $name($request, $response);
       if(method_exists($controller, $request->getActionName().'Action'))
         {
-        $controller->userSession=$this->userSession;
-        $controller->{$request->getActionName().'Action'}();
+        $controller->userSession = $this->userSession;
+        $actionName = $request->getActionName().'Action';
+        $controller->$actionName();
         return true;
         }
       else
@@ -130,4 +131,3 @@ class MIDAS_GlobalModule extends AppController
       }
     }
 } // end class
-?>

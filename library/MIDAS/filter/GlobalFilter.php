@@ -17,5 +17,3 @@ class MIDAS_GlobalFilter extends Zend_Controller_Action_Helper_Abstract
     }
 
   } // end class
-
-?>

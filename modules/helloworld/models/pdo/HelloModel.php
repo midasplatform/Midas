@@ -3,7 +3,6 @@ require_once BASE_PATH.'/modules/helloworld/models/base/HelloModelBase.php';
 
 class Helloworld_HelloModel extends Helloworld_HelloModelBase
 {
-
   /**
    * Return all the record in the table
    * @return Array of HelloDao

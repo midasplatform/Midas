@@ -1,4 +1,5 @@
 <?php
+/** global midas model library*/
 class MIDASModel
 {
   protected $database;
@@ -19,6 +20,7 @@ class MIDASModel
       {
       case 'pdo': $this->database = new MIDASDatabasePdo(); break;
       case 'cassandra': $this->database = new MIDASDatabaseCassandra(); break;
+      default: break;
       }
     } // end __construct()
 
@@ -26,16 +28,16 @@ class MIDASModel
   public function initialize()
     {  
     $this->loadElements(); // load the components for the models    
-    $this->database->initialize($this->_name,$this->_key,$this->_mainData);
+    $this->database->initialize($this->_name, $this->_key, $this->_mainData);
     }
     
   /** Save a Dao */  
   public function save($dao)  
     {
-    $instance=$this->_name."Dao";
+    $instance = $this->_name."Dao";
     if(!$dao instanceof $instance)
       {
-      throw new Zend_Exception("Should be an object ($instance).");
+      throw new Zend_Exception("Should be an object (".$instance.").");
       }
 
     $data = array();
@@ -82,9 +84,9 @@ class MIDASModel
   public function loadElements()
     {
     Zend_Registry::set('components', array());
-    if (isset($this->_components))
+    if(isset($this->_components))
       {
-      foreach ($this->_components as $component)
+      foreach($this->_components as $component)
         {
         $nameComponent = $component . "Component";
 
@@ -128,7 +130,7 @@ class MIDASModel
    * @param $name name of the dao
    * @param $data array of values
    */
-  public function initDao($name, $data,$module=null)
+  public function initDao($name, $data, $module = null)
     {
     // If no data found we return false
     if(!$data)
@@ -136,7 +138,7 @@ class MIDASModel
       return false;
       }
 
-    if($module==null)
+    if($module == null)
       {
       $name = $name . 'Dao';
       Zend_Loader::loadClass($name, BASE_PATH.'/core/models/dao');
@@ -146,18 +148,18 @@ class MIDASModel
       require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
       $name = ucfirst($module).'_'.$name. 'Dao';
       }
-    if (class_exists($name))
+    if(class_exists($name))
       {
       $obj = new $name();
       $model = $obj->getModel();
-      foreach ($model->_mainData as $name => $option)
+      foreach($model->_mainData as $name => $option)
         {
-        if (isset($data[$name]))
+        if(isset($data[$name]))
           {
           $obj->$name = $data[$name];
           }
         }
-      $obj->saved=true;
+      $obj->saved = true;
       return $obj;
       }
     else
@@ -169,16 +171,16 @@ class MIDASModel
 
     /**
    * @method public  __call($method, $params)
-   *  Catch if the method doesn't exists and create a method dynamically
+   *  Catch ifthe method doesn't exists and create a method dynamically
    * @param $method method name
    * @param $params array of param
    * @return return the result of the function dynamically created
    */
   public function __call($method, $params)
     {
-    if (substr($method, 0, 5) == 'getBy')
+    if(substr($method, 0, 5) == 'getBy')
       {
-      /*if (isset($this->_mainData[strtolower(substr($method, 5))]))
+      /*if(isset($this->_mainData[strtolower(substr($method, 5))]))
         {
         return $this->getBy(strtolower(substr($method, 5)), $params[0]);
         }
@@ -189,26 +191,26 @@ class MIDASModel
 
       throw new Zend_Exception(__CLASS__ . " " . $this->_name . ": ".$method." has been deprecated. Please fix.");
       }
-    elseif (substr($method, 0, 6) == 'findBy')
+    elseif(substr($method, 0, 6) == 'findBy')
       {
-      if (isset($this->_mainData[strtolower(substr($method, 6))]))
+      if(isset($this->_mainData[strtolower(substr($method, 6))]))
         {
         return $this->findBy(strtolower(substr($method, 6)), $params[0]);
         }
       else
         {
-        throw new Zend_Exception("Dao:  " . __CLASS__ . " " . $this->_name . ": method $method doesn't exist (" . strtolower(substr($method, 6)) . " is not defined.");
+        throw new Zend_Exception("Dao:  " . __CLASS__ . " " . $this->_name . ": method ".$method." doesn't exist (" . strtolower(substr($method, 6)) . " is not defined.");
         }
       }
     else
       {
-      throw new Zend_Exception($this->_name."Model : method $method doesn't exist.");
+      throw new Zend_Exception($this->_name."Model : method ".$method." doesn't exist.");
       }
     }// end method __call
 
     
   /**
-   * @method public  getBy($var,$option)
+   * @method public  getBy($var, $option)
    *  Get DAO by $var = $value
    * @param $var name of the attribute we search
    * @param $value
@@ -216,13 +218,13 @@ class MIDASModel
    */
   /*private function getBy($var, $value)
     {
-    if (!isset($this->_mainData[$var]))
+    if(!isset($this->_mainData[$var]))
       {
       throw new Zend_Exception("Model " . $this->_name . ": var $var is not defined here.");
       }
     else
       {
-      $dao= $this->initDao(ucfirst($this->_name), $this->database->getBy($var,$value));
+      $dao= $this->initDao(ucfirst($this->_name), $this->database->getBy($var, $value));
       return $dao;
       }
     } //end getBy*/
@@ -236,17 +238,17 @@ class MIDASModel
    */
   public function findBy($var, $value)
     {
-    if (!isset($this->_mainData[$var]))
+    if(!isset($this->_mainData[$var]))
       {
-      throw new Zend_Exception("Model PDO " . $this->_name . ": var $var is not defined here.");
+      throw new Zend_Exception("Model PDO " . $this->_name . ": var ".$var." is not defined here.");
       }
     else
       {
-      $rowset = $this->database->findBy($var,$value);
+      $rowset = $this->database->findBy($var, $value);
       $return = array();
-      foreach ($rowset as $row)
+      foreach($rowset as $row)
         {
-        $tmpDao= $this->initDao(ucfirst($this->_name), $row);
+        $tmpDao = $this->initDao(ucfirst($this->_name), $row);
         $return[] = $tmpDao;
         unset($tmpDao);
         }
@@ -258,20 +260,20 @@ class MIDASModel
     
     
   /** load Dao class*/
-  public function loadDaoClass($name,$module='core')
+  public function loadDaoClass($name, $module = 'core')
     {
-    if($module=='core')
+    if($module == 'core')
       {
       Zend_Loader::loadClass($name, BASE_PATH . '/core/models/dao');
-      if (!class_exists($name))
+      if(!class_exists($name))
         {
         throw new Zend_Exception('Unable to load dao class ' . $name);
         }
       }
     else
       {
-      require_once BASE_PATH . "/modules/$module/models/dao/$name.php";
-      if (!class_exists(ucfirst($module).'_'.$name))
+      require_once BASE_PATH . "/modules/".$method."/models/dao/".$name.".php";
+      if(!class_exists(ucfirst($module).'_'.$name))
         {
         throw new Zend_Exception('Unable to load dao class ' . ucfirst($module).'_'.$name);
         }
@@ -285,20 +287,20 @@ class MIDASModel
    * @brief Load a dao   *
    * @return return dao
    */
-  public function load($key=null)
+  public function load($key = null)
     {
-    if (isset($this->_daoName))
+    if(isset($this->_daoName))
       {
-      $name=$this->_daoName;
+      $name = $this->_daoName;
       }
     else
       {
       $name = ucfirst($this->_name) . 'Dao';
       }
     Zend_Loader::loadClass($name, BASE_PATH . '/core/models/dao');
-    if (class_exists($name))
+    if(class_exists($name))
       {
-      if(!isset($this->_key)&&$key!=null)
+      if(!isset($this->_key) && $key != null)
         {
         throw new Zend_Exception("MIDASDatabasePDO " . $this->_name . ": key is not defined here. (you should write your own load method)");
         }
@@ -308,7 +310,7 @@ class MIDASModel
           {
           return array();
           }
-        $cond='';
+        $cond = '';
         
         if(empty($key))
           {
@@ -316,9 +318,9 @@ class MIDASModel
           }  
         $rowset = $this->database->getAllByKey($key);
         $return = array();
-        foreach ($rowset as $row)
+        foreach($rowset as $row)
           {
-          $tmpDao= $this->initDao(ucfirst($this->_name), $row);
+          $tmpDao = $this->initDao(ucfirst($this->_name), $row);
           $return[] = $tmpDao;
           unset($tmpDao);
           }
@@ -327,14 +329,14 @@ class MIDASModel
       else
         {
         $obj = new $name();
-        if ($key !== null && method_exists($obj, 'initValues'))
+        if($key !== null && method_exists($obj, 'initValues'))
           {
-          if (!$obj->initValues($key))
+          if(!$obj->initValues($key))
             {
             unset($obj);
             return false;
             }
-          $obj->saved=true;
+          $obj->saved = true;
           }
         return $obj;
         }
@@ -371,11 +373,11 @@ class MIDASModel
     }
 
   /**
-   * @method public compareDao($dao1,$dao2)
+   * @method public compareDao($dao1, $dao2)
    *  Compare 2 dao (onlye the MIDAS_DATA
    * @param $dao1
    * @param $dao2
-   * @return True if they are the same one
+   * @return True ifthey are the same one
    */
   public function compareDao($dao1, $dao2)
     {
@@ -383,11 +385,11 @@ class MIDASModel
       {
       return false;
       }
-    foreach ($this->_mainData as $name => $data)
+    foreach($this->_mainData as $name => $data)
       {
-      if ($data['type'] == MIDAS_DATA)
+      if($data['type'] == MIDAS_DATA)
         {
-        if ($dao1->get($name) !== $dao2->get($name))
+        if($dao1->get($name) !== $dao2->get($name))
           {
           return false;
           }
@@ -397,4 +399,3 @@ class MIDASModel
     } //end method compareDao
     
 } // end class GlobalModel
-?>

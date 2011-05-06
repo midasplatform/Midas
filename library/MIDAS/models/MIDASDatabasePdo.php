@@ -21,17 +21,17 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     } // end __construct()
 
   /** Initialize */
-  public function initialize($name,$key,$data)
+  public function initialize($name, $key, $data)
     {      
     $this->_name = $name;
     $this->_mainData = $data;
     $this->_key = $key;
     
-    if (!isset($this->_name))
+    if(!isset($this->_name))
       {
       throw new Zend_Exception("a Model PDO is not defined properly.");
       }
-    if (!isset($this->_mainData))
+    if(!isset($this->_mainData))
       {
       throw new Zend_Exception("Model PDO " . $this->_name . " is not defined properly.");
       }
@@ -53,51 +53,51 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    */
   public function getValue($var, $key, $dao)
     {
-    if (!isset($this->_mainData[$var]))
+    if(!isset($this->_mainData[$var]))
       {
-      throw new Zend_Exception("Database PDO " . $this->_name . ": var $var is not defined here.");
+      throw new Zend_Exception("Database PDO " . $this->_name . ": var ".$var." is not defined here.");
       }
-    if (method_exists($this, 'get' . ucfirst($var)))
+    if(method_exists($this, 'get' . ucfirst($var)))
       {
       return call_user_func('get' . ucfirst($var), $key, $var);
       }
-    else if ($this->_mainData[$var]['type'] == MIDAS_DATA&&$key!=null)
+    else if($this->_mainData[$var]['type'] == MIDAS_DATA && $key != null)
       {
       $result = $this->fetchRow($this->select()->where($this->_key . ' = ?', $key));
-      if (!isset($result->$var))
+      if(!isset($result->$var))
         {
         return null;
         }
       return $result->$var;
       }
-    else if ($this->_mainData[$var]['type'] == MIDAS_ONE_TO_MANY)
+    else if($this->_mainData[$var]['type'] == MIDAS_ONE_TO_MANY)
       {
       require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
       $this->ModelLoader = new MIDAS_ModelLoader();
-      $module='';
-      if(isset($this->_mainData[$var]['module'])&&$this->_mainData[$var]['module']=='core')
+      $module = '';
+      if(isset($this->_mainData[$var]['module']) && $this->_mainData[$var]['module'] == 'core')
         {
-        $module=$this->_mainData[$var]['module'];
+        $module = $this->_mainData[$var]['module'];
         }
-      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model'],$module);
+      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model'], $module);
       if(!$dao->get($this->_mainData[$var]['parent_column']))
         {
         throw new Zend_Exception($this->_mainData[$var]['parent_column']. " is not defined in the dao: ".get_class($dao));
         }
       return $model->__call("findBy" . ucfirst($this->_mainData[$var]['child_column']), array($dao->get($this->_mainData[$var]['parent_column'])));
       }
-    else if ($this->_mainData[$var]['type'] == MIDAS_MANY_TO_ONE)
+    else if($this->_mainData[$var]['type'] == MIDAS_MANY_TO_ONE)
       {
       require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
       $this->ModelLoader = new MIDAS_ModelLoader();
-      $module='';
-      if(isset($this->_mainData[$var]['module'])&&$this->_mainData[$var]['module']=='core')
+      $module = '';
+      if(isset($this->_mainData[$var]['module']) && $this->_mainData[$var]['module'] == 'core')
         {
-        $module=$this->_mainData[$var]['module'];
+        $module = $this->_mainData[$var]['module'];
         }
-      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model'],$module);
+      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model'], $module);
       $key = $model->getKey();
-      if($this->_mainData[$var]['child_column']==$key)
+      if($this->_mainData[$var]['child_column'] == $key)
         {
         return $model->load($dao->get($this->_mainData[$var]['parent_column']));
         }
@@ -105,11 +105,11 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
         {
         throw new Zend_Exception(get_class($model).'::getBy'.ucfirst($this->_mainData[$var]['child_column'])." is not implemented");
         }
-      return call_user_func(array($model,'getBy'.ucfirst($this->_mainData[$var]['child_column'])),
+      return call_user_func(array($model, 'getBy'.ucfirst($this->_mainData[$var]['child_column'])),
                             $dao->get($this->_mainData[$var]['parent_column']));
       
       }
-    else if ($this->_mainData[$var]['type'] == MIDAS_MANY_TO_MANY)
+    else if($this->_mainData[$var]['type'] == MIDAS_MANY_TO_MANY)
       {
       return $this->getLinkedObject($var, $dao);
       }
@@ -131,15 +131,17 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
     $this->ModelLoader = new MIDAS_ModelLoader();
     $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model']);
+    
+    $parentColumn = $this->_mainData[$var]['parent_column'];
     $sql = $this->select()
             ->setIntegrityCheck(false)
             ->from($model->getName())
             ->joinUsing($this->_mainData[$var]['table'], $this->_mainData[$var]['child_column'])
-            ->where($this->_mainData[$var]['parent_column'] . ' = ?', $dao->{$this->_mainData[$var]['parent_column']});
+            ->where($this->_mainData[$var]['parent_column'] . ' = ?', $dao->$parentColumn);
     $rowset = $this->fetchAll($sql);
 
     $return = array();
-    foreach ($rowset as $row)
+    foreach($rowset as $row)
       {
       $return[] = $model->initDao($this->_mainData[$var]['model'], $row);
       }
@@ -147,7 +149,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     } //end getLinkedObject
 
   /**
-   * @method public  getBy($var,$option)
+   * @method public  getBy($var, $option)
    *  Get DAO by $var = $value
    * @param $var name of the attribute we search
    * @param $value
@@ -159,7 +161,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     } //end getBy*/
 
   /**
-   * @method  function link($var,$daoParent, $daoSon)
+   * @method  function link($var, $daoParent, $daoSon)
    *  create a link between 2 tables
    * @param $var name of the attribute we search
    * @param $daoParent
@@ -172,9 +174,9 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
 
     $modelloader = new MIDAS_ModelLoader();
     $model = $modelloader->loadModel($this->_mainData[$var]['model']);
-    foreach ($objs as $obj)
+    foreach($objs as $obj)
       {
-      if ($model->compareDao($obj, $daoSon))
+      if($model->compareDao($obj, $daoSon))
         {
         return;
         }
@@ -190,9 +192,9 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     $childcolumn = $this->_mainData[$var]['child_column'];
 
     // By definition a link is unique, so we should check
-    $select = $db->select()->from($this->_mainData[$var]['table'],array('nrows' => 'COUNT(*)'))
-                             ->where($parentcolumn."=?",$data[$this->_mainData[$var]['parent_column']])
-                             ->where($childcolumn."=?",$data[$this->_mainData[$var]['child_column']]);
+    $select = $db->select()->from($this->_mainData[$var]['table'], array('nrows' => 'COUNT(*)'))
+                             ->where($parentcolumn."=?", $data[$this->_mainData[$var]['parent_column']])
+                             ->where($childcolumn."=?", $data[$this->_mainData[$var]['child_column']]);
 
     $row = $db->fetchRow($select);
     if($row['nrows'] == 0)
@@ -204,7 +206,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
 
 
   /**
-   * @method public  removeLink($var,$daoParent, $daoSon)
+   * @method public  removeLink($var, $daoParent, $daoSon)
    *  remove a link between 2 tables
    * @param $var name of the attribute we search
    * @param $daoParent
@@ -248,7 +250,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     $return = array();
     $this->ModelLoader = new MIDAS_ModelLoader();
     $model = $this->ModelLoader->loadModel($modelName);
-    foreach ($rowset as $row)
+    foreach($rowset as $row)
       {
       $return[] = $model->initDao($modelName, $row);
       }
@@ -275,12 +277,12 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    */
   public function save($dataarray)
     {
-    if(isset($this->_key)&&isset($dataarray[$this->_key]))
+    if(isset($this->_key) && isset($dataarray[$this->_key]))
       {
       $key = $dataarray[$this->_key];
       unset($dataarray[$this->_key]);
-      $nupdated=$this->update($dataarray, array($this->_key.'=?'=>$key));
-      if($nupdated==0)
+      $nupdated = $this->update($dataarray, array($this->_key.'=?' => $key));
+      if($nupdated == 0)
         {
         return false;
         }
@@ -304,10 +306,10 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    */
   public function delete($dao)
     {
-    $instance=ucfirst($this->_name)."Dao";
+    $instance = ucfirst($this->_name)."Dao";
     if(strtolower(get_class($dao)) !=  strtolower($instance))
       {
-      throw new Zend_Exception("Should be an object ($instance). It was: ".get_class($dao) );
+      throw new Zend_Exception("Should be an object (".$instance."). It was: ".get_class($dao) );
       }
     if(!$dao->saved)
       {
@@ -315,12 +317,12 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       }
     if(!isset($this->_key) || !$this->_key)
       {
-      $query=array();
-      foreach ($this->_mainData as $name => $option)
+      $query = array();
+      foreach($this->_mainData as $name => $option)
         {
-        if($option['type']==MIDAS_DATA)
+        if($option['type'] == MIDAS_DATA)
           {
-          $query[$name. ' = ?']=$dao->$name;
+          $query[$name. ' = ?'] = $dao->$name;
           }
         }
       if(empty($query))
@@ -328,17 +330,18 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
         throw new Zend_Exception("Huge error, you almost deleted everything" );
         }
       parent::delete($query);
-      $dao->saved=false;
+      $dao->saved = false;
       return true;
       }
-    $key=$dao->getKey();
+    $key = $dao->getKey();
     if(!isset($key))
       {
       throw new Zend_Exception("Unable to find the key" );
       }
     parent::delete(array($this->_key . ' = ?' => $dao->getKey()));
-    unset($dao->{$dao->_key});
-    $dao->saved=false;
+    $key = $dao->_key;
+    unset($dao->$key);
+    $dao->saved = false;
     return true;
     }//end delete
 
@@ -346,7 +349,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
   public function getAllByKey($keys)
     {
     // Make sure we have only numerics  
-    foreach($keys as $k=>$v)
+    foreach($keys as $k => $v)
       {
       if(!is_numeric($v))
         {
@@ -364,7 +367,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    * @return int */
   public function getCountAll()
     {
-    $count = $this->fetchRow( $this->select()->from($this->_name, 'count(*) as COUNT' ));
+    $count = $this->fetchRow($this->select()->from($this->_name, 'count(*) as COUNT'));
     return $count['COUNT'];
     }//end getCountAll
     

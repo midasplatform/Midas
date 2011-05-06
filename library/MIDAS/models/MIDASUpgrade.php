@@ -12,33 +12,36 @@ class MIDASUpgrade
    * @method public  __construct()
    *  Construct model
    */
-  public function __construct($db,$module)
+  public function __construct($db, $module)
     {
-    $this->db=$db;
-    $this->moduleName=$module;
+    $this->db = $db;
+    $this->moduleName = $module;
     $this->loadElements();
-    if($module!='core')
+    if($module != 'core')
       {
       $this->loadModuleElements();
       }
     } // end __construct()
     
-  
+  /** preUpgrade called before the upgrade*/
   public function preUpgrade()
     {
     
     }
     
+  /** calls if mysql enable*/
   public function mysql()
     {
     
     }
     
+  /** called is pgsql enabled*/
   public function pgsql()
     {
     
     }
     
+  /** called after the upgrade*/
   public function postUpgrade()
     {
     
@@ -54,42 +57,42 @@ class MIDASUpgrade
     $this->ModelLoader = new MIDAS_ModelLoader();
     if(isset($this->_moduleModels))
       {
-      $this->ModelLoader->loadModels($this->_moduleModels,$this->moduleName);
+      $this->ModelLoader->loadModels($this->_moduleModels, $this->moduleName);
       $modelsArray = Zend_Registry::get('models');
-      foreach ($this->_moduleModels as  $value)
+      foreach($this->_moduleModels as  $value)
         {
         if(isset($modelsArray[$this->moduleName.$value]))
           {
-          $tmp=ucfirst($this->moduleName).'_'.$value;
-          $this->{$tmp} = $modelsArray[$this->moduleName.$value];
+          $tmp = ucfirst($this->moduleName).'_'.$value;
+          $this->$tmp = $modelsArray[$this->moduleName.$value];
           }
         }
       }
       
     if(isset($this->_moduleDaos))
       {
-      foreach ($this->_moduleDaos as $dao)
+      foreach($this->_moduleDaos as $dao)
         {
-        include_once ( BASE_PATH . "/modules/{$this->moduleName}/models/dao/{$dao}Dao.php");
+        include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
         }
       }
 
     if(isset($this->_moduleComponents))
       {
-      foreach ($this->_moduleComponents as $component)
+      foreach($this->_moduleComponents as $component)
         {
         $nameComponent = ucfirst($this->moduleName).'_'.$component . "Component";
-        include_once ( BASE_PATH . "/modules/{$this->moduleName}/controllers/components/{$component}Component.php");
+        include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
         @$this->ModuleComponent->$component = new $nameComponent();
         }
       }
       
     if(isset($this->_moduleForms))
       {
-      foreach ($this->_moduleForms as $forms)
+      foreach($this->_moduleForms as $forms)
         {
         $nameForm = ucfirst($this->moduleName).'_'.$forms . "Form";
-        include_once ( BASE_PATH . "/modules/{$this->moduleName}/controllers/forms/{$forms}Form.php");
+        include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
         @$this->ModuleForm->$forms = new $nameForm();
         }
       }
@@ -108,14 +111,14 @@ class MIDASUpgrade
       $this->ModelLoader->loadModels($this->_models);
       }
     $modelsArray = Zend_Registry::get('models');
-    foreach ($modelsArray as $key => $tmp)
+    foreach($modelsArray as $key => $tmp)
       {
       $this->$key = $tmp;
       }
     
     if(isset($this->_daos))
       {
-      foreach ($this->_daos as $dao)
+      foreach($this->_daos as $dao)
         {
         Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/core/models/dao');
         }
@@ -125,7 +128,7 @@ class MIDASUpgrade
     
     if(isset($this->_components))
       {
-      foreach ($this->_components as $component)
+      foreach($this->_components as $component)
         {
         $nameComponent = $component . "Component";
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
@@ -136,7 +139,7 @@ class MIDASUpgrade
     Zend_Registry::set('forms', array());
     if(isset($this->_forms))
       {
-      foreach ($this->_forms as $forms)
+      foreach($this->_forms as $forms)
         {
         $nameForm = $forms . "Form";
 

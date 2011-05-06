@@ -111,7 +111,7 @@ class CommunityController extends AppController
           if($this->_getParam('groupId')==0)
             {
             $new_group=$this->Group->createGroup($communityDao,$formCreateGroup->getValue('name'));
-            echo JsonComponent::encode(array(true,$this->t('Changes saved'),$new_group->_toArray()));
+            echo JsonComponent::encode(array(true,$this->t('Changes saved'),$new_group->toArray()));
             }
           else
             {
@@ -122,7 +122,7 @@ class CommunityController extends AppController
               }
             $group->setName($formCreateGroup->getValue('name'));
             $this->Group->save($group);
-            echo JsonComponent::encode(array(true,$this->t('Changes saved'),$group->_toArray()));
+            echo JsonComponent::encode(array(true,$this->t('Changes saved'),$group->toArray()));
             }
           }
         else
@@ -192,7 +192,7 @@ class CommunityController extends AppController
     $this->view->communityDao=$communityDao;
 
     $this->view->isAdmin=$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_ADMIN);
-    $this->view->json['community']=$communityDao->_toArray();
+    $this->view->json['community']=$communityDao->toArray();
     $this->view->json['community']['message']['delete']=$this->t('Delete');
     $this->view->json['community']['message']['deleteMessage']=$this->t('Do you really want to delete this community? It cannot be undo.');
     $this->view->json['community']['message']['deleteGroupMessage']=$this->t('Do you really want to delete this group? It cannot be undo.');
@@ -277,7 +277,7 @@ class CommunityController extends AppController
       }
     $this->view->isModerator=$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_WRITE);
     $this->view->isAdmin=$this->Community->policyCheck($communityDao, $this->userSession->Dao,MIDAS_POLICY_ADMIN);
-    $this->view->json['community']=$communityDao->_toArray();   
+    $this->view->json['community']=$communityDao->toArray();   
     
     if($this->view->isMember)
       {

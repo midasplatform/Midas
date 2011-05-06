@@ -117,7 +117,7 @@ class SearchController extends AppController
     $resultsArray=array();
     foreach ($results as $result)
       {
-      $tmp=$result->_toArray();
+      $tmp=$result->toArray();
       if($result instanceof UserDao)
         {
         $tmp['resultType']='user';

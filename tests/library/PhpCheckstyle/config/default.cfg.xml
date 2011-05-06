@@ -9,7 +9,7 @@
     <test name="constantNaming" regexp="/^[A-Z_][A-Z_]*[A-Z_]$/" level="ERROR"/>
     
     <!-- Check Variable Naming -->
-    <test name="variableNaming" regexp="/^[a-zA-Z_][a-zA-Z0-9]*$/" />
+    <test name="variableNaming" regexp="/^[a-zA-Z_][a-zA-Z0-9_]*$/" />
     
     <!-- Check Function Naming -->
     <test name="functionNaming" regexp="/^[a-z]/" level="ERROR"/>
@@ -125,6 +125,8 @@
         
     <!-- Check that there is no space before before some tokens  -->
     <test name="noSpaceBeforeToken" level="INFO">
+      <exception value=")"/>  <!-- Exceptions to this rule -->
+      <exception value="->"/>  <!-- Exceptions to this rule -->
     </test>
     
     <!-- Check that there is no space after some tokens -->
@@ -147,7 +149,7 @@
     
     <!--  Checks for excessive parameters in a function declaration -->
     <test name="functionMaxParameters">
-        <property name="maxParameters" value="4"/>
+        <property name="maxParameters" value="7"/>
     </test>
     
     <!-- Check Cyclomatic Complexity -->
@@ -178,7 +180,7 @@
     	<item value="sql_regcase "/>    	
     	<item value="exec"/>
     	<item value="passthru"/>
-    	<item value="delete"/>
+    	<item value="exit"/>
     	<item value="phpinfo"/>
     	<item value="die"/>
     	<!-- <item value="copy"/>  -->

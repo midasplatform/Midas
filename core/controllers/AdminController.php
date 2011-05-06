@@ -201,7 +201,7 @@ class AdminController extends AppController
     $logs = $this->Errorlog->getLog($start, $end, $module, $priority);
     foreach($logs as $key => $log)
       {
-      $logs[$key] = $log->_toArray();
+      $logs[$key] = $log->toArray();
       if(substr($log->getMessage(), 0, 5) == 'Fatal')
         {
         $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), "[message]") + 10, 40);

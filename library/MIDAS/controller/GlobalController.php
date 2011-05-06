@@ -10,9 +10,10 @@ class MIDAS_GlobalController extends Zend_Controller_Action
   protected $Models = array();
   protected $ModelLoader = null;
 
+  /** contructor*/
   public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
     {
-    if ($this->isDebug())
+    if($this->isDebug())
       {
       $this->_controllerTimer = microtime(true);
       }
@@ -28,63 +29,63 @@ class MIDAS_GlobalController extends Zend_Controller_Action
   public function preDispatch()
     {   
         // Init the translater
-    if (!$this->isDebug())
+    if(!$this->isDebug())
       {
-      $frontendOptions=array(
-        'lifetime'=>86400,'automatic_serialization'=>true
+      $frontendOptions = array(
+        'lifetime' => 86400, 'automatic_serialization' => true
       );
 
-      $backendOptions=array(
-        'cache_dir'=>BASE_PATH.'/tmp/cache/translation'
+      $backendOptions = array(
+        'cache_dir' => BASE_PATH.'/tmp/cache/translation'
       );
-      $cache=Zend_Cache::factory('Core','File',$frontendOptions,$backendOptions);
+      $cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
       Zend_Translate::setCache($cache);
       }
-    $translate=new Zend_Translate('csv',BASE_PATH.'/core/translation/fr-main.csv','en');
-    Zend_Registry::set('translater',$translate);
+    $translate = new Zend_Translate('csv', BASE_PATH.'/core/translation/fr-main.csv', 'en');
+    Zend_Registry::set('translater', $translate);
     
-    $translaters=array();
-    $configs=array();
-    $modulesEnable=  Zend_Registry::get('modulesEnable');
+    $translaters = array();
+    $configs = array();
+    $modulesEnable =  Zend_Registry::get('modulesEnable');
     foreach($modulesEnable as $module)
       {
-      $translaters[$module]=new Zend_Translate('csv',BASE_PATH."/modules/$module/translation/fr-main.csv","en");  
-      if(file_exists(BASE_PATH."/modules/$module/configs/module.local.ini"))
+      $translaters[$module] = new Zend_Translate('csv', BASE_PATH."/modules/".$module."/translation/fr-main.csv", "en");  
+      if(file_exists(BASE_PATH."/modules/".$module."/configs/module.local.ini"))
         {
-        $configs[$module]= new Zend_Config_Ini(BASE_PATH."/modules/$module/configs/module.local.ini", 'global');
+        $configs[$module] = new Zend_Config_Ini(BASE_PATH."/modules/".$module."/configs/module.local.ini", 'global');
         }
       else
         {
-        $configs[$module]= new Zend_Config_Ini(BASE_PATH."/modules/$module/configs/module.ini", 'global');
+        $configs[$module] = new Zend_Config_Ini(BASE_PATH."/modules/".$module."/configs/module.ini", 'global');
         }      
       }
-    Zend_Registry::set('translatersModules',$translaters);
-    Zend_Registry::set('configsModules',$configs);
+    Zend_Registry::set('translatersModules', $translaters);
+    Zend_Registry::set('configsModules', $configs);
     
-    $forward=$this->_getParam("forwardModule");
+    $forward = $this->_getParam("forwardModule");
     $request = $this->getRequest();
     $response = $this->getResponse();
     if(!isset($forward))
       {
       foreach($configs as $key => $config)
         {
-        if($config->system==1)
+        if($config->system == 1)
           {
           if(file_exists(BASE_PATH.'/modules/'.$key.'/controllers/'.  ucfirst($request->getControllerName()).'CoreController.php'))
             {
             include_once BASE_PATH.'/modules/'.$key.'/controllers/'.  ucfirst($request->getControllerName()).'CoreController.php';
-            $name=ucfirst($key).'_'.ucfirst($request->getControllerName()).'CoreController';
-            $controller=new $name($request,$response);
+            $name = ucfirst($key).'_'.ucfirst($request->getControllerName()).'CoreController';
+            $controller = new $name($request, $response);
             if(method_exists($controller, $request->getActionName().'Action'))
               {
-              $this->_forward($request->getActionName(), $request->getControllerName().'Core', $key,array('forwardModule'=>true));
+              $this->_forward($request->getActionName(), $request->getControllerName().'Core', $key, array('forwardModule' => true));
               }
             }
           }
         }
       }
     parent::preDispatch();
-    if (!$this->isDebug())
+    if(!$this->isDebug())
       {
       $frontendOptions = array(
         'lifetime' => 86400,
@@ -117,17 +118,17 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     {
 
     parent::postDispatch();
-    if ($this->isDebug() && $this->getEnvironment() != 'testing')
+    if($this->isDebug() && $this->getEnvironment() != 'testing')
       {
-      $time_end = microtime(true);
+      $timeEnd = microtime(true);
       $writer = new Zend_Log_Writer_Firebug();
       $logger = new Zend_Log($writer);
-      $logger->info("---Timers--- Controller timer:" . round(1000*($time_end - $this->_controllerTimer),3)." ms - Global timer:" . round(1000*($time_end - START_TIME),3)." ms");
+      $logger->info("---Timers--- Controller timer:" . round(1000 * ($timeEnd - $this->_controllerTimer), 3)." ms - Global timer:" . round(1000 * ($timeEnd - START_TIME), 3)." ms");
 
-      $logger->info("---Memory Usage---".round((memory_get_usage() / (1024 * 1024)),3) . " MB");
+      $logger->info("---Memory Usage---".round((memory_get_usage() / (1024 * 1024)), 3) . " MB");
       }
 
-    if (Zend_Registry::get("configDatabase")->database->profiler == 1)
+    if(Zend_Registry::get("configDatabase")->database->profiler == 1)
       {
       $this->showProfiler();
       }
@@ -156,14 +157,14 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       $this->ModelLoader->loadModels($this->_models);
       }
     $modelsArray = Zend_Registry::get('models');
-    foreach ($modelsArray as $key => $tmp)
+    foreach($modelsArray as $key => $tmp)
       {
       $this->$key = $tmp;
       }
     
     if(isset($this->_daos))
       {
-      foreach ($this->_daos as $dao)
+      foreach($this->_daos as $dao)
         {
         Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/core/models/dao');
         }
@@ -173,7 +174,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     
     if(isset($this->_components))
       {
-      foreach ($this->_components as $component)
+      foreach($this->_components as $component)
         {
         $nameComponent = $component . "Component";
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
@@ -184,7 +185,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     Zend_Registry::set('forms', array());
     if(isset($this->_forms))
       {
-      foreach ($this->_forms as $forms)
+      foreach($this->_forms as $forms)
         {
         $nameForm = $forms . "Form";
 
@@ -202,18 +203,18 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     $writer = new Zend_Log_Writer_Firebug();
     $logger = new Zend_Log($writer);
     $configDatabase = Zend_Registry::get('configDatabase');
-    if ($configDatabase->database->profiler != '1')
+    if($configDatabase->database->profiler != '1')
       {
       return;
       }
     $db = Zend_Registry::get('dbAdapter');
     
-    if(method_exists($db,"getProfiler"))
+    if(method_exists($db, "getProfiler"))
       { 
       $profiler = $db->getProfiler();
       $totalTime = $profiler->getTotalElapsedSecs();
       $queryCount = $profiler->getTotalNumQueries();
-      if ($queryCount == 0)
+      if($queryCount == 0)
         {
         return;
         }
@@ -221,26 +222,26 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     
     $longestTime = 0;
     $longestQuery = null;
-    if(isset($profiler)&&!empty($profiler))
+    if(isset($profiler) && !empty($profiler))
       {
-      $querys=$profiler->getQueryProfiles();
+      $querys = $profiler->getQueryProfiles();
       if(!empty($querys))
         {
-        foreach ($profiler->getQueryProfiles() as $query)
+        foreach($profiler->getQueryProfiles() as $query)
           {
-          if ($query->getElapsedSecs() > $longestTime)
+          if($query->getElapsedSecs() > $longestTime)
             {
             $longestTime = $query->getElapsedSecs();
             $longestQuery = $query->getQuery();
             }
           }
-        $stats='--- Profiler --- Executed ' . $queryCount . ' queries in ' . round(1000*$totalTime,3) .' ms';
-        $stats.= ' Longest query length: ' . round(1000*$longestTime,3).' ms : '.$longestQuery;
-        $logger->log(str_replace("'","`",$stats), Zend_Log::INFO);
+        $stats = '--- Profiler --- Executed ' . $queryCount . ' queries in ' . round(1000 * $totalTime, 3) .' ms';
+        $stats .= ' Longest query length: ' . round(1000 * $longestTime, 3).' ms : '.$longestQuery;
+        $logger->log(str_replace("'", "`", $stats), Zend_Log::INFO);
 
-        foreach ($profiler->getQueryProfiles() as $query)
+        foreach($profiler->getQueryProfiles() as $query)
           {
-          $logger->log(str_replace("'","`",round(1000*($query->getElapsedSecs()),3). " ms | " . $query->getQuery()), Zend_Log::INFO);
+          $logger->log(str_replace("'", "`", round(1000 * ($query->getElapsedSecs()), 3). " ms | " . $query->getQuery()), Zend_Log::INFO);
           }
         }
       }
@@ -254,7 +255,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
   public function isDebug()
     {
     $config = Zend_Registry::get('config');
-    if ($config->mode->debug == 1)
+    if($config->mode->debug == 1)
       {
       return true;
       }
@@ -291,14 +292,13 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       $array = array();
       $array['action'] = $form->getAction();
       $array['method'] = $form->getMethod();
-      foreach ( $form->getElements() as $element ) {
-          $element->removeDecorator('HtmlTag');
-          $element->removeDecorator('Label');
-          $element->removeDecorator('DtDdWrapper');
-          $array[$element->getName()] = $element;
-      }
+      foreach($form->getElements() as $element )
+        {
+        $element->removeDecorator('HtmlTag');
+        $element->removeDecorator('Label');
+        $element->removeDecorator('DtDdWrapper');
+        $array[$element->getName()] = $element;
+        }
       return $array;
-    }    
-    
+    }        
 } // end class
-?>

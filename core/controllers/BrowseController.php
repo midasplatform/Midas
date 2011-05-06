@@ -283,23 +283,23 @@ class BrowseController extends AppController
       {
       case 'community':
         $community=$this->Community->load($id);        
-        $jsonContent=array_merge($jsonContent,$community->_toArray());
+        $jsonContent=array_merge($jsonContent,$community->toArray());
         $jsonContent['creation']=$this->Component->Date->formatDate(strtotime($community->getCreation()));
         $members=$community->getMemberGroup()->getUsers();
         $jsonContent['members']=count($members);
         break;
       case 'folder':
         $folder=$this->Folder->load($id);
-        $jsonContent=array_merge($jsonContent,$folder->_toArray());
+        $jsonContent=array_merge($jsonContent,$folder->toArray());
         $jsonContent['creation']=$this->Component->Date->formatDate(strtotime($jsonContent['date']));
         break;
       case 'item':
         $item=$this->Item->load($id);
-        $jsonContent=array_merge($jsonContent,$item->_toArray());
+        $jsonContent=array_merge($jsonContent,$item->toArray());
         $itemRevision=$this->Item->getLastRevision($item);
         $jsonContent['creation']=$this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
-        $jsonContent['uploaded']=$itemRevision->getUser()->_toArray();
-        $jsonContent['revision']=$itemRevision->_toArray();
+        $jsonContent['uploaded']=$itemRevision->getUser()->toArray();
+        $jsonContent['revision']=$itemRevision->toArray();
         $jsonContent['nbitstream']=count($itemRevision->getBitstreams());
         $jsonContent['type']='item';
         break;

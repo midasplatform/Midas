@@ -163,7 +163,7 @@ class FolderController extends AppController
       throw new Zend_Exception("User Folder. You cannot delete it.");
       }
     $this->Folder->delete($folder);
-    $folderInfo=$folder->_toArray();
+    $folderInfo=$folder->toArray();
     echo JsonComponent::encode(array(true,$this->t('Changes saved'),$folderInfo));
     }// end deleteAction
     
@@ -257,7 +257,7 @@ class FolderController extends AppController
             }
           else
             {
-            echo JsonComponent::encode(array(true,$this->t('Changes saved'),$folder->_toArray(),$new_folder->_toArray()));
+            echo JsonComponent::encode(array(true,$this->t('Changes saved'),$folder->toArray(),$new_folder->toArray()));
             }
           }
         }
