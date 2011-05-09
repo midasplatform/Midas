@@ -1,8 +1,8 @@
-#!/usr/bin/env php
 <?php
-/* PHPUnit
+/**
+ * PHP_CodeCoverage
  *
- * Copyright (c) 2002-2011, Sebastian Bergmann <sebastian@phpunit.de>.
+ * Copyright (c) 2009-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,42 +33,39 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @category   PHP
+ * @package    CodeCoverage
+ * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
+ * @link       http://github.com/sebastianbergmann/php-code-coverage
+ * @since      File available since Release 1.0.0
  */
 
+/**
+ * Interface for code coverage drivers.
+ *
+ * @category   PHP
+ * @package    CodeCoverage
+ * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
+ * @version    Release: 1.0.4
+ * @link       http://github.com/sebastianbergmann/php-code-coverage
+ * @since      Class available since Release 1.0.0
+ */
+interface PHP_CodeCoverage_Driver
+{
+    /**
+     * Start collection of code coverage information.
+     */
+    public function start();
 
-$base_path= realpath(dirname(__FILE__)) . "/../../../";
-
-set_include_path(get_include_path() . PATH_SEPARATOR . $base_path.'/tests/library');
-require_once 'PHP/CodeCoverage/Filter.php';
-
-if(!file_exists($base_path.'/tests/configs/mysql.ini'))
-  {
-  echo 'Failures: 1 Unable to find config';
-  exit;
-  }
-  
-if(file_exists($base_path.'/core/configs/database.local.ini'))
-  {
-  rename($base_path.'/core/configs/database.local.ini', $base_path.'/core/configs/database.local.ini.test');
-  }
-copy($base_path.'/tests/configs/mysql.ini', $base_path.'/core/configs/database.local.ini');
-copy($base_path.'/tests/configs/mysql.ini', $base_path.'/tests/configs/lock.mysql.ini');
-
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__, 'PHPUNIT');
-
-if (extension_loaded('xdebug')) {
-    xdebug_disable();
+    /**
+     * Stop collection of code coverage information.
+     *
+     * @return array
+     */
+    public function stop();
 }
-
-if (strpos('@php_bin@', '@php_bin') === 0) {
-    set_include_path(dirname(__FILE__) . PATH_SEPARATOR . get_include_path());
-}
-
-require_once 'PHPUnit/Autoload.php';
-
-define('PHPUnit_MAIN_METHOD', 'PHPUnit_TextUI_Command::main');
-
-PHPUnit_TextUI_Command::main();
-
-
-?>
