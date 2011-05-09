@@ -35,8 +35,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'PHP/CodeCoverage/Filter.php';
 $base_path= realpath(dirname(__FILE__)) . "/../../../";
+
+set_include_path(get_include_path() . PATH_SEPARATOR . $base_path.'/tests/library');
+require_once 'PHP/CodeCoverage/Filter.php';
+
 if(!file_exists($base_path.'/tests/configs/pgsql.ini'))
   {
   echo 'Failures: 1 Unable to find config';

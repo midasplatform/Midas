@@ -10,7 +10,6 @@ define('LIBRARY_PATH', realpath(dirname(__FILE__) . '/../library'));
 define('TESTS_PATH', realpath(dirname(__FILE__)));
 define('BASE_PATH', realpath(dirname(__FILE__)) . "/../");
 
-$_SERVER['SERVER_NAME'] = 'http://local.amazon.com';
 
 $includePaths = array(LIBRARY_PATH, get_include_path());
 set_include_path(implode(PATH_SEPARATOR, $includePaths));

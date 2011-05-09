@@ -51,7 +51,7 @@
  * @author     Sebastian Bergmann <sebastian@phpunit.de>
  * @copyright  2002-2011 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: @package_version@
+ * @version    Release: 3.5.13
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 3.4.0
  */
@@ -95,8 +95,8 @@ abstract class PHPUnit_Util_PHP
     public static function getPhpBinary()
     {
         if (self::$phpBinary === NULL) {
-            if (is_readable('@php_bin@')) {
-                self::$phpBinary = '@php_bin@';
+            if (is_readable('C:\xampp\php\php.exe')) {
+                self::$phpBinary = 'C:\xampp\php\php.exe';
             }
 
             else if (PHP_SAPI == 'cli' && isset($_SERVER['_']) &&
