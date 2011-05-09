@@ -631,6 +631,10 @@ class FolderModel extends FolderModelBase
    * @return Array of FolderDao */
   function getFoldersFromSearch($search,$userDao,$limit=14,$group=true,$order='view')
     {
+    if(Zend_Registry::get('configDatabase')->database->adapter=='PDO_PGSQL')
+      {
+      $group=false; //Postgresql don't like the sql request with group by
+      }
     $isAdmin=false;
     if($userDao==null)
       {

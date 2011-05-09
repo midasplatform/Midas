@@ -94,7 +94,8 @@ class UserController extends AppController
     {
     $this->userSession->Dao=null;
     Zend_Session::ForgetMe();
-    $this->_forward('index','index');
+    setcookie('midasUtil', null, time()+60*60*24*30,'/'); //30 days
+    $this->_redirect('/');
     } //end logoutAction
 
 
@@ -141,12 +142,11 @@ class UserController extends AppController
           $remember=$form->getValue('remerberMe');
           if(isset($remember) && $remember == 1)
             {
-            $seconds=60 * 60 * 24 * 14; // 14 days
-            Zend_Session::RememberMe($seconds);
+            setcookie('midasUtil', $userDao->getKey().'-'.md5($userDao->getPassword()), time()+60*60*24*30,'/'); //30 days
             }
           else
             {
-            Zend_Session::ForgetMe();
+            setcookie('midasUtil', null, time()+60*60*24*30,'/'); //30 days
             }
           Zend_Session::start();  
           $user=new Zend_Session_Namespace('Auth_User');

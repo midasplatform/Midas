@@ -47,7 +47,24 @@ class AppController extends MIDAS_GlobalController
         }
       Zend_Session::start();  
       $user = new Zend_Session_Namespace('Auth_User');
-      $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
+      if($user->Dao == null)
+        {
+        $modelLoad = new MIDAS_ModelLoader();
+        $userModel = $modelLoad->loadModel('User');
+        $cookieData = $this->getRequest()->getCookie('midasUtil');
+        if(!empty($cookieData))
+          {
+          $tmp = explode('-', $cookieData);
+          if(count($tmp) == 2)
+            {
+            $userDao = $userModel->load($tmp[0]);
+            if(md5($userDao->getPassword()) == $tmp[1])
+              {
+              $user->Dao = $userDao;
+              }
+            }
+          }
+        }
       $this->userSession = $user;
       $this->view->recentItems = array();
       if($user->Dao != null)

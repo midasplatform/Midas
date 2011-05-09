@@ -39,7 +39,20 @@ Zend_Registry::set('configGlobal', $configGlobal);
 $config = new Zend_Config_Ini(APPLICATION_CONFIG, 'testing');
 Zend_Registry::set('config', $config);
 // InitDatabase
-$configDatabase = new Zend_Config_Ini(DATABASE_CONFIG, 'testing');
+
+if(file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini'))
+  {
+  $configDatabase = new Zend_Config_Ini(BASE_PATH.'/tests/configs/lock.mysql.ini', 'testing');
+  }
+elseif(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
+  {
+  $configDatabase = new Zend_Config_Ini(BASE_PATH.'/tests/configs/lock.pgsql.ini', 'testing');
+  }
+else
+  {
+  echo "Error";exit;
+  }
+
 if ($configDatabase->database->type == 'pdo')
   {
   $db = Zend_Db::factory($configDatabase->database->adapter, array(
@@ -125,16 +138,10 @@ Zend_Registry::set('logger', $logger);
 
 if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
   {
-  unlink(BASE_PATH.'/tests/configs/pgsql.ini');
-  unlink(BASE_PATH.'/tests/configs/lock.pgsql.ini');
-  rename(  BASE_PATH.'/core/configs/database.local.ini',BASE_PATH.'/tests/configs/pgsql.ini');
-  rename(  BASE_PATH.'/core/configs/database.local.ini.test',BASE_PATH.'/core/configs/database.local.ini');
+  rename(  BASE_PATH.'/tests/configs/lock.pgsql.ini',BASE_PATH.'/tests/configs/pgsql.ini');
   }
 if(file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini'))
   {
-  unlink(BASE_PATH.'/tests/configs/mysql.ini');
-  unlink(BASE_PATH.'/tests/configs/lock.mysql.ini');
-  rename(  BASE_PATH.'/core/configs/database.local.ini',BASE_PATH.'/tests/configs/mysql.ini');
-  rename(  BASE_PATH.'/core/configs/database.local.ini.test',BASE_PATH.'/core/configs/database.local.ini');
+  rename(  BASE_PATH.'/tests/configs/lock.mysql.ini',BASE_PATH.'/tests/configs/mysql.ini');
   }
 

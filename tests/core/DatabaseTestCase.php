@@ -40,6 +40,13 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       $databaseFixture =  new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet( dirname(__FILE__) . '/../databaseDataset/'.$files.'.xml');
       $databaseTester->setupDatabase($databaseFixture);
       }
+      
+    if($configDatabase->database->adapter == 'PDO_PGSQL')
+      {
+      $db->query("SELECT setval('feed_feed_id_seq', (SELECT MAX(feed_id) FROM feed)+1);");
+      $db->query("SELECT setval('folder_folder_id_seq', (SELECT MAX(folder_id) FROM folder)+1);");
+      }      
+      
     }
 
 
@@ -47,7 +54,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     {
     if(!isset($this->_connectionMock)||$this->_connectionMock == null)
       {
-      $configDatabase = new Zend_Config_Ini(DATABASE_CONFIG, 'testing');
+      $configDatabase = Zend_Registry::get('configDatabase');
       if ($configDatabase->database->type == 'pdo')
         {
         $db = Zend_Db::factory($configDatabase->database->adapter, array(

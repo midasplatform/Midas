@@ -128,11 +128,10 @@ function initSearchResults(type,append)
 function createSearchResults(element)
 {
   var html='';
-
   if(element.resultType=='user')
     {
     html="<img class='imageSearchResult' alt='' src='"+json.global.coreWebroot+"/public/images/icons/unknownUser-small.png'/>";
-    html+="<a class='nameSearchResult' href='"+json.global.webroot+"/user/"+element.user_id+"'>"+element.firstname+' '+sliceFileName(element.name, 45)+"</a><br/>";
+    html+="<a class='nameSearchResult' href='"+json.global.webroot+"/user/"+element.user_id+"'>"+sliceFileName(element.firstname+' '+element.lastname, 45)+"</a><br/>";
     html+="<span class='descriptionSearchResult' >"+element.company+"</span>";
     html+="<span class='dateSearchResult' >"+element.formattedDate+"</span>";
     }

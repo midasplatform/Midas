@@ -29,6 +29,8 @@ class ItemModelTest extends DatabaseTestCase
     $revision->setUserId($usersFile[0]->getKey());
     $revision->setDate(date('c'));
     $revision->setChanges("change");
+    $revision->setItemId(0);
+    $revision->setRevision(1);
     $this->ItemRevision->save($revision);
 
     $this->Item->addRevision($itemsFile[1],$revision);

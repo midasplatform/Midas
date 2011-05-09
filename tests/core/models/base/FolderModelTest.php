@@ -47,7 +47,7 @@ class FolderModelTest extends DatabaseTestCase
     $items=$folder->getItems();
     $itemsFiltered=$this->Folder->getItemsFiltered($folder,$usersFile[0],0);
     $this->assertEquals(2,count($itemsFiltered));
-    if(!isset($itemsFiltered[0]) || !isset($items[0]) || !$this->Item->compareDao($itemsFiltered[0],$items[0]))
+    if(!isset($itemsFiltered[0]) || !isset($items[0]) || $itemsFiltered[0]->getKey() != $items[0]->getKey())
       {
       $this->fail("Unable to get community");
       }
@@ -96,6 +96,7 @@ class FolderModelTest extends DatabaseTestCase
     $item=new ItemDao();
     $item->setName('test');
     $item->setDescription('test');
+    $item->setType(0);
     $this->Item->save($item);
     $folder=$usersFile[0]->getFolder();
     $this->Folder->addItem($folder,$item);

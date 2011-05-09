@@ -55,6 +55,10 @@ class CommunityModel extends CommunityModelBase
   /** Return a list of communities corresponding to the search */
   function getCommunitiesFromSearch($search,$userDao,$limit=14,$group=true,$order='view')
     {
+    if(Zend_Registry::get('configDatabase')->database->adapter=='PDO_PGSQL')
+      {
+      $group=false; //Postgresql don't like the sql request with group by
+      }
     $communities=array();
     if($userDao==null)
       {

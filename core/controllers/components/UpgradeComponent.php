@@ -144,6 +144,17 @@ class UpgradeComponent extends AppComponent
       if(isset($migration))
         {
         $path=BASE_PATH.'/core/configs/database.local.ini';      
+        if($testing||Zend_Registry::get('configGlobal')->environment=='testing')
+          {
+          if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
+            {
+            $path = BASE_PATH.'/tests/configs/lock.pgsql.ini';
+            }
+          if(file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini'))
+            {
+            $path = BASE_PATH.'/tests/configs/lock.mysql.ini';
+            }
+          }
         $data=parse_ini_file ($path,true);
         if(file_exists($path.'.old'))
           {
@@ -153,12 +164,20 @@ class UpgradeComponent extends AppComponent
         if($testing||Zend_Registry::get('configGlobal')->environment=='testing')
           {
           $data['testing']['version']=$migration['versionText'];
+          if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
+            {
+            $path = BASE_PATH.'/tests/configs/lock.pgsql.ini';
+            }
+          if(file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini'))
+            {
+            $path = BASE_PATH.'/tests/configs/lock.mysql.ini';
+            }
           }
         else
           {
           $data['development']['version']=$migration['versionText'];
-          $data['production']['version']=$migration['versionText'];
-          }     
+          $data['production']['version']=$migration['versionText'];          
+          }   
         $utility->createInitFile($path, $data);
         }
       }

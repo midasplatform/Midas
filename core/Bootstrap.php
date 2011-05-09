@@ -128,7 +128,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'filterParams' => array(
               'priority' => Zend_Log::WARN))));
         }
-      if($configDatabase->database->params->password != 'set_your_password')
+      if($configDatabase->database->adapter == 'PDO_MYSQL' && $configDatabase->database->params->password != 'set_your_password')
         {
         $logger->addWriter($writerDb);
         $logger->setEventItem('datetime', date('Y-m-d H:i:s'));

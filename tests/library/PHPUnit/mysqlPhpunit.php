@@ -47,11 +47,6 @@ if(!file_exists($base_path.'/tests/configs/mysql.ini'))
   exit;
   }
   
-if(file_exists($base_path.'/core/configs/database.local.ini'))
-  {
-  rename($base_path.'/core/configs/database.local.ini', $base_path.'/core/configs/database.local.ini.test');
-  }
-copy($base_path.'/tests/configs/mysql.ini', $base_path.'/core/configs/database.local.ini');
 copy($base_path.'/tests/configs/mysql.ini', $base_path.'/tests/configs/lock.mysql.ini');
 
 PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__, 'PHPUNIT');

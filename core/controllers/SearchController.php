@@ -197,7 +197,7 @@ class SearchController extends AppController
 
       // Search for the folders
       $FoldersDao = $this->Folder->getFoldersFromSearch($search,$this->userSession->Dao); 
-
+     
       // Search for the communities
       $CommunitiesDao = $this->Community->getCommunitiesFromSearch($search,$this->userSession->Dao); 
 
@@ -314,7 +314,7 @@ class SearchController extends AppController
       echo '{'; 
       echo '"id":"'.$id.'"'; 
       echo ', "label":"'.$this->Component->Utility->sliceName($folderDao->getName(),55);
-      if($folderDao->count>1)
+      if(isset($folderDao->count)&&$folderDao->count>1)
         {
         echo ' ('.$folderDao->count.')"';
         }
@@ -323,7 +323,7 @@ class SearchController extends AppController
         echo '"';  
         } 
       echo ', "value":"'.$folderDao->getName().'"';
-      if($folderDao->count==1)
+      if(isset($folderDao->count)&&$folderDao->count==1)
         {
         echo ', "folderid":"'.$folderDao->getFolderId().'"'; 
         } 
@@ -348,7 +348,7 @@ class SearchController extends AppController
       echo '{'; 
       echo '"id":"'.$id.'"'; 
       echo ', "label":"'.$this->Component->Utility->sliceName($communityDao->getName(),55);
-      if($communityDao->count>1)
+      if(isset($communityDao->count)&&$communityDao->count>1)
         {
         echo ' ('.$communityDao->count.')"';
         }
@@ -357,7 +357,7 @@ class SearchController extends AppController
         echo '"';  
         } 
       echo ', "value":"'.$communityDao->getName().'"'; 
-      if($communityDao->count==1)
+      if(!isset($communityDao->count)||$communityDao->count==1)
         {
         echo ', "communityid":"'.$communityDao->getKey().'"'; 
         }

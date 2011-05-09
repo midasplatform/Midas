@@ -60,10 +60,9 @@ class FeedModelTest extends DatabaseTestCase
     $this->assertEquals(true,$feed->saved);
     $this->Feed->addCommunity($feed,$communityFile [0]);
     $communities=$feed->getCommunities();
-    if(!$this->Community->compareDao($communities [0],$communityFile [0]))
+    if(($communities[0]->getKey() != $communityFile[0]->getKey()))
       {
       $this->fail("Unable to add dao");
       }
-
     }
   }
