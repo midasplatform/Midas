@@ -32,6 +32,8 @@ if(!is_writable(BASE_PATH."/core/configs")||!is_writable(BASE_PATH."/log")||!is_
   exit();
   }
 
+// remember me cookie lifetime
+//ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 15); //15 days
 define('START_TIME',microtime(true));
 
 require_once 'Zend/Loader/Autoloader.php';

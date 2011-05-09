@@ -139,7 +139,6 @@ class UserController extends AppController
         if($userDao != false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
           {
           $remember=$form->getValue('remerberMe');
-
           if(isset($remember) && $remember == 1)
             {
             $seconds=60 * 60 * 24 * 14; // 14 days

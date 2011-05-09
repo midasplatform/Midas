@@ -470,6 +470,7 @@ div.TopbarRight li:hover ul{
   display:block;
 }
 
+
 div.TopbarRight img.arrowUser{
   position:relative;
   top:1px;
@@ -481,10 +482,12 @@ div.TopbarRight  li li {
   padding:0px;
   position:relative;
   left:-3px;
+  z-index:200;
 }
 div.TopbarRight  li:hover li a{
   background:#4B4B4B;
   color:white;
+  z-index:200;
   
 }
 
@@ -502,6 +505,7 @@ div.TopbarRight  li ul a{
   -webkit-box-shadow: #666 0 0 5px;
   box-shadow: #666 0 0 5px;
   -moz-box-shadow: 0px 0px 5px #666; 
+  z-index:200;
   
 }
 div.TopbarRight  li ul a:hover, div.TopbarRight  li ul li:hover a{

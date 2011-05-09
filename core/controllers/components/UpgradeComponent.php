@@ -160,7 +160,6 @@ class UpgradeComponent extends AppComponent
           $data['production']['version']=$migration['versionText'];
           }     
         $utility->createInitFile($path, $data);
-        echo "yeah".$migration['versionText']; 
         }
       }
     else

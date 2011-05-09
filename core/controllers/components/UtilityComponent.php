@@ -18,6 +18,14 @@ class UtilityComponent extends AppComponent
             {
             while (false !== ($fileDB = readdir($handleDB)))
               {
+              if(!file_exists(BASE_PATH.'/modules/'.$file.'/database'))
+                {
+                $config->db->PDO_MYSQL=true;
+                $config->db->PDO_IBM=true;
+                $config->db->PDO_OCI=true;
+                $config->db->PDO_SQLITE=true;
+                $config->db->CASSANDRA=true;
+                }
               if(file_exists(BASE_PATH.'/modules/'.$file.'/database/'.$fileDB.'/'))
                 {
                 switch ($fileDB)
@@ -66,7 +74,7 @@ class UtilityComponent extends AppComponent
       }
     if(file_exists($path))
       {
-      unset($path);      
+      unlink($path);      
       }
     
     if(!is_array($data)||empty($data))

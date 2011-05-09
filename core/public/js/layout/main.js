@@ -44,6 +44,11 @@ $(function() {
     loadAjaxDynamicBar('login','/user/login');
     }
     
+  //menu
+  $('div.TopbarRighta li.first').hover(
+			function() { $('ul', this).css('display', 'block'); },
+			function() { $('ul', this).css('display', 'none'); });
+    
   // If we are not logged in
   if(json.global.needToLog)
     {
