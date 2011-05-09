@@ -66,7 +66,7 @@ class UtilityComponent extends AppComponent
       }
     if(file_exists($path))
       {
-      unset($path);      
+      unlink($path);      
       }
     
     if(!is_array($data)||empty($data))

@@ -184,6 +184,8 @@ class InstallController extends AppController
         $databaseConfig['production']['version']=str_replace('.sql', '', basename($sqlFile));  
         $databaseConfig['development']['version']=str_replace('.sql', '', basename($sqlFile));  
         
+        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/database.local.ini',$databaseConfig);
+        
         require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
         $upgradeComponent=new UpgradeComponent();
         $db = Zend_Registry::get('dbAdapter');
@@ -192,7 +194,7 @@ class InstallController extends AppController
         $upgradeComponent->initUpgrade('core', $db, $dbtype);
         $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)));
         
-        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/database.local.ini',$databaseConfig);
+        
         
         $this->User=new UserModel(); //reset Database adapter
         $this->userSession->Dao=$this->User->createUser($form->getValue('email'),$form->getValue('userpassword1'),

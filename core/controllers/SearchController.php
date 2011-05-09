@@ -7,7 +7,7 @@ class SearchController extends AppController
 {
   public $_models=array('ItemKeyword','Item','Folder','User','Community','Group');
   public $_daos=array('ItemKeyword','Item','Folder','User','Community');
-  public $_components=array('Sortdao','Date');
+  public $_components=array('Sortdao','Date','Utility');
     
   /** Init Controller */
   function init()
@@ -255,7 +255,7 @@ class SearchController extends AppController
         }
       echo '{'; 
       echo '"id":"'.$id.'"'; 
-      echo ', "label":"'.$itemDao->getName();
+      echo ', "label":"'.$this->Component->Utility->sliceName($itemDao->getName(),55);
       if($itemDao->count>1)
         {
         echo ' ('.$itemDao->count.')"';
@@ -271,7 +271,7 @@ class SearchController extends AppController
         {
         echo ', "itemid":"'.$itemDao->getItemId().'"'; 
         }
-      echo ', "category":"Items"';   
+      echo ', "category":"'.$this->t('Items').'"';   
       $id++;
       $n++;
       echo '}'; 
@@ -289,11 +289,11 @@ class SearchController extends AppController
         }
       echo '{'; 
       echo '"id":"'.$id.'"'; 
-      echo ', "label":"'.$groupDao->getName();
+      echo ', "label":"'.$this->Component->Utility->sliceName($groupDao->getName(),55);
       echo '"';       
       echo ', "value":"'.$groupDao->getName().'"'; 
       echo ', "groupid":"'.$groupDao->getKey().'"'; 
-      echo ', "category":"Groups"';   
+      echo ', "category":"'.$this->t('Groups').'"';   
       $id++;
       $n++;
       echo '}'; 
@@ -313,7 +313,7 @@ class SearchController extends AppController
         }
       echo '{'; 
       echo '"id":"'.$id.'"'; 
-      echo ', "label":"'.$folderDao->getName();
+      echo ', "label":"'.$this->Component->Utility->sliceName($folderDao->getName(),55);
       if($folderDao->count>1)
         {
         echo ' ('.$folderDao->count.')"';
@@ -327,7 +327,7 @@ class SearchController extends AppController
         {
         echo ', "folderid":"'.$folderDao->getFolderId().'"'; 
         } 
-      echo ', "category":"Folders"';   
+      echo ', "category":"'.$this->t('Folders').'"';   
       $id++;
       $n++;
       echo '}'; 
@@ -347,7 +347,7 @@ class SearchController extends AppController
         }
       echo '{'; 
       echo '"id":"'.$id.'"'; 
-      echo ', "label":"'.$communityDao->getName();
+      echo ', "label":"'.$this->Component->Utility->sliceName($communityDao->getName(),55);
       if($communityDao->count>1)
         {
         echo ' ('.$communityDao->count.')"';
@@ -361,7 +361,7 @@ class SearchController extends AppController
         {
         echo ', "communityid":"'.$communityDao->getKey().'"'; 
         }
-      echo ', "category":"Communities"';   
+      echo ', "category":"'.$this->t('Communities').'"';   
       $id++;
       $n++;
       echo '}'; 
@@ -395,7 +395,7 @@ class SearchController extends AppController
         {
         echo ', "userid":"'.$userDao->getUserId().'"'; 
         }
-      echo ', "category":"Users"';   
+      echo ', "category":"'.$this->t('Users').'"';   
       $id++;
       $n++;
       echo '}';
