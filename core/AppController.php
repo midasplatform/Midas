@@ -70,7 +70,7 @@ class AppController extends MIDAS_GlobalController
         }
       $this->userSession = $user;
       $this->view->recentItems = array();
-      if($user->Dao != null)
+      if($user->Dao != null && $user->Dao instanceof UserDao)
         {
         if($fc->getRequest()->getControllerName() != 'install' && $fc->getRequest()->getControllerName() != 'error' && $user->Dao->isAdmin() && $this->isUpgradeNeeded())
           {

@@ -93,15 +93,15 @@ class AdminController extends AppController
                 }
               break;
             case 'PDO_PGSQL':
-               if(file_exists(BASE_PATH.'/modules/'.$key.'/database/pgsql/'.$allModules[$moduleName]->version.'.sql'))
-                 {
-                 $this->Component->Utility->run_pgsql_from_file(BASE_PATH.'/modules/'.$key.'/database/pgsql/'.$allModules[$moduleName]->version.'.sql',
+              if(file_exists(BASE_PATH.'/modules/'.$key.'/database/pgsql/'.$allModules[$moduleName]->version.'.sql'))
+                {
+                $this->Component->Utility->run_pgsql_from_file(BASE_PATH.'/modules/'.$key.'/database/pgsql/'.$allModules[$moduleName]->version.'.sql',
                                            Zend_Registry::get('configDatabase')->database->params->host,
                                            Zend_Registry::get('configDatabase')->database->params->username,
                                            Zend_Registry::get('configDatabase')->database->params->password,
                                            Zend_Registry::get('configDatabase')->database->params->dbname,
                                            Zend_Registry::get('configDatabase')->database->params->port);
-                 }
+                }
               break;
             default:
               break;
@@ -164,9 +164,9 @@ class AdminController extends AppController
       throw new Zend_Exception("You should be an administrator");
       }
     if(!$this->getRequest()->isXmlHttpRequest())
-     {
-     throw new Zend_Exception("Why are you here ? Should be ajax.");
-     }
+      {
+      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      }
     $this->_helper->layout->disableLayout();
     
     $start = $this->_getParam("startlog");
@@ -244,9 +244,9 @@ class AdminController extends AppController
       throw new Zend_Exception("You should be an administrator");
       }
     if(!$this->getRequest()->isXmlHttpRequest())
-     {
-     throw new Zend_Exception("Why are you here ? Should be ajax.");
-     }
+      {
+      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      }
     $this->_helper->layout->disableLayout();
 
     $db = Zend_Registry::get('dbAdapter');

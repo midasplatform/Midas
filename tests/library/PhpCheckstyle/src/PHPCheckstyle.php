@@ -1835,59 +1835,63 @@ class PHPCheckstyle {
   $this->_checkIndentationLevel($ws);
 	}
 
-  /** check indentation level */
-  private function _checkIndentationLevel($ws)
-    {   
-    if($this->_inControlStatement || $this->_inFuncCall || !isset($this->lineNumber) || !isset($this->_levelOfNesting) || $this->tokenizer->checkNextToken(T_NEW_LINE) || $this->tokenizer->checkNextValidTextToken(")"))
-      {
+  /** 
+   * Check indentation level
+   * @param string $ws
+   */
+  private function _checkIndentationLevel($ws) {   
+    $defaultIndentation = 2;
+    
+    //doesn't work if we are not in a class
+    if(!$this->_inClass) {
+      return;
+      }
+    
+    //doesn't check empty line and where we are in a control statement
+    if($this->_inControlStatement || $this->_inFuncCall || !isset($this->lineNumber) || !isset($this->_levelOfNesting) || $this->tokenizer->checkNextToken(T_NEW_LINE) || $this->tokenizer->checkNextValidTextToken(")")) {
       return;
       }
      
     $previousToken =  $this->tokenizer->peekPrvsToken();
-    if(!isset($this->indentationLevel['previousLine']) || $this->lineNumber != $this->indentationLevel['previousLine'])
-      {
+    // only check a line once
+    if(!isset($this->indentationLevel['previousLine']) || $this->lineNumber != $this->indentationLevel['previousLine']) {
       $nesting = $this->_levelOfNesting;
-      if($this->tokenizer->checkNextValidTextToken("{"))
-        {
+      if($this->tokenizer->checkNextValidTextToken("{")) {
         $nesting++;
         }
         
-      $expectedIndentation = $nesting * 2;
+      $expectedIndentation = $nesting * $defaultIndentation;
       $indentation = strlen($ws);
       if($previousToken[0] != T_NEW_LINE)
         {
         $indentation = 0;
         }
         
-      if($this->tokenizer->checkNextToken(T_COMMENT))
-        {
+      // don't check when the line is a comment
+      if($this->tokenizer->checkNextToken(T_COMMENT)) {
         return;
         }
         
-      if($this->_inSwitch)
-        {
-        if(!$this->tokenizer->checkNextToken(T_CASE) && !$this->tokenizer->checkNextToken(T_DEFAULT))
-          {
-          $expectedIndentation = $expectedIndentation + 2;
+      // control switch statement indentation
+      if($this->_inSwitch) {
+        if(!$this->tokenizer->checkNextToken(T_CASE) && !$this->tokenizer->checkNextToken(T_DEFAULT)) {
+          $expectedIndentation = $expectedIndentation + $defaultIndentation;
           }
           
         // don't check bracket in a switch (TODO)
-        if($this->tokenizer->checkNextValidTextToken("{") || $this->tokenizer->checkNextValidTextToken("}"))
-          {
+        if($this->tokenizer->checkNextValidTextToken("{") || $this->tokenizer->checkNextValidTextToken("}")) {
           return;
           }
         }
         
-      if($this->tokenizer->checkNextToken(T_CONSTANT_ENCAPSED_STRING) || $this->tokenizer->checkNextToken(T_OBJECT_OPERATOR) ||  $this->tokenizer->checkNextToken(T_ARRAY) || $this->tokenizer->checkNextToken(T_NEW))
-        {
-        if(($expectedIndentation+2) > $indentation)
-          {
-          $msg = sprintf(PHPCHECKSTYLE_INDENTATION_LEVEL_MORE, ($expectedIndentation+2),  $indentation);
+      // the indentation is almost free if it is a multiligne array
+      if($this->tokenizer->checkNextToken(T_CONSTANT_ENCAPSED_STRING) || $this->tokenizer->checkNextToken(T_OBJECT_OPERATOR) ||  $this->tokenizer->checkNextToken(T_ARRAY) || $this->tokenizer->checkNextToken(T_NEW)) {
+        if(($expectedIndentation+2) > $indentation) {
+          $msg = sprintf(PHPCHECKSTYLE_INDENTATION_LEVEL_MORE, ($expectedIndentation + $defaultIndentation),  $indentation);
           $this->_writeError('indentationLevel', $msg);
           }
         }        
-      elseif($expectedIndentation != $indentation)
-        {
+      elseif($expectedIndentation != $indentation)  {
         $msg = sprintf(PHPCHECKSTYLE_INDENTATION_LEVEL, $expectedIndentation,  $indentation);
         $this->_writeError('indentationLevel', $msg);
         }

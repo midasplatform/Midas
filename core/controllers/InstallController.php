@@ -147,6 +147,8 @@ class InstallController extends AppController
               $db = Zend_Db::factory("PDO_MYSQL",$params);
               Zend_Db_Table::setDefaultAdapter($db);
               Zend_Registry::set('dbAdapter', $db);
+              
+              $dbtype = 'PDO_MYSQL';
             break;
          case 'pgsql':
             $this->Component->Utility->run_pgsql_from_file($sqlFile,
@@ -177,6 +179,7 @@ class InstallController extends AppController
               $db = Zend_Db::factory("PDO_PGSQL",$params);
               Zend_Db_Table::setDefaultAdapter($db);
               Zend_Registry::set('dbAdapter', $db);
+              $dbtype = 'PDO_PGSQL';
             break;
           default:
             break;
@@ -189,7 +192,6 @@ class InstallController extends AppController
         require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
         $upgradeComponent=new UpgradeComponent();
         $db = Zend_Registry::get('dbAdapter');
-        $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
 
         $upgradeComponent->initUpgrade('core', $db, $dbtype);
         $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)));

@@ -3,7 +3,7 @@
 class UserController extends AppController
   {
   public $_models=array('User','Folder','Folderpolicygroup','Folderpolicyuser','Group','Feed','Feedpolicygroup','Feedpolicyuser','Group','Item' );
-  public $_daos=array(    'User','Folder','Folderpolicygroup','Folderpolicyuser','Group'  );
+  public $_daos=array('User','Folder','Folderpolicygroup','Folderpolicyuser','Group'  );
   public $_components=array('Date','Filter','Sortdao');
   public $_forms=array(    'User'  );
 
