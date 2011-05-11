@@ -10,7 +10,7 @@ class AppForm
     }//end construct
 
 
-    /** translation  */
+  /** translation  */
   protected  function t($text)
     {
     Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');

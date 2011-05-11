@@ -323,6 +323,10 @@ class TokenUtils {
 	public function checkNextValidTextToken($text) {
 		$ret = false;
 		$retInfo = $this->peekNextValidToken();
+    if(!isset($retInfo->token))
+      {
+      return $ret;
+      }
 		$token = $retInfo->token;
 		if (is_string($token)) {
 			if ($token == $text) {
@@ -427,7 +431,6 @@ class TokenUtils {
 				}
 			}
 		}
-
 		return $newTokens;
 	}
 

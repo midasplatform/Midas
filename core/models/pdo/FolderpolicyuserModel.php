@@ -20,9 +20,9 @@ class FolderpolicyuserModel extends FolderpolicyuserModelBase
       {
       throw new Zend_Exception("Should be a folder.");
       }
-    return $this->initDao('Folderpolicyuser',$this->database->fetchRow($this->database->select()
-          ->where('folder_id = ?',$folder->getKey())
-          ->where('user_id = ?',$user->getKey())
+    return $this->initDao('Folderpolicyuser', $this->database->fetchRow($this->database->select()
+          ->where('folder_id = ?', $folder->getKey())
+          ->where('user_id = ?', $user->getKey())
           ));
     }
 }  // end class FolderpolicyuserModel

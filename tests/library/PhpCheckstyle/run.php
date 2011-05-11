@@ -36,6 +36,7 @@ $xmlOutFile = "style-report.xml";
 $txtOutFile = "style-report.txt";
 $lineCountFile = "ncss.xml";
 
+
 // loop through user input
 for ($i = 1; $i < $_SERVER["argc"]; $i++) {
 	switch ($_SERVER["argv"][$i]) {

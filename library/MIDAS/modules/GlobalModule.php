@@ -102,7 +102,7 @@ class MIDAS_GlobalModule extends AppController
       }
     }
 
-    /** call controller core method */
+  /** call controller core method */
   public function callCoreAction()
     {
     $request = $this->getRequest();

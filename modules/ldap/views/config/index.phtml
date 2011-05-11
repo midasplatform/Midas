@@ -1,0 +1,56 @@
+<?php
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config.index.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.index.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+
+<div class="viewMain">
+
+
+     <?php
+      echo "
+      <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
+      <h3>Ldap Configuration:</h3>
+            <div >
+              <label for='hostname'>Ldap Hostname</label>
+              {$this->configForm['hostname']}
+            </div>
+            <div >
+              <label for='basedn'>Base Dn</label>
+              {$this->configForm['basedn']}
+            </div>
+            <div >
+              <label for='protocolVersion'>Ldap Protocol Version</label>
+              {$this->configForm['protocolVersion']}
+            </div>
+            <div >
+              <label for='search'>Search Attribute</label>
+              {$this->configForm['search']}
+            </div>
+            <div >
+              <label for='proxyBasedn'>Proxy Base Dn</label>
+              {$this->configForm['proxyBasedn']}
+            </div>
+            <div >
+              <label for='useActiveDirectory'>Use Active Directory?</label>
+              {$this->configForm['useActiveDirectory']}
+            </div>
+            <div >
+              <label for='autoAddUnknownUser'>Add user if not in database?</label>
+              {$this->configForm['autoAddUnknownUser']}
+            </div>
+          <div>
+            {$this->configForm['submitConfig']}
+          </div>
+       </form>";
+       ?>
+    
+ 
+</div>
+
+
+
+
+
+

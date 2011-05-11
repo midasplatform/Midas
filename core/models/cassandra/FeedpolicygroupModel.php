@@ -25,7 +25,7 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
     $groupid = $group->getKey();
     
     $column = 'feed_'.$feedid;    
-    $feedarray = $this->database->getCassandra('groupfeedpolicy',$groupid,array($column));
+    $feedarray = $this->database->getCassandra('groupfeedpolicy', $groupid, array($column));
 
     if(empty($feedarray))
       {
@@ -37,16 +37,16 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
     $newarray['group_id'] = $groupid;
     $newarray['policy'] = $feedarray[$column];
     
-    return $this->initDao('Feedpolicygroup',$newarray);  
+    return $this->initDao('Feedpolicygroup', $newarray);  
     } // end getPolicy
 
   /** Custom save command */
   public function save($dao)
     {
-    $instance=$this->_name."Dao";
+    $instance = $this->_name."Dao";
     if(!$dao instanceof $instance)
       {
-      throw new Zend_Exception("Should be an object ($instance).");
+      throw new Zend_Exception("Should be an object (".$instance.").");
       }
       
     try 
@@ -59,8 +59,8 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
       $dataarray = array();
       $dataarray[$column] = $dao->getPolicy();
       
-      $column_family = new ColumnFamily($this->database->getDB(),'groupfeedpolicy');
-      $column_family->insert($groupid,$dataarray);  
+      $column_family = new ColumnFamily($this->database->getDB(), 'groupfeedpolicy');
+      $column_family->insert($groupid, $dataarray);  
       
       // Add the feed to the UserFeed (this is a super column)
       $column = 'feed_'.$feedid;
@@ -68,10 +68,10 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
       $dataarray[$column] = array();
       $dataarray[$column]['group_'.$groupid] = $dao->getPolicy();
       
-      $column_family = new ColumnFamily($this->database->getDB(),'userfeed');
-      $column_family->insert($groupid,$dataarray);
+      $column_family = new ColumnFamily($this->database->getDB(), 'userfeed');
+      $column_family->insert($groupid, $dataarray);
       
-      // Add the policy to the CommunityFeed if we have a community
+      // Add the policy to the CommunityFeed ifwe have a community
       if(isset($dao->community) && $dao->community)
         {
         $column = 'feed_'.$feedid;
@@ -79,8 +79,8 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
         $dataarray[$column] = array();
         $dataarray[$column]['group_'.$groupid] = $dao->getPolicy();
       
-        $column_family = new ColumnFamily($this->database->getDB(),'communityfeed');
-        $column_family->insert($dao->community->getCommunityId(),$dataarray);  
+        $column_family = new ColumnFamily($this->database->getDB(), 'communityfeed');
+        $column_family->insert($dao->community->getCommunityId(), $dataarray);  
         }
       
       
@@ -103,10 +103,10 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
       return false;  
       } 
         
-    $instance=ucfirst($this->_name)."Dao";
+    $instance = ucfirst($this->_name)."Dao";
     if(get_class($dao) !=  $instance)
       {
-      throw new Zend_Exception("Should be an object ($instance). It was: ".get_class($dao) );
+      throw new Zend_Exception("Should be an object (".$instance."). It was: ".get_class($dao) );
       }
     if(!$dao->saved)
       {
@@ -119,19 +119,19 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
       $feedid = $dao->getFeedId();
       $groupid = $dao->getGroupId();
       $column = 'feed_'.$feedid;   
-      $cf = new ColumnFamily($this->database->getDB(),'groupfeedpolicy');
-      $cf->remove($groupid,array($column)); 
+      $cf = new ColumnFamily($this->database->getDB(), 'groupfeedpolicy');
+      $cf->remove($groupid, array($column)); 
 
       // Remove from the UserFeed also
       $column = 'feed_'.$feedid;  // super column
-      $cf = new ColumnFamily($this->database->getDB(),'userfeed');
-      $cf->remove($groupid,array('group_'.$groupid),$column);      
+      $cf = new ColumnFamily($this->database->getDB(), 'userfeed');
+      $cf->remove($groupid, array('group_'.$groupid), $column);      
       }    
     catch(Exception $e) 
       {
       throw new Zend_Exception($e); 
       }    
-    $dao->saved=false;
+    $dao->saved = false;
     return true;
     }
     

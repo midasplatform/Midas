@@ -1,61 +1,65 @@
 <?php
+/** Feed Model Base */
 abstract class FeedModelBase extends AppModel
 {
+  /** Constructor*/
   public function __construct()
     {
     parent::__construct();  
     $this->_name = 'feed';
     $this->_key = 'feed_id'; 
     $this->_components = array('Sortdao');
-    $this->_mainData= array(
-      'feed_id'=> array('type'=>MIDAS_DATA),
-      'date'=> array('type'=>MIDAS_DATA),
-      'user_id'=> array('type'=>MIDAS_DATA),
-      'type'=> array('type'=>MIDAS_DATA),
-      'ressource'=> array('type'=>MIDAS_DATA),
-      'communities' =>  array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'Community', 'table' => 'feed2community', 'parent_column'=> 'feed_id', 'child_column' => 'community_id'),
-      'user' => array('type'=>MIDAS_MANY_TO_ONE, 'model'=>'User', 'parent_column'=> 'user_id', 'child_column' => 'user_id'),
-      'feedpolicygroup' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Feedpolicygroup', 'parent_column'=> 'feed_id', 'child_column' => 'feed_id'),
-      'feedpolicyuser' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Feedpolicyuser', 'parent_column'=> 'feed_id', 'child_column' => 'feed_id'),
+    $this->_mainData = array(
+      'feed_id' => array('type' => MIDAS_DATA),
+      'date' => array('type' => MIDAS_DATA),
+      'user_id' => array('type' => MIDAS_DATA),
+      'type' => array('type' => MIDAS_DATA),
+      'ressource' => array('type' => MIDAS_DATA),
+      'communities' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Community', 'table' => 'feed2community', 'parent_column' => 'feed_id', 'child_column' => 'community_id'),
+      'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
+      'feedpolicygroup' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Feedpolicygroup', 'parent_column' => 'feed_id', 'child_column' => 'feed_id'),
+      'feedpolicyuser' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Feedpolicyuser', 'parent_column' => 'feed_id', 'child_column' => 'feed_id'),
       );
     $this->initialize(); // required
     } // end __construct() 
   
-  protected abstract function _getFeeds($loggedUserDao,$userDao=null,$communityDao=null,$policy=0,$limit=20);
-  protected abstract function addCommunity($feed,$community);
+  /** get Feeds*/
+  protected abstract function getFeeds($loggedUserDao, $userDao = null, $communityDao = null, $policy = 0, $limit = 20);
+  /** add a community*/
+  protected abstract function addCommunity($feed, $community);
 
    
   /** get feeds (filtered by policies)
    * @return Array of FeedDao */
-  function getGlobalFeeds($loggedUserDao,$policy=0,$limit=20)
+  function getGlobalFeeds($loggedUserDao, $policy = 0, $limit = 20)
     {
-    return $this->_getFeeds($loggedUserDao,null,null,$policy,$limit);
+    return $this->getFeeds($loggedUserDao, null, null, $policy, $limit);
     } //end getGlobalFeeds
     
   /** get feeds by user (filtered by policies)
    * @return Array of FeedDao */
-  function getFeedsByUser($loggedUserDao,$userDao,$policy=0,$limit=20)
+  function getFeedsByUser($loggedUserDao, $userDao, $policy = 0, $limit = 20)
     {
-    return $this->_getFeeds($loggedUserDao,$userDao,null,$policy,$limit);
+    return $this->getFeeds($loggedUserDao, $userDao, null, $policy, $limit);
     } //end getFeedsByUser
     
   /** get feeds by community (filtered by policies)
      * @return Array of FeedDao */
-  function getFeedsByCommunity($loggedUserDao,$communityDao,$policy=0,$limit=20)
+  function getFeedsByCommunity($loggedUserDao, $communityDao, $policy = 0, $limit = 20)
     {
-    return $this->_getFeeds($loggedUserDao,null,$communityDao,$policy,$limit);
+    return $this->getFeeds($loggedUserDao, null, $communityDao, $policy, $limit);
     } //end getFeedsByCommunity
     
   /** Create a feed
    * @return FeedDao */
-  function createFeed($userDao,$type,$ressource,$communityDao=null)
+  function createFeed($userDao, $type, $ressource, $communityDao = null)
     {
-    if(!$userDao instanceof UserDao&&!is_numeric($type)&&!is_object($ressource))
+    if(!$userDao instanceof UserDao && !is_numeric($type) && !is_object($ressource))
       {
       throw new Zend_Exception("Error parameters.");
       }
     $this->loadDaoClass('FeedDao');
-    $feed=new FeedDao();
+    $feed = new FeedDao();
     $feed->setUserId($userDao->getKey());
     $feed->setType($type);
     $feed->setDate(date('c'));
@@ -78,7 +82,7 @@ abstract class FeedModelBase extends AppModel
         break;
       case MIDAS_FEED_CREATE_LINK_ITEM:
       case MIDAS_FEED_CREATE_ITEM:
-         if(!$ressource instanceof ItemDao)
+        if(!$ressource instanceof ItemDao)
           {
           throw new Zend_Exception("Error parameter ressource, type:".$type);
           }
@@ -122,4 +126,3 @@ abstract class FeedModelBase extends AppModel
     } // end createFeed()  
     
 } // end class FeedModelBase
-?>

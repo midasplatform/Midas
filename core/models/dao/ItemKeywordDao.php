@@ -4,8 +4,8 @@
  * \brief DAO ItemKeyword (table keyword)
  */
 class ItemKeywordDao extends AppDao
-{
-  public $_model='ItemKeyword';
+  {
+  public $_model = 'ItemKeyword';
 
-} // end class
+  } // end class
 ?>

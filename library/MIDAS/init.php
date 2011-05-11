@@ -1,4 +1,6 @@
 <?php
+require_once BASE_PATH . '/library/MIDAS/MIDASNotifier.php';
+require_once BASE_PATH . '/library/MIDAS/notification/GlobalNotification.php';
 require_once BASE_PATH . '/library/MIDAS/controller/GlobalController.php';
 require_once BASE_PATH . '/library/MIDAS/modules/GlobalModule.php';
 require_once BASE_PATH . '/library/MIDAS/component/GlobalComponent.php';

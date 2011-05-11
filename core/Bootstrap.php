@@ -55,8 +55,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $configDatabase = new Zend_Config_Ini(DATABASE_CONFIG, $configGlobal->environment, true);
     if($configDatabase->database->type == 'pdo')
       {      
-      $pdoParams = array(
-            PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true);
+      $pdoParams = array(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true);
       $params = array(
         'host' => $configDatabase->database->params->host,
         'username' => $configDatabase->database->params->username,
@@ -100,7 +99,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       $writerDb = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
       if($config->error->php == 1)
         {
-        new Zend_Log_Formatter_Simple();
+        $formatter = new Zend_Log_Formatter_Simple();
         Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(false);
         $logger = Zend_Log::factory(array(
           array(
@@ -204,7 +203,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         {
         require_once BASE_PATH . "/modules/".$route."/models/AppModel.php";      
         }
-    }
+      }
     Zend_Registry::set('modulesEnable', $listeModule);
     return $router;
     }

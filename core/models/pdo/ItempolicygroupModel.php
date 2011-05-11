@@ -27,12 +27,12 @@ class ItempolicygroupModel extends ItempolicygroupModelBase
       {
       throw new Zend_Exception("Save the daos first.");
       }
-    if($this->getPolicy($group,$item) !== false)
+    if($this->getPolicy($group, $item) !== false)
       {
-      $this->delete($this->getPolicy($group,$item));
+      $this->delete($this->getPolicy($group, $item));
       }
     $this->loadDaoClass('ItempolicygroupDao');
-    $policyGroupDao=new ItempolicygroupDao();
+    $policyGroupDao = new ItempolicygroupDao();
     $policyGroupDao->setGroupId($group->getGroupId());
     $policyGroupDao->setItemId($item->getItemId());
     $policyGroupDao->setPolicy($policy);
@@ -53,7 +53,7 @@ class ItempolicygroupModel extends ItempolicygroupModelBase
       {
       throw new Zend_Exception("Should be an item.");
       }
-    return $this->initDao('Itempolicygroup',$this->database->fetchRow($this->database->select()->where('item_id = ?',$item->getKey())->where('group_id = ?',$group->getKey())));
+    return $this->initDao('Itempolicygroup', $this->database->fetchRow($this->database->select()->where('item_id = ?', $item->getKey())->where('group_id = ?', $group->getKey())));
     }
 } // end class
 ?>

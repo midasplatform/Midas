@@ -4,7 +4,7 @@
  */
 class ErrorlogDao extends AppDao
 {
-  public $_model='Errorlog';
+  public $_model = 'Errorlog';
 
   
 } // end class

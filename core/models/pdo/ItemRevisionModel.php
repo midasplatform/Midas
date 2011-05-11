@@ -11,30 +11,30 @@ class ItemRevisionModel extends ItemRevisionModelBase
   /** Returns the latest revision of a model */
   function getLatestRevision($itemdao)
     {
-    $row = $this->database->fetchRow($this->database->select()->from($this->_name)->where('item_id=?',$itemdao->getItemId())->order('revision DESC')->limit(1));
-    return $this->initDao('ItemRevision',$row);
+    $row = $this->database->fetchRow($this->database->select()->from($this->_name)->where('item_id=?', $itemdao->getItemId())->order('revision DESC')->limit(1));
+    return $this->initDao('ItemRevision', $row);
     }
     
   /** Returns the of the revision in Bytes */
   function getSize($revision)
     {
     $row = $this->database->fetchRow($this->database->select()
-                            ->setIntegrityCheck(false)->from('bitstream', array('sum(sizebytes) as sum'))->where('itemrevision_id=?',$revision->getKey()));
+                            ->setIntegrityCheck(false)->from('bitstream', array('sum(sizebytes) as sum'))->where('itemrevision_id=?', $revision->getKey()));
     return $row['sum'];
     }
 
   /** Return a bitstream by name */
-  function getBitstreamByName($revision,$name)
+  function getBitstreamByName($revision, $name)
     {
     $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
                                           ->from('bitstream')
-                                          ->where('itemrevision_id=?',$revision->getItemrevisionId())
-                                          ->where('name=?',$name));
-    return $this->initDao('Bitstream',$row);
+                                          ->where('itemrevision_id=?', $revision->getItemrevisionId())
+                                          ->where('name=?', $name));
+    return $this->initDao('Bitstream', $row);
     } // end getBitstreamByName
 
   /** Add a bitstream to a revision */
-  function addBitstream($itemRevisionDao,$bitstreamDao)
+  function addBitstream($itemRevisionDao, $bitstreamDao)
     {
     $modelLoad = new MIDAS_ModelLoader();
     $BitstreamModel = $modelLoad->loadModel('Bitstream');
@@ -44,32 +44,32 @@ class ItemRevisionModel extends ItemRevisionModelBase
     $bitstreamDao->setItemrevisionId($itemRevisionDao->getItemrevisionId());
 
     // Save the bistream
-    if(!isset($bitstreamDao->saved)||!$bitstreamDao->saved)
+    if(!isset($bitstreamDao->saved) || !$bitstreamDao->saved)
       {
       $bitstreamDao->setDate(date('c'));
       $BitstreamModel->save($bitstreamDao);
       }
     
-    $item=$itemRevisionDao->getItem($bitstreamDao);
+    $item = $itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));
     $item->setDate(date('c'));
     
     /** thumbnail*/   
- /*   $procces=Zend_Registry::get('configGlobal')->processing;
-    if($procces=='cron')
+ /*   $procces = Zend_Registry::get('configGlobal')->processing;
+    if($procces == 'cron')
       {
-      $TaskModel->createTask(MIDAS_TASK_ITEM_THUMBNAIL,MIDAS_RESOURCE_ITEM,$item->getKey(),'');
+      $TaskModel->createTask(MIDAS_TASK_ITEM_THUMBNAIL, MIDAS_RESOURCE_ITEM, $item->getKey(), '');
       }
     else
       {
-      $thumbnailCreator=$this->Component->Filter->getFilter('ThumbnailCreator');
+      $thumbnailCreator = $this->Component->Filter->getFilter('ThumbnailCreator');
       $thumbnailCreator->inputFile = $bitstreamDao->getPath();
       $thumbnailCreator->inputName = $bitstreamDao->getName();
       $hasThumbnail = $thumbnailCreator->process();
       $thumbnail_output_file = $thumbnailCreator->outputFile;
       if($hasThumbnail&&  file_exists($thumbnail_output_file))
         {
-        $oldThumbnail=$item->getThumbnail();
+        $oldThumbnail = $item->getThumbnail();
         if(!empty($oldThumbnail))
           {
           unlink($oldThumbnail);

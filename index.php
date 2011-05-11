@@ -1,15 +1,19 @@
 <?php
 
-if (function_exists('apache_get_modules')) {
+if(function_exists('apache_get_modules')) 
+  {
   $modules = apache_get_modules();
   $mod_rewrite = in_array('mod_rewrite', $modules);
-} else {
-  $mod_rewrite =  getenv('HTTP_MOD_REWRITE')=='On' ? true : false ;
-}
+  }
+else 
+  {
+  $mod_rewrite = getenv('HTTP_MOD_REWRITE') == 'On' ? true : false;
+  }
 
 if(!$mod_rewrite)
   {
-  echo "Please install/enable the module rewrite";exit;
+  echo "Please install/enable the module rewrite";
+  exit;
   }
 error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', 'on');
@@ -20,7 +24,7 @@ set_include_path('.'
 
 define('BASE_PATH', realpath(dirname(__FILE__)));
 
-if(!is_writable(BASE_PATH."/core/configs")||!is_writable(BASE_PATH."/log")||!is_writable(BASE_PATH."/data")||!is_writable(BASE_PATH."/tmp"))
+if(!is_writable(BASE_PATH."/core/configs") || !is_writable(BASE_PATH."/log") || !is_writable(BASE_PATH."/data") || !is_writable(BASE_PATH."/tmp"))
   {
   echo "To use Midas, the following repertories have to be writable by apache:
         <ul>
@@ -34,7 +38,7 @@ if(!is_writable(BASE_PATH."/core/configs")||!is_writable(BASE_PATH."/log")||!is_
 
 // remember me cookie lifetime
 //ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 15); //15 days
-define('START_TIME',microtime(true));
+define('START_TIME', microtime(true));
 
 require_once 'Zend/Loader/Autoloader.php';
 require_once 'Zend/Application.php';

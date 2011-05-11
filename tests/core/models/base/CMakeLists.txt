@@ -9,3 +9,4 @@ add_midas_test( ItemModel ItemModelTest.php )
 add_midas_test( ItempolicygroupModel ItempolicygroupModelTest.php )
 add_midas_test( ItempolicyuserModel ItempolicyuserModelTest.php )
 add_midas_test( UserModel UserModelTest.php )
+

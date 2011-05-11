@@ -7,7 +7,8 @@ require_once BASE_PATH.'/core/models/base/CommunityModelBase.php';
  */
 class CommunityModel extends CommunityModelBase
 {
-  function getPublicCommunities($limit=20)
+  /** get Public communities */
+  function getPublicCommunities($limit = 20)
     {
     if(!is_numeric($limit))
       {
@@ -62,7 +63,7 @@ class CommunityModel extends CommunityModelBase
           {
           // Add the community_id
           $value[$this->_key] = $key;
-          $dao= $this->initDao('Community',$value);      
+          $dao = $this->initDao('Community', $value);      
           return $dao;
           }  
         }  

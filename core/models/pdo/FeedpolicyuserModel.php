@@ -20,7 +20,7 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
       {
       throw new Zend_Exception("Should be a feed.");
       }
-    return $this->initDao('Feedpolicyuser',$this->database->fetchRow($this->database->select()->where('feed_id = ?',$feed->getKey())->where('user_id = ?',$user->getKey())));
+    return $this->initDao('Feedpolicyuser', $this->database->fetchRow($this->database->select()->where('feed_id = ?', $feed->getKey())->where('user_id = ?', $user->getKey())));
     }  // end getPolicy
     
 } // end class

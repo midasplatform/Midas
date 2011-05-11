@@ -5,6 +5,6 @@
  */
 class FeedpolicyuserDao extends AppDao
   {
-    public $_model='Feedpolicyuser';
+  public $_model = 'Feedpolicyuser';
   }
 ?>

@@ -35,13 +35,14 @@ function(add_midas_style_test TestName TestDir)
   )
 endfunction(add_midas_style_test)
 
+
 add_midas_style_test( StyleCoreAppController ${CMAKE_SOURCE_DIR}/core/AppController.php )
 add_midas_style_test( StyleCoreAppComponent ${CMAKE_SOURCE_DIR}/core/AppComponent.php )
 add_midas_style_test( StyleCoreAppFilters ${CMAKE_SOURCE_DIR}/core/AppFilters.php )
 add_midas_style_test( StyleCoreAppForm ${CMAKE_SOURCE_DIR}/core/AppForm.php )
 add_midas_style_test( StyleCoreBootstrap ${CMAKE_SOURCE_DIR}/core/Bootstrap.php )
-add_midas_style_test( StyleCoreControllers ${CMAKE_SOURCE_DIR}/core/controllers )
-add_midas_style_test( StyleCoreModels ${CMAKE_SOURCE_DIR}/core/models )
+add_midas_style_test( StyleCoreInclude ${CMAKE_SOURCE_DIR}/core/include.php )
+add_midas_style_test( StyleIndex ${CMAKE_SOURCE_DIR}/index.php )
 add_midas_style_test( StyleLibraryMidas ${CMAKE_SOURCE_DIR}/library/MIDAS )
 
 add_subdirectory(core)
