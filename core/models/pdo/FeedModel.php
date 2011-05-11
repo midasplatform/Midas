@@ -8,22 +8,22 @@ require_once BASE_PATH.'/core/models/base/FeedModelBase.php';
 class FeedModel extends FeedModelBase
 { 
  
-  /** check if the policy is valid
+  /** check ifthe policy is valid
    *
    * @param FolderDao $folderDao
    * @param UserDao $userDao
    * @param type $policy
    * @return  boolean 
    */
-  function policyCheck($feedDao,$userDao=null,$policy=0)
+  function policyCheck($feedDao, $userDao = null, $policy = 0)
     {
-    if(!$feedDao instanceof FeedDao||!is_numeric($policy))
+    if(!$feedDao instanceof FeedDao || !is_numeric($policy))
       {
       throw new Zend_Exception("Error param.");
       }
-    if($userDao==null)
+    if($userDao == null)
       {
-      $userId= -1;
+      $userId = -1;
       }
     else if(!$userDao instanceof UserDao)
       {
@@ -38,33 +38,33 @@ class FeedModel extends FeedModelBase
         }
       }
       
-     $subqueryUser= $this->database->select()
+    $subqueryUser = $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'feedpolicyuser'),
                                  array('feed_id'))
                           ->where('policy >= ?', $policy)
                           ->where('p.feed_id = ?', $feedDao->getKey())
-                          ->where('user_id = ? ',$userId);
+                          ->where('user_id = ? ', $userId);
 
-     $subqueryGroup = $this->database->select()
+    $subqueryGroup = $this->database->select()
                     ->setIntegrityCheck(false)
                     ->from(array('p' => 'feedpolicygroup'),
                            array('feed_id'))
                     ->where('policy >= ?', $policy)
                     ->where('p.feed_id = ?', $feedDao->getKey())
-                    ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                    ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
                               group_id IN (' .new Zend_Db_Expr(
                               $this->database->select()
                                    ->setIntegrityCheck(false)
                                    ->from(array('u2g' => 'user2group'),
                                           array('group_id'))
-                                   ->where('u2g.user_id = ?' , $userId)
+                                   ->where('u2g.user_id = ?', $userId)
                                    .'))' ));
 
     $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
     $rowset = $this->database->fetchAll($sql);
-    if(count($rowset)>0)
+    if(count($rowset) > 0)
       {
       return true;
       }
@@ -80,12 +80,12 @@ class FeedModel extends FeedModelBase
    * @param type $policy
    * @param type $limit
    * @return Array of FeedDao */
-  protected function _getFeeds($loggedUserDao,$userDao=null,$communityDao=null,$policy=0,$limit=20)
+  protected function getFeeds($loggedUserDao, $userDao = null, $communityDao = null, $policy = 0, $limit = 20)
     {
-    $isAdmin=false;
-    if($loggedUserDao==null)
+    $isAdmin = false;
+    if($loggedUserDao == null)
       {
-      $userId= -1;
+      $userId = -1;
       }
     else if(!$loggedUserDao instanceof UserDao)
       {
@@ -96,94 +96,100 @@ class FeedModel extends FeedModelBase
       $userId = $loggedUserDao->getUserId();
       if($loggedUserDao->isAdmin())
         {
-        $isAdmin= true;
+        $isAdmin = true;
         }
       }
     
-    if($userDao!=null&&!$userDao instanceof UserDao)
+    if($userDao != null && !$userDao instanceof UserDao)
       {
       throw new Zend_Exception("Should be an user.");
       }
 
-    if($communityDao!=null&&!$communityDao instanceof CommunityDao)
+    if($communityDao != null && !$communityDao instanceof CommunityDao)
       {
       throw new Zend_Exception("Should be a community.");
       }
       
     
-    $sql=$this->database->select()
+    $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->from(array('f' => 'feed'))
           ->limit($limit);
-   if(!$isAdmin)
-     {
-     $sql ->joinLeft(array('fpu' => 'feedpolicyuser'),'
+    if(!$isAdmin)
+      {
+      $sql ->joinLeft(array('fpu' => 'feedpolicyuser'), '
                     f.feed_id = fpu.feed_id AND '.$this->database->getDB()->quoteInto('fpu.policy >= ?', $policy).'
-                       AND '.$this->database->getDB()->quoteInto('fpu.user_id = ? ',$userId).' ',array('userpolicy'=>'fpu.policy'))
-          ->joinLeft(array('fpg' => 'feedpolicygroup'),'
+                       AND '.$this->database->getDB()->quoteInto('fpu.user_id = ? ', $userId).' ', array('userpolicy' => 'fpu.policy'))
+          ->joinLeft(array('fpg' => 'feedpolicygroup'), '
                           f.feed_id = fpg.feed_id AND '.$this->database->getDB()->quoteInto('fpg.policy >= ?', $policy).'
-                             AND ( '.$this->database->getDB()->quoteInto('fpg.group_id = ? ',MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                             AND ( '.$this->database->getDB()->quoteInto('fpg.group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
                                   fpg.group_id IN (' .new Zend_Db_Expr(
                                   $this->database->select()
                                        ->setIntegrityCheck(false)
                                        ->from(array('u2g' => 'user2group'),
                                               array('group_id'))
-                                       ->where('u2g.user_id = ?' , $userId)
-                                       ) .'))' ,array('grouppolicy'=>'fpg.policy'))
+                                       ->where('u2g.user_id = ?', $userId)
+                                       ) .'))', array('grouppolicy' => 'fpg.policy'))
           ->where(
            '(
             fpu.feed_id is not null or
             fpg.feed_id is not null)'
             );
-     }
+      }
     
-    if($userDao!=null)
+    if($userDao != null)
       {
-      $sql->where('f.user_id = ? ',$userDao->getKey());
+      $sql->where('f.user_id = ? ', $userDao->getKey());
       }
       
-    if($communityDao!=null)
+    if($communityDao != null)
       {
       $sql->join(array('f2c' => 'feed2community'),
-                          $this->database->getDB()->quoteInto('f2c.community_id = ? ',$communityDao->getKey())
-                          .' AND f.feed_id = f2c.feed_id'  ,array());
+                          $this->database->getDB()->quoteInto('f2c.community_id = ? ', $communityDao->getKey())
+                          .' AND f.feed_id = f2c.feed_id', array());
       }
     $sql->order(array('f.date DESC'));
     $rowset = $this->database->fetchAll($sql);
-    $rowsetAnalysed=array();
-    foreach ($rowset as $keyRow=>$row)
+    $rowsetAnalysed = array();
+    foreach($rowset as $keyRow => $row)
       {
-      if(isset($row['userpolicy'])&&$row['userpolicy']==null)$row['userpolicy']=0;
-      if(isset($row['grouppolicy'])&&$row['grouppolicy']==null)$row['grouppolicy']=0;
-      if(!isset($rowsetAnalysed[$row['feed_id']])||($rowsetAnalysed[$row['feed_id']]->policy<$row['userpolicy']&&$rowsetAnalysed[$row['feed_id']]->policy<$row['grouppolicy']))
+      if(isset($row['userpolicy']) && $row['userpolicy'] == null)
         {
-        $tmpDao= $this->initDao('Feed', $row);
-        if((isset($row['userpolicy'])&&isset($row['grouppolicy']))&&$row['userpolicy']>=$row['grouppolicy'])
+        $row['userpolicy'] = 0;
+        }
+      if(isset($row['grouppolicy']) && $row['grouppolicy'] == null)
+        {
+        $row['grouppolicy'] = 0;
+        }
+      if(!isset($rowsetAnalysed[$row['feed_id']]) || ($rowsetAnalysed[$row['feed_id']]->policy < $row['userpolicy'] && $rowsetAnalysed[$row['feed_id']]->policy < $row['grouppolicy']))
+        {
+        $tmpDao = $this->initDao('Feed', $row);
+        if((isset($row['userpolicy']) && isset($row['grouppolicy'])) && $row['userpolicy'] >= $row['grouppolicy'])
           {
-          $tmpDao->policy=$row['userpolicy'];
+          $tmpDao->policy = $row['userpolicy'];
           }
         else if($isAdmin)
           {
-          $tmpDao->policy=MIDAS_POLICY_ADMIN;
+          $tmpDao->policy = MIDAS_POLICY_ADMIN;
           }
         else
           {
-          $tmpDao->policy=$row['grouppolicy'];
+          $tmpDao->policy = $row['grouppolicy'];
           }
         $rowsetAnalysed[$row['feed_id']] = $tmpDao;
         unset($tmpDao);
         }
       }
-    $this->Component->Sortdao->field='date';
-    $this->Component->Sortdao->order='asc';
-    usort($rowsetAnalysed, array($this->Component->Sortdao,'sortByDate'));
+    $this->Component->Sortdao->field = 'date';
+    $this->Component->Sortdao->order = 'asc';
+    usort($rowsetAnalysed, array($this->Component->Sortdao, 'sortByDate'));
     return $rowsetAnalysed;    
     } // end _getFeeds
     
 
   /** Add a community to a feed 
    * @return void */
-  function addCommunity($feed,$community)
+  function addCommunity($feed, $community)
     {
     if(!$community instanceof CommunityDao)
       {
@@ -193,7 +199,7 @@ class FeedModel extends FeedModelBase
       {
       throw new Zend_Exception("Should be an feed.");
       }
-    $this->database->link('communities',$feed,$community);
+    $this->database->link('communities', $feed, $community);
     } // end addCommunity
 
   /** Delete Dao
@@ -202,21 +208,21 @@ class FeedModel extends FeedModelBase
   function delete($feeDao)
     {
     $this->ModelLoader = new MIDAS_ModelLoader();
-    $feedpolicygroups=$feeDao->getFeedpolicygroup();    
-    $feedpolicygroupModel=$this->ModelLoader->loadModel('Feedpolicygroup');
+    $feedpolicygroups = $feeDao->getFeedpolicygroup();    
+    $feedpolicygroupModel = $this->ModelLoader->loadModel('Feedpolicygroup');
     foreach($feedpolicygroups as $f)
       {
       $feedpolicygroupModel->delete($f);
       }
       
-    $feedpolicyuser=$feeDao->getFeedpolicyuser();    
-    $feedpolicyuserModel=$this->ModelLoader->loadModel('Feedpolicyuser');
+    $feedpolicyuser = $feeDao->getFeedpolicyuser();    
+    $feedpolicyuserModel = $this->ModelLoader->loadModel('Feedpolicyuser');
     foreach($feedpolicyuser as $f)
       {
       $feedpolicyuserModel->delete($f);
       }
       
-    $communities=$feeDao->getCommunities();
+    $communities = $feeDao->getCommunities();
     foreach($communities as $c)
       {
       $this->database->removeLink('communities', $feeDao, $c);

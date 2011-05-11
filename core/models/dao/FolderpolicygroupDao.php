@@ -5,6 +5,6 @@
  */
 class FolderpolicygroupDao extends AppDao
   {
-    public $_model='Folderpolicygroup';
+  public $_model = 'Folderpolicygroup';
   }
 ?>

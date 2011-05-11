@@ -25,7 +25,7 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
     $userid = $user->getKey();
     
     $column = 'feed_'.$feedid;    
-    $feedarray = $this->database->getCassandra('userfeedpolicy',$userid,array($column));
+    $feedarray = $this->database->getCassandra('userfeedpolicy', $userid, array($column));
 
     if(empty($feedarray))
       {
@@ -37,17 +37,17 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
     $newarray['user_id'] = $userid;
     $newarray['policy'] = $feedarray[$column];
     
-    return $this->initDao('Feedpolicyuser',$newarray);  
+    return $this->initDao('Feedpolicyuser', $newarray);  
     } // end getPolicy
   
  
   /** Custom save command */
   public function save($dao)
     {
-    $instance=$this->_name."Dao";
+    $instance = $this->_name."Dao";
     if(!$dao instanceof $instance)
       {
-      throw new Zend_Exception("Should be an object ($instance).");
+      throw new Zend_Exception("Should be an object (".$instance.").");
       }
       
     try 
@@ -60,8 +60,8 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
       $dataarray = array();
       $dataarray[$column] = $dao->getPolicy();
       
-      $column_family = new ColumnFamily($this->database->getDB(),'userfeedpolicy');
-      $column_family->insert($userid,$dataarray);  
+      $column_family = new ColumnFamily($this->database->getDB(), 'userfeedpolicy');
+      $column_family->insert($userid, $dataarray);  
       
       // Add the feed to the UserFeed (this is a super column)
       $column = 'feed_'.$feedid;
@@ -69,8 +69,8 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
       $dataarray[$column] = array();
       $dataarray[$column]['user_'.$userid] = $dao->getPolicy();
       
-      $column_family = new ColumnFamily($this->database->getDB(),'userfeed');
-      $column_family->insert($userid,$dataarray);
+      $column_family = new ColumnFamily($this->database->getDB(), 'userfeed');
+      $column_family->insert($userid, $dataarray);
       } 
     catch(Exception $e) 
       {
@@ -90,10 +90,10 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
       return false;  
       }  
       
-    $instance=ucfirst($this->_name)."Dao";
+    $instance = ucfirst($this->_name)."Dao";
     if(get_class($dao) !=  $instance)
       {
-      throw new Zend_Exception("Should be an object ($instance). It was: ".get_class($dao) );
+      throw new Zend_Exception("Should be an object (".$instance."). It was: ".get_class($dao) );
       }
     if(!$dao->saved)
       {
@@ -106,19 +106,19 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
       $feedid = $dao->getFeedId();
       $userid = $dao->getUserId();
       $column = 'feed_'.$feedid;   
-      $cf = new ColumnFamily($this->database->getDB(),'userfeedpolicy');
-      $cf->remove($userid,array($column)); 
+      $cf = new ColumnFamily($this->database->getDB(), 'userfeedpolicy');
+      $cf->remove($userid, array($column)); 
 
       // Remove from the UserFeed also
       $column = 'feed_'.$feedid;  // super column
-      $cf = new ColumnFamily($this->database->getDB(),'userfeed');
-      $cf->remove($userid,array('user_'.$userid),$column); 
+      $cf = new ColumnFamily($this->database->getDB(), 'userfeed');
+      $cf->remove($userid, array('user_'.$userid), $column); 
       }    
     catch(Exception $e) 
       {
       throw new Zend_Exception($e); 
       }    
-    $dao->saved=false;
+    $dao->saved = false;
     return true;
     } // end delete()  
     

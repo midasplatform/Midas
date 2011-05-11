@@ -6,8 +6,7 @@
  */
 class MIDAS_GlobalComponent extends Zend_Controller_Action_Helper_Abstract
   {
-
-    /**
+  /**
    * Get Logger
    * @return Zend_Log
    */

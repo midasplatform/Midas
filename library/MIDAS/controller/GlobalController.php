@@ -132,7 +132,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       {
       $this->showProfiler();
       }
-      $this->view->addHelperPath(BASE_PATH."/core/views/helpers", "Zend_View_Helper_");
+    $this->view->addHelperPath(BASE_PATH."/core/views/helpers", "Zend_View_Helper_");
     }
 
   /**
@@ -144,7 +144,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     return Zend_Registry::get('logger');
     }
 
-   /**
+  /**
    * @method public  loadElements()
    *  Loads model and components
    */
@@ -286,19 +286,19 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     return BASE_PATH.'/tmp/misc';
     }
   
-    /** return an array of form element     */
-    public function getFormAsArray(Zend_Form $form) 
+  /** return an array of form element     */
+  public function getFormAsArray(Zend_Form $form) 
     {
-      $array = array();
-      $array['action'] = $form->getAction();
-      $array['method'] = $form->getMethod();
-      foreach($form->getElements() as $element )
-        {
-        $element->removeDecorator('HtmlTag');
-        $element->removeDecorator('Label');
-        $element->removeDecorator('DtDdWrapper');
-        $array[$element->getName()] = $element;
-        }
-      return $array;
+    $array = array();
+    $array['action'] = $form->getAction();
+    $array['method'] = $form->getMethod();
+    foreach($form->getElements() as $element )
+      {
+      $element->removeDecorator('HtmlTag');
+      $element->removeDecorator('Label');
+      $element->removeDecorator('DtDdWrapper');
+      $array[$element->getName()] = $element;
+      }
+    return $array;
     }        
 } // end class

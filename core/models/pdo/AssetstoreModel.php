@@ -7,6 +7,7 @@ require_once BASE_PATH.'/core/models/base/AssetstoreModelBase.php';
  */
 class AssetstoreModel extends AssetstoreModelBase
 {
+  /** get All */
   function getAll()
     {
     return $this->database->getAll('Assetstore');

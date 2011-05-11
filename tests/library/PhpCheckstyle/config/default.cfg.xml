@@ -226,8 +226,10 @@
     <test name="avoidPassingReferences">
     </test>
         
+     <!--
     <test name="showTODOs">
     </test>
+    -->
     
     <!-- Use boolean operators (&&) instead of logical operators (AND) -->
     <test name="useBooleanOperators">
@@ -292,9 +294,9 @@
     </test>
     
     <!-- Detect unused code (after return) -->
-    <test name="checkUnusedCode">
+ <!--   <test name="checkUnusedCode">
     </test>
-    
+    -->
     <!-- Only one class declaration per PHP file -->
     <test name="oneClassPerFile">
     </test>

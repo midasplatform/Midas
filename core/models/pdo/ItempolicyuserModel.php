@@ -27,12 +27,12 @@ class ItempolicyuserModel  extends ItempolicyuserModelBase
       {
       throw new Zend_Exception("Save the daos first.");
       }
-    if($this->getPolicy($user,$item) !== false)
+    if($this->getPolicy($user, $item) !== false)
       {
-      $this->delete($this->getPolicy($user,$item));
+      $this->delete($this->getPolicy($user, $item));
       }
     $this->loadDaoClass('ItempolicyuserDao');
-    $policyUser=new ItempolicyuserDao();
+    $policyUser = new ItempolicyuserDao();
     $policyUser->setUserId($user->getUserId());
     $policyUser->setItemId($item->getItemId());
     $policyUser->setPolicy($policy);
@@ -53,7 +53,7 @@ class ItempolicyuserModel  extends ItempolicyuserModelBase
       {
       throw new Zend_Exception("Should be an item.");
       }
-    return $this->initDao('Itempolicyuser',$this->database->fetchRow($this->database->select()->where('item_id = ?',$item->getKey())->where('user_id = ?',$user->getKey())));
+    return $this->initDao('Itempolicyuser', $this->database->fetchRow($this->database->select()->where('item_id = ?', $item->getKey())->where('user_id = ?', $user->getKey())));
     }
 }
 ?>

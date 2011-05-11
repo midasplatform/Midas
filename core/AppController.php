@@ -29,6 +29,9 @@ class AppController extends MIDAS_GlobalController
 
     $this->view->title = Zend_Registry::get('configGlobal')->application->name;
 
+    // init notifier
+    Zend_Registry::set('notifier', new MIDAS_Notifier()); 
+    
     // Set the version
     $this->view->version = '3.0.0';
     if(isset(Zend_Registry::get('configDatabase')->version))
@@ -123,7 +126,7 @@ class AppController extends MIDAS_GlobalController
       }
       
     $this->view->lang = Zend_Registry::get('configGlobal')->application->lang;
-   //create a global javascript json array
+    //create a global javascript json array
     $jsonGlobal = array(
       "webroot" => $this->view->webroot,
       "coreWebroot" => $this->view->coreWebroot,
@@ -158,6 +161,7 @@ class AppController extends MIDAS_GlobalController
       'copy' => $this->t('Copy'),
       'element' => $this->t('element'),
       'community' => array(
+        
           'invit' => $this->t('Invite collaborators'),
           'advanced' => $this->t('Advanced properties')));
       
@@ -212,7 +216,7 @@ class AppController extends MIDAS_GlobalController
     return false;
     }
 
-    /** zend post dispatch*/
+  /** zend post dispatch*/
   public function postDispatch()
     {
     parent::postDispatch();
@@ -240,89 +244,89 @@ class AppController extends MIDAS_GlobalController
 
   /**completion eclipse*/
   /**
-   * Assetstrore Model
-   * @var AssetstoreModelBase
-   */
+  * Assetstrore Model
+  * @var AssetstoreModelBase
+  */
   var $Assetstore;
   /**
-   * Bitstream Model
-   * @var BitstreamModelBase
-   */
+  * Bitstream Model
+  * @var BitstreamModelBase
+  */
   var $Bitstream;
   /**
-   * Community Model
-   * @var CommunityModelBase
-   */
+  * Community Model
+  * @var CommunityModelBase
+  */
   var $Community;
   /**
-   * Errorlog Model
-   * @var ErrorlogModelBase
-   */
+  * Errorlog Model
+  * @var ErrorlogModelBase
+  */
   var $Errorlog;
   /**
-   * Feed Model
-   * @var FeedModelBase
-   */
+  * Feed Model
+  * @var FeedModelBase
+  */
   var $Feed;
   /**
-   * Feedpolicygroup Model
-   * @var FeedpolicygroupModelBase
-   */
+  * Feedpolicygroup Model
+  * @var FeedpolicygroupModelBase
+  */
   var $Feedpolicygroup;
-    /**
-   * Feedpolicyuser Model
-   * @var FeedpolicyuserModelBase
-   */
+  /**
+  * Feedpolicyuser Model
+  * @var FeedpolicyuserModelBase
+  */
   var $Feedpolicyuser;
   /**
-   * Folder Model
-   * @var FolderModelBase
-   */
+  * Folder Model
+  * @var FolderModelBase
+  */
   var $Folder;
   /**
-   * Folderpolicygroup Model
-   * @var FolderpolicygroupModelBase
-   */
+  * Folderpolicygroup Model
+  * @var FolderpolicygroupModelBase
+  */
   var $Folderpolicygroup;
-    /**
-   * Folderpolicyuser Model
-   * @var FolderpolicyuserModelBase
-   */
+  /**
+  * Folderpolicyuser Model
+  * @var FolderpolicyuserModelBase
+  */
   var $Folderpolicyuser;
   /**
-   * Group Model
-   * @var GroupModelBase
-   */
+  * Group Model
+  * @var GroupModelBase
+  */
   var $Group;
-   /**
-   * ItemKeyword Model
-   * @var ItemKeywordModelBase
-   */
+  /**
+  * ItemKeyword Model
+  * @var ItemKeywordModelBase
+  */
   var $ItemKeyword;
   /**
-   * Item Model
-   * @var ItemModelBase
-   */
+  * Item Model
+  * @var ItemModelBase
+  */
   var $Item;
   /**
-   * Itempolicygroup Model
-   * @var ItempolicygroupModelBase
-   */
+  * Itempolicygroup Model
+  * @var ItempolicygroupModelBase
+  */
   var $Itempolicygroup;
-    /**
-   * Itempolicyuser Model
-   * @var ItempolicyuserModelBase
-   */
+  /**
+  * Itempolicyuser Model
+  * @var ItempolicyuserModelBase
+  */
   var $Itempolicyuser;
   /**
-   * ItemRevision Model
-   * @var ItemRevisionModelBase
-   */
+  * ItemRevision Model
+  * @var ItemRevisionModelBase
+  */
   var $ItemRevision;
-    /**
-   * User Model
-   * @var UserModelBase
-   */
+  /**
+  * User Model
+  * @var UserModelBase
+  */
   var $User;
   
   /**end completion eclipse */

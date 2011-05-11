@@ -16,8 +16,8 @@ class ItemKeywordModel extends ItemKeywordModelBase
       throw new Zend_Exception("Should be a keyword" );
       }
 
-    // Check if the keyword already exists
-    $itemkeyword = $this->database->getCassandra('itemkeyword',$keyword->getValue());
+    // Check ifthe keyword already exists
+    $itemkeyword = $this->database->getCassandra('itemkeyword', $keyword->getValue());
     
     if(empty($itemkeyword))
       {

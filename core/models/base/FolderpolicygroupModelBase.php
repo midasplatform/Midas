@@ -1,17 +1,19 @@
 <?php
+/** FolderpolicygroupModelBase */
 abstract class FolderpolicygroupModelBase extends AppModel
 {
+  /** Constructor */ 
   public function __construct()
     {
     parent::__construct();
-    $this->_name='folderpolicygroup';
-    $this->_mainData=array(
-          'folder_id'=>array('type'=>MIDAS_DATA),
-          'group_id'=>array('type'=>MIDAS_DATA),
-          'policy'=>array('type'=>MIDAS_DATA),
-          'date'=>array('type'=>MIDAS_DATA),
-          'folder'=>array('type'=>MIDAS_MANY_TO_ONE,'model'=>'Folder','parent_column'=>'folder_id','child_column'=>'folder_id'),
-          'group'=>array('type'=>MIDAS_MANY_TO_ONE,'model'=>'Group','parent_column'=>'group_id','child_column'=>'group_id')
+    $this->_name = 'folderpolicygroup';
+    $this->_mainData = array(
+          'folder_id' => array('type' => MIDAS_DATA),
+          'group_id' => array('type' => MIDAS_DATA),
+          'policy' => array('type' => MIDAS_DATA),
+          'date' => array('type' => MIDAS_DATA),
+          'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
+          'group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'group_id', 'child_column' => 'group_id')
         );
     $this->initialize(); // required
     } // end __construct()
@@ -39,12 +41,12 @@ abstract class FolderpolicygroupModelBase extends AppModel
       {
       throw new Zend_Exception("Save the daos first.");
       }
-    if($this->getPolicy($group,$folder) !== false)
+    if($this->getPolicy($group, $folder) !== false)
       {
-      $this->delete($this->getPolicy($group,$folder));
+      $this->delete($this->getPolicy($group, $folder));
       }
     $this->loadDaoClass('FolderpolicygroupDao');
-    $policyGroupDao=new FolderpolicygroupDao();
+    $policyGroupDao = new FolderpolicygroupDao();
     $policyGroupDao->setGroupId($group->getGroupId());
     $policyGroupDao->setFolderId($folder->getFolderId());
     $policyGroupDao->setPolicy($policy);
@@ -53,4 +55,3 @@ abstract class FolderpolicygroupModelBase extends AppModel
     }
     
 } // end class FolderpolicygroupModelBase
-?>

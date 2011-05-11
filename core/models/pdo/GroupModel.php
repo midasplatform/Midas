@@ -12,10 +12,10 @@ class GroupModel  extends GroupModelBase
   function findByCommunity($communityDao)
     {
     $rowset = $this->database->fetchAll($this->database->select()->where('community_id = ?', $communityDao->getKey())); 
-    $result=array();
+    $result = array();
     foreach($rowset as $row)
       {
-      $result[]=$this->initDao(ucfirst($this->_name),$row);
+      $result[] = $this->initDao(ucfirst($this->_name), $row);
       }
     return $result;
     } // end findByCommunity()
@@ -23,7 +23,7 @@ class GroupModel  extends GroupModelBase
   /** Add an user to a group
    * @return void
    *  */
-  function addUser($group,$user)
+  function addUser($group, $user)
     {
     if(!$group instanceof GroupDao)
       {
@@ -33,13 +33,13 @@ class GroupModel  extends GroupModelBase
       {
       throw new Zend_Exception("Should be an user.");
       }
-    $this->database->link('users',$group,$user);
+    $this->database->link('users', $group, $user);
     } // end function addItem
     
   /** Remove an user from a group
    * @return void
    *  */
-  function removeUser($group,$user)
+  function removeUser($group, $user)
     {
     if(!$group instanceof GroupDao)
       {
@@ -49,25 +49,25 @@ class GroupModel  extends GroupModelBase
       {
       throw new Zend_Exception("Should be an user.");
       }
-    $this->database->removeLink('users',$group,$user);
+    $this->database->removeLink('users', $group, $user);
     } // end function removeUser
 
     
   /** Return a list of group corresponding to the search */
-  function getGroupFromSearch($search,$limit=14)
+  function getGroupFromSearch($search, $limit = 14)
     {
-    $groups=array();
+    $groups = array();
 
-    $sql=$this->database->select();
+    $sql = $this->database->select();
     $sql->from(array('g' => 'group'));
-    $sql->where('g.name LIKE ?','%'.$search.'%'); 
+    $sql->where('g.name LIKE ?', '%'.$search.'%'); 
     $sql->limit($limit);
     $sql->order(array('g.name ASC'));   
     $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
       {
-      $tmpDao=$this->initDao('Group', $row);
+      $tmpDao = $this->initDao('Group', $row);
       $return[] = $tmpDao;
       unset($tmpDao);
       }

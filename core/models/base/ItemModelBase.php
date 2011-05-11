@@ -1,67 +1,69 @@
 <?php
+/** ItemModelBase */
 abstract class ItemModelBase extends AppModel
 {
+  /** Constructor */
   public function __construct()
     {
     parent::__construct();
     $this->_name = 'item';
     $this->_key = 'item_id';
 
-    $this->_mainData= array(
-      'item_id'=>  array('type'=>MIDAS_DATA),
-      'name' =>  array('type'=>MIDAS_DATA),
-      'description' =>  array('type'=>MIDAS_DATA),
-      'type' =>  array('type'=>MIDAS_DATA),
-      'sizebytes'=>array('type'=>MIDAS_DATA),
-      'date'=>array('type'=>MIDAS_DATA),
-      'thumbnail'=>array('type'=>MIDAS_DATA),
-      'view'=>array('type'=>MIDAS_DATA),
-      'download'=>array('type'=>MIDAS_DATA),
-      'folders' =>  array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'Folder', 'table' => 'item2folder', 'parent_column'=> 'item_id', 'child_column' => 'folder_id'),
-      'revisions' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model'=>'ItemRevision', 'parent_column'=> 'item_id', 'child_column' => 'item_id'),
-      'keywords' => array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'ItemKeyword', 'table' => 'item2keyword', 'parent_column'=> 'item_id', 'child_column' => 'keyword_id'),
-      'itempolicygroup' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Itempolicygroup', 'parent_column'=> 'item_id', 'child_column' => 'item_id'),
-      'itempolicyuser' =>  array('type'=>MIDAS_ONE_TO_MANY, 'model' => 'Itempolicyuser', 'parent_column'=> 'item_id', 'child_column' => 'item_id'),
+    $this->_mainData = array(
+      'item_id' =>  array('type' => MIDAS_DATA),
+      'name' =>  array('type' => MIDAS_DATA),
+      'description' =>  array('type' => MIDAS_DATA),
+      'type' =>  array('type' => MIDAS_DATA),
+      'sizebytes' => array('type' => MIDAS_DATA),
+      'date' => array('type' => MIDAS_DATA),
+      'thumbnail' => array('type' => MIDAS_DATA),
+      'view' => array('type' => MIDAS_DATA),
+      'download' => array('type' => MIDAS_DATA),
+      'folders' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Folder', 'table' => 'item2folder', 'parent_column' => 'item_id', 'child_column' => 'folder_id'),
+      'revisions' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'ItemRevision', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
+      'keywords' => array('type' => MIDAS_MANY_TO_MANY, 'model' => 'ItemKeyword', 'table' => 'item2keyword', 'parent_column' => 'item_id', 'child_column' => 'keyword_id'),
+      'itempolicygroup' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Itempolicygroup', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
+      'itempolicyuser' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Itempolicyuser', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
       );
     $this->initialize(); // required
     } // end __construct()  
   
-  abstract function getOwnedByUser($userDao,$limit=20);
-  abstract function getSharedToUser($userDao,$limit=20);
-  abstract function getSharedToCommunity($communityDao,$limit=20);
-  abstract function policyCheck($itemdao,$userDao=null,$policy=0);
+  abstract function getOwnedByUser($userDao, $limit = 20);
+  abstract function getSharedToUser($userDao, $limit = 20);
+  abstract function getSharedToCommunity($communityDao, $limit = 20);
+  abstract function policyCheck($itemdao, $userDao = null, $policy = 0);
     
   /** copy parent folder policies*/
-  function copyParentPolicies($itemdao,$folderdao,$feeddao=null)
+  function copyParentPolicies($itemdao, $folderdao, $feeddao = null)
     {
-    if(!$itemdao instanceof ItemDao||!$folderdao instanceof FolderDao)
+    if(!$itemdao instanceof ItemDao || !$folderdao instanceof FolderDao)
       {
       throw new Zend_Exception("Error param.");
       }
-    $groupPolicies=$folderdao->getFolderpolicygroup();
-    $userPolicies=$folderdao->getFolderpolicyuser();
+    $groupPolicies = $folderdao->getFolderpolicygroup();
+    $userPolicies = $folderdao->getFolderpolicyuser();
     
     $modelLoad = new MIDAS_ModelLoader();
     $ItempolicygroupModel = $modelLoad->loadModel('Itempolicygroup');
-    foreach ($groupPolicies as $key => $policy)
+    foreach($groupPolicies as $key => $policy)
       {      
       $ItempolicygroupModel->createPolicy($policy->getGroup(), $itemdao, $policy->getPolicy());
       }
     $ItempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
-    foreach ($userPolicies as $key => $policy)
+    foreach($userPolicies as $key => $policy)
       {      
       $ItempolicyuserModel->createPolicy($policy->getUser(), $itemdao, $policy->getPolicy());
       }
       
-    if($feeddao!=null &&$feeddao instanceof FeedDao)
+    if($feeddao != null && $feeddao instanceof FeedDao)
       {      
       $FeedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
-      foreach ($groupPolicies as $key => $policy)
+      foreach($groupPolicies as $key => $policy)
         {      
         $FeedpolicygroupModel->createPolicy($policy->getGroup(), $feeddao, $policy->getPolicy());
         }
       $FeedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
-      foreach ($userPolicies as $key => $policy)
+      foreach($userPolicies as $key => $policy)
         {      
         $FeedpolicyuserModel->createPolicy($policy->getUser(), $feeddao, $policy->getPolicy());
         }
@@ -79,7 +81,7 @@ abstract class ItemModelBase extends AppModel
     $this->save($itemdao);
     }//end incrementViewCount
     
-   /** plus one download*/
+  /** plus one download*/
   function incrementDownloadCount($itemdao)
     {
     if(!$itemdao instanceof ItemDao)
@@ -92,7 +94,7 @@ abstract class ItemModelBase extends AppModel
     
   /** Add a revision to an item
    * @return void*/
-  function addRevision($itemdao,$revisiondao)
+  function addRevision($itemdao, $revisiondao)
     {
     if(!$itemdao instanceof ItemDao)
       {
@@ -114,13 +116,10 @@ abstract class ItemModelBase extends AppModel
       }
     else
       {
-      $revisiondao->setRevision($latestrevision->getRevision()+1);
+      $revisiondao->setRevision($latestrevision->getRevision() + 1);
       }
     $revisiondao->setItemId($itemdao->getItemId());
-
-    // TODO: Add the date but the database is doing it automatically so maybe not
     $ItemRevisionModel->save($revisiondao);
     } // end addRevision
   
 } // end class ItemModelBase
-?>

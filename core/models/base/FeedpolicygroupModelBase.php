@@ -1,18 +1,20 @@
 <?php
+/** Feed policy model base */
 abstract class FeedpolicygroupModelBase extends AppModel
 {
+  /** Constructor */
   public function __construct()
     {
     parent::__construct();
-    $this->_name='feedpolicygroup';
+    $this->_name = 'feedpolicygroup';
 
-    $this->_mainData=array(
-        'feed_id'=>array('type'=>MIDAS_DATA),
-        'group_id'=>array('type'=>MIDAS_DATA),
-        'policy'=>array('type'=>MIDAS_DATA),
-        'date'=>array('type'=>MIDAS_DATA),
-        'feed'=>array('type'=>MIDAS_MANY_TO_ONE,'model'=>'Feed','parent_column'=>'feed_id','child_column'=>'feed_id'),
-        'group'=>array('type'=>MIDAS_MANY_TO_ONE,'model'=>'Group','parent_column'=>'group_id','child_column'=>'group_id')
+    $this->_mainData = array(
+        'feed_id' => array('type' => MIDAS_DATA),
+        'group_id' => array('type' => MIDAS_DATA),
+        'policy' => array('type' => MIDAS_DATA),
+        'date' => array('type' => MIDAS_DATA),
+        'feed' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Feed', 'parent_column' => 'feed_id', 'child_column' => 'feed_id'),
+        'group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'group_id', 'child_column' => 'group_id')
       );
     $this->initialize(); // required
     } // end __construct()
@@ -40,12 +42,12 @@ abstract class FeedpolicygroupModelBase extends AppModel
       {
       throw new Zend_Exception("Save the daos first.");
       }
-    if($this->getPolicy($group,$feed) !== false)
+    if($this->getPolicy($group, $feed) !== false)
       {
-      $this->delete($this->getPolicy($group,$feed));
+      $this->delete($this->getPolicy($group, $feed));
       }
     $this->loadDaoClass('FeedpolicygroupDao');
-    $policyGroupDao=new FeedpolicygroupDao();
+    $policyGroupDao = new FeedpolicygroupDao();
     $policyGroupDao->setGroupId($group->getGroupId());
     $policyGroupDao->setFeedId($feed->getFeedId());
     $policyGroupDao->setPolicy($policy);
@@ -54,4 +56,3 @@ abstract class FeedpolicygroupModelBase extends AppModel
     } // end createPolicy
     
 } // end class FeedpolicygroupModelBase
-?>

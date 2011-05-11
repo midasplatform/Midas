@@ -169,7 +169,7 @@ class MIDASModel
     } //end initDao
     
 
-    /**
+  /**
    * @method public  __call($method, $params)
    *  Catch ifthe method doesn't exists and create a method dynamically
    * @param $method method name
@@ -229,7 +229,7 @@ class MIDASModel
       }
     } //end getBy*/
 
-   /**
+  /**
    * @method public  findBy($var, $value)
    *  find all DAO by $var = $value
    * @param $var name of the attribute we search
@@ -348,7 +348,7 @@ class MIDASModel
     } //end load
     
     
-   /**
+  /**
    * @method public getValue()
    * Generic get function. You can define custom function.
    * @param $var name of the element we want to get

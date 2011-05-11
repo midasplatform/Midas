@@ -135,9 +135,22 @@ class UserController extends AppController
       $previousUri=$this->_getParam('previousuri');
       if($form->isValid($this->getRequest()->getPost()))
         {
-        $userDao=$this->User->getByEmail($form->getValue('email'));
+        $notifications = Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_LOGIN,array('email' => $form->getValue('email'), 'password' => $form->getValue('password')));
+        
+        if(!empty($notifications['ldap']) && $notifications['ldap'] != false)
+          {
+          $userDao = $notifications['ldap'];
+          $authLdap = true;
+          }
+        else
+          {
+          $userDao = $this->User->getByEmail($form->getValue('email'));
+          $authLdap = false;
+          }
+        
+        
         $passwordPrefix=Zend_Registry::get('configGlobal')->password->prefix;
-        if($userDao != false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
+        if($authLdap || $userDao != false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
           {
           $remember=$form->getValue('remerberMe');
           if(isset($remember) && $remember == 1)
@@ -215,6 +228,13 @@ class UserController extends AppController
         if(!is_string($password))
           {
           echo 'false';
+          return;
+          }
+          
+        $notifications = Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_LOGIN,array('email' => $entry, 'password' => $password));
+        if(!empty($notifications['ldap']) && $notifications['ldap'] != false)
+          {
+          echo "true";
           return;
           }
         $passwordPrefix=Zend_Registry::get('configGlobal')->password->prefix;

@@ -21,7 +21,7 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
       {
       throw new Zend_Exception("Should be a feed.");
       }
-    return $this->initDao('Feedpolicygroup',$this->database->fetchRow($this->database->select()->where('feed_id = ?',$feed->getKey())->where('group_id = ?',$group->getKey())));
+    return $this->initDao('Feedpolicygroup', $this->database->fetchRow($this->database->select()->where('feed_id = ?', $feed->getKey())->where('group_id = ?', $group->getKey())));
     }  // end getPolicy
     
 } // end class

@@ -4,9 +4,9 @@
  * \brief DAO Assetstore (table assetstore)
  */
 class GroupDao extends AppDao
-{
-  public $_model='Group';
- 
-  
-} // end class  
+  {
+  public $_model = 'Group';
+
+
+  } // end class  
 ?>

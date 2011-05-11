@@ -30,11 +30,11 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
     $this->_db = Zend_Registry::get('dbAdapter');  
     }  // end function initialize
 
-   /** Get the database */
-   function getDB()
-     {
-     return $this->_db;  
-     }      
+  /** Get the database */
+  function getDB()
+    {
+    return $this->_db;  
+    }      
 
   /** Because hex2bin doesn't exist in php...*/
   /* function hex2bin($h)
@@ -63,11 +63,11 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       $array[$this->_key] = $key;
       return (object)$array;
       }
-     catch(cassandra_NotFoundException $e) 
+    catch(cassandra_NotFoundException $e) 
       {
       return null;  
       }  
-     catch(Exception $e) 
+    catch(Exception $e) 
       {
       throw new Zend_Exception($e); 
       }
@@ -100,11 +100,11 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
 
       return $array;
       }
-     catch(cassandra_NotFoundException $e) 
+    catch(cassandra_NotFoundException $e) 
       {
       return null;  
       }  
-     catch(Exception $e) 
+    catch(Exception $e) 
       {
       throw new Zend_Exception($e); 
       }
@@ -308,7 +308,7 @@ class MIDASDatabaseCassandra implements MIDASDatabaseInterface
       }    
     } // end getCassandra()
 
-    /** multiget */
+  /** multiget */
   function multigetCassandra($columnfamily, $keys, $columns = null, $column_start = "", $column_finish = "")
     {
     try 

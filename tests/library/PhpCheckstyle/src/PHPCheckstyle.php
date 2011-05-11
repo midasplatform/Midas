@@ -1832,8 +1832,69 @@ class PHPCheckstyle {
 				$this->_writeError('noTabs', PHPCHECKSTYLE_TAB_IN_LINE);
 			}
 		}
+  $this->_checkIndentationLevel($ws);
 	}
 
+  /** check indentation level */
+  private function _checkIndentationLevel($ws)
+    {   
+    if($this->_inControlStatement || $this->_inFuncCall || !isset($this->lineNumber) || !isset($this->_levelOfNesting) || $this->tokenizer->checkNextToken(T_NEW_LINE) || $this->tokenizer->checkNextValidTextToken(")"))
+      {
+      return;
+      }
+     
+    $previousToken =  $this->tokenizer->peekPrvsToken();
+    if(!isset($this->indentationLevel['previousLine']) || $this->lineNumber != $this->indentationLevel['previousLine'])
+      {
+      $nesting = $this->_levelOfNesting;
+      if($this->tokenizer->checkNextValidTextToken("{"))
+        {
+        $nesting++;
+        }
+        
+      $expectedIndentation = $nesting * 2;
+      $indentation = strlen($ws);
+      if($previousToken[0] != T_NEW_LINE)
+        {
+        $indentation = 0;
+        }
+        
+      if($this->tokenizer->checkNextToken(T_COMMENT))
+        {
+        return;
+        }
+        
+      if($this->_inSwitch)
+        {
+        if(!$this->tokenizer->checkNextToken(T_CASE) && !$this->tokenizer->checkNextToken(T_DEFAULT))
+          {
+          $expectedIndentation = $expectedIndentation + 2;
+          }
+          
+        // don't check bracket in a switch (TODO)
+        if($this->tokenizer->checkNextValidTextToken("{") || $this->tokenizer->checkNextValidTextToken("}"))
+          {
+          return;
+          }
+        }
+        
+      if($this->tokenizer->checkNextToken(T_CONSTANT_ENCAPSED_STRING) || $this->tokenizer->checkNextToken(T_OBJECT_OPERATOR) ||  $this->tokenizer->checkNextToken(T_ARRAY) || $this->tokenizer->checkNextToken(T_NEW))
+        {
+        if(($expectedIndentation+2) > $indentation)
+          {
+          $msg = sprintf(PHPCHECKSTYLE_INDENTATION_LEVEL_MORE, ($expectedIndentation+2),  $indentation);
+          $this->_writeError('indentationLevel', $msg);
+          }
+        }        
+      elseif($expectedIndentation != $indentation)
+        {
+        $msg = sprintf(PHPCHECKSTYLE_INDENTATION_LEVEL, $expectedIndentation,  $indentation);
+        $this->_writeError('indentationLevel', $msg);
+        }
+      }
+    $this->indentationLevel['previousLine'] = $this->lineNumber;
+    }
+    
 	/**
 	 * Checks if the block of code need braces.
 	 *
@@ -1967,7 +2028,12 @@ class PHPCheckstyle {
 			$docToken = $this->tokenizer->peekTokenAt($docTokenPosition);
 
 			if (is_array($docToken)) {
-				if ($this->tokenizer->checkProvidedToken($docToken, T_STATIC) || $this->tokenizer->checkProvidedToken($docToken, T_ABSTRACT) || $this->tokenizer->checkProvidedToken($docToken, T_PROTECTED) || $this->tokenizer->checkProvidedToken($docToken, T_PUBLIC) || $this->tokenizer->checkProvidedToken($docToken, T_WHITESPACE) || $this->tokenizer->checkProvidedToken($docToken, T_COMMENT) || $this->tokenizer->checkProvidedToken($docToken, T_ML_COMMENT) || $this->tokenizer->checkProvidedToken($docToken, T_NEW_LINE)) {
+        if ($this->tokenizer->checkProvidedToken($docToken, T_ABSTRACT) )
+          {
+          $found = true;
+          break;
+          }
+				else if ($this->tokenizer->checkProvidedToken($docToken, T_STATIC) || $this->tokenizer->checkProvidedToken($docToken, T_PROTECTED) || $this->tokenizer->checkProvidedToken($docToken, T_PUBLIC) || $this->tokenizer->checkProvidedToken($docToken, T_WHITESPACE) || $this->tokenizer->checkProvidedToken($docToken, T_COMMENT) || $this->tokenizer->checkProvidedToken($docToken, T_ML_COMMENT) || $this->tokenizer->checkProvidedToken($docToken, T_NEW_LINE)) {
 					// All these tokens are ignored
 					} else if ($this->tokenizer->checkProvidedToken($docToken, T_PRIVATE)) {
 					$isPrivate = true; // we are in a private function

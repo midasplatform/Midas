@@ -5,12 +5,12 @@
  */
 class UserDao extends AppDao
   {
-    public $_model='User';
+  public $_model = 'User';
 
-  /* is admin?*/
+  /**  is admin?*/
   public function isAdmin()
     {
-    if($this->getAdmin()==1)
+    if($this->getAdmin() == 1)
       {
       return true;
       }

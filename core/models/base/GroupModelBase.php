@@ -1,6 +1,8 @@
 <?php
+/** GroupModelBase*/
 abstract class GroupModelBase extends AppModel
 {
+  /** Constructor*/
   public function __construct()
     {
     parent::__construct();
@@ -11,16 +13,16 @@ abstract class GroupModelBase extends AppModel
       'community_id' => array('type' => MIDAS_DATA),
       'name' => array('type' => MIDAS_DATA),
       'community' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Community', 'parent_column' => 'community_id', 'child_column' => 'community_id'),
-      'users' =>  array('type'=>MIDAS_MANY_TO_MANY, 'model'=>'User', 'table' => 'user2group', 'parent_column'=> 'group_id', 'child_column' => 'user_id'),
+      'users' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'User', 'table' => 'user2group', 'parent_column' => 'group_id', 'child_column' => 'user_id'),
       );
     $this->initialize(); // required
     } // end __construct()  
   
   /** Add a user to a group */
-  abstract function addUser($group,$user);
-  abstract function removeUser($group,$user);
+  abstract function addUser($group, $user);
+  abstract function removeUser($group, $user);
   abstract function findByCommunity($communityDao);
-  abstract function getGroupFromSearch($search,$limit=14);
+  abstract function getGroupFromSearch($search, $limit = 14);
     
   /** Delete a group */
   public function deleteGroup($group)
@@ -29,20 +31,20 @@ abstract class GroupModelBase extends AppModel
       {
       throw new Zend_Exception("Should be a group.");
       }
-    $users=$group->getUsers();
+    $users = $group->getUsers();
     foreach($users as $user)
       {
-      $this->removeUser($group,$user);
+      $this->removeUser($group, $user);
       }
     parent::delete($group);
     unset($group->group_id);
-    $group->saved=false;
+    $group->saved = false;
     }//end deleteGroup
   
   
   /** create a group
    * @return GroupDao*/
-  public function createGroup($communityDao,$name)
+  public function createGroup($communityDao, $name)
     {
     if(!$communityDao instanceof CommunityDao)
       {
@@ -53,7 +55,7 @@ abstract class GroupModelBase extends AppModel
       throw new Zend_Exception("Should be a string.");
       }
     $this->loadDaoClass('GroupDao');
-    $group=new GroupDao();
+    $group = new GroupDao();
     $group->setName($name);
     $group->setCommunityId($communityDao->getCommunityId());
     $this->save($group);   
@@ -61,4 +63,3 @@ abstract class GroupModelBase extends AppModel
     }
 
 } // end class GroupModelBase
-?>

@@ -20,7 +20,7 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
       {
       throw new Zend_Exception("Should be a folder.");
       }
-    return $this->initDao('Folderpolicygroup',$this->database->fetchRow($this->database->select()->where('folder_id = ?',$folder->getKey())->where('group_id = ?',$group->getKey())));
+    return $this->initDao('Folderpolicygroup', $this->database->fetchRow($this->database->select()->where('folder_id = ?', $folder->getKey())->where('group_id = ?', $group->getKey())));
     }
 }
 ?>

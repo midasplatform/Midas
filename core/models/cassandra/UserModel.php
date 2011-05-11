@@ -21,7 +21,7 @@ class UserModel extends UserModelBase
       
       // Add the user_id
       $userarray[$this->_key] = $userid;
-      $dao= $this->initDao('User',$userarray);      
+      $dao = $this->initDao('User', $userarray);      
       }
     catch(cassandra_NotFoundException $e) 
       {
@@ -45,7 +45,7 @@ class UserModel extends UserModelBase
       $userarray = $user->get($userid);
       // Add the user_id      
       $userarray[$this->_key] = $userid;
-      $dao= $this->initDao('User',$userarray);      
+      $dao = $this->initDao('User', $userarray);      
       }
     catch(cassandra_NotFoundException $e) 
       {
@@ -62,7 +62,7 @@ class UserModel extends UserModelBase
   /** Get user communities */
   public function getUserCommunities($userDao)
     {
-    if($userDao==null)
+    if($userDao == null)
       {
       return array();
       }
@@ -75,10 +75,10 @@ class UserModel extends UserModelBase
     try 
       {
       $user = new ColumnFamily($this->database->getDB(), 'user'); 
-      $communities = $user->get($userDao->getUserId(),array('communities'));
+      $communities = $user->get($userDao->getUserId(), array('communities'));
       
       echo "Cassandra:UserModel:GetUserCommuntiies";
-      print_r($communities);
+      //var_dump($communities);
       exit();
       /*
       foreach($communities as $key => $values)
@@ -100,7 +100,7 @@ class UserModel extends UserModelBase
     /*
     $rowset = $this->database->fetchAll($sql);
     $return = array();
-    foreach ($rowset as $row)
+    foreach($rowset as $row)
       {
       $tmpDao= $this->initDao('Community', $row);
       $return[] = $tmpDao;
@@ -111,18 +111,18 @@ class UserModel extends UserModelBase
     
     
   /** create user */
-  public function createUser($email,$password,$firstname,$lastname,$admin=0)
+  public function createUser($email, $password, $firstname, $lastname, $admin = 0)
     {  
-    $userDao = parent::createUser($email,$password,$firstname,$lastname,$admin);
+    $userDao = parent::createUser($email, $password, $firstname, $lastname, $admin);
     // Add to the emailuser table
     $emailuser = new ColumnFamily($this->database->getDB(), 'emailuser'); 
-    $emailuser->insert($userDao->getEmail(),array($this->_key=>$userDao->user_id));
+    $emailuser->insert($userDao->getEmail(), array($this->_key => $userDao->user_id));
 
     // Add the userid to the folder
     $folder = new ColumnFamily($this->database->getDB(), 'folder'); 
-    $folder->insert($userDao->getFolderId(),array('user_id'=>$userDao->user_id));
+    $folder->insert($userDao->getFolderId(), array('user_id' => $userDao->user_id));
  
     return $userDao;
     }
 }
-?>
+

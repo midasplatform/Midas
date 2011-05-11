@@ -5,8 +5,8 @@
  */
 class BitstreamDao extends AppDao
 {
-  public $_model='Bitstream';
-  public $_components=array('MimeType','Utility');
+  public $_model = 'Bitstream';
+  public $_components = array('MimeType', 'Utility');
   
   /** Fill the properties of the bitstream given the path.
    *  The file should be accessible from the web server.
