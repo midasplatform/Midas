@@ -1,7 +1,8 @@
 <?php
+/** User forms*/
 class UserForm extends AppForm
 {
- /** create login form */
+  /** create login form */
   public function createLoginForm()
     {
     $form = new Zend_Form;
@@ -24,7 +25,7 @@ class UserForm extends AppForm
    
     if(isset($this->uri))
       {
-      $url= new Zend_Form_Element_Hidden("url");
+      $url = new Zend_Form_Element_Hidden("url");
       $form->addElement($url);
       }
     
@@ -32,11 +33,11 @@ class UserForm extends AppForm
     $submit ->setLabel($this->t("Login"))
             ->setAttrib('class', 'globalButton');
      
-    $form->addElements(array($email,$password,$rememberMe,$submit));
+    $form->addElements(array($email, $password, $rememberMe, $submit));
     return $form;
     }
     
-     /** register  form */
+  /** register  form */
   public function createRegisterForm()
     {
     $form = new Zend_Form;
@@ -79,14 +80,14 @@ class UserForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel($this->t("Register"));
     
-    $form->addElements(array($email,$firstname,$lastname,$password1,$password2,$condiftions,$submit));
+    $form->addElements(array($email, $firstname, $lastname, $password1, $password2, $condiftions, $submit));
 
     return $form;
     }
         
     
-      /** acount  form */
-  public function createAccountForm($firstname_value=null,$lastname_value=null,$company_value=null,$policy_value=null)
+  /** acount  form */
+  public function createAccountForm($firstname_value = null, $lastname_value = null, $company_value = null, $policy_value = null)
     {
     $form = new Zend_Form;
     $form->setAction($this->webroot.'/user/settings')
@@ -112,33 +113,32 @@ class UserForm extends AppForm
     $submit ->setLabel($this->t("Modify"));
     
     $privacy = new Zend_Form_Element_Radio('privacy');
-    $privacy->addMultiOptions( array(
+    $privacy->addMultiOptions(array(
                  MIDAS_USER_PUBLIC => $this->t("Public (Anyone can see my information)"),
                  MIDAS_USER_PRIVATE => $this->t("Private (Nobody can see my information)"),
                   ))
           ->setRequired(true)
           ->setValue(MIDAS_COMMUNITY_PUBLIC);
     
-    if($firstname_value!=null)
+    if($firstname_value != null)
       {
       $firstname->setValue($firstname_value);
       }
-    if($lastname_value!=null)
+    if($lastname_value != null)
       {
       $lastname->setValue($lastname_value);
       }
-    if($company_value!=null)
+    if($company_value != null)
       {
       $company->setValue($company_value);
       }
-    if($policy_value!=null)
+    if($policy_value != null)
       {
       $privacy->setValue($policy_value);
       }
     
-    $form->addElements(array($firstname,$lastname,$company,$privacy,$submit));
+    $form->addElements(array($firstname, $lastname, $company, $privacy, $submit));
 
     return $form;
     }
 } // end class
-?>

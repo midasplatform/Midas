@@ -171,14 +171,12 @@
     <!-- @see http://www.php.net/manual/en/indexes.php -->
     <test name="checkProhibitedFunctions">
     	<item value="system"/>
-    	<item value="print_r"/>
     	<item value="var_dump"/>
     	<item value="dl"/>
     	<item value="define_syslog_variables"/>    	
     	<item value="set_magic_quotes_runtime"/>
     	<item value="magic_quotes_runtime"/>
     	<item value="sql_regcase "/>    	
-    	<item value="exec"/>
     	<item value="passthru"/>
     	<item value="exit"/>
     	<item value="phpinfo"/>
@@ -223,8 +221,8 @@
     </test>
     
      <!-- Avoid passing parameters by reference -->
-    <test name="avoidPassingReferences">
-    </test>
+   <!-- <test name="avoidPassingReferences">
+    </test> -->
         
      <!--
     <test name="showTODOs">
@@ -279,19 +277,20 @@
     -->
     <test name="checkInnerAssignment">
     	<exception value="for"/>
+      <exception value="while"/>
     </test>
     
     <!-- Detect unused private functions (detecting unused public ones is more difficult) -->
-    <test name="checkUnusedPrivateFunctions">
-    </test>
+   <!-- <test name="checkUnusedPrivateFunctions">
+    </test> -->
     
     <!-- Detect unused variables -->
    <!-- <test name="checkUnusedVariables">
     </test>-->
     
     <!-- Detect unused function parameters -->
-    <test name="checkUnusedFunctionParameters">
-    </test>
+ <!--   <test name="checkUnusedFunctionParameters">
+    </test> -->
     
     <!-- Detect unused code (after return) -->
  <!--   <test name="checkUnusedCode">

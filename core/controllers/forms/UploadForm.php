@@ -1,7 +1,8 @@
 <?php
+/** Upload forms*/
 class UploadForm extends AppForm
 {
- /** create upload link form */
+  /** create upload link form */
   public function createUploadLinkForm()
     {
     $form = new Zend_Form;
@@ -21,9 +22,8 @@ class UploadForm extends AppForm
     $submit ->setLabel($this->t("Link"))
             ->setAttrib('class', 'globalButton');
      
-    $form->addElements(array($url,$submit));
+    $form->addElements(array($url, $submit));
     return $form;
     }
    
 } // end class
-?>

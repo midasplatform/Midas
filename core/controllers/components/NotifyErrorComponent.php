@@ -1,224 +1,278 @@
 <?php
+/** Error management*/
 class NotifyErrorComponent  extends AppComponent
-{  
-    protected $_environment;  
-    protected $_mailer;  
-    protected $_session;  
-    protected $_error;  
-    protected $_profiler;  
-  
-    public function __construct()
-      {
-      
-      }
-    
-    public function initNotifier(
-        $environment,  
-        ArrayObject $error,  
-        Zend_Mail $mailer,  
-        Zend_Session_Namespace $session,  
-        Zend_Db_Profiler $profiler,  
-        Array $server)  
+  {  
+  protected $_environment;  
+  protected $_mailer;  
+  protected $_session;  
+  protected $_error;  
+  protected $_profiler;  
+
+  /** Constructor */
+  public function __construct()
+    {
+
+    }
+
+  /** Init*/
+  public function initNotifier($environment, ArrayObject $error, Zend_Mail $mailer, Zend_Session_Namespace $session, Zend_Db_Profiler $profiler, Array $server)  
     {  
-        $this->_environment = $environment;  
-        $this->_mailer = $mailer;  
-        $this->_error = $error;  
-        $this->_session = $session;  
-        $this->_profiler = $profiler;  
-        $this->_server = $server;  
+    $this->_environment = $environment;  
+    $this->_mailer = $mailer;  
+    $this->_error = $error;  
+    $this->_session = $session;  
+    $this->_profiler = $profiler;  
+    $this->_server = $server;  
     }  
     
-    public function fatalEror($logger,$mailer)
-      {
-      
-      if(!is_null($e = error_get_last()))
-        {    
-        $environment = Zend_Registry::get('configGlobal')->environment;
-        switch ($environment) {  
-            case 'production':  
-                $message .= "It seems you have just encountered an unknown issue.";  
-                $message .= "Our team has been notified and will deal with the problem as soon as possible.";  
-                header('content-type: text/plain');
-                if($e['type']==E_NOTICE) $e['typeText']='E_NOTICE';
-                elseif($e['type']==E_ERROR ) $e['typeText']='E_ERROR';
-                elseif($e['type']==E_WARNING )$e['typeText']='E_WARNING';
-                elseif($e['type']==E_PARSE) $e['typeText ']='E_PARSE';
-                elseif($e['type']==E_RECOVERABLE_ERROR) $e['typeText ']='E_RECOVERABLE_ERROR';
-                elseif($e['type']==E_COMPILE_ERROR) $e['typeText ']='E_COMPILE_ERROR';
-                else return;
-                echo $message;
-                $this->_mailer=$mailer;
-                $this->_environment=$environment;
-                //$this->notify(true);
-                break;  
-            default:  
-              $this->_server=$_SERVER;
-              if($e['type']==E_NOTICE) $e['typeText']='E_NOTICE';
-              elseif($e['type']==E_ERROR ) $e['typeText']='E_ERROR';
-              elseif($e['type']==E_WARNING )$e['typeText']='E_WARNING';
-              elseif($e['type']==E_PARSE) $e['typeText ']='E_PARSE';
-              elseif($e['type']==E_RECOVERABLE_ERROR) $e['typeText ']='E_RECOVERABLE_ERROR';
-              elseif($e['type']==E_COMPILE_ERROR) $e['typeText ']='E_COMPILE_ERROR';
-              else return;
-              header('content-type: text/plain');
-              echo $this->getFatalErrorMessage($e);
+  /** Handle fatal Errors*/
+  public function fatalEror($logger, $mailer)
+    {
+    if(!is_null(error_get_last()))
+      {    
+      $e = error_get_last();
+      $environment = Zend_Registry::get('configGlobal')->environment;
+      switch($environment) 
+        {  
+        case 'production':  
+          $message .= "It seems you have just encountered an unknown issue.";  
+          $message .= "Our team has been notified and will deal with the problem as soon as possible.";  
+          header('content-type: text/plain');
+          if($e['type'] == E_NOTICE)
+            {
+            $e['typeText'] = 'E_NOTICE';
             }
-        $logger->crit($this->getFatalErrorMessage($e)); 
-        $logger->__destruct();
-        }      
-      }
-      
-    public function warningError($errno, $errstr, $errfile, $errline) 
-      {
-      if($errno==E_WARNING&&Zend_Registry::get('configGlobal')->environment!='production')
-        {
-        $message= "Warning: ".$errstr."<br/>\n on line $errline in file $errfile<br/>\n";
-        $this->getLogger()->warn($message);
-        echo $message;
+          elseif($e['type'] == E_ERROR ) 
+            {
+            $e['typeText'] = 'E_ERROR';
+            }
+          elseif($e['type'] == E_WARNING )
+            {
+            $e['typeText'] = 'E_WARNING';
+            }
+          elseif($e['type'] == E_PARSE) 
+            {
+            $e['typeText '] = 'E_PARSE';
+            }
+          elseif($e['type'] == E_RECOVERABLE_ERROR) 
+            {
+            $e['typeText '] = 'E_RECOVERABLE_ERROR';
+            }
+          elseif($e['type'] == E_COMPILE_ERROR) 
+            {
+            $e['typeText '] = 'E_COMPILE_ERROR';
+            }
+          else 
+            {
+            return;
+            }
+          echo $message;
+          $this->_mailer = $mailer;
+          $this->_environment = $environment;
+          //$this->notify(true);
+          break;  
+        default:  
+          $this->_server = $_SERVER;
+          if($e['type'] == E_NOTICE)
+            {
+            $e['typeText'] = 'E_NOTICE';
+            }
+          elseif($e['type'] == E_ERROR ) 
+            {
+            $e['typeText'] = 'E_ERROR';
+            }
+          elseif($e['type'] == E_WARNING )
+            {
+            $e['typeText'] = 'E_WARNING';
+            }
+          elseif($e['type'] == E_PARSE) 
+            {
+            $e['typeText '] = 'E_PARSE';
+            }
+          elseif($e['type'] == E_RECOVERABLE_ERROR) 
+            {
+            $e['typeText '] = 'E_RECOVERABLE_ERROR';
+            }
+          elseif($e['type'] == E_COMPILE_ERROR) 
+            {
+            $e['typeText '] = 'E_COMPILE_ERROR';
+            }
+          else 
+            {
+            return;
+            }
+          header('content-type: text/plain');
+          echo $this->getFatalErrorMessage($e);
         }
+      $logger->crit($this->getFatalErrorMessage($e)); 
+      $logger->__destruct();
+      }      
+    } // end fatalEror
       
-      if($errno==E_NOTICE&&Zend_Registry::get('configGlobal')->environment!='production')
-        {
-        $message= "Notice : ".$errstr."<br/>\non line $errline in file $errfile<br/>\n";
-        $this->getLogger()->warn($message);
-        echo $message;
-        }      
-      }
-      
-      
-   public function curPageURL() 
+  /** handle warning*/
+  public function warningError($errno, $errstr, $errfile, $errline) 
+    {
+    if($errno == E_WARNING && Zend_Registry::get('configGlobal')->environment != 'production')
       {
-      $pageURL = 'http';
-      if (isset($_SERVER["HTTPS"] )&&$_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
-      $pageURL .= "://";
-      if ($_SERVER["SERVER_PORT"] != "80") {
+      $message = "Warning: ".$errstr."<br/>\n on line ".$errline." in file ".$errfile."<br/>\n";
+      $this->getLogger()->warn($message);
+      echo $message;
+      }
+
+    if($errno == E_NOTICE && Zend_Registry::get('configGlobal')->environment != 'production')
+      {
+      $message = "Notice : ".$errstr."<br/>\non line ".$errline." in file ".$errfile."<br/>\n";
+      $this->getLogger()->warn($message);
+      echo $message;
+      }      
+    }//end warningError
+      
+  /** Page url*/     
+  public function curPageURL() 
+    {
+    $pageURL = 'http';
+    if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") 
+      {
+      $pageURL .= "s";      
+      }
+    $pageURL .= "://";
+    if($_SERVER["SERVER_PORT"] != "80") 
+      {
       $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-      } else {
+      } 
+    else  
+      {
       $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
       }
-      return $pageURL;
-      }
+    return $pageURL;
+    }//end curPageURL
       
-    public function getFatalErrorMessage($e)
-      {
-        $message = "Fatal Error: "; 
-        $message.=     print_r($e,true);
-        $message.=  "\n\n";
-        $message.=  "URL: ".$this->curPageURL();
-        $message.=  "\n\n";
-        if (!empty($this->_server['SERVER_ADDR'])) {  
-            $message .= "Server IP: " . $this->_server['SERVER_ADDR'] . "\n";  
-        }  
-  
-        
-        if (!empty($this->_server['HTTP_USER_AGENT'])) {  
-            $message .= "User agent: " . $this->_server['HTTP_USER_AGENT'] . "\n";  
-        }  
-  
-        if (!empty($this->_server['HTTP_X_REQUESTED_WITH'])) {  
-            $message .= "Request type: " . $this->_server['HTTP_X_REQUESTED_WITH'] . "\n";  
-        }  
-  
-        $message .= "Server time: " . date("Y-m-d H:i:s") . "\n";  
-  
-        if (!empty($this->_server['HTTP_REFERER'])) {  
-            $message .= "Referer: " . $this->_server['HTTP_REFERER'] . "\n";  
-        }  
-        $message .="Parameters (post): ".print_r($_POST,true)."\n";
-        $message .="Parameters (get): ".print_r($_GET,true)."\n\n";
-        
-        return $message;
-      }
-  
-    public function getFullErrorMessage()  
-    {  
-        $message = '';  
-  
-        if (!empty($this->_server['SERVER_ADDR'])) {  
-            $message .= "Server IP: " . $this->_server['SERVER_ADDR'] . "\n";  
-        }  
-  
-        if (!empty($this->_server['HTTP_USER_AGENT'])) {  
-            $message .= "User agent: " . $this->_server['HTTP_USER_AGENT'] . "\n";  
-        }  
-  
-        if (!empty($this->_server['HTTP_X_REQUESTED_WITH'])) {  
-            $message .= "Request type: " . $this->_server['HTTP_X_REQUESTED_WITH'] . "\n";  
-        }  
-  
-        $message .= "Server time: " . date("Y-m-d H:i:s") . "\n";  
-        $message .= "RequestURI: " . $this->_error->request->getRequestUri() . "\n";  
-  
-        if (!empty($this->_server['HTTP_REFERER'])) {  
-            $message .= "Referer: " . $this->_server['HTTP_REFERER'] . "\n";  
-        }  
-  
-        $message .= "<b>Message: " . $this->_error->exception->getMessage() . "</b>\n\n";  
-        $message .= "Trace:\n" . $this->_error->exception->getTraceAsString() . "\n\n";  
-        $message .= "Request data: " . var_export($this->_error->request->getParams(), true) . "\n\n";  
-  
-        $it = $this->_session->getIterator();  
-  
-        $message .= "Session data:\n";  
-        foreach ($it as $key => $value) {  
-            $message .= $key . ": " . var_export($value, true) . "\n";  
-        }  
-        $message .= "\n";  
-        
-        if($this->_profiler->getLastQueryProfile()!==false)
-          {
-          $query = $this->_profiler->getLastQueryProfile()->getQuery();  
-          $queryParams = $this->_profiler->getLastQueryProfile()->getQueryParams();  
+  /** create Fatal Error Message*/
+  public function getFatalErrorMessage($e)
+    {
+    $message = "Fatal Error: "; 
+    $message .=  print_r($e, true);
+    $message .=  "\n\n";
+    $message .=  "URL: ".$this->curPageURL();
+    $message .=  "\n\n";
+    if(!empty($this->_server['SERVER_ADDR']))
+      {  
+      $message .= "Server IP: " . $this->_server['SERVER_ADDR'] . "\n";  
+      }  
 
-          $message .= "Last database query: " . $query . "\n\n";  
-          }
-   
-        return $message;  
-    }  
+    if(!empty($this->_server['HTTP_USER_AGENT'])) 
+      {  
+      $message .= "User agent: " . $this->_server['HTTP_USER_AGENT'] . "\n";  
+      }  
+
+    if(!empty($this->_server['HTTP_X_REQUESTED_WITH'])) 
+      {  
+      $message .= "Request type: " . $this->_server['HTTP_X_REQUESTED_WITH'] . "\n";  
+      }  
+
+    $message .= "Server time: " . date("Y-m-d H:i:s") . "\n";  
+
+    if(!empty($this->_server['HTTP_REFERER'])) 
+      {  
+      $message .= "Referer: " . $this->_server['HTTP_REFERER'] . "\n";  
+      }  
+    $message .= "Parameters (post): ".print_r($_POST, true)."\n";
+    $message .= "Parameters (get): ".print_r($_GET, true)."\n\n";
+    return $message;
+    }
   
-    public function getShortErrorMessage()  
+  /** Create Exception message error*/
+  public function getFullErrorMessage()  
     {  
-        $message = '';  
+    $message = '';  
+
+    if(!empty($this->_server['SERVER_ADDR'])) 
+      {        
+      $message .= "Server IP: " . $this->_server['SERVER_ADDR'] . "\n";  
+      }  
+
+    if(!empty($this->_server['HTTP_USER_AGENT']))
+      {  
+      $message .= "User agent: " . $this->_server['HTTP_USER_AGENT'] . "\n";  
+      }  
+
+    if(!empty($this->_server['HTTP_X_REQUESTED_WITH']))
+      {  
+      $message .= "Request type: " . $this->_server['HTTP_X_REQUESTED_WITH'] . "\n";  
+      }  
+
+    $message .= "Server time: " . date("Y-m-d H:i:s") . "\n";  
+    $message .= "RequestURI: " . $this->_error->request->getRequestUri() . "\n";  
+
+    if(!empty($this->_server['HTTP_REFERER']))
+      {  
+      $message .= "Referer: " . $this->_server['HTTP_REFERER'] . "\n";  
+      }  
+
+    $message .= "<b>Message: " . $this->_error->exception->getMessage() . "</b>\n\n";  
+    $message .= "Trace:\n" . $this->_error->exception->getTraceAsString() . "\n\n";  
+    $message .= "Request data: " . var_export($this->_error->request->getParams(), true) . "\n\n";  
+
+    $it = $this->_session->getIterator();  
+
+    $message .= "Session data:\n";  
+    foreach($it as $key => $value) 
+      {  
+      $message .= $key . ": " . var_export($value, true) . "\n";  
+      }  
+    $message .= "\n";  
+
+    if($this->_profiler->getLastQueryProfile() !== false)
+      {
+      $query = $this->_profiler->getLastQueryProfile()->getQuery();  
+      $queryParams = $this->_profiler->getLastQueryProfile()->getQueryParams();  
+      $message .= "Last database query: " . $query . "\n\n";  
+      }
+    return $message;  
+    }//end getFullErrorMessage
   
-        switch ($this->_environment) {  
-            case 'production':  
-                $message .= "It seems you have just encountered an unknown issue.";  
-                $message .= "Our team has been notified and will deal with the problem as soon as possible.";  
-                break;  
-            default:  
-                $message .= "Message: " . $this->_error->exception->getMessage() . "\n\n";  
-                $message .= "Trace:\n" . $this->_error->exception->getTraceAsString() . "\n\n";  
-        }  
-  
-        return $message;  
+  /** Create short error message */
+  public function getShortErrorMessage()  
+    {  
+    $message = '';  
+    switch($this->_environment)
+      {  
+      case 'production':  
+        $message .= "It seems you have just encountered an unknown issue.";  
+        $message .= "Our team has been notified and will deal with the problem as soon as possible.";  
+        break;  
+      default:  
+        $message .= "Message: " . $this->_error->exception->getMessage() . "\n\n";  
+        $message .= "Trace:\n" . $this->_error->exception->getTraceAsString() . "\n\n";  
+      }  
+    return $message;  
     }  
-  
-    public function notify($fatal=false)  
+
+  /** Send an email*/
+  public function notify($fatal = false)  
     { 
-        if (!in_array($this->_environment, array('production'))&&Zend_Registry::get('configGlobal')->alert->enable=='1') {  
-            return false;  
-        }  
+    if(!in_array($this->_environment, array('production')) && Zend_Registry::get('configGlobal')->alert->enable == '1') 
+      {  
+      return false;  
+      }  
             
-        $this->_mailer->setFrom('do-not-reply@domain.com');  
-        $this->_mailer->setSubject("Exception on Application ".Zend_Registry::get('configGlobal')->application->name);  
-        if($fatal)
-          {
-          
-          }
-        else
-          {
-          $this->_mailer->setBodyText($this->getFullErrorMessage()); 
-          }
-        $this->_mailer->addTo(Zend_Registry::get('configGlobal')->alert->email);  
-        $return=false;
-        try {
-          $return = $this->_mailer->send();
-          }
-        catch (Exception $e)
-          {
-          }          
-       
-        return $return;  
+    $this->_mailer->setFrom('do-not-reply@domain.com');  
+    $this->_mailer->setSubject("Exception on Application ".Zend_Registry::get('configGlobal')->application->name);  
+    if(!$fatal)
+      {
+      $this->_mailer->setBodyText($this->getFullErrorMessage()); 
+      }
+    $this->_mailer->addTo(Zend_Registry::get('configGlobal')->alert->email);  
+    $return = false;
+    try 
+      {
+      $return = $this->_mailer->send();
+      }
+    catch(Exception $e)
+      {
+      $this->getLogger()->crit($e->getMessage());
+      }         
+
+    return $return;  
     }  
-}  
-?>
+  }  

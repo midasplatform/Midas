@@ -1,6 +1,8 @@
 <?php
+/** MineType Management */
 class MimeTypeComponent extends AppComponent
-{
+  {
+  /** Get mime type*/
   function getType($filename) 
     {
     // get base name of the filename provided by user
@@ -9,29 +11,34 @@ class MimeTypeComponent extends AppComponent
     // break file into parts seperated by .
     $filename = explode('.', $filename);
 
-      // take the last part of the file to get the file extension
-      $filename = $filename[count($filename)-1];   
+     // take the last part of the file to get the file extension
+    $filename = $filename[count($filename) - 1];   
+    // find mime type
+    return $this->privFindType($filename);
+    }
 
-      // find mime type
-      return $this->privFindType($filename);
-     }
-
-   function privFindType($ext) {
-      // create mimetypes array
-      $mimetypes = $this->privBuildMimeArray();
+  /** privFindType*/
+  function privFindType($ext)
+    {
+    // create mimetypes array
+    $mimetypes = $this->privBuildMimeArray();
       
-      // return mime type for extension
-      if (isset($mimetypes[$ext])) {
-         return $mimetypes[$ext];
-      // if the extension wasn't found return octet-stream         
-      } else {
-         return 'application/octet-stream';
+    // return mime type for extension
+    if(isset($mimetypes[$ext])) 
+      {
+      return $mimetypes[$ext];
+      // ifthe extension wasn't found return octet-stream         
       }
-         
-   }
+    else 
+      {
+      return 'application/octet-stream';
+      }         
+    }
 
-   function privBuildMimeArray() {
-      return array(
+  /** privBuildMimeArray*/
+  function privBuildMimeArray() 
+    {
+    return array(
          "ez" => "application/andrew-inset",
          "hqx" => "application/mac-binhex40",
          "cpt" => "application/mac-compactpro",
@@ -166,8 +173,6 @@ class MimeTypeComponent extends AppComponent
          "mxu" => "video/vnd.mpegurl",
          "avi" => "video/x-msvideo",
          "movie" => "video/x-sgi-movie",
-         "ice" => "x-conference-xcooltalk"
-      );
-   }
-} // end class
-?>
+         "ice" => "x-conference-xcooltalk");
+    }
+  } // end class

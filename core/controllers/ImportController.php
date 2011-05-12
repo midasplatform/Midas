@@ -6,10 +6,10 @@
  */
 class ImportController extends AppController
   {
-  public $_models=array('Item','Folder','ItemRevision','Assetstore','Folderpolicyuser','Itempolicyuser','ItemKeyword','Itempolicygroup','Group','Folderpolicygroup');
-  public $_daos=array('Item','Folder','ItemRevision','Bitstream','Assetstore','ItemKeyword');
-  public $_components=array('Upload','Utility');
-  public $_forms=array('Import','Assetstore');
+  public $_models = array('Item', 'Folder', 'ItemRevision', 'Assetstore', 'Folderpolicyuser', 'Itempolicyuser', 'ItemKeyword', 'Itempolicygroup', 'Group', 'Folderpolicygroup');
+  public $_daos = array('Item', 'Folder', 'ItemRevision', 'Bitstream', 'Assetstore', 'ItemKeyword');
+  public $_components = array('Upload', 'Utility');
+  public $_forms = array('Import', 'Assetstore');
 
   private $assetstores = array(); // list of assetstores
   private $progressfile; // location of the progress file for ajax request (in the temp dir)
@@ -32,8 +32,10 @@ class ImportController extends AppController
     $it = new DirectoryIterator($path);
     foreach($it as $fileInfo) 
       {
-      if($fileInfo->isDot()) continue;
-      
+      if($fileInfo->isDot()) 
+        {
+        continue;
+        }
       if(!$fileInfo->isReadable()) // file is not readable we skip
         {
         continue;  
@@ -52,7 +54,7 @@ class ImportController extends AppController
     } // end function _recursiveCountFiles
     
     
-  /** Check if the import should be stopped */
+  /** Check ifthe import should be stopped */
   private function _checkStopImport()
     {
     if(file_exists($this->stopfile)) // maybe we should check for the content of the file but not necessary
@@ -62,13 +64,13 @@ class ImportController extends AppController
     return false;  
     } // end _checkStopImport
   
-  /** Increment the number of files processed and write the progress if needed */
+  /** Increment the number of files processed and write the progress ifneeded */
   private function _incrementFileProcessed()
     {
     $this->nfilesprocessed++;
-    $percent = ($this->nfilesprocessed/$this->ntotalfiles)*100;                   
+    $percent = ($this->nfilesprocessed / $this->ntotalfiles) * 100;                   
     $count = 2; // every 2%
-    if($percent%$count == 0)
+    if($percent % $count == 0)
       {
       file_put_contents($this->progressfile,
                         $this->nfilesprocessed.'/'.$this->ntotalfiles);                   
@@ -76,15 +78,17 @@ class ImportController extends AppController
     } // end _incrementFileProcessed  
     
   /** Import a directory recursively */  
-  private function _recursiveParseDirectory($path,$currentdir)
+  private function _recursiveParseDirectory($path, $currentdir)
     {
     set_time_limit(0); // No time limit since import can take a long time  
       
     $it = new DirectoryIterator($path);
     foreach($it as $fileInfo) 
       {
-      if($fileInfo->isDot()) continue;
-      
+      if($fileInfo->isDot()) 
+        {
+        continue;
+        }
       // If the file/dir is not readable (permission issue)
       if(!$fileInfo->isReadable())
         {
@@ -100,14 +104,19 @@ class ImportController extends AppController
       
       if($fileInfo->isDir()) // we have a directory
         {
+        if(!file_exists($fileInfo->getPathName()))
+          {
+          continue;
+          }
+        $files = scandir($fileInfo->getPathName());
         if(!$this->importemptydirectories
-           && ($files = @scandir($fileInfo->getPathName())) && count($files) <= 2)
+           && $files && count($files) <= 2)
           {
           continue;   
           }
         
-        // Find if the child exists
-        $child = $this->Folder->getFolderByName($currentdir,$fileInfo->getFilename());        
+        // Find ifthe child exists
+        $child = $this->Folder->getFolderByName($currentdir, $fileInfo->getFilename());        
         if(!$child)
           { 
           $child = new FolderDao;
@@ -115,17 +124,17 @@ class ImportController extends AppController
           $child->setParentId($currentdir->getFolderId());
           $child->setDate(date('c'));
           $this->Folder->save($child); 
-          $this->Folderpolicyuser->createPolicy($this->userSession->Dao,$child,MIDAS_POLICY_ADMIN);    
-          $anonymousGroup=$this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
-          $this->Folderpolicygroup->createPolicy($anonymousGroup,$child,MIDAS_POLICY_READ);
+          $this->Folderpolicyuser->createPolicy($this->userSession->Dao, $child, MIDAS_POLICY_ADMIN);    
+          $anonymousGroup = $this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
+          $this->Folderpolicygroup->createPolicy($anonymousGroup, $child, MIDAS_POLICY_READ);
           }
-        $this->_recursiveParseDirectory($fileInfo->getPathName(),$child);
+        $this->_recursiveParseDirectory($fileInfo->getPathName(), $child);
         }
       else // we have a file
         {
         $this->_incrementFileProcessed();
         $newrevision = true;
-        $item = $this->Folder->getItemByName($currentdir,$fileInfo->getFilename());
+        $item = $this->Folder->getItemByName($currentdir, $fileInfo->getFilename());
         if(!$item)
           { 
           // Create the item
@@ -137,43 +146,44 @@ class ImportController extends AppController
           $keyword = new ItemKeywordDao();
           $keyword->setValue($fileInfo->getFilename());
           $this->ItemKeyword->insertKeyword($keyword);
-          $this->Item->addKeyword($item,$keyword);  
+          $this->Item->addKeyword($item, $keyword);  
 
-          $tmp=str_replace('.', ' ', $fileInfo->getFilename());
-          $tmp=str_replace('_', ' ', $tmp);
-          $tmp=str_replace('-', ' ', $tmp);
+          $tmp = str_replace('.', ' ', $fileInfo->getFilename());
+          $tmp = str_replace('_', ' ', $tmp);
+          $tmp = str_replace('-', ' ', $tmp);
 
-          $keywords=explode(' ', $tmp);
-          if(count($keywords)>1)
+          $keywords = explode(' ', $tmp);
+          if(count($keywords) > 1)
             {
-            foreach ($keywords as $key => $value)
+            foreach($keywords as $key => $value)
               {
               $keyword = new ItemKeywordDao();
               $keyword->setValue($value);
               $this->ItemKeyword->insertKeyword($keyword);
-              $this->Item->addKeyword($item,$keyword);  
+              $this->Item->addKeyword($item, $keyword);  
               }
             }  
           
           // Set the policy of the item
-          $this->Itempolicyuser->createPolicy($this->userSession->Dao,$item,MIDAS_POLICY_ADMIN);    
-          $anonymousGroup=$this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
-          $this->Itempolicygroup->createPolicy($anonymousGroup,$item,MIDAS_POLICY_READ);
+          $this->Itempolicyuser->createPolicy($this->userSession->Dao, $item, MIDAS_POLICY_ADMIN);    
+          $anonymousGroup = $this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
+          $this->Itempolicygroup->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
                  
           // Add the item to the current directory
-          $this->Folder->addItem($currentdir,$item);
+          $this->Folder->addItem($currentdir, $item);
           
           } // end create item
      
-        // Check if the bistream has been updated based on the local date
-        if($revision = $this->ItemRevision->getLatestRevision($item))
+        // Check ifthe bistream has been updated based on the local date
+        $revision = $this->ItemRevision->getLatestRevision($item);
+        if($revision)
           {
           $newrevision = false;  
-          $bitstream = $this->ItemRevision->getBitstreamByName($revision,$fileInfo->getFilename());
+          $bitstream = $this->ItemRevision->getBitstreamByName($revision, $fileInfo->getFilename());
           if(!$bitstream // no bitstream yet
              || 
-           (strtotime($bitstream->getDate())<filemtime($fileInfo->getPathName()) // file on disk is newer
-            && $bitstream->getChecksum()!=UtilityComponent::md5file($fileInfo->getPathName()) // end md5 is different
+           (strtotime($bitstream->getDate()) < filemtime($fileInfo->getPathName()) // file on disk is newer
+            && $bitstream->getChecksum() != UtilityComponent::md5file($fileInfo->getPathName()) // end md5 is different
             ))
             {
             $newrevision = true;
@@ -186,7 +196,7 @@ class ImportController extends AppController
           $itemRevisionDao = new ItemRevisionDao;
           $itemRevisionDao->setChanges('Initial revision');    
           $itemRevisionDao->setUser_id($this->userSession->Dao->getUserId());
-          $this->Item->addRevision($item,$itemRevisionDao);
+          $this->Item->addRevision($item, $itemRevisionDao);
 
           // Add bitstreams to the revision
           $bitstreamDao = new BitstreamDao;
@@ -196,15 +206,15 @@ class ImportController extends AppController
           
           $bitstreamDao->setAssetstoreId($this->assetstoreid);
           
-          // Upload the bitstream if necessary (based on the assetstore type)
+          // Upload the bitstream ifnecessary (based on the assetstore type)
           $assetstoreDao = $this->Assetstore->load($this->assetstoreid);
-          $this->Component->Upload->uploadBitstream($bitstreamDao,$assetstoreDao);
+          $this->Component->Upload->uploadBitstream($bitstreamDao, $assetstoreDao);
           
-          $this->ItemRevision->addBitstream($itemRevisionDao,$bitstreamDao);
+          $this->ItemRevision->addBitstream($itemRevisionDao, $bitstreamDao);
           } // end new revision
           
         } // end isFile
-      } // end foreach files/dirs in the directory
+      } // end foreachfiles/dirs in the directory
     
     unset($it);
     return true;
@@ -224,7 +234,7 @@ class ImportController extends AppController
       
     set_time_limit(0); // No time limit since import can take a long time  
     $this->view->title = $this->t("Import");
-    $this->view->header= $this->t("Import server-side data");
+    $this->view->header = $this->t("Import server-side data");
     
     $this->assetstores = $this->Assetstore->getAll();
     $this->view->assetstores = $this->assetstores;
@@ -293,7 +303,7 @@ class ImportController extends AppController
       
       try 
         {
-        if($this->_recursiveParseDirectory($pathName,$currentdir))
+        if($this->_recursiveParseDirectory($pathName, $currentdir))
           { 
           echo json_encode(array('message' => $this->t('Import successful.')));
           }
@@ -302,7 +312,7 @@ class ImportController extends AppController
           echo json_encode(array('error' => $this->t('Problem occured while importing. Check the log files or contact an administrator.')));
           }
         }
-      catch (Exception $e) 
+      catch(Exception $e) 
         {
         echo json_encode(array('error' => $this->t($e->getMessage())));
         }
@@ -337,10 +347,10 @@ class ImportController extends AppController
       $file = $this->getTempDirectory()."/importprogress_".$this->_request->id;
       if(file_exists($file))
         {
-        $progressfile = explode('/',file_get_contents($file));
+        $progressfile = explode('/', file_get_contents($file));
         $progress['current'] = $progressfile[0];
         $progress['max'] = $progressfile[1];
-        $progress['percent'] = round($progress['current']*100/$progress['max']);
+        $progress['percent'] = round($progress['current'] * 100 / $progress['max']);
         }
       echo json_encode($progress);
       return true;
@@ -360,7 +370,7 @@ class ImportController extends AppController
     if(isset($this->_request->id))
       {
       $this->stopfile = $this->getTempDirectory()."/importstop_".$this->_request->id;
-      file_put_contents($this->stopfile,$this->_request->id);
+      file_put_contents($this->stopfile, $this->_request->id);
       return true;
       }
     return false;   

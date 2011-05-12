@@ -12,26 +12,26 @@ class UploadComponent extends AppComponent
         {
         throw new Zend_Exception("Cannot create directory: ".$directorypath);   
         }
-      chmod($directorypath,0777);
+      chmod($directorypath, 0777);
       }  
     } // end _createAssetstoreDirectory()
   
   /** Upload local bitstream */
-  private function _uploadLocalBitstream($bitstreamdao,$assetstoredao)
+  private function _uploadLocalBitstream($bitstreamdao, $assetstoredao)
     {
-    // Check if the type of the assestore is suitable
+    // Check ifthe type of the assestore is suitable
     if($assetstoredao->getType() != MIDAS_ASSETSTORE_LOCAL)
       {
       throw new Zend_Exception("The assetstore type should be local to upload.");   
       }
     
-    // Check if the path of the assetstore exists on the server  
+    // Check ifthe path of the assetstore exists on the server  
     if(!is_dir($assetstoredao->getPath()))
       {
       throw new Zend_Exception("The assetstore path doesn't exist.");   
       }
 
-    // Check if the MD5 exists for the bitstream
+    // Check ifthe MD5 exists for the bitstream
     $checksum = $bitstreamdao->getChecksum();  
     if(empty($checksum))
       {
@@ -39,7 +39,7 @@ class UploadComponent extends AppComponent
       }
       
     // Two-level hierarchy.  
-    $path = substr($checksum,0,2).'/'.substr($checksum,2,2).'/'.$checksum;
+    $path = substr($checksum, 0, 2).'/'.substr($checksum, 2, 2).'/'.$checksum;
     $fullpath = $assetstoredao->getPath().'/'.$path;
 
     // This should be rare (MD5 has a low probably for collisions)
@@ -50,14 +50,14 @@ class UploadComponent extends AppComponent
       }
 
     //Create the directories
-    $currentdir = $assetstoredao->getPath().'/'.substr($checksum,0,2);
+    $currentdir = $assetstoredao->getPath().'/'.substr($checksum, 0, 2);
     $this->_createAssetstoreDirectory($currentdir);
-    $currentdir .= '/'.substr($checksum,2,2);
+    $currentdir .= '/'.substr($checksum, 2, 2);
     $this->_createAssetstoreDirectory($currentdir);
         
     // Do the actual copy
     // Do not delete anything. This is the responsability of the controller
-    copy($bitstreamdao->getPath(),$fullpath);
+    copy($bitstreamdao->getPath(), $fullpath);
 
     // Set the new path
     $bitstreamdao->setPath($path);
@@ -65,20 +65,22 @@ class UploadComponent extends AppComponent
     } // end _uploadLocalBitstream()
  
   /** Upload a bitstream */  
-  function uploadBitstream($bitstreamdao,$assetstoredao)
+  function uploadBitstream($bitstreamdao, $assetstoredao)
     { 
     $assetstoretype = $assetstoredao->getType();
     switch($assetstoretype)
       {
       case MIDAS_ASSETSTORE_LOCAL: 
-        $this->_uploadLocalBitstream($bitstreamdao,$assetstoredao); 
+        $this->_uploadLocalBitstream($bitstreamdao, $assetstoredao); 
         break;
       case MIDAS_ASSETSTORE_REMOTE: 
         // Nothing to upload in that case, we return silently
         return true;
       case MIDAS_ASSETSTORE_AMAZON: 
         throw new Zend_Exception("Amazon support is not implemented yet."); 
-        break;  
+        break;
+      default :
+        break;
       }
     return true;  
     } // end uploadBitstream() 

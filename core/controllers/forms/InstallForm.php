@@ -1,14 +1,15 @@
 <?php
+/** Install forms*/
 class InstallForm extends AppForm
 {
- /** create  form */
+  /** create  form */
   public function createDBForm($type)
     {
     $form = new Zend_Form;
 
     $form->setAction($this->webroot.'/install/step2')
           ->setMethod('post');
-    $type= new Zend_Form_Element_Hidden('type');
+    $type = new Zend_Form_Element_Hidden('type');
     
     $host = new Zend_Form_Element_Text('host');
     $host
@@ -65,11 +66,11 @@ class InstallForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel('Set up database');
      
-    $form->addElements(array($port,$type,$host,$username,$password,$dbname,$submit,$lastname,$firstname,$userpassword2,$userpassword1,$email));
+    $form->addElements(array($port, $type, $host, $username, $password, $dbname, $submit, $lastname, $firstname, $userpassword2, $userpassword1, $email));
     return $form;
     } //end createDBForm
     
-     /** create  form */
+  /** create  form */
   public function createConfigForm()
     {
     $form = new Zend_Form;
@@ -97,7 +98,7 @@ class InstallForm extends AppForm
     
     $environment = new Zend_Form_Element_Select('environment');
     $environment ->addMultiOptions(array(
-                    'production' => 'Production' ,
+                    'production' => 'Production',
                     'development' => 'Development'                    
                         ));    
     
@@ -111,8 +112,7 @@ class InstallForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel('Create configuration');
      
-    $form->addElements(array($process,$timezone,$environment,$lang,$name,$smartoptimizer,$submit));
+    $form->addElements(array($process, $timezone, $environment, $lang, $name, $smartoptimizer, $submit));
     return $form;
     }
 } // end class
-?>

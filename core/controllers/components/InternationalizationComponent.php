@@ -1,30 +1,38 @@
 <?php
+/** Internationalization tools */
 class InternationalizationComponent extends AppComponent
-{ 
-    static private $_instance = null;
-    private function __construct() {
+  { 
+  static private $_instance = null;
+  
+  /** Constructor */
+  function __construct() 
+    {
     }
-    static public function getInstance() {
-        if (!self::$_instance instanceof self) {
-           self::$_instance = new self();
-        }
-        return self::$_instance;
+    
+  /** Instance */
+  static public function getInstance() 
+    {
+    if(!self::$_instance instanceof self)
+      {
+      self::$_instance = new self();
+      }
+    return self::$_instance;
     }
  
   /** translate*/
   static public function translate($text)
-     {
-    if (Zend_Registry::get('configGlobal')->application->lang=='fr')
+    {
+    if(Zend_Registry::get('configGlobal')->application->lang == 'fr')
       {
-      $translate=Zend_Registry::get('translater');
-      $new_text=$translate->_($text);
-      if ($new_text==$text)
+      $translate = Zend_Registry::get('translater');
+      $new_text = $translate->_($text);
+      if($new_text == $text)
         {
-        $translaters=Zend_Registry::get('translatersModules');
-        foreach ($translaters as $t)
+        $translaters = Zend_Registry::get('translatersModules');
+        foreach($translaters as $t)
           {
-          $new_text=$t->_($text);
-          if($new_text!=$text)
+          $new_text = $t->_($text);
+          if($new_text != $text)
             {
             break;
             }
@@ -35,7 +43,7 @@ class InternationalizationComponent extends AppComponent
     return $text;
     } //end method t
     
-       /**
+  /**
    * @method public  isDebug()
    * Is Debug mode ON
    * @return boolean
@@ -43,7 +51,7 @@ class InternationalizationComponent extends AppComponent
   static public function isDebug()
     {
     $config = Zend_Registry::get('config');
-    if ($config->mode->debug == 1)
+    if($config->mode->debug == 1)
       {
       return true;
       }
@@ -53,4 +61,3 @@ class InternationalizationComponent extends AppComponent
       }
     }
 } // end class
-?>

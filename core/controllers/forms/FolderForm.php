@@ -1,4 +1,5 @@
 <?php
+/** Folder forms*/
 class FolderForm extends AppForm
 {
   /** create edit folder form */
@@ -19,7 +20,7 @@ class FolderForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel($this->t("Save"));
     
-    $form->addElements(array($name,$description,$submit,$teaser));
+    $form->addElements(array($name, $description, $submit, $teaser));
     return $form;
     }
   

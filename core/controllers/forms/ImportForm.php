@@ -1,7 +1,8 @@
 <?php
+/** Import forms*/
 class ImportForm extends AppForm
 {
-
+  /** Main form*/
   public function createImportForm($assetstores)
     {
     // Setup the form
@@ -9,31 +10,31 @@ class ImportForm extends AppForm
     $form->setAction('import/import');
     $form->setName('importForm');
     $form->setMethod('post');
-    $form->setAttrib('class','importForm');
+    $form->setAttrib('class', 'importForm');
     
     // Hidden upload id
     srand(time());
     
-    $uploadId = new Zend_Form_Element_Hidden('uploadid',array('value'=>rand()));
+    $uploadId = new Zend_Form_Element_Hidden('uploadid', array('value' => rand()));
     $uploadId->setDecorators(array(
         'ViewHelper',
-        array('HtmlTag', array('style'=>'display:none')),
-        array('Label', array('style'=>'display:none')),
+        array('HtmlTag', array('style' => 'display:none')),
+        array('Label', array('style' => 'display:none')),
       ));
     $form->addElement($uploadId);
 
     // Input directory
     $inputDirectory = new Zend_Form_Element_Text('inputdirectory', array('label' => $this->t('Directory on the server'),
-                                                 'id' => 'inputdirectory','size' => 60));
+                                                 'id' => 'inputdirectory', 'size' => 60));
     $inputDirectory->setRequired(true);
     $form->addElement($inputDirectory);
     
     // Button to select the directory on the server
-    $inputDirectoryButton = new Zend_Form_Element_Button('inputdirectorybutton',$this->t('Choose'));
+    $inputDirectoryButton = new Zend_Form_Element_Button('inputdirectorybutton', $this->t('Choose'));
     $inputDirectoryButton->setDecorators(array(
         'ViewHelper',
-        array('HtmlTag', array('tag' => 'div', 'class'=>'browse-button')),
-        array('Label', array('tag' => 'div', 'style'=>'display:none'))
+        array('HtmlTag', array('tag' => 'div', 'class' => 'browse-button')),
+        array('Label', array('tag' => 'div', 'style' => 'display:none'))
       ));
     $form->addElement($inputDirectoryButton);
     
@@ -46,7 +47,7 @@ class ImportForm extends AppForm
     $assetstoretype = new Zend_Form_Element_Select('importassetstoretype');
     $assetstoretype->setLabel($this->t('Storage type'));
     $assetstoretype->setMultiOptions($assetstoretypes);
-    $assetstoretype->setAttrib('onChange','assetstoretypeChanged()');
+    $assetstoretype->setAttrib('onChange', 'assetstoretypeChanged()');
     $form->addElement($assetstoretype);
     
     // Assetstore
@@ -66,7 +67,7 @@ class ImportForm extends AppForm
     $assetstore->setLabel($this->t('Assetstore'));
     $assetstore->setMultiOptions($assetstoredisplay);
     $assetstore->setDescription(' <a class="load-newassetstore" href="#newassetstore-form" rel="#newassetstore-form" title="'.$this->t('Add a new assetstore').'"> '.$this->t('Add a new assetstore').'</a>')
-    ->setDecorators(array(
+        ->setDecorators(array(
         'ViewHelper',
         array('Description', array('escape' => false, 'tag' => false)),
         array('HtmlTag', array('tag' => 'dd')),
@@ -85,13 +86,13 @@ class ImportForm extends AppForm
     
     // Where to import the data
     $importFolder = new Zend_Form_Element_Text('importFolder', array('label' => $this->t('Folder Id'),
-                                               'id' => 'importFolder','size' => 3,'value'=>1));
+                                               'id' => 'importFolder', 'size' => 3, 'value' => 1));
     $importFolder->setRequired(true);
     $form->addElement($importFolder);
     
     
     // Hidden filed to pass the translation of the stop import
-    $stopimport = new Zend_Form_Element_Hidden('importstop',array('value'=>$this->t('Stop import')));
+    $stopimport = new Zend_Form_Element_Hidden('importstop', array('value' => $this->t('Stop import')));
     $stopimport->setDecorators(array(
         'ViewHelper',
         array('HtmlTag', array()),
@@ -101,7 +102,7 @@ class ImportForm extends AppForm
     $form->addElement($stopimport);
     
     // Submit
-    $submit = new Zend_Form_Element_Button('importsubmit',$this->t('Import data'));
+    $submit = new Zend_Form_Element_Button('importsubmit', $this->t('Import data'));
     $form->addElement($submit);
 
     

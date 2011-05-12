@@ -1,64 +1,65 @@
 <?php
+/** Upgrade MIDAS*/
 class UpgradeComponent extends AppComponent
-{ 
+  { 
   
   protected $dir;
   protected $module;
   protected $db;
   protected $dbtype;
   protected $dbtypeShort;
-  protected $init=false;
+  protected $init = false;
   
   /** init upgrade Componenet*/
-  public function initUpgrade($module,$db,$dbtype)
+  public function initUpgrade($module, $db, $dbtype)
     {
-    if($module=='core')
+    if($module == 'core')
       {
-      $this->dir=BASE_PATH.'/core/database/upgrade';
+      $this->dir = BASE_PATH.'/core/database/upgrade';
       }
     else
       {
-      $this->dir=BASE_PATH.'/modules/'.$module.'/database/upgrade';
+      $this->dir = BASE_PATH.'/modules/'.$module.'/database/upgrade';
       }
       
-    $this->db=$db;
-    $this->module=$module;
-    $this->dbtype=$dbtype;
-    switch ($dbtype)
+    $this->db = $db;
+    $this->module = $module;
+    $this->dbtype = $dbtype;
+    switch($dbtype)
       {
       case "PDO_MYSQL":
-        $this->dbtypeShort='mysql';
+        $this->dbtypeShort = 'mysql';
         break;
       case "PDO_PGSQL":
-        $this->dbtypeShort='pgsql';
+        $this->dbtypeShort = 'pgsql';
         break;
       default:
         throw new Zend_Exception("Unknow database type");
         break;
       }
-    $this->init=true;
+    $this->init = true;
     }//end init
   
     
   /** get Newest version */
-  public function getNewestVersion($text=false)
+  public function getNewestVersion($text = false)
     {
     if(!$this->init)
       {
       throw new Zend_Exception("Please init the component first");
       }
-    $files=$this->getMigrationFiles();
+    $files = $this->getMigrationFiles();
     if(empty($files))
       {
       return 0;
       }
-    $version='';
-    foreach ($files as $key=>$f)
+    $version = '';
+    foreach($files as $key => $f)
       {
-      $version=$key;
+      $version = $key;
       if($text)
         {
-        $version=$f['versionText'];
+        $version = $f['versionText'];
         }
       }
     return $version;
@@ -75,16 +76,16 @@ class UpgradeComponent extends AppComponent
     if(file_exists($this->dir))
       {
       $d = dir($this->dir);
-      while (false !== ($entry = $d->read())) 
+      while(false !== ($entry = $d->read())) 
         {
-        if (preg_match('/^([0-9]+)(.)([0-9]+)(.)([0-9]+)\.php/i', $entry, $matches) ) 
+        if(preg_match('/^([0-9]+)(.)([0-9]+)(.)([0-9]+)\.php/i', $entry, $matches) ) 
           {
           $versionText = basename(str_replace(".php", "", $entry));
           $versionNumber = $this->transformVersionToNumeric($versionText);
           $files[$versionNumber] = array(
-                'filename'=>$entry,
-                'version'=>$versionNumber,
-                'versionText'=>$versionText);
+                'filename' => $entry,
+                'version' => $versionNumber,
+                'versionText' => $versionText);
           }
         }
       $d->close();
@@ -93,58 +94,58 @@ class UpgradeComponent extends AppComponent
     return $files;
     } //end getMigrationFiles
     
-    /**transformVersionToNumeric*/
+  /** transformVersionToNumeric*/
   public function transformVersionToNumeric($text)
     {
-    $array=explode('.', $text);
-    if(count($array)!=3)
+    $array = explode('.', $text);
+    if(count($array) != 3)
       {
       throw new Zend_Exception("The version format shoud be 1.2.5. You set:".$text);
       }
-    return (int)$array[0]*1000000+(int)$array[1]*1000+(int)$array[2];
+    return (int)$array[0] * 1000000 + (int)$array[1] * 1000 + (int)$array[2];
     }// end transformVersionToNumeric
    
   /** upgrade*/
-  public function upgrade($currentVersion=null,$testing=false)
+  public function upgrade($currentVersion = null, $testing = false)
     {
-    if($currentVersion==null)
+    if($currentVersion == null)
       {
-      $currentVersion=Zend_Registry::get('configDatabase')->version;
+      $currentVersion = Zend_Registry::get('configDatabase')->version;
       }
-    if($currentVersion==null)
+    if($currentVersion == null)
       {
       throw new Zend_Exception('Version undefined');
       }
     if(!is_numeric($currentVersion))
       {
-      $currentVersion=$this->transformVersionToNumeric($currentVersion);
+      $currentVersion = $this->transformVersionToNumeric($currentVersion);
       }
       
-    $version=$this->getNewestVersion($text=false);
+    $version = $this->getNewestVersion($text = false);
     
-    if($currentVersion == $version||$version==0)
+    if($currentVersion == $version || $version == 0)
       {
       return false;
       }
         
     $migrations = $this->getMigrationFiles();
     
-    foreach ($migrations as $migration) 
+    foreach($migrations as $migration) 
       {
-      if($migration['version']>$currentVersion)
+      if($migration['version'] > $currentVersion)
         {
         $this->_processFile($migration);
         }
       }
      
     require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
-    $utility=new UtilityComponent();
-    if($this->module=='core')
+    $utility = new UtilityComponent();
+    if($this->module == 'core')
       {
       if(isset($migration))
         {
-        $path=BASE_PATH.'/core/configs/database.local.ini';      
-        if($testing||Zend_Registry::get('configGlobal')->environment=='testing')
+        $path = BASE_PATH.'/core/configs/database.local.ini';      
+        if($testing || Zend_Registry::get('configGlobal')->environment == 'testing')
           {
           if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
             {
@@ -155,15 +156,15 @@ class UpgradeComponent extends AppComponent
             $path = BASE_PATH.'/tests/configs/lock.mysql.ini';
             }
           }
-        $data=parse_ini_file ($path,true);
+        $data = parse_ini_file($path, true);
         if(file_exists($path.'.old'))
           {
-          unlink( $path.'.old');
+          unlink($path.'.old');
           }      
         rename($path, $path.'.old');
-        if($testing||Zend_Registry::get('configGlobal')->environment=='testing')
+        if($testing || Zend_Registry::get('configGlobal')->environment == 'testing')
           {
-          $data['testing']['version']=$migration['versionText'];
+          $data['testing']['version'] = $migration['versionText'];
           if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
             {
             $path = BASE_PATH.'/tests/configs/lock.pgsql.ini';
@@ -175,22 +176,22 @@ class UpgradeComponent extends AppComponent
           }
         else
           {
-          $data['development']['version']=$migration['versionText'];
-          $data['production']['version']=$migration['versionText'];          
+          $data['development']['version'] = $migration['versionText'];
+          $data['production']['version'] = $migration['versionText'];          
           }   
         $utility->createInitFile($path, $data);
         }
       }
     else
       {
-      $path=BASE_PATH.'/modules/'.$this->module.'/configs/module.local.ini';
-      $data=parse_ini_file ($path,true);
+      $path = BASE_PATH.'/modules/'.$this->module.'/configs/module.local.ini';
+      $data = parse_ini_file($path, true);
       if(file_exists($path.'.old'))
         {
-        unlink( $path.'.old');
+        unlink($path.'.old');
         }      
       rename($path, $path.'.old');
-      $data['global']['version']=$migration['versionText'];
+      $data['global']['version'] = $migration['versionText'];
       $utility->createInitFile($path, $data);
       }
     return true;
@@ -199,18 +200,18 @@ class UpgradeComponent extends AppComponent
   /** get Class Name*/
   public function getClassName($filename)
     {
-    $array=explode('.', str_replace('.php', '', basename($filename)));
-    if(count($array)!=3)
+    $array = explode('.', str_replace('.php', '', basename($filename)));
+    if(count($array) != 3)
       {
       throw new Zend_Exception("The version format shoud be 1.2.5. You set:".str_replace('.php', '', basename($filename)));
       }
       
-    $classname='';  
-    if($this->module!='core')
+    $classname = '';  
+    if($this->module != 'core')
       {
-      $classname=ucfirst($this->module).'_';
+      $classname = ucfirst($this->module).'_';
       }
-    $classname.="Upgrade_";
+    $classname .= "Upgrade_";
     return $classname.$array[0].'_'.$array[1].'_'.$array[2];
     }//getClassName
   
@@ -222,15 +223,15 @@ class UpgradeComponent extends AppComponent
     $filename = $migration['filename'];
     $classname = $this->getClassName($filename);
     require_once($this->dir.'/'.$filename);
-    if (!class_exists($classname, false)) 
+    if(!class_exists($classname, false)) 
       {
-      throw new Zend_Exception("Could not find class '$classname' in file '$filename'");
+      throw new Zend_Exception("Could not find class '".$classname."' in file '".$filename."'");
       }
       
-    $class = new $classname($this->db,$this->module);
+    $class = new $classname($this->db, $this->module);
     $class->preUpgrade();
-    $class->{$this->dbtypeShort}();
+    $dbtypeShort = $this->dbtypeShort;
+    $class->$dbtypeShort();
     $class->postUpgrade();
     } 
 } // end class
-?>

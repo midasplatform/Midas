@@ -7,9 +7,9 @@
 class IndexController extends AppController
   {
 
-  public $_models=array('Item');
-  public $_daos=array();
-  public $_components=array();
+  public $_models = array('Item');
+  public $_daos = array();
+  public $_components = array();
   
   /**
    * @method init()

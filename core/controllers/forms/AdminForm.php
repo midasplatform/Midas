@@ -1,8 +1,8 @@
 <?php
+/** Admin forms*/
 class AdminForm extends AppForm
 {
- 
-     /** create  form */
+  /** create  form */
   public function createConfigForm()
     {
     $form = new Zend_Form;
@@ -24,7 +24,7 @@ class AdminForm extends AppForm
     
     $environment = new Zend_Form_Element_Select('environment');
     $environment ->addMultiOptions(array(
-                    'production' => 'Production' ,
+                    'production' => 'Production',
                     'development' => 'Development'                    
                         ));    
     
@@ -38,8 +38,7 @@ class AdminForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submitConfig');
     $submit ->setLabel('Save configuration');
      
-    $form->addElements(array($timezone,$environment,$lang,$name,$smartoptimizer,$submit));
+    $form->addElements(array($timezone, $environment, $lang, $name, $smartoptimizer, $submit));
     return $form;
     }
 } // end class
-?>

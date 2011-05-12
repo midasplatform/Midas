@@ -1,9 +1,8 @@
 <?php
 /** Sort Daos*/
 class FilterComponent extends AppComponent
-{ 
-  
-  /* get a filter*/
+{   
+  /** get a filter*/
   public function getFilter($filter)
     {
     Zend_Loader::loadClass($filter, BASE_PATH.'/core/controllers/components/filters');
@@ -12,7 +11,5 @@ class FilterComponent extends AppComponent
       throw new Zend_Exception("Unable to load filter: ".$filter );
       }
     return new $filter();
-    }
-    
+    }    
 } // end class
-?>

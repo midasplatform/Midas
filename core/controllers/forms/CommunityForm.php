@@ -1,7 +1,8 @@
 <?php
+/** Community forms*/
 class CommunityForm extends AppForm
 {
- /** create create community form */
+  /** create create community form */
   public function createCreateForm()
     {
     $form = new Zend_Form;
@@ -16,7 +17,7 @@ class CommunityForm extends AppForm
     $description = new Zend_Form_Element_Textarea('description');
     
     $privacy = new Zend_Form_Element_Radio('privacy');
-    $privacy->addMultiOptions( array(                 
+    $privacy->addMultiOptions(array(
                  MIDAS_COMMUNITY_PRIVATE => $this->t("Private, only member can see the community"),
                  MIDAS_COMMUNITY_PUBLIC => $this->t("Public, everyone can see the community"),
                   ))
@@ -24,7 +25,7 @@ class CommunityForm extends AppForm
             ->setValue(MIDAS_COMMUNITY_PUBLIC);
     
     $canJoin = new Zend_Form_Element_Radio('canJoin');
-    $canJoin->addMultiOptions( array(
+    $canJoin->addMultiOptions(array(
                  MIDAS_COMMUNITY_CAN_JOIN => $this->t("Everyone can join the community"),
                  MIDAS_COMMUNITY_INVITATION_ONLY => $this->t("Only invited users can join the community"),
                   ))
@@ -33,7 +34,7 @@ class CommunityForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel($this->t("Create"));
     
-    $form->addElements(array($name,$description,$privacy,$submit,$canJoin));
+    $form->addElements(array($name, $description, $privacy, $submit, $canJoin));
     return $form;
     }
   
@@ -52,7 +53,7 @@ class CommunityForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel($this->t("Save"));
     
-    $form->addElements(array($name,$submit));
+    $form->addElements(array($name, $submit));
     return $form;
     }
  
