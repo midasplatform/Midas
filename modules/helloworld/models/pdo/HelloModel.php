@@ -21,4 +21,4 @@ class Helloworld_HelloModel extends Helloworld_HelloModelBase
     }
     
 }  // end class
-?>   
+?>
