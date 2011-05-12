@@ -184,7 +184,7 @@ class UpgradeComponent extends AppComponent
       }
     else
       {
-      $path = BASE_PATH.'/modules/'.$this->module.'/configs/module.local.ini';
+      $path = BASE_PATH."/core/configs/".$this->module.".local.ini";
       $data = parse_ini_file($path, true);
       if(file_exists($path.'.old'))
         {

@@ -251,7 +251,7 @@ class InstallController extends AppController
       $allModules = $this->Component->Utility->getAllModules();
       foreach($allModules as $key => $module)
         {
-        $configLocal = BASE_PATH."/modules/".$key."/configs/module.local.ini";
+        $configLocal = BASE_PATH."/core/configs/".$key.".local.ini";
         if(file_exists($configLocal))
           {
           unlink($configLocal);

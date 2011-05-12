@@ -12,9 +12,9 @@ class Ldap_ConfigController extends Ldap_AppController
       throw new Zend_Exception("You should be an administrator");
       }
       
-    if(file_exists(BASE_PATH.'/modules/ldap/configs/module.local.ini'))
+    if(file_exists(BASE_PATH."/core/configs/ldap.local.ini"))
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/ldap/configs/module.local.ini', true);
+      $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/ldap.local.ini", true);
       }
     else
       {
@@ -40,13 +40,13 @@ class Ldap_ConfigController extends Ldap_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(BASE_PATH.'/modules/ldap/configs/module.local.ini.old'))
+        if(file_exists(BASE_PATH."/core/configs/ldap.local.ini.old"))
           {
           unlink(BASE_PATH.'/modules/ldap/configs/module.local.ini.old');
           }
-        if(file_exists(BASE_PATH.'/modules/ldap/configs/module.local.ini'))
+        if(file_exists(BASE_PATH."/core/configs/ldap.local.ini"))
           {
-          rename(BASE_PATH.'/modules/ldap/configs/module.local.ini', BASE_PATH.'/modules/ldap/configs/module.local.ini.old');
+          rename(BASE_PATH."/core/configs/ldap.local.ini", BASE_PATH.'/modules/ldap/configs/module.local.ini.old');
           }
         $applicationConfig['global']['ldap.hostname'] = $this->_getParam('hostname');
         $applicationConfig['global']['ldap.basedn'] = '"'.$this->_getParam('basedn').'"';
@@ -55,7 +55,7 @@ class Ldap_ConfigController extends Ldap_AppController
         $applicationConfig['global']['ldap.proxyBasedn'] = $this->_getParam('proxyBasedn');
         $applicationConfig['global']['ldap.autoAddUnknownUser'] = $this->_getParam('autoAddUnknownUser');
         $applicationConfig['global']['ldap.useActiveDirectory'] = $this->_getParam('useActiveDirectory');
-        $this->Component->Utility->createInitFile(BASE_PATH.'/modules/ldap/configs/module.local.ini', $applicationConfig);
+        $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/ldap.local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }

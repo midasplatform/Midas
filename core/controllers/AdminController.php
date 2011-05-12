@@ -74,7 +74,7 @@ class AdminController extends AppController
           unlink(BASE_PATH.'/core/configs/application.local.ini.old');
           }
         
-        $moduleConfigLocalFile = BASE_PATH."/modules/".$moduleName."/configs/module.local.ini";
+        $moduleConfigLocalFile = BASE_PATH."/core/configs/".$moduleName.".local.ini";
         $moduleConfigFile = BASE_PATH."/modules/".$moduleName."/configs/module.ini";
         if(!file_exists($moduleConfigLocalFile))
           {
