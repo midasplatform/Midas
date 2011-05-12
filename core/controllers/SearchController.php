@@ -18,12 +18,12 @@ class SearchController extends AppController
     if(count($this->_getAllParams()) == 3)
       {
       $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
-      $this->_forward('index',null,null,array('q' => $actionName));
+      $this->_forward('index', null, null, array('q' => $actionName));
       }
     }  // end init()
 
 
- /** search live Action */
+  /** search live Action */
   public function indexAction()
     {
     $this->view->header = $this->t("Search");  
@@ -39,18 +39,18 @@ class SearchController extends AppController
       $order = 'view';
       }
     // Get the items corresponding to the search
-    $ItemsDao = $this->ItemKeyword->getItemsFromSearch($keyword, $this->userSession->Dao, 200,false, $order);
+    $ItemsDao = $this->ItemKeyword->getItemsFromSearch($keyword, $this->userSession->Dao, 200, false, $order);
     
     // Search for the folders
-    $FoldersDao = $this->Folder->getFoldersFromSearch($keyword, $this->userSession->Dao, 15,false, $order); 
+    $FoldersDao = $this->Folder->getFoldersFromSearch($keyword, $this->userSession->Dao, 15, false, $order); 
      
     // Search for the communities
-    $CommunitiesDao = $this->Community->getCommunitiesFromSearch($keyword, $this->userSession->Dao, 15,false, $order); 
+    $CommunitiesDao = $this->Community->getCommunitiesFromSearch($keyword, $this->userSession->Dao, 15, false, $order); 
     
     // Search for the users
-    $UsersDao = $this->User->getUsersFromSearch($keyword, $this->userSession->Dao, 15,false, $order); 
+    $UsersDao = $this->User->getUsersFromSearch($keyword, $this->userSession->Dao, 15, false, $order); 
     
-    $results = $this->formatResults($order, $ItemsDao, $FoldersDao, $CommunitiesDao, $UsersDao);
+    $results = $this->_formatResults($order, $ItemsDao, $FoldersDao, $CommunitiesDao, $UsersDao);
     
     if(isset($ajax))
       {
@@ -80,7 +80,7 @@ class SearchController extends AppController
    * @param Array $users
    * @return Array 
    */
-  private function formatResults($order, $items, $folders, $communities, $users)
+  private function _formatResults($order, $items, $folders, $communities, $users)
     {
     foreach($users as $key => $user)
       {
@@ -93,7 +93,7 @@ class SearchController extends AppController
       }
     $results = array_merge($folders, $items, $communities, $users);
       
-    switch ($order)
+    switch($order)
       {
       case 'name':
         $this->Component->Sortdao->field = 'name';
@@ -176,7 +176,7 @@ class SearchController extends AppController
           unset($GroupsDao[$key]);
           continue;
           }
-        if(isset($this->userSession->Dao)&&$this->userSession->Dao->isAdmin())
+        if(isset($this->userSession->Dao) && $this->userSession->Dao->isAdmin())
           {
           continue;
           }
@@ -218,24 +218,24 @@ class SearchController extends AppController
     $nmaxcommunities = ($ncommunities < 3) ? $ncommunities : 3;
     $nmaxusers = ($nusers < 3) ? $nusers : 3;
     
-    if($nitems>5)
+    if($nitems > 5)
       {
-      $nitems = 14-($nmaxfolders+$nmaxcommunities+$nmaxusers);
+      $nitems = 14 - ($nmaxfolders + $nmaxcommunities + $nmaxusers);
       }
     
-    if($nfolders>3)
+    if($nfolders > 3)
       {
-      $nfolders = 14-($nitems+$nmaxcommunities+$nmaxusers);
+      $nfolders = 14 - ($nitems + $nmaxcommunities + $nmaxusers);
       }
 
-    if($ncommunities>3)
+    if($ncommunities > 3)
       {
-      $ncommunities = 14-($nitems+$nfolders+$nmaxusers);
+      $ncommunities = 14 - ($nitems + $nfolders + $nmaxusers);
       }
 
-    if($nusers>3)
+    if($nusers > 3)
       {
-      $nusers = 14-($nitems+$nfolders+$ncommunities);
+      $nusers = 14 - ($nitems + $nfolders + $ncommunities);
       }  
       
     // Return the JSON results
@@ -249,14 +249,14 @@ class SearchController extends AppController
         {
         break;  
         }  
-      if($id>1)
+      if($id > 1)
         {
         echo ', ';    
         }
       echo '{'; 
       echo '"id":"'.$id.'"'; 
       echo ', "label":"'.$this->Component->Utility->sliceName($itemDao->getName(), 55);
-      if($itemDao->count>1)
+      if($itemDao->count > 1)
         {
         echo ' ('.$itemDao->count.')"';
         }
@@ -283,7 +283,7 @@ class SearchController extends AppController
         {
         break;  
         }  
-      if($id>1)
+      if($id > 1)
         {
         echo ', ';    
         }
@@ -307,14 +307,14 @@ class SearchController extends AppController
         {
         break;  
         }
-      if($id>1)
+      if($id > 1)
         {
         echo ', ';    
         }
       echo '{'; 
       echo '"id":"'.$id.'"'; 
       echo ', "label":"'.$this->Component->Utility->sliceName($folderDao->getName(), 55);
-      if(isset($folderDao->count)&&$folderDao->count>1)
+      if(isset($folderDao->count) && $folderDao->count > 1)
         {
         echo ' ('.$folderDao->count.')"';
         }
@@ -323,7 +323,7 @@ class SearchController extends AppController
         echo '"';  
         } 
       echo ', "value":"'.$folderDao->getName().'"';
-      if(isset($folderDao->count)&&$folderDao->count == 1)
+      if(isset($folderDao->count) && $folderDao->count == 1)
         {
         echo ', "folderid":"'.$folderDao->getFolderId().'"'; 
         } 
@@ -341,14 +341,14 @@ class SearchController extends AppController
         {
         break;  
         }  
-      if($id>1)
+      if($id > 1)
         {
         echo ', ';    
         }
       echo '{'; 
       echo '"id":"'.$id.'"'; 
       echo ', "label":"'.$this->Component->Utility->sliceName($communityDao->getName(), 55);
-      if(isset($communityDao->count)&&$communityDao->count>1)
+      if(isset($communityDao->count) && $communityDao->count > 1)
         {
         echo ' ('.$communityDao->count.')"';
         }
@@ -357,7 +357,7 @@ class SearchController extends AppController
         echo '"';  
         } 
       echo ', "value":"'.$communityDao->getName().'"'; 
-      if(!isset($communityDao->count)||$communityDao->count == 1)
+      if(!isset($communityDao->count) || $communityDao->count == 1)
         {
         echo ', "communityid":"'.$communityDao->getKey().'"'; 
         }
@@ -375,14 +375,14 @@ class SearchController extends AppController
         {
         break;  
         }
-      if($id>1)
+      if($id > 1)
         {
         echo ', ';    
         }
       echo '{'; 
       echo '"id":"'.$id.'"'; 
       echo ', "label":"'.$userDao->getFirstname().' '.$userDao->getLastname();
-      if($userDao->count>1)
+      if($userDao->count > 1)
         {
         echo ' ('.$userDao->count.')"';
         }

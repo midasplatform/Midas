@@ -1,5 +1,5 @@
 <?php
-
+/** Item Controller */
 class ItemController extends AppController
   {
   public $_models = array('Item', 'ItemRevision', 'Bitstream');
@@ -12,9 +12,9 @@ class ItemController extends AppController
     {
     $this->view->activemenu = ''; // set the active menu
     $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
-    if(isset($actionName)&& (is_numeric($actionName) || strlen($actionName)==32)) // This is tricky! and for Cassandra for now
+    if(isset($actionName) && (is_numeric($actionName) || strlen($actionName) == 32)) // This is tricky! and for Cassandra for now
       {
-      $this->_forward('view',null,null,array('itemId' => $actionName));
+      $this->_forward('view', null, null, array('itemId' => $actionName));
       }
     }  // end init()
 
@@ -26,12 +26,12 @@ class ItemController extends AppController
     $this->view->Date = $this->Component->Date;
     $this->view->Utility = $this->Component->Utility;
     $itemId = $this->_getParam("itemId");
-    if(!isset($itemId)||!is_numeric($itemId))
+    if(!isset($itemId) || !is_numeric($itemId))
       {
       throw new Zend_Exception("itemId  should be a number");
       }
     $itemDao = $this->Item->load($itemId);
-    if($itemDao===false)
+    if($itemDao === false)
       {
       throw new Zend_Exception("This item doesn't exist.");
       }
@@ -50,7 +50,7 @@ class ItemController extends AppController
       $recentItems = array();
       if(isset($cookieData))
         {
-        $recentItems= unserialize($cookieData); 
+        $recentItems = unserialize($cookieData); 
         }    
       $tmp = array_reverse($recentItems);
       $i = 0;
@@ -62,7 +62,7 @@ class ItemController extends AppController
           continue;
           }
         $i++;
-        if($i>10)
+        if($i > 10)
           {
           unset($tmp[$key]);
           }
@@ -72,7 +72,7 @@ class ItemController extends AppController
       $itemDaoArray['name'] = $itemDao->getName();
       $recentItems[] = $itemDaoArray;
 
-      setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($recentItems), time()+60*60*24*30, '/'); //30 days
+      setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($recentItems), time() + 60 * 60 * 24 * 30, '/'); //30 days
       }
     $itemRevision = $this->Item->getLastRevision($itemDao);
     $this->Item->incrementViewCount($itemDao);
@@ -95,7 +95,7 @@ class ItemController extends AppController
     }//end index
 
     
-      /** Delete an item*/
+  /** Delete an item*/
   function deleteAction()
     {
     $this->_helper->layout->disableLayout();
@@ -107,7 +107,7 @@ class ItemController extends AppController
       throw new Zend_Exception("itemId should be a number");
       }
     $itemDao = $this->Item->load($itemId);
-    if($itemDao===false||!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+    if($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
       throw new Zend_Exception("This community doesn't exist or you don't have the permissions.");
       }
@@ -118,7 +118,7 @@ class ItemController extends AppController
     }//end delete
     
     
-   /** Merge items*/
+  /** Merge items*/
   function mergeAction()
     {
     $this->_helper->layout->disableLayout();
@@ -136,7 +136,7 @@ class ItemController extends AppController
     foreach($itemIds as $item)
       {
       $itemDao = $this->Item->load($item);
-      if($itemDao != false&&$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      if($itemDao != false && $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
         {
         $items[] = $itemDao;
         }

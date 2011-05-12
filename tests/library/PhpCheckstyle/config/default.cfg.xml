@@ -143,9 +143,10 @@
     </test>
     
     <!-- Checks that the lenght (in lines) of a function doesn't pass the max value -->
-    <test name="functionLength" level="INFO">
+   <!-- <test name="functionLength" level="INFO">
         <property name="maxLength" value="200"/>
     </test>
+    -->
     
     <!--  Checks for excessive parameters in a function declaration -->
     <test name="functionMaxParameters">

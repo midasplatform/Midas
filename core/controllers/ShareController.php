@@ -1,5 +1,5 @@
 <?php
-
+/** Share Controller */
 class ShareController extends AppController
   {
   public $_models = array('Item', 'Folder', 'Group', 'Folderpolicygroup', 'Folderpolicyuser', 'Itempolicygroup', 'Itempolicyuser', 'User', 'Community');
@@ -18,18 +18,18 @@ class ShareController extends AppController
   function dialogAction()
     {
     if(!$this->getRequest()->isXmlHttpRequest())
-     {
-     throw new Zend_Exception("Why are you here ? Should be ajax.");
-     }
+      {
+      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      }
     $this->_helper->layout->disableLayout();
     $type = $this->_getParam('type');
     $element = $this->_getParam('element');
-    if(!isset($type)||!isset($element))
+    if(!isset($type) || !isset($element))
       {
       throw new Zend_Exception("Parameters problem.");
       }
       
-    switch ($type)
+    switch($type)
       {
       case 'folder':
         $element = $this->Folder->load($element);
@@ -63,7 +63,7 @@ class ShareController extends AppController
       }
     
       
-     if($this->_request->isPost())
+    if($this->_request->isPost())
       {
       $this->_helper->viewRenderer->setNoRender();
       $setPublic = $this->_getParam('setPublic');
@@ -85,7 +85,7 @@ class ShareController extends AppController
           $changePolicy = $this->User->load($changeId);
           }
           
-        if(!$isAdmin&&$changeVal>=MIDAS_POLICY_ADMIN)
+        if(!$isAdmin && $changeVal >= MIDAS_POLICY_ADMIN)
           {
           echo JsonComponent::encode(array(false, $this->t('Error')));
           return;
@@ -97,7 +97,7 @@ class ShareController extends AppController
           if($changeType == 'group')
             {
             $policyDao = $this->Folderpolicyuser->getPolicy($changePolicy, $element);  
-            if(!$isAdmin&&$policyDao->getPolicy()>=MIDAS_POLICY_ADMIN)
+            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
               {
               echo JsonComponent::encode(array(false, $this->t('Error')));
               return;
@@ -109,7 +109,7 @@ class ShareController extends AppController
           else
             {
             $policyDao = $this->Folderpolicyuser->getPolicy($changePolicy, $element);    
-            if(!$isAdmin&&$policyDao->getPolicy()>=MIDAS_POLICY_ADMIN)
+            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
               {
               echo JsonComponent::encode(array(false, $this->t('Error')));
               return;
@@ -124,7 +124,7 @@ class ShareController extends AppController
           if($changeType == 'group')
             {
             $policyDao = $this->Itempolicygroup->getPolicy($changePolicy, $element);     
-            if(!$isAdmin&&$policyDao->getPolicy()>=MIDAS_POLICY_ADMIN)
+            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
               {
               echo JsonComponent::encode(array(false, $this->t('Error')));
               return;
@@ -136,7 +136,7 @@ class ShareController extends AppController
           else
             {
             $policyDao = $this->Itempolicyuser->getPolicy($changePolicy, $element);  
-            if(!$isAdmin&&$policyDao->getPolicy()>=MIDAS_POLICY_ADMIN)
+            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
               {
               echo JsonComponent::encode(array(false, $this->t('Error')));
               return;
@@ -166,7 +166,7 @@ class ShareController extends AppController
           if($removeType == 'group')
             {
             $policyDao = $this->Folderpolicyuser->getPolicy($removePolicy, $element);
-            if(!$isAdmin&&$policyDao->getPolicy()>=MIDAS_POLICY_ADMIN)
+            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
               {
               echo JsonComponent::encode(array(false, $this->t('Error')));
               return;
@@ -176,7 +176,7 @@ class ShareController extends AppController
           else
             {
             $policyDao = $this->Folderpolicyuser->getPolicy($removePolicy, $element);
-            if(!$isAdmin&&$policyDao->getPolicy()>=MIDAS_POLICY_ADMIN)
+            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
               {
               echo JsonComponent::encode(array(false, $this->t('Error')));
               return;
@@ -189,7 +189,7 @@ class ShareController extends AppController
           if($removeType == 'group')
             {
             $policyDao = $this->Itempolicygroup->getPolicy($removePolicy, $element);
-            if(!$isAdmin&&$policyDao->getPolicy()>=MIDAS_POLICY_ADMIN)
+            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
               {
               echo JsonComponent::encode(array(false, $this->t('Error')));
               return;
@@ -199,7 +199,7 @@ class ShareController extends AppController
           else
             {
             $policyDao = $this->Itempolicyuser->getPolicy($removePolicy, $element);
-            if(!$isAdmin&&$policyDao->getPolicy()>=MIDAS_POLICY_ADMIN)
+            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
               {
               echo JsonComponent::encode(array(false, $this->t('Error')));
               return;
@@ -307,18 +307,18 @@ class ShareController extends AppController
       $group = $policy->getGroup();
       $groupPolicies[$key]->group = $group;
       $groupPolicies[$key]->communityMemberGroup = false;
-      if($group->getKey()==MIDAS_GROUP_ANONYMOUS_KEY)
+      if($group->getKey() == MIDAS_GROUP_ANONYMOUS_KEY)
         {
         $private = false;
         unset($groupPolicies[$key]);
         continue;
         }
-      if(strpos($group->getName(), 'Admin group of community') != false||strpos($group->getName(), 'Moderators group of community') != false)
+      if(strpos($group->getName(), 'Admin group of community') != false || strpos($group->getName(), 'Moderators group of community') != false)
         {
         unset($groupPolicies[$key]);
         continue;
         }
-      if(strpos($group->getName(), 'Members group of community')!==false)
+      if(strpos($group->getName(), 'Members group of community') !== false)
         {
         $groupPolicies[$key]->communityMemberGroup = true;
         continue;
@@ -331,7 +331,7 @@ class ShareController extends AppController
       }
       
     $request = Zend_Controller_Front::getInstance()->getRequest();
-    $this->view->shareUrl = $request->getScheme() . '://' . $request->getHttpHost() . $this->view->webroot."/$type/".$element->getKey();
+    $this->view->shareUrl = $request->getScheme() . '://' . $request->getHttpHost() . $this->view->webroot."/".$type."/".$element->getKey();
     
     $this->view->groupPolicies = $groupPolicies;
     $this->view->userPolicies = $userPolicies;
