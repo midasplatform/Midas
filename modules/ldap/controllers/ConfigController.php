@@ -49,7 +49,7 @@ class Ldap_ConfigController extends Ldap_AppController
           rename(BASE_PATH.'/modules/ldap/configs/module.local.ini', BASE_PATH.'/modules/ldap/configs/module.local.ini.old');
           }
         $applicationConfig['global']['ldap.hostname'] = $this->_getParam('hostname');
-        $applicationConfig['global']['ldap.basedn'] = "'".$this->_getParam('basedn')."'";
+        $applicationConfig['global']['ldap.basedn'] = '"'.$this->_getParam('basedn').'"';
         $applicationConfig['global']['ldap.protocolVersion'] = $this->_getParam('protocolVersion');
         $applicationConfig['global']['ldap.search'] = $this->_getParam('search');
         $applicationConfig['global']['ldap.proxyBasedn'] = $this->_getParam('proxyBasedn');
