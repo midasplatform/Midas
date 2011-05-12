@@ -21,8 +21,8 @@ function successUpgrade(responseText, statusText, xhr, form)
     }
   if(jsonResponse[0])
     {
-      tabs.tabs( "load" , 1); 
       createNotive(jsonResponse[1],4000);
+      window.location.reload()
     }
   else
     {

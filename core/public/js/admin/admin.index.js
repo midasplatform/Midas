@@ -1,5 +1,7 @@
   $(document).ready(function() {
     
+
+    
     tabs=$( "#tabsGeneric" ).tabs({
       });
     $("#tabsGeneric").show();

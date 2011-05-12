@@ -276,7 +276,7 @@ class AdminController extends AppController
         }
       else
         {
-        echo JsonComponent::encode(array(true, 'Nothing to upgrade'));
+        echo JsonComponent::encode(array(false, 'Nothing to upgrade'));
         }
       return;
       }

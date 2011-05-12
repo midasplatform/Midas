@@ -42,11 +42,11 @@ class Ldap_ConfigController extends Ldap_AppController
         {
         if(file_exists(BASE_PATH."/core/configs/ldap.local.ini.old"))
           {
-          unlink(BASE_PATH.'/modules/ldap/configs/module.local.ini.old');
+          unlink(BASE_PATH."/core/configs/ldap.local.ini.old");
           }
         if(file_exists(BASE_PATH."/core/configs/ldap.local.ini"))
           {
-          rename(BASE_PATH."/core/configs/ldap.local.ini", BASE_PATH.'/modules/ldap/configs/module.local.ini.old');
+          rename(BASE_PATH."/core/configs/ldap.local.ini",BASE_PATH."/core/configs/ldap.local.ini.old");
           }
         $applicationConfig['global']['ldap.hostname'] = $this->_getParam('hostname');
         $applicationConfig['global']['ldap.basedn'] = '"'.$this->_getParam('basedn').'"';

@@ -41,11 +41,7 @@ class Ldap_Notification extends MIDAS_Notification
     $proxyPassword = $config['ldap']->ldap->proxyPassword;
     $passwordPrefix=Zend_Registry::get('configGlobal')->password->prefix;
     
-    $ldapsearch = 'uid='.substr($email,0,strpos($email,'@'));
-    if($searchTerm == 'mail')
-      {
-      $ldapsearch = 'mail='.$email;
-      }
+    $ldapsearch = $searchTerm.'='.$email;
 
     $ldap = ldap_connect($hostname);
     ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, $protocolVersion);
