@@ -17,6 +17,18 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
               {$this->configForm['hostname']}
             </div>
             <div >
+              <label for='hostname'>Backup Server</label>
+              {$this->configForm['backup']}
+            </div>
+            <div >
+              <label for='hostname'>Bind Dn</label>
+              {$this->configForm['bindn']}
+            </div>
+            <div >
+              <label for='hostname'>Bind Password</label>
+              {$this->configForm['bindpw']}
+            </div>
+            <div >
               <label for='basedn'>Base Dn</label>
               {$this->configForm['basedn']}
             </div>
