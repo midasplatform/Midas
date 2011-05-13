@@ -6,12 +6,97 @@
       });
     $("#tabsGeneric").show();
     $('img.tabsLoading').hide()
+    
+    $('a.defaultAssetstoreLink').click(function(){
+      $.post(json.global.webroot+'/assetstore/defaultassetstore', {submitDefaultAssetstore: true, element: $(this).attr('element')},
+         function(data) {
+             jsonResponse = jQuery.parseJSON(data);
+              if(jsonResponse==null)
+                {
+                  createNotive('Error',4000);
+                  return;
+                }
+              createNotive(jsonResponse[1],1500);
+              window.location.replace(json.global.webroot+'/admin#tabs-assetstore');
+              window.location.reload();
+         });
+    });   
+    
+    $('a.removeAssetstoreLink').click(function()
+      {
+      var element = $(this).attr('element');
+      var html = '';
+      html += 'Do you really want to remove the assetstore? All the items located in it will be delete.';
+      html += '<br/>';
+      html += '<br/>';
+      html += '<input style="margin-left:140px;" class="globalButton deleteAssetstoreYes" element="'+element+'" type="button" value="'+json.global.Yes+'"/>';
+      html += '<input style="margin-left:50px;" class="globalButton deleteAssetstoreNo" type="button" value="'+json.global.No+'"/>';
+      showDialogWithContent('Remove Assetstore', html,false);
       
+      $('input.deleteAssetstoreYes').unbind('click').click(function()
+         { 
+          ajaxSelectRequest = $.ajax({
+            type: "POST",
+            url: json.global.webroot+'/assetstore/delete',
+            data: {assetstoreId: element},
+            success: function(jsonContent){
+              jsonResponse = jQuery.parseJSON(jsonContent);
+              createNotive(jsonResponse[1],1500);
+              if(jsonResponse[0])
+                {
+                window.location.replace(json.global.webroot+'/admin#tabs-assetstore');
+                window.location.reload();
+                }
+            }
+          });  
+         });
+        $('input.deleteAssetstoreNo').unbind('click').click(function()
+          {
+          $( "div.MainDialog" ).dialog('close');
+          });       
+      });
       
-    $('#configForm').ajaxForm( {beforeSubmit: validateConfig, success:       successConfig} );
+    $('a.editAssetstoreLink').click(function()
+      {
+      var element = $(this).attr('element');
+      var html = '';
+      html += '<form class="genericForm" onsubmit="false;">';
+      html += '<label>Name:</label> <input type="text" id="assetstoreName" value="'+$(this).parents('div').find('span.assetstoreName').html()+'"/><br/><br/>';
+      html += '<label>Path:</label> <input type="text" id="assetstorePath" value="'+$(this).parents('div').find('span.assetstorePath').html()+'"/>';
+      html += '<br/>';
+      html += '<br/>';
+      html += '<input type="submit" id="assetstoreSubmit" value="Save"/>';
+      html += '</form>';
+      html += '<br/>';
+      showDialogWithContent('Edit Assetstore', html,false);
+      
+      $('input#assetstoreSubmit').unbind('click').click(function()
+         { 
+          ajaxSelectRequest = $.ajax({
+            type: "POST",
+            url: json.global.webroot+'/assetstore/edit',
+            data: {assetstoreId: element, assetstoreName: $('input#assetstoreName').val(), assetstorePath: $('input#assetstorePath').val()},
+            success: function(jsonContent){
+              jsonResponse = jQuery.parseJSON(jsonContent);
+              createNotive(jsonResponse[1],1500);
+              if(jsonResponse[0])
+                {
+                window.location.replace(json.global.webroot+'/admin#tabs-assetstore');
+                window.location.reload();
+                }
+            }
+          });  
+         });
+        $('input.deleteAssetstoreNo').unbind('click').click(function()
+          {
+          $( "div.MainDialog" ).dialog('close');
+          });       
+      });
+      
+    $('#configForm').ajaxForm( {beforeSubmit: validateConfig, success: successConfig} );
     
       // Form for the new assetstore
-    options = { success:assetstoreAddCallback, beforeSubmit:  assetstoreSubmit,  dataType:'json' }; 
+    options = {success:assetstoreAddCallback, beforeSubmit:  assetstoreSubmit,  dataType:'json'}; 
     $('#assetstoreForm').ajaxForm(options);
     
     $('a.load-newassetstore').cluetip({cluetipClass: 'jtip', 
@@ -80,13 +165,8 @@ function assetstoreAddCallback(responseText, statusText, xhr, $form)
   	// It worked, we add the assetstore to the list and we select it by default
   	if(responseText.assetstore_id)
   	  {
-      var html='';
-      html+="<div class='assetstoreElement'>  <span class='assetstoreName'><b>"+responseText.assetstore_name+"</b></span> <br/>";
-      html+="Total space: "+responseText.totalSpaceText+"<br/>";
-      html+="<b>Free space: "+responseText.freeSpaceText+"</b>";
-      html+="</div>";
-      $('div.assetstoreElement:last').after(html);
-      console.log(html);
+      window.location.replace(json.global.webroot+'/admin#tabs-assetstore');
+      window.location.reload();
   	  }
   	  
     createNotive(responseText.msg,4000);

@@ -22,7 +22,8 @@ function successUpgrade(responseText, statusText, xhr, form)
   if(jsonResponse[0])
     {
       createNotive(jsonResponse[1],4000);
-      window.location.reload()
+      window.location.replace(json.global.webroot+'/admin#ui-tabs-1');
+      window.location.reload();
     }
   else
     {

@@ -21,7 +21,12 @@ class AdminController extends AppController
   /** index*/
   function indexAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
+    if(!$this->logged)
+      {
+      $this->haveToBeLogged();
+      return;
+      }
+    if(!$this->userSession->Dao->getAdmin() == 1)
       {
       throw new Zend_Exception("You should be an administrator");
       }
@@ -117,11 +122,13 @@ class AdminController extends AppController
     // get assetstore data
     $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
     $assetstores = $this->Assetstore->getAll();
+    $defaultSet = false;
     foreach($assetstores as $key => $assetstore)
       {
       if($assetstore->getKey() == $defaultAssetStoreId)
         {
         $assetstores[$key]->default = true;
+        $defaultSet = true;
         }
       else
         {
@@ -131,6 +138,18 @@ class AdminController extends AppController
       $assetstores[$key]->totalSpaceText = $this->Component->Utility->formatSize($assetstores[$key]->totalSpace);
       $assetstores[$key]->freeSpace = disk_free_space($assetstore->getPath());
       $assetstores[$key]->freeSpaceText = $this->Component->Utility->formatSize($assetstores[$key]->freeSpace);
+      }
+      
+    if(!$defaultSet)
+      {
+      foreach($assetstores as $key => $assetstore)
+        {
+        $assetstores[$key]->default = true;
+        $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
+        $applicationConfig['global']['defaultassetstore.id'] = $assetstores[$key]->getKey();
+        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
+        break;
+        }
       }
     $this->view->assetstores = $assetstores;
     $this->view->assetstoreForm = $this->Form->Assetstore->createAssetstoreForm();
@@ -154,7 +173,6 @@ class AdminController extends AppController
     $this->view->modulesEnable = $modulesEnable;
     $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
     }//end indexAction
-    
  
   /** show logs*/
   function showlogAction()

@@ -58,7 +58,14 @@ class Ldap_ConfigController extends Ldap_AppController
         $applicationConfig['global']['ldap.autoAddUnknownUser'] = $this->_getParam('autoAddUnknownUser');
         $applicationConfig['global']['ldap.useActiveDirectory'] = $this->_getParam('useActiveDirectory');
         $applicationConfig['global']['ldap.bindn'] = '"'.$this->_getParam('bindn').'"';
-        $applicationConfig['global']['ldap.bindpw'] = $this->_getParam('bindpw');
+        if(isset($this->_getParam('bindpw')))
+          {
+          $applicationConfig['global']['ldap.bindpw'] = $this->_getParam('bindpw');
+          }        
+        if(isset($this->_getParam('proxyPassword')))
+          {
+          $applicationConfig['global']['ldap.proxyPassword'] = $this->_getParam('proxyPassword');
+          }        
         $applicationConfig['global']['ldap.backup'] = $this->_getParam('backup');
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/ldap.local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
