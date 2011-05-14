@@ -30,7 +30,9 @@ class Ldap_ConfigController extends Ldap_AppController
     $formArray['proxyBasedn']->setValue($applicationConfig['global']['ldap.proxyBasedn']);
     $formArray['proxyPassword']->setValue($applicationConfig['global']['ldap.proxyPassword']);
     $formArray['autoAddUnknownUser']->setValue($applicationConfig['global']['ldap.autoAddUnknownUser']);
-    $formArray['useActiveDirectory']->setValue($applicationConfig['global']['ldap.useActiveDirectory']);
+    $formArray['bindn']->setValue($applicationConfig['global']['ldap.bindn']);
+    $formArray['bindpw']->setValue($applicationConfig['global']['ldap.bindpw']);
+    $formArray['backup']->setValue($applicationConfig['global']['ldap.backup']);
     $this->view->configForm = $formArray;
     
     if($this->_request->isPost())
@@ -55,6 +57,16 @@ class Ldap_ConfigController extends Ldap_AppController
         $applicationConfig['global']['ldap.proxyBasedn'] = $this->_getParam('proxyBasedn');
         $applicationConfig['global']['ldap.autoAddUnknownUser'] = $this->_getParam('autoAddUnknownUser');
         $applicationConfig['global']['ldap.useActiveDirectory'] = $this->_getParam('useActiveDirectory');
+        $applicationConfig['global']['ldap.bindn'] = '"'.$this->_getParam('bindn').'"';
+        if(isset($this->_getParam('bindpw')))
+          {
+          $applicationConfig['global']['ldap.bindpw'] = $this->_getParam('bindpw');
+          }        
+        if(isset($this->_getParam('proxyPassword')))
+          {
+          $applicationConfig['global']['ldap.proxyPassword'] = $this->_getParam('proxyPassword');
+          }        
+        $applicationConfig['global']['ldap.backup'] = $this->_getParam('backup');
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/ldap.local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }

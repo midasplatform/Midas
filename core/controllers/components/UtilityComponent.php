@@ -94,7 +94,14 @@ class UtilityComponent extends AppComponent
       $text .= "[".$delimiter."]\n";
       foreach($d as $field => $value)
         {
-        $text .= $field."=".$value."\n";
+        if($value == 'true' || $value == 'false')
+          {
+          $text .= $field."=".$value."\n";
+          }
+        else
+          {
+          $text .= $field."=\"".str_replace('"', "'", $value)."\"\n";
+          }
         }
       $text .= "\n\n";
       }

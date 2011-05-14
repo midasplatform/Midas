@@ -198,8 +198,6 @@ class InstallController extends AppController
         $upgradeComponent->initUpgrade('core', $db, $dbtype);
         $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)));
         
-        
-        
         $this->User = new UserModel(); //reset Database adapter
         $this->userSession->Dao = $this->User->createUser($form->getValue('email'), $form->getValue('userpassword1'),
                                 $form->getValue('firstname'), $form->getValue('lastname'), 1);

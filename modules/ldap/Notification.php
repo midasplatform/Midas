@@ -39,16 +39,28 @@ class Ldap_Notification extends MIDAS_Notification
     $useActiveDirectory = $config['ldap']->ldap->useActiveDirectory;
     $proxybasedn = $config['ldap']->ldap->proxyBasedn;
     $proxyPassword = $config['ldap']->ldap->proxyPassword;
+    $backup = $config['ldap']->ldap->backup;
+    $bindn = $config['ldap']->ldap->bindn;
+    $bindpw = $config['ldap']->ldap->bindpw;
+    $proxyPassword = $config['ldap']->ldap->proxyPassword;
     $passwordPrefix=Zend_Registry::get('configGlobal')->password->prefix;
     
-    $ldapsearch = $searchTerm.'='.$email;
-
+    if($searchTerm == 'uid')
+      {
+      $ldapsearch = 'uid='.substr($email,0,strpos($email,'@'));
+      }
+    else
+      {
+      $ldapsearch = $searchTerm.'='.$email;
+      }
+      
     $ldap = ldap_connect($hostname);
     ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, $protocolVersion);
     if($useActiveDirectory)
       {
       ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
       }
+      
 
     if(isset($ldap) && $ldap != '')
       {
@@ -60,13 +72,21 @@ class Ldap_Notification extends MIDAS_Notification
           throw new Zend_Exception('Cannot bind proxy');
           }
         }
+        
+      $ldapbind = ldap_bind($ldap, $bindn, $bindpw);
+      if(!$ldapbind)
+        {
+        $ldap = ldap_connect($backup);
+        $ldapbind = ldap_bind($ldap, $bindn, $bindpw);
+        }
 
       /* search for pid dn */
-      $result = ldap_search($ldap, $baseDn, $ldapsearch, array('dn','cn'));
+      $result = ldap_search($ldap, $baseDn, $ldapsearch, array("uid",'cn'));
       $someone = false;
       if($result != 0)
         {
         $entries = ldap_get_entries($ldap, $result);
+        
         if($entries['count']!=0)
           {
           $principal = $entries[0]['dn'];
@@ -75,7 +95,7 @@ class Ldap_Notification extends MIDAS_Notification
           {
           /* bind as this user */
           if(@ldap_bind($ldap, $principal, $credential))
-            {
+            {            
             // Try to find the user in the MIDAS database
             $someone = $this->User->getByEmail($email);
             // If the user doesn't exist we add it, but without email
@@ -89,6 +109,7 @@ class Ldap_Notification extends MIDAS_Notification
                 }
 
               $names = explode(" ", $givenname);
+              $firstname = ' ';
               if(count($names)>1)
                 {
                 $firstname = $names[0];

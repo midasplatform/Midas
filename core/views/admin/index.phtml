@@ -55,15 +55,15 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
      foreach($this->assetstores as $assetstore)
        {
        echo "<div class='assetstoreElement'>
-              <span class='assetstoreName'><b>{$assetstore->getName()}</b></span>
+              <b><span class='assetstoreName'>{$assetstore->getName()}</span></b>
                (";
        if($assetstore->default)
          {
-         echo "default assetstore";
+         echo "<span class='defaultAssetstore' element='{$assetstore->getKey()}'>default assetstore</span>";
          }
        else
          {
-         echo "set as default";
+         echo "<a class='defaultAssetstoreLink' element='{$assetstore->getKey()}'>set as default</a>";
          }
        echo ")<br/>";
        if($assetstore->totalSpaceText==false)
@@ -82,7 +82,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
            echo "<b>Free space: {$assetstore->freeSpaceText}</b>";
            }
          }
-       echo "<br/>Path: {$assetstore->getPath()}";
+       echo "<br/>Path: <span class='assetstorePath'>{$assetstore->getPath()}</span>";
        echo "<br/>Type: ";
        switch ($assetstore->getType())
          {
@@ -99,6 +99,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
               echo $assetstore->getType();
               break;
          }
+       echo "<br/><a class='editAssetstoreLink' element='{$assetstore->getKey()}'>edit</a> <a class='removeAssetstoreLink' element='{$assetstore->getKey()}'>remove</a>";
        echo"</div>";
        }
      ?>
@@ -147,7 +148,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
           ";
          }
       ?>
-      <table
+      </table>
     </div>
   </div>
 

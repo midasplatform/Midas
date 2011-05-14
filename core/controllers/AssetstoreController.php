@@ -30,6 +30,96 @@ class AssetstoreController extends AppController
     
     }// end indexAction
     
+    
+  /** change default assetstore*/
+  function defaultassetstoreAction()
+    {
+    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
+      {
+      throw new Zend_Exception("You should be an administrator");
+      }
+    if(!$this->getRequest()->isXmlHttpRequest())
+      {
+      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      }
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    $change = $this->_getParam("submitDefaultAssetstore");
+    $element = $this->_getParam("element");
+    if(isset($change))
+      {
+      $assetstore = $this->Assetstore->load($element);
+      if($assetstore != false)
+        {
+        $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
+        $applicationConfig['global']['defaultassetstore.id'] = $assetstore->getKey();
+        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
+        echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        return;
+        }
+      }
+    echo JsonComponent::encode(array(false, $this->t('Error')));
+    }//defaultassetstoreAction
+    
+    
+  /** delete an assetstore assetstore*/
+  function deleteAction()
+    {
+    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
+      {
+      throw new Zend_Exception("You should be an administrator");
+      }
+    if(!$this->getRequest()->isXmlHttpRequest())
+      {
+      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      }
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    $assetstoreId = $this->_getParam("assetstoreId");
+    if(isset($assetstoreId))
+      {
+      $assetstore = $this->Assetstore->load($assetstoreId);
+      if($assetstore != false)
+        {
+        $this->Assetstore->delete($assetstore);
+        echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        return;
+        }
+      }
+    echo JsonComponent::encode(array(false, $this->t('Error')));
+    }//deleteAction
+    
+  /** edit an assetstore assetstore*/
+  function editAction()
+    {
+    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
+      {
+      throw new Zend_Exception("You should be an administrator");
+      }
+    if(!$this->getRequest()->isXmlHttpRequest())
+      {
+      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      }
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    $assetstoreId = $this->_getParam("assetstoreId");
+    $assetstoreName = $this->_getParam("assetstoreName");
+    $assetstorePath = $this->_getParam("assetstorePath");
+    if(isset($assetstoreId) && !empty($assetstorePath) && file_exists($assetstorePath) && !empty($assetstoreName))
+      {
+      $assetstore = $this->Assetstore->load($assetstoreId);
+      if($assetstore != false)
+        {
+        $assetstore->setName($assetstoreName);
+        $assetstore->setPath($assetstorePath);
+        $this->Assetstore->save($assetstore);
+        echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        return;
+        }
+      }
+    echo JsonComponent::encode(array(false, $this->t('Error')));
+    }//editAction
+    
   /**
    * \fn indexAction()
    * \brief called from ajax

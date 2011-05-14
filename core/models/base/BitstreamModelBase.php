@@ -20,7 +20,7 @@ abstract class BitstreamModelBase extends AppModel
       'path' =>  array('type' => MIDAS_DATA),
       'assetstore_id' =>  array('type' => MIDAS_DATA),
       'date' =>  array('type' => MIDAS_DATA),
-    //'itemrevision' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'ItemRevision', 'parent_column'=> 'itemrevision_id', 'child_column' => 'itemrevision_id'),
+      'itemrevision' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'ItemRevision', 'parent_column'=> 'itemrevision_id', 'child_column' => 'itemrevision_id'),
       'assetstore' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Assetstore', 'parent_column' => 'assetstore_id', 'child_column' => 'assetstore_id'),
       );
     $this->initialize(); // required  
@@ -38,8 +38,9 @@ abstract class BitstreamModelBase extends AppModel
       }
     $checksum = $bitstream->getChecksum();
     $path = $bitstream->getFullPath();
+    $assetstore = $bitstream->getAssetstore();    
     parent::delete($bitstream);
-    if($this->getByChecksum($checksum) == false)
+    if($assetstore->getType() != MIDAS_ASSETSTORE_REMOTE && $this->getByChecksum($checksum) == false)
       {
       unlink($path);
       }
