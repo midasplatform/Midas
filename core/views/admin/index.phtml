@@ -112,7 +112,9 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
        }
      ?>
       
-      <a class="load-newassetstore" href="#newassetstore-form" rel="#newassetstore-form" title="<?php echo $this->t('Add a new assetstore')?>"><?php echo $this->t('Add a new assetstore')?></a>
+      <a class="load-newassetstore" href="#newassetstore-form" rel="#newassetstore-form" title="<?php echo $this->t('Add a new assetstore')?>">Add a new assetstore</a>
+      <br/>
+      <a  href="<?php echo $this->webroot?>/import" >Import local files</a>
 
       <div id="newassetstore-form"  style="display:none">
          <?php echo $this->assetstoreForm; ?>
