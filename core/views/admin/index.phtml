@@ -24,6 +24,14 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
                 <label for='name'>Application name</label>
                 {$this->configForm['name']}
               </div>
+              <div class='description'>
+                <label for='name'>Description</label>
+                {$this->configForm['description']}
+              </div>
+              <div class='keywords'>
+                <label for='name'>Keywords</label>
+                {$this->configForm['keywords']}
+              </div>
               <div class='installLang'>
                 <label for='lang'>Language</label>
                 {$this->configForm['lang']}

@@ -97,7 +97,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         'datetime' => 'timestamp',
         'module'   => 'module');
       $writerDb = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
-      if($config->error->php == 1)
+      if($config->environment == 'production')
         {
         $formatter = new Zend_Log_Formatter_Simple();
         Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(false);

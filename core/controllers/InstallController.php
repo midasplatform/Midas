@@ -1,5 +1,4 @@
 <?php
-
 /**
  *  InstallController
  */
@@ -234,8 +233,10 @@ class InstallController extends AppController
     $form = $this->Form->Install->createConfigForm();
     $formArray = $this->getFormAsArray($form);
     $formArray['name']->setValue($applicationConfig['global']['application.name']);
+    $formArray['keywords']->setValue($applicationConfig['global']['application.keywords']);
     $formArray['environment']->setValue($applicationConfig['global']['environment']);
     $formArray['lang']->setValue($applicationConfig['global']['application.lang']);
+    $formArray['description']->setValue($applicationConfig['global']['application.description']);
     $formArray['smartoptimizer']->setValue($applicationConfig['global']['smartoptimizer']);
     $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
     $formArray['process']->setValue($applicationConfig['global']['processing']);
@@ -256,6 +257,8 @@ class InstallController extends AppController
           }
         }
       $applicationConfig['global']['application.name'] = $form->getValue('name');
+      $applicationConfig['global']['application.description'] = $form->getValue('description');
+      $applicationConfig['global']['application.keywords'] = $form->getValue('keywords');
       $applicationConfig['global']['application.lang'] = $form->getValue('lang');
       $applicationConfig['global']['environment'] = $form->getValue('environment');
       $applicationConfig['global']['defaultassetstore.id'] = $assetstrores[0]->getKey();

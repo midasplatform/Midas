@@ -16,6 +16,10 @@ class AdminForm extends AppForm
                     'fr' => 'French' 
                         ));    
     
+    $description = new Zend_Form_Element_Textarea('description');
+    
+    $keywords = new Zend_Form_Element_Textarea('keywords');
+    
     $timezone = new Zend_Form_Element_Select('timezone');
     $timezone ->addMultiOptions(array(
                     'America/New_York' => 'America/New_York',
@@ -38,7 +42,7 @@ class AdminForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submitConfig');
     $submit ->setLabel('Save configuration');
      
-    $form->addElements(array($timezone, $environment, $lang, $name, $smartoptimizer, $submit));
+    $form->addElements(array($keywords, $description, $timezone, $environment, $lang, $name, $smartoptimizer, $submit));
     return $form;
     }
 } // end class

@@ -100,7 +100,11 @@ class InstallForm extends AppForm
     $environment ->addMultiOptions(array(
                     'production' => 'Production',
                     'development' => 'Development'                    
-                        ));    
+                        ));   
+    
+    $description = new Zend_Form_Element_Textarea('description');
+    
+    $keywords = new Zend_Form_Element_Textarea('keywords');
     
     $name = new Zend_Form_Element_Text('name');
     $name ->setRequired(true)
@@ -112,7 +116,7 @@ class InstallForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel('Create configuration');
      
-    $form->addElements(array($process, $timezone, $environment, $lang, $name, $smartoptimizer, $submit));
+    $form->addElements(array($keywords, $description, $process, $timezone, $environment, $lang, $name, $smartoptimizer, $submit));
     return $form;
     }
 } // end class

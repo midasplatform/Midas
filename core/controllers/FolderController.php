@@ -128,6 +128,9 @@ class FolderController extends AppController
     
     $this->view->isModerator = $this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE);
     $this->view->isAdmin = $this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+    
+    $this->view->title .= ' - '.$folder->getName();
+    $this->view->metaDescription = substr($folder->getDescription(), 0, 160);
     }// end View Action
     
     

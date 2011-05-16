@@ -94,22 +94,31 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
           </tbody>
       </table>
-  </div>
+    </div>
         <?php
-  if($this->isMember)
-    {
-    ?>
-  <div id="tabs-4">
+    if($this->isMember)
+      {
+      ?>
+    <div id="tabs-4">
+      <?php
+      $this->listFiles=$this->shareItems;
+      echo $this->element('listfiles');
+      ?>
+    </div>
     <?php
-    $this->listFiles=$this->shareItems;
-    echo $this->element('listfiles');
-    ?>
+      }?>
   </div>
-  <?php
-    }?>
 </div>
 
+<div id="guideRobot">
+   <?php
+    foreach($this->folders as $folder)
+      {
+      echo "<a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a> ";
+      } 
+    ?>  
 </div>
+
 <div class="viewSideBar">
   
   <?php

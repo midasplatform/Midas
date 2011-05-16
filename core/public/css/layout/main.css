@@ -61,6 +61,11 @@ img.thumbnailSmall{
   font-family: 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif !important;
   font-size: 12px!important;
 }
+
+div#guideRobot{
+  display:none;
+}
+
 /*-------------------------------------------------
 TOP
 -------------------------------------------------*/

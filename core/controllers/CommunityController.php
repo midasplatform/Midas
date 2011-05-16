@@ -283,6 +283,9 @@ class CommunityController extends AppController
       {
       $this->view->shareItems = $this->Item->getSharedToCommunity($communityDao);
       }
+      
+    $this->view->title .= ' - '.$communityDao->getName();
+    $this->view->metaDescription = substr($communityDao->getDescription(), 0, 160);
     }//end view
 
   /** Delete a community*/

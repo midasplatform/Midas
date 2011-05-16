@@ -88,6 +88,9 @@ class ItemController extends AppController
     
     $this->view->itemSize = $this->Component->Utility->formatSize($itemDao->getSizebytes());
     
+    $this->view->title .= ' - '.$itemDao->getName();
+    $this->view->metaDescription = substr($itemDao->getDescription(), 0, 160);
+    
     $this->view->json['item'] = $itemDao->toArray();
     $this->view->json['item']['message']['delete'] = $this->t('Delete');
     $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undo.');

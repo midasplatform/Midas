@@ -84,6 +84,19 @@
   ?>
 </div>
 
+<div id="guideRobot">
+   <?php
+   foreach($this->folders as $folder)    
+      {
+      echo "<a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a> ";
+      } 
+   foreach($this->items as $item) 
+      {
+      echo "<a href='{$this->webroot}/item/{$item->getKey()}'>{$item->getName()}</a> ";
+      } 
+    ?>  
+</div>
+
 <div class="viewSideBar">
   <?php
   if(empty($this->folders)&&empty($this->items))

@@ -37,6 +37,8 @@ class AdminController extends AppController
     $formArray = $this->getFormAsArray($configForm);
     
     $formArray['name']->setValue($applicationConfig['global']['application.name']);
+    $formArray['keywords']->setValue($applicationConfig['global']['application.keywords']);
+    $formArray['description']->setValue($applicationConfig['global']['application.description']);
     $formArray['environment']->setValue($applicationConfig['global']['environment']);
     $formArray['lang']->setValue($applicationConfig['global']['application.lang']);
     $formArray['smartoptimizer']->setValue($applicationConfig['global']['smartoptimizer']);
@@ -61,6 +63,8 @@ class AdminController extends AppController
           }
         rename(BASE_PATH.'/core/configs/application.local.ini', BASE_PATH.'/core/configs/application.local.ini.old');
         $applicationConfig['global']['application.name'] = $this->_getParam('name');
+        $applicationConfig['global']['application.description'] = $this->_getParam('description');
+        $applicationConfig['global']['application.keywords'] = $this->_getParam('keywords');
         $applicationConfig['global']['application.lang'] = $this->_getParam('lang');
         $applicationConfig['global']['environment'] = $this->_getParam('environment');
         $applicationConfig['global']['smartoptimizer'] = $this->_getParam('smartoptimizer');

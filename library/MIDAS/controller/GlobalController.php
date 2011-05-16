@@ -255,7 +255,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
   public function isDebug()
     {
     $config = Zend_Registry::get('config');
-    if($config->mode->debug == 1)
+    if($config->environment == 'production')
       {
       return true;
       }

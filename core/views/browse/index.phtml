@@ -49,6 +49,16 @@
     }
     ?>
 </div>
+
+<div id="guideRobot">
+   <?php
+    foreach($this->communities as $community)
+      {
+      echo "<a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a> ";
+      }  
+    ?>  
+</div>
+
 <div class="viewSideBar">
   <div class="sideElementFirst viewAction" >
     <h1>Actions</h1>
