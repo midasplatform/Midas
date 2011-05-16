@@ -148,8 +148,8 @@ class CommunityController extends AppController
       }//end ajax posts
       
     //init forms
-    $formInfo->setAction($this->view->webroot.'/community/manage?communityId = '.$communityId);
-    $formCreateGroup->setAction($this->view->webroot.'/community/manage?communityId = '.$communityId);
+    $formInfo->setAction($this->view->webroot.'/community/manage?communityId='.$communityId);
+    $formCreateGroup->setAction($this->view->webroot.'/community/manage?communityId='.$communityId);
     $name = $formInfo->getElement('name');
     $name->setValue($communityDao->getName());
     $description = $formInfo->getElement('description');

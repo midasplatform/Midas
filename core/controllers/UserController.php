@@ -10,7 +10,6 @@ class UserController extends AppController
   /** Init Controller */
   function init()
     {
-    $this->view->activemenu = 'user'; // set the active menu
     $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     if(isset($actionName) && (is_numeric($actionName) || strlen($actionName) == 32)) // This is tricky! and for Cassandra for now
       {
@@ -422,6 +421,7 @@ class UserController extends AppController
     elseif(!isset($user_id))
       {
       $userDao = $this->userSession->Dao;
+      $this->view->activemenu = 'user'; // set the active menu
       }
     else
       {

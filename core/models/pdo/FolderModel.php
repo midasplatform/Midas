@@ -228,6 +228,51 @@ class FolderModel extends FolderModelBase
     $folder->saved = false;
     return true;
     } //end delete
+    
+  /** move a folder*/
+  public function move($folder, $parent)
+    {
+    if($folder->getKey() == $parent->getKey())
+      {
+      throw new Zend_Exception("Folder == Parent");
+      }
+    
+    $tmpParent = $parent->getParent();
+    while($tmpParent != false)
+      {
+      if($tmpParent->getKey() == $folder->getKey())
+        {
+        throw new Zend_Exception("Parent is a child of Folder");
+        }
+      $tmpParent = $tmpParent->getParent();
+      }
+    
+    if(!$folder instanceof  FolderDao)
+      {
+      throw new Zend_Exception("Error parameter.");
+      }
+    if(!$parent instanceof  FolderDao)
+      {
+      throw new Zend_Exception("Error parameter.");
+      }
+    $leftIndice = $folder->getLeftIndice();
+    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('left_indice - 2')),
+                          array('left_indice >= ?' => $leftIndice));
+    $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice - 2')),
+                          array('right_indice >= ?' => $leftIndice));
+    $folder->setParentId($parent->getKey());
+    $rightParent = $parent->getRightIndice();
+    
+    $folder->setRightIndice($rightParent + 1);
+    $folder->setLeftIndice($rightParent);
+    
+    $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('2 + right_indice')),
+                          array('right_indice >= ?' => $rightParent));
+    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('2 + left_indice')),
+                          array('left_indice >= ?' => $rightParent));
+    
+    parent::save($folder);
+    }//end move
 
   /** Custom save function*/
   public function save($folder)

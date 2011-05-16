@@ -37,6 +37,7 @@ abstract class FolderModelBase extends AppModel
   abstract function getCommunity($folder);
   abstract function getUser($folder);
   abstract function addItem($folder, $item);
+  abstract function move($folder, $parent);
   abstract function removeItem($folder, $item);
   abstract function policyCheck($folderDao, $userDao = null, $policy = 0);
   abstract function getFolderExists($name, $description);

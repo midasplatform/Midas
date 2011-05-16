@@ -83,21 +83,14 @@ class BrowseController extends AppController
         throw new Zend_Exception("Unable to load destination");
         }
         
-      //TODO
-      /*
       foreach($folders as $folder)
-        {
-        
-        if(isset($copySubmit))
+        {        
+        if(!isset($copySubmit))
           {
-          
-          }
-        else
-          {
-          
+          $this->Folder->move($folder, $destination);
           }
         }
-     */
+
       foreach($items as $item)
         {
         if(isset($copySubmit))
@@ -325,6 +318,7 @@ class BrowseController extends AppController
       {
       $this->_redirect('/');
       }
+    $this->view->activemenu = 'uploaded'; // set the active menu
     $this->view->items = array();
     $this->view->header = $this->t('Uploaded Files');
     $this->view->Date = $this->Component->Date;

@@ -70,6 +70,7 @@ class AppController extends MIDAS_GlobalController
         }
       $this->userSession = $user;
       $this->view->recentItems = array();
+      $this->view->showUploadedLink = false;
       if($user->Dao != null && $user->Dao instanceof UserDao)
         {
         if($fc->getRequest()->getControllerName() != 'install' && $fc->getRequest()->getControllerName() != 'error' && $user->Dao->isAdmin() && $this->isUpgradeNeeded())
@@ -79,6 +80,11 @@ class AppController extends MIDAS_GlobalController
         else
           {
           $this->view->needUpgrade = false;
+          }
+          
+        if(!empty($user->uploaded))
+          {
+          $this->view->showUploadedLink = true;
           }
         $this->logged = true;
         $this->view->logged = true;

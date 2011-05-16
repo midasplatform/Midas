@@ -32,7 +32,7 @@ abstract class AssetstoreModelBase extends AppModel
       }
     $bitreams = $dao->getBitstreams();
     $items = array();
-    foreach ($bitreams as $key => $bitstream)
+    foreach($bitreams as $key => $bitstream)
       {
       $revision = $bitstream->getItemrevision();
       if(empty($revision))
@@ -51,7 +51,7 @@ abstract class AssetstoreModelBase extends AppModel
       
     $modelLoader = new MIDAS_ModelLoader();
     $item_model = $modelLoader->loadModel('Item');
-    foreach ($items as $item)
+    foreach($items as $item)
       {
       $item_model->delete($item);
       }

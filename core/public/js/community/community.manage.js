@@ -399,17 +399,11 @@ function successGroupChange(responseText, statusText, xhr, form)
         }
        else
          {
-         var content="<li><a class='groupLink' groupid='"+jsonResponse[2].group_id+"' href='javascript:;'>"+jsonResponse[2].name+"</a> [<a class='editGroupLink' groupid='"+jsonResponse[2].group_id+"' href='javascript:;'>Edit</a>][<a class='deleteGroupLink' groupid='"+jsonResponse[2].group_id+"' href='javascript:;'>Delete</a>]<span/> </li>";
-         $('div#groupsList ul').append(content);
          
-         var content="<div style='display:none;' class='groupList' id='groupList_"+jsonResponse[2].group_id+"'>";
-         content+="<h4>"+$('div.groupMemberList h4:first').html()+"</h4>";
-         content+='<table cellpadding="0" cellspacing="0" border="0" class="display dataTable">';
-         content+="</table>";
-         content+="</div>";
-         $('div.groupMemberList').append(content);
          }
        init();
+       window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
+       window.location.reload();
     }
   else
     {
