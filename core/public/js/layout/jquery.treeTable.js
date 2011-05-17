@@ -52,14 +52,9 @@
   
   // Recursively hide all node's children in a tree
   $.fn.collapse = function() {
-    $(this).addClass("collapsed");
-    childrenOf($(this)).each(function() {
-      if(!$(this).hasClass("collapsed")) {
-        $(this).collapse();
-      }
-      
-      this.style.display = "none"; // Performance! $(this).hide() is slow...
-    });
+    var id = $(this).attr('id');    
+    $('tr[id*="'+id+'"]').addClass("collapsed").hide();
+    $(this).show();
     colorLines(true);
     return this;
   };
@@ -156,16 +151,13 @@
       {
  //     $(this).find('td:first').prepend('<img class="tableLoading" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>');
       }
+      
+    var id = $(this).attr('id');    
+    
     $(this).removeClass("collapsed").addClass("expanded");
-        childrenOf($(this)).each(function() {
+    $('tr[id*="'+id+'"]').show();
+        $('tr[id*="'+id+'"]').each(function() {
         initialize($(this));
-       
-        if($(this).is(".expanded.parent")) {
-          $(this).expand();
-        }
-
-        // this.style.display = "table-row"; // Unfortunately this is not possible with IE :-(
-        $(this).show();
       });
     initializeAjax($(this),false);
     colorLines(true);
