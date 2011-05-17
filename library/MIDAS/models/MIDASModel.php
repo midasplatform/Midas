@@ -248,7 +248,12 @@ class MIDASModel
       $return = array();
       foreach($rowset as $row)
         {
-        $tmpDao = $this->initDao(ucfirst($this->_name), $row);
+        $daoName = ucfirst($this->_name);
+        if(isset($this->_daoName))
+          {
+          $daoName = substr($this->_daoName, 0, strlen($this->_daoName)-3);
+          }
+        $tmpDao = $this->initDao($daoName, $row);
         $return[] = $tmpDao;
         unset($tmpDao);
         }
