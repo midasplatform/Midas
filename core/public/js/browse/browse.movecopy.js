@@ -16,8 +16,31 @@
     var ajaxSelectRequest='';
     function callbackSelect(node)
     {
+      var selectedElement = node.find('span:last').html();
+      
+      var parent = true;
+      var current = node;
+      
+      while(parent != null)
+        {   
+        parent = null;       
+        var classNames = current[0].className.split(' ');    
+        for(key in classNames)
+          {
+          if(classNames[key].match("child-of-")) 
+            {
+            parent = $("#" + classNames[key].substring(9));
+            }
+          }
+        if(parent != null)
+          {
+          selectedElement = parent.find('span:last').html()+'/'+selectedElement;
+          current = parent;
+          }
+        }       
+      
       $('#selectedDestinationHidden').val(node.attr('element'));
-      $('#selectedDestination').html(node.find('span:last').html());
+      $('#selectedDestination').html(sliceFileName(selectedElement, 40));
       $('#selectElements').removeAttr('disabled');
       $('#copyElement').removeAttr('disabled');
       $('#moveElements').removeAttr('disabled');
