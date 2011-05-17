@@ -35,6 +35,7 @@
       
       $('input.deleteAssetstoreYes').unbind('click').click(function()
          { 
+          $( "div.MainDialog" ).dialog('close');
           ajaxSelectRequest = $.ajax({
             type: "POST",
             url: json.global.webroot+'/assetstore/delete',

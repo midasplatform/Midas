@@ -208,6 +208,13 @@ class ImportController extends AppController
           
           // Upload the bitstream ifnecessary (based on the assetstore type)
           $assetstoreDao = $this->Assetstore->load($this->assetstoreid);
+          
+          $assetstorePath = $assetstoreDao->getPath();
+          $bitstreamPath = $bitstreamDao->getPath();
+          
+          $bitstreamPath = substr($bitstreamPath, strlen($assetstorePath));          
+          $bitstreamDao->setPath($bitstreamPath);
+          
           $this->Component->Upload->uploadBitstream($bitstreamDao, $assetstoreDao);
           
           $this->ItemRevision->addBitstream($itemRevisionDao, $bitstreamDao);

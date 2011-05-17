@@ -135,6 +135,14 @@ class ItemModel extends ItemModelBase
         $feed_model->delete($feed);
         }
       }
+    
+    $folder_model = $this->ModelLoader->loadModel('Folder');
+    $folders = $itemdao->getFolders();
+    foreach($folders as $folder)
+      {
+      $folder_model->removeItem($folder, $itemdao);
+      }
+    
     $revisions = $itemdao->getRevisions();
     foreach($revisions as $revision)
       {

@@ -22,6 +22,10 @@
   background-image: url(../../images/TreeTable/toggle-collapse-dark.png);
 }
 
+.treeTable span.elementSize{
+  padding: 0px!important;
+}
+
 /* jquery.treeTable.sortable
  * ------------------------------------------------------------------------- */
 .treeTable tr.selected, .treeTable tr.accept {
