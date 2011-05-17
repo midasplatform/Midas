@@ -78,6 +78,7 @@ class AssetstoreController extends AppController
     $assetstoreId = $this->_getParam("assetstoreId");
     if(isset($assetstoreId))
       {
+      set_time_limit(0); // No time limit since import can take a long time  
       $assetstore = $this->Assetstore->load($assetstoreId);
       if($assetstore != false)
         {

@@ -104,7 +104,7 @@ class ImportController extends AppController
       
       if($fileInfo->isDir()) // we have a directory
         {
-        if(!file_exists($fileInfo->getPathName()))
+        if(!file_exists($fileInfo->getPathName()) || $fileInfo->getFilename() == 'CVS')
           {
           continue;
           }

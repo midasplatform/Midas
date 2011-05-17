@@ -26,7 +26,7 @@
       {
       var element = $(this).attr('element');
       var html = '';
-      html += 'Do you really want to remove the assetstore? All the items located in it will be delete.';
+      html += 'Do you really want to remove the assetstore? All the items located in it will be delete. (Can take a wihle)';
       html += '<br/>';
       html += '<br/>';
       html += '<input style="margin-left:140px;" class="globalButton deleteAssetstoreYes" element="'+element+'" type="button" value="'+json.global.Yes+'"/>';
