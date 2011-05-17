@@ -14,7 +14,7 @@ $(document).ready(function()
   $('#inputdirectory').change(function(){inputdirectoryChanged()});
 	
   // Form for the new assetstore
-  options = { success:assetstoreAddCallback, beforeSubmit:  assetstoreSubmit,  dataType:'json' }; 
+  options = {success:assetstoreAddCallback, beforeSubmit:  assetstoreSubmit,  dataType:'json'}; 
   $('#assetstoreForm').ajaxForm(options);
   
   // Load the window for the new assetstore
@@ -33,6 +33,18 @@ $(document).ready(function()
   $("#assetstoretype").attr('disabled', 'disabled');
 
   importSubmitButtonValue = $("#importsubmit").html();
+  
+  //Init Browser
+  $('input[name=importFolder]').val('');
+  $('input[name=importFolder]').attr('id','destinationId');
+  $('input[name=importFolder]').hide();
+  $('input[name=importFolder]').before('<input style="margin-left:0px;" id="browseMIDASLink" class="globalButton" type="button" value="Select location" />');
+  $('input[name=importFolder]').before('<span style="margin-left:5px;" id="destinationUpload"/>');
+  $('#browseMIDASLink').click(function()
+    {
+    loadDialog("select","/browse/movecopy/?selectElement=true");
+    showDialog('Browse');
+    });
  });
 
 

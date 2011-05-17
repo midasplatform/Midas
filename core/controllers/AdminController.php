@@ -329,13 +329,17 @@ class AdminController extends AppController
    */
   function serversidefilechooserAction()
     {
-    $userid = $this->CheckSession();
-    if(!$this->User->isAdmin($userid))
+    if(!$this->logged)
       {
-      echo "Administrative privileges required";
-      exit ();
+      throw new Zend_Exception("You should be logged in");
       }
-      
+    if(!$this->userSession->Dao->isAdmin())
+      {
+      throw new Zend_Exception("Administrative privileges required");
+      }     
+    
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
     
     // Display the tree
     $_POST['dir'] = urldecode($_POST['dir']);
@@ -386,7 +390,6 @@ class AdminController extends AppController
       echo "File ".$_POST['dir']." doesn't exist";
       }     
     // No views  
-    exit();
     } // end function  serversidefilechooserAction
     
     
@@ -396,8 +399,9 @@ class AdminController extends AppController
    */
   function migratemidas2Action()
     {
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
     $this->Component->MIDAS2Migration->migrate();
-    exit();  
     }
     
 } // end class
