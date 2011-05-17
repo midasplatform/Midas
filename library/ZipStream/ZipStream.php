@@ -530,6 +530,8 @@ class ZipStream {
     $this->need_headers = false;
 
     echo $str;
+    flush(); // forcing to flush buffer so that the download is instantenous 
+    ob_flush(); // forcing to flush buffer so that the download is instantenous 
   }
 
   #
