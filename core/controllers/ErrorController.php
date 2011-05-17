@@ -111,6 +111,5 @@ class ErrorController extends AppController
         $this->view->message = nl2br($fullMessage);  
       }  
 
-    $this->Component->NotifyError->notify();  
     }  
 }  

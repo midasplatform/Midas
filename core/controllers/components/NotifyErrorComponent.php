@@ -69,7 +69,6 @@ class NotifyErrorComponent  extends AppComponent
           echo $message;
           $this->_mailer = $mailer;
           $this->_environment = $environment;
-          //$this->notify(true);
           break;  
         default:  
           $this->_server = $_SERVER;
@@ -248,31 +247,4 @@ class NotifyErrorComponent  extends AppComponent
     return $message;  
     }  
 
-  /** Send an email*/
-  public function notify($fatal = false)  
-    { 
-    if(!in_array($this->_environment, array('production')) && Zend_Registry::get('configGlobal')->alert->enable == '1') 
-      {  
-      return false;  
-      }  
-            
-    $this->_mailer->setFrom('do-not-reply@domain.com');  
-    $this->_mailer->setSubject("Exception on Application ".Zend_Registry::get('configGlobal')->application->name);  
-    if(!$fatal)
-      {
-      $this->_mailer->setBodyText($this->getFullErrorMessage()); 
-      }
-    $this->_mailer->addTo(Zend_Registry::get('configGlobal')->alert->email);  
-    $return = false;
-    try 
-      {
-      $return = $this->_mailer->send();
-      }
-    catch(Exception $e)
-      {
-      $this->getLogger()->crit($e->getMessage());
-      }         
-
-    return $return;  
-    }  
   }  

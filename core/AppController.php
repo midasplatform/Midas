@@ -52,9 +52,9 @@ class AppController extends MIDAS_GlobalController
         }
       Zend_Session::start();  
       $user = new Zend_Session_Namespace('Auth_User');
+      $modelLoad = new MIDAS_ModelLoader();
       if($user->Dao == null)
-        {
-        $modelLoad = new MIDAS_ModelLoader();
+        {        
         $userModel = $modelLoad->loadModel('User');
         $cookieData = $this->getRequest()->getCookie('midasUtil');
         if(!empty($cookieData))
@@ -70,19 +70,39 @@ class AppController extends MIDAS_GlobalController
             }
           }
         }
+        
+      if($fc->getRequest()->getControllerName() == 'browse')
+        {
+        session_write_close();
+        }
       $this->userSession = $user;
       $this->view->recentItems = array();
       $this->view->showUploadedLink = false;
+      $this->view->needUpgrade = false;
+      $this->view->highNumberError = false;
       if($user->Dao != null && $user->Dao instanceof UserDao)
         {
-        if($fc->getRequest()->getControllerName() != 'install' && $fc->getRequest()->getControllerName() != 'error' && $user->Dao->isAdmin() && $this->isUpgradeNeeded())
-          {
-          $this->view->needUpgrade = true;
+        if($fc->getRequest()->getControllerName() != 'install' && $fc->getRequest()->getControllerName() != 'error' && $user->Dao->isAdmin())
+          {          
+          if($this->isUpgradeNeeded())
+            {
+            $this->view->needUpgrade = true;
+            }  
+          $errorlogModel = $modelLoad->loadModel('Errorlog');
+          $logs = $errorlogModel->getLog(date('c', strtotime("-24 hour")), date('c'), 'all', 'all');
+          foreach($logs as $key => $l)
+            {
+            if($l->getPriority() == MIDAS_PRIORITY_INFO)
+              {
+              unset($logs[$key]);
+              }
+            }
+          if(count($logs) > 5)
+            {
+            $this->view->highNumberError = true;
+            }
           }
-        else
-          {
-          $this->view->needUpgrade = false;
-          }
+
           
         if(!empty($user->uploaded))
           {

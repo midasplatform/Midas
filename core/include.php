@@ -9,6 +9,7 @@ require_once BASE_PATH.'/core/models/AppDao.php';
 
 //include constant files
 include_once BASE_PATH.'/core/constant/global.php';
+include_once BASE_PATH.'/core/constant/error.php';
 include_once BASE_PATH.'/core/constant/datatype.php';
 include_once BASE_PATH.'/core/constant/community.php';
 include_once BASE_PATH.'/core/constant/group.php';
