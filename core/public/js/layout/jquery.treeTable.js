@@ -34,7 +34,7 @@
           this.style.display = "none"; // Performance! $(this).hide() is slow...
         }
       });
-      initializeAjax($(this),true);
+      initializeAjax($(this),true,false);
     });
     initEvent();
     
@@ -63,7 +63,7 @@
     
   var tree= new Array();
   
-  function initializeAjax(node,first)
+  function initializeAjax(node,first,expandNode)
   {
   if(node==undefined)
     {
@@ -93,16 +93,14 @@
           arrayElement=jQuery.parseJSON(data);
           $.each(arrayElement, function(index, value) {             
             tree[index]=value;
-          });
-          children.each(function()
-          {          
-          if($(this).attr('ajax')!=undefined)
-            {
-         //   $(this).removeAttr('ajax');
-         //   $(this).attr('proccessing',false);
-         //   $(this).find('td:first img.tableLoading').hide();
-            }
-          });
+          });   
+         
+        if(expandNode != false)
+          {
+          expandNode.expand();
+          getElementsSize();
+          }
+          
         initEvent();
       });
     }
@@ -132,12 +130,7 @@
   
   // Recursively show all node's children in a tree
   $.fn.expand = function() {
-    if($(this).attr('ajax')!=undefined&&$(this).attr('proccessing')==undefined)
-      {
-      initializeAjax(parentOf($(this)),false); 
-      return $(this).expand();
-      }
-    else if ($(this).attr('ajax')!=undefined&&tree[$(this).attr('ajax')]!=undefined)
+    if ($(this).attr('ajax')!=undefined&&tree[$(this).attr('ajax')]!=undefined)
       {
       createElementsAjax($(this),tree[$(this).attr('ajax')],true);
       $(this).removeAttr('ajax');
@@ -145,6 +138,11 @@
       $(this).find('td:first img.tableLoading').hide();
       initEvent();
       initialize($(this));
+      }
+    else if($(this).attr('ajax')!=undefined&&tree[$(this).attr('ajax')]==undefined)
+      {
+      initializeAjax(parentOf($(this)),false,$(this)); 
+      return
       }
 
     if($(this).attr('proccessing')=='true')
@@ -159,7 +157,7 @@
         $('tr[id*="'+id+'"]').each(function() {
         initialize($(this));
       });
-    initializeAjax($(this),false);
+    initializeAjax($(this),false,false);
     colorLines(true);
     return this;
   };
@@ -305,46 +303,93 @@
     });
   }
 
+
   
-  function createElementsAjax(node,elements,first)
+  function createElementsAjax(node,elementsRaw,first)
   {
+    var lastElement;
     if(typeof customElements == 'function')
       { 
-        html=customElements(node,elements,first);   
+        html=customElements(node,elementsRaw,first);   
         node.after(html)
       }
     else
       {
+        var html='';
         var i = 1;
         var id=node.attr('id');
-        elements['folders'] = jQuery.makeArray(elements['folders']).reverse();
-        elements['items'] = jQuery.makeArray(elements['items']).reverse();
+        elements = elementsRaw;
+        elements['folders'] = jQuery.makeArray(elementsRaw['folders']);
+        elements['items'] = jQuery.makeArray(elementsRaw['items']);
       //  var padding=parseInt(node.find('td:first').css('padding-left').slice(0,-2));
-
-        $.each(elements['items'], function(index, value) { 
-          var html='';
-          html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"'  type='item' policy='"+value['policy']+"' element='"+value['item_id']+"'>";
-          html+=     "  <td><span class='file'>"+sliceFileName(value['name'],40)+"</span></td>";
-          html+=     "  <td>"+value['size']+"</td>";
-          html+=     "  <td>"+value['creation']+"</td>";
-          html+=     "  <td><input type='checkbox' class='treeCheckbox' type='item' element='"+value['item_id']+"'/></td>";
-          html+=     "</tr>";       
+        
+        var j = 1;
+        
+        
+         $.each(elements['folders'], function(index, value) {
+          if(j > 70)
+            {
+            return;
+            }
           i++;
-          node.after(html)
-          });
-          
-       $.each(elements['folders'], function(index, value) {
-          var html='';
+          if($('#'+id+"-"+i).length > 0)
+            {
+            return;
+            }
           html+= "<tr id='"+id+"-"+i+"' deletable='"+value['deletable']+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
           html+=     "  <td><span class='folder'>"+sliceFileName(value['name'],40)+"</span></td>";
           html+=     "  <td>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>'+"</td>";
           html+=     "  <td>"+value['creation']+"</td>";
           html+=     "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='"+value['folder_id']+"'/></td>";
           html+=     "</tr>";
-          i++;
-          node.after(html)
+          lastElement = id+"-"+i;
+          j++;
           });
+        
+
+        $.each(elements['items'], function(index, value) { 
+          i++;
+          if(j > 70)
+            {
+            return;
+            }
+          if($('#'+id+"-"+i).length > 0)
+            {
+            return;
+            }
+          html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"'  type='item' policy='"+value['policy']+"' element='"+value['item_id']+"'>";
+          html+=     "  <td><span class='file'>"+sliceFileName(value['name'],40)+"</span></td>";
+          html+=     "  <td>"+value['size']+"</td>";
+          html+=     "  <td>"+value['creation']+"</td>";
+          html+=     "  <td><input type='checkbox' class='treeCheckbox' type='item' element='"+value['item_id']+"'/></td>";
+          html+=     "</tr>";       
+          j++;
+          lastElement = id+"-"+i;
+          });
+
+      if(j > 70)
+       {
+        html+="<tr id='"+id+"-10000000' element='"+id+"'><td colspan = 1 align=right><a class='treeBrowserShowMore'>Show more</a></td><td></td><td></td><td></td></tr>";
+       }
+       if(elementsRaw['last'] != undefined)
+         {
+         $('#'+elementsRaw['last']).after(html);
+         }
+       else
+         {
+         node.after(html);
+         }       
       }
+
+    $('a.treeBrowserShowMore').click(function()
+      {      
+      elementsRaw['last'] = lastElement;
+      createElementsAjax($('tr#'+$(this).parents('tr').attr('element')),elementsRaw,false);
+      initEvent();
+      initialize($(this).parents('tr'));
+      $(this).parents('tr').remove();
+      }
+    );
     
     var cell = $(node.children("td")[options.treeColumn]);
     var padding = getPaddingLeft(cell) + options.indent;
@@ -440,8 +485,14 @@
   function getElementsSize()
   {
     var elements='';
+    var i = 0;
     $('img.folderLoading').each(function()
-        {    
+        {   
+        i++;
+        if(i > 10)
+          {
+          return ;
+          }
         if($(this).attr('process')==undefined)  
           {
           elements+=$(this).attr('element')+'-';
@@ -459,6 +510,7 @@
               img.parents('tr').find('td:first span:last').append('<span style="padding-left:0px;" class="elementCount">'+' ('+value.count+')'+'</span>');
               img.remove();
           });
+          getElementsSize();
         });
       }
 
