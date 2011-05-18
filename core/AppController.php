@@ -71,7 +71,7 @@ class AppController extends MIDAS_GlobalController
           }
         }
         
-      if($fc->getRequest()->getControllerName() == 'browse')
+      if($fc->getRequest()->getControllerName() == 'browse' || $fc->getRequest()->getControllerName() == 'download')
         {
         session_write_close();
         }

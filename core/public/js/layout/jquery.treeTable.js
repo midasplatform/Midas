@@ -310,7 +310,8 @@
   {
     if(typeof customElements == 'function')
       { 
-        html=customElements(node,elements,first);         
+        html=customElements(node,elements,first);   
+        node.after(html)
       }
     else
       {
