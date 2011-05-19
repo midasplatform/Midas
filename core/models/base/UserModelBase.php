@@ -38,6 +38,29 @@ abstract class UserModelBase extends AppModel
   abstract function getByUser_id($userid);
   abstract function getUserCommunities($userDao);
   
+  /** save */
+  public function save($dao)
+    {
+    parent::save($dao);
+    $modelLoad = new MIDAS_ModelLoader();
+    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+    $uuModel->newUUID($dao);
+    } 
+    
+  /** delete*/
+  public function delete($dao)
+    {
+    //TODO
+    $modelLoad = new MIDAS_ModelLoader();
+    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+    $uudao = $uuModel->getIndentifier($dao);
+    if($uudao)
+      {
+      $uuModel->delete($uudao);
+      }
+    parent::delete($dao);
+    }// delete
+ 
   /** plus one view*/
   function incrementViewCount($userDao)
     {

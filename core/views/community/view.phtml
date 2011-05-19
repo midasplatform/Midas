@@ -82,7 +82,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
                 {
                 $policy=MIDAS_POLICY_WRITE;
                 }
-              echo "<tr id='node--$node' policy='$policy'  class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
+              echo "<tr id='node--$node' policy='$policy'  class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
               echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
               echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDate(),true)}</td>";

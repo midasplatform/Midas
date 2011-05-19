@@ -21,6 +21,7 @@ abstract class FolderModelBase extends AppModel
       'date' =>  array('type' => MIDAS_DATA),
       'view' =>  array('type' => MIDAS_DATA),
       'teaser' =>  array('type' => MIDAS_DATA),
+      'privacy_status' =>  array('type' => MIDAS_DATA),
       'items' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Item', 'table' => 'item2folder', 'parent_column' => 'folder_id', 'child_column' => 'item_id'),
       'folderpolicygroup' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Folderpolicygroup', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
       'folderpolicyuser' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Folderpolicyuser', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),

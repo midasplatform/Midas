@@ -50,7 +50,7 @@
 /**
  * built on XML_Parser
  */
-require_once 'XML/Parser.php';
+require_once dirname(__FILE__).'/../Parser.php';
 
 /**
  * Simple XML parser class.

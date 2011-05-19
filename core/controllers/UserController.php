@@ -404,6 +404,8 @@ class UserController extends AppController
     $this->view->jsonSettings['passwordErrorShort'] = $this->t('Password too short');
     $this->view->jsonSettings['passwordErrorMatch'] = $this->t('The passwords are not the same');
     $this->view->jsonSettings = JsonComponent::encode($this->view->jsonSettings);
+    
+    $this->view->customTabs = Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_GET_CONFIG_TABS, array());
     }
     
   /** user page action*/

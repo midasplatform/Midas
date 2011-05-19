@@ -48,14 +48,14 @@
  */
 
 /**
- * uses PEAR error managemt
+ * uses PEAR error management
  */
-require_once 'PEAR.php';
+require_once dirname(__FILE__).'/../PEAR.php';
 
 /**
- * uses XML_Parser to unserialize document
+ * uses XML_Parser to create XML tags
  */
-require_once 'XML/Parser.php';
+require_once dirname(__FILE__).'/Parser.php';
 
 /**
  * option: Convert nested tags to array or object

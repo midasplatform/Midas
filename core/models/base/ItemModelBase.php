@@ -19,6 +19,7 @@ abstract class ItemModelBase extends AppModel
       'thumbnail' => array('type' => MIDAS_DATA),
       'view' => array('type' => MIDAS_DATA),
       'download' => array('type' => MIDAS_DATA),
+      'privacy_status' => array('type' => MIDAS_DATA),
       'folders' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Folder', 'table' => 'item2folder', 'parent_column' => 'item_id', 'child_column' => 'folder_id'),
       'revisions' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'ItemRevision', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
       'keywords' => array('type' => MIDAS_MANY_TO_MANY, 'model' => 'ItemKeyword', 'table' => 'item2keyword', 'parent_column' => 'item_id', 'child_column' => 'keyword_id'),
@@ -32,6 +33,15 @@ abstract class ItemModelBase extends AppModel
   abstract function getSharedToUser($userDao, $limit = 20);
   abstract function getSharedToCommunity($communityDao, $limit = 20);
   abstract function policyCheck($itemdao, $userDao = null, $policy = 0);
+  
+  /** save */
+  public function save($dao)
+    {
+    parent::save($dao);
+    $modelLoad = new MIDAS_ModelLoader();
+    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+    $uuModel->newUUID($dao);
+    }
     
   /** copy parent folder policies*/
   function copyParentPolicies($itemdao, $folderdao, $feeddao = null)

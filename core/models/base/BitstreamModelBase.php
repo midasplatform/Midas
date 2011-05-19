@@ -29,6 +29,15 @@ abstract class BitstreamModelBase extends AppModel
   /** Abstract functions */
   abstract function getByChecksum($checksum);
   
+  /** save */
+  public function save($dao)
+    {
+    parent::save($dao);
+    $modelLoad = new MIDAS_ModelLoader();
+    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+    $uuModel->newUUID($dao);
+    }
+  
   /** delete a Bitstream*/
   function delete($bitstream)
     {
@@ -39,6 +48,13 @@ abstract class BitstreamModelBase extends AppModel
     $checksum = $bitstream->getChecksum();
     $path = $bitstream->getFullPath();
     $assetstore = $bitstream->getAssetstore();    
+    $modelLoad = new MIDAS_ModelLoader();
+    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+    $uudao = $uuModel->getIndentifier($bitstream);
+    if($uudao)
+      {
+      $uuModel->delete($uudao);
+      }
     parent::delete($bitstream);
     if($assetstore->getType() != MIDAS_ASSETSTORE_REMOTE && $this->getByChecksum($checksum) == false)
       {

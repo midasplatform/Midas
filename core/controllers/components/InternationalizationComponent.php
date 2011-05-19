@@ -28,7 +28,7 @@ class InternationalizationComponent extends AppComponent
       $new_text = $translate->_($text);
       if($new_text == $text)
         {
-        $translaters = Zend_Registry::get('translatersModules');
+        $translaters = Zend_Registry::get('translatersModules');        
         foreach($translaters as $t)
           {
           $new_text = $t->_($text);

@@ -343,7 +343,7 @@
             {
             return;
             }
-          html+= "<tr id='"+id+"-"+i+"' deletable='"+value['deletable']+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
+          html+= "<tr id='"+id+"-"+i+"' deletable='"+value['deletable']+"' privacy='"+value['privacy_status']+"'  class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
           html+=     "  <td><span class='folder'>"+sliceFileName(value['name'],40)+"</span></td>";
           html+=     "  <td>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>'+"</td>";
           html+=     "  <td>"+value['creation']+"</td>";
@@ -364,7 +364,7 @@
             {
             return;
             }
-          html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"'  type='item' policy='"+value['policy']+"' element='"+value['item_id']+"'>";
+          html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"' privacy='"+value['privacy_status']+"'  type='item' policy='"+value['policy']+"' element='"+value['item_id']+"'>";
           html+=     "  <td><span class='file'>"+sliceFileName(value['name'],40)+"</span></td>";
           html+=     "  <td>"+value['size']+"</td>";
           html+=     "  <td>"+value['creation']+"</td>";
@@ -430,6 +430,22 @@
   function initialize(node) {
     if(!node.hasClass("initialized")) {
       node.addClass("initialized");
+      
+      var privacy = '';
+      if(node.attr('privacy') == undefined || node.attr('privacy') == 0)
+        {
+        privacy = json.browse['public'];
+        }
+      else if(node.attr('privacy') == 1)
+        {
+        privacy = json.browse['shared'];
+        }
+      else if(node.attr('privacy') == 2)
+        {
+        privacy = json.browse['private'];
+        }
+        
+      node.find('td:first span').after('<span class="browserPrivacyInformation">'+privacy+'</span>');
       
       var childNodes = childrenOf(node);
       if(!node.hasClass("parent") && childNodes.length > 0) {
@@ -514,7 +530,7 @@
           $.each(arrayElement, function(index, value) { 
               var img=$('img.folderLoading[element='+value.id+']');
               img.after('<span class="elementSize">'+value.size+'</span>');
-              img.parents('tr').find('td:first span:last').append('<span style="padding-left:0px;" class="elementCount">'+' ('+value.count+')'+'</span>');
+              img.parents('tr').find('td:first span:last').before('<span style="padding-left:0px;" class="elementCount">'+' ('+value.count+')'+'</span>');
               img.remove();
           });
           getElementsSize();

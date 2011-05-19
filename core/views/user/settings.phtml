@@ -10,6 +10,15 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
 		<li><a href="#tabs-image"><?php echo $this->t('My Avatar') ?></a></li>
 		<li><a href="#tabs-password"><?php echo $this->t('My Password') ?></a></li>
 		<li><a href="#tabs-communities"><?php echo $this->t('My Communities') ?></a></li>
+    <?php
+    foreach($this->customTabs as $modules)
+      {
+      foreach($modules as $name => $url)
+        {
+        echo "<li><a href='{$url}'>{$name}</a></li>";
+        }
+      }
+      ?>
 	</ul>
 	<div id="tabs-account">
     <h3><?php echo $this->t('My information')?>:</h3>

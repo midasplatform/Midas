@@ -37,6 +37,8 @@ class ItempolicygroupModel extends ItempolicygroupModelBase
     $policyGroupDao->setItemId($item->getItemId());
     $policyGroupDao->setPolicy($policy);
     $this->save($policyGroupDao);
+    
+    $this->computePolicyStatus($item);
     return $policyGroupDao;
     }
 

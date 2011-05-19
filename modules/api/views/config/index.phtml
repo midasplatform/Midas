@@ -1,1 +1,32 @@
-Config page
+<?php
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config.index.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.index.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+
+<div class="viewMain">
+
+
+     <?php
+      echo "
+      <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
+      <h3>Api Configuration:</h3>
+            <div >
+              <label for='methodprefix'>Method Prefix</label>
+              {$this->configForm['methodprefix']}
+            </div>
+          <div>
+            {$this->configForm['submitConfig']}
+          </div>
+       </form>";
+       ?>
+    
+ 
+</div>
+
+
+
+
+
+

@@ -39,7 +39,7 @@
         
       foreach($this->folders as $folder)
         {
-        echo "<tr id='node--$node' deletable='true' policy='{$folder->policy}' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
+        echo "<tr id='node--$node' deletable='true' privacy='{$folder->getPrivacyStatus()}' policy='{$folder->policy}' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
         echo "  <td class='treeBrowseElement'><span class='folder'>{$this->slicename($folder->getName(),40)}</span></td>";
         echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
         echo "  <td>{$this->Date->ago($folder->getDate(),true)}</td>";
@@ -50,7 +50,7 @@
       
       foreach($this->items as $item)
         {
-        echo "<tr id='node--$node' policy='{$item->policy}' class='' type='item' element='{$item->getItemId()}' >";
+        echo "<tr id='node--$node' policy='{$item->policy}' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
         echo "  <td class='treeBrowseElement'><span class='file'>{$this->slicename($item->getName(),40)}</span></td>";
         echo "  <td>{$item->size}</td>";
         echo "  <td>{$this->Date->ago($item->getDate(),true)}</td>";

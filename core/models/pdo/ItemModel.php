@@ -168,6 +168,14 @@ class ItemModel extends ItemModelBase
       {
       $policy_user_model->delete($policy);
       }
+      
+    $modelLoad = new MIDAS_ModelLoader();
+    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+    $uudao = $uuModel->getIndentifier($itemdao);
+    if($uudao)
+      {
+      $uuModel->delete($uudao);
+      }
     parent::delete($itemdao);
     unset($itemdao->item_id);
     $itemdao->saved = false;

@@ -223,6 +223,14 @@ class FolderModel extends FolderModelBase
                           array('left_indice >= ?' => $leftIndice));
     $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice - 2')),
                           array('right_indice >= ?' => $leftIndice));
+    
+    $modelLoad = new MIDAS_ModelLoader();
+    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+    $uudao = $uuModel->getIndentifier($folder);
+    if($uudao)
+      {
+      $uuModel->delete($uudao);
+      }
     parent::delete($folder);
     unset($folder->folder_id);
     $folder->saved = false;
@@ -281,6 +289,11 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Should be a folder.");
       }
+    $name = $folder->getName();
+    if(empty($name))
+      {
+      throw new Zend_Exception("Please set a name.");
+      }
     if($folder->getParentId() <= 0)
       {
       $rightParent = 0;
@@ -330,6 +343,10 @@ class FolderModel extends FolderModelBase
         }
       $folder->folder_id = $insertedid;
       $folder->saved = true;
+      
+      $modelLoad = new MIDAS_ModelLoader();
+      $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+      $uuModel->newUUID($folder);
       return true;
       }
     } // end method save

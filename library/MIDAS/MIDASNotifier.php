@@ -32,17 +32,21 @@ class MIDAS_Notifier
         {
         throw new Zend_Exception('Unable to find notification class: '.$name);
         }
-      $this->modules[$module] = new $name();
+      $this->modules['core'] = new $name();
       }
     }//end contruct() 
     
   /** notify enabled modules*/
-  public function notify($type, $params)
+  public function notify($type, $params = null)
     {
     $return = array();
     foreach($this->modules as $key => $module)
       {
-      $return[$key] = call_user_func(array($module, 'init'), $type, $params);
+      $tmp = call_user_func(array($module, 'init'), $type, $params);
+      if($tmp != null)
+        {
+        $return[$key] = $tmp;
+        }
       }
     return $return;
     }//end notify
