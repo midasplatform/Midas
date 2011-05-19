@@ -52,7 +52,7 @@
 /**
  * uses PEAR's error handling
  */
-require_once 'PEAR.php';
+require_once dirname(__FILE__).'/../PEAR.php';
 
 /**
  * resource could not be created

@@ -441,6 +441,7 @@ class KwWebApiRestMessage extends KwWebApiMessage
 
   function output($result_data)
     {
+
     // using the XML_SERIALIZER Pear Package
     $options = array
       (
@@ -453,6 +454,7 @@ class KwWebApiRestMessage extends KwWebApiMessage
       XML_SERIALIZER_OPTION_RETURN_RESULT    => true
       );
     $serializer = new XML_Serializer( $options );
+    
     $serialized_result = $serializer->serialize( $result_data );
     KwWebApiRestCore::output( $serialized_result );
     }

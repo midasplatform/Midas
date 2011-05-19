@@ -904,7 +904,7 @@ class XML_Util
      */
     function raiseError($msg, $code)
     {
-        require_once 'PEAR.php';
+        require_once dirname(__FILE__).'/../PEAR.php';
         return PEAR::raiseError($msg, $code);
     }
 }

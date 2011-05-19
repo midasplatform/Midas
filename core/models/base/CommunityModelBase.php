@@ -40,6 +40,19 @@ abstract class CommunityModelBase extends AppModel
   /** get All*/
   abstract function getAll();
 
+  /** save */
+  public function save($dao)
+    {
+    $name = $dao->getName();
+    if(empty($name))
+      {
+      throw new Zend_Exception("Please set a name.");
+      }
+    parent::save($dao);
+    $modelLoad = new MIDAS_ModelLoader();
+    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+    $uuModel->newUUID($dao);
+    }
   
   /** plus one view*/
   function incrementViewCount($communityDao)
@@ -61,6 +74,10 @@ abstract class CommunityModelBase extends AppModel
     if($this->getByName($name) !== false)
       {
       throw new Zend_Exception("Community already exists.");
+      }
+    if(empty($name))
+      {
+      throw new Zend_Exception("Please set a name.");
       }
       
     if($canJoin == null || $privacy == MIDAS_COMMUNITY_PRIVATE)
@@ -172,6 +189,13 @@ abstract class CommunityModelBase extends AppModel
     foreach($feeds as $feed)
       {
       $feed_model->delete($feed);
+      }
+    $modelLoad = new MIDAS_ModelLoader();
+    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+    $uudao = $uuModel->getIndentifier($communityDao);
+    if($uudao)
+      {
+      $uuModel->delete($uudao);
       }
     parent::delete($communityDao);
     unset($communityDao->community_id);

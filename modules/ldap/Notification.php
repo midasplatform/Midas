@@ -10,7 +10,7 @@ class Ldap_Notification extends MIDAS_Notification
     switch ($type)
       {
       case MIDAS_NOTIFY_LOGIN:
-        $this->ldapLogin($params);
+        return $this->ldapLogin($params);
         break;
 
       default:

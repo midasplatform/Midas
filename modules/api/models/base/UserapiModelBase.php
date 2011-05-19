@@ -24,12 +24,13 @@ abstract class Api_UserapiModelBase extends Api_AppModel
    abstract function getByAppAndUser($appname,$userDao);
    abstract function getToken($email,$apikey,$appname);
    abstract function getUserapiFromToken($token);
+   abstract function getByUser($userDao);
    
    
      /** Create a new API key */
   function createKey($userDao,$applicationname,$tokenexperiationtime)
     {
-    if(!$userDao instanceof UserDao||!is_string($applicationname)||!is_string($tokenexperiationtime))
+    if(!$userDao instanceof UserDao||!is_string($applicationname)||!is_string($tokenexperiationtime) || empty($applicationname))
       {
       throw new Zend_Exception("Error parameter");
       }

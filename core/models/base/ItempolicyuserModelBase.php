@@ -18,4 +18,13 @@ class ItempolicyuserModelBase extends AppModel
     $this->initialize(); // required
     } // end __construct()  
   
+  /** delete */
+  public function delete($dao)
+    {
+    $item = $dao->getItem();
+    parent::delete($dao);
+    $modelLoad = new MIDAS_ModelLoader();
+    $fitemGroupModel = $modelLoad->loadModel('Itempolicygroup');
+    $fitemGroupModel->computePolicyStatus($item);
+    }//end delete
 } // end class ItempolicyuserModelBase

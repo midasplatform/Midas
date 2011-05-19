@@ -214,6 +214,7 @@ class BrowseController extends AppController
         $tmp['deletable'] = 'true';
         }
       $tmp['policy'] = $folder->policy;
+      $tmp['privacy_status'] = $folder->privacy_status;
       $jsonContent[$folder->getParentId()]['folders'][] = $tmp;
       unset($tmp);
       }
@@ -226,6 +227,7 @@ class BrowseController extends AppController
       $tmp['creation'] = $this->Component->Date->ago($item->getDate(), true);
       $tmp['size'] = $this->Component->Utility->formatSize($item->getSizebytes());
       $tmp['policy'] = $item->policy;
+      $tmp['privacy_status'] = $item->privacy_status;
       $jsonContent[$item->parent_id]['items'][] = $tmp;
       unset($tmp);
       }

@@ -27,6 +27,16 @@ class ItemRevisionModelBase extends AppModel
     $this->initialize(); // required
     } // end __construct()
   
+    
+  /** save */
+  public function save($dao)
+    {
+    parent::save($dao);
+    $modelLoad = new MIDAS_ModelLoader();
+    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+    $uuModel->newUUID($dao);
+    }
+    
   /** delete a revision*/
   function delete($revisiondao)
     {
@@ -40,6 +50,14 @@ class ItemRevisionModelBase extends AppModel
     foreach($bitstreams as $bitstream)
       {
       $bitstream_model->delete($bitstream);
+      }
+      
+    $modelLoad = new MIDAS_ModelLoader();
+    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+    $uudao = $uuModel->getIndentifier($revisiondao);
+    if($uudao)
+      {
+      $uuModel->delete($uudao);
       }
     parent::delete($revisiondao);
     $revisiondao->saved = false;

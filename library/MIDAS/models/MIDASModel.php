@@ -180,15 +180,6 @@ class MIDASModel
     {
     if(substr($method, 0, 5) == 'getBy')
       {
-      /*if(isset($this->_mainData[strtolower(substr($method, 5))]))
-        {
-        return $this->getBy(strtolower(substr($method, 5)), $params[0]);
-        }
-      else
-        {
-        throw new Zend_Exception("Dao:  " . __CLASS__ . " " . $this->_name . ": method $method doesn't exist (" . strtolower(substr($method, 5)) . " is not defined.");
-        }*/
-
       throw new Zend_Exception(__CLASS__ . " " . $this->_name . ": ".$method." has been deprecated. Please fix.");
       }
     elseif(substr($method, 0, 6) == 'findBy')
@@ -208,26 +199,6 @@ class MIDASModel
       }
     }// end method __call
 
-    
-  /**
-   * @method public  getBy($var, $option)
-   *  Get DAO by $var = $value
-   * @param $var name of the attribute we search
-   * @param $value
-   * @return dao
-   */
-  /*private function getBy($var, $value)
-    {
-    if(!isset($this->_mainData[$var]))
-      {
-      throw new Zend_Exception("Model " . $this->_name . ": var $var is not defined here.");
-      }
-    else
-      {
-      $dao= $this->initDao(ucfirst($this->_name), $this->database->getBy($var, $value));
-      return $dao;
-      }
-    } //end getBy*/
 
   /**
    * @method public  findBy($var, $value)
@@ -277,7 +248,7 @@ class MIDASModel
       }
     else
       {
-      require_once BASE_PATH . "/modules/".$method."/models/dao/".$name.".php";
+      require_once BASE_PATH . "/modules/".$module."/models/dao/".$name.".php";
       if(!class_exists(ucfirst($module).'_'.$name))
         {
         throw new Zend_Exception('Unable to load dao class ' . ucfirst($module).'_'.$name);
@@ -302,7 +273,16 @@ class MIDASModel
       {
       $name = ucfirst($this->_name) . 'Dao';
       }
-    Zend_Loader::loadClass($name, BASE_PATH . '/core/models/dao');
+    
+    if(isset($this->moduleName))
+      {
+      $this->loadDaoClass(ucfirst(substr($name, strpos($name, '_')+1)), $this->moduleName);
+      }
+    else
+      {
+      Zend_Loader::loadClass($name, BASE_PATH . '/core/models/dao');
+      }    
+    
     if(class_exists($name))
       {
       if(!isset($this->_key) && $key != null)

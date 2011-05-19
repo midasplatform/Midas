@@ -29,14 +29,17 @@
       $node=1;
       foreach($this->communities as $community)
         {
-        $folder=$community->getFolder();
-        echo "<tr id='node--$node' class='parent' type='community' element='{$community->getCommunityId()}' ajax='{$folder->getFolderId()}'>";
-        echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
-        echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
-        echo "  <td>{$this->Date->ago($folder->getDate(),true)}</td>";
-        echo "  <td><input type='checkbox' class='treeCheckbox' type='community' element='{$community->getCommunityId()}' /></td>";
-        echo "</tr>";
-        $node++;
+        $folder = $community->getFolder();
+        if($folder != false)
+          {
+          echo "<tr id='node--$node' class='parent' privacy='".($community->getPrivacy() == 1 ? MIDAS_PRIVACY_PRIVATE : MIDAS_PRIVACY_PUBLIC )."' type='community' element='{$community->getCommunityId()}' ajax='{$folder->getFolderId()}'>";
+          echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
+          echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
+          echo "  <td>{$this->Date->ago($folder->getDate(),true)}</td>";
+          echo "  <td><input type='checkbox' class='treeCheckbox' type='community' element='{$community->getCommunityId()}' /></td>";
+          echo "</tr>";
+          $node++;
+          }
         }  
       ?>        
     </tbody>
