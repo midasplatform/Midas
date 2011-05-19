@@ -45,7 +45,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         <div class="radioElement">
           <h4><?php echo $this->t('Privacy')?></h4>
           <?php echo $this->infoForm['privacy']?>
+
           <div id="canJoinDiv">
+            <h4><?php echo $this->t('Who can join the community?')?></h4>
             <?php echo $this->infoForm['canJoin']?>
           </div>
         </div>

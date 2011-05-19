@@ -199,6 +199,11 @@ class BrowseController extends AppController
     $folders = $this->Folder->getChildrenFoldersFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ);
     $items = $this->Folder->getItemsFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ);
     $jsonContent = array();
+    foreach($parents as $parent)
+      {
+      $jsonContent[$parent->getKey()]['folders'] = array();
+      $jsonContent[$parent->getKey()]['items'] = array();
+      }
     foreach($folders as $folder)
       {
       $tmp = array();

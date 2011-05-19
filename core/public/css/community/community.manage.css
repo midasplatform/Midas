@@ -1,7 +1,7 @@
 
  div.radioElement label{
   float: inherit!important;
-  width: 400px!important;
+  width: 600px!important;
 }
 
  div.radioElement ul{
@@ -15,10 +15,6 @@
   margin-bottom: 4px;
 }
 
- div.radioElement #canJoinDiv{
-  margin-left: 10px;
-  color: grey;
-}
 
  div.radioElement br{
   display:none;

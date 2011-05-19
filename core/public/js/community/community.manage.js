@@ -448,10 +448,12 @@ if($('input[name=privacy]:checked').val()== 1) //private
     $('input[name=canJoin]').attr('disabled','disabled');
     $('input[name=canJoin]').removeAttr('checked');
     $('input[name=canJoin][value=0]').attr('checked', true); //invitation
+    $('div#canJoinDiv').hide();
   }
 else
   {
     $('input[name=canJoin]').removeAttr('disabled');
+    $('div#canJoinDiv').show();
   }
   $('input[name=privacy]').change(function(){
     initCommunityPrivacy();

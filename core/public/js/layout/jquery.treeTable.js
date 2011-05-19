@@ -79,6 +79,7 @@
     {
     children=childrenOf(node);
     }
+    
   children.each(function()
       {
       if($(this).attr('ajax')!=undefined)

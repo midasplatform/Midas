@@ -85,6 +85,214 @@ class UploadComponent extends AppComponent
     return true;  
     } // end uploadBitstream() 
   
+  /** save upload item in the DB */
+  public function createUploadedItem($userDao, $name, $path, $parent = null, $license = null)
+    {    
+    $modelLoad = new MIDAS_ModelLoader();
+    $itemModel = $modelLoad->loadModel('Item');
+    $feedModel = $modelLoad->loadModel('Feed');
+    $folderModel = $modelLoad->loadModel('Folder');
+    $bitstreamModel = $modelLoad->loadModel('Bitstream');
+    $assetstoreModel = $modelLoad->loadModel('Assetstore');
+    $feedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
+    $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
+    $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
+    $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
+    $itemKeywordModel = $modelLoad->loadModel('ItemKeyword');
+    
+    if($userDao == null)
+      {
+      throw new Zend_Exception('Please log in');
+      }
 
+    if($parent == null)
+      {
+      $parent = $userDao->getPrivateFolder();
+      }
+    if(is_numeric($parent))
+      {
+      $parent = $folderModel->load($parent);
+      }
+
+    if($parent == false || !$folderModel->policyCheck($parent, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception('Parent permissions errors');
+      }
+
+    Zend_Loader::loadClass("ItemDao", BASE_PATH . '/core/models/dao');
+    $item = new ItemDao;
+    $item->setName($name);
+    $item->setDate(date('c'));
+    $item->setDescription('');
+    $item->setType(0);
+    $item->setThumbnail('');
+    $itemModel->save($item);
+
+    $feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_ITEM, $item);
+
+    $folderModel->addItem($parent, $item);
+    $itemModel->copyParentPolicies($item, $parent, $feed);
+
+    $feedpolicyuserModel->createPolicy($userDao, $feed, MIDAS_POLICY_ADMIN);
+    $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
+
+    Zend_Loader::loadClass("ItemRevisionDao", BASE_PATH . '/core/models/dao');
+    $itemRevisionDao = new ItemRevisionDao;
+    $itemRevisionDao->setChanges('Initial revision');
+    $itemRevisionDao->setUser_id($userDao->getKey());
+    $itemRevisionDao->setDate(date('c'));
+    $itemRevisionDao->setLicense($license);
+    $itemModel->addRevision($item, $itemRevisionDao);
+
+    // Set the keyword for the item
+    Zend_Loader::loadClass("ItemKeywordDao", BASE_PATH . '/core/models/dao');
+    $keyword = new ItemKeywordDao();
+    $keyword->setValue($name);
+    $itemKeywordModel->insertKeyword($keyword);
+    $itemModel->addKeyword($item, $keyword);  
+
+    $tmp = str_replace('.', ' ', $name);
+    $tmp = str_replace('_', ' ', $tmp);
+    $tmp = str_replace('-', ' ', $tmp);
+
+    $keywords = explode(' ', $tmp);
+    if(count($keywords) > 1)
+      {
+      foreach($keywords as $key => $value)
+        {
+        $keyword = new ItemKeywordDao();
+        $keyword->setValue($value);
+        $itemKeywordModel->insertKeyword($keyword);
+        $itemModel->addKeyword($item, $keyword);  
+        }
+      }      
+
+    // Add bitstreams to the revision
+    Zend_Loader::loadClass("BitstreamDao", BASE_PATH . '/core/models/dao');
+    $bitstreamDao = new BitstreamDao;
+    $bitstreamDao->setName($name);
+    $bitstreamDao->setPath($path);
+    $bitstreamDao->fillPropertiesFromPath();
+
+    $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
+    $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
+    $assetstoreDao = $assetstoreModel->load($defaultAssetStoreId);
+
+    // Upload the bitstream ifnecessary (based on the assetstore type)
+    $this->uploadBitstream($bitstreamDao, $assetstoreDao);
+    $checksum = $bitstreamDao->getChecksum();
+    $tmpBitstreamDao = $bitstreamModel->getByChecksum($checksum);
+    if($tmpBitstreamDao != false)
+      {
+      $bitstreamDao->setPath($tmpBitstreamDao->getPath());
+      $bitstreamDao->setAssetstoreId($tmpBitstreamDao->getAssetstoreId());
+      }
+    $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
+
+    $this->getLogger()->info(__METHOD__." Upload ok :".$path);
+    return $item;
+    }//end createUploadedItem
+
+  /** save upload item in the DB */
+  public function createNewRevision($userDao, $name, $path, $item_revision, $changes, $license = null)
+    {
+    if($userDao == null)
+      {
+      throw new Zend_Exception('Please log in');
+      }
+
+    $modelLoad = new MIDAS_ModelLoader();
+    $itemModel = $modelLoad->loadModel('Item');
+    $feedModel = $modelLoad->loadModel('Feed');
+    $bitstreamModel = $modelLoad->loadModel('Bitstream');
+    $assetstoreModel = $modelLoad->loadModel('Assetstore');
+    $feedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
+    $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
+    $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
+    
+    $item = $itemModel->load($item_revision[0]);
+
+    if($item == false)
+      {
+      throw new Zend_Exception('Unable to find item');
+      }
+
+    $revisions = $item->getRevisions();
+    $itemRevisionDao = null;
+    foreach($revisions as $revision)
+      {
+      if($item_revision[1] == $revision->getRevision())
+        {
+        $itemRevisionDao = $revision;
+        break;
+        }
+      }
+
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception('Parent permissions errors');
+      }
+
+
+    if($itemRevisionDao == null)
+      {
+      $itemRevisionDao = new ItemRevisionDao;
+      $itemRevisionDao->setChanges($changes);
+      $itemRevisionDao->setUser_id($userDao->getKey());
+      $itemRevisionDao->setDate(date('c'));
+      $itemRevisionDao->setLicense($license);
+      $itemModel->addRevision($item, $itemRevisionDao);
+
+      $feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_REVISION, $itemRevisionDao);
+
+      $groupPolicies = $item->getItempolicygroup();
+      $userPolicies = $item->getItempolicyuser();
+
+      //copy policies
+      if($feed != null && $feed instanceof FeedDao)
+        {      
+        foreach($groupPolicies as $key => $policy)
+          {      
+          $feedpolicygroupModel->createPolicy($policy->getGroup(), $feed, $policy->getPolicy());
+          }
+        foreach($userPolicies as $key => $policy)
+          {      
+          $feedpolicyuserModel->createPolicy($policy->getUser(), $feed, $policy->getPolicy());
+          }
+        }
+      }
+    else
+      {
+      $itemRevisionDao->setChanges($changes);
+      $itemRevisionDao->setLicense($license);
+      $itemRevisionModel->save($itemRevisionDao);
+      }
+
+
+    // Add bitstreams to the revision
+    Zend_Loader::loadClass("BitstreamDao", BASE_PATH . '/core/models/dao');
+    $bitstreamDao = new BitstreamDao;
+    $bitstreamDao->setName($name);
+    $bitstreamDao->setPath($path);
+    $bitstreamDao->fillPropertiesFromPath();
+
+    $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
+    $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
+    $assetstoreDao = $assetstoreModel->load($defaultAssetStoreId);
+
+    // Upload the bitstream ifnecessary (based on the assetstore type)
+    $this->uploadBitstream($bitstreamDao, $assetstoreDao);
+    $checksum = $bitstreamDao->getChecksum();
+    $tmpBitstreamDao = $bitstreamModel->getByChecksum($checksum);
+    if($tmpBitstreamDao != false)
+      {
+      $bitstreamDao->setPath($tmpBitstreamDao->getPath());
+      $bitstreamDao->setAssetstoreId($tmpBitstreamDao->getAssetstoreId());
+      }
+    $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
+
+    $this->getLogger()->info(__METHOD__." Upload ok :".$path);
+    return $item;
+    }//end 
 } // end class UploadComponent
 ?>

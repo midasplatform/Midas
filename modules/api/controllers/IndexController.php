@@ -6,7 +6,7 @@ require_once BASE_PATH . '/modules/api/library/KwWebApiCore.php';
 class Api_IndexController extends Api_AppController
 {
   public $_moduleModels=array('Userapi');
-  public $_models=array('Community', 'User', 'Uniqueidentifier', "Folderpolicyuser", 'Folderpolicygroup', 'Folder');
+  public $_models=array('Community', 'ItemRevision', 'Item', 'User', 'Uniqueidentifier', "Folderpolicyuser", 'Folderpolicygroup', 'Folder');
 
   var $kwWebApiCore = null;
 
@@ -93,6 +93,26 @@ class Api_IndexController extends Api_AppController
     $this->helpContent[$apiMethodPrefix.'login']                   = $help;
     $this->apicallbacks[$apiMethodPrefix.'login']                  = array(&$this, '_Login');
     
+    $help = array();
+    $help['params'] = array();
+    $help['params']['id'] = 'Element Id';
+    $help['params']['type'] = 'Element Type: bitstream='.MIDAS_RESOURCE_BITSTREAM.', item='.MIDAS_RESOURCE_ITEM.', revision='.MIDAS_RESOURCE_REVISION.', folder='.MIDAS_RESOURCE_FOLDER.', community='.MIDAS_RESOURCE_COMMUNITY;
+    $help['example'] = array();
+    $help['return'] = 'Universal identifier';
+    $help['description'] = 'Get uuid';
+    $this->helpContent[$apiMethodPrefix.'uuid.get'] = $help;    
+    $this->apicallbacks[$apiMethodPrefix.'uuid.get']               = array(&$this, '_UuidGet');
+    
+    $help = array();
+    $help['params'] = array();
+    $help['params']['uuid'] = 'Universal identifier';
+    $help['example'] = array();
+    $help['return'] = 'Universal identifier (Dao)';
+    $help['description'] = 'Get Universal identifier (contain resource id and type)';
+    $this->helpContent[$apiMethodPrefix.'resource.get'] = $help; 
+    $this->apicallbacks[$apiMethodPrefix.'resource.get']           = array(&$this, '_ResourceGet');
+        
+    
     
     /* ----- Upload ------*/
     $help = array();
@@ -110,6 +130,14 @@ class Api_IndexController extends Api_AppController
     $help['description'] = 'Get offset';
     $this->helpContent[$apiMethodPrefix.'upload.getoffset'] = $help;    
     $this->apicallbacks[$apiMethodPrefix.'upload.getoffset']       = array(&$this, '_UploadApiGetOffset');
+   
+    $help = array();
+    $help['params'] = array();
+    $help['example'] = array();
+    $help['return'] = '';
+    $help['description'] = 'Upload a bitstream';
+    $this->helpContent[$apiMethodPrefix.'upload.bitstream'] = $help;    
+    $this->apicallbacks[$apiMethodPrefix.'upload.bitstream']       = array(&$this, '_UploadBitstream');
     
     
     /* ----- Community ------*/
@@ -214,7 +242,7 @@ class Api_IndexController extends Api_AppController
     */
     
 /*
-    $this->apicallbacks[$apiMethodPrefix.'upload.bitstream']       = array(&$this, '_UploadBitstream');
+    
 
     $this->apicallbacks[$apiMethodPrefix.'item.create']            = array(&$this, '_ItemCreate');
     $this->apicallbacks[$apiMethodPrefix.'item.get']               = array(&$this, '_ItemGet');
@@ -233,8 +261,7 @@ class Api_IndexController extends Api_AppController
     $this->apicallbacks[$apiMethodPrefix.'bitstream.keyfile']      = array(&$this, '_BitstreamKeyFile');
     $this->apicallbacks[$apiMethodPrefix.'bitstream.locations']    = array(&$this, '_BitstreamLocations');
 
-    $this->apicallbacks[$apiMethodPrefix.'uuid.get']               = array(&$this, '_UuidGet');
-    $this->apicallbacks[$apiMethodPrefix.'resource.get']           = array(&$this, '_ResourceGet');
+
     $this->apicallbacks[$apiMethodPrefix.'resources.search']       = array(&$this, '_ResourcesSearch');
     $this->apicallbacks[$apiMethodPrefix.'newresources.get']       = array(&$this, '_NewResourcesGet');
     $this->apicallbacks[$apiMethodPrefix.'path.to.root']           = array(&$this, '_PathToRoot');
@@ -243,7 +270,6 @@ class Api_IndexController extends Api_AppController
 
     $this->apicallbacks[$apiMethodPrefix.'check.user.agreement']   = array(&$this, '_CheckUserAgreement');
 
-    $this->apicallbacks[$apiMethodPrefix.'example.reversestring']  = array(&$this, '_ExampleReverseString');*/
     
     
 
@@ -302,52 +328,26 @@ class Api_IndexController extends Api_AppController
     // Handle XML-RPC request
     $this->kwWebApiCore = new KwWebApiRestCore( $this->apiSetup, $this->apicallbacks, $request_data);
     }
-
-  /** Controller action handling XMLRPC request */
-  function xmlrpcAction($method_name = '')
+  /** Controller action handling JSON request */
+  function jsonAction()
     {
-    $request_data = '';
-    // NOT IMPLEMENTED
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
 
-    if($this->apiEnable)
+    $request_data = $this->_getAllParams();
+      
+    $method_name = $this->_getParam('method');
+    if( !isset ($method_name))
       {
-      // Handle XML-RPC request
-      //$this->kwWebApiCore = new KwWebApiXmlRpcCore( $this->apiSetup, $this->apicallbacks, $request_data);
-      die(__FUNCTION__.' API not implemented');
+      echo "Inconsistent request";
+      exit;
       }
-    else
-      {
-      die("Midas Api disabled - Check 'condig.api.php' file");
-      }
+    
+    $request_data=$this->_getAllParams();
+    // Handle XML-RPC request
+    $this->kwWebApiCore = new KwWebApiJsonCore( $this->apiSetup, $this->apicallbacks, $request_data);
     }
 
-  /** Controller action handling SOAP request */
-  function soapAction($method_name = '')
-    {
-    $request_data = '';
-    // NOT IMPLEMENTED
-
-    if($this->apiEnable)
-      {
-      // Handle XML-RPC request
-      //$this->kwWebApiCore = new KwWebApiSoapCore( $this->apiSetup, $this->apicallbacks, $request_data);
-      die(__FUNCTION__.' API not implemented');
-      }
-    else
-      {
-      die("Midas Api disabled - Check 'condig.api.php' file");
-      }
-    }
-
-  /** Just an expamle that reverses a string */
-  function _ExampleReverseString($args)
-    {
-    if( !array_key_exists('myparam', $args) )
-      {
-      throw new Exception('Parameter myparam is not defined', -150);
-      }
-    return strrev( $args['myparam'] );
-    }
 
   /** Return the information */
   function _Version( $args )
@@ -449,26 +449,64 @@ class Api_IndexController extends Api_AppController
       throw new Exception('POST or PUT method required', -153);
       }
 
-    $userid = $this->_getUserId($args);
+    $userDao = _getUser($args);
     
-    if(!array_key_exists('uuid', $args))
+    if($userDao == false)
       {
-      throw new Exception('Parameter uuid is not defined', -150);
+      throw new Exception('Please log in', -150);
       }
-    $uuid = $args['uuid'];
+      
+    if(array_key_exists('itemrevision_id', $args))
+      {
+      $revision = $this->ItemRevision->load($args['itemrevision_id']);
+      if($revision != false)
+        {
+        throw new Exception('Unable to find revision', -150);
+        }
+      $item = $revision->getItem();
+      if($item != false)
+        {
+        throw new Exception('Unable to find item', -150);
+        }
+      if(!$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Permission error', -150);
+        }
+      }
+    elseif(array_key_exists('item_id', $args))
+      {      
+      $item = $this->Item->load($args['item_id']);
+      if($item != false)
+        {
+        throw new Exception('Unable to find item', -150);
+        }
+      if(!$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Permission error', -150);
+        }
+      }
+    elseif(array_key_exists('folder_id', $args))
+      {
+      $folder = $this->Folder->load($args['folder_id']);
+      if($folder != false)
+        {
+        throw new Exception('Unable to find folder', -150);
+        }
+      if(!$this->Folder->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Permission error', -150);
+        }
+      }
+    else
+      {
+      throw new Exception('Parameter itemrevision_id or item_id or folder_id is not defined', -150);
+      }
 
     if(!array_key_exists('itemid', $args))
       {
       throw new Exception('Parameter itemid is not defined', -150);
       }
-    $itemid = $args['itemid'];
 
-    if(!$this->User->isPolicyValid($itemid, $userid, MIDAS_RESOURCE_ITEM, MIDAS_POLICY_ADD))
-      {
-      throw new Exception('Invalid policy', -151);
-      }
-
-    // mode : ["multipart" | "stream"]
     $mode = array_key_exists('mode', $args) ? $args['mode'] : "stream";
 
     if ($mode == "stream")
@@ -498,29 +536,6 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Invalid upload mode', -155);
       }
-
-    // Forward parameter to the item controller
-    $ret = $this->requestAction(
-        array( 'controller' => 'item', 'action' => 'upload' ),
-        array( 'pass' => array( $itemid, $uuid, $filesize ),
-               'url' => array(
-                        'authmethod' => 'api',
-                        'key'        => $args['token'],
-                        'name'       => $filename,
-                        'path'       => $filepath,
-                        'sessionid'  => ''
-                        )
-        ),
-        'return'
-    );
-
-    if ( empty($ret) )
-      {
-      throw new Exception('Upload failed', -850);
-      }
-
-    $data['id']   = $ret;
-    $data['size'] = $filesize;
 
     return $data;
     }
@@ -1223,17 +1238,48 @@ class Api_IndexController extends Api_AppController
 
     $id = $args['id'];
     $type = $args['type'];
-    $uuid = $this->Api->getUUID($id,$type);
+    $modelLoad = new MIDAS_ModelLoader();
+    switch($type)
+      {
+      case MIDAS_RESOURCE_ASSETSTORE:
+        $model = $modelLoad->loadModel('Assetstore');
+        break;
+      case MIDAS_RESOURCE_BITSTREAM:
+        $model = $modelLoad->loadModel('Bitstream');
+        break;
+      case MIDAS_RESOURCE_ITEM:
+        $model = $modelLoad->loadModel('Item');
+        break;
+      case MIDAS_RESOURCE_COMMUNITY:
+        $model = $modelLoad->loadModel('Community');
+        break;
+      case MIDAS_RESOURCE_REVISION:
+        $model = $modelLoad->loadModel('ItemRevision');
+        break;
+      case MIDAS_RESOURCE_FOLDER:
+        $model = $modelLoad->loadModel('Folder');
+        break;
+      case MIDAS_RESOURCE_USER:
+        $model = $modelLoad->loadModel('User');
+        break;
+      default :
+        throw new Zend_Exception("Undefined type");
+      }
+    $dao = $model->load($id);
 
-    if($uuid == '')
+    if($dao == false)
       {
       throw new Exception('Invalid resource type or id.', -151);
       }
+      
+    $uuid = $this->Uniqueidentifier->getIndentifier($dao);
 
-    $data['id'] = $id;
-    $data['type'] = $type;
-    $data['uuid'] = $uuid;
-    return $data;
+    if($uuid == false)
+      {
+      throw new Exception('Invalid resource type or id.', -151);
+      }
+      
+    return $uuid->toArray();
     }
 
   /** Get resource given a uuid */
@@ -1245,14 +1291,14 @@ class Api_IndexController extends Api_AppController
       }
 
     $uuid = $args['uuid'];
-    $resource = $this->Api->getResourceForUuid($uuid);
+    $resource = $this->Uniqueidentifier->getByUid($uuid);
 
-    if(!isset($resource['type']))
+    if($resource == false)
       {
       throw new Exception('No resource for the given UUID.', -151);
       }
 
-    return $resource;
+    return $resource->toArray();
     }
 
   /** Returns a path of uuids from the root community to the given node */
