@@ -32,8 +32,6 @@ class InstallController extends AppController
     $this->view->header = "Step1: Server Configuration";
         // Check PHP extension / function
     $phpextensions = array (
-      "curl_init"  => array(false, "Certain features, such as statistics won't be available. It is recommended to enable/install cURL."),
-      "openssl"    => array(false, "Bitstreams signature won't be available. It is recommended to enable/install OpenSSL."),
       "simplexml"  => array(false, ""), 
     );
     $this->view->phpextension_missing = $this->Component->Utility->checkPhpExtensions($phpextensions);

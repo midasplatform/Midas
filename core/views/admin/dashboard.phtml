@@ -1,0 +1,31 @@
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/admin/admin.dashboard.css" />
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/admin/admin.dashboard.js"></script>
+
+
+<?php
+  foreach($this->dashboard as $module => $dasboard)
+    {
+    echo "<h3>".ucfirst($module)."</h3>";
+    echo "<table>";
+    foreach($dasboard as $name => $status)
+      {
+      echo "<tr>";
+      echo "  <td>$name</td>";
+      if($status)
+        {
+        echo "  <td><img src='{$this->coreWebroot}/public/images/icons/ok.png' /></td>";
+        }
+      else
+        {
+        echo "  <td><img src='{$this->coreWebroot}/public/images/icons/nok.png' /></td>";
+        }
+      if(isset($status[1]))
+        {
+        echo "  <td>$status[1]</td>";
+        }
+      echo "</tr>";
+      }
+    echo "</table>";
+    }
+?>
+

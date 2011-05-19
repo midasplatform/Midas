@@ -258,6 +258,24 @@ class AdminController extends AppController
     $this->view->modulesLog = $modules;
     }//showlogAction
     
+  /** function dashboard*/
+  function dashboardAction()
+    {
+    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
+      {
+      throw new Zend_Exception("You should be an administrator");
+      }
+    if(!$this->getRequest()->isXmlHttpRequest())
+      {
+      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      }
+      
+    $this->_helper->layout->disableLayout();
+    
+    $this->view->dashboard =  Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_GET_DASBOARD);
+    
+    }//end dashboardAction
+    
   /** upgrade database*/
   function upgradeAction()
     {

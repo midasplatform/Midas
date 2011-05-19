@@ -12,11 +12,66 @@ class Ldap_Notification extends MIDAS_Notification
       case MIDAS_NOTIFY_LOGIN:
         return $this->ldapLogin($params);
         break;
+      case MIDAS_NOTIFY_GET_DASBOARD:
+        return $this->_getDasboard();
+        break;
 
       default:
         break;
       }
     }//end init
+    
+  /** generate Dasboard information */
+  private function _getDasboard()
+    {    
+    $config = Zend_Registry::get('configsModules');
+    $baseDn =  $config['ldap']->ldap->basedn;
+    $hostname =  $config['ldap']->ldap->hostname;
+    $proxybasedn = $config['ldap']->ldap->proxyBasedn;
+    $proxyPassword = $config['ldap']->ldap->proxyPassword;
+    $backupServer = $config['ldap']->ldap->backup;
+    $bindn = $config['ldap']->ldap->bindn;
+    $bindpw = $config['ldap']->ldap->bindpw;
+    $proxyPassword = $config['ldap']->ldap->proxyPassword;
+    
+    $ldap = ldap_connect($hostname);
+    
+    $server = false;
+    $backup = false;
+    
+     if(isset($ldap) && $ldap != '')
+      {
+      if($proxybasedn != '')
+        {
+        $proxybind = ldap_bind($ldap, $proxybasedn, $proxyPassword);
+        }
+        
+      $ldapbind = ldap_bind($ldap, $bindn, $bindpw);
+      if($ldapbind != false)
+        {
+        $server = true;
+        }
+        
+      if(!empty($backupServer))
+        {
+        $ldap = ldap_connect($backupServer);
+        $ldapbind = ldap_bind($ldap, $bindn, $bindpw);
+        if($ldapbind != false)
+          {
+          $backup = true;
+          }
+        }
+      }
+    
+    $return = array();
+    $return['LDAP Server'] = $server; 
+    if(!empty($backup))
+      {
+      $return['LDAP Backup Server'] = $backup;
+      }
+
+    return $return;
+    }//end _getDasboard
     
   /** login using ldap*/
   private function ldapLogin($params)

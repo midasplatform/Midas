@@ -58,11 +58,15 @@ class Ldap_ConfigController extends Ldap_AppController
         $applicationConfig['global']['ldap.autoAddUnknownUser'] = $this->_getParam('autoAddUnknownUser');
         $applicationConfig['global']['ldap.useActiveDirectory'] = $this->_getParam('useActiveDirectory');
         $applicationConfig['global']['ldap.bindn'] = '"'.$this->_getParam('bindn').'"';
-        if(isset($this->_getParam('bindpw')))
+        
+        $bindpw = $this->_getParam('bindpw');
+        if(isset($bindpw))
           {
           $applicationConfig['global']['ldap.bindpw'] = $this->_getParam('bindpw');
-          }        
-        if(isset($this->_getParam('proxyPassword')))
+          } 
+        
+        $proxyPassword = $this->_getParam('proxyPassword');
+        if(isset($proxyPassword))
           {
           $applicationConfig['global']['ldap.proxyPassword'] = $this->_getParam('proxyPassword');
           }        
