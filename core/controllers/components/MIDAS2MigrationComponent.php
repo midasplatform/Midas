@@ -7,7 +7,7 @@ require_once BASE_PATH.'/core/models/dao/ItemDao.php';
 class MIDAS2MigrationComponent extends AppComponent
 { 
   
-  /**  function to create the items */
+  /** function to create the items */
   private function _createFolderForItem($collectionId, $parentFolderid)
     {
     set_time_limit(0);
@@ -20,10 +20,10 @@ class MIDAS2MigrationComponent extends AppComponent
     $Folderpolicyuser = $modelLoader->loadModel("Folderpolicyuser");
     $Itempolicygroup = $modelLoader->loadModel("Itempolicygroup");
     
-    $colquery = pg_query("SELECT i.item_id,mtitle.text_value AS title,mabstract.text_value AS abstract".
+    $colquery = pg_query("SELECT i.item_id,mtitle.text_value AS title,mabstract.text_value AS abstract ".
                          "FROM item AS i ".
-                         "LEFT JOIN metadatavalue AS mtitle ON (i.item_id = mtitle.item_id AND mtitle.metadata_field_id = 64)".
-                         "LEFT JOIN metadatavalue AS mabstract ON (i.item_id = mabstract.item_id AND mabstract.metadata_field_id = 27)".
+                         "LEFT JOIN metadatavalue AS mtitle ON (i.item_id = mtitle.item_id AND mtitle.metadata_field_id = 64) ".
+                         "LEFT JOIN metadatavalue AS mabstract ON (i.item_id = mabstract.item_id AND mabstract.metadata_field_id = 27) ".
                          "WHERE i.owning_collection=".$collectionId);
     while(pg_fetch_array($colquery))
       {
@@ -34,7 +34,7 @@ class MIDAS2MigrationComponent extends AppComponent
       $folderDao = false;
       try
         {
-        // Create the folder for the community  
+        // Create the folder for the item
         $folderDao = $Folder->createFolder($title, $abstract, $parentFolderid);
         
         // Assign the policies to the folder as the same as the parent folder
@@ -57,15 +57,16 @@ class MIDAS2MigrationComponent extends AppComponent
       catch(Zend_Exception $e) 
         {
         $this->getLogger()->info($e->getMessage());
-        //Zend_Debug::dump($e);
+        Zend_Debug::dump($e);
         //we continue
+        exit();
         }
       
       if($folderDao)  
         { 
         // Create the item from the bitstreams
-        $bitquery = pg_query("SELECT 	b.bitstream_id,b.name,b.description,b.internal_id FROM bitstream AS b,item2bitstream AS i2b".
-                            "WHERE i2b.bitstream_id = b.bitstream_id AND i2b.item_id=".$item_id);
+        $bitquery = pg_query("SELECT 	b.bitstream_id,b.name,b.description,b.internal_id FROM bitstream AS b,item2bitstream AS i2b ".
+                             "WHERE i2b.bitstream_id = b.bitstream_id AND i2b.item_id=".$item_id);
         while($bitquery_array = pg_fetch_array($bitquery))
           {
           $filename = $bitquery_array['name'];
@@ -112,7 +113,7 @@ class MIDAS2MigrationComponent extends AppComponent
       }
     } // end _createFolderForItem()
     
-  /**  function to create the collections */
+  /** function to create the collections */
   private function _createFolderForCollection($communityId, $parentFolderid)
     {
     set_time_limit(0);
@@ -172,7 +173,7 @@ class MIDAS2MigrationComponent extends AppComponent
   
     
   /** Recursive function to create the communities */
-  private function _createFolderForCommunity($parentidMIDAS2, $parentFolderid)
+  private function _createFolderForCommunity($communityidMIDAS2, $parentFolderid)
     {
     set_time_limit(0);
     $modelLoader = new MIDAS_ModelLoader;
@@ -180,7 +181,11 @@ class MIDAS2MigrationComponent extends AppComponent
     $Folderpolicygroup = $modelLoader->loadModel("Folderpolicygroup");  
     $Folderpolicyuser = $modelLoader->loadModel("Folderpolicyuser");  
     
-    $comquery = pg_query("SELECT community_id,name,short_description,introductory_text FROM community WHERE owning_community=".$parentidMIDAS2);
+    // Create the collections attached to this community  
+    $this->_createFolderForCollection($communityidMIDAS2,$parentFolderid);
+        
+    // Find the subcommunities
+    $comquery = pg_query("SELECT community_id,name,short_description,introductory_text FROM community WHERE owning_community=".$communityidMIDAS2);
     while($comquery_array = pg_fetch_array($comquery))
       {
       $community_id = $comquery_array['community_id'];
@@ -215,21 +220,18 @@ class MIDAS2MigrationComponent extends AppComponent
         $this->getLogger()->info($e->getMessage());
         //Zend_Debug::dump($e);
         //we continue
-        }
-      
-      if($folderDao)  
+        } 
+
+       if($folderDao)  // The folder has been created for the community
         { 
+        // Find the subcommunities
         $this->_createFolderForCommunity($community_id, $folderDao->getFolderId());
         }
-      else
+       else
         {
         echo "Cannot create Folder for community: ".$name."<br>";
-        }
-      }
-
-    // Create the collections attached to this community  
-    $this->_createFolderForCollection($parentidMIDAS2, $parentFolderid);
-          
+        } // end cannot create folder
+      }  // end find information about the current community 
     } // end _createCommunity()
   
   /** */
@@ -244,7 +246,7 @@ class MIDAS2MigrationComponent extends AppComponent
       }
       
     // Connect to the local PGSQL database
-    $pgdb = pg_connect("host = localhost port = 5432 dbname = midasopen user = midas password = midas");
+    $pgdb = pg_connect("host='localhost' port='5432' dbname='midasopen' user='midas' password='midas'");
     if($pgdb === false)
       {
       throw new Zend_Exception("Cannot connect to the MIDAS2 database.");
@@ -253,7 +255,7 @@ class MIDAS2MigrationComponent extends AppComponent
     // Check that the password prefix is not defined
     if(Zend_Registry::get('configGlobal')->password->prefix != '')
       {
-      throw new Zend_Exception("Cannot connect to the MIDAS2 database.");  
+      throw new Zend_Exception("Password prefix cannot be set because MIDAS2 doesn't use salt.");  
       }
       
     $modelLoader = new MIDAS_ModelLoader;

@@ -60,9 +60,15 @@ abstract class FolderModelBase extends AppModel
       {
       throw new Zend_Exception("Should be a folder.");
       }
-    if(!is_string($name) || !is_string($description))
+      
+    if(empty($name))
       {
-      throw new Zend_Exception("Should be a string.");
+      throw new Zend_Exception("Name cannot be empty.");
+      }
+       
+    if(!is_string($name))
+      {
+      throw new Zend_Exception("Name should be a string.");
       }
       
     if($parent instanceof FolderDao)
