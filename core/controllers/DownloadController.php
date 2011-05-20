@@ -58,7 +58,7 @@ class DownloadController extends AppController
       foreach($itemIds as $itemId)
         {
         // check revision
-        $tmp = explode(', ', $itemId);
+        $tmp = explode(',', $itemId);
         if(empty($tmp[0]))
           {
           continue;

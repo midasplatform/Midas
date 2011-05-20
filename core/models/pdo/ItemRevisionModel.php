@@ -7,6 +7,53 @@ require_once BASE_PATH.'/core/models/base/ItemRevisionModelBase.php';
  */
 class ItemRevisionModel extends ItemRevisionModelBase
 {
+     
+  /** delete a revision*/
+  function delete($revisiondao)
+    {
+    if(!$revisiondao instanceof ItemRevisionDao)
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    $bitstreams = $revisiondao->getBitstreams();
+    $this->ModelLoader = new MIDAS_ModelLoader();
+    $bitstream_model = $this->ModelLoader->loadModel('Bitstream');
+    foreach($bitstreams as $bitstream)
+      {
+      $bitstream_model->delete($bitstream);
+      }
+      
+      
+    $deleteType = array(MIDAS_FEED_CREATE_REVISION);
+    $sql = $this->database->select()
+                          ->setIntegrityCheck(false)
+                          ->from(array('p' => 'feed'))
+                          ->where('ressource = ?', $revisiondao->getKey());
+    
+    $rowset = $this->database->fetchAll($sql);
+    $this->ModelLoader = new MIDAS_ModelLoader();
+    $feed_model = $this->ModelLoader->loadModel('Feed');
+    foreach($rowset as $row)
+      {
+      $feed = $this->initDao('Feed', $row);
+      if(in_array($feed->getType(), $deleteType))
+        {
+        $feed_model->delete($feed);
+        }
+      }
+      
+    $modelLoad = new MIDAS_ModelLoader();
+    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
+    $uudao = $uuModel->getIndentifier($revisiondao);
+    if($uudao)
+      {
+      $uuModel->delete($uudao);
+      }
+    parent::delete($revisiondao);
+    $revisiondao->saved = false;
+    unset($revisiondao->itemrevision_id);
+    }//end delete
+    
     
   /** Returns the latest revision of a model */
   function getLatestRevision($itemdao)

@@ -1,5 +1,4 @@
 <?php
-
 class Upgrade_3_0_7 extends MIDASUpgrade
 { 
   public function preUpgrade()

@@ -38,6 +38,7 @@ class NotifyErrorComponent  extends AppComponent
           $message .= "It seems you have just encountered an unknown issue.";  
           $message .= "Our team has been notified and will deal with the problem as soon as possible.";  
           header('content-type: text/plain');
+          ob_clean();
           if($e['type'] == E_NOTICE)
             {
             $e['typeText'] = 'E_NOTICE';
@@ -101,6 +102,7 @@ class NotifyErrorComponent  extends AppComponent
             return;
             }
           header('content-type: text/plain');
+          ob_clean();
           echo $this->getFatalErrorMessage($e);
         }
       $logger->crit($this->getFatalErrorMessage($e)); 

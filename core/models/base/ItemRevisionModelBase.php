@@ -36,33 +36,6 @@ class ItemRevisionModelBase extends AppModel
     $uuModel = $modelLoad->loadModel('Uniqueidentifier');
     $uuModel->newUUID($dao);
     }
-    
-  /** delete a revision*/
-  function delete($revisiondao)
-    {
-    if(!$revisiondao instanceof ItemRevisionDao)
-      {
-      throw new Zend_Exception("Error param.");
-      }
-    $bitstreams = $revisiondao->getBitstreams();
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $bitstream_model = $this->ModelLoader->loadModel('Bitstream');
-    foreach($bitstreams as $bitstream)
-      {
-      $bitstream_model->delete($bitstream);
-      }
-      
-    $modelLoad = new MIDAS_ModelLoader();
-    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
-    $uudao = $uuModel->getIndentifier($revisiondao);
-    if($uudao)
-      {
-      $uuModel->delete($uudao);
-      }
-    parent::delete($revisiondao);
-    $revisiondao->saved = false;
-    unset($revisiondao->itemrevision_id);
-    }//end delete
-    
+ 
   
 } // end class ItemRevisionModelBase

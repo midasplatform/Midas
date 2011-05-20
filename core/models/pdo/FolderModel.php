@@ -170,6 +170,80 @@ class FolderModel extends FolderModelBase
     return $folders;
     }
  
+    
+        
+  /** Get the folder tree */  
+  function getAllChildren($folder, $userDao)
+    {    
+    $isAdmin = false;
+    if($userDao == null)
+      {
+      $userId = -1;
+      }
+    else if(!$userDao instanceof UserDao)
+      {
+      throw new Zend_Exception("Should be an user.");
+      }
+    else
+      {
+      $userId = $userDao->getUserId();
+      if($userDao->isAdmin())
+        {
+        $isAdmin = true;
+        }
+      }
+
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder" );
+      }
+    $subqueryUser = $this->database->select()
+                    ->setIntegrityCheck(false)
+                    ->from(array('f' => 'folder'));
+    if(!$isAdmin)
+      {
+      $subqueryUser             ->join(array('fpu' => 'folderpolicyuser'), '
+                          f.folder_id = fpu.folder_id AND '.$this->database->getDB()->quoteInto('fpu.policy >= ?', $policy).'
+                             AND '.$this->database->getDB()->quoteInto('user_id = ? ', $userId).' ', array());
+      }
+    $subqueryUser                 ->where('left_indice > ?', $folder->getLeftIndice())
+                    ->where('right_indice < ?', $folder->getRightIndice());
+
+    $subqueryGroup = $this->database->select()
+                  ->setIntegrityCheck(false)
+                  ->from(array('f' => 'folder'));
+    if(!$isAdmin)
+      {
+      $subqueryGroup      ->join(array('fpg' => 'folderpolicygroup'), '
+                              f.folder_id = fpg.folder_id  AND '.$this->database->getDB()->quoteInto('fpg.policy >= ?', $policy).'
+                                 AND ( '.$this->database->getDB()->quoteInto('group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                                      group_id IN (' .new Zend_Db_Expr(
+                                      $this->database->select()
+                                           ->setIntegrityCheck(false)
+                                           ->from(array('u2g' => 'user2group'),
+                                                  array('group_id'))
+                                           ->where('u2g.user_id = ?', $userId)
+                                           ) .'))', array());
+      }
+
+    $subqueryGroup  ->where('left_indice > ?', $folder->getLeftIndice())
+                  ->where('right_indice < ?', $folder->getRightIndice());
+
+    $subSqlFolders = $this->database->select()
+            ->union(array($subqueryUser, $subqueryGroup));
+
+
+    $rowset = $this->database->fetchAll($subSqlFolders);
+    
+    $folders = array();
+    
+    foreach($rowset as $row)
+      {
+      $folders[] = $this->initDao('Folder', $row);
+      }
+      
+    return $folders;  
+    }  
 
   /** Custom delete function */
   function delete($folder, $recursive = false)

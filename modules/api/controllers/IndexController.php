@@ -7,6 +7,7 @@ class Api_IndexController extends Api_AppController
 {
   public $_moduleModels=array('Userapi');
   public $_models=array('Community', 'ItemRevision', 'Item', 'User', 'Uniqueidentifier', "Folderpolicyuser", 'Folderpolicygroup', 'Folder');
+  public $_components=array('Upload', 'Search');
 
   var $kwWebApiCore = null;
 
@@ -112,7 +113,34 @@ class Api_IndexController extends Api_AppController
     $this->helpContent[$apiMethodPrefix.'resource.get'] = $help; 
     $this->apicallbacks[$apiMethodPrefix.'resource.get']           = array(&$this, '_ResourceGet');
         
+    $help = array();
+    $help['params'] = array();
+    $help['params']['token'] = '(Optional) Authentification token';
+    $help['params']['search'] = 'Search Query';
+    $help['params']['order'] = '(Optional) name or date or view. Default view';
+    $help['example'] = array();
+    $help['return'] = 'Array of resource)';
+    $help['description'] = 'Global search';
+    $this->helpContent[$apiMethodPrefix.'resource.search'] = $help; 
+    $this->apicallbacks[$apiMethodPrefix.'resource.search']       = array(&$this, '_ResourcesSearch');
     
+    $help = array();
+    $help['params'] = array();
+    $help['params']['uuid'] = 'Unique identifier of the resource';
+    $help['example'] = array();
+    $help['return'] = 'Array of resource';
+    $help['description'] = 'Return the path to the root';
+    $this->helpContent[$apiMethodPrefix.'path.to.root'] = $help; 
+    $this->apicallbacks[$apiMethodPrefix.'path.to.root']           = array(&$this, '_PathToRoot');
+    
+    $help = array();
+    $help['params'] = array();
+    $help['params']['uuid'] = 'Unique identifier of the resource';
+    $help['example'] = array();
+    $help['return'] = 'Array of resource';
+    $help['description'] = 'Return the path from the root';
+    $this->helpContent[$apiMethodPrefix.'path.from.root'] = $help; 
+    $this->apicallbacks[$apiMethodPrefix.'path.from.root']         = array(&$this, '_PathFromRoot');
     
     /* ----- Upload ------*/
     $help = array();
@@ -133,11 +161,16 @@ class Api_IndexController extends Api_AppController
    
     $help = array();
     $help['params'] = array();
+    $help['params']['token'] = 'Authentification token';
+    $help['params']['mode'] = '(Optional) stream or multipart. Default: stream';
+    $help['params']['folder_id'] = 'If set, will create a new item in the folder';
+    $help['params']['item_id'] = 'If set, will create a new revision in the item';
+    $help['params']['revision'] = 'If set, will create a new add files to a revision';
     $help['example'] = array();
-    $help['return'] = '';
-    $help['description'] = 'Upload a bitstream';
-    $this->helpContent[$apiMethodPrefix.'upload.bitstream'] = $help;    
-    $this->apicallbacks[$apiMethodPrefix.'upload.bitstream']       = array(&$this, '_UploadBitstream');
+    $help['return'] = 'Item information';
+    $help['description'] = 'Upload a file (using put or post method)';
+    $this->helpContent[$apiMethodPrefix.'upload.file'] = $help;    
+    $this->apicallbacks[$apiMethodPrefix.'upload.file']       = array(&$this, '_UploadFile');
     
     
     /* ----- Community ------*/
@@ -229,70 +262,50 @@ class Api_IndexController extends Api_AppController
     $this->helpContent[$apiMethodPrefix.'folder.content'] = $help;  
     $this->apicallbacks[$apiMethodPrefix.'folder.content']         = array(&$this, '_FolderContent');
     
-    /* TODO
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = '(Optional) Authentification token';
     $help['params']['id'] = 'Id of the folder';
     $help['example'] = array();
-    $help['return'] = 'Array of Items and Folders';
+    $help['return'] = 'Array of Folders';
     $help['description'] = 'Get folder Tree';
     $this->helpContent[$apiMethodPrefix.'folder.tree'] = $help;  
     $this->apicallbacks[$apiMethodPrefix.'folder.tree']         = array(&$this, '_FolderTree');    
-    */
     
-/*
-    
-
-    $this->apicallbacks[$apiMethodPrefix.'item.create']            = array(&$this, '_ItemCreate');
+    /** ------ ITEM --- */
+    $help = array();
+    $help['params'] = array();
+    $help['params']['token'] = '(Optional) Authentification token';
+    $help['params']['id'] = 'Id of the item';
+    $help['example'] = array();
+    $help['return'] = 'Item Information';
+    $help['description'] = 'Get an item information (contains its revisions information)';
+    $this->helpContent[$apiMethodPrefix.'item.get'] = $help;  
     $this->apicallbacks[$apiMethodPrefix.'item.get']               = array(&$this, '_ItemGet');
-    $this->apicallbacks[$apiMethodPrefix.'item.abstract.get']      = array(&$this, '_ItemAbstractGet');
-    $this->apicallbacks[$apiMethodPrefix.'item.title.get']         = array(&$this, '_ItemTitleGet');
-    $this->apicallbacks[$apiMethodPrefix.'item.resource.create']   = array(&$this, '_ItemResourceCreate');
+    
+    $help = array();
+    $help['params'] = array();
+    $help['params']['token'] = '(Optional) Authentification token';
+    $help['params']['id'] = 'Id of the item';
+    $help['params']['revision'] = '(Optional) If not set, will download last revision';
+    $help['example'] = array();
+    $help['return'] = 'File';
+    $help['description'] = 'Download an item';
+    $this->helpContent[$apiMethodPrefix.'item.download'] = $help;  
     $this->apicallbacks[$apiMethodPrefix.'item.download']          = array(&$this, '_ItemDownload');
+    
+    $help = array();
+    $help['params'] = array();
+    $help['params']['token'] = 'Authentification token';
+    $help['params']['id'] = 'Id of the item';
+    $help['example'] = array();
+    $help['return'] = '';
+    $help['description'] = 'Delete an item (an its bitstream)';
+    $this->helpContent[$apiMethodPrefix.'item.delete'] = $help;
     $this->apicallbacks[$apiMethodPrefix.'item.delete']            = array(&$this, '_ItemDelete');
-    $this->apicallbacks[$apiMethodPrefix.'item.keys']              = array(&$this, '_ItemKeys');
-
-    $this->apicallbacks[$apiMethodPrefix.'bitstream.download']     = array(&$this, '_BitstreamDownload');
-    $this->apicallbacks[$apiMethodPrefix.'bitstream.by.hash']      = array(&$this, '_BitstreamDownloadByHash');
-    $this->apicallbacks[$apiMethodPrefix.'bitstream.get']          = array(&$this, '_BitstreamGet');
-    $this->apicallbacks[$apiMethodPrefix.'bitstream.delete']       = array(&$this, '_BitstreamDelete');
-    $this->apicallbacks[$apiMethodPrefix.'bitstream.count']        = array(&$this, '_BitstreamCount');
-    $this->apicallbacks[$apiMethodPrefix.'bitstream.keyfile']      = array(&$this, '_BitstreamKeyFile');
-    $this->apicallbacks[$apiMethodPrefix.'bitstream.locations']    = array(&$this, '_BitstreamLocations');
-
-
-    $this->apicallbacks[$apiMethodPrefix.'resources.search']       = array(&$this, '_ResourcesSearch');
-    $this->apicallbacks[$apiMethodPrefix.'newresources.get']       = array(&$this, '_NewResourcesGet');
-    $this->apicallbacks[$apiMethodPrefix.'path.to.root']           = array(&$this, '_PathToRoot');
-    $this->apicallbacks[$apiMethodPrefix.'path.from.root']         = array(&$this, '_PathFromRoot');
-    $this->apicallbacks[$apiMethodPrefix.'convert.path.to.id']     = array(&$this, '_ConvertPathToId');
-
-    $this->apicallbacks[$apiMethodPrefix.'check.user.agreement']   = array(&$this, '_CheckUserAgreement');
-
     
-    
-
-    /*
-    // Load the plugins API
-    foreach($this->getPlugins() as $plugin=>$enable)
-      {
-      if($enable)
-        {
-        //$this->loadControllers(array("project.api"));
-        $pluginname = ucfirst($plugin);
-        App::Import('Controller',$pluginname.'.'.$pluginname.'Api');
-        $classname = $pluginname.'ApiController';
-        if(class_exists($classname))
-          {
-          $apicontroller = new $classname;
-          $apicontroller->setMIDASAPI($this);
-          $this->apicallbacks = array_merge($this->apicallbacks,$apicontroller->getCallbacks());
-          }
-        }
-      } // end loading plugins callbacks
-     * *
-     */
+    /*     
+    $this->apicallbacks[$apiMethodPrefix.'newresources.get']       = array(&$this, '_NewResourcesGet');     */
     }
 
   /** Initialize property allowing to generate XML */
@@ -412,17 +425,17 @@ class Api_IndexController extends Api_AppController
       exit;
       }
     $token = $args['token'];
-    $userapiDao=$this->Api_Userapi->getUserapiFromToken($token);
+    $userapiDao = $this->Api_Userapi->getUserapiFromToken($token);
     if(!$userapiDao)
       {
-      echo "Error token";
+      echo "Error token. Token does'nt exist";
       exit;
       }
     return $userapiDao->getUserId();
     }
     
   /** Return the user */
-  function _getUser( $args )
+  private function _getUser( $args )
     {
     $userid = $this->_getUserId($args);    
     $userDao = $this->User->load($userid);
@@ -442,29 +455,24 @@ class Api_IndexController extends Api_AppController
     }
 
   /** Upload a Bitstream */
-  function _UploadBitstream( $args )
+  function _UploadFile( $args )
     {
     if (!$this->_request->isPost() && !$this->_request->isPut())
       {
       throw new Exception('POST or PUT method required', -153);
       }
-
-    $userDao = _getUser($args);
+     
+    $userDao = $this->_getUser($args);
     
     if($userDao == false)
       {
       throw new Exception('Please log in', -150);
       }
       
-    if(array_key_exists('itemrevision_id', $args))
+    if(array_key_exists('revision', $args) && array_key_exists('item_id', $args))
       {
-      $revision = $this->ItemRevision->load($args['itemrevision_id']);
-      if($revision != false)
-        {
-        throw new Exception('Unable to find revision', -150);
-        }
-      $item = $revision->getItem();
-      if($item != false)
+      $item = $this->Item->load($args['item_id']);
+      if($item == false)
         {
         throw new Exception('Unable to find item', -150);
         }
@@ -472,11 +480,16 @@ class Api_IndexController extends Api_AppController
         {
         throw new Exception('Permission error', -150);
         }
+      $revision = $this->Item->getRevision($item, $args['revision']);
+      if($revision == false)
+        {
+        throw new Exception('Unable to find revision', -150);
+        }
       }
     elseif(array_key_exists('item_id', $args))
       {      
       $item = $this->Item->load($args['item_id']);
-      if($item != false)
+      if($item == false)
         {
         throw new Exception('Unable to find item', -150);
         }
@@ -488,7 +501,7 @@ class Api_IndexController extends Api_AppController
     elseif(array_key_exists('folder_id', $args))
       {
       $folder = $this->Folder->load($args['folder_id']);
-      if($folder != false)
+      if($folder == false)
         {
         throw new Exception('Unable to find folder', -150);
         }
@@ -502,11 +515,6 @@ class Api_IndexController extends Api_AppController
       throw new Exception('Parameter itemrevision_id or item_id or folder_id is not defined', -150);
       }
 
-    if(!array_key_exists('itemid', $args))
-      {
-      throw new Exception('Parameter itemid is not defined', -150);
-      }
-
     $mode = array_key_exists('mode', $args) ? $args['mode'] : "stream";
 
     if ($mode == "stream")
@@ -515,7 +523,6 @@ class Api_IndexController extends Api_AppController
       $args['uploadtoken'] = $token['token'];
       $args['length'] = $args['size'];
       $result = $this->uploadApi->process($args);
-
       $filename = $result['filename'];
       $filepath = $result['path'];
       $filesize = $result['size'];
@@ -536,112 +543,26 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Invalid upload mode', -155);
       }
-
-    return $data;
-    }
-
-  /** Create an item */
-  function _ItemCreate( $args )
-    {
-    if(!$this->RequestHandler->isPost())
+      
+    if(isset($folder))
       {
-      throw new Exception('POST method required', -153);
+      $item = $this->Component->Upload->createUploadedItem($userDao, $filename, $filepath, $folder);
       }
-
-    $userid = $this->_getUserId($args);
-
-    if(!array_key_exists('parentid', $args))
+    else if(isset($revision))
       {
-      throw new Exception('Parameter parentid is not defined', -150);
-      }
-
-    if(!array_key_exists('name', $args))
-      {
-      throw new Exception('Parameter name is not defined', -150);
-      }
-
-    // Get the parentid
-    $parentid = $args['parentid'];
-    if(!$this->User->isPolicyValid($parentid, $userid, MIDAS_RESOURCE_COLLECTION, MIDAS_POLICY_ADD))
-      {
-      throw new Exception('Invalid policy', -151);
-      }
-
-    // Get the name
-    $Title = $args['name'];
-
-    $Copyright = isset($args['copyright']) ? $args['copyright'] : '';
-    $Description = isset($args['description']) ? $args['description'] : '';
-    $Abstract = isset($args['abstract']) ? $args['abstract'] : '';
-    $Authors = isset($args['authors']) ? explode('/',$args['authors']) : array();
-    $Keywords = isset($args['keywords']) ? explode('/',$args['keywords']) : array();
-
-    $FirstNames = array();
-    $LastNames = array();
-    foreach($Authors as $author)
-      {
-      if($author == '') break;
-      $name = explode(",", $author);
-
-      if(count($name) >= 2)
-        {
-        $FirstNames[] = trim($name[0]);
-        $LastNames[] = trim($name[1]);
-        }
-      else
-        {
-        $FirstNames[] = '';
-        $LastNames[] = trim($name[0]);
-        }
-      }
-
-    for($i = 0; $i < count($Keywords); $i++)
-      {
-      $Keywords[$i] = trim($Keywords[$i]);
-      }
-
-    $uuid = isset($args['uuid']) ? $args['uuid'] : '';
-
-    $record = $this->Api->getResourceForUuid($uuid);
-    if(!empty($record))
-      {
-      if(!$this->User->isPolicyValid($record['id'], $userid, MIDAS_RESOURCE_ITEM, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception('Invalid policy', -151);
-        }
-
-      $metadata['title'] = $Title;
-      $metadata['abstract'] = $Abstract;
-      $metadata['description'] = $Description;
-      $metadata['copyright'] = $Copyright;
-      $metadata['firstname'] = $FirstNames;
-      $metadata['lastname'] = $LastNames;
-      $metadata['keyword'] = $Keywords;
-
-      if($this->Item->updateItem($record['id'], $userid, $metadata) === false)
-        {
-        throw new Exception('Item metadata update failed', -201);
-        }
-      return $record;
+      $tmp = array($item->getKey(), $revision->getRevision());
+      $item = $this->Component->Upload->createNewRevision($userDao, $filename, $filepath, $tmp, '');
       }
     else
       {
-      $itemid = $this->Item->createItem($parentid, $userid, $FirstNames, $LastNames, '',
-                        $Title, $Keywords, $Abstract, '', '', $Description, $Copyright,
-                        '', 0, 0, 0, 0, '', '', '',
-                        $this->getMidasBaseHandle(), false, false, $uuid);
-
-      if($itemid === false)
-        {
-        throw new Exception('Request failed', -200);
-        }
-
-      $data['id'] = $itemid;
-
-      return $data;
+      $tmp = array($item->getKey(), 99999);//new revision
+      $item = $this->Component->Upload->createNewRevision($userDao, $filename, $filepath, $tmp, '');
       }
+      
+    return $item->toArray();
     }
 
+  
   /** Create a community */
   function _CommunityCreate( $args )
     {    
@@ -778,34 +699,12 @@ class Api_IndexController extends Api_AppController
     $jsonContent = array();
     foreach($folders as $folder)
       {
-      $tmp = array();
-      $tmp['folder_id'] = $folder->getFolderId();
-      $tmp['name'] = $folder->getName();
-      $tmp['creation'] = $folder->getDate();
-      if($tmp['name'] == 'Public' || $tmp['name'] == 'Private')
-        {
-        $tmp['deletable'] = 'false';
-        }
-      else
-        {
-        $tmp['deletable'] = 'true';
-        }
-      $tmp['policy'] = $folder->policy;
-      $tmp['privacy_status'] = $folder->privacy_status;
-      $jsonContent[$folder->getParentId()]['folders'][] = $tmp;
+      $jsonContent[$folder->getParentId()]['folders'][] = $folder->toArray();
       unset($tmp);
       }
     foreach($items as $item)
       {
-      $tmp = array();
-      $tmp['item_id'] = $item->getItemId();
-      $tmp['name'] = $item->getName();
-      $tmp['parent_id'] = $item->parent_id;
-      $tmp['creation'] = $item->getDate();
-      $tmp['size'] = $item->getSizebytes();
-      $tmp['policy'] = $item->policy;
-      $tmp['privacy_status'] = $item->privacy_status;
-      $jsonContent[$item->parent_id]['items'][] = $tmp;
+      $jsonContent[$item->parent_id]['items'][] = $item->toArray();
       unset($tmp);
       }
       
@@ -815,10 +714,52 @@ class Api_IndexController extends Api_AppController
   /** Get the full tree from a community */
   function _FolderTree( $args )
     {
-    App::import("Component", "communitytree");
-    $userid = $this->_getUserId($args);
-    $tree = new communitytreeComponent();
-    return $tree->getTree(0,$userid);
+    if(!array_key_exists('id', $args))
+      {
+      throw new Exception('Parameter id is not defined', -155);
+      }
+
+    $id = $args['id'];
+    $folder = $this->Folder->load($id);
+    
+    $userDao = $this->_getUser($args);
+    $folders = $this->Folder->getAllChildren($folder, $userDao);
+    
+    $tree = array();
+    $folderTree = array();
+    
+    foreach($folders as $folder)
+      {
+      $mainnode = $folder->toArray();
+      
+      if($folder->getParentId() != -1)
+        {
+        if(isset($folderTree[$folder->getParentId()]))
+          {
+          $mainnode['depth'] = $folderTree[$folder->getParentId()]['depth']+1;
+          }
+        else
+          {
+          $mainnode['depth'] = 1;
+          }        
+        }
+      // Cut the name to fit in the tree
+      $maxsize = 24-($mainnode['depth']*2.5);
+      if(strlen($mainnode['name']) > $maxsize)
+        {
+        $mainnode['name'] = substr($mainnode['name'],0,$maxsize).'...';
+        }
+      $folderTree[$folder->getKey()] = $mainnode;
+      if($folder->getParentId() == -1)
+        {
+        $tree[] = &$folderTree[$folder->getKey()];  
+        }
+      else
+        {
+        $tree[$folder->getParentId()][] = &$folderTree[$folder->getKey()];
+        }  
+      }
+    return $tree;
     } //_CommunityTree
 
   /** Get information about the folder */
@@ -954,118 +895,51 @@ class Api_IndexController extends Api_AppController
     return array($abstract);
     }
 
-  /** Return the title given an item id */
-  function _ItemTitleGet( $args )
-    {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', -150);
-      }
-    $itemid = $args['id'];
-    $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($itemid,$userid,MIDAS_RESOURCE_ITEM,MIDAS_POLICY_READ))
-      {
-      throw new Exception('Invalid policy', -151);
-      }
-    $title = $this->Item->GetTitle($itemid);
-    return array($title);
-    }
-
-  /** Group resource given and item */
-  function _ItemResourceCreate( $args )
-    {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', -150);
-      }
-    $itemid = $args['id'];
-    $userid = $this->_getUserId($args);
-
-    if(!$this->User->isPolicyValid($itemid, $userid, MIDAS_RESOURCE_ITEM, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception('Invalid policy', -151);
-      }
-
-    // Forward parameter to the item controller
-    $ret = $this->requestAction(
-      array( 'controller' => 'item', 'action' => 'create_resource' ),
-      array( 'pass' => array( $itemid )),
-      'return'
-      );
-
-    return array($title);
-    //return true;
-    }
-
-  /** Return a list of item ids given a search criteria */
-  function _ItemSearch( $args )
-    {
-    if( ! array_key_exists( 'term', $args ) )
-      {
-      throw new Exception( 'Parameter term is not defined', -150 );
-      }
-
-    $searchTerm = $args['term'];
-    $userid = $this->_getUserId( $args );
-
-    $itemids = array();
-    foreach( $itemsearchids as $itemid )
-      {
-      if( ! $this->User->isPolicyValid( $itemid, $userid, MIDAS_RESOURCE_ITEM,MIDAS_POLICY_READ ) )
-        {
-        continue;
-        }
-      $itemids[] = $itemid;
-      }
-    return $itemids;
-    }
 
   /** Get the item */
   function _ItemGet( $args )
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -150);
+      throw new Exception('Parameter id is not defined', -155);
       }
 
     $itemid = $args['id'];
-    $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($itemid,$userid,MIDAS_RESOURCE_ITEM,MIDAS_POLICY_READ))
+    
+    if(array_key_exists('token', $args))
       {
-      throw new Exception('Invalid policy', -151);
+      $userDao = $this->_getUser($args);
       }
-
-    // We should do this in one SQL request
-    $data['id'] = $itemid;
-    $data['uuid'] = $this->Item->getUuid($itemid);
-    $data['parent'] = $this->Item->getOwningCollection($itemid);
-    $data['hasAgreement'] = $this->Item->hasAgreement($itemid) ? '1' : '0';
-    $data['title'] = $this->Item->getTitle($itemid);
-    $data['abstract'] = $this->Item->getAbstract($itemid);
-    $data['description'] = $this->Item->getDescription($itemid);
-    $data['size'] = $this->Resourcelog->getFileSize($itemid, MIDAS_RESOURCE_ITEM);
-
-    $authors = $this->Item->getAuthors($itemid);
-    $data['keywords'] = $this->Item->getKeywords($itemid);
-
-    foreach($authors as $author)
+    else
       {
-      $data['authors'][] = $author['lastname'].", ".$author['firstname'];
-      }
+      $userDao = false;
+      }   
+    
+    $item = $this->Item->load($itemid);
 
-    $i=0;
-    $bitstreamids = $this->Item->getBitstreams($itemid);
-    foreach($bitstreamids as $bitstreamid)
+    if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
       {
-      $data['bitstreams'][$i]['name'] = $this->Bitstream->getName($bitstreamid);
-      $data['bitstreams'][$i]['size'] = $this->Bitstream->getSizeInBytes($bitstreamid);
-      $data['bitstreams'][$i]['uuid'] = $this->Bitstream->getUuid($bitstreamid);
-      $data['bitstreams'][$i]['checksum'] = $this->Bitstream->getChecksum($bitstreamid);
-      $data['bitstreams'][$i]['id'] = $bitstreamid;
-      $i++;
+      throw new Exception("This item doesn't exist  or you don't have the permissions.", 200);
+      }   
+
+    $itemArray = $item->toArray();
+    $revisions = $item->getRevisions();
+    $revisionsArray = array();
+    foreach($revisions as $revision)
+      {
+      $bitstreamArray = array();
+      $bitstreams = $revision->getBitstreams();
+      foreach($bitstreams as $b)
+        {
+        $bitstreamArray[] = $b->toArray();
+        }
+      $tmp = $revision->toArray();
+      $tmp['bitstreams'] = $bitstreamArray;
+      $revisionsArray[] = $tmp;
       }
-    return $data;
-    }
+    $itemArray['revisions'] = $revisionsArray;
+    return $itemArray;
+    }// _CommunityGet
 
   /** Download a folder */
   function _FolderDownload( $args )
@@ -1101,18 +975,35 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -150);
+      throw new Exception('Parameter id is not defined', -155);
       }
 
-    $itemid = $args['id'];
-    $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($itemid,$userid,MIDAS_RESOURCE_ITEM,MIDAS_POLICY_READ))
+    $id = $args['id'];
+    
+    if(array_key_exists('token', $args))
       {
-      throw new Exception('Invalid policy', -151);
+      $userDao = $this->_getUser($args);
       }
+    else
+      {
+      $userDao = false;
+      }   
+    
+    $item = $this->Item->load($id);
 
-    $this->requestAction('/item/download/'.$itemid,array('return'));
-    exit();
+    if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+      {
+      throw new Exception("This item doesn't exist  or you don't have the permissions.", 200);
+      }   
+
+    if(isset($args['revision']))
+      {
+      $this->_redirect('/download/?items='.$item->getKey().','.$args['revision']);
+      }
+    else
+      {
+      $this->_redirect('/download/?items='.$item->getKey());
+      }
     }
 
   /** Return all locations for a bitstream */
@@ -1304,11 +1195,7 @@ class Api_IndexController extends Api_AppController
   /** Returns a path of uuids from the root community to the given node */
   function _PathFromRoot ( $args )
     {
-    if(!array_key_exists('uuid', $args))
-      {
-      throw new Exception('Parameter uuid is not defined', -150);
-      }
-    return array_reverse($this->Api->getPathToRoot($args['uuid']));
+    return array_reverse($this->_PathToRoot($args));
     }
 
   /** Returns a path of uuids from the given node to the root community */
@@ -1318,7 +1205,32 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter uuid is not defined', -150);
       }
-    return $this->Api->getPathToRoot($args['uuid']);
+      
+    $resource = $this->Uniqueidentifier->getByUid($args['uuid']);
+    
+    $return = array();
+    $return[] = $resource->toArray();
+
+    if($resource == false)
+      {
+      throw new Exception('No resource for the given UUID.', -151);
+      }
+    
+    $folder = $this->Uniqueidentifier->getResource($resource); 
+    
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Exception('Should be a folder.', -150);
+      }
+    
+    $parent = $folder->getParent();
+    while($parent !== false)
+      {
+      $resource = $this->Uniqueidentifier->getIndentifier($parent); ;
+      $return[] = $resource->toArray();
+      $parent = $parent->getParent();
+      }
+    return $return;
     }
 
   /** Search resources for the given words */
@@ -1328,41 +1240,14 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter search is not defined', -150);
       }
-    $userid = $this->_getUserId($args);
-
-    $results = $this->Search->searchResources($userid, $args['search']);
-    $retVal = array();
-
-    foreach($results['bitstreams'] as $bitstream)
+    $userDao = $this->_getUser($args);
+    
+    $order = 'view';
+    if(isset($args['order']))
       {
-      $retVal['bitstreams'][] = array(
-        'bitstream_id'=>$bitstream['bitstream_id'],
-        'bitstream_name'=>$bitstream['bitstream_name'],
-        'uuid'=>$bitstream['uuid']);
+      $order = $args['order'];
       }
-    foreach($results['items'] as $item)
-      {
-      $retVal['items'][] = array(
-        'item_id'=>$item['item_id'],
-        'item_name'=>$item['item_name'],
-        'uuid'=>$item['uuid']);
-      }
-    foreach($results['collections'] as $coll)
-      {
-      $retVal['collections'][] = array(
-        'collection_id'=>$coll['collection_id'],
-        'collection_name'=>$coll['collection_name'],
-        'uuid'=>$coll['uuid']);
-      }
-    foreach($results['communities'] as $comm)
-      {
-      $retVal['communities'][] = array(
-        'community_id'=>$comm['community_id'],
-        'community_name'=>$comm['community_name'],
-        'uuid'=>$comm['uuid']);
-      }
-
-    return $retVal;
+    return $this->Component->Search->searchAll($userDao, $args['search'], $order);;
     }
 
   /** Return all changed resources since a given timestamp, and provide a new timestamp */
@@ -1379,21 +1264,6 @@ class Api_IndexController extends Api_AppController
         }
       }
     $data['timestamp'] = $this->Api->getCurrentSQLTime();
-    return $data;
-    }
-
-  function _ConvertPathToId( $args )
-    {
-    if(!array_key_exists('path', $args))
-      {
-      throw new Exception('Parameter path is not defined', -150);
-      }
-    $data = $this->Api->convertPathToId($args['path']);
-
-    if($data === false)
-      {
-      throw new Exception('Invalid resource path', -151);
-      }
     return $data;
     }
 
@@ -1450,190 +1320,21 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', -155);
       }
-    $id = $args['id'];
-    $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($id, $userid, MIDAS_RESOURCE_ITEM, MIDAS_POLICY_DELETE))
+    
+    $userDao = $this->_getUser($args);
+    if($userDao == false)
       {
-      throw new Exception('Invalid policy', -151);
-      }
-    if(!$this->Item->delete($id))
-      {
-      throw new Exception("Failed to delete item $id", -100);
-      }
-    }
-
-  function _BitstreamDelete( $args )
-    {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', -155);
+      throw new Exception('Unable to find user', -150);
       }
     $id = $args['id'];
-    $userid = $this->_getUserId($args);
-    $parentid = $this->Bitstream->getItemId($id);
-    if(!$this->User->isPolicyValid($parentid, $userid, MIDAS_RESOURCE_ITEM, MIDAS_POLICY_REMOVE))
-      {
-      throw new Exception('Invalid policy', -151);
-      }
-    if(!$this->Bitstream->delete($id))
-      {
-      throw new Exception("Failed to delete bitstream $id", -100);
-      }
-    }
+    $item = $this->Item->load($id);
 
-  /** Outputs a count of all bitstreams under the given resource */
-  function _BitstreamCount( $args )
-    {
-    if(!array_key_exists('type', $args))
+    if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
       {
-      throw new Exception('Parameter type is not defined', -155);
-      }
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', -155);
-      }
-    $type = $args['type'];
-    $id = $args['id'];
-
-    if(!is_numeric($id) || $id < 1)
-      {
-      throw new Exception('Id must be a number greater than zero.', -155);
-      }
-    $userid = $this->_getUserId($args);
-
-    $count = 0;
-    switch($type)
-      {
-      case MIDAS_RESOURCE_COMMUNITY:
-        list($count,$size) = $this->Community->countBitstreams($id, $userid);
-        break;
-      case MIDAS_RESOURCE_COLLECTION:
-        list($count,$size) = $this->Collection->countBitstreams($id, $userid);
-        break;
-      case MIDAS_RESOURCE_ITEM:
-        list($count,$size) = $this->Item->countBitstreams($id, $userid);
-        break;
-      default:
-        throw new Exception('Invalid type provided.', -155);
-      }
-    return array('count'=>$count, 'size'=>$size);
-    }
-
-  function _BitstreamKeyFile( $args )
-    {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', -155);
-      }
-    $id = $args['id'];
-    $userid = $this->_getUserId($args);
-
-    if(!$this->User->isPolicyValid($id, $userid, MIDAS_RESOURCE_BITSTREAM, MIDAS_POLICY_READ))
-      {
-      throw new Exception('Invalid policy', -151);
-      }
-    if(!$this->Bitstream->getExists($id))
-      {
-      throw new Exception('Bitstream does not exist', -100);
-      }
-    $checksum = $this->Bitstream->getChecksum($id);
-    ob_end_clean();
-    $this->requestAction('/bitstream/keyfile/'.$checksum,array('return'));
-    exit();
-    }
-
-  function _ItemKeys( $args )
-    {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', -155);
-      }
-    $format = 'tgz';
-    if(array_key_exists('format', $args))
-      {
-      $format = $args['format'];
-      }
-    $zip = $format == 'zip' ? '1' : '0';
-    $id = $args['id'];
-    $userid = $this->_getUserId($args);
-
-    if(!$this->User->isPolicyValid($id, $userid, MIDAS_RESOURCE_ITEM, MIDAS_POLICY_READ))
-      {
-      throw new Exception('Invalid policy', -151);
-      }
-    if(!$this->Item->getExists($id))
-      {
-      throw new Exception('Item does not exist', -100);
-      }
-    // make a valid filename from the item title
-    $name = str_replace(" ", "_", $this->Item->getTitle($id) );
-    $name = str_replace(":", "_", $name);
-    $name = str_replace(";", "_", $name);
-    $name = str_replace("\n", "_", $name);
-    $name = str_replace("\\", "_", $name);
-    $name = str_replace("/", "_", $name);
-    $name = str_replace("&", "_", $name);
-
-    ob_end_clean();
-
-    $this->requestAction(
-        array( 'controller' => 'item', 'action' => 'downloadkeys' ),
-        array( 'pass' => array( $id ),
-               'url' => array('name' => $name, 'zip' => $zip)
-             ),
-        'return'
-    );
-    exit();
-    }
-
-  function _CheckUserAgreement( $args )
-    {
-    $userid = $this->_getUserId($args);
-    if(!$userid)
-      {
-      throw new Exception('Invalid user token', -151);
-      }
-    if(!array_key_exists('type', $args))
-      {
-      throw new Exception('Parameter type is not defined', -155);
-      }
-    $type = $args['type'];
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', -155);
-      }
-    $id = $args['id'];
-    if(!is_numeric($id) || $id < 1)
-      {
-      throw new Exception('Id must be a number greater than zero.', -155);
-      }
-
-    $communityid = 0;
-    switch($type)
-      {
-      case MIDAS_RESOURCE_COMMUNITY:
-        $communityid = $this->Community->hasAgreement($id);
-        break;
-      case MIDAS_RESOURCE_COLLECTION:
-        $communityid = $this->Collection->hasAgreement($id);
-        break;
-      case MIDAS_RESOURCE_ITEM:
-        $communityid = $this->Item->hasAgreement($id);
-        break;
-      case MIDAS_RESOURCE_BITSTREAM:
-        $communityid = $this->Bitstream->hasAgreement($id);
-        break;
-      default:
-        throw new Exception('Invalid type provided.', -155);
-      }
-    if(!$communityid)
-      {
-      throw new Exception('No license agreement found', -42);
-      }
-    $data['hasAgreed'] = $this->User->isAdmin($userid) ||
-      $this->CommunityAgreement->isInGroup($userid, $this->CommunityAgreement->getGroupId($communityid))
-      ? '1' : '0';
-    return $data;
+      throw new Exception("This item doesn't exist  or you don't have the permissions.", 200);
+      }  
+      
+    $this->Item->delete($item);
     }
   } // end class
 ?>

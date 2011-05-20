@@ -7,11 +7,11 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/index/index.i
   
   <div class="api.listmethods" id="api.listmethods">
     Available methods:
-    <ul class="api.listmethods">
+    <ul class="listmethods">
       <?php 
       foreach( $this->data['api.listmethods'] as $methodname )
         {
-        echo "<li>".$methodname." <a class='showHideHelp'>?</a></li>"; 
+        echo "<li class='methodListElement'>".$methodname." <a class='showHideHelp'>?</a></li>"; 
         if(isset($this->help[$methodname]))
           {
           echo "<div class='helpContent'>";
