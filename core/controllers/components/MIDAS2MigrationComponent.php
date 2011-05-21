@@ -2,10 +2,23 @@
 require_once BASE_PATH.'/core/models/dao/ItemRevisionDao.php';
 require_once BASE_PATH.'/core/models/dao/BitstreamDao.php';
 require_once BASE_PATH.'/core/models/dao/ItemDao.php';
+require_once BASE_PATH.'/core/models/dao/AssetstoreDao.php';
+require_once BASE_PATH.'/core/controllers/components/UploadComponent.php';
 
 /** Migration tool*/
 class MIDAS2MigrationComponent extends AppComponent
 { 
+  /** These variables should be set by the UI */
+  var $midas2User = "midas";
+  var $midas2Password = "midas";
+  var $midas2Host = "localhost";
+  var $midas2Database = "midas";
+  var $midas2Port = "5432";
+  var $midas2Assetstore = "C:/xampp/midas/assetstore"; // without end slash
+  var $assetstoreId = '1';
+  
+  /** Private variables */
+  var $userId;
   
   /** function to create the items */
   private function _createFolderForItem($collectionId, $parentFolderid)
@@ -16,6 +29,7 @@ class MIDAS2MigrationComponent extends AppComponent
     $Item = $modelLoader->loadModel("Item");  
     $ItemRevision = $modelLoader->loadModel("ItemRevision");
     $Group = $modelLoader->loadModel("Group");  
+    $Assetstore = $modelLoader->loadModel("Assetstore");  
     $Folderpolicygroup = $modelLoader->loadModel("Folderpolicygroup");  
     $Folderpolicyuser = $modelLoader->loadModel("Folderpolicyuser");
     $Itempolicygroup = $modelLoader->loadModel("Itempolicygroup");
@@ -25,11 +39,17 @@ class MIDAS2MigrationComponent extends AppComponent
                          "LEFT JOIN metadatavalue AS mtitle ON (i.item_id = mtitle.item_id AND mtitle.metadata_field_id = 64) ".
                          "LEFT JOIN metadatavalue AS mabstract ON (i.item_id = mabstract.item_id AND mabstract.metadata_field_id = 27) ".
                          "WHERE i.owning_collection=".$collectionId);
-    while(pg_fetch_array($colquery))
+    while($colquery_array = pg_fetch_array($colquery))
       {
-      $colquery_array = pg_fetch_array($colquery);
       $item_id = $colquery_array['item_id'];
       $title = $colquery_array['title'];
+     
+      // If title is empty we skip this item
+      if(empty($title))
+        {
+        continue; 
+        }
+      
       $abstract = $colquery_array['abstract'];
       $folderDao = false;
       try
@@ -59,7 +79,6 @@ class MIDAS2MigrationComponent extends AppComponent
         $this->getLogger()->info($e->getMessage());
         Zend_Debug::dump($e);
         //we continue
-        exit();
         }
       
       if($folderDao)  
@@ -86,24 +105,41 @@ class MIDAS2MigrationComponent extends AppComponent
           // Create a revision for the item
           $itemRevisionDao = new ItemRevisionDao;
           $itemRevisionDao->setChanges('Initial revision');    
-          //$itemRevisionDao->setUser_id($this->userSession->Dao->getUserId());
+          $itemRevisionDao->setUser_id($this->userId);
           $Item->addRevision($itemdao, $itemRevisionDao);
 
+          // Add the metadata
+          
+          
           // Add bitstreams to the revision
           $bitstreamDao = new BitstreamDao;
           $bitstreamDao->setName($filename);
           
           // Compute the path from the internalid 
+          // We are assuming only one assetstore
           $internal_id = $bitquery_array['internal_id'];
-          $bitstreamDao->setPath($internal_id);
-          //$bitstreamDao->fillPropertiesFromPath();
-          //$bitstreamDao->setAssetstoreId($this->assetstoreid);
+          $filepath = $this->midas2Assetstore.'/';
+          $filepath .= substr($internal_id,0,2).'/';
+          $filepath .= substr($internal_id,2,2).'/';
+          $filepath .= substr($internal_id,4,2).'/';
+          $filepath .= $internal_id;
           
-          // Upload the bitstream ifnecessary (based on the assetstore type)
-          $ItemRevision->addBitstream($itemRevisionDao, $bitstreamDao);
-          
-          // We should add the metadata as well  
-          
+          // Check that the file exists
+          if(file_exists($filepath))
+            { 
+            // Upload the bitstream
+            $assetstoreDao = $Assetstore->load($this->assetstoreId);
+            $bitstreamDao->setPath($filepath);
+            $bitstreamDao->fillPropertiesFromPath();
+            $bitstreamDao->setAssetstoreId($this->assetstoreId);
+            
+            $UploadComponent = new UploadComponent();
+            $UploadComponent->uploadBitstream($bitstreamDao, $assetstoreDao);
+            unset($UploadComponent);
+            
+            // Upload the bitstream ifnecessary (based on the assetstore type)
+            $ItemRevision->addBitstream($itemRevisionDao, $bitstreamDao);
+            }
           }          
         }
       else
@@ -235,10 +271,11 @@ class MIDAS2MigrationComponent extends AppComponent
     } // end _createCommunity()
   
   /** */
-  function migrate()
-    {
+  function migrate($userid)
+    {       
     set_time_limit(0);
-      
+    $this->userId = $userid; 
+          
     // Check that we are in development mode
     if(Zend_Registry::get('configGlobal')->environment != 'development')
       {
@@ -246,7 +283,8 @@ class MIDAS2MigrationComponent extends AppComponent
       }
       
     // Connect to the local PGSQL database
-    $pgdb = pg_connect("host='localhost' port='5432' dbname='midasopen' user='midas' password='midas'");
+    $pgdb = pg_connect("host='".$this->midas2Host."' port='".$this->midas2Port."' dbname='".$this->midas2Database.
+                       "' user='".$this->midas2User."' password='".$this->midas2Password."'");
     if($pgdb === false)
       {
       throw new Zend_Exception("Cannot connect to the MIDAS2 database.");

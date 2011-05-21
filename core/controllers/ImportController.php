@@ -206,7 +206,7 @@ class ImportController extends AppController
           
           $bitstreamDao->setAssetstoreId($this->assetstoreid);
           
-          // Upload the bitstream ifnecessary (based on the assetstore type)
+          // Upload the bitstream if necessary (based on the assetstore type)
           $assetstoreDao = $this->Assetstore->load($this->assetstoreid);
           
           $assetstorePath = $assetstoreDao->getPath();

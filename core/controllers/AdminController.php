@@ -417,9 +417,19 @@ class AdminController extends AppController
    */
   function migratemidas2Action()
     {
+    if(!$this->logged)
+      {
+      $this->haveToBeLogged();
+      return;
+      }
+     if(!$this->userSession->Dao->getAdmin() == 1)
+      {
+      throw new Zend_Exception("You should be an administrator");
+      }
+
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
-    $this->Component->MIDAS2Migration->migrate();
+    $this->Component->MIDAS2Migration->migrate($this->userSession->Dao->getUserId());
     }
     
 } // end class
