@@ -1,0 +1,14 @@
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/paraview/paraview.index.css" />
+
+<?php
+echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/paraview/ParaViewWeb.js');
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/paraview/paraview.index.js');
+?>
+  <div id='renderercontainer'>
+         <!-- The renderer will be inserted here -->
+   </div>
+<?php echo $this->headScript() ?>
+<div style="display: none;" class="jsonContent">
+  <?php echo $this->json?>
+</div>

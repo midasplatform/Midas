@@ -276,7 +276,7 @@ class MIDASModel
     
     if(isset($this->moduleName))
       {
-      $this->loadDaoClass(ucfirst(substr($name, strpos($name, '_')+1)), $this->moduleName);
+      $this->loadDaoClass(ucfirst(substr($name, strpos($name, '_') + 1)), $this->moduleName);
       }
     else
       {

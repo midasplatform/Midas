@@ -37,5 +37,25 @@
       loadDialog("uploadrevision"+$(this).attr('element'),"/upload/revision?itemId="+$(this).attr('element'));
       showDialog($(this).html());
     });
+    
+    
+    /** preview */
+     $('a#itemPreviewLink').click(function(){
+       
+      var height = $(window).height()-100;
+      var width = $(window).width()-10;
+      var url  = json.global.webroot+"/visualize/?itemId="+json.item.item_id+'&height='+height+'&width='+width;
+      var html = '<div id="fullscreenVisualize" >';
+      html +=   '<div id="fullscreenPanel">test</div>';
+      html +=   '<iframe name="fullscreenVisualizeIframe" height="'+height+'" width="'+width+'" id="fullscreenVisualizeIframe" src="'+url+'"></iframe>';
+      html +=   '</div>';
+      
+      $('body').append(html);
+      $('.MainDialog').hide();
+      $('.TopDynamicBar').hide();
+      $('.Topbar').hide();
+      $('.Header').hide();
+      $('.Wrapper').hide();
+    });
   });
   

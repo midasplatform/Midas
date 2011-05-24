@@ -77,6 +77,14 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
         <a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'>{$this->t('Download lastest revision')}</a>
       </li>        
         ";
+      if($this->preview)
+        {
+     echo 
+     "<li>
+        <a id='itemPreviewLink'>{$this->t('Preview')}</a>
+      </li>        
+        ";
+        }
       if($this->isModerator)
         {
         echo 

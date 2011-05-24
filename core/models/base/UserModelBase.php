@@ -112,9 +112,9 @@ abstract class UserModelBase extends AppModel
     $feedpolicyuserModel = $this->ModelLoader->loadModel('Feedpolicyuser');
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
         
-    $folderGlobal = $folderModel->createFolder('user_' . $userDao->getKey(), 'Main folder of ' . $userDao->getFullName(), MIDAS_FOLDER_USERPARENT);
-    $folderPrivate = $folderModel->createFolder('Private', 'Private folder of ' . $userDao->getFullName(), $folderGlobal);
-    $folderPublic = $folderModel->createFolder('Public', 'Public folder of ' . $userDao->getFullName(), $folderGlobal);
+    $folderGlobal = $folderModel->createFolder('user_' . $userDao->getKey(), '', MIDAS_FOLDER_USERPARENT);
+    $folderPrivate = $folderModel->createFolder('Private', '', $folderGlobal);
+    $folderPublic = $folderModel->createFolder('Public', '', $folderGlobal);
 
     $folderpolicygroupModel->createPolicy($anonymousGroup, $folderPublic, MIDAS_POLICY_READ);
         
