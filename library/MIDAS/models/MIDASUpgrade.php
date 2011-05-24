@@ -5,8 +5,8 @@
  */
 class MIDASUpgrade
 {
-  
   protected $db;
+  protected $dbtype;
   
   /**
    * @method public  __construct()
@@ -21,6 +21,7 @@ class MIDASUpgrade
       {
       $this->loadModuleElements();
       }
+    $this->dbtype = Zend_Registry::get('configDatabase')->database->adapter;  
     } // end __construct()
     
   /** preUpgrade called before the upgrade*/
@@ -148,5 +149,155 @@ class MIDASUpgrade
         }
       }
     }//end loadElements
-} //end class MIDASDatabasePdo
+    
+    
+  /**
+   * @method public AddTableField()
+   *  Add a field to a table
+   */
+  function AddTableField($table,$field,$mySQLType,$pgSqlType,$default)
+    {
+    $sql = '';
+    if($default !== false)
+      {
+      $sql = " DEFAULT '".$default."'";
+      }
+  
+    if($this->dbtype == "PDO_PGSQL")
+      {
+      $this->db->query("ALTER TABLE \"".$table."\" ADD \"".$field."\" ".$pgSqlType.$sql);
+      }
+    else
+      {
+      $this->db->query("ALTER TABLE ".$table." ADD ".$field." ".$mySQLType.$sql);
+      }
+    }
+  
+  /**
+   * @method public RemoveTableField()
+   *  Remove a field from a table
+   */
+  function RemoveTableField($table,$field)
+    {
+    if($this->dbtype == "PDO_PGSQL")
+      {
+      $this->db->query("ALTER TABLE \"".$table."\" DROP COLUMN \"".$field."\"");
+      }
+    else
+      {
+      $this->db->query("ALTER TABLE ".$table." DROP ".$field);
+      }
+    }
+  
+  /**
+   * @method public RenameTableField()
+   *  Rename a field from a table
+   */
+  function RenameTableField($table,$field,$newfield,$mySQLType,$pgSqlType,$default)
+    {
+    if($this->dbtype == "PDO_PGSQL")
+      {
+      $this->db->query("ALTER TABLE \"".$table."\" RENAME \"".$field."\" TO \"".$newfield."\"");
+      $this->db->query("ALTER TABLE \"".$table."\" ALTER COLUMN \"".$newfield."\" TYPE ".$pgSqlType);
+      $this->db->query("ALTER TABLE \"".$table."\" ALTER COLUMN \"".$newfield."\" SET DEFAULT ".$default);
+      }
+    else
+      {
+      $this->db->query("ALTER TABLE ".$table." CHANGE ".$field." ".$newfield." ".$mySQLType." DEFAULT '".$default."'");
+      }
+    }
+    
+  /**
+   * @method public CheckIndexExists()
+   *  Check if the index exists. 
+   *  Only works for MySQL
+   */
+  function CheckIndexExists($table,$field)
+    {
+    if($this->dbtype == "PDO_MYSQL")
+      {
+      $rowset = $this->db->fetchAll("SHOW INDEX FROM ".$tablename);
+      foreach($rowset as $index_array)
+        {
+        if($index_array['Column_name'] == $columnname)
+          {
+          return true;
+          }
+        }
+      }
+    return false; 
+    }  // end CheckIndexExists()
+    
+  /**
+   * @method public AddTableIndex()
+   *  Add an index to a table
+   */
+  function AddTableIndex($table,$field)
+    {
+    if(!$this->CheckIndexExists($table,$field))
+      {
+      if($this->dbtype == "PDO_PGSQL")
+        {
+        @$this->db->query("CREATE INDEX ".$table."_".$field."_idx ON \"".$table."\" (\"".$field."\")");
+        }
+      else
+        {
+        $this->db->query("ALTER TABLE ".$table." ADD INDEX ( ".$field." )");
+        }
+      }
+    }
+  
+  /**
+   * @method public RemoveTableIndex()
+   *  Remove an index from a table
+   */
+  function RemoveTableIndex($table,$field)
+    {
+    if($this->CheckIndexExists($table,$field))
+      {
+      if($this->dbtype == "PDO_PGSQL")
+        {
+        $this->db->query("DROP INDEX ".$table."_".$field."_idx");
+        }
+      else
+        {
+        $this->db->query("ALTER TABLE ".$table." DROP INDEX ".$field);
+        }
+      }
+    }
+    
+  /**
+   * @method public AddTablePrimaryKey()
+   *  Add a primary key to a table
+   */
+  function AddTablePrimaryKey($table,$field)
+    {
+    if($this->dbtype == "PDO_PGSQL")
+      {
+      $this->db->query("ALTER TABLE \"".$table."\" ADD PRIMARY KEY (\"".$field."\")");
+      }
+    else
+      {
+      $this->db->query("ALTER TABLE ".$table." ADD PRIMARY KEY ( ".$field." )");
+      }
+    }
+  
+  /**
+   * @method public RemoveTablePrimaryKey()
+   *  Remove a primary key from a table
+   */
+  function RemoveTablePrimaryKey($table)
+    {
+    if($this->dbtype == "PDO_PGSQL")
+      {
+      $this->db->query("ALTER TABLE \"".$table."\" DROP CONSTRAINT \"value_pkey\"");
+      $this->db->query("ALTER TABLE \"".$table."\" DROP CONSTRAINT \"".$table."_pkey\"");
+      }
+    else
+      {
+      $this->db->query("ALTER TABLE ".$table." DROP PRIMARY KEY");
+      }
+    }
+      
+} //end class MIDASUpgrade
 ?>
