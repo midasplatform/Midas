@@ -25,6 +25,17 @@ class FeedController extends AppController
     $this->view->nItems = $this->Item->getCountAll();
     $this->view->notifications = array();
     $this->view->header = $this->t('Feed');
+    
+    if($this->logged)
+      {
+      $request = $this->getRequest();
+      $cookieData = $request->getCookie('newFeed'.$this->userSession->Dao->getKey());
+      if(isset($cookieData) && is_numeric($cookieData))
+        {
+        $this->view->lastFeedVisit = $cookieData;
+        }  
+      setcookie('newFeed'.$this->userSession->Dao->getKey(), strtotime("now"), time() + 60 * 60 * 24 * 300, '/'); //30 days
+      }
     }
         
   /** get getfolders Items' size */

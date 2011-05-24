@@ -35,3 +35,10 @@ div.feedDelete{
   width:10px;
   height: 10px;
 }
+
+img.newFeedElement{
+  float:right;
+  position:relative;
+  left: -13px;
+  top: 2px;
+}

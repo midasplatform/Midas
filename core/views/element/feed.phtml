@@ -15,6 +15,10 @@
   foreach($feeds as $key => $feed)
     {
     echo "<div class='feedElement'  element='{$feed->getKey()}'>";
+    if(isset($this->lastFeedVisit) && $this->lastFeedVisit < strtotime($feed->getDate()))
+      {
+      echo "<img class='newFeedElement'  src='{$this->coreWebroot}/public/images/icons/new.png' alt=''/>";
+      }
     echo createFeedElement($this,$feed);
     echo "</div>";
     }
