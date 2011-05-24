@@ -62,7 +62,7 @@ class ItemController extends AppController
           continue;
           }
         $i++;
-        if($i > 10)
+        if($i > 4)
           {
           unset($tmp[$key]);
           }
