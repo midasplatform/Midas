@@ -42,7 +42,7 @@
         checkDB($(this));
       });
       
-    $('.dbForm .adminAcountForm input').focusout(function()
+    $('.dbForm .adminAcountForm input').keyup(function()
       {
         var obj=$(this);
         checkAll(obj);

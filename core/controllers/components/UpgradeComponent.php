@@ -3,12 +3,12 @@
 class UpgradeComponent extends AppComponent
   { 
   
-  protected $dir;
+  public $dir;
   protected $module;
   protected $db;
   protected $dbtype;
   protected $dbtypeShort;
-  protected $init = false;
+  public $init = false;
   
   /** init upgrade Componenet*/
   public function initUpgrade($module, $db, $dbtype)
@@ -81,6 +81,15 @@ class UpgradeComponent extends AppComponent
         if(preg_match('/^([0-9]+)(.)([0-9]+)(.)([0-9]+)\.php/i', $entry, $matches) ) 
           {
           $versionText = basename(str_replace(".php", "", $entry));
+          $versionNumber = $this->transformVersionToNumeric($versionText);
+          $files[$versionNumber] = array(
+                'filename' => $entry,
+                'version' => $versionNumber,
+                'versionText' => $versionText);
+          }
+        if(preg_match('/^([0-9]+)(.)([0-9]+)(.)([0-9]+)\.sql/i', $entry, $matches) ) 
+          {
+          $versionText = basename(str_replace(".sql", "", $entry));
           $versionNumber = $this->transformVersionToNumeric($versionText);
           $files[$versionNumber] = array(
                 'filename' => $entry,

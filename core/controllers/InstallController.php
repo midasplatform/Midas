@@ -103,14 +103,14 @@ class InstallController extends AppController
         {
         $databaseConfig = parse_ini_file(BASE_PATH.'/core/configs/database.ini', true);
         $MyDirectory = opendir(BASE_PATH."/core/database/".$type);
-        while($Entry = readdir($MyDirectory))
-          {
-          if(strpos($Entry, ".sql") != false)
-            {
-            $sqlFile = BASE_PATH."/core/database/".$type."/".$Entry;
-            }
-          }
-        if(!isset($sqlFile))
+        
+        require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
+        $upgradeComponent = new UpgradeComponent();
+        $upgradeComponent->dir = BASE_PATH."/core/database/".$type;
+        $upgradeComponent->init = true;
+        $sqlFile = $upgradeComponent->getNewestVersion(true);
+        $sqlFile = BASE_PATH."/core/database/".$type."/".$sqlFile.'.sql';
+        if(!isset($sqlFile) ||!file_exists($sqlFile))
           {
           throw new Zend_Exception("Unable to find sql file");
           }
