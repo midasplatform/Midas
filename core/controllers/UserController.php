@@ -360,7 +360,7 @@ class UserController extends AppController
             {
             $userDao = $this->User->load($userDao->getKey());
             $oldThumbnail = $userDao->getThumbnail();
-            if(!empty($oldThumbnail))
+            if(!empty($oldThumbnail) && file_exists(BASE_PATH.'/'.$oldThumbnail))
               {
               unlink(BASE_PATH.'/'.$oldThumbnail);
               }
@@ -385,7 +385,7 @@ class UserController extends AppController
           {
           $userDao = $this->User->load($userDao->getKey());
           $oldThumbnail = $userDao->getThumbnail();
-          if(!empty($oldThumbnail))
+          if(!empty($oldThumbnail) && file_exists(BASE_PATH.'/'.$oldThumbnail))
             {
             unlink(BASE_PATH.'/'.$oldThumbnail);
             }

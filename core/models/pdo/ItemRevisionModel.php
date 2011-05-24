@@ -100,30 +100,24 @@ class ItemRevisionModel extends ItemRevisionModelBase
     $item = $itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));
     $item->setDate(date('c'));
-    
-    /** thumbnail*/   
- /*   $procces = Zend_Registry::get('configGlobal')->processing;
-    if($procces == 'cron')
+ 
+    $procces = Zend_Registry::get('configGlobal')->processing;
+    require_once BASE_PATH.'/core/controllers/components/FilterComponent.php';
+    $filterComponent = new FilterComponent();
+    $thumbnailCreator = $filterComponent->getFilter('ThumbnailCreator');
+    $thumbnailCreator->inputFile = $bitstreamDao->getFullPath();
+    $thumbnailCreator->inputName = $bitstreamDao->getName();
+    $hasThumbnail = $thumbnailCreator->process();
+    if(isset($thumbnailCreator->outputFile) && $hasThumbnail &&  file_exists($thumbnailCreator->outputFile))
       {
-      $TaskModel->createTask(MIDAS_TASK_ITEM_THUMBNAIL, MIDAS_RESOURCE_ITEM, $item->getKey(), '');
-      }
-    else
-      {
-      $thumbnailCreator = $this->Component->Filter->getFilter('ThumbnailCreator');
-      $thumbnailCreator->inputFile = $bitstreamDao->getPath();
-      $thumbnailCreator->inputName = $bitstreamDao->getName();
-      $hasThumbnail = $thumbnailCreator->process();
-      $thumbnail_output_file = $thumbnailCreator->outputFile;
-      if($hasThumbnail&&  file_exists($thumbnail_output_file))
+      $oldThumbnail = $item->getThumbnail();
+      if(!empty($oldThumbnail))
         {
-        $oldThumbnail = $item->getThumbnail();
-        if(!empty($oldThumbnail))
-          {
-          unlink($oldThumbnail);
-          }
-        $item->setThumbnail(substr($thumbnail_output_file, strlen(BASE_PATH)+1));
-        }    
-      }*/
+        unlink($oldThumbnail);
+        }
+      $item->setThumbnail(substr($thumbnailCreator->outputFile, strlen(BASE_PATH)+1));
+      }    
+      
     $ItemModel->save($item);
     } // end addBitstream
 

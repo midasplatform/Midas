@@ -27,8 +27,6 @@
 <div class="tabs" id='uploadTabs'>
   <ul>
     <li><a href="#uploadTabs-1">Simple</a></li>
-    <li><a href="<?php echo $this->webroot?>/upload/javaupload"><?php echo $this->t('Large Files');?></a></li>
-    <li><a href="#uploadTabs-3"><?php echo $this->t('Links');?></a></li>
   </ul>
   <div id="uploadTabs-1"> 
       <b>Step 1: Select files to upload</b>
@@ -86,18 +84,7 @@
       <span id="btnStartUpload" >
         <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" value="Start Upload" />
       </span>
-  
-  </div>
-    <div id="uploadTabs-3">
-      <form id="linkForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
-        <div >
-          <?php echo $this->form['url']?>
-        </div>
-        <div>
-          <?php echo $this->form['submit']?>
-        </div>
-      </form>
-  </div>
+ 
 </div>
 
 <div>

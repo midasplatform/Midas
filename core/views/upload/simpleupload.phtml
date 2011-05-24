@@ -75,7 +75,7 @@
           <span id="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
         <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>  
         <br/>
-        <input style="margin-left:0px;" id='browseMIDASLink' class="globalButton" type="button" value="Change location" />
+        <input style="margin-left:0px;"  class="browseMIDASLink globalButton" type="button" value="Change location" />
         <br/>
         <br/>
       </div>      
@@ -96,9 +96,25 @@
   </div>
     <div id="uploadTabs-3">
       <form id="linkForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
-        <div >
-          <?php echo $this->form['url']?>
+        <div>
+          <label for="name"><b>Step 1: Set a name</b></label><br/>
+          <?php echo $this->form['name']?><br/><br/>
         </div>
+        <div>
+          <label for="url"><b>Step 2: Set the url</b></label><br/>
+          <?php echo $this->form['url']?><br/><br/>
+        </div>
+        <b>Step 2: Where do you want to upload your files</b>
+          <div>
+          <br/>
+          <b>Curent selected location:</b>
+          <span class="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
+          <input type="hidden" name="parent" class="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>  
+            <br/>
+            <input style="margin-left:0px;" class="browseMIDASLink globalButton" type="button" value="Change location" />
+            <br/>
+            <br/>
+        </div>      
         <div>
           <?php echo $this->form['submit']?>
         </div>

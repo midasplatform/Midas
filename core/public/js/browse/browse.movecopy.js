@@ -7,6 +7,8 @@
        $('#selectElements').click(function(){
          $('#destinationUpload').html($('#selectedDestination').html());
          $('#destinationId').val($('#selectedDestinationHidden').val());
+         $('.destinationUpload').html($('#selectedDestination').html());
+         $('.destinationId').val($('#selectedDestinationHidden').val());
          $( "div.MainDialog" ).dialog('close');
          return false;
        });

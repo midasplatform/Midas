@@ -103,6 +103,11 @@ class DownloadController extends AppController
       elseif(count($bitstreams) == 1)
         {
         $bitstream = $bitstreams[0];
+        if(strpos($bitstream->getPath(), 'http://') !== false)
+          {
+          $this->_redirect($bitstream->getPath());
+          return;
+          }
         $this->view->mimetype = $bitstream->getMimetype();
         $this->view->path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
         $this->view->name = $bitstream->getName();

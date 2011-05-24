@@ -96,28 +96,19 @@ class UploadController extends AppController
       {
       throw new Zend_Exception("Error, should be an ajax action.");
       }
-    $form = $this->Form->Upload->createUploadLinkForm();
-
-    if(true)
-      {
-      $path_parts = pathinfo($form->getValue('url'));
-      $name = $path_parts['basename'];
-      $item = new ItemDao;
-      $item->setName($name);
-      $this->Item->save($item);
-      $this->userSession->uploaded[] = $item->getKey();
-      $feed = $this->Feed->createFeed($this->userSession->Dao, MIDAS_FEED_CREATE_LINK_ITEM, $item);
-      $this->Folder->addItem($this->userSession->Dao->getPrivateFolder(), $item);
-      $this->Feedpolicyuser->createPolicy($this->userSession->Dao, $feed, MIDAS_POLICY_ADMIN);
-      $this->Itempolicyuser->createPolicy($this->userSession->Dao, $item, MIDAS_POLICY_ADMIN);
-      $itemRevisionDao = new ItemRevisionDao;
-      $itemRevisionDao->setChanges('Initial revision');
-      $itemRevisionDao->setUser_id($this->userSession->Dao->getKey());
-      $this->Item->addRevision($item, $itemRevisionDao);
-      $this->getLogger()->info(__METHOD__." Upload link ok ".$name.":".$form->getValue('url'));
-      }
+    
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
+    $parent = $this->_getParam("parent");
+    $name = $this->_getParam("name");
+    $url = $this->_getParam("url");
+    $parent = $this->_getParam("parent");
+    $license = $this->_getParam("license");
+    if(!empty($url) && !empty($name))
+      {
+      $item = $this->Component->Upload->createLinkItem($this->userSession->Dao, $name, $url, $parent);
+      $this->userSession->uploaded[] = $item->getKey();
+      }      
     }//end simple upload
 
   /** java upload*/

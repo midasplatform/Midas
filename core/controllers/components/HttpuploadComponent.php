@@ -45,7 +45,10 @@ class HttpuploadComponent extends AppComponent
     set_time_limit(0); // Timeout of the PHP script set to Infinite
     ignore_user_abort(TRUE);
 
-    $test = @$params['testingmode'];
+    if(isset($params['testingmode']))
+      {
+      $test = $params['testingmode'];
+      }
     if(isset($test) && !empty($test))
       {
       if(!isset($params['path']) || empty($params['path']))
