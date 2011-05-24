@@ -110,7 +110,7 @@ class AppController extends MIDAS_GlobalController
           }
         $this->logged = true;
         $this->view->logged = true;
-        $user->Dao->lastAction = date('c');
+        
         $this->view->userDao = $user->Dao;
         $cookieData = $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->user_id);
         $this->view->recentItems = array();
@@ -118,8 +118,8 @@ class AppController extends MIDAS_GlobalController
           {
           $this->view->recentItems = unserialize($cookieData); 
           $check = $this->_getParam('checkRecentItem');
-          // check if recent items exit (every 10 minutes)
-          if(isset($check) || strtotime($user->Dao->lastAction) < strtotime("-1 minute"))
+          // check if recent items exit (every 2 minutes)
+          if(isset($check) || !isset($user->Dao->lastAction) || strtotime($user->Dao->lastAction) < strtotime("-2 minute"))
             {
             $modelLoad = new MIDAS_ModelLoader();
             $itemModel = $modelLoad->loadModel('Item');
@@ -139,6 +139,7 @@ class AppController extends MIDAS_GlobalController
             setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($this->view->recentItems), time() + 60 * 60 * 24 * 30, '/'); //30 days
             }
           } 
+        $user->Dao->lastAction = date('c');
         }
       else
         {
