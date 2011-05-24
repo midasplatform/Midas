@@ -458,4 +458,41 @@ class UserController extends AppController
     $this->view->isViewAction = ($this->logged && ($this->userSession->Dao->getKey() == $userDao->getKey() || $this->userSession->Dao->isAdmin()));
     $this->view->information = array();
     }
+  
+  /** manage files page action*/
+  public function manageAction()
+    {
+    $this->view->Date = $this->Component->Date;
+    $user_id = $this->_getParam("user_id");
+    
+    if(!isset($user_id) && !$this->logged)
+      {
+      $this->view->header = $this->t("You should be logged in.");
+      $this->_helper->viewRenderer->setNoRender();
+      return false;
+      }
+    elseif(!isset($user_id))
+      {
+      $userDao = $this->userSession->Dao;
+      $this->view->activemenu = 'user'; // set the active menu
+      }
+    else
+      {
+      $userDao = $this->User->load($user_id);
+      if(!$this->userSession->Dao->isAdmin())
+        {
+        throw new Zend_Exception("Permission error");
+        }
+      }
+      
+    if(!$userDao instanceof UserDao)
+      {
+      throw new Zend_Exception("Unable to find user");
+      }
+    
+    $this->view->user = $userDao;
+    $this->view->folders = array();
+    $this->view->folders[] = $userDao->getPublicFolder();
+    $this->view->folders[] = $userDao->getPrivateFolder();
+    }
   }//end class

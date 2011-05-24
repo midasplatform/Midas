@@ -1,4 +1,6 @@
-  $(document).ready(function() {
+  var disableElementSize=true;
+
+$(document).ready(function() {
     
     initCommunityPrivacy();
 
@@ -67,6 +69,7 @@
     //init tree
     $('img.tabsLoading').hide()
     
+  
     $("#browseTable").treeTable();
     $("img.tableLoading").hide();
     $("table#browseTable").show();

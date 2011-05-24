@@ -27,7 +27,7 @@ class Upgrade_3_0_11 extends MIDASUpgrade
       CREATE TABLE  communityinvitation (
         communityinvitation_id  serial  PRIMARY KEY,
         community_id bigint,
-        user_id bigint,
+        user_id bigint
       )  
       ; ";
     $this->db->query($sql);

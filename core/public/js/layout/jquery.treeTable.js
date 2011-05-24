@@ -508,6 +508,10 @@
   var ajaxSizeRequest='';
   function getElementsSize()
   {
+    if(typeof(disableElementSize) !== 'undefined')
+      {
+        return;
+      }
     var elements='';
     var i = 0;
     $('img.folderLoading').each(function()

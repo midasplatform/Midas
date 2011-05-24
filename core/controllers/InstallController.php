@@ -110,7 +110,7 @@ class InstallController extends AppController
         $upgradeComponent->init = true;
         $sqlFile = $upgradeComponent->getNewestVersion(true);
         $sqlFile = BASE_PATH."/core/database/".$type."/".$sqlFile.'.sql';
-        if(!isset($sqlFile) ||!file_exists($sqlFile))
+        if(!isset($sqlFile) || !file_exists($sqlFile))
           {
           throw new Zend_Exception("Unable to find sql file");
           }
