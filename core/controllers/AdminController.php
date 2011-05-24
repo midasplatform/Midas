@@ -422,7 +422,7 @@ class AdminController extends AppController
       $this->haveToBeLogged();
       return;
       }
-     if(!$this->userSession->Dao->getAdmin() == 1)
+    if(!$this->userSession->Dao->getAdmin() == 1)
       {
       throw new Zend_Exception("You should be an administrator");
       }

@@ -10,13 +10,12 @@ class MIDAS_GlobalModule extends AppController
   /** contructor*/
   public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
     {    
-
+    $this->loadModuleElements();
     parent::__construct($request, $response, $invokeArgs);
     if(!isset($this->moduleName))
       {
       throw new Zend_Exception("Please set the module name in AppController");
-      }
-    $this->loadModuleElements();
+      }    
     $fc = Zend_Controller_Front::getInstance();
     $this->view->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
     

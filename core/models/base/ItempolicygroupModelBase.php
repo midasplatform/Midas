@@ -20,7 +20,7 @@ class ItempolicygroupModelBase extends AppModel
     } // end __construct() 
   
     
-   /** delete */
+  /** delete */
   public function delete($dao)
     {
     $item = $dao->getItem();

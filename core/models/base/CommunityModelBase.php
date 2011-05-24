@@ -109,13 +109,13 @@ abstract class CommunityModelBase extends AppModel
     $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
     $feedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
     
-    $folderGlobal = $folderModel->createFolder('community_'.$communityDao->getKey(), 'Main folder of the community '.$communityDao->getKey(), MIDAS_FOLDER_COMMUNITYPARENT);
-    $folderPublic = $folderModel->createFolder('Public', 'Public folder of the community '.$communityDao->getKey(), $folderGlobal);
-    $folderPrivate = $folderModel->createFolder('Private', 'Private folder of the community '.$communityDao->getKey(), $folderGlobal);
+    $folderGlobal = $folderModel->createFolder('community_'.$communityDao->getKey(), '', MIDAS_FOLDER_COMMUNITYPARENT);
+    $folderPublic = $folderModel->createFolder('Public', '', $folderGlobal);
+    $folderPrivate = $folderModel->createFolder('Private', '', $folderGlobal);
 
-    $adminGroup = $groupModel->createGroup($communityDao, 'Admin group of community '.$communityDao->getKey());
-    $moderatorsGroup = $groupModel->createGroup($communityDao, 'Moderators group of community '.$communityDao->getKey());
-    $memberGroup = $groupModel->createGroup($communityDao, 'Members group of community '.$communityDao->getKey());
+    $adminGroup = $groupModel->createGroup($communityDao, 'Administrator');
+    $moderatorsGroup = $groupModel->createGroup($communityDao, 'Moderators');
+    $memberGroup = $groupModel->createGroup($communityDao, 'Members');
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
 
     $communityDao->setFolderId($folderGlobal->getKey());

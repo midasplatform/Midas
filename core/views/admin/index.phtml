@@ -127,36 +127,28 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
       <?php
       foreach($this->modulesList as $key=>$module)
          {
-         echo "
-           <tr class='moduleElement'>
-              <td>";
-              if(isset($module->db->{$this->databaseType}))
-                {
-                 echo " 
-                   <input type='checkbox' class='moduleCheckbox' module='{$key}' name='module[{$key}]'   ".((in_array($key, $this->modulesEnable))?'checked':'')."/>";
-                }
-              else
-                {
-                echo "
-                  Module not available with your database type.
-                  ";
-                }
-              echo"
-              </td>    
-              <td>
-              <b>{$module->fullname}</b><br/>
-              {$module->description}
-              </td>";              
-              if($module->configPage)
-                {
-              echo "
-              <td class='configLink' style='display:none;'>
-                <a href='{$this->webroot}/$key/config'>View configuration</a>
-              </td>";
-                }
-              echo "
-           </tr>
-          ";
+          if(isset($module->db->{$this->databaseType}))
+            {
+             echo "
+               <tr class='moduleElement'>
+                  <td>
+                       <input type='checkbox' class='moduleCheckbox' module='{$key}' name='module[{$key}]'   ".((in_array($key, $this->modulesEnable))?'checked':'')."/>
+                  </td>    
+                  <td>
+                  <b>{$module->fullname}</b><br/>
+                  {$module->description}
+                  </td>";              
+                  if($module->configPage)
+                    {
+                  echo "
+                  <td class='configLink' style='display:none;'>
+                    <a href='{$this->webroot}/$key/config'>View configuration</a>
+                  </td>";
+                    }
+                  echo "
+               </tr>
+              ";
+            }
          }
       ?>
       </table>

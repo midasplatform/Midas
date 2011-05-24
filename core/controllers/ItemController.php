@@ -91,6 +91,17 @@ class ItemController extends AppController
     $this->view->title .= ' - '.$itemDao->getName();
     $this->view->metaDescription = substr($itemDao->getDescription(), 0, 160);
     
+    
+    $tmp = Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_CAN_VISUALIZE, array('item' => $itemDao));
+    if(isset($tmp['visualize']) && $tmp['visualize'] == true)
+      {
+      $this->view->preview = true;
+      }
+    else
+      {
+      $this->view->preview = false;
+      }
+    
     $this->view->json['item'] = $itemDao->toArray();
     $this->view->json['item']['message']['delete'] = $this->t('Delete');
     $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undo.');
