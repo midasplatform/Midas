@@ -94,7 +94,7 @@ function successPictureChange(responseText, statusText, xhr, $form)
     }
   if(jsonResponse[0])
     {
-       $('img#userTopThumbnail').attr('src',json.global.webroot+'/'+jsonResponse[2]);
+       $('img#userTopThumbnail').attr('src', jsonResponse[2]);
        createNotive(jsonResponse[1],4000);
     }
   else

@@ -289,6 +289,7 @@ class UserController extends AppController
       $submitPassword = $this->_getParam('modifyPassword');
       $modifyAccount = $this->_getParam('modifyAccount');
       $modifyPicture = $this->_getParam('modifyPicture');
+      $modifyPictureGravatar = $this->_getParam('modifyPictureGravatar');
       if(isset($submitPassword) && $this->logged)
         {
         $oldPass = $this->_getParam('oldPassword');
@@ -369,12 +370,36 @@ class UserController extends AppController
               {
               $this->userSession->Dao = $userDao;
               }   
-            echo JsonComponent::encode(array(true, $this->t('Changes saved'), $userDao->getThumbnail()));
+            echo JsonComponent::encode(array(true, $this->t('Changes saved'), $this->view->webroot.'/'.$userDao->getThumbnail()));
             }   
           else
             {
             echo JsonComponent::encode(array(false, 'Error'));
             }
+          }
+        }
+      if(isset($modifyPictureGravatar) && $this->logged)
+        {
+        $gravatarUrl = $this->User->getGravatarUrl($userDao->getEmail());
+        if($gravatarUrl != false)
+          {
+          $userDao = $this->User->load($userDao->getKey());
+          $oldThumbnail = $userDao->getThumbnail();
+          if(!empty($oldThumbnail))
+            {
+            unlink(BASE_PATH.'/'.$oldThumbnail);
+            }
+          $userDao->setThumbnail($gravatarUrl);
+          $this->User->save($userDao);
+          if(!isset($userId))
+            {
+            $this->userSession->Dao = $userDao;
+            }   
+          echo JsonComponent::encode(array(true, $this->t('Changes saved'), $userDao->getThumbnail()));
+          }   
+        else
+          {
+          echo JsonComponent::encode(array(false, 'Error'));
           }
         }
       }
@@ -395,6 +420,8 @@ class UserController extends AppController
     $this->Component->Sortdao->order = 'asc';
     usort($communities, array($this->Component->Sortdao, 'sortByName'));
     
+    $this->view->isGravatar = $this->User->getGravatarUrl($userDao->getEmail());
+
     $this->view->communities = $communities;
     $this->view->user = $userDao;
     $this->view->thumbnail = $userDao->getThumbnail();

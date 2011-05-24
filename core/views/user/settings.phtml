@@ -50,15 +50,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
     <div id="imageActual">
     <h4><?php echo $this->t('Current Avatar')?>:</h4>
       <?php
-      $thumbnail=$this->thumbnail;
-      if(!empty($thumbnail))
-        {
-        echo "<img id='userTopThumbnail' src='{$this->webroot}/{$thumbnail}' alt=''/>";
-        }
-      else
-        {
-        echo "<img id='userTopThumbnail' src='{$this->coreWebroot}/public/images/icons/unknownUser.png' alt=''/>";
-        }
+      echo $this->userthumbnail($this->thumbnail,'userTopThumbnail');
       ?>
     </div>
     <h3><?php echo $this->t('My Avatar')?>:</h3>
@@ -70,6 +62,13 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
       <br/>
       <input type="submit" name='modifyPicture' value="<?php echo $this->t('Upload new avatar')?>">
       <br/>
+      <?php 
+
+      if(strpos($this->thumbnail, 'http://') === false && $this->isGravatar)
+        {
+        echo ' <input type="submit" name="modifyPictureGravatar" value="'.$this->t('Use gravatar').'">';
+        }
+      ?>
       <br/>      
     </form>    
   </div>

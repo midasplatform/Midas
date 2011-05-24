@@ -22,5 +22,14 @@ class UserDao extends AppDao
     {
     return $this->getFirstname()." ".$this->getLastname();
     }//end class
+    
+  /** toArray */
+  public function toArray()
+    {
+    $return = parent::toArray();
+    unset($return['email']);
+    unset($return['password']);
+    return $return;
+    }
   }
 ?>

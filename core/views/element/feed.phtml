@@ -35,14 +35,8 @@
       }
     echo "<div class='feedUserImage'>";
     $thumbnail=$feed->getUser()->getThumbnail();
-    if(!empty($thumbnail))
-      {
-      echo "<img class='thumbnailSmall' src='{$view->webroot}/{$thumbnail}' alt=''/>";
-      }
-    else
-      {
-      echo "<img class='thumbnailSmall' src='{$view->coreWebroot}/public/images/icons/unknownUser.png' alt=''/>";
-      }
+
+    echo $view->userthumbnail($thumbnail);
     echo "</div>";
     echo "<div class='feedInfo'>";
     echo $view->linkuser($feed->getUser()).' ';
