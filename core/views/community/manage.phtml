@@ -187,6 +187,17 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
               echo "</tr>";
               $node++;
               } 
+              
+            foreach($this->items as $item)
+              {
+              echo "<tr id='node--$node' policy='{$item->policy}' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
+              echo "  <td class='treeBrowseElement'><span class='file'>{$this->slicename($item->getName(),40)}</span></td>";
+              echo "  <td>{$item->size}</td>";
+              echo "  <td>{$this->Date->ago($item->getDate(),true)}</td>";
+              echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' /></td>";
+              echo "</tr>";
+              $node++;
+              }
             ?>
 
           </tbody>
@@ -204,6 +215,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <div class='sideElementFirst genericAction'>
       <h1>Actions</h1>
         <ul>
+          <li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'>{$this->t('Create top level Folder')}</a></li>
           <li><a href='javascript:;' id='communityDeleteLink'>{$this->t('Delete')}</a></li>
        </ul>
     </div>";    

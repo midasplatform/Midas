@@ -183,9 +183,10 @@ class CommunityController extends AppController
       }
     
     //init file tree
-    $this->view->folders = array();
-    $this->view->folders[] = $communityDao->getPublicFolder();
-    $this->view->folders[] = $communityDao->getPrivateFolder();
+    $this->view->mainFolder = $communityDao->getFolder();  
+    
+    $this->view->folders = $this->Folder->getChildrenFoldersFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     $this->view->Date = $this->Component->Date;
     
     $this->view->header = $this->t("Manage Community");
@@ -273,9 +274,9 @@ class CommunityController extends AppController
     $group_member = $communityDao->getMemberGroup();
     $this->view->members = $group_member->getUsers();
     
-    $this->view->folders = array();
-    $this->view->folders[] = $communityDao->getPublicFolder();
-    $this->view->folders[] = $communityDao->getPrivateFolder();
+    $this->view->mainFolder = $communityDao->getFolder();  
+    $this->view->folders = $this->Folder->getChildrenFoldersFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     
     $this->view->isMember = false;
     if($this->userSession->Dao != null)
