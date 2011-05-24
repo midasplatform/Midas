@@ -1,0 +1,14 @@
+input#urlInput{
+  width: 300px;
+}
+
+div#permissionsContent a{
+  cursor: pointer;
+  color: #56758B;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+div#permissionsContent a:hover{
+  text-decoration: underline;
+}

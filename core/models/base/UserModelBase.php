@@ -27,6 +27,7 @@ abstract class UserModelBase extends AppModel
       'public_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'publicfolder_id', 'child_column' => 'folder_id'),
       'private_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'privatefolder_id', 'child_column' => 'folder_id'),
       'groups' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Group', 'table' => 'user2group', 'parent_column' => 'user_id', 'child_column' => 'group_id'),
+      'invitations' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'CommunityInvitation', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
       'folderpolicyuser' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Folderpolicyuser', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
       'feeds' => array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Feed', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
       ); 
@@ -58,6 +59,14 @@ abstract class UserModelBase extends AppModel
       {
       $uuModel->delete($uudao);
       }
+      
+    $ciModel = $modelLoad->loadModel('CommunityInvitation');
+    $invitations = $dao->getInvitations();
+    foreach($invitations as $invitation)
+      {
+      $ciModel->delete($invitation);
+      }
+      
     parent::delete($dao);
     }// delete
  

@@ -73,6 +73,13 @@ abstract class FeedModelBase extends AppModel
           }
         $feed->setRessource($ressource->getKey());
         break;
+      case MIDAS_FEED_COMMUNITY_INVITATION:
+        if(!$ressource instanceof CommunityInvitationDao)
+          {
+          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          }
+        $feed->setRessource($ressource->getKey());
+        break;
       case MIDAS_FEED_CREATE_FOLDER:
         if(!$ressource instanceof FolderDao)
           {

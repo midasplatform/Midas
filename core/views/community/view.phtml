@@ -122,7 +122,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 <div class="viewSideBar">
   
   <?php
-  if(!$this->isMember&&$this->canJoin)
+  if($this->logged && !$this->isMember && ($this->canJoin || $this->isInvited))
     {
     echo "
     <form type='post' action=''>
@@ -142,11 +142,14 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       echo "
           <li><a href='{$this->webroot}/community/manage?communityId={$this->communityDao->getKey()}'>{$this->t('Manage')}</a></li>
           ";
+      echo "
+          <li><a id='sendInvitationLink'>{$this->t('Send invitation')}</a></li>
+          ";
       }
     if($this->isMember&&!$this->isAdmin)
       {
       echo "
-          <li><a href=''>{$this->t('Leave the community')}</a></li>
+          <li><a href='{$this->webroot}/community/manage?communityId={$this->communityDao->getKey()}&leaveCommunity=true'>{$this->t('Leave the community')}</a></li>
           ";
       }
     echo 

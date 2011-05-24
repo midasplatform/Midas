@@ -2,7 +2,7 @@
 /** Community Controller*/
 class CommunityController extends AppController
   {
-  public $_models = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Group', 'User', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Item');
+  public $_models = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Group', 'User', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Item', 'CommunityInvitation');
   public $_daos = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Group', 'User');
   public $_components = array('Sortdao', 'Date');
   public $_forms = array('Community');
@@ -243,12 +243,26 @@ class CommunityController extends AppController
       throw new Zend_Exception("This community doesn't exist  or you don't have the permissions.");
       }
     $joinCommunity = $this->_getParam('joinCommunity'); 
+    $leaveCommunity = $this->_getParam('leaveCommunity'); 
     $canJoin = $communityDao->getCanJoin() == MIDAS_COMMUNITY_CAN_JOIN;
+
+    $this->view->isInvited = $this->CommunityInvitation->isInvited($communityDao, $this->userSession->Dao);
     $this->view->canJoin = $canJoin;
-    if($canJoin && $this->userSession->Dao != null && isset($joinCommunity) && $communityDao->getPrivacy() == MIDAS_COMMUNITY_PUBLIC)
+    if($this->userSession->Dao != null && isset($joinCommunity) && ($canJoin || $this->view->isInvited))
       {
       $member_group = $communityDao->getMemberGroup();
       $this->Group->addUser($member_group, $this->userSession->Dao);
+      if($this->view->isInvited)
+        {
+        $this->CommunityInvitation->removeInvitation($communityDao, $this->userSession->Dao);
+        }
+      }
+      
+    if($this->userSession->Dao != null && isset($leaveCommunity))
+      {
+      $member_group = $communityDao->getMemberGroup();
+      $this->Group->removeUser($member_group, $this->userSession->Dao);
+      $this->_redirect('/');
       }
     
     $this->Community->incrementViewCount($communityDao);
@@ -278,6 +292,7 @@ class CommunityController extends AppController
     $this->view->isModerator = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_WRITE);
     $this->view->isAdmin = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     $this->view->json['community'] = $communityDao->toArray();   
+    $this->view->json['community']['sendInvitation'] = $this->t('Send invitation');
     
     if($this->view->isMember)
       {
@@ -308,6 +323,47 @@ class CommunityController extends AppController
     $this->Community->delete($communityDao);
 
     $this->_redirect('/');
+    }//end delete
+    
+  /** Invit user to a community*/
+  function invitationAction()
+    {
+    $this->_helper->layout->disableLayout();
+    
+    $communityId = $this->_getParam("communityId");
+    if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId) != 32)) // This is tricky! and for Cassandra for now
+      {
+      throw new Zend_Exception("Community ID should be a number");
+      }
+    $communityDao = $this->Community->load($communityId);
+    if($communityDao === false || !$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception("This community doesn't exist or you don't have the permissions.");
+      }
+      
+    if($this->_request->isPost())
+      {
+      $this->_helper->viewRenderer->setNoRender();
+      $sendInvitation = $this->_getParam('sendInvitation');
+      if(isset($sendInvitation))
+        {
+        $userId = $this->_getParam('userId');
+        $userDao = $this->User->load($userId);
+        if($userDao == false)
+          {
+          throw new Zend_Exception("Unable to find user.");
+          }
+        $invitation = $this->CommunityInvitation->createInvitation($communityDao, $this->userSession->Dao, $userDao);
+        if($invitation == false)
+          {
+          echo JsonComponent::encode(array(false, $this->t('Error')));
+          }
+        else
+          {
+          echo JsonComponent::encode(array(true, $userDao->getFullName().' '.$this->t('has been invited')));
+          }
+        }
+      }
     }//end delete
     
   /** create a community (ajax)*/

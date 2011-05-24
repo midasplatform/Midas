@@ -8,6 +8,31 @@ require_once BASE_PATH.'/core/models/base/FeedModelBase.php';
 class FeedModel extends FeedModelBase
 { 
  
+  /** get feed by resource*/
+  function getFeedByResourceAndType($typeArray, $dao)
+    {
+    if(!is_array($typeArray))
+      {
+      $typeArray = array($typeArray);
+      }
+    $sql = $this->database->select()
+                      ->setIntegrityCheck(false)
+                      ->from(array('p' => 'feed'))
+                      ->where('ressource = ?', $dao->getKey());
+    
+    $rowset = $this->database->fetchAll($sql);
+    $feeds = array();
+    foreach($rowset as $row)
+      {
+      $feed = $this->initDao('Feed', $row);
+      if(in_array($feed->getType(), $typeArray))
+        {
+        $feeds[] = $this->initDao('Feed', $row);
+        }      
+      }
+    return $feeds;
+    }
+    
   /** check ifthe policy is valid
    *
    * @param FolderDao $folderDao
@@ -115,28 +140,25 @@ class FeedModel extends FeedModelBase
           ->setIntegrityCheck(false)
           ->from(array('f' => 'feed'))
           ->limit($limit);
-    if(!$isAdmin)
-      {
-      $sql ->joinLeft(array('fpu' => 'feedpolicyuser'), '
-                    f.feed_id = fpu.feed_id AND '.$this->database->getDB()->quoteInto('fpu.policy >= ?', $policy).'
-                       AND '.$this->database->getDB()->quoteInto('fpu.user_id = ? ', $userId).' ', array('userpolicy' => 'fpu.policy'))
-          ->joinLeft(array('fpg' => 'feedpolicygroup'), '
-                          f.feed_id = fpg.feed_id AND '.$this->database->getDB()->quoteInto('fpg.policy >= ?', $policy).'
-                             AND ( '.$this->database->getDB()->quoteInto('fpg.group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                                  fpg.group_id IN (' .new Zend_Db_Expr(
-                                  $this->database->select()
-                                       ->setIntegrityCheck(false)
-                                       ->from(array('u2g' => 'user2group'),
-                                              array('group_id'))
-                                       ->where('u2g.user_id = ?', $userId)
-                                       ) .'))', array('grouppolicy' => 'fpg.policy'))
-          ->where(
-           '(
-            fpu.feed_id is not null or
-            fpg.feed_id is not null)'
-            );
-      }
-    
+    $sql ->joinLeft(array('fpu' => 'feedpolicyuser'), '
+                  f.feed_id = fpu.feed_id AND '.$this->database->getDB()->quoteInto('fpu.policy >= ?', $policy).'
+                     AND '.$this->database->getDB()->quoteInto('fpu.user_id = ? ', $userId).' ', array('userpolicy' => 'fpu.policy'))
+        ->joinLeft(array('fpg' => 'feedpolicygroup'), '
+                        f.feed_id = fpg.feed_id AND '.$this->database->getDB()->quoteInto('fpg.policy >= ?', $policy).'
+                           AND ( '.$this->database->getDB()->quoteInto('fpg.group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                                fpg.group_id IN (' .new Zend_Db_Expr(
+                                $this->database->select()
+                                     ->setIntegrityCheck(false)
+                                     ->from(array('u2g' => 'user2group'),
+                                            array('group_id'))
+                                     ->where('u2g.user_id = ?', $userId)
+                                     ) .'))', array('grouppolicy' => 'fpg.policy'))
+        ->where(
+         '(
+          fpu.feed_id is not null or
+          fpg.feed_id is not null)'
+          );
+
     if($userDao != null)
       {
       $sql->where('f.user_id = ? ', $userDao->getKey());

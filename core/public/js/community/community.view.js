@@ -1,5 +1,4 @@
-  $(document).ready(function() {
-    
+  $(document).ready(function() {    
     $( "#tabsGeneric" ).tabs({
       select: function(event, ui) {
         $('div.genericAction').show();
@@ -16,6 +15,11 @@
     $("img.tableLoading").hide();
     $("table#browseTable").show();
     
+   $('a#sendInvitationLink').click(function()
+    {
+    loadDialog("invitationCommunity","/community/invitation?communityId="+json.community.community_id);
+    showDialog(json.community.sendInvitation,false);
+    });
     
   });
   

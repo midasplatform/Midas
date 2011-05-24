@@ -19,6 +19,9 @@ class FeedDao extends AppDao
       case MIDAS_FEED_UPDATE_COMMUNITY:
         $model = $modelLoader->loadModel("Community");
         return $model->load($this->ressource);
+      case MIDAS_FEED_COMMUNITY_INVITATION:
+        $model = $modelLoader->loadModel("CommunityInvitation");
+        return $model->load($this->ressource);
       case MIDAS_FEED_CREATE_FOLDER:
         $model = $modelLoader->loadModel("Folder");
         return $model->load($this->ressource);

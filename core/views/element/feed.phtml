@@ -47,6 +47,9 @@
       case MIDAS_FEED_CREATE_COMMUNITY:
         echo "{$view->t("added the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
         break;
+      case MIDAS_FEED_COMMUNITY_INVITATION:
+        echo "{$view->t("invited you to the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getCommunity()->getKey()}'>".$view->slicename($feed->getRessource()->getCommunity()->getName(),30)."</a>";
+        break;
       case MIDAS_FEED_UPDATE_COMMUNITY:
       case MIDAS_FEED_CREATE_FOLDER:
       case MIDAS_FEED_CREATE_ITEM:

@@ -27,6 +27,7 @@ abstract class CommunityModelBase extends AppModel
       'private_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'privatefolder_id', 'child_column' => 'folder_id'),
       'admin_group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'admingroup_id', 'child_column' => 'group_id'),
       'moderator_group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'moderatorgroup_id', 'child_column' => 'group_id'),
+      'invitations' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'CommunityInvitation', 'parent_column' => 'community_id', 'child_column' => 'community_id'),
       'member_group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'membergroup_id', 'child_column' => 'group_id'),
       'feeds' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Feed', 'table' => 'feed2community', 'parent_column' => 'community_id', 'child_column' => 'feed_id'),
       );
@@ -197,6 +198,14 @@ abstract class CommunityModelBase extends AppModel
       {
       $uuModel->delete($uudao);
       }
+      
+    $ciModel = $modelLoad->loadModel('CommunityInvitation');
+    $invitations = $communityDao->getInvitations();
+    foreach($invitations as $invitation)
+      {
+      $ciModel->delete($invitation);
+      }
+      
     parent::delete($communityDao);
     unset($communityDao->community_id);
     $communityDao->saved = false;
@@ -252,6 +261,15 @@ abstract class CommunityModelBase extends AppModel
           foreach($user_groups as $group)
             {
             if($group->getKey() == $member_group->getKey())
+              {
+              return true;
+              }
+            }
+            
+          $invitations = $userDao->getInvitations();
+          foreach($invitations as $invitation)
+            {
+            if($invitation->getCommunityId() == $communityDao->getKey())
               {
               return true;
               }

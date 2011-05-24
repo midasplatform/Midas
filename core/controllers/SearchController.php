@@ -73,8 +73,9 @@ class SearchController extends AppController
       
     $search = $this->getRequest()->getParam('term');
     $shareSearch = $this->getRequest()->getParam('shareSearch'); //return user group and communities
+    $userSearch = $this->getRequest()->getParam('userSearch'); 
     
-    if(isset ($shareSearch))
+    if(isset($shareSearch))
       {
       $ItemsDao = array();
       $FoldersDao = array();
@@ -102,6 +103,15 @@ class SearchController extends AppController
           unset($GroupsDao[$key]);
           }
         }
+      // Search for the users
+      $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao); 
+      }
+    elseif(isset($userSearch))
+      {
+      $ItemsDao = array();
+      $FoldersDao = array();
+      $CommunitiesDao = array();
+      $GroupsDao = array();
       // Search for the users
       $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao); 
       }

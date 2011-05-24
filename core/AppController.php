@@ -118,8 +118,8 @@ class AppController extends MIDAS_GlobalController
           {
           $this->view->recentItems = unserialize($cookieData); 
           $check = $this->_getParam('checkRecentItem');
-          // check if recent items exit (every 2 minutes)
-          if(isset($check) || !isset($user->Dao->lastAction) || strtotime($user->Dao->lastAction) < strtotime("-2 minute"))
+          // check if recent items exit (every 5 minutes)
+          if(isset($check) || !isset($user->Dao->lastAction) || strtotime($user->Dao->lastAction) < strtotime("-5 minute"))
             {
             $modelLoad = new MIDAS_ModelLoader();
             $itemModel = $modelLoad->loadModel('Item');
