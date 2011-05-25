@@ -1,0 +1,6 @@
+<?php
+define("MIDAS_METADATA_GLOBAL", 0);
+define("MIDAS_METADATA_DOCUMENT", 1);
+define("MIDAS_METADATA_VIDEO", 2);
+define("MIDAS_METADATA_IMAGE", 3);
+?>

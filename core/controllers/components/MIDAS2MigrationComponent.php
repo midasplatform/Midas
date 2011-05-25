@@ -2,6 +2,7 @@
 require_once BASE_PATH.'/core/models/dao/ItemRevisionDao.php';
 require_once BASE_PATH.'/core/models/dao/BitstreamDao.php';
 require_once BASE_PATH.'/core/models/dao/ItemDao.php';
+require_once BASE_PATH.'/core/models/dao/MetadataDao.php';
 require_once BASE_PATH.'/core/models/dao/AssetstoreDao.php';
 require_once BASE_PATH.'/core/controllers/components/UploadComponent.php';
 
@@ -275,7 +276,8 @@ class MIDAS2MigrationComponent extends AppComponent
     {       
     set_time_limit(0);
     $this->userId = $userid; 
-          
+
+
     // Check that we are in development mode
     if(Zend_Registry::get('configGlobal')->environment != 'development')
       {
@@ -297,6 +299,18 @@ class MIDAS2MigrationComponent extends AppComponent
       }
       
     $modelLoader = new MIDAS_ModelLoader;
+    
+    // Just to test the metadata
+    $MetadataModel = $modelLoader->loadModel("Metadata");  
+    $Item = $modelLoader->loadModel("Item");  
+    
+    $itemDao = $Item->load(42);
+    $itemRevisionDao = $Item->getLastRevision($itemDao);
+    //$MetadataModel->addMetadata(MIDAS_METADATA_DOCUMENT,'contributor','author','Author of a text');
+    $MetadataModel->addMetadataValue($itemRevisionDao,MIDAS_METADATA_DOCUMENT,
+    																'contributor','author','Julien!');
+    
+    return false;
     
     // STEP 1: Import the users
     $User = $modelLoader->loadModel("User");  
