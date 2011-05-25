@@ -23,6 +23,7 @@ abstract class UserModelBase extends AppModel
       'publicfolder_id' => array('type' => MIDAS_DATA),
       'privatefolder_id' => array('type' => MIDAS_DATA),
       'view' => array('type' => MIDAS_DATA),
+      'uuid' => array('type' => MIDAS_DATA),
       'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
       'public_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'publicfolder_id', 'child_column' => 'folder_id'),
       'private_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'privatefolder_id', 'child_column' => 'folder_id'),
@@ -38,28 +39,23 @@ abstract class UserModelBase extends AppModel
   abstract function getByEmail($email);
   abstract function getByUser_id($userid);
   abstract function getUserCommunities($userDao);
+  abstract function getByUuid($uuid);
   
   /** save */
   public function save($dao)
     {
+    if(!isset($dao->uuid) || empty($dao->uuid))
+      {
+      $dao->setUuid(uniqid() . md5(mt_rand()));
+      }
     parent::save($dao);
-    $modelLoad = new MIDAS_ModelLoader();
-    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
-    $uuModel->newUUID($dao);
     } 
     
   /** delete*/
   public function delete($dao)
     {
     //TODO
-    $modelLoad = new MIDAS_ModelLoader();
-    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
-    $uudao = $uuModel->getIndentifier($dao);
-    if($uudao)
-      {
-      $uuModel->delete($uudao);
-      }
-      
+    $modelLoad = new MIDAS_ModelLoader();     
     $ciModel = $modelLoad->loadModel('CommunityInvitation');
     $invitations = $dao->getInvitations();
     foreach($invitations as $invitation)
@@ -155,29 +151,30 @@ abstract class UserModelBase extends AppModel
   
     
   /**
-	 * Get either a Gravatar URL or complete image tag for a specified email address.
-	 *
-	 * @param string $email The email address
-	 * @param string $s Size in pixels, defaults to 80px [ 1 - 512 ]
-	 * @param string $d Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
-	 * @param string $r Maximum rating (inclusive) [ g | pg | r | x ]
-	 * @param boole $img True to return a complete IMG tag False for just the URL
-	 * @param array $atts Optional, additional key/value attributes to include in the IMG tag
-	 * @return String containing either just a URL or a complete image tag
-	 * @source http://gravatar.com/site/implement/images/php/
-	 */
-	public function getGravatarUrl($email, $s = 32, $d = '404', $r = 'g', $img = false, $atts = array() ) {
-		$url = 'http://www.gravatar.com/avatar/';
-		$url .= md5(strtolower(trim($email)));
-		$url .= "?s=$s&d=$d&r=$r";
-		if($img) 
+   * Get either a Gravatar URL or complete image tag for a specified email address.
+   *
+   * @param string $email The email address
+   * @param string $s Size in pixels, defaults to 80px [ 1 - 512 ]
+   * @param string $d Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
+   * @param string $r Maximum rating (inclusive) [ g | pg | r | x ]
+   * @param boole $img True to return a complete IMG tag False for just the URL
+   * @param array $atts Optional, additional key/value attributes to include in the IMG tag
+   * @return String containing either just a URL or a complete image tag
+   * @source http://gravatar.com/site/implement/images/php/
+   */
+  public function getGravatarUrl($email, $s = 32, $d = '404', $r = 'g', $img = false, $atts = array() )
+    {
+    $url = 'http://www.gravatar.com/avatar/';
+    $url .= md5(strtolower(trim($email)));
+    $url .= "?s=".$s."&d=".$d."&r=".$r;
+    if($img) 
       {
-			$url = '<img src="' . $url . '"';
-			foreach ( $atts as $key => $val )
+      $url = '<img src="' . $url . '"';
+      foreach($atts as $key => $val)
         {
-				$url .= ' ' . $key . '="' . $val . '"';
+        $url .= ' ' . $key . '="' . $val . '"';
         }
-			$url .= ' />';
+      $url .= ' />';
       }
     
     $header = get_headers($url, 1);
@@ -185,6 +182,6 @@ abstract class UserModelBase extends AppModel
       {
       return false;
       }
-		return $url;
-	}
+    return $url;
+    }
 } // end class UserModelBase

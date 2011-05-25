@@ -22,6 +22,7 @@ abstract class CommunityModelBase extends AppModel
       'membergroup_id' => array('type' => MIDAS_DATA),
       'can_join' => array('type' => MIDAS_DATA),
       'view' => array('type' => MIDAS_DATA),
+      'uuid' => array('type' => MIDAS_DATA),
       'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
       'public_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'publicfolder_id', 'child_column' => 'folder_id'),
       'private_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'privatefolder_id', 'child_column' => 'folder_id'),
@@ -40,19 +41,21 @@ abstract class CommunityModelBase extends AppModel
   abstract function getByName($name);
   /** get All*/
   abstract function getAll();
+  abstract function getByUuid($uuid);
 
   /** save */
   public function save($dao)
     {
+    if(!isset($dao->uuid) || empty($dao->uuid))
+      {
+      $dao->setUuid(uniqid() . md5(mt_rand()));
+      }
     $name = $dao->getName();
     if(empty($name))
       {
       throw new Zend_Exception("Please set a name.");
       }
     parent::save($dao);
-    $modelLoad = new MIDAS_ModelLoader();
-    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
-    $uuModel->newUUID($dao);
     }
   
   /** plus one view*/
@@ -192,12 +195,6 @@ abstract class CommunityModelBase extends AppModel
       $feed_model->delete($feed);
       }
     $modelLoad = new MIDAS_ModelLoader();
-    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
-    $uudao = $uuModel->getIndentifier($communityDao);
-    if($uudao)
-      {
-      $uuModel->delete($uudao);
-      }
       
     $ciModel = $modelLoad->loadModel('CommunityInvitation');
     $invitations = $communityDao->getInvitations();

@@ -7,7 +7,14 @@ require_once BASE_PATH.'/core/models/base/CommunityModelBase.php';
  */
 class CommunityModel extends CommunityModelBase
 { 
-
+  /** get by uuid*/
+  function getByUuid($uuid)
+    {
+    $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid)); 
+    $dao = $this->initDao(ucfirst($this->_name), $row);
+    return $dao;
+    }
+    
   /** Get a community by name */
   function getByName($name)
     {

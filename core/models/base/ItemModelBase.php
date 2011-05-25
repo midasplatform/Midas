@@ -20,6 +20,7 @@ abstract class ItemModelBase extends AppModel
       'view' => array('type' => MIDAS_DATA),
       'download' => array('type' => MIDAS_DATA),
       'privacy_status' => array('type' => MIDAS_DATA),
+      'uuid' => array('type' => MIDAS_DATA),
       'folders' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Folder', 'table' => 'item2folder', 'parent_column' => 'item_id', 'child_column' => 'folder_id'),
       'revisions' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'ItemRevision', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
       'keywords' => array('type' => MIDAS_MANY_TO_MANY, 'model' => 'ItemKeyword', 'table' => 'item2keyword', 'parent_column' => 'item_id', 'child_column' => 'keyword_id'),
@@ -38,10 +39,11 @@ abstract class ItemModelBase extends AppModel
   /** save */
   public function save($dao)
     {
+    if(!isset($dao->uuid) || empty($dao->uuid))
+      {
+      $dao->setUuid(uniqid() . md5(mt_rand()));
+      }
     parent::save($dao);
-    $modelLoad = new MIDAS_ModelLoader();
-    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
-    $uuModel->newUUID($dao);
     }
     
   /** copy parent folder policies*/

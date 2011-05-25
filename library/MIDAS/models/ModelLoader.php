@@ -30,7 +30,6 @@ class MIDAS_ModelLoader
    */
   public function loadModel($model, $module = '')
     {
-
     $databaseType = Zend_Registry::get('configDatabase')->database->type;
     $models = Zend_Registry::get('models');
     if(!isset($models[$module.$model]))

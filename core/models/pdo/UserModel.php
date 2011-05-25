@@ -7,7 +7,14 @@ require_once BASE_PATH.'/core/models/base/UserModelBase.php';
  */
 class UserModel extends UserModelBase
 {
-  
+  /** get by uuid*/
+  function getByUuid($uuid)
+    {
+    $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid)); 
+    $dao = $this->initDao(ucfirst($this->_name), $row);
+    return $dao;
+    }
+    
   /** Get a user by email */
   function getByEmail($email)
     {

@@ -27,9 +27,6 @@ abstract class AssetstoreModelBase extends AppModel
   public function save($dao)
     {
     parent::save($dao);
-    $modelLoad = new MIDAS_ModelLoader();
-    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
-    $uuModel->newUUID($dao);
     }
   
   /** delete an assetstore (and all the items in it)*/
@@ -63,13 +60,6 @@ abstract class AssetstoreModelBase extends AppModel
     foreach($items as $item)
       {
       $item_model->delete($item);
-      }
-    $modelLoad = new MIDAS_ModelLoader();
-    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
-    $uudao = $uuModel->getIndentifier($dao);
-    if($uudao)
-      {
-      $uuModel->delete($uudao);
       }
     parent::delete($dao);
     }// delete

@@ -7,6 +7,14 @@ require_once BASE_PATH.'/core/models/base/FolderModelBase.php';
  */
 class FolderModel extends FolderModelBase
 {
+  
+  /** get by uuid*/
+  function getByUuid($uuid)
+    {
+    $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid)); 
+    $dao = $this->initDao(ucfirst($this->_name), $row);
+    return $dao;
+    }
     
   /** check ifthe policy is valid*/
   function policyCheck($folderDao, $userDao = null, $policy = 0)
@@ -298,13 +306,6 @@ class FolderModel extends FolderModelBase
     $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice - 2')),
                           array('right_indice >= ?' => $leftIndice));
     
-    $modelLoad = new MIDAS_ModelLoader();
-    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
-    $uudao = $uuModel->getIndentifier($folder);
-    if($uudao)
-      {
-      $uuModel->delete($uudao);
-      }
     parent::delete($folder);
     unset($folder->folder_id);
     $folder->saved = false;
@@ -363,6 +364,11 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Should be a folder.");
       }
+      
+    if(!isset($folder->uuid) || empty($folder->uuid))
+      {
+      $folder->setUuid(uniqid() . md5(mt_rand()));
+      }
     $name = $folder->getName();
     if(empty($name))
       {
@@ -410,6 +416,7 @@ class FolderModel extends FolderModelBase
                           array('right_indice >= ?' => $rightParent));
       $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('2 + left_indice')),
                           array('left_indice >= ?' => $rightParent));
+      
       $insertedid = $this->database->insert($data);
       if(!$insertedid)
         {
@@ -417,10 +424,7 @@ class FolderModel extends FolderModelBase
         }
       $folder->folder_id = $insertedid;
       $folder->saved = true;
-      
-      $modelLoad = new MIDAS_ModelLoader();
-      $uuModel = $modelLoad->loadModel('Uniqueidentifier');
-      $uuModel->newUUID($folder);
+    
       return true;
       }
     } // end method save

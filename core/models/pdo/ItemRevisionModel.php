@@ -7,7 +7,14 @@ require_once BASE_PATH.'/core/models/base/ItemRevisionModelBase.php';
  */
 class ItemRevisionModel extends ItemRevisionModelBase
 {
-     
+  /** get by uuid*/
+  function getByUuid($uuid)
+    {
+    $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid)); 
+    $dao = $this->initDao(ucfirst($this->_name), $row);
+    return $dao;
+    }
+    
   /** delete a revision*/
   function delete($revisiondao)
     {
@@ -42,13 +49,6 @@ class ItemRevisionModel extends ItemRevisionModelBase
         }
       }
       
-    $modelLoad = new MIDAS_ModelLoader();
-    $uuModel = $modelLoad->loadModel('Uniqueidentifier');
-    $uudao = $uuModel->getIndentifier($revisiondao);
-    if($uudao)
-      {
-      $uuModel->delete($uudao);
-      }
     parent::delete($revisiondao);
     $revisiondao->saved = false;
     unset($revisiondao->itemrevision_id);

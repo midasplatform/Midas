@@ -6,8 +6,8 @@ require_once BASE_PATH . '/modules/api/library/KwWebApiCore.php';
 class Api_IndexController extends Api_AppController
 {
   public $_moduleModels=array('Userapi');
-  public $_models=array('Community', 'ItemRevision', 'Item', 'User', 'Uniqueidentifier', "Folderpolicyuser", 'Folderpolicygroup', 'Folder');
-  public $_components=array('Upload', 'Search');
+  public $_models=array('Community', 'ItemRevision', 'Item', 'User', "Folderpolicyuser", 'Folderpolicygroup', 'Folder');
+  public $_components=array('Upload', 'Search', 'Uuid');
 
   var $kwWebApiCore = null;
 
@@ -65,6 +65,7 @@ class Api_IndexController extends Api_AppController
 
     $this->view->data= $data; // transfer data to the view
     $this->view->help = $this->helpContent;
+    $this->view->serverURL = $this->getServerURL();
     }
 
    /** Set the call back API */
@@ -583,11 +584,7 @@ class Api_IndexController extends Api_AppController
     $record = false;
     if(!empty($uuid))
       {
-      $record = $this->Uniqueidentifier->getByUid($uuid);
-      if($record != false)
-        {
-        $record = $this->Uniqueidentifier->getResource($record);
-        }
+      $record = $this->Component->Uuid->getByUid($uuid);
       if($record === false || !$this->Community->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
         {
         throw new Exception("This community doesn't exist  or you don't have the permissions.", 200);
@@ -816,14 +813,10 @@ class Api_IndexController extends Api_AppController
     $record = false;
     if(!empty($uuid))
       {
-      $record = $this->Uniqueidentifier->getByUid($uuid);      
-      if($record != false)
-        {
-        $record = $this->Uniqueidentifier->getResource($record);
-        }
+      $record = $this->Component->Uuid->getByUid($uuid);
       if($record === false || !$this->Folder->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
         {
-        throw new Exception("This community doesn't exist  or you don't have the permissions.", 200);
+        throw new Exception("This folder doesn't exist  or you don't have the permissions.", 200);
         }   
       }
     if($record != false && $record instanceof FolderDao)
@@ -1163,14 +1156,14 @@ class Api_IndexController extends Api_AppController
       throw new Exception('Invalid resource type or id.', -151);
       }
       
-    $uuid = $this->Uniqueidentifier->getIndentifier($dao);
+    $uuid = $dao->getUuid();
 
     if($uuid == false)
       {
       throw new Exception('Invalid resource type or id.', -151);
       }
       
-    return $uuid->toArray();
+    return $uuid;
     }
 
   /** Get resource given a uuid */
@@ -1182,7 +1175,7 @@ class Api_IndexController extends Api_AppController
       }
 
     $uuid = $args['uuid'];
-    $resource = $this->Uniqueidentifier->getByUid($uuid);
+    $resource = $this->Component->Uuid->getByUid($uuid);
 
     if($resource == false)
       {
@@ -1206,17 +1199,15 @@ class Api_IndexController extends Api_AppController
       throw new Exception('Parameter uuid is not defined', -150);
       }
       
-    $resource = $this->Uniqueidentifier->getByUid($args['uuid']);
+    $folder = $this->Component->Uuid->getByUid($args['uuid']);
     
     $return = array();
-    $return[] = $resource->toArray();
+    $return[] = $folder->toArray();
 
-    if($resource == false)
+    if($folder == false)
       {
       throw new Exception('No resource for the given UUID.', -151);
       }
-    
-    $folder = $this->Uniqueidentifier->getResource($resource); 
     
     if(!$folder instanceof FolderDao)
       {
@@ -1226,8 +1217,7 @@ class Api_IndexController extends Api_AppController
     $parent = $folder->getParent();
     while($parent !== false)
       {
-      $resource = $this->Uniqueidentifier->getIndentifier($parent); ;
-      $return[] = $resource->toArray();
+      $return[] = $parent->toArray();
       $parent = $parent->getParent();
       }
     return $return;
