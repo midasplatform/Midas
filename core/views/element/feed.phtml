@@ -5,6 +5,62 @@
 ?>
 
 <?
+
+
+  if(!function_exists('createFeedElement'))
+    {
+    function createFeedElement(&$view,$feed)
+      {
+      $type=$feed->getType();
+      if($feed->policy==2)
+        {
+        echo "<div class='feedDelete'>";
+        echo "<img class='feedDeleteLink' element='{$feed->getKey()}' src='{$view->coreWebroot}/public/images/icons/close.png' alt=''/>";
+        echo "</div>";
+        }
+      echo "<div class='feedUserImage'>";
+      $thumbnail=$feed->getUser()->getThumbnail();
+
+      echo $view->userthumbnail($thumbnail);
+      echo "</div>";
+      echo "<div class='feedInfo'>";
+      echo $view->linkuser($feed->getUser()).' ';
+      switch($type)
+        {
+        case MIDAS_FEED_CREATE_COMMUNITY:
+          echo "{$view->t("added the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
+          break;
+        case MIDAS_FEED_COMMUNITY_INVITATION:
+          echo "{$view->t("invited you to the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getCommunity()->getKey()}'>".$view->slicename($feed->getRessource()->getCommunity()->getName(),30)."</a>";
+          break;
+        case MIDAS_FEED_UPDATE_COMMUNITY:
+        case MIDAS_FEED_CREATE_FOLDER:
+        case MIDAS_FEED_CREATE_ITEM:
+          echo "{$view->t("added the item")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
+          break;
+        case MIDAS_FEED_CREATE_LINK_ITEM:
+          echo "{$view->t("added the link")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
+          break;
+        case MIDAS_FEED_CREATE_REVISION:
+          echo "{$view->t("added a new revision to")} <a href='{$view->webroot}/item/{$feed->getRessource()->getItem()->getKey()}'>".$view->slicename($feed->getRessource()->getItem()->getName(),30)."</a>";
+          break;
+        case MIDAS_FEED_CREATE_USER:
+          echo "{$view->t("registered")}";
+          break;
+        case MIDAS_FEED_DELETE_COMMUNITY:
+        case MIDAS_FEED_DELETE_FOLDER:
+        case MIDAS_FEED_DELETE_ITEM:
+        default:
+          break;
+        }
+      echo "</div>";
+      echo "<div class='feedDate'>";
+      echo  $view->Dateago(strtotime($feed->getDate()));
+      echo "</div>";
+      echo "<div style='clear:left;'></div>";
+      }
+    }
+    
   $feeds=$this->feeds;
   if(!isset($feeds)||empty($feeds))
     {
@@ -24,56 +80,5 @@
     }
   echo "</div>";
 
-  function createFeedElement(&$view,$feed)
-    {
-    $type=$feed->getType();
-    if($feed->policy==2)
-      {
-      echo "<div class='feedDelete'>";
-      echo "<img class='feedDeleteLink' element='{$feed->getKey()}' src='{$view->coreWebroot}/public/images/icons/close.png' alt=''/>";
-      echo "</div>";
-      }
-    echo "<div class='feedUserImage'>";
-    $thumbnail=$feed->getUser()->getThumbnail();
-
-    echo $view->userthumbnail($thumbnail);
-    echo "</div>";
-    echo "<div class='feedInfo'>";
-    echo $view->linkuser($feed->getUser()).' ';
-    switch($type)
-      {
-      case MIDAS_FEED_CREATE_COMMUNITY:
-        echo "{$view->t("added the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
-        break;
-      case MIDAS_FEED_COMMUNITY_INVITATION:
-        echo "{$view->t("invited you to the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getCommunity()->getKey()}'>".$view->slicename($feed->getRessource()->getCommunity()->getName(),30)."</a>";
-        break;
-      case MIDAS_FEED_UPDATE_COMMUNITY:
-      case MIDAS_FEED_CREATE_FOLDER:
-      case MIDAS_FEED_CREATE_ITEM:
-        echo "{$view->t("added the item")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
-        break;
-      case MIDAS_FEED_CREATE_LINK_ITEM:
-        echo "{$view->t("added the link")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
-        break;
-      case MIDAS_FEED_CREATE_REVISION:
-        echo "{$view->t("added a new revision to")} <a href='{$view->webroot}/item/{$feed->getRessource()->getItem()->getKey()}'>".$view->slicename($feed->getRessource()->getItem()->getName(),30)."</a>";
-        break;
-      case MIDAS_FEED_CREATE_USER:
-        echo "{$view->t("registered")}";
-        break;
-      case MIDAS_FEED_DELETE_COMMUNITY:
-      case MIDAS_FEED_DELETE_FOLDER:
-      case MIDAS_FEED_DELETE_ITEM:
-      default:
-        break;
-      }
-    echo "</div>";
-    echo "<div class='feedDate'>";
-    echo  $view->Dateago(strtotime($feed->getDate()));
-    echo "</div>";
-    echo "<div style='clear:left;'></div>";
-    }
-    
  ?>
 

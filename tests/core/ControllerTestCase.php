@@ -3,6 +3,8 @@ require_once dirname(__FILE__).'/../bootstrap.php';
 abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
   {
   protected $application;
+  
+  protected $params = array();
 
   public function setUp()
     {
@@ -10,11 +12,103 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     $this->loadElements();
     parent::setUp();
     }
+  
+      /**
+     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
+     */
+  protected function getDataSet($name='default')
+    {
+    return new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet(
+            dirname(__FILE__) . '/../databaseDataset/'.$name.".xml");
+    }
+    
+   /** loadData */
+  protected function loadData($modelName,$file=null)
+    {
+    $model=$this->ModelLoader->loadModel($modelName);
+    if($file==null)
+      {
+      $file=strtolower($modelName);
+      }
 
- public function dispatchUrI($uri){
+    $data=$this->getDataSet($file);
+    $dataUsers=$data->getTable($model->getName());
+    $rows=$dataUsers->getRowCount();
+    $key=array();
+    for($i=0; $i<$dataUsers->getRowCount();$i++)
+      {
+      $key[]=$dataUsers->getValue($i, $model->getKey());
+      }
+    return $model->load($key);
+    }
+
+ private function initModule()
+   {
+    $router = Zend_Controller_Front::getInstance()->getRouter();
+    
+    //Init Modules    
+    $frontController = Zend_Controller_Front::getInstance();  
+    $frontController->addControllerDirectory(BASE_PATH . '/core/controllers');
+    $modules = new Zend_Config_Ini(APPLICATION_CONFIG, 'module');
+    // routes modules
+    $listeModule = array();
+    foreach($modules as $key => $module)
+      {      
+      if($module == 1 &&  file_exists(BASE_PATH.'/modules/'.$key))
+        {
+        $listeModule[] = $key;
+        }
+      }
+    foreach($listeModule as $m)
+      { 
+      $route = $m;
+      $nameModule = $m; 
+      $router->addRoute($nameModule."-1", 
+          new Zend_Controller_Router_Route("".$route."/:controller/:action/*", 
+              array(
+                  'module' => $nameModule)));
+      $router->addRoute($nameModule."-2", 
+          new Zend_Controller_Router_Route("".$route."/:controller/", 
+              array(
+                  'module' => $nameModule,
+                  'action' => 'index')));
+      $router->addRoute($nameModule."-3", 
+          new Zend_Controller_Router_Route("".$route."/", 
+              array(
+                  'module' => $nameModule,
+                  'controller' => 'index',
+                  'action' => 'index')));
+      $frontController->addControllerDirectory(BASE_PATH . "/modules/".$route."/controllers", $nameModule);
+      if(file_exists(BASE_PATH . "/modules/".$route."/AppController.php"))
+        {
+        require_once BASE_PATH . "/modules/".$route."/AppController.php";      
+        }
+      if(file_exists(BASE_PATH . "/modules/".$route."/models/AppDao.php"))
+        {
+        require_once BASE_PATH . "/modules/".$route."/models/AppDao.php";      
+        }
+      if(file_exists(BASE_PATH . "/modules/".$route."/models/AppModel.php"))
+        {
+        require_once BASE_PATH . "/modules/".$route."/models/AppModel.php";      
+        }
+      }
+    Zend_Registry::set('modulesEnable', $listeModule);
+   }
+    
+ public function dispatchUrI($uri, $userDao = null, $withException = false){
+   if($userDao != null)
+     {
+     $this->params['testingUserId'] = $userDao->getKey();
+     }
+     
+   $this->request->setQuery($this->params);
    $this->dispatch($uri);
    if($this->request->getControllerName()=="error")
      {
+     if($withException)
+       {
+       return;
+       }
      $error = $this->request->getParam('error_handler');
      Zend_Loader::loadClass("NotifyErrorComponent", BASE_PATH . '/core/controllers/components');
      $errorComponent = new NotifyErrorComponent();
@@ -34,20 +128,31 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
 
      $this->fail($errorComponent->getFullErrorMessage());
      }
-   $this->assertController("browse");
-   $this->assertAction("index");
+     
+   if($withException)
+     {
+     $this->fail('The dispatch should throw an exception');
+     }
    }
 
-
+  public function resetAll()
+    {
+    $this->reset();
+    $this->params = array();
+    $this->frontController->setControllerDirectory(BASE_PATH . '/core/controllers', 'default');
+    }
+   
  public function tearDown()
     {
-    $this->resetRequest();
-    $this->resetResponse();
+    Zend_Controller_Front::getInstance()->resetInstance();
+    $this->resetAll();
     parent::tearDown();
     }
   public function appBootstrap()
     {
     $this->application = new Zend_Application(APPLICATION_ENV, CORE_CONFIG);
+    $this->frontController->setControllerDirectory(BASE_PATH . '/core/controllers', 'default');
+    $this->initModule();
     $this->application->bootstrap();
     }
 

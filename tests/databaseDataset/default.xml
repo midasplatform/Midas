@@ -71,7 +71,7 @@
 	<!-- MIDAS_FEED_CREATE_COMMUNITY -->
 	<feed feed_id="1" date="2011-01-27 12:09:02" user_id='1' type="0"
 		ressource="2000" />
-	<feedpolicygroup feed_id="1" group_id="0" policy='2'  />
+	<feedpolicygroup feed_id="1" group_id="0" policy='0'  />
 		
 	<!-- MIDAS_FEED_DELETE_COMMUNITY -->
 	<feed feed_id="2" date="2011-01-27 12:09:02" user_id='1' type="1"
@@ -81,7 +81,7 @@
 	<!-- MIDAS_FEED_UPDATE_COMMUNITY -->
 	<feed feed_id="3" date="2011-01-27 12:09:02" user_id='1' type="2"
 		ressource="2000" />
-	<feedpolicyuser feed_id="3" user_id="1" policy='0'  />
+	<feedpolicyuser feed_id="3" user_id="1" policy='2'  />
 	<feed2community feed_id="2" community_id="2000" />
 	
 	<!-- MIDAS_FEED_CREATE_USER -->

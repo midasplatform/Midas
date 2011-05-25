@@ -16,6 +16,8 @@ class AppController extends MIDAS_GlobalController
     parent::preDispatch();
     $this->view->setEncoding('iso-8859-1');
     
+    $this->view->setScriptPath(BASE_PATH."/core/views");  
+    
     $fc = Zend_Controller_Front::getInstance();
     $module = $fc->getRequest()->getModuleName();
     if($module == 'default')
@@ -51,8 +53,25 @@ class AppController extends MIDAS_GlobalController
         Zend_Session::setId($_POST['sid']);       
         }
       Zend_Session::start();  
-      $user = new Zend_Session_Namespace('Auth_User');
+      
+      // log in when testing
+      $testingUserId = $this->_getParam('testingUserId');
       $modelLoad = new MIDAS_ModelLoader();
+      if(Zend_Registry::get('configGlobal')->environment == 'testing' && isset($testingUserId))
+        {
+        $user = new Zend_Session_Namespace('Auth_User');
+        $userModel = $modelLoad->loadModel('User');
+        $user->Dao = $userModel->load($testingUserId);
+        if($user->Dao == false)
+          {
+          throw new Zend_Exception('Unable to find user');
+          }          
+        }
+      else
+        {
+        $user = new Zend_Session_Namespace('Auth_User');
+        }
+      
       if($user->Dao == null)
         {        
         $userModel = $modelLoad->loadModel('User');
@@ -222,6 +241,26 @@ class AppController extends MIDAS_GlobalController
     return $prefix.$_SERVER['SERVER_NAME'].$currentPort;
     }
 
+  /** check if testing environement is set */
+  public function isTestingEnv()
+    {
+    return Zend_Registry::get('configGlobal')->environment == 'testing';
+    }
+    
+  /** disable layout */
+  public function disableLayout()
+    {
+    if($this->_helper->hasHelper('layout'))
+      {
+      $this->_helper->layout->disableLayout();
+      }
+    }
+  /** disable view */
+  public function disableView()
+    {
+    $this->_helper->viewRenderer->setNoRender();
+    }
+    
   /** check if midas needs to be upgraded */
   public function isUpgradeNeeded()
     {
@@ -254,7 +293,7 @@ class AppController extends MIDAS_GlobalController
     parent::postDispatch();
     $this->view->json = JsonComponent::encode($this->view->json);
     $this->view->generatedTimer = round((microtime(true) - START_TIME), 3);
-    if(Zend_Registry::get('config')->environment != 'testing')
+    if(Zend_Registry::get('configGlobal')->environment != 'testing')
       {
       header('Content-Type: text/html; charset=ISO-8859-1');
       }

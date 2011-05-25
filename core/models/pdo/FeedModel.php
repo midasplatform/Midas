@@ -88,6 +88,7 @@ class FeedModel extends FeedModelBase
 
     $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
+
     $rowset = $this->database->fetchAll($sql);
     if(count($rowset) > 0)
       {

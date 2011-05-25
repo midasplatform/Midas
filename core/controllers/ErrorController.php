@@ -102,7 +102,11 @@ class ErrorController extends AppController
         $this->view->message = $shortMessage;  
         break;  
       case 'testing':  
-        $this->_helper->layout->setLayout('blank');  
+        if($this->_helper->hasHelper('layout'))
+          {
+          $this->_helper->layout->disableLayout();
+          }
+        
         $this->_helper->viewRenderer->setNoRender();  
 
         $this->getResponse()->appendBody($shortMessage);  

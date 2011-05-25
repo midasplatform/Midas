@@ -1,3 +1,7 @@
+add_midas_test( IndexController IndexControllerTest.php )
+add_midas_test( FeedController FeedControllerTest.php )
+
+
 # Syle
 add_midas_style_test( StyleCoreControllerComponents ${CMAKE_SOURCE_DIR}/core/controllers/components )
 add_midas_style_test( StyleCoreControllerForms ${CMAKE_SOURCE_DIR}/core/controllers/forms )

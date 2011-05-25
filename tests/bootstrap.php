@@ -33,7 +33,8 @@ require_once 'core/DatabaseTestCase.php';
 Zend_Registry::set('logger', null);
 
 
-$configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global');
+$configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
+$configGlobal->environment = 'testing';
 Zend_Registry::set('configGlobal', $configGlobal);
 
 $config = new Zend_Config_Ini(APPLICATION_CONFIG, 'testing');

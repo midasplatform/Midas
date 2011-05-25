@@ -26,7 +26,7 @@ class FeedController extends AppController
     $this->view->notifications = array();
     $this->view->header = $this->t('Feed');
     
-    if($this->logged)
+    if($this->logged && !$this->isTestingEnv())
       {
       $request = $this->getRequest();
       $cookieData = $request->getCookie('newFeed'.$this->userSession->Dao->getKey());
@@ -38,16 +38,16 @@ class FeedController extends AppController
       }
     }
         
-  /** get getfolders Items' size */
+  /** get delete a feed */
   public function deleteajaxAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
+    if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
       {
       throw new Zend_Exception("Why are you here ? Should be ajax.");
       }     
      
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
     
     $feedId = $this->_getParam('feed');
     if(!isset($feedId) || (!is_numeric($feedId) && strlen($feedId) != 32)) // This is tricky! and for Cassandra for now)
@@ -55,16 +55,18 @@ class FeedController extends AppController
       throw new Zend_Exception("Please set the feed Id");
       }
     $feed = $this->Feed->load($feedId);
+    
     if($feed == false)
       {
       return;
       }    
-    if(!$this->Feed->policyCheck($feed, $this->userSession->Dao, 2))
+
+    if(!$this->Feed->policyCheck($feed, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
       return;
       }
     $this->Feed->delete($feed);      
-    }//end getfolderscontent
+    }//end deleteajaxAction
     
 } // end class
 

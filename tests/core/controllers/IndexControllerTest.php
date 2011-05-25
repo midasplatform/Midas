@@ -4,14 +4,15 @@ class IndexControllerTest extends ControllerTestCase
   {
   public function setUp()
     {
-    $this->setupDatabase(array());
+    $this->setupDatabase(array('default'));
     parent::setUp();
     }
 
-  public function testAboutAction()
+  public function testIndexAction()
     {
-    $this->dispatchUrI("/browse");
-    $this->assertQueryContentContains('div.viewHeader', 'Data');
+    $this->dispatchUrI("/index");
+    $this->assertController("feed");
+    $this->assertAction("index");   
     }
 
   }

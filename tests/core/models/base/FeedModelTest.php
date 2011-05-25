@@ -5,7 +5,7 @@ class FeedModelTest extends DatabaseTestCase
 
   public function setUp()
     {
-    $this->setupDatabase(array());
+    $this->setupDatabase(array('default'));
     $this->_models=array(
       'Feed','Community'
     );
