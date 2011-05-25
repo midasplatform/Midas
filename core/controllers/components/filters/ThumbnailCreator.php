@@ -106,7 +106,7 @@ class ThumbnailCreator extends AppFilters
       case "mha":
       case "nrrd":
       case "":
-        $ret = $this->_processMetaImage($extension);
+        //$ret = $this->_processMetaImage($extension);
         break;
       case "pdf":
         $this->inputFile .= "[0]";    // first page only
@@ -120,7 +120,7 @@ class ThumbnailCreator extends AppFilters
       case "flv":
       case "mp4":
       case "rm":
-        $ret = $this->_processVideo();
+        //$ret = $this->_processVideo();
         break;
       default:
         $ret = $this->_processStandard();
