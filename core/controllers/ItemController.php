@@ -102,6 +102,8 @@ class ItemController extends AppController
     $this->view->title .= ' - '.$itemDao->getName();
     $this->view->metaDescription = substr($itemDao->getDescription(), 0, 160);
     
+    $this->view->metadatavalues = $this->ItemRevision->getMetadata($itemRevision);
+    
     
     $tmp = Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_CAN_VISUALIZE, array('item' => $itemDao));
     if(isset($tmp['visualize']) && $tmp['visualize'] == true)

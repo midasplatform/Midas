@@ -75,6 +75,8 @@ PURPOSE.  See the above copyright notices for more information.
   $feeds=$this->feeds;
   if(!isset($feeds)||empty($feeds))
     {
+    echo $this->t("Feed is currently empty. It could be that the community is not very active 
+          or you may not have the permissions to see the feeds.");  
     return;
     }
 

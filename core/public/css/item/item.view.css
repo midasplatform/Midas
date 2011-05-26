@@ -10,3 +10,7 @@ div.viewInfo{
 table#browseTable{
   display: table!important;
 }
+
+table#metadataTable{
+  display: table!important;
+}

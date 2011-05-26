@@ -17,3 +17,7 @@ div.communityList span{
   padding-left: 15px;
 }
 
+div.communityBlock:hover{
+  background-color: #F6F9FE;
+  cursor: pointer;
+}

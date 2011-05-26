@@ -17,11 +17,17 @@
     $('a.moreDescription').click(function(){
       $(this).parents('div').find('.shortDescription').hide();
       $(this).parents('div').find('.fullDescription').show();
+      return false;
     })
     $('a.lessDescription').click(function(){
       $(this).parents('div').find('.shortDescription').show();
       $(this).parents('div').find('.fullDescription').hide();
+      return false;
     })
 
+   $('.communityBlock').click(function(){
+     $(location).attr('href',($('> .communityTitle',this).attr('href')));
+    }) 
+    
   });
   

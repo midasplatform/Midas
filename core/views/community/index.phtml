@@ -21,25 +21,30 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/community/communi
     {
     foreach($this->userCommunities as $community)
       {
-      echo "
-      <div>
-      <a class='communityTitle' href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a>
+      ?>  
+      <div class="communityBlock">
+      <a class="communityTitle" href="<?php echo $this->webroot.'/community/'.$community->getKey();?>">
+      <?php echo $community->getName()?></a>
       <br/>
-        <span class='shortDescription' >
-        ";
-        if(strlen($community->getDescription())>270)
-          {
+      <?php 
+      if(strlen($community->getDescription())>270)
+          { ?>
+        <span class='shortDescription'>
+        <?php 
           echo substr($community->getDescription(), 0,270)."... <a class='moreDescription'>{$this->t('more')}</a>";
-          }
-        echo "
+        ?>
         </span>
-        <span class='fullDescription' style='display:none;'>
-        {$community->getDescription()}
-        <br/>
-        <a class='lessDescription'>{$this->t('less')}</a>
+        <span class="fullDescription" style="display:none;">
+        <?php echo $community->getDescription(); ?>
+        <a class='lessDescription'><?php echo $this->t('less'); ?></a>
         </span>
+      <?php } else { ?>
+      <span class='fullDescription'">
+      <?php echo $community->getDescription(); ?>
+      </span>
+      <?php } ?>
       </div>
-      ";
+  <?php    
       }
     }
   ?>

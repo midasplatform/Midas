@@ -26,6 +26,31 @@ class ItemRevisionModel extends ItemRevisionModelBase
     return $dao;
     }
     
+  /** get the metadata associated with the revision */
+  function getMetadata($revisiondao)
+    {
+    if(!$revisiondao instanceof ItemRevisionDao)
+      {
+      throw new Zend_Exception("Error param.");
+      }
+
+    $metadatavalues = array();    
+    $sql = $this->database->select()
+                          ->setIntegrityCheck(false)
+                          ->from('metadatavalue')
+                          ->where('itemrevision_id = ?', $revisiondao->getKey())
+                          ->joinLeft('metadata','metadata.metadata_id = metadatavalue.metadata_id');
+                          
+    $rowset = $this->database->fetchAll($sql); 
+    foreach($rowset as $row)
+      {
+      $metadata = $this->initDao('Metadata', $row);
+      $metadatavalues[] = $metadata; 
+      }
+
+    return $metadatavalues;
+    }  // end getMetadata
+    
   /** delete a revision*/
   function delete($revisiondao)
     {

@@ -40,6 +40,7 @@ abstract class ItemRevisionModelBase extends AppModel
     } // end __construct()
   
   abstract function getByUuid($uuid);
+  abstract function getMetadata($revisiondao);
     
   /** save */
   public function save($dao)
