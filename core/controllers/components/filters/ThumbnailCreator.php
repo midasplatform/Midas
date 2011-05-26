@@ -1,20 +1,15 @@
 <?php
 /*=========================================================================
-Program:   MIDAS Server
-Language:  PHP/HTML/Java/Javascript/SQL
-Date:      $Date: 2010-11-15 17:14:43 +0100 (lun., 15 nov. 2010) $
-Version:   $Revision: 3162 $
-
-Copyright (c) Kitware Inc. 28 Corporate Drive. All rights reserved.
-Clifton Park, NY, 12065, USA.
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
 
 See Copyright.txt for details.
 This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-?>
-<?php
+
 /** Thumbnail creator */
 class ThumbnailCreator extends AppFilters
 {

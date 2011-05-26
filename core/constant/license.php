@@ -1,5 +1,16 @@
 <?php
-define("LICENSE_PDDL", 0); // ?Public Domain for data/databases? ,http://www.opendatacommons.org/licenses/pddl/summary/
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+define("LICENSE_PDDL", 0); // Public Domain for data/databases ,http://www.opendatacommons.org/licenses/pddl/summary/
 define("LICENSE_ODC_BY", 1); // Attribution for data/databases http://www.opendatacommons.org/licenses/by/summary/
 define("LICENSE_ODBL", 2); // Attribution Share-Alike for data/databases http://www.opendatacommons.org/licenses/odbl/summary/
 define("LICENSE_RESERVED", 3); //This work is copyrighted by is owner and cannot be shared, distributed or modified without prior consent of the author.

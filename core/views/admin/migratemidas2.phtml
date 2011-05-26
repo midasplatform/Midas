@@ -1,10 +1,21 @@
 <?php 
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/admin/admin.migrate.js');
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/admin/admin.migrate.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
   
-  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.css');
-  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/admin/admin.migrate.css');
-  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/assetstore.add.css');
+$this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.css');
+$this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/admin/admin.migrate.css');
+$this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/assetstore.add.css');
 ?>
 
 <h2> Migrating from MIDAS version 2 to MIDAS version 3</h2>
