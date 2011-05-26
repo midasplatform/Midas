@@ -110,7 +110,46 @@ class MIDAS2MigrationComponent extends AppComponent
           $Item->addRevision($itemdao, $itemRevisionDao);
 
           // Add the metadata
+          $MetadataModel = $modelLoader->loadModel("Metadata");  
+          // Register the common metadata (this should move to the main function
+          try
+            {
+            $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL,'contributor','author','Author of the data');
+            $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL,'date','uploaded','Date when the data was uploaded to MIDAS');
+            $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL,'date','issued','Date when the data was published');
+            $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL,'date','created','Date when the data was created');
+            }
+          catch(Zend_Exception $e) 
+            {
+            //we continue
+            }
           
+          // 
+          $metadataquery = pg_query("SELECT metadata_field_id,text_value FROM metadatavalue WHERE item_id=".$item_id);
+          while($metadata_array = pg_fetch_array($metadataquery))
+            {
+            $text_value = $metadata_array['text_value']; 
+            $metadata_field_id = $metadata_array['metadata_field_id'];   
+            
+            $element = "";
+            $qualifier = "";
+            
+            // Do not check 64 and 27 because they are stored as field and not metadata
+            // in MIDAS3
+            switch($metadata_field_id)
+              {
+              case 3:  $element='contributor'; $qualifier='author'; break;
+              case 11:  $element='date'; $qualifier='uploaded'; break;
+              case 15:  $element='date'; $qualifier='issued'; break;
+              case 14:  $element='date'; $qualifier='created'; break;
+              }
+            
+            if($element != "")
+              {  
+              $MetadataModel->addMetadataValue($itemRevisionDao,MIDAS_METADATA_GLOBAL,
+    					  											         $element,$qualifier,$text_value);
+              }
+            }
           
           // Add bitstreams to the revision
           $bitstreamDao = new BitstreamDao;
@@ -285,8 +324,10 @@ class MIDAS2MigrationComponent extends AppComponent
       }
       
     // Connect to the local PGSQL database
+    ob_start();  // disable warnings
     $pgdb = pg_connect("host='".$this->midas2Host."' port='".$this->midas2Port."' dbname='".$this->midas2Database.
                        "' user='".$this->midas2User."' password='".$this->midas2Password."'");
+    ob_end_clean();  
     if($pgdb === false)
       {
       throw new Zend_Exception("Cannot connect to the MIDAS2 database.");
@@ -299,18 +340,6 @@ class MIDAS2MigrationComponent extends AppComponent
       }
       
     $modelLoader = new MIDAS_ModelLoader;
-    
-    // Just to test the metadata
-    $MetadataModel = $modelLoader->loadModel("Metadata");  
-    $Item = $modelLoader->loadModel("Item");  
-    
-    $itemDao = $Item->load(42);
-    $itemRevisionDao = $Item->getLastRevision($itemDao);
-    //$MetadataModel->addMetadata(MIDAS_METADATA_DOCUMENT,'contributor','author','Author of a text');
-    $MetadataModel->addMetadataValue($itemRevisionDao,MIDAS_METADATA_DOCUMENT,
-    																'contributor','author','Julien!');
-    
-    return false;
     
     // STEP 1: Import the users
     $User = $modelLoader->loadModel("User");  
@@ -347,6 +376,9 @@ class MIDAS2MigrationComponent extends AppComponent
       $communityDao = false;
       try
         {
+        // Check the policies for the community  
+          
+          
         $communityDao = $Community->createCommunity($name, $short_description, MIDAS_COMMUNITY_PUBLIC, NULL); // no user 
         } 
       catch(Zend_Exception $e) 

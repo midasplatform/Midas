@@ -3,10 +3,10 @@
 class AssetstoreForm extends AppForm
 {
   /** Create assetstore form*/
-  public function createAssetstoreForm()
+  public function createAssetstoreForm($action='assetstore/add')
     {
     $form = new Zend_Form();
-    $form->setAction('assetstore/add');
+    $form->setAction($action);
     $form->setName('assetstoreForm');
     $form->setMethod('post');
     $form->setAttrib('class', 'assetstoreForm');

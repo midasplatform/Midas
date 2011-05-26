@@ -1,0 +1,19 @@
+<?php 
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/admin/admin.migrate.js');
+  $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+  
+  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.css');
+  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/assetstore.add.css');
+?>
+
+<h2>Migrating from MIDAS version 2 to MIDAS version 3</h2>
+<?php echo $this->migrateForm; ?>
+
+
+<div id="newassetstore-form"  style="display:none">
+   <?php echo $this->assetstoreForm; ?>
+</div>
+
+<script language="javascript">
+var assetstores = eval(<?php echo json_encode($this->assetstores)?>);
+</script>

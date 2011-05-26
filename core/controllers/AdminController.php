@@ -8,7 +8,7 @@ class AdminController extends AppController
   public $_models = array('Errorlog', 'Assetstore');
   public $_daos = array();
   public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration');
-  public $_forms = array('Admin', 'Assetstore');
+  public $_forms = array('Admin', 'Assetstore','Migrate');
   
   /** init the controller */
   function init()
@@ -427,9 +427,65 @@ class AdminController extends AppController
       throw new Zend_Exception("You should be an administrator");
       }
 
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
-    $this->Component->MIDAS2Migration->migrate($this->userSession->Dao->getUserId());
+    $this->assetstores = $this->Assetstore->getAll();  
+    $this->view->migrateForm = $this->Form->Migrate->createMigrateForm($this->assetstores);
+    $this->view->assetstoreForm = $this->Form->Assetstore->createAssetstoreForm('../assetstore/add');
+    
+    if($this->getRequest()->isPost())
+      {
+      $this->_helper->layout->disableLayout();
+      $this->_helper->viewRenderer->setNoRender();
+          
+      if(!$this->view->migrateForm->isValid($_POST)) 
+        {
+        echo json_encode(array('error' => $this->t('The form is invalid. Missing values.')));
+        return false;
+        }
+      
+      $midas2_hostname = $_POST['midas2_hostname'];
+      $midas2_port = $_POST['midas2_port'];
+      $midas2_user = $_POST['midas2_user'];
+      $midas2_password = $_POST['midas2_password'];
+      $midas2_database = $_POST['midas2_database'];
+      $midas2_assetstore = $_POST['midas2_assetstore'];
+      $midas3_assetstore = $_POST['assetstore'];
+      
+      // Check that the assetstore is accessible
+      if(!file_exists($midas2_assetstore))
+        {
+        echo json_encode(array('error' => $this->t('MIDAS2 assetstore is not accessible.')));
+        return false;  
+        }
+
+      // Remove the last slashe if any
+      if($midas2_assetstore[strlen($midas2_assetstore)-1] == '\\' 
+         || $midas2_assetstore[strlen($midas2_assetstore)-1] == '/')  
+        {
+        $midas2_assetstore = substr($midas2_assetstore,0,strlen($midas2_assetstore)-1);
+        }
+        
+      $this->Component->MIDAS2Migration->midas2User = $midas2_user;
+      $this->Component->MIDAS2Migration->midas2Password = $midas2_password;
+      $this->Component->MIDAS2Migration->midas2Host = $midas2_hostname;
+      $this->Component->MIDAS2Migration->midas2Database = $midas2_database;
+      $this->Component->MIDAS2Migration->midas2Port = $midas2_port;
+      $this->Component->MIDAS2Migration->midas2Assetstore = $midas2_assetstore;
+      $this->Component->MIDAS2Migration->assetstoreId = $midas3_assetstore;
+  
+      try
+        {
+        $this->Component->MIDAS2Migration->migrate($this->userSession->Dao->getUserId());
+        }
+      catch(Zend_Exception $e) 
+        {
+        echo json_encode(array('error' => $this->t($e->getMessage()))); 
+        return false; 
+        }
+          
+      echo json_encode(array('message' => $this->t('Migration sucessful.')));
+      }  
+      
+    // Display the form  
     }
     
 } // end class
