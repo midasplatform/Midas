@@ -1,0 +1,47 @@
+h2 {
+margin-left: 10px;
+}
+
+form.migrateForm dl {
+margin-top: 25px;
+border: 0px;
+width: 800px;
+}
+
+form.migrateForm dl dt {
+float: left;
+text-align: right;
+width: 200px;
+height: 25px;
+font-weight: bold;
+margin-top: 5px;
+padding-bottom: 5px;
+border-bottom: 1px solid #EEEEEE;
+}
+
+form.migrateForm dl dd {
+float: left;
+width: 550px;
+display:inline;
+height: 25px;
+text-align: left;
+margin-left: 0px;
+margin-top: 5px;
+padding-left: 20px;
+padding-bottom: 5px;
+border-bottom: 1px solid #EEEEEE;
+}
+
+#submit-label {
+   border-bottom: 0px;
+}
+
+#submit-element {
+  border-bottom: 0px;
+}
+
+.browse-button{
+position: relative;
+top: -32px;
+left: 630px;
+}

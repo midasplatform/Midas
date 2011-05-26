@@ -3,10 +3,11 @@
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
   
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.css');
+  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/admin/admin.migrate.css');
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/assetstore.add.css');
 ?>
 
-<h2>Migrating from MIDAS version 2 to MIDAS version 3</h2>
+<h2> Migrating from MIDAS version 2 to MIDAS version 3</h2>
 <?php echo $this->migrateForm; ?>
 
 
