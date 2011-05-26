@@ -36,7 +36,6 @@
 		privacy="0" folder_id="1003" publicfolder_id="1004" privatefolder_id="1005"
 		admingroup_id="3000" moderatorgroup_id="3001" membergroup_id="3002" />
 		
-		
 
 	<group group_id="3000" community_id="2000" name="Community test User 1 Admin" />
 	<group group_id="3001" community_id="2000"
@@ -46,7 +45,7 @@
 
 
 	<user user_id="1" firstname="FirstName1" lastname="LastName1"
-		email="user1@user1.com" password="123" creation="2011-01-27 12:09:02"
+		email="user1@user1.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:09:02"
 		folder_id="1000" publicfolder_id="1001" privatefolder_id="1002" />
 
 	<user2group group_id="3000" user_id="1" />

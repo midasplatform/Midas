@@ -109,7 +109,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
       echo "<ul>";
       foreach($this->communities as $community)
         {
-        echo "<li><a style='color:white;' href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a>";
+        echo "<li class='settingsCommunityList'><a style='color:white;' href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a>";
         echo "<ul>";
         foreach($community->groups as $group)
           {

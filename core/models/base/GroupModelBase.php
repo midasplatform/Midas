@@ -23,6 +23,25 @@ abstract class GroupModelBase extends AppModel
   abstract function removeUser($group, $user);
   abstract function findByCommunity($communityDao);
   abstract function getGroupFromSearch($search, $limit = 14);
+  
+  /** load */
+  public function load($key = null)
+    {
+    if($key == MIDAS_GROUP_ANONYMOUS_KEY)
+      {
+      $this->loadDaoClass('GroupDao');
+      $dao = new GroupDao();
+      $dao->setGroupId(MIDAS_GROUP_ANONYMOUS_KEY);
+      $dao->setCommunityId(0);
+      $dao->setName('Anonymous');
+      $dao->saved = true;
+      return $dao;
+      }
+    else
+      {
+      return parent::load($key);
+      }
+    }
     
   /** Delete a group */
   public function deleteGroup($group)

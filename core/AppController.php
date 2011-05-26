@@ -59,7 +59,7 @@ class AppController extends MIDAS_GlobalController
       $modelLoad = new MIDAS_ModelLoader();
       if(Zend_Registry::get('configGlobal')->environment == 'testing' && isset($testingUserId))
         {
-        $user = new Zend_Session_Namespace('Auth_User');
+        $user = new Zend_Session_Namespace('Auth_User_Testing');
         $userModel = $modelLoad->loadModel('User');
         $user->Dao = $userModel->load($testingUserId);
         if($user->Dao == false)
@@ -227,6 +227,10 @@ class AppController extends MIDAS_GlobalController
   /** get server's url */
   function getServerURL()
     {
+    if($this->isTestingEnv())
+      {
+      return 'http://localhost';
+      }
     $currentPort = "";
     $prefix = "http://";
 

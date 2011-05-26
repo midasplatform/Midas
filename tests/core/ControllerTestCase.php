@@ -13,6 +13,11 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     parent::setUp();
     }
   
+    
+  public function getBody()
+    {
+    return $this->response->outputBody();
+    }
       /**
      * @return PHPUnit_Extensions_Database_DataSet_IDataSet
      */
@@ -100,9 +105,16 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
      {
      $this->params['testingUserId'] = $userDao->getKey();
      }
-     
-   $this->request->setQuery($this->params);
+   if($this->request->isPost())
+     {
+     $this->request->setPost($this->params);
+     }
+   else
+     {
+     $this->request->setQuery($this->params);
+     }
    $this->dispatch($uri);
+   $this->assertNotResponseCode('404');
    if($this->request->getControllerName()=="error")
      {
      if($withException)
