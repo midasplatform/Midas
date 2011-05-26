@@ -138,10 +138,19 @@ class AdminController extends AppController
         {
         $assetstores[$key]->default = false;
         }
-      $assetstores[$key]->totalSpace = disk_total_space($assetstore->getPath());
-      $assetstores[$key]->totalSpaceText = $this->Component->Utility->formatSize($assetstores[$key]->totalSpace);
-      $assetstores[$key]->freeSpace = disk_free_space($assetstore->getPath());
-      $assetstores[$key]->freeSpaceText = $this->Component->Utility->formatSize($assetstores[$key]->freeSpace);
+        
+      // Check if we can access the path
+      if(file_exists($assetstore->getPath()))
+        {  
+        $assetstores[$key]->totalSpace = disk_total_space($assetstore->getPath());
+        $assetstores[$key]->totalSpaceText = $this->Component->Utility->formatSize($assetstores[$key]->totalSpace);
+        $assetstores[$key]->freeSpace = disk_free_space($assetstore->getPath());
+        $assetstores[$key]->freeSpaceText = $this->Component->Utility->formatSize($assetstores[$key]->freeSpace);
+        } 
+      else 
+        {
+        $assetstores[$key]->totalSpaceText = false;
+        }
       }
       
     if(!$defaultSet)
