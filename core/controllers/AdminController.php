@@ -18,7 +18,7 @@ class AdminController extends AppController
   public $_models = array('Errorlog', 'Assetstore');
   public $_daos = array();
   public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration');
-  public $_forms = array('Admin', 'Assetstore','Migrate');
+  public $_forms = array('Admin', 'Assetstore', 'Migrate');
   
   /** init the controller */
   function init()
@@ -477,10 +477,10 @@ class AdminController extends AppController
         }
 
       // Remove the last slashe if any
-      if($midas2_assetstore[strlen($midas2_assetstore)-1] == '\\' 
-         || $midas2_assetstore[strlen($midas2_assetstore)-1] == '/')  
+      if($midas2_assetstore[strlen($midas2_assetstore) - 1] == '\\' 
+         || $midas2_assetstore[strlen($midas2_assetstore) - 1] == '/')  
         {
-        $midas2_assetstore = substr($midas2_assetstore,0,strlen($midas2_assetstore)-1);
+        $midas2_assetstore = substr($midas2_assetstore, 0, strlen($midas2_assetstore) - 1);
         }
         
       $this->Component->MIDAS2Migration->midas2User = $midas2_user;

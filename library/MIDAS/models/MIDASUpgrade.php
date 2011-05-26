@@ -165,7 +165,7 @@ class MIDASUpgrade
    * @method public AddTableField()
    *  Add a field to a table
    */
-  function AddTableField($table,$field,$mySQLType,$pgSqlType,$default)
+  function addTableField($table, $field, $mySQLType, $pgSqlType, $default)
     {
     $sql = '';
     if($default !== false)
@@ -187,7 +187,7 @@ class MIDASUpgrade
    * @method public RemoveTableField()
    *  Remove a field from a table
    */
-  function RemoveTableField($table,$field)
+  function removeTableField($table, $field)
     {
     if($this->dbtype == "PDO_PGSQL")
       {
@@ -203,7 +203,7 @@ class MIDASUpgrade
    * @method public RenameTableField()
    *  Rename a field from a table
    */
-  function RenameTableField($table,$field,$newfield,$mySQLType,$pgSqlType,$default)
+  function renameTableField($table, $field, $newfield, $mySQLType, $pgSqlType, $default)
     {
     if($this->dbtype == "PDO_PGSQL")
       {
@@ -222,7 +222,7 @@ class MIDASUpgrade
    *  Check if the index exists. 
    *  Only works for MySQL
    */
-  function CheckIndexExists($table,$field)
+  function checkIndexExists($table, $field)
     {
     if($this->dbtype == "PDO_MYSQL")
       {
@@ -242,9 +242,9 @@ class MIDASUpgrade
    * @method public AddTableIndex()
    *  Add an index to a table
    */
-  function AddTableIndex($table,$field)
+  function addTableIndex($table, $field)
     {
-    if(!$this->CheckIndexExists($table,$field))
+    if(!$this->checkIndexExists($table, $field))
       {
       if($this->dbtype == "PDO_PGSQL")
         {
@@ -261,9 +261,9 @@ class MIDASUpgrade
    * @method public RemoveTableIndex()
    *  Remove an index from a table
    */
-  function RemoveTableIndex($table,$field)
+  function removeTableIndex($table, $field)
     {
-    if($this->CheckIndexExists($table,$field))
+    if($this->checkIndexExists($table, $field))
       {
       if($this->dbtype == "PDO_PGSQL")
         {
@@ -280,7 +280,7 @@ class MIDASUpgrade
    * @method public AddTablePrimaryKey()
    *  Add a primary key to a table
    */
-  function AddTablePrimaryKey($table,$field)
+  function addTablePrimaryKey($table, $field)
     {
     if($this->dbtype == "PDO_PGSQL")
       {
@@ -296,7 +296,7 @@ class MIDASUpgrade
    * @method public RemoveTablePrimaryKey()
    *  Remove a primary key from a table
    */
-  function RemoveTablePrimaryKey($table)
+  function removeTablePrimaryKey($table)
     {
     if($this->dbtype == "PDO_PGSQL")
       {

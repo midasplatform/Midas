@@ -31,16 +31,16 @@ abstract class MetadataModelBase extends AppModel
     $this->initialize(); // required
     } // end __construct() 
   
-  abstract function getMetadata($type,$element,$qualifier);
+  abstract function getMetadata($type, $element, $qualifier);
   protected abstract function saveMetadataValue($metadataDao);
   abstract function getMetadataValueExists($metadataDao);
   
   /** Add a metadata
    * @return MetadataDao */
-  function addMetadata($type,$element,$qualifier,$description)
+  function addMetadata($type, $element, $qualifier, $description)
     {
     // Gets the metadata
-    $metadata = $this->getMetadata($type,$element,$qualifier);  
+    $metadata = $this->getMetadata($type, $element, $qualifier);  
     if($metadata)
       {
       throw new Zend_Exception("Metadata already exists.");  
@@ -62,7 +62,7 @@ abstract class MetadataModelBase extends AppModel
     
   /** Add a metadata to an itemRevision
    * @return MetadataDao */
-  function addMetadataValue($itemRevisionDao,$type,$element,$qualifier,$value)
+  function addMetadataValue($itemRevisionDao, $type, $element, $qualifier, $value)
     {
     if(!$itemRevisionDao instanceof $itemRevisionDao)
       {
@@ -70,7 +70,7 @@ abstract class MetadataModelBase extends AppModel
       }
 
     // Gets the metadata
-    $metadataDao = $this->getMetadata($type,$element,$qualifier); 
+    $metadataDao = $this->getMetadata($type, $element, $qualifier); 
     
     if(!$metadataDao)
       {

@@ -22,11 +22,11 @@ class Upgrade_3_0_12 extends MIDASUpgrade
     
   public function postUpgrade()
     {
-    $this->AddTableField('community', 'uuid', 'varchar(255)', ' character varying(512)', null);
-    $this->AddTableField('user', 'uuid', 'varchar(255)', ' character varying(512)', null);
-    $this->AddTableField('item', 'uuid', 'varchar(255)', ' character varying(512)', null);
-    $this->AddTableField('folder', 'uuid', 'varchar(255)', ' character varying(512)', null);
-    $this->AddTableField('itemrevision', 'uuid', 'varchar(255)', ' character varying(512)', null);
+    $this->addTableField('community', 'uuid', 'varchar(255)', ' character varying(512)', null);
+    $this->addTableField('user', 'uuid', 'varchar(255)', ' character varying(512)', null);
+    $this->addTableField('item', 'uuid', 'varchar(255)', ' character varying(512)', null);
+    $this->addTableField('folder', 'uuid', 'varchar(255)', ' character varying(512)', null);
+    $this->addTableField('itemrevision', 'uuid', 'varchar(255)', ' character varying(512)', null);
 
     }
 }

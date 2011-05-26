@@ -14,7 +14,7 @@ PURPOSE.  See the above copyright notices for more information.
 class AssetstoreForm extends AppForm
 {
   /** Create assetstore form*/
-  public function createAssetstoreForm($action='assetstore/add')
+  public function createAssetstoreForm($action = 'assetstore/add')
     {
     $form = new Zend_Form();
     $form->setAction($action);
@@ -23,7 +23,7 @@ class AssetstoreForm extends AppForm
     $form->setAttrib('class', 'assetstoreForm');
     
     // Name of the assetstore
-    $inputDirectory = new Zend_Form_Element_Text('name', array('label' => $this->t('Give a name'),
+    $inputDirectory = new Zend_Form_Element_Text('name', array('label' => $this->t('Give a name'), 
                                                  'id' => 'assetstorename'));
     $inputDirectory->setRequired(true);
     $form->addElement($inputDirectory);
