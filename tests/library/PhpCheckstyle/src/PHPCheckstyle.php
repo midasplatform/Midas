@@ -1807,15 +1807,22 @@ class PHPCheckstyle {
 		if ($this->_isActive('lineLength')) {
 
 			// Comments are ignored
-			if (!($this->tokenizer->checkProvidedToken($this->token, T_COMMENT) || $this->tokenizer->checkProvidedToken($this->token, T_ML_COMMENT) || $this->tokenizer->checkProvidedToken($this->token, T_DOC_COMMENT))) {
+			if (!($this->tokenizer->checkProvidedToken($this->token, T_COMMENT) 
+			   || $this->tokenizer->checkProvidedToken($this->token, T_ML_COMMENT) 
+			   || $this->tokenizer->checkProvidedToken($this->token, T_DOC_COMMENT))) {
 
 				$text = $this->tokenizer->extractTokenText($this->token);
-				$text = trim($text);
-				$maxlen = $this->_config->getTestProperty('lineLength', 'maxLineLength');
-				$msg = sprintf(PHPCHECKSTYLE_LONG_LINE, $maxlen);
-				if (strlen($text) > $maxlen) {
-					$this->_writeError('lineLength', $msg);
-				}
+				$textarray = explode("\r",$text);
+				foreach($textarray as $text)
+				  {
+				  $text = trim($text);
+				
+				  $maxlen = $this->_config->getTestProperty('lineLength', 'maxLineLength');
+				  $msg = sprintf(PHPCHECKSTYLE_LONG_LINE, $maxlen);
+				  if (strlen($text) > $maxlen) {
+					  $this->_writeError('lineLength', $msg);
+				  }
+				  }
 			}
 		}
 	}

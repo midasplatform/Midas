@@ -24,7 +24,7 @@ class MigrateForm extends AppForm
     $form->setAttrib('class', 'migrateForm');
 
     // Input directory
-    $midas2_hostname = new Zend_Form_Element_Text('midas2_hostname', array('label' => $this->t('MIDAS2 Hostname'), 'size' => 60,'value' => 'localhost'));
+    $midas2_hostname = new Zend_Form_Element_Text('midas2_hostname', array('label' => $this->t('MIDAS2 Hostname'), 'size' => 60, 'value' => 'localhost'));
     $midas2_hostname->setRequired(true);
     $form->addElement($midas2_hostname);
     
@@ -41,7 +41,7 @@ class MigrateForm extends AppForm
     $midas2_password->setRequired(true);
     $form->addElement($midas2_password);
     
-    $midas2_database = new Zend_Form_Element_Text('midas2_database', array('label' => $this->t('MIDAS2 Database'),' size' => 60, 'value' => 'midas'));
+    $midas2_database = new Zend_Form_Element_Text('midas2_database', array('label' => $this->t('MIDAS2 Database'), ' size' => 60, 'value' => 'midas'));
     $midas2_database->setRequired(true);
     $form->addElement($midas2_database);
     

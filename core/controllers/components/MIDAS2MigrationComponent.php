@@ -150,7 +150,7 @@ class MIDAS2MigrationComponent extends AppComponent
           $policyquery = pg_query("SELECT policy_id FROM resourcepolicy WHERE resource_type_id=".MIDAS2_RESOURCE_ITEM.
                                 " AND resource_id=".$item_id." AND epersongroup_id=0");
           $privacy = MIDAS_COMMUNITY_PRIVATE;
-          if(pg_num_rows($policyquery)>0)
+          if(pg_num_rows($policyquery) > 0)
             {
             $anonymousGroup = $Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
             $Itempolicygroup->createPolicy($anonymousGroup, $itemdao, MIDAS_POLICY_READ);  
@@ -402,33 +402,33 @@ class MIDAS2MigrationComponent extends AppComponent
           $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);
           }
           
-         // Add specific MIDAS policies for users (not dealing with groups)
-         $policyquery = pg_query("SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email 
+        // Add specific MIDAS policies for users (not dealing with groups)
+        $policyquery = pg_query("SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email 
                                 FROM resourcepolicy 
                                 LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
                                  WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_COMMUNITY.
                                  " AND resource_id=".$community_id." GROUP BY eperson.eperson_id, email");
                                  
-         while($policyquery_array = pg_fetch_array($policyquery))
-           {
-           $actionid = $policyquery_array['actionid'];  
-           $email = $policyquery_array['email'];
-           if($actionid > 1)
-             {
-             $policyValue = MIDAS_POLICY_ADMIN;
-             }
-           else if($actionid == 1)
-             {
-             $policyValue = MIDAS_POLICY_WRITE; 
-             }
-           else
-             {
-             $policyValue = MIDAS_POLICY_READ;
-             }  
-           $userDao = $User->getByEmail($email);
-           
-           $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);  
-           }
+        while($policyquery_array = pg_fetch_array($policyquery))
+          {
+          $actionid = $policyquery_array['actionid'];  
+          $email = $policyquery_array['email'];
+          if($actionid > 1)
+            {
+            $policyValue = MIDAS_POLICY_ADMIN;
+            }
+          else if($actionid == 1)
+            {
+            $policyValue = MIDAS_POLICY_WRITE; 
+            }
+          else
+            {
+            $policyValue = MIDAS_POLICY_READ;
+            }  
+          $userDao = $User->getByEmail($email);
+          
+          $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);  
+          }
         } 
       catch(Zend_Exception $e) 
         {
@@ -437,12 +437,12 @@ class MIDAS2MigrationComponent extends AppComponent
         //we continue
         } 
 
-       if($folderDao)  // The folder has been created for the community
+      if($folderDao)  // The folder has been created for the community
         { 
         // Find the subcommunities
         $this->_createFolderForCommunity($community_id, $folderDao->getFolderId());
         }
-       else
+      else
         {
         echo "Cannot create Folder for community: ".$name."<br>";
         } // end cannot create folder
