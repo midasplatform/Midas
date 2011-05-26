@@ -184,18 +184,6 @@ class MIDAS2MigrationComponent extends AppComponent
 
           // Add the metadata
           $MetadataModel = $modelLoader->loadModel("Metadata");  
-          // Register the common metadata (this should move to the main function)
-          try
-            {
-            $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL,'contributor','author','Author of the data');
-            $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL,'date','uploaded','Date when the data was uploaded to MIDAS');
-            $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL,'date','issued','Date when the data was published');
-            $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL,'date','created','Date when the data was created');
-            }
-          catch(Zend_Exception $e) 
-            {
-            //we continue
-            }
           
           // 
           $metadataquery = pg_query("SELECT metadata_field_id,text_value FROM metadatavalue WHERE item_id=".$item_id);
@@ -213,8 +201,18 @@ class MIDAS2MigrationComponent extends AppComponent
               {
               case 3:  $element='contributor'; $qualifier='author'; break;
               case 11:  $element='date'; $qualifier='uploaded'; break;
-              case 15:  $element='date'; $qualifier='issued'; break;
               case 14:  $element='date'; $qualifier='created'; break;
+              case 15:  $element='date'; $qualifier='issued'; break;
+              case 18:  $element='identifier'; $qualifier='citation'; break;
+              case 25:  $element='identifier'; $qualifier='uri'; break;
+              case 26:  $element='description'; $qualifier='general'; break;
+              case 28:  $element='description'; $qualifier='provenance'; break;
+              case 29:  $element='description'; $qualifier='sponsorship'; break;
+              case 39:  $element='description'; $qualifier='publisher'; break;
+              case 57:  $element='subject'; $qualifier='keyword'; break;
+              case 68:  $element='subject'; $qualifier='ocis'; break;
+              case 75:  $element='identifier'; $qualifier='pubmed'; break;
+              case 74:  $element='identifier'; $qualifier='doi'; break;
               }
             
             if($element != "")

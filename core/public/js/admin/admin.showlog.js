@@ -42,7 +42,6 @@ function initLogs()
   });
 }
 
-
 var dates = $( "#startlog, #endlog" ).datepicker({
 			defaultDate: "-1w",
 			changeMonth: true,
@@ -56,12 +55,9 @@ var dates = $( "#startlog, #endlog" ).datepicker({
 						selectedDate, instance.settings );
 				dates.not( this ).datepicker( "option", option, date );
 			}
-		});
-    
-    
-$('#logSelector').ajaxForm( {beforeSubmit: validateShowlog, success:       successShowlog} );
-  
+		}); 
 
+$('#logSelector').ajaxForm( {beforeSubmit: validateShowlog, success: successShowlog} );
 
 function validateShowlog(formData, jqForm, options) { 
  $('table#listLogs').hide();

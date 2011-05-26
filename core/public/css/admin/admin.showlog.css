@@ -5,3 +5,7 @@ tr.logSum{
 .ui-widget-content{
   border: none!important;
 }
+
+.ui-datepicker{
+	clear: both;
+}
