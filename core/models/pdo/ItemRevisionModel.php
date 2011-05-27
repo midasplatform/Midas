@@ -136,24 +136,124 @@ class ItemRevisionModel extends ItemRevisionModelBase
     $item = $itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));
     $item->setDate(date('c'));
+    
  
-    $procces = Zend_Registry::get('configGlobal')->processing;
+    $modulesThumbnail =  Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_CREATE_THUMBNAIL);
+    if(empty($modulesThumbnail))
+      {
+      $mime = $bitstreamDao->getMimetype();
+      $tmpfile = $bitstreamDao->getPath();
+      if(!file_exists($tmpfile))
+        {
+        $tmpfile = $bitstreamDao->getFullPath();
+        }
+       // Creating temp image as a source image (original image).
+      $createThumb = true;
+      if(file_exists($tmpfile) && $mime == 'image/jpeg')
+        {
+        try
+          {
+          $src = imagecreatefromjpeg($tmpfile);
+          }
+        catch (Exception $exc)
+          {
+          $createThumb = false; 
+          }
+        }
+      else if(file_exists($tmpfile) && $mime == 'image/png')
+        {
+        try
+          {
+          $src = imagecreatefrompng($tmpfile);
+          }
+        catch (Exception $exc)
+          {
+          $createThumb = false; 
+          }        
+        }
+      else if(file_exists($tmpfile) && $mime == 'image/gif')
+        {
+        try
+          {
+          $src = imagecreatefromgif($tmpfile);
+          }
+        catch (Exception $exc)
+          {
+          $createThumb = false; 
+          }   
+        }  
+      else
+        {
+        $createThumb = false;  
+        }    
+      
+      if($createThumb)
+        {
+        $tmpPath = BASE_PATH.'/data/thumbnail/'.rand(1, 1000);
+        if(!file_exists(BASE_PATH.'/data/thumbnail/'))
+          {
+          throw new Zend_Exception("Problem thumbnail path: ".BASE_PATH.'/data/thumbnail/');
+          }
+        if(!file_exists($tmpPath))
+          {
+          mkdir($tmpPath);
+          }
+        $tmpPath .= '/'.rand(1, 1000);
+        if(!file_exists($tmpPath))
+          {
+          mkdir($tmpPath);
+          }
+        $destionation = $tmpPath."/".rand(1, 1000).'.jpeg';
+        while(file_exists($destionation))
+          {
+          $destionation = $tmpPath."/".rand(1, 1000).'.jpeg';
+          }
+        $pathThumbnail=$destionation;
+
+        list ($x, $y) = @getimagesize ($tmpfile);  //--- get size of img ---
+        $thumb = 100;  //--- max. size of thumb ---
+        if($x > $y) 
+          {
+          $tx = $thumb;  //--- landscape ---
+          $ty = round($thumb / $x * $y);
+          }
+        else
+          {
+          $tx = round($thumb / $y * $x);  //--- portrait ---
+          $ty = $thumb;
+          }
+
+        $thb = imagecreatetruecolor ($tx, $ty);  //--- create thumbnail ---
+        imagecopyresampled ($thb,$src, 0,0, 0,0, $tx,$ty, $x,$y);
+        imagejpeg ($thb, $pathThumbnail, 80);
+        imagedestroy ($thb);    
+        imagedestroy ($src);   
+        } 
+      }
+    else
+      {
+      $createThumb = false;
+      //TODO
+      /*
     require_once BASE_PATH.'/core/controllers/components/FilterComponent.php';
     $filterComponent = new FilterComponent();
     $thumbnailCreator = $filterComponent->getFilter('ThumbnailCreator');
     $thumbnailCreator->inputFile = $bitstreamDao->getFullPath();
     $thumbnailCreator->inputName = $bitstreamDao->getName();
     $hasThumbnail = $thumbnailCreator->process();
-    if(isset($thumbnailCreator->outputFile) && $hasThumbnail &&  file_exists($thumbnailCreator->outputFile))
+    
+      */
+      }
+
+    if($createThumb)
       {
       $oldThumbnail = $item->getThumbnail();
       if(!empty($oldThumbnail))
         {
         unlink($oldThumbnail);
         }
-      $item->setThumbnail(substr($thumbnailCreator->outputFile, strlen(BASE_PATH)+1));
+      $item->setThumbnail(substr($pathThumbnail, strlen(BASE_PATH)+1));
       }    
-      
     $ItemModel->save($item);
     } // end addBitstream
 

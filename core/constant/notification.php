@@ -17,4 +17,6 @@ define("MIDAS_NOTIFY_GET_DASBOARD", 2);
 
 /** visualization*/
 define("MIDAS_NOTIFY_CAN_VISUALIZE", 100);
+define("MIDAS_NOTIFY_CREATE_THUMBNAIL", 101);
+
 ?>

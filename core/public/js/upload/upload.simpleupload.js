@@ -47,6 +47,20 @@
        $('#jqueryFileUploadContent').show();
        initJqueryFileupload();
      }
+    
+    function sendParentToJavaSession()
+    {
+      $.post(json.global.webroot+'/upload/javaupload', {parent: $('#destinationId').val(),license: $('select[name=licenseSelect]:last').val()},
+         function(data) {
+             console.log(data);
+         });
+    }
+     
+    function successJavaUpload()
+    {
+      $('.uploadedJava').val(parseInt($('.uploadedJava').val())+1);
+      updateUploadedCount();
+    }
       
     function updateUploadedCount()
     {

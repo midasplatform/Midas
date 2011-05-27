@@ -27,6 +27,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.UIManager;
 
 import com.kitware.utils.exception.JavaUploaderException;
+import java.net.MalformedURLException;
 
 public class Main extends JApplet
   {
@@ -107,16 +108,24 @@ public class Main extends JApplet
 
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-    buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
     // upload button
     uploadFileButton = new JButton("Upload");
     uploadFileButton.addActionListener(new java.awt.event.ActionListener()
       {
+        
         public void actionPerformed(ActionEvent evt)
           {
+          try {
+            getAppletContext().showDocument
+              (new URL("javascript:sendParentToJavaSession()"));
+            }
+          catch (MalformedURLException me) { }
           uploadFileButtonActionPerformed(evt);
           }
+        
+        
       });
 
     buttonPanel.add(uploadFileButton);
@@ -149,24 +158,23 @@ public class Main extends JApplet
     pane.add(buttonPanel);
 
     // info labels
-    fileNameLabel = new JLabel(FILENAME_LABEL_TITLE
-        + "Click 'upload' to select a file");
+    fileNameLabel = new JLabel(FILENAME_LABEL_TITLE);
     fileSizeLabel = new JLabel(FILESIZE_LABEL_TITLE + "0 bytes");
     fileCountLabel = new JLabel(FILECOUNT_LABEL_TITLE);
     bytesUploadedLabel = new JLabel(BYTE_TRANSFERRED_LABEL_TITLE + "0 bytes");
 
     JPanel labelPanel = new JPanel(new GridLayout(4, 1));
-    labelPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     labelPanel.add(fileCountLabel);
     labelPanel.add(fileNameLabel);
     labelPanel.add(fileSizeLabel);
     labelPanel.add(bytesUploadedLabel);
     JScrollPane scrollPane = new JScrollPane(labelPanel);
-    scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     pane.add(scrollPane);
 
     JPanel progressBarPanel = new JPanel(new GridLayout(2, 1));
-    progressBarPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    progressBarPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
     uploadStatusLabel = new JLabel("upload progress");
     progressBarPanel.add(uploadStatusLabel);
@@ -175,7 +183,7 @@ public class Main extends JApplet
     uploadProgressBar.setStringPainted(true);
 
     progressBarPanel.add(uploadProgressBar);
-    progressBarPanel.setBorder(BorderFactory.createEmptyBorder(5, 25, 5, 25));
+    progressBarPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
     // background color
     pane.setBackground(appletBackgroundColor);
@@ -384,6 +392,12 @@ public class Main extends JApplet
       {
       this.getAppletContext().showDocument(this.onSuccessRedirectURLObj);
       }
+    
+    try {
+      getAppletContext().showDocument
+        (new URL("javascript:successJavaUpload()"));
+      }
+    catch (MalformedURLException me) { }
     }
 
   public void reset()
@@ -396,6 +410,7 @@ public class Main extends JApplet
 
   public void uploadFileButtonActionPerformed(ActionEvent evt)
     {
+
     try
       {
       JFileChooser chooser = new JFileChooser();

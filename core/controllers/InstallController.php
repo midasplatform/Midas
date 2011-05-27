@@ -54,7 +54,7 @@ class InstallController extends AppController
       $this->_redirect("/install/step2");
       }
     } // end method indexAction   
-    
+
     
   /**
    * @method step2Action()

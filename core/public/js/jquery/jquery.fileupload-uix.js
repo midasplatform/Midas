@@ -107,6 +107,7 @@
         };
 
         this.buildUploadRow = function (files, index, handler) {
+          
             if (typeof index !== 'number') {
                 return handler.buildMultiUploadRow(files, handler);
             }
@@ -114,6 +115,8 @@
                 fileName = handler.formatFileName(file.name),
                 uploadRow = handler.uploadTemplate
                     .clone().removeAttr('id');
+                    
+
             uploadRow.find('.file_name')
                 .text(fileName);
             uploadRow.find('.file_size')
