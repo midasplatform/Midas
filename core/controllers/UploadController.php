@@ -13,8 +13,8 @@ PURPOSE.  See the above copyright notices for more information.
 /** Upload Controller */
 class UploadController extends AppController
   {
-  public $_models = array('User', 'Item', 'ItemRevision', 'Folder', 'Itempolicyuser', "ItemKeyword", 'Itempolicygroup', 'Group', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Bitstream', 'Assetstore');
-  public $_daos = array('User', 'Item', 'ItemRevision', 'Bitstream', 'Folder', "ItemKeyword");
+  public $_models = array('Assetstore', 'User', 'Item', 'ItemRevision', 'Folder', 'Itempolicyuser', "ItemKeyword", 'Itempolicygroup', 'Group', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Bitstream', 'Assetstore');
+  public $_daos = array('Assetstore', 'User', 'Item', 'ItemRevision', 'Bitstream', 'Folder', "ItemKeyword");
   public $_components = array('Httpupload', 'Upload');
   public $_forms = array('Upload');
 
@@ -28,11 +28,32 @@ class UploadController extends AppController
     $maxPost = str_replace("M", "", ini_get('post_max_size'));
     if($maxFile < $maxPost)
       {
-      $this->view->maxSizeFile = $maxFile;
+      $this->view->maxSizeFile = $maxFile * 1024 * 1024;
       }
     else
       {
-      $this->view->maxSizeFile = $maxPost;
+      $this->view->maxSizeFile = $maxPost * 1024 * 1024;
+      }
+      
+    if($this->isTestingEnv())
+      {      
+      $assetstores = $this->Assetstore->getAll();
+      if(empty($assetstores))
+        {
+        $assetstoreDao = new AssetstoreDao();
+        $assetstoreDao->setName('Default');
+        $assetstoreDao->setPath(BASE_PATH.'/data/assetstore');
+        $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
+        $this->Assetstore = new AssetstoreModel(); //reset Database adapter
+        $this->Assetstore->save($assetstoreDao); 
+        }
+      else
+        {
+        $assetstoreDao = $assetstores[0];
+        }
+      $config = Zend_Registry::get('configGlobal');
+      $config->defaultassetstore->id = $assetstoreDao->getKey();
+      Zend_Registry::set('configGlobal', $config);
       }
     }
 
@@ -43,11 +64,11 @@ class UploadController extends AppController
       {
       throw new Zend_Exception("You have to be logged in to do that");
       }
-    if(!$this->getRequest()->isXmlHttpRequest())
+    if(!$this->getRequest()->isXmlHttpRequest()&& !$this->isTestingEnv())
       {
       throw new Zend_Exception("Error, should be an ajax action.");
       }
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $this->view->form = $this->getFormAsArray($this->Form->Upload->createUploadLinkForm());
     $this->userSession->uploaded = array();
     $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
@@ -65,6 +86,7 @@ class UploadController extends AppController
         $this->view->defaultUploadLocationText = $parent->getName();
         }
       }
+      
     }//end simple upload
 
   /**  upload new revision*/
@@ -74,11 +96,11 @@ class UploadController extends AppController
       {
       throw new Zend_Exception("You have to be logged in to do that");
       }
-    if(!$this->getRequest()->isXmlHttpRequest())
+    if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
       {
       throw new Zend_Exception("Error, should be an ajax action.");
       }
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $itemId = $this->_getParam('itemId');
     $item = $this->Item->load($itemId);
 
@@ -103,13 +125,13 @@ class UploadController extends AppController
       {
       throw new Zend_Exception("You have to be logged in to do that");
       }
-    if(!$this->getRequest()->isXmlHttpRequest())
+    if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
       {
       throw new Zend_Exception("Error, should be an ajax action.");
       }
-    
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+     
+    $this->disableLayout();
+    $this->disableView();
     $parent = $this->_getParam("parent");
     $name = $this->_getParam("name");
     $url = $this->_getParam("url");
@@ -136,6 +158,16 @@ class UploadController extends AppController
     $this->_helper->layout->disableLayout();
     $this->view->protocol = "http";
     $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+    $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
+    
+    $parent = $this->_getParam('parent');
+    $license = $this->_getParam('license');
+    if(!empty ($parent) && !empty($license))
+      {
+      $this->disableView();
+      $this->userSession->JavaUpload->parent = $parent;
+      $this->userSession->JavaUpload->license = $license;
+      }
     }//end java upload
 
 
@@ -143,6 +175,8 @@ class UploadController extends AppController
    * interrupted upload attempt **/
   function gethttpuploadoffsetAction()
     {
+    $this->disableLayout();
+    $this->disableView();
     $params = $this->_getAllParams();
     $url = $this->view->url();
     $url = substr($url,  0, strrpos($url, '/'));
@@ -153,6 +187,8 @@ class UploadController extends AppController
   /** java upload function, didn 't check what it does :-) */
   function gethttpuploaduniqueidentifierAction()
     {
+    $this->disableLayout();
+    $this->disableView();
     $params = $this->_getAllParams();
     $this->Component->Httpupload->get_http_upload_unique_identifier($params);
     } //end get_http_upload_unique_identifier
@@ -166,15 +202,31 @@ class UploadController extends AppController
       {
       throw new Zend_Exception("You have to be logged in to do that");
       }
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
 
     $TMP_DIR = BASE_PATH.'/tmp/misc/';
     list ($filename, $path, $length) = $this->Component->Httpupload->process_http_upload($params);
 
     if(!empty($path) && file_exists($path) && $length > 0)
       {
-      $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename, $path);
+      if(isset($this->userSession->JavaUpload->parent))
+        {
+        $parent = $this->userSession->JavaUpload->parent;
+        }
+      else
+        {
+        $parent = null;
+        }
+      if(isset($this->userSession->JavaUpload->license))
+        {
+        $license = $this->userSession->JavaUpload->license;
+        }
+      else
+        {
+        $license = null;
+        }
+      $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename, $path, $parent, $license);
       $this->userSession->uploaded[] = $item->getKey();
       }
     } //end processjavaupload
@@ -187,30 +239,44 @@ class UploadController extends AppController
       {
       throw new Zend_Exception("You have to be logged in to do that");
       }
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
-    $upload = new Zend_File_Transfer();
-    $upload->receive();
-    $path = $upload->getFileName();
-    $file_size = filesize($path);
+
+    $this->disableLayout();
+    $this->disableView();
+    
+    if($this->isTestingEnv())
+      {
+      //simulate file upload
+      $path = BASE_PATH.'/tests/testfiles/search.png';
+      $file_size = filesize($path);
+      $filename = 'search.png';
+      }
+    else
+      {
+      $upload = new Zend_File_Transfer();
+      $upload->receive();
+      $path = $upload->getFileName();
+      $file_size =  filesize($path);
+      $filename = $upload->getFilename(null, false);
+      }
+      
     $parent = $this->_getParam("parent");
     $license = $this->_getParam("license");
-    if(!empty($path) && file_exists($path) && $upload->getFileSize() > 0)
+    if(!empty($path) && file_exists($path) && $file_size > 0)
       {
       $tmp = explode('-', $parent);
       if(count($tmp) == 2) //means we upload a new revision
         {
         $changes = $this->_getParam("changes");
-        $this->Component->Upload->createNewRevision($this->userSession->Dao, $upload->getFilename(null, false), $upload->getFilename(), $tmp, $changes, $license);
+        $this->Component->Upload->createNewRevision($this->userSession->Dao, $filename, $path, $tmp, $changes, $license);
         }
       else
         {
-        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $upload->getFilename(null, false), $upload->getFilename(), $parent, $license);
+        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename, $path, $parent, $license);
         $this->userSession->uploaded[] = $item->getKey();
         }
 
       $info = array();
-      $info['name'] = basename($upload->getFileName());        
+      $info['name'] = basename($path);        
       $info['size'] = $file_size;
       echo json_encode($info);
       }

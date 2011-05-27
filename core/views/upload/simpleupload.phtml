@@ -43,7 +43,7 @@ PURPOSE.  See the above copyright notices for more information.
     <li><a href="#uploadTabs-3"><?php echo $this->t('Links');?></a></li>
   </ul>
   <div id="uploadTabs-1"> 
-      <b>Step 1: Select files to upload</b>
+      <b><?php echo $this->t('Step 1: Select files to upload')?></b>
       <br/>
       <div id="swfuploadContent">
         <span id="spanButtonPlaceHolder"></span>
@@ -57,7 +57,7 @@ PURPOSE.  See the above copyright notices for more information.
             <form action="<?php echo $this->webroot?>/upload/saveuploaded" method="POST" enctype="multipart/form-data">
                 <input type="file" name="file[]" multiple>
                 <button type="submit">Upload</button>
-                <div class="file_upload_label">Browse or drop files</div>
+                <div class="file_upload_label"><?php echo $this->t('Browse or drop files')?></div>
             </form>
             <table class="files">
                 <tr class="file_upload_template" style="display:none;">
@@ -79,11 +79,17 @@ PURPOSE.  See the above copyright notices for more information.
             </table>
             <div class="file_upload_overall_progress" style='display:none;'><div style="display:none;"></div></div>
         </div>
+        <div class="tooBigUpload">
+          <b><?php echo $this->t('Please use the large file tool, the following files are too big:')?></b>
+          <ul>
+            
+          </ul>
+        </div>
       </div>
-      <b>Step 2: Where do you want to upload your files</b>
+      <b><?php echo $this->t('Step 2: Where do you want to upload your files')?>?</b>
       <div>
       <br/>
-      <b>Curent selected location:</b>
+      <b><?php echo $this->t('Curent selected location:')?></b>
           <span id="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
         <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>  
         <br/>
@@ -91,35 +97,35 @@ PURPOSE.  See the above copyright notices for more information.
         <br/>
         <br/>
       </div>      
-      <b>Step 3: Select a license</b>
+      <b><?php echo $this->t('Step 3: Select a license')?></b>
       <div>
         <?php
         echo $this->element('license')?>
       </div>     
       <br/>
-      <b>Step 4: Start the upload</b>
+      <b><?php echo $this->t('Step 4: Start the upload')?></b>
       <br/>
       <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
      
       <span id="btnStartUpload" >
-        <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" value="Start Upload" />
+        <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" value="<?php echo $this->t('Start Upload')?>" />
       </span>
   
   </div>
     <div id="uploadTabs-3">
       <form id="linkForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
         <div>
-          <label for="name"><b>Step 1: Set a name</b></label><br/>
+          <label for="name"><b><?php echo $this->t('Step 1: Set a name')?></b></label><br/>
           <?php echo $this->form['name']?><br/><br/>
         </div>
         <div>
-          <label for="url"><b>Step 2: Set the url</b></label><br/>
+          <label for="url"><b><?php echo $this->t('Step 2: Set the url')?></b></label><br/>
           <?php echo $this->form['url']?><br/><br/>
         </div>
-        <b>Step 2: Where do you want to upload your files</b>
+        <b><?php echo $this->t('Step 3: Where do you want to upload your files')?></b>
           <div>
           <br/>
-          <b>Curent selected location:</b>
+          <b><?php echo $this->t('Curent selected location:')?></b>
           <span class="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
           <input type="hidden" name="parent" class="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>  
             <br/>

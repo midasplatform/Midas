@@ -350,17 +350,26 @@
         
         this.initUpload = function (event, files, index, xhr, handler, callBack) {
             handler.initUploadRow(event, files, index, xhr, handler);
-            handler.addNode(
-                getUploadTable(handler),
-                handler.uploadRow,
-                function () {
-                    if (typeof handler.beforeSend === func) {
-                        handler.beforeSend(event, files, index, xhr, handler, callBack);
-                    } else {
-                        callBack();
-                    }
-                }
-            );
+            if(files[index].size<$('input.maxSizeFile').val())
+              {
+              handler.addNode(
+                  getUploadTable(handler),
+                  handler.uploadRow,
+                  function () {
+                      if (typeof handler.beforeSend === func) {
+                          handler.beforeSend(event, files, index, xhr, handler, callBack);
+                      } else {
+                          callBack();
+                      }
+                  }
+
+              );
+              }
+            else
+              {
+                $('div.tooBigUpload').show();
+                $('div.tooBigUpload ul').append('<li>'+files[index].name+'</li>');
+              }
             handler.initUploadProgressAll();
         };
         

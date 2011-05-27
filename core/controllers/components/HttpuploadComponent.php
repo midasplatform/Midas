@@ -22,7 +22,8 @@ class HttpuploadComponent extends AppComponent
     if(!isset($params['filename']) || empty($params['filename']))
       {
       $this->getLogger()->crit("[ERROR]'filename' parameter is not set");
-      exit ("[ERROR]'filename' parameter is not set");
+      echo "[ERROR]'filename' parameter is not set";
+      return;
       }
     $filename = $params['filename'];
     $this->getLogger()->info(__METHOD__."filename: ".$filename);
@@ -30,14 +31,16 @@ class HttpuploadComponent extends AppComponent
     if(!isset($params['length']) || empty($params['length']))
       {
       $this->getLogger()->crit(__METHOD__."[ERROR]'length' parameter is not set");
-      exit ("[ERROR]'length' parameter is not set");
+      echo "[ERROR]'length' parameter is not set";
+      return;
       }
     $length = $params['length'];
 
     if(!isset($params['uploadUniqueIdentifier']) || empty($params['uploadUniqueIdentifier']))
       {
       $this->getLogger()->crit(__METHOD__."[ERROR]'uploadUniqueIdentifier' parameter is not set");
-      exit ("[ERROR]'uploadUniqueIdentifier' parameter is not set");
+      echo "[ERROR]'uploadUniqueIdentifier' parameter is not set";
+      return;
       }
     $uploadUniqueIdentifier = $params['uploadUniqueIdentifier'];
     //check ifthe temporary file exists
@@ -45,7 +48,8 @@ class HttpuploadComponent extends AppComponent
     if(!file_exists($pathTemporaryFilename))
       {
       $this->getLogger()->crit(__METHOD__."[ERROR]'uploadUniqueIdentifier' parameter is incorrect: ".$uploadUniqueIdentifier);
-      exit ("[ERROR]'uploadUniqueIdentifier' parameter is incorrect: ".$uploadUniqueIdentifier);
+      echo "[ERROR]'uploadUniqueIdentifier' parameter is incorrect: ".$uploadUniqueIdentifier;
+      return;
       }
     else
       {
@@ -65,7 +69,8 @@ class HttpuploadComponent extends AppComponent
       if(!isset($params['path']) || empty($params['path']))
         {
         $this->getLogger()->crit(__METHOD__."[ERROR]'path' parameter is not set");
-        exit ("[ERROR]'path' parameter is not set");
+        echo "[ERROR]'path' parameter is not set";
+        return;
         }
       $in = fopen($params['path'], "rb"); // Stream (Applet -> Server) Mode: Read, Binary
       }
@@ -102,7 +107,8 @@ class HttpuploadComponent extends AppComponent
     if($uploadOffset < $length)
       {
       $this->getLogger()->crit(__METHOD__."[ERROR]Failed to upload file (".($uploadOffset / $length)." bytes)");
-      exit ("[ERROR]Failed to upload file (".($uploadOffset / $length)." bytes)");
+      echo "[ERROR]Failed to upload file (".($uploadOffset / $length)." bytes)";
+      return;
       }
 
     return array ($filename, $pathTemporaryFilename, $length);
@@ -115,17 +121,19 @@ class HttpuploadComponent extends AppComponent
     if(!isset($params['filename']) || empty($params['filename']))
       {
       $this->getLogger()->crit(__METHOD__."[ERROR]"."get_http_upload_unique_identifier: 'filename' parameter is missing");
-      exit ("[ERROR]"."get_http_upload_unique_identifier: 'filename' parameter is missing");
+      echo "[ERROR]"."get_http_upload_unique_identifier: 'filename' parameter is missing";
+      return;
       }
     $filename = $params['filename'];
     $unique_identifier = basename(tempnam(BASE_PATH.'/tmp/misc/', $filename));
     if(!$unique_identifier)
       {
       $this->getLogger()->crit(__METHOD__."[ERROR]"."get_http_upload_unique_identifier: Failed to create unique identifier");
-      exit ("[ERROR]"."get_http_upload_unique_identifier: Failed to create unique identifier");
+      echo "[ERROR]"."get_http_upload_unique_identifier: Failed to create unique identifier";
+      return;
       }
     $this->getLogger()->info(__METHOD__."[OK]".$unique_identifier);
-    exit ("[OK]".$unique_identifier);
+    echo "[OK]".$unique_identifier;
     }
 
   /** used to see how much of a file made it to the server during an
@@ -135,10 +143,11 @@ class HttpuploadComponent extends AppComponent
     //check parameters
     if(!isset($params['uploadUniqueIdentifier']) || empty($params['uploadUniqueIdentifier']))
       {
-      exit ("[ERROR]'uploadUniqueIdentifier' parameter is not set");
+      echo "[ERROR]'uploadUniqueIdentifier' parameter is not set";
+      return;
       }
     $uploadUniqueIdentifier = $params['uploadUniqueIdentifier'];
     
-    exit (sprintf("[OK]%u", filesize(BASE_PATH.'/tmp/misc/'."$uploadUniqueIdentifier")));
+    echo sprintf("[OK]%u", filesize(BASE_PATH.'/tmp/misc/'."$uploadUniqueIdentifier"));
     }
   }

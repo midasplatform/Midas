@@ -142,6 +142,10 @@ class NotifyErrorComponent  extends AppComponent
   /** Page url*/     
   public function curPageURL() 
     {
+    if(Zend_Registry::get('configGlobal')->environment == 'testing')
+      {
+      return 'http://localhost';
+      }
     $pageURL = 'http';
     if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") 
       {

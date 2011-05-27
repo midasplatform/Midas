@@ -1,6 +1,7 @@
 add_midas_test( IndexController IndexControllerTest.php )
 add_midas_test( FeedController FeedControllerTest.php )
 add_midas_test( UserController UserControllerTest.php )
+add_midas_test( UploadController UploadControllerTest.php )
 
 
 # Syle

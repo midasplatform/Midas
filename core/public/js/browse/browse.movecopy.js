@@ -1,6 +1,8 @@
     $("#moveTable").treeTable();
     $("img.tableLoading").hide();
     $("table#moveTable").show();
+    
+    $('applet').hide();
    
    if($('#selectElements')!=undefined)
      {
@@ -10,6 +12,7 @@
          $('.destinationUpload').html($('#selectedDestination').html());
          $('.destinationId').val($('#selectedDestinationHidden').val());
          $( "div.MainDialog" ).dialog('close');
+         $('applet').show();
          return false;
        });
      }
