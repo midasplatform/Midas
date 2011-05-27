@@ -25,7 +25,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
    <table>
      <tr>
        <td><label for="email"><?php echo $this->t("E-mail")?></label></td>
-       <td><label for="password"><?php echo $this->t("Password")?></label></td>
+       <td><label for="password"><?php echo $this->t("Password")?></label> (<a id='forgotPasswordLink' style='text-decoration: underline;font-size: 10px;' href="#"><?php echo $this->t("Forgot your password")?>?</a>)</td>
        <td></td>
      </tr>
      <tr>
@@ -34,9 +34,10 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
        <td><?php echo $this->form['submit']?></td>
      </tr>
      <tr>
+       
+       <td><?php echo $this->t("Not registered yet?")?> <a class="registerLink" style='text-decoration: underline;'><?php echo $this->t("Register here")?></a></td>
        <td><?php echo $this->form['remerberMe']?>
         <label id="rememberMeText" for="remerberMe"><?php echo $this->t("Remember Me")?></label></td>
-       <td> <a class="registerLink"> <?php echo $this->t("Register")?></a>, <a id='forgotPasswordLink' href="#"><?php echo $this->t("Forgot your password")?>?</a></td>
        <td></td>
      </tr>
    </table>
