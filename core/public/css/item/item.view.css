@@ -14,3 +14,7 @@ table#browseTable{
 table#metadataTable{
   display: table!important;
 }
+
+div.genericInfo .genericCompany {
+  font-size: 10px;
+}

@@ -1,0 +1,68 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.js');
+?>
+<link href="<?php echo $this->coreWebroot?>/public/css/user/user.index.css" rel="stylesheet" type="text/css" />
+
+<div class="viewMain">
+  <div class="userList">
+  <?php
+  if(!empty($this->users))
+    {
+    foreach($this->users as $user)
+      {
+      ?>  
+      <div class="userBlock">
+      <a class="userTitle" href="<?php echo $this->webroot.'/user/'.$user->getKey();?>">
+      <?php echo $user->getFirstname()?></a>
+      <br/>
+      </div>
+  <?php    
+      }
+    }
+  ?>
+  </div>
+  
+    <?php 
+  if(empty($this->users))
+    {    
+    echo "<h4>{$this->t("No public user to show.")}. </h4>";
+    }
+    ?>
+</div>
+<div class="viewSideBar">
+  <div class="sideElementFirst viewAction">
+    <h1>Actions</h1>
+    <ul>
+      <li>
+        <a class="createCommunity" >Nothing here</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sideElement viewSelected" >
+      <h1><?php echo $this->t('Selected')?></h1>
+      <span></span>
+  </div>
+      
+  <div class="sideElementLast viewInfo">
+    <h1>Info</h1>    
+    <?php
+    echo count($this->users).' '.(count($this->users)>1?$this->t('Public users'):$this->t('Public user'));
+    ?>
+  </div>
+</div>
+
+
+
+

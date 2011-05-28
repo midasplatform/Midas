@@ -28,6 +28,30 @@ class UserController extends AppController
       }
     } // end init()
 
+  /** Index */
+  function indexAction()
+    {
+    $this->view->header = $this->t("Users");
+    $this->view->json['user']['createCommunity'] = $this->t('Create a community');
+    $this->view->json['user']['titleCreateLogin'] = $this->t('Please log in');
+    $this->view->json['user']['contentCreateLogin'] = $this->t('You need to be logged in to be able to create a community.');
+
+    if($this->logged && $this->userSession->Dao->isAdmin())
+      {
+      $users = $this->User->getAll();
+      }
+    else
+      {
+      $users = $this->User->getPublicUsers();
+      }
+      
+    $this->Component->Sortdao->field = 'name';
+    $this->Component->Sortdao->order = 'asc';
+    usort($users, array($this->Component->Sortdao, 'sortByName'));
+    $users = $this->Component->Sortdao->arrayUniqueDao($users);
+    
+    $this->view->users = $users;
+    } //end index
     
   /** Recover the password (ajax) */
   function recoverpasswordAction()
@@ -77,7 +101,6 @@ class UserController extends AppController
         
       $user->setPassword(md5($pass));
       
-
       // Send the email
       $url = $this->getServerURL().$this->view->webroot;
 
@@ -100,7 +123,7 @@ class UserController extends AppController
       } 
     } // end recoverpassword
 
-  /** logout an user*/
+  /** Logout a user */
   function logoutAction()
     {
     $this->userSession->Dao = null;
@@ -110,7 +133,7 @@ class UserController extends AppController
     } //end logoutAction
 
 
-  /** register an user*/
+  /** Register a user */
   function registerAction()
     {
     $form = $this->Form->User->createRegisterForm();
@@ -132,8 +155,7 @@ class UserController extends AppController
     ));
     } //end register
 
-
-  /** check log in action*/
+  /** Login action */
   function loginAction()
     {
     $this->Form->User->uri = $this->getRequest()->getRequestUri();
@@ -158,7 +180,6 @@ class UserController extends AppController
           $userDao = $this->User->getByEmail($form->getValue('email'));
           $authLdap = false;
           }
-        
         
         $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
         if($authLdap || $userDao != false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
@@ -207,7 +228,7 @@ class UserController extends AppController
     } // end method login
 
 
-  /** term of service */
+  /** Term of service */
   public function termofserviceAction()
     {
     if($this->getRequest()->isXmlHttpRequest())
@@ -217,7 +238,7 @@ class UserController extends AppController
     } // end term of service
 
 
-  /** valid  entries (ajax)*/
+  /** Valid  entries (ajax) */
   public function validentryAction()
     {
     if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
@@ -274,7 +295,7 @@ class UserController extends AppController
       }
     } //end valid entry
 
-  /** settings page action*/
+  /** Settings page action */
   public function settingsAction()
     {
     if(!$this->logged)
@@ -470,7 +491,7 @@ class UserController extends AppController
     $this->view->customTabs = Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_GET_CONFIG_TABS, array());
     }
     
-  /** user page action*/
+  /** User page action*/
   public function userpageAction()
     {
     $this->view->Date = $this->Component->Date;
@@ -521,7 +542,7 @@ class UserController extends AppController
     $this->view->information = array();
     }
   
-  /** manage files page action*/
+  /** Manage files page action*/
   public function manageAction()
     {
     $this->view->Date = $this->Component->Date;

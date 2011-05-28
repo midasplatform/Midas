@@ -29,7 +29,7 @@ class CommunityController extends AppController
       }
     }  // end init()
     
-  /** manage community*/
+  /** Manage community*/
   function manageAction()
     {
     if(!$this->logged)  
@@ -214,7 +214,7 @@ class CommunityController extends AppController
     }//end manageAction
     
     
-  /** index*/
+  /** Index */
   function indexAction()
     {
     $this->view->header = $this->t("Communities");
@@ -235,12 +235,12 @@ class CommunityController extends AppController
     $this->Component->Sortdao->field = 'name';
     $this->Component->Sortdao->order = 'asc';
     usort($communities, array($this->Component->Sortdao, 'sortByName'));
-    $communities = $this->Component->Sortdao->arrayUniqueDao($communities );
+    $communities = $this->Component->Sortdao->arrayUniqueDao($communities);
     
     $this->view->userCommunities = $communities;
     }//end index
 
-  /** view a community*/
+  /** View a community*/
   function viewAction()
     {
     $this->view->Date = $this->Component->Date;
@@ -313,7 +313,7 @@ class CommunityController extends AppController
       
     $this->view->title .= ' - '.$communityDao->getName();
     $this->view->metaDescription = substr($communityDao->getDescription(), 0, 160);
-    }//end view
+    } //end index
 
   /** Delete a community*/
   function deleteAction()
@@ -337,7 +337,7 @@ class CommunityController extends AppController
     $this->_redirect('/');
     }//end delete
     
-  /** Invit user to a community*/
+  /** Invite a user to a community*/
   function invitationAction()
     {
     $this->_helper->layout->disableLayout();
@@ -376,9 +376,9 @@ class CommunityController extends AppController
           }
         }
       }
-    }//end delete
+    }//end invite
     
-  /** create a community (ajax)*/
+  /** Create a community (ajax)*/
   function createAction()
     {
     if(!$this->logged)
@@ -404,9 +404,9 @@ class CommunityController extends AppController
       $this->_helper->layout->disableLayout();
       $this->view->form = $this->getFormAsArray($form);
       }
-    }//end index
+    }//end create
 
-  /** valid  entries (ajax)*/
+  /** Validate entries (ajax)*/
   public function validentryAction()
     {
     if(!$this->getRequest()->isXmlHttpRequest())

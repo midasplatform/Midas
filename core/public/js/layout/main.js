@@ -196,7 +196,7 @@ $(function() {
     });
   
   $('#menuUserInfo').click(function(){
-      globalAuthAsk(json.global.webroot+'/user/userpage#tabs-3');
+      globalAuthAsk(json.global.webroot+'/user/userpage');
   });
   $("div.TopDynamicBar .closeButton").click(function()
   {

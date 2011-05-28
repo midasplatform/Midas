@@ -95,7 +95,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
          echo "Total space: {$assetstore->totalSpaceText}<br/>";
          if(($assetstore->freeSpace/$assetstore->totalSpace<0.10))
            {
-           echo "<b>Free space: {$assetstore->freeSpaceText}. Almost full!!!</b>";
+           echo "<b>Free space: {$assetstore->freeSpaceText}. Less than 10% free!</b>";
            }
          else
            {

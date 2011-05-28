@@ -74,6 +74,40 @@ class UserModel extends UserModelBase
     return $return;
     } // end getUserCommunities
 
+  /** Get all */
+  function getAll()
+    {
+    $rowset = $this->database->fetchAll($this->database->select()); 
+    $return = array();
+    foreach($rowset as $row)
+      {      
+      $return[] = $this->initDao('User', $row);
+      }
+    return $return;
+    } // end getAll()
+    
+  /** Get public users
+   * @return Array of Users Dao */
+  function getPublicUsers($limit = 20)
+    {
+    if(!is_numeric($limit))
+      {
+      throw new Zend_Exception("Error parameter.");
+      }
+    $sql = $this->database->select()->from($this->_name)
+                          ->where('privacy = ?', MIDAS_USER_PUBLIC)
+                          ->limit($limit);
+      
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {      
+      $return[] = $this->initDao('User', $row);
+      }
+    return $return;
+    } // end getPublicUsers()
+
+    
   /** Returns a user given its folder (either public,private or base folder) */
   function getByFolder($folder)
     {

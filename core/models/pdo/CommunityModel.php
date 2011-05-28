@@ -63,12 +63,10 @@ class CommunityModel extends CommunityModelBase
       $return[] = $this->initDao('Community', $row);
       }
     return $return;
-    } // end getByName()
+    } // end getAll()
      
-  /** get public Communities
-   * 
-   * @return Array of Community Dao
-   */
+  /** Get public Communities
+   * @return Array of Community Dao */
   function getPublicCommunities($limit = 20)
     {
     if(!is_numeric($limit))
@@ -86,7 +84,7 @@ class CommunityModel extends CommunityModelBase
       $return[] = $this->initDao('Community', $row);
       }
     return $return;
-    }
+    } // end getPublicCommunities()
   
   /** Return a list of communities corresponding to the search */
   function getCommunitiesFromSearch($search, $userDao, $limit = 14, $group = true, $order = 'view')

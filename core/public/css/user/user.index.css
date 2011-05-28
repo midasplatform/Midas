@@ -1,0 +1,23 @@
+div.userList{
+  
+}
+
+div.userList div{
+  border-bottom: 1px dotted grey;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+div.userList a.userTitle{
+  font-weight: bold;
+  font-size: 14px;
+}
+
+div.userList span{
+  padding-left: 15px;
+}
+
+div.userBlock:hover{
+  background-color: #F6F9FE;
+  cursor: pointer;
+}

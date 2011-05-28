@@ -53,6 +53,10 @@ abstract class UserModelBase extends AppModel
   abstract function getByUuid($uuid);
   /** Returns a user given its folder (either public,private or base folder) */
   abstract function getByFolder($folder);
+  /** Returns all the public users. Limited to 20 by default. */
+  abstract function getPublicUsers($limit = 20);
+  /** Returns all the users */
+  abstract function getAll();
   
   /** save */
   public function save($dao)
