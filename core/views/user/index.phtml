@@ -24,7 +24,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.j
       ?>  
       <div class="userBlock">
       <a class="userTitle" href="<?php echo $this->webroot.'/user/'.$user->getKey();?>">
-      <?php echo $user->getFirstname()?></a>
+      <?php echo $user->getFirstname().' '.$user->getLastname()?></a>
       <br/>
       </div>
   <?php    

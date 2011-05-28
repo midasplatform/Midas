@@ -122,21 +122,17 @@ class ItemRevisionModel extends ItemRevisionModelBase
     $modelLoad = new MIDAS_ModelLoader();
     $BitstreamModel = $modelLoad->loadModel('Bitstream');
     $ItemModel = $modelLoad->loadModel('Item');
-  //  $TaskModel = $modelLoad->loadModel('Task');
+    // $TaskModel = $modelLoad->loadModel('Task');
 
     $bitstreamDao->setItemrevisionId($itemRevisionDao->getItemrevisionId());
 
     // Save the bistream
-    if(!isset($bitstreamDao->saved) || !$bitstreamDao->saved)
-      {
-      $bitstreamDao->setDate(date('c'));
-      $BitstreamModel->save($bitstreamDao);
-      }
+    $bitstreamDao->setDate(date('c'));
+    $BitstreamModel->save($bitstreamDao);
     
     $item = $itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));
     $item->setDate(date('c'));
-    
  
     $modulesThumbnail =  Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_CREATE_THUMBNAIL);
     if(empty($modulesThumbnail))

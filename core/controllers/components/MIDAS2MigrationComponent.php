@@ -48,7 +48,8 @@ class MIDAS2MigrationComponent extends AppComponent
     {
     set_time_limit(0);
     $modelLoader = new MIDAS_ModelLoader;
-    $Folder = $modelLoader->loadModel("Folder");  
+    $Folder = $modelLoader->loadModel("Folder");
+    $Bitstream = $modelLoader->loadModel("Bitstream");  
     $Item = $modelLoader->loadModel("Item");  
     $ItemRevision = $modelLoader->loadModel("ItemRevision");
     $Group = $modelLoader->loadModel("Group");  
@@ -268,10 +269,10 @@ class MIDAS2MigrationComponent extends AppComponent
             
             $UploadComponent = new UploadComponent();
             $UploadComponent->uploadBitstream($bitstreamDao, $assetstoreDao);
-            unset($UploadComponent);
             
             // Upload the bitstream ifnecessary (based on the assetstore type)
             $ItemRevision->addBitstream($itemRevisionDao, $bitstreamDao);
+            unset($UploadComponent);
             }
           }          
         }

@@ -45,7 +45,7 @@ class UserController extends AppController
       $users = $this->User->getPublicUsers();
       }
       
-    $this->Component->Sortdao->field = 'name';
+    $this->Component->Sortdao->field = 'firstname';
     $this->Component->Sortdao->order = 'asc';
     usort($users, array($this->Component->Sortdao, 'sortByName'));
     $users = $this->Component->Sortdao->arrayUniqueDao($users);

@@ -56,7 +56,8 @@ class UploadComponent extends AppComponent
     // This should be rare (MD5 has a low probably for collisions)
     if(file_exists($fullpath))
       {
-      //throw new Zend_Exception("File already in the assetstore.");   
+      // Set the new path
+      $bitstreamdao->setPath($path);
       return false;
       }
 
@@ -72,7 +73,6 @@ class UploadComponent extends AppComponent
 
     // Set the new path
     $bitstreamdao->setPath($path);
-    
     } // end _uploadLocalBitstream()
  
   /** Upload a bitstream */  
@@ -393,7 +393,7 @@ class UploadComponent extends AppComponent
     $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
     $assetstoreDao = $assetstoreModel->load($defaultAssetStoreId);
 
-    // Upload the bitstream ifnecessary (based on the assetstore type)
+    // Upload the bitstream if necessary (based on the assetstore type)
     $this->uploadBitstream($bitstreamDao, $assetstoreDao);
     $checksum = $bitstreamDao->getChecksum();
     $tmpBitstreamDao = $bitstreamModel->getByChecksum($checksum);
