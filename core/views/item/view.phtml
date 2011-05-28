@@ -118,7 +118,16 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
       <?php 
       echo 
      "<li>
-        <a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'>{$this->t('Download lastest revision')}</a>
+        <a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'>";
+      if($this->itemIsLink)
+        {
+        echo $this->t('View as weblink');  
+        }
+      else
+        {
+        echo $this->t('Download lastest revision');  
+        }
+      echo "</a>
       </li>        
         ";
       if($this->preview)

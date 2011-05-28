@@ -42,20 +42,10 @@ class BrowseController extends AppController
       $communities = $this->User->getUserCommunities($this->userSession->Dao);
       $communities = array_merge($communities, $this->Community->getPublicCommunities());
       }
-    
-    $header .= "<ul class = 'pathBrowser'>";
-    $header .= " <li class = 'pathData'><a href = '".$this->view->webroot."/browse'>".$this->t('Data')."</a></li>";
-    $header .= "</ul>";
-    
+
     $this->view->Date = $this->Component->Date;
     
-    $this->Component->Sortdao->field = 'name';
-    $this->Component->Sortdao->order = 'asc';
-    usort($communities, array($this->Component->Sortdao, 'sortByName'));
-    $communities = $this->Component->Sortdao->arrayUniqueDao($communities );
-    
-    $this->view->communities = $communities;
-    $this->view->header = $header;
+    $this->view->header = $this->t('Explore');
     
     $this->view->itemThumbnails = $this->Item->getRandomItems($this->userSession->Dao, 0, 12, true);
     $this->view->nUsers = $this->User->getCountAll();
@@ -63,7 +53,6 @@ class BrowseController extends AppController
     $this->view->nItems = $this->Item->getCountAll();
     $this->view->notifications = array();
     
-    $this->view->json['community']['createCommunity'] = $this->t('Create a community');
     $this->view->json['community']['titleCreateLogin'] = $this->t('Please log in');
     $this->view->json['community']['contentCreateLogin'] = $this->t('You need to be logged in to be able to create a community.');
     }

@@ -13,15 +13,18 @@ PURPOSE.  See the above copyright notices for more information.
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/admin/admin.upgrade.css" />
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/admin/admin.upgrade.js"></script>
 
-<h3>Core :</h3>
-Current version: <?php echo $this->core['currentText']?> <br/>
+<h3>Core:</h3>
+Current version: <?php echo $this->core['currentText']?><br/>
 <?php
   if($this->core['current']<$this->core['target'])
     {
     echo "Need to upgrade to version: ".$this->core['targetText'];
     }
+  else 
+    {
+    echo "MIDAS is up to date.";
+    }  
 ?>
-
 <h3>Modules:</h3>
 <?php
 foreach($this->modules as $name=>$module)
@@ -32,7 +35,11 @@ foreach($this->modules as $name=>$module)
     {
     echo "Need to upgrade to version: ".$module['targetText'];
     }
-
+  }
+  
+if(count($this->modules) == 0)
+  {
+  echo "No module enabled.";
   }
 ?>
 <br/>
@@ -40,3 +47,5 @@ foreach($this->modules as $name=>$module)
 <form id='upgradeMIDAS'  action="<?php echo $this->webroot?>/admin/upgrade" method="post">
   <input type='submit' class="globalButton" value="Upgrade"/>
 </form>
+<br/><br/>
+<a href="<?php echo $this->webroot?>/admin/migratemidas2">Upgrade from MIDAS2</a>

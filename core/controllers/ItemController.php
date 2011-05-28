@@ -90,6 +90,20 @@ class ItemController extends AppController
     $itemDao->lastrevision = $itemRevision;
     $itemDao->revisions = $itemDao->getRevisions();
     
+    // Display the good link if the item is pointing to a website
+    $this->view->itemIsLink = false;
+    
+    $bitstreams = $itemRevision->getBitstreams();
+    if(count($bitstreams) == 1)
+      {
+      $bitstream = $bitstreams[0];
+      if(strpos($bitstream->getPath(), 'http://') !== false)
+        {
+        $this->view->itemIsLink = true;
+        }
+      }
+         
+        
     $this->Component->Sortdao->field = 'revision';
     $this->Component->Sortdao->order = 'desc';
     usort($itemDao->revisions, array($this->Component->Sortdao, 'sortByNumber'));
