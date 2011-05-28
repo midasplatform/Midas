@@ -144,6 +144,16 @@ class MIDAS2MigrationComponent extends AppComponent
             
           $itemdao = new ItemDao;
           $itemdao->setName($filename);
+          
+          // Get the number of downloads and set it
+          $itemstatsquery = pg_query("SELECT downloads from midas_resourcelog WHERE
+                                     resource_id_type=".MIDAS2_RESOURCE_ITEM." AND resource_id=".$item_id);
+          if($itemstats_array = pg_fetch_array($itemstatsquery))
+            {
+            $itemdao->setView($itemstats_array['downloads']);
+            $itemdao->setDownload($itemstats_array['downloads']);
+            }
+             
           $Item->save($itemdao);
           
           // Just check if the group anonymous can access the item
@@ -189,7 +199,7 @@ class MIDAS2MigrationComponent extends AppComponent
           
           // Create a revision for the item
           $itemRevisionDao = new ItemRevisionDao;
-          $itemRevisionDao->setChanges('Initial revision');    
+          $itemRevisionDao->setChanges('Initial revision'); 
           $itemRevisionDao->setUser_id($this->userId);
           $Item->addRevision($itemdao, $itemRevisionDao);
 
@@ -581,8 +591,6 @@ class MIDAS2MigrationComponent extends AppComponent
       
     // Close the database connection  
     pg_close($pgdb);
-    
-    echo "Migration done. Enjoy MIDAS3!";
     } // end function migrate()  
     
 } // end class

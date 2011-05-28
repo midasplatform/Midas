@@ -15,6 +15,27 @@ table#metadataTable{
   display: table!important;
 }
 
+div.genericInfo {
+  position: relative;
+}
+
 div.genericInfo .genericCompany {
   font-size: 10px;
+}
+
+#browseTable {
+  margin-top:0px;
+}
+
+.itemStats {
+	clear:both;
+	position: relative;
+	float: right;
+  font-size: 10px;
+  color: #777777;
+  top: -32px;
+  margin: 0px;
+  width: 130px;
+  height: 10px;
+  text-align: right;
 }

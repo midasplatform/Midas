@@ -26,8 +26,9 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
   <div class="genericInfo">
     <div class="genericName"><?php   echo $this->slicename($this->itemDao->getName(),50);  ?></div>
     <div class="genericCompany"><?php echo $this->itemSize;?></div>
+    <div class="itemStats"><?php echo $this->itemDao->getView()?> <?php echo $this->t('views'); ?>, 
+    <?php echo $this->itemDao->getDownload()?> <?php echo $this->t('downloads');?></div>  
   </div>
-  
   
   <table id="browseTable" class="midasTree">
     <thead>
@@ -179,9 +180,9 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
         <tr> 
           <td>Revision</td>   
           <td><?php echo $this->itemDao->lastrevision->getRevision()?></td>
-        </tr> 
+        </tr>
         <tr>   
-          <td><?php echo $this->t('# files');?></td>
+          <td><?php echo $this->t('Files');?></td>
           <td><?php echo count($this->itemDao->lastrevision->getBitstreams())?></td> 
         </tr>
       </tbody>
