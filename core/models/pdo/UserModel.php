@@ -74,6 +74,25 @@ class UserModel extends UserModelBase
     return $return;
     } // end getUserCommunities
 
+  /** Returns a user given its folder (either public,private or base folder) */
+  function getByFolder($folder)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder" );
+      } 
+    
+    $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
+                                          ->from('user')
+                                          ->where('folder_id=?', $folder->getFolderId())
+                                          ->orwhere('publicfolder_id=?', $folder->getFolderId())
+                                          ->orwhere('privatefolder_id=?', $folder->getFolderId())
+                                          );
+                                          
+    $user = $this->initDao('User',$row);
+    return $user;    
+    }
+    
   /** Return a list of users corresponding to the search */
   function getUsersFromSearch($search, $userDao, $limit = 14, $group = true, $order = 'view')
     {

@@ -46,13 +46,16 @@ abstract class CommunityModelBase extends AppModel
     $this->initialize(); // required  
     } // end __construct()
   
-  /** getPublicCommunities*/
+  /** Returns all the public communities. Limited to 20 by default. */
   abstract function getPublicCommunities($limit = 20);
-  /** get By Name*/
+  /** Returns the community given its name */
   abstract function getByName($name);
-  /** get All*/
+  /** Returns all the communities */
   abstract function getAll();
+  /** Returns a community by its uuid */
   abstract function getByUuid($uuid);
+  /** Returns a community given its folder (either public,private or base folder) */
+  abstract function getByFolder($folder);
 
   /** save */
   public function save($dao)

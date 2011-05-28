@@ -189,7 +189,24 @@ class FolderModel extends FolderModelBase
     return $folders;
     }
  
+  /** Get the root folder */
+  function getRoot($folder)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder" );
+      } 
     
+    $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
+                                          ->from('folder')
+                                          ->where('left_indice<?', $folder->getLeftIndice())
+                                          ->where('right_indice>?', $folder->getRightIndice())
+                                          ->order('left_indice ASC')
+                                          ->limit(1));
+                                          
+    $root = $this->initDao('Folder',$row);
+    return $root;
+    } // end getRoot()  
         
   /** Get the folder tree */  
   function getAllChildren($folder, $userDao)

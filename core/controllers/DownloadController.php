@@ -15,7 +15,7 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class DownloadController extends AppController
 {
-  public $_models = array("Folder", 'Item');
+  public $_models = array('Folder', 'Item', 'Community', 'User');
   public $_daos = array();
   public $_components = array();
    
@@ -149,6 +149,22 @@ class DownloadController extends AppController
         {
         $name = $folders[0]->getName(); 
         $name = substr($name, 0, 50);
+        
+        $rootFolder = $this->Folder->getRoot($folders[0]);
+        if($rootFolder)
+          {
+          // Find the Community or the User which have the folder
+          $rootCom = $this->Community->getByFolder($rootFolder);  
+          if(!$rootCom)
+            {
+            $user = $this->User->getByFolder($rootFolder);  
+            $name = $user->getFirstname().$user->getLastname().'-'.$name;
+            }
+          else 
+            {
+            $name = $rootCom->getName().'-'.$name;
+            }
+          }
         }
       else
         {

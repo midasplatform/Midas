@@ -55,6 +55,7 @@ abstract class FolderModelBase extends AppModel
   abstract function policyCheck($folderDao, $userDao = null, $policy = 0);
   abstract function getFolderExists($name, $description);
   abstract function getByUuid($uuid);
+  abstract function getRoot($folder);
   
   /** Increment the view count */
   function incrementViewCount($folder)
