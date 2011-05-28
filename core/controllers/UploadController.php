@@ -89,7 +89,7 @@ class UploadController extends AppController
       
     }//end simple upload
 
-  /**  upload new revision*/
+  /**  upload new revision */
   public function revisionAction()
     {
     if(!$this->logged)

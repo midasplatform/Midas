@@ -185,12 +185,12 @@ Current Avatar;Avatar actuel
 Upload new avatar;Ajouter un nouvel avatar
 Modify password;Modifier mot de passe
 Retype new password;Retapper nouveau mot de passe
-Sharing settings;Paramètres de partage
+Share;Partager
 folder;répertoire
 item;document
 You can use the following direct link to share the;Vous pouvez utiliser le lien suivant pour partager le
 Permissions;Autorisations
-Anyone on the Internet can find and access. No sign-in required.;Tous le monde peut trouver et voir. Pas d'authentification requise.
+Anyone can find and access. No sign-in required.;Tous le monde peut trouver et voir. Pas d'authentification requise.
 Only people explicitly granted permission can access. Sign-in required.;Seulement les personnes avec une autorisation ont accès. Authentification requise.
 Set Private;Rendre Privé
 Set Public;Rendre Public
@@ -212,7 +212,7 @@ Public, everyone can see the community;Public, tout le monde peut voir la commun
 Everyone can join the community;Tout le monde peut rejoindre la communauté
 Only invited users can join the community;Seulement les utilisateurs invités peuvent rejoindre la communauté
 Last revision content;Contenu de la dernière révision
-Upload new Revision;Ajouter nouvelle Révision
+Upload new revision;Ajouter nouvelle révision
 added a new revision to;a ajouté une nouvelle révision à
 Uploaded files;Fichiers ajoutés
 Who can join the community?;Qui peut rejoindre la communauté?

@@ -213,7 +213,7 @@ class AppController extends MIDAS_GlobalController
       'removeItem' => $this->t('Remove Item from Folder'),
       'deleteMessage' => $this->t('Do you really want to delete the folder'),
       'removeMessage' => $this->t('Do you really want to remove the item'),
-      'share' => $this->t('Sharing settings'),
+      'share' => $this->t('Share'),
       'shared' => $this->t('Shared'),
       'public' => $this->t('Public'),
       'private' => $this->t('Private'),
