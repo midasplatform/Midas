@@ -79,6 +79,18 @@ abstract class CommunityModelBase extends AppModel
       {
       throw new Zend_Exception("Error param.");
       }
+    $user = Zend_Registry::get('userSession');
+    if(isset($user))
+      {
+      if(isset($user->viewedCommunities[$communityDao->getKey()]))
+        {
+        return;
+        }
+      else
+        {
+        $user->viewedCommunities[$communityDao->getKey()] = true;
+        }
+      }
     $communityDao->view++;
     $this->save($communityDao);
     } //end incrementViewCount

@@ -64,6 +64,18 @@ abstract class FolderModelBase extends AppModel
       {
       throw new Zend_Exception("Error param.");
       }
+    $user = Zend_Registry::get('userSession');
+    if(isset($user))
+      {
+      if(isset($user->viewedFolder[$folder->getKey()]))
+        {
+        return;
+        }
+      else
+        {
+        $user->viewedFolder[$folder->getKey()] = true;
+        }
+      }
     $folder->view++;
     $this->save($folder);
     }//end incrementViewCount

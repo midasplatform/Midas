@@ -101,6 +101,18 @@ abstract class ItemModelBase extends AppModel
       {
       throw new Zend_Exception("Error param.");
       }
+    $user = Zend_Registry::get('userSession');
+    if(isset($user))
+      {
+      if(isset($user->viewedItems[$itemdao->getKey()]))
+        {
+        return;
+        }
+      else
+        {
+        $user->viewedItems[$itemdao->getKey()] = true;
+        }
+      }
     $itemdao->view++;
     $this->save($itemdao);
     }//end incrementViewCount

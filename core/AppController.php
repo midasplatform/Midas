@@ -183,6 +183,8 @@ class AppController extends MIDAS_GlobalController
       $this->logged = false;
       }
       
+    Zend_Registry::set('userSession', $user);
+      
     $this->view->lang = Zend_Registry::get('configGlobal')->application->lang;
     //create a global javascript json array
     $jsonGlobal = array(
