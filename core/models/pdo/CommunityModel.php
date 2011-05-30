@@ -49,7 +49,7 @@ class CommunityModel extends CommunityModelBase
                                           ->orwhere('privatefolder_id=?', $folder->getFolderId())
                                           );
                                           
-    $community = $this->initDao('Community',$row);
+    $community = $this->initDao('Community', $row);
     return $community;    
     }
      

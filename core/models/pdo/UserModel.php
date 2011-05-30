@@ -87,7 +87,7 @@ class UserModel extends UserModelBase
       {
       $sql  ->limit($limit);    
       }
-    elseif(!is_numeric ($offset))
+    elseif(!is_numeric($offset))
       {
       $sql ->where('lastname LIKE ?', $offset.'%');
       $sql  ->limit($limit);   
@@ -134,7 +134,7 @@ class UserModel extends UserModelBase
                                           ->orwhere('privatefolder_id=?', $folder->getFolderId())
                                           );
                                           
-    $user = $this->initDao('User',$row);
+    $user = $this->initDao('User', $row);
     return $user;    
     }
     

@@ -39,7 +39,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
                           ->setIntegrityCheck(false)
                           ->from('metadatavalue')
                           ->where('itemrevision_id = ?', $revisiondao->getKey())
-                          ->joinLeft('metadata','metadata.metadata_id = metadatavalue.metadata_id');
+                          ->joinLeft('metadata', 'metadata.metadata_id = metadatavalue.metadata_id');
                           
     $rowset = $this->database->fetchAll($sql); 
     foreach($rowset as $row)

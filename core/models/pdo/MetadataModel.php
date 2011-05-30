@@ -20,7 +20,7 @@ class MetadataModel extends MetadataModelBase
 {
   /** Return an item by its name
    * @return MetadataDao*/
-  function getMetadata($type,$element,$qualifier)
+  function getMetadata($type, $element, $qualifier)
     {
     $row = $this->database->fetchRow($this->database->select()
                                           ->from('metadata')
@@ -39,6 +39,7 @@ class MetadataModel extends MetadataModelBase
       case MIDAS_METADATA_DOCUMENT: return 'metadatadocumentvalue';
       case MIDAS_METADATA_VIDEO: return 'metadatavideovalue';
       case MIDAS_METADATA_IMAGE: return 'metadataimagevalue';
+      default: return 'metadatavalue';
       }  
     return 'metadatavalue';  
     }
@@ -59,7 +60,7 @@ class MetadataModel extends MetadataModelBase
                                           ->where('itemrevision_id=?', $metadataDao->getItemrevisionId())
                                           ->where('value=?', $metadataDao->getValue()));
     
-    if(count($row)>0)
+    if(count($row) > 0)
       {
       return true;  
       }
@@ -74,11 +75,11 @@ class MetadataModel extends MetadataModelBase
       throw new Zend_Exception("Should be a metadata.");
       }
 
-	  $data['metadata_id'] = $metadataDao->getKey();
+    $data['metadata_id'] = $metadataDao->getKey();
     $data['itemrevision_id'] = $metadataDao->getItemrevisionId();
     $data['value'] = $metadataDao->getValue();
     $tablename = $this->getTableValueName($metadataDao->getMetadatatype());
-    $table = new Zend_Db_Table(array('name'=>$tablename,'primary'=>'metadata_id'));
+    $table = new Zend_Db_Table(array('name'=> $tablename, 'primary' => 'metadata_id'));
     $table->insert($data);
     return true;
     } // end function saveMetadataValue()

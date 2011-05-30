@@ -204,7 +204,7 @@ class FolderModel extends FolderModelBase
                                           ->order('left_indice ASC')
                                           ->limit(1));
                                           
-    $root = $this->initDao('Folder',$row);
+    $root = $this->initDao('Folder', $row);
     return $root;
     } // end getRoot()  
         

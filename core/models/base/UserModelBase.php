@@ -92,7 +92,7 @@ abstract class UserModelBase extends AppModel
       {
       throw new Zend_Exception("Error param.");
       }
-     $user = Zend_Registry::get('userSession');
+    $user = Zend_Registry::get('userSession');
     if(isset($user))
       {
       if(isset($user->viewedUsers[$userDao->getKey()]))
