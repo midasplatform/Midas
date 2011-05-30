@@ -5,6 +5,8 @@ $(document).ready(function() {
     //init tree
     $('img.tabsLoading').hide()
     
+    $('div.sideElementFirst').show();
+    
   
     $("#browseTable").treeTable();
     $("img.tableLoading").hide();

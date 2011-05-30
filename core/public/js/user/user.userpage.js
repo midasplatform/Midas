@@ -5,6 +5,8 @@
         $('div.genericAction').show();
         $('div.genericCommunities').show();
         $('div.genericStats').show();
+        $('div.biographyBlock').show();
+        $('div.websiteBlock').show();
         $('div.viewInfo').hide();
         $('div.viewAction').hide();
         }
@@ -25,6 +27,8 @@
       $('div.genericAction').hide();
       $('div.genericCommunities').hide();
       $('div.genericStats').hide();
+      $('div.biographyBlock').hide();
+      $('div.websiteBlock').hide();
       $('div.viewInfo').show();
       $('div.viewAction').show();
       genericCallbackSelect(node);  

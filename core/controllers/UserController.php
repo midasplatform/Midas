@@ -558,10 +558,8 @@ class UserController extends AppController
     $this->view->user = $userDao;
     $this->view->userCommunities = $this->User->getUserCommunities($userDao);
     $this->view->folders = array();
-    $this->view->folders[] = $userDao->getPublicFolder();
     if(!empty($this->userSession->Dao) && ($userDao->getKey() == $this->userSession->Dao->getKey() || $this->userSession->Dao->isAdmin()))
       {
-      $this->view->folders[] = $userDao->getPrivateFolder();
       $this->view->ownedItems = $this->Item->getOwnedByUser($userDao);
       $this->view->shareItems = $this->Item->getSharedToUser($userDao);
       }
@@ -569,6 +567,10 @@ class UserController extends AppController
       {
       $this->User->incrementViewCount($userDao);
       }
+      
+    $this->view->mainFolder = $userDao->getFolder();  
+    $this->view->folders = $this->Folder->getChildrenFoldersFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     $this->view->feeds = $this->Feed->getFeedsByUser($this->userSession->Dao, $userDao);
     
     $this->view->isViewAction = ($this->logged && ($this->userSession->Dao->getKey() == $userDao->getKey() || $this->userSession->Dao->isAdmin()));
@@ -607,8 +609,8 @@ class UserController extends AppController
       }
     
     $this->view->user = $userDao;
-    $this->view->folders = array();
-    $this->view->folders[] = $userDao->getPublicFolder();
-    $this->view->folders[] = $userDao->getPrivateFolder();
+    $this->view->mainFolder = $userDao->getFolder();  
+    $this->view->folders = $this->Folder->getChildrenFoldersFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     }
   }//end class
