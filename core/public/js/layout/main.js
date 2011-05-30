@@ -347,10 +347,48 @@ function showDialog(title,button)
   }
 }
 
+function showBigDialog(title,button)
+{  
+  var x= $('div.HeaderSearch').position().left+50; 
+  var y= 100; 
+  if(button)
+  {
+    $( "div.MainDialog" ).dialog({
+			resizable: false,
+      width:700,
+			modal: false,
+      draggable:false,
+      title: title,
+      position: [x,y],
+      buttons: { "Ok": function() { $(this).dialog("close"); } } 
+		});
+    
+  }
+  else
+  {
+    $( "div.MainDialog" ).dialog({
+			resizable: false,
+      width:700,
+			modal: false,
+      draggable:false,
+      title: title		,
+      position: [x,y]
+		});
+  }
+}
+
 function showDialogWithContent(title,content,button)
 {
   $('.DialogContentPage').val('');
   $('div.MainDialogContent').html(content);
   $("div.MainDialogLoading").hide();
   showDialog(title,button);
+}
+
+function showBigDialogWithContent(title,content,button)
+{
+  $('.DialogContentPage').val('');
+  $('div.MainDialogContent').html(content);
+  $("div.MainDialogLoading").hide();
+  showBigDialog(title,button);
 }

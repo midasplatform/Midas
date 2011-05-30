@@ -5,7 +5,7 @@ $('label.termLabel').after($('div.termDiv').html());
 $('a.termOfService').click(function()
 {
   loadDialog("terms","/user/termofservice");
-  showDialog("Terms of Service");
+  showBigDialog("Terms of Service");
 });
   
 $('#registerForm input').each(function()

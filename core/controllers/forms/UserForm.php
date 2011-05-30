@@ -61,6 +61,7 @@ class UserForm extends AppForm
     $email = new Zend_Form_Element_Text('email');
     $email->setRequired(true)
           ->addValidator('NotEmpty', true)
+          ->setAttrib('maxLength', 255)
           ->addValidator('EmailAddress');
           
     
@@ -68,12 +69,14 @@ class UserForm extends AppForm
     $firstname
           ->setRequired(true)
           ->addValidator('NotEmpty', true)
+          ->setAttrib('maxLength', 255)
           ->addValidator(new Zend_Validate_Alnum());
     
     $lastname = new Zend_Form_Element_Text('lastname');
     $lastname
           ->setRequired(true)
           ->addValidator('NotEmpty', true)
+          ->setAttrib('maxLength', 255)
           ->addValidator(new Zend_Validate_Alnum());
 
     $password1 = new Zend_Form_Element_Password('password1');
@@ -98,7 +101,7 @@ class UserForm extends AppForm
         
     
   /** acount  form */
-  public function createAccountForm($firstname_value = null, $lastname_value = null, $company_value = null, $policy_value = null)
+  public function createAccountForm($defaultValue = array())
     {
     $form = new Zend_Form;
     $form->setAction($this->webroot.'/user/settings')
@@ -108,16 +111,39 @@ class UserForm extends AppForm
     $firstname
           ->setRequired(true)
           ->addValidator('NotEmpty', true)
+          ->setAttrib('maxLength', 255)
           ->addValidator(new Zend_Validate_Alnum());
     
     $lastname = new Zend_Form_Element_Text('lastname');
     $lastname
           ->setRequired(true)
           ->addValidator('NotEmpty', true)
+          ->setAttrib('maxLength', 255)
           ->addValidator(new Zend_Validate_Alnum());
     
     $company = new Zend_Form_Element_Text('company');
     $company
+          ->setAttrib('maxLength', 255)
+          ->addValidator(new Zend_Validate_Alnum());
+    
+    $city = new Zend_Form_Element_Text('city');
+    $city
+          ->setAttrib('maxLength', 100)
+          ->addValidator(new Zend_Validate_Alnum());
+    
+    $country = new Zend_Form_Element_Text('country');
+    $country
+          ->setAttrib('maxLength', 100)
+          ->addValidator(new Zend_Validate_Alnum());
+    
+    $validator = new Zend_Validate_Callback(array('Zend_Uri', 'check'));
+    $website = new Zend_Form_Element_Text('website');
+    $website
+          ->setAttrib('maxLength', 255)
+          ->addValidator($validator);
+    
+    $biography = new Zend_Form_Element_Textarea('biography');
+    $biography
           ->addValidator(new Zend_Validate_Alnum());
 
     $submit = new  Zend_Form_Element_Submit('modifyAccount');
@@ -131,24 +157,40 @@ class UserForm extends AppForm
           ->setRequired(true)
           ->setValue(MIDAS_COMMUNITY_PUBLIC);
     
-    if($firstname_value != null)
+    if(isset($defaultValue['firstname']))
       {
-      $firstname->setValue($firstname_value);
+      $firstname->setValue($defaultValue['firstname']);
       }
-    if($lastname_value != null)
+    if(isset($defaultValue['lastname']))
       {
-      $lastname->setValue($lastname_value);
+      $lastname->setValue($defaultValue['lastname']);
       }
-    if($company_value != null)
+    if(isset($defaultValue['company']))
       {
-      $company->setValue($company_value);
+      $company->setValue($defaultValue['company']);
       }
-    if($policy_value != null)
+    if(isset($defaultValue['privacy']))
       {
-      $privacy->setValue($policy_value);
+      $privacy->setValue($defaultValue['privacy']);
+      }
+    if(isset($defaultValue['city']))
+      {
+      $city->setValue($defaultValue['city']);
+      }
+    if(isset($defaultValue['country']))
+      {
+      $country->setValue($defaultValue['country']);
+      }
+    if(isset($defaultValue['website']))
+      {
+      $website->setValue($defaultValue['website']);
+      }
+    if(isset($defaultValue['biography']))
+      {
+      $biography->setValue($defaultValue['biography']);
       }
     
-    $form->addElements(array($firstname, $lastname, $company, $privacy, $submit));
+    $form->addElements(array($website, $city ,$country, $biography, $firstname, $lastname, $company, $privacy, $submit));
 
     return $form;
     }

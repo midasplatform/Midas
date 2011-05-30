@@ -17,14 +17,44 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.j
 <div class="viewMain">
   <div class="userList">
   <?php
+  echo "<h3 class='userSubTitle'>";
+  switch ($this->order)
+    {
+    case 'lastname':
+      echo $this->t('Alphabetic');
+      break;
+    case 'view':
+      echo $this->t('Most Popular');
+      break;
+    default:
+      break;
+    }
+  echo "</h3>";
+  if($this->order == 'lastname')
+    {
+    echo "<a href='{$this->webroot}/user?order=lastname'>{$this->t('All')}</a> ";
+    for ($i=ord("A");$i<ord("Z");$i++)
+      {
+      if($this->offset === chr($i))
+        {
+        echo chr($i)." ";
+        }
+      else
+        {
+        echo "<a href='{$this->webroot}/user?order=lastname&offset=".chr($i)."'>".chr($i)."</a> ";
+        }
+      }
+    
+    }
   if(!empty($this->users))
     {
     foreach($this->users as $user)
       {
       ?>  
       <div class="userBlock">
-      <a class="userTitle" href="<?php echo $this->webroot.'/user/'.$user->getKey();?>">
-      <?php echo $user->getFirstname().' '.$user->getLastname()?></a>
+      <?php
+        echo $this->linkuser($user);
+      ?>
       <br/>
       </div>
   <?php    
@@ -42,11 +72,28 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.j
 </div>
 <div class="viewSideBar">
   <div class="sideElementFirst viewAction">
-    <h1>Actions</h1>
+    <h1>Order</h1>
     <ul>
-      <li>
-        <a class="createCommunity" >Nothing here</a>
-      </li>
+      <?php
+      if($this->order != 'lastname')
+        {
+        echo "<li><a href='{$this->webroot}/user?order=lastname'>{$this->t('Alphabetic')}</a></li>";
+        }
+      else
+        {
+         echo "<li>{$this->t('Alphabetic')}</li>"; 
+        }
+      ?>
+      <?php
+      if($this->order != 'view')
+        {
+        echo "<li><a href='{$this->webroot}/user?order=view'>{$this->t('Popularity')}</a></li>";
+        }
+      else
+        {
+         echo "<li>{$this->t('Popularity')}</li>"; 
+        }
+      ?>
     </ul>
   </div>
 

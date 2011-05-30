@@ -75,9 +75,40 @@ class UserModel extends UserModelBase
     } // end getUserCommunities
 
   /** Get all */
-  function getAll()
+  function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null)
     {
-    $rowset = $this->database->fetchAll($this->database->select()); 
+    $sql = $this->database->select();
+    if($onlyPublic)
+      {
+      $sql ->where('privacy = ?', MIDAS_USER_PUBLIC);
+      }
+      
+    if($offset == null)
+      {
+      $sql  ->limit($limit);    
+      }
+    elseif(!is_numeric ($offset))
+      {
+      $sql ->where('lastname LIKE ?', $offset.'%');
+      $sql  ->limit($limit);   
+      }
+    else
+      {
+      $sql  ->limit($limit, $offset);   
+      }
+    switch($order)
+      {
+      case 'lastname':
+        $sql->order(array('lastname ASC'));
+        break;
+      case 'view':
+        $sql->order(array('view DESC', 'lastname ASC'));
+        break;
+      default:
+        $sql->order(array('lastname DESC'));
+        break;
+      }
+    $rowset = $this->database->fetchAll($sql); 
     $return = array();
     foreach($rowset as $row)
       {      
@@ -86,26 +117,6 @@ class UserModel extends UserModelBase
     return $return;
     } // end getAll()
     
-  /** Get public users
-   * @return Array of Users Dao */
-  function getPublicUsers($limit = 20)
-    {
-    if(!is_numeric($limit))
-      {
-      throw new Zend_Exception("Error parameter.");
-      }
-    $sql = $this->database->select()->from($this->_name)
-                          ->where('privacy = ?', MIDAS_USER_PUBLIC)
-                          ->limit($limit);
-      
-    $rowset = $this->database->fetchAll($sql);
-    $return = array();
-    foreach($rowset as $row)
-      {      
-      $return[] = $this->initDao('User', $row);
-      }
-    return $return;
-    } // end getPublicUsers()
 
     
   /** Returns a user given its folder (either public,private or base folder) */

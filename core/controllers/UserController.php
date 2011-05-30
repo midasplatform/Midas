@@ -32,24 +32,29 @@ class UserController extends AppController
   function indexAction()
     {
     $this->view->header = $this->t("Users");
-    $this->view->json['user']['createCommunity'] = $this->t('Create a community');
-    $this->view->json['user']['titleCreateLogin'] = $this->t('Please log in');
-    $this->view->json['user']['contentCreateLogin'] = $this->t('You need to be logged in to be able to create a community.');
+
+    $order = $this->_getParam('order');
+    $offset = $this->_getParam('offset');
+    if(!isset($order))
+      {
+      $order = 'view';
+      }
+    if(!isset($offset))
+      {
+      $offset = 0;
+      }
 
     if($this->logged && $this->userSession->Dao->isAdmin())
       {
-      $users = $this->User->getAll();
+      $users = $this->User->getAll(false, 100, $order, $offset);
       }
     else
       {
-      $users = $this->User->getPublicUsers();
+      $users = $this->User->getAll(true, 100, $order, $offset);
       }
-      
-    $this->Component->Sortdao->field = 'firstname';
-    $this->Component->Sortdao->order = 'asc';
-    usort($users, array($this->Component->Sortdao, 'sortByName'));
-    $users = $this->Component->Sortdao->arrayUniqueDao($users);
     
+    $this->view->order = $order;
+    $this->view->offset = $offset;
     $this->view->users = $users;
     } //end index
     
@@ -324,8 +329,16 @@ class UserController extends AppController
       throw new Zend_Exception("Unable to load user");
       }
     
-    $accountForm = $this->Form->User->createAccountForm($userDao->getFirstname(), $userDao->getLastname(),
-                                                $userDao->getCompany(), $userDao->getPrivacy());
+    $defaultValue = array();
+    $defaultValue['firstname'] = $userDao->getFirstname();
+    $defaultValue['lastname'] = $userDao->getLastname();
+    $defaultValue['company'] = $userDao->getCompany();
+    $defaultValue['privacy'] = $userDao->getPrivacy();
+    $defaultValue['city'] = $userDao->getCity();
+    $defaultValue['country'] = $userDao->getCountry();
+    $defaultValue['website'] = $userDao->getWebsite();
+    $defaultValue['biography'] = $userDao->getBiography();
+    $accountForm = $this->Form->User->createAccountForm($defaultValue);
     $this->view->accountForm = $this->getFormAsArray($accountForm);
     
     if($this->_request->isPost())
@@ -363,6 +376,10 @@ class UserController extends AppController
         $lastname = trim($this->_getParam('lastname'));
         $company = trim($this->_getParam('company'));
         $privacy = $this->_getParam('privacy');
+        $city = $this->_getParam('city');
+        $country = $this->_getParam('country');
+        $website = $this->_getParam('website');
+        $biography = $this->_getParam('biography');
         
         $userDao = $this->User->load($userDao->getKey());
 
@@ -379,6 +396,22 @@ class UserController extends AppController
         if(isset($company))
           {
           $userDao->setCompany($company);
+          }        
+        if(isset($city))
+          {
+          $userDao->setCity($city);
+          }        
+        if(isset($country))
+          {
+          $userDao->setCountry($country);
+          }        
+        if(isset($website))
+          {
+          $userDao->setWebsite($website);
+          }        
+        if(isset($biography))
+          {
+          $userDao->setBiography($biography);
           }        
         $userDao->setPrivacy($privacy);
         $this->User->save($userDao);

@@ -7,8 +7,8 @@ div.registerContent {
 div.registerInfo {
   float: left;
   color: white;
-  height: 110px;
-  width: 200px;
+  height: 140px;
+  width: 250px;
   border: 1px solid grey;
   margin-top: 15px;
   margin-bottom: 7px;
@@ -20,6 +20,33 @@ div.registerInfo {
   padding: 3px 3px 3px 3px;
 }
 
+div.registerInfo h4{
+  margin-top: 2px;
+  margin-left: 5px;
+  color: #84acc8; 
+  margin-bottom: 3px;
+}
+div.registerInfo h3{
+  margin-top: 0px;
+  margin-bottom: 0px;
+
+}
+div.registerInfo ul{
+  list-style: circle;
+  padding-left: 20px;
+  padding-top: 3px;
+  margin-top: 0px;
+}
+div.registerInfo li{
+  color: #ddd;
+}
+div.registerInfo a{
+  color: #84acc8;
+  text-decoration: underline;
+  font-size: 13px;
+  font-weight: bold;
+}
+
 div.register {
   
 }
@@ -29,7 +56,7 @@ Register Form
 -------------------------------------------------*/
 form#registerForm {
   color: white;
-  margin-left: 240px;
+  margin-left: 270px;
   padding-top: 15px;
 }
 

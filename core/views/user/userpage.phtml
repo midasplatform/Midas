@@ -25,7 +25,26 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   </div>
   <div class="genericInfo">
     <div class="genericName"><?php echo $this->user->getFullName();?></div>
-    <div class="genericCompany"><?php echo $this->user->getCompany();?></div>
+    <div class="genericCompany"><?php echo $this->user->getCompany();?>
+        <span id="locationUser">
+        <?php
+        $city = $this->user->getCity();
+        $country = $this->user->getCountry();
+        if(!empty($city))
+          {
+          echo $city;
+          if(!empty($country))
+            {
+            echo ', ';
+            }
+          }
+        if(!empty($country))
+          {
+          echo $country;
+          }
+          ?>
+        </span>
+      </div>
   </div>
   <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <div class="tabs" id='tabsGeneric'>
@@ -137,10 +156,10 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     {
     echo "
     <div class='sideElement".(($this->isViewAction)?'':'First')." genericCommunities'>
-    <h1>Communities</h1>    
+    <h1>{$this->t('Communities')}</h1>    
     <ul>";
 
-      foreach($this->userCommunities as $community)
+    foreach($this->userCommunities as $community)
         {
         echo "<li><a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></li>";
         }
@@ -148,6 +167,29 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
      </ul>
      </div>";
     }
+    
+  $website = $this->user->getWebsite();
+  if(!empty($website))
+    {
+    echo "
+    <div class='sideElement'>
+    <h1>{$this->t('Website')}</h1>    
+      <ul>
+        <li><a href='{$website}'>{$website}</a></li>
+      </ul>
+     </div>";
+    }
+    
+  $biography = $this->user->getBiography();
+  if(!empty($biography))
+    {
+    echo "
+    <div class='sideElement'>
+    <h1>{$this->t('Biography')}</h1>    
+      ".nl2br($biography)."
+     </div>";
+    }
+    
     ?>
 
   

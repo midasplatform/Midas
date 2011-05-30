@@ -11,6 +11,10 @@ $('#modifyPicture').ajaxForm( { beforeSubmit: validatePictureChange, success:   
 
 jsonSettings = jQuery.parseJSON($('div.jsonSettingsContent').html());
 
+$('textarea#biography').attr('onkeyup', 'this.value = this.value.slice(0, 255)');
+$('textarea#biography').attr('onchange', 'this.value = this.value.slice(0, 255)');
+
+
 function validatePasswordChange(formData, jqForm, options) { 
  
     var form = jqForm[0]; 

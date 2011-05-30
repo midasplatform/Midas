@@ -10,6 +10,15 @@ class UserControllerTest extends ControllerTestCase
     parent::setUp();
     
     }
+    
+  /** test index*/
+  public function testIndexAction()
+    {
+    $this->dispatchUrI("/user");
+    $this->assertController("user");
+    
+    $this->assertQuery("div.userBlock");
+    }
 
   /** test register*/
   public function testRegisterAction()

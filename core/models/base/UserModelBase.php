@@ -35,6 +35,10 @@ abstract class UserModelBase extends AppModel
       'privatefolder_id' => array('type' => MIDAS_DATA),
       'view' => array('type' => MIDAS_DATA),
       'uuid' => array('type' => MIDAS_DATA),
+      'city' => array('type' => MIDAS_DATA),
+      'country' => array('type' => MIDAS_DATA),
+      'website' => array('type' => MIDAS_DATA),
+      'biography' => array('type' => MIDAS_DATA),
       'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
       'public_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'publicfolder_id', 'child_column' => 'folder_id'),
       'private_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'privatefolder_id', 'child_column' => 'folder_id'),
@@ -53,10 +57,8 @@ abstract class UserModelBase extends AppModel
   abstract function getByUuid($uuid);
   /** Returns a user given its folder (either public,private or base folder) */
   abstract function getByFolder($folder);
-  /** Returns all the public users. Limited to 20 by default. */
-  abstract function getPublicUsers($limit = 20);
   /** Returns all the users */
-  abstract function getAll();
+  abstract function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null);
   
   /** save */
   public function save($dao)

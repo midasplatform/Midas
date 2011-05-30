@@ -64,7 +64,7 @@ class UploadController extends AppController
       {
       throw new Zend_Exception("You have to be logged in to do that");
       }
-    if(!$this->getRequest()->isXmlHttpRequest()&& !$this->isTestingEnv())
+    if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
       {
       throw new Zend_Exception("Error, should be an ajax action.");
       }

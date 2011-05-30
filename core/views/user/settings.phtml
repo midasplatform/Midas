@@ -40,7 +40,16 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
           <td><span><?php echo $this->t('Lastname');?>:</span><?php echo $this->accountForm['lastname']?></td>
         </tr>
         <tr>
+          <td><span><?php echo $this->t('Website');?>:</span><?php echo $this->accountForm['website']?></td>
           <td><span><?php echo $this->t('Company');?>:</span><?php echo $this->accountForm['company']?></td>
+        </tr>
+        <tr>
+          <td><span><?php echo $this->t('City');?>:</span><?php echo $this->accountForm['city']?></td>
+          <td><span><?php echo $this->t('Country');?>:</span><?php echo $this->accountForm['country']?></td>
+        </tr>
+        <tr>
+          <td colspan="2"><span><?php echo $this->t('Biography');?>:</span><?php echo $this->accountForm['biography']?>
+          </td>
         </tr>
         <tr>
           <td colspan=2><?php echo $this->t('Privacy');?>:

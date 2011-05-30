@@ -21,3 +21,8 @@ div.userBlock:hover{
   background-color: #F6F9FE;
   cursor: pointer;
 }
+
+.userSubTitle{
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
