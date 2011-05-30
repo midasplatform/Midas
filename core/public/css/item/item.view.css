@@ -28,14 +28,8 @@ div.genericInfo .genericCompany {
 }
 
 .itemStats {
-	clear:both;
-	position: relative;
 	float: right;
   font-size: 10px;
   color: #777777;
-  top: -32px;
-  margin: 0px;
-  width: 130px;
-  height: 10px;
-  text-align: right;
+  margin-right: 10px;
 }

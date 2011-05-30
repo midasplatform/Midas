@@ -24,10 +24,26 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
   ?>
   </div>
   <div class="genericInfo">
+    <div class="genericBigButton genericWrapperTopRight">
+      <?php
+      echo "<a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'>";
+      if($this->itemIsLink)
+        {
+        echo $this->t('View as weblink');  
+        }
+      else
+        {
+        echo $this->t('Download');  
+        }
+      echo '</a>';
+       ?>
+    </div>
+    <div class="itemStats">
+    <?php echo $this->itemDao->getView()?> <?php echo $this->t('views'); ?>, 
+    <?php echo $this->itemDao->getDownload()?> <?php echo $this->t('downloads');?></div>  
     <div class="genericName"><?php   echo $this->slicename($this->itemDao->getName(),50);  ?></div>
     <div class="genericCompany"><?php echo $this->itemSize;?></div>
-    <div class="itemStats"><?php echo $this->itemDao->getView()?> <?php echo $this->t('views'); ?>, 
-    <?php echo $this->itemDao->getDownload()?> <?php echo $this->t('downloads');?></div>  
+
   </div>
   
   <table id="browseTable" class="midasTree">
@@ -117,23 +133,9 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
     <h1>Actions</h1>
     <ul>
       <?php 
-      echo 
-     "<li>
-        <a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'>";
-      if($this->itemIsLink)
-        {
-        echo $this->t('View as weblink');  
-        }
-      else
-        {
-        echo $this->t('Download lastest revision');  
-        }
-      echo "</a>
-      </li>        
-        ";
       if($this->preview)
         {
-     echo 
+      echo 
      "<li>
         <a id='itemPreviewLink'>{$this->t('Preview')}</a>
       </li>        
@@ -144,7 +146,10 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
         echo 
        "<li>
           <a href='javascript:;' class='moveCopyLink' >{$this->t('Copy')}</a>
-        </li>        
+        </li>  
+        <li>
+          <a href='javascript:;' class='editItemLink' >{$this->t('Edit')}</a>
+        </li> 
         <li>
           <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink' >{$this->t('Share')}</a>
         </li>        

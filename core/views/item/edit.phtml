@@ -1,0 +1,31 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/item/item.edit.js?'.time().'"></script>';
+?>
+
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/item/item.edit.css" />
+
+<form id="editItemForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
+   <input type="hidden" name="itemId" value="<?php echo $this->itemDao->getKey()?>"/>
+      <div >
+        <label for="name"><?php echo $this->t("Name")?></label>
+        <?php echo $this->form['name']?>
+      </div>
+      <div >
+        <label for="description"><?php echo $this->t("Description")?></label>
+        <?php echo $this->form['description']?>
+      </div>
+      <div>
+        <?php echo $this->form['submit']?>
+      </div>
+</form>

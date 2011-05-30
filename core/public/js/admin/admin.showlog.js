@@ -38,7 +38,7 @@ function initLogs()
   
   $('table#listLogs tr.logSum').click(function()
   {
-    showDialogWithContent('Log', $(this).next().html(),true);
+    showBigDialogWithContent('Log', $(this).next().html(),true);
   });
 }
 

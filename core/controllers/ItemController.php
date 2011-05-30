@@ -16,7 +16,7 @@ class ItemController extends AppController
   public $_models = array('Item', 'ItemRevision', 'Bitstream');
   public $_daos = array();
   public $_components = array('Date', 'Utility', 'Sortdao');
-  public $_forms = array();
+  public $_forms = array('Item');
 
   /** Init Controller */
   function init()
@@ -135,6 +135,47 @@ class ItemController extends AppController
     $this->view->json['item']['message']['movecopy'] = $this->t('Copy Item.');
     }//end index
 
+  /** Edit  (ajax) */
+  function editAction()
+    {
+    $this->disableLayout();
+    $item_id = $this->_getParam('itemId');
+    $item = $this->Item->load($item_id);
+    if(!isset($item_id))
+      {
+      throw new Zend_Exception("Please set the itemId.");
+      }
+    elseif($item === false)
+      {
+      throw new Zend_Exception("The item doesn t exist.");
+      }
+    elseif(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception("Permissions error.");
+      }    
+        
+    if($this->_request->isPost())
+      {
+      $name = $this->_getParam('name');
+      $description = $this->_getParam('description');
+      
+      if(strlen($name) > 0)
+        {
+        $item->setName($name);
+        }        
+      $item->setDescription($description);
+        
+      $this->Item->save($item);
+      $this->_redirect('/item/'.$item->getKey());
+      }
+    
+    $this->view->itemDao = $item;    
+    $form = $this->Form->Item->createEditForm();
+    $formArray = $this->getFormAsArray($form);    
+    $formArray['name']->setValue($item->getName());
+    $formArray['description']->setValue($item->getDescription());
+    $this->view->form = $formArray;
+    }
     
   /** Delete an item*/
   function deleteAction()

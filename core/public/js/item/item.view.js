@@ -38,7 +38,12 @@
       showDialog($(this).html());
     });
     
-    
+    //edit
+    $('a.editItemLink').click(function(){
+      loadDialog("editItem"+json.item.item_id,"/item/edit?itemId="+json.item.item_id);
+        showDialog(json.browse.edit,false);
+    });
+        
     /** preview */
      $('a#itemPreviewLink').click(function(){
        
