@@ -13,37 +13,40 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/s
 ?>
 <link href="<?php echo $this->coreWebroot?>/public/css/share/share.dialog.css?<?php echo time();?> " rel="stylesheet" type="text/css" />
 
+
+<div id='elementDirectLink' <?php echo (($this->private)?'style="display:none;"':'');?>>";
+<?php echo  $this->t('You can use the following direct link to share the').' '.$this->t($this->type)?>:<br/>';
+<input type='text' id='urlInput' readonly='readonly' value='{$this->shareUrl}' />
+</div>
+<br/>
+
+<div id='permissionsContent'>
+  <div id='permissionPublic' <?php echo (($this->private)?'style="display:none;"':'')?>>
+   <b><?php echo $this->t('Public')?></b> <?php echo $this->t('Anyone can find and access. No sign-in required.')?>
+     <a id='setElementPrivateLink'><?php echo $this->t('You can set the permission as private.')?></a>
+  </div>
+
+  <div id='permissionPrivate' <?php echo ((!$this->private)?'style="display:none;"':'')?>>
+     <b><?php echo $this->t('Private')?></b> <?php echo $this->t('Only people explicitly granted permission can access. Sign-in required.')?>
+       <a id='setElementPublicLink'><?php echo $this->t('You can set the permission as public.')?></a>
+  </div>
+
+  <h4><?php echo $this->t('Permissions')?></h4>
+    <div id='permissionEntity'>
+    <table>
 <?php
-echo "<div id='elementDirectLink' ".(($this->private)?'style="display:none;"':'').">";
-echo $this->t('You can use the following direct link to share the').' '.$this->t($this->type).':<br/>';
-echo "<input type='text' id='urlInput' readonly='readonly' value='{$this->shareUrl}' />";
-echo "</div>";
-echo "<br/>";
-
-echo "<div id='permissionsContent'>";
-echo "  <div id='permissionPublic' ".(($this->private)?'style="display:none;"':'').">";
-echo "    <b>{$this->t('Public')}</b> {$this->t('Anyone can find and access. No sign-in required.')}";
-echo "    <a id='setElementPrivateLink'>{$this->t('You can set the permission as private.')}</a>";
-echo "  </div>";
-
-echo "  <div id='permissionPrivate' ".((!$this->private)?'style="display:none;"':'').">";
-echo "    <b>{$this->t('Private')}</b> {$this->t('Only people explicitly granted permission can access. Sign-in required.')}";
-echo "    <a id='setElementPublicLink'>{$this->t('You can set the permission as public.')}</a>";
-echo "  </div>";
-
-echo "      <h4>".$this->t('Permissions')."</h4>";
-echo "      <div id='permissionEntity'>";
-echo "        <table>";
 foreach($this->groupPolicies as $policy)
   {
-  echo "        <tr type='group' element='{$policy->group->getKey()}'>";
-  echo "          <td>";
-  echo "            <img src='{$this->coreWebroot}/public/images/icons/community.png'";
-  echo "          </td>";
-  echo "          <td class='changePermissionSelect'>";
-  echo "            ".(($policy->communityMemberGroup)?$policy->group->getCommunity()->getName():$policy->group->getName());
-  echo "          </td>";
-  echo "          <td>";
+  ?>
+    <tr type='group' element='<?php echo $policy->group->getKey()?>'>
+      <td>
+      <img src='<?php echo $this->coreWebroot?>/public/images/icons/community.png'/>
+      </td>
+      <td class='changePermissionSelect'>
+        <?php echo (($policy->communityMemberGroup)?$policy->group->getCommunity()->getName():$policy->group->getName())?>
+      </td>
+      <td>
+   <?php
   if((!$this->isAdmin&&$policy->getPolicy()==MIDAS_POLICY_ADMIN))
     {
     switch ($policy->getPolicy())
@@ -60,7 +63,9 @@ foreach($this->groupPolicies as $policy)
     }
   else
     {
-    echo "            <select class='changePermissionSelect'>";
+    ?>
+     <select class='changePermissionSelect'>
+       <?php
     if($this->isAdmin)
       {
       echo "            <option value='".MIDAS_POLICY_ADMIN."' ".(($policy->getPolicy()==MIDAS_POLICY_ADMIN)?'selected':'').">{$this->t('is owner')}</option>";
@@ -69,23 +74,27 @@ foreach($this->groupPolicies as $policy)
     echo "              <option value='".MIDAS_POLICY_READ."' ".(($policy->getPolicy()==MIDAS_POLICY_READ)?'selected':'').">{$this->t('can read')}</option>";
     echo "            </select>";
     }
-  echo "          </td>";
-  echo "          <td>";
-  echo "            <a class='removeShareLink'><img  src='{$this->coreWebroot}/public/images/icons/close.png' alt=''/></a>";
-  echo "          </td>";
-  echo "        </tr>";
+    ?>
+    </td>
+     <td>
+     <a class='removeShareLink'><img  src='<?php echo $this->coreWebroot?>/public/images/icons/close.png' alt=''/></a>
+    </td>
+    </tr>
+    <?php
   }
   
 foreach($this->userPolicies as $policy)
   {
-  echo "        <tr type='user' element='{$policy->user->getKey()}'>";
-  echo "          <td>";
-  echo "            <img src='{$this->coreWebroot}/public/images/icons/unknownUser-small.png'";
-  echo "          </td>";
-  echo "          <td>";
-  echo "            ".$policy->user->getFullName();
-  echo "          </td>";
-  echo "          <td>";
+  ?>
+  <tr type='user' element='<?php echo $policy->user->getKey()?>'>
+    <td>
+     <img src='<?php echo $this->coreWebroot?>/public/images/icons/unknownUser-small.png'/>
+    </td>
+    <td>
+      <?php echo $policy->user->getFullName()?>
+    </td>
+    <td>
+  <?php
   if((!$this->isAdmin&&$policy->getPolicy()==MIDAS_POLICY_ADMIN)||$policy->user->getKey()==$this->userDao->getKey())
     {
     switch ($policy->getPolicy())
@@ -120,18 +129,19 @@ foreach($this->userPolicies as $policy)
     }
   echo "        </tr>";
   }
-echo "        </table>";
-echo " <br/>";
-echo "      <div class='shareSearch'>";
-echo "        <input type='text' id='live_share_search' value='{$this->t('Add a permission to ...')}' autocomplete='off' autocorrect='off' autocapitalize='off' />";
-echo "        <input type='hidden' id='live_share_search_value' value='init'  />";
-echo "        <div id='searchShareLoading' style='display:none'></div>";
-echo "      </div>";
-echo "    </div>";
+  ?>
+   </table>
+   <br/>
+   <div class='shareSearch'>
+    <input type='text' id='live_share_search' value='<?php echo $this->t('Add a permission to ...')?>' autocomplete='off' autocorrect='off' autocapitalize='off' />
+      <input type='hidden' id='live_share_search_value' value='init'  />
+       <div id='searchShareLoading' style='display:none'></div>
+     </div>
+   </div>
 
-echo "</div>";
+</div>
 
-?>
+
 <div style="display: none;" class="jsonShareContent">
   <?php echo $this->jsonShare?>
 </div>
