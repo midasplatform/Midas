@@ -190,7 +190,7 @@ class UserForm extends AppForm
       $biography->setValue($defaultValue['biography']);
       }
     
-    $form->addElements(array($website, $city ,$country, $biography, $firstname, $lastname, $company, $privacy, $submit));
+    $form->addElements(array($website, $city, $country, $biography, $firstname, $lastname, $company, $privacy, $submit));
 
     return $form;
     }

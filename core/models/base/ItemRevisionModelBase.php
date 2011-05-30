@@ -42,7 +42,7 @@ abstract class ItemRevisionModelBase extends AppModel
   abstract function getByUuid($uuid);
   abstract function getMetadata($revisiondao);
   
-   /** Add a bitstream to a revision */
+  /** Add a bitstream to a revision */
   function addBitstream($itemRevisionDao, $bitstreamDao)
     {
     $modelLoad = new MIDAS_ModelLoader();
@@ -77,7 +77,7 @@ abstract class ItemRevisionModelBase extends AppModel
           {
           $src = imagecreatefromjpeg($tmpfile);
           }
-        catch (Exception $exc)
+        catch(Exception $exc)
           {
           $createThumb = false; 
           }
@@ -88,7 +88,7 @@ abstract class ItemRevisionModelBase extends AppModel
           {
           $src = imagecreatefrompng($tmpfile);
           }
-        catch (Exception $exc)
+        catch(Exception $exc)
           {
           $createThumb = false; 
           }        
@@ -99,7 +99,7 @@ abstract class ItemRevisionModelBase extends AppModel
           {
           $src = imagecreatefromgif($tmpfile);
           }
-        catch (Exception $exc)
+        catch(Exception $exc)
           {
           $createThumb = false; 
           }   
@@ -130,9 +130,9 @@ abstract class ItemRevisionModelBase extends AppModel
           {
           $destionation = $tmpPath."/".rand(1, 1000).'.jpeg';
           }
-        $pathThumbnail=$destionation;
+        $pathThumbnail = $destionation;
 
-        list ($x, $y) = @getimagesize ($tmpfile);  //--- get size of img ---
+        list ($x, $y) = getimagesize($tmpfile);  //--- get size of img ---
         $thumb = 100;  //--- max. size of thumb ---
         if($x > $y) 
           {
@@ -145,11 +145,11 @@ abstract class ItemRevisionModelBase extends AppModel
           $ty = $thumb;
           }
 
-        $thb = imagecreatetruecolor ($tx, $ty);  //--- create thumbnail ---
-        imagecopyresampled ($thb,$src, 0,0, 0,0, $tx,$ty, $x,$y);
-        imagejpeg ($thb, $pathThumbnail, 80);
-        imagedestroy ($thb);    
-        imagedestroy ($src);   
+        $thb = imagecreatetruecolor($tx, $ty);  //--- create thumbnail ---
+        imagecopyresampled($thb, $src, 0, 0, 0, 0, $tx, $ty, $x, $y);
+        imagejpeg($thb, $pathThumbnail, 80);
+        imagedestroy($thb);    
+        imagedestroy($src);   
         } 
       }
     else
@@ -174,7 +174,7 @@ abstract class ItemRevisionModelBase extends AppModel
         {
         unlink($oldThumbnail);
         }
-      $item->setThumbnail(substr($pathThumbnail, strlen(BASE_PATH)+1));
+      $item->setThumbnail(substr($pathThumbnail, strlen(BASE_PATH) + 1));
       }    
     $ItemModel->save($item);
     } // end addBitstream

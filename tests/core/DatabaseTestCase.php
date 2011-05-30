@@ -44,6 +44,9 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     if($configDatabase->database->adapter == 'PDO_PGSQL')
       {
       $db->query("SELECT setval('feed_feed_id_seq', (SELECT MAX(feed_id) FROM feed)+1);");
+      $db->query("SELECT setval('user_user_id_seq', (SELECT MAX(user_id) FROM user)+1);");
+      $db->query("SELECT setval('item_item_id_seq', (SELECT MAX(item_id) FROM item)+1);");
+      $db->query("SELECT setval('itemrevision_itemrevision_id_seq', (SELECT MAX(itemrevision_id) FROM itemrevision)+1);");
       $db->query("SELECT setval('folder_folder_id_seq', (SELECT MAX(folder_id) FROM folder)+1);");
       }      
       
