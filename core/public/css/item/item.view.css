@@ -1,4 +1,6 @@
-
+div#revisionContent{
+  display:none;
+}
 div.viewAction{
   display:block!important;
 }

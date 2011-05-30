@@ -75,10 +75,10 @@ div.genericBigButton{
   float: left;
   border: #354856 1px solid;
   list-style-type: none;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  -khtml-border-radius: 6px;
-  border-radius: 6px;  
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px;  
   background-color: #ffffff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#c4c4c4));
   background-image: -moz-linear-gradient(center top, #ffffff 0%, #c4c4c4 100% );
@@ -109,6 +109,26 @@ div.genericBigButton:hover{
 
 div.genericWrapperTopRight{
   float:right;
+}
+
+div.viewAction li a:hover, div.genericAction li a:hover{
+  text-decoration: none;
+}
+
+div.viewAction li img, div.genericAction li img{
+  position:relative;
+  top:3px;
+}
+
+div.viewAction hr, div.genericAction hr{
+  margin-bottom: 0px;
+  margin-top: 3px;
+  color: #D7D7D7;
+  background-color: #D7D7D7;
+  height: 1px;
+  border: 0;
+  width: 130px;
+  margin-left: 0px;
 }
 
 /*-------------------------------------------------

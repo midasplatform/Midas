@@ -42,7 +42,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
     <?php echo $this->itemDao->getView()?> <?php echo $this->t('views'); ?>, 
     <?php echo $this->itemDao->getDownload()?> <?php echo $this->t('downloads');?></div>  
     <div class="genericName"><?php   echo $this->slicename($this->itemDao->getName(),50);  ?></div>
-    <div class="genericCompany"><?php echo $this->itemSize;?></div>
+    <div class="genericCompany" style="color:grey;"><?php echo $this->itemSize;?></div>
 
   </div>
   
@@ -101,31 +101,38 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
     </tbody>
   </table>
   <?php } ?>
+  <br/>
+  <br/>
   
-  <h4 style="margin-bottom: 5px;"><?php echo $this->t('Latest revision content')?>:</h4>
+  <a onclick="$('#revisionContent').show();$(this).remove();"><?php echo $this->t('Show Content')?></a>
   
-  <table id="browseTable" class="midasTree">
-    <thead>
-      <tr>
-        <th ><?php echo $this->t('Name');?></th>
-        <th ><?php echo $this->t('Size');?></th>
-        <th ><?php echo $this->t('Type');?></th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php
-      $bitstreams=$this->itemDao->lastrevision->getBitstreams();
-      foreach($bitstreams as $bitstream)
-        {
-        echo "<tr>";
-        echo "  <td>{$this->slicename($bitstream->getName(),50)}</td>";
-        echo "  <td>{$this->Utility->formatSize($bitstream->getSizebytes())}  </td>";
-        echo "  <td>{$bitstream->getMimetype()}</td>";
-        echo "</tr>";
-        }  
-      ?>        
-    </tbody>
-  </table>
+  <div id="revisionContent">
+  
+    <h4 style="margin-top: 0px;margin-bottom: 5px;"><?php echo $this->t('Latest revision content')?>:</h4>
+
+    <table id="browseTable" class="midasTree">
+      <thead>
+        <tr>
+          <th ><?php echo $this->t('Name');?></th>
+          <th ><?php echo $this->t('Size');?></th>
+          <th ><?php echo $this->t('Type');?></th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        $bitstreams=$this->itemDao->lastrevision->getBitstreams();
+        foreach($bitstreams as $bitstream)
+          {
+          echo "<tr>";
+          echo "  <td>{$this->slicename($bitstream->getName(),50)}</td>";
+          echo "  <td>{$this->Utility->formatSize($bitstream->getSizebytes())}  </td>";
+          echo "  <td>{$bitstream->getMimetype()}</td>";
+          echo "</tr>";
+          }  
+        ?>        
+      </tbody>
+    </table>
+  </div>
   
 </div>
 <div class="viewSideBar">
@@ -145,16 +152,16 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
         {
         echo 
        "<li>
-          <a href='javascript:;' class='moveCopyLink' >{$this->t('Copy')}</a>
+          <a href='javascript:;' class='moveCopyLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/copy.png'/> {$this->t('Copy')}</a>
         </li>  
         <li>
-          <a href='javascript:;' class='editItemLink' >{$this->t('Edit')}</a>
+          <a href='javascript:;' class='editItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/> {$this->t('Edit')}</a>
         </li> 
         <li>
-          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink' >{$this->t('Share')}</a>
+          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/share.png'/> {$this->t('Share')}</a>
         </li>        
         <li>
-          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='uploadRevisionLink' >{$this->t('Upload new revision')}</a>
+          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='uploadRevisionLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/upload.png'/> {$this->t('Upload new revision')}</a>
         </li>        
           ";
         }
@@ -163,7 +170,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
         echo 
        "
         <li>
-          <a  href='javascript:;' id='itemDeleteLink'>{$this->t('Delete')}</a>
+          <a  href='javascript:;' id='itemDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Delete')}</a>
         </li>   
           ";
         }

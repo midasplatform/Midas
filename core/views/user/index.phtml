@@ -77,21 +77,21 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.j
       <?php
       if($this->order != 'lastname')
         {
-        echo "<li><a href='{$this->webroot}/user?order=lastname'>{$this->t('Alphabetic')}</a></li>";
+        echo "<li><a href='{$this->webroot}/user?order=lastname'><img alt='' src='{$this->coreWebroot}/public/images/icons/alphabet.png'/> {$this->t('Alphabetic')}</a></li>";
         }
       else
         {
-         echo "<li>{$this->t('Alphabetic')}</li>"; 
+         echo "<li><img alt='' src='{$this->coreWebroot}/public/images/icons/alphabet.png'/> {$this->t('Alphabetic')}</li>"; 
         }
       ?>
       <?php
       if($this->order != 'view')
         {
-        echo "<li><a href='{$this->webroot}/user?order=view'>{$this->t('Popularity')}</a></li>";
+        echo "<li><a href='{$this->webroot}/user?order=view'><img alt='' src='{$this->coreWebroot}/public/images/icons/fire.png'/> {$this->t('Popularity')}</a></li>";
         }
       else
         {
-         echo "<li>{$this->t('Popularity')}</li>"; 
+         echo "<li><img alt='' src='{$this->coreWebroot}/public/images/icons/fire.png'/> {$this->t('Popularity')}</li>"; 
         }
       ?>
     </ul>

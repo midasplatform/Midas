@@ -14,9 +14,9 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/s
 <link href="<?php echo $this->coreWebroot?>/public/css/share/share.dialog.css?<?php echo time();?> " rel="stylesheet" type="text/css" />
 
 
-<div id='elementDirectLink' <?php echo (($this->private)?'style="display:none;"':'');?>>";
-<?php echo  $this->t('You can use the following direct link to share the').' '.$this->t($this->type)?>:<br/>';
-<input type='text' id='urlInput' readonly='readonly' value='{$this->shareUrl}' />
+<div id='elementDirectLink' <?php echo (($this->private)?'style="display:none;"':'');?>>
+<?php echo  $this->t('You can use the following direct link to share the').' '.$this->t($this->type)?>:<br/>
+<input type='text' id='urlInput' readonly='readonly' value='<?php echo $this->shareUrl?>' />
 </div>
 <br/>
 

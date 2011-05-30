@@ -49,6 +49,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <div class="tabs" id='tabsGeneric'>
   <ul>
+    <li><a href="#tabs-3"><?php echo $this->t('Data');?></a></li>
     <li><a href="#tabs-1"><?php echo $this->t("Feed")?></a></li>
     <?php
     if(!empty($this->information))
@@ -58,7 +59,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <?php
       }
       ?>
-    <li><a href="#tabs-3"><?php echo $this->t('Data');?></a></li>
+   
     <?php
     if($this->isViewAction)
       {
@@ -157,8 +158,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   <div class="sideElementFirst genericAction">
     <h1>Actions</h1>
     <ul>
-      <li class="myAccountLink" userid="'.$this->user->getKey().'"><a>'.$this->t('Manage Profile').'</a></li>
-      <li><a href="'.$this->webroot.'/user/manage/?userId='.$this->user->getKey().'">'.$this->t('Manage Files').'</a></li>
+      <li class="myAccountLink" userid="'.$this->user->getKey().'"><a><img alt="" src="'.$this->coreWebroot.'/public/images/icons/user.png"/> '.$this->t('Manage Profile').'</a></li>
+      <li><a href="'.$this->webroot.'/user/manage/?userId='.$this->user->getKey().'"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/data.png"/> '.$this->t('Manage Files').'</a></li>
     </ul>
   </div>';
     }   
@@ -186,7 +187,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <div class='sideElement websiteBlock'>
     <h1>{$this->t('Website')}</h1>    
       <ul>
-        <li><a href='{$website}'>{$website}</a></li>
+        <li><a target='_blank' href='{$website}'>{$website}</a></li>
       </ul>
      </div>";
     }

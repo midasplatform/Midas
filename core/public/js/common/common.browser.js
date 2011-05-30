@@ -207,35 +207,44 @@
         var html='';
         if(type=='community')
           {
-            html+='<li><a href="'+json.global.webroot+'/community/'+element+'">'+json.browse.view+'</a></li>';            
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/community/'+element+'">'+json.browse.view+'</a></li>';            
           }
         if(type=='folder')
           {
-            html+='<li><a href="'+json.global.webroot+'/folder/'+element+'">'+json.browse.view+'</a></li>';
-            html+='<li><a href="'+json.global.webroot+'/download?folders='+element+'">'+json.browse.download+'</a></li>';
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/folder/'+element+'">'+json.browse.view+'</a></li>';
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?folders='+element+'">'+json.browse.download+'</a></li>';
+            
             if(policy>=1)
-              { 
-              html+='<li><a onclick="createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
-              html+='<li><a rel="'+json.global.webroot+'/upload/simpleupload/?parent='+element+'" class="uploadInFolder">'+json.browse.uploadIn+'</a></li>';
-              html+='<li><a onclick="editFolder('+element+');">'+json.browse.edit+'</a></li>';
+              {
+              html+='<hr/>';
+              html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/FileTree/directory.png"/> <a onclick="createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
+              html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/upload.png"/> <a rel="'+json.global.webroot+'/upload/simpleupload/?parent='+element+'" class="uploadInFolder">'+json.browse.uploadIn+'</a></li>';
+              html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/edit.png"/> <a onclick="editFolder('+element+');">'+json.browse.edit+'</a></li>';
               if(node.attr('deletable')!=undefined && node.attr('deletable')=='true')
                 {
-                html+='<li><a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';                
-                html+='<li><a onclick="deleteFolder('+element+');">'+json.browse['delete']+'</a></li>'; 
+                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/share.png"/> <a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';                
+                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="deleteFolder('+element+');">'+json.browse['delete']+'</a></li>'; 
                 }
               }                
           }
         if(type=='item')
           {
-            html+='<li><a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
-            html+='<li><a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLastest+'</a></li>';
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLastest+'</a></li>';
             if(policy>=1)
               {
-              html+='<li><a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
-              html+='<li class="removeItemLi"><a onclick="removeItem('+element+');">'+json.browse['removeItem']+'</a></li>'; 
+              html+='<hr/>';
+              html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/share.png"/> <a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+              html+='<li class="removeItemLi"><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="removeItem('+element+');">'+json.browse['removeItem']+'</a></li>'; 
               }   
           }
          $('div.viewAction ul').html(html);
+         
+           $('div.viewAction li a').hover(function(){
+            $(this).parents('li').css('background-color','#E5E5E5');
+          }, function(){
+            $(this).parents('li').css('background-color','white');
+          });
          
          $('a.uploadInFolder').cluetip({
            cluetipClass: 'jtip',

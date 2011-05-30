@@ -29,11 +29,15 @@ PURPOSE.  See the above copyright notices for more information.
         echo "<img class='feedDeleteLink' element='{$feed->getKey()}' src='{$view->coreWebroot}/public/images/icons/close.png' alt=''/>";
         echo "</div>";
         }
-      echo "<div class='feedUserImage'>";
-      $thumbnail=$feed->getUser()->getThumbnail();
+      
+      if(!isset($view->disableFeedImages))
+        {
+        echo "<div class='feedUserImage'>";
+        $thumbnail=$feed->getUser()->getThumbnail();
 
-      echo $view->userthumbnail($thumbnail);
-      echo "</div>";
+        echo $view->userthumbnail($thumbnail);
+        echo "</div>";
+        }
       echo "<div class='feedInfo'>";
       echo $view->linkuser($feed->getUser()).' ';
       switch($type)

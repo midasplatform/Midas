@@ -85,7 +85,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <h1>Actions</h1>
       <ul>
         <?php
-        echo "<li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'>{$this->t('Create top level Folder')}</a></li>";
+        echo "<li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/FileTree/directory.png'/> {$this->t('Create top level Folder')}</a></li>";
         ?>
       </ul>
     </div>

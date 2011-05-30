@@ -575,6 +575,8 @@ class UserController extends AppController
     
     $this->view->isViewAction = ($this->logged && ($this->userSession->Dao->getKey() == $userDao->getKey() || $this->userSession->Dao->isAdmin()));
     $this->view->information = array();
+    
+    $this->view->disableFeedImages = true;
     }
   
   /** Manage files page action*/

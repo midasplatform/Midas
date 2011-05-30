@@ -46,8 +46,8 @@ $(function() {
     
   //menu
   $('div.TopbarRighta li.first').hover(
-			function() { $('ul', this).css('display', 'block'); },
-			function() { $('ul', this).css('display', 'none'); });
+			function() {$('ul', this).css('display', 'block');},
+			function() {$('ul', this).css('display', 'none');});
     
   // If we are not logged in
   if(json.global.needToLog)
@@ -239,6 +239,12 @@ $(function() {
      width:            600
     });
     }
+    
+  $('div.viewAction li a').hover(function(){
+    $(this).parents('li').css('background-color','#E5E5E5');
+  }, function(){
+    $(this).parents('li').css('background-color','white');
+  });
 });
 function globalAuthAsk(url)
 {
@@ -330,7 +336,7 @@ function showDialog(title,button)
       draggable:false,
       title: title,
       position: [x,y],
-      buttons: { "Ok": function() { $(this).dialog("close"); } } 
+      buttons: {"Ok": function() {$(this).dialog("close");}} 
 		});
     
   }
@@ -360,7 +366,7 @@ function showBigDialog(title,button)
       draggable:false,
       title: title,
       position: [x,y],
-      buttons: { "Ok": function() { $(this).dialog("close"); } } 
+      buttons: {"Ok": function() {$(this).dialog("close");}} 
 		});
     
   }
