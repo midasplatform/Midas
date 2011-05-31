@@ -289,7 +289,7 @@ class MIDAS2MigrationComponent extends AppComponent
     set_time_limit(0);
     $modelLoader = new MIDAS_ModelLoader;
     $Folder = $modelLoader->loadModel("Folder");
-    $User = $modelLoader->loadModel("User");  
+    $User = $modelLoader->loadModel("User");
     $Folderpolicygroup = $modelLoader->loadModel("Folderpolicygroup");  
     $Folderpolicyuser = $modelLoader->loadModel("Folderpolicyuser");  
     
@@ -378,6 +378,7 @@ class MIDAS2MigrationComponent extends AppComponent
     $Folder = $modelLoader->loadModel("Folder");  
     $Folderpolicygroup = $modelLoader->loadModel("Folderpolicygroup");  
     $Folderpolicyuser = $modelLoader->loadModel("Folderpolicyuser");  
+    $User = $modelLoader->loadModel("User");
     
     // Create the collections attached to this community 
     $this->_createFolderForCollection($communityidMIDAS2, $parentFolderid);
