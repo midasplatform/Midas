@@ -49,6 +49,15 @@ class MigrateForm extends AppForm
     $midas2_assetstore->setRequired(true);
     $form->addElement($midas2_assetstore);
     
+    // Button to select the directory on the server
+    $midas2_assetstore_button = new Zend_Form_Element_Button('midas2_assetstore_button', $this->t('Choose'));
+    $midas2_assetstore_button->setDecorators(array(
+        'ViewHelper',
+        array('HtmlTag', array('tag' => 'div', 'class' => 'browse-button')),
+        array('Label', array('tag' => 'div', 'style' => 'display:none'))
+      ));
+    $form->addElement($midas2_assetstore_button);
+    
     // Assetstore
     $assetstoredisplay = array();
     $assetstoredisplay[0] = $this->t('Choose one...');
