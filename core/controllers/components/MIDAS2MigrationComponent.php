@@ -148,7 +148,7 @@ class MIDAS2MigrationComponent extends AppComponent
           
           // Get the number of downloads and set it
           $itemstatsquery = pg_query("SELECT downloads from midas_resourcelog WHERE
-                                     resource_id_type=".MIDAS2_RESOURCE_ITEM." AND resource_id=".$item_id);
+                                      resource_id_type=".MIDAS2_RESOURCE_ITEM." AND resource_id=".$item_id);
           if($itemstats_array = pg_fetch_array($itemstatsquery))
             {
             $itemdao->setView($itemstats_array['downloads']);

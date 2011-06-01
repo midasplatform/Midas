@@ -25,7 +25,8 @@ class ConsoleReporter extends Reporter {
 	 * @param String $level the severity level
 	 */
 	public function writeError($line, $check, $message, $level = WARNING) {
-		echo $this->currentPhpFile." ".$level." Line:".$line." - ".$message."\n";
+	  $line2 = $line+1;
+		echo $this->currentPhpFile." ".$level." Line:".$line2." - ".$message."\n";
 	}
 
 }
