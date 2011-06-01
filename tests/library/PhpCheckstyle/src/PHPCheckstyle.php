@@ -1812,7 +1812,7 @@ class PHPCheckstyle {
 			   || $this->tokenizer->checkProvidedToken($this->token, T_DOC_COMMENT))) {
 
 				$text = $this->tokenizer->extractTokenText($this->token);
-				$textarray = explode("\r",$text);
+				$textarray = explode("\n",$text);
 				foreach($textarray as $text)
 				  {
 				  $text = trim($text);
