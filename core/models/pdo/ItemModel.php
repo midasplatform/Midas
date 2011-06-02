@@ -53,6 +53,30 @@ class ItemModel extends ItemModelBase
     }//end getSharedToCommunity
     
   /**
+   * Get most popular items
+   * @param type $limit
+   * @return Array 
+   */ 
+  function getMostPopulars($userDao, $limit=20)
+    {
+    $sql = $this->database->select()
+                  ->setIntegrityCheck(false)
+                  ->from(array('i' => 'item'))
+                  ->where('privacy_status = ?', MIDAS_PRIVACY_PUBLIC)
+                  ->order(array('i.view DESC'))
+                  ->limit($limit);
+    $rowset = $this->database->fetchAll($sql);
+    $results = array();
+    foreach($rowset as $row)
+      {
+      $tmp = $this->initDao('Item', $row);
+      $results[] = $tmp;
+      }
+    return $results; 
+    }
+
+    
+  /**
    * Get Items where user policy = Admin
    * @param type $userDao
    * @param type $limit
@@ -248,7 +272,7 @@ class ItemModel extends ItemModelBase
    * @param type $limit
    * @return array of ItemDao 
    */
-  function getRandomItems($userDao = null, $policy = 0, $limit = 10, $thumbnailFilter = false)
+  function getRandomThumbnails($userDao = null, $policy = 0, $limit = 10, $thumbnailFilter = false)
     {
     if($userDao == null)
       {

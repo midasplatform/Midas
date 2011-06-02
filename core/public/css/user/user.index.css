@@ -2,15 +2,10 @@ div.userList{
   
 }
 
-div.userList div{
+div.userBlock{
   border-bottom: 1px dotted grey;
   padding-top: 5px;
   padding-bottom: 5px;
-}
-
-div.userList a.userTitle{
-  font-weight: bold;
-  font-size: 14px;
 }
 
 div.userList span{
@@ -25,4 +20,11 @@ div.userBlock:hover{
 .userSubTitle{
   margin-top: 0px;
   margin-bottom: 5px;
+}
+
+div.userStats {
+  float: right;
+  font-size: 10px;
+  border: none;
+  color: #777777;
 }

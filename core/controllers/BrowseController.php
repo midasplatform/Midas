@@ -29,29 +29,20 @@ class BrowseController extends AppController
   /** Index Action*/
   public function indexAction()
     {
-    $communities = array();
     $items = array();
     $header = "";
-
-    if($this->logged && $this->userSession->Dao->isAdmin())
-      {
-      $communities = $this->Community->getAll();
-      }
-    else
-      {
-      $communities = $this->User->getUserCommunities($this->userSession->Dao);
-      $communities = array_merge($communities, $this->Community->getPublicCommunities());
-      }
 
     $this->view->Date = $this->Component->Date;
     
     $this->view->header = $this->t('Explore');
     
-    $this->view->itemThumbnails = $this->Item->getRandomItems($this->userSession->Dao, 0, 12, true);
+    $this->view->itemThumbnails = $this->Item->getRandomThumbnails($this->userSession->Dao, 0, 12, true);
+
+    $this->view->items = $this->Item->getMostPopulars($this->userSession->Dao,30);
+    
     $this->view->nUsers = $this->User->getCountAll();
     $this->view->nCommunities = $this->Community->getCountAll();
     $this->view->nItems = $this->Item->getCountAll();
-    $this->view->notifications = array();
     
     $this->view->json['community']['titleCreateLogin'] = $this->t('Please log in');
     $this->view->json['community']['contentCreateLogin'] = $this->t('You need to be logged in to be able to create a community.');

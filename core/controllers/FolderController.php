@@ -126,8 +126,7 @@ class FolderController extends AppController
           }
         $parent = $parent->getParent();
         }
-      $header = "<ul class = 'pathBrowser'>
-               <li class = 'pathData'><a href = '".$this->view->webroot."/browse'>".$this->t('Data')."</a></li>".$header;
+      $header = "<ul class = 'pathBrowser'>".$header;
       $header .= "</ul>";
       }
       

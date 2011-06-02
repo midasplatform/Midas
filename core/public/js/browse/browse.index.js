@@ -1,6 +1,5 @@
   $(document).ready(function() {
 
-    
     $("#browseTable").treeTable();
     
     $("img.tableLoading").hide();
@@ -14,7 +13,6 @@
     $('div.feedThumbnail img').mouseout(function(){
         $(this).fadeTo("fast",0.2);
     });
-    
     
     $('a.createCommunity').click(function()
     {
@@ -30,6 +28,12 @@
         loadAjaxDynamicBar('login','/user/login');
         }
     });
+   
+      
+    $('.itemBlock').click(function(){
+        $(location).attr('href',($('> .itemTitle',this).attr('href')));
+       }) 
+    
   });
   
   //dependance: common/browser.js
