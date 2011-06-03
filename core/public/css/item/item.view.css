@@ -35,3 +35,21 @@ div.genericInfo .genericCompany {
   color: #777777;
   margin-right: 10px;
 }
+
+iframe#fullscreenVisualizeIframe{
+  border:0;
+}
+
+div#fullscreenPanel{
+  float:right;
+}
+
+div#fullscreenPanel ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+img.closeVisuButton{
+  float:right;
+}

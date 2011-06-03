@@ -15,10 +15,11 @@ class Visualize_IndexController extends Visualize_AppController
   public $_moduleComponents=array('Main');
   public $_models=array('Item');
   
-  /** init */
-  function init()
+    
+  /** index*/
+  function indexAction()
     {
-    $itemId = $this->_getParam('itemId');
+     $itemId = $this->_getParam('itemId');
     $height = $this->_getParam('height');
     $width = $this->_getParam('width');
     if(!isset($height))
@@ -31,20 +32,31 @@ class Visualize_IndexController extends Visualize_AppController
       }
     $itemId = $this->_getParam('itemId');
     $itemDao = $this->Item->load($itemId);
+    
     if($this->ModuleComponent->Main->canVisualizeWithParaview($itemDao))
       {
       $this->_redirect('/visualize/paraview/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+      }
+    elseif($this->ModuleComponent->Main->canVisualizeMedia($itemDao))
+      {
+      $this->_redirect('/visualize/media/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+      }
+    elseif($this->ModuleComponent->Main->canVisualizeTxt($itemDao))
+      {
+      $this->_redirect('/visualize/txt/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+      }
+    elseif($this->ModuleComponent->Main->canVisualizeImage($itemDao))
+      {
+      $this->_redirect('/visualize/image/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+      }
+    elseif($this->ModuleComponent->Main->canVisualizePdf($itemDao))
+      {
+      $this->_redirect('/visualize/pdf/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
     else
       {
       throw new Zend_Exception('Unable to visualize');
       }
-    }
-    
-  /** index*/
-  function indexAction()
-    {
-    
     }
   } // end class
 ?>

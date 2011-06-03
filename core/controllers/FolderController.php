@@ -126,11 +126,21 @@ class FolderController extends AppController
           }
         $parent = $parent->getParent();
         }
-      $header = "<ul class = 'pathBrowser'>
-               <li class = 'pathData'><a href = '".$this->view->webroot."/browse'>".$this->t('Data')."</a></li>".$header;
+      $header = "<ul class = 'pathBrowser'>"
+              .$header;
       $header .= "</ul>";
       }
       
+    if(!isset($this->userSession->Dao->recentFolders))
+      {
+      $this->userSession->Dao->recentFolders = array();
+      }
+    array_push($this->userSession->Dao->recentFolders, $folder->getKey());
+    if(count($this->userSession->Dao->recentFolders) > 5)
+      {
+      array_shift($this->userSession->Dao->recentFolders);
+      }
+
     $this->Folder->incrementViewCount($folder);
     $this->view->mainFolder = $folder;
     $this->view->folders = $folders;
@@ -176,7 +186,7 @@ class FolderController extends AppController
       {
       throw new Zend_Exception("User Folder. You cannot delete it.");
       }
-    $this->Folder->delete($folder);
+    $this->Folder->delete($folder, true);
     $folderInfo = $folder->toArray();
     echo JsonComponent::encode(array(true, $this->t('Changes saved'), $folderInfo));
     }// end deleteAction

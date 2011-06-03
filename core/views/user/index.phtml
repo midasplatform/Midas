@@ -105,7 +105,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.j
   <div class="sideElementLast viewInfo">
     <h1>Info</h1>    
     <?php
-    echo count($this->users).' '.(count($this->users)>1?$this->t('Public users'):$this->t('Public user'));
+    echo $this->nUsers.' '.$this->t('user').($this->nUsers>1?'s':'');
     ?>
   </div>
 </div>

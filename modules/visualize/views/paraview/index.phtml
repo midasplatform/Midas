@@ -14,10 +14,33 @@ PURPOSE.  See the above copyright notices for more information.
 
 <?php
 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/paraview/ParaViewWeb.js');
+$this->headScript()->appendFile('/PWService/js/ParaViewWeb.js');
 $this->headScript()->appendFile($this->moduleWebroot . '/public/js/paraview/paraview.index.js');
 ?>
-  <div id='renderercontainer'>
+        <img class="toolButton" src="<?php echo $this->moduleWebroot?>/public/images/resetCamera.png" alt="Reset camera" onclick="resetCamera()"
+             style="left: 10px;"/>
+        <img class="toolButton" src="<?php echo $this->moduleWebroot?>/public/images/extendMenu.png" alt="Show/Hide control panel" onclick="changeControlVisibility()"
+             style="left: 45px"/>
+        <img class="toolButton" src="<?php echo $this->moduleWebroot?>/public/images/orientation.png" alt="Show/Hide orientation axis" onclick="changeOrientationAxisVisibility()"
+             style="left: 70px;"/>
+        <img class="toolButton" src="<?php echo $this->moduleWebroot?>/public/images/axis.png" alt="Show/Hide rotation axis" onclick="changeRotationAxisVisibility()"
+             style="left: 95px;"/>
+<img class="visuLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+
+ <select id="renderer-type" name="renderer-type"
+                onchange="switchRenderer(false)" >
+            <option <?php if($this->renderer == 'js')echo 'selected';?> value="js">JavaScript</option>
+			<option <?php if($this->renderer == 'webgl')echo 'selected';?> value="webgl">WebGL</option>
+</select>
+
+
+ <div id="controlPanel"> 
+Contours:
+</b><br/> 
+<input type="test" id="contour" onChange="stateController.iso.setIsosurfaces($('#contour').val());" />
+  </div> 
+
+<div id='renderercontainer' style="">
          <!-- The renderer will be inserted here -->
    </div>
 <?php echo $this->headScript() ?>

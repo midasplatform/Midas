@@ -144,7 +144,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
         {
       echo 
      "<li>
-        <a id='itemPreviewLink'>{$this->t('Preview')}</a>
+        <a id='itemPreviewLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/view.png'/> {$this->t('Preview')}</a>
       </li>        
         ";
         }
@@ -177,7 +177,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
       ?>
     </ul>
   </div>
-  <div class="sideElementLast viewInfo">
+  <div class="sideElement<?php if(count($this->sameLocation) == 1) echo "Last"?> viewInfo">
     <h1>Info</h1>    
     <table>  
       <tbody>
@@ -210,6 +210,25 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
       }
       ?>
   </div>
+    <?php
+  if(count($this->sameLocation) != 1)
+    {?>
+  <div class='sideElementLast viewSameLocation'>
+    <h1><?php echo $this->t('In the same location')?></h1>  
+    <ul>
+    <?php
+    foreach($this->sameLocation as $item)
+      {
+      echo "<li>";
+      echo "<a class='linkedcontentLink' preview='{$item->preview}' element='{$item->getKey()}' href='{$this->webroot}/item/{$item->getKey()}'>".$this->slicename($item->getName(),25)."</a>";
+      echo "</li>";
+      }
+    ?>
+    </ul>
+  </div>
+  <?php
+    }
+    ?>
 </div>
 
 

@@ -23,7 +23,6 @@ class BrowseController extends AppController
   function init()
     {
     $this->view->activemenu = 'browse'; // set the active menu
-    session_write_close();
     }  // end init()
 
   /** Index Action*/
@@ -294,6 +293,15 @@ class BrowseController extends AppController
         $folder = $this->Folder->load($id);
         $jsonContent = array_merge($jsonContent, $folder->toArray());
         $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($jsonContent['date']));
+        if(!isset($this->userSession->Dao->recentFolders))
+          {
+          $this->userSession->Dao->recentFolders = array();
+          }
+        array_push($this->userSession->Dao->recentFolders, $folder->getKey());
+        if(count($this->userSession->Dao->recentFolders) > 5)
+          {
+          array_shift($this->userSession->Dao->recentFolders);
+          }
         break;
       case 'item':
         $item = $this->Item->load($id);

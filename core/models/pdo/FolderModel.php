@@ -209,7 +209,7 @@ class FolderModel extends FolderModelBase
     } // end getRoot()  
         
   /** Get the folder tree */  
-  function getAllChildren($folder, $userDao)
+  function getAllChildren($folder, $userDao, $admin = false)
     {    
     $isAdmin = false;
     if($userDao == null)
@@ -227,6 +227,11 @@ class FolderModel extends FolderModelBase
         {
         $isAdmin = true;
         }
+      }
+      
+    if($admin)
+      {
+      $isAdmin = true;
       }
 
     if(!$folder instanceof FolderDao)
@@ -349,6 +354,7 @@ class FolderModel extends FolderModelBase
       }
     
     $tmpParent = $parent->getParent();
+    $currentParent = $folder->getParent();
     while($tmpParent != false)
       {
       if($tmpParent->getKey() == $folder->getKey())
@@ -366,23 +372,82 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Error parameter.");
       }
-    $leftIndice = $folder->getLeftIndice();
-    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('left_indice - 2')),
-                          array('left_indice >= ?' => $leftIndice));
-    $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice - 2')),
-                          array('right_indice >= ?' => $leftIndice));
+    
+    $node_id = $folder->getKey();
+    $node_pos_left = $folder->getLeftIndice();
+    $node_pos_right = $folder->getRightIndice();
+    $parent_id = $parent->getKey();
+
+    $parent_pos_right = $parent->getRightIndice();
+    $node_size = $node_pos_right - $node_pos_left + 1;
+
+    // step 1: temporary "remove" moving node
+    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('0 - left_indice'), 'right_indice' => new Zend_Db_Expr('0 - right_indice')),
+                          'left_indice >= '.$node_pos_left.' AND right_indice <= '.$node_pos_right);
+    
+    // step 2: decrease left and/or right position values of currently 'lower' items (and parents)
+    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('left_indice - '.$node_size)),
+                          array('left_indice > ?' => $node_pos_right));
+    $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice - '.$node_size)),
+                          array('right_indice > ?' => $node_pos_right));
+    
+    // step 3: increase left and/or right position values of future 'lower' items (and parents)
+    $cond = ($parent_pos_right > $node_pos_right ? $parent_pos_right - $node_size : $parent_pos_right);
+    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('left_indice + '.$node_size)),
+                          array('left_indice >= ?' => $cond));
+    $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice + '.$node_size)),
+                          array('right_indice >= ?' => $cond));
+
+   // step 4: move node (ant it's subnodes) and update it's parent item id  
+    $cond = ($parent_pos_right > $node_pos_right) ? $parent_pos_right - $node_pos_right - 1 : $parent_pos_right - $node_pos_right - 1 + $node_size;
+    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('0 - left_indice + '.$cond), 'right_indice' => new Zend_Db_Expr('0 - right_indice + '.$cond)),
+                          'left_indice <= '.(0 - $node_pos_left).' AND right_indice >= '.(0 - $node_pos_right));
+
+    $folder = $this->load($folder->getKey());
     $folder->setParentId($parent->getKey());
-    $rightParent = $parent->getRightIndice();
-    
-    $folder->setRightIndice($rightParent + 1);
-    $folder->setLeftIndice($rightParent);
-    
-    $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('2 + right_indice')),
-                          array('right_indice >= ?' => $rightParent));
-    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('2 + left_indice')),
-                          array('left_indice >= ?' => $rightParent));
-    
     parent::save($folder);
+    /*
+
+    $allChildren = $this->getAllChildren($folder, null, true);
+      
+    $leftIndice = $folder->getLeftIndice();
+    $rightIndice = $folder->getRightIndice();
+    $rightParentIndice = $currentParent->getRightIndice();
+    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('left_indice - '.$diff)),
+                          array('left_indice > ?' => $rightIndice));
+    $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice - '.$diff)),
+                          array('right_indice > ?' => $rightIndice));
+    
+    
+    $childrenIds = array();
+    foreach($allChildren as $child)
+      {
+      $childrenIds[] = $child->getKey();
+      }
+    $childrenIds[] = $folder->getKey();
+    $folder = $this->load($folder->getKey());
+    $parent = $this->load($parent->getKey());
+    
+    $diff = $folder->getLeftIndice() - $parent->getRightIndice();
+    
+    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('left_indice - '.$diff)),
+                          array('folder_id IN (?)' => $childrenIds));
+    $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice - '.$diff)),
+                          array('folder_id IN (?)' => $childrenIds));
+    
+    $this->getLogger()->info('2:'.$diff);
+    $parent = $this->load($parent->getKey());
+    $folder = $this->load($folder->getKey());
+    $diff = $folder->getRightIndice() - $parent->getRightIndice() + 1;
+    
+    $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr($diff.' + right_indice')),
+                          array('right_indice >= ?' => $parent->getRightIndice()));
+    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr($diff.' + left_indice')),
+                          array('left_indice >= ?' => $parent->getRightIndice()));
+    $folder = $this->load($folder->getKey());
+    $folder->setParentId($parent->getKey());
+    $this->getLogger()->info('3:'.$diff);
+    parent::save($folder);*/
     }//end move
 
   /** Custom save function*/

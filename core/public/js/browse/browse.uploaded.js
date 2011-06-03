@@ -25,12 +25,12 @@
         var html='';
         if(type=='item')
           {
-            html+='<li><a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
-            html+='<li><a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLastest+'</a></li>';
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLastest+'</a></li>';
             if(policy>=1)
               {
-              html+='<li><a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
-              html+='<li ><a class onclick="deleteItem('+element+');">'+json.browse['delete']+'</a></li>'; 
+              html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/share.png"/> <a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+              html+='<li ><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a class onclick="deleteItem('+element+');">'+json.browse['delete']+'</a></li>'; 
               }   
           }
          $('div.viewAction ul').html(html);

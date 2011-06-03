@@ -13,7 +13,7 @@ PURPOSE.  See the above copyright notices for more information.
 /** Item Controller */
 class ItemController extends AppController
   {
-  public $_models = array('Item', 'ItemRevision', 'Bitstream');
+  public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Folder');
   public $_daos = array();
   public $_components = array('Date', 'Utility', 'Sortdao');
   public $_forms = array('Item');
@@ -128,6 +128,43 @@ class ItemController extends AppController
       {
       $this->view->preview = false;
       }
+     
+    $items = array();
+    if(in_array($itemDao->getKey(), $this->userSession->uploaded))
+      {
+      $items = $this->Item->load($this->userSession->uploaded);
+      }
+    else
+      {
+      $parents = $itemDao->getFolders();
+      if(isset($this->userSession->Dao->recentFolders))
+        {
+        foreach($parents as $p)
+          {
+          if(in_array($p->getKey(), $this->userSession->Dao->recentFolders))
+            {
+            $currentFolder = $p;
+            break;
+            }
+          }
+        }
+      $items = $this->Folder->getItemsFiltered($currentFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+      }
+      
+    foreach($items as $key => $item)
+      {
+      $tmp = Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_CAN_VISUALIZE, array('item' => $item));
+      if(isset($tmp['visualize']) && $tmp['visualize'] == true)
+        {
+        $items[$key]->preview = 'true';
+        }
+      else
+        {
+        $items[$key]->preview = 'false';
+        }
+      }
+      
+    $this->view->sameLocation = $items;
     
     $this->view->json['item'] = $itemDao->toArray();
     $this->view->json['item']['message']['delete'] = $this->t('Delete');

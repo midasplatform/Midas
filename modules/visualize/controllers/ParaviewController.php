@@ -42,9 +42,42 @@ class Visualize_ParaviewController extends Visualize_AppController
     foreach($bitstreams as $bitstream)
       {
       copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
-      $filePath = "/workspace/PW-work/midas/".$tmpFolderName.'/'.$bitstream->getName();
+      $ext = substr(strrchr($bitstream->getName(), '.'), 1);
+      if($ext != 'pvsm')
+        {
+        $filePath = "/workspace/PW-work/midas/".$tmpFolderName.'/'.$bitstream->getName();
+        $mainBitstream = $bitstream;
+        }
       }   
     
+    $this->view->json['visualize']['openState'] = false;
+      
+    foreach($bitstreams as $bitstream)
+      {
+      $ext = substr(strrchr($bitstream->getName(), '.'), 1);
+      if($ext == 'pvsm')
+        {        
+        $file_contents = file_get_contents($path.'/'.$bitstream->getName());
+        $file_contents = preg_replace('/\"([a-zA-Z0-9_.\/\\\:]{1,1000})'.  str_replace('.', '\.', $mainBitstream->getName())."/", '"'.$filePath, $file_contents);
+        $filePath = "/workspace/PW-work/midas/".$tmpFolderName.'/'.$bitstream->getName();
+        $inF = fopen($path.'/'.$bitstream->getName(),"w");
+        fwrite($inF, $file_contents);
+        fclose($inF); 
+        $this->view->json['visualize']['openState'] = true;
+        break;
+        }
+      }  
+      
+    
+    if($item->getSizebytes()> 1*1024*1024)
+      {
+      $this->view->renderer = 'js';
+      }
+    else
+      {
+      $this->view->renderer = 'webgl';
+      }
+      
     $this->view->json['visualize']['url'] = $filePath;    
     $this->view->json['visualize']['width'] = $this->_getParam('width');    
     $this->view->json['visualize']['height'] = $this->_getParam('height');    

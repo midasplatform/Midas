@@ -56,6 +56,7 @@ class UserController extends AppController
     $this->view->order = $order;
     $this->view->offset = $offset;
     $this->view->users = $users;
+    $this->view->nUsers = $this->User->getCountAll();
     } //end index
     
   /** Recover the password (ajax) */

@@ -24,19 +24,21 @@ class Visualize_ConfigController extends Visualize_AppController
       {
       throw new Zend_Exception("You should be an administrator");
       }
-      
+    
+    $module = 'visualize';
+    
     if(file_exists(BASE_PATH."/core/configs/api.local.ini"))
       {
-      $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/api.local.ini", true);
+      $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/".$module.".local.ini", true);
       }
     else
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/api/configs/module.ini', true);
+      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$module.'/configs/module.ini', true);
       }
     $configForm = $this->ModuleForm->Config->createConfigForm();
     
     $formArray = $this->getFormAsArray($configForm);    
-    $formArray['methodprefix']->setValue($applicationConfig['global']['methodprefix']);
+    $formArray['useparaview']->setValue($applicationConfig['global']['useparaview']);
     
     $this->view->configForm = $formArray;
     
@@ -47,16 +49,16 @@ class Visualize_ConfigController extends Visualize_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(BASE_PATH."/core/configs/api.local.ini.old"))
+        if(file_exists(BASE_PATH."/core/configs/".$module.".local.ini.old"))
           {
-          unlink(BASE_PATH."/core/configs/api.local.ini.old");
+          unlink(BASE_PATH."/core/configs/".$module.".local.ini.old");
           }
-        if(file_exists(BASE_PATH."/core/configs/api.local.ini"))
+        if(file_exists(BASE_PATH."/core/configs/".$module.".local.ini"))
           {
-          rename(BASE_PATH."/core/configs/api.local.ini",BASE_PATH."/core/configs/api.local.ini.old");
+          rename(BASE_PATH."/core/configs/".$module.".local.ini",BASE_PATH."/core/configs/".$module.".local.ini.old");
           }
-        $applicationConfig['global']['methodprefix'] = $this->_getParam('methodprefix');
-        $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/api.local.ini", $applicationConfig);
+        $applicationConfig['global']['useparaview'] = $this->_getParam('useparaview');
+        $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$module.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }

@@ -20,20 +20,23 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
 <div class="viewMain">
   
-  <?php
-  $descriptionMainFolder=$this->mainFolder->getDescription();
-  if(!empty($descriptionMainFolder))
-    {
-    ?>
+
+
   <div class="tabs" id='tabsGeneric'>
     <ul>
       <li><a href="#tabs-1"><?php echo $this->t("Data")?></a></li>
       <li><a href="#tabs-2"><?php echo $this->t('Info');?></a></li>
     </ul>
+  <div class="genericBigButton genericWrapperTopRight">
+    <?php
+    echo "<a  href='{$this->webroot}/download/?folders={$this->mainFolder->getKey()}'>";
+    echo $this->t('Download');  
+    echo '</a>';
+     ?>
+  </div>
   <div id="tabs-1">
-  <?php
-    }
-  ?>
+
+
   <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
   <table id="browseTable" class="midasTree">
     <thead>
@@ -80,19 +83,15 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     echo "<h4>{$this->t("This folder is empty")}.</h4>";
     }
     ?>
-    <?php
-  
-  if(!empty($descriptionMainFolder))
-    {
-    ?>
+
     </div>
     <div id="tabs-2">
-      <?php echo $descriptionMainFolder?>
+      <?php 
+      $descriptionMainFolder=$this->mainFolder->getDescription();
+      echo $descriptionMainFolder?>
     </div>
   </div>
-  <?php
-    }
-  ?>
+
 </div>
 
 <div id="guideRobot">

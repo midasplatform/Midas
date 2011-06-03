@@ -20,7 +20,11 @@ class Visualize_Notification extends MIDAS_Notification
     switch ($type)
       {
       case MIDAS_NOTIFY_CAN_VISUALIZE:
-        return $this->ModuleComponent->Main->canVisualizeWithParaview($params['item']);
+        return $this->ModuleComponent->Main->canVisualizeWithParaview($params['item']) ||
+             $this->ModuleComponent->Main->canVisualizeMedia($params['item']) ||
+           $this->ModuleComponent->Main->canVisualizeTxt($params['item']) ||
+          $this->ModuleComponent->Main->canVisualizeImage($params['item']) ||
+          $this->ModuleComponent->Main->canVisualizePdf($params['item']);
         break;
 
       default:
