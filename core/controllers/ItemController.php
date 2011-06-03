@@ -130,25 +130,29 @@ class ItemController extends AppController
       }
      
     $items = array();
-    if(in_array($itemDao->getKey(), $this->userSession->uploaded))
+    if(isset($this->userSession->uploaded) && in_array($itemDao->getKey(), $this->userSession->uploaded))
       {
       $items = $this->Item->load($this->userSession->uploaded);
       }
     else
       {
       $parents = $itemDao->getFolders();
-      if(isset($this->userSession->Dao->recentFolders))
+      if(isset($this->userSession->recentFolders))
         {
         foreach($parents as $p)
           {
-          if(in_array($p->getKey(), $this->userSession->Dao->recentFolders))
+          if(in_array($p->getKey(), $this->userSession->recentFolders))
             {
             $currentFolder = $p;
             break;
             }
           }
+        if(isset($currentFolder))
+          {
+          $items = $this->Folder->getItemsFiltered($currentFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+          }
         }
-      $items = $this->Folder->getItemsFiltered($currentFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+
       }
       
     foreach($items as $key => $item)

@@ -28,7 +28,7 @@ PURPOSE.  See the above copyright notices for more information.
       This script will guide you during the installation of MIDAS. 
       MIDAS will store the datasets and related information in these directories.
       Make sure they are fitting your installation or modify your config.php file.
-      <br/><br/>For more information go to: <a href="http://www.kitware.com/midaswiki/index.php/Installation">http://www.kitware.com/midaswiki/index.php/Installation</a>
+      <br/><br/>For more information go to: <a href="http://www.kitware.com/midaswiki/index.php/MIDAS3-Installation">http://www.kitware.com/midaswiki/index.php/MIDAS3-Installation</a>
 
       <h3>System check</h3>
   <?php
@@ -40,23 +40,13 @@ PURPOSE.  See the above copyright notices for more information.
         echo "<li><span style=\"color:#d48304\"> $missing </span> </li>";
         }
       }
-
-    if($this->convertfound[0]==false)
-      {
-      echo "<li><span style=\"color:#d48304\"> {$this->convertfound[1]}</span>";
-      if(strstr(PHP_OS,"WIN"))
-        {
-        echo " <br/>If you have installed Image Magick and it still doesn't work. Copy the convert.exe file to im-convert.exe in the Image Magick Folder. There may be a conflict with the windows convert application.";
-        }
-      echo "</li>";
-      }
       
     if($this->writable==false)
       {
       echo "<li><span style=\"color:red\"> Unable to right in the application folder: {$this->basePath}. Please check you apache server permissions</span> </li>";
       }
       
-    if($this->writable&&$this->convertfound[0]&&empty($this->phpextension_missing))
+    if($this->writable&&empty($this->phpextension_missing))
       {
       echo "<li><span style=\"color:green\"> Your system is OK</span> </li>";
       }

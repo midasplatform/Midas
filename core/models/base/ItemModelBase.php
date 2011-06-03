@@ -26,7 +26,8 @@ abstract class ItemModelBase extends AppModel
       'description' =>  array('type' => MIDAS_DATA),
       'type' =>  array('type' => MIDAS_DATA),
       'sizebytes' => array('type' => MIDAS_DATA),
-      'date' => array('type' => MIDAS_DATA),
+      'date_creation' => array('type' => MIDAS_DATA),
+      'date_update' => array('type' => MIDAS_DATA),
       'thumbnail' => array('type' => MIDAS_DATA),
       'view' => array('type' => MIDAS_DATA),
       'download' => array('type' => MIDAS_DATA),
@@ -56,6 +57,11 @@ abstract class ItemModelBase extends AppModel
       {
       $dao->setUuid(uniqid() . md5(mt_rand()));
       }
+    if(!isset($dao->date_creation) || empty($dao->date_creation))
+      {
+      $dao->setDateCreation(date('c'));
+      }
+    $dao->setDateUpdate(date('c'));
     parent::save($dao);
     }
     
@@ -116,7 +122,7 @@ abstract class ItemModelBase extends AppModel
         }
       }
     $itemdao->view++;
-    $this->save($itemdao);
+    parent::save($itemdao);
     }//end incrementViewCount
     
   /** plus one download*/
@@ -127,7 +133,7 @@ abstract class ItemModelBase extends AppModel
       throw new Zend_Exception("Error param.");
       }
     $itemdao->download++;
-    $this->save($itemdao);
+    parent::save($itemdao);
     }//end incrementDownloadCount
     
   /** Add a revision to an item
@@ -158,6 +164,7 @@ abstract class ItemModelBase extends AppModel
       }
     $revisiondao->setItemId($itemdao->getItemId());
     $ItemRevisionModel->save($revisiondao);
+    $this->save($itemdao);//update date
     } // end addRevision
   
 } // end class ItemModelBase

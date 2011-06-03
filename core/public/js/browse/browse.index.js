@@ -5,13 +5,13 @@
     $("img.tableLoading").hide();
     $("table#browseTable").show();
     
-    $('div.feedThumbnail img').fadeTo("slow",0.2);
+    $('div.feedThumbnail img').fadeTo("slow",0.4);
     $('div.feedThumbnail img').mouseover(function(){
         $(this).fadeTo("fast",1);
     });
  
     $('div.feedThumbnail img').mouseout(function(){
-        $(this).fadeTo("fast",0.2);
+        $(this).fadeTo("fast",0.4);
     });
     
     $('a.createCommunity').click(function()

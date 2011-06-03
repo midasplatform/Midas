@@ -131,14 +131,14 @@ class FolderController extends AppController
       $header .= "</ul>";
       }
       
-    if(!isset($this->userSession->Dao->recentFolders))
+    if(!isset($this->userSession->recentFolders))
       {
-      $this->userSession->Dao->recentFolders = array();
+      $this->userSession->recentFolders = array();
       }
-    array_push($this->userSession->Dao->recentFolders, $folder->getKey());
-    if(count($this->userSession->Dao->recentFolders) > 5)
+    array_push($this->userSession->recentFolders, $folder->getKey());
+    if(count($this->userSession->recentFolders) > 5)
       {
-      array_shift($this->userSession->Dao->recentFolders);
+      array_shift($this->userSession->recentFolders);
       }
 
     $this->Folder->incrementViewCount($folder);

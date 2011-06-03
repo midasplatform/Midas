@@ -58,11 +58,11 @@ class SearchComponent extends AppComponent
     foreach($users as $key => $user)
       {
       $users[$key]->name = $user->getLastname();
-      $users[$key]->date = $user->getCreation();
+      $users[$key]->date_update = $user->getCreation();
       }
     foreach($communities as $key => $community)
       {
-      $communities[$key]->date = $community->getCreation();
+      $communities[$key]->date_update = $community->getCreation();
       }
     $results = array_merge($folders, $items, $communities, $users);
     
@@ -80,7 +80,7 @@ class SearchComponent extends AppComponent
         usort($results, array($sortdaoComponent, 'sortByName'));
         break;
       case 'date':
-        $sortdaoComponent->field = 'date';
+        $sortdaoComponent->field = 'date_update';
         $sortdaoComponent->order = 'asc';
         usort($results, array($sortdaoComponent, 'sortByDate'));
         break;
@@ -105,7 +105,7 @@ class SearchComponent extends AppComponent
       if($result instanceof ItemDao)
         {
         $tmp['resultType'] = 'item';
-        $tmp['formattedDate'] = $dateComponent->formatDate($result->getDate());
+        $tmp['formattedDate'] = $dateComponent->formatDate($result->getDateUpdate());
         }
       if($result instanceof CommunityDao)
         {
@@ -115,7 +115,7 @@ class SearchComponent extends AppComponent
       if($result instanceof FolderDao)
         {
         $tmp['resultType'] = 'folder';
-        $tmp['formattedDate'] = $dateComponent->formatDate($result->getDate());
+        $tmp['formattedDate'] = $dateComponent->formatDate($result->getDateUpdate());
         }
       unset($tmp['password']);
       unset($tmp['email']);

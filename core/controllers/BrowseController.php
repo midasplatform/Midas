@@ -198,7 +198,7 @@ class BrowseController extends AppController
       $tmp = array();
       $tmp['folder_id'] = $folder->getFolderId();
       $tmp['name'] = $folder->getName();
-      $tmp['creation'] = $this->Component->Date->ago($folder->getDate(), true);
+      $tmp['date_update'] = $this->Component->Date->ago($folder->getDateUpdate(), true);
       if($tmp['name'] == 'Public' || $tmp['name'] == 'Private')
         {
         $tmp['deletable'] = 'false';
@@ -218,7 +218,7 @@ class BrowseController extends AppController
       $tmp['item_id'] = $item->getItemId();
       $tmp['name'] = $item->getName();
       $tmp['parent_id'] = $item->parent_id;
-      $tmp['creation'] = $this->Component->Date->ago($item->getDate(), true);
+      $tmp['date_update'] = $this->Component->Date->ago($item->getDateUpdate(), true);
       $tmp['size'] = $this->Component->Utility->formatSize($item->getSizebytes());
       $tmp['policy'] = $item->policy;
       $tmp['privacy_status'] = $item->privacy_status;
@@ -283,15 +283,15 @@ class BrowseController extends AppController
       case 'folder':
         $folder = $this->Folder->load($id);
         $jsonContent = array_merge($jsonContent, $folder->toArray());
-        $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($jsonContent['date']));
-        if(!isset($this->userSession->Dao->recentFolders))
+        $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($jsonContent['date_update']));
+        if(!isset($this->userSession->recentFolders))
           {
-          $this->userSession->Dao->recentFolders = array();
+          $this->userSession->recentFolders = array();
           }
-        array_push($this->userSession->Dao->recentFolders, $folder->getKey());
-        if(count($this->userSession->Dao->recentFolders) > 5)
+        array_push($this->userSession->recentFolders, $folder->getKey());
+        if(count($this->userSession->recentFolders) > 5)
           {
-          array_shift($this->userSession->Dao->recentFolders);
+          array_shift($this->userSession->recentFolders);
           }
         break;
       case 'item':
