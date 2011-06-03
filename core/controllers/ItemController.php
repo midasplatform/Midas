@@ -137,11 +137,11 @@ class ItemController extends AppController
     else
       {
       $parents = $itemDao->getFolders();
-      if(isset($this->userSession->Dao->recentFolders))
+      if(isset($this->userSession->recentFolders))
         {
         foreach($parents as $p)
           {
-          if(in_array($p->getKey(), $this->userSession->Dao->recentFolders))
+          if(in_array($p->getKey(), $this->userSession->recentFolders))
             {
             $currentFolder = $p;
             break;
