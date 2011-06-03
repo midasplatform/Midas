@@ -14,9 +14,10 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.f
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/community/community.view.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/community/community.view.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/community/community.view.css" />
+
 <div class="viewMain">
   <div class="genericThumbnail">
   <?php
@@ -32,7 +33,18 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   ?>
   </div>
   <div class="genericInfo">
+  <?php
+  if($this->logged && !$this->isMember && ($this->canJoin || $this->isInvited))
+    {
+      ?>
+     <div class="genericBigButton genericWrapperTopRight">
+     <form type='post' action=''>
+      <input name='joinCommunity' type='submit' value='<?php echo $this->t('Join the community') ?>' />
+    </form>
+    </div>
+   <?php } ?>    
     <div class="genericName"><?php echo $this->communityDao->getName();?></div>
+    <div class="genericSubtitle" style="color:grey;"><?php echo $this->communityDao->getDescription(); ?></div>
   </div>
   <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <div class="tabs" id='tabsGeneric'>
@@ -68,7 +80,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       ?>
     <div id="tabs-2">
       <?php
-      echo $description;
+      echo nl2br($description);
       ?>
     </div>
     <?php
@@ -145,15 +157,6 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 <div class="viewSideBar">
   
   <?php
-  if($this->logged && !$this->isMember && ($this->canJoin || $this->isInvited))
-    {
-    echo "
-    <form type='post' action=''>
-      <input name='joinCommunity' type='submit' class='globalButton' value='{$this->t('Join the community')}' />
-    </form>
-    ";
-    }
-  
   if($this->isModerator||$this->isAdmin||$this->isMember)
     {
     echo "  

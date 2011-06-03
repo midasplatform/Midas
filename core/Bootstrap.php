@@ -83,6 +83,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       Zend_Db_Table::setDefaultAdapter($db);
       Zend_Registry::set('dbAdapter', $db);
       }
+    elseif($configDatabase->database->type == 'mongo')
+      {
+      // The mongo driver should be a php extension    
+      $db = new Mongo($configDatabase->database->params->host.":".
+                      $configDatabase->database->params->port);
+      $dbname = $configDatabase->database->params->dbname; 
+      $database = $db->$dbname;
+      Zend_Registry::set('dbAdapter', $database);
+      }
     elseif($configDatabase->database->type == 'cassandra')
       {
       Zend_Loader::loadClass("connection", BASE_PATH . '/library/phpcassa');
@@ -115,7 +124,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
           array(
             'writerName' => 'Stream',
             'writerParams' => array(
-              'stream' => './log/dev.log'),
+              'stream' => './log/prod.log'),
             'filterName' => 'Priority',
             'filterParams' => array(
               'priority' => Zend_Log::INFO)),
@@ -132,12 +141,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
           array(
             'writerName' => 'Stream',
             'writerParams' => array(
-              'stream' => './log/prod.log'),
+              'stream' => './log/dev.log'),
             'filterName' => 'Priority',
             'filterParams' => array(
               'priority' => Zend_Log::WARN))));
         }
-      if($configDatabase->database->adapter == 'PDO_MYSQL' && $configDatabase->database->params->password != 'set_your_password')
+      if($configDatabase->database->adapter == 'PDO_MYSQL' 
+         && $configDatabase->database->params->password != 'set_your_password')
         {
         $logger->addWriter($writerDb);
         $logger->setEventItem('datetime', date('Y-m-d H:i:s'));

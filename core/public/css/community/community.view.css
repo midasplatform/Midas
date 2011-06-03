@@ -6,3 +6,23 @@ div.viewSideBar input.globalButton{
   margin-top: 5px;
   margin-left: 35px;
 }
+
+div.genericInfo .genericSubtitle {
+  font-weight: normal;
+}
+
+div.genericBigButton input{
+  border: none;
+  cursor: pointer;
+  background-color: #ffffff;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#c4c4c4));
+  background-image: -moz-linear-gradient(center top, #ffffff 0%, #c4c4c4 100% );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#c4c4c4');
+}
+
+div.genericBigButton input:hover{
+  background-color: #bddcc9;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#bddcc9), to(#8ab79b));
+  background-image: -moz-linear-gradient(center top, #bddcc9 0%, #8ab79b 100% );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bddcc9', endColorstr='#8ab79b');
+}

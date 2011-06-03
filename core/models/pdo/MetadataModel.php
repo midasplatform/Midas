@@ -79,7 +79,7 @@ class MetadataModel extends MetadataModelBase
     $data['itemrevision_id'] = $metadataDao->getItemrevisionId();
     $data['value'] = $metadataDao->getValue();
     $tablename = $this->getTableValueName($metadataDao->getMetadatatype());
-    $table = new Zend_Db_Table(array('name'=> $tablename, 'primary' => 'metadata_id'));
+    $table = new Zend_Db_Table(array('name' => $tablename, 'primary' => 'metadata_id'));
     $table->insert($data);
     return true;
     } // end function saveMetadataValue()

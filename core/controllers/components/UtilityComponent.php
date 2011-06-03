@@ -33,6 +33,7 @@ class UtilityComponent extends AppComponent
             $config->db->PDO_OCI = true;
             $config->db->PDO_SQLITE = true;
             $config->db->CASSANDRA = true;
+            $config->db->MONGO = true;
             }
           else
             {
@@ -51,6 +52,7 @@ class UtilityComponent extends AppComponent
                     case 'oci' : $config->db->PDO_OCI = true;break;
                     case 'sqlite' : $config->db->PDO_SQLITE = true;break;
                     case 'cassandra' : $config->db->CASSANDRA = true;break;
+                    case 'mongo' : $config->db->MONGO = true;break;
                     default : break;
                     }
                   }

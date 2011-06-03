@@ -8,6 +8,38 @@ div.feedThumbnail img{
   margin-right: 4px;
 }
 
+.itemSubTitle{
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+
 div.feedThumbnail a{
   border: 0px;
+}
+
+div.itemList{
+  
+}
+
+div.itemList span{
+  padding-left: 15px;
+}
+
+div.itemBlock {
+	padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px dotted grey;
+}
+
+div.itemBlock:hover{
+  background-color: #F6F9FE;
+  cursor: pointer;
+}
+
+div.itemStats {
+	float: right;
+  font-size: 10px;
+  border: none;
+  color: #777777;
 }

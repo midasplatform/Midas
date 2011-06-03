@@ -19,11 +19,25 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/browse/browse.index.css" />
 <div class="viewMain">
- 
+  <h3 class='itemSubTitle'> <?php echo $this->t('Most Popular Items'); ?></h3>
+  <div class="itemList">
+  <?php 
+  if(!empty($this->items))
+    {
+    foreach($this->items as $item)
+      {
+      ?>  
+      <div class="itemBlock">
+      <a class="itemTitle" href="<?php echo $this->webroot?>/item/<?php echo $item->getItemId(); ?>"><?php echo $item->getName(); ?></a>
+      <div class="itemStats"><?php echo $item->getView(); ?> views, <?php echo $item->getDownload(); ?> downloads</div>
+      </div>
+  <?php    
+      }
+    }
+  ?>
+  </div>
+  
 </div>
-
-
-
 
 
 <div class="viewSideBar">
@@ -45,24 +59,12 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <div class="ajaxInfoElement">
     </div>
   </div>
-  
-  
+    
   <div class="defaultSide" >
-    <div align="justify"  class='sideElementFirst feedNotification'>
-MIDAS integrates multimedia server technology with open-source data analysis and visualization clients. The server follows open standards for data storage, access and harvesting.
-  </div>
-      <?php
-    if(!empty($this->notifications))
-      {
-      echo   "<div class='sideElement feedNotification'>
-                <h1>Notifications</h1>
-              </div>";
-      }
-      ?>
     <?php 
     if(!empty($this->itemThumbnails))
       {
-      echo '<div class="sideElement feedThumbnail">';
+      echo '<div class="sideElementFirst feedThumbnail">';
       echo '<h1>Thumbnails</h1>';
       foreach($this->itemThumbnails as $item)
         {

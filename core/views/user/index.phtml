@@ -55,7 +55,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.j
       <?php
         echo $this->linkuser($user);
       ?>
-      <br/>
+      <div class="userStats"><?php echo $user->getView(); ?> views</div>
       </div>
   <?php    
       }

@@ -148,8 +148,9 @@ class MIDAS2MigrationComponent extends AppComponent
           
           // Get the number of downloads and set it
           $itemstatsquery = pg_query("SELECT downloads from midas_resourcelog WHERE
-                                     resource_id_type=".MIDAS2_RESOURCE_ITEM." AND resource_id=".$item_id);
-          if($itemstats_array = pg_fetch_array($itemstatsquery))
+                                      resource_id_type=".MIDAS2_RESOURCE_ITEM." AND resource_id=".$item_id);
+          $itemstats_array = pg_fetch_array($itemstatsquery);
+          if($itemstats_array)
             {
             $itemdao->setView($itemstats_array['downloads']);
             $itemdao->setDownload($itemstats_array['downloads']);
@@ -289,7 +290,7 @@ class MIDAS2MigrationComponent extends AppComponent
     set_time_limit(0);
     $modelLoader = new MIDAS_ModelLoader;
     $Folder = $modelLoader->loadModel("Folder");
-    $User = $modelLoader->loadModel("User");  
+    $User = $modelLoader->loadModel("User");
     $Folderpolicygroup = $modelLoader->loadModel("Folderpolicygroup");  
     $Folderpolicyuser = $modelLoader->loadModel("Folderpolicyuser");  
     
@@ -378,6 +379,7 @@ class MIDAS2MigrationComponent extends AppComponent
     $Folder = $modelLoader->loadModel("Folder");  
     $Folderpolicygroup = $modelLoader->loadModel("Folderpolicygroup");  
     $Folderpolicyuser = $modelLoader->loadModel("Folderpolicyuser");  
+    $User = $modelLoader->loadModel("User");
     
     // Create the collections attached to this community 
     $this->_createFolderForCollection($communityidMIDAS2, $parentFolderid);

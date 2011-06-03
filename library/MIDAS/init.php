@@ -21,6 +21,7 @@ require_once BASE_PATH . '/library/MIDAS/models/MIDASModel.php';
 require_once BASE_PATH . '/library/MIDAS/models/MIDASDatabaseInterface.php';
 require_once BASE_PATH . '/library/MIDAS/models/MIDASDatabasePdo.php';
 require_once BASE_PATH . '/library/MIDAS/models/MIDASDatabaseCassandra.php';
+require_once BASE_PATH . '/library/MIDAS/models/MIDASDatabaseMongo.php';
 require_once BASE_PATH . '/library/MIDAS/models/GlobalDao.php';
 
 include_once BASE_PATH . '/library/MIDAS/constant/datatype.php';
