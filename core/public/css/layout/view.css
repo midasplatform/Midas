@@ -58,12 +58,9 @@ div.viewSelected{
 
 div.viewNotice{
   display: none;
-  position: relative;
+  position: absolute;
   background-color: #45b775;
   color: #012844;
-  float: right;
-  top: -18px;
-  left: 175px;
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 2px;
@@ -71,6 +68,11 @@ div.viewNotice{
   border: 1px solid #168846;
 }
 
+div.viewNoticeWrapper{
+  position: relative;
+  left: 145px;
+  top:4px;
+}
 
 div.viewSideBar div.sideElement{
   border-bottom: 1px solid white;  

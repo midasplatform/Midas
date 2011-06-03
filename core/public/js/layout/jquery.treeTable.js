@@ -332,7 +332,7 @@
       //  var padding=parseInt(node.find('td:first').css('padding-left').slice(0,-2));
         
         var j = 1;
-        
+        var sliceValue = 42 - (id.split('-').length - 1)*3;
         
          $.each(elements['folders'], function(index, value) {
           if(j > 70)
@@ -345,7 +345,7 @@
             return;
             }
           html+= "<tr id='"+id+"-"+i+"' deletable='"+value['deletable']+"' privacy='"+value['privacy_status']+"'  class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
-          html+=     "  <td><span class='folder'>"+sliceFileName(value['name'],40)+"</span></td>";
+          html+=     "  <td><span class='folder'>"+sliceFileName(value['name'],sliceValue)+"</span></td>";
           html+=     "  <td>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>'+"</td>";
           html+=     "  <td>"+value['date_update']+"</td>";
           html+=     "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='"+value['folder_id']+"'/></td>";
@@ -366,7 +366,7 @@
             return;
             }
           html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"' privacy='"+value['privacy_status']+"'  type='item' policy='"+value['policy']+"' element='"+value['item_id']+"'>";
-          html+=     "  <td><span class='file'>"+sliceFileName(value['name'],40)+"</span></td>";
+          html+=     "  <td><span class='file'>"+sliceFileName(value['name'],sliceValue)+"</span></td>";
           html+=     "  <td>"+value['size']+"</td>";
           html+=     "  <td>"+value['date_update']+"</td>";
           html+=     "  <td><input type='checkbox' class='treeCheckbox' type='item' element='"+value['item_id']+"'/></td>";

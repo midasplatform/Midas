@@ -284,14 +284,14 @@ class BrowseController extends AppController
         $folder = $this->Folder->load($id);
         $jsonContent = array_merge($jsonContent, $folder->toArray());
         $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($jsonContent['date_update']));
-        if(!isset($this->userSession->Dao->recentFolders))
+        if(!isset($this->userSession->recentFolders))
           {
-          $this->userSession->Dao->recentFolders = array();
+          $this->userSession->recentFolders = array();
           }
-        array_push($this->userSession->Dao->recentFolders, $folder->getKey());
-        if(count($this->userSession->Dao->recentFolders) > 5)
+        array_push($this->userSession->recentFolders, $folder->getKey());
+        if(count($this->userSession->recentFolders) > 5)
           {
-          array_shift($this->userSession->Dao->recentFolders);
+          array_shift($this->userSession->recentFolders);
           }
         break;
       case 'item':
