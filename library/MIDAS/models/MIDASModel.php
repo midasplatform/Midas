@@ -31,6 +31,7 @@ class MIDASModel
       {
       case 'pdo': $this->database = new MIDASDatabasePdo(); break;
       case 'cassandra': $this->database = new MIDASDatabaseCassandra(); break;
+      case 'mongo': $this->database = new MIDASDatabaseMongo(); break;
       default: break;
       }
     } // end __construct()

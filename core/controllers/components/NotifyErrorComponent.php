@@ -113,7 +113,10 @@ class NotifyErrorComponent  extends AppComponent
             return;
             }
           header('content-type: text/plain');
-          ob_clean();
+          if (count(ob_list_handlers()) > 0) 
+            {
+            ob_clean();
+            }
           echo $this->getFatalErrorMessage($e);
         }
       $logger->crit($this->getFatalErrorMessage($e)); 
