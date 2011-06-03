@@ -406,48 +406,6 @@ class FolderModel extends FolderModelBase
     $folder = $this->load($folder->getKey());
     $folder->setParentId($parent->getKey());
     parent::save($folder);
-    /*
-
-    $allChildren = $this->getAllChildren($folder, null, true);
-      
-    $leftIndice = $folder->getLeftIndice();
-    $rightIndice = $folder->getRightIndice();
-    $rightParentIndice = $currentParent->getRightIndice();
-    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('left_indice - '.$diff)),
-                          array('left_indice > ?' => $rightIndice));
-    $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice - '.$diff)),
-                          array('right_indice > ?' => $rightIndice));
-    
-    
-    $childrenIds = array();
-    foreach($allChildren as $child)
-      {
-      $childrenIds[] = $child->getKey();
-      }
-    $childrenIds[] = $folder->getKey();
-    $folder = $this->load($folder->getKey());
-    $parent = $this->load($parent->getKey());
-    
-    $diff = $folder->getLeftIndice() - $parent->getRightIndice();
-    
-    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('left_indice - '.$diff)),
-                          array('folder_id IN (?)' => $childrenIds));
-    $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice - '.$diff)),
-                          array('folder_id IN (?)' => $childrenIds));
-    
-    $this->getLogger()->info('2:'.$diff);
-    $parent = $this->load($parent->getKey());
-    $folder = $this->load($folder->getKey());
-    $diff = $folder->getRightIndice() - $parent->getRightIndice() + 1;
-    
-    $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr($diff.' + right_indice')),
-                          array('right_indice >= ?' => $parent->getRightIndice()));
-    $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr($diff.' + left_indice')),
-                          array('left_indice >= ?' => $parent->getRightIndice()));
-    $folder = $this->load($folder->getKey());
-    $folder->setParentId($parent->getKey());
-    $this->getLogger()->info('3:'.$diff);
-    parent::save($folder);*/
     }//end move
 
   /** Custom save function*/
@@ -500,11 +458,18 @@ class FolderModel extends FolderModelBase
       unset($data['folder_id']);
       unset($data['left_indice']);
       unset($data['right_indice']);
+      $data['date_update'] = date('c');
       $this->database->update($data, array('folder_id = ?' => $key));
       return $key;
       }
     else
       {
+      if(!isset($data['date_creation']) || empty($data['date_creation']))
+        {
+        $data['date_creation'] = date('c');
+        }
+      $data['date_update'] = date('c');
+
       $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('2 + right_indice')),
                           array('right_indice >= ?' => $rightParent));
       $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('2 + left_indice')),
@@ -931,7 +896,7 @@ class FolderModel extends FolderModelBase
         $sql->order(array('f.name ASC'));
         break;
       case 'date':
-        $sql->order(array('f.date ASC'));
+        $sql->order(array('f.date_update ASC'));
         break;
       case 'view': 
       default:

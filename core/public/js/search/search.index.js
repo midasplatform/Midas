@@ -65,7 +65,7 @@ $(document).ready(function() {
   type='all';
 });
 
-var numberOfResults=10;
+var numberOfResults=20;
 var iterator;
 var type;
 
@@ -75,7 +75,8 @@ function changeSorting(order)
   $('ul#searchResults').hide();
   $.post(json.global.webroot+'/search', {q:json.search.keyword,ajax: true, order: order},
      function(data) {
-         json.search.results = jQuery.parseJSON(data);
+         var tmp = jQuery.parseJSON(data);
+         json.search.results = tmp.results;
          initSearchResults(type,false);
      });
 }

@@ -29,7 +29,8 @@ abstract class FolderModelBase extends AppModel
       'parent_id' => array('type' => MIDAS_DATA),
       'name' => array('type' => MIDAS_DATA),
       'description' =>  array('type' => MIDAS_DATA),
-      'date' =>  array('type' => MIDAS_DATA),
+      'date_update' =>  array('type' => MIDAS_DATA),
+      'date_creation' =>  array('type' => MIDAS_DATA),
       'view' =>  array('type' => MIDAS_DATA),
       'teaser' =>  array('type' => MIDAS_DATA),
       'privacy_status' =>  array('type' => MIDAS_DATA),
@@ -77,7 +78,7 @@ abstract class FolderModelBase extends AppModel
         }
       }
     $folder->view++;
-    $this->save($folder);
+    parent::save($folder);
     }//end incrementViewCount
   
   /** Create a folder */
@@ -118,7 +119,6 @@ abstract class FolderModelBase extends AppModel
     $folder = new FolderDao();
     $folder->setName($name);
     $folder->setDescription($description);
-    $folder->setDate(date('c'));
     
     $folder->setParentId($parentId);
     $this->save($folder);

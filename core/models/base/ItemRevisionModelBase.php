@@ -58,7 +58,7 @@ abstract class ItemRevisionModelBase extends AppModel
     
     $item = $itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));
-    $item->setDate(date('c'));
+    $item->setDateCreation(date('c'));
  
     $modulesThumbnail =  Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_CREATE_THUMBNAIL);
     if(empty($modulesThumbnail))

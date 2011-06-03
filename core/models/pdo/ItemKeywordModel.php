@@ -145,7 +145,7 @@ class ItemKeywordModel extends ItemKeywordModelBase
         $sql->order(array('i.name ASC'));
         break;
       case 'date':
-        $sql->order(array('i.date ASC'));
+        $sql->order(array('i.date_update ASC'));
         break;
       case 'view': 
       default:

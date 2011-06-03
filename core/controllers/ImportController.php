@@ -132,7 +132,7 @@ class ImportController extends AppController
           $child = new FolderDao;
           $child->setName($fileInfo->getFilename());
           $child->setParentId($currentdir->getFolderId());
-          $child->setDate(date('c'));
+          $child->setDateCreation(date('c'));
           $this->Folder->save($child); 
           $this->Folderpolicyuser->createPolicy($this->userSession->Dao, $child, MIDAS_POLICY_ADMIN);    
           $anonymousGroup = $this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);

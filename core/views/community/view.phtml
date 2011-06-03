@@ -109,7 +109,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
               echo "<tr id='node--$node' policy='$policy'  class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
               echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
               echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
-              echo "  <td>{$this->Date->ago($folder->getDate(),true)}</td>";
+              echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
               echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId()}' /></td>";
               echo "</tr>";
               $node++;
@@ -120,7 +120,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
               echo "<tr id='node--$node' policy='{$item->policy}' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
               echo "  <td class='treeBrowseElement'><span class='file'>{$this->slicename($item->getName(),40)}</span></td>";
               echo "  <td>{$item->size}</td>";
-              echo "  <td>{$this->Date->ago($item->getDate(),true)}</td>";
+              echo "  <td>{$this->Date->ago($item->getDateUpdate(),true)}</td>";
               echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' /></td>";
               echo "</tr>";
               $node++;
