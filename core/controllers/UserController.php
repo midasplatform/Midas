@@ -429,24 +429,102 @@ class UserController extends AppController
           //simulate file upload
           $path = BASE_PATH.'/tests/testfiles/search.png';
           $size = filesize($path);
+          $mime = 'image/png';
           }
         else
           {
+          $mime = $_FILES['file']['type'];
           $upload = new Zend_File_Transfer();
           $upload->receive();
           $path = $upload->getFileName();
-          $size =  $upload->getFileSize();
+          $size =  $upload->getFileSize();          
           }
           
+
         if(!empty($path) && file_exists($path) && $size > 0)
           {
-          //create thumbnail
-          $thumbnailCreator = $this->Component->Filter->getFilter('ThumbnailCreator');
-          $thumbnailCreator->inputFile = $path;
-          $thumbnailCreator->inputName = basename($path);
-          $hasThumbnail = $thumbnailCreator->process();
-          $thumbnail_output_file = $thumbnailCreator->outputFile;
-          if($hasThumbnail &&  file_exists($thumbnail_output_file))
+          if(file_exists($path) && $mime == 'image/jpeg')
+            {
+            try
+              {
+              $src = imagecreatefromjpeg($path);
+              }
+            catch(Exception $exc)
+              {
+              echo JsonComponent::encode(array(false, 'Error, Unable to read jpg file'));
+              return;
+              }
+            }
+          else if(file_exists($path) && $mime == 'image/png')
+            {
+            try
+              {
+              $src = imagecreatefrompng($path);
+              }
+            catch(Exception $exc)
+              {
+              echo JsonComponent::encode(array(false, 'Error, Unable to read png file'));
+              return;
+              }        
+            }
+          else if(file_exists($path) && $mime == 'image/gif')
+            {
+            try
+              {
+              $src = imagecreatefromgif($path);
+              }
+            catch(Exception $exc)
+              {
+              echo JsonComponent::encode(array(false, 'Error, Unable to read gif file'));
+              return;
+              }   
+            }  
+          else
+            {
+            echo JsonComponent::encode(array(false, 'Error, wrong format'));
+            return;
+            }    
+
+          $tmpPath = BASE_PATH.'/data/thumbnail/'.rand(1, 1000);
+          if(!file_exists(BASE_PATH.'/data/thumbnail/'))
+            {
+            throw new Zend_Exception("Problem thumbnail path: ".BASE_PATH.'/data/thumbnail/');
+            }
+          if(!file_exists($tmpPath))
+            {
+            mkdir($tmpPath);
+            }
+          $tmpPath .= '/'.rand(1, 1000);
+          if(!file_exists($tmpPath))
+            {
+            mkdir($tmpPath);
+            }
+          $destionation = $tmpPath."/".rand(1, 1000).'.jpeg';
+          while(file_exists($destionation))
+            {
+            $destionation = $tmpPath."/".rand(1, 1000).'.jpeg';
+            }
+          $pathThumbnail = $destionation;
+
+          list ($x, $y) = getimagesize($path);  //--- get size of img ---
+          $thumb = 32;  //--- max. size of thumb ---
+          if($x > $y) 
+            {
+            $tx = $thumb;  //--- landscape ---
+            $ty = round($thumb / $x * $y);
+            }
+          else
+            {
+            $tx = round($thumb / $y * $x);  //--- portrait ---
+            $ty = $thumb;
+            }
+
+          $thb = imagecreatetruecolor($tx, $ty);  //--- create thumbnail ---
+          imagecopyresampled($thb, $src, 0, 0, 0, 0, $tx, $ty, $x, $y);
+          imagejpeg($thb, $pathThumbnail, 80);
+          imagedestroy($thb);    
+          imagedestroy($src);   
+          if(file_exists($pathThumbnail))
             {
             $userDao = $this->User->load($userDao->getKey());
             $oldThumbnail = $userDao->getThumbnail();
@@ -454,42 +532,43 @@ class UserController extends AppController
               {
               unlink(BASE_PATH.'/'.$oldThumbnail);
               }
-            $userDao->setThumbnail(substr($thumbnail_output_file, strlen(BASE_PATH) + 1));
+            $userDao->setThumbnail(substr($pathThumbnail, strlen(BASE_PATH) + 1));
             $this->User->save($userDao);
             if(!isset($userId))
               {
               $this->userSession->Dao = $userDao;
               }   
             echo JsonComponent::encode(array(true, $this->t('Changes saved'), $this->view->webroot.'/'.$userDao->getThumbnail()));
+            }
+          else
+            {
+            echo JsonComponent::encode(array(false, 'Error'));
+            return;
+            }
+          }
+        if(isset($modifyPictureGravatar) && $this->logged)
+          {
+          $gravatarUrl = $this->User->getGravatarUrl($userDao->getEmail());
+          if($gravatarUrl != false)
+            {
+            $userDao = $this->User->load($userDao->getKey());
+            $oldThumbnail = $userDao->getThumbnail();
+            if(!empty($oldThumbnail) && file_exists(BASE_PATH.'/'.$oldThumbnail))
+              {
+              unlink(BASE_PATH.'/'.$oldThumbnail);
+              }
+            $userDao->setThumbnail($gravatarUrl);
+            $this->User->save($userDao);
+            if(!isset($userId))
+              {
+              $this->userSession->Dao = $userDao;
+              }   
+            echo JsonComponent::encode(array(true, $this->t('Changes saved'), $userDao->getThumbnail()));
             }   
           else
             {
             echo JsonComponent::encode(array(false, 'Error'));
             }
-          }
-        }
-      if(isset($modifyPictureGravatar) && $this->logged)
-        {
-        $gravatarUrl = $this->User->getGravatarUrl($userDao->getEmail());
-        if($gravatarUrl != false)
-          {
-          $userDao = $this->User->load($userDao->getKey());
-          $oldThumbnail = $userDao->getThumbnail();
-          if(!empty($oldThumbnail) && file_exists(BASE_PATH.'/'.$oldThumbnail))
-            {
-            unlink(BASE_PATH.'/'.$oldThumbnail);
-            }
-          $userDao->setThumbnail($gravatarUrl);
-          $this->User->save($userDao);
-          if(!isset($userId))
-            {
-            $this->userSession->Dao = $userDao;
-            }   
-          echo JsonComponent::encode(array(true, $this->t('Changes saved'), $userDao->getThumbnail()));
-          }   
-        else
-          {
-          echo JsonComponent::encode(array(false, 'Error'));
           }
         }
       }

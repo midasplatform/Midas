@@ -1,0 +1,39 @@
+div.helpContent{
+  font-size: 10px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  background-color: #DDD;
+  display:none;
+}
+
+li.methodListElement{
+  margin-bottom: 3px;
+}
+
+img.toolButton{
+  z-index: 100;
+  position: absolute; 
+  top: 5px;
+  cursor:pointer;
+}
+
+#renderercontainer{
+  z-index: 2; overflow: hidden; position: absolute; top: -30px; right: 0px; left: 0px; bottom: 0px;
+  display: none;
+}
+
+img.visuLoading{
+  z-index: 100;
+  position: absolute; 
+  top: 30px;
+  left: 20px;
+}
+
+#renderer-type{
+  z-index: 5;width: 100px; position: absolute; right: 60px; top: 8px;
+}
+
+#controlPanel{
+  z-index: 1; overflow: hidden; position: absolute; top: 40px; left: 0px; width: 200px; bottom: 0px;
+  display:none;
+}

@@ -46,8 +46,7 @@ class InstallController extends AppController
       "simplexml"  => array(false, ""), 
     );
     $this->view->phpextension_missing = $this->Component->Utility->checkPhpExtensions($phpextensions);
-    $this->view->writable = is_writable(BASE_PATH.'/core/configs');  
-    $this->view->convertfound = $this->Component->Utility->isImageMagickWorking();   
+    $this->view->writable = is_writable(BASE_PATH.'/core/configs');   
     $this->view->basePath = BASE_PATH;
     if(!empty($_POST) && $this->view->writable)
       {
