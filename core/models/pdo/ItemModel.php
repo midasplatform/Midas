@@ -57,7 +57,7 @@ class ItemModel extends ItemModelBase
    * @param type $limit
    * @return Array 
    */ 
-  function getMostPopulars($userDao, $limit=20)
+  function getMostPopulars($userDao, $limit = 20)
     {
     $sql = $this->database->select()
                   ->setIntegrityCheck(false)

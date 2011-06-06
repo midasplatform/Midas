@@ -141,7 +141,7 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
         // The key is always _id in MongoDB    
         $keyvalue = $dataarray[$this->_key];
         $collection = $this->_name; 
-        $this->_db->$collection->update(array('_id',$keyvalue),$dataarray); 
+        $this->_db->$collection->update(array('_id', $keyvalue), $dataarray); 
         }
       else
         {
