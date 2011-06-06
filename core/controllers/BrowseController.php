@@ -37,7 +37,7 @@ class BrowseController extends AppController
     
     $this->view->itemThumbnails = $this->Item->getRandomThumbnails($this->userSession->Dao, 0, 12, true);
 
-    $this->view->items = $this->Item->getMostPopulars($this->userSession->Dao,30);
+    $this->view->items = $this->Item->getMostPopulars($this->userSession->Dao, 30);
     
     $this->view->nUsers = $this->User->getCountAll();
     $this->view->nCommunities = $this->Community->getCountAll();

@@ -263,7 +263,15 @@ function globalAuthAsk(url)
 function createNotive(text,delay)
 {
     $(".viewNotice").html(text);  
-  	$(".viewNotice").fadeIn(100).delay(delay).fadeOut(100);
+    if($(".viewNotice").html().length > 40)
+      {
+      $(".viewNotice").css('width', '250px');
+      }
+    else
+      {
+      $(".viewNotice").css('width', (60+$(".viewNotice").html().length*3)+'px');
+      }
+      $(".viewNotice").fadeIn(100).delay(delay).fadeOut(100);
 }
 
 function loadAjaxDynamicBar(name,url)
