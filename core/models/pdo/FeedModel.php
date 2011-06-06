@@ -100,12 +100,12 @@ class FeedModel extends FeedModelBase
     $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
 
-    $rowset = $this->database->fetchAll($sql);
-    if(count($rowset) > 0)
+    $row = $this->database->fetchRow($sql);
+    if($row == null)
       {
-      return true;
+      return false;
       }
-    return false;
+    return true;
     } //end policyCheck
   
 
