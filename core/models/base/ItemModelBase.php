@@ -47,7 +47,7 @@ abstract class ItemModelBase extends AppModel
   abstract function getSharedToCommunity($communityDao, $limit = 20);
   abstract function policyCheck($itemdao, $userDao = null, $policy = 0);
   abstract function getLastRevision($itemdao);
-  abstract function getMostPopulars($userDao, $limit=20);
+  abstract function getMostPopulars($userDao, $limit = 20);
   abstract function getRandomThumbnails($userDao = null, $policy = 0, $limit = 10, $thumbnailFilter = false);
   
   /** save */
