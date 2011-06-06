@@ -44,6 +44,5 @@
         showDialog(json.browse.edit,false);
     });
         
-
   });
   

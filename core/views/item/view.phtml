@@ -45,7 +45,7 @@ if($this->preview) // module visualize
     <div class="itemStats">
     <?php echo $this->itemDao->getView()?> <?php echo $this->t('views'); ?>, 
     <?php echo $this->itemDao->getDownload()?> <?php echo $this->t('downloads');?></div>  
-    <div class="genericName"><?php   echo $this->slicename($this->itemDao->getName(),50);  ?></div>
+    <div class="genericName <?php if(strlen($this->itemDao->getName()) > 30) echo "tips";?>" <?php if(strlen($this->itemDao->getName()) > 30) echo "style='cursor:help;' title='".$this->itemDao->getName()."'";?>  ><?php   echo $this->slicename($this->itemDao->getName(),30);  ?></div>
     <div class="genericSubtitle" style="color:grey;"><?php echo $this->itemSize;?></div>
 
   </div>
