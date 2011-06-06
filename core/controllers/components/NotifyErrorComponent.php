@@ -113,7 +113,7 @@ class NotifyErrorComponent  extends AppComponent
             return;
             }
           header('content-type: text/plain');
-          if (count(ob_list_handlers()) > 0) 
+          if(count(ob_list_handlers()) > 0) 
             {
             ob_clean();
             }
