@@ -40,6 +40,7 @@ abstract class CommunityModelBase extends AppModel
       'admin_group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'admingroup_id', 'child_column' => 'group_id'),
       'moderator_group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'moderatorgroup_id', 'child_column' => 'group_id'),
       'invitations' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'CommunityInvitation', 'parent_column' => 'community_id', 'child_column' => 'community_id'),
+      'groups' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Group', 'parent_column' => 'community_id', 'child_column' => 'community_id'),
       'member_group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'membergroup_id', 'child_column' => 'group_id'),
       'feeds' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Feed', 'table' => 'feed2community', 'parent_column' => 'community_id', 'child_column' => 'feed_id'),
       );

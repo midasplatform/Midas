@@ -10,7 +10,10 @@ $(document).ready(function() {
         $('div.genericCommunities').show();
         $('div.genericStats').show();
         $('div.viewInfo').hide();
+        $('div.memberSelection').hide();
+        $('div.groupUsersSelection').hide();
         $('div.viewAction').hide();
+        $('td.tdUser input').removeAttr('checked');
         }
       });
     $("#tabsGeneric").show();
@@ -50,10 +53,10 @@ $(document).ready(function() {
       {
       "sScrollY": "100px",
       "bScrollCollapse": true,
-      "bPaginate": false,
+      "bPaginate": true,
       "bLengthChange": false,
       "bFilter": false,
-      "bSort": false,
+      "bSort": true,
       "bInfo": false,
       "bAutoWidth": true ,
       "oLanguage": {
@@ -75,7 +78,7 @@ $(document).ready(function() {
     $("table#browseTable").show();
     
     initDragAndDrop();    
-
+    $('td.tdUser input').removeAttr('checked');
   });
   
   
@@ -183,6 +186,8 @@ function init()
 
       $('a#createGroupLink').click(function()
       {
+        $('div.groupUsersSelection').hide();
+        $('td.tdUser input').removeAttr('checked');
         $('div.MainDialogContent').html('');
         $('div.MainDialogContent').html('');
         $('div#createGroupFrom').find('input[name=groupId]').val('0');
@@ -211,13 +216,8 @@ function init()
         $('div.groupList').hide();
         var id=$(this).attr('groupid');
         $('div#groupList_'+ id).show();
-        $('div#memberList td.tdUser').show();
-        $('td.tdUser input').attr('checked','');
+        $('td.tdUser input').removeAttr('checked');
         groupSelected=id;
-        $('div#groupList_'+ id+' input').each(function()
-          {
-            $('div#memberList td.userid_'+$(this).attr('userid')).hide();
-          });
       });
       
     $('td.tdUser input').click(function()
@@ -278,26 +278,23 @@ var memberSelected=new Array();
 function initCheckboxSelection()
   {
     $('td#userGroupSelected').html('');
-    $('td#userMemberSelected').html('');
+    $('.memberSelection').hide();
+    $('.groupUsersSelection').hide();
     groupUsersSelected=new Array();
     memberSelected=new Array();
     $('div.groupMemberList input:checked').each(function()
     {
       groupUsersSelected.push($(this).attr('userid'));
+      $('.groupUsersSelection').show();
     });
     $('div.communityMemberList input:checked').each(function()
     {
       memberSelected.push($(this).attr('userid'));
+      $('.memberSelection').show();
     });
-    if(groupUsersSelected.length>0)
-      {
-        $('td#userGroupSelected').html(groupUsersSelected.length+' user(s) selected<br/><a href="javascript:;" id="removeUserLink">Remove users From Group</a>');
-      }
-    if(memberSelected.length>0)
-      {
-        $('td#userMemberSelected').html(memberSelected.length+' user(s) selected<br/><a href="javascript:;" id="addUserLink">Add users to Group</a>');
-      }
-    $('a#removeUserLink').click(function()
+    
+
+    $('a.removeUserLink').click(function()
     {
     var users='';
     $.each( groupUsersSelected, function(i, v){
@@ -314,16 +311,8 @@ function initCheckboxSelection()
           if(jsonResponse[0])
             {
               createNotive(jsonResponse[1],4000);
-              $('div.groupMemberList input:checked').each(function()
-                {
-                  $('div#memberList td.userid_'+$(this).attr('userid')).show();
-                  $(this).parent('td').remove();
-                  init()
-                });
-              $('td#userGroupSelected').html('');
-              $('td#userMemberSelected').html('');
-              $('td.tdUser input').attr('checked','');
-              init();
+              window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
+              window.location.reload();
             }
           else
             {
@@ -333,13 +322,17 @@ function initCheckboxSelection()
 
     });
     
-    $('a#addUserLink').click(function()
+    $('a.removeFromCommunity').click(function()
     {
     var users='';
     $.each( memberSelected, function(i, v){
-       users+=v+'-';
+      if($('div#memberList input[admin=false][userid='+v+']').length>0)
+      {
+       users+=v+'-'; 
+      }
+
      });
-     $.post(json.global.webroot+'/community/manage', {communityId: json.community.community_id, addUser: 'true', groupId:groupSelected,users:users},
+     $.post(json.global.webroot+'/community/manage', {communityId: json.community.community_id, removeUser: 'true', groupId:json.community.memberGroup.group_id,users:users},
      function(data) {
          jsonResponse = jQuery.parseJSON(data);
           if(jsonResponse==null)
@@ -350,27 +343,71 @@ function initCheckboxSelection()
           if(jsonResponse[0])
             {
               createNotive(jsonResponse[1],4000);
-              $('div.communityMemberList input:checked').each(function()
-                { 
-                 datatable[groupSelected].fnAddData( [
-                    $(this).parent('td').html()+'<span id="newRow"/>',
-                    ] );
-                 $('span#newRow').parent('td').addClass('tdUser');
-                 $('span#newRow').parent('td').addClass('userid_'+$(this).attr('userid'));
-                 $('span#newRow').remove();
-                 $(this).parent('td').hide();
-                 init()
-                });
-              $('td.tdUser input').attr('checked','');
-              $('td#userGroupSelected').html('');
-              $('td#userMemberSelected').html('');
-              init();
+              window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
+              window.location.reload();
             }
           else
             {
               createNotive(jsonResponse[1],4000);
             }
      });
+
+    });
+    
+    $('a.addUserLink').click(function()
+    {
+    var users='';
+    $.each( memberSelected, function(i, v){
+       users+=v+'-';
+     });
+     $.post(json.global.webroot+'/community/manage', {communityId: json.community.community_id, addUser: 'true', groupId:$(this).attr('element'),users:users},
+     function(data) {
+         jsonResponse = jQuery.parseJSON(data);
+          if(jsonResponse==null)
+            {
+              createNotive('Error',4000);
+              return;
+            }
+          if(jsonResponse[0])
+            {
+              createNotive(jsonResponse[1],4000);
+              window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
+              window.location.reload();
+            }
+          else
+            {
+              createNotive(jsonResponse[1],4000);
+            }
+     });
+     $(this).remove();
+    });
+    
+    $('a.addModeratorLink').click(function()
+    {
+    var users='';
+    $.each( memberSelected, function(i, v){
+       users+=v+'-';
+     });
+     $.post(json.global.webroot+'/community/manage', {communityId: json.community.community_id, addUser: 'true', groupId:json.community.moderatorGroup.group_id,users:users},
+     function(data) {
+         jsonResponse = jQuery.parseJSON(data);
+          if(jsonResponse==null)
+            {
+              createNotive('Error',4000);
+              return;
+            }
+          if(jsonResponse[0])
+            {
+              createNotive(jsonResponse[1],4000);
+              window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
+              window.location.reload();
+            }
+          else
+            {
+              createNotive(jsonResponse[1],4000);
+            }
+     });
+     $(this).remove();
     });
   }
 function validateGroupChange(formData, jqForm, options) { 
