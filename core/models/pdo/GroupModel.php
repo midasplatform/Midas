@@ -68,6 +68,21 @@ class GroupModel  extends GroupModelBase
       {
       throw new Zend_Exception("Should be an user.");
       }
+      
+    $community = $group->getCommunity();
+    $groupMember = $community->getMemberGroup();
+    if($groupMember->getKey() == $group->getKey())
+      {
+      $communityGroups = $community->getGroups();
+      foreach($communityGroups as $cgroup)
+        {
+        if($cgroup->getKey() != $groupMember->getKey())
+          {
+          $this->removeUser($cgroup, $user);
+          }
+        }
+      }
+    
     $this->database->removeLink('users', $group, $user);
     } // end function removeUser
 
