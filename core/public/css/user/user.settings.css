@@ -20,8 +20,11 @@ div#accountPrivacy{
 
 div#accountPrivacy label{
   width: auto!important;
+  float: none!important;
 }
-
+div#accountPrivacy br{
+  display:none;
+}
 div#imageActual{
   float:right;
 }

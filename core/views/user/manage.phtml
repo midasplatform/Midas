@@ -33,6 +33,17 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   ?>
   </div>
   <div class="genericInfo">
+     <div class ="genericWrapperTopRight">
+
+         <?php
+          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+            echo "<a  href='{$this->webroot}/user/{$this->user->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+            echo $this->t('Back');  
+            echo "</a>";
+          echo '</div>';
+          
+        ?>
+    </div>
     <div class="genericName"><?php echo $this->user->getFullName();?></div>
     <div class="genericSubtitle"><?php echo $this->user->getCompany();?></div>
   </div>

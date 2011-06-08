@@ -34,6 +34,17 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   ?>
   </div>
   <div class="genericInfo">
+    <div class ="genericWrapperTopRight">
+
+         <?php
+          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+            echo "<a  href='{$this->webroot}/community/{$this->communityDao->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+            echo $this->t('Back');  
+            echo "</a>";
+          echo '</div>';
+          
+        ?>
+    </div>
     <div class="genericName"><?php echo $this->communityDao->getName();?></div>
   </div>
   <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
@@ -106,7 +117,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
           foreach($this->members as $user)
             {
             echo "<tr>";
-            echo "<td  class='tdUser userid_{$user->getKey()}'><input ";
+            echo "<td width='70%' class='tdUser userid_{$user->getKey()}'><input ";
             if(in_array($user->getKey(), $administratorIds))
               {
               echo "admin = 'true' ";

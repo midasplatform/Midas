@@ -13,6 +13,18 @@ PURPOSE.  See the above copyright notices for more information.
 <?php if(isset($this->errormessage)) { echo $this->errormessage; } ?>
 <?php if(isset($this->statusmessage)) { echo $this->statusmessage; } ?>
 
+
+    <div class ="genericWrapperTopRight">
+         <?php
+          echo '<div style="margin-right:2px;" class="genericBigButton ">';
+            echo "<a  href='{$this->webroot}/admin#tabs-assetstore'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+            echo $this->t('Back');  
+            echo "</a>";
+          echo '</div>';
+          
+        ?>
+    </div>
+<br/>
 <?php 
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/import/import.index.js');
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
@@ -20,6 +32,7 @@ PURPOSE.  See the above copyright notices for more information.
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.css');
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/import/import.index.css');
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/assetstore.add.css');
+ 
   
   echo $this->importForm;
 ?>

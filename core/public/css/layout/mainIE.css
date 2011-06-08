@@ -3,5 +3,9 @@ div.SideBar {
 }
 
 div.viewHeader {
-  border-bottom: none !important;
+
+}
+
+div.TopbarRight  li ul{
+  padding:0px 0px 0px 0px!important;
 }
