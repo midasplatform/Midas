@@ -28,23 +28,46 @@ if($this->preview) // module visualize
   ?>
   </div>
   <div class="genericInfo">
-    <div class="genericBigButton genericWrapperTopRight">
-      <?php
-      echo "<a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'>";
-      if($this->itemIsLink)
+    <div class ="genericWrapperTopRight">
+      <div style="float:right;" class="genericBigButton ">
+        <?php
+        echo "<a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/download.png'/>";
+        if($this->itemIsLink)
+          {
+          echo $this->t('View as weblink');  
+          }
+        else
+          {
+          echo $this->t('Download');  
+          }
+        echo '</a>';
+         ?>
+      </div>
+      
+       <?php
+      if($this->backUploaded)
         {
-        echo $this->t('View as weblink');  
+        echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+          echo "<a  href='{$this->webroot}/browse/uploaded'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+          echo $this->t('Back');  
+          echo "</a>";
+        echo '</div>';
         }
-      else
+      else if($this->currentFolder)
         {
-        echo $this->t('Download');  
+        echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+          echo "<a  href='{$this->webroot}/folder/{$this->currentFolder->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+          echo $this->t('Back');  
+          echo "</a>";
+        echo '</div>';
         }
-      echo '</a>';
-       ?>
+      ?>
+      
+      <br/>
+      <div class="itemStats">
+      <?php echo $this->itemDao->getView()?> <?php echo $this->t('views'); ?>, 
+      <?php echo $this->itemDao->getDownload()?> <?php echo $this->t('downloads');?></div>  
     </div>
-    <div class="itemStats">
-    <?php echo $this->itemDao->getView()?> <?php echo $this->t('views'); ?>, 
-    <?php echo $this->itemDao->getDownload()?> <?php echo $this->t('downloads');?></div>  
     <div class="genericName <?php if(strlen($this->itemDao->getName()) > 30) echo "tips";?>" <?php if(strlen($this->itemDao->getName()) > 30) echo "style='cursor:help;' title='".$this->itemDao->getName()."'";?>  ><?php   echo $this->slicename($this->itemDao->getName(),30);  ?></div>
     <div class="genericSubtitle" style="color:grey;"><?php echo $this->itemSize;?></div>
 

@@ -130,8 +130,11 @@ class ItemController extends AppController
       }
      
     $items = array();
+    $this->view->backUploaded = false;
+    $this->view->currentFolder = false;
     if(isset($this->userSession->uploaded) && in_array($itemDao->getKey(), $this->userSession->uploaded))
       {
+      $this->view->backUploaded = true;
       $items = $this->Item->load($this->userSession->uploaded);
       }
     else
@@ -150,9 +153,9 @@ class ItemController extends AppController
         if(isset($currentFolder))
           {
           $items = $this->Folder->getItemsFiltered($currentFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+          $this->view->currentFolder = $currentFolder;
           }
         }
-
       }
       
     foreach($items as $key => $item)
