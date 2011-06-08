@@ -117,7 +117,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
           foreach($this->members as $user)
             {
             echo "<tr>";
-            echo "<td  class='tdUser userid_{$user->getKey()}'><input ";
+            echo "<td width='70%' class='tdUser userid_{$user->getKey()}'><input ";
             if(in_array($user->getKey(), $administratorIds))
               {
               echo "admin = 'true' ";

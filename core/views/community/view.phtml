@@ -145,14 +145,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   </div>
 </div>
 
-<div id="guideRobot">
-   <?php
-    foreach($this->folders as $folder)
-      {
-      echo "<a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a> ";
-      } 
-    ?>  
-</div>
+
 
 <div class="viewSideBar">
   
@@ -225,5 +218,12 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
 
 
-
+<div id="guideRobot">
+   <?php
+    foreach($this->folders as $folder)
+      {
+      echo "<a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a> ";
+      } 
+    ?>  
+</div>
 

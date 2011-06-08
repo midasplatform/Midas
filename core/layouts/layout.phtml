@@ -20,6 +20,13 @@ echo $this->doctype()
     
     <meta name="Description" content="<?php echo htmlentities($this->metaDescription)?>" /> 
     <meta name="Keywords" content="<?php echo htmlentities($this->metaKeywords)?>" /> 
+    <noscript> 
+    <meta http-equiv="refresh" content="1; URL=<?php echo $this->webroot?>/index/nojs"> 
+    </noscript> 
+    
+    <!--[if lte IE 6]>
+      <meta http-equiv="refresh" content="1; URL=<?php echo $this->webroot?>/index/nobrowser"> 
+    <![endif]-->
    
     <!-- Import CSS -->
     <link rel="shortcut icon" href="<?php echo $this->coreWebroot ?>/public/images/icons/favicon.ico" />

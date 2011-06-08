@@ -5,12 +5,12 @@
  * ========================================================================= */
 
 .treeTable .browserPrivacyInformation{
-  float:right;
+  position: absolute;
+  right: 195px; 
   color: grey;
   font-size: 10px;
   padding-right: 8px;
-  padding-left
-  : 0px;
+  padding-left  : 0px;
 }
 
 /* jquery.treeTable.collapsible
