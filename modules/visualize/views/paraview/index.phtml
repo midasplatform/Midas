@@ -27,7 +27,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/paraview/para
              style="left: 95px;"/>
 <img class="visuLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
 
- <select id="renderer-type" name="renderer-type"
+ <select id="renderer-type" name="renderer-type" <?php if(!$this->usewebgl) echo "style='display:none;'"?>
                 onchange="switchRenderer(false)" >
             <option <?php if($this->renderer == 'js')echo 'selected';?> value="js">JavaScript</option>
 			<option <?php if($this->renderer == 'webgl')echo 'selected';?> value="webgl">WebGL</option>

@@ -27,7 +27,7 @@ class Visualize_ConfigController extends Visualize_AppController
     
     $module = 'visualize';
     
-    if(file_exists(BASE_PATH."/core/configs/api.local.ini"))
+    if(file_exists(BASE_PATH."/core/configs/".$module.".local.ini"))
       {
       $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/".$module.".local.ini", true);
       }
@@ -39,6 +39,9 @@ class Visualize_ConfigController extends Visualize_AppController
     
     $formArray = $this->getFormAsArray($configForm);    
     $formArray['useparaview']->setValue($applicationConfig['global']['useparaview']);
+    $formArray['userwebgl']->setValue($applicationConfig['global']['userwebgl']);
+    $formArray['customtmp']->setValue($applicationConfig['global']['customtmp']);
+    $formArray['paraviewworkdir']->setValue($applicationConfig['global']['paraviewworkdir']);
     
     $this->view->configForm = $formArray;
     
@@ -58,6 +61,9 @@ class Visualize_ConfigController extends Visualize_AppController
           rename(BASE_PATH."/core/configs/".$module.".local.ini",BASE_PATH."/core/configs/".$module.".local.ini.old");
           }
         $applicationConfig['global']['useparaview'] = $this->_getParam('useparaview');
+        $applicationConfig['global']['customtmp'] = $this->_getParam('customtmp');
+        $applicationConfig['global']['userwebgl'] = $this->_getParam('userwebgl');
+        $applicationConfig['global']['paraviewworkdir'] = $this->_getParam('paraviewworkdir');
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$module.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }

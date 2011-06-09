@@ -33,7 +33,7 @@ class Visualize_MediaController extends Visualize_AppController
       }
     $this->bistream = $bitstreams[0];
     
-    $ext = substr(strrchr($bitstreams[0]->getName(), '.'), 1);
+    $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
     if(in_array($ext, array('avi', 'mp4', 'm4v')))
       {
       $this->view->json['type'] = 'm4v';
