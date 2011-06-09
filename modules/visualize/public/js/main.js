@@ -15,7 +15,9 @@
       var url  = json.global.webroot+"/visualize/?itemId="+json.item.item_id+'&height='+height+'&width='+width;
       var html = '<div id="fullscreenVisualize" >';
       html +=   '<div id="fullscreenPanel">';
-      html +=   '<a class="closeVisuButton" ><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> </a>';
+      html +=   '<div style="float:left;margin-right:2px;" class="genericBigButton ">';
+      html +=   '<a style="float:left;" class="closeVisuButton"><img style="float:left;margin-right:2px;" alt="" src="'+json.global.coreWebroot+'/public/images/icons/back.png">Back</a></div>';
+      html +=   '<br/>';
       html +=   '<br/>';
       if($('div.viewSameLocation').length >0)
         {

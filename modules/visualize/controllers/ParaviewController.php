@@ -29,6 +29,7 @@ class Visualize_ParaviewController extends Visualize_AppController
     $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
     $customtmp = $modulesConfig['visualize']->customtmp;    
     $useparaview = $modulesConfig['visualize']->useparaview;
+    $userwebgl = $modulesConfig['visualize']->userwebgl;
     if(!isset($useparaview) || !$useparaview)
       {
       throw new Zend_Exception('Please unable paraviewweb');
@@ -61,7 +62,10 @@ class Visualize_ParaviewController extends Visualize_AppController
       { 
       if(is_dir($tmp_dir.'/'.$entry) && filemtime($tmp_dir.'/'.$entry) < strtotime('-1 hours') && !in_array($entry, array('.','..')))
         {
-        $this->rrmdir($tmp_dir.'/'.$entry);
+        if(strpos($entry, 'Paraview') !== false)
+          {
+          $this->rrmdir($tmp_dir.'/'.$entry);
+          }
         }
       }
     do
@@ -69,7 +73,7 @@ class Visualize_ParaviewController extends Visualize_AppController
       $tmpFolderName = 'ParaviewWeb_'.mt_rand(0, 9999999);
       $path = $tmp_dir.'/'.$tmpFolderName;
       }
-    while (!mkdir($path, '700'));
+    while (!mkdir($path));
     
     $revision = $this->Item->getLastRevision($item);
     $bitstreams = $revision->getBitstreams();
@@ -103,7 +107,7 @@ class Visualize_ParaviewController extends Visualize_AppController
       }  
       
     
-    if($item->getSizebytes()> 1*1024*1024)
+    if(!$userwebgl || $item->getSizebytes()> 1*1024*1024)
       {
       $this->view->renderer = 'js';
       }
@@ -111,12 +115,10 @@ class Visualize_ParaviewController extends Visualize_AppController
       {
       $this->view->renderer = 'webgl';
       }
-      
     $this->view->json['visualize']['url'] = $filePath;    
     $this->view->json['visualize']['width'] = $this->_getParam('width');    
-    $this->view->json['visualize']['height'] = $this->_getParam('height');    
-    
-    
+    $this->view->json['visualize']['height'] = $this->_getParam('height');        
+    $this->view->usewebgl = $userwebgl;
     }
     
   /** recursively delete a folder*/
