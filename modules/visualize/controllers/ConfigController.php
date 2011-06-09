@@ -39,6 +39,8 @@ class Visualize_ConfigController extends Visualize_AppController
     
     $formArray = $this->getFormAsArray($configForm);    
     $formArray['useparaview']->setValue($applicationConfig['global']['useparaview']);
+    $formArray['customtmp']->setValue($applicationConfig['global']['customtmp']);
+    $formArray['paraviewworkdir']->setValue($applicationConfig['global']['paraviewworkdir']);
     
     $this->view->configForm = $formArray;
     
@@ -58,6 +60,8 @@ class Visualize_ConfigController extends Visualize_AppController
           rename(BASE_PATH."/core/configs/".$module.".local.ini",BASE_PATH."/core/configs/".$module.".local.ini.old");
           }
         $applicationConfig['global']['useparaview'] = $this->_getParam('useparaview');
+        $applicationConfig['global']['customtmp'] = $this->_getParam('customtmp');
+        $applicationConfig['global']['paraviewworkdir'] = $this->_getParam('paraviewworkdir');
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$module.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }

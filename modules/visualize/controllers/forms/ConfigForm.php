@@ -22,11 +22,13 @@ class Visualize_ConfigForm extends AppForm
           ->setMethod('post'); 
 
     $useparaview = new Zend_Form_Element_Checkbox("useparaview");  
+    $paraviewworkdir = new Zend_Form_Element_Text("paraviewworkdir");  
+    $customtmp = new Zend_Form_Element_Text("customtmp");  
     
     $submit = new  Zend_Form_Element_Submit('submitConfig');
     $submit ->setLabel('Save configuration');
      
-    $form->addElements(array($useparaview, $submit));
+    $form->addElements(array($paraviewworkdir, $customtmp, $useparaview, $submit));
     return $form;
     }
     
