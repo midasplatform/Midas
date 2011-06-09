@@ -24,8 +24,19 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>Visualize Configuration:</h3>
             <div >
-              <label for='methodprefix'>Use ParaviewWeb server</label>
-              {$this->configForm['useparaview']}
+              <label for='customtmp'>Temp directory</label>
+              {$this->configForm['customtmp']}<br/>
+               (if empty: ".BASE_PATH."/tmp/visualize)<br/><br/>
+            </div>
+            <div >
+              <label for='useparaview'>Use ParaviewWeb server</label>
+              {$this->configForm['useparaview']}<br/><br/>
+            </div>
+            <div >
+              <label for='paraviewworkdir'>ParaviewWeb server Work Dir </label>
+              {$this->configForm['paraviewworkdir']}
+              <br/>
+              (where the paraview server mount the Temp directory)
             </div>
           <div>
             {$this->configForm['submitConfig']}

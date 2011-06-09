@@ -14,28 +14,6 @@ PURPOSE.  See the above copyright notices for more information.
 <link href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.fileupload-ui.css?<?php echo time()?>" rel="stylesheet" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
-    <?php
-        if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
-          {
-          echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/swfupload/js/swfupload.js,swfupload.queue.js,fileprogress.js,handlers.js"></script>';
-          }
-        else
-          {
-          ?>
-          <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.js"></script>
-          <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.queue.js"></script>
-          <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/fileprogress.js"></script>
-          <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/handlers.js"></script>
-          <?php
-          }
-    ?>
-
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-ui.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-uix.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.simpleupload.js?<?php echo time()?>"></script>
-
 <div class="tabs" id='uploadTabs'>
   <ul>
     <li><a href="#uploadTabs-1">Simple</a></li>
@@ -45,13 +23,6 @@ PURPOSE.  See the above copyright notices for more information.
   <div id="uploadTabs-1"> 
       <b><?php echo $this->t('Step 1: Select files to upload')?></b>
       <br/>
-      <div id="swfuploadContent">
-        <span id="spanButtonPlaceHolder"></span>
-        <div>
-        <div class="fieldset flash"  id="fsUploadProgress">
-        </div>
-        </div>
-      </div>
       <div id="jqueryFileUploadContent">
         <div id="file_upload">
             <form action="<?php echo $this->webroot?>/upload/saveuploaded" method="POST" enctype="multipart/form-data">
@@ -155,5 +126,22 @@ PURPOSE.  See the above copyright notices for more information.
 <input type="hidden" class="uploadedJava" value="0"/>
 <input type="hidden" class="uploadedLinks" value="0"/>
 
+
+<?php
+    if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+      {
+      echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/jquery/jquery.fileupload.js,jquery.fileupload-ui.js,jquery.fileupload-uix.js,jquery.form.js"></script>';
+      }
+    else
+      {
+      ?>
+      <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload.js"></script>
+      <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-ui.js"></script>
+      <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-uix.js"></script>
+      <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
+      <?php
+      }
+?>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.simpleupload.js"></script>
 
 
