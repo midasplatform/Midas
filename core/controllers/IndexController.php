@@ -38,13 +38,13 @@ class IndexController extends AppController
     $this->_forward('index', "feed");
     } // end method indexAction   
     
-  /* no javascript*/
+  /** no javascript*/
   function nojsAction()
     {
     $this->disableLayout();
     } // end method indexAction   
     
-  /* no javascript*/
+  /** no valid browser*/
   function nobrowserAction()
     {
     $this->disableLayout();
