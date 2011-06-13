@@ -39,7 +39,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       ?>
      <div class="genericBigButton genericWrapperTopRight">
      <form type='post' action=''>
-      <input name='joinCommunity' type='submit' value='<?php echo $this->t('Join the community') ?>' />
+      <input style="margin:0px;padding:0px;" name='joinCommunity' type='submit' value='<?php echo $this->t('Join the community') ?>' />
     </form>
     </div>
    <?php } ?>    
@@ -145,14 +145,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   </div>
 </div>
 
-<div id="guideRobot">
-   <?php
-    foreach($this->folders as $folder)
-      {
-      echo "<a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a> ";
-      } 
-    ?>  
-</div>
+
 
 <div class="viewSideBar">
   
@@ -225,5 +218,12 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
 
 
-
+<div id="guideRobot">
+   <?php
+    foreach($this->folders as $folder)
+      {
+      echo "<a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a> ";
+      } 
+    ?>  
+</div>
 

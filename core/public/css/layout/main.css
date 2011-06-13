@@ -169,7 +169,6 @@ div.Topbar {
   font-family: 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif;
   font-size: 12px;
   background: #000;
-  position: relative;
   text-align: left;
   z-index: 99;
   background-color: #414141;
@@ -198,6 +197,7 @@ div.Topbar ul{
   list-style-type: disc;
   margin: 0px 25px 0px 15px;
   padding: 0px;
+  position: relative;
 }
 
 div.Topbar ul li{
@@ -207,6 +207,7 @@ div.Topbar ul li{
   margin-left: 10px;
   padding-left: 10px;
   border-left: 1px grey solid;
+  position: relative;
 }
 
 div.Topbar ul li.first{
@@ -495,7 +496,7 @@ div.SideBar ul li a span{
 div.SideBar hr {
   border-bottom: 1px solid white;
   border-top: 1px solid #DAD8D4;
-  margin: 1em -30px 1em 0px;
+  margin: 5px -30px 5px 0px;
 }
 
 div.SideBar h1, div.viewSideBar h1 {
@@ -503,6 +504,9 @@ div.SideBar h1, div.viewSideBar h1 {
   font-size: 11px;
   text-shadow: white 0px 1px 1px;
   text-transform: uppercase;
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+  
 }
 
 
@@ -532,7 +536,6 @@ div.TopbarRight  li ul{
   border:0px;
   position:absolute;
   width:120px;
-  z-index:200;
   
   /*top:1em;
 		/*left:0;*/
