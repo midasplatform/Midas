@@ -149,8 +149,8 @@ class AppController extends MIDAS_GlobalController
         $this->view->userDao = $user->Dao;
         $cookieData = $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->user_id);
         $this->view->recentItems = array();
-        if(isset($cookieData))
-          {
+        if(isset($cookieData) && file_exists(BASE_PATH.'/core/configs/database.local.ini')) //check if midas installed
+          {          
           $this->view->recentItems = unserialize($cookieData); 
           $check = $this->_getParam('checkRecentItem');
           // check if recent items exit (every 5 minutes)

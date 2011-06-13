@@ -22,7 +22,7 @@ class Visualize_MainComponent extends AppComponent
       return false;
       }
     
-    $extensions = array('vtk', 'ply', 'vtp', 'pvsm', 'mha');
+    $extensions = array('vtk', 'ply', 'vtp', 'pvsm', 'mha', 'vtu');
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
@@ -32,7 +32,7 @@ class Visualize_MainComponent extends AppComponent
       return false;
       }
       
-    $ext = substr(strrchr($bitstreams[0]->getName(), '.'), 1);
+    $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
     return in_array($ext, $extensions);
     }//end canVisualize
     
@@ -49,7 +49,7 @@ class Visualize_MainComponent extends AppComponent
       return false;
       }
       
-    $ext = substr(strrchr($bitstreams[0]->getName(), '.'), 1);
+    $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
     return in_array($ext, $extensions);
     }//end canVisualize 
         
@@ -66,7 +66,7 @@ class Visualize_MainComponent extends AppComponent
       return false;
       }
       
-    $ext = substr(strrchr($bitstreams[0]->getName(), '.'), 1);
+    $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
     return in_array($ext, $extensions);
     }//end canVisualize 
     
@@ -83,7 +83,7 @@ class Visualize_MainComponent extends AppComponent
       return false;
       }
       
-    $ext = substr(strrchr($bitstreams[0]->getName(), '.'), 1);
+    $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
     return in_array($ext, $extensions);
     }//end canVisualize 
     
@@ -100,7 +100,7 @@ class Visualize_MainComponent extends AppComponent
       return false;
       }
       
-    $ext = substr(strrchr($bitstreams[0]->getName(), '.'), 1);
+    $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
     return in_array($ext, $extensions);
     }//end canVisualize
 } // end class
