@@ -165,7 +165,11 @@ if($this->preview) // module visualize
   
 </div>
 <div class="viewSideBar">
+    <?php
+  if($this->preview || $this->isModerator ||$this->isAdmin)
+    {?>
   <div class="sideElementFirst viewAction">
+
     <h1>Actions</h1>
     <ul>
       <?php 
@@ -206,7 +210,9 @@ if($this->preview) // module visualize
       ?>
     </ul>
   </div>
-  <div class="sideElement<?php if(count($this->sameLocation) > 1) echo "Last"?> viewInfo">
+  <?php
+    }?>
+  <div class="<?php echo (!$this->preview && !$this->isModerator && !$this->isAdmin)?'sideElementFirst':''; ?>sideElement<?php if(count($this->sameLocation) > 1) echo "Last"?> viewInfo">
     <h1>Info</h1>    
     <table>  
       <tbody>

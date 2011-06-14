@@ -38,6 +38,8 @@ class AppController extends MIDAS_GlobalController
     $this->view->webroot = $fc->getBaseUrl();
     $this->coreWebroot = $this->view->webroot.'/core';
     $this->view->coreWebroot = $this->coreWebroot;
+    
+    $this->view->demoMode = $this->isDemoMode();
 
     $this->view->title = Zend_Registry::get('configGlobal')->application->name;
     $this->view->metaDescription = Zend_Registry::get('configGlobal')->application->description;
@@ -274,6 +276,12 @@ class AppController extends MIDAS_GlobalController
   public function isTestingEnv()
     {
     return Zend_Registry::get('configGlobal')->environment == 'testing';
+    }
+    
+  /** check if demo mode is set */
+  public function isDemoMode()
+    {
+    return Zend_Registry::get('configGlobal')->demomode == 1;
     }
     
   /** disable layout */
