@@ -13,7 +13,7 @@
       var height = $(window).height()-100;
       var width = 800;
       var url  = json.global.webroot+"/visualize/?itemId="+json.item.item_id+'&height='+height+'&width='+width;
-      var html = '<div id="fullscreenVisualize" >';
+      var html = '<div id="fullscreenVisualize" style="min-width:1200px">';
       html +=   '<div id="fullscreenPanel">';
       html +=   '<div style="float:left;margin-right:2px;" class="genericBigButton ">';
       html +=   '<a style="float:left;" class="closeVisuButton"><img style="float:left;margin-right:2px;" alt="" src="'+json.global.coreWebroot+'/public/images/icons/back.png">Back</a></div>';
@@ -108,7 +108,7 @@
       $('.MainDialog').hide();
       $('.TopDynamicBar').hide();
       $('.Topbar').show();
-      $('.Header').hide();
+      //$('.Header').hide();
       $('.SubWrapper').hide();
       $('#fullscreenVisualize a.closeVisuButton').click(function(){
         $('#fullscreenVisualize').remove();

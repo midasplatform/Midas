@@ -148,6 +148,10 @@ echo $this->doctype()
       <div class="HeaderContent">
 
         <div class="HeaderLogo" onclick="window.location='<?php echo $this->webroot?>';">
+          <?php
+          if($this->demoMode)
+          echo 'Demo'
+          ?>
         </div>
         <div class="HeaderSearch">
           <input type="text" id="live_search" value="<?= $this->t('Jump to a data, folder...') ?>" autocomplete="off" autocorrect="off" autocapitalize="off" />

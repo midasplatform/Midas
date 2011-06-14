@@ -17,7 +17,7 @@ class AdminController extends AppController
 {
   public $_models = array('Errorlog', 'Assetstore');
   public $_daos = array();
-  public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration');
+  public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration', 'Demo');
   public $_forms = array('Admin', 'Assetstore', 'Migrate');
   
   /** init the controller */
@@ -26,6 +26,18 @@ class AdminController extends AppController
     $config = Zend_Registry::get('configGlobal'); //set admin part to english
     $config->application->lang = 'en';
     Zend_Registry::get('configGlobal', $config);
+    }
+    
+  /** reset Demo*/
+  function resetdemoAction()
+    {
+    if(!$this->isDemoMode())
+      {
+      throw new Zend_Exception("Please enable demo mode");
+      }
+    $this->Component->Demo->reset();
+    $this->disableLayout();
+    $this->disableView();
     }
     
   /** index*/
