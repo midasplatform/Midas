@@ -22,7 +22,7 @@ class MIDASUpgrade
    * @method public  __construct()
    *  Construct model
    */
-  public function __construct($db, $module)
+  public function __construct($db, $module, $dbType)
     {
     $this->db = $db;
     $this->moduleName = $module;
@@ -31,7 +31,7 @@ class MIDASUpgrade
       {
       $this->loadModuleElements();
       }
-    $this->dbtype = Zend_Registry::get('configDatabase')->database->adapter;  
+    $this->dbtype = $dbType;  
     } // end __construct()
     
   /** preUpgrade called before the upgrade*/
