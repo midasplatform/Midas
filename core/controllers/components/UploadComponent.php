@@ -288,6 +288,11 @@ class UploadComponent extends AppComponent
     $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
     $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
     $assetstoreDao = $assetstoreModel->load($defaultAssetStoreId);
+    
+    if($assetstoreDao == false)
+      {
+      throw new Zend_Exception("Unable to load default assetstore");
+      }
 
     // Upload the bitstream ifnecessary (based on the assetstore type)
     $this->uploadBitstream($bitstreamDao, $assetstoreDao);

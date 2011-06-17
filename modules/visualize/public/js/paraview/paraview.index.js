@@ -110,6 +110,7 @@ var serverUrl = "/PWService";
             {
             if(renderers.webgl == undefined)
               {
+              paraview.updateConfiguration(true, "JPEG", "WebGL");
               renderers.webgl = new WebGLRenderer("webglRenderer", serverUrl);
               renderers.webgl.init(paraview.sessionId, activeView.__selfid__);
               $('img.toolButton').hide();
