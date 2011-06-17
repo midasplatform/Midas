@@ -132,5 +132,9 @@ var serverUrl = "/PWService";
                 resetCamera();
                 initController();
                 }
+              else
+                {
+                paraview.updateConfiguration(true, "JPEG", "WebGL"); 
+                }
           }
       }
