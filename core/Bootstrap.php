@@ -65,6 +65,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $configDatabase = new Zend_Config_Ini(DATABASE_CONFIG, $configGlobal->environment, true);
     if($configDatabase->database->type == 'pdo')
       {      
+      // Does the server PDO support MySQL?
+      if(!defined('PDO::MYSQL_ATTR_USE_BUFFERED_QUERY'))
+        {
+        throw new Zend_Exception('It appears PDO is not setup to support MySQL. '.
+                                 'Please check your PDO configuration.');
+        }
       $pdoParams = array(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true);
       $params = array(
         'host' => $configDatabase->database->params->host,
