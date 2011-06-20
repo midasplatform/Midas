@@ -32,7 +32,7 @@ class UpgradeComponent extends AppComponent
       {
       $this->dir = BASE_PATH.'/modules/'.$module.'/database/upgrade';
       }
-
+      
     $this->db = $db;
     $this->module = $module;
     $this->dbtype = $dbtype;
@@ -248,7 +248,7 @@ class UpgradeComponent extends AppComponent
       throw new Zend_Exception("Could not find class '".$classname."' in file '".$filename."'");
       }
       
-    $class = new $classname($this->db, $this->module, $this->dbtype);
+    $class = new $classname($this->db, $this->module);
     $class->preUpgrade();
     $dbtypeShort = $this->dbtypeShort;
     $class->$dbtypeShort();
