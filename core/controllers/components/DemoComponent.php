@@ -24,8 +24,8 @@ class DemoComponent extends AppComponent
     $db = Zend_Registry::get('dbAdapter');    
     $dbname = Zend_Registry::get('configDatabase')->database->params->dbname;
     
-    $stmt = $db->query("SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '$dbname'");      
-    while ($row = $stmt->fetch())
+    $stmt = $db->query("SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '".$dbname."'");      
+    while($row = $stmt->fetch())
       {
       $db->query("DELETE FROM `".$row['TABLE_NAME']."`");   
       }
@@ -34,9 +34,9 @@ class DemoComponent extends AppComponent
     $dir = opendir($path);
     while($entry = readdir($dir)) 
       { 
-      if(is_dir($path.'/'.$entry) && !in_array($entry, array('.','..')))
+      if(is_dir($path.'/'.$entry) && !in_array($entry, array('.', '..')))
         {
-        $this->rrmdir($path.'/'.$entry);
+        $this->_rrmdir($path.'/'.$entry);
         }
       }
       
@@ -44,9 +44,9 @@ class DemoComponent extends AppComponent
     $dir = opendir($path);
     while($entry = readdir($dir)) 
       { 
-      if(is_dir($path.'/'.$entry) && !in_array($entry, array('.','..')))
+      if(is_dir($path.'/'.$entry) && !in_array($entry, array('.', '..')))
         {
-        $this->rrmdir($path.'/'.$entry);
+        $this->_rrmdir($path.'/'.$entry);
         }
       }
       
@@ -93,7 +93,7 @@ class DemoComponent extends AppComponent
     }
     
   /** recursively delete a folder*/
-  private function rrmdir($dir) 
+  private function _rrmdir($dir) 
     { 
     if(!file_exists($dir))
       {
@@ -110,7 +110,7 @@ class DemoComponent extends AppComponent
         { 
         if(filetype($dir."/".$object) == "dir")
           {
-          $this->rrmdir($dir."/".$object);
+          $this->_rrmdir($dir."/".$object);
           }
         else 
           {

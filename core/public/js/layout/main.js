@@ -262,16 +262,10 @@ function globalAuthAsk(url)
 
 function createNotive(text,delay)
 {
-    $(".viewNotice").html(text);  
-    if($(".viewNotice").html().length > 40)
-      {
-      $(".viewNotice").css('width', '250px');
-      }
-    else
-      {
-      $(".viewNotice").css('width', (60+$(".viewNotice").html().length*3)+'px');
-      }
-      $(".viewNotice").fadeIn(100).delay(delay).fadeOut(100);
+    $.jGrowl(text, {
+      sticky:false,
+      life:delay
+      });
 }
 
 function loadAjaxDynamicBar(name,url)
@@ -406,3 +400,4 @@ function showBigDialogWithContent(title,content,button)
   $("div.MainDialogLoading").hide();
   showBigDialog(title,button);
 }
+
