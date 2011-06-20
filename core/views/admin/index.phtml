@@ -134,35 +134,91 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.ind
     </div>
     
     <div id="tabs-modules">
-      <table>
+      <table style='width:100%;'>
       <?php
-      foreach($this->modulesList as $key=>$module)
+      $hidden = 0;
+      foreach($this->modulesList as $category => $list)
          {
-          if(isset($module->db->{$this->databaseType}))
-            {
-             echo "
-               <tr class='moduleElement'>
-                  <td>
-                       <input type='checkbox' class='moduleCheckbox' module='{$key}' name='module[{$key}]'   ".((in_array($key, $this->modulesEnable))?'checked':'')."/>
-                  </td>    
-                  <td>
-                  <b>{$module->fullname}</b><br/>
-                  {$module->description}
-                  </td>";              
-                  if($module->configPage)
-                    {
-                  echo "
-                  <td class='configLink' style='display:none;'>
-                    <a href='{$this->webroot}/$key/config'>View configuration</a>
-                  </td>";
-                    }
-                  echo "
-               </tr>
-              ";
-            }
+         echo "<tr><td colspan=3><span class='moduleCategoryArrow'>></span> <a class='moduleVisibleCategoryLink'>".$category."</a> (".$this->countModules[$category]['visible'].")</td></tr>";
+         echo "<div class='categoryWrapper' style='display:none;'>";
+         foreach($list as $key => $module)
+           {
+            if($module->dbOk && $module->dependenciesExist)
+              {
+               echo "
+                 <tr class='moduleElement {$category}VisibleElement' style='display:none;'>
+                    <td style='width:30px;'>
+                      <input type='checkbox' dependencies='".trim($module->dependencies)."' class='moduleCheckbox' module='{$key}' name='module[{$key}]'   ".((in_array($key, $this->modulesEnable))?'checked':'')."/>
+                    </td>    
+                    <td>
+                    <b>{$module->fullname}</b><br/>
+                    {$module->description}
+                    </td>";              
+                    if($module->configPage)
+                      {
+                    echo "
+                    <td class='configLink' style='display:none;width:300px;'>
+                      <a href='{$this->webroot}/$key/config'>View configuration</a>
+                    </td>";
+                      }
+                    echo "
+                 </tr>
+                ";
+              }
+           }
+           echo "</div>";
          }
       ?>
       </table>
+      
+      <table class="tableElementError" style="display:none;width:100%;">
+      <?php
+      $hidden = 0;
+      echo "<tr><td colspan=3><h4 style='margin-bottom:2px;'>Hidden modules</h4></td></tr>";
+      foreach($this->modulesList as $category => $list)
+         {
+         echo "<tr><td colspan=3><span class='moduleCategoryArrow'>></span> <a class='moduleHiddenCategoryLink'>".$category."</a> (".$this->countModules[$category]['hidden'].")</td></tr>";
+         echo "<div class='categoryWrapper' style='display:none;'>";
+         foreach($list as $key => $module)
+           {
+            if(!$module->dbOk || !$module->dependenciesExist)
+             {
+             $hidden++ ;
+                echo "
+                 <tr class='moduleElementError {$category}HiddenElement'  style='display:none;'>
+                    <td style='width:30px;'></td>
+                    <td>
+                    <b>{$module->fullname}</b><br/>
+                    {$module->description}
+                    </td>";              
+                    if(!$module->dbOk)
+                      {
+                    echo "
+                    <td style='width:300px;'>
+                      Not available with you database type
+                    </td>";
+                      }
+                    elseif(!$module->dependenciesExist)
+                      {
+                    echo "
+                    <td style='width:300px;'>
+                      Missing dependencies
+                    </td>";
+                      }
+                    echo "
+                 </tr>
+                ";
+             }
+           }
+           echo "</div>";
+         }
+      ?>
+      </table>
+      
+    <?php if($hidden != 0)
+      {
+      echo "<br/><br/><a onclick=\"$('.tableElementError').show();$(this).remove();\">Show $hidden hidden modules</a>";
+      }?>
     </div>
   </div>
 

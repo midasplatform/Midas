@@ -113,11 +113,53 @@
            if($(this).is(':checked'))
              {
              modulevalue='true'; 
+             var dependencies = $(this).attr('dependencies');
+             dependencies=dependencies.split(',');
+             $.each(dependencies, function(i, l){
+                if(l != '')
+                 {
+                 if(!$('input[module='+l+']').is(':checked'))
+                   {
+                    $.post(json.global.webroot+'/admin/index', {submitModule: true, modulename: l , modulevalue:modulevalue});
+                    createNotive("Dependancy: Enabling module "+l,1500);     
+                   }
+                 $('input[module='+l+']').attr('checked',true);
+                 }
+               });
              }
            else
              {
              modulevalue='false';
+             var moduleDependencies = new Array();
+             $.each($('input[dependencies='+$(this).attr('module')+']:checked'),function(){
+               moduleDependencies.push($(this).attr('module'));
+             });
+             $.each($('input[dependencies*=",'+$(this).attr('module')+'"]:checked'),function(){
+               moduleDependencies.push($(this).attr('module'));
+             });
+             $.each($('input[dependencies*="'+$(this).attr('module')+',"]:checked'),function(){
+               moduleDependencies.push($(this).attr('module'));
+             });
+             var found = false;
+             
+             var mainModule = $(this).attr('module');
+
+             $.each(moduleDependencies, function(i, l){
+                var module = l;
+                if(module != '')
+                 {
+                 found =true;
+                 createNotive("Dependancy: The module "+module+" requires "+mainModule+". Please, disable it first.",3500);                     
+                 }
+               });
+             if(found)
+               {
+               $(this).attr('checked',true);
+               return;
+               }
              }
+           
+           
            $.post(json.global.webroot+'/admin/index', {submitModule: true, modulename: $(this).attr('module') , modulevalue:modulevalue},
            function(data) {
                jsonResponse = jQuery.parseJSON(data);
@@ -126,9 +168,35 @@
                     createNotive('Error',4000);
                     return;
                   }
-                createNotive(jsonResponse[1],1500);
+                createNotive(jsonResponse[1],3500);
                 initModulesConfigLinks();
            });
+     });
+     
+     $('a.moduleVisibleCategoryLink').click(function(){
+       if($(this).prev('span').html() == '&gt;')
+         {
+         $(this).prev('span').html('v'); 
+         $('.'+$(this).html()+'VisibleElement').show();
+         }
+       else
+         {
+         $(this).prev('span').html('>');   
+         $('.'+$(this).html()+'VisibleElement').hide();
+         }
+     });
+     
+     $('a.moduleHiddenCategoryLink').click(function(){
+       if($(this).prev('span').html() == '&gt;')
+         {
+         $(this).prev('span').html('v'); 
+         $('.'+$(this).html()+'HiddenElement').show();
+         }
+       else
+         {
+         $(this).prev('span').html('>');   
+         $('.'+$(this).html()+'HiddenElement').hide();
+         }
      });
    initModulesConfigLinks();
   });
