@@ -197,6 +197,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $listeModule[] = $key;
         }
       }
+      
+    // loading modules elements
     foreach($listeModule as $m)
       { 
       $route = $m;
@@ -229,6 +231,26 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         {
         require_once BASE_PATH . "/modules/".$route."/models/AppModel.php";      
         }
+      if(file_exists(BASE_PATH . "/modules/".$route."/constant/module.php"))
+        {
+        require_once BASE_PATH . "/modules/".$route."/constant/module.php";      
+        }
+        
+      $dir = BASE_PATH . "/modules/".$route."/models/base";
+      if(is_dir($dir)) 
+        {      
+        $objects = scandir($dir); 
+        foreach($objects as $object) 
+          { 
+          if($object != "." && $object != "..") 
+            { 
+            if(filetype($dir."/".$object) != "dir")
+              {
+              require_once $dir."/".$object;
+              }
+            } 
+          } 
+        }      
       }
     Zend_Registry::set('modulesEnable', $listeModule);
     return $router;
