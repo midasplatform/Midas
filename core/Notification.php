@@ -14,22 +14,15 @@ PURPOSE.  See the above copyright notices for more information.
 class Notification extends MIDAS_Notification
   {
   public $_components = array('Utility');
+  
   /** init notification process*/
-  public function init($type, $params)
+  public function init()
     {
-    switch ($type)
-      {
-      case MIDAS_NOTIFY_GET_DASBOARD:
-        return $this->_getDasboard();
-        break;
-
-      default:
-        break;
-      }
+    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDasboard');
     }//end init  
     
   /** generate Dasboard information */
-  private function _getDasboard()
+  public function getDasboard()
     {
     $return = array();
     $return['Database'] = array(true); //If you are here it works...

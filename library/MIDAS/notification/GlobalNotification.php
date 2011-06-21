@@ -15,13 +15,56 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class MIDAS_Notification
   {
+  
+  private $_task = array();
+  private $_notification = array();
+  
   /** contructor*/
   public function __construct()
     {    
     $this->loadElements();
     $this->loadModuleElements();
+    $this->init();
     }
+    
+  /** register task*/
+  public function addTask($name, $method, $comment)
+    {
+    $this->_task[$name] = array('method' => $method, 'comment' => $comment);
+    }// end assTask
+    
+  /** register callback*/
+  public function addCallBack($name, $method)
+    {
+    if(isset($this->_notification[$name]))
+      {
+      $this->_notification[$name] = array();
+      }
+    $this->_notification[$name][] = array('type' => 'callback', 'call' => $method);
+    }// end addCallBack
+    
+  /** register callback*/
+  public function addEvent($name, $task, $priority = MIDAS_EVENT_PRIORITY_NORMAL)
+    {
+    if(isset($this->_notification[$name]))
+      {
+      $this->_notification[$name] = array();
+      }
+    $this->_notification[$name][] = array('type' => 'task', 'call' => $task, 'priority' => $priority);
+    }// end addCallBack
 
+  /** get Tasks */
+  public function getTasks()
+    {
+    return $this->_task;
+    }
+  
+  /** get Tasks */
+  public function getNotifications()
+    {
+    return $this->_notification;
+    }
+  
   /**
    * Get Logger
    * @return Zend_Log

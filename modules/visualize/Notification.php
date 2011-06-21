@@ -14,30 +14,26 @@ class Visualize_Notification extends MIDAS_Notification
   {
   public $_moduleComponents=array('Main');
   public $moduleName='visualize';
+  
   /** init notification process*/
-  public function init($type, $params)
+  public function init()
     {
-    switch ($type)
-      {
-      case MIDAS_NOTIFY_CAN_VISUALIZE:
-        return $this->ModuleComponent->Main->canVisualizeWithParaview($params['item']) ||
-             $this->ModuleComponent->Main->canVisualizeMedia($params['item']) ||
-           $this->ModuleComponent->Main->canVisualizeTxt($params['item']) ||
-          $this->ModuleComponent->Main->canVisualizeImage($params['item']) ||
-          $this->ModuleComponent->Main->canVisualizePdf($params['item']);
-        break;
-
-      case MIDAS_NOTIFY_GET_DASBOARD:
-        return $this->_getDasboard();
-        break;
-      default:
-        break;
-      }
+    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDasboard');
+    $this->addCallBack("CALLBACK_VISUALIZE_CAN_VISUALIZE", 'canVisualize');
     }//end init  
     
-      
+  /** can visualize?*/
+  public function canVisualize($params)
+    {
+    return $this->ModuleComponent->Main->canVisualizeWithParaview($params['item']) ||
+           $this->ModuleComponent->Main->canVisualizeMedia($params['item']) ||
+           $this->ModuleComponent->Main->canVisualizeTxt($params['item']) ||
+           $this->ModuleComponent->Main->canVisualizeImage($params['item']) ||
+           $this->ModuleComponent->Main->canVisualizePdf($params['item']);
+    }
+    
   /** generate Dasboard information */
-  private function _getDasboard()
+  public function getDasboard()
     {    
     $modulesConfig=Zend_Registry::get('configsModules');
     $useparaview = $modulesConfig['visualize']->useparaview;
