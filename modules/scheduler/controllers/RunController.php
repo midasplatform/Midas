@@ -38,6 +38,11 @@ class Scheduler_RunController extends Scheduler_AppController
     foreach($jobs as $job)
       {
       $job->setStatus(SCHEDULER_JOB_STATUS_STARTED);
+      if($job->getRunOnlyOnce() == 0)
+        {
+        $firetime = strtotime($job->getFireTime()) + $job->getTimeInterval();
+        $job->setFireTime(date('c', $firetime));
+        }
       $job->setTimeLastFired(date('c'));
       $this->Scheduler_Job->save($job);
       try
@@ -54,7 +59,14 @@ class Scheduler_RunController extends Scheduler_AppController
         $this->Scheduler_Job->save($job);
         continue;
         }
-      $job->setStatus(SCHEDULER_JOB_STATUS_DONE);
+      if($job->getRunOnlyOnce() == 0)
+        {
+        $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
+        }
+      else
+        {
+        $job->setStatus(SCHEDULER_JOB_STATUS_DONE);
+        }
       $this->Scheduler_Job->save($job);
       }
     } 
