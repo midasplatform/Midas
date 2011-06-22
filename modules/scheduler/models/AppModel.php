@@ -10,8 +10,9 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-define("MIDAS_EVENT_PRIORITY_NORMAL",1);
-define("MIDAS_EVENT_PRIORITY_LOW",0);
-define("MIDAS_EVENT_PRIORITY_HIGH",2);
+class Scheduler_AppModel extends MIDASModel
+{
 
+
+}
 ?>

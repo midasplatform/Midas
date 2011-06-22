@@ -174,7 +174,7 @@ class UserController extends AppController
       $previousUri = $this->_getParam('previousuri');
       if($form->isValid($this->getRequest()->getPost()))
         {
-        $notifications = Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_LOGIN, array('email' => $form->getValue('email'), 'password' => $form->getValue('password')));
+        $notifications = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_AUTHENTIFICATION", array('email' => $form->getValue('email'), 'password' => $form->getValue('password')));
         
         if(!empty($notifications['ldap']) && $notifications['ldap'] != false)
           {
@@ -282,7 +282,7 @@ class UserController extends AppController
           return;
           }
           
-        $notifications = Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_LOGIN, array('email' => $entry, 'password' => $password));
+        $notifications = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_AUTHENTIFICATION", array('email' => $entry, 'password' => $password));
         if(!empty($notifications['ldap']) && $notifications['ldap'] != false)
           {
           echo "true";
@@ -601,7 +601,7 @@ class UserController extends AppController
     $this->view->jsonSettings['passwordErrorMatch'] = $this->t('The passwords are not the same');
     $this->view->jsonSettings = JsonComponent::encode($this->view->jsonSettings);
     
-    $this->view->customTabs = Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_GET_CONFIG_TABS, array());
+    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_CONFI_TABS', array());
     }
     
   /** User page action*/

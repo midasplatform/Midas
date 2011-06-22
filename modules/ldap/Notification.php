@@ -16,24 +16,15 @@ class Ldap_Notification extends MIDAS_Notification
   public $_models=array('User');
   
   /** init notification process*/
-  public function init($type, $params)
+  public function init()
     {
-    switch ($type)
-      {
-      case MIDAS_NOTIFY_LOGIN:
-        return $this->ldapLogin($params);
-        break;
-      case MIDAS_NOTIFY_GET_DASBOARD:
-        return $this->_getDasboard();
-        break;
+    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDasboard');
+    $this->addCallBack("CALLBACK_CORE_AUTHENTIFICATION", 'ldapLogin');
+    }//end init  
 
-      default:
-        break;
-      }
-    }//end init
     
   /** generate Dasboard information */
-  private function _getDasboard()
+  public function getDasboard()
     {    
     $config = Zend_Registry::get('configsModules');
     $baseDn =  $config['ldap']->ldap->basedn;
@@ -85,7 +76,7 @@ class Ldap_Notification extends MIDAS_Notification
     }//end _getDasboard
     
   /** login using ldap*/
-  private function ldapLogin($params)
+  public function ldapLogin($params)
     {
     if(!isset($params['email']) || !isset($params['password']))
       {

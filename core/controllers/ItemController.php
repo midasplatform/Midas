@@ -119,7 +119,7 @@ class ItemController extends AppController
     $this->view->metadatavalues = $this->ItemRevision->getMetadata($itemRevision);
     
     
-    $tmp = Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_CAN_VISUALIZE, array('item' => $itemDao));
+    $tmp = Zend_Registry::get('notifier')->callback("CALLBACK_VISUALIZE_CAN_VISUALIZE", array('item' => $itemDao));
     if(isset($tmp['visualize']) && $tmp['visualize'] == true)
       {
       $this->view->preview = true;
@@ -160,7 +160,7 @@ class ItemController extends AppController
       
     foreach($items as $key => $item)
       {
-      $tmp = Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_CAN_VISUALIZE, array('item' => $item));
+      $tmp = Zend_Registry::get('notifier')->callback("CALLBACK_VISUALIZE_CAN_VISUALIZE", array('item' => $item));
       if(isset($tmp['visualize']) && $tmp['visualize'] == true)
         {
         $items[$key]->preview = 'true';

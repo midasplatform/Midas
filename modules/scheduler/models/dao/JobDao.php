@@ -1,5 +1,4 @@
 <?php
-
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -11,8 +10,11 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-class Task_AppController extends MIDAS_GlobalModule
+class Scheduler_JobDao extends Scheduler_AppDao
   {
-  public $moduleName='task';
-  } //end class
+    public $_model='Job';
+    public $_module='scheduler';
+    
+
+  }
 ?>

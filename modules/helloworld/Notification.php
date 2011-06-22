@@ -7,15 +7,15 @@ class Api_Notification extends MIDAS_Notification
   /** init notification process*/
   public function init()
     {
-    $this->addCallBack('CALLBACK_CORE_GET_CONFI_TABS', 'getConfigTabs');
+    $this->addCallBack('CALLBACK_CORE_TEST', 'testMethod');
+    $this->addTask('TASK_HELLOWORLD_TEST', 'testMethod', 'test');
+    $this->addEvent('EVENT_CORE_CREATE_THUMBNAIL', 'TASK_HELLOWORLD_TEST');
     }//end init
     
   /** get Config Tabs */
-  public function getConfigTabs()
+  public function testMethod()
     {
-    $fc = Zend_Controller_Front::getInstance();
-    $moduleWebroot = $fc->getBaseUrl().'/api';
-    return array('Api' => $moduleWebroot.'/config/usertab');
+    return;
     }
   } //end class
 ?>

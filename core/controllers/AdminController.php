@@ -303,7 +303,9 @@ class AdminController extends AppController
       
     $this->_helper->layout->disableLayout();
     
-    $this->view->dashboard =  Zend_Registry::get('notifier')->notify(MIDAS_NOTIFY_GET_DASBOARD);
+    $this->view->dashboard = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_DASHBOARD");
+    
+    ksort($this->view->dashboard);
     
     }//end dashboardAction
     
