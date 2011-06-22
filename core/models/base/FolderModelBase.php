@@ -54,7 +54,7 @@ abstract class FolderModelBase extends AppModel
   abstract function move($folder, $parent);
   abstract function removeItem($folder, $item);
   abstract function policyCheck($folderDao, $userDao = null, $policy = 0);
-  abstract function getFolderExists($name, $description);
+  abstract function getFolderExists($name, $parent);
   abstract function getByUuid($uuid);
   abstract function getRoot($folder);
   
@@ -109,9 +109,9 @@ abstract class FolderModelBase extends AppModel
       }  
 
     // Check ifa folder with the same name already exists for the same parent
-    if($this->getFolderExists($name, $parentId))
+    if($this->getFolderExists($name, $parent))
       {
-      $existingfolder = $this->getFolderExists($name, $parentId);
+      $existingfolder = $this->getFolderExists($name, $parent);
       return $existingfolder;
       }
       
