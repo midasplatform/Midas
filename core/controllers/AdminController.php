@@ -191,7 +191,7 @@ class AdminController extends AppController
     
     // get modules
     $modulesEnable = Zend_Registry::get('modulesEnable');
-    
+    $adapter = Zend_Registry::get('configDatabase')->database->adapter;
     foreach($allModules as $key => $module)
       {
       if(file_exists(BASE_PATH."/modules/".$key."/controllers/ConfigController.php"))
@@ -202,9 +202,68 @@ class AdminController extends AppController
         {
         $allModules[$key]->configPage = false;
         }
+        
+      if(isset($module->db->$adapter))
+        {
+        $allModules[$key]->dbOk = true;
+        }
+      else
+        {
+        $allModules[$key]->dbOk = false;
+        }
+        
+      $allModules[$key]->dependenciesArray = array();
+      $allModules[$key]->dependenciesExist = true;
+      // check if dependencies exit
+      if(isset($allModules[$key]->dependencies) && !empty($allModules[$key]->dependencies))
+        {
+        $allModules[$key]->dependenciesArray = explode(',', trim($allModules[$key]->dependencies));
+        foreach($allModules[$key]->dependenciesArray as $dependency)
+          {
+          if(!isset($allModules[$dependency]))
+            {
+            $allModules[$key]->dependenciesExist = false;
+            }
+          }
+        }
       }
 
-    $this->view->modulesList = $allModules;
+    $modulesList = array();
+    $countModules = array();
+    foreach($allModules as $k => $module)
+      {
+      if(!isset($module->category) || empty($module->category))
+        {
+        $category = "Misc";
+        }
+      else
+        {
+        $category = ucfirst(strtolower($module->category));
+        }
+      if(!isset($modulesList[$category]))
+        {
+        $modulesList[$category] = array();
+        $countModules[$category] = array('visible' => 0, 'hidden' => 0);
+        }
+      $modulesList[$category][$k] = $module;
+      if($module->dbOk && $module->dependenciesExist)
+        {
+        $countModules[$category]['visible']++;
+        }
+      else
+        {
+        $countModules[$category]['hidden']++;
+        }
+      }
+      
+    foreach($modulesList as $k => $l)
+      {
+      ksort($modulesList[$k]);
+      }
+    
+    ksort($modulesList);
+    $this->view->countModules = $countModules;
+    $this->view->modulesList = $modulesList;
     $this->view->modulesEnable = $modulesEnable;
     $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
     }//end indexAction

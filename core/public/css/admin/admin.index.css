@@ -10,3 +10,14 @@ div.viewWrapper {
 div.assetstoreElement{
   margin-bottom: 10px;
 }
+
+tr.moduleElementError td{
+  color:grey;
+  font-size: 11px;
+}
+
+a.moduleVisibleCategoryLink, a.moduleHiddenCategoryLink{
+  font-weight: bold!important;
+  font-size: 13px!important;
+}
+
