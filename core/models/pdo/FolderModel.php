@@ -372,6 +372,12 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Error parameter.");
       }
+      
+    // Check ifa folder with the same name already exists for the same parent
+    if($this->getFolderExists($folder->getName(), $parent))
+      {
+      throw new Zend_Exception('This name is already used');
+      }
     
     $node_id = $folder->getKey();
     $node_pos_left = $folder->getLeftIndice();
@@ -516,13 +522,13 @@ class FolderModel extends FolderModelBase
     }
 
   /** Returns ifa folder exists based on the name and description */
-  function getFolderExists($name, $parentid)
+  function getFolderExists($name, $parent)
     {
     $dao = $this->initDao('Folder', $this->database->fetchRow($this->database->select()
                                                            ->setIntegrityCheck(false)
                                                            ->from('folder')
                                                            ->where('name = ?', $name)
-                                                           ->where('parent_id = ?', $parentid)));
+                                                           ->where('parent_id = ?', $parent->getKey())));
     return $dao;
     }
     
@@ -630,6 +636,9 @@ class FolderModel extends FolderModelBase
         $policyArray[$row['item_id']] = $row['policy'];
         }
       }
+    
+    $listNamesArray = array();
+    
     foreach($rowset as $keyRow => $row)
       {
       if(isset($policyArray[$row['item_id']]))
@@ -637,6 +646,16 @@ class FolderModel extends FolderModelBase
         $tmpDao = $this->initDao('Item', $row);
         $tmpDao->policy = $policyArray[$row['item_id']];
         $tmpDao->parent_id = $row['folder_id'];
+        
+        if(isset($listNamesArray[$tmpDao->getName()]))
+          {
+          $listNamesArray[$tmpDao->getName()]++;
+          $tmpDao->setName($tmpDao->getName().' ('.$listNamesArray[$tmpDao->getName()].')');
+          }
+        else
+          {
+          $listNamesArray[$tmpDao->getName()] = 0;
+          }
         $return[] = $tmpDao;
         unset($policyArray[$row['item_id']]);
         }
