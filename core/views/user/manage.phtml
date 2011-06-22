@@ -21,15 +21,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 <div class="viewMain">
   <div class="genericThumbnail">
   <?php
-  $thumbnail=$this->user->getThumbnail();
-  if(!empty($thumbnail))
-    {
-    echo "<img class='thumbnailSmall' src='{$this->webroot}/{$thumbnail}' alt=''/>";
-    }
-  else
-    {
-    echo "<img  class='thumbnailSmall' src='{$this->coreWebroot}/public/images/icons/unknownUser.png' alt=''/>";
-    }
+  echo $this->userthumbnail($thumbnail);
   ?>
   </div>
   <div class="genericInfo">
