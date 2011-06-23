@@ -64,6 +64,7 @@ abstract class MetadataModelBase extends AppModel
    * @return MetadataDao */
   function addMetadataValue($itemRevisionDao, $type, $element, $qualifier, $value)
     {
+
     if(!$itemRevisionDao instanceof $itemRevisionDao)
       {
       throw new Zend_Exception("Error parameters.");
