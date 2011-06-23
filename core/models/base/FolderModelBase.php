@@ -106,6 +106,7 @@ abstract class FolderModelBase extends AppModel
     else
       {
       $parentId = $parent;
+      $parent = $this->load($parentId);
       }  
 
     // Check ifa folder with the same name already exists for the same parent
