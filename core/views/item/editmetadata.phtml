@@ -1,0 +1,75 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/item/item.editmetadata.js?'.time().'"></script>';
+?>
+
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/item/item.editmetadata.css" />
+
+<form id="editMetadataForm" class="genericForm" method="POST"  action="<?php echo $this->webroot?>/item/<?php echo $this->itemDao->getKey()?>">
+   <input type="hidden" name="metadataId" value="<?php echo (!$this->metadata)?'':$this->metadata->getMetadataId()?>"/>
+   <input type="hidden" name="editMetadata" value="1"/>
+      <div >
+        <label for="metadatatype"><?php echo $this->t("Type")?></label>
+        <select name="metadatatype">
+          <?php 
+          foreach($this->metadataType as $name => $v)
+            {
+            echo "<option value='$name'";
+            if($this->metadata && $name = $this->metadata->getMetadatatype() )
+              {
+              echo ' selected ';
+              }
+            echo ">";
+            switch ($name)
+              {
+              case MIDAS_METADATA_GLOBAL:
+                echo "Global";
+                break;
+              case MIDAS_METADATA_IMAGE:
+                echo "Image";
+                break;
+              case MIDAS_METADATA_DOCUMENT:
+                echo "Document";
+                break;
+              case MIDAS_METADATA_VIDEO:
+                echo "Video";
+                break;
+              default:
+                echo "Global";
+                break;
+              }
+            echo "</option>";
+            }
+            ?>
+        </select>
+      </div>
+      <div >
+        <label for="element"><?php echo $this->t("Element")?></label>
+        <input name ="element" value ="<?php echo (!$this->metadata)?'':$this->metadata->getElement()?>"/>
+      </div>
+      <div >
+        <label for="qualifier"><?php echo $this->t("Qualifier")?></label>
+        <input name ="qualifier" value ="<?php echo (!$this->metadata)?'':$this->metadata->getQualifier()?>"/>
+      </div>
+      <div >
+        <label for="value"><?php echo $this->t("Value")?></label>
+        <input name ="value" value ="<?php echo (!$this->metadata)?'':$this->metadata->getValue()?>"/>
+      </div>
+      <div>
+        <input type='submit' value ='<?php echo (!$this->metadata)? $this->t('Add'):$this->t('Edit')?>'/>
+      </div>
+</form>
+
+<div id="jsonMetadata" style ='display:none;'>
+  <?php echo $this->jsonMetadataType?>
+</div>

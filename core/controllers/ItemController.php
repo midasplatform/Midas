@@ -13,7 +13,7 @@ PURPOSE.  See the above copyright notices for more information.
 /** Item Controller */
 class ItemController extends AppController
   {
-  public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Folder');
+  public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Folder', 'Metadata');
   public $_daos = array();
   public $_components = array('Date', 'Utility', 'Sortdao');
   public $_forms = array('Item');
@@ -29,7 +29,46 @@ class ItemController extends AppController
       }
     }  // end init()
 
-
+    
+  /** create/edit metadata*/
+  function editmetadataAction()
+    {
+    $this->disableLayout();
+    if(!$this->logged)
+      {
+      throw new Zend_Exception("You have to be logged in to do that");
+      }
+      
+    $itemId = $this->_getParam("itemId");
+    $metadataId = $this->_getParam("metadataId");
+    $itemDao = $this->Item->load($itemId);
+    if($itemDao === false)
+      {
+      throw new Zend_Exception("This item doesn't exist.");
+      }
+    if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception("Problem policies.");
+      }
+    $itemRevision = $this->Item->getLastRevision($itemDao);
+    $metadatavalues = $this->ItemRevision->getMetadata($itemRevision);
+    $this->view->metadata = null;
+    
+    foreach($metadatavalues as $value)
+      {
+      if($value->getMetadataId() == $metadataId)
+        {
+        $this->view->metadata = $value;
+        break;
+        }
+      }
+      
+    $this->view->itemDao = $itemDao;
+    $this->view->metadataType = $this->Metadata->getAllMetadata();
+    $this->view->metadataType = $this->view->metadataType['sorted'];
+    $this->view->jsonMetadataType = JsonComponent::encode($this->view->metadataType);
+    }
+    
   /** view a community*/
   function viewAction()
     {
@@ -53,6 +92,38 @@ class ItemController extends AppController
       
     $this->view->isAdmin = $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     $this->view->isModerator = $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE);
+    $itemRevision = $this->Item->getLastRevision($itemDao);
+    if($this->_request->isPost())
+      {
+      $deleteMetadata = $this->_getParam('deleteMetadata');
+      $editMetadata = $this->_getParam('editMetadata');
+      if(isset($deleteMetadata) && $this->view->isModerator) //remove users from group
+        {
+        $this->disableView();
+        $this->disableLayout();
+        $metadataId = $this->_getParam('element');
+        $this->ItemRevision->deleteMetadata($itemRevision, $metadataId);
+        echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        }
+      if(isset($editMetadata) && $this->view->isModerator) //remove users from group
+        {
+        $metadataId = $this->_getParam('metadataId');
+        $metadatatype = $this->_getParam('metadatatype');
+        $element = $this->_getParam('element');
+        $qualifier = $this->_getParam('qualifier');
+        $value = $this->_getParam('value');
+        if(isset($metadataId))
+          {
+          $this->ItemRevision->deleteMetadata($itemRevision, $metadataId);
+          }
+        $metadataDao = $this->Metadata->getMetadata($metadatatype, $element, $qualifier);         
+        if($metadataDao == false)
+          {
+          $this->Metadata->addMetadata($metadatatype, $element, $qualifier, '');
+          }        
+        $this->Metadata->addMetadataValue($itemRevision, $metadatatype, $element, $qualifier, $value);
+        }
+      }
 
     if($this->logged)
       {
@@ -85,7 +156,7 @@ class ItemController extends AppController
 
       setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($recentItems), time() + 60 * 60 * 24 * 30, '/'); //30 days
       }
-    $itemRevision = $this->Item->getLastRevision($itemDao);
+    
     $this->Item->incrementViewCount($itemDao);
     $itemDao->lastrevision = $itemRevision;
     $itemDao->revisions = $itemDao->getRevisions();
@@ -176,6 +247,7 @@ class ItemController extends AppController
     $this->view->json['item'] = $itemDao->toArray();
     $this->view->json['item']['message']['delete'] = $this->t('Delete');
     $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undo.');
+    $this->view->json['item']['message']['deleteMetadataMessage'] = $this->t('Do you really want to delete this metadata? It cannot be undo.');
     $this->view->json['item']['message']['movecopy'] = $this->t('Copy Item.');
     }//end index
 

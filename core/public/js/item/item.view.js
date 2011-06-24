@@ -1,4 +1,45 @@
   $(document).ready(function() {
+    
+    $('a.metadataDeleteLink img').fadeTo("fast",0.4);
+    $('a.metadataDeleteLink').click(function(){
+      var metadataCell = $(this).parents('tr');
+      var metadataId = $(this).attr('element');
+      var html='';
+      html+=json.item.message['deleteMetadataMessage'];
+      html+='<br/>';
+      html+='<br/>';
+      html+='<br/>';
+      html+='<input style="margin-left:140px;" class="globalButton deleteMetaDataYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
+      html+='<input style="margin-left:50px;" class="globalButton deleteMetaDataNo" type="button" value="'+json.global.No+'"/>';
+      showDialogWithContent(json.item.message['delete'],html,false);
+      
+      $('input.deleteMetaDataYes').unbind('click').click(function()
+        { 
+          $.post(json.global.webroot+'/item/'+json.item.item_id, { element: metadataId, deleteMetadata: true});
+          metadataCell.remove();
+          $( "div.MainDialog" ).dialog('close');
+        });
+      $('input.deleteMetaDataNo').unbind('click').click(function()
+        {
+           $( "div.MainDialog" ).dialog('close');
+        });    
+      });
+    $('a.metadataEditLink img').fadeTo("fast",0.4);
+    
+    $('a.metadataEditLink').click(function(){
+      var metadataId = $(this).attr('element');
+      loadDialog("editmetadata"+metadataId, "/item/editmetadata/?metadataId="+metadataId+"&itemId="+json.item.item_id);
+      showDialog('MetaData');
+      
+    });
+    $('a.addMetadataLink').click(function(){
+      var metadataId = $(this).attr('element');
+      loadDialog("editmetadata"+metadataId, "/item/editmetadata/?itemId="+json.item.item_id);
+      showDialog('MetaData');
+      
+    });
+    
+    
     $('a.moveCopyLink').click(function()
       {
         loadDialog("movecopy","/browse/movecopy/?move=false&items="+json.item.item_id);
