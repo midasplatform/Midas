@@ -110,7 +110,7 @@ abstract class FolderModelBase extends AppModel
       }  
 
     // Check ifa folder with the same name already exists for the same parent
-    if($this->getFolderExists($name, $parent))
+    if($parent !== false && $this->getFolderExists($name, $parent))
       {
       $existingfolder = $this->getFolderExists($name, $parent);
       return $existingfolder;
