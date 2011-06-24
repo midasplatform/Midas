@@ -38,19 +38,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
    */
   public function preDispatch()
     {   
-        // Init the translater
-    if(!$this->isDebug())
-      {
-      $frontendOptions = array(
-        'lifetime' => 86400, 'automatic_serialization' => true
-      );
-
-      $backendOptions = array(
-        'cache_dir' => BASE_PATH.'/tmp/cache/translation'
-      );
-      $cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
-      Zend_Translate::setCache($cache);
-      }
+    // Init the translater
     $translate = new Zend_Translate('csv', BASE_PATH.'/core/translation/fr-main.csv', 'en');
     Zend_Registry::set('translater', $translate);
     
