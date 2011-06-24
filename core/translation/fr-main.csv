@@ -123,6 +123,7 @@ Manage Groups and Members;Gérer les Groupes et les Members
 Manage Files;Gérer les fichiers
 Do you really want to delete this community? It cannot be undo.; Voulez vous vraiment supprimer cette communité? Cette action est irréversible.
 Do you really want to delete this item? It cannot be undo.; Voulez vous vraiment supprimer ce document? Cette action est irréversible.
+Do you really want to delete this metadata? It cannot be undo.; Voulez vous vraiment supprimer cette métadonnée? Cette action est irréversible.
 Do you really want to delete this group? It cannot be undo.; Voulez vous vraiment supprimer ce groupe? Cette action est irréversible.
 Join the community;Rejoindre la communauté
 Request to join the community;Demander à être membre de la communauté
@@ -250,3 +251,4 @@ Add in group;Ajouter au groupe
 Set as moderator;Promouvoir en tant que modérateur
 Remove from community;Retirer de la communauté
 Remove from group;Retirer du groupe
+Add Metadata;Ajouter Métadonnée

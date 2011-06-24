@@ -51,6 +51,18 @@ class ItemRevisionModel extends ItemRevisionModelBase
     return $metadatavalues;
     }  // end getMetadata
     
+  /** get the metadata associated with the revision */
+  function deleteMetadata($revisiondao, $metadataId)
+    {
+    if(!$revisiondao instanceof ItemRevisionDao ||!is_numeric($metadataId))
+      {
+      throw new Zend_Exception("Error param.");
+      }
+
+    Zend_Registry::get('dbAdapter')->delete('metadatavalue', 'itemrevision_id = '.$revisiondao->getKey().' AND metadata_id = '.$metadataId);
+    return;
+    }  // end getMetadata
+    
   /** delete a revision*/
   function delete($revisiondao)
     {

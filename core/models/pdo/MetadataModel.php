@@ -30,6 +30,26 @@ class MetadataModel extends MetadataModelBase
     return $this->initDao('Metadata', $row);
     } // end function getMetadata()
     
+  /** get all the metadata */
+  function getAllMetadata()
+    {
+    $rowset = $this->database->fetchAll($this->database->select());
+    
+    $metadata = array();
+    foreach($rowset as $row)
+      {
+      $dao = $this->initDao('Metadata', $row);
+      $metadata['raw'][] = $dao;
+      $metadata['sorted'][$dao->getMetadatatype()][$dao->getElement()][] = $dao;
+      }
+    ksort($metadata['sorted']);
+    foreach($metadata['sorted'] as $key => $v)
+      {
+      ksort($metadata['sorted'][$key]);
+      }
+    return $metadata;
+    } // end function getMetadata()
+    
   /** Return the table name based on the type of metadata*/  
   function getTableValueName($metadatatype)
     {
