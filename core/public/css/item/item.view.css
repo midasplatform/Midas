@@ -67,3 +67,7 @@ div#fullscreenPanel ul{
 img.closeVisuButton{
   float:right;
 }
+
+div.manageMetadata{
+  float:right;
+}

@@ -100,6 +100,10 @@ class JsonComponent extends AppComponent
   /** encode Array */
   private function _utf8_encode_array(&$array, $key)
     {
+    if(is_object($array) && method_exists($array, 'toArray'))
+      {
+      $array = $array->toArray();
+      }
     if(is_array($array)) 
       {
       array_walk($array, array($this, '_utf8_encode_array'));
