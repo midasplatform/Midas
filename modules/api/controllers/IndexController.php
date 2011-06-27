@@ -314,6 +314,17 @@ class Api_IndexController extends Api_AppController
     $this->helpContent[$apiMethodPrefix.'item.delete'] = $help;
     $this->apicallbacks[$apiMethodPrefix.'item.delete']            = array(&$this, '_ItemDelete');
     
+    $help = array();
+    $help['params'] = array();
+    $help['params']['token'] = 'Authentification token';
+    $help['params']['id'] = 'Id of the item';
+    $help['params']['revision'] = '(Optional) Revision of the item';
+    $help['example'] = array();
+    $help['return'] = '';
+    $help['description'] = 'Get metadata';
+    $this->helpContent[$apiMethodPrefix.'item.getmetadata'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'item.getmetadata']            = array(&$this, '_ItemGetMetadata');
+    
     /*     
     $this->apicallbacks[$apiMethodPrefix.'newresources.get']       = array(&$this, '_NewResourcesGet');     */
     }
@@ -941,6 +952,60 @@ class Api_IndexController extends Api_AppController
       }
     $itemArray['revisions'] = $revisionsArray;
     return $itemArray;
+    }// _CommunityGet
+    
+  /** Get the item's metadata */
+  function _ItemGetMetadata( $args )
+    {
+    if(!array_key_exists('id', $args))
+      {
+      throw new Exception('Parameter id is not defined', -155);
+      }
+
+    $itemid = $args['id'];
+    
+    if(array_key_exists('token', $args))
+      {
+      $userDao = $this->_getUser($args);
+      }
+    else
+      {
+      $userDao = false;
+      }   
+    
+    $item = $this->Item->load($itemid);
+
+    if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+      {
+      throw new Exception("This item doesn't exist  or you don't have the permissions.", 200);
+      }   
+      
+    if(isset($args['revision']))
+      {
+      $revisionNumber = $args['revision'];
+      $revisions = $item->getRevisions();
+      foreach($revisions as $revision)
+        {
+        if($revisionNumber == $revision->getRevision())
+          {
+          $revisionDao = $revision;
+          break;
+          }
+        }
+      }
+
+    if(!isset($revisionDao))
+      {
+      $revisionDao = $this->Item->getLastRevision($item);
+      }
+      
+    $metadata = $this->ItemRevision->getMetadata($revisionDao);
+    $metadataArray = array();
+    foreach($metadata as $m)
+      {
+      $metadataArray[] = $m->toArray();
+      }
+    return $metadataArray;
     }// _CommunityGet
 
   /** Download a folder */

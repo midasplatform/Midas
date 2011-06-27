@@ -32,6 +32,7 @@ abstract class MetadataModelBase extends AppModel
     } // end __construct() 
   
   abstract function getMetadata($type, $element, $qualifier);
+  abstract function getAllMetadata();
   protected abstract function saveMetadataValue($metadataDao);
   abstract function getMetadataValueExists($metadataDao);
   
