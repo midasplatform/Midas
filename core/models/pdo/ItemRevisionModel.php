@@ -115,7 +115,4 @@ class ItemRevisionModel extends ItemRevisionModelBase
                                           ->where('name=?', $name));
     return $this->initDao('Bitstream', $row);
     } // end getBitstreamByName
-
- 
 } // end class
-?>

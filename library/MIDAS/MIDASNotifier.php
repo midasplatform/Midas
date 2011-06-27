@@ -18,6 +18,18 @@ class MIDAS_Notifier
   private $tasksByModule = array();
   public $notifications = array();
   
+  /** get Notification */
+  public function getNotifications()
+    {
+    return $this->notifications;
+    }
+    
+  /** get Tasks */
+  public function getTaks()
+    {
+    return $this->tasks;
+    }
+  
   /** init the notifier*/
   public function __construct()
     {
