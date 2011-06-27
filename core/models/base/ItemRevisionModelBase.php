@@ -61,10 +61,7 @@ abstract class ItemRevisionModelBase extends AppModel
     $item->setDateCreation(date('c'));
  
     $modulesThumbnail =  Zend_Registry::get('notifier')->notifyEvent("EVENT_CORE_CREATE_THUMBNAIL", array($item->toArray(), $itemRevisionDao->toArray()));
-    $notifications = Zend_Registry::get('notifier')->getNotifications();
-
-    $createThumb = false;  
-    if(!isset($notifications["EVENT_CORE_CREATE_THUMBNAIL"]) || empty($notifications["EVENT_CORE_CREATE_THUMBNAIL"]))
+    if(empty($modulesThumbnail))
       {
       $mime = $bitstreamDao->getMimetype();
       $tmpfile = $bitstreamDao->getPath();
@@ -154,6 +151,20 @@ abstract class ItemRevisionModelBase extends AppModel
         imagedestroy($thb);    
         imagedestroy($src);   
         } 
+      }
+    else
+      {
+      $createThumb = false;
+      //TODO
+      /*
+      require_once BASE_PATH.'/core/controllers/components/FilterComponent.php';
+      $filterComponent = new FilterComponent();
+      $thumbnailCreator = $filterComponent->getFilter('ThumbnailCreator');
+      $thumbnailCreator->inputFile = $bitstreamDao->getFullPath();
+      $thumbnailCreator->inputName = $bitstreamDao->getName();
+      $hasThumbnail = $thumbnailCreator->process();
+    
+      */
       }
 
     if($createThumb)

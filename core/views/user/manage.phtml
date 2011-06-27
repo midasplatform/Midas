@@ -21,6 +21,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 <div class="viewMain">
   <div class="genericThumbnail">
   <?php
+  $thumbnail=$this->user->getThumbnail();
   echo $this->userthumbnail($thumbnail);
   ?>
   </div>
