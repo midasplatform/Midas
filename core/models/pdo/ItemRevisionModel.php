@@ -54,7 +54,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
   /** get the metadata associated with the revision */
   function deleteMetadata($revisiondao, $metadataId)
     {
-    if(!$revisiondao instanceof ItemRevisionDao ||!is_numeric($metadataId))
+    if(!$revisiondao instanceof ItemRevisionDao || !is_numeric($metadataId))
       {
       throw new Zend_Exception("Error param.");
       }

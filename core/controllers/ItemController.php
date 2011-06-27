@@ -93,7 +93,7 @@ class ItemController extends AppController
     $this->view->isAdmin = $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     $this->view->isModerator = $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE);
     $itemRevision = $this->Item->getLastRevision($itemDao);
-     if($this->_request->isPost())
+    if($this->_request->isPost())
       {
       $deleteMetadata = $this->_getParam('deleteMetadata');
       $editMetadata = $this->_getParam('editMetadata');
