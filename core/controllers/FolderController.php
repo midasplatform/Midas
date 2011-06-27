@@ -54,6 +54,13 @@ class FolderController extends AppController
     if($this->_request->isPost())
       {
       $name = $this->_getParam('name');
+      
+      // Check ifa folder with the same name already exists for the same parent
+      if($this->Folder->getFolderExists($name, $folder->getParent()))
+        {
+        throw new Zend_Exception('This name is already used');
+        }
+    
       $description = $this->_getParam('description');
       $teaser = $this->_getParam('teaser');
       
