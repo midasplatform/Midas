@@ -13,6 +13,8 @@ PURPOSE.  See the above copyright notices for more information.
 class Visualize_ParaviewController extends Visualize_AppController
 {
   public $_models = array('Item', 'ItemRevision', 'Bitstream');
+  public $_moduleComponents=array('Main');
+  
   /** index */
   public function indexAction()
     {
@@ -30,6 +32,8 @@ class Visualize_ParaviewController extends Visualize_AppController
     $customtmp = $modulesConfig['visualize']->customtmp;    
     $useparaview = $modulesConfig['visualize']->useparaview;
     $userwebgl = $modulesConfig['visualize']->userwebgl;
+    $usesymlinks = $modulesConfig['visualize']->usesymlinks;
+    $pwapp = $modulesConfig['visualize']->pwapp;
     if(!isset($useparaview) || !$useparaview)
       {
       throw new Zend_Exception('Please unable paraviewweb');
@@ -38,48 +42,26 @@ class Visualize_ParaviewController extends Visualize_AppController
     if(!isset($paraviewworkdir) || empty($paraviewworkdir))
       {
       throw new Zend_Exception('Please set the paraview work directory');
-      }
-    
-    if(isset($customtmp) && !empty($customtmp))
-      {
-      $tmp_dir = $customtmp;
-      if(!file_exists($tmp_dir) || !is_writable($tmp_dir))
-        {
-        throw new Zend_Exception('Unable to access temp dir');
-        }
-      }
-    else
-      {
-      if(!file_exists(BASE_PATH.'/tmp/visualize'))
-        {
-        mkdir(BASE_PATH.'/tmp/visualize');
-        }
-      $tmp_dir = BASE_PATH.'/tmp/visualize';
-      }
+      }    
+   
       
-    $dir = opendir($tmp_dir);
-    while($entry = readdir($dir)) 
-      { 
-      if(is_dir($tmp_dir.'/'.$entry) && filemtime($tmp_dir.'/'.$entry) < strtotime('-1 hours') && !in_array($entry, array('.','..')))
-        {
-        if(strpos($entry, 'Paraview') !== false)
-          {
-          $this->rrmdir($tmp_dir.'/'.$entry);
-          }
-        }
-      }
-    do
-      {
-      $tmpFolderName = 'ParaviewWeb_'.mt_rand(0, 9999999);
-      $path = $tmp_dir.'/'.$tmpFolderName;
-      }
-    while (!mkdir($path));
+    $pathArray = $this->ModuleComponent->Main->createParaviewPath();
+    $path = $pathArray['path'];
+    $tmpFolderName = $pathArray['foderName'];
     
     $revision = $this->Item->getLastRevision($item);
     $bitstreams = $revision->getBitstreams();
     foreach($bitstreams as $bitstream)
       {
-      copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
+      if($usesymlinks)
+        {
+        symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
+        }
+      else
+        {
+        copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
+        }
+        
       $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
       if($ext != 'pvsm')
         {
@@ -117,34 +99,18 @@ class Visualize_ParaviewController extends Visualize_AppController
       }
     $this->view->json['visualize']['url'] = $filePath;    
     $this->view->json['visualize']['width'] = $this->_getParam('width');    
-    $this->view->json['visualize']['height'] = $this->_getParam('height');        
+    $this->view->json['visualize']['height'] = $this->_getParam('height');   
+    $this->view->width = $this->_getParam('width');    
+    $this->view->height = $this->_getParam('height');   
+    $this->view->fileLocation= $filePath;
+    $this->view->pwapp= $pwapp;
     $this->view->usewebgl = $userwebgl;
+    $this->view->itemDao = $item;
+    $this->view->screenshotPath = '/data/visualize/_'.$item->getKey().'_1.png';
+    $this->view->useScreenshot = file_exists(BASE_PATH.$this->view->screenshotPath);
+    $this->view->loadState = $this->view->json['visualize']['openState'];
     }
     
-  /** recursively delete a folder*/
-  private function rrmdir($dir) 
-    { 
-    if(is_dir($dir)) 
-      {      
-      $objects = scandir($dir); 
-      }
-
-    foreach($objects as $object) 
-      { 
-      if($object != "." && $object != "..") 
-        { 
-        if(filetype($dir."/".$object) == "dir")
-          {
-          $this->rrmdir($dir."/".$object);
-          }
-        else 
-          {
-          unlink($dir."/".$object); 
-          }
-        } 
-      } 
-     reset($objects); 
-     rmdir($dir); 
-   }
+  
 } // end class
 ?>

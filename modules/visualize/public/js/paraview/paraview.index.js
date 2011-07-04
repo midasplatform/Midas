@@ -41,11 +41,12 @@ var serverUrl = "/PWService";
       // Create renderers
       switchRenderer(true);
       $('img.visuLoading').hide();
+      $('img#bigScreenshot').hide();
       $('#renderercontainer').show();
   }
 
 
- $(document).ready(function() {
+$(window).load(function() {
    json = jQuery.parseJSON($('div.jsonContent').html());
    start();
   });

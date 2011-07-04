@@ -16,6 +16,12 @@ img.toolButton{
   top: 5px;
   cursor:pointer;
 }
+a#linkParaviewApplication{
+  z-index: 100;
+  position: absolute; 
+  top: 5px;
+  cursor:pointer;
+}
 
 #renderercontainer{
   z-index: 2; overflow: hidden; position: absolute; top: -30px; right: 0px; left: 0px; bottom: 0px;
