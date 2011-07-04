@@ -23,13 +23,16 @@ class Visualize_ConfigForm extends AppForm
 
     $useparaview = new Zend_Form_Element_Checkbox("useparaview");  
     $userwebgl = new Zend_Form_Element_Checkbox("userwebgl");  
+    $usesymlinks = new Zend_Form_Element_Checkbox("usesymlinks");  
     $paraviewworkdir = new Zend_Form_Element_Text("paraviewworkdir");  
     $customtmp = new Zend_Form_Element_Text("customtmp");  
+    $PWApp = new Zend_Form_Element_Text("pwapp");  
+    $pvbatch = new Zend_Form_Element_Text("pvbatch");  
     
     $submit = new  Zend_Form_Element_Submit('submitConfig');
     $submit ->setLabel('Save configuration');
      
-    $form->addElements(array($userwebgl, $paraviewworkdir, $customtmp, $useparaview, $submit));
+    $form->addElements(array($pvbatch, $PWApp, $usesymlinks, $userwebgl, $paraviewworkdir, $customtmp, $useparaview, $submit));
     return $form;
     }
     
