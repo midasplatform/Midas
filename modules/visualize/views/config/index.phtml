@@ -46,6 +46,18 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
               {$this->configForm['userwebgl']}<br/><br/>
             </div>
             <div >
+              <label for='userwebgl'>Use Symlinks (instead of copying files. Only works with samba)</label>
+              {$this->configForm['usesymlinks']}<br/><br/>
+            </div>
+            <div >
+              <label for='userwebgl'>PWapp URL</label>
+              {$this->configForm['pwapp']}<br/><br/>
+            </div>
+            <div >
+              <label for='userwebgl'>pvbatch location</label>
+              {$this->configForm['pvbatch']}<br/><br/>
+            </div>
+            <div >
               <label for='paraviewworkdir'>ParaviewWeb server Work Dir </label>
               {$this->configForm['paraviewworkdir']}
               <br/>
@@ -56,8 +68,21 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
           </div>
        </form>";
        ?>
-    
- 
+    <br/>
+    <br/>
+    If you want to use symlinks. Please enable "follow symlinks" option in you samba configuration (smb.conf):
+    <pre>
+    [foo]
+       comment = FooComment
+       path = /foo
+       public = yes
+       writable =  no
+       printable = no
+       follow symlinks = yes
+       guest ok = yes
+       wide links = yes
+       unix extensions = no
+    </pre>
 </div>
 
 

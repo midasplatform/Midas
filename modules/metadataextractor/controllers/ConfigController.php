@@ -14,13 +14,13 @@ class Metadataextractor_ConfigController extends Metadataextractor_AppController
       throw new Zend_Exception("You should be an administrator");
       }
       
-    if(file_exists(BASE_PATH."/core/configs/metadataextractor.local.ini"))
+    if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
       {
       $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", true);
       }
     else
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/".$this->moduleName."/configs/module.ini', true);
+      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
       }
     $configForm = $this->ModuleForm->Config->createConfigForm();
     

@@ -40,7 +40,10 @@ class Visualize_ConfigController extends Visualize_AppController
     $formArray = $this->getFormAsArray($configForm);    
     $formArray['useparaview']->setValue($applicationConfig['global']['useparaview']);
     $formArray['userwebgl']->setValue($applicationConfig['global']['userwebgl']);
+    $formArray['pwapp']->setValue($applicationConfig['global']['pwapp']);
     $formArray['customtmp']->setValue($applicationConfig['global']['customtmp']);
+    $formArray['usesymlinks']->setValue($applicationConfig['global']['usesymlinks']);
+    $formArray['pvbatch']->setValue($applicationConfig['global']['pvbatch']);
     $formArray['paraviewworkdir']->setValue($applicationConfig['global']['paraviewworkdir']);
     
     $this->view->configForm = $formArray;
@@ -63,6 +66,9 @@ class Visualize_ConfigController extends Visualize_AppController
         $applicationConfig['global']['useparaview'] = $this->_getParam('useparaview');
         $applicationConfig['global']['customtmp'] = $this->_getParam('customtmp');
         $applicationConfig['global']['userwebgl'] = $this->_getParam('userwebgl');
+        $applicationConfig['global']['usesymlinks'] = $this->_getParam('usesymlinks');
+        $applicationConfig['global']['pwapp'] = $this->_getParam('pwapp');
+        $applicationConfig['global']['pvbatch'] = $this->_getParam('pvbatch');
         $applicationConfig['global']['paraviewworkdir'] = $this->_getParam('paraviewworkdir');
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$module.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));

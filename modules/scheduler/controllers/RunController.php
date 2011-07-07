@@ -30,6 +30,7 @@ class Scheduler_RunController extends Scheduler_AppController
 
   function indexAction()
     {
+    set_time_limit(0); 
     $this->disableLayout();
     $this->disableView();
     $jobs = $this->Scheduler_Job->getJobsToRun();
