@@ -238,7 +238,7 @@ class UpgradeComponent extends AppComponent
   /** execute de upgrade*/
   protected function _processFile($migration) 
     {
-    require_once BASE_PATH.'/core/MIDASUpgrade.php';
+    require_once BASE_PATH.'/core/models/MIDASUpgrade.php';
     $version = $migration['version'];
     $filename = $migration['filename'];
     $classname = $this->getClassName($filename);
