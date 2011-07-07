@@ -29,4 +29,5 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/library/CMake/CTestCustom.cmake.in
 include(CTest)
 set( SERVER_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 add_subdirectory(tests)
-
+add_subdirectory(core/tests)
+add_subdirectory(modules)

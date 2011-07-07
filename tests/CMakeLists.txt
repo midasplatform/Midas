@@ -24,6 +24,32 @@ function(add_midas_test TestName TestFile)
   ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/pgsql.ini)
 endfunction(add_midas_test)
 
+function(add_midas_mysql_test TestName TestFile)
+  IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini)
+    add_test(
+      Mysql${TestName}
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PHPUnit/mysqlPhpunit.php --bootstrap ${CMAKE_SOURCE_DIR}/tests/bootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
+    )
+    set_tests_properties(
+      Mysql${TestName} PROPERTIES
+      FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
+    )
+  ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini)  
+endfunction(add_midas_mysql_test)
+
+function(add_midas_pgsql_test TestName TestFile)
+   IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/pgsql.ini)
+    add_test(
+      Pgsql${TestName}
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PHPUnit/pgsqlPhpunit.php --bootstrap ${CMAKE_SOURCE_DIR}/tests/bootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
+    )
+    set_tests_properties(
+      Pgsql${TestName} PROPERTIES
+      FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
+    )
+  ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/pgsql.ini)
+endfunction(add_midas_pgsql_test)
+
 function(add_midas_style_test TestName TestDir)
   add_test(
     ${TestName}
@@ -35,14 +61,6 @@ function(add_midas_style_test TestName TestDir)
   )
 endfunction(add_midas_style_test)
 
+add_midas_style_test( StyleTestsControllerTestCase ${CMAKE_SOURCE_DIR}/tests/ControllerTestCase.php )
+add_midas_style_test( StyleTestsDatabaseTestCase ${CMAKE_SOURCE_DIR}/tests/DatabaseTestCase.php )
 
-add_midas_style_test( StyleCoreAppController ${CMAKE_SOURCE_DIR}/core/AppController.php )
-add_midas_style_test( StyleCoreAppComponent ${CMAKE_SOURCE_DIR}/core/AppComponent.php )
-add_midas_style_test( StyleCoreAppFilters ${CMAKE_SOURCE_DIR}/core/AppFilters.php )
-add_midas_style_test( StyleCoreAppForm ${CMAKE_SOURCE_DIR}/core/AppForm.php )
-add_midas_style_test( StyleCoreBootstrap ${CMAKE_SOURCE_DIR}/core/Bootstrap.php )
-add_midas_style_test( StyleCoreInclude ${CMAKE_SOURCE_DIR}/core/include.php )
-add_midas_style_test( StyleIndex ${CMAKE_SOURCE_DIR}/index.php )
-add_midas_style_test( StyleLibraryMidas ${CMAKE_SOURCE_DIR}/library/MIDAS )
-
-add_subdirectory(core)

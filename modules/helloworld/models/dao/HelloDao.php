@@ -10,9 +10,9 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+/** demo dao*/
 class Helloworld_HelloDao extends AppDao
   {
-    public $_model='Hello';
-    public $_module='helloworld';
+  public $_model = 'Hello';
+  public $_module = 'helloworld';
   }
-?>
