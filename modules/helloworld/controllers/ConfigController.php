@@ -9,13 +9,13 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-
+/** demo config controller*/
 class Helloworld_ConfigController extends Helloworld_AppController
 {
-
-   function indexAction()
+  /** index actop, */
+  function indexAction()
     {
-    if(!$this->logged||!$this->userSession->Dao->getAdmin()==1)
+    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
       {
       throw new Zend_Exception("You should be an administrator");
       }

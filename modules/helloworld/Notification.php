@@ -1,6 +1,6 @@
 <?php
 /** notification manager*/
-class Api_Notification extends MIDAS_Notification
+class Helloworld_Notification extends MIDAS_Notification
   {
   public $_models=array('User');
   

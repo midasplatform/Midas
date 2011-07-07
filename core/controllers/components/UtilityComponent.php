@@ -307,4 +307,53 @@ class UtilityComponent extends AppComponent
     return true;
     }
     
+    
+  /** install a module */
+  public function installModule($moduleName)
+    {
+    // TODO, The module installation process needs some improvment.
+    $allModules = $this->getAllModules();
+    $version = $allModules[$moduleName]->version;
+    try
+      {
+      switch(Zend_Registry::get('configDatabase')->database->adapter)
+        {
+        case 'PDO_MYSQL':
+          if(file_exists(BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$version.'.sql'))
+            {
+            $this->run_mysql_from_file(BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$version.'.sql',
+                                       Zend_Registry::get('configDatabase')->database->params->host,
+                                       Zend_Registry::get('configDatabase')->database->params->username,
+                                       Zend_Registry::get('configDatabase')->database->params->password,
+                                       Zend_Registry::get('configDatabase')->database->params->dbname,
+                                       Zend_Registry::get('configDatabase')->database->params->port);
+            }
+          break;
+        case 'PDO_PGSQL':
+          if(file_exists(BASE_PATH.'/modules/'.$moduleName.'/database/pgsql/'.$version.'.sql'))
+            {
+            $this->run_pgsql_from_file(BASE_PATH.'/modules/'.$moduleName.'/database/pgsql/'.$version.'.sql',
+                                       Zend_Registry::get('configDatabase')->database->params->host,
+                                       Zend_Registry::get('configDatabase')->database->params->username,
+                                       Zend_Registry::get('configDatabase')->database->params->password,
+                                       Zend_Registry::get('configDatabase')->database->params->dbname,
+                                       Zend_Registry::get('configDatabase')->database->params->port);
+            }
+          break;
+        default:
+          break;
+        }
+      }
+    catch(Zend_Exception $exc)
+      {
+      $this->getLogger()->warn($exc->getMessage());
+      }
+      
+    require_once dirname(__FILE__).'/UpgradeComponent.php';
+    $upgrade = new UpgradeComponent();
+    $db = Zend_Registry::get('dbAdapter');
+    $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
+    $upgrade->initUpgrade($moduleName, $db, $dbtype);
+    $upgrade->upgrade($version);
+    }    
 } // end class

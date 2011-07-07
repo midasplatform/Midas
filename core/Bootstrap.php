@@ -81,7 +81,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         'driver_options' => $pdoParams);
       if($configGlobal->environment == "production")
         {
-        Zend_Loader::loadClass("ProductionDbProfiler", BASE_PATH . '/library/MIDAS/models/profiler');
+        Zend_Loader::loadClass("ProductionDbProfiler", BASE_PATH . '/core/models/profiler');
         $params['profiler'] = new ProductionDbProfiler();
         }
       $db = Zend_Db::factory($configDatabase->database->adapter, $params);
