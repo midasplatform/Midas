@@ -26,8 +26,8 @@ define('START_TIME',microtime(true));
 Zend_Session::$_unitTestEnabled = true;
 Zend_Session::start();
 
-require_once 'core/ControllerTestCase.php';
-require_once 'core/DatabaseTestCase.php';
+require_once 'ControllerTestCase.php';
+require_once 'DatabaseTestCase.php';
 
 
 Zend_Registry::set('logger', null);

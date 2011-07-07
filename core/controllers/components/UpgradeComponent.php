@@ -238,7 +238,7 @@ class UpgradeComponent extends AppComponent
   /** execute de upgrade*/
   protected function _processFile($migration) 
     {
-    require_once BASE_PATH.'/library/MIDAS/models/MIDASUpgrade.php';
+    require_once BASE_PATH.'/core/MIDASUpgrade.php';
     $version = $migration['version'];
     $filename = $migration['filename'];
     $classname = $this->getClassName($filename);
@@ -248,7 +248,7 @@ class UpgradeComponent extends AppComponent
       throw new Zend_Exception("Could not find class '".$classname."' in file '".$filename."'");
       }
       
-    $class = new $classname($this->db, $this->module);
+    $class = new $classname($this->db, $this->module, $this->dbtype);
     $class->preUpgrade();
     $dbtypeShort = $this->dbtypeShort;
     $class->$dbtypeShort();

@@ -22,7 +22,6 @@ class FeedDao extends AppDao
   public function getRessource()
     {
     $type = $this->getType();
-    require_once BASE_PATH.'/library/MIDAS/models/ModelLoader.php';
     $modelLoader = new MIDAS_ModelLoader();
     switch($type)
       {

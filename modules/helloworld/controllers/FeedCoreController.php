@@ -9,30 +9,30 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-
-
+/** demo overwrite component */
 class Helloworld_FeedCoreController extends Helloworld_AppController
 {
 
-  public $_models=array('User');
-  public $_moduleModels=array('Hello');
-  public $_daos=array('Item');
-  public $_moduleDaos=array('Hello');
-  public $_components=array('Utility');
-  public $_moduleComponents=array('Hello');
-  public $_forms=array('Install');
-  public $_moduleForms=array('Index');
+  public $_models = array('User');
+  public $_moduleModels = array('Hello');
+  public $_daos = array('Item');
+  public $_moduleDaos = array('Hello');
+  public $_components = array('Utility');
+  public $_moduleComponents = array('Hello');
+  public $_forms = array('Install');
+  public $_moduleForms = array('Index');
   
   /**
    * @method initAction()
    *  Index Action (first action when we access the application)
    */
   function init()
-   {         
+    {         
   
-   } // end method indexAction
+    } // end method indexAction
 
-   function indexAction()
+  /** index action*/  
+  function indexAction()
     {
     $this->callCoreAction();
     } 

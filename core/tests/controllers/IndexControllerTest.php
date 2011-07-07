@@ -9,16 +9,22 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-/** demo config controller*/
-class Helloworld_ConfigController extends Helloworld_AppController
-{
-  /** index actop, */
-  function indexAction()
+/** test index controller*/
+class IndexControllerTest extends ControllerTestCase
+  {
+  /** init test*/
+  public function setUp()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
-    } 
-    
-}//end class
+    $this->setupDatabase(array('default'));
+    parent::setUp();
+    }
+
+  /** test index*/
+  public function testIndexAction()
+    {
+    $this->dispatchUrI("/index");
+    $this->assertController("feed");
+    $this->assertAction("index");   
+    }
+
+  }

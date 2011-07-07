@@ -10,11 +10,13 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+/** demo module form*/
 class Helloworld_IndexForm extends AppForm
 {
+  /** main config form */
   public function createIndexForm()
     {
-   $form = new Zend_Form;
+    $form = new Zend_Form;
 
     $form->setAction("")
           ->setMethod('post');
@@ -28,7 +30,7 @@ class Helloworld_IndexForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel('Submit');
      
-    $form->addElements(array($name,$submit));
+    $form->addElements(array($name, $submit));
     return $form;
     }
 } // end class
