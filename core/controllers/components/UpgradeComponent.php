@@ -205,14 +205,17 @@ class UpgradeComponent extends AppComponent
     else
       {
       $path = BASE_PATH."/core/configs/".$this->module.".local.ini";
-      $data = parse_ini_file($path, true);
-      if(file_exists($path.'.old'))
+      if(file_exists($path))
         {
-        unlink($path.'.old');
-        }      
-      rename($path, $path.'.old');
-      $data['global']['version'] = $migration['versionText'];
-      $utility->createInitFile($path, $data);
+        $data = parse_ini_file($path, true);
+        if(file_exists($path.'.old'))
+          {
+          unlink($path.'.old');
+          }      
+        rename($path, $path.'.old');
+        $data['global']['version'] = $migration['versionText'];
+        $utility->createInitFile($path, $data);
+        }
       }
     return true;
     }//end upgrade
