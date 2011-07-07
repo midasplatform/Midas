@@ -94,7 +94,7 @@ class AppController extends MIDAS_GlobalController
           if(count($tmp) == 2)
             {
             $userDao = $userModel->load($tmp[0]);
-            if($userDao!= false && md5($userDao->getPassword()) == $tmp[1])
+            if($userDao != false && md5($userDao->getPassword()) == $tmp[1])
               {
               $user->Dao = $userDao;
               }

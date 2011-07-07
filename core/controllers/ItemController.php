@@ -106,7 +106,7 @@ class ItemController extends AppController
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
-      if(isset($editMetadata)&& !empty($editMetadata) && $this->view->isModerator) //remove users from group
+      if(isset($editMetadata) && !empty($editMetadata) && $this->view->isModerator) //remove users from group
         {
         $metadataId = $this->_getParam('metadataId');
         $metadatatype = $this->_getParam('metadatatype');
