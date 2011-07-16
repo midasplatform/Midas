@@ -85,6 +85,18 @@ abstract class MetadataModelBase extends AppModel
       {
       throw new Zend_Exception("This metadata value already exists for that revision.");   
       }
+     
+    $item = $itemRevisionDao->getItem();
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $lastrevision = $itemModel->getLastRevision($item);
+    
+    //refresh zend search index
+    if($lastrevision->getKey() == $itemRevisionDao->getKey())
+      {
+      $itemModel->save($item);
+      }
+      
     $this->saveMetadataValue($metadataDao);
     } // end addMetadataValue()  
     

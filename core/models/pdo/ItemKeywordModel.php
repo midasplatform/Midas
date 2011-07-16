@@ -45,30 +45,21 @@ class ItemKeywordModel extends ItemKeywordModelBase
         }
       }
           
-    $searchterms = explode(' ', $searchterm);
-    // Apparently it's slow to do a like in a subquery so we run it first  
-    $sql = $this->database->select()->from(array('i' => 'itemkeyword'), array())
-                ->setIntegrityCheck(false);
-    $sql->join(array('i2k' => 'item2keyword'), 'i.keyword_id = i2k.keyword_id', array('item_id'));
-    
-    if(empty($searchterms))
+    require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
+    $component = new SearchComponent();    
+    $index = $component->getLuceneItemIndex();
+    Zend_Search_Lucene_Search_QueryParser::setDefaultOperator(Zend_Search_Lucene_Search_QueryParser::B_AND);
+    Zend_Search_Lucene::setResultSetLimit($limit * 3);
+    if($group && strpos($searchterm, ':') === false)
       {
-      return array();
+      $rowset = $index->find('title:'.$searchterm);
       }
-    
-    foreach($searchterms as $key => $term)
+    else
       {
-      if($key == 0)
-        {
-        $sql->where('value LIKE ?', '%'.$term.'%'); 
-        }
-      else
-        {
-        $sql->orWhere('value LIKE ?', '%'.$term.'%'); 
-        }
+      $rowset = $index->find($searchterm);
       }
-                                   
-    $rowset = $this->database->fetchAll($sql);
+
+    
     $return = array();
     $itemIdsCount = array();
     $itemIds = array();
@@ -85,14 +76,7 @@ class ItemKeywordModel extends ItemKeywordModelBase
       }
     foreach($itemIdsCount as $key => $n)
       {
-      if($n < count($searchterms))
-        {
-        unset($itemIdsCount[$key]);
-        }
-      else
-        {
-        $itemIds[] = $key;
-        }
+      $itemIds[] = $key;
       }
       
     if(empty($itemIds))

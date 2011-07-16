@@ -13,6 +13,26 @@ PURPOSE.  See the above copyright notices for more information.
 /** Search */
 class SearchComponent extends AppComponent
 {  
+  
+  /** get Zend Lucene index */
+  public function getLuceneItemIndex()
+    {
+    $path = BASE_PATH.'/tmp/cache/searchIndex';
+    if(!file_exists($path))
+      {
+      mkdir($path);
+      }
+    
+    $path .= '/item';
+    if(!file_exists($path))
+      {
+      mkdir($path);
+      Zend_Search_Lucene::create($path);
+      }
+      
+    return Zend_Search_Lucene::open($path);
+    }
+    
   /** search all the results */
   public function searchAll($userDao, $search, $order)
     {
