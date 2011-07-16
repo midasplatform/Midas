@@ -60,6 +60,17 @@ class ItemRevisionModel extends ItemRevisionModelBase
       }
 
     Zend_Registry::get('dbAdapter')->delete('metadatavalue', 'itemrevision_id = '.$revisiondao->getKey().' AND metadata_id = '.$metadataId);
+    
+    $item = $revisiondao->getItem();
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $lastrevision = $itemModel->getLastRevision($item);
+    
+    //refresh zend search index
+    if($lastrevision->getKey() == $revisiondao->getKey())
+      {
+      $itemModel->save($item);
+      }
     return;
     }  // end getMetadata
     

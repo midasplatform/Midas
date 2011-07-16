@@ -40,6 +40,34 @@ class AdminController extends AppController
     $this->disableView();
     }
     
+  /** run a task **/
+  function taskAction()
+    {
+    set_time_limit(0);
+    if(!$this->logged)
+      {
+      $this->haveToBeLogged();
+      return;
+      }
+    if(!$this->userSession->Dao->getAdmin() == 1)
+      {
+      throw new Zend_Exception("You should be an administrator");
+      }
+      
+    $task = $this->_getParam("task");
+    $params = $this->_getParam("params");
+    if(isset($params))
+      {
+      $params = JsonComponent::decode($params);
+      }
+      
+    $modules = Zend_Registry::get('notifier')->modules;
+    $tasks = Zend_Registry::get('notifier')->tasks;
+    call_user_func(array($modules[$tasks[$task]['module']],$tasks[$task]['method']), $params);
+    $this->disableLayout();
+    $this->disableView();
+    }
+    
   /** index*/
   function indexAction()
     {

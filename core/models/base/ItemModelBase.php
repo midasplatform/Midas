@@ -63,6 +63,40 @@ abstract class ItemModelBase extends AppModel
       }
     $dao->setDateUpdate(date('c'));
     parent::save($dao);
+    
+    require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
+    $component = new SearchComponent();    
+    $index = $component->getLuceneItemIndex();
+    
+    $hits = $index->find("item_id:".$dao->getKey());
+    foreach ($hits as $hit) 
+      {
+      $index->delete($hit->id);
+      }
+    $doc = new Zend_Search_Lucene_Document();
+    $doc->addField(Zend_Search_Lucene_Field::Text('title', $dao->getName()));
+    $doc->addField(Zend_Search_Lucene_Field::Keyword('item_id', $dao->getKey()));    
+    $doc->addField(Zend_Search_Lucene_Field::UnStored('description', $dao->getDescription()));    
+    
+    $modelLoad = new MIDAS_ModelLoader();
+    $revisionModel = $modelLoad->loadModel('ItemRevision');    
+    $revision = $this->getLastRevision($dao);
+    
+    $metadata = $revisionModel->getMetadata($revision);
+    $metadataString = '';
+    
+    foreach($metadata as $m)
+      {
+      $doc->addField(Zend_Search_Lucene_Field::Keyword($m->getElement().'-'.$m->getQualifier(), $m->getValue())); 
+      if(!is_numeric($m->getValue()))
+        {
+        $metadataString.=' '. $m->getValue();
+        }
+      }
+      
+    $doc->addField(Zend_Search_Lucene_Field::Text('metadata', $metadataString));
+    $index->addDocument($doc);
+    $index->commit();
     }
     
   /** copy parent folder policies*/
