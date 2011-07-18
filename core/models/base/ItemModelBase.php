@@ -69,7 +69,7 @@ abstract class ItemModelBase extends AppModel
     $index = $component->getLuceneItemIndex();
     
     $hits = $index->find("item_id:".$dao->getKey());
-    foreach ($hits as $hit) 
+    foreach($hits as $hit) 
       {
       $index->delete($hit->id);
       }
@@ -82,19 +82,22 @@ abstract class ItemModelBase extends AppModel
     $revisionModel = $modelLoad->loadModel('ItemRevision');    
     $revision = $this->getLastRevision($dao);
     
-    $metadata = $revisionModel->getMetadata($revision);
-    $metadataString = '';
-    
-    foreach($metadata as $m)
-      {
-      $doc->addField(Zend_Search_Lucene_Field::Keyword($m->getElement().'-'.$m->getQualifier(), $m->getValue())); 
-      if(!is_numeric($m->getValue()))
+    if($revision != false)
+      {    
+      $metadata = $revisionModel->getMetadata($revision);
+      $metadataString = '';
+
+      foreach($metadata as $m)
         {
-        $metadataString.=' '. $m->getValue();
+        $doc->addField(Zend_Search_Lucene_Field::Keyword($m->getElement().'-'.$m->getQualifier(), $m->getValue())); 
+        if(!is_numeric($m->getValue()))
+          {
+          $metadataString .= ' '. $m->getValue();
+          }
         }
+
+      $doc->addField(Zend_Search_Lucene_Field::Text('metadata', $metadataString));
       }
-      
-    $doc->addField(Zend_Search_Lucene_Field::Text('metadata', $metadataString));
     $index->addDocument($doc);
     $index->commit();
     }
