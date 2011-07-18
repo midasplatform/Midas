@@ -63,7 +63,7 @@ class AdminController extends AppController
       
     $modules = Zend_Registry::get('notifier')->modules;
     $tasks = Zend_Registry::get('notifier')->tasks;
-    call_user_func(array($modules[$tasks[$task]['module']],$tasks[$task]['method']), $params);
+    call_user_func(array($modules[$tasks[$task]['module']], $tasks[$task]['method']), $params);
     $this->disableLayout();
     $this->disableView();
     }

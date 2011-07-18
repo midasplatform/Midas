@@ -210,7 +210,7 @@ class ItemModel extends ItemModelBase
     $index = $component->getLuceneItemIndex();
     
     $hits = $index->find("item_id:".$itemdao->getKey());
-    foreach ($hits as $hit) 
+    foreach($hits as $hit) 
       {
       $index->delete($hit->id);
       }
