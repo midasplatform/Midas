@@ -204,6 +204,17 @@ class ItemModel extends ItemModelBase
       $policy_user_model->delete($policy);
       }
       
+      
+    require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
+    $component = new SearchComponent();    
+    $index = $component->getLuceneItemIndex();
+    
+    $hits = $index->find("item_id:".$itemdao->getKey());
+    foreach($hits as $hit) 
+      {
+      $index->delete($hit->id);
+      }
+      
     parent::delete($itemdao);
     unset($itemdao->item_id);
     $itemdao->saved = false;

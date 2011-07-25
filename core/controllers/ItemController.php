@@ -113,7 +113,7 @@ class ItemController extends AppController
         $element = $this->_getParam('element');
         $qualifier = $this->_getParam('qualifier');
         $value = $this->_getParam('value');
-        if(isset($metadataId))
+        if(isset($metadataId) && !empty($metadataIds))
           {
           $this->ItemRevision->deleteMetadata($itemRevision, $metadataId);
           }

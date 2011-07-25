@@ -25,7 +25,7 @@ class MIDAS_Notifier
     }
     
   /** get Tasks */
-  public function getTaks()
+  public function getTasks()
     {
     return $this->tasks;
     }
