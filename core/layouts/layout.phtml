@@ -130,16 +130,40 @@ echo $this->doctype()
               <a href="#" > <?= $this->t('Help') ?></a>
             </li>
             <li>
-              <?php if($this->lang=='fr')
-                {
-                echo '<a href="'.$this->webroot.'?lang=en"><img src="'.$this->coreWebroot.'/public/images/icons/english.png" alt="English"/>';
-                }
-              else
-                {
-                echo '<a href="'.$this->webroot.'?lang=fr"><img src="'.$this->coreWebroot.'/public/images/icons/french.png" alt="French"/>';
-                }
+              
+                <a href="#" style="margin-right: 20px">
+                
+               <?php 
+               echo $this->t('My Language');
                 ?>
-              </a>
+              <img class="languageIcon" src="<?php echo $this->coreWebroot?>/public/images/icons/language.png" alt ="" /> 
+                </a>
+                <ul>
+                  <li>
+                  <?php 
+                  if($this->lang=='en')
+                    {
+                    echo '<a href="#"><b>English</b></a>';
+                    }
+                  else
+                    {
+                    echo '<a href="'.$this->webroot.'?lang=en">English</a>';
+                    }
+                    ?>
+                  </li>
+                  <li>
+                  <?php 
+                  if($this->lang=='fr')
+                    {
+                    echo '<a href="#"><b>Français</b></a>';
+                    }
+                  else
+                    {
+                    echo '<a href="'.$this->webroot.'?lang=fr">Français</a>';
+                    }
+                    ?>
+                  </li>
+                </ul>
             </li>
           </ul>
         </div>
