@@ -260,7 +260,6 @@ class InstallController extends AppController
     $formArray['description']->setValue($applicationConfig['global']['application.description']);
     $formArray['smartoptimizer']->setValue($applicationConfig['global']['smartoptimizer']);
     $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
-    $formArray['process']->setValue($applicationConfig['global']['processing']);
  
     $assetstrores = $this->Assetstore->getAll();
 
@@ -285,7 +284,6 @@ class InstallController extends AppController
       $applicationConfig['global']['defaultassetstore.id'] = $assetstrores[0]->getKey();
       $applicationConfig['global']['smartoptimizer'] = $form->getValue('smartoptimizer');
       $applicationConfig['global']['default.timezone'] = $form->getValue('timezone');
-      $applicationConfig['global']['processing'] = $form->getValue('process');
 
       $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
       $this->_redirect("/admin?checkRecentItem=true#tabs-modules");

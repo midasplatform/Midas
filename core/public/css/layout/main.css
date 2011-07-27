@@ -549,6 +549,13 @@ div.TopbarRight img.arrowUser{
   position:relative;
   top:1px;
 }
+
+div.TopbarRight img.languageIcon{
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
 div.TopbarRight  li li {
   display:block;
   float:none;
