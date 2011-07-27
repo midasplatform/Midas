@@ -112,11 +112,23 @@ class NotifyErrorComponent  extends AppComponent
             {
             return;
             }
-          header('content-type: text/plain');
+          
           if(count(ob_list_handlers()) > 0) 
             {
             ob_clean();
             }
+            
+          $db = Zend_Registry::get('dbAdapter');
+          $table = $db->listTables();
+          if(file_exists(BASE_PATH.'/core/configs/database.local.ini') && empty($table))
+            {
+            $fc = Zend_Controller_Front::getInstance();
+            $webroot = $fc->getBaseUrl();
+            echo "MIDAS is not installed. <a href='".$webroot."/install?reset=true'>Click here to reset MIDAS and go to the installation page.</a>";
+            return;
+            }
+            
+          header('content-type: text/plain');
           echo $this->getFatalErrorMessage($e);
         }
       $logger->crit($this->getFatalErrorMessage($e)); 
