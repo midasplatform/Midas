@@ -57,6 +57,7 @@ abstract class FolderModelBase extends AppModel
   abstract function getFolderExists($name, $parent);
   abstract function getByUuid($uuid);
   abstract function getRoot($folder);
+  abstract function getAll();
   
   /** Increment the view count */
   function incrementViewCount($folder)
