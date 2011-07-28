@@ -139,7 +139,7 @@ class ItemController extends AppController
       $i = 0;
       foreach($tmp as $key => $t)
         {
-        if($t['item_id'] == $itemDao->getKey())
+        if($t == $itemDao->getKey() || !is_numeric($t))
           {
           unset($tmp[$key]);
           continue;
@@ -151,9 +151,7 @@ class ItemController extends AppController
           }
         }
       $recentItems = array_reverse($tmp);
-      $itemDaoArray['item_id'] = $itemDao->getKey();
-      $itemDaoArray['name'] = $itemDao->getName();
-      $recentItems[] = $itemDaoArray;
+      $recentItems[] = $itemDao->getKey();
 
       setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($recentItems), time() + 60 * 60 * 24 * 30, '/'); //30 days
       }
