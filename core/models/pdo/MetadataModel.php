@@ -35,7 +35,7 @@ class MetadataModel extends MetadataModelBase
     {
     $rowset = $this->database->fetchAll($this->database->select());
     
-    $metadata = array();
+    $metadata = array('raw' => array(), 'sorted' => array());
     foreach($rowset as $row)
       {
       $dao = $this->initDao('Metadata', $row);

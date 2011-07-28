@@ -440,7 +440,7 @@ class MIDAS2MigrationComponent extends AppComponent
             }  
           $userDao = $User->getByEmail($email);
           
-          $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);  
+          $Folderpolicyuser->createPolicy($userDao, $folderDao, $policyValue);  
           }
         } 
       catch(Zend_Exception $e) 
