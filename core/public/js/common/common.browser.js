@@ -110,15 +110,15 @@
                 if(jsonResponse[0])
                   {
                     createNotive(jsonResponse[1],1500);
+                    node.remove();
+                    $( "div.MainDialog" ).dialog('close');
                     node.each(function(){
                       var children = childrenOf($(this));
-                      if(children!=undefined)
+                      if(children != undefined)
                         {
                         children.remove();
                         }
-                    });
-                    node.remove();
-                    $( "div.MainDialog" ).dialog('close');
+                    });                    
                   }
                 else
                   {

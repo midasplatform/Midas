@@ -55,8 +55,8 @@ class FolderController extends AppController
       {
       $name = $this->_getParam('name');
       
-      // Check ifa folder with the same name already exists for the same parent
-      if($this->Folder->getFolderExists($name, $folder->getParent()))
+      // Check if folder with the same name already exists for the same parent
+      if($folder->getName() != $name && $this->Folder->getFolderExists($name, $folder->getParent()))
         {
         throw new Zend_Exception('This name is already used');
         }
@@ -239,6 +239,9 @@ class FolderController extends AppController
     $folder_id = $this->_getParam('folderId');
     $folder = $this->Folder->load($folder_id);
     $header = "";
+    $form = $this->Form->Folder->createEditForm();
+    $formArray = $this->getFormAsArray($form);    
+    $this->view->form = $formArray;
     if(!isset($folder_id))
       {
       throw new Zend_Exception("Please set the folderId.");
@@ -265,6 +268,12 @@ class FolderController extends AppController
           }
         else
           {
+          // Check if folder with the same name already exists for the same parent
+          if($this->Folder->getFolderExists($name, $folder))
+            {
+            echo JsonComponent::encode(array(false, $this->t('This name is already used')));
+            return;
+            }
           $new_folder = $this->Folder->createFolder($name, '', $folder);
           $policyGroup = $folder->getFolderpolicygroup();
           $policyUser = $folder->getFolderpolicyuser();

@@ -20,7 +20,15 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/j
    <input type="hidden" name="folderId" value="<?php echo $this->parentFolder->getKey()?>"/>
       <div >
         <label for="name"><?php echo $this->t("Name")?></label>
-        <input type='text' name="name"/>
+        <?php echo $this->form['name']?>
+      </div>
+      <div >
+        <label for="description"><?php echo $this->t("Description")?></label>
+        <?php echo $this->form['description']?>
+      </div>
+      <div >
+        <label for="teaser"><?php echo $this->t("Teaser")?></label>
+        <?php echo $this->form['teaser']?>
       </div>
      
       <div>
