@@ -152,29 +152,28 @@ class AppController extends MIDAS_GlobalController
         $cookieData = $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->user_id);
         $this->view->recentItems = array();
         if(isset($cookieData) && file_exists(BASE_PATH.'/core/configs/database.local.ini')) //check if midas installed
-          {          
-          $this->view->recentItems = unserialize($cookieData); 
-          $check = $this->_getParam('checkRecentItem');
-          // check if recent items exit (every 5 minutes)
-          if(isset($check) || !isset($user->Dao->lastAction) || strtotime($user->Dao->lastAction) < strtotime("-5 minute"))
+          {  
+          $modelLoad = new MIDAS_ModelLoader();
+          $itemModel = $modelLoad->loadModel('Item');
+          $tmpRecentItems = unserialize($cookieData);
+          $recentItems = array();
+          if(!empty($tmpRecentItems) && is_array($tmpRecentItems))
             {
-            $modelLoad = new MIDAS_ModelLoader();
-            $itemModel = $modelLoad->loadModel('Item');
-            foreach($this->view->recentItems as $key => $t)
-              {
-              if(!is_array($t))
-                {
-                unset($this->view->recentItems[$key]);
-                continue;
-                }
-              $item = $itemModel->load($t['item_id']);
-              if($item == false)
-                {
-                unset($this->view->recentItems[$key]);
-                }
-              }
-            setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($this->view->recentItems), time() + 60 * 60 * 24 * 30, '/'); //30 days
+             foreach($tmpRecentItems as $key => $t)
+               {
+               if(is_numeric($t))
+                 {
+                 $item = $itemModel->load($t);
+                 if($item !== false)
+                   {
+                   $recentItems[] = $item->toArray();
+                   }
+                 }
+               }
             }
+
+          $this->view->recentItems = $recentItems; 
+          $check = $this->_getParam('checkRecentItem');
           } 
         $user->Dao->lastAction = date('c');
         }

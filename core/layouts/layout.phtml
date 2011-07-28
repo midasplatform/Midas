@@ -240,7 +240,7 @@ echo $this->doctype()
                 {
                 if(is_array($item))
                   {
-                  echo "<li onclick=\"location.replace('{$this->webroot}/item/{$item['item_id']}');\" class='recentItem' title='".  str_replace("'", '"', $item['name'])." | todo'><a  href='{$this->webroot}/item/{$item['item_id']}'>".$this->slicename($item['name'],20)."</a></li>";
+                  echo "<li onclick=\"location.replace('{$this->webroot}/item/{$item['item_id']}');\" class='recentItem' title='".  str_replace("'", '"', $item['name'])."'><a  href='{$this->webroot}/item/{$item['item_id']}'>".$this->slicename($item['name'],20)."</a></li>";
                   }                  
                 }
               echo '</ul>';
