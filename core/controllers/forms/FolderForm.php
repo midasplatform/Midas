@@ -22,11 +22,14 @@ class FolderForm extends AppForm
           ->setMethod('post');
 
     $name = new Zend_Form_Element_Text('name');
-    $name ->setRequired(true)
+    $name ->setAttribs(array('placeholder' => $this->t('Name of the folder'), 'autofocus' => 'autofocus', 'required' => 'required'))
+          ->setRequired(true)
           ->addValidator('NotEmpty', true);
 
     $description = new Zend_Form_Element_Textarea('description');
+    $description ->setAttribs(array('placeholder' => $this->t('Optional')));
     $teaser = new Zend_Form_Element_Text('teaser');
+    $teaser ->setAttribs(array('placeholder' => $this->t('Optional')));
     $teaser->setAttrib('MAXLENGTH', '250');
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel($this->t("Save"));
