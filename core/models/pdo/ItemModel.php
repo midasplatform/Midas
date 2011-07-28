@@ -19,6 +19,25 @@ require_once BASE_PATH.'/core/models/base/ItemModelBase.php';
 class ItemModel extends ItemModelBase
 {
   
+  /** get All*/
+  function getAll()
+    {
+    $rowset = $this->database->fetchAll($this->database->select()->order(array('item_id DESC'))); 
+    $results = array();
+    foreach($rowset as $row)
+      {
+      $results[] = $this->initDao('Item', $row);
+      }
+    return $results;
+    }
+    
+  /** get by uuid*/
+  function getByUuid($uuid)
+    {
+    $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid)); 
+    $dao = $this->initDao(ucfirst($this->_name), $row);
+    return $dao;
+    }
   /**
    * Get Items where user policy exists and is != admin
    * @param type $userDao

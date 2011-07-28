@@ -17,8 +17,19 @@ require_once BASE_PATH.'/core/models/base/FolderModelBase.php';
  * \brief Pdo Model
  */
 class FolderModel extends FolderModelBase
-{
-  
+{  
+  /** get All*/
+  function getAll()
+    {
+    $rowset = $this->database->fetchAll($this->database->select()->order(array('folder_id DESC'))); 
+    $results = array();
+    foreach($rowset as $row)
+      {
+      $results[] = $this->initDao('Folder', $row);
+      }
+    return $results;
+    }
+    
   /** get by uuid*/
   function getByUuid($uuid)
     {
