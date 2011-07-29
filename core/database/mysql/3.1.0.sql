@@ -352,6 +352,35 @@ CREATE TABLE IF NOT EXISTS `metadata` (
   KEY `metadatatype_id` (`metadatatype`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
 
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','contributor','author','Author of the data');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','date','uploaded','Date when the data was uploaded');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','date','issued','Date when the data was released');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','date','created','Date when the data was created');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','identifier','citation','Citation of the data');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','identifier','uri','URI identifier');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','identifier','pubmed','PubMed identifier');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','identifier','doi','Digital Object Identifier');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','description','general','General description field');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','description','provenance','Provenance of the data');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','description','sponsorship','Sponsor of the data');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','description','publisher','Publisher of the data');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','subject','keyword','Keyword');
+INSERT INTO metadata (metadatatype,element,qualifier,description)
+VALUES ('0','subject','ocis','OCIS subject');
+
 -- --------------------------------------------------------
 
 --
