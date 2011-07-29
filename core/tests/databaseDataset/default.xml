@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
 
-	<folder folder_id="1" name="name Folder 1" description="Description Folder 1"   left_indice="1" right_indice="2"
+	<folder folder_id="1" name="name Folder 1" description="Description Folder 1"   left_indice="1" right_indice="2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72800'
 		parent_id="-1"/>
-	<folder folder_id="2" name="name Folder 2" description="Description Folder 2"  left_indice="3" right_indice="4"
+  <folderpolicygroup folder_id="1" group_id="0" policy='0' />
+	<folder folder_id="2" name="name Folder 2" description="Description Folder 2"  left_indice="3" right_indice="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72801'
 		parent_id="-1"/>
-	<folder folder_id="3" name="name Folder 3" description="Description Folder 3"  left_indice="5" right_indice="6"
+	<folder folder_id="3" name="name Folder 3" description="Description Folder 3"  left_indice="5" right_indice="6" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72802'
 		parent_id="-1"/>
 		
-	<folder folder_id="1000" name="User 1 name Folder 1"
+	<folder folder_id="1000" name="User 1 name Folder 1"  uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72760'
 		description="Description Folder 1" left_indice="1000" right_indice="1005"
 		parent_id="-1" />
 	<folderpolicyuser folder_id="1000" user_id="1" policy='2' />
-	<folder folder_id="1001" name="User 1 name Folder 2"
+	<folder folder_id="1001" name="User 1 name Folder 2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761'
 		description="Description Folder 2" left_indice="1001" right_indice="1002"
 		parent_id="1000" />
 	<folderpolicyuser folder_id="1001" user_id="1" policy='2' />
-	<folder folder_id="1002" name="User 1 name Folder 3"
+	<folder folder_id="1002" name="User 1 name Folder 3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72762'
 		description="Description Folder 3" left_indice="1003" right_indice="1004"
 		parent_id="1000" />
 	<folderpolicyuser folder_id="1002" user_id="1" policy='2' />
-	<folder folder_id="1003" name="Community test User 1 name Folder 1"
+	<folder folder_id="1003" name="Community test User 1 name Folder 1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72763'
 		description="Description Folder 1" left_indice="1006" right_indice="10011"
 		parent_id="-2" />
-	<folder folder_id="1004" name="Community test User 1 name Folder 2"
+	<folder folder_id="1004" name="Community test User 1 name Folder 2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72764'
 		description="Description Folder 2" left_indice="1007" right_indice="1008"
 		parent_id="1003" />
-	<folder folder_id="1005" name="Community test User 1 name Folder 3"
+	<folder folder_id="1005" name="Community test User 1 name Folder 3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72765'
 		description="Description Folder 3" left_indice="1009" right_indice="1010"
 		parent_id="1003" />
 		
@@ -51,19 +52,19 @@
 	<user2group group_id="3000" user_id="1" />
 	<user2group group_id="3002" user_id="1" />
 
-	<item item_id="1" name="name 1" description="Description 1" type="1" />
+	<item item_id="1" name="name 1" description="Description 1" type="1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
 	<itemrevision itemrevision_id="1" item_id="1" revision="1"
 		date="2011-01-27 12:09:02" user_id='1' changes="Description 1" />
 	<itemrevision itemrevision_id="3" item_id="1" revision="2"
 		date="2011-01-27 12:09:02" user_id='1' changes="Description 1" />
 	<itempolicygroup item_id="1" group_id="0" policy='0'  />
 	<item2folder  item_id="1" folder_id='1001' />
-	<item item_id="2" name="name 2" description="Description 2" type="4" />
+	<item item_id="2" name="name 2" description="Description 2" type="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72751' />
 	<itemrevision itemrevision_id="2" item_id="2" revision="1"
 		date="2011-01-27 12:09:02" user_id='1' changes="Description 1" />
 	<itempolicyuser item_id="2" user_id="1" policy='2' />
 	<item2folder item_id="2" folder_id='1001' />
-	<item item_id="3" name="name 3" description="Description 3" type="3" />
+	<item item_id="3" name="name 3" description="Description 3" type="3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72752' />
 
 
 

@@ -22,6 +22,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     {
     $this->bootstrap = array($this, 'appBootstrap');
     $this->loadElements();
+    $this->ModelLoader = new MIDAS_ModelLoader();
     parent::setUp();
     }
   
@@ -217,6 +218,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     $this->reset();
     $this->params = array();
     $this->frontController->setControllerDirectory(BASE_PATH . '/core/controllers', 'default');
+    $this->_initModule();
     }
    
   /** end test*/  
