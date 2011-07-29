@@ -159,17 +159,17 @@ class AppController extends MIDAS_GlobalController
           $recentItems = array();
           if(!empty($tmpRecentItems) && is_array($tmpRecentItems))
             {
-             foreach($tmpRecentItems as $key => $t)
-               {
-               if(is_numeric($t))
-                 {
-                 $item = $itemModel->load($t);
-                 if($item !== false)
-                   {
-                   $recentItems[] = $item->toArray();
-                   }
-                 }
-               }
+            foreach($tmpRecentItems as $key => $t)
+              {
+              if(is_numeric($t))
+                {
+                $item = $itemModel->load($t);
+                if($item !== false)
+                  {
+                  $recentItems[] = $item->toArray();
+                  }
+                }
+              }
             }
 
           $this->view->recentItems = $recentItems; 
