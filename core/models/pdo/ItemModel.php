@@ -19,7 +19,7 @@ require_once BASE_PATH.'/core/models/base/ItemModelBase.php';
 class ItemModel extends ItemModelBase
 {
   
-    /** Get the keyword from the search.
+  /** Get the keyword from the search.
    * @return Array of ItemDao */
   function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view')
     {
