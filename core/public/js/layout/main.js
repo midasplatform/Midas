@@ -206,12 +206,17 @@ $(function() {
     }
   });
   
+  var uploadPageLoaded = false;
   $('div.HeaderAction li.uploadFile').click(function()
   {
     if(json.global.logged)
     {
-     // loadDialog("upload","/upload/simpleupload");
-     // showDialog("Upload",false);
+    if(!uploadPageLoaded)
+      {
+      $('img#uploadAFile').hide();
+      $('img#uploadAFileLoadiing').show();
+      uploadPageLoaded = true;
+      }    
     }
     else
     {

@@ -21,7 +21,8 @@
     var ajaxSelectRequest='';
     function callbackSelect(node)
     {
-      var selectedElement = node.find('span:last').html();
+      console.log(node);
+      var selectedElement = node.find('span:eq(1)').html();
       
       var parent = true;
       var current = node;
@@ -39,7 +40,7 @@
           }
         if(parent != null)
           {
-          selectedElement = parent.find('span:last').html()+'/'+selectedElement;
+          selectedElement = parent.find('span:eq(1)').html()+'/'+selectedElement;
           current = parent;
           }
         }       
