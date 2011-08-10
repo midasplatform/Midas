@@ -213,6 +213,8 @@ class ItemModel extends ItemModelBase
                   ->setIntegrityCheck(false)
                   ->from(array('i' => 'item'))
                   ->where('privacy_status = ?', MIDAS_PRIVACY_PUBLIC)
+                  ->where('download != ?', 0)
+                  ->where('view != ?', 0)
                   ->order(array('i.view DESC'))
                   ->limit($limit);
     $rowset = $this->database->fetchAll($sql);
