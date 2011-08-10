@@ -16,7 +16,7 @@ class UploadControllerTest extends ControllerTestCase
   public function setUp()
     {
     $this->setupDatabase(array('default'));
-    $this->_models = array('User', 'Feed', 'Assetstore', 'ItemKeyword', 'Item');
+    $this->_models = array('User', 'Feed', 'Assetstore', 'Item');
     $this->_daos = array('User', 'Assetstore');
     parent::setUp();
     }
@@ -93,7 +93,7 @@ class UploadControllerTest extends ControllerTestCase
     $userDao = $this->User->load($usersFile[0]->getKey());
     $this->dispatchUrI($page, $userDao);
 
-    $search = $this->ItemKeyword->getItemsFromSearch('search.png', $userDao);
+    $search = $this->Item->getItemsFromSearch('search.png', $userDao);
     if(empty($search))
       {
       $this->fail('Unable to find item');
@@ -151,7 +151,7 @@ class UploadControllerTest extends ControllerTestCase
     $this->params['license'] = 0;
     $this->dispatchUrI("/upload/savelink", $userDao); 
     
-    $search = $this->ItemKeyword->getItemsFromSearch($this->params['name'], $userDao);
+    $search = $this->Item->getItemsFromSearch($this->params['name'], $userDao);
     if(empty($search))
       {
       $this->fail('Unable to find item');
@@ -172,7 +172,7 @@ class UploadControllerTest extends ControllerTestCase
     $this->params['license'] = 0;
     $this->dispatchUrI("/upload/saveuploaded", $userDao); 
     
-    $search = $this->ItemKeyword->getItemsFromSearch('search.png', $userDao);
+    $search = $this->Item->getItemsFromSearch('search.png', $userDao);
     if(empty($search))
       {
       $this->fail('Unable to find item');

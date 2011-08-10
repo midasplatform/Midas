@@ -15,8 +15,8 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class SearchController extends AppController
 {
-  public $_models = array('ItemKeyword', 'Item', 'Folder', 'User', 'Community', 'Group');
-  public $_daos = array('ItemKeyword', 'Item', 'Folder', 'User', 'Community');
+  public $_models = array('Item', 'Folder', 'User', 'Community', 'Group');
+  public $_daos = array('Item', 'Folder', 'User', 'Community');
   public $_components = array('Sortdao', 'Date', 'Utility', 'Search');
     
   /** Init Controller */
@@ -128,7 +128,7 @@ class SearchController extends AppController
     else
       {
       // Search for the items
-      $ItemsDao = $this->ItemKeyword->getItemsFromSearch($search, $this->userSession->Dao);
+      $ItemsDao = $this->Item->getItemsFromSearch($search, $this->userSession->Dao);
 
       // Search for the folders
       $FoldersDao = $this->Folder->getFoldersFromSearch($search, $this->userSession->Dao); 

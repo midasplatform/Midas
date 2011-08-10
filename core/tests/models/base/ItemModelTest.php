@@ -17,9 +17,9 @@ class ItemModelTest extends DatabaseTestCase
     {
     $this->setupDatabase(array());
     $this->_models = array(
-      'Item', 'ItemRevision', 'ItemKeyword'
+      'Item', 'ItemRevision'
     );
-    $this->_daos = array('ItemKeyword');
+    $this->_daos = array();
     parent::setUp();
     }
 
@@ -50,17 +50,4 @@ class ItemModelTest extends DatabaseTestCase
     $this->assertEquals($revision->getKey(), $revisionTmp->getKey());
     }
 
-  /** testAddKeyword*/
-  public function testAddKeyword()
-    {
-    $itemsFile = $this->loadData('Item', 'default');
-    $usersFile = $this->loadData('User', 'default');
-    $keyword = new ItemKeywordDao();
-    $keyword->setValue('testKeyword');
-    $keyword->setRelevance(1);
-    $this->ItemKeyword->save($keyword);
-    $this->Item->addKeyword($itemsFile[1], $keyword);
-    $keywords = $itemsFile[1]->getKeywords();
-    $this->assertEquals($keyword->getKey(), $keywords[0]->getKey());
-    }
   }

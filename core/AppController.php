@@ -406,11 +406,6 @@ class AppController extends MIDAS_GlobalController
   */
   var $Group;
   /**
-  * ItemKeyword Model
-  * @var ItemKeywordModelBase
-  */
-  var $ItemKeyword;
-  /**
   * Item Model
   * @var ItemModelBase
   */

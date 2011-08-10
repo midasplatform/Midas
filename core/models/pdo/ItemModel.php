@@ -19,6 +19,137 @@ require_once BASE_PATH.'/core/models/base/ItemModelBase.php';
 class ItemModel extends ItemModelBase
 {
   
+  /** Get the keyword from the search.
+   * @return Array of ItemDao */
+  function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view')
+    {
+    if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_PGSQL')
+      {
+      $group = false; //Postgresql don't like the sql request with group by
+      }
+    $isAdmin = false;
+    if($userDao == null)
+      {
+      $userId = -1;
+      }
+    else if(!$userDao instanceof UserDao)
+      {
+      throw new Zend_Exception("Should be a user.");
+      }
+    else
+      {
+      $userId = $userDao->getUserId();
+      if($userDao->isAdmin())
+        {
+        $isAdmin = true;
+        }
+      }
+          
+    require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
+    $component = new SearchComponent();    
+    $index = $component->getLuceneItemIndex();
+    Zend_Search_Lucene_Search_QueryParser::setDefaultOperator(Zend_Search_Lucene_Search_QueryParser::B_AND);
+    Zend_Search_Lucene::setResultSetLimit($limit * 3);
+    if($group && strpos($searchterm, ':') === false)
+      {
+      $rowset = $index->find('title:'.$searchterm);
+      }
+    else
+      {
+      $rowset = $index->find($searchterm);
+      }
+
+    
+    $return = array();
+    $itemIdsCount = array();
+    $itemIds = array();
+    foreach($rowset as $row)
+      {
+      if(isset($itemIdsCount[$row->item_id]))
+        {
+        $itemIdsCount[$row->item_id]++;
+        }
+      else
+        {
+        $itemIdsCount[$row->item_id] = 1;
+        }
+      }
+    foreach($itemIdsCount as $key => $n)
+      {
+      $itemIds[] = $key;
+      }
+      
+    if(empty($itemIds))
+      {
+      return array();
+      }
+    $sql = $this->database->select();
+    if($group)
+      {
+      $sql->from(array('i' => 'item'), array('item_id', 'name', 'count(*)'));
+      }
+    else
+      {
+      $sql->from(array('i' => 'item'));
+      }
+              
+    if(!$isAdmin)
+      {
+      $sql ->joinLeft(array('ipu' => 'itempolicyuser'), '
+                    i.item_id = ipu.item_id AND '.$this->database->getDB()->quoteInto('ipu.policy >= ?', MIDAS_POLICY_READ).'
+                       AND '.$this->database->getDB()->quoteInto('ipu.user_id = ? ', $userId).' ', array())
+          ->joinLeft(array('ipg' => 'itempolicygroup'), '
+                         i.item_id = ipg.item_id AND '.$this->database->getDB()->quoteInto('ipg.policy >= ?', MIDAS_POLICY_READ).'
+                             AND ( '.$this->database->getDB()->quoteInto('ipg.group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                                  ipg.group_id IN (' .new Zend_Db_Expr(
+                                  $this->database->select()
+                                       ->setIntegrityCheck(false)
+                                       ->from(array('u2g' => 'user2group'),
+                                              array('group_id'))
+                                       ->where('u2g.user_id = ?', $userId)
+                                       ) .'))', array())
+          ->where(
+           '(
+            ipu.item_id is not null or
+            ipg.item_id is not null)'
+            );
+      }
+    $sql->setIntegrityCheck(false)  
+          ->where('i.item_id IN   (?)', $itemIds)             
+          ->limit($limit);
+    
+    if($group)
+      {
+      $sql->group('i.name');
+      }
+      
+    switch($order)
+      {
+      case 'name':
+        $sql->order(array('i.name ASC'));
+        break;
+      case 'date':
+        $sql->order(array('i.date_update ASC'));
+        break;
+      case 'view': 
+      default:
+        $sql->order(array('i.view DESC'));
+        break;
+      }
+    $rowset = $this->database->fetchAll($sql);
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->initDao('Item', $row);
+      if(isset($row['count(*)']))
+        {
+        $tmpDao->count = $row['count(*)'];
+        }
+      $return[] = $tmpDao;
+      unset($tmpDao);
+      }
+    return $return;
+    } // end getItemsFromSearch()
+  
   /** get All*/
   function getAll()
     {
@@ -202,13 +333,7 @@ class ItemModel extends ItemModelBase
       {
       $revision_model->delete($revision);
       }
-      
-    $keywords = $itemdao->getKeywords();
-    foreach($keywords as $keyword)
-      {
-      $this->removeKeyword($itemdao, $keyword);
-      }
-      
+            
     $policy_group_model = $this->ModelLoader->loadModel('Itempolicygroup');
     $policiesGroup = $itemdao->getItempolicygroup();
     foreach($policiesGroup as $policy)
@@ -416,36 +541,5 @@ class ItemModel extends ItemModelBase
                                               ->setIntegrityCheck(false)
                                               ));
     }
-
-
-  /** Add a keyword to an item
-   * @return void*/
-  function addKeyword($itemdao, $keyworddao)
-    {
-    if(!$itemdao instanceof ItemDao)
-      {
-      throw new Zend_Exception("First argument should be an item");
-      }
-    if(!$keyworddao instanceof ItemKeywordDao)
-      {
-      throw new Zend_Exception("Second argument should be a keyword");
-      }
-    $this->database->link('keywords', $itemdao, $keyworddao);
-    } // end addKeyword
-    
-  /** Remove a keyword to an item
-   * @return void*/
-  function removeKeyword($itemdao, $keyworddao)
-    {
-    if(!$itemdao instanceof ItemDao)
-      {
-      throw new Zend_Exception("First argument should be an item");
-      }
-    if(!$keyworddao instanceof ItemKeywordDao)
-      {
-      throw new Zend_Exception("Second argument should be a keyword");
-      }
-    $this->database->removeLink('keywords', $itemdao, $keyworddao);
-    } // end addKeyword
 }  // end class
 ?>
