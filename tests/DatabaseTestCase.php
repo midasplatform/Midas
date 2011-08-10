@@ -255,11 +255,6 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
    */
   var $Group;
   /**
-   * ItemKeyword Model
-   * @var ItemKeywordModel
-   */
-  var $ItemKeyword;
-  /**
    * Item Model
    * @var ItemModel
    */

@@ -35,7 +35,6 @@ abstract class ItemModelBase extends AppModel
       'uuid' => array('type' => MIDAS_DATA),
       'folders' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Folder', 'table' => 'item2folder', 'parent_column' => 'item_id', 'child_column' => 'folder_id'),
       'revisions' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'ItemRevision', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
-      'keywords' => array('type' => MIDAS_MANY_TO_MANY, 'model' => 'ItemKeyword', 'table' => 'item2keyword', 'parent_column' => 'item_id', 'child_column' => 'keyword_id'),
       'itempolicygroup' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Itempolicygroup', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
       'itempolicyuser' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Itempolicyuser', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
       );
@@ -51,6 +50,7 @@ abstract class ItemModelBase extends AppModel
   abstract function getRandomThumbnails($userDao = null, $policy = 0, $limit = 10, $thumbnailFilter = false);
   abstract function getByUuid($uuid);
   abstract function getAll();
+  abstract function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view');
   
   /** save */
   public function save($dao)

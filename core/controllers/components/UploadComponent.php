@@ -109,7 +109,6 @@ class UploadComponent extends AppComponent
     $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
     $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
     $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
-    $itemKeywordModel = $modelLoad->loadModel('ItemKeyword');
     
     if($userDao == null)
       {
@@ -152,30 +151,7 @@ class UploadComponent extends AppComponent
     $itemRevisionDao->setUser_id($userDao->getKey());
     $itemRevisionDao->setDate(date('c'));
     $itemRevisionDao->setLicense(null);
-    $itemModel->addRevision($item, $itemRevisionDao);
-
-    // Set the keyword for the item
-    Zend_Loader::loadClass("ItemKeywordDao", BASE_PATH . '/core/models/dao');
-    $keyword = new ItemKeywordDao();
-    $keyword->setValue($name);
-    $itemKeywordModel->insertKeyword($keyword);
-    $itemModel->addKeyword($item, $keyword);  
-
-    $tmp = str_replace('.', ' ', $name);
-    $tmp = str_replace('_', ' ', $tmp);
-    $tmp = str_replace('-', ' ', $tmp);
-
-    $keywords = explode(' ', $tmp);
-    if(count($keywords) > 1)
-      {
-      foreach($keywords as $key => $value)
-        {
-        $keyword = new ItemKeywordDao();
-        $keyword->setValue($value);
-        $itemKeywordModel->insertKeyword($keyword);
-        $itemModel->addKeyword($item, $keyword);  
-        }
-      }      
+    $itemModel->addRevision($item, $itemRevisionDao); 
 
     // Add bitstreams to the revision
     Zend_Loader::loadClass("BitstreamDao", BASE_PATH . '/core/models/dao');
@@ -210,7 +186,6 @@ class UploadComponent extends AppComponent
     $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
     $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
     $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
-    $itemKeywordModel = $modelLoad->loadModel('ItemKeyword');
     
     if($userDao == null)
       {
@@ -254,29 +229,7 @@ class UploadComponent extends AppComponent
     $itemRevisionDao->setDate(date('c'));
     $itemRevisionDao->setLicense($license);
     $itemModel->addRevision($item, $itemRevisionDao);
-
-    // Set the keyword for the item
-    Zend_Loader::loadClass("ItemKeywordDao", BASE_PATH . '/core/models/dao');
-    $keyword = new ItemKeywordDao();
-    $keyword->setValue($name);
-    $itemKeywordModel->insertKeyword($keyword);
-    $itemModel->addKeyword($item, $keyword);  
-
-    $tmp = str_replace('.', ' ', $name);
-    $tmp = str_replace('_', ' ', $tmp);
-    $tmp = str_replace('-', ' ', $tmp);
-
-    $keywords = explode(' ', $tmp);
-    if(count($keywords) > 1)
-      {
-      foreach($keywords as $key => $value)
-        {
-        $keyword = new ItemKeywordDao();
-        $keyword->setValue($value);
-        $itemKeywordModel->insertKeyword($keyword);
-        $itemModel->addKeyword($item, $keyword);  
-        }
-      }      
+ 
 
     // Add bitstreams to the revision
     Zend_Loader::loadClass("BitstreamDao", BASE_PATH . '/core/models/dao');

@@ -13,8 +13,8 @@ PURPOSE.  See the above copyright notices for more information.
 /** Upload Controller */
 class UploadController extends AppController
   {
-  public $_models = array('Assetstore', 'User', 'Item', 'ItemRevision', 'Folder', 'Itempolicyuser', "ItemKeyword", 'Itempolicygroup', 'Group', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Bitstream', 'Assetstore');
-  public $_daos = array('Assetstore', 'User', 'Item', 'ItemRevision', 'Bitstream', 'Folder', "ItemKeyword");
+  public $_models = array('Assetstore', 'User', 'Item', 'ItemRevision', 'Folder', 'Itempolicyuser', 'Itempolicygroup', 'Group', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Bitstream', 'Assetstore');
+  public $_daos = array('Assetstore', 'User', 'Item', 'ItemRevision', 'Bitstream', 'Folder');
   public $_components = array('Httpupload', 'Upload');
   public $_forms = array('Upload');
 

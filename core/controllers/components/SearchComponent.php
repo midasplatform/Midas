@@ -37,7 +37,7 @@ class SearchComponent extends AppComponent
   public function searchAll($userDao, $search, $order)
     {
     $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('ItemKeyword');
+    $itemModel = $modelLoad->loadModel('Item');
     $folderModel = $modelLoad->loadModel('Folder');
     $communityModel = $modelLoad->loadModel('Community');
     $userModel = $modelLoad->loadModel('User');
