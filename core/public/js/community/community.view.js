@@ -41,7 +41,7 @@
       genericCallbackDblClick(node);
     }
     
-        function callbackCheckboxes(node)
+   function callbackCheckboxes(node)
     {
       genericCallbackCheckboxes(node);
     }
