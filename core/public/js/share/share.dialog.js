@@ -140,7 +140,6 @@ $('a#setElementPrivateLink').click(function(){
           if(jsonResponse[0])
             {
               createNotive(jsonResponse[1],1500);
-              $( "div.MainDialog" ).dialog('close');
               loadDialog("sharing"+$(this).attr('type')+$(this).attr('element')+newPolicyId,"/share/dialog?type="+jsonShare.type+'&element='+jsonShare.element);
               showDialog(json.browse.share);
             }
@@ -151,7 +150,7 @@ $('a#setElementPrivateLink').click(function(){
        });
      itemShareSelected = true;
 
-     $( "div.MainDialog" ).dialog('close');
+
      }
    });
 

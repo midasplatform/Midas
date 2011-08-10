@@ -2,6 +2,24 @@ input#urlInput{
   width: 300px;
 }
 
+input#live_share_search{
+  width: 350px;
+}
+
+div#permissionEntity table{
+  width:330px;
+}
+
+div#permissionEntity table td.changePermissionSelect{
+  width:150px;
+}
+div#permissionEntity table td.changePermissionDelete{
+  width:30px;
+}
+div#permissionEntity table td.changePermissionSelectBox{
+  width:100px;
+}
+
 div#permissionsContent a{
   cursor: pointer;
   color: #56758B;
