@@ -16,8 +16,8 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class ImportController extends AppController
   {
-  public $_models = array('Item', 'Folder', 'ItemRevision', 'Assetstore', 'Folderpolicyuser', 'Itempolicyuser', 'ItemKeyword', 'Itempolicygroup', 'Group', 'Folderpolicygroup');
-  public $_daos = array('Item', 'Folder', 'ItemRevision', 'Bitstream', 'Assetstore', 'ItemKeyword');
+  public $_models = array('Item', 'Folder', 'ItemRevision', 'Assetstore', 'Folderpolicyuser', 'Itempolicyuser', 'Itempolicygroup', 'Group', 'Folderpolicygroup');
+  public $_daos = array('Item', 'Folder', 'ItemRevision', 'Bitstream', 'Assetstore');
   public $_components = array('Upload', 'Utility');
   public $_forms = array('Import', 'Assetstore');
 
@@ -151,28 +151,6 @@ class ImportController extends AppController
           $item = new ItemDao;
           $item->setName($fileInfo->getFilename());
           $this->Item->save($item);
-          
-          // Set the keyword for the item
-          $keyword = new ItemKeywordDao();
-          $keyword->setValue($fileInfo->getFilename());
-          $this->ItemKeyword->insertKeyword($keyword);
-          $this->Item->addKeyword($item, $keyword);  
-
-          $tmp = str_replace('.', ' ', $fileInfo->getFilename());
-          $tmp = str_replace('_', ' ', $tmp);
-          $tmp = str_replace('-', ' ', $tmp);
-
-          $keywords = explode(' ', $tmp);
-          if(count($keywords) > 1)
-            {
-            foreach($keywords as $key => $value)
-              {
-              $keyword = new ItemKeywordDao();
-              $keyword->setValue($value);
-              $this->ItemKeyword->insertKeyword($keyword);
-              $this->Item->addKeyword($item, $keyword);  
-              }
-            }  
           
           // Set the policy of the item
           $this->Itempolicyuser->createPolicy($this->userSession->Dao, $item, MIDAS_POLICY_ADMIN);    
