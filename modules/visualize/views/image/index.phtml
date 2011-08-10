@@ -1,0 +1,40 @@
+<?php  
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/js/jquery/iviewer/jquery.iviewer.css" />
+
+<?php
+echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/image/image.index.js');
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/jquery/iviewer/jquery.iviewer.min.js');
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/jquery/iviewer/jquery.mousewheel.min.js');
+?>
+<style> 
+    .viewer
+    {
+        width: 750px;
+        height: 650px;
+        border: 1px solid black;
+        position: relative;
+    }
+
+    .wrapper
+    {
+        overflow: hidden;
+    }
+</style> 
+
+<div class="wrapper"> 
+  <div id="viewer" class="viewer"></div> 
+</div>
+<div id='urlImage' style="display:none;"><?php echo $this->imageUrl?></div>
+<?php echo $this->headScript() ?>
