@@ -107,7 +107,7 @@ class ShareController extends AppController
           {
           if($changeType == 'group')
             {
-            $policyDao = $this->Folderpolicyuser->getPolicy($changePolicy, $element);  
+            $policyDao = $this->Folderpolicygroup->getPolicy($changePolicy, $element);  
             if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
               {
               echo JsonComponent::encode(array(false, $this->t('Error')));
@@ -125,9 +125,9 @@ class ShareController extends AppController
               echo JsonComponent::encode(array(false, $this->t('Error')));
               return;
               }
-            $this->Folderpolicygroup->delete($policyDao);
+            $this->Folderpolicyuser->delete($policyDao);
             $policyDao->setPolicy($changeVal);
-            $this->Folderpolicygroup->save($policyDao);
+            $this->Folderpolicyuser->save($policyDao);
             }
           }
         else
@@ -176,7 +176,7 @@ class ShareController extends AppController
           {
           if($removeType == 'group')
             {
-            $policyDao = $this->Folderpolicyuser->getPolicy($removePolicy, $element);
+            $policyDao = $this->Folderpolicygroup->getPolicy($removePolicy, $element);
             if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
               {
               echo JsonComponent::encode(array(false, $this->t('Error')));
@@ -192,7 +192,7 @@ class ShareController extends AppController
               echo JsonComponent::encode(array(false, $this->t('Error')));
               return;
               }
-            $this->Folderpolicygroup->delete($policyDao);
+            $this->Folderpolicyuser->delete($policyDao);
             }
           }
         else
