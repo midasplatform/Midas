@@ -43,9 +43,9 @@ foreach($this->groupPolicies as $policy)
       <img src='<?php echo $this->coreWebroot?>/public/images/icons/community.png'/>
       </td>
       <td class='changePermissionSelect'>
-        <?php echo (($policy->communityMemberGroup)?$policy->group->getCommunity()->getName():$policy->group->getName())?>
+        <?php echo $policy->group->getCommunity()->getName().' ('.$policy->group->getName().')'?>
       </td>
-      <td>
+      <td class='changePermissionSelectBox'>
    <?php
   if((!$this->isAdmin&&$policy->getPolicy()==MIDAS_POLICY_ADMIN))
     {
@@ -76,7 +76,7 @@ foreach($this->groupPolicies as $policy)
     }
     ?>
     </td>
-     <td>
+     <td class='changePermissionDelete'>
      <a class='removeShareLink'><img  src='<?php echo $this->coreWebroot?>/public/images/icons/close.png' alt=''/></a>
     </td>
     </tr>
@@ -90,10 +90,10 @@ foreach($this->userPolicies as $policy)
     <td>
      <img src='<?php echo $this->coreWebroot?>/public/images/icons/unknownUser-small.png'/>
     </td>
-    <td>
+    <td class='changePermissionSelect'>
       <?php echo $policy->user->getFullName()?>
     </td>
-    <td>
+    <td class='changePermissionSelectBox'>
   <?php
   if((!$this->isAdmin&&$policy->getPolicy()==MIDAS_POLICY_ADMIN)||$policy->user->getKey()==$this->userDao->getKey())
     {
@@ -123,7 +123,7 @@ foreach($this->userPolicies as $policy)
   echo "          </td>";
   if($policy->user->getKey()!=$this->userDao->getKey())
     {
-    echo "          <td>";
+    echo "          <td class='changePermissionDelete'>";
     echo "            <a class='removeShareLink' ><img src='{$this->coreWebroot}/public/images/icons/close.png' alt=''/></a>";
     echo "          </td>";
     }

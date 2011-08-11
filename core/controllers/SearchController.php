@@ -92,27 +92,23 @@ class SearchController extends AppController
 
       // Search for the communities
       $CommunitiesDao = $this->Community->getCommunitiesFromSearch($search, $this->userSession->Dao); 
-      
-      // Search for the groups
-      $GroupsDao = $this->Group->getGroupFromSearch($search); 
-      foreach($GroupsDao as $key => $group)
-        {
-        if(strpos($group->getName(), 'group of community') != false)
-          {
-          unset($GroupsDao[$key]);
-          continue;
-          }
-        if(isset($this->userSession->Dao) && $this->userSession->Dao->isAdmin())
+      $GroupsDao = array();
+      foreach($CommunitiesDao as $communitieDao)
+        {        
+        $groups = $communitieDao->getGroups(); 
+        if(!$this->Community->policyCheck($communitieDao, $this->userSession->Dao))
           {
           continue;
           }
-        $community = $group->getCommunity();
-        $GroupsDao[$key]->community = $community;
-        if(!$this->Community->policyCheck($community, $this->userSession->Dao))
+        foreach($groups as $key => $group)
           {
-          unset($GroupsDao[$key]);
+          $group->setName($communitieDao->getName().' ('.$group->getName().')');
+          $group->community = $communitieDao;
+          $GroupsDao[] = $group;
           }
         }
+        
+      $CommunitiesDao = array();
       // Search for the users
       $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao); 
       }
