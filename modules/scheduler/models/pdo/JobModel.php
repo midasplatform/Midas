@@ -54,5 +54,26 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
     return $return;
     }
     
+    
+    /** get jobs*/
+  public function getLastErrors($limit = 10)
+    {
+    $load = $this->getServerLoad();      
+    $sql = $this->database->select()
+          ->setIntegrityCheck(false)
+          ->where('status = ?', SCHEDULER_JOB_STATUS_FAILED)
+          ->order(array('fire_time DESC'))
+          ->limit($limit);
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->initDao('Job', $row, 'scheduler');
+      $return[] = $tmpDao;
+      unset($tmpDao);
+      }
+    return $return;
+    }
+    
 }  // end class
 ?>

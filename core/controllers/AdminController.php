@@ -26,6 +26,11 @@ class AdminController extends AppController
     $config = Zend_Registry::get('configGlobal'); //set admin part to english
     $config->application->lang = 'en';
     Zend_Registry::get('configGlobal', $config);
+    if($this->isDemoMode())
+      {
+      $this->disableView();
+      $this->render('unavailable');
+      }
     }
     
   /** reset Demo*/

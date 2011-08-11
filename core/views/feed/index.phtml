@@ -38,7 +38,7 @@ MIDAS integrates multimedia server technology with open-source data analysis and
     foreach($this->itemThumbnails as $item)
       {
       echo "<a href='{$this->webroot}/item/{$item->getKey()}'>";
-      echo "<img src='{$this->webroot}/{$item->getThumbnail()}' alt=''/>"; 
+      echo "<img qtip='".$item->getName()."' src='{$this->webroot}/{$item->getThumbnail()}' alt=''/>"; 
       echo "</a>";
       }
     echo '</div>';

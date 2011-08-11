@@ -174,7 +174,14 @@ class UserController extends AppController
       $previousUri = $this->_getParam('previousuri');
       if($form->isValid($this->getRequest()->getPost()))
         {
-        $notifications = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_AUTHENTIFICATION", array('email' => $form->getValue('email'), 'password' => $form->getValue('password')));
+        try
+          {
+          $notifications = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_AUTHENTIFICATION", array('email' => $form->getValue('email'), 'password' => $form->getValue('password')));
+          }
+        catch(Zend_Exception $exc)
+          {
+          $this->getLogger()->crit($exc->getMessage());
+          }
         
         if(!empty($notifications['ldap']) && $notifications['ldap'] != false)
           {
@@ -188,9 +195,8 @@ class UserController extends AppController
           }
         
         $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-        if($authLdap || $userDao != false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
-          {
-          
+        if($authLdap || $userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
+          {          
           $remember = $form->getValue('remerberMe');
           if(isset($remember) && $remember == 1)
             {
@@ -280,9 +286,16 @@ class UserController extends AppController
           {
           echo 'false';
           return;
+          }          
+
+        try
+          {
+          $notifications = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_AUTHENTIFICATION", array('email' => $entry, 'password' => $password));
           }
-          
-        $notifications = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_AUTHENTIFICATION", array('email' => $entry, 'password' => $password));
+        catch(Zend_Exception $exc)
+          {
+          $this->getLogger()->crit($exc->getMessage());
+          }
         if(!empty($notifications['ldap']) && $notifications['ldap'] != false)
           {
           echo "true";
