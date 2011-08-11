@@ -85,7 +85,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       require_once BASE_PATH . '/core/models/ModelLoader.php';
       $this->ModelLoader = new MIDAS_ModelLoader();
       $module = '';
-      if(isset($this->_mainData[$var]['module']) && $this->_mainData[$var]['module'] == 'core')
+      if(isset($this->_mainData[$var]['module']) && $this->_mainData[$var]['module'] != 'core')
         {
         $module = $this->_mainData[$var]['module'];
         }

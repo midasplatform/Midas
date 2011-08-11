@@ -33,7 +33,7 @@ foreach($this->modules as $name=>$module)
   echo "Current version: {$module['currentText']} <br/>";
   if($module['current']<$module['target'])
     {
-    echo "Need to upgrade to version: ".$module['targetText'];
+    echo "Need to upgrade to version: ".$module['targetText'].'<br/>';
     }
   }
   

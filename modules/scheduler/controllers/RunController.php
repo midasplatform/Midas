@@ -16,7 +16,7 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class Scheduler_RunController extends Scheduler_AppController
 {
-  public $_moduleModels=array('Job');
+  public $_moduleModels=array('Job', 'JobLog');
   public $_components=array('Json');
 
   /**
@@ -33,7 +33,21 @@ class Scheduler_RunController extends Scheduler_AppController
     set_time_limit(0); 
     $this->disableLayout();
     $this->disableView();
-    $jobs = $this->Scheduler_Job->getJobsToRun();
+    
+    $id = $this->_getParam('id');
+    if(isset($id))
+      {
+      $jobs = $this->Scheduler_Job->load($id);
+      if($jobs == false)
+        {
+        throw new Zend_Exception('Unable to load job');
+        }
+      $jobs = array($jobs);
+      }
+    else
+      {
+      $jobs = $this->Scheduler_Job->getJobsToRun();
+      }
     $modules = Zend_Registry::get('notifier')->modules;
     $tasks = Zend_Registry::get('notifier')->tasks;
     foreach($jobs as $job)
@@ -58,6 +72,7 @@ class Scheduler_RunController extends Scheduler_AppController
         {
         $job->setStatus(SCHEDULER_JOB_STATUS_FAILED);
         $this->Scheduler_Job->save($job);
+        $this->Scheduler_JobLog->saveLog($job, $exc->getMessage().' - '.$exc->getTraceAsString());
         continue;
         }
       if($job->getRunOnlyOnce() == 0)

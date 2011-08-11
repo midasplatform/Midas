@@ -73,11 +73,24 @@ class DemoComponent extends AppComponent
     $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.ini', true);
     $applicationConfig['global']['defaultassetstore.id'] = $assetstoreDao->getKey();    
     $applicationConfig['global']['demomode'] = true;    
-        
-    if(file_exists(BASE_PATH.'/core/configs/visualize.demo.local.ini'))
+    $applicationConfig['global']['environment'] = 'development';    
+    $applicationConfig['global']['application.name'] = 'MIDAS - Demo';    
+    $applicationConfig['global']['application.description'] = '';    
+    $applicationConfig['global']['application.keywords'] = '';      
+    
+    $enabledModules = array('visualize', 'oai', 'metadataextractor', 'api', 'scheduler', 'thumbnailcreator');
+    
+    foreach($enabledModules as $module)
       {
-      copy(BASE_PATH.'/core/configs/visualize.demo.local.ini', BASE_PATH.'/core/configs/visualize.local.ini');
-      $applicationConfig['module']['visualize'] = true;    
+      if(file_exists(BASE_PATH.'/core/configs/'.$module.'.demo.local.ini'))
+        {
+        copy(BASE_PATH.'/core/configs/'.$module.'.demo.local.ini', BASE_PATH.'/core/configs/'.$module.'.local.ini');
+        $applicationConfig['module'][$module] = true;    
+        }
+      else
+        {
+        unlink(BASE_PATH.'/core/configs/'.$module.'.local.ini');
+        }
       }
       
     require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';

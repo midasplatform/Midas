@@ -17,38 +17,49 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
 
 <div class="viewMain">
+  
+  <div class ="genericWrapperTopRight">
+         <?php
+          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+            echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+            echo $this->t('Back');  
+            echo "</a>";
+          echo '</div>';
+          
+        ?>
+    </div>
 
 
      <?php
       echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>Ldap Configuration:</h3>
-            <div >
+            <div qtip='This is the url to the ldap server. (required)'  >
               <label for='hostname'>Ldap Hostname</label>
               {$this->configForm['hostname']}
             </div>
-            <div >
+            <div qtip=\"This is the url to the backup server. Leave blank if you don't want to use a backup server.\" >
               <label for='hostname'>Backup Server</label>
               {$this->configForm['backup']}
             </div>
-            <div >
-              <label for='hostname'>Bind Dn</label>
+            <div qtip='This is the context object used to search on the directory. Example: cn=user,ou=people,dc=myorganization,dc=com'>
+              <label  for='hostname'>Bind Dn</label>
               {$this->configForm['bindn']}
             </div>
-            <div >
-              <label for='hostname'>Bind Password</label>
+            <div qtip='Password of the object context.' >
+              <label  for='hostname'>Bind Password</label>
               {$this->configForm['bindpw']}
             </div>
             <div >
-              <label for='basedn'>Base Dn</label>
+              <label  for='basedn'>Base Dn</label>
               {$this->configForm['basedn']}
             </div>
             <div >
               <label for='protocolVersion'>Ldap Protocol Version</label>
               {$this->configForm['protocolVersion']}
             </div>
-            <div >
-              <label for='search'>Search Attribute</label>
+            <div qtip=' This is the unique identifier field in the LDAP directory where the username is stored' >
+              <label  for='search'>Search Attribute</label>
               {$this->configForm['search']}
             </div>
             <div >

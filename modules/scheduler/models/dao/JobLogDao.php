@@ -10,9 +10,11 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-class Scheduler_AppModel extends MIDASModel
-{
-  public $moduleName='scheduler';
+class Scheduler_JobLogDao extends Scheduler_AppDao
+  {
+    public $_model='JobLog';
+    public $_module='scheduler';
+    
 
-}
+  }
 ?>

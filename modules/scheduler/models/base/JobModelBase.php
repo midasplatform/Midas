@@ -28,6 +28,7 @@ class Scheduler_JobModelBase extends Scheduler_AppModel
         'priority'=>  array('type'=>MIDAS_DATA),
         'status'=>  array('type'=>MIDAS_DATA),
         'params'=>  array('type'=>MIDAS_DATA),
+        'logs' => array('type' => MIDAS_ONE_TO_MANY, 'model' => 'JobLog', 'module' => 'scheduler', 'parent_column' => 'job_id', 'child_column' => 'job_id'),
         );
     $this->initialize(); // required
     } // end __construct()
