@@ -1,7 +1,9 @@
 		
     
     var swfu;
-      
+    
+    $('img#uploadAFile').show();
+    $('img#uploadAFileLoadiing').hide();
       function uploadPreStart(file)
       {
         swfu.setPostParams({"sid" : $('.sessionId').val(),"parent": $('#destinationId').val(),'license': $('select[name=licenseSelect]').val()});

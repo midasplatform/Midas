@@ -185,7 +185,8 @@ echo $this->doctype()
         <div class="HeaderAction">
           <ul>
             <li class="uploadFile" title="Upload" rel="<?php echo $this->webroot?>/upload/simpleupload">
-              <a href="#"><img src="<?= $this->coreWebroot ?>/public/images/icons/addfile.png" alt="Upload a file"/>
+              <a href="#"><img id="uploadAFile" src="<?= $this->coreWebroot ?>/public/images/icons/addfile.png" alt="Upload a file"/>
+              <img id="uploadAFileLoadiing" style="margin-top:5px;display:none;" src="<?= $this->coreWebroot ?>/public/images/icons/loading.gif" alt="Upload a file"/>
                 Upload
               </a>
             </li>
