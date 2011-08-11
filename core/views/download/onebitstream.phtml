@@ -25,6 +25,13 @@ $modified = gmdate('D, d M Y H:i:s').' GMT';
 header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 header("Last-Modified: $modified");
 
+// if pdf set the content-type acordingly
+if(!isset($contentType)&&pathinfo($this->name, PATHINFO_EXTENSION) == "pdf")
+  {
+  $contentType = 'application/pdf';
+  $enableContentDisposition = false;
+  }
+  
 if(!isset($contentType))
   {
   $contentType = 'application/octet-stream';
@@ -36,13 +43,8 @@ if(!isset($contentType)&&strlen($this->name)>4 && substr($this->name,strlen($thi
   $contentType = 'application/isp';
   }
   
-// if pdf set the content-type acordingly
-if(!isset($contentType)&&pathinfo($this->name, PATHINFO_EXTENSION) == "pdf")
-  {
-  $contentType = 'application/pdf';
-  $enableContentDisposition = false;
-  }
-  
+
+
 $agent = env('HTTP_USER_AGENT');
 if (preg_match('%Opera(/| )([0-9].[0-9]{1,2})%', $agent) || preg_match('/MSIE ([0-9].[0-9]{1,2})/', $agent))
   {

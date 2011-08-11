@@ -17,7 +17,6 @@ class Visualize_ImageController extends Visualize_AppController
   public function indexAction()
     {
     $this->disableLayout();
-    $this->disableView();
     $itemid = $this->_getParam('itemId');
     $item = $this->Item->load($itemid);
     
@@ -33,8 +32,10 @@ class Visualize_ImageController extends Visualize_AppController
       throw new Zend_Exception('Error');
       }
     $this->bistream = $bitstreams[0];
+    
+    $this->view->imageUrl = $this->view->webroot."/download?items=".$item->getKey();
 
-    echo "<img src='".$this->view->webroot."/download?items=".$item->getKey()."'/>";
+
     }
 } // end class
 ?>
