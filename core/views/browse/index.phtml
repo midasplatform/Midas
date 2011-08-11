@@ -28,7 +28,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       {
       ?>  
       <div class="itemBlock">
-      <a class="itemTitle" href="<?php echo $this->webroot?>/item/<?php echo $item->getItemId(); ?>"><?php echo $item->getName(); ?></a>
+      <a class="itemTitle" qtip="<?php echo str_replace('"', "'", $item->getDescription())?>" href="<?php echo $this->webroot?>/item/<?php echo $item->getItemId(); ?>"><?php echo $item->getName(); ?></a>
       <div class="itemStats"><?php echo $item->getView(); ?> views, <?php echo $item->getDownload(); ?> downloads</div>
       </div>
   <?php    
@@ -69,7 +69,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       foreach($this->itemThumbnails as $item)
         {
         echo "<a href='{$this->webroot}/item/{$item->getKey()}'>";
-        echo "<img src='{$this->webroot}/{$item->getThumbnail()}' alt=''/>"; 
+        echo "<img qtip='".$item->getName()."' src='{$this->webroot}/{$item->getThumbnail()}' alt=''/>"; 
         echo "</a>";
         }
       echo '</div>';

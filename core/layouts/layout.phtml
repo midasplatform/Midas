@@ -33,18 +33,17 @@ echo $this->doctype()
     <?php
     if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
       {
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/main.css,view.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css,jquery.cluetip.css,jquery.jgrowl.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/main.css,view.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css,jquery.qtip.min.css" />';
       }
     else
       {
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/main.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery.cluetip.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/view.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery-ui.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/form.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/loginForm.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery.treeTable.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery.jgrowl.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery.qtip.min.css" />';
       }
     ?>
     <!--[if IE]>
@@ -207,7 +206,7 @@ echo $this->doctype()
         }
       if($this->highNumberError)
         {
-        echo '<span style="color:red;">More than 5 errors occured in the last 24 hours. <a href="'.$this->webroot.'/admin/#ui-tabs-2">Check the logs</a></span><br/><br/>';
+        echo '<span style="color:red;">More than 5 errors occured in the last 24 hours. <a href="'.$this->webroot.'/admin/#ui-tabs-3">Check the logs</a></span><br/><br/>';
         }
       ?>
       <div class="SubWrapper">
@@ -241,7 +240,7 @@ echo $this->doctype()
                 {
                 if(is_array($item))
                   {
-                  echo "<li onclick=\"location.replace('{$this->webroot}/item/{$item['item_id']}');\" class='recentItem' title='".  str_replace("'", '"', $item['name'])."'><a  href='{$this->webroot}/item/{$item['item_id']}'>".$this->slicename($item['name'],20)."</a></li>";
+                  echo "<li onclick=\"location.replace('{$this->webroot}/item/{$item['item_id']}');\" class='recentItem' qtip='".  str_replace("'", '"', $item['name'])."'><a  href='{$this->webroot}/item/{$item['item_id']}'>".$this->slicename($item['name'],20)."</a></li>";
                   }                  
                 }
               echo '</ul>';
@@ -277,16 +276,15 @@ echo $this->doctype()
     <?php
               if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
                 {
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,jquery.treeTable.js,jquery.cluetip.js,jquery.jgrowl.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,jquery.treeTable.js,jquery.qtip.min.js"></script>';
                 }
               else
                 {
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.cluetip.js"></script>';
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery-ui.js"></script>';
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/main.js"></script>';
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.treeTable.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.jgrowl.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.qtip.min.js"></script>';
                 }
     ?>
     <?php echo $this->headScript() ?>

@@ -47,6 +47,10 @@ class MIDASModel
   public function save($dao)  
     {
     $instance = $this->_name."Dao";
+    if(isset($this->_daoName) && isset($this->moduleName))
+      {
+      $instance = ucfirst($this->moduleName).'_'.$this->_daoName;
+      }
     if(!$dao instanceof $instance)
       {
       throw new Zend_Exception("Should be an object (".$instance.").");
@@ -227,6 +231,11 @@ class MIDASModel
       }
     else
       {
+      $module = '';
+      if(isset($this->moduleName) )
+        {
+        $module = $this->moduleName;
+        }
       $rowset = $this->database->findBy($var, $value);
       $return = array();
       foreach($rowset as $row)
@@ -236,7 +245,7 @@ class MIDASModel
           {
           $daoName = substr($this->_daoName, 0, strlen($this->_daoName)-3);
           }
-        $tmpDao = $this->initDao($daoName, $row);
+        $tmpDao = $this->initDao($daoName, $row, $module);
         $return[] = $tmpDao;
         unset($tmpDao);
         }

@@ -246,19 +246,35 @@
             $(this).parents('li').css('background-color','white');
           });
          
-         $('a.uploadInFolder').cluetip({
-           cluetipClass: 'jtip',
-           dropShadow: false,
-           hoverIntent: false,
-           activation: 'click', 
-           arrows: true, 
-           closePosition: 'title',
-           closeText: '<img src="'+json.global.coreWebroot+'/public/images/icons/close.png" alt="close" />',  
-           positionBy:'uploadElement',
-           topOffset:        20,   
-           leftOffset:       -450,
-           width:            600
-          });
+        $('a.uploadInFolder').qtip(
+          {
+             content: {
+                // Set the text to an image HTML string with the correct src URL to the loading image you want to use
+                text: '<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />',
+                ajax: {
+                   url: $('a.uploadInFolder').attr('rel') // Use the rel attribute of each element for the url to load
+                },
+                title: {
+                   text: 'Upload', // Give the tooltip a title using each elements text
+                   button: true
+                }
+             },
+             position: {
+                at: 'bottom center', // Position the tooltip above the link
+                my: 'top right',
+                viewport: $(window), // Keep the tooltip on-screen at all times
+                effect: true // Disable positioning animation
+             },
+             show: {
+                event: 'click',
+                solo: true // Only show one tooltip at a time
+             },
+             hide: 'unfocus',
+             style: {
+                classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded',
+                tip: false
+             }
+          })
          
          $('a.sharingLink').click(function(){
             loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));

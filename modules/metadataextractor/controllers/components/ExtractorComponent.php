@@ -54,7 +54,8 @@ class Metadataextractor_ExtractorComponent extends AppComponent
       $modulesConfig=Zend_Registry::get('configsModules');
       $command = $modulesConfig['metadataextractor']->hachoir;
       exec(str_replace("'", '"',$command).' "'.$bitstream->getFullPath().'"', $output);
-      if($output[0] != "Metadata:")
+
+      if(!isset($output[0]) || $output[0] != "Metadata:")
         {
         return;
         }

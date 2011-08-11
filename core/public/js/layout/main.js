@@ -44,6 +44,12 @@ $(function() {
     loadAjaxDynamicBar('login','/user/login');
     }
     
+  $('[qtip]').qtip({
+   content: {
+      attr: 'qtip'
+   }
+})
+    
   //menu
   $('div.TopbarRighta li.first').hover(
 			function() {$('ul', this).css('display', 'block');},
@@ -227,22 +233,36 @@ $(function() {
     }
   });
  
-
   if(json.global.logged)
     {
-    $('div.HeaderAction li.uploadFile').cluetip({
-     cluetipClass: 'jtip',
-     dropShadow: false,
-     hoverIntent: false,
-     activation: 'click', 
-     arrows: true, 
-     closePosition: 'title',
-     closeText: '<img src="'+json.global.coreWebroot+'/public/images/icons/close.png" alt="close" />',  
-     positionBy:'uploadElement',
-     topOffset:        -100,   
-     leftOffset:       -550,
-     width:            600
-    });
+    $('div.HeaderAction li.uploadFile').qtip(
+      {
+         content: {
+            // Set the text to an image HTML string with the correct src URL to the loading image you want to use
+            text: '<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />',
+            ajax: {
+               url: $('div.HeaderAction li.uploadFile').attr('rel') // Use the rel attribute of each element for the url to load
+            },
+            title: {
+               text: 'Upload', // Give the tooltip a title using each elements text
+               button: true
+            }
+         },
+         position: {
+            at: 'bottom center', // Position the tooltip above the link
+            my: 'top right',
+            viewport: $(window), // Keep the tooltip on-screen at all times
+            effect: true // Disable positioning animation
+         },
+         show: {
+            event: 'click',
+            solo: true // Only show one tooltip at a time
+         },
+         hide: 'unfocus',
+         style: {
+            classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
+         }
+      })
     }
     
   $('div.viewAction li a').hover(function(){
@@ -267,11 +287,91 @@ function globalAuthAsk(url)
 
 function createNotive(text,delay)
 {
-    $.jGrowl(text, {
-      sticky:false,
-      life:delay
-      });
+    createGrowl(false, text, delay);
 }
+
+ window.createGrowl = function(persistent, text, delay) {
+      // Use the last visible jGrowl qtip as our positioning target
+      var target = $('.qtip.jgrowl:visible:last');
+ 
+      // Create your jGrowl qTip...
+      $(document.body).qtip({
+         // Any content config you want here really.... go wild!
+         content: {
+            text: text
+         },
+         position: {
+            my: 'top right', // Not really important...
+            at: (target.length ? 'bottom' : 'top') + ' right', // If target is window use 'top right' instead of 'bottom right'
+            target: target.length ? target : $(document.body), // Use our target declared above
+            adjust: { y: 5 } // Add some vertical spacing
+         },
+         show: {
+            event: false, // Don't show it on a regular event
+            ready: true, // Show it when ready (rendered)
+            effect: function() { $(this).stop(0,1).fadeIn(400); }, // Matches the hide effect
+            delay: 0, // Needed to prevent positioning issues
+            
+            // Custom option for use with the .get()/.set() API, awesome!
+            persistent: persistent
+         },
+         hide: {
+            event: false, // Don't hide it on a regular event
+            effect: function(api) { 
+               // Do a regular fadeOut, but add some spice!
+               $(this).stop(0,1).fadeOut(400).queue(function() {
+                  // Destroy this tooltip after fading out
+                  api.destroy();
+ 
+                  // Update positions
+                  updateGrowls();
+               })
+            }
+         },
+         style: {
+            classes: 'jgrowl ui-tooltip-dark ui-tooltip-rounded', // Some nice visual classes
+            tip: false // No tips for this one (optional ofcourse) 
+         },
+         events: {
+            render: function(event, api) {
+               // Trigger the timer (below) on render
+               timerGrowl.call(api.elements.tooltip, event, delay);
+            }
+         }
+      })
+      .removeData('qtip');
+   };
+ 
+   // Make it a window property see we can call it outside via updateGrowls() at any point
+   window.updateGrowls = function() {
+      // Loop over each jGrowl qTip
+      var each = $('.qtip.jgrowl:not(:animated)');
+      each.each(function(i) {
+         var api = $(this).data('qtip');
+ 
+         // Set the target option directly to prevent reposition() from being called twice.
+         api.options.position.target = !i ? $(document.body) : each.eq(i - 1);
+         api.set('position.at', (!i ? 'top' : 'bottom') + ' right');
+      });
+   };
+ 
+ // Setup our timer function
+ function timerGrowl(event, delay) {
+    var api = $(this).data('qtip'),
+       lifespan = delay; // 5 second lifespan
+
+    // If persistent is set to true, don't do anything.
+    if(api.get('show.persistent') === true) { return; }
+
+    // Otherwise, start/clear the timer depending on event type
+    clearTimeout(api.timer);
+    if(event.type !== 'mouseover') {
+       api.timerGrowl = setTimeout(api.hide, lifespan);
+    }
+ }
+
+ // Utilise delegate so we don't have to rebind for every qTip!
+ $(document).delegate('.qtip.jgrowl', 'mouseover mouseout', timerGrowl);
 
 function loadAjaxDynamicBar(name,url)
 {

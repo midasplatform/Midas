@@ -132,6 +132,23 @@ div.viewAction hr, div.genericAction hr{
   margin-left: 0px;
 }
 
+.jgrowl{
+  min-width: 250px!important;
+  min-height: 70px!important;
+
+}
+
+.jgrowl div{
+  border-color: grey!important;
+  font-size: 12px!important;
+  font-weight: bold!important;
+}
+
+.uploadqtip{
+  min-width: 600px!important;
+  border: 1px solid grey!important;
+}
+
 /*-------------------------------------------------
 TOP
 -------------------------------------------------*/
