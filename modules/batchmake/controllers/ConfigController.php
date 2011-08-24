@@ -47,17 +47,17 @@ class Batchmake_ConfigController extends Batchmake_AppController
 
 
 
-  public $_moduleForms=array('Config');
-  public $_components=array('Utility','Internationalization');
-  public $_moduleComponents=array('KWBatchmake');
+  public $_moduleForms = array('Config');
+  public $_components = array('Utility', 'Internationalization');
+  public $_moduleComponents = array('KWBatchmake');
 
 
   /**
-   * @method _archiveOldModuleLocal()
+   * @method archiveOldModuleLocal()
    * will archive the current module.local config file
    * written in the hope of being reusable
    */
-  function _archiveOldModuleLocal()
+  protected function archiveOldModuleLocal()
     {
     if(file_exists(BATCHMAKE_MODULE_LOCAL_OLD_CONFIG))
       {
@@ -65,7 +65,7 @@ class Batchmake_ConfigController extends Batchmake_AppController
       }
     if(file_exists(BATCHMAKE_MODULE_LOCAL_CONFIG))
       {
-      rename(BATCHMAKE_MODULE_LOCAL_CONFIG,BATCHMAKE_MODULE_LOCAL_OLD_CONFIG);
+      rename(BATCHMAKE_MODULE_LOCAL_CONFIG, BATCHMAKE_MODULE_LOCAL_OLD_CONFIG);
       }
     }
 
@@ -74,15 +74,15 @@ class Batchmake_ConfigController extends Batchmake_AppController
   /**
    * @method indexAction()
    */
-   function indexAction()
+  function indexAction()
     {
 
-    $applicationConfig = $this->ModuleComponent->KWBatchmake->LoadApplicationConfig();
-    $configPropertiesRequirements = $this->ModuleComponent->KWBatchmake->GetConfigPropertiesRequirements();
+    $applicationConfig = $this->ModuleComponent->KWBatchmake->loadApplicationConfig();
+    $configPropertiesRequirements = $this->ModuleComponent->KWBatchmake->getConfigPropertiesRequirements();
        
     $configForm = $this->ModuleForm->Config->createConfigForm($configPropertiesRequirements);
     $formArray = $this->getFormAsArray($configForm);    
-    foreach($configPropertiesRequirements as $configProperty=>$configPropertyRequirement)
+    foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
       {
       $formArray[$configProperty]->setValue($applicationConfig[GLOBAL_CONFIG_NAME][$this->moduleName.'.'.$configProperty]);
       } 
@@ -96,8 +96,8 @@ class Batchmake_ConfigController extends Batchmake_AppController
 
       if(isset($submitConfig))
         {
-        $this->_archiveOldModuleLocal();
-        foreach($configPropertiesRequirements as $configProperty=>$configPropertyRequirement)
+        $this->archiveOldModuleLocal();
+        foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
           {
           $applicationConfig[GLOBAL_CONFIG_NAME][$this->moduleName.'.'.$configProperty] = $this->_getParam($configProperty);
           }     
@@ -110,11 +110,11 @@ class Batchmake_ConfigController extends Batchmake_AppController
     } 
 
 
- /**
-   * @method _testconfig() 
+  /**
+   * @method testconfig() 
    * performs validation on the current configuration set through the UI
    */
-  function _testconfig()
+  protected function testconfig()
     {
 
     //default of correct config
@@ -124,16 +124,19 @@ class Batchmake_ConfigController extends Batchmake_AppController
     
 
     $configPropertiesRequirements = $this->ModuleComponent->KWBatchmake->GetConfigPropertiesRequirements();
-    foreach($configPropertiesRequirements as $configProperty=>$configPropertyRequirement)
+    foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
       {
       $configPropertyVal = $this->_getParam($configProperty);
       if($configPropertyVal)
         {
         // if the property exists, check its configuration      
-        list($result, $status) = $this->ModuleComponent->KWBatchmake->CheckFileFlag( $configPropertyVal, $configPropertyRequirement);
-        $configStatus[] = array(PROPERTY_KEY => $configProperty, STATUS_KEY => $status, TYPE_KEY => $result?STATUS_TYPE_INFO:STATUS_TYPE_ERROR);
+        list($result, $status) = $this->ModuleComponent->KWBatchmake->CheckFileFlag($configPropertyVal, $configPropertyRequirement);
+        $configStatus[] = array(PROPERTY_KEY => $configProperty, STATUS_KEY => $status, TYPE_KEY => $result ? STATUS_TYPE_INFO : STATUS_TYPE_ERROR);
         // the property is in error, therefore so is the global config
-        if(!$result) $total_config_correct = 0;
+        if(!$result)
+          {
+          $total_config_correct = 0;
+          }
         }
       else
         {
@@ -146,21 +149,24 @@ class Batchmake_ConfigController extends Batchmake_AppController
     // for now assuming will run via condor, so require all of the condor setup
 
     $appsPaths = $this->ModuleComponent->KWBatchmake->GetApplicationsPaths();
-    foreach($appsPaths as $app=>$pathProperty)
+    foreach($appsPaths as $app => $pathProperty)
       {
-      $appPath = $this->_getParam($pathProperty) ."/" . $this->ModuleComponent->KWBatchmake->FormatAppName( $app );
-      list($result, $status) = $this->ModuleComponent->KWBatchmake->CheckFileFlag( $appPath, CHECK_IF_EXECUTABLE);
+      $appPath = $this->_getParam($pathProperty) ."/" . $this->ModuleComponent->KWBatchmake->FormatAppName($app);
+      list($result, $status) = $this->ModuleComponent->KWBatchmake->CheckFileFlag($appPath, CHECK_IF_EXECUTABLE);
       $applicationString = $this->Component->Internationalization->translate(APPLICATION_STRING);
-      $configStatus[] = array(PROPERTY_KEY => $applicationString . ' ' .$appPath, STATUS_KEY => $status, TYPE_KEY => $result?STATUS_TYPE_INFO:STATUS_TYPE_ERROR);
+      $configStatus[] = array(PROPERTY_KEY => $applicationString . ' ' .$appPath, STATUS_KEY => $status, TYPE_KEY => $result ? STATUS_TYPE_INFO : STATUS_TYPE_ERROR);
       // the property is in error, therefore so is the global config
-      if(!$result) $total_config_correct = 0;
+      if(!$result)
+        {
+        $total_config_correct = 0;
+        }
       }
 
     // Process web server user information
 
     // TODO what should be done if there are warnings??
-    $processUser  = posix_getpwuid( posix_geteuid() );
-    $processGroup = posix_getgrgid( posix_geteuid() );
+    $processUser  = posix_getpwuid(posix_geteuid());
+    $processGroup = posix_getgrgid(posix_geteuid());
 
     $phpProcessString = $this->Component->Internationalization->translate(PHP_PROCESS_STRING);
     $phpProcessUserString = $phpProcessString . ' ' . $this->Component->Internationalization->translate(PHP_PROCESS_USER_STRING);
@@ -176,16 +182,16 @@ class Batchmake_ConfigController extends Batchmake_AppController
     $phpProcessUserShellString = $phpProcessUserString . '[' . $phpProcessShellString . ']';
 
     $processProperties = array($phpProcessUserNameString => !empty($processUser[PHP_PROCESS_NAME_STRING]) ? $processUser[PHP_PROCESS_NAME_STRING] : "",
-      $phpProcessUserGroupString => !empty($processGroup[PHP_PROCESS_NAME_STRING]) ? $processGroup[PHP_PROCESS_NAME_STRING] : "",
-      $phpProcessUserHomeString => !empty($processUser[DIR_KEY]) ? $processUser[DIR_KEY] : "",
-      $phpProcessUserShellString => !empty($processUser[PHP_PROCESS_SHELL_STRING]) ? $processUser[PHP_PROCESS_SHELL_STRING] : "");
+    $phpProcessUserGroupString => !empty($processGroup[PHP_PROCESS_NAME_STRING]) ? $processGroup[PHP_PROCESS_NAME_STRING] : "",
+    $phpProcessUserHomeString => !empty($processUser[DIR_KEY]) ? $processUser[DIR_KEY] : "",
+    $phpProcessUserShellString => !empty($processUser[PHP_PROCESS_SHELL_STRING]) ? $processUser[PHP_PROCESS_SHELL_STRING] : "");
 
-    foreach($processProperties as $property=>$value)
+    foreach($processProperties as $property => $value)
       {
       $status   = !empty($value);
       $configStatus[]   = array(PROPERTY_KEY => $property, 
-                      STATUS_KEY => $status ? $value : $unknownString, 
-                      TYPE_KEY=> $status?STATUS_TYPE_INFO:STATUS_TYPE_WARNING);
+      STATUS_KEY => $status ? $value : $unknownString, 
+      TYPE_KEY => $status ? STATUS_TYPE_INFO : STATUS_TYPE_WARNING);
       }
    
 
@@ -194,7 +200,7 @@ class Batchmake_ConfigController extends Batchmake_AppController
     }
 
 
- /**
+  /**
    * @method testconfigAction() 
    * ajax function which tests config setup, performing 
    * validation on the current configuration set through the UI
@@ -209,7 +215,7 @@ class Batchmake_ConfigController extends Batchmake_AppController
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
-    $config_status = $this->_testconfig();
+    $config_status = $this->testconfig();
     echo JsonComponent::encode($config_status);
     }//end testconfigAction
  

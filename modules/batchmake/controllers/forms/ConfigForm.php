@@ -10,10 +10,16 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+/**
+ * Batchmake_ConfigForm
+ */
 class Batchmake_ConfigForm extends AppForm
 {
  
-     /** create  form */
+  /**
+   * @method createConfigForm
+   * does what it says.
+   */
   public function createConfigForm($configPropertiesRequirements)
     {
     $form = new Zend_Form;
@@ -22,7 +28,7 @@ class Batchmake_ConfigForm extends AppForm
           ->setMethod('post'); 
 
     $formElements = array();
-    foreach($configPropertiesRequirements as $property=>$requirements) 
+    foreach($configPropertiesRequirements as $property => $requirements) 
       {
       $textElement = new Zend_Form_Element_Text($property);
       $textElement->setRequired(true)->addValidator('NotEmpty', true);
@@ -31,7 +37,7 @@ class Batchmake_ConfigForm extends AppForm
 
   
     $submit = new  Zend_Form_Element_Submit('submitConfig');
-    Zend_Loader::loadClass("InternationalizationComponent",BASE_PATH.'/core/controllers/components');
+    Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
     $submit ->setLabel(InternationalizationComponent::translate(SAVE_CONFIGURATION_STRING)); 
     $formElements[] = $submit;
        
