@@ -10,9 +10,12 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+// need to include the module constant for this test
+require_once str_replace('tests', 'constant', str_replace('controllers', 'module.php', dirname(__FILE__)));
 /** config controller tests*/
 class ConfigControllerTest extends ControllerTestCase
   {
+
   /** set up tests*/
   public function setUp()
     {
@@ -26,12 +29,13 @@ class ConfigControllerTest extends ControllerTestCase
     {
     $this->dispatchUrI("/batchmake/config/index");
     $body = $this->getBody();
-    //$this->assertAction("index");
-    //$this->assertModule("batchmake");
-    //if(strpos($body, "Module version (config file):") === false)
-    //  {
-    //  $this->fail('Unable to find body element');
-    //  }
+    
+    $this->assertAction("index");
+    $this->assertModule("batchmake");
+    if(strpos($body, "Batchmake Configuration") === false)
+      {
+      $this->fail('Unable to find body element');
+      }
     }
 
   }
