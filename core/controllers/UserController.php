@@ -377,6 +377,7 @@ class UserController extends AppController
             $this->userSession->Dao = $userDao;
             }
           echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+          Zend_Registry::get('notifier')->callback('CALLBACK_CORE_PASSWORD_CHANGED', array('userDao'=>$userDao));
           }
         else
           {
@@ -614,7 +615,7 @@ class UserController extends AppController
     $this->view->jsonSettings['passwordErrorMatch'] = $this->t('The passwords are not the same');
     $this->view->jsonSettings = JsonComponent::encode($this->view->jsonSettings);
     
-    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_CONFI_TABS', array());
+    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_CONFIG_TABS', array());
     }
     
   /** User page action*/

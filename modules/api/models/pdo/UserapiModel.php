@@ -5,7 +5,6 @@ require_once BASE_PATH.'/modules/api/models/base/UserapiModelBase.php';
 class Api_UserapiModel extends Api_UserapiModelBase
 {
 
-
    /** Create an API key from a login and password */
   function createKeyFromEmailPassword($appname,$email,$password)
     {
@@ -13,7 +12,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
       {
       throw new Zend_Exception("Error parameter");
       }
-      
+
     $this->ModelLoader = new MIDAS_ModelLoader();
     $userModel=$this->ModelLoader->loadModel('User');
 
@@ -24,7 +23,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
       {
       return false;
       }
-      
+
     // Find if we already have an apikey
     $ret = $this->getByAppAndEmail($appname,$email);
 
@@ -40,12 +39,12 @@ class Api_UserapiModel extends Api_UserapiModelBase
       }
     return false;
     } // end function createKeyFromEmailPassword
-    
+
   /**
    * Get UserapiDao by
    * @param string $appname Application Name
-   * @param string $email 
-   * @return Api_UserapiDao 
+   * @param string $email
+   * @return Api_UserapiDao
    */
   function getByAppAndEmail($appname,$email)
     {
@@ -61,16 +60,16 @@ class Api_UserapiModel extends Api_UserapiModelBase
       return false;
       }
     $row = $this->database->fetchRow($this->database->select()->where('application_name = ?', $appname)
-                                                              ->where('user_id = ?', $userDao->getKey())); 
+                                                              ->where('user_id = ?', $userDao->getKey()));
     $dao= $this->initDao('Userapi', $row,'api');
     return $dao;
     } // end getByApikey
-    
+
   /**
    * Get UserapiDao by
    * @param string $appname Application Name
-   * @param UserDao $userDao 
-   * @return Api_UserapiDao 
+   * @param UserDao $userDao
+   * @return Api_UserapiDao
    */
   function getByAppAndUser($appname,$userDao)
     {
@@ -79,18 +78,18 @@ class Api_UserapiModel extends Api_UserapiModelBase
       throw new Zend_Exception("Error parameter");
       }
     $row = $this->database->fetchRow($this->database->select()->where('application_name = ?', $appname)
-                                                              ->where('user_id = ?', $userDao->getKey())); 
+                                                              ->where('user_id = ?', $userDao->getKey()));
     $dao= $this->initDao('Userapi', $row,'api');
     return $dao;
     } // end getByAppAndUser
 
-  
+
   /**
    * Return the tokendao
    * @param type $email
    * @param type $apikey
    * @param type $appname
-   * @return Api_TokenDao 
+   * @return Api_TokenDao
    */
   function getToken($email,$apikey,$appname)
     {
@@ -107,7 +106,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
       return false;
       }
     $now = date("c");
-    
+
     $sql=   $this->database->select()
                       ->setIntegrityCheck(false)
                       ->from(array('t' => 'api_token'))
@@ -117,7 +116,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
                       ->where('u.application_name = ?', $appname)
                       ->where('t.expiration_date > ?', $now)
                       ->where('u.apikey = ?', $apikey) ;
-    
+
 
     $row = $this->database->fetchRow($sql);
     $tokenDao= $this->initDao('Token', $row,'api');
@@ -147,7 +146,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
       }
 
     // Find the api id
-    
+
     $sql=   $this->database->select()
                   ->setIntegrityCheck(false)
                   ->from(array('u' => 'api_userapi'))
@@ -156,8 +155,8 @@ class Api_UserapiModel extends Api_UserapiModelBase
                   ->where('u.apikey = ?', $apikey) ;
 
     $row = $this->database->fetchRow($sql);
-    $userapiDao= $this->initDao('Userapi', $row,'api');  
-    
+    $userapiDao= $this->initDao('Userapi', $row,'api');
+
     if(!$userapiDao)
       {
       return false;
@@ -170,9 +169,9 @@ class Api_UserapiModel extends Api_UserapiModelBase
     $tokenDao->setExpirationDate(date("c",time()+$userapiDao->getTokenExpirationTime()*60));
 
     $tokenModel=$this->ModelLoader->loadModel('Token','api');
-        
+
     $tokenModel->save($tokenDao);
-    
+
     // We do some cleanup of all the other keys that have expired
     $tokenModel->cleanExpired();
 
@@ -188,7 +187,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
       throw new Zend_Exception("Error parameter");
       }
     $now = date("c");
-    
+
     $sql=   $this->database->select()
                   ->setIntegrityCheck(false)
                   ->from(array('u' => 'api_userapi'))
@@ -196,7 +195,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
                      ' u.userapi_id = t.userapi_id',array() )
                   ->where('t.expiration_date > ?', $now)
                   ->where('t.token = ?', $token) ;
-    
+
 
     $row = $this->database->fetchRow($sql);
     return $this->initDao('Userapi', $row,'api');
