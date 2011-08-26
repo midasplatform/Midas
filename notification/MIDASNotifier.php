@@ -31,7 +31,7 @@ class MIDAS_Notifier
     }
   
   /** init the notifier*/
-  public function __construct()
+  public function __construct($logged, $session)
     {
     $modules = Zend_Registry::get('modulesEnable');
     foreach($modules as $module)
@@ -45,6 +45,8 @@ class MIDAS_Notifier
           throw new Zend_Exception('Unable to find notification class: '.$name);
           }
         $this->modules[$module] = new $name();
+        $this->modules[$module]->logged = $logged;
+        $this->modules[$module]->userSession = $session;
         }
       }
     

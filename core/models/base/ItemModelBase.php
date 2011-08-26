@@ -173,6 +173,7 @@ abstract class ItemModelBase extends AppModel
       }
     $itemdao->download++;
     parent::save($itemdao);
+    Zend_Registry::get('notifier')->callback("CALLBACK_CORE_PLUS_ONE_DOWNLOAD", array('item' => $itemdao));
     }//end incrementDownloadCount
     
   /** Add a revision to an item
