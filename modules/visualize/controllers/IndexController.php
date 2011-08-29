@@ -33,6 +33,12 @@ class Visualize_IndexController extends Visualize_AppController
     $itemId = $this->_getParam('itemId');
     $itemDao = $this->Item->load($itemId);
     
+    $modulesConfig = Zend_Registry::get('configsModules');
+    if(isset($modulesConfig['slicer']))
+      {
+      $this->_redirect('/slicer/visualize/?itemId='.$itemId.'&height=500&width=800');
+      }
+    
     if($this->ModuleComponent->Main->canVisualizeWithParaview($itemDao))
       {
       $this->_redirect('/visualize/paraview/?itemId='.$itemId.'&height='.$height.'&width='.$width);
