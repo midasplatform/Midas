@@ -258,11 +258,14 @@ $(function() {
             event: 'click',
             solo: true // Only show one tooltip at a time
          },
-         hide: 'unfocus',
+         hide: {
+          event: false
+         },
          style: {
             classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
          }
       })
+    $('.uploadqtip').css('z-index:500');
     }
     
   $('div.viewAction li a').hover(function(){
@@ -443,8 +446,10 @@ function showDialog(title,button)
       draggable:false,
       title: title,
       position: [x,y],
+      zIndex: 15100,
       buttons: {"Ok": function() {$(this).dialog("close");}} 
 		});
+    
     
   }
   else
@@ -455,9 +460,11 @@ function showDialog(title,button)
 			modal: false,
       draggable:false,
       title: title		,
+      zIndex: 15100,
       position: [x,y]
 		});
   }
+   
 }
 
 function showBigDialog(title,button)
