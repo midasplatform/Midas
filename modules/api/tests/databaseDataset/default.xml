@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+
+	<user user_id="1" firstname="FirstName1" lastname="LastName1"
+		email="user1@user1.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:09:02"
+		folder_id="1000" publicfolder_id="1001" privatefolder_id="1002" />
+
+</dataset>
+

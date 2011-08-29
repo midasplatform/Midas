@@ -5,8 +5,11 @@ require_once BASE_PATH.'/modules/api/models/base/UserapiModelBase.php';
 class Api_UserapiModel extends Api_UserapiModelBase
 {
 
-   /** Create an API key from a login and password */
-  function createKeyFromEmailPassword($appname,$email,$password)
+   /**
+    * Create an API key from a login and password.  The password passed to this
+    * function should not be hashed, it should be the actual password.
+    */
+  function createKeyFromEmailPassword($appname, $email, $password)
     {
     if(!is_string($appname)||!is_string($email)||!is_string($password))
       {
@@ -18,14 +21,14 @@ class Api_UserapiModel extends Api_UserapiModelBase
 
     // First check that the email and password are correct (ldap not supported for now)
     $userDao = $userModel->getByEmail($email);
-    $passwordPrefix=Zend_Registry::get('configGlobal')->password->prefix;
+    $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
     if($userDao == false || md5($passwordPrefix.$password) != $userDao->getPassword())
       {
       return false;
       }
 
     // Find if we already have an apikey
-    $ret = $this->getByAppAndEmail($appname,$email);
+    $ret = $this->getByAppAndEmail($appname, $email);
 
     if($ret instanceof Api_UserapiDao)
       {
@@ -35,7 +38,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
       {
       // Create the APIKey
       $tokenexperiationtime = '100';
-      return $this->createKey($userDao,$appname,$tokenexperiationtime);
+      return $this->createKey($userDao, $appname, $tokenexperiationtime);
       }
     return false;
     } // end function createKeyFromEmailPassword
@@ -46,7 +49,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
    * @param string $email
    * @return Api_UserapiDao
    */
-  function getByAppAndEmail($appname,$email)
+  function getByAppAndEmail($appname, $email)
     {
     if(!is_string($appname)||!is_string($email))
       {
@@ -61,7 +64,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
       }
     $row = $this->database->fetchRow($this->database->select()->where('application_name = ?', $appname)
                                                               ->where('user_id = ?', $userDao->getKey()));
-    $dao= $this->initDao('Userapi', $row,'api');
+    $dao = $this->initDao('Userapi', $row,'api');
     return $dao;
     } // end getByApikey
 
@@ -71,7 +74,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
    * @param UserDao $userDao
    * @return Api_UserapiDao
    */
-  function getByAppAndUser($appname,$userDao)
+  function getByAppAndUser($appname, $userDao)
     {
     if(!is_string($appname)||!$userDao instanceof UserDao)
       {
@@ -91,7 +94,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
    * @param type $appname
    * @return Api_TokenDao
    */
-  function getToken($email,$apikey,$appname)
+  function getToken($email, $apikey, $appname)
     {
     if(!is_string($appname)||!is_string($apikey)||!is_string($email))
       {
