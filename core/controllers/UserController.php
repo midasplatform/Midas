@@ -377,7 +377,7 @@ class UserController extends AppController
             $this->userSession->Dao = $userDao;
             }
           echo JsonComponent::encode(array(true, $this->t('Changes saved')));
-          Zend_Registry::get('notifier')->callback('CALLBACK_CORE_PASSWORD_CHANGED', array('userDao'=>$userDao));
+          Zend_Registry::get('notifier')->callback('CALLBACK_CORE_PASSWORD_CHANGED', array('userDao' => $userDao));
           }
         else
           {
