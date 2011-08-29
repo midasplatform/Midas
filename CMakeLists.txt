@@ -33,6 +33,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/library/CMake/CTestCustom.cmake.in
 # Setup testing and required parameters for testing
 
 include(CTest)
+option( MIDAS_RUN_STYLE_TESTS "Should MIDAS run PHP style checking tests?" ON )
 set( SERVER_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 add_subdirectory(tests)
 add_subdirectory(core/tests)
