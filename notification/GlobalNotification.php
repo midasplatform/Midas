@@ -24,6 +24,11 @@ class MIDAS_Notification
     {    
     $this->loadElements();
     $this->loadModuleElements();
+    if(!method_exists($this, 'init'))
+      {
+      echo 'Init method missing in notification class';
+      exit;
+      }
     $this->init();
     }
     
