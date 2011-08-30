@@ -211,12 +211,21 @@ if($this->preview) // module visualize
         }
       if($this->isAdmin)
         {
+        $modules = Zend_Registry::get('modulesEnable');
+         if(in_array('statistics', $modules))
+          {
+          echo 
+         "<li>
+            <a href='".$this->webroot."/statistics/item?id=".$this->itemDao->getKey()."'><img alt='' src='{$this->coreWebroot}/public/images/icons/metadata.png'/> {$this->t('Statistics')}</a>
+          </li>        
+            ";
+          }
         echo 
        "
         <li>
           <a  href='javascript:;' id='itemDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Delete')}</a>
         </li>   
-          ";
+          ";         
         }
       ?>
     </ul>

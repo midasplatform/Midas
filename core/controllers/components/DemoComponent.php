@@ -78,7 +78,7 @@ class DemoComponent extends AppComponent
     $applicationConfig['global']['application.description'] = '';    
     $applicationConfig['global']['application.keywords'] = '';      
     
-    $enabledModules = array('visualize', 'oai', 'metadataextractor', 'api', 'scheduler', 'thumbnailcreator');
+    $enabledModules = array('visualize', 'oai', 'metadataextractor', 'api', 'scheduler', 'thumbnailcreator', 'statistics');
     
     foreach($enabledModules as $module)
       {
@@ -103,6 +103,7 @@ class DemoComponent extends AppComponent
     require_once BASE_PATH.'/core/controllers/components/UploadComponent.php';
     $uploadCompoenent = new UploadComponent();
     $item = $uploadCompoenent->createUploadedItem($admin, 'midasLogo.gif', BASE_PATH.'/core/public/images/midasLogo.gif', $communityDao->getPublicFolder());
+    $item = $uploadCompoenent->createUploadedItem($admin, 'cow.vtp', BASE_PATH.'/core/public/demo/cow.vtp', $communityDao->getPublicFolder());
     }
     
   /** recursively delete a folder*/

@@ -192,7 +192,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $listeModule = array();
     foreach($modules as $key => $module)
       {      
-      if($module == 1 &&  file_exists(BASE_PATH.'/modules/'.$key))
+      if($module == 1 &&  file_exists(BASE_PATH.'/modules/'.$key) && file_exists(BASE_PATH . "/modules/".$key."/AppController.php"))
         {
         $listeModule[] = $key;
         }

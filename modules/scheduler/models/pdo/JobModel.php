@@ -13,7 +13,28 @@ PURPOSE.  See the above copyright notices for more information.
 /** job model */
 class Scheduler_JobModel extends Scheduler_JobModelBase
 {
-
+  /** get by tasks */
+  public function getJobsByTask($task)
+    {
+    if(!is_string($task))
+      {
+      throw new Zend_Exception('Error Params');
+      }
+    $sql = $this->database->select()
+          ->setIntegrityCheck(false)
+          ->where('task = ?', $task)
+          ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN);
+    
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->initDao('Job', $row, 'scheduler');
+      $return[] = $tmpDao;
+      unset($tmpDao);
+      }
+    return $return;
+    }
   /** get jobs*/
   public function getJobsToRun()
     {
