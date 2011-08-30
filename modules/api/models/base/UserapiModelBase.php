@@ -37,14 +37,13 @@ abstract class Api_UserapiModelBase extends Api_AppModel
       {
       throw new Zend_Exception('Error parameter: must be a userDao object');
       }
-
     // Remove prior default api key(s)
     $rowset = $this->database->fetchAll($this->database->select()
                                                        ->where('user_id = ?', $userDao->getKey())
                                                        ->where('application_name = ?', 'Default'));
     foreach($rowset as $row)
       {
-      $userApiDao= $this->initDao('Userapi', $row,'api');
+      $userApiDao= $this->initDao('Userapi', $row, 'api');
       $this->delete($userApiDao);
       }
 
@@ -63,7 +62,7 @@ abstract class Api_UserapiModelBase extends Api_AppModel
      /** Create a new API key */
   function createKey($userDao,$applicationname,$tokenexperiationtime)
     {
-    if(!$userDao instanceof UserDao||!is_string($applicationname)||!is_string($tokenexperiationtime) || empty($applicationname))
+    if(!$userDao instanceof UserDao || !is_string($applicationname) || !is_string($tokenexperiationtime) || empty($applicationname))
       {
       throw new Zend_Exception("Error parameter");
       }
@@ -90,7 +89,7 @@ abstract class Api_UserapiModelBase extends Api_AppModel
 
     $key = "";
     $max=strlen($keychars)-1;
-    for ($i=0;$i<$length;$i++)
+    for ($i=0; $i<$length; $i++)
       {
       $key .= substr($keychars, rand(0, $max), 1);
       }

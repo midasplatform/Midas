@@ -12,11 +12,12 @@ PURPOSE.  See the above copyright notices for more information.
 
 require_once BASE_PATH . '/modules/api/library/KwWebApiCore.php';
 
+/** Main controller for the web api module */
 class Api_IndexController extends Api_AppController
 {
-  public $_moduleModels=array('Userapi');
-  public $_models=array('Community', 'ItemRevision', 'Item', 'User', "Folderpolicyuser", 'Folderpolicygroup', 'Folder');
-  public $_components=array('Upload', 'Search', 'Uuid');
+  public $_moduleModels = array('Userapi');
+  public $_models = array('Community', 'ItemRevision', 'Item', 'User', "Folderpolicyuser", 'Folderpolicygroup', 'Folder');
+  public $_components = array('Upload', 'Search', 'Uuid');
 
   var $kwWebApiCore = null;
 
@@ -34,13 +35,13 @@ class Api_IndexController extends Api_AppController
     $this->apiEnable = true;
 
     // define api parameters
-    $this->apiSetup['testing']         = Zend_Registry::get('configGlobal')->environment=="testing";
+    $this->apiSetup['testing']         = Zend_Registry::get('configGlobal')->environment == "testing";
     $this->apiSetup['tmp_directory']   = $this->getTempDirectory();
-    $modulesConfig=Zend_Registry::get('configsModules');
+    $modulesConfig = Zend_Registry::get('configsModules');
     $this->apiSetup['apiMethodPrefix'] = $modulesConfig['api']->methodprefix;
 
-    $this->_SetApiCallbacks( $this->apiSetup['apiMethodPrefix'] );
-    $this->action=$actionName=Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+    $this->_setApiCallbacks($this->apiSetup['apiMethodPrefix']);
+    $this->action = $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     switch($this->action)
       {
       case "rest":
@@ -48,12 +49,15 @@ class Api_IndexController extends Api_AppController
       case "php_serial":
       case "xmlrpc":
       case "soap":
-        $this->_InitApiCommons();
+        $this->_initApiCommons();
+        break;
+      default:
         break;
       }
-    ob_start();    
+    ob_start();
     }
 
+  /** Post dispatch */
   function postDispatch()
     {
     parent::postDispatch();
@@ -63,7 +67,7 @@ class Api_IndexController extends Api_AppController
   /** Index function */
   function indexAction()
     {
-    $this->view->header='Web API';
+    $this->view->header = 'Web API';
 
     // Prepare the data used by the view
     $data = array(
@@ -72,24 +76,24 @@ class Api_IndexController extends Api_AppController
       'api.listmethods'   => array_keys($this->apicallbacks),
       );
 
-    $this->view->data= $data; // transfer data to the view
+    $this->view->data = $data; // transfer data to the view
     $this->view->help = $this->helpContent;
     $this->view->serverURL = $this->getServerURL();
     }
 
-   /** Set the call back API */
-  function _SetApiCallbacks( $apiMethodPrefix )
+  /** Set the call back API */
+  private function _setApiCallbacks($apiMethodPrefix)
     {
-    $apiMethodPrefix = KwWebApiCore::checkApiMethodPrefix( $apiMethodPrefix );
-    
+    $apiMethodPrefix = KwWebApiCore::checkApiMethodPrefix($apiMethodPrefix);
+
     $help = array();
     $help['params'] = array();
     $help['example'] = array();
     $help['return'] = 'String version';
     $help['description'] = 'Return the version of MIDAS';
     $this->helpContent[$apiMethodPrefix.'version']                   = $help;
-    $this->apicallbacks[$apiMethodPrefix.'version']                   = array(&$this, '_Version');    
-    
+    $this->apicallbacks[$apiMethodPrefix.'version']                  = array(&$this, 'version');
+
     $help = array();
     $help['params'] = array();
     $help['params']['appname'] = 'Application Name';
@@ -102,8 +106,8 @@ class Api_IndexController extends Api_AppController
     $help['return'] = 'Token';
     $help['description'] = 'Authenticate an user';
     $this->helpContent[$apiMethodPrefix.'login']                   = $help;
-    $this->apicallbacks[$apiMethodPrefix.'login']                  = array(&$this, '_Login');
-    
+    $this->apicallbacks[$apiMethodPrefix.'login']                  = array(&$this, 'login');
+
     $help = array();
     $help['params'] = array();
     $help['params']['id'] = 'Element Id';
@@ -111,18 +115,18 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'Universal identifier';
     $help['description'] = 'Get uuid';
-    $this->helpContent[$apiMethodPrefix.'uuid.get'] = $help;    
-    $this->apicallbacks[$apiMethodPrefix.'uuid.get']               = array(&$this, '_UuidGet');
-    
+    $this->helpContent[$apiMethodPrefix.'uuid.get'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'uuid.get']               = array(&$this, 'uuidGet');
+
     $help = array();
     $help['params'] = array();
     $help['params']['uuid'] = 'Universal identifier';
     $help['example'] = array();
     $help['return'] = 'Universal identifier (Dao)';
     $help['description'] = 'Get Universal identifier (contain resource id and type)';
-    $this->helpContent[$apiMethodPrefix.'resource.get'] = $help; 
-    $this->apicallbacks[$apiMethodPrefix.'resource.get']           = array(&$this, '_ResourceGet');
-        
+    $this->helpContent[$apiMethodPrefix.'resource.get'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'resource.get']           = array(&$this, 'resourceGet');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = '(Optional) Authentification token';
@@ -131,27 +135,27 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'Array of resource)';
     $help['description'] = 'Global search';
-    $this->helpContent[$apiMethodPrefix.'resource.search'] = $help; 
-    $this->apicallbacks[$apiMethodPrefix.'resource.search']       = array(&$this, '_ResourcesSearch');
-    
+    $this->helpContent[$apiMethodPrefix.'resource.search'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'resource.search']       = array(&$this, 'resourcesSearch');
+
     $help = array();
     $help['params'] = array();
     $help['params']['uuid'] = 'Unique identifier of the resource';
     $help['example'] = array();
     $help['return'] = 'Array of resource';
     $help['description'] = 'Return the path to the root';
-    $this->helpContent[$apiMethodPrefix.'path.to.root'] = $help; 
-    $this->apicallbacks[$apiMethodPrefix.'path.to.root']           = array(&$this, '_PathToRoot');
-    
+    $this->helpContent[$apiMethodPrefix.'path.to.root'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'path.to.root']           = array(&$this, 'pathToRoot');
+
     $help = array();
     $help['params'] = array();
     $help['params']['uuid'] = 'Unique identifier of the resource';
     $help['example'] = array();
     $help['return'] = 'Array of resource';
     $help['description'] = 'Return the path from the root';
-    $this->helpContent[$apiMethodPrefix.'path.from.root'] = $help; 
-    $this->apicallbacks[$apiMethodPrefix.'path.from.root']         = array(&$this, '_PathFromRoot');
-    
+    $this->helpContent[$apiMethodPrefix.'path.from.root'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'path.from.root']         = array(&$this, 'pathFromRoot');
+
     /* ----- Upload ------*/
     $help = array();
     $help['params'] = array();
@@ -159,16 +163,16 @@ class Api_IndexController extends Api_AppController
     $help['return'] = 'Token';
     $help['description'] = 'Generate an upload token';
     $this->helpContent[$apiMethodPrefix.'upload.generatetoken'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'upload.generatetoken']   = array(&$this, '_UploadApiGenerateToken');
-    
+    $this->apicallbacks[$apiMethodPrefix.'upload.generatetoken']   = array(&$this, 'uploadApiGenerateToken');
+
     $help = array();
     $help['params'] = array();
     $help['example'] = array();
     $help['return'] = '';
     $help['description'] = 'Get offset';
-    $this->helpContent[$apiMethodPrefix.'upload.getoffset'] = $help;    
-    $this->apicallbacks[$apiMethodPrefix.'upload.getoffset']       = array(&$this, '_UploadApiGetOffset');
-   
+    $this->helpContent[$apiMethodPrefix.'upload.getoffset'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'upload.getoffset']       = array(&$this, 'uploadApiGetOffset');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = 'Authentification token';
@@ -179,10 +183,10 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'Item information';
     $help['description'] = 'Upload a file (using put or post method)';
-    $this->helpContent[$apiMethodPrefix.'upload.file'] = $help;    
-    $this->apicallbacks[$apiMethodPrefix.'upload.file']       = array(&$this, '_UploadFile');
-    
-    
+    $this->helpContent[$apiMethodPrefix.'upload.file'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'upload.file']       = array(&$this, 'uploadFile');
+
+
     /* ----- Community ------*/
     $help = array();
     $help['params'] = array();
@@ -195,9 +199,9 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'Community Information';
     $help['description'] = 'Create or update a community';
-    $this->helpContent[$apiMethodPrefix.'community.create'] = $help;  
-    $this->apicallbacks[$apiMethodPrefix.'community.create']       = array(&$this, '_CommunityCreate');
-    
+    $this->helpContent[$apiMethodPrefix.'community.create'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'community.create']       = array(&$this, 'communityCreate');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = '(Optional) Authentification token';
@@ -205,9 +209,9 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'Community Information';
     $help['description'] = 'Get a community';
-    $this->helpContent[$apiMethodPrefix.'community.get'] = $help;  
-    $this->apicallbacks[$apiMethodPrefix.'community.get']          = array(&$this, '_CommunityGet');
-    
+    $this->helpContent[$apiMethodPrefix.'community.get'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'community.get']          = array(&$this, 'communityGet');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = 'Authentification token';
@@ -215,9 +219,9 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = '';
     $help['description'] = 'Delete a community';
-    $this->helpContent[$apiMethodPrefix.'community.delete'] = $help;  
-    $this->apicallbacks[$apiMethodPrefix.'community.delete']       = array(&$this, '_CommunityDelete');
-    
+    $this->helpContent[$apiMethodPrefix.'community.delete'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'community.delete']       = array(&$this, 'communityDelete');
+
      /* ----- Folder ------*/
     $help = array();
     $help['params'] = array();
@@ -229,9 +233,9 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'Folder information';
     $help['description'] = 'Create or edit a folder';
-    $this->helpContent[$apiMethodPrefix.'folder.create'] = $help; 
-    $this->apicallbacks[$apiMethodPrefix.'folder.create']      = array(&$this, '_FolderCreate');
-    
+    $this->helpContent[$apiMethodPrefix.'folder.create'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'folder.create']      = array(&$this, 'folderCreate');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = 'Authentification token';
@@ -239,9 +243,9 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = '';
     $help['description'] = 'Delete a folder';
-    $this->helpContent[$apiMethodPrefix.'folder.delete'] = $help; 
-    $this->apicallbacks[$apiMethodPrefix.'folder.delete']      = array(&$this, '_FolderDelete');
-    
+    $this->helpContent[$apiMethodPrefix.'folder.delete'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'folder.delete']      = array(&$this, 'folderDelete');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = '(Optional) Authentification token';
@@ -249,9 +253,9 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'Folder Information';
     $help['description'] = 'Get a folder';
-    $this->helpContent[$apiMethodPrefix.'folder.get'] = $help;  
-    $this->apicallbacks[$apiMethodPrefix.'folder.get']          = array(&$this, '_FolderGet');
-    
+    $this->helpContent[$apiMethodPrefix.'folder.get'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'folder.get']          = array(&$this, 'folderGet');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = '(Optional) Authentification token';
@@ -259,9 +263,9 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'File';
     $help['description'] = 'Download a folder';
-    $this->helpContent[$apiMethodPrefix.'folder.download'] = $help;  
-    $this->apicallbacks[$apiMethodPrefix.'folder.download']    = array(&$this, '_FolderDownload');
-    
+    $this->helpContent[$apiMethodPrefix.'folder.download'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'folder.download']    = array(&$this, 'folderDownload');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = '(Optional) Authentification token';
@@ -269,9 +273,9 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'Array of Items and Folders';
     $help['description'] = 'Get folder Content';
-    $this->helpContent[$apiMethodPrefix.'folder.content'] = $help;  
-    $this->apicallbacks[$apiMethodPrefix.'folder.content']         = array(&$this, '_FolderContent');
-    
+    $this->helpContent[$apiMethodPrefix.'folder.content'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'folder.content']         = array(&$this, 'folderContent');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = '(Optional) Authentification token';
@@ -279,9 +283,9 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'Array of Folders';
     $help['description'] = 'Get folder Tree';
-    $this->helpContent[$apiMethodPrefix.'folder.tree'] = $help;  
-    $this->apicallbacks[$apiMethodPrefix.'folder.tree']         = array(&$this, '_FolderTree');    
-    
+    $this->helpContent[$apiMethodPrefix.'folder.tree'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'folder.tree']         = array(&$this, 'folderTree');
+
     /** ------ ITEM --- */
     $help = array();
     $help['params'] = array();
@@ -290,9 +294,9 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'Item Information';
     $help['description'] = 'Get an item information (contains its revisions information)';
-    $this->helpContent[$apiMethodPrefix.'item.get'] = $help;  
-    $this->apicallbacks[$apiMethodPrefix.'item.get']               = array(&$this, '_ItemGet');
-    
+    $this->helpContent[$apiMethodPrefix.'item.get'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'item.get']               = array(&$this, 'itemGet');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = '(Optional) Authentification token';
@@ -301,9 +305,9 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'File';
     $help['description'] = 'Download an item';
-    $this->helpContent[$apiMethodPrefix.'item.download'] = $help;  
-    $this->apicallbacks[$apiMethodPrefix.'item.download']          = array(&$this, '_ItemDownload');
-    
+    $this->helpContent[$apiMethodPrefix.'item.download'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'item.download']          = array(&$this, 'itemDownload');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = 'Authentification token';
@@ -312,8 +316,8 @@ class Api_IndexController extends Api_AppController
     $help['return'] = '';
     $help['description'] = 'Delete an item (an its bitstream)';
     $this->helpContent[$apiMethodPrefix.'item.delete'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'item.delete']            = array(&$this, '_ItemDelete');
-    
+    $this->apicallbacks[$apiMethodPrefix.'item.delete']            = array(&$this, 'itemDelete');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = 'Authentification token';
@@ -323,14 +327,14 @@ class Api_IndexController extends Api_AppController
     $help['return'] = '';
     $help['description'] = 'Get metadata';
     $this->helpContent[$apiMethodPrefix.'item.getmetadata'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'item.getmetadata']            = array(&$this, '_ItemGetMetadata');
-    
-    /*     
-    $this->apicallbacks[$apiMethodPrefix.'newresources.get']       = array(&$this, '_NewResourcesGet');     */
+    $this->apicallbacks[$apiMethodPrefix.'item.getmetadata']            = array(&$this, 'itemGetMetadata');
+
+    /*
+    $this->apicallbacks[$apiMethodPrefix.'newresources.get']       = array(&$this, 'newResourcesGet');     */
     }
 
   /** Initialize property allowing to generate XML */
-  function _InitApiCommons()
+  private function _initApiCommons()
     {
     // Disable debug information - Required to generate valid XML output
     //Configure::write('debug', 0);
@@ -343,102 +347,8 @@ class Api_IndexController extends Api_AppController
     $this->uploadApi = new KwUploadAPI($this->apiSetup);
     }
 
-  /** Controller action handling REST request */
-  function restAction()
-    {
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
-
-    $request_data = $this->_getAllParams();
-      
-    $method_name = $this->_getParam('method');
-    if( !isset ($method_name))
-      {
-      echo "Inconsistent request";
-      exit;
-      }
-    
-    $request_data=$this->_getAllParams();
-    // Handle XML-RPC request
-    $this->kwWebApiCore = new KwWebApiRestCore( $this->apiSetup, $this->apicallbacks, $request_data);
-    }
-  /** Controller action handling JSON request */
-  function jsonAction()
-    {
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
-
-    $request_data = $this->_getAllParams();
-      
-    $method_name = $this->_getParam('method');
-    if( !isset ($method_name))
-      {
-      echo "Inconsistent request";
-      exit;
-      }
-    
-    $request_data=$this->_getAllParams();
-    // Handle XML-RPC request
-    $this->kwWebApiCore = new KwWebApiRestCore( $this->apiSetup, $this->apicallbacks, array_merge($request_data, array('format' => 'json')));
-    }
-
-
-  /** Return the information */
-  function _Version( $args )
-    {
-    $data['version'] = $this->view->version;
-    return $data;
-    }
-
   /** Return the user id given the arguments */
-  function _Login( $args )
-    {
-    if(!array_key_exists('email', $args))
-      {
-      throw new Exception('Parameter email is not defined', -150);
-      }
-
-    if(!array_key_exists('appname', $args))
-        {
-        throw new Exception('Parameter appname is not defined', -150);
-        }
-
-    $data['token'] = "";
-
-    // If we have a password we generate an API key for the user
-    if(array_key_exists('password', $args))
-      {
-      $userapiDao = $this->Api_Userapi->createKeyFromEmailPassword($args['appname'],$args['email'],$args['password']);
-      
-      if($userapiDao === false)
-        {
-        throw new Exception('Unable to authenticate.Please check credentials.', -150);
-        }
-        
-      $args['apikey'] = $userapiDao->getApikey();
-      }
-    else
-      {
-      if(!array_key_exists('apikey', $args))
-        {
-        throw new Exception('Parameter apikey is not defined', -150);
-        }
-      }
-
-    $email = $args['email'];
-    $appname = $args['appname'];
-    $apikey = $args['apikey'];
-    $tokenDao = $this->Api_Userapi->getToken($email, $apikey, $appname);
-    if(empty($tokenDao))
-        {
-        throw new Exception('Unable to authenticate.Please check credentials.', -150);
-        }
-    $data['token'] = $tokenDao->getToken();
-    return $data;
-    }
-
-  /** Return the user id given the arguments */
-  function _getUserId( $args )
+  private function _getUserId($args)
     {
     if(!array_key_exists('token', $args))
       {
@@ -454,42 +364,136 @@ class Api_IndexController extends Api_AppController
       }
     return $userapiDao->getUserId();
     }
-    
+
   /** Return the user */
-  private function _getUser( $args )
+  private function _getUser($args)
     {
-    $userid = $this->_getUserId($args);    
+    $userid = $this->_getUserId($args);
     $userDao = $this->User->load($userid);
     return $userDao;
     }
 
-  /** Generate an unique upload token */
-  function _UploadApiGenerateToken( $args )
+  /** Controller action handling REST request */
+  function restAction()
     {
-    return $this->uploadApi->generateToken( $args );
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+
+    $request_data = $this->_getAllParams();
+
+    $method_name = $this->_getParam('method');
+    if(!isset($method_name))
+      {
+      echo "Inconsistent request";
+      exit;
+      }
+
+    $request_data = $this->_getAllParams();
+    // Handle XML-RPC request
+    $this->kwWebApiCore = new KwWebApiRestCore($this->apiSetup, $this->apicallbacks, $request_data);
+    }
+
+  /** Controller action handling JSON request */
+  function jsonAction()
+    {
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+
+    $request_data = $this->_getAllParams();
+
+    $method_name = $this->_getParam('method');
+    if(!isset($method_name))
+      {
+      echo "Inconsistent request";
+      exit;
+      }
+
+    $request_data = $this->_getAllParams();
+    // Handle XML-RPC request
+    $this->kwWebApiCore = new KwWebApiRestCore($this->apiSetup, $this->apicallbacks, array_merge($request_data, array('format' => 'json')));
+    }
+
+  /** Return the information */
+  function version($args)
+    {
+    $data['version'] = $this->view->version;
+    return $data;
+    }
+
+  /** Return the user id given the arguments */
+  function login($args)
+    {
+    if(!array_key_exists('email', $args))
+      {
+      throw new Exception('Parameter email is not defined', -150);
+      }
+
+    if(!array_key_exists('appname', $args))
+      {
+      throw new Exception('Parameter appname is not defined', -150);
+      }
+
+    $data['token'] = "";
+
+    // If we have a password we generate an API key for the user
+    if(array_key_exists('password', $args))
+      {
+      $userapiDao = $this->Api_Userapi->createKeyFromEmailPassword($args['appname'], $args['email'], $args['password']);
+
+      if($userapiDao === false)
+        {
+        throw new Exception('Unable to authenticate.Please check credentials.', -150);
+        }
+
+      $args['apikey'] = $userapiDao->getApikey();
+      }
+    else
+      {
+      if(!array_key_exists('apikey', $args))
+        {
+        throw new Exception('Parameter apikey is not defined', -150);
+        }
+      }
+
+    $email = $args['email'];
+    $appname = $args['appname'];
+    $apikey = $args['apikey'];
+    $tokenDao = $this->Api_Userapi->getToken($email, $apikey, $appname);
+    if(empty($tokenDao))
+      {
+      throw new Exception('Unable to authenticate.Please check credentials.', -150);
+      }
+    $data['token'] = $tokenDao->getToken();
+    return $data;
+    }
+
+  /** Generate an unique upload token */
+  function uploadApiGenerateToken($args)
+    {
+    return $this->uploadApi->generateToken($args);
     }
 
   /** Get the offset of the current upload */
-  function _UploadApiGetOffset( $args )
+  function uploadApiGetOffset($args)
     {
-    return $this->uploadApi->getOffset( $args );
+    return $this->uploadApi->getOffset($args);
     }
 
   /** Upload a Bitstream */
-  function _UploadFile( $args )
+  function uploadFile($args)
     {
-    if (!$this->_request->isPost() && !$this->_request->isPut())
+    if(!$this->_request->isPost() && !$this->_request->isPut())
       {
       throw new Exception('POST or PUT method required', -153);
       }
-     
+
     $userDao = $this->_getUser($args);
-    
+
     if($userDao == false)
       {
       throw new Exception('Please log in', -150);
       }
-      
+
     if(array_key_exists('revision', $args) && array_key_exists('item_id', $args))
       {
       $item = $this->Item->load($args['item_id']);
@@ -508,7 +512,7 @@ class Api_IndexController extends Api_AppController
         }
       }
     elseif(array_key_exists('item_id', $args))
-      {      
+      {
       $item = $this->Item->load($args['item_id']);
       if($item == false)
         {
@@ -538,7 +542,7 @@ class Api_IndexController extends Api_AppController
 
     $mode = array_key_exists('mode', $args) ? $args['mode'] : "stream";
 
-    if ($mode == "stream")
+    if($mode == "stream")
       {
       $token = $this->uploadApi->generateToken($args);
       $args['uploadtoken'] = $token['token'];
@@ -548,7 +552,7 @@ class Api_IndexController extends Api_AppController
       $filepath = $result['path'];
       $filesize = $result['size'];
       }
-    else if ($mode == "multipart")
+    else if($mode == "multipart")
       {
       if(!array_key_exists('file', $args) || !array_key_exists('file', $_FILES))
         {
@@ -564,7 +568,7 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Invalid upload mode', -155);
       }
-      
+
     if(isset($folder))
       {
       $item = $this->Component->Upload->createUploadedItem($userDao, $filename, $filepath, $folder);
@@ -579,14 +583,14 @@ class Api_IndexController extends Api_AppController
       $tmp = array($item->getKey(), 99999);//new revision
       $item = $this->Component->Upload->createNewRevision($userDao, $filename, $filepath, $tmp, '');
       }
-      
+
     return $item->toArray();
     }
 
-  
+
   /** Create a community */
-  function _CommunityCreate( $args )
-    {    
+  function communityCreate($args)
+    {
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
@@ -608,7 +612,7 @@ class Api_IndexController extends Api_AppController
       if($record === false || !$this->Community->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
         {
         throw new Exception("This community doesn't exist  or you don't have the permissions.", 200);
-        }   
+        }
       }
     if($record != false && $record instanceof CommunityDao)
       {
@@ -656,8 +660,8 @@ class Api_IndexController extends Api_AppController
       }
     }
 
-  /** Get a community information */
-  function _CommunityGet( $args )
+  /** Get a community's information */
+  function communityGet($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -665,7 +669,7 @@ class Api_IndexController extends Api_AppController
       }
 
     $communityid = $args['id'];
-    
+
     if(array_key_exists('token', $args))
       {
       $userDao = $this->_getUser($args);
@@ -673,20 +677,20 @@ class Api_IndexController extends Api_AppController
     else
       {
       $userDao = false;
-      }   
-    
+      }
+
     $community = $this->Community->load($communityid);
 
     if($community === false || !$this->Community->policyCheck($community, $userDao, MIDAS_POLICY_READ))
       {
       throw new Exception("This community doesn't exist  or you don't have the permissions.", 200);
-      }   
+      }
 
     return $community->toArray();
-    }// _CommunityGet
+    }
 
   /** Get folderContent */
-  function _FolderContent( $args )
+  function folderContent($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -694,7 +698,7 @@ class Api_IndexController extends Api_AppController
       }
 
     $id = $args['id'];
-    
+
     if(array_key_exists('token', $args))
       {
       $userDao = $this->_getUser($args);
@@ -702,14 +706,14 @@ class Api_IndexController extends Api_AppController
     else
       {
       $userDao = false;
-      }   
-    
+      }
+
     $parent = $this->Folder->load($id);
 
     if($parent === false || !$this->Folder->policyCheck($parent, $userDao, MIDAS_POLICY_READ))
       {
       throw new Exception("This folder doesn't exist  or you don't have the permissions.", 200);
-      }   
+      }
 
     $folders = $this->Folder->getChildrenFoldersFiltered($parent, $this->userSession->Dao, MIDAS_POLICY_READ);
     $items = $this->Folder->getItemsFiltered($parent, $this->userSession->Dao, MIDAS_POLICY_READ);
@@ -724,12 +728,12 @@ class Api_IndexController extends Api_AppController
       $jsonContent[$item->parent_id]['items'][] = $item->toArray();
       unset($tmp);
       }
-      
+
     return $jsonContent[$parent->getKey()];
     }
 
   /** Get the full tree from a community */
-  function _FolderTree( $args )
+  function folderTree($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -738,49 +742,49 @@ class Api_IndexController extends Api_AppController
 
     $id = $args['id'];
     $folder = $this->Folder->load($id);
-    
+
     $userDao = $this->_getUser($args);
     $folders = $this->Folder->getAllChildren($folder, $userDao);
-    
+
     $tree = array();
     $folderTree = array();
-    
+
     foreach($folders as $folder)
       {
       $mainnode = $folder->toArray();
-      
+
       if($folder->getParentId() != -1)
         {
         if(isset($folderTree[$folder->getParentId()]))
           {
-          $mainnode['depth'] = $folderTree[$folder->getParentId()]['depth']+1;
+          $mainnode['depth'] = $folderTree[$folder->getParentId()]['depth'] + 1;
           }
         else
           {
           $mainnode['depth'] = 1;
-          }        
+          }
         }
       // Cut the name to fit in the tree
-      $maxsize = 24-($mainnode['depth']*2.5);
+      $maxsize = 24 - ($mainnode['depth'] * 2.5);
       if(strlen($mainnode['name']) > $maxsize)
         {
-        $mainnode['name'] = substr($mainnode['name'],0,$maxsize).'...';
+        $mainnode['name'] = substr($mainnode['name'], 0, $maxsize).'...';
         }
       $folderTree[$folder->getKey()] = $mainnode;
       if($folder->getParentId() == -1)
         {
-        $tree[] = &$folderTree[$folder->getKey()];  
+        $tree[] = &$folderTree[$folder->getKey()];
         }
       else
         {
         $tree[$folder->getParentId()][] = &$folderTree[$folder->getKey()];
-        }  
+        }
       }
     return $tree;
     } //_CommunityTree
 
   /** Get information about the folder */
-  function _FolderGet( $args )
+  function folderGet($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -788,7 +792,7 @@ class Api_IndexController extends Api_AppController
       }
 
     $id = $args['id'];
-    
+
     if(array_key_exists('token', $args))
       {
       $userDao = $this->_getUser($args);
@@ -796,20 +800,20 @@ class Api_IndexController extends Api_AppController
     else
       {
       $userDao = false;
-      }   
-    
+      }
+
     $folder = $this->Folder->load($id);
 
     if($folder === false || !$this->Folder->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
       {
-      throw new Exception("This folder doesn't exist  or you don't have the permissions.", 200);
-      }   
+      throw new Exception("This folder doesn't exist or you don't have the permissions.", 200);
+      }
 
     return $folder->toArray();
     }
 
   /** Create a folder */
-  function _FolderCreate( $args )
+  function folderCreate($args)
     {
     $userDao = $this->_getUser($args);
     if($userDao == false)
@@ -837,7 +841,7 @@ class Api_IndexController extends Api_AppController
       if($record === false || !$this->Folder->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
         {
         throw new Exception("This folder doesn't exist  or you don't have the permissions.", 200);
-        }   
+        }
       }
     if($record != false && $record instanceof FolderDao)
       {
@@ -890,7 +894,7 @@ class Api_IndexController extends Api_AppController
     }
 
   /** Return the abstract given an item id */
-  function _ItemAbstractGet( $args )
+  function itemAbstractGet($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -899,7 +903,7 @@ class Api_IndexController extends Api_AppController
 
     $itemid = $args['id'];
     $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($itemid,$userid,MIDAS_RESOURCE_ITEM,MIDAS_POLICY_READ))
+    if(!$this->User->isPolicyValid($itemid, $userid, MIDAS_RESOURCE_ITEM, MIDAS_POLICY_READ))
       {
       throw new Exception('Invalid policy', -151);
       }
@@ -908,9 +912,8 @@ class Api_IndexController extends Api_AppController
     return array($abstract);
     }
 
-
   /** Get the item */
-  function _ItemGet( $args )
+  function itemGet($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -918,7 +921,7 @@ class Api_IndexController extends Api_AppController
       }
 
     $itemid = $args['id'];
-    
+
     if(array_key_exists('token', $args))
       {
       $userDao = $this->_getUser($args);
@@ -926,14 +929,14 @@ class Api_IndexController extends Api_AppController
     else
       {
       $userDao = false;
-      }   
-    
+      }
+
     $item = $this->Item->load($itemid);
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
       {
       throw new Exception("This item doesn't exist  or you don't have the permissions.", 200);
-      }   
+      }
 
     $itemArray = $item->toArray();
     $revisions = $item->getRevisions();
@@ -952,10 +955,10 @@ class Api_IndexController extends Api_AppController
       }
     $itemArray['revisions'] = $revisionsArray;
     return $itemArray;
-    }// _CommunityGet
-    
+    }
+
   /** Get the item's metadata */
-  function _ItemGetMetadata( $args )
+  function itemGetMetadata($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -963,7 +966,7 @@ class Api_IndexController extends Api_AppController
       }
 
     $itemid = $args['id'];
-    
+
     if(array_key_exists('token', $args))
       {
       $userDao = $this->_getUser($args);
@@ -971,15 +974,15 @@ class Api_IndexController extends Api_AppController
     else
       {
       $userDao = false;
-      }   
-    
+      }
+
     $item = $this->Item->load($itemid);
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
       {
       throw new Exception("This item doesn't exist  or you don't have the permissions.", 200);
-      }   
-      
+      }
+
     if(isset($args['revision']))
       {
       $revisionNumber = $args['revision'];
@@ -998,7 +1001,7 @@ class Api_IndexController extends Api_AppController
       {
       $revisionDao = $this->Item->getLastRevision($item);
       }
-      
+
     $metadata = $this->ItemRevision->getMetadata($revisionDao);
     $metadataArray = array();
     foreach($metadata as $m)
@@ -1006,10 +1009,10 @@ class Api_IndexController extends Api_AppController
       $metadataArray[] = $m->toArray();
       }
     return $metadataArray;
-    }// _CommunityGet
+    }
 
   /** Download a folder */
-  function _FolderDownload( $args )
+  function folderDownload($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -1017,7 +1020,7 @@ class Api_IndexController extends Api_AppController
       }
 
     $id = $args['id'];
-    
+
     if(array_key_exists('token', $args))
       {
       $userDao = $this->_getUser($args);
@@ -1025,20 +1028,20 @@ class Api_IndexController extends Api_AppController
     else
       {
       $userDao = false;
-      }   
-    
+      }
+
     $folder = $this->Folder->load($id);
 
     if($folder === false || !$this->Folder->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
       {
       throw new Exception("This folder doesn't exist  or you don't have the permissions.", 200);
-      }   
+      }
 
     $this->_redirect('/download/?folders='.$folder->getKey());
     }
 
   /** Download an item */
-  function _ItemDownload( $args )
+  function itemDownload($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -1046,7 +1049,7 @@ class Api_IndexController extends Api_AppController
       }
 
     $id = $args['id'];
-    
+
     if(array_key_exists('token', $args))
       {
       $userDao = $this->_getUser($args);
@@ -1054,14 +1057,14 @@ class Api_IndexController extends Api_AppController
     else
       {
       $userDao = false;
-      }   
-    
+      }
+
     $item = $this->Item->load($id);
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
       {
       throw new Exception("This item doesn't exist  or you don't have the permissions.", 200);
-      }   
+      }
 
     if(isset($args['revision']))
       {
@@ -1074,7 +1077,7 @@ class Api_IndexController extends Api_AppController
     }
 
   /** Return all locations for a bitstream */
-  function _BitstreamLocations( $args )
+  function bitstreamLocations($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -1087,7 +1090,7 @@ class Api_IndexController extends Api_AppController
       throw new Exception('Invalid id parameter', -150);
       }
     $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($bitstreamid,$userid,MIDAS_RESOURCE_BITSTREAM,MIDAS_POLICY_READ))
+    if(!$this->User->isPolicyValid($bitstreamid, $userid, MIDAS_RESOURCE_BITSTREAM, MIDAS_POLICY_READ))
       {
       throw new Exception('Invalid policy', -151);
       }
@@ -1095,7 +1098,7 @@ class Api_IndexController extends Api_AppController
     }
 
   /** Download a bitstream */
-  function _BitstreamDownload( $args )
+  function bitstreamDownload($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -1104,7 +1107,7 @@ class Api_IndexController extends Api_AppController
 
     $bitstreamid = $args['id'];
     $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($bitstreamid,$userid,MIDAS_RESOURCE_BITSTREAM,MIDAS_POLICY_READ))
+    if(!$this->User->isPolicyValid($bitstreamid, $userid, MIDAS_RESOURCE_BITSTREAM, MIDAS_POLICY_READ))
       {
       throw new Exception('Invalid policy', -151);
       }
@@ -1120,11 +1123,12 @@ class Api_IndexController extends Api_AppController
       }
     // must call ob_end_clean before we forward to bitstream/download or bitstream/view
     ob_end_clean();
-    $this->requestAction('/bitstream/view/'.$bitstreamid.$location,array('return'));
+    $this->requestAction('/bitstream/view/'.$bitstreamid.$location, array('return'));
     exit();
     }
 
-  function _BitstreamDownloadByHash( $args )
+  /** Download a bitstream by its checksum */
+  function bitstreamDownloadByHash($args)
     {
     if(!array_key_exists('hash', $args))
       {
@@ -1139,26 +1143,26 @@ class Api_IndexController extends Api_AppController
 
     if($bitstreamid === false)
       {
-      throw new Exception("No bitstream exists with $alg = $hash", -152);
+      throw new Exception('No bitstream exists with'.$alg.' = '.$hash, -150);
       }
     if(array_key_exists('checkExistsOnly', $args))
       {
-      return array('exists'=>'true');
+      return array('exists' => 'true');
       }
     $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($bitstreamid,$userid,MIDAS_RESOURCE_BITSTREAM,MIDAS_POLICY_READ))
+    if(!$this->User->isPolicyValid($bitstreamid, $userid, MIDAS_RESOURCE_BITSTREAM, MIDAS_POLICY_READ))
       {
       throw new Exception('Invalid policy', -151);
       }
 
     // must call ob_end_clean before we forward to bitstream/download or bitstream/view
     ob_end_clean();
-    $this->requestAction("/bitstream/view/$bitstreamid$name",array('return'));
+    $this->requestAction('/bitstream/view/'.$bitstreamid.$name, array('return'));
     exit();
     }
 
   /** Get bitstream info */
-  function _BitstreamGet( $args )
+  function bitstreamGet($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -1167,7 +1171,7 @@ class Api_IndexController extends Api_AppController
 
     $bitstreamid = $args['id'];
     $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($bitstreamid,$userid,MIDAS_RESOURCE_BITSTREAM,MIDAS_POLICY_READ))
+    if(!$this->User->isPolicyValid($bitstreamid, $userid, MIDAS_RESOURCE_BITSTREAM, MIDAS_POLICY_READ))
       {
       throw new Exception('Invalid policy', -151);
       }
@@ -1183,7 +1187,7 @@ class Api_IndexController extends Api_AppController
     }
 
   /** Get uuid for a resource */
-  function _UuidGet( $args )
+  function uuidGet($args)
     {
     if(!array_key_exists('id', $args))
       {
@@ -1229,19 +1233,19 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Invalid resource type or id.', -151);
       }
-      
+
     $uuid = $dao->getUuid();
 
     if($uuid == false)
       {
       throw new Exception('Invalid resource type or id.', -151);
       }
-      
+
     return $uuid;
     }
 
   /** Get resource given a uuid */
-  function _ResourceGet( $args )
+  function resourceGet($args)
     {
     if(!array_key_exists('uuid', $args))
       {
@@ -1260,21 +1264,21 @@ class Api_IndexController extends Api_AppController
     }
 
   /** Returns a path of uuids from the root community to the given node */
-  function _PathFromRoot ( $args )
+  function pathFromRoot ($args)
     {
-    return array_reverse($this->_PathToRoot($args));
+    return array_reverse($this->pathToRoot($args));
     }
 
   /** Returns a path of uuids from the given node to the root community */
-  function _PathToRoot ( $args )
+  function pathToRoot ($args)
     {
     if(!array_key_exists('uuid', $args))
       {
       throw new Exception('Parameter uuid is not defined', -150);
       }
-      
+
     $folder = $this->Component->Uuid->getByUid($args['uuid']);
-    
+
     $return = array();
     $return[] = $folder->toArray();
 
@@ -1282,12 +1286,12 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('No resource for the given UUID.', -151);
       }
-    
+
     if(!$folder instanceof FolderDao)
       {
       throw new Exception('Should be a folder.', -150);
       }
-    
+
     $parent = $folder->getParent();
     while($parent !== false)
       {
@@ -1298,28 +1302,28 @@ class Api_IndexController extends Api_AppController
     }
 
   /** Search resources for the given words */
-  function _ResourcesSearch( $args )
+  function resourcesSearch($args)
     {
     if(!array_key_exists('search', $args))
       {
       throw new Exception('Parameter search is not defined', -150);
       }
     $userDao = $this->_getUser($args);
-    
+
     $order = 'view';
     if(isset($args['order']))
       {
       $order = $args['order'];
       }
-    return $this->Component->Search->searchAll($userDao, $args['search'], $order);;
+    return $this->Component->Search->searchAll($userDao, $args['search'], $order);
     }
 
   /** Return all changed resources since a given timestamp, and provide a new timestamp */
-  function _NewResourcesGet( $args )
+  function newResourcesGet($args)
     {
     if(array_key_exists('since', $args))
       {
-      App::import('Model','Resourcelog');
+      App::import('Model', 'Resourcelog');
       $Resourcelog = new Resourcelog();
       $results = $Resourcelog->getAllModifiedSince($args['since']);
       foreach($results as $result)
@@ -1331,13 +1335,14 @@ class Api_IndexController extends Api_AppController
     return $data;
     }
 
-  function _CommunityDelete( $args )
+  /** Delete a community */
+  function communityDelete($args)
     {
     if(!array_key_exists('id', $args))
       {
       throw new Exception('Parameter id is not defined', -155);
       }
-    
+
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
@@ -1349,19 +1354,19 @@ class Api_IndexController extends Api_AppController
     if($community === false || !$this->Community->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
       {
       throw new Exception("This community doesn't exist  or you don't have the permissions.", 200);
-      }  
-      
+      }
+
     $this->Community->delete($community);
     }
 
   /** Delete Folder*/
-  function _FolderDelete( $args )
+  function folderDelete($args)
     {
     if(!array_key_exists('id', $args))
       {
       throw new Exception('Parameter id is not defined', -155);
       }
-    
+
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
@@ -1373,18 +1378,19 @@ class Api_IndexController extends Api_AppController
     if($folder === false || !$this->Folder->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
       {
       throw new Exception("This community doesn't exist  or you don't have the permissions.", 200);
-      }  
-      
+      }
+
     $this->Folder->delete($folder);
     }
 
-  function _ItemDelete( $args )
+  /** Delete an item */
+  function itemDelete($args)
     {
     if(!array_key_exists('id', $args))
       {
       throw new Exception('Parameter id is not defined', -155);
       }
-    
+
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
@@ -1396,8 +1402,8 @@ class Api_IndexController extends Api_AppController
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
       {
       throw new Exception("This item doesn't exist  or you don't have the permissions.", 200);
-      }  
-      
+      }
+
     $this->Item->delete($item);
     }
   } // end class
