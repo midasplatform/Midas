@@ -29,7 +29,7 @@ class ApiKeyControllerTest extends ControllerTestCase
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    
+
     $modelLoad = new MIDAS_ModelLoader();
     $userApiModel = $modelLoad->loadModel('Userapi', 'api');
     $userApiModel->createDefaultApiKey($userDao);
@@ -44,7 +44,7 @@ class ApiKeyControllerTest extends ControllerTestCase
 
     $page = $this->webroot.'user/settings';
     $this->dispatchUrI($page, $userDao);
-    
+
     $postKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
     $this->assertNotEquals($preKey, $postKey);
     $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
@@ -54,5 +54,22 @@ class ApiKeyControllerTest extends ControllerTestCase
   /** Make sure adding a new user adds a default api key */
   public function testNewUserGetsDefaultApiKey()
     {
+    // Register a new user
+    $this->params['email'] = 'some.user@server.com';
+    $this->params['password1'] = 'midas';
+    $this->params['password2'] = 'midas';
+    $this->params['firstname'] = 'some';
+    $this->params['lastname'] = 'user';
+    $this->request->setMethod('POST');
+
+    $page = $this->webroot.'user/register';
+    $this->dispatchUrI($page);
+
+    // Check that their default api key was created
+    $modelLoad = new MIDAS_ModelLoader();
+    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $key = $userApiModel->getByAppAndEmail('Default', 'some.user@server.com')->getApikey();
+    $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
+    $this->assertEquals($key, md5('some.user@server.com'.md5($passwordPrefix.'midas').'Default'));
     }
   }
