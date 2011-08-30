@@ -13,13 +13,12 @@ set( Midas_VERSION_BUILD
 set( Midas_VERSION
   "${Midas_VERSION_MAJOR}.${Midas_VERSION_MINOR}.${Midas_VERSION_BUILD}" )
 
-set( PHP "php" CACHE STRING  "PHP executable.")
-
-EXECUTE_PROCESS( COMMAND ${PHP} RESULT_VARIABLE ret_var)
-if(NOT ${ret_var} EQUAL 0)
-  message(FATAL_ERROR "Please set the PHP executable")
+#-----------------------------------------------------------------------------
+#  Find the php executable
+find_program(PHP "php" CACHE STRING "PHP executable.")
+if(NOT PHP)
+ message(FATAL_ERROR "Please set the PHP executable")
 endif()
-
 
 
 #-----------------------------------------------------------------------------
