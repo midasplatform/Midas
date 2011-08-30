@@ -51,14 +51,16 @@ function(add_midas_pgsql_test TestName TestFile)
 endfunction(add_midas_pgsql_test)
 
 function(add_midas_style_test TestName TestDir)
-  add_test(
-    ${TestName}
-    ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PhpCheckstyle/run.php --format console --src ${TestDir}
-  )
-  set_tests_properties(
-    ${TestName} PROPERTIES
-    FAIL_REGULAR_EXPRESSION "ERROR;WARNING"
-  )
+  if(MIDAS_RUN_STYLE_TESTS)
+    add_test(
+      ${TestName}
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PhpCheckstyle/run.php --format console --src ${TestDir}
+    )
+    set_tests_properties(
+      ${TestName} PROPERTIES
+      FAIL_REGULAR_EXPRESSION "ERROR;WARNING"
+    )
+  endif()
 endfunction(add_midas_style_test)
 
 add_midas_style_test( StyleTestsControllerTestCase ${CMAKE_SOURCE_DIR}/tests/ControllerTestCase.php )

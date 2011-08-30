@@ -379,7 +379,7 @@ class Api_IndexController extends Api_AppController
     
     $request_data=$this->_getAllParams();
     // Handle XML-RPC request
-    $this->kwWebApiCore = new KwWebApiRestCore( $this->apiSetup, $this->apicallbacks, array_merge($request_data,array('format' => 'json')));
+    $this->kwWebApiCore = new KwWebApiRestCore( $this->apiSetup, $this->apicallbacks, array_merge($request_data, array('format' => 'json')));
     }
 
 

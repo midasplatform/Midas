@@ -29,8 +29,8 @@ abstract class UserModelBase extends AppModel
       'password' => array('type' => MIDAS_DATA),
       'creation' => array('type' => MIDAS_DATA),
       'folder_id' => array('type' => MIDAS_DATA),
-      'admin' => array('type' => MIDAS_DATA),    
-      'privacy' => array('type' => MIDAS_DATA),    
+      'admin' => array('type' => MIDAS_DATA),
+      'privacy' => array('type' => MIDAS_DATA),
       'publicfolder_id' => array('type' => MIDAS_DATA),
       'privatefolder_id' => array('type' => MIDAS_DATA),
       'view' => array('type' => MIDAS_DATA),
@@ -46,10 +46,10 @@ abstract class UserModelBase extends AppModel
       'invitations' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'CommunityInvitation', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
       'folderpolicyuser' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Folderpolicyuser', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
       'feeds' => array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Feed', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
-      ); 
+      );
     $this->initialize(); // required
     } // end __construct()
-  
+
   /** Abstract functions */
   abstract function getByEmail($email);
   abstract function getByUser_id($userid);
@@ -59,7 +59,7 @@ abstract class UserModelBase extends AppModel
   abstract function getByFolder($folder);
   /** Returns all the users */
   abstract function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null);
-  
+
   /** save */
   public function save($dao)
     {
@@ -68,23 +68,23 @@ abstract class UserModelBase extends AppModel
       $dao->setUuid(uniqid() . md5(mt_rand()));
       }
     parent::save($dao);
-    } 
-    
+    }
+
   /** delete*/
   public function delete($dao)
     {
     //TODO
-    $modelLoad = new MIDAS_ModelLoader();     
+    $modelLoad = new MIDAS_ModelLoader();
     $ciModel = $modelLoad->loadModel('CommunityInvitation');
     $invitations = $dao->getInvitations();
     foreach($invitations as $invitation)
       {
       $ciModel->delete($invitation);
       }
-      
+
     parent::delete($dao);
     }// delete
- 
+
   /** plus one view*/
   function incrementViewCount($userDao)
     {
@@ -107,10 +107,10 @@ abstract class UserModelBase extends AppModel
     $userDao->view++;
     $this->save($userDao);
     }//end incrementViewCount
-    
+
   /** create user */
   public function createUser($email, $password, $firstname, $lastname, $admin = 0)
-    {    
+    {
     if(!is_string($email) || empty($email) || !is_string($password) || empty($password) || !is_string($firstname)
         || empty($firstname) || !is_string($lastname) || empty($lastname) || !is_numeric($admin))
       {
@@ -122,7 +122,7 @@ abstract class UserModelBase extends AppModel
       {
       throw new Zend_Exception("User already exists.");
       }
-      
+
     Zend_Loader::loadClass('UserDao', BASE_PATH.'/core/models/dao');
     $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
     if(isset($passwordPrefix) && !empty($passwordPrefix))
@@ -136,14 +136,14 @@ abstract class UserModelBase extends AppModel
     $userDao->setCreation(date('c'));
     $userDao->setPassword(md5($password));
     $userDao->setAdmin($admin);
-    
+
     // check gravatar
     $gravatarUrl = $this->getGravatarUrl($email);
     if($gravatarUrl != false)
       {
       $userDao->setThumbnail($gravatarUrl);
       }
-    
+
     parent::save($userDao);
 
     $this->ModelLoader = new MIDAS_ModelLoader();
@@ -155,13 +155,13 @@ abstract class UserModelBase extends AppModel
     $feedpolicygroupModel = $this->ModelLoader->loadModel('Feedpolicygroup');
     $feedpolicyuserModel = $this->ModelLoader->loadModel('Feedpolicyuser');
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-        
+
     $folderGlobal = $folderModel->createFolder('user_' . $userDao->getKey(), '', MIDAS_FOLDER_USERPARENT);
     $folderPrivate = $folderModel->createFolder('Private', '', $folderGlobal);
     $folderPublic = $folderModel->createFolder('Public', '', $folderGlobal);
 
     $folderpolicygroupModel->createPolicy($anonymousGroup, $folderPublic, MIDAS_POLICY_READ);
-        
+
     $folderpolicyuserModel->createPolicy($userDao, $folderPrivate, MIDAS_POLICY_ADMIN);
     $folderpolicyuserModel->createPolicy($userDao, $folderGlobal, MIDAS_POLICY_ADMIN);
     $folderpolicyuserModel->createPolicy($userDao, $folderPublic, MIDAS_POLICY_ADMIN);
@@ -175,12 +175,14 @@ abstract class UserModelBase extends AppModel
 
     $feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_USER, $userDao);
     $feedpolicygroupModel->createPolicy($anonymousGroup, $feed, MIDAS_POLICY_READ);
-    $feedpolicyuserModel->createPolicy($userDao, $feed, MIDAS_POLICY_ADMIN);    
+    $feedpolicyuserModel->createPolicy($userDao, $feed, MIDAS_POLICY_ADMIN);
+
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_NEW_USER_ADDED', array('userDao' => $userDao));
 
     return $userDao;
     }
-  
-    
+
+
   /**
    * Get either a Gravatar URL or complete image tag for a specified email address.
    *
@@ -198,7 +200,7 @@ abstract class UserModelBase extends AppModel
     $url = 'http://www.gravatar.com/avatar/';
     $url .= md5(strtolower(trim($email)));
     $url .= "?s=".$s."&d=".$d."&r=".$r;
-    if($img) 
+    if($img)
       {
       $url = '<img src="' . $url . '"';
       foreach($atts as $key => $val)
@@ -207,7 +209,7 @@ abstract class UserModelBase extends AppModel
         }
       $url .= ' />';
       }
-    
+
     $header = get_headers($url, 1);
     if(strpos($header[0], '404 Not Found') != false)
       {
