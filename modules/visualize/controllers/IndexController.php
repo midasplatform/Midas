@@ -34,7 +34,9 @@ class Visualize_IndexController extends Visualize_AppController
     $itemDao = $this->Item->load($itemId);
     
     $modulesConfig = Zend_Registry::get('configsModules');
-    if(isset($modulesConfig['slicer']))
+    $revision = $this->Item->getLastRevision($itemDao);
+    $bitstreams = $revision->getBitstreams();
+    if(isset($modulesConfig['slicer']) && count($bitstreams) == 1 && $bitstreams[0]->getName() == 'slicer.html')
       {
       $this->_redirect('/slicer/visualize/?itemId='.$itemId.'&height=500&width=800');
       }
