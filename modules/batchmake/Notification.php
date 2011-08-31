@@ -13,26 +13,29 @@ PURPOSE.  See the above copyright notices for more information.
 /** notification manager*/
 class Batchmake_Notification extends MIDAS_Notification
   {
-  public $_models=array('User');
-  
-
+  public $_moduleComponents=array('KWBatchmake');
+  public $moduleName = 'batchmake';
+  public $_components = array('Utility', 'Internationalization');    
+    
   /** init notification process*/
   public function init()
     {
-    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDasboard');
-    $this->addTask('TASK_BATCHMAKE_TEST', 'testMethod', 'test');
-    $this->addEvent('EVENT_CORE_CREATE_THUMBNAIL', 'TASK_BATCHMAKE_TEST');
+    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
     }//end init
 
 
-  /** generate Dasboard information */
-  public function getDasboard()
+  /** generate Dashboard information */
+  public function getDashboard()
     {    
-    $config = Zend_Registry::get('configsModules');
-
     $return = array();
-    $return['notice'] = 'This notification needs to be improved';
-   
+    if($this->ModuleComponent->KWBatchmake->isConfigCorrect())
+      {
+      $return[$this->Component->Internationalization->translate(MIDAS_BATCHMAKE_CONFIG_CORRECT)] = 1;
+      }
+    else
+      {
+      $return[$this->Component->Internationalization->translate(MIDAS_BATCHMAKE_CONFIG_ERROR)] = 0;
+      }
     return $return;
     } 
   } //end class
