@@ -36,9 +36,8 @@ class Batchmake_ConfigForm extends AppForm
       } 
 
   
-    $submit = new  Zend_Form_Element_Submit('submitConfig');
-    Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
-    $submit ->setLabel(InternationalizationComponent::translate(SAVE_CONFIGURATION_STRING)); 
+    $submit = new  Zend_Form_Element_Submit(MIDAS_BATCHMAKE_SUBMIT_CONFIG);
+    $submit ->setLabel($this->t(MIDAS_BATCHMAKE_SAVE_CONFIGURATION_STRING)); 
     $formElements[] = $submit;
        
 
