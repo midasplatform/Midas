@@ -23,7 +23,7 @@ define("MIDAS_HTTP_ERROR", -153);
 class Api_IndexController extends Api_AppController
 {
   public $_moduleModels = array('Userapi');
-  public $_models = array('Community', 'ItemRevision', 'Item', 'User', "Folderpolicyuser", 'Folderpolicygroup', 'Folder');
+  public $_models = array('Community', 'ItemRevision', 'Item', 'User', 'Folderpolicyuser', 'Folderpolicygroup', 'Folder');
   public $_components = array('Upload', 'Search', 'Uuid', 'Sortdao');
 
   var $kwWebApiCore = null;
@@ -98,16 +98,16 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'String version';
     $help['description'] = 'Return the version of MIDAS';
-    $this->helpContent[$apiMethodPrefix.'version']                   = $help;
-    $this->apicallbacks[$apiMethodPrefix.'version']                  = array(&$this, 'version');
+    $this->helpContent[$apiMethodPrefix.'version'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'version']                = array(&$this, 'version');
 
     $help = array();
     $help['params'] = array();
     $help['example'] = array();
     $help['return'] = 'MIDAS info';
     $help['description'] = 'Get information about this MIDAS instance';
-    $this->helpContent[$apiMethodPrefix.'info']                      = $help;
-    $this->apicallbacks[$apiMethodPrefix.'info']                     = array(&$this, 'info');
+    $this->helpContent[$apiMethodPrefix.'info'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'info']                   = array(&$this, 'info');
 
     $help = array();
     $help['params'] = array();
@@ -120,7 +120,7 @@ class Api_IndexController extends Api_AppController
     $help['example']['?method=midas.login&appname=test&email=user@test.com&apikey=YourKey'] = 'Authenticate using key';
     $help['return'] = 'Token';
     $help['description'] = 'Authenticate an user';
-    $this->helpContent[$apiMethodPrefix.'login']                   = $help;
+    $this->helpContent[$apiMethodPrefix.'login'] = $help;
     $this->apicallbacks[$apiMethodPrefix.'login']                  = array(&$this, 'login');
 
     $help = array();
@@ -151,7 +151,7 @@ class Api_IndexController extends Api_AppController
     $help['return'] = 'Array of resource)';
     $help['description'] = 'Global search';
     $this->helpContent[$apiMethodPrefix.'resource.search'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'resource.search']       = array(&$this, 'resourcesSearch');
+    $this->apicallbacks[$apiMethodPrefix.'resource.search']        = array(&$this, 'resourcesSearch');
 
     $help = array();
     $help['params'] = array();
@@ -199,10 +199,18 @@ class Api_IndexController extends Api_AppController
     $help['return'] = 'Item information';
     $help['description'] = 'Upload a file (using put or post method)';
     $this->helpContent[$apiMethodPrefix.'upload.file'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'upload.file']       = array(&$this, 'uploadFile');
-
+    $this->apicallbacks[$apiMethodPrefix.'upload.file']            = array(&$this, 'uploadFile');
 
     /* ----- Community ------*/
+    $help = array();
+    $help['params'] = array();
+    $help['params']['token'] = '(Optional) Authentification token';
+    $help['example'] = array();
+    $help['return'] = 'List of communities';
+    $help['description'] = 'Get the list of all communities visible to the given user';
+    $this->helpContent[$apiMethodPrefix.'community.list'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'community.list']         = array(&$this, 'communityList');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = 'Authentification token';
@@ -249,7 +257,7 @@ class Api_IndexController extends Api_AppController
     $help['return'] = 'Folder information';
     $help['description'] = 'Create or edit a folder';
     $this->helpContent[$apiMethodPrefix.'folder.create'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'folder.create']      = array(&$this, 'folderCreate');
+    $this->apicallbacks[$apiMethodPrefix.'folder.create']          = array(&$this, 'folderCreate');
 
     $help = array();
     $help['params'] = array();
@@ -259,7 +267,7 @@ class Api_IndexController extends Api_AppController
     $help['return'] = '';
     $help['description'] = 'Delete a folder';
     $this->helpContent[$apiMethodPrefix.'folder.delete'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'folder.delete']      = array(&$this, 'folderDelete');
+    $this->apicallbacks[$apiMethodPrefix.'folder.delete']          = array(&$this, 'folderDelete');
 
     $help = array();
     $help['params'] = array();
@@ -269,7 +277,7 @@ class Api_IndexController extends Api_AppController
     $help['return'] = 'Folder Information';
     $help['description'] = 'Get a folder';
     $this->helpContent[$apiMethodPrefix.'folder.get'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'folder.get']          = array(&$this, 'folderGet');
+    $this->apicallbacks[$apiMethodPrefix.'folder.get']             = array(&$this, 'folderGet');
 
     $help = array();
     $help['params'] = array();
@@ -279,7 +287,7 @@ class Api_IndexController extends Api_AppController
     $help['return'] = 'File';
     $help['description'] = 'Download a folder';
     $this->helpContent[$apiMethodPrefix.'folder.download'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'folder.download']    = array(&$this, 'folderDownload');
+    $this->apicallbacks[$apiMethodPrefix.'folder.download']        = array(&$this, 'folderDownload');
 
     $help = array();
     $help['params'] = array();
@@ -287,7 +295,7 @@ class Api_IndexController extends Api_AppController
     $help['params']['id'] = 'Id of the folder';
     $help['example'] = array();
     $help['return'] = 'Array of Items and Folders';
-    $help['description'] = 'Get folder Content';
+    $help['description'] = 'Get folder content';
     $this->helpContent[$apiMethodPrefix.'folder.content'] = $help;
     $this->apicallbacks[$apiMethodPrefix.'folder.content']         = array(&$this, 'folderContent');
 
@@ -297,9 +305,18 @@ class Api_IndexController extends Api_AppController
     $help['params']['id'] = 'Id of the folder';
     $help['example'] = array();
     $help['return'] = 'Array of Folders';
-    $help['description'] = 'Get folder Tree';
+    $help['description'] = 'Get folder tree';
     $this->helpContent[$apiMethodPrefix.'folder.tree'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'folder.tree']         = array(&$this, 'folderTree');
+    $this->apicallbacks[$apiMethodPrefix.'folder.tree']            = array(&$this, 'folderTree');
+
+    $help = array();
+    $help['params'] = array();
+    $help['params']['token'] = '(Optional) Authentification token';
+    $help['example'] = array();
+    $help['return'] = 'List of Folders';
+    $help['description'] = 'Get the list of top level folders belonging to a given user';
+    $this->helpContent[$apiMethodPrefix.'user.folders'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'user.folders']            = array(&$this, 'userFolders');
 
     /** ------ ITEM --- */
     $help = array();
@@ -342,7 +359,7 @@ class Api_IndexController extends Api_AppController
     $help['return'] = '';
     $help['description'] = 'Get metadata';
     $this->helpContent[$apiMethodPrefix.'item.getmetadata'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'item.getmetadata']            = array(&$this, 'itemGetMetadata');
+    $this->apicallbacks[$apiMethodPrefix.'item.getmetadata']       = array(&$this, 'itemGetMetadata');
     }
 
   /** Initialize property allowing to generate XML */
@@ -1279,10 +1296,51 @@ class Api_IndexController extends Api_AppController
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
       {
-      throw new Exception("This item doesn't exist  or you don't have the permissions.", MIDAS_INVALID_POLICY);
+      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
     $this->Item->delete($item);
+    }
+
+  /**
+   * Return a list of all communities visible to a user
+   */
+  function communityList($args)
+    {
+    $userDao = $this->_getUser($args);
+
+    if($userDao && $userDao->isAdmin())
+      {
+      $communities = $this->Community->getAll();
+      }
+    else
+      {
+      $communities = $this->Community->getPublicCommunities();
+      if($userDao)
+        {
+        $communities = array_merge($communities, $this->User->getUserCommunities($userDao));
+        }
+      }
+
+    $this->Component->Sortdao->field = 'name';
+    $this->Component->Sortdao->order = 'asc';
+    usort($communities, array($this->Component->Sortdao, 'sortByName'));
+    return $this->Component->Sortdao->arrayUniqueDao($communities);
+    }
+
+  /**
+   * Return a list of top level folders belonging to the user
+   */
+  function userFolders($args)
+    {
+    $userDao = $this->_getUser($args);
+    if($userDao == false)
+      {
+      return array();
+      }
+
+    $userRootFolder = $userDao->getFolder();  
+    return $this->Folder->getChildrenFoldersFiltered($userRootFolder, $userDao, MIDAS_POLICY_READ);
     }
   } // end class
 ?>
