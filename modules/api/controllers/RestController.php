@@ -1,5 +1,6 @@
 <?php
 
+/** Api controller for /rest */
 class Api_RestController extends Api_AppController
 {
 
