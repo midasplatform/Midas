@@ -96,6 +96,14 @@ class Api_IndexController extends Api_AppController
 
     $help = array();
     $help['params'] = array();
+    $help['example'] = array();
+    $help['return'] = 'MIDAS info';
+    $help['description'] = 'Get information about this MIDAS instance';
+    $this->helpContent[$apiMethodPrefix.'info']                      = $help;
+    $this->apicallbacks[$apiMethodPrefix.'info']                     = array(&$this, 'info');
+
+    $help = array();
+    $help['params'] = array();
     $help['params']['appname'] = 'Application Name';
     $help['params']['email'] = 'E-mail of the user';
     $help['params']['password'] = '(Optional) Password of the user';
@@ -415,6 +423,16 @@ class Api_IndexController extends Api_AppController
 
   /** Return the information */
   function version($args)
+    {
+    $data['version'] = $this->view->version;
+    return $data;
+    }
+
+  /**
+   * Return the information.  Currently this is the same behavior as the version function,
+   * and is provided to maintain backward compatibility with MIDAS 2 for MIDASClient
+   */
+  function info($args)
     {
     $data['version'] = $this->view->version;
     return $data;
