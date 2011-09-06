@@ -54,6 +54,15 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       <li><a href="#tabs-members"><?php echo $this->t('Members');?></a></li>
       <li><a href="#tabs-2"><?php echo $this->t('Groups');?></a></li>
       <li><a href="#tabs-3"><?php echo $this->t('Files');?></a></li>
+      <?php
+          foreach($this->customTabs as $modules)
+            {          
+              foreach($modules as $name => $url)
+               {
+                 echo "<li><a href='{$url}?communityId={$this->communityDao->getKey()}'>{$name}</a></li>";
+               }
+            }
+      ?>
     </ul>
     <div id="tabs-1">
        <form id="editCommunityForm" class="genericForm" method="<?php echo $this->infoForm['method']?>"  action="<?php echo $this->infoForm['action']?>">
@@ -198,7 +207,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       <div style="display:none;" id='createGroupFrom'>
         <form class="editGroupForm genericForm" method="<?php echo $this->createGroupForm['method']?>"  action="<?php echo $this->createGroupForm['action']?>">
           <div class="createNameElement">
-            <label for="name"><?php echo $this->t('Nom')?></label>
+            <label for="name"><?php echo $this->t('Name')?></label>
             <?php echo $this->createGroupForm['name']?>
           </div>
           <div>
