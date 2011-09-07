@@ -151,7 +151,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
                   ->from(array('u' => 'api_userapi'))
                   ->where('u.user_id = ?', $userDao->getKey())
                   ->where('u.application_name = ?', $appname)
-                  ->where('u.apikey = ?', $apikey) ;
+                  ->where('u.apikey = ?', $apikey);
 
     $row = $this->database->fetchRow($sql);
     $userapiDao = $this->initDao('Userapi', $row, 'api');
