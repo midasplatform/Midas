@@ -134,12 +134,8 @@ class Api_UserapiModel extends Api_UserapiModelBase
     $length = 40;
 
     // seed with microseconds
-    function make_seed_recoverpass_token()
-      {
-      list($usec, $sec) = explode(' ', microtime());
-      return (float) $sec + ((float) $usec * 100000);
-      }
-    srand(make_seed_recoverpass_token());
+    list($usec, $sec) = explode(' ', microtime());
+    srand((float) $sec + ((float) $usec * 100000));
 
     $token = "";
     $max=strlen($keychars)-1;

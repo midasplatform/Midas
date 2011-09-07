@@ -61,14 +61,6 @@ class Api_IndexController extends Api_AppController
       default:
         break;
       }
-    ob_start();
-    }
-
-  /** Post dispatch */
-  function postDispatch()
-    {
-    parent::postDispatch();
-    ob_clean();
     }
 
   /** Index function */
@@ -369,7 +361,7 @@ class Api_IndexController extends Api_AppController
     //Configure::write('debug', 0);
 
     // Avoids render() call
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
     // Instanciate Upload Module
@@ -407,7 +399,7 @@ class Api_IndexController extends Api_AppController
   /** Controller action handling REST request */
   function restAction()
     {
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
     $request_data = $this->_getAllParams();
@@ -427,7 +419,7 @@ class Api_IndexController extends Api_AppController
   /** Controller action handling JSON request */
   function jsonAction()
     {
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
     $request_data = $this->_getAllParams();
