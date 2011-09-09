@@ -33,7 +33,7 @@ class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
    *  */
   function createAgreement($community_id, $agreement)
     {     
-    $this->loadDaoClass('AgreementDao','communityagreement');       
+    $this->loadDaoClass('AgreementDao', 'communityagreement');      
     $agreementDao = new Communityagreement_AgreementDao();
     $agreementDao->setCommunityId($community_id);
     $agreementDao->setAgreement($agreement);

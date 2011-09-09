@@ -13,7 +13,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 class Communityagreement_AppController extends MIDAS_GlobalModule
   {
-    public $moduleName='communityagreement';
+  public $moduleName='communityagreement';
     
   /**
    * Communityagreement_Agreement Model
@@ -22,3 +22,4 @@ class Communityagreement_AppController extends MIDAS_GlobalModule
   var $Communityagreement_Agreement;
   } //end class
 ?>
+
