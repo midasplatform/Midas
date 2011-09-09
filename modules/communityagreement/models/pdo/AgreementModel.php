@@ -16,7 +16,7 @@ require_once BASE_PATH.'/modules/communityagreement/models/base/AgreementModelBa
 class Communityagreement_AgreementModel extends Communityagreement_AgreementModelBase
 {
   /** Get all */
- function getAll()
+  function getAll()
     {
     $sql = $this->database->select();
     $rowset = $this->database->fetchAll($sql);

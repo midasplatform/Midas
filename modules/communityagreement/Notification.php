@@ -2,7 +2,7 @@
 /** notification manager*/
 class Communityagreement_Notification extends MIDAS_Notification
   {
-  public $_models=array('Community');
+  public $_models = array('Community');
   
   /** init notification process*/
   public function init()
@@ -19,15 +19,17 @@ class Communityagreement_Notification extends MIDAS_Notification
     $moduleWebroot = $fc->getBaseUrl().'/communityagreement';
     return array('Community Agreement' => $moduleWebroot.'/config/agreementtab');
     }
-    
-   public function getCommunityViewJSs()
+  
+  /** get Java scripts */  
+  public function getCommunityViewJSs()
     {
     $fc = Zend_Controller_Front::getInstance();
     $moduleUriroot = $fc->getBaseUrl().'/modules/communityagreement';
     return array($moduleUriroot.'/public/js/config/config.agreementcheckbox.js');
     }
-    
-    public function getCommunityViewCSSs()
+  
+  /** get CSS */
+  public function getCommunityViewCSSs()
     {
     $fc = Zend_Controller_Front::getInstance();
     $moduleUriroot = $fc->getBaseUrl().'/modules/communityagreement';
@@ -36,3 +38,4 @@ class Communityagreement_Notification extends MIDAS_Notification
     
   } //end class
 ?>
+
