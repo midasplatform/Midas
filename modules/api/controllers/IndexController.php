@@ -276,6 +276,16 @@ class Api_IndexController extends Api_AppController
     $help['params']['token'] = '(Optional) Authentification token';
     $help['params']['id'] = 'Id of the folder';
     $help['example'] = array();
+    $help['return'] = 'List of children';
+    $help['description'] = 'Get all of the immediate children of a folder';
+    $this->helpContent[$apiMethodPrefix.'folder.children'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'folder.children']        = array(&$this, 'folderChildren');
+
+    $help = array();
+    $help['params'] = array();
+    $help['params']['token'] = '(Optional) Authentification token';
+    $help['params']['id'] = 'Id of the folder';
+    $help['example'] = array();
     $help['return'] = 'File';
     $help['description'] = 'Download a folder';
     $this->helpContent[$apiMethodPrefix.'folder.download'] = $help;
@@ -301,6 +311,7 @@ class Api_IndexController extends Api_AppController
     $this->helpContent[$apiMethodPrefix.'folder.tree'] = $help;
     $this->apicallbacks[$apiMethodPrefix.'folder.tree']            = array(&$this, 'folderTree');
 
+    /** ----- User -------------*/
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = '(Optional) Authentification token';
@@ -309,6 +320,16 @@ class Api_IndexController extends Api_AppController
     $help['description'] = 'Get the list of top level folders belonging to a given user';
     $this->helpContent[$apiMethodPrefix.'user.folders'] = $help;
     $this->apicallbacks[$apiMethodPrefix.'user.folders']            = array(&$this, 'userFolders');
+
+    $help = array();
+    $help['params'] = array();
+    $help['params']['email'] = 'The user\'s email';
+    $help['params']['password'] = 'The user\'s password';
+    $help['example'] = array();
+    $help['return'] = 'The user\'s default API key';
+    $help['description'] = 'Gets the user\'s default API key.  Only call this the first time a new password is used';
+    $this->helpContent[$apiMethodPrefix.'user.apikey.default'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'user.apikey.default']    = array(&$this, 'userApikeyDefault');
 
     /** ------ ITEM --- */
     $help = array();
@@ -845,6 +866,24 @@ class Api_IndexController extends Api_AppController
     return $folder->toArray();
     }
 
+  /** Get the immediate children of a folder */
+  function folderChildren($args)
+    {
+    if(!array_key_exists('id', $args))
+      {
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
+      }
+
+    $id = $args['id'];
+    $folder = $this->Folder->load($id);
+
+    $userDao = $this->_getUser($args);
+    $folders = $this->Folder->getChildrenFoldersFiltered($folder, $userDao);
+    $items = $this->Folder->getItemsFiltered($folder, $userDao);
+
+    return array('folders' => $folders, 'items' => $items);
+    }
+
   /** Create a folder */
   function folderCreate($args)
     {
@@ -1168,13 +1207,13 @@ class Api_IndexController extends Api_AppController
     }
 
   /** Returns a path of uuids from the root community to the given node */
-  function pathFromRoot ($args)
+  function pathFromRoot($args)
     {
     return array_reverse($this->pathToRoot($args));
     }
 
   /** Returns a path of uuids from the given node to the root community */
-  function pathToRoot ($args)
+  function pathToRoot($args)
     {
     if(!array_key_exists('uuid', $args))
       {
@@ -1333,6 +1372,29 @@ class Api_IndexController extends Api_AppController
 
     $userRootFolder = $userDao->getFolder();  
     return $this->Folder->getChildrenFoldersFiltered($userRootFolder, $userDao, MIDAS_POLICY_READ);
+    }
+
+  /**
+   * Returns the user's default API key given their username and password
+   */
+  function userApikeyDefault($args)
+    {
+    if(!$this->_request->isPost())
+      {
+      throw new Exception('POST method required', MIDAS_HTTP_ERROR);
+      }
+    if(!array_key_exists('email', $args))
+      {
+      throw new Exception('Parameter email is not defined', MIDAS_INVALID_PARAMETER);
+      }
+    if(!array_key_exists('password', $args))
+      {
+      throw new Exception('Parameter password is not defined', MIDAS_INVALID_PARAMETER);
+      }
+
+    $salt = Zend_Registry::get('configGlobal')->password->prefix;
+    $defaultApiKey = $key = md5($args['email'].md5($salt.$args['password']).'Default');
+    return array('apikey' => $defaultApiKey);
     }
   } // end class
 ?>
