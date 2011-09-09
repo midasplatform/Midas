@@ -100,7 +100,7 @@ class ApiIndexControllerTest extends ControllerTestCase
     $this->resetAll();
     $this->params['token'] = $this->_loginUsingApiKey();
     $this->params['method'] = 'midas.community.list';
-    
+
     $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
@@ -114,5 +114,74 @@ class ApiIndexControllerTest extends ControllerTestCase
     $this->assertEquals($resp->data[0]->name, 'Community test User 1');
 
     //TODO test that a private community is not returned (requires another community in the data set)
+    }
+
+  /** Test listing of child folders */
+  public function testFolderChildren()
+    {
+    $this->resetAll();
+    $token = $this->_loginUsingApiKey();
+    $this->params['token'] = $token;
+    $this->params['method'] = 'midas.folder.children';
+    $this->params['id'] = 1000;
+    $this->request->setMethod('POST');
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    // Should contain 2 folders and 0 items
+    $this->assertEquals(count($resp->data->folders), 2);
+    $this->assertEquals(count($resp->data->items), 0);
+
+    $this->assertEquals($resp->data->folders[0]->_model, 'Folder');
+    $this->assertEquals($resp->data->folders[1]->_model, 'Folder');
+    $this->assertEquals($resp->data->folders[0]->folder_id, 1001);
+    $this->assertEquals($resp->data->folders[1]->folder_id, 1002);
+    $this->assertEquals($resp->data->folders[0]->name, 'User 1 name Folder 2');
+    $this->assertEquals($resp->data->folders[1]->name, 'User 1 name Folder 3');
+    $this->assertEquals($resp->data->folders[0]->description, 'Description Folder 2');
+    $this->assertEquals($resp->data->folders[1]->description, 'Description Folder 3');
+
+    $this->resetAll();
+    $this->params['token'] = $token;
+    $this->params['method'] = 'midas.folder.children';
+    $this->params['id'] = 1001;
+    $this->request->setMethod('POST');
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    // Should contain 0 folders and 2 items
+    $this->assertEquals(count($resp->data->folders), 0);
+    $this->assertEquals(count($resp->data->items), 2);
+
+    $this->assertEquals($resp->data->items[0]->_model, 'Item');
+    $this->assertEquals($resp->data->items[1]->_model, 'Item');
+    $this->assertEquals($resp->data->items[0]->item_id, 1);
+    $this->assertEquals($resp->data->items[1]->item_id, 2);
+    $this->assertEquals($resp->data->items[0]->name, 'name 1');
+    $this->assertEquals($resp->data->items[1]->name, 'name 2');
+    $this->assertEquals($resp->data->items[0]->description, 'Description 1');
+    $this->assertEquals($resp->data->items[1]->description, 'Description 2');
+    }
+
+  /** Test get user's default API key using username and password */
+  public function testUserApikeyDefault()
+    {
+    $this->resetAll();
+    $usersFile = $this->loadData('User', 'default');
+    $userDao = $this->User->load($usersFile[0]->getKey());
+    $this->params['method'] = 'midas.user.apikey.default';
+    $this->params['email'] = $userDao->getEmail();
+    $this->params['password'] = 'test';
+    $this->request->setMethod('POST');
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    // Expected API key
+    $modelLoad = new MIDAS_ModelLoader();
+    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel->createDefaultApiKey($userDao);
+    $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
+
+    $this->assertEquals($resp->data->apikey, $apiKey);
     }
   }
