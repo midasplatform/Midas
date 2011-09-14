@@ -23,6 +23,7 @@ define("MIDAS_HTTP_ERROR", -153);
 class Api_IndexController extends Api_AppController
 {
   public $_moduleModels = array('Userapi');
+  public $_moduleComponents = array('Authentication');
   public $_models = array('Community', 'ItemRevision', 'Item', 'User', 'Folderpolicyuser', 'Folderpolicygroup', 'Folder');
   public $_components = array('Upload', 'Search', 'Uuid', 'Sortdao');
 
@@ -403,30 +404,7 @@ class Api_IndexController extends Api_AppController
   /** Return the user dao */
   private function _getUser($args)
     {
-    if(array_key_exists('useSession', $args))
-      {
-      return $this->userSession->Dao;
-      }
-    else
-      {
-      if(!array_key_exists('token', $args))
-        {
-        return 0;
-        }
-      $token = $args['token'];
-      $userapiDao = $this->Api_Userapi->getUserapiFromToken($token);
-      if(!$userapiDao)
-        {
-        throw new Exception('Invalid token', MIDAS_INVALID_TOKEN);
-        }
-      $userid = $userapiDao->getUserId();
-      if($userid == 0)
-        {
-        return false;
-        }
-      $userDao = $this->User->load($userid);
-      return $userDao;
-      }
+    return $this->ModuleComponent->Authentication->getUser($args, $this->userSession->Dao);
     }
 
   /** Controller action handling REST request */
