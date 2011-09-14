@@ -12,12 +12,19 @@ PURPOSE.  See the above copyright notices for more information.
 
 require_once BASE_PATH . '/modules/api/library/KwWebApiCore.php';
 
+// Web API error codes
+define("MIDAS_INTERNAL_ERROR", -100);
+define("MIDAS_INVALID_TOKEN", -101);
+define("MIDAS_INVALID_PARAMETER", -150);
+define("MIDAS_INVALID_POLICY", -151);
+define("MIDAS_HTTP_ERROR", -153);
+
 /** Main controller for the web api module */
 class Api_IndexController extends Api_AppController
 {
   public $_moduleModels = array('Userapi');
-  public $_models = array('Community', 'ItemRevision', 'Item', 'User', "Folderpolicyuser", 'Folderpolicygroup', 'Folder');
-  public $_components = array('Upload', 'Search', 'Uuid');
+  public $_models = array('Community', 'ItemRevision', 'Item', 'User', 'Folderpolicyuser', 'Folderpolicygroup', 'Folder');
+  public $_components = array('Upload', 'Search', 'Uuid', 'Sortdao');
 
   var $kwWebApiCore = null;
 
@@ -54,14 +61,6 @@ class Api_IndexController extends Api_AppController
       default:
         break;
       }
-    ob_start();
-    }
-
-  /** Post dispatch */
-  function postDispatch()
-    {
-    parent::postDispatch();
-    ob_clean();
     }
 
   /** Index function */
@@ -91,8 +90,16 @@ class Api_IndexController extends Api_AppController
     $help['example'] = array();
     $help['return'] = 'String version';
     $help['description'] = 'Return the version of MIDAS';
-    $this->helpContent[$apiMethodPrefix.'version']                   = $help;
-    $this->apicallbacks[$apiMethodPrefix.'version']                  = array(&$this, 'version');
+    $this->helpContent[$apiMethodPrefix.'version'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'version']                = array(&$this, 'version');
+
+    $help = array();
+    $help['params'] = array();
+    $help['example'] = array();
+    $help['return'] = 'MIDAS info';
+    $help['description'] = 'Get information about this MIDAS instance';
+    $this->helpContent[$apiMethodPrefix.'info'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'info']                   = array(&$this, 'info');
 
     $help = array();
     $help['params'] = array();
@@ -105,7 +112,7 @@ class Api_IndexController extends Api_AppController
     $help['example']['?method=midas.login&appname=test&email=user@test.com&apikey=YourKey'] = 'Authenticate using key';
     $help['return'] = 'Token';
     $help['description'] = 'Authenticate an user';
-    $this->helpContent[$apiMethodPrefix.'login']                   = $help;
+    $this->helpContent[$apiMethodPrefix.'login'] = $help;
     $this->apicallbacks[$apiMethodPrefix.'login']                  = array(&$this, 'login');
 
     $help = array();
@@ -136,7 +143,7 @@ class Api_IndexController extends Api_AppController
     $help['return'] = 'Array of resource)';
     $help['description'] = 'Global search';
     $this->helpContent[$apiMethodPrefix.'resource.search'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'resource.search']       = array(&$this, 'resourcesSearch');
+    $this->apicallbacks[$apiMethodPrefix.'resource.search']        = array(&$this, 'resourcesSearch');
 
     $help = array();
     $help['params'] = array();
@@ -184,10 +191,18 @@ class Api_IndexController extends Api_AppController
     $help['return'] = 'Item information';
     $help['description'] = 'Upload a file (using put or post method)';
     $this->helpContent[$apiMethodPrefix.'upload.file'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'upload.file']       = array(&$this, 'uploadFile');
-
+    $this->apicallbacks[$apiMethodPrefix.'upload.file']            = array(&$this, 'uploadFile');
 
     /* ----- Community ------*/
+    $help = array();
+    $help['params'] = array();
+    $help['params']['token'] = '(Optional) Authentification token';
+    $help['example'] = array();
+    $help['return'] = 'List of communities';
+    $help['description'] = 'Get the list of all communities visible to the given user';
+    $this->helpContent[$apiMethodPrefix.'community.list'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'community.list']         = array(&$this, 'communityList');
+
     $help = array();
     $help['params'] = array();
     $help['params']['token'] = 'Authentification token';
@@ -234,7 +249,7 @@ class Api_IndexController extends Api_AppController
     $help['return'] = 'Folder information';
     $help['description'] = 'Create or edit a folder';
     $this->helpContent[$apiMethodPrefix.'folder.create'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'folder.create']      = array(&$this, 'folderCreate');
+    $this->apicallbacks[$apiMethodPrefix.'folder.create']          = array(&$this, 'folderCreate');
 
     $help = array();
     $help['params'] = array();
@@ -244,7 +259,7 @@ class Api_IndexController extends Api_AppController
     $help['return'] = '';
     $help['description'] = 'Delete a folder';
     $this->helpContent[$apiMethodPrefix.'folder.delete'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'folder.delete']      = array(&$this, 'folderDelete');
+    $this->apicallbacks[$apiMethodPrefix.'folder.delete']          = array(&$this, 'folderDelete');
 
     $help = array();
     $help['params'] = array();
@@ -254,7 +269,17 @@ class Api_IndexController extends Api_AppController
     $help['return'] = 'Folder Information';
     $help['description'] = 'Get a folder';
     $this->helpContent[$apiMethodPrefix.'folder.get'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'folder.get']          = array(&$this, 'folderGet');
+    $this->apicallbacks[$apiMethodPrefix.'folder.get']             = array(&$this, 'folderGet');
+
+    $help = array();
+    $help['params'] = array();
+    $help['params']['token'] = '(Optional) Authentification token';
+    $help['params']['id'] = 'Id of the folder';
+    $help['example'] = array();
+    $help['return'] = 'List of children';
+    $help['description'] = 'Get all of the immediate children of a folder';
+    $this->helpContent[$apiMethodPrefix.'folder.children'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'folder.children']        = array(&$this, 'folderChildren');
 
     $help = array();
     $help['params'] = array();
@@ -264,7 +289,7 @@ class Api_IndexController extends Api_AppController
     $help['return'] = 'File';
     $help['description'] = 'Download a folder';
     $this->helpContent[$apiMethodPrefix.'folder.download'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'folder.download']    = array(&$this, 'folderDownload');
+    $this->apicallbacks[$apiMethodPrefix.'folder.download']        = array(&$this, 'folderDownload');
 
     $help = array();
     $help['params'] = array();
@@ -272,7 +297,7 @@ class Api_IndexController extends Api_AppController
     $help['params']['id'] = 'Id of the folder';
     $help['example'] = array();
     $help['return'] = 'Array of Items and Folders';
-    $help['description'] = 'Get folder Content';
+    $help['description'] = 'Get folder content';
     $this->helpContent[$apiMethodPrefix.'folder.content'] = $help;
     $this->apicallbacks[$apiMethodPrefix.'folder.content']         = array(&$this, 'folderContent');
 
@@ -282,9 +307,29 @@ class Api_IndexController extends Api_AppController
     $help['params']['id'] = 'Id of the folder';
     $help['example'] = array();
     $help['return'] = 'Array of Folders';
-    $help['description'] = 'Get folder Tree';
+    $help['description'] = 'Get folder tree';
     $this->helpContent[$apiMethodPrefix.'folder.tree'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'folder.tree']         = array(&$this, 'folderTree');
+    $this->apicallbacks[$apiMethodPrefix.'folder.tree']            = array(&$this, 'folderTree');
+
+    /** ----- User -------------*/
+    $help = array();
+    $help['params'] = array();
+    $help['params']['token'] = '(Optional) Authentification token';
+    $help['example'] = array();
+    $help['return'] = 'List of Folders';
+    $help['description'] = 'Get the list of top level folders belonging to a given user';
+    $this->helpContent[$apiMethodPrefix.'user.folders'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'user.folders']            = array(&$this, 'userFolders');
+
+    $help = array();
+    $help['params'] = array();
+    $help['params']['email'] = 'The user\'s email';
+    $help['params']['password'] = 'The user\'s password';
+    $help['example'] = array();
+    $help['return'] = 'The user\'s default API key';
+    $help['description'] = 'Gets the user\'s default API key.  Only call this the first time a new password is used';
+    $this->helpContent[$apiMethodPrefix.'user.apikey.default'] = $help;
+    $this->apicallbacks[$apiMethodPrefix.'user.apikey.default']    = array(&$this, 'userApikeyDefault');
 
     /** ------ ITEM --- */
     $help = array();
@@ -327,10 +372,7 @@ class Api_IndexController extends Api_AppController
     $help['return'] = '';
     $help['description'] = 'Get metadata';
     $this->helpContent[$apiMethodPrefix.'item.getmetadata'] = $help;
-    $this->apicallbacks[$apiMethodPrefix.'item.getmetadata']            = array(&$this, 'itemGetMetadata');
-
-    /*
-    $this->apicallbacks[$apiMethodPrefix.'newresources.get']       = array(&$this, 'newResourcesGet');     */
+    $this->apicallbacks[$apiMethodPrefix.'item.getmetadata']       = array(&$this, 'itemGetMetadata');
     }
 
   /** Initialize property allowing to generate XML */
@@ -340,7 +382,7 @@ class Api_IndexController extends Api_AppController
     //Configure::write('debug', 0);
 
     // Avoids render() call
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
     // Instanciate Upload Module
@@ -352,15 +394,13 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('token', $args))
       {
-      echo "Unable to find token";
-      exit;
+      return 0;
       }
     $token = $args['token'];
     $userapiDao = $this->Api_Userapi->getUserapiFromToken($token);
     if(!$userapiDao)
       {
-      echo "Error token. Token does'nt exist";
-      exit;
+      throw new Exception('Invalid token', MIDAS_INVALID_TOKEN);
       }
     return $userapiDao->getUserId();
     }
@@ -369,6 +409,10 @@ class Api_IndexController extends Api_AppController
   private function _getUser($args)
     {
     $userid = $this->_getUserId($args);
+    if($userid == 0)
+      {
+      return false;
+      }
     $userDao = $this->User->load($userid);
     return $userDao;
     }
@@ -376,7 +420,7 @@ class Api_IndexController extends Api_AppController
   /** Controller action handling REST request */
   function restAction()
     {
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
     $request_data = $this->_getAllParams();
@@ -396,7 +440,7 @@ class Api_IndexController extends Api_AppController
   /** Controller action handling JSON request */
   function jsonAction()
     {
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
     $request_data = $this->_getAllParams();
@@ -420,17 +464,27 @@ class Api_IndexController extends Api_AppController
     return $data;
     }
 
+  /**
+   * Return the information.  Currently this is the same behavior as the version function,
+   * and is provided to maintain backward compatibility with MIDAS 2 for MIDASClient
+   */
+  function info($args)
+    {
+    $data['version'] = $this->view->version;
+    return $data;
+    }
+
   /** Return the user id given the arguments */
   function login($args)
     {
     if(!array_key_exists('email', $args))
       {
-      throw new Exception('Parameter email is not defined', -150);
+      throw new Exception('Parameter email is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     if(!array_key_exists('appname', $args))
       {
-      throw new Exception('Parameter appname is not defined', -150);
+      throw new Exception('Parameter appname is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $data['token'] = "";
@@ -442,7 +496,7 @@ class Api_IndexController extends Api_AppController
 
       if($userapiDao === false)
         {
-        throw new Exception('Unable to authenticate.Please check credentials.', -150);
+        throw new Exception('Unable to authenticate.Please check credentials.', MIDAS_INVALID_PARAMETER);
         }
 
       $args['apikey'] = $userapiDao->getApikey();
@@ -451,7 +505,7 @@ class Api_IndexController extends Api_AppController
       {
       if(!array_key_exists('apikey', $args))
         {
-        throw new Exception('Parameter apikey is not defined', -150);
+        throw new Exception('Parameter apikey is not defined', MIDAS_INVALID_PARAMETER);
         }
       }
 
@@ -461,7 +515,7 @@ class Api_IndexController extends Api_AppController
     $tokenDao = $this->Api_Userapi->getToken($email, $apikey, $appname);
     if(empty($tokenDao))
       {
-      throw new Exception('Unable to authenticate.Please check credentials.', -150);
+      throw new Exception('Unable to authenticate.Please check credentials.', MIDAS_INVALID_PARAMETER);
       }
     $data['token'] = $tokenDao->getToken();
     return $data;
@@ -484,14 +538,14 @@ class Api_IndexController extends Api_AppController
     {
     if(!$this->_request->isPost() && !$this->_request->isPut())
       {
-      throw new Exception('POST or PUT method required', -153);
+      throw new Exception('POST or PUT method required', MIDAS_HTTP_ERROR);
       }
 
     $userDao = $this->_getUser($args);
 
     if($userDao == false)
       {
-      throw new Exception('Please log in', -150);
+      throw new Exception('Please log in', MIDAS_INVALID_POLICY);
       }
 
     if(array_key_exists('revision', $args) && array_key_exists('item_id', $args))
@@ -499,16 +553,16 @@ class Api_IndexController extends Api_AppController
       $item = $this->Item->load($args['item_id']);
       if($item == false)
         {
-        throw new Exception('Unable to find item', -150);
+        throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
         }
       if(!$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
         {
-        throw new Exception('Permission error', -150);
+        throw new Exception('Permission error', MIDAS_INVALID_PARAMETER);
         }
       $revision = $this->Item->getRevision($item, $args['revision']);
       if($revision == false)
         {
-        throw new Exception('Unable to find revision', -150);
+        throw new Exception('Unable to find revision', MIDAS_INVALID_PARAMETER);
         }
       }
     elseif(array_key_exists('item_id', $args))
@@ -516,11 +570,11 @@ class Api_IndexController extends Api_AppController
       $item = $this->Item->load($args['item_id']);
       if($item == false)
         {
-        throw new Exception('Unable to find item', -150);
+        throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
         }
       if(!$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
         {
-        throw new Exception('Permission error', -150);
+        throw new Exception('Permission error', MIDAS_INVALID_POLICY);
         }
       }
     elseif(array_key_exists('folder_id', $args))
@@ -528,16 +582,16 @@ class Api_IndexController extends Api_AppController
       $folder = $this->Folder->load($args['folder_id']);
       if($folder == false)
         {
-        throw new Exception('Unable to find folder', -150);
+        throw new Exception('Unable to find folder', MIDAS_INVALID_PARAMETER);
         }
       if(!$this->Folder->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
         {
-        throw new Exception('Permission error', -150);
+        throw new Exception('Permission error', MIDAS_INVALID_POLICY);
         }
       }
     else
       {
-      throw new Exception('Parameter itemrevision_id or item_id or folder_id is not defined', -150);
+      throw new Exception('Parameter itemrevision_id or item_id or folder_id is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $mode = array_key_exists('mode', $args) ? $args['mode'] : "stream";
@@ -556,7 +610,7 @@ class Api_IndexController extends Api_AppController
       {
       if(!array_key_exists('file', $args) || !array_key_exists('file', $_FILES))
         {
-        throw new Exception('Parameter file is not defined', -150);
+        throw new Exception('Parameter file is not defined', MIDAS_INVALID_PARAMETER);
         }
       $file = $_FILES['file'];
 
@@ -566,7 +620,7 @@ class Api_IndexController extends Api_AppController
       }
     else
       {
-      throw new Exception('Invalid upload mode', -155);
+      throw new Exception('Invalid upload mode', MIDAS_INVALID_PARAMETER);
       }
 
     if(isset($folder))
@@ -594,12 +648,12 @@ class Api_IndexController extends Api_AppController
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
-      throw new Exception('Unable to find user', -150);
+      throw new Exception('Unable to find user', MIDAS_INVALID_POLICY);
       }
 
     if(!array_key_exists('name', $args))
       {
-      throw new Exception('Parameter name is not defined', -150);
+      throw new Exception('Parameter name is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $name = $args['name'];
@@ -611,7 +665,7 @@ class Api_IndexController extends Api_AppController
       $record = $this->Component->Uuid->getByUid($uuid);
       if($record === false || !$this->Community->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
         {
-        throw new Exception("This community doesn't exist  or you don't have the permissions.", 200);
+        throw new Exception("This community doesn't exist  or you don't have the permissions.", MIDAS_INVALID_POLICY);
         }
       }
     if($record != false && $record instanceof CommunityDao)
@@ -653,7 +707,7 @@ class Api_IndexController extends Api_AppController
 
       if($communityDao === false)
         {
-        throw new Exception('Request failed', -200);
+        throw new Exception('Request failed', MIDAS_INTERNAL_ERROR);
         }
 
       return $communityDao->toArray();
@@ -665,7 +719,7 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -155);
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $communityid = $args['id'];
@@ -683,7 +737,7 @@ class Api_IndexController extends Api_AppController
 
     if($community === false || !$this->Community->policyCheck($community, $userDao, MIDAS_POLICY_READ))
       {
-      throw new Exception("This community doesn't exist  or you don't have the permissions.", 200);
+      throw new Exception("This community doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
     return $community->toArray();
@@ -694,7 +748,7 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -155);
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $id = $args['id'];
@@ -712,7 +766,7 @@ class Api_IndexController extends Api_AppController
 
     if($parent === false || !$this->Folder->policyCheck($parent, $userDao, MIDAS_POLICY_READ))
       {
-      throw new Exception("This folder doesn't exist  or you don't have the permissions.", 200);
+      throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
     $folders = $this->Folder->getChildrenFoldersFiltered($parent, $this->userSession->Dao, MIDAS_POLICY_READ);
@@ -737,7 +791,7 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -155);
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $id = $args['id'];
@@ -788,7 +842,7 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -155);
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $id = $args['id'];
@@ -806,10 +860,28 @@ class Api_IndexController extends Api_AppController
 
     if($folder === false || !$this->Folder->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
       {
-      throw new Exception("This folder doesn't exist or you don't have the permissions.", 200);
+      throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
     return $folder->toArray();
+    }
+
+  /** Get the immediate children of a folder */
+  function folderChildren($args)
+    {
+    if(!array_key_exists('id', $args))
+      {
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
+      }
+
+    $id = $args['id'];
+    $folder = $this->Folder->load($id);
+
+    $userDao = $this->_getUser($args);
+    $folders = $this->Folder->getChildrenFoldersFiltered($folder, $userDao);
+    $items = $this->Folder->getItemsFiltered($folder, $userDao);
+
+    return array('folders' => $folders, 'items' => $items);
     }
 
   /** Create a folder */
@@ -818,16 +890,16 @@ class Api_IndexController extends Api_AppController
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
-      throw new Exception('Unable to find user', -150);
+      throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
       }
 
     if(!array_key_exists('name', $args))
       {
-      throw new Exception('Parameter name is not defined', -150);
+      throw new Exception('Parameter name is not defined', MIDAS_INVALID_PARAMETER);
       }
     if(!array_key_exists('description', $args))
       {
-      throw new Exception('Parameter name is not defined', -150);
+      throw new Exception('Parameter name is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $name = $args['name'];
@@ -840,7 +912,7 @@ class Api_IndexController extends Api_AppController
       $record = $this->Component->Uuid->getByUid($uuid);
       if($record === false || !$this->Folder->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
         {
-        throw new Exception("This folder doesn't exist  or you don't have the permissions.", 200);
+        throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
         }
       }
     if($record != false && $record instanceof FolderDao)
@@ -861,18 +933,18 @@ class Api_IndexController extends Api_AppController
       {
       if(!array_key_exists('parentid', $args))
         {
-        throw new Exception('Parameter parentid is not defined', -150);
+        throw new Exception('Parameter parentid is not defined', MIDAS_INVALID_PARAMETER);
         }
       $parentid = $args['parentid'];
       $folder = $this->Folder->load($parentid);
       if($folder == false)
         {
-        throw new Exception('Parent doesn\'t exit', -150);
+        throw new Exception('Parent doesn\'t exit', MIDAS_INVALID_PARAMETER);
         }
       $new_folder = $this->Folder->createFolder($name, $description, $folder);
       if($new_folder === false)
         {
-        throw new Exception('Request failed', -200);
+        throw new Exception('Request failed', MIDAS_INTERNAL_ERROR);
         }
       $policyGroup = $folder->getFolderpolicygroup();
       $policyUser = $folder->getFolderpolicyuser();
@@ -893,31 +965,12 @@ class Api_IndexController extends Api_AppController
       }
     }
 
-  /** Return the abstract given an item id */
-  function itemAbstractGet($args)
-    {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', -150);
-      }
-
-    $itemid = $args['id'];
-    $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($itemid, $userid, MIDAS_RESOURCE_ITEM, MIDAS_POLICY_READ))
-      {
-      throw new Exception('Invalid policy', -151);
-      }
-
-    $abstract = $this->Item->GetAbstract($itemid);
-    return array($abstract);
-    }
-
   /** Get the item */
   function itemGet($args)
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -155);
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $itemid = $args['id'];
@@ -935,7 +988,7 @@ class Api_IndexController extends Api_AppController
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
       {
-      throw new Exception("This item doesn't exist  or you don't have the permissions.", 200);
+      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
     $itemArray = $item->toArray();
@@ -962,7 +1015,7 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -155);
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $itemid = $args['id'];
@@ -980,7 +1033,7 @@ class Api_IndexController extends Api_AppController
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
       {
-      throw new Exception("This item doesn't exist  or you don't have the permissions.", 200);
+      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
     if(isset($args['revision']))
@@ -1016,7 +1069,7 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -155);
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $id = $args['id'];
@@ -1034,7 +1087,7 @@ class Api_IndexController extends Api_AppController
 
     if($folder === false || !$this->Folder->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
       {
-      throw new Exception("This folder doesn't exist  or you don't have the permissions.", 200);
+      throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
     $this->_redirect('/download/?folders='.$folder->getKey());
@@ -1045,7 +1098,7 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -155);
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $id = $args['id'];
@@ -1063,7 +1116,7 @@ class Api_IndexController extends Api_AppController
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
       {
-      throw new Exception("This item doesn't exist  or you don't have the permissions.", 200);
+      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
     if(isset($args['revision']))
@@ -1076,126 +1129,16 @@ class Api_IndexController extends Api_AppController
       }
     }
 
-  /** Return all locations for a bitstream */
-  function bitstreamLocations($args)
-    {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', -150);
-      }
-
-    $bitstreamid = $args['id'];
-    if(!is_numeric($bitstreamid))
-      {
-      throw new Exception('Invalid id parameter', -150);
-      }
-    $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($bitstreamid, $userid, MIDAS_RESOURCE_BITSTREAM, MIDAS_POLICY_READ))
-      {
-      throw new Exception('Invalid policy', -151);
-      }
-    return $this->Bitstream->getLocations($bitstreamid);
-    }
-
-  /** Download a bitstream */
-  function bitstreamDownload($args)
-    {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', -150);
-      }
-
-    $bitstreamid = $args['id'];
-    $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($bitstreamid, $userid, MIDAS_RESOURCE_BITSTREAM, MIDAS_POLICY_READ))
-      {
-      throw new Exception('Invalid policy', -151);
-      }
-
-    $location = '';
-    if(array_key_exists('location', $args) && is_numeric($args['location']))
-      {
-      $location = '?location='.$args['location']; //choose a particular assetstore
-      }
-    if($userid)
-      {
-      $this->Session->write('User', $userid);
-      }
-    // must call ob_end_clean before we forward to bitstream/download or bitstream/view
-    ob_end_clean();
-    $this->requestAction('/bitstream/view/'.$bitstreamid.$location, array('return'));
-    exit();
-    }
-
-  /** Download a bitstream by its checksum */
-  function bitstreamDownloadByHash($args)
-    {
-    if(!array_key_exists('hash', $args))
-      {
-      throw new Exception('Parameter hash is not defined', -150);
-      }
-    $name = array_key_exists('name', $args) ? '/'.$args['name'] : '';
-    $alg = array_key_exists('algorithm', $args) ? $args['algorithm'] : 'MD5';
-    $alg = strtoupper($alg); //in case they pass in 'md5' or 'sha1'
-    $hash = $args['hash'];
-
-    $bitstreamid = $this->Bitstream->getByHash($hash, $alg);
-
-    if($bitstreamid === false)
-      {
-      throw new Exception('No bitstream exists with'.$alg.' = '.$hash, -150);
-      }
-    if(array_key_exists('checkExistsOnly', $args))
-      {
-      return array('exists' => 'true');
-      }
-    $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($bitstreamid, $userid, MIDAS_RESOURCE_BITSTREAM, MIDAS_POLICY_READ))
-      {
-      throw new Exception('Invalid policy', -151);
-      }
-
-    // must call ob_end_clean before we forward to bitstream/download or bitstream/view
-    ob_end_clean();
-    $this->requestAction('/bitstream/view/'.$bitstreamid.$name, array('return'));
-    exit();
-    }
-
-  /** Get bitstream info */
-  function bitstreamGet($args)
-    {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', -150);
-      }
-
-    $bitstreamid = $args['id'];
-    $userid = $this->_getUserId($args);
-    if(!$this->User->isPolicyValid($bitstreamid, $userid, MIDAS_RESOURCE_BITSTREAM, MIDAS_POLICY_READ))
-      {
-      throw new Exception('Invalid policy', -151);
-      }
-    $data['id'] = $bitstreamid;
-    $data['uuid'] = $this->Bitstream->getUuid($bitstreamid);
-    $data['parent'] = $this->Bitstream->getItemId($bitstreamid);
-    $data['hasAgreement'] = $this->Bitstream->hasAgreement($bitstreamid) ? '1' : '0';
-    $data['name'] = $this->Bitstream->getName($bitstreamid);
-    $data['description'] = $this->Bitstream->getDescription($bitstreamid);
-    $data['size'] = $this->Bitstream->getSizeInBytes($bitstreamid);
-    $data['format'] = $this->Bitstream->getBitstreamFormatId($bitstreamid);
-    return $data;
-    }
-
   /** Get uuid for a resource */
   function uuidGet($args)
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -150);
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
     if(!array_key_exists('type', $args))
       {
-      throw new Exception('Parameter type is not defined', -150);
+      throw new Exception('Parameter type is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $id = $args['id'];
@@ -1231,14 +1174,14 @@ class Api_IndexController extends Api_AppController
 
     if($dao == false)
       {
-      throw new Exception('Invalid resource type or id.', -151);
+      throw new Exception('Invalid resource type or id.', MIDAS_INVALID_PARAMETER);
       }
 
     $uuid = $dao->getUuid();
 
     if($uuid == false)
       {
-      throw new Exception('Invalid resource type or id.', -151);
+      throw new Exception('Invalid resource type or id.', MIDAS_INVALID_PARAMETER);
       }
 
     return $uuid;
@@ -1249,7 +1192,7 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('uuid', $args))
       {
-      throw new Exception('Parameter uuid is not defined', -150);
+      throw new Exception('Parameter uuid is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $uuid = $args['uuid'];
@@ -1257,24 +1200,24 @@ class Api_IndexController extends Api_AppController
 
     if($resource == false)
       {
-      throw new Exception('No resource for the given UUID.', -151);
+      throw new Exception('No resource for the given UUID.', MIDAS_INVALID_PARAMETER);
       }
 
     return $resource->toArray();
     }
 
   /** Returns a path of uuids from the root community to the given node */
-  function pathFromRoot ($args)
+  function pathFromRoot($args)
     {
     return array_reverse($this->pathToRoot($args));
     }
 
   /** Returns a path of uuids from the given node to the root community */
-  function pathToRoot ($args)
+  function pathToRoot($args)
     {
     if(!array_key_exists('uuid', $args))
       {
-      throw new Exception('Parameter uuid is not defined', -150);
+      throw new Exception('Parameter uuid is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $folder = $this->Component->Uuid->getByUid($args['uuid']);
@@ -1284,12 +1227,12 @@ class Api_IndexController extends Api_AppController
 
     if($folder == false)
       {
-      throw new Exception('No resource for the given UUID.', -151);
+      throw new Exception('No resource for the given UUID.', MIDAS_INVALID_PARAMETER);
       }
 
     if(!$folder instanceof FolderDao)
       {
-      throw new Exception('Should be a folder.', -150);
+      throw new Exception('Should be a folder.', MIDAS_INVALID_PARAMETER);
       }
 
     $parent = $folder->getParent();
@@ -1306,7 +1249,7 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('search', $args))
       {
-      throw new Exception('Parameter search is not defined', -150);
+      throw new Exception('Parameter search is not defined', MIDAS_INVALID_PARAMETER);
       }
     $userDao = $this->_getUser($args);
 
@@ -1318,42 +1261,25 @@ class Api_IndexController extends Api_AppController
     return $this->Component->Search->searchAll($userDao, $args['search'], $order);
     }
 
-  /** Return all changed resources since a given timestamp, and provide a new timestamp */
-  function newResourcesGet($args)
-    {
-    if(array_key_exists('since', $args))
-      {
-      App::import('Model', 'Resourcelog');
-      $Resourcelog = new Resourcelog();
-      $results = $Resourcelog->getAllModifiedSince($args['since']);
-      foreach($results as $result)
-        {
-        $data['modified'][] = $this->Api->getUuid($result['resource_id'], $result['resource_id_type']);
-        }
-      }
-    $data['timestamp'] = $this->Api->getCurrentSQLTime();
-    return $data;
-    }
-
   /** Delete a community */
   function communityDelete($args)
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -155);
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
-      throw new Exception('Unable to find user', -150);
+      throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
       }
     $id = $args['id'];
     $community = $this->Community->load($id);
 
     if($community === false || !$this->Community->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
       {
-      throw new Exception("This community doesn't exist  or you don't have the permissions.", 200);
+      throw new Exception("This community doesn't exist  or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
     $this->Community->delete($community);
@@ -1364,20 +1290,20 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -155);
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
-      throw new Exception('Unable to find user', -150);
+      throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
       }
     $id = $args['id'];
     $folder = $this->Folder->load($id);
 
     if($folder === false || !$this->Folder->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
       {
-      throw new Exception("This community doesn't exist  or you don't have the permissions.", 200);
+      throw new Exception("This community doesn't exist  or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
     $this->Folder->delete($folder);
@@ -1388,23 +1314,87 @@ class Api_IndexController extends Api_AppController
     {
     if(!array_key_exists('id', $args))
       {
-      throw new Exception('Parameter id is not defined', -155);
+      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
-      throw new Exception('Unable to find user', -150);
+      throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
       }
     $id = $args['id'];
     $item = $this->Item->load($id);
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
       {
-      throw new Exception("This item doesn't exist  or you don't have the permissions.", 200);
+      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
     $this->Item->delete($item);
+    }
+
+  /**
+   * Return a list of all communities visible to a user
+   */
+  function communityList($args)
+    {
+    $userDao = $this->_getUser($args);
+
+    if($userDao && $userDao->isAdmin())
+      {
+      $communities = $this->Community->getAll();
+      }
+    else
+      {
+      $communities = $this->Community->getPublicCommunities();
+      if($userDao)
+        {
+        $communities = array_merge($communities, $this->User->getUserCommunities($userDao));
+        }
+      }
+
+    $this->Component->Sortdao->field = 'name';
+    $this->Component->Sortdao->order = 'asc';
+    usort($communities, array($this->Component->Sortdao, 'sortByName'));
+    return $this->Component->Sortdao->arrayUniqueDao($communities);
+    }
+
+  /**
+   * Return a list of top level folders belonging to the user
+   */
+  function userFolders($args)
+    {
+    $userDao = $this->_getUser($args);
+    if($userDao == false)
+      {
+      return array();
+      }
+
+    $userRootFolder = $userDao->getFolder();  
+    return $this->Folder->getChildrenFoldersFiltered($userRootFolder, $userDao, MIDAS_POLICY_READ);
+    }
+
+  /**
+   * Returns the user's default API key given their username and password
+   */
+  function userApikeyDefault($args)
+    {
+    if(!$this->_request->isPost())
+      {
+      throw new Exception('POST method required', MIDAS_HTTP_ERROR);
+      }
+    if(!array_key_exists('email', $args))
+      {
+      throw new Exception('Parameter email is not defined', MIDAS_INVALID_PARAMETER);
+      }
+    if(!array_key_exists('password', $args))
+      {
+      throw new Exception('Parameter password is not defined', MIDAS_INVALID_PARAMETER);
+      }
+
+    $salt = Zend_Registry::get('configGlobal')->password->prefix;
+    $defaultApiKey = $key = md5($args['email'].md5($salt.$args['password']).'Default');
+    return array('apikey' => $defaultApiKey);
     }
   } // end class
 ?>

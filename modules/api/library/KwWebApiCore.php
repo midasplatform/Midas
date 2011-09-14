@@ -347,10 +347,9 @@ class KwWebApiJsonCore extends KwWebApiCore
     {
     }
 
-  static function output( $content )
+  static function output($content)
     {
     echo $content;
-    exit;
     }
   protected function apiError($error, $message)
     {
