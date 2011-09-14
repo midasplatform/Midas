@@ -400,32 +400,33 @@ class Api_IndexController extends Api_AppController
     $this->uploadApi = new KwUploadAPI($this->apiSetup);
     }
 
-  /** Return the user id given the arguments */
-  private function _getUserId($args)
-    {
-    if(!array_key_exists('token', $args))
-      {
-      return 0;
-      }
-    $token = $args['token'];
-    $userapiDao = $this->Api_Userapi->getUserapiFromToken($token);
-    if(!$userapiDao)
-      {
-      throw new Exception('Invalid token', MIDAS_INVALID_TOKEN);
-      }
-    return $userapiDao->getUserId();
-    }
-
-  /** Return the user */
+  /** Return the user dao */
   private function _getUser($args)
     {
-    $userid = $this->_getUserId($args);
-    if($userid == 0)
+    if(array_key_exists('useSession', $args))
       {
-      return false;
+      return $this->userSession->Dao;
       }
-    $userDao = $this->User->load($userid);
-    return $userDao;
+    else
+      {
+      if(!array_key_exists('token', $args))
+        {
+        return 0;
+        }
+      $token = $args['token'];
+      $userapiDao = $this->Api_Userapi->getUserapiFromToken($token);
+      if(!$userapiDao)
+        {
+        throw new Exception('Invalid token', MIDAS_INVALID_TOKEN);
+        }
+      $userid = $userapiDao->getUserId();
+      if($userid == 0)
+        {
+        return false;
+        }
+      $userDao = $this->User->load($userid);
+      return $userDao;
+      }
     }
 
   /** Controller action handling REST request */
@@ -732,18 +733,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $communityid = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $community = $this->Community->load($communityid);
 
     if($community === false || !$this->Community->policyCheck($community, $userDao, MIDAS_POLICY_READ))
@@ -761,18 +753,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $id = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $parent = $this->Folder->load($id);
 
     if($parent === false || !$this->Folder->policyCheck($parent, $userDao, MIDAS_POLICY_READ))
@@ -855,18 +838,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $id = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $folder = $this->Folder->load($id);
 
     if($folder === false || !$this->Folder->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
@@ -983,18 +957,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $itemid = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $item = $this->Item->load($itemid);
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
@@ -1028,18 +993,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $itemid = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $item = $this->Item->load($itemid);
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
@@ -1082,18 +1038,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $id = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $folder = $this->Folder->load($id);
 
     if($folder === false || !$this->Folder->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
@@ -1111,18 +1058,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $id = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $item = $this->Item->load($id);
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
