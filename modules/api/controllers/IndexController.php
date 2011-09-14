@@ -373,6 +373,17 @@ class Api_IndexController extends Api_AppController
     $help['description'] = 'Get metadata';
     $this->helpContent[$apiMethodPrefix.'item.getmetadata'] = $help;
     $this->apicallbacks[$apiMethodPrefix.'item.getmetadata']       = array(&$this, 'itemGetMetadata');
+
+    // Extend web API to other modules via CALLBACK_API_METHODS
+    $additionalMethods = Zend_Registry::get('notifier')->callback('CALLBACK_API_METHODS', array());
+    foreach($additionalMethods as $module => $methods)
+      {
+      foreach($methods as $method)
+        {
+        $this->helpContent[$apiMethodPrefix.strtolower($module).'.'.$method['name']] = $method['help'];
+        $this->apicallbacks[$apiMethodPrefix.strtolower($module).'.'.$method['name']] = array($method['callbackObject'], $method['callbackFunction']);
+        }
+      }
     }
 
   /** Initialize property allowing to generate XML */
@@ -1370,7 +1381,7 @@ class Api_IndexController extends Api_AppController
       return array();
       }
 
-    $userRootFolder = $userDao->getFolder();  
+    $userRootFolder = $userDao->getFolder();
     return $this->Folder->getChildrenFoldersFiltered($userRootFolder, $userDao, MIDAS_POLICY_READ);
     }
 
