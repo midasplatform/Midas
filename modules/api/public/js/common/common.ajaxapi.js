@@ -6,7 +6,6 @@ var ajaxWebApi = {};
  * response object, including error handling
  * Parameters:
  *   method: Web API method to call (such as midas.bitstream.list)
- *   [authenticate]: defaults to true. If set to false, won't login
  *   [args]: Key=value arguments to the web API method, delimited with &
  *   [success]: Function to be called when this function is finished (one 
  *              arg, the response json object)
@@ -60,7 +59,6 @@ ajaxWebApi._webApiCall = function(params)
           }
         return;
         }
-      //TODO detect invalid (expired) token.  If so, set our token = '' and try again
       if(params.success)
         {
         params.success(retVal);
