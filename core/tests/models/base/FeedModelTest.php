@@ -34,8 +34,8 @@ class FeedModelTest extends DatabaseTestCase
     $communitiesFile = $this->Feed->getGlobalFeeds($usersFile[0], 2);
     $this->assertEquals(1, count($communitiesFile));
     }
-    
-  /** testGetFeedsByUser*/   
+
+  /** testGetFeedsByUser*/
   public function testGetFeedsByUser()
     {
     $usersFile = $this->loadData('User', 'default');
@@ -57,7 +57,7 @@ class FeedModelTest extends DatabaseTestCase
     $this->assertEquals(1, count($communitiesFile));
     }
 
-  /** testCreateFeed*/  
+  /** testCreateFeed*/
   public function testCreateFeed()
     {
     $usersFile = $this->loadData('User', 'default');

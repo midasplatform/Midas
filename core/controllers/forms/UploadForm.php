@@ -22,7 +22,7 @@ class UploadForm extends AppForm
           ->setMethod('post');
 
     $validator = new Zend_Validate_Callback(array('Zend_Uri', 'check'));
-    
+
     $name = new Zend_Form_Element_Text('name');
     $name ->setRequired(true);
     $url = new Zend_Form_Element_Text('url');
@@ -31,13 +31,13 @@ class UploadForm extends AppForm
           ->addValidator($validator)
           ->addValidator('NotEmpty', true);
 
-    
+
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel($this->t("Save Link"))
             ->setAttrib('class', 'globalButton');
-     
+
     $form->addElements(array($name, $url, $submit));
     return $form;
     }
-   
+
 } // end class

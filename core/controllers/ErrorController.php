@@ -11,27 +11,27 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 /** Error Controller*/
-class ErrorController extends AppController  
-{  
+class ErrorController extends AppController
+{
   public $_models = array();
   public $_daos = array();
   public $_components = array('NotifyError', 'Utility');
   public $_forms = array();
-  private $_error;  
-  private $_environment;  
+  private $_error;
+  private $_environment;
 
   /** Init Controller*/
-  public function init()  
-    {  
-    parent::init();  
+  public function init()
+    {
+    parent::init();
 
     $error = $this->_getParam('error_handler');
     if(!isset($error) || empty($error))
       {
       return;
       }
-    $mailer = new Zend_Mail();  
-    $session = new Zend_Session_Namespace('Auth_User');  
+    $mailer = new Zend_Mail();
+    $session = new Zend_Session_Namespace('Auth_User');
     $db = Zend_Registry::get('dbAdapter');
 
     if(method_exists($db, "getProfiler"))
@@ -40,32 +40,32 @@ class ErrorController extends AppController
       }
     else
       {
-      $profiler = new Zend_Db_Profiler();  
-      }  
+      $profiler = new Zend_Db_Profiler();
+      }
     $environment = Zend_Registry::get('configGlobal')->environment;
     $this->_environment = $environment;
     $this->Component->NotifyError->initNotifier(
-        $environment,  
-        $error,  
-        $mailer,  
-        $session,  
-        $profiler,  
-        $_SERVER  
-    );  
+        $environment,
+        $error,
+        $mailer,
+        $session,
+        $profiler,
+        $_SERVER
+    );
 
-    $this->_error = $error;  
+    $this->_error = $error;
 
-    $this->_environment = $environment;  
+    $this->_environment = $environment;
     $this->view->setScriptPath(BASE_PATH."/core/views");
-    }  
+    }
 
   /** Error Action */
-  public function errorAction()  
-    {  
-    $error = $this->_getParam('error_handler');  
+  public function errorAction()
+    {
+    $error = $this->_getParam('error_handler');
     if(!isset($error) || empty($error))
       {
-      $this->view->message = 'Page not found'; 
+      $this->view->message = 'Page not found';
       return;
       }
 
@@ -76,20 +76,20 @@ class ErrorController extends AppController
       $this->view->message = "Midas is not installed. Please go the <a href = '".$this->view->webroot."/install'> install page</a>.";
       return;
       }
-    switch($this->_error->type) 
-      {  
-      case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_CONTROLLER:  
-      case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ACTION:  
-        $this->getResponse()->setHttpResponseCode(404);  
-        $this->view->message = 'Page not found';  
-        break;  
+    switch($this->_error->type)
+      {
+      case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_CONTROLLER:
+      case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ACTION:
+        $this->getResponse()->setHttpResponseCode(404);
+        $this->view->message = 'Page not found';
+        break;
 
-      default:  
-        $this->getResponse()->setHttpResponseCode(500);  
-        $this->_applicationError();  
-        break;  
-      } 
-    $fullMessage = $this->Component->NotifyError->getFullErrorMessage();  
+      default:
+        $this->getResponse()->setHttpResponseCode(500);
+        $this->_applicationError();
+        break;
+      }
+    $fullMessage = $this->Component->NotifyError->getFullErrorMessage();
     if(isset($this->fullMessage))
       {
       $this->getLogger()->warn($this->fullMessage);
@@ -99,32 +99,32 @@ class ErrorController extends AppController
       $this->getLogger()->warn('URL: '.$this->Component->NotifyError->curPageURL()."\n".$this->view->message);
       }
 
-    }  
+    }
 
-  private function _applicationError()  
-    {  
-    $fullMessage = $this->Component->NotifyError->getFullErrorMessage();  
-    $shortMessage = $this->Component->NotifyError->getShortErrorMessage();  
+  private function _applicationError()
+    {
+    $fullMessage = $this->Component->NotifyError->getFullErrorMessage();
+    $shortMessage = $this->Component->NotifyError->getShortErrorMessage();
     $this->fullMessage = $fullMessage;
 
     switch($this->_environment)
-      {  
-      case 'production':  
-        $this->view->message = $shortMessage;  
-        break;  
-      case 'testing':  
+      {
+      case 'production':
+        $this->view->message = $shortMessage;
+        break;
+      case 'testing':
         if($this->_helper->hasHelper('layout'))
           {
           $this->_helper->layout->disableLayout();
           }
-        
-        $this->_helper->viewRenderer->setNoRender();  
 
-        $this->getResponse()->appendBody($shortMessage);  
-        break;  
-      default:  
-        $this->view->message = nl2br($fullMessage);  
-      }  
+        $this->_helper->viewRenderer->setNoRender();
 
-    }  
-}  
+        $this->getResponse()->appendBody($shortMessage);
+        break;
+      default:
+        $this->view->message = nl2br($fullMessage);
+      }
+
+    }
+}

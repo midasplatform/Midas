@@ -21,26 +21,26 @@ class AssetstoreController extends AppController
   public $_daos = array('Assetstore');
   public $_components = array('Utility');
   public $_forms = array('Assetstore');
-  
+
   /**
    * @method init()
    *  Init Controller
    */
   function init()
-    { 
+    {
     $this->view->menu = "assetstore";
-    }  // end init() 
-    
+    }  // end init()
+
   /**
    * \fn indexAction()
    * \brief Index Action (first action when we access the application)
    */
   function indexAction()
-    {      
-    
+    {
+
     }// end indexAction
-    
-    
+
+
   /** change default assetstore*/
   function defaultassetstoreAction()
     {
@@ -70,8 +70,8 @@ class AssetstoreController extends AppController
       }
     echo JsonComponent::encode(array(false, $this->t('Error')));
     }//defaultassetstoreAction
-    
-    
+
+
   /** delete an assetstore assetstore*/
   function deleteAction()
     {
@@ -88,7 +88,7 @@ class AssetstoreController extends AppController
     $assetstoreId = $this->_getParam("assetstoreId");
     if(isset($assetstoreId))
       {
-      set_time_limit(0); // No time limit since import can take a long time  
+      set_time_limit(0); // No time limit since import can take a long time
       $assetstore = $this->Assetstore->load($assetstoreId);
       if($assetstore != false)
         {
@@ -99,7 +99,7 @@ class AssetstoreController extends AppController
       }
     echo JsonComponent::encode(array(false, $this->t('Error')));
     }//deleteAction
-    
+
   /** edit an assetstore assetstore*/
   function editAction()
     {
@@ -130,7 +130,7 @@ class AssetstoreController extends AppController
       }
     echo JsonComponent::encode(array(false, $this->t('Error')));
     }//editAction
-    
+
   /**
    * \fn indexAction()
    * \brief called from ajax
@@ -139,14 +139,14 @@ class AssetstoreController extends AppController
     {
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
-      
+
     $form = $this->Form->Assetstore->createAssetstoreForm();
-    if($this->getRequest()->isPost() && !$form->isValid($_POST)) 
+    if($this->getRequest()->isPost() && !$form->isValid($_POST))
       {
       echo json_encode(array('error' => 'The form is invalid. Missing values.'));
       return false;
       }
-      
+
     if($this->getRequest()->isPost() && $form->isValid($_POST))
       {
       // Save the assetstore in the database
@@ -154,8 +154,8 @@ class AssetstoreController extends AppController
       $assetstoreDao->setName($form->name->getValue());
       $assetstoreDao->setPath($form->basedirectory->getValue());
       $assetstoreDao->setType($form->type->getValue());
-      $this->Assetstore->save($assetstoreDao);  
-        
+      $this->Assetstore->save($assetstoreDao);
+
       echo json_encode(array('msg' => 'The assetstore has been added.',
                        'assetstore_id' => $assetstoreDao->getAssetstoreId(),
                        'assetstore_name' => $assetstoreDao->getName(),
@@ -164,15 +164,14 @@ class AssetstoreController extends AppController
                        'totalSpaceText' => $this->Component->Utility->formatSize(disk_total_space($assetstoreDao->getPath())),
                        'freeSpace' => disk_free_space($assetstoreDao->getPath()),
                        'freeSpaceText' => $this->Component->Utility->formatSize(disk_free_space($assetstoreDao->getPath())),
-                       ));  
+                       ));
       return true;
       }
-      
-    echo json_encode(array('error' => 'Bad request.'));  
+
+    echo json_encode(array('error' => 'Bad request.'));
     return false;
     } // end import action
-    
-    
+
+
 } // end class
 
-  

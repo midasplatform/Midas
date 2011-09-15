@@ -28,10 +28,10 @@ abstract class FolderpolicyuserModelBase extends AppModel
         );
     $this->initialize(); // required
     } // end __construct()
-  
+
   /** Abstract functions */
-  abstract function getPolicy($user, $folder);  
-  
+  abstract function getPolicy($user, $folder);
+
   /** delete */
   public function delete($dao)
     {
@@ -41,7 +41,7 @@ abstract class FolderpolicyuserModelBase extends AppModel
     $folderGroupModel = $modelLoad->loadModel('Folderpolicygroup');
     $folderGroupModel->computePolicyStatus($folder);
     }//end delete
-    
+
   /** create a policy
    * @return FolderpolicyuserDao*/
   public function createPolicy($user, $folder, $policy)
@@ -72,11 +72,11 @@ abstract class FolderpolicyuserModelBase extends AppModel
     $policyUser->setFolderId($folder->getFolderId());
     $policyUser->setPolicy($policy);
     $this->save($policyUser);
-    
+
     $modelLoad = new MIDAS_ModelLoader();
     $folderGroupModel = $modelLoad->loadModel('Folderpolicygroup');
     $folderGroupModel->computePolicyStatus($folder);
     return $policyUser;
     }
-  
+
 } // end class FolderpolicyuserModelBase

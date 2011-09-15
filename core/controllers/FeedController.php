@@ -18,13 +18,13 @@ class FeedController extends AppController
   public $_models = array('Feed', 'Item', 'User', 'Community');
   public $_daos = array();
   public $_components = array();
-    
+
   /** Init Controller */
   function init()
-    {   
+    {
     $this->view->activemenu = 'feed'; // set the active menu
-    }  // end init()  
-    
+    }  // end init()
+
   /** index Action */
   public function indexAction()
     {
@@ -35,7 +35,7 @@ class FeedController extends AppController
     $this->view->nItems = $this->Item->getCountAll();
     $this->view->notifications = array();
     $this->view->header = $this->t('Feed');
-    
+
     if($this->logged && !$this->isTestingEnv())
       {
       $request = $this->getRequest();
@@ -43,41 +43,40 @@ class FeedController extends AppController
       if(isset($cookieData) && is_numeric($cookieData))
         {
         $this->view->lastFeedVisit = $cookieData;
-        }  
+        }
       setcookie('newFeed'.$this->userSession->Dao->getKey(), strtotime("now"), time() + 60 * 60 * 24 * 300, '/'); //30 days
       }
     }
-        
+
   /** get delete a feed */
   public function deleteajaxAction()
     {
     if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
       {
       throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }     
-     
+      }
+
     $this->disableLayout();
     $this->disableView();
-    
+
     $feedId = $this->_getParam('feed');
     if(!isset($feedId) || (!is_numeric($feedId) && strlen($feedId) != 32)) // This is tricky! and for Cassandra for now)
       {
       throw new Zend_Exception("Please set the feed Id");
       }
     $feed = $this->Feed->load($feedId);
-    
+
     if($feed == false)
       {
       return;
-      }    
+      }
 
     if(!$this->Feed->policyCheck($feed, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
       return;
       }
-    $this->Feed->delete($feed);      
+    $this->Feed->delete($feed);
     }//end deleteajaxAction
-    
+
 } // end class
 
-  

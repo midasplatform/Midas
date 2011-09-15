@@ -21,11 +21,11 @@ class ItemRevisionModel extends ItemRevisionModelBase
   /** get by uuid*/
   function getByUuid($uuid)
     {
-    $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid)); 
+    $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid));
     $dao = $this->initDao(ucfirst($this->_name), $row);
     return $dao;
     }
-    
+
   /** get the metadata associated with the revision */
   function getMetadata($revisiondao)
     {
@@ -34,23 +34,23 @@ class ItemRevisionModel extends ItemRevisionModelBase
       throw new Zend_Exception("Error param.");
       }
 
-    $metadatavalues = array();    
+    $metadatavalues = array();
     $sql = $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from('metadatavalue')
                           ->where('itemrevision_id = ?', $revisiondao->getKey())
                           ->joinLeft('metadata', 'metadata.metadata_id = metadatavalue.metadata_id');
-                          
-    $rowset = $this->database->fetchAll($sql); 
+
+    $rowset = $this->database->fetchAll($sql);
     foreach($rowset as $row)
       {
       $metadata = $this->initDao('Metadata', $row);
-      $metadatavalues[] = $metadata; 
+      $metadatavalues[] = $metadata;
       }
 
     return $metadatavalues;
     }  // end getMetadata
-    
+
   /** get the metadata associated with the revision */
   function deleteMetadata($revisiondao, $metadataId)
     {
@@ -60,12 +60,12 @@ class ItemRevisionModel extends ItemRevisionModelBase
       }
 
     Zend_Registry::get('dbAdapter')->delete('metadatavalue', 'itemrevision_id = '.$revisiondao->getKey().' AND metadata_id = '.$metadataId);
-    
+
     $item = $revisiondao->getItem();
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $lastrevision = $itemModel->getLastRevision($item);
-    
+
     //refresh zend search index
     if($lastrevision->getKey() == $revisiondao->getKey())
       {
@@ -73,7 +73,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
       }
     return;
     }  // end getMetadata
-    
+
   /** delete a revision*/
   function delete($revisiondao)
     {
@@ -88,14 +88,14 @@ class ItemRevisionModel extends ItemRevisionModelBase
       {
       $bitstream_model->delete($bitstream);
       }
-      
-      
+
+
     $deleteType = array(MIDAS_FEED_CREATE_REVISION);
     $sql = $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'feed'))
                           ->where('ressource = ?', $revisiondao->getKey());
-    
+
     $rowset = $this->database->fetchAll($sql);
     $this->ModelLoader = new MIDAS_ModelLoader();
     $feed_model = $this->ModelLoader->loadModel('Feed');
@@ -107,20 +107,20 @@ class ItemRevisionModel extends ItemRevisionModelBase
         $feed_model->delete($feed);
         }
       }
-      
+
     parent::delete($revisiondao);
     $revisiondao->saved = false;
     unset($revisiondao->itemrevision_id);
     }//end delete
-    
-    
+
+
   /** Returns the latest revision of a model */
   function getLatestRevision($itemdao)
     {
     $row = $this->database->fetchRow($this->database->select()->from($this->_name)->where('item_id=?', $itemdao->getItemId())->order('revision DESC')->limit(1));
     return $this->initDao('ItemRevision', $row);
     }
-    
+
   /** Returns the of the revision in Bytes */
   function getSize($revision)
     {

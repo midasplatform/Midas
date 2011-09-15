@@ -36,12 +36,12 @@ class IndexControllerTest extends ControllerTestCase
       {
       $this->fail('GetRecord error found');
       }
-      
+
     if(strpos($body, $itemsFile[0]->getUuid()) === false)
       {
       $this->fail('GetRecord unable to find uuid');
       }
-      
+
     $this->resetAll();
     $this->params['verb'] = 'Identify';
     $this->dispatchUrI("/oai");
@@ -52,8 +52,8 @@ class IndexControllerTest extends ControllerTestCase
       {
       $this->fail('Identify error found');
       }
-      
-    $this->resetAll();  
+
+    $this->resetAll();
     $this->params['verb'] = 'ListIdentifiers';
     $this->params['metadataPrefix'] = 'oai_dc';
     $this->dispatchUrI("/oai");
@@ -64,14 +64,14 @@ class IndexControllerTest extends ControllerTestCase
       {
       $this->fail('ListIdentifiers error found');
       }
-      
+
     if(strpos($body, $itemsFile[0]->getUuid()) === false)
       {
       $this->fail('ListIdentifiers unable to find uuid');
       }
-      
-      
-    $this->resetAll();  
+
+
+    $this->resetAll();
     $this->params['verb'] = 'ListMetadataFormats';
     $this->params['identifier'] = 'oai:midas.foo.com:'.$itemsFile[0]->getUuid();
     $this->dispatchUrI("/oai");
@@ -82,13 +82,13 @@ class IndexControllerTest extends ControllerTestCase
       {
       $this->fail('ListMetadataFormats error found');
       }
-      
+
     if(strpos($body, $itemsFile[0]->getUuid()) === false)
       {
       $this->fail('ListMetadataFormats unable to find uuid');
       }
-      
-    $this->resetAll();  
+
+    $this->resetAll();
     $this->params['verb'] = 'ListSets';
     $this->dispatchUrI("/oai");
     $this->assertAction("index");
@@ -103,6 +103,6 @@ class IndexControllerTest extends ControllerTestCase
     if(strpos($body, $folderFiles[0]->getUuid()) === false)
       {
       $this->fail('ListSets unable to find uuid');
-      } 
+      }
     }
   }

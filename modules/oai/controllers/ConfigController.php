@@ -24,7 +24,7 @@ class Oai_ConfigController extends Oai_AppController
       {
       throw new Zend_Exception("You should be an administrator");
       }
-      
+
     if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
       {
       $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", true);
@@ -34,14 +34,14 @@ class Oai_ConfigController extends Oai_AppController
       $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
       }
     $configForm = $this->ModuleForm->Config->createConfigForm();
-    
-    $formArray = $this->getFormAsArray($configForm);    
+
+    $formArray = $this->getFormAsArray($configForm);
     $formArray['repositoryname']->setValue($applicationConfig['global']['repositoryname']);
     $formArray['adminemail']->setValue($applicationConfig['global']['adminemail']);
     $formArray['repositoryidentifier']->setValue($applicationConfig['global']['repositoryidentifier']);
-    
+
     $this->view->configForm = $formArray;
-    
+
     if($this->_request->isPost())
       {
       $this->_helper->layout->disableLayout();
@@ -64,7 +64,7 @@ class Oai_ConfigController extends Oai_AppController
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }
-    } 
-     
-    
+    }
+
+
 }//end class

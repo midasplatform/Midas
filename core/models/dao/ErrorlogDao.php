@@ -16,7 +16,5 @@ PURPOSE.  See the above copyright notices for more information.
 class ErrorlogDao extends AppDao
 {
   public $_model = 'Errorlog';
-
-  
 } // end class
 ?>

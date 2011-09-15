@@ -20,7 +20,7 @@ class CommunityInvitationModelBase extends AppModel
     $this->_name = 'communityinvitation';
     $this->_daoName = 'CommunityInvitationDao';
     $this->_key = 'communityinvitation_id';
-  
+
     $this->_mainData = array(
       'communityinvitation_id' =>  array('type' => MIDAS_DATA),
       'community_id' =>  array('type' => MIDAS_DATA),
@@ -30,7 +30,7 @@ class CommunityInvitationModelBase extends AppModel
       );
     $this->initialize(); // required
     } // end __construct()
-  
+
   /** create invitation */
   public function createInvitation($communityDao, $userDao, $invitedUserDao)
     {
@@ -42,22 +42,22 @@ class CommunityInvitationModelBase extends AppModel
         return;
         }
       }
-    
+
     Zend_Loader::loadClass('CommunityInvitationDao', BASE_PATH.'/core/models/dao');
     $invitationDao = new CommunityInvitationDao();
     $invitationDao->setCommunityId($communityDao->getKey());
     $invitationDao->setUserId($invitedUserDao->getKey());
     $this->save($invitationDao);
-    
+
     $modelLoad = new MIDAS_ModelLoader();
     $feedModel = $modelLoad->loadModel('Feed');
     $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
-    
+
     $feed = $feedModel->createFeed($userDao, MIDAS_FEED_COMMUNITY_INVITATION, $invitationDao, $communityDao);
     $feedpolicyuserModel->createPolicy($invitedUserDao, $feed, MIDAS_POLICY_ADMIN);
     return $invitationDao;
     }
-  
+
   /** is user invited */
   public function isInvited($communityDao, $userDao)
     {
@@ -75,7 +75,7 @@ class CommunityInvitationModelBase extends AppModel
       }
     return false;
     }
-    
+
   /** remove invitation */
   public function removeInvitation($communityDao, $userDao)
     {

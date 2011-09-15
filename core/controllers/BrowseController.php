@@ -32,17 +32,17 @@ class BrowseController extends AppController
     $header = "";
 
     $this->view->Date = $this->Component->Date;
-    
+
     $this->view->header = $this->t('Explore');
-    
+
     $this->view->itemThumbnails = $this->Item->getRandomThumbnails($this->userSession->Dao, 0, 12, true);
 
     $this->view->items = $this->Item->getMostPopulars($this->userSession->Dao, 30);
-    
+
     $this->view->nUsers = $this->User->getCountAll();
     $this->view->nCommunities = $this->Community->getCountAll();
     $this->view->nItems = $this->Item->getCountAll();
-    
+
     $this->view->json['community']['titleCreateLogin'] = $this->t('Please log in');
     $this->view->json['community']['contentCreateLogin'] = $this->t('You need to be logged in to be able to create a community.');
     }
@@ -62,7 +62,7 @@ class BrowseController extends AppController
       $itemIds = explode('-', $elements[1]);
       $folders = $this->Folder->load($folderIds);
       $items = $this->Item->load($itemIds);
-      $destination = $this->Folder->load($destination);      
+      $destination = $this->Folder->load($destination);
       if(empty($folders) && empty ($items))
         {
         throw new Zend_Exception("No element selected");
@@ -71,9 +71,9 @@ class BrowseController extends AppController
         {
         throw new Zend_Exception("Unable to load destination");
         }
-        
+
       foreach($folders as $folder)
-        {        
+        {
         if(!isset($copySubmit))
           {
           $this->Folder->move($folder, $destination);
@@ -110,13 +110,13 @@ class BrowseController extends AppController
       $this->_redirect('/folder/'.$destination->getKey());
       }
 
-      
+
     if(!$this->getRequest()->isXmlHttpRequest())
       {
       throw new Zend_Exception("Why are you here ? Should be ajax.");
       }
     $this->_helper->layout->disableLayout();
-    
+
     if(!isset($select))
       {
       $folderIds = $this->_getParam('folders');
@@ -149,20 +149,20 @@ class BrowseController extends AppController
       {
       $this->view->selectEnabled = true;
       }
-    
+
     $communities = $this->User->getUserCommunities($this->userSession->Dao);
     $communities = array_merge($communities, $this->Community->getPublicCommunities());
     $this->view->Date = $this->Component->Date;
-    
+
     $this->Component->Sortdao->field = 'name';
     $this->Component->Sortdao->order = 'asc';
     usort($communities, array($this->Component->Sortdao, 'sortByName'));
     $communities = $this->Component->Sortdao->arrayUniqueDao($communities );
-    
+
     $this->view->user = $this->userSession->Dao;
     $this->view->communities = $communities;
     }
-    
+
   /** get getfolders content (ajax function for the treetable) */
   public function getfolderscontentAction()
     {
@@ -184,7 +184,7 @@ class BrowseController extends AppController
       {
       throw new Zend_Exception("Folder doesn't exist");
       }
-      
+
     $folders = $this->Folder->getChildrenFoldersFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ);
     $items = $this->Folder->getItemsFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ);
     $jsonContent = array();
@@ -227,15 +227,15 @@ class BrowseController extends AppController
       }
     echo JsonComponent::encode($jsonContent);
     }//end getfolderscontent
-    
+
   /** get getfolders Items' size */
   public function getfolderssizeAction()
     {
   /*  if(!$this->getRequest()->isXmlHttpRequest())
      {
      throw new Zend_Exception("Why are you here ? Should be ajax.");
-     }  */  
-     
+     }  */
+
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $folderIds = $this->_getParam('folders');
@@ -274,7 +274,7 @@ class BrowseController extends AppController
     switch($element)
       {
       case 'community':
-        $community = $this->Community->load($id);        
+        $community = $this->Community->load($id);
         $jsonContent = array_merge($jsonContent, $community->toArray());
         $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($community->getCreation()));
         $members = $community->getMemberGroup()->getUsers();

@@ -23,7 +23,7 @@ class ItemModel extends ItemModelBase
    * @param UserDao $userDao
    * @param type $policy
    * @param type $limit
-   * @return array of ItemDao 
+   * @return array of ItemDao
    */
   function getRandomItems($userDao = null, $policy = 0, $limit = 10, $thumbnailFilter = false)
     {
@@ -39,13 +39,13 @@ class ItemModel extends ItemModelBase
       {
       $userId = $userDao->getUserId();
       }
-      
+
     if(!isset($policy) || !isset($limit) || !isset($thumbnailFilter))
       {
       throw new Zend_Exception("Error parameter.");
       }
-      
-    /*  
+
+    /*
     if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL')
       {
       $rand = 'RAND()';
@@ -59,7 +59,7 @@ class ItemModel extends ItemModelBase
         ->from(array('i' => 'item'))
         ->join(array('tt'=> $this->database->select()
                     ->from(array('i' => 'item'),array('maxid' => 'MAX(item_id)'))
-                    ),        
+                    ),
             ' i.item_id >= FLOOR(tt.maxid*'.$rand.')')
         ->joinLeft(array('ip' => 'itempolicyuser'), '
                   i.item_id = ip.item_id AND '.$this->database->getDB()->quoteInto('ip.policy >= ?', $policy).'
@@ -109,7 +109,7 @@ class ItemModel extends ItemModelBase
         unset($tmpDao);
         }
       }
-    */  
+    */
     return $rowsetAnalysed;
     }//end get random
 }

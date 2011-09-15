@@ -147,7 +147,7 @@ class HttpuploadComponent extends AppComponent
       return;
       }
     $uploadUniqueIdentifier = $params['uploadUniqueIdentifier'];
-    
+
     echo sprintf("[OK]%u", filesize(BASE_PATH.'/tmp/misc/'."$uploadUniqueIdentifier"));
     }
   }

@@ -33,23 +33,23 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
       }
     $folderid = $folder->getKey();
     $groupid = $group->getKey();
-    
-    $column = 'group_'.$groupid;    
+
+    $column = 'group_'.$groupid;
     $folderarray = $this->database->getCassandra('folder', $folderid, array($column));
 
     if(empty($folderarray))
       {
-      return null;  
+      return null;
       }
-      
+
     // Massage the data to the proper format
     $newarray['folder_id'] = $folderid;
     $newarray['group_id'] = $groupid;
     $newarray['policy'] = $folderarray[$column];
-    
+
     return $this->initDao('Folderpolicygroup', $newarray);
     } // end getPolicy()
-    
+
   /** Custom save command */
   public function save($dao)
     {
@@ -58,37 +58,37 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
       {
       throw new Zend_Exception("Should be an object (".$instance.").");
       }
-      
-    try 
+
+    try
       {
       $folderid = $dao->getFolderId();
       $groupid = $dao->getGroupId();
-      $column = 'group_'.$groupid;    
+      $column = 'group_'.$groupid;
 
       $dataarray = array();
       $dataarray[$column] = $dao->getPolicy();
-      
+
       $column_family = new ColumnFamily($this->database->getDB(), 'folder');
-      $column_family->insert($folderid, $dataarray);  
-      } 
-    catch(Exception $e) 
+      $column_family->insert($folderid, $dataarray);
+      }
+    catch(Exception $e)
       {
-      throw new Zend_Exception($e); 
-      } 
-    
+      throw new Zend_Exception($e);
+      }
+
     $dao->saved = true;
     return true;
-    } // end save()  
-    
+    } // end save()
+
   /** Custome delete command */
   public function delete($dao)
     {
-    // No DAO passed we just return  
+    // No DAO passed we just return
     if($dao == null)
       {
-      return false;  
-      } 
-        
+      return false;
+      }
+
     $instance = ucfirst($this->_name)."Dao";
     if(get_class($dao) !=  $instance)
       {
@@ -98,22 +98,22 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
       {
       throw new Zend_Exception("The dao should be saved first ...");
       }
-    
-    try 
+
+    try
       {
-      // Remove the column group from the folder 
+      // Remove the column group from the folder
       $folderid = $dao->getFolderId();
       $groupid = $dao->getGroupId();
-      $column = 'group_'.$groupid;   
+      $column = 'group_'.$groupid;
       $cf = new ColumnFamily($this->database->getDB(), 'folder');
-      $cf->remove($folderid, array($column));      
-      }    
-    catch(Exception $e) 
+      $cf->remove($folderid, array($column));
+      }
+    catch(Exception $e)
       {
-      throw new Zend_Exception($e); 
-      }    
+      throw new Zend_Exception($e);
+      }
     $dao->saved = false;
     return true;
-    }    
-    
+    }
+
 } // end class

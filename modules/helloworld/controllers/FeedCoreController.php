@@ -21,20 +21,20 @@ class Helloworld_FeedCoreController extends Helloworld_AppController
   public $_moduleComponents = array('Hello');
   public $_forms = array('Install');
   public $_moduleForms = array('Index');
-  
+
   /**
    * @method initAction()
    *  Index Action (first action when we access the application)
    */
   function init()
-    {         
-  
+    {
+
     } // end method indexAction
 
-  /** index action*/  
+  /** index action*/
   function indexAction()
     {
     $this->callCoreAction();
-    } 
-    
+    }
+
 }//end class

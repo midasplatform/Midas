@@ -17,32 +17,32 @@ require_once BASE_PATH.'/core/models/base/FolderModelBase.php';
  * \brief Cassandra Model
  */
 class FolderModel extends FolderModelBase
-{     
- 
+{
+
   /** Get a folder by id */
   function getByFolder_id($folderid)
     {
-    try 
+    try
       {
-      $folder = new ColumnFamily($this->database->getDB(), 'folder');      
+      $folder = new ColumnFamily($this->database->getDB(), 'folder');
       $folderarray = $folder->get($folderid);
-          
+
       // Add the user_id
       $folderarray[$this->_key] = $folderid;
       $dao = $this->initDao('Folder', $folderarray);
       }
-    catch(cassandra_NotFoundException $e) 
+    catch(cassandra_NotFoundException $e)
       {
-      return false;  
-      }      
-    catch(Exception $e) 
+      return false;
+      }
+    catch(Exception $e)
       {
-      throw new Zend_Exception($e); 
-      }  
+      throw new Zend_Exception($e);
+      }
     return $dao;
     } // end getByFolder_id()
-  
-  /** Add an item */  
+
+  /** Add an item */
   function addItem($folder, $item)
     {
     if(!$folder instanceof FolderDao)
@@ -55,7 +55,7 @@ class FolderModel extends FolderModelBase
       }
     $this->database->link('items', $folder, $item);
     } // end function addItem
-    
+
   /** Remove an item from a folder
    * @return void
    */
@@ -71,8 +71,8 @@ class FolderModel extends FolderModelBase
       }
     //$this->database->removeLink('items', $folder, $item);
     } // end function addItem
-    
-  
+
+
   /** Custom save function*/
   public function save($folder)
     {
@@ -90,15 +90,15 @@ class FolderModel extends FolderModelBase
       $parentFolder = $folder->getParent();
       $rightParent = $parentFolder->getRightIndice();
       }
-      
-   
-    */   
+
+
+    */
 
     $rightParent = 0;   // REMOVE ME
-       
+
     $data = array();
-  
-    
+
+
     foreach($this->_mainData as $key => $var)
       {
       if(isset($folder->$key))
@@ -122,9 +122,9 @@ class FolderModel extends FolderModelBase
       unset($data['folder_id']);
       unset($data['left_indice']);
       unset($data['right_indice']);
-      
+
       $column_family = new ColumnFamily($this->database->getDB(), 'folder');
-      $column_family->insert($this->database->hex2bin($key), $data); 
+      $column_family->insert($this->database->hex2bin($key), $data);
       return $key;
       }
     else
@@ -136,15 +136,15 @@ class FolderModel extends FolderModelBase
       $insertedid = $this->insert($data);
       */
       $column_family = new ColumnFamily($this->database->getDB(), 'folder');
-      $uuid = bin2hex(CassandraUtil::uuid1());    
-      $column_family->insert($uuid, $data);      
+      $uuid = bin2hex(CassandraUtil::uuid1());
+      $column_family->insert($uuid, $data);
       $folder->folder_id = $uuid;
       $folder->saved = true;
       return true;
       }
-    } // end method save  
+    } // end method save
 
-    
+
   /** getFolder with policy check */
   function getChildrenFoldersFiltered($folder, $userDao = null, $policy = 0)
     {
@@ -185,7 +185,7 @@ class FolderModel extends FolderModelBase
       $userId = $userDao->getUserId();
       }
 
-    /*  
+    /*
     $subqueryUser= $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('f' => 'folder'))
@@ -214,10 +214,10 @@ class FolderModel extends FolderModelBase
                                    .'))' ));
     $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
-    
+
     $rowset = $this->database->fetchAll($sql);
     */
-    $return = array();      
+    $return = array();
     /*$policyArray = array();
     foreach($rowset as $keyRow => $row)
       {
@@ -242,9 +242,9 @@ class FolderModel extends FolderModelBase
     $this->Component->Sortdao->order = 'asc';
     usort($return, array($this->Component->Sortdao, 'sortByName'));
     return $return;
-    }  
+    }
 
-    
+
   /** getItems with policy check
    * @return
    */
@@ -321,14 +321,14 @@ class FolderModel extends FolderModelBase
 
     $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
-    
+
     $rowset = $this->database->fetchAll($sql);
     */
-    $return = array();    
+    $return = array();
     /* $policyArray = array();
     foreach($rowset as $keyRow => $row)
       {
-   
+
       if(!isset($policyArray[$row['item_id']])||(isset($policyArray[$row['item_id']])&&$row['policy']>$policyArray[$row['item_id']]))
         {
         $policyArray[$row['item_id']] = $row['policy'];
@@ -376,9 +376,9 @@ class FolderModel extends FolderModelBase
       {
       $userId = $userDao->getUserId();
       }
-      
+
    /*  foreach($folders as $key => $folder)
-      { 
+      {
       if(!$folder instanceof FolderDao)
         {
         throw new Zend_Exception("Should be a folder" );
@@ -442,7 +442,7 @@ class FolderModel extends FolderModelBase
                 ;
 
 
-      $row = $this->database->fetchRow($sql);    
+      $row = $this->database->fetchRow($sql);
       $folders[$key]->count = $row['count'];
       $folders[$key]->size = $row['sum'];
       if($folders[$key]->size == null)
@@ -453,7 +453,7 @@ class FolderModel extends FolderModelBase
       */
     return $folders;
     }
-      
+
   /** Get community if the folder is the main folder of one*/
   function getCommunity($folder)
     {
@@ -461,20 +461,20 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Should be a folder.");
       }
-        
+
     $folderid = $folder->getFolderId();
     $folderarray = $this->database->getCassandra('folder', $folderid, array('community_id'));
     if($folderarray !== false)
       {
       $communityid = $folderarray['community_id'];
-      $communityarray = $this->database->getCassandra('community', $communityid);  
+      $communityarray = $this->database->getCassandra('community', $communityid);
       // Massage the data to the proper format
       $communityarray['community_id'] = $communityid;
-      return $this->initDao('Community', $communityarray);      
+      return $this->initDao('Community', $communityarray);
       }
-    return false;  
+    return false;
     }
-    
+
   /** Get user if the folder is the main folder of one */
   function getUser($folder)
     {
@@ -487,13 +487,13 @@ class FolderModel extends FolderModelBase
     if($folderarray !== false)
       {
       $userid = $folderarray['user_id'];
-      $userarray = $this->database->getCassandra('user', $userid);  
+      $userarray = $this->database->getCassandra('user', $userid);
       // Massage the data to the proper format
       $userarray['user_id'] = $userid;
-      return $this->initDao('User', $userarray);      
+      return $this->initDao('User', $userarray);
       }
-    return false;  
-    }  
-    
+    return false;
+    }
+
 } // end class FolderModel
 ?>

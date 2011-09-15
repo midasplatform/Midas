@@ -16,7 +16,7 @@ abstract class CommunityModelBase extends AppModel
   /** constructor */
   public function __construct()
     {
-    parent::__construct();  
+    parent::__construct();
     $this->_name = 'community';
     $this->_key = 'community_id';
     $this->_mainData = array(
@@ -44,9 +44,9 @@ abstract class CommunityModelBase extends AppModel
       'member_group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'membergroup_id', 'child_column' => 'group_id'),
       'feeds' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Feed', 'table' => 'feed2community', 'parent_column' => 'community_id', 'child_column' => 'feed_id'),
       );
-    $this->initialize(); // required  
+    $this->initialize(); // required
     } // end __construct()
-  
+
   /** Returns all the public communities. Limited to 20 by default. */
   abstract function getPublicCommunities($limit = 20);
   /** Returns the community given its name */
@@ -72,7 +72,7 @@ abstract class CommunityModelBase extends AppModel
       }
     parent::save($dao);
     }
-  
+
   /** plus one view*/
   function incrementViewCount($communityDao)
     {
@@ -95,13 +95,13 @@ abstract class CommunityModelBase extends AppModel
     $communityDao->view++;
     $this->save($communityDao);
     } //end incrementViewCount
-  
+
   /** Create a community.
    *  privacy: MIDAS_COMMUNITY_PUBLIC, MIDAS_COMMUNITY_PRIVATE
    *  */
   function createCommunity($name, $description, $privacy, $user, $canJoin = null)
     {
-    $name = ucfirst($name);  
+    $name = ucfirst($name);
     if($this->getByName($name) !== false)
       {
       throw new Zend_Exception("Community already exists.");
@@ -110,7 +110,7 @@ abstract class CommunityModelBase extends AppModel
       {
       throw new Zend_Exception("Please set a name.");
       }
-      
+
     if($canJoin == null || $privacy == MIDAS_COMMUNITY_PRIVATE)
       {
       if($privacy == MIDAS_COMMUNITY_PRIVATE)
@@ -122,8 +122,8 @@ abstract class CommunityModelBase extends AppModel
         $canJoin = MIDAS_COMMUNITY_CAN_JOIN;
         }
       }
-      
-    $this->loadDaoClass('CommunityDao');       
+
+    $this->loadDaoClass('CommunityDao');
     $communityDao = new CommunityDao();
     $communityDao->setName($name);
     $communityDao->setDescription($description);
@@ -139,7 +139,7 @@ abstract class CommunityModelBase extends AppModel
     $folderpolicygroupModel = $modelLoad->loadModel('Folderpolicygroup');
     $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
     $feedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
-    
+
     $folderGlobal = $folderModel->createFolder('community_'.$communityDao->getKey(), '', MIDAS_FOLDER_COMMUNITYPARENT);
     $folderPublic = $folderModel->createFolder('Public', '', $folderGlobal);
     $folderPrivate = $folderModel->createFolder('Private', '', $folderGlobal);
@@ -168,21 +168,21 @@ abstract class CommunityModelBase extends AppModel
       $feedpolicygroupModel->createPolicy($moderatorsGroup, $feed, MIDAS_POLICY_ADMIN);
       $feedpolicygroupModel->createPolicy($memberGroup, $feed, MIDAS_POLICY_READ);
       }
-      
+
     $folderpolicygroupModel->createPolicy($adminGroup, $folderGlobal, MIDAS_POLICY_ADMIN);
     $folderpolicygroupModel->createPolicy($adminGroup, $folderPublic, MIDAS_POLICY_ADMIN);
     $folderpolicygroupModel->createPolicy($adminGroup, $folderPrivate, MIDAS_POLICY_ADMIN);
-    
+
 
     $folderpolicygroupModel->createPolicy($moderatorsGroup, $folderGlobal, MIDAS_POLICY_READ);
     $folderpolicygroupModel->createPolicy($moderatorsGroup, $folderPublic, MIDAS_POLICY_WRITE);
     $folderpolicygroupModel->createPolicy($moderatorsGroup, $folderPrivate, MIDAS_POLICY_WRITE);
-    
+
 
     $folderpolicygroupModel->createPolicy($memberGroup, $folderGlobal, MIDAS_POLICY_READ);
     $folderpolicygroupModel->createPolicy($memberGroup, $folderPublic, MIDAS_POLICY_WRITE);
     $folderpolicygroupModel->createPolicy($memberGroup, $folderPrivate, MIDAS_POLICY_WRITE);
-    
+
 
     if($communityDao->getPrivacy() != MIDAS_COMMUNITY_PRIVATE)
       {
@@ -191,11 +191,11 @@ abstract class CommunityModelBase extends AppModel
         {
         $feedpolicygroupModel->createPolicy($anonymousGroup, $feed, MIDAS_POLICY_READ);
         }
-      } 
+      }
     return $communityDao;
-    } // end createCommunity()    
-    
-    
+    } // end createCommunity()
+
+
   /** Delete a community */
   function delete($communityDao)
     {
@@ -210,11 +210,11 @@ abstract class CommunityModelBase extends AppModel
       {
       $group_model->delete($group);
       }
-    
+
     $folder_model = $this->ModelLoader->loadModel('Folder');
     $folder = $communityDao->getFolder();
     $folder_model->delete($folder, true);
-    
+
     $feed_model = $this->ModelLoader->loadModel('Feed');
     $feeds = $communityDao->getFeeds();
     foreach($feeds as $feed)
@@ -222,26 +222,26 @@ abstract class CommunityModelBase extends AppModel
       $feed_model->delete($feed);
       }
     $modelLoad = new MIDAS_ModelLoader();
-      
+
     $ciModel = $modelLoad->loadModel('CommunityInvitation');
     $invitations = $communityDao->getInvitations();
     foreach($invitations as $invitation)
       {
       $ciModel->delete($invitation);
       }
-      
+
     parent::delete($communityDao);
     unset($communityDao->community_id);
     $communityDao->saved = false;
     }//end delete
-    
-  
+
+
   /** check ifthe policy is valid
   *
   * @param FolderDao $folderDao
   * @param UserDao $userDao
   * @param type $policy
-  * @return  boolean 
+  * @return  boolean
   */
   function policyCheck($communityDao, $userDao = null, $policy = 0)
     {
@@ -265,8 +265,8 @@ abstract class CommunityModelBase extends AppModel
         return true;
         }
       }
-    
-    $privacy = $communityDao->getPrivacy();    
+
+    $privacy = $communityDao->getPrivacy();
     switch($policy)
       {
       case MIDAS_POLICY_READ:
@@ -289,7 +289,7 @@ abstract class CommunityModelBase extends AppModel
               return true;
               }
             }
-            
+
           $invitations = $userDao->getInvitations();
           foreach($invitations as $invitation)
             {
@@ -343,5 +343,5 @@ abstract class CommunityModelBase extends AppModel
       default:
         return false;
       }
-    } //end policyCheck  
+    } //end policyCheck
 } // end class CommunityModelBase

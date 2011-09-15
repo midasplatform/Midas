@@ -29,10 +29,10 @@ abstract class FeedpolicygroupModelBase extends AppModel
       );
     $this->initialize(); // required
     } // end __construct()
- 
-  /** Abstract functions */  
+
+  /** Abstract functions */
   abstract function getPolicy($group, $feed);
-    
+
   /** create a policy
    * @return FeedpolicygroupDao*/
   public function createPolicy($group, $feed, $policy)
@@ -65,5 +65,5 @@ abstract class FeedpolicygroupModelBase extends AppModel
     $this->save($policyGroupDao);
     return $policyGroupDao;
     } // end createPolicy
-    
+
 } // end class FeedpolicygroupModelBase

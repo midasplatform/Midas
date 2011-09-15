@@ -23,7 +23,7 @@ class ItemModelTest extends DatabaseTestCase
     parent::setUp();
     }
 
-  /** testGetLastRevision */  
+  /** testGetLastRevision */
   public function testGetLastRevision()
     {
     $itemsFile = $this->loadData('Item', 'default');

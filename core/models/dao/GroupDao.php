@@ -17,7 +17,5 @@ PURPOSE.  See the above copyright notices for more information.
 class GroupDao extends AppDao
   {
   public $_model = 'Group';
-
-
-  } // end class  
+  } // end class
 ?>

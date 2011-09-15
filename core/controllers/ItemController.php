@@ -29,7 +29,7 @@ class ItemController extends AppController
       }
     }  // end init()
 
-    
+
   /** create/edit metadata*/
   function editmetadataAction()
     {
@@ -38,7 +38,7 @@ class ItemController extends AppController
       {
       throw new Zend_Exception("You have to be logged in to do that");
       }
-      
+
     $itemId = $this->_getParam("itemId");
     $metadataId = $this->_getParam("metadataId");
     $itemDao = $this->Item->load($itemId);
@@ -53,7 +53,7 @@ class ItemController extends AppController
     $itemRevision = $this->Item->getLastRevision($itemDao);
     $metadatavalues = $this->ItemRevision->getMetadata($itemRevision);
     $this->view->metadata = null;
-    
+
     foreach($metadatavalues as $value)
       {
       if($value->getMetadataId() == $metadataId)
@@ -62,13 +62,13 @@ class ItemController extends AppController
         break;
         }
       }
-      
+
     $this->view->itemDao = $itemDao;
     $this->view->metadataType = $this->Metadata->getAllMetadata();
     $this->view->metadataType = $this->view->metadataType['sorted'];
     $this->view->jsonMetadataType = JsonComponent::encode($this->view->metadataType);
     }
-    
+
   /** view a community*/
   function viewAction()
     {
@@ -89,7 +89,7 @@ class ItemController extends AppController
       {
       throw new Zend_Exception("Problem policies.");
       }
-      
+
     $this->view->isAdmin = $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     $this->view->isModerator = $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE);
     $itemRevision = $this->Item->getLastRevision($itemDao);
@@ -117,11 +117,11 @@ class ItemController extends AppController
           {
           $this->ItemRevision->deleteMetadata($itemRevision, $metadataId);
           }
-        $metadataDao = $this->Metadata->getMetadata($metadatatype, $element, $qualifier);         
+        $metadataDao = $this->Metadata->getMetadata($metadatatype, $element, $qualifier);
         if($metadataDao == false)
           {
           $this->Metadata->addMetadata($metadatatype, $element, $qualifier, '');
-          }        
+          }
         $this->Metadata->addMetadataValue($itemRevision, $metadatatype, $element, $qualifier, $value);
         }
       }
@@ -133,8 +133,8 @@ class ItemController extends AppController
       $recentItems = array();
       if(isset($cookieData))
         {
-        $recentItems = unserialize($cookieData); 
-        }    
+        $recentItems = unserialize($cookieData);
+        }
       $tmp = array_reverse($recentItems);
       $i = 0;
       foreach($tmp as $key => $t)
@@ -155,14 +155,14 @@ class ItemController extends AppController
 
       setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($recentItems), time() + 60 * 60 * 24 * 30, '/'); //30 days
       }
-    
+
     $this->Item->incrementViewCount($itemDao);
     $itemDao->lastrevision = $itemRevision;
     $itemDao->revisions = $itemDao->getRevisions();
-    
+
     // Display the good link if the item is pointing to a website
     $this->view->itemIsLink = false;
-    
+
     $bitstreams = $itemRevision->getBitstreams();
     if(count($bitstreams) == 1)
       {
@@ -172,23 +172,23 @@ class ItemController extends AppController
         $this->view->itemIsLink = true;
         }
       }
-         
-        
+
+
     $this->Component->Sortdao->field = 'revision';
     $this->Component->Sortdao->order = 'desc';
     usort($itemDao->revisions, array($this->Component->Sortdao, 'sortByNumber'));
-    
+
     $itemDao->creation = $this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
     $this->view->itemDao = $itemDao;
-    
+
     $this->view->itemSize = $this->Component->Utility->formatSize($itemDao->getSizebytes());
-    
+
     $this->view->title .= ' - '.$itemDao->getName();
     $this->view->metaDescription = substr($itemDao->getDescription(), 0, 160);
-    
+
     $this->view->metadatavalues = $this->ItemRevision->getMetadata($itemRevision);
-    
-    
+
+
     $tmp = Zend_Registry::get('notifier')->callback("CALLBACK_VISUALIZE_CAN_VISUALIZE", array('item' => $itemDao));
     if(isset($tmp['visualize']) && $tmp['visualize'] == true)
       {
@@ -198,7 +198,7 @@ class ItemController extends AppController
       {
       $this->view->preview = false;
       }
-     
+
     $items = array();
     $this->view->backUploaded = false;
     $this->view->currentFolder = false;
@@ -227,7 +227,7 @@ class ItemController extends AppController
           }
         }
       }
-      
+
     foreach($items as $key => $item)
       {
       $tmp = Zend_Registry::get('notifier')->callback("CALLBACK_VISUALIZE_CAN_VISUALIZE", array('item' => $item));
@@ -240,9 +240,9 @@ class ItemController extends AppController
         $items[$key]->preview = 'false';
         }
       }
-      
+
     $this->view->sameLocation = $items;
-    
+
     $this->view->json['item'] = $itemDao->toArray();
     $this->view->json['item']['message']['delete'] = $this->t('Delete');
     $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undo.');
@@ -267,37 +267,37 @@ class ItemController extends AppController
     elseif(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
       throw new Zend_Exception("Permissions error.");
-      }    
-        
+      }
+
     if($this->_request->isPost())
       {
       $name = $this->_getParam('name');
       $description = $this->_getParam('description');
-      
+
       if(strlen($name) > 0)
         {
         $item->setName($name);
-        }        
+        }
       $item->setDescription($description);
-        
+
       $this->Item->save($item);
       $this->_redirect('/item/'.$item->getKey());
       }
-    
-    $this->view->itemDao = $item;    
+
+    $this->view->itemDao = $item;
     $form = $this->Form->Item->createEditForm();
-    $formArray = $this->getFormAsArray($form);    
+    $formArray = $this->getFormAsArray($form);
     $formArray['name']->setValue($item->getName());
     $formArray['description']->setValue($item->getDescription());
     $this->view->form = $formArray;
     }
-    
+
   /** Delete an item*/
   function deleteAction()
     {
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
-    
+
     $itemId = $this->_getParam("itemId");
     if(!isset($itemId) || (!is_numeric($itemId) && strlen($itemId) != 32)) // This is tricky! and for Cassandra for now
       {
@@ -308,19 +308,19 @@ class ItemController extends AppController
       {
       throw new Zend_Exception("This community doesn't exist or you don't have the permissions.");
       }
-      
+
     $this->Item->delete($itemDao);
 
     $this->_redirect('/?checkRecentItem = true');
     }//end delete
-    
-    
+
+
   /** Merge items*/
   function mergeAction()
     {
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
-    
+
     $itemIds = $this->_getParam("items");
     $name = $this->_getParam("name");
     if(empty($name))
@@ -328,7 +328,7 @@ class ItemController extends AppController
       throw new Zend_Exception('Please set a name');
       }
     $itemIds = explode('-', $itemIds);
-    
+
     $items = array();
     foreach($itemIds as $item)
       {
@@ -338,13 +338,13 @@ class ItemController extends AppController
         $items[] = $itemDao;
         }
       }
-      
+
     if(empty($items))
       {
       throw new Zend_Exception('Permissions error');
       }
-      
-      
+
+
     $mainItem = $items[0];
     $mainItemLastResision = $this->Item->getLastRevision($mainItem);
     foreach($items as $key => $item)
@@ -361,15 +361,15 @@ class ItemController extends AppController
         $this->Item->delete($item);
         }
       }
-      
+
     $mainItem->setSizebytes($this->ItemRevision->getSize($mainItemLastResision));
     $mainItem->setName($name);
     $this->Item->save($mainItem);
-    
+
     $this->_redirect('/browse/uploaded');
     }//end delete
-    
+
   }//end class
-  
-  /*    pour la récupérer 
+
+  /*    pour la récupérer
      */

@@ -27,8 +27,8 @@ class ItempolicyuserModelBase extends AppModel
         'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id')
       );
     $this->initialize(); // required
-    } // end __construct()  
-  
+    } // end __construct()
+
   /** delete */
   public function delete($dao)
     {

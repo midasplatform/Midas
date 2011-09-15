@@ -43,6 +43,15 @@ function(add_midas_style_test TestName TestDir)
       ${TestName} PROPERTIES
       FAIL_REGULAR_EXPRESSION "ERROR;WARNING"
     )
+
+    add_test(
+      ${TestName}TrailingSpaces
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/MIDASStyleChecker.php --src ${TestDir}
+    )
+    set_tests_properties(
+      ${TestName}TrailingSpaces PROPERTIES
+      FAIL_REGULAR_EXPRESSION "ERROR;WARNING"
+    )
   endif()
 endfunction(add_midas_style_test)
 

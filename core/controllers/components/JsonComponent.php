@@ -12,24 +12,24 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Json Component */
 class JsonComponent extends AppComponent
-  { 
+  {
   static private $_instance = null;
- 
+
   /** Constructor */
   function __construct()
     {
     }
-    
+
   /** Instance */
-  static public function getInstance() 
+  static public function getInstance()
     {
-    if(!self::$_instance instanceof self) 
+    if(!self::$_instance instanceof self)
       {
       self::$_instance = new self();
       }
     return self::$_instance;
     }
- 
+
   /**
    * Decodes the given $encodedValue string which is
    * encoded in the JSON format
@@ -42,18 +42,18 @@ class JsonComponent extends AppComponent
     {
     $char = substr($encodedValue, 0, 1);
     $isValue = false;
-    if($char != "{") 
+    if($char != "{")
       {
       $isValue = true;
       $encodedValue = '{"toto":'.$encodedValue.'}';
       }
-      
+
     $tab = json_decode($encodedValue, $objectDecodeType);
-    if($isValue) 
+    if($isValue)
       {
       $tab = $tab["toto"];
       }
-    if(is_array($tab)) 
+    if(is_array($tab))
       {
       self::getInstance()->utf8_decode_array($tab);
       }
@@ -64,7 +64,7 @@ class JsonComponent extends AppComponent
     return $tab;
     }
 
- 
+
   /**
    * Encode the mixed $valueToEncode into the JSON format
    *
@@ -73,7 +73,7 @@ class JsonComponent extends AppComponent
    */
   static public function encode($valueToEncode)
     {
-    if(!is_array($valueToEncode)) 
+    if(!is_array($valueToEncode))
       {
       $valueToEncode = utf8_encode($valueToEncode);
       }
@@ -90,9 +90,9 @@ class JsonComponent extends AppComponent
     {
     array_walk($tab, array($this, '_utf8_encode_array'));
     }
-    
+
   /** Decode Array */
-  function utf8_decode_array(&$tab) 
+  function utf8_decode_array(&$tab)
     {
     array_walk($tab, array($this, '_utf8_decode_array'));
     }
@@ -104,10 +104,10 @@ class JsonComponent extends AppComponent
       {
       $array = $array->toArray();
       }
-    if(is_array($array)) 
+    if(is_array($array))
       {
       array_walk($array, array($this, '_utf8_encode_array'));
-      } 
+      }
     else
       {
       $array = utf8_encode($array);
@@ -115,13 +115,13 @@ class JsonComponent extends AppComponent
     }
 
   /** decode array*/
-  private function _utf8_decode_array(&$array, $key) 
+  private function _utf8_decode_array(&$array, $key)
     {
     if(is_array($array))
       {
       array_walk($array, array($this, '_utf8_decode_array'));
       }
-    else 
+    else
       {
       $array = utf8_decode($array);
       }

@@ -19,7 +19,7 @@ class InstallController extends AppController
   public $_daos = array('Assetstore');
   public $_components = array('Utility');
   public $_forms = array('Install');
-    
+
   /**
    * @method init()
    */
@@ -56,18 +56,18 @@ class InstallController extends AppController
     $this->view->header = "Step1: Server Configuration";
         // Check PHP extension / function
     $phpextensions = array (
-      "simplexml"  => array(false, ""), 
+      "simplexml"  => array(false, ""),
     );
     $this->view->phpextension_missing = $this->Component->Utility->checkPhpExtensions($phpextensions);
-    $this->view->writable = is_writable(BASE_PATH.'/core/configs');   
+    $this->view->writable = is_writable(BASE_PATH.'/core/configs');
     $this->view->basePath = BASE_PATH;
     if(!empty($_POST) && $this->view->writable)
       {
       $this->_redirect("/install/step2");
       }
-    } // end method indexAction   
+    } // end method indexAction
 
-    
+
   /**
    * @method step2Action()
    */
@@ -86,11 +86,11 @@ class InstallController extends AppController
       "sqlite" => array(false, ''),
       "ibm" => array(false, ''),
     );
-    
+
     $this->view->databaseType = array();
-    
+
     foreach($phpextensions as $key => $t)
-      {      
+      {
       if(!file_exists(BASE_PATH."/core/database/".$key))
         {
         unset($phpextensions[$key]);
@@ -109,24 +109,24 @@ class InstallController extends AppController
             break;
           default:
             break;
-          }        
+          }
         $this->view->databaseType[$key] = $this->getFormAsArray($form);
         }
       }
     $this->view->phpextension_missing = $this->Component->Utility->checkPhpExtensions($phpextensions);
-    $this->view->writable = is_writable(BASE_PATH);  
-    $this->view->convertfound = $this->Component->Utility->isImageMagickWorking();   
+    $this->view->writable = is_writable(BASE_PATH);
+    $this->view->convertfound = $this->Component->Utility->isImageMagickWorking();
     $this->view->basePath = BASE_PATH;
-    
+
     if($this->_request->isPost())
       {
-      $type = $this->_getParam('type');      
+      $type = $this->_getParam('type');
       $form = $this->Form->Install->createDBForm($type);
       if($form->isValid($this->getRequest()->getPost()))
         {
         $databaseConfig = parse_ini_file(BASE_PATH.'/core/configs/database.ini', true);
         $MyDirectory = opendir(BASE_PATH."/core/database/".$type);
-        
+
         require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
         $upgradeComponent = new UpgradeComponent();
         $upgradeComponent->dir = BASE_PATH."/core/database/".$type;
@@ -137,7 +137,7 @@ class InstallController extends AppController
           {
           throw new Zend_Exception("Unable to find sql file");
           }
-          
+
         switch($type)
           {
           case 'mysql':
@@ -195,8 +195,8 @@ class InstallController extends AppController
             $databaseConfig['development']['database.params.password'] = $form->getValue('password');
             $databaseConfig['production']['database.params.dbname'] = $form->getValue('dbname');
             $databaseConfig['development']['database.params.dbname'] = $form->getValue('dbname');
-            $databaseConfig['development']['database.params.port'] = $form->getValue('port');              
-            $databaseConfig['production']['database.params.port'] = $form->getValue('port');              
+            $databaseConfig['development']['database.params.port'] = $form->getValue('port');
+            $databaseConfig['production']['database.params.port'] = $form->getValue('port');
 
             $db = Zend_Db::factory("PDO_PGSQL", $params);
             Zend_Db_Table::setDefaultAdapter($db);
@@ -206,34 +206,34 @@ class InstallController extends AppController
           default:
             break;
           }
-        $databaseConfig['production']['version'] = str_replace('.sql', '', basename($sqlFile));  
-        $databaseConfig['development']['version'] = str_replace('.sql', '', basename($sqlFile));  
-        
+        $databaseConfig['production']['version'] = str_replace('.sql', '', basename($sqlFile));
+        $databaseConfig['development']['version'] = str_replace('.sql', '', basename($sqlFile));
+
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/database.local.ini', $databaseConfig);
-        
+
         require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
         $upgradeComponent = new UpgradeComponent();
         $db = Zend_Registry::get('dbAdapter');
 
         $upgradeComponent->initUpgrade('core', $db, $dbtype);
         $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)));
-        
+
         $this->User = new UserModel(); //reset Database adapter
         $this->userSession->Dao = $this->User->createUser($form->getValue('email'), $form->getValue('userpassword1'),
                                 $form->getValue('firstname'), $form->getValue('lastname'), 1);
-        
+
         //create default assetstrore
         $assetstoreDao = new AssetstoreDao();
         $assetstoreDao->setName('Default');
         $assetstoreDao->setPath(BASE_PATH.'/data/assetstore');
         $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
         $this->Assetstore = new AssetstoreModel(); //reset Database adapter
-        $this->Assetstore->save($assetstoreDao); 
+        $this->Assetstore->save($assetstoreDao);
         $this->_redirect("/install/step3");
         }
       }
-    } // end method step2Action   
-       
+    } // end method step2Action
+
   /**
    * @method step3Action()
    */
@@ -260,10 +260,10 @@ class InstallController extends AppController
     $formArray['description']->setValue($applicationConfig['global']['application.description']);
     $formArray['smartoptimizer']->setValue($applicationConfig['global']['smartoptimizer']);
     $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
- 
+
     $assetstrores = $this->Assetstore->getAll();
 
-    $this->view->form = $formArray;  
+    $this->view->form = $formArray;
     $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
     if($this->_request->isPost() && $form->isValid($this->getRequest()->getPost()))
       {
@@ -288,9 +288,9 @@ class InstallController extends AppController
       $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
       $this->_redirect("/admin?checkRecentItem=true#tabs-modules");
       }
-    } // end method step2Action   
-    
-    
+    } // end method step2Action
+
+
   /** ajax function which tests connectivity to a db */
   public function testconnexionAction()
     {
@@ -310,13 +310,13 @@ class InstallController extends AppController
       {
       case 'mysql':
         $link = mysql_connect($host.":".$port, "$username", "$password");
-        if(!$link) 
+        if(!$link)
           {
           $return = array(false, "Could not connect to the server '" . $host . "': ".mysql_error());
           break;
           }
         $dbcheck = mysql_select_db("$dbname");
-        if(!$dbcheck) 
+        if(!$dbcheck)
           {
           $return = array(false, "Could not connect to the server '" . $host . "': ".mysql_error());
           break;
@@ -332,20 +332,19 @@ class InstallController extends AppController
         break;
       case 'pgsql':
         $link = pg_connect("host = ".$host." port = ".$port." dbname = ".$dbname." user = ".$username." password = ".$password);
-        if(!$link) 
+        if(!$link)
           {
           $return = array(false, "Could not connect to the server '" . $host . "': ".pg_last_error($link));
           break;
-          }     
+          }
         $return = array(true, "The database is reachable");
-        break; 
+        break;
       default:
         $return = array(false, "Database not defined");
         break;
       }
     echo JsonComponent::encode($return);
     }//end getElementInfo
- 
+
 } // end class
 
-  

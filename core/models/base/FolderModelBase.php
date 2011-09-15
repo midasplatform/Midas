@@ -19,7 +19,7 @@ abstract class FolderModelBase extends AppModel
     parent::__construct();
     $this->_name = 'folder';
     $this->_key = 'folder_id';
-  
+
     $this->_components = array('Sortdao');
 
     $this->_mainData = array(
@@ -42,7 +42,7 @@ abstract class FolderModelBase extends AppModel
       'parent' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'parent_id', 'child_column' => 'folder_id'),
       );
     $this->initialize(); // required
-    } // end __construct() 
+    } // end __construct()
 
   /** Abstract functions */
   abstract function getChildrenFoldersFiltered($folder, $userDao = null, $policy = 0);
@@ -58,7 +58,7 @@ abstract class FolderModelBase extends AppModel
   abstract function getByUuid($uuid);
   abstract function getRoot($folder);
   abstract function getAll();
-  
+
   /** Increment the view count */
   function incrementViewCount($folder)
     {
@@ -81,7 +81,7 @@ abstract class FolderModelBase extends AppModel
     $folder->view++;
     parent::save($folder);
     }//end incrementViewCount
-  
+
   /** Create a folder */
   function createFolder($name, $description, $parent)
     {
@@ -89,17 +89,17 @@ abstract class FolderModelBase extends AppModel
       {
       throw new Zend_Exception("Should be a folder.");
       }
-      
+
     if(empty($name))
       {
       throw new Zend_Exception("Name cannot be empty.");
       }
-       
+
     if(!is_string($name))
       {
       throw new Zend_Exception("Name should be a string.");
       }
-      
+
     if($parent instanceof FolderDao)
       {
       $parentId = $parent->getFolderId();
@@ -108,7 +108,7 @@ abstract class FolderModelBase extends AppModel
       {
       $parentId = $parent;
       $parent = $this->load($parentId);
-      }  
+      }
 
     // Check ifa folder with the same name already exists for the same parent
     if($parent !== false && $this->getFolderExists($name, $parent))
@@ -116,12 +116,12 @@ abstract class FolderModelBase extends AppModel
       $existingfolder = $this->getFolderExists($name, $parent);
       return $existingfolder;
       }
-      
+
     $this->loadDaoClass('FolderDao');
     $folder = new FolderDao();
     $folder->setName($name);
     $folder->setDescription($description);
-    
+
     $folder->setParentId($parentId);
     $this->save($folder);
     return $folder;

@@ -27,11 +27,11 @@ abstract class FeedpolicyuserModelBase extends AppModel
         'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id')
       );
     $this->initialize(); // required
-    } // end __construct()  
-  
-  /** Abstract functions */  
+    } // end __construct()
+
+  /** Abstract functions */
   abstract function getPolicy($user, $feed);
-  
+
   /** create a policy
    * @return FeedpolicyuserDao*/
   public function createPolicy($user, $feed, $policy)
@@ -64,5 +64,5 @@ abstract class FeedpolicyuserModelBase extends AppModel
     $this->save($policyUser);
     return $policyUser;
     } // end createPolicy
-    
+
 } // end class FeedpolicyuserModelBase

@@ -10,12 +10,12 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-if(function_exists('apache_get_modules')) 
+if(function_exists('apache_get_modules'))
   {
   $modules = apache_get_modules();
   $mod_rewrite = in_array('mod_rewrite', $modules);
   }
-else 
+else
   {
   $mod_rewrite = getenv('HTTP_MOD_REWRITE') == 'On' ? true : false;
   }

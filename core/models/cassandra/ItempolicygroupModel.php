@@ -18,6 +18,6 @@ require_once BASE_PATH.'/core/models/base/ItempolicygroupModelBase.php';
  */
 class ItempolicygroupModel extends ItempolicygroupModelBase
 {
-  
+
 } // end class
 ?>

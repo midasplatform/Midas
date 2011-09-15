@@ -33,10 +33,10 @@ class FolderForm extends AppForm
     $teaser->setAttrib('MAXLENGTH', '250');
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel($this->t("Save"));
-    
+
     $form->addElements(array($name, $description, $submit, $teaser));
     return $form;
     }
-  
+
 } // end class
 ?>

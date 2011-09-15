@@ -17,7 +17,7 @@ class MIDASUpgrade
 {
   protected $db;
   protected $dbtype;
-  
+
   /**
    * @method public  __construct()
    *  Construct model
@@ -31,34 +31,34 @@ class MIDASUpgrade
       {
       $this->loadModuleElements();
       }
-    $this->dbtype = $dbType;  
+    $this->dbtype = $dbType;
     } // end __construct()
-    
+
   /** preUpgrade called before the upgrade*/
   public function preUpgrade()
     {
-    
+
     }
-    
+
   /** calls if mysql enable*/
   public function mysql()
     {
-    
+
     }
-    
+
   /** called is pgsql enabled*/
   public function pgsql()
     {
-    
+
     }
-    
+
   /** called after the upgrade*/
   public function postUpgrade()
     {
-    
+
     }
-    
-  
+
+
   /**
    * @method public  loadElements()
    *  Loads model and components
@@ -79,7 +79,7 @@ class MIDASUpgrade
           }
         }
       }
-      
+
     if(isset($this->_moduleDaos))
       {
       foreach($this->_moduleDaos as $dao)
@@ -97,7 +97,7 @@ class MIDASUpgrade
         @$this->ModuleComponent->$component = new $nameComponent();
         }
       }
-      
+
     if(isset($this->_moduleForms))
       {
       foreach($this->_moduleForms as $forms)
@@ -108,7 +108,7 @@ class MIDASUpgrade
         }
       }
     }
-  
+
   /**
    * @method public  loadElements()
    *  Loads model and components
@@ -126,7 +126,7 @@ class MIDASUpgrade
       {
       $this->$key = $tmp;
       }
-    
+
     if(isset($this->_daos))
       {
       foreach($this->_daos as $dao)
@@ -136,7 +136,7 @@ class MIDASUpgrade
       }
 
     Zend_Registry::set('components', array());
-    
+
     if(isset($this->_components))
       {
       foreach($this->_components as $component)
@@ -159,8 +159,8 @@ class MIDASUpgrade
         }
       }
     }//end loadElements
-    
-    
+
+
   /**
    * @method public AddTableField()
    *  Add a field to a table
@@ -172,7 +172,7 @@ class MIDASUpgrade
       {
       $sql = " DEFAULT '".$default."'";
       }
-  
+
     if($this->dbtype == "PDO_PGSQL")
       {
       $this->db->query("ALTER TABLE \"".$table."\" ADD \"".$field."\" ".$pgSqlType.$sql);
@@ -182,7 +182,7 @@ class MIDASUpgrade
       $this->db->query("ALTER TABLE ".$table." ADD ".$field." ".$mySQLType.$sql);
       }
     }
-  
+
   /**
    * @method public RemoveTableField()
    *  Remove a field from a table
@@ -198,7 +198,7 @@ class MIDASUpgrade
       $this->db->query("ALTER TABLE ".$table." DROP ".$field);
       }
     }
-  
+
   /**
    * @method public RenameTableField()
    *  Rename a field from a table
@@ -223,13 +223,13 @@ class MIDASUpgrade
       else
         {
         $this->db->query("ALTER TABLE ".$table." CHANGE ".$field." ".$newfield." ".$mySQLType);
-        }      
+        }
       }
     }
-    
+
   /**
    * @method public CheckIndexExists()
-   *  Check if the index exists. 
+   *  Check if the index exists.
    *  Only works for MySQL
    */
   function checkIndexExists($table, $field)
@@ -245,9 +245,9 @@ class MIDASUpgrade
           }
         }
       }
-    return false; 
+    return false;
     }  // end CheckIndexExists()
-    
+
   /**
    * @method public AddTableIndex()
    *  Add an index to a table
@@ -266,7 +266,7 @@ class MIDASUpgrade
         }
       }
     }
-  
+
   /**
    * @method public RemoveTableIndex()
    *  Remove an index from a table
@@ -285,7 +285,7 @@ class MIDASUpgrade
         }
       }
     }
-    
+
   /**
    * @method public AddTablePrimaryKey()
    *  Add a primary key to a table
@@ -301,7 +301,7 @@ class MIDASUpgrade
       $this->db->query("ALTER TABLE ".$table." ADD PRIMARY KEY ( ".$field." )");
       }
     }
-  
+
   /**
    * @method public RemoveTablePrimaryKey()
    *  Remove a primary key from a table
@@ -318,6 +318,6 @@ class MIDASUpgrade
       $this->db->query("ALTER TABLE ".$table." DROP PRIMARY KEY");
       }
     }
-      
+
 } //end class MIDASUpgrade
 ?>

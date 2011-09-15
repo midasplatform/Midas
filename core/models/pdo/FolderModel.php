@@ -17,11 +17,11 @@ require_once BASE_PATH.'/core/models/base/FolderModelBase.php';
  * \brief Pdo Model
  */
 class FolderModel extends FolderModelBase
-{  
+{
   /** get All*/
   function getAll()
     {
-    $rowset = $this->database->fetchAll($this->database->select()->order(array('folder_id DESC'))); 
+    $rowset = $this->database->fetchAll($this->database->select()->order(array('folder_id DESC')));
     $results = array();
     foreach($rowset as $row)
       {
@@ -29,15 +29,15 @@ class FolderModel extends FolderModelBase
       }
     return $results;
     }
-    
+
   /** get by uuid*/
   function getByUuid($uuid)
     {
-    $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid)); 
+    $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid));
     $dao = $this->initDao(ucfirst($this->_name), $row);
     return $dao;
     }
-    
+
   /** check ifthe policy is valid*/
   function policyCheck($folderDao, $userDao = null, $policy = 0)
     {
@@ -61,7 +61,7 @@ class FolderModel extends FolderModelBase
         return true;
         }
       }
-      
+
     $subqueryUser = $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'folderpolicyuser'),
@@ -94,7 +94,7 @@ class FolderModel extends FolderModelBase
       }
     return true;
     }//end policyCheck
-    
+
   /** get the size and the number of item in a folder*/
   public function getSizeFiltered($folders, $userDao = null, $policy = 0)
     {
@@ -120,7 +120,7 @@ class FolderModel extends FolderModelBase
         }
       }
     foreach($folders as $key => $folder)
-      { 
+      {
       if(!$folder instanceof FolderDao)
         {
         throw new Zend_Exception("Should be a folder" );
@@ -153,7 +153,7 @@ class FolderModel extends FolderModelBase
                                              ->where('u2g.user_id = ?', $userId)
                                              ) .'))', array());
         }
-        
+
       $subqueryGroup  ->where('left_indice > ?', $folder->getLeftIndice())
                     ->where('right_indice < ?', $folder->getRightIndice());
 
@@ -189,7 +189,7 @@ class FolderModel extends FolderModelBase
                   );
         }
 
-      $row = $this->database->fetchRow($sql);    
+      $row = $this->database->fetchRow($sql);
       $folders[$key]->count = $row['count'];
       $folders[$key]->size = $row['sum'];
       if($folders[$key]->size == null)
@@ -199,29 +199,29 @@ class FolderModel extends FolderModelBase
       }
     return $folders;
     }
- 
+
   /** Get the root folder */
   function getRoot($folder)
     {
     if(!$folder instanceof FolderDao)
       {
       throw new Zend_Exception("Should be a folder" );
-      } 
-    
+      }
+
     $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
                                           ->from('folder')
                                           ->where('left_indice<?', $folder->getLeftIndice())
                                           ->where('right_indice>?', $folder->getRightIndice())
                                           ->order('left_indice ASC')
                                           ->limit(1));
-                                          
+
     $root = $this->initDao('Folder', $row);
     return $root;
-    } // end getRoot()  
-        
-  /** Get the folder tree */  
+    } // end getRoot()
+
+  /** Get the folder tree */
   function getAllChildren($folder, $userDao, $admin = false)
-    {    
+    {
     $isAdmin = false;
     if($userDao == null)
       {
@@ -239,7 +239,7 @@ class FolderModel extends FolderModelBase
         $isAdmin = true;
         }
       }
-      
+
     if($admin)
       {
       $isAdmin = true;
@@ -286,16 +286,16 @@ class FolderModel extends FolderModelBase
 
 
     $rowset = $this->database->fetchAll($subSqlFolders);
-    
+
     $folders = array();
-    
+
     foreach($rowset as $row)
       {
       $folders[] = $this->initDao('Folder', $row);
       }
-      
-    return $folders;  
-    }  
+
+    return $folders;
+    }
 
   /** Custom delete function */
   function delete($folder, $recursive = false)
@@ -313,14 +313,14 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Unable to find the key" );
       }
-   
+
     $this->ModelLoader = new MIDAS_ModelLoader();
     $items = $folder->getItems();
     foreach($items as $item)
       {
       $this->removeItem($folder, $item);
       }
-      
+
     if($recursive)
       {
       $children = $folder->getFolders();
@@ -329,14 +329,14 @@ class FolderModel extends FolderModelBase
         $this->delete($child, true);
         }
       }
-      
+
     $policy_group_model = $this->ModelLoader->loadModel('Folderpolicygroup');
     $policiesGroup = $folder->getFolderpolicygroup();
     foreach($policiesGroup as $policy)
       {
       $policy_group_model->delete($policy);
       }
-     
+
     $policy_user_model = $this->ModelLoader->loadModel('Folderpolicyuser');
     $policiesUser = $folder->getFolderpolicyuser();
     foreach($policiesUser as $policy)
@@ -349,13 +349,13 @@ class FolderModel extends FolderModelBase
                           array('left_indice >= ?' => $leftIndice));
     $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice - 2')),
                           array('right_indice >= ?' => $leftIndice));
-    
+
     parent::delete($folder);
     unset($folder->folder_id);
     $folder->saved = false;
     return true;
     } //end delete
-    
+
   /** move a folder*/
   public function move($folder, $parent)
     {
@@ -363,7 +363,7 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Folder == Parent");
       }
-    
+
     $tmpParent = $parent->getParent();
     $currentParent = $folder->getParent();
     while($tmpParent != false)
@@ -374,7 +374,7 @@ class FolderModel extends FolderModelBase
         }
       $tmpParent = $tmpParent->getParent();
       }
-    
+
     if(!$folder instanceof  FolderDao)
       {
       throw new Zend_Exception("Error parameter.");
@@ -383,13 +383,13 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Error parameter.");
       }
-      
+
     // Check ifa folder with the same name already exists for the same parent
     if($this->getFolderExists($folder->getName(), $parent))
       {
       throw new Zend_Exception('This name is already used');
       }
-    
+
     $node_id = $folder->getKey();
     $node_pos_left = $folder->getLeftIndice();
     $node_pos_right = $folder->getRightIndice();
@@ -401,13 +401,13 @@ class FolderModel extends FolderModelBase
     // step 1: temporary "remove" moving node
     $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('0 - left_indice'), 'right_indice' => new Zend_Db_Expr('0 - right_indice')),
                           'left_indice >= '.$node_pos_left.' AND right_indice <= '.$node_pos_right);
-    
+
     // step 2: decrease left and/or right position values of currently 'lower' items (and parents)
     $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('left_indice - '.$node_size)),
                           array('left_indice > ?' => $node_pos_right));
     $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice - '.$node_size)),
                           array('right_indice > ?' => $node_pos_right));
-    
+
     // step 3: increase left and/or right position values of future 'lower' items (and parents)
     $cond = ($parent_pos_right > $node_pos_right ? $parent_pos_right - $node_size : $parent_pos_right);
     $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('left_indice + '.$node_size)),
@@ -415,7 +415,7 @@ class FolderModel extends FolderModelBase
     $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice + '.$node_size)),
                           array('right_indice >= ?' => $cond));
 
-   // step 4: move node (ant it's subnodes) and update it's parent item id  
+   // step 4: move node (ant it's subnodes) and update it's parent item id
     $cond = ($parent_pos_right > $node_pos_right) ? $parent_pos_right - $node_pos_right - 1 : $parent_pos_right - $node_pos_right - 1 + $node_size;
     $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('0 - left_indice + '.$cond), 'right_indice' => new Zend_Db_Expr('0 - right_indice + '.$cond)),
                           'left_indice <= '.(0 - $node_pos_left).' AND right_indice >= '.(0 - $node_pos_right));
@@ -432,7 +432,7 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Should be a folder.");
       }
-      
+
     if(!isset($folder->uuid) || empty($folder->uuid))
       {
       $folder->setUuid(uniqid() . md5(mt_rand()));
@@ -491,7 +491,7 @@ class FolderModel extends FolderModelBase
                           array('right_indice >= ?' => $rightParent));
       $this->database->getDB()->update('folder', array('left_indice' => new Zend_Db_Expr('2 + left_indice')),
                           array('left_indice >= ?' => $rightParent));
-      
+
       $insertedid = $this->database->insert($data);
       if(!$insertedid)
         {
@@ -499,7 +499,7 @@ class FolderModel extends FolderModelBase
         }
       $folder->folder_id = $insertedid;
       $folder->saved = true;
-    
+
       return true;
       }
     } // end method save
@@ -517,7 +517,7 @@ class FolderModel extends FolderModelBase
                                                            ->where('folder_id = ?', $folder->getFolderId())));
     return $dao;
     }
-    
+
   /** Get user if the folder is the main folder of one */
   function getUser($folder)
     {
@@ -542,8 +542,8 @@ class FolderModel extends FolderModelBase
                                                            ->where('parent_id = ?', $parent->getKey())));
     return $dao;
     }
-    
-    
+
+
   /** getItems with policy check
    * @return
    */
@@ -586,7 +586,7 @@ class FolderModel extends FolderModelBase
         $isAdmin = true;
         }
       }
-      
+
     $subqueryUser = $this->database->select()
                       ->setIntegrityCheck(false)
                       ->from(array('f' => 'item'))
@@ -622,22 +622,22 @@ class FolderModel extends FolderModelBase
 
     $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
-    
+
     if($isAdmin)
       {
       $sql = $this->database->select()
                       ->setIntegrityCheck(false)
-                      ->from(array('f' => 'item'))                          
+                      ->from(array('f' => 'item'))
                       ->join(array('i' => 'item2folder'),
                             $this->database->getDB()->quoteInto('i.folder_id IN (?)', $folderIds).'
                             AND i.item_id = f.item_id', array('i.folder_id'));
       }
-    
+
     $rowset = $this->database->fetchAll($sql);
-    $return = array();    
+    $return = array();
     $policyArray = array();
     foreach($rowset as $keyRow => $row)
-      { 
+      {
       if($isAdmin)
         {
         $policyArray[$row['item_id']] = MIDAS_POLICY_ADMIN;
@@ -647,9 +647,9 @@ class FolderModel extends FolderModelBase
         $policyArray[$row['item_id']] = $row['policy'];
         }
       }
-    
+
     $listNamesArray = array();
-    
+
     foreach($rowset as $keyRow => $row)
       {
       if(isset($policyArray[$row['item_id']]))
@@ -657,7 +657,7 @@ class FolderModel extends FolderModelBase
         $tmpDao = $this->initDao('Item', $row);
         $tmpDao->policy = $policyArray[$row['item_id']];
         $tmpDao->parent_id = $row['folder_id'];
-        
+
         if(isset($listNamesArray[$tmpDao->getName()]))
           {
           $listNamesArray[$tmpDao->getName()]++;
@@ -748,7 +748,7 @@ class FolderModel extends FolderModelBase
                                    .'))' ));
     $sql = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
-    
+
     if($isAdmin)
       {
       $sql = $this->database->select()
@@ -756,9 +756,9 @@ class FolderModel extends FolderModelBase
                           ->from(array('f' => 'folder'))
                           ->where('f.parent_id IN (?)', $folderIds);
       }
-    
+
     $rowset = $this->database->fetchAll($sql);
-    $return = array();      
+    $return = array();
     $policyArray = array();
     foreach($rowset as $keyRow => $row)
       {
@@ -782,7 +782,7 @@ class FolderModel extends FolderModelBase
         unset($policyArray[$row['folder_id']]);
         }
       }
-   
+
     $this->Component->Sortdao->field = 'name';
     $this->Component->Sortdao->order = 'asc';
     usort($return, array($this->Component->Sortdao, 'sortByName'));
@@ -819,7 +819,7 @@ class FolderModel extends FolderModelBase
       }
     $this->database->link('items', $folder, $item);
     } // end function addItem
-    
+
   /** Remove an item from a folder
    * @return void
    */
@@ -877,7 +877,7 @@ class FolderModel extends FolderModelBase
         $isAdmin = true;
         }
       }
-        
+
     $sql = $this->database->select();
     if($group)
       {
@@ -887,7 +887,7 @@ class FolderModel extends FolderModelBase
       {
       $sql->from(array('f' => 'folder'))->distinct();
       }
-     
+
     if(!$isAdmin)
       {
       $sql->joinLeft(array('fpu' => 'folderpolicyuser'), '
@@ -908,18 +908,18 @@ class FolderModel extends FolderModelBase
             fpu.folder_id is not null or
             fpg.folder_id is not null)'
             );
-      }          
+      }
     $sql->setIntegrityCheck(false)
-          ->where($this->database->getDB()->quoteInto('name LIKE ?', '%'.$search.'%'))     
-          ->where('name != ?', "Public")  
-          ->where('name != ?', "Private")  
+          ->where($this->database->getDB()->quoteInto('name LIKE ?', '%'.$search.'%'))
+          ->where('name != ?', "Public")
+          ->where('name != ?', "Private")
           ->limit($limit);
-    
+
     if($group)
       {
       $sql->group('f.name');
       }
-      
+
     switch($order)
       {
       case 'name':
@@ -928,7 +928,7 @@ class FolderModel extends FolderModelBase
       case 'date':
         $sql->order(array('f.date_update ASC'));
         break;
-      case 'view': 
+      case 'view':
       default:
         $sql->order(array('f.view DESC'));
         break;

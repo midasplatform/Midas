@@ -12,16 +12,16 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Internationalization tools */
 class InternationalizationComponent extends AppComponent
-  { 
+  {
   static private $_instance = null;
-  
+
   /** Constructor */
-  function __construct() 
+  function __construct()
     {
     }
-    
+
   /** Instance */
-  static public function getInstance() 
+  static public function getInstance()
     {
     if(!self::$_instance instanceof self)
       {
@@ -29,7 +29,7 @@ class InternationalizationComponent extends AppComponent
       }
     return self::$_instance;
     }
- 
+
   /** translate*/
   static public function translate($text)
     {
@@ -39,7 +39,7 @@ class InternationalizationComponent extends AppComponent
       $new_text = $translate->_($text);
       if($new_text == $text)
         {
-        $translaters = Zend_Registry::get('translatersModules');        
+        $translaters = Zend_Registry::get('translatersModules');
         foreach($translaters as $t)
           {
           $new_text = $t->_($text);
@@ -53,7 +53,7 @@ class InternationalizationComponent extends AppComponent
       }
     return $text;
     } //end method t
-    
+
   /**
    * @method public  isDebug()
    * Is Debug mode ON

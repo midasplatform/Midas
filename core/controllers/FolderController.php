@@ -25,13 +25,13 @@ class FolderController extends AppController
     $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     if(isset($actionName) && (is_numeric($actionName) || strlen($actionName) == 32)) // This is tricky! and for Cassandra for now
       {
-      
+
       $this->_forward('view', null, null, array('folderId' => $actionName));
       }
     $this->view->activemenu = 'browse'; // set the active menu
     }  // end init()
-    
-    
+
+
   /** Edit Folder (ajax) */
   function editAction()
     {
@@ -49,38 +49,38 @@ class FolderController extends AppController
     elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
       throw new Zend_Exception("Permissions error.");
-      }    
-        
+      }
+
     if($this->_request->isPost())
       {
       $name = $this->_getParam('name');
-      
+
       // Check if folder with the same name already exists for the same parent
       if($folder->getName() != $name && $this->Folder->getFolderExists($name, $folder->getParent()))
         {
         throw new Zend_Exception('This name is already used');
         }
-    
+
       $description = $this->_getParam('description');
       $teaser = $this->_getParam('teaser');
-      
+
       if(strlen($name) > 0)
         {
         $folder->setName($name);
-        }        
+        }
       $folder->setDescription($description);
       if(strlen($teaser) < 251)
         {
         $folder->setTeaser($teaser);
         }
-        
+
       $this->Folder->save($folder);
       $this->_redirect('/folder/'.$folder->getKey());
       }
-    
-    $this->view->folderDao = $folder;    
+
+    $this->view->folderDao = $folder;
     $form = $this->Form->Folder->createEditForm();
-    $formArray = $this->getFormAsArray($form);    
+    $formArray = $this->getFormAsArray($form);
     $formArray['name']->setValue($folder->getName());
     $formArray['description']->setValue($folder->getDescription());
     $formArray['teaser']->setValue($folder->getTeaser());
@@ -125,7 +125,7 @@ class FolderController extends AppController
           {
           $user = $this->Folder->getUser($parent);
           $header = " <li class = 'pathUser'><img alt = '' src = '".$this->view->coreWebroot."/public/images/icons/unknownUser-small.png' /><span><a href = '".$this->view->webroot."/user/".$user->getKey()."'>".$this->Component->Utility->sliceName($user->getFullName(), 25)."</a></span></li>".$header;
- 
+
           }
         else
           {
@@ -136,7 +136,7 @@ class FolderController extends AppController
       $header = "<ul class = 'pathBrowser'>".$header;
       $header .= "</ul>";
       }
-      
+
     if(!isset($this->userSession->recentFolders))
       {
       $this->userSession->recentFolders = array();
@@ -152,16 +152,16 @@ class FolderController extends AppController
     $this->view->folders = $folders;
     $this->view->items = $items;
     $this->view->header = $header;
-    
+
     $this->view->isModerator = $this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE);
     $this->view->isAdmin = $this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
-    
+
     $this->view->title .= ' - '.$folder->getName();
     $this->view->metaDescription = substr($folder->getDescription(), 0, 160);
     }// end View Action
-    
-    
-   
+
+
+
   /** delete a folder (dialog,ajax only)*/
   public function deleteAction()
     {
@@ -182,7 +182,7 @@ class FolderController extends AppController
       {
       throw new Zend_Exception("Permissions error.");
       }
-      
+
     $parent = $folder->getParent();
     if($this->Folder->getCommunity($parent) != false || $this->Folder->getCommunity($folder) != false)
       {
@@ -196,7 +196,7 @@ class FolderController extends AppController
     $folderInfo = $folder->toArray();
     echo JsonComponent::encode(array(true, $this->t('Changes saved'), $folderInfo));
     }// end deleteAction
-    
+
   /** remove an item from a folder (dialog,ajax only)*/
   public function removeitemAction()
     {
@@ -227,11 +227,11 @@ class FolderController extends AppController
       {
       throw new Zend_Exception("Permissions error.");
       }
-      
+
     $this->Folder->removeItem($folder, $item);
     echo JsonComponent::encode(array(true, $this->t('Changes saved')));
     }// end deleteAction
-    
+
   /** create a folder (dialog,ajax only)*/
   public function createfolderAction()
     {
@@ -240,7 +240,7 @@ class FolderController extends AppController
     $folder = $this->Folder->load($folder_id);
     $header = "";
     $form = $this->Form->Folder->createEditForm();
-    $formArray = $this->getFormAsArray($form);    
+    $formArray = $this->getFormAsArray($form);
     $this->view->form = $formArray;
     if(!isset($folder_id))
       {
@@ -289,7 +289,7 @@ class FolderController extends AppController
             $policyValue = $policy->getPolicy();
             $this->Folderpolicyuser->createPolicy($user, $new_folder, $policyValue);
             }
-            
+
           if($new_folder == false)
             {
             echo JsonComponent::encode(array(false, $this->t('Error')));
