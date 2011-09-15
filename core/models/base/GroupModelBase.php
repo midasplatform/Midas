@@ -27,14 +27,14 @@ abstract class GroupModelBase extends AppModel
       'users' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'User', 'table' => 'user2group', 'parent_column' => 'group_id', 'child_column' => 'user_id'),
       );
     $this->initialize(); // required
-    } // end __construct()  
-  
+    } // end __construct()
+
   /** Add a user to a group */
   abstract function addUser($group, $user);
   abstract function removeUser($group, $user);
   abstract function findByCommunity($communityDao);
   abstract function getGroupFromSearch($search, $limit = 14);
-  
+
   /** load */
   public function load($key = null)
     {
@@ -53,7 +53,7 @@ abstract class GroupModelBase extends AppModel
       return parent::load($key);
       }
     }
-    
+
   /** Delete a group */
   public function deleteGroup($group)
     {
@@ -70,8 +70,8 @@ abstract class GroupModelBase extends AppModel
     unset($group->group_id);
     $group->saved = false;
     }//end deleteGroup
-  
-  
+
+
   /** create a group
    * @return GroupDao*/
   public function createGroup($communityDao, $name)
@@ -88,7 +88,7 @@ abstract class GroupModelBase extends AppModel
     $group = new GroupDao();
     $group->setName($name);
     $group->setCommunityId($communityDao->getCommunityId());
-    $this->save($group);   
+    $this->save($group);
     return $group;
     }
 

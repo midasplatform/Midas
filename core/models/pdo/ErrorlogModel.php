@@ -17,8 +17,8 @@ require_once BASE_PATH.'/core/models/base/ErrorlogModelBase.php';
  * \brief Pdo Model
  */
 class ErrorlogModel extends ErrorlogModelBase
-{ 
-    
+{
+
   /**
    *  Return a list of log
    * @param type $startDate
@@ -53,6 +53,6 @@ class ErrorlogModel extends ErrorlogModelBase
       }
     return $result;
     }//getLog
-    
+
 } // end class
 ?>

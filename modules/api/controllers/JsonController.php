@@ -8,7 +8,7 @@ class Api_JsonController extends Api_AppController
   function preDispatch()
     {
     $this->_forward('json', 'index', 'api', $this->_getAllParams());
-    parent::preDispatch();   
+    parent::preDispatch();
     }
   } // end class
 ?>

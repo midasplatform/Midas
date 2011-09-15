@@ -27,28 +27,28 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
         {
         if(file_exists(BASE_PATH . "/modules/".$route."/AppController.php"))
           {
-          require_once BASE_PATH . "/modules/".$route."/AppController.php";      
+          require_once BASE_PATH . "/modules/".$route."/AppController.php";
           }
         if(file_exists(BASE_PATH . "/modules/".$route."/models/AppDao.php"))
           {
-          require_once BASE_PATH . "/modules/".$route."/models/AppDao.php";      
+          require_once BASE_PATH . "/modules/".$route."/models/AppDao.php";
           }
         if(file_exists(BASE_PATH . "/modules/".$route."/models/AppModel.php"))
           {
-          require_once BASE_PATH . "/modules/".$route."/models/AppModel.php";      
+          require_once BASE_PATH . "/modules/".$route."/models/AppModel.php";
           }
-        }      
+        }
       }
 
     parent::setUp();
     }
 
-  /** end tests*/  
+  /** end tests*/
   public function tearDown()
     {
     parent::tearDown();
     }
-    
+
   /** init midas*/
   public function appBootstrap()
     {
@@ -86,7 +86,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       $databaseFixture =  new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
       $databaseTester->setupDatabase($databaseFixture);
       }
-      
+
     if($configDatabase->database->adapter == 'PDO_PGSQL')
       {
       $db->query("SELECT setval('feed_feed_id_seq', (SELECT MAX(feed_id) FROM feed)+1);");
@@ -94,10 +94,10 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       $db->query("SELECT setval('item_item_id_seq', (SELECT MAX(item_id) FROM item)+1);");
       $db->query("SELECT setval('itemrevision_itemrevision_id_seq', (SELECT MAX(itemrevision_id) FROM itemrevision)+1);");
       $db->query("SELECT setval('folder_folder_id_seq', (SELECT MAX(folder_id) FROM folder)+1);");
-      }     
+      }
     }
 
-  /** create mock database connection*/  
+  /** create mock database connection*/
   protected function getConnection()
     {
     if(!isset($this->_connectionMock) || $this->_connectionMock == null)

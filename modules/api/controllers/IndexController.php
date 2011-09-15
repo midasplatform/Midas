@@ -1370,7 +1370,7 @@ class Api_IndexController extends Api_AppController
       return array();
       }
 
-    $userRootFolder = $userDao->getFolder();  
+    $userRootFolder = $userDao->getFolder();
     return $this->Folder->getChildrenFoldersFiltered($userRootFolder, $userDao, MIDAS_POLICY_READ);
     }
 

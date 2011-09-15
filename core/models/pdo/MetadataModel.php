@@ -29,12 +29,12 @@ class MetadataModel extends MetadataModelBase
                                           ->where('qualifier=?', $qualifier));
     return $this->initDao('Metadata', $row);
     } // end function getMetadata()
-    
+
   /** get all the metadata */
   function getAllMetadata()
     {
     $rowset = $this->database->fetchAll($this->database->select());
-    
+
     $metadata = array('raw' => array(), 'sorted' => array());
     foreach($rowset as $row)
       {
@@ -49,8 +49,8 @@ class MetadataModel extends MetadataModelBase
       }
     return $metadata;
     } // end function getMetadata()
-    
-  /** Return the table name based on the type of metadata*/  
+
+  /** Return the table name based on the type of metadata*/
   function getTableValueName($metadatatype)
     {
     switch($metadatatype)
@@ -60,33 +60,33 @@ class MetadataModel extends MetadataModelBase
       case MIDAS_METADATA_VIDEO: return 'metadatavideovalue';
       case MIDAS_METADATA_IMAGE: return 'metadataimagevalue';
       default: return 'metadatavalue';
-      }  
-    return 'metadatavalue';  
+      }
+    return 'metadatavalue';
     }
-    
-  /** Get if a metadata value already exists */  
+
+  /** Get if a metadata value already exists */
   function getMetadataValueExists($metadataDao)
     {
     if(!$metadataDao instanceof MetadataDao)
       {
       throw new Zend_Exception("Should be a metadata.");
-      } 
-       
-      
+      }
+
+
     $row = $this->database->fetchRow($this->database->select()
                                           ->setIntegrityCheck(false)
                                           ->from($this->getTableValueName($metadataDao->getMetadatatype()))
                                           ->where('metadata_id=?', $metadataDao->getKey())
                                           ->where('itemrevision_id=?', $metadataDao->getItemrevisionId())
                                           ->where('value=?', $metadataDao->getValue()));
-    
+
     if(count($row) > 0)
       {
-      return true;  
+      return true;
       }
-    return false;                             
+    return false;
     }  // end getMetadataValueExists()
-    
+
   /** Save a metadata value */
   function saveMetadataValue($metadataDao)
     {
@@ -103,5 +103,5 @@ class MetadataModel extends MetadataModelBase
     $table->insert($data);
     return true;
     } // end function saveMetadataValue()
-  
+
 } // end class

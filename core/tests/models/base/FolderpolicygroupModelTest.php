@@ -23,7 +23,7 @@ class FolderpolicygroupModelTest extends DatabaseTestCase
     parent::setUp();
     }
 
-  /** testCreatePolicyAndGetPolicy*/  
+  /** testCreatePolicyAndGetPolicy*/
   public function testCreatePolicyAndGetPolicy()
     {
     $folderFile = $this->loadData('Folder', 'default');

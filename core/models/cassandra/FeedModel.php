@@ -18,7 +18,7 @@ require_once BASE_PATH.'/core/models/base/FeedModelBase.php';
  */
 class FeedModel extends FeedModelBase
 {
-  
+
   /** get Feeds*/
   protected function getFeeds($loggedUserDao, $userDao = null, $communityDao = null, $policy = 0, $limit = 20)
     {
@@ -38,7 +38,7 @@ class FeedModel extends FeedModelBase
       {
       $userId = $loggedUserDao->getUserId();
       }
-    
+
     if($userDao != null && !$userDao instanceof UserDao)
       {
       throw new Zend_Exception("Should be an user.");
@@ -48,12 +48,12 @@ class FeedModel extends FeedModelBase
       {
       throw new Zend_Exception("Should be a community.");
       }
-    
+
     // Get the groups from the user
     $usergrouparray = $this->database->getCassandra('user', $userId, null, "group_", "group_"); // need to get only the group_* columns
     $groupids[] = MIDAS_GROUP_ANONYMOUS_KEY;
-      
-      
+
+
     // If we ask for the feeds for a user
     if($userDao)
       {
@@ -62,33 +62,33 @@ class FeedModel extends FeedModelBase
 
       $userfeedpolicyarray = array();
       $groupfeedpolicyarray = array();
-      
+
       foreach($userfeed as $feed => $values)
         {
         // Groups
         $groups = array();
         foreach($groupids as $groupid)
           {
-          $groups['group_'.$groupid] = 0;  
+          $groups['group_'.$groupid] = 0;
           }
-          
+
         foreach(array_intersect_key($values, $groups) as $group => $policy)
           {
-          if(!isset($groupfeedpolicyarray[$feed]) 
+          if(!isset($groupfeedpolicyarray[$feed])
              || $groupfeedpolicyarray[$feed][substr($feed, 5)] < $policy )
             {
-            $array[$feed] = $policy;  
+            $array[$feed] = $policy;
             $groupfeedpolicyarray[$feed] = $array;
-            }     
+            }
           }
-        
+
         // User
         if(key_exists('user_'.$userId, $values))
           {
-          $userfeedpolicyarray[$feed] = $values;  
-          }  
-        }  
-        
+          $userfeedpolicyarray[$feed] = $values;
+          }
+        }
+
       }
     else if($communityDao)
       {
@@ -97,76 +97,76 @@ class FeedModel extends FeedModelBase
 
       $userfeedpolicyarray = array();
       $groupfeedpolicyarray = array();
-      
+
       foreach($communityfeed as $feed => $values)
         {
         // Groups
         $groups = array();
         foreach($groupids as $groupid)
           {
-          $groups['group_'.$groupid] = 0;  
+          $groups['group_'.$groupid] = 0;
           }
-          
+
         foreach(array_intersect_key($values, $groups) as $group => $policy)
           {
-          if(!isset($groupfeedpolicyarray[$feed]) 
+          if(!isset($groupfeedpolicyarray[$feed])
              || $groupfeedpolicyarray[$feed][substr($feed, 5)] < $policy )
             {
-            $array[$feed] = $policy;  
+            $array[$feed] = $policy;
             $groupfeedpolicyarray[$feed] = $array;
-            }     
+            }
           }
-        
+
         // User
         if(key_exists('user_'.$userId, $values))
           {
-          $userfeedpolicyarray[$feed] = $values;  
-          }  
+          $userfeedpolicyarray[$feed] = $values;
+          }
         }
-      }  
-    else 
-      {    
+      }
+    else
+      {
       // Select from the UserFeedPolicy
       $userfeedpolicyarray = $this->database->getCassandra('userfeedpolicy', $userId);
-    
+
       // Select from the GroupFeedPolicy for the groups
       // multiget
       $groupfeedpolicyarray = $this->database->multigetCassandra('groupfeedpolicy', $groupids); // need to get only the group_* columns
       }
-      
+
     $rowsetAnalysed = array();
     // Start with the users
     foreach($userfeedpolicyarray as $key => $row)
       {
       $feed_id = substr($key, 5);
-      $feedrow = $this->database->getCassandra('feed', $feed_id);  
+      $feedrow = $this->database->getCassandra('feed', $feed_id);
       $feedrow['feed_id'] = $feed_id;
       $dao =  $this->initDao('Feed', $feedrow);
       $dao->policy = $row;
       $rowsetAnalysed[$feed_id] = $dao;
       unset($dao);
       }
-      
-    // Then the groups  
+
+    // Then the groups
     foreach($groupfeedpolicyarray as $key => $grouprow)
-      { 
+      {
       foreach($grouprow as $feed_id => $policy)
         {
         $feed_id = substr($feed_id, 5);
-      
-        $feedrow = $this->database->getCassandra('feed', $feed_id);         
+
+        $feedrow = $this->database->getCassandra('feed', $feed_id);
         $feedrow['feed_id'] = $feed_id;
-        
+
         if(isset($rowsetAnalysed[$feed_id]))
           {
           $dao = $rowsetAnalysed[$feed_id];
           if($dao->policy < $policy)
             {
-            $rowsetAnalysed[$feed_id]->policy = $policy; 
+            $rowsetAnalysed[$feed_id]->policy = $policy;
             }
           }
-        else 
-          { 
+        else
+          {
           $dao = $this->initDao('Feed', $feedrow);
           $dao->policy = $policy;
           $rowsetAnalysed[$feed_id] = $dao;
@@ -174,14 +174,14 @@ class FeedModel extends FeedModelBase
           }
         }
       }
-     
+
     $this->Component->Sortdao->field = 'date';
     $this->Component->Sortdao->order = 'asc';
     usort($rowsetAnalysed, array($this->Component->Sortdao, 'sortByDate'));
     return $rowsetAnalysed;
     }
-    
-  /** Add a community to a feed 
+
+  /** Add a community to a feed
    * @return void */
   function addCommunity($feed, $community)
     {
@@ -193,19 +193,19 @@ class FeedModel extends FeedModelBase
       {
       throw new Zend_Exception("Should be an feed.");
       }
-    
+
     $feedid = $feed->getFeedId();
     $communityid = $community->getCommunityId();
-    $column = 'feed_'.$feedid;    
+    $column = 'feed_'.$feedid;
 
     $dataarray = array();
     $dataarray[$column] = array(); // supercolumn to be filled out when we set the policies
     $dataarray[$column]['na'] = 'na';
-    
+
     $column_family = new ColumnFamily($this->database->getDB(), 'communityfeed');
     $column_family->insert($communityid, $dataarray);
     } // end addCommunity
-    
-    
+
+
 } // end class
 ?>

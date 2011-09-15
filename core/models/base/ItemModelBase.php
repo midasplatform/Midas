@@ -39,8 +39,8 @@ abstract class ItemModelBase extends AppModel
       'itempolicyuser' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Itempolicyuser', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
       );
     $this->initialize(); // required
-    } // end __construct()  
-  
+    } // end __construct()
+
   abstract function getOwnedByUser($userDao, $limit = 20);
   abstract function getSharedToUser($userDao, $limit = 20);
   abstract function getSharedToCommunity($communityDao, $limit = 20);
@@ -51,7 +51,7 @@ abstract class ItemModelBase extends AppModel
   abstract function getByUuid($uuid);
   abstract function getAll();
   abstract function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view');
-  
+
   /** save */
   public function save($dao)
     {
@@ -65,33 +65,33 @@ abstract class ItemModelBase extends AppModel
       }
     $dao->setDateUpdate(date('c'));
     parent::save($dao);
-    
+
     require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
-    $component = new SearchComponent();    
+    $component = new SearchComponent();
     $index = $component->getLuceneItemIndex();
-    
+
     $hits = $index->find("item_id:".$dao->getKey());
-    foreach($hits as $hit) 
+    foreach($hits as $hit)
       {
       $index->delete($hit->id);
       }
     $doc = new Zend_Search_Lucene_Document();
     $doc->addField(Zend_Search_Lucene_Field::Text('title', $dao->getName()));
-    $doc->addField(Zend_Search_Lucene_Field::Keyword('item_id', $dao->getKey()));    
-    $doc->addField(Zend_Search_Lucene_Field::UnStored('description', $dao->getDescription()));    
-    
+    $doc->addField(Zend_Search_Lucene_Field::Keyword('item_id', $dao->getKey()));
+    $doc->addField(Zend_Search_Lucene_Field::UnStored('description', $dao->getDescription()));
+
     $modelLoad = new MIDAS_ModelLoader();
-    $revisionModel = $modelLoad->loadModel('ItemRevision');    
+    $revisionModel = $modelLoad->loadModel('ItemRevision');
     $revision = $this->getLastRevision($dao);
-    
+
     if($revision != false)
-      {    
+      {
       $metadata = $revisionModel->getMetadata($revision);
       $metadataString = '';
 
       foreach($metadata as $m)
         {
-        $doc->addField(Zend_Search_Lucene_Field::Keyword($m->getElement().'-'.$m->getQualifier(), $m->getValue())); 
+        $doc->addField(Zend_Search_Lucene_Field::Keyword($m->getElement().'-'.$m->getQualifier(), $m->getValue()));
         if(!is_numeric($m->getValue()))
           {
           $metadataString .= ' '. $m->getValue();
@@ -103,7 +103,7 @@ abstract class ItemModelBase extends AppModel
     $index->addDocument($doc);
     $index->commit();
     }
-    
+
   /** copy parent folder policies*/
   function copyParentPolicies($itemdao, $folderdao, $feeddao = null)
     {
@@ -113,34 +113,34 @@ abstract class ItemModelBase extends AppModel
       }
     $groupPolicies = $folderdao->getFolderpolicygroup();
     $userPolicies = $folderdao->getFolderpolicyuser();
-    
+
     $modelLoad = new MIDAS_ModelLoader();
     $ItempolicygroupModel = $modelLoad->loadModel('Itempolicygroup');
     foreach($groupPolicies as $key => $policy)
-      {      
+      {
       $ItempolicygroupModel->createPolicy($policy->getGroup(), $itemdao, $policy->getPolicy());
       }
     $ItempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
     foreach($userPolicies as $key => $policy)
-      {      
+      {
       $ItempolicyuserModel->createPolicy($policy->getUser(), $itemdao, $policy->getPolicy());
       }
-      
+
     if($feeddao != null && $feeddao instanceof FeedDao)
-      {      
+      {
       $FeedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
       foreach($groupPolicies as $key => $policy)
-        {      
+        {
         $FeedpolicygroupModel->createPolicy($policy->getGroup(), $feeddao, $policy->getPolicy());
         }
       $FeedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
       foreach($userPolicies as $key => $policy)
-        {      
+        {
         $FeedpolicyuserModel->createPolicy($policy->getUser(), $feeddao, $policy->getPolicy());
         }
       }
     }//end copyParentPolicies
-  
+
   /** plus one view*/
   function incrementViewCount($itemdao)
     {
@@ -163,7 +163,7 @@ abstract class ItemModelBase extends AppModel
     $itemdao->view++;
     parent::save($itemdao);
     }//end incrementViewCount
-    
+
   /** plus one download*/
   function incrementDownloadCount($itemdao)
     {
@@ -174,7 +174,7 @@ abstract class ItemModelBase extends AppModel
     $itemdao->download++;
     parent::save($itemdao);
     }//end incrementDownloadCount
-    
+
   /** Add a revision to an item
    * @return void*/
   function addRevision($itemdao, $revisiondao)
@@ -205,5 +205,5 @@ abstract class ItemModelBase extends AppModel
     $ItemRevisionModel->save($revisiondao);
     $this->save($itemdao);//update date
     } // end addRevision
-  
+
 } // end class ItemModelBase

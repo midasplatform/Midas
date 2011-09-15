@@ -8,7 +8,7 @@ class Api_RestController extends Api_AppController
   function preDispatch()
     {
     $this->_forward('rest', 'index', 'api', $this->_getAllParams());
-    parent::preDispatch();   
+    parent::preDispatch();
     }
   } // end class
 ?>

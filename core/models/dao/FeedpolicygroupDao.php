@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /**
  * \class FeedpolicygroupDao
- * \brief DAO 
+ * \brief DAO
  */
 class FeedpolicygroupDao extends AppDao
   {

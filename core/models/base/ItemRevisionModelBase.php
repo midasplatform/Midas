@@ -20,9 +20,9 @@ abstract class ItemRevisionModelBase extends AppModel
     $this->_name = 'itemrevision';
     $this->_daoName = 'ItemRevisionDao';
     $this->_key = 'itemrevision_id';
-    
+
     $this->_components = array('Filter');
-  
+
     $this->_mainData = array(
       'itemrevision_id' =>  array('type' => MIDAS_DATA),
       'item_id' =>  array('type' => MIDAS_DATA),
@@ -38,10 +38,10 @@ abstract class ItemRevisionModelBase extends AppModel
       );
     $this->initialize(); // required
     } // end __construct()
-  
+
   abstract function getByUuid($uuid);
   abstract function getMetadata($revisiondao);
-  
+
   /** Add a bitstream to a revision */
   function addBitstream($itemRevisionDao, $bitstreamDao)
     {
@@ -55,15 +55,15 @@ abstract class ItemRevisionModelBase extends AppModel
     // Save the bistream
     $bitstreamDao->setDate(date('c'));
     $BitstreamModel->save($bitstreamDao);
-    
+
     $item = $itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));
     $item->setDateCreation(date('c'));
- 
+
     $modulesThumbnail =  Zend_Registry::get('notifier')->notifyEvent("EVENT_CORE_CREATE_THUMBNAIL", array($item));
     $notifications = Zend_Registry::get('notifier')->getNotifications();
 
-    $createThumb = false;  
+    $createThumb = false;
     if(!isset($notifications["EVENT_CORE_CREATE_THUMBNAIL"]) || empty($notifications["EVENT_CORE_CREATE_THUMBNAIL"]))
       {
       $mime = $bitstreamDao->getMimetype();
@@ -82,7 +82,7 @@ abstract class ItemRevisionModelBase extends AppModel
           }
         catch(Exception $exc)
           {
-          $createThumb = false; 
+          $createThumb = false;
           }
         }
       else if(file_exists($tmpfile) && $mime == 'image/png')
@@ -93,8 +93,8 @@ abstract class ItemRevisionModelBase extends AppModel
           }
         catch(Exception $exc)
           {
-          $createThumb = false; 
-          }        
+          $createThumb = false;
+          }
         }
       else if(file_exists($tmpfile) && $mime == 'image/gif')
         {
@@ -104,14 +104,14 @@ abstract class ItemRevisionModelBase extends AppModel
           }
         catch(Exception $exc)
           {
-          $createThumb = false; 
-          }   
-        }  
+          $createThumb = false;
+          }
+        }
       else
         {
-        $createThumb = false;  
-        }    
-      
+        $createThumb = false;
+        }
+
       if($createThumb)
         {
         $tmpPath = BASE_PATH.'/data/thumbnail/'.rand(1, 1000);
@@ -137,7 +137,7 @@ abstract class ItemRevisionModelBase extends AppModel
 
         list ($x, $y) = getimagesize($tmpfile);  //--- get size of img ---
         $thumb = 100;  //--- max. size of thumb ---
-        if($x > $y) 
+        if($x > $y)
           {
           $tx = $thumb;  //--- landscape ---
           $ty = round($thumb / $x * $y);
@@ -151,9 +151,9 @@ abstract class ItemRevisionModelBase extends AppModel
         $thb = imagecreatetruecolor($tx, $ty);  //--- create thumbnail ---
         imagecopyresampled($thb, $src, 0, 0, 0, 0, $tx, $ty, $x, $y);
         imagejpeg($thb, $pathThumbnail, 80);
-        imagedestroy($thb);    
-        imagedestroy($src);   
-        } 
+        imagedestroy($thb);
+        imagedestroy($src);
+        }
       }
 
     if($createThumb)
@@ -164,11 +164,11 @@ abstract class ItemRevisionModelBase extends AppModel
         unlink($oldThumbnail);
         }
       $item->setThumbnail(substr($pathThumbnail, strlen(BASE_PATH) + 1));
-      }    
+      }
     $ItemModel->save($item);
     } // end addBitstream
 
-    
+
   /** save */
   public function save($dao)
     {
@@ -178,6 +178,6 @@ abstract class ItemRevisionModelBase extends AppModel
       }
     parent::save($dao);
     }
- 
-  
+
+
 } // end class ItemRevisionModelBase

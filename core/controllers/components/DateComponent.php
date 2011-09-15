@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Data management Componenet */
 class DateComponent extends AppComponent
-  { 
+  {
   /** format date (ex: 01/14/2011 or 14/01/2011 (fr or en) */
   static public function formatDate($timestamp)
     {
@@ -33,7 +33,7 @@ class DateComponent extends AppComponent
       return date('m', $timestamp).'/'.date('d', $timestamp).'/'.date('Y', $timestamp);
       }
     }
-    
+
   /** format the date (ex: 5 days ago) */
   static public function ago($timestamp, $only_time = false)
     {
@@ -57,12 +57,12 @@ class DateComponent extends AppComponent
     if($difference != 1)
       {
       $periods[$j] .=  "s";
-      if($periodsFr[$j] != 'mois') 
+      if($periodsFr[$j] != 'mois')
         {
         $periodsFr[$j] .=  "s";
         }
       }
-      
+
     if($only_time)
       {
       if(Zend_Registry::get('configGlobal')->application->lang == 'fr')
@@ -83,5 +83,5 @@ class DateComponent extends AppComponent
       $text = $difference." ".$periods[$j]." ago";
       }
     return $text;
-    }    
+    }
   } // end class

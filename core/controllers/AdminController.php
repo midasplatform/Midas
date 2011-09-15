@@ -19,7 +19,7 @@ class AdminController extends AppController
   public $_daos = array();
   public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration', 'Demo');
   public $_forms = array('Admin', 'Assetstore', 'Migrate');
-  
+
   /** init the controller */
   function init()
     {
@@ -32,7 +32,7 @@ class AdminController extends AppController
       $this->render('unavailable');
       }
     }
-    
+
   /** reset Demo*/
   function resetdemoAction()
     {
@@ -44,7 +44,7 @@ class AdminController extends AppController
     $this->disableLayout();
     $this->disableView();
     }
-    
+
   /** run a task **/
   function taskAction()
     {
@@ -58,21 +58,21 @@ class AdminController extends AppController
       {
       throw new Zend_Exception("You should be an administrator");
       }
-      
+
     $task = $this->_getParam("task");
     $params = $this->_getParam("params");
     if(isset($params))
       {
       $params = JsonComponent::decode($params);
       }
-      
+
     $modules = Zend_Registry::get('notifier')->modules;
     $tasks = Zend_Registry::get('notifier')->tasks;
     call_user_func(array($modules[$tasks[$task]['module']], $tasks[$task]['method']), $params);
     $this->disableLayout();
     $this->disableView();
     }
-    
+
   /** index*/
   function indexAction()
     {
@@ -87,10 +87,10 @@ class AdminController extends AppController
       }
     $this->view->header = "Administration";
     $configForm = $this->Form->Admin->createConfigForm();
-    
+
     $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
     $formArray = $this->getFormAsArray($configForm);
-    
+
     $formArray['name']->setValue($applicationConfig['global']['application.name']);
     $formArray['keywords']->setValue($applicationConfig['global']['application.keywords']);
     $formArray['description']->setValue($applicationConfig['global']['application.description']);
@@ -100,9 +100,9 @@ class AdminController extends AppController
     $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
     $this->view->selectedLicense = $applicationConfig['global']['defaultlicense'];
     $this->view->configForm = $formArray;
-    
+
     $allModules = $this->Component->Utility->getAllModules();
-    
+
     if($this->_request->isPost())
       {
       $this->_helper->layout->disableLayout();
@@ -137,7 +137,7 @@ class AdminController extends AppController
           {
           unlink(BASE_PATH.'/core/configs/application.local.ini.old');
           }
-        
+
         $moduleConfigLocalFile = BASE_PATH."/core/configs/".$moduleName.".local.ini";
         $moduleConfigFile = BASE_PATH."/modules/".$moduleName."/configs/module.ini";
         if(!file_exists($moduleConfigLocalFile))
@@ -151,7 +151,7 @@ class AdminController extends AppController
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }
-      
+
     // get assetstore data
     $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
     $assetstores = $this->Assetstore->getAll();
@@ -167,21 +167,21 @@ class AdminController extends AppController
         {
         $assetstores[$key]->default = false;
         }
-        
+
       // Check if we can access the path
       if(file_exists($assetstore->getPath()))
-        {  
+        {
         $assetstores[$key]->totalSpace = disk_total_space($assetstore->getPath());
         $assetstores[$key]->totalSpaceText = $this->Component->Utility->formatSize($assetstores[$key]->totalSpace);
         $assetstores[$key]->freeSpace = disk_free_space($assetstore->getPath());
         $assetstores[$key]->freeSpaceText = $this->Component->Utility->formatSize($assetstores[$key]->freeSpace);
-        } 
-      else 
+        }
+      else
         {
         $assetstores[$key]->totalSpaceText = false;
         }
       }
-      
+
     if(!$defaultSet)
       {
       foreach($assetstores as $key => $assetstore)
@@ -195,7 +195,7 @@ class AdminController extends AppController
       }
     $this->view->assetstores = $assetstores;
     $this->view->assetstoreForm = $this->Form->Assetstore->createAssetstoreForm();
-    
+
     // get modules
     $modulesEnable = Zend_Registry::get('modulesEnable');
     $adapter = Zend_Registry::get('configDatabase')->database->adapter;
@@ -209,7 +209,7 @@ class AdminController extends AppController
         {
         $allModules[$key]->configPage = false;
         }
-        
+
       if(isset($module->db->$adapter))
         {
         $allModules[$key]->dbOk = true;
@@ -218,7 +218,7 @@ class AdminController extends AppController
         {
         $allModules[$key]->dbOk = false;
         }
-        
+
       $allModules[$key]->dependenciesArray = array();
       $allModules[$key]->dependenciesExist = true;
       // check if dependencies exit
@@ -262,19 +262,19 @@ class AdminController extends AppController
         $countModules[$category]['hidden']++;
         }
       }
-      
+
     foreach($modulesList as $k => $l)
       {
       ksort($modulesList[$k]);
       }
-    
+
     ksort($modulesList);
     $this->view->countModules = $countModules;
     $this->view->modulesList = $modulesList;
     $this->view->modulesEnable = $modulesEnable;
     $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
     }//end indexAction
- 
+
   /** show logs*/
   function showlogAction()
     {
@@ -287,7 +287,7 @@ class AdminController extends AppController
       throw new Zend_Exception("Why are you here ? Should be ajax.");
       }
     $this->_helper->layout->disableLayout();
-    
+
     $start = $this->_getParam("startlog");
     $end = $this->_getParam("endlog");
     $module = $this->_getParam("modulelog");
@@ -316,7 +316,7 @@ class AdminController extends AppController
       {
       $priority = 'all';
       }
-      
+
     $logs = $this->Errorlog->getLog($start, $end, $module, $priority);
     foreach($logs as $key => $log)
       {
@@ -337,24 +337,24 @@ class AdminController extends AppController
       }
     $this->view->jsonLogs = JsonComponent::encode($logs);
     $this->view->jsonLogs = htmlentities($this->view->jsonLogs);
-    
+
     if($this->_request->isPost())
       {
       $this->_helper->viewRenderer->setNoRender();
       echo $this->view->jsonLogs;
       return;
       }
-      
+
     $modulesConfig = Zend_Registry::get('configsModules');
-      
+
     $modules = array('all', 'core');
     foreach($modulesConfig as $key => $module)
       {
       $modules[] = $key;
-      }    
+      }
     $this->view->modulesLog = $modules;
     }//showlogAction
-    
+
   /** function dashboard*/
   function dashboardAction()
     {
@@ -366,15 +366,15 @@ class AdminController extends AppController
       {
       throw new Zend_Exception("Why are you here ? Should be ajax.");
       }
-      
+
     $this->_helper->layout->disableLayout();
-    
+
     $this->view->dashboard = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_DASHBOARD");
-    
+
     ksort($this->view->dashboard);
-    
+
     }//end dashboardAction
-    
+
   /** upgrade database*/
   function upgradeAction()
     {
@@ -391,7 +391,7 @@ class AdminController extends AppController
     $db = Zend_Registry::get('dbAdapter');
     $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
     $modulesConfig = Zend_Registry::get('configsModules');
-    
+
     if($this->_request->isPost())
       {
       $this->_helper->viewRenderer->setNoRender();
@@ -402,11 +402,11 @@ class AdminController extends AppController
         {
         $this->Component->Upgrade->initUpgrade($key, $db, $dbtype);
         $upgraded = $upgraded || $this->Component->Upgrade->upgrade($module->version);
-        }    
+        }
       $this->Component->Upgrade->initUpgrade('core', $db, $dbtype);
       $upgraded = $upgraded || $this->Component->Upgrade->upgrade(Zend_Registry::get('configDatabase')->version);
       $this->view->upgraded = $upgraded;
-      
+
       $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
       $modulesConfig = Zend_Registry::get('configsModules');
       if($upgraded)
@@ -419,7 +419,7 @@ class AdminController extends AppController
         }
       return;
       }
-      
+
     $modules = array();
     foreach($modulesConfig as $key => $module)
       {
@@ -428,10 +428,10 @@ class AdminController extends AppController
       $modules[$key]['targetText'] = $this->Component->Upgrade->getNewestVersion(true);
       $modules[$key]['currentText'] = $module->version;
       $modules[$key]['current'] = $this->Component->Upgrade->transformVersionToNumeric($module->version);
-      }      
-   
+      }
+
     $this->view->modules = $modules;
-    
+
     $this->Component->Upgrade->initUpgrade('core', $db, $dbtype);
     $core['target'] = $this->Component->Upgrade->getNewestVersion();
     $core['targetText'] = $this->Component->Upgrade->getNewestVersion(true);
@@ -439,7 +439,7 @@ class AdminController extends AppController
     $core['current'] = $this->Component->Upgrade->transformVersionToNumeric(Zend_Registry::get('configDatabase')->version);
     $this->view->core = $core;
     }//end upgradeAction
-    
+
   /**
    * \fn serversidefilechooser()
    * \brief called by the server-side file chooser
@@ -453,11 +453,11 @@ class AdminController extends AppController
     if(!$this->userSession->Dao->isAdmin())
       {
       throw new Zend_Exception("Administrative privileges required");
-      }     
-    
+      }
+
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
-    
+
     // Display the tree
     $_POST['dir'] = urldecode($_POST['dir']);
     $files = array();
@@ -477,7 +477,7 @@ class AdminController extends AppController
       $files[] = '/';
       }
 
-    if(file_exists($_POST['dir']) || file_exists($files[0])) 
+    if(file_exists($_POST['dir']) || file_exists($files[0]))
       {
       if(file_exists($_POST['dir']))
         {
@@ -485,34 +485,34 @@ class AdminController extends AppController
         }
       natcasesort($files);
       echo "<ul class=\"jqueryFileTree\" style=\"display: none;\">";
-      foreach($files as $file) 
+      foreach($files as $file)
         {
         if(file_exists($_POST['dir'] . $file) && $file != '.' && $file != '..' && is_readable($_POST['dir'] . $file))
           {
           if(is_dir($_POST['dir'] . $file))
             {
-            echo "<li class=\"directory collapsed\"><a href=\"#\" rel=\"" . htmlentities($_POST['dir'] . $file) . "/\">" . htmlentities($file) . "</a></li>";  
+            echo "<li class=\"directory collapsed\"><a href=\"#\" rel=\"" . htmlentities($_POST['dir'] . $file) . "/\">" . htmlentities($file) . "</a></li>";
             }
           else// not a directory: a file!
             {
-            $ext = preg_replace('/^.*\./', '', $file); 
+            $ext = preg_replace('/^.*\./', '', $file);
             echo "<li class=\"file ext_".$ext."\"><a href=\"#\" rel=\"" . htmlentities($_POST['dir'] . $file) . "\">" . htmlentities($file) . "</a></li>";
-            }              
+            }
           }
         }
-      echo "</ul>"; 
+      echo "</ul>";
       }
     else
       {
       echo "File ".$_POST['dir']." doesn't exist";
-      }     
-    // No views  
+      }
+    // No views
     } // end function  serversidefilechooserAction
-    
-    
+
+
   /**
-   * \fn 
-   * \brief 
+   * \fn
+   * \brief
    */
   function migratemidas2Action()
     {
@@ -526,21 +526,21 @@ class AdminController extends AppController
       throw new Zend_Exception("You should be an administrator");
       }
 
-    $this->assetstores = $this->Assetstore->getAll();  
+    $this->assetstores = $this->Assetstore->getAll();
     $this->view->migrateForm = $this->Form->Migrate->createMigrateForm($this->assetstores);
     $this->view->assetstoreForm = $this->Form->Assetstore->createAssetstoreForm('../assetstore/add');
-    
+
     if($this->getRequest()->isPost())
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-          
-      if(!$this->view->migrateForm->isValid($_POST)) 
+
+      if(!$this->view->migrateForm->isValid($_POST))
         {
         echo json_encode(array('error' => $this->t('The form is invalid. Missing values.')));
         return false;
         }
-      
+
       $midas2_hostname = $_POST['midas2_hostname'];
       $midas2_port = $_POST['midas2_port'];
       $midas2_user = $_POST['midas2_user'];
@@ -548,21 +548,21 @@ class AdminController extends AppController
       $midas2_database = $_POST['midas2_database'];
       $midas2_assetstore = $_POST['midas2_assetstore'];
       $midas3_assetstore = $_POST['assetstore'];
-      
+
       // Check that the assetstore is accessible
       if(!file_exists($midas2_assetstore))
         {
         echo json_encode(array('error' => $this->t('MIDAS2 assetstore is not accessible.')));
-        return false;  
+        return false;
         }
 
       // Remove the last slashe if any
-      if($midas2_assetstore[strlen($midas2_assetstore) - 1] == '\\' 
-         || $midas2_assetstore[strlen($midas2_assetstore) - 1] == '/')  
+      if($midas2_assetstore[strlen($midas2_assetstore) - 1] == '\\'
+         || $midas2_assetstore[strlen($midas2_assetstore) - 1] == '/')
         {
         $midas2_assetstore = substr($midas2_assetstore, 0, strlen($midas2_assetstore) - 1);
         }
-        
+
       $this->Component->MIDAS2Migration->midas2User = $midas2_user;
       $this->Component->MIDAS2Migration->midas2Password = $midas2_password;
       $this->Component->MIDAS2Migration->midas2Host = $midas2_hostname;
@@ -570,23 +570,22 @@ class AdminController extends AppController
       $this->Component->MIDAS2Migration->midas2Port = $midas2_port;
       $this->Component->MIDAS2Migration->midas2Assetstore = $midas2_assetstore;
       $this->Component->MIDAS2Migration->assetstoreId = $midas3_assetstore;
-  
+
       try
         {
         $this->Component->MIDAS2Migration->migrate($this->userSession->Dao->getUserId());
         }
-      catch(Zend_Exception $e) 
+      catch(Zend_Exception $e)
         {
-        echo json_encode(array('error' => $this->t($e->getMessage()))); 
-        return false; 
+        echo json_encode(array('error' => $this->t($e->getMessage())));
+        return false;
         }
-          
+
       echo json_encode(array('message' => $this->t('Migration sucessful.')));
-      }  
-      
-    // Display the form  
+      }
+
+    // Display the form
     }
-    
+
 } // end class
 
-  

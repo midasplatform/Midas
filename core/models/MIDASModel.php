@@ -18,13 +18,13 @@ class MIDASModel
   protected $_key = '';
   protected $_mainData = array();
   protected $_components = array();
-  
+
   /**
    * @method public __construct()
    * Constructor
    */
   public function __construct()
-    { 
+    {
     // We should do the switch here
     $configDatabase = Zend_Registry::get('configDatabase');
     switch($configDatabase->database->type)
@@ -36,15 +36,15 @@ class MIDASModel
       }
     } // end __construct()
 
-  /** Initializing */  
+  /** Initializing */
   public function initialize()
-    {  
-    $this->loadElements(); // load the components for the models    
+    {
+    $this->loadElements(); // load the components for the models
     $this->database->initialize($this->_name, $this->_key, $this->_mainData);
     }
-    
-  /** Save a Dao */  
-  public function save($dao)  
+
+  /** Save a Dao */
+  public function save($dao)
     {
     $instance = $this->_name."Dao";
     if(isset($this->_daoName) && isset($this->moduleName))
@@ -73,26 +73,26 @@ class MIDASModel
         $dataarray[$key] = $d;
         }
       }
-    
+
     $insertedid = $this->database->save($dataarray);
-      
+
     if($insertedid !== false)
       {
       if(isset($this->_key) && !empty($this->_key))
         {
         $key = $this->_key;
         $dao->$key = $insertedid;
-        }  
+        }
       $dao->saved = true;
       }
     } // end save()
-    
-  /** Delete a Dao */  
-  public function delete($dao)  
+
+  /** Delete a Dao */
+  public function delete($dao)
     {
     $this->database->delete($dao);
     }
-     
+
   /**
    * @method public  loadElements()
    *  Loads model and components
@@ -111,25 +111,25 @@ class MIDASModel
         }
       }
     }
-    
+
   /** Return the key */
   public function getKey()
     {
-    return $this->_key;  
-    }   
-  
+    return $this->_key;
+    }
+
   /** Return the name */
   public function getName()
     {
-    return $this->_name;  
-    } 
+    return $this->_name;
+    }
 
   /** Return the maindata */
   public function getMainData()
     {
-    return $this->_mainData;  
-    }  
-    
+    return $this->_mainData;
+    }
+
   /**
    * @method public function getLogger()
    * Get Logger
@@ -139,7 +139,7 @@ class MIDASModel
     {
     return Zend_Registry::get('logger');
     }
-    
+
   /**
    * @method public  initDao()
    *  init a dao
@@ -183,7 +183,7 @@ class MIDASModel
       throw new Zend_Exception('Unable to load dao ' . $name);
       }
     } //end initDao
-    
+
 
   /**
    * @method public  __call($method, $params)
@@ -251,11 +251,11 @@ class MIDASModel
         }
       return $return;
       }
-    } //end method findBy 
-    
-    
-    
-    
+    } //end method findBy
+
+
+
+
   /** load Dao class*/
   public function loadDaoClass($name, $module = 'core')
     {
@@ -276,9 +276,9 @@ class MIDASModel
         }
       }
 
-    } 
-    
-    
+    }
+
+
   /**
    * @fn public  load()
    * @brief Load a dao   *
@@ -294,7 +294,7 @@ class MIDASModel
       {
       $name = ucfirst($this->_name) . 'Dao';
       }
-    
+
     if(isset($this->moduleName))
       {
       $this->loadDaoClass(ucfirst(substr($name, strpos($name, '_') + 1)), $this->moduleName);
@@ -302,8 +302,8 @@ class MIDASModel
     else
       {
       Zend_Loader::loadClass($name, BASE_PATH . '/core/models/dao');
-      }    
-    
+      }
+
     if(class_exists($name))
       {
       if(!isset($this->_key) && $key != null)
@@ -317,11 +317,11 @@ class MIDASModel
           return array();
           }
         $cond = '';
-        
+
         if(empty($key))
           {
           return array();
-          }  
+          }
         $rowset = $this->database->getAllByKey($key);
         $return = array();
         foreach($rowset as $row)
@@ -352,8 +352,8 @@ class MIDASModel
       throw new Zend_Exception('Unable to load dao ' . $name);
       }
     } //end load
-    
-    
+
+
   /**
    * @method public getValue()
    * Generic get function. You can define custom function.
@@ -365,17 +365,17 @@ class MIDASModel
     {
     return $this->database->getValue($var, $key, $dao);
     }
- 
+
   /** Function getValues */
   public function getValues($key)
     {
-    return $this->database->getValues($key);   
-    }  
+    return $this->database->getValues($key);
+    }
 
   /** Returns the number of rows */
   public function getCountAll()
     {
-    return $this->database->getCountAll(); 
+    return $this->database->getCountAll();
     }
 
   /**
@@ -403,5 +403,5 @@ class MIDASModel
       }
     return true;
     } //end method compareDao
-    
+
 } // end class GlobalModel

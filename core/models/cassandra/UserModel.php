@@ -22,54 +22,54 @@ class UserModel extends UserModelBase
   function getByEmail($email)
     {
     // We get from the table emailuser
-    try 
+    try
       {
-      $emailuser = new ColumnFamily($this->database->getDB(), 'emailuser'); 
+      $emailuser = new ColumnFamily($this->database->getDB(), 'emailuser');
       $useridarray = $emailuser->get($email);
-      $userid = $useridarray[$this->_key];      
+      $userid = $useridarray[$this->_key];
       $user = new ColumnFamily($this->database->getDB(), 'user');
       $userarray = $user->get($userid);
-      
+
       // Add the user_id
       $userarray[$this->_key] = $userid;
-      $dao = $this->initDao('User', $userarray);      
+      $dao = $this->initDao('User', $userarray);
       }
-    catch(cassandra_NotFoundException $e) 
+    catch(cassandra_NotFoundException $e)
       {
-      return false;  
-      }      
-    catch(Exception $e) 
+      return false;
+      }
+    catch(Exception $e)
       {
-      throw new Zend_Exception($e); 
-      }  
-      
+      throw new Zend_Exception($e);
+      }
+
     return $dao;
     } // end getByEmail()
-    
+
   /** Get a user by id */
   function getByUser_id($userid)
     {
     // We get from the table emailuser
-    try 
+    try
       {
       $user = new ColumnFamily($this->database->getDB(), 'user');
       $userarray = $user->get($userid);
-      // Add the user_id      
+      // Add the user_id
       $userarray[$this->_key] = $userid;
-      $dao = $this->initDao('User', $userarray);      
+      $dao = $this->initDao('User', $userarray);
       }
-    catch(cassandra_NotFoundException $e) 
+    catch(cassandra_NotFoundException $e)
       {
-      return false;  
-      }      
+      return false;
+      }
     catch(Exception $e)
       {
-      throw new Zend_Exception($e); 
-      }  
-      
+      throw new Zend_Exception($e);
+      }
+
     return $dao;
     } // end getByUser_id()
-    
+
   /** Get user communities */
   public function getUserCommunities($userDao)
     {
@@ -82,32 +82,32 @@ class UserModel extends UserModelBase
       throw new Zend_Exception("Should be an user.");
       }
 
-    $return = array(); 
-    try 
+    $return = array();
+    try
       {
-      $user = new ColumnFamily($this->database->getDB(), 'user'); 
+      $user = new ColumnFamily($this->database->getDB(), 'user');
       $communities = $user->get($userDao->getUserId(), array('communities'));
-      
+
       echo "Cassandra:UserModel:GetUserCommuntiies";
       //var_dump($communities);
       exit();
       /*
       foreach($communities as $key => $values)
         {
-          
+
         }
       */
-      
+
       }
-    catch(cassandra_NotFoundException $e) 
+    catch(cassandra_NotFoundException $e)
       {
-      return $return;  
-      }      
-    catch(Exception $e) 
+      return $return;
+      }
+    catch(Exception $e)
       {
-      throw new Zend_Exception($e); 
-      } 
-   
+      throw new Zend_Exception($e);
+      }
+
     /*
     $rowset = $this->database->fetchAll($sql);
     $return = array();
@@ -118,21 +118,21 @@ class UserModel extends UserModelBase
       unset($tmpDao);
       }
     return $return;*/
-    } // end getUserCommunities  
-    
-    
+    } // end getUserCommunities
+
+
   /** create user */
   public function createUser($email, $password, $firstname, $lastname, $admin = 0)
-    {  
+    {
     $userDao = parent::createUser($email, $password, $firstname, $lastname, $admin);
     // Add to the emailuser table
-    $emailuser = new ColumnFamily($this->database->getDB(), 'emailuser'); 
+    $emailuser = new ColumnFamily($this->database->getDB(), 'emailuser');
     $emailuser->insert($userDao->getEmail(), array($this->_key => $userDao->user_id));
 
     // Add the userid to the folder
-    $folder = new ColumnFamily($this->database->getDB(), 'folder'); 
+    $folder = new ColumnFamily($this->database->getDB(), 'folder');
     $folder->insert($userDao->getFolderId(), array('user_id' => $userDao->user_id));
- 
+
     return $userDao;
     }
 }

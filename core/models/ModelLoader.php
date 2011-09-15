@@ -46,7 +46,7 @@ class MIDAS_ModelLoader
     if(!isset($models[$module.$model]))
       {
       if($module == "")
-        {    
+        {
         include_once BASE_PATH."/core/models/" . $databaseType."/".$model.'Model.php';
         $name = $model . 'Model';
         }

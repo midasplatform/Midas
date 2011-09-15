@@ -20,7 +20,7 @@ class IndexController extends AppController
   public $_models = array('Item');
   public $_daos = array();
   public $_components = array();
-  
+
   /**
    * @method init()
    *  Init Controller
@@ -36,18 +36,18 @@ class IndexController extends AppController
   function indexAction()
     {
     $this->_forward('index', "feed");
-    } // end method indexAction   
-    
+    } // end method indexAction
+
   /** no javascript*/
   function nojsAction()
     {
     $this->disableLayout();
-    } // end method indexAction   
-    
+    } // end method indexAction
+
   /** no valid browser*/
   function nobrowserAction()
     {
     $this->disableLayout();
-    } // end method indexAction   
-    
+    } // end method indexAction
+
 }//end class

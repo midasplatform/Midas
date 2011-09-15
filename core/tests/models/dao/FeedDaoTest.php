@@ -26,7 +26,7 @@ class FeedDaoTest extends DatabaseTestCase
     parent::setUp();
     }
 
-  /** testGetRessource*/ 
+  /** testGetRessource*/
   public function testGetRessource()
     {
     $feeds = $this->loadData('Feed', 'default');

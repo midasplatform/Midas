@@ -22,19 +22,19 @@ class BitstreamModel extends BitstreamModelBase
   function getByChecksum($checksum)
     {
     $bitstreamchecksum = $this->database->getCassandra('bitstreamchecksum', $checksum);
-    
+
     if(empty($bitstreamchecksum))
       {
       return null;
       }
     $bitstreamid = $bitstreamchecksum['bitstream_id'];
-    
+
     $bitstream = $this->database->getCassandra('bitstream', $bitstreamid);
     $bitstream['bitstream_id'] = $bitstreamid;
-    $dao = $this->initDao('Bitstream', $bitstream);      
+    $dao = $this->initDao('Bitstream', $bitstream);
     return $dao;
-     
+
     } // end getByChecksum()
-  
+
 }
 ?>

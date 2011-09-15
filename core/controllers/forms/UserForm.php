@@ -31,23 +31,23 @@ class UserForm extends AppForm
     $password = new Zend_Form_Element_Password('password');
     $password
              ->addValidator('NotEmpty', true)
-             ->setRequired(true);    
+             ->setRequired(true);
     $rememberMe = new Zend_Form_Element_Checkbox('remerberMe');
-   
+
     if(isset($this->uri))
       {
       $url = new Zend_Form_Element_Hidden("url");
       $form->addElement($url);
       }
-    
+
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel($this->t("Login"))
             ->setAttrib('class', 'globalButton');
-     
+
     $form->addElements(array($email, $password, $rememberMe, $submit));
     return $form;
     }
-    
+
   /** register  form */
   public function createRegisterForm()
     {
@@ -63,15 +63,15 @@ class UserForm extends AppForm
           ->addValidator('NotEmpty', true)
           ->setAttrib('maxLength', 255)
           ->addValidator('EmailAddress');
-          
-    
+
+
     $firstname = new Zend_Form_Element_Text('firstname');
     $firstname
           ->setRequired(true)
           ->addValidator('NotEmpty', true)
           ->setAttrib('maxLength', 255)
           ->addValidator(new Zend_Validate_Alnum());
-    
+
     $lastname = new Zend_Form_Element_Text('lastname');
     $lastname
           ->setRequired(true)
@@ -83,72 +83,72 @@ class UserForm extends AppForm
     $password1
              ->addValidator('NotEmpty', true)
              ->setRequired(true);
-    
+
     $password2 = new Zend_Form_Element_Password('password2');
     $password2
              ->addValidator('NotEmpty', true)
              ->setRequired(true);
-           
+
     $condiftions = new Zend_Form_Element_Checkbox('conditions');
 
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel($this->t("Register"));
-    
+
     $form->addElements(array($email, $firstname, $lastname, $password1, $password2, $condiftions, $submit));
 
     return $form;
     }
-        
-    
+
+
   /** acount  form */
   public function createAccountForm($defaultValue = array())
     {
     $form = new Zend_Form;
     $form->setAction($this->webroot.'/user/settings')
           ->setMethod('post');
-              
+
     $firstname = new Zend_Form_Element_Text('firstname');
     $firstname
           ->setRequired(true)
           ->addValidator('NotEmpty', true)
           ->setAttrib('maxLength', 255)
           ->addValidator(new Zend_Validate_Alnum());
-    
+
     $lastname = new Zend_Form_Element_Text('lastname');
     $lastname
           ->setRequired(true)
           ->addValidator('NotEmpty', true)
           ->setAttrib('maxLength', 255)
           ->addValidator(new Zend_Validate_Alnum());
-    
+
     $company = new Zend_Form_Element_Text('company');
     $company
           ->setAttrib('maxLength', 255)
           ->addValidator(new Zend_Validate_Alnum());
-    
+
     $city = new Zend_Form_Element_Text('city');
     $city
           ->setAttrib('maxLength', 100)
           ->addValidator(new Zend_Validate_Alnum());
-    
+
     $country = new Zend_Form_Element_Text('country');
     $country
           ->setAttrib('maxLength', 100)
           ->addValidator(new Zend_Validate_Alnum());
-    
+
     $validator = new Zend_Validate_Callback(array('Zend_Uri', 'check'));
     $website = new Zend_Form_Element_Text('website');
     $website
           ->setAttrib('maxLength', 255)
           ->addValidator($validator);
-    
+
     $biography = new Zend_Form_Element_Textarea('biography');
     $biography
           ->addValidator(new Zend_Validate_Alnum());
 
     $submit = new  Zend_Form_Element_Submit('modifyAccount');
     $submit ->setLabel($this->t("Modify"));
-    
+
     $privacy = new Zend_Form_Element_Radio('privacy');
     $privacy->addMultiOptions(array(
                  MIDAS_USER_PUBLIC => $this->t("Public (Anyone can see my information)"),
@@ -156,7 +156,7 @@ class UserForm extends AppForm
                   ))
           ->setRequired(true)
           ->setValue(MIDAS_COMMUNITY_PUBLIC);
-    
+
     if(isset($defaultValue['firstname']))
       {
       $firstname->setValue($defaultValue['firstname']);
@@ -189,7 +189,7 @@ class UserForm extends AppForm
       {
       $biography->setValue($defaultValue['biography']);
       }
-    
+
     $form->addElements(array($website, $city, $country, $biography, $firstname, $lastname, $company, $privacy, $submit));
 
     return $form;

@@ -28,9 +28,9 @@ class ItempolicygroupModelBase extends AppModel
         'group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'group_id', 'child_column' => 'group_id')
       );
     $this->initialize(); // required
-    } // end __construct() 
-  
-    
+    } // end __construct()
+
+
   /** delete */
   public function delete($dao)
     {
@@ -38,18 +38,18 @@ class ItempolicygroupModelBase extends AppModel
     parent::delete($dao);
     $this->computePolicyStatus($item);
     }//end delete
-    
-    
+
+
   /** compute policy status*/
   public function computePolicyStatus($item)
     {
     $groupPolicies = $item->getItempolicygroup();
     $userPolicies = $item->getItempolicyuser();
-    
+
     $shared = false;
     $modelLoad = new MIDAS_ModelLoader();
     $itemModel = $modelLoad->loadModel('Item');
-    
+
     foreach($groupPolicies as $key => $policy)
       {
       if($policy->getGroupId() == MIDAS_GROUP_ANONYMOUS_KEY)
@@ -71,7 +71,7 @@ class ItempolicygroupModelBase extends AppModel
         break;
         }
       }
-      
+
     if($shared)
       {
       $item->setPrivacyStatus(MIDAS_PRIVACY_SHARED);
@@ -85,5 +85,5 @@ class ItempolicygroupModelBase extends AppModel
       return MIDAS_PRIVACY_PRIVATE;
       }
     }// end computePolicyStatus
-    
+
 } // end class ItempolicygroupModelBase

@@ -17,7 +17,7 @@ PURPOSE.  See the above copyright notices for more information.
 class MIDAS_GlobalDao
 {
   protected $key;
-  
+
   /**
    * @method public  __construct()
    *  Construct dao
@@ -65,12 +65,12 @@ class MIDAS_GlobalDao
       {
       throw new Zend_Exception("Model " . $this->getModel()->_name . ": key is not defined here.");
       }
-    $values = $this->getModel()->getValues($key); 
+    $values = $this->getModel()->getValues($key);
     if($values == null)
       {
       return false;
       }
-      
+
     $maindata = $this->getModel()->getMainData();
     foreach($maindata as $name => $type)
       {
@@ -81,7 +81,7 @@ class MIDAS_GlobalDao
       }
     return true;
     }
-   
+
   /** return values as an array*/
   public function toArray()
     {
@@ -119,7 +119,7 @@ class MIDAS_GlobalDao
    * @return value
    */
   public function get($var)
-    {     
+    {
     $maindata = $this->getModel()->getMainData();
     if(!isset($maindata[$var]))
       {
@@ -152,7 +152,7 @@ class MIDAS_GlobalDao
    */
   public function set($var, $value)
     {
-    $maindata = $this->getModel()->getMainData(); 
+    $maindata = $this->getModel()->getMainData();
     if(!isset($maindata[$var]))
       {
       throw new Zend_Exception("Model " . $this->getModel()->getName() . ": var ".$var." is not defined here.");
@@ -187,7 +187,7 @@ class MIDAS_GlobalDao
       }
     return $this->ModelLoader->loadModel($this->_model);
     } //end method getModel()
-    
+
   /**
    * @method public function getLogger()
    * Get Logger
@@ -197,7 +197,7 @@ class MIDAS_GlobalDao
     {
     return Zend_Registry::get('logger');
     } //end method getLogger()
-    
+
   /**
    * @method public  __call($method, $params)
    *  Catch ifthe method doesn't exists and create a method dynamically
@@ -238,7 +238,7 @@ class MIDAS_GlobalDao
       throw new Zend_Exception("Dao:  " . __CLASS__ . ": method ".$method." doesn't exist.");
       }
     } // end __call
-    
+
   /**
    * @method private _getRealName(
    * @param $var name

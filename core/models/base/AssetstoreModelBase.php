@@ -19,7 +19,7 @@ abstract class AssetstoreModelBase extends AppModel
     parent::__construct();
     $this->_name = 'assetstore';
     $this->_key = 'assetstore_id';
-  
+
     $this->_mainData = array(
         'assetstore_id' =>  array('type' => MIDAS_DATA),
         'name' =>  array('type' => MIDAS_DATA),
@@ -30,16 +30,16 @@ abstract class AssetstoreModelBase extends AppModel
         );
     $this->initialize(); // required
     } // end __construct()
-   
+
   /** Abstract functions */
   abstract function getAll();
-  
+
   /** save an assetsore*/
   public function save($dao)
     {
     parent::save($dao);
     }
-  
+
   /** delete an assetstore (and all the items in it)*/
   public function delete($dao)
     {
@@ -62,10 +62,10 @@ abstract class AssetstoreModelBase extends AppModel
         {
         continue;
         }
-      
+
       $items[$item->getKey()] = $item;
       }
-      
+
     $modelLoader = new MIDAS_ModelLoader();
     $item_model = $modelLoader->loadModel('Item');
     foreach($items as $item)
@@ -74,5 +74,5 @@ abstract class AssetstoreModelBase extends AppModel
       }
     parent::delete($dao);
     }// delete
- 
+
 } // end class AssetstoreModelBase

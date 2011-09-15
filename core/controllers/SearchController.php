@@ -18,12 +18,12 @@ class SearchController extends AppController
   public $_models = array('Item', 'Folder', 'User', 'Community', 'Group');
   public $_daos = array('Item', 'Folder', 'User', 'Community');
   public $_components = array('Sortdao', 'Date', 'Utility', 'Search');
-    
+
   /** Init Controller */
   function init()
-    { 
+    {
     $this->view->activemenu = 'feed'; // set the active menu
-    
+
     // ifthe number of parameters is more than 3 then it's the liveAction or advanced search
     if(count($this->_getAllParams()) == 3)
       {
@@ -36,19 +36,19 @@ class SearchController extends AppController
   /** search live Action */
   public function indexAction()
     {
-    $this->view->header = $this->t("Search");  
-    
-    // Pass the keyword to javascript  
+    $this->view->header = $this->t("Search");
+
+    // Pass the keyword to javascript
     $keyword = $this->getRequest()->getParam('q');
     $this->view->json['search']['keyword'] = $keyword;
-    
+
     $ajax = $this->_getParam('ajax');
     $order = $this->_getParam('order');
     if(!isset($order))
       {
       $order = 'view';
       }
-    
+
     $results = $this->Component->Search->searchAll($this->userSession->Dao, $keyword, $order);
     if(isset($ajax))
       {
@@ -69,33 +69,33 @@ class SearchController extends AppController
       }
     }//end indexAction
 
-    
-    
+
+
   /** search live Action */
   public function liveAction()
     {
-    // This is necessary in order to avoid session lock and being able to run two 
+    // This is necessary in order to avoid session lock and being able to run two
     // ajax requests simultaneously
     session_write_close();
 
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
-      
+
     $search = $this->getRequest()->getParam('term');
     $shareSearch = $this->getRequest()->getParam('shareSearch'); //return user group and communities
-    $userSearch = $this->getRequest()->getParam('userSearch'); 
-    
+    $userSearch = $this->getRequest()->getParam('userSearch');
+
     if(isset($shareSearch))
       {
       $ItemsDao = array();
       $FoldersDao = array();
 
       // Search for the communities
-      $CommunitiesDao = $this->Community->getCommunitiesFromSearch($search, $this->userSession->Dao); 
+      $CommunitiesDao = $this->Community->getCommunitiesFromSearch($search, $this->userSession->Dao);
       $GroupsDao = array();
       foreach($CommunitiesDao as $communitieDao)
-        {        
-        $groups = $communitieDao->getGroups(); 
+        {
+        $groups = $communitieDao->getGroups();
         if(!$this->Community->policyCheck($communitieDao, $this->userSession->Dao))
           {
           continue;
@@ -107,10 +107,10 @@ class SearchController extends AppController
           $GroupsDao[] = $group;
           }
         }
-        
+
       $CommunitiesDao = array();
       // Search for the users
-      $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao); 
+      $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao);
       }
     elseif(isset($userSearch))
       {
@@ -119,7 +119,7 @@ class SearchController extends AppController
       $CommunitiesDao = array();
       $GroupsDao = array();
       // Search for the users
-      $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao); 
+      $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao);
       }
     else
       {
@@ -127,33 +127,33 @@ class SearchController extends AppController
       $ItemsDao = $this->Item->getItemsFromSearch($search, $this->userSession->Dao);
 
       // Search for the folders
-      $FoldersDao = $this->Folder->getFoldersFromSearch($search, $this->userSession->Dao); 
-     
+      $FoldersDao = $this->Folder->getFoldersFromSearch($search, $this->userSession->Dao);
+
       // Search for the communities
-      $CommunitiesDao = $this->Community->getCommunitiesFromSearch($search, $this->userSession->Dao); 
+      $CommunitiesDao = $this->Community->getCommunitiesFromSearch($search, $this->userSession->Dao);
 
       // Search for the users
-      $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao); 
+      $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao);
       $GroupsDao = array();
       }
 
-    
+
     // Compute how many of each we should display
     $nitems = count($ItemsDao);
     $nfolders = count($FoldersDao);
     $ncommunities = count($CommunitiesDao);
     $ngroups = count($GroupsDao);
     $nusers = count($UsersDao);
-    
+
     $nmaxfolders = ($nfolders < 3) ? $nfolders : 3;
     $nmaxcommunities = ($ncommunities < 3) ? $ncommunities : 3;
     $nmaxusers = ($nusers < 3) ? $nusers : 3;
-    
+
     if($nitems > 5)
       {
       $nitems = 14 - ($nmaxfolders + $nmaxcommunities + $nmaxusers);
       }
-    
+
     if($nfolders > 3)
       {
       $nfolders = 14 - ($nitems + $nmaxcommunities + $nmaxusers);
@@ -167,8 +167,8 @@ class SearchController extends AppController
     if($nusers > 3)
       {
       $nusers = 14 - ($nitems + $nfolders + $ncommunities);
-      }  
-      
+      }
+
     // Return the JSON results
     echo '[';
     $id = 1;
@@ -178,163 +178,162 @@ class SearchController extends AppController
       {
       if($n == $nitems)
         {
-        break;  
-        }  
+        break;
+        }
       if($id > 1)
         {
-        echo ', ';    
+        echo ', ';
         }
-      echo '{'; 
-      echo '"id":"'.$id.'"'; 
+      echo '{';
+      echo '"id":"'.$id.'"';
       echo ', "label":"'.$this->Component->Utility->sliceName($itemDao->getName(), 55);
       if($itemDao->count > 1)
         {
         echo ' ('.$itemDao->count.')"';
         }
-      else 
+      else
         {
-        echo '"';  
-        } 
-      
-      echo ', "value":"'.$itemDao->getName().'"'; 
-      
+        echo '"';
+        }
+
+      echo ', "value":"'.$itemDao->getName().'"';
+
       if($itemDao->count == 1)
         {
-        echo ', "itemid":"'.$itemDao->getItemId().'"'; 
+        echo ', "itemid":"'.$itemDao->getItemId().'"';
         }
-      echo ', "category":"'.$this->t('Items').'"';   
+      echo ', "category":"'.$this->t('Items').'"';
       $id++;
       $n++;
-      echo '}'; 
+      echo '}';
       }
     // Groups
     foreach($GroupsDao as $groupDao)
       {
       if($n == $ngroups)
         {
-        break;  
-        }  
+        break;
+        }
       if($id > 1)
         {
-        echo ', ';    
+        echo ', ';
         }
-      echo '{'; 
-      echo '"id":"'.$id.'"'; 
+      echo '{';
+      echo '"id":"'.$id.'"';
       echo ', "label":"'.$this->Component->Utility->sliceName($groupDao->getName(), 55);
-      echo '"';       
-      echo ', "value":"'.$groupDao->getName().'"'; 
-      echo ', "groupid":"'.$groupDao->getKey().'"'; 
-      echo ', "category":"'.$this->t('Groups').'"';   
+      echo '"';
+      echo ', "value":"'.$groupDao->getName().'"';
+      echo ', "groupid":"'.$groupDao->getKey().'"';
+      echo ', "category":"'.$this->t('Groups').'"';
       $id++;
       $n++;
-      echo '}'; 
+      echo '}';
       }
 
-    // Folder  
+    // Folder
     $n = 0;
     foreach($FoldersDao as $folderDao)
       {
       if($n == $nfolders)
         {
-        break;  
+        break;
         }
       if($id > 1)
         {
-        echo ', ';    
+        echo ', ';
         }
-      echo '{'; 
-      echo '"id":"'.$id.'"'; 
+      echo '{';
+      echo '"id":"'.$id.'"';
       echo ', "label":"'.$this->Component->Utility->sliceName($folderDao->getName(), 55);
       if(isset($folderDao->count) && $folderDao->count > 1)
         {
         echo ' ('.$folderDao->count.')"';
         }
-      else 
+      else
         {
-        echo '"';  
-        } 
+        echo '"';
+        }
       echo ', "value":"'.$folderDao->getName().'"';
       if(isset($folderDao->count) && $folderDao->count == 1)
         {
-        echo ', "folderid":"'.$folderDao->getFolderId().'"'; 
-        } 
-      echo ', "category":"'.$this->t('Folders').'"';   
+        echo ', "folderid":"'.$folderDao->getFolderId().'"';
+        }
+      echo ', "category":"'.$this->t('Folders').'"';
       $id++;
       $n++;
-      echo '}'; 
-      } 
-      
-    // Community  
+      echo '}';
+      }
+
+    // Community
     $n = 0;
     foreach($CommunitiesDao as $communityDao)
       {
       if($n == $ncommunities)
         {
-        break;  
-        }  
+        break;
+        }
       if($id > 1)
         {
-        echo ', ';    
+        echo ', ';
         }
-      echo '{'; 
-      echo '"id":"'.$id.'"'; 
+      echo '{';
+      echo '"id":"'.$id.'"';
       echo ', "label":"'.$this->Component->Utility->sliceName($communityDao->getName(), 55);
       if(isset($communityDao->count) && $communityDao->count > 1)
         {
         echo ' ('.$communityDao->count.')"';
         }
-      else 
+      else
         {
-        echo '"';  
-        } 
-      echo ', "value":"'.$communityDao->getName().'"'; 
+        echo '"';
+        }
+      echo ', "value":"'.$communityDao->getName().'"';
       if(!isset($communityDao->count) || $communityDao->count == 1)
         {
-        echo ', "communityid":"'.$communityDao->getKey().'"'; 
+        echo ', "communityid":"'.$communityDao->getKey().'"';
         }
-      echo ', "category":"'.$this->t('Communities').'"';   
+      echo ', "category":"'.$this->t('Communities').'"';
       $id++;
       $n++;
-      echo '}'; 
+      echo '}';
       }
-       
+
     // User
     $n = 0;
     foreach($UsersDao as $userDao)
       {
       if($n == $nusers)
         {
-        break;  
+        break;
         }
       if($id > 1)
         {
-        echo ', ';    
+        echo ', ';
         }
-      echo '{'; 
-      echo '"id":"'.$id.'"'; 
+      echo '{';
+      echo '"id":"'.$id.'"';
       echo ', "label":"'.$userDao->getFirstname().' '.$userDao->getLastname();
       if($userDao->count > 1)
         {
         echo ' ('.$userDao->count.')"';
         }
-      else 
+      else
         {
-        echo '"';  
-        } 
+        echo '"';
+        }
       echo ', "value":"'.$userDao->getFirstname().' '.$userDao->getLastname().'"';
       if($userDao->count == 1)
         {
-        echo ', "userid":"'.$userDao->getUserId().'"'; 
+        echo ', "userid":"'.$userDao->getUserId().'"';
         }
-      echo ', "category":"'.$this->t('Users').'"';   
+      echo ', "category":"'.$this->t('Users').'"';
       $id++;
       $n++;
       echo '}';
-      }   
-      
+      }
+
     echo ']';
     }
-    
+
 } // end class
 
-  

@@ -14,7 +14,7 @@ require_once dirname(__FILE__).'/bootstrap.php';
 abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
   {
   protected $application;
-  
+
   protected $params = array();
 
   /** set up tests*/
@@ -25,8 +25,8 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     $this->ModelLoader = new MIDAS_ModelLoader();
     parent::setUp();
     }
-  
-  /** get response body*/  
+
+  /** get response body*/
   public function getBody()
     {
     return $this->response->outputBody();
@@ -44,7 +44,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       }
     return new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
     }
-    
+
   /** loadData */
   protected function loadData($modelName, $file = null, $module = '')
     {
@@ -69,8 +69,8 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
   private function _initModule()
     {
     $router = Zend_Controller_Front::getInstance()->getRouter();
-    //Init Modules    
-    $frontController = Zend_Controller_Front::getInstance();  
+    //Init Modules
+    $frontController = Zend_Controller_Front::getInstance();
     $frontController->addControllerDirectory(BASE_PATH . '/core/controllers');
     if(isset($this->enabledModules) || (isset($_POST['enabledModules']) || isset($_GET['enabledModules'])))
       {
@@ -96,34 +96,34 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       {
       $modules = array();
       }
-      
+
     // routes modules
     $listeModule = array();
     foreach($modules as $key => $module)
-      {      
+      {
       if($module == 1 &&  file_exists(BASE_PATH.'/modules/'.$key))
         {
         $listeModule[] = $key;
         }
       }
-      
+
     require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
     $utilityComponent = new UtilityComponent();
     foreach($listeModule as $m)
-      { 
+      {
       $route = $m;
-      $nameModule = $m; 
-      $router->addRoute($nameModule."-1", 
-          new Zend_Controller_Router_Route("".$route."/:controller/:action/*", 
+      $nameModule = $m;
+      $router->addRoute($nameModule."-1",
+          new Zend_Controller_Router_Route("".$route."/:controller/:action/*",
               array(
                   'module' => $nameModule)));
-      $router->addRoute($nameModule."-2", 
-          new Zend_Controller_Router_Route("".$route."/:controller/", 
+      $router->addRoute($nameModule."-2",
+          new Zend_Controller_Router_Route("".$route."/:controller/",
               array(
                   'module' => $nameModule,
                   'action' => 'index')));
-      $router->addRoute($nameModule."-3", 
-          new Zend_Controller_Router_Route("".$route."/", 
+      $router->addRoute($nameModule."-3",
+          new Zend_Controller_Router_Route("".$route."/",
               array(
                   'module' => $nameModule,
                   'controller' => 'index',
@@ -131,21 +131,21 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       $frontController->addControllerDirectory(BASE_PATH . "/modules/".$route."/controllers", $nameModule);
       if(file_exists(BASE_PATH . "/modules/".$route."/AppController.php"))
         {
-        require_once BASE_PATH . "/modules/".$route."/AppController.php";      
+        require_once BASE_PATH . "/modules/".$route."/AppController.php";
         }
       if(file_exists(BASE_PATH . "/modules/".$route."/models/AppDao.php"))
         {
-        require_once BASE_PATH . "/modules/".$route."/models/AppDao.php";      
+        require_once BASE_PATH . "/modules/".$route."/models/AppDao.php";
         }
       if(file_exists(BASE_PATH . "/modules/".$route."/models/AppModel.php"))
         {
-        require_once BASE_PATH . "/modules/".$route."/models/AppModel.php";      
+        require_once BASE_PATH . "/modules/".$route."/models/AppModel.php";
         }
       $utilityComponent->installModule($nameModule);
       }
     Zend_Registry::set('modulesEnable', $listeModule);
     }
-  
+
   /**
    *
     The method dispatchUrl  fetchs the page.
@@ -160,7 +160,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       {
       $this->params['testingUserId'] = $userDao->getKey();
       }
-     
+
     if(isset($this->enabledModules) && !empty($this->enabledModules))
       {
       $this->params['enabledModules'] = join(";", $this->enabledModules);
@@ -169,7 +169,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       {
       unset($this->params['enabledModules']);
       }
-   
+
     if($this->request->isPost())
       {
       $this->request->setPost($this->params);
@@ -205,7 +205,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
 
       $this->fail($errorComponent->getFullErrorMessage());
       }
-     
+
     if($withException)
       {
       $this->fail('The dispatch should throw an exception');
@@ -220,15 +220,15 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     $this->frontController->setControllerDirectory(BASE_PATH . '/core/controllers', 'default');
     $this->_initModule();
     }
-   
-  /** end test*/  
+
+  /** end test*/
   public function tearDown()
     {
     Zend_Controller_Front::getInstance()->resetInstance();
     $this->resetAll();
     parent::tearDown();
     }
-    
+
   /** init midas*/
   public function appBootstrap()
     {
@@ -268,7 +268,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       $databaseFixture =  new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
       $databaseTester->setupDatabase($databaseFixture);
       }
-      
+
     if($configDatabase->database->adapter == 'PDO_PGSQL')
       {
       $db->query("SELECT setval('feed_feed_id_seq', (SELECT MAX(feed_id) FROM feed)+1);");
@@ -276,7 +276,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       $db->query("SELECT setval('item_item_id_seq', (SELECT MAX(item_id) FROM item)+1);");
       $db->query("SELECT setval('itemrevision_itemrevision_id_seq', (SELECT MAX(itemrevision_id) FROM itemrevision)+1);");
       $db->query("SELECT setval('folder_folder_id_seq', (SELECT MAX(folder_id) FROM folder)+1);");
-      }     
+      }
     }
 
   /**

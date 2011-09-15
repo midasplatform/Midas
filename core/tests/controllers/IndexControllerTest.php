@@ -24,7 +24,7 @@ class IndexControllerTest extends ControllerTestCase
     {
     $this->dispatchUrI("/index");
     $this->assertController("feed");
-    $this->assertAction("index");   
+    $this->assertAction("index");
     }
 
   }

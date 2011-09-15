@@ -12,8 +12,8 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Search */
 class SearchComponent extends AppComponent
-{  
-  
+{
+
   /** get Zend Lucene index */
   public function getLuceneItemIndex()
     {
@@ -22,17 +22,17 @@ class SearchComponent extends AppComponent
       {
       mkdir($path);
       }
-    
+
     $path .= '/item';
     if(!file_exists($path))
       {
       mkdir($path);
       Zend_Search_Lucene::create($path);
       }
-      
+
     return Zend_Search_Lucene::open($path);
     }
-    
+
   /** search all the results */
   public function searchAll($userDao, $search, $order)
     {
@@ -41,37 +41,37 @@ class SearchComponent extends AppComponent
     $folderModel = $modelLoad->loadModel('Folder');
     $communityModel = $modelLoad->loadModel('Community');
     $userModel = $modelLoad->loadModel('User');
-    
+
     $ItemsDao = $itemModel->getItemsFromSearch($search, $userDao, 200, false, $order);
-    
+
     // Search for the folders
-    $FoldersDao = $folderModel->getFoldersFromSearch($search, $userDao, 15, false, $order); 
-     
+    $FoldersDao = $folderModel->getFoldersFromSearch($search, $userDao, 15, false, $order);
+
     // Search for the communities
-    $CommunitiesDao = $communityModel->getCommunitiesFromSearch($search, $userDao, 15, false, $order); 
-    
+    $CommunitiesDao = $communityModel->getCommunitiesFromSearch($search, $userDao, 15, false, $order);
+
     // Search for the users
-    $UsersDao = $userModel->getUsersFromSearch($search, $userDao, 15, false, $order); 
-    
+    $UsersDao = $userModel->getUsersFromSearch($search, $userDao, 15, false, $order);
+
     $return = array();
-    
+
     $return['nitems'] = count($ItemsDao);
     $return['nfolders'] = count($FoldersDao);
     $return['ncommunities'] = count($CommunitiesDao);
     $return['nusers'] = count($UsersDao);
     $return['results'] = $this->_formatResults($order, $ItemsDao, $FoldersDao, $CommunitiesDao, $UsersDao);
-    
+
     return $return;
     }
-      
-  /** 
+
+  /**
    * Format search results
    * @param string $order
    * @param Array $items
    * @param Array $folders
    * @param Array $communities
    * @param Array $users
-   * @return Array 
+   * @return Array
    */
   private function _formatResults($order, $items, $folders, $communities, $users)
     {
@@ -85,13 +85,13 @@ class SearchComponent extends AppComponent
       $communities[$key]->date_update = $community->getCreation();
       }
     $results = array_merge($folders, $items, $communities, $users);
-    
+
     Zend_Loader::loadClass('SortdaoComponent', BASE_PATH . '/core/controllers/components');
     Zend_Loader::loadClass('DateComponent', BASE_PATH . '/core/controllers/components');
-    
+
     $sortdaoComponent = new SortdaoComponent();
     $dateComponent = new DateComponent();
-      
+
     switch($order)
       {
       case 'name':

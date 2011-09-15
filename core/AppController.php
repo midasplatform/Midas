@@ -25,9 +25,9 @@ class AppController extends MIDAS_GlobalController
     {
     parent::preDispatch();
     $this->view->setEncoding('iso-8859-1');
-    
-    $this->view->setScriptPath(BASE_PATH."/core/views");  
-    
+
+    $this->view->setScriptPath(BASE_PATH."/core/views");
+
     $fc = Zend_Controller_Front::getInstance();
     $module = $fc->getRequest()->getModuleName();
     if($module == 'default')
@@ -38,7 +38,7 @@ class AppController extends MIDAS_GlobalController
     $this->view->webroot = $fc->getBaseUrl();
     $this->coreWebroot = $this->view->webroot.'/core';
     $this->view->coreWebroot = $this->coreWebroot;
-    
+
     $this->view->demoMode = $this->isDemoMode();
 
     $this->view->title = Zend_Registry::get('configGlobal')->application->name;
@@ -46,26 +46,26 @@ class AppController extends MIDAS_GlobalController
     $this->view->metaKeywords = Zend_Registry::get('configGlobal')->application->keywords;
 
     // init notifier
-    Zend_Registry::set('notifier', new MIDAS_Notifier()); 
-    
+    Zend_Registry::set('notifier', new MIDAS_Notifier());
+
     // Set the version
     $this->view->version = '3.0.0';
     if(isset(Zend_Registry::get('configDatabase')->version))
       {
       $this->view->version = Zend_Registry::get('configDatabase')->version;
       }
-   
+
     require_once BASE_PATH . '/core/models/dao/UserDao.php';
     require_once BASE_PATH . '/core/models/dao/ItemDao.php';
     //Init Session
     if($fc->getRequest()->getActionName() != 'login' || $fc->getRequest()->getControllerName() != 'user')
       {
-      if(isset($_POST['sid']))    
-        { 
-        Zend_Session::setId($_POST['sid']);       
+      if(isset($_POST['sid']))
+        {
+        Zend_Session::setId($_POST['sid']);
         }
-      Zend_Session::start();  
-      
+      Zend_Session::start();
+
       // log in when testing
       $testingUserId = $this->_getParam('testingUserId');
       $modelLoad = new MIDAS_ModelLoader();
@@ -77,15 +77,15 @@ class AppController extends MIDAS_GlobalController
         if($user->Dao == false)
           {
           throw new Zend_Exception('Unable to find user');
-          }          
+          }
         }
       else
         {
         $user = new Zend_Session_Namespace('Auth_User');
         }
-      
+
       if($user->Dao == null)
-        {        
+        {
         $userModel = $modelLoad->loadModel('User');
         $cookieData = $this->getRequest()->getCookie('midasUtil');
         if(!empty($cookieData))
@@ -101,7 +101,7 @@ class AppController extends MIDAS_GlobalController
             }
           }
         }
-        
+
       $controllerName = $fc->getRequest()->getControllerName();
       $actionName = $fc->getRequest()->getActionName();
       if($fc->getRequest()->getControllerName() == 'browse' || $fc->getRequest()->getControllerName() == 'download')
@@ -120,11 +120,11 @@ class AppController extends MIDAS_GlobalController
       if($user->Dao != null && $user->Dao instanceof UserDao)
         {
         if($fc->getRequest()->getControllerName() != 'install' && $fc->getRequest()->getControllerName() != 'error' && $user->Dao->isAdmin())
-          {          
+          {
           if($this->isUpgradeNeeded())
             {
             $this->view->needUpgrade = true;
-            }  
+            }
           $errorlogModel = $modelLoad->loadModel('Errorlog');
           $logs = $errorlogModel->getLog(date('c', strtotime("-24 hour")), date('c'), 'all', 'all');
           foreach($logs as $key => $l)
@@ -140,19 +140,19 @@ class AppController extends MIDAS_GlobalController
             }
           }
 
-          
+
         if(!empty($user->uploaded))
           {
           $this->view->showUploadedLink = true;
           }
         $this->logged = true;
         $this->view->logged = true;
-        
+
         $this->view->userDao = $user->Dao;
         $cookieData = $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->user_id);
         $this->view->recentItems = array();
         if(isset($cookieData) && file_exists(BASE_PATH.'/core/configs/database.local.ini')) //check if midas installed
-          {  
+          {
           $modelLoad = new MIDAS_ModelLoader();
           $itemModel = $modelLoad->loadModel('Item');
           $tmpRecentItems = unserialize($cookieData);
@@ -172,9 +172,9 @@ class AppController extends MIDAS_GlobalController
               }
             }
 
-          $this->view->recentItems = $recentItems; 
+          $this->view->recentItems = $recentItems;
           $check = $this->_getParam('checkRecentItem');
-          } 
+          }
         $user->Dao->lastAction = date('c');
         }
       else
@@ -189,7 +189,7 @@ class AppController extends MIDAS_GlobalController
       $this->view->logged = false;
       $this->logged = false;
       }
-      
+
     if(isset($user))
       {
       Zend_Registry::set('userSession', $user);
@@ -198,7 +198,7 @@ class AppController extends MIDAS_GlobalController
       {
       Zend_Registry::set('userSession', null);
       }
-      
+
     $this->view->lang = Zend_Registry::get('configGlobal')->application->lang;
     //create a global javascript json array
     $jsonGlobal = array(
@@ -210,12 +210,12 @@ class AppController extends MIDAS_GlobalController
       "lang" => Zend_Registry::get('configGlobal')->application->lang,
       "Yes" => $this->t('Yes'),
       "No" => $this->t('No'));
-    
-    
+
+
     $login = array(
       "titleUploadLogin" => $this->t('Please log in'),
       "contentUploadLogin" => $this->t('You need to be logged in to be able to upload files.'));
-    
+
     $browse = array(
       'view' => $this->t('View'),
       'uploadIn' => $this->t('Upload here'),
@@ -238,10 +238,10 @@ class AppController extends MIDAS_GlobalController
       'copy' => $this->t('Copy'),
       'element' => $this->t('element'),
       'community' => array(
-        
+
           'invit' => $this->t('Invite collaborators'),
           'advanced' => $this->t('Advanced properties')));
-      
+
     $feed = array(
       "deleteFeed" => $this->t('Do you really want to delete the feed'));
 
@@ -276,13 +276,13 @@ class AppController extends MIDAS_GlobalController
     {
     return Zend_Registry::get('configGlobal')->environment == 'testing';
     }
-    
+
   /** check if demo mode is set */
   public function isDemoMode()
     {
     return Zend_Registry::get('configGlobal')->demomode == 1;
     }
-    
+
   /** disable layout */
   public function disableLayout()
     {
@@ -296,7 +296,7 @@ class AppController extends MIDAS_GlobalController
     {
     $this->_helper->viewRenderer->setNoRender();
     }
-    
+
   /** check if midas needs to be upgraded */
   public function isUpgradeNeeded()
     {
@@ -304,7 +304,7 @@ class AppController extends MIDAS_GlobalController
     $upgradeComponent = new UpgradeComponent();
     $db = Zend_Registry::get('dbAdapter');
     $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
-    
+
     $upgradeComponent->initUpgrade('core', $db, $dbtype);
     if($upgradeComponent->getNewestVersion() != $upgradeComponent->transformVersionToNumeric(Zend_Registry::get('configDatabase')->version))
       {
@@ -319,7 +319,7 @@ class AppController extends MIDAS_GlobalController
         {
         return true;
         }
-      }      
+      }
     return false;
     }
 
@@ -430,6 +430,6 @@ class AppController extends MIDAS_GlobalController
   * @var UserModelBase
   */
   var $User;
-  
+
   /**end completion eclipse */
   }//end class

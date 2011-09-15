@@ -21,7 +21,7 @@ class FeedControllerTest extends ControllerTestCase
     $this->_daos = array('User');
     $this->enabledModules = array('helloworld');
     parent::setUp();
-    
+
     }
 
   /** test index*/
@@ -29,8 +29,8 @@ class FeedControllerTest extends ControllerTestCase
     {
     $this->dispatchUrI("/feed");
     $this->assertController("feedCore");
-    $this->assertAction("index");   
-    
+    $this->assertAction("index");
+
     if(strpos($this->getBody(), "This page replaces the normal feed page.") === false)
       {
       $this->fail('Unable to find body element');
