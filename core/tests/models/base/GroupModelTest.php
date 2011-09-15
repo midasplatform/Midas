@@ -23,7 +23,7 @@ class GroupModelTest extends DatabaseTestCase
     parent::setUp();
     }
 
-  /** testCreateAndAddUser*/  
+  /** testCreateAndAddUser*/
   public function testCreateAndAddUser()
     {
     $usersFile = $this->loadData('User', 'default');

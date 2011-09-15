@@ -30,25 +30,25 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     $this->loadElements();
     parent::__construct($request, $response, $invokeArgs);
     }
-    
+
   /**
    * Pre-dispatch routines
    *
    * @return void
    */
   public function preDispatch()
-    {   
+    {
     // Init the translater
 
     $translate = new Zend_Translate('csv', BASE_PATH.'/core/translation/fr-main.csv', 'en');
     Zend_Registry::set('translater', $translate);
-    
+
     $translaters = array();
     $configs = array();
     $modulesEnable =  Zend_Registry::get('modulesEnable');
     foreach($modulesEnable as $module)
       {
-      $translaters[$module] = new Zend_Translate('csv', BASE_PATH."/modules/".$module."/translation/fr-main.csv", "en");  
+      $translaters[$module] = new Zend_Translate('csv', BASE_PATH."/modules/".$module."/translation/fr-main.csv", "en");
       if(file_exists(BASE_PATH."/core/configs/".$module.".local.ini"))
         {
         $configs[$module] = new Zend_Config_Ini(BASE_PATH."/core/configs/".$module.".local.ini", 'global');
@@ -56,11 +56,11 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       else
         {
         $configs[$module] = new Zend_Config_Ini(BASE_PATH."/modules/".$module."/configs/module.ini", 'global');
-        }      
+        }
       }
     Zend_Registry::set('translatersModules', $translaters);
     Zend_Registry::set('configsModules', $configs);
-    
+
     $forward = $this->_getParam("forwardModule");
     $request = $this->getRequest();
     $response = $this->getResponse();
@@ -77,7 +77,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
             {
             $this->_forward($request->getActionName(), $request->getControllerName().'Core', $key, array('forwardModule' => true));
             }
-          }          
+          }
         }
       }
     parent::preDispatch();
@@ -99,7 +99,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
 
       // Passing the object to cache by default
       Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
-      }      
+      }
     }
 
   /**
@@ -157,7 +157,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       {
       $this->$key = $tmp;
       }
-    
+
     if(isset($this->_daos))
       {
       foreach($this->_daos as $dao)
@@ -167,7 +167,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       }
 
     Zend_Registry::set('components', array());
-    
+
     if(isset($this->_components))
       {
       foreach($this->_components as $component)
@@ -204,9 +204,9 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       return;
       }
     $db = Zend_Registry::get('dbAdapter');
-    
+
     if(method_exists($db, "getProfiler"))
-      { 
+      {
       $profiler = $db->getProfiler();
       $totalTime = $profiler->getTotalElapsedSecs();
       $queryCount = $profiler->getTotalNumQueries();
@@ -215,7 +215,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         return;
         }
       }
-    
+
     $longestTime = 0;
     $longestQuery = null;
     if(isset($profiler) && !empty($profiler))
@@ -271,7 +271,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     $config = Zend_Registry::get('configGlobal');
     return $config->environment;
     }
-    
+
   /**
    * @method public getTempDirectory()
    * get the midas temporary directory
@@ -281,9 +281,9 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     {
     return BASE_PATH.'/tmp/misc';
     }
-  
+
   /** return an array of form element     */
-  public function getFormAsArray(Zend_Form $form) 
+  public function getFormAsArray(Zend_Form $form)
     {
     $array = array();
     $array['action'] = $form->getAction();
@@ -296,5 +296,5 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       $array[$element->getName()] = $element;
       }
     return $array;
-    }        
+    }
 } // end class

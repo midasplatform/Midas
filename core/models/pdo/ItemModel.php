@@ -18,7 +18,7 @@ require_once BASE_PATH.'/core/models/base/ItemModelBase.php';
  */
 class ItemModel extends ItemModelBase
 {
-  
+
   /** Get the keyword from the search.
    * @return Array of ItemDao */
   function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view')
@@ -44,9 +44,9 @@ class ItemModel extends ItemModelBase
         $isAdmin = true;
         }
       }
-          
+
     require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
-    $component = new SearchComponent();    
+    $component = new SearchComponent();
     $index = $component->getLuceneItemIndex();
     Zend_Search_Lucene_Search_QueryParser::setDefaultOperator(Zend_Search_Lucene_Search_QueryParser::B_AND);
     Zend_Search_Lucene::setResultSetLimit($limit * 3);
@@ -59,7 +59,7 @@ class ItemModel extends ItemModelBase
       $rowset = $index->find($searchterm);
       }
 
-    
+
     $return = array();
     $itemIdsCount = array();
     $itemIds = array();
@@ -78,7 +78,7 @@ class ItemModel extends ItemModelBase
       {
       $itemIds[] = $key;
       }
-      
+
     if(empty($itemIds))
       {
       return array();
@@ -92,7 +92,7 @@ class ItemModel extends ItemModelBase
       {
       $sql->from(array('i' => 'item'));
       }
-              
+
     if(!$isAdmin)
       {
       $sql ->joinLeft(array('ipu' => 'itempolicyuser'), '
@@ -114,15 +114,15 @@ class ItemModel extends ItemModelBase
             ipg.item_id is not null)'
             );
       }
-    $sql->setIntegrityCheck(false)  
-          ->where('i.item_id IN   (?)', $itemIds)             
+    $sql->setIntegrityCheck(false)
+          ->where('i.item_id IN   (?)', $itemIds)
           ->limit($limit);
-    
+
     if($group)
       {
       $sql->group('i.name');
       }
-      
+
     switch($order)
       {
       case 'name':
@@ -131,7 +131,7 @@ class ItemModel extends ItemModelBase
       case 'date':
         $sql->order(array('i.date_update ASC'));
         break;
-      case 'view': 
+      case 'view':
       default:
         $sql->order(array('i.view DESC'));
         break;
@@ -149,11 +149,11 @@ class ItemModel extends ItemModelBase
       }
     return $return;
     } // end getItemsFromSearch()
-  
+
   /** get All*/
   function getAll()
     {
-    $rowset = $this->database->fetchAll($this->database->select()->order(array('item_id DESC'))); 
+    $rowset = $this->database->fetchAll($this->database->select()->order(array('item_id DESC')));
     $results = array();
     foreach($rowset as $row)
       {
@@ -161,11 +161,11 @@ class ItemModel extends ItemModelBase
       }
     return $results;
     }
-    
+
   /** get by uuid*/
   function getByUuid($uuid)
     {
-    $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid)); 
+    $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid));
     $dao = $this->initDao(ucfirst($this->_name), $row);
     return $dao;
     }
@@ -173,7 +173,7 @@ class ItemModel extends ItemModelBase
    * Get Items where user policy exists and is != admin
    * @param type $userDao
    * @param type $limit
-   * @return Array 
+   * @return Array
    */
   function getSharedToCommunity($communityDao, $limit = 20)
     {
@@ -201,12 +201,12 @@ class ItemModel extends ItemModelBase
       }
     return $results;
     }//end getSharedToCommunity
-    
+
   /**
    * Get most popular items
    * @param type $limit
-   * @return Array 
-   */ 
+   * @return Array
+   */
   function getMostPopulars($userDao, $limit = 20)
     {
     $sql = $this->database->select()
@@ -224,15 +224,15 @@ class ItemModel extends ItemModelBase
       $tmp = $this->initDao('Item', $row);
       $results[] = $tmp;
       }
-    return $results; 
+    return $results;
     }
 
-    
+
   /**
    * Get Items where user policy = Admin
    * @param type $userDao
    * @param type $limit
-   * @return Array 
+   * @return Array
    */
   function getOwnedByUser($userDao, $limit = 20)
     {
@@ -261,12 +261,12 @@ class ItemModel extends ItemModelBase
       }
     return $results;
     }//end getOwnedByUser
-    
+
   /**
    * Get Items where user policy exists and is != admin
    * @param type $userDao
    * @param type $limit
-   * @return Array 
+   * @return Array
    */
   function getSharedToUser($userDao, $limit = 20)
     {
@@ -295,7 +295,7 @@ class ItemModel extends ItemModelBase
       }
     return $results;
     }//end getSharedToUser
-    
+
   /** Delete an item */
   function delete($itemdao)
     {
@@ -303,13 +303,13 @@ class ItemModel extends ItemModelBase
       {
       throw new Zend_Exception("Error param.");
       }
-      
+
     $deleteType = array(MIDAS_FEED_CREATE_ITEM, MIDAS_FEED_CREATE_LINK_ITEM);
     $sql = $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'feed'))
                           ->where('ressource = ?', $itemdao->getKey());
-    
+
     $rowset = $this->database->fetchAll($sql);
     $this->ModelLoader = new MIDAS_ModelLoader();
     $feed_model = $this->ModelLoader->loadModel('Feed');
@@ -322,50 +322,50 @@ class ItemModel extends ItemModelBase
         $feed_model->delete($feed);
         }
       }
-    
+
     $folder_model = $this->ModelLoader->loadModel('Folder');
     $folders = $itemdao->getFolders();
     foreach($folders as $folder)
       {
       $folder_model->removeItem($folder, $itemdao);
       }
-    
+
     $revisions = $itemdao->getRevisions();
     foreach($revisions as $revision)
       {
       $revision_model->delete($revision);
       }
-            
+
     $policy_group_model = $this->ModelLoader->loadModel('Itempolicygroup');
     $policiesGroup = $itemdao->getItempolicygroup();
     foreach($policiesGroup as $policy)
       {
       $policy_group_model->delete($policy);
       }
-     
+
     $policy_user_model = $this->ModelLoader->loadModel('Itempolicyuser');
     $policiesUser = $itemdao->getItempolicyuser();
     foreach($policiesUser as $policy)
       {
       $policy_user_model->delete($policy);
       }
-      
-      
+
+
     require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
-    $component = new SearchComponent();    
+    $component = new SearchComponent();
     $index = $component->getLuceneItemIndex();
-    
+
     $hits = $index->find("item_id:".$itemdao->getKey());
-    foreach($hits as $hit) 
+    foreach($hits as $hit)
       {
       $index->delete($hit->id);
       }
-      
+
     parent::delete($itemdao);
     unset($itemdao->item_id);
     $itemdao->saved = false;
     }//end delete
-    
+
   /** check ifthe policy is valid*/
   function policyCheck($itemdao, $userDao = null, $policy = 0)
     {
@@ -389,7 +389,7 @@ class ItemModel extends ItemModelBase
         return true;
         }
       }
-      
+
     $subqueryUser = $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'itempolicyuser'),
@@ -421,13 +421,13 @@ class ItemModel extends ItemModelBase
       }
     return true;
     }//end policyCheck
-    
+
   /** get random items
    *
    * @param UserDao $userDao
    * @param type $policy
    * @param type $limit
-   * @return array of ItemDao 
+   * @return array of ItemDao
    */
   function getRandomThumbnails($userDao = null, $policy = 0, $limit = 10, $thumbnailFilter = false)
     {
@@ -443,7 +443,7 @@ class ItemModel extends ItemModelBase
       {
       $userId = $userDao->getUserId();
       }
-      
+
     if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL')
       {
       $rand = 'RAND()';
@@ -456,7 +456,7 @@ class ItemModel extends ItemModelBase
         ->setIntegrityCheck(false)
         ->from(array('i' => 'item'))
         ->join(array('tt' => $this->database->select()
-                    ->from(array('i' => 'item'), array('maxid' => 'MAX(item_id)'))),        
+                    ->from(array('i' => 'item'), array('maxid' => 'MAX(item_id)'))),
                       ' i.item_id >= FLOOR(tt.maxid*'.$rand.')')
         ->joinLeft(array('ip' => 'itempolicyuser'), '
                   i.item_id = ip.item_id AND '.$this->database->getDB()->quoteInto('ip.policy >= ?', $policy).'
@@ -511,7 +511,7 @@ class ItemModel extends ItemModelBase
       }
     return $rowsetAnalysed;
     }//end get random
-    
+
   /** Get the last revision
    * @return ItemRevisionDao*/
   function getLastRevision($itemdao)
@@ -527,7 +527,7 @@ class ItemModel extends ItemModelBase
                                               ->setIntegrityCheck(false)
                                               ));
     }
-    
+
   /** Get  revision
    * @return ItemRevisionDao*/
   function getRevision($itemdao, $number)

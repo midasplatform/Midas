@@ -36,7 +36,7 @@ class Oai_IndexController extends Oai_AppController
   /** Index function */
   function indexAction()
     {
-    // Need to define some variables global so they can 
+    // Need to define some variables global so they can
     // be accessed by the OAI classes
     global $output;
     global $xmlheader;
@@ -53,14 +53,14 @@ class Oai_IndexController extends Oai_AppController
     global $METADATAFORMATS;
     global $MAXIDS;
     global $XMLSCHEMA;
-   
+
     $output = '';
     $errors = '';
 
     // configuration, sorry, that's not simple :)
     $modulesConfig = Zend_Registry::get('configsModules');
     $modelLoader = new MIDAS_ModelLoader();
-    
+
     if($this->isTestingEnv())
       {
       $_SERVER['SERVER_NAME'] = 'localhost';
@@ -69,17 +69,17 @@ class Oai_IndexController extends Oai_AppController
       }
     $MY_URI = 'http://'.$_SERVER['SERVER_NAME'].$this->view->webroot.'/oai';
     $compression = array('gzip', 'deflate');
-    $XMLHEADER = 
+    $XMLHEADER =
       '<?xml version="1.0" encoding="UTF-8"?>
       <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
                http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">'."\n";
-    
+
     $responseDate = gmstrftime('%Y-%m-%dT%T').'Z';
-    $xmlheader = $XMLHEADER . 
+    $xmlheader = $XMLHEADER .
             ' <responseDate>'.$responseDate."</responseDate>\n";
-    
+
     $SHOW_QUERY_ERROR = false;
     $repositoryName = $modulesConfig['oai']->repositoryname;
     $baseURL = $MY_URI;
@@ -94,25 +94,25 @@ class Oai_IndexController extends Oai_AppController
     $delimiter = ':';
     $idPrefix = '';
     $oaiprefix = "oai".$delimiter.$repositoryIdentifier.$delimiter.$idPrefix;
-    $setspecprefix = "hdl_"; 
-    
-    $METADATAFORMATS = array ('oai_dc' => array('metadataPrefix' => 'oai_dc', 
+    $setspecprefix = "hdl_";
+
+    $METADATAFORMATS = array ('oai_dc' => array('metadataPrefix' => 'oai_dc',
           'schema' => 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
           'metadataNamespace' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
           'myhandler' => 'record_dc.php',
           'record_prefix' => 'dc',
           'record_namespace' => 'http://purl.org/dc/elements/1.1/')
           );
-    
+
     $MAXIDS = 5;
     $MAXRECORDS = 5;
     $tokenValid = 24 * 3600;
-    $expirationdatetime = gmstrftime('%Y-%m-%dT%TZ', time() + $tokenValid); 
+    $expirationdatetime = gmstrftime('%Y-%m-%dT%TZ', time() + $tokenValid);
     $SQL['split'] = ';';
     $XMLSCHEMA = 'http://www.w3.org/2001/XMLSchema-instance';
-     
+
     $MidasTempDirectory = $this->getTempDirectory();
-  
+
     require_once BASE_PATH . '/modules/oai/library/oai/oaidp-util.php';
     if($_SERVER['REQUEST_METHOD'] == 'GET')
       {
@@ -126,10 +126,10 @@ class Oai_IndexController extends Oai_AppController
       {
       $errors .= oai_error('badRequestMethod', $_SERVER['REQUEST_METHOD']);
       }
-    
+
     // Some fixes for CakePHP
     unset($args['url']);
-    
+
     $reqattr = '';
     if(is_array($args))
       {
@@ -138,7 +138,7 @@ class Oai_IndexController extends Oai_AppController
         $reqattr .= ' '.$key.'="'.htmlspecialchars(stripslashes($val)).'"';
         }
       }
-    
+
     // in case register_globals is on, clean up polluted global scope
     $verbs = array ('from', 'identifier', 'metadataPrefix', 'set', 'resumptionToken', 'until');
     foreach($verbs as $val)
@@ -146,10 +146,10 @@ class Oai_IndexController extends Oai_AppController
       unset($$val);
       }
     $db = Zend_Registry::get('dbAdapter');
-    
+
     $request = ' <request'.$reqattr.'>'.$MY_URI."</request>\n";
     $request_err = ' <request>'.$MY_URI."</request>\n";
-    
+
     if(is_array($compression))
       {
       if(in_array('gzip', $compression) && ini_get('output_buffering'))
@@ -162,7 +162,7 @@ class Oai_IndexController extends Oai_AppController
         $compress = FALSE;
         }
       }
-    
+
 
     if(isset($args['verb']))
       {
@@ -172,46 +172,46 @@ class Oai_IndexController extends Oai_AppController
           unset($args['verb']);
           include(BASE_PATH . '/modules/oai/library/oai/getrecord.php');
           break;
-    
+
         case 'Identify':
           unset($args['verb']);
           // we never use compression in Identify
           $compress = FALSE;
           include(BASE_PATH . '/modules/oai/library/oai/identify.php');
           break;
-    
+
         case 'ListIdentifiers':
           unset($args['verb']);
           include(BASE_PATH . '/modules/oai/library/oai/listidentifiers.php');
           break;
-    
+
         case 'ListMetadataFormats':
           unset($args['verb']);
           include(BASE_PATH . '/modules/oai/library/oai/listmetadataformats.php');
           break;
-    
+
         case 'ListRecords':
           unset($args['verb']);
           include(BASE_PATH . '/modules/oai/library/oai/listrecords.php');
           break;
-    
+
         case 'ListSets':
           unset($args['verb']);
           include(BASE_PATH . '/modules/oai/library/oai/listsets.php');
           break;
-    
+
         default:
           // we never use compression with errors
           $compress = FALSE;
           $errors .= oai_error('badVerb', $args['verb']);
         } /*switch */
-    
+
       }
     else
       {
       $errors .= oai_error('noVerb');
       }
-    
+
     if($errors != '' && $this->isTestingEnv())
       {
       echo $errors;
@@ -220,12 +220,12 @@ class Oai_IndexController extends Oai_AppController
       {
       oai_exit();
       }
-      
+
     if($compress)
       {
       ob_start('ob_gzhandler');
       }
-      
+
     $this->disableLayout();
     $this->disableView();
     if(!$this->isTestingEnv())
@@ -234,11 +234,11 @@ class Oai_IndexController extends Oai_AppController
       }
     echo $xmlheader;
     echo $request;
-    echo $output;  
-    
+    echo $output;
+
     if(!$this->isTestingEnv())
       {
-      oai_close(); 
+      oai_close();
       exit;
       }
     }

@@ -13,7 +13,7 @@ PURPOSE.  See the above copyright notices for more information.
 /** FolderpolicygroupModelBase */
 abstract class FolderpolicygroupModelBase extends AppModel
 {
-  /** Constructor */ 
+  /** Constructor */
   public function __construct()
     {
     parent::__construct();
@@ -28,10 +28,10 @@ abstract class FolderpolicygroupModelBase extends AppModel
         );
     $this->initialize(); // required
     } // end __construct()
-  
-  /** Abstract functions */  
+
+  /** Abstract functions */
   abstract function getPolicy($group, $folder);
-  
+
   /** delete */
   public function delete($dao)
     {
@@ -39,7 +39,7 @@ abstract class FolderpolicygroupModelBase extends AppModel
     parent::delete($dao);
     $this->computePolicyStatus($folder);
     }//end delete
-    
+
   /** create a policy
    * @return FolderpolicygroupDao*/
   public function createPolicy($group, $folder, $policy)
@@ -70,21 +70,21 @@ abstract class FolderpolicygroupModelBase extends AppModel
     $policyGroupDao->setFolderId($folder->getFolderId());
     $policyGroupDao->setPolicy($policy);
     $this->save($policyGroupDao);
-    
+
     $this->computePolicyStatus($folder);
     return $policyGroupDao;
     }
-    
+
   /** compute policy status*/
   public function computePolicyStatus($folder)
     {
     $groupPolicies = $folder->getFolderpolicygroup();
     $userPolicies = $folder->getFolderpolicyuser();
-    
+
     $shared = false;
     $modelLoad = new MIDAS_ModelLoader();
     $folderModel = $modelLoad->loadModel('Folder');
-    
+
     foreach($groupPolicies as $key => $policy)
       {
       if($policy->getGroupId() == MIDAS_GROUP_ANONYMOUS_KEY)
@@ -106,7 +106,7 @@ abstract class FolderpolicygroupModelBase extends AppModel
         break;
         }
       }
-      
+
     if($shared)
       {
       $folder->setPrivacyStatus(MIDAS_PRIVACY_SHARED);
@@ -120,5 +120,5 @@ abstract class FolderpolicygroupModelBase extends AppModel
       return MIDAS_PRIVACY_PRIVATE;
       }
     }// end computePolicyStatus
-    
+
 } // end class FolderpolicygroupModelBase

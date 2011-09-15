@@ -33,7 +33,7 @@ class UserDao extends AppDao
     {
     return $this->getFirstname()." ".$this->getLastname();
     }//end class
-    
+
   /** toArray */
   public function toArray()
     {

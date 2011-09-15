@@ -23,5 +23,5 @@ class AssetstoreModel extends AssetstoreModelBase
     {
     return $this->database->getAll('Assetstore');
     }
-    
+
 }  // end class

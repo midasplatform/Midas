@@ -12,8 +12,8 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** This class handles the upload of files into the different assetstores */
 class UploadComponent extends AppComponent
-{  
-  
+{
+
   /** Helper function to create the two-level hierarchy */
   private function _createAssetstoreDirectory($directorypath)
     {
@@ -21,35 +21,35 @@ class UploadComponent extends AppComponent
       {
       if(!mkdir($directorypath))
         {
-        throw new Zend_Exception("Cannot create directory: ".$directorypath);   
+        throw new Zend_Exception("Cannot create directory: ".$directorypath);
         }
       chmod($directorypath, 0777);
-      }  
+      }
     } // end _createAssetstoreDirectory()
-  
+
   /** Upload local bitstream */
   private function _uploadLocalBitstream($bitstreamdao, $assetstoredao)
     {
     // Check ifthe type of the assestore is suitable
     if($assetstoredao->getType() != MIDAS_ASSETSTORE_LOCAL)
       {
-      throw new Zend_Exception("The assetstore type should be local to upload.");   
+      throw new Zend_Exception("The assetstore type should be local to upload.");
       }
-    
-    // Check ifthe path of the assetstore exists on the server  
+
+    // Check ifthe path of the assetstore exists on the server
     if(!is_dir($assetstoredao->getPath()))
       {
-      throw new Zend_Exception("The assetstore path doesn't exist.");   
+      throw new Zend_Exception("The assetstore path doesn't exist.");
       }
 
     // Check ifthe MD5 exists for the bitstream
-    $checksum = $bitstreamdao->getChecksum();  
+    $checksum = $bitstreamdao->getChecksum();
     if(empty($checksum))
       {
       throw new Zend_Exception("Checksum is not set.");
       }
-      
-    // Two-level hierarchy.  
+
+    // Two-level hierarchy.
     $path = substr($checksum, 0, 2).'/'.substr($checksum, 2, 2).'/'.$checksum;
     $fullpath = $assetstoredao->getPath().'/'.$path;
 
@@ -66,7 +66,7 @@ class UploadComponent extends AppComponent
     $this->_createAssetstoreDirectory($currentdir);
     $currentdir .= '/'.substr($checksum, 2, 2);
     $this->_createAssetstoreDirectory($currentdir);
-        
+
     // Do the actual copy
     // Do not delete anything. This is the responsability of the controller
     copy($bitstreamdao->getPath(), $fullpath);
@@ -74,31 +74,31 @@ class UploadComponent extends AppComponent
     // Set the new path
     $bitstreamdao->setPath($path);
     } // end _uploadLocalBitstream()
- 
-  /** Upload a bitstream */  
+
+  /** Upload a bitstream */
   function uploadBitstream($bitstreamdao, $assetstoredao)
-    { 
+    {
     $assetstoretype = $assetstoredao->getType();
     switch($assetstoretype)
       {
-      case MIDAS_ASSETSTORE_LOCAL: 
-        $this->_uploadLocalBitstream($bitstreamdao, $assetstoredao); 
+      case MIDAS_ASSETSTORE_LOCAL:
+        $this->_uploadLocalBitstream($bitstreamdao, $assetstoredao);
         break;
-      case MIDAS_ASSETSTORE_REMOTE: 
+      case MIDAS_ASSETSTORE_REMOTE:
         // Nothing to upload in that case, we return silently
         return true;
-      case MIDAS_ASSETSTORE_AMAZON: 
-        throw new Zend_Exception("Amazon support is not implemented yet."); 
+      case MIDAS_ASSETSTORE_AMAZON:
+        throw new Zend_Exception("Amazon support is not implemented yet.");
         break;
       default :
         break;
       }
-    return true;  
-    } // end uploadBitstream() 
-  
+    return true;
+    } // end uploadBitstream()
+
   /** save upload item in the DB */
   public function createLinkItem($userDao, $name, $url, $parent = null)
-    {    
+    {
     $modelLoad = new MIDAS_ModelLoader();
     $itemModel = $modelLoad->loadModel('Item');
     $feedModel = $modelLoad->loadModel('Feed');
@@ -109,7 +109,7 @@ class UploadComponent extends AppComponent
     $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
     $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
     $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
-    
+
     if($userDao == null)
       {
       throw new Zend_Exception('Please log in');
@@ -151,7 +151,7 @@ class UploadComponent extends AppComponent
     $itemRevisionDao->setUser_id($userDao->getKey());
     $itemRevisionDao->setDate(date('c'));
     $itemRevisionDao->setLicense(null);
-    $itemModel->addRevision($item, $itemRevisionDao); 
+    $itemModel->addRevision($item, $itemRevisionDao);
 
     // Add bitstreams to the revision
     Zend_Loader::loadClass("BitstreamDao", BASE_PATH . '/core/models/dao');
@@ -171,11 +171,11 @@ class UploadComponent extends AppComponent
     $this->getLogger()->info(__METHOD__." Upload ok ");
     return $item;
     }//end createUploadedItem
-    
-    
+
+
   /** save upload item in the DB */
   public function createUploadedItem($userDao, $name, $path, $parent = null, $license = null)
-    {    
+    {
     $modelLoad = new MIDAS_ModelLoader();
     $itemModel = $modelLoad->loadModel('Item');
     $feedModel = $modelLoad->loadModel('Feed');
@@ -186,7 +186,7 @@ class UploadComponent extends AppComponent
     $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
     $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
     $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
-    
+
     if($userDao == null)
       {
       throw new Zend_Exception('Please log in');
@@ -229,7 +229,7 @@ class UploadComponent extends AppComponent
     $itemRevisionDao->setDate(date('c'));
     $itemRevisionDao->setLicense($license);
     $itemModel->addRevision($item, $itemRevisionDao);
- 
+
 
     // Add bitstreams to the revision
     Zend_Loader::loadClass("BitstreamDao", BASE_PATH . '/core/models/dao');
@@ -241,7 +241,7 @@ class UploadComponent extends AppComponent
     $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
     $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
     $assetstoreDao = $assetstoreModel->load($defaultAssetStoreId);
-    
+
     if($assetstoreDao == false)
       {
       throw new Zend_Exception("Unable to load default assetstore");
@@ -279,7 +279,7 @@ class UploadComponent extends AppComponent
     $feedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
     $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
     $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
-    
+
     $item = $itemModel->load($item_revision[0]);
 
     if($item == false)
@@ -320,13 +320,13 @@ class UploadComponent extends AppComponent
 
       //copy policies
       if($feed != null && $feed instanceof FeedDao)
-        {      
+        {
         foreach($groupPolicies as $key => $policy)
-          {      
+          {
           $feedpolicygroupModel->createPolicy($policy->getGroup(), $feed, $policy->getPolicy());
           }
         foreach($userPolicies as $key => $policy)
-          {      
+          {
           $feedpolicyuserModel->createPolicy($policy->getUser(), $feed, $policy->getPolicy());
           }
         }
@@ -364,6 +364,6 @@ class UploadComponent extends AppComponent
     $this->getLogger()->info(__METHOD__." Upload ok :".$path);
     Zend_Registry::get('notifier')->notifyEvent("EVENT_CORE_UPLOAD_FILE", array($itemRevisionDao->getItem()->toArray(), $itemRevisionDao->toArray()));
     return $item;
-    }//end 
+    }//end
 } // end class UploadComponent
 ?>

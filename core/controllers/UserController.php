@@ -52,13 +52,13 @@ class UserController extends AppController
       {
       $users = $this->User->getAll(true, 100, $order, $offset);
       }
-    
+
     $this->view->order = $order;
     $this->view->offset = $offset;
     $this->view->users = $users;
     $this->view->nUsers = $this->User->getCountAll();
     } //end index
-    
+
   /** Recover the password (ajax) */
   function recoverpasswordAction()
     {
@@ -72,7 +72,7 @@ class UserController extends AppController
       {
       $this->disableView();
       $user = $this->User->getByEmail($email);
-      
+
        // Check ifthe email is already registered
       if(!$user)
         {
@@ -82,7 +82,7 @@ class UserController extends AppController
       // Create a new password
       $keychars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       $length = 10;
-      
+
       /** make_seed_recoverpass */
       function make_seed_recoverpass()
         {
@@ -98,15 +98,15 @@ class UserController extends AppController
         $pass .= substr($keychars, rand(0, $max), 1);
         }
       $encrypted = md5($pass);
-      
+
       $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
       if(isset($passwordPrefix) && !empty($passwordPrefix))
         {
         $pass = $passwordPrefix.$pass;
         }
-        
+
       $user->setPassword(md5($pass));
-      
+
       // Send the email
       $url = $this->getServerURL().$this->view->webroot;
 
@@ -126,7 +126,7 @@ class UserController extends AppController
         $alert = "Problem during process !";
         echo JsonComponent::encode(array(false, $this->t('Problem during process !')));
         }
-      } 
+      }
     } // end recoverpassword
 
   /** Logout a user */
@@ -149,9 +149,9 @@ class UserController extends AppController
         {
         throw new Zend_Exception("User already exists.");
         }
-        
+
       $this->userSession->Dao = $this->User->createUser(trim($form->getValue('email')), $form->getValue('password1'), trim($form->getValue('firstname')), trim($form->getValue('lastname')));
-      
+
       $this->_redirect("/");
       }
     $this->view->form = $this->getFormAsArray($form);
@@ -182,7 +182,7 @@ class UserController extends AppController
           {
           $this->getLogger()->crit($exc->getMessage());
           }
-        
+
         if(!empty($notifications['ldap']) && $notifications['ldap'] != false)
           {
           $userDao = $notifications['ldap'];
@@ -193,10 +193,10 @@ class UserController extends AppController
           $userDao = $this->User->getByEmail($form->getValue('email'));
           $authLdap = false;
           }
-        
+
         $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
         if($authLdap || $userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
-          {          
+          {
           $remember = $form->getValue('remerberMe');
           if(isset($remember) && $remember == 1)
             {
@@ -212,7 +212,7 @@ class UserController extends AppController
               setcookie('midasUtil', null, time() + 60 * 60 * 24 * 30, '/'); //30 days
               }
             }
-          Zend_Session::start();  
+          Zend_Session::start();
           $user = new Zend_Session_Namespace('Auth_User');
           $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
           $user->Dao = $userDao;
@@ -280,13 +280,13 @@ class UserController extends AppController
           echo "false";
           }
         return;
-      case 'login' :        
+      case 'login' :
         $password = $this->_getParam("password");
         if(!is_string($password))
           {
           echo 'false';
           return;
-          }          
+          }
 
         try
           {
@@ -321,9 +321,9 @@ class UserController extends AppController
       {
       $this->disableView();
       return false;
-      }   
+      }
     $this->disableLayout();
-    
+
     $userId = $this->_getParam('userId');
     if(isset($userId) && $userId != $this->userSession->Dao->getKey() && !$this->userSession->Dao->isAdmin())
       {
@@ -337,12 +337,12 @@ class UserController extends AppController
       {
       $userDao = $this->userSession->Dao;
       }
-      
+
     if(empty($userDao) || $userDao == false)
       {
       throw new Zend_Exception("Unable to load user");
       }
-    
+
     $defaultValue = array();
     $defaultValue['firstname'] = $userDao->getFirstname();
     $defaultValue['lastname'] = $userDao->getLastname();
@@ -354,7 +354,7 @@ class UserController extends AppController
     $defaultValue['biography'] = $userDao->getBiography();
     $accountForm = $this->Form->User->createAccountForm($defaultValue);
     $this->view->accountForm = $this->getFormAsArray($accountForm);
-    
+
     if($this->_request->isPost())
       {
       $this->_helper->viewRenderer->setNoRender();
@@ -384,7 +384,7 @@ class UserController extends AppController
           echo JsonComponent::encode(array(false, $this->t('The old password is incorrect')));
           }
         }
-        
+
       if(isset($modifyAccount) && $this->logged)
         {
         $firtname = trim($this->_getParam('firstname'));
@@ -395,7 +395,7 @@ class UserController extends AppController
         $country = $this->_getParam('country');
         $website = $this->_getParam('website');
         $biography = $this->_getParam('biography');
-        
+
         $userDao = $this->User->load($userDao->getKey());
 
         if(!isset($privacy) || ($privacy != MIDAS_USER_PRIVATE && $privacy != MIDAS_USER_PUBLIC))
@@ -411,29 +411,29 @@ class UserController extends AppController
         if(isset($company))
           {
           $userDao->setCompany($company);
-          }        
+          }
         if(isset($city))
           {
           $userDao->setCity($city);
-          }        
+          }
         if(isset($country))
           {
           $userDao->setCountry($country);
-          }        
+          }
         if(isset($website))
           {
           $userDao->setWebsite($website);
-          }        
+          }
         if(isset($biography))
           {
           $userDao->setBiography($biography);
-          }        
+          }
         $userDao->setPrivacy($privacy);
         $this->User->save($userDao);
         if(!isset($userId))
           {
           $this->userSession->Dao = $userDao;
-          }     
+          }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         }
       if(isset($modifyPicture) && $this->logged)
@@ -451,9 +451,9 @@ class UserController extends AppController
           $upload = new Zend_File_Transfer();
           $upload->receive();
           $path = $upload->getFileName();
-          $size =  $upload->getFileSize();          
+          $size =  $upload->getFileSize();
           }
-          
+
 
         if(!empty($path) && file_exists($path) && $size > 0)
           {
@@ -479,7 +479,7 @@ class UserController extends AppController
               {
               echo JsonComponent::encode(array(false, 'Error, Unable to read png file'));
               return;
-              }        
+              }
             }
           else if(file_exists($path) && $mime == 'image/gif')
             {
@@ -491,13 +491,13 @@ class UserController extends AppController
               {
               echo JsonComponent::encode(array(false, 'Error, Unable to read gif file'));
               return;
-              }   
-            }  
+              }
+            }
           else
             {
             echo JsonComponent::encode(array(false, 'Error, wrong format'));
             return;
-            }    
+            }
 
           $tmpPath = BASE_PATH.'/data/thumbnail/'.rand(1, 1000);
           if(!file_exists(BASE_PATH.'/data/thumbnail/'))
@@ -522,7 +522,7 @@ class UserController extends AppController
 
           list ($x, $y) = getimagesize($path);  //--- get size of img ---
           $thumb = 32;  //--- max. size of thumb ---
-          if($x > $y) 
+          if($x > $y)
             {
             $tx = $thumb;  //--- landscape ---
             $ty = round($thumb / $x * $y);
@@ -536,8 +536,8 @@ class UserController extends AppController
           $thb = imagecreatetruecolor($tx, $ty);  //--- create thumbnail ---
           imagecopyresampled($thb, $src, 0, 0, 0, 0, $tx, $ty, $x, $y);
           imagejpeg($thb, $pathThumbnail, 80);
-          imagedestroy($thb);    
-          imagedestroy($src);   
+          imagedestroy($thb);
+          imagedestroy($src);
           if(file_exists($pathThumbnail))
             {
             $userDao = $this->User->load($userDao->getKey());
@@ -551,7 +551,7 @@ class UserController extends AppController
             if(!isset($userId))
               {
               $this->userSession->Dao = $userDao;
-              }   
+              }
             echo JsonComponent::encode(array(true, $this->t('Changes saved'), $this->view->webroot.'/'.$userDao->getThumbnail()));
             }
           else
@@ -576,9 +576,9 @@ class UserController extends AppController
             if(!isset($userId))
               {
               $this->userSession->Dao = $userDao;
-              }   
+              }
             echo JsonComponent::encode(array(true, $this->t('Changes saved'), $userDao->getThumbnail()));
-            }   
+            }
           else
             {
             echo JsonComponent::encode(array(false, 'Error'));
@@ -586,7 +586,7 @@ class UserController extends AppController
           }
         }
       }
-    
+
     $communities = array();
     $groups = $userDao->getGroups();
     foreach($groups as $group)
@@ -602,7 +602,7 @@ class UserController extends AppController
     $this->Component->Sortdao->field = 'name';
     $this->Component->Sortdao->order = 'asc';
     usort($communities, array($this->Component->Sortdao, 'sortByName'));
-    
+
     $this->view->isGravatar = $this->User->getGravatarUrl($userDao->getEmail());
 
     $this->view->communities = $communities;
@@ -614,10 +614,10 @@ class UserController extends AppController
     $this->view->jsonSettings['passwordErrorShort'] = $this->t('Password too short');
     $this->view->jsonSettings['passwordErrorMatch'] = $this->t('The passwords are not the same');
     $this->view->jsonSettings = JsonComponent::encode($this->view->jsonSettings);
-    
+
     $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_CONFIG_TABS', array());
     }
-    
+
   /** User page action*/
   public function userpageAction()
     {
@@ -643,12 +643,12 @@ class UserController extends AppController
         throw new Zend_Exception("Permission error");
         }
       }
-      
+
     if(!$userDao instanceof UserDao)
       {
       throw new Zend_Exception("Unable to find user");
       }
-    
+
     $this->view->user = $userDao;
     $this->view->userCommunities = $this->User->getUserCommunities($userDao);
     $this->view->folders = array();
@@ -661,24 +661,24 @@ class UserController extends AppController
       {
       $this->User->incrementViewCount($userDao);
       }
-      
-    $this->view->mainFolder = $userDao->getFolder();  
+
+    $this->view->mainFolder = $userDao->getFolder();
     $this->view->folders = $this->Folder->getChildrenFoldersFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     $this->view->feeds = $this->Feed->getFeedsByUser($this->userSession->Dao, $userDao);
-    
+
     $this->view->isViewAction = ($this->logged && ($this->userSession->Dao->getKey() == $userDao->getKey() || $this->userSession->Dao->isAdmin()));
     $this->view->information = array();
-    
+
     $this->view->disableFeedImages = true;
     }
-  
+
   /** Manage files page action*/
   public function manageAction()
     {
     $this->view->Date = $this->Component->Date;
     $user_id = $this->_getParam("user_id");
-    
+
     if(!isset($user_id) && !$this->logged)
       {
       $this->view->header = $this->t("You should be logged in.");
@@ -698,14 +698,14 @@ class UserController extends AppController
         throw new Zend_Exception("Permission error");
         }
       }
-      
+
     if(!$userDao instanceof UserDao)
       {
       throw new Zend_Exception("Unable to find user");
       }
-    
+
     $this->view->user = $userDao;
-    $this->view->mainFolder = $userDao->getFolder();  
+    $this->view->mainFolder = $userDao->getFolder();
     $this->view->folders = $this->Folder->getChildrenFoldersFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     }

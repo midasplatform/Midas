@@ -19,6 +19,6 @@ class Helloworld_ConfigController extends Helloworld_AppController
       {
       throw new Zend_Exception("You should be an administrator");
       }
-    } 
-    
+    }
+
 }//end class

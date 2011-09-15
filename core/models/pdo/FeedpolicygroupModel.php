@@ -18,7 +18,7 @@ require_once BASE_PATH.'/core/models/base/FeedpolicygroupModelBase.php';
  */
 class FeedpolicygroupModel extends FeedpolicygroupModelBase
 {
-  
+
   /** getPolicy
    * @return FeedpolicygroupDao
    */
@@ -34,6 +34,6 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
       }
     return $this->initDao('Feedpolicygroup', $this->database->fetchRow($this->database->select()->where('feed_id = ?', $feed->getKey())->where('group_id = ?', $group->getKey())));
     }  // end getPolicy
-    
+
 } // end class
 ?>

@@ -25,5 +25,5 @@ class Helloworld_HelloModelBase extends Helloworld_AppModel
         );
     $this->initialize(); // required
     } // end __construct()
-    
+
 } // end class Helloworld_HelloModelBase

@@ -34,9 +34,9 @@ class UploadController extends AppController
       {
       $this->view->maxSizeFile = $maxPost * 1024 * 1024;
       }
-      
+
     if($this->isTestingEnv())
-      {      
+      {
       $assetstores = $this->Assetstore->getAll();
       if(empty($assetstores))
         {
@@ -45,7 +45,7 @@ class UploadController extends AppController
         $assetstoreDao->setPath(BASE_PATH.'/data/assetstore');
         $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
         $this->Assetstore = new AssetstoreModel(); //reset Database adapter
-        $this->Assetstore->save($assetstoreDao); 
+        $this->Assetstore->save($assetstoreDao);
         }
       else
         {
@@ -86,7 +86,7 @@ class UploadController extends AppController
         $this->view->defaultUploadLocationText = $parent->getName();
         }
       }
-      
+
     }//end simple upload
 
   /**  upload new revision */
@@ -129,7 +129,7 @@ class UploadController extends AppController
       {
       throw new Zend_Exception("Error, should be an ajax action.");
       }
-     
+
     $this->disableLayout();
     $this->disableView();
     $parent = $this->_getParam("parent");
@@ -141,7 +141,7 @@ class UploadController extends AppController
       {
       $item = $this->Component->Upload->createLinkItem($this->userSession->Dao, $name, $url, $parent);
       $this->userSession->uploaded[] = $item->getKey();
-      }      
+      }
     }//end simple upload
 
   /** java upload*/
@@ -159,7 +159,7 @@ class UploadController extends AppController
     $this->view->protocol = "http";
     $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
     $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
-    
+
     $parent = $this->_getParam('parent');
     $license = $this->_getParam('license');
     if(!empty ($parent) && !empty($license))
@@ -242,7 +242,7 @@ class UploadController extends AppController
 
     $this->disableLayout();
     $this->disableView();
-    
+
     if($this->isTestingEnv())
       {
       //simulate file upload
@@ -258,7 +258,7 @@ class UploadController extends AppController
       $file_size =  filesize($path);
       $filename = $upload->getFilename(null, false);
       }
-      
+
     $parent = $this->_getParam("parent");
     $license = $this->_getParam("license");
     if(!empty($path) && file_exists($path) && $file_size > 0)
@@ -276,7 +276,7 @@ class UploadController extends AppController
         }
 
       $info = array();
-      $info['name'] = basename($path);        
+      $info['name'] = basename($path);
       $info['size'] = $file_size;
       echo json_encode($info);
       }

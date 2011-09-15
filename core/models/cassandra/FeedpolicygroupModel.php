@@ -31,24 +31,24 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
       {
       throw new Zend_Exception("Should be a feed.");
       }
-    
+
     $feedid = $feed->getKey();
     $groupid = $group->getKey();
-    
-    $column = 'feed_'.$feedid;    
+
+    $column = 'feed_'.$feedid;
     $feedarray = $this->database->getCassandra('groupfeedpolicy', $groupid, array($column));
 
     if(empty($feedarray))
       {
-      return null;  
+      return null;
       }
-      
+
     // Massage the data to the proper format
     $newarray['feed_id'] = $feedid;
     $newarray['group_id'] = $groupid;
     $newarray['policy'] = $feedarray[$column];
-    
-    return $this->initDao('Feedpolicygroup', $newarray);  
+
+    return $this->initDao('Feedpolicygroup', $newarray);
     } // end getPolicy
 
   /** Custom save command */
@@ -59,29 +59,29 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
       {
       throw new Zend_Exception("Should be an object (".$instance.").");
       }
-      
-    try 
+
+    try
       {
       $feedid = $dao->getFeedId();
       $groupid = $dao->getGroupId();
-      
+
       // Add the feed to the UserFeedPolicy
       $column = 'feed_'.$feedid;
       $dataarray = array();
       $dataarray[$column] = $dao->getPolicy();
-      
+
       $column_family = new ColumnFamily($this->database->getDB(), 'groupfeedpolicy');
-      $column_family->insert($groupid, $dataarray);  
-      
+      $column_family->insert($groupid, $dataarray);
+
       // Add the feed to the UserFeed (this is a super column)
       $column = 'feed_'.$feedid;
       $dataarray = array();
       $dataarray[$column] = array();
       $dataarray[$column]['group_'.$groupid] = $dao->getPolicy();
-      
+
       $column_family = new ColumnFamily($this->database->getDB(), 'userfeed');
       $column_family->insert($groupid, $dataarray);
-      
+
       // Add the policy to the CommunityFeed ifwe have a community
       if(isset($dao->community) && $dao->community)
         {
@@ -89,31 +89,31 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
         $dataarray = array();
         $dataarray[$column] = array();
         $dataarray[$column]['group_'.$groupid] = $dao->getPolicy();
-      
+
         $column_family = new ColumnFamily($this->database->getDB(), 'communityfeed');
-        $column_family->insert($dao->community->getCommunityId(), $dataarray);  
+        $column_family->insert($dao->community->getCommunityId(), $dataarray);
         }
-      
-      
-      } 
-    catch(Exception $e) 
+
+
+      }
+    catch(Exception $e)
       {
-      throw new Zend_Exception($e); 
-      } 
-    
+      throw new Zend_Exception($e);
+      }
+
     $dao->saved = true;
     return true;
-    } // end save()  
-    
+    } // end save()
+
   /** Custome delete command */
   public function delete($dao)
     {
-    // No DAO passed we just return  
+    // No DAO passed we just return
     if($dao == null)
       {
-      return false;  
-      } 
-        
+      return false;
+      }
+
     $instance = ucfirst($this->_name)."Dao";
     if(get_class($dao) !=  $instance)
       {
@@ -123,28 +123,28 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
       {
       throw new Zend_Exception("The dao should be saved first ...");
       }
-    
-    try 
+
+    try
       {
-      // Remove the column user from the feed 
+      // Remove the column user from the feed
       $feedid = $dao->getFeedId();
       $groupid = $dao->getGroupId();
-      $column = 'feed_'.$feedid;   
+      $column = 'feed_'.$feedid;
       $cf = new ColumnFamily($this->database->getDB(), 'groupfeedpolicy');
-      $cf->remove($groupid, array($column)); 
+      $cf->remove($groupid, array($column));
 
       // Remove from the UserFeed also
       $column = 'feed_'.$feedid;  // super column
       $cf = new ColumnFamily($this->database->getDB(), 'userfeed');
-      $cf->remove($groupid, array('group_'.$groupid), $column);      
-      }    
-    catch(Exception $e) 
+      $cf->remove($groupid, array('group_'.$groupid), $column);
+      }
+    catch(Exception $e)
       {
-      throw new Zend_Exception($e); 
-      }    
+      throw new Zend_Exception($e);
+      }
     $dao->saved = false;
     return true;
     }
-    
+
 }  // end class
 ?>

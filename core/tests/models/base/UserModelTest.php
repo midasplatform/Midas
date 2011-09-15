@@ -42,7 +42,7 @@ class UserModelTest extends DatabaseTestCase
       {
       $communityDaos = $this->User->getUserCommunities('test');
       }
-    catch(Exception $expected) 
+    catch(Exception $expected)
       {
       return;
       }

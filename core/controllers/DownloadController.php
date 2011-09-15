@@ -18,7 +18,7 @@ class DownloadController extends AppController
   public $_models = array('Folder', 'Item', 'Community', 'User');
   public $_daos = array();
   public $_components = array();
-   
+
   /** index
    * @param ?folders = 12-13 (will download a zip of the folder 12 and 13 ,recusively)
    * @param ?folders = 12, 1-13, 1 (will download a zip of the folder 12 and 13 ,recusively) //Need testing
@@ -60,7 +60,7 @@ class DownloadController extends AppController
         }
       }
     $folders = $this->Folder->load($folderIds);
-    
+
     $itemIds = explode('-', $itemIds);
     $revisions = array();
     if(!empty($itemIds))
@@ -97,7 +97,7 @@ class DownloadController extends AppController
           }
         }
       }
-    
+
     if(empty($folders) && empty($revisions))
       {
       throw new Zend_Exception("No element");
@@ -131,7 +131,7 @@ class DownloadController extends AppController
         {
         Zend_Loader::loadClass("ZipStream", BASE_PATH.'/library/ZipStream/');
         $this->_helper->viewRenderer->setNoRender();
-        $name = $revision->getItem()->getName(); 
+        $name = $revision->getItem()->getName();
         $name = substr($name, 0, 50);
         $zip = new ZipStream($name.'.zip');
         foreach($bitstreams as $bitstream)
@@ -147,20 +147,20 @@ class DownloadController extends AppController
       $this->_helper->viewRenderer->setNoRender();
       if(count($folders) == 1 && empty($revisions))
         {
-        $name = $folders[0]->getName(); 
+        $name = $folders[0]->getName();
         $name = substr($name, 0, 50);
-        
+
         $rootFolder = $this->Folder->getRoot($folders[0]);
         if($rootFolder)
           {
           // Find the Community or the User which have the folder
-          $rootCom = $this->Community->getByFolder($rootFolder);  
+          $rootCom = $this->Community->getByFolder($rootFolder);
           if(!$rootCom)
             {
-            $user = $this->User->getByFolder($rootFolder);  
+            $user = $this->User->getByFolder($rootFolder);
             $name = $user->getFirstname().$user->getLastname().'-'.$name;
             }
-          else 
+          else
             {
             $name = $rootCom->getName().'-'.$name;
             }
@@ -175,7 +175,7 @@ class DownloadController extends AppController
       $zip->finish();
       }
     }//end index
-   
+
   /** create zip recursive*/
   private function _createZipRecursive($zip, $path, $folders, $revisions)
     {
@@ -192,7 +192,7 @@ class DownloadController extends AppController
       if(!$this->Folder->policyCheck($folder, $this->userSession->Dao))
         {
         continue;
-        } 
+        }
       $items = $folder->getItems();
       $subRevisions = array();
       foreach($items as $item)
@@ -200,7 +200,7 @@ class DownloadController extends AppController
         if(!$this->Item->policyCheck($item, $this->userSession->Dao))
           {
           continue;
-          }       
+          }
         $tmp = $this->Item->getLastRevision($item);
         if($tmp !== false)
           {
@@ -213,7 +213,7 @@ class DownloadController extends AppController
               $zip->add_file_from_path($path.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'. $bitstream->getPath());
               }
             }
-          }        
+          }
         }
       if(!isset($folder->recursive) || $folder->recursive)
         {
@@ -224,4 +224,3 @@ class DownloadController extends AppController
     }
 } // end class
 
-  

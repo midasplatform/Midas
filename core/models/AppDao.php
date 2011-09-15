@@ -16,7 +16,7 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class AppDao extends MIDAS_GlobalDao
   {
- 
+
   } //end class
 
 ?>

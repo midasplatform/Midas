@@ -19,5 +19,5 @@ interface MIDASDatabaseInterface
   /** generic get value*/
   public function getValue($var, $key, $dao);
   /** generic get all by key*/
-  public function getAllByKey($keys);      
+  public function getAllByKey($keys);
 } // end interface

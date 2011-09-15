@@ -12,12 +12,12 @@ PURPOSE.  See the above copyright notices for more information.
 
 /**
  * \class CommunityInvitationDao
- * \brief DAO Assetstore 
+ * \brief DAO Assetstore
  */
 class CommunityInvitationDao extends AppDao
 {
   public $_model = 'CommunityInvitation';
- 
-  
-} // end class  
+
+
+} // end class
 ?>

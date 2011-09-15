@@ -18,11 +18,11 @@ require_once BASE_PATH.'/core/models/base/GroupModelBase.php';
  */
 class GroupModel  extends GroupModelBase
 {
-  
+
   /** Get a groups by Community */
   function findByCommunity($communityDao)
     {
-    $rowset = $this->database->fetchAll($this->database->select()->where('community_id = ?', $communityDao->getKey())); 
+    $rowset = $this->database->fetchAll($this->database->select()->where('community_id = ?', $communityDao->getKey()));
     $result = array();
     foreach($rowset as $row)
       {
@@ -30,7 +30,7 @@ class GroupModel  extends GroupModelBase
       }
     return $result;
     } // end findByCommunity()
-    
+
   /** Add an user to a group
    * @return void
    *  */
@@ -44,17 +44,17 @@ class GroupModel  extends GroupModelBase
       {
       throw new Zend_Exception("Should be an user.");
       }
-    
+
     $community = $group->getCommunity();
     $groupMember = $community->getMemberGroup();
     if($groupMember->getKey() != $group->getKey())
       {
       $this->addUser($groupMember, $user);
       }
-    
+
     $this->database->link('users', $group, $user);
     } // end function addItem
-    
+
   /** Remove an user from a group
    * @return void
    *  */
@@ -68,7 +68,7 @@ class GroupModel  extends GroupModelBase
       {
       throw new Zend_Exception("Should be an user.");
       }
-      
+
     $community = $group->getCommunity();
     $groupMember = $community->getMemberGroup();
     if($groupMember->getKey() == $group->getKey())
@@ -82,11 +82,11 @@ class GroupModel  extends GroupModelBase
           }
         }
       }
-    
+
     $this->database->removeLink('users', $group, $user);
     } // end function removeUser
 
-    
+
   /** Return a list of group corresponding to the search */
   function getGroupFromSearch($search, $limit = 14)
     {
@@ -94,9 +94,9 @@ class GroupModel  extends GroupModelBase
 
     $sql = $this->database->select();
     $sql->from(array('g' => 'group'));
-    $sql->where('g.name LIKE ?', '%'.$search.'%'); 
+    $sql->where('g.name LIKE ?', '%'.$search.'%');
     $sql->limit($limit);
-    $sql->order(array('g.name ASC'));   
+    $sql->order(array('g.name ASC'));
     $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)

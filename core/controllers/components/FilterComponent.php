@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Sort Daos*/
 class FilterComponent extends AppComponent
-{   
+{
   /** get a filter*/
   public function getFilter($filter)
     {
@@ -22,5 +22,5 @@ class FilterComponent extends AppComponent
       throw new Zend_Exception("Unable to load filter: ".$filter );
       }
     return new $filter();
-    }    
+    }
 } // end class

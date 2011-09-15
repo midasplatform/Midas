@@ -17,8 +17,8 @@ require_once BASE_PATH.'/core/models/base/FeedModelBase.php';
  * \brief Pdo Model
  */
 class FeedModel extends FeedModelBase
-{ 
- 
+{
+
   /** get feed by resource*/
   function getFeedByResourceAndType($typeArray, $dao)
     {
@@ -30,7 +30,7 @@ class FeedModel extends FeedModelBase
                       ->setIntegrityCheck(false)
                       ->from(array('p' => 'feed'))
                       ->where('ressource = ?', $dao->getKey());
-    
+
     $rowset = $this->database->fetchAll($sql);
     $feeds = array();
     foreach($rowset as $row)
@@ -39,17 +39,17 @@ class FeedModel extends FeedModelBase
       if(in_array($feed->getType(), $typeArray))
         {
         $feeds[] = $this->initDao('Feed', $row);
-        }      
+        }
       }
     return $feeds;
     }
-    
+
   /** check ifthe policy is valid
    *
    * @param FolderDao $folderDao
    * @param UserDao $userDao
    * @param type $policy
-   * @return  boolean 
+   * @return  boolean
    */
   function policyCheck($feedDao, $userDao = null, $policy = 0)
     {
@@ -73,7 +73,7 @@ class FeedModel extends FeedModelBase
         return true;
         }
       }
-      
+
     $subqueryUser = $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'feedpolicyuser'),
@@ -107,9 +107,9 @@ class FeedModel extends FeedModelBase
       }
     return true;
     } //end policyCheck
-  
 
-    
+
+
   /** get feed
    * @param UserDao $loggedUserDao
    * @param UserDao $userDao
@@ -136,7 +136,7 @@ class FeedModel extends FeedModelBase
         $isAdmin = true;
         }
       }
-    
+
     if($userDao != null && !$userDao instanceof UserDao)
       {
       throw new Zend_Exception("Should be an user.");
@@ -146,8 +146,8 @@ class FeedModel extends FeedModelBase
       {
       throw new Zend_Exception("Should be a community.");
       }
-      
-    
+
+
     $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->from(array('f' => 'feed'))
@@ -175,7 +175,7 @@ class FeedModel extends FeedModelBase
       {
       $sql->where('f.user_id = ? ', $userDao->getKey());
       }
-      
+
     if($communityDao != null)
       {
       $sql->join(array('f2c' => 'feed2community'),
@@ -217,11 +217,11 @@ class FeedModel extends FeedModelBase
     $this->Component->Sortdao->field = 'date';
     $this->Component->Sortdao->order = 'asc';
     usort($rowsetAnalysed, array($this->Component->Sortdao, 'sortByDate'));
-    return $rowsetAnalysed;    
+    return $rowsetAnalysed;
     } // end _getFeeds
-    
 
-  /** Add a community to a feed 
+
+  /** Add a community to a feed
    * @return void */
   function addCommunity($feed, $community)
     {
@@ -237,25 +237,25 @@ class FeedModel extends FeedModelBase
     } // end addCommunity
 
   /** Delete Dao
-   * @param FeedDao $feeDao 
+   * @param FeedDao $feeDao
    */
   function delete($feeDao)
     {
     $this->ModelLoader = new MIDAS_ModelLoader();
-    $feedpolicygroups = $feeDao->getFeedpolicygroup();    
+    $feedpolicygroups = $feeDao->getFeedpolicygroup();
     $feedpolicygroupModel = $this->ModelLoader->loadModel('Feedpolicygroup');
     foreach($feedpolicygroups as $f)
       {
       $feedpolicygroupModel->delete($f);
       }
-      
-    $feedpolicyuser = $feeDao->getFeedpolicyuser();    
+
+    $feedpolicyuser = $feeDao->getFeedpolicyuser();
     $feedpolicyuserModel = $this->ModelLoader->loadModel('Feedpolicyuser');
     foreach($feedpolicyuser as $f)
       {
       $feedpolicyuserModel->delete($f);
       }
-      
+
     $communities = $feeDao->getCommunities();
     foreach($communities as $c)
       {
@@ -263,6 +263,6 @@ class FeedModel extends FeedModelBase
       }
     return parent::delete($feeDao);
     } // end delete
-    
+
 } // end class
 ?>

@@ -13,6 +13,6 @@ PURPOSE.  See the above copyright notices for more information.
 class Helloworld_AppModel extends MIDASModel
 {
 
-    
+
 }
 ?>

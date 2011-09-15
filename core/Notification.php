@@ -15,14 +15,14 @@ class Notification extends MIDAS_Notification
   {
   public $_components = array('Utility');
   public $_models = array('User', 'Item');
-  
+
   /** init notification process*/
   public function init()
     {
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDasboard');
     $this->addTask('TASK_CORE_RESET_ITEM_INDEXES', 'resetItemIndexes', 'Recompute lucene indexes');
-    }//end init  
-    
+    }//end init
+
   /** generate Dasboard information */
   public function getDasboard()
     {
@@ -32,11 +32,11 @@ class Notification extends MIDAS_Notification
     $return['Config Folder Writable'] = array(is_writable(BASE_PATH.'/core/configs'));
     $return['Data Folder Writable'] = array(is_writable(BASE_PATH.'/data'));
     $return['Temporary Folder Writable'] = array(is_writable(BASE_PATH.'/tmp'));
-    
+
     return $return;
     }//end _getDasboard
-    
-    
+
+
   /** reset item indexes */
   public function resetItemIndexes()
     {
@@ -49,11 +49,11 @@ class Notification extends MIDAS_Notification
         $this->Item->save($item);
         }
       }
-      
+
     require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
-    $component = new SearchComponent();    
+    $component = new SearchComponent();
     $index = $component->getLuceneItemIndex();
-    
+
     $index->optimize();
     }
   } //end class

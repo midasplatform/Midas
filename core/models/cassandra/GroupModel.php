@@ -18,31 +18,31 @@ require_once BASE_PATH.'/core/models/base/GroupModelBase.php';
  */
 class GroupModel extends GroupModelBase
 {
-  
+
   /** Get a group by id */
   function getByGroup_id($groupid)
     {
-    try 
+    try
       {
-      $group = new ColumnFamily($this->database->getDB(), 'group');      
+      $group = new ColumnFamily($this->database->getDB(), 'group');
       $grouparray = $group->get($groupid);
-          
+
       // Add the user_id
       $grouparray[$this->_key] = $groupid;
       $dao = $this->initDao('Group', $grouparray);
       }
-    catch(cassandra_NotFoundException $e) 
+    catch(cassandra_NotFoundException $e)
       {
-      return false;  
-      }      
-    catch(Exception $e) 
+      return false;
+      }
+    catch(Exception $e)
       {
-      throw new Zend_Exception($e); 
-      }  
+      throw new Zend_Exception($e);
+      }
     return $dao;
     } // end getByGroup_id()
-    
-    
+
+
   /** Add an user to a group
    * @return void
    *  */
@@ -56,13 +56,13 @@ class GroupModel extends GroupModelBase
       {
       throw new Zend_Exception("Should be an user.");
       }
-      
+
     $column_family = new ColumnFamily($this->database->getDB(), 'group');
     $data = array();
     $column = 'user_'.$user->getUserId();
     $data[$column] = date('c');
-    
-    $column_family->insert($group->getGroupId(), $data);  
+
+    $column_family->insert($group->getGroupId(), $data);
     } // end function addUser
 
   /** Get a groups by Community */
@@ -71,10 +71,10 @@ class GroupModel extends GroupModelBase
     if(!$communityDao instanceof CommunityDaom)
       {
       throw new Zend_Exception("Should be a community.");
-      }  
-    throw new Zend_Exception("findByCommunity not implemented yet");  
-    /*  
-    $rowset = $this->database->fetchAll($this->database->select()->where('community_id = ?', $communityDao->getKey())); 
+      }
+    throw new Zend_Exception("findByCommunity not implemented yet");
+    /*
+    $rowset = $this->database->fetchAll($this->database->select()->where('community_id = ?', $communityDao->getKey()));
     $result = array();
     foreach($rowset as $row)
       {
@@ -82,7 +82,7 @@ class GroupModel extends GroupModelBase
       }
     return $result;*/
     } // end findByCommunity()
-      
+
   /** Remove an user from a group
    * @return void
    *  */
@@ -95,22 +95,22 @@ class GroupModel extends GroupModelBase
     if(!$user instanceof UserDao)
       {
       throw new Zend_Exception("Should be an user.");
-      }  
+      }
     $column_family = new ColumnFamily($this->database->getDB(), 'group');
-    $column_family->remove($group->getGroupId(), array('user_'.$user->getUserId()));  
-    } // end function removeUser 
+    $column_family->remove($group->getGroupId(), array('user_'.$user->getUserId()));
+    } // end function removeUser
 
   /** Get Users attached to a group */
   function getUsers($groupid)
     {
-    $users = array();  
+    $users = array();
     $usergrouparray = $this->database->getCassandra('group', $groupid, null, "user_", "user_");
     foreach($usergrouparray as $user)
       {
       $users[] = $this->initDao('User', $user);
-      }  
+      }
     return $users;
     } // end getByGroup_id()
-    
+
 }  // end class
 

@@ -26,10 +26,10 @@ class HelloModelTest extends DatabaseTestCase
     {
     $modelLoad = new MIDAS_ModelLoader();
     $helloModel = $modelLoad->loadModel('Hello', 'helloworld');
-    
+
     $daos = $helloModel->getAll();
     $this->assertEquals(1, count($daos));
     }
 
- 
+
   }

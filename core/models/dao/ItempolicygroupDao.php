@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /**
  * \class ItempolicygroupDao
- * \brief DAO Item 
+ * \brief DAO Item
  */
 class ItempolicygroupDao extends AppDao
   {

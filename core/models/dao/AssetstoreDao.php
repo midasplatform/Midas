@@ -17,7 +17,5 @@ PURPOSE.  See the above copyright notices for more information.
 class AssetstoreDao extends AppDao
 {
   public $_model = 'Assetstore';
- 
-  
-} // end class  
+} // end class
 ?>

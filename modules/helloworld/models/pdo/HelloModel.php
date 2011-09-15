@@ -31,5 +31,5 @@ class Helloworld_HelloModel extends Helloworld_HelloModelBase
       }
     return $rowsetAnalysed;
     }
-    
+
 }  // end class

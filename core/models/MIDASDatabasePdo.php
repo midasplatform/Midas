@@ -16,11 +16,11 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseInterface
 {
-  
+
   protected $_name;
   protected $_mainData;
   protected $_key;
-  
+
   /**
    * @method public  __construct()
    *  Construct model
@@ -32,11 +32,11 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
 
   /** Initialize */
   public function initialize($name, $key, $data)
-    {      
+    {
     $this->_name = $name;
     $this->_mainData = $data;
     $this->_key = $key;
-    
+
     if(!isset($this->_name))
       {
       throw new Zend_Exception("a Model PDO is not defined properly.");
@@ -46,14 +46,14 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       throw new Zend_Exception("Model PDO " . $this->_name . " is not defined properly.");
       }
     }  // end function initialize
-   
+
 
   /** Return the database */
   public function getDB()
     {
-    return $this->_db;  
-    }  
-    
+    return $this->_db;
+    }
+
   /**
    * @method public  get()
    * Generic get function. You can define custom function.
@@ -117,7 +117,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
         }
       return call_user_func(array($model, 'getBy'.ucfirst($this->_mainData[$var]['child_column'])),
                             $dao->get($this->_mainData[$var]['parent_column']));
-      
+
       }
     else if($this->_mainData[$var]['type'] == MIDAS_MANY_TO_MANY)
       {
@@ -141,7 +141,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     require_once BASE_PATH . '/core/models/ModelLoader.php';
     $this->ModelLoader = new MIDAS_ModelLoader();
     $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model']);
-    
+
     $parentColumn = $this->_mainData[$var]['parent_column'];
     $sql = $this->select()
             ->setIntegrityCheck(false)
@@ -354,26 +354,26 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     $dao->saved = false;
     return true;
     }//end delete
-    
+
 
   /** getAllByKey() */
   public function getAllByKey($keys)
     {
-    // Make sure we have only numerics  
+    // Make sure we have only numerics
     foreach($keys as $k => $v)
       {
       if(!is_numeric($v))
         {
         unset($keys[$k]);
         }
-      }        
+      }
     if(empty($keys))
       {
       return array();
       }
-    return $this->fetchAll($this->select()->where($this->_key . ' IN (?)', $keys));  
+    return $this->fetchAll($this->select()->where($this->_key . ' IN (?)', $keys));
     }
-  
+
   /** return the number row in the table
    * @return int */
   public function getCountAll()
@@ -381,6 +381,6 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     $count = $this->fetchRow($this->select()->from($this->_name, 'count(*) as COUNT'));
     return $count['COUNT'];
     }//end getCountAll
-    
+
 } //end class MIDASDatabasePdo
 ?>

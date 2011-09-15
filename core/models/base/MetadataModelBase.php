@@ -16,9 +16,9 @@ abstract class MetadataModelBase extends AppModel
   /** Constructor*/
   public function __construct()
     {
-    parent::__construct();  
+    parent::__construct();
     $this->_name = 'metadata';
-    $this->_key = 'metadata_id'; 
+    $this->_key = 'metadata_id';
     $this->_mainData = array(
       'metadata_id' => array('type' => MIDAS_DATA),
       'metadatatype' => array('type' => MIDAS_DATA),
@@ -29,22 +29,22 @@ abstract class MetadataModelBase extends AppModel
       'itemrevision_id' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'ItemRevision', 'parent_column' => 'itemrevision_id', 'child_column' => 'itemrevision_id'),
       );
     $this->initialize(); // required
-    } // end __construct() 
-  
+    } // end __construct()
+
   abstract function getMetadata($type, $element, $qualifier);
   abstract function getAllMetadata();
   protected abstract function saveMetadataValue($metadataDao);
   abstract function getMetadataValueExists($metadataDao);
-  
+
   /** Add a metadata
    * @return MetadataDao */
   function addMetadata($type, $element, $qualifier, $description)
     {
     // Gets the metadata
-    $metadata = $this->getMetadata($type, $element, $qualifier);  
+    $metadata = $this->getMetadata($type, $element, $qualifier);
     if($metadata)
       {
-      throw new Zend_Exception("Metadata already exists.");  
+      throw new Zend_Exception("Metadata already exists.");
       }
 
     $this->loadDaoClass('MetadataDao');
@@ -53,14 +53,14 @@ abstract class MetadataModelBase extends AppModel
     $metadataDao->setElement($element);
     $metadataDao->setQualifier($qualifier);
     $metadataDao->setDescription($description);
-    
+
     if(!$this->save($metadataDao))
       {
-      return false;  
-      } 
+      return false;
+      }
     return $metadataDao;
-    } // end addMetadataValue() 
-    
+    } // end addMetadataValue()
+
   /** Add a metadata to an itemRevision
    * @return MetadataDao */
   function addMetadataValue($itemRevisionDao, $type, $element, $qualifier, $value)
@@ -72,32 +72,32 @@ abstract class MetadataModelBase extends AppModel
       }
 
     // Gets the metadata
-    $metadataDao = $this->getMetadata($type, $element, $qualifier); 
-    
+    $metadataDao = $this->getMetadata($type, $element, $qualifier);
+
     if(!$metadataDao)
       {
-      throw new Zend_Exception("Metadata ".$element.".".$qualifier." doesn't exist. 
-                                You should add it before adding a value.");  
+      throw new Zend_Exception("Metadata ".$element.".".$qualifier." doesn't exist.
+                                You should add it before adding a value.");
       }
     $metadataDao->setItemrevisionId($itemRevisionDao->getKey());
     $metadataDao->setValue($value);
     if($this->getMetadataValueExists($metadataDao))
       {
-      throw new Zend_Exception("This metadata value already exists for that revision.");   
+      throw new Zend_Exception("This metadata value already exists for that revision.");
       }
-     
+
     $item = $itemRevisionDao->getItem();
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $lastrevision = $itemModel->getLastRevision($item);
-    
+
     //refresh zend search index
     if($lastrevision->getKey() == $itemRevisionDao->getKey())
       {
       $itemModel->save($item);
       }
-      
+
     $this->saveMetadataValue($metadataDao);
-    } // end addMetadataValue()  
-    
+    } // end addMetadataValue()
+
 } // end class MetadataModelBase

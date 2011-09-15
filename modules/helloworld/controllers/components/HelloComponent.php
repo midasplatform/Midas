@@ -12,10 +12,10 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** demo component*/
 class Helloworld_HelloComponent extends AppComponent
-{ 
+{
   /** demo method*/
   public function hello()
     {
     return "helloComponent";
-    }    
+    }
 } // end class

@@ -16,10 +16,10 @@ abstract class BitstreamModelBase extends AppModel
   /** constructor */
   public function __construct()
     {
-    parent::__construct();  
+    parent::__construct();
     $this->_name = 'bitstream';
     $this->_key = 'bitstream_id';
-  
+
     $this->_mainData = array(
       'bitstream_id' =>  array('type' => MIDAS_DATA),
       'itemrevision_id' =>  array('type' => MIDAS_DATA),
@@ -34,18 +34,18 @@ abstract class BitstreamModelBase extends AppModel
       'itemrevision' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'ItemRevision', 'parent_column' => 'itemrevision_id', 'child_column' => 'itemrevision_id'),
       'assetstore' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Assetstore', 'parent_column' => 'assetstore_id', 'child_column' => 'assetstore_id'),
       );
-    $this->initialize(); // required  
+    $this->initialize(); // required
     } // end __construct()
-    
+
   /** Abstract functions */
   abstract function getByChecksum($checksum);
-  
+
   /** save */
   public function save($dao)
     {
     parent::save($dao);
     }
-  
+
   /** delete a Bitstream*/
   function delete($bitstream)
     {
@@ -55,7 +55,7 @@ abstract class BitstreamModelBase extends AppModel
       }
     $checksum = $bitstream->getChecksum();
     $path = $bitstream->getFullPath();
-    $assetstore = $bitstream->getAssetstore();    
+    $assetstore = $bitstream->getAssetstore();
     parent::delete($bitstream);
     if($assetstore->getType() != MIDAS_ASSETSTORE_REMOTE && $this->getByChecksum($checksum) == false)
       {

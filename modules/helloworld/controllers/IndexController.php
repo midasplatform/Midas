@@ -21,27 +21,27 @@ class Helloworld_IndexController extends Helloworld_AppController
   public $_moduleComponents = array('Hello');
   public $_forms = array('Install');
   public $_moduleForms = array('Index');
-  
+
   /**
    * @method initAction()
    *  Index Action (first action when we access the application)
    */
   function init()
-    {         
-  
+    {
+
     } // end method indexAction
 
   /** index action*/
   function indexAction()
     {
     $configs = Zend_Registry::get('configsModules');
-     
+
     //test Core Dao;
     $item = new ItemDao();
-    
+
     //test Module Dao;
     $hello = new Helloworld_HelloDao();
-        
+
     $this->view->version = $configs[$this->moduleName]->version;
     $this->view->componentTest = $this->ModuleComponent->Hello->hello();
     $users = $this->User->getAll();
@@ -51,6 +51,6 @@ class Helloworld_IndexController extends Helloworld_AppController
 
     $this->view->installForm = $this->Form->Install->createConfigForm();
     $this->view->indexForm = $this->ModuleForm->Index->createIndexForm();
-    } 
-    
+    }
+
 }//end class
