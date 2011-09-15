@@ -9,11 +9,11 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+class Batchmake_TaskDao extends AppDao {
 
-class Batchmake_AppModel extends MIDASModel
-{
-  public $moduleName='batchmake';
+    public $_model = 'Task';
+    public $_module = 'batchmake';
 
-    
 }
+
 ?>

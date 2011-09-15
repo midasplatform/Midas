@@ -136,7 +136,9 @@ class Batchmake_ConfigController extends Batchmake_AppController
       }
     
     $config_status =  $this->ModuleComponent->KWBatchmake->testconfig($configPropertiesParamVals);
-    echo JsonComponent::encode($config_status);
+    $jsonout = JsonComponent::encode($config_status);
+    echo $jsonout;
+//    echo JsonComponent::encode($config_status);
     }//end testconfigAction
  
 

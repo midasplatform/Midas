@@ -12,6 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 class Batchmake_AppDao extends MIDAS_GlobalDao
   {
+  public $moduleName='batchmake';
  
   } //end class
 

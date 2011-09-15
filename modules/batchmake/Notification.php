@@ -21,10 +21,16 @@ class Batchmake_Notification extends MIDAS_Notification
   public function init()
     {
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
+    $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLink');
     }//end init
 
-
-  /** generate Dashboard information */
+    
+  /**
+   *@method getDashboard
+   * will generate information about this module to display on the Dashboard
+   *@return array with key being a string describing if the configuration of
+   * the module is correct or not, and value being a 1/0 for the same info.
+   */
   public function getDashboard()
     {    
     $return = array();
@@ -38,5 +44,21 @@ class Batchmake_Notification extends MIDAS_Notification
       }
     return $return;
     } 
+
+    
+  /**
+   *@method getLeftLink
+   * will generate a link for this module to be displayed in the main view.
+   *@return ['batchmake' => [ link to batchmake module, module icon image path]]
+   */
+  public function getLeftLink()
+    {
+    $fc = Zend_Controller_Front::getInstance();
+    $moduleWebroot = $fc->getBaseUrl() . MIDAS_BATCHMAKE_MODULE;
+    return array(ucfirst(MIDAS_BATCHMAKE_MODULE) => array($moduleWebroot,  $moduleWebRoot . '/public/images/cmake.png'));
+    }
+        
   } //end class
+    
+    
 ?>
