@@ -23,6 +23,7 @@ define("MIDAS_HTTP_ERROR", -153);
 class Api_IndexController extends Api_AppController
 {
   public $_moduleModels = array('Userapi');
+  public $_moduleComponents = array('Authentication');
   public $_models = array('Community', 'ItemRevision', 'Item', 'User', 'Folderpolicyuser', 'Folderpolicygroup', 'Folder');
   public $_components = array('Upload', 'Search', 'Uuid', 'Sortdao');
 
@@ -373,6 +374,17 @@ class Api_IndexController extends Api_AppController
     $help['description'] = 'Get metadata';
     $this->helpContent[$apiMethodPrefix.'item.getmetadata'] = $help;
     $this->apicallbacks[$apiMethodPrefix.'item.getmetadata']       = array(&$this, 'itemGetMetadata');
+
+    // Extend web API to other modules via CALLBACK_API_METHODS
+    $additionalMethods = Zend_Registry::get('notifier')->callback('CALLBACK_API_METHODS', array());
+    foreach($additionalMethods as $module => $methods)
+      {
+      foreach($methods as $method)
+        {
+        $this->helpContent[$apiMethodPrefix.strtolower($module).'.'.$method['name']] = $method['help'];
+        $this->apicallbacks[$apiMethodPrefix.strtolower($module).'.'.$method['name']] = array($method['callbackObject'], $method['callbackFunction']);
+        }
+      }
     }
 
   /** Initialize property allowing to generate XML */
@@ -389,32 +401,10 @@ class Api_IndexController extends Api_AppController
     $this->uploadApi = new KwUploadAPI($this->apiSetup);
     }
 
-  /** Return the user id given the arguments */
-  private function _getUserId($args)
-    {
-    if(!array_key_exists('token', $args))
-      {
-      return 0;
-      }
-    $token = $args['token'];
-    $userapiDao = $this->Api_Userapi->getUserapiFromToken($token);
-    if(!$userapiDao)
-      {
-      throw new Exception('Invalid token', MIDAS_INVALID_TOKEN);
-      }
-    return $userapiDao->getUserId();
-    }
-
-  /** Return the user */
+  /** Return the user dao */
   private function _getUser($args)
     {
-    $userid = $this->_getUserId($args);
-    if($userid == 0)
-      {
-      return false;
-      }
-    $userDao = $this->User->load($userid);
-    return $userDao;
+    return $this->ModuleComponent->Authentication->getUser($args, $this->userSession->Dao);
     }
 
   /** Controller action handling REST request */
@@ -721,18 +711,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $communityid = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $community = $this->Community->load($communityid);
 
     if($community === false || !$this->Community->policyCheck($community, $userDao, MIDAS_POLICY_READ))
@@ -750,18 +731,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $id = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $parent = $this->Folder->load($id);
 
     if($parent === false || !$this->Folder->policyCheck($parent, $userDao, MIDAS_POLICY_READ))
@@ -844,18 +816,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $id = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $folder = $this->Folder->load($id);
 
     if($folder === false || !$this->Folder->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
@@ -972,18 +935,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $itemid = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $item = $this->Item->load($itemid);
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
@@ -1017,18 +971,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $itemid = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $item = $this->Item->load($itemid);
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
@@ -1071,18 +1016,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $id = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $folder = $this->Folder->load($id);
 
     if($folder === false || !$this->Folder->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
@@ -1100,18 +1036,9 @@ class Api_IndexController extends Api_AppController
       {
       throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $this->_getUser($args);
 
     $id = $args['id'];
-
-    if(array_key_exists('token', $args))
-      {
-      $userDao = $this->_getUser($args);
-      }
-    else
-      {
-      $userDao = false;
-      }
-
     $item = $this->Item->load($id);
 
     if($item === false || !$this->Item->policyCheck($item, $userDao, MIDAS_POLICY_READ))
@@ -1370,7 +1297,7 @@ class Api_IndexController extends Api_AppController
       return array();
       }
 
-    $userRootFolder = $userDao->getFolder();  
+    $userRootFolder = $userDao->getFolder();
     return $this->Folder->getChildrenFoldersFiltered($userRootFolder, $userDao, MIDAS_POLICY_READ);
     }
 
