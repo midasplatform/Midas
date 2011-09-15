@@ -38,7 +38,7 @@ class MIDAS_GlobalModule extends AppController
     foreach($allModules as &$mod)
       {
       $modWebroot = $mod.'Webroot';
-      $this->view->__set($modWebroot, $fc->getBaseUrl().'/modules/'.$mod);
+      $this->view->$modWebroot = $fc->getBaseUrl().'/modules/'.$mod;
       }
     }
     
