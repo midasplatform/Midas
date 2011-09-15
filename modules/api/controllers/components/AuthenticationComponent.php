@@ -37,7 +37,9 @@ class Api_AuthenticationComponent extends AppComponent
         return 0;
         }
       $token = $args['token'];
-      $userapiDao = $this->Api_Userapi->getUserapiFromToken($token);
+      $modelLoad = new MIDAS_ModelLoader();
+      $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+      $userapiDao = $userApiModel->getUserapiFromToken($token);
       if(!$userapiDao)
         {
         throw new Exception('Invalid token', MIDAS_INVALID_TOKEN);
@@ -47,7 +49,8 @@ class Api_AuthenticationComponent extends AppComponent
         {
         return false;
         }
-      $userDao = $this->User->load($userid);
+      $userModel = $modelLoad->loadModel('User');
+      $userDao = $userModel->load($userid);
       return $userDao;
       }
     }

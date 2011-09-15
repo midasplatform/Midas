@@ -26,16 +26,17 @@ class ApiIndexControllerTest extends ControllerTestCase
     }
 
   /** Invoke the JSON web API */
-  private function _callJsonApi()
+  private function _callJsonApi($sessionUser = null)
     {
-    $this->dispatchUrI($this->webroot.'api/json');
-    return json_decode($this->response->getBody());
+    $this->dispatchUrI($this->webroot.'api/json', $sessionUser);
+    return json_decode($this->getBody());
     }
 
   /** Make sure we got a good response from a web API call */
   private function _assertStatusOk($resp)
     {
     $this->assertNotEquals($resp, false);
+    $this->assertEquals($resp->message, '');
     $this->assertEquals($resp->stat, 'ok');
     $this->assertEquals($resp->code, 0);
     $this->assertTrue(isset($resp->data));
@@ -183,5 +184,31 @@ class ApiIndexControllerTest extends ControllerTestCase
     $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
 
     $this->assertEquals($resp->data->apikey, $apiKey);
+    }
+
+  /** Test that we can authenticate to the web API using the user session */
+  public function testSessionAuthentication()
+    {
+    $usersFile = $this->loadData('User', 'default');
+    $userDao = $this->User->load($usersFile[0]->getKey());
+
+    $this->resetAll();
+    $this->params = array();
+    $this->params['method'] = 'midas.user.folders';
+    $this->params['useSession'] = 'true';
+    $this->request->setMethod('POST');
+    $resp = $this->_callJsonApi($userDao);
+    $this->_assertStatusOk($resp);
+
+    // We should see the user's folders
+    $this->assertEquals(count($resp->data), 2);
+
+    foreach($resp->data as $folder)
+      {
+      $this->assertEquals($folder->_model, 'Folder');
+      $this->assertEquals($folder->parent_id, 1000);
+      }
+    $this->assertEquals($resp->data[0]->name, 'User 1 name Folder 2');
+    $this->assertEquals($resp->data[1]->name, 'User 1 name Folder 3');
     }
   }
