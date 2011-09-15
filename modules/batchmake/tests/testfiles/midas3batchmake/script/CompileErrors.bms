@@ -1,0 +1,7 @@
+# Should the script end in case of errors
+ExitOnError(1)
+
+Echo('This script should not compile')
+
+Foreach(var ${varlist})
+Endforeach()

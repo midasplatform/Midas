@@ -16,7 +16,7 @@ define("MIDAS_BATCHMAKE_CHECK_IF_EXECUTABLE", 0x8);
 define("MIDAS_BATCHMAKE_CHECK_IF_CHMODABLE", 0x10);
 define("MIDAS_BATCHMAKE_CHECK_IF_CHMODABLE_RW", 0x16); // 0x10 + 0x6
 
-define("MIDAS_BATCHMAKE_DEFAULT_MKDIR_MODE", 0775);
+
 
 // Condor executables
 define("MIDAS_BATCHMAKE_CONDOR_STATUS", "condor_status");
@@ -26,7 +26,10 @@ define("MIDAS_BATCHMAKE_CONDOR_SUBMIT_DAG", "condor_submit_dag");
 
 // Batchmake executable
 define("MIDAS_BATCHMAKE_EXE", "BatchMake");
-  
+// Batchmake temporary execution dir
+define("MIDAS_BATCHMAKE_SSP_DIR", "SSP");
+
+
 // Extension automatically appended to dagman 
 // description file when 'condor_dag_submit' generates it
 define("MIDAS_BATCHMAKE_CONDOR_DAGMAN_EXT", ".condor.sub");
@@ -88,7 +91,10 @@ define("MIDAS_BATCHMAKE_EXIST_STRING", 'Exist');
 define("MIDAS_BATCHMAKE_NOT_FOUND_ON_CURRENT_SYSTEM_STRING", 'Not found on the current system');
 define("MIDAS_BATCHMAKE_FILE_OR_DIRECTORY_DOESNT_EXIST_STRING", "File or directory doesn't exist:");
 
-
+define("MIDAS_BATCHMAKE_NO_SCRIPT_SPECIFIED", "No script specified");
+define("MIDAS_BATCHMAKE_NO_SCRIPT_FOUND", "No script found at: ");
+define("MIDAS_BATCHMAKE_CREATE_TMP_DIR_FAILED", "Failed to create temporary directory: ");
+define("MIDAS_BATCHMAKE_SYMLINK_FAILED", "Failed to create symbolic link: ");
 
 
 // property keys
