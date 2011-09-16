@@ -17,12 +17,12 @@ include_once BASE_PATH . '/library/KWUtils.php';
  *  provides utility methods needed to interact with Batchmake via Midas3.
  */
 class Batchmake_KWBatchmakeComponent extends AppComponent
-{ 
+{
 
   protected static $configPropertiesRequirements = array(MIDAS_BATCHMAKE_TMP_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_CHMODABLE_RW,
-  MIDAS_BATCHMAKE_BIN_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_READABLE, 
-  MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_READABLE, 
-  MIDAS_BATCHMAKE_APP_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_READABLE, 
+  MIDAS_BATCHMAKE_BIN_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_READABLE,
+  MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_READABLE,
+  MIDAS_BATCHMAKE_APP_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_READABLE,
   MIDAS_BATCHMAKE_DATA_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_CHMODABLE_RW,
   MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_READABLE);
 
@@ -32,18 +32,18 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    */
   public function getConfigPropertiesRequirements()
     {
-    return self::$configPropertiesRequirements;  
+    return self::$configPropertiesRequirements;
     }
 
-    
+
   protected static $applicationsPaths = array(MIDAS_BATCHMAKE_CONDOR_STATUS => MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY,
   MIDAS_BATCHMAKE_CONDOR_QUEUE => MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY,
   MIDAS_BATCHMAKE_CONDOR_SUBMIT => MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY,
   MIDAS_BATCHMAKE_CONDOR_SUBMIT_DAG => MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY,
   MIDAS_BATCHMAKE_EXE => MIDAS_BATCHMAKE_BIN_DIR_PROPERTY);
 
-  
-  
+
+
   // component configuration settings
   protected $componentConfig;
   // individual config properties, for convenience
@@ -53,7 +53,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
   protected $configBinDir;
   protected $configDataDir;
   protected $configCondorBinDir;
-    
+
   /**
    * Constructor, loads ini from standard config location, unless a
    * supplied alternateConfig.
@@ -62,17 +62,17 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
   public function __construct($alternateConfig = null)
     {
     $this->loadConfigProperties($alternateConfig);
-    } // end __construct($alternateConfig)  
-    
-    
+    } // end __construct($alternateConfig)
+
+
   /**
    * helper function to load the correct config file
    * @param string $alternateConfig path to alternative config ini file
    * @return config array with config properties
    */
   protected function loadConfig($alternateConfig = null)
-    {    
-    if($alternateConfig) 
+    {
+    if($alternateConfig)
       {
       $config = parse_ini_file($alternateConfig, false);
       }
@@ -93,24 +93,24 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    * out only those properties that are in the 'batchmake.' config namespace,
    * removing the 'batchmake.' from the key name.
    * @param string $alternateConfig a path to an alternate config ini file
-   * @return array of batchmake module specific config properties 
+   * @return array of batchmake module specific config properties
    */
   public function loadConfigProperties($alternateConfig = null)
     {
     $configPropertiesParamVals = array();
     $rawConfig = $this->loadConfig($alternateConfig);
-    
+
     $modulePropertyNamespace = MIDAS_BATCHMAKE_MODULE . '.';
     foreach($rawConfig as $configProperty => $configPropertyVal)
       {
       $ind = strpos($configProperty, $modulePropertyNamespace);
       if($ind !== false && $ind  == 0)
         {
-        $reducedKey = substr($configProperty, strpos($configProperty, '.') + 1);      
-        $configPropertiesParamVals[$reducedKey] = $configPropertyVal;      
+        $reducedKey = substr($configProperty, strpos($configProperty, '.') + 1);
+        $configPropertiesParamVals[$reducedKey] = $configPropertyVal;
         }
       }
-      
+
     $this->componentConfig = $configPropertiesParamVals;
     $this->configScriptDir = $this->componentConfig[MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY];
     $this->configAppDir = $this->componentConfig[MIDAS_BATCHMAKE_APP_DIR_PROPERTY];
@@ -120,10 +120,10 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     $this->configCondorBinDir = $this->componentConfig[MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY];
     return $this->componentConfig;
     }
-    
+
   // above here is config setup
-  // below here is config testing  
-    
+  // below here is config testing
+
   /**
    * @method checkFileFlag()
    * @TODO from KWUtils, may need to be moved, but first tested
@@ -134,15 +134,15 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     $exist    = file_exists($file);
     Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
     $status =  ($exist ? InternationalizationComponent::translate(MIDAS_BATCHMAKE_EXIST_STRING) : InternationalizationComponent::translate(MIDAS_BATCHMAKE_NOT_FOUND_ON_CURRENT_SYSTEM_STRING));
-    $ret = $exist; 
-    
+    $ret = $exist;
+
     if($exist && ($options & MIDAS_BATCHMAKE_CHECK_IF_READABLE))
       {
       $readable = is_readable($file);
       $status .= $readable ? " / Readable" : " / NotReadable";
       $ret = $ret && $readable;
       }
-      
+
     if($exist && ($options & MIDAS_BATCHMAKE_CHECK_IF_WRITABLE))
       {
       $writable = is_writable($file);
@@ -161,15 +161,15 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       $status .= $chmodable ? " / Chmodable" : " / NotChmodable";
       $ret = $ret && $chmodable;
       }
-    return array($ret, $status); 
+    return array($ret, $status);
     }
 
   /**
    * @method isChmodable
-   * Check if current PHP process has permission to change the mode 
+   * Check if current PHP process has permission to change the mode
    * of $fileOrDirectory.
    * @TODO from KWUtils, may need to be moved, but first tested
-   * Note: If return true, the mode of the file will be MIDAS_BATCHMAKE_DEFAULT_MKDIR_MODE 
+   * Note: If return true, the mode of the file will be MIDAS_BATCHMAKE_DEFAULT_MKDIR_MODE
    *       On windows, return always True
    */
   protected function isChmodable($fileOrDirectory)
@@ -178,61 +178,61 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       {
       return true;
       }
-    
+
     if(!file_exists($fileOrDirectory))
       {
       Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
       self::Error(InternationalizationComponent::translate(MIDAS_BATCHMAKE_FILE_OR_DIRECTORY_DOESNT_EXIST_STRING).' ['.$fileOrDirectory.']');
-      return false; 
+      return false;
       }
 
     // Get permissions of the file
-    // TODO On CIFS filesytem, even if the function GetFilePermissions call clearstatcache(), the value returned can be wrong 
+    // TODO On CIFS filesytem, even if the function GetFilePermissions call clearstatcache(), the value returned can be wrong
     $current_perms = KWUtils::DEFAULT_MKDIR_MODE;
     if($current_perms === false)
       {
       return false;
-      }    
-    
+      }
+
     if(is_writable($fileOrDirectory))
       {
-      // Try to re-apply them 
+      // Try to re-apply them
       $return = chmod($fileOrDirectory, $current_perms);
       }
     else
       {
-      $return = false;  
+      $return = false;
       }
-    return $return;    
+    return $return;
     }
 
   /**
-   * @method testconfig() 
+   * @method testconfig()
    * @param array $alternateConfigValues an alternative set of values to test,
    * usually testing a possible configuration set to be saved.
    * performs validation on current config setup.
    */
   public function testconfig($alternateConfigValues = null)
-    {  
+    {
     //default to correct config
     $total_config_correct = 1;
     $configStatus = array();
-    
+
     if($alternateConfigValues)
       {
       $configToTest = $alternateConfigValues;
       }
     else
       {
-      $configToTest = $this->componentConfig; 
+      $configToTest = $this->componentConfig;
       }
-    
+
     foreach(self::$configPropertiesRequirements as $configProperty => $configPropertyRequirement)
       {
       $configPropertyVal = $configToTest[$configProperty];
       if($configPropertyVal)
         {
-        // if the property exists, check its configuration      
+        // if the property exists, check its configuration
         list($result, $status) = $this->checkFileFlag($configPropertyVal, $configPropertyRequirement);
         $configStatus[] = array(MIDAS_BATCHMAKE_PROPERTY_KEY => $configProperty, MIDAS_BATCHMAKE_STATUS_KEY => $status, MIDAS_BATCHMAKE_TYPE_KEY => $result ? MIDAS_BATCHMAKE_STATUS_TYPE_INFO : MIDAS_BATCHMAKE_STATUS_TYPE_ERROR);
         // the property is in error, therefore so is the global config
@@ -256,7 +256,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       $appPath = $configToTest[$pathProperty] ."/" . KWUtils::formatAppName($app);
       list($result, $status) = $this->checkFileFlag($appPath, MIDAS_BATCHMAKE_CHECK_IF_EXECUTABLE);
       Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
-      
+
       $applicationString = InternationalizationComponent::translate(MIDAS_BATCHMAKE_APPLICATION_STRING);
       $configStatus[] = array(MIDAS_BATCHMAKE_PROPERTY_KEY => $applicationString . ' ' .$appPath, MIDAS_BATCHMAKE_STATUS_KEY => $status, MIDAS_BATCHMAKE_TYPE_KEY => $result ? MIDAS_BATCHMAKE_STATUS_TYPE_INFO : MIDAS_BATCHMAKE_STATUS_TYPE_ERROR);
       // the property is in error, therefore so is the global config
@@ -293,32 +293,32 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     foreach($processProperties as $property => $value)
       {
       $status   = !empty($value);
-      $configStatus[]   = array(MIDAS_BATCHMAKE_PROPERTY_KEY => $property, 
-      MIDAS_BATCHMAKE_STATUS_KEY => $status ? $value : $unknownString, 
+      $configStatus[]   = array(MIDAS_BATCHMAKE_PROPERTY_KEY => $property,
+      MIDAS_BATCHMAKE_STATUS_KEY => $status ? $value : $unknownString,
       MIDAS_BATCHMAKE_TYPE_KEY => $status ? MIDAS_BATCHMAKE_STATUS_TYPE_INFO : MIDAS_BATCHMAKE_STATUS_TYPE_WARNING);
       }
-   
+
     return array($total_config_correct, $configStatus);
 
-    }    
-  
+    }
+
   /**
     * @method isConfigCorrect
     * helper method to return true if the config is correct, false otherwise
     * @param array $alternateConfigValues an alternative set of values to test,
     * usually testing a possible configuration set to be saved.
-    * @return true if config correct, false otherwise 
+    * @return true if config correct, false otherwise
     */
   public function isConfigCorrect($alternateConfigValues = null)
     {
     $applicationConfig = $this->testconfig($alternateConfigValues);
     return $applicationConfig[0] == 1;
     }
-      
+
   // above here is config testing
   // below here is execution functionality
-    
-    
+
+
   /**
    * @method getBatchmakeScripts
    * will create a list of Batchmake scripts that exist in the MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY
@@ -337,8 +337,8 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
     return $scriptNames;
     }
-    
-    
+
+
 
   /**
    * will createa  new batchmake task, along with a work directory
@@ -356,28 +356,28 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     // create a workDir based on the task and user
     $workDir = KWUtils::createSubDirectories($this->configTmpDir . "/", $subdirs);
     return $workDir;
-    }    
-    
+    }
+
   /**
    * @method preparePipelineScripts
    * will look in the scriptDir for a batchmake script and symlink it to the
    * workDir, will then find any batchmake scripts that need to be included
    * other than a config script, and symlink them in from the scriptDir,
    * and for each of these additional scripts, will perform the same
-   * operation (symlinking included batchmake scripts), 
+   * operation (symlinking included batchmake scripts),
    * will throw a Zend_Exception if any symlink fails or if a target file
    * doesn't exist.
-   * @param $workDir the temporary work dir 
+   * @param $workDir the temporary work dir
    * @param $scriptName the original batchmake script
    * @param $processed a list of those scripts already processed
    * @return the array of scripts processed
    */
-  public function preparePipelineScripts($workDir, $scriptName, $processed = array(), &$currentPath = array()) 
+  public function preparePipelineScripts($workDir, $scriptName, $processed = array(), &$currentPath = array())
     {
     // check for cycles
     if(array_search($scriptName, $currentPath) !== false)
       {
-      throw new Zend_Exception("Cycle found in the include graph of batchmake scripts.");  
+      throw new Zend_Exception("Cycle found in the include graph of batchmake scripts.");
       }
     // push this script onto the currentPath
     $currentPath[] = $scriptName;
@@ -394,7 +394,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       // now consider this script to be processed
       $processed[$scriptName] = $scriptName;
       }
-      
+
     // read through the script looking for includes
     $contents = file_get_contents($this->configScriptDir . '/' . $scriptName);
     // looking for lines like
@@ -407,7 +407,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       {
       // we just want the subpattern match, not the full match
       // the subpattern match is the name of the included file
-      $subpatternMatches = $matches[1];      
+      $subpatternMatches = $matches[1];
       // now that we have the matches, we only want the ones that are not .config.bms
       foreach($subpatternMatches as $ind => $includeName)
         {
@@ -427,28 +427,28 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     // return the processed list
     return $processed;
     }
-    
-    
+
+
   /**
    * @method preparePipelineBmms
    * will look in the $workDir for all batchmake scripts that are passed
    * in the array $bmScripts, for each of these, it will find all of the apps
    * included in them using the SetApp Batchmake command, and sym link the
    * corresponding bmm file to the tmpDir, these bmm files are expected to be
-   * in the $binDir, will throw a Zend_Exception if any symlink fails or if a 
+   * in the $binDir, will throw a Zend_Exception if any symlink fails or if a
    * bmm file doesn't exist, or if one of the batchmake scripts doesn't exist.
-   * @param $workDir the temporary work dir 
+   * @param $workDir the temporary work dir
    * @param $bmScripts the array of Batchmake scripts in the $tmpDir to process
    * @return an array of [ bmmfile => bmScript where bmmfile first found ]
    */
-  public function preparePipelineBmms($workDir, $bmScripts) 
+  public function preparePipelineBmms($workDir, $bmScripts)
     {
     // initialize the list of bmms that have been processed
     $processed = array();
     foreach($bmScripts as $bmScript)
       {
       $scriptPath = $workDir . '/' . $bmScript;
-      if(!file_exists($scriptPath)) 
+      if(!file_exists($scriptPath))
         {
         throw new Zend_Exception($scriptPath . ' could not be found');
         }
@@ -462,8 +462,8 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       if($matches && count($matches) > 1)
         {
         // we just want the subpattern match, not the full match
-        // the subpattern match is the name of the included file 
-        $subpatternMatches = $matches[1];      
+        // the subpattern match is the name of the included file
+        $subpatternMatches = $matches[1];
         // now that we have the matches, get the app names to use for the bmm
         foreach($subpatternMatches as $ind => $appName)
           {
@@ -479,7 +479,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
             $processed[$appName] = $bmScript;
             }
           }
-        }      
+        }
       }
     return $processed;
     }
@@ -488,23 +488,23 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    * @method compileBatchMakeScript will check that the passed in $batchmakescript
    * in the passed in $workDir will compile without errors.
    * @param string $workDir directory where the work for SSP should be done
-   * @param string $bmScript name of the script, should be in $tmpDir 
-   * @return type 
+   * @param string $bmScript name of the script, should be in $tmpDir
+   * @return type
    */
   public function compileBatchMakeScript($workDir, $bmScript)
     {
     // Prepare command
     $params = array(
-      '-ap', $this->configAppDir, 
+      '-ap', $this->configAppDir,
       '-p', $workDir,
       '-c', $workDir.$bmScript,
-      ); 
+      );
     $cmd = KWUtils::prepareExecCommand($this->configBinDir . '/'. MIDAS_BATCHMAKE_EXE, $params);
     if($cmd === false)
       {
       return false;
-      } 
-    
+      }
+
     // Run command
     KWUtils::exec($cmd, $output, $workDir, $returnVal);
 
@@ -512,7 +512,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       {
       throw new Zend_Exception("Failed to run: [".$cmd."], output: [".implode(",", $output )."]");
       }
-    
+
     // if BatchMake reports errors, throw an exception
     foreach($output as $ind => $val)
       {
@@ -530,66 +530,66 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
           }
         }
       }
-    
+
     throw new Zend_Exception("Error in BatchMake script, the compile step didn't report errors, output: [".implode(",", $cmd_output )."]");
     }
-    
-    
+
+
 
   /**
    * @method generateCondorDag will create condor scripts and a condor dag
    * from the batchmake script $bmScript, in the directory $workDir.
    * @param type $workDir
-   * @param type $bmScript 
+   * @param type $bmScript
    */
   public function generateCondorDag($workDir, $bmScript)
     {
-    $dagName      = $bmScript.'.dagjob'; 
-    
+    $dagName      = $bmScript.'.dagjob';
+
     // Prepare command
     $params = array(
-      '-ap', $this->configAppDir, 
+      '-ap', $this->configAppDir,
       '-p', $workDir,
       '--condor', $workDir.$bmScript, $workDir.$dagName,
-      ); 
-    
+      );
+
     $cmd = KWUtils::prepareExecCommand($this->configBinDir . '/'. MIDAS_BATCHMAKE_EXE, $params);
-    
+
     // Run command
     KWUtils::exec($cmd, $output, $workDir, $returnVal);
-     
+
     if($returnVal !== 0)
       {
       throw new Zend_Exception("Failed to run: [".$cmd."], output: [".implode(",", $cmd_output )."]");
       }
     return $dagName;
     }
-    
+
   /**
    * @method condorSubmitDag will submit the passed in $dagScript to condor,
    * executing in the passed in $workDir
    * @param type $workDir
-   * @param type $dagScript 
-   */  
+   * @param type $dagScript
+   */
   public function condorSubmitDag($workDir, $dagScript)
     {
-    // Prepare command  
+    // Prepare command
     $params = array($dagScript);
-        
+
     $cmd = KWUtils::prepareExecCommand($this->configCondorBinDir . '/'. MIDAS_BATCHMAKE_CONDOR_SUBMIT_DAG, $params);
 
-    // Run command 
+    // Run command
     KWUtils::exec($cmd, $output, $workDir, $returnVal);
-    
+
     if($returnVal !== 0)
       {
       throw new Zend_Exception("Failed to run: [".$cmd."], output: [".implode(",", $cmd_output )."]");
       }
     }
-    
-    
-    
-    
-    
+
+
+
+
+
 } // end class
 ?>

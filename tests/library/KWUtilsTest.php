@@ -19,7 +19,7 @@ require_once BASE_PATH.'/library/KWUtils.php';
 class KWUtilsTest extends ControllerTestCase
   {
 
-    
+
   /** tests mkDir function */
   public function testMkDir()
     {
@@ -32,24 +32,24 @@ class KWUtilsTest extends ControllerTestCase
     // now clean up
     rmdir($tmpDir);
     }
-    
+
   /** tests createSubDirectories function */
   public function testCreateSubDirectories()
     {
     // test creating directories, do this in the tmp dir
-    // 
+    //
     // create a nested set of directories
     $tmpDir = BASE_PATH . 'tmp/';
     $subDirs = array("KWUtilsTest", "1", "2", "3");
     $outDir = KWUtils::createSubDirectories($tmpDir, $subDirs);
 
     // now check that all the subdirs have been created
-    
+
     // according to what we wanted
     $this->assertFileExists($tmpDir);
     // and what we got back
     $this->assertFileExists($outDir);
-    
+
     $currDir = $tmpDir;
     foreach($subDirs as $subdir)
       {
@@ -63,13 +63,13 @@ class KWUtilsTest extends ControllerTestCase
       {
       // we aren't doing anything with $subdir, just iterating once per subdir
       rmdir($currDir);
-      $parts = explode('/', $currDir);  
+      $parts = explode('/', $currDir);
       $parts = array_slice($parts, 0, count($parts)-1);
-      $currDir = implode('/', $parts);  
+      $currDir = implode('/', $parts);
       }
-    }    
-  
-    
+    }
+
+
   /** tests exec function */
   public function testExec()
     {
@@ -86,14 +86,14 @@ class KWUtilsTest extends ControllerTestCase
 
     // yuck, need to do a bit of munging to get around tests/.. in BASE_PATH
     $execDir = str_replace('tests/../', '', $execDir);
-    
+
     $this->assertEquals($execDir, $output[0]);
     // return_val should be 0
     $this->assertEquals($returnVal, 0);
     // now clean up the tmp dir
     rmdir($execDir);
-    } 
-    
+    }
+
   /** tests appendStringIfNot function */
   public function testAppendStringIfNot()
     {
@@ -125,9 +125,9 @@ class KWUtilsTest extends ControllerTestCase
       {
       // if we end up here, that is the correct behavior
       $this->assertTrue(true);
-      }    
-    }       
-    
+      }
+    }
+
   /** tests isExecutable function */
   public function testIsExecutable()
     {
@@ -138,8 +138,8 @@ class KWUtilsTest extends ControllerTestCase
     $this->assertFalse(KWUtils::isExecutable('pwd', false));
     // but 'pwd' will be found in the path
     $this->assertTrue(KWUtils::isExecutable('pwd', true));
-    }    
-    
+    }
+
   /** tests prepareExecCommand function */
   public function testPrepareExecCommand()
     {
@@ -147,7 +147,7 @@ class KWUtilsTest extends ControllerTestCase
     $appPath = KWUtils::findApp('php', true);
     $this->assertEquals($returnVal, "'".$appPath."' 'blah1' 'blah2' 'blah3'");
     }
-    
-    
-  
+
+
+
   }

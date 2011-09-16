@@ -20,9 +20,9 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class KWUtils
 {
-  
-  CONST DEFAULT_MKDIR_MODE = 0775;  
-    
+
+  CONST DEFAULT_MKDIR_MODE = 0775;
+
   /**
    * @method mkDir
    * @TODO what to do with errors in a way that is consistent with error reporting
@@ -43,48 +43,48 @@ class KWUtils
       {
       return false;
       }
-    return true; 
+    return true;
     }
-    
-  /** 
+
+  /**
    * @method createSubDirectories recursively create subdirectories starting at
    * baseDirectory, sequentially creating each of the directories in the
    * subDirectories array, according to the passed in mode.
    * @param $baseDirectory the first directory to create
-   * @param $subDirectories an array of directories that will be created in a 
+   * @param $subDirectories an array of directories that will be created in a
    * recursive fashion, each one appending to the last as a deeper subdirectory
    * of baseDirectory
    * @param the mode to create the new directories
-   */  
+   */
   public static function createSubDirectories($baseDirectory, $subDirectories, $mode = self::DEFAULT_MKDIR_MODE)
     {
     if(!file_exists($baseDirectory) )
       {
       throw new Zend_Exception($baseDirectory . ' does not exist');
       }
-    $relpath = ''; 
+    $relpath = '';
     foreach($subDirectories as $directory)
       {
-      $relpath .= $directory . "/"; 
-      
+      $relpath .= $directory . "/";
+
       if(!KwUtils::mkDir($baseDirectory . $relpath, $mode))
-        { 
+        {
         throw new Zend_Exception($baseDirectory . $relpath . ' could not be created');
         }
       }
     return $baseDirectory . $relpath;
     }
 
-  /** 
+  /**
    * @method isWindows()
    * @return True if the current platform is windows
    */
   public static function isWindows()
     {
-    return (strtolower(substr(PHP_OS, 0, 3)) == "win"); 
+    return (strtolower(substr(PHP_OS, 0, 3)) == "win");
     }
-    
-    
+
+
   /**
    * @method escapeCommand
    * will escape a command respecting the format of the current platform
@@ -100,11 +100,11 @@ class KWUtils
       {
       $command = '"'.$command.'"';
       }
-    
-    return $command; 
-    }  
-    
-  /**  
+
+    return $command;
+    }
+
+  /**
    * @method appendStringIfNot will append the string $ext to
    * $subject if it is not already a suffix of $subject
    * @param $subject, the string to be appended to
@@ -115,9 +115,9 @@ class KWUtils
     {
     if(!(substr($subject, strlen($subject) - strlen($ext)) === $ext)  )
       {
-      $subject .= $ext; 
+      $subject .= $ext;
       }
-    return $subject; 
+    return $subject;
     }
 
   /**
@@ -127,65 +127,65 @@ class KWUtils
    * @param $output, a reference to put the output of the command
    * @param $chdir, the dir to change to for execution, if any
    * @param $return_val, a reference to put the return value of the command
-   *  the temporary work dir 
+   *  the temporary work dir
    */
   public static function exec($command, &$output = null, $chdir = "", &$return_val = null)
     {
     if(!empty($chdir) && is_dir($chdir))
-      { 
+      {
       if(!chdir($chdir))
         {
         throw new Zend_Exception("Failed to change directory: [".$chdir."]");
         }
       }
     // on Linux need to add redirection to handle stderr
-    $redirect_error = KWUtils::isLinux() ? " 2>&1" : ""; 
+    $redirect_error = KWUtils::isLinux() ? " 2>&1" : "";
     exec(KWUtils::escapeCommand($command) . $redirect_error, $output, $return_val);
-    }    
-    
-    
-  /** 
+    }
+
+
+  /**
    * @method isLinux()
    * @return True if the current platform is Linux
    */
   public static function isLinux()
     {
-    return (strtolower(substr(PHP_OS, 0, 5)) == "linux"); 
-    }  
-    
-    
-    
+    return (strtolower(substr(PHP_OS, 0, 5)) == "linux");
+    }
+
+
+
   /**
    * @method prepareExecCommand
-   * will prepare an executable application and params for command line 
+   * will prepare an executable application and params for command line
    * execution, including escaping and quoting arguments.
    * @param $app_name, the application to be executed
    * @param $params, an array of arguments to the application
-   * @return the full command line command, escaped and quoted, will throw a 
+   * @return the full command line command, escaped and quoted, will throw a
    * Zend_Exception if the app is not in the path and not executable
    */
   public static function prepareExecCommand($app_name, $params = array())
     {
     // Check if application is executable, if not, see if you can find it
     // in the path
-    if(!KWUtils::isExecutable($app_name, false)) 
+    if(!KWUtils::isExecutable($app_name, false))
       {
       $app_name = KWUtils::findApp($app_name, true);
       }
-      
+
     // escape parameters
     $escapedParams = array();
     foreach($params as $param)
       {
       $escapedParams[] = escapeshellarg($param);
       }
-     
+
     // glue together app_name and params using spaces
     return escapeshellarg($app_name)." ".implode(" ", $escapedParams);
-    }    
-    
-    
-  /** 
+    }
+
+
+  /**
    * @method isExecutable will return true if the app can be found and is
    * executable, can optionally look in the path.
    * @param string $app_name, the app to check
@@ -198,7 +198,7 @@ class KWUtils
       {
       if($check_in_path)
         {
-        try 
+        try
           {
           if(KWUtils::findApp($app_name, true))
             {
@@ -212,11 +212,11 @@ class KWUtils
         }
       return false;
       }
-    return true; 
-    }    
-    
+    return true;
+    }
+
   /**
-   * @method findApp will return the absolute path of an application 
+   * @method findApp will return the absolute path of an application
    * @param $app_name, the name of the application
    * @param $check_execution_flag, whether to include in the check that the
    * application is executable
@@ -226,11 +226,11 @@ class KWUtils
    */
   public static function findApp($app_name, $check_execution_flag )
     {
-    $PHP_PATH_SEPARATOR = ":"; 
+    $PHP_PATH_SEPARATOR = ":";
     // split path
-    $path_list = explode($PHP_PATH_SEPARATOR, getenv("PATH")); 
-    
-    // loop through paths 
+    $path_list = explode($PHP_PATH_SEPARATOR, getenv("PATH"));
+
+    // loop through paths
     foreach($path_list as $path)
       {
       $status = false;
@@ -239,16 +239,16 @@ class KWUtils
         {
         if(is_executable($path_to_app))
           {
-          $status = true; 
-          break; 
-          } 
+          $status = true;
+          break;
+          }
         }
       else
         {
         if(file_exists($path_to_app))
           {
           $status = true;
-          break; 
+          break;
           }
         }
       }
@@ -256,24 +256,24 @@ class KWUtils
       {
       throw new Zend_Exception("Failed to locate the application: [".$app_name."] [check_execution_flag:".$check_execution_flag."]");
       }
-    return $path_to_app; 
-    }  
-    
-    
+    return $path_to_app;
+    }
 
 
-  /** 
+
+
+  /**
    * @method formatAppName
    * Format the application name according to the platform.
    */
   public static function formatAppName($app_name)
     {
     if(substr(PHP_OS, 0, 3) == "WIN")
-      { 
-      $app_name = KWUtils::appendStringIfNot($app_name, ".exe"); 
+      {
+      $app_name = KWUtils::appendStringIfNot($app_name, ".exe");
       }
-    return $app_name; 
-    }    
-    
-    
+    return $app_name;
+    }
+
+
 }

@@ -15,7 +15,7 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class Batchmake_ConfigForm extends AppForm
 {
- 
+
   /**
    * @method createConfigForm
    * does what it says.
@@ -25,21 +25,21 @@ class Batchmake_ConfigForm extends AppForm
     $form = new Zend_Form;
 
     $form->setAction($this->webroot.'/batchmake/config/index')
-          ->setMethod('post'); 
+          ->setMethod('post');
 
     $formElements = array();
-    foreach($configPropertiesRequirements as $property => $requirements) 
+    foreach($configPropertiesRequirements as $property => $requirements)
       {
       $textElement = new Zend_Form_Element_Text($property);
       $textElement->setRequired(true)->addValidator('NotEmpty', true);
       $formElements[] = $textElement;
-      } 
+      }
 
-  
+
     $submit = new  Zend_Form_Element_Submit(MIDAS_BATCHMAKE_SUBMIT_CONFIG);
-    $submit ->setLabel($this->t(MIDAS_BATCHMAKE_SAVE_CONFIGURATION_STRING)); 
+    $submit ->setLabel($this->t(MIDAS_BATCHMAKE_SAVE_CONFIGURATION_STRING));
     $formElements[] = $submit;
-       
+
 
     $form->addElements($formElements);
     return $form;

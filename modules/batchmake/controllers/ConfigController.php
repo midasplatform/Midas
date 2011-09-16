@@ -62,13 +62,13 @@ class Batchmake_ConfigController extends Batchmake_AppController
     $applicationConfig = $this->ModuleComponent->KWBatchmake->loadConfigProperties();
     $configPropertiesRequirements = $this->ModuleComponent->KWBatchmake->getConfigPropertiesRequirements();
     $configForm = $this->ModuleForm->Config->createConfigForm($configPropertiesRequirements);
-    $formArray = $this->getFormAsArray($configForm);    
+    $formArray = $this->getFormAsArray($configForm);
     foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
       {
       $formArray[$configProperty]->setValue($applicationConfig[$configProperty]);
-      } 
+      }
     $this->view->configForm = $formArray;
-    
+
     if($this->_request->isPost())
       {
       $this->_helper->layout->disableLayout();
@@ -83,20 +83,20 @@ class Batchmake_ConfigController extends Batchmake_AppController
         foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
           {
           $newsaver[MIDAS_BATCHMAKE_GLOBAL_CONFIG_NAME][$this->moduleName.'.'.$configProperty] = $this->_getParam($configProperty);
-          }     
+          }
         $this->Component->Utility->createInitFile(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, $newsaver);
         $msg = $this->t(MIDAS_BATCHMAKE_CHANGES_SAVED_STRING);
         echo JsonComponent::encode(array(true, $msg));
         }
       }
 
-    } 
+    }
 
 
 
   /**
-   * @method testconfigAction() 
-   * ajax function which tests config setup, performing 
+   * @method testconfigAction()
+   * ajax function which tests config setup, performing
    * validation on the current configuration set through the UI
    */
   public function testconfigAction()
@@ -109,18 +109,18 @@ class Batchmake_ConfigController extends Batchmake_AppController
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
-   
+
     $configPropertiesParamVals = array();
     $configPropertiesRequirements = $this->ModuleComponent->KWBatchmake->getConfigPropertiesRequirements();
     foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
       {
       $configPropertiesParamVals[$configProperty] = $this->_getParam($configProperty);
       }
-    
+
     $config_status =  $this->ModuleComponent->KWBatchmake->testconfig($configPropertiesParamVals);
     $jsonout = JsonComponent::encode($config_status);
     echo $jsonout;
     }//end testconfigAction
- 
+
 
 }//end class
