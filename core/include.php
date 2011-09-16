@@ -22,10 +22,11 @@ require_once BASE_PATH . '/core/models/MIDASDatabaseInterface.php';
 require_once BASE_PATH . '/core/models/MIDASDatabasePdo.php';
 require_once BASE_PATH . '/core/models/MIDASDatabaseCassandra.php';
 require_once BASE_PATH . '/core/models/MIDASDatabaseMongo.php';
-require_once BASE_PATH . '/core/models//GlobalDao.php';
+require_once BASE_PATH . '/core/models/GlobalDao.php';
 
 include_once BASE_PATH . '/core/constant/datatype.php';
 require_once BASE_PATH . '/core/models/ModelLoader.php';
+require_once BASE_PATH . '/core/ComponentLoader.php';
 
 require_once BASE_PATH.'/core/AppController.php';
 require_once BASE_PATH.'/core/AppComponent.php';
