@@ -1,0 +1,31 @@
+To run the Batchmake module tests, you must setup the correct config paths in 
+
+
+$MIDAS_ROOT/modules/batchmake/tests/configs/module.local.ini
+
+
+
+$MIDAS_ROOT points to the location of your top level Midas directory.
+
+
+
+point the config values to the following locations:
+
+batchmake.tmp_dir=$MIDAS_ROOT/modules/batchmake/tests/testfiles/midas3batchmake/tmp
+batchmake.bin_dir=$MIDAS_ROOT/modules/batchmake/tests/testfiles/midas3batchmake/bin
+batchmake.script_dir=$MIDAS_ROOT/modules/batchmake/tests/testfiles/midas3batchmake/script
+batchmake.app_dir=$MIDAS_ROOT/modules/batchmake/tests/testfiles/midas3batchmake/bin
+batchmake.data_dir=$MIDAS_ROOT/modules/batchmake/tests/testfiles/midas3batchmake/data
+batchmake.condor_bin_dir= Location of your condor bin directory
+
+
+
+Chown the directories recursively from  
+
+$MIDAS_ROOT/modules/batchmake/tests/testfilesconfigs/midas3batchmake
+
+to be owned by whichever user will run the tests.
+
+
+
+You must copy or symlink a BatchMake executable to the batchmake.bin_dir .
