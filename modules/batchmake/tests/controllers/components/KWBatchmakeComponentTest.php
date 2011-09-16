@@ -18,18 +18,18 @@ PURPOSE.  See the above copyright notices for more information.
 class KWBatchmakeComponentTest extends ControllerTestCase
   {
 
-  protected $kwBatchmakeComponent;  
+  protected $kwBatchmakeComponent;
   protected $applicationConfig;
- 
+
   /** constructor */
   public function __construct()
     {
-    // need to include the module constant for this test  
+    // need to include the module constant for this test
     require_once BASE_PATH.'/modules/batchmake/constant/module.php';
     require_once BASE_PATH.'/modules/batchmake/controllers/components/KWBatchmakeComponent.php';
-    $this->kwBatchmakeComponent = new Batchmake_KWBatchmakeComponent(BASE_PATH.'/modules/batchmake/tests/configs/module.local.ini');      
+    $this->kwBatchmakeComponent = new Batchmake_KWBatchmakeComponent(BASE_PATH.'/modules/batchmake/tests/configs/module.local.ini');
     }
-    
+
   /** set up tests*/
   public function setUp()
     {
@@ -51,8 +51,8 @@ class KWBatchmakeComponentTest extends ControllerTestCase
     // change a value to something bad
     $badConfigVals[MIDAS_BATCHMAKE_DATA_DIR_PROPERTY] = '/unlikely/to/work/right';
     $this->assertFalse($this->kwBatchmakeComponent->isConfigCorrect($badConfigVals));
-    }  
-  
+    }
+
   /**
    * tests that all the bmScripts that have been entered for testing are found
    */
@@ -68,7 +68,7 @@ class KWBatchmakeComponentTest extends ControllerTestCase
     sort($expectedTestScripts);
     $this->assertEquals($foundTestScripts, $expectedTestScripts);
     }
-    
+
   /**
    * helper function to clear out any files in a directory
    */
@@ -78,23 +78,23 @@ class KWBatchmakeComponentTest extends ControllerTestCase
       {
       if($filename && $filename != '.' && $filename != '..')
         {
-        unlink($dirToClear.'/'.$filename);  
+        unlink($dirToClear.'/'.$filename);
         }
       }
     }
-   
+
 
   /**
-   * helper function to run a test case 
-   */ 
+   * helper function to run a test case
+   */
   protected function preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet)
     {
     // clear the directory of any existing files
-    $this->clearDirFiles($workDir);  
-    
+    $this->clearDirFiles($workDir);
+
     // try symlinking all the batchmake files starting with $scriptName
     $bmScriptsProcessed = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    
+
     // check that the correct batchmake scripts are there, and only those
     // easiest just to add '.' and '..' to expected list
     $expectedSet[] = '..';
@@ -103,23 +103,23 @@ class KWBatchmakeComponentTest extends ControllerTestCase
 
     $foundScripts = scandir($workDir);
     sort($foundScripts);
-    
-    $this->assertEquals($expectedSet, $foundScripts, 
+
+    $this->assertEquals($expectedSet, $foundScripts,
             "Expected batchmake scripts not found rooted from ".$scriptName);
 
-    // add in '.' and '..' 
+    // add in '.' and '..'
     $bmScriptsProcessed[] = '.';
     $bmScriptsProcessed[] = '..';
     sort($bmScriptsProcessed);
-    
+
     // also check that the set of scripts returned from the method is this same set
-    $this->assertEquals($expectedSet, $bmScriptsProcessed, 
+    $this->assertEquals($expectedSet, $bmScriptsProcessed,
             "Expected batchmake scripts not equal to those returned from processing ".$scriptName);
     }
-    
+
   /**
-   * helper function to run a test case that is expected to throw an exception 
-   */ 
+   * helper function to run a test case that is expected to throw an exception
+   */
   protected function preparePipelineScriptsTestcaseException($workDir, $scriptName)
     {
     try
@@ -127,120 +127,120 @@ class KWBatchmakeComponentTest extends ControllerTestCase
       // need to suppress error output to keep test from failing, despite exception being caught
       $bmScripts = @$this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
       $this->fail('Expected an exception for $scriptName, but did not get one.');
-      }  
+      }
     catch(Zend_Exception $ze)
       {
       // if we got here, this is the correct behavior
       $this->assertTrue(true);
       }
     }
-    
-    
+
+
   /** tests preparePipelineScripts, and exercises createTask. */
   public function testPreparePipelineScripts()
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $workDir = $this->kwBatchmakeComponent->createTask($userDao);  
-    
+    $workDir = $this->kwBatchmakeComponent->createTask($userDao);
+
     $scriptName = 'anotherscript.bms';
     $expectedSet = array("myscript.bms", "Myscript2.bms",
          "anotherscript.bms", "noscripts.bms", "PixelCounter.bms");
     $this->preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet);
-   
+
     $scriptName = "noscripts.bms";
     $expectedSet = array("noscripts.bms");
     $this->preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet);
-    
+
     // try symlinking all the batchmake files starting with anotherscriptwitherrors.bms
     // expect an exception, as this script includes a non-existent script
     $scriptName = 'anotherscriptwitherrors.bms';
     $this->preparePipelineScriptsTestcaseException($workDir, $scriptName);
-    
+
     // cycle detection tests
-    
+
     // check a script with no cycle,1->2, 1->3, 3->2
     // clear the directory of the symlinked files
     $scriptName = "nocycle1.bms";
     $expectedSet = array("nocycle1.bms", "nocycle2.bms", "nocycle3.bms");
     $this->preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet);
-  
+
     // expect an exception, as this script has a simple cycle
     // 1->1
     $scriptName = 'cycle1.bms';
     $this->preparePipelineScriptsTestcaseException($workDir, $scriptName);
-    
+
     // check a script with a more complex cycle, 1->2, 1->3, 2->3, 3->2
     $scriptName = 'cycle31.bms';
-    $this->preparePipelineScriptsTestcaseException($workDir, $scriptName);      
+    $this->preparePipelineScriptsTestcaseException($workDir, $scriptName);
     }
-    
-    
+
+
   /** tests preparePipelineBmms */
   public function testPreparePipelineBmms()
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $workDir = $this->kwBatchmakeComponent->createTask($userDao);      
-    
+    $workDir = $this->kwBatchmakeComponent->createTask($userDao);
+
     // try a script that refers to a non-existant bmm
-    $scriptName = 'bmmswitherrors.bms';  
+    $scriptName = 'bmmswitherrors.bms';
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
     try
       {
       $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
       $this->fail('Expected an exception for '.$scriptName.', but did not get one.');
-      }  
+      }
     catch(Zend_Exception $ze)
       {
       // if we got here, this is the correct behavior
       $this->assertTrue(true);
       }
-    
+
     // now try symlinking all the batchmake files starting with anotherscript.bms
     $scriptName = 'anotherscript.bms';
-    $bmScripts_anotherscript = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);    
+    $bmScripts_anotherscript = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
     $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts_anotherscript);
     // these come as [ name of app => script where found ]
     // convert them to a form useful for comparison
     $processedBmms_anotherscript = array();
     foreach($bmms as $bmm => $script)
       {
-      $processedBmms_anotherscript[] = $bmm.'.bmm';    
+      $processedBmms_anotherscript[] = $bmm.'.bmm';
       }
     sort($processedBmms_anotherscript);
-    
+
     $globOutput = glob($workDir.'/*.bmm');
     // strip off the path
     $foundBmms_anotherscript = array();
-    foreach($globOutput as $bmm) 
+    foreach($globOutput as $bmm)
       {
-      $foundBmms_anotherscript[] = basename($bmm);  
+      $foundBmms_anotherscript[] = basename($bmm);
       }
     sort($foundBmms_anotherscript);
-    
+
     $expectedBmms_anotherscript = array("AnotherApp.bmm", "MyApp2.bmm",
       "PixelCounter.bmm", "TestApp1.bmm", "TestApp2.bmm", "myapp.bmm");
     sort($expectedBmms_anotherscript);
-    
+
     // compare the three arrays
     $this->assertEquals($processedBmms_anotherscript, $expectedBmms_anotherscript, "BMMs: processed != expected, for anotherscript.bms");
     $this->assertEquals($processedBmms_anotherscript, $foundBmms_anotherscript, "BMMs: processed != found, for anotherscript.bms");
     }
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
 
   /** tests testCompileBatchMakeScript */
   public function testCompileBatchMakeScript()
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $workDir = $this->kwBatchmakeComponent->createTask($userDao);  
-    
+    $workDir = $this->kwBatchmakeComponent->createTask($userDao);
+
     // a script that compiles
     $scriptName = 'Compiles.bms';
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
@@ -262,8 +262,8 @@ class KWBatchmakeComponentTest extends ControllerTestCase
       {
       // if we got here, this is the correct behavior
       $this->assertTrue(true);
-      }    
-      
+      }
+
     }
 
   /** tests generateCondorDag */
@@ -271,13 +271,13 @@ class KWBatchmakeComponentTest extends ControllerTestCase
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $workDir = $this->kwBatchmakeComponent->createTask($userDao);  
-    
+    $workDir = $this->kwBatchmakeComponent->createTask($userDao);
+
     // a script that compiles
     $scriptName = 'Compiles.bms';
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
     $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
-    
+
     // try to generate the Condor script
     $dagJobFile = $this->kwBatchmakeComponent->generateCondorDag($workDir, $scriptName);
     $this->assertEquals($dagJobFile, 'Compiles.bms.dagjob');
@@ -291,19 +291,19 @@ class KWBatchmakeComponentTest extends ControllerTestCase
     $contents = file_get_contents($workDir.'/'. 'Compiles.bms.dagjob');
     $dagjobStrings = array('Job job3', 'Job job5', 'PARENT job1 CHILD job3', 'PARENT job3 CHILD job5');
     foreach($dagjobStrings as $string)
-      { 
+      {
       $this->assertTrue(preg_match("/".$string."/", $contents, $matches) === 1);
       }
     }
-    
-       
+
+
   /** tests function testCondorSubmitDag */
   public function testCondorSubmitDag()
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $workDir = $this->kwBatchmakeComponent->createTask($userDao);  
-      
+    $workDir = $this->kwBatchmakeComponent->createTask($userDao);
+
     // a script that compiles
     $scriptName = 'Compiles.bms';
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
