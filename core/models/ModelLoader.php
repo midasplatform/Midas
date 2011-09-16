@@ -45,15 +45,15 @@ class MIDAS_ModelLoader
     $models = Zend_Registry::get('models');
     if(!isset($models[$module.$model]))
       {
-      if($module == "")
+      if($module == '')
         {
-        include_once BASE_PATH."/core/models/" . $databaseType."/".$model.'Model.php';
+        include_once BASE_PATH.'/core/models/'.$databaseType.'/'.$model.'Model.php';
         $name = $model . 'Model';
         }
       else
         {
-        include_once BASE_PATH."/modules/".$module."/models/" . $databaseType."/".$model.'Model.php';
-        $name = ucfirst($module).'_'.$model . 'Model';
+        include_once BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
+        $name = ucfirst($module).'_'.$model.'Model';
         }
       if(class_exists($name))
         {
@@ -62,7 +62,7 @@ class MIDAS_ModelLoader
         }
       else
         {
-        throw new Zend_Exception('Unable to load class ' . $name);
+        throw new Zend_Exception('Unable to load class '.$name);
         }
       }
     return $models[$module.$model];
