@@ -9,11 +9,11 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+require_once BASE_PATH . '/modules/batchmake/models/base/TaskModelBase.php';
 
-class Batchmake_AppModel extends MIDASModel
-{
-  public $moduleName='batchmake';
+class Batchmake_TaskModel extends Batchmake_TaskModelBase {
 
-    
+
 }
+
 ?>

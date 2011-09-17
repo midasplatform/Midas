@@ -27,3 +27,7 @@ form.genericForm .info    { color:green; }
 form.genericForm .warning   { font-weight: bold; color:orange; }
 form.genericForm .error   { font-weight: bold; color:red; }
 div.content-batchmake-info .desc    { font-weight: bold; margin-top: 0.8em; font-size: 0.9em; display: block; }
+
+
+#batchmake_config_status.info   { color:green; }
+#batchmake_config_status.error  { font-weight: bold; color:red; }
