@@ -10,20 +10,27 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-require_once BASE_PATH . '/modules/api/library/ApiEnabledNotification.php';
-
-class Validation_Notification extends ApiEnabled_Notification
-  {
-  public $moduleName = 'validation';
-  public $_moduleComponents=array('Api');
-  public $_models=array();
-
-  /** init notification process*/
-  public function init()
+/** Component for api methods */
+class Validation_ApiComponent extends AppComponent
+{
+  /**
+   * Description is here
+   * @param foo seven times 5
+   * @param bar twist blarg
+   * @return The word BAR
+   */
+  public function test($value)
     {
-    $this->enableWebAPI();
-    }//end init
+    return array('foo'=> $value['foo'],
+                 'bar'=> $value['bar']);
+    }
 
-  } //end class
-  
-?>
+  /**
+   * Just a words function
+   */
+  public function words()
+    {
+    return array('x' => 'y');
+    }
+
+} // end class
