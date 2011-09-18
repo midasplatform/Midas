@@ -56,21 +56,12 @@ class MIDASModel
       throw new Zend_Exception("Should be an object (".$instance.").");
       }
 
-    $data = array();
+    $dataarray = array();
     foreach($this->_mainData as $key => $var)
       {
       if(isset($dao->$key))
         {
-        $data[$key] = $dao->$key;
-        }
-      }
-
-    $dataarray = array();
-    foreach($data as $key => $d)
-      {
-      if(isset($this->_mainData[$key]))
-        {
-        $dataarray[$key] = $d;
+        $dataarray[$key] = $dao->$key;
         }
       }
 
