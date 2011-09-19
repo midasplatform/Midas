@@ -28,9 +28,8 @@ class Api_IndexController extends Api_AppController
   public $_components = array('Upload', 'Search', 'Uuid', 'Sortdao');
 
   var $kwWebApiCore = null;
-
-  // Use this parameter to map API methods to your protected or private controller methods
   var $apicallbacks = array();
+  var $helpContent = array();
 
   // Config parameters
   var $apiEnable = '';
@@ -48,7 +47,6 @@ class Api_IndexController extends Api_AppController
     $modulesConfig = Zend_Registry::get('configsModules');
     $this->apiSetup['apiMethodPrefix'] = $modulesConfig['api']->methodprefix;
 
-    $this->_setApiCallbacks($this->apiSetup['apiMethodPrefix']);
     $this->action = $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     switch($this->action)
       {
@@ -68,6 +66,7 @@ class Api_IndexController extends Api_AppController
   function indexAction()
     {
     $this->view->header = 'Web API';
+    $this->_computeApiHelp($this->apiSetup['apiMethodPrefix']);
 
     // Prepare the data used by the view
     $data = array(
@@ -81,10 +80,42 @@ class Api_IndexController extends Api_AppController
     $this->view->serverURL = $this->getServerURL();
     }
 
-  /** Set the call back API */
-  private function _setApiCallbacks($apiMethodPrefix)
+  /** This is called when calling a web api method */
+  private function _computeApiCallback($method_name, $apiMethodPrefix)
     {
-    $apiMethodPrefix = KwWebApiCore::checkApiMethodPrefix($apiMethodPrefix);
+    $tokens = explode('.', $method_name);
+    if(array_shift($tokens) != $apiMethodPrefix) //pop off the method prefix token
+      {
+      return; //let the web API core write out its method doesn't exist message
+      }
+
+    $method = implode($tokens);
+    if(method_exists($this, $method))
+      {
+      $this->apicallbacks[$method_name] = array(&$this, $method);
+      }
+    else //it doesn't exist here, check in the module specified by the 2nd token
+      {
+      $moduleName = array_shift($tokens);
+      $moduleMethod = implode('', $tokens);
+      $retVal = Zend_Registry::get('notifier')->callback('CALLBACK_API_METHOD_'.strtoupper($moduleName), array());
+    //  print_r($retVal);
+    //  exit;
+      /*foreach($additionalMethods as $module => $methods)
+        {
+        foreach($methods as $method)
+          {
+          $this->helpContent[$apiMethodPrefix.strtolower($module).'.'.$method['name']] = $method['help'];
+          $this->apicallbacks[$apiMethodPrefix.strtolower($module).'.'.$method['name']] = array($method['callbackObject'], $method['callbackFunction']);
+          }
+        }*/
+      }
+    }
+
+  /** This index function uses this to display the list of web api methods */
+  private function _computeApiHelp($apiMethodPrefix)
+    {
+    $apiMethodPrefix = KwWebApiCore::checkApiMethodPrefix($apiMethodPrefix); //append the . if needed
 
     $help = array();
     $help['params'] = array();
@@ -375,8 +406,8 @@ class Api_IndexController extends Api_AppController
     $this->helpContent[$apiMethodPrefix.'item.getmetadata'] = $help;
     $this->apicallbacks[$apiMethodPrefix.'item.getmetadata']       = array(&$this, 'itemGetMetadata');
 
-    // Extend web API to other modules via CALLBACK_API_METHODS
-    $additionalMethods = Zend_Registry::get('notifier')->callback('CALLBACK_API_METHODS', array());
+    // Get the lists from other modules
+    $additionalMethods = Zend_Registry::get('notifier')->callback('CALLBACK_API_HELP', array());
     foreach($additionalMethods as $module => $methods)
       {
       foreach($methods as $method)
@@ -423,6 +454,7 @@ class Api_IndexController extends Api_AppController
       }
 
     $request_data = $this->_getAllParams();
+    $this->_computeApiCallback($method_name, $this->apiSetup['apiMethodPrefix']);
     // Handle XML-RPC request
     $this->kwWebApiCore = new KwWebApiRestCore($this->apiSetup, $this->apicallbacks, $request_data);
     }
@@ -443,6 +475,7 @@ class Api_IndexController extends Api_AppController
       }
 
     $request_data = $this->_getAllParams();
+    $this->_computeApiCallback($method_name, $this->apiSetup['apiMethodPrefix']);
     // Handle XML-RPC request
     $this->kwWebApiCore = new KwWebApiRestCore($this->apiSetup, $this->apicallbacks, array_merge($request_data, array('format' => 'json')));
     }
