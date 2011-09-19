@@ -1,18 +1,19 @@
-
-  $(document).ready(function() {  
+/**
+ * An ajax based form submission for form 'createAgreementForm'
+*/
+  $(document).ready(function() {
        $('#createAgreementForm').ajaxForm( {beforeSubmit: validateAgreementChange, success: successAgreementChange} );
-  });    
+  });
 
-  function validateAgreementChange(formData, jqForm, options) { 
+  function validateAgreementChange(formData, jqForm, options) {
  
   }
 
   function successAgreementChange(responseText, statusText, xhr, form) {
 
     try {
-           jsonResponse = jQuery.parseJSON(responseText);
+           jsonResponse = $.parseJSON(responseText);
         } catch (e) {
-           
            alert(responseText);
            return false;
           }
@@ -30,9 +31,5 @@
         {
           createNotive(jsonResponse[1],4000);
         }
-      
+
     }
-
-
-
-    

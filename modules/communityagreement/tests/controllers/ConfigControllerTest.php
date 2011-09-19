@@ -26,13 +26,13 @@ class ConfigControllerTest extends ControllerTestCase
     $this->enabledModules = array('communityagreement');
     parent::setUp();
     }
-    
+
   /** test agreementdialog*/
   public function testAgreementdialogAction()
     {
     $communitiesFile = $this->loadData('Community', 'default');
     $community_id = $communitiesFile[0]->getKey();
-    
+
     $this->getRequest()->setMethod('POST');
     $page = '/communityagreement/config/agreementdialog?communityId='.$community_id;
     $this->dispatchUrI($page);
@@ -40,13 +40,13 @@ class ConfigControllerTest extends ControllerTestCase
     $this->assertModule("communityagreement");
     $this->assertController("config");
     $this->assertAction("agreementdialog");
-    
+
     $body = $this->getBody();
     if(strpos($body, "Community agreement for Community test User 1") === false)
       {
       $this->fail('Unable to find body element');
       }
-    }  
+    }
 
   /** test agreementtab*/
   public function testAgreementtabAction()

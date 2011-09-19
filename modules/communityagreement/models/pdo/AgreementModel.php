@@ -11,11 +11,21 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 require_once BASE_PATH.'/modules/communityagreement/models/base/AgreementModelBase.php';
 
-/** agreement pdo model */
-
+/**
+ * Communityagreement_AgreementModel
+ *
+ * agreement pdo model
+ *
+ * @category   Midas modules
+ * @package    communityagreement
+ */
 class Communityagreement_AgreementModel extends Communityagreement_AgreementModelBase
 {
-  /** Get all */
+  /**
+   * get all the community agreements
+   * 
+   * @return array of agreementDao 
+   */
   function getAll()
     {
     $sql = $this->database->select();
@@ -28,12 +38,17 @@ class Communityagreement_AgreementModel extends Communityagreement_AgreementMode
       }
     return $rowsetAnalysed;
     }
-    
-  /** Get an agreement by communityid */
+
+  /**
+   * Get an agreement by communityid
+   * 
+   * @param string $community_id
+   * @return agreementDao 
+   */
   function getByCommunityId($community_id)
     {
     $row = $this->database->fetchRow($this->database->select()->where('community_id=?', $community_id));
     $dao = $this->initDao('Agreement', $row, 'communityagreement');
     return $dao;
-    } 
+    }
 }  // end class

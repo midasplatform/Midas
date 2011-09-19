@@ -9,8 +9,14 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-
-/** agreement base model*/
+/**
+ * Communityagreement_AgreementModelBase
+ *
+ * agreement base model
+ *
+ * @category   Midas modules
+ * @package    communityagreement
+ */
 class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
 {
   /** constructor*/
@@ -27,18 +33,22 @@ class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
         );
     $this->initialize(); // required
     } // end __construct()
-    
 
-  /** Create a community agreement.
-   *  */
+  /**
+   * Create a community agreement
+   * 
+   * @param string $community_id
+   * @param string $agreement
+   * @return Communityagreement_AgreementDao
+   */
   function createAgreement($community_id, $agreement)
-    {     
-    $this->loadDaoClass('AgreementDao', 'communityagreement');      
+    {
+    $this->loadDaoClass('AgreementDao', 'communityagreement');
     $agreementDao = new Communityagreement_AgreementDao();
     $agreementDao->setCommunityId($community_id);
     $agreementDao->setAgreement($agreement);
     $this->save($agreementDao);
     return $agreementDao;
-    } 
-    
+    }
+
 } // end class AgreementModelBase

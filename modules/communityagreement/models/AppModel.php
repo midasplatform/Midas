@@ -10,6 +10,12 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+/**
+ * Communityagreement_AppModel
+ *
+ * @category   Midas modules
+ * @package    communityagreement
+ */
 class Communityagreement_AppModel extends MIDASModel
 {
   public $moduleName='communityagreement';
