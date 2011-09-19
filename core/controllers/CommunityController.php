@@ -212,8 +212,8 @@ class CommunityController extends AppController
     $this->view->json['community']['message']['infoErrorName'] = $this->t('Please, set the name.');
     $this->view->json['community']['message']['createGroup'] = $this->t('Create a group');
     $this->view->json['community']['message']['editGroup'] = $this->t('Edit a group');
-    
-    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', array()); 
+
+    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', array());
     }//end manageAction
     
     
@@ -245,7 +245,7 @@ class CommunityController extends AppController
 
   /** View a community*/
   function viewAction()
-    {      
+    {
     $this->view->Date = $this->Component->Date;
     $communityId = $this->_getParam("communityId");
     if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId) != 32)) // This is tricky! and for Cassandra for now
@@ -315,12 +315,12 @@ class CommunityController extends AppController
       }
       
     $this->view->title .= ' - '.$communityDao->getName();
-    $this->view->metaDescription = substr($communityDao->getDescription(), 0, 160); 
-    
+    $this->view->metaDescription = substr($communityDao->getDescription(), 0, 160);
+
     $this->view->customJSs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_VIEW_JSS', array());
     $this->view->customCSSs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_VIEW_CSSS', array());
-    } //end index    
-    
+    } //end index
+
   /** Delete a community*/
   function deleteAction()
     {
