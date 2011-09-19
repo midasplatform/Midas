@@ -23,8 +23,8 @@ class Communityagreement_AgreementModel extends Communityagreement_AgreementMode
 {
   /**
    * get all the community agreements
-   * 
-   * @return array of agreementDao 
+   *
+   * @return array of agreementDao
    */
   function getAll()
     {
@@ -41,9 +41,9 @@ class Communityagreement_AgreementModel extends Communityagreement_AgreementMode
 
   /**
    * Get an agreement by communityid
-   * 
+   *
    * @param string $community_id
-   * @return agreementDao 
+   * @return agreementDao
    */
   function getByCommunityId($community_id)
     {

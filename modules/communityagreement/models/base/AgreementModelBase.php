@@ -36,7 +36,7 @@ class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
 
   /**
    * Create a community agreement
-   * 
+   *
    * @param string $community_id
    * @param string $agreement
    * @return Communityagreement_AgreementDao

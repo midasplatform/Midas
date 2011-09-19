@@ -34,11 +34,11 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
     }
 
   /** community agreement tab
-   * 
+   *
    * Shown in the community manage page when the 'community agreement' module is enabled
-   * 
+   *
    * @method agreementtabAction()
-   * @throws Zend_Exception on invalid communityId 
+   * @throws Zend_Exception on invalid communityId
   */
   function agreementtabAction()
     {
@@ -61,8 +61,8 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
 
     $agreementDao = $this->Communityagreement_Agreement->getByCommunityId($communityId);
 
-    // If cannot find any community agreement using the given communityID, 
-    // initilize the community agreement using an empty string and then create an agreementDao 
+    // If cannot find any community agreement using the given communityID,
+    // initilize the community agreement using an empty string and then create an agreementDao
     if($agreementDao == false)
       {
       $agreement = '';
@@ -94,11 +94,11 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
     if($chopped_agreement != '' )
       {
       $this->Communityagreement_Agreement->save($agreementDao);
-      } 
+      }
     else if($this->Communityagreement_Agreement->getByCommunityId($communityId) != false)
       {
       $this->Communityagreement_Agreement->delete($agreementDao);
-      }  
+      }
 
     // init form
     $agreement = $formAgreement->getElement('agreement');
@@ -109,10 +109,10 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
 
   /**
    * community agreement dialog
-   * 
+   *
    * When a user wants to read the community agreement before joining the community, the "agreement" link will be clicked
    * and this dialog will be shown
-   * 
+   *
    * @method agreementdialogAction()
    * @throws Zend_Exception on invalid communityId
   */
@@ -122,7 +122,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
       {
       $this->_helper->layout->disableLayout();
       }
-      
+
     $communityId = $this->_getParam("communityId");
     if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId) != 32)) // This is tricky! and for Cassandra for now
       {
@@ -140,7 +140,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
 
   /**
    * ajax function which checks if the community agreement has been set
-   * 
+   *
    * @method checkagreementAction()
    * @throws Zend_Exception on invalid request
   */
@@ -152,7 +152,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
       }
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
-     
+
     $communityId = $this->_getParam("communityId");
     $agreementDao = $this->Communityagreement_Agreement->getByCommunityId($communityId);
     if($agreementDao != false)

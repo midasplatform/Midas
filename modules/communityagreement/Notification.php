@@ -56,6 +56,6 @@ class Communityagreement_Notification extends MIDAS_Notification
     $moduleUriroot = $fc->getBaseUrl().'/modules/communityagreement';
     return array($moduleUriroot.'/public/css/config/config.agreementcheckbox.css');
     }
-    
+
   } //end class
 ?>

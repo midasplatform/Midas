@@ -28,7 +28,7 @@ class AgreementModelTest extends DatabaseTestCase
     {
     $modelLoad = new MIDAS_ModelLoader();
     $agreementModel = $modelLoad->loadModel('Agreement', 'communityagreement');
-    
+
     $daos = $agreementModel->getAll();
     $this->assertEquals(1, count($daos));
     }
@@ -38,10 +38,10 @@ class AgreementModelTest extends DatabaseTestCase
     {
     $modelLoad = new MIDAS_ModelLoader();
     $agreementModel = $modelLoad->loadModel('Agreement', 'communityagreement');
-    
+
     $dao = $agreementModel->getByCommunityId('2000');
     $this->assertEquals(1, count($dao));
     $this->assertEquals('Community agreement for Community test User 1', $dao->getAgreement());
     }
-  
+
   }
