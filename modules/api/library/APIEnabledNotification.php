@@ -64,7 +64,7 @@ class ApiEnabled_Notification extends MIDAS_Notification
             $description = $doc;
             }
           }
-        $name = strtolower($realName);
+        $name = strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1.$2", $realName));
         $help = array();
         $help['params'] = $params;
         $help['example'] = $example;
