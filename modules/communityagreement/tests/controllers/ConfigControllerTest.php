@@ -36,7 +36,7 @@ class ConfigControllerTest extends ControllerTestCase
     $this->getRequest()->setMethod('POST');
     $page = '/communityagreement/config/agreementdialog?communityId='.$community_id;
     $this->dispatchUrI($page);
-    
+
     $this->assertModule("communityagreement");
     $this->assertController("config");
     $this->assertAction("agreementdialog");
@@ -53,7 +53,7 @@ class ConfigControllerTest extends ControllerTestCase
     {
     $communitiesFile = $this->loadData('Community', 'default');
     $community_id = $communitiesFile[0]->getKey();
-    
+
     $this->params = array();
     $this->params['email'] = 'user1@user1.com';
     $this->params['password'] = 'test';
@@ -64,11 +64,11 @@ class ConfigControllerTest extends ControllerTestCase
     $this->params = array();
     $this->getRequest()->setMethod('GET');
     $this->dispatchUrI($page);
-    
+
     $this->assertModule("communityagreement");
     $this->assertController("config");
     $this->assertAction("agreementtab");
-    
+
     $this->params['agreement'] = 'test agreement tab';
     $this->getRequest()->setMethod('POST');
     $this->dispatchUrI($page);
