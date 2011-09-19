@@ -98,17 +98,12 @@ class Api_IndexController extends Api_AppController
       {
       $moduleName = array_shift($tokens);
       $moduleMethod = implode('', $tokens);
-      $retVal = Zend_Registry::get('notifier')->callback('CALLBACK_API_METHOD_'.strtoupper($moduleName), array());
-    //  print_r($retVal);
-    //  exit;
-      /*foreach($additionalMethods as $module => $methods)
+      $retVal = Zend_Registry::get('notifier')->callback('CALLBACK_API_METHOD_'.strtoupper($moduleName), array('methodName' => $moduleMethod));
+      foreach($retVal as $module => $method)
         {
-        foreach($methods as $method)
-          {
-          $this->helpContent[$apiMethodPrefix.strtolower($module).'.'.$method['name']] = $method['help'];
-          $this->apicallbacks[$apiMethodPrefix.strtolower($module).'.'.$method['name']] = array($method['callbackObject'], $method['callbackFunction']);
-          }
-        }*/
+        $this->apicallbacks[$method_name] = array($method['object'], $method['method']);
+        break;
+        }
       }
     }
 
