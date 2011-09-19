@@ -47,8 +47,7 @@ class CommunityController extends AppController
     if($communityDao === false || !$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
       throw new Zend_Exception("This community doesn't exist  or you don't have the permissions.");
-      }    
-       
+      }
     $formInfo = $this->Form->Community->createCreateForm();
     $formCreateGroup = $this->Form->Community->createCreateGroupForm();
     
