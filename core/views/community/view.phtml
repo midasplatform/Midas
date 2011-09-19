@@ -12,11 +12,27 @@ PURPOSE.  See the above copyright notices for more information.
 
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/community/community.view.js');
-$this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js'); 
+foreach($this->customJSs as $Urls)
+  {          
+    foreach($Urls as $url)
+      {
+        $this->headScript()->appendFile($url);
+      }
+  }
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/community/community.view.css" />
+<?php
+foreach($this->customCSSs as $Uris)
+  {          
+    foreach($Uris as $uri)
+      {
+        echo "<link type='text/css' rel='stylesheet' href={$uri} />";
+      }
+  }
+?>
 
 <div class="viewMain">
   <div class="genericThumbnail">
@@ -37,12 +53,12 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   if($this->logged && !$this->isMember && ($this->canJoin || $this->isInvited))
     {
       ?>
-     <div class="genericBigButton genericWrapperTopRight">
-     <form type='post' action=''>
-      <input style="margin:0px;padding:0px;" name='joinCommunity' type='submit' value='<?php echo $this->t('Join the community') ?>' />
-    </form>
-    </div>
-   <?php } ?>    
+     <div id="joinCommunityDiv" class="genericBigButton genericWrapperTopRight">
+     <form id="joinCommunityForm" type='post' action=''>
+      <input style="margin:0px;padding:0px;" id="joinCommunity_submit" name='joinCommunity' type='submit' value='<?php echo $this->t('Join the community') ?>' />
+     </form>    
+     </div>
+   <?php } ?> 
     <div class="genericName"><?php echo $this->communityDao->getName();?></div>
     <div class="genericSubtitle" style="color:grey;"><?php echo $this->communityDao->getDescription(); ?></div>
   </div>
