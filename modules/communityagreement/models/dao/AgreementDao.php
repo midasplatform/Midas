@@ -10,7 +10,14 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-/** agreement dao*/
+/**
+ * Communityagreement_AgreementDao
+ *
+ * agreement dao
+ *
+ * @category   Midas modules
+ * @package    communityagreement
+ */
 class Communityagreement_AgreementDao extends Communityagreement_AppDao
   {
   public $_model = 'Agreement';

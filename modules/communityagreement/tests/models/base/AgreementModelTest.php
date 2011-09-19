@@ -16,7 +16,7 @@ class AgreementModelTest extends DatabaseTestCase
   public function setUp()
     {
     //$this->setupDatabase(array('default')); //core dataset
-    
+
     $this->enabledModules = array('communityagreement');
     $this->setupDatabase(array('default')); //core dataset
     $this->setupDatabase(array('default'), 'communityagreement'); // module dataset
@@ -32,8 +32,7 @@ class AgreementModelTest extends DatabaseTestCase
     $daos = $agreementModel->getAll();
     $this->assertEquals(1, count($daos));
     }
-   
-    
+
   /** test AgreementModel::getByCommunityId*/
   public function testGetByCommunityId()
     {
@@ -43,6 +42,6 @@ class AgreementModelTest extends DatabaseTestCase
     $dao = $agreementModel->getByCommunityId('2000');
     $this->assertEquals(1, count($dao));
     $this->assertEquals('Community agreement for Community test User 1', $dao->getAgreement());
-    }   
+    }
   
   }

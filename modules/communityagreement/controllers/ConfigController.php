@@ -9,58 +9,70 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-/** community agreement config controller*/
+/**
+ * Communityagreement_ConfigController
+ *
+ * @category   Midas modules
+ * @package    communityagreement
+ */
 class Communityagreement_ConfigController extends Communityagreement_AppController
 {
   public $_models = array('Community');
   public $_moduleModels = array('Agreement');
   public $_moduleForms = array('Config');
-  
-  /** index */
+
+  /**
+   * @method indexAction()
+   * @throws Zend_Exception on invalid userSession
+   */
   function indexAction()
     {
     if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
       {
       throw new Zend_Exception("You should be an administrator");
       }
-    } 
-    
-  /** 
-  *  @method agreementtabAction() 
-  *  community agreement tab. It is shown in the community manage page when the 'community agreement' module is enabled
-  */   
+    }
+
+  /** community agreement tab
+   * 
+   * Shown in the community manage page when the 'community agreement' module is enabled
+   * 
+   * @method agreementtabAction()
+   * @throws Zend_Exception on invalid communityId 
+  */
   function agreementtabAction()
     {
-   
-    if(!$this->logged)  
+
+    if(!$this->logged)
       {
       $this->haveToBeLogged();
       return false;
       }
-    if($this->_helper->hasHelper('layout')) 
+    if($this->_helper->hasHelper('layout'))
       {
       $this->_helper->layout->disableLayout();
       }
-      
+
     $communityId = $this->_getParam("communityId");
     if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId) != 32)) // This is tricky! and for Cassandra for now
       {
       throw new Zend_Exception("Community ID should be a number");
       }
-      
+
     $agreementDao = $this->Communityagreement_Agreement->getByCommunityId($communityId);
-    
-    // If community agreement does not exist, show an emtpy string to the cummunity administrator
+
+    // If cannot find any community agreement using the given communityID, 
+    // initilize the community agreement using an empty string and then create an agreementDao 
     if($agreementDao == false)
       {
       $agreement = '';
       $agreementDao = $this->Communityagreement_Agreement->createAgreement($communityId, $agreement);
       }
-    
-    $formAgreement = $this->ModuleForm->Config->createCreateAgreementForm($communityId);  
-    if($this->_request->isPost() && $formAgreement->isValid($this->getRequest()->getPost())) 
+
+    $formAgreement = $this->ModuleForm->Config->createCreateAgreementForm($communityId);
+    if($this->_request->isPost() && $formAgreement->isValid($this->getRequest()->getPost()))
       {
-      if($this->_helper->hasHelper('layout')) 
+      if($this->_helper->hasHelper('layout'))
         {
         $this->_helper->layout->disableLayout();
         }
@@ -75,10 +87,11 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
         echo JsonComponent::encode(array(false, $this->t('Error')));
         }
       }
-    
-    // if agreement only contains white spaces, delete it from the database.
+
+    // If a community agreement only contains white spaces, it is treated as an empty agreement
+    // and will be deleted from the database if it exists
     $chopped_agreement = chop($agreementDao->getAgreement());
-    if($chopped_agreement != '' ) 
+    if($chopped_agreement != '' )
       {
       $this->Communityagreement_Agreement->save($agreementDao);
       } 
@@ -86,21 +99,26 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
       {
       $this->Communityagreement_Agreement->delete($agreementDao);
       }  
-      
-    //init form
+
+    // init form
     $agreement = $formAgreement->getElement('agreement');
     $agreement->setValue($agreementDao->getAgreement());
-    $this->view->agreementForm = $this->getFormAsArray($formAgreement); 
-    $this->view->agreementDao = $agreementDao;         
+    $this->view->agreementForm = $this->getFormAsArray($formAgreement);
+    $this->view->agreementDao = $agreementDao;
     }
-   
-  /** 
-  *  @method agreementdialogAction() 
-  *  community agreement dialog, show the community agreements to peaple who want to join the community
-    */
+
+  /**
+   * community agreement dialog
+   * 
+   * When a user wants to read the community agreement before joining the community, the "agreement" link will be clicked
+   * and this dialog will be shown
+   * 
+   * @method agreementdialogAction()
+   * @throws Zend_Exception on invalid communityId
+  */
   function agreementdialogAction()
     {
-    if($this->_helper->hasHelper('layout')) 
+    if($this->_helper->hasHelper('layout'))
       {
       $this->_helper->layout->disableLayout();
       }
@@ -110,21 +128,22 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
       {
       throw new Zend_Exception("Community ID should be a number");
       }
-    
-    $agreementDao = $this->Communityagreement_Agreement->getByCommunityId($communityId);  
+
+    $agreementDao = $this->Communityagreement_Agreement->getByCommunityId($communityId);
     if($agreementDao == false)
       {
       $agreement = '';
       $agreementDao = $this->Communityagreement_Agreement->createAgreement($communityId, $agreement);
       }
-    $this->view->agreementDao = $agreementDao;          
+    $this->view->agreementDao = $agreementDao;
     }
-   
- 
+
   /**
-  * @method checkIfAgreementEmptyAction()
-   * ajax function which checks if the community agreement has been set 
-   */
+   * ajax function which checks if the community agreement has been set
+   * 
+   * @method checkagreementAction()
+   * @throws Zend_Exception on invalid request
+  */
   public function checkagreementAction()
     {
     if(!$this->getRequest()->isXmlHttpRequest())
@@ -135,7 +154,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
     $this->_helper->viewRenderer->setNoRender();
      
     $communityId = $this->_getParam("communityId");
-    $agreementDao = $this->Communityagreement_Agreement->getByCommunityId($communityId);  
+    $agreementDao = $this->Communityagreement_Agreement->getByCommunityId($communityId);
     if($agreementDao != false)
       {
       echo JsonComponent::encode(MIDAS_COMMUNITYAGREEMENT_AGREEMENT_NOT_EMPTY);
@@ -143,7 +162,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
     else
       {
       echo JsonComponent::encode(MIDAS_COMMUNITYAGREEMENT_AGREEMENT_IS_EMPTY);
-      }  
+      }
     }
- 
+
 }//end class
