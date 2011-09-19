@@ -9,31 +9,25 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-
-/** feed test*/
-class FeedControllerTest extends ControllerTestCase
-  {
+/** test hello model*/
+class DashboardModelTest extends DatabaseTestCase
+{
   /** set up tests*/
   public function setUp()
     {
-    $this->setupDatabase(array('default'));
-    $this->_models = array('User', 'Feed');
-    $this->_daos = array('User');
-    $this->enabledModules = array('helloworld');
+    $this->setupDatabase(array('default')); //core dataset
+    $this->setupDatabase(array('default'), 'validation'); // module dataset
+    $this->enabledModules = array('validation');
     parent::setUp();
-    
     }
 
-  /** test index*/
-  public function testIndexAction()
+  /** testGetAll*/
+  public function testGetAll()
     {
-    $this->dispatchUrI("/feed");
-    $this->assertController("feedCore");
-    $this->assertAction("index");   
-    
-    if(strpos($this->getBody(), "This page replaces the normal feed page.") === false)
-      {
-      $this->fail('Unable to find body element');
-      }
+    $modelLoad = new MIDAS_ModelLoader();
+    $dashboardModel = $modelLoad->loadModel('Dashboard', 'validation');
+    $daos = $dashboardModel->getAll();
+    $this->assertEquals(1, count($daos));
     }
-  }
+
+}

@@ -21,20 +21,20 @@ class Validation_IndexController extends Validation_AppController
   public $_moduleComponents = array();
   public $_forms = array();
   public $_moduleForms = array();
-  
+
   /**
    * @method initAction()
    *  Index Action (first action when we access the application)
    */
   function init()
-    {         
-  
+    {
+
     } // end method indexAction
 
   /** index action*/
   function indexAction()
     {
-      $this->view->validationText = $this->t('VALIDATION');
-    } 
-    
+    $this->view->validationText = $this->t('VALIDATION');
+    }
+
 }//end class

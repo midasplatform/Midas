@@ -9,15 +9,16 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-require_once BASE_PATH.'/modules/validation/models/base/ValidationModelBase.php';
+require_once BASE_PATH.'/modules/validation/models/base/DashboardModelBase.php';
 
-/** demo pdo model */
-
-class Validation_ValidationModel extends Validation_ValidationModelBase
+/**
+ * Dashboard PDO Model
+ */
+class Validation_DashboardModel extends Validation_DashboardModelBase
 {
   /**
    * Return all the record in the table
-   * @return Array of HelloDao
+   * @return Array of ValidationDao
    */
   function getAll()
     {
@@ -26,10 +27,10 @@ class Validation_ValidationModel extends Validation_ValidationModelBase
     $rowsetAnalysed = array();
     foreach($rowset as $keyRow => $row)
       {
-      $tmpDao = $this->initDao('Hello', $row, 'helloworld');
+      $tmpDao = $this->initDao('Dashboard', $row, 'validation');
       $rowsetAnalysed[] = $tmpDao;
       }
     return $rowsetAnalysed;
     }
-    
+
 }  // end class

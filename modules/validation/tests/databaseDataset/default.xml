@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
-
-	<helloworld_hello hello_id="1" />
-
+	<validation_dashboard dashboard_id="1"
+			      name="foo"
+			      description="bar" />
 </dataset>
 

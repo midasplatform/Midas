@@ -21,8 +21,8 @@ class Validation_ApiComponent extends AppComponent
    */
   public function test($value)
     {
-    return array('foo'=> $value['foo'],
-                 'bar'=> $value['bar']);
+    return array('foo' => $value['foo'],
+                 'bar' => $value['bar']);
     }
 
   /**
