@@ -25,7 +25,7 @@ class ApiEnabled_Notification extends MIDAS_Notification
    * $this->enableWebAPI();
    *
    */
-  public function getWebApiMethods()
+  public function getWebApiHelp()
     {
     $methods = array();
     $r = new ReflectionClass($this->ModuleComponent->Api);
@@ -64,7 +64,7 @@ class ApiEnabled_Notification extends MIDAS_Notification
             $description = $doc;
             }
           }
-        $name = strtolower($realName);
+        $name = strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1.$2", $realName));
         $help = array();
         $help['params'] = $params;
         $help['example'] = $example;
@@ -80,11 +80,26 @@ class ApiEnabled_Notification extends MIDAS_Notification
     }
 
   /**
+   * Returns the actual method in your module corresponding to the requested method,
+   * or false if the method doesn't exist
+   */
+  public function findWebApiMethod($params)
+    {
+    $methodName = $params['methodName'];
+    if(method_exists($this->ModuleComponent->Api, $methodName))
+      {
+      return array('object' => &$this->ModuleComponent->Api, 'method' => $methodName);
+      }
+    return false;
+    }
+
+  /**
    * Add to your init function to enable the web api for your module. This will
    * work provided you've created an ApiComponent.
    */
-  public function enableWebAPI()
+  public function enableWebAPI($moduleName)
     {
-    $this->addCallBack('CALLBACK_API_METHODS', 'getWebApiMethods');
+    $this->addCallBack('CALLBACK_API_HELP', 'getWebApiHelp');
+    $this->addCallBack('CALLBACK_API_METHOD_'.strtoupper($moduleName), 'findWebApiMethod');
     }
 }
