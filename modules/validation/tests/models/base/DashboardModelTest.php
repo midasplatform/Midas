@@ -61,6 +61,10 @@ class DashboardModelTest extends DatabaseTestCase
     $this->assertNotEquals(false, $truth);
     }
 
+  /**
+   * test consistency verification (same number of items in each folder, good
+   * naming, etc.
+   */
   public function testVerifyConsistency()
     {
     // Create training, testing, and truth folders
@@ -81,7 +85,10 @@ class DashboardModelTest extends DatabaseTestCase
     $this->Folder->save($truthFolder);
 
     // Add items to the folders
-    for ($i = 0; $i < 3; ++$i)
+    $trainingItem = null;
+    $testingItem = null;
+    $truthItem = null;
+    for($i = 0; $i < 3; ++$i)
       {
       $trainingItem = new ItemDao();
       $testingItem = new ItemDao();
@@ -113,10 +120,116 @@ class DashboardModelTest extends DatabaseTestCase
     $dashboardModel->setTraining($dao, $trainingFolder);
     $dashboardModel->setTesting($dao, $testingFolder);
     $dashboardModel->setTruth($dao, $truthFolder);
-    
+
     // Reload the dashboard and check it for consistency
     $daos = $dashboardModel->getAll();
     $dao = $daos[0];
     $this->assertEquals(true, $dashboardModel->checkConsistency($dao));
+
+    // Remove a testing dataset and check consistency
+    $this->Folder->removeItem($testingFolder, $testingItem);
+    $this->assertEquals(false, $dashboardModel->checkConsistency($dao));
+
+    // Re-add the item and check again :)
+    $this->Folder->addItem($testingFolder, $testingItem);
+    $this->assertEquals(true, $dashboardModel->checkConsistency($dao));
+
+    // Modifying a item name and checking for consistency
+    $testingItem->setName('BADNAME');
+    $this->Item->save($testingItem);
+    $this->assertEquals(false, $dashboardModel->checkConsistency($dao));
+    }
+
+  /**
+   * test addResult function
+   */
+  public function testAddRemoveResult()
+    {
+    // Create training, testing, and truth folders
+    $testingFolder = new FolderDao();
+    $testingFolder->setName('testing');
+    $testingFolder->setDescription('testing');
+    $testingFolder->setParentId(-1);
+    $this->Folder->save($testingFolder);
+    $trainingFolder = new FolderDao();
+    $trainingFolder->setName('training');
+    $trainingFolder->setDescription('training');
+    $trainingFolder->setParentId(-1);
+    $this->Folder->save($trainingFolder);
+    $truthFolder = new FolderDao();
+    $truthFolder->setName('truth');
+    $truthFolder->setDescription('truth');
+    $truthFolder->setParentId(-1);
+    $this->Folder->save($truthFolder);
+
+    // Create result folder
+    $resultFolder = new FolderDao();
+    $resultFolder->setName('result');
+    $resultFolder->setDescription('result');
+    $resultFolder->setParentId(-1);
+    $this->Folder->save($resultFolder);
+
+    // Add items to the folders
+    $trainingItem = null;
+    $testingItem = null;
+    $truthItem = null;
+    $resultItem = null;
+    for($i = 0; $i < 3; ++$i)
+      {
+      $trainingItem = new ItemDao();
+      $testingItem = new ItemDao();
+      $truthItem = new ItemDao();
+      $resultItem = new ItemDao();
+
+      $trainingItem->setName('img0'.$i.'.mha');
+      $testingItem->setName('img0'.$i.'.mha');
+      $truthItem->setName('img0'.$i.'.mha');
+      $resultItem->setName('img0'.$i.'.mha');
+
+      $trainingItem->setDescription('training img '.$i);
+      $testingItem->setDescription('testing img '.$i);
+      $truthItem->setDescription('truth img '.$i);
+      $resultItem->setDescription('result img '.$i);
+
+      $trainingItem->setType(0);
+      $testingItem->setType(0);
+      $truthItem->setType(0);
+      $resultItem->setType(0);
+
+      $this->Item->save($trainingItem);
+      $this->Item->save($testingItem);
+      $this->Item->save($truthItem);
+      $this->Item->save($resultItem);
+
+      $this->Folder->addItem($trainingFolder, $trainingItem);
+      $this->Folder->addItem($testingFolder, $testingItem);
+      $this->Folder->addItem($truthFolder, $truthItem);
+      $this->Folder->addItem($resultFolder, $resultItem);
+
+      }
+
+    // Acquire the dashboard from the database
+    $modelLoad = new MIDAS_ModelLoader();
+    $dashboardModel = $modelLoad->loadModel('Dashboard', 'validation');
+    $daos = $dashboardModel->getAll();
+    $dao = $daos[0];
+
+    // Add testing, training, and truth to the dashboard
+    $dashboardModel->setTraining($dao, $trainingFolder);
+    $dashboardModel->setTesting($dao, $testingFolder);
+    $dashboardModel->setTruth($dao, $truthFolder);
+
+    // Reload the dashboard and check it for consistency
+    $daos = $dashboardModel->getAll();
+    $dao = $daos[0];
+    $dashboardModel->addResult($dao, $resultFolder);
+    $this->assertEquals(3, count($dao->getResults()));
+
+    // Remove a couple of result sets
+    $results = $dao->getResults();
+    $dashboardModel->removeResult($dao, $results[0]);
+    $dashboardModel->removeResult($dao, $results[1]);
+    $this->assertEquals(1, count($dao->getResults()));
+
     }
 }

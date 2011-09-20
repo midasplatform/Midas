@@ -50,4 +50,22 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     $this->database->link('results', $dashboard, $folder);
     }
 
+  /**
+   * remove a results folder from the dashboard
+   * @return void
+   */
+  function removeResult($dashboard, $folder)
+    {
+    if(!$dashboard instanceof Validation_DashboardDao)
+      {
+      throw new Zend_Exception("Should be a dasboard.");
+      }
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+    $this->database->removeLink('results', $dashboard, $folder);
+    }
+
+
 }  // end class

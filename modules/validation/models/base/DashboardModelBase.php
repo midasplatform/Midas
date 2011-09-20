@@ -133,9 +133,9 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
     $testingItems = $testing->getItems();
     $trainingItems = $training->getItems();
     $truthItems = $truth->getItems();
-    
-    if( count($testingItems) == count($trainingItems) &&
-        count($trainingItems) == count($truthItems) )
+
+    if(count($testingItems) == count($trainingItems) &&
+       count($trainingItems) == count($truthItems) )
       {
       $fn = create_function('$first,$second',
                             'return strcmp( $first->getName(),
@@ -143,16 +143,17 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
       usort($testingItems, $fn);
       usort($trainingItems, $fn);
       usort($truthItems, $fn);
-      for( $i = 0; $i < count($truthItems); ++$i )
+      $len = count($truthItems);
+      for($i = 0; $i < $len; ++$i)
         {
         $nameDifference = 0;
-        if( strcmp( $testingItems[$i]->getName(),
-                    $trainingItems[$i]->getName() ) != 0 )
+        if(strcmp($testingItems[$i]->getName(),
+                  $trainingItems[$i]->getName() ) != 0 )
           {
           return false;
           }
-        if( strcmp( $trainingItems[$i]->getName(),
-                    $truthItems[$i]->getName() ) != 0 )
+        if(strcmp($trainingItems[$i]->getName(),
+                  $truthItems[$i]->getName() ) != 0 )
           {
           return false;
           }
@@ -166,5 +167,6 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
     }
 
   abstract function addResult($dashboard, $folder);
+  abstract function removeResult($dashboard, $folder);
 
 } // end class Validation_DashboardModelBase
