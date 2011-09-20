@@ -33,4 +33,21 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     return $rowsetAnalysed;
     }
 
+  /**
+   * Add a results folder to the dashboard
+   * @return void
+   */
+  function addResult($dashboard, $folder)
+    {
+    if(!$dashboard instanceof Validation_DashboardDao)
+      {
+      throw new Zend_Exception("Should be a dasboard.");
+      }
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+    $this->database->link('results', $dashboard, $folder);
+    }
+
 }  // end class
