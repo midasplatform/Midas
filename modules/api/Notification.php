@@ -1,8 +1,13 @@
 <?php
+
+require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
+
 /** notification manager*/
-class Api_Notification extends MIDAS_Notification
+class Api_Notification extends ApiEnabled_Notification
   {
-  public $_models=array('User');
+  public $moduleName = 'api';
+  public $_moduleComponents = array('Api');
+  public $_models = array('User');
 
   /** init notification process*/
   public function init()
@@ -10,6 +15,8 @@ class Api_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_GET_CONFIG_TABS', 'getConfigTabs');
     $this->addCallBack('CALLBACK_CORE_PASSWORD_CHANGED', 'setDefaultWebApiKey');
     $this->addCallBack('CALLBACK_CORE_NEW_USER_ADDED', 'setDefaultWebApiKey');
+
+    $this->enableWebAPI('api');
     }//end init
 
   /** get Config Tabs */
