@@ -583,7 +583,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
     if($returnVal !== 0)
       {
-      throw new Zend_Exception("Failed to run: [".$cmd."], output: [".implode(",", $cmd_output )."]");
+      throw new Zend_Exception("Failed to run: [".$cmd."], output: [".implode(",", $output )."]");
       }
     }
 
