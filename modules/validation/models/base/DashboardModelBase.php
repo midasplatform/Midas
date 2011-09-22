@@ -53,16 +53,24 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
                             'parent_column' => 'testingfolder_id',
                             'child_column' => 'folder_id'),
         'results' =>  array('type' => MIDAS_MANY_TO_MANY,
-                           'model' => 'Folder',
-                           'table' => 'validation_dashboard2folder',
+                            'model' => 'Folder',
+                            'table' => 'validation_dashboard2folder',
+                            'parent_column' => 'dashboard_id',
+                            'child_column' => 'folder_id'),
+        'scores' =>  array('type' => MIDAS_MANY_TO_MANY,
+                           'model' => 'ScalarResult',
+                           'module' => 'validation',
+                           'table' => 'validation_dashboard2scalarresult',
                            'parent_column' => 'dashboard_id',
-                           'child_column' => 'folder_id'),
+                           'child_column' => 'scalarresult_id'),
       );
     $this->initialize(); // required
     } // end __construct()
 
   /**
    * Set the truth folder of the dashboard
+   * @param dashboard the target dashboard
+   * @param folder the target folder
    * @return void
    */
   function setTruth($dashboard, $folder)
@@ -81,6 +89,8 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
 
   /**
    * Set the training folder of the dashboard
+   * @param dashboard the target dashboard
+   * @param folder the target folder
    * @return void
    */
   function setTraining($dashboard, $folder)
@@ -99,6 +109,8 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
 
   /**
    * Set the testing folder of the dashboard
+   * @param dashboard the target dashboard
+   * @param folder the target folder
    * @return void
    */
   function setTesting($dashboard, $folder)
@@ -118,6 +130,7 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
   /**
    * Verify that the testing, truth, and training folders contain the same
    * number of items and that the item names correspond.
+   * @param dashboard the target dashboard
    * @return boolean true if valid, false if invalid
    */
   function checkConsistency($dashboard)
@@ -166,7 +179,50 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
       }
     }
 
+  /**
+   * Add a result folder to the dashboard. The names of the items in the
+   * folder should correspond to the ones in testing, training, and truth.
+   * @param dashboard the target dashboard
+   * @param folder the folder of result items
+   * @return void
+   */
   abstract function addResult($dashboard, $folder);
+
+  /**
+   * Remove a result folder from the dashboard
+   * @param dashboard the target dashboard
+   * @param folder the folder of result items to be take off of the dashboard
+   * @return void
+   */
   abstract function removeResult($dashboard, $folder);
+
+  /**
+   * Set a single row of result values for a dashboard.
+   * @param dashboard the target dashboard
+   * @param folder the result folder with which the values are associated
+   * @param values an array where the keys are item ids and the values are
+   *        scalar results
+   * @return void
+   */
+  abstract function setScores($dashboard, $folder, $values);
+
+
+  /**
+   * Get a single set of scores for a dashboard
+   * @param dashboard the target dashboard
+   * @param folder the folder that corresponds to the results
+   * @return an array where the keys are item ids and the values are
+   *         scores
+   */
+  abstract function getScores($dashboard, $folder);
+
+  /**
+   * Get all sets of scores for a dashboard
+   * @param dashboard the target dashboard
+   * @return an array of arrays where the keys are folder ids and the values
+   *         are arrays where the keys are item ids and the values are
+   *         scores
+   */
+  abstract function getAllScores($dashboard);
 
 } // end class Validation_DashboardModelBase
