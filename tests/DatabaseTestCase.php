@@ -134,16 +134,20 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     return $this->createFlatXmlDataSet($path);
     }
 
-  /** loadData */
-  protected function loadData($modelName, $file = null, $module = '')
+  /** loadData
+   * @param modelName of model to load
+   * @param file that the test data is defined in
+   * @param modelModule the module of the model, or '' if in core
+   * @param fileModule the module the test data file is in, or '' if in core
+   */
+  protected function loadData($modelName, $file = null, $modelModule = '', $fileModule = '')
     {
-    $model = $this->ModelLoader->loadModel($modelName, $module);
+    $model = $this->ModelLoader->loadModel($modelName, $modelModule);
     if($file == null)
       {
       $file = strtolower($modelName);
       }
-
-    $data = $this->getDataSet($file, $module);
+    $data = $this->getDataSet($file, $fileModule);
     $dataUsers = $data->getTable($model->getName());
     $rows = $dataUsers->getRowCount();
     $key = array();
