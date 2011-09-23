@@ -9,10 +9,11 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-require_once BASE_PATH . '/modules/batchmake/models/base/TaskModelBase.php';
-/** Batchmake_TaskModel */
-class Batchmake_TaskModel extends Batchmake_TaskModelBase {
+/** Batchmake_ItemmetricDao */
+class Batchmake_ItemmetricDao extends AppDao {
 
+  public $_model = 'Itemmetric';
+  public $_module = 'batchmake';
 
 }
 
