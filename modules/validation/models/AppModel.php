@@ -15,5 +15,5 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class Validation_AppModel extends MIDASModel
 {
-
+  public $moduleName = 'validation';
 }
