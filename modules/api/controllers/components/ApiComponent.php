@@ -33,7 +33,7 @@ class Api_ApiComponent extends AppComponent
     {
     foreach($requiredList as $param)
       {
-      if(!array_key_exists(&$args, $param))
+      if(!array_key_exists($param, $args))
         {
         throw new Exception('Parameter '.$param.' is not defined', MIDAS_INVALID_PARAMETER);
         }
@@ -77,7 +77,7 @@ class Api_ApiComponent extends AppComponent
    */
   function login($args)
     {
-    $this->_validateParams(&$args, array('email', 'appname', 'apikey'));
+    $this->_validateParams($args, array('email', 'appname', 'apikey'));
 
     $data['token'] = '';
     $email = $args['email'];
@@ -102,7 +102,7 @@ class Api_ApiComponent extends AppComponent
    */
   public function uuidGet($args)
     {
-    $this->_validateParams(&$args, array('id', 'type'));
+    $this->_validateParams($args, array('id', 'type'));
 
     $id = $args['id'];
     $type = $args['type'];
@@ -157,7 +157,7 @@ class Api_ApiComponent extends AppComponent
    */
   function resourceGet($args)
     {
-    $this->_validateParams(&$args, array('uuid'));
+    $this->_validateParams($args, array('uuid'));
 
     $uuid = $args['uuid'];
     $componentLoader = new MIDAS_ComponentLoader();
@@ -189,7 +189,7 @@ class Api_ApiComponent extends AppComponent
    */
   function pathToRoot($args)
     {
-    $this->_validateParams(&$args, array('uuid'));
+    $this->_validateParams($args, array('uuid'));
 
     $componentLoader = new MIDAS_ComponentLoader();
     $uuidComponent = $componentLoader->loadComponent('Uuid');
@@ -225,7 +225,7 @@ class Api_ApiComponent extends AppComponent
    */
   function resourceSearch($args)
     {
-    $this->_validateParams(&$args, array('search'));
+    $this->_validateParams($args, array('search'));
     $userDao = $this->_getUser($args);
 
     $order = 'view';
@@ -393,7 +393,7 @@ class Api_ApiComponent extends AppComponent
    */
   function communityCreate($args)
     {
-    $this->_validateParams(&$args, array('name'));
+    $this->_validateParams($args, array('name'));
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
@@ -528,7 +528,7 @@ class Api_ApiComponent extends AppComponent
    */
   function communityDelete($args)
     {
-    $this->_validateParams(&$args, array('id'));
+    $this->_validateParams($args, array('id'));
 
     $userDao = $this->_getUser($args);
     if($userDao == false)
@@ -561,7 +561,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderCreate($args)
     {
-    $this->_validateParams(&$args, array('name'));
+    $this->_validateParams($args, array('name'));
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
@@ -643,7 +643,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderGet($args)
     {
-    $this->_validateParams(&$args, array('id'));
+    $this->_validateParams($args, array('id'));
     $userDao = $this->_getUser($args);
 
     $modelLoader = new MIDAS_ModelLoader();
@@ -668,7 +668,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderChildren($args)
     {
-    $this->_validateParams(&$args, array('id'));
+    $this->_validateParams($args, array('id'));
 
     $id = $args['id'];
     $modelLoader = new MIDAS_ModelLoader();
@@ -689,7 +689,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderDelete($args)
     {
-    $this->_validateParams(&$args, array('id'));
+    $this->_validateParams($args, array('id'));
 
     $userDao = $this->_getUser($args);
     if($userDao == false)
@@ -717,7 +717,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderDownload($args)
     {
-    $this->_validateParams(&$args, array('id'));
+    $this->_validateParams($args, array('id'));
     $userDao = $this->_getUser($args);
 
     $id = $args['id'];
@@ -741,7 +741,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemGet($args)
     {
-    $this->_validateParams(&$args, array('id'));
+    $this->_validateParams($args, array('id'));
     $userDao = $this->_getUser($args);
 
     $itemid = $args['id'];
@@ -782,7 +782,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDownload($args)
     {
-    $this->_validateParams(&$args, array('id'));
+    $this->_validateParams($args, array('id'));
     $userDao = $this->_getUser($args);
 
     $id = $args['id'];
@@ -812,7 +812,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDelete($args)
     {
-    $this->_validateParams(&$args, array('id'));
+    $this->_validateParams($args, array('id'));
 
     $userDao = $this->_getUser($args);
     if($userDao == false)
@@ -840,7 +840,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemGetmetadata($args)
     {
-    $this->_validateParams(&$args, array('id'));
+    $this->_validateParams($args, array('id'));
     $userDao = $this->_getUser($args);
 
     $itemid = $args['id'];
@@ -909,7 +909,7 @@ class Api_ApiComponent extends AppComponent
    */
   function userApikeyDefault($args)
     {
-    $this->_validateParams(&$args, array('email', 'password'));
+    $this->_validateParams($args, array('email', 'password'));
     if(!$this->controller->getRequest()->isPost())
       {
       throw new Exception('POST method required', MIDAS_HTTP_ERROR);
