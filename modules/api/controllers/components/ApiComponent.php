@@ -25,6 +25,21 @@ class Api_ApiComponent extends AppComponent
   public $apiSetup;
   public $userSession;
 
+  /**
+   * Pass the args and a list of required parameters.
+   * Will throw an exception if a required one is missing.
+   */
+  private function _validateParams($args, $requiredList)
+    {
+    foreach($requiredList as $param)
+      {
+      if(!array_key_exists(&$args, $param))
+        {
+        throw new Exception('Parameter '.$param.' is not defined', MIDAS_INVALID_PARAMETER);
+        }
+      }
+    }
+
   /** Return the user dao */
   private function _getUser($args)
     {
@@ -62,20 +77,7 @@ class Api_ApiComponent extends AppComponent
    */
   function login($args)
     {
-    if(!array_key_exists('email', $args))
-      {
-      throw new Exception('Parameter email is not defined', MIDAS_INVALID_PARAMETER);
-      }
-
-    if(!array_key_exists('appname', $args))
-      {
-      throw new Exception('Parameter appname is not defined', MIDAS_INVALID_PARAMETER);
-      }
-
-    if(!array_key_exists('apikey', $args))
-      {
-      throw new Exception('Parameter apikey is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('email', 'appname', 'apikey'));
 
     $data['token'] = '';
     $email = $args['email'];
@@ -100,14 +102,7 @@ class Api_ApiComponent extends AppComponent
    */
   public function uuidGet($args)
     {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
-      }
-    if(!array_key_exists('type', $args))
-      {
-      throw new Exception('Parameter type is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('id', 'type'));
 
     $id = $args['id'];
     $type = $args['type'];
@@ -162,10 +157,7 @@ class Api_ApiComponent extends AppComponent
    */
   function resourceGet($args)
     {
-    if(!array_key_exists('uuid', $args))
-      {
-      throw new Exception('Parameter uuid is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('uuid'));
 
     $uuid = $args['uuid'];
     $componentLoader = new MIDAS_ComponentLoader();
@@ -197,10 +189,7 @@ class Api_ApiComponent extends AppComponent
    */
   function pathToRoot($args)
     {
-    if(!array_key_exists('uuid', $args))
-      {
-      throw new Exception('Parameter uuid is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('uuid'));
 
     $componentLoader = new MIDAS_ComponentLoader();
     $uuidComponent = $componentLoader->loadComponent('Uuid');
@@ -236,10 +225,7 @@ class Api_ApiComponent extends AppComponent
    */
   function resourceSearch($args)
     {
-    if(!array_key_exists('search', $args))
-      {
-      throw new Exception('Parameter search is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('search'));
     $userDao = $this->_getUser($args);
 
     $order = 'view';
@@ -399,7 +385,7 @@ class Api_ApiComponent extends AppComponent
    * Create a new community
    * @param token Authentication token
    * @param name The community name
-   * @param description The community description
+   * @param description (Optional) The community description
    * @param uuid (Optional) Uuid of the community. If none is passed, will generate one.
    * @param privacy (Optional) Default 'Public'.
    * @param canjoin (Optional) Default 'Everyone'.
@@ -407,15 +393,11 @@ class Api_ApiComponent extends AppComponent
    */
   function communityCreate($args)
     {
+    $this->_validateParams(&$args, array('name'));
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       throw new Exception('Unable to find user', MIDAS_INVALID_POLICY);
-      }
-
-    if(!array_key_exists('name', $args))
-      {
-      throw new Exception('Parameter name is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $name = $args['name'];
@@ -546,18 +528,17 @@ class Api_ApiComponent extends AppComponent
    */
   function communityDelete($args)
     {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
-      }
-    $modelLoader = new MIDAS_ModelLoader();
-    $communityModel = $modelLoader->loadModel('Community');
+    $this->_validateParams(&$args, array('id'));
+
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
       }
     $id = $args['id'];
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $communityModel = $modelLoader->loadModel('Community');
     $community = $communityModel->load($id);
 
     if($community === false || !$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
@@ -572,7 +553,7 @@ class Api_ApiComponent extends AppComponent
    * Create a folder
    * @param token Authentication token
    * @param name The name of the folder to create
-   * @param description The description of the folder
+   * @param description (Optional) The description of the folder
    * @param uuid (Optional) Uuid of the folder. If none is passed, will generate one.
    * @param privacy (Optional) Default 'Public'.
    * @param parentid The id of the parent folder
@@ -580,19 +561,11 @@ class Api_ApiComponent extends AppComponent
    */
   function folderCreate($args)
     {
+    $this->_validateParams(&$args, array('name'));
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
-      }
-
-    if(!array_key_exists('name', $args))
-      {
-      throw new Exception('Parameter name is not defined', MIDAS_INVALID_PARAMETER);
-      }
-    if(!array_key_exists('description', $args))
-      {
-      throw new Exception('Parameter name is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $modelLoader = new MIDAS_ModelLoader();
@@ -670,10 +643,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderGet($args)
     {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('id'));
     $userDao = $this->_getUser($args);
 
     $modelLoader = new MIDAS_ModelLoader();
@@ -698,10 +668,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderChildren($args)
     {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('id'));
 
     $id = $args['id'];
     $modelLoader = new MIDAS_ModelLoader();
@@ -722,10 +689,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderDelete($args)
     {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('id'));
 
     $userDao = $this->_getUser($args);
     if($userDao == false)
@@ -753,10 +717,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderDownload($args)
     {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('id'));
     $userDao = $this->_getUser($args);
 
     $id = $args['id'];
@@ -780,10 +741,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemGet($args)
     {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('id'));
     $userDao = $this->_getUser($args);
 
     $itemid = $args['id'];
@@ -824,10 +782,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDownload($args)
     {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('id'));
     $userDao = $this->_getUser($args);
 
     $id = $args['id'];
@@ -857,10 +812,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDelete($args)
     {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('id'));
 
     $userDao = $this->_getUser($args);
     if($userDao == false)
@@ -888,10 +840,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemGetmetadata($args)
     {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_validateParams(&$args, array('id'));
     $userDao = $this->_getUser($args);
 
     $itemid = $args['id'];
@@ -960,17 +909,10 @@ class Api_ApiComponent extends AppComponent
    */
   function userApikeyDefault($args)
     {
+    $this->_validateParams(&$args, array('email', 'password'));
     if(!$this->controller->getRequest()->isPost())
       {
       throw new Exception('POST method required', MIDAS_HTTP_ERROR);
-      }
-    if(!array_key_exists('email', $args))
-      {
-      throw new Exception('Parameter email is not defined', MIDAS_INVALID_PARAMETER);
-      }
-    if(!array_key_exists('password', $args))
-      {
-      throw new Exception('Parameter password is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $salt = Zend_Registry::get('configGlobal')->password->prefix;
