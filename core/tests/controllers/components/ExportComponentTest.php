@@ -208,6 +208,8 @@ class ExportComponentTest extends ControllerTestCase
     $this->assertEquals($user1_public_bitstream_path, readlink($midas_exporttest_dir.'/'.$itemIds[0].'/user1_public.png'));
     // user1's private file will NOT be exported
     $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[1].'/user1_private.png'));
+    // clean up
+    $this->_recursiveRemoveDirectory($midas_exporttest_dir);
     } // end public function testCreateSymlinks
 
   } // end class
