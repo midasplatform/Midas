@@ -48,6 +48,10 @@
 	<user user_id="1" firstname="FirstName1" lastname="LastName1"
 		email="user1@user1.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:09:02"
 		folder_id="1000" publicfolder_id="1001" privatefolder_id="1002" />
+<!-- To test Export component -->
+	<user user_id="2" firstname="FirstName2" lastname="LastName2"
+		email="user2@user2.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:10:02" />
+	<folderpolicygroup folder_id="1001" group_id="0" policy='0' />
 
 	<user2group group_id="3000" user_id="1" />
 	<user2group group_id="3002" user_id="1" />
