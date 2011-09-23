@@ -3,6 +3,8 @@ add_midas_test( FeedController FeedControllerTest.php )
 add_midas_test( UserController UserControllerTest.php )
 add_midas_test( UploadController UploadControllerTest.php )
 
+add_subdirectory( components )
+
 
 # Syle
 add_midas_style_test( StyleCoreControllerComponents ${CMAKE_SOURCE_DIR}/core/controllers/components )
