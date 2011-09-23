@@ -1,0 +1,80 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config.index.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.index.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+
+<div class="viewMain">
+  <div class ="genericWrapperTopRight">
+         <?php
+          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+            echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+            echo $this->t('Back');  
+            echo "</a>";
+          echo '</div>';
+          
+        ?>
+    </div>
+     <?php
+      echo "
+      <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
+      <h3>Batchmake Configuration:</h3>
+            <div qtip='The file-system location of the Batchmake temporary work directory. (required)'  >
+              <label for='tmp_dir'>Batchmake temporary directory</label>
+              {$this->configForm['tmp_dir']}
+            </div>
+            <div qtip='The file-system location of the Batchmake executable. (required)'  >
+              <label for='bin_dir'>Location of Batchmake executable</label>
+              {$this->configForm['bin_dir']}
+            </div>
+            <div qtip='The file-system location of the BatchMake .bms scripts. (required)'  >
+              <label for='script_dir'>Batchmake script directory</label>
+              {$this->configForm['script_dir']}
+            </div>
+            <div qtip='The file-system location of the executable applications and .bmm wrappers. (required)'  >
+              <label for='app_dir'>Batchmake application directory</label>
+              {$this->configForm['app_dir']}
+            </div>
+            <div qtip='The file-system location where Midas will export data to be consumed by BatchMake pipelines. (required)'  >
+              <label for='data_dir'>Batchmake data directory</label>
+              {$this->configForm['data_dir']}
+            </div>
+            <div qtip='The file-system location of the Condor binaries. (required)'  >
+              <label for='condor_bin_dir'>Condor binary directory</label>
+              {$this->configForm['condor_bin_dir']}
+            </div>
+            <div id='apps_config_div'>
+            </div>
+            <div id='php_config_div'>
+            </div>
+            <div>
+              <div id='configResult'>
+                <div>
+                  <img style='display:none;' id='testLoading'  alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/>
+                  <img style='display:none;' id='testOk'  alt='' src='{$this->coreWebroot}/public/images/icons/ok.png'/>
+                  <img style='display:none;' id='testNok'  alt='' src='{$this->coreWebroot}/public/images/icons/nok.png'/>             
+                  <span id='testError'/>
+                </div>
+              </div>
+            </div>
+
+          <div>
+            {$this->configForm['submitConfig']}
+          </div>
+       </form>";
+       ?>
+    
+ 
+</div>

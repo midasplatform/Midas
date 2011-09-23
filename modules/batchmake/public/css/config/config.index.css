@@ -1,0 +1,33 @@
+
+
+root { 
+  display: block;
+}
+
+
+#configResult{
+  position: relative;
+}
+
+#configResult div{
+  margin-left: 203px;
+  margin-top:4px;
+  height: 30px;
+}
+
+/* redefine viewWrapper */
+div.viewWrapper {
+  margin-top: 0px;
+  position: relative;
+  padding-right: 50px;
+}
+
+
+form.genericForm .info    { color:green; }
+form.genericForm .warning   { font-weight: bold; color:orange; }
+form.genericForm .error   { font-weight: bold; color:red; }
+div.content-batchmake-info .desc    { font-weight: bold; margin-top: 0.8em; font-size: 0.9em; display: block; }
+
+
+#batchmake_config_status.info   { color:green; }
+#batchmake_config_status.error  { font-weight: bold; color:red; }
