@@ -159,6 +159,14 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
       throw new ZendException('Target item not part of result set.');
       }
 
+    // remove a previous scalar value if there is one.
+    $oldResults = $scalarResultModel->findBy('item_id', $tgtItem->getKey());
+    if(count($oldResults) == 1)
+      {
+      $oldResult = $oldResults[0];
+      $this->database->unlink('scores', $dashboard, $oldResult);
+      }
+
     $scalarResult = new Validation_ScalarResultDao();
     $scalarResult->setFolderId($folder->getKey());
     $scalarResult->setItemId($tgtItem->getKey());

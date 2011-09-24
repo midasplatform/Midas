@@ -95,7 +95,7 @@ class Validation_ApiComponent extends AppComponent
     $authComponent = $componentLoader->loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
-    if(!$userDao->isAdmin())
+    if(!$userDao || !$userDao->isAdmin())
       {
       throw new Exception('Only an admin can create a dashboard.', -1);
       }
@@ -125,7 +125,7 @@ class Validation_ApiComponent extends AppComponent
     $authComponent = $componentLoader->loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
-    if(!$userDao->isAdmin())
+    if(!$userDao || !$userDao->isAdmin())
       {
       throw new Exception('Only an admin can set the testing folder.', -1);
       }
@@ -136,7 +136,7 @@ class Validation_ApiComponent extends AppComponent
     $folderModel = $modelLoad->loadModel('Folder');
     if($folderModel->load($value['folder_id']))
       {
-      $dao->setTestingFolderId($value['folder_id']);
+      $dao->setTestingfolderId($value['folder_id']);
       $model->save($dao);
       }
     else
@@ -160,7 +160,7 @@ class Validation_ApiComponent extends AppComponent
     $authComponent = $componentLoader->loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
-    if(!$userDao->isAdmin())
+    if(!$userDao || !$userDao->isAdmin())
       {
       throw new Exception('Only an admin can set the truth folder.', -1);
       }
@@ -171,7 +171,7 @@ class Validation_ApiComponent extends AppComponent
     $folderModel = $modelLoad->loadModel('Folder');
     if($folderModel->load($value['folder_id']))
       {
-      $dao->setTruthFolderId($value['folder_id']);
+      $dao->setTruthfolderId($value['folder_id']);
       $model->save($dao);
       }
     else
@@ -195,7 +195,7 @@ class Validation_ApiComponent extends AppComponent
     $authComponent = $componentLoader->loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
-    if(!$userDao->isAdmin())
+    if(!$userDao || !$userDao->isAdmin())
       {
       throw new Exception('Only an admin can set the training folder.', -1);
       }
@@ -206,7 +206,7 @@ class Validation_ApiComponent extends AppComponent
     $folderModel = $modelLoad->loadModel('Folder');
     if($folderModel->load($value['folder_id']))
       {
-      $dao->setTrainingFolderId($value['folder_id']);
+      $dao->setTrainingfolderId($value['folder_id']);
       $model->save($dao);
       }
     else
@@ -225,6 +225,15 @@ class Validation_ApiComponent extends AppComponent
   public function addResultFolder($value)
     {
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
+
+    $componentLoader = new MIDAS_ComponentLoader();
+    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $userDao = $authComponent->getUser($value,
+                                       Zend_Registry::get('userSession')->Dao);
+    if(!$userDao)
+      {
+      throw new Exception('You must login to submit a result folder.', -1);
+      }
 
     $modelLoad = new MIDAS_ModelLoader();
     $model = $modelLoad->loadModel('Dashboard', 'validation');
@@ -257,7 +266,7 @@ class Validation_ApiComponent extends AppComponent
     $authComponent = $componentLoader->loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
-    if(!$userDao->isAdmin())
+    if(!$userDao || !$userDao->isAdmin())
       {
       throw new Exception('Only administrators can remove results.', -1);
       }
@@ -288,6 +297,34 @@ class Validation_ApiComponent extends AppComponent
     }
 
   /**
+   * Get the result folders associated with a dashboard
+   * @param dashboard_id the id of the target dashboard
+   * @return and array of folder_id's corresponding to result folders assigned
+   *         to the dashboard
+   */
+  public function getResultFolders($value)
+    {
+    $this->_checkKeys(array('dashboard_id'), $value);
+
+    $modelLoad = new MIDAS_ModelLoader();
+    $model = $modelLoad->loadModel('Dashboard', 'validation');
+    $dao = $model->load($value['dashboard_id']);
+    if(!$dao)
+      {
+      throw new Exception('No dashboard found with that id.', -1);
+      }
+
+    $results = $dao->getResults();
+    $return = array();
+    foreach($results as $result)
+      {
+      $return[] = $result->getKey();
+      }
+    return array('dashboard_id' => $dao->getKey(),
+                 'results' => $return);
+    }
+
+  /**
    * Set a single scalar result value
    * @param dashboard_id the id of the target dashboard
    * @param folder_id the id of the target result folder
@@ -306,7 +343,7 @@ class Validation_ApiComponent extends AppComponent
     $authComponent = $componentLoader->loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
-    if(!$userDao->isAdmin())
+    if(!$userDao || !$userDao->isAdmin())
       {
       throw new Exception('Only administrators can write result scalars.', -1);
       }
@@ -320,7 +357,7 @@ class Validation_ApiComponent extends AppComponent
 
     // Verify that the dashboard exists
     $dashboardDao = $dashboardModel->load($value['dashboard_id']);
-    if(!$dao)
+    if(!$dashboardDao)
       {
       throw new Exception('No dashboard found with that id.', -1);
       }
@@ -357,11 +394,11 @@ class Validation_ApiComponent extends AppComponent
       }
 
     // Assuming everything went according to plan, set the result scalar
-    $dashboarModel->setScore($dashboardDao,
-                             $tgtResult,
-                             $tgtItem,
-                             $value['value']);
-    return array('dashboard_id' => $dao->getKey());
+    $dashboardModel->setScore($dashboardDao,
+                              $tgtResult,
+                              $tgtItem,
+                              $value['value']);
+    return array('dashboard_id' => $dashboardDao->getKey());
     }
 
   /**
@@ -386,7 +423,7 @@ class Validation_ApiComponent extends AppComponent
 
     // Verify that the dashboard exists
     $dashboardDao = $dashboardModel->load($value['dashboard_id']);
-    if(!$dao)
+    if(!$dashboardDao)
       {
       throw new Exception('No dashboard found with that id.', -1);
       }
@@ -416,6 +453,78 @@ class Validation_ApiComponent extends AppComponent
 
     return array('item_id' => $itemId,
                  'value' => $scores[$itemId]);
+    }
+
+  /**
+   * Get the scalar results associated with one result folder
+   * @param dashboard_id the id of the target dashboard
+   * @param folder_id the id of the target result folder
+   * @return the scalar results for the specified folder
+   */
+  public function getScores($value)
+    {
+    // check for the proper parameters
+    $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
+
+    // Load the necessary models
+    $modelLoad = new MIDAS_ModelLoader();
+    $dashboardModel = $modelLoad->loadModel('Dashboard', 'validation');
+    $folderModel = $modelLoad->loadModel('Folder');
+
+    // Verify that the dashboard exists
+    $dashboardDao = $dashboardModel->load($value['dashboard_id']);
+    if(!$dashboardDao)
+      {
+      throw new Exception('No dashboard found with that id.', -1);
+      }
+
+    // Verify that the folder_id is associated with the dashboard as a result
+    $results = $dashboardDao->getResults();
+    $tgtResult = null;
+    foreach($results as $result)
+      {
+      if($result->getKey() == $value['folder_id'])
+        {
+        $tgtResult = $result;
+        break;
+        }
+      }
+    if(!$tgtResult)
+      {
+      throw new Exception('No result found with that folder_id.', -1);
+      }
+
+    $scores = $dashboardModel->getScores($dashboardDao, $tgtResult);
+
+    return array('dashboard_id' => $dashboardDao->getKey(),
+                 'scores' => $scores);
+    }
+
+  /**
+   * Get all scalar results associated with a dashboard
+   * @param dashboard_id the id of the target dashboard
+   * @return the scalar results for the specified dashboard
+   */
+  public function getAllScores($value)
+    {
+    // check for the proper parameters
+    $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
+
+    // Load the necessary models
+    $modelLoad = new MIDAS_ModelLoader();
+    $dashboardModel = $modelLoad->loadModel('Dashboard', 'validation');
+
+    // Verify that the dashboard exists
+    $dashboardDao = $dashboardModel->load($value['dashboard_id']);
+    if(!$dashboardDao)
+      {
+      throw new Exception('No dashboard found with that id.', -1);
+      }
+
+    $scores = $dashboardModel->getAllScores($dashboardDao);
+
+    return array('dashboard_id' => $dashboardDao->getKey(),
+                 'scores' => $scores);
     }
 
 } // end class
