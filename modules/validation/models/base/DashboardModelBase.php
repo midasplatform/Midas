@@ -206,6 +206,16 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
    */
   abstract function setScores($dashboard, $folder, $values);
 
+  /**
+   * Set a single result value
+   * @param dashboard the target dashboard
+   * @param folder the result folder with which the value is associated
+   * @param item the item associated with the result
+   * @param value a scalar value representing a result
+   *        scalar results
+   * @return void
+   */
+  abstract function setScore($dashboard, $folder, $item, $values);
 
   /**
    * Get a single set of scores for a dashboard

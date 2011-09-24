@@ -119,6 +119,55 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     }
 
   /**
+   * Set a single result value
+   * @param dashboard the target dashboard
+   * @param folder the result folder with which the value is associated
+   * @param item the item associated with the result
+   * @param value a scalar value representing a result
+   *        scalar results
+   * @return void
+   */
+  function setScore($dashboard, $folder, $item, $value)
+    {
+    if(!$dashboard instanceof Validation_DashboardDao)
+      {
+      throw new Zend_Exception("Should be a dashboard.");
+      }
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+    if(!$item instanceof ItemDao)
+      {
+      throw new Zend_Exception("Should be an item.");
+      }
+    $modelLoad = new MIDAS_ModelLoader();
+    $scalarResultModel = $modelLoad->loadModel('ScalarResult', 'validation');
+    $this->loadDaoClass('ScalarResultDao', 'validation');
+    $items = $folder->getItems();
+    $tgtItem = null;
+    foreach($items as $curItem)
+      {
+      if($curItem->getKey() == $item->getKey())
+        {
+        $tgtItem = $curItem;
+        break;
+        }
+      }
+    if(!$tgtItem)
+      {
+      throw new ZendException('Target item not part of result set.');
+      }
+
+    $scalarResult = new Validation_ScalarResultDao();
+    $scalarResult->setFolderId($folder->getKey());
+    $scalarResult->setItemId($tgtItem->getKey());
+    $scalarResult->setValue($value);
+    $scalarResultModel->save($scalarResult);
+    $this->database->link('scores', $dashboard, $scalarResult);
+    }
+
+  /**
    * Get a single set of scores for a dashboard
    * @param dashboard the target dashboard
    * @param folder the folder that corresponds to the results
