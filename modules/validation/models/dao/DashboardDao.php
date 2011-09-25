@@ -10,20 +10,11 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-/** demo base model*/
-class Validation_ValidationModelBase extends Validation_AppModel
-{
-  /** constructor*/
-  public function __construct()
-    {
-    parent::__construct();
-    $this->_name = 'validation_validation';
-    $this->_key = 'validation_id';
-
-    $this->_mainData = array(
-        'validation_id' =>  array('type' => MIDAS_DATA),
-        );
-    $this->initialize(); // required
-    } // end __construct()
-    
-} // end class Helloworld_HelloModelBase
+/**
+ * Dashboard DAO
+ */
+class Validation_DashboardDao extends AppDao
+  {
+  public $_model = 'Dashboard';
+  public $_module = 'validation';
+  }

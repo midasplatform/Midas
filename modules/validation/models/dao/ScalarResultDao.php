@@ -10,9 +10,11 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-/** demo dao*/
-class Validation_ValidationDao extends AppDao
+/**
+ * ScalarResult DAO
+ */
+class Validation_ScalarResultDao extends AppDao
   {
-  public $_model = 'Validation';
+  public $_model = 'ScalarResult';
   public $_module = 'validation';
   }
