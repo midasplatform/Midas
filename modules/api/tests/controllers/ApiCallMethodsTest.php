@@ -19,8 +19,8 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->setupDatabase(array('default')); //core dataset
     $this->setupDatabase(array('default'), 'api'); // module dataset
     $this->enabledModules = array('api');
-    $this->_models = array('User', 'Folder');
-    $this->_daos = array('User', 'Folder');
+    $this->_models = array('User', 'Folder', 'Item');
+    $this->_daos = array('User', 'Folder', 'Item');
 
     parent::setUp();
     }
@@ -162,6 +162,46 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($resp->data->items[1]->name, 'name 2');
     $this->assertEquals($resp->data->items[0]->description, 'Description 1');
     $this->assertEquals($resp->data->items[1]->description, 'Description 2');
+    }
+
+  /** Test the item.get method */
+  public function testItemGet()
+    {
+    $itemsFile = $this->loadData('Item', 'default');
+    $itemDao = $this->Item->load($itemsFile[0]->getKey());
+
+    $this->resetAll();
+    $token = $this->_loginUsingApiKey();
+    $this->params['token'] = $token;
+    $this->params['method'] = 'midas.item.get';
+    $this->params['id'] = $itemsFile[0]->getKey();
+    $this->request->setMethod('POST');
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    $this->assertEquals($resp->data->item_id, $itemDao->getKey());
+    $this->assertEquals($resp->data->uuid, $itemDao->getUuid());
+    $this->assertEquals($resp->data->description, $itemDao->getDescription());
+    $this->assertTrue(is_array($resp->data->revisions));
+    $this->assertEquals(count($resp->data->revisions), 2); //make sure we get both revisions
+    $this->assertTrue(is_array($resp->data->revisions[0]->bitstreams));
+    $this->assertEquals($resp->data->revisions[0]->revision, '1');
+    $this->assertEquals($resp->data->revisions[1]->revision, '2');
+
+    // Test the 'head' parameter
+    $this->resetAll();
+    $token = $this->_loginUsingApiKey();
+    $this->params['token'] = $token;
+    $this->params['method'] = 'midas.item.get';
+    $this->params['id'] = $itemsFile[0]->getKey();
+    $this->params['head'] = 'true';
+    $this->request->setMethod('POST');
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    $this->assertEquals(count($resp->data->revisions), 1); //make sure we get only one revision
+    $this->assertTrue(is_array($resp->data->revisions[0]->bitstreams));
+    $this->assertEquals($resp->data->revisions[0]->revision, '2');
     }
 
   /** Test get user's default API key using username and password */

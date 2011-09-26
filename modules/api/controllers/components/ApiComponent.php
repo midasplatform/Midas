@@ -737,6 +737,7 @@ class Api_ApiComponent extends AppComponent
    * Get an item's information
    * @param token (Optional) Authentication token
    * @param id The item id
+   * @param head (Optional) only list the most recent revision
    * @return The item object
    */
   function itemGet($args)
@@ -755,8 +756,16 @@ class Api_ApiComponent extends AppComponent
       }
 
     $itemArray = $item->toArray();
-    $revisions = $item->getRevisions();
     $revisionsArray = array();
+
+    if(array_key_exists('head', $args))
+      {
+      $revisions = array($itemModel->getLastRevision($item));
+      }
+    else //get all revisions
+      {
+      $revisions = $item->getRevisions();
+      }
     foreach($revisions as $revision)
       {
       $bitstreamArray = array();
