@@ -11,7 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 /** Tests the functionality of the web API methods */
-class ApiCallMethodsTest extends ControllerTestCase
+class ApiIndexControllerTest extends ControllerTestCase
   {
   /** set up tests */
   public function setUp()
