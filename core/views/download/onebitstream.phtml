@@ -10,23 +10,23 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-$chunkSize = 1*(1024*8);
+$chunkSize = 1024 * 8;
 $buffer = '';
-$fileSize = @filesize($this->path);
+$fileSize = filesize($this->path);
 $handle = fopen($this->path, 'rb');
 
-$contenType=$this->mimetype;
+$contentType = $this->mimetype;
 
-if ($handle === false)
+if($handle === false)
   {
   throw new Zend_Exception("Unable to open the file ");
   }
 $modified = gmdate('D, d M Y H:i:s').' GMT';
-header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-header("Last-Modified: $modified");
+header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+header('Last-Modified: '.$modified);
 
 // if pdf set the content-type acordingly
-if(!isset($contentType)&&pathinfo($this->name, PATHINFO_EXTENSION) == "pdf")
+if(!isset($contentType) && pathinfo($this->name, PATHINFO_EXTENSION) == 'pdf')
   {
   $contentType = 'application/pdf';
   $enableContentDisposition = false;
@@ -38,74 +38,75 @@ if(!isset($contentType))
   } 
 
 // Hack for .vsp files (for OSA)
-if(!isset($contentType)&&strlen($this->name)>4 && substr($this->name,strlen($this->name)-4,4)==".vsp")
+if(!isset($contentType) && strlen($this->name) > 4 && substr($this->name,strlen($this->name) - 4, 4) == '.vsp')
   {
   $contentType = 'application/isp';
   }
-  
-
 
 $agent = env('HTTP_USER_AGENT');
-if (preg_match('%Opera(/| )([0-9].[0-9]{1,2})%', $agent) || preg_match('/MSIE ([0-9].[0-9]{1,2})/', $agent))
+if(preg_match('%Opera(/| )([0-9].[0-9]{1,2})%', $agent) || preg_match('/MSIE ([0-9].[0-9]{1,2})/', $agent))
   {
   header('Content-Type: '.$contentType);
-  header("Content-Disposition: attachment; filename=\"".$this->name."\";");
-  header("Expires: 0");
+  header('Content-Disposition: attachment; filename="'.$this->name.'";');
+  header('Expires: 0');
   header('Accept-Ranges: bytes');
-  header("Cache-Control: private", false);
-  header("Pragma: private");
+  header('Cache-Control: private', false);
+  header('Pragma: private');
   $httpRange = env('HTTP_RANGE');
-  if ( isset ($httpRange))
+  if(isset($httpRange))
     {
     list ($toss, $range) = explode("=", $httpRange);
     str_replace($range, "-", $range);
-    $size = $fileSize-1;
-    $length = $fileSize-$range;
-    header("HTTP/1.1 206 Partial Content");
-    header("Content-Length: $length");
-    header("Content-Range: bytes $range$size/$fileSize");
+    $size = $fileSize - 1;
+    $length = $fileSize - $range;
+    header('HTTP/1.1 206 Partial Content');
+    header('Content-Length: '.$length);
+    header('Content-Range: bytes '.$range.$size.'/'.$fileSize);
     fseek($handle, $range);
     }
   else
     {
-    header("Content-Length: ".$fileSize);
+    header('Content-Length: '.$fileSize);
     }
   }
 else
   {
   header('Accept-Ranges: bytes');
-  header("Expires: 0");
-  header("Content-Type: ".$contentType);
-  header("Content-Length: ".$fileSize);
-  if(!isset($enableContentDisposition) || $enableContentDisposition==true) 
+  header('Expires: 0');
+  header('Content-Type: '.$contentType);
+  header('Content-Length: '.$fileSize);
+  if(!isset($enableContentDisposition) || $enableContentDisposition == true) 
     {
-    header("Content-Disposition: attachment; filename=\"".$this->name."\";");
+    header('Content-Disposition: attachment; filename="'.$this->name.'";');
     }
-  if ( isset ($httpRange))
+  if(isset($httpRange))
     {
-    list ($toss, $range) = explode("=", $httpRange);
-    str_replace($range, "-", $range);
-    $size = $fileSize-1;
-    $length = $fileSize-$range;
-    header("HTTP/1.1 206 Partial Content");
-    header("Content-Length: $length");
-    header("Content-Range: bytes $range$size/$fileSize");
+    list($toss, $range) = explode('=', $httpRange);
+    str_replace($range, '-', $range);
+    $size = $fileSize - 1;
+    $length = $fileSize - $range;
+    header('HTTP/1.1 206 Partial Content');
+    header('Content-Length: '.$length);
+    header('Content-Range: bytes '.$range.$size.'/'.$fileSize);
     fseek($handle, $range);
     }
   }
-@ob_end_clean();
-@ob_start();
 
-while (!feof($handle) && connection_status() == 0)
+set_time_limit(0);
+
+//kill the whole ob stack (Zend uses double nested output buffers)
+while(ob_get_level() > 0)
   {
-  set_time_limit(0);
+  ob_end_clean();
+  }
+
+while(!feof($handle) && connection_status() == 0)
+  {
   $buffer = fread($handle, $chunkSize);
   echo $buffer;
-  @flush();
-  @ob_flush();
   }
 fclose($handle);
-exit ((connection_status() == 0) && !connection_aborted());
+exit(connection_status() == 0 && !connection_aborted());
 
 
 
