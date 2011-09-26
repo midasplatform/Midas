@@ -10,7 +10,7 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-require_once BASE_PATH . '/modules/api/library/ApiEnabledNotification.php';
+require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 
 class Validation_Notification extends ApiEnabled_Notification
   {
