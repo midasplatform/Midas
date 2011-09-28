@@ -1,0 +1,22 @@
+# Should the script end in case of errors
+ExitOnError(1)
+
+# all params are hardcoded, just used to check for creating a dagjob and condor scripts
+
+SetApp(pixelCounter @PixelCounter)
+SetAppOption(pixelCounter.threshold 10)
+SetAppOption(pixelCounter.GenerateXMLFile 1)
+
+Set(hardcodedlist 'sphere_5.mha' 'sphere_10.mha' 'sphere_15.mha')
+
+# Generic script options
+Foreach(file ${hardcodedlist})
+  GetFilename(stem ${file} NAME_WITHOUT_EXTENSION)
+
+  SetAppOption(pixelCounter.filename ${file})
+  SetAppOption(pixelCounter.GenerateXMLFile.GenerateXMLFile ${stem}.xml)
+
+  # Run the application 
+  Run(prog_output ${pixelCounter})  
+
+Endforeach(file)
