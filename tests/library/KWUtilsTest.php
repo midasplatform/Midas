@@ -35,11 +35,7 @@ class KWUtilsTest extends ControllerTestCase
   /** tests mkDir function */
   public function testMkDir()
     {
-    $tmpDir = $this->getTempDirectory() . '/';
-    // try creating one that exists
-    // we can ignore any errors
-    $this->assertFalse(KWUtils::mkDir($tmpDir));
-    $tmpDir .= "KWUtilsTest";
+    $tmpDir = $this->getTempDirectory() . '/KWUtilsTest';
     $this->assertTrue(KWUtils::mkDir($tmpDir));
     // now clean up
     rmdir($tmpDir);
