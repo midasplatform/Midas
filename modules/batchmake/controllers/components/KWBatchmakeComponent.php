@@ -67,16 +67,11 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
   /**
    * helper function to load the correct config file
-   * @param string $alternateConfig path to alternative config ini file
    * @return config array with config properties
    */
-  protected function loadConfig($alternateConfig = null)
+  protected function loadConfig()
     {
-    if($alternateConfig)
-      {
-      $config = parse_ini_file($alternateConfig, false);
-      }
-    elseif(file_exists(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG))
+    if(file_exists(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG))
       {
       $config = parse_ini_file(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, false);
       }
@@ -92,25 +87,31 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    * will load the configuration property values for this module, and filter
    * out only those properties that are in the 'batchmake.' config namespace,
    * removing the 'batchmake.' from the key name.
-   * @param string $alternateConfig a path to an alternate config ini file
+   * @param string $alternateConfig an array of alternate config props
    * @return array of batchmake module specific config properties
    */
   public function loadConfigProperties($alternateConfig = null)
     {
-    $configPropertiesParamVals = array();
-    $rawConfig = $this->loadConfig($alternateConfig);
-
-    $modulePropertyNamespace = MIDAS_BATCHMAKE_MODULE . '.';
-    foreach($rawConfig as $configProperty => $configPropertyVal)
+    if(!isset($alternateConfig))
       {
-      $ind = strpos($configProperty, $modulePropertyNamespace);
-      if($ind !== false && $ind  == 0)
+      $configPropertiesParamVals = array();
+      $rawConfig = $this->loadConfig();
+
+      $modulePropertyNamespace = MIDAS_BATCHMAKE_MODULE . '.';
+      foreach($rawConfig as $configProperty => $configPropertyVal)
         {
-        $reducedKey = substr($configProperty, strpos($configProperty, '.') + 1);
-        $configPropertiesParamVals[$reducedKey] = $configPropertyVal;
+        $ind = strpos($configProperty, $modulePropertyNamespace);
+        if($ind !== false && $ind  == 0)
+          {
+          $reducedKey = substr($configProperty, strpos($configProperty, '.') + 1);
+          $configPropertiesParamVals[$reducedKey] = $configPropertyVal;
+          }
         }
       }
-
+    else
+      {
+      $configPropertiesParamVals = $alternateConfig;
+      }
     $this->componentConfig = $configPropertiesParamVals;
     $this->configScriptDir = $this->componentConfig[MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY];
     $this->configAppDir = $this->componentConfig[MIDAS_BATCHMAKE_APP_DIR_PROPERTY];
@@ -129,7 +130,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    * @TODO from KWUtils, may need to be moved, but first tested
    * checks whether the file at the passed in path has the passed in options.
    */
-  protected function checkFileFlag($file, $options = 0x0)
+  protected function checkFileFlag($file, $processUserUid, $options = 0x0)
     {
     $exist    = file_exists($file);
     Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
@@ -157,7 +158,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
     if(!KWUtils::isWindows() && $exist && ($options & MIDAS_BATCHMAKE_CHECK_IF_CHMODABLE))
       {
-      $chmodable = $this->IsChmodable($file);
+      $chmodable = $this->IsChmodable($file, $processUserUid);
       $status .= $chmodable ? " / Chmodable" : " / NotChmodable";
       $ret = $ret && $chmodable;
       }
@@ -172,7 +173,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    * Note: If return true, the mode of the file will be MIDAS_BATCHMAKE_DEFAULT_MKDIR_MODE
    *       On windows, return always True
    */
-  protected function isChmodable($fileOrDirectory)
+  protected function isChmodable($fileOrDirectory, $processUserUid)
     {
     if(KWUtils::isWindows())
       {
@@ -196,8 +197,20 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
     if(is_writable($fileOrDirectory))
       {
-      // Try to re-apply them
-      $return = chmod($fileOrDirectory, $current_perms);
+      // first check on the uid of the fileOrDirectory
+      // if that is different than the processUserUid, then chmod
+      // will return false and add a warning, so let's prevent this beforehand
+      $fileStat = stat($fileOrDirectory);
+      $fileUid = $fileStat['uid'];
+      if($fileUid !== $processUserUid)
+        {
+        return false;
+        }
+      else
+        {
+         // Try to re-apply them
+        $return = chmod($fileOrDirectory, $current_perms);
+        }
       }
     else
       {
@@ -227,49 +240,13 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       $configToTest = $this->componentConfig;
       }
 
-    foreach(self::$configPropertiesRequirements as $configProperty => $configPropertyRequirement)
-      {
-      $configPropertyVal = $configToTest[$configProperty];
-      if($configPropertyVal)
-        {
-        // if the property exists, check its configuration
-        list($result, $status) = $this->checkFileFlag($configPropertyVal, $configPropertyRequirement);
-        $configStatus[] = array(MIDAS_BATCHMAKE_PROPERTY_KEY => $configProperty, MIDAS_BATCHMAKE_STATUS_KEY => $status, MIDAS_BATCHMAKE_TYPE_KEY => $result ? MIDAS_BATCHMAKE_STATUS_TYPE_INFO : MIDAS_BATCHMAKE_STATUS_TYPE_ERROR);
-        // the property is in error, therefore so is the global config
-        if(!$result)
-          {
-          $total_config_correct = 0;
-          }
-        }
-      else
-        {
-        // property doesn't exist, both the property and global config are in error
-        $configStatus[] = array(MIDAS_BATCHMAKE_PROPERTY_KEY => $configProperty, MIDAS_BATCHMAKE_STATUS_KEY => MIDAS_BATCHMAKE_CONFIG_VALUE_MISSING, MIDAS_BATCHMAKE_TYPE_KEY => MIDAS_BATCHMAKE_STATUS_TYPE_ERROR);
-        $total_config_correct = 0;
-        }
-      }
-
-    // for now assuming will run via condor, so require all of the condor setup
-
-    foreach(self::$applicationsPaths as $app => $pathProperty)
-      {
-      $appPath = $configToTest[$pathProperty] ."/" . KWUtils::formatAppName($app);
-      list($result, $status) = $this->checkFileFlag($appPath, MIDAS_BATCHMAKE_CHECK_IF_EXECUTABLE);
-      Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
-
-      $applicationString = InternationalizationComponent::translate(MIDAS_BATCHMAKE_APPLICATION_STRING);
-      $configStatus[] = array(MIDAS_BATCHMAKE_PROPERTY_KEY => $applicationString . ' ' .$appPath, MIDAS_BATCHMAKE_STATUS_KEY => $status, MIDAS_BATCHMAKE_TYPE_KEY => $result ? MIDAS_BATCHMAKE_STATUS_TYPE_INFO : MIDAS_BATCHMAKE_STATUS_TYPE_ERROR);
-      // the property is in error, therefore so is the global config
-      if(!$result)
-        {
-        $total_config_correct = 0;
-        }
-      }
+    Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
 
     // Process web server user information
 
     // TODO what should be done if there are warnings??
     $processUser  = posix_getpwuid(posix_geteuid());
+    $processUserUid = $processUser['uid'];
     $processGroup = posix_getgrgid(posix_geteuid());
 
     $phpProcessString = InternationalizationComponent::translate(MIDAS_BATCHMAKE_PHP_PROCESS_STRING);
@@ -297,6 +274,44 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       MIDAS_BATCHMAKE_STATUS_KEY => $status ? $value : $unknownString,
       MIDAS_BATCHMAKE_TYPE_KEY => $status ? MIDAS_BATCHMAKE_STATUS_TYPE_INFO : MIDAS_BATCHMAKE_STATUS_TYPE_WARNING);
       }
+
+    foreach(self::$configPropertiesRequirements as $configProperty => $configPropertyRequirement)
+      {
+      $configPropertyVal = $configToTest[$configProperty];
+      if($configPropertyVal)
+        {
+        // if the property exists, check its configuration
+        list($result, $status) = $this->checkFileFlag($configPropertyVal, $processUserUid, $configPropertyRequirement);
+        $configStatus[] = array(MIDAS_BATCHMAKE_PROPERTY_KEY => $configProperty, MIDAS_BATCHMAKE_STATUS_KEY => $status, MIDAS_BATCHMAKE_TYPE_KEY => $result ? MIDAS_BATCHMAKE_STATUS_TYPE_INFO : MIDAS_BATCHMAKE_STATUS_TYPE_ERROR);
+        // the property is in error, therefore so is the global config
+        if(!$result)
+          {
+          $total_config_correct = 0;
+          }
+        }
+      else
+        {
+        // property doesn't exist, both the property and global config are in error
+        $configStatus[] = array(MIDAS_BATCHMAKE_PROPERTY_KEY => $configProperty, MIDAS_BATCHMAKE_STATUS_KEY => MIDAS_BATCHMAKE_CONFIG_VALUE_MISSING, MIDAS_BATCHMAKE_TYPE_KEY => MIDAS_BATCHMAKE_STATUS_TYPE_ERROR);
+        $total_config_correct = 0;
+        }
+      }
+
+    // for now assuming will run via condor, so require all of the condor setup
+
+    foreach(self::$applicationsPaths as $app => $pathProperty)
+      {
+      $appPath = $configToTest[$pathProperty] ."/" . KWUtils::formatAppName($app);
+      list($result, $status) = $this->checkFileFlag($appPath, MIDAS_BATCHMAKE_CHECK_IF_EXECUTABLE);
+      $applicationString = InternationalizationComponent::translate(MIDAS_BATCHMAKE_APPLICATION_STRING);
+      $configStatus[] = array(MIDAS_BATCHMAKE_PROPERTY_KEY => $applicationString . ' ' .$appPath, MIDAS_BATCHMAKE_STATUS_KEY => $status, MIDAS_BATCHMAKE_TYPE_KEY => $result ? MIDAS_BATCHMAKE_STATUS_TYPE_INFO : MIDAS_BATCHMAKE_STATUS_TYPE_ERROR);
+      // the property is in error, therefore so is the global config
+      if(!$result)
+        {
+        $total_config_correct = 0;
+        }
+      }
+
 
     return array($total_config_correct, $configStatus);
 

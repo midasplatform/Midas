@@ -12,9 +12,10 @@ PURPOSE.  See the above copyright notices for more information.
 
 // need to include the module constant for this test
 require_once BASE_PATH.'/modules/batchmake/constant/module.php';
+require_once BASE_PATH.'/modules/batchmake/tests/controllers/BatchmakeControllerTest.php';
 
 /** config controller tests*/
-class ConfigControllerTest extends ControllerTestCase
+class ConfigControllerTest extends BatchmakeControllerTest
   {
 
   protected $kwBatchmakeComponent;
@@ -25,12 +26,13 @@ class ConfigControllerTest extends ControllerTestCase
     {
     $this->setupDatabase(array('default'));
     $this->_models = array('User');
-    //$this->_daos = array('User');//
-    //$this->_moduleModels = array('Task');//
     $this->enabledModules = array('batchmake');
-    require_once BASE_PATH.'/modules/batchmake/controllers/components/KWBatchmakeComponent.php';
-    $this->kwBatchmakeComponent = new Batchmake_KWBatchmakeComponent(BASE_PATH.'/modules/batchmake/tests/configs/module.local.ini');
     parent::setUp();
+    if(!isset($this->kwBatchmakeComponent))
+      {
+      require_once BASE_PATH.'/modules/batchmake/controllers/components/KWBatchmakeComponent.php';
+      $this->kwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($this->setupAndGetConfig());
+      }
     }
 
 
@@ -49,10 +51,8 @@ class ConfigControllerTest extends ControllerTestCase
       $this->fail('Unable to find body element');
       }
 
-
     $this->assertQuery("form#configForm");
-    $applicationConfig = $this->kwBatchmakeComponent->loadConfigProperties(BASE_PATH.'/modules/batchmake/tests/configs/module.local.ini');
-    // change a value to something bad
+    $applicationConfig = $this->setupAndGetConfig();
     $this->params = array();
     $this->params[MIDAS_BATCHMAKE_TMP_DIR_PROPERTY] = $applicationConfig[MIDAS_BATCHMAKE_TMP_DIR_PROPERTY];
     $this->params[MIDAS_BATCHMAKE_BIN_DIR_PROPERTY] = $applicationConfig[MIDAS_BATCHMAKE_BIN_DIR_PROPERTY];
