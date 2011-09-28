@@ -12,23 +12,17 @@ PURPOSE.  See the above copyright notices for more information.
 
 
 
+require_once BASE_PATH.'/modules/batchmake/tests/controllers/BatchmakeControllerTest.php';
+
 /**
  * KWBatchmakeComponent tests
  */
-class KWBatchmakeComponentTest extends ControllerTestCase
+class KWBatchmakeComponentTest extends BatchmakeControllerTest
   {
 
   protected $kwBatchmakeComponent;
   protected $applicationConfig;
 
-  /** constructor */
-  public function __construct()
-    {
-    // need to include the module constant for this test
-    require_once BASE_PATH.'/modules/batchmake/constant/module.php';
-    require_once BASE_PATH.'/modules/batchmake/controllers/components/KWBatchmakeComponent.php';
-    $this->kwBatchmakeComponent = new Batchmake_KWBatchmakeComponent(BASE_PATH.'/modules/batchmake/tests/configs/module.local.ini');
-    }
 
   /** set up tests*/
   public function setUp()
@@ -37,6 +31,11 @@ class KWBatchmakeComponentTest extends ControllerTestCase
     $this->_models = array('User');
     $this->enabledModules = array('batchmake');
     parent::setUp();
+    if(!isset($this->kwBatchmakeComponent))
+      {
+      require_once BASE_PATH.'/modules/batchmake/controllers/components/KWBatchmakeComponent.php';
+      $this->kwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($this->setupAndGetConfig());
+      }
     }
 
   /**
@@ -45,12 +44,14 @@ class KWBatchmakeComponentTest extends ControllerTestCase
    */
   public function testIsConfigCorrect()
     {
+    // start out with known correct set
     $this->assertTrue($this->kwBatchmakeComponent->isConfigCorrect());
-    // start out with know correct set
-    $badConfigVals = $this->kwBatchmakeComponent->loadConfigProperties(BASE_PATH.'/modules/batchmake/tests/configs/module.local.ini');
-    // change a value to something bad
+
+    // now make a change to something that shouldn't work
+    $badConfigVals = $this->setupAndGetConfig();
     $badConfigVals[MIDAS_BATCHMAKE_DATA_DIR_PROPERTY] = '/unlikely/to/work/right';
-    $this->assertFalse($this->kwBatchmakeComponent->isConfigCorrect($badConfigVals));
+    $badKwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($badConfigVals);//BASE_PATH.'/modules/batchmake/tests/configs/module.local.ini');
+    $this->assertFalse($badKwBatchmakeComponent->isConfigCorrect());//$badConfigVals));
     }
 
   /**
