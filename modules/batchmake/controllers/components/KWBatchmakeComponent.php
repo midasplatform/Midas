@@ -546,7 +546,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
         }
       }
 
-    throw new Zend_Exception("Error in BatchMake script, the compile step didn't report errors, output: [".implode(",", $cmd_output )."]");
+    throw new Zend_Exception("Error in BatchMake script, the compile step didn't report errors, output: [".implode(",", $output )."]");
     }
 
 
@@ -575,7 +575,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
     if($returnVal !== 0)
       {
-      throw new Zend_Exception("Failed to run: [".$cmd."], output: [".implode(",", $cmd_output )."]");
+      throw new Zend_Exception("Failed to run: [".$cmd."], output: [".implode(",", $output )."]");
       }
     return $dagName;
     }
@@ -598,7 +598,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
     if($returnVal !== 0)
       {
-      throw new Zend_Exception("Failed to run: [".$cmd."], output: [".implode(",", $cmd_output )."]");
+      throw new Zend_Exception("Failed to run: [".$cmd."], output: [".implode(",", $output )."]");
       }
     }
 
