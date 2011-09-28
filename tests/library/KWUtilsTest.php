@@ -16,18 +16,30 @@ require_once BASE_PATH.'/library/KWUtils.php';
 /**
  * KWUtils tests
  */
+
+
 class KWUtilsTest extends ControllerTestCase
   {
 
+  /**
+   * helper function to return Midas configured temp directory
+   * @return midas temp dir
+   */
+  protected function getTempDirectory()
+    {
+    include_once BASE_PATH.'/core/GlobalController.php';
+    $controller = new MIDAS_GlobalController($this->request, $this->response);
+    return $controller->getTempDirectory();
+    }
 
   /** tests mkDir function */
   public function testMkDir()
     {
-    $tmpDir = '/tmp';
+    $tmpDir = $this->getTempDirectory() . '/';
     // try creating one that exists
     // we can ignore any errors
     $this->assertFalse(KWUtils::mkDir($tmpDir));
-    $tmpDir .= "/KWUtilsTest";
+    $tmpDir .= "KWUtilsTest";
     $this->assertTrue(KWUtils::mkDir($tmpDir));
     // now clean up
     rmdir($tmpDir);
@@ -39,7 +51,7 @@ class KWUtilsTest extends ControllerTestCase
     // test creating directories, do this in the tmp dir
     //
     // create a nested set of directories
-    $tmpDir = BASE_PATH . 'tmp/';
+    $tmpDir = $this->getTempDirectory() . '/';
     $subDirs = array("KWUtilsTest", "1", "2", "3");
     $outDir = KWUtils::createSubDirectories($tmpDir, $subDirs);
 
@@ -77,7 +89,7 @@ class KWUtilsTest extends ControllerTestCase
     // the value of pwd in it
 
     // create a tmp dir for this test
-    $execDir = BASE_PATH . 'tmp/KWUtilsTest';
+    $execDir = $this->getTempDirectory() . '/KWUtilsTest';
     mkdir($execDir);
     $cmd = 'pwd';
     $chdir = $execDir;
@@ -86,9 +98,13 @@ class KWUtilsTest extends ControllerTestCase
 
     // yuck, need to do a bit of munging to get around tests/.. in BASE_PATH
     $execDir = str_replace('tests/../', '', $execDir);
+    // and now replace any // with /,
+    // the // doesn't affect functionality on the
+    // filesystem, but will cause string inequality
+    $execDir = str_replace('//', '/', $execDir);
 
     $this->assertEquals($execDir, $output[0]);
-    // return_val should be 0
+    // returnVal should be 0
     $this->assertEquals($returnVal, 0);
     // now clean up the tmp dir
     rmdir($execDir);
