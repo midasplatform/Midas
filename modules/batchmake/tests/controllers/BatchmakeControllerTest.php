@@ -12,6 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 // need to include the module constant for this test
 require_once BASE_PATH.'/modules/batchmake/constant/module.php';
+require_once BASE_PATH.'/modules/batchmake/controllers/components/KWBatchmakeComponent.php';
 require_once BASE_PATH.'/library/KWUtils.php';
 
 /** helper class used for testing batchmake module */
@@ -48,7 +49,7 @@ class BatchmakeControllerTest extends ControllerTestCase
     MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY => $tmpDir.'/batchmake/tests/script',
     MIDAS_BATCHMAKE_APP_DIR_PROPERTY => $tmpDir.'/batchmake/tests/bin',
     MIDAS_BATCHMAKE_DATA_DIR_PROPERTY => $tmpDir.'/batchmake/tests/data',
-    MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY => '/home/condor/bin');//change this with mocks??
+    MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY => $tmpDir.'/batchmake/tests/condorbin');//change this with mocks??
     // now make sure these dirs exist
     // later can actually add some stuff to these dirs
     foreach($configProps as $prop => $dir)
@@ -70,6 +71,36 @@ class BatchmakeControllerTest extends ControllerTestCase
     $targetDir = $configProps[MIDAS_BATCHMAKE_APP_DIR_PROPERTY];
     $extension = '.bmm';
     $this->symlinkFileset($srcDir, $targetDir, $extension);
+
+
+    // the mock object strategy requires both an interface and for
+    // executable files to exist on disk in a particular location,
+    // so here we will create symlinks to a known executable
+    // ls
+    // which should be on most systems
+
+    $params = array('ls');
+    $cmd = KWUtils::prepareExeccommand('which', $params);
+    // dir doesn't matter, just send in srcDir as it is convenient
+    KWUtils::exec($cmd, $output, $srcDir, $returnVal);
+    if($returnVal !== 0 || !isset($output) || !isset($output[0]))
+      {
+      throw new Zend_Exception('Problem finding ls on your system, used for testing');
+      }
+    $pathToLs = $output[0];
+
+    // get the applications and their path properties from the component that
+    // expects them
+    $applicationsPaths = Batchmake_KWBatchmakeComponent::getApplicationsPaths();
+    foreach($applicationsPaths as $application => $pathProperty)
+      {
+      // now in the place of each executable, symlink the ls exe
+      $link = $configProps[$pathProperty] . '/' . $application;
+      if(!file_exists($link) && !symlink($pathToLs, $link))
+        {
+        throw new Zend_Exception($pathToLs . ' could not be sym-linked to ' . $link);
+        }
+      }
 
     return $configProps;
     }
