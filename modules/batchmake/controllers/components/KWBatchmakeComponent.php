@@ -30,7 +30,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    * accessor functin to return the names of the config propeties, and
    * their filesystem requirements;
    */
-  public function getConfigPropertiesRequirements()
+  public static function getConfigPropertiesRequirements()
     {
     return self::$configPropertiesRequirements;
     }
@@ -42,6 +42,14 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
   MIDAS_BATCHMAKE_CONDOR_SUBMIT_DAG => MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY,
   MIDAS_BATCHMAKE_EXE => MIDAS_BATCHMAKE_BIN_DIR_PROPERTY);
 
+  /**
+   * accessor functin to return the application names, along with their
+   * expected location property.
+   */
+  public static function getApplicationsPaths()
+    {
+    return self::$applicationsPaths;
+    }
 
 
   // component configuration settings
@@ -54,14 +62,26 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
   protected $configDataDir;
   protected $configCondorBinDir;
 
+
+  protected $executor;
+
   /**
    * Constructor, loads ini from standard config location, unless a
    * supplied alternateConfig.
    * @param string $alternateConfig path to alternative config ini file
    */
-  public function __construct($alternateConfig = null)
+  public function __construct($alternateConfig = null, $executor = null)
     {
     $this->loadConfigProperties($alternateConfig);
+    if(!isset($executor))
+      {
+      require_once BASE_PATH.'/modules/batchmake/library/Executor.php';
+      $this->executor = new Batchmake_Executor();
+      }
+    else
+      {
+      $this->executor = $executor;
+      }
     } // end __construct($alternateConfig)
 
 
@@ -521,11 +541,11 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
 
     // Run command
-    KWUtils::exec($cmd, $output, $workDir, $returnVal);
+    $this->executor->exec($cmd, $output, $workDir, $returnVal);
 
     if($returnVal !== 0)
       {
-      throw new Zend_Exception("Failed to run: [".$cmd."], output: [".implode(",", $output )."]");
+      throw new Zend_Exception("compileBatchMakeScript: Failed to run: [".$cmd."], output: [".implode(",", $output )."]");
       }
 
     // if BatchMake reports errors, throw an exception
@@ -541,12 +561,12 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
           }
         else
           {
-          throw new Zend_Exception("Compiling script [".$bmScript."] yielded output: [".implode(",", $output )."]");
+          throw new Zend_Exception("compileBatchMakeScript: Compiling script [".$bmScript."] yielded output: [".implode(",", $output )."]");
           }
         }
       }
 
-    throw new Zend_Exception("Error in BatchMake script, the compile step didn't report errors, output: [".implode(",", $output )."]");
+    throw new Zend_Exception("compileBatchMakeScript: Error in BatchMake script, the compile step didn't report errors, output: [".implode(",", $output )."]");
     }
 
 
@@ -559,7 +579,15 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    */
   public function generateCondorDag($workDir, $bmScript)
     {
-    $dagName      = $bmScript.'.dagjob';
+    // remove .bms if it exists, for the creation of the dagjob
+    if(substr($bmScript, strlen($bmScript) - strlen('.bms') === '.bms'))
+      {
+      $dagName = substr($bmScript, 0, strlen($bmScript)-4) . '.dagjob';
+      }
+    else
+      {
+      $dagName      = $bmScript.'.dagjob';
+      }
 
     // Prepare command
     $params = array(
@@ -571,11 +599,11 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     $cmd = KWUtils::prepareExecCommand($this->configBinDir . '/'. MIDAS_BATCHMAKE_EXE, $params);
 
     // Run command
-    KWUtils::exec($cmd, $output, $workDir, $returnVal);
+    $this->executor->exec($cmd, $output, $workDir, $returnVal);
 
     if($returnVal !== 0)
       {
-      throw new Zend_Exception("Failed to run: [".$cmd."], output: [".implode(",", $output )."]");
+      throw new Zend_Exception("generateCondorDag: Failed to run: [".$cmd."], output: [".implode(",", $output )."]");
       }
     return $dagName;
     }
@@ -594,11 +622,11 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     $cmd = KWUtils::prepareExecCommand($this->configCondorBinDir . '/'. MIDAS_BATCHMAKE_CONDOR_SUBMIT_DAG, $params);
 
     // Run command
-    KWUtils::exec($cmd, $output, $workDir, $returnVal);
+    $this->executor->exec($cmd, $output, $workDir, $returnVal);
 
     if($returnVal !== 0)
       {
-      throw new Zend_Exception("Failed to run: [".$cmd."], output: [".implode(",", $output )."]");
+      throw new Zend_Exception("condorSubmitDag: Failed to run: [".$cmd."], output: [".implode(",", $output )."]");
       }
     }
 

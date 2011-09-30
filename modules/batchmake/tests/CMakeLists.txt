@@ -2,5 +2,6 @@ option( MIDAS_RUN_BATCHMAKE_TESTS "Should MIDAS run BatchMake tests?  Specific c
 if(MIDAS_RUN_BATCHMAKE_TESTS)
   add_subdirectory( controllers )
   add_midas_style_test( StyleTestsBatchmakeControllers ${CMAKE_SOURCE_DIR}/modules/batchmake/tests/controllers )
+  add_midas_style_test( StyleTestsBatchmakeLibrary ${CMAKE_SOURCE_DIR}/modules/batchmake/tests/library )
 endif()
 
