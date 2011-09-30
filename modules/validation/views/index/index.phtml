@@ -10,10 +10,46 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 ?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/validation.index.css" />
 <?php
 $this->headScript()->appendFile(
   $this->apiWebroot . '/public/js/common/common.ajaxapi.js');
 $this->headScript()->appendFile(
   $this->moduleWebroot . '/public/js/index/index.index.js');
 ?>
-<?php echo $this->validationText?>
+<div class="viewMain">
+  <h3>Active Validation Dashboards</h3>
+  <div class="dashList">
+<?php foreach($this->dashboards as $index => $dashboard) {?>
+    <div class="dashEntry <?php if($index % 2 == 1) echo 'grayEntry';?>"/>
+       <span class="dashIcon"><img src="<?php echo $this->coreWebroot . '/public/images/icons/ok.png'; ?>" /></span><span class="dashTitle"><?php echo $dashboard->getName(); ?></span>
+       <span class="dashDeleteIcon"><img src="<?php echo $this->coreWebroot . '/public/images/icons/nok.png'; ?>" /></span>
+       <span class="dashDescription"><?php echo $dashboard->getDescription(); ?></span>
+    </div>
+<?php } ?>
+  </div>
+  <div class="dashPanel">
+    <span id="addDash" class="dashButton">
+      <img src="<?php echo $this->coreWebroot . '/public/images/icons/add.png'; ?>" /> Create New Dashboard
+    </span>
+    <span id="editDash" class="dashButton">
+      <img src="<?php echo $this->coreWebroot . '/public/images/icons/edit.png'; ?>" /> Edit Dashboards
+    </span>
+  </div>
+</div>
+<div class="viewSideBar">
+  <div align="justify" class='sideElementFirst feedNotification'>
+  MIDAS Validate enables the simple presentation of algorithm validation
+  "dashboards" to provide useful information about algorithm performance at a
+  glance. Choose a validation dashboard to view and interact with the results.
+  </div>
+  <div class="sideElementLast feedStats">
+    <h1>Stats</h1>
+    <?php
+    echo "<ul>";
+    echo "  <li>{$this->nDashboards} {$this->t('dashboard')}".(($this->nDashboards>1)?'s':'')."</li>";
+    echo "  <li>{$this->nSubmissions} {$this->t('submissions')}".(($this->nSubmissions>1)?'s':'')."</li>";
+    echo "</ul>";
+    ?>
+  </div>
+</div>

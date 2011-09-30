@@ -13,10 +13,10 @@ PURPOSE.  See the above copyright notices for more information.
 class Validation_IndexController extends Validation_AppController
 {
 
-  public $_models = array('User');
-  public $_moduleModels = array('Validation');
-  public $_daos = array('Item');
-  public $_moduleDaos = array('Validation');
+  public $_models = array('User', 'Item', 'Folder');
+  public $_moduleModels = array('Dashboard');
+  public $_daos = array('Item', 'Folder');
+  public $_moduleDaos = array('Dashboard');
   public $_components = array('Utility');
   public $_moduleComponents = array();
   public $_forms = array();
@@ -34,7 +34,14 @@ class Validation_IndexController extends Validation_AppController
   /** index action*/
   function indexAction()
     {
-    $this->view->validationText = $this->t('VALIDATION');
+    $dashboards = $this->Validation_Dashboard->getAll();
+    $this->view->nSubmissions = 0;
+    foreach($dashboards as $dashboard)
+      {
+      $this->view->nSubmissions += count($dashboard->getResults());
+      }
+    $this->view->dashboards = $dashboards;
+    $this->view->nDashboards = count($dashboards);
     }
 
 }//end class
