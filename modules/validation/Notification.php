@@ -21,7 +21,7 @@ class Validation_Notification extends ApiEnabled_Notification
   /** init notification process*/
   public function init()
     {
-    $this->enableWebAPI();
+    $this->enableWebAPI($this->moduleName);
     }//end init
 
   } //end class
