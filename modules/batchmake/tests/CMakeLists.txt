@@ -7,6 +7,7 @@ if(MIDAS_RUN_BATCHMAKE_TESTS)
   # Style tests for code
   add_midas_style_test( StyleBatchmakeControllers ${CMAKE_SOURCE_DIR}/modules/batchmake/controllers )
   add_midas_style_test( StyleBatchmakeComponents ${CMAKE_SOURCE_DIR}/modules/batchmake/controllers/components )
+  add_midas_style_test( StyleBatchmakeLibrary ${CMAKE_SOURCE_DIR}/modules/batchmake/library )
   add_midas_style_test( StyleBatchmakeModels ${CMAKE_SOURCE_DIR}/modules/batchmake/models )
   add_midas_style_test( StyleBatchmakeModelsBase ${CMAKE_SOURCE_DIR}/modules/batchmake/models/base )
   add_midas_style_test( StyleBatchmakeModelsDAO ${CMAKE_SOURCE_DIR}/modules/batchmake/models/dao )
@@ -15,8 +16,8 @@ if(MIDAS_RUN_BATCHMAKE_TESTS)
   # Style tests for test code
   add_midas_style_test( StyleTestsBatchmakeControllers ${CMAKE_SOURCE_DIR}/modules/batchmake/tests/controllers )
   add_midas_style_test( StyleTestsBatchmakeComponents ${CMAKE_SOURCE_DIR}/modules/batchmake/tests/controllers/components )
+  add_midas_style_test( StyleTestsBatchmakeLibrary ${CMAKE_SOURCE_DIR}/modules/batchmake/tests/library )
   add_midas_style_test( StyleTestsBatchmakeModels ${CMAKE_SOURCE_DIR}/modules/batchmake/tests/models )
   add_midas_style_test( StyleTestsBatchmakeModelsBase ${CMAKE_SOURCE_DIR}/modules/batchmake/tests/models/base )
-
 endif()
 
