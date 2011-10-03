@@ -49,7 +49,7 @@ class BatchmakeControllerTest extends ControllerTestCase
     MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY => $tmpDir.'/batchmake/tests/script',
     MIDAS_BATCHMAKE_APP_DIR_PROPERTY => $tmpDir.'/batchmake/tests/bin',
     MIDAS_BATCHMAKE_DATA_DIR_PROPERTY => $tmpDir.'/batchmake/tests/data',
-    MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY => $tmpDir.'/batchmake/tests/condorbin');//change this with mocks??
+    MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY => $tmpDir.'/batchmake/tests/condorbin');
     // now make sure these dirs exist
     // later can actually add some stuff to these dirs
     foreach($configProps as $prop => $dir)
