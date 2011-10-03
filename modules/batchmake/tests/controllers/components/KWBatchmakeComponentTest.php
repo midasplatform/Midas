@@ -37,7 +37,6 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
       require_once BASE_PATH.'/modules/batchmake/tests/library/ExecutorMock.php';
       $executor = new Batchmake_ExecutorMock();
       $this->kwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($this->setupAndGetConfig(), $executor);
-//      $this->kwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($this->setupAndGetConfig());
       }
     }
 
@@ -53,8 +52,8 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     // now make a change to something that shouldn't work
     $badConfigVals = $this->setupAndGetConfig();
     $badConfigVals[MIDAS_BATCHMAKE_DATA_DIR_PROPERTY] = '/unlikely/to/work/right';
-    $badKwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($badConfigVals);//BASE_PATH.'/modules/batchmake/tests/configs/module.local.ini');
-    $this->assertFalse($badKwBatchmakeComponent->isConfigCorrect());//$badConfigVals));
+    $badKwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($badConfigVals);
+    $this->assertFalse($badKwBatchmakeComponent->isConfigCorrect());
     }
 
   /**
