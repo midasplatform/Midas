@@ -756,8 +756,14 @@ class Api_ApiComponent extends AppComponent
       }
 
     $itemArray = $item->toArray();
-    $revisionsArray = array();
 
+    $owningFolders = $item->getFolders();
+    if(count($owningFolders) > 0)
+      {
+      $itemArray['folder_id'] = $owningFolders[0]->parent_id;
+      }
+
+    $revisionsArray = array();
     if(array_key_exists('head', $args))
       {
       $revisions = array($itemModel->getLastRevision($item));
