@@ -676,8 +676,15 @@ class Api_ApiComponent extends AppComponent
     $folder = $folderModel->load($id);
 
     $userDao = $this->_getUser($args);
-    $folders = $folderModel->getChildrenFoldersFiltered($folder, $userDao);
-    $items = $folderModel->getItemsFiltered($folder, $userDao);
+    try
+      {
+      $folders = $folderModel->getChildrenFoldersFiltered($folder, $userDao);
+      $items = $folderModel->getItemsFiltered($folder, $userDao);
+      }
+    catch(Exception $e)
+      {
+      throw new Exception($e->getMessage(), MIDAS_INTERNAL_ERROR);
+      }
 
     return array('folders' => $folders, 'items' => $items);
     }
