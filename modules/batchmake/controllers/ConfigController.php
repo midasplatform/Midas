@@ -69,7 +69,7 @@ class Batchmake_ConfigController extends Batchmake_AppController
     $returnedConfig = array();
     foreach($currentConfig as $configProp => $configDir)
       {
-      if(!isset($configProp) || !isset($configDir) || $configDir == "")
+      if((!isset($configProp) || !isset($configDir) || $configDir == "") && array_key_exists($configProp, $defaultConfigDirs))
         {
         $configDir = $defaultConfigDirs[$configProp];
         $returnedConfig[$configProp] = $configDir;  
@@ -97,17 +97,16 @@ class Batchmake_ConfigController extends Batchmake_AppController
    */
   public function indexAction()
     {
-
-    $applicationConfig = $this->ModuleComponent->KWBatchmake->loadConfigProperties();
-    $applicationConfig = $this->createDefaultConfig($applicationConfig);
+    // get all the properties, not just the batchmake config
+    $fullConfig = $this->ModuleComponent->KWBatchmake->loadConfigProperties(null,false);
+    // now get just the batchmake ones
+    $batchmakeConfig = $this->ModuleComponent->KWBatchmake->filterBatchmakeConfigProperties($fullConfig);
+      
+//    $applicationConfig = $this->ModuleComponent->KWBatchmake->loadConfigProperties();
+    $batchmakeConfig = $this->createDefaultConfig($batchmakeConfig);
     $configPropertiesRequirements = $this->ModuleComponent->KWBatchmake->getConfigPropertiesRequirements();
-    $configForm = $this->ModuleForm->Config->createConfigForm($configPropertiesRequirements);
-    $formArray = $this->getFormAsArray($configForm);
-    foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
-      {
-      $formArray[$configProperty]->setValue($applicationConfig[$configProperty]);
-      }
-    $this->view->configForm = $formArray;
+
+    
 
     if($this->_request->isPost())
       {
@@ -119,15 +118,30 @@ class Batchmake_ConfigController extends Batchmake_AppController
         {
         $this->archiveOldModuleLocal();
         // save only those properties we are interested for local configuration
-        $newsaver = array();
         foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
           {
-          $newsaver[MIDAS_BATCHMAKE_GLOBAL_CONFIG_NAME][$this->moduleName.'.'.$configProperty] = $this->_getParam($configProperty);
+          $fullConfig[MIDAS_BATCHMAKE_GLOBAL_CONFIG_NAME][$this->moduleName.'.'.$configProperty] = $this->_getParam($configProperty);
           }
-        $this->Component->Utility->createInitFile(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, $newsaver);
+        $this->Component->Utility->createInitFile(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, $fullConfig);
+//        $newsaver = array();
+//        foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
+//          {
+//          $newsaver[MIDAS_BATCHMAKE_GLOBAL_CONFIG_NAME][$this->moduleName.'.'.$configProperty] = $this->_getParam($configProperty);
+//          }
+//        $this->Component->Utility->createInitFile(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, $newsaver);
         $msg = $this->t(MIDAS_BATCHMAKE_CHANGES_SAVED_STRING);
         echo JsonComponent::encode(array(true, $msg));
         }
+      }
+    else
+      {
+      $configForm = $this->ModuleForm->Config->createConfigForm($configPropertiesRequirements);
+      $formArray = $this->getFormAsArray($configForm);
+      foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
+        {
+        $formArray[$configProperty]->setValue($batchmakeConfig[$configProperty]);
+        }
+      $this->view->configForm = $formArray; 
       }
 
     }

@@ -38,32 +38,30 @@ class Batchmake_ApiComponent extends AppComponent
    * @param data_dir the path to the data export dir
    * @param condor_bin_dir the path to the location of the condor executables
    * @return an array, the first value is a 0 if the config is incorrect or 1 
-   * if the config is correct, the second value is a list of individual
-   * config values and their status.
+   * if the config is correct, the second value is a list of individual config values and their statuses.
    */
-  public function testConfig($value)
+  public function testconfig($params)
     {
     // any values that aren't filled in, fill them in with a blank
     $expectedKeys = array("tmp_dir", "bin_dir", "script_dir", "app_dir", "data_dir", "condor_bin_dir");
-    $replacements = array();
-    foreach($value as $key=>$value)
+    $configParams = array();
+    foreach($expectedKeys as $propKey)
       {
-      if(!isset($key))
+      if(!isset($params[$propKey]))
         {
-        $replacements[$key] = "";   
+        $configParams[$propKey] = "";   
         }
-      } 
-    foreach($replacements as $replacement=>$val)
-      {
-      $value[$replacement] = $val;
-      }
+      else
+        {
+        $configParams[$propKey] = $params[$propKey];   
+        }
+      }     
     
-    
-    $this->_checkKeys(array('item_id', 'metric_name'), $value);  
+    //$this->_checkKeys(array('item_id', 'metric_name'), $value);  
       
     $componentLoader = new MIDAS_ComponentLoader();
     $kwbatchmakeComponent = $componentLoader->loadComponent('KWBatchmake', 'batchmake');
-    return array($kwbatchmakeComponent->testconfig($value));
+    return array($kwbatchmakeComponent->testconfig($configParams));
     }
     
         
