@@ -9,21 +9,19 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-/** Batchmake_TaskModelBase */
+/** TaskModel Base class */
 class Batchmake_TaskModelBase extends Batchmake_AppModel {
 
-  /**
-   * constructor
-   */
+  /** constructor */
   public function __construct()
     {
     parent::__construct();
     $this->_name = 'batchmake_task';
     $this->_key = 'batchmake_task_id';
+
     $this->_mainData = array(
       'batchmake_task_id' => array('type' => MIDAS_DATA),
-      'user_id' => array('type' => MIDAS_DATA, )
-       );
+      'user_id' => array('type' => MIDAS_DATA, ));
     $this->initialize(); // required
     }
 

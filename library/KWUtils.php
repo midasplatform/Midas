@@ -66,8 +66,7 @@ class KWUtils
     foreach($subDirectories as $directory)
       {
       $relpath .= $directory . "/";
-
-      if(!KwUtils::mkDir($baseDirectory . $relpath, $mode))
+      if(!is_dir($baseDirectory . $relpath) && !KwUtils::mkDir($baseDirectory . $relpath, $mode))
         {
         throw new Zend_Exception($baseDirectory . $relpath . ' could not be created');
         }

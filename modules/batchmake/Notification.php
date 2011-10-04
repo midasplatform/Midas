@@ -9,17 +9,19 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 
 /** notification manager*/
-class Batchmake_Notification extends MIDAS_Notification
+class Batchmake_Notification extends ApiEnabled_Notification
   {
-  public $_moduleComponents=array('KWBatchmake');
   public $moduleName = 'batchmake';
-  public $_components = array('Utility', 'Internationalization');    
+  public $_components = array('Utility', 'Internationalization');     
+  public $_moduleComponents=array('KWBatchmake','Api'); 
     
   /** init notification process*/
   public function init()
     {
+    $this->enableWebAPI($this->moduleName);  
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
     $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLink');
     }//end init
@@ -55,7 +57,7 @@ class Batchmake_Notification extends MIDAS_Notification
     {
     $fc = Zend_Controller_Front::getInstance();
     $moduleWebroot = $fc->getBaseUrl() . MIDAS_BATCHMAKE_MODULE;
-    return array(ucfirst(MIDAS_BATCHMAKE_MODULE) => array($moduleWebroot,  $moduleWebRoot . '/public/images/cmake.png'));
+    return array(ucfirst(MIDAS_BATCHMAKE_MODULE) => array($moduleWebroot,  $moduleWebroot . '/public/images/cmake.png'));
     }
         
   } //end class
