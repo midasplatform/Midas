@@ -37,12 +37,12 @@ php_div = 'php_config_div';
       
     $('#configForm input').keyup(function()
       {
-      $(document).find('#submitConfig').attr('disabled','disabled');
+ //     $(document).find('#submitConfig').attr('disabled','disabled');
   //      var obj=$(this);
         //checkAll(obj);
       });
 
-    $(document).find('#submitConfig').attr('disabled','disabled');
+//    $(document).find('#submitConfig').attr('disabled','disabled');
 
     checkConfig($(this));
   });
@@ -63,7 +63,22 @@ app_dir_val  = $(document).find('#app_dir').val()
 data_dir_val  = $(document).find('#data_dir').val()
 condor_bin_dir_val  = $(document).find('#condor_bin_dir').val()
 
-
+/*  ajaxWebApi.ajax({
+   method: 'midas.batchmake.testconfig',
+   args: 'tmp_dir=' + tmp_dir_val + '&bin_dir=' + bin_dir_val,
+   log: $('#testError'),
+   success: function(retVal) {
+     handleValidationResponse(retVal);
+     },
+   error: function(retVal) {
+     alert(retVal.responseText);
+     },
+   complete: function() {
+     $('#testLoading').hide();
+     }
+ });*/
+ 
+ 
   $.ajax({
           type: "POST",
           url: json.global.webroot+'/batchmake/config/testconfig',
@@ -81,6 +96,9 @@ function handleValidationResponse(jsonContent)
   $(document).find('#testLoading').hide();
             
   var testConfig=jQuery.parseJSON(jsonContent);
+//  //some kinda error handling?
+  // 
+  // 
   // testConfig should be
   // [0] = 1 if the global config is correct, 0 otherwise
   // [1] = an array of individual config properties and statuses            
@@ -93,13 +111,13 @@ function handleValidationResponse(jsonContent)
     {
     $(document).find('#testOk').show();
     $(document).find('#testError').html(global_config_correct_msg).removeClass().addClass(info_class);       
-    $(document).find('#submitConfig').removeAttr('disabled');
+  //  $(document).find('#submitConfig').removeAttr('disabled');
     }
   else
     {
     $(document).find('#testNok').show();
     $(document).find('#testError').html(global_config_error_msg).removeClass().addClass(error_class);
-    $(document).find('#submitConfig').attr('disabled','disabled');
+  //  $(document).find('#submitConfig').attr('disabled','disabled');
     }
 
   $(document).find('div #'+application_div).children().remove();

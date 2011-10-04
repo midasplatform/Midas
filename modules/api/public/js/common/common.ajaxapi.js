@@ -64,9 +64,13 @@ ajaxWebApi._webApiCall = function(params)
         params.success(retVal);
         }
       },
-    error: function() {
+    error: function(retVal) {
       ajaxWebApi.logError('Ajax call to web API returned an error (' +
           json.global.webroot + '/api/json' + '?' + params.method + '&' + params.args + ')', params.log);
+      if(params.error)
+        {
+        params.error(retVal);
+        }
       if(params.complete)
         {
         params.complete();
