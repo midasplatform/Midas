@@ -489,6 +489,41 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Get the immediate children of a community (non-recursive)
+   * @param token (Optional) Authentication token
+   * @param id The id of the community
+   * @return The folders in the community
+   */
+  function communityChildren($args)
+    {
+    $this->_validateParams($args, array('id'));
+
+    $id = $args['id'];
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $communityModel = $modelLoader->loadModel('Community');
+    $folderModel = $modelLoader->loadModel('Folder');
+    $community = $communityModel->load($id);
+    if(!$community)
+      {
+      throw new Exception('Invalid community id', MIDAS_INVALID_PARAMETER);
+      }
+    $folder = $folderModel->load($community->getFolderId());
+
+    $userDao = $this->_getUser($args);
+    try
+      {
+      $folders = $folderModel->getChildrenFoldersFiltered($folder, $userDao);
+      }
+    catch(Exception $e)
+      {
+      throw new Exception($e->getMessage(), MIDAS_INTERNAL_ERROR);
+      }
+
+    return array('folders' => $folders);
+    }
+
+  /**
    * Return a list of all communities visible to a user
    * @param token (Optional) Authentication token
    * @return A list of all communities
