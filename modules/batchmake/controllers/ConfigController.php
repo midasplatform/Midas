@@ -50,7 +50,46 @@ class Batchmake_ConfigController extends Batchmake_AppController
       }
     }
 
-
+    
+    
+  /**
+   * will create default paths in the midas temp directory
+   * for any properties not already set, except for the
+   * condor bin dir; imposing a firmer hand on the user
+   * @param type $currentConfig 
+   */
+  protected function createDefaultConfig($currentConfig)
+    {
+    $tmpDir = $this->getTempDirectory();
+    $defaultConfigDirs = array(MIDAS_BATCHMAKE_TMP_DIR_PROPERTY => $tmpDir.'/batchmake/tmp',
+    MIDAS_BATCHMAKE_BIN_DIR_PROPERTY => $tmpDir.'/batchmake/bin',
+    MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY => $tmpDir.'/batchmake/script',
+    MIDAS_BATCHMAKE_APP_DIR_PROPERTY => $tmpDir.'/batchmake/bin',
+    MIDAS_BATCHMAKE_DATA_DIR_PROPERTY => $tmpDir.'/batchmake/data');
+    $returnedConfig = array();
+    foreach($currentConfig as $configProp => $configDir)
+      {
+      if(!isset($configProp) || !isset($configDir) || $configDir == "")
+        {
+        $configDir = $defaultConfigDirs[$configProp];
+        $returnedConfig[$configProp] = $configDir;  
+        // also create this directory to be sure it exists
+        if(!KWUtils::mkDir($configDir))
+          {
+          throw new Zend_Exception("Cannot create directory ".$configDir);
+          }
+        }
+      else
+        {
+        $returnedConfig[$configProp] = $configDir;
+        }
+      }
+    return $returnedConfig;    
+    }
+    
+    
+    
+    
 
   /**
    * @method indexAction(), will test the configuration that the user has set
@@ -60,6 +99,7 @@ class Batchmake_ConfigController extends Batchmake_AppController
     {
 
     $applicationConfig = $this->ModuleComponent->KWBatchmake->loadConfigProperties();
+    $applicationConfig = $this->createDefaultConfig($applicationConfig);
     $configPropertiesRequirements = $this->ModuleComponent->KWBatchmake->getConfigPropertiesRequirements();
     $configForm = $this->ModuleForm->Config->createConfigForm($configPropertiesRequirements);
     $formArray = $this->getFormAsArray($configForm);

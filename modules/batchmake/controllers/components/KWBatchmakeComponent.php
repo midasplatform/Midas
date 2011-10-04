@@ -91,17 +91,18 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    */
   protected function loadConfig()
     {
+    $path = MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG;
     if(file_exists(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG))
       {
       $config = parse_ini_file(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, false);
       }
     else
       {
-      $config = parse_ini_file(MIDAS_BATCHMAKE_MODULE_CONFIG);
+      throw new Zend_Exception("The Batchmake module has not been enabled.  Enable it through the Midas administration tab");
       }
     return $config;
     }
-
+    
   /**
    * @method loadConfigProperties
    * will load the configuration property values for this module, and filter
