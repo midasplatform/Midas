@@ -10,10 +10,11 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+/** AppModel class for batchmake module */
 class Batchmake_AppModel extends MIDASModel
 {
-  public $moduleName='batchmake';
+  public $moduleName = 'batchmake';
 
-    
+
 }
 ?>

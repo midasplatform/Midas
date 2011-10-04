@@ -1,13 +1,5 @@
-// TODO put all strings into translation 
-// TODO clean up this file and make it more rational
-
-
 global_config_error_msg = "The overall configuration is in error";
 global_config_correct_msg = "The overall configuration is correct";
-
-
-
-
 
 info_class = 'info';
 error_class = 'error';
@@ -18,54 +10,44 @@ application_div = 'apps_config_div';
 php_div = 'php_config_div';
 
 
+$(document).ready(function()
+  {
+          
+  $('#configForm').ajaxForm( {beforeSubmit: validateConfig, success:       successConfig} );
 
-  $(document).ready(function() {
-    
-      
-    $('#configForm').ajaxForm( {beforeSubmit: validateConfig, success:       successConfig} );
+  $('#configForm input').each(function()
+    {
+    // add a span after each input for displaying any errors related to that input
+    inputID = $(this).attr("id")       
+    $(this).after('<span id="'+inputID+'Status'+'"></span>');
+    })
 
-    $('#configForm input').each(function()
-      {
-      // add a span after each input for displaying any errors related to that input
-      inputID = $(this).attr("id")       
-      $(this).after('<span id="'+inputID+'Status'+'"></span>');
-      })
-    $('#configForm').focusout(function()
-      {
-        checkConfig($(this));
-      });
-      
-    $('#configForm input').keyup(function()
-      {
- //     $(document).find('#submitConfig').attr('disabled','disabled');
-  //      var obj=$(this);
-        //checkAll(obj);
-      });
-
-//    $(document).find('#submitConfig').attr('disabled','disabled');
-
+  $('#configForm').focusout(function()
+    {
     checkConfig($(this));
+    });
+      
+  checkConfig($(this));
   });
 
 
 function checkConfig(obj)
   {
-//  obj=obj.parents('form');
   $(document).find('#testLoading').show();
   $(document).find('#testOk').hide();
   $(document).find('#testNok').hide();
   $(document).find('#testError').html('');
 
-tmp_dir_val  = $(document).find('#tmp_dir').val()
-bin_dir_val  = $(document).find('#bin_dir').val()
-script_dir_val  = $(document).find('#script_dir').val()
-app_dir_val  = $(document).find('#app_dir').val()
-data_dir_val  = $(document).find('#data_dir').val()
-condor_bin_dir_val  = $(document).find('#condor_bin_dir').val()
+  tmp_dir_val  = $(document).find('#tmp_dir').val()
+  bin_dir_val  = $(document).find('#bin_dir').val()
+  script_dir_val  = $(document).find('#script_dir').val()
+  app_dir_val  = $(document).find('#app_dir').val()
+  data_dir_val  = $(document).find('#data_dir').val()
+  condor_bin_dir_val  = $(document).find('#condor_bin_dir').val()
 
-/*  ajaxWebApi.ajax({
+  ajaxWebApi.ajax({
    method: 'midas.batchmake.testconfig',
-   args: 'tmp_dir=' + tmp_dir_val + '&bin_dir=' + bin_dir_val,
+   args: 'tmp_dir=' + tmp_dir_val + '&bin_dir=' + bin_dir_val + '&script_dir=' + script_dir_val + '&app_dir=' + app_dir_val + '&data_dir=' + data_dir_val + '&condor_bin_dir=' + condor_bin_dir_val,
    log: $('#testError'),
    success: function(retVal) {
      handleValidationResponse(retVal);
@@ -76,29 +58,13 @@ condor_bin_dir_val  = $(document).find('#condor_bin_dir').val()
    complete: function() {
      $('#testLoading').hide();
      }
- });*/
+   });
  
- 
-  $.ajax({
-          type: "POST",
-          url: json.global.webroot+'/batchmake/config/testconfig',
-          data: {tmp_dir: tmp_dir_val, bin_dir: bin_dir_val, script_dir: script_dir_val,
-            app_dir: app_dir_val,data_dir: data_dir_val,condor_bin_dir: condor_bin_dir_val},
-          cache:false,
-          success: function(jsonContent){ handleValidationResponse(jsonContent) }
-         }); 
-  return;
-  }  
+  }
 
-
-function handleValidationResponse(jsonContent)
+function handleValidationResponse(retVal)
   {
-  $(document).find('#testLoading').hide();
-            
-  var testConfig=jQuery.parseJSON(jsonContent);
-//  //some kinda error handling?
-  // 
-  // 
+  testConfig = retVal.data;          
   // testConfig should be
   // [0] = 1 if the global config is correct, 0 otherwise
   // [1] = an array of individual config properties and statuses            
@@ -111,13 +77,11 @@ function handleValidationResponse(jsonContent)
     {
     $(document).find('#testOk').show();
     $(document).find('#testError').html(global_config_correct_msg).removeClass().addClass(info_class);       
-  //  $(document).find('#submitConfig').removeAttr('disabled');
     }
   else
     {
     $(document).find('#testNok').show();
     $(document).find('#testError').html(global_config_error_msg).removeClass().addClass(error_class);
-  //  $(document).find('#submitConfig').attr('disabled','disabled');
     }
 
   $(document).find('div #'+application_div).children().remove();
@@ -150,11 +114,13 @@ function handleValidationResponse(jsonContent)
 
 
   
-function validateConfig(formData, jqForm, options) { 
-}
+function validateConfig(formData, jqForm, options) 
+  {
+
+  }
 
 function successConfig(responseText, statusText, xhr, form) 
-{
+  {
   try {
         jsonResponse = jQuery.parseJSON(responseText);
     } catch (e) {
@@ -174,4 +140,4 @@ function successConfig(responseText, statusText, xhr, form)
     {
       createNotive(jsonResponse[1],4000);
     }
-}
+  }

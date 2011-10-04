@@ -27,7 +27,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
   MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_READABLE);
 
   /**
-   * accessor functin to return the names of the config propeties, and
+   * accessor function to return the names of the config propeties, and
    * their filesystem requirements;
    */
   public static function getConfigPropertiesRequirements()
@@ -43,7 +43,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
   MIDAS_BATCHMAKE_EXE => MIDAS_BATCHMAKE_BIN_DIR_PROPERTY);
 
   /**
-   * accessor functin to return the application names, along with their
+   * accessor function to return the application names, along with their
    * expected location property.
    */
   public static function getApplicationsPaths()
@@ -87,6 +87,8 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
   /**
    * helper function to load the correct config file
+   * @param bool $processSections param to be passed on to parse_ini_file,
+   * default is false
    * @return config array with config properties
    */
   protected function loadConfig($processSections = false)
@@ -102,9 +104,15 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
     return $config;
     }
-    
-    
-    
+
+
+  /**
+   * takes in an array read out of an ini file, looks in the 'global'
+   * space, and returns an array of only those properties that begin
+   * with batchmake.
+   * @param type $fullConfig
+   * @return type
+   */
   public function filterBatchmakeConfigProperties($fullConfig)
     {
     $batchmakeProps = array();
@@ -121,23 +129,24 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
     return $batchmakeProps;
     }
-    
-    
+
+
   /**
    * @method loadConfigProperties
-   * will load the configuration property values for this module, and filter
-   * out only those properties that are in the 'batchmake.' config namespace,
-   * removing the 'batchmake.' from the key name.
+   * will load the configuration property values for this module
    * @param string $alternateConfig an array of alternate config props
    * @param boolean $batchmakeOnly whether to get all properties or only config
+   * properties that are in the 'batchmake.' config namespace,
+   * removing the 'batchmake.' from the key name if true.
    * @return array of batchmake module specific config properties
    */
   public function loadConfigProperties($alternateConfig = null, $batchmakeOnly = true)
     {
     // load the full config
     $rawConfig = $this->loadConfig(true);
+    // get the global namespace props
     $globalProps = $rawConfig['global'];
-    // now set all the batchmake properties, except if we have any alternatives
+    // now set all the batchmake properties if we have any alternatives
     $configPropertiesParamVals = array();
     if(isset($alternateConfig))
       {
@@ -145,30 +154,16 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       // set these properties in the rawConfig
       foreach($alternateConfig as $propKey => $propVal)
         {
-        $globalProps[MIDAS_BATCHMAKE_MODULE . '.' . $propKey] = $propVal;  
+        $globalProps[MIDAS_BATCHMAKE_MODULE . '.' . $propKey] = $propVal;
         }
       $rawConfig['global'] = $globalProps;
       }
-//    else
-//      {
+    // get out the batchmake props
     $batchmakeProps = $this->filterBatchmakeConfigProperties($rawConfig);
     foreach($batchmakeProps as $configProperty => $configPropertyVal)
       {
-      $configPropertiesParamVals[$configProperty] = $configPropertyVal;  
+      $configPropertiesParamVals[$configProperty] = $configPropertyVal;
       }
-      
-    /*  $configPropertiesParamVals = array();
-      $modulePropertyNamespace = MIDAS_BATCHMAKE_MODULE . '.';
-      foreach($globalProps as $configProperty => $configPropertyVal)
-        {
-        $ind = strpos($configProperty, $modulePropertyNamespace);
-        if($ind !== false && $ind  == 0)
-          {
-          $reducedKey = substr($configProperty, strpos($configProperty, '.') + 1);
-          $configPropertiesParamVals[$reducedKey] = $configPropertyVal;
-          }
-        }*/
-//      }
     // set the member fields for config variables
     $this->componentConfig = $configPropertiesParamVals;
     $this->configScriptDir = $this->componentConfig[MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY];
@@ -184,44 +179,8 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
     else
       {
-      return $rawConfig; 
+      return $rawConfig;
       }
-    
-      
-/*    if(!isset($alternateConfig))
-      {
-      $rawConfig = $this->loadConfig();
-
-      // batchmakeOnly option says to remove all other properties than those
-      // prefixed with "batchmake."
-      if($batchmakeOnly)
-        {
-        $modulePropertyNamespace = MIDAS_BATCHMAKE_MODULE . '.';
-        foreach($rawConfig as $configProperty => $configPropertyVal)
-          {
-          $ind = strpos($configProperty, $modulePropertyNamespace);
-          if($ind !== false && $ind  == 0)
-            {
-            $reducedKey = substr($configProperty, strpos($configProperty, '.') + 1);
-            $configPropertiesParamVals[$reducedKey] = $configPropertyVal;
-            }
-          }
-        }
-      }
-    else
-      {
-      $configPropertiesParamVals = $alternateConfig;
-      }
-
-  */
-//    $this->componentConfig = $configPropertiesParamVals;
-//    $this->configScriptDir = $this->componentConfig[MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY];
-//    $this->configAppDir = $this->componentConfig[MIDAS_BATCHMAKE_APP_DIR_PROPERTY];
-//    $this->configTmpDir = $this->componentConfig[MIDAS_BATCHMAKE_TMP_DIR_PROPERTY];
-//    $this->configBinDir = $this->componentConfig[MIDAS_BATCHMAKE_BIN_DIR_PROPERTY];
-//    $this->configDataDir = $this->componentConfig[MIDAS_BATCHMAKE_DATA_DIR_PROPERTY];
-//    $this->configCondorBinDir = $this->componentConfig[MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY];
-//    return $this->componentConfig;
     }
 
   // above here is config setup

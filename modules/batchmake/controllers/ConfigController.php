@@ -50,13 +50,13 @@ class Batchmake_ConfigController extends Batchmake_AppController
       }
     }
 
-    
-    
+
+
   /**
    * will create default paths in the midas temp directory
    * for any properties not already set, except for the
    * condor bin dir; imposing a firmer hand on the user
-   * @param type $currentConfig 
+   * @param type $currentConfig
    */
   protected function createDefaultConfig($currentConfig)
     {
@@ -72,7 +72,7 @@ class Batchmake_ConfigController extends Batchmake_AppController
       if((!isset($configProp) || !isset($configDir) || $configDir == "") && array_key_exists($configProp, $defaultConfigDirs))
         {
         $configDir = $defaultConfigDirs[$configProp];
-        $returnedConfig[$configProp] = $configDir;  
+        $returnedConfig[$configProp] = $configDir;
         // also create this directory to be sure it exists
         if(!KWUtils::mkDir($configDir))
           {
@@ -84,12 +84,12 @@ class Batchmake_ConfigController extends Batchmake_AppController
         $returnedConfig[$configProp] = $configDir;
         }
       }
-    return $returnedConfig;    
+    return $returnedConfig;
     }
-    
-    
-    
-    
+
+
+
+
 
   /**
    * @method indexAction(), will test the configuration that the user has set
@@ -98,15 +98,14 @@ class Batchmake_ConfigController extends Batchmake_AppController
   public function indexAction()
     {
     // get all the properties, not just the batchmake config
-    $fullConfig = $this->ModuleComponent->KWBatchmake->loadConfigProperties(null,false);
+    $fullConfig = $this->ModuleComponent->KWBatchmake->loadConfigProperties(null, false);
     // now get just the batchmake ones
     $batchmakeConfig = $this->ModuleComponent->KWBatchmake->filterBatchmakeConfigProperties($fullConfig);
-      
-//    $applicationConfig = $this->ModuleComponent->KWBatchmake->loadConfigProperties();
+    // create these properties as default dir locations in tmp
     $batchmakeConfig = $this->createDefaultConfig($batchmakeConfig);
     $configPropertiesRequirements = $this->ModuleComponent->KWBatchmake->getConfigPropertiesRequirements();
 
-    
+
 
     if($this->_request->isPost())
       {
@@ -116,6 +115,7 @@ class Batchmake_ConfigController extends Batchmake_AppController
 
       if(isset($submitConfig))
         {
+        // user wants to save config
         $this->archiveOldModuleLocal();
         // save only those properties we are interested for local configuration
         foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
@@ -123,58 +123,24 @@ class Batchmake_ConfigController extends Batchmake_AppController
           $fullConfig[MIDAS_BATCHMAKE_GLOBAL_CONFIG_NAME][$this->moduleName.'.'.$configProperty] = $this->_getParam($configProperty);
           }
         $this->Component->Utility->createInitFile(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, $fullConfig);
-//        $newsaver = array();
-//        foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
-//          {
-//          $newsaver[MIDAS_BATCHMAKE_GLOBAL_CONFIG_NAME][$this->moduleName.'.'.$configProperty] = $this->_getParam($configProperty);
-//          }
-//        $this->Component->Utility->createInitFile(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, $newsaver);
         $msg = $this->t(MIDAS_BATCHMAKE_CHANGES_SAVED_STRING);
         echo JsonComponent::encode(array(true, $msg));
         }
       }
     else
       {
+      // populate config form with values
       $configForm = $this->ModuleForm->Config->createConfigForm($configPropertiesRequirements);
       $formArray = $this->getFormAsArray($configForm);
       foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
         {
         $formArray[$configProperty]->setValue($batchmakeConfig[$configProperty]);
         }
-      $this->view->configForm = $formArray; 
+      $this->view->configForm = $formArray;
       }
 
     }
 
-
-
-  /**
-   * @method testconfigAction()
-   * ajax function which tests config setup, performing
-   * validation on the current configuration set through the UI
-   */
-  public function testconfigAction()
-    {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      $ajaxDirectLoadErrorString = $this->t(MIDAS_BATCHMAKE_AJAX_DIRECT_LOAD_ERROR_STRING);
-      throw new Zend_Exception($ajaxDirectLoadErrorString);
-      }
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
-
-
-    $configPropertiesParamVals = array();
-    $configPropertiesRequirements = $this->ModuleComponent->KWBatchmake->getConfigPropertiesRequirements();
-    foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
-      {
-      $configPropertiesParamVals[$configProperty] = $this->_getParam($configProperty);
-      }
-
-    $config_status =  $this->ModuleComponent->KWBatchmake->testconfig($configPropertiesParamVals);
-    $jsonout = JsonComponent::encode($config_status);
-    echo $jsonout;
-    }//end testconfigAction
 
 
 }//end class
