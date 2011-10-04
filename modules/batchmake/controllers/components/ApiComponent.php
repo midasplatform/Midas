@@ -57,8 +57,6 @@ class Batchmake_ApiComponent extends AppComponent
         }
       }
 
-    //$this->_checkKeys(array('item_id', 'metric_name'), $value);
-
     $componentLoader = new MIDAS_ComponentLoader();
     $kwbatchmakeComponent = $componentLoader->loadComponent('KWBatchmake', 'batchmake');
     return $kwbatchmakeComponent->testconfig($configParams);
