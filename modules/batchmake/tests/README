@@ -1,0 +1,10 @@
+For testing the batchmake module, we have aimed for very few external dependencies.
+
+BatchMake and Condor binaries are not required.
+
+What is required is that the the midas tmp dir (usually $MIDAS_ROOT/tmp/misc) is
+writable by the user who is running tests.
+
+One brute force way to accomplish this is
+
+sudo chmod -R 777 $MIDAS_ROOT/tmp/misc
