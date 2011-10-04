@@ -559,6 +559,18 @@ class ApiControllerTest extends ControllerTestCase
     $this->_assertStatusOk($resp);
     $this->assertEquals(1, $resp->data->item_id);
     $this->assertEquals(3.14, $resp->data->value);
+    $this->resetAll();
+
+    // Add a scalar result to the same slot as earlier
+    $this->params['token'] = $this->_loginUsingApiKeyAsAdmin();
+    $this->params['method'] = 'midas.validation.setscalarresult';
+    $this->params['dashboard_id'] = 1;
+    $this->params['folder_id'] = 1001;
+    $this->params['item_id'] = 1;
+    $this->params['value'] = 3.14;
+    $this->request->setMethod('POST');
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
 
     }
 

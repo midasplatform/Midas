@@ -164,7 +164,7 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     if(count($oldResults) == 1)
       {
       $oldResult = $oldResults[0];
-      $this->database->unlink('scores', $dashboard, $oldResult);
+      $this->database->removeLink('scores', $dashboard, $oldResult);
       }
 
     $scalarResult = new Validation_ScalarResultDao();
