@@ -124,6 +124,7 @@ class DownloadController extends AppController
           $this->_redirect($bitstreams[0]->getPath());
           return;
           }
+        $this->_helper->viewRenderer->setNoRender();
         $componentLoader = new MIDAS_ComponentLoader();
         $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');
         if($this->_getParam('testingmode') == '1')
