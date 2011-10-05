@@ -977,4 +977,38 @@ class Api_ApiComponent extends AppComponent
     return array('apikey' => $defaultApiKey);
     }
 
+  function bitstreamDownload($args)
+    {
+    $this->_validateParams($args, array('id'));
+    $userDao = $this->_getUser($args);
+    $modelLoader = new MIDAS_ModelLoader();
+    $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    $bitstream = $bitstreamModel->load($args['id']);
+
+    if(!$bitstream)
+      {
+      throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
+      }
+    $revisionModel = $modelLoader->loadModel('ItemRevision');
+    $revision = $revisionModel->load($bitstream->getItemrevisionId());
+
+    if(!$revision)
+      {
+      throw new Exception('Invalid revision id', MIDAS_INTERNAL_ERROR);
+      }
+    $itemModel = $modelLoader->loadModel('Item');
+    $item = $itemModel->load($revision->getItemId());
+    if(!$item || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+      {
+      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
+      }
+    if(strpos($bitstream->getPath(), 'http://') !== false)
+      {
+      $this->_redirect($bitstream->getPath());
+      return;
+      }
+    $componentLoader = new MIDAS_ComponentLoader();
+    $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');
+    $downloadComponent->download($bitstream);
+    }
   } // end class
