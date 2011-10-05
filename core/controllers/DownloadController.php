@@ -108,9 +108,9 @@ class DownloadController extends AppController
       $bitstreams = $revision->getBitstreams();
 
       if($this->_getParam('testingmode') == '1')
-          {
-          $bitstreams = array($bitstreams[0]);
-          }
+        {
+        $bitstreams = array($bitstreams[0]);
+        }
 
       if(count($bitstreams) == 0)
         {
