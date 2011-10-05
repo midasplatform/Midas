@@ -29,7 +29,7 @@ class DownloadController extends AppController
   public function indexAction()
     {
     set_time_limit(0);
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $itemIds = $this->_getParam('items');
     $folderIds = $this->_getParam('folders');
     if(!isset($itemIds) && !isset($folderIds))
@@ -78,6 +78,7 @@ class DownloadController extends AppController
           {
           continue;
           }
+         
         $this->Item->incrementDownloadCount($item);
         if(isset($tmp[1]))
           {
@@ -100,7 +101,7 @@ class DownloadController extends AppController
 
     if(empty($folders) && empty($revisions))
       {
-      throw new Zend_Exception("No element");
+      throw new Zend_Exception('There is nothing to download');
       }
     if(empty($folders) && count($revisions) == 1)
       {
