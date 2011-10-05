@@ -366,7 +366,7 @@ class ItemModel extends ItemModelBase
     $itemdao->saved = false;
     }//end delete
 
-  /** check ifthe policy is valid*/
+  /** check if the policy is valid*/
   function policyCheck($itemdao, $userDao = null, $policy = 0)
     {
     if(!$itemdao instanceof  ItemDao || !is_numeric($policy))

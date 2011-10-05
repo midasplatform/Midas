@@ -111,33 +111,30 @@ class DownloadController extends AppController
       if($this->_getParam('testingmode') == '1')
         {
         $bitstreams = array($bitstreams[0]);
-        $this->view->testingmode = true;
         }
 
       if(count($bitstreams) == 0)
         {
-        throw new Zend_Exception("Empty item");
+        throw new Zend_Exception('Empty item');
         }
       elseif(count($bitstreams) == 1)
         {
-        $bitstream = $bitstreams[0];
-        if(strpos($bitstream->getPath(), 'http://') !== false)
+        if(strpos($bitstreams[0]->getPath(), 'http://') !== false)
           {
-          $this->_redirect($bitstream->getPath());
+          $this->_redirect($bitstreams[0]->getPath());
           return;
           }
-        $this->view->mimetype = $bitstream->getMimetype();
-        $this->view->path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
-        $this->view->name = $bitstream->getName();
-        if(!file_exists($this->view->path))
+        $componentLoader = new MIDAS_ComponentLoader();
+        $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');
+        if($this->_getParam('testingmode') == '1')
           {
-          throw new Zend_Exception("Unable to find file on the disk");
+          $downloadComponent->testingmode = true;
           }
-        $this->render('onebitstream');
+        $downloadComponent->download($bitstreams[0]);
         }
       else
         {
-        Zend_Loader::loadClass("ZipStream", BASE_PATH.'/library/ZipStream/');
+        Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
         $this->_helper->viewRenderer->setNoRender();
         $name = $revision->getItem()->getName();
         $name = substr($name, 0, 50);
@@ -151,7 +148,7 @@ class DownloadController extends AppController
       }
     else
       {
-      Zend_Loader::loadClass("ZipStream", BASE_PATH.'/library/ZipStream/');
+      Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
       $this->_helper->viewRenderer->setNoRender();
       if(count($folders) == 1 && empty($revisions))
         {
