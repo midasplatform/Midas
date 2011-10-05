@@ -977,17 +977,39 @@ class Api_ApiComponent extends AppComponent
     return array('apikey' => $defaultApiKey);
     }
 
+  /**
+   * Download a bitstream either by its id or by a checksum. Either an id or checksum parameter is required.
+   * @param token (Optional) Authentication token
+   * @param id (Optional) The id of the bitstream
+   * @param checksum (Optional) The checksum of the bitstream
+   * @param name (Optional) Alternate filename to download as
+   */
   function bitstreamDownload($args)
     {
-    $this->_validateParams($args, array('id'));
+    if(!array_key_exists('id', $args) && !array_key_exists('checksum', $args))
+      {
+      throw new Exception('Either an id or checksum parameter is required', MIDAS_INVALID_PARAMETER);
+      }
     $userDao = $this->_getUser($args);
     $modelLoader = new MIDAS_ModelLoader();
     $bitstreamModel = $modelLoader->loadModel('Bitstream');
-    $bitstream = $bitstreamModel->load($args['id']);
+    if(array_key_exists('id', $args))
+      {
+      $bitstream = $bitstreamModel->load($args['id']);
+      }
+    else
+      {
+      $bitstream = $bitstreamModel->getByChecksum($args['checksum']);
+      }
 
     if(!$bitstream)
       {
       throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
+      }
+
+    if(array_key_exists('name', $args))
+      {
+      $bitstream->setName($args['name']);
       }
     $revisionModel = $modelLoader->loadModel('ItemRevision');
     $revision = $revisionModel->load($bitstream->getItemrevisionId());
