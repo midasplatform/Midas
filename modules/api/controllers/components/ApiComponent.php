@@ -978,6 +978,52 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Fetch the information about a bitstream
+   * @param token (Optional) Authentication token
+   * @param id The id of the bitstream
+   * @return Bitstream dao
+   */
+  function bitstreamGet($args)
+    {
+    $this->_validateParams($args, array('id'));
+    $userDao = $this->_getUser($args);
+    $modelLoader = new MIDAS_ModelLoader();
+    $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    $bitstream = $bitstreamModel->load($args['id']);
+
+    if(!$bitstream)
+      {
+      throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
+      }
+
+    if(array_key_exists('name', $args))
+      {
+      $bitstream->setName($args['name']);
+      }
+    $revisionModel = $modelLoader->loadModel('ItemRevision');
+    $revision = $revisionModel->load($bitstream->getItemrevisionId());
+
+    if(!$revision)
+      {
+      throw new Exception('Invalid revision id', MIDAS_INTERNAL_ERROR);
+      }
+    $itemModel = $modelLoader->loadModel('Item');
+    $item = $itemModel->load($revision->getItemId());
+    if(!$item || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+      {
+      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
+      }
+    $bitstreamArray = array();
+    $bitstreamArray['name'] = $bitstream->getName();
+    $bitstreamArray['size'] = $bitstream->getSizebytes();
+    $bitstreamArray['mimetype'] = $bitstream->getMimetype();
+    $bitstreamArray['checksum'] = $bitstream->getChecksum();
+    $bitstreamArray['itemrevision_id'] = $bitstream->getItemrevisionId();
+    $bitstreamArray['item_id'] = $revision->getItemId();
+    return $bitstreamArray;
+    }
+
+  /**
    * Download a bitstream either by its id or by a checksum. Either an id or checksum parameter is required.
    * @param token (Optional) Authentication token
    * @param id (Optional) The id of the bitstream
