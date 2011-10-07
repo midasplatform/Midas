@@ -370,6 +370,3 @@ class ItemController extends AppController
     }//end delete
 
   }//end class
-
-  /*    pour la récupérer
-     */
