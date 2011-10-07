@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `assetstore` (
   `name` varchar(255) NOT NULL,
   `path` varchar(512) NOT NULL,
   `type` tinyint(4) NOT NULL,
-  PRIMARY KEY (`assetstore_id`),
+  PRIMARY KEY (`assetstore_id`)
 )   DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 
