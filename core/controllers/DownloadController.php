@@ -78,7 +78,6 @@ class DownloadController extends AppController
           {
           continue;
           }
-         
         $this->Item->incrementDownloadCount($item);
         if(isset($tmp[1]))
           {

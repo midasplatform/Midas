@@ -138,7 +138,7 @@ class UtilityComponent extends AppComponent
 
 
   /**
-   * Check ifthe php function/extension are available
+   * Check if the php function/extension are available
    *
    * $phpextensions should have the following format:
    *   array(
@@ -211,7 +211,7 @@ class UtilityComponent extends AppComponent
     $text = "<b>ImageMagick</b> (>=6.0) is not found. Please install imagemagick from http://www.imagemagick.org";
     return array(false, $text);
     }
-  /** format filz size*/
+  /** format file size*/
   static public function formatSize($sizeInByte)
     {
     $dataNorme = 'B';
@@ -268,7 +268,7 @@ class UtilityComponent extends AppComponent
 
     $reqs = explode(";", $requetes);
     foreach($reqs as $req)
-      {// et on les éxécute
+      {// And they are executed
       if(!mysql_query($req, $db) && trim($req) != "")
         {
         throw new Zend_Exception("Unable to execute: ".$req );

@@ -24,7 +24,7 @@ class AppController extends MIDAS_GlobalController
   public function preDispatch()
     {
     parent::preDispatch();
-    $this->view->setEncoding('iso-8859-1');
+    $this->view->setEncoding('UTF-8');
 
     $this->view->setScriptPath(BASE_PATH."/core/views");
 
