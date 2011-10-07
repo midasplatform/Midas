@@ -168,8 +168,7 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception('No resource for the given UUID.', MIDAS_INVALID_PARAMETER);
       }
-
-    return $resource->toArray();
+    return array('type' => $resource->resourceType, 'id' => $resource->getKey());
     }
 
   /**
