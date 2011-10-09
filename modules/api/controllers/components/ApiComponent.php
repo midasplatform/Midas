@@ -410,10 +410,6 @@ class Api_ApiComponent extends AppComponent
     if(!empty($uuid))
       {
       $record = $uuidComponent->getByUid($uuid);
-      if($record === false || !$communityModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception("This community doesn't exist  or you don't have the permissions.", MIDAS_INVALID_POLICY);
-        }
       }
     if($record != false && $record instanceof CommunityDao)
       {
@@ -450,7 +446,7 @@ class Api_ApiComponent extends AppComponent
         {
         $canJoin = $args['canjoin'];
         }
-      $communityDao = $communityModel->createCommunity($name, $description, $privacy, $userDao, $canJoin);
+      $communityDao = $communityModel->createCommunity($name, $description, $privacy, $userDao, $canJoin, $uuid);
 
       if($communityDao === false)
         {
