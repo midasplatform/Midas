@@ -152,7 +152,8 @@ class Api_ApiComponent extends AppComponent
 
   /**
    * Get a resource by its UUID
-   * @params uuid Universal identifier for the resource
+   * @param uuid Universal identifier for the resource
+   * @param folder (Optional) If set, will return the folder instead of the community record
    * @return The resource's dao
    */
   function resourceGet($args)
@@ -167,6 +168,11 @@ class Api_ApiComponent extends AppComponent
     if($resource == false)
       {
       throw new Exception('No resource for the given UUID.', MIDAS_INVALID_PARAMETER);
+      }
+
+    if($resource->resourceType == MIDAS_RESOURCE_COMMUNITY && array_key_exists('folder', $args))
+      {
+      return array('type' => MIDAS_RESOURCE_FOLDER, 'id' => $resource->getFolderId());
       }
     return array('type' => $resource->resourceType, 'id' => $resource->getKey());
     }
@@ -645,20 +651,22 @@ class Api_ApiComponent extends AppComponent
         {
         throw new Exception('Parent doesn\'t exist', MIDAS_INVALID_PARAMETER);
         }
-      $new_folder = $folderModel->createFolder($name, $description, $folder);
+      $new_folder = $folderModel->createFolder($name, $description, $folder, $uuid);
       if($new_folder === false)
         {
         throw new Exception('Request failed', MIDAS_INTERNAL_ERROR);
         }
       $policyGroup = $folder->getFolderpolicygroup();
       $policyUser = $folder->getFolderpolicyuser();
+      $folderpolicygroupModel = $modelLoader->loadModel('Folderpolicygroup');
+      $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicygroup');
       foreach($policyGroup as $policy)
         {
-        $folderModelpolicygroup->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
+        $folderpolicygroupModel->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
         }
       foreach($policyUser as $policy)
         {
-        $folderModelpolicyuser->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
+        $folderpolicyuserModel->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
         }
 
       return $new_folder->toArray();
