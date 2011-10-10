@@ -207,7 +207,7 @@ abstract class ItemModelBase extends AppModel
     $this->save($itemdao);//update date
     } // end addRevision
 
-    /** Create a new empty item */
+  /** Create a new empty item */
   function createItem($name, $description, $parent, $uuid = '')
     {
     if(!$parent instanceof FolderDao && !is_numeric($parent))
