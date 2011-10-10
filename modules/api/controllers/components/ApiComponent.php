@@ -189,12 +189,29 @@ class Api_ApiComponent extends AppComponent
 
   /**
    * Generate a unique upload token
+   * @param itemid The id of the parent item to upload into
+   * @param filename The filename of the bitstream you will upload
    * @return An upload token that can be used to upload a file
    */
   function uploadGeneratetoken($args)
     {
+    $this->_validateParams($args, array('itemid', 'filename'));
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('Anonymous users may not upload', MIDAS_INVALID_POLICY);
+      }
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $item = $itemModel->load($args['itemid']);
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception('Invalid policy or itemid', MIDAS_INVALID_POLICY);
+      }
+
     $uploadApi = new KwUploadAPI($this->apiSetup);
-    return $uploadApi->generateToken($args);
+    return $uploadApi->generateToken($args, $userDao->getKey().'/'.$item->getKey());
     }
 
   /**
@@ -209,50 +226,79 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Upload a file to the server. PUT or POST is required
-   * @param token The upload token (see upload.generatetoken)
+   * Upload a file to the server. PUT or POST is required. Either the itemid or folderid parameter must be set
+   * @param uploadtoken The upload token (see upload.generatetoken)
+   * @param filename The upload filename
+   * @param length The length in bytes of the file being uploaded
    * @param mode (Optional) Stream or multipart. Default is stream
-   * @param folder_id The id of the folder to upload into
-   * @param item_id (Optional) If set, will create a new revision in the existing item
-   * @param revision (Optional) If set, will add a new file into an existing revision
+   * @param folderid (Optional) The id of the folder to upload into
+   * @param itemid (Optional) If set, will create a new revision in the existing item
+   * @param revision (Optional) If set, will add a new file into an existing revision.  Set this to "head" to add to the most recent revision.
    * @param return The item information of the item created or changed
    */
   function uploadPerform($args)
     {
+    $this->_validateParams($args, array('uploadtoken', 'filename', 'length'));
     if(!$this->controller->getRequest()->isPost() && !$this->controller->getRequest()->isPut())
       {
       throw new Exception('POST or PUT method required', MIDAS_HTTP_ERROR);
       }
 
-    $userDao = $this->_getUser($args);
-
-    if($userDao == false)
-      {
-      throw new Exception('Please log in', MIDAS_INVALID_POLICY);
-      }
+    list($userid, $resourceid, ) = explode('/', $args['uploadtoken']);
+    //TODO check if this upload token is valid
 
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
-    if(array_key_exists('revision', $args) && array_key_exists('item_id', $args))
+    $userModel = $modelLoader->loadModel('User');
+    $userDao = $userModel->load($userid);
+    if(!$userDao)
       {
-      $item = $itemModel->load($args['item_id']);
+      throw new Exception('Invalid user id from upload token', MIDAS_INVALID_PARAMETER);
+      }
+
+    if(array_key_exists('revision', $args) && array_key_exists('itemid', $args))
+      {
+      if($args['itemid'] != $resourceid)
+        {
+        throw new Exception('Upload token does not match itemid', MIDAS_INVALID_PARAMETER);
+        }
+      $item = $itemModel->load($args['itemid']);
       if($item == false)
         {
         throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
         }
-      if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+      if(strtolower($args['revision']) == 'head')
         {
-        throw new Exception('Permission error', MIDAS_INVALID_PARAMETER);
+        $revision = $itemModel->getLastRevision($item);
+
+        if($revision == false)
+          {
+          // Create new revision if none exists yet
+          Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
+          $revision = new ItemRevisionDao();
+          $revision->setChanges('Initial revision');
+          $revision->setUser_id($userDao->getKey());
+          $revision->setDate(date('c'));
+          $revision->setLicense(null);
+          $revision = $itemModel->addRevision($item, $revision);
+          }
         }
-      $revision = $itemModel->getRevision($item, $args['revision']);
-      if($revision == false)
+      else
         {
-        throw new Exception('Unable to find revision', MIDAS_INVALID_PARAMETER);
+        $revision = $itemModel->getRevision($item, $args['revision']);
+        if($revision == false)
+          {
+          throw new Exception('Unable to find revision', MIDAS_INVALID_PARAMETER);
+          }
         }
       }
-    elseif(array_key_exists('item_id', $args))
+    elseif(array_key_exists('itemid', $args))
       {
-      $item = $itemModel->load($args['item_id']);
+      if($args['itemid'] != $resourceid)
+        {
+        throw new Exception('Upload token does not match itemid', MIDAS_INVALID_PARAMETER);
+        }
+      $item = $itemModel->load($args['itemid']);
       if($item == false)
         {
         throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
@@ -262,10 +308,14 @@ class Api_ApiComponent extends AppComponent
         throw new Exception('Permission error', MIDAS_INVALID_POLICY);
         }
       }
-    elseif(array_key_exists('folder_id', $args))
+    elseif(array_key_exists('folderid', $args))
       {
+      if($args['folderid'] != $resourceid)
+        {
+        throw new Exception('Upload token does not match itemid', MIDAS_INVALID_PARAMETER);
+        }
       $folderModel = $modelLoader->loadModel('Folder');
-      $folder = $folderModel->load($args['folder_id']);
+      $folder = $folderModel->load($args['folderid']);
       if($folder == false)
         {
         throw new Exception('Unable to find folder', MIDAS_INVALID_PARAMETER);
@@ -277,18 +327,17 @@ class Api_ApiComponent extends AppComponent
       }
     else
       {
-      throw new Exception('Parameter itemrevision_id or item_id or folder_id is not defined', MIDAS_INVALID_PARAMETER);
+      throw new Exception('You must specify an itemid or folderid to upload into', MIDAS_INVALID_PARAMETER);
       }
 
     $mode = array_key_exists('mode', $args) ? $args['mode'] : 'stream';
     $uploadApi = new KwUploadAPI($this->apiSetup);
 
+    // Use KWUploadApi to handle the actual file upload
     if($mode == 'stream')
       {
-      $token = $this->uploadApi->generateToken($args);
-      $args['uploadtoken'] = $token['token'];
-      $args['length'] = $args['size'];
       $result = $uploadApi->process($args);
+
       $filename = $result['filename'];
       $filepath = $result['path'];
       $filesize = $result['size'];
@@ -327,6 +376,14 @@ class Api_ApiComponent extends AppComponent
       $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $tmp, '');
       }
 
+    if(!$item)
+      {
+      throw new Exception('Upload failed', MIDAS_INTERNAL_ERROR);
+      }
+    if($filesize == $args['length'])
+      {
+      unlink($filepath);
+      }
     return $item->toArray();
     }
 
