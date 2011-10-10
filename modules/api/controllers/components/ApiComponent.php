@@ -413,6 +413,10 @@ class Api_ApiComponent extends AppComponent
       }
     if($record != false && $record instanceof CommunityDao)
       {
+      if(!$communityModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+        }
       $record->setName($name);
       if(isset($args['description']))
         {
@@ -431,7 +435,8 @@ class Api_ApiComponent extends AppComponent
       }
     else
       {
-      $description = "";
+      // Policy check to make sure the user can create top level communities (admins only?)
+      $description = '';
       $privacy = MIDAS_COMMUNITY_PUBLIC;
       $canJoin = MIDAS_COMMUNITY_CAN_JOIN;
       if(isset($args['description']))
@@ -595,7 +600,7 @@ class Api_ApiComponent extends AppComponent
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
-      throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
+      throw new Exception('Cannot create folder anonymously', MIDAS_INVALID_POLICY);
       }
 
     $modelLoader = new MIDAS_ModelLoader();
@@ -610,13 +615,13 @@ class Api_ApiComponent extends AppComponent
       $componentLoader = new MIDAS_ComponentLoader();
       $uuidComponent = $componentLoader->loadComponent('Uuid');
       $record = $uuidComponent->getByUid($uuid);
-      if($record === false || !$folderModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-        }
       }
     if($record != false && $record instanceof FolderDao)
       {
+      if(!$folderModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+        }
       $record->setName($name);
       if(isset($args['description']))
         {
@@ -635,8 +640,7 @@ class Api_ApiComponent extends AppComponent
         {
         throw new Exception('Parameter parentid is not defined', MIDAS_INVALID_PARAMETER);
         }
-      $parentid = $args['parentid'];
-      $folder = $folderModel->load($parentid);
+      $folder = $folderModel->load($args['parentid']);
       if($folder == false)
         {
         throw new Exception('Parent doesn\'t exist', MIDAS_INVALID_PARAMETER);
@@ -650,15 +654,11 @@ class Api_ApiComponent extends AppComponent
       $policyUser = $folder->getFolderpolicyuser();
       foreach($policyGroup as $policy)
         {
-        $group = $policy->getGroup();
-        $policyValue = $policy->getPolicy();
-        $folderModelpolicygroup->createPolicy($group, $new_folder, $policyValue);
+        $folderModelpolicygroup->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
         }
       foreach($policyUser as $policy)
         {
-        $user = $policy->getUser();
-        $policyValue = $policy->getPolicy();
-        $folderModelpolicyuser->createPolicy($user, $new_folder, $policyValue);
+        $folderModelpolicyuser->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
         }
 
       return $new_folder->toArray();
