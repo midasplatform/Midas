@@ -207,4 +207,55 @@ abstract class ItemModelBase extends AppModel
     $this->save($itemdao);//update date
     } // end addRevision
 
+    /** Create a new empty item */
+  function createItem($name, $description, $parent, $uuid = '')
+    {
+    if(!$parent instanceof FolderDao && !is_numeric($parent))
+      {
+      throw new Zend_Exception('Parent should be a folder.');
+      }
+
+    if(empty($name))
+      {
+      throw new Zend_Exception('Name cannot be empty.');
+      }
+
+    if(!is_string($name))
+      {
+      throw new Zend_Exception('Name should be a string.');
+      }
+
+    if($parent instanceof FolderDao)
+      {
+      $parentId = $parent->getFolderId();
+      }
+    else
+      {
+      $parentId = $parent;
+      $parent = $this->load($parentId);
+      }
+
+    // Check if an item with the same name already exists for the same parent(s)
+    $siblings = $parent->getItems();
+    foreach($siblings as $sibling)
+      {
+      if($sibling->getName() == $name)
+        {
+        throw new Zend_Exception('An item with the name '.$name.' already exists in that folder');
+        }
+      }
+
+    $this->loadDaoClass('ItemDao');
+    $item = new ItemDao();
+    $item->setName($name);
+    $item->setDescription($description);
+    $item->setUuid($uuid);
+    $this->save($item);
+
+    $modelLoad = new MIDAS_ModelLoader();
+    $folderModel = $modelLoad->loadModel('Folder');
+    $folderModel->addItem($parent, $item);
+    $this->copyParentPolicies($item, $parent);
+    return $item;
+    }
 } // end class ItemModelBase

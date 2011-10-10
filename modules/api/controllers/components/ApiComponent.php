@@ -95,64 +95,9 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Get the UUID of a resource
-   * @param id The id of the resource (numeric)
-   * @param type The type of the resource (numeric)
-   * @return Universal identifier
-   */
-  public function uuidGet($args)
-    {
-    $this->_validateParams($args, array('id', 'type'));
-
-    $id = $args['id'];
-    $type = $args['type'];
-    $modelLoad = new MIDAS_ModelLoader();
-    switch($type)
-      {
-      case MIDAS_RESOURCE_ASSETSTORE:
-        $model = $modelLoad->loadModel('Assetstore');
-        break;
-      case MIDAS_RESOURCE_BITSTREAM:
-        $model = $modelLoad->loadModel('Bitstream');
-        break;
-      case MIDAS_RESOURCE_ITEM:
-        $model = $modelLoad->loadModel('Item');
-        break;
-      case MIDAS_RESOURCE_COMMUNITY:
-        $model = $modelLoad->loadModel('Community');
-        break;
-      case MIDAS_RESOURCE_REVISION:
-        $model = $modelLoad->loadModel('ItemRevision');
-        break;
-      case MIDAS_RESOURCE_FOLDER:
-        $model = $modelLoad->loadModel('Folder');
-        break;
-      case MIDAS_RESOURCE_USER:
-        $model = $modelLoad->loadModel('User');
-        break;
-      default :
-        throw new Zend_Exception("Undefined type");
-      }
-    $dao = $model->load($id);
-
-    if($dao == false)
-      {
-      throw new Exception('Invalid resource type or id.', MIDAS_INVALID_PARAMETER);
-      }
-
-    $uuid = $dao->getUuid();
-
-    if($uuid == false)
-      {
-      throw new Exception('Invalid resource type or id.', MIDAS_INVALID_PARAMETER);
-      }
-
-    return $uuid;
-    }
-
-  /**
    * Get a resource by its UUID
-   * @params uuid Universal identifier for the resource
+   * @param uuid Universal identifier for the resource
+   * @param folder (Optional) If set, will return the folder instead of the community record
    * @return The resource's dao
    */
   function resourceGet($args)
@@ -167,6 +112,11 @@ class Api_ApiComponent extends AppComponent
     if($resource == false)
       {
       throw new Exception('No resource for the given UUID.', MIDAS_INVALID_PARAMETER);
+      }
+
+    if($resource->resourceType == MIDAS_RESOURCE_COMMUNITY && array_key_exists('folder', $args))
+      {
+      return array('type' => MIDAS_RESOURCE_FOLDER, 'id' => $resource->getFolderId());
       }
     return array('type' => $resource->resourceType, 'id' => $resource->getKey());
     }
@@ -381,7 +331,7 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Create a new community
+   * Create a new community or update an existing one using the uuid
    * @param token Authentication token
    * @param name The community name
    * @param description (Optional) The community description
@@ -455,7 +405,7 @@ class Api_ApiComponent extends AppComponent
 
       if($communityDao === false)
         {
-        throw new Exception('Request failed', MIDAS_INTERNAL_ERROR);
+        throw new Exception('Create community failed', MIDAS_INTERNAL_ERROR);
         }
 
       return $communityDao->toArray();
@@ -585,7 +535,7 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Create a folder
+   * Create a folder or update an existing one if one exists by the uuid passed
    * @param token Authentication token
    * @param name The name of the folder to create
    * @param description (Optional) The description of the folder
@@ -645,20 +595,22 @@ class Api_ApiComponent extends AppComponent
         {
         throw new Exception('Parent doesn\'t exist', MIDAS_INVALID_PARAMETER);
         }
-      $new_folder = $folderModel->createFolder($name, $description, $folder);
+      $new_folder = $folderModel->createFolder($name, $description, $folder, $uuid);
       if($new_folder === false)
         {
-        throw new Exception('Request failed', MIDAS_INTERNAL_ERROR);
+        throw new Exception('Create folder failed', MIDAS_INTERNAL_ERROR);
         }
       $policyGroup = $folder->getFolderpolicygroup();
       $policyUser = $folder->getFolderpolicyuser();
+      $folderpolicygroupModel = $modelLoader->loadModel('Folderpolicygroup');
+      $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicygroup');
       foreach($policyGroup as $policy)
         {
-        $folderModelpolicygroup->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
+        $folderpolicygroupModel->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
         }
       foreach($policyUser as $policy)
         {
-        $folderModelpolicyuser->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
+        $folderpolicyuserModel->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
         }
 
       return $new_folder->toArray();
@@ -771,6 +723,78 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Create an item or update an existing one if one exists by the uuid passed
+   * @param token Authentication token
+   * @param name The name of the item to create
+   * @param description (Optional) The description of the item
+   * @param uuid (Optional) Uuid of the item. If none is passed, will generate one.
+   * @param privacy (Optional) Default 'Public'.
+   * @param parentid The id of the parent folder
+   * @return The item object that was created
+   */
+  function itemCreate($args)
+    {
+    $this->_validateParams($args, array('name'));
+    $userDao = $this->_getUser($args);
+    if($userDao == false)
+      {
+      throw new Exception('Cannot create item anonymously', MIDAS_INVALID_POLICY);
+      }
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $name = $args['name'];
+    $description = $args['description'];
+
+    $uuid = isset($args['uuid']) ? $args['uuid'] : '';
+    $record = false;
+    if(!empty($uuid))
+      {
+      $componentLoader = new MIDAS_ComponentLoader();
+      $uuidComponent = $componentLoader->loadComponent('Uuid');
+      $record = $uuidComponent->getByUid($uuid);
+      }
+    if($record != false && $record instanceof ItemDao)
+      {
+      if(!$itemModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+        }
+      $record->setName($name);
+      if(isset($args['description']))
+        {
+        $record->setDescription($args['description']);
+        }
+      if(isset($args['privacy']))
+        {
+        $record->setPrivacy($args['privacy']);
+        }
+      $itemModel->save($record);
+      return $record->toArray();
+      }
+    else
+      {
+      if(!array_key_exists('parentid', $args))
+        {
+        throw new Exception('Parameter parentid is not defined', MIDAS_INVALID_PARAMETER);
+        }
+      $folderModel = $modelLoader->loadModel('Folder');
+      $folder = $folderModel->load($args['parentid']);
+      if($folder == false)
+        {
+        throw new Exception('Parent folder doesn\'t exist', MIDAS_INVALID_PARAMETER);
+        }
+      $item = $itemModel->createItem($name, $description, $folder, $uuid);
+      if($item === false)
+        {
+        throw new Exception('Create new item failed', MIDAS_INTERNAL_ERROR);
+        }
+
+      return $item->toArray();
+      }
+    }
+
+  /**
    * Get an item's information
    * @param token (Optional) Authentication token
    * @param id The item id
@@ -797,7 +821,7 @@ class Api_ApiComponent extends AppComponent
     $owningFolders = $item->getFolders();
     if(count($owningFolders) > 0)
       {
-      $itemArray['folder_id'] = $owningFolders[0]->parent_id;
+      $itemArray['folder_id'] = $owningFolders[0]->getKey();
       }
 
     $revisionsArray = array();
@@ -809,8 +833,13 @@ class Api_ApiComponent extends AppComponent
       {
       $revisions = $item->getRevisions();
       }
+
     foreach($revisions as $revision)
       {
+      if(!$revision)
+        {
+        continue;
+        }
       $bitstreamArray = array();
       $bitstreams = $revision->getBitstreams();
       foreach($bitstreams as $b)
