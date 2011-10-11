@@ -285,10 +285,10 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->_assertStatusOk($resp);
     $token = $resp->data->token;
     $this->assertTrue(
-      preg_match('/^'.$usersFile[0]->getKey().'\/'.$itemsFile[1]->getKey().'\/.+\.tmp$/', $token) > 0,
-      'Upload token is not of the form <userid>/<itemid>/*.tmp');
+      preg_match('/^'.$usersFile[0]->getKey().'\/'.$itemsFile[1]->getKey().'\/.+\..+$/', $token) > 0,
+      'Upload token ('.$token.') is not of the form <userid>/<itemid>/*.*');
     $this->assertTrue(file_exists(BASE_PATH.'/tmp/misc/'.$token),
-      "Token placeholder file $token was not created in the temp dir");
+      'Token placeholder file '.$token.' was not created in the temp dir');
 
     //now upload using our token
     $this->resetAll();
@@ -320,7 +320,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     unlink(BASE_PATH.'/tmp/misc/test.txt');
 
     $this->_assertStatusOk($resp);
-    
+
     $this->assertTrue(file_exists($assetstoreFile), 'File was not written to the assetstore');
     $this->assertEquals(filesize($assetstoreFile), $length, 'Assetstore file is the wrong length: '.filesize($assetstoreFile));
     $this->assertEquals(md5_file($assetstoreFile), $md5, 'Assetstore file had incorrect checksum');
