@@ -1,3 +1,4 @@
+add_midas_test( AssetstoreModel AssetstoreModelTest.php )
 add_midas_test( FeedModel FeedModelTest.php )
 add_midas_test( FeedpolicygroupModel FeedpolicygroupModelTest.php )
 add_midas_test( FeedpolicyuserModel FeedpolicyuserModelTest.php )
