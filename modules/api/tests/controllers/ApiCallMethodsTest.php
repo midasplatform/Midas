@@ -19,7 +19,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->setupDatabase(array('default')); //core dataset
     $this->setupDatabase(array('default'), 'api'); // module dataset
     $this->enabledModules = array('api');
-    $this->_models = array('User', 'Folder', 'Item');
+    $this->_models = array('User', 'Folder', 'Item', 'ItemRevision');
     $this->_daos = array('User', 'Folder', 'Item');
 
     parent::setUp();
@@ -250,5 +250,89 @@ class ApiCallMethodsTest extends ControllerTestCase
       }
     $this->assertEquals($resp->data[0]->name, 'User 1 name Folder 2');
     $this->assertEquals($resp->data[1]->name, 'User 1 name Folder 3');
+    }
+
+  /** Test file upload */
+  public function testUpload()
+    {
+    $this->resetAll();
+    $usersFile = $this->loadData('User', 'default');
+    $itemsFile = $this->loadData('Item', 'default');
+
+    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $this->params['filename'] = 'test.txt';
+    // call should fail for the first item since we don't have write permission
+    $this->params['itemid'] = $itemsFile[0]->getKey();
+    $this->request->setMethod('POST');
+    $resp = $this->_callJsonApi();
+    $this->assertEquals($resp->stat, 'fail');
+    $this->assertEquals($resp->message, 'Invalid policy or itemid');
+    $this->assertTrue($resp->code != 0);
+
+    $this->resetAll();
+    $usersFile = $this->loadData('User', 'default');
+    $itemsFile = $this->loadData('Item', 'default');
+
+    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $this->params['filename'] = 'test.txt';
+    // use the second item since it has write permission set for our user
+    $this->params['itemid'] = $itemsFile[1]->getKey();
+    $this->request->setMethod('POST');
+    $resp = $this->_callJsonApi();
+
+    $this->_assertStatusOk($resp);
+    $token = $resp->data->token;
+    $this->assertTrue(
+      preg_match('/^'.$usersFile[0]->getKey().'\/'.$itemsFile[1]->getKey().'\/.+\.tmp$/', $token) > 0,
+      'Upload token is not of the form <userid>/<itemid>/*.tmp');
+    $this->assertTrue(file_exists(BASE_PATH.'/tmp/misc/'.$token),
+      "Token placeholder file $token was not created in the temp dir");
+
+    //now upload using our token
+    $this->resetAll();
+
+    $string = '';
+    $length = 100;
+    for($i = 0; $i < $length; $i++)
+      {
+      $string .= 'a';
+      }
+    $fh = fopen(BASE_PATH.'/tmp/misc/test.txt', 'w');
+    fwrite($fh, $string);
+    fclose($fh);
+    $md5 = md5($string);
+    $assetstoreFile = BASE_PATH.'/data/assetstore/'.substr($md5, 0, 2).'/'.substr($md5, 2, 2).'/'.$md5;
+    unlink($assetstoreFile);
+
+    $this->params['method'] = 'midas.upload.perform';
+    $this->params['uploadtoken'] = $token;
+    $this->params['filename'] = 'test.txt';
+    $this->params['length'] = $length;
+    $this->params['itemid'] = $itemsFile[1]->getKey();
+    $this->params['revision'] = 'head'; //upload into head revision
+    $this->params['testingmode'] = 'true';
+
+    $this->request->setMethod('POST');
+    $resp = $this->_callJsonApi();
+
+    unlink(BASE_PATH.'/tmp/misc/test.txt');
+
+    $this->_assertStatusOk($resp);
+    
+    $this->assertTrue(file_exists($assetstoreFile), 'File was not written to the assetstore');
+    $this->assertEquals(filesize($assetstoreFile), $length, 'Assetstore file is the wrong length: '.filesize($assetstoreFile));
+    $this->assertEquals(md5_file($assetstoreFile), $md5, 'Assetstore file had incorrect checksum');
+
+    // make sure it was uploaded to the head revision of the item
+    $itemDao = $this->Item->load($itemsFile[1]->getKey());
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 1, 'Too many revisions in the item');
+    $bitstreams = $revisions[0]->getBitstreams();
+    $this->assertEquals(count($bitstreams), 1, 'Too many bitstreams in the revision');
+    $this->assertEquals($bitstreams[0]->name, 'test.txt');
+    $this->assertEquals($bitstreams[0]->sizebytes, $length);
+    $this->assertEquals($bitstreams[0]->checksum, $md5);
     }
   }

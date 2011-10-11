@@ -189,6 +189,7 @@ class Api_ApiComponent extends AppComponent
 
   /**
    * Generate a unique upload token
+   * @param token Authentication token
    * @param itemid The id of the parent item to upload into
    * @param filename The filename of the bitstream you will upload
    * @return An upload token that can be used to upload a file
@@ -245,7 +246,6 @@ class Api_ApiComponent extends AppComponent
       }
 
     list($userid, $resourceid, ) = explode('/', $args['uploadtoken']);
-    //TODO check if this upload token is valid
 
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
@@ -332,6 +332,12 @@ class Api_ApiComponent extends AppComponent
 
     $mode = array_key_exists('mode', $args) ? $args['mode'] : 'stream';
     $uploadApi = new KwUploadAPI($this->apiSetup);
+
+    if(array_key_exists('testingmode', $args))
+      {
+      $uploadApi->testing_enable = true;
+      $args['localinput'] = $this->apiSetup['tmp_directory'].'/'.$args['filename'];
+      }
 
     // Use KWUploadApi to handle the actual file upload
     if($mode == 'stream')
