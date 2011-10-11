@@ -192,7 +192,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $actualMd5 = md5_file(BASE_PATH.'/tmp/misc/httpupload.png');
+    $actualMd5 = md5_file(BASE_PATH.'/tmp/misc/testing_file.png');
 
     $search = $this->Item->getItemsFromSearch('search.png', $userDao);
     $this->assertTrue(count($search) > 0);
