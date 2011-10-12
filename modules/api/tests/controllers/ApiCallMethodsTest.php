@@ -262,6 +262,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['token'] = $this->_loginUsingApiKey();
     $this->params['method'] = 'midas.upload.generatetoken';
     $this->params['filename'] = 'test.txt';
+    $this->params['checksum'] = 'foo';
     // call should fail for the first item since we don't have write permission
     $this->params['itemid'] = $itemsFile[0]->getKey();
     $this->request->setMethod('POST');
@@ -274,25 +275,8 @@ class ApiCallMethodsTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $itemsFile = $this->loadData('Item', 'default');
 
-    $this->params['token'] = $this->_loginUsingApiKey();
-    $this->params['method'] = 'midas.upload.generatetoken';
-    $this->params['filename'] = 'test.txt';
-    // use the second item since it has write permission set for our user
-    $this->params['itemid'] = $itemsFile[1]->getKey();
-    $this->request->setMethod('POST');
-    $resp = $this->_callJsonApi();
-
-    $this->_assertStatusOk($resp);
-    $token = $resp->data->token;
-    $this->assertTrue(
-      preg_match('/^'.$usersFile[0]->getKey().'\/'.$itemsFile[1]->getKey().'\/.+\..+$/', $token) > 0,
-      'Upload token ('.$token.') is not of the form <userid>/<itemid>/*.*');
-    $this->assertTrue(file_exists(BASE_PATH.'/tmp/misc/'.$token),
-      'Token placeholder file '.$token.' was not created in the temp dir');
-
     //now upload using our token
     $this->resetAll();
-
     $string = '';
     $length = 100;
     for($i = 0; $i < $length; $i++)
@@ -305,6 +289,23 @@ class ApiCallMethodsTest extends ControllerTestCase
     $md5 = md5($string);
     $assetstoreFile = BASE_PATH.'/data/assetstore/'.substr($md5, 0, 2).'/'.substr($md5, 2, 2).'/'.$md5;
     unlink($assetstoreFile);
+
+    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $this->params['filename'] = 'test.txt';
+    $this->params['checksum'] = $md5;
+    // use the second item since it has write permission set for our user
+    $this->params['itemid'] = $itemsFile[1]->getKey();
+    $this->request->setMethod('POST');
+    $resp = $this->_callJsonApi();
+
+    $this->_assertStatusOk($resp);
+    $token = $resp->data->token;
+    $this->assertTrue(
+      preg_match('/^'.$usersFile[0]->getKey().'\/'.$itemsFile[1]->getKey().'\/.+\..+$/', $token) > 0,
+      'Upload token ('.$token.') is not of the form <userid>/<itemid>/*.*');
+    $this->assertTrue(file_exists(BASE_PATH.'/tmp/misc/'.$token),
+      'Token placeholder file '.$token.' was not created in the temp dir');
 
     $this->params['method'] = 'midas.upload.perform';
     $this->params['uploadtoken'] = $token;
