@@ -71,7 +71,7 @@
 	<item item_id="3" name="name 3" description="Description 3" type="3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72752' />
 
 	<bitstream bitstream_id="1" itemrevision_id="3" name="foo.png" mimetype="image/png" sizebytes="64" checksum="f283bc88b24491ba85c65ba960642753"
-		path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="1" date="2011-01-27 12:09:02" />
+		path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="24" date="2011-01-27 12:09:02" />
 
 	<!-- MIDAS_FEED_CREATE_COMMUNITY -->
 	<feed feed_id="1" date="2011-01-27 12:09:02" user_id='1' type="0"
