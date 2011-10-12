@@ -9,7 +9,7 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-
+require_once BASE_PATH . '/modules/helloworld/models/AppModel.php';
 /** demo base model*/
 class Helloworld_HelloModelBase extends Helloworld_AppModel
 {

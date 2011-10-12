@@ -20,6 +20,21 @@ if(NOT PHP)
  message(FATAL_ERROR "Please set the PHP executable")
 endif()
 
+#-----------------------------------------------------------------------------
+#  Drop all tables from the testing DB
+#  Then re-install the DB, set a Default assetstore, and install all modules
+
+execute_process(
+  COMMAND ${PHP} ${CMAKE_CURRENT_SOURCE_DIR}/tests/DatabaseSetup.php
+  RESULT_VARIABLE databaseSetup_RESULT
+  OUTPUT_VARIABLE databaseSetup_OUT
+  ERROR_VARIABLE databaseSetup_ERR)
+
+if(${databaseSetup_RESULT})
+  message(STATUS "DatabaseSetup output: ${databaseSetup_OUT}")
+  message(FATAL_ERROR "DatabaseSetup error: ${databaseSetup_ERR}")
+endif()
+
 
 #-----------------------------------------------------------------------------
 #  This should be at the top level for warning suppression
