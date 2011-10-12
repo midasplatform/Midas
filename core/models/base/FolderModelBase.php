@@ -83,7 +83,7 @@ abstract class FolderModelBase extends AppModel
     }//end incrementViewCount
 
   /** Create a folder */
-  function createFolder($name, $description, $parent)
+  function createFolder($name, $description, $parent, $uuid = '')
     {
     if(!$parent instanceof FolderDao && !is_numeric($parent))
       {
@@ -121,7 +121,7 @@ abstract class FolderModelBase extends AppModel
     $folder = new FolderDao();
     $folder->setName($name);
     $folder->setDescription($description);
-
+    $folder->setUuid($uuid);
     $folder->setParentId($parentId);
     $this->save($folder);
     return $folder;

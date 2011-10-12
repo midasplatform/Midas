@@ -123,7 +123,7 @@ class FolderModel extends FolderModelBase
       {
       if(!$folder instanceof FolderDao)
         {
-        throw new Zend_Exception("Should be a folder" );
+        throw new Zend_Exception("Should be a folder");
         }
       $subqueryUser = $this->database->select()
                       ->setIntegrityCheck(false)
@@ -205,7 +205,7 @@ class FolderModel extends FolderModelBase
     {
     if(!$folder instanceof FolderDao)
       {
-      throw new Zend_Exception("Should be a folder" );
+      throw new Zend_Exception("Should be a folder");
       }
 
     $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
@@ -247,7 +247,7 @@ class FolderModel extends FolderModelBase
 
     if(!$folder instanceof FolderDao)
       {
-      throw new Zend_Exception("Should be a folder" );
+      throw new Zend_Exception("Should be a folder");
       }
     $subqueryUser = $this->database->select()
                     ->setIntegrityCheck(false)
@@ -302,7 +302,7 @@ class FolderModel extends FolderModelBase
     {
     if(!$folder instanceof FolderDao)
       {
-      throw new Zend_Exception("Should be a folder" );
+      throw new Zend_Exception("Should be a folder");
       }
     if(!$folder->saved)
       {
