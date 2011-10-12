@@ -230,6 +230,16 @@ class Api_ApiComponent extends AppComponent
         $revision->setLicense(null);
         $revision = $itemModel->addRevision($item, $revision);
         }
+
+      $siblings = $revision->getBitstreams();
+      foreach($siblings as $sibling)
+        {
+        if($sibling->getName() == $args['filename'])
+          {
+          // already have a file with this name. don't add new record.
+          return array('token' => '');
+          }
+        }
       Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
       $bitstream = new BitstreamDao();
       $bitstream->setChecksum($args['checksum']);
