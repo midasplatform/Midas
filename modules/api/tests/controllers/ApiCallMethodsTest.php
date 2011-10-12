@@ -271,12 +271,10 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($resp->message, 'Invalid policy or itemid');
     $this->assertTrue($resp->code != 0);
 
+    //now upload using our token
     $this->resetAll();
     $usersFile = $this->loadData('User', 'default');
     $itemsFile = $this->loadData('Item', 'default');
-
-    //now upload using our token
-    $this->resetAll();
     $string = '';
     $length = 100;
     for($i = 0; $i < $length; $i++)
@@ -301,8 +299,8 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['itemid'] = $itemsFile[1]->getKey();
     $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
-
     $this->_assertStatusOk($resp);
+
     $token = $resp->data->token;
     $this->assertTrue(
       preg_match('/^'.$usersFile[0]->getKey().'\/'.$itemsFile[1]->getKey().'\/.+\..+$/', $token) > 0,
@@ -310,6 +308,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertTrue(file_exists(BASE_PATH.'/tmp/misc/'.$token),
       'Token placeholder file '.$token.' was not created in the temp dir');
 
+    $this->resetAll();
     $this->params['method'] = 'midas.upload.perform';
     $this->params['uploadtoken'] = $token;
     $this->params['filename'] = 'test.txt';
@@ -320,10 +319,9 @@ class ApiCallMethodsTest extends ControllerTestCase
 
     $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
 
     unlink(BASE_PATH.'/tmp/misc/test.txt');
-
-    $this->_assertStatusOk($resp);
 
     $this->assertTrue(file_exists($assetstoreFile), 'File was not written to the assetstore');
     $this->assertEquals(filesize($assetstoreFile), $length, 'Assetstore file is the wrong length: '.filesize($assetstoreFile));
