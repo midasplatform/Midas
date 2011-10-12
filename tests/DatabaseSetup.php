@@ -31,8 +31,6 @@ function loadDbAdapter($testConfigDir, $dbType)
   $lockFile = $testConfigDir . '/lock.' . $dbType . '.ini';
   copy($dbConfigFile, $lockFile);
 
-// TODO what are these lockfiles for even
-// they don't seem to do anything
   // load the lockfile as the test dbConfig
   if(file_exists($lockFile))
     {
@@ -99,15 +97,18 @@ function installCore($db, $dbType, $utilityComponent)
     {
     case 'mysql':
       $utilityComponent->run_mysql_from_file($sqlFile, $databaseConfig['host'], $databaseConfig['username'], $databaseConfig['password'], $databaseConfig['dbname'], $databaseConfig['port']);
+      $upgradeDbType = "PDO_MYSQL";
       break;
     case 'pgsql':
       $utilityComponent->run_pgsql_from_file($sqlFile, $databaseConfig['host'], $databaseConfig['username'], $databaseConfig['password'], $databaseConfig['dbname'], $databaseConfig['port']);
+      $upgradeDbType = "PDO_PGSQL";
       break;
     default:
       throw new Zend_Exception("Unknown db type: ".$dbType);
       break;
     }
 
+  $upgradeComponent->initUpgrade('core', $db, $upgradeDbType);
   $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)), true /* true for testing */);
   }
 
@@ -162,6 +163,22 @@ function installModules($utilityComponent)
     $utilityComponent->installModule($moduleName);
     }
   }
+
+// cleanup the lock files
+function releaseLocks()
+  {
+  if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
+    {
+    rename(  BASE_PATH.'/tests/configs/lock.pgsql.ini',BASE_PATH.'/tests/configs/pgsql.ini');
+    }
+  if(file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini'))
+    {
+    rename(  BASE_PATH.'/tests/configs/lock.mysql.ini',BASE_PATH.'/tests/configs/mysql.ini');
+    }
+  }
+
+
+
 
 
 
@@ -262,6 +279,8 @@ foreach($dbTypes as $dbType)
     installCore($dbAdapter, $dbType, $utilityComponent);
     createDefaultAssetstore();
     installModules($utilityComponent);
+
+    releaseLocks();
     }
   catch(Zend_Exception $ze)
     {
