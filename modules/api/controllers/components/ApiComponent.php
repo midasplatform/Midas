@@ -192,11 +192,12 @@ class Api_ApiComponent extends AppComponent
    * @param token Authentication token
    * @param itemid The id of the parent item to upload into
    * @param filename The filename of the bitstream you will upload
-   * @return An upload token that can be used to upload a file
+   * @param checksum The md5 checksum of the file to be uploaded
+   * @return An upload token that can be used to upload a file. If the token returned is blank, the server already has this file and there is no need to upload.
    */
   function uploadGeneratetoken($args)
     {
-    $this->_validateParams($args, array('itemid', 'filename'));
+    $this->_validateParams($args, array('itemid', 'filename', 'checksum'));
     $userDao = $this->_getUser($args);
     if(!$userDao)
       {
@@ -211,8 +212,41 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('Invalid policy or itemid', MIDAS_INVALID_POLICY);
       }
 
-    $uploadApi = new KwUploadAPI($this->apiSetup);
-    return $uploadApi->generateToken($args, $userDao->getKey().'/'.$item->getKey());
+    // If we already have a bitstream with this checksum, create a reference and return blank token
+    $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    $existingBitstream = $bitstreamModel->getByChecksum($args['checksum']);
+    if($existingBitstream)
+      {
+      $revision = $itemModel->getLastRevision($item);
+
+      if($revision == false)
+        {
+        // Create new revision if none exists yet
+        Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
+        $revision = new ItemRevisionDao();
+        $revision->setChanges('Initial revision');
+        $revision->setUser_id($userDao->getKey());
+        $revision->setDate(date('c'));
+        $revision->setLicense(null);
+        $revision = $itemModel->addRevision($item, $revision);
+        }
+      Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
+      $bitstream = new BitstreamDao();
+      $bitstream->setChecksum($args['checksum']);
+      $bitstream->setName($args['filename']);
+      $bitstream->setSizebytes($existingBitstream->getSizebytes());
+      $bitstream->setPath($existingBitstream->getPath());
+      $bitstream->setAssetstoreId($existingBitstream->getAssetstoreId());
+      $bitstream->setMimetype($existingBitstream->getMimetype());
+      $revisionModel = $modelLoader->loadModel('Revision');
+      $revisionModel->addBitstream($revision, $bitstream);
+      return array('token' => '');
+      }
+    else //we don't already have this content, so create the token
+      {
+      $uploadApi = new KwUploadAPI($this->apiSetup);
+      return $uploadApi->generateToken($args, $userDao->getKey().'/'.$item->getKey());
+      }
     }
 
   /**
