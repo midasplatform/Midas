@@ -248,7 +248,7 @@ class Api_ApiComponent extends AppComponent
       $bitstream->setPath($existingBitstream->getPath());
       $bitstream->setAssetstoreId($existingBitstream->getAssetstoreId());
       $bitstream->setMimetype($existingBitstream->getMimetype());
-      $revisionModel = $modelLoader->loadModel('Revision');
+      $revisionModel = $modelLoader->loadModel('ItemRevision');
       $revisionModel->addBitstream($revision, $bitstream);
       return array('token' => '');
       }

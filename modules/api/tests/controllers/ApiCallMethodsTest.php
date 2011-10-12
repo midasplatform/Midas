@@ -324,17 +324,43 @@ class ApiCallMethodsTest extends ControllerTestCase
     unlink(BASE_PATH.'/tmp/misc/test.txt');
 
     $this->assertTrue(file_exists($assetstoreFile), 'File was not written to the assetstore');
-    $this->assertEquals(filesize($assetstoreFile), $length, 'Assetstore file is the wrong length: '.filesize($assetstoreFile));
+    $this->assertEquals(filesize($assetstoreFile), $length, 'Assetstore file is the wrong length');
     $this->assertEquals(md5_file($assetstoreFile), $md5, 'Assetstore file had incorrect checksum');
 
     // make sure it was uploaded to the head revision of the item
     $itemDao = $this->Item->load($itemsFile[1]->getKey());
     $revisions = $itemDao->getRevisions();
-    $this->assertEquals(count($revisions), 1, 'Too many revisions in the item');
+    $this->assertEquals(count($revisions), 1, 'Wrong number of revisions in the item');
     $bitstreams = $revisions[0]->getBitstreams();
-    $this->assertEquals(count($bitstreams), 1, 'Too many bitstreams in the revision');
+    $this->assertEquals(count($bitstreams), 1, 'Wrong number of bitstreams in the revision');
     $this->assertEquals($bitstreams[0]->name, 'test.txt');
     $this->assertEquals($bitstreams[0]->sizebytes, $length);
     $this->assertEquals($bitstreams[0]->checksum, $md5);
+
+    // Check that a redundant upload yields a blank upload token and a new reference
+    $this->resetAll();
+    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $this->params['filename'] = 'test2.txt';
+    $this->params['checksum'] = $md5;
+    $this->params['itemid'] = $itemsFile[1]->getKey();
+    $this->request->setMethod('POST');
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    $token = $resp->data->token;
+    $this->assertEquals($token, '', 'Redundant content upload did not return a blank token');
+
+    $itemDao = $this->Item->load($itemsFile[1]->getKey());
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 1, 'Wrong number of revisions in the item');
+    $bitstreams = $revisions[0]->getBitstreams();
+    $this->assertEquals(count($bitstreams), 2, 'Wrong number of bitstreams in the revision');
+    $this->assertEquals($bitstreams[0]->name, 'test.txt');
+    $this->assertEquals($bitstreams[0]->sizebytes, $length);
+    $this->assertEquals($bitstreams[0]->checksum, $md5);
+    $this->assertEquals($bitstreams[1]->name, 'test2.txt');
+    $this->assertEquals($bitstreams[1]->sizebytes, $length);
+    $this->assertEquals($bitstreams[1]->checksum, $md5);
     }
   }
