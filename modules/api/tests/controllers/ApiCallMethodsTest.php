@@ -288,7 +288,10 @@ class ApiCallMethodsTest extends ControllerTestCase
     fclose($fh);
     $md5 = md5($string);
     $assetstoreFile = BASE_PATH.'/data/assetstore/'.substr($md5, 0, 2).'/'.substr($md5, 2, 2).'/'.$md5;
-    unlink($assetstoreFile);
+    if(file_exists($assetstoreFile))
+      {
+      unlink($assetstoreFile);
+      }
 
     $this->params['token'] = $this->_loginUsingApiKey();
     $this->params['method'] = 'midas.upload.generatetoken';
