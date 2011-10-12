@@ -19,7 +19,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->setupDatabase(array('default')); //core dataset
     $this->setupDatabase(array('default'), 'api'); // module dataset
     $this->enabledModules = array('api');
-    $this->_models = array('User', 'Folder', 'Item', 'ItemRevision');
+    $this->_models = array('User', 'Folder', 'Item', 'ItemRevision', 'Assetstore');
     $this->_daos = array('User', 'Folder', 'Item');
 
     parent::setUp();
@@ -285,7 +285,9 @@ class ApiCallMethodsTest extends ControllerTestCase
     fwrite($fh, $string);
     fclose($fh);
     $md5 = md5($string);
-    $assetstoreFile = BASE_PATH.'/data/assetstore/'.substr($md5, 0, 2).'/'.substr($md5, 2, 2).'/'.$md5;
+    $assetstores = $this->Assetstore->getAll();
+    $this->assertTrue(count($assetstores) > 0, 'There are no assetstores defined in the database');
+    $assetstoreFile = $assetstores[0]->getPath().'/'.substr($md5, 0, 2).'/'.substr($md5, 2, 2).'/'.$md5;
     if(file_exists($assetstoreFile))
       {
       unlink($assetstoreFile);
