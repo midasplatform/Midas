@@ -60,11 +60,11 @@ abstract class ItemRevisionModelBase extends AppModel
     $item->setSizebytes($this->getSize($itemRevisionDao));
     $item->setDateCreation(date('c'));
 
-    $modulesThumbnail =  Zend_Registry::get('notifier')->notifyEvent("EVENT_CORE_CREATE_THUMBNAIL", array($item));
+    $modulesThumbnail =  Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_CREATE_THUMBNAIL', array($item));
     $notifications = Zend_Registry::get('notifier')->getNotifications();
 
     $createThumb = false;
-    if(!isset($notifications["EVENT_CORE_CREATE_THUMBNAIL"]) || empty($notifications["EVENT_CORE_CREATE_THUMBNAIL"]))
+    if(!isset($notifications['EVENT_CORE_CREATE_THUMBNAIL']) || empty($notifications['EVENT_CORE_CREATE_THUMBNAIL']))
       {
       $mime = $bitstreamDao->getMimetype();
       $tmpfile = $bitstreamDao->getPath();
