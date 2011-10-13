@@ -13,7 +13,7 @@ PURPOSE.  See the above copyright notices for more information.
 /** User Controller */
 class UserController extends AppController
   {
-  public $_models = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser', 'Group', 'Item' );
+  public $_models = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser', 'Group', 'Item', 'Community' );
   public $_daos = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group'  );
   public $_components = array('Date', 'Filter', 'Sortdao');
   public $_forms = array('User');
@@ -704,9 +704,30 @@ class UserController extends AppController
       throw new Zend_Exception("Unable to find user");
       }
 
+    // Get all the communities this user can see 
+    $communities = array();
+    if($userDao->isAdmin())
+      {
+      $communities = $this->Community->getAll();
+      }
+    else
+      {
+      $communities = $this->Community->getPublicCommunities();
+      }
+    // Get community folders this user can at least read
+    $communityFolders = array();
+    foreach($communities as $communityDao)
+      {
+      $tmpfolders = $this->Folder->getChildrenFoldersFiltered($communityDao->getFolder(), $userDao, MIDAS_POLICY_READ);
+      $communityID = $communityDao->getKey();
+      $communityFolders[$communityID] = $tmpfolders;
+      }
+
     $this->view->user = $userDao;
     $this->view->mainFolder = $userDao->getFolder();
     $this->view->folders = $this->Folder->getChildrenFoldersFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $this->view->userCommunities = $communities;
+    $this->view->userCommunityFolders = $communityFolders;
     }
   }//end class
