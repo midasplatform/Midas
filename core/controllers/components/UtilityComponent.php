@@ -327,7 +327,7 @@ class UtilityComponent extends AppComponent
         {
         throw new Zend_Exception('Could not find class "'.$classname.'" in file "'.$filename.'"');
         }
-      
+
       $class = new $classname();
       $class->preInstall();
       }
@@ -377,6 +377,6 @@ class UtilityComponent extends AppComponent
     $db = Zend_Registry::get('dbAdapter');
     $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
     $upgrade->initUpgrade($moduleName, $db, $dbtype);
-    $upgrade->upgrade($version);  
+    $upgrade->upgrade($version);
     }
 } // end class
