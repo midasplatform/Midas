@@ -123,8 +123,10 @@ class KwUploadAPI
     else
       {
       $uploadOffset = filesize($pathTemporaryFilename);
-      //$controller->log("$filename exists - uploadOffset:$uploadOffset", LOG_DEBUG);
       }
+
+    // can't do streaming checksum if we have a partial file already.
+    $streamChecksum = $uploadOffset == 0;
 
     set_time_limit(0); // Timeout of the PHP script set to Infinite
     ignore_user_abort(TRUE);
@@ -143,24 +145,32 @@ class KwUploadAPI
         }
 
     // open target output
-    $out = fopen($pathTemporaryFilename, "ab"); // Stream (Server -> TempFile) Mode: Append, Binary
-    if ($out === FALSE )
+    $out = fopen($pathTemporaryFilename, 'ab'); // Stream (Server -> TempFile) Mode: Append, Binary
+    if ($out === false)
         {
-        error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Failed to open output file:$pathTemporaryFilename", $this->log_type, $this->log_file);
+        error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '."Failed to open output file:$pathTemporaryFilename", $this->log_type, $this->log_file);
         throw new Exception("Failed to open output file [$pathTemporaryFilename]", -143);
         }
 
-    $bufSize = 10485760;
-    $bufSize = ($length < $bufSize)?$length:$bufSize;
+    if($streamChecksum)
+      {
+      $hashctx = hash_init('md5');
+      }
 
     // read from input and write into file
+    $bufSize = 5242880;
+    $bufSize = $length < $bufSize ? $length : $bufSize;
     while(connection_status() == CONNECTION_NORMAL && $uploadOffset < $length && ($buf = fread($in, $bufSize)))
       {
       $uploadOffset += strlen($buf);
       fwrite($out, $buf);
-      if ($length - $uploadOffset < $bufSize)
+      if($length - $uploadOffset < $bufSize)
         {
         $bufSize = $length - $uploadOffset;
+        }
+      if($streamChecksum)
+        {
+        hash_update($hashctx, $buf);
         }
       }
     fclose($in);
@@ -175,6 +185,7 @@ class KwUploadAPI
     $data['filename'] = $filename;
     $data['path']     = $pathTemporaryFilename;
     $data['size']     = $uploadOffset;
+    $data['md5']      = $streamChecksum ? hash_final($hashctx) : '';
 
     return $data;
     }

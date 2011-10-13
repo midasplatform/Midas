@@ -391,6 +391,7 @@ class Api_ApiComponent extends AppComponent
       $filename = $result['filename'];
       $filepath = $result['path'];
       $filesize = $result['size'];
+      $filemd5 = $result['md5'];
       }
     else if($mode == 'multipart')
       {
@@ -403,6 +404,7 @@ class Api_ApiComponent extends AppComponent
       $filename = $file['name'];
       $filepath = $file['tmp_name'];
       $filesize = $file['size'];
+      $filemd5 = '';
       }
     else
       {
@@ -413,17 +415,17 @@ class Api_ApiComponent extends AppComponent
     $uploadComponent = $componentLoader->loadComponent('Upload');
     if(isset($folder))
       {
-      $item = $uploadComponent->createUploadedItem($userDao, $filename, $filepath, $folder);
+      $item = $uploadComponent->createUploadedItem($userDao, $filename, $filepath, $folder, '', $filemd5);
       }
     else if(isset($revision))
       {
       $tmp = array($item->getKey(), $revision->getRevision()); //existing revision
-      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $tmp, '');
+      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $tmp, '', null, $filemd5);
       }
     else
       {
       $tmp = array($item->getKey(), 99999); //new revision
-      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $tmp, '');
+      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $tmp, '', null, $filemd5);
       }
 
     if(!$item)
