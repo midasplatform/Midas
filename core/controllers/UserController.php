@@ -704,7 +704,7 @@ class UserController extends AppController
       throw new Zend_Exception("Unable to find user");
       }
 
-    // Get all the communities this user can see 
+    // Get all the communities this user can see
     $communities = array();
     if($userDao->isAdmin())
       {
