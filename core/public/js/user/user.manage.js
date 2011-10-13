@@ -8,11 +8,19 @@ $(document).ready(function() {
     $('div.sideElementFirst').show();
     
   
-    $("#browseTable").treeTable();
+    $('table')
+        .filter(function() {
+            return this.id.match(/browseTable*/);
+        })
+        .treeTable();
+    ;
+    
     $("img.tableLoading").hide();
     $("table#browseTable").show();
     
-    initDragAndDrop();    
+    $('div.communityList').hide();
+    
+    initDragAndDrop();
 
   });
   
@@ -24,8 +32,15 @@ $(document).ready(function() {
       $('div.genericAction').hide();
       $('div.genericCommunities').hide();
       $('div.genericStats').hide();
-      $('div.viewInfo').show();
-      $('div.viewAction').show()
+      
+      // user need to have at least written permission to see specific Actions
+      //(edit, delete, etc...)
+      if (node.attr('type')!= 0 )
+        {
+        $('div.viewInfo').show();
+        $('div.viewAction').show();
+        }
+      
       genericCallbackSelect(node);  
     }
 
@@ -45,18 +60,24 @@ $(document).ready(function() {
 
 function initDragAndDrop()
 {
-      $("#browseTable .file, #browseTable .folder:not(.notdraggable)").draggable({
-      helper: "clone",
-      opacity: .75,
-      refreshPositions: true, // Performance?
-      revert: "invalid",
-      revertDuration: 300,
-      scroll: true
+      $("#browseTable .file:not(.notdraggable), #browseTable .folder:not(.notdraggable)").draggable({
+        helper: "clone",
+        cursor: "move",
+        opacity: .75,
+        refreshPositions: true, // Performance?
+        revert: "invalid",
+        revertDuration: 300,
+        scroll: true,
+        // Show communities when user starts to drag items
+        start: function() {            
+          $('div.communityList').show();            
+        } 
       });
       
-      // Configure droppable rows
+      
       $("#browseTable .folder").each(function() {
-        $(this).parents("tr").droppable({
+        // Configure droppable folders/items
+        $(this).parents("tr:[policy!=0]").droppable({
           accept: ".file, .folder",
           drop: function(e, ui) { 
             // Call jQuery treeTable plugin to move the branch
@@ -107,5 +128,31 @@ function initDragAndDrop()
             }
           }
         });
+        
+        // Configure non-drappable folders/items
+        $(this).parents("tr:[policy=0]").droppable({
+            revert: true,
+            // Make the droppable branch expand when a draggable node is moved over it.
+            over: function(e, ui) {
+              if(!$(this).is(".expanded")) {
+                $(this).expand();
+              }
+            }  
+        });
+        
+        $(this).parents("tr:[policy=0]").qtip({
+          content: 'You do not have write permission on this folder and cannot drop items to it !',
+          show: 'mouseover',
+          hide: 'mouseout',
+          position: {
+                at: 'center', 
+                my: 'bottom left',
+                viewport: $(window), // Keep the qtip on-screen at all times
+                effect: true // Disable positioning animation
+             }
+         });
+        
       });
+      
+      
 }

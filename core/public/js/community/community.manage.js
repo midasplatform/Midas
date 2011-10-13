@@ -73,9 +73,16 @@ $(document).ready(function() {
     $('img.tabsLoading').hide()
     
   
-    $("#browseTable").treeTable();
+     $('table')
+        .filter(function() {
+            return this.id.match(/browseTable*/);
+        })
+        .treeTable();
+    ;
     $("img.tableLoading").hide();
     $("table#browseTable").show();
+    
+    $('div.userPersonalData').hide();
     
     initDragAndDrop();    
     $('td.tdUser input').removeAttr('checked');
@@ -112,11 +119,15 @@ function initDragAndDrop()
 {
       $("#browseTable .file, #browseTable .folder:not(.notdraggable)").draggable({
       helper: "clone",
+      cursor: "move",
       opacity: .75,
       refreshPositions: true, // Performance?
       revert: "invalid",
       revertDuration: 300,
-      scroll: true
+      scroll: true,
+      start: function() {            
+          $('div.userPersonalData').show();            
+        }
       });
       
       // Configure droppable rows
