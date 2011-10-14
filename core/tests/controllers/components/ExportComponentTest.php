@@ -10,6 +10,8 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+require_once BASE_PATH.'/library/KWUtils.php';
+
 /**
  * ExportComponentTest
  *
@@ -20,46 +22,6 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class ExportComponentTest extends ControllerTestCase
   {
-
-  /**
-   * Helper function to recursively delete a directory
-   *
-   * @param type $directorypath Directory to be deleted
-   * @return bool Success or not
-   */
-  private function _recursiveRemoveDirectory($directorypath)
-    {
-    // if the path has a slash at the end, remove it here
-    $directorypath = rtrim($directorypath, '/');
-
-    $handle = opendir($directorypath);
-    if(!is_readable($directorypath))
-      {
-      return false;
-      }
-    while(false !== ($item = readdir($handle)))
-      {
-      if($item != '.' && $item != '..')
-        {
-        $path = $directorypath.'/'.$item;
-        if(is_dir($path))
-          {
-          $this->_recursiveRemoveDirectory($path);
-          }
-        else
-          {
-          unlink($path);
-          }
-        }
-      }
-    closedir($handle);
-    // try to delete the now empty directory
-    if(!rmdir($directorypath))
-      {
-      return false;
-      }
-    return true;
-    }
 
   /** set up tests*/
   public function setUp()
@@ -86,7 +48,7 @@ class ExportComponentTest extends ControllerTestCase
     $midas_exporttest_dir = BASE_PATH.'/tmp/exportTest';
     if(file_exists($midas_exporttest_dir))
       {
-      if(!$this->_recursiveRemoveDirectory($midas_exporttest_dir))
+      if(!KWUtils::recursiveRemoveDirectory($midas_exporttest_dir))
         {
         throw new Zend_Exception($midas_exporttest_dir." has already existed and we cannot delete it.");
         }
@@ -154,7 +116,7 @@ class ExportComponentTest extends ControllerTestCase
     }
 
   /**
-   * Test ExportComponentTest::exportBitstreams function
+   * Test ExportComponentTest::exportBitstreams 'createSymlinks' functionality
    *
    * 1) user1 upload one file to his public folder, another file to his private folder
    * 2) export these two items as user1, both files should be exported.
@@ -209,7 +171,46 @@ class ExportComponentTest extends ControllerTestCase
     // user1's private file will NOT be exported
     $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[1].'/user1_private.png'));
     // clean up
-    $this->_recursiveRemoveDirectory($midas_exporttest_dir);
+    KWUtils::recursiveRemoveDirectory($midas_exporttest_dir);
     } // end public function testCreateSymlinks
+
+  /**
+   * Test ExportComponentTest::exportBitstreams 'copy' functiionality
+   *
+   * Because testCreateSymlinks function has covered most testing aspects,
+   * this test only use a simple scenario
+   * 1) user1 upload one file to his private folder
+   * 2) export this item as user1, the file should be exported.
+   */
+  public function testCopy()
+    {
+    $midas_exporttest_dir = BASE_PATH.'/tmp/exportTest';
+
+    // user1 upload one file to his public folder, another file to his private folder
+    $usersFile = $this->loadData('User', 'default');
+    $userDao = $this->User->load($usersFile[0]->getKey());
+    $this->uploadItems($userDao);
+
+    require_once BASE_PATH.'/core/controllers/components/ExportComponent.php';
+    $exportCompoenent = new ExportComponent();
+    $filenames = array();
+    $filenames[] = "user1_private.png";
+    $itemIds = $this->getItemIds($userDao, $filenames);
+    // file should not exist before export
+    $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[0].'/user1_private.png'));
+    // user1 export this item
+    $exportCompoenent->exportBitstreams($userDao, $midas_exporttest_dir, $itemIds, false);
+
+    // user1's private file will be exported (copied to the destination directory)
+    $user1_private_item = $this->Item->load($itemIds[0]);
+    $user1_private_revision = $this->Item->getLastRevision($user1_private_item);
+    $user1_private_bitstreams = $user1_private_revision->getBitstreams();
+    $user1_private_lastbitstream = end($user1_private_bitstreams);
+    $user1_private_bitstream_path = $user1_private_lastbitstream->getAssetstore()->getPath().'/'.$user1_private_lastbitstream->getPath();
+    $this->assertFileEquals($user1_private_bitstream_path, $midas_exporttest_dir.'/'.$itemIds[0].'/user1_private.png');
+
+    // clean up
+    KWUtils::recursiveRemoveDirectory($midas_exporttest_dir);
+    } // end public function testCopy
 
   } // end class
