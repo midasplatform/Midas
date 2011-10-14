@@ -10,6 +10,9 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+
+require_once BASE_PATH.'/library/KWUtils.php';
+
 /**
  * ExportComponent
  *
@@ -23,54 +26,6 @@ class ExportComponent extends AppComponent
 {
 
   /**
-   * Helper function to recursively delete a directory
-   *
-   * @param type $directorypath Directory to be deleted
-   * @return bool Success or not
-   */
-  private function _recursiveRemoveDirectory($directorypath)
-    {
-    // if the path has a slash at the end, remove it here
-    $directorypath = rtrim($directorypath, '/');
-    // open the directory
-    $handle = opendir($directorypath);
-
-    if(!is_readable($directorypath))
-      {
-      return false;
-      }
-    // and scan through the items inside
-    while(false !== ($item = readdir($handle)))
-      {
-      // if the filepointer is not the current directory or the parent directory
-      if($item != '.' && $item != '..')
-        {
-        // build the new path to delete
-        $path = $directorypath.'/'.$item;
-        // if the new path is a directory
-        if(is_dir($path))
-          {
-          // call this function with the new path
-          $this->_recursiveRemoveDirectory($path);
-          // if the new path is a file
-          }
-        else
-          {
-           // remove the file
-          unlink($path);
-          }
-        }
-      }
-    closedir($handle);
-    // try to delete the now empty directory
-    if(!rmdir($directorypath))
-      {
-      return false;
-      }
-    return true;
-    }
-
-  /**
    * Helper function to create a directory for an item
    *
    * @param string $directorypath   Directory to be created
@@ -80,7 +35,8 @@ class ExportComponent extends AppComponent
     // if the directory exists, try to delete it first
     if(file_exists($directorypath))
       {
-      if(!$this->_recursiveRemoveDirectory($directorypath))
+
+      if(!KWUtils::recursiveRemoveDirectory($directorypath))
         {
         throw new Zend_Exception($directorypath." has already existed and we cannot delete it.");
         }
@@ -128,8 +84,8 @@ class ExportComponent extends AppComponent
         {
         // $itemId is a comma seperatd value,
         // the 1st column is the actual item_id, the 2nd is revision_num (optional)
-        $tmp = explode(',', $itemId);
-        if(empty($tmp[0]))
+        $tmpId = explode(',', $itemId);
+        if(empty($tmpId[0]))
           {
           continue;
           }
@@ -138,12 +94,12 @@ class ExportComponent extends AppComponent
         $item_export_dir = $targetDir.'/'.$itemId;
         if(file_exists($item_export_dir))
           {
-          if(!$this->_recursiveRemoveDirectory($item_export_dir))
+          if(!KWUtils::recursiveRemoveDirectory($item_export_dir))
             {
             throw new Zend_Exception($item_export_dir." has already existed and we cannot delete it.");
             }
           }
-        $item = $itemModel->load($tmp[0]);
+        $item = $itemModel->load($tmpId[0]);
         // Only do policy check in the ITEM level now.
         // May also need to do policy check in the FOLDER level.
         if($item == false || !$itemModel->policyCheck($item, $userDao))
@@ -151,21 +107,29 @@ class ExportComponent extends AppComponent
           continue;
           }
         // Use the given revision_number if it is not empty
-        if(isset($tmp[1]))
+        if(isset($tmpId[1]))
           {
-          $tmp = $itemModel->getRevision($item, $tmp[1]);
-          if($tmp !== false)
+          $revisionNum = $itemModel->getRevision($item, $tmpId[1]);
+          if($revisionNum !== false)
             {
-            $revisions[] = $tmp;
+            $revisions[] = $revisionNum;
+            }
+          else
+            {
+            throw new Zend_Exception("Revision number ".$tmpId[1]." for item ".$tmpId[0]." does not exist. Please check your input.");
             }
           }
         // Otherwise use the lastest revision
         else
           {
-          $tmp = $itemModel->getLastRevision($item);
-          if($tmp !== false)
+          $revisionNum = $itemModel->getLastRevision($item);
+          if($revisionNum !== false)
             {
-            $revisions[] = $tmp;
+            $revisions[] = $revisionNum;
+            }
+          else
+            {
+            throw new Zend_Exception("Item ".$tmpId[0]." does not exist. Please check your input.");
             }
           }
         } // end foreach($itemIds
