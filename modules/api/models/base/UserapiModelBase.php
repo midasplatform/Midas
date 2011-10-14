@@ -38,19 +38,22 @@ abstract class Api_UserapiModelBase extends Api_AppModel
       {
       throw new Zend_Exception('Error parameter: must be a userDao object');
       }
-    // Remove prior default api key(s)
+    $key = md5($userDao->getEmail().$userDao->getPassword().'Default');
+
     $rowset = $this->database->fetchAll($this->database->select()
                                                        ->where('user_id = ?', $userDao->getKey())
                                                        ->where('application_name = ?', 'Default'));
-    foreach($rowset as $row)
+    $this->loadDaoClass('UserapiDao', 'api');
+
+    if(count($rowset)) //update existing record if we have one already
       {
-      $userApiDao = $this->initDao('Userapi', $row, 'api');
-      $this->delete($userApiDao);
+      $userApiDao = $this->initDao('Userapi', $rowset[0], 'api');
+      $userApiDao->setApikey($key);
+      $this->save($userApiDao);
+      return;
       }
 
-    // Save new default key
-    $key = md5($userDao->getEmail().$userDao->getPassword().'Default');
-    $this->loadDaoClass('UserapiDao', 'api');
+    // Otherwise save new default key
     $userApiDao = new Api_UserapiDao();
     $userApiDao->setUserId($userDao->getKey());
     $userApiDao->setApplicationName('Default');

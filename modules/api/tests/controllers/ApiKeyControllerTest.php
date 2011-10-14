@@ -72,4 +72,17 @@ class ApiKeyControllerTest extends ControllerTestCase
     $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
     $this->assertEquals($key, md5('some.user@server.com'.md5($passwordPrefix.'midas').'Default'));
     }
+
+  /**
+   * Make sure that existing users get a default api key
+   * created for them when the web api module is installed
+   */
+  public function testExistingUsersGetDefaultKeysOnInstall()
+    {
+    $modelLoad = new MIDAS_ModelLoader();
+    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiDao = $userApiModel->getByAppAndEmail('Default', 'user1@user1.com');
+    $this->assertTrue($userApiDao != false, 'Api key was not created for existing user');
+    $this->assertEquals($userApiDao->getApikey(), md5('user1@user1.com35fd8ba86ba403ffcc00feac5355ad20Default'));
+    }
   }
