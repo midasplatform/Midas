@@ -21,7 +21,7 @@ class Batchmake_IndexController extends Batchmake_AppController
    */
   public function indexAction()
     {
-    $this->view->header = $this->t("BatchMake Server Side Processing");
+    $this->view->header = $this->t("Batchmake Server Side Processing");
     }
 
 
