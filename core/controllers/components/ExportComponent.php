@@ -128,8 +128,8 @@ class ExportComponent extends AppComponent
         {
         // $itemId is a comma seperatd value,
         // the 1st column is the actual item_id, the 2nd is revision_num (optional)
-        $tmp = explode(',', $itemId);
-        if(empty($tmp[0]))
+        $tmpId = explode(',', $itemId);
+        if(empty($tmpId[0]))
           {
           continue;
           }
@@ -143,7 +143,7 @@ class ExportComponent extends AppComponent
             throw new Zend_Exception($item_export_dir." has already existed and we cannot delete it.");
             }
           }
-        $item = $itemModel->load($tmp[0]);
+        $item = $itemModel->load($tmpId[0]);
         // Only do policy check in the ITEM level now.
         // May also need to do policy check in the FOLDER level.
         if($item == false || !$itemModel->policyCheck($item, $userDao))
@@ -151,22 +151,30 @@ class ExportComponent extends AppComponent
           continue;
           }
         // Use the given revision_number if it is not empty
-        if(isset($tmp[1]))
+        if(isset($tmpId[1]))
           {
-          $tmp = $itemModel->getRevision($item, $tmp[1]);
-          if($tmp !== false)
+          $revisionNum = $itemModel->getRevision($item, $tmpId[1]);
+          if($revisionNum !== false)
             {
-            $revisions[] = $tmp;
+            $revisions[] = $revisionNum;
             }
+          else
+             {
+             throw new Zend_Exception("Revision number ".$tmpId[1]." for item ".$tmpId[0]." does not exist. Please check your input.");
+             }
           }
         // Otherwise use the lastest revision
         else
           {
-          $tmp = $itemModel->getLastRevision($item);
-          if($tmp !== false)
+          $revisionNum = $itemModel->getLastRevision($item);
+          if($revisionNum !== false)
             {
-            $revisions[] = $tmp;
+            $revisions[] = $revisionNum;
             }
+          else
+             {
+             throw new Zend_Exception("Item ".$tmpId[0]." does not exist. Please check your input.");
+             }
           }
         } // end foreach($itemIds
       } // if(!empty($itemIds))
