@@ -145,16 +145,19 @@ function initDragAndDrop()
              {
                elements=';'+$(ui.draggable).parents("tr").attr('element');
              }
-           var from;
+           var from_ojbect;
            var classNames=$(ui.draggable).parents("tr").attr('class').split(' ');
             for(key in classNames) {
               if(classNames[key].match('child-of-')) {
-                from= $("#" + classNames[key].substring(9)).attr('element');
+                from_obj = "#" + classNames[key].substring(9); 
               }
             }
            var destination_obj=this;
-           $.post(json.global.webroot+'/browse/movecopy', {moveElement: true, elements: elements , destination:$(this).attr('element'),from:from,ajax:true},
-           function(data) {
+           
+           // do nothing if drop item(s) to its current folder
+           if ($(this).attr('id') != $(from_obj).attr('id')){
+             $.post(json.global.webroot+'/browse/movecopy', {moveElement: true, elements: elements , destination:$(this).attr('element'),from:$(from_obj).attr('element'),ajax:true},
+             function(data) {
 
                jsonResponse = jQuery.parseJSON(data);
                 if(jsonResponse==null)
@@ -166,14 +169,15 @@ function initDragAndDrop()
                   {
                     createNotive(jsonResponse[1],1500);
                     $($(ui.draggable).parents("tr")).appendBranchTo(destination_obj);
-                    $(destination_obj).reload();
+                    $(from_obj).reload();
+                    $(destination_obj).reload();        
                   }
                 else
                   {
                     createNotive(jsonResponse[1],4000);
                   }
-           });
-            
+             });
+           }       
           },
           hoverClass: "accept",
           over: function(e, ui) {
