@@ -43,7 +43,7 @@ $settings['embed'] = false;
 //base dir (a relative path to the base directory)
 $settings['baseDir'] = '../';
 
-//Encoding of your js and css files. (utf-8 or iso-8859-1)
+//Encoding of your js and css files. FOR THE LOVE OF GOD ONLY USE UTF8
 $settings['charSet'] = 'utf-8'; 
 
 //Show error messages if any error occurs (true or false)

@@ -1,38 +1,10 @@
--- phpMyAdmin SQL Dump
--- version 3.3.9
--- http://www.phpmyadmin.net
---
--- Serveur: localhost
--- Généré le : Ven 17 Juin 2011 à 11:22
--- Version du serveur: 5.5.8
--- Version de PHP: 5.3.5
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Base de données: `midas`
---
-
--- --------------------------------------------------------
-
---
--- Structure de la table `assetstore`
---
-
 CREATE TABLE IF NOT EXISTS `assetstore` (
   `assetstore_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `path` varchar(512) NOT NULL,
   `type` tinyint(4) NOT NULL,
-  PRIMARY KEY (`assetstore_id`),
-  UNIQUE KEY `path` (`path`,`type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=24 ;
+  PRIMARY KEY (`assetstore_id`)
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
 
 -- --------------------------------------------------------
 
@@ -52,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `bitstream` (
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`bitstream_id`),
   KEY `itemrevision_id` (`itemrevision_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=692 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=692 ;
 
 -- --------------------------------------------------------
 
@@ -77,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `community` (
   `uuid` varchar(255) DEFAULT '',
   PRIMARY KEY (`community_id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=20 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
 
 -- --------------------------------------------------------
 
@@ -90,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `communityinvitation` (
   `community_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`communityinvitation_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 -- --------------------------------------------------------
 
@@ -105,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `errorlog` (
   `message` text NOT NULL,
   `datetime` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`errorlog_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=185 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=185 ;
 
 -- --------------------------------------------------------
 
@@ -120,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `feed` (
   `type` int(11) NOT NULL,
   `ressource` varchar(255) NOT NULL,
   PRIMARY KEY (`feed_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=82 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=82 ;
 
 -- --------------------------------------------------------
 
@@ -132,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `feed2community` (
   `feed_id` bigint(20) NOT NULL,
   `community_id` bigint(20) NOT NULL,
   UNIQUE KEY `feed_id` (`feed_id`,`community_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -146,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `feedpolicygroup` (
   `policy` tinyint(4) NOT NULL,
   `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `feed_id` (`feed_id`,`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -160,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `feedpolicyuser` (
   `policy` tinyint(4) NOT NULL,
   `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `feed_id` (`feed_id`,`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -183,7 +155,7 @@ CREATE TABLE IF NOT EXISTS `folder` (
   `date_creation` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`folder_id`),
   KEY `parent_id` (`parent_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Describes a directory' AUTO_INCREMENT=209 ;
+)   DEFAULT CHARSET=utf8 COMMENT='Describes a directory' AUTO_INCREMENT=209 ;
 
 -- --------------------------------------------------------
 
@@ -197,7 +169,7 @@ CREATE TABLE IF NOT EXISTS `folderpolicygroup` (
   `policy` tinyint(4) NOT NULL,
   `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `folder_id` (`folder_id`,`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -211,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `folderpolicyuser` (
   `policy` tinyint(4) NOT NULL,
   `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `folder_id` (`folder_id`,`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -225,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `group` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`group_id`),
   KEY `community_id` (`community_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=58 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=58 ;
 
 -- --------------------------------------------------------
 
@@ -247,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `item` (
   `uuid` varchar(255) DEFAULT '',
   `date_creation` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=56 ;
 
 -- --------------------------------------------------------
 
@@ -258,7 +230,7 @@ CREATE TABLE IF NOT EXISTS `item` (
 CREATE TABLE IF NOT EXISTS `item2folder` (
   `item_id` bigint(20) NOT NULL,
   `folder_id` bigint(20) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -270,7 +242,7 @@ CREATE TABLE IF NOT EXISTS `item2keyword` (
   `item_id` bigint(20) NOT NULL,
   `keyword_id` bigint(20) NOT NULL,
   UNIQUE KEY `item_id` (`item_id`,`keyword_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -285,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `itemkeyword` (
   PRIMARY KEY (`keyword_id`),
   UNIQUE KEY `value` (`value`),
   KEY `relevance` (`relevance`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=67 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=67 ;
 
 -- --------------------------------------------------------
 
@@ -299,7 +271,7 @@ CREATE TABLE IF NOT EXISTS `itempolicygroup` (
   `policy` tinyint(4) NOT NULL,
   `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `item_id` (`item_id`,`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -313,7 +285,7 @@ CREATE TABLE IF NOT EXISTS `itempolicyuser` (
   `policy` tinyint(4) NOT NULL,
   `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `item_id` (`item_id`,`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -334,7 +306,7 @@ CREATE TABLE IF NOT EXISTS `itemrevision` (
   UNIQUE KEY `item_id` (`item_id`,`revision`),
   KEY `user_id` (`user_id`),
   KEY `date` (`date`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=704 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=704 ;
 
 -- --------------------------------------------------------
 
@@ -350,7 +322,7 @@ CREATE TABLE IF NOT EXISTS `metadata` (
   `description` varchar(512) NOT NULL,
   PRIMARY KEY (`metadata_id`),
   KEY `metadatatype_id` (`metadatatype`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
 
 INSERT INTO metadata (metadatatype,element,qualifier,description)
 VALUES ('0','contributor','author','Author of the data');
@@ -396,7 +368,7 @@ CREATE TABLE IF NOT EXISTS `metadatadocumentvalue` (
   KEY `metadata_id` (`metadata_id`),
   KEY `itemrevision_id` (`itemrevision_id`),
   KEY `value` (`value`(1000))
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+)  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -412,7 +384,7 @@ CREATE TABLE IF NOT EXISTS `metadatavalue` (
   PRIMARY KEY (`metadatavalue_id`),
   KEY `metadata_id` (`metadata_id`,`itemrevision_id`),
   KEY `value` (`value`(1000))
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+)  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -442,7 +414,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `biography` varchar(255) DEFAULT '',
   PRIMARY KEY (`user_id`),
   KEY `email` (`email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=44 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=44 ;
 
 -- --------------------------------------------------------
 
@@ -454,4 +426,4 @@ CREATE TABLE IF NOT EXISTS `user2group` (
   `user_id` bigint(20) NOT NULL,
   `group_id` bigint(20) NOT NULL,
   UNIQUE KEY `user_id` (`user_id`,`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)  DEFAULT CHARSET=utf8;

@@ -20,92 +20,105 @@ class KwUploadAPI
 {
   //const PARAM_NAME_UPLOAD_TOKEN = 'uploadUniqueIdentifier';
   const PARAM_NAME_UPLOAD_TOKEN = 'uploadtoken';
-  
-  var $tmp_directory       = ''; 
-  var $testing_enable      = false; 
-  
-  var $log_file = ''; 
-  var $log_type = 0; 
-  
+
+  var $tmp_directory       = '';
+  var $testing_enable      = false;
+
+  var $log_file = '';
+  var $log_type = 0;
+
   /** Create the object */
   function __construct($apiSetup)
     {
-    //$this->checkApiSetup($apiSetup); 
+    //$this->checkApiSetup($apiSetup);
     $this->tmp_directory  = $apiSetup['tmp_directory'];
-    $this->testing_enable = $apiSetup['testing'];  
+    $this->testing_enable = $apiSetup['testing'];
     }
-  
+
   /** check if the $apiSetup provided is valid */
   function checkApiSetup($apiSetup)
     {
     // Not Implemented
     }
-  
+
   /** Set the temporary directory */
   function setTempDirectory($tmp_directory)
     {
     $this->tmp_directory = $tmp_directory;
     }
-  
-   /** */
-  function generateToken($args)
+
+   /**
+    * Generate an upload token that will act as the authentication token for the upload.
+    * This token is the filename of a guaranteed unique file which will be placed under the
+    * directory specified by the dirname parameter, which should be used to ensure that
+    * the user can only write into a certain logical space.
+    */
+  function generateToken($args, $dirname = '')
     {
-    //check parameter
-    if (!array_key_exists('filename', $args))
+    if(!array_key_exists('filename', $args))
       {
       throw new Exception('Parameter filename is not defined', -150);
       }
-  
-    // create a unique temporary file
-    $unique_identifier = basename(tempnam($this->tmp_directory, $args['filename']));
-    
-    if ( empty($unique_identifier) )
+    $dir = $dirname == '' ? '' : '/'.$dirname;
+    $dir = $this->tmp_directory.$dir;
+
+    if(!file_exists($dir))
+      {
+      mkdir($dir, 0700, true);
+      }
+    // create a unique temporary file in the dirname directory
+    $unique_identifier = basename(tempnam($dir, $args['filename']));
+    if($dirname != '')
+      {
+      $unique_identifier = $dirname.'/'.$unique_identifier;
+      }
+
+    if(empty($unique_identifier))
       {
       throw new Exception('Failed to generate upload token', -140);
       }
-    $data['token'] = $unique_identifier; 
-    return $data; 
+    return array('token' => $unique_identifier);
     }
-    
+
   /** Handle the upload */
   function process($args)
     {
     $uploadOffset = (float)0; // bytes received
-  
+
     //check parameters
     if (!array_key_exists('filename', $args))
       {
       error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter filename is not defined", $this->log_type, $this->log_file);
       throw new Exception('Parameter filename is not defined', -150);
       }
-  
+
     $filename = $args['filename']; // XXXX.ISP
-    
+
     if (!array_key_exists(self::PARAM_NAME_UPLOAD_TOKEN, $args))
       {
       error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter ".self::PARAM_NAME_UPLOAD_TOKEN." is not defined", $this->log_type, $this->log_file);
       throw new Exception('Parameter '.self::PARAM_NAME_UPLOAD_TOKEN.' is not defined', -150);
       }
     $uploadToken = $args[self::PARAM_NAME_UPLOAD_TOKEN]; //XXX123.TMP
-    
+
     if (!array_key_exists('length', $args))
       {
       error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter length is not defined", $this->log_type, $this->log_file);
       throw new Exception('Parameter length is not defined', -150);
       }
     $length = (float)($args['length']);
-    
-    if ($this->testing_enable && array_key_exists('localinput', $args))
+
+    if($this->testing_enable && array_key_exists('localinput', $args))
       {
-      $localinput = array_key_exists('localinput', $args) ? $args['localinput'] : false; 
+      $localinput = array_key_exists('localinput', $args) ? $args['localinput'] : false;
       }
-    
+
     //check if the temporary file exists
-    $pathTemporaryFilename = $this->tmp_directory."/".$uploadToken;
-    if (!file_exists($pathTemporaryFilename))
+    $pathTemporaryFilename = $this->tmp_directory.'/'.$uploadToken;
+    if(!file_exists($pathTemporaryFilename))
       {
-      error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Invalid upload token", $this->log_type, $this->log_file);
-      throw new Exception("Invalid upload token", -141);
+      error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '.'Invalid upload token', $this->log_type, $this->log_file);
+      throw new Exception('Invalid upload token', -141);
       }
     else
       {
@@ -116,16 +129,16 @@ class KwUploadAPI
     set_time_limit(0); // Timeout of the PHP script set to Infinite
     ignore_user_abort(TRUE);
 
-    $inputfile = "php://input"; // Stream (Client -> Server) Mode: Read, Binary
+    $inputfile = 'php://input'; // Stream (Client -> Server) Mode: Read, Binary
     if ($this->testing_enable && array_key_exists('localinput', $args))
       {
-      $inputfile = $localinput; // Stream (LocalServerFile -> Server) Mode: Read, Binary    
+      $inputfile = $localinput; // Stream (LocalServerFile -> Server) Mode: Read, Binary
       }
 
-     $in = fopen($inputfile, "rb");    // Stream (LocalServerFile -> Server) Mode: Read, Binary
-     if ($in === FALSE )
+     $in = fopen($inputfile, 'rb');    // Stream (LocalServerFile -> Server) Mode: Read, Binary
+     if($in === FALSE )
         {
-        error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Failed to open source:$inputfile", $this->log_type, $this->log_file);
+        error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '."Failed to open source:$inputfile", $this->log_type, $this->log_file);
         throw new Exception("Failed to open [$inputfile] source", -142);
         }
 
@@ -141,32 +154,31 @@ class KwUploadAPI
     $bufSize = ($length < $bufSize)?$length:$bufSize;
 
     // read from input and write into file
-    while (connection_status() == CONNECTION_NORMAL && $uploadOffset < $length && ($buf = fread($in, $bufSize)))
+    while(connection_status() == CONNECTION_NORMAL && $uploadOffset < $length && ($buf = fread($in, $bufSize)))
       {
       $uploadOffset += strlen($buf);
-      //$this->log("uploadOffset: $uploadOffset", LOG_DEBUG);
       fwrite($out, $buf);
-      if ($length-$uploadOffset < $bufSize)
+      if ($length - $uploadOffset < $bufSize)
         {
-        $bufSize = $length-$uploadOffset;
+        $bufSize = $length - $uploadOffset;
         }
       }
     fclose($in);
     fclose($out);
 
-    if ($uploadOffset < $length)
+    if($uploadOffset < $length)
       {
-      error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Failed to upload file - {$uploadOffset}/{$length} bytes transferred", $this->log_type, $this->log_file);
+      error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '."Failed to upload file - {$uploadOffset}/{$length} bytes transferred", $this->log_type, $this->log_file);
       throw new Exception("Failed to upload file - {$uploadOffset}/{$length} bytes transferred", -105);
       }
 
-    $data['filename'] = $filename; 
+    $data['filename'] = $filename;
     $data['path']     = $pathTemporaryFilename;
     $data['size']     = $uploadOffset;
 
-    return $data; 
+    return $data;
     }
-      
+
   /** Get the amount of data already uploaded */
   function getOffset($args)
     {
@@ -176,12 +188,12 @@ class KwUploadAPI
       throw new Exception('Parameter '.self::PARAM_NAME_UPLOAD_TOKEN.' is not defined', -150);
       }
     $uploadToken = $args[self::PARAM_NAME_UPLOAD_TOKEN]; //XXX123.TMP
-    
-    $offset = filesize($this->tmp_directory."/$uploadToken");  
-    
-    $data['offset'] = $offset; 
-    
-    return $data; 
+
+    $offset = filesize($this->tmp_directory."/$uploadToken");
+
+    $data['offset'] = $offset;
+
+    return $data;
     }
 }
 
