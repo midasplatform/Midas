@@ -10,6 +10,8 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+require_once BASE_PATH.'/library/KWUtils.php';
+
 /**
  * ExportComponent
  *
@@ -23,54 +25,6 @@ class ExportComponent extends AppComponent
 {
 
   /**
-   * Helper function to recursively delete a directory
-   *
-   * @param type $directorypath Directory to be deleted
-   * @return bool Success or not
-   */
-  private function _recursiveRemoveDirectory($directorypath)
-    {
-    // if the path has a slash at the end, remove it here
-    $directorypath = rtrim($directorypath, '/');
-    // open the directory
-    $handle = opendir($directorypath);
-
-    if(!is_readable($directorypath))
-      {
-      return false;
-      }
-    // and scan through the items inside
-    while(false !== ($item = readdir($handle)))
-      {
-      // if the filepointer is not the current directory or the parent directory
-      if($item != '.' && $item != '..')
-        {
-        // build the new path to delete
-        $path = $directorypath.'/'.$item;
-        // if the new path is a directory
-        if(is_dir($path))
-          {
-          // call this function with the new path
-          $this->_recursiveRemoveDirectory($path);
-          // if the new path is a file
-          }
-        else
-          {
-           // remove the file
-          unlink($path);
-          }
-        }
-      }
-    closedir($handle);
-    // try to delete the now empty directory
-    if(!rmdir($directorypath))
-      {
-      return false;
-      }
-    return true;
-    }
-
-  /**
    * Helper function to create a directory for an item
    *
    * @param string $directorypath   Directory to be created
@@ -80,7 +34,7 @@ class ExportComponent extends AppComponent
     // if the directory exists, try to delete it first
     if(file_exists($directorypath))
       {
-      if(!$this->_recursiveRemoveDirectory($directorypath))
+      if(!KWUtils::recursiveRemoveDirectory($directorypath))
         {
         throw new Zend_Exception($directorypath." has already existed and we cannot delete it.");
         }
@@ -138,7 +92,7 @@ class ExportComponent extends AppComponent
         $item_export_dir = $targetDir.'/'.$itemId;
         if(file_exists($item_export_dir))
           {
-          if(!$this->_recursiveRemoveDirectory($item_export_dir))
+          if(!KWUtils::recursiveRemoveDirectory($item_export_dir))
             {
             throw new Zend_Exception($item_export_dir." has already existed and we cannot delete it.");
             }
@@ -159,9 +113,9 @@ class ExportComponent extends AppComponent
             $revisions[] = $revisionNum;
             }
           else
-             {
-             throw new Zend_Exception("Revision number ".$tmpId[1]." for item ".$tmpId[0]." does not exist. Please check your input.");
-             }
+            {
+            throw new Zend_Exception("Revision number ".$tmpId[1]." for item ".$tmpId[0]." does not exist. Please check your input.");
+            }
           }
         // Otherwise use the lastest revision
         else
@@ -172,9 +126,9 @@ class ExportComponent extends AppComponent
             $revisions[] = $revisionNum;
             }
           else
-             {
-             throw new Zend_Exception("Item ".$tmpId[0]." does not exist. Please check your input.");
-             }
+            {
+            throw new Zend_Exception("Item ".$tmpId[0]." does not exist. Please check your input.");
+            }
           }
         } // end foreach($itemIds
       } // if(!empty($itemIds))

@@ -160,6 +160,20 @@ class KWUtilsTest extends ControllerTestCase
     $this->assertEquals($returnVal, "'".$appPath."' 'blah1' 'blah2' 'blah3'");
     }
 
+  /** tests recursiveRemoveDirectory function */
+  public function testRecursiveRemoveDirectory()
+    {
+    // create a two-level directory
+    $testParentDir = $this->getTempDirectory() . '/KWUtilsParentDir';
+    mkdir($testParentDir);
+    $testChildDir = $this->getTempDirectory() . '/KWUtilsParentDir/ChildDir';
+    mkdir($testChildDir);
+    copy(BASE_PATH.'/tests/testfiles/search.png', $testChildDir.'/testContent.png');
+    $this->assertTrue(file_exists($testChildDir.'/testContent.png'));
 
+    // recursively remove the directory
+    KWUtils::recursiveRemoveDirectory($testParentDir);
+    $this->assertFalse(file_exists($testParentDir));
+    }
 
   }
