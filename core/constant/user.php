@@ -12,4 +12,5 @@ PURPOSE.  See the above copyright notices for more information.
 
 define("MIDAS_USER_PUBLIC", 0);
 define("MIDAS_USER_PRIVATE", 1);
+define("MIDAS_MAXIMUM_FOLDER_NUMBERS_PER_LEVEL", 1000);
 ?>
