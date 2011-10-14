@@ -10,7 +10,6 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-
 require_once BASE_PATH.'/library/KWUtils.php';
 
 /**
@@ -35,7 +34,6 @@ class ExportComponent extends AppComponent
     // if the directory exists, try to delete it first
     if(file_exists($directorypath))
       {
-
       if(!KWUtils::recursiveRemoveDirectory($directorypath))
         {
         throw new Zend_Exception($directorypath." has already existed and we cannot delete it.");

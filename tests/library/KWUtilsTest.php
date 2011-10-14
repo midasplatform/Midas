@@ -38,7 +38,7 @@ class KWUtilsTest extends ControllerTestCase
     $tmpDir = $this->getTempDirectory() . '/KWUtilsTest';
     $this->assertTrue(KWUtils::mkDir($tmpDir));
     // now clean up
-    rmdir($tmpDir);
+    KWUtils::recursiveRemoveDirectory($tmpDir);
     }
 
   /** tests createSubDirectories function */
@@ -66,15 +66,8 @@ class KWUtilsTest extends ControllerTestCase
       $this->assertTrue(is_dir($currDir));
       }
 
-    // now walk back up the tree and clean up these tmp dirs
-    foreach($subDirs as $subdir)
-      {
-      // we aren't doing anything with $subdir, just iterating once per subdir
-      rmdir($currDir);
-      $parts = explode('/', $currDir);
-      $parts = array_slice($parts, 0, count($parts)-1);
-      $currDir = implode('/', $parts);
-      }
+    $topDir = $this->getTempDirectory() . '/KWUtilsTest';
+    KWUtils::recursiveRemoveDirectory($topDir);
     }
 
 
@@ -163,6 +156,10 @@ class KWUtilsTest extends ControllerTestCase
   /** tests recursiveRemoveDirectory function */
   public function testRecursiveRemoveDirectory()
     {
+    // test some basic exception handling
+    $this->assertFalse(KWUtils::recursiveRemoveDirectory(''));
+    $this->assertFalse(KWUtils::recursiveRemoveDirectory('thisstringisunlikelytobeadirectory'));
+
     // create a two-level directory
     $testParentDir = $this->getTempDirectory() . '/KWUtilsParentDir';
     mkdir($testParentDir);
