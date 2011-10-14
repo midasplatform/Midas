@@ -192,12 +192,14 @@ class Api_ApiComponent extends AppComponent
    * @param token Authentication token
    * @param itemid The id of the parent item to upload into
    * @param filename The filename of the bitstream you will upload
-   * @param checksum The md5 checksum of the file to be uploaded
-   * @return An upload token that can be used to upload a file. If the token returned is blank, the server already has this file and there is no need to upload.
+   * @param checksum (Optional) The md5 checksum of the file to be uploaded
+   * @return An upload token that can be used to upload a file.
+             If checksum is passed and the token returned is blank, the
+             server already has this file and there is no need to upload.
    */
   function uploadGeneratetoken($args)
     {
-    $this->_validateParams($args, array('itemid', 'filename', 'checksum'));
+    $this->_validateParams($args, array('itemid', 'filename'));
     $userDao = $this->_getUser($args);
     if(!$userDao)
       {
@@ -212,51 +214,52 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('Invalid policy or itemid', MIDAS_INVALID_POLICY);
       }
 
-    // If we already have a bitstream with this checksum, create a reference and return blank token
-    $bitstreamModel = $modelLoader->loadModel('Bitstream');
-    $existingBitstream = $bitstreamModel->getByChecksum($args['checksum']);
-    if($existingBitstream)
+    if(array_key_exists('checksum', $args))
       {
-      $revision = $itemModel->getLastRevision($item);
-
-      if($revision == false)
+      // If we already have a bitstream with this checksum, create a reference and return blank token
+      $bitstreamModel = $modelLoader->loadModel('Bitstream');
+      $existingBitstream = $bitstreamModel->getByChecksum($args['checksum']);
+      if($existingBitstream)
         {
-        // Create new revision if none exists yet
-        Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
-        $revision = new ItemRevisionDao();
-        $revision->setChanges('Initial revision');
-        $revision->setUser_id($userDao->getKey());
-        $revision->setDate(date('c'));
-        $revision->setLicense(null);
-        $revision = $itemModel->addRevision($item, $revision);
-        }
+        $revision = $itemModel->getLastRevision($item);
 
-      $siblings = $revision->getBitstreams();
-      foreach($siblings as $sibling)
-        {
-        if($sibling->getName() == $args['filename'])
+        if($revision == false)
           {
-          // already have a file with this name. don't add new record.
-          return array('token' => '');
+          // Create new revision if none exists yet
+          Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
+          $revision = new ItemRevisionDao();
+          $revision->setChanges('Initial revision');
+          $revision->setUser_id($userDao->getKey());
+          $revision->setDate(date('c'));
+          $revision->setLicense(null);
+          $revision = $itemModel->addRevision($item, $revision);
           }
+
+        $siblings = $revision->getBitstreams();
+        foreach($siblings as $sibling)
+          {
+          if($sibling->getName() == $args['filename'])
+            {
+            // already have a file with this name. don't add new record.
+            return array('token' => '');
+            }
+          }
+        Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
+        $bitstream = new BitstreamDao();
+        $bitstream->setChecksum($args['checksum']);
+        $bitstream->setName($args['filename']);
+        $bitstream->setSizebytes($existingBitstream->getSizebytes());
+        $bitstream->setPath($existingBitstream->getPath());
+        $bitstream->setAssetstoreId($existingBitstream->getAssetstoreId());
+        $bitstream->setMimetype($existingBitstream->getMimetype());
+        $revisionModel = $modelLoader->loadModel('ItemRevision');
+        $revisionModel->addBitstream($revision, $bitstream);
+        return array('token' => '');
         }
-      Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
-      $bitstream = new BitstreamDao();
-      $bitstream->setChecksum($args['checksum']);
-      $bitstream->setName($args['filename']);
-      $bitstream->setSizebytes($existingBitstream->getSizebytes());
-      $bitstream->setPath($existingBitstream->getPath());
-      $bitstream->setAssetstoreId($existingBitstream->getAssetstoreId());
-      $bitstream->setMimetype($existingBitstream->getMimetype());
-      $revisionModel = $modelLoader->loadModel('ItemRevision');
-      $revisionModel->addBitstream($revision, $bitstream);
-      return array('token' => '');
       }
-    else //we don't already have this content, so create the token
-      {
-      $uploadApi = new KwUploadAPI($this->apiSetup);
-      return $uploadApi->generateToken($args, $userDao->getKey().'/'.$item->getKey());
-      }
+    //we don't already have this content, so create the token
+    $uploadApi = new KwUploadAPI($this->apiSetup);
+    return $uploadApi->generateToken($args, $userDao->getKey().'/'.$item->getKey());
     }
 
   /**
@@ -271,14 +274,16 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Upload a file to the server. PUT or POST is required. Either the itemid or folderid parameter must be set
+   * Upload a file to the server. PUT or POST is required. Either the itemid
+       or folderid parameter must be set
    * @param uploadtoken The upload token (see upload.generatetoken)
    * @param filename The upload filename
    * @param length The length in bytes of the file being uploaded
    * @param mode (Optional) Stream or multipart. Default is stream
    * @param folderid (Optional) The id of the folder to upload into
    * @param itemid (Optional) If set, will create a new revision in the existing item
-   * @param revision (Optional) If set, will add a new file into an existing revision.  Set this to "head" to add to the most recent revision.
+   * @param revision (Optional) If set, will add a new file into an existing
+            revision. Set this to "head" to add to the most recent revision.
    * @param return The item information of the item created or changed
    */
   function uploadPerform($args)
@@ -1090,7 +1095,8 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Returns the user's default API key given their username and password. POST method required.
+   * Returns the user's default API key given their username and password.
+       POST method required.
    * @param email The user's email
    * @param password The user's password
    * @return The user's default API key
@@ -1155,7 +1161,8 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Download a bitstream either by its id or by a checksum. Either an id or checksum parameter is required.
+   * Download a bitstream either by its id or by a checksum.
+       Either an id or checksum parameter is required.
    * @param token (Optional) Authentication token
    * @param id (Optional) The id of the bitstream
    * @param checksum (Optional) The checksum of the bitstream
