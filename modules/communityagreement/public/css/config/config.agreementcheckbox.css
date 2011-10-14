@@ -1,0 +1,11 @@
+
+/*-------------------------------------------------
+Community agreement checkbox
+-------------------------------------------------*/
+
+div#communityAgreementCheckboxDiv{
+}
+
+a.communityAgreementCheckbox:hover {
+  background-color: #bddcc9;
+}

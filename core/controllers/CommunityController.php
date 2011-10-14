@@ -48,7 +48,6 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception("This community doesn't exist  or you don't have the permissions.");
       }
-
     $formInfo = $this->Form->Community->createCreateForm();
     $formCreateGroup = $this->Form->Community->createCreateGroupForm();
 
@@ -213,6 +212,8 @@ class CommunityController extends AppController
     $this->view->json['community']['message']['infoErrorName'] = $this->t('Please, set the name.');
     $this->view->json['community']['message']['createGroup'] = $this->t('Create a group');
     $this->view->json['community']['message']['editGroup'] = $this->t('Edit a group');
+
+    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', array());
     }//end manageAction
 
 
@@ -315,6 +316,9 @@ class CommunityController extends AppController
 
     $this->view->title .= ' - '.$communityDao->getName();
     $this->view->metaDescription = substr($communityDao->getDescription(), 0, 160);
+
+    $this->view->customJSs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_VIEW_JSS', array());
+    $this->view->customCSSs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_VIEW_CSSS', array());
     } //end index
 
   /** Delete a community*/
