@@ -184,7 +184,7 @@ foreach($this->customCSSs as $Uris)
     if($this->isMember&&!$this->isAdmin)
       {
       echo "
-          <li><a href='{$this->webroot}/community/manage?communityId={$this->communityDao->getKey()}&leaveCommunity=true'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Leave the community')}</a></li>
+          <li><a href='{$this->webroot}/community/{$this->communityDao->getKey()}?leaveCommunity=true'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Leave the community')}</a></li>
           ";
       }
     echo 
