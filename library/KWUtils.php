@@ -284,6 +284,10 @@ class KWUtils
    */
   public static function recursiveRemoveDirectory($directorypath)
     {
+    if(empty($directorypath) || !is_dir($directorypath))
+      {
+      return false;
+      }
     // if the path has a slash at the end, remove it here
     $directorypath = rtrim($directorypath, '/');
     // open the directory
@@ -323,6 +327,5 @@ class KWUtils
       }
     return true;
     }
-
 
 }

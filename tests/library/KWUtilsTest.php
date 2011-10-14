@@ -156,6 +156,10 @@ class KWUtilsTest extends ControllerTestCase
   /** tests recursiveRemoveDirectory function */
   public function testRecursiveRemoveDirectory()
     {
+    // test some basic exception handling
+    $this->assertFalse(KWUtils::recursiveRemoveDirectory(''));
+    $this->assertFalse(KWUtils::recursiveRemoveDirectory('thisstringisunlikelytobeadirectory'));
+
     // create a two-level directory
     $testParentDir = $this->getTempDirectory() . '/KWUtilsParentDir';
     mkdir($testParentDir);
