@@ -213,4 +213,67 @@ class ExportComponentTest extends ControllerTestCase
     KWUtils::recursiveRemoveDirectory($midas_exporttest_dir);
     } // end public function testCopy
 
+
+  /**
+   * Test ExportComponentTest::exportBitstreams function using invalid input
+   *
+   * test case 1) input paremeter itemIds is not an array; expect an exception
+   * test case 2) use valid item id with invalid revision number; expect an exception
+   * test case 3) use invalid item id; expect an exception
+   */
+  public function testExportBitStreamsInvalidCases()
+    {
+    $midas_exporttest_dir = BASE_PATH.'/tmp/exportTest';
+
+    $usersFile = $this->loadData('User', 'default');
+    $userDao = $this->User->load($usersFile[0]->getKey());
+    $this->uploadItems($userDao);
+
+    require_once BASE_PATH.'/core/controllers/components/ExportComponent.php';
+    $exportCompoenent = new ExportComponent();
+    $validFile = "user1_public.png";
+    $validItems = $this->Item->getItemsFromSearch($validFile, $userDao);
+    $validItemId = $validItems[0]->getKey();
+    $invalidRevision = 100;
+    $invalidItemId = 1000;
+    // test case 1)
+    try
+      {
+      $exportCompoenent->exportBitstreams($userDao, $midas_exporttest_dir, $validItemId, true);
+      $this->fail('Expected an exception exporting component, but didn not get one');
+      }
+    catch(Zend_Exception $ze)
+      {
+      // if we got here, this is the correct behavior
+      $this->assertTrue(true);
+      }
+    // test case 2)
+    $inputItemIds = array();
+    $inputItemIds[] = $validItemId.','.$invalidRevision;
+    try
+      {
+      $exportCompoenent->exportBitstreams($userDao, $midas_exporttest_dir, $inputItemIds, true);
+      $this->fail('Expected an exception exporting component, but did not get one');
+      }
+    catch(Zend_Exception $ze)
+      {
+      // if we got here, this is the correct behavior
+      $this->assertTrue(true);
+      }
+    //test case 3)
+    $inputItemIds = array();
+    $inputItemIds[] = $invalidItemId;
+    try
+      {
+      $exportCompoenent->exportBitstreams($userDao, $midas_exporttest_dir, $inputItemIds, true);
+      $this->fail('Expected an exception exporting component, but did not get one');
+      }
+    catch(Zend_Exception $ze)
+      {
+      // if we got here, this is the correct behavior
+      $this->assertTrue(true);
+      }
+
+    }
+
   } // end class
