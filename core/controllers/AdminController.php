@@ -98,6 +98,10 @@ class AdminController extends AppController
     $formArray['lang']->setValue($applicationConfig['global']['application.lang']);
     $formArray['smartoptimizer']->setValue($applicationConfig['global']['smartoptimizer']);
     $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
+    if(isset($applicationConfig['global']['dynamichelp']))
+      {
+      $formArray['dynamichelp']->setValue($applicationConfig['global']['dynamichelp']);
+      }
     $this->view->selectedLicense = $applicationConfig['global']['defaultlicense'];
     $this->view->configForm = $formArray;
 
@@ -125,6 +129,7 @@ class AdminController extends AppController
         $applicationConfig['global']['smartoptimizer'] = $this->_getParam('smartoptimizer');
         $applicationConfig['global']['default.timezone'] = $this->_getParam('timezone');
         $applicationConfig['global']['defaultlicense'] = $this->_getParam('licenseSelect');
+        $applicationConfig['global']['dynamichelp'] = $this->_getParam('dynamichelp');
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }

@@ -1,68 +1,88 @@
 var json
 var itemselected = false;
 
+// Prevent error if console.log is called
 if (typeof console != "object") {
 	var console = {
 		'log':function(){}
 	};
 } 
 
-  function sliceFileName(name,nchar)
-  {
-    if(name.length>nchar)
-      { 
-      toremove=(name.length)-nchar;  
-      if(toremove<13)
-        {
-        return name;
-        }
-      name=name.substring(0,10)+'...'+name.substring(13+toremove);
-      return name;
-      }
-  return name;
-  }
-
-  function trimName(name,padding)
-  {
-    if(name.length*7+padding>350)
-      { 
-      toremove=(name.length*7+padding-350)/8;  
-      if(toremove<13)
-        {
-        return 'error';
-        }
-      name=name.substring(0,10)+'...'+name.substring(name.length+13-toremove);
-      return name;
-      }
-  return name;
-  }
-  
+// Main calls
 $(function() { 
+  
+  // Parse json content
   json = jQuery.parseJSON($('div.jsonContent').html());
+  
+  // Preload login page
   if(!json.global.logged)
     {
     loadAjaxDynamicBar('login','/user/login');
     }
-    
-  $('[qtip]').qtip({
-   content: {
-      attr: 'qtip'
-   }
-})
-    
-  //menu
-  $('div.TopbarRighta li.first').hover(
-			function() {$('ul', this).css('display', 'block');},
-			function() {$('ul', this).css('display', 'none');});
-    
-  // If we are not logged in
+  
+  // Show log page.
   if(json.global.needToLog)
     {
     showOrHideDynamicBar('login');
     loadAjaxDynamicBar('login','/user/login');
     return;
     }
+    
+  // Init Dynamic help ---------------
+  InitHelpQtip();
+  if(json.global.dynamichelpAnimate)
+    {
+    TimerQtip();
+    }
+  else
+    {
+    StopTimerQtip();
+    }
+  // Javascript link ---------------------
   
+  // Starting Guide
+  $('a#startingGuideLink').click(function()
+    {
+    showStartingGuide();
+    });
+  if(json.global.startingGuide)
+    {
+    showStartingGuide();
+    }
+    
+  function showStartingGuide()
+   {
+   $( "#dialogStartingGuide" ).dialog({
+			width: 580,
+      title: $( "#dialogStartingGuide" ).attr('title'),
+			modal: true
+      });
+   }
+   
+   $('#disableStartingGuide').change(function(){
+     var value = 1;
+     if($(this).is(':checked'))
+       {
+       value = 0;
+       }
+     $.post(json.global.webroot+"/user/startingguide", {value: value} );
+   });
+   
+   $('#blockPersoLink').click(function(){window.location.replace($('.webroot').val()+'/user/userpage/');});
+   $('#blockExploreLink').click(function(){window.location.replace($('.webroot').val()+'/browse/');});
+   $('#blockCommunityLink').click(function(){window.location.replace($('.webroot').val()+'/community/');});
+   $('#blockSettingsLink').click(function(){
+      loadAjaxDynamicBar('settings','/user/settings');
+      if($("div.TopDynamicBar").is(':hidden'))
+        {
+          $("div.TopDynamicBar").show('blind', function() {
+
+          });   
+        }  
+      $('#dialogStartingGuide').dialog("close");
+    });
+  
+  // Login
   $("a.loginLink").click(function()
     {
     showOrHideDynamicBar('login');
@@ -70,6 +90,7 @@ $(function() {
     });
     
 
+  // Account link
   $("li.myAccountLink").click(function()
     {
     if($("div.TopDynamicBar").is(':hidden'))
@@ -88,6 +109,7 @@ $(function() {
       }    
     });
     
+  // Setting link
    $("li.settingsLink").click(function()
     {
     if($("div.TopDynamicBar").is(':hidden'))
@@ -98,6 +120,7 @@ $(function() {
     loadAjaxDynamicBar('settings','/user/settings');
     });
     
+  // Module link
    $("li.modulesLink").click(function()
     {
     if($("div.TopDynamicBar").is(':hidden'))
@@ -107,13 +130,16 @@ $(function() {
       }
     loadAjaxDynamicBar('settings','/user/settings');
     });
+    
   
+  // Register link 
   $("a.registerLink").click(function()
     {
     showOrHideDynamicBar('register');
     loadAjaxDynamicBar('register','/user/register');
     });
   
+  // Search Bar -----------------------
   // Live search
   $.widget( "custom.catcomplete", $.ui.autocomplete, {
     _renderMenu: function( ul, items ) {
@@ -201,38 +227,11 @@ $(function() {
       }
     });
   
-  $('#menuUserInfo').click(function(){
-      globalAuthAsk(json.global.webroot+'/user/userpage');
-  });
-  $("div.TopDynamicBar .closeButton").click(function()
-  {
-    if(!$("div.TopDynamicBar").is(':hidden'))
-    {
-      $("div.TopDynamicBar").hide('blind');
-    }
-  });
+
   
-  var uploadPageLoaded = false;
-  $('div.HeaderAction li.uploadFile').click(function()
-  {
-    if(json.global.logged)
-    {
-    if(!uploadPageLoaded)
-      {
-      $('img#uploadAFile').hide();
-      $('img#uploadAFileLoadiing').show();
-      uploadPageLoaded = true;
-      }    
-    }
-    else
-    {
-     
-      createNotive(json.login.contentUploadLogin,4000)
-      $("div.TopDynamicBar").show('blind');
-      loadAjaxDynamicBar('login','/user/login');
-    }
-  });
+ // Upload -------------------------------------
  
+ // init Upload dialog
   if(json.global.logged)
     {
     $('div.HeaderAction li.uploadFile').qtip(
@@ -268,31 +267,323 @@ $(function() {
     $('.uploadqtip').css('z-index:500');
     }
     
+  // ask the user to log in if we want to upload a file
+  var uploadPageLoaded = false;
+  $('div.HeaderAction li.uploadFile').click(function()
+  {
+    if(json.global.logged)
+    {
+    if(!uploadPageLoaded)
+      {
+      $('img#uploadAFile').hide();
+      $('img#uploadAFileLoadiing').show();
+      uploadPageLoaded = true;
+      }    
+    }
+    else
+    {     
+      createNotive(json.login.contentUploadLogin,4000)
+      $("div.TopDynamicBar").show('blind');
+      loadAjaxDynamicBar('login','/user/login');
+    }
+  });
+  
+  // Style -------------------------------------
+    
+  // hover  link (view Action is the right menu in the file browser)
   $('div.viewAction li a').hover(function(){
     $(this).parents('li').css('background-color','#E5E5E5');
   }, function(){
     $(this).parents('li').css('background-color','white');
   });
+  
+  // user menu
+    $('#menuUserInfo').click(function(){
+      globalAuthAsk(json.global.webroot+'/user/userpage');
+    });
+  $("div.TopDynamicBar .closeButton").click(function()
+  {
+    if(!$("div.TopDynamicBar").is(':hidden'))
+    {
+      $("div.TopDynamicBar").hide('blind');
+    }
+  });
+  
+    $('[qtip]').qtip({
+   content: {
+      attr: 'qtip'
+   }
+})
+    
+  $('div.TopbarRighta li.first').hover(
+			function() {$('ul', this).css('display', 'block');},
+			function() {$('ul', this).css('display', 'none');});
 });
-function globalAuthAsk(url)
-{
-    if(json.global.logged)
-      {
-      window.location.replace(url);
-      }
-    else
-      {
-      createNotive(json.login.titleUploadLogin,4000)
-      $("div.TopDynamicBar").show('blind');
-      loadAjaxDynamicBar('login','/user/login');
-      }
-}
 
-function createNotive(text,delay)
+
+   
+ // Javascript uilts ----------------------------------
+ 
+// show a jgrowl notice
+function createNotice(text,delay)
 {
     createGrowl(false, text, delay);
 }
 
+// asks the user to authenticate
+function globalAuthAsk(url)
+  {
+  if(json.global.logged)
+    {
+    window.location.replace(url);
+    }
+  else
+    {
+    createNotive(json.login.titleUploadLogin,4000)
+    $("div.TopDynamicBar").show('blind');
+    loadAjaxDynamicBar('login','/user/login');
+    }
+  }
+
+// load the content of the black top bar
+function loadAjaxDynamicBar(name,url)
+{
+  if($('.DynamicContentPage').val()!=name)
+  {
+    $('.DynamicContentPage').val(name);
+    $('div.TopDynamicContent').fadeOut('slow',function()
+    {
+      $('div.TopDynamicContent').html("");
+      $("div.TopDynamicLoading").show();   
+      
+      $.ajax({
+        url: $('.webroot').val()+url,
+        contentType: "application/x-www-form-urlencoded;charset=ISO-8859-15",
+        success: function(data) {
+          $("div.TopDynamicLoading").hide();
+          $('div.TopDynamicContent').hide();
+          $('div.TopDynamicContent').html(data);
+          $('div.TopDynamicContent').fadeIn("slow");
+        }
+      });
+    });   
+  }
+}
+
+// show or hide the bar 
+function showOrHideDynamicBar(name)
+{  
+  if($("div.TopDynamicBar").is(':hidden'))
+  {
+    $("div.TopDynamicBar").show('blind', function() {
+      $('#email').focus();
+    });   
+  }
+  else if($('.DynamicContentPage').val()==name)
+  {
+    $("div.TopDynamicBar").hide('blind');
+  }
+}
+
+// load a dialog (ajax)
+function loadDialog(name,url)
+{
+  if($('.DialogContentPage').val()!=name)
+  {
+    $('.DialogContentPage').val(name);
+    $('div.MainDialogContent').html("");
+    $("div.MainDialogLoading").show();
+    $.ajax({
+      url: $('.webroot').val()+url,
+      contentType: "application/x-www-form-urlencoded;charset=ISO-8859-15",
+      success: function(data) {
+        $('div.MainDialogContent').html(data);
+        $("div.MainDialogLoading").hide();
+        $('.dialogTitle').hide();        
+      }
+    });
+  } 
+}
+
+// show a static dialog
+function showDialog(title,button)
+{  
+  var x= $('div.HeaderSearch').position().left+150; 
+  var y= 100; 
+  if(button)
+  {
+    $( "div.MainDialog" ).dialog({
+			resizable: false,
+      width:450,
+			modal: false,
+      draggable:false,
+      title: title,
+      position: [x,y],
+      zIndex: 15100,
+      buttons: {"Ok": function() {$(this).dialog("close");}} 
+		});
+    
+    
+  }
+  else
+  {
+    $( "div.MainDialog" ).dialog({
+			resizable: false,
+      width:450,
+			modal: false,
+      draggable:false,
+      title: title		,
+      zIndex: 15100,
+      position: [x,y]
+		});
+  }   
+}
+
+// show a dialog with a width of 700px
+function showBigDialog(title,button)
+{  
+  var x= $('div.HeaderSearch').position().left+50; 
+  var y= 100; 
+  if(button)
+  {
+    $( "div.MainDialog" ).dialog({
+			resizable: false,
+      width:700,
+			modal: false,
+      draggable:false,
+      title: title,
+      position: [x,y],
+      buttons: {"Ok": function() {$(this).dialog("close");}} 
+		});
+    
+  }
+  else
+  {
+    $( "div.MainDialog" ).dialog({
+			resizable: false,
+      width:700,
+			modal: false,
+      draggable:false,
+      title: title		,
+      position: [x,y]
+		});
+  }
+}
+
+// showDialogWithContent
+function showDialogWithContent(title,content,button)
+{
+  $('.DialogContentPage').val('');
+  $('div.MainDialogContent').html(content);
+  $("div.MainDialogLoading").hide();
+  showDialog(title,button);
+}
+
+// showBigDialogWithContent
+function showBigDialogWithContent(title,content,button)
+{
+  $('.DialogContentPage').val('');
+  $('div.MainDialogContent').html(content);
+  $("div.MainDialogLoading").hide();
+  showBigDialog(title,button);
+}
+
+// trim name by the number of character
+function sliceFileName(name,nchar)
+  {
+    if(name.length>nchar)
+      { 
+      toremove=(name.length)-nchar;  
+      if(toremove<13)
+        {
+        return name;
+        }
+      name=name.substring(0,10)+'...'+name.substring(13+toremove);
+      return name;
+      }
+  return name;
+  }
+
+// trim name by the number of pixel
+ function trimName(name,padding)
+  {
+    if(name.length*7+padding>350)
+      { 
+      toremove=(name.length*7+padding-350)/8;  
+      if(toremove<13)
+        {
+        return 'error';
+        }
+      name=name.substring(0,10)+'...'+name.substring(name.length+13-toremove);
+      return name;
+      }
+  return name;
+  }
+  
+    
+ var qtipsHelp = new Array();
+ var iQtips = 0;    
+ 
+ function InitHelpQtip()
+   {
+   if(!json.global.dynamichelp)return ;
+   if(json.dynamicHelp == undefined)return;
+   $.each(json.dynamicHelp, function(index, value) { 
+         var text = value.text;
+         text = text.replace(/&lt;/g, '<');
+         text = text.replace(/&gt;/g, '>');
+         var tmp = $(value.selector).qtip({
+           content: {
+              text: text
+           },
+           position: {
+              my: value.my,  // Position my top left...
+              at: value.at // at the bottom right of...
+           }
+        });
+        qtipsHelp.push(tmp);
+     });
+   }
+ 
+ // Dynamic help sequence
+ function TimerQtip() {
+       if(!json.global.dynamichelp)return ;
+       
+       $.each(qtipsHelp, function(index, value) { 
+         value.qtip('hide');
+         value.qtip('disable');
+        });
+        
+       if(!$('#dialogStartingGuide').is(':hidden'))
+         {
+         iQtips = 0;
+         setTimeout("TimerQtip()",1000);  
+         return;
+         }
+       
+       qtipsHelp[iQtips].qtip('show');
+       if(qtipsHelp.length > iQtips+1)
+         {
+         setTimeout("TimerQtip()",5000);
+         }
+       else
+         {
+         setTimeout("StopTimerQtip()",5000); 
+         }
+       iQtips++;
+     }
+  
+  function StopTimerQtip()
+    {
+      if(!json.global.dynamichelp)return ;
+      $.each(qtipsHelp, function(index, value) { 
+         value.qtip('hide');
+         value.qtip('enable');
+        });
+    }
+  
+  
+// Setup jgrowl --------------------------------------
  window.createGrowl = function(persistent, text, delay) {
       // Use the last visible jGrowl qtip as our positioning target
       var target = $('.qtip.jgrowl:visible:last');
@@ -307,12 +598,12 @@ function createNotive(text,delay)
             my: 'top right', // Not really important...
             at: (target.length ? 'bottom' : 'top') + ' right', // If target is window use 'top right' instead of 'bottom right'
             target: target.length ? target : $(document.body), // Use our target declared above
-            adjust: { y: 5 } // Add some vertical spacing
+            adjust: {y: 5} // Add some vertical spacing
          },
          show: {
             event: false, // Don't show it on a regular event
             ready: true, // Show it when ready (rendered)
-            effect: function() { $(this).stop(0,1).fadeIn(400); }, // Matches the hide effect
+            effect: function() {$(this).stop(0,1).fadeIn(400);}, // Matches the hide effect
             delay: 0, // Needed to prevent positioning issues
             
             // Custom option for use with the .get()/.set() API, awesome!
@@ -357,159 +648,28 @@ function createNotive(text,delay)
          api.set('position.at', (!i ? 'top' : 'bottom') + ' right');
       });
    };
- 
- // Setup our timer function
- function timerGrowl(event, delay) {
+   
+
+ function timerGrowl(event, delay) 
+  {
     var api = $(this).data('qtip'),
        lifespan = delay; // 5 second lifespan
 
     // If persistent is set to true, don't do anything.
-    if(api.get('show.persistent') === true) { return; }
+    if(api.get('show.persistent') === true) {return;}
 
     // Otherwise, start/clear the timer depending on event type
     clearTimeout(api.timer);
     if(event.type !== 'mouseover') {
        api.timerGrowl = setTimeout(api.hide, lifespan);
     }
- }
+  }
 
- // Utilise delegate so we don't have to rebind for every qTip!
  $(document).delegate('.qtip.jgrowl', 'mouseover mouseout', timerGrowl);
-
-function loadAjaxDynamicBar(name,url)
+ 
+ 
+ // deprecated
+function createNotive(text, delay)
 {
-  if($('.DynamicContentPage').val()!=name)
-  {
-    $('.DynamicContentPage').val(name);
-    $('div.TopDynamicContent').fadeOut('slow',function()
-    {
-      $('div.TopDynamicContent').html("");
-      $("div.TopDynamicLoading").show();   
-      
-      $.ajax({
-        url: $('.webroot').val()+url,
-        contentType: "application/x-www-form-urlencoded;charset=ISO-8859-15",
-        success: function(data) {
-          $("div.TopDynamicLoading").hide();
-          $('div.TopDynamicContent').hide();
-          $('div.TopDynamicContent').html(data);
-          $('div.TopDynamicContent').fadeIn("slow");
-        }
-      });
-    });   
-  }
+  createNotice(text,delay);
 }
-
-function showOrHideDynamicBar(name)
-{  
-  if($("div.TopDynamicBar").is(':hidden'))
-  {
-    $("div.TopDynamicBar").show('blind', function() {
-      $('#email').focus();
-    });   
-  }
-  else if($('.DynamicContentPage').val()==name)
-  {
-    $("div.TopDynamicBar").hide('blind');
-  }
-}
-
-function loadDialog(name,url)
-{
-  if($('.DialogContentPage').val()!=name)
-  {
-    $('.DialogContentPage').val(name);
-    $('div.MainDialogContent').html("");
-    $("div.MainDialogLoading").show();
-    $.ajax({
-      url: $('.webroot').val()+url,
-      contentType: "application/x-www-form-urlencoded;charset=ISO-8859-15",
-      success: function(data) {
-        $('div.MainDialogContent').html(data);
-        $("div.MainDialogLoading").hide();
-        $('.dialogTitle').hide();        
-      }
-    });
-  } 
-}
-
-function showDialog(title,button)
-{  
-  var x= $('div.HeaderSearch').position().left+150; 
-  var y= 100; 
-  if(button)
-  {
-    $( "div.MainDialog" ).dialog({
-			resizable: false,
-      width:450,
-			modal: false,
-      draggable:false,
-      title: title,
-      position: [x,y],
-      zIndex: 15100,
-      buttons: {"Ok": function() {$(this).dialog("close");}} 
-		});
-    
-    
-  }
-  else
-  {
-    $( "div.MainDialog" ).dialog({
-			resizable: false,
-      width:450,
-			modal: false,
-      draggable:false,
-      title: title		,
-      zIndex: 15100,
-      position: [x,y]
-		});
-  }
-   
-}
-
-function showBigDialog(title,button)
-{  
-  var x= $('div.HeaderSearch').position().left+50; 
-  var y= 100; 
-  if(button)
-  {
-    $( "div.MainDialog" ).dialog({
-			resizable: false,
-      width:700,
-			modal: false,
-      draggable:false,
-      title: title,
-      position: [x,y],
-      buttons: {"Ok": function() {$(this).dialog("close");}} 
-		});
-    
-  }
-  else
-  {
-    $( "div.MainDialog" ).dialog({
-			resizable: false,
-      width:700,
-			modal: false,
-      draggable:false,
-      title: title		,
-      position: [x,y]
-		});
-  }
-}
-
-function showDialogWithContent(title,content,button)
-{
-  $('.DialogContentPage').val('');
-  $('div.MainDialogContent').html(content);
-  $("div.MainDialogLoading").hide();
-  showDialog(title,button);
-}
-
-function showBigDialogWithContent(title,content,button)
-{
-  $('.DialogContentPage').val('');
-  $('div.MainDialogContent').html(content);
-  $("div.MainDialogLoading").hide();
-  showBigDialog(title,button);
-}
-

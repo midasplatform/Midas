@@ -8,4 +8,8 @@
     $('div.feedThumbnail img').mouseout(function(){
         $(this).fadeTo("fast",0.4);
     });
+    
+    
+    
   });
+  
