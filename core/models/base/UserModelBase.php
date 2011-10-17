@@ -39,6 +39,7 @@ abstract class UserModelBase extends AppModel
       'country' => array('type' => MIDAS_DATA),
       'website' => array('type' => MIDAS_DATA),
       'biography' => array('type' => MIDAS_DATA),
+      'dynamichelp' => array('type' => MIDAS_DATA),
       'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
       'public_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'publicfolder_id', 'child_column' => 'folder_id'),
       'private_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'privatefolder_id', 'child_column' => 'folder_id'),

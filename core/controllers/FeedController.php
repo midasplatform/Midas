@@ -46,6 +46,8 @@ class FeedController extends AppController
         }
       setcookie('newFeed'.$this->userSession->Dao->getKey(), strtotime("now"), time() + 60 * 60 * 24 * 300, '/'); //30 days
       }
+      
+    $this->addDynamicHelp('.feedContainer', 'The <b>Feed</b> shows recent actions and events.', 'top right', 'bottom left');
     }
 
   /** get delete a feed */

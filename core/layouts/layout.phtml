@@ -79,11 +79,20 @@ echo $this->doctype()
         <div class="TopbarLeft">
           <ul>
             <li class="first">
-              <a href="http://www.kitware.com/products/midas.html" >MIDAS</a>
+              <a href="midasplatform.org" >MIDAS</a>
             </li>
             <li>
               <a href="http://www.kitware.com" >Kitware</a>
             </li>
+            <?php
+            if($this->logged)
+              {
+              ?>
+              <li>
+                <a href="#" id="startingGuideLink" ><?php echo $this->t('Starting Guide')?></a>
+              </li>
+            <?php
+              }?>
           </ul>
         </div>
         <div class="TopbarRight">
@@ -291,6 +300,79 @@ echo $this->doctype()
     <input type="hidden" class="webroot" value="<?php echo $this->webroot?>" />
     <div style="display: none;" class="jsonContent">
       <?php echo $this->json?>
+    </div>
+    
+    <div id="dialogStartingGuide" style="display:none;" title="<?php echo $this->t('Starting Guide')?>">
+      <br/>
+     Click on the action of you choice to start using the MIDAS Platform.
+     
+     <br/><br/>
+     <div id="seperatorStartingGuide">
+       
+     </div>
+     <br/>
+       <div class="blockSet" id="blockPersoLink">
+        <table>
+          <tbody><tr>
+            <td class="logo">
+              <img alt="" src="<?php echo  $this->coreWebroot?>/public/images/bigicons/folder-lock.png" />
+            </td>
+            <td>
+              <h4  >Access your personal folder</h4>
+              <span style="color:grey;">Store data in a secured location.</span>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+      <div class="blockSet" id="blockSettingsLink">
+        <table>
+          <tbody><tr>
+            <td class="logo">
+              <img alt="" src="<?php echo  $this->coreWebroot?>/public/images/bigicons/explore.png" />
+            </td>
+            <td>
+              <h4>Manage your profile</h4>
+              <span style="color:grey;">Manage your information and your privacy.</span>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+     <br/>
+      <div class="blockSet" id="blockExploreLink">
+        <table>
+          <tbody><tr>
+            <td class="logo">
+              <img alt="" src="<?php echo  $this->coreWebroot?>/public/images/bigicons/profile.png" />
+            </td>
+            <td>
+              <h4>Explore the data</h4>
+              <span style="color:grey;">Browse the data hosted on the MIDAS Platform.</span>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+      <div class="blockSet" id="blockCommunityLink" >
+        <table>
+          <tbody><tr>
+            <td class="logo">
+              <img alt="" src="<?php echo  $this->coreWebroot?>/public/images/bigicons/community.png" />
+            </td>
+            <td>
+              <h4>Join a community</h4>
+              <span style="color:grey;">Be part of a project!</span>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+     <br/>
+     <div style="float:left;">
+       <input type="checkbox" name="disableStartingGuide" id="disableStartingGuide" <?php if(isset($this->userDao) && $this->userDao->getDynamichelp() == 0) echo 'checked'?> /> 
+       <label style="color:grey;font-size: 11px;" for="disableStartingGuide">Always hide the help animation and this window.</label>
+     </div>
     </div>
   </body>
 </html>
