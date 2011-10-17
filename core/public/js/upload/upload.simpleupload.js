@@ -110,6 +110,12 @@
         }
     }
     
+     $('#startUploadLink').qtip({
+         content: {
+            attr: 'qtip'
+         }
+      });
+
     
     function initJqueryFileupload()
     {
@@ -135,6 +141,10 @@
               $(this).parent('tr').find('.file_upload_cancel button').click();
               }
           });
+        
+          $('#startUploadLink').css('box-shadow', '0 0 5px blue');
+          $('#startUploadLink').css('-webkit-box-shadow', '0 0 5px blue');
+          $('#startUploadLink').css('-moz-box-shadow', '0 0 5px blue');
           },
          onComplete:  function (event, files, index, xhr, handler) {
               $('.uploadedSimple').val(parseInt($('.uploadedSimple').val())+1);
@@ -150,6 +160,9 @@
                 return false;
               }
             $('.file_upload_start button').click();
+            $('#startUploadLink').css('box-shadow', '0 0 0px blue');
+            $('#startUploadLink').css('-webkit-box-shadow', '0 0 0px blue');
+            $('#startUploadLink').css('-moz-box-shadow', '0 0 0px blue');
             return false;
         });
     
