@@ -13,7 +13,7 @@ PURPOSE.  See the above copyright notices for more information.
 /** Upload Controller */
 class UploadController extends AppController
   {
-  public $_models = array('Assetstore', 'User', 'Item', 'ItemRevision', 'Folder', 'Itempolicyuser', 'Itempolicygroup', 'Group', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Bitstream', 'Assetstore');
+  public $_models = array('Folderpolicygroup', 'Folderpolicyuser', 'Assetstore', 'User', 'Item', 'ItemRevision', 'Folder', 'Itempolicyuser', 'Itempolicygroup', 'Group', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Bitstream', 'Assetstore');
   public $_daos = array('Assetstore', 'User', 'Item', 'ItemRevision', 'Bitstream', 'Folder');
   public $_components = array('Httpupload', 'Upload');
   public $_forms = array('Upload');
@@ -242,6 +242,7 @@ class UploadController extends AppController
 
     $this->disableLayout();
     $this->disableView();
+    $pathClient = $this->_getParam("path");
 
     if($this->isTestingEnv())
       {
@@ -259,6 +260,19 @@ class UploadController extends AppController
       $filename = $upload->getFilename(null, false);
       }
 
+    if(!empty($pathClient))
+      {
+      $tmpArray = split(';;', $pathClient);
+      foreach($tmpArray as $value)
+        {
+        if(strpos($value, $filename) !== false)
+          {
+          $pathClient = $value;
+          break;
+          }
+        }
+      }
+      
     $parent = $this->_getParam("parent");
     $license = $this->_getParam("license");
     if(!empty($path) && file_exists($path) && $file_size > 0)
@@ -271,6 +285,40 @@ class UploadController extends AppController
         }
       else
         {
+        if(!empty($pathClient))
+          {
+          $parentDao = $this->Folder->load($parent);
+          $this->getLogger()->info($pathClient);
+          $folders = split('/', $pathClient);
+          unset($folders[count($folders) - 1]);
+          foreach($folders as $folderName)
+            {
+            if($this->Folder->getFolderExists($folderName, $parentDao))
+              {
+              $parentDao = $this->Folder->getFolderByName($parentDao, $folderName);
+              }
+            else
+              {
+              $new_folder = $this->Folder->createFolder($folderName, '', $parentDao);
+              $policyGroup = $parentDao->getFolderpolicygroup();
+              $policyUser = $parentDao->getFolderpolicyuser();
+              foreach($policyGroup as $policy)
+                {
+                $group = $policy->getGroup();
+                $policyValue = $policy->getPolicy();
+                $this->Folderpolicygroup->createPolicy($group, $new_folder, $policyValue);
+                }
+              foreach($policyUser as $policy)
+                {
+                $user = $policy->getUser();
+                $policyValue = $policy->getPolicy();
+                $this->Folderpolicyuser->createPolicy($user, $new_folder, $policyValue);
+                }
+              $parentDao = $new_folder;
+              }
+            }
+          $parent = $parentDao->getKey();
+          }
         $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename, $path, $parent, $license);
         $this->userSession->uploaded[] = $item->getKey();
         }
