@@ -10,6 +10,46 @@
         //uploadStart(file);
       }
       
+    // detect chrom or firefox 7+
+    try {
+        var is_chrome = /chrome/.test( navigator.userAgent.toLowerCase() );
+        var version = jQuery.browser.version.split('.');
+        version = parseInt(version[0]);
+        var is_firefox = jQuery.browser.mozilla != undefined && version > 6;  
+    
+        if(is_chrome)
+          {
+          $('#changeUploadMode').show();
+          }
+        } catch (exception) { }
+
+    var mode = "file";
+    var htmlFileMode = $('.file_upload_label').html();
+    var htmlFolderMode = $('.file_upload_label_folder').html();
+    $('#uploadModeFileLink').hide();
+    $('.uploadModeLink').click(function(){
+      if(mode == 'file')
+        {
+        mode = 'folder'; 
+        $('#fileUploaderInput').attr('webkitdirectory', '');
+        $('#fileUploaderInput').attr('directory', '');
+        $('#fileUploaderInput').attr('mozdirectory', '');
+        $('.file_upload_label').html(htmlFolderMode);
+        $('#uploadModeFileLink').show();
+        $('#uploadModeFolderLink').hide();
+        }
+      else
+        {
+        mode = 'file'; 
+        $('#fileUploaderInput').removeAttr('webkitdirectory');
+        $('#fileUploaderInput').removeAttr('directory');
+        $('#fileUploaderInput').removeAttr('mozdirectory');
+        $('.file_upload_label').html(htmlFileMode);
+        $('#uploadModeFileLink').hide();
+        $('#uploadModeFolderLink').show();
+        }
+    });
+    
       
 		$( "#uploadTabs" ).tabs({
 			ajaxOptions: {
@@ -78,12 +118,23 @@
         $('#file_upload').fileUploadUIX({
           beforeSend: function (event, files, index, xhr, handler, callBack) {
             handler.uploadRow.find('.file_upload_start').click(function () {
+              var path = '';
+              $.each(files, function (index, file) {
+                    path += file.webkitRelativePath+';;';
+                });
                 handler.formData = {
                     parent: $('#destinationId').val(),
+                    path: path,
                     license: $('select[name=licenseSelect]').val()
                 };
                 callBack();
             });
+          $('.file_name').each(function(){
+            if($(this).html() == '.' || $(this).html() == '..'  )
+              {
+              $(this).parent('tr').find('.file_upload_cancel button').click();
+              }
+          });
           },
          onComplete:  function (event, files, index, xhr, handler) {
               $('.uploadedSimple').val(parseInt($('.uploadedSimple').val())+1);
