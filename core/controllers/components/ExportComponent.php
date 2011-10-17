@@ -76,6 +76,11 @@ class ExportComponent extends AppComponent
 
     // Get items
     $revisions = array();
+    if(!is_array($itemIds))
+      {
+      throw new Zend_Exception("Input parameter \$itemIds should be an array.");
+      }
+
     if(!empty($itemIds))
       {
       foreach($itemIds as $itemId)
@@ -98,9 +103,13 @@ class ExportComponent extends AppComponent
             }
           }
         $item = $itemModel->load($tmpId[0]);
-        // Only do policy check in the ITEM level now.
-        // May also need to do policy check in the FOLDER level.
-        if($item == false || !$itemModel->policyCheck($item, $userDao))
+
+        if($item == false)
+          {
+          throw new Zend_Exception("Item ".$tmpId[0]." does not exist. Please check your input.");
+          }
+        // Do policy check in the ITEM level, ignore items which cannot be exported by the user.
+        else if(!$itemModel->policyCheck($item, $userDao))
           {
           continue;
           }
@@ -121,14 +130,7 @@ class ExportComponent extends AppComponent
         else
           {
           $revisionNum = $itemModel->getLastRevision($item);
-          if($revisionNum !== false)
-            {
-            $revisions[] = $revisionNum;
-            }
-          else
-            {
-            throw new Zend_Exception("Item ".$tmpId[0]." does not exist. Please check your input.");
-            }
+          $revisions[] = $revisionNum;
           }
         } // end foreach($itemIds
       } // if(!empty($itemIds))
