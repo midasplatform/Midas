@@ -73,6 +73,7 @@ class DemoComponent extends AppComponent
     $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.ini', true);
     $applicationConfig['global']['defaultassetstore.id'] = $assetstoreDao->getKey();
     $applicationConfig['global']['demomode'] = true;
+    $applicationConfig['global']['dynamichelp'] = true;
     $applicationConfig['global']['environment'] = 'development';
     $applicationConfig['global']['application.name'] = 'MIDAS - Demo';
     $applicationConfig['global']['application.description'] = 'MIDAS integrates multimedia server technology with Kitware?s open-source data analysis and visualization clients. The server follows open standards for data storage, access and harvesting';
