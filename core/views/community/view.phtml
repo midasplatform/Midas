@@ -65,14 +65,14 @@ foreach($this->customCSSs as $Uris)
   <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <div class="tabs" id='tabsGeneric'>
   <ul>
-    <li><a href="#tabs-3"><?php echo $this->t('Data');?></a></li>
-    <li><a href="#tabs-1"><?php echo $this->t("Feed")?></a></li>
+    <li><a id="tabDataLink" href="#tabs-data"><?php echo $this->t('Data');?></a></li>
+    <li><a id="tabFeedLink" href="#tabs-feed"><?php echo $this->t("Feed")?></a></li>
     <?php
     $description=$this->communityDao->getDescription();
     if(!empty($description))
       {
       ?>
-    <li><a href="#tabs-2"><?php echo $this->t('Info');?></a></li>
+    <li><a id="tabInfoLink" href="#tabs-info"><?php echo $this->t('Info');?></a></li>
     <?php
       }
       ?>
@@ -81,11 +81,11 @@ foreach($this->customCSSs as $Uris)
     if($this->isMember)
       {
       ?>
-    <li><a href="#tabs-4"><?php echo $this->t('Shared to Members');?></a></li>
+    <li><a id="tabSharedLink" href="#tabs-shared"><?php echo $this->t('Shared to Members');?></a></li>
     <?php
       }?>
   </ul>
-  <div id="tabs-1">
+  <div id="tabs-feed">
      <?
       echo $this->element('feed');
       ?>
@@ -94,7 +94,7 @@ foreach($this->customCSSs as $Uris)
     if(!empty($description))
       {
       ?>
-    <div id="tabs-2">
+    <div id="tabs-info">
       <?php
       echo nl2br($description);
       ?>
@@ -102,7 +102,7 @@ foreach($this->customCSSs as $Uris)
     <?php
       }
       ?>
-    <div id="tabs-3">
+    <div id="tabs-data">
       <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
 
       <table id="browseTable" class="midasTree">
@@ -150,7 +150,7 @@ foreach($this->customCSSs as $Uris)
     if($this->isMember)
       {
       ?>
-    <div id="tabs-4">
+    <div id="tabs-shared">
       <?php
       $this->listFiles=$this->shareItems;
       echo $this->element('listfiles');

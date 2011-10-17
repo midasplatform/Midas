@@ -246,6 +246,9 @@ class CommunityController extends AppController
     $communities = $this->Component->Sortdao->arrayUniqueDao($communities);
 
     $this->view->userCommunities = $communities;
+    
+    $this->addDynamicHelp('.communityList:first', 'List of current projects/communities hosted on MIDAS.', 'top right', 'bottom left');
+    $this->addDynamicHelp('.createCommunity', 'Manage your own community or project.');
     }//end index
 
   /** View a community*/
@@ -324,6 +327,12 @@ class CommunityController extends AppController
 
     $this->view->customJSs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_VIEW_JSS', array());
     $this->view->customCSSs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_VIEW_CSSS', array());
+    
+    $this->addDynamicHelp('#tabDataLink', 'Public and Private Data hosted by the community.');
+    $this->addDynamicHelp('#tabFeedLink', 'What\'s new?');
+    $this->addDynamicHelp('#tabInfoLink', 'Description of the community.');
+    $this->addDynamicHelp('#tabSharedLink', 'Data shared to the member of the community.');
+    
     } //end index
 
   /** Delete a community*/

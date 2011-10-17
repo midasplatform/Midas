@@ -35,7 +35,7 @@ class IndexController extends AppController
    */
   function indexAction()
     {
-    $this->_forward('index', "feed");
+    $this->_redirect("/feed");
     } // end method indexAction
 
   /** no javascript*/
