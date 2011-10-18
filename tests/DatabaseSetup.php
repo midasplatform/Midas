@@ -66,12 +66,19 @@ function loadDbAdapter($testConfigDir, $dbType)
   }
 
 
-function dropTables($db)
+function dropTables($db, $dbType)
   {
   $tables = $db->listTables();
   foreach($tables as $table)
     {
-    $sql = "drop table `".$table."`";
+    if($dbType === 'mysql')
+      {
+      $sql = "drop table `".$table."`";
+      }
+    else if($dbType === 'pgsql')
+      {
+      $sql = 'drop table "'.$table.'"';
+      }
     $db->query($sql);
     }
   }
@@ -164,29 +171,14 @@ function installModules($utilityComponent)
     }
   }
 
-// cleanup the lock files
-function releaseLocks()
+// cleanup the lock file
+function releaseLock($dbType)
   {
-  if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
+  if(file_exists(BASE_PATH.'/tests/configs/lock.'.$dbType.'.ini'))
     {
-    rename(  BASE_PATH.'/tests/configs/lock.pgsql.ini',BASE_PATH.'/tests/configs/pgsql.ini');
-    }
-  if(file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini'))
-    {
-    rename(  BASE_PATH.'/tests/configs/lock.mysql.ini',BASE_PATH.'/tests/configs/mysql.ini');
+    rename(  BASE_PATH.'/tests/configs/lock.'.$dbType.'.ini',BASE_PATH.'/tests/configs/'.$dbType.'.ini');
     }
   }
-
-
-
-
-
-
-
-
-
-
-
 
 
 // general setup
@@ -271,8 +263,7 @@ foreach($dbTypes as $dbType)
   try
     {
     $dbAdapter = loadDbAdapter($testConfigDir, $dbType);
-    dropTables($dbAdapter);
-
+    dropTables($dbAdapter, $dbType);
     require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
     $utilityComponent = new UtilityComponent();
 
@@ -280,7 +271,7 @@ foreach($dbTypes as $dbType)
     createDefaultAssetstore();
     installModules($utilityComponent);
 
-    releaseLocks();
+    releaseLock($dbType);
     }
   catch(Zend_Exception $ze)
     {
