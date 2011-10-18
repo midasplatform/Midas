@@ -553,6 +553,11 @@ function sliceFileName(name,nchar)
          value.qtip('hide');
          value.qtip('disable');
         });
+
+        if(json.global.demomode)
+          {
+          $('.loginLink').qtip('enable');
+          }
         
        if(!$('#dialogStartingGuide').is(':hidden'))
          {
