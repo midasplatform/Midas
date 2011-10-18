@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `assetstore` (
   `path` varchar(512) NOT NULL,
   `type` tinyint(4) NOT NULL,
   PRIMARY KEY (`assetstore_id`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `bitstream` (
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`bitstream_id`),
   KEY `itemrevision_id` (`itemrevision_id`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=692 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `community` (
   `uuid` varchar(255) DEFAULT '',
   PRIMARY KEY (`community_id`),
   KEY `name` (`name`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `communityinvitation` (
   `community_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`communityinvitation_id`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `errorlog` (
   `message` text NOT NULL,
   `datetime` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`errorlog_id`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=185 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `feed` (
   `type` int(11) NOT NULL,
   `ressource` varchar(255) NOT NULL,
   PRIMARY KEY (`feed_id`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=82 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS `folder` (
   `date_creation` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`folder_id`),
   KEY `parent_id` (`parent_id`)
-)   DEFAULT CHARSET=utf8 COMMENT='Describes a directory' AUTO_INCREMENT=209 ;
+)   DEFAULT CHARSET=utf8 COMMENT='Describes a directory';
 
 -- --------------------------------------------------------
 
@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `group` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`group_id`),
   KEY `community_id` (`community_id`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=58 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `item` (
   `uuid` varchar(255) DEFAULT '',
   `date_creation` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=56 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `itemkeyword` (
   PRIMARY KEY (`keyword_id`),
   UNIQUE KEY `value` (`value`),
   KEY `relevance` (`relevance`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=67 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS `itemrevision` (
   UNIQUE KEY `item_id` (`item_id`,`revision`),
   KEY `user_id` (`user_id`),
   KEY `date` (`date`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=704 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -322,7 +322,7 @@ CREATE TABLE IF NOT EXISTS `metadata` (
   `description` varchar(512) NOT NULL,
   PRIMARY KEY (`metadata_id`),
   KEY `metadatatype_id` (`metadatatype`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+)   DEFAULT CHARSET=utf8;
 
 INSERT INTO metadata (metadatatype,element,qualifier,description)
 VALUES ('0','contributor','author','Author of the data');
@@ -368,7 +368,7 @@ CREATE TABLE IF NOT EXISTS `metadatadocumentvalue` (
   KEY `metadata_id` (`metadata_id`),
   KEY `itemrevision_id` (`itemrevision_id`),
   KEY `value` (`value`(1000))
-)  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -384,7 +384,7 @@ CREATE TABLE IF NOT EXISTS `metadatavalue` (
   PRIMARY KEY (`metadatavalue_id`),
   KEY `metadata_id` (`metadata_id`,`itemrevision_id`),
   KEY `value` (`value`(1000))
-)  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -414,7 +414,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `biography` varchar(255) DEFAULT '',
   PRIMARY KEY (`user_id`),
   KEY `email` (`email`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=44 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
