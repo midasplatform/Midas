@@ -262,17 +262,18 @@ class UploadController extends AppController
 
     if(!empty($pathClient))
       {
-      $tmpArray = split(';;', $pathClient);
+      $tmpArray = explode(';;', $pathClient);
       foreach($tmpArray as $value)
         {
-        if(strpos($value, $filename) !== false)
+        $tmpPathValue = explode('/', $value);
+        if(end($tmpPathValue) == $filename)
           {
           $pathClient = $value;
           break;
           }
         }
       }
-      
+
     $parent = $this->_getParam("parent");
     $license = $this->_getParam("license");
     if(!empty($path) && file_exists($path) && $file_size > 0)
@@ -289,7 +290,7 @@ class UploadController extends AppController
           {
           $parentDao = $this->Folder->load($parent);
           $this->getLogger()->info($pathClient);
-          $folders = split('/', $pathClient);
+          $folders = explode('/', $pathClient);
           unset($folders[count($folders) - 1]);
           foreach($folders as $folderName)
             {
