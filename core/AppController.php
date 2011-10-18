@@ -174,7 +174,7 @@ class AppController extends MIDAS_GlobalController
 
           $this->view->recentItems = $recentItems;
           $check = $this->_getParam('checkRecentItem');
-          }      
+          }
         }
       else
         {
@@ -200,10 +200,10 @@ class AppController extends MIDAS_GlobalController
       }
 
     $this->view->lang = Zend_Registry::get('configGlobal')->application->lang;
-    
+
     $this->view->isStartingGuide = $this->isStartingGuide();
-    $this->view->isDynamicHelp = $this->isDynamicHelp();   
-    
+    $this->view->isDynamicHelp = $this->isDynamicHelp();
+
     //create a global javascript json array
     $jsonGlobal = array(
       "webroot" => $this->view->webroot,
@@ -254,14 +254,14 @@ class AppController extends MIDAS_GlobalController
 
     $this->view->json = array(
       "global" => $jsonGlobal, "login" => $login, 'feed' => $feed, "browse" => $browse);
-    
+
     // Init Dynamic Help (the order makes sense for the animation)
     if($this->isDemoMode())
       {
       $this->addDynamicHelp('.loginLink', "<b>Authenticate.</b><br/><br/>Demo Administrator:<br/>- Login: admin@kitware.com<br/>- Password: admin<br/><br/>
-                            Demo User:<br/>-Login: user@kitware.com<br/>-Password: useryour information.", 'bottom left', 'top right');
+                            Demo User:<br/>-Login: user@kitware.com<br/>-Password: user", 'bottom left', 'top right');
       }
-    
+
     if($this->logged)
       {
       $this->addDynamicHelp('#startingGuideLink', 'Show the <b>Starting Guide</b>. You can disable these messages from this panel.');
@@ -270,11 +270,11 @@ class AppController extends MIDAS_GlobalController
       {
       $this->addDynamicHelp('.HeaderLogo', 'The <b>MIDAS Platform</b> integrates multimedia server technology with open-source data analysis and visualization clients.');
       }
-      
-        
+
+
     $this->addDynamicHelp('.HeaderSearch', '<b>Quick search</b>. Use this tool to quickly find information and data.');
     $this->addDynamicHelp('li.uploadFile a', '<b>Upload</b> files, data using this button.');
-    
+
     if($this->logged)
       {
       $this->addDynamicHelp('#topUserName', '<b>Manage</b> your information.', 'bottom left', 'top right');
@@ -283,12 +283,12 @@ class AppController extends MIDAS_GlobalController
       {
       $this->addDynamicHelp('.registerLink', '<b>Register</b> to create your personnal space.', 'bottom left', 'top right');
       }
-    
+
     $this->addDynamicHelp('.SideBar ul:first', '<b>Navigation menu</b>. Browse, explore and manage data.');
-    
+
     Zend_Loader::loadClass("JsonComponent", BASE_PATH.'/core/controllers/components');
     } // end preDispatch()
-    
+
   /** show dynamic help ? */
   function isDynamicHelp()
     {
@@ -305,13 +305,13 @@ class AppController extends MIDAS_GlobalController
         }
       return $dynamichelp == 1;
       }
-    catch (Zend_Exception $exc)
+    catch(Zend_Exception $exc)
       {
       $this->getLogger()->warn($exc->getMessage());
       return false;
       }
     }
-    
+
   /** show starting guide ? */
   function isStartingGuide()
     {
@@ -323,7 +323,7 @@ class AppController extends MIDAS_GlobalController
         }
       return false;
       }
-    catch (Zend_Exception $exc)
+    catch(Zend_Exception $exc)
       {
       $this->getLogger()->warn($exc->getMessage());
       return false;
@@ -362,11 +362,11 @@ class AppController extends MIDAS_GlobalController
    * @param type $selector (javascript selector)
    * @param type $text
    * @param type $location
-   * @param type $arrow 
+   * @param type $arrow
    */
   public function addDynamicHelp($selector, $text, $location = 'bottom right', $arrow = 'top left')
     {
-    $this->view->json['dynamicHelp'][] = array('selector' => $selector, 'text' => htmlspecialchars($text) , 'my' => $arrow, 'at' => $location);
+    $this->view->json['dynamicHelp'][] = array('selector' => $selector, 'text' => htmlspecialchars($text), 'my' => $arrow, 'at' => $location);
     }
   /** check if demo mode is set */
   public function isDemoMode()
