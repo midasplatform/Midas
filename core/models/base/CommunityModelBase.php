@@ -99,7 +99,7 @@ abstract class CommunityModelBase extends AppModel
   /** Create a community.
    *  privacy: MIDAS_COMMUNITY_PUBLIC, MIDAS_COMMUNITY_PRIVATE
    *  */
-  function createCommunity($name, $description, $privacy, $user, $canJoin = null)
+  function createCommunity($name, $description, $privacy, $user, $canJoin = null, $uuid = '')
     {
     $name = ucfirst($name);
     if($this->getByName($name) !== false)
@@ -130,6 +130,7 @@ abstract class CommunityModelBase extends AppModel
     $communityDao->setPrivacy($privacy);
     $communityDao->setCreation(date('c'));
     $communityDao->setCanJoin($canJoin);
+    $communityDao->setUuid($uuid);
     $this->save($communityDao);
 
     $modelLoad = new MIDAS_ModelLoader();

@@ -95,64 +95,9 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Get the UUID of a resource
-   * @param id The id of the resource (numeric)
-   * @param type The type of the resource (numeric)
-   * @return Universal identifier
-   */
-  public function uuidGet($args)
-    {
-    $this->_validateParams($args, array('id', 'type'));
-
-    $id = $args['id'];
-    $type = $args['type'];
-    $modelLoad = new MIDAS_ModelLoader();
-    switch($type)
-      {
-      case MIDAS_RESOURCE_ASSETSTORE:
-        $model = $modelLoad->loadModel('Assetstore');
-        break;
-      case MIDAS_RESOURCE_BITSTREAM:
-        $model = $modelLoad->loadModel('Bitstream');
-        break;
-      case MIDAS_RESOURCE_ITEM:
-        $model = $modelLoad->loadModel('Item');
-        break;
-      case MIDAS_RESOURCE_COMMUNITY:
-        $model = $modelLoad->loadModel('Community');
-        break;
-      case MIDAS_RESOURCE_REVISION:
-        $model = $modelLoad->loadModel('ItemRevision');
-        break;
-      case MIDAS_RESOURCE_FOLDER:
-        $model = $modelLoad->loadModel('Folder');
-        break;
-      case MIDAS_RESOURCE_USER:
-        $model = $modelLoad->loadModel('User');
-        break;
-      default :
-        throw new Zend_Exception("Undefined type");
-      }
-    $dao = $model->load($id);
-
-    if($dao == false)
-      {
-      throw new Exception('Invalid resource type or id.', MIDAS_INVALID_PARAMETER);
-      }
-
-    $uuid = $dao->getUuid();
-
-    if($uuid == false)
-      {
-      throw new Exception('Invalid resource type or id.', MIDAS_INVALID_PARAMETER);
-      }
-
-    return $uuid;
-    }
-
-  /**
    * Get a resource by its UUID
-   * @params uuid Universal identifier for the resource
+   * @param uuid Universal identifier for the resource
+   * @param folder (Optional) If set, will return the folder instead of the community record
    * @return The resource's dao
    */
   function resourceGet($args)
@@ -169,7 +114,11 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('No resource for the given UUID.', MIDAS_INVALID_PARAMETER);
       }
 
-    return $resource->toArray();
+    if($resource->resourceType == MIDAS_RESOURCE_COMMUNITY && array_key_exists('folder', $args))
+      {
+      return array('type' => MIDAS_RESOURCE_FOLDER, 'id' => $resource->getFolderId());
+      }
+    return array('type' => $resource->resourceType, 'id' => $resource->getKey());
     }
 
   /**
@@ -240,12 +189,74 @@ class Api_ApiComponent extends AppComponent
 
   /**
    * Generate a unique upload token
-   * @return An upload token that can be used to upload a file
+   * @param token Authentication token
+   * @param itemid The id of the parent item to upload into
+   * @param filename The filename of the bitstream you will upload
+   * @param checksum The md5 checksum of the file to be uploaded
+   * @return An upload token that can be used to upload a file. If the token returned is blank, the server already has this file and there is no need to upload.
    */
   function uploadGeneratetoken($args)
     {
-    $uploadApi = new KwUploadAPI($this->apiSetup);
-    return $uploadApi->generateToken($args);
+    $this->_validateParams($args, array('itemid', 'filename', 'checksum'));
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('Anonymous users may not upload', MIDAS_INVALID_POLICY);
+      }
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $item = $itemModel->load($args['itemid']);
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception('Invalid policy or itemid', MIDAS_INVALID_POLICY);
+      }
+
+    // If we already have a bitstream with this checksum, create a reference and return blank token
+    $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    $existingBitstream = $bitstreamModel->getByChecksum($args['checksum']);
+    if($existingBitstream)
+      {
+      $revision = $itemModel->getLastRevision($item);
+
+      if($revision == false)
+        {
+        // Create new revision if none exists yet
+        Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
+        $revision = new ItemRevisionDao();
+        $revision->setChanges('Initial revision');
+        $revision->setUser_id($userDao->getKey());
+        $revision->setDate(date('c'));
+        $revision->setLicense(null);
+        $revision = $itemModel->addRevision($item, $revision);
+        }
+
+      $siblings = $revision->getBitstreams();
+      foreach($siblings as $sibling)
+        {
+        if($sibling->getName() == $args['filename'])
+          {
+          // already have a file with this name. don't add new record.
+          return array('token' => '');
+          }
+        }
+      Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
+      $bitstream = new BitstreamDao();
+      $bitstream->setChecksum($args['checksum']);
+      $bitstream->setName($args['filename']);
+      $bitstream->setSizebytes($existingBitstream->getSizebytes());
+      $bitstream->setPath($existingBitstream->getPath());
+      $bitstream->setAssetstoreId($existingBitstream->getAssetstoreId());
+      $bitstream->setMimetype($existingBitstream->getMimetype());
+      $revisionModel = $modelLoader->loadModel('ItemRevision');
+      $revisionModel->addBitstream($revision, $bitstream);
+      return array('token' => '');
+      }
+    else //we don't already have this content, so create the token
+      {
+      $uploadApi = new KwUploadAPI($this->apiSetup);
+      return $uploadApi->generateToken($args, $userDao->getKey().'/'.$item->getKey());
+      }
     }
 
   /**
@@ -260,50 +271,78 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Upload a file to the server. PUT or POST is required
-   * @param token The upload token (see upload.generatetoken)
+   * Upload a file to the server. PUT or POST is required. Either the itemid or folderid parameter must be set
+   * @param uploadtoken The upload token (see upload.generatetoken)
+   * @param filename The upload filename
+   * @param length The length in bytes of the file being uploaded
    * @param mode (Optional) Stream or multipart. Default is stream
-   * @param folder_id The id of the folder to upload into
-   * @param item_id (Optional) If set, will create a new revision in the existing item
-   * @param revision (Optional) If set, will add a new file into an existing revision
+   * @param folderid (Optional) The id of the folder to upload into
+   * @param itemid (Optional) If set, will create a new revision in the existing item
+   * @param revision (Optional) If set, will add a new file into an existing revision.  Set this to "head" to add to the most recent revision.
    * @param return The item information of the item created or changed
    */
   function uploadPerform($args)
     {
+    $this->_validateParams($args, array('uploadtoken', 'filename', 'length'));
     if(!$this->controller->getRequest()->isPost() && !$this->controller->getRequest()->isPut())
       {
       throw new Exception('POST or PUT method required', MIDAS_HTTP_ERROR);
       }
 
-    $userDao = $this->_getUser($args);
-
-    if($userDao == false)
-      {
-      throw new Exception('Please log in', MIDAS_INVALID_POLICY);
-      }
+    list($userid, $resourceid, ) = explode('/', $args['uploadtoken']);
 
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
-    if(array_key_exists('revision', $args) && array_key_exists('item_id', $args))
+    $userModel = $modelLoader->loadModel('User');
+    $userDao = $userModel->load($userid);
+    if(!$userDao)
       {
-      $item = $itemModel->load($args['item_id']);
+      throw new Exception('Invalid user id from upload token', MIDAS_INVALID_PARAMETER);
+      }
+
+    if(array_key_exists('revision', $args) && array_key_exists('itemid', $args))
+      {
+      if($args['itemid'] != $resourceid)
+        {
+        throw new Exception('Upload token does not match itemid', MIDAS_INVALID_PARAMETER);
+        }
+      $item = $itemModel->load($args['itemid']);
       if($item == false)
         {
         throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
         }
-      if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+      if(strtolower($args['revision']) == 'head')
         {
-        throw new Exception('Permission error', MIDAS_INVALID_PARAMETER);
+        $revision = $itemModel->getLastRevision($item);
+
+        if($revision == false)
+          {
+          // Create new revision if none exists yet
+          Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
+          $revision = new ItemRevisionDao();
+          $revision->setChanges('Initial revision');
+          $revision->setUser_id($userDao->getKey());
+          $revision->setDate(date('c'));
+          $revision->setLicense(null);
+          $revision = $itemModel->addRevision($item, $revision);
+          }
         }
-      $revision = $itemModel->getRevision($item, $args['revision']);
-      if($revision == false)
+      else
         {
-        throw new Exception('Unable to find revision', MIDAS_INVALID_PARAMETER);
+        $revision = $itemModel->getRevision($item, $args['revision']);
+        if($revision == false)
+          {
+          throw new Exception('Unable to find revision', MIDAS_INVALID_PARAMETER);
+          }
         }
       }
-    elseif(array_key_exists('item_id', $args))
+    elseif(array_key_exists('itemid', $args))
       {
-      $item = $itemModel->load($args['item_id']);
+      if($args['itemid'] != $resourceid)
+        {
+        throw new Exception('Upload token does not match itemid', MIDAS_INVALID_PARAMETER);
+        }
+      $item = $itemModel->load($args['itemid']);
       if($item == false)
         {
         throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
@@ -313,10 +352,14 @@ class Api_ApiComponent extends AppComponent
         throw new Exception('Permission error', MIDAS_INVALID_POLICY);
         }
       }
-    elseif(array_key_exists('folder_id', $args))
+    elseif(array_key_exists('folderid', $args))
       {
+      if($args['folderid'] != $resourceid)
+        {
+        throw new Exception('Upload token does not match itemid', MIDAS_INVALID_PARAMETER);
+        }
       $folderModel = $modelLoader->loadModel('Folder');
-      $folder = $folderModel->load($args['folder_id']);
+      $folder = $folderModel->load($args['folderid']);
       if($folder == false)
         {
         throw new Exception('Unable to find folder', MIDAS_INVALID_PARAMETER);
@@ -328,18 +371,23 @@ class Api_ApiComponent extends AppComponent
       }
     else
       {
-      throw new Exception('Parameter itemrevision_id or item_id or folder_id is not defined', MIDAS_INVALID_PARAMETER);
+      throw new Exception('You must specify an itemid or folderid to upload into', MIDAS_INVALID_PARAMETER);
       }
 
     $mode = array_key_exists('mode', $args) ? $args['mode'] : 'stream';
     $uploadApi = new KwUploadAPI($this->apiSetup);
 
+    if(array_key_exists('testingmode', $args))
+      {
+      $uploadApi->testing_enable = true;
+      $args['localinput'] = $this->apiSetup['tmp_directory'].'/'.$args['filename'];
+      }
+
+    // Use KWUploadApi to handle the actual file upload
     if($mode == 'stream')
       {
-      $token = $this->uploadApi->generateToken($args);
-      $args['uploadtoken'] = $token['token'];
-      $args['length'] = $args['size'];
       $result = $uploadApi->process($args);
+
       $filename = $result['filename'];
       $filepath = $result['path'];
       $filesize = $result['size'];
@@ -378,11 +426,19 @@ class Api_ApiComponent extends AppComponent
       $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $tmp, '');
       }
 
+    if(!$item)
+      {
+      throw new Exception('Upload failed', MIDAS_INTERNAL_ERROR);
+      }
+    if($filesize == $args['length'])
+      {
+      unlink($filepath);
+      }
     return $item->toArray();
     }
 
   /**
-   * Create a new community
+   * Create a new community or update an existing one using the uuid
    * @param token Authentication token
    * @param name The community name
    * @param description (Optional) The community description
@@ -411,13 +467,13 @@ class Api_ApiComponent extends AppComponent
     if(!empty($uuid))
       {
       $record = $uuidComponent->getByUid($uuid);
-      if($record === false || !$communityModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception("This community doesn't exist  or you don't have the permissions.", MIDAS_INVALID_POLICY);
-        }
       }
     if($record != false && $record instanceof CommunityDao)
       {
+      if(!$communityModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+        }
       $record->setName($name);
       if(isset($args['description']))
         {
@@ -436,7 +492,8 @@ class Api_ApiComponent extends AppComponent
       }
     else
       {
-      $description = "";
+      // Policy check to make sure the user can create top level communities (admins only?)
+      $description = '';
       $privacy = MIDAS_COMMUNITY_PUBLIC;
       $canJoin = MIDAS_COMMUNITY_CAN_JOIN;
       if(isset($args['description']))
@@ -451,11 +508,11 @@ class Api_ApiComponent extends AppComponent
         {
         $canJoin = $args['canjoin'];
         }
-      $communityDao = $communityModel->createCommunity($name, $description, $privacy, $userDao, $canJoin);
+      $communityDao = $communityModel->createCommunity($name, $description, $privacy, $userDao, $canJoin, $uuid);
 
       if($communityDao === false)
         {
-        throw new Exception('Request failed', MIDAS_INTERNAL_ERROR);
+        throw new Exception('Create community failed', MIDAS_INTERNAL_ERROR);
         }
 
       return $communityDao->toArray();
@@ -486,6 +543,41 @@ class Api_ApiComponent extends AppComponent
       }
 
     return $community->toArray();
+    }
+
+  /**
+   * Get the immediate children of a community (non-recursive)
+   * @param token (Optional) Authentication token
+   * @param id The id of the community
+   * @return The folders in the community
+   */
+  function communityChildren($args)
+    {
+    $this->_validateParams($args, array('id'));
+
+    $id = $args['id'];
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $communityModel = $modelLoader->loadModel('Community');
+    $folderModel = $modelLoader->loadModel('Folder');
+    $community = $communityModel->load($id);
+    if(!$community)
+      {
+      throw new Exception('Invalid community id', MIDAS_INVALID_PARAMETER);
+      }
+    $folder = $folderModel->load($community->getFolderId());
+
+    $userDao = $this->_getUser($args);
+    try
+      {
+      $folders = $folderModel->getChildrenFoldersFiltered($folder, $userDao);
+      }
+    catch(Exception $e)
+      {
+      throw new Exception($e->getMessage(), MIDAS_INTERNAL_ERROR);
+      }
+
+    return array('folders' => $folders);
     }
 
   /**
@@ -550,7 +642,7 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Create a folder
+   * Create a folder or update an existing one if one exists by the uuid passed
    * @param token Authentication token
    * @param name The name of the folder to create
    * @param description (Optional) The description of the folder
@@ -565,7 +657,7 @@ class Api_ApiComponent extends AppComponent
     $userDao = $this->_getUser($args);
     if($userDao == false)
       {
-      throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
+      throw new Exception('Cannot create folder anonymously', MIDAS_INVALID_POLICY);
       }
 
     $modelLoader = new MIDAS_ModelLoader();
@@ -580,13 +672,13 @@ class Api_ApiComponent extends AppComponent
       $componentLoader = new MIDAS_ComponentLoader();
       $uuidComponent = $componentLoader->loadComponent('Uuid');
       $record = $uuidComponent->getByUid($uuid);
-      if($record === false || !$folderModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-        }
       }
     if($record != false && $record instanceof FolderDao)
       {
+      if(!$folderModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+        }
       $record->setName($name);
       if(isset($args['description']))
         {
@@ -605,30 +697,27 @@ class Api_ApiComponent extends AppComponent
         {
         throw new Exception('Parameter parentid is not defined', MIDAS_INVALID_PARAMETER);
         }
-      $parentid = $args['parentid'];
-      $folder = $folderModel->load($parentid);
+      $folder = $folderModel->load($args['parentid']);
       if($folder == false)
         {
         throw new Exception('Parent doesn\'t exist', MIDAS_INVALID_PARAMETER);
         }
-      $new_folder = $folderModel->createFolder($name, $description, $folder);
+      $new_folder = $folderModel->createFolder($name, $description, $folder, $uuid);
       if($new_folder === false)
         {
-        throw new Exception('Request failed', MIDAS_INTERNAL_ERROR);
+        throw new Exception('Create folder failed', MIDAS_INTERNAL_ERROR);
         }
       $policyGroup = $folder->getFolderpolicygroup();
       $policyUser = $folder->getFolderpolicyuser();
+      $folderpolicygroupModel = $modelLoader->loadModel('Folderpolicygroup');
+      $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicygroup');
       foreach($policyGroup as $policy)
         {
-        $group = $policy->getGroup();
-        $policyValue = $policy->getPolicy();
-        $folderModelpolicygroup->createPolicy($group, $new_folder, $policyValue);
+        $folderpolicygroupModel->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
         }
       foreach($policyUser as $policy)
         {
-        $user = $policy->getUser();
-        $policyValue = $policy->getPolicy();
-        $folderModelpolicyuser->createPolicy($user, $new_folder, $policyValue);
+        $folderpolicyuserModel->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
         }
 
       return $new_folder->toArray();
@@ -676,8 +765,15 @@ class Api_ApiComponent extends AppComponent
     $folder = $folderModel->load($id);
 
     $userDao = $this->_getUser($args);
-    $folders = $folderModel->getChildrenFoldersFiltered($folder, $userDao);
-    $items = $folderModel->getItemsFiltered($folder, $userDao);
+    try
+      {
+      $folders = $folderModel->getChildrenFoldersFiltered($folder, $userDao);
+      $items = $folderModel->getItemsFiltered($folder, $userDao);
+      }
+    catch(Exception $e)
+      {
+      throw new Exception($e->getMessage(), MIDAS_INTERNAL_ERROR);
+      }
 
     return array('folders' => $folders, 'items' => $items);
     }
@@ -734,9 +830,82 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Create an item or update an existing one if one exists by the uuid passed
+   * @param token Authentication token
+   * @param name The name of the item to create
+   * @param description (Optional) The description of the item
+   * @param uuid (Optional) Uuid of the item. If none is passed, will generate one.
+   * @param privacy (Optional) Default 'Public'.
+   * @param parentid The id of the parent folder
+   * @return The item object that was created
+   */
+  function itemCreate($args)
+    {
+    $this->_validateParams($args, array('name'));
+    $userDao = $this->_getUser($args);
+    if($userDao == false)
+      {
+      throw new Exception('Cannot create item anonymously', MIDAS_INVALID_POLICY);
+      }
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $name = $args['name'];
+    $description = $args['description'];
+
+    $uuid = isset($args['uuid']) ? $args['uuid'] : '';
+    $record = false;
+    if(!empty($uuid))
+      {
+      $componentLoader = new MIDAS_ComponentLoader();
+      $uuidComponent = $componentLoader->loadComponent('Uuid');
+      $record = $uuidComponent->getByUid($uuid);
+      }
+    if($record != false && $record instanceof ItemDao)
+      {
+      if(!$itemModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+        }
+      $record->setName($name);
+      if(isset($args['description']))
+        {
+        $record->setDescription($args['description']);
+        }
+      if(isset($args['privacy']))
+        {
+        $record->setPrivacy($args['privacy']);
+        }
+      $itemModel->save($record);
+      return $record->toArray();
+      }
+    else
+      {
+      if(!array_key_exists('parentid', $args))
+        {
+        throw new Exception('Parameter parentid is not defined', MIDAS_INVALID_PARAMETER);
+        }
+      $folderModel = $modelLoader->loadModel('Folder');
+      $folder = $folderModel->load($args['parentid']);
+      if($folder == false)
+        {
+        throw new Exception('Parent folder doesn\'t exist', MIDAS_INVALID_PARAMETER);
+        }
+      $item = $itemModel->createItem($name, $description, $folder, $uuid);
+      if($item === false)
+        {
+        throw new Exception('Create new item failed', MIDAS_INTERNAL_ERROR);
+        }
+
+      return $item->toArray();
+      }
+    }
+
+  /**
    * Get an item's information
    * @param token (Optional) Authentication token
    * @param id The item id
+   * @param head (Optional) only list the most recent revision
    * @return The item object
    */
   function itemGet($args)
@@ -755,10 +924,29 @@ class Api_ApiComponent extends AppComponent
       }
 
     $itemArray = $item->toArray();
-    $revisions = $item->getRevisions();
+
+    $owningFolders = $item->getFolders();
+    if(count($owningFolders) > 0)
+      {
+      $itemArray['folder_id'] = $owningFolders[0]->getKey();
+      }
+
     $revisionsArray = array();
+    if(array_key_exists('head', $args))
+      {
+      $revisions = array($itemModel->getLastRevision($item));
+      }
+    else //get all revisions
+      {
+      $revisions = $item->getRevisions();
+      }
+
     foreach($revisions as $revision)
       {
+      if(!$revision)
+        {
+        continue;
+        }
       $bitstreamArray = array();
       $bitstreams = $revision->getBitstreams();
       foreach($bitstreams as $b)
@@ -920,4 +1108,106 @@ class Api_ApiComponent extends AppComponent
     return array('apikey' => $defaultApiKey);
     }
 
+  /**
+   * Fetch the information about a bitstream
+   * @param token (Optional) Authentication token
+   * @param id The id of the bitstream
+   * @return Bitstream dao
+   */
+  function bitstreamGet($args)
+    {
+    $this->_validateParams($args, array('id'));
+    $userDao = $this->_getUser($args);
+    $modelLoader = new MIDAS_ModelLoader();
+    $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    $bitstream = $bitstreamModel->load($args['id']);
+
+    if(!$bitstream)
+      {
+      throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
+      }
+
+    if(array_key_exists('name', $args))
+      {
+      $bitstream->setName($args['name']);
+      }
+    $revisionModel = $modelLoader->loadModel('ItemRevision');
+    $revision = $revisionModel->load($bitstream->getItemrevisionId());
+
+    if(!$revision)
+      {
+      throw new Exception('Invalid revision id', MIDAS_INTERNAL_ERROR);
+      }
+    $itemModel = $modelLoader->loadModel('Item');
+    $item = $itemModel->load($revision->getItemId());
+    if(!$item || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+      {
+      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
+      }
+    $bitstreamArray = array();
+    $bitstreamArray['name'] = $bitstream->getName();
+    $bitstreamArray['size'] = $bitstream->getSizebytes();
+    $bitstreamArray['mimetype'] = $bitstream->getMimetype();
+    $bitstreamArray['checksum'] = $bitstream->getChecksum();
+    $bitstreamArray['itemrevision_id'] = $bitstream->getItemrevisionId();
+    $bitstreamArray['item_id'] = $revision->getItemId();
+    return $bitstreamArray;
+    }
+
+  /**
+   * Download a bitstream either by its id or by a checksum. Either an id or checksum parameter is required.
+   * @param token (Optional) Authentication token
+   * @param id (Optional) The id of the bitstream
+   * @param checksum (Optional) The checksum of the bitstream
+   * @param name (Optional) Alternate filename to download as
+   */
+  function bitstreamDownload($args)
+    {
+    if(!array_key_exists('id', $args) && !array_key_exists('checksum', $args))
+      {
+      throw new Exception('Either an id or checksum parameter is required', MIDAS_INVALID_PARAMETER);
+      }
+    $userDao = $this->_getUser($args);
+    $modelLoader = new MIDAS_ModelLoader();
+    $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    if(array_key_exists('id', $args))
+      {
+      $bitstream = $bitstreamModel->load($args['id']);
+      }
+    else
+      {
+      $bitstream = $bitstreamModel->getByChecksum($args['checksum']);
+      }
+
+    if(!$bitstream)
+      {
+      throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
+      }
+
+    if(array_key_exists('name', $args))
+      {
+      $bitstream->setName($args['name']);
+      }
+    $revisionModel = $modelLoader->loadModel('ItemRevision');
+    $revision = $revisionModel->load($bitstream->getItemrevisionId());
+
+    if(!$revision)
+      {
+      throw new Exception('Invalid revision id', MIDAS_INTERNAL_ERROR);
+      }
+    $itemModel = $modelLoader->loadModel('Item');
+    $item = $itemModel->load($revision->getItemId());
+    if(!$item || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+      {
+      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
+      }
+    if(strpos($bitstream->getPath(), 'http://') !== false)
+      {
+      $this->_redirect($bitstream->getPath());
+      return;
+      }
+    $componentLoader = new MIDAS_ComponentLoader();
+    $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');
+    $downloadComponent->download($bitstream);
+    }
   } // end class

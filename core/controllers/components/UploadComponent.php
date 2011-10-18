@@ -129,7 +129,7 @@ class UploadComponent extends AppComponent
       throw new Zend_Exception('Parent permissions errors');
       }
 
-    Zend_Loader::loadClass("ItemDao", BASE_PATH . '/core/models/dao');
+    Zend_Loader::loadClass('ItemDao', BASE_PATH.'/core/models/dao');
     $item = new ItemDao;
     $item->setName($name);
     $item->setDescription('');
@@ -232,7 +232,7 @@ class UploadComponent extends AppComponent
 
 
     // Add bitstreams to the revision
-    Zend_Loader::loadClass("BitstreamDao", BASE_PATH . '/core/models/dao');
+    Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
     $bitstreamDao = new BitstreamDao;
     $bitstreamDao->setName($name);
     $bitstreamDao->setPath($path);
@@ -247,7 +247,7 @@ class UploadComponent extends AppComponent
       throw new Zend_Exception("Unable to load default assetstore");
       }
 
-    // Upload the bitstream ifnecessary (based on the assetstore type)
+    // Upload the bitstream if necessary (based on the assetstore type)
     $this->uploadBitstream($bitstreamDao, $assetstoreDao);
     $checksum = $bitstreamDao->getChecksum();
     $tmpBitstreamDao = $bitstreamModel->getByChecksum($checksum);
@@ -258,7 +258,7 @@ class UploadComponent extends AppComponent
       }
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
 
-    $this->getLogger()->info(__METHOD__." Upload ok :".$path);
+    $this->getLogger()->info(__METHOD__.' Upload ok :'.$path);
     Zend_Registry::get('notifier')->notifyEvent("EVENT_CORE_UPLOAD_FILE", array($item->toArray(), $itemRevisionDao->toArray()));
     return $item;
     }//end createUploadedItem

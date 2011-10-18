@@ -59,7 +59,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     $config = new Zend_Config_Ini(APPLICATION_CONFIG, $configGlobal->environment, true);
     Zend_Registry::set('config', $config);
-    date_default_timezone_set('Europe/Paris');
+    date_default_timezone_set($configGlobal->default->timezone);
 
     // InitDatabase
     $configDatabase = new Zend_Config_Ini(DATABASE_CONFIG, $configGlobal->environment, true);
