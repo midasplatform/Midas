@@ -277,7 +277,7 @@ class CommunityController extends AppController
       {
       $member_group = $communityDao->getMemberGroup();
       $this->Group->removeUser($member_group, $this->userSession->Dao);
-      $this->_redirect('/');
+      $this->_redirect('/community');
       }
 
     $this->Community->incrementViewCount($communityDao);
