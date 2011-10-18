@@ -212,6 +212,7 @@ class AppController extends MIDAS_GlobalController
       "needToLog" => false,
       "currentUri" => $this->getRequest()->REQUEST_URI,
       "lang" => Zend_Registry::get('configGlobal')->application->lang,
+      "demomode" => $this->isDemoMode(),
       "dynamichelp" => $this->isDynamicHelp(),
       "dynamichelpAnimate" => $this->isDynamicHelp() && isset($_GET['first']),
       "startingGuide" => $this->isStartingGuide(),
