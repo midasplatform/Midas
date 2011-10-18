@@ -314,6 +314,24 @@ class UtilityComponent extends AppComponent
     // TODO, The module installation process needs some improvment.
     $allModules = $this->getAllModules();
     $version = $allModules[$moduleName]->version;
+
+    $installScript = BASE_PATH.'/modules/'.$moduleName.'/database/InstallScript.php';
+    $installScriptExists = file_exists($installScript);
+    if($installScriptExists)
+      {
+      require_once BASE_PATH.'/core/models/MIDASModuleInstallScript.php';
+      require_once $installScript;
+
+      $classname = ucfirst($moduleName).'_InstallScript';
+      if(!class_exists($classname, false))
+        {
+        throw new Zend_Exception('Could not find class "'.$classname.'" in file "'.$filename.'"');
+        }
+
+      $class = new $classname();
+      $class->preInstall();
+      }
+
     try
       {
       switch(Zend_Registry::get('configDatabase')->database->adapter)
@@ -347,6 +365,11 @@ class UtilityComponent extends AppComponent
     catch(Zend_Exception $exc)
       {
       $this->getLogger()->warn($exc->getMessage());
+      }
+
+    if($installScriptExists)
+      {
+      $class->postInstall();
       }
 
     require_once dirname(__FILE__).'/UpgradeComponent.php';

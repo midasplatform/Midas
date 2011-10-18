@@ -104,6 +104,9 @@ class UserModel extends UserModelBase
       case 'view':
         $sql->order(array('view DESC', 'lastname ASC'));
         break;
+      case 'admin':
+        $sql->order(array('admin DESC'));
+        break;
       default:
         $sql->order(array('lastname DESC'));
         break;
