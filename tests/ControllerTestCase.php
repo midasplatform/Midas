@@ -141,7 +141,6 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         {
         require_once BASE_PATH . "/modules/".$route."/models/AppModel.php";
         }
-      $utilityComponent->installModule($nameModule);
       }
     Zend_Registry::set('modulesEnable', $listeModule);
     }
