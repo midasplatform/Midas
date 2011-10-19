@@ -45,9 +45,6 @@ class AppController extends MIDAS_GlobalController
     $this->view->metaDescription = Zend_Registry::get('configGlobal')->application->description;
     $this->view->metaKeywords = Zend_Registry::get('configGlobal')->application->keywords;
 
-    // init notifier
-    Zend_Registry::set('notifier', new MIDAS_Notifier());
-
     // Set the version
     $this->view->version = '3.0.0';
     if(isset(Zend_Registry::get('configDatabase')->version))
@@ -198,6 +195,10 @@ class AppController extends MIDAS_GlobalController
       {
       Zend_Registry::set('userSession', null);
       }
+
+    // init notifier
+    Zend_Registry::set('notifier', new MIDAS_Notifier($this->logged, $this->userSession));
+
 
     $this->view->lang = Zend_Registry::get('configGlobal')->application->lang;
     //create a global javascript json array
