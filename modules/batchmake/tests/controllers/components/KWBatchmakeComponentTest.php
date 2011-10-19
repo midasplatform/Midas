@@ -24,6 +24,7 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
   protected $applicationConfig;
 
 
+
   /** set up tests*/
   public function setUp()
     {

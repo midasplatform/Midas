@@ -60,26 +60,26 @@ class ExportComponentTest extends ControllerTestCase
     chmod($midas_exporttest_dir, 0777);
 
     // upload an item to user1's public folder
-    $user1_public_path = $midas_exporttest_dir.'/user1_public.png';
+    $user1_public_path = $midas_exporttest_dir.'/public.file';
     copy(BASE_PATH.'/tests/testfiles/search.png', $user1_public_path);
     $user1_public_fh = fopen($user1_public_path, "a+");
     fwrite($user1_public_fh, "content:user1_public");
     fclose($user1_public_fh);
     $user1_pulic_file_size = filesize($user1_public_path);
-    $user1_public_filename = 'user1_public.png';
+    $user1_public_filename = 'public.file';
     $user1_public_parent = $userDao->getPublicFolder()->getKey();
     $license = 0;
     $uploadCompoenent->createUploadedItem($userDao, $user1_public_filename,
                                           $user1_public_path, $user1_public_parent, $license);
 
     // upload an item to user1's private folder
-    $user1_private_path = $midas_exporttest_dir.'/user1_private.png';
+    $user1_private_path = $midas_exporttest_dir.'/private.png';
     copy(BASE_PATH.'/tests/testfiles/search.png', $user1_private_path);
     $user1_private_fh = fopen($user1_private_path, "a+");
     fwrite($user1_private_fh, "content:user1_private");
     fclose($user1_private_fh);
     $user1_pulic_file_size = filesize($user1_private_path);
-    $user1_private_filename = 'user1_private.png';
+    $user1_private_filename = 'private.png';
     $user1_private_parent = $userDao->getPrivateFolder()->getKey();
     $license = 0;
     $uploadCompoenent->createUploadedItem($userDao, $user1_private_filename,
@@ -135,12 +135,12 @@ class ExportComponentTest extends ControllerTestCase
     require_once BASE_PATH.'/core/controllers/components/ExportComponent.php';
     $exportCompoenent = new ExportComponent();
     $filenames = array();
-    $filenames[] = "user1_public.png";
-    $filenames[] = "user1_private.png";
+    $filenames[] = "public.file";
+    $filenames[] = "private.png";
     $itemIds = $this->getItemIds($userDao, $filenames);
     // symlinks should not exist before export
-    $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[0].'/user1_public.png'));
-    $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[1].'/user1_private.png'));
+    $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
+    $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[1].'/private.png'));
     // user1 export these two items
     $exportCompoenent->exportBitstreams($userDao, $midas_exporttest_dir, $itemIds, true);
 
@@ -150,26 +150,26 @@ class ExportComponentTest extends ControllerTestCase
     $user1_public_bitstreams = $user1_public_revision->getBitstreams();
     $user1_public_lastbitstream = end($user1_public_bitstreams);
     $user1_public_bitstream_path = $user1_public_lastbitstream->getAssetstore()->getPath().'/'.$user1_public_lastbitstream->getPath();
-    $this->assertTrue(is_link($midas_exporttest_dir.'/'.$itemIds[0].'/user1_public.png'));
-    $this->assertEquals($user1_public_bitstream_path, readlink($midas_exporttest_dir.'/'.$itemIds[0].'/user1_public.png'));
+    $this->assertTrue(is_link($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
+    $this->assertEquals($user1_public_bitstream_path, readlink($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
     // user1's private file will be exported as a symlink file and the linked bitstream is also asserted
     $user1_private_item = $this->Item->load($itemIds[1]);
     $user1_private_revision = $this->Item->getLastRevision($user1_private_item);
     $user1_private_bitstreams = $user1_private_revision->getBitstreams();
     $user1_private_lastbitstream = end($user1_private_bitstreams);
     $user1_private_bitstream_path = $user1_private_lastbitstream->getAssetstore()->getPath().'/'.$user1_private_lastbitstream->getPath();
-    $this->assertTrue(is_link($midas_exporttest_dir.'/'.$itemIds[1].'/user1_private.png'));
-    $this->assertEquals($user1_private_bitstream_path, readlink($midas_exporttest_dir.'/'.$itemIds[1].'/user1_private.png'));
+    $this->assertTrue(is_link($midas_exporttest_dir.'/'.$itemIds[1].'/private.png'));
+    $this->assertEquals($user1_private_bitstream_path, readlink($midas_exporttest_dir.'/'.$itemIds[1].'/private.png'));
 
     // switch to user2
     $userDao = $this->User->load($usersFile[1]->getKey());
     //user2 export the same two items as above
     $exportCompoenent->exportBitstreams($userDao, $midas_exporttest_dir, $itemIds, true);
     // user1's public file will be exported as a symlink file and the linked bitstream is also asserted
-    $this->assertTrue(is_link($midas_exporttest_dir.'/'.$itemIds[0].'/user1_public.png'));
-    $this->assertEquals($user1_public_bitstream_path, readlink($midas_exporttest_dir.'/'.$itemIds[0].'/user1_public.png'));
+    $this->assertTrue(is_link($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
+    $this->assertEquals($user1_public_bitstream_path, readlink($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
     // user1's private file will NOT be exported
-    $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[1].'/user1_private.png'));
+    $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[1].'/private.png'));
     // clean up
     KWUtils::recursiveRemoveDirectory($midas_exporttest_dir);
     } // end public function testCreateSymlinks
@@ -194,10 +194,10 @@ class ExportComponentTest extends ControllerTestCase
     require_once BASE_PATH.'/core/controllers/components/ExportComponent.php';
     $exportCompoenent = new ExportComponent();
     $filenames = array();
-    $filenames[] = "user1_private.png";
+    $filenames[] = "private.png";
     $itemIds = $this->getItemIds($userDao, $filenames);
     // file should not exist before export
-    $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[0].'/user1_private.png'));
+    $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[0].'/private.png'));
     // user1 export this item
     $exportCompoenent->exportBitstreams($userDao, $midas_exporttest_dir, $itemIds, false);
 
@@ -207,7 +207,7 @@ class ExportComponentTest extends ControllerTestCase
     $user1_private_bitstreams = $user1_private_revision->getBitstreams();
     $user1_private_lastbitstream = end($user1_private_bitstreams);
     $user1_private_bitstream_path = $user1_private_lastbitstream->getAssetstore()->getPath().'/'.$user1_private_lastbitstream->getPath();
-    $this->assertFileEquals($user1_private_bitstream_path, $midas_exporttest_dir.'/'.$itemIds[0].'/user1_private.png');
+    $this->assertFileEquals($user1_private_bitstream_path, $midas_exporttest_dir.'/'.$itemIds[0].'/private.png');
 
     // clean up
     KWUtils::recursiveRemoveDirectory($midas_exporttest_dir);
@@ -231,7 +231,7 @@ class ExportComponentTest extends ControllerTestCase
 
     require_once BASE_PATH.'/core/controllers/components/ExportComponent.php';
     $exportCompoenent = new ExportComponent();
-    $validFile = "user1_public.png";
+    $validFile = "public.file";
     $validItems = $this->Item->getItemsFromSearch($validFile, $userDao);
     $validItemId = $validItems[0]->getKey();
     $invalidRevision = 100;
@@ -274,6 +274,8 @@ class ExportComponentTest extends ControllerTestCase
       $this->assertTrue(true);
       }
 
+    // clean up
+    KWUtils::recursiveRemoveDirectory($midas_exporttest_dir);
     }
 
   } // end class
