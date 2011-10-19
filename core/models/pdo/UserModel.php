@@ -125,17 +125,17 @@ class UserModel extends UserModelBase
     $sql = $this->database->select();
     $sql ->where('admin = ?', 1);
 
-    $rowset = $this->database->fetchAll($sql); 
+    $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
-      {      
+      {
       $return[] = $this->initDao('User', $row);
       }
     return $return;
     } // end getAll()
-    
 
-    
+
+
   /** Returns a user given its folder (either public,private or base folder) */
   function getByFolder($folder)
     {
