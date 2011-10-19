@@ -18,8 +18,9 @@ echo $this->doctype()
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title><?php echo $this->title ?></title>
     
-    <meta name="Description" content="<?php echo htmlentities($this->metaDescription)?>" /> 
-    <meta name="Keywords" content="<?php echo htmlentities($this->metaKeywords)?>" /> 
+    <meta name="description" content="<?php echo htmlentities($this->metaDescription)?>" /> 
+    <meta name="keywords" content="<?php echo htmlentities($this->metaKeywords)?>" />
+    <meta name="robots" content="index, follow, all" /> 
     <noscript> 
     <meta http-equiv="refresh" content="1; URL=<?php echo $this->webroot?>/index/nojs"> 
     </noscript> 
@@ -79,7 +80,7 @@ echo $this->doctype()
         <div class="TopbarLeft">
           <ul>
             <li class="first">
-              <a href="http://www.kitware.com/products/midas.html" >MIDAS</a>
+              <a href="http://www.kitware.com/midasindex.html" >MIDAS</a>
             </li>
             <li>
               <a href="http://www.kitware.com" >Kitware</a>
@@ -103,6 +104,20 @@ echo $this->doctype()
                   echo '
                       <li onclick="location.replace(\''.$this->webroot.'/admin\');"><a>'.$this->t('Administration').'</a></li>';
                   }
+                  
+                                  
+              $linksModules = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_USER_MENU", array());
+              if(!empty($linksModules))
+                {
+                foreach($linksModules as $links)
+                  {
+                  foreach($links as $name => $link)
+                    {
+                    echo '
+                        <li onclick="location.replace(\''.$link.'\');"><a>'.$name.'</a></li>';
+                    }
+                  }
+                }
                 echo '
                     </ul>
                    ';
@@ -227,6 +242,26 @@ echo $this->doctype()
                <li <?php if($this->activemenu=='uploaded') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/browse/uploaded');" ><a href="<?php echo $this->webroot?>/browse/uploaded"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/addfile.png" /><span> <?php echo $this->t('My uploads');?></span></a></li>
               <?php
                 }
+                
+              $linksModules = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_LEFT_LINKS", array());
+              if(!empty($linksModules))
+                {
+                foreach($linksModules as $links)
+                  {
+                  foreach($links as $name => $array)
+                    {
+                    if(count($array) != 2)
+                      {
+                      throw new Zend_Exception('Key = 0 should be the link, Key = 1 should be the image');
+                      }
+                    $link = $array[0];
+                    $image = $array[1];
+                    ?>
+                    <li  onclick="location.replace('<?php echo $link?>');" ><a href="<?php echo $link?>"><img alt="" src="<?php echo $image?>" /><span> <?php echo $name;?></span></a></li>
+                    <?php
+                    }
+                  }
+                }
               ?>
              </ul>
             <hr/>
@@ -293,4 +328,15 @@ echo $this->doctype()
       <?php echo $this->json?>
     </div>
   </body>
+  
+  <?php
+  $footers = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_FOOTER_LAYOUT", array());
+  if(!empty($footers))
+    {
+    foreach($footers as $footer)
+      {
+      echo $footer;
+      }
+    }
+  ?>
 </html>

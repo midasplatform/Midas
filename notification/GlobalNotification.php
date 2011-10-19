@@ -19,6 +19,13 @@ class MIDAS_Notification
   private $_task = array();
   private $_notification = array();
   
+    /** translation */
+  protected function t($text)
+    {
+    Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
+    return InternationalizationComponent::translate($text);
+    } //end method t
+  
   /** contructor*/
   public function __construct()
     {    

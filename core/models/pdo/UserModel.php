@@ -119,9 +119,23 @@ class UserModel extends UserModelBase
       }
     return $return;
     } // end getAll()
+  /** Get admins */
+  function getAdmins()
+    {
+    $sql = $this->database->select();
+    $sql ->where('admin = ?', 1);
 
+    $rowset = $this->database->fetchAll($sql); 
+    $return = array();
+    foreach($rowset as $row)
+      {      
+      $return[] = $this->initDao('User', $row);
+      }
+    return $return;
+    } // end getAll()
+    
 
-
+    
   /** Returns a user given its folder (either public,private or base folder) */
   function getByFolder($folder)
     {
