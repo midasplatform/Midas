@@ -26,7 +26,7 @@ class Helloworld_Upgrade_1_0_2 extends MIDASUpgrade
     $sql = "CREATE TABLE IF NOT EXISTS helloworld_helloupgrade2 (
                   id int(11) NOT NULL AUTO_INCREMENT,
                   PRIMARY KEY (id)
-                )";
+                ) DEFAULT CHARSET=utf8";
     $this->db->query($sql);
     }
     

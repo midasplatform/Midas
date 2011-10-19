@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `scheduler_job` (
   `status`  tinyint(4),
   `params`  text,
   PRIMARY KEY (`job_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS scheduler_workflow;
@@ -22,7 +22,7 @@ CREATE TABLE scheduler_workflow (
 
   PRIMARY KEY              (workflow_id),
   UNIQUE  KEY name_version (workflow_name, workflow_version)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS scheduler_node;
 CREATE TABLE scheduler_node (
@@ -33,7 +33,7 @@ CREATE TABLE scheduler_node (
 
   PRIMARY KEY             (node_id),
           KEY workflow_id (workflow_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS scheduler_node_connection;
 CREATE TABLE scheduler_node_connection (
@@ -42,7 +42,7 @@ CREATE TABLE scheduler_node_connection (
   outgoing_node_id   INTEGER UNSIGNED NOT NULL,
 
   PRIMARY KEY (node_connection_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS scheduler_variable_handler;
 CREATE TABLE scheduler_variable_handler (
@@ -51,7 +51,7 @@ CREATE TABLE scheduler_variable_handler (
   class       VARCHAR(255)          NOT NULL,
 
   PRIMARY KEY (workflow_id, class)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS scheduler_execution;
 CREATE TABLE scheduler_execution (
@@ -67,7 +67,7 @@ CREATE TABLE scheduler_execution (
 
   PRIMARY KEY                  (execution_id, workflow_id),
           KEY execution_parent (execution_parent)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS scheduler_execution_state;
 CREATE TABLE scheduler_execution_state (
@@ -78,4 +78,4 @@ CREATE TABLE scheduler_execution_state (
   node_thread_id      INTEGER UNSIGNED NOT NULL,
 
   PRIMARY KEY (execution_id, node_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
