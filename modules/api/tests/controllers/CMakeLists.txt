@@ -1,3 +1,3 @@
-add_midas_mysql_test( ApiKeyControllerTest ApiKeyControllerTest.php )
-add_midas_mysql_test( ApiIndexControllerTest ApiIndexControllerTest.php )
-add_midas_mysql_test( ApiCallMethodsTest ApiCallMethodsTest.php )
+add_midas_test( ApiKeyControllerTest ApiKeyControllerTest.php )
+add_midas_test( ApiIndexControllerTest ApiIndexControllerTest.php )
+add_midas_test( ApiCallMethodsTest ApiCallMethodsTest.php )
