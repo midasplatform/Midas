@@ -15,7 +15,7 @@ class Upgrade_3_0_9 extends MIDASUpgrade
         `resource_id` bigint(20),
         `resource_type` tinyint(4),
         PRIMARY KEY (`uniqueidentifier_id`)
-      )   DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+      )   DEFAULT CHARSET=utf8;
       ";
     $this->db->query($sql);
     }
