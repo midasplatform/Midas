@@ -735,7 +735,7 @@ class Api_ApiComponent extends AppComponent
    * Get information about the folder
    * @param token (Optional) Authentication token
    * @param id The id of the folder
-   * @return The folder object
+   * @return The folder object, including its parent object
    */
   function folderGet($args)
     {
@@ -753,7 +753,9 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
-    return $folder->toArray();
+    $arr = $folder->toArray();
+    $arr['parent'] = $folder->getParent();
+    return $arr;
     }
 
   /**
