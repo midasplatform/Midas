@@ -174,7 +174,7 @@ class UploadComponent extends AppComponent
 
 
   /** save upload item in the DB */
-  public function createUploadedItem($userDao, $name, $path, $parent = null, $license = null)
+  public function createUploadedItem($userDao, $name, $path, $parent = null, $license = null, $filemd5 = '')
     {
     $modelLoad = new MIDAS_ModelLoader();
     $itemModel = $modelLoad->loadModel('Item');
@@ -230,12 +230,12 @@ class UploadComponent extends AppComponent
     $itemRevisionDao->setLicense($license);
     $itemModel->addRevision($item, $itemRevisionDao);
 
-
     // Add bitstreams to the revision
     Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
     $bitstreamDao = new BitstreamDao;
     $bitstreamDao->setName($name);
     $bitstreamDao->setPath($path);
+    $bitstreamDao->setChecksum($filemd5);
     $bitstreamDao->fillPropertiesFromPath();
 
     $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
@@ -264,7 +264,7 @@ class UploadComponent extends AppComponent
     }//end createUploadedItem
 
   /** save upload item in the DB */
-  public function createNewRevision($userDao, $name, $path, $item_revision, $changes, $license = null)
+  public function createNewRevision($userDao, $name, $path, $item_revision, $changes, $license = null, $filemd5 = '')
     {
     if($userDao == null)
       {
@@ -344,6 +344,7 @@ class UploadComponent extends AppComponent
     $bitstreamDao = new BitstreamDao;
     $bitstreamDao->setName($name);
     $bitstreamDao->setPath($path);
+    $bitstreamDao->setChecksum($filemd5);
     $bitstreamDao->fillPropertiesFromPath();
 
     $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
