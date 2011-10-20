@@ -153,7 +153,7 @@ class AdminController extends AppController
       }
 
     // get assetstore data
-    $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
+    $defaultAssetStoreId = $this->Assetstore->getDefault()->getKey();
     $assetstores = $this->Assetstore->getAll();
     $defaultSet = false;
     foreach($assetstores as $key => $assetstore)

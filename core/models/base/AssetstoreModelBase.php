@@ -149,4 +149,17 @@ abstract class AssetstoreModelBase extends AppModel
     parent::delete($dao);
     }// delete
 
+  /**
+   * This function returns the default assetstore in the database. This
+   * is assumed to be named "Default" and is selected as such. If there
+   * is no assetsore we fail misserably, if there are more than one then
+   * we only return the "first."
+   * @return the default assetstore
+   */
+  public function getDefault()
+    {
+    $found = $this->findBy('name', 'Default');
+    return $found[0];
+    } // end getDefault
+
 } // end class AssetstoreModelBase

@@ -162,9 +162,8 @@ class UploadComponent extends AppComponent
     $bitstreamDao->setSizebytes(0);
     $bitstreamDao->setChecksum(' ');
 
-    $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
-    $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
-    $assetstoreDao = $assetstoreModel->load($defaultAssetStoreId);
+    $assetstoreDao = $assetstoreModel->getDefault();
+    $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
 
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
 
@@ -238,9 +237,8 @@ class UploadComponent extends AppComponent
     $bitstreamDao->setChecksum($filemd5);
     $bitstreamDao->fillPropertiesFromPath();
 
-    $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
-    $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
-    $assetstoreDao = $assetstoreModel->load($defaultAssetStoreId);
+    $assetstoreDao = $assetstoreModel->getDefault();
+    $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
 
     if($assetstoreDao == false)
       {
@@ -347,9 +345,8 @@ class UploadComponent extends AppComponent
     $bitstreamDao->setChecksum($filemd5);
     $bitstreamDao->fillPropertiesFromPath();
 
-    $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
-    $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
-    $assetstoreDao = $assetstoreModel->load($defaultAssetStoreId);
+    $assetstoreDao = $assetstoreModel->getDefault();
+    $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
 
     // Upload the bitstream if necessary (based on the assetstore type)
     $this->uploadBitstream($bitstreamDao, $assetstoreDao);

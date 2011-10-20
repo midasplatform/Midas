@@ -7,21 +7,6 @@
     $("#tabsGeneric").show();
     $('img.tabsLoading').hide()
     
-    $('a.defaultAssetstoreLink').click(function(){
-      $.post(json.global.webroot+'/assetstore/defaultassetstore', {submitDefaultAssetstore: true, element: $(this).attr('element')},
-         function(data) {
-             jsonResponse = jQuery.parseJSON(data);
-              if(jsonResponse==null)
-                {
-                  createNotive('Error',4000);
-                  return;
-                }
-              createNotive(jsonResponse[1],1500);
-              window.location.replace(json.global.webroot+'/admin#tabs-assetstore');
-              window.location.reload();
-         });
-    });   
-    
     $('a.removeAssetstoreLink').click(function()
       {
       var element = $(this).attr('element');
