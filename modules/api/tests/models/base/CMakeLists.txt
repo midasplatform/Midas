@@ -1,1 +1,1 @@
-add_midas_mysql_test( ApiUserApiModel UserApiModelTest.php )
+add_midas_test( ApiUserApiModel UserApiModelTest.php )
