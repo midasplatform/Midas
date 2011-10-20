@@ -152,7 +152,18 @@ class MIDASModel
       }
     else
       {
-      require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
+      if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+        {
+        require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
+        }
+      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+        {
+        require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php';
+        }
+      else
+        {
+        throw new Zend_Exception("Unable to find dao file ".$name);
+        }
       $name = ucfirst($module).'_'.$name. 'Dao';
       }
     if(class_exists($name))
@@ -260,7 +271,27 @@ class MIDASModel
       }
     else
       {
-      require_once BASE_PATH . "/modules/".$module."/models/dao/".$name.".php";
+      if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+        {
+        require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
+        }
+      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+        {
+        require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php';
+        }
+      if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. '.php'))
+        {
+        require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. '.php';
+        }
+      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. '.php'))
+        {
+        require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. '.php';
+        }
+      else
+        {
+        throw new Zend_Exception("Unable to find dao file ".$name);
+        }
+
       if(!class_exists(ucfirst($module).'_'.$name))
         {
         throw new Zend_Exception('Unable to load dao class ' . ucfirst($module).'_'.$name);
@@ -286,7 +317,12 @@ class MIDASModel
       $name = ucfirst($this->_name) . 'Dao';
       }
 
-    if(isset($this->moduleName))
+    if(isset($this->_daoName) && isset($this->moduleName))
+      {
+      $this->loadDaoClass($name, $this->moduleName);
+      $name = ucfirst($this->moduleName).'_'.$name;
+      }
+    elseif(isset($this->moduleName))
       {
       $this->loadDaoClass(ucfirst(substr($name, strpos($name, '_') + 1)), $this->moduleName);
       }

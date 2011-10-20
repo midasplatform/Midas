@@ -19,19 +19,19 @@ class MIDAS_GlobalModule extends AppController
   {
   /** contructor*/
   public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
-    {       
+    {
     parent::__construct($request, $response, $invokeArgs);
     $this->loadModuleElements();
     if(!isset($this->moduleName))
       {
       throw new Zend_Exception("Please set the module name in AppController");
-      }    
+      }
     $fc = Zend_Controller_Front::getInstance();
     $this->view->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
-    
+
     $stack = debug_backtrace();
     $forward = $this->_getParam('forwardModule');
-    
+
     // Add variables to the view that allow the retrieval of any enabled module
     // webroots
     $allModules = Zend_Registry::get('modulesEnable');
@@ -41,22 +41,33 @@ class MIDAS_GlobalModule extends AppController
       $this->view->$modWebroot = $fc->getBaseUrl().'/modules/'.$mod;
       }
     }
-    
+
   /** pre dispatch (zend)*/
   public function preDispatch()
-    {   
-    parent::preDispatch();   
-    $this->view->setScriptPath(BASE_PATH."/modules/".$this->moduleName."/views");
+    {
+    parent::preDispatch();
+    if(file_exists(BASE_PATH."/modules/".$this->moduleName."/views"))
+      {
+      $this->view->setScriptPath(BASE_PATH."/modules/".$this->moduleName."/views");
+      }
+    elseif(file_exists(BASE_PATH."/privateModules/".$this->moduleName."/views"))
+      {
+      $this->view->setScriptPath(BASE_PATH."/privateModules/".$this->moduleName."/views");
+      }
+    else
+      {
+      throw new Zend_Exception('Unable to find module '.$this->moduleName.' view directory');
+      }
     if($this->isTestingEnv())
       {
       $this->disableLayout();
       }
     else
-      {   
-      
+      {
+
       if(file_exists(BASE_PATH."/modules/".$this->moduleName."/layouts/layout.phtml"))
         {
-        $this->_helper->layout->setLayoutPath(BASE_PATH."/modules/".$this->moduleName."/layouts");  
+        $this->_helper->layout->setLayoutPath(BASE_PATH."/modules/".$this->moduleName."/layouts");
         }
       }
     }
@@ -98,7 +109,7 @@ class MIDAS_GlobalModule extends AppController
           }
         }
       }
-      
+
     if(isset($this->_moduleDaos))
       {
       foreach($this->_moduleDaos as $dao)
@@ -116,7 +127,7 @@ class MIDAS_GlobalModule extends AppController
         @$this->ModuleComponent->$component = new $nameComponent();
         }
       }
-      
+
     if(isset($this->_moduleForms))
       {
       foreach($this->_moduleForms as $forms)

@@ -51,7 +51,18 @@ class MIDAS_ComponentLoader
         }
       else
         {
-        include_once BASE_PATH.'/modules/'.$module.'/controllers/components/'.$component.'Component.php';
+        if(file_exists(BASE_PATH.'/modules/'.$module.'/controllers/components/'.$component.'Component.php'))
+          {
+          include_once BASE_PATH.'/modules/'.$module.'/controllers/components/'.$component.'Component.php';
+          }
+        elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/controllers/components/'.$component.'Component.php'))
+          {
+          include_once BASE_PATH.'/privateModules/'.$module.'/controllers/components/'.$component.'Component.php';
+          }
+        else
+          {
+          throw new Zend_Exception("Component file doesn't exit");
+          }
         $name = ucfirst($module).'_'.$component.'Component';
         }
       if(class_exists($name))
