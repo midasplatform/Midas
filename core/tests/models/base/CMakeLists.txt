@@ -1,4 +1,5 @@
 add_midas_test( AssetstoreModel AssetstoreModelTest.php )
+add_midas_test( CommunityModel CommunityModelTest.php )
 add_midas_test( FeedModel FeedModelTest.php )
 add_midas_test( FeedpolicygroupModel FeedpolicygroupModelTest.php )
 add_midas_test( FeedpolicyuserModel FeedpolicyuserModelTest.php )
@@ -10,4 +11,3 @@ add_midas_test( ItemModel ItemModelTest.php )
 add_midas_test( ItempolicygroupModel ItempolicygroupModelTest.php )
 add_midas_test( ItempolicyuserModel ItempolicyuserModelTest.php )
 add_midas_test( UserModel UserModelTest.php )
-
