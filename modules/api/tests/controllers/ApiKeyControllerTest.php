@@ -79,9 +79,17 @@ class ApiKeyControllerTest extends ControllerTestCase
    */
   public function testExistingUsersGetDefaultKeysOnInstall()
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $modelLoader = new MIDAS_ModelLoader();
+    $userApiModel = $modelLoader->loadModel('Userapi', 'api');
     $userApiDao = $userApiModel->getByAppAndEmail('Default', 'user1@user1.com');
+
+    $this->assertTrue($userApiDao == false, 'Key should not exist before install');
+    $componentLoader = new MIDAS_ComponentLoader();
+    $utilityComponent = $componentLoader->loadComponent('Utility');
+    $utilityComponent->installModule('api');
+
+    $userApiDao = $userApiModel->getByAppAndEmail('Default', 'user1@user1.com');
+
     $this->assertTrue($userApiDao != false, 'Api key was not created for existing user');
     $this->assertEquals($userApiDao->getApikey(), md5('user1@user1.com35fd8ba86ba403ffcc00feac5355ad20Default'));
     }
