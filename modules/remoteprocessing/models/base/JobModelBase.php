@@ -23,10 +23,13 @@ class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
         'os'=>  array('type'=>MIDAS_DATA),
         'condition'=>  array('type'=>MIDAS_DATA),
         'script'=>  array('type'=>MIDAS_DATA),
-        'params'=>  array('type'=>MIDAS_DATA)
+        'params'=>  array('type'=>MIDAS_DATA),
+        'status'=>  array('type'=>MIDAS_DATA),
+        'expiration_date'=>  array('type'=>MIDAS_DATA),
+        'start_date'=>  array('type'=>MIDAS_DATA),
         );
     $this->initialize(); // required
     } // end __construct()
 
 } // end class AssetstoreModelBase
-?>
+?> 

@@ -38,7 +38,19 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     unset($params['os']);
     $job->setCondition($params['condition']);
     unset($params['condition']);
-    $job->setParams(JsonComponent::encode($params));
+
+    if(isset($params['expiration']))
+      {
+      $job->setExpirationDate($params['expiration']);
+      }
+    else
+      {
+      $date = new Zend_Date();
+      $date->add('5', Zend_Date::HOUR);
+      $job->setExpirationDate($date->toString('c'));
+      }
+
+    $job->setParams(JsonComponent::encode($params['params']));
     $this->Remoteprocessing_Job->save($job);
     return;
     }

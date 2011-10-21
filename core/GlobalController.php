@@ -23,6 +23,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
   /** contructor*/
   public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
     {
+
     if($this->isDebug())
       {
       $this->_controllerTimer = microtime(true);
@@ -201,6 +202,10 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         {
         $nameComponent = $component . "Component";
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
+        if(!class_exists($nameComponent))
+          {
+          throw new Zend_Exception('Unable to find '.$nameComponent);
+          }
         @$this->Component->$component = new $nameComponent();
         }
       }
@@ -213,6 +218,10 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         $nameForm = $forms . "Form";
 
         Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
+        if(!class_exists($nameForm))
+          {
+          throw new Zend_Exception('Unable to find '.$nameForm);
+          }
         @$this->Form->$forms = new $nameForm();
         }
       }

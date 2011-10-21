@@ -124,6 +124,10 @@ class MIDAS_GlobalModule extends AppController
         {
         $nameComponent = ucfirst($this->moduleName).'_'.$component . "Component";
         include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
+        if(!class_exists($nameComponent))
+          {
+          throw new Zend_Exception('Unable to find '.$nameComponent);
+          }
         @$this->ModuleComponent->$component = new $nameComponent();
         }
       }
@@ -134,6 +138,10 @@ class MIDAS_GlobalModule extends AppController
         {
         $nameForm = ucfirst($this->moduleName).'_'.$forms . "Form";
         include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
+        if(!class_exists($nameForm))
+          {
+          throw new Zend_Exception('Unable to find '.$nameForm);
+          }
         @$this->ModuleForm->$forms = new $nameForm();
         }
       }
