@@ -1221,4 +1221,53 @@ class Api_ApiComponent extends AppComponent
     $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');
     $downloadComponent->download($bitstream);
     }
+
+  /**
+   * Count the bitstreams under a containing resource. Uses latest revision of each item.
+   * @param token (Optional) Authentication token
+   * @param uuid The uuid of the containing resource
+   * @return array(size=>total_size_in_bytes, count=>total_number_of_files)
+   */
+  function bitstreamCount($args)
+    {
+    $this->_validateParams($args, array('uuid'));
+    $userDao = $this->_getUser($args);
+    $componentLoader = new MIDAS_ComponentLoader();
+    $uuidComponent = $componentLoader->loadComponent('Uuid');
+    $resource = $uuidComponent->getByUid($args['uuid']);
+
+    if($resource == false)
+      {
+      throw new Exception('No resource for the given UUID.', MIDAS_INVALID_PARAMETER);
+      }
+
+    $modelLoader = new MIDAS_ModelLoader();
+    switch($resource->resourceType)
+      {
+      case MIDAS_RESOURCE_COMMUNITY:
+        $communityModel = $modelLoader->loadModel('Community');
+        if(!$communityModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
+          {
+          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+          }
+        return $communityModel->countBitstreams($resource, $userDao);
+      case MIDAS_RESOURCE_FOLDER:
+        $folderModel = $modelLoader->loadModel('Folder');
+        if(!$folderModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
+          {
+          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+          }
+        return $folderModel->countBitstreams($resource, $userDao);
+      case MIDAS_RESOURCE_ITEM:
+        $itemModel = $modelLoader->loadModel('Item');
+        if(!$itemModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
+          {
+          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+          }
+        return $itemModel->countBitstreams($resource);
+      default:
+        throw new Exception('Invalid resource type', MIDAS_INTERNAL_ERROR);
+      }
+    }
+
   } // end class

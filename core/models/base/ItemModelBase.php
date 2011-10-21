@@ -258,4 +258,27 @@ abstract class ItemModelBase extends AppModel
     $this->copyParentPolicies($item, $parent);
     return $item;
     }
+
+  /**
+   * Count the bitstreams under this item's head revision.
+   * Returns array('size'=>size_in_bytes, 'count'=>total_number_of_bitstreams)
+   */
+  function countBitstreams($itemDao)
+    {
+    $totalSize = 0;
+    $totalCount = 0;
+    $rev = $this->getLastRevision($itemDao);
+
+    if($rev)
+      {
+      $bitstreams = $rev->getBitstreams();
+      foreach($bitstreams as $bitstream)
+        {
+        $totalCount++;
+        $totalSize += $bitstream->getSizebytes();
+        }
+      }
+
+    return array('size' => $totalSize, 'count' => $totalCount);
+    } //end countBitstreams
 } // end class ItemModelBase
