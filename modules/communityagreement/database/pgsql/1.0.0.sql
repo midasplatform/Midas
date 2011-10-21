@@ -5,5 +5,5 @@
 CREATE TABLE communityagreement_agreement (
   agreement_id serial PRIMARY KEY,
   community_id bigint NOT NULL,
-  agreement text NOT NULL,
-)
+  agreement text NOT NULL
+);
