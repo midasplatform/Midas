@@ -6,13 +6,14 @@ class Scheduler_Notification extends MIDAS_Notification
   public $_moduleDaos=array('Job');
   public $_components=array('Json');
   public $moduleName = 'scheduler';
-  
+
   /** init notification process*/
   public function init()
     {
     $this->addTask("TASK_SCHEDULER_SCHEDULE_TASK", 'scheduleTask', "Schedule a task. Parameters: task, priority, params");
+    $this->addCallBack('CALLBACK_SCHEDULER_SCHEDULE_TASK', 'scheduleTask');
     }//end init
-    
+
   /** get Config Tabs */
   public function scheduleTask($params)
     {

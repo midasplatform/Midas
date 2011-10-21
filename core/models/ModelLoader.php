@@ -52,7 +52,19 @@ class MIDAS_ModelLoader
         }
       else
         {
-        include_once BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
+        if(file_exists(BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
+          {
+          include_once BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
+          }
+        elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
+          {
+          include_once BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
+          }
+        else
+          {
+          throw new Zend_Exception("Unable to find model file ".$model);
+          }
+
         $name = ucfirst($module).'_'.$model.'Model';
         }
       if(class_exists($name))

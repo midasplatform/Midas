@@ -45,13 +45,16 @@ class GroupModel  extends GroupModelBase
       throw new Zend_Exception("Should be an user.");
       }
 
-    $community = $group->getCommunity();
-    $groupMember = $community->getMemberGroup();
-    if($groupMember->getKey() != $group->getKey())
+    if($group->getKey() != MIDAS_GROUP_SERVER_KEY)
       {
-      $this->addUser($groupMember, $user);
+      $community = $group->getCommunity();
+      $groupMember = $community->getMemberGroup();
+      if($groupMember->getKey() != $group->getKey())
+        {
+        $this->addUser($groupMember, $user);
+        }
       }
-
+      
     $this->database->link('users', $group, $user);
     } // end function addItem
 

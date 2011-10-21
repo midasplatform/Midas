@@ -17,6 +17,7 @@ class Scheduler_JobModelBase extends Scheduler_AppModel
     parent::__construct();
     $this->_name = 'scheduler_job';
     $this->_key = 'job_id';
+    $this->_daoName = 'JobDao';
 
     $this->_mainData= array(
         'job_id'=>  array('type'=>MIDAS_DATA),
@@ -33,29 +34,29 @@ class Scheduler_JobModelBase extends Scheduler_AppModel
     $this->initialize(); // required
     } // end __construct()
 
-   
+
   /** get server load*/
-  protected function getServerLoad() 
-    { 
+  protected function getServerLoad()
+    {
     if(isset($this->load))
       {
       return $this->load;
       }
-    $os = strtolower(PHP_OS);  
-    if(strpos($os, "win") === false) 
+    $os = strtolower(PHP_OS);
+    if(strpos($os, "win") === false)
       {
       $this->load = sys_getloadavg();
       return $this->load;
-      } 
+      }
     else
       {
       ob_start();
       passthru('typeperf -sc 1 "\processor(_total)\% processor time"',$status);
       $content = ob_get_contents();
       ob_end_clean();
-      if($status === 0) 
+      if($status === 0)
         {
-        if(preg_match("/\,\"([0-9]+\.[0-9]+)\"/",$content,$load)) 
+        if(preg_match("/\,\"([0-9]+\.[0-9]+)\"/",$content,$load))
           {
           $this->load = $load;
           return $load;
@@ -64,6 +65,6 @@ class Scheduler_JobModelBase extends Scheduler_AppModel
       }
     $this->load = array();
     return array();
-  }  
+  }
 } // end class AssetstoreModelBase
 ?>
