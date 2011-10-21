@@ -104,7 +104,36 @@ class CommunityController extends AppController
           $communityDao = $this->Community->load($communityDao->getKey());
           $communityDao->setName($formInfo->getValue('name'));
           $communityDao->setDescription($formInfo->getValue('description'));
-          $communityDao->setPrivacy($formInfo->getValue('privacy'));
+
+          // update folderpolicygroup and feedpolicygroup tables when community privacy is changed between public and private
+          // users in Midas_anonymouse_group can see community's public folder only if the community is set as public
+          $forminfo_privacy = $formInfo->getValue('privacy');
+          $communityDao->setPrivacy($forminfo_privacy);
+          $anonymousGroup = $this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
+          $communityPublicFolder = $communityDao->getPublicFolder();
+          $folderpolicygroupDao = $this->Folderpolicygroup->getPolicy($anonymousGroup, $communityPublicFolder);
+          if($forminfo_privacy == MIDAS_COMMUNITY_PRIVATE && $folderpolicygroupDao !== false)
+            {
+            $this->Folderpolicygroup->delete($folderpolicygroupDao);
+            }
+          else if($forminfo_privacy == MIDAS_COMMUNITY_PUBLIC && $folderpolicygroupDao == false)
+            {
+            $this->Folderpolicygroup->createPolicy($anonymousGroup, $communityPublicFolder, MIDAS_POLICY_READ);
+            }
+          // users in Midas_anonymouse_group can see CREATE_COMMUNITY feed for this community only if the community is set as public
+          $feedcreatecommunityDaoArray = array();
+          // there exist 1 and only 1 feed in 'MIDAS_FEED_CREATE_COMMUNITY' type for any commuinty
+          $feedcreatecommunityDaoArray = $this->Feed->getFeedByResourceAndType(MIDAS_FEED_CREATE_COMMUNITY, $communityDao);
+          $feedpolicygroupDao = $this->Feedpolicygroup->getPolicy($anonymousGroup, $feedcreatecommunityDaoArray[0]);
+          if($forminfo_privacy == MIDAS_COMMUNITY_PRIVATE && $feedpolicygroupDao !== false)
+            {
+            $this->Feedpolicygroup->delete($feedpolicygroupDao);
+            }
+          else if($forminfo_privacy == MIDAS_COMMUNITY_PUBLIC && $feedpolicygroupDao == false)
+            {
+            $this->Feedpolicygroup->createPolicy($anonymousGroup, $feedcreatecommunityDaoArray[0], MIDAS_POLICY_READ);
+            }
+
           $communityDao->setCanJoin($formInfo->getValue('canJoin'));
           $this->Community->save($communityDao);
           echo JsonComponent::encode(array(true, $this->t('Changes saved'), $formInfo->getValue('name')));
