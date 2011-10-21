@@ -19,15 +19,16 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->setupDatabase(array('default')); //core dataset
     $this->setupDatabase(array('default'), 'api'); // module dataset
     $this->enabledModules = array('api');
-    $this->_models = array('User', 'Folder', 'Item', 'ItemRevision', 'Assetstore');
-    $this->_daos = array('User', 'Folder', 'Item');
+    $this->_models = array('User', 'Folder', 'Item', 'ItemRevision', 'Assetstore', 'Bitstream');
+    $this->_daos = array();
 
     parent::setUp();
     }
 
   /** Invoke the JSON web API */
-  private function _callJsonApi($sessionUser = null)
+  private function _callJsonApi($sessionUser = null, $method = 'POST')
     {
+    $this->request->setMethod($method);
     $this->dispatchUrI($this->webroot.'api/json', $sessionUser);
     return json_decode($this->getBody());
     }
@@ -57,7 +58,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['email'] = $usersFile[0]->getEmail();
     $this->params['appname'] = 'Default';
     $this->params['apikey'] = $apiKey;
-    $this->request->setMethod('POST');
 
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
@@ -73,7 +73,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     {
     // Try anonymously first
     $this->params['method'] = 'midas.user.folders';
-    $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
     // No user folders should be visible anonymously
@@ -82,7 +81,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->resetAll();
     $this->params['token'] = $this->_loginUsingApiKey();
     $this->params['method'] = 'midas.user.folders';
-    $resp = $this->_callJsonApi();
+    $resp = $this->_callJsonApi(null, 'GET');
     $this->_assertStatusOk($resp);
     $this->assertEquals(count($resp->data), 2);
 
@@ -102,7 +101,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['token'] = $this->_loginUsingApiKey();
     $this->params['method'] = 'midas.community.list';
 
-    $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
@@ -125,7 +123,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['token'] = $token;
     $this->params['method'] = 'midas.folder.children';
     $this->params['id'] = 1000;
-    $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
@@ -146,7 +143,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['token'] = $token;
     $this->params['method'] = 'midas.folder.children';
     $this->params['id'] = 1001;
-    $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
@@ -175,7 +171,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['token'] = $token;
     $this->params['method'] = 'midas.item.get';
     $this->params['id'] = $itemsFile[0]->getKey();
-    $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
@@ -195,7 +190,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['method'] = 'midas.item.get';
     $this->params['id'] = $itemsFile[0]->getKey();
     $this->params['head'] = 'true';
-    $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
@@ -213,7 +207,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['method'] = 'midas.user.apikey.default';
     $this->params['email'] = $userDao->getEmail();
     $this->params['password'] = 'test';
-    $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
@@ -236,7 +229,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params = array();
     $this->params['method'] = 'midas.user.folders';
     $this->params['useSession'] = 'true';
-    $this->request->setMethod('POST');
     $resp = $this->_callJsonApi($userDao);
     $this->_assertStatusOk($resp);
 
@@ -253,7 +245,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     }
 
   /** Test file upload */
-  public function testUpload()
+  public function testBitstreamUpload()
     {
     $this->resetAll();
     $usersFile = $this->loadData('User', 'default');
@@ -265,7 +257,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['checksum'] = 'foo';
     // call should fail for the first item since we don't have write permission
     $this->params['itemid'] = $itemsFile[0]->getKey();
-    $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->assertEquals($resp->stat, 'fail');
     $this->assertEquals($resp->message, 'Invalid policy or itemid');
@@ -299,7 +290,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['checksum'] = $md5;
     // use the second item since it has write permission set for our user
     $this->params['itemid'] = $itemsFile[1]->getKey();
-    $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
@@ -318,8 +308,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['itemid'] = $itemsFile[1]->getKey();
     $this->params['revision'] = 'head'; //upload into head revision
     $this->params['testingmode'] = 'true';
-
-    $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
@@ -346,7 +334,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['filename'] = 'test2.txt';
     $this->params['checksum'] = $md5;
     $this->params['itemid'] = $itemsFile[1]->getKey();
-    $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
@@ -364,5 +351,59 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($bitstreams[1]->name, 'test2.txt');
     $this->assertEquals($bitstreams[1]->sizebytes, $length);
     $this->assertEquals($bitstreams[1]->checksum, $md5);
+    }
+
+  /** test the bitstream count functionality on all resource types */
+  public function testBitstreamCount()
+    {
+    $bitstreamsFile = $this->loadData('Bitstream', 'default');
+    $bitstream = $this->Bitstream->load($bitstreamsFile[0]->getKey());
+    $expectedSize = $bitstream->getSizebytes();
+
+    // Test passing a bad uuid
+    $this->params['method'] = 'midas.bitstream.count';
+    $this->params['uuid'] = 'notavaliduuid';
+    $resp = $this->_callJsonApi();
+    $this->assertEquals($resp->message, 'No resource for the given UUID.');
+    $this->assertEquals($resp->stat, 'fail');
+    $this->assertNotEquals($resp->code, 0);
+
+    // Test count bitstreams in community
+    $this->resetAll();
+    $this->params['method'] = 'midas.bitstream.count';
+    $this->params['uuid'] = '4e311fdf82107d245f0798d654fc24205f2621eb72777';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->count, 0);
+    $this->assertEquals($resp->data->size, 0); //no bitstreams in this community
+
+    // Test count bitstreams in folder without privileges - should fail
+    $this->resetAll();
+    $this->params['method'] = 'midas.bitstream.count';
+    $this->params['uuid'] = '4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761';
+    $resp = $this->_callJsonApi();
+    $this->assertEquals($resp->message, 'Invalid policy');
+    $this->assertEquals($resp->stat, 'fail');
+    $this->assertNotEquals($resp->code, 0);
+
+    // Test count bitstreams in folder with privileges - should succeed
+    $this->resetAll();
+    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['method'] = 'midas.bitstream.count';
+    $this->params['uuid'] = '4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->count, 1);
+    $this->assertEquals($resp->data->size, $expectedSize);
+
+    // Test count bitstreams in item
+    $this->resetAll();
+    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['method'] = 'midas.bitstream.count';
+    $this->params['uuid'] = '4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->count, 1);
+    $this->assertEquals($resp->data->size, $expectedSize);
     }
   }
