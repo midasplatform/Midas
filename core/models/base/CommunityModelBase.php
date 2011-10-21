@@ -345,4 +345,18 @@ abstract class CommunityModelBase extends AppModel
         return false;
       }
     } //end policyCheck
+
+  /**
+   * Count the bitstreams under this community.
+   * Returns array('size'=>size_in_bytes, 'count'=>total_number_of_bitstreams)
+   */
+  function countBitstreams($communityDao, $userDao = null)
+    {
+    $modelLoad = new MIDAS_ModelLoader();
+    $folderModel = $modelLoad->loadModel('Folder');
+    $folderDao = $folderModel->load($communityDao->getFolderId());
+
+    return $folderModel->countBitstreams($folderDao, $userDao);
+    } //end countBitstreams
+
 } // end class CommunityModelBase
