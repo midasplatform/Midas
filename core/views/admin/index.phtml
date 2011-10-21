@@ -78,16 +78,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
        {
        echo "<div class='assetstoreElement'>
               <b><span class='assetstoreName'>{$assetstore->getName()}</span></b>
-               (";
-       if($assetstore->default)
-         {
-         echo "<span class='defaultAssetstore' element='{$assetstore->getKey()}'>default assetstore</span>";
-         }
-       else
-         {
-         echo "<a class='defaultAssetstoreLink' element='{$assetstore->getKey()}'>set as default</a>";
-         }
-       echo ")<br/>";
+	      <br/>";
        if($assetstore->totalSpaceText==false)
          {
          echo "<b>Unable to access assetstore</b>";
