@@ -24,7 +24,7 @@ class ItemmetricModelTest extends DatabaseTestCase
     if($configDatabase->database->adapter == 'PDO_PGSQL')
       {
       $db->query("SELECT setval('batchmake_itemmetric_itemmetric_id_seq', (SELECT MAX(itemmetric_id) FROM batchmake_itemmetric)+1);");
-      }    
+      }
     }
 
   /** Test that ItemmetricModel::createTask($userDao) works */
