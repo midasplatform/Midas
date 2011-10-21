@@ -19,6 +19,12 @@ class ItemmetricModelTest extends DatabaseTestCase
     $this->enabledModules = array('batchmake');
     parent::setUp();
     $this->setupDatabase(array('default'), 'batchmake'); // module dataset
+    $db = Zend_Registry::get('dbAdapter');
+    $configDatabase = Zend_Registry::get('configDatabase' );
+    if($configDatabase->database->adapter == 'PDO_PGSQL')
+      {
+      $db->query("SELECT setval('batchmake_itemmetric_itemmetric_id_seq', (SELECT MAX(itemmetric_id) FROM batchmake_itemmetric)+1);");
+      }    
     }
 
   /** Test that ItemmetricModel::createTask($userDao) works */
