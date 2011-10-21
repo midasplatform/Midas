@@ -1,0 +1,25 @@
+# Should the script end in case of errors
+ExitOnError(1)
+
+# Imported parameters: cfg_input_directory, cfg_output_directory, cfg_application_directory, cfg_threshold
+Include(PixelCounter.config.bms)
+
+# Application setup
+SetApp(pixelCounter @PixelCounter)
+SetApp(myapp2 @MyApp2)
+SetAppOption(pixelCounter.threshold ${cfg_threshold})
+SetAppOption(pixelCounter.GenerateXMLFile 1)
+
+
+# Generic script options
+Foreach(file ${cfg_input_cart})
+  GetFilename(stem ${file} NAME_WITHOUT_EXTENSION)
+
+  SetAppOption(pixelCounter.filename ${file})
+  SetAppOption(pixelCounter.GenerateXMLFile.GenerateXMLFile ${stem}.${cfg_output1}.xml)
+
+  # Run the application 
+  CondorPostScript(pixelCounter ${cfg_condorpostscript} ${cfg_midas_baseURL}  ${cfg_itemid} ${cfg_email} ${cfg_appname} ${cfg_apikey} ${cfg_output_directory} ${stem}.${cfg_output1}.xml)
+  Run(prog_output ${pixelCounter})  
+
+Endforeach(file)

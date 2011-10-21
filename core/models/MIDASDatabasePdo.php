@@ -254,15 +254,15 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    *  find all DAO
    * @return daos
    */
-  public function getAll($modelName)
+  public function getAll($modelName, $module = '')
     {
     $rowset = $this->fetchAll($this->select());
     $return = array();
     $this->ModelLoader = new MIDAS_ModelLoader();
-    $model = $this->ModelLoader->loadModel($modelName);
+    $model = $this->ModelLoader->loadModel($modelName, $module);
     foreach($rowset as $row)
       {
-      $return[] = $model->initDao($modelName, $row);
+      $return[] = $model->initDao($modelName, $row, $module);
       }
     return $return;
     } //end method getAll
