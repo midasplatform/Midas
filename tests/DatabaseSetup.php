@@ -73,11 +73,11 @@ function dropTables($db, $dbType)
     {
     if($dbType === 'mysql')
       {
-      $sql = "drop table `".$table."`";
+      $sql = "drop table `".$table."` cascade";
       }
     else if($dbType === 'pgsql')
       {
-      $sql = 'drop table "'.$table.'"';
+      $sql = 'drop table "'.$table.'" cascade';
       }
     $db->query($sql);
     }
@@ -256,7 +256,6 @@ Zend_Registry::set('config', $config);
 
 $testConfigDir = BASE_PATH.'/tests/configs/';
 $dbTypes = getSqlDbTypes($testConfigDir);
-
 
 foreach($dbTypes as $dbType)
   {
