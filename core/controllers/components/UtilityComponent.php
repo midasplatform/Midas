@@ -19,13 +19,13 @@ class UtilityComponent extends AppComponent
     $modules = array();
     if(file_exists(BASE_PATH.'/modules/') && opendir(BASE_PATH.'/modules/'))
       {
-      $array = $this->initModulesConfig(BASE_PATH.'/modules/');
+      $array = $this->_initModulesConfig(BASE_PATH.'/modules/');
       $modules = array_merge($modules, $array);
       }
 
     if(file_exists(BASE_PATH.'/privateModules/') && opendir(BASE_PATH.'/privateModules/'))
       {
-      $array = $this->initModulesConfig(BASE_PATH.'/privateModules/');
+      $array = $this->_initModulesConfig(BASE_PATH.'/privateModules/');
       $modules = array_merge($modules, $array);
       }
 
@@ -33,7 +33,7 @@ class UtilityComponent extends AppComponent
     }
 
   /** find modules configuration in a folder */
-  private function initModulesConfig($dir)
+  private function _initModulesConfig($dir)
     {
     $handle = opendir($dir);
     while(false !== ($file = readdir($handle)))

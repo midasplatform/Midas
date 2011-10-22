@@ -155,7 +155,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       {
       $return[] = $model->initDao($this->_mainData[$var]['model'], $row);
       }
-      
+
     return $return;
     } //end getLinkedObject
 

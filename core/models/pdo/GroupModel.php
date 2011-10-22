@@ -54,7 +54,7 @@ class GroupModel  extends GroupModelBase
         $this->addUser($groupMember, $user);
         }
       }
-      
+
     $this->database->link('users', $group, $user);
     } // end function addItem
 
