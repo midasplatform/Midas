@@ -16,7 +16,7 @@ function(add_midas_mysql_test TestName TestFile)
       FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
       RESOURCE_LOCK MIDASDatabase
     )
-  ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini)  
+  ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini)
 endfunction(add_midas_mysql_test)
 
 function(add_midas_pgsql_test TestName TestFile)
@@ -44,14 +44,16 @@ function(add_midas_style_test TestName TestDir)
       FAIL_REGULAR_EXPRESSION "ERROR;WARNING"
     )
 
-    add_test(
-      ${TestName}TrailingSpaces
-      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/MIDASStyleChecker.php --src ${TestDir}
-    )
-    set_tests_properties(
-      ${TestName}TrailingSpaces PROPERTIES
-      FAIL_REGULAR_EXPRESSION "ERROR;WARNING"
-    )
+    if(MIDAS_RUN_TRAILLINGSPACES_TESTS)
+      add_test(
+        ${TestName}TrailingSpaces
+        ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/MIDASStyleChecker.php --src ${TestDir}
+      )
+      set_tests_properties(
+        ${TestName}TrailingSpaces PROPERTIES
+        FAIL_REGULAR_EXPRESSION "ERROR;WARNING"
+      )
+    endif()
   endif()
 endfunction(add_midas_style_test)
 
