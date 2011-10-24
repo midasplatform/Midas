@@ -145,13 +145,16 @@ if(!empty($this->userCommunities))
 
 <div class="viewSideBar">
   
-    <div class="sideElementFirst viewAction">
-    <h1>Actions</h1>
+    <div class="sideElementFirst">
+    <h1>Actions</h1> 
       <ul>
         <?php
         echo "<li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/FileTree/directory.png'/> {$this->t('Create top level Folder')}</a></li>";
         ?>
       </ul>
+    </div>
+    <div class="sideElementFirst viewAction">
+      <ul/> 
     </div>
     <div class="sideElement viewSelected" >
       <h1><?php echo $this->t('Selected')?></h1>
