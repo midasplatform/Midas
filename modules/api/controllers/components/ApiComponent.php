@@ -499,7 +499,10 @@ class Api_ApiComponent extends AppComponent
       }
     else
       {
-      // Policy check to make sure the user can create top level communities (admins only?)
+      if(!$userDao->isAdmin())
+        {
+        throw new Exception('Only admins can create communities', MIDAS_INVALID_POLICY);
+        }
       $description = '';
       $privacy = MIDAS_COMMUNITY_PUBLIC;
       $canJoin = MIDAS_COMMUNITY_CAN_JOIN;
