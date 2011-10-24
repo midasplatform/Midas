@@ -20,6 +20,7 @@ if(NOT PHP)
  message(FATAL_ERROR "Please set the PHP executable")
 endif()
 
+
 #-----------------------------------------------------------------------------
 #  Drop all tables from the testing DB
 #  Then re-install the DB, set a Default assetstore, and install all modules
@@ -48,6 +49,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/library/CMake/CTestCustom.cmake.in
 
 include(CTest)
 option( MIDAS_RUN_STYLE_TESTS "Should MIDAS run PHP style checking tests?" ON )
+option( MIDAS_RUN_TRAILLINGSPACES_TESTS "Should MIDAS run trailling spaces tests?" ON )
 set( SERVER_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 add_subdirectory(tests)
 add_subdirectory(core/tests)
