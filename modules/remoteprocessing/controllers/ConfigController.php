@@ -2,11 +2,10 @@
 
 class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
 {
-   public $_moduleForms=array('Config');
-   public $_components=array('Utility', 'Date');
+   public $_moduleComponents = array('Executable');
 
   /** download remote script */
-  function downnloadAction()
+  function initAction()
     {
      if(!$this->logged||!$this->userSession->Dao->getAdmin()==1)
       {

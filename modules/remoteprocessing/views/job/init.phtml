@@ -1,0 +1,95 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.init.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/job/job.init.css" />
+<div class="viewMain">
+     <div class ="genericWrapperTopRight">
+         <?php
+          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+            echo "<a  href='{$this->webroot}/remoteprocessing/job/manage?itemId={$this->itemDao->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+            echo $this->t('Back');
+            echo "</a>";
+          echo '</div>';
+
+        ?>
+    </div>
+
+  <br/>
+  <br/>
+  <?php
+  $i = 0;
+  foreach($this->metaContent->option as $option)
+    {
+    echo "<div id='option_".$i."' name='".htmlentities(ucfirst($option->name))."' class='optionWrapper' tag='".htmlentities($option->tag)."'>";
+    echo "<h4>".ucfirst($option->name)."</h4>";
+
+    $type = 'inputParam';
+    if($option->channel == 'ouput')
+      {
+      elementOuputFile($i, $option);
+      }
+    else if($option->field->external == 1)
+      {
+      elementInputFile($i, $option);
+      }
+    else
+      {
+      elementInputParam($i, $option);
+      }
+    echo "</div>";
+    $i++;
+    }
+  ?>
+
+  <h3>Command preview:</h3>
+  <div id="commandGenerated">
+  </div>
+
+  <br/>
+
+   <?php
+    echo '<div class="genericBigButton ">';
+      echo "<a id='creatJobLink' ><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/add.png'/>";
+      echo $this->t('Create Job');
+      echo "</a>";
+    echo '</div>';
+  ?>
+
+</div>
+
+<?php
+
+function elementOuputFile($i, $option)
+  {
+  echo "<a class='selectOutputFolderLink' order='$i'>Select Ouput Folder</a><br/>";
+  echo "Selected: <span class='selectedFolder' element=''></span><br/>";
+  echo "Name of the output: <input type='text' class='nameOutputOption'/>";
+  }
+
+function elementInputFile($i, $option)
+  {
+  echo "<a class='selectInputFileLink' order='$i'>Select Input File</a><br/>";
+  echo "Selected: <span class='selectedItem' element=''></span>";
+  }
+
+function elementInputParam($i, $option)
+  {
+  echo "Value (".ucfirst($option->field->type)."): <input variable='".$option->field->type."' type='text' qtip='Example multiple values: <b>5;6;9</b><br/>Example range with a step of 0.5: <b>5-10(0.5)</b>' class='valueInputOption'/>";
+  }
+?>
+
+
+
+
+

@@ -136,7 +136,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
       $paramsReturn['script'] = $jobs[0]->getScript();
       $paramsReturn['params']['job_id'] = $jobs[0]->getKey();
       $paramsReturn['params'] = JsonComponent::encode($paramsReturn['params']);
-      $jobs[0]->setStatus(MIDAS_REMOTEPROCESSING_STATUS_STARTED);
+      //$jobs[0]->setStatus(MIDAS_REMOTEPROCESSING_STATUS_STARTED);
       $jobModel->save($jobs[0]);
       }
 

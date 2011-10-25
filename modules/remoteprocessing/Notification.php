@@ -15,6 +15,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     $this->enableWebAPI($this->moduleName);
     $this->addTask("TASK_REMOTEPROCESSING_ADD_JOB", 'addJob', "");
     $this->addCallBack('CALLBACK_REMOTEPROCESSING_IS_EXECUTABLE', 'isExecutable');
+    $this->addCallBack('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', 'processProcessingResults');
 
     }//end init
 
@@ -34,6 +35,33 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
         }
       }
     return false;
+    }
+
+    /** Process results*/
+  public function processProcessingResults($params)
+    {
+    $modulesConfig=Zend_Registry::get('configsModules');
+    $communityKey = $modulesConfig['zeiss']->community->results;
+    $modelLoad = new MIDAS_ModelLoader();
+    $communityModel = $modelLoad->loadModel('Community');
+    $userModel = $modelLoad->loadModel('User');
+
+    $userDao = $userModel->load($params['userKey']);
+
+    $communityDao = $communityModel->load($communityKey);
+    $folder = $communityDao->getPublicFolder();
+
+    $componentLoader = new MIDAS_ComponentLoader();
+    $uploadComponent = $componentLoader->loadComponent('Upload');
+
+    foreach($params['output'] as $file)
+      {
+      $filepath = $params['pathResults'].'/'.$file;
+      if(file_exists($filepath))
+        {
+        $item = $uploadComponent->createUploadedItem($userDao, basename($filepath), $filepath, $folder);
+        }
+      }
     }
 
   /** get Config Tabs */

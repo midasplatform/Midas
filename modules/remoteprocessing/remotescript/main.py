@@ -152,6 +152,7 @@ def handleMidasResponse(response):
     os.chdir(pathProcessingFolder+'/script/')
     cmd = "python "+pathProcessingFolder+'/script/script.py'
     p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=False)
+    p.wait()
     stdout = p.stdout.read()
     os.chdir(sys.path[0])
 

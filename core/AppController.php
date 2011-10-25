@@ -298,6 +298,16 @@ class AppController extends MIDAS_GlobalController
     $this->_helper->viewRenderer->setNoRender();
     }
 
+  /** Show a jgrowl Message */
+  public function showNotificationMessage($message)
+    {
+    if(!isset($this->view->json['triggerNotification']))
+      {
+      $this->view->json['triggerNotification'] = array();
+      }
+    $this->view->json['triggerNotification'][] = $message;
+    }
+
   /** check if midas needs to be upgraded */
   public function isUpgradeNeeded()
     {

@@ -213,7 +213,12 @@ if($this->preview) // module visualize
           {
           echo
          "<li>
-            <a href='".$this->webroot."/remoteprocessing/executable/define/?itemId=".$this->itemDao->getKey()."'><img alt='' src='{$this->coreWebroot}/public/images/icons/metadata.png'/> {$this->t('Define Executable')}</a>
+            <a href='".$this->webroot."/remoteprocessing/executable/define/?itemId=".$this->itemDao->getKey()."'><img alt='' src='{$this->coreWebroot}/public/images/icons/xml.png'/> {$this->t('Define Executable')}</a>
+          </li>
+            ";
+          echo
+         "<li>
+            <a href='".$this->webroot."/remoteprocessing/job/manage/?itemId=".$this->itemDao->getKey()."'><img alt='' src='{$this->coreWebroot}/public/images/icons/job.png'/> {$this->t('Manage Processing Jobs')}</a>
           </li>
             ";
           }

@@ -1,14 +1,15 @@
 <?php
 
-class Remoteprocessing_ExecutableController extends Remoteprocessing_AppController
+class Remoteprocessing_JobController extends Remoteprocessing_AppController
 {
   public $_models = array('Item', 'Bitstream', 'ItemRevision', 'Assetstore');
   public $_components = array('Upload');
   public $_moduleComponents = array('Executable');
 
-  /** define an executable */
-  function defineAction()
+  /** manage jobs */
+  function manageAction()
     {
+
     $itemId = $this->_getParam("itemId");
     if(!isset($itemId) || !is_numeric($itemId))
       {
@@ -24,27 +25,51 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
       {
       throw new Zend_Exception("Problem policies.");
       }
-    $this->view->header = $this->t("Manage Configuration: ".$itemDao->getName());
+    $this->view->header = $this->t("Manage Jobs: ".$itemDao->getName());
+    $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
+    $this->view->metaFile = $metaFile;
+    $this->view->itemDao = $itemDao;
+    }
+
+   /** init a job */
+  function initAction()
+    {
+    $this->view->header = $this->t("Job");
+    $itemId = $this->_getParam("itemId");
+    if(!isset($itemId) || !is_numeric($itemId))
+      {
+      throw new Zend_Exception("itemId  should be a number");
+      }
+
+    $itemDao = $this->Item->load($itemId);
+    if($itemDao === false)
+      {
+      throw new Zend_Exception("This item doesn't exist.");
+      }
+    if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception("Problem policies.");
+      }
 
     $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
-
-    if(isset($_GET['init']))
+    if($metaFile == false)
       {
-      $this->showNotificationMessage('Please set the option of the executable first.');
+      $this->_redirect('/remoteprocessing/executable/define?init=false&itemId='.$itemDao->getKey());
+      return;
       }
 
-    $jsonContents = JsonComponent::encode(array());
-    if($metaFile !== false)
-      {
-      $jsonContents = Zend_Json::fromXml(file_get_contents($metaFile->getFullPath()), true);
-      }
+    $metaContent = new SimpleXMLElement(file_get_contents($metaFile->getFullPath()));
+    $this->view->metaContent = $metaContent;
+
     $this->view->itemDao = $itemDao;
-    $this->view->jsonMetadata = $jsonContents;
     $this->view->json['item'] = $itemDao->toArray();
      if($this->_request->isPost())
       {
       $this->disableLayout();
       $this->disableView();
+
+      $this->ModuleComponent->Executable->initAndSchedule($itemDao, $metaContent, $_POST['results']);
+      /*
 
       $results = $_POST['results'];
       $xmlContent = $this->ModuleComponent->Executable->createDefinitionFile($results);
@@ -87,9 +112,8 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
       if(file_exists($pathFile))
         {
         unlink($pathFile);
-        }
+        }*/
       }
-
     }
 
 }//end class

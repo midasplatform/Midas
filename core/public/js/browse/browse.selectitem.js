@@ -13,6 +13,11 @@
          $('.destinationId').val($('#selectedDestinationHidden').val());
          $( "div.MainDialog" ).dialog('close');
          $('applet').show();
+
+         if(typeof itemSelectionCallback == 'function')
+            {
+            itemSelectionCallback($('#selectedDestination').html(), $('#selectedDestinationHidden').val());
+            }
          return false;
        });
      }
@@ -21,39 +26,18 @@
     var ajaxSelectRequest='';
     function callbackSelect(node)
     {
-      var selectedElement = node.find('span:eq(1)').html();
-
-      var parent = true;
-      var current = node;
-
-      while(parent != null)
+      if(node.attr('type') == 'item')
         {
-        parent = null;
-        var classNames = current[0].className.split(' ');
-        for(key in classNames)
-          {
-          if(classNames[key].match("child-of-"))
-            {
-            parent = $("#" + classNames[key].substring(9));
-            }
-          }
-        if(parent != null)
-          {
-          selectedElement = parent.find('span:eq(1)').html()+'/'+selectedElement;
-          current = parent;
-          }
-        }
+        var selectedElement = node.find('span:eq(0)').html();
 
-      $('#selectedDestinationHidden').val(node.attr('element'));
-      $('#selectedDestination').html(sliceFileName(selectedElement, 40));
-      $('#selectElements').removeAttr('disabled');
-      $('#copyElement').removeAttr('disabled');
-      $('#moveElements').removeAttr('disabled');
+        $('#selectedDestinationHidden').val(node.attr('element'));
+        $('#selectedDestination').html(sliceFileName(selectedElement, 40));
+        $('#selectElements').removeAttr('disabled');
+        }
     }
 
-
-     $('img.infoLoading').show();
-      $('div.ajaxInfoElement').html('');
+    $('img.infoLoading').show();
+    $('div.ajaxInfoElement').html('');
 
 
     function callbackDblClick(node)
@@ -84,6 +68,16 @@
             i++;
             }
             });
+
+          $.each(elements['items'], function(index, value) {
+
+          html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"' privacy='"+value['privacy_status']+"'  type='item' policy='"+value['policy']+"' element='"+value['item_id']+"'>";
+          html+=     "  <td><span class='file'>"+trimName(value['name'],padding)+"</span></td>";
+          html+=     "</tr>";
+          i++;
+          });
        return html;
+
+
     }
 

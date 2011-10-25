@@ -273,6 +273,14 @@ $(function() {
   }, function(){
     $(this).parents('li').css('background-color','white');
   });
+
+  // show Notification Message
+  if(json.triggerNotification != undefined)
+    {
+    jQuery.each(json.triggerNotification, function(i, val) {
+       createNotive(val, 4000)
+       });
+    }
 });
 function globalAuthAsk(url)
 {
