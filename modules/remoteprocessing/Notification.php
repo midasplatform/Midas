@@ -14,7 +14,27 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     {
     $this->enableWebAPI($this->moduleName);
     $this->addTask("TASK_REMOTEPROCESSING_ADD_JOB", 'addJob', "");
+    $this->addCallBack('CALLBACK_REMOTEPROCESSING_IS_EXECUTABLE', 'isExecutable');
+
     }//end init
+
+  /** check if item contains an executable */
+  public function isExecutable($params)
+    {
+    $modelLoad = new MIDAS_ModelLoader();
+    $itemModel = $modelLoad->loadModel('Item');
+    $item = $params['item'];
+    $revision = $itemModel->getLastRevision($item);
+    $bitstreams = $revision->getBitstreams();
+    foreach($bitstreams as $b)
+      {
+      if(is_executable($b->getFullPath()))
+        {
+        return true;
+        }
+      }
+    return false;
+    }
 
   /** get Config Tabs */
   public function addJob($params)

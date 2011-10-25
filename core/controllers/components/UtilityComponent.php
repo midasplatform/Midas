@@ -36,6 +36,7 @@ class UtilityComponent extends AppComponent
   private function _initModulesConfig($dir)
     {
     $handle = opendir($dir);
+    $modules = array();
     while(false !== ($file = readdir($handle)))
       {
       if(file_exists($dir.$file.'/configs/module.ini'))
