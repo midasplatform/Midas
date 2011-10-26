@@ -126,4 +126,33 @@ abstract class FolderModelBase extends AppModel
     $this->save($folder);
     return $folder;
     }
+
+  /**
+   * Count the bitstreams under this folder.
+   * Returns array('size'=>size_in_bytes, 'count'=>total_number_of_bitstreams)
+   */
+  function countBitstreams($folderDao, $userDao = null)
+    {
+    $totalSize = 0;
+    $totalCount = 0;
+    $subfolders = $this->getChildrenFoldersFiltered($folderDao, $userDao);
+    foreach($subfolders as $subfolder)
+      {
+      $subtotal = $this->countBitstreams($subfolder, $userDao);
+      $totalSize += $subtotal['size'];
+      $totalCount += $subtotal['count'];
+      }
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $items = $this->getItemsFiltered($folderDao, $userDao);
+    foreach($items as $item)
+      {
+      $subtotal = $itemModel->countBitstreams($item);
+      $totalSize += $subtotal['size'];
+      $totalCount += $subtotal['count'];
+      }
+
+    return array('size' => $totalSize, 'count' => $totalCount);
+    } //end countBitstreams
 } // end class FolderModelBase
