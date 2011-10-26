@@ -41,7 +41,7 @@ span.communityTitle{
 .draggable { cursor: pointer; }
 
 div.communityList{
-  opacity: .85;
+  opacity: .90;
 }
 
 div.communityList span.communityShortDescription{
