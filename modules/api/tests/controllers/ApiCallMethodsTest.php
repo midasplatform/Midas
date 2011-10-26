@@ -43,8 +43,8 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertTrue(isset($resp->data));
     }
 
-  /** Authenticate using the default api key */
-  private function _loginUsingApiKey()
+  /** Authenticate using the default api key for user 1 */
+  private function _loginAsNormalUser()
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
@@ -68,6 +68,32 @@ class ApiCallMethodsTest extends ControllerTestCase
     return $resp->data->token;
     }
 
+  /** Authenticate using the default api key */
+  private function _loginAsAdministrator()
+    {
+    $usersFile = $this->loadData('User', 'default');
+    $userDao = $this->User->load($usersFile[2]->getKey());
+
+    $modelLoad = new MIDAS_ModelLoader();
+    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel->createDefaultApiKey($userDao);
+    $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
+
+    $this->params['method'] = 'midas.login';
+    $this->params['email'] = $usersFile[2]->getEmail();
+    $this->params['appname'] = 'Default';
+    $this->params['apikey'] = $apiKey;
+    $this->request->setMethod('POST');
+
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals(strlen($resp->data->token), 40);
+
+    // **IMPORTANT** This will clear any params that were set before this function was called
+    $this->resetAll();
+    return $resp->data->token;
+    }
+
   /** Get the folders corresponding to the user */
   public function testUserFolders()
     {
@@ -79,7 +105,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals(count($resp->data), 0);
 
     $this->resetAll();
-    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.user.folders';
     $resp = $this->_callJsonApi(null, 'GET');
     $this->_assertStatusOk($resp);
@@ -94,11 +120,44 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($resp->data[1]->name, 'User 1 name Folder 3');
     }
 
+  /** Test creation of a new community */
+  public function testCommunityCreate()
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $communityModel = $modelLoader->loadModel('Community');
+    $communities = $communityModel->getAll();
+    $originalCount = count($communities);
+
+    // Normal user should not be able to create a community
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.community.create';
+    $this->params['name'] = 'testNewComm';
+    $resp = $this->_callJsonApi();
+    $this->assertEquals($resp->message, 'Only admins can create communities');
+    $this->assertEquals($resp->stat, 'fail');
+    $this->assertNotEquals($resp->code, 0);
+
+    $communities = $communityModel->getAll();
+    $this->assertEquals(count($communities), $originalCount);
+
+    // Admin should be able to create the community
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.community.create';
+    $this->params['name'] = 'testNewComm';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    $communities = $communityModel->getAll();
+    $this->assertEquals(count($communities), $originalCount + 1);
+    }
+
   /** Test listing of visible communities */
   public function testCommunityList()
     {
     $this->resetAll();
-    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.community.list';
 
     $resp = $this->_callJsonApi();
@@ -119,7 +178,7 @@ class ApiCallMethodsTest extends ControllerTestCase
   public function testFolderChildren()
     {
     $this->resetAll();
-    $token = $this->_loginUsingApiKey();
+    $token = $this->_loginAsNormalUser();
     $this->params['token'] = $token;
     $this->params['method'] = 'midas.folder.children';
     $this->params['id'] = 1000;
@@ -167,7 +226,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $itemDao = $this->Item->load($itemsFile[0]->getKey());
 
     $this->resetAll();
-    $token = $this->_loginUsingApiKey();
+    $token = $this->_loginAsNormalUser();
     $this->params['token'] = $token;
     $this->params['method'] = 'midas.item.get';
     $this->params['id'] = $itemsFile[0]->getKey();
@@ -185,7 +244,7 @@ class ApiCallMethodsTest extends ControllerTestCase
 
     // Test the 'head' parameter
     $this->resetAll();
-    $token = $this->_loginUsingApiKey();
+    $token = $this->_loginAsNormalUser();
     $this->params['token'] = $token;
     $this->params['method'] = 'midas.item.get';
     $this->params['id'] = $itemsFile[0]->getKey();
@@ -251,7 +310,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $itemsFile = $this->loadData('Item', 'default');
 
-    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.upload.generatetoken';
     $this->params['filename'] = 'test.txt';
     $this->params['checksum'] = 'foo';
@@ -284,7 +343,7 @@ class ApiCallMethodsTest extends ControllerTestCase
       unlink($assetstoreFile);
       }
 
-    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.upload.generatetoken';
     $this->params['filename'] = 'test.txt';
     $this->params['checksum'] = $md5;
@@ -329,7 +388,7 @@ class ApiCallMethodsTest extends ControllerTestCase
 
     // Check that a redundant upload yields a blank upload token and a new reference
     $this->resetAll();
-    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.upload.generatetoken';
     $this->params['filename'] = 'test2.txt';
     $this->params['checksum'] = $md5;

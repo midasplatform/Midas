@@ -28,7 +28,10 @@ class Helloworld_Upgrade_1_0_1 extends MIDASUpgrade
     
   public function pgsql()
     {
-    
+    $sql = "CREATE TABLE helloworld_helloupgrade1 (
+                  id serial PRIMARY KEY
+                  );";
+    $this->db->query($sql);
     }
     
   public function postUpgrade()
