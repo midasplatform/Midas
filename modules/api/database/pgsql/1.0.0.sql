@@ -1,6 +1,7 @@
+DROP TABLE IF EXISTS api_userapi;
+DROP TABLE IF EXISTS api_token;
 
-
-CREATE TABLE IF NOT EXISTS api_userapi (
+CREATE TABLE api_userapi (
   userapi_id serial PRIMARY KEY,
   user_id bigint NOT NULL,
   apikey character varying(40) NOT NULL,
@@ -9,7 +10,7 @@ CREATE TABLE IF NOT EXISTS api_userapi (
   creation_date timestamp without time zone
 );
 
-CREATE TABLE IF NOT EXISTS api_token (
+CREATE TABLE api_token (
   token_id serial PRIMARY KEY,
   userapi_id bigint NOT NULL,
   token character varying(40) NOT NULL,
