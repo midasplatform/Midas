@@ -376,7 +376,7 @@ class MIDASModel
    * @param $dao2
    * @return True ifthey are the same one
    */
-  public function compareDao($dao1, $dao2)
+  public function compareDao($dao1, $dao2, $juggleTypes = false)
     {
     if(!is_object($dao1) || !is_object($dao2))
       {
@@ -386,10 +386,20 @@ class MIDASModel
       {
       if($data['type'] == MIDAS_DATA)
         {
-        if($dao1->get($name) !== $dao2->get($name))
+        if($juggleTypes)
           {
-          return false;
+          if($dao1->get($name) != $dao2->get($name))
+            {
+            return false;
+            }
           }
+        else
+          {
+          if($dao1->get($name) !== $dao2->get($name))
+            {
+            return false;
+            }
+          }  
         }
       }
     return true;
