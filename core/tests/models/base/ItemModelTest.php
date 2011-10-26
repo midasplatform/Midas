@@ -29,7 +29,7 @@ class ItemModelTest extends DatabaseTestCase
     $itemsFile = $this->loadData('Item', 'default');
     $revisionsFile = $this->loadData('ItemRevision', 'default');
     $revision = $this->Item->getLastRevision($itemsFile[0]);
-    $this->assertEquals($revisionsFile[1]->getKey(), $revision->getKey());
+    $this->assertEquals($revisionsFile[2]->getKey(), $revision->getKey());
     }
 
   /** testAddRevision*/
