@@ -455,7 +455,7 @@ class MIDASModel
             {
             return false;
             }
-          }  
+          }
         }
       }
     return true;
