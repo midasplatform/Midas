@@ -380,7 +380,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     // Test count bitstreams in folder without privileges - should fail
     $this->resetAll();
     $this->params['method'] = 'midas.bitstream.count';
-    $this->params['uuid'] = '4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761';
+    $this->params['uuid'] = '4e311fdf82007c245b07d8d6c4fcb4205f2621eb72751';
     $resp = $this->_callJsonApi();
     $this->assertEquals($resp->message, 'Invalid policy');
     $this->assertEquals($resp->stat, 'fail');
@@ -388,7 +388,7 @@ class ApiCallMethodsTest extends ControllerTestCase
 
     // Test count bitstreams in folder with privileges - should succeed
     $this->resetAll();
-    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.bitstream.count';
     $this->params['uuid'] = '4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761';
     $resp = $this->_callJsonApi();
@@ -398,7 +398,7 @@ class ApiCallMethodsTest extends ControllerTestCase
 
     // Test count bitstreams in item
     $this->resetAll();
-    $this->params['token'] = $this->_loginUsingApiKey();
+    $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.bitstream.count';
     $this->params['uuid'] = '4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750';
     $resp = $this->_callJsonApi();
