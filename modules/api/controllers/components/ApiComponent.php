@@ -1171,6 +1171,7 @@ class Api_ApiComponent extends AppComponent
    * @param id (Optional) The id of the bitstream
    * @param checksum (Optional) The checksum of the bitstream
    * @param name (Optional) Alternate filename to download as
+   * @param offset (Optional) The download offset in bytes (used for resume)
    */
   function bitstreamDownload($args)
     {
@@ -1217,8 +1218,10 @@ class Api_ApiComponent extends AppComponent
       $this->_redirect($bitstream->getPath());
       return;
       }
+    $offset = array_key_exists('offset', $args) ? $args['offset'] : 0;
+
     $componentLoader = new MIDAS_ComponentLoader();
     $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');
-    $downloadComponent->download($bitstream);
+    $downloadComponent->download($bitstream, $offset);
     }
   } // end class

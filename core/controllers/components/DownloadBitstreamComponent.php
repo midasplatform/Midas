@@ -24,8 +24,9 @@ class DownloadBitstreamComponent extends AppComponent
   /**
    * Calling this will stream the file to the client.
    * The parameter is a bitstream dao.
+   * Optional second parameter is the download offset in bytes.
    */
-  function download($bitstream)
+  function download($bitstream, $offset = 0)
     {
     $mimetype = $bitstream->getMimetype();
     $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
@@ -123,16 +124,20 @@ class DownloadBitstreamComponent extends AppComponent
       ob_end_clean();
       }
 
+    if(is_numeric($offset) && $offset > 0 && $offset <= $fileSize)
+      {
+      fseek($handle, $offset);
+      }
+
     while(!feof($handle) && connection_status() == 0)
       {
-      $buffer = fread($handle, $chunkSize);
-      echo $buffer;
+      echo fread($handle, $chunkSize);
       }
     fclose($handle);
 
     if(!$this->testingmode) //don't exit if we are in testing mode
       {
-      exit(connection_status() == 0 && !connection_aborted());
+      exit();
       }
     }
   } //end class
