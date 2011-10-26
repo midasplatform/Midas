@@ -13,7 +13,7 @@ PURPOSE.  See the above copyright notices for more information.
 /** Community Controller*/
 class CommunityController extends AppController
   {
-  public $_models = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Group', 'User', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Item', 'CommunityInvitation');
+  public $_models = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Itempolicygroup', 'Group', 'User', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Item', 'CommunityInvitation');
   public $_daos = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Group', 'User');
   public $_components = array('Sortdao', 'Date');
   public $_forms = array('Community');
@@ -105,7 +105,7 @@ class CommunityController extends AppController
           $communityDao->setName($formInfo->getValue('name'));
           $communityDao->setDescription($formInfo->getValue('description'));
 
-          // update folderpolicygroup and feedpolicygroup tables when community privacy is changed between public and private
+          // update folderpolicygroup, itempolicygroup and feedpolicygroup tables when community privacy is changed between public and private
           // users in Midas_anonymouse_group can see community's public folder only if the community is set as public
           $forminfo_privacy = $formInfo->getValue('privacy');
           $communityDao->setPrivacy($forminfo_privacy);
@@ -114,12 +114,48 @@ class CommunityController extends AppController
           $folderpolicygroupDao = $this->Folderpolicygroup->getPolicy($anonymousGroup, $communityPublicFolder);
           if($forminfo_privacy == MIDAS_COMMUNITY_PRIVATE && $folderpolicygroupDao !== false)
             {
+            // process root folder
             $this->Folderpolicygroup->delete($folderpolicygroupDao);
+            // process items in root folder
+            foreach($communityPublicFolder->getItems() as $item)
+              {
+              $itemolicygroupDao = $this->Itempolicygroup->getPolicy($anonymousGroup, $item);
+              $this->Itempolicygroup->delete($itemolicygroupDao);
+              }
+            // process children folders
+            foreach($this->Folder->getAllChildren($communityPublicFolder, $this->userSession->Dao) as $subfolder)
+              {
+              $subfolderpolicygroupDao = $this->Folderpolicygroup->getPolicy($anonymousGroup, $subfolder);
+              $this->Folderpolicygroup->delete($subfolderpolicygroupDao);
+              // process items in childrn folders
+              foreach($subfolder->getItems() as $subfolderItem)
+                {
+                $subfolderitemolicygroupDao = $this->Itempolicygroup->getPolicy($anonymousGroup, $subfolderItem);
+                $this->Itempolicygroup->delete($subfolderitemolicygroupDao);
+                }
+              }
             }
           else if($forminfo_privacy == MIDAS_COMMUNITY_PUBLIC && $folderpolicygroupDao == false)
             {
+            // process root folder
             $this->Folderpolicygroup->createPolicy($anonymousGroup, $communityPublicFolder, MIDAS_POLICY_READ);
+            // process items in root folder
+            foreach($communityPublicFolder->getItems() as $item)
+              {
+              $this->Itempolicygroup->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+              }
+            // process children folders
+            foreach($this->Folder->getAllChildren($communityPublicFolder, $this->userSession->Dao) as $subfolder)
+              {
+              $this->Folderpolicygroup->createPolicy($anonymousGroup, $subfolder, MIDAS_POLICY_READ);
+              // process items in childer folders
+              foreach($subfolder->getItems() as $subfolderItem)
+                {
+                $this->Itempolicygroup->createPolicy($anonymousGroup, $subfolderItem, MIDAS_POLICY_READ);
+                }
+              }
             }
+
           // users in Midas_anonymouse_group can see CREATE_COMMUNITY feed for this community only if the community is set as public
           $feedcreatecommunityDaoArray = array();
           // there exist 1 and only 1 feed in 'MIDAS_FEED_CREATE_COMMUNITY' type for any commuinty
