@@ -82,4 +82,3 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
     return $return;
     }
 }  // end class
-?>

@@ -10,14 +10,14 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-/** index controller tests*/
+/** ExecutableControllerTest */
 class ExecutableControllerTest extends ControllerTestCase
   {
-    /** set up tests*/
+  /** set up tests*/
   public function setUp()
     {
     $this->setupDatabase(array('default', 'adminUser'));
-    $this->_models = array('User', 'Item');
+    $this->_models = array('User', 'Item', 'ItemRevision');
     $this->enabledModules = array('remoteprocessing');
     parent::setUp();
     }
@@ -47,5 +47,6 @@ class ExecutableControllerTest extends ControllerTestCase
 
     // create new revision
     $this->assertNotEquals($revision->getRevision(), $revisionNext->getRevision());
+    $this->ItemRevision->delete($revisionNext);
     }
   }

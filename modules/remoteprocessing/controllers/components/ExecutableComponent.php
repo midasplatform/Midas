@@ -151,7 +151,6 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     $script .= "import subprocess\n";
     foreach($commandMatrix as $key => $commandList)
       {
-      $script .= "print 'Matrix Element ".$key."'\n";
       $command = $executable->getName().' '.  join('', $commandList);
       if($key == 1)
         {
@@ -164,9 +163,15 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
 
       $script .= "process = subprocess.Popen('".$command."', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n";
       $script .= "process.wait()\n";
-      $script .= "print process.stdout.readline()\n";
-      $script .= "print process.stderr.readline()\n";
+      $script .= "returnArray = process.communicate()\n";
+      $script .= "print '-COMMAND'\n";
+      $script .= "print '".$command."'\n";
+      $script .= "print '-STDOUT'\n";
+      $script .= "print returnArray[0]\n";
+      $script .= "print '-STDERR'\n";
+      $script .= "print returnArray[1]\n";
       }
+
 
     $tmpOutputArray = $ouputArray;
     foreach($tmpOutputArray as $ouput)
@@ -178,7 +183,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         }
       }
 
-    $parameters = $jobComponent->initJobParameters('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', $inputArray, $ouputArray , $additionalParams);
+    $parameters = $jobComponent->initJobParameters('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', $inputArray, $ouputArray, $additionalParams);
 
     $ext = end(explode('.', $executable->getName()));
     if($ext == 'exe')
@@ -239,7 +244,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
             }
           $matrix[$i][$key] = $tmpvalue;
           }
-        if(count($values) >1)
+        if(count($values) > 1)
           {
           $multipleElement = $multipleElement * count($values);
           }
@@ -265,59 +270,59 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
       {
       $element = explode(';', $r);
       $option = $xml->addChild('option');
-      $option->addChild('number',htmlspecialchars(utf8_encode($i)));
-      $option->addChild('name',htmlspecialchars(utf8_encode($element[0])));
-      $option->addChild('tag',htmlspecialchars(utf8_encode($element[5])));
-      $option->addChild('longtag',htmlspecialchars(utf8_encode('')));
-      $option->addChild('description',htmlspecialchars(utf8_encode('')));
+      $option->addChild('number', htmlspecialchars(utf8_encode($i)));
+      $option->addChild('name', htmlspecialchars(utf8_encode($element[0])));
+      $option->addChild('tag', htmlspecialchars(utf8_encode($element[5])));
+      $option->addChild('longtag', htmlspecialchars(utf8_encode('')));
+      $option->addChild('description', htmlspecialchars(utf8_encode('')));
       if($element[4] == 'True')
         {
-        $option->addChild('required',htmlspecialchars(utf8_encode(1)));
+        $option->addChild('required', htmlspecialchars(utf8_encode(1)));
         }
       else
         {
-        $option->addChild('required',htmlspecialchars(utf8_encode(0)));
+        $option->addChild('required', htmlspecialchars(utf8_encode(0)));
         }
 
       if($element[1] == 'ouputFile')
         {
-        $option->addChild('channel',htmlspecialchars(utf8_encode('ouput')));
+        $option->addChild('channel', htmlspecialchars(utf8_encode('ouput')));
         }
       else
         {
-        $option->addChild('channel',htmlspecialchars(utf8_encode('input')));
+        $option->addChild('channel', htmlspecialchars(utf8_encode('input')));
         }
 
-      $option->addChild('nvalues',htmlspecialchars(utf8_encode(1)));
+      $option->addChild('nvalues', htmlspecialchars(utf8_encode(1)));
 
       $field = $option->addChild('field');
-      $field->addChild('name',htmlspecialchars(utf8_encode($element[0])));
-      $field->addChild('description',htmlspecialchars(utf8_encode('')));
+      $field->addChild('name', htmlspecialchars(utf8_encode($element[0])));
+      $field->addChild('description', htmlspecialchars(utf8_encode('')));
 
       if($element[1] == 'inputParam')
         {
-        $field->addChild('type',htmlspecialchars(utf8_encode($element[2])));
+        $field->addChild('type', htmlspecialchars(utf8_encode($element[2])));
         }
       else
         {
-        $field->addChild('type',htmlspecialchars(utf8_encode('string')));
+        $field->addChild('type', htmlspecialchars(utf8_encode('string')));
         }
-      $field->addChild('value',htmlspecialchars(utf8_encode('')));
+      $field->addChild('value', htmlspecialchars(utf8_encode('')));
       if($element[4] == 'True')
         {
-        $field->addChild('required',htmlspecialchars(utf8_encode(1)));
+        $field->addChild('required', htmlspecialchars(utf8_encode(1)));
         }
       else
         {
-        $field->addChild('required',htmlspecialchars(utf8_encode(0)));
+        $field->addChild('required', htmlspecialchars(utf8_encode(0)));
         }
       if($element[1] == 'inputParam')
         {
-        $field->addChild('external',htmlspecialchars(utf8_encode(0)));
+        $field->addChild('external', htmlspecialchars(utf8_encode(0)));
         }
       else
         {
-        $field->addChild('external',htmlspecialchars(utf8_encode(1)));
+        $field->addChild('external', htmlspecialchars(utf8_encode(1)));
         }
       }
     $xml = $xml->asXML();

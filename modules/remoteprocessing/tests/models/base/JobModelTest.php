@@ -57,7 +57,7 @@ class JobModelTest extends DatabaseTestCase
     $modelLoad = new MIDAS_ModelLoader();
     $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
     $itemsFile = $this->loadData('Item', 'default');
-    $jobFile = $this->loadData('Job', 'default', 'remoteprocessing');
+    $jobFile = $this->loadData('Job', 'default', 'remoteprocessing', 'remoteprocessing');
 
     $jobModel->addItemRelation($jobFile[0], $itemsFile[1]);
     $jobs = $jobModel->getRelatedJob($itemsFile[1]);
