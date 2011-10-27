@@ -66,10 +66,10 @@ class Remoteprocessing_ApiComponent extends AppComponent
       $userDao->setPrivacy(MIDAS_USER_PRIVATE);
       $userDao->setCompany($os); //used to set operating system
       $userModel->save($userDao);
-
       $serverGroup = $groupModel->load(MIDAS_GROUP_SERVER_KEY);
       $groupModel->addUser($serverGroup, $userDao);
       $userapiDao = $Api_UserapiModel->createKey($userDao, 'remoteprocessing', '100');
+
       $apikey = $userapiDao->getApikey();
 
       Zend_Registry::get('notifier')->callback('CALLBACK_REMOTEPROCESSING_CREATESERVER', $userDao->toArray());
@@ -184,10 +184,17 @@ class Remoteprocessing_ApiComponent extends AppComponent
    */
   public function resultsserver($args)
     {
-    if($_SERVER['REQUEST_METHOD'] != 'POST')
+    $testingmode = false;
+    if($_GET['testingmode'] == 1)
+      {
+      $testingmode = true;
+      }
+    if(!$testingmode && $_SERVER['REQUEST_METHOD'] != 'POST')
       {
       throw new Exception('Should be a put request.', MIDAS_INVALID_PARAMETER);
       }
+
+
     $modelLoad = new MIDAS_ModelLoader();
     $componentLoader = new MIDAS_ComponentLoader();
     $authComponent = $componentLoader->loadComponent('Authentication', 'api');
@@ -226,7 +233,16 @@ class Remoteprocessing_ApiComponent extends AppComponent
       $destionation = BASE_PATH.'/tmp/remoteprocessing/'.rand(1, 1000).time();
       }
     mkdir($destionation);
-    move_uploaded_file($_FILES['file']['tmp_name'], $destionation."/results.zip");
+
+    if(!$testingmode)
+      {
+      move_uploaded_file($_FILES['file']['tmp_name'], $destionation."/results.zip");
+      }
+
+    if($testingmode)
+      {
+      return array();
+      }
 
     if(file_exists($destionation."/results.zip"))
       {

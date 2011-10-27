@@ -17,6 +17,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     $this->addTask("TASK_REMOTEPROCESSING_ADD_JOB", 'addJob', "");
     $this->addCallBack('CALLBACK_REMOTEPROCESSING_IS_EXECUTABLE', 'isExecutable');
     $this->addCallBack('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', 'processProcessingResults');
+    $this->addCallBack('CALLBACK_REMOTEPROCESSING_ADD_JOB', 'addJob');
     }//end init
 
   /** check if item contains an executable */
