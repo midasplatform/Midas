@@ -122,7 +122,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         'datetime' => 'timestamp',
         'module'   => 'module');
       $writerDb = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
-      if($config->environment == 'production')
+      if($configGlobal->environment == 'production')
         {
         $formatter = new Zend_Log_Formatter_Simple();
         Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(false);
@@ -131,11 +131,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'writerName' => 'Stream',
             'writerParams' => array(
               'stream' => './log/prod.log'),
-            'filterName' => 'Priority',
-            'filterParams' => array(
-              'priority' => Zend_Log::INFO)),
-          array(
-            'writerName' => 'Firebug',
             'filterName' => 'Priority',
             'filterParams' => array(
               'priority' => Zend_Log::INFO))));
