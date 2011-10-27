@@ -10,11 +10,11 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+/** Job Dao */
 class Remoteprocessing_JobDao extends Remoteprocessing_AppDao
   {
-    public $_model='Job';
-    public $_module='remoteprocessing';
+  public $_model = 'Job';
+  public $_module = 'remoteprocessing';
 
 
   }
-?>

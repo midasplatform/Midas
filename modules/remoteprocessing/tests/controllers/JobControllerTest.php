@@ -10,7 +10,7 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-/** index controller tests*/
+/** JobControllerTest*/
 class JobControllerTest extends ControllerTestCase
   {
   /** set up tests*/

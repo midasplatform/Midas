@@ -47,6 +47,7 @@ class ApiTest extends ControllerTestCase
     $revision = $this->Item->getLastRevision($itemFile[0]);
 
     // register (create user)
+    $this->resetAll();
     $this->params = array();
     $this->params['securitykey'] = $this->_getSecurityKey();
     $this->params['os'] = MIDAS_REMOTEPROCESSING_OS_WINDOWS;
@@ -88,7 +89,7 @@ class ApiTest extends ControllerTestCase
     // ask action
     $this->params = array();
     $this->params['token'] = $token;
-    $this->params['os'] = MIDAS_REMOTEPROCESSING_OS_WINDOWS;
+    $this->params['os'] = '123';
     $this->request->setMethod('POST');
 
     $this->dispatchUrI('/api/json?method=midas.remoteprocessing.keepaliveserver');

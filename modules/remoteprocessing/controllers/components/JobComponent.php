@@ -28,7 +28,7 @@ class Remoteprocessing_JobComponent extends AppComponent
       {
       throw new Zend_Exception("Unable to find callback ".$resultCallback);
       }
-    if(!is_array($inputArray) || !is_array($ouputArray) ||!is_array($additionalParams))
+    if(!is_array($inputArray) || !is_array($ouputArray) || !is_array($additionalParams))
       {
       throw new Zend_Exception("Error params");
       }
@@ -76,7 +76,7 @@ class Remoteprocessing_JobComponent extends AppComponent
       $scheduleParams['fire_time'] = $fire_time;
       }
 
-    if(!$only_once && $time_interval !==false)
+    if(!$only_once && $time_interval !== false)
       {
       $scheduleParams['run_only_once'] = false;
       $scheduleParams['time_interval'] = $time_interval;
