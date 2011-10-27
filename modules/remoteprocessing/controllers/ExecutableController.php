@@ -1,14 +1,24 @@
 <?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
 
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+/** Executable controller */
 class Remoteprocessing_ExecutableController extends Remoteprocessing_AppController
 {
   public $_models = array('Item', 'Bitstream', 'ItemRevision', 'Assetstore');
   public $_components = array('Upload');
+  public $_moduleComponents = array('Executable');
 
   /** define an executable */
   function defineAction()
     {
-    $this->view->header = $this->t("Item");
     $itemId = $this->_getParam("itemId");
     if(!isset($itemId) || !is_numeric($itemId))
       {
@@ -24,17 +34,13 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
       {
       throw new Zend_Exception("Problem policies.");
       }
+    $this->view->header = $this->t("Manage Configuration: ".$itemDao->getName());
 
-    $revision = $this->Item->getLastRevision($itemDao);
-    $bitstreams = $revision->getBitstreams();
-    $metaFile = false;
-    foreach($bitstreams as $b)
+    $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
+
+    if(isset($_GET['init']))
       {
-      if($b->getName() == 'MetaIO.vxml')
-        {
-        $metaFile = $b;
-        break;
-        }
+      $this->showNotificationMessage('Please set the option of the executable first.');
       }
 
     $jsonContents = JsonComponent::encode(array());
@@ -45,75 +51,19 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
     $this->view->itemDao = $itemDao;
     $this->view->jsonMetadata = $jsonContents;
     $this->view->json['item'] = $itemDao->toArray();
-     if($this->_request->isPost())
+    if($this->_request->isPost())
       {
       $this->disableLayout();
       $this->disableView();
+
       $results = $_POST['results'];
-      $xml = new SimpleXMLElement('<options></options>');
-      $i = 0;
-      foreach($results as $r)
-        {
-        $element = explode(';', $r);
-        $option = $xml->addChild('option');
-        $option->addChild('number',htmlspecialchars(utf8_encode($i)));
-        $option->addChild('name',htmlspecialchars(utf8_encode($element[0])));
-        $option->addChild('tag',htmlspecialchars(utf8_encode($element[5])));
-        $option->addChild('longtag',htmlspecialchars(utf8_encode('')));
-        $option->addChild('description',htmlspecialchars(utf8_encode('')));
-        if($element[4] == 'True')
-          {
-          $option->addChild('required',htmlspecialchars(utf8_encode(1)));
-          }
-        else
-          {
-          $option->addChild('required',htmlspecialchars(utf8_encode(0)));
-          }
-
-        if($element[1] == 'ouputFile')
-          {
-          $option->addChild('channel',htmlspecialchars(utf8_encode('ouput')));
-          }
-        else
-          {
-          $option->addChild('channel',htmlspecialchars(utf8_encode('input')));
-          }
-
-        $option->addChild('nvalues',htmlspecialchars(utf8_encode(1)));
-
-        $field = $option->addChild('field');
-        $field->addChild('name',htmlspecialchars(utf8_encode($element[0])));
-        $field->addChild('description',htmlspecialchars(utf8_encode('')));
-
-        if($element[1] == 'inputParam')
-          {
-          $field->addChild('type',htmlspecialchars(utf8_encode($element[2])));
-          }
-        else
-          {
-          $field->addChild('type',htmlspecialchars(utf8_encode('string')));
-          }
-        $field->addChild('value',htmlspecialchars(utf8_encode('')));
-        if($element[4] == 'True')
-          {
-          $field->addChild('required',htmlspecialchars(utf8_encode(1)));
-          }
-        else
-          {
-          $field->addChild('required',htmlspecialchars(utf8_encode(0)));
-          }
-        if($element[1] == 'inputParam')
-          {
-          $field->addChild('external',htmlspecialchars(utf8_encode(0)));
-          }
-        else
-          {
-          $field->addChild('external',htmlspecialchars(utf8_encode(1)));
-          }
-        }
-
+      $xmlContent = $this->ModuleComponent->Executable->createDefinitionFile($results);
       $pathFile = BASE_PATH.'/tmp/misc/'.uniqid().time();
-      file_put_contents($pathFile, $xml->asXML());
+      file_put_contents($pathFile, $xmlContent);
+
+      $revision = $this->Item->getLastRevision($itemDao);
+      $bitstreams = $revision->getBitstreams();
+
       $itemRevisionDao = new ItemRevisionDao;
       $itemRevisionDao->setChanges('Modification Definition File');
       $itemRevisionDao->setUser_id($this->userSession->Dao->getKey());
@@ -143,6 +93,11 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
       // Upload the bitstream if necessary (based on the assetstore type)
       $this->Component->Upload->uploadBitstream($bitstreamDao, $assetstoreDao);
       $this->ItemRevision->addBitstream($itemRevisionDao, $bitstreamDao);
+
+      if(file_exists($pathFile))
+        {
+        unlink($pathFile);
+        }
       }
 
     }

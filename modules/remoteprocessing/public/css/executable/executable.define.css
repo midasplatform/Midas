@@ -9,3 +9,8 @@
 	.portlet-content { padding: 0.4em; }
 	.ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 	.ui-sortable-placeholder * { visibility: hidden; }
+
+
+  .deleteOptionLink{
+    float:right;cursor:pointer!important;
+  }

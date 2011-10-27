@@ -90,6 +90,14 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       foreach($paramsTestingModules as $p)
         {
         $modules[$p] = 1;
+        if(file_exists(BASE_PATH . "/modules/".$p."/constant/module.php"))
+          {
+          require_once BASE_PATH . "/modules/".$p."/constant/module.php";
+          }
+        if(file_exists(BASE_PATH . "/privateModules/".$p."/constant/module.php"))
+          {
+          require_once BASE_PATH . "/privateModules/".$p."/constant/module.php";
+          }
         }
       }
     else

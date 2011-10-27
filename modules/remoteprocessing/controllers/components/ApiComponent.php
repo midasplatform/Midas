@@ -44,7 +44,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
       $securitykey = $args['securitykey'];
       }
 
-    $modulesConfig=Zend_Registry::get('configsModules');
+    $modulesConfig = Zend_Registry::get('configsModules');
     $checkSecuritykey = $modulesConfig['remoteprocessing']->securitykey;
     if(empty($securitykey) || $securitykey != $checkSecuritykey)
       {
@@ -66,10 +66,15 @@ class Remoteprocessing_ApiComponent extends AppComponent
       $userDao->setPrivacy(MIDAS_USER_PRIVATE);
       $userDao->setCompany($os); //used to set operating system
       $userModel->save($userDao);
-
       $serverGroup = $groupModel->load(MIDAS_GROUP_SERVER_KEY);
       $groupModel->addUser($serverGroup, $userDao);
-      $userapiDao = $Api_UserapiModel->createKey($userDao, 'remoteprocessing', '100');
+
+      $userapiDao = $Api_UserapiModel->getByAppAndUser('remoteprocessing', $userDao);
+      if($userapiDao == false)
+        {
+        $userapiDao = $Api_UserapiModel->createKey($userDao, 'remoteprocessing', '100');
+        }
+
       $apikey = $userapiDao->getApikey();
 
       Zend_Registry::get('notifier')->callback('CALLBACK_REMOTEPROCESSING_CREATESERVER', $userDao->toArray());
@@ -103,6 +108,11 @@ class Remoteprocessing_ApiComponent extends AppComponent
       throw new Exception('Unable to authenticate as a server. Please check credentials.', MIDAS_INVALID_PARAMETER);
       }
 
+    if(!isset($args['os']))
+      {
+      throw new Exception('Please set the os', MIDAS_INVALID_PARAMETER);
+      }
+
     $groupModel = $modelLoad->loadModel('Group');
     $groupServer = $groupModel->load(MIDAS_GROUP_SERVER_KEY);
     $users = $groupServer->getUsers();
@@ -122,7 +132,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
       }
 
     $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
-    $jobs = $jobModel->getBy(MIDAS_REMOTEPROCESSING_OS_WINDOWS, '');
+    $jobs = $jobModel->getBy($args['os'], '');
 
     if(empty($jobs))
       {
@@ -131,13 +141,43 @@ class Remoteprocessing_ApiComponent extends AppComponent
     else
       {
       $paramsReturn['action'] = 'process';
-      $params = $jobs[0]->getParams();
       $paramsReturn['params'] = JsonComponent::decode($jobs[0]->getParams());
       $paramsReturn['script'] = $jobs[0]->getScript();
       $paramsReturn['params']['job_id'] = $jobs[0]->getKey();
+
+      $paramsJob = $paramsReturn['params'];
       $paramsReturn['params'] = JsonComponent::encode($paramsReturn['params']);
       $jobs[0]->setStatus(MIDAS_REMOTEPROCESSING_STATUS_STARTED);
       $jobModel->save($jobs[0]);
+
+      $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
+      $folderpolicyuserModel = $modelLoad->loadModel('Folderpolicyuser');
+      $itemModel = $modelLoad->loadModel('Item');
+      $folderModel = $modelLoad->loadModel('Folder');
+
+      // set policies
+      if(isset($paramsJob['input']))
+        {
+        foreach($paramsJob['input'] as $itemId)
+          {
+          $item = $itemModel->load($itemId);
+          if($item != false)
+            {
+            $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_READ);
+            }
+          }
+        }
+      if(isset($paramsJob['ouputFolders']))
+        {
+        foreach($paramsJob['ouputFolders'] as $folderId)
+          {
+          $folder = $folderModel->load($folderId);
+          if($folder != false)
+            {
+            $folderpolicyuserModel->createPolicy($userDao, $folder, MIDAS_POLICY_WRITE);
+            }
+          }
+        }
       }
 
     return $paramsReturn;
@@ -149,10 +189,17 @@ class Remoteprocessing_ApiComponent extends AppComponent
    */
   public function resultsserver($args)
     {
-    if($_SERVER['REQUEST_METHOD'] != 'POST')
+    $testingmode = false;
+    if(isset($_GET['testingmode']) && $_GET['testingmode'] == 1)
+      {
+      $testingmode = true;
+      }
+    if(!$testingmode && $_SERVER['REQUEST_METHOD'] != 'POST')
       {
       throw new Exception('Should be a put request.', MIDAS_INVALID_PARAMETER);
       }
+
+
     $modelLoad = new MIDAS_ModelLoader();
     $componentLoader = new MIDAS_ComponentLoader();
     $authComponent = $componentLoader->loadComponent('Authentication', 'api');
@@ -180,7 +227,6 @@ class Remoteprocessing_ApiComponent extends AppComponent
       }
 
     $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
-    $jobs = $jobModel->getBy(MIDAS_REMOTEPROCESSING_OS_WINDOWS, '');
     if(!file_exists(BASE_PATH.'/tmp/remoteprocessing'))
       {
       mkdir(BASE_PATH.'/tmp/remoteprocessing');
@@ -192,12 +238,21 @@ class Remoteprocessing_ApiComponent extends AppComponent
       $destionation = BASE_PATH.'/tmp/remoteprocessing/'.rand(1, 1000).time();
       }
     mkdir($destionation);
-    move_uploaded_file($_FILES['file']['tmp_name'], $destionation."/results.zip");
+
+    if(!$testingmode)
+      {
+      move_uploaded_file($_FILES['file']['tmp_name'], $destionation."/results.zip");
+      }
+
+    if($testingmode)
+      {
+      return array();
+      }
 
     if(file_exists($destionation."/results.zip"))
       {
       mkdir($destionation.'/content');
-      $target_directory= $destionation.'/content';
+      $target_directory = $destionation.'/content';
       $filter = new Zend_Filter_Decompress(array(
         'adapter' => 'Zip',
         'options' => array(
@@ -228,13 +283,13 @@ class Remoteprocessing_ApiComponent extends AppComponent
       {
       throw new Exception('Error, unable to find results.', MIDAS_INVALID_PARAMETER);
       }
-    //$this->rrmdir($destionation);
+    $this->_rrmdir($destionation);
     return array();
     }
 
 
-    /** recursively delete a folder*/
-  private function rrmdir($dir)
+  /** recursively delete a folder*/
+  private function _rrmdir($dir)
     {
     if(is_dir($dir))
       {
@@ -247,7 +302,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
         {
         if(filetype($dir."/".$object) == "dir")
           {
-          $this->rrmdir($dir."/".$object);
+          $this->_rrmdir($dir."/".$object);
           }
         else
           {
@@ -255,9 +310,9 @@ class Remoteprocessing_ApiComponent extends AppComponent
           }
         }
       }
-     reset($objects);
-     rmdir($dir);
-   }
+    reset($objects);
+    rmdir($dir);
+    }
 
 } // end class
 

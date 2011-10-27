@@ -10,6 +10,8 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+require_once BASE_PATH.'/modules/remoteprocessing/models/base/JobModelBase.php';
+
 /** job model */
 class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
 {
@@ -37,5 +39,46 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
       }
     return $return;
     }
+
+  /** add item relation*/
+  function addItemRelation($job, $item)
+    {
+    if(!$job instanceof Remoteprocessing_JobDao)
+      {
+      throw new Zend_Exception("Should be a job.");
+      }
+    if(!$item instanceof ItemDao)
+      {
+      throw new Zend_Exception("Should be an item.");
+      }
+    $this->database->link('items', $job, $item);
+    }
+
+  /** get related job */
+  function getRelatedJob($item)
+    {
+    if(!$item instanceof ItemDao)
+      {
+      throw new Zend_Exception("Should be an item.");
+      }
+
+    $sql = $this->database->select()
+          ->from('remoteprocessing_job2item')
+          ->setIntegrityCheck(false)
+          ->where('item_id = ?', $item->getKey())
+          ->order('job_id DESC');
+
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->load($row['job_id']);
+      if($tmpDao != false)
+        {
+        $return[] = $tmpDao;
+        unset($tmpDao);
+        }
+      }
+    return $return;
+    }
 }  // end class
-?>

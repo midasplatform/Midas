@@ -1,0 +1,7 @@
+#tableJobsList{
+  width: 80%;
+}
+
+#tableJobsList td{
+  border-bottom: 1px solid grey;
+}

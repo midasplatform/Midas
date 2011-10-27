@@ -304,6 +304,14 @@ $(function() {
   $("div.TopDynamicBar .closeButton").click(function()
   {
     if(!$("div.TopDynamicBar").is(':hidden'))
+
+  // show Notification Message
+  if(json.triggerNotification != undefined)
+    {
+    jQuery.each(json.triggerNotification, function(i, val) {
+       createNotive(val, 4000)
+       });
+    }
     {
       $("div.TopDynamicBar").hide('blind');
     }

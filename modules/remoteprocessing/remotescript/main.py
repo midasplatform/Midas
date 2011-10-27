@@ -62,7 +62,7 @@ def registerServer():
       parameters['os'] = cfg['os']
       try: response = interfaceMidas.makeRequest('midas.remoteprocessing.registerserver', parameters)
       except pydasException.PydasException, e:
-        print "Unable to Register"
+        print "Unable to Register. Please check the configuration."
         return False
     setInternalConfig(response['email'], response['apikey'], response['token'])
     print "Registered"
@@ -80,9 +80,11 @@ def keepAliveServer():
 
     parameters = dict()
     parameters['token'] = cfginternal['token']
+    parameters['os'] = cfg['os']
     try: response = interfaceMidas.makeRequest('midas.remoteprocessing.keepaliveserver', parameters)
     except pydasException.PydasException, e:
       print "Keep aline failed"
+      print e
       return False
     return response
 
@@ -103,7 +105,6 @@ def sendResults(file):
       print "Unable to send results"
       print e
       return False
-    print response
     return response
 
 # Handle Midas command
@@ -152,6 +153,7 @@ def handleMidasResponse(response):
     os.chdir(pathProcessingFolder+'/script/')
     cmd = "python "+pathProcessingFolder+'/script/script.py'
     p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=False)
+    p.wait()
     stdout = p.stdout.read()
     os.chdir(sys.path[0])
 
@@ -203,6 +205,8 @@ if __name__ == "__main__":
       response = keepAliveServer()
       if response != False:
         handleMidasResponse(response)
+      else:
+        time.sleep(120)
     else:
       time.sleep(120)
 
