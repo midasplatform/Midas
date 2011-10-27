@@ -86,9 +86,7 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
       $bitstreamDao->setName('MetaIO.vxml');
       $bitstreamDao->setPath($pathFile);
       $bitstreamDao->fillPropertiesFromPath();
-      $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
-      $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
-      $assetstoreDao = $this->Assetstore->load($defaultAssetStoreId);
+      $assetstoreDao = $this->Assetstore->getDefault();
 
       // Upload the bitstream if necessary (based on the assetstore type)
       $this->Component->Upload->uploadBitstream($bitstreamDao, $assetstoreDao);
