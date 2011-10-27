@@ -62,7 +62,7 @@ def registerServer():
       parameters['os'] = cfg['os']
       try: response = interfaceMidas.makeRequest('midas.remoteprocessing.registerserver', parameters)
       except pydasException.PydasException, e:
-        print "Unable to Register"
+        print "Unable to Register. Please check the configuration."
         return False
     setInternalConfig(response['email'], response['apikey'], response['token'])
     print "Registered"

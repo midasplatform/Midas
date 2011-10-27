@@ -79,7 +79,11 @@ class Communicator(object):
             raise PydasException("Request failed with HTTP error code "
                                  "%d" % code)
                                  
-        response = json.loads(content)
+        try: response = json.loads(content)
+        except Exception, e:
+          print e
+          print content
+          return False
 
         if response['stat'] != 'ok':
             raise PydasException("Request failed with Midas error code "

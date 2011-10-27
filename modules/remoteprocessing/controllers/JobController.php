@@ -1,5 +1,15 @@
 <?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
 
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+/** job controller*/
 class Remoteprocessing_JobController extends Remoteprocessing_AppController
 {
   public $_models = array('Item', 'Bitstream', 'ItemRevision', 'Assetstore');
@@ -36,10 +46,9 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       {
       $this->showNotificationMessage('The Job will appear in a next few minutes.');
       }
-
     }
 
-   /** init a job */
+  /** init a job */
   function initAction()
     {
     $this->view->header = $this->t("Job");
@@ -71,7 +80,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 
     $this->view->itemDao = $itemDao;
     $this->view->json['item'] = $itemDao->toArray();
-     if($this->_request->isPost())
+    if($this->_request->isPost())
       {
       $this->disableLayout();
       $this->disableView();

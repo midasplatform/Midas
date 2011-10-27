@@ -44,7 +44,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
       $securitykey = $args['securitykey'];
       }
 
-    $modulesConfig=Zend_Registry::get('configsModules');
+    $modulesConfig = Zend_Registry::get('configsModules');
     $checkSecuritykey = $modulesConfig['remoteprocessing']->securitykey;
     if(empty($securitykey) || $securitykey != $checkSecuritykey)
       {
@@ -68,7 +68,12 @@ class Remoteprocessing_ApiComponent extends AppComponent
       $userModel->save($userDao);
       $serverGroup = $groupModel->load(MIDAS_GROUP_SERVER_KEY);
       $groupModel->addUser($serverGroup, $userDao);
-      $userapiDao = $Api_UserapiModel->createKey($userDao, 'remoteprocessing', '100');
+
+      $userapiDao = $Api_UserapiModel->getByAppAndUser('remoteprocessing', $userDao);
+      if($userapiDao == false)
+        {
+        $userapiDao = $Api_UserapiModel->createKey($userDao, 'remoteprocessing', '100');
+        }
 
       $apikey = $userapiDao->getApikey();
 
@@ -185,7 +190,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
   public function resultsserver($args)
     {
     $testingmode = false;
-    if($_GET['testingmode'] == 1)
+    if(isset($_GET['testingmode']) && $_GET['testingmode'] == 1)
       {
       $testingmode = true;
       }
@@ -247,7 +252,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
     if(file_exists($destionation."/results.zip"))
       {
       mkdir($destionation.'/content');
-      $target_directory= $destionation.'/content';
+      $target_directory = $destionation.'/content';
       $filter = new Zend_Filter_Decompress(array(
         'adapter' => 'Zip',
         'options' => array(
@@ -278,13 +283,13 @@ class Remoteprocessing_ApiComponent extends AppComponent
       {
       throw new Exception('Error, unable to find results.', MIDAS_INVALID_PARAMETER);
       }
-    //$this->rrmdir($destionation);
+    $this->_rrmdir($destionation);
     return array();
     }
 
 
-    /** recursively delete a folder*/
-  private function rrmdir($dir)
+  /** recursively delete a folder*/
+  private function _rrmdir($dir)
     {
     if(is_dir($dir))
       {
@@ -297,7 +302,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
         {
         if(filetype($dir."/".$object) == "dir")
           {
-          $this->rrmdir($dir."/".$object);
+          $this->_rrmdir($dir."/".$object);
           }
         else
           {
@@ -305,9 +310,9 @@ class Remoteprocessing_ApiComponent extends AppComponent
           }
         }
       }
-     reset($objects);
-     rmdir($dir);
-   }
+    reset($objects);
+    rmdir($dir);
+    }
 
 } // end class
 
