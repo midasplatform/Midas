@@ -69,70 +69,190 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
       {
       throw new Zend_Exception('Unable to find executable');
       }
-    $command = $executable->getName().' ';
 
+    // Process parameters
     $isMultiParameter = false;
+    $cmdOptions = array();
     foreach($xmlMeta->option as $option)
       {
       if(!isset($javascriptResults[$i]))
         {
         continue;
         }
-      if(!empty($option->tag))
-        {
-        $command .= $option->tag." ";
-        }
-      $resut = $javascriptResults[$i];
+      $result = $javascriptResults[$i];
       if($option->channel == 'ouput')
         {
-        $resutArray = explode(";;", $resut);
-        $folder = $folderModel->load($resutArray[0]);
+        $resultArray = explode(";;", $result);
+        $folder = $folderModel->load($resultArray[0]);
         if($folder == false)
           {
           throw new Zend_Exception('Unable to find folder');
           }
-        $additionalParams['ouputFolders'][] = $resutArray[0];
-        $ouputArray[] = $resutArray[1];
-        $command .= "'".$resutArray[1]."' ";
+        $additionalParams['ouputFolders'][] = $resultArray[0];
+        $ouputArray[] = $resultArray[1];
+        $cmdOptions[$i] = array('type' => 'output', 'folderId' => $resultArray[0], 'fileName' => $resultArray[1]);
         }
       else if($option->field->external == 1)
         {
-        $item = $itemModel->load($resut);
+        $item = $itemModel->load($result);
         if($item == false)
           {
           throw new Zend_Exception('Unable to find item');
           }
         $inputArray[] = $item;
-        $command .= "'".$item->getName()."' ";
+        $cmdOptions[$i] = array('type' => 'input', 'item' => $item);
         }
       else
         {
-        $command .= "".$resut." ";
+        $cmdOptions[$i] = array('type' => 'param', 'values' => array());
+        if(strpos($result, ';') !== false)
+          {
+          $cmdOptions[$i]['values'] = explode(';', $result);
+          }
+        elseif(strpos($result, '-') !== false)
+          {
+          $tmpArray = explode('(', $result);
+          if(count($tmpArray) == 1)
+            {
+            $step = 1;
+            }
+          else
+            {
+            $step = substr($tmpArray[1], 0, strlen($tmpArray[1])-1);
+            }
+
+          $tmpArray = explode('-', $tmpArray[0]);
+          $start = $tmpArray[0];
+          $end = $tmpArray[1];
+          for($j = $start;$j <= $end;$j = $j + $step)
+            {
+            $cmdOptions[$i]['values'][] = $j;
+            }
+          }
+        else
+          {
+          $cmdOptions[$i]['values'][] = $result;
+          }
+
+        if(!empty($option->tag))
+          {
+          $cmdOptions[$i]['tag'] = $option->tag;
+          }
         }
       $i++;
       }
 
+
+    $commandMatrix = $this->_createParametersMatrix($cmdOptions);
+
+    $additionalParams['optionMatrix'] = $commandMatrix;
+
     $script = "#! /usr/bin/python\n";
     $script .= "import subprocess\n";
-    $script .= "process = subprocess.Popen(\"".$command."\", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n";
-    $script .= "process.wait()\n";
-    $script .= "print process.stdout.readline()\n";
-    $script .= "print process.stderr.readline()\n";
+    foreach($commandMatrix as $key => $commandList)
+      {
+      $script .= "print 'Matrix Element ".$key."'\n";
+      $command = $executable->getName().' '.  join('', $commandList);
+      if($key == 1)
+        {
+        $command = str_replace('{{key}}', '', $command);
+        }
+      else
+        {
+        $command = str_replace('{{key}}', $key, $command);
+        }
+
+      $script .= "process = subprocess.Popen('".$command."', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n";
+      $script .= "process.wait()\n";
+      $script .= "print process.stdout.readline()\n";
+      $script .= "print process.stderr.readline()\n";
+      }
+
+    $tmpOutputArray = $ouputArray;
+    foreach($tmpOutputArray as $ouput)
+      {
+      $ext = end(explode('.', $ouput));
+      foreach($commandMatrix as $key => $commandList)
+        {
+        $ouputArray[] = str_replace('.'.$ext, $key.'.'.$ext, $ouput);
+        }
+      }
 
     $parameters = $jobComponent->initJobParameters('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', $inputArray, $ouputArray , $additionalParams);
 
-    $jobParameters = $jobComponent->scheduleJob($parameters, $script, MIDAS_REMOTEPROCESSING_OS_WINDOWS);
-    /*    $this->disableView();
-    $componentLoader = new MIDAS_ComponentLoader();
-    $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
+    $ext = end(explode('.', $executable->getName()));
+    if($ext == 'exe')
+      {
+      $os = MIDAS_REMOTEPROCESSING_OS_WINDOWS;
+      }
+    else
+      {
+      $os = MIDAS_REMOTEPROCESSING_OS_LINUX;
+      }
+    $jobParameters = $jobComponent->scheduleJob($parameters, $script, $os);
+    }
 
-    $itemDao = $this->Item->load(115);
-
-    $parameters = $jobComponent->initJobParameters('CALLBACK_ZEISS_RESULTS',array($itemDao), array('test.txt'));
 
 
+  /** create cmd option matrix*/
+  private function _createParametersMatrix($cmdOptions)
+    {
+    $totalLine = 1;
+    foreach($cmdOptions as $cmdOption)
+      {
+      if($cmdOption['type'] == 'param')
+        {
+        $totalLine = $totalLine * count($cmdOption['values']);
+        }
+      }
 
-    $jobParameters = $jobComponent->scheduleJob($parameters, $script, MIDAS_REMOTEPROCESSING_OS_WINDOWS);*/
+    $matrix = array();
+    $multipleElement = 1;
+    foreach($cmdOptions as $key => $cmdOption)
+      {
+      $value = '';
+      if(isset($cmdOption['tag']))
+        {
+        $value .= $cmdOption['tag'].' ';
+        }
+
+      if($cmdOption['type'] == 'input')
+        {
+        $value .= '"'.$cmdOption['item']->getName().'" ';
+        }
+      elseif($cmdOption['type'] == 'output')
+        {
+        $ext = end(explode('.', $cmdOption['fileName']));
+        $value .= '"'.  str_replace('.'.$ext, '{{key}}.'.$ext, $cmdOption['fileName']).'" ';
+        }
+
+      if($cmdOption['type'] == 'param')
+        {
+        $values = $cmdOption['values'];
+        $j = 0;
+        for($i = 1; $i <= $totalLine; $i++)
+          {
+          $tmpvalue = $value.$values[$j].' ';
+          if($i % $multipleElement == 0)
+            {
+            $j++;
+            }
+          $matrix[$i][$key] = $tmpvalue;
+          }
+        if(count($values) >1)
+          {
+          $multipleElement = $multipleElement * count($values);
+          }
+        }
+      else
+        {
+        for($i = 1; $i <= $totalLine; $i++)
+          {
+          $matrix[$i][$key] = $value;
+          }
+        }
+      }
+    return $matrix;
     }
 
   /** create Xml File */

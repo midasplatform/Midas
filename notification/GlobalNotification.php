@@ -15,31 +15,31 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class MIDAS_Notification
   {
-  
+
   private $_task = array();
   private $_notification = array();
-  
+
     /** translation */
   protected function t($text)
     {
     Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
     return InternationalizationComponent::translate($text);
     } //end method t
-  
+
   /** contructor*/
   public function __construct()
-    {    
+    {
     $this->loadElements();
     $this->loadModuleElements();
     $this->init();
     }
-    
+
   /** register task*/
   public function addTask($name, $method, $comment)
     {
     $this->_task[$name] = array('method' => $method, 'comment' => $comment);
     }// end assTask
-    
+
   /** register callback*/
   public function addCallBack($name, $method)
     {
@@ -49,7 +49,7 @@ class MIDAS_Notification
       }
     $this->_notification[$name][] = array('type' => 'callback', 'call' => $method);
     }// end addCallBack
-    
+
   /** register callback*/
   public function addEvent($name, $task, $priority = MIDAS_EVENT_PRIORITY_NORMAL)
     {
@@ -65,13 +65,13 @@ class MIDAS_Notification
     {
     return $this->_task;
     }
-  
+
   /** get Tasks */
   public function getNotifications()
     {
     return $this->_notification;
     }
-  
+
   /**
    * Get Logger
    * @return Zend_Log
@@ -80,7 +80,7 @@ class MIDAS_Notification
     {
     return Zend_Registry::get('logger');
     }
-    
+
   /**
    * @method public  loadElements()
    *  Loads model and components
@@ -98,7 +98,7 @@ class MIDAS_Notification
       {
       $this->$key = $tmp;
       }
-    
+
     if(isset($this->_daos))
       {
       foreach($this->_daos as $dao)
@@ -108,7 +108,7 @@ class MIDAS_Notification
       }
 
     Zend_Registry::set('components', array());
-    
+
     if(isset($this->_components))
       {
       foreach($this->_components as $component)
@@ -131,7 +131,7 @@ class MIDAS_Notification
         }
       }
     }//end loadElements
-    
+
   /**
    * @method public  loadElements()
    *  Loads model and components
@@ -152,7 +152,7 @@ class MIDAS_Notification
           }
         }
       }
-      
+
     if(isset($this->_moduleDaos))
       {
       foreach($this->_moduleDaos as $dao)
@@ -170,7 +170,7 @@ class MIDAS_Notification
         @$this->ModuleComponent->$component = new $nameComponent();
         }
       }
-      
+
     if(isset($this->_moduleForms))
       {
       foreach($this->_moduleForms as $forms)

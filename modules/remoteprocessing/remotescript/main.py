@@ -80,9 +80,11 @@ def keepAliveServer():
 
     parameters = dict()
     parameters['token'] = cfginternal['token']
+    parameters['os'] = cfg['os']
     try: response = interfaceMidas.makeRequest('midas.remoteprocessing.keepaliveserver', parameters)
     except pydasException.PydasException, e:
       print "Keep aline failed"
+      print e
       return False
     return response
 
@@ -103,7 +105,6 @@ def sendResults(file):
       print "Unable to send results"
       print e
       return False
-    print response
     return response
 
 # Handle Midas command
@@ -204,6 +205,8 @@ if __name__ == "__main__":
       response = keepAliveServer()
       if response != False:
         handleMidasResponse(response)
+      else:
+        time.sleep(120)
     else:
       time.sleep(120)
 

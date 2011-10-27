@@ -61,12 +61,14 @@ $(document).ready(function(){
     if(cansubmit)
       {
       req = { 'results[]' : results};
+      $(this).after('<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Saving..." />')
+      $(this).remove();
       $.ajax({
            type: "POST",
            url: "",
            data: req ,
            success: function(x){
-             //window.location.replace($('.webroot').val()+'/remoteprocessing/job/manage/?itemId='+json.item.item_id)
+             window.location.replace($('.webroot').val()+'/remoteprocessing/job/manage/?itemId='+json.item.item_id+'&inprogress=true')
            }
          });
       }

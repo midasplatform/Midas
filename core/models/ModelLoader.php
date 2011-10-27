@@ -43,15 +43,29 @@ class MIDAS_ModelLoader
     {
     $databaseType = Zend_Registry::get('configDatabase')->database->type;
     $models = Zend_Registry::get('models');
+
     if(!isset($models[$module.$model]))
       {
       if($module == '')
         {
+        if(file_exists(BASE_PATH.'/core/models/base/'.$model.'ModelBase.php'))
+          {
+          include_once BASE_PATH.'/core/models/base/'.$model.'ModelBase.php';
+          }
         include_once BASE_PATH.'/core/models/'.$databaseType.'/'.$model.'Model.php';
         $name = $model . 'Model';
         }
       else
         {
+        if(file_exists(BASE_PATH.'/modules/'.$module.'/models/base/'.$model.'ModelBase.php'))
+          {
+          include_once BASE_PATH.'/modules/'.$module.'/models/base/'.$model.'ModelBase.php';
+          }
+        elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php'))
+          {
+          include_once BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php';
+          }
+
         if(file_exists(BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
           {
           include_once BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
@@ -67,6 +81,7 @@ class MIDAS_ModelLoader
 
         $name = ucfirst($module).'_'.$model.'Model';
         }
+
       if(class_exists($name))
         {
         $models[$module.$model] = new $name;

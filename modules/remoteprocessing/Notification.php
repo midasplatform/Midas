@@ -7,6 +7,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
   public $moduleName = 'remoteprocessing';
   public $_moduleComponents=array('Api');
   public $_moduleModels=array('Job');
+  public $_models=array('Item');
   public $_moduleDaos=array('Job');
 
   /** init notification process*/
@@ -16,7 +17,6 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     $this->addTask("TASK_REMOTEPROCESSING_ADD_JOB", 'addJob', "");
     $this->addCallBack('CALLBACK_REMOTEPROCESSING_IS_EXECUTABLE', 'isExecutable');
     $this->addCallBack('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', 'processProcessingResults');
-
     }//end init
 
   /** check if item contains an executable */
@@ -41,15 +41,16 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
   public function processProcessingResults($params)
     {
     $modulesConfig=Zend_Registry::get('configsModules');
-    $communityKey = $modulesConfig['zeiss']->community->results;
+
     $modelLoad = new MIDAS_ModelLoader();
-    $communityModel = $modelLoad->loadModel('Community');
     $userModel = $modelLoad->loadModel('User');
+    $folderModel = $modelLoad->loadModel('Folder');
+    $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
+    $job = $jobModel->load($params['job_id']);
 
     $userDao = $userModel->load($params['userKey']);
 
-    $communityDao = $communityModel->load($communityKey);
-    $folder = $communityDao->getPublicFolder();
+    $folder = $folderModel->load($params['ouputFolders'][0]);
 
     $componentLoader = new MIDAS_ComponentLoader();
     $uploadComponent = $componentLoader->loadComponent('Upload');
@@ -60,7 +61,16 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       if(file_exists($filepath))
         {
         $item = $uploadComponent->createUploadedItem($userDao, basename($filepath), $filepath, $folder);
+        $jobModel->addItemRelation($job, $item);
         }
+      }
+    if(isset($params['log']) && !empty($params['log']))
+      {
+      $logFile = BASE_PATH.'/tmp/misc/'.uniqid();
+      file_put_contents($logFile, $params['log']);
+      $item = $uploadComponent->createUploadedItem($userDao, 'log.txt', $logFile, $folder);
+      $jobModel->addItemRelation($job, $item);
+      unlink($logFile);
       }
     }
 
@@ -100,6 +110,18 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
 
     $job->setParams(JsonComponent::encode($params['params']));
     $this->Remoteprocessing_Job->save($job);
+
+    if(!empty($params['params']['input']))
+      {
+      foreach($params['params']['input'] as $itemId)
+        {
+        $item = $this->Item->load($itemId);
+        if($item != false)
+          {
+          $this->Remoteprocessing_Job->addItemRelation($job, $item);
+          }
+        }
+      }
     return;
     }
 

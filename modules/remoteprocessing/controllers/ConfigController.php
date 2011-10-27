@@ -2,10 +2,11 @@
 
 class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
 {
-   public $_moduleComponents = array('Executable');
+   public $_moduleForms=array('Config');
+   public $_components=array('Utility', 'Date');
 
   /** download remote script */
-  function initAction()
+  function downloadAction()
     {
      if(!$this->logged||!$this->userSession->Dao->getAdmin()==1)
       {
@@ -65,8 +66,9 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
 
     if($this->_request->isPost())
       {
-      $this->_helper->layout->disableLayout();
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableLayout();
+      $this->disableView();
+
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {

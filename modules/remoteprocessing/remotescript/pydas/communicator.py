@@ -4,6 +4,7 @@ import httplib
 import urllib
 from urlparse import urlparse
 from exceptions import PydasException
+import zipfile
 
 class Communicator(object):
     """
@@ -122,22 +123,58 @@ class Communicator(object):
         if token:        
           parameters['token'] = token
         parameters['id'] = itemId
+                          
+        itemInfo = self.getItem(itemId, token)
+        revision = False
+        for value in itemInfo['revisions']:
+          revision = value
+          
+        for value in revision['bitstreams']:
+          self.downloadBitstream(value['bitstream_id'], destination, token)
+ 
+        return
+        
+    def getBitstream(self, bitstreamId, token = None):
+        """
+        Get bitstream Info
+        """
+        parameters = dict()
+        if token:        
+          parameters['token'] = token
+        parameters['id'] = bitstreamId
+        
+        response = self.makeRequest('midas.bitstream.get', parameters)
+        return response
+        
+    def downloadBitstream(self, bitstreamId, destination, token = None):
+        """
+        Download a bitstream
+        """
+        parameters = dict()
+        if token:        
+          parameters['token'] = token
+        parameters['id'] = bitstreamId
         
         data = urllib.urlencode(parameters)    
         headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}        
-        url = self.serverUrl + self.apiSuffix + 'midas.item.download'        
+        url = self.serverUrl + self.apiSuffix + 'midas.bitstream.download'        
         h = httplib.HTTPConnection(urlparse(url)[1])      
         h.request('POST', urlparse(url)[2]+'?'+urlparse(url)[4], data, headers)            
         respnseRequest = h.getresponse()
         code = respnseRequest.status
+
         message = respnseRequest.reason
         data = respnseRequest.read() 
+        
+        if os.path.isdir(destination) == False:
+          destination = os.path.dirname(path)
+        
+        bitstreamInfo = self.getBitstream(bitstreamId, token)
+        destination = destination+'/'+bitstreamInfo['name']
 
-        if os.path.isdir(destination):
-          itemInfo = self.getItem(itemId, token)
-          destination = destination+'/'+itemInfo['name']
         with open(destination, 'wb') as f:
             f.write(data)
+   
         return
         
     def getDefaultApiKey(self, email, password):

@@ -19,17 +19,27 @@ class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
     $this->_key = 'job_id';
 
     $this->_mainData= array(
-        'job_id'=>  array('type'=>MIDAS_DATA),
-        'os'=>  array('type'=>MIDAS_DATA),
-        'condition'=>  array('type'=>MIDAS_DATA),
-        'script'=>  array('type'=>MIDAS_DATA),
-        'params'=>  array('type'=>MIDAS_DATA),
-        'status'=>  array('type'=>MIDAS_DATA),
-        'expiration_date'=>  array('type'=>MIDAS_DATA),
+        'job_id' =>  array('type'=>MIDAS_DATA),
+        'os' =>  array('type'=>MIDAS_DATA),
+        'condition' =>  array('type'=>MIDAS_DATA),
+        'script' =>  array('type'=>MIDAS_DATA),
+        'params' =>  array('type'=>MIDAS_DATA),
+        'status' =>  array('type'=>MIDAS_DATA),
+        'expiration_date' =>  array('type'=>MIDAS_DATA),
+        'creation_date' =>  array('type'=>MIDAS_DATA),
         'start_date'=>  array('type'=>MIDAS_DATA),
+        'items' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Item', 'table' => 'remoteprocessing_job2item', 'parent_column' => 'job_id', 'child_column' => 'item_id'),
         );
     $this->initialize(); // required
     } // end __construct()
 
+
+  /** save */
+  public function save($dao)
+    {
+    $dao->setCreationDate(date('c'));
+    parent::save($dao);
+    }
+
 } // end class AssetstoreModelBase
-?> 
+?>

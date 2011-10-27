@@ -45,6 +45,7 @@ class Remoteprocessing_JobComponent extends AppComponent
         throw new Zend_Exception("Error params. Shoud be an itemdao");
         }
       $return['input'][] = $input->getKey();
+
       }
 
     foreach($ouputArray as $output)

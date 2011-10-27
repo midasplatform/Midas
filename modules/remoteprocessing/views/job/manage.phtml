@@ -45,6 +45,50 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
     ?>
   <br/>
 
+  <?php
+  if(empty($this->relatedJobs))
+    {
+    echo "No related Jobs";
+    }
+  else
+    {
+    ?>
+  <h4>Related Jobs</h4>
+  <table id="tableJobsList">
+    <tr>
+      <td><b>#Id</b></td>
+      <td><b>Cretion Date</b></td>
+      <td><b>Status</b></td>
+    </tr>
+    <?php
+    foreach($this->relatedJobs as $job)
+      {
+      echo "<tr>";
+      echo  "<td>".$job->getKey()."</td>";
+      echo  "<td>".$job->getCreationDate()."</td>";
+      if(strtotime($job->getExpirationDate()) < strtotime(date('c')))
+        {
+        echo  "<td>Expired</td>";
+        }
+      elseif($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_WAIT)
+        {
+        echo  "<td>Waiting</td>";
+        }
+      elseif($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_STARTED)
+        {
+        echo  "<td>Started</td>";
+        }
+      else
+        {
+        echo  "<td>Done</td>";
+        }
+      echo "</tr>";
+      }
+      ?>
+  </table>
+  <?php
+    }
+    ?>
 </div>
 
 <div id="jsonMetadataContent"><?php echo $this->jsonMetadata?></div>
