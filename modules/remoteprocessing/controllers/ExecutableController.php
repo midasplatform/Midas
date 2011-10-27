@@ -87,6 +87,7 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
       $bitstreamDao->setPath($pathFile);
       $bitstreamDao->fillPropertiesFromPath();
       $assetstoreDao = $this->Assetstore->getDefault();
+      $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
 
       // Upload the bitstream if necessary (based on the assetstore type)
       $this->Component->Upload->uploadBitstream($bitstreamDao, $assetstoreDao);
