@@ -48,8 +48,7 @@ class NotifyErrorComponent  extends AppComponent
         case 'production':
           $message .= "It seems you have just encountered an unknown issue.";
           $message .= "Our team has been notified and will deal with the problem as soon as possible.";
-          header('content-type: text/plain');
-          ob_clean();
+
           if($e['type'] == E_NOTICE)
             {
             $e['typeText'] = 'E_NOTICE';
@@ -77,6 +76,11 @@ class NotifyErrorComponent  extends AppComponent
           else
             {
             return;
+            }
+          header('content-type: text/plain');
+          if(count(ob_list_handlers()) > 0)
+            {
+            ob_clean();
             }
           echo $message;
           $this->_mailer = $mailer;
