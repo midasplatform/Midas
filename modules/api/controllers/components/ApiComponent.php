@@ -263,9 +263,9 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Get the offset of the current upload
-   * @token The upload token for the file
-   * @return The size of the file currently on the server
+   * Get the size of a partially completed upload
+   * @param uploadtoken The upload token for the file
+   * @return [offset] The size of the file currently on the server
    */
   function uploadGetoffset($args)
     {
