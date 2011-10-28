@@ -73,12 +73,14 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     // Process parameters
     $isMultiParameter = false;
     $cmdOptions = array();
+    $parametersList = array();
     foreach($xmlMeta->option as $option)
       {
       if(!isset($javascriptResults[$i]))
         {
         continue;
         }
+
       $result = $javascriptResults[$i];
       if($option->channel == 'ouput')
         {
@@ -94,6 +96,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         }
       else if($option->field->external == 1)
         {
+        $parametersList[$i] = $option->name;
         if(strpos($result, 'folder') !== false)
           {
           $folder = $folderModel->load(str_replace('folder', '', $result));
@@ -122,6 +125,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         }
       else
         {
+        $parametersList[$i] = $option->name;
         $cmdOptions[$i] = array('type' => 'param', 'values' => array());
         if(strpos($result, ';') !== false)
           {
@@ -164,13 +168,14 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     $commandMatrix = $this->_createParametersMatrix($cmdOptions);
 
     $additionalParams['optionMatrix'] = $commandMatrix;
+    $additionalParams['parametersList'] = $parametersList;
 
     $script = "#! /usr/bin/python\n";
     $script .= "import subprocess\n";
     foreach($commandMatrix as $key => $commandList)
       {
       $command = $executable->getName().' '.  join('', $commandList);
-      $command = str_replace('{{key}}', $key, $command);
+      $command = str_replace('{{key}}', '.'.$key, $command);
 
       $script .= "process = subprocess.Popen('".$command."', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n";
       $script .= "process.wait()\n";
@@ -190,7 +195,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
       $ext = end(explode('.', $ouput));
       foreach($commandMatrix as $key => $commandList)
         {
-        $ouputArray[] = str_replace('.'.$ext, $key.'.'.$ext, $ouput);
+        $ouputArray[] = str_replace('.'.$ext, '.'.$key.'.'.$ext, $ouput);
         }
       }
 

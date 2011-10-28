@@ -1,6 +1,6 @@
 $('#createFolderForm').ajaxForm( {beforeSubmit: validateCreateFolder, success:       successCreateFolder} );
 
- if(typeof callbackDblClick != 'function') { 
+ if(typeof callbackDblClick != 'function') {
       function childrenOf(node) {
          if(node[0]==undefined)
           {
@@ -10,11 +10,11 @@ $('#createFolderForm').ajaxForm( {beforeSubmit: validateCreateFolder, success:  
       };
     }
 
-  
 
-function validateCreateFolder(formData, jqForm, options) { 
- 
-    var form = jqForm[0]; 
+
+function validateCreateFolder(formData, jqForm, options) {
+
+    var form = jqForm[0];
     if (form.name.value.length<1)
       {
         createNotive('Error name',4000);
@@ -22,8 +22,13 @@ function validateCreateFolder(formData, jqForm, options) {
       }
 }
 
-function successCreateFolder(responseText, statusText, xhr, form) 
+function successCreateFolder(responseText, statusText, xhr, form)
 {
+ if(typeof successCreateFolderCallback == 'function')
+    {
+    successCreateFolderCallback(responseText, statusText, xhr, form);
+    return;
+    }
   $( "div.MainDialog" ).dialog("close");
   jsonResponse = jQuery.parseJSON(responseText);
   if(jsonResponse==null)

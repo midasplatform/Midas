@@ -79,6 +79,7 @@ class AppController extends MIDAS_GlobalController
       else
         {
         $user = new Zend_Session_Namespace('Auth_User');
+        $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
         }
 
       if($user->Dao == null)

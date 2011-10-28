@@ -46,6 +46,8 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     $modelLoad = new MIDAS_ModelLoader();
     $userModel = $modelLoad->loadModel('User');
     $folderModel = $modelLoad->loadModel('Folder');
+    $itemModel = $modelLoad->loadModel('Item');
+    $metadataModel = $modelLoad->loadModel('Metadata');
     $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
     $job = $jobModel->load($params['job_id']);
 
@@ -61,8 +63,28 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       $filepath = $params['pathResults'].'/'.$file;
       if(file_exists($filepath))
         {
+        $tmpArray = array_reverse(explode('.', basename($filepath)));
         $item = $uploadComponent->createUploadedItem($userDao, basename($filepath), $filepath, $folder);
         $jobModel->addItemRelation($job, $item);
+
+        // add parameter metadata
+        if(is_numeric($tmpArray[1]) && isset($params['parametersList']) && isset($params['optionMatrix']))
+          {
+          $revision = $itemModel->getLastRevision($item);
+          foreach($params['parametersList'] as $key => $name)
+            {
+            if(isset($params['optionMatrix'][$tmpArray[1]][$key]))
+              {
+              $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'parameter', $name);
+              if(!$metadataDao)
+                {
+                $metadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'parameter', $name, '');
+                }
+              $metadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL,
+                           'parameter', $name, $params['optionMatrix'][$tmpArray[1]][$key]);
+              }
+            }
+          }
         }
       }
     if(isset($params['log']) && !empty($params['log']))

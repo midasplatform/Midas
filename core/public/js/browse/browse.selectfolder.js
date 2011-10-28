@@ -49,15 +49,76 @@
           }
         }
 
-    $('#selectedDestinationHidden').val(node.attr('element'));
-    $('#selectedDestination').html(sliceFileName(selectedElement, 40));
-    $('#selectElements').removeAttr('disabled');
+    $('#createFolderContent').hide();
+    if(node.attr('element') == -1)
+      {
+      $('#selectElements').attr('disabled', 'disabled');
+      $('#createFolderButton').hide();
+      }
+    else
+      {
+      $('#selectedDestinationHidden').val(node.attr('element'));
+      $('#selectedDestination').html(sliceFileName(selectedElement, 40));
+      $('#selectElements').removeAttr('disabled');
 
+      if($('#defaultPolicy').val() != 0)
+        {
+        $('#createFolderButton').show();
+        }
+      }
     }
 
     $('img.infoLoading').show();
     $('div.ajaxInfoElement').html('');
 
+    $('#createFolderButton').click(function(){
+      if($('#createFolderContent').is(':hidden'))
+        {
+        $('#createFolderContent').html('<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />').show();
+        var url = json.global.webroot+'/folder/createfolder?folderId='+$('#selectedDestinationHidden').val();
+        $('#createFolderContent').load(url);
+        }
+      else
+        {
+        $('#createFolderContent').hide();
+        }
+    })
+
+
+    var newFolder = false;
+    function successCreateFolderCallback(responseText, statusText, xhr, form)
+    {
+    jsonResponse = jQuery.parseJSON(responseText);
+    if(jsonResponse==null)
+      {
+        createNotive('Error',4000);
+        return;
+      }
+    if(jsonResponse[0])
+      {
+        createNotive(jsonResponse[1],4000);
+        var node = $('table.treeTable tr[element='+jsonResponse[2].folder_id+']');
+        node.reload();
+
+        $('#createFolderContent').hide();
+
+        newFolder = jsonResponse[3].folder_id;
+
+      }
+    else
+      {
+        createNotive(jsonResponse[1],4000);
+      }
+
+    }
+
+    function reloadNodeCallback(mainNode)
+      {
+      if(newFolder != false)
+        {
+        callbackSelect($('table.treeTable tr[element='+newFolder+']'));
+        }
+      }
 
     function callbackDblClick(node)
     {
@@ -77,9 +138,8 @@
 
         var padding=parseInt(node.find('td:first').css('padding-left').slice(0,-2));
         var html='';
-
-          $.each(elements['folders'], function(index, value) {
-          if(value['policy']!='0')
+        $.each(elements['folders'], function(index, value) {
+          if(value['policy'] >= parseInt($('#defaultPolicy').val()))
             {
             html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
             html+=     "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";

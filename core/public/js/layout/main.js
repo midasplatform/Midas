@@ -215,6 +215,7 @@ $(function() {
   var uploadPageLoaded = false;
   $('div.HeaderAction li.uploadFile').click(function()
   {
+    $('.uploadqtip').css('z-index','800');
     if(json.global.logged)
     {
     if(!uploadPageLoaded)
