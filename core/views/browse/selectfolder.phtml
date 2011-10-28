@@ -11,11 +11,11 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/common/common.browser.js"></script>';
-echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/browse/browse.selectfolder.js"></script>';
+echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/browse/browse.selectfolder.js?'.time().'"></script>';
 ?>
 
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/browse/browse.selectfolder.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/browse/browse.selectfolder.css?<?php echo time()?>" />
 
   <h4><?php echo $this->t('Please select a folder.')?></h4>
   <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
@@ -36,7 +36,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
       $node=1;
       foreach($this->communities as $community)
         {
-        $folder=$community->getFolder();
+        $folder = $community->getFolder();
         echo "<tr id='node--$node' class='parent' privacy='".($community->getPrivacy() == 1 ? MIDAS_PRIVACY_PRIVATE : MIDAS_PRIVACY_PUBLIC )."' type='community' element='{$community->getCommunityId()}' ajax='{$folder->getFolderId()}'>";
         echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
         echo "</tr>";
@@ -51,7 +51,20 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
       ?>
     </tbody>
   </table>
-   <br/> <br/>
+   <br/>
+   <?php
+   echo '<div class="genericBigButton" id="createFolderButton" >';
+      echo "<a ><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/FileTree/directory.png'/>";
+      echo $this->t('Create a new Folder');
+      echo "</a>";
+    echo '</div>';
+    ?>
+
+   <div id="createFolderContent">
+
+   </div>
+   <br/>
+
   <form class="genericForm" type='post' action="<?php echo $this->webroot?>/browse/selectitem">
     <input type='hidden' name='elements' value='<?php echo $this->folderIds?>;<?php echo $this->itemIds?>' />
     <input type='hidden' id="selectedDestinationHidden" name='destination' />
@@ -59,9 +72,4 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
     <input type="submit" disabled  name='selectElements' id='selectElements'  value="<?php echo $this->t('Select')?>"/>
   </form>
 
-  <?php
-  if(empty($this->communities))
-    {
-    echo "<h4>{$this->t("No community available")}.</h4>";
-    }
-    ?>
+  <input id="defaultPolicy" type="hidden" value="<?php echo $this->policy?>"/>

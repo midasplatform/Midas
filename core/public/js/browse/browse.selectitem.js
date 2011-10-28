@@ -60,13 +60,10 @@
         var html='';
 
           $.each(elements['folders'], function(index, value) {
-          if(value['policy']!='0')
-            {
             html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
             html+=     "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";
             html+=     "</tr>";
             i++;
-            }
             });
 
           $.each(elements['items'], function(index, value) {
@@ -80,4 +77,75 @@
 
 
     }
+
+    // Live search
+  $.widget( "custom.catcomplete", $.ui.autocomplete, {
+    _renderMenu: function( ul, items ) {
+      var self = this,
+        currentCategory = "";
+      $.each( items, function( index, item ) {
+        if ( item.category != currentCategory ) {
+          ul.append( '<li class="search-category">' + item.category + "</li>" );
+          currentCategory = item.category;
+        }
+        self._renderItem( ul, item );
+      });
+    }
+  });
+
+  var cacheSearchSelectItem = {},
+  lastXhr;
+  $("#live_search_item").catcomplete({
+  minLength: 2,
+  delay: 10,
+  source: function( request, response ) {
+    var term = request.term;
+    if ( term in cacheSearchSelectItem ) {
+      response( cacheSearchSelectItem[ term ] );
+      return;
+    }
+
+    $("#searchloadingSelectItem").show();
+
+    lastXhr = $.getJSON( $('.webroot').val()+"/search/live?itemSearch=true", request, function( data, status, xhr ) {
+      $("#searchloadingSelectItem").hide();
+      cacheSearchSelectItem[ term ] = data;
+      if ( xhr === lastXhr ) {
+        itemselected = false;
+        response( data );
+      }
+      });
+   }, // end source
+   select: function(event, ui) {
+     itemselected = true;
+      $('#selectedDestinationHidden').val(ui.item.itemid);
+      $('#selectedDestination').html(ui.item.value);
+      $('#selectElements').removeAttr('disabled');
+     }
+   });
+
+  $('#live_search_item').focus(function() {
+    if($('#live_search_item_value').val() == 'init')
+      {
+      $('#live_search_item_value').val($('#live_search_item').val());
+      $('#live_search_item').val('');
+      }
+    });
+
+  $('#live_search_item').focusout(function() {
+    if($('#live_search_item').val() == '')
+      {
+      $('#live_search_item').val($('#live_search_item_value').val());
+      $('#live_search_item_value').val('init');
+      }
+    });
+
+  $('#live_search_item').keyup(function(e)
+    {
+    if(e.keyCode == 13 && !itemselected) // enter key has been pressed
+      {
+      window.location.replace($('.webroot').val()+'/search/'+$('#live_search_item').val());
+      }
+    });
+
 

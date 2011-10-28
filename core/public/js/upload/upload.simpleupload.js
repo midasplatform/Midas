@@ -172,7 +172,7 @@
     
     $('.browseMIDASLink').click(function()
       {
-        loadDialog("select","/browse/movecopy/?selectElement=true");
+        loadDialog("select","/browse/selectfolder/?policy=write");
         showDialog('Browse');
       });
       

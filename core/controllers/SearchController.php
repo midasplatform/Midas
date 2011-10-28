@@ -84,6 +84,7 @@ class SearchController extends AppController
     $search = $this->getRequest()->getParam('term');
     $shareSearch = $this->getRequest()->getParam('shareSearch'); //return user group and communities
     $userSearch = $this->getRequest()->getParam('userSearch');
+    $itemSearch = $this->getRequest()->getParam('itemSearch');
 
     if(isset($shareSearch))
       {
@@ -120,6 +121,15 @@ class SearchController extends AppController
       $GroupsDao = array();
       // Search for the users
       $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao);
+      }
+    elseif(isset($itemSearch))
+      {
+      $ItemsDao = $this->Item->getItemsFromSearch($search, $this->userSession->Dao, 15, false);
+      $FoldersDao = array();
+      $CommunitiesDao = array();
+      $GroupsDao = array();
+      // Search for the users
+      $UsersDao = array();
       }
     else
       {
@@ -187,7 +197,7 @@ class SearchController extends AppController
       echo '{';
       echo '"id":"'.$id.'"';
       echo ', "label":"'.$this->Component->Utility->sliceName($itemDao->getName(), 55);
-      if($itemDao->count > 1)
+      if(isset($itemDao->count) && $itemDao->count > 1)
         {
         echo ' ('.$itemDao->count.')"';
         }
@@ -198,7 +208,7 @@ class SearchController extends AppController
 
       echo ', "value":"'.$itemDao->getName().'"';
 
-      if($itemDao->count == 1)
+      if(!isset($itemDao->count) || $itemDao->count == 1)
         {
         echo ', "itemid":"'.$itemDao->getItemId().'"';
         }

@@ -117,14 +117,36 @@
         $(this).removeAttr('proccessing');
         $(this).attr('ajax',$(this).attr('element'));
         $(this).expand();
+        var table = $(this).parents('table.treeTable');
+        var mainNode = $(this);
         $.post(json.global.webroot+'/browse/getfolderscontent',{folders: $(this).attr('element')} , function(data) {
           arrayElement=jQuery.parseJSON(data);
           $.each(arrayElement, function(index, value) {             
             tree[index]=value;
           });
         createElementsAjax(obj,tree[obj.attr('element')],true);
+       // createElementsAjax(obj,tree[obj.attr('element')],true);
         initEvent();
         getElementsSize();
+
+        var treeArray = new Array();
+        table.find('tr').each(function() {
+          var id = $(this).attr('element');
+          if(treeArray[id] != undefined)
+            {
+            $(this).remove();
+            }
+          else
+            {
+            treeArray[id] = true;
+            }
+        });
+
+       if(typeof reloadNodeCallback == 'function')
+            {
+            reloadNodeCallback(mainNode);
+            }
+
       });
        
   }

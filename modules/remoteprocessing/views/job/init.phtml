@@ -9,7 +9,7 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.init.js');
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/job/job.init.css" />
@@ -79,8 +79,8 @@ function elementOuputFile($i, $option)
 
 function elementInputFile($i, $option)
   {
-  echo "<a class='selectInputFileLink' order='$i'>Select Input File</a><br/>";
-  echo "Selected: <span class='selectedItem' element=''></span>";
+  echo "<a class='selectInputFileLink' order='$i'>Select Input File</a> or <a qtip='All the data contained in the selected folder will be processed' class='selectInputFolderLink' order='$i'>Select Input Folder</a><br/>";
+  echo "Selected: <span style='display:none'; class='selectedFolderContent' element=''></span><span class='selectedItem' element=''></span>";
   }
 
 function elementInputParam($i, $option)
