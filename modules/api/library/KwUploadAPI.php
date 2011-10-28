@@ -198,11 +198,10 @@ class KwUploadAPI
       {
       throw new Exception('Parameter '.self::PARAM_NAME_UPLOAD_TOKEN.' is not defined', -150);
       }
-    $uploadToken = $args[self::PARAM_NAME_UPLOAD_TOKEN]; //XXX123.TMP
+    $uploadToken = $args[self::PARAM_NAME_UPLOAD_TOKEN];
 
-    $offset = filesize($this->tmp_directory."/$uploadToken");
-
-    $data['offset'] = $offset;
+    $data = array();
+    $data['offset'] = filesize($this->tmp_directory."/$uploadToken");
 
     return $data;
     }
