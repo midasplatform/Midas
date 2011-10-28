@@ -208,20 +208,6 @@ if($this->preview) // module visualize
           <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='uploadRevisionLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/upload.png'/> {$this->t('Upload new revision')}</a>
         </li>
           ";
-        $tmp = Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_IS_EXECUTABLE", array('item' => $this->itemDao));
-        if(isset($tmp['remoteprocessing']) && $tmp['remoteprocessing'])
-          {
-          echo
-         "<li>
-            <a href='".$this->webroot."/remoteprocessing/executable/define/?itemId=".$this->itemDao->getKey()."'><img alt='' src='{$this->coreWebroot}/public/images/icons/xml.png'/> {$this->t('Define Executable')}</a>
-          </li>
-            ";
-          echo
-         "<li>
-            <a href='".$this->webroot."/remoteprocessing/job/manage/?itemId=".$this->itemDao->getKey()."'><img alt='' src='{$this->coreWebroot}/public/images/icons/job.png'/> {$this->t('Manage Processing Jobs')}</a>
-          </li>
-            ";
-          }
         }
       if($this->isAdmin)
         {
@@ -240,6 +226,14 @@ if($this->preview) // module visualize
           <a  href='javascript:;' id='itemDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Delete')}</a>
         </li>
           ";
+        }
+      $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_ITEM_VIEW_ACTIONMENU", array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin));
+      foreach($htmltArray as $html)
+        {
+        if(!empty($html))
+          {
+          echo $html;
+          }
         }
       ?>
     </ul>
@@ -279,7 +273,15 @@ if($this->preview) // module visualize
       }
       ?>
   </div>
-    <?php
+  <?php
+  $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_ITEM_VIEW_INFO", array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin));
+    foreach($htmltArray as $html)
+      {
+      if(!empty($html))
+        {
+        echo $html;
+        }
+      }
   if(count($this->sameLocation) > 1)
     {?>
   <div class='sideElementLast viewSameLocation'>

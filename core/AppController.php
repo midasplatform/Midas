@@ -39,6 +39,9 @@ class AppController extends MIDAS_GlobalController
     $this->coreWebroot = $this->view->webroot.'/core';
     $this->view->coreWebroot = $this->coreWebroot;
 
+    Zend_Registry::set('webroot', $this->view->webroot);
+    Zend_Registry::set('coreWebroot', $this->view->coreWebroot);
+
     $this->view->demoMode = $this->isDemoMode();
 
     $this->view->title = Zend_Registry::get('configGlobal')->application->name;
