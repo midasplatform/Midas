@@ -3,13 +3,19 @@ var currentBrowser = false;
 $(document).ready(function(){
 
   $('.selectInputFileLink').click(function(){
-    loadDialog("select_"+$(this).attr('order'),"/browse/selectitem");
+    loadDialog("selectitem_"+$(this).attr('order'),"/browse/selectitem");
     showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
 
   $('.selectOutputFolderLink').click(function(){
-    loadDialog("select_"+$(this).attr('order'),"/browse/selectfolder");
+    loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=write");
+    showDialog('Browse');
+    currentBrowser = $(this).attr('order');
+  });
+
+  $('.selectInputFolderLink').click(function(){
+    loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=read");
     showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
@@ -33,14 +39,22 @@ $(document).ready(function(){
       }
     else if($(this).find('.selectInputFileLink').length > 0)
       {
-      if($(this).find('.selectedItem').attr('element') == '')
+      if($(this).find('.selectedItem').attr('element') == '' && $(this).find('.selectedFolderContent').attr('element') == '')
         {
         createNotive('Please set '+$(this).attr('name'), 4000);
         cansubmit = false;
         }
       else
         {
-        results[i] = $(this).find('.selectedItem').attr('element');
+        var folderElement = $(this).find('.selectedFolderContent').attr('element');
+        if(folderElement != '')
+          {
+          results[i] = 'folder'+folderElement;
+          }
+        else
+          {
+          results[i] = $(this).find('.selectedItem').attr('element');
+          }
         }
       }
     else
@@ -87,16 +101,21 @@ $(document).ready(function(){
 function itemSelectionCallback(name, id)
   {
   var optionWrapper = $('#option_'+currentBrowser);
-  optionWrapper.find('.selectedItem').html(name);
+  optionWrapper.find('.selectedItem').html('Item '+name);
   optionWrapper.find('.selectedItem').attr('element',id);
+  optionWrapper.find('.selectedFolder').attr('element', '');
   updateGeneratedCommand()
   }
 
 function folderSelectionCallback(name, id)
   {
   var optionWrapper = $('#option_'+currentBrowser);
-  optionWrapper.find('.selectedFolder').html(name);
-  optionWrapper.find('.selectedFolder').attr('element',id);
+  optionWrapper.find('.selectedFolderContent').html('Folder '+name);
+  optionWrapper.find('.selectedFolder').html('Folder '+name);
+  optionWrapper.find('.selectedItem').html('Folder '+name);
+  optionWrapper.find('.selectedFolderContent').attr('element', id);
+  optionWrapper.find('.selectedFolder').attr('element', id);
+  optionWrapper.find('.selectedItem').attr('element', '');
   updateGeneratedCommand()
   }
 

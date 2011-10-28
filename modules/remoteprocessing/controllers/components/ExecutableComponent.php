@@ -94,13 +94,31 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         }
       else if($option->field->external == 1)
         {
-        $item = $itemModel->load($result);
-        if($item == false)
+        if(strpos($result, 'folder') !== false)
           {
-          throw new Zend_Exception('Unable to find item');
+          $folder = $folderModel->load(str_replace('folder', '', $result));
+          if($folder == false)
+            {
+            throw new Zend_Exception('Unable to find folder');
+            }
+          $items = $folder->getItems();
+          $cmdOptions[$i] = array('type' => 'input', 'item' => array());
+          foreach($items as $item)
+            {
+            $inputArray[] = $item;
+            $cmdOptions[$i]['item'][] = $item;
+            }
           }
-        $inputArray[] = $item;
-        $cmdOptions[$i] = array('type' => 'input', 'item' => $item);
+        else
+          {
+          $item = $itemModel->load($result);
+          if($item == false)
+            {
+            throw new Zend_Exception('Unable to find item');
+            }
+          $inputArray[] = $item;
+          $cmdOptions[$i] = array('type' => 'input', 'item' => array($item));
+          }
         }
       else
         {
@@ -152,14 +170,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     foreach($commandMatrix as $key => $commandList)
       {
       $command = $executable->getName().' '.  join('', $commandList);
-      if($key == 1)
-        {
-        $command = str_replace('{{key}}', '', $command);
-        }
-      else
-        {
-        $command = str_replace('{{key}}', $key, $command);
-        }
+      $command = str_replace('{{key}}', $key, $command);
 
       $script .= "process = subprocess.Popen('".$command."', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n";
       $script .= "process.wait()\n";
@@ -223,20 +234,45 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
 
       if($cmdOption['type'] == 'input')
         {
-        $value .= '"'.$cmdOption['item']->getName().'" ';
+        $values = $cmdOption['item'];
+        $j = 0;
+        for($i = 1; $i <= $totalLine; $i++)
+          {
+          $tmpvalue = $value.$values[$j]->getName().' ';
+          if($i % $multipleElement == 0)
+            {
+            $j++;
+            }
+          if(!isset($values[$j]))
+            {
+            $j = 0;
+            }
+          $matrix[$i][$key] = $tmpvalue;
+          }
+        if(count($values) > 1)
+          {
+          $multipleElement = $multipleElement * count($values);
+          }
         }
       elseif($cmdOption['type'] == 'output')
         {
         $ext = end(explode('.', $cmdOption['fileName']));
         $value .= '"'.  str_replace('.'.$ext, '{{key}}.'.$ext, $cmdOption['fileName']).'" ';
+        for($i = 1; $i <= $totalLine; $i++)
+          {
+          $matrix[$i][$key] = $value;
+          }
         }
-
-      if($cmdOption['type'] == 'param')
+      elseif($cmdOption['type'] == 'param')
         {
         $values = $cmdOption['values'];
         $j = 0;
         for($i = 1; $i <= $totalLine; $i++)
           {
+          if(!isset($values[$j]))
+            {
+            $j = 0;
+            }
           $tmpvalue = $value.$values[$j].' ';
           if($i % $multipleElement == 0)
             {
@@ -247,13 +283,6 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         if(count($values) > 1)
           {
           $multipleElement = $multipleElement * count($values);
-          }
-        }
-      else
-        {
-        for($i = 1; $i <= $totalLine; $i++)
-          {
-          $matrix[$i][$key] = $value;
           }
         }
       }
