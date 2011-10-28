@@ -208,7 +208,7 @@ class SearchController extends AppController
 
       echo ', "value":"'.$itemDao->getName().'"';
 
-      if(isset($itemDao->count) && $itemDao->count == 1)
+      if(!isset($itemDao->count) || $itemDao->count == 1)
         {
         echo ', "itemid":"'.$itemDao->getItemId().'"';
         }

@@ -225,6 +225,10 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         {
         $totalLine = $totalLine * count($cmdOption['values']);
         }
+      if($cmdOption['type'] == 'input')
+        {
+        $totalLine = $totalLine * count($cmdOption['item']);
+        }
       }
 
     $matrix = array();
