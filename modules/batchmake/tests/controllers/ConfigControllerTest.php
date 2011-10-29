@@ -18,29 +18,57 @@ require_once BASE_PATH.'/modules/batchmake/tests/controllers/BatchmakeController
 class ConfigControllerTest extends BatchmakeControllerTest
   {
 
-  protected $kwBatchmakeComponent;
 
 
   /** set up tests*/
   public function setUp()
     {
     $this->setupDatabase(array('default'));
+    $this->_daos = array('User');
     $this->_models = array('User');
     $this->enabledModules = array('batchmake');
     parent::setUp();
-    if(!isset($this->kwBatchmakeComponent))
-      {
-      require_once BASE_PATH.'/modules/batchmake/controllers/components/KWBatchmakeComponent.php';
-      $this->kwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($this->setupAndGetConfig());
-      }
     }
+
 
 
 
   /** test index action*/
   public function testIndexAction()
     {
-    $this->dispatchUrI("/batchmake/config/index");
+    // first try to bring up the page without logging in, should get an exception
+    $usersFile = $this->loadData('User', 'default');
+    $nullUserDao = null;
+    foreach($usersFile as $userDao)
+      {
+      if($userDao->getFirstname() === 'Admin')
+        {
+        $adminUserDao = $userDao;
+        }
+      else if($userDao->getFirstname() === 'FirstName1')
+        {
+        $nonAdminUserDao = $userDao;
+        }
+      }
+
+    $withException = true;
+    $page = '/batchmake/config/index';
+    $this->params = array();
+    $this->getRequest()->setMethod('GET');
+    $this->dispatchUrI($page, $nullUserDao, $withException);
+
+    // now login with a non-admin account, should get an exception
+    $this->resetAll();
+    $this->params = array();
+    $this->getRequest()->setMethod('GET');
+    $this->dispatchUrI($page, $nonAdminUserDao, $withException);
+
+    // now login with an admin account
+    $this->resetAll();
+    $this->params = array();
+    $this->getRequest()->setMethod('GET');
+    $this->dispatchUrI($page, $adminUserDao);
+
     $body = $this->getBody();
 
     $this->assertModule("batchmake");
@@ -52,20 +80,6 @@ class ConfigControllerTest extends BatchmakeControllerTest
       }
 
     $this->assertQuery("form#configForm");
-    $applicationConfig = $this->setupAndGetConfig();
-    $this->params = array();
-    $this->params[MIDAS_BATCHMAKE_TMP_DIR_PROPERTY] = $applicationConfig[MIDAS_BATCHMAKE_TMP_DIR_PROPERTY];
-    $this->params[MIDAS_BATCHMAKE_BIN_DIR_PROPERTY] = $applicationConfig[MIDAS_BATCHMAKE_BIN_DIR_PROPERTY];
-    $this->params[MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY] = $applicationConfig[MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY];
-    $this->params[MIDAS_BATCHMAKE_APP_DIR_PROPERTY] = $applicationConfig[MIDAS_BATCHMAKE_APP_DIR_PROPERTY];
-    $this->params[MIDAS_BATCHMAKE_DATA_DIR_PROPERTY] = $applicationConfig[MIDAS_BATCHMAKE_DATA_DIR_PROPERTY];
-    $this->params[MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY] = $applicationConfig[MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY];
-    // @TODO get these tests to a better state, testing more
-    // luckily, almost all of the functionality goes through KWBatchmakeComponent
-    // which is reasonably well tested
-    $this->params['submit'] = 'submitConfig';
-    $this->request->setMethod('POST');
-    $this->dispatchUrI("/batchmake/config", null, true);
     }
 
 
