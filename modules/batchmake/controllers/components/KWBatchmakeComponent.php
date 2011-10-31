@@ -142,10 +142,37 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    */
   public function loadConfigProperties($alternateConfig = null, $batchmakeOnly = true)
     {
-    // load the full config
-    $rawConfig = $this->loadConfig(true);
-    // get the global namespace props
-    $globalProps = $rawConfig['global'];
+    try
+      {
+      // load the full config
+      $rawConfig = $this->loadConfig(true);
+      // get the global namespace props
+      $globalProps = $rawConfig['global'];
+      }
+    catch(Zend_Exception $ze)
+      {
+      // if there is an alternateConfig, it is acceptable not to be able to
+      // load a config, so just create an empty raw config and global
+      if(isset($alternateConfig))
+        {
+        $rawConfig = array();
+        $globalProps = array();
+        }
+      else if(Zend_Registry::get('configGlobal')->environment == 'testing')
+        {
+        // it is acceptable not to be able to load a config if we are in
+        // testing mode, can get the config from the Zend_Registry set
+        // by the tests
+        $rawConfig = array();
+        $globalProps = array();
+        $alternateConfig = Zend_Registry::get('batchmake_test_config');
+        }
+      else
+        {
+        throw $ze;
+        }
+      }
+
     // now set all the batchmake properties if we have any alternatives
     $configPropertiesParamVals = array();
     if(isset($alternateConfig))
@@ -158,6 +185,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
         }
       $rawConfig['global'] = $globalProps;
       }
+
     // get out the batchmake props
     $batchmakeProps = $this->filterBatchmakeConfigProperties($rawConfig);
     foreach($batchmakeProps as $configProperty => $configPropertyVal)

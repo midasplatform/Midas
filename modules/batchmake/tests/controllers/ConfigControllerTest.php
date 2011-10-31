@@ -18,9 +18,6 @@ require_once BASE_PATH.'/modules/batchmake/tests/controllers/BatchmakeController
 class ConfigControllerTest extends BatchmakeControllerTest
   {
 
-  protected $kwBatchmakeComponent;
-
-
   /** set up tests*/
   public function setUp()
     {
@@ -29,11 +26,6 @@ class ConfigControllerTest extends BatchmakeControllerTest
     $this->_models = array('User');
     $this->enabledModules = array('batchmake');
     parent::setUp();
-    if(!isset($this->kwBatchmakeComponent))
-      {
-      require_once BASE_PATH.'/modules/batchmake/controllers/components/KWBatchmakeComponent.php';
-      $this->kwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($this->setupAndGetConfig());
-      }
     }
 
   /** test index action*/
