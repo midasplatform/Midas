@@ -707,27 +707,34 @@ class Api_ApiComponent extends AppComponent
         {
         throw new Exception('Parameter parentid is not defined', MIDAS_INVALID_PARAMETER);
         }
-      $folder = $folderModel->load($args['parentid']);
-      if($folder == false)
+      if($args['parentid'] == -1) //top level user folder being created
         {
-        throw new Exception('Parent doesn\'t exist', MIDAS_INVALID_PARAMETER);
+        $new_folder = $folderModel->createFolder($name, $description, $userDao->getFolderId(), $uuid);
         }
-      $new_folder = $folderModel->createFolder($name, $description, $folder, $uuid);
-      if($new_folder === false)
+      else //child of existing folder
         {
-        throw new Exception('Create folder failed', MIDAS_INTERNAL_ERROR);
-        }
-      $policyGroup = $folder->getFolderpolicygroup();
-      $policyUser = $folder->getFolderpolicyuser();
-      $folderpolicygroupModel = $modelLoader->loadModel('Folderpolicygroup');
-      $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicygroup');
-      foreach($policyGroup as $policy)
-        {
-        $folderpolicygroupModel->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
-        }
-      foreach($policyUser as $policy)
-        {
-        $folderpolicyuserModel->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
+        $folder = $folderModel->load($args['parentid']);
+        if($folder == false)
+          {
+          throw new Exception('Parent doesn\'t exist', MIDAS_INVALID_PARAMETER);
+          }
+        $new_folder = $folderModel->createFolder($name, $description, $folder, $uuid);
+        if($new_folder === false)
+          {
+          throw new Exception('Create folder failed', MIDAS_INTERNAL_ERROR);
+          }
+        $policyGroup = $folder->getFolderpolicygroup();
+        $policyUser = $folder->getFolderpolicyuser();
+        $folderpolicygroupModel = $modelLoader->loadModel('Folderpolicygroup');
+        $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicygroup');
+        foreach($policyGroup as $policy)
+          {
+          $folderpolicygroupModel->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
+          }
+        foreach($policyUser as $policy)
+          {
+          $folderpolicyuserModel->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
+          }
         }
 
       return $new_folder->toArray();
