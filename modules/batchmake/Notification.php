@@ -58,7 +58,7 @@ class Batchmake_Notification extends ApiEnabled_Notification
     $fc = Zend_Controller_Front::getInstance();
     $baseURL = $fc->getBaseUrl();
     $moduleWebroot = $baseURL . '/' . MIDAS_BATCHMAKE_MODULE;
-    return array(ucfirst(MIDAS_BATCHMAKE_MODULE) => array($moduleWebroot . '/config',  $baseURL . '/modules/batchmake/public/images/cmake.png'));
+    return array(ucfirst(MIDAS_BATCHMAKE_MODULE) => array($moduleWebroot . '/index',  $baseURL . '/modules/batchmake/public/images/cmake.png'));
     }
         
   } //end class
