@@ -216,6 +216,12 @@ foreach($this->customCSSs as $Uris)
    </div>
   
     <div class="sideElementActions viewAction">
+      <?php
+      if((!$this->isModerator)&&(!$this->isAdmin)&&(!$this->isMember))
+        {
+        echo "<h1>Actions</h1>";  
+        }
+      ?>
       <ul>
         <li>
 
