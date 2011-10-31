@@ -47,10 +47,11 @@
 	<user user_id="1" firstname="FirstName1" lastname="LastName1"
 		email="user1@user1.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:09:02"
 		folder_id="1000" publicfolder_id="1001" privatefolder_id="1002" admin="0" />
+
 <!-- To test Export component -->
 	<user user_id="2" firstname="FirstName2" lastname="LastName2"
 		email="user2@user2.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:10:02" admin="0" />
-	<folderpolicygroup folder_id="1001" group_id="0" policy='0' />
+	<folderpolicygroup folder_id="1001" group_id="0" policy="0" />
 <!-- To test admin user capabilities -->
 	<user user_id="3" firstname="Admin" lastname="Admin"
 		email="admin@admin.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" admin="1" />
@@ -73,7 +74,7 @@
 	<item item_id="3" name="name 3" description="Description 3" type="3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72752' />
 
 	<bitstream bitstream_id="1" itemrevision_id="3" name="foo.png" mimetype="image/png" sizebytes="64" checksum="f283bc88b24491ba85c65ba960642753"
-		path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="24" date="2011-01-27 12:09:02" />
+		path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="1" date="2011-01-27 12:09:02" />
 
 	<!-- MIDAS_FEED_CREATE_COMMUNITY -->
 	<feed feed_id="1" date="2011-01-27 12:09:02" user_id='1' type="0"

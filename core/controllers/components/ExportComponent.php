@@ -80,7 +80,6 @@ class ExportComponent extends AppComponent
       {
       throw new Zend_Exception("Input parameter \$itemIds should be an array.");
       }
-
     if(!empty($itemIds))
       {
       foreach($itemIds as $itemId)
@@ -103,7 +102,6 @@ class ExportComponent extends AppComponent
             }
           }
         $item = $itemModel->load($tmpId[0]);
-
         if($item == false)
           {
           throw new Zend_Exception("Item ".$tmpId[0]." does not exist. Please check your input.");

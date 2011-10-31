@@ -152,6 +152,7 @@ class ExportComponentTest extends ControllerTestCase
     $user1_public_bitstream_path = $user1_public_lastbitstream->getAssetstore()->getPath().'/'.$user1_public_lastbitstream->getPath();
     $this->assertTrue(is_link($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
     $this->assertEquals($user1_public_bitstream_path, readlink($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
+
     // user1's private file will be exported as a symlink file and the linked bitstream is also asserted
     $user1_private_item = $this->Item->load($itemIds[1]);
     $user1_private_revision = $this->Item->getLastRevision($user1_private_item);
@@ -212,7 +213,6 @@ class ExportComponentTest extends ControllerTestCase
     // clean up
     KWUtils::recursiveRemoveDirectory($midas_exporttest_dir);
     } // end public function testCopy
-
 
   /**
    * Test ExportComponentTest::exportBitstreams function using invalid input

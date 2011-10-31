@@ -8,4 +8,4 @@ CREATE TABLE IF NOT EXISTS communityagreement_agreement (
   `agreement` text NOT NULL,
   PRIMARY KEY (`agreement_id`),
   KEY `community_id` (`community_id`)
-) AUTO_INCREMENT=200;
+) DEFAULT CHARSET=utf8;

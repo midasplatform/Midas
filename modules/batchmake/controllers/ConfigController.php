@@ -97,6 +97,12 @@ class Batchmake_ConfigController extends Batchmake_AppController
    */
   public function indexAction()
     {
+
+    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
+      {
+      throw new Zend_Exception("You should be an administrator");
+      }
+
     // get all the properties, not just the batchmake config
     $fullConfig = $this->ModuleComponent->KWBatchmake->loadConfigProperties(null, false);
     // now get just the batchmake ones

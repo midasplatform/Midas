@@ -275,6 +275,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       $db->query("SELECT setval('item_item_id_seq', (SELECT MAX(item_id) FROM item)+1);");
       $db->query("SELECT setval('itemrevision_itemrevision_id_seq', (SELECT MAX(itemrevision_id) FROM itemrevision)+1);");
       $db->query("SELECT setval('folder_folder_id_seq', (SELECT MAX(folder_id) FROM folder)+1);");
+      $db->query("SELECT setval('bitstream_bitstream_id_seq', (SELECT MAX(bitstream_id) FROM bitstream)+1);");
       }
     }
 

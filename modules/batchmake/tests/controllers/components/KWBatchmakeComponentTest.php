@@ -23,59 +23,6 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
   protected $kwBatchmakeComponent;
   protected $applicationConfig;
 
-
-  /** Helper function to recursively delete a directory
-   * @TODO temporary usage of this function, this should
-   * get into KWUtils
-   *
-   * @param type $directorypath Directory to be deleted
-   * @return bool Success or not
-   */
-  private function _recursiveRemoveDirectory($directorypath)
-    {
-    // if the path has a slash at the end, remove it here
-    $directorypath = rtrim($directorypath, '/');
-    // open the directory
-    $handle = opendir($directorypath);
-
-    if(!is_readable($directorypath))
-      {
-      return false;
-      }
-    // and scan through the items inside
-    while(false !== ($item = readdir($handle)))
-      {
-      // if the filepointer is not the current directory or the parent directory
-      if($item != '.' && $item != '..')
-        {
-        // build the new path to delete
-        $path = $directorypath.'/'.$item;
-        // if the new path is a directory
-        if(is_dir($path))
-          {
-          // call this function with the new path
-          $this->_recursiveRemoveDirectory($path);
-          // if the new path is a file
-          }
-        else
-          {
-          // remove the file
-          unlink($path);
-          }
-        }
-      }
-    closedir($handle);
-    // try to delete the now empty directory
-    if(!rmdir($directorypath))
-      {
-      return false;
-      }
-    return true;
-    }
-
-
-
-
   /** set up tests*/
   public function setUp()
     {
@@ -97,7 +44,8 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     {
     // remove the temporary tests dir
     $testTmpDir = $this->getTempDirectory() . '/batchmake/tests';
-    $this->_recursiveRemoveDirectory($testTmpDir);
+
+    KWUtils::recursiveRemoveDirectory($testTmpDir);
     }
 
 
@@ -146,7 +94,6 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
         }
       }
     }
-
 
   /**
    * helper function to run a test case

@@ -102,9 +102,8 @@ class AssetstoreModelTest extends DatabaseTestCase
     $found = $this->Assetstore->findBy('name', 'test_assetstore_3');
     $this->assertNotEmpty($found);
     $savedDao = $found[0];
-    // explicit cast to get around differences in mysql vs pgsql type handling
-    $savedDao->type = (int)$savedDao->type;
-    $this->assertTrue($this->Assetstore->compareDao($assetstoreDao3, $savedDao));
+
+    $this->assertTrue($this->Assetstore->compareDao($assetstoreDao3, $savedDao, true));
 
     // Incorrect Create Tests
 
@@ -153,9 +152,8 @@ class AssetstoreModelTest extends DatabaseTestCase
     $found = $this->Assetstore->findBy('name', $newName);
     $this->assertNotEmpty($found);
     $foundDao = $found[0];
-    // explicit cast to get around differences in mysql vs pgsql type handling
-    $foundDao->type = (int)$foundDao->type;
-    $this->assertTrue($this->Assetstore->compareDao($foundDao, $assetstoreDao1));
+
+    $this->assertTrue($this->Assetstore->compareDao($foundDao, $assetstoreDao1, true));
     $this->assertEquals($foundDao->getName(), $newName);
     $assetstoreDao1->setName($savedName);
 
@@ -169,9 +167,8 @@ class AssetstoreModelTest extends DatabaseTestCase
     $found = $this->Assetstore->findBy('path', $newPath);
     $this->assertNotEmpty($found);
     $foundDao = $found[0];
-    // explicit cast to get around differences in mysql vs pgsql type handling
-    $foundDao->type = (int)$foundDao->type;
-    $this->assertTrue($this->Assetstore->compareDao($foundDao, $assetstoreDao1));
+
+    $this->assertTrue($this->Assetstore->compareDao($foundDao, $assetstoreDao1, true));
     $this->assertEquals($foundDao->getPath(), $newPath);
     $assetstoreDao1->setPath($savedPath);
 

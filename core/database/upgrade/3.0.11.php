@@ -15,7 +15,7 @@ class Upgrade_3_0_11 extends MIDASUpgrade
         `community_id` bigint(20),
         `user_id` bigint(20),
         PRIMARY KEY (`communityinvitation_id`)
-      )   DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+      )   DEFAULT CHARSET=utf8;
       ";
     $this->db->query($sql);
     }

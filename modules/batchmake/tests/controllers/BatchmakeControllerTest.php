@@ -20,6 +20,17 @@ class BatchmakeControllerTest extends ControllerTestCase
   {
 
   /**
+   * setup function will set test config properties in the Zend_Registry
+   */
+  public function setup()
+    {
+    parent::setup();
+    $testConfigProps = $this->setupAndGetConfig();
+    Zend_Registry::set('batchmake_test_config', $testConfigProps);
+    }
+
+
+  /**
    * helper function to return Midas configured temp directory
    * @return midas temp dir
    */
