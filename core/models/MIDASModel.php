@@ -229,13 +229,33 @@ class MIDASModel
         }
       $rowset = $this->database->findBy($var, $value);
       $return = array();
-      foreach($rowset as $row)
+
+      // if there are any rows, set the daoName
+      if(isset($rowset) && sizeof($rowset) > 0)
         {
-        $daoName = ucfirst($this->_name);
         if(isset($this->_daoName))
           {
           $daoName = substr($this->_daoName, 0, strlen($this->_daoName)-3);
           }
+        else
+          {
+          // can't just convert the name to dao name, in case it is in a module
+          if(isset($this->moduleName))
+            {
+            // we want to split the string, expecting 2 parts, module_model
+            // just use the model name for the dao
+            $parts = explode('_', $this->_name);
+            $daoName = ucfirst($parts[1]);
+            }
+          else
+            {
+            // if no module, just upper case the model name
+            $daoName = ucfirst($this->_name);
+            }
+          }
+        }
+      foreach($rowset as $row)
+        {
         $tmpDao = $this->initDao($daoName, $row, $module);
         $return[] = $tmpDao;
         unset($tmpDao);

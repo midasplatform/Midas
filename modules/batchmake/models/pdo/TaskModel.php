@@ -11,8 +11,8 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 require_once BASE_PATH . '/modules/batchmake/models/base/TaskModelBase.php';
 
-/** TaskModel class */
-class Batchmake_TaskModel extends Batchmake_TaskModelBase {
 
+/** Batchmake_TaskModel */
+class Batchmake_TaskModel extends Batchmake_TaskModelBase {
 
 }

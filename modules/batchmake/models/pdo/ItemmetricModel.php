@@ -9,9 +9,21 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-/** AppDao class for batchmake module */
-class Batchmake_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'batchmake';
+require_once BASE_PATH . '/modules/batchmake/models/base/ItemmetricModelBase.php';
 
-  } //end class
+/** Batchmake_ItemmetricModel */
+class Batchmake_ItemmetricModel extends Batchmake_ItemmetricModelBase {
+
+  /**
+   * @return all rows stored.
+   */
+  public function getAll()
+    {
+    $rowsetDAOs = $this->database->getAll('Itemmetric', 'batchmake');
+    return $rowsetDAOs;
+    }
+
+
+}
+
+?>

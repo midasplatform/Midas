@@ -12,7 +12,9 @@ PURPOSE.  See the above copyright notices for more information.
 /** TaskModel Base class */
 class Batchmake_TaskModelBase extends Batchmake_AppModel {
 
-  /** constructor */
+  /**
+   * constructor
+   */
   public function __construct()
     {
     parent::__construct();
@@ -21,7 +23,8 @@ class Batchmake_TaskModelBase extends Batchmake_AppModel {
 
     $this->_mainData = array(
       'batchmake_task_id' => array('type' => MIDAS_DATA),
-      'user_id' => array('type' => MIDAS_DATA, ));
+      'user_id' => array('type' => MIDAS_DATA, )
+       );
     $this->initialize(); // required
     }
 
