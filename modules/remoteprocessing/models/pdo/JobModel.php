@@ -40,8 +40,38 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
     return $return;
     }
 
+  /** get Related Items */
+  function getRelatedItems($job)
+    {
+    if(!$job instanceof Remoteprocessing_JobDao)
+      {
+      throw new Zend_Exception("Should be an item.");
+      }
+
+    $sql = $this->database->select()
+          ->from('remoteprocessing_job2item')
+          ->setIntegrityCheck(false)
+          ->where('job_id = ?', $job->getKey())
+          ->order('item_id DESC');
+
+    $loader = new MIDAS_ModelLoader();
+    $itemModel = $loader->loadModel('Item');
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao = $itemModel->load($row['item_id']);
+      if($tmpDao != false)
+        {
+        $return[] = $tmpDao;
+        unset($tmpDao);
+        }
+      }
+    return $return;
+    }
+
   /** add item relation*/
-  function addItemRelation($job, $item)
+  function addItemRelation($job, $item, $type = MIDAS_REMOTEPROCESSING_RELATION_TYPE_EXECUTABLE)
     {
     if(!$job instanceof Remoteprocessing_JobDao)
       {
@@ -51,7 +81,15 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
       {
       throw new Zend_Exception("Should be an item.");
       }
+    if(!is_numeric($type))
+      {
+      throw new Zend_Exception("Should be a number.");
+      }
     $this->database->link('items', $job, $item);
+
+    // sql because the query is simple and it
+    $data = array('type' => $type);
+    $this->database->update('remoteprocessing_job2item', $data, 'job_id = '.$job->getKey().' AND item_id = '.$item->getKey());
     }
 
   /** get related job */

@@ -151,7 +151,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
         {
         $tmpArray = array_reverse(explode('.', basename($filepath)));
         $item = $uploadComponent->createUploadedItem($userDao, basename($filepath), $filepath, $folder);
-        $jobModel->addItemRelation($job, $item);
+        $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT);
 
         // add parameter metadata
         if(is_numeric($tmpArray[1]) && isset($params['parametersList']) && isset($params['optionMatrix']))
@@ -178,7 +178,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       $logFile = BASE_PATH.'/tmp/misc/'.uniqid();
       file_put_contents($logFile, $params['log']);
       $item = $uploadComponent->createUploadedItem($userDao, 'log.txt', $logFile, $folder);
-      $jobModel->addItemRelation($job, $item);
+      $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT);
       unlink($logFile);
       }
     }
@@ -227,7 +227,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
         $item = $this->Item->load($itemId);
         if($item != false)
           {
-          $this->Remoteprocessing_Job->addItemRelation($job, $item);
+          $this->Remoteprocessing_Job->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT);
           }
         }
       }
