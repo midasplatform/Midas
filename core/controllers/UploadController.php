@@ -252,11 +252,13 @@ class UploadController extends AppController
       }
     else
       {
+      ob_start();
       $upload = new Zend_File_Transfer();
       $upload->receive();
       $path = $upload->getFileName();
       $file_size =  filesize($path);
       $filename = $upload->getFilename(null, false);
+      ob_end_clean();
       }
 
     $parent = $this->_getParam("parent");
