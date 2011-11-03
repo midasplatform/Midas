@@ -253,6 +253,22 @@ class AppController extends MIDAS_GlobalController
     $this->view->json = array(
       "global" => $jsonGlobal, "login" => $login, 'feed' => $feed, "browse" => $browse);
     Zend_Loader::loadClass("JsonComponent", BASE_PATH.'/core/controllers/components');
+
+    // init layout
+    $modulesConfig = Zend_Registry::get('configsModules');
+    foreach($modulesConfig as $key => $module)
+      {
+      if($this->_helper->hasHelper('layout') && file_exists(BASE_PATH . "/modules/".$key."/layouts/layout-core.phtml"))
+        {
+        $this->_helper->layout->setLayoutPath(BASE_PATH . "/modules/".$key."/layouts/");
+        $this->_helper->layout->setLayout('layout-core');
+        }
+      if($this->_helper->hasHelper('layout') && file_exists(BASE_PATH . "/privateModules/".$key."/layouts/layout-core.phtml"))
+        {
+        $this->_helper->layout->setLayoutPath(BASE_PATH . "/privateModules/".$key."/layouts/");
+        $this->_helper->layout->setLayout('layout-core');
+        }
+      }
     } // end preDispatch()
 
   /** get server's url */
