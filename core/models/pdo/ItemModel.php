@@ -305,11 +305,18 @@ class ItemModel extends ItemModelBase
       }
 
     $deleteType = array(MIDAS_FEED_CREATE_ITEM, MIDAS_FEED_CREATE_LINK_ITEM);
+
+
+    $itemDaoKey = $itemdao->getKey();
+    // postgres will not do the necessary type conversion
+    if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_PGSQL')
+      {
+      $itemDaoKey = (string)$itemDaoKey;
+      }
     $sql = $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'feed'))
-                          ->where('ressource = ?', $itemdao->getKey());
-
+                          ->where('ressource = ?', $itemDaoKey);
     $rowset = $this->database->fetchAll($sql);
     $this->ModelLoader = new MIDAS_ModelLoader();
     $feed_model = $this->ModelLoader->loadModel('Feed');
