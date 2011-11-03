@@ -34,8 +34,17 @@ class JobControllerTest extends ControllerTestCase
     $this->dispatchUrI('/remoteprocessing/job/manage?itemId='.$itemFile[0]->getKey(), null, true);
     $this->dispatchUrI('/remoteprocessing/job/manage?itemId='.$itemFile[0]->getKey(), $userDao, false);
 
-    // means job found
-    $this->assertQuery('table#tableJobsList');
+    $modelLoader = new MIDAS_ModelLoader();
+    $jobModel = $modelLoader->loadModel('Job', 'remoteprocessing');
+    $jobs = $jobModel->getRelatedJob($itemFile[0]);
+    if(empty($jobs))
+      {
+      $this->assertNotQuery('table#tableJobsList');
+      }
+    else
+      {
+      $this->assertQuery('table#tableJobsList');
+      }
     }
 
   /** test init*/

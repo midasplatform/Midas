@@ -174,7 +174,8 @@ function addElement(paramaters)
 function updateSortableElement()
   {
 		$( ".column" ).sortable({
-			connectWith: ".column"
+			connectWith: ".column",
+       handle: '.portlet-header'
 		});
 
 		$( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )

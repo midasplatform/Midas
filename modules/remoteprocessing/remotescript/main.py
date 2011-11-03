@@ -151,7 +151,7 @@ def handleMidasResponse(response):
 
     print "Run script"
     os.chdir(pathProcessingFolder+'/script/')
-    cmd = "python "+pathProcessingFolder+'/script/script.py'
+    cmd = sys.executable+" "+pathProcessingFolder+'/script/script.py'
     p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=False)
     p.wait()
     stdout = p.stdout.read()
@@ -172,7 +172,7 @@ def handleMidasResponse(response):
     zipdir(pathProcessingFolder+'/results', pathProcessingFolder+'/results.zip')
     print "Sending results"
     sendResults(pathProcessingFolder+'/results.zip')
-    shutil.rmtree(pathProcessingFolder)
+    #shutil.rmtree(pathProcessingFolder)
   else:
     print "Error, Unable to find command"
     return False

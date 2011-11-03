@@ -30,10 +30,16 @@ class Scheduler_Notification extends MIDAS_Notification
       {
       $params['run_only_once'] = true;
       }
+
     if(!isset($params['fire_time']))
       {
       $params['fire_time'] = date('c');
       }
+    else
+      {
+      $params['fire_time'] = date('c', $params['fire_time']);
+      }
+
     if(!$params['run_only_once'])
       {
       if(!isset($params['time_interval']))
@@ -52,6 +58,7 @@ class Scheduler_Notification extends MIDAS_Notification
       }
     $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
     $job->setParams(JsonComponent::encode($params['params']));
+
     $this->Scheduler_Job->save($job);
     return;
     }

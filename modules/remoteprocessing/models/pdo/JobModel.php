@@ -63,6 +63,7 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
       $tmpDao = $itemModel->load($row['item_id']);
       if($tmpDao != false)
         {
+        $tmpDao->type = $row['type'];
         $return[] = $tmpDao;
         unset($tmpDao);
         }
@@ -89,7 +90,7 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
 
     // sql because the query is simple and it
     $data = array('type' => $type);
-    $this->database->update('remoteprocessing_job2item', $data, 'job_id = '.$job->getKey().' AND item_id = '.$item->getKey());
+    $this->database->getDb()->update('remoteprocessing_job2item', $data, 'job_id = '.$job->getKey().' AND item_id = '.$item->getKey());
     }
 
   /** get related job */

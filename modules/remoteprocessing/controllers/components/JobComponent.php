@@ -45,7 +45,6 @@ class Remoteprocessing_JobComponent extends AppComponent
         throw new Zend_Exception("Error params. Shoud be an itemdao");
         }
       $return['input'][] = $input->getKey();
-
       }
 
     foreach($ouputArray as $output)
@@ -73,7 +72,7 @@ class Remoteprocessing_JobComponent extends AppComponent
     $scheduleParams['params'] = $scriptParams;
     if(is_string($fire_time))
       {
-      $scheduleParams['fire_time'] = $fire_time;
+      $scheduleParams['fire_time'] = strtotime($fire_time);
       }
 
     if(!$only_once && $time_interval !== false)
@@ -82,7 +81,14 @@ class Remoteprocessing_JobComponent extends AppComponent
       $scheduleParams['time_interval'] = $time_interval;
       }
 
-    Zend_Registry::get('notifier')->callback("CALLBACK_SCHEDULER_SCHEDULE_TASK", $scheduleParams);
+    if(isset($scheduleParams['fire_time']))
+      {
+      Zend_Registry::get('notifier')->callback("CALLBACK_SCHEDULER_SCHEDULE_TASK", $scheduleParams);
+      }
+    else
+      {
+      Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_ADD_JOB", $scriptParams);
+      }
     }
 
 }

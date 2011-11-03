@@ -26,6 +26,19 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/executable/ex
         ?>
     </div>
 
+
+  <br/>
+  <br/>
+  This page allow you to define the execution options of the item: <b><?php echo $this->itemDao->getName()?></b>.<br/>These option are used to defined how the MIDAS Platform will use the item to create remote processing tasks.
+  <br/>
+  <br/>
+  <div id="tableContainer">
+    <div class="column">
+
+
+    </div>
+  </div>
+
     <?php
           echo '<div  class="genericBigButton ">';
             echo "<a id='addDefinitionLink' ><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/add.png'/>";
@@ -43,17 +56,6 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/executable/ex
           echo '</div>';
 
         ?>
-  <br/>
-  <br/>
-  This page allow you to define the execution options of the item: <b><?php echo $this->itemDao->getName()?></b>.<br/>These option are used to defined how the MIDAS Platform will use the item to create remote processing tasks.
-  <br/>
-  <br/>
-  <div id="tableContainer">
-    <div class="column">
-
-
-    </div>
-  </div>
 </div>
 
 <div id="jsonMetadataContent"><?php echo $this->jsonMetadata?></div>

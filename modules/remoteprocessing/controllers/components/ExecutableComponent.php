@@ -39,21 +39,14 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     }
 
   /** schedule Job (create script and set parameters).*/
-  function initAndSchedule($itemDao, $xmlMeta, $javascriptResults)
+  function initAndSchedule($executableItemDao, $cmdOptions, $parametersList, $fire_time = false, $time_interval = false, $only_once = true)
     {
     $componentLoader = new MIDAS_ComponentLoader();
     $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
     $itemModel = $modelLoader->loadModel('Item');
     $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
 
-    $inputArray = array();
-    $ouputArray = array();
-    $inputArray[] = $itemDao;
-    $additionalParams = array('ouputFolders' => array());
-    $i = 0;
-
-    $revision = $itemModel->getLastRevision($itemDao);
+    $revision = $itemModel->getLastRevision($executableItemDao);
     $bitstreams = $revision->getBitstreams();
 
     $executable = false;
@@ -70,106 +63,78 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
       throw new Zend_Exception('Unable to find executable');
       }
 
-    // Process parameters
-    $isMultiParameter = false;
-    $cmdOptions = array();
-    $parametersList = array();
-    foreach($xmlMeta->option as $option)
-      {
-      if(!isset($javascriptResults[$i]))
-        {
-        continue;
-        }
+    $parameters['cmdOptions'] = $cmdOptions;
+    $parameters['parametersList'] = $parametersList;
+    $parameters['executable'] = $executableItemDao->getKey();
 
-      $result = $javascriptResults[$i];
-      if($option->channel == 'ouput')
+    $ext = end(explode('.', $executable->getName()));
+    if($ext == 'exe')
+      {
+      $os = MIDAS_REMOTEPROCESSING_OS_WINDOWS;
+      }
+    else
+      {
+      $os = MIDAS_REMOTEPROCESSING_OS_LINUX;
+      }
+    $jobParameters = $jobComponent->scheduleJob($parameters, '', $os, $fire_time, $time_interval, $only_once);
+    }
+
+  /** init job */
+  public function processScheduledJobParameters($params)
+    {
+    $cmdOptions = $params['params']['cmdOptions'];
+    $componentLoader = new MIDAS_ComponentLoader();
+    $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $folderModel = $modelLoader->loadModel('Folder');
+    $executable = $itemModel->load($params['params']['executable']);
+
+    $params['params']['ouputFolders'] = array();
+    $inputArray = array();
+    $ouputArray = array();
+    $inputArray[] = $executable;
+
+    foreach($cmdOptions as $key => $option)
+      {
+      if($option['type'] == 'output')
         {
-        $resultArray = explode(";;", $result);
-        $folder = $folderModel->load($resultArray[0]);
-        if($folder == false)
-          {
-          throw new Zend_Exception('Unable to find folder');
-          }
-        $additionalParams['ouputFolders'][] = $resultArray[0];
-        $ouputArray[] = $resultArray[1];
-        $cmdOptions[$i] = array('type' => 'output', 'folderId' => $resultArray[0], 'fileName' => $resultArray[1]);
+        $params['params']['ouputFolders'][] = $option['folderId'];
+        $ouputArray[] = $option['fileName'];
         }
-      else if($option->field->external == 1)
+      elseif($option['type'] == 'input')
         {
-        $parametersList[$i] = $option->name;
-        if(strpos($result, 'folder') !== false)
+        if(isset($option['folder']))
           {
-          $folder = $folderModel->load(str_replace('folder', '', $result));
-          if($folder == false)
-            {
-            throw new Zend_Exception('Unable to find folder');
-            }
+          $folder = $folderModel->load($option['folder']);
           $items = $folder->getItems();
-          $cmdOptions[$i] = array('type' => 'input', 'item' => array());
           foreach($items as $item)
             {
-            $inputArray[] = $item;
-            $cmdOptions[$i]['item'][] = $item;
+            $cmdOptions[$key]['item'][] = $item;
             }
           }
-        else
+        foreach($cmdOptions[$key]['item'] as $item)
           {
-          $item = $itemModel->load($result);
-          if($item == false)
-            {
-            throw new Zend_Exception('Unable to find item');
-            }
           $inputArray[] = $item;
-          $cmdOptions[$i] = array('type' => 'input', 'item' => array($item));
           }
         }
-      else
-        {
-        $parametersList[$i] = $option->name;
-        $cmdOptions[$i] = array('type' => 'param', 'values' => array());
-        if(strpos($result, ';') !== false)
-          {
-          $cmdOptions[$i]['values'] = explode(';', $result);
-          }
-        elseif(strpos($result, '-') !== false)
-          {
-          $tmpArray = explode('(', $result);
-          if(count($tmpArray) == 1)
-            {
-            $step = 1;
-            }
-          else
-            {
-            $step = substr($tmpArray[1], 0, strlen($tmpArray[1])-1);
-            }
-
-          $tmpArray = explode('-', $tmpArray[0]);
-          $start = $tmpArray[0];
-          $end = $tmpArray[1];
-          for($j = $start;$j <= $end;$j = $j + $step)
-            {
-            $cmdOptions[$i]['values'][] = $j;
-            }
-          }
-        else
-          {
-          $cmdOptions[$i]['values'][] = $result;
-          }
-
-        if(!empty($option->tag))
-          {
-          $cmdOptions[$i]['tag'] = $option->tag;
-          }
-        }
-      $i++;
       }
 
-
     $commandMatrix = $this->_createParametersMatrix($cmdOptions);
+    $tmp = $this->_createScript($commandMatrix, $executable, $ouputArray);
 
-    $additionalParams['optionMatrix'] = $commandMatrix;
-    $additionalParams['parametersList'] = $parametersList;
+    $ouputArray = $tmp['outputArray'];
+    $script = $tmp['script'];
 
+    $params['params']['optionMatrix'] = $commandMatrix;
+
+    $parameters = $jobComponent->initJobParameters('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', $inputArray, $ouputArray, $params['params']);
+    return array('parameters' => $parameters, 'script' => $script);
+    }
+
+  /** create Script */
+  private function _createScript($commandMatrix, $executable, $ouputArray)
+    {
     $script = "#! /usr/bin/python\n";
     $script .= "import subprocess\n";
     foreach($commandMatrix as $key => $commandList)
@@ -198,23 +163,8 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         $ouputArray[] = str_replace('.'.$ext, '.'.$key.'.'.$ext, $ouput);
         }
       }
-
-    $parameters = $jobComponent->initJobParameters('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', $inputArray, $ouputArray, $additionalParams);
-
-    $ext = end(explode('.', $executable->getName()));
-    if($ext == 'exe')
-      {
-      $os = MIDAS_REMOTEPROCESSING_OS_WINDOWS;
-      }
-    else
-      {
-      $os = MIDAS_REMOTEPROCESSING_OS_LINUX;
-      }
-    $jobParameters = $jobComponent->scheduleJob($parameters, $script, $os);
+    return array('script' => $script, 'outputArray' => $ouputArray);
     }
-
-
-
   /** create cmd option matrix*/
   private function _createParametersMatrix($cmdOptions)
     {

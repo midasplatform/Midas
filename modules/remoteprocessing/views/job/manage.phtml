@@ -29,7 +29,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
     <?php
           echo '<div  class="genericBigButton ">';
             echo "<a href='{$this->webroot}/remoteprocessing/job/init?itemId={$this->itemDao->getKey()}' ><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/add.png'/>";
-            echo $this->t('Add a Job');
+            echo $this->t('Schedule a Job');
             echo "</a>";
           echo '</div>';
 
@@ -64,7 +64,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
     foreach($this->relatedJobs as $job)
       {
       echo "<tr>";
-      echo  "<td>".$job->getKey()."</td>";
+      echo  "<td><a href='".$this->webroot."/remoteprocessing/job/view?jobId=".$job->getKey()."'>".$job->getKey()."</a></td>";
       echo  "<td>".$job->getCreationDate()."</td>";
       if($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE)
         {
