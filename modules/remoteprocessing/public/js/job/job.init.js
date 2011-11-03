@@ -1,6 +1,18 @@
 var currentBrowser = false;
 
 $(document).ready(function(){
+  $( "#datepicker" ).datetimepicker();
+  $('#ui-datepicker-div').hide();
+  $('#checkboxSchedule').change(function(){
+    if(!$(this).is(':checked'))
+      {
+      $('#schedulerWrapper').show();
+      }
+    else
+      {
+       $('#schedulerWrapper').hide();
+      }
+  })
 
   $('.selectInputFileLink').click(function(){
     loadDialog("selectitem_"+$(this).attr('order'),"/browse/selectitem");
@@ -30,6 +42,11 @@ $(document).ready(function(){
       if($(this).find('.nameOutputOption').val() == '' || $(this).find('.selectedFolder').attr('element') == '')
         {
         createNotive('Please set '+$(this).attr('name'), 4000);
+        cansubmit = false;
+        }
+      else if($(this).find('.nameOutputOption').val().indexOf(".") == -1)
+        {
+        createNotive('Please set an extension in the option '+$(this).attr('name'), 4000);
         cansubmit = false;
         }
       else
@@ -74,7 +91,14 @@ $(document).ready(function(){
 
     if(cansubmit)
       {
-      req = { 'results[]' : results};
+      var date = '';
+      var every = '0';
+      if(!$('#checkboxSchedule').is(':checked'))
+        {
+        date = $('#datepicker').val();
+        every = $('#intervalSelect').val();
+        }
+      req = { 'results[]' : results, 'date' : date, 'interval': every};
       $(this).after('<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Saving..." />')
       $(this).remove();
       $.ajax({

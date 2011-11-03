@@ -302,8 +302,12 @@ class AppController extends MIDAS_GlobalController
         $this->_helper->layout->setLayoutPath(BASE_PATH . "/modules/".$key."/layouts/");
         $this->_helper->layout->setLayout('layout-core');
         }
+      if($this->_helper->hasHelper('layout') && file_exists(BASE_PATH . "/privateModules/".$key."/layouts/layout-core.phtml"))
+        {
+        $this->_helper->layout->setLayoutPath(BASE_PATH . "/privateModules/".$key."/layouts/");
+        $this->_helper->layout->setLayout('layout-core');
+        }
       }
-
     } // end preDispatch()
 
   /** show dynamic help ? */

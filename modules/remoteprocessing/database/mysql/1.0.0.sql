@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `remoteprocessing_job` (
 
 CREATE TABLE IF NOT EXISTS `remoteprocessing_job2item` (
   `job_id` bigint(20) NOT NULL,
-  `item_id` bigint(20) NOT NULL
+  `item_id` bigint(20) NOT NULL,
+  `type` tinyint(4) NOT NULL DEFAULT 0,
 );
 

@@ -71,7 +71,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       Zend_Loader::loadClass('UtilityComponent', BASE_PATH . '/core/controllers/components');
       $component = new UtilityComponent();
 
-      $html =   "<div class='sideElementLast'>
+      $html =   "<div class='sideElement'>
                     <h1>".$this->t('Related Items')."</h1>
                       <ul>";
       $itemIds = array();
@@ -106,7 +106,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
         $html .=   "<li>";
         $html .=    "<a  element='".$item->getKey()."' href='".Zend_Registry::get('webroot')."/item/".$item->getKey()."'>".$component->slicename($item->getName(),25)."</a>";
         $html .=    "</li>";
-        if($i > 10)
+        if($i > 7)
           {
           $html .=   "<li>...</li>";
           break;
@@ -116,6 +116,26 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       if($i == 0)
         {
         return "";
+        }
+      $html .=  "</ul>";
+      $html .=  "</div>";
+
+      $html .= "<div class='sideElementLast'>
+                  <h1>".$this->t('Related Jobs')."</h1>
+                    <ul>";
+      $i = 0;
+      foreach($jobs as $job)
+        {
+        $html .=   "<li>";
+        $html .=    "<a  element='".$job->getKey()."' href='".Zend_Registry::get('webroot')."/remoteprocessing/job/view/?jobId=".$job->getKey()."'>".$job->getCreationDate()."</a>";
+        $html .=    "</li>";
+        if($i > 3)
+          {
+
+          $html .=   "<li>...</li>";
+          break;
+          }
+        $i++;
         }
       $html .=  "</ul>";
       $html .=  "</div>";
@@ -151,7 +171,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
         {
         $tmpArray = array_reverse(explode('.', basename($filepath)));
         $item = $uploadComponent->createUploadedItem($userDao, basename($filepath), $filepath, $folder);
-        $jobModel->addItemRelation($job, $item);
+        $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT);
 
         // add parameter metadata
         if(is_numeric($tmpArray[1]) && isset($params['parametersList']) && isset($params['optionMatrix']))
@@ -178,7 +198,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       $logFile = BASE_PATH.'/tmp/misc/'.uniqid();
       file_put_contents($logFile, $params['log']);
       $item = $uploadComponent->createUploadedItem($userDao, 'log.txt', $logFile, $folder);
-      $jobModel->addItemRelation($job, $item);
+      $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT);
       unlink($logFile);
       }
     }
@@ -186,6 +206,16 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
   /** get Config Tabs */
   public function addJob($params)
     {
+    // dynamically process the params
+    if(isset($params['params']['cmdOptions']) && empty($params['script'])&& isset($params['params']['executable']))
+      {
+      $componentLoader = new MIDAS_ComponentLoader();
+      $executableComponent = $componentLoader->loadComponent('Executable', 'remoteprocessing');
+      $tmp = $executableComponent->processScheduledJobParameters($params);
+      $params['params'] = $tmp['parameters'];
+      $params['script'] = $tmp['script'];
+      }
+
     if(!isset($params['script']) || empty($params['script']))
       {
       throw new Zend_Exception('Unable to find script');
@@ -198,6 +228,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       {
       throw new Zend_Exception('Unable to find condition');
       }
+
     $job = new Remoteprocessing_JobDao();
     $job->setScript($params['script']);
     unset($params['script']);
@@ -225,9 +256,13 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       foreach($params['params']['input'] as $itemId)
         {
         $item = $this->Item->load($itemId);
-        if($item != false)
+        if($item != false && $item->getKey() != $params['params']['executable'])
           {
-          $this->Remoteprocessing_Job->addItemRelation($job, $item);
+          $this->Remoteprocessing_Job->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT);
+          }
+        elseif($item != false)
+          {
+          $this->Remoteprocessing_Job->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_EXECUTABLE);
           }
         }
       }

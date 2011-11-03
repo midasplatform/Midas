@@ -10,9 +10,11 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.timepicker-addon.js');
 $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.init.js');
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/job/job.init.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.timepicker-addon.css" />
 <div class="viewMain">
      <div class ="genericWrapperTopRight">
          <?php
@@ -51,17 +53,28 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.init.
     $i++;
     }
   ?>
+    <input type='checkbox' id="checkboxSchedule" name="checkboxSchedule" checked/> <label for="checkboxSchedule">Run as soon as possible</label>
+  <div id="schedulerWrapper" >
+    Date and Time: <input type="text" id="datepicker"> Every: <select id="intervalSelect">
+      <option value="0">Only once</option>
+      <option value="3600">Hours</option>
+      <option value="86400">Days</option>
+      <option value="604800">Weeks</option>
+    </select>
+  </div>
+  <br/>
 
   <h3>Command preview:</h3>
   <div id="commandGenerated">
   </div>
+
 
   <br/>
 
    <?php
     echo '<div class="genericBigButton ">';
       echo "<a id='creatJobLink' ><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/add.png'/>";
-      echo $this->t('Create Job');
+      echo $this->t('Schedule Job');
       echo "</a>";
     echo '</div>';
   ?>
