@@ -24,8 +24,8 @@ class UploadController extends AppController
    */
   function init()
     {
-    $maxFile = str_replace("M", "", ini_get('upload_max_filesize'));
-    $maxPost = str_replace("M", "", ini_get('post_max_size'));
+    $maxFile = str_replace('M', '', ini_get('upload_max_filesize'));
+    $maxPost = str_replace('M', '', ini_get('post_max_size'));
     if($maxFile < $maxPost)
       {
       $this->view->maxSizeFile = $maxFile * 1024 * 1024;
@@ -62,11 +62,11 @@ class UploadController extends AppController
     {
     if(!$this->logged)
       {
-      throw new Zend_Exception("You have to be logged in to do that");
+      throw new Zend_Exception('You have to be logged in to do that');
       }
     if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
       {
-      throw new Zend_Exception("Error, should be an ajax action.");
+      throw new Zend_Exception('Error, should be an ajax action.');
       }
     $this->disableLayout();
     $this->view->form = $this->getFormAsArray($this->Form->Upload->createUploadLinkForm());
@@ -94,11 +94,11 @@ class UploadController extends AppController
     {
     if(!$this->logged)
       {
-      throw new Zend_Exception("You have to be logged in to do that");
+      throw new Zend_Exception('You have to be logged in to do that');
       }
     if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
       {
-      throw new Zend_Exception("Error, should be an ajax action.");
+      throw new Zend_Exception('Error, should be an ajax action.');
       }
     $this->disableLayout();
     $itemId = $this->_getParam('itemId');
@@ -106,11 +106,11 @@ class UploadController extends AppController
 
     if($item == false)
       {
-      throw new Zend_Exception("Unable to load item.");
+      throw new Zend_Exception('Unable to load item.');
       }
     if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
-      throw new Zend_Exception("Error policies.");
+      throw new Zend_Exception('Error policies.');
       }
     $this->view->item = $item;
     $itemRevision = $this->Item->getLastRevision($item);
@@ -123,20 +123,20 @@ class UploadController extends AppController
     {
     if(!$this->logged)
       {
-      throw new Zend_Exception("You have to be logged in to do that");
+      throw new Zend_Exception('You have to be logged in to do that');
       }
     if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
       {
-      throw new Zend_Exception("Error, should be an ajax action.");
+      throw new Zend_Exception('Error, should be an ajax action.');
       }
 
     $this->disableLayout();
     $this->disableView();
-    $parent = $this->_getParam("parent");
-    $name = $this->_getParam("name");
-    $url = $this->_getParam("url");
-    $parent = $this->_getParam("parent");
-    $license = $this->_getParam("license");
+    $parent = $this->_getParam('parent');
+    $name = $this->_getParam('name');
+    $url = $this->_getParam('url');
+    $parent = $this->_getParam('parent');
+    $license = $this->_getParam('license');
     if(!empty($url) && !empty($name))
       {
       $item = $this->Component->Upload->createLinkItem($this->userSession->Dao, $name, $url, $parent);
@@ -149,14 +149,14 @@ class UploadController extends AppController
     {
     if(!$this->logged)
       {
-      throw new Zend_Exception("You have to be logged in to do that");
+      throw new Zend_Exception('You have to be logged in to do that');
       }
     if(!$this->getRequest()->isXmlHttpRequest())
       {
-      throw new Zend_Exception("Error, should be an ajax action.");
+      throw new Zend_Exception('Error, should be an ajax action.');
       }
     $this->_helper->layout->disableLayout();
-    $this->view->protocol = "http";
+    $this->view->protocol = 'http';
     $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
     $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
 
@@ -184,7 +184,7 @@ class UploadController extends AppController
     $this->Component->Httpupload->get_http_upload_offset($params);
     } //end get_http_upload_offset
 
-  /** java upload function, didn 't check what it does :-) */
+  /** java upload function, didn't check what it does :-) */
   function gethttpuploaduniqueidentifierAction()
     {
     $this->disableLayout();
@@ -200,7 +200,7 @@ class UploadController extends AppController
     $params = $this->_getAllParams();
     if(!$this->logged)
       {
-      throw new Zend_Exception("You have to be logged in to do that");
+      throw new Zend_Exception('You have to be logged in to do that');
       }
     $this->disableLayout();
     $this->disableView();
@@ -237,7 +237,7 @@ class UploadController extends AppController
     {
     if(!$this->logged)
       {
-      throw new Zend_Exception("You have to be logged in to do that");
+      throw new Zend_Exception('You have to be logged in to do that');
       }
 
     $this->disableLayout();
@@ -252,8 +252,9 @@ class UploadController extends AppController
       }
     else
       {
+      // bugfix: We added an adapter class (see issue 324) under Zend/File/Transfer/Adapter
       ob_start();
-      $upload = new Zend_File_Transfer();
+      $upload = new Zend_File_Transfer('HttpFixed');
       $upload->receive();
       $path = $upload->getFileName();
       $file_size =  filesize($path);
@@ -261,14 +262,14 @@ class UploadController extends AppController
       ob_end_clean();
       }
 
-    $parent = $this->_getParam("parent");
-    $license = $this->_getParam("license");
+    $parent = $this->_getParam('parent');
+    $license = $this->_getParam('license');
     if(!empty($path) && file_exists($path) && $file_size > 0)
       {
       $tmp = explode('-', $parent);
       if(count($tmp) == 2) //means we upload a new revision
         {
-        $changes = $this->_getParam("changes");
+        $changes = $this->_getParam('changes');
         $this->Component->Upload->createNewRevision($this->userSession->Dao, $filename, $path, $tmp, $changes, $license);
         }
       else
