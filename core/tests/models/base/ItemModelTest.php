@@ -29,7 +29,28 @@ class ItemModelTest extends DatabaseTestCase
     $itemsFile = $this->loadData('Item', 'default');
     $revisionsFile = $this->loadData('ItemRevision', 'default');
     $revision = $this->Item->getLastRevision($itemsFile[0]);
-    $this->assertEquals($revisionsFile[2]->getKey(), $revision->getKey());
+    $revisionKey = $revision->getKey();
+    $revisionRevision = $revision->getRevision();
+    // get the id for this item
+    $itemId = $itemsFile[0]->getKey();
+    // loop through all revisions, find highest that matches item id
+    $found = false;
+    foreach($revisionsFile as $revisionDao)
+      {
+      if($revisionDao->getItemId() === $itemId)
+        {
+        // see if we find the matching highest
+        if($revisionDao->getKey() === $revisionKey)
+          {
+          $found = true;
+          }
+        if($revisionDao->getRevision() > $revisionRevision)
+          {
+          $this->fail("testGetLastRevision found a revision higher than that of getLastRevision()");
+          }
+        }
+      }
+    $this->assertTrue($found, "testGetLastRevision never found the highest revision with getLastRevision()");
     }
 
   /** testAddRevision*/
