@@ -35,9 +35,13 @@ class Scheduler_Notification extends MIDAS_Notification
       {
       $params['fire_time'] = date('c');
       }
-    else
+    elseif(is_numeric($params['fire_time']))
       {
       $params['fire_time'] = date('c', $params['fire_time']);
+      }
+    else
+      {
+      $params['fire_time'] = $params['fire_time'];
       }
 
     if(!$params['run_only_once'])
