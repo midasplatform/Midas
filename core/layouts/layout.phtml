@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -9,7 +9,7 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-echo $this->doctype() 
+echo $this->doctype()
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -17,18 +17,18 @@ echo $this->doctype()
     <!-- Meta -->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title><?php echo $this->title ?></title>
-    
-    <meta name="description" content="<?php echo htmlentities($this->metaDescription)?>" /> 
+
+    <meta name="description" content="<?php echo htmlentities($this->metaDescription)?>" />
     <meta name="keywords" content="<?php echo htmlentities($this->metaKeywords)?>" />
-    <meta name="robots" content="index, follow, all" /> 
-    <noscript> 
-    <meta http-equiv="refresh" content="1; URL=<?php echo $this->webroot?>/index/nojs"> 
-    </noscript> 
-    
+    <meta name="robots" content="index, follow, all" />
+    <noscript>
+    <meta http-equiv="refresh" content="1; URL=<?php echo $this->webroot?>/index/nojs">
+    </noscript>
+
     <!--[if lte IE 6]>
-      <meta http-equiv="refresh" content="1; URL=<?php echo $this->webroot?>/index/nobrowser"> 
+      <meta http-equiv="refresh" content="1; URL=<?php echo $this->webroot?>/index/nobrowser">
     <![endif]-->
-   
+
     <!-- Import CSS -->
     <link rel="shortcut icon" href="<?php echo $this->coreWebroot ?>/public/images/icons/favicon.ico" />
     <?php
@@ -53,7 +53,7 @@ echo $this->doctype()
     <![endif]-->
     <?php echo $this->headLink();  // import the css ?>
     <?php echo $this->headStyle(); // import the css ?>
-    
+
   </head>
   <body>
     <div class="MainDialog" style="display:none;">
@@ -80,10 +80,10 @@ echo $this->doctype()
         <div class="TopbarLeft">
           <ul>
             <li class="first">
-              <a href="http://www.kitware.com/midasindex.html" >MIDAS</a>
+              <a href="http://midasplatform.org" target="_blank">MIDAS</a>
             </li>
             <li>
-              <a href="http://www.kitware.com" >Kitware</a>
+              <a href="http://www.kitware.com" target="_blank">Kitware</a>
             </li>
           </ul>
         </div>
@@ -104,8 +104,8 @@ echo $this->doctype()
                   echo '
                       <li onclick="location.replace(\''.$this->webroot.'/admin\');"><a>'.$this->t('Administration').'</a></li>';
                   }
-                  
-                                  
+
+
               $linksModules = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_USER_MENU", array());
               if(!empty($linksModules))
                 {
@@ -126,7 +126,7 @@ echo $this->doctype()
                 {
                 echo '<b><a class="loginLink" href="#" >'.$this->t('Login').'</a></b>';
                 }
-                ?>              
+                ?>
             </li>
             <li>
               <?php
@@ -138,23 +138,23 @@ echo $this->doctype()
                 {
                 echo '<a class="registerLink" href="#" > '.$this->t('Register').'</a>';
                 }
-                ?>  
+                ?>
             </li>
             <li>
               <a href="#" > <?= $this->t('Help') ?></a>
             </li>
             <li>
-              
+
                 <a href="#" style="margin-right: 20px">
-                
-               <?php 
+
+               <?php
                echo $this->t('My Language');
                 ?>
-              <img class="languageIcon" src="<?php echo $this->coreWebroot?>/public/images/icons/language.png" alt ="" /> 
+              <img class="languageIcon" src="<?php echo $this->coreWebroot?>/public/images/icons/language.png" alt ="" />
                 </a>
                 <ul>
                   <li>
-                  <?php 
+                  <?php
                   if($this->lang=='en')
                     {
                     echo '<a href="#"><b>English</b></a>';
@@ -166,7 +166,7 @@ echo $this->doctype()
                     ?>
                   </li>
                   <li>
-                  <?php 
+                  <?php
                   if($this->lang=='fr')
                     {
                     echo '<a href="#"><b>Francais</b></a>';
@@ -206,13 +206,13 @@ echo $this->doctype()
               </a>
             </li>
           </ul>
-          <div class="viewNoticeWrapper">          
+          <div class="viewNoticeWrapper">
             <div class="viewNotice"></div>
           </div>
         </div>
       </div>
     </div>
-    
+
     <div class="Wrapper">
       <?php
       if($this->needUpgrade)
@@ -242,7 +242,7 @@ echo $this->doctype()
                <li <?php if($this->activemenu=='uploaded') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/browse/uploaded');" ><a href="<?php echo $this->webroot?>/browse/uploaded"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/addfile.png" /><span> <?php echo $this->t('My uploads');?></span></a></li>
               <?php
                 }
-                
+
               $linksModules = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_LEFT_LINKS", array());
               if(!empty($linksModules))
                 {
@@ -276,7 +276,7 @@ echo $this->doctype()
                 if(is_array($item))
                   {
                   echo "<li onclick=\"location.replace('{$this->webroot}/item/{$item['item_id']}');\" class='recentItem' qtip='".  str_replace("'", '"', $item['name'])."'><a  href='{$this->webroot}/item/{$item['item_id']}'>".$this->slicename($item['name'],20)."</a></li>";
-                  }                  
+                  }
                 }
               echo '</ul>';
               }
@@ -289,13 +289,13 @@ echo $this->doctype()
               echo "<div class='viewHeader'>{$this->header} </div>";
               }
             ?>
-            
+
             <div class="viewWrapper">
               <!-- Content -->
               <?php echo $this->layout()->content ?>
               <!-- End Content -->
-          
-            </div>    
+
+            </div>
             <div class="clear"/>
           </div>
         </div>
@@ -307,7 +307,7 @@ echo $this->doctype()
         </div>
       </div>
       <hr style="display: none;"/>
-    </div> 
+    </div>
     <?php
               if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
                 {
@@ -328,7 +328,7 @@ echo $this->doctype()
       <?php echo $this->json?>
     </div>
   </body>
-  
+
   <?php
   $footers = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_FOOTER_LAYOUT", array());
   if(!empty($footers))
