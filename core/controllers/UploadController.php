@@ -290,10 +290,9 @@ class UploadController extends AppController
         }
       else
         {
-        if(!empty($pathClient))
+        if(!empty($pathClient) && $pathClient != ";;")
           {
           $parentDao = $this->Folder->load($parent);
-          $this->getLogger()->info($pathClient);
           $folders = explode('/', $pathClient);
           unset($folders[count($folders) - 1]);
           foreach($folders as $folderName)
