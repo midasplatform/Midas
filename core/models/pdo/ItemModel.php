@@ -305,11 +305,13 @@ class ItemModel extends ItemModelBase
       }
 
     $deleteType = array(MIDAS_FEED_CREATE_ITEM, MIDAS_FEED_CREATE_LINK_ITEM);
+
+
+    // explicitly typecast the itemId to a string, for postgres
     $sql = $this->database->select()
                           ->setIntegrityCheck(false)
                           ->from(array('p' => 'feed'))
-                          ->where('ressource = ?', $itemdao->getKey());
-
+                          ->where('ressource = ?', (string)$itemdao->getKey());
     $rowset = $this->database->fetchAll($sql);
     $this->ModelLoader = new MIDAS_ModelLoader();
     $feed_model = $this->ModelLoader->loadModel('Feed');

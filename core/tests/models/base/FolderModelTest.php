@@ -15,7 +15,7 @@ class FolderModelTest extends DatabaseTestCase
   /** init test*/
   public function setUp()
     {
-    $this->setupDatabase(array());
+    $this->setupDatabase(array('default'));
     $this->_models = array(
       'Folder', "Community", "Item", "Folderpolicyuser"
     );
