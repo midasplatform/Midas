@@ -82,7 +82,7 @@ text-align: left;
 
 form.genericForm input[type=text],form.genericForm input[type=password] ,form.genericForm textarea{
   margin-right: 10px;
-  background: #F3F1EC !important;
+  background: #F3F1EC;
   border: 1px solid grey;
   color: black;
   height: 18px;
@@ -98,7 +98,7 @@ form.genericForm textarea{
 }
 
 form.genericForm input[type=text]:hover,form.genericForm input[type=password]:hover, form.genericForm textarea:hover{
-  background: white !important;
+  background: white;
 }
 
 
