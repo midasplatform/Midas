@@ -22,13 +22,14 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/jqplot/jqplot
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
 <div class="viewMain">
   <h3>Statistics</h3>
-      
+
   <p> More information are available on <a target="_blank" href="<?php echo $this->piwikUrl?>">PIWIK</a></p>
   <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <div class="tabs" id='tabsGeneric'>
   <ul>
     <li><a href="#tabs-overview">Visitors Overview</a></li>
     <li><a href="#tabs-live">Live</a></li>
+    <li><a href="#tabs-map">World Map</a></li>
     <li><a href="#tabs-configuration">Visitors Configuration</a></li>
     <li><a href="#tabs-referrers">Referrers</a></li>
     <li><a href="#tabs-errors">Errors</a></li>
@@ -40,23 +41,26 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/jqplot/jqplot
     </div>
     <div id="tabs-live">
       <div id="widgetIframeLive"><iframe width="100%" height="650" src="<?php echo $this->piwikUrl?>/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Live&actionToWidgetize=widget&idSite=<?php echo $this->piwikId?>&language=en&period=day&date=today&disableLink=1&widget=1&token_auth=<?php echo $this->piwikKey?>" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
-    </div>        
+    </div>
+    <div id="tabs-map">
+      <div id="widgetIframeMap"><iframe width="100%" height="650" src="<?php echo $this->piwikUrl?>/index.php?module=Widgetize&action=iframe&moduleToWidgetize=UserCountryMap&actionToWidgetize=worldMap&idSite=1&period=week&date=today&disableLink=1&widget=1" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
+    </div>
     <div id="tabs-configuration">
       <div id="widgetIframeConfiguration"><iframe width="100%" height="650" src="<?php echo $this->piwikUrl?>/index.php?module=Widgetize&action=iframe&moduleToWidgetize=UserSettings&actionToWidgetize=getConfiguration&idSite=<?php echo $this->piwikId?>&language=en&period=day&date=today&disableLink=1&widget=1&token_auth=<?php echo $this->piwikKey?>" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
-      </div>        
+      </div>
     <div id="tabs-referrers">
       <div id="widgetIframeRef"><iframe width="100%" height="650" src="<?php echo $this->piwikUrl?>/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Referers&actionToWidgetize=getRefererType&idSite=<?php echo $this->piwikId?>&language=en&period=day&date=today&disableLink=1&widget=1&token_auth=<?php echo $this->piwikKey?>" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
-    </div>   
+    </div>
     <div id="tabs-errors">
       <div id="chartErrors" style="height:450px;width:800px; "></div>
-    </div>   
+    </div>
     <div id="tabs-assetstores">
       <div id="chartAssetstore" ></div>
-    </div>   
+    </div>
   </div>
 
 </div>
 <div class="viewSideBar">
-  
- 
+
+
 </div>

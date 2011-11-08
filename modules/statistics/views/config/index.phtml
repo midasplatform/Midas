@@ -29,23 +29,29 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
   
     This module requires PIWIK.<br/>
     To install it: <a href="http://piwik.org/docs/installation/" target='_blank'>http://piwik.org/docs/installation/</a><br/><br/>
+    This module requires an IPInfoDb API key.<br/>
+    To get one, create an account at: <a href="http://www.ipinfodb.com/register.php" target='_blank'>http://www.ipinfodb.com/register.php</a><br/><br/>
      <?php
       echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>Statistics Module Configuration:</h3>
-            <div >
-              <label for='hachoir'>URL Piwik</label>
+            <div>
+              <label for='hachoir'>Piwik URL</label>
               {$this->configForm['piwikurl']}
             </div>
-            <div >
+            <div>
               <label for='hachoir'>Piwik API Key</label>
               {$this->configForm['piwikapikey']}
             </div>
-            <div >
+            <div>
               <label for='hachoir'>Piwik site ID</label>
               {$this->configForm['piwikid']}
             </div>
-            <div >
+            <div>
+              <label for='hachoir'>IPInfoDB API Key</label>
+              {$this->configForm['ipinfodbapikey']}
+            </div>
+            <div>
               <label for='hachoir'>Send Daily Reports to the Administrators</label>
               {$this->configForm['report']}
             </div>
