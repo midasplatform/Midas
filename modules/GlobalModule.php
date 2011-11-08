@@ -28,6 +28,7 @@ class MIDAS_GlobalModule extends AppController
       }
     $fc = Zend_Controller_Front::getInstance();
     $this->view->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
+    $this->view->moduleName = $this->moduleName;
 
     $stack = debug_backtrace();
     $forward = $this->_getParam('forwardModule');

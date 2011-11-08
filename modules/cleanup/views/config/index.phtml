@@ -1,0 +1,52 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.spinbox.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.index.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.spinbox.css" />
+<div class="viewMain">
+     <div class ="genericWrapperTopRight">
+       <?php
+          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+            echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+            echo $this->t('Back');
+            echo '</a>';
+          echo '</div>';
+
+        ?>
+    </div>
+
+    <?php
+      echo "
+      <form class='genericForm' id='configForm' method='{$this->configForm['method']}' action='{$this->configForm['action']}'>
+      <h3>Cleanup Module Configuration:</h3>
+          <div >
+            <label for='olderThan'>Days to keep partial files</label>
+            {$this->configForm['olderThan']}
+          </div>
+          <div>
+            {$this->configForm['submitConfig']}
+          </div>
+       </form>";
+     ?>
+
+</div>
+
+
+
+
+
+
