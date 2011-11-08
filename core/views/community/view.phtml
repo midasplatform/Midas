@@ -10,14 +10,14 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/community/community.view.js');
-$this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js'); 
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/community/community.view.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 foreach($this->customJSs as $Urls)
-  {          
+  {
     foreach($Urls as $url)
       {
-        $this->headScript()->appendFile($url);
+      $this->headScript()->appendFile($url);
       }
   }
 ?>
@@ -26,11 +26,11 @@ foreach($this->customJSs as $Urls)
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/community/community.view.css" />
 <?php
 foreach($this->customCSSs as $Uris)
-  {          
-    foreach($Uris as $uri)
-      {
-        echo "<link type='text/css' rel='stylesheet' href={$uri} />";
-      }
+  {
+  foreach($Uris as $uri)
+    {
+    echo "<link type='text/css' rel='stylesheet' href={$uri} />";
+    }
   }
 ?>
 
@@ -56,9 +56,9 @@ foreach($this->customCSSs as $Uris)
      <div id="joinCommunityDiv" class="genericBigButton genericWrapperTopRight">
      <form id="joinCommunityForm" type='post' action=''>
       <input style="margin:0px;padding:0px;" id="joinCommunity_submit" name='joinCommunity' type='submit' value='<?php echo $this->t('Join the community') ?>' />
-     </form>    
+     </form>
      </div>
-   <?php } ?> 
+   <?php } ?>
     <div class="genericName"><?php echo $this->communityDao->getName();?></div>
     <div class="genericSubtitle" style="color:grey;"><?php echo $this->communityDao->getDescription(); ?></div>
   </div>
@@ -76,7 +76,7 @@ foreach($this->customCSSs as $Uris)
     <?php
       }
       ?>
-    
+
     <?php
     if($this->isMember)
       {
@@ -129,8 +129,8 @@ foreach($this->customCSSs as $Uris)
               echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId()}' /></td>";
               echo "</tr>";
               $node++;
-              } 
-              
+              }
+
             foreach($this->items as $item)
               {
               echo "<tr id='node--$node' policy='{$item->policy}' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
@@ -164,11 +164,11 @@ foreach($this->customCSSs as $Uris)
 
 
 <div class="viewSideBar">
-  
+
   <?php
   if($this->isModerator||$this->isAdmin||$this->isMember)
     {
-    echo "  
+    echo "
     <div class='sideElementFirst genericAction'>
       <h1>Actions</h1>
         <ul>";
@@ -187,13 +187,13 @@ foreach($this->customCSSs as $Uris)
           <li><a href='{$this->webroot}/community/{$this->communityDao->getKey()}?leaveCommunity=true'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Leave the community')}</a></li>
           ";
       }
-    echo 
+    echo
     "  </ul>
     </div>";
     }
   ?>
    <div class="sideElement<?php echo (!$this->isModerator&&!$this->isAdmin&&!$this->isMember)?'First':''?> genericCommunities">
-    <h1><?php echo $this->t('Members')?></h1>    
+    <h1><?php echo $this->t('Members')?></h1>
       <ul>
       <?php
         $i=0;
@@ -206,8 +206,8 @@ foreach($this->customCSSs as $Uris)
       </ul>
    </div>
    <div class="sideElementLast genericStats">
-    <h1>Stats</h1>  
-    
+    <h1>Stats</h1>
+
     <?php
       echo "<ul>";
       echo "  <li>".count($this->members)." {$this->t("member")}".((count($this->members)>1)?'s':'')."</li>";
@@ -233,7 +233,7 @@ foreach($this->customCSSs as $Uris)
       <span></span>
     </div>
     <div class="sideElementLast viewInfo">
-      <h1>Info</h1>    
+      <h1>Info</h1>
       <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
       <div class="ajaxInfoElement">
       </div>
@@ -248,7 +248,7 @@ foreach($this->customCSSs as $Uris)
     foreach($this->folders as $folder)
       {
       echo "<a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a> ";
-      } 
-    ?>  
+      }
+    ?>
 </div>
 

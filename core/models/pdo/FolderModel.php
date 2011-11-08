@@ -834,6 +834,12 @@ class FolderModel extends FolderModelBase
       throw new Zend_Exception("Should be an item.");
       }
     $this->database->removeLink('items', $folder, $item);
+    if(count($item->getFolders()) == 0)
+      {
+      $modelLoader = new MIDAS_ModelLoader();
+      $itemModel = $modelLoader->loadModel('Item');
+      $itemModel->delete($item);
+      }
     } // end function addItem
 
   /** Return an item by its name
