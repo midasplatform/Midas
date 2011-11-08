@@ -43,31 +43,31 @@ class CDashComponent extends AppComponent
         throw new Zend_Exception("The status should be passed or failed");
         }
       }
-    $xml = '<?xml version="1.0" encoding="UTF-8"?>
-            <Site BuildName="'.$buildName.'"
-              BuildStamp="'.date('Ymd').'-'.((int)date('G')*60 + (int)date('i')).'-'.$buildType.'"
-              Name="'.$machineName.'"
-              Generator=""
-              CompilerName=""
-              OSName=""
-              Hostname=""
-              OSRelease=""
-              OSVersion=""
-              OSPlatform=""
-              Is64Bits=""
-              VendorString=""
-              VendorID=""
-              FamilyID=""
-              ModelID=""
-              ProcessorCacheSize=""
-              NumberOfLogicalCPU=""
-              NumberOfPhysicalCPU=""
-              TotalVirtualMemory=""
-              TotalPhysicalMemory=""
-              LogicalProcessorsPerPhysical=""
-              ProcessorClockFrequency=""
-            >
-            <Testing>
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+    $xml .= '        <Site BuildName="'.$buildName.'"';
+    $xml .= '          BuildStamp="'.date('Ymd').'-'.((int)date('G') * 60 + (int)date('i')).'-'.$buildType.'"';
+    $xml .= '          Name="'.$machineName.'"';
+    $xml .= '          Generator=""';
+    $xml .= '          CompilerName=""';
+    $xml .= '          OSName=""';
+    $xml .= '          Hostname=""';
+    $xml .= '          OSRelease=""';
+    $xml .= '          OSVersion=""';
+    $xml .= '          OSPlatform=""';
+    $xml .= '          Is64Bits=""';
+    $xml .= '          VendorString=""';
+    $xml .= '          VendorID=""';
+    $xml .= '          FamilyID=""';
+    $xml .= '          ModelID=""';
+    $xml .= '          ProcessorCacheSize=""';
+    $xml .= '          NumberOfLogicalCPU=""';
+    $xml .= '          NumberOfPhysicalCPU=""';
+    $xml .= '          TotalVirtualMemory=""';
+    $xml .= '          TotalPhysicalMemory=""';
+    $xml .= '          LogicalProcessorsPerPhysical=""';
+    $xml .= '          ProcessorClockFrequency=""';
+    $xml .= '        >';
+    $xml .= '        <Testing>
             <StartDateTime>'.date('M m H:i T').'</StartDateTime>
             <StartTestTime>'.time().'</StartTestTime>
             <TestList>
@@ -77,7 +77,7 @@ class CDashComponent extends AppComponent
       $xml .= '<Test>'.$name.'</Test>
         ';
       }
-    $xml .='</TestList>
+    $xml .= '</TestList>
       ';
     foreach($tests as $name => $test)
       {
@@ -99,7 +99,7 @@ class CDashComponent extends AppComponent
         </Results>
       </Test>';
       }
-    $xml .='
+    $xml .= '
         <EndDateTime>'.date('M m H:i T').'</EndDateTime>
           <EndTestTime>'.time().'</EndTestTime>
         <ElapsedMinutes>0</ElapsedMinutes></Testing>
@@ -120,7 +120,7 @@ class CDashComponent extends AppComponent
       throw new Zend_Exception("Problem with ".$url.", ".$php_errormsg);
       }
     $response = stream_get_contents($fp);
-    if ($response === false)
+    if($response === false)
       {
       throw new Zend_Exception("Problem reading data from ".$url.", ".$php_errormsg);
       }
