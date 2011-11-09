@@ -304,6 +304,7 @@ class UploadComponent extends AppComponent
 
     if($itemRevisionDao == null)
       {
+      Zend_Loader::loadClass("ItemRevisionDao", BASE_PATH . '/core/models/dao');
       $itemRevisionDao = new ItemRevisionDao;
       $itemRevisionDao->setChanges($changes);
       $itemRevisionDao->setUser_id($userDao->getKey());
