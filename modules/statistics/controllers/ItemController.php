@@ -41,7 +41,9 @@ class Statistics_ItemController extends Statistics_AppController
 
       if($latitude || $longitude)
         {
-        $markers[] = array($latitude, $longitude);
+        $markers[] = array('latitude' => $latitude,
+                           'longitude' => $longitude,
+                           'date' => $key);
         }
       }
 
