@@ -173,8 +173,10 @@ if($this->preview) // module visualize
 
 </div>
 <div class="viewSideBar">
-    <?php
-  if($this->preview || $this->isModerator ||$this->isAdmin)
+  <?php
+  $modules = Zend_Registry::get('modulesEnable');
+  $statisticsEnabled = in_array('statistics', $modules);
+  if($this->preview || $this->isModerator ||$this->isAdmin || $statisticsEnabled)
     {?>
   <div class="sideElementFirst viewAction">
 
@@ -211,15 +213,6 @@ if($this->preview) // module visualize
         }
       if($this->isAdmin)
         {
-        $modules = Zend_Registry::get('modulesEnable');
-         if(in_array('statistics', $modules))
-          {
-          echo
-         "<li>
-            <a href='".$this->webroot."/statistics/item?id=".$this->itemDao->getKey()."'><img alt='' src='{$this->coreWebroot}/public/images/icons/metadata.png'/> {$this->t('Statistics')}</a>
-          </li>
-            ";
-          }
         echo
        "
         <li>
@@ -235,6 +228,10 @@ if($this->preview) // module visualize
           echo $html;
           }
         }
+      echo
+        "<li>
+          <a href='".$this->webroot."/statistics/item?id=".$this->itemDao->getKey()."'><img alt='' src='{$this->coreWebroot}/public/images/icons/metadata.png'/> {$this->t('Statistics')}</a>
+        </li>";
       ?>
     </ul>
   </div>
