@@ -138,8 +138,13 @@ div.viewAction hr, div.genericAction hr{
 }
 
 .jgrowl div{
+  background-color: #578DBB!important;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#578DBB), to(#325372))!important;
+  background-image: -moz-linear-gradient(center top, #578DBB 0%, #325372 100% )!important;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#578DBB', endColorstr='#325372')!important;
+
   border: 2px solid grey!important;
-  font-size: 12px!important;
+  font-size: 13px!important;
   font-weight: bold!important;
   box-shadow: 0 0 5px #57BB7D!important;
   -webkit-box-shadow: 0 0 5px #57BB7D!important;

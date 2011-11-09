@@ -26,10 +26,12 @@ class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
         'script' =>  array('type' => MIDAS_DATA),
         'params' =>  array('type' => MIDAS_DATA),
         'status' =>  array('type' => MIDAS_DATA),
+        'creator_id' =>  array('type' => MIDAS_DATA),
         'expiration_date' =>  array('type' => MIDAS_DATA),
         'creation_date' =>  array('type' => MIDAS_DATA),
         'start_date' =>  array('type' => MIDAS_DATA),
         'items' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Item', 'table' => 'remoteprocessing_job2item', 'parent_column' => 'job_id', 'child_column' => 'item_id'),
+        'creator' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'creator_id', 'child_column' => 'user_id'),
         );
     $this->initialize(); // required
     } // end __construct()

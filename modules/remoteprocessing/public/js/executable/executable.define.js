@@ -53,10 +53,18 @@
       $(this).remove();
       $.ajax({
              type: "POST",
-             url: "",
+             url: json.global.webroot+"/remoteprocessing/executable/define?itemId="+$('#itemIdExecutable').val(),
              data: req ,
              success: function(x){
-               window.location.replace($('.webroot').val()+'/item/'+json.item.item_id)
+               if(typeof(isDefineAjax) === 'undefined' || !isDefineAjax)
+                 {
+                  window.location.replace($('.webroot').val()+'/item/'+json.item.item_id)
+                 }
+               else
+                 {
+                 $( "div.MainDialog" ).dialog("close");
+                 isExecutableMeta = true;
+                 }
              }
            });
     });

@@ -608,10 +608,10 @@ function sliceFileName(name,nchar)
             text: text
          },
          position: {
-            my: 'top right', // Not really important...
+            my: 'top right',
             at: (target.length ? 'bottom' : 'top') + ' right', // If target is window use 'top right' instead of 'bottom right'
-            target: target.length ? target : $(document.body), // Use our target declared above
-            adjust: {y: 5} // Add some vertical spacing
+            target: target.length ? target : $(".HeaderContent"), // Use our target declared above
+            adjust: { y: target.length ? -20 : 50 } // Add some vertical spacing
          },
          show: {
             event: false, // Don't show it on a regular event

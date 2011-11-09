@@ -1,0 +1,13 @@
+div.HeaderAction ul li.processButton{
+  background-color: #578dbb;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#578dbb), to(#325372));
+  background-image: -moz-linear-gradient(center top, #578dbb 0%, #325372 100% );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#578dbb', endColorstr='#325372');
+}
+
+div.HeaderAction ul li.processButton:hover{
+  background-color: #5b7ad2;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#5b7ad2), to(#42779d));
+  background-image: -moz-linear-gradient(center top, #5b7ad2 0%, #42779d 100% );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#5b7ad2', endColorstr='#42779d');
+}

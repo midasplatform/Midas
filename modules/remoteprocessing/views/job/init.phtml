@@ -12,95 +12,116 @@ PURPOSE.  See the above copyright notices for more information.
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.timepicker-addon.js');
 $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.init.js');
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.smartWizard-2.0.js');
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/job/job.init.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.timepicker-addon.css" />
-<div class="viewMain">
-     <div class ="genericWrapperTopRight">
-         <?php
-          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/remoteprocessing/job/manage?itemId={$this->itemDao->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-            echo $this->t('Back');
-            echo "</a>";
-          echo '</div>';
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.smartWizard-2.0.css" />
 
+<div id="wizard" class="swMain">
+  <ul>
+    <li>
+      <a href="#step-1">
+          <span class="stepDesc">
+             1. Upload<br />
+             <small>Upload additional data</small>
+          </span>
+      </a>
+    </li>
+    <li>
+      <a href="#step-2">
+          <span class="stepDesc">
+             2. Executable<br />
+             <small>Select an executable</small>
+          </span>
+      </a>
+    </li>
+    <li>
+      <a href="#step-3">
+
+          <span class="stepDesc">
+             3. Parameters<br />
+             <small>Set up job's parameters</small>
+          </span>
+       </a>
+    </li>
+    <li>
+      <a href="#step-4">
+          <span class="stepDesc">
+             4. Metrics<br />
+             <small>How evaluate the job results</small>
+          </span>
+      </a>
+    </li>
+  </ul>
+  <div id="step-1">
+      <h2 class="StepTitle">Upload (Optional)</h2>
+      <br/><b>A processing job requires at least an executable. <br/>Please upload the file you want to process.</b> (you can use browse MIDAS content)<br/>
+      <br/>
+
+      <div id='uploadContentBlock'>
+        <img  src="<?php echo $this->webroot?>/core/public/images/icons/loading.gif" alt="Loading..." />
+      </div>
+      <br/>
+      <b>Go to the <a onclick="$('.buttonNext').click();" >next step</a> if you want to use already uploaded files.</b>
+
+  </div>
+  <div id="step-2">
+      <h2 class="StepTitle">Executable</h2>
+      <br/><b>Select the executable you want to use.</b>
+      <br/><br/>
+      <?php
+        echo '<div id="browseExecutableFile" class="genericBigButton ">';
+          echo "<a  ><img  alt='' src='{$this->coreWebroot}/public/images/FileTree/file.png'/>";
+          echo $this->t('Browse');
+          echo "</a>";
+        echo '</div>';
         ?>
+
+      <div id='recentuploadContentBlock'>
+        <img  src="<?php echo $this->webroot?>/core/public/images/icons/loading.gif" alt="Loading..." />
+      </div>
+      <br/><br/>
+      <b>Selected Item:</b> <span id="selectedExecutable"><?php echo (isset($this->itemDao))? $this->itemDao->getName():'None'?></span>
+      <input type="hidden" id="selectedExecutableId" value="<?php echo (isset($this->itemDao))? $this->itemDao->getKey():''?>"/>
+  </div>
+  <div id="step-3">
+      <h2 class="StepTitle">Parameters</h2>
+      <br/>
+      <b>Here are listed the options executable options. Please fill the form using the data you want to process.</b><br/><br/>
+      <?php
+      if($this->scheduled)
+        {?>
+        A scheduled job require folder inputs. All the data located in these folders will be periodically processed.<br/><br/>
+        <?php
+        }
+      ?>
+
+      <br/>
+      <div id="executableForm" loaded="">
+      </div>
+
+    <?php if($this->scheduled)
+      {?>
+    <input type='checkbox' id="checkboxSchedule" name="checkboxSchedule"/> <label for="checkboxSchedule">Run as soon as possible</label>
+    <div id="schedulerWrapper" >
+      Date and Time: <input type="text" id="datepicker"> Every: <select id="intervalSelect">
+        <option value="0">Only once</option>
+        <option value="3600">Hours</option>
+        <option value="86400">Days</option>
+        <option value="604800">Weeks</option>
+      </select>
     </div>
+    <br/>
+    <?php
+      }?>
 
-  <br/>
-  <br/>
-  <?php
-  $i = 0;
-  foreach($this->metaContent->option as $option)
-    {
-    echo "<div id='option_".$i."' name='".htmlentities(ucfirst($option->name))."' class='optionWrapper' tag='".htmlentities($option->tag)."'>";
-    echo "<h4>".ucfirst($option->name)."</h4>";
-
-    $type = 'inputParam';
-    if($option->channel == 'ouput')
-      {
-      elementOuputFile($i, $option);
-      }
-    else if($option->field->external == 1)
-      {
-      elementInputFile($i, $option);
-      }
-    else
-      {
-      elementInputParam($i, $option);
-      }
-    echo "</div>";
-    $i++;
-    }
-  ?>
-    <input type='checkbox' id="checkboxSchedule" name="checkboxSchedule" checked/> <label for="checkboxSchedule">Run as soon as possible</label>
-  <div id="schedulerWrapper" >
-    Date and Time: <input type="text" id="datepicker"> Every: <select id="intervalSelect">
-      <option value="0">Only once</option>
-      <option value="3600">Hours</option>
-      <option value="86400">Days</option>
-      <option value="604800">Weeks</option>
-    </select>
   </div>
-  <br/>
-
-  <h3>Command preview:</h3>
-  <div id="commandGenerated">
+  <div id="step-4">
+      <h2 class="StepTitle">Metrics</h2>
+       Todo
   </div>
-
-
-  <br/>
-
-   <?php
-    echo '<div class="genericBigButton ">';
-      echo "<a id='creatJobLink' ><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/add.png'/>";
-      echo $this->t('Schedule Job');
-      echo "</a>";
-    echo '</div>';
-  ?>
-
 </div>
-
-<?php
-
-function elementOuputFile($i, $option)
-  {
-  echo "<a class='selectOutputFolderLink' order='$i'>Select Ouput Folder</a><br/>";
-  echo "Selected: <span class='selectedFolder' element=''></span><br/>";
-  echo "Name of the output: <input type='text' class='nameOutputOption'/>";
-  }
-
-function elementInputFile($i, $option)
-  {
-  echo "<a class='selectInputFileLink' order='$i'>Select Input File</a> or <a qtip='All the data contained in the selected folder will be processed' class='selectInputFolderLink' order='$i'>Select Input Folder</a><br/>";
-  echo "Selected: <span style='display:none'; class='selectedFolderContent' element=''></span><span class='selectedItem' element=''></span>";
-  }
-
-function elementInputParam($i, $option)
-  {
-  echo "Value (".ucfirst($option->field->type)."): <input variable='".$option->field->type."' type='text' qtip='Example multiple values: <b>5;6;9</b><br/>Example range with a step of 0.5: <b>5-10(0.5)</b>' class='valueInputOption'/>";
-  }
-?>
 
 
 
