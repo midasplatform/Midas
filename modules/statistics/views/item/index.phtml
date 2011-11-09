@@ -10,35 +10,56 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/item/index.index.js');
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/jquery.jqplot.js');
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/jqplot/jqplot.dateAxisRenderer.min.js');
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/jqplot/jqplot.pieRenderer.min.js');
+$this->headScript()->appendFile('http://maps.googleapis.com/maps/api/js?sensor=false');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/item/index.index.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/jquery.jqplot.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/jqplot/jqplot.dateAxisRenderer.min.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/jqplot/jqplot.pieRenderer.min.js');
 ?>
 <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/excanvas.min.js"></script><![endif]-->
 <link rel="stylesheet" type="text/css" href="<?php echo $this->moduleWebroot?>/public/css/jquery.jqplot.css" />
 
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/item/index.index.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/index/index.index.css" />
 <div class="viewMain">
   <div class ="genericWrapperTopRight">
-         <?php
-          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/item/".$this->itemDao->getKey()."'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-            echo $this->t('Back');  
-            echo "</a>";
-          echo '</div>';
-          
-        ?>
-    </div>
+    <?php
+      echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+        echo "<a  href='{$this->webroot}/item/".$this->itemDao->getKey()."'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+          echo $this->t('Back');
+        echo "</a>";
+      echo '</div>';
+    ?>
+  </div>
   <h3>Statistics - <?php echo $this->itemDao->getName()?></h3>
 
-   
-  <div id="chartDownloads" style="height:450px;width:800px; "></div>
- 
+  <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+  <div class="tabs" id='tabsGeneric'>
+    <ul>
+      <li><a href="#tabs-map">Download Map</a></li>
+      <li><a href="#tabs-chart">Daily Totals</a></li>
+    </ul>
+    <div id="tabs-map">
+      <div id="map_canvas" style="width:800px; height:450px;"></div>
+    </div>
+    <div id="tabs-chart">
+      <div id="chartDownloads" style="height:450px; width:800px;"></div>
+    </div>
   </div>
 
-<div class="viewSideBar">
-  
- 
+  <!-- START! -->
+  <script type="text/javascript">
+  function placeDownloadPins(theMap)
+    {
+    var myLatlng = new google.maps.LatLng(35, -100.044922);
+
+    var marker = new google.maps.Marker({
+      position: myLatlng,
+      map: theMap,
+      title:"Hello World!!"
+      });
+    }
+  </script>
+<!-- END -->
 </div>
