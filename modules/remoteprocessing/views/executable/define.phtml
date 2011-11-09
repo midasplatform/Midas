@@ -10,18 +10,28 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/executable/executable.define.js');
-
+if($this->isAjax)
+  {
+  echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/executable/executable.define.js"></script>';
+  }
+else
+  {
+  $this->headScript()->appendFile($this->moduleWebroot . '/public/js/executable/executable.define.js');
+  }
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/executable/executable.define.css" />
+
 <div class="viewMain">
      <div class ="genericWrapperTopRight">
          <?php
-          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/item/{$this->itemDao->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-            echo $this->t('Back');
-            echo "</a>";
-          echo '</div>';
+         if(!$this->isAjax)
+           {
+            echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+              echo "<a  href='{$this->webroot}/item/{$this->itemDao->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+              echo $this->t('Back');
+              echo "</a>";
+            echo '</div>';
+           }
 
         ?>
     </div>
@@ -59,7 +69,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/executable/ex
 </div>
 
 <div id="jsonMetadataContent"><?php echo $this->jsonMetadata?></div>
-
+<input type="hidden" id="itemIdExecutable" value="<?php echo$this->itemDao->getKey()?>"/>
 
 
 

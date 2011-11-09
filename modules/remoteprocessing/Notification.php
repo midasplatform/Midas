@@ -18,26 +18,43 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_REMOTEPROCESSING_IS_EXECUTABLE', 'isExecutable');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getActionMenu');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_INFO', 'getItemInfo');
+    $this->addCallBack('CALLBACK_CORE_LAYOUT_TOPBUTTONS', 'getButton');
+    $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getFooter');
+    $this->addCallBack('CALLBACK_CORE_GET_FOOTER_HEADER', 'getHeader');
     $this->addCallBack('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', 'processProcessingResults');
     $this->addCallBack('CALLBACK_REMOTEPROCESSING_ADD_JOB', 'addJob');
     }//end init
 
+  /** get layout header */
+  public function getHeader()
+    {
+    return '<link type="text/css" rel="stylesheet" href="'.Zend_Registry::get('webroot').'/modules/remoteprocessing/public/css/layout/remoteprocessing.css" />';
+    }
+  /** get layout footer */
+  public function getFooter()
+    {
+    return '<script type="text/javascript" src="'.Zend_Registry::get('webroot').'/modules/remoteprocessing/public/js/layout/remoteprocessing.js"></script>';
+    }
+
+  /** add a process button */
+  public function getButton($params)
+    {
+    $html =  "<li class='processButton' style='margin-left:5px;' title='Process' rel='".Zend_Registry::get('webroot')."/remoteprocessing/index/selectaction'>
+                <a href='#'><img id='processButtonImg' src='".Zend_Registry::get('webroot')."/modules/remoteprocessing/public/images/process-ok.png' alt='Start a process'/>
+                <img id='processButtonLoadiing' style='margin-top:5px;display:none;' src='".Zend_Registry::get('webroot')."/core/public/images/icons/loading.gif' alt=''/>
+                  Process
+                </a>
+              </li> ";
+    return $html;
+    }
+
   /** check if item contains an executable */
   public function isExecutable($params)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('Item');
+    $componentLoader = new MIDAS_ComponentLoader();
     $item = $params['item'];
-    $revision = $itemModel->getLastRevision($item);
-    $bitstreams = $revision->getBitstreams();
-    foreach($bitstreams as $b)
-      {
-      if(is_executable($b->getFullPath()))
-        {
-        return true;
-        }
-      }
-    return false;
+    $executableComponent = $componentLoader->loadComponent("Executable", "remoteprocessing");
+    return $executableComponent->getExecutable($item) !== false;
     }
 
   /** get action menu*/
@@ -246,6 +263,11 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       $date = new Zend_Date();
       $date->add('5', Zend_Date::HOUR);
       $job->setExpirationDate($date->toString('c'));
+      }
+
+    if(isset($params['params']['creator_id']))
+      {
+      $job->setCreatorId($params['params']['creator_id']);
       }
 
     $job->setParams(JsonComponent::encode($params['params']));

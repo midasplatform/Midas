@@ -60,6 +60,10 @@ class Scheduler_Notification extends MIDAS_Notification
       {
       $job->setTimeInterval($params['time_interval']);
       }
+    if($this->logged)
+      {
+      $job->setCreatorId($this->userSession->Dao->getKey());
+      }
     $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
     $job->setParams(JsonComponent::encode($params['params']));
 

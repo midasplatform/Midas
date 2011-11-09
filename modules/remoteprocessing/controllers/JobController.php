@@ -48,40 +48,59 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       }
     }
 
-  /** init a job */
+  /** init a job*/
   function initAction()
     {
-    $this->view->header = $this->t("Job");
+    $this->view->header = $this->t("Create Job Wizard");
+    if(!$this->logged)
+      {
+      $this->haveToBeLogged();
+      return false;
+      }
+    $scheduled = $this->_getParam("scheduled");
+    if(isset($scheduled))
+      {
+      $scheduled = true;
+      $this->view->header = $this->t("Schedule Job Wizard");
+      }
+    else
+      {
+      $scheduled = false;
+      }
+
     $itemId = $this->_getParam("itemId");
-    if(!isset($itemId) || !is_numeric($itemId))
+    if(isset($itemId))
       {
-      throw new Zend_Exception("itemId  should be a number");
+      $itemDao = $this->Item->load($itemId);
+      if($itemDao === false)
+        {
+        throw new Zend_Exception("This item doesn't exist.");
+        }
+      $this->view->itemDao = $itemDao;
       }
 
-    $itemDao = $this->Item->load($itemId);
-    if($itemDao === false)
-      {
-      throw new Zend_Exception("This item doesn't exist.");
-      }
-    if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
-      {
-      throw new Zend_Exception("Problem policies.");
-      }
-
-    $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
-    if($metaFile == false)
-      {
-      $this->_redirect('/remoteprocessing/executable/define?init=false&itemId='.$itemDao->getKey());
-      return;
-      }
-
-    $metaContent = new SimpleXMLElement(file_get_contents($metaFile->getFullPath()));
-    $this->view->metaContent = $metaContent;
-
-    $this->view->itemDao = $itemDao;
-    $this->view->json['item'] = $itemDao->toArray();
+    $this->view->json['job']['scheduled'] = $scheduled;
+    $this->view->scheduled = $scheduled;
     if($this->_request->isPost())
       {
+      $itemId = $this->_getParam("itemId");
+      if(!isset($itemId) || !is_numeric($itemId))
+        {
+        throw new Zend_Exception("itemId  should be a number");
+        }
+
+      $itemDao = $this->Item->load($itemId);
+      if($itemDao === false)
+        {
+        throw new Zend_Exception("This item doesn't exist.");
+        }
+      if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+        {
+        throw new Zend_Exception("Problem policies.");
+        }
+
+      $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
+      $metaContent = new SimpleXMLElement(file_get_contents($metaFile->getFullPath()));
       $this->disableLayout();
       $this->disableView();
 
@@ -185,8 +204,52 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           }
         }
 
-      $this->ModuleComponent->Executable->initAndSchedule($itemDao, $cmdOptions, $parametersList, $fire_time, $time_interval, $only_once);
+      $this->ModuleComponent->Executable->initAndSchedule($this->userSession->Dao, $itemDao, $cmdOptions, $parametersList, $fire_time, $time_interval, $only_once);
       }
+    }
+
+  /** return the executable form (should be an ajax call) */
+  function getinitexecutableAction()
+    {
+    $this->disableLayout();
+    $itemId = $this->_getParam("itemId");
+    $scheduled = $this->_getParam("scheduled");
+    if(isset($scheduled) && $scheduled == 1)
+      {
+      $scheduled = true;
+      }
+    else
+      {
+      $scheduled = false;
+      }
+
+    $this->view->scheduled = $scheduled;
+    if(!isset($itemId) || !is_numeric($itemId))
+      {
+      throw new Zend_Exception("itemId  should be a number");
+      }
+
+    $itemDao = $this->Item->load($itemId);
+    if($itemDao === false)
+      {
+      throw new Zend_Exception("This item doesn't exist.");
+      }
+    if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception("Problem policies.");
+      }
+
+    $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
+    if($metaFile == false)
+      {
+      throw new Zend_Exception("Unable to find meta information");
+      }
+
+    $metaContent = new SimpleXMLElement(file_get_contents($metaFile->getFullPath()));
+    $this->view->metaContent = $metaContent;
+
+    $this->view->itemDao = $itemDao;
+    $this->view->json['item'] = $itemDao->toArray();
     }
 
   /** view a job */
@@ -259,5 +322,85 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     $this->view->executable = $executable;
     $this->view->parameters = $parametersList;
     }
+
+  /** Valid  entries (ajax) */
+  public function validentryAction()
+    {
+    if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
+      {
+      throw new Zend_Exception("Why are you here? Should be ajax.");
+      }
+
+    $this->disableLayout();
+    $this->disableView();
+    $entry = $this->_getParam("entry");
+    $type = $this->_getParam("type");
+    if(!is_string($entry) || !is_string($type))
+      {
+      echo 'false';
+      return;
+      }
+    switch($type)
+      {
+      case 'isexecutable' :
+        $itemDao = $this->Item->load($entry);
+        if($itemDao !== false && $this->ModuleComponent->Executable->getExecutable($itemDao) !== false)
+          {
+          echo "true";
+          }
+        else
+          {
+          echo "false";
+          }
+        return;
+      case 'ismeta' :
+        $itemDao = $this->Item->load($entry);
+        if($itemDao !== false && $this->ModuleComponent->Executable->getMetaIoFile($itemDao) !== false)
+          {
+          echo "true";
+          }
+        else
+          {
+          echo "false";
+          }
+        return;
+      default :
+        echo "false";
+        return;
+      }
+    } //end valid entry
+
+  /** Get  entries (ajax) */
+  public function getentryAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    $entry = $this->_getParam("entry");
+    $type = $this->_getParam("type");
+    if(!is_string($type))
+      {
+      echo JsonComponent::encode(false);
+      return;
+      }
+    switch($type)
+      {
+      case 'getRecentExecutable' :
+        $recent = array();
+        foreach($this->userSession->uploaded as $item)
+          {
+          $item = $this->Item->load($item);
+
+          if($item != false && $this->ModuleComponent->Executable->getExecutable($item) !== false)
+            {
+            $recent[] = $item->toArray();
+            }
+          }
+        echo JsonComponent::encode($recent);
+        return;
+      default :
+        echo JsonComponent::encode(false);
+        return;
+      }
+    } //end valid entry
 
 }//end class

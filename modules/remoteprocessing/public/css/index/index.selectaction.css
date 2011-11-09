@@ -1,0 +1,38 @@
+
+#selectactionBlock .blockSet{
+  width: 262px;
+  float: left;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  padding: 1px;
+  margin: 5px;
+  border: 1px solid #CCC;
+  cursor:pointer;
+}
+
+#selectactionBlock .blockSet:hover{
+  border: 2px solid #D3E8F8;
+  padding: 0px;
+  box-shadow: 1px 2px 4px #b9b9b9;
+  -moz-box-shadow: 1px 2px 4px #b9b9b9;
+  -webkit-box-shadow: 1px 2px 4px #b9b9b9;
+}
+
+#seperatorSelectAction{
+    background-color: #ffffff;
+    height:5px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#c4c4c4));
+    background-image: -moz-linear-gradient(center top, #ffffff 0%, #c4c4c4 100% );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#c4c4c4');
+      box-shadow: 1px 2px 4px #b9b9b9;
+  -moz-box-shadow: 1px 2px 4px #b9b9b9;
+  -webkit-box-shadow: 1px 2px 4px #b9b9b9;
+    -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+#selectactionBlock h4{
+  margin-bottom: 2px;
+}

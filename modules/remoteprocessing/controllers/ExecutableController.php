@@ -25,6 +25,13 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
       throw new Zend_Exception("itemId  should be a number");
       }
 
+    $isAjax = $this->getRequest()->isXmlHttpRequest();
+    $this->view->isAjax = $isAjax;
+    if($isAjax)
+      {
+      $this->disableLayout();
+      }
+
     $itemDao = $this->Item->load($itemId);
     if($itemDao === false)
       {
@@ -35,7 +42,6 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
       throw new Zend_Exception("Problem policies.");
       }
     $this->view->header = $this->t("Manage Configuration: ".$itemDao->getName());
-
     $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
 
     if(isset($_GET['init']))

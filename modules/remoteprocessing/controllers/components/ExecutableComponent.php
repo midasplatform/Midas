@@ -38,18 +38,14 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     return $metaFile;
     }
 
-  /** schedule Job (create script and set parameters).*/
-  function initAndSchedule($executableItemDao, $cmdOptions, $parametersList, $fire_time = false, $time_interval = false, $only_once = true)
+  /** get executable bitstream (return false if there is not) */
+  function getExecutable($itemDao)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
+    $executable = false;
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
-    $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
-
-    $revision = $itemModel->getLastRevision($executableItemDao);
+    $revision = $itemModel->getLastRevision($itemDao);
     $bitstreams = $revision->getBitstreams();
-
-    $executable = false;
     foreach($bitstreams as $b)
       {
       if(is_executable($b->getFullPath()))
@@ -57,6 +53,18 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         $executable = $b;
         }
       }
+    return $executable;
+    }
+
+  /** schedule Job (create script and set parameters).*/
+  function initAndSchedule($userDao, $executableItemDao, $cmdOptions, $parametersList, $fire_time = false, $time_interval = false, $only_once = true)
+    {
+    $componentLoader = new MIDAS_ComponentLoader();
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
+
+    $executable = $this->getExecutable($executableItemDao);
 
     if($executable == false)
       {
@@ -64,6 +72,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
       }
 
     $parameters['cmdOptions'] = $cmdOptions;
+    $parameters['creator_id'] = $userDao->getKey();
     $parameters['parametersList'] = $parametersList;
     $parameters['executable'] = $executableItemDao->getKey();
 
