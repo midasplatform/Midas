@@ -43,7 +43,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/jqplot/jqplot
       <div id="widgetIframeLive"><iframe width="100%" height="650" src="<?php echo $this->piwikUrl?>/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Live&actionToWidgetize=widget&idSite=<?php echo $this->piwikId?>&language=en&period=day&date=today&disableLink=1&widget=1&token_auth=<?php echo $this->piwikKey?>" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
     </div>
     <div id="tabs-map">
-      <div id="widgetIframeMap"><iframe width="100%" height="650" src="<?php echo $this->piwikUrl?>/index.php?module=Widgetize&action=iframe&moduleToWidgetize=UserCountryMap&actionToWidgetize=worldMap&idSite=1&period=week&date=today&disableLink=1&widget=1" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
+      <div id="widgetIframeMap"><iframe width="100%" height="650" src="<?php echo $this->piwikUrl?>/index.php?module=Widgetize&action=iframe&moduleToWidgetize=UserCountryMap&actionToWidgetize=worldMap&idSite=<?php echo $this->piwikId?>&period=week&date=today&disableLink=1&widget=1" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
     </div>
     <div id="tabs-configuration">
       <div id="widgetIframeConfiguration"><iframe width="100%" height="650" src="<?php echo $this->piwikUrl?>/index.php?module=Widgetize&action=iframe&moduleToWidgetize=UserSettings&actionToWidgetize=getConfiguration&idSite=<?php echo $this->piwikId?>&language=en&period=day&date=today&disableLink=1&widget=1&token_auth=<?php echo $this->piwikKey?>" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
