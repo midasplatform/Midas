@@ -34,7 +34,7 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jqplot/jqplot.p
   </div>
   <h3>Statistics - <?php echo $this->itemDao->getName()?></h3>
 
-  <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+  <img class="tabsLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <div class="tabs" id='tabsGeneric'>
     <ul>
       <li><a href="#tabs-map">Download Map</a></li>
@@ -52,13 +52,13 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jqplot/jqplot.p
   <script type="text/javascript">
   function placeDownloadPins(theMap)
     {
-    var myLatlng = new google.maps.LatLng(35, -100.044922);
-
-    var marker = new google.maps.Marker({
-      position: myLatlng,
-      map: theMap,
-      title:"Hello World!!"
-      });
+    <?php
+    foreach($this->markers as $marker)
+      {
+      echo 'var myLatlng = new google.maps.LatLng('.$marker['latitude'].', '.$marker['longitude'].');';
+      echo 'new google.maps.Marker({ position: myLatlng, map: theMap, title: "'.$marker['date'].'"});';
+      }
+    ?>
     }
   </script>
 <!-- END -->
