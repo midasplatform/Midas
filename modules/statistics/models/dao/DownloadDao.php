@@ -10,9 +10,9 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+/** dao for the statistics_download model */
 class Statistics_DownloadDao extends Statistics_AppDao
-  {
-    public $_model='Download';
-
-  }
+{
+  public $_model = 'Download';
+}
 ?>

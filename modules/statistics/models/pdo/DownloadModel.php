@@ -10,11 +10,11 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-/** job model */
+/** statistics_download model */
 class Statistics_DownloadModel extends Statistics_DownloadModelBase
 {
-   /**
-   *  Return a list of log
+  /**
+   * Return a list of downloads
    * @param type $startDate
    * @param type $endDate
    * @param type $module
@@ -39,6 +39,6 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
       $result[] = $this->initDao('Download', $row, "statistics");
       }
     return $result;
-    }//getLog
+    } //getLog
 }  // end class
 ?>

@@ -13,21 +13,21 @@ PURPOSE.  See the above copyright notices for more information.
 /** Download model base */
 class Statistics_DownloadModelBase extends Statistics_AppModel
 {
-
+  /** constructor */
   public function __construct()
     {
     parent::__construct();
     $this->_name = 'statistics_download';
     $this->_key = 'job_id';
 
-    $this->_mainData= array(
-        'download_id'=>  array('type'=>MIDAS_DATA),
-        'item_id'=>  array('type'=>MIDAS_DATA),
-        'user_id'=>  array('type'=>MIDAS_DATA),
-        'ip'=>  array('type'=>MIDAS_DATA),
-        'date'=>  array('type'=>MIDAS_DATA),
-        'latitude'=>  array('type'=>MIDAS_DATA),
-        'longitude'=>  array('type'=>MIDAS_DATA),
+    $this->_mainData = array(
+        'download_id' => array('type' => MIDAS_DATA),
+        'item_id' => array('type' => MIDAS_DATA),
+        'user_id' => array('type' => MIDAS_DATA),
+        'ip' => array('type' => MIDAS_DATA),
+        'date' => array('type' => MIDAS_DATA),
+        'latitude' => array('type' => MIDAS_DATA),
+        'longitude' => array('type' => MIDAS_DATA),
         'item' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Item', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
         'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id')
         );
@@ -76,15 +76,15 @@ class Statistics_DownloadModelBase extends Statistics_AppModel
   private function _getGeolocation($ip)
     {
     if(function_exists('curl_init') == false)
-       {
-       $location['latitude'] = '';
-       $location['longitude'] = '';
-       return $location;
-       }
+      {
+      $location['latitude'] = '';
+      $location['longitude'] = '';
+      return $location;
+      }
 
     $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/'.$this->moduleName.'.local.ini', true);
     $apiKey = $applicationConfig['global']['ipinfodb.apikey'];
-    $url = "http://api.ipinfodb.com/v3/ip-city/?key=$apiKey&ip=$ip&format=json";
+    $url = 'http://api.ipinfodb.com/v3/ip-city/?key='.$apiKey.'&ip='.$ip.'&format=json';
 
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $url);

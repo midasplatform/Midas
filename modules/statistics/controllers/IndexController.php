@@ -1,15 +1,16 @@
 <?php
 
+/** Index controller for the statistics module */
 class Statistics_IndexController extends Statistics_AppController
 {
-  public $_moduleModels=array('Download');
-  public $_models=array('Errorlog', 'Assetstore');
+  public $_moduleModels = array('Download');
+  public $_models = array('Errorlog', 'Assetstore');
   public $_components = array('Utility');
 
   /** index action*/
   function indexAction()
     {
-    if(!$this->logged||!$this->userSession->Dao->getAdmin()==1)
+    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
       {
       throw new Zend_Exception("You should be an administrator");
       }
@@ -24,8 +25,8 @@ class Statistics_IndexController extends Statistics_AppController
         $assetstores[$key]->totalSpace = disk_total_space($assetstore->getPath());
         $assetstores[$key]->usedSpace = disk_total_space($assetstore->getPath()) - disk_free_space($assetstore->getPath());
         $assetstores[$key]->freeSpace = disk_free_space($assetstore->getPath());
-        $assetstores[$key]->usedSpaceText = round(($assetstores[$key]->usedSpace / $assetstores[$key]->totalSpace)*100, 2) ;
-        $assetstores[$key]->freeSpaceText = round((disk_free_space($assetstore->getPath()) / $assetstores[$key]->totalSpace)*100, 2) ;
+        $assetstores[$key]->usedSpaceText = round(($assetstores[$key]->usedSpace / $assetstores[$key]->totalSpace) * 100, 2);
+        $assetstores[$key]->freeSpaceText = round((disk_free_space($assetstore->getPath()) / $assetstores[$key]->totalSpace) * 100, 2);
         }
       else
         {
@@ -45,18 +46,18 @@ class Statistics_IndexController extends Statistics_AppController
             );
       }
 
-    $errors = $this->Errorlog->getLog(date( 'c', strtotime ('-20 day'.date( 'Y-m-j G:i:s'))), date('c'), 'all', 2);
+    $errors = $this->Errorlog->getLog(date('c', strtotime('-20 day'.date('Y-m-j G:i:s'))), date('c'), 'all', 2);
     $arrayErrors = array();
 
     $format = 'Y-m-j';
-    for($i = 0; $i<21; $i++)
+    for($i = 0; $i < 21; $i++)
       {
-      $key =  date($format, strtotime(date( 'c', strtotime ('-'.$i.' day'.date( 'Y-m-j G:i:s')))));
+      $key = date($format, strtotime(date('c', strtotime('-'.$i.' day'.date('Y-m-j G:i:s')))));
       $arrayErrors[$key] = 0;
       }
     foreach($errors as $error)
       {
-      $key =  date($format, strtotime($error->getDatetime()));
+      $key = date($format, strtotime($error->getDatetime()));
       $arrayErrors[$key]++;
       }
 
