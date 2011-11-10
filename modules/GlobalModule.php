@@ -30,6 +30,10 @@ class MIDAS_GlobalModule extends AppController
     $this->view->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
     $this->view->moduleName = $this->moduleName;
 
+    $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', true);
+    $this->view->moduleFullName = $config->fullname;
+    $this->view->moduleDescription = $config->description;
+
     $stack = debug_backtrace();
     $forward = $this->_getParam('forwardModule');
 
