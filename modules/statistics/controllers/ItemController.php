@@ -3,14 +3,13 @@
 /** Controller for statistics about an item */
 class Statistics_ItemController extends Statistics_AppController
 {
-   public $_moduleModels = array('Download');
-   public $_models = array('Item');
-   public $_components = array('Utility');
+  public $_moduleModels = array('Download');
+  public $_models = array('Item');
+  public $_components = array('Utility');
 
-   /** index action*/
-   function indexAction()
+  /** index action*/
+  function indexAction()
     {
-
     $item = $this->Item->load($_GET['id']);
     if(!$item)
       {

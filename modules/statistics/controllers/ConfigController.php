@@ -70,7 +70,7 @@ class Statistics_ConfigController extends Statistics_AppController
             $job->setTask('TASK_STATISTICS_SEND_REPORT');
             $job->setPriority('1');
             $job->setRunOnlyOnce(false);
-            $job->setFireTime(date('Y-m-j', strtotime ('+1 day'.date( 'Y-m-j G:i:s'))).' 1:00:00');
+            $job->setFireTime(date('Y-m-j', strtotime('+1 day'.date('Y-m-j G:i:s'))).' 1:00:00');
             $job->setTimeInterval(24 * 60 * 60);
             $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
             $job->setParams(JsonComponent::encode(array()));

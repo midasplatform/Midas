@@ -1,7 +1,7 @@
 <?php
+/** Form for configuring the statistics module */
 class Statistics_ConfigForm extends AppForm
 {
-
   /** create  form */
   public function createConfigForm()
     {
