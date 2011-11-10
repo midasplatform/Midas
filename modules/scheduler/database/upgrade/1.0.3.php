@@ -9,12 +9,13 @@ class Scheduler_Upgrade_1_0_3 extends MIDASUpgrade
 
   public function mysql()
     {
+    $sql = "ALTER TABLE scheduler_job ADD creator_id bigint(20)";
+    $this->db->query($sql);
     }
 
 
   public function postUpgrade()
     {
-    $this->addTableField('scheduler_job', 'creator_id', 'bigint(20)', 'bigint', false);
     }
 }
 ?>

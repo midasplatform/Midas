@@ -19,7 +19,8 @@ class Remoteprocessing_Upgrade_1_0_1 extends MIDASUpgrade
 
   public function mysql()
     {
-
+    $sql = "ALTER TABLE remoteprocessing_job ADD creator_id bigint(20)";
+    $this->db->query($sql);
     }
 
   public function pgsql()
@@ -29,7 +30,6 @@ class Remoteprocessing_Upgrade_1_0_1 extends MIDASUpgrade
 
   public function postUpgrade()
     {
-    $this->addTableField('remoteprocessing_job', 'creator_id', 'bigint(20)', 'bigint', false);
     }
 }
 ?>
