@@ -6,13 +6,14 @@ class Scheduler_Notification extends MIDAS_Notification
   public $_moduleDaos=array('Job');
   public $_components=array('Json');
   public $moduleName = 'scheduler';
-  
+
   /** init notification process*/
   public function init()
     {
     $this->addTask("TASK_SCHEDULER_SCHEDULE_TASK", 'scheduleTask', "Schedule a task. Parameters: task, priority, params");
+    $this->addCallBack('CALLBACK_SCHEDULER_SCHEDULE_TASK', 'scheduleTask');
     }//end init
-    
+
   /** get Config Tabs */
   public function scheduleTask($params)
     {
@@ -29,10 +30,20 @@ class Scheduler_Notification extends MIDAS_Notification
       {
       $params['run_only_once'] = true;
       }
+
     if(!isset($params['fire_time']))
       {
       $params['fire_time'] = date('c');
       }
+    elseif(is_numeric($params['fire_time']))
+      {
+      $params['fire_time'] = date('c', $params['fire_time']);
+      }
+    else
+      {
+      $params['fire_time'] = $params['fire_time'];
+      }
+
     if(!$params['run_only_once'])
       {
       if(!isset($params['time_interval']))
@@ -49,8 +60,13 @@ class Scheduler_Notification extends MIDAS_Notification
       {
       $job->setTimeInterval($params['time_interval']);
       }
+    if($this->logged)
+      {
+      $job->setCreatorId($this->userSession->Dao->getKey());
+      }
     $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
     $job->setParams(JsonComponent::encode($params['params']));
+
     $this->Scheduler_Job->save($job);
     return;
     }

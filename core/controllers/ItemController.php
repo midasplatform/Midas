@@ -210,7 +210,11 @@ class ItemController extends AppController
     else
       {
       $parents = $itemDao->getFolders();
-      if(isset($this->userSession->recentFolders))
+      if(count($parents) == 1)
+        {
+        $currentFolder = $parents[0];
+        }
+      elseif(isset($this->userSession->recentFolders))
         {
         foreach($parents as $p)
           {
@@ -220,11 +224,12 @@ class ItemController extends AppController
             break;
             }
           }
-        if(isset($currentFolder))
-          {
-          $items = $this->Folder->getItemsFiltered($currentFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
-          $this->view->currentFolder = $currentFolder;
-          }
+
+        }
+      if(isset($currentFolder))
+        {
+        $items = $this->Folder->getItemsFiltered($currentFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+        $this->view->currentFolder = $currentFolder;
         }
       }
 

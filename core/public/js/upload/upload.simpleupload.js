@@ -1,7 +1,7 @@
-		
-    
+
+
     var swfu;
-    
+
     $('img#uploadAFile').show();
     $('img#uploadAFileLoadiing').hide();
       function uploadPreStart(file)
@@ -9,8 +9,8 @@
         swfu.setPostParams({"sid" : $('.sessionId').val(),"parent": $('#destinationId').val(),'license': $('select[name=licenseSelect]').val()});
         //uploadStart(file);
       }
-      
-      
+
+
 		$( "#uploadTabs" ).tabs({
 			ajaxOptions: {
         beforeSend: function()
@@ -29,18 +29,18 @@
 			}
 		});
     $( "#uploadTabs" ).show();
-      $('#linkForm').ajaxForm(function() { 
+      $('#linkForm').ajaxForm(function() {
          // $('input[name=url]').val('http://');
           $('.uploadedLinks').val(parseInt($('.uploadedLinks').val())+1);
           updateUploadedCount();
       });
-     
-     
-     
+
+
+
     $('#swfuploadContent').hide();
     $('#jqueryFileUploadContent').show();
     initJqueryFileupload();
-    
+
     function sendParentToJavaSession()
     {
       $.post(json.global.webroot+'/upload/javaupload', {parent: $('#destinationId').val(),license: $('select[name=licenseSelect]:last').val()},
@@ -48,13 +48,13 @@
              console.log(data);
          });
     }
-     
+
     function successJavaUpload()
     {
       $('.uploadedJava').val(parseInt($('.uploadedJava').val())+1);
       updateUploadedCount();
     }
-      
+
     function updateUploadedCount()
     {
       var count=parseInt($('.uploadedSimple').val())+parseInt($('.uploadedLinks').val())+parseInt($('.uploadedJava').val());
@@ -65,12 +65,12 @@
         }
       else
         {
-        
+
         $('.reviewUploaded').hide();
         }
     }
-    
-    
+
+
     function initJqueryFileupload()
     {
       updateUploadedCount();
@@ -91,7 +91,7 @@
           },
         sequentialUploads: true
         });
-        
+
         $('#startUploadLink').click(function () {
             if($('#destinationId').val()==undefined||$('#destinationId').val().length==0)
               {
@@ -101,14 +101,13 @@
             $('.file_upload_start button').click();
             return false;
         });
-    
+
     }
-    
-    
-    
+
+
+
     $('.browseMIDASLink').click(function()
       {
-        loadDialog("select","/browse/movecopy/?selectElement=true");
+        loadDialog("select","/browse/selectfolder/?policy=write");
         showDialog('Browse');
       });
-      

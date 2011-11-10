@@ -23,6 +23,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
   /** contructor*/
   public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
     {
+
     if($this->isDebug())
       {
       $this->_controllerTimer = microtime(true);
@@ -48,10 +49,27 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     $modulesEnable =  Zend_Registry::get('modulesEnable');
     foreach($modulesEnable as $module)
       {
-      $translaters[$module] = new Zend_Translate('csv', BASE_PATH."/modules/".$module."/translation/fr-main.csv", "en");
+      if(file_exists(BASE_PATH."/modules/".$module."/translation/fr-main.csv"))
+        {
+        $translationFile = BASE_PATH."/modules/".$module."/translation/fr-main.csv";
+        }
+      elseif(file_exists(BASE_PATH."/privateModules/".$module."/translation/fr-main.csv"))
+        {
+        $translationFile = BASE_PATH."/privateModules/".$module."/translation/fr-main.csv";
+        }
+      else
+        {
+        throw new Zend_Exception('No translation file found in module '.$module);
+        }
+
+      $translaters[$module] = new Zend_Translate('csv', $translationFile, "en");
       if(file_exists(BASE_PATH."/core/configs/".$module.".local.ini"))
         {
         $configs[$module] = new Zend_Config_Ini(BASE_PATH."/core/configs/".$module.".local.ini", 'global');
+        }
+      elseif(file_exists(BASE_PATH."/privateModules/".$module."/configs/module.ini"))
+        {
+        $configs[$module] = new Zend_Config_Ini(BASE_PATH."/privateModules/".$module."/configs/module.ini", 'global');
         }
       else
         {
@@ -71,6 +89,16 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         if(file_exists(BASE_PATH.'/modules/'.$key.'/controllers/'.  ucfirst($request->getControllerName()).'CoreController.php'))
           {
           include_once BASE_PATH.'/modules/'.$key.'/controllers/'.  ucfirst($request->getControllerName()).'CoreController.php';
+          $name = ucfirst($key).'_'.ucfirst($request->getControllerName()).'CoreController';
+          $controller = new $name($request, $response);
+          if(method_exists($controller, $request->getActionName().'Action'))
+            {
+            $this->_forward($request->getActionName(), $request->getControllerName().'Core', $key, array('forwardModule' => true));
+            }
+          }
+        elseif(file_exists(BASE_PATH.'/privateModules/'.$key.'/controllers/'.  ucfirst($request->getControllerName()).'CoreController.php'))
+          {
+          include_once BASE_PATH.'/privateModules/'.$key.'/controllers/'.  ucfirst($request->getControllerName()).'CoreController.php';
           $name = ucfirst($key).'_'.ucfirst($request->getControllerName()).'CoreController';
           $controller = new $name($request, $response);
           if(method_exists($controller, $request->getActionName().'Action'))
@@ -174,6 +202,10 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         {
         $nameComponent = $component . "Component";
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
+        if(!class_exists($nameComponent))
+          {
+          throw new Zend_Exception('Unable to find '.$nameComponent);
+          }
         @$this->Component->$component = new $nameComponent();
         }
       }
@@ -186,6 +218,10 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         $nameForm = $forms . "Form";
 
         Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
+        if(!class_exists($nameForm))
+          {
+          throw new Zend_Exception('Unable to find '.$nameForm);
+          }
         @$this->Form->$forms = new $nameForm();
         }
       }

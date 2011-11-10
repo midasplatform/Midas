@@ -110,7 +110,7 @@ if(!isset($version))
       }
     }
 
-  
+
   $version=str_replace('.sql', '', basename($sqlFile));
   }
 $upgradeComponent->upgrade($version,true);

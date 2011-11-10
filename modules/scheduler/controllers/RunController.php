@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /**
  * TaskController
- * 
+ *
  */
 class Scheduler_RunController extends Scheduler_AppController
 {
@@ -24,16 +24,16 @@ class Scheduler_RunController extends Scheduler_AppController
    *  Index Action (first action when we access the application)
    */
   function init()
-    {      
+    {
 
     } // end method indexAction
 
   function indexAction()
     {
-    set_time_limit(0); 
+    set_time_limit(0);
     $this->disableLayout();
     $this->disableView();
-    
+
     $id = $this->_getParam('id');
     if(isset($id))
       {
@@ -85,6 +85,6 @@ class Scheduler_RunController extends Scheduler_AppController
         }
       $this->Scheduler_Job->save($job);
       }
-    } 
-    
+    }
+
 }//end class

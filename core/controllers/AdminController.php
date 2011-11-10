@@ -140,11 +140,22 @@ class AdminController extends AppController
 
         $moduleConfigLocalFile = BASE_PATH."/core/configs/".$moduleName.".local.ini";
         $moduleConfigFile = BASE_PATH."/modules/".$moduleName."/configs/module.ini";
-        if(!file_exists($moduleConfigLocalFile))
+        $moduleConfigPrivateFile = BASE_PATH."/privateModules/".$moduleName."/configs/module.ini";
+        if(!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigFile))
           {
           copy($moduleConfigFile, $moduleConfigLocalFile);
           $this->Component->Utility->installModule($moduleName);
           }
+        elseif(!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigPrivateFile))
+          {
+          copy($moduleConfigPrivateFile, $moduleConfigLocalFile);
+          $this->Component->Utility->installModule($moduleName);
+          }
+        elseif(!file_exists($moduleConfigLocalFile))
+          {
+          throw new Zend_Exception("Unable to find config file");
+          }
+
         rename(BASE_PATH.'/core/configs/application.local.ini', BASE_PATH.'/core/configs/application.local.ini.old');
         $applicationConfig['module'][$moduleName] = $modulevalue;
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
@@ -202,6 +213,10 @@ class AdminController extends AppController
     foreach($allModules as $key => $module)
       {
       if(file_exists(BASE_PATH."/modules/".$key."/controllers/ConfigController.php"))
+        {
+        $allModules[$key]->configPage = true;
+        }
+      elseif(file_exists(BASE_PATH."/privateModules/".$key."/controllers/ConfigController.php"))
         {
         $allModules[$key]->configPage = true;
         }

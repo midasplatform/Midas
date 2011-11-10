@@ -39,6 +39,9 @@ class AppController extends MIDAS_GlobalController
     $this->coreWebroot = $this->view->webroot.'/core';
     $this->view->coreWebroot = $this->coreWebroot;
 
+    Zend_Registry::set('webroot', $this->view->webroot);
+    Zend_Registry::set('coreWebroot', $this->view->coreWebroot);
+
     $this->view->demoMode = $this->isDemoMode();
 
     $this->view->title = Zend_Registry::get('configGlobal')->application->name;
@@ -79,6 +82,7 @@ class AppController extends MIDAS_GlobalController
       else
         {
         $user = new Zend_Session_Namespace('Auth_User');
+        $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
         }
 
       if($user->Dao == null)
@@ -249,6 +253,22 @@ class AppController extends MIDAS_GlobalController
     $this->view->json = array(
       "global" => $jsonGlobal, "login" => $login, 'feed' => $feed, "browse" => $browse);
     Zend_Loader::loadClass("JsonComponent", BASE_PATH.'/core/controllers/components');
+
+    // init layout
+    $modulesConfig = Zend_Registry::get('configsModules');
+    foreach($modulesConfig as $key => $module)
+      {
+      if($this->_helper->hasHelper('layout') && file_exists(BASE_PATH . "/modules/".$key."/layouts/layout-core.phtml"))
+        {
+        $this->_helper->layout->setLayoutPath(BASE_PATH . "/modules/".$key."/layouts/");
+        $this->_helper->layout->setLayout('layout-core');
+        }
+      if($this->_helper->hasHelper('layout') && file_exists(BASE_PATH . "/privateModules/".$key."/layouts/layout-core.phtml"))
+        {
+        $this->_helper->layout->setLayoutPath(BASE_PATH . "/privateModules/".$key."/layouts/");
+        $this->_helper->layout->setLayout('layout-core');
+        }
+      }
     } // end preDispatch()
 
   /** get server's url */
@@ -296,6 +316,16 @@ class AppController extends MIDAS_GlobalController
   public function disableView()
     {
     $this->_helper->viewRenderer->setNoRender();
+    }
+
+  /** Show a jgrowl Message */
+  public function showNotificationMessage($message)
+    {
+    if(!isset($this->view->json['triggerNotification']))
+      {
+      $this->view->json['triggerNotification'] = array();
+      }
+    $this->view->json['triggerNotification'][] = $message;
     }
 
   /** check if midas needs to be upgraded */

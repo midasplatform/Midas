@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -20,7 +20,7 @@ PURPOSE.  See the above copyright notices for more information.
     <li><a href="<?php echo $this->webroot?>/upload/javaupload"><?php echo $this->t('Large Files');?></a></li>
     <li><a href="#uploadTabs-3"><?php echo $this->t('Links');?></a></li>
   </ul>
-  <div id="uploadTabs-1"> 
+  <div id="uploadTabs-1">
       <b><?php echo $this->t('Step 1: Select files to upload')?></b>
       <br/>
       <div id="jqueryFileUploadContent">
@@ -43,8 +43,8 @@ PURPOSE.  See the above copyright notices for more information.
                     <td class="file_size"></td>
                 </tr>
                 <div class="file_upload_buttons" style='display:none;'>
-                  <button class="file_upload_start">Start All</button> 
-                  <button class="file_upload_cancel">Cancel All</button> 
+                  <button class="file_upload_start">Start All</button>
+                  <button class="file_upload_cancel">Cancel All</button>
                   <button class="file_download_delete">Delete All</button>
                 </div>
             </table>
@@ -53,7 +53,7 @@ PURPOSE.  See the above copyright notices for more information.
         <div class="tooBigUpload">
           <b><?php echo $this->t('Please use the large file tool, the following files are too big:')?></b>
           <ul>
-            
+
           </ul>
         </div>
       </div>
@@ -62,26 +62,26 @@ PURPOSE.  See the above copyright notices for more information.
       <br/>
       <b><?php echo $this->t('Curent selected location:')?></b>
           <span id="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
-        <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>  
+        <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>
         <br/>
         <input style="margin-left:0px;"  class="browseMIDASLink globalButton" type="button" value="Change location" />
         <br/>
         <br/>
-      </div>      
+      </div>
       <b><?php echo $this->t('Step 3: Select a license')?></b>
       <div>
         <?php
         echo $this->element('license')?>
-      </div>     
+      </div>
       <br/>
       <b><?php echo $this->t('Step 4: Start the upload')?></b>
       <br/>
       <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
-     
+
       <span id="btnStartUpload" >
         <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" value="<?php echo $this->t('Start Upload')?>" />
       </span>
-  
+
   </div>
     <div id="uploadTabs-3">
       <form id="linkForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
@@ -98,12 +98,12 @@ PURPOSE.  See the above copyright notices for more information.
           <br/>
           <b><?php echo $this->t('Curent selected location:')?></b>
           <span class="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
-          <input type="hidden" name="parent" class="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>  
+          <input type="hidden" name="parent" class="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>
             <br/>
             <input style="margin-left:0px;" class="browseMIDASLink globalButton" type="button" value="Change location" />
             <br/>
             <br/>
-        </div>      
+        </div>
         <div>
           <?php echo $this->form['submit']?>
         </div>
