@@ -277,8 +277,8 @@ class CommunityController extends AppController
     $this->view->json['community']['moderatorGroup'] = $moderator_group->toArray();
     $this->view->json['community']['memberGroup'] = $group_member->toArray();
     $this->view->json['community']['message']['delete'] = $this->t('Delete');
-    $this->view->json['community']['message']['deleteMessage'] = $this->t('Do you really want to delete this community? It cannot be undo.');
-    $this->view->json['community']['message']['deleteGroupMessage'] = $this->t('Do you really want to delete this group? It cannot be undo.');
+    $this->view->json['community']['message']['deleteMessage'] = $this->t('Do you really want to delete this community? It cannot be undone.');
+    $this->view->json['community']['message']['deleteGroupMessage'] = $this->t('Do you really want to delete this group? It cannot be undone.');
     $this->view->json['community']['message']['infoErrorName'] = $this->t('Please, set the name.');
     $this->view->json['community']['message']['createGroup'] = $this->t('Create a group');
     $this->view->json['community']['message']['editGroup'] = $this->t('Edit a group');

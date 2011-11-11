@@ -250,8 +250,8 @@ class ItemController extends AppController
 
     $this->view->json['item'] = $itemDao->toArray();
     $this->view->json['item']['message']['delete'] = $this->t('Delete');
-    $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undo.');
-    $this->view->json['item']['message']['deleteMetadataMessage'] = $this->t('Do you really want to delete this metadata? It cannot be undo.');
+    $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undone.');
+    $this->view->json['item']['message']['deleteMetadataMessage'] = $this->t('Do you really want to delete this metadata? It cannot be undone.');
     $this->view->json['item']['message']['movecopy'] = $this->t('Copy Item.');
     }//end index
 
