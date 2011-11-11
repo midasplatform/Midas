@@ -315,7 +315,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
    */
   public function getTempDirectory()
     {
-    return BASE_PATH.'/tmp/misc';
+    return KWUtils::getTempDirectory();
     }
 
   /** return an array of form element     */

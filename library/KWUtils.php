@@ -47,6 +47,17 @@ class KWUtils
     }
 
   /**
+   * @method public getTempDirectory()
+   * get the midas temporary directory
+   * @return string
+   */
+  public static function getTempDirectory()
+    {
+    return BASE_PATH.'/tmp/misc';
+    }
+
+
+  /**
    * @method createSubDirectories recursively create subdirectories starting at
    * baseDirectory, sequentially creating each of the directories in the
    * subDirectories array, according to the passed in mode.
