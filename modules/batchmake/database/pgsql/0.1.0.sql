@@ -1,6 +1,7 @@
 CREATE TABLE batchmake_task (
     batchmake_task_id serial PRIMARY KEY,
-    user_id bigint NOT NULL
+    user_id bigint NOT NULL,
+    work_dir text
 );
 
 

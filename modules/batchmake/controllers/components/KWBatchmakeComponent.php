@@ -453,13 +453,8 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     {
     $modelLoad = new MIDAS_ModelLoader();
     $batchmakeTaskModel = $modelLoad->loadModel('Task', 'batchmake');
-    $taskDao = $batchmakeTaskModel->createTask($userDao);
-    $userId = $taskDao->getUserId();
-    $taskId = $taskDao->getKey();
-    $subdirs = array(MIDAS_BATCHMAKE_SSP_DIR, $userId, $taskId);
-    // create a workDir based on the task and user
-    $workDir = KWUtils::createSubDirectories($this->configTmpDir . "/", $subdirs);
-    return $workDir;
+    $taskDao = $batchmakeTaskModel->createTask($userDao, $this->configTmpDir);
+    return $taskDao;
     }
 
   /**
