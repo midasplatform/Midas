@@ -63,6 +63,7 @@ class MIDAS_GlobalModule extends AppController
       {
       throw new Zend_Exception('Unable to find module '.$this->moduleName.' view directory');
       }
+
     if($this->isTestingEnv())
       {
       $this->disableLayout();
@@ -89,7 +90,6 @@ class MIDAS_GlobalModule extends AppController
     {
 
     parent::postDispatch();
-
 
     $this->view->addHelperPath(BASE_PATH."/".$this->moduleName."/views/helpers", "Zend_View_Helper_");
     }
