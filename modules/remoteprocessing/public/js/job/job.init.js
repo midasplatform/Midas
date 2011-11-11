@@ -55,7 +55,7 @@ function onFinishCallback()
         date = $('#datepicker').val();
         every = $('#intervalSelect').val();
         }
-      req = {'results[]' : results, 'date' : date, 'interval': every};
+      req = {'results[]' : results, 'name': $('#jobName').val(), 'date' : date, 'interval': every};
       $(this).after('<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Saving..." />')
       $(this).remove();
       $.ajax({
@@ -63,7 +63,7 @@ function onFinishCallback()
            url: json.global.webroot+"/remoteprocessing/job/init?itemId="+$('#selectedExecutableId').val(),
            data: req ,
            success: function(x){
-             window.location.replace($('.webroot').val()+'/remoteprocessing/index/dashboard')
+             window.location.replace($('.webroot').val()+'/remoteprocessing/job/manage')
            }
          });
      }
@@ -91,6 +91,11 @@ function validateSteps(stepnumber)
     {
     var i = 0;
     results = new Array();
+    if($('#jobName').val() == '')
+      {
+      createNotive('Please set the job\'s name.', 4000);
+      isStepValid = false;
+      }
     $('.optionWrapper').each(function(){
     var required = false;
     if($(this).attr('isrequired') == 'true')
@@ -215,8 +220,8 @@ function loadRecentUpload()
         $('#selectedExecutable').html($(this).find('a').html());
         $('#selectedExecutableId').val($(this).attr('element'));
         createNotive("Please set the executable meta informaiton.", 4000);
-        loadDialog("meta_"+$(this).attr('element'), '/remoteprocessing/executable/define?itemId='+$(this).attr('element'));
-        showBigDialog("MetaInformation", false);
+        $('#metaPageBlock').load(json.global.webroot+'/remoteprocessing/executable/define?itemId='+$(this).attr('element'));
+        $('#metaWrapper').show();
         isExecutableMeta = false;
         executableValid = true;
       });

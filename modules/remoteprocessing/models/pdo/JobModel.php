@@ -120,4 +120,33 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
       }
     return $return;
     }
+
+  /** get job by user */
+  function getByUser($user, $limit = 10)
+    {
+    if(!$user instanceof UserDao)
+      {
+      throw new Zend_Exception("Should be an user.");
+      }
+
+    $sql = $this->database->select()
+          ->from('remoteprocessing_job')
+          ->setIntegrityCheck(false)
+          ->where('creator_id = ?', $user->getKey())
+          ->limit($limit)
+          ->order('job_id DESC');
+
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->load($row['job_id']);
+      if($tmpDao != false)
+        {
+        $return[] = $tmpDao;
+        unset($tmpDao);
+        }
+      }
+    return $return;
+    }
 }  // end class

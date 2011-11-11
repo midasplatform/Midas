@@ -66,7 +66,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
             <a href='".Zend_Registry::get('webroot')."/remoteprocessing/executable/define/?itemId=".$params['item']->getKey()."'><img alt='' src='".Zend_Registry::get('coreWebroot')."/public/images/icons/xml.png'/> ".$this->t('Define Executable')."</a>
           </li>
           <li>
-            <a href='".Zend_Registry::get('webroot')."/remoteprocessing/job/manage/?itemId=".$params['item']->getKey()."'><img alt='' src='".Zend_Registry::get('coreWebroot')."/public/images/icons/job.png'/> ".$this->t('Manage Processing Jobs')."</a>
+            <a href='".Zend_Registry::get('webroot')."/remoteprocessing/job/init/?itemId=".$params['item']->getKey()."'><img alt='' src='".Zend_Registry::get('coreWebroot')."/public/images/icons/job.png'/> ".$this->t('Create a Job')."</a>
           </li> ";
       return $html;
       }
@@ -143,8 +143,13 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       $i = 0;
       foreach($jobs as $job)
         {
+        $name = $job->getName();
+        if(empty($name))
+          {
+          $name = $job->getCreationDate();
+          }
         $html .=   "<li>";
-        $html .=    "<a  element='".$job->getKey()."' href='".Zend_Registry::get('webroot')."/remoteprocessing/job/view/?jobId=".$job->getKey()."'>".$job->getCreationDate()."</a>";
+        $html .=    "<a  element='".$job->getKey()."' href='".Zend_Registry::get('webroot')."/remoteprocessing/job/view/?jobId=".$job->getKey()."'>".$name."</a>";
         $html .=    "</li>";
         if($i > 3)
           {
@@ -187,9 +192,11 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       if(file_exists($filepath))
         {
         $tmpArray = array_reverse(explode('.', basename($filepath)));
+        $oldfilepath = $filepath;
+        $filepath = str_replace(".".$tmpArray[1].".", ".", $filepath);
+        rename($oldfilepath, $filepath);
         $item = $uploadComponent->createUploadedItem($userDao, basename($filepath), $filepath, $folder);
         $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT);
-
         // add parameter metadata
         if(is_numeric($tmpArray[1]) && isset($params['parametersList']) && isset($params['optionMatrix']))
           {
@@ -268,6 +275,10 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     if(isset($params['params']['creator_id']))
       {
       $job->setCreatorId($params['params']['creator_id']);
+      }
+    if(isset($params['params']['job_name']))
+      {
+      $job->setName($params['params']['job_name']);
       }
 
     $job->setParams(JsonComponent::encode($params['params']));

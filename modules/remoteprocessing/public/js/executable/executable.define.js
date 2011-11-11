@@ -63,6 +63,8 @@
                else
                  {
                  $( "div.MainDialog" ).dialog("close");
+                 $('#metaWrapper').hide();
+                 $('#metaPageBlock').html('');
                  isExecutableMeta = true;
                  }
              }

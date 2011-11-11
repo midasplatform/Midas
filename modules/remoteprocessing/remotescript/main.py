@@ -172,7 +172,7 @@ def handleMidasResponse(response):
     zipdir(pathProcessingFolder+'/results', pathProcessingFolder+'/results.zip')
     print "Sending results"
     sendResults(pathProcessingFolder+'/results.zip')
-    #shutil.rmtree(pathProcessingFolder)
+    shutil.rmtree(pathProcessingFolder)
   else:
     print "Error, Unable to find command"
     return False

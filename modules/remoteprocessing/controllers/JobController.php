@@ -20,32 +20,17 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
   /** manage jobs */
   function manageAction()
     {
-    $itemId = $this->_getParam("itemId");
-    if(!isset($itemId) || !is_numeric($itemId))
+    if(!$this->logged)
       {
-      throw new Zend_Exception("itemId  should be a number");
+      $this->haveToBeLogged();
+      return false;
       }
+    $this->view->header = $this->t("Manage Your Jobs");
 
-    $itemDao = $this->Item->load($itemId);
-    if($itemDao === false)
-      {
-      throw new Zend_Exception("This item doesn't exist.");
-      }
-    if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
-      {
-      throw new Zend_Exception("Problem policies.");
-      }
-    $this->view->header = $this->t("Manage Jobs: ".$itemDao->getName());
-    $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
-    $this->view->metaFile = $metaFile;
-    $this->view->itemDao = $itemDao;
-
-    $this->view->relatedJobs = $this->Remoteprocessing_Job->getRelatedJob($itemDao);
-
-    if(isset($_GET['inprogress']))
-      {
-      $this->showNotificationMessage('The Job will appear in a next few minutes.');
-      }
+    $modelLoad = new MIDAS_ModelLoader();
+    $schedulerJobModel = $modelLoad->loadModel('Job', 'scheduler');
+    $this->view->scheduledJobs = $schedulerJobModel->getJobsByTaskAndCreator('TASK_REMOTEPROCESSING_ADD_JOB', $this->userSession->Dao);
+    $this->view->relatedJobs = $this->Remoteprocessing_Job->getByUser($this->userSession->Dao, 10);
     }
 
   /** init a job*/
@@ -128,7 +113,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           }
         else if($option->field->external == 1)
           {
-          $parametersList[$i] = $option->name;
+          $parametersList[$i] = (string)$option->name;
           if(strpos($result, 'folder') !== false)
             {
             $folder = $this->Folder->load(str_replace('folder', '', $result));
@@ -151,7 +136,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           }
         else
           {
-          $parametersList[$i] = $option->name;
+          $parametersList[$i] = (string)$option->name;
           $cmdOptions[$i] = array('type' => 'param', 'values' => array());
           if(strpos($result, ';') !== false)
             {
@@ -184,7 +169,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 
           if(!empty($option->tag))
             {
-            $cmdOptions[$i]['tag'] = $option->tag;
+            $cmdOptions[$i]['tag'] = (string)$option->tag;
             }
           }
         $i++;
@@ -204,7 +189,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           }
         }
 
-      $this->ModuleComponent->Executable->initAndSchedule($this->userSession->Dao, $itemDao, $cmdOptions, $parametersList, $fire_time, $time_interval, $only_once);
+      $this->ModuleComponent->Executable->initAndSchedule($this->userSession->Dao, $itemDao, $_POST['name'], $cmdOptions, $parametersList, $fire_time, $time_interval, $only_once);
       }
     }
 
@@ -264,6 +249,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       }
 
     $this->view->job = $jobDao;
+    $this->view->header = $this->t("Job: ".$jobDao->getName());
     $items = $jobDao->getItems();
     $inputs = array();
     $outputs = array();
