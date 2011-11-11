@@ -338,7 +338,7 @@ class BrowseController extends AppController
         }
       }
     $this->view->json['item']['message']['delete'] = $this->t('Delete');
-    $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undo.');
+    $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undone.');
     $this->view->json['item']['message']['merge'] = $this->t('Merge Files in one Item');
     $this->view->json['item']['message']['mergeName'] = $this->t('Name of the item');
     }
