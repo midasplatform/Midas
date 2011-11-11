@@ -71,9 +71,6 @@ class TaskModelTest extends DatabaseTestCase
 
     $task4Dao = $taskModel->load($taskId2);
     $this->assertTrue($taskModel->compareDao($task2Dao, $task4Dao));
-
-    // now clean up
-    KWUtils::recursiveRemoveDirectory($tmpWorkDirRoot);
     }
 
 
