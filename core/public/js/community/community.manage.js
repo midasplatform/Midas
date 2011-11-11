@@ -169,9 +169,7 @@ function initDragAndDrop()
                 if(jsonResponse[0])
                   {
                     createNotive(jsonResponse[1],1500);
-                    $($(ui.draggable).parents("tr")).appendBranchTo(destination_obj);
-                    $(from_obj).reload();
-                    $(destination_obj).reload();        
+                    $($(ui.draggable).parents("tr")).appendBranchTo(destination_obj);       
                   }
                 else
                   {

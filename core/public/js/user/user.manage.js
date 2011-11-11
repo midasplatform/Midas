@@ -114,9 +114,7 @@ function initDragAndDrop()
                 if(jsonResponse[0])
                   {
                     createNotive(jsonResponse[1],1500);
-                    $($(ui.draggable).parents("tr")[0]).appendBranchTo(destination_obj);              
-                    $(from_obj).reload();
-                    $(destination_obj).reload();
+                    $($(ui.draggable).parents("tr")[0]).appendBranchTo(destination_obj);
                   }
                 else
                   {
@@ -146,6 +144,7 @@ function initDragAndDrop()
             }  
         });
         
+        // qtip pop-up for folders with only read permission
         $(this).parents("tr:[policy=0]").qtip({
           content: 'You do not have write permission on this folder and cannot drop item(s) to it !',
           show: 'mouseover',

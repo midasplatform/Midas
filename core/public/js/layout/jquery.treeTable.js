@@ -51,10 +51,17 @@
   };
   
   // Recursively hide all node's children in a tree
-  $.fn.collapse = function() {
-    var id = $(this).attr('id');    
-    $('tr[id*="'+id+'"]').addClass("collapsed").hide();
-    $(this).show();
+  $.fn.collapse = function() {    
+    $(this).addClass("collapsed");
+    
+    childrenOf($(this)).each(function() {
+      if(!$(this).hasClass("collapsed")) {
+        $(this).collapse();
+      }
+      
+      this.style.display = "none"; // Performance! $(this).hide() is slow...
+    });
+
     colorLines(true);
     return this;
   };
@@ -201,8 +208,17 @@
       
       node.addClass(options.childPrefix + destination.id);
       move(node, destination); // Recursively move nodes to new location
-      var padding = getPaddingLeft(destination) + options.indent;
+      // adjust node's padding'
+      var cell = $($(destination).children("td")[options.treeColumn]);
+      var padding = getPaddingLeft(cell) + options.indent;
       node.children("td:first")[options.treeColumn].style.paddingLeft = (padding-12) + "px";
+      // adust node's children's padding'
+      var childPaddingLeft = padding - 12 + options.indent;
+      var arrayCell=childrenOf(node);
+      if(arrayCell==null)return;
+      arrayCell.each(function(){
+        $(this).children("td:first")[options.treeColumn].style.paddingLeft = (childPaddingLeft-12) + "px";
+        });       
     }
     
     return this;
