@@ -32,7 +32,10 @@ class TaskModelTest extends DatabaseTestCase
 
     $user1Dao = $usersFile[0];
 
-    $task1Dao = $taskModel->createTask($user1Dao);
+    $tmpWorkDirRoot = KWUtils::getTempDirectory() . '/' . 'test';
+    KWUtils::mkDir($tmpWorkDirRoot);
+
+    $task1Dao = $taskModel->createTask($user1Dao, $tmpWorkDirRoot);
 
     $this->assertNotEmpty($task1Dao);
     $this->assertTrue($task1Dao instanceof Batchmake_TaskDao);
@@ -47,7 +50,7 @@ class TaskModelTest extends DatabaseTestCase
     // now try a different user
     $user2Dao = $usersFile[1];
 
-    $task2Dao = $taskModel->createTask($user2Dao);
+    $task2Dao = $taskModel->createTask($user2Dao, $tmpWorkDirRoot);
     $this->assertNotEmpty($task2Dao);
     $this->assertTrue($task2Dao instanceof Batchmake_TaskDao);
     $userId2 = $task2Dao->getUserId();
@@ -68,6 +71,9 @@ class TaskModelTest extends DatabaseTestCase
 
     $task4Dao = $taskModel->load($taskId2);
     $this->assertTrue($taskModel->compareDao($task2Dao, $task4Dao));
+
+    // now clean up
+    KWUtils::recursiveRemoveDirectory($tmpWorkDirRoot);
     }
 
 
