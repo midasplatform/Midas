@@ -1,5 +1,5 @@
-add_midas_mysql_test( RemoteprocessingJobController JobControllerTest.php )
-add_midas_mysql_test( RemoteprocessingExecutableController ExecutableControllerTest.php )
+#add_midas_mysql_test( RemoteprocessingJobController JobControllerTest.php )
+#add_midas_mysql_test( RemoteprocessingExecutableController ExecutableControllerTest.php )
 add_midas_mysql_test( RemoteprocessingConfigController ConfigControllerTest.php )
 
 # Syle

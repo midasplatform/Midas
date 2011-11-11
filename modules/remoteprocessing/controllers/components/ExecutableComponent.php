@@ -57,7 +57,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     }
 
   /** schedule Job (create script and set parameters).*/
-  function initAndSchedule($userDao, $executableItemDao, $cmdOptions, $parametersList, $fire_time = false, $time_interval = false, $only_once = true)
+  function initAndSchedule($userDao, $executableItemDao, $jobName, $cmdOptions, $parametersList, $fire_time = false, $time_interval = false, $only_once = true)
     {
     $componentLoader = new MIDAS_ComponentLoader();
     $modelLoader = new MIDAS_ModelLoader();
@@ -73,6 +73,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
 
     $parameters['cmdOptions'] = $cmdOptions;
     $parameters['creator_id'] = $userDao->getKey();
+    $parameters['job_name'] = $jobName;
     $parameters['parametersList'] = $parametersList;
     $parameters['executable'] = $executableItemDao->getKey();
 
@@ -130,7 +131,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
       }
 
     $commandMatrix = $this->_createParametersMatrix($cmdOptions);
-    $tmp = $this->_createScript($commandMatrix, $executable, $ouputArray);
+    $tmp = $this->_createScript($params['params']['parametersList'], $commandMatrix, $executable, $ouputArray);
 
     $ouputArray = $tmp['outputArray'];
     $script = $tmp['script'];
@@ -142,20 +143,25 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     }
 
   /** create Script */
-  private function _createScript($commandMatrix, $executable, $ouputArray)
+  private function _createScript($parametersList, $commandMatrix, $executable, $ouputArray)
     {
     $script = "#! /usr/bin/python\n";
     $script .= "import subprocess\n";
+    $script .= "import time\n";
     foreach($commandMatrix as $key => $commandList)
       {
       $command = $executable->getName().' '.  join('', $commandList);
-      $command = str_replace('{{key}}', '.'.$key, $command);
+      $command = str_replace('{{key}}', '.'.$this->_generateSuffixOutputName($commandList, $parametersList).'.'.$key, $command);
 
+      $script .= "start = time.clock()\n";
       $script .= "process = subprocess.Popen('".$command."', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n";
       $script .= "process.wait()\n";
       $script .= "returnArray = process.communicate()\n";
+      $script .= "end = time.clock()\n";
       $script .= "print '-COMMAND'\n";
       $script .= "print '".$command."'\n";
+      $script .= "print '-EXECUTION TIME'\n";
+      $script .= "print '%.2gs' % (end-start)\n";
       $script .= "print '-STDOUT'\n";
       $script .= "print returnArray[0]\n";
       $script .= "print '-STDERR'\n";
@@ -169,10 +175,27 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
       $ext = end(explode('.', $ouput));
       foreach($commandMatrix as $key => $commandList)
         {
-        $ouputArray[] = str_replace('.'.$ext, '.'.$key.'.'.$ext, $ouput);
+        $ouputArray[] = str_replace('.'.$ext, '.'.$this->_generateSuffixOutputName($commandList, $parametersList).'.'.$key.'.'.$ext, $ouput);
         }
       }
     return array('script' => $script, 'outputArray' => $ouputArray);
+    }
+
+  /** generate suffix output name */
+  private function _generateSuffixOutputName($commandList, $parametersList)
+    {
+    $return = "";
+    foreach($commandList as $key => $command)
+      {
+      if(isset($parametersList[$key]) && !empty($parametersList[$key]))
+        {
+        $return = $return.substr($parametersList[$key], 0, 6)."-";
+        $command = str_replace('"', '', $command);
+        $command = (string)str_replace(' ', '', $command);
+        $return = $return.$command."_";
+        }
+      }
+    return substr($return,0,-1);
     }
   /** create cmd option matrix*/
   private function _createParametersMatrix($cmdOptions)

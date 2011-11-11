@@ -9,8 +9,27 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/index/index.dashboard.js');
-?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/index/index.dashboard.css" />
 
-Development in progress.
+class Remoteprocessing_Upgrade_1_0_2 extends MIDASUpgrade
+{
+  public function preUpgrade()
+    {
+
+    }
+
+  public function mysql()
+    {
+    $sql = "ALTER TABLE remoteprocessing_job ADD name varchar(512)";
+    $this->db->query($sql);
+    }
+
+  public function pgsql()
+    {
+
+    }
+
+  public function postUpgrade()
+    {
+    }
+}
+?>

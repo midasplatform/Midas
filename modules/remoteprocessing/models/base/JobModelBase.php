@@ -25,6 +25,7 @@ class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
         'condition' =>  array('type' => MIDAS_DATA),
         'script' =>  array('type' => MIDAS_DATA),
         'params' =>  array('type' => MIDAS_DATA),
+        'name' =>  array('type' => MIDAS_DATA),
         'status' =>  array('type' => MIDAS_DATA),
         'creator_id' =>  array('type' => MIDAS_DATA),
         'expiration_date' =>  array('type' => MIDAS_DATA),
