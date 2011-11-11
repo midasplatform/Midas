@@ -36,9 +36,7 @@ class BatchmakeControllerTest extends ControllerTestCase
    */
   protected function getTempDirectory()
     {
-    include_once BASE_PATH.'/core/GlobalController.php';
-    $controller = new MIDAS_GlobalController($this->request, $this->response);
-    return $controller->getTempDirectory();
+    return KWUtils::getTempDirectory();
     }
 
   /**
