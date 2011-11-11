@@ -396,6 +396,7 @@ class Api_ApiComponent extends AppComponent
       $filename = $result['filename'];
       $filepath = $result['path'];
       $filesize = $result['size'];
+      $filemd5 = $result['md5'];
       }
     else if($mode == 'multipart')
       {
@@ -408,6 +409,7 @@ class Api_ApiComponent extends AppComponent
       $filename = $file['name'];
       $filepath = $file['tmp_name'];
       $filesize = $file['size'];
+      $filemd5 = '';
       }
     else
       {
@@ -418,17 +420,17 @@ class Api_ApiComponent extends AppComponent
     $uploadComponent = $componentLoader->loadComponent('Upload');
     if(isset($folder))
       {
-      $item = $uploadComponent->createUploadedItem($userDao, $filename, $filepath, $folder);
+      $item = $uploadComponent->createUploadedItem($userDao, $filename, $filepath, $folder, '', $filemd5);
       }
     else if(isset($revision))
       {
       $tmp = array($item->getKey(), $revision->getRevision()); //existing revision
-      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $tmp, '');
+      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $tmp, '', null, $filemd5);
       }
     else
       {
       $tmp = array($item->getKey(), 99999); //new revision
-      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $tmp, '');
+      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $tmp, '', null, $filemd5);
       }
 
     if(!$item)
@@ -497,7 +499,10 @@ class Api_ApiComponent extends AppComponent
       }
     else
       {
-      // Policy check to make sure the user can create top level communities (admins only?)
+      if(!$userDao->isAdmin())
+        {
+        throw new Exception('Only admins can create communities', MIDAS_INVALID_POLICY);
+        }
       $description = '';
       $privacy = MIDAS_COMMUNITY_PUBLIC;
       $canJoin = MIDAS_COMMUNITY_CAN_JOIN;
@@ -733,7 +738,7 @@ class Api_ApiComponent extends AppComponent
    * Get information about the folder
    * @param token (Optional) Authentication token
    * @param id The id of the folder
-   * @return The folder object
+   * @return The folder object, including its parent object
    */
   function folderGet($args)
     {
@@ -751,7 +756,9 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
-    return $folder->toArray();
+    $arr = $folder->toArray();
+    $arr['parent'] = $folder->getParent();
+    return $arr;
     }
 
   /**
@@ -1217,4 +1224,53 @@ class Api_ApiComponent extends AppComponent
     $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');
     $downloadComponent->download($bitstream);
     }
+
+  /**
+   * Count the bitstreams under a containing resource. Uses latest revision of each item.
+   * @param token (Optional) Authentication token
+   * @param uuid The uuid of the containing resource
+   * @return array(size=>total_size_in_bytes, count=>total_number_of_files)
+   */
+  function bitstreamCount($args)
+    {
+    $this->_validateParams($args, array('uuid'));
+    $userDao = $this->_getUser($args);
+    $componentLoader = new MIDAS_ComponentLoader();
+    $uuidComponent = $componentLoader->loadComponent('Uuid');
+    $resource = $uuidComponent->getByUid($args['uuid']);
+
+    if($resource == false)
+      {
+      throw new Exception('No resource for the given UUID.', MIDAS_INVALID_PARAMETER);
+      }
+
+    $modelLoader = new MIDAS_ModelLoader();
+    switch($resource->resourceType)
+      {
+      case MIDAS_RESOURCE_COMMUNITY:
+        $communityModel = $modelLoader->loadModel('Community');
+        if(!$communityModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
+          {
+          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+          }
+        return $communityModel->countBitstreams($resource, $userDao);
+      case MIDAS_RESOURCE_FOLDER:
+        $folderModel = $modelLoader->loadModel('Folder');
+        if(!$folderModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
+          {
+          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+          }
+        return $folderModel->countBitstreams($resource, $userDao);
+      case MIDAS_RESOURCE_ITEM:
+        $itemModel = $modelLoader->loadModel('Item');
+        if(!$itemModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
+          {
+          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+          }
+        return $itemModel->countBitstreams($resource);
+      default:
+        throw new Exception('Invalid resource type', MIDAS_INTERNAL_ERROR);
+      }
+    }
+
   } // end class

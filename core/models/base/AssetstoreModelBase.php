@@ -161,4 +161,5 @@ abstract class AssetstoreModelBase extends AppModel
     $found = $this->findBy('name', 'Default');
     return $found[0];
     } // end getDefault
+
 } // end class AssetstoreModelBase

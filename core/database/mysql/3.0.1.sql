@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `assetstore` (
   `path` varchar(512) NOT NULL,
   `type` tinyint(4) NOT NULL,
   PRIMARY KEY (`assetstore_id`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+)   DEFAULT CHARSET=utf8;
 
 
 -- --------------------------------------------------------
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `bitstream` (
   `date` timestamp NOT NULL,
   PRIMARY KEY (`bitstream_id`),
   KEY `itemrevision_id` (`itemrevision_id`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=680 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `community` (
   `view` bigint(20) NOT NULL  DEFAULT '0', 
   PRIMARY KEY (`community_id`),
   KEY `name` (`name`)
-)  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `errorlog` (
   `message` text NOT NULL,
   `datetime` timestamp NULL DEFAULT NULL ,
   PRIMARY KEY (`errorlog_id`)
-)  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `folder` (
   `view` bigint(20) NOT NULL  DEFAULT '0', 
   PRIMARY KEY (`folder_id`),
   KEY `parent_id` (`parent_id`)
-)   DEFAULT CHARSET=utf8 COMMENT='Describes a directory' AUTO_INCREMENT=23 ;
+)   DEFAULT CHARSET=utf8 COMMENT='Describes a directory';
 
 -- --------------------------------------------------------
 
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `group` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`group_id`),
   KEY `community_id` (`community_id`)
-)  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)  DEFAULT CHARSET=utf8;
 
 INSERT INTO `group` (group_id,community_id,name) VALUES (0,0,'Anonymous');
 -- --------------------------------------------------------
@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS `item` (
   `download` bigint(20) NOT NULL  DEFAULT '0', 
   `sizebytes` BIGINT( 20 ) NOT NULL DEFAULT  '0',
   PRIMARY KEY (`item_id`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=37 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `itemrevision` (
   UNIQUE KEY `item_id` (`item_id`,`revision`),
   KEY `user_id` (`user_id`),
   KEY `date` (`date`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=685 ;
+)   DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -250,7 +250,7 @@ CREATE TABLE IF NOT EXISTS `itemkeyword` (
   PRIMARY KEY (`keyword_id`),
   UNIQUE KEY `value` (`value`),
   KEY `relevance` (`relevance`)
-)  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -266,7 +266,7 @@ CREATE TABLE IF NOT EXISTS `metadata` (
   `description` varchar(512) NOT NULL,
   PRIMARY KEY (`metadata_id`),
   KEY `metadatatype_id` (`metadatatype_id`)
-)  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -293,7 +293,7 @@ CREATE TABLE IF NOT EXISTS `metadatatype` (
   `metadatatype_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`metadatatype_id`)
-)  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -332,7 +332,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `view` bigint(20) NOT NULL  DEFAULT '0', 
   PRIMARY KEY (`user_id`),
   KEY `email` (`email`)
-)  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)  DEFAULT CHARSET=utf8;
 
 
 -- --------------------------------------------------------

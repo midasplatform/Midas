@@ -86,7 +86,7 @@ $(document).ready(function() {
     var ajaxSelectRequest='';
     function callbackSelect(node)
     {
-      $('div.genericAction').hide();
+      $('div.genericAction').show();
       $('div.genericCommunities').hide();
       $('div.genericStats').hide();
       $('div.viewInfo').show();

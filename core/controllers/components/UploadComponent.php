@@ -162,9 +162,8 @@ class UploadComponent extends AppComponent
     $bitstreamDao->setSizebytes(0);
     $bitstreamDao->setChecksum(' ');
 
-    $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
-    $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
-    $assetstoreDao = $assetstoreModel->load($defaultAssetStoreId);
+    $assetstoreDao = $assetstoreModel->getDefault();
+    $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
 
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
 
@@ -174,7 +173,7 @@ class UploadComponent extends AppComponent
 
 
   /** save upload item in the DB */
-  public function createUploadedItem($userDao, $name, $path, $parent = null, $license = null)
+  public function createUploadedItem($userDao, $name, $path, $parent = null, $license = null, $filemd5 = '')
     {
     $modelLoad = new MIDAS_ModelLoader();
     $itemModel = $modelLoad->loadModel('Item');
@@ -230,17 +229,16 @@ class UploadComponent extends AppComponent
     $itemRevisionDao->setLicense($license);
     $itemModel->addRevision($item, $itemRevisionDao);
 
-
     // Add bitstreams to the revision
     Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
     $bitstreamDao = new BitstreamDao;
     $bitstreamDao->setName($name);
     $bitstreamDao->setPath($path);
+    $bitstreamDao->setChecksum($filemd5);
     $bitstreamDao->fillPropertiesFromPath();
 
-    $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
-    $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
-    $assetstoreDao = $assetstoreModel->load($defaultAssetStoreId);
+    $assetstoreDao = $assetstoreModel->getDefault();
+    $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
 
     if($assetstoreDao == false)
       {
@@ -264,7 +262,7 @@ class UploadComponent extends AppComponent
     }//end createUploadedItem
 
   /** save upload item in the DB */
-  public function createNewRevision($userDao, $name, $path, $item_revision, $changes, $license = null)
+  public function createNewRevision($userDao, $name, $path, $item_revision, $changes, $license = null, $filemd5 = '')
     {
     if($userDao == null)
       {
@@ -306,6 +304,7 @@ class UploadComponent extends AppComponent
 
     if($itemRevisionDao == null)
       {
+      Zend_Loader::loadClass("ItemRevisionDao", BASE_PATH . '/core/models/dao');
       $itemRevisionDao = new ItemRevisionDao;
       $itemRevisionDao->setChanges($changes);
       $itemRevisionDao->setUser_id($userDao->getKey());
@@ -344,11 +343,11 @@ class UploadComponent extends AppComponent
     $bitstreamDao = new BitstreamDao;
     $bitstreamDao->setName($name);
     $bitstreamDao->setPath($path);
+    $bitstreamDao->setChecksum($filemd5);
     $bitstreamDao->fillPropertiesFromPath();
 
-    $defaultAssetStoreId = Zend_Registry::get('configGlobal')->defaultassetstore->id;
-    $bitstreamDao->setAssetstoreId($defaultAssetStoreId);
-    $assetstoreDao = $assetstoreModel->load($defaultAssetStoreId);
+    $assetstoreDao = $assetstoreModel->getDefault();
+    $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
 
     // Upload the bitstream if necessary (based on the assetstore type)
     $this->uploadBitstream($bitstreamDao, $assetstoreDao);

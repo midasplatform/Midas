@@ -240,13 +240,33 @@ class MIDASModel
         }
       $rowset = $this->database->findBy($var, $value);
       $return = array();
-      foreach($rowset as $row)
+
+      // if there are any rows, set the daoName
+      if(isset($rowset) && sizeof($rowset) > 0)
         {
-        $daoName = ucfirst($this->_name);
         if(isset($this->_daoName))
           {
           $daoName = substr($this->_daoName, 0, strlen($this->_daoName)-3);
           }
+        else
+          {
+          // can't just convert the name to dao name, in case it is in a module
+          if(isset($this->moduleName))
+            {
+            // we want to split the string, expecting 2 parts, module_model
+            // just use the model name for the dao
+            $parts = explode('_', $this->_name);
+            $daoName = ucfirst($parts[1]);
+            }
+          else
+            {
+            // if no module, just upper case the model name
+            $daoName = ucfirst($this->_name);
+            }
+          }
+        }
+      foreach($rowset as $row)
+        {
         $tmpDao = $this->initDao($daoName, $row, $module);
         $return[] = $tmpDao;
         unset($tmpDao);
@@ -412,7 +432,7 @@ class MIDASModel
    * @param $dao2
    * @return True ifthey are the same one
    */
-  public function compareDao($dao1, $dao2)
+  public function compareDao($dao1, $dao2, $juggleTypes = false)
     {
     if(!is_object($dao1) || !is_object($dao2))
       {
@@ -422,9 +442,19 @@ class MIDASModel
       {
       if($data['type'] == MIDAS_DATA)
         {
-        if($dao1->get($name) !== $dao2->get($name))
+        if($juggleTypes)
           {
-          return false;
+          if($dao1->get($name) != $dao2->get($name))
+            {
+            return false;
+            }
+          }
+        else
+          {
+          if($dao1->get($name) !== $dao2->get($name))
+            {
+            return false;
+            }
           }
         }
       }

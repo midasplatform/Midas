@@ -94,6 +94,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       $db->query("SELECT setval('item_item_id_seq', (SELECT MAX(item_id) FROM item)+1);");
       $db->query("SELECT setval('itemrevision_itemrevision_id_seq', (SELECT MAX(itemrevision_id) FROM itemrevision)+1);");
       $db->query("SELECT setval('folder_folder_id_seq', (SELECT MAX(folder_id) FROM folder)+1);");
+      $db->query("SELECT setval('bitstream_bitstream_id_seq', (SELECT MAX(bitstream_id) FROM bitstream)+1);");
       }
     }
 
@@ -134,16 +135,20 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     return $this->createFlatXmlDataSet($path);
     }
 
-  /** loadData */
-  protected function loadData($modelName, $file = null, $module = '')
+  /** loadData
+   * @param modelName of model to load
+   * @param file that the test data is defined in
+   * @param modelModule the module of the model, or '' if in core
+   * @param fileModule the module the test data file is in, or '' if in core
+   */
+  protected function loadData($modelName, $file = null, $modelModule = '', $fileModule = '')
     {
-    $model = $this->ModelLoader->loadModel($modelName, $module);
+    $model = $this->ModelLoader->loadModel($modelName, $modelModule);
     if($file == null)
       {
       $file = strtolower($modelName);
       }
-
-    $data = $this->getDataSet($file, $module);
+    $data = $this->getDataSet($file, $fileModule);
     $dataUsers = $data->getTable($model->getName());
     $rows = $dataUsers->getRowCount();
     $key = array();

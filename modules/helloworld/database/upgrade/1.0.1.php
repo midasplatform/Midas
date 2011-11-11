@@ -22,13 +22,16 @@ class Helloworld_Upgrade_1_0_1 extends MIDASUpgrade
     $sql = "CREATE TABLE IF NOT EXISTS helloworld_helloupgrade1 (
                   id int(11) NOT NULL AUTO_INCREMENT,
                   PRIMARY KEY (id)
-                )";
+                ) DEFAULT CHARSET=utf8";
     $this->db->query($sql);
     }
     
   public function pgsql()
     {
-    
+    $sql = "CREATE TABLE helloworld_helloupgrade1 (
+                  id serial PRIMARY KEY
+                  );";
+    $this->db->query($sql);
     }
     
   public function postUpgrade()

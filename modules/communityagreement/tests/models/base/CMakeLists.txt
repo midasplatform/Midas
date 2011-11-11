@@ -1,1 +1,1 @@
-add_midas_mysql_test( CommunityagreementAgreementModel AgreementModelTest.php )
+add_midas_test( CommunityagreementAgreementModel AgreementModelTest.php )

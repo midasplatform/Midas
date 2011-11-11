@@ -15,7 +15,7 @@ class Scheduler_Upgrade_1_0_1 extends MIDASUpgrade
         `date` timestamp,
         `log` text,
         PRIMARY KEY (`log_id`)
-      ) ";
+      ) DEFAULT CHARSET=utf8";
     $this->db->query($sql);
 
     }
