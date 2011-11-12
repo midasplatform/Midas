@@ -21,24 +21,14 @@ require_once BASE_PATH.'/library/KWUtils.php';
 class KWUtilsTest extends ControllerTestCase
   {
 
-  /**
-   * helper function to return Midas configured temp directory
-   * @return midas temp dir
-   */
-  protected function getTempDirectory()
-    {
-    include_once BASE_PATH.'/core/GlobalController.php';
-    $controller = new MIDAS_GlobalController($this->request, $this->response);
-    return $controller->getTempDirectory();
-    }
-
   /** tests mkDir function */
   public function testMkDir()
     {
-    $tmpDir = $this->getTempDirectory() . '/KWUtilsTest';
-    $this->assertTrue(KWUtils::mkDir($tmpDir));
+    $tmpDir = KWUtils::getTempDirectory();
+    $testDir = $tmpDir . '/' . 'KWUtilsTest';
+    $this->assertTrue(KWUtils::mkDir($testDir));
     // now clean up
-    KWUtils::recursiveRemoveDirectory($tmpDir);
+    KWUtils::recursiveRemoveDirectory($testDir);
     }
 
   /** tests createSubDirectories function */
@@ -47,7 +37,7 @@ class KWUtilsTest extends ControllerTestCase
     // test creating directories, do this in the tmp dir
     //
     // create a nested set of directories
-    $tmpDir = $this->getTempDirectory() . '/';
+    $tmpDir = KWUtils::getTempDirectory() . '/';
     $subDirs = array("KWUtilsTest", "1", "2", "3");
     $outDir = KWUtils::createSubDirectories($tmpDir, $subDirs);
 
@@ -66,7 +56,7 @@ class KWUtilsTest extends ControllerTestCase
       $this->assertTrue(is_dir($currDir));
       }
 
-    $topDir = $this->getTempDirectory() . '/KWUtilsTest';
+    $topDir = KWUtils::getTempDirectory() . '/KWUtilsTest';
     KWUtils::recursiveRemoveDirectory($topDir);
     }
 
@@ -78,7 +68,7 @@ class KWUtilsTest extends ControllerTestCase
     // the value of pwd in it
 
     // create a tmp dir for this test
-    $execDir = $this->getTempDirectory() . '/KWUtilsTest';
+    $execDir = KWUtils::getTempDirectory() . '/KWUtilsTest';
     mkdir($execDir);
     $cmd = 'pwd';
     $chdir = $execDir;
@@ -162,9 +152,9 @@ class KWUtilsTest extends ControllerTestCase
     $this->assertFalse(KWUtils::recursiveRemoveDirectory('thisstringisunlikelytobeadirectory'));
 
     // create a two-level directory
-    $testParentDir = $this->getTempDirectory() . '/KWUtilsParentDir';
+    $testParentDir = KWUtils::getTempDirectory() . '/KWUtilsParentDir';
     mkdir($testParentDir);
-    $testChildDir = $this->getTempDirectory() . '/KWUtilsParentDir/ChildDir';
+    $testChildDir = KWUtils::getTempDirectory() . '/KWUtilsParentDir/ChildDir';
     mkdir($testChildDir);
     copy(BASE_PATH.'/tests/testfiles/search.png', $testChildDir.'/testContent.png');
     $this->assertTrue(file_exists($testChildDir.'/testContent.png'));
