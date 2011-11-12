@@ -57,12 +57,21 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     }
 
   /** schedule Job (create script and set parameters).*/
-  function initAndSchedule($userDao, $executableItemDao, $jobName, $cmdOptions, $parametersList, $fire_time = false, $time_interval = false, $only_once = true)
+  function initAndSchedule($userDao, $executableItemDao, $jobName, $cmdOptions, $parametersList, $fire_time = false, $time_interval = false)
     {
     $componentLoader = new MIDAS_ComponentLoader();
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
+
+    if($time_interval === false)
+      {
+      $only_once = true;
+      }
+    else
+      {
+      $only_once = false;
+      }
 
     $executable = $this->getExecutable($executableItemDao);
 
@@ -195,7 +204,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         $return = $return.$command."_";
         }
       }
-    return substr($return,0,-1);
+    return substr($return, 0, -1);
     }
   /** create cmd option matrix*/
   private function _createParametersMatrix($cmdOptions)
