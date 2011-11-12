@@ -178,18 +178,16 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 
       $fire_time = false;
       $time_interval = false;
-      $only_once = true;
       if(isset($_POST['date']))
         {
         $fire_time = $_POST['date'];
         if($_POST['interval'] != 0)
           {
-          $only_once = false;
           $time_interval = $_POST['interval'];
           }
         }
 
-      $this->ModuleComponent->Executable->initAndSchedule($this->userSession->Dao, $itemDao, $_POST['name'], $cmdOptions, $parametersList, $fire_time, $time_interval, $only_once);
+      $this->ModuleComponent->Executable->initAndSchedule($this->userSession->Dao, $itemDao, $_POST['name'], $cmdOptions, $parametersList, $fire_time, $time_interval);
       }
     }
 

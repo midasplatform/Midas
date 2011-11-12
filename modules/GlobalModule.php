@@ -119,7 +119,18 @@ class MIDAS_GlobalModule extends AppController
       {
       foreach($this->_moduleDaos as $dao)
         {
-        include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
+        if(file_exists(BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
+          {
+          include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
+          }
+        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
+          {
+          include_once (BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php");
+          }
+        else
+          {
+          throw new Zend_Exception('Unable to find dao  '.$dao);
+          }
         }
       }
 
@@ -128,7 +139,18 @@ class MIDAS_GlobalModule extends AppController
       foreach($this->_moduleComponents as $component)
         {
         $nameComponent = ucfirst($this->moduleName).'_'.$component . "Component";
-        include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
+        if(file_exists(BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php"))
+          {
+          include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
+          }
+        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"))
+          {
+          include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php");
+          }
+        else
+          {
+          throw new Zend_Exception('Unable to find components  '.$component);
+          }
         if(!class_exists($nameComponent))
           {
           throw new Zend_Exception('Unable to find '.$nameComponent);
@@ -143,6 +165,18 @@ class MIDAS_GlobalModule extends AppController
         {
         $nameForm = ucfirst($this->moduleName).'_'.$forms . "Form";
         include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
+        if(file_exists(BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
+          {
+          include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
+          }
+        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
+          {
+          include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
+          }
+        else
+          {
+          throw new Zend_Exception('Unable to find form  '.$forms);
+          }
         if(!class_exists($nameForm))
           {
           throw new Zend_Exception('Unable to find '.$nameForm);
