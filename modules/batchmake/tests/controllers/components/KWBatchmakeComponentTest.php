@@ -152,7 +152,8 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $workDir = $this->kwBatchmakeComponent->createTask($userDao);
+    $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
+    $workDir = $taskDao->getWorkDir();
 
     $scriptName = 'anotherscript.bms';
     $expectedSet = array("myscript.bms", "Myscript2.bms",
@@ -192,7 +193,8 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $workDir = $this->kwBatchmakeComponent->createTask($userDao);
+    $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
+    $workDir = $taskDao->getWorkDir();
 
     // try a script that refers to a non-existant bmm
     $scriptName = 'bmmswitherrors.bms';
@@ -247,7 +249,8 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $workDir = $this->kwBatchmakeComponent->createTask($userDao);
+    $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
+    $workDir = $taskDao->getWorkDir();
 
     // a script that compiles
     $scriptName = 'Compiles.bms';
@@ -313,7 +316,8 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $workDir = $this->kwBatchmakeComponent->createTask($userDao);
+    $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
+    $workDir = $taskDao->getWorkDir();
 
     // try a script that returns a non-zero value
     $scriptName = 'CompileReturnNonzero.bms';
@@ -353,7 +357,8 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $workDir = $this->kwBatchmakeComponent->createTask($userDao);
+    $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
+    $workDir = $taskDao->getWorkDir();
 
     // try a script that returns a non-zero value
     $scriptName = 'CompileReturnNonzero.dagjob';
