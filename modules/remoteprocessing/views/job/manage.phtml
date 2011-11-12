@@ -25,7 +25,6 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
             echo $this->t('Create a Job');
             echo "</a>";
           echo '</div>';
-
         ?>
 
   <br/>
@@ -59,23 +58,23 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
       echo  "<td>".$job->getCreationDate()."</td>";
       if($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE)
         {
-        echo  "<td>Done</td>";
+        echo  "<td class='elementStatus'>Done</td>";
         }
       elseif(strtotime($job->getExpirationDate()) < strtotime(date('c')))
         {
-        echo  "<td>Expired</td>";
+        echo  "<td class='elementStatus'>Expired</td>";
         }
       elseif($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_WAIT)
         {
-        echo  "<td>Waiting</td>";
+        echo  "<td class='elementStatus'>Waiting</td>";
         }
       elseif($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_STARTED)
         {
-        echo  "<td>Started</td>";
+        echo  "<td class='elementStatus'>Started</td>";
         }
       else
         {
-        echo  "<td>Done</td>";
+        echo  "<td class='elementStatus'>Done</td>";
         }
       echo "</tr>";
       }
@@ -123,6 +122,14 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
 </div>
 <div class="viewSideBar">
 
+   <div class="sideElementFirst viewAction" style ="display:none;">
+    <h1>Actions</h1>
+    <ul>
+      <li>
+        <a id='viewJob'><img alt='' src='<?php echo $this->coreWebroot?>/public/images/icons/view.png'/>View</a>
+      </li>
+    </ul>
+   </div>
 </div>
 
 

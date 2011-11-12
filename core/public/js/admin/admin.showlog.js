@@ -8,7 +8,7 @@ function initLogs()
   $('.logsLoading').show();
   $('table#listLogs tr.logSum').remove();
   $('table#listLogs tr.logDetail').remove();
-  $.each(jsonLogs, function(index, value) { 
+  $.each(jsonLogs, function(index, value) {
   var html='';
   html+='<tr class="logSum">';
   html+=' <td>'+value.datetime+'</td>';
@@ -32,10 +32,10 @@ function initLogs()
   html+='</tr>';
   $('table#listLogs').append(html);
   });
-  
+
   $('table#listLogs').show();
   $('.logsLoading').hide();
-  
+
   $('table#listLogs tr.logSum').click(function()
   {
     showBigDialogWithContent('Log', $(this).next().html(),true);
@@ -55,19 +55,19 @@ var dates = $( "#startlog, #endlog" ).datepicker({
 						selectedDate, instance.settings );
 				dates.not( this ).datepicker( "option", option, date );
 			}
-		}); 
+		});
 
 $('#logSelector').ajaxForm( {beforeSubmit: validateShowlog, success: successShowlog} );
 
-function validateShowlog(formData, jqForm, options) { 
+function validateShowlog(formData, jqForm, options) {
  $('table#listLogs').hide();
  $('.logsLoading').show();
 }
 
-function successShowlog(responseText, statusText, xhr, form) 
+function successShowlog(responseText, statusText, xhr, form)
 {
   $('div#jsonLogs').html(responseText);
-  
+
   try {
        jsonLogs = jQuery.parseJSON($('div#jsonLogs').html());
     } catch (e) {
