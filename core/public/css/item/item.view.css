@@ -13,8 +13,21 @@ table#browseTable{
   display: table!important;
 }
 
-table#metadataTable{
+table#metadataTable {
   display: table!important;
+  width: 580px;
+  table-layout: fixed;
+}
+
+table#metadataTable th.elementHeader {
+  width: 6em;
+}
+
+table#metadataTable td {
+  overflow: hidden;
+  -o-text-overflow: ellipsis; /* Opera */
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 div.genericInfo {
