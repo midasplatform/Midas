@@ -12,28 +12,28 @@ PURPOSE.  See the above copyright notices for more information.
 
 /**
  * TaskController
- * 
+ *
  */
 class Scheduler_RunController extends Scheduler_AppController
 {
-  public $_moduleModels=array('Job', 'JobLog');
-  public $_components=array('Json');
+  public $_moduleModels = array('Job', 'JobLog');
+  public $_components = array('Json');
 
   /**
    * @method initAction()
    *  Index Action (first action when we access the application)
    */
   function init()
-    {      
+    {
 
     } // end method indexAction
 
   function indexAction()
     {
-    set_time_limit(0); 
+    set_time_limit(0);
     $this->disableLayout();
     $this->disableView();
-    
+
     $id = $this->_getParam('id');
     if(isset($id))
       {
@@ -55,7 +55,13 @@ class Scheduler_RunController extends Scheduler_AppController
       $job->setStatus(SCHEDULER_JOB_STATUS_STARTED);
       if($job->getRunOnlyOnce() == 0)
         {
-        $firetime = strtotime($job->getFireTime()) + $job->getTimeInterval();
+        $interval = $job->getTimeInterval();
+        $currTime = time();
+        $firetime = strtotime($job->getFireTime()) + $interval;
+        while($firetime < $currTime && $interval > 0)
+          {
+          $firetime += $interval; //only schedule jobs for the future
+          }
         $job->setFireTime(date('c', $firetime));
         }
       $job->setTimeLastFired(date('c'));
@@ -85,6 +91,6 @@ class Scheduler_RunController extends Scheduler_AppController
         }
       $this->Scheduler_Job->save($job);
       }
-    } 
-    
+    }
+
 }//end class
