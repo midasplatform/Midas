@@ -35,6 +35,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
       }
     return $return;
     }
+
   /** get jobs*/
   public function getJobsToRun()
     {
@@ -61,7 +62,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
           ->setIntegrityCheck(false)
           ->where('priority >= ?', $minPriority)
           ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN)
-          ->where('fire_time <= ?', date('c'))
+          ->where('fire_time >= ?', date('c'))
           ->order(array('priority DESC',
                            'fire_time ASC'));
     $rowset = $this->database->fetchAll($sql);
