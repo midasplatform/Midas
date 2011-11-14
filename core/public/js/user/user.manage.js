@@ -7,6 +7,7 @@ $(document).ready(function() {
     $('img.tabsLoading').hide()
     
     $('div.sideElementFirst').show();
+    $('div.viewAction').hide();
     
   
     $('table')
