@@ -22,9 +22,8 @@ class Cleanup_ConfigController extends Cleanup_AppController
       $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
       }
     $configForm = $this->ModuleForm->Config->createConfigForm();
-
     $formArray = $this->getFormAsArray($configForm);
-
+    $formArray['olderThan']->setValue($applicationConfig['global']['days']);
     $this->view->configForm = $formArray;
 
     if($this->_request->isPost())
@@ -73,6 +72,7 @@ class Cleanup_ConfigController extends Cleanup_AppController
                                                             'days' => $this->_getParam('olderThan'))));
           $jobModel->save($jobReport);
           }
+        $applicationConfig['global']['days'] = $this->_getParam('olderThan');
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/'.$this->moduleName.'.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
