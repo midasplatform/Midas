@@ -47,7 +47,8 @@ class Cleanup_Notification extends MIDAS_Notification
   /** Recursive implementation of cleanup dir */
   private function _cleanupRecursive($dir, $cutoff, $log)
     {
-    if($handle = opendir($dir))
+    $handle = opendir($dir);
+    if($handle)
       {
       $dirEmpty = true;
       while(false !== ($file = readdir($handle)))

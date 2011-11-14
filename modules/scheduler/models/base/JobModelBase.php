@@ -33,6 +33,7 @@ abstract class Scheduler_JobModelBase extends Scheduler_AppModel
     $this->initialize(); // required
     } // end __construct()
 
+  public abstract function getJobsByTask($task);
   public abstract function getJobsToRun();
 
   /** get server load*/

@@ -1,5 +1,6 @@
 <?php
 
+/** Configure controller for cleanup module */
 class Cleanup_ConfigController extends Cleanup_AppController
 {
   public $_moduleForms = array('Config');
@@ -28,7 +29,7 @@ class Cleanup_ConfigController extends Cleanup_AppController
 
     if($this->_request->isPost())
       {
-      $this->_helper->layout->disableLayout();
+      $this->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))

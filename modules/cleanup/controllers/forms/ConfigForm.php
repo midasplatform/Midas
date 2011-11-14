@@ -1,4 +1,5 @@
 <?php
+/** Cleanup module configuration form */
 class Cleanup_ConfigForm extends AppForm
 {
 
