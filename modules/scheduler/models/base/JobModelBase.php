@@ -10,7 +10,7 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-class Scheduler_JobModelBase extends Scheduler_AppModel
+abstract class Scheduler_JobModelBase extends Scheduler_AppModel
 {
   public function __construct()
     {
@@ -36,6 +36,8 @@ class Scheduler_JobModelBase extends Scheduler_AppModel
     $this->initialize(); // required
     } // end __construct()
 
+  public abstract function getJobsByTask($task);
+  public abstract function getJobsToRun();
 
   /** get server load*/
   protected function getServerLoad()

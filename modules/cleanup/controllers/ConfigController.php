@@ -1,5 +1,6 @@
 <?php
 
+/** Configure controller for cleanup module */
 class Cleanup_ConfigController extends Cleanup_AppController
 {
   public $_moduleForms = array('Config');
@@ -22,18 +23,13 @@ class Cleanup_ConfigController extends Cleanup_AppController
       $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
       }
     $configForm = $this->ModuleForm->Config->createConfigForm();
-
     $formArray = $this->getFormAsArray($configForm);
-    /*$formArray['piwikurl']->setValue($applicationConfig['global']['piwik.url']);
-    $formArray['piwikapikey']->setValue($applicationConfig['global']['piwik.apikey']);
-    $formArray['piwikid']->setValue($applicationConfig['global']['piwik.id']);
-    $formArray['report']->setValue($applicationConfig['global']['report']);*/
-
+    $formArray['olderThan']->setValue($applicationConfig['global']['days']);
     $this->view->configForm = $formArray;
 
     if($this->_request->isPost())
       {
-      $this->_helper->layout->disableLayout();
+      $this->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
@@ -67,9 +63,17 @@ class Cleanup_ConfigController extends Cleanup_AppController
           $job->setFireTime(date('Y-m-j', strtotime('+1 day'.date('Y-m-j G:i:s'))).' 1:00:00');
           $job->setTimeInterval(24 * 60 * 60);
           $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
-          $job->setParams(JsonComponent::encode(array('tempDirectory' => $this->getTempDirectory())));
+          $job->setParams(JsonComponent::encode(array('tempDirectory' => $this->getTempDirectory(),
+                                                      'days' => $this->_getParam('olderThan'))));
           $jobModel->save($job);
           }
+        else
+          {
+          $jobReport->setParams(JsonComponent::encode(array('tempDirectory' => $this->getTempDirectory(),
+                                                            'days' => $this->_getParam('olderThan'))));
+          $jobModel->save($jobReport);
+          }
+        $applicationConfig['global']['days'] = $this->_getParam('olderThan');
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/'.$this->moduleName.'.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
