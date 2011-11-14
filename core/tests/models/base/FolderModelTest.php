@@ -22,6 +22,8 @@ class FolderModelTest extends DatabaseTestCase
     $this->_daos = array(
       'Folder'
     );
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     parent::setUp();
     }
 
