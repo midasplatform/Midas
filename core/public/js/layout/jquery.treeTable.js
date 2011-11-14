@@ -45,16 +45,23 @@
     childPrefix: "child-of-",
     clickableNodeNames: true,
     expandable: true,
-    indent: 19,
+    indent: 7,
     initialState: "collapsed",
     treeColumn: 0
   };
   
   // Recursively hide all node's children in a tree
-  $.fn.collapse = function() {
-    var id = $(this).attr('id');    
-    $('tr[id*="'+id+'"]').addClass("collapsed").hide();
-    $(this).show();
+  $.fn.collapse = function() {    
+    $(this).addClass("collapsed");
+    
+    childrenOf($(this)).each(function() {
+      if(!$(this).hasClass("collapsed")) {
+        $(this).collapse();
+      }
+      
+      this.style.display = "none"; // Performance! $(this).hide() is slow...
+    });
+
     colorLines(true);
     return this;
   };
@@ -218,13 +225,13 @@
     // 3: +node+ should not be inserted as a child of +node+ itself.
 
     if($.inArray(node[0].id, ancestorNames) == -1 && (!parent || (destination.id != parent[0].id)) && destination.id != node[0].id) {
-
+      indent(node, ancestorsOf(node).length * options.indent * -1); // Remove indentation
+        
       if(parent) {node.removeClass(options.childPrefix + parent[0].id);}
       
       node.addClass(options.childPrefix + destination.id);
       move(node, destination); // Recursively move nodes to new location
-      var padding = getPaddingLeft(destination) + options.indent;
-      node.children("td:first")[options.treeColumn].style.paddingLeft = (padding-12) + "px";
+      indent(node, ancestorsOf(node).length * options.indent);     
     }
     
     return this;
@@ -274,14 +281,14 @@
   }
   
   function indent(node, value) {
-    var cell = $(node.children("td:first")[options.treeColumn]);
+    var cell = $(node.children("td")[options.treeColumn]);
     cell[0].style.paddingLeft = getPaddingLeft(cell) + value + "px";
     
     childrenOf(node).each(function() {
       indent($(this), value);
     });
   };
-
+  
   function initEvent()
   {
           // Make visible that a row is clicked
@@ -446,11 +453,11 @@
     arrayCell.each(function() {
       if(first)
         {
-        $(this).children("td:first")[options.treeColumn].style.paddingLeft = (padding-12) + "px";
+        $(this).children("td:first")[options.treeColumn].style.paddingLeft = padding + "px";
         }
       else
         {
-        $(this).children("td:first")[options.treeColumn].style.paddingLeft = (padding-12) + "px"; 
+        $(this).children("td:first")[options.treeColumn].style.paddingLeft = padding + "px"; 
         }
        if(node.hasClass('expanded'))
          {
@@ -497,11 +504,11 @@
         var padding = getPaddingLeft(cell) + options.indent;
         
         childNodes.each(function() {
-          $(this).children("td:first")[options.treeColumn].style.paddingLeft =  (padding-12) + "px";
+          $(this).children("td:first")[options.treeColumn].style.paddingLeft =  padding + "px";
         });
 
         if(options.expandable) {
-          cell.prepend('<span style="margin-left: -' + options.indent + 'px; padding-left: ' + options.indent + 'px" class="expander"></span>');
+          cell.prepend('<span style="margin-left: -' + (options.indent+12) + 'px; padding-left: ' + (options.indent+12) + 'px" class="expander"></span>');
           $(cell[0].firstChild).click(function() {node.toggleBranch();});
           
           if(options.clickableNodeNames) {

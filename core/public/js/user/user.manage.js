@@ -100,9 +100,9 @@ function initDragAndDrop()
             }
            var destination_obj=this;
            
-           // do nothing if drop item(s) to its current folder
+           // do nothing if drop item(s) to its current folder, otherwise move item(s)
            if ($(this).attr('id') != $(from_obj).attr('id')){
-             $.post(json.global.webroot+'/browse/movecopy', {moveElement: true, elements: elements , destination:$(this).attr('element'),from:$(from_obj).attr('element'),ajax:true},
+             $.post(json.global.webroot+'/browse/movecopy', {moveElement: true, elements: elements , destination:$(destination_obj).attr('element'),from:$(from_obj).attr('element'),ajax:true},
              function(data) {
 
                jsonResponse = jQuery.parseJSON(data);
@@ -114,9 +114,7 @@ function initDragAndDrop()
                 if(jsonResponse[0])
                   {
                     createNotive(jsonResponse[1],1500);
-                    $($(ui.draggable).parents("tr")).appendBranchTo(destination_obj);
-                    $(from_obj).reload();
-                    $(destination_obj).reload();
+                    $($(ui.draggable).parents("tr")[0]).appendBranchTo(destination_obj);
                   }
                 else
                   {
@@ -146,12 +144,13 @@ function initDragAndDrop()
             }  
         });
         
+        // qtip pop-up for folders with only read permission
         $(this).parents("tr:[policy=0]").qtip({
-          content: 'You do not have write permission on this folder and cannot drop items to it !',
+          content: 'You do not have write permission on this folder and cannot drop item(s) to it !',
           show: 'mouseover',
           hide: 'mouseout',
           position: {
-                at: 'center', 
+                target: 'mouse',
                 my: 'bottom left',
                 viewport: $(window), // Keep the qtip on-screen at all times
                 effect: true // Disable positioning animation
