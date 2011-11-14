@@ -14,11 +14,68 @@ class Cleanup_Notification extends MIDAS_Notification
   public function performCleanup($params)
     {
     $tempDir = $params['tempDirectory'];
-    $olderThan = $params['olderThan'];
+    $days = $params['days']; //days since last modified before we delete the file
+    $log = 'Beginning directory cleanup of '.$tempDir."\n";
 
-    if(!file_exists($tempDir))
+    if(!is_numeric($days) || $days < 1)
       {
-      throw new Zend_Exception('Temp directory ('.$tempDir.') does not exist');
+      $days = 1;
+      }
+
+    if(!is_dir($tempDir))
+      {
+      throw new Zend_Exception('Temp directory ('.$tempDir.') does not exist or is not a directory');
+      }
+
+    $cutoff = strtotime('-'.$days.' days');
+    $handle = opendir($tempDir);
+    while(false !== ($name = readdir($handle)))
+      {
+      if($name != '.' && $name != '..')
+        {
+        $path = $tempDir.'/'.$name;
+        if(is_dir($path) && is_numeric($name))
+          {
+          $this->_cleanupRecursive($path, $cutoff, &$log);
+          }
+        }
+      }
+    closedir($handle);
+    return $log;
+    }
+
+  /** Recursive implementation of cleanup dir */
+  private function _cleanupRecursive($dir, $cutoff, $log)
+    {
+    if($handle = opendir($dir))
+      {
+      $dirEmpty = true;
+      while(false !== ($file = readdir($handle)))
+        {
+        if($file != '.' && $file != '..')
+          {
+          $dirEmpty = false;
+          $file = $dir.'/'.$file;
+          if(is_dir($file))
+            {
+            $this->_cleanupRecursive($file, $cutoff, &$log);
+            }
+          else
+            {
+            if(filemtime($file) < $cutoff)
+              {
+              $log .= 'Deleting outdated partial file '.$file."\n";
+              unlink($file);
+              }
+            }
+          }
+        }
+      closedir($handle);
+      if($dirEmpty)
+        {
+        $log .= 'Deleting empty directory '.$dir."\n";
+        rmdir($dir);
+        }
       }
     }
   } //end class
