@@ -46,6 +46,7 @@ class Dicomextractor_ApiComponent extends AppComponent
     $dicomComponent = $componentLoader->loadComponent('Extractor',
                                                       'DicomExtractor');
     $dicomComponent->extract($revisionDao);
+    $dicomComponent->thumbnail($itemDao);
     return json_encode($revisionDao);
   }
 

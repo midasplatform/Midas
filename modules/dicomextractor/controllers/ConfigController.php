@@ -35,6 +35,7 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
     
     $formArray = $this->getFormAsArray($configForm);    
     $formArray['dcm2xml']->setValue($applicationConfig['global']['dcm2xml']);
+    $formArray['dcmj2pnm']->setValue($applicationConfig['global']['dcmj2pnm']);
     
     $this->view->configForm = $formArray;
     
@@ -54,6 +55,7 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
           rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini",BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
           }
         $applicationConfig['global']['dcm2xml'] = $this->_getParam('dcm2xml');
+        $applicationConfig['global']['dcmj2pnm'] = $this->_getParam('dcmj2pnm');
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }

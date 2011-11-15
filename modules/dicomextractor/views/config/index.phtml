@@ -34,9 +34,13 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>DICOM Extractor Configuration:</h3>
             <div >
-              <label for='dcm2xml'>Command to run dcm2xml</label>
+              <label for='dcm2xml'>Command to run dcm2xml (for data)</label>
               {$this->configForm['dcm2xml']}
             </div>
+            <div >
+              <label for='dcmjpnm'>Command to run dcmj2pnm (for thumbnail)</label>
+              {$this->configForm['dcmj2pnm']}
+            </div >
           <div>
             {$this->configForm['submitConfig']}
           </div>
