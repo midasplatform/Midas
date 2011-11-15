@@ -9,9 +9,46 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-
+include_once BASE_PATH . '/library/KWUtils.php';
+/** Exract dicom metadata */
 class Dicomextractor_ExtractorComponent extends AppComponent
 {
+
+  /**
+   * Create a thumbnail from the series
+   */
+  public function thumbnail($item)
+  {
+    $modelLoader = new MIDAS_ModelLoader;
+    $componentLoader = new MIDAS_ComponentLoader;
+    $itemModel = $modelLoader->loadModel("Item");
+    $revision = $itemModel->getLastRevision($item);
+    $bitstreams = $revision->getBitstreams();
+    $numBitstreams = count($bitstreams);
+    if($numBitstreams < 1)
+      {
+      return;
+      }
+
+    $thumbnailComponent = $componentLoader->loadComponent('Imagemagick',
+                                                          'Thumbnailcreator');
+
+    $bitstream = $bitstreams[$numBitstreams/2];
+
+    // Turn the DICOM into a JPEG
+    $modulesConfig=Zend_Registry::get('configsModules');
+    $tmpSlice = KWUtils::getTempDirectory().'/'.$bitstream->getName().'.jpg';
+    $command = $modulesConfig['dicomextractor']->dcmj2pnm;
+    $preparedCommand = str_replace("'", '"',$command);
+    $preparedCommand .= ' "'.$bitstream->getFullPath().'" "'.$tmpSlice.'"';
+    exec($preparedCommand, $output);
+
+    // We have to spoof an item array for the thumbnail component.
+    $spoofedItem = array();
+    $spoofedItem['item_id'] = $item->getKey();
+    $thumbnailComponent->createThumbnail($spoofedItem,$tmpSlice);
+  }
+
   /** extract metadata
    *  HACK TODO FIXME Right now we only extract the metadata from the 0th
    *  bistream of the item. We should really do some sort of validation on
@@ -67,7 +104,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
           break;
         }
       }
-    $MetadataModel = $modelLoader->loadModel("Metadata");  
+    $MetadataModel = $modelLoader->loadModel("Metadata");
     foreach($tagArray as $row)
       {
       try
