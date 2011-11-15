@@ -36,7 +36,7 @@ class Cleanup_Notification extends MIDAS_Notification
         $path = $tempDir.'/'.$name;
         if(is_dir($path) && is_numeric($name))
           {
-          $this->_cleanupRecursive($path, $cutoff, &$log);
+          $this->_cleanupRecursive($path, $cutoff, $log);
           }
         }
       }
@@ -45,7 +45,7 @@ class Cleanup_Notification extends MIDAS_Notification
     }
 
   /** Recursive implementation of cleanup dir */
-  private function _cleanupRecursive($dir, $cutoff, $log)
+  private function _cleanupRecursive($dir, $cutoff, &$log)
     {
     $handle = opendir($dir);
     if($handle)
@@ -59,7 +59,7 @@ class Cleanup_Notification extends MIDAS_Notification
           $file = $dir.'/'.$file;
           if(is_dir($file))
             {
-            $this->_cleanupRecursive($file, $cutoff, &$log);
+            $this->_cleanupRecursive($file, $cutoff, $log);
             }
           else
             {

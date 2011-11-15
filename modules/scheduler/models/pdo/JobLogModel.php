@@ -15,6 +15,6 @@ require_once BASE_PATH.'/modules/scheduler/models/base/JobLogModelBase.php';
 /** job model */
 class Scheduler_JobLogModel extends Scheduler_JobLogModelBase
 {
-    
+
 }  // end class
 ?>

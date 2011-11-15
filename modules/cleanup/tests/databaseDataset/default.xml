@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
 
-  <scheduler_job
-    job_id="1"
-    task="TASK_DUMMY_NOTREAL"
-    run_only_once="0"
-    fire_time="2311-01-27 11:11:11"
-    time_last_fired="0000-00-00 00:00:00"
-    time_interval="3600"
-    priority="0"
-    status="0"
-    params="" />
-
   <scheduler_job_log
-    log_id="1"
-    job_id="1"
+    log_id="1001"
+    job_id="1001"
     date="2011-11-14 11:11:11"
     log="foo" />
 
