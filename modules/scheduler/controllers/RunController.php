@@ -70,7 +70,7 @@ class Scheduler_RunController extends Scheduler_AppController
         {
         if(!isset($tasks[$job->getTask()]))
           {
-          throw new Zend_Exception('Unable to find task');
+          throw new Zend_Exception('Unable to find task '.$job->getTask());
           }
         $log = call_user_func(array($modules[$tasks[$job->getTask()]['module']], $tasks[$job->getTask()]['method']), JsonComponent::decode($job->getParams()));
         if($log && is_string($log))
@@ -78,7 +78,7 @@ class Scheduler_RunController extends Scheduler_AppController
           $this->Scheduler_JobLog->saveLog($job, $log);
           }
         }
-      catch (Zend_Exception $exc)
+      catch(Zend_Exception $exc)
         {
         $job->setStatus(SCHEDULER_JOB_STATUS_FAILED);
         $this->Scheduler_Job->save($job);

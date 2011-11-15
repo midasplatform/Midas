@@ -26,7 +26,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
           ->setIntegrityCheck(false)
           ->where('task = ?', $task)
           ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN);
-    
+
     $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
@@ -38,7 +38,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
     return $return;
     }
 
-  /** get jobs*/
+  /** get the jobs that should be run on the current run invocation */
   public function getJobsToRun()
     {
     $load = $this->getServerLoad();
@@ -59,12 +59,12 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
         $minPriority = MIDAS_EVENT_PRIORITY_LOW;
         }
       }
-      
-   $sql = $this->database->select()
+
+    $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->where('priority >= ?', $minPriority)
           ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN)
-          ->where('fire_time >= ?', date('c'))
+          ->where('fire_time <= ?', date('c'))
           ->order(array('priority DESC',
                            'fire_time ASC'));
     $rowset = $this->database->fetchAll($sql);
@@ -77,12 +77,30 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
       }
     return $return;
     }
-    
-    
-    /** get jobs*/
+
+  /** get all jobs scheduled to run in the future */
+  public function getFutureScheduledJobs()
+    {
+    $sql = $this->database->select()
+          ->setIntegrityCheck(false)
+          ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN)
+          ->where('fire_time >= ?', date('c'))
+          ->order(array('fire_time ASC'));
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->initDao('Job', $row, 'scheduler');
+      $return[] = $tmpDao;
+      unset($tmpDao);
+      }
+    return $return;
+    }
+
+  /** get jobs*/
   public function getLastErrors($limit = 10)
     {
-    $load = $this->getServerLoad();      
+    $load = $this->getServerLoad();
     $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->where('status = ?', SCHEDULER_JOB_STATUS_FAILED)
@@ -98,6 +116,6 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
       }
     return $return;
     }
-    
+
 }  // end class
 ?>
