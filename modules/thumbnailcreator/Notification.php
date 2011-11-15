@@ -2,7 +2,6 @@
 /** notification manager*/
 class Thumbnailcreator_Notification extends MIDAS_Notification
   {
-    //public $_moduleComponents=array('Imagemagick');
   public $moduleName = 'thumbnailcreator';
   
   /** init notification process*/
@@ -15,7 +14,10 @@ class Thumbnailcreator_Notification extends MIDAS_Notification
   /** createThumbnail */
   public function createThumbnail($params)
     {
-      //$this->ModuleComponent->Imagemagick->createThumbnail($params[0]);
+    $componentLoader = new MIDAS_ComponentLoader;
+    $thumbnailComponent = $componentLoader->loadComponent('Imagemagick',
+                                                          'Thumbnailcreator');
+    $thumbnailComponent->createThumbnail($params[0]);
     return;
     }
   } //end class
