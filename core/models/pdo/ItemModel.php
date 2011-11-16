@@ -329,7 +329,7 @@ class ItemModel extends ItemModelBase
     $folders = $itemdao->getFolders();
     foreach($folders as $folder)
       {
-      $folder_model->removeItem($folder, $itemdao);
+      $this->database->removeLink('folders', $itemdao, $folder);
       }
 
     $revisions = $itemdao->getRevisions();
