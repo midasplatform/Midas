@@ -29,3 +29,17 @@ img.folderLoading{
 	#cart { width: 200px; float: left; }
 	/* style the list to maximize the droppable hitarea */
 	#cart ol { margin: 0; padding: 1em 0 1em 3em; }
+  
+span.userDataTitle{
+  font-size: 14px;
+  text-shadow: white 0px 1px 1px;
+  font-weight: bold;
+  line-height:150%;
+  }
+  
+.notdraggable { cursor: default; }
+.ui-draggable { cursor: pointer; }
+
+div.userPersonalData{
+  opacity: .90;
+}

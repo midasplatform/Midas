@@ -202,6 +202,11 @@ class CommunityController extends AppController
     $this->view->header = $this->t("Manage Community");
     $this->view->communityDao = $communityDao;
 
+    // User's personal data, used for drag-and-drop feature
+    $this->view->userPersonalmainFolder = $this->userSession->Dao->getFolder();
+    $this->view->userPersonalFolders = $this->Folder->getChildrenFoldersFiltered($this->view->userPersonalmainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $this->view->userPersonalItems = $this->Folder->getItemsFiltered($this->view->userPersonalmainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+
     $this->view->isAdmin = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     $this->view->json['community'] = $communityDao->toArray();
     $this->view->json['community']['moderatorGroup'] = $moderator_group->toArray();

@@ -63,9 +63,10 @@ $(document).ready(function() {
         "sEmptyTable": "No users in this group"
         }
       });
-      if($(this).attr('groupid')!=undefined)
+      var groupid=$(this).attr('groupid');
+      if(groupid!=undefined)
         {
-          datatable[$(this).attr('groupid')]=obj;
+          datatable[groupid]=obj;
         }
     });
     
@@ -73,9 +74,16 @@ $(document).ready(function() {
     $('img.tabsLoading').hide()
     
   
-    $("#browseTable").treeTable();
+     $('table')
+        .filter(function() {
+            return this.id.match(/browseTable*/);
+        })
+        .treeTable();
+    ;
     $("img.tableLoading").hide();
     $("table#browseTable").show();
+    
+    $('div.userPersonalData').hide();
     
     initDragAndDrop();    
     $('td.tdUser input').removeAttr('checked');
@@ -112,11 +120,15 @@ function initDragAndDrop()
 {
       $("#browseTable .file, #browseTable .folder:not(.notdraggable)").draggable({
       helper: "clone",
+      cursor: "move",
       opacity: .75,
       refreshPositions: true, // Performance?
       revert: "invalid",
       revertDuration: 300,
-      scroll: true
+      scroll: true,
+      start: function() {            
+          $('div.userPersonalData').show();            
+        }
       });
       
       // Configure droppable rows
@@ -134,16 +146,19 @@ function initDragAndDrop()
              {
                elements=';'+$(ui.draggable).parents("tr").attr('element');
              }
-           var from;
+           var from_ojbect;
            var classNames=$(ui.draggable).parents("tr").attr('class').split(' ');
             for(key in classNames) {
               if(classNames[key].match('child-of-')) {
-                from= $("#" + classNames[key].substring(9)).attr('element');
+                from_obj = "#" + classNames[key].substring(9); 
               }
             }
            var destination_obj=this;
-           $.post(json.global.webroot+'/browse/movecopy', {moveElement: true, elements: elements , destination:$(this).attr('element'),from:from,ajax:true},
-           function(data) {
+           
+           // do nothing if drop item(s) to its current folder
+           if ($(this).attr('id') != $(from_obj).attr('id')){
+             $.post(json.global.webroot+'/browse/movecopy', {moveElement: true, elements: elements , destination:$(this).attr('element'),from:$(from_obj).attr('element'),ajax:true},
+             function(data) {
 
                jsonResponse = jQuery.parseJSON(data);
                 if(jsonResponse==null)
@@ -154,15 +169,14 @@ function initDragAndDrop()
                 if(jsonResponse[0])
                   {
                     createNotive(jsonResponse[1],1500);
-                    $($(ui.draggable).parents("tr")).appendBranchTo(destination_obj);
-                    $(destination_obj).reload();
+                    $($(ui.draggable).parents("tr")).appendBranchTo(destination_obj);       
                   }
                 else
                   {
                     createNotive(jsonResponse[1],4000);
                   }
-           });
-            
+             });
+           }       
           },
           hoverClass: "accept",
           over: function(e, ui) {
@@ -179,6 +193,8 @@ function init()
 {
   groupUsersSelected=new Array();
   memberSelected=new Array();
+  var mainDialogContentDiv = $('div.MainDialogContent');
+  var createGroupFromDiv = $('div#createGroupFrom');
   $('a.groupLink').each(function(){
     var id=$(this).attr('groupid');
     $(this).parent('li').find('span').html(' ('+($('div#groupList_'+id+' td.tdUser').size())+')');
@@ -188,24 +204,22 @@ function init()
       {
         $('div.groupUsersSelection').hide();
         $('td.tdUser input').removeAttr('checked');
-        $('div.MainDialogContent').html('');
-        $('div.MainDialogContent').html('');
-        $('div#createGroupFrom').find('input[name=groupId]').val('0');
-        $('div#createGroupFrom').find('input[name=name]').val('');
-        showDialogWithContent(json.community.message.createGroup,$('div#createGroupFrom').html(),false);
-        $('div.MainDialogContent form.editGroupForm').ajaxForm( {beforeSubmit: validateGroupChange, success:       successGroupChange} );
+        mainDialogContentDiv.html('');
+        createGroupFromDiv.find('input[name=groupId]').val('0');
+        createGroupFromDiv.find('input[name=name]').val('');
+        showDialogWithContent(json.community.message.createGroup,createGroupFromDiv.html(),false);
+        mainDialogContentDiv.find('form.editGroupForm').ajaxForm( {beforeSubmit: validateGroupChange, success:       successGroupChange} );
       });
       
     $('a.editGroupLink').click(function()
       {
-        $('div.MainDialogContent').html('');
+        mainDialogContentDiv.html('');
         var id=$(this).attr('groupid');
-        $('div.MainDialogContent').html('');
-        $('div#createGroupFrom').find('input[name=groupId]').val(id);
+        createGroupFromDiv.find('input[name=groupId]').val(id);
         var groupName=$(this).parent('li').find('a:first').html();
-        showDialogWithContent(json.community.message.editGroup,$('div#createGroupFrom').html(),false);
+        showDialogWithContent(json.community.message.editGroup,createGroupFromDiv.html(),false);
         $('form.editGroupForm input#name').val(groupName);
-        $('div.MainDialogContent form.editGroupForm').ajaxForm( {beforeSubmit: validateGroupChange, success:       successGroupChange} );
+        mainDialogContentDiv.find('form.editGroupForm').ajaxForm( {beforeSubmit: validateGroupChange, success:       successGroupChange} );
       });
       
     $('a.groupLink').click(function()
@@ -483,19 +497,23 @@ function successInfoChange(responseText, statusText, xhr, form)
 
 function initCommunityPrivacy()
 {
-if($('input[name=privacy]:checked').val()== 1) //private
+var inputCanJoin = $('input[name=canJoin]');
+var inputPrivacy = $('input[name=privacy]');
+var canJoinDiv = $('div#canJoinDiv');
+
+if(inputPrivacy.filter(':checked').val()== 1) //private
   {
-    $('input[name=canJoin]').attr('disabled','disabled');
-    $('input[name=canJoin]').removeAttr('checked');
-    $('input[name=canJoin][value=0]').attr('checked', true); //invitation
-    $('div#canJoinDiv').hide();
+    inputCanJoin.attr('disabled','disabled');
+    inputCanJoin.removeAttr('checked');
+    inputCanJoin.filter('[value=0]').attr('checked', true); //invitation
+    canJoinDiv.hide();
   }
 else
   {
-    $('input[name=canJoin]').removeAttr('disabled');
-    $('div#canJoinDiv').show();
+    inputCanJoin.removeAttr('disabled');
+    canJoinDiv.show();
   }
-  $('input[name=privacy]').change(function(){
+    inputPrivacy.change(function(){
     initCommunityPrivacy();
   });
 }
