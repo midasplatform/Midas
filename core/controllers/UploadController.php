@@ -200,6 +200,7 @@ class UploadController extends AppController
     $params = $this->_getAllParams();
     if(!$this->logged)
       {
+      echo "[ERROR] You must be logged in to upload";
       throw new Zend_Exception('You have to be logged in to do that');
       }
     $this->disableLayout();
@@ -226,8 +227,18 @@ class UploadController extends AppController
         {
         $license = null;
         }
-      $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename, $path, $parent, $license);
+
+      try
+        {
+        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename, $path, $parent, $license);
+        }
+      catch(Exception $e)
+        {
+        echo "[ERROR] ".$e->getMessage();
+        throw $e;
+        }
       $this->userSession->uploaded[] = $item->getKey();
+      echo "[OK]";
       }
     } //end processjavaupload
 
