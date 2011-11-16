@@ -10,144 +10,192 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-/** Httpupload (java tool*/
+/**
+ * This component is used for large uploads and is used by
+ * the web api and the java uploader.  It generates an authenticated
+ * upload token that can be used to start or resume an upload.
+ */
 class HttpuploadComponent extends AppComponent
   {
-  /** process*/
-  function process_http_upload($params)
+
+  var $tmpDirectory = '';
+  var $tokenParamName = '';
+  var $testingEnable = false;
+
+  var $logFile = '';
+  var $logType = 0;
+
+  /** Set the upload temporary directory */
+  public function setTmpDirectory($dir)
     {
-    $uploadOffset = 0; // bytes received
+    $this->tmpDirectory = $dir;
+    }
+
+  /** Set whether we are in testing mode or not (boolean) */
+  public function setTestingMode($testing)
+    {
+    $this->testingEnable = $testing;
+    }
+
+  /** Set the name of the uploadtoken parameter that is being passed */
+  public function setTokenParamName($name)
+    {
+    $this->tokenParamName = $name;
+    }
+
+  /**
+   * Generate an upload token that will act as the authentication token for the upload.
+   * This token is the filename of a guaranteed unique file which will be placed under the
+   * directory specified by the dirname parameter, which should be used to ensure that
+   * the user can only write into a certain logical space.
+   */
+  public function generateToken($args, $dirname = '')
+    {
+    if(!array_key_exists('filename', $args))
+      {
+      throw new Exception('Parameter filename is not defined', -150);
+      }
+    $dir = $dirname == '' ? '' : '/'.$dirname;
+    $dir = $this->tmpDirectory.$dir;
+
+    if(!file_exists($dir))
+      {
+      mkdir($dir, 0700, true);
+      }
+    // create a unique temporary file in the dirname directory
+    $unique_identifier = basename(tempnam($dir, $args['filename']));
+    if($dirname != '')
+      {
+      $unique_identifier = $dirname.'/'.$unique_identifier;
+      }
+
+    if(empty($unique_identifier))
+      {
+      throw new Exception('Failed to generate upload token', -140);
+      }
+    return array('token' => $unique_identifier);
+    }
+
+  /** Handle the upload */
+  public function process($args)
+    {
+    $uploadOffset = (float)0; // bytes received
 
     //check parameters
-    if(!isset($params['filename']) || empty($params['filename']))
+    if(!array_key_exists('filename', $args))
       {
-      $this->getLogger()->crit("[ERROR]'filename' parameter is not set");
-      echo "[ERROR]'filename' parameter is not set";
-      return;
+      error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter filename is not defined", $this->logType, $this->logFile);
+      throw new Exception('Parameter filename is not defined', -150);
       }
-    $filename = $params['filename'];
-    $this->getLogger()->info(__METHOD__."filename: ".$filename);
 
-    if(!isset($params['length']) || empty($params['length']))
-      {
-      $this->getLogger()->crit(__METHOD__."[ERROR]'length' parameter is not set");
-      echo "[ERROR]'length' parameter is not set";
-      return;
-      }
-    $length = $params['length'];
+    $filename = $args['filename']; // XXXX.ISP
 
-    if(!isset($params['uploadUniqueIdentifier']) || empty($params['uploadUniqueIdentifier']))
+    if (!array_key_exists($this->tokenParamName, $args))
       {
-      $this->getLogger()->crit(__METHOD__."[ERROR]'uploadUniqueIdentifier' parameter is not set");
-      echo "[ERROR]'uploadUniqueIdentifier' parameter is not set";
-      return;
+      error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter ".$this->tokenParamName." is not defined", $this->logType, $this->logFile);
+      throw new Exception('Parameter '.$this->tokenParamName.' is not defined', -150);
       }
-    $uploadUniqueIdentifier = $params['uploadUniqueIdentifier'];
-    //check ifthe temporary file exists
-    $pathTemporaryFilename = BASE_PATH.'/tmp/misc/'.$uploadUniqueIdentifier;
+    $uploadToken = $args[$this->tokenParamName]; //XXX123.TMP
+
+    if (!array_key_exists('length', $args))
+      {
+      error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter length is not defined", $this->logType, $this->logFile);
+      throw new Exception('Parameter length is not defined', -150);
+      }
+    $length = (float)($args['length']);
+
+    if($this->testingEnable && array_key_exists('localinput', $args))
+      {
+      $localinput = array_key_exists('localinput', $args) ? $args['localinput'] : false;
+      }
+
+    //check if the temporary file exists
+    $pathTemporaryFilename = $this->tmpDirectory.'/'.$uploadToken;
     if(!file_exists($pathTemporaryFilename))
       {
-      $this->getLogger()->crit(__METHOD__."[ERROR]'uploadUniqueIdentifier' parameter is incorrect: ".$uploadUniqueIdentifier);
-      echo "[ERROR]'uploadUniqueIdentifier' parameter is incorrect: ".$uploadUniqueIdentifier;
-      return;
+      error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '.'Invalid upload token', $this->logType, $this->logFile);
+      throw new Exception('Invalid upload token', -141);
       }
     else
       {
       $uploadOffset = filesize($pathTemporaryFilename);
-      $this->getLogger()->info(__METHOD__.$filename." exists - uploadOffset:".$uploadOffset);
       }
+
+    // can't do streaming checksum if we have a partial file already.
+    $streamChecksum = $uploadOffset == 0;
 
     set_time_limit(0); // Timeout of the PHP script set to Infinite
     ignore_user_abort(TRUE);
 
-    if(isset($params['testingmode']))
+    $inputfile = 'php://input'; // Stream (Client -> Server) Mode: Read, Binary
+    if ($this->testingEnable && array_key_exists('localinput', $args))
       {
-      $test = $params['testingmode'];
+      $inputfile = $localinput; // Stream (LocalServerFile -> Server) Mode: Read, Binary
       }
-    if(isset($test) && !empty($test))
-      {
-      if(!isset($params['path']) || empty($params['path']))
+
+     $in = fopen($inputfile, 'rb');    // Stream (LocalServerFile -> Server) Mode: Read, Binary
+     if($in === FALSE )
         {
-        $this->getLogger()->crit(__METHOD__."[ERROR]'path' parameter is not set");
-        echo "[ERROR]'path' parameter is not set";
-        return;
+        error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '."Failed to open source:$inputfile", $this->logType, $this->logFile);
+        throw new Exception("Failed to open [$inputfile] source", -142);
         }
-      $in = fopen($params['path'], "rb"); // Stream (Applet -> Server) Mode: Read, Binary
-      }
-    else
+
+    // open target output
+    $out = fopen($pathTemporaryFilename, 'ab'); // Stream (Server -> TempFile) Mode: Append, Binary
+    if ($out === false)
+        {
+        error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '."Failed to open output file:$pathTemporaryFilename", $this->logType, $this->logFile);
+        throw new Exception("Failed to open output file [$pathTemporaryFilename]", -143);
+        }
+
+    if($streamChecksum)
       {
-      $in = fopen("php://input", "rb"); // Stream (Applet -> Server) Mode: Read, Binary
+      $hashctx = hash_init('md5');
       }
 
-    $out = fopen($pathTemporaryFilename, "ab"); // Stream (Server -> TempFile) Mode: Append, Binary
-
-    $bufSize = 10485760;
-    $bufSize = ($length < $bufSize) ? $length : $bufSize;
-    $this->getLogger()->info(__METHOD__."bufSize: ".$bufSize);
-    //$cstatus = connection_status();
-    //$this->log("connection_status: $cstatus", LOG_DEBUG);
     // read from input and write into file
+    $bufSize = 5242880;
+    $bufSize = $length < $bufSize ? $length : $bufSize;
     while(connection_status() == CONNECTION_NORMAL && $uploadOffset < $length && ($buf = fread($in, $bufSize)))
       {
       $uploadOffset += strlen($buf);
-      //$this->log("uploadOffset: $uploadOffset", LOG_DEBUG);
       fwrite($out, $buf);
       if($length - $uploadOffset < $bufSize)
         {
         $bufSize = $length - $uploadOffset;
         }
+      if($streamChecksum)
+        {
+        hash_update($hashctx, $buf);
+        }
       }
-    //$cstatus = connection_status();
-    //$this->log("connection_status: $cstatus", LOG_DEBUG);
     fclose($in);
     fclose($out);
 
-    //$this->log("uploadOffset: $uploadOffset", LOG_DEBUG);
-
     if($uploadOffset < $length)
       {
-      $this->getLogger()->crit(__METHOD__."[ERROR]Failed to upload file (".($uploadOffset / $length)." bytes)");
-      echo "[ERROR]Failed to upload file (".($uploadOffset / $length)." bytes)";
-      return;
+      error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '."Failed to upload file - {$uploadOffset}/{$length} bytes transferred", $this->logType, $this->logFile);
+      throw new Exception("Failed to upload file - {$uploadOffset}/{$length} bytes transferred", -105);
       }
 
-    return array ($filename, $pathTemporaryFilename, $length);
+    $data['filename'] = $filename;
+    $data['path']     = $pathTemporaryFilename;
+    $data['size']     = $uploadOffset;
+    $data['md5']      = $streamChecksum ? hash_final($hashctx) : '';
+
+    return $data;
     }
 
-  /** get_http_upload_unique_identifier*/
-  function get_http_upload_unique_identifier($params)
-    {
-    //check parameter
-    if(!isset($params['filename']) || empty($params['filename']))
-      {
-      $this->getLogger()->crit(__METHOD__."[ERROR]"."get_http_upload_unique_identifier: 'filename' parameter is missing");
-      echo "[ERROR]"."get_http_upload_unique_identifier: 'filename' parameter is missing";
-      return;
-      }
-    $filename = $params['filename'];
-    $unique_identifier = basename(tempnam(BASE_PATH.'/tmp/misc/', $filename));
-    if(!$unique_identifier)
-      {
-      $this->getLogger()->crit(__METHOD__."[ERROR]"."get_http_upload_unique_identifier: Failed to create unique identifier");
-      echo "[ERROR]"."get_http_upload_unique_identifier: Failed to create unique identifier";
-      return;
-      }
-    $this->getLogger()->info(__METHOD__."[OK]".$unique_identifier);
-    echo "[OK]".$unique_identifier;
-    }
-
-  /** used to see how much of a file made it to the server during an
-   * interrupted upload attempt **/
-  function get_http_upload_offset($params)
+  /** Get the amount of data already uploaded */
+  public function getOffset($args)
     {
     //check parameters
-    if(!isset($params['uploadUniqueIdentifier']) || empty($params['uploadUniqueIdentifier']))
+    if(!array_key_exists($this->tokenParamName, $args))
       {
-      echo "[ERROR]'uploadUniqueIdentifier' parameter is not set";
-      return;
+      throw new Exception('Parameter '.$this->tokenParamName.' is not defined', -150);
       }
-    $uploadUniqueIdentifier = $params['uploadUniqueIdentifier'];
-
-    echo sprintf("[OK]%u", filesize(BASE_PATH.'/tmp/misc/'."$uploadUniqueIdentifier"));
+    $uploadToken = $args[$this->tokenParamName];
+    $offset = filesize($this->tmpDirectory.'/'.$uploadToken);
+    return array('offset' => $offset);
     }
   }
