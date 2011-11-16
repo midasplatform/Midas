@@ -297,13 +297,13 @@ class ItemController extends AppController
     $this->view->form = $formArray;
     }
 
-  /** Delete an item*/
+  /** Delete an item */
   function deleteAction()
     {
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
-    $itemId = $this->_getParam("itemId");
+    $itemId = $this->_getParam('itemId');
     if(!isset($itemId) || (!is_numeric($itemId) && strlen($itemId) != 32)) // This is tricky! and for Cassandra for now
       {
       throw new Zend_Exception("itemId should be a number");
@@ -311,7 +311,7 @@ class ItemController extends AppController
     $itemDao = $this->Item->load($itemId);
     if($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception("This community doesn't exist or you don't have the permissions.");
+      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
       }
 
     $this->Item->delete($itemDao);
