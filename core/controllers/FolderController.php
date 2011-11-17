@@ -184,11 +184,14 @@ class FolderController extends AppController
       }
 
     $parent = $folder->getParent();
-    if($this->Folder->getCommunity($parent) != false || $this->Folder->getCommunity($folder) != false)
+    $folderName = $folder->getName();
+    // User cannot delete community's root folder, the default 'Public' folder and the default 'Private' folder
+    if(($this->Folder->getCommunity($parent) != false && ($folderName == 'Public' || $folderName  == 'Private')) || $this->Folder->getCommunity($folder) != false)
       {
       throw new Zend_Exception("Community Folder. You cannot delete it.");
       }
-    if($this->Folder->getUser($parent) != false || $this->Folder->getUser($folder) != false)
+    // User cannot delete its root folder, the default 'Public' folder and the default 'Private' folder
+    if(($this->Folder->getUser($parent) != false && ($folderName == 'Public' || $folderName  == 'Private')) || $this->Folder->getUser($folder) != false)
       {
       throw new Zend_Exception("User Folder. You cannot delete it.");
       }
