@@ -134,6 +134,11 @@ class DownloadController extends AppController
         }
       else
         {
+        while(ob_get_level() > 0)
+          {
+          ob_end_clean();
+          }
+        ob_start();
         Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
         $this->_helper->viewRenderer->setNoRender();
         $name = $revision->getItem()->getName();
@@ -144,6 +149,7 @@ class DownloadController extends AppController
           $zip->add_file_from_path($bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
           }
         $zip->finish();
+        exit();
         }
       }
     else
@@ -175,9 +181,16 @@ class DownloadController extends AppController
         {
         $name = "Custom";
         }
+
+      while(ob_get_level() > 0)
+        {
+        ob_end_clean();
+        }
+      ob_start();
       $zip = new ZipStream($name.'.zip');
       $zip = $this->_createZipRecursive($zip, '', $folders, $revisions);
       $zip->finish();
+      exit();
       }
     }//end index
 
