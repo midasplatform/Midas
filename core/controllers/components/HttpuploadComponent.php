@@ -19,11 +19,8 @@ class HttpuploadComponent extends AppComponent
   {
 
   var $tmpDirectory = '';
-  var $tokenParamName = '';
+  var $tokenParamName = 'uploadtoken';
   var $testingEnable = false;
-
-  var $logFile = '';
-  var $logType = 0;
 
   /** Set the upload temporary directory */
   public function setTmpDirectory($dir)
@@ -81,25 +78,20 @@ class HttpuploadComponent extends AppComponent
     {
     $uploadOffset = (float)0; // bytes received
 
-    //check parameters
     if(!array_key_exists('filename', $args))
       {
-      error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter filename is not defined", $this->logType, $this->logFile);
       throw new Exception('Parameter filename is not defined', -150);
       }
+    $filename = $args['filename'];
 
-    $filename = $args['filename']; // XXXX.ISP
-
-    if (!array_key_exists($this->tokenParamName, $args))
+    if(!array_key_exists($this->tokenParamName, $args))
       {
-      error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter ".$this->tokenParamName." is not defined", $this->logType, $this->logFile);
       throw new Exception('Parameter '.$this->tokenParamName.' is not defined', -150);
       }
-    $uploadToken = $args[$this->tokenParamName]; //XXX123.TMP
+    $uploadToken = $args[$this->tokenParamName];
 
-    if (!array_key_exists('length', $args))
+    if(!array_key_exists('length', $args))
       {
-      error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter length is not defined", $this->logType, $this->logFile);
       throw new Exception('Parameter length is not defined', -150);
       }
     $length = (float)($args['length']);
@@ -113,7 +105,6 @@ class HttpuploadComponent extends AppComponent
     $pathTemporaryFilename = $this->tmpDirectory.'/'.$uploadToken;
     if(!file_exists($pathTemporaryFilename))
       {
-      error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '.'Invalid upload token', $this->logType, $this->logFile);
       throw new Exception('Invalid upload token', -141);
       }
     else
@@ -125,28 +116,26 @@ class HttpuploadComponent extends AppComponent
     $streamChecksum = $uploadOffset == 0;
 
     set_time_limit(0); // Timeout of the PHP script set to Infinite
-    ignore_user_abort(TRUE);
+    ignore_user_abort(true);
 
     $inputfile = 'php://input'; // Stream (Client -> Server) Mode: Read, Binary
-    if ($this->testingEnable && array_key_exists('localinput', $args))
+    if($this->testingEnable && array_key_exists('localinput', $args))
       {
       $inputfile = $localinput; // Stream (LocalServerFile -> Server) Mode: Read, Binary
       }
 
-     $in = fopen($inputfile, 'rb');    // Stream (LocalServerFile -> Server) Mode: Read, Binary
-     if($in === FALSE )
-        {
-        error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '."Failed to open source:$inputfile", $this->logType, $this->logFile);
-        throw new Exception("Failed to open [$inputfile] source", -142);
-        }
+    $in = fopen($inputfile, 'rb'); // Stream (LocalServerFile -> Server) Mode: Read, Binary
+    if($in === false)
+      {
+      throw new Exception('Failed to open ['.$inputfile.'] source', -142);
+      }
 
     // open target output
     $out = fopen($pathTemporaryFilename, 'ab'); // Stream (Server -> TempFile) Mode: Append, Binary
-    if ($out === false)
-        {
-        error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '."Failed to open output file:$pathTemporaryFilename", $this->logType, $this->logFile);
-        throw new Exception("Failed to open output file [$pathTemporaryFilename]", -143);
-        }
+    if($out === false)
+      {
+      throw new Exception('Failed to open output file ['.$pathTemporaryFilename.']', -143);
+      }
 
     if($streamChecksum)
       {
@@ -174,8 +163,7 @@ class HttpuploadComponent extends AppComponent
 
     if($uploadOffset < $length)
       {
-      error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '."Failed to upload file - {$uploadOffset}/{$length} bytes transferred", $this->logType, $this->logFile);
-      throw new Exception("Failed to upload file - {$uploadOffset}/{$length} bytes transferred", -105);
+      throw new Exception('Failed to upload file - '.$uploadOffset.'/'.$length.' bytes transferred', -105);
       }
 
     $data['filename'] = $filename;

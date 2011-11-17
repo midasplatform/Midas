@@ -256,9 +256,16 @@ class UploadController extends AppController
       echo '[ERROR]User id does not match upload token user id';
       throw new Zend_Exception('User id does not match upload token user id');
       }
-    $expectedParentId = $this->userSession->JavaUpload->parent ?
-      $this->userSession->JavaUpload->parent :
-      $this->userSession->Dao->getPrivatefolderId();
+
+    if($this->userSession->JavaUpload->parent)
+      {
+      $expectedParentId = $this->userSession->JavaUpload->parent;
+      }
+    else
+      {
+      $expectedParentId = $this->userSession->Dao->getPrivatefolderId();
+      }
+
     if($parentId != $expectedParentId)
       {
       echo '[ERROR]You are attempting to upload into the incorrect parent folder';
