@@ -190,7 +190,8 @@ class UploadController extends AppController
 
     $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
     $this->Component->Httpupload->setTokenParamName('uploadUniqueIdentifier');
-    $this->Component->Httpupload->getOffset($params);
+    $offset = $this->Component->Httpupload->getOffset($params);
+    echo '[OK]'.$offset['offset'];
     } //end gethttpuploadoffset
 
   /**
@@ -208,7 +209,7 @@ class UploadController extends AppController
       throw new Zend_Exception('You have to be logged in to do that');
       }
 
-    if($this->userSession->JavaUpload->parent)
+    if(!isset($params['testingmode']) && $this->userSession->JavaUpload->parent)
       {
       $folderId = $this->userSession->JavaUpload->parent;
       }
@@ -257,7 +258,7 @@ class UploadController extends AppController
       throw new Zend_Exception('User id does not match upload token user id');
       }
 
-    if($this->userSession->JavaUpload->parent)
+    if(!isset($params['testingmode']) && $this->userSession->JavaUpload->parent)
       {
       $expectedParentId = $this->userSession->JavaUpload->parent;
       }
@@ -279,7 +280,7 @@ class UploadController extends AppController
 
     if(!empty($data['path']) && file_exists($data['path']) && $data['size'] > 0)
       {
-      if(isset($this->userSession->JavaUpload->parent))
+      if(!isset($params['testingmode']) && isset($this->userSession->JavaUpload->parent))
         {
         $parent = $this->userSession->JavaUpload->parent;
         }
@@ -309,7 +310,6 @@ class UploadController extends AppController
       echo "[OK]";
       }
     } //end processjavaupload
-
 
   /** save an uploaded file */
   public function saveuploadedAction()
