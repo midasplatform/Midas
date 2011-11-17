@@ -329,7 +329,7 @@ class Api_ApiComponent extends AppComponent
           $revision->setUser_id($userDao->getKey());
           $revision->setDate(date('c'));
           $revision->setLicense(null);
-          $revision = $itemModel->addRevision($item, $revision);
+          $itemModel->addRevision($item, $revision);
           }
         }
       else
