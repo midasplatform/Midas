@@ -63,6 +63,7 @@ class Cleanup_ConfigController extends Cleanup_AppController
           $job->setFireTime(date('Y-m-j', strtotime('+1 day'.date('Y-m-j G:i:s'))).' 1:00:00');
           $job->setTimeInterval(24 * 60 * 60);
           $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
+          $job->setCreatorId($this->userSession->Dao->getKey());
           $job->setParams(JsonComponent::encode(array('tempDirectory' => $this->getTempDirectory(),
                                                       'days' => $this->_getParam('olderThan'))));
           $jobModel->save($job);
