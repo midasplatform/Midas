@@ -29,7 +29,7 @@ class FeedModel extends FeedModelBase
     $sql = $this->database->select()
                       ->setIntegrityCheck(false)
                       ->from(array('p' => 'feed'))
-                      ->where('ressource = ?', $dao->getKey());
+                      ->where('ressource = ?', (string)$dao->getKey());
 
     $rowset = $this->database->fetchAll($sql);
     $feeds = array();
