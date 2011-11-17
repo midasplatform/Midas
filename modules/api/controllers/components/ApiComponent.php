@@ -682,7 +682,7 @@ class Api_ApiComponent extends AppComponent
     $modelLoader = new MIDAS_ModelLoader();
     $folderModel = $modelLoader->loadModel('Folder');
     $name = $args['name'];
-    $description = $args['description'];
+    $description = isset($args['description']) ? $args['description'] : '';
 
     $uuid = isset($args['uuid']) ? $args['uuid'] : '';
     $record = false;
@@ -735,7 +735,7 @@ class Api_ApiComponent extends AppComponent
         $policyGroup = $folder->getFolderpolicygroup();
         $policyUser = $folder->getFolderpolicyuser();
         $folderpolicygroupModel = $modelLoader->loadModel('Folderpolicygroup');
-        $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicygroup');
+        $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicyuser');
         foreach($policyGroup as $policy)
           {
           $folderpolicygroupModel->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
