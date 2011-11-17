@@ -23,7 +23,7 @@ class Api_IndexController extends Api_AppController
 
   // Config parameters
   var $apiEnable = '';
-  var $apiSetup  = array();
+  var $apiSetup = array();
 
   /** Before filter */
   function preDispatch()
@@ -32,9 +32,9 @@ class Api_IndexController extends Api_AppController
     $this->apiEnable = true;
 
     // define api parameters
-    $this->apiSetup['testing']         = Zend_Registry::get('configGlobal')->environment == "testing";
-    $this->apiSetup['tmp_directory']   = $this->getTempDirectory();
     $modulesConfig = Zend_Registry::get('configsModules');
+    $this->apiSetup['testing'] = Zend_Registry::get('configGlobal')->environment == 'testing';
+    $this->apiSetup['tmpDirectory'] = $this->getTempDirectory();
     $this->apiSetup['apiMethodPrefix'] = $modulesConfig['api']->methodprefix;
 
     $this->action = $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();

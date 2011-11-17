@@ -162,7 +162,7 @@ class UploadController extends AppController
 
     $parent = $this->_getParam('parent');
     $license = $this->_getParam('license');
-    if(!empty ($parent) && !empty($license))
+    if(!empty($parent) && !empty($license))
       {
       $this->disableView();
       $this->userSession->JavaUpload->parent = $parent;
@@ -171,44 +171,113 @@ class UploadController extends AppController
     }//end java upload
 
 
-  /** used to see how much of a file made it to the server during an
-   * interrupted upload attempt **/
+  /**
+   * Used to see how much of a file made it to the server during an interrupted upload attempt
+   * @param uploadUniqueIdentifier The upload token to check
+   */
   function gethttpuploadoffsetAction()
     {
     $this->disableLayout();
     $this->disableView();
     $params = $this->_getAllParams();
-    $url = $this->view->url();
-    $url = substr($url,  0, strrpos($url, '/'));
-    $params['internParameter'] = substr($url, strrpos($url, '/') + 1);
-    $this->Component->Httpupload->get_http_upload_offset($params);
-    } //end get_http_upload_offset
 
-  /** java upload function, didn't check what it does :-) */
+    list($userId, , ) = explode('/', $params['uploadUniqueIdentifier']);
+    if($userId != $this->userSession->Dao->getUserId())
+      {
+      echo '[ERROR]User id does not match upload token user id';
+      throw new Zend_Exception('User id does not match upload token user id');
+      }
+
+    $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
+    $this->Component->Httpupload->setTokenParamName('uploadUniqueIdentifier');
+    $this->Component->Httpupload->getOffset($params);
+    } //end gethttpuploadoffset
+
+  /**
+   * Get a unique upload token for the java uploader. Must be logged in to do this
+   * @param filename The name of the file to be uploaded
+   */
   function gethttpuploaduniqueidentifierAction()
     {
     $this->disableLayout();
     $this->disableView();
     $params = $this->_getAllParams();
-    $this->Component->Httpupload->get_http_upload_unique_identifier($params);
-    } //end get_http_upload_unique_identifier
 
-
-  /** process java upload*/
-  function processjavauploadAction()
-    {
-    $params = $this->_getAllParams();
     if(!$this->logged)
       {
       throw new Zend_Exception('You have to be logged in to do that');
       }
+
+    if($this->userSession->JavaUpload->parent)
+      {
+      $folderId = $this->userSession->JavaUpload->parent;
+      }
+    else
+      {
+      $folderId = $this->userSession->Dao->getPrivatefolderId();
+      }
+
+    $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
+
+    $dir = $this->userSession->Dao->getUserId().'/'.$folderId;
+    try
+      {
+      $token = $this->Component->Httpupload->generateToken($params, $dir);
+      echo '[OK]'.$token['token'];
+      }
+    catch(Exception $e)
+      {
+      echo '[ERROR]'.$e->getMessage();
+      throw $e;
+      }
+    } //end get_http_upload_unique_identifier
+
+
+  /**
+   * Process a java upload
+   * @param uploadUniqueIdentifier The upload token (see gethttpuploaduniqueidentifierAction)
+   * @param filename The name of the file being uploaded
+   * @param length The length of the file being uploaded
+   */
+  function processjavauploadAction()
+    {
     $this->disableLayout();
     $this->disableView();
+    $params = $this->_getAllParams();
 
-    $TMP_DIR = BASE_PATH.'/tmp/misc/';
-    list ($filename, $path, $length) = $this->Component->Httpupload->process_http_upload($params);
+    if(!$this->logged)
+      {
+      echo '[ERROR]You must be logged in to upload';
+      throw new Zend_Exception('You have to be logged in to do that');
+      }
+    list($userId, $parentId, ) = explode('/', $params['uploadUniqueIdentifier']);
+    if($userId != $this->userSession->Dao->getUserId())
+      {
+      echo '[ERROR]User id does not match upload token user id';
+      throw new Zend_Exception('User id does not match upload token user id');
+      }
 
-    if(!empty($path) && file_exists($path) && $length > 0)
+    if($this->userSession->JavaUpload->parent)
+      {
+      $expectedParentId = $this->userSession->JavaUpload->parent;
+      }
+    else
+      {
+      $expectedParentId = $this->userSession->Dao->getPrivatefolderId();
+      }
+
+    if($parentId != $expectedParentId)
+      {
+      echo '[ERROR]You are attempting to upload into the incorrect parent folder';
+      throw new Zend_Exception('You are attempting to upload into the incorrect parent folder');
+      }
+
+    $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
+    $this->Component->Httpupload->setTestingMode(Zend_Registry::get('configGlobal')->environment == 'testing');
+    $this->Component->Httpupload->setTokenParamName('uploadUniqueIdentifier');
+    $data = $this->Component->Httpupload->process($params);
+
+    if(!empty($data['path']) && file_exists($data['path']) && $data['size'] > 0)
       {
       if(isset($this->userSession->JavaUpload->parent))
         {
@@ -226,8 +295,18 @@ class UploadController extends AppController
         {
         $license = null;
         }
-      $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename, $path, $parent, $license);
+
+      try
+        {
+        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $data['filename'], $data['path'], $parent, $license, $data['md5']);
+        }
+      catch(Exception $e)
+        {
+        echo "[ERROR] ".$e->getMessage();
+        throw $e;
+        }
       $this->userSession->uploaded[] = $item->getKey();
+      echo "[OK]";
       }
     } //end processjavaupload
 

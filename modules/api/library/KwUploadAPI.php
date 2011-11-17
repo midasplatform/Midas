@@ -47,12 +47,12 @@ class KwUploadAPI
     $this->tmp_directory = $tmp_directory;
     }
 
-   /**
-    * Generate an upload token that will act as the authentication token for the upload.
-    * This token is the filename of a guaranteed unique file which will be placed under the
-    * directory specified by the dirname parameter, which should be used to ensure that
-    * the user can only write into a certain logical space.
-    */
+  /**
+   * Generate an upload token that will act as the authentication token for the upload.
+   * This token is the filename of a guaranteed unique file which will be placed under the
+   * directory specified by the dirname parameter, which should be used to ensure that
+   * the user can only write into a certain logical space.
+   */
   function generateToken($args, $dirname = '')
     {
     if(!array_key_exists('filename', $args))
