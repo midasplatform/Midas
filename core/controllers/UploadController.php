@@ -257,14 +257,14 @@ class UploadController extends AppController
       $upload = new Zend_File_Transfer('HttpFixed');
       $upload->receive();
       $path = $upload->getFileName();
-      $file_size =  filesize($path);
+      $file_size = filesize($path);
       $filename = $upload->getFilename(null, false);
       ob_end_clean();
       }
 
     $parent = $this->_getParam('parent');
     $license = $this->_getParam('license');
-    if(!empty($path) && file_exists($path) && $file_size > 0)
+    if(!empty($path) && file_exists($path))
       {
       $tmp = explode('-', $parent);
       if(count($tmp) == 2) //means we upload a new revision
