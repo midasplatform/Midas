@@ -52,6 +52,17 @@ abstract class ItemModelBase extends AppModel
   abstract function getAll();
   abstract function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view');
 
+  /** delete an item */
+  public function delete($dao)
+    {
+    if(!$dao instanceof ItemDao)
+      {
+      throw new Zend_Exception('You must pass an item dao to ItemModel::delete');
+      }
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_DELETED', array('item' => $dao));
+    parent::delete($dao);
+    }// delete
+
   /** save */
   public function save($dao)
     {
