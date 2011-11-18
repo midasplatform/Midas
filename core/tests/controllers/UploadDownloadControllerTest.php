@@ -176,13 +176,21 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $this->params = array();
     $this->params['parent'] = $userDao->getPublicFolder()->getKey();
     $this->params['license'] = 0;
+    $this->params['path'] = BASE_PATH.'/tests/testfiles/search.png'; //testing mode param
     $this->dispatchUrI('/upload/saveuploaded', $userDao);
 
     $search = $this->Item->getItemsFromSearch('search.png', $userDao);
-    if(empty($search))
-      {
-      $this->fail('Unable to find item');
-      }
+    $this->assertNotEmpty($search, 'Unable to find uploaded item');
+
+    // Test to make sure uploading an empty file works
+    $this->resetAll();
+    $this->params['parent'] = $userDao->getPublicFolder()->getKey();
+    $this->params['license'] = 0;
+    $this->params['path'] = BASE_PATH.'/tests/testfiles/empty.txt'; //testing mode param
+    $this->dispatchUrI('/upload/saveuploaded', $userDao);
+
+    $search = $this->Item->getItemsFromSearch('empty.txt', $userDao);
+    $this->assertNotEmpty($search, 'Unable to find empty uploaded item');
     }
 
   /**

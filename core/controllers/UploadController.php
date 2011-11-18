@@ -246,9 +246,9 @@ class UploadController extends AppController
     if($this->isTestingEnv())
       {
       //simulate file upload
-      $path = BASE_PATH.'/tests/testfiles/search.png';
+      $path = $this->_getParam('path');
+      $filename = basename($path);
       $file_size = filesize($path);
-      $filename = 'search.png';
       }
     else
       {
