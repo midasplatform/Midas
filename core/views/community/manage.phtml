@@ -239,17 +239,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
             
             foreach($this->folders as $folder)
               {
-              $folderName = $folder->getName();
-              if ($folderName == 'Public' || $folderName  == 'Private')
-                {
-                $deletableStatus = 'false';
-                }
-              else
-                {
-                $deletableStatus = 'true';
-                }
-              echo "<tr id='node--$node' class='parent' deletable=$deletableStatus privacy='{$folder->getPrivacyStatus()}' policy='".MIDAS_POLICY_ADMIN."' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
-              echo "  <td class='treeBrowseElement'><span class='notdraggable folder'>$folderName</span></td>";
+              echo "<tr id='node--$node' class='parent' deletable='true' privacy='{$folder->getPrivacyStatus()}' policy='".MIDAS_POLICY_ADMIN."' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
+              echo "  <td class='treeBrowseElement'><span class='notdraggable folder'>{$folder->getName()}</span></td>";
               echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
               echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId()}' /></td>";

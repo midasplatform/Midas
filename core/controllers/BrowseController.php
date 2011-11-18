@@ -199,14 +199,7 @@ class BrowseController extends AppController
       $tmp['folder_id'] = $folder->getFolderId();
       $tmp['name'] = $folder->getName();
       $tmp['date_update'] = $this->Component->Date->ago($folder->getDateUpdate(), true);
-      if($tmp['name'] == 'Public' || $tmp['name'] == 'Private')
-        {
-        $tmp['deletable'] = 'false';
-        }
-      else
-        {
-        $tmp['deletable'] = 'true';
-        }
+      $tmp['deletable'] = 'true';
       $tmp['policy'] = $folder->policy;
       $tmp['privacy_status'] = $folder->privacy_status;
       $jsonContent[$folder->getParentId()]['folders'][] = $tmp;
