@@ -54,8 +54,7 @@ class Statistics_Notification extends MIDAS_Notification
     $coreWebroot = $fc->getBaseUrl().'/core';
     $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
     return '<li><a href="'.$moduleWebroot.'/item?id='.$params['item']->getKey().
-           '"><img alt="" src="'.$coreWebroot.'/public/images/icons/metadata.png" /> '.
-           $this->t('Statistics').'</a></li>';
+           '"><img alt="" src="'.$coreWebroot.'/public/images/icons/metadata.png" /> '.$this->t('Statistics').'</a></li>';
     }
 
   /** get layout footer */
