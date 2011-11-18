@@ -111,9 +111,9 @@ if($this->preview) // module visualize
   <table style='display:block;'  id="metadataTable" class="midasTree">
     <thead>
       <tr>
-        <th ><?php echo $this->t('Element');?></th>
-        <th ><?php echo $this->t('Qualifier');?></th>
-        <th ><?php echo $this->t('Value');?></th>
+        <th class='elementHeader'><?php echo $this->t('Element');?></th>
+        <th class='qualifierHeader'><?php echo $this->t('Qualifier');?></th>
+        <th class='valueHeader'><?php echo $this->t('Value');?></th>
       </tr>
     </thead>
     <tbody>
@@ -174,9 +174,7 @@ if($this->preview) // module visualize
 </div>
 <div class="viewSideBar">
   <?php
-  $modules = Zend_Registry::get('modulesEnable');
-  $statisticsEnabled = in_array('statistics', $modules);
-  if($this->preview || $this->isModerator ||$this->isAdmin || $statisticsEnabled)
+  if($this->preview || $this->isModerator || $this->isAdmin)
     {?>
   <div class="sideElementFirst viewAction">
 
@@ -204,7 +202,7 @@ if($this->preview) // module visualize
           <a href='javascript:;' class='addMetadataLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/metadata.png'/> {$this->t('Add Metadata')}</a>
         </li>
         <li>
-          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/share.png'/> {$this->t('Share')}</a>
+          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/share.png'/> {$this->t('Permissions')}</a>
         </li>
         <li>
           <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='uploadRevisionLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/upload.png'/> {$this->t('Upload new revision')}</a>
@@ -220,10 +218,14 @@ if($this->preview) // module visualize
         </li>
           ";
         }
-      echo
-        "<li>
-          <a href='".$this->webroot."/statistics/item?id=".$this->itemDao->getKey()."'><img alt='' src='{$this->coreWebroot}/public/images/icons/metadata.png'/> {$this->t('Statistics')}</a>
-        </li>";
+      $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_ITEM_VIEW_ACTIONMENU", array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin));
+      foreach($htmltArray as $html)
+        {
+        if(!empty($html))
+          {
+          echo $html;
+          }
+        }
       ?>
     </ul>
   </div>
@@ -262,7 +264,15 @@ if($this->preview) // module visualize
       }
       ?>
   </div>
-    <?php
+  <?php
+  $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_ITEM_VIEW_INFO", array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin));
+  foreach($htmltArray as $html)
+    {
+    if(!empty($html))
+      {
+      echo $html;
+      }
+    }
   if(count($this->sameLocation) > 1)
     {?>
   <div class='sideElementLast viewSameLocation'>
@@ -282,7 +292,3 @@ if($this->preview) // module visualize
     }
     ?>
 </div>
-
-
-
-

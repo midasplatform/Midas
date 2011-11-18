@@ -11,6 +11,7 @@ class Statistics_Notification extends MIDAS_Notification
     {
     $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getFooter');
     $this->addCallBack('CALLBACK_CORE_GET_USER_MENU', 'getUserMenu');
+    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemMenuLink');
     $this->addCallBack('CALLBACK_CORE_PLUS_ONE_DOWNLOAD', 'addDownload');
 
     $this->addTask('TASK_STATISTICS_SEND_REPORT', 'sendReport', 'Send a daily report');
@@ -44,6 +45,17 @@ class Statistics_Notification extends MIDAS_Notification
       {
       return null;
       }
+    }
+
+  /** Get the link to place in the item action menu */
+  public function getItemMenuLink($params)
+    {
+    $fc = Zend_Controller_Front::getInstance();
+    $coreWebroot = $fc->getBaseUrl().'/core';
+    $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
+    return '<li><a href="'.$moduleWebroot.'/item?id='.$params['item']->getKey().
+           '"><img alt="" src="'.$coreWebroot.'/public/images/icons/metadata.png" /> '.
+           $this->t('Statistics').'</a></li>';
     }
 
   /** get layout footer */
