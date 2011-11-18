@@ -50,11 +50,10 @@ class Statistics_Notification extends MIDAS_Notification
   /** Get the link to place in the item action menu */
   public function getItemMenuLink($params)
     {
-    $fc = Zend_Controller_Front::getInstance();
-    $coreWebroot = $fc->getBaseUrl().'/core';
-    $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
-    return '<li><a href="'.$moduleWebroot.'/item?id='.$params['item']->getKey().
-           '"><img alt="" src="'.$coreWebroot.'/public/images/icons/metadata.png" /> '.$this->t('Statistics').'</a></li>';
+    $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
+    return '<li><a href="'.$webroot.'/'.$this->moduleName.'/item?id='.$params['item']->getKey().
+           '"><img alt="" src="'.$webroot.'/modules/'.$this->moduleName.
+           '/public/images/chart_bar.png" /> '.$this->t('Statistics').'</a></li>';
     }
 
   /** get layout footer */
