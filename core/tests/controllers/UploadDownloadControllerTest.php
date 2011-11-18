@@ -187,7 +187,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $this->params = array();
     $this->params['parent'] = $userDao->getPublicFolder()->getKey();
     $this->params['license'] = 0;
-    $this->params['path'] = BASE_PATH.'/tests/testfiles/search.png'; //testing mode param
+    $this->params['testpath'] = BASE_PATH.'/tests/testfiles/search.png'; //testing mode param
     $this->dispatchUrI('/upload/saveuploaded', $userDao);
 
     $search = $this->Item->getItemsFromSearch('search.png', $userDao);
@@ -197,7 +197,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $this->resetAll();
     $this->params['parent'] = $userDao->getPublicFolder()->getKey();
     $this->params['license'] = 0;
-    $this->params['path'] = BASE_PATH.'/tests/testfiles/empty.txt'; //testing mode param
+    $this->params['testpath'] = BASE_PATH.'/tests/testfiles/empty.txt'; //testing mode param
     $this->dispatchUrI('/upload/saveuploaded', $userDao);
 
     $search = $this->Item->getItemsFromSearch('empty.txt', $userDao);
