@@ -99,8 +99,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
             $node=1;
             foreach($this->folders as $folder)
               {
-              $folderName = $folder->getName();
-              if ($folderName == 'Public' || $folderName == 'Private')
+              $folderId = $folder->getFolderId();
+              if ($folderId == $this->privateFolderId || $folderId == $this->publicFolderId)
                 {
                 $deletableStatus = 'false';
                 }
@@ -108,11 +108,11 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
                 {
                 $deletableStatus = 'true';
                 }
-              echo "<tr id='node--$node' policy='{$folder->policy}' deletable=$deletableStatus class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
-              echo "  <td class='treeBrowseElement'><span class='folder'>$folderName</span></td>";
-              echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
+              echo "<tr id='node--$node' policy='{$folder->policy}' deletable=$deletableStatus class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='$folderId' ajax='$folderId'>";
+              echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
+              echo "  <td><img class='folderLoading'  element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
-              echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId()}' /></td>";
+              echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='$folderId' /></td>";
               echo "</tr>";
               $node++;
               } 

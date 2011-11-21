@@ -260,7 +260,9 @@ class BrowseController extends AppController
       $tmp['folder_id'] = $folder->getFolderId();
       $tmp['name'] = $folder->getName();
       $tmp['date_update'] = $this->Component->Date->ago($folder->getDateUpdate(), true);
-      $tmp['deletable'] = 'true';
+      // this ajax function is only used by treetable.js and it will handle all the other folders except for the top level folders.
+      // All the non-top level folders are deletable if users have correct permission
+      $tmp['deletable'] =  'true';
       $tmp['policy'] = $folder->policy;
       $tmp['privacy_status'] = $folder->privacy_status;
       $jsonContent[$folder->getParentId()]['folders'][] = $tmp;
