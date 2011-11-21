@@ -655,7 +655,7 @@ class Api_ApiComponent extends AppComponent
    * @param description (Optional) The description of the folder
    * @param uuid (Optional) Uuid of the folder. If none is passed, will generate one.
    * @param privacy (Optional) Default 'Public'.
-   * @param parentid The id of the parent folder
+   * @param parentid The id of the parent folder. Set this to -1 to create a top level user folder.
    * @return The folder object that was created
    */
   function folderCreate($args)
