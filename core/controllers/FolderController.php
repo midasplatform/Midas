@@ -184,16 +184,33 @@ class FolderController extends AppController
       }
 
     $parent = $folder->getParent();
-    $folderName = $folder->getName();
+    $folderId = $folder->getFolderId();
     // User cannot delete community's root folder, the default 'Public' folder and the default 'Private' folder
-    if(($this->Folder->getCommunity($parent) != false && ($folderName == 'Public' || $folderName == 'Private'))  || $this->Folder->getCommunity($folder) != false)
+    if($this->Folder->getCommunity($folder) != false)
       {
-      throw new Zend_Exception("Community Folder. You cannot delete it.");
+      throw new Zend_Exception("Community Root Folder. You cannot delete it.");
       }
-    // User cannot delete its root folder, the default 'Public' folder and the default 'Private' folder
-    if(($this->Folder->getUser($parent) != false && ($folderName == 'Public' || $folderName == 'Private'))  || $this->Folder->getUser($folder) != false)
+    $communityDao = $this->Folder->getCommunity($parent);
+    if($communityDao != false)
       {
-      throw new Zend_Exception("User Folder. You cannot delete it.");
+      if($communityDao->getPrivatefolderId() == $folderId || $communityDao->getPublicfolderId() == $folderId)
+        {
+        throw new Zend_Exception("Community Default Folder. You cannot delete it.");
+        }
+      }
+
+    // User cannot delete its root folder, the default 'Public' folder and the default 'Private' folder
+    if($this->Folder->getUser($folder) != false)
+      {
+      throw new Zend_Exception("User Root Folder. You cannot delete it.");
+      }
+    $userDao = $this->Folder->getUser($parent);
+    if($userDao != false)
+      {
+      if($userDao->getPrivatefolderId() == $folderId || $userDao->getPublicfolderId() == $folderId)
+        {
+        throw new Zend_Exception("User Default Folder. You cannot delete it.");
+        }
       }
     $this->Folder->delete($folder, true);
     $folderInfo = $folder->toArray();
