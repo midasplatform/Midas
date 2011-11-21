@@ -222,10 +222,10 @@ function createAction(node)
         {
         html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/FileTree/directory.png"/> <a onclick="createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
         html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/upload.png"/> <a rel="'+json.global.webroot+'/upload/simpleupload/?parent='+element+'" class="uploadInFolder">'+json.browse.uploadIn+'</a></li>';
-        html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/edit.png"/> <a onclick="editFolder('+element+');">'+json.browse.edit+'</a></li>';
+                  html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/share.png"/> <a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
         if(node.attr('deletable')!=undefined && node.attr('deletable')=='true')
-          {
-          html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/share.png"/> <a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+          { 
+          html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/edit.png"/> <a onclick="editFolder('+element+');">'+json.browse.edit+'</a></li>';
           html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="deleteFolder('+element+');">'+json.browse['delete']+'</a></li>';
           }
         }
