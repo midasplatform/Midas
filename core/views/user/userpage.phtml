@@ -99,13 +99,17 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
             $node=1;
             foreach($this->folders as $folder)
               {
-              $policy=MIDAS_POLICY_READ;
-              if($this->isModerator||$this->isAdmin)
+              $folderName = $folder->getName();
+              if ($folderName == 'Public' || $folderName == 'Private')
                 {
-                $policy=MIDAS_POLICY_WRITE;
+                $deletableStatus = 'false';
                 }
-              echo "<tr id='node--$node' policy='$policy'  class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
-              echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
+              else
+                {
+                $deletableStatus = 'true';
+                }
+              echo "<tr id='node--$node' policy='{$folder->policy}' deletable=$deletableStatus class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
+              echo "  <td class='treeBrowseElement'><span class='folder'>$folderName</span></td>";
               echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
               echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId()}' /></td>";
@@ -160,6 +164,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <ul>
       <li class="myAccountLink" userid="'.$this->user->getKey().'"><a><img alt="" src="'.$this->coreWebroot.'/public/images/icons/user.png"/> '.$this->t('Manage Profile').'</a></li>
       <li><a href="'.$this->webroot.'/user/manage/?userId='.$this->user->getKey().'"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/data.png"/> '.$this->t('Manage Files').'</a></li>
+      <li><a onclick="createNewFolder('.$this->mainFolder->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/FileTree/directory.png"/> '.$this->t('Create a top level Folder').'</a></li>  
     </ul>
   </div>';
     }   
