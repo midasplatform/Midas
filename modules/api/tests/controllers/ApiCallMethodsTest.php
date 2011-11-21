@@ -174,6 +174,27 @@ class ApiCallMethodsTest extends ControllerTestCase
     //TODO test that a private community is not returned (requires another community in the data set)
     }
 
+  /** Test creating a folder */
+  public function testFolderCreate()
+    {
+    $usersFile = $this->loadData('User', 'default');
+    $userDao = $this->User->load($usersFile[0]->getKey());
+
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.folder.create';
+    $this->params['name'] = 'testFolderCreate';
+    $this->params['parentid'] = $userDao->getPublicfolderId();
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    // Make sure folder was created correctly
+    $this->assertNotEmpty($resp->data->uuid);
+    $this->assertEquals($userDao->getPublicfolderId(), $resp->data->parent_id);
+    $this->assertEquals('testFolderCreate', $resp->data->name);
+    $this->assertEquals('', $resp->data->description);
+    }
+
   /** Test listing of child folders */
   public function testFolderChildren()
     {

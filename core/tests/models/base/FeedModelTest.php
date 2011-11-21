@@ -70,7 +70,7 @@ class FeedModelTest extends DatabaseTestCase
     $this->assertEquals(true, $feed->saved);
     $feed = $this->Feed->createFeed($usersFile [0], MIDAS_FEED_CREATE_ITEM, $itemFile[0]);
     $this->assertEquals(true, $feed->saved);
-    $feed = $this->Feed->createFeed($usersFile [0], MIDAS_FEED_CREATE_USER, $usersFile [0]);
+    $feed = $this->Feed->createFeed($usersFile [0], MIDAS_FEED_CREATE_USER, $usersFile[0]);
     $this->assertEquals(true, $feed->saved);
     $this->Feed->addCommunity($feed, $communityFile [0]);
     $communities = $feed->getCommunities();
@@ -78,5 +78,16 @@ class FeedModelTest extends DatabaseTestCase
       {
       $this->fail("Unable to add dao");
       }
+    }
+
+  /** test Feed::getFeedByResourceAndType */
+  public function testGetFeedByResourceAndType()
+    {
+    $usersFile = $this->loadData('User', 'default');
+    $feed = $this->Feed->getFeedByResourceAndType(array(MIDAS_FEED_CREATE_USER), $usersFile[0]);
+    $this->assertEquals(count($feed), 1);
+    $this->assertEquals($feed[0]->user_id, $usersFile[0]->getKey());
+    $this->assertEquals($feed[0]->type, MIDAS_FEED_CREATE_USER);
+    $this->assertEquals($feed[0]->ressource, (string)$usersFile[0]->getKey());
     }
   }

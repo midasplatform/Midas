@@ -1,7 +1,7 @@
-add_midas_test( IndexController IndexControllerTest.php )
 add_midas_test( FeedController FeedControllerTest.php )
-add_midas_test( UserController UserControllerTest.php )
+add_midas_test( ItemController ItemControllerTest.php )
 add_midas_test( UploadDownloadController UploadDownloadControllerTest.php )
+add_midas_test( UserController UserControllerTest.php )
 
 add_subdirectory( components )
 
