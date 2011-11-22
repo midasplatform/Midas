@@ -258,8 +258,11 @@ class Api_ApiComponent extends AppComponent
         }
       }
     //we don't already have this content, so create the token
-    $uploadApi = new KwUploadAPI($this->apiSetup);
-    return $uploadApi->generateToken($args, $userDao->getKey().'/'.$item->getKey());
+    $componentLoader = new MIDAS_ComponentLoader();
+    $uploadComponent = $componentLoader->loadComponent('Httpupload');
+    $uploadComponent->setTestingMode($this->apiSetup['testing']);
+    $uploadComponent->setTmpDirectory($this->apiSetup['tmpDirectory']);
+    return $uploadComponent->generateToken($args, $userDao->getKey().'/'.$item->getKey());
     }
 
   /**
@@ -269,8 +272,11 @@ class Api_ApiComponent extends AppComponent
    */
   function uploadGetoffset($args)
     {
-    $uploadApi = new KwUploadAPI($this->apiSetup);
-    return $uploadApi->getOffset($args);
+    $componentLoader = new MIDAS_ComponentLoader();
+    $uploadComponent = $componentLoader->loadComponent('Httpupload');
+    $uploadComponent->setTestingMode($this->apiSetup['testing']);
+    $uploadComponent->setTmpDirectory($this->apiSetup['tmpDirectory']);
+    return $uploadComponent->getOffset($args);
     }
 
   /**
@@ -380,18 +386,22 @@ class Api_ApiComponent extends AppComponent
       }
 
     $mode = array_key_exists('mode', $args) ? $args['mode'] : 'stream';
-    $uploadApi = new KwUploadAPI($this->apiSetup);
+
+    $componentLoader = new MIDAS_ComponentLoader();
+    $httpUploadComponent = $componentLoader->loadComponent('Httpupload');
+    $httpUploadComponent->setTestingMode($this->apiSetup['testing']);
+    $httpUploadComponent->setTmpDirectory($this->apiSetup['tmpDirectory']);
 
     if(array_key_exists('testingmode', $args))
       {
-      $uploadApi->testing_enable = true;
-      $args['localinput'] = $this->apiSetup['tmp_directory'].'/'.$args['filename'];
+      $httpUploadComponent->setTestingMode(true);
+      $args['localinput'] = $this->apiSetup['tmpDirectory'].'/'.$args['filename'];
       }
 
-    // Use KWUploadApi to handle the actual file upload
+    // Use the Httpupload component to handle the actual file upload
     if($mode == 'stream')
       {
-      $result = $uploadApi->process($args);
+      $result = $httpUploadComponent->process($args);
 
       $filename = $result['filename'];
       $filepath = $result['path'];
@@ -416,7 +426,6 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('Invalid upload mode', MIDAS_INVALID_PARAMETER);
       }
 
-    $componentLoader = new MIDAS_ComponentLoader();
     $uploadComponent = $componentLoader->loadComponent('Upload');
     if(isset($folder))
       {
