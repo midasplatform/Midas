@@ -263,9 +263,9 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Get the offset of the current upload
-   * @token The upload token for the file
-   * @return The size of the file currently on the server
+   * Get the size of a partially completed upload
+   * @param uploadtoken The upload token for the file
+   * @return [offset] The size of the file currently on the server
    */
   function uploadGetoffset($args)
     {
@@ -658,7 +658,7 @@ class Api_ApiComponent extends AppComponent
    * @param description (Optional) The description of the folder
    * @param uuid (Optional) Uuid of the folder. If none is passed, will generate one.
    * @param privacy (Optional) Default 'Public'.
-   * @param parentid The id of the parent folder
+   * @param parentid The id of the parent folder. Set this to -1 to create a top level user folder.
    * @return The folder object that was created
    */
   function folderCreate($args)
@@ -707,27 +707,34 @@ class Api_ApiComponent extends AppComponent
         {
         throw new Exception('Parameter parentid is not defined', MIDAS_INVALID_PARAMETER);
         }
-      $folder = $folderModel->load($args['parentid']);
-      if($folder == false)
+      if($args['parentid'] == -1) //top level user folder being created
         {
-        throw new Exception('Parent doesn\'t exist', MIDAS_INVALID_PARAMETER);
+        $new_folder = $folderModel->createFolder($name, $description, $userDao->getFolderId(), $uuid);
         }
-      $new_folder = $folderModel->createFolder($name, $description, $folder, $uuid);
-      if($new_folder === false)
+      else //child of existing folder
         {
-        throw new Exception('Create folder failed', MIDAS_INTERNAL_ERROR);
-        }
-      $policyGroup = $folder->getFolderpolicygroup();
-      $policyUser = $folder->getFolderpolicyuser();
-      $folderpolicygroupModel = $modelLoader->loadModel('Folderpolicygroup');
-      $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicyuser');
-      foreach($policyGroup as $policy)
-        {
-        $folderpolicygroupModel->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
-        }
-      foreach($policyUser as $policy)
-        {
-        $folderpolicyuserModel->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
+        $folder = $folderModel->load($args['parentid']);
+        if($folder == false)
+          {
+          throw new Exception('Parent doesn\'t exist', MIDAS_INVALID_PARAMETER);
+          }
+        $new_folder = $folderModel->createFolder($name, $description, $folder, $uuid);
+        if($new_folder === false)
+          {
+          throw new Exception('Create folder failed', MIDAS_INTERNAL_ERROR);
+          }
+        $policyGroup = $folder->getFolderpolicygroup();
+        $policyUser = $folder->getFolderpolicyuser();
+        $folderpolicygroupModel = $modelLoader->loadModel('Folderpolicygroup');
+        $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicyuser');
+        foreach($policyGroup as $policy)
+          {
+          $folderpolicygroupModel->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
+          }
+        foreach($policyUser as $policy)
+          {
+          $folderpolicyuserModel->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
+          }
         }
 
       return $new_folder->toArray();
@@ -1174,6 +1181,7 @@ class Api_ApiComponent extends AppComponent
    * @param id (Optional) The id of the bitstream
    * @param checksum (Optional) The checksum of the bitstream
    * @param name (Optional) Alternate filename to download as
+   * @param offset (Optional) The download offset in bytes (used for resume)
    */
   function bitstreamDownload($args)
     {
@@ -1220,9 +1228,11 @@ class Api_ApiComponent extends AppComponent
       $this->_redirect($bitstream->getPath());
       return;
       }
+    $offset = array_key_exists('offset', $args) ? $args['offset'] : 0;
+
     $componentLoader = new MIDAS_ComponentLoader();
     $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');
-    $downloadComponent->download($bitstream);
+    $downloadComponent->download($bitstream, $offset);
     }
 
   /**
