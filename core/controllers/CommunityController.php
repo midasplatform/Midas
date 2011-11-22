@@ -117,18 +117,21 @@ class CommunityController extends AppController
             // process root folder
             $this->Folderpolicygroup->delete($folderpolicygroupDao);
             // process items in root folder
-            foreach($communityPublicFolder->getItems() as $item)
+            $items = $communityPublicFolder->getItems();
+            foreach($items as $item)
               {
               $itemolicygroupDao = $this->Itempolicygroup->getPolicy($anonymousGroup, $item);
               $this->Itempolicygroup->delete($itemolicygroupDao);
               }
-            // process children folders
-            foreach($this->Folder->getAllChildren($communityPublicFolder, $this->userSession->Dao) as $subfolder)
+            // process all the children (and grandchildren ...) folders 
+            $subfolders = $this->Folder->getAllChildren($communityDao->getPublicFolder(), $this->userSession->Dao);
+            foreach($subfolders as $subfolder)
               {
               $subfolderpolicygroupDao = $this->Folderpolicygroup->getPolicy($anonymousGroup, $subfolder);
               $this->Folderpolicygroup->delete($subfolderpolicygroupDao);
-              // process items in childrn folders
-              foreach($subfolder->getItems() as $subfolderItem)
+              // process items in children folders
+              $subitems = $subfolder->getItems();
+              foreach($subitems as $subfolderItem)
                 {
                 $subfolderitemolicygroupDao = $this->Itempolicygroup->getPolicy($anonymousGroup, $subfolderItem);
                 $this->Itempolicygroup->delete($subfolderitemolicygroupDao);
@@ -140,16 +143,19 @@ class CommunityController extends AppController
             // process root folder
             $this->Folderpolicygroup->createPolicy($anonymousGroup, $communityPublicFolder, MIDAS_POLICY_READ);
             // process items in root folder
-            foreach($communityPublicFolder->getItems() as $item)
+            $items = $communityPublicFolder->getItems();
+            foreach($items as $item)
               {
               $this->Itempolicygroup->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
               }
-            // process children folders
-            foreach($this->Folder->getAllChildren($communityPublicFolder, $this->userSession->Dao) as $subfolder)
+            // process all the children (and grandchildren ...) folders  
+            $subfolders = $this->Folder->getAllChildren($communityDao->getPublicFolder(), $this->userSession->Dao);
+            foreach($subfolders as $subfolder)
               {
               $this->Folderpolicygroup->createPolicy($anonymousGroup, $subfolder, MIDAS_POLICY_READ);
-              // process items in childer folders
-              foreach($subfolder->getItems() as $subfolderItem)
+              // process items in children folders
+              $subitems = $subfolder->getItems();
+              foreach($subitems as $subfolderItem)
                 {
                 $this->Itempolicygroup->createPolicy($anonymousGroup, $subfolderItem, MIDAS_POLICY_READ);
                 }
