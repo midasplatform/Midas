@@ -123,7 +123,7 @@ class CommunityController extends AppController
               $itemolicygroupDao = $this->Itempolicygroup->getPolicy($anonymousGroup, $item);
               $this->Itempolicygroup->delete($itemolicygroupDao);
               }
-            // process all the children (and grandchildren ...) folders 
+            // process all the children (and grandchildren ...) folders
             $subfolders = $this->Folder->getAllChildren($communityDao->getPublicFolder(), $this->userSession->Dao);
             foreach($subfolders as $subfolder)
               {
@@ -148,7 +148,7 @@ class CommunityController extends AppController
               {
               $this->Itempolicygroup->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
               }
-            // process all the children (and grandchildren ...) folders  
+            // process all the children (and grandchildren ...) folders
             $subfolders = $this->Folder->getAllChildren($communityDao->getPublicFolder(), $this->userSession->Dao);
             foreach($subfolders as $subfolder)
               {
