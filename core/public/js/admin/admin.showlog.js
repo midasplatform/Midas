@@ -11,9 +11,12 @@ function initLogs()
   $('.logsLoading').show();
   $('table#listLogs tr.logSum').remove();
   $('table#listLogs tr.logDetail').remove();
+  var i = 1;
   $.each(jsonLogs, function(index, value) {
+    var stripeClass = i % 2 ? 'odd' : 'even';
+    i++;
     var html='';
-    html+='<tr class="logSum">';
+    html+='<tr class="logSum '+stripeClass+'">';
     html+=' <td>'+value.datetime+'</td>';
     html+=' <td>'+priorityMap[value.priority]+'</td>';
     html+=' <td>'+value.module+'</td>';
@@ -24,7 +27,6 @@ function initLogs()
     html+='</tr>';
     $('table#listLogs').append(html);
     });
-
   $('table#listLogs').show();
   $('table#listLogs').trigger('update');
   
