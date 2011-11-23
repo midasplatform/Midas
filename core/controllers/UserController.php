@@ -32,6 +32,7 @@ class UserController extends AppController
   function indexAction()
     {
     $this->view->header = $this->t("Users");
+    $this->view->activemenu = 'user'; // set the active menu
 
     $order = $this->_getParam('order');
     $offset = $this->_getParam('offset');
@@ -634,7 +635,7 @@ class UserController extends AppController
     elseif(!isset($user_id))
       {
       $userDao = $this->userSession->Dao;
-      $this->view->activemenu = 'user'; // set the active menu
+      $this->view->activemenu = 'myprofile'; // set the active menu
       }
     else
       {
