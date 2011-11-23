@@ -359,9 +359,12 @@ class UploadComponent extends AppComponent
       $bitstreamDao->setAssetstoreId($tmpBitstreamDao->getAssetstoreId());
       }
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
+    // now that we have updated the itemRevision, the item may be stale
+    $item = $itemModel->load($item_revision[0]);
 
     $this->getLogger()->info(__METHOD__." Upload ok :".$path);
     Zend_Registry::get('notifier')->notifyEvent("EVENT_CORE_UPLOAD_FILE", array($itemRevisionDao->getItem()->toArray(), $itemRevisionDao->toArray()));
+
     return $item;
     }//end
 } // end class UploadComponent

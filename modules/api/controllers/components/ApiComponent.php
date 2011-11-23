@@ -232,7 +232,7 @@ class Api_ApiComponent extends AppComponent
           $revision->setUser_id($userDao->getKey());
           $revision->setDate(date('c'));
           $revision->setLicense(null);
-          $revision = $itemModel->addRevision($item, $revision);
+          $itemModel->addRevision($item, $revision);
           }
 
         $siblings = $revision->getBitstreams();
@@ -875,11 +875,10 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception('Cannot create item anonymously', MIDAS_INVALID_POLICY);
       }
-
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $name = $args['name'];
-    $description = $args['description'];
+    $description = isset($args['description']) ? $args['description'] : '';
 
     $uuid = isset($args['uuid']) ? $args['uuid'] : '';
     $record = false;

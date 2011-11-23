@@ -260,6 +260,7 @@ abstract class ItemModelBase extends AppModel
     $item = new ItemDao();
     $item->setName($name);
     $item->setDescription($description);
+    $item->setType(0);
     $item->setUuid($uuid);
     $this->save($item);
 
