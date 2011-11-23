@@ -39,6 +39,11 @@ function successCreateFolder(responseText, statusText, xhr, form)
         {
         node.reload();
         }
+      // create a top level folder  
+      else
+        {
+        location.reload();  
+        }
     }
   else
     {
