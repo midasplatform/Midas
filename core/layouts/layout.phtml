@@ -263,7 +263,7 @@ echo $this->doctype()
               <li <?php if($this->activemenu=='browse') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/browse');" ><a href="<?php echo $this->webroot?>/browse"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/explore.png" /><span> <?php echo $this->t('Explore');?></span></a></li>
               <li <?php if($this->activemenu=='community') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/community');" ><a href="<?php echo $this->webroot?>/community"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/community2.png" /><span> <?php echo $this->t('Communities');?></span></a></li>
               <li <?php if($this->activemenu=='user') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/user');" ><a href="<?php echo $this->webroot?>/user"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/users.png" /><span> <?php echo $this->t('Users');?></span></a></li>
-              <li id="menuUserInfo" <?php if($this->activemenu=='user') {echo 'class="active"';} ?>  ><a href="javascript:;"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/user.png" /><span> <?php echo $this->t('My profile');?></span></a></li>
+              <li id="menuUserInfo" <?php if($this->activemenu=='myprofile') {echo 'class="active"';} ?>  ><a href="javascript:;"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/user.png" /><span> <?php echo $this->t('My profile');?></span></a></li>
 
                <?php
               if($this->showUploadedLink)

@@ -295,7 +295,7 @@ class AdminController extends AppController
     $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
     }//end indexAction
 
-  /** show logs*/
+  /** Used to display and filter the list of log messages */
   function showlogAction()
     {
     if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
@@ -304,23 +304,23 @@ class AdminController extends AppController
       }
     if(!$this->getRequest()->isXmlHttpRequest())
       {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      throw new Zend_Exception('This page should only be requested by ajax');
       }
     $this->_helper->layout->disableLayout();
 
-    $start = $this->_getParam("startlog");
-    $end = $this->_getParam("endlog");
-    $module = $this->_getParam("modulelog");
-    $priority = $this->_getParam("prioritylog");
-    if(!isset($start))
+    $start = $this->_getParam('startlog');
+    $end = $this->_getParam('endlog');
+    $module = $this->_getParam('modulelog');
+    $priority = $this->_getParam('prioritylog');
+    if(!isset($start) || empty($start))
       {
-      $start = date('c', strtotime("-24 hour"));
+      $start = date('c', strtotime('-24 hour'));
       }
     else
       {
       $start = date('c', strtotime($start));
       }
-    if(!isset($end))
+    if(!isset($end) || empty($end))
       {
       $end = date('c');
       }
@@ -328,14 +328,19 @@ class AdminController extends AppController
       {
       $end = date('c', strtotime($end));
       }
-    if(!isset($module))
+    if(!isset($module) || empty($module))
       {
       $module = 'all';
       }
-    if(!isset($priority))
+    if(!isset($priority) || empty($priority))
       {
       $priority = 'all';
       }
+
+    $this->view->currentFilter = array('start' => $start,
+                                       'end' => $end,
+                                       'module' => $module,
+                                       'priority' => $priority);
 
     $logs = $this->Errorlog->getLog($start, $end, $module, $priority);
     foreach($logs as $key => $log)
@@ -343,36 +348,35 @@ class AdminController extends AppController
       $logs[$key] = $log->toArray();
       if(substr($log->getMessage(), 0, 5) == 'Fatal')
         {
-        $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), "[message]") + 10, 40);
+        $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), '[message]') + 13, 60);
         }
       elseif(substr($log->getMessage(), 0, 6) == 'Server')
         {
-        $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), "Message:") + 9, 40);
+        $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), 'Message:') + 9, 60);
         }
       else
         {
-        $shortMessage = substr($log->getMessage(), 0, 40);
+        $shortMessage = substr($log->getMessage(), 0, 60);
         }
       $logs[$key]['shortMessage'] = $shortMessage.' ...';
       }
-    $this->view->jsonLogs = JsonComponent::encode($logs);
-    $this->view->jsonLogs = htmlentities($this->view->jsonLogs);
 
     if($this->_request->isPost())
       {
       $this->_helper->viewRenderer->setNoRender();
-      echo $this->view->jsonLogs;
+      echo JsonComponent::encode(array('currentFilter' => $this->view->currentFilter,
+                                       'logs' => $logs));
       return;
       }
 
     $modulesConfig = Zend_Registry::get('configsModules');
-
     $modules = array('all', 'core');
     foreach($modulesConfig as $key => $module)
       {
       $modules[] = $key;
       }
     $this->view->modulesLog = $modules;
+    $this->view->jsonLogs = htmlentities(JsonComponent::encode($logs));
     }//showlogAction
 
   /** function dashboard*/
@@ -608,4 +612,3 @@ class AdminController extends AppController
     }
 
 } // end class
-
