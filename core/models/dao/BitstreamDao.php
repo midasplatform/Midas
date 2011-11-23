@@ -32,6 +32,9 @@ class BitstreamDao extends AppDao
 
     // TODO Compute the full path from the assetstore. For now using the path
     $this->setMimetype($this->Component->MimeType->getType($this->path));
+    // clear the stat cache, as the underlying file might have changed
+    // since the last time filesize was called on the same filepath
+    clearstatcache(true, $this->path);
     $this->setSizebytes(filesize($this->path));
     if(!isset($this->checksum) || empty($this->checksum))
       {
