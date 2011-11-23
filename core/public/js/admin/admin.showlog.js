@@ -1,6 +1,9 @@
+var priorityMap = { 2 : 'critical', 4: 'warning', 6: 'info' };
+
 jsonLogs = jQuery.parseJSON($('div#jsonLogs').html());
 
 initLogs();
+$('table#listLogs').tablesorter({widgets: ['zebra']});
 
 function initLogs()
 {
@@ -12,18 +15,7 @@ function initLogs()
     var html='';
     html+='<tr class="logSum">';
     html+=' <td>'+value.datetime+'</td>';
-    if(value.priority == 2)
-      {
-      html+=' <td><b>Critical</b></td>';
-      }
-    if(value.priority == 4)
-      {
-      html+=' <td>Warning</td>';
-      }
-    if(value.priority == 6)
-      {
-      html+=' <td>Info</td>';
-      }
+    html+=' <td>'+priorityMap[value.priority]+'</td>';
     html+=' <td>'+value.module+'</td>';
     html+=' <td>'+value.shortMessage+'</td>';
     html+='</tr>';
@@ -34,6 +26,8 @@ function initLogs()
     });
 
   $('table#listLogs').show();
+  $('table#listLogs').trigger('update');
+  
   $('.logsLoading').hide();
 
   $('table#listLogs tr.logSum').click(function() {
@@ -66,11 +60,14 @@ function validateShowlog(formData, jqForm, options)
 
 function successShowlog(responseText, statusText, xhr, form)
 {
-  $('div#jsonLogs').html(responseText);
-
   try
     {
-    jsonLogs = jQuery.parseJSON($('div#jsonLogs').html());
+    var resp = jQuery.parseJSON(responseText);
+    jsonLogs = resp.logs;
+    $('#currentFilterStart').html(resp.currentFilter.start);
+    $('#currentFilterEnd').html(resp.currentFilter.end);
+    $('#currentFilterModule').html(resp.currentFilter.module);
+    $('#currentFilterPriority').html(priorityMap[resp.currentFilter.priority]);
     }
   catch(e)
     {
