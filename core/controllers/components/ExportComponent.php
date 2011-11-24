@@ -126,7 +126,7 @@ class ExportComponent extends AppComponent
             throw new Zend_Exception("Revision number ".$tmpId[1]." for item ".$tmpId[0]." does not exist. Please check your input.");
             }
           }
-        // Otherwise use the lastest revision
+        // Otherwise use the latest revision
         else
           {
           $revisionNum = $itemModel->getLastRevision($item);

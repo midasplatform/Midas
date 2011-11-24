@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -15,6 +15,7 @@ PURPOSE.  See the above copyright notices for more information.
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.tablesorter.css?<?php echo time()?>" />
 
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.tablesorter.min.js?<?php echo time()?>"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.checkboxrange.js?<?php echo time()?>"></script>
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/admin/admin.showlog.js?<?php echo time()?>"></script>
 
 <form id="logSelector" method="post" action="<?php echo $this->webroot?>/admin/showlog">
@@ -52,11 +53,12 @@ Priority: <span id="currentFilterPriority"><?php echo $this->currentFilter['prio
 <table id="listLogs" class="tablesorter">
   <thead>
     <tr>
+      <th><input type="checkbox" id="selectAllCheckbox" /></th>
       <th>Date</th>
       <th>Priority</th>
       <th>Module</th>
       <th>Short Message</th>
-    </tr>    
+    </tr>
   </thead>
 </table>
 
