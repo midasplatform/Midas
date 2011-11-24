@@ -3,7 +3,9 @@ var priorityMap = { 2 : 'critical', 4: 'warning', 6: 'info' };
 jsonLogs = jQuery.parseJSON($('div#jsonLogs').html());
 
 initLogs();
-$('table#listLogs').tablesorter({widgets: ['zebra']});
+$('#selectAllCheckbox').click(function() {
+  $('input.logSelect').prop("checked", this.checked);
+  });
 
 function initLogs()
 {
@@ -29,8 +31,6 @@ function initLogs()
     $('table#listLogs').append(html);
     });
   $('table#listLogs').show();
-  $('table#listLogs').trigger('update');
-  
   $('.logsLoading').hide();
 
   $('table#listLogs tr.logSum td.logMessage').click(function() {

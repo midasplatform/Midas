@@ -12,6 +12,12 @@ tr.logSum td input{
   vertical-align: middle;
 }
 
+#selectAllCheckbox{
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+  vertical-align: middle;
+}
+
 .ui-widget-content{
   border: none!important;
 }
