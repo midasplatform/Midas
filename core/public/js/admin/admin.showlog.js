@@ -20,7 +20,7 @@ function initLogs()
     html+=' <td>'+value.datetime+'</td>';
     html+=' <td>'+priorityMap[value.priority]+'</td>';
     html+=' <td>'+value.module+'</td>';
-    html+=' <td>'+value.shortMessage+'</td>';
+    html+=' <td>'+value.shortMessage+'<div style="display:none;"><pre>'+value.message+'</pre></div></td>';
     html+='</tr>';
     html+='<tr class="logDetail" style="display:none;">';
     html+=' <td colspan="4"><pre>'+value.message+'</pre></td>';
@@ -33,7 +33,7 @@ function initLogs()
   $('.logsLoading').hide();
 
   $('table#listLogs tr.logSum').click(function() {
-    showBigDialogWithContent('Log', $(this).next().html(), true);
+    showBigDialogWithContent('Log', $(this).find('div').html(), true);
     });
 }
 
