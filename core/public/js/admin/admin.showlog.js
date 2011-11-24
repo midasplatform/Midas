@@ -17,10 +17,11 @@ function initLogs()
     i++;
     var html='';
     html+='<tr class="logSum '+stripeClass+'">';
+    html+=' <td><input class="logSelect" type="checkbox" id="logSelect'+value.errorlog_id+'" /></td>';
     html+=' <td>'+value.datetime+'</td>';
     html+=' <td>'+priorityMap[value.priority]+'</td>';
     html+=' <td>'+value.module+'</td>';
-    html+=' <td>'+value.shortMessage+'<div style="display:none;"><pre>'+value.message+'</pre></div></td>';
+    html+=' <td class="logMessage">'+value.shortMessage+'<div style="display:none;"><pre>'+value.message+'</pre></div></td>';
     html+='</tr>';
     html+='<tr class="logDetail" style="display:none;">';
     html+=' <td colspan="4"><pre>'+value.message+'</pre></td>';
@@ -32,9 +33,10 @@ function initLogs()
   
   $('.logsLoading').hide();
 
-  $('table#listLogs tr.logSum').click(function() {
+  $('table#listLogs tr.logSum td.logMessage').click(function() {
     showBigDialogWithContent('Log', $(this).find('div').html(), true);
     });
+  $('input.logSelect').enableCheckboxRangeSelection();
 }
 
 var dates = $("#startlog, #endlog").datepicker({

@@ -1,5 +1,15 @@
-tr.logSum{
+tr.logSum td.logMessage{
   cursor: pointer;
+}
+
+tr.logSum{
+  vertical-align: middle;
+}
+
+tr.logSum td input{
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+  vertical-align: middle;
 }
 
 .ui-widget-content{
