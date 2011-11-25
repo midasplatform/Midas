@@ -3,6 +3,35 @@ var priorityMap = { 2 : 'critical', 4: 'warning', 6: 'info' };
 jsonLogs = jQuery.parseJSON($('div#jsonLogs').html());
 
 initLogs();
+
+var dates = $("#startlog, #endlog").datepicker({
+  defaultDate: "-1w",
+  changeMonth: true,
+  numberOfMonths: 1,
+  onSelect: function(selectedDate) {
+    var option = this.id == "startlog" ? "minDate" : "maxDate";
+    var instance = $(this).data("datepicker");
+    var date = $.datepicker.parseDate(
+      instance.settings.dateFormat || $.datepicker._defaults.dateFormat,
+      selectedDate, instance.settings);
+    dates.not( this ).datepicker("option", option, date);
+    },
+  dayNamesMin: ["S", "M", "T", "W", "T", "F", "S"]
+  });
+
+$('#logSelector').ajaxForm( {beforeSubmit: validateShowlog, success: successShowlog} );
+
+$('table#listLogs').tablesorter({
+  headers: {
+    0: {sorter: false}, //checkbox column
+    4: {sorter: false}  //log message column
+    } 
+  }).bind('sortEnd', function() {  
+    $('input.logSelect').enableCheckboxRangeSelection();
+  }).bind('update', function() {
+    $('input.logSelect').enableCheckboxRangeSelection();
+  });
+
 $('#selectAllCheckbox').click(function() {
   $('input.logSelect').prop("checked", this.checked);
   });
@@ -32,29 +61,12 @@ function initLogs()
     });
   $('table#listLogs').show();
   $('.logsLoading').hide();
+  $('table#listLogs').trigger('update');
 
   $('table#listLogs tr.logSum td.logMessage').click(function() {
     showBigDialogWithContent('Log', $(this).find('div').html(), true);
     });
-  $('input.logSelect').enableCheckboxRangeSelection();
 }
-
-var dates = $("#startlog, #endlog").datepicker({
-  defaultDate: "-1w",
-  changeMonth: true,
-  numberOfMonths: 1,
-  onSelect: function(selectedDate) {
-    var option = this.id == "startlog" ? "minDate" : "maxDate";
-    var instance = $(this).data("datepicker");
-    var date = $.datepicker.parseDate(
-      instance.settings.dateFormat || $.datepicker._defaults.dateFormat,
-      selectedDate, instance.settings);
-    dates.not( this ).datepicker("option", option, date);
-    },
-  dayNamesMin: ["S", "M", "T", "W", "T", "F", "S"]
-  });
-
-$('#logSelector').ajaxForm( {beforeSubmit: validateShowlog, success: successShowlog} );
 
 function validateShowlog(formData, jqForm, options)
 {
