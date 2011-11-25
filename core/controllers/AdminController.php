@@ -359,6 +359,38 @@ class AdminController extends AppController
     $this->view->jsonLogs = htmlentities(JsonComponent::encode($logs));
     }//showlogAction
 
+  /** Used to delete a list of log entries */
+  function deletelogAction()
+    {
+    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
+      {
+      throw new Zend_Exception('You should be an administrator');
+      }
+    if(!$this->getRequest()->isXmlHttpRequest())
+      {
+      throw new Zend_Exception('This page should only be requested by ajax');
+      }
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    $ids = $this->_getParam('idList');
+    $count = 0;
+    foreach(explode(',', $ids) as $id)
+      {
+      if(!empty($id) && is_numeric($id))
+        {
+        $count++;
+        $dao = $this->Errorlog->load($id);
+        if($dao)
+          {
+          $this->Errorlog->delete($dao);
+          }
+        }
+      }
+
+    echo JsonComponent::encode(array('message' => 'Successfully deleted '.$count.' entries.'));
+    return;
+    }
+
   /** function dashboard*/
   function dashboardAction()
     {
