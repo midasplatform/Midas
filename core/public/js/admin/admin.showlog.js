@@ -26,9 +26,7 @@ $('table#listLogs').tablesorter({
     0: {sorter: false}, //checkbox column
     4: {sorter: false}  //log message column
     } 
-  }).bind('sortEnd', function() {  
-    $('input.logSelect').enableCheckboxRangeSelection();
-  }).bind('update', function() {
+  }).bind('sortEnd', function() {
     $('input.logSelect').enableCheckboxRangeSelection();
   });
 
@@ -42,6 +40,8 @@ function initLogs()
   $('.logsLoading').show();
   $('table#listLogs tr.logSum').remove();
   $('table#listLogs tr.logDetail').remove();
+  $('#fullLogMessages div').remove();
+
   var i = 1;
   $.each(jsonLogs, function(index, value) {
     var stripeClass = i % 2 ? 'odd' : 'even';
@@ -52,19 +52,23 @@ function initLogs()
     html+=' <td>'+value.datetime+'</td>';
     html+=' <td>'+priorityMap[value.priority]+'</td>';
     html+=' <td>'+value.module+'</td>';
-    html+=' <td class="logMessage">'+value.shortMessage+'<div style="display:none;"><pre>'+value.message+'</pre></div></td>';
+    html+=' <td class="logMessage" name="'+value.errorlog_id+'">'+value.shortMessage+'</td>';
     html+='</tr>';
     html+='<tr class="logDetail" style="display:none;">';
     html+=' <td colspan="4"><pre>'+value.message+'</pre></td>';
     html+='</tr>';
+    var messageHtml = '<div id="fullMessage'+value.errorlog_id+'"><pre>'+value.message+'</pre></div>';
     $('table#listLogs').append(html);
+    $('#fullLogMessages').append(messageHtml);
     });
   $('table#listLogs').show();
   $('.logsLoading').hide();
   $('table#listLogs').trigger('update');
+  $('input.logSelect').enableCheckboxRangeSelection();
 
   $('table#listLogs tr.logSum td.logMessage').click(function() {
-    showBigDialogWithContent('Log', $(this).find('div').html(), true);
+    var id = $(this).attr('name');
+    showBigDialogWithContent('Log', $('#fullMessage'+id).html(), true);
     });
 }
 
