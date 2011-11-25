@@ -14,7 +14,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 {
   public $_models = array('Item', 'Bitstream', 'ItemRevision', 'Assetstore', 'Folder');
   public $_components = array('Upload');
-  public $_moduleComponents = array('Executable');
+  public $_moduleComponents = array('Executable', 'Job');
   public $_moduleModels = array('Job');
 
   /** manage jobs */
@@ -142,7 +142,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
             {
             $cmdOptions[$i]['values'] = explode(';', $result);
             }
-          elseif(strpos($result, '-') !== false)
+          elseif(strpos($result, '-') !== false && strpos($result, '-') !== 0)
             {
             $tmpArray = explode('(', $result);
             if(count($tmpArray) == 1)
@@ -285,23 +285,25 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           $item->metadataParameters[$m->getQualifier()] = $m->getValue();
           }
 
-        if($item->getName() == 'log.txt')
+        $outputs[] = $item;
+        }
+      elseif($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS)
+        {
+        $reviesion = $this->Item->getLastRevision($item);
+        $metadata = $this->ItemRevision->getMetadata($reviesion);
+        $item->metadata = $metadata;
+
+        $bitstreams = $reviesion->getBitstreams();
+        if(count($bitstreams) == 1)
           {
-          $bitstreams = $reviesion->getBitstreams();
-          if(count($bitstreams) == 1)
-            {
-            $log = file_get_contents($bitstreams[0]->getFullPath());
-            }
-          }
-        else
-          {
-          $outputs[] = $item;
+          $log = file_get_contents($bitstreams[0]->getFullPath());
           }
         }
       }
 
     $this->view->outputs = $outputs;
     $this->view->log = $log;
+    $this->view->results =  $this->ModuleComponent->Job->convertXmlREsults($log);
     $this->view->inputs = $inputs;
     $this->view->executable = $executable;
     $this->view->parameters = $parametersList;

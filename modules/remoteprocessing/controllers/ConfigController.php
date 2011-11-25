@@ -19,6 +19,10 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
   /** download remote script */
   function downloadAction()
     {
+    while(ob_get_level() > 0)
+      {
+      ob_end_clean();
+      }
     if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
       {
       throw new Zend_Exception("You should be an administrator");
@@ -27,6 +31,7 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
     $this->disableLayout();
     $this->disableView();
     Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
+    ob_start();
     $zip = new ZipStream('RemoteScript.zip');
 
     $file = BASE_PATH.'/modules/remoteprocessing/remotescript/main.py';
@@ -45,6 +50,7 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
       }
 
     $zip->finish();
+    exit();
     }
 
   /** index action*/

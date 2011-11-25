@@ -91,4 +91,119 @@ class Remoteprocessing_JobComponent extends AppComponent
       }
     }
 
+  /** compute logs (return an xml file) */
+  public function computeLogs($job, $logs, $params)
+    {
+    unset($params['log']);
+    $componentLoader = new MIDAS_ComponentLoader();
+    $utilityComponent = $componentLoader->loadComponent('Utility');
+    $logs = str_replace("\r\n", "", $logs);
+    $logs = str_replace("\r\r", "\r", $logs);
+    $xml = "<?xml version='1.0'?>\n";
+    $xml .= "<Job id='".$job->getKey()."' name='".$job->getName()."'>\n";
+    $xml .= "<JobParameters>\n";
+    $xml .= "<![CDATA[".JsonComponent::encode($params)."]]>";
+    $xml .= "</JobParameters>\n";
+    $logs = explode("-COMMAND\r", $logs);
+    if(count($logs)<2)
+      {
+      return "";
+      }
+    unset($logs[0]);
+    foreach($logs as $log)
+      {
+      $failed = false;
+      $tmp = explode("-EXECUTION TIME\r", $log);
+      $command = $tmp[0];
+      $tmp = explode("-STDOUT\r", $tmp[1]);
+      $executionTime = $tmp[0];
+      $tmp = explode("-STDERR\r", $tmp[1]);
+      $stdout = $tmp[0];
+      $stderr = $tmp[1];
+
+      $search = array(' ', "\t", "\n", "\r");
+      $cleanedStderr = str_replace($search, '', $stderr);
+      if(!empty($cleanedStderr))
+        {
+        $failed = true;
+        }
+      $lowerout = strtolower($stdout);
+      if(strpos($lowerout, "error") !== false)
+        {
+        $failed = true;
+        }
+
+      $xml .= "<Process status=";
+      if($failed)
+        {
+        $xml .= "'failed'";
+        }
+      else
+        {
+        $xml .= "'passed'";
+        }
+      $xml .= ">\n";
+      $xml .= "<Command>\n";
+      $xml .= "<![CDATA[".$command."]]>";
+      $xml .= "</Command>\n";
+      $xml .= "<ExecutionTime>\n";
+      $xml .= "<![CDATA[".$executionTime."]]>";
+      $xml .= "</ExecutionTime>\n";
+      $xml .= "<Output>\n";
+      $xml .= "<![CDATA[".$stdout."]]>";
+      $xml .= "</Output>\n";
+      $xml .= "<Error>\n";
+      $xml .= "<![CDATA[".$stderr."]]>";
+      $xml .= "</Error>\n";
+      $xml .= "</Process>";
+      }
+    $xml .= "</Job>\n";
+    return $xml;
+    }
+
+  /** convertXmlREsults */
+  public function convertXmlREsults($xml)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $jobModel = $modelLoader->loadmodel('Job', 'remoteprocessing');
+    $itemModel = $modelLoader->loadmodel('Item');
+
+    $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+    if(!$xml)
+      {
+      return;
+      }
+    $return = array();
+    $return['job'] = $jobModel->load((int) $xml->attributes()->id[0]);
+    $return['params'] = JsonComponent::decode((string) $xml->JobParameters);
+    $return['process'] = array();
+    $i = 1;
+    foreach($xml->Process as $process)
+      {
+      $tmp = array();
+      $tmp['status'] = (string) $process->attributes()->status[0];
+      $tmp['command'] = trim((string) $process->Command);
+      $tmp['stderr'] = trim((string) $process->Error);
+      $tmp['stdout'] = trim((string) $process->Output);
+      $tmp['xmlStdout'] = simplexml_load_string($tmp['stdout'], 'SimpleXMLElement', LIBXML_NOCDATA);;
+      $tmp['time'] = (float) trim(str_replace("s", "", (string) $process->ExecutionTime)); //convert in milliseconds
+      $tmp['output'] = array();
+      $tmp['parameters'] = array();
+      foreach($return['params']['parametersList'] as $key => $parameter)
+        {
+        $tmp['parameters'][$key] = trim($return['params']['optionMatrix'][$i][$key]);
+        }
+      if(isset($return['params']['outputKeys'][$i]))
+        {
+        foreach($return['params']['outputKeys'][$i] as $itemId)
+          {
+          $tmp['output'][] = $itemModel->load($itemId);
+          }
+        }
+      $return['process'][] = $tmp;
+      $i++;
+      }
+    return $return;
+    }
+
 }

@@ -172,6 +172,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     $modulesConfig=Zend_Registry::get('configsModules');
 
     $modelLoad = new MIDAS_ModelLoader();
+    $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
     $userModel = $modelLoad->loadModel('User');
     $folderModel = $modelLoad->loadModel('Folder');
     $itemModel = $modelLoad->loadModel('Item');
@@ -180,11 +181,20 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     $job = $jobModel->load($params['job_id']);
 
     $userDao = $userModel->load($params['userKey']);
+    $creatorDao = $userModel->load($params['creator_id']);
 
-    $folder = $folderModel->load($params['ouputFolders'][0]);
+    if(isset($params['ouputFolders'][0]))
+      {
+      $folder = $folderModel->load($params['ouputFolders'][0]);
+      }
+    else
+      {
+      $folder = $userDao->getPrivateFolder();
+      }
 
     $componentLoader = new MIDAS_ComponentLoader();
     $uploadComponent = $componentLoader->loadComponent('Upload');
+    $params['outputKeys'] = array();
 
     foreach($params['output'] as $file)
       {
@@ -196,6 +206,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
         $filepath = str_replace(".".$tmpArray[1].".", ".", $filepath);
         rename($oldfilepath, $filepath);
         $item = $uploadComponent->createUploadedItem($userDao, basename($filepath), $filepath, $folder);
+        $params['outputKeys'][$tmpArray[1]][] = $item->getKey();
         $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT);
         // add parameter metadata
         if(is_numeric($tmpArray[1]) && isset($params['parametersList']) && isset($params['optionMatrix']))
@@ -219,10 +230,13 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       }
     if(isset($params['log']) && !empty($params['log']))
       {
+      $jobComponenet = $componentLoader->loadComponent('Job', 'remoteprocessing');
+      $xmlResults = $jobComponenet->computeLogs($job, $params['log'], $params);
       $logFile = BASE_PATH.'/tmp/misc/'.uniqid();
-      file_put_contents($logFile, $params['log']);
-      $item = $uploadComponent->createUploadedItem($userDao, 'log.txt', $logFile, $folder);
-      $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT);
+      file_put_contents($logFile, $xmlResults);
+      $item = $uploadComponent->createUploadedItem($userDao, 'job-'.$params['job_id'].'_results.xml', $logFile, $folder);
+      $itempolicyuserModel->createPolicy($creatorDao, $item, MIDAS_POLICY_READ);
+      $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS);
       unlink($logFile);
       }
     }

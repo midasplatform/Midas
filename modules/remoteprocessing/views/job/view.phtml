@@ -22,7 +22,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
          if($this->executable != false)
            {
           echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/remoteprocessing/job/manage/?itemId={$this->executable->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+            echo "<a  href='{$this->webroot}/remoteprocessing/job/manage'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
             echo $this->t('Back');
             echo "</a>";
           echo '</div>';
@@ -61,28 +61,85 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
     if($this->log != false)
       {
       ?>
-    <a id="showLogLink">Toggle log window</a><br/>
-    <pre id="hiddenLog"><?php echo $this->log?></pre>
+    <a id="showLogLink">Toggle raw xml results</a><br/>
+    <pre id="hiddenLog"><?php echo htmlentities($this->log)?></pre>
+
+    <h4>Results and Metrics grid:</h4>
+    <table id="tableXml">
+      <thead>
+        <tr>
+        <?php
+        foreach($this->results['params']['parametersList'] as $parameter)
+          {
+          echo "<th qtip='".ucfirst($parameter)."'><b>".$this->slicename(ucfirst($parameter),10)."</b></th>";
+          }
+        echo "<th qtip='Execution status'><b>Stat.</b></th>";
+        echo "<th qtip='Duration'><b>Dur.</b></th>";
+        echo "<th qtip='Stdout Output'><b>Out.</b></th>";
+        echo "<th qtip='Stderr Output'><b>Err.</b></th>";
+        ?>
+       <?php
+        $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_JOB_DASHBOARD_HEADER", array($this->results));
+        foreach($htmltArray as $html)
+          {
+          if(!empty($html))
+            {
+            echo $html;
+            }
+          }
+        ?>
+        </tr>
+      </thead>
+      <tbody>
     <?php
+      foreach($this->results['process'] as $result)
+        {
+        echo "<tr>";
+        foreach($this->results['params']['parametersList'] as $key => $parameter)
+          {
+          if(isset($result['parameters'][$key]) && isset($this->inputs[trim($result['parameters'][$key])]))
+            {
+            echo "<td><a href='".$this->webroot."/item/".$this->inputs[trim($result['parameters'][$key])]->getKey()."' elementItem='".$this->inputs[trim($result['parameters'][$key])]->getKey()."'>".$this->slicename($result['parameters'][$key],15)."</a></td>";
+            }
+          elseif(isset($result['parameters'][$key]))
+            {
+            echo "<td>".$this->slicename($result['parameters'][$key], 15)."</td>";
+            }
+          else
+            {
+            echo "<td></td>";
+            }
+          }
+        echo "<td class='xmlStatus'>".$result['status']."</td>";
+        echo "<td >".str_replace(' seconds', 's', $this->duration($result['time']))."</td>";
+        echo "<td class='showInDialog' output='".htmlentities($result['stdout'])."'><a>".$this->slicename(htmlentities($result['stdout']),15)."</a></td>";
+        echo "<td class='showInDialog' output='".htmlentities($result['stderr'])."'><a>".$this->slicename(htmlentities($result['stderr']),15)."</a></td>";
+
+        $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_JOB_DASHBOARD_BODY", array($result));
+        foreach($htmltArray as $html)
+          {
+          if(!empty($html))
+            {
+            echo $html;
+            }
+          }
+        echo "</tr>";
+        }
+        ?>
+       </tbody>
+    </table>
+
+    <div id="metricsWrapper" style="display:none;">
+      <h4>Metrics: </h4>
+    </div>
+      <?php
       }
+
     if($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE && !empty($this->outputs))
       {
       ?>
-    <h4>Results grid:</h4>
-             <?php
+    <h4>Output grid:</h4>
 
-          $itemsList = "";
-          foreach($this->outputs as $ouput)
-            {
-            $itemsList .= $ouput->getKey().'-';
-            }
-          echo '<div class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/download?items={$itemsList}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/download.png'/>";
-            echo $this->t('Download Results');
-            echo "</a>";
-          echo '</div>';
-
-        ?>
     <table id="tableResults">
       <thead>
         <tr>
@@ -133,6 +190,21 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
       ?>
       </tbody>
     </table>
+
+                 <?php
+
+          $itemsList = "";
+          foreach($this->outputs as $ouput)
+            {
+            $itemsList .= $ouput->getKey().'-';
+            }
+          echo '<div class="genericBigButton ">';
+            echo "<a  href='{$this->webroot}/download?items={$itemsList}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/download.png'/>";
+            echo $this->t('Download Results');
+            echo "</a>";
+          echo '</div>';
+
+        ?>
     <?php
       }
    ?>

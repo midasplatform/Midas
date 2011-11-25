@@ -4,9 +4,18 @@ $(document).ready(function(){
   colorLines();
   $('.midasTree tr').click(function(){
     selectedJob = $(this).attr('element');
+    createActionMenu($(this));
     colorLines();
   });
 });
+
+function createActionMenu(obj)
+  {
+  $('.viewAction').show();
+  $('#viewJob').click(function(){
+    window.location.replace(json.global.webroot+'/remoteprocessing/job/view/?jobId='+selectedJob);
+  });
+  }
 
 function colorLines(checkHidden)
   {
