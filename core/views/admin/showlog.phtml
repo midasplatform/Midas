@@ -43,6 +43,7 @@ PURPOSE.  See the above copyright notices for more information.
   <input type='submit' value='Apply Filter' />
 </form>
 
+
 <br/>
 
 <span><b>Current Filter:</b></span><br />
@@ -50,6 +51,8 @@ From: <span id="currentFilterStart"><?php echo $this->currentFilter['start']; ?>
 To: <span id="currentFilterEnd"><?php echo $this->currentFilter['end']; ?></span><br />
 Module: <span id="currentFilterModule"><?php echo $this->currentFilter['module']; ?></span><br />
 Priority: <span id="currentFilterPriority"><?php echo $this->currentFilter['priority']; ?></span><br />
+<hr/>
+<button type="button" id="deleteSelected">Delete Selected</button>
 <table id="listLogs" class="tablesorter">
   <thead>
     <tr>
@@ -60,7 +63,14 @@ Priority: <span id="currentFilterPriority"><?php echo $this->currentFilter['prio
       <th>Short Message</th>
     </tr>
   </thead>
+  <tbody>
+    <tr id="dummy">
+      <td></td><td></td><td></td><td></td><td></td>
+    </tr>
+  </tbody>
 </table>
 
 <img class="logsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+
 <div id="jsonLogs" style="display:none;"><?php echo $this->jsonLogs?></div>
+<div id="fullLogMessages" style="display:none;"></div>
