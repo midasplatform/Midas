@@ -345,11 +345,13 @@ class UploadController extends AppController
     $license = $this->_getParam('license');
     if(!empty($path) && file_exists($path))
       {
-      $tmp = explode('-', $parent);
-      if(count($tmp) == 2) //means we upload a new revision
+      $itemId_itemRevisionNumber = explode('-', $parent);
+      if(count($itemId_itemRevisionNumber) == 2) //means we upload a new revision
         {
         $changes = $this->_getParam('changes');
-        $this->Component->Upload->createNewRevision($this->userSession->Dao, $filename, $path, $tmp, $changes, $license);
+        $itemId = $itemId_itemRevisionNumber[0];
+        $itemRevisionNumber = $itemId_itemRevisionNumber[1];
+        $this->Component->Upload->createNewRevision($this->userSession->Dao, $filename, $path, $changes, $itemId, $itemRevisionNumber, $license);
         }
       else
         {

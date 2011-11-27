@@ -262,7 +262,7 @@ class UploadComponent extends AppComponent
     }//end createUploadedItem
 
   /** save upload item in the DB */
-  public function createNewRevision($userDao, $name, $path, $item_revision, $changes, $license = null, $filemd5 = '')
+  public function createNewRevision($userDao, $name, $path, $changes, $itemId, $itemRevisionNumber = null, $license = null, $filemd5 = '')
     {
     if($userDao == null)
       {
@@ -278,21 +278,24 @@ class UploadComponent extends AppComponent
     $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
     $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
 
-    $item = $itemModel->load($item_revision[0]);
+    $item = $itemModel->load($itemId);
 
     if($item == false)
       {
       throw new Zend_Exception('Unable to find item');
       }
 
-    $revisions = $item->getRevisions();
     $itemRevisionDao = null;
-    foreach($revisions as $revision)
+    if(isset($itemRevisionNumber))
       {
-      if($item_revision[1] == $revision->getRevision())
+      $revisions = $item->getRevisions();
+      foreach($revisions as $revision)
         {
-        $itemRevisionDao = $revision;
-        break;
+        if($itemRevisionNumber == $revision->getRevision())
+          {
+          $itemRevisionDao = $revision;
+          break;
+          }
         }
       }
 
@@ -360,7 +363,7 @@ class UploadComponent extends AppComponent
       }
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
     // now that we have updated the itemRevision, the item may be stale
-    $item = $itemModel->load($item_revision[0]);
+    $item = $itemModel->load($itemId);
 
     $this->getLogger()->info(__METHOD__." Upload ok :".$path);
     Zend_Registry::get('notifier')->notifyEvent("EVENT_CORE_UPLOAD_FILE", array($itemRevisionDao->getItem()->toArray(), $itemRevisionDao->toArray()));
