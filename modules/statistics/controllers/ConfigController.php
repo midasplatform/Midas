@@ -56,11 +56,8 @@ class Statistics_ConfigController extends Statistics_AppController
         $jobReport = false;
         foreach($jobs as $job)
           {
-          if($job->getTask() == 'TASK_STATISTICS_SEND_REPORT')
-            {
-            $jobReport = $job;
-            break;
-            }
+          $jobReport = $job;
+          break;
           }
         if($applicationConfig['global']['report'] == 1)
           {
@@ -83,6 +80,27 @@ class Statistics_ConfigController extends Statistics_AppController
             {
             $jobModel->delete($jobReport);
             }
+          }
+
+        // Register offline geolocation task
+        $jobs = $jobModel->getJobsByTask('TASK_STATISTICS_PERFORM_GEOLOCATION');
+        $jobLocation = false;
+        foreach($jobs as $job)
+          {
+          $jobLocation = $job;
+          break;
+          }
+        if($jobLocation == false)
+          {
+          $job = new Scheduler_JobDao();
+          $job->setTask('TASK_STATISTICS_PERFORM_GEOLOCATION');
+          $job->setPriority('1');
+          $job->setRunOnlyOnce(false);
+          $job->setFireTime(date('Y-m-j', strtotime('+1 day'.date('Y-m-j G:i:s'))).' 1:00:00');
+          $job->setTimeInterval(1 * 60 * 60);
+          $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
+          $job->setParams(JsonComponent::encode(array()));
+          $jobModel->save($job);
           }
         $applicationConfig['global']['piwik.id'] = $this->_getParam('piwikid');
         $applicationConfig['global']['piwik.apikey'] = $this->_getParam('piwikapikey');

@@ -11,7 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 /** Download model base */
-class Statistics_DownloadModelBase extends Statistics_AppModel
+abstract class Statistics_DownloadModelBase extends Statistics_AppModel
 {
   /** constructor */
   public function __construct()
@@ -34,6 +34,8 @@ class Statistics_DownloadModelBase extends Statistics_AppModel
     $this->initialize(); // required
     } // end __construct()
 
+  /** Get all entries that have not yet been geolocated */
+  abstract function getAllUnlocated();
 
   /** add a download record for the given item */
   public function addDownload($item, $user)
@@ -56,53 +58,49 @@ class Statistics_DownloadModelBase extends Statistics_AppModel
       }
     $download->setIp($ip);
     $download->setDate(date('c'));
-
-    $position = $this->_getGeolocation($ip);
-    $longitude = $position['longitude'];
-    if($longitude != '')
-      {
-      $download->setLongitude($longitude);
-      }
-    $latitude = $position['latitude'];
-    if($latitude != '')
-      {
-      $download->setLatitude($latitude);
-      }
+    // we will perform the geolocation later, since it can be slow
+    $download->setLatitude('');
+    $download->setLongitude('');
 
     $this->save($download);
     }
 
   /** Get the geolocation from IP address */
-  private function _getGeolocation($ip)
+  public function performGeolocation()
     {
     if(function_exists('curl_init') == false)
       {
-      $location['latitude'] = '';
-      $location['longitude'] = '';
-      return $location;
+      return;
       }
 
-    $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/'.$this->moduleName.'.local.ini', true);
-    $apiKey = $applicationConfig['global']['ipinfodb.apikey'];
-    $url = 'http://api.ipinfodb.com/v3/ip-city/?key='.$apiKey.'&ip='.$ip.'&format=json';
-
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    $resp = curl_exec($curl);
-
-    $result = array('latitude' => '', 'longitude' => '');
-    if(!$resp || empty($resp))
+    $downloads = $this->getAllUnlocated();
+    foreach($downloads as $download)
       {
-      return $result; // Failed to open connection
+      $download->setLatitude('0');
+      $download->setLongitude('0'); //only try geolocation once.
+      if($download->getIp())
+        {
+        $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/'.$this->moduleName.'.local.ini', true);
+        $apiKey = $applicationConfig['global']['ipinfodb.apikey'];
+        $url = 'http://api.ipinfodb.com/v3/ip-city/?key='.$apiKey.'&ip='.$download->getIp().'&format=json';
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $resp = curl_exec($curl);
+
+        if($resp && !empty($resp))
+          {
+          $answer = json_decode($resp);
+          if($answer->statusCode == 'OK')
+            {
+            $download->setLatitude($answer->latitude);
+            $download->setLongitude($answer->longitude);
+            }
+          }
+        }
+      $this->save($download);
       }
-    $answer = json_decode($resp);
-    if($answer->statusCode == 'OK')
-      {
-      $result['latitude'] = $answer->latitude;
-      $result['longitude'] = $answer->longitude;
-      }
-    return $result;
     }
 
 } // end class
