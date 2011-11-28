@@ -105,7 +105,7 @@ class Remoteprocessing_JobComponent extends AppComponent
     $xml .= "<![CDATA[".JsonComponent::encode($params)."]]>";
     $xml .= "</JobParameters>\n";
     $logs = explode("-COMMAND\r", $logs);
-    if(count($logs)<2)
+    if(count($logs) < 2)
       {
       return "";
       }
@@ -185,7 +185,7 @@ class Remoteprocessing_JobComponent extends AppComponent
       $tmp['command'] = trim((string) $process->Command);
       $tmp['stderr'] = trim((string) $process->Error);
       $tmp['stdout'] = trim((string) $process->Output);
-      $tmp['xmlStdout'] = simplexml_load_string($tmp['stdout'], 'SimpleXMLElement', LIBXML_NOCDATA);;
+      $tmp['xmlStdout'] = simplexml_load_string($tmp['stdout'], 'SimpleXMLElement', LIBXML_NOCDATA);
       $tmp['time'] = (float) trim(str_replace("s", "", (string) $process->ExecutionTime)); //convert in milliseconds
       $tmp['output'] = array();
       $tmp['parameters'] = array();
