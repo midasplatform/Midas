@@ -90,9 +90,9 @@ Size;Taille
 Modified;Modifié
 Download;Télécharger
 Delete Feed;Effacer cette actualité
-Do you really want to delete the feed;Voulez-vous vraiment supprimer l'actualité
-Do you really want to delete the folder;Voulez-vous vraiment supprimer le répertoire
-Do you really want to remove the item;Voulez-vous vraiment retirer le document
+Do you really want to delete the feed?;Voulez-vous vraiment supprimer l'actualité?
+Do you really want to delete the folder?;Voulez-vous vraiment supprimer le répertoire?
+Do you really want to remove the item?;Voulez-vous vraiment retirer le document?
 Yes;Oui
 No;Non
 Plugins;Plugins
