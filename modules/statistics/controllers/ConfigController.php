@@ -35,7 +35,7 @@ class Statistics_ConfigController extends Statistics_AppController
 
     if($this->_request->isPost())
       {
-      $this->_helper->layout->disableLayout();
+      $this->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
