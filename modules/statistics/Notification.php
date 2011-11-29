@@ -15,6 +15,7 @@ class Statistics_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_PLUS_ONE_DOWNLOAD', 'addDownload');
 
     $this->addTask('TASK_STATISTICS_SEND_REPORT', 'sendReport', 'Send a daily report');
+    $this->addTask('TASK_STATISTICS_PERFORM_GEOLOCATION', 'performGeolocation', 'Perform geolocation based on IP');
     }//end init
 
   /** send the batch report to admins */
@@ -30,6 +31,12 @@ class Statistics_Notification extends MIDAS_Notification
     $item = $params['item'];
     $user = $this->userSession->Dao;
     $this->Statistics_Download->addDownload($item, $user);
+    }
+
+  /** perform download geolocation by ip address */
+  public function performGeolocation()
+    {
+    $this->Statistics_Download->performGeolocation();
     }
 
   /** user Menu link */

@@ -36,9 +36,27 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
     $rowset = $this->database->fetchAll($sql);
     foreach($rowset as $keyRow => $row)
       {
-      $result[] = $this->initDao('Download', $row, "statistics");
+      $result[] = $this->initDao('Download', $row, 'statistics');
       }
     return $result;
-    } //getLog
+    }
+
+  /**
+   * Return a list of downloads that have not yet had geolocation run on them
+   */
+  function getAllUnlocated()
+    {
+    $result = array();
+    $sql = $this->database->select()
+            ->setIntegrityCheck(false)
+            ->from(array('e' => 'statistics_download'))
+            ->where('latitude = ?', '');
+    $rowset = $this->database->fetchAll($sql);
+    foreach($rowset as $keyRow => $row)
+      {
+      $result[] = $this->initDao('Download', $row, 'statistics');
+      }
+    return $result;
+    }
 }  // end class
 ?>
