@@ -665,6 +665,8 @@ class UserController extends AppController
 
     $this->view->mainFolder = $userDao->getFolder();
     $this->view->folders = $this->Folder->getChildrenFoldersFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $this->view->privateFolderId = $userDao->getPrivatefolderId();
+    $this->view->publicFolderId = $userDao->getPublicfolderId();
     $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     $this->view->feeds = $this->Feed->getFeedsByUser($this->userSession->Dao, $userDao);
 
@@ -727,6 +729,8 @@ class UserController extends AppController
     $this->view->user = $userDao;
     $this->view->mainFolder = $userDao->getFolder();
     $this->view->folders = $this->Folder->getChildrenFoldersFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $this->view->privateFolderId = $userDao->getPrivatefolderId();
+    $this->view->publicFolderId = $userDao->getPublicfolderId();
     $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     $this->view->userCommunities = $communities;
     $this->view->userCommunityFolders = $communityFolders;
