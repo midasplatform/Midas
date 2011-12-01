@@ -297,12 +297,13 @@ function createAction(node)
         event: 'click',
         solo: true // Only show one tooltip at a time
         },
-      hide: 'unfocus',
+      hide: {
+        event: false
+        },
       style: {
-        classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded',
-        tip: false
+        classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
         }
-      })
+      });
 
     $('a.sharingLink').click(function(){
         loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
