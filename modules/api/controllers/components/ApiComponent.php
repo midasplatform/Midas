@@ -232,7 +232,7 @@ class Api_ApiComponent extends AppComponent
           $revision->setUser_id($userDao->getKey());
           $revision->setDate(date('c'));
           $revision->setLicense(null);
-          $revision = $itemModel->addRevision($item, $revision);
+          $itemModel->addRevision($item, $revision);
           }
 
         $siblings = $revision->getBitstreams();
@@ -335,7 +335,7 @@ class Api_ApiComponent extends AppComponent
           $revision->setUser_id($userDao->getKey());
           $revision->setDate(date('c'));
           $revision->setLicense(null);
-          $revision = $itemModel->addRevision($item, $revision);
+          $itemModel->addRevision($item, $revision);
           }
         }
       else
@@ -427,19 +427,22 @@ class Api_ApiComponent extends AppComponent
       }
 
     $uploadComponent = $componentLoader->loadComponent('Upload');
+    $license = null;
     if(isset($folder))
       {
-      $item = $uploadComponent->createUploadedItem($userDao, $filename, $filepath, $folder, '', $filemd5);
+      $item = $uploadComponent->createUploadedItem($userDao, $filename, $filepath, $folder, $license, $filemd5);
       }
     else if(isset($revision))
       {
-      $tmp = array($item->getKey(), $revision->getRevision()); //existing revision
-      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $tmp, '', null, $filemd5);
+      //an existing revision
+      $changes = '';
+      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $changes, $item->getKey(), $revision->getRevision(), $license, $filemd5);
       }
     else
       {
-      $tmp = array($item->getKey(), 99999); //new revision
-      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $tmp, '', null, $filemd5);
+      // a new revision
+      $changes = '';
+      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $changes, $item->getKey(), $revision, $license, $filemd5);
       }
 
     if(!$item)
@@ -875,11 +878,10 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception('Cannot create item anonymously', MIDAS_INVALID_POLICY);
       }
-
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $name = $args['name'];
-    $description = $args['description'];
+    $description = isset($args['description']) ? $args['description'] : '';
 
     $uuid = isset($args['uuid']) ? $args['uuid'] : '';
     $record = false;
