@@ -25,8 +25,8 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
     <li><a href="#tabs-configuration">Configuration</a></li>
     <li><a href="#tabs-modules">Modules</a></li>
     <li><a href="#tabs-assetstore">Assetstores</a></li>
-    <li><a href="<?php echo $this->webroot?>/admin/upgrade">Upgrade</a></li>    
-    <li><a href="<?php echo $this->webroot?>/admin/dashboard">Dashboard</a></li>    
+    <li><a href="<?php echo $this->webroot?>/admin/upgrade">Upgrade</a></li>
+    <li><a href="<?php echo $this->webroot?>/admin/dashboard">Dashboard</a></li>
     <li><a href="<?php echo $this->webroot?>/admin/showlog">Logs</a></li>
   </ul>
     <div id="tabs-configuration">
@@ -77,8 +77,16 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
      foreach($this->assetstores as $assetstore)
        {
        echo "<div class='assetstoreElement'>
-              <b><span class='assetstoreName'>{$assetstore->getName()}</span></b>
-	      <br/>";
+              <b><span class='assetstoreName'>{$assetstore->getName()}</span></b> ";
+       if($assetstore->default)
+         {
+         echo "(<span qtip='If set as default, the uploaded files will be store is this assetstore.' class='defaultAssetstore' element='{$assetstore->getKey()}'>default assetstore</span>)";
+         }
+       else
+         {
+         echo "(<a qtip='If set as default, the uploaded files will be store is this assetstore.' class='defaultAssetstoreLink' element='{$assetstore->getKey()}'>set as default</a>)";
+         }
+	      echo "<br/>";
        if($assetstore->totalSpaceText==false)
          {
          echo "<b>Unable to access assetstore</b>";
@@ -116,7 +124,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
        echo"</div>";
        }
      ?>
-      
+
       <a class="load-newassetstore" href="#newassetstore-form" rel="#newassetstore-form" title="<?php echo $this->t('Add a new assetstore')?>">Add a new assetstore</a>
       <br/>
       <a  href="<?php echo $this->webroot?>/import" >Import local files</a>
@@ -125,7 +133,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
          <?php echo $this->assetstoreForm; ?>
       </div>
     </div>
-    
+
     <div id="tabs-modules">
       <table style='width:100%;'>
       <?php
@@ -142,11 +150,11 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                  <tr class='moduleElement {$category}VisibleElement' style='display:none;'>
                     <td style='width:30px;'>
                       <input type='checkbox' dependencies='".trim($module->dependencies)."' class='moduleCheckbox' module='{$key}' name='module[{$key}]'   ".((in_array($key, $this->modulesEnable))?'checked':'')."/>
-                    </td>    
+                    </td>
                     <td>
                     <b>{$module->fullname}</b><br/>
                     {$module->description}
-                    </td>";              
+                    </td>";
                     if($module->configPage)
                       {
                     echo "
@@ -163,7 +171,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
          }
       ?>
       </table>
-      
+
       <table class="tableElementError" style="display:none;width:100%;">
       <?php
       $hidden = 0;
@@ -183,7 +191,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                     <td>
                     <b>{$module->fullname}</b><br/>
                     {$module->description}
-                    </td>";              
+                    </td>";
                     if(!$module->dbOk)
                       {
                     echo "
@@ -207,20 +215,20 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
          }
       ?>
       </table>
-      
+
     <?php if($hidden != 0)
       {
       echo "<br/><br/><a onclick=\"$('.tableElementError').show();$(this).remove();\">Show $hidden hidden modules</a>";
       }?>
-      
+
     <p><a target="_blank" href="http://www.kitware.com/midaswiki/index.php/MIDAS3-Plugins">Additional Information</a></p>
     </div>
   </div>
 
 </div>
 <div class="viewSideBar">
-  
- 
+
+
 </div>
 
 

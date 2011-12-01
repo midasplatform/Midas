@@ -17,7 +17,7 @@ PURPOSE.  See the above copyright notices for more information.
 class AssetstoreController extends AppController
   {
 
-  public $_models = array('Assetstore');
+  public $_models = array('Assetstore', 'Setting');
   public $_daos = array('Assetstore');
   public $_components = array('Utility');
   public $_forms = array('Assetstore');
@@ -61,9 +61,7 @@ class AssetstoreController extends AppController
       $assetstore = $this->Assetstore->load($element);
       if($assetstore != false)
         {
-        $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
-        $applicationConfig['global']['defaultassetstore.id'] = $assetstore->getKey();
-        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
+        $this->Setting->setConfig('default_assetstore', $assetstore->getKey());
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
