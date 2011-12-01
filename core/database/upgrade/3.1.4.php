@@ -21,7 +21,7 @@ class Upgrade_3_1_4 extends MIDASUpgrade
 
   public function pgsql()
     {
-    $sql = "CREATE TABLE  community (
+    $sql = "CREATE TABLE  setting (
               setting_id serial  PRIMARY KEY,
               name  character varying(256) NOT NULL,
               module  character varying(256) NOT NULL,
