@@ -141,6 +141,7 @@ class KWUtils
    */
   public static function exec($command, &$output = null, $chdir = "", &$return_val = null)
     {
+    $currCwd = getcwd();  
     if(!empty($chdir) && is_dir($chdir))
       {
       if(!chdir($chdir))
@@ -151,6 +152,11 @@ class KWUtils
     // on Linux need to add redirection to handle stderr
     $redirect_error = KWUtils::isLinux() ? " 2>&1" : "";
     exec(KWUtils::escapeCommand($command) . $redirect_error, $output, $return_val);
+    // change back to original directory
+    if(!chdir($currCwd))
+      {
+      throw new Zend_Exception("Failed to change back to original directory: [".$currCwd."]");
+      }
     }
 
 
