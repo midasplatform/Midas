@@ -19,6 +19,11 @@ div.tooBigUpload{
   display:none;
 }
 
+div.uploadedFilesWrapper{
+  max-height: 250px;
+  overflow: auto;
+}
+
 /* -- Form Styles ------------------------------- */
 #swfuploadContent form {
 	margin: 0;

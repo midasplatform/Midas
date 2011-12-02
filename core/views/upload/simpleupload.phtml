@@ -36,24 +36,27 @@ PURPOSE.  See the above copyright notices for more information.
               <?php echo $this->t('or')?> <a style="color:blue; cursor:pointer;" class="uploadModeLink" id="uploadModeFolderLink"><?php echo $this->t('upload a folder')?></a>
               <a style="color:#56758B; cursor:pointer;" class="uploadModeLink" id="uploadModeFileLink"><?php echo $this->t('upload files')?></a>
             </div>
-            <table class="files">
-                <tr class="file_upload_template" style="display:none;">
-                    <td class="file_name"></td>
-                    <td class="file_size"></td>
-                    <td class="file_upload_progress"><div></div></td>
-                    <td class="file_upload_start" style='display:none;'><button>Start</button></td>
-                    <td class="file_upload_cancel"><button></button></td>
-                </tr>
-                <tr class="file_download_template" style="display:none;">
-                    <td class="file_name"><a></a></td>
-                    <td class="file_size"></td>
-                </tr>
-                <div class="file_upload_buttons" style='display:none;'>
-                  <button class="file_upload_start">Start All</button>
-                  <button class="file_upload_cancel">Cancel All</button>
-                  <button class="file_download_delete">Delete All</button>
-                </div>
-            </table>
+
+            <div class="uploadedFilesWrapper">
+              <table class="files">
+                  <tr class="file_upload_template" style="display:none;">
+                      <td class="file_name"></td>
+                      <td class="file_size"></td>
+                      <td class="file_upload_progress"><div></div></td>
+                      <td class="file_upload_start" style='display:none;'><button>Start</button></td>
+                      <td class="file_upload_cancel"><button></button></td>
+                  </tr>
+                  <tr class="file_download_template" style="display:none;">
+                      <td class="file_name"><a></a></td>
+                      <td class="file_size"></td>
+                  </tr>
+                  <div class="file_upload_buttons" style='display:none;'>
+                    <button class="file_upload_start">Start All</button>
+                    <button class="file_upload_cancel">Cancel All</button>
+                    <button class="file_download_delete">Delete All</button>
+                  </div>
+              </table>
+            </div>
             <div class="file_upload_overall_progress" style='display:none;'><div style="display:none;"></div></div>
         </div>
         <div class="tooBigUpload">
