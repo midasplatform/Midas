@@ -208,7 +208,12 @@ class MIDAS_GlobalController extends Zend_Controller_Action
           {
           throw new Zend_Exception('Unable to find '.$nameComponent);
           }
-        @$this->Component->$component = new $nameComponent();
+
+        if(!isset($this->Component))
+          {
+          $this->Component =  new stdClass();
+          }
+        $this->Component->$component = new $nameComponent();
         }
       }
 
@@ -224,7 +229,12 @@ class MIDAS_GlobalController extends Zend_Controller_Action
           {
           throw new Zend_Exception('Unable to find '.$nameForm);
           }
-        @$this->Form->$forms = new $nameForm();
+        
+        if(!isset($this->Form))
+          {
+          $this->Form =  new stdClass();
+          }
+        $this->Form->$forms = new $nameForm();
         }
       }
     }//end loadElements

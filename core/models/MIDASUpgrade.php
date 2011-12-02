@@ -117,7 +117,11 @@ class MIDASUpgrade
           throw new Zend_Exception("Unable to find component file ".$component);
           }
 
-        @$this->ModuleComponent->$component = new $nameComponent();
+        if(!isset($this->ModuleComponent))
+          {
+          $this->ModuleComponent =  new stdClass();
+          }
+        $this->ModuleComponent->$component = new $nameComponent();
         }
       }
 
@@ -139,7 +143,11 @@ class MIDASUpgrade
           throw new Zend_Exception("Unable to find form file ".$forms);
           }
 
-        @$this->ModuleForm->$forms = new $nameForm();
+        if(!isset($this->ModuleForm))
+          {
+          $this->ModuleForm =  new stdClass();
+          }
+        $this->ModuleForm->$forms = new $nameForm();
         }
       }
     }
@@ -178,7 +186,11 @@ class MIDASUpgrade
         {
         $nameComponent = $component . "Component";
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
-        @$this->Component->$component = new $nameComponent();
+        if(!isset($this->Component))
+          {
+          $this->Component =  new stdClass();
+          }
+        $this->Component->$component = new $nameComponent();
         }
       }
 
@@ -190,7 +202,11 @@ class MIDASUpgrade
         $nameForm = $forms . "Form";
 
         Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
-        @$this->Form->$forms = new $nameForm();
+        if(!isset($this->Form))
+          {
+          $this->Form =  new stdClass();
+          }
+        $this->Form->$forms = new $nameForm();
         }
       }
     }//end loadElements
