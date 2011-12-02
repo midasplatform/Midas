@@ -1,1 +1,2 @@
 add_midas_test( OfflineGeolocationTest OfflineGeolocationTest.php )
+add_midas_mysql_test( StatisticsGeolocationLookup StatisticsGeolocationLookupTest.php )

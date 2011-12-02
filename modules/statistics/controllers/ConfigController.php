@@ -98,10 +98,12 @@ class Statistics_ConfigController extends Statistics_AppController
           $job->setRunOnlyOnce(false);
           $job->setFireTime(date('Y-m-j', strtotime('+1 day'.date('Y-m-j G:i:s'))).' 1:00:00');
           $job->setTimeInterval(1 * 60 * 60);
-          $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
-          $job->setParams(JsonComponent::encode(array()));
-          $jobModel->save($job);
+          $jobLocation = $job;
           }
+        $jobLocation->setParams(JsonComponent::encode(array('apikey' => $this->_getParam('ipinfodbapikey'))));
+        $jobLocation->setStatus(SCHEDULER_JOB_STATUS_TORUN);
+        $jobModel->save($jobLocation);
+
         $applicationConfig['global']['piwik.id'] = $this->_getParam('piwikid');
         $applicationConfig['global']['piwik.apikey'] = $this->_getParam('piwikapikey');
         $applicationConfig['global']['ipinfodb.apikey'] = $this->_getParam('ipinfodbapikey');
