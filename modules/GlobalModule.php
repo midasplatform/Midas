@@ -118,7 +118,11 @@ class MIDAS_GlobalModule extends AppController
         {
         $nameComponent = ucfirst($this->moduleName).'_'.$component . "Component";
         include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
-        @$this->ModuleComponent->$component = new $nameComponent();
+        if(!isset($this->ModuleComponent))
+          {
+          $this->ModuleComponent =  new stdClass();
+          }
+        $this->ModuleComponent->$component = new $nameComponent();
         }
       }
 
@@ -128,7 +132,11 @@ class MIDAS_GlobalModule extends AppController
         {
         $nameForm = ucfirst($this->moduleName).'_'.$forms . "Form";
         include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
-        @$this->ModuleForm->$forms = new $nameForm();
+        if(!isset($this->ModuleForm))
+          {
+          $this->ModuleForm =  new stdClass();
+          }
+        $this->ModuleForm->$forms = new $nameForm();
         }
       }
     }
