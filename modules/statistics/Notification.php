@@ -3,7 +3,7 @@
 class Statistics_Notification extends MIDAS_Notification
   {
   public $moduleName = 'statistics';
-  public $_moduleModels = array('Download');
+  public $_moduleModels = array('Download', 'IpLocation');
   public $_moduleComponents = array('Report');
 
   /** init notification process*/
@@ -36,7 +36,7 @@ class Statistics_Notification extends MIDAS_Notification
   /** perform download geolocation by ip address */
   public function performGeolocation()
     {
-    $this->Statistics_Download->performGeolocation();
+    $this->Statistics_IpLocation->performGeolocation();
     }
 
   /** user Menu link */

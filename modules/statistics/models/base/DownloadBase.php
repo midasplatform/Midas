@@ -18,24 +18,20 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
     {
     parent::__construct();
     $this->_name = 'statistics_download';
-    $this->_key = 'job_id';
+    $this->_key = 'download_id';
 
     $this->_mainData = array(
         'download_id' => array('type' => MIDAS_DATA),
         'item_id' => array('type' => MIDAS_DATA),
         'user_id' => array('type' => MIDAS_DATA),
-        'ip' => array('type' => MIDAS_DATA),
+        'ip_location_id' => array('type' => MIDAS_DATA),
         'date' => array('type' => MIDAS_DATA),
-        'latitude' => array('type' => MIDAS_DATA),
-        'longitude' => array('type' => MIDAS_DATA),
         'item' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Item', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
-        'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id')
+        'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
+        'ip_location' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'IpLocation', 'module' => 'statistics', 'parent_column' => 'ip_location_id', 'child_column' => 'ip_location_id')
         );
     $this->initialize(); // required
     } // end __construct()
-
-  /** Get all entries that have not yet been geolocated */
-  abstract function getAllUnlocated();
 
   /** add a download record for the given item */
   public function addDownload($item, $user)
@@ -44,63 +40,39 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
       {
       throw new Zend_Exception('Error: item parameter is not an item dao');
       }
-    $this->loadDaoClass('DownloadDao', 'statistics');
-    $download = new Statistics_DownloadDao();
-    $download->setItemId($item->getKey());
-    if($user instanceof UserDao)
-      {
-      $download->setUserId($user->getKey());
-      }
+
     $ip = $_SERVER['REMOTE_ADDR'];
     if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
       {
       $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
       }
-    $download->setIp($ip);
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $ipLocationModel = $modelLoader->loadModel('IpLocation', 'statistics');
+    $ipLocation = $ipLocationModel->getByIp($ip);
+
+    if($ipLocation == false)
+      {
+      $this->loadDaoClass('IpLocationDao', 'statistics');
+      $ipLocation = new Statistics_IpLocationDao();
+      $ipLocation->setIp($ip);
+      // we will perform the geolocation later, since it can be slow
+      $ipLocation->setLatitude('');
+      $ipLocation->setLongitude('');
+      $ipLocationModel->save($ipLocation);
+      }
+
+    $this->loadDaoClass('DownloadDao', 'statistics');
+    $download = new Statistics_DownloadDao();
+    $download->setItemId($item->getKey());
+    $download->setIpLocationId($ipLocation->getKey());
     $download->setDate(date('c'));
-    // we will perform the geolocation later, since it can be slow
-    $download->setLatitude('');
-    $download->setLongitude('');
+    if($user instanceof UserDao)
+      {
+      $download->setUserId($user->getKey());
+      }
 
     $this->save($download);
-    }
-
-  /** Get the geolocation from IP address */
-  public function performGeolocation()
-    {
-    if(function_exists('curl_init') == false)
-      {
-      return;
-      }
-
-    $downloads = $this->getAllUnlocated();
-    foreach($downloads as $download)
-      {
-      $download->setLatitude('0');
-      $download->setLongitude('0'); //only try geolocation once.
-      if($download->getIp())
-        {
-        $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/'.$this->moduleName.'.local.ini', true);
-        $apiKey = $applicationConfig['global']['ipinfodb.apikey'];
-        $url = 'http://api.ipinfodb.com/v3/ip-city/?key='.$apiKey.'&ip='.$download->getIp().'&format=json';
-
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $resp = curl_exec($curl);
-
-        if($resp && !empty($resp))
-          {
-          $answer = json_decode($resp);
-          if($answer->statusCode == 'OK')
-            {
-            $download->setLatitude($answer->latitude);
-            $download->setLongitude($answer->longitude);
-            }
-          }
-        }
-      $this->save($download);
-      }
     }
 
 } // end class

@@ -53,7 +53,7 @@ class MIDASModel
       }
     if(!$dao instanceof $instance)
       {
-      throw new Zend_Exception("Should be an object (".$instance.").");
+      throw new Zend_Exception("Should be an object of type ".$instance.", was type ".get_class($dao));
       }
 
     $dataarray = array();

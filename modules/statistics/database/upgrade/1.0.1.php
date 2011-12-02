@@ -24,7 +24,7 @@ class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
 
     // Add a logical foreign key into the download table
     $this->db->query("ALTER TABLE `statistics_download`
-              ADD COLUMN `ip_id` bigint(20) NOT NULL");
+              ADD COLUMN `ip_location_id` bigint(20) NOT NULL");
 
     // Copy the entries from our old table into the new one
     $sql = $this->db->select()
@@ -43,7 +43,7 @@ class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
 
       // Point the download table entries to the new entry
       $this->db->update('statistics_download',
-                        array('ip_id' => $id),
+                        array('ip_location_id' => $id),
                         array('ip = ?' => $row['ip']));
       }
 
@@ -54,6 +54,8 @@ class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
 
     // Add item id index to the download table for faster item statistics lookup
     $this->db->query("ALTER TABLE `statistics_download` ADD INDEX (`item_id`)");
+    // Add latitude index to the geolocation table for quick selection of blank entries
+    $this->db->query("ALTER TABLE `statistics_ip_location` ADD INDEX (`latitude`)");
     }
 
   public function postUpgrade()
