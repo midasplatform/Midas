@@ -10,6 +10,8 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+require_once BASE_PATH.'/modules/scheduler/models/base/JobModelBase.php';
+
 /** job model */
 class Scheduler_JobModel extends Scheduler_JobModelBase
 {
@@ -24,7 +26,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
           ->setIntegrityCheck(false)
           ->where('task = ?', $task)
           ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN);
-    
+
     $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
@@ -56,7 +58,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
         $minPriority = MIDAS_EVENT_PRIORITY_LOW;
         }
       }
-      
+
    $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->where('priority >= ?', $minPriority)
@@ -74,12 +76,12 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
       }
     return $return;
     }
-    
-    
+
+
     /** get jobs*/
   public function getLastErrors($limit = 10)
     {
-    $load = $this->getServerLoad();      
+    $load = $this->getServerLoad();
     $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->where('status = ?', SCHEDULER_JOB_STATUS_FAILED)
@@ -95,6 +97,6 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
       }
     return $return;
     }
-    
+
 }  // end class
 ?>

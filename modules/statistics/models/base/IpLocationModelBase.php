@@ -40,15 +40,12 @@ abstract class Statistics_IpLocationModelBase extends Statistics_AppModel
    * Performs the geolocation job on any ip entries that haven't been
    * geolocated yet
    */
-  public function performGeolocation()
+  public function performGeolocation($apiKey)
     {
     if(function_exists('curl_init') == false)
       {
       return;
       }
-
-    $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/'.$this->moduleName.'.local.ini', true);
-    $apiKey = $applicationConfig['global']['ipinfodb.apikey'];
 
     if(empty($apiKey))
       {
@@ -72,11 +69,21 @@ abstract class Statistics_IpLocationModelBase extends Statistics_AppModel
         if($resp && !empty($resp))
           {
           $answer = json_decode($resp);
-          if(strtoupper($answer->statusCode) == 'OK')
+          if($answer && strtoupper($answer->statusCode) == 'OK')
             {
             $location->setLatitude($answer->latitude);
             $location->setLongitude($answer->longitude);
             }
+          else
+            {
+            $this->save($location);
+            throw new Zend_Exception('IpInfoDb lookup failed ('.$url.'): '.$resp);
+            }
+          }
+        else
+          {
+          $this->save($location);
+          throw new Zend_Exception('IpInfoDb lookup failed ('.$url.'): empty response');
           }
         }
       $this->save($location);

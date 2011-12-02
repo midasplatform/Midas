@@ -10,6 +10,8 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+require_once BASE_PATH.'/modules/statistics/models/base/IpLocationModelBase.php';
+
 /** statistics Ip Location model */
 class Statistics_IpLocationModel extends Statistics_IpLocationModelBase
 {

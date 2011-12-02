@@ -10,6 +10,8 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+require_once BASE_PATH.'/modules/scheduler/models/base/JobLogModelBase.php';
+
 /** job model */
 class Scheduler_JobLogModel extends Scheduler_JobLogModelBase
 {

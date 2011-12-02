@@ -29,7 +29,7 @@ class Scheduler_JobLogModelBase extends Scheduler_AppModel
     $this->initialize(); // required
     } // end __construct()
 
-   
+
   /** save logs */
   public function saveLog($jobDao, $text)
     {
@@ -38,7 +38,7 @@ class Scheduler_JobLogModelBase extends Scheduler_AppModel
     $joblog->setJobId($jobDao->getKey());
     $joblog->setDate(date('c'));
     $joblog->setLog($text);
-    
+
     $this->save($joblog);
     }
 } // end class AssetstoreModelBase

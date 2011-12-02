@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+
+  <statistics_ip_location ip_location_id="1" ip="1.146.2.14" latitude="" longitude="" />
+
+  <scheduler_job job_id="1000" task="TASK_DUMMY" run_only_once="0" fire_time="2011-12-01 02:00:00"
+    time_last_fired="2011-12-01 01:00:00" time_interval="3600" priority="1" status="1" params="[]" />
+
+  <scheduler_job_log log_id="1000" job_id="1000" date="2011-12-02 16:16:45" log="dummy" />
+
+</dataset>
