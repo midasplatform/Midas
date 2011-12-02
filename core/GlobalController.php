@@ -229,7 +229,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
           {
           throw new Zend_Exception('Unable to find '.$nameForm);
           }
-        
+
         if(!isset($this->Form))
           {
           $this->Form =  new stdClass();
