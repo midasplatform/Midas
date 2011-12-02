@@ -453,7 +453,7 @@ class AppController extends MIDAS_GlobalController
     $this->view->generatedTimer = round((microtime(true) - START_TIME), 3);
     if(Zend_Registry::get('configGlobal')->environment != 'testing')
       {
-      header('Content-Type: text/html; charset=ISO-8859-1');
+      header('Content-Type: text/html; charset=UTF-8');
       }
     }
 

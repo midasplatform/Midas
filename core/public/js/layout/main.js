@@ -366,7 +366,7 @@ function loadAjaxDynamicBar(name,url)
       
       $.ajax({
         url: $('.webroot').val()+url,
-        contentType: "application/x-www-form-urlencoded;charset=ISO-8859-15",
+        contentType: "application/x-www-form-urlencoded;charset=UTF-8",
         success: function(data) {
           $("div.TopDynamicLoading").hide();
           $('div.TopDynamicContent').hide();
@@ -403,7 +403,7 @@ function loadDialog(name,url)
     $("div.MainDialogLoading").show();
     $.ajax({
       url: $('.webroot').val()+url,
-      contentType: "application/x-www-form-urlencoded;charset=ISO-8859-15",
+      contentType: "application/x-www-form-urlencoded;charset=UTF-8",
       success: function(data) {
         $('div.MainDialogContent').html(data);
         $("div.MainDialogLoading").hide();
