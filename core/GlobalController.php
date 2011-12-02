@@ -192,7 +192,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         $nameForm = $forms . "Form";
 
         Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
-        
+
         if(!isset($this->Form))
           {
           $this->Form =  new stdClass();
