@@ -24,6 +24,7 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
   protected $applicationConfig;
 
 
+  protected $cwd;
 
   /** set up tests*/
   public function setUp()
@@ -31,6 +32,7 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     $this->setupDatabase(array('default'));
     $this->_models = array('User');
     $this->enabledModules = array('batchmake');
+    $this->cwd = getcwd();
     parent::setUp();
     if(!isset($this->kwBatchmakeComponent))
       {
@@ -47,6 +49,8 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     // remove the temporary tests dir
     $testTmpDir = $this->getTempDirectory() . '/batchmake/tests';
     KWUtils::recursiveRemoveDirectory($testTmpDir);
+    // change the current dir back to the saved cwd after each test
+    chdir($this->cwd);
     }
 
 

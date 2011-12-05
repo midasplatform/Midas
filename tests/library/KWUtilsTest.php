@@ -67,6 +67,10 @@ class KWUtilsTest extends ControllerTestCase
     // not sure how to test this exactly, for now create a tmp dir, check
     // the value of pwd in it
 
+    $initialCwd = getcwd();
+    $output = null;
+    $returnVal = null;
+
     // create a tmp dir for this test
     $execDir = KWUtils::getTempDirectory() . '/KWUtilsTest';
     mkdir($execDir);
@@ -74,6 +78,12 @@ class KWUtilsTest extends ControllerTestCase
     $chdir = $execDir;
     KWUtils::exec($cmd, $output, $chdir, $returnVal);
     // $output should have one value, the same as execDir
+
+    $postCwd = getcwd();
+    // check that we are back to the original directory after the exec
+    // we are already checking with this test that we chdir correctly because
+    // the test changes into a dir and then performs pwd there
+    $this->assertEquals($initialCwd, $postCwd, "exec didn't correctly return to the origin directory");//
 
     // yuck, need to do a bit of munging to get around tests/.. in BASE_PATH
     $execDir = str_replace('tests/../', '', $execDir);
@@ -87,6 +97,37 @@ class KWUtilsTest extends ControllerTestCase
     $this->assertEquals($returnVal, 0);
     // now clean up the tmp dir
     rmdir($execDir);
+
+    // pass in a bad cwd, be sure that we get an exception
+    $chdir = "/this/dir/probably/will/not/exist/anywhere";
+    $output = null;
+    $returnVal = null;
+    try
+      {
+      KWUtils::exec($cmd, $output, $chdir, $returnVal);
+      $this->fail();
+      }
+    catch(Zend_Exception $ze)
+      {
+      // this is the correct behavior
+      $this->assertTrue(true);
+      }
+    $postCwd = getcwd();
+    // ensure we are still in the same directory
+    $this->assertEquals($initialCwd, $postCwd, "exec didn't correctly return to the origin directory");//
+
+    // now try to run pwd passing in a null chdir
+    // should return an output the same as the initialCwd
+    $chdir = null;
+    $output = null;
+    $returnVal = null;
+    KWUtils::exec($cmd, $output, $chdir, $returnVal);
+    // ensure that it ran in the initialCwd
+    $this->assertEquals($initialCwd, $output[0]);
+
+    // check that we are still in the output dir
+    $postCwd = getcwd();
+    $this->assertEquals($initialCwd, $postCwd);
     }
 
   /** tests appendStringIfNot function */
