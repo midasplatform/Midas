@@ -199,10 +199,12 @@ class DownloadController extends AppController
     {
     foreach($revisions as $revision)
       {
+      $itemPath = $path.'/'.$revision->getItem()->getName();
       $bitstreams = $revision->getBitstreams();
+
       foreach($bitstreams as $bitstream)
         {
-        $zip->add_file_from_path($path.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
+        $zip->add_file_from_path($itemPath.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
         }
       }
     foreach($folders as $folder)
