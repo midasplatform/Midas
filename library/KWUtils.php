@@ -141,19 +141,35 @@ class KWUtils
    */
   public static function exec($command, &$output = null, $chdir = "", &$return_val = null)
     {
-    $currCwd = getcwd();  
-    if(!empty($chdir) && is_dir($chdir))
+    $changed = false;
+    if(!empty($chdir))
       {
-      if(!chdir($chdir))
+      if(is_dir($chdir))
         {
-        throw new Zend_Exception("Failed to change directory: [".$chdir."]");
+        if(!getcwd())
+          {
+          throw new Exception ('getcwd failed');
+          }
+        $currCwd = getcwd();
+
+        if(!chdir($chdir))
+          {
+          throw new Zend_Exception("Failed to change directory: [".$chdir."]");
+          }
+        $changed = true;
+        }
+      else
+        {
+        throw new Zend_Exception("passed in chdir is not a directory: [".$chdir."]");
         }
       }
+
     // on Linux need to add redirection to handle stderr
     $redirect_error = KWUtils::isLinux() ? " 2>&1" : "";
     exec(KWUtils::escapeCommand($command) . $redirect_error, $output, $return_val);
-    // change back to original directory
-    if(!chdir($currCwd))
+
+    // change back to original directory if necessary
+    if($changed && !chdir($currCwd))
       {
       throw new Zend_Exception("Failed to change back to original directory: [".$currCwd."]");
       }
