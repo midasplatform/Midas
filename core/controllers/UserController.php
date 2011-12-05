@@ -76,7 +76,8 @@ class UserController extends AppController
        // Check ifthe email is already registered
       if(!$user)
         {
-        echo JsonComponent::encode(array(false, $this->t('Unable to find e-mail.')));
+        echo JsonComponent::encode(array(false, $this->t('No user registered with that email.')));
+        exit;
         }
 
       // Create a new password
