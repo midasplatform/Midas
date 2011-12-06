@@ -110,7 +110,7 @@ foreach($this->customCSSs as $Uris)
               <th class="thData"><?php echo $this->t('Name');?></th>
               <th class="thSize"><?php echo $this->t('Size');?></th>
               <th class="thDate"><?php echo $this->t('Modified');?></th>
-              <th class="thCheckbox"></th>
+              <th class="thCheckbox"><input type="checkbox" id="browseTableHeaderCheckbox" /></th>
         </thead>
         <tbody>
             <?php
@@ -184,7 +184,7 @@ foreach($this->customCSSs as $Uris)
       echo "
           <li><a id='sendInvitationLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/email.png'/> {$this->t('Send invitation')}</a></li>
           ";
-      echo "<li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/FileTree/directory.png'/> {$this->t('Create a top level Folder')}</a></li>
+      echo "<li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t('Create a top level Folder')}</a></li>
           ";
       }
     if($this->isMember&&!$this->isAdmin)
@@ -235,7 +235,7 @@ foreach($this->customCSSs as $Uris)
       </ul>
     </div>
     <div class="sideElement viewSelected" >
-      <h1><?php echo $this->t('Selected')?></h1>
+      <h1><?php echo $this->t('Selected')?><span></span></h1>
       <span></span>
     </div>
     <div class="sideElementLast viewInfo">

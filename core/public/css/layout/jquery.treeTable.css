@@ -73,26 +73,37 @@ table.midasTree{
 
 table.midasTree th{
   color: black;
-  border-bottom: 1px black dotted;
-
+  cursor: default;
 }
 
 table.midasTree th.thData{
   width:480px;
-  border-right: 1px grey dotted;
   padding-left: 36px;
+  background-color: #CCD7E0;
+  border: 1px #888888 solid;
 }
 table.midasTree th.thDate{
   width:100px;
   padding-left: 10px;
+  background-color: #CCD7E0;
+  border: 1px #888888 solid;
 }
 table.midasTree th.thSize{
   width:75px;
-  border-right: 1px grey dotted;
   padding-left: 10px;
+  background-color: #CCD7E0;
+  border: 1px #888888 solid;
 }
 table.midasTree th.thCheckbox{
   width:20px;
+  background-color: #CCD7E0;
+  border: 1px #888888 solid;
+}
+#browseTableHeaderCheckbox{
+  margin-top: 2px;
+  margin-bottom: 2px;
+  margin-left: 3px;
+  margin-right: 3px;
 }
 
 table.midasTree td{
