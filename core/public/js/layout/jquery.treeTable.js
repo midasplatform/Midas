@@ -45,13 +45,15 @@
     childPrefix: "child-of-",
     clickableNodeNames: true,
     expandable: true,
+    onNodeShow: null,
+    onNodeHide: null,
     indent: 7,
     initialState: "collapsed",
     treeColumn: 0
   };
   
   // Recursively hide all node's children in a tree
-  $.fn.collapse = function() {    
+  $.fn.collapse = function() {
     $(this).addClass("collapsed");
     
     childrenOf($(this)).each(function() {
@@ -60,6 +62,9 @@
       }
       
       this.style.display = "none"; // Performance! $(this).hide() is slow...
+      if($.isFunction(options.onNodeHide)) {
+        options.onNodeHide.call(this);
+      }
     });
 
     colorLines(true);
@@ -170,6 +175,10 @@
 
       // this.style.display = "table-row"; // Unfortunately this is not possible with IE :-(
       $(this).show();
+
+      if($.isFunction(options.onNodeShow)) {
+        options.onNodeShow.call(this);
+      }
     });  
 
     initializeAjax($(this),false,false);

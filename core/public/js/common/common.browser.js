@@ -128,7 +128,7 @@ function deleteFolder(id)
           removeChildren(node);
           node.remove();
           // mark ancestor nodes
-          for (var i = 0; i < ancestorNodes.length; i++){ 
+          for (var i = 0; i < ancestorNodes.length; i++){
             $(ancestorNodes[i]).find('span.elementCount').remove();
             $(ancestorNodes[i]).find('span.elementSize').after("<img class='folderLoading'  element='"+$(ancestorNodes[i]).attr('element')+"' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
             $(ancestorNodes[i]).find('span.elementSize').remove();
@@ -171,7 +171,7 @@ function editFolder(id)
 
 function parentOf(node) {
   var classNames = node[0].className.split(' ');
-    
+
   for(key in classNames) {
     if(classNames[key].match("child-of-")) {
       return $("#" + classNames[key].substring(9));
@@ -218,7 +218,7 @@ function removeItem(id)
           node.remove();
           $( "div.MainDialog" ).dialog('close');
           // mark ancestor nodes
-          for (var i = 0; i < ancestorNodes.length; i++){ 
+          for (var i = 0; i < ancestorNodes.length; i++){
             $(ancestorNodes[i]).find('span.elementCount').remove();
             $(ancestorNodes[i]).find('span.elementSize').after("<img class='folderLoading'  element='"+$(ancestorNodes[i]).attr('element')+"' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
             $(ancestorNodes[i]).find('span.elementSize').remove();
@@ -262,7 +262,7 @@ function createAction(node)
         html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/upload.png"/> <a rel="'+json.global.webroot+'/upload/simpleupload/?parent='+element+'" class="uploadInFolder">'+json.browse.uploadIn+'</a></li>';
                   html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
         if(node.attr('deletable')!=undefined && node.attr('deletable')=='true')
-          { 
+          {
           html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/edit.png"/> <a onclick="editFolder('+element+');">'+json.browse.edit+'</a></li>';
           html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="deleteFolder('+element+');">'+json.browse['delete']+'</a></li>';
           }

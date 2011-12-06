@@ -14,7 +14,14 @@
     $("#tabsGeneric").show();
     $('img.tabsLoading').hide()
     
-    $("#browseTable").treeTable();
+    $("#browseTable").treeTable({
+      onNodeShow: function(node) {
+        $('input.treeCheckbox:visible').enableCheckboxRangeSelection();
+      },
+      onNodeHide: function(node) {
+        $('input.treeCheckbox:visible').enableCheckboxRangeSelection();
+      }
+    });
     $('#browseTableHeaderCheckbox').click(function() {
       var selector = this.checked ? '.treeCheckbox:visible' : '.treeCheckbox';
       $('#browseTable').find(selector).prop("checked", this.checked);
