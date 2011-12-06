@@ -43,17 +43,29 @@ function genericCallbackCheckboxes(node)
       }
   });
   var link=json.global.webroot+'/download?folders='+folders+'&items='+items;
-  if((arraySelected['folders'].length+arraySelected['items'].length)>0)
+  if((arraySelected['folders'].length + arraySelected['items'].length) > 0)
     {
     $('div.viewSelected').show();
-    var html=(arraySelected['folders'].length+arraySelected['items'].length);
-    html+=' '+json.browse.element;
-    if((arraySelected['folders'].length+arraySelected['items'].length)>1)
+    var html = ' (' + (arraySelected['folders'].length + arraySelected['items'].length);
+    html += ' ' + json.browse.element;
+    if((arraySelected['folders'].length + arraySelected['items'].length) > 1)
       {
-      html+='s';
+      html += 's';
+      $('div.sideElementActions').hide();
       }
-    html+='<br/><a href="'+link+'">'+json.browse.download+'</a>';
-    $('div.viewSelected span').html(html);
+    html += ')';
+    $('div.viewSelected h1 span').html(html);
+    var links = '<ul>';
+    links += '<li style="background-color: white;">';
+    links += '<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> ';
+    links += '<a href="' + link + '">' + json.browse.download + '</a></li>';
+    links += '</ul>';
+    $('div.viewSelected>span').html(links);
+    $('div.viewSelected li a').hover(function(){
+      $(this).parents('li').css('background-color','#E5E5E5');
+    }, function(){
+      $(this).parents('li').css('background-color','white');
+    });
     }
   else
     {
@@ -116,7 +128,7 @@ function deleteFolder(id)
           removeChildren(node);
           node.remove();
           // mark ancestor nodes
-          for (var i = 0; i < ancestorNodes.length; i++){ 
+          for (var i = 0; i < ancestorNodes.length; i++){
             $(ancestorNodes[i]).find('span.elementCount').remove();
             $(ancestorNodes[i]).find('span.elementSize').after("<img class='folderLoading'  element='"+$(ancestorNodes[i]).attr('element')+"' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
             $(ancestorNodes[i]).find('span.elementSize').remove();
@@ -159,7 +171,7 @@ function editFolder(id)
 
 function parentOf(node) {
   var classNames = node[0].className.split(' ');
-    
+
   for(key in classNames) {
     if(classNames[key].match("child-of-")) {
       return $("#" + classNames[key].substring(9));
@@ -197,22 +209,22 @@ function removeItem(id)
         jsonResponse = jQuery.parseJSON(data);
         if(jsonResponse==null)
           {
-            createNotive('Error',4000);
-            return;
+          createNotive('Error',4000);
+          return;
           }
         if(jsonResponse[0])
           {
-            createNotive(jsonResponse[1],1500);
-            node.remove();
-            $( "div.MainDialog" ).dialog('close');
-            // mark ancestor nodes
-            for (var i = 0; i < ancestorNodes.length; i++){ 
-              $(ancestorNodes[i]).find('span.elementCount').remove();
-              $(ancestorNodes[i]).find('span.elementSize').after("<img class='folderLoading'  element='"+$(ancestorNodes[i]).attr('element')+"' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
-              $(ancestorNodes[i]).find('span.elementSize').remove();
-            }
-            // update folder size
-            getElementsSize();
+          createNotive(jsonResponse[1],1500);
+          node.remove();
+          $( "div.MainDialog" ).dialog('close');
+          // mark ancestor nodes
+          for (var i = 0; i < ancestorNodes.length; i++){
+            $(ancestorNodes[i]).find('span.elementCount').remove();
+            $(ancestorNodes[i]).find('span.elementSize').after("<img class='folderLoading'  element='"+$(ancestorNodes[i]).attr('element')+"' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
+            $(ancestorNodes[i]).find('span.elementSize').remove();
+          }
+          // update folder size
+          getElementsSize();
           }
         else
           {
@@ -246,11 +258,11 @@ function createAction(node)
 
       if(policy>=1)
         {
-        html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/FileTree/directory.png"/> <a onclick="createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
+        html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/folder_add.png"/> <a onclick="createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
         html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/upload.png"/> <a rel="'+json.global.webroot+'/upload/simpleupload/?parent='+element+'" class="uploadInFolder">'+json.browse.uploadIn+'</a></li>';
-                  html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/share.png"/> <a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+                  html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
         if(node.attr('deletable')!=undefined && node.attr('deletable')=='true')
-          { 
+          {
           html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/edit.png"/> <a onclick="editFolder('+element+');">'+json.browse.edit+'</a></li>';
           html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="deleteFolder('+element+');">'+json.browse['delete']+'</a></li>';
           }
@@ -262,7 +274,7 @@ function createAction(node)
       html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLatest+'</a></li>';
       if(policy>=1)
         {
-        html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/share.png"/> <a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+        html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
         html+='<li class="removeItemLi"><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="removeItem('+element+');">'+json.browse['removeItem']+'</a></li>';
         }
       }

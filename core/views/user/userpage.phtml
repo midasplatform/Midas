@@ -11,6 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.checkboxrange.js');
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/user/user.userpage.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 ?>
@@ -59,7 +60,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <?php
       }
       ?>
-   
+
     <?php
     if($this->isViewAction)
       {
@@ -92,7 +93,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
               <th class="thData"><?php echo $this->t('Name');?></th>
               <th class="thSize"><?php echo $this->t('Size');?></th>
               <th class="thDate"><?php echo $this->t('Modified');?></th>
-              <th class="thCheckbox"></th>
+              <th class="thCheckbox"><input type="checkbox" id="browseTableHeaderCheckbox" /></th>
         </thead>
         <tbody>
             <?php
@@ -115,8 +116,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
               echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='$folderId' /></td>";
               echo "</tr>";
               $node++;
-              } 
-              
+              }
+
             foreach($this->items as $item)
               {
               echo "<tr id='node--$node' policy='{$item->policy}' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
@@ -164,16 +165,16 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <ul>
       <li class="myAccountLink" userid="'.$this->user->getKey().'"><a><img alt="" src="'.$this->coreWebroot.'/public/images/icons/user.png"/> '.$this->t('Manage Profile').'</a></li>
       <li><a href="'.$this->webroot.'/user/manage/?userId='.$this->user->getKey().'"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/data.png"/> '.$this->t('Manage Files').'</a></li>
-      <li><a onclick="createNewFolder('.$this->mainFolder->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/FileTree/directory.png"/> '.$this->t('Create a top level Folder').'</a></li>  
+      <li><a onclick="createNewFolder('.$this->mainFolder->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/folder_add.png"/> '.$this->t('Create a top level Folder').'</a></li>
     </ul>
   </div>';
-    }   
-  
+    }
+
   if(!empty($this->userCommunities))
     {
     echo "
     <div class='sideElement".(($this->isViewAction)?'':'First')." genericCommunities'>
-    <h1>{$this->t('Communities')}</h1>    
+    <h1>{$this->t('Communities')}</h1>
     <ul>";
 
     foreach($this->userCommunities as $community)
@@ -184,32 +185,32 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
      </ul>
      </div>";
     }
-    
+
   $website = $this->user->getWebsite();
   if(!empty($website))
     {
     echo "
     <div class='sideElement websiteBlock'>
-    <h1>{$this->t('Website')}</h1>    
+    <h1>{$this->t('Website')}</h1>
       <ul>
         <li><a target='_blank' href='{$website}'>{$website}</a></li>
       </ul>
      </div>";
     }
-    
+
   $biography = $this->user->getBiography();
   if(!empty($biography))
     {
     echo "
     <div class='sideElement biographyBlock'>
-    <h1>{$this->t('Biography')}</h1>    
+    <h1>{$this->t('Biography')}</h1>
       ".nl2br($biography)."
      </div>";
     }
-    
+
     ?>
 
-  
+
     <div class="sideElementActions viewAction">
       <ul>
         <li>
@@ -218,16 +219,13 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       </ul>
     </div>
     <div class="sideElement viewSelected" >
-      <h1><?php echo $this->t('Selected')?></h1>
+      <h1><?php echo $this->t('Selected')?><span></span></h1>
       <span></span>
     </div>
     <div class="sideElementLast viewInfo">
-      <h1>Info</h1>    
+      <h1>Info</h1>
       <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
       <div class="ajaxInfoElement">
       </div>
     </div>
 </div>
-
-
-

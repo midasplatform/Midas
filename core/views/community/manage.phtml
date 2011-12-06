@@ -120,7 +120,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
           echo '<table cellpadding="0" cellspacing="0" border="0" class="display dataTable">';
           echo "<thead>
                 <tr>
-                  <th>Name</th>
+                  <th>Name</th><th style='display:none'></th><th style='display:none'></th>
                 </tr>
               </thead>"; 
           foreach($this->members as $user)
@@ -230,7 +230,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
               <th class="thData"><?php echo $this->t('Name');?></th>
               <th class="thSize"><?php echo $this->t('Size');?></th>
               <th class="thDate"><?php echo $this->t('Modified');?></th>
-              <th class="thCheckbox"></th>
+              <th class="thCheckbox"><input type="checkbox" id="browseTableHeaderCheckbox" /></th>
         </thead>
         <tbody>
             <?php
@@ -281,7 +281,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
           <th class="thData"><?php echo $this->t('Name');?></th>
           <th class="thSize"><?php echo $this->t('Size');?></th>
           <th class="thDate"><?php echo $this->t('Modified');?></th>
-          <th class="thCheckbox"></th>
+          <th class="thCheckbox"><input type="checkbox" id="browseTableHeaderCheckbox" /></th>
       </thead>
       <tbody>
             <?php
@@ -324,7 +324,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <div class='sideElementFirst genericAction'>
       <h1>Actions</h1>
         <ul>
-          <li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/FileTree/directory.png'/> {$this->t('Create a top level Folder')}</a></li>
+          <li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t('Create a top level Folder')}</a></li>
           <li><a href='javascript:;' id='communityDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Delete Community')}</a></li>
        </ul>
     </div>";    
