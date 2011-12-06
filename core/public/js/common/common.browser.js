@@ -99,6 +99,8 @@ function deleteFolder(id)
   $('input.deleteFolderYes').unbind('click').click(function()
     {
     var node = $('table.treeTable tr.parent[element='+id+']');
+    // get ancestor nodes
+    var ancestorNodes = ancestorsOf(node);
     $.post(json.global.webroot+'/folder/delete', {folderId: id},
       function(data) {
         jsonResponse = jQuery.parseJSON(data);
@@ -113,6 +115,14 @@ function deleteFolder(id)
           $('div.MainDialog').dialog('close');
           removeChildren(node);
           node.remove();
+          // mark ancestor nodes
+          for (var i = 0; i < ancestorNodes.length; i++){ 
+            $(ancestorNodes[i]).find('span.elementCount').remove();
+            $(ancestorNodes[i]).find('span.elementSize').after("<img class='folderLoading'  element='"+$(ancestorNodes[i]).attr('element')+"' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
+            $(ancestorNodes[i]).find('span.elementSize').remove();
+            }
+          // update folder size
+          getElementsSize();
           }
         else
           {
@@ -147,6 +157,24 @@ function editFolder(id)
   showDialog(json.browse.edit,false);
   }
 
+function parentOf(node) {
+  var classNames = node[0].className.split(' ');
+    
+  for(key in classNames) {
+    if(classNames[key].match("child-of-")) {
+      return $("#" + classNames[key].substring(9));
+    }
+  }
+}
+
+function ancestorsOf(node) {
+  var ancestors = [];
+  while(node = parentOf(node)) {
+    ancestors[ancestors.length] = node[0];
+  }
+  return ancestors;
+}
+
 function removeItem(id)
   {
   var html='';
@@ -162,15 +190,9 @@ function removeItem(id)
   $('input.deleteFolderYes').unbind('click').click(function()
     {
     var node=$('table.treeTable tr[element='+id+']');
-    var parent;
-    //get parent
-    var classNames = node.attr('class').split(' ');
-    for(key in classNames) {
-      if(classNames[key].match("child-of-")) {
-        parent = $("#" + classNames[key].substring(9));
-      }
-    }
-    $.post(json.global.webroot+'/folder/removeitem', {folderId: parent.attr('element'), itemId: id},
+    // get ancestor nodes
+    var ancestorNodes = ancestorsOf(node);
+    $.post(json.global.webroot+'/folder/removeitem', {folderId: parentOf(node).attr('element'), itemId: id},
       function(data) {
         jsonResponse = jQuery.parseJSON(data);
         if(jsonResponse==null)
@@ -183,9 +205,13 @@ function removeItem(id)
             createNotive(jsonResponse[1],1500);
             node.remove();
             $( "div.MainDialog" ).dialog('close');
-            parent.find('span.elementCount').remove();
-            parent.find('span.elementSize').after("<img class='folderLoading'  element='{"+parent.attr('element')+"}' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
-            parent.find('span.elementSize').remove();
+            // mark ancestor nodes
+            for (var i = 0; i < ancestorNodes.length; i++){ 
+              $(ancestorNodes[i]).find('span.elementCount').remove();
+              $(ancestorNodes[i]).find('span.elementSize').after("<img class='folderLoading'  element='"+$(ancestorNodes[i]).attr('element')+"' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
+              $(ancestorNodes[i]).find('span.elementSize').remove();
+            }
+            // update folder size
             getElementsSize();
           }
         else
@@ -220,13 +246,12 @@ function createAction(node)
 
       if(policy>=1)
         {
-        html+='<hr/>';
         html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/FileTree/directory.png"/> <a onclick="createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
         html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/upload.png"/> <a rel="'+json.global.webroot+'/upload/simpleupload/?parent='+element+'" class="uploadInFolder">'+json.browse.uploadIn+'</a></li>';
-        html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/edit.png"/> <a onclick="editFolder('+element+');">'+json.browse.edit+'</a></li>';
+                  html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/share.png"/> <a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
         if(node.attr('deletable')!=undefined && node.attr('deletable')=='true')
-          {
-          html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/share.png"/> <a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+          { 
+          html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/edit.png"/> <a onclick="editFolder('+element+');">'+json.browse.edit+'</a></li>';
           html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="deleteFolder('+element+');">'+json.browse['delete']+'</a></li>';
           }
         }
@@ -237,7 +262,6 @@ function createAction(node)
       html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLastest+'</a></li>';
       if(policy>=1)
         {
-        html+='<hr/>';
         html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/share.png"/> <a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
         html+='<li class="removeItemLi"><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="removeItem('+element+');">'+json.browse['removeItem']+'</a></li>';
         }
@@ -273,12 +297,13 @@ function createAction(node)
         event: 'click',
         solo: true // Only show one tooltip at a time
         },
-      hide: 'unfocus',
+      hide: {
+        event: false
+        },
       style: {
-        classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded',
-        tip: false
+        classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
         }
-      })
+      });
 
     $('a.sharingLink').click(function(){
         loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));

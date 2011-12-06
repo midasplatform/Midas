@@ -21,9 +21,9 @@ abstract class ItemModelBase extends AppModel
     $this->_key = 'item_id';
 
     $this->_mainData = array(
-      'item_id' =>  array('type' => MIDAS_DATA),
-      'name' =>  array('type' => MIDAS_DATA),
-      'description' =>  array('type' => MIDAS_DATA),
+      'item_id' => array('type' => MIDAS_DATA),
+      'name' => array('type' => MIDAS_DATA),
+      'description' => array('type' => MIDAS_DATA),
       'type' =>  array('type' => MIDAS_DATA),
       'sizebytes' => array('type' => MIDAS_DATA),
       'date_creation' => array('type' => MIDAS_DATA),
@@ -33,10 +33,10 @@ abstract class ItemModelBase extends AppModel
       'download' => array('type' => MIDAS_DATA),
       'privacy_status' => array('type' => MIDAS_DATA),
       'uuid' => array('type' => MIDAS_DATA),
-      'folders' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Folder', 'table' => 'item2folder', 'parent_column' => 'item_id', 'child_column' => 'folder_id'),
-      'revisions' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'ItemRevision', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
-      'itempolicygroup' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Itempolicygroup', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
-      'itempolicyuser' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Itempolicyuser', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
+      'folders' => array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Folder', 'table' => 'item2folder', 'parent_column' => 'item_id', 'child_column' => 'folder_id'),
+      'revisions' => array('type' => MIDAS_ONE_TO_MANY, 'model' => 'ItemRevision', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
+      'itempolicygroup' => array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Itempolicygroup', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
+      'itempolicyuser' => array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Itempolicyuser', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
       );
     $this->initialize(); // required
     } // end __construct()
@@ -51,6 +51,17 @@ abstract class ItemModelBase extends AppModel
   abstract function getByUuid($uuid);
   abstract function getAll();
   abstract function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view');
+
+  /** delete an item */
+  public function delete($dao)
+    {
+    if(!$dao instanceof ItemDao)
+      {
+      throw new Zend_Exception('You must pass an item dao to ItemModel::delete');
+      }
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_DELETED', array('item' => $dao));
+    parent::delete($dao);
+    }// delete
 
   /** save */
   public function save($dao)
@@ -249,6 +260,7 @@ abstract class ItemModelBase extends AppModel
     $item = new ItemDao();
     $item->setName($name);
     $item->setDescription($description);
+    $item->setType(0);
     $item->setUuid($uuid);
     $this->save($item);
 

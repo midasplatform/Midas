@@ -199,14 +199,9 @@ class BrowseController extends AppController
       $tmp['folder_id'] = $folder->getFolderId();
       $tmp['name'] = $folder->getName();
       $tmp['date_update'] = $this->Component->Date->ago($folder->getDateUpdate(), true);
-      if($tmp['name'] == 'Public' || $tmp['name'] == 'Private')
-        {
-        $tmp['deletable'] = 'false';
-        }
-      else
-        {
-        $tmp['deletable'] = 'true';
-        }
+      // this ajax function is only used by treetable.js and it will handle all the other folders except for the top level folders.
+      // All the non-top level folders are deletable if users have correct permission
+      $tmp['deletable'] =  'true';
       $tmp['policy'] = $folder->policy;
       $tmp['privacy_status'] = $folder->privacy_status;
       $jsonContent[$folder->getParentId()]['folders'][] = $tmp;
@@ -338,7 +333,7 @@ class BrowseController extends AppController
         }
       }
     $this->view->json['item']['message']['delete'] = $this->t('Delete');
-    $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undo.');
+    $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undone.');
     $this->view->json['item']['message']['merge'] = $this->t('Merge Files in one Item');
     $this->view->json['item']['message']['mergeName'] = $this->t('Name of the item');
     }

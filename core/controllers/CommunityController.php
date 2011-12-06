@@ -202,13 +202,20 @@ class CommunityController extends AppController
     $this->view->header = $this->t("Manage Community");
     $this->view->communityDao = $communityDao;
 
+    // User's personal data, used for drag-and-drop feature
+    $this->view->userPersonalmainFolder = $this->userSession->Dao->getFolder();
+    $this->view->userPersonalFolders = $this->Folder->getChildrenFoldersFiltered($this->view->userPersonalmainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $this->view->userPersonalItems = $this->Folder->getItemsFiltered($this->view->userPersonalmainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+
     $this->view->isAdmin = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+    $this->view->privateFolderId = $communityDao->getPrivatefolderId();
+    $this->view->publicFolderId = $communityDao->getPublicfolderId();
     $this->view->json['community'] = $communityDao->toArray();
     $this->view->json['community']['moderatorGroup'] = $moderator_group->toArray();
     $this->view->json['community']['memberGroup'] = $group_member->toArray();
     $this->view->json['community']['message']['delete'] = $this->t('Delete');
-    $this->view->json['community']['message']['deleteMessage'] = $this->t('Do you really want to delete this community? It cannot be undo.');
-    $this->view->json['community']['message']['deleteGroupMessage'] = $this->t('Do you really want to delete this group? It cannot be undo.');
+    $this->view->json['community']['message']['deleteMessage'] = $this->t('Do you really want to delete this community? It cannot be undone.');
+    $this->view->json['community']['message']['deleteGroupMessage'] = $this->t('Do you really want to delete this group? It cannot be undone.');
     $this->view->json['community']['message']['infoErrorName'] = $this->t('Please, set the name.');
     $this->view->json['community']['message']['createGroup'] = $this->t('Create a group');
     $this->view->json['community']['message']['editGroup'] = $this->t('Edit a group');
@@ -306,6 +313,8 @@ class CommunityController extends AppController
       }
     $this->view->isModerator = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_WRITE);
     $this->view->isAdmin = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+    $this->view->privateFolderId = $communityDao->getPrivatefolderId();
+    $this->view->publicFolderId = $communityDao->getPublicfolderId();
     $this->view->json['community'] = $communityDao->toArray();
     $this->view->json['community']['sendInvitation'] = $this->t('Send invitation');
 

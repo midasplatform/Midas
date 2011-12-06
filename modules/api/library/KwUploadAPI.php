@@ -47,12 +47,12 @@ class KwUploadAPI
     $this->tmp_directory = $tmp_directory;
     }
 
-   /**
-    * Generate an upload token that will act as the authentication token for the upload.
-    * This token is the filename of a guaranteed unique file which will be placed under the
-    * directory specified by the dirname parameter, which should be used to ensure that
-    * the user can only write into a certain logical space.
-    */
+  /**
+   * Generate an upload token that will act as the authentication token for the upload.
+   * This token is the filename of a guaranteed unique file which will be placed under the
+   * directory specified by the dirname parameter, which should be used to ensure that
+   * the user can only write into a certain logical space.
+   */
   function generateToken($args, $dirname = '')
     {
     if(!array_key_exists('filename', $args))
@@ -198,11 +198,10 @@ class KwUploadAPI
       {
       throw new Exception('Parameter '.self::PARAM_NAME_UPLOAD_TOKEN.' is not defined', -150);
       }
-    $uploadToken = $args[self::PARAM_NAME_UPLOAD_TOKEN]; //XXX123.TMP
+    $uploadToken = $args[self::PARAM_NAME_UPLOAD_TOKEN];
 
-    $offset = filesize($this->tmp_directory."/$uploadToken");
-
-    $data['offset'] = $offset;
+    $data = array();
+    $data['offset'] = filesize($this->tmp_directory."/$uploadToken");
 
     return $data;
     }

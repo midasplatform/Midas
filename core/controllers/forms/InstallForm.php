@@ -65,14 +65,12 @@ class InstallForm extends AppForm
     $firstname = new Zend_Form_Element_Text('firstname');
     $firstname
           ->setRequired(true)
-          ->addValidator('NotEmpty', true)
-          ->addValidator(new Zend_Validate_Alnum());
+          ->addValidator('NotEmpty', true);
 
     $lastname = new Zend_Form_Element_Text('lastname');
     $lastname
           ->setRequired(true)
-          ->addValidator('NotEmpty', true)
-          ->addValidator(new Zend_Validate_Alnum());
+          ->addValidator('NotEmpty', true);
 
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel('Set up database');

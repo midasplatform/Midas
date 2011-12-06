@@ -115,7 +115,11 @@ class MIDAS_Notification
         {
         $nameComponent = $component . "Component";
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
-        @$this->Component->$component = new $nameComponent();
+        if(!isset($this->Component))
+          {
+          $this->Component =  new stdClass();
+          }
+        $this->Component->$component = new $nameComponent();
         }
       }
 
@@ -127,7 +131,11 @@ class MIDAS_Notification
         $nameForm = $forms . "Form";
 
         Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
-        @$this->Form->$forms = new $nameForm();
+        if(!isset($this->Form))
+          {
+          $this->Form =  new stdClass();
+          }
+        $this->Form->$forms = new $nameForm();
         }
       }
     }//end loadElements
@@ -167,7 +175,11 @@ class MIDAS_Notification
         {
         $nameComponent = ucfirst($this->moduleName).'_'.$component . "Component";
         include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
-        @$this->ModuleComponent->$component = new $nameComponent();
+        if(!isset($this->ModuleComponent))
+          {
+          $this->ModuleComponent =  new stdClass();
+          }
+        $this->ModuleComponent->$component = new $nameComponent();
         }
       }
       
@@ -177,7 +189,11 @@ class MIDAS_Notification
         {
         $nameForm = ucfirst($this->moduleName).'_'.$forms . "Form";
         include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
-        @$this->ModuleForm->$forms = new $nameForm();
+        if(!isset($this->ModuleForm))
+          {
+          $this->ModuleForm =  new stdClass();
+          }
+        $this->ModuleForm->$forms = new $nameForm();
         }
       }
     }

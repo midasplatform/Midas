@@ -69,15 +69,13 @@ class UserForm extends AppForm
     $firstname
           ->setRequired(true)
           ->addValidator('NotEmpty', true)
-          ->setAttrib('maxLength', 255)
-          ->addValidator(new Zend_Validate_Alnum());
+          ->setAttrib('maxLength', 255);
 
     $lastname = new Zend_Form_Element_Text('lastname');
     $lastname
           ->setRequired(true)
           ->addValidator('NotEmpty', true)
-          ->setAttrib('maxLength', 255)
-          ->addValidator(new Zend_Validate_Alnum());
+          ->setAttrib('maxLength', 255);
 
     $password1 = new Zend_Form_Element_Password('password1');
     $password1
@@ -111,30 +109,25 @@ class UserForm extends AppForm
     $firstname
           ->setRequired(true)
           ->addValidator('NotEmpty', true)
-          ->setAttrib('maxLength', 255)
-          ->addValidator(new Zend_Validate_Alnum());
+          ->setAttrib('maxLength', 255);
 
     $lastname = new Zend_Form_Element_Text('lastname');
     $lastname
           ->setRequired(true)
           ->addValidator('NotEmpty', true)
-          ->setAttrib('maxLength', 255)
-          ->addValidator(new Zend_Validate_Alnum());
+          ->setAttrib('maxLength', 255);
 
     $company = new Zend_Form_Element_Text('company');
     $company
-          ->setAttrib('maxLength', 255)
-          ->addValidator(new Zend_Validate_Alnum());
+          ->setAttrib('maxLength', 255);
 
     $city = new Zend_Form_Element_Text('city');
     $city
-          ->setAttrib('maxLength', 100)
-          ->addValidator(new Zend_Validate_Alnum());
+          ->setAttrib('maxLength', 100);
 
     $country = new Zend_Form_Element_Text('country');
     $country
-          ->setAttrib('maxLength', 100)
-          ->addValidator(new Zend_Validate_Alnum());
+          ->setAttrib('maxLength', 100);
 
     $validator = new Zend_Validate_Callback(array('Zend_Uri', 'check'));
     $website = new Zend_Form_Element_Text('website');
