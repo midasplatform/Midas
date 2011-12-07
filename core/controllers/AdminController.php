@@ -152,8 +152,17 @@ class AdminController extends AppController
         }
       }
 
+    // Disable default assetstore feature is version less than 3.1.4
+    if($this->Component->Upgrade->transformVersionToNumeric(Zend_Registry::get('configDatabase')->version) < $this->Component->Upgrade->transformVersionToNumeric("3.1.4") )
+      {
+      $defaultAssetStoreId = 0;
+      }
+    else
+      {
+      $defaultAssetStoreId = $this->Assetstore->getDefault()->getKey();
+      }
+
     // get assetstore data
-    $defaultAssetStoreId = $this->Assetstore->getDefault()->getKey();
     $assetstores = $this->Assetstore->getAll();
     $defaultSet = false;
     foreach($assetstores as $key => $assetstore)
