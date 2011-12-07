@@ -140,6 +140,24 @@ class UserController extends AppController
     $this->_redirect('/');
     } //end logoutAction
 
+  /** Set user's starting guide value */
+  function startingguideAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    if($this->logged && isset($_POST['value']))
+      {
+      $value = 0;
+      if($_POST['value'] == 1)
+        {
+        $value = 1;
+        }
+      $this->userSession->Dao->setDynamichelp($value);
+      $user = $this->User->load($this->userSession->Dao->getKey());
+      $user->setDynamichelp($value);
+      $this->User->save($user);
+      }
+    }
 
   /** Register a user */
   function registerAction()
@@ -154,13 +172,14 @@ class UserController extends AppController
 
       $this->userSession->Dao = $this->User->createUser(trim($form->getValue('email')), $form->getValue('password1'), trim($form->getValue('firstname')), trim($form->getValue('lastname')));
 
-      $this->_redirect("/");
+      $this->_redirect("/feed?first=true");
       }
     $this->view->form = $this->getFormAsArray($form);
     $this->disableLayout();
     $this->view->jsonRegister = JsonComponent::encode(array(
       'MessageNotValid' => $this->t('The e-mail is not valid'), 'MessageNotAvailable' => $this->t('This e-mail is not available'), 'MessagePassword' => $this->t('Password too short'), 'MessagePasswords' => $this->t('The passwords are not the same'), 'MessageLastname' => $this->t('Please set your lastname'), 'MessageTerms' => $this->t('Please validate the terms of service'), 'MessageFirstname' => $this->t('Please set your firstname')
     ));
+
     } //end register
 
   /** Login action */
@@ -232,11 +251,11 @@ class UserController extends AppController
 
       if(isset($previousUri) && strpos($previousUri, $this->view->webroot) !== false && strpos($previousUri, "logout") === false)
         {
-        $this->_redirect(substr($previousUri, strlen($this->view->webroot)));
+        $this->_redirect(substr($previousUri, strlen($this->view->webroot)).'?first=true');
         }
       else
         {
-        $this->_redirect("/");
+        $this->_redirect("/feed?first=true");
         }
       }
     } // end method login
