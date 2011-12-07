@@ -220,7 +220,7 @@ class FolderModel extends FolderModelBase
     } // end getRoot()
 
   /** Get the folder tree */
-  function getAllChildren($folder, $userDao, $admin = false)
+  function getAllChildren($folder, $userDao, $admin = false, $policy = 0)
     {
     $isAdmin = false;
     if($userDao == null)
