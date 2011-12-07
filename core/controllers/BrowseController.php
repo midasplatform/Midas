@@ -379,7 +379,8 @@ class BrowseController extends AppController
         continue;
         }
 
-      if($this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      if($this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN) &&
+         $this->Folder->isDeleteable($folder))
         {
         $this->Folder->delete($folder);
         $resp['success']['folders'][] = $folderId;

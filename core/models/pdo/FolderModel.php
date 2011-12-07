@@ -954,4 +954,36 @@ class FolderModel extends FolderModelBase
     return $return;
     } // end getFolderFromSearch()
 
+  /**
+   * Returns whether the folder is able to be deleted.
+   * Any folder can be deleted unless it is a base, Public, or Private Folder
+   * of a User or Community.
+   */
+  function isDeleteable($folder)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception('Should be a folder.');
+      }
+    $id = $folder->getFolderId();
+    if($this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
+                                      ->from('community')
+                                      ->where('folder_id=?', $id)
+                                      ->orwhere('publicfolder_id=?', $id)
+                                      ->orwhere('privatefolder_id=?', $id)))
+      {
+      return false;
+      }
+
+    if($this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
+                                      ->from('user')
+                                      ->where('folder_id=?', $id)
+                                      ->orwhere('publicfolder_id=?', $id)
+                                      ->orwhere('privatefolder_id=?', $id)))
+      {
+      return false;
+      }
+    return true;
+    }
+
 } // end class
