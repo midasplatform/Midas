@@ -15,8 +15,8 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class BrowseController extends AppController
 {
-  public $_models = array('Folder', 'User', 'Community', 'Folder', 'Item');
-  public $_daos = array('Folder', 'User', 'Community', 'Folder', 'Item');
+  public $_models = array('User', 'Community', 'Folder', 'Item');
+  public $_daos = array('User', 'Community', 'Folder', 'Item');
   public $_components = array('Date', 'Utility', 'Sortdao');
 
   /** Init Controller */
@@ -399,14 +399,83 @@ class BrowseController extends AppController
     $this->view->json['item']['message']['mergeName'] = $this->t('Name of the item');
     }
 
-  /** delete a set of folders and items */
+  /**
+   * Delete a set of folders and items. Called by ajax from common.browser.js
+   * @param folders A list of folder ids separated by '-'
+   * @param items A list of item ids separated by '-'
+   * @return Replies with a json object of the form:
+             {success: {folders: [<id>, <id>, ...], items: [<id>, <id>, ...]},
+              failure: {folders: [<id>, <id>, ...], items: [<id>, <id>, ...]}}
+     Denoting which deletes succeeded and which failed.  Invalid ids will be considered
+     already deleted and are thus returned as successful.
+   */
   public function deleteAction()
     {
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('You must be logged in to delete resources.');
+      }
+
     $this->disableLayout();
-    $folders = $this->_getParam('folders');
-    $items = $this->_getParam('items');
-    echo json_encode(array('message' => "Deleted folders ".$folders." and items ".$items));
-    exit;
+    $this->_helper->viewRenderer->setNoRender();
+
+    $folderIds = $this->_getParam('folders');
+    $itemIds = $this->_getParam('items');
+
+    $resp = array('success' => array('folders' => array(), 'items' => array()),
+                  'failure' => array('folders' => array(), 'items' => array()));
+    $folderIds = explode('-', $folderIds);
+    $itemIds = explode('-', $itemIds);
+
+    foreach($folderIds as $folderId)
+      {
+      if($folderId == '')
+        {
+        continue;
+        }
+      $folder = $this->Folder->load($folderId);
+      if(!$folder)
+        {
+        $resp['success']['folders'][] = $folderId; //probably deleted by a parent delete
+        continue;
+        }
+
+      if($this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN) &&
+         $this->Folder->isDeleteable($folder))
+        {
+        $this->Folder->delete($folder);
+        $resp['success']['folders'][] = $folderId;
+        }
+      else
+        {
+        $resp['failure']['folders'][] = $folderId; //permission failure
+        }
+      }
+
+    foreach($itemIds as $itemId)
+      {
+      if($itemId == '')
+        {
+        continue;
+        }
+      $item = $this->Item->load($itemId);
+      if(!$item)
+        {
+        $resp['success']['items'][] = $itemId; //probably deleted by a parent delete
+        continue;
+        }
+
+      if($this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+        {
+        $this->Item->delete($item);
+        $resp['success']['items'][] = $itemId;
+        }
+      else
+        {
+        $resp['failure']['items'][] = $itemId; //permission failure
+        }
+      }
+    echo JsonComponent::encode($resp);
     }
 } // end class
 

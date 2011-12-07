@@ -1,7 +1,17 @@
 var ajaxSelectRequest='';
 
+/**
+ * Callback when a row is selected
+ * Pass null if there is no selected row.
+ */
 function genericCallbackSelect(node)
   {
+  if(!node)
+    {
+    $('div.ajaxInfoElement').html('');
+    $('div.viewAction ul').html('');
+    return;
+    }
   $('img.infoLoading').show();
   $('div.ajaxInfoElement').html('');
   if(ajaxSelectRequest!='')
@@ -101,6 +111,28 @@ function createNewFolder(id)
   showDialog(json.browse.createFolder,false);
   }
 
+function removeNodeFromTree(node, recursive)
+  {
+  if(!node || node.length == 0)
+    {
+    return;
+    }
+  var ancestorNodes = ancestorsOf(node);
+  if(recursive)
+    {
+    removeChildren(node);
+    }
+  node.remove();
+  // mark ancestor nodes
+  for (var i = 0; i < ancestorNodes.length; i++){
+    $(ancestorNodes[i]).find('span.elementCount').remove();
+    $(ancestorNodes[i]).find('span.elementSize').after("<img class='folderLoading'  element='"+$(ancestorNodes[i]).attr('element')+"' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
+    $(ancestorNodes[i]).find('span.elementSize').remove();
+    }
+  // update folder size
+  getElementsSize();
+  }
+
 function deleteFolder(id)
   {
   var html='';
@@ -114,8 +146,7 @@ function deleteFolder(id)
   $('input.deleteFolderYes').unbind('click').click(function()
     {
     var node = $('table.treeTable tr.parent[element='+id+']');
-    // get ancestor nodes
-    var ancestorNodes = ancestorsOf(node);
+
     $.post(json.global.webroot+'/folder/delete', {folderId: id},
       function(data) {
         jsonResponse = jQuery.parseJSON(data);
@@ -128,16 +159,9 @@ function deleteFolder(id)
           {
           createNotive(jsonResponse[1],1500);
           $('div.MainDialog').dialog('close');
-          removeChildren(node);
-          node.remove();
-          // mark ancestor nodes
-          for (var i = 0; i < ancestorNodes.length; i++){
-            $(ancestorNodes[i]).find('span.elementCount').remove();
-            $(ancestorNodes[i]).find('span.elementSize').after("<img class='folderLoading'  element='"+$(ancestorNodes[i]).attr('element')+"' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
-            $(ancestorNodes[i]).find('span.elementSize').remove();
-            }
-          // update folder size
-          getElementsSize();
+          removeNodeFromTree(node, true);
+          genericCallbackCheckboxes($('#browseTable'));
+          genericCallbackSelect(null);
           }
         else
           {
@@ -147,10 +171,14 @@ function deleteFolder(id)
     });
   $('input.deleteFolderNo').unbind('click').click(function()
     {
-    $( "div.MainDialog" ).dialog('close');
+    $('div.MainDialog').dialog('close');
     });
   }
 
+/**
+ * Deletes the set of folders and items selected with the checkboxes.
+ * The folders and items params should be strings of ids separated by - (empty ids will be ignored)
+ */
 function deleteSelected(folders, items)
 {
   var html='';
@@ -163,16 +191,33 @@ function deleteSelected(folders, items)
   $('input.deleteSelectedYes').unbind('click').click(function() {
     $.post(json.global.webroot+'/browse/delete', {folders: folders, items: items},
       function(data) {
-        jsonResponse = jQuery.parseJSON(data);
-        if(jsonResponse==null)
+        var resp = jQuery.parseJSON(data);
+        if(resp == null)
           {
           createNotive('Error during folder delete. Check the log.', 4000);
           return;
           }
-        if(jsonResponse.message)
+        if(resp.success)
           {
-          createNotive(jsonResponse.message, 4000);
+          var message = 'Deleted ' + resp.success.folders.length + ' folders and ';
+          message += resp.success.items.length + ' items.';
+          if(resp.failure.folders.length || resp.failure.items.length)
+            {
+            message += ' Invalid delete permissions on ';
+            message += resp.failure.folders.length + ' folders and ';
+            message += resp.failure.items.length + ' items.';
+            }
+          createNotive(message, 5000);
           $('div.MainDialog').dialog('close');
+
+          for(var i = 0; i < resp.success.folders.length; i++) {
+            removeNodeFromTree($('table.treeTable tr.parent[element='+resp.success.folders[i]+']'), true);
+            }
+          for(var i = 0; i < resp.success.items.length; i++) {
+            removeNodeFromTree($('table.treeTable tr[type=item][element='+resp.success.items[i]+']'), false);
+            }
+          genericCallbackCheckboxes($('#browseTable'));
+          genericCallbackSelect(null);
           }
       });
     });
@@ -235,8 +280,7 @@ function removeItem(id)
   $('input.deleteFolderYes').unbind('click').click(function()
     {
     var node=$('table.treeTable tr[element='+id+']');
-    // get ancestor nodes
-    var ancestorNodes = ancestorsOf(node);
+
     $.post(json.global.webroot+'/folder/removeitem', {folderId: parentOf(node).attr('element'), itemId: id},
       function(data) {
         jsonResponse = jQuery.parseJSON(data);
@@ -248,20 +292,14 @@ function removeItem(id)
         if(jsonResponse[0])
           {
           createNotive(jsonResponse[1],1500);
-          node.remove();
           $( "div.MainDialog" ).dialog('close');
-          // mark ancestor nodes
-          for (var i = 0; i < ancestorNodes.length; i++){
-            $(ancestorNodes[i]).find('span.elementCount').remove();
-            $(ancestorNodes[i]).find('span.elementSize').after("<img class='folderLoading'  element='"+$(ancestorNodes[i]).attr('element')+"' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
-            $(ancestorNodes[i]).find('span.elementSize').remove();
-          }
-          // update folder size
-          getElementsSize();
+          removeNodeFromTree(node, false);
+          genericCallbackCheckboxes($('#browseTable'));
+          genericCallbackSelect(null);
           }
         else
           {
-            createNotive(jsonResponse[1],4000);
+          createNotive(jsonResponse[1],4000);
           }
       });
     });
