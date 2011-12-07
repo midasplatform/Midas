@@ -13,10 +13,18 @@ $(document).ready(function() {
 
   $("#browseTable").treeTable({
     onNodeShow: function(node) {
-      $('input.treeCheckbox:visible').enableCheckboxRangeSelection();
+      $('input.treeCheckbox:visible').enableCheckboxRangeSelection({
+        onRangeSelect: function() {
+          genericCallbackCheckboxes($('#browseTable'));
+        }
+      });
     },
     onNodeHide: function(node) {
-      $('input.treeCheckbox:visible').enableCheckboxRangeSelection();
+      $('input.treeCheckbox:visible').enableCheckboxRangeSelection({
+        onRangeSelect: function() {
+          genericCallbackCheckboxes($('#browseTable'));
+        }
+      });
     }
   });
   // Select/deslect all rows. If we are doing deselect all, we include hidden rows
