@@ -20,6 +20,8 @@ class DashboardModelTest extends DatabaseTestCase
     $this->enabledModules = array('validation');
     $this->_models = array('Folder', 'Item');
     $this->_daos = array('Folder', 'Item');
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     parent::setUp();
     }
 
@@ -131,6 +133,8 @@ class DashboardModelTest extends DatabaseTestCase
     $this->assertEquals(false, $dashboardModel->checkConsistency($dao));
 
     // Re-add the item and check again :)
+    // Re save the item first, as removing it from the folder deleted it
+    $this->Item->save($testingItem);
     $this->Folder->addItem($testingFolder, $testingItem);
     $this->assertEquals(true, $dashboardModel->checkConsistency($dao));
 
