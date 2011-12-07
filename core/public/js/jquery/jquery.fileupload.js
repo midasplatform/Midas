@@ -695,7 +695,7 @@
                     return;
                 }
                 var i;
-                if(files.length > 200 && !confirm("You selected a large number of files ("+files.length+"), do you want to process? (Your browser may become unstable)"))
+                if(files.length > 100 && !confirm("You selected a large number of files ("+files.length+"), are you sure you want to proceed? (Your browser may become unstable)"))
                   {
                   return;
                   }
