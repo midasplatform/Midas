@@ -180,7 +180,9 @@ abstract class AssetstoreModelBase extends AppModel
           }
         }
       $defaultAssetstore = $found[0];
-      $settingModel->setConfig('default_assetstore', $defaultAssetstore->getKey());
+      // explicit cast to string, as the setConfig method expects a string
+      $defaultAssetstoreId = (string)$defaultAssetstore->getKey();
+      $settingModel->setConfig('default_assetstore', $defaultAssetstoreId);
       }
 
     return $defaultAssetstore;
