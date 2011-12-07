@@ -46,7 +46,7 @@
                 return list;
             };
         },
-        
+
         SequenceHandler = function () {
             var sequence = [];
             this.push = function (callBack) {
@@ -62,7 +62,7 @@
                 }
             };
         };
-        
+
     FileUpload = function (container) {
         var fileUpload = this,
             uploadForm,
@@ -109,7 +109,7 @@
                 }
             }),
             sequenceHandler = new SequenceHandler(),
-            
+
             completeNext = function () {
                 multiLoader.complete();
                 sequenceHandler.next();
@@ -231,7 +231,7 @@
                     settings.onProgressAll(progressEvent, loaderList);
                 }
             },
-            
+
             handleLoadEvent = function (event, files, index, xhr, settings) {
                 var progressEvent;
                 if (isChunkedUpload(settings)) {
@@ -269,7 +269,7 @@
                 }
                 completeNext();
             },
-            
+
             handleProgressEvent = function (event, files, index, xhr, settings) {
                 var progressEvent = event;
                 if (isChunkedUpload(settings) && event.lengthComputable) {
@@ -284,7 +284,7 @@
                 }
                 handleGlobalProgress(progressEvent, files, index, xhr, settings);
             },
-            
+
             initUploadEventHandlers = function (files, index, xhr, settings) {
                 if (xhr.upload) {
                     xhr.upload.onprogress = function (e) {
@@ -316,14 +316,14 @@
                 }
                 return settings.url;
             },
-            
+
             getMethod = function (settings) {
                 if (typeof settings.method === func) {
                     return settings.method(settings.uploadForm || uploadForm);
                 }
                 return settings.method;
             },
-            
+
             getFieldName = function (settings) {
                 if (typeof settings.fieldName === func) {
                     return settings.fieldName(settings.fileInput || fileInput);
@@ -442,7 +442,7 @@
                 buffer.push(formData);
                 return buffer.join('');
             },
-            
+
             fileReaderUpload = function (files, xhr, settings) {
                 var boundary = '----MultiPartFormBoundary' + (new Date()).getTime(),
                     loader,
@@ -695,6 +695,14 @@
                     return;
                 }
                 var i;
+                if(files.length > 100 && !confirm("You selected a large number of files ("+files.length+"), are you sure you want to proceed? (Your browser may become unstable)"))
+                  {
+                  return;
+                  }
+                $("div.uploadedFilesWrapper").css('border-bottom', '1px dotted #E4E4E4');
+                $("div.uploadedFilesWrapper").css('border-top', '1px dotted #E4E4E4');
+                $("div.uploadedFilesWrapper").css('margin-bottom', '10px');
+                $("div.uploadedFilesWrapper").css('margin-top', '10px');
                 files = Array.prototype.slice.call(files, 0);
                 if (settings.multiFileRequest && settings.multipart && files.length) {
                     handleUpload(event, files, input, form);
@@ -704,17 +712,17 @@
                     }
                 }
             },
-            
+
             initUploadForm = function () {
                 uploadForm = (container.is('form') ? container : container.find('form'))
                     .filter(settings.uploadFormFilter);
             },
-            
+
             initFileInput = function () {
                 fileInput = (uploadForm.length ? uploadForm : container).find('input:file')
                     .filter(settings.fileInputFilter);
             },
-            
+
             replaceFileInput = function (input) {
                 var inputClone = input.clone(true);
                 $('<form/>').append(inputClone).get(0).reset();
@@ -729,7 +737,7 @@
             }
             e.preventDefault();
         };
-        
+
         this.onDocumentDrop = function (e) {
             if (typeof settings.onDocumentDrop === func &&
                     settings.onDocumentDrop(e) === false) {
@@ -761,7 +769,7 @@
             }
             e.preventDefault();
         };
-        
+
         this.onChange = function (e) {
             if (typeof settings.onChange === func &&
                     settings.onChange(e) === false) {
@@ -855,7 +863,7 @@
             }
             initEventHandlers();
         };
-        
+
         this.option = function (name, value) {
             var options;
             if (typeof value === undef) {
@@ -865,7 +873,7 @@
             options[name] = value;
             fileUpload.options(options);
         };
-        
+
         this.destroy = function () {
             if (typeof settings.destroy === func) {
                 settings.destroy();
@@ -876,7 +884,7 @@
                 .removeClass(settings.cssClass);
             settings.dropZone.not(container).removeClass(settings.cssClass);
         };
-        
+
         this.upload = function (files) {
             if (typeof files.length === undef) {
                 files = [files];
@@ -891,7 +899,7 @@
                 (new FileUpload($(this))).init(options);
             });
         },
-        
+
         option: function (option, value, namespace) {
             namespace = namespace ? namespace : defaultNamespace;
             var fileUpload = $(this).data(namespace);
@@ -917,7 +925,7 @@
                 }
             });
         },
-                
+
         destroy: function (namespace) {
             namespace = namespace ? namespace : defaultNamespace;
             return this.each(function () {
@@ -929,7 +937,7 @@
                 }
             });
         },
-        
+
         upload: function (files, namespace) {
             namespace = namespace ? namespace : defaultNamespace;
             return this.each(function () {
@@ -942,7 +950,7 @@
             });
         }
     };
-    
+
     $.fn.fileUpload = function (method) {
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
@@ -952,5 +960,5 @@
             $.error('Method "' + method + '" does not exist on jQuery.fileUpload');
         }
     };
-    
+
 }(jQuery));
