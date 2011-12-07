@@ -398,5 +398,15 @@ class BrowseController extends AppController
     $this->view->json['item']['message']['merge'] = $this->t('Merge Files in one Item');
     $this->view->json['item']['message']['mergeName'] = $this->t('Name of the item');
     }
+
+  /** delete a set of folders and items */
+  public function deleteAction()
+    {
+    $this->disableLayout();
+    $folders = $this->_getParam('folders');
+    $items = $this->_getParam('items');
+    echo json_encode(array('message' => "Deleted folders ".$folders." and items ".$items));
+    exit;
+    }
 } // end class
 

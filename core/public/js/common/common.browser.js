@@ -42,7 +42,7 @@ function genericCallbackCheckboxes(node)
       items+=$(this).attr('element')+'-';
       }
   });
-  var link=json.global.webroot+'/download?folders='+folders+'&items='+items;
+
   if((arraySelected['folders'].length + arraySelected['items'].length) > 0)
     {
     $('div.viewSelected').show();
@@ -57,8 +57,13 @@ function genericCallbackCheckboxes(node)
     $('div.viewSelected h1 span').html(html);
     var links = '<ul>';
     links += '<li style="background-color: white;">';
-    links += '<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> ';
-    links += '<a href="' + link + '">' + json.browse.download + '</a></li>';
+    links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> ';
+    links += '  <a href="' + json.global.webroot + '/download?folders=' + folders + '&items=' + items + '">' + json.browse.download + '</a></li>';
+    links += '</li>';
+    links += '<li style="background-color: white;">';
+    links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> ';
+    links += '  <a onclick="deleteSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.deleteSelected + '</a></li>';
+    links += '</li>';
     links += '</ul>';
     $('div.viewSelected>span').html(links);
     $('div.viewSelected li a').hover(function(){
@@ -100,13 +105,11 @@ function deleteFolder(id)
   {
   var html='';
   html+=json.browse['deleteMessage'];
-  html+='<br/>';
-  html+='<br/>';
-  html+='<br/>';
+  html+='<br/><br/><br/>';
   html+='<input style="margin-left:140px;" class="globalButton deleteFolderYes" element="'+id+'" type="button" value="'+json.global.Yes+'"/>';
   html+='<input style="margin-left:50px;" class="globalButton deleteFolderNo" type="button" value="'+json.global.No+'"/>';
 
-  showDialogWithContent(json.browse['delete'],html,false);
+  showDialogWithContent(json.browse['delete'], html, false);
 
   $('input.deleteFolderYes').unbind('click').click(function()
     {
@@ -147,6 +150,36 @@ function deleteFolder(id)
     $( "div.MainDialog" ).dialog('close');
     });
   }
+
+function deleteSelected(folders, items)
+{
+  var html='';
+  html+=json.browse['deleteSelectedMessage'];
+  html+='<br/><br/><br/>';
+  html+='<input style="margin-left:140px;" class="globalButton deleteSelectedYes" type="button" value="'+json.global.Yes+'"/>';
+  html+='<input style="margin-left:50px;" class="globalButton deleteSelectedNo" type="button" value="'+json.global.No+'"/>';
+
+  showDialogWithContent(json.browse['deleteSelected'],html,false);
+  $('input.deleteSelectedYes').unbind('click').click(function() {
+    $.post(json.global.webroot+'/browse/delete', {folders: folders, items: items},
+      function(data) {
+        jsonResponse = jQuery.parseJSON(data);
+        if(jsonResponse==null)
+          {
+          createNotive('Error during folder delete. Check the log.', 4000);
+          return;
+          }
+        if(jsonResponse.message)
+          {
+          createNotive(jsonResponse.message, 4000);
+          $('div.MainDialog').dialog('close');
+          }
+      });
+    });
+  $('input.deleteSelectedNo').unbind('click').click(function() {
+    $('div.MainDialog').dialog('close');
+    });
+}
 
 /**
  * Helper method to remove all of a node's subtree from the treeTable view.
