@@ -140,7 +140,15 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     {
     require_once BASE_PATH . '/core/models/ModelLoader.php';
     $this->ModelLoader = new MIDAS_ModelLoader();
-    $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model']);
+    if(isset($this->_mainData[$var]['module']))
+      {
+      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model'],
+                                             $this->_mainData[$var]['module']);
+      }
+    else
+      {
+      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model']);
+      }
 
     $parentColumn = $this->_mainData[$var]['parent_column'];
     $sql = $this->select()
@@ -153,7 +161,16 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     $return = array();
     foreach($rowset as $row)
       {
-      $return[] = $model->initDao($this->_mainData[$var]['model'], $row);
+      if(isset($this->_mainData[$var]['module']))
+        {
+        $return[] = $model->initDao($this->_mainData[$var]['model'],
+                                    $row,
+                                    $this->_mainData[$var]['module']);
+        }
+      else
+        {
+        $return[] = $model->initDao($this->_mainData[$var]['model'], $row);
+        }
       }
     return $return;
     } //end getLinkedObject
@@ -183,7 +200,15 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     $objs = $daoParent->get($var);
 
     $modelloader = new MIDAS_ModelLoader();
-    $model = $modelloader->loadModel($this->_mainData[$var]['model']);
+    if(isset($this->_mainData[$var]['module']))
+      {
+      $model = $modelloader->loadModel($this->_mainData[$var]['model'],
+                                       $this->_mainData[$var]['module']);
+      }
+    else
+      {
+      $model = $modelloader->loadModel($this->_mainData[$var]['model']);
+      }
     foreach($objs as $obj)
       {
       if($model->compareDao($obj, $daoSon))
