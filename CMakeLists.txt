@@ -39,7 +39,7 @@ endif()
 message(STATUS "Database setup is complete")
 
 #-----------------------------------------------------------------------------
-#  This should be at the top level for warning suppression
+#  This should be at the top level for warning suppression and coverage exclude
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/library/CMake/CTestCustom.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake )
 

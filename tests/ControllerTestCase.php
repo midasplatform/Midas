@@ -17,21 +17,62 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once dirname(__FILE__).'/bootstrap.php';
-/** main controller test element*/
+require_once dirname(__FILE__).'/configuredVars.php';
+
+/** main controller test element */
 abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
   {
   protected $application;
 
   protected $params = array();
 
-  /** set up tests*/
+  /**
+   * Start xdebug code coverage.
+   * Only has an effect if MIDAS_TEST_COVERAGE is defined to true
+   */
+  public function startCodeCoverage()
+    {
+    if(MIDAS_TEST_COVERAGE && extension_loaded('xdebug'))
+      {
+      xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+      }
+    }
+
+  /**
+   * Stop xdebug code coverage and write the results.
+   * Only has an effect if MIDAS_TEST_COVERAGE is defined to true
+   */
+  public function stopCodeCoverage()
+    {
+    if(MIDAS_TEST_COVERAGE && extension_loaded('xdebug'))
+      {
+      $data = xdebug_get_code_coverage();
+      xdebug_stop_code_coverage();
+
+      $file = CMAKE_BINARY_DIR.'/xdebugCoverage/'.md5($_SERVER['SCRIPT_FILENAME']);
+      file_put_contents($file.'.'.md5(uniqid(rand(), true)).'.'.get_class($this), serialize($data));
+      }
+    }
+
+  /** set up tests */
   public function setUp()
     {
     $this->bootstrap = array($this, 'appBootstrap');
     $this->loadElements();
     $this->ModelLoader = new MIDAS_ModelLoader();
     parent::setUp();
+    $this->startCodeCoverage();
+    }
+
+  /** end test */
+  public function tearDown()
+    {
+    Zend_Controller_Front::getInstance()->resetInstance();
+    $this->resetAll();
+    parent::tearDown();
+    $this->stopCodeCoverage();
     }
 
   /** get response body*/
@@ -234,14 +275,6 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     $this->params = array();
     $this->frontController->setControllerDirectory(BASE_PATH . '/core/controllers', 'default');
     $this->_initModule();
-    }
-
-  /** end test*/
-  public function tearDown()
-    {
-    Zend_Controller_Front::getInstance()->resetInstance();
-    $this->resetAll();
-    parent::tearDown();
     }
 
   /** init midas*/
