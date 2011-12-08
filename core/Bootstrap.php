@@ -57,6 +57,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $configCore = new Zend_Config_Ini(CORE_CONFIG, 'global', true);
     Zend_Registry::set('configCore', $configCore);
 
+    // check if internationalization enabled
+    if(isset($configCore->internationalization) && $configCore->internationalization == "0")
+      {
+      $configGlobal->application->lang = "en";
+      }
+
     $config = new Zend_Config_Ini(APPLICATION_CONFIG, $configGlobal->environment, true);
     Zend_Registry::set('config', $config);
     date_default_timezone_set($configGlobal->default->timezone);
