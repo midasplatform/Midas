@@ -133,6 +133,60 @@ function removeNodeFromTree(node, recursive)
   getElementsSize();
   }
 
+function removeItem(id)
+  {
+  var html='';
+  html+=json.browse['removeMessage'];
+  html+='<br/>';
+  html+='<br/>';
+  html+='<br/>';
+  html+='<input style="margin-left:140px;" class="globalButton deleteFolderYes" element="'+id+'" type="button" value="'+json.global.Yes+'"/>';
+  html+='<input style="margin-left:50px;" class="globalButton deleteFolderNo" type="button" value="'+json.global.No+'"/>';
+
+  showDialogWithContent(json.browse['delete'],html,false);
+
+  $('input.deleteFolderYes').unbind('click').click(function()
+    {
+    var node = $('table.treeTable tr[element='+id+']');
+    var folder = parentOf(node);
+    var folderId = '';
+    if(folder) //we are in a subfolder view and the parent is the current folder
+      {
+      folderId = folder.attr('element');
+      }
+    else
+      {
+      folderId = json.folder.folder_id;
+      }
+
+    $.post(json.global.webroot+'/folder/removeitem', {folderId: folderId, itemId: id},
+      function(data) {
+        jsonResponse = jQuery.parseJSON(data);
+        if(jsonResponse==null)
+          {
+          createNotive('Error',4000);
+          return;
+          }
+        if(jsonResponse[0])
+          {
+          createNotive(jsonResponse[1],1500);
+          $( "div.MainDialog" ).dialog('close');
+          removeNodeFromTree(node, false);
+          genericCallbackCheckboxes($('#browseTable'));
+          genericCallbackSelect(null);
+          }
+        else
+          {
+          createNotive(jsonResponse[1],4000);
+          }
+      });
+    });
+  $('input.deleteFolderNo').unbind('click').click(function()
+    {
+    $( "div.MainDialog" ).dialog('close');
+    });
+  }
+
 function deleteFolder(id)
   {
   var html='';
@@ -264,50 +318,6 @@ function ancestorsOf(node) {
   }
   return ancestors;
 }
-
-function removeItem(id)
-  {
-  var html='';
-  html+=json.browse['removeMessage'];
-  html+='<br/>';
-  html+='<br/>';
-  html+='<br/>';
-  html+='<input style="margin-left:140px;" class="globalButton deleteFolderYes" element="'+id+'" type="button" value="'+json.global.Yes+'"/>';
-  html+='<input style="margin-left:50px;" class="globalButton deleteFolderNo" type="button" value="'+json.global.No+'"/>';
-
-  showDialogWithContent(json.browse['delete'],html,false);
-
-  $('input.deleteFolderYes').unbind('click').click(function()
-    {
-    var node=$('table.treeTable tr[element='+id+']');
-
-    $.post(json.global.webroot+'/folder/removeitem', {folderId: parentOf(node).attr('element'), itemId: id},
-      function(data) {
-        jsonResponse = jQuery.parseJSON(data);
-        if(jsonResponse==null)
-          {
-          createNotive('Error',4000);
-          return;
-          }
-        if(jsonResponse[0])
-          {
-          createNotive(jsonResponse[1],1500);
-          $( "div.MainDialog" ).dialog('close');
-          removeNodeFromTree(node, false);
-          genericCallbackCheckboxes($('#browseTable'));
-          genericCallbackSelect(null);
-          }
-        else
-          {
-          createNotive(jsonResponse[1],4000);
-          }
-      });
-    });
-  $('input.deleteFolderNo').unbind('click').click(function()
-    {
-    $( "div.MainDialog" ).dialog('close');
-    });
-  }
 
 function createAction(node)
   {

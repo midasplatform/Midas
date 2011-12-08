@@ -158,6 +158,7 @@ class FolderController extends AppController
 
     $this->view->title .= ' - '.$folder->getName();
     $this->view->metaDescription = substr($folder->getDescription(), 0, 160);
+    $this->view->json['folder'] = $folder;
     }// end View Action
 
 
@@ -226,7 +227,7 @@ class FolderController extends AppController
     $item_id = $this->_getParam('itemId');
     $folder = $this->Folder->load($folder_id);
     $item = $this->Item->load($item_id);
-    $header = "";
+    $header = '';
     if(!isset($folder_id))
       {
       throw new Zend_Exception("Please set the folderId.");
@@ -237,15 +238,19 @@ class FolderController extends AppController
       }
     elseif($folder === false)
       {
-      throw new Zend_Exception("The folder doesn t exist.");
+      throw new Zend_Exception("The folder doesn't exist.");
       }
     elseif($item === false)
       {
-      throw new Zend_Exception("The item doesn t exist.");
+      throw new Zend_Exception("The item doesn't exist.");
       }
     elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
-      throw new Zend_Exception("Permissions error.");
+      throw new Zend_Exception('Write permission on folder required');
+      }
+    elseif(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception('Admin permission on item required');
       }
 
     $this->Folder->removeItem($folder, $item);
