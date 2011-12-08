@@ -1,9 +1,4 @@
-  MIDAS Server
-
-  Copyright (c) 2011 Kitware SAS.  All rights reserved.
-  See Copyright.txt for details. More information http://www.kitware.fr
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notices for more information.
-  
+ MIDAS Server
+ Copyright (c) Kitware SAS. 20 rue de la Villette. 69328 Lyon, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com

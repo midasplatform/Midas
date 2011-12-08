@@ -107,9 +107,10 @@ function initLogs()
     }
 }
 
-function validateShowlog(formData, jqForm, options) {
- $('table#listLogs').hide();
- $('.logsLoading').show();
+function validateShowlog(formData, jqForm, options)
+{
+  $('table#listLogs').hide();
+  $('.logsLoading').show();
 }
 
 function successShowlog(responseText, statusText, xhr, form)

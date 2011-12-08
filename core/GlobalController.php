@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 20 rue de la Villette. 69328 Lyon, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 require_once BASE_PATH.'/library/KWUtils.php';
@@ -204,14 +212,14 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         {
         $nameComponent = $component . "Component";
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
-        if(!class_exists($nameComponent))
-          {
-          throw new Zend_Exception('Unable to find '.$nameComponent);
-          }
 
         if(!isset($this->Component))
           {
           $this->Component =  new stdClass();
+          }
+        if(!class_exists($nameComponent))
+          {
+          throw new Zend_Exception('Unable to find '.$nameComponent);
           }
         $this->Component->$component = new $nameComponent();
         }
@@ -225,14 +233,13 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         $nameForm = $forms . "Form";
 
         Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
-        if(!class_exists($nameForm))
-          {
-          throw new Zend_Exception('Unable to find '.$nameForm);
-          }
-
         if(!isset($this->Form))
           {
           $this->Form =  new stdClass();
+          }
+        if(!class_exists($nameForm))
+          {
+          throw new Zend_Exception('Unable to find '.$nameForm);
           }
         $this->Form->$forms = new $nameForm();
         }

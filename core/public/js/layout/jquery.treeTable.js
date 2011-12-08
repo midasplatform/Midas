@@ -54,19 +54,9 @@
   
   // Recursively hide all node's children in a tree
   $.fn.collapse = function() {
-    $(this).addClass("collapsed");
-    
-    childrenOf($(this)).each(function() {
-      if(!$(this).hasClass("collapsed")) {
-        $(this).collapse();
-      }
-      
-      this.style.display = "none"; // Performance! $(this).hide() is slow...
-      if($.isFunction(options.onNodeHide)) {
-        options.onNodeHide.call(this);
-      }
-    });
-
+    var id = $(this).attr('id');
+    $('tr[id*="'+id+'"]').addClass("collapsed").hide();
+    $(this).show();
     colorLines(true);
     return this;
   };
@@ -371,7 +361,7 @@
         
         var j = 1;
         var sliceValue = 42 - (id.split('-').length - 1)*3;
-        
+
         var drag_option = "";
         
          $.each(elements['folders'], function(index, value) {

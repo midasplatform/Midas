@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 20 rue de la Villette. 69328 Lyon, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 require_once BASE_PATH.'/core/AppController.php';
@@ -30,7 +38,19 @@ class MIDAS_GlobalModule extends AppController
     $this->view->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
     $this->view->moduleName = $this->moduleName;
 
-    $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', true);
+	if(file_exists(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini'))
+      {
+      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', true);
+      }
+    elseif(file_exists(BASE_PATH.'/privateModules/'.$this->moduleName.'/configs/module.ini'))
+      {
+      $config = new Zend_Config_Ini(BASE_PATH.'/privateModules/'.$this->moduleName.'/configs/module.ini', 'global', true);
+      }
+    else
+      {
+      throw new Zend_Exception('Unable to find configuration file');
+      }
+    
     $this->view->moduleFullName = $config->fullname;
     $this->view->moduleDescription = $config->description;
 
@@ -63,7 +83,6 @@ class MIDAS_GlobalModule extends AppController
       {
       throw new Zend_Exception('Unable to find module '.$this->moduleName.' view directory');
       }
-
     if($this->isTestingEnv())
       {
       $this->disableLayout();
@@ -155,7 +174,6 @@ class MIDAS_GlobalModule extends AppController
           {
           throw new Zend_Exception('Unable to find '.$nameComponent);
           }
-
         if(!isset($this->ModuleComponent))
           {
           $this->ModuleComponent =  new stdClass();
@@ -186,7 +204,6 @@ class MIDAS_GlobalModule extends AppController
           {
           throw new Zend_Exception('Unable to find '.$nameForm);
           }
-
         if(!isset($this->ModuleForm))
           {
           $this->ModuleForm =  new stdClass();
