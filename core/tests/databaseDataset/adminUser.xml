@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+    <user user_id="11111" firstname="FirstName11111" lastname="LastName11111"
+      email="user11111@user11111.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:09:02"
+      folder_id="11110" publicfolder_id="11111" privatefolder_id="11112" admin="1"/>
+
+    <folder folder_id="11110" name="User 11111 name Folder 1"  uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb70'
+		description="Description Folder 1" left_indice="1111" right_indice="11115"
+		parent_id="-1" />
+
+    <folderpolicyuser folder_id="11110" user_id="1" policy='2' />
+    <folder folder_id="11111" name="User 11111 name Folder 2" uuid='4e311fdf82007c245b07d8d6cb4205f2621eb72761'
+      description="Description Folder 2" left_indice="11111" right_indice="11112"
+      parent_id="11110" />
+    <folderpolicyuser folder_id="11111" user_id="1" policy='2' />
+    <folder folder_id="11112" name="User 11111 name Folder 3" uuid='4e311fdf8200745b07d8d6c4fcb4205f2621eb72762'
+      description="Description Folder 3" left_indice="11113" right_indice="11114"
+      parent_id="11110" />
+</dataset>

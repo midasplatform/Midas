@@ -59,6 +59,10 @@ class NotifyErrorComponent  extends AppComponent
             {
             $e['typeText'] = 'E_ERROR';
             }
+          elseif($e['type'] == 4 )
+            {
+            $e['typeText'] = '4';
+            }
           elseif($e['type'] == E_WARNING )
             {
             $e['typeText'] = 'E_WARNING';
@@ -97,6 +101,10 @@ class NotifyErrorComponent  extends AppComponent
           elseif($e['type'] == E_ERROR )
             {
             $e['typeText'] = 'E_ERROR';
+            }
+          elseif($e['type'] == 4 )
+            {
+            $e['typeText'] = '4';
             }
           elseif($e['type'] == E_WARNING )
             {

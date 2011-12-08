@@ -95,6 +95,7 @@ class Zend_Application_Bootstrap_Bootstrap
 
         $front->setParam('bootstrap', $this);
         $response = $front->dispatch();
+
         if ($front->returnResponse()) {
             return $response;
         }

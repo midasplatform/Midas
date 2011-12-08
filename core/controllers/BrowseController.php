@@ -163,6 +163,67 @@ class BrowseController extends AppController
     $this->view->communities = $communities;
     }
 
+  /** Ajax element used to select an item*/
+  public function selectitemAction()
+    {
+    if(!$this->getRequest()->isXmlHttpRequest())
+      {
+      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      }
+    $this->_helper->layout->disableLayout();
+
+    $this->view->selectEnabled = true;
+
+    $communities = $this->User->getUserCommunities($this->userSession->Dao);
+    $communities = array_merge($communities, $this->Community->getPublicCommunities());
+    $this->view->Date = $this->Component->Date;
+
+    $this->Component->Sortdao->field = 'name';
+    $this->Component->Sortdao->order = 'asc';
+    usort($communities, array($this->Component->Sortdao, 'sortByName'));
+    $communities = $this->Component->Sortdao->arrayUniqueDao($communities );
+
+    $this->view->user = $this->userSession->Dao;
+    $this->view->communities = $communities;
+    }
+
+  /** Ajax element used to select a folder*/
+  public function selectfolderAction()
+    {
+    if(!$this->getRequest()->isXmlHttpRequest())
+      {
+      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      }
+    $this->disableLayout();
+    $policy = $this->_getParam("policy");
+
+    $communities = $this->User->getUserCommunities($this->userSession->Dao);
+
+
+    if(isset($policy) && $policy == 'read')
+      {
+      $policy = MIDAS_POLICY_READ;
+      $communities = array_merge($communities, $this->Community->getPublicCommunities());
+      }
+    else
+      {
+      $policy = MIDAS_POLICY_WRITE;
+      }
+
+    $this->view->selectEnabled = true;
+
+    $this->view->Date = $this->Component->Date;
+    $this->view->policy = $policy;
+
+    $this->Component->Sortdao->field = 'name';
+    $this->Component->Sortdao->order = 'asc';
+    usort($communities, array($this->Component->Sortdao, 'sortByName'));
+    $communities = $this->Component->Sortdao->arrayUniqueDao($communities );
+
+    $this->view->user = $this->userSession->Dao;
+    $this->view->communities = $communities;
+    }
+
   /** get getfolders content (ajax function for the treetable) */
   public function getfolderscontentAction()
     {

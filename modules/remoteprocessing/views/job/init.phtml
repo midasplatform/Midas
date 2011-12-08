@@ -1,0 +1,128 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.timepicker-addon.js');
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.init.js');
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.smartWizard-2.0.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/job/job.init.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.timepicker-addon.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.smartWizard-2.0.css" />
+
+<div id="wizard" class="swMain">
+  <ul>
+    <li>
+      <a href="#step-1">
+          <span class="stepDesc">
+             1. Upload<br />
+             <small>Upload additional data</small>
+          </span>
+      </a>
+    </li>
+    <li>
+      <a href="#step-2">
+          <span class="stepDesc">
+             2. Executable<br />
+             <small>Select an executable</small>
+          </span>
+      </a>
+    </li>
+    <li>
+      <a href="#step-3">
+
+          <span class="stepDesc">
+             3. Parameters<br />
+             <small>Set up job's parameters</small>
+          </span>
+       </a>
+    </li>
+  </ul>
+  <div id="step-1">
+      <h2 class="StepTitle">Upload (Optional)</h2>
+      <br/><b>A processing job requires at least an executable. <br/>Please upload the file you want to process.</b> (you can use browse MIDAS content)<br/>
+      <br/>
+
+      <div id='uploadContentBlock'>
+        <img  src="<?php echo $this->webroot?>/core/public/images/icons/loading.gif" alt="Loading..." />
+      </div>
+      <br/>
+      <b>Go to the <a onclick="$('.buttonNext').click();" >next step</a> if you want to use already uploaded files.</b>
+
+  </div>
+  <div id="step-2">
+      <h2 class="StepTitle">Executable</h2>
+      <br/><b>Select the executable you want to use.</b>
+      <br/><br/>
+      <?php
+        echo '<div id="browseExecutableFile" class="genericBigButton ">';
+          echo "<a  ><img  alt='' src='{$this->coreWebroot}/public/images/FileTree/file.png'/>";
+          echo $this->t('Browse');
+          echo "</a>";
+        echo '</div>';
+        ?>
+
+      <div id='recentuploadContentBlock'>
+        <img  src="<?php echo $this->webroot?>/core/public/images/icons/loading.gif" alt="Loading..." />
+      </div>
+      <br/><br/>
+      <b>Selected Item:</b> <span id="selectedExecutable"><?php echo (isset($this->itemDao))? $this->itemDao->getName():'None'?></span>
+      <input type="hidden" id="selectedExecutableId" value="<?php echo (isset($this->itemDao))? $this->itemDao->getKey():''?>"/>
+
+      <div id="metaWrapper">
+        <h3>Meta information</h3>
+        <div id="metaPageBlock">
+          <img  src="<?php echo $this->webroot?>/core/public/images/icons/loading.gif" alt="Loading..." />
+        </div>
+      </div>
+  </div>
+  <div id="step-3">
+      <h2 class="StepTitle">Parameters</h2>
+      <br/>
+      <b>Here are listed the options executable options. Please fill the form using the data you want to process.</b><br/><br/>
+      <?php
+      if($this->scheduled)
+        {?>
+        A scheduled job require folder inputs. All the data located in these folders will be periodically processed.<br/><br/>
+        <?php
+        }
+      ?>
+
+      <br/>
+      <div class="nameWrapper" >
+        <h4>Name (required)</h4>
+        <input type="text" id="jobName" name="jobName"/>
+      </div>
+      <div id="executableForm" loaded="">
+      </div>
+
+    <?php if($this->scheduled)
+      {?>
+    <input type='checkbox' id="checkboxSchedule" name="checkboxSchedule"/> <label for="checkboxSchedule">Run as soon as possible</label>
+    <div id="schedulerWrapper" >
+      Date and Time: <input type="text" id="datepicker"> Every: <select id="intervalSelect">
+        <option value="0">Only once</option>
+        <option value="3600">Hours</option>
+        <option value="86400">Days</option>
+        <option value="604800">Weeks</option>
+      </select>
+    </div>
+    <br/>
+    <?php
+      }?>
+
+  </div>
+</div>
+
+
+
+
+

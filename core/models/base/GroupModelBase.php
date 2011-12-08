@@ -48,6 +48,16 @@ abstract class GroupModelBase extends AppModel
       $dao->saved = true;
       return $dao;
       }
+    elseif($key == MIDAS_GROUP_SERVER_KEY)
+      {
+      $this->loadDaoClass('GroupDao');
+      $dao = new GroupDao();
+      $dao->setGroupId(MIDAS_GROUP_SERVER_KEY);
+      $dao->setCommunityId(0);
+      $dao->setName('Servers');
+      $dao->saved = true;
+      return $dao;
+      }
     else
       {
       return parent::load($key);

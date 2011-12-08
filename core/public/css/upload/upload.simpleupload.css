@@ -30,6 +30,10 @@ div.uploadedFilesWrapper{
 	padding: 0;
 }
 
+.globalButton{
+  margin-top: 3px!important;
+}
+
 
 
 #swfuploadContent div.fieldset {

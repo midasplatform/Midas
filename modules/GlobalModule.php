@@ -30,7 +30,19 @@ class MIDAS_GlobalModule extends AppController
     $this->view->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
     $this->view->moduleName = $this->moduleName;
 
-    $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', true);
+	if(file_exists(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini'))
+      {
+      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', true);
+      }
+    elseif(file_exists(BASE_PATH.'/privateModules/'.$this->moduleName.'/configs/module.ini'))
+      {
+      $config = new Zend_Config_Ini(BASE_PATH.'/privateModules/'.$this->moduleName.'/configs/module.ini', 'global', true);
+      }
+    else
+      {
+      throw new Zend_Exception('Unable to find configuration file');
+      }
+    
     $this->view->moduleFullName = $config->fullname;
     $this->view->moduleDescription = $config->description;
 
@@ -51,7 +63,18 @@ class MIDAS_GlobalModule extends AppController
   public function preDispatch()
     {
     parent::preDispatch();
-    $this->view->setScriptPath(BASE_PATH."/modules/".$this->moduleName."/views");
+    if(file_exists(BASE_PATH."/modules/".$this->moduleName."/views"))
+      {
+      $this->view->setScriptPath(BASE_PATH."/modules/".$this->moduleName."/views");
+      }
+    elseif(file_exists(BASE_PATH."/privateModules/".$this->moduleName."/views"))
+      {
+      $this->view->setScriptPath(BASE_PATH."/privateModules/".$this->moduleName."/views");
+      }
+    else
+      {
+      throw new Zend_Exception('Unable to find module '.$this->moduleName.' view directory');
+      }
     if($this->isTestingEnv())
       {
       $this->disableLayout();
@@ -108,7 +131,18 @@ class MIDAS_GlobalModule extends AppController
       {
       foreach($this->_moduleDaos as $dao)
         {
-        include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
+        if(file_exists(BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
+          {
+          include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
+          }
+        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
+          {
+          include_once (BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php");
+          }
+        else
+          {
+          throw new Zend_Exception('Unable to find dao  '.$dao);
+          }
         }
       }
 
@@ -117,7 +151,22 @@ class MIDAS_GlobalModule extends AppController
       foreach($this->_moduleComponents as $component)
         {
         $nameComponent = ucfirst($this->moduleName).'_'.$component . "Component";
-        include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
+        if(file_exists(BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php"))
+          {
+          include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
+          }
+        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"))
+          {
+          include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php");
+          }
+        else
+          {
+          throw new Zend_Exception('Unable to find components  '.$component);
+          }
+        if(!class_exists($nameComponent))
+          {
+          throw new Zend_Exception('Unable to find '.$nameComponent);
+          }
         if(!isset($this->ModuleComponent))
           {
           $this->ModuleComponent =  new stdClass();
@@ -132,6 +181,22 @@ class MIDAS_GlobalModule extends AppController
         {
         $nameForm = ucfirst($this->moduleName).'_'.$forms . "Form";
         include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
+        if(file_exists(BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
+          {
+          include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
+          }
+        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
+          {
+          include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
+          }
+        else
+          {
+          throw new Zend_Exception('Unable to find form  '.$forms);
+          }
+        if(!class_exists($nameForm))
+          {
+          throw new Zend_Exception('Unable to find '.$nameForm);
+          }
         if(!isset($this->ModuleForm))
           {
           $this->ModuleForm =  new stdClass();

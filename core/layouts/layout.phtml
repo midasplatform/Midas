@@ -47,6 +47,17 @@ echo $this->doctype()
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery.qtip.min.css" />';
       }
     ?>
+    <?php
+    $headers = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_FOOTER_HEADER", array());
+    if(!empty($headers))
+      {
+      foreach($headers as $header)
+        {
+        echo $header;
+        }
+      }
+    ?>
+
     <!--[if IE]>
       <?php echo  '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/mainIE.css" />';?>
       <?php echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/roundCornerIE.js"></script>';?>
@@ -214,6 +225,16 @@ echo $this->doctype()
                 Upload
               </a>
             </li>
+            <?php
+            $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_LAYOUT_TOPBUTTONS", array());
+            foreach($htmltArray as $html)
+              {
+              if(!empty($html))
+                {
+                echo $html;
+                }
+              }
+            ?>
           </ul>
           <div class="viewNoticeWrapper">
             <div class="viewNotice"></div>
@@ -318,18 +339,18 @@ echo $this->doctype()
       <hr style="display: none;"/>
     </div>
     <?php
-              if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
-                {
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,jquery.treeTable.js,jquery.qtip.min.js"></script>';
-                }
-              else
-                {
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery-ui.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/main.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.treeTable.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.qtip.min.js"></script>';
-                }
+      if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+        {
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,jquery.treeTable.js,jquery.qtip.min.js"></script>';
+        }
+      else
+        {
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery-ui.js"></script>';
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/main.js"></script>';
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.treeTable.js"></script>';
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.qtip.min.js"></script>';
+        }
     ?>
     <?php echo $this->headScript() ?>
     <input type="hidden" class="webroot" value="<?php echo $this->webroot?>" />

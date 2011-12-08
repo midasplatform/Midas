@@ -131,7 +131,8 @@ class MIDAS_GlobalDao
       }
     if(method_exists($this, 'get' . ucfirst($var)))
       {
-      return call_user_func('get' . ucfirst($var), $var);
+      $name = 'get' . ucfirst($var);
+      return $this->$name($var);
       }
     elseif(isset($this->$var))
       {

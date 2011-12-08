@@ -211,6 +211,15 @@ if($this->preview) // module visualize
         }
       if($this->isAdmin)
         {
+        $modules = Zend_Registry::get('modulesEnable');
+         if(in_array('statistics', $modules))
+          {
+          echo
+         "<li>
+            <a href='".$this->webroot."/statistics/item?id=".$this->itemDao->getKey()."'><img alt='' src='{$this->coreWebroot}/public/images/icons/metadata.png'/> {$this->t('Statistics')}</a>
+          </li>
+            ";
+          }
         echo
        "
         <li>
@@ -266,13 +275,13 @@ if($this->preview) // module visualize
   </div>
   <?php
   $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_ITEM_VIEW_INFO", array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin));
-  foreach($htmltArray as $html)
-    {
-    if(!empty($html))
+    foreach($htmltArray as $html)
       {
-      echo $html;
+      if(!empty($html))
+        {
+        echo $html;
+        }
       }
-    }
   if(count($this->sameLocation) > 1)
     {?>
   <div class='sideElementLast viewSameLocation'>

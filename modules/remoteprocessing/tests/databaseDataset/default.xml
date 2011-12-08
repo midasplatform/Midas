@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+
+	<remoteprocessing_job job_id = "1" os = "windows" script = "script" status = "0" expiration_date = "2011-10-26 22:32:58"	creation_date ="2011-10-26 18:01:02"/>
+  <remoteprocessing_job2item job_id = "1" item_id = "1" />
+
+</dataset>
+

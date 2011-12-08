@@ -172,6 +172,14 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     return $config;
     }
 
+  /** set up front */
+  protected function _initFrontModules()
+    {
+    $this->bootstrap('frontController');
+    $front = $this->getResource('frontController');
+    $front->addModuleDirectory(BASE_PATH.'/modules');
+    $front->addModuleDirectory(BASE_PATH.'/privateModules');
+    }
 
   /** init routes*/
   protected function _initRouter()
@@ -188,6 +196,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     foreach($modules as $key => $module)
       {
       if($module == 1 &&  file_exists(BASE_PATH.'/modules/'.$key) && file_exists(BASE_PATH . "/modules/".$key."/AppController.php"))
+        {
+        $listeModule[] = $key;
+        }
+      elseif($module == 1 &&  file_exists(BASE_PATH.'/privateModules/'.$key) && file_exists(BASE_PATH . "/privateModules/".$key."/AppController.php"))
         {
         $listeModule[] = $key;
         }
@@ -213,7 +225,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                   'module' => $nameModule,
                   'controller' => 'index',
                   'action' => 'index')));
-      $frontController->addControllerDirectory(BASE_PATH . "/modules/".$route."/controllers", $nameModule);
+
       if(file_exists(BASE_PATH . "/modules/".$route."/AppController.php"))
         {
         require_once BASE_PATH . "/modules/".$route."/AppController.php";
@@ -231,7 +243,29 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         require_once BASE_PATH . "/modules/".$route."/constant/module.php";
         }
 
+      if(file_exists(BASE_PATH . "/privateModules/".$route."/AppController.php"))
+        {
+        require_once BASE_PATH . "/privateModules/".$route."/AppController.php";
+        }
+      if(file_exists(BASE_PATH . "/privateModules/".$route."/models/AppDao.php"))
+        {
+        require_once BASE_PATH . "/privateModules/".$route."/models/AppDao.php";
+        }
+      if(file_exists(BASE_PATH . "/privateModules/".$route."/models/AppModel.php"))
+        {
+        require_once BASE_PATH . "/privateModules/".$route."/models/AppModel.php";
+        }
+      if(file_exists(BASE_PATH . "/privateModules/".$route."/constant/module.php"))
+        {
+        require_once BASE_PATH . "/privateModules/".$route."/constant/module.php";
+        }
+
       $dir = BASE_PATH . "/modules/".$route."/models/base";
+      if(!is_dir($dir))
+        {
+        $dir = BASE_PATH . "/privateModules/".$route."/models/base";
+        }
+
       if(is_dir($dir))
         {
         $objects = scandir($dir);

@@ -1,7 +1,7 @@
-		
-    
+
+
     var swfu;
-    
+
     $('img#uploadAFile').show();
     $('img#uploadAFileLoadiing').hide();
       function uploadPreStart(file)
@@ -69,18 +69,18 @@
 			}
 		});
     $( "#uploadTabs" ).show();
-      $('#linkForm').ajaxForm(function() { 
+      $('#linkForm').ajaxForm(function() {
          // $('input[name=url]').val('http://');
           $('.uploadedLinks').val(parseInt($('.uploadedLinks').val())+1);
           updateUploadedCount();
       });
-     
-     
-     
+
+
+
     $('#swfuploadContent').hide();
     $('#jqueryFileUploadContent').show();
     initJqueryFileupload();
-    
+
     function sendParentToJavaSession()
     {
       $.post(json.global.webroot+'/upload/javaupload', {parent: $('#destinationId').val(),license: $('select[name=licenseSelect]:last').val()},
@@ -88,13 +88,13 @@
              console.log(data);
          });
     }
-     
+
     function successJavaUpload()
     {
       $('.uploadedJava').val(parseInt($('.uploadedJava').val())+1);
       updateUploadedCount();
     }
-      
+
     function updateUploadedCount()
     {
       var count=parseInt($('.uploadedSimple').val())+parseInt($('.uploadedLinks').val())+parseInt($('.uploadedJava').val());
@@ -105,7 +105,7 @@
         }
       else
         {
-        
+
         $('.reviewUploaded').hide();
         }
     }
@@ -152,7 +152,7 @@
           },
         sequentialUploads: true
         });
-        
+
         $('#startUploadLink').click(function () {
             if($('#destinationId').val()==undefined||$('#destinationId').val().length==0)
               {
@@ -165,14 +165,13 @@
             $('#startUploadLink').css('-moz-box-shadow', '0 0 0px blue');
             return false;
         });
-    
+
     }
-    
-    
-    
+
+
+
     $('.browseMIDASLink').click(function()
       {
-        loadDialog("select","/browse/movecopy/?selectElement=true");
+        loadDialog("select","/browse/selectfolder/?policy=write");
         showDialog('Browse');
       });
-      

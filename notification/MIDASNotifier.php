@@ -12,24 +12,24 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Notify modules using this class*/
 class MIDAS_Notifier
-  {  
+  {
   public $modules = array();
   public $tasks = array();
   private $tasksByModule = array();
   public $notifications = array();
-  
+
   /** get Notification */
   public function getNotifications()
     {
     return $this->notifications;
     }
-    
+
   /** get Tasks */
   public function getTasks()
     {
     return $this->tasks;
     }
-  
+
   /** init the notifier*/
   public function __construct($logged, $session)
     {
@@ -48,8 +48,20 @@ class MIDAS_Notifier
         $this->modules[$module]->logged = $logged;
         $this->modules[$module]->userSession = $session;
         }
+      if(file_exists(BASE_PATH.'/privateModules/'.$module.'/Notification.php'))
+        {
+        require_once BASE_PATH.'/privateModules/'.$module.'/Notification.php';
+        $name = ucfirst($module).'_Notification';
+        if(!class_exists($name))
+          {
+          throw new Zend_Exception('Unable to find notification class: '.$name);
+          }
+        $this->modules[$module] = new $name();
+        $this->modules[$module]->logged = $logged;
+        $this->modules[$module]->userSession = $session;
+        }
       }
-    
+
     if(file_exists(BASE_PATH.'/core/Notification.php'))
       {
       require_once BASE_PATH.'/core/Notification.php';
@@ -59,8 +71,10 @@ class MIDAS_Notifier
         throw new Zend_Exception('Unable to find notification class: '.$name);
         }
       $this->modules['core'] = new $name();
+      $this->modules['core']->logged = $logged;
+      $this->modules['core']->userSession = $session;
       }
-      
+
     foreach($this->modules as $module => $notificationClass)
       {
       $tasks = $notificationClass->getTasks();
@@ -76,12 +90,12 @@ class MIDAS_Notifier
           }
         $this->tasks[$name] = $task;
         $this->tasks[$name]['module'] = $module;
-        
+
         $this->tasksByModule[$module] = $task;
         $this->tasksByModule[$module]['name'] = $name;
-        }        
+        }
       }
-      
+
     foreach($this->modules as $module => $notificationClass)
       {
       $notifications = $notificationClass->getNotifications();
@@ -91,7 +105,7 @@ class MIDAS_Notifier
           {
           $this->notifications[$name] = array();
           }
-          
+
         foreach($notificationArray as $notification)
           {
           if($notification['type'] == 'callback')
@@ -117,8 +131,8 @@ class MIDAS_Notifier
           }
         }
       }
-    }//end contruct() 
-    
+    }//end contruct()
+
   /** notify enabled modules*/
   public function notifyEvent($name, $params = null, $moduleFilter = array())
     {
@@ -145,7 +159,7 @@ class MIDAS_Notifier
       }
     return $return;
     }//end notify
-    
+
   /** schedule or execute a task*/
   private function _setTask($name, $params, $priority)
     {
@@ -164,7 +178,7 @@ class MIDAS_Notifier
       call_user_func(array($this->modules[$this->tasks[$name]['module']], $this->tasks[$name]['method']), $params);
       }
     }
-    
+
   /** notify enabled modules*/
   public function callback($name, $params = null, $moduleFilter = array())
     {
@@ -195,7 +209,7 @@ class MIDAS_Notifier
       }
     return $return;
     }//end notify
-    
+
   /**
    * Get Logger
    * @return Zend_Log

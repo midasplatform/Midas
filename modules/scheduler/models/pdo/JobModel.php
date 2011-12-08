@@ -24,7 +24,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
           ->setIntegrityCheck(false)
           ->where('task = ?', $task)
           ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN);
-    
+
     $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
@@ -35,6 +35,32 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
       }
     return $return;
     }
+
+  /** get by tasks */
+  public function getJobsByTaskAndCreator($task, $userDao)
+    {
+    if(!is_string($task) && !$userDao instanceof UserDao)
+      {
+      throw new Zend_Exception('Error Params');
+      }
+    $sql = $this->database->select()
+          ->setIntegrityCheck(false)
+          ->where('task = ?', $task)
+          ->where('creator_id = ?', $userDao->getKey())
+          ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN)
+          ->order('fire_time DESC');
+
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->initDao('Job', $row, 'scheduler');
+      $return[] = $tmpDao;
+      unset($tmpDao);
+      }
+    return $return;
+    }
+
   /** get jobs*/
   public function getJobsToRun()
     {
@@ -56,7 +82,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
         $minPriority = MIDAS_EVENT_PRIORITY_LOW;
         }
       }
-      
+
    $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->where('priority >= ?', $minPriority)
@@ -74,12 +100,12 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
       }
     return $return;
     }
-    
-    
+
+
     /** get jobs*/
   public function getLastErrors($limit = 10)
     {
-    $load = $this->getServerLoad();      
+    $load = $this->getServerLoad();
     $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->where('status = ?', SCHEDULER_JOB_STATUS_FAILED)
@@ -95,6 +121,6 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
       }
     return $return;
     }
-    
+
 }  // end class
 ?>

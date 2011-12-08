@@ -1,12 +1,12 @@
 <?php
 
 class Scheduler_Upgrade_1_0_1 extends MIDASUpgrade
-{ 
+{
   public function preUpgrade()
     {
-    
+
     }
-    
+
   public function mysql()
     {
     $sql = "CREATE TABLE IF NOT EXISTS `scheduler_job_log` (
@@ -19,11 +19,11 @@ class Scheduler_Upgrade_1_0_1 extends MIDASUpgrade
     $this->db->query($sql);
 
     }
-    
-    
+
+
   public function postUpgrade()
     {
-    
+
     }
 }
 ?>

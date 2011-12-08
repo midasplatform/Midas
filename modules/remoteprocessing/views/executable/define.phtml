@@ -1,0 +1,79 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+if($this->isAjax)
+  {
+  echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/executable/executable.define.js"></script>';
+  }
+else
+  {
+  $this->headScript()->appendFile($this->moduleWebroot . '/public/js/executable/executable.define.js');
+  }
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/executable/executable.define.css" />
+
+<div class="viewMain">
+     <div class ="genericWrapperTopRight">
+         <?php
+         if(!$this->isAjax)
+           {
+            echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+              echo "<a  href='{$this->webroot}/item/{$this->itemDao->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+              echo $this->t('Back');
+              echo "</a>";
+            echo '</div>';
+            echo '  <br/><br/>';
+           }
+
+        ?>
+    </div>
+
+
+
+  This page allow you to define the execution options of the item: <b><?php echo $this->itemDao->getName()?></b>.<br/>These option are used to defined how the MIDAS Platform will use the item to create remote processing tasks.
+  <br/>
+  <br/>
+  <div id="tableContainer">
+    <div class="column">
+
+
+    </div>
+  </div>
+
+    <?php
+          echo '<div  class="genericBigButton ">';
+            echo "<a id='addDefinitionLink' ><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/add.png'/>";
+            echo $this->t('Add an Option');
+            echo "</a>";
+          echo '</div>';
+
+        ?>
+
+      <?php
+          echo '<div  class="genericBigButton " qtip="On save, MIDAS adds a VXML file to the Item.">';
+            echo "<a id='saveDefinitionLink'  ><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/upload.png'/>";
+            echo $this->t('Save');
+            echo "</a>";
+          echo '</div>';
+
+        ?>
+</div>
+
+<div id="jsonMetadataContent"><?php echo $this->jsonMetadata?></div>
+<input type="hidden" id="itemIdExecutable" value="<?php echo$this->itemDao->getKey()?>"/>
+
+
+
+
+
+
+

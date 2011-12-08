@@ -76,7 +76,8 @@ class DemoComponent extends AppComponent
     $applicationConfig['global']['dynamichelp'] = true;
     $applicationConfig['global']['environment'] = 'development';
     $applicationConfig['global']['application.name'] = 'MIDAS - Demo';
-    $applicationConfig['global']['application.description'] = 'MIDAS integrates multimedia server technology with Kitware?s open-source data analysis and visualization clients. The server follows open standards for data storage, access and harvesting';
+    $applicationConfig['global']['application.description'] = 'MIDAS integrates multimedia server technology with Kitware?s open-source ';
+    $applicationConfig['global']['application.description'] .= 'data analysis and visualization clients. The server follows open standards for data storage, access and harvesting';
     $applicationConfig['global']['application.keywords'] = 'demonstration, data management, visualization';
 
     $enabledModules = array('visualize', 'oai', 'metadataextractor', 'api', 'scheduler', 'thumbnailcreator', 'statistics');

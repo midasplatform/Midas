@@ -1,0 +1,44 @@
+table#moveTable{
+  width: 420px !important;
+}
+
+table#moveTable th.thData {
+width: auto!important;
+border-right: none!important;
+}
+
+table#moveTable{
+  display: none;
+}
+
+.treeTable .browserPrivacyInformation{
+  right: 10px!important;
+}
+
+input#live_search_item {
+background: white url(../../images/icons/search.png) no-repeat scroll 3px 1px;
+border: 1px solid white;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+-khtml-border-radius: 4px;
+border-radius: 4px;
+font-size: 12px;
+opacity: 0.9;
+padding: 3px 10px 3px 24px;
+width: 400px;
+-webkit-box-shadow: #666 0 0 3px;
+box-shadow: #666 0 0 3px;
+-moz-box-shadow: 0px 0px 3px #666;
+width:200px;
+}
+
+#searchloadingSelectItem{
+  position:absolute;
+  background:  url("../../images/icons/loading-small.gif") bottom center no-repeat;
+  color:#FFFFFF;
+  text-decoration:none;
+  width: 16px;
+  height: 16px;
+  top: 12px;
+  right: 7px;
+}

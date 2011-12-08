@@ -195,7 +195,6 @@ class Api_UserapiModel extends Api_UserapiModelBase
                   ->where('t.expiration_date > ?', $now)
                   ->where('t.token = ?', $token);
 
-
     $row = $this->database->fetchRow($sql);
     return $this->initDao('Userapi', $row, 'api');
     }
