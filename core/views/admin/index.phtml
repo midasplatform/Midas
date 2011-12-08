@@ -46,7 +46,12 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                 <label for='name'>Keywords</label>
                 {$this->configForm['keywords']}
               </div>
-              <div class='installLang'>
+              <div class='installLang'";
+      if(isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get('configCore')->internationalization == "0")
+        {
+        echo " style='display:none;' ";
+        }
+      echo ">
                 <label for='lang'>Language</label>
                 {$this->configForm['lang']}
               </div>

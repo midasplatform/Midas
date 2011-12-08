@@ -163,8 +163,12 @@ echo $this->doctype()
             <li>
               <a href="#" > <?= $this->t('Help') ?></a>
             </li>
+
+            <?php
+            if(!isset(Zend_Registry::get('configCore')->internationalization) || Zend_Registry::get('configCore')->internationalization == "1")
+              {
+              ?>
             <li>
-              
                 <a href="#" style="margin-right: 20px">
                 
                <?php 
@@ -199,6 +203,9 @@ echo $this->doctype()
                   </li>
                 </ul>
             </li>
+            <?php
+              }
+              ?>
           </ul>
         </div>
       </div>
@@ -357,14 +364,14 @@ echo $this->doctype()
     <div style="display: none;" class="jsonContent">
       <?php echo $this->json?>
     </div>
-    
+
     <div id="dialogStartingGuide" style="display:none;" title="<?php echo $this->t('Starting Guide')?>">
       <br/>
      Click on the action of you choice to start using the MIDAS Platform.
-     
+
      <br/><br/>
      <div id="seperatorStartingGuide">
-       
+
      </div>
      <br/>
        <div class="blockSet" id="blockPersoLink">
@@ -426,7 +433,7 @@ echo $this->doctype()
       </div>
      <br/>
      <div style="float:left;">
-       <input type="checkbox" name="disableStartingGuide" id="disableStartingGuide" <?php if(isset($this->userDao) && $this->userDao->getDynamichelp() == 0) echo 'checked'?> /> 
+       <input type="checkbox" name="disableStartingGuide" id="disableStartingGuide" <?php if(isset($this->userDao) && $this->userDao->getDynamichelp() == 0) echo 'checked'?> />
        <label style="color:grey;font-size: 11px;" for="disableStartingGuide">Always hide the help animation and this window.</label>
      </div>
     </div>
