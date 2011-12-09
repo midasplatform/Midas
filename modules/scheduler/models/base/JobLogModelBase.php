@@ -10,6 +10,7 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+/** Base class for the job log model */
 class Scheduler_JobLogModelBase extends Scheduler_AppModel
 {
   public function __construct()
@@ -19,13 +20,13 @@ class Scheduler_JobLogModelBase extends Scheduler_AppModel
     $this->_daoName = 'JobLogDao';
     $this->_key = 'log_id';
 
-    $this->_mainData= array(
-        'job_id'=>  array('type'=>MIDAS_DATA),
-        'log_id'=>  array('type'=>MIDAS_DATA),
-        'date'=>  array('type'=>MIDAS_DATA),
-        'log'=>  array('type'=>MIDAS_DATA),
-        'job' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Job','module' => 'scheduler', 'parent_column' => 'job_id', 'child_column' => 'job_id'),
-        );
+    $this->_mainData = array(
+      'log_id' => array('type' => MIDAS_DATA),
+      'job_id' => array('type' => MIDAS_DATA),
+      'date' => array('type' => MIDAS_DATA),
+      'log' => array('type' => MIDAS_DATA),
+      'job' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Job','module' => 'scheduler', 'parent_column' => 'job_id', 'child_column' => 'job_id')
+      );
     $this->initialize(); // required
     } // end __construct()
 
@@ -41,5 +42,5 @@ class Scheduler_JobLogModelBase extends Scheduler_AppModel
 
     $this->save($joblog);
     }
-} // end class AssetstoreModelBase
+} // end class JobLogModelBase
 ?>

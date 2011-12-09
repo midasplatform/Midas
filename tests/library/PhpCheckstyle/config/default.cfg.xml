@@ -277,7 +277,7 @@
     With the exception of for iterators, all assignments should occur in their own toplevel statement to increase readability.  
     -->
     <test name="checkInnerAssignment">
-    	<exception value="for"/>
+      <exception value="for"/>
       <exception value="while"/>
     </test>
     

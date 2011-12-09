@@ -1,4 +1,5 @@
 <?php
+
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -10,11 +11,8 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-require_once BASE_PATH.'/modules/scheduler/models/base/JobLogModelBase.php';
-
-/** job model */
-class Scheduler_JobLogModel extends Scheduler_JobLogModelBase
-{
-
-}  // end class
+class Cleanup_AppController extends MIDAS_GlobalModule
+  {
+  public $moduleName = 'cleanup';
+  } //end class
 ?>

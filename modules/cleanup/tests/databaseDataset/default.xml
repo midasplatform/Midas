@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+
+  <scheduler_job_log
+    log_id="1001"
+    job_id="1001"
+    date="2011-11-14 11:11:11"
+    log="foo" />
+
+</dataset>
+

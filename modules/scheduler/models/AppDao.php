@@ -2,7 +2,7 @@
 
 class Scheduler_AppDao extends MIDAS_GlobalDao
   {
-    public $moduleName='scheduler';
+    public $moduleName = 'scheduler';
   } //end class
 
 ?>

@@ -30,7 +30,7 @@ class MIDAS_GlobalModule extends AppController
     $this->view->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
     $this->view->moduleName = $this->moduleName;
 
-	if(file_exists(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini'))
+    if(file_exists(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini'))
       {
       $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', true);
       }
