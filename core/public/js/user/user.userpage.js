@@ -12,15 +12,12 @@
         }
       });
     $("#tabsGeneric").show();
-    $('img.tabsLoading').hide()
+    $('img.tabsLoading').hide();
     
     $("#browseTable").treeTable({
-      onNodeShow: function(node) {
-        $('input.treeCheckbox:visible').enableCheckboxRangeSelection();
-      },
-      onNodeHide: function(node) {
-        $('input.treeCheckbox:visible').enableCheckboxRangeSelection();
-      }
+      onFirstInit: enableRangeSelect,
+      onNodeShow: enableRangeSelect,
+      onNodeHide: enableRangeSelect
     });
     $('#browseTableHeaderCheckbox').click(function() {
       var selector = this.checked ? '.treeCheckbox:visible' : '.treeCheckbox';
