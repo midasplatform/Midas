@@ -358,7 +358,7 @@ class UploadController extends AppController
 
     $parent = $this->_getParam("parent");
     $license = $this->_getParam("license");
-    if(!empty($path) && file_exists($path) && $file_size > 0)
+    if(!empty($path) && file_exists($path))
       {
       $itemId_itemRevisionNumber = explode('-', $parent);
       if(count($itemId_itemRevisionNumber) == 2) //means we upload a new revision
