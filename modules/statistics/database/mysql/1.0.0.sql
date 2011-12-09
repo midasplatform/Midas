@@ -8,4 +8,4 @@ CREATE TABLE IF NOT EXISTS `statistics_download` (
   `longitude` VARCHAR(50) ,
   `date`  timestamp,
   PRIMARY KEY (`download_id`)
-)   DEFAULT CHARSET=utf8;
+);
