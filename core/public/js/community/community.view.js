@@ -9,23 +9,12 @@ $(document).ready(function() {
       }
     });
   $("#tabsGeneric").show();
-  $('img.tabsLoading').hide()
+  $('img.tabsLoading').hide();
 
   $("#browseTable").treeTable({
-    onNodeShow: function(node) {
-      $('input.treeCheckbox:visible').enableCheckboxRangeSelection({
-        onRangeSelect: function() {
-          genericCallbackCheckboxes($('#browseTable'));
-        }
-      });
-    },
-    onNodeHide: function(node) {
-      $('input.treeCheckbox:visible').enableCheckboxRangeSelection({
-        onRangeSelect: function() {
-          genericCallbackCheckboxes($('#browseTable'));
-        }
-      });
-    }
+    onFirstInit: enableRangeSelect,
+    onNodeShow: enableRangeSelect,
+    onNodeHide: enableRangeSelect
   });
   // Select/deslect all rows. If we are doing deselect all, we include hidden rows
   $('#browseTableHeaderCheckbox').click(function() {

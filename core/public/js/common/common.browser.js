@@ -491,3 +491,12 @@ function createInfo(jsonContent)
 
   $('div.ajaxInfoElement').html(html);
 }
+
+function enableRangeSelect(node)
+  {
+  $('input.treeCheckbox:visible').enableCheckboxRangeSelection({
+    onRangeSelect: function() {
+      genericCallbackCheckboxes($('#browseTable'));
+      }
+    });
+  }
