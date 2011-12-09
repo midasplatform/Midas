@@ -31,20 +31,22 @@ class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
             ->from(array('d' => 'statistics_download'), array('ip', 'latitude', 'longitude'))
             ->distinct();
     $rowSet = $this->db->fetchAll($sql);
-
+    $ips = array();
     foreach($rowSet as $keyRow => $row)
       {
-      $data = array();
-      $data['ip'] = $row['ip'];
-      $data['latitude'] = $row['latitude'];
-      $data['longitude'] = $row['longitude'];
+      // key by ip so we don't have duplicate ips (violates unique constraint)
+      $ips[$row['ip']] = array('latitude' => $row['latitude'], 'longitude' => $row['longitude']);
+      }
+    foreach($ips as $ip => $location)
+      {
+      $data = array('ip' => $ip, 'latitude' => $location['latitude'], 'longitude' => $location['longitude']);
       $this->db->insert('statistics_ip_location', $data);
       $id = $this->db->lastInsertId('statistics_ip_location', 'ip_location_id');
 
       // Point the download table entries to the new entry
       $this->db->update('statistics_download',
                         array('ip_location_id' => $id),
-                        array('ip = ?' => $row['ip']));
+                        array('ip = ?' => $ip));
       }
 
     // Drop the columns from the download table
