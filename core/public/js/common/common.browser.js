@@ -70,10 +70,14 @@ function genericCallbackCheckboxes(node)
     links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> ';
     links += '  <a href="' + json.global.webroot + '/download?folders=' + folders + '&items=' + items + '">' + json.browse.download + '</a></li>';
     links += '</li>';
-    links += '<li style="background-color: white;">';
-    links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> ';
-    links += '  <a onclick="deleteSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.deleteSelected + '</a></li>';
-    links += '</li>';
+ 
+    if(json.global.logged)
+      {
+      links += '<li style="background-color: white;">';
+      links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> ';
+      links += '  <a onclick="deleteSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.deleteSelected + '</a></li>';
+      links += '</li>';
+      }
     links += '</ul>';
     $('div.viewSelected>span').html(links);
     $('div.viewSelected li a').hover(function(){
