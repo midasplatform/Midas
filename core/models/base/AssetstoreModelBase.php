@@ -150,16 +150,42 @@ abstract class AssetstoreModelBase extends AppModel
     }// delete
 
   /**
-   * This function returns the default assetstore in the database. This
-   * is assumed to be named "Default" and is selected as such. If there
-   * is no assetsore we fail misserably, if there are more than one then
-   * we only return the "first."
+   * Check if there is an assetstore in the database. If not look for one called Default.
+   * If Default doesn't exist, return the first assetstore found.
    * @return the default assetstore
    */
   public function getDefault()
     {
-    $found = $this->findBy('name', 'Default');
-    return $found[0];
+    $modelLoader = new MIDAS_ModelLoader();
+    $settingModel = $modelLoader->loadModel('Setting');
+    $assetstoreModel = $modelLoader->loadModel('Assetstore');
+    $defaultAssetstoreId = $settingModel->getValueByName('default_assetstore');
+
+    $defaultAssetstore = false;
+
+    if(is_numeric($defaultAssetstoreId))
+      {
+      $defaultAssetstore = $assetstoreModel->load($defaultAssetstoreId);
+      }
+
+    if($defaultAssetstoreId == null || $defaultAssetstore == false)
+      {
+      $found = $this->findBy('name', 'Default');
+      if(empty($found))
+        {
+        $found = $this->getAll();
+        if(empty($found))
+          {
+          throw new Zend_Exception("No assetstore found in the database");
+          }
+        }
+      $defaultAssetstore = $found[0];
+      // explicit cast to string, as the setConfig method expects a string
+      $defaultAssetstoreId = (string)$defaultAssetstore->getKey();
+      $settingModel->setConfig('default_assetstore', $defaultAssetstoreId);
+      }
+
+    return $defaultAssetstore;
     } // end getDefault
 
 } // end class AssetstoreModelBase
