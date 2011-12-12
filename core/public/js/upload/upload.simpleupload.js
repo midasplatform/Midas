@@ -1,4 +1,4 @@
-		
+    
     
     var swfu;
     
@@ -51,8 +51,8 @@
     });
     
       
-		$( "#uploadTabs" ).tabs({
-			ajaxOptions: {
+    $( "#uploadTabs" ).tabs({
+      ajaxOptions: {
         beforeSend: function()
         {
           $('div.MainDialogLoading').show();
@@ -62,12 +62,12 @@
           $('div.MainDialogLoading').hide();
           $( "#uploadTabs" ).show();
         },
-				error: function( xhr, status, index, anchor ) {
-					$( anchor.hash ).html(
-						"Couldn't load this tab. We'll try to fix this as soon as possible. " );
-				}
-			}
-		});
+        error: function( xhr, status, index, anchor ) {
+          $( anchor.hash ).html(
+            "Couldn't load this tab. We'll try to fix this as soon as possible. " );
+        }
+      }
+    });
     $( "#uploadTabs" ).show();
       $('#linkForm').ajaxForm(function() { 
          // $('input[name=url]').val('http://');
@@ -82,21 +82,21 @@
     initJqueryFileupload();
     
     function sendParentToJavaSession()
-    {
+      {
       $.post(json.global.webroot+'/upload/javaupload', {parent: $('#destinationId').val(),license: $('select[name=licenseSelect]:last').val()},
          function(data) {
              console.log(data);
          });
-    }
-     
+      }
+
     function successJavaUpload()
-    {
+      {
       $('.uploadedJava').val(parseInt($('.uploadedJava').val())+1);
       updateUploadedCount();
-    }
-      
+      }
+
     function updateUploadedCount()
-    {
+      {
       var count=parseInt($('.uploadedSimple').val())+parseInt($('.uploadedLinks').val())+parseInt($('.uploadedJava').val());
       $('.globalUploadedCount').html(count);
       if(count>0)
@@ -108,7 +108,7 @@
         
         $('.reviewUploaded').hide();
         }
-    }
+      }
     
      $('#startUploadLink').qtip({
          content: {
@@ -118,7 +118,7 @@
 
     
     function initJqueryFileupload()
-    {
+      {
       updateUploadedCount();
        //see http://aquantum-demo.appspot.com/file-upload
         $('#file_upload').fileUploadUIX({
@@ -165,14 +165,11 @@
             $('#startUploadLink').css('-moz-box-shadow', '0 0 0px blue');
             return false;
         });
-    
-    }
-    
-    
-    
+      }
+
     $('.browseMIDASLink').click(function()
       {
-        loadDialog("select","/browse/selectfolder/?policy=write");
-        showDialog('Browse');
+      loadDialog("select","/browse/selectfolder/?policy=write");
+      showDialog('Browse');
       });
       

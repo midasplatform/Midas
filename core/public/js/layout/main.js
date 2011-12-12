@@ -3,9 +3,9 @@ var itemselected = false;
 
 // Prevent error if console.log is called
 if (typeof console != "object") {
-	var console = {
-		'log':function(){}
-	};
+  var console = {
+    'log':function(){}
+  };
 } 
 
 // Main calls
@@ -53,9 +53,9 @@ $(function() {
   function showStartingGuide()
    {
    $( "#dialogStartingGuide" ).dialog({
-			width: 580,
+      width: 580,
       title: $( "#dialogStartingGuide" ).attr('title'),
-			modal: true
+      modal: true
       });
    }
    
@@ -324,8 +324,8 @@ $(function() {
 })
     
   $('div.TopbarRighta li.first').hover(
-			function() {$('ul', this).css('display', 'block');},
-			function() {$('ul', this).css('display', 'none');});
+      function() {$('ul', this).css('display', 'block');},
+      function() {$('ul', this).css('display', 'none');});
 });
 
 
@@ -413,38 +413,49 @@ function loadDialog(name,url)
   } 
 }
 
-// show a static dialog
-function showDialog(title,button)
-{  
+/** 
+ * Show a static dialog.
+ * To override default dialog() options, use the opts argument
+ */
+function showDialog(title, button, opts)
+{
   var x= $('div.HeaderSearch').position().left+150; 
   var y= 100; 
   if(button)
-  {
-    $( "div.MainDialog" ).dialog({
-			resizable: false,
+    {
+    var options = {
+      resizable: false,
       width:450,
-			modal: false,
-      draggable:false,
+      modal: false,
+      draggable:true,
       title: title,
       position: [x,y],
       zIndex: 15100,
       buttons: {"Ok": function() {$(this).dialog("close");}} 
-		});
-    
-    
-  }
+    };
+    for(var attrname in opts)
+      {
+      options[attrname] = opts[attrname]; //override defaults if set
+      }
+    $( "div.MainDialog" ).dialog(options);
+    }
   else
-  {
-    $( "div.MainDialog" ).dialog({
-			resizable: false,
+    {
+    var options = {
+      resizable: false,
       width:450,
-			modal: false,
-      draggable:false,
-      title: title		,
+      modal: false,
+      draggable:true,
+      title: title,
       zIndex: 15100,
       position: [x,y]
-		});
-  }   
+      };
+    for(var attrname in opts)
+      {
+      options[attrname] = opts[attrname]; //override defaults if set
+      }
+    $( "div.MainDialog" ).dialog(options);
+    }   
 }
 
 // show a dialog with a width of 700px
@@ -455,26 +466,26 @@ function showBigDialog(title,button)
   if(button)
   {
     $( "div.MainDialog" ).dialog({
-			resizable: false,
+      resizable: false,
       width:700,
-			modal: false,
+      modal: false,
       draggable:false,
       title: title,
       position: [x,y],
       buttons: {"Ok": function() {$(this).dialog("close");}} 
-		});
+    });
     
   }
   else
   {
     $( "div.MainDialog" ).dialog({
-			resizable: false,
+      resizable: false,
       width:700,
-			modal: false,
+      modal: false,
       draggable:false,
-      title: title		,
+      title: title    ,
       position: [x,y]
-		});
+    });
   }
 }
 

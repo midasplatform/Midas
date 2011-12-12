@@ -2,13 +2,10 @@ package com.kitware.utils;
 
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.event.ActionEvent;
 import java.awt.GridLayout;
-
+import java.awt.event.ActionEvent;
 import java.io.File;
-
 import java.net.URL;
-
 import java.security.AccessControlException;
 
 import javax.swing.BorderFactory;
@@ -23,11 +20,10 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.TableColumn;
 import javax.swing.UIManager;
+import javax.swing.table.TableColumn;
 
 import com.kitware.utils.exception.JavaUploaderException;
-import java.net.MalformedURLException;
 
 public class Main extends JApplet
   {
@@ -117,11 +113,6 @@ public class Main extends JApplet
         
         public void actionPerformed(ActionEvent evt)
           {
-          try {
-            getAppletContext().showDocument
-              (new URL("javascript:sendParentToJavaSession()"));
-            }
-          catch (MalformedURLException me) { }
           uploadFileButtonActionPerformed(evt);
           }
         
@@ -392,12 +383,6 @@ public class Main extends JApplet
       {
       this.getAppletContext().showDocument(this.onSuccessRedirectURLObj);
       }
-    
-    try {
-      getAppletContext().showDocument
-        (new URL("javascript:successJavaUpload()"));
-      }
-    catch (MalformedURLException me) { }
     }
 
   public void reset()
