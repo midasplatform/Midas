@@ -228,4 +228,37 @@ class FolderModelTest extends DatabaseTestCase
     $item = $this->Item->load($itemid);
     $this->assertEquals(false, $item, 'Item should have been deleted');
     }
+
+  /**
+   * Test if the Folder->isDeleteable function()
+   */
+  public function testFolderIsDeleteable()
+    {
+    $communitiesFile = $this->loadData('Community', 'default');
+    $usersFile = $this->loadData('User', 'default');
+
+    // Base, public, and private folders for user and community shouldn't be deleteable
+    $this->assertFalse($this->Folder->isDeleteable($communitiesFile[0]->getFolder()));
+    $this->assertFalse($this->Folder->isDeleteable($communitiesFile[0]->getPublicFolder()));
+    $this->assertFalse($this->Folder->isDeleteable($communitiesFile[0]->getPrivateFolder()));
+    $this->assertFalse($this->Folder->isDeleteable($usersFile[0]->getFolder()));
+    $this->assertFalse($this->Folder->isDeleteable($usersFile[0]->getPublicFolder()));
+    $this->assertFalse($this->Folder->isDeleteable($usersFile[0]->getPrivateFolder()));
+
+    // Make a new top level community folder and make sure it is deleteable
+    $folder = $this->Folder->createFolder('TestFolderDeleteable', 'Description', $communitiesFile[0]->getFolder());
+    $this->assertTrue($this->Folder->isDeleteable($folder));
+
+    // Make a new folder within the community private folder and make sure it is deleteable
+    $folder = $this->Folder->createFolder('TestFolderDeleteable', 'Description', $communitiesFile[0]->getPrivateFolder());
+    $this->assertTrue($this->Folder->isDeleteable($folder));
+
+    // Make a new top level user folder and make sure it is deleteable
+    $folder = $this->Folder->createFolder('TestFolderDeleteable', 'Description', $usersFile[0]->getFolder());
+    $this->assertTrue($this->Folder->isDeleteable($folder));
+
+    // Make a new folder within the user's private folder and make sure it is deleteable
+    $folder = $this->Folder->createFolder('TestFolderDeleteable', 'Description', $usersFile[0]->getPrivateFolder());
+    $this->assertTrue($this->Folder->isDeleteable($folder));
+    }
   }

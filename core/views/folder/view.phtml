@@ -11,6 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.checkboxrange.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/folder/folder.view.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 ?>
@@ -44,7 +45,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         <th class="thData"><?php echo $this->t('Name');?></th>
         <th class="thSize"><?php echo $this->t('Size');?></th>
         <th class="thDate"><?php echo $this->t('Modified');?></th>
-        <th class="thCheckbox"></th>
+        <th class="thCheckbox"><input type="checkbox" id="browseTableHeaderCheckbox" /></th>
       </tr>
     </thead>
     <tbody>
@@ -125,7 +126,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     </ul>
   </div>
   <div class="sideElement viewSelected" >
-  <h1>'.$this->t('Selected').'</h1>
+  <h1>'.$this->t('Selected').'<span></span></h1>
     <span></span>
   </div>
   <div class="sideElementLast viewInfo">';

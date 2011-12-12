@@ -239,6 +239,8 @@ class AppController extends MIDAS_GlobalController
       'manage' => $this->t('Manage'),
       'edit' => $this->t('Edit'),
       'delete' => $this->t('Delete'),
+      'deleteSelected' => $this->t('Delete all selected'),
+      'deleteSelectedMessage' => $this->t('Do you really want to delete all selected resources?'),
       'removeItem' => $this->t('Remove Item from Folder'),
       'deleteMessage' => $this->t('Do you really want to delete the folder'),
       'removeMessage' => $this->t('Do you really want to remove the item'),

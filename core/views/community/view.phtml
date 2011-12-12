@@ -11,6 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.checkboxrange.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/community/community.view.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 foreach($this->customJSs as $Urls)
@@ -110,7 +111,7 @@ foreach($this->customCSSs as $Uris)
               <th class="thData"><?php echo $this->t('Name');?></th>
               <th class="thSize"><?php echo $this->t('Size');?></th>
               <th class="thDate"><?php echo $this->t('Modified');?></th>
-              <th class="thCheckbox"></th>
+              <th class="thCheckbox"><input type="checkbox" id="browseTableHeaderCheckbox" /></th>
         </thead>
         <tbody>
             <?php
@@ -130,7 +131,7 @@ foreach($this->customCSSs as $Uris)
               echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
               echo "  <td><img class='folderLoading'  element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
-              echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='$folderId' /></td>";
+              echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='$folderId' id='folderCheckbox{$folderId}' /></td>";
               echo "</tr>";
               $node++;
               }
@@ -141,7 +142,7 @@ foreach($this->customCSSs as $Uris)
               echo "  <td class='treeBrowseElement'><span class='file'>{$this->slicename($item->getName(),40)}</span></td>";
               echo "  <td>{$item->size}</td>";
               echo "  <td>{$this->Date->ago($item->getDateUpdate(),true)}</td>";
-              echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' /></td>";
+              echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' id='itemCheckbox{$item->getItemId()}' /></td>";
               echo "</tr>";
               $node++;
               }
@@ -184,7 +185,7 @@ foreach($this->customCSSs as $Uris)
       echo "
           <li><a id='sendInvitationLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/email.png'/> {$this->t('Send invitation')}</a></li>
           ";
-      echo "<li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/FileTree/directory.png'/> {$this->t('Create a top level Folder')}</a></li>
+      echo "<li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t('Create a top level Folder')}</a></li>
           ";
       }
     if($this->isMember&&!$this->isAdmin)
@@ -235,7 +236,7 @@ foreach($this->customCSSs as $Uris)
       </ul>
     </div>
     <div class="sideElement viewSelected" >
-      <h1><?php echo $this->t('Selected')?></h1>
+      <h1><?php echo $this->t('Selected')?><span></span></h1>
       <span></span>
     </div>
     <div class="sideElementLast viewInfo">

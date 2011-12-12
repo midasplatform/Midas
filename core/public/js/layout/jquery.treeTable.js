@@ -1,3 +1,9 @@
+/**
+ * NOTICE: This has been forked by the MIDAS team and contains a great deal of code
+ * that is not in the original plugin.  Do not overwrite this file with a newer
+ * version of the plugin.
+ */
+
 /*
  * jQuery treeTable Plugin 2.3.0
  * http://ludo.cubicphuse.nl/jquery-plugins/treeTable/
@@ -28,7 +34,6 @@
           if (isNaN(defaultPaddingLeft)) {
             defaultPaddingLeft = parseInt($($(this).children("td:first")[options.treeColumn]).css('padding-left'), 10);
           }
-
           initialize($(this));
         } else if(options.initialState == "collapsed") {
           this.style.display = "none"; // Performance! $(this).hide() is slow...
@@ -45,6 +50,9 @@
     childPrefix: "child-of-",
     clickableNodeNames: true,
     expandable: true,
+    onFirstInit: null,
+    onNodeShow: null,
+    onNodeHide: null,
     indent: 7,
     initialState: "collapsed",
     treeColumn: 0
@@ -81,13 +89,13 @@
     }
 
   children.each(function()
+    {
+    if($(this).attr('ajax')!=undefined)
       {
-      if($(this).attr('ajax')!=undefined)
-        {
-        folders+=$(this).attr('ajax')+'-';
-        $(this).attr('proccessing',true);
-        }
-      });
+      folders+=$(this).attr('ajax')+'-';
+      $(this).attr('proccessing',true);
+      }
+    });
   if(folders!='')
     {
     $.post(json.global.webroot+'/browse/getfolderscontent',{folders: folders} , function(data) {
@@ -103,9 +111,13 @@
           }
 
         initEvent();
+        if(first && $.isFunction(options.onFirstInit))
+          {
+          options.onFirstInit.call();
+          }
       });
     }
-    getElementsSize();
+  getElementsSize();
   }
 
   $.fn.reload = function (){
@@ -184,6 +196,10 @@
 
       // this.style.display = "table-row"; // Unfortunately this is not possible with IE :-(
       $(this).show();
+
+      if($.isFunction(options.onNodeShow)) {
+        options.onNodeShow.call(this);
+      }
     });
 
     initializeAjax($(this),false,false);
@@ -218,12 +234,12 @@
 
     if($.inArray(node[0].id, ancestorNames) == -1 && (!parent || (destination.id != parent[0].id)) && destination.id != node[0].id) {
       indent(node, ancestorsOf(node).length * options.indent * -1); // Remove indentation
-        
+
       if(parent) {node.removeClass(options.childPrefix + parent[0].id);}
 
       node.addClass(options.childPrefix + destination.id);
       move(node, destination); // Recursively move nodes to new location
-      indent(node, ancestorsOf(node).length * options.indent);     
+      indent(node, ancestorsOf(node).length * options.indent);
     }
 
     return this;
@@ -280,7 +296,7 @@
       indent($(this), value);
     });
   };
-  
+
   function initEvent()
   {
           // Make visible that a row is clicked
@@ -356,7 +372,7 @@
         var sliceValue = 42 - (id.split('-').length - 1)*3;
 
         var drag_option = "";
-        
+
          $.each(elements['folders'], function(index, value) {
           if(j > 70)
             {
@@ -369,13 +385,13 @@
             }
           if (value['policy'] == 0)
             {
-            drag_option = " notdraggable"  
+            drag_option = " notdraggable"
             }
           else
             {
-            drag_option = ""  
+            drag_option = ""
             }
-          html+= "<tr id='"+id+"-"+i+"' deletable='"+value['deletable']+"' privacy='"+value['privacy_status']+"'  class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";  
+          html+= "<tr id='"+id+"-"+i+"' deletable='"+value['deletable']+"' privacy='"+value['privacy_status']+"'  class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
           html+=     "  <td><span class='folder"+drag_option+"'>"+sliceFileName(value['name'],sliceValue)+"</span></td>";
           html+=     "  <td>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>'+"</td>";
           html+=     "  <td>"+value['date_update']+"</td>";
@@ -398,11 +414,11 @@
             }
           if (value['policy'] == 0)
             {
-            drag_option = " notdraggable"  
+            drag_option = " notdraggable"
             }
           else
             {
-            drag_option = ""  
+            drag_option = ""
             }
           html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"' privacy='"+value['privacy_status']+"'  type='item' policy='"+value['policy']+"' element='"+value['item_id']+"'>";
           html+=     "  <td><span class='file"+drag_option+"'>"+sliceFileName(value['name'],sliceValue)+"</span></td>";
@@ -449,7 +465,7 @@
         }
       else
         {
-        $(this).children("td:first")[options.treeColumn].style.paddingLeft = padding + "px"; 
+        $(this).children("td:first")[options.treeColumn].style.paddingLeft = padding + "px";
         }
        if(node.hasClass('expanded'))
          {

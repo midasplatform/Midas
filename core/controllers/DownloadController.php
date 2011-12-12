@@ -199,10 +199,21 @@ class DownloadController extends AppController
     {
     foreach($revisions as $revision)
       {
+      $itemName = $revision->getItem()->getName();
       $bitstreams = $revision->getBitstreams();
+      $count = count($bitstreams);
+
       foreach($bitstreams as $bitstream)
         {
-        $zip->add_file_from_path($path.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
+        if($count > 1 || $bitstream->getName() != $itemName)
+          {
+          $currPath = $path.'/'.$itemName;
+          }
+        else
+          {
+          $currPath = $path;
+          }
+        $zip->add_file_from_path($currPath.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
         }
       }
     foreach($folders as $folder)
@@ -215,6 +226,7 @@ class DownloadController extends AppController
       $subRevisions = array();
       foreach($items as $item)
         {
+        $itemName = $item->getName();
         if(!$this->Item->policyCheck($item, $this->userSession->Dao))
           {
           continue;
@@ -226,9 +238,18 @@ class DownloadController extends AppController
           if(isset($folder->recursive) && $folder->recursive == false)
             {
             $bitstreams = $subRevisions->getBitstreams();
+            $count = count($bitstreams);
             foreach($bitstreams as $bitstream)
               {
-              $zip->add_file_from_path($path.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'. $bitstream->getPath());
+              if($count > 1 || $bitstream->getName() != $itemName)
+                {
+                $currPath = $path.'/'.$itemName;
+                }
+              else
+                {
+                $currPath = $path;
+                }
+              $zip->add_file_from_path($currPath.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'. $bitstream->getPath());
               }
             }
           }
