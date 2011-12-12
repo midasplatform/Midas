@@ -103,7 +103,7 @@ class FolderModel extends FolderModelBase
     return true;
     }//end policyCheck
 
-  /** get the size and the number of item in a folder*/
+/** get the size and the number of item in a folder*/
   public function getSizeFiltered($folders, $userDao = null, $policy = 0)
     {
     $isAdmin = false;
@@ -169,8 +169,9 @@ class FolderModel extends FolderModelBase
               ->union(array($subqueryUser, $subqueryGroup));
 
       $sql = $this->database->select()
+                ->distinct()
                 ->setIntegrityCheck(false)
-                ->from(array('i' => 'item'), array('sum' => 'sum(i.sizebytes)', 'count' => 'count(i.item_id)'))
+                ->from(array('i' => 'item'))
                 ->join(array('i2f' => 'item2folder'),
                          '( '.$this->database->getDB()->quoteInto('i2f.folder_id IN (?)', $subSqlFolders).'
                           OR i2f.folder_id = '.$folder->getKey().'
@@ -194,8 +195,13 @@ class FolderModel extends FolderModelBase
                  '(
                   ip.item_id is not null or
                   ipg.item_id is not null)'
-                  );
+                  )
+                ->group('i.item_id');
         }
+
+      $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from(array('i' => $sql), array('sum' => 'sum(i.sizebytes)', 'count' => 'count(i.item_id)'));
 
       $row = $this->database->fetchRow($sql);
       $folders[$key]->count = $row['count'];
