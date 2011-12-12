@@ -7655,16 +7655,16 @@
         },
         
         'fr': {
-            monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
-            monthNamesShort: ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'],
+            monthNames: ['Janvier','FΟ©vrier','Mars','Avril','Mai','Juin','Juillet','AoΟΜt','Septembre','Octobre','Novembre','DΟ©cembre'],
+            monthNamesShort: ['Jan','FΟ©v','Mar','Avr','Mai','Jun','Jul','AoΟΜ','Sep','Oct','Nov','DΟ©c'],
             dayNames: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
             dayNamesShort: ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'],
             formatString: '%Y-%m-%d %H:%M:%S'
         },
         
         'de': {
-            monthNames: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
-            monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
+            monthNames: ['Januar','Februar','MΟΛrz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+            monthNamesShort: ['Jan','Feb','MΟΛr','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
             dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
             dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
             formatString: '%Y-%m-%d %H:%M:%S'
@@ -7679,18 +7679,18 @@
         },
         
         'ru': {
-            monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
-            monthNamesShort: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
-            dayNames: ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
-            dayNamesShort: ['вск','пнд','втр','срд','чтв','птн','сбт'],
+            monthNames: ['–·–Ϋ–≤–Α―Ä―¨','–Λ–Β–≤―Ä–Α–Μ―¨','–€–Α―Ä―²','–ê–Ω―Ä–Β–Μ―¨','–€–Α–Ι','–‰―é–Ϋ―¨','–‰―é–Μ―¨','–ê–≤–≥―É―¹―²','–Γ–Β–Ϋ―²―è–±―Ä―¨','–û–Κ―²―è–±―Ä―¨','–ù–Ψ―è–±―Ä―¨','–î–Β–Κ–Α–±―Ä―¨'],
+            monthNamesShort: ['–·–Ϋ–≤','–Λ–Β–≤','–€–Α―Ä','–ê–Ω―Ä','–€–Α–Ι','–‰―é–Ϋ','–‰―é–Μ','–ê–≤–≥','–Γ–Β–Ϋ','–û–Κ―²','–ù–Ψ―è','–î–Β–Κ'],
+            dayNames: ['–≤–Ψ―¹–Κ―Ä–Β―¹–Β–Ϋ―¨–Β','–Ω–Ψ–Ϋ–Β–¥–Β–Μ―¨–Ϋ–Η–Κ','–≤―²–Ψ―Ä–Ϋ–Η–Κ','―¹―Ä–Β–¥–Α','―΅–Β―²–≤–Β―Ä–≥','–Ω―è―²–Ϋ–Η―Ü–Α','―¹―É–±–±–Ψ―²–Α'],
+            dayNamesShort: ['–≤―¹–Κ','–Ω–Ϋ–¥','–≤―²―Ä','―¹―Ä–¥','―΅―²–≤','–Ω―²–Ϋ','―¹–±―²'],
             formatString: '%Y-%m-%d %H:%M:%S'
         },
         
         'ar': {
-            monthNames: ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'آذار', 'حزيران','تموز', 'آب', 'أيلول',   'تشرين الأول', 'تشرين الثاني', 'كانون الأول'],
+            monthNames: ['ΌÉΊßΌÜΌàΌÜ ΊßΌ³ΊΪΊßΌÜΌä', 'Ί¥Ί®ΊßΊΖ', 'ΊΔΊΑΊßΊ±', 'ΌÜΌäΊ≥ΊßΌÜ', 'ΊΔΊΑΊßΊ±', 'Ί≠Ί≤ΌäΊ±ΊßΌÜ','ΊΣΌÖΌàΊ≤', 'ΊΔΊ®', 'ΊΘΌäΌ³ΌàΌ³',   'ΊΣΊ¥Ί±ΌäΌÜ ΊßΌ³ΊΘΌàΌ³', 'ΊΣΊ¥Ί±ΌäΌÜ ΊßΌ³ΊΪΊßΌÜΌä', 'ΌÉΊßΌÜΌàΌÜ ΊßΌ³ΊΘΌàΌ³'],
             monthNamesShort: ['1','2','3','4','5','6','7','8','9','10','11','12'],
-            dayNames: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
-            dayNamesShort: ['سبت', 'أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة'],
+            dayNames: ['ΊßΌ³Ί≥Ί®ΊΣ', 'ΊßΌ³ΊΘΊ≠Ί·', 'ΊßΌ³ΊßΊΪΌÜΌäΌÜ', 'ΊßΌ³ΊΪΌ³ΊßΊΪΊßΊΓ', 'ΊßΌ³ΊΘΊ±Ί®ΊΙΊßΊΓ', 'ΊßΌ³Ί°ΌÖΌäΊ≥', 'ΊßΌ³Ί§ΌÖΊΙΊ©'],
+            dayNamesShort: ['Ί≥Ί®ΊΣ', 'ΊΘΊ≠Ί·', 'ΊßΊΪΌÜΌäΌÜ', 'ΊΪΌ³ΊßΊΪΊßΊΓ', 'ΊΘΊ±Ί®ΊΙΊßΊΓ', 'Ί°ΌÖΌäΊ≥', 'Ί§ΌÖΊΙΊ©'],
             formatString: '%Y-%m-%d %H:%M:%S'
         },
         
