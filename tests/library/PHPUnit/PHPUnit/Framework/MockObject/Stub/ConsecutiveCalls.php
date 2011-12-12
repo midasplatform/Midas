@@ -35,7 +35,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    PHPUnit_MockObject
- * @author     Patrick Müller <elias0@gmx.net>
+ * @author     Patrick MΓΌller <elias0@gmx.net>
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright  2010-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
@@ -47,7 +47,7 @@
  * Stubs a method by returning a user-defined stack of values.
  *
  * @package    PHPUnit_MockObject
- * @author     Patrick Müller <elias0@gmx.net>
+ * @author     Patrick MΓΌller <elias0@gmx.net>
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright  2010-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License

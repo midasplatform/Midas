@@ -34,7 +34,7 @@ class Text_Wiki_Render_Plain_SpecialChar extends Text_Wiki_Render {
                        '~rdq~' => '"',
                        '~lsq~' => "'",
                        '~rsq~' => "'",
-                       '~c~' => '©',
+                       '~c~' => 'Β©',
                        '~--~' => '-',
                        '" -- "' => '-',
                        '&quot; -- &quot;' => '-',
