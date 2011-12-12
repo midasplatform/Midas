@@ -15,7 +15,7 @@
  * @category    File
  * @package     File
  * @author      Tomas V.V.Cox <cox@idecnet.com>
- * @author      Helgi Þormar <dufuz@php.net>
+ * @author      Helgi Î®ormar <dufuz@php.net>
  * @copyright   2004-2005 The Authors
  * @license     http://www.php.net/license/3_0.txt  PHP License 3.0
  * @version     CVS: $Id: CSV.php,v 1.41 2007/05/20 12:25:14 dufuz Exp $
@@ -51,7 +51,7 @@ require_once 'File.php';
 * http://www.shaftek.org/publications/drafts/mime-csv/draft-shafranovich-mime-csv-00.html#appendix
 *
 * @author Tomas V.V.Cox <cox@idecnet.com>
-* @author Helgi Þormar <dufuz@php.net>
+* @author Helgi Î®ormar <dufuz@php.net>
 * @package File
 */
 class File_CSV
