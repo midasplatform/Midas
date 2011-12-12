@@ -204,7 +204,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         {
         $nameComponent = $component . "Component";
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
-		if(!isset($this->Component))
+        if(!isset($this->Component))
           {
           $this->Component =  new stdClass();
           }
@@ -224,7 +224,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         $nameForm = $forms . "Form";
 
         Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
-		if(!isset($this->Form))
+        if(!isset($this->Form))
           {
           $this->Form =  new stdClass();
           }

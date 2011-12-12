@@ -80,3 +80,14 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
     "not define any previously undefined public symbols"
     "warning: jobserver unavailable"
     )
+
+SET(CTEST_CUSTOM_COVERAGE_EXCLUDE
+    ${CTEST_CUSTOM_COVERAGE_EXCLUDE}
+    "[/\\\\]library[/\\\\]"
+    "[/\\\\]tests/library[/\\\\]"
+    )
+
+SET(CTEST_EXTRA_COVERAGE_GLOB
+    ${CTEST_EXTRA_COVERAGE_GLOB}
+    "core/*.php"
+    )
