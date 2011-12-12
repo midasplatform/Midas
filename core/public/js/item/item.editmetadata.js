@@ -16,10 +16,9 @@ function initElementMetaData()
      availableTags.push(i);
    });
   $( "input[name=element]" ).autocomplete({
-			source: availableTags,
+      source: availableTags,
       change: function(){initElementMetaData();}
-		});
-    console.log(availableTags);
+    });
   initQualifierMetaData();
 }
 
@@ -34,8 +33,8 @@ function initQualifierMetaData()
    });
    
   $( "input[name=qualifier]" ).autocomplete({
-			source: availableTags,
+      source: availableTags,
       change: function(){initElementMetaData();}
-		});
+    });
 }
-		
+    
