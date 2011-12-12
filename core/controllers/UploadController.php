@@ -413,4 +413,10 @@ class UploadController extends AppController
       echo json_encode($info);
       }
     }//end saveuploaded
+
+  /** Link for the java applet to review uploaded files */
+  public function reviewAction()
+    {
+    $this->_redirect('/browse/uploaded');
+    }
 }//end class

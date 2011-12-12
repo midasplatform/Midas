@@ -90,7 +90,9 @@ PURPOSE.  See the above copyright notices for more information.
       <span id="btnStartUpload" >
         <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" qtip="<?php echo $this->t("Don't forget to start the upload.")?>" value="<?php echo $this->t('Start Upload')?>" />
       </span>
-
+      <div>
+        <?php echo $this->t('Number of uploaded files');?> <span class="globalUploadedCount">0</span>
+      </div>
   </div>
     <div id="uploadTabs-3">
       <form id="linkForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
@@ -120,9 +122,6 @@ PURPOSE.  See the above copyright notices for more information.
   </div>
 </div>
 
-<div>
-  <?php echo $this->t('Number of uploaded files');?> <span class="globalUploadedCount">0</span>
-</div>
 <div class="reviewUploaded">
   <form method="post" action="<?php echo $this->webroot?>/browse/uploaded">
     <input class="globalButton" type="submit" value="<?php echo $this->t('Review uploaded files');?>" />
