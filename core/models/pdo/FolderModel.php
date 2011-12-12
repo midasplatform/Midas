@@ -191,7 +191,7 @@ class FolderModel extends FolderModelBase
                 ->group('i.item_id');
         }
 
-       $sql = $this->database->select()
+      $sql = $this->database->select()
                 ->setIntegrityCheck(false)
                 ->from(array('i' => $sql), array('sum' => 'sum(i.sizebytes)', 'count' => 'count(i.item_id)'));
 
