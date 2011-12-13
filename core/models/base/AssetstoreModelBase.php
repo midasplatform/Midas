@@ -170,6 +170,8 @@ abstract class AssetstoreModelBase extends AppModel
 
     if($defaultAssetstoreId == null || $defaultAssetstore == false)
       {
+      // since we don't have a default_assetstore, save one here in settings
+      // first try one named Default
       $found = $this->findBy('name', 'Default');
       if(empty($found))
         {
@@ -179,6 +181,7 @@ abstract class AssetstoreModelBase extends AppModel
           throw new Zend_Exception("No assetstore found in the database");
           }
         }
+      // otherwise take the first
       $defaultAssetstore = $found[0];
       // explicit cast to string, as the setConfig method expects a string
       $defaultAssetstoreId = (string)$defaultAssetstore->getKey();
