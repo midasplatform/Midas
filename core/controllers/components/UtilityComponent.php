@@ -394,6 +394,10 @@ class UtilityComponent extends AppComponent
       {
       // if the setting model hasn't been installed, or there is no
       // value in the settings table for this, provide a default
+      $tempDirectory = null;
+      }
+    if(!isset($tempDirectory) || empty($tempDirectory))
+      {
       $tempDirectory = BASE_PATH.'/tmp';
       }
     return $tempDirectory .'/'.$subdir.'/';
