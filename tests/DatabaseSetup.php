@@ -128,7 +128,8 @@ function createDefaultAssetstore()
   $modelLoader->loadModel('Assetstore');
 
   // path munging
-  $testAssetstoreBase = BASE_PATH.'/tmp/misc/test';
+  require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
+  $testAssetstoreBase = UtilityComponent::getTempDirectory().'/test/';
   $testAssetstoreBase = str_replace('tests/../', '', $testAssetstoreBase);
   $testAssetstoreBase = str_replace('//', '/', $testAssetstoreBase);
 
