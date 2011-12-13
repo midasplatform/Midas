@@ -10,10 +10,21 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 require_once dirname(__FILE__).'/bootstrap.php';
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 /** main models test element*/
 abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
   {
   protected $application;
+
+  /**
+   * @method protected getTempDirectory()
+   * get the midas temporary directory
+   * @return string
+   */
+  protected function getTempDirectory()
+    {
+    return UtilityComponent::getTempDirectory();
+    }
 
   /** init tests*/
   public function setUp()

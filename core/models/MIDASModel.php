@@ -9,6 +9,7 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /** global midas model library*/
 class MIDASModel
@@ -42,6 +43,17 @@ class MIDASModel
     $this->loadElements(); // load the components for the models
     $this->database->initialize($this->_name, $this->_key, $this->_mainData);
     }
+
+  /**
+   * @method protected getTempDirectory()
+   * get the midas temporary directory
+   * @return string
+   */
+  protected function getTempDirectory()
+    {
+    return UtilityComponent::getTempDirectory();
+    }
+
 
   /** Save a Dao */
   public function save($dao)

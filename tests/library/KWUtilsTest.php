@@ -11,8 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 require_once BASE_PATH.'/library/KWUtils.php';
-
-
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 /**
  * KWUtils tests
  */
@@ -24,7 +23,7 @@ class KWUtilsTest extends ControllerTestCase
   /** tests mkDir function */
   public function testMkDir()
     {
-    $tmpDir = KWUtils::getTempDirectory();
+    $tmpDir = UtilityComponent::getTempDirectory();
     $testDir = $tmpDir . '/' . 'KWUtilsTest';
     $this->assertTrue(KWUtils::mkDir($testDir));
     // now clean up
@@ -37,7 +36,7 @@ class KWUtilsTest extends ControllerTestCase
     // test creating directories, do this in the tmp dir
     //
     // create a nested set of directories
-    $tmpDir = KWUtils::getTempDirectory() . '/';
+    $tmpDir = UtilityComponent::getTempDirectory() . '/';
     $subDirs = array("KWUtilsTest", "1", "2", "3");
     $outDir = KWUtils::createSubDirectories($tmpDir, $subDirs);
 
@@ -56,7 +55,7 @@ class KWUtilsTest extends ControllerTestCase
       $this->assertTrue(is_dir($currDir));
       }
 
-    $topDir = KWUtils::getTempDirectory() . '/KWUtilsTest';
+    $topDir = UtilityComponent::getTempDirectory() . '/KWUtilsTest';
     KWUtils::recursiveRemoveDirectory($topDir);
     }
 
@@ -68,7 +67,7 @@ class KWUtilsTest extends ControllerTestCase
     // the value of pwd in it
 
     // create a tmp dir for this test
-    $execDir = KWUtils::getTempDirectory() . '/KWUtilsTest';
+    $execDir = UtilityComponent::getTempDirectory() . '/KWUtilsTest';
     mkdir($execDir);
     $cmd = 'pwd';
     $chdir = $execDir;
@@ -152,9 +151,9 @@ class KWUtilsTest extends ControllerTestCase
     $this->assertFalse(KWUtils::recursiveRemoveDirectory('thisstringisunlikelytobeadirectory'));
 
     // create a two-level directory
-    $testParentDir = KWUtils::getTempDirectory() . '/KWUtilsParentDir';
+    $testParentDir = UtilityComponent::getTempDirectory() . '/KWUtilsParentDir';
     mkdir($testParentDir);
-    $testChildDir = KWUtils::getTempDirectory() . '/KWUtilsParentDir/ChildDir';
+    $testChildDir = UtilityComponent::getTempDirectory() . '/KWUtilsParentDir/ChildDir';
     mkdir($testChildDir);
     copy(BASE_PATH.'/tests/testfiles/search.png', $testChildDir.'/testContent.png');
     $this->assertTrue(file_exists($testChildDir.'/testContent.png'));

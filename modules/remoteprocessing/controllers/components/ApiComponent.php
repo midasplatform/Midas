@@ -9,7 +9,7 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 /** Component for api methods */
 class Remoteprocessing_ApiComponent extends AppComponent
 {
@@ -227,15 +227,15 @@ class Remoteprocessing_ApiComponent extends AppComponent
       }
 
     $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
-    if(!file_exists(BASE_PATH.'/tmp/remoteprocessing'))
+    if(!file_exists(UtilityComponent::getTempDirectory().'/remoteprocessing'))
       {
-      mkdir(BASE_PATH.'/tmp/remoteprocessing');
+      mkdir(UtilityComponent::getTempDirectory().'/remoteprocessing');
       }
 
-    $destionation = BASE_PATH.'/tmp/remoteprocessing/'.rand(1, 1000).time();
+    $destionation = UtilityComponent::getTempDirectory().'/remoteprocessing/'.rand(1, 1000).time();
     while(file_exists($destionation))
       {
-      $destionation = BASE_PATH.'/tmp/remoteprocessing/'.rand(1, 1000).time();
+      $destionation = UtilityComponent::getTempDirectory().'/remoteprocessing/'.rand(1, 1000).time();
       }
     mkdir($destionation);
 

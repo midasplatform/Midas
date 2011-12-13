@@ -9,8 +9,7 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-
-require_once BASE_PATH.'/library/KWUtils.php';
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /**
  *  GlobalAction
@@ -119,7 +118,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         );
 
       $backendOptions = array(
-        'cache_dir' => BASE_PATH.'/tmp/cache/db'
+        'cache_dir' => UtilityComponent::getCacheDirectory().'/db'
         );
 
       $cache = Zend_Cache::factory('Core',
@@ -204,7 +203,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         {
         $nameComponent = $component . "Component";
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
-		if(!isset($this->Component))
+        if(!isset($this->Component))
           {
           $this->Component =  new stdClass();
           }
@@ -224,7 +223,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         $nameForm = $forms . "Form";
 
         Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
-		if(!isset($this->Form))
+        if(!isset($this->Form))
           {
           $this->Form =  new stdClass();
           }
@@ -319,13 +318,13 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     }
 
   /**
-   * @method public getTempDirectory()
+   * @method protected getTempDirectory()
    * get the midas temporary directory
    * @return string
    */
-  public function getTempDirectory()
+  protected function getTempDirectory()
     {
-    return KWUtils::getTempDirectory();
+    return UtilityComponent::getTempDirectory();
     }
 
   /** return an array of form element     */

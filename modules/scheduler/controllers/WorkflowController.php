@@ -71,8 +71,8 @@ class Scheduler_WorkflowController extends Scheduler_AppController
     $workflow->accept( $visitor );
     $modulesConfig=Zend_Registry::get('configsModules');
     $command = $modulesConfig['scheduler']->dot;
-    $dotFile = BASE_PATH.'/tmp/misc/graphviz_workflow_'.$workflow->__get('id').'.dot';
-    $image = BASE_PATH.'/tmp/misc/graphviz_workflow_'.$workflow->__get('id').'.png';
+    $dotFile = $this->getTempDirectory().'/graphviz_workflow_'.$workflow->__get('id').'.dot';
+    $image = $this->getTempDirectory().'/graphviz_workflow_'.$workflow->__get('id').'.png';
     if(file_exists($dotFile))
       {
       unlink($dotFile);

@@ -232,7 +232,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       {
       $jobComponenet = $componentLoader->loadComponent('Job', 'remoteprocessing');
       $xmlResults = $jobComponenet->computeLogs($job, $params['log'], $params);
-      $logFile = BASE_PATH.'/tmp/misc/'.uniqid();
+      $logFile = $pathFile = $this->getTempDirectory().'/'.uniqid();
       file_put_contents($logFile, $xmlResults);
       $item = $uploadComponent->createUploadedItem($userDao, 'job-'.$params['job_id'].'_results.xml', $logFile, $folder);
       $itempolicyuserModel->createPolicy($creatorDao, $item, MIDAS_POLICY_READ);
