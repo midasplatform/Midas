@@ -19,6 +19,11 @@ div.tooBigUpload{
   display:none;
 }
 
+div.tooBigUpload img{
+  position: relative;
+  top: 3px;
+}
+
 div.uploadedFilesWrapper{
   max-height: 250px;
   overflow: auto;
