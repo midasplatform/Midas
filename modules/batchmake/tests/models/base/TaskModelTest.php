@@ -40,7 +40,7 @@ class TaskModelTest extends DatabaseTestCase
 
     $user1Dao = $usersFile[0];
 
-    $tmpWorkDirRoot = KWUtils::getTempDirectory() . '/' . 'test';
+    $tmpWorkDirRoot = $this->getTempDirectory() . '/' . 'test';
     KWUtils::mkDir($tmpWorkDirRoot);
 
     $task1Dao = $taskModel->createTask($user1Dao, $tmpWorkDirRoot);

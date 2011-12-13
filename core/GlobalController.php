@@ -17,8 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-
-require_once BASE_PATH.'/library/KWUtils.php';
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /**
  *  GlobalAction
@@ -127,7 +126,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         );
 
       $backendOptions = array(
-        'cache_dir' => BASE_PATH.'/tmp/cache/db'
+        'cache_dir' => UtilityComponent::getCacheDirectory().'/db'
         );
 
       $cache = Zend_Cache::factory('Core',
@@ -212,7 +211,6 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         {
         $nameComponent = $component . "Component";
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
-
         if(!isset($this->Component))
           {
           $this->Component =  new stdClass();
@@ -328,13 +326,13 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     }
 
   /**
-   * @method public getTempDirectory()
+   * @method protected getTempDirectory()
    * get the midas temporary directory
    * @return string
    */
-  public function getTempDirectory()
+  protected function getTempDirectory()
     {
-    return KWUtils::getTempDirectory();
+    return UtilityComponent::getTempDirectory();
     }
 
   /** return an array of form element     */

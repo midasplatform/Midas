@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 /** notification manager*/
 class Notification extends MIDAS_Notification
   {
@@ -39,7 +40,8 @@ class Notification extends MIDAS_Notification
     $return['Image Magick'] = array($this->Component->Utility->isImageMagickWorking());
     $return['Config Folder Writable'] = array(is_writable(BASE_PATH.'/core/configs'));
     $return['Data Folder Writable'] = array(is_writable(BASE_PATH.'/data'));
-    $return['Temporary Folder Writable'] = array(is_writable(BASE_PATH.'/tmp'));
+    // pass in empty string since we want to check the overall root temp directory
+    $return['Temporary Folder Writable'] = array(is_writable(UtilityComponent::getTempDirectory('')));
 
     return $return;
     }//end _getDasboard

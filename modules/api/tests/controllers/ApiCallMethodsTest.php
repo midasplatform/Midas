@@ -365,7 +365,7 @@ class ApiCallMethodsTest extends ControllerTestCase
       {
       $string .= 'a';
       }
-    $fh = fopen(BASE_PATH.'/tmp/misc/test.txt', 'w');
+    $fh = fopen($this->getTempDirectory().'/test.txt', 'w');
     fwrite($fh, $string);
     fclose($fh);
     $md5 = md5($string);
@@ -391,7 +391,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertTrue(
       preg_match('/^'.$usersFile[0]->getKey().'\/'.$itemsFile[1]->getKey().'\/.+\..+$/', $token) > 0,
       'Upload token ('.$token.') is not of the form <userid>/<itemid>/*.*');
-    $this->assertTrue(file_exists(BASE_PATH.'/tmp/misc/'.$token),
+    $this->assertTrue(file_exists($this->getTempDirectory().'/'.$token),
       'Token placeholder file '.$token.' was not created in the temp dir');
 
     // attempt the upload
@@ -544,7 +544,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertTrue(
       preg_match('/^'.$usersFile[0]->getKey().'\/'.$generatedItemId.'\/.+\..+$/', $token) > 0,
       'Upload token ('.$token.') is not of the form <userid>/<itemid>/*.*');
-    $this->assertTrue(file_exists(BASE_PATH.'/tmp/misc/'.$token),
+    $this->assertTrue(file_exists($this->getTempDirectory().'/'.$token),
       'Token placeholder file '.$token.' was not created in the temp dir');
 
     $itemDao = $this->Item->load($generatedItemId);
@@ -587,7 +587,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($bitstreams[0]->sizebytes, $length);
     $this->assertEquals($bitstreams[0]->checksum, $md5);
 
-    unlink(BASE_PATH.'/tmp/misc/test.txt');
+    unlink($this->getTempDirectory().'/test.txt');
     }
 
   /** test the bitstream count functionality on all resource types */

@@ -383,6 +383,44 @@ class UtilityComponent extends AppComponent
     return true;
     }
 
+  /**
+   * @method public getTempDirectory()
+   * @param $subdir
+   * get the midas temporary directory, appending the param $subdir, which
+   * defaults to "misc"
+   * @return string
+   */
+  public static function getTempDirectory($subdir = "misc")
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $settingModel = $modelLoader->loadModel('Setting');
+    try
+      {
+      $tempDirectory = $settingModel->getValueByName('temp_directory');
+      }
+    catch(Exception $e)
+      {
+      // if the setting model hasn't been installed, or there is no
+      // value in the settings table for this, provide a default
+      $tempDirectory = null;
+      }
+    if(!isset($tempDirectory) || empty($tempDirectory))
+      {
+      $tempDirectory = BASE_PATH.'/tmp';
+      }
+    return $tempDirectory .'/'.$subdir.'/';
+    }
+
+  /**
+   * @method public getCacheDirectory()
+   * get the midas cache directory
+   * @return string
+   */
+  public static function getCacheDirectory()
+    {
+    return self::getTempDirectory('cache');
+    }
+
 
   /** install a module */
   public function installModule($moduleName)

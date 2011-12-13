@@ -40,7 +40,7 @@ class CleanupPerformTest extends ControllerTestCase
     require_once(BASE_PATH.'/modules/scheduler/constant/module.php');
     Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
 
-    $tempDir = BASE_PATH.'/tmp/misc';
+    $tempDir = $this->getTempDirectory();
 
     // Use the admin user so we can configure the module
     $usersFile = $this->loadData('User', 'default');

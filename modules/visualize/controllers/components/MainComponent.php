@@ -17,7 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 class Visualize_MainComponent extends AppComponent
 {
   /** can visualize */
@@ -180,7 +180,7 @@ class Visualize_MainComponent extends AppComponent
         }
       }
 
-    $tmpPath = BASE_PATH.'/tmp/misc';
+    $tmpPath = UtilityComponent::getTempDirectory();
     if(file_exists($tmpPath.'/screenshot1.png'))
       {
       unlink($tmpPath.'/screenshot1.png');
@@ -343,11 +343,11 @@ class Visualize_MainComponent extends AppComponent
       }
     else
       {
-      if(!file_exists(BASE_PATH.'/tmp/visualize'))
+      if(!file_exists(UtilityComponent::getTempDirectory().'/visualize'))
         {
-        mkdir(BASE_PATH.'/tmp/visualize');
+        mkdir(UtilityComponent::getTempDirectory().'/visualize');
         }
-      $tmp_dir = BASE_PATH.'/tmp/visualize';
+      $tmp_dir = UtilityComponent::getTempDirectory().'/visualize';
       }
 
     $dir = opendir($tmp_dir);
