@@ -87,14 +87,15 @@ class DownloadBitstreamComponent extends AppComponent
         $httpRange = env('HTTP_RANGE');
         if(isset($httpRange))
           {
-          list ($toss, $range) = explode('=', $httpRange);
-          str_replace($range, '-', $range);
-          $size = $fileSize - 1;
-          $length = $fileSize - $range;
+          // HTTP range is of the form "bytes=n-" where n is the offset
+          list(, $range) = explode('=', $httpRange);
+          $firstByte = strstr($range, '-', true);
+          $lastByte = $fileSize - 1;
+          $length = $fileSize - $firstByte;
           header('HTTP/1.1 206 Partial Content');
           header('Content-Length: '.$length);
-          header('Content-Range: bytes '.$range.$size.'/'.$fileSize);
-          fseek($handle, $range);
+          header('Content-Range: bytes '.$firstByte.'-'.$lastByte.'/'.$fileSize);
+          fseek($handle, $firstByte);
           }
         else
           {
@@ -113,14 +114,14 @@ class DownloadBitstreamComponent extends AppComponent
           }
         if(isset($httpRange))
           {
-          list($toss, $range) = explode('=', $httpRange);
-          str_replace($range, '-', $range);
-          $size = $fileSize - 1;
-          $length = $fileSize - $range;
+          list(, $range) = explode('=', $httpRange);
+          $firstByte = strstr($range, '-', true);
+          $lastByte = $fileSize - 1;
+          $length = $fileSize - $firstByte;
           header('HTTP/1.1 206 Partial Content');
           header('Content-Length: '.$length);
-          header('Content-Range: bytes '.$range.$size.'/'.$fileSize);
-          fseek($handle, $range);
+          header('Content-Range: bytes '.$firstByte.'-'.$lastByte.'/'.$fileSize);
+          fseek($handle, $firstByte);
           }
         }
       }
