@@ -33,20 +33,8 @@ class InstallController extends AppController
    */
   function init()
     {
-    if(isset($_GET['reset']))
-      {
-      $db = Zend_Registry::get('dbAdapter');
-      $table = $db->listTables();
-      if(empty($table) && file_exists(BASE_PATH."/core/configs/database.local.ini"))
-        {
-        unlink(BASE_PATH."/core/configs/database.local.ini");
-        if(file_exists(BASE_PATH."/core/configs/application.local.ini"))
-          {
-          unlink(BASE_PATH."/core/configs/application.local.ini");
-          }
-        }
-      }
-    if(file_exists(BASE_PATH."/core/configs/database.local.ini") && file_exists(BASE_PATH."/core/configs/application.local.ini"))
+    if(file_exists(BASE_PATH."/core/configs/database.local.ini") &&
+       file_exists(BASE_PATH."/core/configs/application.local.ini"))
       {
       throw new Zend_Exception("Midas is already installed.");
       }
