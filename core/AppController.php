@@ -250,8 +250,8 @@ class AppController extends MIDAS_GlobalController
       'deleteSelected' => $this->t('Delete all selected'),
       'deleteSelectedMessage' => $this->t('Do you really want to delete all selected resources?'),
       'removeItem' => $this->t('Remove Item from Folder'),
-      'deleteMessage' => $this->t('Do you really want to delete the folder'),
-      'removeMessage' => $this->t('Do you really want to remove the item'),
+      'deleteMessage' => $this->t('Do you really want to delete the folder?'),
+      'removeMessage' => $this->t('Do you really want to remove the item?'),
       'share' => $this->t('Permissions'),
       'shared' => $this->t('Shared'),
       'public' => $this->t('Public'),
@@ -266,7 +266,7 @@ class AppController extends MIDAS_GlobalController
           'advanced' => $this->t('Advanced properties')));
 
     $feed = array(
-      "deleteFeed" => $this->t('Do you really want to delete the feed'));
+      "deleteFeed" => $this->t('Do you really want to delete the feed?'));
 
     $this->view->json = array(
       "global" => $jsonGlobal, "login" => $login, 'feed' => $feed, "browse" => $browse);
