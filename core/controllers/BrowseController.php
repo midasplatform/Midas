@@ -104,7 +104,7 @@ class BrowseController extends AppController
           {
           $from = $this->_getParam('from');
           $from = $this->Folder->load($from);
-          if($destinationFolder== false)
+          if($destinationFolder == false)
             {
             throw new Zend_Exception("Unable to load destination");
             }
