@@ -24,7 +24,7 @@ class Batchmake_TaskModelBase extends Batchmake_AppModel {
 
     $this->_mainData = array(
       'batchmake_task_id' => array('type' => MIDAS_DATA),
-      'user_id' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
+      'user_id' => array('type' => MIDAS_DATA),
       'work_dir' => array('type' => MIDAS_DATA));
     $this->initialize(); // required
     }
