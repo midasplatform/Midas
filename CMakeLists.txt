@@ -30,7 +30,7 @@ execute_process(
   OUTPUT_VARIABLE databaseSetup_OUT
   ERROR_VARIABLE databaseSetup_ERR)
 
-if(${databaseSetup_RESULT})
+if(NOT databaseSetup_RESULT EQUAL 0)
   message(STATUS "DatabaseSetup output: ${databaseSetup_OUT}")
   message(FATAL_ERROR "DatabaseSetup error: ${databaseSetup_ERR}")
 endif()
