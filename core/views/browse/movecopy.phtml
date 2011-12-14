@@ -59,19 +59,25 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
         <?php
     if($this->moveEnabled)
       {?>
-      <input type="submit" disabled  name='moveElements' id='moveElements'  value="<?php echo $this->t('Move')?>"/>
-    <?php
+      <input type="submit" disabled  name='moveElement' id='moveElement'  value="<?php echo $this->t('Move')?>"/>
+    <?php      
       }
     elseif($this->selectEnabled)
       {
       ?>
-      <input type="submit" disabled  name='selectElements' id='selectElements'  value="<?php echo $this->t('Select')?>"/>
+      <input type="submit" disabled  name='selectElement' id='selectElement'  value="<?php echo $this->t('Select')?>"/>
       <?php
       }
-       else
-         {
+    elseif($this->shareEnabled)
+      {
       ?>
-    <input type="submit" disabled id='copyElement'  name='copyElement' value="<?php echo $this->t('Copy')?>"/>
-    <?php
-        }?>
+      <input type="submit" disabled  name='shareElement' id='shareElement'  value="<?php echo $this->t('Share')?>"/>
+      <?php
+      }
+    else
+      {
+      ?>
+      <input type="submit" disabled name='duplicateElement' id='duplicateElement'  value="<?php echo $this->t('Duplicate')?>"/>
+      <?php
+      }?>
   </form>

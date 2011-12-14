@@ -261,9 +261,11 @@ class ItemController extends AppController
 
     $this->view->json['item'] = $itemDao->toArray();
     $this->view->json['item']['message']['delete'] = $this->t('Delete');
+    $this->view->json['item']['message']['sharedItem'] = $this->t('This item is currrently shared by other folders and/or communities. Deletion will make it disappear in all these folders and/or communitites. ');
     $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undone.');
     $this->view->json['item']['message']['deleteMetadataMessage'] = $this->t('Do you really want to delete this metadata? It cannot be undone.');
-    $this->view->json['item']['message']['movecopy'] = $this->t('Copy Item.');
+    $this->view->json['item']['message']['share'] = $this->t('Share Item.');
+    $this->view->json['item']['message']['duplicate'] = $this->t('Duplicate Item.');
     }//end index
 
   /** Edit  (ajax) */
@@ -385,4 +387,30 @@ class ItemController extends AppController
     $this->_redirect('/browse/uploaded');
     }//end delete
 
+ /**
+   * ajax function which checks if the community agreement has been set
+   *
+   * @method checksharedAction()
+   * @throws Zend_Exception on invalid request
+  */
+  public function checksharedAction()
+    {
+    if(!$this->getRequest()->isXmlHttpRequest())
+      {
+      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      }
+    $this->disableLayout();
+    $this->disableView();
+    $itemId = $this->_getParam("itemId");
+    $itemDao = $this->Item->load($itemId);
+    $shareCount = count($itemDao->getFolders());
+    $ifShared = false;
+    if ($shareCount > 1)
+      {
+      $ifShared = true;
+      }
+      
+    echo JsonComponent::encode($ifShared);  
+    }
+    
   }//end class
