@@ -128,7 +128,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
     $row = $this->database->fetchRow($this->database->select()->from($this->_name)->where('item_id=?', $itemdao->getItemId())->order('revision DESC')->limit(1));
     return $this->initDao('ItemRevision', $row);
     }
-  
+
   /** Returns the of the revision in Bytes */
   function getSize($revision)
     {

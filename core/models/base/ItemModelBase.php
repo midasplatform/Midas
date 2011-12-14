@@ -159,13 +159,21 @@ abstract class ItemModelBase extends AppModel
         }
       }
     }//end copyParentPolicies
-    
-  /** share Item policies*/
+
+  /** share an item*/
+  /**
+   * share an item to destination folder and add read-only permission to users/groups who can
+   * access the destination folder
+   * @method shareItemReadonly()
+   * @param ItemDao $itemDao the item to be shared
+   * @param FolderDao $folderDao destination folder
+   * @throws Zend_Exception on invalid input parameters (itemDao and folderDao)
+  */
   function shareItemReadonly($itemdao, $folderdao)
     {
     if(!$itemdao instanceof ItemDao || !$folderdao instanceof FolderDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error input parameter.");
       }
     $groupPolicies = $folderdao->getFolderpolicygroup();
     $existingGroupPolicies = $itemdao->getItempolicygroup();
@@ -173,7 +181,7 @@ abstract class ItemModelBase extends AppModel
     foreach($existingGroupPolicies as $key => $policy)
       {
       $group = $policy->getGroup();
-      if (in_array($group, $existingGroups))
+      if(in_array($group, $existingGroups))
         {
         array_push($existingGroups, $group);
         }
@@ -184,7 +192,7 @@ abstract class ItemModelBase extends AppModel
     foreach($groupPolicies as $key => $policy)
       {
       $newGroup = $policy->getGroup();
-      if (!in_array($group, $existingGroups))
+      if(!in_array($group, $existingGroups))
         {
         $ItempolicygroupModel->createPolicy($newGroup, $itemdao, MIDAS_POLICY_READ);
         }
@@ -192,20 +200,33 @@ abstract class ItemModelBase extends AppModel
     }//end shareItemReadonly
 
 
- /** share Item policies*/
+  /**
+   * Duplicate an item in destination folder/community
+   *
+   * Create a new item (same as old one) in destination folder/community. The new item
+   * have the same metadata and revisions with the old one, but its owner is set as the
+   * input userDao parameter (who run this operation) and access policy is based on
+   * the input folderDao paramer (destination folder)
+   *
+   * @method duplicateItem()
+   * @param ItemDao $itemDao the item to be duplicated
+   * @param UserDao $userDao the user who run this operation
+   * @param FolderDao $folderDao destination folder
+   * @throws Zend_Exception on invalid input parameters (itemDao, userDao and folderDao)
+  */
   function duplicateItem($itemDao, $userDao, $folderDao)
     {
     if(!$itemDao instanceof ItemDao || !$folderDao instanceof FolderDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error ItemDao or FolderDao");
       }
     if(!$userDao instanceof UserDao)
       {
       throw new Zend_Exception("Should be an user.");
-      } 
+      }
     $name = $itemDao->getName();
     $description = $itemDao->getDescription();
-    $newItem = $this->createItem($name, $description, $folderDao);      
+    $newItem = $this->createItem($name, $description, $folderDao);
     $newItem->setType($itemDao->getType());
     $newItem->setThumbnail($itemDao->getThumbnail());
     $newItem->setSizebytes($itemDao->getSizebytes());
@@ -213,9 +234,9 @@ abstract class ItemModelBase extends AppModel
     $newItem->setDateCreation(date('c'));
     $newItem->setDateUpdate(date('c'));
     $this->save($newItem);
-    
+
     $modelLoad = new MIDAS_ModelLoader();
-    $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');      
+    $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
     foreach($itemDao->getRevisions() as $revision)
       {
       $itemRevisionDao = new ItemRevisionDao;
@@ -226,7 +247,7 @@ abstract class ItemModelBase extends AppModel
       $itemRevisionDao->setUserId($userDao->getUserId());
       $itemRevisionDao->setLicense($revision->getLicense());
       $ItemRevisionModel->save($itemRevisionDao);
-      } 
+      }
     }//end duplicateItem
 
   /** plus one view*/
@@ -294,7 +315,7 @@ abstract class ItemModelBase extends AppModel
     $ItemRevisionModel->save($revisiondao);
     $this->save($itemdao);//update date
     } // end addRevision
-    
+
   /** Create a new empty item */
   function createItem($name, $description, $parent, $uuid = '')
     {

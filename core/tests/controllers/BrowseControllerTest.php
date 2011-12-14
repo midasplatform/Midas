@@ -109,4 +109,14 @@ class BrowseControllerTest extends ControllerTestCase
     $this->assertEquals($resp->success->folders[0], $folderId);
     $this->assertEquals($resp->success->items[0], $itemId);
     }
+
+  /**
+   * Test the following functionalities in movecopy controller in the browse view
+   * 1) Share an item
+   * 2) Duplicate an item
+   */
+  public function testMoveCopyAction()
+    {
+
+    }
   }
