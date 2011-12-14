@@ -254,6 +254,10 @@ $(function() {
             effect: true // Disable positioning animation
          },
          show: {
+            modal: { 
+              on: true,
+              blur: false
+              },
             event: 'click',
             solo: true // Only show one tooltip at a time
          },
