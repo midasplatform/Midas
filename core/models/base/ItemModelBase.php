@@ -159,6 +159,75 @@ abstract class ItemModelBase extends AppModel
         }
       }
     }//end copyParentPolicies
+    
+  /** share Item policies*/
+  function shareItemReadonly($itemdao, $folderdao)
+    {
+    if(!$itemdao instanceof ItemDao || !$folderdao instanceof FolderDao)
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    $groupPolicies = $folderdao->getFolderpolicygroup();
+    $existingGroupPolicies = $itemdao->getItempolicygroup();
+    $existingGroups = array();
+    foreach($existingGroupPolicies as $key => $policy)
+      {
+      $group = $policy->getGroup();
+      if (in_array($group, $existingGroups))
+        {
+        array_push($existingGroups, $group);
+        }
+      }
+
+    $modelLoad = new MIDAS_ModelLoader();
+    $ItempolicygroupModel = $modelLoad->loadModel('Itempolicygroup');
+    foreach($groupPolicies as $key => $policy)
+      {
+      $newGroup = $policy->getGroup();
+      if (!in_array($group, $existingGroups))
+        {
+        $ItempolicygroupModel->createPolicy($newGroup, $itemdao, MIDAS_POLICY_READ);
+        }
+      }
+    }//end shareItemReadonly
+
+
+ /** share Item policies*/
+  function duplicateItem($itemDao, $userDao, $folderDao)
+    {
+    if(!$itemDao instanceof ItemDao || !$folderDao instanceof FolderDao)
+      {
+      throw new Zend_Exception("Error param.");
+      }
+    if(!$userDao instanceof UserDao)
+      {
+      throw new Zend_Exception("Should be an user.");
+      } 
+    $name = $itemDao->getName();
+    $description = $itemDao->getDescription();
+    $newItem = $this->createItem($name, $description, $folderDao);      
+    $newItem->setType($itemDao->getType());
+    $newItem->setThumbnail($itemDao->getThumbnail());
+    $newItem->setSizebytes($itemDao->getSizebytes());
+    $newItem->setPrivacyStatus($itemDao->getPrivacyStatus());
+    $newItem->setDateCreation(date('c'));
+    $newItem->setDateUpdate(date('c'));
+    $this->save($newItem);
+    
+    $modelLoad = new MIDAS_ModelLoader();
+    $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');      
+    foreach($itemDao->getRevisions() as $revision)
+      {
+      $itemRevisionDao = new ItemRevisionDao;
+      $itemRevisionDao->setItemId($newItem->getItemId());
+      $itemRevisionDao->setRevision($revision->getRevision());
+      $itemRevisionDao->setDate($revision->getDate());
+      $itemRevisionDao->setChanges($revision->getChanges());
+      $itemRevisionDao->setUserId($userDao->getUserId());
+      $itemRevisionDao->setLicense($revision->getLicense());
+      $ItemRevisionModel->save($itemRevisionDao);
+      } 
+    }//end duplicateItem
 
   /** plus one view*/
   function incrementViewCount($itemdao)
@@ -225,7 +294,7 @@ abstract class ItemModelBase extends AppModel
     $ItemRevisionModel->save($revisiondao);
     $this->save($itemdao);//update date
     } // end addRevision
-
+    
   /** Create a new empty item */
   function createItem($name, $description, $parent, $uuid = '')
     {
