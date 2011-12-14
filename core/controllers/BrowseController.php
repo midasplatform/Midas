@@ -58,10 +58,11 @@ class BrowseController extends AppController
   /** move or copy selected element*/
   public function movecopyAction()
     {
-    $copySubmit = $this->_getParam('copyElement');
+    $shareSubmit = $this->_getParam('shareElement');
+    $duplicateSubmit = $this->_getParam('duplicateElement');
     $moveSubmit = $this->_getParam('moveElement');
     $select = $this->_getParam('selectElement');
-    if(isset($copySubmit) || isset($moveSubmit))
+    if(isset($moveSubmit) || isset($shareSubmit) || isset($duplicateSubmit))
       {
       $elements = explode(';', $this->_getParam('elements'));
       $destination = $this->_getParam('destination');
@@ -70,41 +71,45 @@ class BrowseController extends AppController
       $itemIds = explode('-', $elements[1]);
       $folders = $this->Folder->load($folderIds);
       $items = $this->Item->load($itemIds);
-      $destination = $this->Folder->load($destination);
+      $destinationFolder = $this->Folder->load($destination);
       if(empty($folders) && empty ($items))
         {
         throw new Zend_Exception("No element selected");
         }
-      if($destination == false)
+      if($destinationFolder == false)
         {
         throw new Zend_Exception("Unable to load destination");
         }
 
       foreach($folders as $folder)
         {
-        if(!isset($copySubmit))
+        if(isset($moveSubmit))
           {
-          $this->Folder->move($folder, $destination);
+          $this->Folder->move($folder, $destinationFolder);
           }
         }
 
       foreach($items as $item)
         {
-        if(isset($copySubmit))
+        if(isset($shareSubmit))
           {
-          $this->Folder->addItem($destination, $item);
-          $this->Item->copyParentPolicies($item, $destination);
+          $this->Folder->addItem($destinationFolder, $item);
+          $this->Item->shareItemReadonly($item, $destinationFolder);
+          }
+        elseif(isset($duplicateSubmit))
+          {
+          $this->Item->duplicateItem($item, $this->userSession->Dao, $destinationFolder);
           }
         else
           {
           $from = $this->_getParam('from');
           $from = $this->Folder->load($from);
-          if($destination == false)
+          if($destinationFolder == false)
             {
             throw new Zend_Exception("Unable to load destination");
             }
-          $this->Folder->addItem($destination, $item);
-          $this->Item->copyParentPolicies($item, $destination);
+          $this->Folder->addItem($destinationFolder, $item);
+          $this->Item->copyParentPolicies($item, $destinationFolder);
           $this->Folder->removeItem($from, $item);
           }
         }
@@ -115,7 +120,7 @@ class BrowseController extends AppController
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
-      $this->_redirect('/folder/'.$destination->getKey());
+      $this->_redirect('/folder/'.$destinationFolder->getKey());
       }
 
 
@@ -130,12 +135,18 @@ class BrowseController extends AppController
       $folderIds = $this->_getParam('folders');
       $itemIds = $this->_getParam('items');
       $move = $this->_getParam('move');
+      $share = $this->_getParam('share');
       $this->view->folderIds = $folderIds;
       $this->view->itemIds = $itemIds;
       $this->view->moveEnabled = true;
+      $this->view->shareEnabled = false;
       if(isset($move))
         {
         $this->view->moveEnabled = false;
+        }
+      if(isset($share))
+        {
+        $this->view->shareEnabled = true;
         }
       $folderIds = explode('-', $folderIds);
       $itemIds = explode('-', $itemIds);
