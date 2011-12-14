@@ -680,7 +680,16 @@ class UserController extends AppController
       }
 
     $this->view->user = $userDao;
-    $this->view->userCommunities = $this->User->getUserCommunities($userDao);
+    $userCommunities = $this->User->getUserCommunities($userDao);
+    $filteredCommunities = array();
+    foreach($userCommunities as $community)
+      {
+      if($this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_READ))
+        {
+        $filteredCommunities[] = $community;
+        }
+      }
+    $this->view->userCommunities = $filteredCommunities;
     $this->view->folders = array();
     if(!empty($this->userSession->Dao) && ($userDao->getKey() == $this->userSession->Dao->getKey() || $this->userSession->Dao->isAdmin()))
       {
