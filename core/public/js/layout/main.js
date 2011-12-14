@@ -423,6 +423,7 @@ function showDialog(title, button, opts)
       title: title,
       position: [x,y],
       zIndex: 15100,
+      modal: true,
       buttons: {"Ok": function() {$(this).dialog("close");}} 
     };
     for(var attrname in opts)
@@ -440,6 +441,7 @@ function showDialog(title, button, opts)
       draggable:true,
       title: title,
       zIndex: 15100,
+      modal: true,
       position: [x,y]
       };
     for(var attrname in opts)
@@ -464,6 +466,8 @@ function showBigDialog(title,button)
       draggable:false,
       title: title,
       position: [x,y],
+      zIndex: 15100,
+      modal: true,
       buttons: {"Ok": function() {$(this).dialog("close");}} 
     });
     
@@ -475,8 +479,10 @@ function showBigDialog(title,button)
       width:700,
       modal: false,
       draggable:false,
-      title: title    ,
-      position: [x,y]
+      title: title,
+      position: [x,y],
+      zIndex: 15100,
+      modal: true
     });
   }
 }
