@@ -310,10 +310,7 @@ class AdminController extends AppController
       {
       throw new Zend_Exception("You should be an administrator");
       }
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception('This page should only be requested by ajax');
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
     $start = $this->_getParam('startlog');
@@ -394,10 +391,7 @@ class AdminController extends AppController
       {
       throw new Zend_Exception('You should be an administrator');
       }
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception('This page should only be requested by ajax');
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $ids = $this->_getParam('idList');
@@ -426,10 +420,7 @@ class AdminController extends AppController
       {
       throw new Zend_Exception("You should be an administrator");
       }
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
 
     $this->_helper->layout->disableLayout();
 
@@ -446,10 +437,7 @@ class AdminController extends AppController
       {
       throw new Zend_Exception("You should be an administrator");
       }
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
     $db = Zend_Registry::get('dbAdapter');

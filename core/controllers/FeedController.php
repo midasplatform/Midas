@@ -61,9 +61,9 @@ class FeedController extends AppController
   /** get delete a feed */
   public function deleteajaxAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
+    if(!$this->isTestingEnv())
       {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      $this->requireAjaxRequest();
       }
 
     $this->disableLayout();

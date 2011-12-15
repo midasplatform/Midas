@@ -290,10 +290,7 @@ class InstallController extends AppController
   /** ajax function which tests connectivity to a db */
   public function testconnexionAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $type = $this->_getParam('type');

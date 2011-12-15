@@ -118,11 +118,7 @@ class BrowseController extends AppController
       $this->_redirect('/folder/'.$destination->getKey());
       }
 
-
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
     if(!isset($select))
@@ -174,10 +170,7 @@ class BrowseController extends AppController
   /** Ajax element used to select an item*/
   public function selectitemAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
     $this->view->selectEnabled = true;
@@ -198,10 +191,7 @@ class BrowseController extends AppController
   /** Ajax element used to select a folder*/
   public function selectfolderAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
     $this->disableLayout();
     $policy = $this->_getParam("policy");
 
@@ -235,11 +225,7 @@ class BrowseController extends AppController
   /** get getfolders content (ajax function for the treetable) */
   public function getfolderscontentAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
-
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $folderIds = $this->_getParam('folders');
@@ -295,11 +281,7 @@ class BrowseController extends AppController
   /** get getfolders Items' size */
   public function getfolderssizeAction()
     {
-  /*  if(!$this->getRequest()->isXmlHttpRequest())
-     {
-     throw new Zend_Exception("Why are you here ? Should be ajax.");
-     }  */
-
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $folderIds = $this->_getParam('folders');
@@ -322,10 +304,7 @@ class BrowseController extends AppController
   /** get element info (ajax function for the treetable) */
   public function getelementinfoAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $element = $this->_getParam('type');
