@@ -14,7 +14,7 @@ CREATE TABLE batchmake_itemmetric (
 CREATE TABLE condor_dag (
     condor_dag_id serial PRIMARY KEY,
     batchmake_task_id bigint NOT NULL,
-    log_filename text NOT NULL
+    out_filename text NOT NULL
 );
 
 CREATE TABLE condor_job (

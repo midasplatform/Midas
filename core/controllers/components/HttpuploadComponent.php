@@ -18,6 +18,15 @@
  limitations under the License.
 =========================================================================*/
 
+// HTTPUPLOAD error codes
+define('MIDAS_HTTPUPLOAD_UPLOAD_FAILED', -105);
+define('MIDAS_HTTPUPLOAD_UPLOAD_TOKEN_GENERATION_FAILED', -140);
+define('MIDAS_HTTPUPLOAD_INVALID_UPLOAD_TOKEN', -141);
+define('MIDAS_HTTPUPLOAD_INPUT_FILE_OPEN_FAILED', -142);
+define('MIDAS_HTTPUPLOAD_OUTPUT_FILE_OPEN_FAILED', -143);
+define('MIDAS_HTTPUPLOAD_TMP_DIR_CREATION_FAILED', -144);
+define('MIDAS_HTTPUPLOAD_PARAM_UNDEFINED', -150);
+
 /**
  * This component is used for large uploads and is used by
  * the web api and the java uploader.  It generates an authenticated
@@ -58,14 +67,17 @@ class HttpuploadComponent extends AppComponent
     {
     if(!array_key_exists('filename', $args))
       {
-      throw new Exception('Parameter filename is not defined', -150);
+      throw new Exception('Parameter filename is not defined', MIDAS_HTTPUPLOAD_FILENAME_PARAM_UNDEFINED);
       }
     $dir = $dirname == '' ? '' : '/'.$dirname;
     $dir = $this->tmpDirectory.$dir;
 
     if(!file_exists($dir))
       {
-      mkdir($dir, 0700, true);
+      if(!mkdir($dir, 0700, true))
+        {
+        throw new Exception('Failed to create temporary upload dir', MIDAS_HTTPUPLOAD_TMP_DIR_CREATION_FAILED);
+        }
       }
     // create a unique temporary file in the dirname directory
     $unique_identifier = basename(tempnam($dir, $args['filename']));
@@ -76,7 +88,7 @@ class HttpuploadComponent extends AppComponent
 
     if(empty($unique_identifier))
       {
-      throw new Exception('Failed to generate upload token', -140);
+      throw new Exception('Failed to generate upload token', MIDAS_HTTPUPLOAD_UPLOAD_TOKEN_GENERATION_FAILED);
       }
     return array('token' => $unique_identifier);
     }
@@ -88,19 +100,19 @@ class HttpuploadComponent extends AppComponent
 
     if(!array_key_exists('filename', $args))
       {
-      throw new Exception('Parameter filename is not defined', -150);
+      throw new Exception('Parameter filename is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
       }
     $filename = $args['filename'];
 
     if(!array_key_exists($this->tokenParamName, $args))
       {
-      throw new Exception('Parameter '.$this->tokenParamName.' is not defined', -150);
+      throw new Exception('Parameter '.$this->tokenParamName.' is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
       }
     $uploadToken = $args[$this->tokenParamName];
 
     if(!array_key_exists('length', $args))
       {
-      throw new Exception('Parameter length is not defined', -150);
+      throw new Exception('Parameter length is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
       }
     $length = (float)($args['length']);
 
@@ -113,7 +125,7 @@ class HttpuploadComponent extends AppComponent
     $pathTemporaryFilename = $this->tmpDirectory.'/'.$uploadToken;
     if(!file_exists($pathTemporaryFilename))
       {
-      throw new Exception('Invalid upload token', -141);
+      throw new Exception('Invalid upload token', MIDAS_HTTPUPLOAD_INVALID_UPLOAD_TOKEN);
       }
     else
       {
@@ -135,14 +147,14 @@ class HttpuploadComponent extends AppComponent
     $in = fopen($inputfile, 'rb'); // Stream (LocalServerFile -> Server) Mode: Read, Binary
     if($in === false)
       {
-      throw new Exception('Failed to open ['.$inputfile.'] source', -142);
+      throw new Exception('Failed to open ['.$inputfile.'] source', MIDAS_HTTPUPLOAD_INPUT_FILE_OPEN_FAILED);
       }
 
     // open target output
     $out = fopen($pathTemporaryFilename, 'ab'); // Stream (Server -> TempFile) Mode: Append, Binary
     if($out === false)
       {
-      throw new Exception('Failed to open output file ['.$pathTemporaryFilename.']', -143);
+      throw new Exception('Failed to open output file ['.$pathTemporaryFilename.']', MIDAS_HTTPUPLOAD_OUTPUT_FILE_OPEN_FAILED);
       }
 
     if($streamChecksum)
@@ -171,7 +183,7 @@ class HttpuploadComponent extends AppComponent
 
     if($uploadOffset < $length)
       {
-      throw new Exception('Failed to upload file - '.$uploadOffset.'/'.$length.' bytes transferred', -105);
+      throw new Exception('Failed to upload file - '.$uploadOffset.'/'.$length.' bytes transferred', MIDAS_HTTPUPLOAD_UPLOAD_FAILED);
       }
 
     $data['filename'] = $filename;
@@ -188,7 +200,7 @@ class HttpuploadComponent extends AppComponent
     //check parameters
     if(!array_key_exists($this->tokenParamName, $args))
       {
-      throw new Exception('Parameter '.$this->tokenParamName.' is not defined', -150);
+      throw new Exception('Parameter '.$this->tokenParamName.' is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
       }
     $uploadToken = $args[$this->tokenParamName];
     $offset = filesize($this->tmpDirectory.'/'.$uploadToken);
