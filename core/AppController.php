@@ -18,6 +18,11 @@
  limitations under the License.
 =========================================================================*/
 
+// Exception Messages
+define('MIDAS_ADMIN_PRIVILEGES_REQUIRED', "Administrative privileges required.");
+define('MIDAS_AJAX_REQUEST_ONLY', "This page should only be requested by ajax.");
+define('MIDAS_LOGIN_REQUIRED', "User should be logged in to access this page.");
+
 /**
  * GlobalAction
  * Provides global function to the controllers
@@ -470,10 +475,29 @@ class AppController extends MIDAS_GlobalController
   /** trigger logging (javascript) */
   public function haveToBeLogged()
     {
-    $this->view->header = $this->t("You should be logged to access this page");
+    $this->view->header = $this->t(MIDAS_LOGIN_REQUIRED);
     $this->view->json['global']['needToLog'] = true;
     $this->_helper->viewRenderer->setNoRender();
     }
+
+  /** ensure the request is ajax */
+  public function requireAjaxRequest()
+    {
+    if(!$this->getRequest()->isXmlHttpRequest())
+      {
+      throw new Zend_Exception(MIDAS_AJAX_REQUEST_ONLY);
+      }
+    }
+
+  /** ensure that the user is logged in and has admin privileges */
+  public function requireAdminPrivileges()
+    {
+    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
+      {
+      throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED);
+      }
+    }
+
   /** translation */
   protected function t($text)
     {

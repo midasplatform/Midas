@@ -154,10 +154,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
   */
   public function checkagreementAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 

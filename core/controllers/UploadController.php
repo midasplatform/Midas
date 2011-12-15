@@ -72,9 +72,9 @@ class UploadController extends AppController
       {
       throw new Zend_Exception('You have to be logged in to do that');
       }
-    if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
+    if(!$this->isTestingEnv())
       {
-      throw new Zend_Exception('Error, should be an ajax action.');
+      $this->requireAjaxRequest();
       }
     $this->disableLayout();
     $this->view->form = $this->getFormAsArray($this->Form->Upload->createUploadLinkForm());
@@ -104,9 +104,9 @@ class UploadController extends AppController
       {
       throw new Zend_Exception('You have to be logged in to do that');
       }
-    if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
+    if(!$this->isTestingEnv())
       {
-      throw new Zend_Exception('Error, should be an ajax action.');
+      $this->requireAjaxRequest();
       }
     $this->disableLayout();
     $itemId = $this->_getParam('itemId');
@@ -133,9 +133,9 @@ class UploadController extends AppController
       {
       throw new Zend_Exception('You have to be logged in to do that');
       }
-    if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
+    if(!$this->isTestingEnv())
       {
-      throw new Zend_Exception('Error, should be an ajax action.');
+      $this->requireAjaxRequest();
       }
 
     $this->disableLayout();
@@ -159,10 +159,7 @@ class UploadController extends AppController
       {
       throw new Zend_Exception('You have to be logged in to do that');
       }
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception('Error, should be an ajax action.');
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->view->protocol = 'http';
     $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];

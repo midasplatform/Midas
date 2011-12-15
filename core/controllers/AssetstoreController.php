@@ -56,10 +56,7 @@ class AssetstoreController extends AppController
       {
       throw new Zend_Exception("You should be an administrator");
       }
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $change = $this->_getParam("submitDefaultAssetstore");
@@ -85,10 +82,7 @@ class AssetstoreController extends AppController
       {
       throw new Zend_Exception("You should be an administrator");
       }
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $assetstoreId = $this->_getParam("assetstoreId");
@@ -113,10 +107,7 @@ class AssetstoreController extends AppController
       {
       throw new Zend_Exception("You should be an administrator");
       }
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $assetstoreId = $this->_getParam("assetstoreId");
