@@ -53,8 +53,8 @@ class Statistics_ItemController extends Statistics_AppController
       {
       $key = date($format, strtotime($download->getDate()));
       $arrayDownload[$key]++;
-      $latitude = $download->getLatitude();
-      $longitude = $download->getLongitude();
+      $latitude = $download->getIpLocation()->getLatitude();
+      $longitude = $download->getIpLocation()->getLongitude();
 
       if($latitude || $longitude)
         {
