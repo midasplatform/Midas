@@ -68,6 +68,7 @@
         }
       }
     });
+
     $( ".uploadTabs" ).show();
       $('#linkForm').ajaxForm(function() {
          // $('input[name=url]').val('http://');
