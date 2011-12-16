@@ -31,9 +31,9 @@
       if(mode == 'file')
         {
         mode = 'folder'; 
-        $('#fileUploaderInput').attr('webkitdirectory', '');
-        $('#fileUploaderInput').attr('directory', '');
-        $('#fileUploaderInput').attr('mozdirectory', '');
+        $('.fileUploaderInput').attr('webkitdirectory', '');
+        $('.fileUploaderInput').attr('directory', '');
+        $('.fileUploaderInput').attr('mozdirectory', '');
         $('.file_upload_label').html(htmlFolderMode);
         $('#uploadModeFileLink').show();
         $('#uploadModeFolderLink').hide();
@@ -41,9 +41,9 @@
       else
         {
         mode = 'file'; 
-        $('#fileUploaderInput').removeAttr('webkitdirectory');
-        $('#fileUploaderInput').removeAttr('directory');
-        $('#fileUploaderInput').removeAttr('mozdirectory');
+        $('.fileUploaderInput').removeAttr('webkitdirectory');
+        $('.fileUploaderInput').removeAttr('directory');
+        $('.fileUploaderInput').removeAttr('mozdirectory');
         $('.file_upload_label').html(htmlFileMode);
         $('#uploadModeFileLink').hide();
         $('#uploadModeFolderLink').show();
@@ -121,7 +121,7 @@
       {
       updateUploadedCount();
        //see http://aquantum-demo.appspot.com/file-upload
-        $('#file_upload').fileUploadUIX({
+        $('.file_upload:visible').fileUploadUIX({
           beforeSend: function (event, files, index, xhr, handler, callBack) {
             handler.uploadRow.find('.file_upload_start').click(function () {
               var path = '';

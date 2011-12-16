@@ -24,9 +24,9 @@ PURPOSE.  See the above copyright notices for more information.
       <b><?php echo $this->t('Step 1: Select files to upload')?></b>
       <br/>
       <div id="jqueryFileUploadContent">
-        <div id="file_upload">
+        <div class="file_upload">
             <form action="<?php echo $this->webroot?>/upload/saveuploaded" method="POST" enctype="multipart/form-data">
-                <input id="fileUploaderInput" type="file" name="file[]" multiple>
+                <input class="fileUploaderInput" type="file" name="file[]" multiple>
                 <button type="submit">Upload</button>
                 <div class="file_upload_label"><?php echo $this->t('Browse or drop files')?></div>
                 <div class="file_upload_label_folder"><?php echo $this->t('Browse')?></div>
