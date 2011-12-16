@@ -72,7 +72,7 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
 
       $results = $_POST['results'];
       $xmlContent = $this->ModuleComponent->Executable->createDefinitionFile($results);
-      $pathFile = BASE_PATH.'/tmp/misc/'.uniqid().time();
+      $pathFile = $this->getTempDirectory().'/'.uniqid().time();
       file_put_contents($pathFile, $xmlContent);
 
       $revision = $this->Item->getLastRevision($itemDao);

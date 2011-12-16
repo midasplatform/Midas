@@ -37,16 +37,6 @@ class BatchmakeControllerTest extends ControllerTestCase
     Zend_Registry::set('batchmake_test_config', $testConfigProps);
     }
 
-
-  /**
-   * helper function to return Midas configured temp directory
-   * @return midas temp dir
-   */
-  protected function getTempDirectory()
-    {
-    return KWUtils::getTempDirectory();
-    }
-
   /**
    * function will create a temporary batchmake config, copying over test data
    * to the the locations in that config needed for the tests, returning an

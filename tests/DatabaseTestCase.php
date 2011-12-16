@@ -20,6 +20,7 @@
 
 require_once dirname(__FILE__).'/bootstrap.php';
 require_once dirname(__FILE__).'/configuredVars.php';
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /** main models test element*/
 abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
@@ -52,6 +53,15 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       $file = CMAKE_BINARY_DIR.'/xdebugCoverage/'.md5($_SERVER['SCRIPT_FILENAME']);
       file_put_contents($file.'.'.md5(uniqid(rand(), true)).'.'.get_class($this), serialize($data));
       }
+
+  /**
+   * @method protected getTempDirectory()
+   * get the midas temporary directory
+   * @return string
+   */
+  protected function getTempDirectory()
+    {
+    return UtilityComponent::getTempDirectory();
     }
 
   /** init tests*/

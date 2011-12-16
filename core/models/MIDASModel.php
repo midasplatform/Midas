@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /** global midas model library*/
 class MIDASModel
@@ -50,6 +51,17 @@ class MIDASModel
     $this->loadElements(); // load the components for the models
     $this->database->initialize($this->_name, $this->_key, $this->_mainData);
     }
+
+  /**
+   * @method protected getTempDirectory()
+   * get the midas temporary directory
+   * @return string
+   */
+  protected function getTempDirectory()
+    {
+    return UtilityComponent::getTempDirectory();
+    }
+
 
   /** Save a Dao */
   public function save($dao)

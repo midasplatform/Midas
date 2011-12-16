@@ -563,6 +563,11 @@ class AppController extends MIDAS_GlobalController
   * @var UserModelBase
   */
   var $User;
+  /**
+  * Setting Model
+  * @var SettingModelBase
+  */
+  var $Setting;
 
   /**end completion eclipse */
   }//end class

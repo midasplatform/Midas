@@ -21,9 +21,10 @@
 // midas core files
 require_once BASE_PATH . '/notification/MIDASNotifier.php';
 require_once BASE_PATH . '/notification/GlobalNotification.php';
+require_once BASE_PATH . '/core/GlobalComponent.php';
+require_once BASE_PATH . '/core/AppComponent.php';
 require_once BASE_PATH . '/core/GlobalController.php';
 require_once BASE_PATH . '/modules/GlobalModule.php';
-require_once BASE_PATH . '/core/GlobalComponent.php';
 require_once BASE_PATH . '/core/models/MIDASModel.php';
 
 require_once BASE_PATH . '/core/models/MIDASDatabaseInterface.php';
@@ -37,7 +38,6 @@ require_once BASE_PATH . '/core/models/ModelLoader.php';
 require_once BASE_PATH . '/core/ComponentLoader.php';
 
 require_once BASE_PATH.'/core/AppController.php';
-require_once BASE_PATH.'/core/AppComponent.php';
 require_once BASE_PATH.'/core/AppForm.php';
 require_once BASE_PATH.'/core/models/AppModel.php';
 require_once BASE_PATH.'/core/models/AppDao.php';

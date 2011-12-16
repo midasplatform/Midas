@@ -86,8 +86,16 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
      foreach($this->assetstores as $assetstore)
        {
        echo "<div class='assetstoreElement'>
-              <b><span class='assetstoreName'>{$assetstore->getName()}</span></b>
-	      <br/>";
+              <b><span class='assetstoreName'>{$assetstore->getName()}</span></b> ";
+       if($assetstore->default)
+         {
+         echo "(<span qtip='If set as default, the uploaded files will be store is this assetstore.' class='defaultAssetstore' element='{$assetstore->getKey()}'>default assetstore</span>)";
+         }
+       else
+         {
+         echo "(<a qtip='If set as default, the uploaded files will be store is this assetstore.' class='defaultAssetstoreLink' element='{$assetstore->getKey()}'>set as default</a>)";
+         }
+	      echo "<br/>";
        if($assetstore->totalSpaceText==false)
          {
          echo "<b>Unable to access assetstore</b>";
