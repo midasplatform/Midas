@@ -169,4 +169,9 @@ $('a#setElementPrivateLink').click(function(){
       $('#live_share_search_value').val('init');
       }
     });
+
+$('input.permissionsDone').click(function() {
+  $('div.MainDialog').dialog('close');
+  });
+
   
