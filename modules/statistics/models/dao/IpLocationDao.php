@@ -14,5 +14,6 @@ PURPOSE.  See the above copyright notices for more information.
 class Statistics_IpLocationDao extends Statistics_AppDao
 {
   public $_model = 'IpLocation';
+  public $_module = 'statistics';
 }
 ?>
