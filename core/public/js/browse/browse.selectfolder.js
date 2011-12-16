@@ -36,7 +36,7 @@ function callbackSelect(node)
       {
       if(classNames[key].match("child-of-"))
         {
-        parent = $("#" + classNames[key].substring(9));
+        parent = $("div.MainDialogContent #" + classNames[key].substring(9));
         }
       }
     if(parent != null)
