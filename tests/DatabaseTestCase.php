@@ -21,6 +21,7 @@
 require_once dirname(__FILE__).'/bootstrap.php';
 require_once dirname(__FILE__).'/configuredVars.php';
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
+
 /** main models test element*/
 abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
   {

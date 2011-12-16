@@ -51,7 +51,7 @@
     });
     
       
-    $( "#uploadTabs" ).tabs({
+    $( ".uploadTabs" ).tabs({
       ajaxOptions: {
         beforeSend: function()
         {
@@ -60,7 +60,7 @@
         success: function()
         {
           $('div.MainDialogLoading').hide();
-          $( "#uploadTabs" ).show();
+          $( ".uploadTabs" ).show();
         },
         error: function( xhr, status, index, anchor ) {
           $( anchor.hash ).html(
@@ -68,8 +68,13 @@
         }
       }
     });
+<<<<<<< HEAD
     $( "#uploadTabs" ).show();
       $('#linkForm').ajaxForm(function() { 
+=======
+    $( ".uploadTabs" ).show();
+      $('#linkForm').ajaxForm(function() {
+>>>>>>> 0329-UploadDialogFixes-zach_mullen
          // $('input[name=url]').val('http://');
           $('.uploadedLinks').val(parseInt($('.uploadedLinks').val())+1);
           updateUploadedCount();
