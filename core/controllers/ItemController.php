@@ -186,22 +186,26 @@ class ItemController extends AppController
     // Display the good link if the item is pointing to a website
     $this->view->itemIsLink = false;
 
-    $bitstreams = $itemRevision->getBitstreams();
-    if(count($bitstreams) == 1)
-      {
-      $bitstream = $bitstreams[0];
-      if(strpos($bitstream->getPath(), 'http://') !== false)
-        {
-        $this->view->itemIsLink = true;
-        }
-      }
 
+    if(isset($itemRevision) && $itemRevision !== false)
+      {
+      $bitstreams = $itemRevision->getBitstreams();
+      if(count($bitstreams) == 1)
+        {
+        $bitstream = $bitstreams[0];
+        if(strpos($bitstream->getPath(), 'http://') !== false)
+          {
+          $this->view->itemIsLink = true;
+          }
+        }
+      $itemDao->creation = $this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
+      $this->view->metadatavalues = $this->ItemRevision->getMetadata($itemRevision);
+      }
 
     $this->Component->Sortdao->field = 'revision';
     $this->Component->Sortdao->order = 'desc';
     usort($itemDao->revisions, array($this->Component->Sortdao, 'sortByNumber'));
 
-    $itemDao->creation = $this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
     $this->view->itemDao = $itemDao;
 
     $this->view->itemSize = $this->Component->Utility->formatSize($itemDao->getSizebytes());
@@ -209,7 +213,6 @@ class ItemController extends AppController
     $this->view->title .= ' - '.$itemDao->getName();
     $this->view->metaDescription = substr($itemDao->getDescription(), 0, 160);
 
-    $this->view->metadatavalues = $this->ItemRevision->getMetadata($itemRevision);
 
 
     $tmp = Zend_Registry::get('notifier')->callback("CALLBACK_VISUALIZE_CAN_VISUALIZE", array('item' => $itemDao));

@@ -352,10 +352,18 @@ class BrowseController extends AppController
         $item = $this->Item->load($id);
         $jsonContent = array_merge($jsonContent, $item->toArray());
         $itemRevision = $this->Item->getLastRevision($item);
-        $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
-        $jsonContent['uploaded'] = $itemRevision->getUser()->toArray();
-        $jsonContent['revision'] = $itemRevision->toArray();
-        $jsonContent['nbitstream'] = count($itemRevision->getBitstreams());
+        if(isset($itemRevision) && $itemRevision !== false)
+          {
+          $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
+          $jsonContent['uploaded'] = $itemRevision->getUser()->toArray();
+          $jsonContent['revision'] = $itemRevision->toArray();
+          $jsonContent['nbitstream'] = count($itemRevision->getBitstreams());
+          }
+        else
+          {
+          $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($item->getDateCreation()));
+          $jsonContent['norevisions'] = true;
+          }
         $jsonContent['type'] = 'item';
         break;
       default:
