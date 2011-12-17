@@ -450,28 +450,38 @@ function createInfo(jsonContent)
     }
   if(arrayElement['type']=='item')
     {
-    html+='  <tr>';
-    html+='    <td>'+arrayElement.translation.Uploaded+'</td>';
-    html+='    <td><a href="'+json.global.webroot+'/user/'+arrayElement['uploaded']['user_id']+'">'+arrayElement['uploaded']['firstname']+' '+arrayElement['uploaded']['lastname']+'</a></td>';
-    html+='  </tr>';
-    html+='  <tr>';
-    html+='    <td>Revision';
-    if(parseInt(arrayElement['revision']['revision'])>1)
+    if(arrayElement['norevisions'] == true)
       {
-      html+='s';
+      html+='  <tr>';
+      html+='    <td>No Revisions</td>';
+      html+='  </tr>';
+      html+='  <tr>';
       }
-    html+=     '</td>';
-    html+='    <td>'+arrayElement['revision']['revision']+'</td>';
-    html+='  </tr>';
-    html+='  <tr>';
-    html+='    <td>'+arrayElement.translation.File;
-    if(parseInt(arrayElement['nbitstream'])>1)
+    else
       {
-      html+='s';
+      html+='  <tr>';
+      html+='    <td>'+arrayElement.translation.Uploaded+'</td>';
+      html+='    <td><a href="'+json.global.webroot+'/user/'+arrayElement['uploaded']['user_id']+'">'+arrayElement['uploaded']['firstname']+' '+arrayElement['uploaded']['lastname']+'</a></td>';
+      html+='  </tr>';
+      html+='  <tr>';
+      html+='    <td>Revision';
+      if(parseInt(arrayElement['revision']['revision'])>1)
+        {
+        html+='s';
+        }
+      html+=     '</td>';
+      html+='    <td>'+arrayElement['revision']['revision']+'</td>';
+      html+='  </tr>';
+      html+='  <tr>';
+      html+='    <td>'+arrayElement.translation.File;
+      if(parseInt(arrayElement['nbitstream'])>1)
+        {
+        html+='s';
+        }
+      html+=    '</td>';
+      html+='    <td>'+arrayElement['nbitstream']+'</td>';
+      html+='  </tr>';
       }
-    html+=    '</td>';
-    html+='    <td>'+arrayElement['nbitstream']+'</td>';
-    html+='  </tr>';
     }
 
   if(arrayElement['type']=='folder')

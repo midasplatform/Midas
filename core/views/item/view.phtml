@@ -144,7 +144,8 @@ if($this->preview) // module visualize
   <a onclick="$('#revisionContent').show();$(this).remove();"><?php echo $this->t('Show Content')?></a>
 
   <div id="revisionContent">
-
+  <?php if(isset($this->itemDao->lastrevision) && $this->itemDao->lastrevision !== false)       
+        { ?>        
     <h4 style="margin-top: 0px;margin-bottom: 5px;"><?php echo $this->t('Latest revision content')?>:</h4>
 
     <table style='display:block;'  id="browseTable" class="midasTree">
@@ -167,6 +168,7 @@ if($this->preview) // module visualize
           echo "</tr>";
           }
         ?>
+  <?php } // check for $this->itemDao->lastRevision ?>
       </tbody>
     </table>
   </div>
@@ -229,12 +231,13 @@ if($this->preview) // module visualize
       ?>
     </ul>
   </div>
-  <?php
-    }?>
+  <?php } ?>
   <div class="<?php echo (!$this->preview && !$this->isModerator && !$this->isAdmin)?'sideElementFirst':''; ?>sideElement<?php if(count($this->sameLocation) > 1) echo "Last"?> viewInfo">
     <h1>Info</h1>
     <table>
       <tbody>
+      <?php if(isset($this->itemDao->lastrevision) && $this->itemDao->lastrevision !== false)       
+            { ?>
         <tr>
           <td><?php echo $this->t('Created')?></td>
           <td><?php echo $this->itemDao->creation?></td>
@@ -251,6 +254,13 @@ if($this->preview) // module visualize
           <td><?php echo $this->t('Files');?></td>
           <td><?php echo count($this->itemDao->lastrevision->getBitstreams())?></td>
         </tr>
+      <?php } // check for $this->itemDao->lastRevision 
+          else
+            { ?>
+        <tr>
+          <td><?php echo $this->t('No Revisions');?></td>
+        </tr>
+      <?php } // else ?>
       </tbody>
     </table>
     <?php
