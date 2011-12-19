@@ -297,7 +297,7 @@ class AppController extends MIDAS_GlobalController
       }
     else
       {
-      $this->addDynamicHelp('.registerLink', '<b>Register</b> to create your personnal space.', 'bottom left', 'top right');
+      $this->addDynamicHelp('.registerLink', '<b>Register</b> to create your personal space.', 'bottom left', 'top right');
       }
 
     $this->addDynamicHelp('.SideBar ul:first', '<b>Navigation menu</b>. Browse, explore and manage data.');
