@@ -357,7 +357,7 @@ class UserController extends AppController
     $userId = $this->_getParam('userId');
     if(isset($userId) && $userId != $this->userSession->Dao->getKey() && !$this->userSession->Dao->isAdmin())
       {
-      throw new Zend_Exception('You should be an admin');
+      throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED);
       }
     else if(isset($userId))
       {
@@ -656,7 +656,7 @@ class UserController extends AppController
 
     if(!isset($user_id) && !$this->logged)
       {
-      $this->view->header = $this->t("You should be logged in.");
+      $this->view->header = $this->t(MIDAS_LOGIN_REQUIRED);
       $this->_helper->viewRenderer->setNoRender();
       return false;
       }
@@ -722,7 +722,7 @@ class UserController extends AppController
 
     if(!isset($user_id) && !$this->logged)
       {
-      $this->view->header = $this->t("You should be logged in.");
+      $this->view->header = $this->t(MIDAS_LOGIN_REQUIRED);
       $this->_helper->viewRenderer->setNoRender();
       return false;
       }

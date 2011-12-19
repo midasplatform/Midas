@@ -28,10 +28,7 @@ class Visualize_ConfigController extends Visualize_AppController
    /** index action*/
    function indexAction()
     {
-    if(!$this->logged||!$this->userSession->Dao->getAdmin()==1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
     
     $module = 'visualize';
     

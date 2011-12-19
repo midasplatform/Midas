@@ -60,12 +60,9 @@ class AdminController extends AppController
     if(!$this->logged)
       {
       $this->haveToBeLogged();
-      return;
+      return false;
       }
-    if(!$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
 
     $task = $this->_getParam("task");
     $params = $this->_getParam("params");
@@ -87,12 +84,9 @@ class AdminController extends AppController
     if(!$this->logged)
       {
       $this->haveToBeLogged();
-      return;
+      return false;
       }
-    if(!$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
     $this->view->header = "Administration";
     $configForm = $this->Form->Admin->createConfigForm();
 
@@ -306,10 +300,7 @@ class AdminController extends AppController
   /** Used to display and filter the list of log messages */
   function showlogAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
@@ -387,10 +378,7 @@ class AdminController extends AppController
   /** Used to delete a list of log entries */
   function deletelogAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception('You should be an administrator');
-      }
+    $this->requireAdminPrivileges();
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
@@ -416,10 +404,7 @@ class AdminController extends AppController
   /** function dashboard*/
   function dashboardAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
     $this->requireAjaxRequest();
 
     $this->_helper->layout->disableLayout();
@@ -433,10 +418,7 @@ class AdminController extends AppController
   /** upgrade database*/
   function upgradeAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
@@ -500,12 +482,10 @@ class AdminController extends AppController
     {
     if(!$this->logged)
       {
-      throw new Zend_Exception("You should be logged in");
+      $this->haveToBeLogged();
+      return false;
       }
-    if(!$this->userSession->Dao->isAdmin())
-      {
-      throw new Zend_Exception("Administrative privileges required");
-      }
+    $this->requireAdminPrivileges();
 
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
@@ -571,12 +551,9 @@ class AdminController extends AppController
     if(!$this->logged)
       {
       $this->haveToBeLogged();
-      return;
+      return false;
       }
-    if(!$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
 
     $this->assetstores = $this->Assetstore->getAll();
     $this->view->migrateForm = $this->Form->Migrate->createMigrateForm($this->assetstores);

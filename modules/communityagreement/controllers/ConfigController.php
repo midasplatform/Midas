@@ -35,10 +35,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
    */
   function indexAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
     }
 
   /** community agreement tab
