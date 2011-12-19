@@ -55,13 +55,14 @@
     onNodeHide: null,
     indent: 7,
     initialState: "collapsed",
-    treeColumn: 0
+    treeColumn: 0,
+    container: ""
   };
 
   // Recursively hide all node's children in a tree
   $.fn.collapse = function() {
     var id = $(this).attr('id');
-    $('tr[id*="'+id+'"]').addClass("collapsed").hide();
+    $(options.container+'tr[id*="'+id+'"]').addClass("collapsed").hide();
     $(this).show();
     colorLines(true);
     return this;

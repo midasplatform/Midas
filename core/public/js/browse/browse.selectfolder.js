@@ -1,4 +1,6 @@
-$("#moveTable").treeTable();
+$("#moveTable").treeTable({
+  container: "#moveTable "
+  });
 $("img.tableLoading").hide();
 $("table#moveTable").show();
 
