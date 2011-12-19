@@ -152,9 +152,9 @@ class BrowseController extends AppController
         {
         throw new Zend_Exception("No element selected");
         }
-      if(!$this->view->logged)
+      if(!$this->logged)
         {
-        throw new Zend_Exception("Should be logged");
+        throw new Zend_Exception(MIDAS_LOGIN_REQUIRED);
         }
       $this->view->folders = $folders;
       $this->view->items = $items;
@@ -417,6 +417,7 @@ class BrowseController extends AppController
    */
   public function deleteAction()
     {
+    $this->requireAjaxRequest();
     if(!$this->logged)
       {
       throw new Zend_Exception('You must be logged in to delete resources.');

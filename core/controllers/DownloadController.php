@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  AJAX request for the admin Controller
+ *  Controller for downloading elements.
  */
 class DownloadController extends AppController
 {

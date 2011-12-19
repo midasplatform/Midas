@@ -52,10 +52,7 @@ class AssetstoreController extends AppController
   /** change default assetstore*/
   function defaultassetstoreAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
@@ -78,10 +75,7 @@ class AssetstoreController extends AppController
   /** delete an assetstore assetstore*/
   function deleteAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
@@ -103,10 +97,7 @@ class AssetstoreController extends AppController
   /** edit an assetstore assetstore*/
   function editAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
@@ -134,6 +125,8 @@ class AssetstoreController extends AppController
    */
   function addAction()
     {
+    $this->requireAdminPrivileges();
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
