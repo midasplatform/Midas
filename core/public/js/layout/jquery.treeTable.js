@@ -133,11 +133,10 @@
     $(this).expand();
 
     var mainNode = $(this);
-    console.log(mainNode);
     $.post(json.global.webroot+'/browse/getfolderscontent',{folders: $(this).attr('element')} , function(data) {
       arrayElement = jQuery.parseJSON(data);
       $.each(arrayElement, function(index, value) {
-        tree[getContainer($(this)).attr('id')][index] = value;
+        tree[getContainer(obj).attr('id')][index] = value;
         });
      // createElementsAjax(obj,tree[obj.attr('element')],true);
       initEvent(mainNode);
