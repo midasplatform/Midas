@@ -258,7 +258,7 @@ class FolderController extends AppController
       }
     elseif(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception('Admin permission on item required');
+      throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED);
       }
 
     $this->Folder->removeItem($folder, $item);

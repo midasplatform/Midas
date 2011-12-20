@@ -44,7 +44,7 @@ class ItemController extends AppController
     $this->disableLayout();
     if(!$this->logged)
       {
-      throw new Zend_Exception("You have to be logged in to do that");
+      throw new Zend_Exception(MIDAS_LOGIN_REQUIRED);
       }
 
     $itemId = $this->_getParam("itemId");

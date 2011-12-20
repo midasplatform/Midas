@@ -320,9 +320,9 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
   /** Valid  entries (ajax) */
   public function validentryAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest() && !$this->isTestingEnv())
+    if(!$this->isTestingEnv())
       {
-      throw new Zend_Exception("Why are you here? Should be ajax.");
+      $this->requireAjaxRequest();
       }
 
     $this->disableLayout();
