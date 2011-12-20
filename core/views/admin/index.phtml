@@ -122,9 +122,10 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
           case MIDAS_ASSETSTORE_REMOTE:
               echo "Remote";
               break;
-          case MIDAS_ASSETSTORE_AMAZON:
-              echo "Amazon S3";
-              break;
+         // Amazon support is not yet implemented, don't present it as an option
+         // case MIDAS_ASSETSTORE_AMAZON:
+         //     echo "Amazon S3";
+         //     break;
           default:
               echo $assetstore->getType();
               break;
