@@ -11,8 +11,8 @@ table#moveTable{
   display: none;
 }
 
-.treeTable .browserPrivacyInformation{
-  right: 10px!important;
+#moveTable .browserPrivacyInformation{
+  right: 10px;
 }
 
 #createFolderButton{
