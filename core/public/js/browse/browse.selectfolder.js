@@ -1,5 +1,9 @@
 $("#moveTable").treeTable({
-  container: "moveTable"
+  callbackSelect: selectFolderCallbackSelect,
+  callbackDblClick: selectFolderCallbackDblClick,
+  callbackReloadNode: selectFolderCallbackReloadNode,
+  callbackCheckboxes: selectFolderCallbackCheckboxes,
+  callbackCustomElements: selectFolderCallbackCustomElements
   });
 $("div.MainDialogContent img.tableLoading").hide();
 $("table#moveTable").show();
@@ -22,8 +26,8 @@ if($('div.MainDialogContent #selectElements') != undefined)
   }
 
 //dependance: common/browser.js
-var ajaxSelectRequest='';
-function callbackSelect(node)
+var ajaxSelectRequest = '';
+function selectFolderCallbackSelect(node)
   {
   var selectedElement = node.find('span:eq(1)').html();
 
@@ -109,7 +113,7 @@ function successCreateFolderCallback(responseText, statusText, xhr, form)
     }
   }
 
-function reloadNodeCallback(mainNode)
+function selectFolderCallbackReloadNode(mainNode)
   {
   if(newFolder != false)
     {
@@ -117,17 +121,17 @@ function reloadNodeCallback(mainNode)
     }
   }
 
-function callbackDblClick(node)
+function selectFolderCallbackDblClick(node)
   {
   //  genericCallbackDblClick(node);
   }
 
-function callbackCheckboxes(node)
+function selectFolderCallbackCheckboxes(node)
   {
   //  genericCallbackCheckboxes(node);
   }
 
-function customElements(node,elements,first)
+function selectFolderCallbackCustomElements(node,elements,first)
   {
   var i = 1;
   var id = node.attr('id');

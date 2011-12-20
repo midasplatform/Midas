@@ -15,12 +15,39 @@
   // Helps to make options available to all functions
   // TODO: This gives problems when there are both expandable and non-expandable
   // trees on a page. The options shouldn't be global to all these instances!
-  var options;
   var defaultPaddingLeft;
 
   $.fn.treeTable = function(opts) {
-    options = $.extend({}, $.fn.treeTable.defaults, opts);
-    tree[options.container] = new Array();
+    var options = $.extend({}, $.fn.treeTable.defaults, opts);
+
+    // default to global callbacks in none were passed
+    if(options.callbackSelect == null && typeof callbackSelect == 'function')
+      {
+      options.callbackSelect = callbackSelect;
+      }
+    if(options.callbackCheckboxes == null && typeof callbackCheckboxes == 'function')
+      {
+      options.callbackCheckboxes = callbackCheckboxes;
+      }
+    if(options.callbackDblClick == null && typeof callbackDblClick == 'function')
+      {
+      options.callbackDblClick = callbackDblClick;
+      }
+    if(options.callbackCreateElement == null && typeof callbackCreateElement == 'function')
+      {
+      options.callbackCreateElement = callbackCreateElement;
+      }
+    if(options.callbackReloadNode == null && typeof callbackReloadNode == 'function')
+      {
+      options.callbackReloadNode = callbackReloadNode;
+      }
+    if(options.callbackCustomElements == null && typeof callbackCustomElements == 'function')
+      {
+      options.callbackCustomElements = callbackCustomElements;
+      }
+
+    $.data($(this)[0], 'options', options);
+    tree[$(this).attr('id')] = new Array();
     colorLines($(this), false);
 
     var tmp = this.each(function() {
@@ -57,7 +84,13 @@
     indent: 7,
     initialState: "collapsed",
     treeColumn: 0,
-    container: "browseTable"
+
+    callbackSelect: null,
+    callbackCheckboxes: null,
+    callbackDblClick: null,
+    callbackCreateElement: null,
+    callbackReloadNode: null,
+    callbackCustomElements: null
   };
 
   // Recursively hide all node's children in a tree
@@ -74,6 +107,9 @@
 
   function initializeAjax(node, first, expandNode)
     {
+    var table = getContainer(node);
+    var options = getOptions(table);
+    
     if(node == undefined)
       {
       return ;
@@ -123,10 +159,12 @@
 
   $.fn.reload = function ()
     {
+    var table = getContainer($(this));
+    var options = getOptions(table);
     $(this).each(function() {
         childrenOf($(this)).remove();
       });
-    tree[getContainer($(this)).attr('id')][$(this).attr('element')] = null;
+    tree[table.attr('id')][$(this).attr('element')] = null;
     var obj = $(this);
     $(this).removeAttr('proccessing');
     $(this).attr('ajax', $(this).attr('element'));
@@ -136,7 +174,7 @@
     $.post(json.global.webroot+'/browse/getfolderscontent',{folders: $(this).attr('element')} , function(data) {
       arrayElement = jQuery.parseJSON(data);
       $.each(arrayElement, function(index, value) {
-        tree[getContainer(obj).attr('id')][index] = value;
+        tree[table.attr('id')][index] = value;
         });
      // createElementsAjax(obj,tree[obj.attr('element')],true);
       initEvent(mainNode);
@@ -155,9 +193,9 @@
           }
         });
 
-      if(typeof reloadNodeCallback == 'function')
+      if(typeof options.callbackReloadNode == 'function')
         {
-        reloadNodeCallback(mainNode);
+        options.callbackReloadNode(mainNode);
         }
       });
     }
@@ -166,6 +204,7 @@
   $.fn.expand = function()
     {
     var table = getContainer($(this));
+    var options = getOptions(table);
     if ($(this).attr('ajax') != undefined && tree[table.attr('id')][$(this).attr('ajax')] != undefined)
       {
       createElementsAjax($(this), tree[table.attr('id')][$(this).attr('ajax')], true);
@@ -225,6 +264,7 @@
     {
     var node = $(this);
     var parent = parentOf(node);
+    var options = getOptions(node);
 
     var ancestorNames = $.map(ancestorsOf($(destination)), function(a) {return a.id;});
 
@@ -289,7 +329,10 @@
       {
       return null;
       }
-    return getContainer(node).find("tbody tr." + options.childPrefix + node[0].id);
+    var table = getContainer(node);
+    var options = getOptions(table);
+
+    return table.find("tbody tr." + options.childPrefix + node[0].id);
     };
 
   function getPaddingLeft(node)
@@ -304,6 +347,7 @@
 
   function indent(node, value)
     {
+    var options = getOptions(node);
     var cell = $(node.children("td")[options.treeColumn]);
     cell[0].style.paddingLeft = getPaddingLeft(cell) + value + "px";
 
@@ -314,28 +358,29 @@
 
   function initEvent(table)
     {
+    var options = getOptions(table);
           // Make visible that a row is clicked
     table.find("tbody tr").unbind('mousedown');
     table.find("tbody tr").mousedown(function() {
       $("tr.selected").removeClass("selected"); // Deselect currently selected rows
       $(this).addClass("selected");
-      if(typeof callbackSelect == 'function') {
-          callbackSelect($(this));
+      if(typeof options.callbackSelect == 'function') {
+          options.callbackSelect($(this));
           }
     });
 
     table.find("tbody tr").unbind('dblclick');
     table.find("tbody tr").dblclick(function () {
-      if(typeof callbackDblClick == 'function') {
-        callbackDblClick($(this));
+      if(typeof options.callbackDblClick == 'function') {
+        options.callbackDblClick($(this));
         }
       });
     colorLines(table, true);
 
     table.find(".treeCheckbox").unbind('change');
     table.find(".treeCheckbox").change(function(){
-      if(typeof callbackCheckboxes == 'function') {
-        callbackCheckboxes(tableRef[options.container]);
+      if(typeof options.callbackCheckboxes == 'function') {
+        options.callbackCheckboxes(table);
         }
       });
     }
@@ -370,9 +415,10 @@
     {
     var lastElement;
     var table = getContainer(node);
-    if(typeof customElements == 'function')
+    var options = getOptions(table);
+    if(typeof options.callbackCustomElements == 'function')
       {
-      html = customElements(node, elementsRaw, first);
+      html = options.callbackCustomElements(node, elementsRaw, first);
       node.after(html);
       }
     else
@@ -492,14 +538,15 @@
          $(this).hide();
          }
        });
-     if(typeof callbackCreateElement == 'function') {
-      callbackCreateElement($(this));
+     if(typeof options.callbackCreateElement == 'function') {
+      options.callbackCreateElement($(this));
       }
 
   }
 
   function initialize(node)
     {
+    var options = getOptions(node);
     if(!node.hasClass("initialized")) {
       node.addClass("initialized");
 
@@ -569,6 +616,7 @@
   function parentOf(node)
     {
     var classNames = node[0].className.split(' ');
+    var options = getOptions(node);
 
     for(key in classNames)
       {
@@ -586,6 +634,13 @@
       return node;
       }
     return $(node.parents('table')[0]);
+    }
+
+  function getOptions(node)
+    {
+    var table = getContainer(node);
+    var options = $.data(table[0], 'options');
+    return options ? options : $.fn.treeTable.defaults;
     }
 })(jQuery);
 
