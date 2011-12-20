@@ -108,7 +108,8 @@ class DownloadController extends AppController
 
     if(empty($folders) && empty($revisions))
       {
-      throw new Zend_Exception('There is nothing to download');
+      // download an empty zip with the name of item (if it exists), then exit
+      $this->_downloadEmptyItem($item);
       }
     if(empty($folders) && count($revisions) == 1)
       {
@@ -122,7 +123,8 @@ class DownloadController extends AppController
 
       if(count($bitstreams) == 0)
         {
-        throw new Zend_Exception('Empty item');
+        // download an empty zip with the name of item (if it exists), then exit
+        $this->_downloadEmptyItem($item);
         }
       elseif(count($bitstreams) == 1)
         {
@@ -201,6 +203,37 @@ class DownloadController extends AppController
       exit();
       }
     }//end index
+
+  /**
+   * will download a zip file with the same name as the item name,
+   * if the item exists, then will exit.
+   * @param type $item
+   */
+  private function _downloadEmptyItem($item)
+    {
+    while(ob_get_level() > 0)
+      {
+      ob_end_clean();
+      }
+    ob_start();
+    Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
+    $this->_helper->viewRenderer->setNoRender();
+    if(isset($item))
+      {
+      $name = $item->getName();
+      }
+    else
+      {
+      $name = "No_item_selected";
+      }
+    $name = substr($name, 0, 50);
+    $zip = new ZipStream($name.'.zip');
+    $zip->finish();
+    exit();
+    }
+
+
+
 
   /** create zip recursive*/
   private function _createZipRecursive($zip, $path, $folders, $revisions)
