@@ -67,7 +67,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                 <label for='smartoptimizer'>CSS and Javascript optimizer</label>
                 {$this->configForm['smartoptimizer']}
               </div>
-              <div qtip='If you enable this feature, MIDAS will show to the users how to use the system.' class='installSmartoptimizer'>
+              <div qtip='If you enable this feature, MIDAS will show the users how to use the system.' class='installSmartoptimizer'>
                 <label for='dynamichelp'>Dynamic Help</label>
                 {$this->configForm['dynamichelp']}
               </div>
@@ -89,11 +89,11 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
               <b><span class='assetstoreName'>{$assetstore->getName()}</span></b> ";
        if($assetstore->default)
          {
-         echo "(<span qtip='If set as default, the uploaded files will be store is this assetstore.' class='defaultAssetstore' element='{$assetstore->getKey()}'>default assetstore</span>)";
+         echo "(<span qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstore' element='{$assetstore->getKey()}'>default assetstore</span>)";
          }
        else
          {
-         echo "(<a qtip='If set as default, the uploaded files will be store is this assetstore.' class='defaultAssetstoreLink' element='{$assetstore->getKey()}'>set as default</a>)";
+         echo "(<a qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstoreLink' element='{$assetstore->getKey()}'>set as default</a>)";
          }
 	      echo "<br/>";
        if($assetstore->totalSpaceText==false)
@@ -205,7 +205,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                       {
                     echo "
                     <td style='width:300px;'>
-                      Not available with you database type
+                      Not available with your database type
                     </td>";
                       }
                     elseif(!$module->dependenciesExist)
