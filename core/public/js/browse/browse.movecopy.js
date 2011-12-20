@@ -1,4 +1,9 @@
-    $("#moveTable").treeTable();
+    $("#moveTable").treeTable({
+      callbackSelect: moveCopyCallbackSelect,
+      callbackCheckboxes: moveCopyCallbackCheckboxes,
+      callbackDblClick: moveCopyCallbackDblClick,
+      callbackCustomElements: moveCopyCallbackCustomElements
+    });
     $("img.tableLoading").hide();
     $("table#moveTable").show();
 
@@ -19,7 +24,7 @@
 
   //dependance: common/browser.js
     var ajaxSelectRequest='';
-    function callbackSelect(node)
+    function moveCopyCallbackSelect(node)
     {
       var selectedElement = node.find('span:eq(1)').html();
 
@@ -57,17 +62,17 @@
       $('div.ajaxInfoElement').html('');
 
 
-    function callbackDblClick(node)
+    function moveCopyCallbackDblClick(node)
     {
     //  genericCallbackDblClick(node);
     }
 
-    function callbackCheckboxes(node)
+    function moveCopyCallbackCheckboxes(node)
     {
     //  genericCallbackCheckboxes(node);
     }
 
-    function customElements(node,elements,first)
+    function moveCopyCallbackCustomElements(node,elements,first)
     {
         var i = 1;
         var id=node.attr('id');

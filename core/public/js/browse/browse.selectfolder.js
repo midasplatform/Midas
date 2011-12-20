@@ -1,10 +1,16 @@
-$("#moveTable").treeTable();
-$("img.tableLoading").hide();
+$("#moveTable").treeTable({
+  callbackSelect: selectFolderCallbackSelect,
+  callbackDblClick: selectFolderCallbackDblClick,
+  callbackReloadNode: selectFolderCallbackReloadNode,
+  callbackCheckboxes: selectFolderCallbackCheckboxes,
+  callbackCustomElements: selectFolderCallbackCustomElements
+  });
+$("div.MainDialogContent img.tableLoading").hide();
 $("table#moveTable").show();
 
-if($('#selectElements')!=undefined)
+if($('div.MainDialogContent #selectElements') != undefined)
   {
-  $('#selectElements').click(function(){
+  $('div.MainDialogContent #selectElements').click(function(){
     $('#destinationUpload').html($('#selectedDestination').html());
     $('#destinationId').val($('#selectedDestinationHidden').val());
     $('.destinationUpload').html($('#selectedDestination').html());
@@ -17,11 +23,11 @@ if($('#selectElements')!=undefined)
       }
     return false;
     });
-   }
+  }
 
 //dependance: common/browser.js
-var ajaxSelectRequest='';
-function callbackSelect(node)
+var ajaxSelectRequest = '';
+function selectFolderCallbackSelect(node)
   {
   var selectedElement = node.find('span:eq(1)').html();
 
@@ -46,38 +52,38 @@ function callbackSelect(node)
       }
     }
 
-  $('#createFolderContent').hide();
+  $('div.MainDialogContent #createFolderContent').hide();
   if(node.attr('element') == -1)
     {
-    $('#selectElements').attr('disabled', 'disabled');
-    $('#createFolderButton').hide();
+    $('div.MainDialogContent #selectElements').attr('disabled', 'disabled');
+    $('div.MainDialogContent #createFolderButton').hide();
     }
   else
     {
-    $('#selectedDestinationHidden').val(node.attr('element'));
-    $('#selectedDestination').html(sliceFileName(selectedElement, 40));
-    $('#selectElements').removeAttr('disabled');
+    $('div.MainDialogContent #selectedDestinationHidden').val(node.attr('element'));
+    $('div.MainDialogContent #selectedDestination').html(sliceFileName(selectedElement, 40));
+    $('div.MainDialogContent #selectElements').removeAttr('disabled');
 
-    if($('#defaultPolicy').val() != 0)
+    if($('div.MainDialogContent #defaultPolicy').val() != 0)
       {
-      $('#createFolderButton').show();
+      $('div.MainDialogContent #createFolderButton').show();
       }
     }
   }
 
-$('img.infoLoading').show();
-$('div.ajaxInfoElement').html('');
+$('#moveTable ajaimg.infoLoading').show();
+$('div.MainDialogContent div.ajaxInfoElement').html('');
 
-$('#createFolderButton').click(function(){
-  if($('#createFolderContent').is(':hidden'))
+$('div.MainDialogContent #createFolderButton').click(function(){
+  if($('div.MainDialogContent #createFolderContent').is(':hidden'))
     {
-    $('#createFolderContent').html('<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />').show();
+    $('div.MainDialogContent #createFolderContent').html('<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />').show();
     var url = json.global.webroot+'/folder/createfolder?folderId='+$('#selectedDestinationHidden').val();
-    $('#createFolderContent').load(url);
+    $('div.MainDialogContent #createFolderContent').load(url);
     }
   else
     {
-    $('#createFolderContent').hide();
+    $('div.MainDialogContent #createFolderContent').hide();
     }
   });
 
@@ -94,10 +100,10 @@ function successCreateFolderCallback(responseText, statusText, xhr, form)
   if(jsonResponse[0])
     {
     createNotive(jsonResponse[1],4000);
-    var node = $('table.treeTable tr[element='+jsonResponse[2].folder_id+']');
+    var node = $('#moveTable tr[element='+jsonResponse[2].folder_id+']');
     node.reload();
 
-    $('#createFolderContent').hide();
+    $('div.MainDialogContent #createFolderContent').hide();
 
     newFolder = jsonResponse[3].folder_id;
     }
@@ -107,34 +113,34 @@ function successCreateFolderCallback(responseText, statusText, xhr, form)
     }
   }
 
-function reloadNodeCallback(mainNode)
+function selectFolderCallbackReloadNode(mainNode)
   {
   if(newFolder != false)
     {
-    callbackSelect($('table.treeTable tr[element='+newFolder+']'));
+    callbackSelect($('#moveTable tr[element='+newFolder+']'));
     }
   }
 
-function callbackDblClick(node)
+function selectFolderCallbackDblClick(node)
   {
   //  genericCallbackDblClick(node);
   }
 
-function callbackCheckboxes(node)
+function selectFolderCallbackCheckboxes(node)
   {
   //  genericCallbackCheckboxes(node);
   }
 
-function customElements(node,elements,first)
+function selectFolderCallbackCustomElements(node,elements,first)
   {
   var i = 1;
-  var id=node.attr('id');
+  var id = node.attr('id');
   elements['folders'] = jQuery.makeArray(elements['folders']);
 
-  var padding=parseInt(node.find('td:first').css('padding-left').slice(0,-2));
-  var html='';
+  var padding = parseInt(node.find('td:first').css('padding-left').slice(0,-2));
+  var html = '';
   $.each(elements['folders'], function(index, value) {
-    if(value['policy'] >= parseInt($('#defaultPolicy').val()))
+    if(value['policy'] >= parseInt($('div.MainDialogContent #defaultPolicy').val()))
       {
       html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
       html+=     "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";

@@ -50,7 +50,7 @@
     //  genericCallbackCheckboxes(node);
     }
 
-    function customElements(node,elements,first)
+    function callbackCustomElements(node,elements,first)
     {
         var i = 1;
         var id=node.attr('id');
