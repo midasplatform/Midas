@@ -45,10 +45,11 @@ class AssetstoreForm extends AppForm
 
     // Assetstore type
     $assetstoretypes = array('0' => $this->t('Managed by MIDAS'),
-                             '1' => $this->t('Remotely linked'),
-                             '2' => $this->t('Amazon S3'));
+                             '1' => $this->t('Remotely linked'));
+    // Amazon support is not yet implemented, don't present it as an option
+    //                          '2' => $this->t('Amazon S3'));
 
-    $assetstoretype = new Zend_Form_Element_Select('type', array('id' => 'assetstoretype'));
+    $assetstoretype = new Zend_Form_Element_Select('assetstoretype', array('id' => 'assetstoretype'));
     $assetstoretype->setLabel('Select a type')->setMultiOptions($assetstoretypes);
     // Add a loading image
     $assetstoretype->setDescription('<div class="assetstoreLoading" style="display:none"><img src="'.$this->webroot.'/core/public/images/icons/loading.gif"/></div>')
