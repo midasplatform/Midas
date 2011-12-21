@@ -88,13 +88,26 @@ class BrowseController extends AppController
           $this->Folder->move($folder, $destinationFolder);
           }
         }
-
+      
+      $sourceFolderIds = array();  
       foreach($items as $item)
         {
         if(isset($shareSubmit))
           {
+          foreach($item->getFolders() as $parentFolder)
+            {
+            $folderId = $parentFolder->getKey();
+            array_push($sourceFolderIds, $folderId);
+            }
           $this->Folder->addItem($destinationFolder, $item);
-          $this->Item->shareItemReadonly($item, $destinationFolder);
+          if(in_array($destinationFolder->getKey(), $sourceFolderIds))
+            {
+            $this->_redirect('/item/'.$item->getKey());
+            }
+          else
+            {
+            $this->Item->shareItemReadonly($item, $destinationFolder);
+            }
           }
         elseif(isset($duplicateSubmit))
           {

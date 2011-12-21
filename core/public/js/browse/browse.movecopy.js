@@ -4,11 +4,11 @@
       callbackDblClick: moveCopyCallbackDblClick,
       callbackCustomElements: moveCopyCallbackCustomElements
     });
-    $("img.tableLoading").hide();
-    $("table#moveTable").show();
-
-    $('applet').hide();
-   
+     $("img.tableLoading").hide();
+     $("table#moveTable").show();
+     
+     $('applet').hide();
+     
    if($('#selectElement')!=undefined)
      {
        $('#selectElement').click(function(){
@@ -19,9 +19,9 @@
          $( "div.MainDialog" ).dialog('close');
          $('applet').show();
          return false;
-       });
+});
      }
-
+     
   //dependance: common/browser.js
     var ajaxSelectRequest='';
     function moveCopyCallbackSelect(node)
