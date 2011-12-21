@@ -53,7 +53,6 @@ class AssetstoreController extends AppController
   function defaultassetstoreAction()
     {
     $this->requireAdminPrivileges();
-    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $change = $this->_getParam("submitDefaultAssetstore");
@@ -76,7 +75,6 @@ class AssetstoreController extends AppController
   function deleteAction()
     {
     $this->requireAdminPrivileges();
-    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $assetstoreId = $this->_getParam("assetstoreId");
@@ -98,7 +96,6 @@ class AssetstoreController extends AppController
   function editAction()
     {
     $this->requireAdminPrivileges();
-    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $assetstoreId = $this->_getParam("assetstoreId");
@@ -134,7 +131,6 @@ class AssetstoreController extends AppController
   function addAction()
     {
     $this->requireAdminPrivileges();
-    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
