@@ -1,6 +1,7 @@
 add_midas_test( BrowseController BrowseControllerTest.php )
 add_midas_test( FeedController FeedControllerTest.php )
 add_midas_test( ItemController ItemControllerTest.php )
+add_midas_test( SearchController SearchControllerTest.php )
 add_midas_test( UploadDownloadController UploadDownloadControllerTest.php )
 add_midas_test( UserController UserControllerTest.php )
 

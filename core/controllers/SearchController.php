@@ -60,7 +60,7 @@ class SearchController extends AppController
     $results = $this->Component->Search->searchAll($this->userSession->Dao, $keyword, $order);
     if(isset($ajax))
       {
-      $this->_helper->layout->disableLayout();
+      $this->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
       echo JsonComponent::encode($results);
       }
@@ -86,7 +86,7 @@ class SearchController extends AppController
     // ajax requests simultaneously
     session_write_close();
 
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
     $search = $this->getRequest()->getParam('term');

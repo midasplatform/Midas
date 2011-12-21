@@ -1,6 +1,6 @@
 
 $(document).ready(function() {
-  
+
   jsonMetadata = jQuery.parseJSON($('div#jsonMetadata').html());
   initElementMetaData();
   $('select, input').change(function(){
