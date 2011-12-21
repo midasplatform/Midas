@@ -181,7 +181,7 @@
       getElementsSize(mainNode);
 
       var treeArray = new Array();
-      getContainer($(this)).find('tr').each(function() {
+      table.find('tr').each(function() {
         var id = $(this).attr('element');
         if(treeArray[id] != undefined)
           {
@@ -216,7 +216,12 @@
       }
     else if($(this).attr('ajax') != undefined && tree[table.attr('id')][$(this).attr('ajax')] == undefined)
       {
-      initializeAjax(parentOf($(this)), false, $(this));
+      var parent = parentOf($(this));
+      if(!parent)
+        {
+        parent = $(this);
+        }
+      initializeAjax(parent, false, $(this));
       return;
       }
 
