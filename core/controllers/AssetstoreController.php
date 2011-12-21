@@ -129,7 +129,15 @@ class AssetstoreController extends AppController
         {
         $assetstore->setName($assetstoreName);
         $assetstore->setPath($assetstorePath);
-        $this->Assetstore->save($assetstore);
+        try
+          {
+          $this->Assetstore->save($assetstore);
+          }
+        catch(Zend_Exception $ze)
+          {
+          echo JsonComponent::encode(array(false, $ze->getMessage()));
+          return;
+          }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
@@ -160,8 +168,16 @@ class AssetstoreController extends AppController
       $assetstoreDao->setName($form->name->getValue());
       $assetstoreDao->setPath($form->basedirectory->getValue());
       $assetstoreDao->setType($form->assetstoretype->getValue());
-      $this->Assetstore->save($assetstoreDao);
-
+      try
+        {
+        $this->Assetstore->save($assetstoreDao);
+        }
+      catch(Zend_Exception $ze)
+        {
+        echo json_encode(array('error' => $ze->getMessage()));
+        return false;
+        }
+        
       echo json_encode(array('msg' => 'The assetstore has been added.',
                        'assetstore_id' => $assetstoreDao->getAssetstoreId(),
                        'assetstore_name' => $assetstoreDao->getName(),
