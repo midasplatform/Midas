@@ -161,7 +161,7 @@ class AssetstoreController extends AppController
         echo json_encode(array('error' => $ze->getMessage()));
         return false;
         }
-        
+
       echo json_encode(array('msg' => 'The assetstore has been added.',
                        'assetstore_id' => $assetstoreDao->getAssetstoreId(),
                        'assetstore_name' => $assetstoreDao->getName(),
