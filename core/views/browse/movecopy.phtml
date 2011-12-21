@@ -42,7 +42,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
         echo "</tr>";
         $node++;
         }
-
+        
         $folder=$this->user->getFolder();
         echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='-1' ajax='{$folder->getFolderId()}'>";
         echo "  <td class='treeBrowseElement'><span class='folder'>{$this->t('My Files')} ({$this->user->getFullName()})</span></td>";
