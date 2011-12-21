@@ -24,7 +24,7 @@ class SearchControllerTest extends ControllerTestCase
   /** init test*/
   public function setUp()
     {
-    $this->setupDatabase(array('default'));
+    $this->setupDatabase(array('search'));
     $this->_models = array('User');
     parent::setUp();
     }
@@ -143,7 +143,7 @@ class SearchControllerTest extends ControllerTestCase
     $this->assertEquals(count($resp), 0);
 
     // Ensure we get item results from live search with itemSearch enabled if user has permissions
-    $usersFile = $this->loadData('User', 'default');
+    $usersFile = $this->loadData('User', 'search');
     $userDao = $this->User->load($usersFile[2]->getKey());
     $this->resetAll();
     $this->dispatchUrI('/search/live?term=name&itemSearch', $userDao);
