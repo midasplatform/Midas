@@ -27,10 +27,7 @@ class Statistics_ConfigController extends Statistics_AppController
   /** index action*/
   function indexAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception('You should be an administrator');
-      }
+    $this->requireAdminPrivileges();
 
     if(file_exists(BASE_PATH.'/core/configs/'.$this->moduleName.'.local.ini'))
       {

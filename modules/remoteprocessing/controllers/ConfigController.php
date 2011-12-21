@@ -31,10 +31,7 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
       {
       ob_end_clean();
       }
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
 
     $this->disableLayout();
     $this->disableView();
@@ -64,10 +61,7 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
   /** index action*/
   function indexAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
 
     if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
       {

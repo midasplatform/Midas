@@ -27,11 +27,8 @@ class Thumbnailcreator_ConfigController extends Thumbnailcreator_AppController
    /** index action*/
    function indexAction()
     {
-    if(!$this->logged||!$this->userSession->Dao->getAdmin()==1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
-      
+    $this->requireAdminPrivileges();
+    
     if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
       {
       $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", true);

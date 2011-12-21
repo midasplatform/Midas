@@ -25,11 +25,8 @@ class Ldap_ConfigController extends Ldap_AppController
 
    function indexAction()
     {
-    if(!$this->logged||!$this->userSession->Dao->getAdmin()==1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
-      
+    $this->requireAdminPrivileges();
+    
     if(file_exists(BASE_PATH."/core/configs/ldap.local.ini"))
       {
       $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/ldap.local.ini", true);

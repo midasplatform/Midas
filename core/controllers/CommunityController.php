@@ -500,10 +500,7 @@ class CommunityController extends AppController
       }
     else
       {
-      if(!$this->getRequest()->isXmlHttpRequest())
-        {
-        throw new Zend_Exception("Why are you here ? Should be ajax.");
-        }
+      $this->requireAjaxRequest();
       $this->_helper->layout->disableLayout();
       $this->view->form = $this->getFormAsArray($form);
       }
@@ -512,11 +509,7 @@ class CommunityController extends AppController
   /** Validate entries (ajax)*/
   public function validentryAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
-
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $entry = $this->_getParam("entry");
