@@ -130,7 +130,7 @@ function assetstoreSubmit(formData, jqForm, options)
 {
   // Add the type is the one in the main page (because it's hidden in the assetstore add page)
   var assetstoretype = new Object();
-  assetstoretype.name = 'type';
+  assetstoretype.name = 'assetstoretype';
   assetstoretype.value = $("#importassetstoretype").val();
   formData.push(assetstoretype);  
   $(".assetstoreLoading").show();

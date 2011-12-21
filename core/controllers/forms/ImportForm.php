@@ -61,7 +61,8 @@ class ImportForm extends AppForm
     $assetstoretypes = array();
     $assetstoretypes[MIDAS_ASSETSTORE_LOCAL] = $this->t('Copy data on this server'); // manage by MIDAS
     $assetstoretypes[MIDAS_ASSETSTORE_REMOTE] = $this->t('Link data from its current location'); // link the data
-    $assetstoretypes[MIDAS_ASSETSTORE_AMAZON] = $this->t('Copy data to the cloud'); // Amazon support
+    // Amazon support is not yet implemented, don't present it as an option
+    //$assetstoretypes[MIDAS_ASSETSTORE_AMAZON] = $this->t('Copy data to the cloud'); // Amazon support
 
     $assetstoretype = new Zend_Form_Element_Select('importassetstoretype');
     $assetstoretype->setLabel($this->t('Storage type'));
