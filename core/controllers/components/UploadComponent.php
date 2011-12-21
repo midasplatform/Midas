@@ -139,7 +139,7 @@ class UploadComponent extends AppComponent
 
     Zend_Loader::loadClass('ItemDao', BASE_PATH.'/core/models/dao');
     $item = new ItemDao;
-    $item->setName($itemModel->UpdateItemName($item->getName(), $parent));
+    $item->setName($itemModel->updateItemName($item->getName(), $parent));
     $item->setDescription('');
     $item->setType(0);
     $item->setThumbnail('');

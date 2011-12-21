@@ -186,7 +186,7 @@ abstract class ItemModelBase extends AppModel
         array_push($existingGroups, $group);
         }
       }
-      
+
     $modelLoad = new MIDAS_ModelLoader();
     $ItempolicygroupModel = $modelLoad->loadModel('Itempolicygroup');
     foreach($groupPolicies as $key => $policy)
@@ -316,15 +316,20 @@ abstract class ItemModelBase extends AppModel
     $this->save($itemdao);//update date
     } // end addRevision
 
-  /*
+  /**
+   * Update Item name to avoid same named items within a folder.
+   *
    *  Check if an item with the same name already exists for the same parent(s). If it exists, add appendix to the file name
    *  Notes: following naming convention is used:
    * Assumption: if an item's name is like "aaa.txt (1)", the name should not be this item's real name, but its modified name in Midas when it is created.
    * This item's real name should be 'aaa.txt' which doesn't have / \(d+\)/ like appendix .
    * So when an item named "aaa.txt (1)" is duplicated, the newly created item will be called "aaa.txt (2)" instead of "aaa.txt (1) (1)"
+   *
+   * @method updateItemName()
+   * @param string $name name of the item
+   * @param FolderDao $parent parent folder of the item
    */
-     
-  function UpdateItemName($name, $parent)
+  function updateItemName($name, $parent)
     {
     if(!$parent instanceof FolderDao && !is_numeric($parent))
       {
@@ -335,8 +340,8 @@ abstract class ItemModelBase extends AppModel
       {
       throw new Zend_Exception('Name cannot be empty.');
       }
-      
-     if($parent instanceof FolderDao)
+
+    if($parent instanceof FolderDao)
       {
       $parentId = $parent->getFolderId();
       }
@@ -345,14 +350,14 @@ abstract class ItemModelBase extends AppModel
       $parentId = $parent;
       $parent = $this->load($parentId);
       }
-      
+
     $realName = preg_split('/ \(\d+\)/', $name);
     $siblings = $parent->getItems();
     $copyIndex = 0;
     foreach($siblings as $sibling)
       {
       $siblingName = $sibling->getName();
-      if (!strcmp($siblingName, $realName[0]) && ($copyIndex == 0))
+      if(!strcmp($siblingName, $realName[0]) && ($copyIndex == 0))
         {
         $copyIndex = 1;
         }
@@ -360,23 +365,23 @@ abstract class ItemModelBase extends AppModel
         {
         // get copy index number from the item's name. e.g. get 1 from "aaa.txt (1)"
         $currentCopy = intval(substr(strrchr($siblingName, "("), 1, -1));
-        if ($currentCopy >= $copyIndex)
+        if($currentCopy >= $copyIndex)
           {
-          $copyIndex = $currentCopy+1;
+          $copyIndex = $currentCopy + 1;
           }
         }
       }
-      
-    $updatedName = $realName[0]; 
+
+    $updatedName = $realName[0];
     if($copyIndex > 0)
       {
       $updatedName = $realName[0].' ('.$copyIndex.')';
       }
     return $updatedName;
-    
-    
+
+
     }
-    
+
   /** Create a new empty item */
   function createItem($name, $description, $parent, $uuid = '')
     {
@@ -406,8 +411,8 @@ abstract class ItemModelBase extends AppModel
       }
 
     $this->loadDaoClass('ItemDao');
-    $item = new ItemDao();  
-    $item->setName($this->UpdateItemName($name, $parent));  
+    $item = new ItemDao();
+    $item->setName($this->updateItemName($name, $parent));
     $item->setDescription($description);
     $item->setType(0);
     $item->setUuid($uuid);

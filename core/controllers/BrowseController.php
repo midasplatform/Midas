@@ -88,8 +88,8 @@ class BrowseController extends AppController
           $this->Folder->move($folder, $destinationFolder);
           }
         }
-      
-      $sourceFolderIds = array();  
+
+      $sourceFolderIds = array();
       foreach($items as $item)
         {
         if(isset($shareSubmit))

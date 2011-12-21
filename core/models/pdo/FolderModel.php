@@ -672,9 +672,9 @@ class FolderModel extends FolderModelBase
         $tmpDao->policy = $policyArray[$row['item_id']];
         $tmpDao->parent_id = $row['folder_id'];
 
-        /* 
+        /*
          * The new naming convention makes sure that no two (or more) items have the same name in a folder,
-         * although items can have same name when they are in different subfolders 
+         * although items can have same name when they are in different subfolders
          */
         /*
         if(isset($listNamesArray[$tmpDao->getName()]))
@@ -837,9 +837,9 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Should be an item.");
       }
-    $modelLoader = new MIDAS_ModelLoader();  
-    $itemModel = $modelLoader->loadModel("Item");  
-    $item->setName($itemModel->UpdateItemName($item->getName(), $folder));    
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel("Item");
+    $item->setName($itemModel->updateItemName($item->getName(), $folder));
     $this->database->link('items', $folder, $item);
     } // end function addItem
 
