@@ -134,7 +134,7 @@ function removeNodeFromTree(node, recursive)
     $(ancestorNodes[i]).find('span.elementSize').remove();
     }
   // update folder size
-  getElementsSize();
+  getElementsSize($('#browseTable')); //todo select table ancestor of node instead of using global scope
   }
 
 function removeItem(id)

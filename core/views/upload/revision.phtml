@@ -36,7 +36,7 @@ PURPOSE.  See the above copyright notices for more information.
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.revision.js?<?php echo time()?>"></script>
 
-<div class="tabs" id='uploadTabs'>
+<div class="tabs uploadTabs" id='uploadTabs'>
   <ul>
     <li><a href="#uploadTabs-1">Simple</a></li>
   </ul>
@@ -51,7 +51,7 @@ PURPOSE.  See the above copyright notices for more information.
         </div>
       </div>
       <div id="jqueryFileUploadContent">
-        <div id="file_upload">
+        <div class="file_upload">
             <form action="<?php echo $this->webroot?>/upload/saveuploaded" method="POST" enctype="multipart/form-data">
                 <input type="file" name="file[]" multiple>
                 <button type="submit">Upload</button>
