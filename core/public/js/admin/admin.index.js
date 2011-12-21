@@ -77,11 +77,15 @@
             data: {assetstoreId: element, assetstoreName: $('input#assetstoreName').val(), assetstorePath: $('input#assetstorePath').val()},
             success: function(jsonContent){
               jsonResponse = jQuery.parseJSON(jsonContent);
-              createNotive(jsonResponse[1],1500);
               if(jsonResponse[0])
                 {
+                createNotive(jsonResponse[1],1500);
                 window.location.replace(json.global.webroot+'/admin#tabs-assetstore');
                 window.location.reload();
+                }
+              else
+                {
+                createNotive(jsonResponse[1],4000);
                 }
             }
           });
