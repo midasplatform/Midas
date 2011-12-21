@@ -159,7 +159,7 @@ class AssetstoreController extends AppController
       $assetstoreDao = new AssetstoreDao();
       $assetstoreDao->setName($form->name->getValue());
       $assetstoreDao->setPath($form->basedirectory->getValue());
-      $assetstoreDao->setType($form->type->getValue());
+      $assetstoreDao->setType($form->assetstoretype->getValue());
       $this->Assetstore->save($assetstoreDao);
 
       echo json_encode(array('msg' => 'The assetstore has been added.',
