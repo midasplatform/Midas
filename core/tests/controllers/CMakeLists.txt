@@ -1,3 +1,4 @@
+add_midas_test( AssetstoreController AssetstoreControllerTest.php )
 add_midas_test( BrowseController BrowseControllerTest.php )
 add_midas_test( FeedController FeedControllerTest.php )
 add_midas_test( ItemController ItemControllerTest.php )
@@ -8,7 +9,7 @@ add_midas_test( UserController UserControllerTest.php )
 add_subdirectory( components )
 
 
-# Syle
+# Style
 add_midas_style_test( StyleCoreControllerComponents ${CMAKE_SOURCE_DIR}/core/controllers/components )
 add_midas_style_test( StyleCoreControllerForms ${CMAKE_SOURCE_DIR}/core/controllers/forms )
 add_midas_style_test( StyleCoreAdminController ${CMAKE_SOURCE_DIR}/core/controllers/AdminController.php )
