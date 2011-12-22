@@ -211,17 +211,17 @@ class UserModel extends UserModelBase
     if($isAdmin)
       {
       $sql  ->where(' ('.
-          $this->database->getDB()->quoteInto('firstname LIKE ?', '%'.$search.'%').' OR '.
-          $this->database->getDB()->quoteInto('lastname LIKE ?', '%'.$search.'%').')')
+          $this->database->getDB()->quoteInto('u.firstname LIKE ?', '%'.$search.'%').' OR '.
+          $this->database->getDB()->quoteInto('u.lastname LIKE ?', '%'.$search.'%').')')
           ->limit($limit)
           ->setIntegrityCheck(false);
       }
     else
       {
-      $sql  ->where('(privacy = '.MIDAS_USER_PUBLIC.' OR ('.
+      $sql  ->where('(u.privacy = '.MIDAS_USER_PUBLIC.' OR ('.
           $subqueryUser.')>0'.') AND ('.
-          $this->database->getDB()->quoteInto('firstname LIKE ?', '%'.$search.'%').' OR '.
-          $this->database->getDB()->quoteInto('lastname LIKE ?', '%'.$search.'%').')')
+          $this->database->getDB()->quoteInto('u.firstname LIKE ?', '%'.$search.'%').' OR '.
+          $this->database->getDB()->quoteInto('u.lastname LIKE ?', '%'.$search.'%').')')
           ->limit($limit)
           ->setIntegrityCheck(false);
       }
@@ -229,20 +229,20 @@ class UserModel extends UserModelBase
 
     if($group)
       {
-      $sql->group(array('firstname', 'lastname'));
+      $sql->group(array('u.firstname', 'u.lastname'));
       }
 
     switch($order)
       {
       case 'name':
-        $sql->order(array('lastname ASC', 'firstname ASC'));
+        $sql->order(array('u.lastname ASC', 'u.firstname ASC'));
         break;
       case 'date':
-        $sql->order(array('creation ASC'));
+        $sql->order(array('u.creation ASC'));
         break;
       case 'view':
       default:
-        $sql->order(array('view DESC'));
+        $sql->order(array('u.view DESC'));
         break;
       }
     $rowset = $this->database->fetchAll($sql);
