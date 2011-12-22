@@ -54,7 +54,7 @@ class SearchControllerTest extends ControllerTestCase
 
     foreach($resp->results as $result)
       {
-      $this->assertTrue($result->resultType == 'user' || $result->resultType == 'folder' || $result->resultType =='item');
+      $this->assertTrue($result->resultType == 'user' || $result->resultType == 'folder' || $result->resultType == 'item');
 
       switch($result->resultType)
         {
@@ -66,6 +66,7 @@ class SearchControllerTest extends ControllerTestCase
         case 'folder':
           $this->assertTrue(is_numeric($result->folder_id));
           $this->assertNotEmpty($result->name);
+          break;
         case 'item':
           break;
         default:
@@ -84,20 +85,28 @@ class SearchControllerTest extends ControllerTestCase
 
     $resp = json_decode($this->getBody());
 
-    // Ensure we get item and user results from live search
-    $this->assertEquals(count($resp), 4);
-    $this->assertEquals($resp[0]->category, 'Folders');
-    $this->assertNotEmpty($resp[0]->value);
-    $this->assertTrue(is_numeric($resp[0]->folderid));
-    $this->assertEquals($resp[1]->category, 'Folders');
-    $this->assertNotEmpty($resp[1]->value);
-    $this->assertTrue(is_numeric($resp[1]->folderid));
-    $this->assertEquals($resp[2]->category, 'Users');
-    $this->assertNotEmpty($resp[2]->value);
-    $this->assertTrue(is_numeric($resp[2]->userid));
-    $this->assertEquals($resp[3]->category, 'Users');
-    $this->assertNotEmpty($resp[3]->value);
-    $this->assertTrue(is_numeric($resp[3]->userid));
+    // Ensure we get folder and user results from live search
+    $this->assertTrue(count($resp) >= 4);
+    foreach($resp as $result)
+      {
+      $this->assertTrue($result->category == 'Users' || $result->category == 'Folders' || $result->category == 'Items');
+
+      switch($result->category)
+        {
+        case 'Users':
+          $this->assertTrue(is_numeric($result->userid));
+          $this->assertNotEmpty($result->value);
+          break;
+        case 'Folders':
+          $this->assertTrue(is_numeric($result->folderid));
+          $this->assertNotEmpty($result->value);
+          break;
+        case 'Items':
+          break;
+        default:
+          break;
+        }
+      }
 
     // Ensure we get community results from live search
     $this->resetAll();
