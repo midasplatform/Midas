@@ -298,7 +298,7 @@ class SearchController extends AppController
         }
       $label = $userDao->getFirstname().' '.$userDao->getLastname();
       $value = $label;
-      if($userDao->count > 1)
+      if(isset($userDao->count) && $userDao->count > 1)
         {
         $label .= ' ('.$userDao->count.')';
         }
@@ -307,7 +307,7 @@ class SearchController extends AppController
                       'value' => $value,
                       'category' => $this->t('Users'));
 
-      if($userDao->count == 1)
+      if(!isset($userDao->count) || $userDao->count == 1)
         {
         $result['userid'] = $userDao->getKey();
         }
