@@ -110,7 +110,7 @@ class SearchControllerTest extends ControllerTestCase
 
     // Ensure we get community results from live search
     $this->resetAll();
-    $this->dispatchUrI('/search/live?term=community');
+    $this->dispatchUrI('/search/live?term=Community');
     $this->assertController('search');
     $this->assertAction('live');
     $resp = json_decode($this->getBody());
@@ -122,7 +122,7 @@ class SearchControllerTest extends ControllerTestCase
 
     // Ensure we get group results from live search with shareSearch enabled
     $this->resetAll();
-    $this->dispatchUrI('/search/live?term=community&shareSearch');
+    $this->dispatchUrI('/search/live?term=Community&shareSearch');
     $this->assertController('search');
     $this->assertAction('live');
     $resp = json_decode($this->getBody());
