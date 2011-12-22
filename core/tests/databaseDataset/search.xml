@@ -59,18 +59,17 @@
   <user2group group_id="3000" user_id="1" />
   <user2group group_id="3002" user_id="1" />
 
-  <item item_id="1" name="name 1" description="Description 1" type="1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
+  <item item_id="1" name="matchedValue 1" description="Description 1" type="1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
   <itemrevision itemrevision_id="1" item_id="1" revision="1"
     date="2011-01-27 12:09:02" user_id='1' changes="Description 1" />
   <itemrevision itemrevision_id="3" item_id="1" revision="2"
     date="2011-01-27 12:09:02" user_id='1' changes="Description 1" />
-  <itempolicygroup item_id="1" group_id="0" policy='0'  />
   <item2folder  item_id="1" folder_id='1001' />
-  <item item_id="2" name="name 2" description="Description 2" type="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72751' />
+  <item item_id="2" name="matchedValue 2" description="Description 2" type="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72751' />
   <itemrevision itemrevision_id="2" item_id="2" revision="1"
     date="2011-01-27 12:09:02" user_id='1' changes="Description 1" />
   <itempolicyuser item_id="2" user_id="1" policy='2' />
   <item2folder item_id="2" folder_id='1001' />
-  <item item_id="3" name="name 3" description="Description 3" type="3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72752' />
+  <item item_id="3" name="matchedValue 3" description="Description 3" type="3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72752' />
 
 </dataset>
