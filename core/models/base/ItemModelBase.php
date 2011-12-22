@@ -317,10 +317,10 @@ abstract class ItemModelBase extends AppModel
     } // end addRevision
 
   /**
-   * Update Item name to avoid same named items within a folder.
+   * Update Item name to avoid two or more items have same name within their parent folder.
    *
-   *  Check if an item with the same name already exists for the same parent(s). If it exists, add appendix to the file name
-   *  Notes: following naming convention is used:
+   * Check if an item with the same name already exists in the parent folder. If it exists, add appendix to the original file name.
+   * The following naming convention is used:
    * Assumption: if an item's name is like "aaa.txt (1)", the name should not be this item's real name, but its modified name in Midas when it is created.
    * This item's real name should be 'aaa.txt' which doesn't have / \(d+\)/ like appendix .
    * So when an item named "aaa.txt (1)" is duplicated, the newly created item will be called "aaa.txt (2)" instead of "aaa.txt (1) (1)"
@@ -328,6 +328,7 @@ abstract class ItemModelBase extends AppModel
    * @method updateItemName()
    * @param string $name name of the item
    * @param FolderDao $parent parent folder of the item
+   * @return string $updatedName new unique(within its parent folder) name assigned to the item
    */
   function updateItemName($name, $parent)
     {
