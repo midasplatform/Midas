@@ -1,0 +1,27 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/share/share.applyrecursivedialog.js?'.time().'"></script>';
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+?>
+<link href="<?php echo $this->coreWebroot?>/public/css/share/share.dialog.css?<?php echo time();?> " rel="stylesheet" type="text/css" />
+<br />
+<?php echo $this->t('Would you also like to apply these permissions to all items and subfolders?'); ?>
+
+<br /><br /><br />
+
+<form id="applyPoliciesRecursiveForm" style="float: right" class="genericForm" method="POST"  action="<?php echo $this->webroot?>/share/applyrecursivedialog">
+  <input type='hidden' name="folderId" value="<?php echo $this->folderId; ?>" />
+  <input class="genericButton" type='submit' name='submitButton' id='acceptApplyRecursive' value='<?php echo $this->t('Yes')?>' />
+  <input class="genericButton" style="margin-left: 15px;" type='button' name='declineApplyRecursive' id='declineApplyRecursive'
+         value='<?php echo $this->t('No')?>' />
+</form>
+<img id="applyPoliciesRecursiveLoadingGif" style="display: none; float: left" alt="" src="<?php echo  $this->coreWebroot?>/public/images/icons/loading.gif" />

@@ -37,7 +37,7 @@ class ShareController extends AppController
   function dialogAction()
     {
     $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $type = $this->_getParam('type');
     $element = $this->_getParam('element');
     if(!isset($type) || !isset($element))
@@ -361,4 +361,41 @@ class ShareController extends AppController
     $this->view->jsonShare['element'] = $element->getKey();
     $this->view->jsonShare = JsonComponent::encode($this->view->jsonShare);
     } //end dialogAction
+
+  /** controller for applying policies recursively to a folder */
+  function applyrecursivedialogAction()
+    {
+    $this->disableLayout();
+    $folderId = $this->_getParam('folderId');
+    $this->view->folderId = $folderId;
+
+    if($this->_request->isPost())
+      {
+      $this->_helper->viewRenderer->setNoRender();
+      sleep(2);
+      echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+      /*$setPublic = $this->_getParam('setPublic');
+      if(isset($changePolicy))
+        {
+        $changeVal = $this->_getParam('changeVal');
+        $changeType = $this->_getParam('changeType');
+        $changeId = $this->_getParam('changeId');
+        if($changeType == 'group')
+          {
+          $changePolicy = $this->Group->load($changeId);
+          }
+        else
+          {
+          $changePolicy = $this->User->load($changeId);
+          }
+
+        if(!$isAdmin && $changeVal >= MIDAS_POLICY_ADMIN)
+          {
+          echo JsonComponent::encode(array(false, $this->t('Error')));
+          return;
+          }
+        }*/
+      }
+    }
+
   }//end class
