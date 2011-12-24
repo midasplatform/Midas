@@ -98,16 +98,15 @@ class Utf8tools
    * that is utf8 encoded and has the same name as the non-utf8 file, with
    * an extension of .utf8 .
    */
-  public function listNonUtf8Files($createUtf8Version = false)
+  public function listNonUtf8Files($srcDir, $createUtf8Version = false)
     {
-    $allFiles =  $this->getMatchingFilesRecursive('.');
-    echo "The following files have non UTF-8 characters:\n\n";
+    $allFiles =  $this->getMatchingFilesRecursive($srcDir);
     foreach($allFiles as $file)
       {
       $filecontents = file_get_contents($file);
       if(!$this->isUtf8($filecontents))
         {
-        echo "$file \n";
+        echo "ERROR: non-utf8 characters found in $file \n";
         if($createUtf8Version)
           {
           $utf8Version = mb_convert_encoding($filecontents, "UTF-8");
@@ -124,11 +123,11 @@ class Utf8tools
 
 // don't create utf8 versions by default
 $create = false;
-if(sizeof($argv) > 1)
+if(sizeof($argv) > 3 || sizeof($argv) < 2)
   {
-  if($argv[1] !== 'create')
+  if($argv[3] !== 'create')
     {
-    echo "Usage (should be from MIDAS BASE DIR):\n\nphp Utf8tools.php [create]\n\noptional argument create says to create utf8 versions on non utf8 encoded files\n";
+    echo "Usage:\n\nphp Utf8tools.php --src <MIDAS SOURCE DIR> [create]\n\noptional argument create says to create utf8 versions on non utf8 encoded files\n";
     exit();
     }
   else
@@ -136,6 +135,7 @@ if(sizeof($argv) > 1)
     $create = true;
     }
   }
+$srcDir = $argv[2];
 $utf8 = new  Utf8tools();
-$utf8->listNonUtf8Files($create);
+$utf8->listNonUtf8Files($srcDir, $create);
 ?>
