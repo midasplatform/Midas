@@ -64,6 +64,7 @@ class AssetstoreControllerTest extends ControllerTestCase
   public function tearDown()
     {
     $this->Assetstore->delete($this->testAssetstoreDao);
+    parent::tearDown();
     }
 
   /** helper method, load the 3 different user daos. */
