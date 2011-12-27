@@ -15,8 +15,8 @@ midas.share.applyrecursive.success = function(responseText, statusText, xhr, for
   $('input#acceptApplyRecursive').removeAttr('disabled');
   $('input#declineApplyRecursive').removeAttr('disabled');
   $('img#applyPoliciesRecursiveLoadingGif').hide();
-
   jsonResponse = $.parseJSON(responseText);
+  
   if(jsonResponse == null)
     {
     createNotice('Error', 4000);
@@ -24,11 +24,19 @@ midas.share.applyrecursive.success = function(responseText, statusText, xhr, for
     }
   if(jsonResponse[0])
     {
-    createNotice(jsonResponse[1], 4000);
+    var success = jsonResponse[1].success;
+    var failure = jsonResponse[1].failure;
+    if(success > 0)
+      {
+      createNotice('Successfully set policies on ' + success + ' resources', 4000);
+      }
+    if(failure > 0)
+      {
+      createNotice('Failed to set policies on ' + failure + ' resources', 5000);
+      }
     }
   else
     {
-    // should write some error text into the dialog.
     createNotice(jsonResponse[1], 4000);
     }
 }
