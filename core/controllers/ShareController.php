@@ -23,7 +23,7 @@ class ShareController extends AppController
   {
   public $_models = array('Item', 'Folder', 'Group', 'Folderpolicygroup', 'Folderpolicyuser', 'Itempolicygroup', 'Itempolicyuser', 'User', 'Community');
   public $_daos = array();
-  public $_components = array();
+  public $_components = array('Policy');
   public $_forms = array();
 
   /** Init Controller */
@@ -365,6 +365,7 @@ class ShareController extends AppController
   /** controller for applying policies recursively to a folder */
   function applyrecursivedialogAction()
     {
+    set_time_limit(0); //may take a while.
     $this->disableLayout();
     $folderId = $this->_getParam('folderId');
     $this->view->folderId = $folderId;
@@ -372,29 +373,15 @@ class ShareController extends AppController
     if($this->_request->isPost())
       {
       $this->_helper->viewRenderer->setNoRender();
-      sleep(2);
-      echo JsonComponent::encode(array(true, $this->t('Changes saved')));
-      /*$setPublic = $this->_getParam('setPublic');
-      if(isset($changePolicy))
+      $folder = $this->Folder->load($folderId);
+      if(!$folder)
         {
-        $changeVal = $this->_getParam('changeVal');
-        $changeType = $this->_getParam('changeType');
-        $changeId = $this->_getParam('changeId');
-        if($changeType == 'group')
-          {
-          $changePolicy = $this->Group->load($changeId);
-          }
-        else
-          {
-          $changePolicy = $this->User->load($changeId);
-          }
-
-        if(!$isAdmin && $changeVal >= MIDAS_POLICY_ADMIN)
-          {
-          echo JsonComponent::encode(array(false, $this->t('Error')));
-          return;
-          }
-        }*/
+        echo JsonComponent::encode(array(false, $this->t('Invalid folder id')));
+        exit;
+        }
+      $results = $this->Component->Policy->applyPoliciesRecursive($folder, $this->userSession->Dao);
+      echo JsonComponent::encode(array(true, $results));
+      exit;
       }
     }
 
