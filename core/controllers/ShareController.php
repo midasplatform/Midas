@@ -33,7 +33,7 @@ class ShareController extends AppController
     } // end init()
 
 
-  /** ajax dialog where the use share something*/
+  /** ajax dialog for managing permissions */
   function dialogAction()
     {
     $this->requireAjaxRequest();
@@ -63,24 +63,20 @@ class ShareController extends AppController
       throw new Zend_Exception("Unable to load element.");
       }
 
-    if($type == 'folder')
-      {
-      $policyCheck = $this->Folder->policyCheck($element, $this->userSession->Dao, MIDAS_POLICY_WRITE);
-      $isAdmin = $this->Folder->policyCheck($element, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
-      }
-    else
-      {
-      $policyCheck = $this->Item->policyCheck($element, $this->userSession->Dao, MIDAS_POLICY_WRITE);
-      $isAdmin = $this->Item->policyCheck($element, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
-      }
-    if($policyCheck == false)
-      {
-      throw new Zend_Exception("Permission problem.");
-      }
-
-
     if($this->_request->isPost())
       {
+      if($type == 'folder')
+        {
+        $isAdmin = $this->Folder->policyCheck($element, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+        }
+      else
+        {
+        $isAdmin = $this->Item->policyCheck($element, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+        }
+      if(!$isAdmin)
+        {
+        throw new Zend_Exception('Admin privileges required to change permissions');
+        }
       $this->_helper->viewRenderer->setNoRender();
       $setPublic = $this->_getParam('setPublic');
       $setPrivate = $this->_getParam('setPrivate');
@@ -101,23 +97,11 @@ class ShareController extends AppController
           $changePolicy = $this->User->load($changeId);
           }
 
-        if(!$isAdmin && $changeVal >= MIDAS_POLICY_ADMIN)
-          {
-          echo JsonComponent::encode(array(false, $this->t('Error')));
-          return;
-          }
-
-
         if($type == 'folder')
           {
           if($changeType == 'group')
             {
             $policyDao = $this->Folderpolicygroup->getPolicy($changePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Folderpolicygroup->delete($policyDao);
             $policyDao->setPolicy($changeVal);
             $this->Folderpolicygroup->save($policyDao);
@@ -125,11 +109,6 @@ class ShareController extends AppController
           else
             {
             $policyDao = $this->Folderpolicyuser->getPolicy($changePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Folderpolicyuser->delete($policyDao);
             $policyDao->setPolicy($changeVal);
             $this->Folderpolicyuser->save($policyDao);
@@ -140,11 +119,6 @@ class ShareController extends AppController
           if($changeType == 'group')
             {
             $policyDao = $this->Itempolicygroup->getPolicy($changePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Itempolicygroup->delete($policyDao);
             $policyDao->setPolicy($changeVal);
             $this->Itempolicygroup->save($policyDao);
@@ -152,11 +126,6 @@ class ShareController extends AppController
           else
             {
             $policyDao = $this->Itempolicyuser->getPolicy($changePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Itempolicyuser->delete($policyDao);
             $policyDao->setPolicy($changeVal);
             $this->Itempolicyuser->save($policyDao);
@@ -182,21 +151,11 @@ class ShareController extends AppController
           if($removeType == 'group')
             {
             $policyDao = $this->Folderpolicygroup->getPolicy($removePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Folderpolicygroup->delete($policyDao);
             }
           else
             {
             $policyDao = $this->Folderpolicyuser->getPolicy($removePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Folderpolicyuser->delete($policyDao);
             }
           }
@@ -205,21 +164,11 @@ class ShareController extends AppController
           if($removeType == 'group')
             {
             $policyDao = $this->Itempolicygroup->getPolicy($removePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Itempolicygroup->delete($policyDao);
             }
           else
             {
             $policyDao = $this->Itempolicyuser->getPolicy($removePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Itempolicyuser->delete($policyDao);
             }
           }
@@ -351,7 +300,6 @@ class ShareController extends AppController
 
     $this->view->groupPolicies = $groupPolicies;
     $this->view->userPolicies = $userPolicies;
-    $this->view->isAdmin = $isAdmin;
     $this->view->private = $private;
     $this->view->type = $type;
     $this->view->element = $element;
