@@ -75,7 +75,8 @@ class ShareController extends AppController
         }
       if(!$isAdmin)
         {
-        throw new Zend_Exception('Admin privileges required to change permissions');
+        echo JsonComponent::encode(array(false, $this->t('Admin privileges required to change permissions')));
+        exit;
         }
       $this->_helper->viewRenderer->setNoRender();
       $setPublic = $this->_getParam('setPublic');
@@ -132,6 +133,7 @@ class ShareController extends AppController
             }
           }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        exit;
         }
       if(isset($removePolicy))
         {
@@ -173,6 +175,7 @@ class ShareController extends AppController
             }
           }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        exit;
         }
       if(isset($createPolicy))
         {
@@ -204,7 +207,7 @@ class ShareController extends AppController
           else
             {
             echo JsonComponent::encode(array(false, $this->t('Error')));
-            return;
+            exit;
             }
           }
         else
@@ -220,10 +223,11 @@ class ShareController extends AppController
           else
             {
             echo JsonComponent::encode(array(false, $this->t('Error')));
-            return;
+            exit;
             }
           }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        exit;
         }
       if(isset($setPublic))
         {
@@ -237,6 +241,7 @@ class ShareController extends AppController
           $this->Itempolicygroup->createPolicy($anonymousGroup, $element, MIDAS_POLICY_READ);
           }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        exit;
         }
       if(isset($setPrivate))
         {
@@ -252,6 +257,7 @@ class ShareController extends AppController
           $this->Itempolicygroup->delete($policyDao);
           }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        exit;
         }
       }
 
