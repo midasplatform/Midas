@@ -33,7 +33,6 @@ class FolderController extends AppController
     $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     if(isset($actionName) && (is_numeric($actionName) || strlen($actionName) == 32)) // This is tricky! and for Cassandra for now
       {
-
       $this->_forward('view', null, null, array('folderId' => $actionName));
       }
     $this->view->activemenu = 'browse'; // set the active menu
@@ -187,7 +186,7 @@ class FolderController extends AppController
       {
       throw new Zend_Exception("The folder doesn t exist.");
       }
-    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
       throw new Zend_Exception("Permissions error.");
       }
@@ -252,9 +251,9 @@ class FolderController extends AppController
       {
       throw new Zend_Exception("The item doesn't exist.");
       }
-    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception('Write permission on folder required');
+      throw new Zend_Exception('Admin permission on folder required');
       }
     elseif(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
