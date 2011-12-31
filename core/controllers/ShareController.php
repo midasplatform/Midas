@@ -74,7 +74,6 @@ class ShareController extends AppController
       {
       throw new Zend_Exception('Admin privileges required to change permissions');
       }
-    
 
     if($this->_request->isPost())
       {
