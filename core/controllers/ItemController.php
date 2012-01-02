@@ -26,7 +26,11 @@ class ItemController extends AppController
   public $_components = array('Date', 'Utility', 'Sortdao');
   public $_forms = array('Item');
 
-  /** Init Controller */
+  /**
+   * Init Controller
+   *
+   * @method init()
+  */
   function init()
     {
     $this->view->activemenu = ''; // set the active menu
@@ -38,7 +42,13 @@ class ItemController extends AppController
     }  // end init()
 
 
-  /** create/edit metadata*/
+
+  /**
+   * create/edit metadata
+   *
+   * @method editmetadataAction()
+   * @throws Zend_Exception on non-logged user, invalid itemId and incorrect access permission
+  */
   function editmetadataAction()
     {
     $this->disableLayout();
@@ -77,7 +87,12 @@ class ItemController extends AppController
     $this->view->jsonMetadataType = JsonComponent::encode($this->view->metadataType);
     }
 
-  /** view a community*/
+  /**
+   * View a Item
+   *
+   * @method viewAction()
+   * @throws Zend_Exception on invalid itemId and incorrect access permission
+  */
   function viewAction()
     {
     $this->view->header = $this->t("Item");
@@ -261,12 +276,19 @@ class ItemController extends AppController
 
     $this->view->json['item'] = $itemDao->toArray();
     $this->view->json['item']['message']['delete'] = $this->t('Delete');
+    $this->view->json['item']['message']['sharedItem'] = $this->t('This item is currrently shared by other folders and/or communities. Deletion will make it disappear in all these folders and/or communitites. ');
     $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undone.');
     $this->view->json['item']['message']['deleteMetadataMessage'] = $this->t('Do you really want to delete this metadata? It cannot be undone.');
-    $this->view->json['item']['message']['movecopy'] = $this->t('Copy Item.');
+    $this->view->json['item']['message']['share'] = $this->t('Share Item (Display the same item in the destination folder)');
+    $this->view->json['item']['message']['duplicate'] = $this->t('Duplicate Item (Create a new item in the destination folder)');
     }//end index
 
-  /** Edit  (ajax) */
+  /**
+   * Edit an item
+   *
+   * @method editAction()
+   * @throws Zend_Exception on invalid itemId and incorrect access permission
+  */
   function editAction()
     {
     $this->disableLayout();
@@ -308,7 +330,12 @@ class ItemController extends AppController
     $this->view->form = $formArray;
     }
 
-  /** Delete an item */
+  /**
+   * Delete an item
+   *
+   * @method deleteAction()
+   * @throws Zend_Exception on invalid itemId and incorrect access permission
+  */
   function deleteAction()
     {
     $this->disableLayout();
@@ -331,7 +358,12 @@ class ItemController extends AppController
     }//end delete
 
 
-  /** Merge items*/
+  /**
+   * Merge items
+   *
+   * @method mergeAction()
+   * @throws Zend_Exception on invalid item name and incorrect access permission
+  */
   function mergeAction()
     {
     $this->_helper->layout->disableLayout();
@@ -383,6 +415,34 @@ class ItemController extends AppController
     $this->Item->save($mainItem);
 
     $this->_redirect('/browse/uploaded');
-    }//end delete
+    }//end merge
+
+  /**
+   * Check if an item is shared
+   *
+   * ajax function which checks if an item is shared in other folder/community
+   *
+   * @method checksharedAction()
+   * @throws Zend_Exception on non-ajax call
+  */
+  public function checksharedAction()
+    {
+    if(!$this->getRequest()->isXmlHttpRequest())
+      {
+      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      }
+    $this->disableLayout();
+    $this->disableView();
+    $itemId = $this->_getParam("itemId");
+    $itemDao = $this->Item->load($itemId);
+    $shareCount = count($itemDao->getFolders());
+    $ifShared = false;
+    if($shareCount > 1)
+      {
+      $ifShared = true;
+      }
+
+    echo JsonComponent::encode($ifShared);
+    } // end checkshared
 
   }//end class

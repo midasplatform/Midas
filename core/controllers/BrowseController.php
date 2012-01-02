@@ -58,10 +58,16 @@ class BrowseController extends AppController
   /** move or copy selected element*/
   public function movecopyAction()
     {
-    $copySubmit = $this->_getParam('copyElement');
+    $shareSubmit = $this->_getParam('shareElement');
+    $duplicateSubmit = $this->_getParam('duplicateElement');
     $moveSubmit = $this->_getParam('moveElement');
+
     $select = $this->_getParam('selectElement');
-    if(isset($copySubmit) || isset($moveSubmit))
+    $share = $this->_getParam('share');
+    $duplicate = $this->_getParam('duplicate');
+
+    // used for drag-and-drop actions
+    if(isset($moveSubmit) || isset($shareSubmit) || isset($duplicateSubmit))
       {
       $elements = explode(';', $this->_getParam('elements'));
       $destination = $this->_getParam('destination');
@@ -70,41 +76,58 @@ class BrowseController extends AppController
       $itemIds = explode('-', $elements[1]);
       $folders = $this->Folder->load($folderIds);
       $items = $this->Item->load($itemIds);
-      $destination = $this->Folder->load($destination);
+      $destinationFolder = $this->Folder->load($destination);
       if(empty($folders) && empty ($items))
         {
         throw new Zend_Exception("No element selected");
         }
-      if($destination == false)
+      if($destinationFolder == false)
         {
         throw new Zend_Exception("Unable to load destination");
         }
 
       foreach($folders as $folder)
         {
-        if(!isset($copySubmit))
+        if(isset($moveSubmit))
           {
-          $this->Folder->move($folder, $destination);
+          $this->Folder->move($folder, $destinationFolder);
           }
         }
 
+      $sourceFolderIds = array();
       foreach($items as $item)
         {
-        if(isset($copySubmit))
+        if(isset($shareSubmit))
           {
-          $this->Folder->addItem($destination, $item);
-          $this->Item->copyParentPolicies($item, $destination);
+          foreach($item->getFolders() as $parentFolder)
+            {
+            $folderId = $parentFolder->getKey();
+            array_push($sourceFolderIds, $folderId);
+            }
+          if(in_array($destinationFolder->getKey(), $sourceFolderIds))
+            {
+            $this->_redirect('/item/'.$item->getKey());
+            }
+          else
+            {
+            $this->Folder->addItem($destinationFolder, $item);
+            $this->Item->addReadonlyPolicy($item, $destinationFolder);
+            }
           }
-        else
+        elseif(isset($duplicateSubmit))
+          {
+          $this->Item->duplicateItem($item, $this->userSession->Dao, $destinationFolder);
+          }
+        else //moveSubmit
           {
           $from = $this->_getParam('from');
           $from = $this->Folder->load($from);
-          if($destination == false)
+          if($destinationFolder == false)
             {
             throw new Zend_Exception("Unable to load destination");
             }
-          $this->Folder->addItem($destination, $item);
-          $this->Item->copyParentPolicies($item, $destination);
+          $this->Folder->addItem($destinationFolder, $item);
+          $this->Item->copyParentPolicies($item, $destinationFolder);
           $this->Folder->removeItem($from, $item);
           }
         }
@@ -115,24 +138,19 @@ class BrowseController extends AppController
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
-      $this->_redirect('/folder/'.$destination->getKey());
+      $this->_redirect('/folder/'.$destinationFolder->getKey());
       }
 
+    // Used for movecopy dialog
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
-    if(!isset($select))
+    if(isset($share) || isset($duplicate))
       {
       $folderIds = $this->_getParam('folders');
       $itemIds = $this->_getParam('items');
-      $move = $this->_getParam('move');
       $this->view->folderIds = $folderIds;
       $this->view->itemIds = $itemIds;
-      $this->view->moveEnabled = true;
-      if(isset($move))
-        {
-        $this->view->moveEnabled = false;
-        }
       $folderIds = explode('-', $folderIds);
       $itemIds = explode('-', $itemIds);
       $folders = $this->Folder->load($folderIds);
@@ -147,9 +165,19 @@ class BrowseController extends AppController
         }
       $this->view->folders = $folders;
       $this->view->items = $items;
+      if(isset($share))
+        {
+        $this->view->shareEnabled = true;
+        $this->view->duplicateEnabled = false;
+        }
+      else
+        {
+        $this->view->duplicateEnabled = true;
+        $this->view->shareEnabled = false;
+        }
       $this->view->selectEnabled = false;
       }
-    else
+    else //isset($select)
       {
       $this->view->selectEnabled = true;
       }
@@ -225,7 +253,6 @@ class BrowseController extends AppController
   /** get getfolders content (ajax function for the treetable) */
   public function getfolderscontentAction()
     {
-    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $folderIds = $this->_getParam('folders');

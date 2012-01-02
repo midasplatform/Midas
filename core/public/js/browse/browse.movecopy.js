@@ -4,14 +4,14 @@
       callbackDblClick: moveCopyCallbackDblClick,
       callbackCustomElements: moveCopyCallbackCustomElements
     });
-    $("img.tableLoading").hide();
-    $("table#moveTable").show();
-
-    $('applet').hide();
-
-   if($('#selectElements')!=undefined)
+     $("img.tableLoading").hide();
+     $("table#moveTable").show();
+     
+     $('applet').hide();
+       
+   if($('#selectElement')!=undefined)
      {
-       $('#selectElements').click(function(){
+       $('#selectElement').click(function(){
          $('#destinationUpload').html($('#selectedDestination').html());
          $('#destinationId').val($('#selectedDestinationHidden').val());
          $('.destinationUpload').html($('#selectedDestination').html());
@@ -21,7 +21,7 @@
          return false;
        });
      }
-
+     
   //dependance: common/browser.js
     var ajaxSelectRequest='';
     function moveCopyCallbackSelect(node)
@@ -51,9 +51,10 @@
 
       $('#selectedDestinationHidden').val(node.attr('element'));
       $('#selectedDestination').html(sliceFileName(selectedElement, 40));
-      $('#selectElements').removeAttr('disabled');
-      $('#copyElement').removeAttr('disabled');
-      $('#moveElements').removeAttr('disabled');
+      $('#selectElement').removeAttr('disabled');
+      $('#shareElement').removeAttr('disabled');
+      $('#duplicateElement').removeAttr('disabled');
+      $('#moveElement').removeAttr('disabled');
     }
 
 
