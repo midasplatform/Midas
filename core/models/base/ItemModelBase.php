@@ -160,16 +160,16 @@ abstract class ItemModelBase extends AppModel
       }
     }//end copyParentPolicies
 
-  /** share an item*/
-  /**
-   * share an item to destination folder and add read-only permission to users/groups who can
-   * access the destination folder
-   * @method shareItemReadonly()
+  /** Grant read only permission for an item in the target folder
+   *
+   * share an item to destination folder (grant read-only permission to users/groups who can
+   * access the destination folder )
+   * @method addReadonlyPolicy()
    * @param ItemDao $itemDao the item to be shared
    * @param FolderDao $folderDao destination folder
    * @throws Zend_Exception on invalid input parameters (itemDao and folderDao)
   */
-  function shareItemReadonly($itemdao, $folderdao)
+  function addReadonlyPolicy($itemdao, $folderdao)
     {
     if(!$itemdao instanceof ItemDao || !$folderdao instanceof FolderDao)
       {
@@ -197,7 +197,7 @@ abstract class ItemModelBase extends AppModel
         $ItempolicygroupModel->createPolicy($newGroup, $itemdao, MIDAS_POLICY_READ);
         }
       }
-    }//end shareItemReadonly
+    }//end addReadonlyPolicy
 
 
   /**

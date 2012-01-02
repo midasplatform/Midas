@@ -42,13 +42,13 @@
 
     $('a.shareItemLink').click(function()
       {
-        loadDialog("shareItem","/browse/movecopy/?move=false&share=true&items="+json.item.item_id);
+        loadDialog("shareItem","/browse/movecopy/?share=true&items="+json.item.item_id);
         showDialog(json.item.message.share);
       });
       
     $('a.duplicateItemLink').click(function()
       {
-        loadDialog("duplicateItem","/browse/movecopy/?move=false&items="+json.item.item_id);
+        loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+json.item.item_id);
         showDialog(json.item.message.duplicate);
       });
 

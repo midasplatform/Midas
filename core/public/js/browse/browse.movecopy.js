@@ -19,7 +19,7 @@
          $( "div.MainDialog" ).dialog('close');
          $('applet').show();
          return false;
-});
+       });
      }
      
   //dependance: common/browser.js
