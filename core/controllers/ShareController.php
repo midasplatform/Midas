@@ -23,7 +23,7 @@ class ShareController extends AppController
   {
   public $_models = array('Item', 'Folder', 'Group', 'Folderpolicygroup', 'Folderpolicyuser', 'Itempolicygroup', 'Itempolicyuser', 'User', 'Community');
   public $_daos = array();
-  public $_components = array();
+  public $_components = array('Policy');
   public $_forms = array();
 
   /** Init Controller */
@@ -33,11 +33,10 @@ class ShareController extends AppController
     } // end init()
 
 
-  /** ajax dialog where the use share something*/
+  /** ajax dialog for managing permissions */
   function dialogAction()
     {
-    $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $type = $this->_getParam('type');
     $element = $this->_getParam('element');
     if(!isset($type) || !isset($element))
@@ -65,19 +64,16 @@ class ShareController extends AppController
 
     if($type == 'folder')
       {
-      $policyCheck = $this->Folder->policyCheck($element, $this->userSession->Dao, MIDAS_POLICY_WRITE);
       $isAdmin = $this->Folder->policyCheck($element, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
       }
     else
       {
-      $policyCheck = $this->Item->policyCheck($element, $this->userSession->Dao, MIDAS_POLICY_WRITE);
       $isAdmin = $this->Item->policyCheck($element, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
       }
-    if($policyCheck == false)
+    if(!$isAdmin)
       {
-      throw new Zend_Exception("Permission problem.");
+      throw new Zend_Exception('Admin privileges required to change permissions');
       }
-
 
     if($this->_request->isPost())
       {
@@ -101,23 +97,11 @@ class ShareController extends AppController
           $changePolicy = $this->User->load($changeId);
           }
 
-        if(!$isAdmin && $changeVal >= MIDAS_POLICY_ADMIN)
-          {
-          echo JsonComponent::encode(array(false, $this->t('Error')));
-          return;
-          }
-
-
         if($type == 'folder')
           {
           if($changeType == 'group')
             {
             $policyDao = $this->Folderpolicygroup->getPolicy($changePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Folderpolicygroup->delete($policyDao);
             $policyDao->setPolicy($changeVal);
             $this->Folderpolicygroup->save($policyDao);
@@ -125,11 +109,6 @@ class ShareController extends AppController
           else
             {
             $policyDao = $this->Folderpolicyuser->getPolicy($changePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Folderpolicyuser->delete($policyDao);
             $policyDao->setPolicy($changeVal);
             $this->Folderpolicyuser->save($policyDao);
@@ -140,11 +119,6 @@ class ShareController extends AppController
           if($changeType == 'group')
             {
             $policyDao = $this->Itempolicygroup->getPolicy($changePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Itempolicygroup->delete($policyDao);
             $policyDao->setPolicy($changeVal);
             $this->Itempolicygroup->save($policyDao);
@@ -152,17 +126,13 @@ class ShareController extends AppController
           else
             {
             $policyDao = $this->Itempolicyuser->getPolicy($changePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Itempolicyuser->delete($policyDao);
             $policyDao->setPolicy($changeVal);
             $this->Itempolicyuser->save($policyDao);
             }
           }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        return;
         }
       if(isset($removePolicy))
         {
@@ -182,21 +152,11 @@ class ShareController extends AppController
           if($removeType == 'group')
             {
             $policyDao = $this->Folderpolicygroup->getPolicy($removePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Folderpolicygroup->delete($policyDao);
             }
           else
             {
             $policyDao = $this->Folderpolicyuser->getPolicy($removePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Folderpolicyuser->delete($policyDao);
             }
           }
@@ -205,25 +165,16 @@ class ShareController extends AppController
           if($removeType == 'group')
             {
             $policyDao = $this->Itempolicygroup->getPolicy($removePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Itempolicygroup->delete($policyDao);
             }
           else
             {
             $policyDao = $this->Itempolicyuser->getPolicy($removePolicy, $element);
-            if(!$isAdmin && $policyDao->getPolicy() >= MIDAS_POLICY_ADMIN)
-              {
-              echo JsonComponent::encode(array(false, $this->t('Error')));
-              return;
-              }
             $this->Itempolicyuser->delete($policyDao);
             }
           }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        return;
         }
       if(isset($createPolicy))
         {
@@ -275,6 +226,7 @@ class ShareController extends AppController
             }
           }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        return;
         }
       if(isset($setPublic))
         {
@@ -288,6 +240,7 @@ class ShareController extends AppController
           $this->Itempolicygroup->createPolicy($anonymousGroup, $element, MIDAS_POLICY_READ);
           }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        return;
         }
       if(isset($setPrivate))
         {
@@ -303,6 +256,7 @@ class ShareController extends AppController
           $this->Itempolicygroup->delete($policyDao);
           }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        return;
         }
       }
 
@@ -351,7 +305,6 @@ class ShareController extends AppController
 
     $this->view->groupPolicies = $groupPolicies;
     $this->view->userPolicies = $userPolicies;
-    $this->view->isAdmin = $isAdmin;
     $this->view->private = $private;
     $this->view->type = $type;
     $this->view->element = $element;
@@ -361,4 +314,28 @@ class ShareController extends AppController
     $this->view->jsonShare['element'] = $element->getKey();
     $this->view->jsonShare = JsonComponent::encode($this->view->jsonShare);
     } //end dialogAction
+
+  /** controller for applying policies recursively to a folder */
+  function applyrecursivedialogAction()
+    {
+    set_time_limit(0); //may take a while.
+    $this->disableLayout();
+    $folderId = $this->_getParam('folderId');
+    $this->view->folderId = $folderId;
+
+    if($this->_request->isPost())
+      {
+      $this->_helper->viewRenderer->setNoRender();
+      $folder = $this->Folder->load($folderId);
+      if(!$folder)
+        {
+        echo JsonComponent::encode(array(false, $this->t('Invalid folder id')));
+        return;
+        }
+      $results = $this->Component->Policy->applyPoliciesRecursive($folder, $this->userSession->Dao);
+      echo JsonComponent::encode(array(true, $results));
+      return;
+      }
+    }
+
   }//end class

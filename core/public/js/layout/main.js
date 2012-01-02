@@ -422,7 +422,7 @@ function showDialog(title, button, opts)
     var options = {
       resizable: false,
       width:450,
-      modal: false,
+      minHeight: 0,
       draggable:true,
       title: title,
       position: [x,y],
@@ -441,7 +441,7 @@ function showDialog(title, button, opts)
     var options = {
       resizable: false,
       width:450,
-      modal: false,
+      minHeight: 0,
       draggable:true,
       title: title,
       zIndex: 15100,
@@ -466,7 +466,6 @@ function showBigDialog(title,button)
     $( "div.MainDialog" ).dialog({
       resizable: false,
       width:700,
-      modal: false,
       draggable:false,
       title: title,
       position: [x,y],
@@ -481,7 +480,6 @@ function showBigDialog(title,button)
     $( "div.MainDialog" ).dialog({
       resizable: false,
       width:700,
-      modal: false,
       draggable:false,
       title: title,
       position: [x,y],
