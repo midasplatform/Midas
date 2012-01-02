@@ -61,7 +61,12 @@ class BrowseController extends AppController
     $shareSubmit = $this->_getParam('shareElement');
     $duplicateSubmit = $this->_getParam('duplicateElement');
     $moveSubmit = $this->_getParam('moveElement');
+
     $select = $this->_getParam('selectElement');
+    $share = $this->_getParam('share');
+    $duplicate = $this->_getParam('duplicate');
+
+    // used for drag-and-drop actions
     if(isset($moveSubmit) || isset($shareSubmit) || isset($duplicateSubmit))
       {
       $elements = explode(';', $this->_getParam('elements'));
@@ -99,21 +104,21 @@ class BrowseController extends AppController
             $folderId = $parentFolder->getKey();
             array_push($sourceFolderIds, $folderId);
             }
-          $this->Folder->addItem($destinationFolder, $item);
           if(in_array($destinationFolder->getKey(), $sourceFolderIds))
             {
             $this->_redirect('/item/'.$item->getKey());
             }
           else
             {
-            $this->Item->shareItemReadonly($item, $destinationFolder);
+            $this->Folder->addItem($destinationFolder, $item);
+            $this->Item->addReadonlyPolicy($item, $destinationFolder);
             }
           }
         elseif(isset($duplicateSubmit))
           {
           $this->Item->duplicateItem($item, $this->userSession->Dao, $destinationFolder);
           }
-        else
+        else //moveSubmit
           {
           $from = $this->_getParam('from');
           $from = $this->Folder->load($from);
@@ -136,27 +141,16 @@ class BrowseController extends AppController
       $this->_redirect('/folder/'.$destinationFolder->getKey());
       }
 
+    // Used for movecopy dialog
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
-    if(!isset($select))
+    if(isset($share) || isset($duplicate))
       {
       $folderIds = $this->_getParam('folders');
       $itemIds = $this->_getParam('items');
-      $move = $this->_getParam('move');
-      $share = $this->_getParam('share');
       $this->view->folderIds = $folderIds;
       $this->view->itemIds = $itemIds;
-      $this->view->moveEnabled = true;
-      $this->view->shareEnabled = false;
-      if(isset($move))
-        {
-        $this->view->moveEnabled = false;
-        }
-      if(isset($share))
-        {
-        $this->view->shareEnabled = true;
-        }
       $folderIds = explode('-', $folderIds);
       $itemIds = explode('-', $itemIds);
       $folders = $this->Folder->load($folderIds);
@@ -171,9 +165,19 @@ class BrowseController extends AppController
         }
       $this->view->folders = $folders;
       $this->view->items = $items;
+      if(isset($share))
+        {
+        $this->view->shareEnabled = true;
+        $this->view->duplicateEnabled = false;
+        }
+      else
+        {
+        $this->view->duplicateEnabled = true;
+        $this->view->shareEnabled = false;
+        }
       $this->view->selectEnabled = false;
       }
-    else
+    else //isset($select)
       {
       $this->view->selectEnabled = true;
       }

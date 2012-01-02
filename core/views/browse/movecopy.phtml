@@ -52,7 +52,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
     </tbody>
   </table>
    <br/> <br/>
-  <form class="genericForm" type='post' action="<?php echo $this->webroot?>/browse/movecopy">
+  <form class="genericForm" id="moveCopyForm" type='post' action="<?php echo $this->webroot?>/browse/movecopy">
     <input type='hidden' name='elements' value='<?php echo $this->folderIds?>;<?php echo $this->itemIds?>' />
     <input type='hidden' id="selectedDestinationHidden" name='destination' />
     Destination: <span id="selectedDestination" > <?php echo $this->t('Please select a folder.') ?> </span> <br/>
