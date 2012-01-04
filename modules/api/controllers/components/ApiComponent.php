@@ -755,6 +755,10 @@ class Api_ApiComponent extends AppComponent
           {
           $folderpolicyuserModel->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
           }
+        if(!$folderModel->policyCheck($new_folder, $userDao, MIDAS_POLICY_ADMIN))
+          {
+          $folderpolicyuserModel->createPolicy($userDao, $new_folder, MIDAS_POLICY_ADMIN);
+          }
         }
 
       return $new_folder->toArray();

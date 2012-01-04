@@ -307,20 +307,6 @@ class FolderController extends AppController
             return;
             }
           $new_folder = $this->Folder->createFolder($name, '', $folder);
-          $policyGroup = $folder->getFolderpolicygroup();
-          $policyUser = $folder->getFolderpolicyuser();
-          foreach($policyGroup as $policy)
-            {
-            $group = $policy->getGroup();
-            $policyValue = $policy->getPolicy();
-            $this->Folderpolicygroup->createPolicy($group, $new_folder, $policyValue);
-            }
-          foreach($policyUser as $policy)
-            {
-            $user = $policy->getUser();
-            $policyValue = $policy->getPolicy();
-            $this->Folderpolicyuser->createPolicy($user, $new_folder, $policyValue);
-            }
 
           if($new_folder == false)
             {
@@ -328,6 +314,24 @@ class FolderController extends AppController
             }
           else
             {
+            $policyGroup = $folder->getFolderpolicygroup();
+            $policyUser = $folder->getFolderpolicyuser();
+            foreach($policyGroup as $policy)
+              {
+              $group = $policy->getGroup();
+              $policyValue = $policy->getPolicy();
+              $this->Folderpolicygroup->createPolicy($group, $new_folder, $policyValue);
+              }
+            foreach($policyUser as $policy)
+              {
+              $user = $policy->getUser();
+              $policyValue = $policy->getPolicy();
+              $this->Folderpolicyuser->createPolicy($user, $new_folder, $policyValue);
+              }
+            if(!$this->Folder->policyCheck($new_folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+              {
+              $this->Folderpolicyuser->createPolicy($this->userSession->Dao, $new_folder, MIDAS_POLICY_ADMIN);
+              }
             echo JsonComponent::encode(array(true, $this->t('Changes saved'), $folder->toArray(), $new_folder->toArray()));
             }
           }
