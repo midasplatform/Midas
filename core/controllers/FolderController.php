@@ -267,7 +267,7 @@ class FolderController extends AppController
   /** create a folder (dialog,ajax only)*/
   public function createfolderAction()
     {
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $folder_id = $this->_getParam('folderId');
     $folder = $this->Folder->load($folder_id);
     $header = "";
