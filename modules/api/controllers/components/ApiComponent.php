@@ -755,6 +755,10 @@ class Api_ApiComponent extends AppComponent
           {
           $folderpolicyuserModel->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
           }
+        if(!$folderModel->policyCheck($new_folder, $userDao, MIDAS_POLICY_ADMIN))
+          {
+          $folderpolicyuserModel->createPolicy($userDao, $new_folder, MIDAS_POLICY_ADMIN);
+          }
         }
 
       return $new_folder->toArray();
@@ -929,11 +933,17 @@ class Api_ApiComponent extends AppComponent
         {
         throw new Exception('Parent folder doesn\'t exist', MIDAS_INVALID_PARAMETER);
         }
+      if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Invalid permissions on parent folder', MIDAS_INVALID_POLICY);
+        }
       $item = $itemModel->createItem($name, $description, $folder, $uuid);
       if($item === false)
         {
         throw new Exception('Create new item failed', MIDAS_INTERNAL_ERROR);
         }
+      $itempolicyuserModel = $modelLoader->loadModel('Itempolicyuser');
+      $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
 
       return $item->toArray();
       }
