@@ -1,11 +1,8 @@
-  $(document).ready(function() {
-    
-      
-    $('#configForm').ajaxForm( {beforeSubmit: validateConfig, success:       successConfig} );
+$(document).ready(function() {
+  $('#configForm').ajaxForm( {beforeSubmit: validateConfig, success: successConfig} );
   });
   
-  
-  function validateConfig(formData, jqForm, options) { 
+function validateConfig(formData, jqForm, options) { 
  
 }
 
@@ -19,15 +16,15 @@ function successConfig(responseText, statusText, xhr, form)
     }
   if(jsonResponse==null)
     {
-      createNotive('Error',4000);
-      return;
+    createNotice('Error',4000);
+    return;
     }
   if(jsonResponse[0])
     {
-      createNotive(jsonResponse[1],4000);
+    createNotice(jsonResponse[1],4000);
     }
   else
     {
-      createNotive(jsonResponse[1],4000);
+    createNotice(jsonResponse[1],4000);
     }
 }

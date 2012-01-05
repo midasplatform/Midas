@@ -69,6 +69,13 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <li><a href="#tabs-5"><?php echo $this->t('Shared to me');?></a></li>
     <?php
       }
+    foreach($this->moduleTabs as $module)
+      {
+      foreach($module as $name => $url)
+        {
+        echo "<li><a href='{$url}'>{$name}</a></li>";
+        }
+      }
       ?>
   </ul>
   <div id="tabs-1">

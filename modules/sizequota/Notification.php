@@ -29,7 +29,7 @@ class Sizequota_Notification extends MIDAS_Notification
   public function init()
     {
     //$this->addCallBack('CALLBACK_CORE_GET_MANAGE_COMMUNITY_TABS', 'getCommunityTab');
-    //$this->addCallBack('CALLBACK_CORE_GET_USER_TABS', 'getUserTab');
+    $this->addCallBack('CALLBACK_CORE_GET_USER_TABS', 'getUserTab');
     //$this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD', 'validateUpload');
     }
 
@@ -42,7 +42,10 @@ class Sizequota_Notification extends MIDAS_Notification
   /** Add a tab to the user's main page for size quota */
   public function getUserTab($args)
     {
-    //TODO
+    $user = $args['user'];
+    $fc = Zend_Controller_Front::getInstance();
+    $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
+    return array($this->t('Storage Quota') => $moduleWebroot.'/config/folder?folderId='.$user->getFolderId());
     }
 
   /** Return whether or not the upload is allowed.  If uploading the file

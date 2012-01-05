@@ -18,17 +18,15 @@
  limitations under the License.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
-$this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.folder.js');
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/jquery/jquery.form.js"></script>';
+echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/config/config.folder.js"></script>';
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.folder.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
 
 </div>
-  <form class='genericForm' id='configForm' method='<?php echo $this->configForm['method'] ?>'  action='<?php echo $this->configForm['action'] ?>'>
-    <h3>Size Quota Module Configuration:</h3>
-    Leave a field blank to indicate an unlimited quota.
-    <br /><br />
+  <form class='genericForm' id='configForm' method='<?php echo $this->configForm['method'] ?>' action='<?php echo $this->configForm['action'] ?>'>
+    <h3><?php echo $this->t('Storage Quota Configuration'); ?></h3>
     <div>
       <?php
         echo $this->configForm['usedefault'];
