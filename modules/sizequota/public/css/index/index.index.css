@@ -1,0 +1,11 @@
+div.helpContent{
+  font-size: 10px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  background-color: #DDD;
+  display:none;
+}
+
+li.methodListElement{
+  margin-bottom: 3px;
+}
