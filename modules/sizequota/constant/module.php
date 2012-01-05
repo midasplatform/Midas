@@ -17,5 +17,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-//define("MIDAS_EXAMPLE", 0);
+define("MIDAS_USE_DEFAULT_QUOTA", 0);
+define("MIDAS_USE_SPECIFIC_QUOTA", 1);
 ?>

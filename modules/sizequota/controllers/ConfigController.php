@@ -18,9 +18,15 @@
  limitations under the License.
 =========================================================================*/
 
-/** sizequota main config controller */
+/**
+ * This controller is used to manage size quotas on folders.
+ * It contains the actions for the main module configuration page as well as for
+ * maintaining folder-specific quotas.
+ */
 class Sizequota_ConfigController extends Sizequota_AppController
 {
+  public $_models = array('Folder', 'Setting');
+  public $_moduleModels = array('FolderQuota');
   public $_moduleForms = array('Config');
 
   /** index action*/
@@ -29,9 +35,8 @@ class Sizequota_ConfigController extends Sizequota_AppController
     $this->requireAdminPrivileges();
 
     $modelLoader = new MIDAS_ModelLoader();
-    $settingModel = $modelLoader->loadModel('Setting');
-    $defaultUserQuota = $settingModel->getValueByName('defaultuserquota', $this->moduleName);
-    $defaultCommunityQuota = $settingModel->getValueByName('defaultcommunityquota', $this->moduleName);
+    $defaultUserQuota = $this->Setting->getValueByName('defaultuserquota', $this->moduleName);
+    $defaultCommunityQuota = $this->Setting->getValueByName('defaultcommunityquota', $this->moduleName);
 
     $configForm = $this->ModuleForm->Config->createConfigForm();
     $formArray = $this->getFormAsArray($configForm);
@@ -59,14 +64,94 @@ class Sizequota_ConfigController extends Sizequota_AppController
           echo JsonComponent::encode(array(false, 'Invalid quota value. Please enter a positive integer.'));
           return;
           }
-        $settingModel->setConfig('defaultuserquota', $defaultUserQuota, $this->moduleName);
-        $settingModel->setConfig('defaultcommunityquota', $defaultCommunityQuota, $this->moduleName);
+        $this->Setting->setConfig('defaultuserquota', $defaultUserQuota, $this->moduleName);
+        $this->Setting->setConfig('defaultcommunityquota', $defaultCommunityQuota, $this->moduleName);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
     }
 
-  /** Test whether the provided quota value is legal */
+  /** Renders the view for folder-specific quotas */
+  public function folderAction()
+    {
+    $this->disableLayout();
+    if(!$this->_getParam('folderId'))
+      {
+      throw new Zend_Exception('Invalid parameters');
+      }
+    $folder = $this->Folder->load($this->_getParam('folderId'));
+
+    if(!$folder)
+      {
+      throw new Zend_Exception('Invalid folderId parameter');
+      }
+    if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      throw new Zend_Exception('Invalid policy');
+      }
+
+    if($folder->getParentId() == -1) //user folder
+      {
+      $defaultQuota = $this->Setting->getValueByName('defaultuserquota', $this->moduleName);
+      }
+    else if($folder->getParentId() == -2) //community folder
+      {
+      $defaultQuota = $this->Setting->getValueByName('defaultcommunityquota', $this->moduleName);
+      }
+    else
+      {
+      throw new Zend_Exception('Must be a community or user root folder');
+      }
+
+    $currentQuota = $this->Sizequota_FolderQuota->getQuota($folder);
+    $configForm = $this->ModuleForm->Config->createFolderForm($defaultQuota);
+    $formArray = $this->getFormAsArray($configForm);
+    if($currentQuota === false)
+      {
+      $formArray['usedefault']->setValue(MIDAS_USE_DEFAULT_QUOTA);
+      $this->view->quota = $defaultQuota;
+      }
+    else
+      {
+      $formArray['usedefault']->setValue(MIDAS_USE_SPECIFIC_QUOTA);
+      $formArray['quota']->setValue($currentQuota->getQuota());
+      $this->view->quota = $currentQuota->getQuota();
+      }
+    $this->view->configForm = $formArray;
+    $this->view->folder = $folder;
+    $this->view->usedSpace = $this->Folder->getSizeFiltered($folder, $this->userSession->Dao);
+    }
+
+  /** Used to manage folder-specific quotas (form handler) */
+  public function foldersubmitAction()
+    {
+    $this->requireAdminPrivileges();
+
+    $this->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    $quota = $this->_getParam('quota');
+    $useDefault = $this->_getParam('usedefault');
+    if($useDefault == MIDAS_USE_DEFAULT_QUOTA)
+      {
+      $quota = null;
+      }
+    $folder = $this->Folder->load($this->_getParam('folderId'));
+    if(!$folder)
+      {
+      echo JsonComponent::encode(array(false, 'Invalid folderId parameter'));
+      return;
+      }
+    if($quota !== null && !$this->_isValidQuota(array($quota)))
+      {
+      echo JsonComponent::encode(array(false, 'Invalid quota value. Please enter a positive integer.'));
+      return;
+      }
+
+    $this->Sizequota_FolderQuota->setQuota($folder, $quota);
+    echo JsonComponent::encode(array(true, 'Changes saved'));
+    }
+
+  /** Test whether the provided quota values are legal */
   private function _isValidQuota($quotas)
     {
     foreach($quotas as $quota)

@@ -37,5 +37,32 @@ class Sizequota_ConfigForm extends AppForm
     $form->addElements(array($defaultUserQuota, $defaultCommunityQuota, $submit));
     return $form;
     }
+
+  /** form used to set a folder-specific quota */
+  public function createFolderForm($defaultQuota)
+    {
+    if($defaultQuota === '')
+      {
+      $defaultQuota = $this->t('Unlimited');
+      }
+    $form = new Zend_Form;
+    $form->setAction($this->webroot.'/sizequota/config/foldersubmit')
+         ->setMethod('post');
+
+    $submit = new Zend_Form_Element_Submit('submitQuota');
+    $submit->setLabel($this->t('Save'));
+
+    $useDefault = new Zend_Form_Element_Radio('usedefault');
+    $useDefault->addMultiOptions(array(MIDAS_USE_DEFAULT_QUOTA => $this->t('Use the default quota: ').$defaultQuota,
+                                       MIDAS_USE_SPECIFIC_QUOTA => $this->t('Use a specific quota:')))
+               ->setRequired(true);
+
+    $quota = new Zend_Form_Element_Text('quota');
+    $quota->setAttrib('quota', 30);
+
+    $form->addElements(array($useDefault, $quota, $submit));
+    return $form;
+    }
+
 } // end class
 ?>

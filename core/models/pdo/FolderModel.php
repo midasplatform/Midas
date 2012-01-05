@@ -389,7 +389,7 @@ class FolderModel extends FolderModelBase
       $tmpParent = $tmpParent->getParent();
       }
 
-    if(!$folder instanceof  FolderDao)
+    if(!$folder instanceof FolderDao)
       {
       throw new Zend_Exception("Error parameter.");
       }
