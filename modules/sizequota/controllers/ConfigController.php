@@ -117,9 +117,11 @@ class Sizequota_ConfigController extends Sizequota_AppController
       $formArray['quota']->setValue($currentQuota->getQuota());
       $this->view->quota = $currentQuota->getQuota();
       }
+    $usedSpace = $this->Folder->getSizeFiltered($folder, $this->userSession->Dao);
+    $this->view->usedSpace = $usedSpace[0]->size;
     $this->view->configForm = $formArray;
     $this->view->folder = $folder;
-    $this->view->usedSpace = $this->Folder->getSizeFiltered($folder, $this->userSession->Dao);
+    $this->view->isAdmin = $this->userSession->Dao->isAdmin();
     }
 
   /** Used to manage folder-specific quotas (form handler) */

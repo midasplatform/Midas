@@ -25,18 +25,27 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/con
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
 
 </div>
-  <form class='genericForm' id='configForm' method='<?php echo $this->configForm['method'] ?>' action='<?php echo $this->configForm['action'] ?>'>
-    <h3><?php echo $this->t('Storage Quota Configuration'); ?></h3>
-    <div>
-      <?php
-        echo $this->configForm['usedefault'];
-        echo $this->configForm['quota'];
-      ?>
-    <div>
-      <?php echo $this->configForm['submitQuota']; ?>
-    </div>
-    <input type="hidden" name="folderId" value="<?php echo $this->folder->getKey(); ?>" />
-  </form>
+  <span><?php echo 'Current used space: '.$this->usedSpace; ?></span>
+  <br />
+  <span><?php echo 'Total space: '.$this->quota; ?></span>
+  <br />
+  <?php
+  if($this->isAdmin)
+    { ?>
+    <hr />
+    <form class='quotaConfigForm' id='configForm' method='<?php echo $this->configForm['method'] ?>' action='<?php echo $this->configForm['action'] ?>'>
+      <div>
+        <?php
+          echo $this->configForm['usedefault'];
+          echo $this->configForm['quota'];
+        ?>
+      <div>
+        <?php echo $this->configForm['submitQuota']; ?>
+      </div>
+      <input type="hidden" name="folderId" value="<?php echo $this->folder->getKey(); ?>" />
+    </form>
+  <?php
+    } ?>
 </div>
 
 
