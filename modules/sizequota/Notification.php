@@ -28,7 +28,7 @@ class Sizequota_Notification extends MIDAS_Notification
   /** init notification process */
   public function init()
     {
-    $this->addCallBack('CALLBACK_CORE_GET_MANAGE_COMMUNITY_TABS', 'getCommunityTab');
+    $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', 'getCommunityTab');
     $this->addCallBack('CALLBACK_CORE_GET_USER_TABS', 'getUserTab');
     //$this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD', 'validateUpload');
     }
@@ -36,7 +36,10 @@ class Sizequota_Notification extends MIDAS_Notification
   /** Add a tab to the manage community page for size quota */
   public function getCommunityTab($args)
     {
-    //TODO
+    $community = $args['community'];
+    $fc = Zend_Controller_Front::getInstance();
+    $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
+    return array($this->t('Storage Quota') => $moduleWebroot.'/config/folder?folderId='.$community->getFolderId());
     }
 
   /** Add a tab to the user's main page for size quota */
