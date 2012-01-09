@@ -45,7 +45,7 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
   public function getUserQuota($user)
     {
     $quotaDao = $this->getQuota($user->getFolder());
-    if(!quotaDao)
+    if(!$quotaDao)
       {
       $modelLoader = new MIDAS_ModelLoader();
       $settingModel = $modelLoader->loadModel('Setting');
@@ -58,7 +58,7 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
   public function getCommunityQuota($community)
     {
     $quotaDao = $this->getQuota($community->getFolder());
-    if(!quotaDao)
+    if(!$quotaDao)
       {
       $modelLoader = new MIDAS_ModelLoader();
       $settingModel = $modelLoader->loadModel('Setting');

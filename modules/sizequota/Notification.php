@@ -17,12 +17,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 
 /** notification manager for sizequota module */
-class Sizequota_Notification extends MIDAS_Notification
+class Sizequota_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'sizequota';
-  public $_moduleComponents = array();
+  public $_moduleComponents = array('Api');
   public $_models = array('Folder');
 
   /** init notification process */
@@ -31,6 +32,8 @@ class Sizequota_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', 'getCommunityTab');
     $this->addCallBack('CALLBACK_CORE_GET_USER_TABS', 'getUserTab');
     //$this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD', 'validateUpload');
+
+    $this->enableWebAPI($this->moduleName);
     }
 
   /** Add a tab to the manage community page for size quota */
