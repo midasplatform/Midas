@@ -25,7 +25,7 @@ midas.sizequota.folder.successConfig = function(responseText, statusText, xhr, f
     }
   if(jsonResponse[0])
     {
-    createNotice(jsonResponse[1],4000);
+    location.reload();
     }
   else
     {
@@ -56,27 +56,32 @@ $(document).ready(function() {
   $('input[name="usedefault"]').change(midas.sizequota.folder.radioButtonChanged);
   midas.sizequota.folder.radioButtonChanged();
 
-  var quota = parseInt($('#quotaValue').html());
-  var used = parseInt($('#usedSpaceValue').html());
-  var free = quota - used;
-  var hUsed = $('#hUsedSpaceValue').html();
-  var hFree = $('#hFreeSpaceValue').html();
+  var content = $('#quotaValue').html();
 
-  var data = [['Used space (' + hUsed + ')' , used], ['Free space (' + hFree + ')', free]];
-  if(quota != '' && quota != 0)
+  if(content != '' && content != 0)
     {
-    $('#quotaChart').show();
-    $.jqplot('quotaChart', [data], {
-      seriesDefaults: {
-        renderer: $.jqplot.PieRenderer,
-        rendererOptions: {
-          showDataLabels: true
+    var quota = parseInt($('#quotaValue').html());
+    var used = parseInt($('#usedSpaceValue').html());
+
+    if(used <= quota)
+      {
+      var free = quota - used;
+      var hUsed = $('#hUsedSpaceValue').html();
+      var hFree = $('#hFreeSpaceValue').html();
+      var data = [['Used space (' + hUsed + ')' , used], ['Free space (' + hFree + ')', free]];
+      $('#quotaChart').show();
+      $.jqplot('quotaChart', [data], {
+        seriesDefaults: {
+          renderer: $.jqplot.PieRenderer,
+          rendererOptions: {
+            showDataLabels: true
+            }
+          },
+        legend: {
+          show: true,
+          location: 'e'
           }
-        },
-      legend: {
-        show: true,
-        location: 'e'
-        }
-      });
+        });
+      }
     }
   });
