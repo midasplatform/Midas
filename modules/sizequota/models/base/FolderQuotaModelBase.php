@@ -21,6 +21,7 @@
 /** Base class for the job log model */
 abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
 {
+  /** constructor */
   public function __construct()
     {
     parent::__construct();
