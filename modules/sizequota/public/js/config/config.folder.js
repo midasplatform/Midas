@@ -55,4 +55,28 @@ $(document).ready(function() {
 
   $('input[name="usedefault"]').change(midas.sizequota.folder.radioButtonChanged);
   midas.sizequota.folder.radioButtonChanged();
+
+  var quota = parseInt($('#quotaValue').html());
+  var used = parseInt($('#usedSpaceValue').html());
+  var free = quota - used;
+  var hUsed = $('#hUsedSpaceValue').html();
+  var hFree = $('#hFreeSpaceValue').html();
+
+  var data = [['Used space (' + hUsed + ')' , used], ['Free space (' + hFree + ')', free]];
+  if(quota != '' && quota != 0)
+    {
+    $('#quotaChart').show();
+    $.jqplot('quotaChart', [data], {
+      seriesDefaults: {
+        renderer: $.jqplot.PieRenderer,
+        rendererOptions: {
+          showDataLabels: true
+          }
+        },
+      legend: {
+        show: true,
+        location: 'e'
+        }
+      });
+    }
   });
