@@ -39,10 +39,10 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
          <?php
           echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
             echo "<a  href='{$this->webroot}/community/{$this->communityDao->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-            echo $this->t('Back');  
+            echo $this->t('Back');
             echo "</a>";
           echo '</div>';
-          
+
         ?>
     </div>
     <div class="genericName"><?php echo $this->communityDao->getName();?></div>
@@ -56,11 +56,11 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       <li><a href="#tabs-3"><?php echo $this->t('Files');?></a></li>
       <?php
           foreach($this->customTabs as $modules)
-            {          
-              foreach($modules as $name => $url)
-               {
-                 echo "<li><a href='{$url}?communityId={$this->communityDao->getKey()}'>{$name}</a></li>";
-               }
+            {
+            foreach($modules as $name => $url)
+              {
+              echo "<li><a href='{$url}?communityId={$this->communityDao->getKey()}'>{$name}</a></li>";
+              }
             }
       ?>
     </ul>
@@ -90,11 +90,11 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       </form>
 
     </div>
-    
+
     <div id="tabs-members">
       <td style="width: 50%;vertical-align: top;">
         <div  class='communityMemberList'>
-          <?php 
+          <?php
           $allgroups=$this->groups;
           $allgroups['admin']=$this->adminGroup;
           $allgroups['moderator']=$this->moderatorGroup;
@@ -102,7 +102,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
             {
             $allgroups[$k]->users = $group->getUsers();
             }
-            
+
           $administratorIds = array();
           $moderatorsIds = array();
           foreach($allgroups['admin']->users as $user)
@@ -113,8 +113,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
             {
             $moderatorsIds[] = $user->getKey();
             }
-          ?>    
-          <h4><?php echo $this->t('Community\'s Members')?>:</h4>	
+          ?>
+          <h4><?php echo $this->t('Community\'s Members')?>:</h4>
           <?php
           echo "<div  id='memberList'>";
           echo '<table cellpadding="0" cellspacing="0" border="0" class="display dataTable">';
@@ -122,7 +122,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
                 <tr>
                   <th>Name</th><th style='display:none'></th><th style='display:none'></th>
                 </tr>
-              </thead>"; 
+              </thead>";
           foreach($this->members as $user)
             {
             echo "<tr>";
@@ -156,11 +156,11 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         </div>
 
     </div>
-    
+
     <div id="tabs-2">
       <a href="javascript:;" id='createGroupLink'> <?php echo $this->t('Create a group')?></a>
       <div id="groupsList">
-        <h4><?php echo $this->t('Groups')?>:</h4>	
+        <h4><?php echo $this->t('Groups')?>:</h4>
         <?php
         echo '<ul>';
         if(empty($this->groups))
@@ -190,7 +190,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
                       <tr>
                         <th>Name</th>
                       </tr>
-                    </thead>"; 
+                    </thead>";
                 foreach($group->users as $user)
                   {
                   echo "<tr>";
@@ -236,7 +236,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
             <?php
             $communityId = $this->communityDao->getKey();
             $node = MIDAS_MAXIMUM_FOLDER_NUMBERS_PER_LEVEL * $communityId;
-            
+
             foreach($this->folders as $folder)
               {
               $folderId = $folder->getFolderId();
@@ -255,8 +255,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
               echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='$folderId' /></td>";
               echo "</tr>";
               $node++;
-              } 
-              
+              }
+
             foreach($this->items as $item)
               {
               echo "<tr id='node--$node' policy='{$item->policy}' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
@@ -275,7 +275,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   <div class="userPersonalData">
       <span class="userDataTitle">
       <?php echo 'Your personal data'?></span>
-      <br/>      
+      <br/>
       <table id="browseTable" class="midasTree">
       <thead>
           <th class="thData"><?php echo $this->t('Name');?></th>
@@ -296,8 +296,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
               echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId()}' /></td>";
               echo "</tr>";
               $node++;
-              } 
-              
+              }
+
             foreach($this->userPersonalItems as $item)
               {
               echo "<tr id='node--$node' policy='{$item->policy}' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
@@ -310,28 +310,28 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
               }
             ?>
       </tbody>
-      </table>      
+      </table>
     </div>
     </div>
   </div>
 </div>
 <div class="viewSideBar">
-  
+
   <?php
   if($this->isAdmin)
     {
-    echo "  
+    echo "
     <div class='sideElementFirst genericAction'>
       <h1>Actions</h1>
         <ul>
           <li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t('Create a top level Folder')}</a></li>
           <li><a href='javascript:;' id='communityDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Delete Community')}</a></li>
        </ul>
-    </div>";    
+    </div>";
     }
   ?>
    <div class="sideElement<?php echo (!$this->isModerator&&!$this->isAdmin&&!$this->isMember)?'First':''?> genericCommunities">
-    <h1><?php echo $this->t('Members')?></h1>    
+    <h1><?php echo $this->t('Members')?></h1>
       <ul>
       <?php
         $i=0;
@@ -344,7 +344,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       </ul>
    </div>
    <div class="sideElement memberSelection" style="display:none;">
-     <h1><?php echo $this->t('Selected')?></h1>   
+     <h1><?php echo $this->t('Selected')?></h1>
      <ul>
        <?php
        foreach($this->groups as $group)
@@ -357,14 +357,14 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
      </ul>
    </div>
    <div class="sideElement groupUsersSelection" style="display:none;">
-     <h1><?php echo $this->t('Selected')?></h1>   
+     <h1><?php echo $this->t('Selected')?></h1>
      <ul>
        <li><a class='removeUserLink'><?php echo $this->t('Remove from group')?></a></li>
      </ul>
    </div>
    <div class="sideElementLast genericStats">
-    <h1>Stats</h1>  
-    
+    <h1>Stats</h1>
+
     <?php
       echo "<ul>";
       echo "  <li>".count($this->members)." {$this->t("member")}".((count($this->members)>1)?'s':'')."</li>";
@@ -372,7 +372,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       ?>
    </div>
 
-  
+
     <div class="sideElementFirst viewAction">
       <ul>
         <li>
@@ -385,7 +385,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       <span></span>
     </div>
     <div class="sideElementLast viewInfo">
-      <h1>Info</h1>    
+      <h1>Info</h1>
       <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
       <div class="ajaxInfoElement">
       </div>
