@@ -87,7 +87,7 @@ class Sizequota_Notification extends ApiEnabled_Notification
       }
     else
       {
-      $freeSpace = $quota->getQuota() - $folderModel->getSize($rootFolder);
+      $freeSpace = number_format($quota->getQuota() - $folderModel->getSize($rootFolder), 0, '.', '');
       return '<div id="sizequotaFreeSpace" style="display:none;">'.$freeSpace.'</div>';
       }
     }
