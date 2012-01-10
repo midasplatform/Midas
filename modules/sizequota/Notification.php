@@ -31,6 +31,8 @@ class Sizequota_Notification extends ApiEnabled_Notification
     {
     $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', 'getCommunityTab');
     $this->addCallBack('CALLBACK_CORE_GET_USER_TABS', 'getUserTab');
+    $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getScript');
+    $this->addCallBack('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', 'getSimpleuploadExtraHtml');
     //$this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD', 'validateUpload');
 
     $this->enableWebAPI($this->moduleName);
@@ -58,6 +60,36 @@ class Sizequota_Notification extends ApiEnabled_Notification
     else
       {
       return array();
+      }
+    }
+
+  /** Add our javascript callback script */
+  public function getScript()
+    {
+    $fc = Zend_Controller_Front::getInstance();
+    $modulePublicWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
+    return '<script type="text/javascript" src="'.$modulePublicWebroot.'/public/js/common/common.notify.js"></script>';
+    }
+
+  /** Add free space information to the dom on the simple upload page */
+  public function getSimpleuploadExtraHtml($args)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $folderModel = $modelLoader->loadModel('Folder');
+    $folderQuotaModel = $modelLoader->loadModel('FolderQuota', $this->moduleName);
+
+    $folder = $args['folder'];
+    $rootFolder = $folderModel->getRoot($folder);
+    $quota = $folderQuotaModel->getQuota($rootFolder);
+    if($quota === false)
+      {
+      return '<div id="sizequotaFreeSpace" style="display:none;"></div>';
+      }
+    else
+      {
+      $usedSpace = $folderModel->getSizeFiltered($rootFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+      $freeSpace = $quota->getQuota() - $usedSpace[0]->size;
+      return '<div id="sizequotaFreeSpace" style="display:none;">'.$freeSpace.'</div>';
       }
     }
 

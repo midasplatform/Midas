@@ -94,7 +94,11 @@ class UploadController extends AppController
         $this->view->defaultUploadLocationText = $parent->getName();
         }
       }
-
+    else
+      {
+      $parent = $this->Folder->load($this->userSession->Dao->getPrivatefolderId());
+      }
+    $this->view->extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', array('folder' => $parent));
     }//end simple upload
 
   /**  upload new revision */

@@ -164,6 +164,37 @@ class Sizequota_ConfigController extends Sizequota_AppController
     echo JsonComponent::encode(array(true, 'Changes saved'));
     }
 
+  /** Get the amount of free space available for a folder */
+  public function getfreespaceAction()
+    {
+    $this->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+
+    $folder = $this->Folder->load($this->_getParam('folderId'));
+    if(!$folder)
+      {
+      echo JsonComponent::encode(array('status' => false, 'message' => 'Invalid folder'));
+      return;
+      }
+    if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      echo JsonComponent::encode(array('status' => false, 'message' => 'Invalid policy'));
+      return;
+      }
+    $rootFolder = $this->Folder->getRoot($folder);
+    $quota = $this->Sizequota_FolderQuota->getQuota($rootFolder);
+    if($quota === false)
+      {
+      $freeSpace = '';
+      }
+    else
+      {
+      $usedSpace = $this->Folder->getSizeFiltered($rootFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+      $freeSpace = $quota->getQuota() - $usedSpace[0]->size;
+      }
+    echo JsonComponent::encode(array('status' => true, 'freeSpace' => $freeSpace));
+    }
+
   /** Test whether the provided quota values are legal */
   private function _isValidQuota($quotas)
     {

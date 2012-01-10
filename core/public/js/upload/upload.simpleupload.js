@@ -121,35 +121,48 @@
     function initJqueryFileupload()
       {
       updateUploadedCount();
-       //see http://aquantum-demo.appspot.com/file-upload
-        $('.file_upload:visible').fileUploadUIX({
-          beforeSend: function (event, files, index, xhr, handler, callBack) {
-            handler.uploadRow.find('.file_upload_start').click(function () {
-              var path = '';
-              $.each(files, function (index, file) {
-                    path += file.webkitRelativePath+';;';
-                });
-                handler.formData = {
-                    parent: $('#destinationId').val(),
-                    path: path,
-                    license: $('select[name=licenseSelect]').val()
-                };
-                callBack();
+      //see http://aquantum-demo.appspot.com/file-upload
+      $('.file_upload:visible').fileUploadUIX({
+        beforeSend: function (event, files, index, xhr, handler, callBack) {
+          if(index == 0) //only do this once since we have all the files every time
+            {
+            var retVal = midas.doCallback('CALLBACK_CORE_VALIDATE_UPLOAD', {files: files});
+            $.each(retVal, function(module, resp) {
+              if(resp.status === false)
+                {
+                $('div.uploadValidationError b').html(resp.message);
+                $('div.uploadValidationError').show();
+                }
+              });
+            }
+
+          handler.uploadRow.find('.file_upload_start').click(function () {
+            var path = '';
+            $.each(files, function (index, file) {
+              path += file.webkitRelativePath+';;';
+              });
+            handler.formData = {
+              parent: $('#destinationId').val(),
+              path: path,
+              license: $('select[name=licenseSelect]').val()
+              };
+            callBack();
             });
           $('.file_name').each(function(){
-            if($(this).html() == '.' || $(this).html() == '..'  )
+            if($(this).html() == '.' || $(this).html() == '..')
               {
               $(this).parent('tr').find('.file_upload_cancel button').click();
               }
-          });
+            });
         
           $('#startUploadLink').css('box-shadow', '0 0 5px blue');
           $('#startUploadLink').css('-webkit-box-shadow', '0 0 5px blue');
           $('#startUploadLink').css('-moz-box-shadow', '0 0 5px blue');
           },
-         onComplete:  function (event, files, index, xhr, handler) {
-              $('.uploadedSimple').val(parseInt($('.uploadedSimple').val())+1);
-              updateUploadedCount();
+        onComplete:  function (event, files, index, xhr, handler) {
+          midas.doCallback('CALLBACK_CORE_RESET_UPLOAD_TOTAL');
+          $('.uploadedSimple').val(parseInt($('.uploadedSimple').val())+1);
+            updateUploadedCount();
           },
         sequentialUploads: true
         });
