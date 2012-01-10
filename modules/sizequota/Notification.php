@@ -17,12 +17,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 
 /** notification manager for sizequota module */
-class Sizequota_Notification extends MIDAS_Notification
+class Sizequota_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'sizequota';
-  public $_moduleComponents = array();
+  public $_moduleComponents = array('Api');
   public $_models = array('Folder');
 
   /** init notification process */
@@ -30,7 +31,11 @@ class Sizequota_Notification extends MIDAS_Notification
     {
     $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', 'getCommunityTab');
     $this->addCallBack('CALLBACK_CORE_GET_USER_TABS', 'getUserTab');
+    $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getScript');
+    $this->addCallBack('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', 'getSimpleuploadExtraHtml');
     //$this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD', 'validateUpload');
+
+    $this->enableWebAPI($this->moduleName);
     }
 
   /** Add a tab to the manage community page for size quota */
@@ -55,6 +60,35 @@ class Sizequota_Notification extends MIDAS_Notification
     else
       {
       return array();
+      }
+    }
+
+  /** Add our javascript callback script */
+  public function getScript()
+    {
+    $fc = Zend_Controller_Front::getInstance();
+    $modulePublicWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
+    return '<script type="text/javascript" src="'.$modulePublicWebroot.'/public/js/common/common.notify.js"></script>';
+    }
+
+  /** Add free space information to the dom on the simple upload page */
+  public function getSimpleuploadExtraHtml($args)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $folderModel = $modelLoader->loadModel('Folder');
+    $folderQuotaModel = $modelLoader->loadModel('FolderQuota', $this->moduleName);
+
+    $folder = $args['folder'];
+    $rootFolder = $folderModel->getRoot($folder);
+    $quota = $folderQuotaModel->getQuota($rootFolder);
+    if($quota === false)
+      {
+      return '<div id="sizequotaFreeSpace" style="display:none;"></div>';
+      }
+    else
+      {
+      $freeSpace = $quota->getQuota() - $folderModel->getSize($rootFolder);
+      return '<div id="sizequotaFreeSpace" style="display:none;">'.$freeSpace.'</div>';
       }
     }
 

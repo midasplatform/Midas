@@ -117,7 +117,7 @@ class Sizequota_ConfigController extends Sizequota_AppController
       $formArray['quota']->setValue($currentQuota->getQuota());
       $this->view->quota = $currentQuota->getQuota();
       }
-    $usedSpace = $this->Folder->getSizeFiltered($folder, $this->userSession->Dao);
+    $usedSpace = $this->Folder->getSize($folder);
     $this->view->usedSpace = $usedSpace[0]->size;
     $this->view->hUsedSpace = UtilityComponent::formatSize($this->view->usedSpace);
     if($this->view->quota == '')
@@ -162,6 +162,36 @@ class Sizequota_ConfigController extends Sizequota_AppController
 
     $this->Sizequota_FolderQuota->setQuota($folder, $quota);
     echo JsonComponent::encode(array(true, 'Changes saved'));
+    }
+
+  /** Get the amount of free space available for a folder */
+  public function getfreespaceAction()
+    {
+    $this->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+
+    $folder = $this->Folder->load($this->_getParam('folderId'));
+    if(!$folder)
+      {
+      echo JsonComponent::encode(array('status' => false, 'message' => 'Invalid folder'));
+      return;
+      }
+    if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      echo JsonComponent::encode(array('status' => false, 'message' => 'Invalid policy'));
+      return;
+      }
+    $rootFolder = $this->Folder->getRoot($folder);
+    $quota = $this->Sizequota_FolderQuota->getQuota($rootFolder);
+    if($quota === false)
+      {
+      $freeSpace = '';
+      }
+    else
+      {
+      $freeSpace = $quota->getQuota() - $this->Folder->getSize($rootFolder);
+      }
+    echo JsonComponent::encode(array('status' => true, 'freeSpace' => $freeSpace));
     }
 
   /** Test whether the provided quota values are legal */

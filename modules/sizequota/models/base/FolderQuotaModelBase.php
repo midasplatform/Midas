@@ -21,6 +21,7 @@
 /** Base class for the job log model */
 abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
 {
+  /** constructor */
   public function __construct()
     {
     parent::__construct();
@@ -44,7 +45,7 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
   public function getUserQuota($user)
     {
     $quotaDao = $this->getQuota($user->getFolder());
-    if(!quotaDao)
+    if(!$quotaDao)
       {
       $modelLoader = new MIDAS_ModelLoader();
       $settingModel = $modelLoader->loadModel('Setting');
@@ -57,7 +58,7 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
   public function getCommunityQuota($community)
     {
     $quotaDao = $this->getQuota($community->getFolder());
-    if(!quotaDao)
+    if(!$quotaDao)
       {
       $modelLoader = new MIDAS_ModelLoader();
       $settingModel = $modelLoader->loadModel('Setting');

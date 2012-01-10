@@ -15,6 +15,15 @@ width:94%!important;
 
 }
 
+div.uploadValidationError{
+  display:none;
+}
+
+div.uploadValidationError img{
+  position: relative;
+  top: 3px;
+}
+
 div.tooBigUpload{
   display:none;
 }
