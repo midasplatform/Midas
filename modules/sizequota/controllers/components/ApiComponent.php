@@ -78,7 +78,7 @@ class Sizequota_ApiComponent extends AppComponent
       }
     $quotaModel = $modelLoader->loadModel('FolderQuota', 'sizequota');
     $quota = $quotaModel->getUserQuota($user);
-    $used = $folderModel->getSizeFiltered($user->getFolder(), $requestUser, MIDAS_POLICY_READ);
+    $used = $folderModel->getSize($user->getFolder());
     return array('quota' => $quota, 'used' => $used[0]->size);
     }
 
@@ -110,7 +110,7 @@ class Sizequota_ApiComponent extends AppComponent
       }
     $quotaModel = $modelLoader->loadModel('FolderQuota', 'sizequota');
     $quota = $quotaModel->getCommunityQuota($comm);
-    $used = $folderModel->getSizeFiltered($comm->getFolder(), $requestUser, MIDAS_POLICY_READ);
+    $used = $folderModel->getSize($comm->getFolder());
     return array('quota' => $quota, 'used' => $used[0]->size);
     }
 

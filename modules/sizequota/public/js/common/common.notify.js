@@ -42,7 +42,7 @@ midas.sizequota.resetTotal = function()
 midas.sizequota.folderChanged = function(args)
 {
   $.ajax({
-    type: "POST",
+    type: 'POST',
     url: json.global.webroot+'/sizequota/config/getfreespace',
     data: {folderId: args.folderId},
     success: function(jsonContent) {

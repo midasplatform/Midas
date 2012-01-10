@@ -87,8 +87,7 @@ class Sizequota_Notification extends ApiEnabled_Notification
       }
     else
       {
-      $usedSpace = $folderModel->getSizeFiltered($rootFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
-      $freeSpace = $quota->getQuota() - $usedSpace[0]->size;
+      $freeSpace = $quota->getQuota() - $folderModel->getSize($rootFolder);
       return '<div id="sizequotaFreeSpace" style="display:none;">'.$freeSpace.'</div>';
       }
     }
