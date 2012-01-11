@@ -282,10 +282,26 @@ class UploadController extends AppController
       throw new Zend_Exception('You are attempting to upload into the incorrect parent folder');
       }
 
+    $testingMode = Zend_Registry::get('configGlobal')->environment == 'testing';
     $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
-    $this->Component->Httpupload->setTestingMode(Zend_Registry::get('configGlobal')->environment == 'testing');
+    $this->Component->Httpupload->setTestingMode($testingMode);
     $this->Component->Httpupload->setTokenParamName('uploadUniqueIdentifier');
     $data = $this->Component->Httpupload->process($params);
+
+    $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD',
+                                                            array('filename' => $data['filename'],
+                                                                  'size' => $data['size'],
+                                                                  'path' => $data['path'],
+                                                                  'folderId' => $parentId));
+    foreach($validations as $validation)
+      {
+      if(!$validation['status'])
+        {
+        unlink($data['path']);
+        echo '[ERROR]'.$validation['message'];
+        throw new Zend_Exception($validation['message']);
+        }
+      }
 
     if(!empty($data['path']) && file_exists($data['path']) && $data['size'] > 0)
       {
@@ -309,9 +325,17 @@ class UploadController extends AppController
       try
         {
         $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $data['filename'], $data['path'], $parent, $license, $data['md5']);
+        if(!$testingMode)
+          {
+          unlink($data['path']);
+          }
         }
       catch(Exception $e)
         {
+        if(!$testingMode)
+          {
+          unlink($data['path']);
+          }
         echo "[ERROR] ".$e->getMessage();
         throw $e;
         }
@@ -426,7 +450,10 @@ class UploadController extends AppController
             }
           }
         $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename, $path, $parent, $license);
-        unlink($path);
+        if(!$this->isTestingEnv())
+          {
+          unlink($path);
+          }
         $this->userSession->uploaded[] = $item->getKey();
         }
 
