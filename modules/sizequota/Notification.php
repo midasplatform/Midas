@@ -95,10 +95,38 @@ class Sizequota_Notification extends ApiEnabled_Notification
   /** 
    * Return whether or not the upload is allowed.  If uploading the file
    * will cause the size to surpass the quota, it will be rejected.
+   * @param size Size of the uploaded file
+   * @param folderId The id of the folder being uploaded into
+   * @return array('status' => boolean, 'message' => 'error message if status is false')
    */
   public function validateUpload($args)
     {
-    return true;
+    $modelLoader = new MIDAS_ModelLoader();
+    $folderModel = $modelLoader->loadModel('Folder');
+    $folderQuotaModel = $modelLoader->loadModel('FolderQuota', $this->moduleName);
+
+    $folder = $folderModel->load($args['folderId']);
+    if(!$folder)
+      {
+      return array('status' => false, 'message' => 'Invalid folder id');
+      }
+    $rootFolder = $folderModel->getRoot($folder);
+    $quota = $folderQuotaModel->getFolderQuota($rootFolder);
+    if($quota == '')
+      {
+      return array('status' => true);
+      }
+
+    $freeSpace = $quota - $folderModel->getSize($rootFolder);
+    $uploadSize = $args['size'];
+    if($uploadSize > $freeSpace)
+      {
+      return array('status' => false,
+                   'message' => 'Upload quota exceeded. Free space: '.$freeSpace.
+                                '. Attempted upload size: '.$uploadSize.
+                                ' into folder '.$args['folderId']);
+      }
+    return array('status' => true);
     }
   } //end class
 ?>

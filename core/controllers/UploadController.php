@@ -412,14 +412,28 @@ class UploadController extends AppController
             }
           $parent = $parentDao->getKey();
           }
+        $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD',
+                                                                array('filename' => $filename,
+                                                                      'size' => $file_size,
+                                                                      'path' => $path,
+                                                                      'folderId' => $parent));
+        foreach($validations as $validation)
+          {
+          if(!$validation['status'])
+            {
+            unlink($path);
+            throw new Zend_Exception($validation['message']);
+            }
+          }
         $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename, $path, $parent, $license);
+        unlink($path);
         $this->userSession->uploaded[] = $item->getKey();
         }
 
       $info = array();
       $info['name'] = basename($path);
       $info['size'] = $file_size;
-      echo json_encode($info);
+      echo JsonComponent::encode($info);
       }
     }//end saveuploaded
 
