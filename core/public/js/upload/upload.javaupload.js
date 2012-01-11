@@ -24,3 +24,5 @@ function folderSelectionCallback()
   {
   sendParentToJavaSession();
   }
+
+midas.doCallback('CALLBACK_CORE_JAVAUPLOAD_LOADED');

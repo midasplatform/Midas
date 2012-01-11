@@ -37,6 +37,16 @@ midas.sizequota.resetTotal = function()
 }
 
 /**
+ * Call this to update the message
+ */
+midas.sizequota.updateFreeSpaceMessage = function()
+{
+  var hFreeSpace = $('#sizequotaHFreeSpace').html();
+  $('.belowDestinationUpload').html('<b>Free space:</b> ' + hFreeSpace);
+  $('.belowDestinationUpload').show();
+}
+
+/**
  * Called when a different upload location is selected
  */
 midas.sizequota.folderChanged = function(args)
@@ -48,6 +58,9 @@ midas.sizequota.folderChanged = function(args)
     success: function(jsonContent) {
       var jsonResponse = jQuery.parseJSON(jsonContent);
       $('#sizequotaFreeSpace').html(jsonResponse.freeSpace);
+      $('#sizequotaHFreeSpace').html(jsonResponse.hFreeSpace);
+
+      midas.sizequota.updateFreeSpaceMessage();
 
       if(midas.sizequota.totalSize == 0)
         {
@@ -71,6 +84,18 @@ midas.sizequota.folderChanged = function(args)
     });
 }
 
+/**
+ * Correctly initializes the free space message
+ */
+midas.sizequota.onPageLoad = function()
+{
+  var folderId = $('.destinationId').val();
+  midas.sizequota.folderChanged({folderId: folderId});
+}
+
 midas.registerCallback('CALLBACK_CORE_VALIDATE_UPLOAD', 'sizequota', midas.sizequota.validateUpload);
 midas.registerCallback('CALLBACK_CORE_RESET_UPLOAD_TOTAL', 'sizequota', midas.sizequota.resetTotal);
 midas.registerCallback('CALLBACK_CORE_UPLOAD_FOLDER_CHANGED', 'sizequota', midas.sizequota.folderChanged);
+midas.registerCallback('CALLBACK_CORE_SIMPLEUPLOAD_LOADED', 'sizequota', midas.sizequota.onPageLoad);
+midas.registerCallback('CALLBACK_CORE_JAVAUPLOAD_LOADED', 'sizequota', midas.sizequota.onPageLoad);
+

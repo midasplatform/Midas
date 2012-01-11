@@ -32,7 +32,8 @@ class Sizequota_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', 'getCommunityTab');
     $this->addCallBack('CALLBACK_CORE_GET_USER_TABS', 'getUserTab');
     $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getScript');
-    $this->addCallBack('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', 'getSimpleuploadExtraHtml');
+    $this->addCallBack('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', 'getExtraHtml');
+    $this->addCallBack('CALLBACK_CORE_GET_JAVAUPLOAD_EXTRA_HTML', 'getExtraHtml');
     $this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD', 'validateUpload');
 
     $this->enableWebAPI($this->moduleName);
@@ -72,7 +73,7 @@ class Sizequota_Notification extends ApiEnabled_Notification
     }
 
   /** Add free space information to the dom on the simple upload page */
-  public function getSimpleuploadExtraHtml($args)
+  public function getExtraHtml($args)
     {
     $modelLoader = new MIDAS_ModelLoader();
     $folderModel = $modelLoader->loadModel('Folder');
@@ -83,16 +84,20 @@ class Sizequota_Notification extends ApiEnabled_Notification
     $quota = $folderQuotaModel->getFolderQuota($rootFolder);
     if($quota == '')
       {
-      return '<div id="sizequotaFreeSpace" style="display:none;"></div>';
+      return '<div id="sizequotaFreeSpace" style="display:none;"></div>'.
+             '<div id="sizequotaHFreeSpace" style="display:none;">'.$this->t('Unlimited').'</div>';
       }
     else
       {
-      $freeSpace = number_format($quota - $folderModel->getSize($rootFolder), 0, '.', '');
-      return '<div id="sizequotaFreeSpace" style="display:none;">'.$freeSpace.'</div>';
+      $used = $folderModel->getSize($rootFolder);
+      $freeSpace = number_format($quota - $used, 0, '.', '');
+      $hFreeSpace = UtilityComponent::formatSize($quota - $used);
+      return '<div id="sizequotaFreeSpace" style="display:none;">'.$freeSpace.'</div>'.
+             '<div id="sizequotaHFreeSpace" style="display:none;">'.$hFreeSpace.'</div>';
       }
     }
 
-  /** 
+  /**
    * Return whether or not the upload is allowed.  If uploading the file
    * will cause the size to surpass the quota, it will be rejected.
    * @param size Size of the uploaded file

@@ -189,3 +189,4 @@
       loadDialog("select","/browse/selectfolder/?policy=write");
       showDialog('Browse');
       });
+    midas.doCallback('CALLBACK_CORE_SIMPLEUPLOAD_LOADED');
