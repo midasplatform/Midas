@@ -41,6 +41,27 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
   /** Get the quota dao for a particular folder, or return false if none is set */
   public abstract function getQuota($folder);
 
+  /** Get the quota in bytes for a particular folder, or return the default if none is set */
+  public function getFolderQuota($folder)
+    {
+    $quotaDao = $this->getQuota($folder);
+    if(!$quotaDao)
+      {
+      $modelLoader = new MIDAS_ModelLoader();
+      $settingModel = $modelLoader->loadModel('Setting');
+      if($folder->getParentId() == -1) //user
+        {
+        $settingName = 'defaultuserquota';
+        }
+      else
+        {
+        $settingName = 'defaultcommunityquota';
+        }
+      return $settingModel->getValueByName($settingName, $this->moduleName);
+      }
+    return $quotaDao->getQuota();
+    }
+
   /** Get the quota in bytes for a particular user, or return the default if none is set */
   public function getUserQuota($user)
     {

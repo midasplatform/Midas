@@ -33,7 +33,7 @@ class Sizequota_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_CORE_GET_USER_TABS', 'getUserTab');
     $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getScript');
     $this->addCallBack('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', 'getSimpleuploadExtraHtml');
-    //$this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD', 'validateUpload');
+    $this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD', 'validateUpload');
 
     $this->enableWebAPI($this->moduleName);
     }
@@ -80,24 +80,24 @@ class Sizequota_Notification extends ApiEnabled_Notification
 
     $folder = $args['folder'];
     $rootFolder = $folderModel->getRoot($folder);
-    $quota = $folderQuotaModel->getQuota($rootFolder);
-    if($quota === false)
+    $quota = $folderQuotaModel->getFolderQuota($rootFolder);
+    if($quota == '')
       {
       return '<div id="sizequotaFreeSpace" style="display:none;"></div>';
       }
     else
       {
-      $freeSpace = number_format($quota->getQuota() - $folderModel->getSize($rootFolder), 0, '.', '');
+      $freeSpace = number_format($quota - $folderModel->getSize($rootFolder), 0, '.', '');
       return '<div id="sizequotaFreeSpace" style="display:none;">'.$freeSpace.'</div>';
       }
     }
 
-  /** Return whether or not the upload is allowed.  If uploading the file
-   *  will cause the size to pass the quota, it will be rejected.
+  /** 
+   * Return whether or not the upload is allowed.  If uploading the file
+   * will cause the size to surpass the quota, it will be rejected.
    */
   public function validateUpload($args)
     {
-    //TODO
     return true;
     }
   } //end class

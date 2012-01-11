@@ -181,14 +181,14 @@ class Sizequota_ConfigController extends Sizequota_AppController
       return;
       }
     $rootFolder = $this->Folder->getRoot($folder);
-    $quota = $this->Sizequota_FolderQuota->getQuota($rootFolder);
-    if($quota === false)
+    $quota = $this->Sizequota_FolderQuota->getFolderQuota($rootFolder);
+    if($quota == '')
       {
       $freeSpace = '';
       }
     else
       {
-      $freeSpace = number_format($quota->getQuota() - $this->Folder->getSize($rootFolder), 0, '.', '');
+      $freeSpace = number_format($quota - $this->Folder->getSize($rootFolder), 0, '.', '');
       }
     echo JsonComponent::encode(array('status' => true, 'freeSpace' => $freeSpace));
     }
