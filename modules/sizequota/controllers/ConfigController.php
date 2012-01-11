@@ -117,8 +117,7 @@ class Sizequota_ConfigController extends Sizequota_AppController
       $formArray['quota']->setValue($currentQuota->getQuota());
       $this->view->quota = $currentQuota->getQuota();
       }
-    $usedSpace = $this->Folder->getSize($folder);
-    $this->view->usedSpace = $usedSpace[0]->size;
+    $this->view->usedSpace = $this->Folder->getSize($folder);
     $this->view->hUsedSpace = UtilityComponent::formatSize($this->view->usedSpace);
     if($this->view->quota == '')
       {
@@ -182,14 +181,14 @@ class Sizequota_ConfigController extends Sizequota_AppController
       return;
       }
     $rootFolder = $this->Folder->getRoot($folder);
-    $quota = $this->Sizequota_FolderQuota->getQuota($rootFolder);
-    if($quota === false)
+    $quota = $this->Sizequota_FolderQuota->getFolderQuota($rootFolder);
+    if($quota == '')
       {
       $freeSpace = '';
       }
     else
       {
-      $freeSpace = $quota->getQuota() - $this->Folder->getSize($rootFolder);
+      $freeSpace = number_format($quota - $this->Folder->getSize($rootFolder), 0, '.', '');
       }
     echo JsonComponent::encode(array('status' => true, 'freeSpace' => $freeSpace));
     }
