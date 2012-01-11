@@ -71,11 +71,13 @@ PURPOSE.  See the above copyright notices for more information.
       <b><?php echo $this->t('Step 2: Where do you want to upload your files')?>?</b>
       <div>
       <br/>
-      <b><?php echo $this->t('Curent selected location:')?></b>
+      <b><?php echo $this->t('Current selected location:')?></b>
           <span id="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
         <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>
+        <br/><br/>
+        <div class="belowDestinationUpload" style="display: none;"></div>
         <br/>
-        <input style="margin-left:0px;"  class="browseMIDASLink globalButton" type="button" value="Change location" />
+        <input style="margin-left:0px;" class="browseMIDASLink globalButton" type="button" value="Change location" />
         <br/>
         <br/>
       </div>

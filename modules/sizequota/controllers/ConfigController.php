@@ -185,12 +185,17 @@ class Sizequota_ConfigController extends Sizequota_AppController
     if($quota == '')
       {
       $freeSpace = '';
+      $hFreeSpace = $this->t('Unlimited');
       }
     else
       {
-      $freeSpace = number_format($quota - $this->Folder->getSize($rootFolder), 0, '.', '');
+      $used = $this->Folder->getSize($rootFolder);
+      $freeSpace = number_format($quota - $used, 0, '.', '');
+      $hFreeSpace = UtilityComponent::formatSize($quota - $used);
       }
-    echo JsonComponent::encode(array('status' => true, 'freeSpace' => $freeSpace));
+    echo JsonComponent::encode(array('status' => true,
+                                     'freeSpace' => $freeSpace,
+                                     'hFreeSpace' => $hFreeSpace));
     }
 
   /** Test whether the provided quota values are legal */

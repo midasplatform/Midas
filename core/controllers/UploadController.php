@@ -101,7 +101,47 @@ class UploadController extends AppController
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', array('folder' => $parent));
     }//end simple upload
 
-  /**  upload new revision */
+  /** Render the large file upload view */
+  public function javauploadAction()
+    {
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('You have to be logged in to do that');
+      }
+    $this->requireAjaxRequest();
+    $this->_helper->layout->disableLayout();
+    $this->view->protocol = 'http';
+    $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+    $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
+    $this->view->defaultUploadLocation = $this->userSession->Dao->getPrivatefolderId();
+    $this->view->defaultUploadLocationText = $this->t('My Private Folder');
+
+    $parent = $this->_getParam('parent');
+    $license = $this->_getParam('license');
+    if(!empty($parent) && !empty($license))
+      {
+      $this->disableView();
+      $this->userSession->JavaUpload->parent = $parent;
+      $this->userSession->JavaUpload->license = $license;
+      }
+    if(isset($parent))
+      {
+      $folder = $this->Folder->load($parent);
+      if($this->logged && $folder != false)
+        {
+        $this->view->defaultUploadLocation = $folder->getKey();
+        $this->view->defaultUploadLocationText = $folder->getName();
+        }
+      }
+    else
+      {
+      $folder = $this->Folder->load($this->userSession->Dao->getPrivatefolderId());
+      }
+    $this->view->extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_JAVAUPLOAD_EXTRA_HTML',
+                                                                      array('folder' => $folder));
+    }//end java upload
+
+  /** upload new revision */
   public function revisionAction()
     {
     if(!$this->logged)
@@ -155,30 +195,6 @@ class UploadController extends AppController
       $this->userSession->uploaded[] = $item->getKey();
       }
     }//end simple upload
-
-  /** java upload*/
-  public function javauploadAction()
-    {
-    if(!$this->logged)
-      {
-      throw new Zend_Exception('You have to be logged in to do that');
-      }
-    $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
-    $this->view->protocol = 'http';
-    $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
-    $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
-
-    $parent = $this->_getParam('parent');
-    $license = $this->_getParam('license');
-    if(!empty($parent) && !empty($license))
-      {
-      $this->disableView();
-      $this->userSession->JavaUpload->parent = $parent;
-      $this->userSession->JavaUpload->license = $license;
-      }
-    }//end java upload
-
 
   /**
    * Used to see how much of a file made it to the server during an interrupted upload attempt
