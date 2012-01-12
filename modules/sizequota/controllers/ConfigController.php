@@ -169,7 +169,14 @@ class Sizequota_ConfigController extends Sizequota_AppController
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
-    $folder = $this->Folder->load($this->_getParam('folderId'));
+    $folderId = $this->_getParam('folderId');
+    if(!isset($folderId))
+      {
+      echo JsonComponent::encode(array('status' => false, 'message' => 'Missing folderId parameter'));
+      return;
+      }
+
+    $folder = $this->Folder->load($folderId);
     if(!$folder)
       {
       echo JsonComponent::encode(array('status' => false, 'message' => 'Invalid folder'));
@@ -180,7 +187,15 @@ class Sizequota_ConfigController extends Sizequota_AppController
       echo JsonComponent::encode(array('status' => false, 'message' => 'Invalid policy'));
       return;
       }
-    $rootFolder = $this->Folder->getRoot($folder);
+
+    if($folder->getParentId() < 0)
+      {
+      $rootFolder = $folder;
+      }
+    else
+      {
+      $rootFolder = $this->Folder->getRoot($folder);
+      }
     $quota = $this->Sizequota_FolderQuota->getFolderQuota($rootFolder);
     if($quota == '')
       {
