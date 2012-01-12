@@ -1,0 +1,219 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.view.js');
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.dataTable.js');
+
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/job/job.view.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.dataTable.css" />
+<div class="viewMain">
+     <div class ="genericWrapperTopRight">
+         <?php
+         if($this->executable != false)
+           {
+          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+            echo "<a  href='{$this->webroot}/remoteprocessing/job/manage'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+            echo $this->t('Back');
+            echo "</a>";
+          echo '</div>';
+           }
+        ?>
+    </div>
+  <?php
+   $jobStatus = "Done";
+   if($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE)
+      {
+      $jobStatus =  "Done";
+      }
+    elseif(strtotime($this->job->getExpirationDate()) < strtotime(date('c')))
+      {
+      $jobStatus = "Expired";
+      }
+    elseif($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_WAIT)
+      {
+      $jobStatus =  "Waiting";
+      }
+    elseif($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_STARTED)
+      {
+      $jobStatus =  "Started";
+      }
+      ?>
+
+  <h4>Job Status: <?php echo $jobStatus?></h4>
+
+  <?php
+    if($this->executable != false)
+      {
+      ?>
+    <h4>Executable: <a href="<?php echo $this->webroot?>/item/<?php echo $this->executable->getKey()?>"><?php echo $this->executable->getName()?></a></h4>
+  <?php
+      }
+    if($this->log != false)
+      {
+      ?>
+    <a id="showLogLink">Toggle raw xml results</a><br/>
+    <pre id="hiddenLog"><?php echo htmlentities($this->log)?></pre>
+
+    <h4>Results and Metrics grid:</h4>
+    <table id="tableXml">
+      <thead>
+        <tr>
+        <?php
+        foreach($this->results['params']['parametersList'] as $parameter)
+          {
+          echo "<th qtip='".ucfirst($parameter)."'><b>".$this->slicename(ucfirst($parameter),10)."</b></th>";
+          }
+        echo "<th qtip='Execution status'><b>Stat.</b></th>";
+        echo "<th qtip='Duration'><b>Dur.</b></th>";
+        echo "<th qtip='Stdout Output'><b>Out.</b></th>";
+        echo "<th qtip='Stderr Output'><b>Err.</b></th>";
+        ?>
+       <?php
+        $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_JOB_DASHBOARD_HEADER", array($this->results));
+        foreach($htmltArray as $html)
+          {
+          if(!empty($html))
+            {
+            echo $html;
+            }
+          }
+        ?>
+        </tr>
+      </thead>
+      <tbody>
+    <?php
+      foreach($this->results['process'] as $result)
+        {
+        echo "<tr>";
+        foreach($this->results['params']['parametersList'] as $key => $parameter)
+          {
+          if(isset($result['parameters'][$key]) && isset($this->inputs[trim($result['parameters'][$key])]))
+            {
+            echo "<td><a href='".$this->webroot."/item/".$this->inputs[trim($result['parameters'][$key])]->getKey()."' elementItem='".$this->inputs[trim($result['parameters'][$key])]->getKey()."'>".$this->slicename($result['parameters'][$key],15)."</a></td>";
+            }
+          elseif(isset($result['parameters'][$key]))
+            {
+            echo "<td>".$this->slicename($result['parameters'][$key], 15)."</td>";
+            }
+          else
+            {
+            echo "<td></td>";
+            }
+          }
+        echo "<td class='xmlStatus'>".$result['status']."</td>";
+        echo "<td >".str_replace(' seconds', 's', $this->duration($result['time']))."</td>";
+        echo "<td class='showInDialog' output='".htmlentities($result['stdout'])."'><a>".$this->slicename(htmlentities($result['stdout']),15)."</a></td>";
+        echo "<td class='showInDialog' output='".htmlentities($result['stderr'])."'><a>".$this->slicename(htmlentities($result['stderr']),15)."</a></td>";
+
+        $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_JOB_DASHBOARD_BODY", array($result));
+        foreach($htmltArray as $html)
+          {
+          if(!empty($html))
+            {
+            echo $html;
+            }
+          }
+        echo "</tr>";
+        }
+        ?>
+       </tbody>
+    </table>
+
+    <div id="metricsWrapper" style="display:none;">
+      <h4>Metrics: </h4>
+    </div>
+      <?php
+      }
+
+    if($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE && !empty($this->outputs))
+      {
+      ?>
+    <h4>Output grid:</h4>
+
+    <table id="tableResults">
+      <thead>
+        <tr>
+        <?php
+        echo "<th><b>Output</b></th>";
+        echo "<th><b>Thumbnail</b></th>";
+
+        foreach($this->parameters as $parameter)
+          {
+          echo "<th><b>".ucfirst($parameter)."</b></th>";
+          }
+        ?>
+        </tr>
+      </thead>
+      <tbody>
+      <?php
+      foreach($this->outputs as $output)
+        {
+        echo "<tr>";
+        $metadata = $output->metadataParameters;
+        echo "<td ><a href='".$this->webroot."/item/".$output->getKey()."' elementItem='".$output->getKey()."'>".$output->getName()."</a></td>";
+        $path = $output->getThumbnail();
+        echo "<td>";
+        if(!empty($path)&&  file_exists(BASE_PATH.'/'.$path))
+          {
+          echo "
+            <img class='infoLogo' alt='' src='{$this->webroot}/{$path}'/>
+            ";
+          }
+        echo "</td>";
+        foreach($this->parameters as $parameter)
+          {
+          if(isset($metadata[$parameter]) && isset($this->inputs[trim($metadata[$parameter])]))
+            {
+            echo "<td><a href='".$this->webroot."/item/".$this->inputs[trim($metadata[$parameter])]->getKey()."' elementItem='".$this->inputs[trim($metadata[$parameter])]->getKey()."'>".$metadata[$parameter]."</a></td>";
+            }
+          elseif(isset($metadata[$parameter]))
+            {
+            echo "<td>".$metadata[$parameter]."</td>";
+            }
+          else
+            {
+            echo "<td></td>";
+            }
+          }
+        echo "</tr>";
+        }
+      ?>
+      </tbody>
+    </table>
+
+                 <?php
+
+          $itemsList = "";
+          foreach($this->outputs as $ouput)
+            {
+            $itemsList .= $ouput->getKey().'-';
+            }
+          echo '<div class="genericBigButton ">';
+            echo "<a  href='{$this->webroot}/download?items={$itemsList}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/download.png'/>";
+            echo $this->t('Download Results');
+            echo "</a>";
+          echo '</div>';
+
+        ?>
+    <?php
+      }
+   ?>
+
+
+</div>
+
+
+
+
+
+

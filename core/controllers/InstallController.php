@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /**
@@ -25,20 +33,8 @@ class InstallController extends AppController
    */
   function init()
     {
-    if(isset($_GET['reset']))
-      {
-      $db = Zend_Registry::get('dbAdapter');
-      $table = $db->listTables();
-      if(empty($table) && file_exists(BASE_PATH."/core/configs/database.local.ini"))
-        {
-        unlink(BASE_PATH."/core/configs/database.local.ini");
-        if(file_exists(BASE_PATH."/core/configs/application.local.ini"))
-          {
-          unlink(BASE_PATH."/core/configs/application.local.ini");
-          }
-        }
-      }
-    if(file_exists(BASE_PATH."/core/configs/database.local.ini") && file_exists(BASE_PATH."/core/configs/application.local.ini"))
+    if(file_exists(BASE_PATH."/core/configs/database.local.ini") &&
+       file_exists(BASE_PATH."/core/configs/application.local.ini"))
       {
       throw new Zend_Exception("Midas is already installed.");
       }
@@ -224,7 +220,7 @@ class InstallController extends AppController
 
         //create default assetstrore
         $assetstoreDao = new AssetstoreDao();
-        $assetstoreDao->setName('Default');
+        $assetstoreDao->setName('Local');
         $assetstoreDao->setPath(BASE_PATH.'/data/assetstore');
         $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
         $this->Assetstore = new AssetstoreModel(); //reset Database adapter
@@ -294,10 +290,7 @@ class InstallController extends AppController
   /** ajax function which tests connectivity to a db */
   public function testconnexionAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $type = $this->_getParam('type');

@@ -1,5 +1,23 @@
-# function to add a new PHP based coverage test to CDash
-#
+# Create the configuredVars.php file used for testing
+option(MIDAS_TEST_COVERAGE "Perform xdebug coverage. Only turn on if you need coverage." OFF)
+
+file(WRITE ${CMAKE_SOURCE_DIR}/tests/configuredVars.php
+     "<?php
+     define('CMAKE_BINARY_DIR', '${CMAKE_BINARY_DIR}');
+     ")
+file(APPEND ${CMAKE_SOURCE_DIR}/tests/configuredVars.php "define('MIDAS_TEST_COVERAGE', ")
+if(MIDAS_TEST_COVERAGE)
+  file(APPEND ${CMAKE_SOURCE_DIR}/tests/configuredVars.php "true")
+else()
+  file(APPEND ${CMAKE_SOURCE_DIR}/tests/configuredVars.php "false")
+endif()
+file(APPEND ${CMAKE_SOURCE_DIR}/tests/configuredVars.php "); ?>")
+
+# Create the xdebug coverage directory that CTest expects
+if(NOT EXISTS ${CMAKE_BINARY_DIR}/xdebugCoverage)
+  file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/xdebugCoverage)
+endif()
+
 function(add_midas_test TestName TestFile)
   add_midas_mysql_test(${TestName} ${TestFile})
   add_midas_pgsql_test(${TestName} ${TestFile})

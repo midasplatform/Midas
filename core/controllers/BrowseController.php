@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /**
@@ -15,8 +23,8 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class BrowseController extends AppController
 {
-  public $_models = array('Folder', 'User', 'Community', 'Folder', 'Item');
-  public $_daos = array('Folder', 'User', 'Community', 'Folder', 'Item');
+  public $_models = array('User', 'Community', 'Folder', 'Item');
+  public $_daos = array('User', 'Community', 'Folder', 'Item');
   public $_components = array('Date', 'Utility', 'Sortdao');
 
   /** Init Controller */
@@ -50,10 +58,16 @@ class BrowseController extends AppController
   /** move or copy selected element*/
   public function movecopyAction()
     {
-    $copySubmit = $this->_getParam('copyElement');
+    $shareSubmit = $this->_getParam('shareElement');
+    $duplicateSubmit = $this->_getParam('duplicateElement');
     $moveSubmit = $this->_getParam('moveElement');
+
     $select = $this->_getParam('selectElement');
-    if(isset($copySubmit) || isset($moveSubmit))
+    $share = $this->_getParam('share');
+    $duplicate = $this->_getParam('duplicate');
+
+    // used for drag-and-drop actions
+    if(isset($moveSubmit) || isset($shareSubmit) || isset($duplicateSubmit))
       {
       $elements = explode(';', $this->_getParam('elements'));
       $destination = $this->_getParam('destination');
@@ -62,41 +76,58 @@ class BrowseController extends AppController
       $itemIds = explode('-', $elements[1]);
       $folders = $this->Folder->load($folderIds);
       $items = $this->Item->load($itemIds);
-      $destination = $this->Folder->load($destination);
+      $destinationFolder = $this->Folder->load($destination);
       if(empty($folders) && empty ($items))
         {
         throw new Zend_Exception("No element selected");
         }
-      if($destination == false)
+      if($destinationFolder == false)
         {
         throw new Zend_Exception("Unable to load destination");
         }
 
       foreach($folders as $folder)
         {
-        if(!isset($copySubmit))
+        if(isset($moveSubmit))
           {
-          $this->Folder->move($folder, $destination);
+          $this->Folder->move($folder, $destinationFolder);
           }
         }
 
+      $sourceFolderIds = array();
       foreach($items as $item)
         {
-        if(isset($copySubmit))
+        if(isset($shareSubmit))
           {
-          $this->Folder->addItem($destination, $item);
-          $this->Item->copyParentPolicies($item, $destination);
+          foreach($item->getFolders() as $parentFolder)
+            {
+            $folderId = $parentFolder->getKey();
+            array_push($sourceFolderIds, $folderId);
+            }
+          if(in_array($destinationFolder->getKey(), $sourceFolderIds))
+            {
+            $this->_redirect('/item/'.$item->getKey());
+            }
+          else
+            {
+            $this->Folder->addItem($destinationFolder, $item);
+            $this->Item->addReadonlyPolicy($item, $destinationFolder);
+            }
           }
-        else
+        elseif(isset($duplicateSubmit))
+          {
+          $this->Item->duplicateItem($item, $this->userSession->Dao, $destinationFolder);
+          }
+        else //moveSubmit
           {
           $from = $this->_getParam('from');
           $from = $this->Folder->load($from);
-          if($destination == false)
+          if($destinationFolder == false)
             {
             throw new Zend_Exception("Unable to load destination");
             }
-          $this->Folder->addItem($destination, $item);
-          $this->Item->copyParentPolicies($item, $destination);
+          $this->Folder->addItem($destinationFolder, $item);
+          $this->Item->copyParentPolicies($item, $destinationFolder);
           $this->Folder->removeItem($from, $item);
           }
         }
@@ -107,28 +138,19 @@ class BrowseController extends AppController
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
-      $this->_redirect('/folder/'.$destination->getKey());
+      $this->_redirect('/folder/'.$destinationFolder->getKey());
       }
 
-
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    // Used for movecopy dialog
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
-    if(!isset($select))
+    if(isset($share) || isset($duplicate))
       {
       $folderIds = $this->_getParam('folders');
       $itemIds = $this->_getParam('items');
-      $move = $this->_getParam('move');
       $this->view->folderIds = $folderIds;
       $this->view->itemIds = $itemIds;
-      $this->view->moveEnabled = true;
-      if(isset($move))
-        {
-        $this->view->moveEnabled = false;
-        }
       $folderIds = explode('-', $folderIds);
       $itemIds = explode('-', $itemIds);
       $folders = $this->Folder->load($folderIds);
@@ -137,15 +159,25 @@ class BrowseController extends AppController
         {
         throw new Zend_Exception("No element selected");
         }
-      if(!$this->view->logged)
+      if(!$this->logged)
         {
-        throw new Zend_Exception("Should be logged");
+        throw new Zend_Exception(MIDAS_LOGIN_REQUIRED);
         }
       $this->view->folders = $folders;
       $this->view->items = $items;
+      if(isset($share))
+        {
+        $this->view->shareEnabled = true;
+        $this->view->duplicateEnabled = false;
+        }
+      else
+        {
+        $this->view->duplicateEnabled = true;
+        $this->view->shareEnabled = false;
+        }
       $this->view->selectEnabled = false;
       }
-    else
+    else //isset($select)
       {
       $this->view->selectEnabled = true;
       }
@@ -163,14 +195,64 @@ class BrowseController extends AppController
     $this->view->communities = $communities;
     }
 
+  /** Ajax element used to select an item*/
+  public function selectitemAction()
+    {
+    $this->requireAjaxRequest();
+    $this->_helper->layout->disableLayout();
+
+    $this->view->selectEnabled = true;
+
+    $communities = $this->User->getUserCommunities($this->userSession->Dao);
+    $communities = array_merge($communities, $this->Community->getPublicCommunities());
+    $this->view->Date = $this->Component->Date;
+
+    $this->Component->Sortdao->field = 'name';
+    $this->Component->Sortdao->order = 'asc';
+    usort($communities, array($this->Component->Sortdao, 'sortByName'));
+    $communities = $this->Component->Sortdao->arrayUniqueDao($communities );
+
+    $this->view->user = $this->userSession->Dao;
+    $this->view->communities = $communities;
+    }
+
+  /** Ajax element used to select a folder*/
+  public function selectfolderAction()
+    {
+    $this->requireAjaxRequest();
+    $this->disableLayout();
+    $policy = $this->_getParam("policy");
+
+    $communities = $this->User->getUserCommunities($this->userSession->Dao);
+
+
+    if(isset($policy) && $policy == 'read')
+      {
+      $policy = MIDAS_POLICY_READ;
+      $communities = array_merge($communities, $this->Community->getPublicCommunities());
+      }
+    else
+      {
+      $policy = MIDAS_POLICY_WRITE;
+      }
+
+    $this->view->selectEnabled = true;
+
+    $this->view->Date = $this->Component->Date;
+    $this->view->policy = $policy;
+
+    $this->Component->Sortdao->field = 'name';
+    $this->Component->Sortdao->order = 'asc';
+    usort($communities, array($this->Component->Sortdao, 'sortByName'));
+    $communities = $this->Component->Sortdao->arrayUniqueDao($communities );
+
+    $this->view->user = $this->userSession->Dao;
+    $this->view->communities = $communities;
+    }
+
   /** get getfolders content (ajax function for the treetable) */
   public function getfolderscontentAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
-
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $folderIds = $this->_getParam('folders');
@@ -199,14 +281,9 @@ class BrowseController extends AppController
       $tmp['folder_id'] = $folder->getFolderId();
       $tmp['name'] = $folder->getName();
       $tmp['date_update'] = $this->Component->Date->ago($folder->getDateUpdate(), true);
-      if($tmp['name'] == 'Public' || $tmp['name'] == 'Private')
-        {
-        $tmp['deletable'] = 'false';
-        }
-      else
-        {
-        $tmp['deletable'] = 'true';
-        }
+      // this ajax function is only used by treetable.js and it will handle all the other folders except for the top level folders.
+      // All the non-top level folders are deletable if users have correct permission
+      $tmp['deletable'] =  'true';
       $tmp['policy'] = $folder->policy;
       $tmp['privacy_status'] = $folder->privacy_status;
       $jsonContent[$folder->getParentId()]['folders'][] = $tmp;
@@ -231,11 +308,7 @@ class BrowseController extends AppController
   /** get getfolders Items' size */
   public function getfolderssizeAction()
     {
-  /*  if(!$this->getRequest()->isXmlHttpRequest())
-     {
-     throw new Zend_Exception("Why are you here ? Should be ajax.");
-     }  */
-
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $folderIds = $this->_getParam('folders');
@@ -258,10 +331,7 @@ class BrowseController extends AppController
   /** get element info (ajax function for the treetable) */
   public function getelementinfoAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $element = $this->_getParam('type');
@@ -298,10 +368,18 @@ class BrowseController extends AppController
         $item = $this->Item->load($id);
         $jsonContent = array_merge($jsonContent, $item->toArray());
         $itemRevision = $this->Item->getLastRevision($item);
-        $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
-        $jsonContent['uploaded'] = $itemRevision->getUser()->toArray();
-        $jsonContent['revision'] = $itemRevision->toArray();
-        $jsonContent['nbitstream'] = count($itemRevision->getBitstreams());
+        if(isset($itemRevision) && $itemRevision !== false)
+          {
+          $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
+          $jsonContent['uploaded'] = $itemRevision->getUser()->toArray();
+          $jsonContent['revision'] = $itemRevision->toArray();
+          $jsonContent['nbitstream'] = count($itemRevision->getBitstreams());
+          }
+        else
+          {
+          $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($item->getDateCreation()));
+          $jsonContent['norevisions'] = true;
+          }
         $jsonContent['type'] = 'item';
         break;
       default:
@@ -341,6 +419,85 @@ class BrowseController extends AppController
     $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undone.');
     $this->view->json['item']['message']['merge'] = $this->t('Merge Files in one Item');
     $this->view->json['item']['message']['mergeName'] = $this->t('Name of the item');
+    }
+
+  /**
+   * Delete a set of folders and items. Called by ajax from common.browser.js
+   * @param folders A list of folder ids separated by '-'
+   * @param items A list of item ids separated by '-'
+   * @return Replies with a json object of the form:
+             {success: {folders: [<id>, <id>, ...], items: [<id>, <id>, ...]},
+              failure: {folders: [<id>, <id>, ...], items: [<id>, <id>, ...]}}
+     Denoting which deletes succeeded and which failed.  Invalid ids will be considered
+     already deleted and are thus returned as successful.
+   */
+  public function deleteAction()
+    {
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('You must be logged in to delete resources.');
+      }
+
+    $this->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+
+    $folderIds = $this->_getParam('folders');
+    $itemIds = $this->_getParam('items');
+
+    $resp = array('success' => array('folders' => array(), 'items' => array()),
+                  'failure' => array('folders' => array(), 'items' => array()));
+    $folderIds = explode('-', $folderIds);
+    $itemIds = explode('-', $itemIds);
+
+    foreach($folderIds as $folderId)
+      {
+      if($folderId == '')
+        {
+        continue;
+        }
+      $folder = $this->Folder->load($folderId);
+      if(!$folder)
+        {
+        $resp['success']['folders'][] = $folderId; //probably deleted by a parent delete
+        continue;
+        }
+
+      if($this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN) &&
+         $this->Folder->isDeleteable($folder))
+        {
+        $this->Folder->delete($folder);
+        $resp['success']['folders'][] = $folderId;
+        }
+      else
+        {
+        $resp['failure']['folders'][] = $folderId; //permission failure
+        }
+      }
+
+    foreach($itemIds as $itemId)
+      {
+      if($itemId == '')
+        {
+        continue;
+        }
+      $item = $this->Item->load($itemId);
+      if(!$item)
+        {
+        $resp['success']['items'][] = $itemId; //probably deleted by a parent delete
+        continue;
+        }
+
+      if($this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+        {
+        $this->Item->delete($item);
+        $resp['success']['items'][] = $itemId;
+        }
+      else
+        {
+        $resp['failure']['items'][] = $itemId; //permission failure
+        }
+      }
+    echo JsonComponent::encode($resp);
     }
 } // end class
 

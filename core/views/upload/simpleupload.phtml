@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -14,46 +14,55 @@ PURPOSE.  See the above copyright notices for more information.
 <link href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.fileupload-ui.css?<?php echo time()?>" rel="stylesheet" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<div class="tabs" id='uploadTabs'>
+<div class="tabs uploadTabs" id='uploadTabs'>
   <ul>
     <li><a href="#uploadTabs-1">Simple</a></li>
     <li><a href="<?php echo $this->webroot?>/upload/javaupload"><?php echo $this->t('Large Files');?></a></li>
     <li><a href="#uploadTabs-3"><?php echo $this->t('Links');?></a></li>
   </ul>
-  <div id="uploadTabs-1"> 
+  <div id="uploadTabs-1">
       <b><?php echo $this->t('Step 1: Select files to upload')?></b>
       <br/>
       <div id="jqueryFileUploadContent">
-        <div id="file_upload">
+        <div class="file_upload">
             <form action="<?php echo $this->webroot?>/upload/saveuploaded" method="POST" enctype="multipart/form-data">
-                <input type="file" name="file[]" multiple>
+                <input class="fileUploaderInput" type="file" name="file[]" multiple>
                 <button type="submit">Upload</button>
                 <div class="file_upload_label"><?php echo $this->t('Browse or drop files')?></div>
+                <div class="file_upload_label_folder"><?php echo $this->t('Browse')?></div>
             </form>
-            <table class="files">
-                <tr class="file_upload_template" style="display:none;">
-                    <td class="file_name"></td>
-                    <td class="file_size"></td>
-                    <td class="file_upload_progress"><div></div></td>
-                    <td class="file_upload_start" style='display:none;'><button>Start</button></td>
-                    <td class="file_upload_cancel"><button></button></td>
-                </tr>
-                <tr class="file_download_template" style="display:none;">
-                    <td class="file_name"><a></a></td>
-                    <td class="file_size"></td>
-                </tr>
-                <div class="file_upload_buttons" style='display:none;'>
-                  <button class="file_upload_start">Start All</button> 
-                  <button class="file_upload_cancel">Cancel All</button> 
-                  <button class="file_download_delete">Delete All</button>
-                </div>
-            </table>
+            <div id="changeUploadMode" style="display:none;">
+              <br/>
+              <?php echo $this->t('or')?> <a style="color:blue; cursor:pointer;" class="uploadModeLink" id="uploadModeFolderLink"><?php echo $this->t('upload a folder')?></a>
+              <a style="color:#56758B; cursor:pointer;" class="uploadModeLink" id="uploadModeFileLink"><?php echo $this->t('upload files')?></a>
+            </div>
+
+            <div class="uploadedFilesWrapper">
+              <table class="files">
+                  <tr class="file_upload_template" style="display:none;">
+                      <td class="file_name"></td>
+                      <td class="file_size"></td>
+                      <td class="file_upload_progress"><div></div></td>
+                      <td class="file_upload_start" style='display:none;'><button>Start</button></td>
+                      <td class="file_upload_cancel"><button></button></td>
+                  </tr>
+                  <tr class="file_download_template" style="display:none;">
+                      <td class="file_name"><a></a></td>
+                      <td class="file_size"></td>
+                  </tr>
+                  <div class="file_upload_buttons" style='display:none;'>
+                    <button class="file_upload_start">Start All</button>
+                    <button class="file_upload_cancel">Cancel All</button>
+                    <button class="file_download_delete">Delete All</button>
+                  </div>
+              </table>
+            </div>
             <div class="file_upload_overall_progress" style='display:none;'><div style="display:none;"></div></div>
         </div>
         <div class="tooBigUpload">
-          <b><?php echo $this->t('Please use the large file tool, the following files are too big:')?></b>
+          <img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/> <b><?php echo $this->t('Please use the large file tool, the following files are too big:')?></b>
           <ul>
-            
+
           </ul>
         </div>
       </div>
@@ -62,26 +71,28 @@ PURPOSE.  See the above copyright notices for more information.
       <br/>
       <b><?php echo $this->t('Curent selected location:')?></b>
           <span id="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
-        <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>  
+        <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>
         <br/>
         <input style="margin-left:0px;"  class="browseMIDASLink globalButton" type="button" value="Change location" />
         <br/>
         <br/>
-      </div>      
+      </div>
       <b><?php echo $this->t('Step 3: Select a license')?></b>
       <div>
         <?php
         echo $this->element('license')?>
-      </div>     
+      </div>
       <br/>
       <b><?php echo $this->t('Step 4: Start the upload')?></b>
       <br/>
       <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
-     
+
       <span id="btnStartUpload" >
-        <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" value="<?php echo $this->t('Start Upload')?>" />
+        <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" qtip="<?php echo $this->t("Don't forget to start the upload.")?>" value="<?php echo $this->t('Start Upload')?>" />
       </span>
-  
+      <div>
+        <?php echo $this->t('Number of uploaded files');?> <span class="globalUploadedCount">0</span>
+      </div>
   </div>
     <div id="uploadTabs-3">
       <form id="linkForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
@@ -98,12 +109,12 @@ PURPOSE.  See the above copyright notices for more information.
           <br/>
           <b><?php echo $this->t('Curent selected location:')?></b>
           <span class="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
-          <input type="hidden" name="parent" class="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>  
+          <input type="hidden" name="parent" class="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>
             <br/>
             <input style="margin-left:0px;" class="browseMIDASLink globalButton" type="button" value="Change location" />
             <br/>
             <br/>
-        </div>      
+        </div>
         <div>
           <?php echo $this->form['submit']?>
         </div>
@@ -111,9 +122,6 @@ PURPOSE.  See the above copyright notices for more information.
   </div>
 </div>
 
-<div>
-  <?php echo $this->t('Number of uploaded files');?> <span class="globalUploadedCount">0</span>
-</div>
 <div class="reviewUploaded">
   <form method="post" action="<?php echo $this->webroot?>/browse/uploaded">
     <input class="globalButton" type="submit" value="<?php echo $this->t('Review uploaded files');?>" />
@@ -143,5 +151,3 @@ PURPOSE.  See the above copyright notices for more information.
       }
 ?>
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.simpleupload.js"></script>
-
-

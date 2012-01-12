@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -9,8 +9,13 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/admin/admin.showlog.css?<?php echo time()?>" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.tablesorter.css?<?php echo time()?>" />
+
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.tablesorter.min.js?<?php echo time()?>"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.checkboxrange.js?<?php echo time()?>"></script>
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/admin/admin.showlog.js?<?php echo time()?>"></script>
 
 <form id="logSelector" method="post" action="<?php echo $this->webroot?>/admin/showlog">
@@ -35,20 +40,37 @@ PURPOSE.  See the above copyright notices for more information.
     <option value="6">info</option>
   </select>
   <br/>
-  <input type='submit' value='Filter' />
+  <input type='submit' value='Apply Filter' />
 </form>
 
+
 <br/>
-<table id="listLogs">
+
+<span><b>Current Filter:</b></span><br />
+From: <span id="currentFilterStart"><?php echo $this->currentFilter['start']; ?></span><br />
+To: <span id="currentFilterEnd"><?php echo $this->currentFilter['end']; ?></span><br />
+Module: <span id="currentFilterModule"><?php echo $this->currentFilter['module']; ?></span><br />
+Priority: <span id="currentFilterPriority"><?php echo $this->currentFilter['priority']; ?></span><br />
+<hr/>
+<button type="button" id="deleteSelected">Delete Selected</button>
+<table id="listLogs" class="tablesorter">
   <thead>
     <tr>
+      <th><input type="checkbox" id="selectAllCheckbox" /></th>
       <th>Date</th>
       <th>Priority</th>
       <th>Module</th>
       <th>Short Message</th>
-    </tr>    
+    </tr>
   </thead>
+  <tbody>
+    <tr id="dummy">
+      <td></td><td></td><td></td><td></td><td></td>
+    </tr>
+  </tbody>
 </table>
 
 <img class="logsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+
 <div id="jsonLogs" style="display:none;"><?php echo $this->jsonLogs?></div>
+<div id="fullLogMessages" style="display:none;"></div>

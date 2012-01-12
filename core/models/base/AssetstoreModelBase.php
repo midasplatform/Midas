@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /** Assetstore Model Base*/
@@ -150,16 +158,45 @@ abstract class AssetstoreModelBase extends AppModel
     }// delete
 
   /**
-   * This function returns the default assetstore in the database. This
-   * is assumed to be named "Default" and is selected as such. If there
-   * is no assetsore we fail misserably, if there are more than one then
-   * we only return the "first."
+   * Check if there is an assetstore in the database. If not look for one called Default.
+   * If Default doesn't exist, return the first assetstore found.
    * @return the default assetstore
    */
   public function getDefault()
     {
-    $found = $this->findBy('name', 'Default');
-    return $found[0];
+    $modelLoader = new MIDAS_ModelLoader();
+    $settingModel = $modelLoader->loadModel('Setting');
+    $assetstoreModel = $modelLoader->loadModel('Assetstore');
+    $defaultAssetstoreId = $settingModel->getValueByName('default_assetstore');
+
+    $defaultAssetstore = false;
+
+    if(is_numeric($defaultAssetstoreId))
+      {
+      $defaultAssetstore = $assetstoreModel->load($defaultAssetstoreId);
+      }
+
+    if($defaultAssetstoreId == null || $defaultAssetstore == false)
+      {
+      // since we don't have a default_assetstore, save one here in settings
+      // first try one named Default
+      $found = $this->findBy('name', 'Default');
+      if(empty($found))
+        {
+        $found = $this->getAll();
+        if(empty($found))
+          {
+          throw new Zend_Exception("No assetstore found in the database");
+          }
+        }
+      // otherwise take the first
+      $defaultAssetstore = $found[0];
+      // explicit cast to string, as the setConfig method expects a string
+      $defaultAssetstoreId = (string)$defaultAssetstore->getKey();
+      $settingModel->setConfig('default_assetstore', $defaultAssetstoreId);
+      }
+
+    return $defaultAssetstore;
     } // end getDefault
 
 } // end class AssetstoreModelBase

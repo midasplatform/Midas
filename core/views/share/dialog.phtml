@@ -15,132 +15,95 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/s
 
 
 <div id='elementDirectLink' <?php echo (($this->private)?'style="display:none;"':'');?>>
-<?php echo  $this->t('You can use the following direct link to share the').' '.$this->t($this->type)?>:<br/>
-<input type='text' id='urlInput' readonly='readonly' value='<?php echo $this->shareUrl?>' />
+  <?php echo  $this->t('You can use the following direct link to share the').' '.$this->t($this->type)?>:<br/>
+  <input type='text' id='urlInput' readonly='readonly' value='<?php echo $this->shareUrl?>' />
 </div>
 <br/>
 
 <div id='permissionsContent'>
   <div id='permissionPublic' <?php echo (($this->private)?'style="display:none;"':'')?>>
    <b><?php echo $this->t('Public')?></b> <?php echo $this->t('Anyone can find and access. No sign-in required.')?>
-     <a id='setElementPrivateLink'><?php echo $this->t('You can set the permission as private.')?></a>
+   <a id='setElementPrivateLink'><?php echo $this->t('You can set the permission as private.')?></a>
   </div>
 
   <div id='permissionPrivate' <?php echo ((!$this->private)?'style="display:none;"':'')?>>
      <b><?php echo $this->t('Private')?></b> <?php echo $this->t('Only people explicitly granted permission can access. Sign-in required.')?>
-       <a id='setElementPublicLink'><?php echo $this->t('You can set the permission as public.')?></a>
+     <a id='setElementPublicLink'><?php echo $this->t('You can set the permission as public.')?></a>
   </div>
 
   <h4><?php echo $this->t('Permissions')?></h4>
-    <div id='permissionEntity'>
+  <div id='permissionEntity'>
     <table>
-<?php
-foreach($this->groupPolicies as $policy)
-  {
-  ?>
-    <tr type='group' element='<?php echo $policy->group->getKey()?>'>
-      <td>
-      <img src='<?php echo $this->coreWebroot?>/public/images/icons/community.png'/>
-      </td>
-      <td class='changePermissionSelect'>
-        <?php echo $policy->group->getCommunity()->getName().' ('.$policy->group->getName().')'?>
-      </td>
-      <td class='changePermissionSelectBox'>
-   <?php
-  if((!$this->isAdmin&&$policy->getPolicy()==MIDAS_POLICY_ADMIN))
-    {
-    switch ($policy->getPolicy())
-      {
-      case MIDAS_POLICY_ADMIN:
-        echo $this->t('is owner');
-        break;
-      case MIDAS_POLICY_WRITE:
-        echo $this->t('can edit');
-        break;
-      default:
-        break;
-      }
-    }
-  else
-    {
-    ?>
-     <select class='changePermissionSelect'>
-       <?php
-    if($this->isAdmin)
-      {
-      echo "            <option value='".MIDAS_POLICY_ADMIN."' ".(($policy->getPolicy()==MIDAS_POLICY_ADMIN)?'selected':'').">{$this->t('is owner')}</option>";
-      }
-    echo "              <option value='".MIDAS_POLICY_WRITE."' ".(($policy->getPolicy()==MIDAS_POLICY_WRITE)?'selected':'').">{$this->t('can edit')}</option>";
-    echo "              <option value='".MIDAS_POLICY_READ."' ".(($policy->getPolicy()==MIDAS_POLICY_READ)?'selected':'').">{$this->t('can read')}</option>";
-    echo "            </select>";
-    }
-    ?>
-    </td>
-     <td class='changePermissionDelete'>
-     <a class='removeShareLink'><img  src='<?php echo $this->coreWebroot?>/public/images/icons/close.png' alt=''/></a>
-    </td>
-    </tr>
     <?php
-  }
-  
-foreach($this->userPolicies as $policy)
-  {
-  ?>
-  <tr type='user' element='<?php echo $policy->user->getKey()?>'>
-    <td>
-     <img src='<?php echo $this->coreWebroot?>/public/images/icons/unknownUser-small.png'/>
-    </td>
-    <td class='changePermissionSelect'>
-      <?php echo $policy->user->getFullName()?>
-    </td>
-    <td class='changePermissionSelectBox'>
-  <?php
-  if((!$this->isAdmin&&$policy->getPolicy()==MIDAS_POLICY_ADMIN)||$policy->user->getKey()==$this->userDao->getKey())
-    {
-    switch ($policy->getPolicy())
+    foreach($this->groupPolicies as $policy)
       {
-      case MIDAS_POLICY_ADMIN:
-        echo $this->t('is owner');
-        break;
-      case MIDAS_POLICY_WRITE:
-        echo $this->t('can edit');
-        break;
-      default:
-        break;
+      ?>
+      <tr type='group' element='<?php echo $policy->group->getKey()?>'>
+        <td>
+        <img src='<?php echo $this->coreWebroot?>/public/images/icons/community.png'/>
+        </td>
+        <td class='changePermissionSelect'>
+          <?php echo $policy->group->getCommunity()->getName().' ('.$policy->group->getName().')'?>
+        </td>
+        <td class='changePermissionSelectBox'>
+          <select class='changePermissionSelect'>
+          <?php
+            echo "<option value='".MIDAS_POLICY_ADMIN."' ".(($policy->getPolicy() == MIDAS_POLICY_ADMIN) ? 'selected' : '').">{$this->t('is owner')}</option>";
+            echo "<option value='".MIDAS_POLICY_WRITE."' ".(($policy->getPolicy() == MIDAS_POLICY_WRITE) ? 'selected' : '').">{$this->t('can edit')}</option>";
+            echo "<option value='".MIDAS_POLICY_READ."' ".(($policy->getPolicy() == MIDAS_POLICY_READ) ? 'selected' : '').">{$this->t('can read')}</option>";
+           ?>
+          </select>
+        </td>
+        <td class='changePermissionDelete'>
+          <a class='removeShareLink'><img  src='<?php echo $this->coreWebroot?>/public/images/icons/close.png' alt=''/></a>
+        </td>
+      </tr>
+      <?php
       }
-    }
-  else
-    {
-  echo "            <select class='changePermissionSelect'>";
-    if($this->isAdmin)
-      {
-      echo "          <option value='".MIDAS_POLICY_ADMIN."' ".(($policy->getPolicy()==MIDAS_POLICY_ADMIN)?'selected':'').">{$this->t('is owner')}</option>";
-      }
-    echo "            <option value='".MIDAS_POLICY_WRITE."' ".(($policy->getPolicy()==MIDAS_POLICY_WRITE)?'selected':'').">{$this->t('can edit')}</option>";
-    echo "            <option value='".MIDAS_POLICY_READ."' ".(($policy->getPolicy()==MIDAS_POLICY_READ)?'selected':'').">{$this->t('can read')}</option>";
-    echo "           </select>";
-    }
-  echo "          </td>";
-  if($policy->user->getKey()!=$this->userDao->getKey())
-    {
-    echo "          <td class='changePermissionDelete'>";
-    echo "            <a class='removeShareLink' ><img src='{$this->coreWebroot}/public/images/icons/close.png' alt=''/></a>";
-    echo "          </td>";
-    }
-  echo "        </tr>";
-  }
-  ?>
-   </table>
-   <br/>
-   <div class='shareSearch'>
-    <input type='text' id='live_share_search' value='<?php echo $this->t('Add a permission to ...')?>' autocomplete='off' autocorrect='off' autocapitalize='off' />
-      <input type='hidden' id='live_share_search_value' value='init'  />
-       <div id='searchShareLoading' style='display:none'></div>
-     </div>
-   </div>
 
+    foreach($this->userPolicies as $policy)
+      {
+      ?>
+      <tr type='user' element='<?php echo $policy->user->getKey()?>'>
+        <td>
+         <img src='<?php echo $this->coreWebroot?>/public/images/icons/unknownUser-small.png'/>
+        </td>
+        <td class='changePermissionSelect'>
+          <?php echo $policy->user->getFullName() ?>
+        </td>
+        <td class='changePermissionSelectBox'>
+          <select class='changePermissionSelect'>
+          <?php
+             echo "<option value='".MIDAS_POLICY_ADMIN."' ".(($policy->getPolicy() == MIDAS_POLICY_ADMIN) ? 'selected' : '').">{$this->t('is owner')}</option>";
+             echo "<option value='".MIDAS_POLICY_WRITE."' ".(($policy->getPolicy() == MIDAS_POLICY_WRITE) ? 'selected' : '').">{$this->t('can edit')}</option>";
+             echo "<option value='".MIDAS_POLICY_READ."' ".(($policy->getPolicy() == MIDAS_POLICY_READ) ? 'selected' : '').">{$this->t('can read')}</option>";
+           ?>
+          </select>
+        </td>
+        <?php
+        if($policy->user->getKey() != $this->userDao->getKey())
+          {
+          echo "<td class='changePermissionDelete'>";
+          echo "  <a class='removeShareLink' ><img src='{$this->coreWebroot}/public/images/icons/close.png' alt=''/></a>";
+          echo "</td>";
+          }
+        ?>
+      </tr>
+      <?php
+      }
+      ?>
+    </table>
+    <br/>
+    <div class='shareSearch'>
+      <input type='text' id='live_share_search' value='<?php echo $this->t('Add a permission to ...')?>' autocomplete='off' autocorrect='off' autocapitalize='off' />
+      <input type='hidden' id='live_share_search_value' value='init' />
+      <div id='searchShareLoading' style='display:none'></div>
+    </div>
+  </div>
+
+  <br /><br />
+  <input type='button' style='margin-left: 0px' class='globalButton permissionsDone' value='<?php echo $this->t('Done')?>' />
 </div>
-
 
 <div style="display: none;" class="jsonShareContent">
   <?php echo $this->jsonShare?>

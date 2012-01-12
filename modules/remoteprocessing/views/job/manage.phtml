@@ -1,0 +1,142 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manage.js');
+
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/job/job.manage.css"
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+
+<div class="viewMain">
+
+    <?php
+          echo '<div  class="genericBigButton ">';
+            echo "<a href='{$this->webroot}/remoteprocessing/job/init' ><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/add.png'/>";
+            echo $this->t('Create a Job');
+            echo "</a>";
+          echo '</div>';
+        ?>
+
+  <br/>
+  <br/>
+
+
+
+    <?php
+  if(empty($this->relatedJobs))
+    {
+    echo "No started Jobs";
+    }
+  else
+    {
+    ?>
+  <h4>10 last Jobs</h4>
+  <table style='display:block;' class="midasTree">
+
+    <thead>
+      <tr>
+        <th style="width:100px;" >Name</th>
+        <th style="width:240px;" >Creation Date</th>
+        <th  style="width:250px;">Status</th>
+      </tr>
+    </thead>
+    <?php
+    foreach($this->relatedJobs as $job)
+      {
+      echo "<tr element='".$job->getKey()."v'>";
+      echo  "<td>".$job->getName()."</td>";
+      echo  "<td>".$job->getCreationDate()."</td>";
+      if($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE)
+        {
+        echo  "<td class='elementStatus'>Done</td>";
+        }
+      elseif(strtotime($job->getExpirationDate()) < strtotime(date('c')))
+        {
+        echo  "<td class='elementStatus'>Expired</td>";
+        }
+      elseif($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_WAIT)
+        {
+        echo  "<td class='elementStatus'>Waiting</td>";
+        }
+      elseif($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_STARTED)
+        {
+        echo  "<td class='elementStatus'>Started</td>";
+        }
+      else
+        {
+        echo  "<td class='elementStatus'>Done</td>";
+        }
+      echo "</tr>";
+      }
+      ?>
+  </table>
+  <?php
+    }
+    ?>
+
+
+    <?php
+  if(empty($this->relatedJobs))
+    {
+    echo "No scheduled Jobs";
+    }
+  else
+    {
+    ?>
+  <h4>Scheluded Jobs</h4>
+  <table style='display:block;' class="midasTree">
+
+    <thead>
+      <tr>
+        <th style="width:100px;" >Name</th>
+        <th style="width:240px;" >Run Time</th>
+        <th  style="width:250px;">Status</th>
+      </tr>
+    </thead>
+    <?php
+    foreach($this->scheduledJobs as $job)
+      {
+      $params = JsonComponent::decode($job->getParams());
+      echo "<tr element='".$job->getKey()."v'>";
+      echo  "<td>".$params['params']['job_name']."</td>";
+      echo  "<td>".$job->getFireTime()."</td>";
+      echo  "<td>Scheduled</td>";
+      echo "</tr>";
+      }
+      ?>
+  </table>
+  <?php
+    }
+    ?>
+
+</div>
+<div class="viewSideBar">
+
+   <div class="sideElementFirst viewAction" style ="display:none;">
+    <h1>Actions</h1>
+    <ul>
+      <li>
+        <a id='viewJob'><img alt='' src='<?php echo $this->coreWebroot?>/public/images/icons/view.png'/>View</a>
+      </li>
+    </ul>
+   </div>
+</div>
+
+
+
+
+
+
+
+
+

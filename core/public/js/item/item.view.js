@@ -1,5 +1,5 @@
   $(document).ready(function() {
-
+    
     $('a.metadataDeleteLink img').fadeTo("fast",0.4);
     $('a.metadataDeleteLink').click(function(){
       var metadataCell = $(this).parents('tr');
@@ -40,34 +40,53 @@
     });
 
 
-    $('a.moveCopyLink').click(function()
+    $('a.shareItemLink').click(function()
       {
-        loadDialog("movecopy","/browse/movecopy/?move=false&items="+json.item.item_id);
-        showDialog(json.item.message.movecopy);
+        loadDialog("shareItem","/browse/movecopy/?share=true&items="+json.item.item_id);
+        showDialog(json.item.message.share);
+      });
+      
+    $('a.duplicateItemLink').click(function()
+      {
+        loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+json.item.item_id);
+        showDialog(json.item.message.duplicate);
       });
 
      $('a#itemDeleteLink').click(function()
-    {
-      var html='';
-      html+=json.item.message['deleteMessage'];
-      html+='<br/>';
-      html+='<br/>';
-      html+='<br/>';
-      html+='<input style="margin-left:140px;" class="globalButton deleteItemYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
-      html+='<input style="margin-left:50px;" class="globalButton deleteItemNo" type="button" value="'+json.global.No+'"/>';
+    {       
+     $.ajax({
+           type: "GET",
+           url: json.global.webroot+'/item/checkshared',
+           data: {itemId: json.item.item_id},
+           success: function(jsonContent){
+             
+             var $itemIsShared = $.parseJSON(jsonContent);
+             var html='';
+             if ($itemIsShared == true)
+               {
+               html+=json.item.message['sharedItem'];
+               }
+             html+=json.item.message['deleteMessage'];
+             html+='<br/>';
+             html+='<br/>';
+             html+='<br/>';
+             html+='<input style="margin-left:140px;" class="globalButton deleteItemYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
+             html+='<input style="margin-left:50px;" class="globalButton deleteItemNo" type="button" value="'+json.global.No+'"/>';
 
-      showDialogWithContent(json.item.message['delete'],html,false);
+             showDialogWithContent(json.item.message['delete'],html,false);
 
-      $('input.deleteItemYes').unbind('click').click(function()
-        {
-          location.replace(json.global.webroot+'/item/delete?itemId='+json.item.item_id);
-        });
-      $('input.deleteItemNo').unbind('click').click(function()
-        {
-           $( "div.MainDialog" ).dialog('close');
-        });
-
-    });
+             $('input.deleteItemYes').unbind('click').click(function()
+             {
+             location.replace(json.global.webroot+'/item/delete?itemId='+json.item.item_id);
+             });
+            $('input.deleteItemNo').unbind('click').click(function()
+            {
+              $( "div.MainDialog" ).dialog('close');
+              });
+           }
+     });
+        
+   });
 
     $('a.sharingLink').click(function(){
       loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
@@ -96,6 +115,10 @@
             effect: true // Disable positioning animation
          },
          show: {
+            modal: { 
+              on: true,
+              blur: false
+              },
             event: 'click',
             solo: true // Only show one tooltip at a time
          },

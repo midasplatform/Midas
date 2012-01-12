@@ -19,9 +19,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/feed/feed.index.j
   <?php echo $this->element('feed')?>
 </div>
 <div class="viewSideBar">
-  <div align="justify" class='sideElementFirst feedNotification'>
-MIDAS integrates multimedia server technology with open-source data analysis and visualization clients. The server follows open standards for data storage, access and harvesting.
-  </div>
+
     <?php
   if(!empty($this->notifications))
     {
@@ -33,7 +31,7 @@ MIDAS integrates multimedia server technology with open-source data analysis and
   <?php 
   if(!empty($this->itemThumbnails))
     {
-    echo '<div class="sideElement feedThumbnail">';
+    echo '<div class="sideElementFirst feedThumbnail">';
     echo '<h1>Thumbnails</h1>';
     foreach($this->itemThumbnails as $item)
       {

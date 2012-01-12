@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /**
@@ -15,31 +23,31 @@ PURPOSE.  See the above copyright notices for more information.
  */
 class MIDAS_Notification
   {
-  
+
   private $_task = array();
   private $_notification = array();
-  
+
     /** translation */
   protected function t($text)
     {
     Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
     return InternationalizationComponent::translate($text);
     } //end method t
-  
+
   /** contructor*/
   public function __construct()
-    {    
+    {
     $this->loadElements();
     $this->loadModuleElements();
     $this->init();
     }
-    
+
   /** register task*/
   public function addTask($name, $method, $comment)
     {
     $this->_task[$name] = array('method' => $method, 'comment' => $comment);
     }// end assTask
-    
+
   /** register callback*/
   public function addCallBack($name, $method)
     {
@@ -49,7 +57,7 @@ class MIDAS_Notification
       }
     $this->_notification[$name][] = array('type' => 'callback', 'call' => $method);
     }// end addCallBack
-    
+
   /** register callback*/
   public function addEvent($name, $task, $priority = MIDAS_EVENT_PRIORITY_NORMAL)
     {
@@ -65,13 +73,13 @@ class MIDAS_Notification
     {
     return $this->_task;
     }
-  
+
   /** get Tasks */
   public function getNotifications()
     {
     return $this->_notification;
     }
-  
+
   /**
    * Get Logger
    * @return Zend_Log
@@ -80,7 +88,7 @@ class MIDAS_Notification
     {
     return Zend_Registry::get('logger');
     }
-    
+
   /**
    * @method public  loadElements()
    *  Loads model and components
@@ -98,7 +106,7 @@ class MIDAS_Notification
       {
       $this->$key = $tmp;
       }
-    
+
     if(isset($this->_daos))
       {
       foreach($this->_daos as $dao)
@@ -108,14 +116,18 @@ class MIDAS_Notification
       }
 
     Zend_Registry::set('components', array());
-    
+
     if(isset($this->_components))
       {
       foreach($this->_components as $component)
         {
         $nameComponent = $component . "Component";
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
-        @$this->Component->$component = new $nameComponent();
+        if(!isset($this->Component))
+          {
+          $this->Component =  new stdClass();
+          }
+        $this->Component->$component = new $nameComponent();
         }
       }
 
@@ -127,11 +139,15 @@ class MIDAS_Notification
         $nameForm = $forms . "Form";
 
         Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
-        @$this->Form->$forms = new $nameForm();
+        if(!isset($this->Form))
+          {
+          $this->Form =  new stdClass();
+          }
+        $this->Form->$forms = new $nameForm();
         }
       }
     }//end loadElements
-    
+
   /**
    * @method public  loadElements()
    *  Loads model and components
@@ -152,12 +168,23 @@ class MIDAS_Notification
           }
         }
       }
-      
+
     if(isset($this->_moduleDaos))
       {
       foreach($this->_moduleDaos as $dao)
         {
-        include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
+        if(file_exists(BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
+          {
+          include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
+          }
+        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
+          {
+          include_once (BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php");
+          }
+        else
+          {
+          throw new Zend_Exception('Unable to find dao  '.$dao);
+          }
         }
       }
 
@@ -166,18 +193,57 @@ class MIDAS_Notification
       foreach($this->_moduleComponents as $component)
         {
         $nameComponent = ucfirst($this->moduleName).'_'.$component . "Component";
-        include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
-        @$this->ModuleComponent->$component = new $nameComponent();
+        if(file_exists(BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php"))
+          {
+          include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
+          }
+        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"))
+          {
+          include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php");
+          }
+        else
+          {
+          throw new Zend_Exception('Unable to find components  '.$component);
+          }
+        if(!class_exists($nameComponent))
+          {
+          throw new Zend_Exception('Unable to find '.$nameComponent);
+          }
+        if(!isset($this->ModuleComponent))
+          {
+          $this->ModuleComponent =  new stdClass();
+          }
+        $this->ModuleComponent->$component = new $nameComponent();
         }
       }
-      
+
     if(isset($this->_moduleForms))
       {
       foreach($this->_moduleForms as $forms)
         {
         $nameForm = ucfirst($this->moduleName).'_'.$forms . "Form";
         include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
-        @$this->ModuleForm->$forms = new $nameForm();
+        if(file_exists(BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
+          {
+          include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
+          }
+        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
+          {
+          include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
+          }
+        else
+          {
+          throw new Zend_Exception('Unable to find form  '.$forms);
+          }
+        if(!class_exists($nameForm))
+          {
+          throw new Zend_Exception('Unable to find '.$nameForm);
+          }
+        if(!isset($this->ModuleForm))
+          {
+          $this->ModuleForm =  new stdClass();
+          }
+        $this->ModuleForm->$forms = new $nameForm();
         }
       }
     }

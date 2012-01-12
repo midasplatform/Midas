@@ -1,14 +1,23 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /** global midas model library*/
 class MIDASModel
@@ -43,6 +52,17 @@ class MIDASModel
     $this->database->initialize($this->_name, $this->_key, $this->_mainData);
     }
 
+  /**
+   * @method protected getTempDirectory()
+   * get the midas temporary directory
+   * @return string
+   */
+  protected function getTempDirectory()
+    {
+    return UtilityComponent::getTempDirectory();
+    }
+
+
   /** Save a Dao */
   public function save($dao)
     {
@@ -53,7 +73,7 @@ class MIDASModel
       }
     if(!$dao instanceof $instance)
       {
-      throw new Zend_Exception("Should be an object (".$instance.").");
+      throw new Zend_Exception("Should be an object of type ".$instance.", was type ".get_class($dao));
       }
 
     $dataarray = array();
@@ -98,7 +118,11 @@ class MIDASModel
         $nameComponent = $component . "Component";
 
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
-        @$this->Component->$component = new $nameComponent();
+        if(!isset($this->Component))
+          {
+          $this->Component =  new stdClass();
+          }
+        $this->Component->$component = new $nameComponent();
         }
       }
     }
@@ -152,7 +176,18 @@ class MIDASModel
       }
     else
       {
-      require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
+      if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+        {
+        require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
+        }
+      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+        {
+        require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php';
+        }
+      else
+        {
+        throw new Zend_Exception("Unable to find dao file ".$name);
+        }
       $name = ucfirst($module).'_'.$name. 'Dao';
       }
     if(class_exists($name))
@@ -280,7 +315,27 @@ class MIDASModel
       }
     else
       {
-      require_once BASE_PATH . "/modules/".$module."/models/dao/".$name.".php";
+      if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+        {
+        require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
+        }
+      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+        {
+        require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php';
+        }
+      if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. '.php'))
+        {
+        require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. '.php';
+        }
+      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. '.php'))
+        {
+        require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. '.php';
+        }
+      else
+        {
+        throw new Zend_Exception("Unable to find dao file ".$name);
+        }
+
       if(!class_exists(ucfirst($module).'_'.$name))
         {
         throw new Zend_Exception('Unable to load dao class ' . ucfirst($module).'_'.$name);
@@ -306,7 +361,12 @@ class MIDASModel
       $name = ucfirst($this->_name) . 'Dao';
       }
 
-    if(isset($this->moduleName))
+    if(isset($this->_daoName) && isset($this->moduleName))
+      {
+      $this->loadDaoClass($name, $this->moduleName);
+      $name = ucfirst($this->moduleName).'_'.$name;
+      }
+    elseif(isset($this->moduleName))
       {
       $this->loadDaoClass(ucfirst(substr($name, strpos($name, '_') + 1)), $this->moduleName);
       }

@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /**
@@ -52,12 +60,9 @@ class AdminController extends AppController
     if(!$this->logged)
       {
       $this->haveToBeLogged();
-      return;
+      return false;
       }
-    if(!$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
 
     $task = $this->_getParam("task");
     $params = $this->_getParam("params");
@@ -79,12 +84,9 @@ class AdminController extends AppController
     if(!$this->logged)
       {
       $this->haveToBeLogged();
-      return;
+      return false;
       }
-    if(!$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
     $this->view->header = "Administration";
     $configForm = $this->Form->Admin->createConfigForm();
 
@@ -98,6 +100,10 @@ class AdminController extends AppController
     $formArray['lang']->setValue($applicationConfig['global']['application.lang']);
     $formArray['smartoptimizer']->setValue($applicationConfig['global']['smartoptimizer']);
     $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
+    if(isset($applicationConfig['global']['dynamichelp']))
+      {
+      $formArray['dynamichelp']->setValue($applicationConfig['global']['dynamichelp']);
+      }
     $this->view->selectedLicense = $applicationConfig['global']['defaultlicense'];
     $this->view->configForm = $formArray;
 
@@ -125,6 +131,7 @@ class AdminController extends AppController
         $applicationConfig['global']['smartoptimizer'] = $this->_getParam('smartoptimizer');
         $applicationConfig['global']['default.timezone'] = $this->_getParam('timezone');
         $applicationConfig['global']['defaultlicense'] = $this->_getParam('licenseSelect');
+        $applicationConfig['global']['dynamichelp'] = $this->_getParam('dynamichelp');
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
@@ -140,11 +147,22 @@ class AdminController extends AppController
 
         $moduleConfigLocalFile = BASE_PATH."/core/configs/".$moduleName.".local.ini";
         $moduleConfigFile = BASE_PATH."/modules/".$moduleName."/configs/module.ini";
-        if(!file_exists($moduleConfigLocalFile))
+        $moduleConfigPrivateFile = BASE_PATH."/privateModules/".$moduleName."/configs/module.ini";
+        if(!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigFile))
           {
           copy($moduleConfigFile, $moduleConfigLocalFile);
           $this->Component->Utility->installModule($moduleName);
           }
+        elseif(!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigPrivateFile))
+          {
+          copy($moduleConfigPrivateFile, $moduleConfigLocalFile);
+          $this->Component->Utility->installModule($moduleName);
+          }
+        elseif(!file_exists($moduleConfigLocalFile))
+          {
+          throw new Zend_Exception("Unable to find config file");
+          }
+
         rename(BASE_PATH.'/core/configs/application.local.ini', BASE_PATH.'/core/configs/application.local.ini.old');
         $applicationConfig['module'][$moduleName] = $modulevalue;
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
@@ -152,8 +170,17 @@ class AdminController extends AppController
         }
       }
 
+    // Disable default assetstore feature is version less than 3.1.4
+    if($this->Component->Upgrade->transformVersionToNumeric(Zend_Registry::get('configDatabase')->version) < $this->Component->Upgrade->transformVersionToNumeric("3.1.4") )
+      {
+      $defaultAssetStoreId = 0;
+      }
+    else
+      {
+      $defaultAssetStoreId = $this->Assetstore->getDefault()->getKey();
+      }
+
     // get assetstore data
-    $defaultAssetStoreId = $this->Assetstore->getDefault()->getKey();
     $assetstores = $this->Assetstore->getAll();
     $defaultSet = false;
     foreach($assetstores as $key => $assetstore)
@@ -202,6 +229,10 @@ class AdminController extends AppController
     foreach($allModules as $key => $module)
       {
       if(file_exists(BASE_PATH."/modules/".$key."/controllers/ConfigController.php"))
+        {
+        $allModules[$key]->configPage = true;
+        }
+      elseif(file_exists(BASE_PATH."/privateModules/".$key."/controllers/ConfigController.php"))
         {
         $allModules[$key]->configPage = true;
         }
@@ -275,32 +306,26 @@ class AdminController extends AppController
     $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
     }//end indexAction
 
-  /** show logs*/
+  /** Used to display and filter the list of log messages */
   function showlogAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAdminPrivileges();
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
-    $start = $this->_getParam("startlog");
-    $end = $this->_getParam("endlog");
-    $module = $this->_getParam("modulelog");
-    $priority = $this->_getParam("prioritylog");
-    if(!isset($start))
+    $start = $this->_getParam('startlog');
+    $end = $this->_getParam('endlog');
+    $module = $this->_getParam('modulelog');
+    $priority = $this->_getParam('prioritylog');
+    if(!isset($start) || empty($start))
       {
-      $start = date('c', strtotime("-24 hour"));
+      $start = date('c', strtotime('-24 hour'));
       }
     else
       {
       $start = date('c', strtotime($start));
       }
-    if(!isset($end))
+    if(!isset($end) || empty($end))
       {
       $end = date('c');
       }
@@ -308,14 +333,19 @@ class AdminController extends AppController
       {
       $end = date('c', strtotime($end));
       }
-    if(!isset($module))
+    if(!isset($module) || empty($module))
       {
       $module = 'all';
       }
-    if(!isset($priority))
+    if(!isset($priority) || empty($priority))
       {
       $priority = 'all';
       }
+
+    $this->view->currentFilter = array('start' => $start,
+                                       'end' => $end,
+                                       'module' => $module,
+                                       'priority' => $priority);
 
     $logs = $this->Errorlog->getLog($start, $end, $module, $priority);
     foreach($logs as $key => $log)
@@ -323,49 +353,68 @@ class AdminController extends AppController
       $logs[$key] = $log->toArray();
       if(substr($log->getMessage(), 0, 5) == 'Fatal')
         {
-        $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), "[message]") + 10, 40);
+        $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), '[message]') + 13, 60);
         }
       elseif(substr($log->getMessage(), 0, 6) == 'Server')
         {
-        $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), "Message:") + 9, 40);
+        $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), 'Message:') + 9, 60);
         }
       else
         {
-        $shortMessage = substr($log->getMessage(), 0, 40);
+        $shortMessage = substr($log->getMessage(), 0, 60);
         }
       $logs[$key]['shortMessage'] = $shortMessage.' ...';
       }
-    $this->view->jsonLogs = JsonComponent::encode($logs);
-    $this->view->jsonLogs = htmlentities($this->view->jsonLogs);
 
     if($this->_request->isPost())
       {
       $this->_helper->viewRenderer->setNoRender();
-      echo $this->view->jsonLogs;
+      echo JsonComponent::encode(array('currentFilter' => $this->view->currentFilter,
+                                       'logs' => $logs));
       return;
       }
 
     $modulesConfig = Zend_Registry::get('configsModules');
-
     $modules = array('all', 'core');
     foreach($modulesConfig as $key => $module)
       {
       $modules[] = $key;
       }
     $this->view->modulesLog = $modules;
+    $this->view->jsonLogs = htmlentities(JsonComponent::encode($logs));
     }//showlogAction
+
+  /** Used to delete a list of log entries */
+  function deletelogAction()
+    {
+    $this->requireAdminPrivileges();
+    $this->requireAjaxRequest();
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+    $ids = $this->_getParam('idList');
+    $count = 0;
+    foreach(explode(',', $ids) as $id)
+      {
+      if(!empty($id) && is_numeric($id))
+        {
+        $count++;
+        $dao = $this->Errorlog->load($id);
+        if($dao)
+          {
+          $this->Errorlog->delete($dao);
+          }
+        }
+      }
+
+    echo JsonComponent::encode(array('message' => 'Successfully deleted '.$count.' entries.'));
+    return;
+    }
 
   /** function dashboard*/
   function dashboardAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAdminPrivileges();
+    $this->requireAjaxRequest();
 
     $this->_helper->layout->disableLayout();
 
@@ -378,14 +427,8 @@ class AdminController extends AppController
   /** upgrade database*/
   function upgradeAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
+    $this->requireAdminPrivileges();
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
     $db = Zend_Registry::get('dbAdapter');
@@ -448,12 +491,10 @@ class AdminController extends AppController
     {
     if(!$this->logged)
       {
-      throw new Zend_Exception("You should be logged in");
+      $this->haveToBeLogged();
+      return false;
       }
-    if(!$this->userSession->Dao->isAdmin())
-      {
-      throw new Zend_Exception("Administrative privileges required");
-      }
+    $this->requireAdminPrivileges();
 
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
@@ -519,12 +560,9 @@ class AdminController extends AppController
     if(!$this->logged)
       {
       $this->haveToBeLogged();
-      return;
+      return false;
       }
-    if(!$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
 
     $this->assetstores = $this->Assetstore->getAll();
     $this->view->migrateForm = $this->Form->Migrate->createMigrateForm($this->assetstores);
@@ -588,4 +626,3 @@ class AdminController extends AppController
     }
 
 } // end class
-

@@ -1,0 +1,40 @@
+table#moveTable{
+  width: 420px !important;
+}
+
+table#moveTable th.thData {
+width: auto!important;
+border-right: none!important;
+}
+
+table#moveTable{
+  display: none;
+}
+
+#moveTable .browserPrivacyInformation{
+  right: 10px;
+}
+
+#createFolderButton{
+  float:none!important;
+  width: 200px;
+  border:none;
+  display:none;
+}
+
+#createFolderContent{
+  display:none;
+  border: 1px #CCD7E0 dotted!important;
+  margin-top: 5px;
+  width: 300px;
+  margin-bottom: 2px;
+  border: #354856 1px solid;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -khtml-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: #666 0 0 2px;
+  box-shadow: #666 0 0 2px;
+  -moz-box-shadow: 0px 0px 2px #666;
+  padding: 0px 5px 6px 5px;
+}

@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /** Assetstore forms*/
@@ -37,10 +45,11 @@ class AssetstoreForm extends AppForm
 
     // Assetstore type
     $assetstoretypes = array('0' => $this->t('Managed by MIDAS'),
-                             '1' => $this->t('Remotely linked'),
-                             '2' => $this->t('Amazon S3'));
+                             '1' => $this->t('Remotely linked'));
+    // Amazon support is not yet implemented, don't present it as an option
+    //                          '2' => $this->t('Amazon S3'));
 
-    $assetstoretype = new Zend_Form_Element_Select('type', array('id' => 'assetstoretype'));
+    $assetstoretype = new Zend_Form_Element_Select('assetstoretype', array('id' => 'assetstoretype'));
     $assetstoretype->setLabel('Select a type')->setMultiOptions($assetstoretypes);
     // Add a loading image
     $assetstoretype->setDescription('<div class="assetstoreLoading" style="display:none"><img src="'.$this->webroot.'/core/public/images/icons/loading.gif"/></div>')

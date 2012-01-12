@@ -1,19 +1,27 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /** Community Controller*/
 class CommunityController extends AppController
   {
-  public $_models = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Group', 'User', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Item', 'CommunityInvitation');
+  public $_models = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Itempolicygroup', 'Group', 'User', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Item', 'CommunityInvitation');
   public $_daos = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Group', 'User');
   public $_components = array('Sortdao', 'Date');
   public $_forms = array('Community');
@@ -104,7 +112,78 @@ class CommunityController extends AppController
           $communityDao = $this->Community->load($communityDao->getKey());
           $communityDao->setName($formInfo->getValue('name'));
           $communityDao->setDescription($formInfo->getValue('description'));
-          $communityDao->setPrivacy($formInfo->getValue('privacy'));
+
+          // update folderpolicygroup, itempolicygroup and feedpolicygroup tables when community privacy is changed between public and private
+          // users in Midas_anonymouse_group can see community's public folder only if the community is set as public
+          $forminfo_privacy = $formInfo->getValue('privacy');
+          $communityDao->setPrivacy($forminfo_privacy);
+          $anonymousGroup = $this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
+          $communityPublicFolder = $communityDao->getPublicFolder();
+          $folderpolicygroupDao = $this->Folderpolicygroup->getPolicy($anonymousGroup, $communityPublicFolder);
+          if($forminfo_privacy == MIDAS_COMMUNITY_PRIVATE && $folderpolicygroupDao !== false)
+            {
+            // process root folder
+            $this->Folderpolicygroup->delete($folderpolicygroupDao);
+            // process items in root folder
+            $items = $communityPublicFolder->getItems();
+            foreach($items as $item)
+              {
+              $itemolicygroupDao = $this->Itempolicygroup->getPolicy($anonymousGroup, $item);
+              $this->Itempolicygroup->delete($itemolicygroupDao);
+              }
+            // process all the children (and grandchildren ...) folders
+            $subfolders = $this->Folder->getAllChildren($communityDao->getPublicFolder(), $this->userSession->Dao);
+            foreach($subfolders as $subfolder)
+              {
+              $subfolderpolicygroupDao = $this->Folderpolicygroup->getPolicy($anonymousGroup, $subfolder);
+              $this->Folderpolicygroup->delete($subfolderpolicygroupDao);
+              // process items in children folders
+              $subitems = $subfolder->getItems();
+              foreach($subitems as $subfolderItem)
+                {
+                $subfolderitemolicygroupDao = $this->Itempolicygroup->getPolicy($anonymousGroup, $subfolderItem);
+                $this->Itempolicygroup->delete($subfolderitemolicygroupDao);
+                }
+              }
+            }
+          else if($forminfo_privacy == MIDAS_COMMUNITY_PUBLIC && $folderpolicygroupDao == false)
+            {
+            // process root folder
+            $this->Folderpolicygroup->createPolicy($anonymousGroup, $communityPublicFolder, MIDAS_POLICY_READ);
+            // process items in root folder
+            $items = $communityPublicFolder->getItems();
+            foreach($items as $item)
+              {
+              $this->Itempolicygroup->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+              }
+            // process all the children (and grandchildren ...) folders
+            $subfolders = $this->Folder->getAllChildren($communityDao->getPublicFolder(), $this->userSession->Dao);
+            foreach($subfolders as $subfolder)
+              {
+              $this->Folderpolicygroup->createPolicy($anonymousGroup, $subfolder, MIDAS_POLICY_READ);
+              // process items in children folders
+              $subitems = $subfolder->getItems();
+              foreach($subitems as $subfolderItem)
+                {
+                $this->Itempolicygroup->createPolicy($anonymousGroup, $subfolderItem, MIDAS_POLICY_READ);
+                }
+              }
+            }
+
+          // users in Midas_anonymouse_group can see CREATE_COMMUNITY feed for this community only if the community is set as public
+          $feedcreatecommunityDaoArray = array();
+          // there exist 1 and only 1 feed in 'MIDAS_FEED_CREATE_COMMUNITY' type for any commuinty
+          $feedcreatecommunityDaoArray = $this->Feed->getFeedByResourceAndType(MIDAS_FEED_CREATE_COMMUNITY, $communityDao);
+          $feedpolicygroupDao = $this->Feedpolicygroup->getPolicy($anonymousGroup, $feedcreatecommunityDaoArray[0]);
+          if($forminfo_privacy == MIDAS_COMMUNITY_PRIVATE && $feedpolicygroupDao !== false)
+            {
+            $this->Feedpolicygroup->delete($feedpolicygroupDao);
+            }
+          else if($forminfo_privacy == MIDAS_COMMUNITY_PUBLIC && $feedpolicygroupDao == false)
+            {
+            $this->Feedpolicygroup->createPolicy($anonymousGroup, $feedcreatecommunityDaoArray[0], MIDAS_POLICY_READ);
+            }
+
           $communityDao->setCanJoin($formInfo->getValue('canJoin'));
           $this->Community->save($communityDao);
           echo JsonComponent::encode(array(true, $this->t('Changes saved'), $formInfo->getValue('name')));
@@ -202,7 +281,14 @@ class CommunityController extends AppController
     $this->view->header = $this->t("Manage Community");
     $this->view->communityDao = $communityDao;
 
+    // User's personal data, used for drag-and-drop feature
+    $this->view->userPersonalmainFolder = $this->userSession->Dao->getFolder();
+    $this->view->userPersonalFolders = $this->Folder->getChildrenFoldersFiltered($this->view->userPersonalmainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $this->view->userPersonalItems = $this->Folder->getItemsFiltered($this->view->userPersonalmainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+
     $this->view->isAdmin = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+    $this->view->privateFolderId = $communityDao->getPrivatefolderId();
+    $this->view->publicFolderId = $communityDao->getPublicfolderId();
     $this->view->json['community'] = $communityDao->toArray();
     $this->view->json['community']['moderatorGroup'] = $moderator_group->toArray();
     $this->view->json['community']['memberGroup'] = $group_member->toArray();
@@ -241,6 +327,9 @@ class CommunityController extends AppController
     $communities = $this->Component->Sortdao->arrayUniqueDao($communities);
 
     $this->view->userCommunities = $communities;
+
+    $this->addDynamicHelp('.communityList:first', 'List of current projects/communities hosted on MIDAS.', 'top right', 'bottom left');
+    $this->addDynamicHelp('.createCommunity', 'Manage your own community or project.');
     }//end index
 
   /** View a community*/
@@ -306,6 +395,8 @@ class CommunityController extends AppController
       }
     $this->view->isModerator = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_WRITE);
     $this->view->isAdmin = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+    $this->view->privateFolderId = $communityDao->getPrivatefolderId();
+    $this->view->publicFolderId = $communityDao->getPublicfolderId();
     $this->view->json['community'] = $communityDao->toArray();
     $this->view->json['community']['sendInvitation'] = $this->t('Send invitation');
 
@@ -319,6 +410,12 @@ class CommunityController extends AppController
 
     $this->view->customJSs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_VIEW_JSS', array());
     $this->view->customCSSs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_VIEW_CSSS', array());
+
+    $this->addDynamicHelp('#tabDataLink', 'Public and Private Data hosted by the community.');
+    $this->addDynamicHelp('#tabFeedLink', 'What\'s new?');
+    $this->addDynamicHelp('#tabInfoLink', 'Description of the community.');
+    $this->addDynamicHelp('#tabSharedLink', 'Data shared to the member of the community.');
+
     } //end index
 
   /** Delete a community*/
@@ -403,10 +500,7 @@ class CommunityController extends AppController
       }
     else
       {
-      if(!$this->getRequest()->isXmlHttpRequest())
-        {
-        throw new Zend_Exception("Why are you here ? Should be ajax.");
-        }
+      $this->requireAjaxRequest();
       $this->_helper->layout->disableLayout();
       $this->view->form = $this->getFormAsArray($form);
       }
@@ -415,11 +509,7 @@ class CommunityController extends AppController
   /** Validate entries (ajax)*/
   public function validentryAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
-
+    $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $entry = $this->_getParam("entry");

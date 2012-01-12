@@ -1,14 +1,24 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
+
+require_once BASE_PATH.'/modules/scheduler/models/base/JobModelBase.php';
 
 /** job model */
 class Scheduler_JobModel extends Scheduler_JobModelBase
@@ -24,7 +34,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
           ->setIntegrityCheck(false)
           ->where('task = ?', $task)
           ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN);
-    
+
     $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)
@@ -35,7 +45,33 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
       }
     return $return;
     }
-  /** get jobs*/
+
+  /** get by tasks */
+  public function getJobsByTaskAndCreator($task, $userDao)
+    {
+    if(!is_string($task) && !$userDao instanceof UserDao)
+      {
+      throw new Zend_Exception('Error Params');
+      }
+    $sql = $this->database->select()
+          ->setIntegrityCheck(false)
+          ->where('task = ?', $task)
+          ->where('creator_id = ?', $userDao->getKey())
+          ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN)
+          ->order('fire_time DESC');
+
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->initDao('Job', $row, 'scheduler');
+      $return[] = $tmpDao;
+      unset($tmpDao);
+      }
+    return $return;
+    }
+
+  /** get the jobs that should be run on the current run invocation */
   public function getJobsToRun()
     {
     $load = $this->getServerLoad();
@@ -56,7 +92,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
         $minPriority = MIDAS_EVENT_PRIORITY_LOW;
         }
       }
-      
+
    $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->where('priority >= ?', $minPriority)
@@ -74,12 +110,30 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
       }
     return $return;
     }
-    
-    
-    /** get jobs*/
+
+  /** get all jobs scheduled to run in the future */
+  public function getFutureScheduledJobs()
+    {
+    $sql = $this->database->select()
+          ->setIntegrityCheck(false)
+          ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN)
+          ->where('fire_time >= ?', date('c'))
+          ->order(array('fire_time ASC'));
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->initDao('Job', $row, 'scheduler');
+      $return[] = $tmpDao;
+      unset($tmpDao);
+      }
+    return $return;
+    }
+
+  /** Get the last 'limit' jobs that have failed. The default value for limit is 10. */
   public function getLastErrors($limit = 10)
     {
-    $load = $this->getServerLoad();      
+    $load = $this->getServerLoad();
     $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->where('status = ?', SCHEDULER_JOB_STATUS_FAILED)
@@ -95,6 +149,6 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
       }
     return $return;
     }
-    
+
 }  // end class
 ?>

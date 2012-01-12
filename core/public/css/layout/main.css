@@ -1,18 +1,18 @@
 body {
   background-color: #F3F1EC;
   border: 0px;
-  font-family: 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
+  font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
   font-size: 12px;
   margin: 0px;
   padding: 0px;
   text-align: left;
   width: 100%;
-  height: 100%; 
+  height: 100%;
   min-width: 800px;
 }
 
 .clear {
-  clear: both;  
+  clear: both;
   content: '.';
   display: block;
   height: 0px;
@@ -25,7 +25,7 @@ dl {
 }
 
 dt{
-  
+
 }
 
 img{
@@ -79,14 +79,14 @@ div.genericBigButton{
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   -khtml-border-radius: 3px;
-  border-radius: 3px;  
+  border-radius: 3px;
   background-color: #ffffff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#c4c4c4));
   background-image: -moz-linear-gradient(center top, #ffffff 0%, #c4c4c4 100% );
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#c4c4c4');
   -webkit-box-shadow: #666 0 0 2px;
   box-shadow: #666 0 0 2px;
-  -moz-box-shadow: 0px 0px 2px #666; 
+  -moz-box-shadow: 0px 0px 2px #666;
   padding: 1px 3px 2px 3px;
 }
 
@@ -112,11 +112,11 @@ div.genericWrapperTopRight{
   float:right;
 }
 
-div.viewAction li a:hover, div.genericAction li a:hover{
+div.viewAction li a:hover, div.genericAction li a:hover, div.viewSelected li a:hover{
   text-decoration: none;
 }
 
-div.viewAction li img, div.genericAction li img{
+div.viewAction li img, div.genericAction li img, div.viewSelected li img{
   position:relative;
   top:3px;
 }
@@ -133,17 +133,24 @@ div.viewAction hr, div.genericAction hr{
 }
 
 .jgrowl{
-  min-width: 250px!important;
+  min-width: 300px!important;
   min-height: 70px!important;
-
 }
 
 .jgrowl div{
-  border-color: grey!important;
-  font-size: 12px!important;
-  font-weight: bold!important;
-}
+  background-color: #578DBB!important;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#578DBB), to(#325372))!important;
+  background-image: -moz-linear-gradient(center top, #578DBB 0%, #325372 100% )!important;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#578DBB', endColorstr='#325372')!important;
 
+  border: 2px solid grey!important;
+  font-size: 13px!important;
+  font-weight: bold!important;
+  box-shadow: 0 0 5px #57BB7D!important;
+  -webkit-box-shadow: 0 0 5px #57BB7D!important;
+  -moz-box-shadow: 0 0 5px #57BB7D!important;
+  margin-right:40px;
+}
 .uploadqtip{
   min-width: 600px!important;
   border: 1px solid grey!important;
@@ -180,7 +187,7 @@ div.TopDynamicBar .closeButton span{
 }
 
 div.TopDynamicBar .TopDynamicLoading{
-  
+
 }
 div.Topbar {
   font-family: 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif;
@@ -261,7 +268,7 @@ div.Header {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#63869f', endColorstr='#56758b');
   -webkit-box-shadow: #666 0 0 3px;
   box-shadow: #666 0 0 3px;
-  -moz-box-shadow: 0px 0px 3px #666; 
+  -moz-box-shadow: 0px 0px 3px #666;
 }
 
 div.Header div.HeaderContent{
@@ -300,14 +307,14 @@ div.Header div.HeaderSearch input#live_search{
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
   -khtml-border-radius: 4px;
-  border-radius: 4px;   
+  border-radius: 4px;
   font-size: 14px;
   opacity: 0.9;
   padding: 5px 10px 5px 24px;
   width: 400px;
   -webkit-box-shadow: #666 0 0 15px;
   box-shadow: #666 0 0 15px;
-  -moz-box-shadow: 0px 0px 15px #666; 
+  -moz-box-shadow: 0px 0px 15px #666;
 }
 
 #searchloading{
@@ -372,14 +379,14 @@ div.HeaderAction ul li{
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
   -khtml-border-radius: 6px;
-  border-radius: 6px;  
+  border-radius: 6px;
   background-color: #57bb7d;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#57bb7d), to(#32724a));
   background-image: -moz-linear-gradient(center top, #57bb7d 0%, #32724a 100% );
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#57bb7d', endColorstr='#32724a');
   -webkit-box-shadow: #666 0 0 5px;
   box-shadow: #666 0 0 5px;
-  -moz-box-shadow: 0px 0px 5px #666; 
+  -moz-box-shadow: 0px 0px 5px #666;
   padding: 0px 5px 6px 5px;
 }
 
@@ -412,7 +419,7 @@ div.SubWrapper{
   margin: 0px;
   padding: 0px;
   width: 100%;
-  
+
 }
 
 /*-------------------------------------------------
@@ -428,13 +435,13 @@ div.MainContent {
 
 div.SubMainContent{
   -webkit-box-shadow: #CCC 0px 0px 3px;
-  -moz-box-shadow: 0px 0px 6px #CCC; 
+  -moz-box-shadow: 0px 0px 6px #CCC;
   background-color: white;
   border: 1px solid #D7D7D7;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
   -khtml-border-radius: 6px;
-  border-radius: 6px;  
+  border-radius: 6px;
   padding: 0px 0px 7px;
   position: relative;
   min-height: 500px;
@@ -501,7 +508,7 @@ div.SideBar ul li a:hover{
 }
 
 div.SideBar ul li a img{
-  
+
 }
 
 div.SideBar ul li a span{
@@ -523,7 +530,7 @@ div.SideBar h1, div.viewSideBar h1 {
   text-transform: uppercase;
   margin-top: 0.67em;
   margin-bottom: 0.67em;
-  
+
 }
 
 
@@ -553,7 +560,7 @@ div.TopbarRight  li ul{
   border:0px;
   position:absolute;
   width:120px;
-  
+
   /*top:1em;
 		/*left:0;*/
 }
@@ -586,7 +593,7 @@ div.TopbarRight  li:hover li a{
   background:#4B4B4B;
   color:white;
   z-index:200;
-  
+
 }
 
 
@@ -602,9 +609,9 @@ div.TopbarRight  li ul a{
   line-height:17px;
   -webkit-box-shadow: #666 0 0 5px;
   box-shadow: #666 0 0 5px;
-  -moz-box-shadow: 0px 0px 5px #666; 
+  -moz-box-shadow: 0px 0px 5px #666;
   z-index:200;
-  
+
 }
 div.TopbarRight  li ul a:hover, div.TopbarRight  li ul li:hover a{
   background:black ;
@@ -612,4 +619,47 @@ div.TopbarRight  li ul a:hover, div.TopbarRight  li ul li:hover a{
 }
 div.TopbarRight  p{
   clear:left;
+}
+
+/*---------------------------------------------
+Starting Guide 
+----------------------------------------------
+*/
+
+#dialogStartingGuide .blockSet{
+  width: 262px;
+  float: left;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  padding: 1px;
+  margin: 5px;
+  border: 1px solid #CCC;
+  cursor:pointer;
+}
+
+#dialogStartingGuide .blockSet:hover{
+  border: 2px solid #D3E8F8;
+  padding: 0px;
+  box-shadow: 1px 2px 4px #b9b9b9;
+  -moz-box-shadow: 1px 2px 4px #b9b9b9;
+  -webkit-box-shadow: 1px 2px 4px #b9b9b9;
+}
+
+#seperatorStartingGuide{
+    background-color: #ffffff;
+    height:5px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#c4c4c4));
+    background-image: -moz-linear-gradient(center top, #ffffff 0%, #c4c4c4 100% );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#c4c4c4');
+      box-shadow: 1px 2px 4px #b9b9b9;
+  -moz-box-shadow: 1px 2px 4px #b9b9b9;
+  -webkit-box-shadow: 1px 2px 4px #b9b9b9;
+    -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+#dialogStartingGuide h4{
+  margin-bottom: 2px;
 }

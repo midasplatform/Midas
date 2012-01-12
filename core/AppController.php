@@ -1,14 +1,27 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
+
+// Exception Messages
+define('MIDAS_ADMIN_PRIVILEGES_REQUIRED', "Administrative privileges required.");
+define('MIDAS_AJAX_REQUEST_ONLY', "This page should only be requested by ajax.");
+define('MIDAS_LOGIN_REQUIRED', "User should be logged in to access this page.");
 
 /**
  * GlobalAction
@@ -38,6 +51,9 @@ class AppController extends MIDAS_GlobalController
     $this->view->webroot = $fc->getBaseUrl();
     $this->coreWebroot = $this->view->webroot.'/core';
     $this->view->coreWebroot = $this->coreWebroot;
+
+    Zend_Registry::set('webroot', $this->view->webroot);
+    Zend_Registry::set('coreWebroot', $this->view->coreWebroot);
 
     $this->view->demoMode = $this->isDemoMode();
 
@@ -79,6 +95,7 @@ class AppController extends MIDAS_GlobalController
       else
         {
         $user = new Zend_Session_Namespace('Auth_User');
+        $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
         }
 
       if($user->Dao == null)
@@ -172,7 +189,6 @@ class AppController extends MIDAS_GlobalController
           $this->view->recentItems = $recentItems;
           $check = $this->_getParam('checkRecentItem');
           }
-        $user->Dao->lastAction = date('c');
         }
       else
         {
@@ -194,6 +210,7 @@ class AppController extends MIDAS_GlobalController
     else
       {
       Zend_Registry::set('userSession', null);
+      $user = null;
       }
 
     // init notifier
@@ -201,6 +218,10 @@ class AppController extends MIDAS_GlobalController
 
 
     $this->view->lang = Zend_Registry::get('configGlobal')->application->lang;
+
+    $this->view->isStartingGuide = $this->isStartingGuide();
+    $this->view->isDynamicHelp = $this->isDynamicHelp();
+
     //create a global javascript json array
     $jsonGlobal = array(
       "webroot" => $this->view->webroot,
@@ -209,6 +230,10 @@ class AppController extends MIDAS_GlobalController
       "needToLog" => false,
       "currentUri" => $this->getRequest()->REQUEST_URI,
       "lang" => Zend_Registry::get('configGlobal')->application->lang,
+      "demomode" => $this->isDemoMode(),
+      "dynamichelp" => $this->isDynamicHelp(),
+      "dynamichelpAnimate" => $this->isDynamicHelp() && isset($_GET['first']),
+      "startingGuide" => $this->isStartingGuide(),
       "Yes" => $this->t('Yes'),
       "No" => $this->t('No'));
 
@@ -223,13 +248,15 @@ class AppController extends MIDAS_GlobalController
       'createFolder' => $this->t('Create a new Folder'),
       'preview' => $this->t('Preview'),
       'download' => $this->t('Download'),
-      'downloadLastest' => $this->t('Download lastest revision'),
+      'downloadLatest' => $this->t('Download latest revision'),
       'manage' => $this->t('Manage'),
       'edit' => $this->t('Edit'),
       'delete' => $this->t('Delete'),
+      'deleteSelected' => $this->t('Delete all selected'),
+      'deleteSelectedMessage' => $this->t('Do you really want to delete all selected resources?'),
       'removeItem' => $this->t('Remove Item from Folder'),
-      'deleteMessage' => $this->t('Do you really want to delete the folder'),
-      'removeMessage' => $this->t('Do you really want to remove the item'),
+      'deleteMessage' => $this->t('Do you really want to delete the folder?'),
+      'removeMessage' => $this->t('Do you really want to remove the item?'),
       'share' => $this->t('Permissions'),
       'shared' => $this->t('Shared'),
       'public' => $this->t('Public'),
@@ -244,12 +271,101 @@ class AppController extends MIDAS_GlobalController
           'advanced' => $this->t('Advanced properties')));
 
     $feed = array(
-      "deleteFeed" => $this->t('Do you really want to delete the feed'));
+      "deleteFeed" => $this->t('Do you really want to delete the feed?'));
 
     $this->view->json = array(
       "global" => $jsonGlobal, "login" => $login, 'feed' => $feed, "browse" => $browse);
+
+    // Init Dynamic Help (the order makes sense for the animation)
+    if($this->isDemoMode())
+      {
+      $this->addDynamicHelp('.loginLink', "<b>Authenticate.</b><br/><br/>Demo Administrator:<br/>- Login: admin@kitware.com<br/>- Password: admin<br/><br/>
+                            Demo User:<br/>-Login: user@kitware.com<br/>-Password: user", 'bottom left', 'top right');
+      }
+
+    if($this->logged)
+      {
+      $this->addDynamicHelp('#startingGuideLink', 'Show the <b>Starting Guide</b>. You can disable these messages from this panel.');
+      }
+    else
+      {
+      $this->addDynamicHelp('.HeaderLogo', 'The <b>MIDAS Platform</b> integrates multimedia server technology with open-source data analysis and visualization clients.');
+      }
+
+
+    $this->addDynamicHelp('.HeaderSearch', '<b>Quick search</b>. Use this tool to quickly find information and data.');
+    $this->addDynamicHelp('li.uploadFile a', '<b>Upload</b> files, data using this button.');
+
+    if($this->logged)
+      {
+      $this->addDynamicHelp('#topUserName', '<b>Manage</b> your information.', 'bottom left', 'top right');
+      }
+    else
+      {
+      $this->addDynamicHelp('.registerLink', '<b>Register</b> to create your personal space.', 'bottom left', 'top right');
+      }
+
+    $this->addDynamicHelp('.SideBar ul:first', '<b>Navigation menu</b>. Browse, explore and manage data.');
+
     Zend_Loader::loadClass("JsonComponent", BASE_PATH.'/core/controllers/components');
+
+    // init layout
+    $modulesConfig = Zend_Registry::get('configsModules');
+    foreach($modulesConfig as $key => $module)
+      {
+      if($this->_helper->hasHelper('layout') && file_exists(BASE_PATH . "/modules/".$key."/layouts/layout-core.phtml"))
+        {
+        $this->_helper->layout->setLayoutPath(BASE_PATH . "/modules/".$key."/layouts/");
+        $this->_helper->layout->setLayout('layout-core');
+        }
+      if($this->_helper->hasHelper('layout') && file_exists(BASE_PATH . "/privateModules/".$key."/layouts/layout-core.phtml"))
+        {
+        $this->_helper->layout->setLayoutPath(BASE_PATH . "/privateModules/".$key."/layouts/");
+        $this->_helper->layout->setLayout('layout-core');
+        }
+      }
     } // end preDispatch()
+
+  /** show dynamic help ? */
+  function isDynamicHelp()
+    {
+    if($this->isDemoMode())
+      {
+      return true;
+      }
+    try
+      {
+      $dynamichelp = Zend_Registry::get('configGlobal')->dynamichelp;
+      if($dynamichelp && $this->userSession != null && $this->userSession->Dao != null)
+        {
+        return $this->userSession->Dao->getDynamichelp() == 1;
+        }
+      return $dynamichelp == 1;
+      }
+    catch(Zend_Exception $exc)
+      {
+      $this->getLogger()->warn($exc->getMessage());
+      return false;
+      }
+    }
+
+  /** show starting guide ? */
+  function isStartingGuide()
+    {
+    try
+      {
+      if($this->userSession != null && $this->userSession->Dao != null && isset($_GET['first']))
+        {
+        return $this->userSession->Dao->getDynamichelp() == 1;
+        }
+      return false;
+      }
+    catch(Zend_Exception $exc)
+      {
+      $this->getLogger()->warn($exc->getMessage());
+      return false;
+      }
+    }
 
   /** get server's url */
   function getServerURL()
@@ -278,6 +394,17 @@ class AppController extends MIDAS_GlobalController
     return Zend_Registry::get('configGlobal')->environment == 'testing';
     }
 
+  /** Add a qtip help in the page
+   *
+   * @param type $selector (javascript selector)
+   * @param type $text
+   * @param type $location
+   * @param type $arrow
+   */
+  public function addDynamicHelp($selector, $text, $location = 'bottom right', $arrow = 'top left')
+    {
+    $this->view->json['dynamicHelp'][] = array('selector' => $selector, 'text' => htmlspecialchars($text), 'my' => $arrow, 'at' => $location);
+    }
   /** check if demo mode is set */
   public function isDemoMode()
     {
@@ -296,6 +423,16 @@ class AppController extends MIDAS_GlobalController
   public function disableView()
     {
     $this->_helper->viewRenderer->setNoRender();
+    }
+
+  /** Show a jgrowl Message */
+  public function showNotificationMessage($message)
+    {
+    if(!isset($this->view->json['triggerNotification']))
+      {
+      $this->view->json['triggerNotification'] = array();
+      }
+    $this->view->json['triggerNotification'][] = $message;
     }
 
   /** check if midas needs to be upgraded */
@@ -332,17 +469,36 @@ class AppController extends MIDAS_GlobalController
     $this->view->generatedTimer = round((microtime(true) - START_TIME), 3);
     if(Zend_Registry::get('configGlobal')->environment != 'testing')
       {
-      header('Content-Type: text/html; charset=ISO-8859-1');
+      header('Content-Type: text/html; charset=UTF-8');
       }
     }
 
   /** trigger logging (javascript) */
   public function haveToBeLogged()
     {
-    $this->view->header = $this->t("You should be logged to access this page");
+    $this->view->header = $this->t(MIDAS_LOGIN_REQUIRED);
     $this->view->json['global']['needToLog'] = true;
     $this->_helper->viewRenderer->setNoRender();
     }
+
+  /** ensure the request is ajax */
+  public function requireAjaxRequest()
+    {
+    if(!$this->getRequest()->isXmlHttpRequest())
+      {
+      throw new Zend_Exception(MIDAS_AJAX_REQUEST_ONLY);
+      }
+    }
+
+  /** ensure that the user is logged in and has admin privileges */
+  public function requireAdminPrivileges()
+    {
+    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
+      {
+      throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED);
+      }
+    }
+
   /** translation */
   protected function t($text)
     {
@@ -431,6 +587,11 @@ class AppController extends MIDAS_GlobalController
   * @var UserModelBase
   */
   var $User;
+  /**
+  * Setting Model
+  * @var SettingModelBase
+  */
+  var $Setting;
 
   /**end completion eclipse */
   }//end class

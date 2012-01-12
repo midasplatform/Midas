@@ -1,17 +1,25 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /**
- *  AJAX request for the admin Controller
+ *  Controller for downloading elements.
  */
 class DownloadController extends AppController
 {
@@ -100,7 +108,8 @@ class DownloadController extends AppController
 
     if(empty($folders) && empty($revisions))
       {
-      throw new Zend_Exception('There is nothing to download');
+      // download an empty zip with the name of item (if it exists), then exit
+      $this->_downloadEmptyItem($item);
       }
     if(empty($folders) && count($revisions) == 1)
       {
@@ -114,7 +123,8 @@ class DownloadController extends AppController
 
       if(count($bitstreams) == 0)
         {
-        throw new Zend_Exception('Empty item');
+        // download an empty zip with the name of item (if it exists), then exit
+        $this->_downloadEmptyItem($item);
         }
       elseif(count($bitstreams) == 1)
         {
@@ -134,6 +144,11 @@ class DownloadController extends AppController
         }
       else
         {
+        while(ob_get_level() > 0)
+          {
+          ob_end_clean();
+          }
+        ob_start();
         Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
         $this->_helper->viewRenderer->setNoRender();
         $name = $revision->getItem()->getName();
@@ -144,6 +159,7 @@ class DownloadController extends AppController
           $zip->add_file_from_path($bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
           }
         $zip->finish();
+        exit();
         }
       }
     else
@@ -175,21 +191,70 @@ class DownloadController extends AppController
         {
         $name = "Custom";
         }
+
+      while(ob_get_level() > 0)
+        {
+        ob_end_clean();
+        }
+      ob_start();
       $zip = new ZipStream($name.'.zip');
       $zip = $this->_createZipRecursive($zip, '', $folders, $revisions);
       $zip->finish();
+      exit();
       }
     }//end index
+
+  /**
+   * will download a zip file with the same name as the item name,
+   * if the item exists, then will exit.
+   * @param type $item
+   */
+  private function _downloadEmptyItem($item)
+    {
+    while(ob_get_level() > 0)
+      {
+      ob_end_clean();
+      }
+    ob_start();
+    Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
+    $this->_helper->viewRenderer->setNoRender();
+    if(isset($item))
+      {
+      $name = $item->getName();
+      }
+    else
+      {
+      $name = "No_item_selected";
+      }
+    $name = substr($name, 0, 50);
+    $zip = new ZipStream($name.'.zip');
+    $zip->finish();
+    exit();
+    }
+
+
+
 
   /** create zip recursive*/
   private function _createZipRecursive($zip, $path, $folders, $revisions)
     {
     foreach($revisions as $revision)
       {
+      $itemName = $revision->getItem()->getName();
       $bitstreams = $revision->getBitstreams();
+      $count = count($bitstreams);
+
       foreach($bitstreams as $bitstream)
         {
-        $zip->add_file_from_path($path.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
+        if($count > 1 || $bitstream->getName() != $itemName)
+          {
+          $currPath = $path.'/'.$itemName;
+          }
+        else
+          {
+          $currPath = $path;
+          }
+        $zip->add_file_from_path($currPath.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
         }
       }
     foreach($folders as $folder)
@@ -202,6 +267,7 @@ class DownloadController extends AppController
       $subRevisions = array();
       foreach($items as $item)
         {
+        $itemName = $item->getName();
         if(!$this->Item->policyCheck($item, $this->userSession->Dao))
           {
           continue;
@@ -213,9 +279,18 @@ class DownloadController extends AppController
           if(isset($folder->recursive) && $folder->recursive == false)
             {
             $bitstreams = $subRevisions->getBitstreams();
+            $count = count($bitstreams);
             foreach($bitstreams as $bitstream)
               {
-              $zip->add_file_from_path($path.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'. $bitstream->getPath());
+              if($count > 1 || $bitstream->getName() != $itemName)
+                {
+                $currPath = $path.'/'.$itemName;
+                }
+              else
+                {
+                $currPath = $path;
+                }
+              $zip->add_file_from_path($currPath.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'. $bitstream->getPath());
               }
             }
           }

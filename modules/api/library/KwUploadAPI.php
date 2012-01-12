@@ -1,5 +1,23 @@
 <?php
 /*=========================================================================
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+=========================================================================*/
+/*=========================================================================
 Program:   MIDAS Server
 Language:  PHP/HTML/Java/Javascript/SQL
 Date:      $Date$
@@ -47,12 +65,12 @@ class KwUploadAPI
     $this->tmp_directory = $tmp_directory;
     }
 
-   /**
-    * Generate an upload token that will act as the authentication token for the upload.
-    * This token is the filename of a guaranteed unique file which will be placed under the
-    * directory specified by the dirname parameter, which should be used to ensure that
-    * the user can only write into a certain logical space.
-    */
+  /**
+   * Generate an upload token that will act as the authentication token for the upload.
+   * This token is the filename of a guaranteed unique file which will be placed under the
+   * directory specified by the dirname parameter, which should be used to ensure that
+   * the user can only write into a certain logical space.
+   */
   function generateToken($args, $dirname = '')
     {
     if(!array_key_exists('filename', $args))
@@ -198,11 +216,10 @@ class KwUploadAPI
       {
       throw new Exception('Parameter '.self::PARAM_NAME_UPLOAD_TOKEN.' is not defined', -150);
       }
-    $uploadToken = $args[self::PARAM_NAME_UPLOAD_TOKEN]; //XXX123.TMP
+    $uploadToken = $args[self::PARAM_NAME_UPLOAD_TOKEN];
 
-    $offset = filesize($this->tmp_directory."/$uploadToken");
-
-    $data['offset'] = $offset;
+    $data = array();
+    $data['offset'] = filesize($this->tmp_directory."/$uploadToken");
 
     return $data;
     }

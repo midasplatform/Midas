@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /** This class handles the upload of files into the different assetstores */
@@ -131,7 +139,7 @@ class UploadComponent extends AppComponent
 
     Zend_Loader::loadClass('ItemDao', BASE_PATH.'/core/models/dao');
     $item = new ItemDao;
-    $item->setName($name);
+    $item->setName($itemModel->updateItemName($name, $parent));
     $item->setDescription('');
     $item->setType(0);
     $item->setThumbnail('');
@@ -262,7 +270,7 @@ class UploadComponent extends AppComponent
     }//end createUploadedItem
 
   /** save upload item in the DB */
-  public function createNewRevision($userDao, $name, $path, $item_revision, $changes, $license = null, $filemd5 = '')
+  public function createNewRevision($userDao, $name, $path, $changes, $itemId, $itemRevisionNumber = null, $license = null, $filemd5 = '')
     {
     if($userDao == null)
       {
@@ -278,21 +286,24 @@ class UploadComponent extends AppComponent
     $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
     $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
 
-    $item = $itemModel->load($item_revision[0]);
+    $item = $itemModel->load($itemId);
 
     if($item == false)
       {
       throw new Zend_Exception('Unable to find item');
       }
 
-    $revisions = $item->getRevisions();
     $itemRevisionDao = null;
-    foreach($revisions as $revision)
+    if(isset($itemRevisionNumber))
       {
-      if($item_revision[1] == $revision->getRevision())
+      $revisions = $item->getRevisions();
+      foreach($revisions as $revision)
         {
-        $itemRevisionDao = $revision;
-        break;
+        if($itemRevisionNumber == $revision->getRevision())
+          {
+          $itemRevisionDao = $revision;
+          break;
+          }
         }
       }
 
@@ -359,9 +370,12 @@ class UploadComponent extends AppComponent
       $bitstreamDao->setAssetstoreId($tmpBitstreamDao->getAssetstoreId());
       }
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
+    // now that we have updated the itemRevision, the item may be stale
+    $item = $itemModel->load($itemId);
 
     $this->getLogger()->info(__METHOD__." Upload ok :".$path);
     Zend_Registry::get('notifier')->notifyEvent("EVENT_CORE_UPLOAD_FILE", array($itemRevisionDao->getItem()->toArray(), $itemRevisionDao->toArray()));
+
     return $item;
     }//end
 } // end class UploadComponent

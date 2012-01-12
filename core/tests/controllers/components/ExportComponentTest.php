@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 require_once BASE_PATH.'/library/KWUtils.php';
@@ -45,7 +53,7 @@ class ExportComponentTest extends ControllerTestCase
     // notifier is required in ItemRevisionModelBase::addBitstream, create a fake one
     Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     // create a directory for testing the export component
-    $midas_exporttest_dir = BASE_PATH.'/tmp/exportTest';
+    $midas_exporttest_dir = $this->getTempDirectory().'/exportTest';
     if(file_exists($midas_exporttest_dir))
       {
       if(!KWUtils::recursiveRemoveDirectory($midas_exporttest_dir))
@@ -125,8 +133,7 @@ class ExportComponentTest extends ControllerTestCase
    */
   public function testCreateSymlinks()
     {
-    $midas_exporttest_dir = BASE_PATH.'/tmp/exportTest';
-
+    $midas_exporttest_dir = $this->getTempDirectory().'/exportTest';
     // user1 upload one file to his public folder, another file to his private folder
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
@@ -185,7 +192,7 @@ class ExportComponentTest extends ControllerTestCase
    */
   public function testCopy()
     {
-    $midas_exporttest_dir = BASE_PATH.'/tmp/exportTest';
+    $midas_exporttest_dir = $this->getTempDirectory().'/exportTest';
 
     // user1 upload one file to his public folder, another file to his private folder
     $usersFile = $this->loadData('User', 'default');
@@ -223,7 +230,7 @@ class ExportComponentTest extends ControllerTestCase
    */
   public function testExportBitStreamsInvalidCases()
     {
-    $midas_exporttest_dir = BASE_PATH.'/tmp/exportTest';
+    $midas_exporttest_dir = $this->getTempDirectory().'/exportTest';
 
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());

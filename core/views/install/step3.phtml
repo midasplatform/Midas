@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -34,7 +34,12 @@ PURPOSE.  See the above copyright notices for more information.
                 <label for='name'>Keywords</label>
                 {$this->form['keywords']}
               </div>
-              <div class='installLang'>
+              <div class='installLang'";
+      if(isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get('configCore')->internationalization == "0")
+        {
+        echo " style='display:none;' ";
+        }
+      echo ">
                 <label for='lang'>Language</label>
                 {$this->form['lang']}
               </div>
@@ -58,7 +63,7 @@ PURPOSE.  See the above copyright notices for more information.
             {$this->form['submit']}
           </div>
        </form>";
-                
+
      ?>
 </div>
 <div class="viewSideBar">
@@ -71,7 +76,7 @@ PURPOSE.  See the above copyright notices for more information.
 </div>
 
 <div class='hiddenProcces' style="display:none;">
-  <?php 
+  <?php
 echo "<br/>
     Windows:".BASE_PATH."<br/>/library/Executable/windows/32/<br/>wget.exe -O <br/>".BASE_PATH."<br/>/log/task.log<br/> http://localhost{$this->webroot}/task<br/><br/>
     Linux:  wget -O ".BASE_PATH."<br/>/log/task.log http://localhost{$this->webroot}/task";

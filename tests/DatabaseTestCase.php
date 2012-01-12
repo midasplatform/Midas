@@ -1,19 +1,69 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
+
 require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/configuredVars.php';
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
+
 /** main models test element*/
 abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
   {
   protected $application;
+
+  /**
+   * Start xdebug code coverage.
+   * Only has an effect if MIDAS_TEST_COVERAGE is defined to true
+   */
+  public function startCodeCoverage()
+    {
+    if(MIDAS_TEST_COVERAGE && extension_loaded('xdebug'))
+      {
+      xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+      }
+    }
+
+  /**
+   * Stop xdebug code coverage and write the results.
+   * Only has an effect if MIDAS_TEST_COVERAGE is defined to true
+   */
+  public function stopCodeCoverage()
+    {
+    if(MIDAS_TEST_COVERAGE && extension_loaded('xdebug'))
+      {
+      $data = xdebug_get_code_coverage();
+      xdebug_stop_code_coverage();
+
+      $file = CMAKE_BINARY_DIR.'/xdebugCoverage/'.md5($_SERVER['SCRIPT_FILENAME']);
+      file_put_contents($file.'.'.md5(uniqid(rand(), true)).'.'.get_class($this), serialize($data));
+      }
+    }
+
+  /**
+   * @method protected getTempDirectory()
+   * get the midas temporary directory
+   * @return string
+   */
+  protected function getTempDirectory()
+    {
+    return UtilityComponent::getTempDirectory();
+    }
 
   /** init tests*/
   public function setUp()
@@ -41,12 +91,14 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       }
 
     parent::setUp();
+    $this->startCodeCoverage();
     }
 
   /** end tests*/
   public function tearDown()
     {
     parent::tearDown();
+    $this->stopCodeCoverage();
     }
 
   /** init midas*/

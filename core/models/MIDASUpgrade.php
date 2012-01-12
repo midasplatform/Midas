@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /**
@@ -84,7 +92,18 @@ class MIDASUpgrade
       {
       foreach($this->_moduleDaos as $dao)
         {
-        include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
+        if(file_exists(BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
+          {
+          include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
+          }
+        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
+          {
+          include_once (BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php");
+          }
+        else
+          {
+          throw new Zend_Exception("Unable to find dao file ".$dao);
+          }
         }
       }
 
@@ -93,8 +112,24 @@ class MIDASUpgrade
       foreach($this->_moduleComponents as $component)
         {
         $nameComponent = ucfirst($this->moduleName).'_'.$component . "Component";
-        include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
-        @$this->ModuleComponent->$component = new $nameComponent();
+        if(file_exists(BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php"))
+          {
+          include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
+          }
+        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"))
+          {
+          include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php");
+          }
+        else
+          {
+          throw new Zend_Exception("Unable to find component file ".$component);
+          }
+
+        if(!isset($this->ModuleComponent))
+          {
+          $this->ModuleComponent =  new stdClass();
+          }
+        $this->ModuleComponent->$component = new $nameComponent();
         }
       }
 
@@ -103,8 +138,24 @@ class MIDASUpgrade
       foreach($this->_moduleForms as $forms)
         {
         $nameForm = ucfirst($this->moduleName).'_'.$forms . "Form";
-        include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
-        @$this->ModuleForm->$forms = new $nameForm();
+        if(file_exists(BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
+          {
+          include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
+          }
+        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
+          {
+          include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
+          }
+        else
+          {
+          throw new Zend_Exception("Unable to find form file ".$forms);
+          }
+
+        if(!isset($this->ModuleForm))
+          {
+          $this->ModuleForm =  new stdClass();
+          }
+        $this->ModuleForm->$forms = new $nameForm();
         }
       }
     }
@@ -143,7 +194,11 @@ class MIDASUpgrade
         {
         $nameComponent = $component . "Component";
         Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
-        @$this->Component->$component = new $nameComponent();
+        if(!isset($this->Component))
+          {
+          $this->Component =  new stdClass();
+          }
+        $this->Component->$component = new $nameComponent();
         }
       }
 
@@ -155,7 +210,11 @@ class MIDASUpgrade
         $nameForm = $forms . "Form";
 
         Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
-        @$this->Form->$forms = new $nameForm();
+        if(!isset($this->Form))
+          {
+          $this->Form =  new stdClass();
+          }
+        $this->Form->$forms = new $nameForm();
         }
       }
     }//end loadElements

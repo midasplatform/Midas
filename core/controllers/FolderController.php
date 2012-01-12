@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /** Folder Controller*/
@@ -25,7 +33,6 @@ class FolderController extends AppController
     $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     if(isset($actionName) && (is_numeric($actionName) || strlen($actionName) == 32)) // This is tricky! and for Cassandra for now
       {
-
       $this->_forward('view', null, null, array('folderId' => $actionName));
       }
     $this->view->activemenu = 'browse'; // set the active menu
@@ -158,6 +165,7 @@ class FolderController extends AppController
 
     $this->view->title .= ' - '.$folder->getName();
     $this->view->metaDescription = substr($folder->getDescription(), 0, 160);
+    $this->view->json['folder'] = $folder;
     }// end View Action
 
 
@@ -178,19 +186,39 @@ class FolderController extends AppController
       {
       throw new Zend_Exception("The folder doesn t exist.");
       }
-    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
       throw new Zend_Exception("Permissions error.");
       }
 
     $parent = $folder->getParent();
-    if($this->Folder->getCommunity($parent) != false || $this->Folder->getCommunity($folder) != false)
+    $folderId = $folder->getFolderId();
+    // User cannot delete community's root folder, the default 'Public' folder and the default 'Private' folder
+    if($this->Folder->getCommunity($folder) != false)
       {
-      throw new Zend_Exception("Community Folder. You cannot delete it.");
+      throw new Zend_Exception("Community Root Folder. You cannot delete it.");
       }
-    if($this->Folder->getUser($parent) != false || $this->Folder->getUser($folder) != false)
+    $communityDao = $this->Folder->getCommunity($parent);
+    if($communityDao != false)
       {
-      throw new Zend_Exception("User Folder. You cannot delete it.");
+      if($communityDao->getPrivatefolderId() == $folderId || $communityDao->getPublicfolderId() == $folderId)
+        {
+        throw new Zend_Exception("Community Default Folder. You cannot delete it.");
+        }
+      }
+
+    // User cannot delete its root folder, the default 'Public' folder and the default 'Private' folder
+    if($this->Folder->getUser($folder) != false)
+      {
+      throw new Zend_Exception("User Root Folder. You cannot delete it.");
+      }
+    $userDao = $this->Folder->getUser($parent);
+    if($userDao != false)
+      {
+      if($userDao->getPrivatefolderId() == $folderId || $userDao->getPublicfolderId() == $folderId)
+        {
+        throw new Zend_Exception("User Default Folder. You cannot delete it.");
+        }
       }
     $this->Folder->delete($folder, true);
     $folderInfo = $folder->toArray();
@@ -206,7 +234,7 @@ class FolderController extends AppController
     $item_id = $this->_getParam('itemId');
     $folder = $this->Folder->load($folder_id);
     $item = $this->Item->load($item_id);
-    $header = "";
+    $header = '';
     if(!isset($folder_id))
       {
       throw new Zend_Exception("Please set the folderId.");
@@ -217,15 +245,19 @@ class FolderController extends AppController
       }
     elseif($folder === false)
       {
-      throw new Zend_Exception("The folder doesn t exist.");
+      throw new Zend_Exception("The folder doesn't exist.");
       }
     elseif($item === false)
       {
-      throw new Zend_Exception("The item doesn t exist.");
+      throw new Zend_Exception("The item doesn't exist.");
       }
-    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception("Permissions error.");
+      throw new Zend_Exception('Admin permission on folder required');
+      }
+    elseif(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED);
       }
 
     $this->Folder->removeItem($folder, $item);

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -30,22 +30,22 @@ if($this->preview) // module visualize
         echo "<a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/download.png'/>";
         if($this->itemIsLink)
           {
-          echo $this->t('View as weblink');  
+          echo $this->t('View as weblink');
           }
         else
           {
-          echo $this->t('Download');  
+          echo $this->t('Download');
           }
         echo '</a>';
          ?>
       </div>
-      
+
        <?php
       if($this->backUploaded)
         {
         echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
           echo "<a  href='{$this->webroot}/browse/uploaded'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-          echo $this->t('Back');  
+          echo $this->t('Back');
           echo "</a>";
         echo '</div>';
         }
@@ -53,16 +53,16 @@ if($this->preview) // module visualize
         {
         echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
           echo "<a  href='{$this->webroot}/folder/{$this->currentFolder->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-          echo $this->t('Back');  
+          echo $this->t('Back');
           echo "</a>";
         echo '</div>';
         }
       ?>
-      
+
       <br/>
       <div class="itemStats">
-      <?php echo $this->itemDao->getView()?> <?php echo $this->t('views'); ?>, 
-      <?php echo $this->itemDao->getDownload()?> <?php echo $this->t('downloads');?></div>  
+      <?php echo $this->itemDao->getView()?> <?php echo $this->t('views'); ?>,
+      <?php echo $this->itemDao->getDownload()?> <?php echo $this->t('downloads');?></div>
   </div>
   <div style='width:400px;' class="genericInfo">
      <div class="genericThumbnail">
@@ -74,7 +74,7 @@ if($this->preview) // module visualize
     <div class="genericSubtitle" style="color:grey;"><?php echo $this->itemSize;?></div>
 
   </div>
-  
+
   <table style='display:block;' class="midasTree">
     <thead>
       <tr>
@@ -94,19 +94,19 @@ if($this->preview) // module visualize
         echo "  <td>{$revision->getChanges()}</td>";
         echo "</tr>";
         $node++;
-        }  
-      ?>        
+        }
+      ?>
     </tbody>
   </table>
-  
+
   <h4 style="margin-bottom: 5px;"><?php echo $this->t('Latest revision metadata')?>:</h4>
 
   <?php if(count($this->metadatavalues) == 0)
     {
-    echo "No metadata for this revision.";  
+    echo "No metadata for this revision.";
     }
-  else 
-    {  
+  else
+    {
   ?>
   <table style='display:block;'  id="metadataTable" class="midasTree">
     <thead>
@@ -133,18 +133,19 @@ if($this->preview) // module visualize
           }
         echo "  </td>";
         echo "</tr>";
-        }  
-      ?>        
+        }
+      ?>
     </tbody>
   </table>
   <?php } ?>
   <br/>
   <br/>
-  
+
   <a onclick="$('#revisionContent').show();$(this).remove();"><?php echo $this->t('Show Content')?></a>
-  
+
   <div id="revisionContent">
-  
+  <?php if(isset($this->itemDao->lastrevision) && $this->itemDao->lastrevision !== false)       
+        { ?>        
     <h4 style="margin-top: 0px;margin-bottom: 5px;"><?php echo $this->t('Latest revision content')?>:</h4>
 
     <table style='display:block;'  id="browseTable" class="midasTree">
@@ -165,93 +166,102 @@ if($this->preview) // module visualize
           echo "  <td>{$this->Utility->formatSize($bitstream->getSizebytes())}  </td>";
           echo "  <td>{$bitstream->getMimetype()}</td>";
           echo "</tr>";
-          }  
-        ?>        
+          }
+        ?>
+  <?php } // check for $this->itemDao->lastRevision ?>
       </tbody>
     </table>
   </div>
-  
+
 </div>
 <div class="viewSideBar">
-    <?php
-  if($this->preview || $this->isModerator ||$this->isAdmin)
+  <?php
+  if($this->preview || $this->isModerator || $this->isAdmin)
     {?>
   <div class="sideElementFirst viewAction">
 
     <h1>Actions</h1>
     <ul>
-      <?php 
+      <?php
       if($this->preview)
         {
-      echo 
+      echo
      "<li>
         <a id='itemPreviewLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/view.png'/> {$this->t('Preview')}</a>
-      </li>        
+      </li>
         ";
         }
       if($this->isModerator)
         {
-        echo 
+        echo
        "<li>
-          <a href='javascript:;' class='moveCopyLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/copy.png'/> {$this->t('Copy')}</a>
-        </li>  
+          <a href='javascript:;' class='shareItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/item-share.png'/> {$this->t('Share')}</a>
+        </li>
+        <li>
+          <a href='javascript:;' class='duplicateItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/copy.png'/> {$this->t('Duplicate')}</a>
+        </li> 
         <li>
           <a href='javascript:;' class='editItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/> {$this->t('Edit')}</a>
-        </li> 
+        </li>
         <li>
           <a href='javascript:;' class='addMetadataLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/metadata.png'/> {$this->t('Add Metadata')}</a>
-        </li> 
-        <li>
-          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/share.png'/> {$this->t('Permissions')}</a>
-        </li>        
+        </li>
         <li>
           <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='uploadRevisionLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/upload.png'/> {$this->t('Upload new revision')}</a>
-        </li>        
+        </li>
           ";
         }
       if($this->isAdmin)
         {
-        $modules = Zend_Registry::get('modulesEnable');
-         if(in_array('statistics', $modules))
-          {
-          echo 
-         "<li>
-            <a href='".$this->webroot."/statistics/item?id=".$this->itemDao->getKey()."'><img alt='' src='{$this->coreWebroot}/public/images/icons/metadata.png'/> {$this->t('Statistics')}</a>
-          </li>        
-            ";
-          }
-        echo 
-       "
+        echo "
+        <li>
+          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/lock.png'/> {$this->t('Permissions')}</a>
+        </li>
         <li>
           <a  href='javascript:;' id='itemDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Delete')}</a>
-        </li>   
-          ";         
+        </li>";
+        }
+      $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_ITEM_VIEW_ACTIONMENU", array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin));
+      foreach($htmltArray as $html)
+        {
+        if(!empty($html))
+          {
+          echo $html;
+          }
         }
       ?>
     </ul>
   </div>
-  <?php
-    }?>
+  <?php } ?>
   <div class="<?php echo (!$this->preview && !$this->isModerator && !$this->isAdmin)?'sideElementFirst':''; ?>sideElement<?php if(count($this->sameLocation) > 1) echo "Last"?> viewInfo">
-    <h1>Info</h1>    
-    <table>  
+    <h1>Info</h1>
+    <table>
       <tbody>
-        <tr>    
+      <?php if(isset($this->itemDao->lastrevision) && $this->itemDao->lastrevision !== false)       
+            { ?>
+        <tr>
           <td><?php echo $this->t('Created')?></td>
-          <td><?php echo $this->itemDao->creation?></td> 
+          <td><?php echo $this->itemDao->creation?></td>
         </tr>
-        <tr>   
-          <td><?php echo $this->t('Uploaded by');?></td>  
+        <tr>
+          <td><?php echo $this->t('Uploaded by');?></td>
           <td><?php echo $this->linkuser($this->itemDao->lastrevision->getUser())?></td>
         </tr>
-        <tr> 
-          <td>Revision</td>   
+        <tr>
+          <td>Revision</td>
           <td><?php echo $this->itemDao->lastrevision->getRevision()?></td>
         </tr>
-        <tr>   
+        <tr>
           <td><?php echo $this->t('Files');?></td>
-          <td><?php echo count($this->itemDao->lastrevision->getBitstreams())?></td> 
+          <td><?php echo count($this->itemDao->lastrevision->getBitstreams())?></td>
         </tr>
+      <?php } // check for $this->itemDao->lastRevision 
+          else
+            { ?>
+        <tr>
+          <td><?php echo $this->t('No Revisions');?></td>
+        </tr>
+      <?php } // else ?>
       </tbody>
     </table>
     <?php
@@ -265,11 +275,19 @@ if($this->preview) // module visualize
       }
       ?>
   </div>
-    <?php
+  <?php
+  $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_ITEM_VIEW_INFO", array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin));
+    foreach($htmltArray as $html)
+      {
+      if(!empty($html))
+        {
+        echo $html;
+        }
+      }
   if(count($this->sameLocation) > 1)
     {?>
   <div class='sideElementLast viewSameLocation'>
-    <h1><?php echo $this->t('In the same location')?></h1>  
+    <h1><?php echo $this->t('In the same location')?></h1>
     <ul>
     <?php
     foreach($this->sameLocation as $item)
@@ -285,7 +303,3 @@ if($this->preview) // module visualize
     }
     ?>
 </div>
-
-
-
-

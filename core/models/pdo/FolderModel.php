@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 require_once BASE_PATH.'/core/models/base/FolderModelBase.php';
@@ -95,7 +103,7 @@ class FolderModel extends FolderModelBase
     return true;
     }//end policyCheck
 
-  /** get the size and the number of item in a folder*/
+/** get the size and the number of item in a folder*/
   public function getSizeFiltered($folders, $userDao = null, $policy = 0)
     {
     $isAdmin = false;
@@ -161,8 +169,9 @@ class FolderModel extends FolderModelBase
               ->union(array($subqueryUser, $subqueryGroup));
 
       $sql = $this->database->select()
+                ->distinct()
                 ->setIntegrityCheck(false)
-                ->from(array('i' => 'item'), array('sum' => 'sum(i.sizebytes)', 'count' => 'count(i.item_id)'))
+                ->from(array('i' => 'item'))
                 ->join(array('i2f' => 'item2folder'),
                          '( '.$this->database->getDB()->quoteInto('i2f.folder_id IN (?)', $subSqlFolders).'
                           OR i2f.folder_id = '.$folder->getKey().'
@@ -186,8 +195,13 @@ class FolderModel extends FolderModelBase
                  '(
                   ip.item_id is not null or
                   ipg.item_id is not null)'
-                  );
+                  )
+                ->group('i.item_id');
         }
+
+      $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from(array('i' => $sql), array('sum' => 'sum(i.sizebytes)', 'count' => 'count(i.item_id)'));
 
       $row = $this->database->fetchRow($sql);
       $folders[$key]->count = $row['count'];
@@ -220,7 +234,7 @@ class FolderModel extends FolderModelBase
     } // end getRoot()
 
   /** Get the folder tree */
-  function getAllChildren($folder, $userDao, $admin = false)
+  function getAllChildren($folder, $userDao, $admin = false, $policy = 0)
     {
     $isAdmin = false;
     if($userDao == null)
@@ -587,50 +601,49 @@ class FolderModel extends FolderModelBase
         }
       }
 
-    $subqueryUser = $this->database->select()
-                      ->setIntegrityCheck(false)
-                      ->from(array('f' => 'item'))
-                      ->join(array('p' => 'itempolicyuser'),
-                            'f.item_id = p.item_id',
-                             array('p.policy'))
-                      ->join(array('i' => 'item2folder'),
-                            $this->database->getDB()->quoteInto('i.folder_id IN (?)', $folderIds).'
-                            AND i.item_id = p.item_id', array('i.folder_id'))
-                      ->where('policy >= ?', $policy)
-                      ->where('user_id = ? ', $userId);
-
-    $subqueryGroup = $this->database->select()
-                    ->setIntegrityCheck(false)
-                    ->from(array('f' => 'item'))
-                    ->join(array('p' => 'itempolicygroup'),
-                          'f.item_id = p.item_id',
-                           array('p.policy'))
-                    ->join(array('i' => 'item2folder'),
-                                $this->database->getDB()->quoteInto('i.folder_id IN (?)', $folderIds).'
-                                AND i.item_id = p.item_id', array('i.folder_id'))
-                    ->where('policy >= ?', $policy)
-                    ->where('( '.$this->database->getDB()->quoteInto('p.group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                              p.group_id IN (' .new Zend_Db_Expr(
-                              $this->database->select()
-                                   ->setIntegrityCheck(false)
-                                   ->from(array('u2g' => 'user2group'),
-                                          array('group_id'))
-                                   ->where('u2g.user_id = ?', $userId)
-                                   .'))' ));
-
-
-
-    $sql = $this->database->select()
-            ->union(array($subqueryUser, $subqueryGroup));
-
     if($isAdmin)
       {
       $sql = $this->database->select()
-                      ->setIntegrityCheck(false)
-                      ->from(array('f' => 'item'))
-                      ->join(array('i' => 'item2folder'),
-                            $this->database->getDB()->quoteInto('i.folder_id IN (?)', $folderIds).'
-                            AND i.item_id = f.item_id', array('i.folder_id'));
+                  ->setIntegrityCheck(false)
+                  ->from(array('f' => 'item'))
+                  ->join(array('i' => 'item2folder'),
+                    $this->database->getDB()->quoteInto('i.folder_id IN (?)', $folderIds).'
+                    AND i.item_id = f.item_id', array('i.folder_id'));
+      }
+    else
+      {
+      $subqueryUser = $this->database->select()
+                           ->setIntegrityCheck(false)
+                           ->from(array('f' => 'item'))
+                           ->join(array('p' => 'itempolicyuser'),
+                              'f.item_id = p.item_id',
+                               array('p.policy'))
+                           ->join(array('i' => 'item2folder'),
+                              $this->database->getDB()->quoteInto('i.folder_id IN (?)', $folderIds).'
+                              AND i.item_id = p.item_id', array('i.folder_id'))
+                           ->where('policy >= ?', $policy)
+                           ->where('user_id = ? ', $userId);
+
+      $subqueryGroup = $this->database->select()
+                            ->setIntegrityCheck(false)
+                            ->from(array('f' => 'item'))
+                            ->join(array('p' => 'itempolicygroup'),
+                              'f.item_id = p.item_id',
+                              array('p.policy'))
+                            ->join(array('i' => 'item2folder'),
+                                  $this->database->getDB()->quoteInto('i.folder_id IN (?)', $folderIds).'
+                                  AND i.item_id = p.item_id', array('i.folder_id'))
+                            ->where('policy >= ?', $policy)
+                            ->where('( '.$this->database->getDB()->quoteInto('p.group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                                p.group_id IN (' .new Zend_Db_Expr(
+                                $this->database->select()
+                                     ->setIntegrityCheck(false)
+                                     ->from(array('u2g' => 'user2group'),
+                                            array('group_id'))
+                                     ->where('u2g.user_id = ?', $userId)
+                                     .'))' ));
+
+      $sql = $this->database->select()->union(array($subqueryUser, $subqueryGroup));
       }
 
     $rowset = $this->database->fetchAll($sql);
@@ -654,24 +667,22 @@ class FolderModel extends FolderModelBase
       {
       if(isset($policyArray[$row['item_id']]))
         {
-        $tmpDao = $this->initDao('Item', $row);
-        $tmpDao->policy = $policyArray[$row['item_id']];
-        $tmpDao->parent_id = $row['folder_id'];
+        $item = $this->initDao('Item', $row);
+        $folders = $item->getFolders();
 
-        if(isset($listNamesArray[$tmpDao->getName()]))
+        foreach($folders as $folder)
           {
-          $listNamesArray[$tmpDao->getName()]++;
-          $tmpDao->setName($tmpDao->getName().' ('.$listNamesArray[$tmpDao->getName()].')');
+          if(in_array($folder->getKey(), $folderIds))
+            {
+            $tmpDao = clone $item;
+            $tmpDao->policy = $policyArray[$row['item_id']];
+            $tmpDao->parent_id = $folder->getKey();
+            $return[] = $tmpDao;
+            }
           }
-        else
-          {
-          $listNamesArray[$tmpDao->getName()] = 0;
-          }
-        $return[] = $tmpDao;
         unset($policyArray[$row['item_id']]);
         }
       }
-
     $this->Component->Sortdao->field = 'name';
     $this->Component->Sortdao->order = 'asc';
     usort($return, array($this->Component->Sortdao, 'sortByName'));
@@ -817,6 +828,9 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Should be an item.");
       }
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel("Item");
+    $item->setName($itemModel->updateItemName($item->getName(), $folder));
     $this->database->link('items', $folder, $item);
     } // end function addItem
 
@@ -953,5 +967,37 @@ class FolderModel extends FolderModelBase
       }
     return $return;
     } // end getFolderFromSearch()
+
+  /**
+   * Returns whether the folder is able to be deleted.
+   * Any folder can be deleted unless it is a base, Public, or Private Folder
+   * of a User or Community.
+   */
+  function isDeleteable($folder)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception('Should be a folder.');
+      }
+    $id = $folder->getFolderId();
+    if($this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
+                                      ->from('community')
+                                      ->where('folder_id=?', $id)
+                                      ->orwhere('publicfolder_id=?', $id)
+                                      ->orwhere('privatefolder_id=?', $id)))
+      {
+      return false;
+      }
+
+    if($this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
+                                      ->from('user')
+                                      ->where('folder_id=?', $id)
+                                      ->orwhere('publicfolder_id=?', $id)
+                                      ->orwhere('privatefolder_id=?', $id)))
+      {
+      return false;
+      }
+    return true;
+    }
 
 } // end class

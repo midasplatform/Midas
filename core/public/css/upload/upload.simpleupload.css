@@ -12,17 +12,31 @@ width:94%!important;
 
 }
 #jqueryFileUploadContent{
-  
+
 }
 
 div.tooBigUpload{
   display:none;
 }
 
+div.tooBigUpload img{
+  position: relative;
+  top: 3px;
+}
+
+div.uploadedFilesWrapper{
+  max-height: 250px;
+  overflow: auto;
+}
+
 /* -- Form Styles ------------------------------- */
-#swfuploadContent form {	
+#swfuploadContent form {
 	margin: 0;
 	padding: 0;
+}
+
+.globalButton{
+  margin-top: 3px!important;
 }
 
 
@@ -68,8 +82,8 @@ div.tooBigUpload{
 #swfuploadContent button,
 #swfuploadContent input,
 #swfuploadContent select,
-#swfuploadContent textarea { 
-	border-width: 1px; 
+#swfuploadContent textarea {
+	border-width: 1px;
 	margin-bottom: 10px;
 	padding: 2px 3px;
 }
@@ -79,9 +93,9 @@ div.tooBigUpload{
 #swfuploadContent input[disabled]{ border: 1px solid #ccc } /* FF 2 Fix */
 
 
-#swfuploadContent label { 
-	width: 150px; 
-	text-align: right; 
+#swfuploadContent label {
+	width: 150px;
+	text-align: right;
 	display:block;
 	margin-right: 5px;
 }
@@ -142,7 +156,7 @@ div.tooBigUpload{
 	white-space: nowrap;
 	overflow: hidden;
   display: inline;
-  
+
 }
 
 #swfuploadContent .progressBarInProgress,

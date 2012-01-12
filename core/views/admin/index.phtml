@@ -25,8 +25,8 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
     <li><a href="#tabs-configuration">Configuration</a></li>
     <li><a href="#tabs-modules">Modules</a></li>
     <li><a href="#tabs-assetstore">Assetstores</a></li>
-    <li><a href="<?php echo $this->webroot?>/admin/upgrade">Upgrade</a></li>    
-    <li><a href="<?php echo $this->webroot?>/admin/dashboard">Dashboard</a></li>    
+    <li><a href="<?php echo $this->webroot?>/admin/upgrade">Upgrade</a></li>
+    <li><a href="<?php echo $this->webroot?>/admin/dashboard">Dashboard</a></li>
     <li><a href="<?php echo $this->webroot?>/admin/showlog">Logs</a></li>
   </ul>
     <div id="tabs-configuration">
@@ -42,11 +42,16 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                 <label for='name'>Description</label>
                 {$this->configForm['description']}
               </div>
-              <div qtip='>Provide keywords for search engines.' class='keywords'>
+              <div qtip='Provide keywords for search engines.' class='keywords'>
                 <label for='name'>Keywords</label>
                 {$this->configForm['keywords']}
               </div>
-              <div class='installLang'>
+              <div class='installLang'";
+      if(isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get('configCore')->internationalization == "0")
+        {
+        echo " style='display:none;' ";
+        }
+      echo ">
                 <label for='lang'>Language</label>
                 {$this->configForm['lang']}
               </div>
@@ -61,6 +66,10 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
               <div qtip='SmartOptimizer (previously named JSmart) is a PHP library that enhances your website performance by optimizing the front end using techniques such as minifying, compression, caching, concatenation and embedding.' class='installSmartoptimizer'>
                 <label for='smartoptimizer'>CSS and Javascript optimizer</label>
                 {$this->configForm['smartoptimizer']}
+              </div>
+              <div qtip='If you enable this feature, MIDAS will show the users how to use the system.' class='installSmartoptimizer'>
+                <label for='dynamichelp'>Dynamic Help</label>
+                {$this->configForm['dynamichelp']}
               </div>
               <div class='defaultLicense'>
                 <label for='licenseSelect'>Default license</label>
@@ -77,8 +86,16 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
      foreach($this->assetstores as $assetstore)
        {
        echo "<div class='assetstoreElement'>
-              <b><span class='assetstoreName'>{$assetstore->getName()}</span></b>
-	      <br/>";
+              <b><span class='assetstoreName'>{$assetstore->getName()}</span></b> ";
+       if($assetstore->default)
+         {
+         echo "(<span qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstore' element='{$assetstore->getKey()}'>default assetstore</span>)";
+         }
+       else
+         {
+         echo "(<a qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstoreLink' element='{$assetstore->getKey()}'>set as default</a>)";
+         }
+	      echo "<br/>";
        if($assetstore->totalSpaceText==false)
          {
          echo "<b>Unable to access assetstore</b>";
@@ -105,9 +122,10 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
           case MIDAS_ASSETSTORE_REMOTE:
               echo "Remote";
               break;
-          case MIDAS_ASSETSTORE_AMAZON:
-              echo "Amazon S3";
-              break;
+         // Amazon support is not yet implemented, don't present it as an option
+         // case MIDAS_ASSETSTORE_AMAZON:
+         //     echo "Amazon S3";
+         //     break;
           default:
               echo $assetstore->getType();
               break;
@@ -116,7 +134,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
        echo"</div>";
        }
      ?>
-      
+
       <a class="load-newassetstore" href="#newassetstore-form" rel="#newassetstore-form" title="<?php echo $this->t('Add a new assetstore')?>">Add a new assetstore</a>
       <br/>
       <a  href="<?php echo $this->webroot?>/import" >Import local files</a>
@@ -125,7 +143,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
          <?php echo $this->assetstoreForm; ?>
       </div>
     </div>
-    
+
     <div id="tabs-modules">
       <table style='width:100%;'>
       <?php
@@ -142,11 +160,11 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                  <tr class='moduleElement {$category}VisibleElement' style='display:none;'>
                     <td style='width:30px;'>
                       <input type='checkbox' dependencies='".trim($module->dependencies)."' class='moduleCheckbox' module='{$key}' name='module[{$key}]'   ".((in_array($key, $this->modulesEnable))?'checked':'')."/>
-                    </td>    
+                    </td>
                     <td>
                     <b>{$module->fullname}</b><br/>
                     {$module->description}
-                    </td>";              
+                    </td>";
                     if($module->configPage)
                       {
                     echo "
@@ -163,7 +181,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
          }
       ?>
       </table>
-      
+
       <table class="tableElementError" style="display:none;width:100%;">
       <?php
       $hidden = 0;
@@ -183,12 +201,12 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                     <td>
                     <b>{$module->fullname}</b><br/>
                     {$module->description}
-                    </td>";              
+                    </td>";
                     if(!$module->dbOk)
                       {
                     echo "
                     <td style='width:300px;'>
-                      Not available with you database type
+                      Not available with your database type
                     </td>";
                       }
                     elseif(!$module->dependenciesExist)
@@ -207,20 +225,20 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
          }
       ?>
       </table>
-      
+
     <?php if($hidden != 0)
       {
       echo "<br/><br/><a onclick=\"$('.tableElementError').show();$(this).remove();\">Show $hidden hidden modules</a>";
       }?>
-      
+
     <p><a target="_blank" href="http://www.kitware.com/midaswiki/index.php/MIDAS3-Plugins">Additional Information</a></p>
     </div>
   </div>
 
 </div>
 <div class="viewSideBar">
-  
- 
+
+
 </div>
 
 

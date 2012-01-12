@@ -23,21 +23,22 @@ endif()
 #-----------------------------------------------------------------------------
 #  Drop all tables from the testing DB
 #  Then re-install the DB, set a Default assetstore, and install all modules
-
+message(STATUS "Setting up database for module testing, please wait...")
 execute_process(
   COMMAND ${PHP} ${CMAKE_CURRENT_SOURCE_DIR}/tests/DatabaseSetup.php
   RESULT_VARIABLE databaseSetup_RESULT
   OUTPUT_VARIABLE databaseSetup_OUT
   ERROR_VARIABLE databaseSetup_ERR)
 
-if(${databaseSetup_RESULT})
+if(NOT databaseSetup_RESULT EQUAL 0)
   message(STATUS "DatabaseSetup output: ${databaseSetup_OUT}")
   message(FATAL_ERROR "DatabaseSetup error: ${databaseSetup_ERR}")
 endif()
 
+message(STATUS "Database setup is complete")
 
 #-----------------------------------------------------------------------------
-#  This should be at the top level for warning suppression
+#  This should be at the top level for warning suppression and coverage exclude
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/library/CMake/CTestCustom.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake )
 

@@ -1,22 +1,22 @@
 Help;Aide
 Register;S'enregistrer
 Login;Authentification
-Jump to a data, folder...;Trouver une donnée, un dossier...
+Jump to a data, folder...;Trouver une donnÃ©e, un dossier...
 Close;Fermer
 E-mail;E-mail
 Password;Mot de Passe
-Firstname;Prénom
+Firstname;PrÃ©nom
 Lastname;Nom
 Confirm Password;Confirmez votre mot de passe
-Logout;Déconnexion
-Feed;Actualités
-Data;Données
-Communities;Communautés
+Logout;DÃ©connexion
+Feed;ActualitÃ©s
+Data;DonnÃ©es
+Communities;CommunautÃ©s
 My Uploads;Mes Fichiers
 Plugins;Plugins
-Recently Viewed;Vu Récemment
+Recently Viewed;Vu RÃ©cemment
 Remember me; Se souvenir de moi
-Import server-side data; Import de données coté serveur
+Import server-side data; Import de donnÃ©es cotÃ© serveur
 Directory on the server; Repertoire sur le serveur
 Assetstore; Magasin de donnees
 Import empty directories; Importer les dossiers vides
@@ -32,38 +32,38 @@ Managed by MIDAS; Gere par MIDAS
 Remotely linked; Gere a distance
 Add this assetstore; Ajouter ce magasin
 Choose; Choisir
-I read and accepted the;J'ai lu et accepté les
+I read and accepted the;J'ai lu et acceptÃ© les
 terms of service;conditions d'utilisation
 Please log in;Merci de vous authentifier
-You need to be logged in to be able to upload files.;Vous devez être authentifié pour pouvoir uploader des fichiers.
-You need to be logged in to be able to create a community.;Vous devez être authentifié pour pouvoir créer une communauté.
-You should be logged to access this page;Vous devez être authentifié pour pouvoir accéder à cette page
-Create a community;Créer une communauté
+You need to be logged in to be able to upload files.;Vous devez Ãªtre authentifiÃ© pour pouvoir uploader des fichiers.
+You need to be logged in to be able to create a community.;Vous devez Ãªtre authentifiÃ© pour pouvoir crÃ©er une communautÃ©.
+You should be logged to access this page;Vous devez Ãªtre authentifiÃ© pour pouvoir accÃ©der Ã  cette page
+Create a community;CrÃ©er une communautÃ©
 Name;Nom
-Privacy;Confidentialité
-Create;Créer
-Private;Privée
+Privacy;ConfidentialitÃ©
+Create;CrÃ©er
+Private;PrivÃ©e
 Public;Public
-Private (Nobody can access to my page);Privé (Personne ne peut accéder à mes informations)
-Private (Nobody can see my information);Privé (Personne ne peut voir mes informations)
-Public (Everyone can access to my information);Public (Tout le monde peut accéder à mes informations)
+Private (Nobody can access to my page);PrivÃ© (Personne ne peut accÃ©der Ã  mes informations)
+Private (Nobody can see my information);PrivÃ© (Personne ne peut voir mes informations)
+Public (Everyone can access to my information);Public (Tout le monde peut accÃ©der Ã  mes informations)
 Public (Anyone can see my information);Public (Tout le monde peut voir mes informations)
-Semi-private;Semi-privée
+Semi-private;Semi-privÃ©e
 Description;Description
-Created;Crée
+Created;CrÃ©e
 View;Voir
 Edit;Editer
 Delete;Effacer
 Share;Partager
 Rename;Renommer
-Move;Déplacer
+Move;DÃ©placer
 Copy;Copier
 Invite collaborators;Inviter des collaborateurs
-Advanced properties;Propriétés avancées
-Forgot your password;Mot de passe oublié
-Your e-mail or password is invalid - please try again;Votre e-mail ou votre password est éroné
+Advanced properties;PropriÃ©tÃ©s avancÃ©es
+Forgot your password;Mot de passe oubliÃ©
+Your e-mail or password is invalid - please try again;Votre e-mail ou votre password est Ã©ronÃ©
 Please set your lastname;Merci de renseigner votre nom
-Please set your firstname;Merci de renseigner votre prénom
+Please set your firstname;Merci de renseigner votre prÃ©nom
 Please validate the terms of service;Merci de valider les conditions d'utilisation
 The e-mail is not valid;Cet e-mail n'est pas valide
 This e-mail is not available;Cet e-mail n'est pas disponible
@@ -72,12 +72,12 @@ Large Files;Fichiers Volumineux
 Links;Liens
 Browse;Parcourir
 Link;Joindre
-Number of uploaded files;Nombre de fichiers uploadés
-Review uploaded files;Consulter les fichiers uploadés
+Number of uploaded files;Nombre de fichiers uploadÃ©s
+Review uploaded files;Consulter les fichiers uploadÃ©s
 Search;Recherche
-added the community;a ajouté la communauté
-added the item;a ajouté le document
-added the link;a ajouté le lien
+added the community;a ajoutÃ© la communautÃ©
+added the item;a ajoutÃ© le document
+added the link;a ajoutÃ© le lien
 registered;s'est inscrit
 Item;Document
 Items;Documents
@@ -87,63 +87,63 @@ User;Utilisateur
 user;utilisateur
 Users;Utilisateurs
 Size;Taille
-Modified;Modifié
-Download;Télécharger
-Delete Feed;Effacer cette actualité
-Do you really want to delete the feed;Voulez-vous vraiment supprimer l'actualité
-Do you really want to delete the folder;Voulez-vous vraiment supprimer le répertoire
-Do you really want to remove the item;Voulez-vous vraiment retirer le document
+Modified;ModifiÃ©
+Download;TÃ©lÃ©charger
+Delete Feed;Effacer cette actualitÃ©
+Do you really want to delete the feed?;Voulez-vous vraiment supprimer l'actualitÃ©?
+Do you really want to delete the folder?;Voulez-vous vraiment supprimer le rÃ©pertoire?
+Do you really want to remove the item?;Voulez-vous vraiment retirer le document?
 Yes;Oui
 No;Non
 Plugins;Plugins
 E-mail;E-mail
 Remember Me;Se souvenir de moi
 Members;Membres
-Generated in;Généré en
-Preview;Aperçu
-Uploaded by;Uploadé par
+Generated in;GÃ©nÃ©rÃ© en
+Preview;AperÃ§u
+Uploaded by;UploadÃ© par
 File;Fichier
-This community is private;Cette communauté est privée
-Selected;Sélection
-element;élement
-No community available;Pas de communauté disponible
-Create your own community;Créez la votre
-This folder is empty;Ce répertoire est vide
+This community is private;Cette communautÃ© est privÃ©e
+Selected;SÃ©lection
+element;Ã©lement
+No community available;Pas de communautÃ© disponible
+Create your own community;CrÃ©ez la votre
+This folder is empty;Ce rÃ©pertoire est vide
 by;par
-Uploaded;Uploadé
+Uploaded;UploadÃ©
 Changes;Changements
-Community;Communauté
+Community;CommunautÃ©
 My Page;Ma page
 My Account;Mon compte
-Settings;Préférences
+Settings;PrÃ©fÃ©rences
 Modules;Modules
 Administration;Administration
 member;membre
-Manage Groups and Members;Gérer les Groupes et les Members
-Manage Files;Gérer les fichiers
-Do you really want to delete this community? It cannot be undone.; Voulez vous vraiment supprimer cette communité? Cette action est irréversible.
-Do you really want to delete this item? It cannot be undone.; Voulez vous vraiment supprimer ce document? Cette action est irréversible.
-Do you really want to delete this metadata? It cannot be undone.; Voulez vous vraiment supprimer cette métadonnée? Cette action est irréversible.
-Do you really want to delete this group? It cannot be undone.; Voulez vous vraiment supprimer ce groupe? Cette action est irréversible.
-Join the community;Rejoindre la communauté
-Request to join the community;Demander à être membre de la communauté
-Leave the community;Quitter la communauté
-Manage;Gérer
-Move/Copy Item.;Déplacer/Copier Document.
+Manage Groups and Members;GÃ©rer les Groupes et les Members
+Manage Files;GÃ©rer les fichiers
+Do you really want to delete this community? It cannot be undone.; Voulez vous vraiment supprimer cette communitÃ©? Cette action est irrÃ©versible.
+Do you really want to delete this item? It cannot be undone.; Voulez vous vraiment supprimer ce document? Cette action est irrÃ©versible.
+Do you really want to delete this metadata? It cannot be undone.; Voulez vous vraiment supprimer cette mÃ©tadonnÃ©e? Cette action est irrÃ©versible.
+Do you really want to delete this group? It cannot be undone.; Voulez vous vraiment supprimer ce groupe? Cette action est irrÃ©versible.
+Join the community;Rejoindre la communautÃ©
+Request to join the community;Demander Ã  Ãªtre membre de la communautÃ©
+Leave the community;Quitter la communautÃ©
+Manage;GÃ©rer
+Move/Copy Item.;DÃ©placer/Copier Document.
 Copy Item.;Copier Document.
 item;document
 My Files;Mes Fichiers
-Please select a folder.;Sélectionnez un répertoire.
-community;communauté
-communities;communautés
+Please select a folder.;SÃ©lectionnez un rÃ©pertoire.
+community;communautÃ©
+communities;communautÃ©s
 Modify my password; Modifier mon mot de passe
 My old password;Mon ancien mot de passe
 My new password;Mon nouveau mot de passe
 Confirmation;Confirmation
 Modify;Modifier
-Changes saved; Changements sauvés
+Changes saved; Changements sauvÃ©s
 The old password is incorrect;L'ancien mot de passe est incorrecte
-The passwords are not the same;Les mot des passes sont différents
+The passwords are not the same;Les mot des passes sont diffÃ©rents
 Modify my information;Modifier mes informations
 Modify my picture;Modifier mon image
 Choose a picture;Choisir une image
@@ -153,33 +153,33 @@ Groups;Groupes
 Files;Fichiers
 Save;Sauver
 Please, set the name.;Merci de renseigner le nom.
-Manage Community;Gérer Communauté
+Manage Community;GÃ©rer CommunautÃ©
 Administrators;Administrateurs
 Administrator;Administrateur
-Moderators;Modérateurs
-Moderator;Modérateur
-There is no custom group.;Il n'y a pas de groupe personnalisé.
-Create a group;Créer un groupe
+Moderators;ModÃ©rateurs
+Moderator;ModÃ©rateur
+There is no custom group.;Il n'y a pas de groupe personnalisÃ©.
+Create a group;CrÃ©er un groupe
 Edit a group;Editer une groupe
-Community's Members;Membres de la communauté
+Community's Members;Membres de la communautÃ©
 Group's members;Membres du groupe
-Create a new Folder;Créer un nouveau répertoire
-Advanced search;Recherche avancée
+Create a new Folder;CrÃ©er un nouveau rÃ©pertoire
+Advanced search;Recherche avancÃ©e
 Sort by;Trier par
-All the results;Tous les résultats
+All the results;Tous les rÃ©sultats
 Number of views;Nombre de vues
-No result found.;Aucun résultat trouvé pour votre recherche.
-Show more results.;Montrer plus de résultats.
+No result found.;Aucun rÃ©sultat trouvÃ© pour votre recherche.
+Show more results.;Montrer plus de rÃ©sultats.
 Delete user;Supprimer utilisateur
-Manage Account Information;Gérer le compte utilisateur
-Manage Profile;Gérer Profil
-Company;Société
-Please select an image file on your computer (2 MB maximum);Sélectionnez un fichier image sur votre ordinateur (2 Mo maximum)
-My Communities;Mes Communautés
-You don't belong to any community.;Vous ne faites parti d'aucune communauté.
+Manage Account Information;GÃ©rer le compte utilisateur
+Manage Profile;GÃ©rer Profil
+Company;SociÃ©tÃ©
+Please select an image file on your computer (2 MB maximum);SÃ©lectionnez un fichier image sur votre ordinateur (2 Mo maximum)
+My Communities;Mes CommunautÃ©s
+You don't belong to any community.;Vous ne faites parti d'aucune communautÃ©.
 less;moins
 more;plus
-Download lastest revision;Télécharger la dernière révision
+Download latest revision;TÃ©lÃ©charger la derniÃ¨re rÃ©vision
 My information;Mes informations
 My Password;Mon Mot de Passe
 Current Avatar;Avatar actuel
@@ -187,49 +187,49 @@ Upload new avatar;Ajouter un nouvel avatar
 Modify password;Modifier mot de passe
 Retype new password;Retapper nouveau mot de passe
 Share;Partager
-folder;répertoire
+folder;rÃ©pertoire
 item;document
 You can use the following direct link to share the;Vous pouvez utiliser le lien suivant pour partager le
 Permissions;Autorisations
 Anyone can find and access. No sign-in required.;Tous le monde peut trouver et voir. Pas d'authentification requise.
-Only people explicitly granted permission can access. Sign-in required.;Seulement les personnes avec une autorisation ont accès. Authentification requise.
-Set Private;Rendre Privé
+Only people explicitly granted permission can access. Sign-in required.;Seulement les personnes avec une autorisation ont accÃ¨s. Authentification requise.
+Set Private;Rendre PrivÃ©
 Set Public;Rendre Public
-is owner;est propriétaire
+is owner;est propriÃ©taire
 can edit;peut modifier
 can read;peut voir
-Add a permission to ...;Ajouter une autorisation à ...
+Add a permission to ...;Ajouter une autorisation Ã  ...
 Owned by me;M'appartenant
-Shared to me;Partagés avec moi
-Shared to Members;Partagés aux Membres
-Remove Item from Folder;Enlever le document du répertoire
-My Private Folder;Mon Répertoire Privé
-Uploaded Files;Fichiers Uploadés
+Shared to me;PartagÃ©s avec moi
+Shared to Members;PartagÃ©s aux Membres
+Remove Item from Folder;Enlever le document du rÃ©pertoire
+My Private Folder;Mon RÃ©pertoire PrivÃ©
+Uploaded Files;Fichiers UploadÃ©s
 Name of the item;Nom du document
 Upload here;Ajouter des fichiers ici
-Privacy;Confidentialité
-Private, only member can see the community;Privée, seulement les membres peuvent voir la communauté
-Public, everyone can see the community;Public, tout le monde peut voir la communauté
-Everyone can join the community;Tout le monde peut rejoindre la communauté
-Only invited users can join the community;Seulement les utilisateurs invités peuvent rejoindre la communauté
-Last revision content;Contenu de la dernière révision
-Upload new revision;Ajouter nouvelle révision
-added a new revision to;a ajouté une nouvelle révision à
-Uploaded files;Fichiers ajoutés
-Who can join the community?;Qui peut rejoindre la communauté?
+Privacy;ConfidentialitÃ©
+Private, only member can see the community;PrivÃ©e, seulement les membres peuvent voir la communautÃ©
+Public, everyone can see the community;Public, tout le monde peut voir la communautÃ©
+Everyone can join the community;Tout le monde peut rejoindre la communautÃ©
+Only invited users can join the community;Seulement les utilisateurs invitÃ©s peuvent rejoindre la communautÃ©
+Last revision content;Contenu de la derniÃ¨re rÃ©vision
+Upload new revision;Ajouter nouvelle rÃ©vision
+added a new revision to;a ajoutÃ© une nouvelle rÃ©vision Ã 
+Uploaded files;Fichiers ajoutÃ©s
+Who can join the community?;Qui peut rejoindre la communautÃ©?
 Send invitation;Envoyer des invitations
 Invite the user ...;Inviter l utilisateur ...
-has been invited;a été invité
-invited you to the community;vous a invité à la communauté
-Create top level Folder;Créer un répertoire racine
+has been invited;a Ã©tÃ© invitÃ©
+invited you to the community;vous a invitÃ© Ã  la communautÃ©
+Create top level Folder;CrÃ©er un rÃ©pertoire racine
 Use gravatar;Utiliser Gravatar
-Step 1: Select files to upload;Etape 1: Sélectionner les fichiers à ajouter
-Browse or drop files;Parcourir ou déposer des fichiers
-Step 2: Where do you want to upload your files;Etape 2: Où voulez vous ajouter ces fichiers
-Step 1: Where do you want to upload your files;Etape 1: Où voulez vous ajouter ces fichiers
-Curent selected location:;Destination sélèctionnée
-Step 3: Select a license;Etape 3 : Sélectionner une lisence
-Step 2: Select a license;Etape 2 : Sélectionner une lisence
+Step 1: Select files to upload;Etape 1: SÃ©lectionner les fichiers Ã  ajouter
+Browse or drop files;Parcourir ou dÃ©poser des fichiers
+Step 2: Where do you want to upload your files;Etape 2: OÃ¹ voulez vous ajouter ces fichiers
+Step 1: Where do you want to upload your files;Etape 1: OÃ¹ voulez vous ajouter ces fichiers
+Curent selected location:;Destination sÃ©lÃ¨ctionnÃ©e
+Step 3: Select a license;Etape 3 : SÃ©lectionner une lisence
+Step 2: Select a license;Etape 2 : SÃ©lectionner une lisence
 Step 4: Start the upload;Etape 4 : Lancer l'upload
 Step 3: Select files to upload;Etape 3 : Lancer l'upload
 Start Upload;Lancer l'upload
@@ -238,7 +238,7 @@ Step 2: Set the url;Etape 2: Choisir un url
 Step 3: Where do you want to upload your files;Etape 3: Ou voulez vous ajouter des fichiers
 Save Link;Sauver Lien
 Please use the large file tool, the following files are too big:;Merci d'utiliser l'outil pour ajouter des fichiers volumineux pour les fichiers suivants:
-Not registered yet?;Pas encore enregistré?
+Not registered yet?;Pas encore enregistrÃ©?
 Register here;Enregistrez vous ici
 My profile;Mon profile
 My uploads;Mes uploads
@@ -246,16 +246,24 @@ Website;Site Internet
 City;Ville
 Country;Pays
 Biography;Biographie
-In the same location;Au même endroit
+In the same location;Au mÃªme endroit
 Add in group;Ajouter au groupe
-Set as moderator;Promouvoir en tant que modérateur
-Remove from community;Retirer de la communauté
+Set as moderator;Promouvoir en tant que modÃ©rateur
+Remove from community;Retirer de la communautÃ©
 Remove from group;Retirer du groupe
-Add Metadata;Ajouter Métadonnée
-This name is already used;Ce nom est déja utilisé
-Name of the folder;Nom du répertoire
+Add Metadata;Ajouter MÃ©tadonnÃ©e
+This name is already used;Ce nom est dÃ©ja utilisÃ©
+Starting Guide;Assistant de DÃ©marrage
+Name of the folder;Nom du rÃ©pertoire
 Optional;Optionel
 Teaser;Courte descriptionMy Language;Ma Langue
 Delete the post;Supprimer la publication
 Step 3: Set the changes;Etape 3 : Indiquez les changements
-View new Revision;Voir nouvelle révision
+View new Revision;Voir nouvelle rÃ©vision
+or;ou
+upload a folder;ajouter un rÃ©pertoire
+Please select an item.;SÃ©lectionnez un document.
+Or search it...;Ou recherchez le...
+upload files;ajouter des fichiers
+Don't forget to start the upload.;N'oubliez pas de lancer l'upload.
+

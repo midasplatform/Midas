@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /** Component that will download a bitstream to the client */
@@ -24,8 +32,9 @@ class DownloadBitstreamComponent extends AppComponent
   /**
    * Calling this will stream the file to the client.
    * The parameter is a bitstream dao.
+   * Optional second parameter is the download offset in bytes.
    */
-  function download($bitstream)
+  function download($bitstream, $offset = 0)
     {
     $mimetype = $bitstream->getMimetype();
     $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
@@ -78,14 +87,15 @@ class DownloadBitstreamComponent extends AppComponent
         $httpRange = env('HTTP_RANGE');
         if(isset($httpRange))
           {
-          list ($toss, $range) = explode('=', $httpRange);
-          str_replace($range, '-', $range);
-          $size = $fileSize - 1;
-          $length = $fileSize - $range;
+          // HTTP range is of the form "bytes=n-" where n is the offset
+          list(, $range) = explode('=', $httpRange);
+          $firstByte = strstr($range, '-', true);
+          $lastByte = $fileSize - 1;
+          $length = $fileSize - $firstByte;
           header('HTTP/1.1 206 Partial Content');
           header('Content-Length: '.$length);
-          header('Content-Range: bytes '.$range.$size.'/'.$fileSize);
-          fseek($handle, $range);
+          header('Content-Range: bytes '.$firstByte.'-'.$lastByte.'/'.$fileSize);
+          fseek($handle, $firstByte);
           }
         else
           {
@@ -104,14 +114,14 @@ class DownloadBitstreamComponent extends AppComponent
           }
         if(isset($httpRange))
           {
-          list($toss, $range) = explode('=', $httpRange);
-          str_replace($range, '-', $range);
-          $size = $fileSize - 1;
-          $length = $fileSize - $range;
+          list(, $range) = explode('=', $httpRange);
+          $firstByte = strstr($range, '-', true);
+          $lastByte = $fileSize - 1;
+          $length = $fileSize - $firstByte;
           header('HTTP/1.1 206 Partial Content');
           header('Content-Length: '.$length);
-          header('Content-Range: bytes '.$range.$size.'/'.$fileSize);
-          fseek($handle, $range);
+          header('Content-Range: bytes '.$firstByte.'-'.$lastByte.'/'.$fileSize);
+          fseek($handle, $firstByte);
           }
         }
       }
@@ -123,16 +133,20 @@ class DownloadBitstreamComponent extends AppComponent
       ob_end_clean();
       }
 
+    if(is_numeric($offset) && $offset > 0 && $offset <= $fileSize)
+      {
+      fseek($handle, $offset);
+      }
+
     while(!feof($handle) && connection_status() == 0)
       {
-      $buffer = fread($handle, $chunkSize);
-      echo $buffer;
+      echo fread($handle, $chunkSize);
       }
     fclose($handle);
 
     if(!$this->testingmode) //don't exit if we are in testing mode
       {
-      exit(connection_status() == 0 && !connection_aborted());
+      exit();
       }
     }
   } //end class

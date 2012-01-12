@@ -11,6 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.checkboxrange.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/community/community.view.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 foreach($this->customJSs as $Urls)
@@ -65,14 +66,14 @@ foreach($this->customCSSs as $Uris)
   <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <div class="tabs" id='tabsGeneric'>
   <ul>
-    <li><a href="#tabs-3"><?php echo $this->t('Data');?></a></li>
-    <li><a href="#tabs-1"><?php echo $this->t("Feed")?></a></li>
+    <li><a id="tabDataLink" href="#tabs-data"><?php echo $this->t('Data');?></a></li>
+    <li><a id="tabFeedLink" href="#tabs-feed"><?php echo $this->t("Feed")?></a></li>
     <?php
     $description=$this->communityDao->getDescription();
     if(!empty($description))
       {
       ?>
-    <li><a href="#tabs-2"><?php echo $this->t('Info');?></a></li>
+    <li><a id="tabInfoLink" href="#tabs-info"><?php echo $this->t('Info');?></a></li>
     <?php
       }
       ?>
@@ -81,11 +82,11 @@ foreach($this->customCSSs as $Uris)
     if($this->isMember)
       {
       ?>
-    <li><a href="#tabs-4"><?php echo $this->t('Shared to Members');?></a></li>
+    <li><a id="tabSharedLink" href="#tabs-shared"><?php echo $this->t('Shared to Members');?></a></li>
     <?php
       }?>
   </ul>
-  <div id="tabs-1">
+  <div id="tabs-feed">
      <?
       echo $this->element('feed');
       ?>
@@ -94,7 +95,7 @@ foreach($this->customCSSs as $Uris)
     if(!empty($description))
       {
       ?>
-    <div id="tabs-2">
+    <div id="tabs-info">
       <?php
       echo nl2br($description);
       ?>
@@ -102,7 +103,7 @@ foreach($this->customCSSs as $Uris)
     <?php
       }
       ?>
-    <div id="tabs-3">
+    <div id="tabs-data">
       <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
 
       <table id="browseTable" class="midasTree">
@@ -110,23 +111,27 @@ foreach($this->customCSSs as $Uris)
               <th class="thData"><?php echo $this->t('Name');?></th>
               <th class="thSize"><?php echo $this->t('Size');?></th>
               <th class="thDate"><?php echo $this->t('Modified');?></th>
-              <th class="thCheckbox"></th>
+              <th class="thCheckbox"><input type="checkbox" id="browseTableHeaderCheckbox" /></th>
         </thead>
         <tbody>
             <?php
             $node=1;
             foreach($this->folders as $folder)
               {
-              $policy=MIDAS_POLICY_READ;
-              if($this->isModerator||$this->isAdmin)
+              $folderId = $folder->getFolderId();
+              if ($folderId == $this->privateFolderId || $folderId == $this->publicFolderId)
                 {
-                $policy=MIDAS_POLICY_WRITE;
+                $deletableStatus = 'false';
                 }
-              echo "<tr id='node--$node' policy='$policy'  class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
+              else
+                {
+                $deletableStatus = 'true';
+                }
+              echo "<tr id='node--$node' policy='{$folder->policy}' deletable=$deletableStatus class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='$folderId' ajax='$folderId'>";
               echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
-              echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
+              echo "  <td><img class='folderLoading'  element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
-              echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId()}' /></td>";
+              echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='$folderId' id='folderCheckbox{$folderId}' /></td>";
               echo "</tr>";
               $node++;
               }
@@ -137,7 +142,7 @@ foreach($this->customCSSs as $Uris)
               echo "  <td class='treeBrowseElement'><span class='file'>{$this->slicename($item->getName(),40)}</span></td>";
               echo "  <td>{$item->size}</td>";
               echo "  <td>{$this->Date->ago($item->getDateUpdate(),true)}</td>";
-              echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' /></td>";
+              echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' id='itemCheckbox{$item->getItemId()}' /></td>";
               echo "</tr>";
               $node++;
               }
@@ -150,7 +155,7 @@ foreach($this->customCSSs as $Uris)
     if($this->isMember)
       {
       ?>
-    <div id="tabs-4">
+    <div id="tabs-shared">
       <?php
       $this->listFiles=$this->shareItems;
       echo $this->element('listfiles');
@@ -179,6 +184,8 @@ foreach($this->customCSSs as $Uris)
           ";
       echo "
           <li><a id='sendInvitationLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/email.png'/> {$this->t('Send invitation')}</a></li>
+          ";
+      echo "<li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t('Create a top level Folder')}</a></li>
           ";
       }
     if($this->isMember&&!$this->isAdmin)
@@ -229,7 +236,7 @@ foreach($this->customCSSs as $Uris)
       </ul>
     </div>
     <div class="sideElement viewSelected" >
-      <h1><?php echo $this->t('Selected')?></h1>
+      <h1><?php echo $this->t('Selected')?><span></span></h1>
       <span></span>
     </div>
     <div class="sideElementLast viewInfo">

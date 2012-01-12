@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /** Error management*/
@@ -46,9 +54,11 @@ class NotifyErrorComponent  extends AppComponent
       switch($environment)
         {
         case 'production':
-          $message .= "It seems you have just encountered an unknown issue.";
-          $message .= "Our team has been notified and will deal with the problem as soon as possible.";
-
+          $message = "The system has encountered the following error:<br/><h3>";
+          $message .= $e->message . "<br/>";
+          $message .= "In " . $e->file . ", line: " . $e->line . "<br/>";
+          $message .= "At " . date("H:i:s Y-m-d") . "</h3><br/>";
+          $message .= "Please notify your administrator with this information.<br/>";
           if($e['type'] == E_NOTICE)
             {
             $e['typeText'] = 'E_NOTICE';
@@ -56,6 +66,10 @@ class NotifyErrorComponent  extends AppComponent
           elseif($e['type'] == E_ERROR )
             {
             $e['typeText'] = 'E_ERROR';
+            }
+          elseif($e['type'] == 4 )
+            {
+            $e['typeText'] = '4';
             }
           elseif($e['type'] == E_WARNING )
             {
@@ -95,6 +109,10 @@ class NotifyErrorComponent  extends AppComponent
           elseif($e['type'] == E_ERROR )
             {
             $e['typeText'] = 'E_ERROR';
+            }
+          elseif($e['type'] == 4 )
+            {
+            $e['typeText'] = '4';
             }
           elseif($e['type'] == E_WARNING )
             {
@@ -273,8 +291,11 @@ class NotifyErrorComponent  extends AppComponent
     switch($this->_environment)
       {
       case 'production':
-        $message .= "It seems you have just encountered an unknown issue.";
-        $message .= "Our team has been notified and will deal with the problem as soon as possible.";
+        $message = "The system has encountered the following error:<br/><h3>";
+        $message .= $this->_error->exception->getMessage() . "<br/>";
+        $message .= "In " . $this->_error->exception->getFile() . ", line: " . $this->_error->exception->getLine() . "<br/>";
+        $message .= "At " . date("H:i:s Y-m-d") . "</h3><br/>";
+        $message .= "Please notify your administrator with this information.<br/>";
         break;
       default:
         $message .= "Message: " . $this->_error->exception->getMessage() . "\n\n";

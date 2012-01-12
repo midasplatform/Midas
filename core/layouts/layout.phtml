@@ -47,6 +47,17 @@ echo $this->doctype()
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery.qtip.min.css" />';
       }
     ?>
+    <?php
+    $headers = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_FOOTER_HEADER", array());
+    if(!empty($headers))
+      {
+      foreach($headers as $header)
+        {
+        echo $header;
+        }
+      }
+    ?>
+
     <!--[if IE]>
       <?php echo  '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/mainIE.css" />';?>
       <?php echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/roundCornerIE.js"></script>';?>
@@ -85,6 +96,15 @@ echo $this->doctype()
             <li>
               <a target="_blank" href="http://www.kitware.com" >Kitware</a>
             </li>
+            <?php
+            if($this->logged)
+              {
+              ?>
+              <li>
+                <a href="#" id="startingGuideLink" ><?php echo $this->t('Starting Guide')?></a>
+              </li>
+            <?php
+              }?>
           </ul>
         </div>
         <div class="TopbarRight">
@@ -143,10 +163,13 @@ echo $this->doctype()
             <li>
               <a href="#" > <?= $this->t('Help') ?></a>
             </li>
+
+            <?php
+            if(!isset(Zend_Registry::get('configCore')->internationalization) || Zend_Registry::get('configCore')->internationalization == "1")
+              {
+              ?>
             <li>
-
                 <a href="#" style="margin-right: 20px">
-
                <?php
                echo $this->t('My Language');
                 ?>
@@ -179,6 +202,9 @@ echo $this->doctype()
                   </li>
                 </ul>
             </li>
+            <?php
+              }
+              ?>
           </ul>
         </div>
       </div>
@@ -205,6 +231,16 @@ echo $this->doctype()
                 Upload
               </a>
             </li>
+            <?php
+            $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_LAYOUT_TOPBUTTONS", array());
+            foreach($htmltArray as $html)
+              {
+              if(!empty($html))
+                {
+                echo $html;
+                }
+              }
+            ?>
           </ul>
           <div class="viewNoticeWrapper">
             <div class="viewNotice"></div>
@@ -233,7 +269,7 @@ echo $this->doctype()
               <li <?php if($this->activemenu=='browse') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/browse');" ><a href="<?php echo $this->webroot?>/browse"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/explore.png" /><span> <?php echo $this->t('Explore');?></span></a></li>
               <li <?php if($this->activemenu=='community') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/community');" ><a href="<?php echo $this->webroot?>/community"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/community2.png" /><span> <?php echo $this->t('Communities');?></span></a></li>
               <li <?php if($this->activemenu=='user') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/user');" ><a href="<?php echo $this->webroot?>/user"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/users.png" /><span> <?php echo $this->t('Users');?></span></a></li>
-              <li id="menuUserInfo" <?php if($this->activemenu=='user') {echo 'class="active"';} ?>  ><a href="javascript:;"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/user.png" /><span> <?php echo $this->t('My profile');?></span></a></li>
+              <li id="menuUserInfo" <?php if($this->activemenu=='myprofile') {echo 'class="active"';} ?>  ><a href="javascript:;"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/user.png" /><span> <?php echo $this->t('My profile');?></span></a></li>
 
                <?php
               if($this->showUploadedLink)
@@ -299,33 +335,118 @@ echo $this->doctype()
             <div class="clear"/>
           </div>
         </div>
-        <div class="Footer"><a href="http://www.kitware.com/products/midas.html">MIDAS</a> <?php echo $this->version ?> by <a href="http://www.kitware.com">Kitware</a> © <?php echo date("Y") ?> -
+        <div class="SupraFooter">
+          <?php
+            $contentFooters = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_SUPRA_FOOTER", array());
+            if(!empty($contentFooters))
+              {
+              foreach($contentFooters as $contentFooter)
+                {
+                echo $contentFooter;
+                }
+              }
+          ?>
+        </div>
+        <div class="Footer"><a href="http://www.kitware.com/products/midas.html">MIDAS</a> <?php echo $this->version ?> by <a href="http://www.kitware.com">Kitware</a> Â© <?php echo date("Y") ?> -
          <?php
          echo $this->t('Generated in').' '.$this->generatedTimer." s";
          ?>
-        - <a href="http://public.kitware.com/Bug/my_view_page.php"><?php echo $this->t('Report bug');?></a>
+        - <a href="http://public.kitware.com/MidasBT/my_view_page.php"><?php echo $this->t('Report bug');?></a>
         </div>
       </div>
       <hr style="display: none;"/>
     </div>
     <?php
-              if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
-                {
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,jquery.treeTable.js,jquery.qtip.min.js"></script>';
-                }
-              else
-                {
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery-ui.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/main.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.treeTable.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.qtip.min.js"></script>';
-                }
+      if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+        {
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,jquery.treeTable.js,jquery.qtip.min.js"></script>';
+        }
+      else
+        {
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery-ui.js"></script>';
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/main.js"></script>';
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.treeTable.js"></script>';
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.qtip.min.js"></script>';
+        }
     ?>
     <?php echo $this->headScript() ?>
     <input type="hidden" class="webroot" value="<?php echo $this->webroot?>" />
     <div style="display: none;" class="jsonContent">
       <?php echo $this->json?>
+    </div>
+
+    <div id="dialogStartingGuide" style="display:none;" title="<?php echo $this->t('Starting Guide')?>">
+      <br/>
+     Click on the action of you choice to start using the MIDAS Platform.
+
+     <br/><br/>
+     <div id="seperatorStartingGuide">
+
+     </div>
+     <br/>
+       <div class="blockSet" id="blockPersoLink">
+        <table>
+          <tbody><tr>
+            <td class="logo">
+              <img alt="" src="<?php echo  $this->coreWebroot?>/public/images/bigicons/folder-lock.png" />
+            </td>
+            <td>
+              <h4  >Access your personal folder</h4>
+              <span style="color:grey;">Store data in a secured location.</span>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+      <div class="blockSet" id="blockSettingsLink">
+        <table>
+          <tbody><tr>
+            <td class="logo">
+              <img alt="" src="<?php echo  $this->coreWebroot?>/public/images/bigicons/explore.png" />
+            </td>
+            <td>
+              <h4>Manage your profile</h4>
+              <span style="color:grey;">Manage your information and your privacy.</span>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+     <br/>
+      <div class="blockSet" id="blockExploreLink">
+        <table>
+          <tbody><tr>
+            <td class="logo">
+              <img alt="" src="<?php echo  $this->coreWebroot?>/public/images/bigicons/profile.png" />
+            </td>
+            <td>
+              <h4>Explore the data</h4>
+              <span style="color:grey;">Browse the data hosted on the MIDAS Platform.</span>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+      <div class="blockSet" id="blockCommunityLink" >
+        <table>
+          <tbody><tr>
+            <td class="logo">
+              <img alt="" src="<?php echo  $this->coreWebroot?>/public/images/bigicons/community.png" />
+            </td>
+            <td>
+              <h4>Join a community</h4>
+              <span style="color:grey;">Be part of a project!</span>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+     <br/>
+     <div style="float:left;">
+       <input type="checkbox" name="disableStartingGuide" id="disableStartingGuide" <?php if(isset($this->userDao) && $this->userDao->getDynamichelp() == 0) echo 'checked'?> />
+       <label style="color:grey;font-size: 11px;" for="disableStartingGuide">Always hide the help animation and this window.</label>
+     </div>
     </div>
   </body>
 

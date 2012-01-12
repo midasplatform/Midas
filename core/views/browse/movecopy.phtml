@@ -21,13 +21,13 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
   <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
   <table id="moveTable" class="midasTree">
     <thead>
-      <?php 
+      <?php
     if(!empty($this->communities))
       {  ?>
       <tr>
         <th class="thData"><?php echo $this->t('Name');?></th>
       </tr>
-     <?php 
+     <?php
       }
      ?>
     </thead>
@@ -41,44 +41,43 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
         echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
         echo "</tr>";
         $node++;
-        }  
+        }
         
         $folder=$this->user->getFolder();
         echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='-1' ajax='{$folder->getFolderId()}'>";
         echo "  <td class='treeBrowseElement'><span class='folder'>{$this->t('My Files')} ({$this->user->getFullName()})</span></td>";
         echo "</tr>";
         $node++;
-      ?>        
+      ?>
     </tbody>
   </table>
    <br/> <br/>
-  <form class="genericForm" type='post' action="<?php echo $this->webroot?>/browse/movecopy">
+  <form class="genericForm" id="moveCopyForm" type='post' action="<?php echo $this->webroot?>/browse/movecopy">
     <input type='hidden' name='elements' value='<?php echo $this->folderIds?>;<?php echo $this->itemIds?>' />
     <input type='hidden' id="selectedDestinationHidden" name='destination' />
     Destination: <span id="selectedDestination" > <?php echo $this->t('Please select a folder.') ?> </span> <br/>
         <?php
     if($this->moveEnabled)
       {?>
-      <input type="submit" disabled  name='moveElements' id='moveElements'  value="<?php echo $this->t('Move')?>"/>
+      <input type="submit" disabled  name='moveElement' id='moveElement'  value="<?php echo $this->t('Move')?>"/>
     <?php      
       }
     elseif($this->selectEnabled)
       {
       ?>
-      <input type="submit" disabled  name='selectElements' id='selectElements'  value="<?php echo $this->t('Select')?>"/>
+      <input type="submit" disabled  name='selectElement' id='selectElement'  value="<?php echo $this->t('Select')?>"/>
       <?php
       }
-       else
-         {
+    elseif($this->shareEnabled)
+      {
       ?>
-    <input type="submit" disabled id='copyElement'  name='copyElement' value="<?php echo $this->t('Copy')?>"/>
-    <?php
-        }?>
+      <input type="submit" disabled  name='shareElement' id='shareElement'  value="<?php echo $this->t('Share')?>"/>
+      <?php
+      }
+    else
+      {
+      ?>
+      <input type="submit" disabled name='duplicateElement' id='duplicateElement'  value="<?php echo $this->t('Duplicate')?>"/>
+      <?php
+      }?>
   </form>
-  
-  <?php 
-  if(empty($this->communities))
-    {    
-    echo "<h4>{$this->t("No community available")}.</h4>";
-    }
-    ?>

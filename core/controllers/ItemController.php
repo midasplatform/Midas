@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /** Item Controller */
@@ -18,7 +26,11 @@ class ItemController extends AppController
   public $_components = array('Date', 'Utility', 'Sortdao');
   public $_forms = array('Item');
 
-  /** Init Controller */
+  /**
+   * Init Controller
+   *
+   * @method init()
+  */
   function init()
     {
     $this->view->activemenu = ''; // set the active menu
@@ -30,13 +42,19 @@ class ItemController extends AppController
     }  // end init()
 
 
-  /** create/edit metadata*/
+
+  /**
+   * create/edit metadata
+   *
+   * @method editmetadataAction()
+   * @throws Zend_Exception on non-logged user, invalid itemId and incorrect access permission
+  */
   function editmetadataAction()
     {
     $this->disableLayout();
     if(!$this->logged)
       {
-      throw new Zend_Exception("You have to be logged in to do that");
+      throw new Zend_Exception(MIDAS_LOGIN_REQUIRED);
       }
 
     $itemId = $this->_getParam("itemId");
@@ -69,7 +87,12 @@ class ItemController extends AppController
     $this->view->jsonMetadataType = JsonComponent::encode($this->view->metadataType);
     }
 
-  /** view a community*/
+  /**
+   * View a Item
+   *
+   * @method viewAction()
+   * @throws Zend_Exception on invalid itemId and incorrect access permission
+  */
   function viewAction()
     {
     $this->view->header = $this->t("Item");
@@ -163,22 +186,26 @@ class ItemController extends AppController
     // Display the good link if the item is pointing to a website
     $this->view->itemIsLink = false;
 
-    $bitstreams = $itemRevision->getBitstreams();
-    if(count($bitstreams) == 1)
-      {
-      $bitstream = $bitstreams[0];
-      if(strpos($bitstream->getPath(), 'http://') !== false)
-        {
-        $this->view->itemIsLink = true;
-        }
-      }
 
+    if(isset($itemRevision) && $itemRevision !== false)
+      {
+      $bitstreams = $itemRevision->getBitstreams();
+      if(count($bitstreams) == 1)
+        {
+        $bitstream = $bitstreams[0];
+        if(strpos($bitstream->getPath(), 'http://') !== false)
+          {
+          $this->view->itemIsLink = true;
+          }
+        }
+      $itemDao->creation = $this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
+      $this->view->metadatavalues = $this->ItemRevision->getMetadata($itemRevision);
+      }
 
     $this->Component->Sortdao->field = 'revision';
     $this->Component->Sortdao->order = 'desc';
     usort($itemDao->revisions, array($this->Component->Sortdao, 'sortByNumber'));
 
-    $itemDao->creation = $this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
     $this->view->itemDao = $itemDao;
 
     $this->view->itemSize = $this->Component->Utility->formatSize($itemDao->getSizebytes());
@@ -186,7 +213,6 @@ class ItemController extends AppController
     $this->view->title .= ' - '.$itemDao->getName();
     $this->view->metaDescription = substr($itemDao->getDescription(), 0, 160);
 
-    $this->view->metadatavalues = $this->ItemRevision->getMetadata($itemRevision);
 
 
     $tmp = Zend_Registry::get('notifier')->callback("CALLBACK_VISUALIZE_CAN_VISUALIZE", array('item' => $itemDao));
@@ -210,7 +236,11 @@ class ItemController extends AppController
     else
       {
       $parents = $itemDao->getFolders();
-      if(isset($this->userSession->recentFolders))
+      if(count($parents) == 1)
+        {
+        $currentFolder = $parents[0];
+        }
+      elseif(isset($this->userSession->recentFolders))
         {
         foreach($parents as $p)
           {
@@ -220,11 +250,12 @@ class ItemController extends AppController
             break;
             }
           }
-        if(isset($currentFolder))
-          {
-          $items = $this->Folder->getItemsFiltered($currentFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
-          $this->view->currentFolder = $currentFolder;
-          }
+
+        }
+      if(isset($currentFolder))
+        {
+        $items = $this->Folder->getItemsFiltered($currentFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+        $this->view->currentFolder = $currentFolder;
         }
       }
 
@@ -245,12 +276,19 @@ class ItemController extends AppController
 
     $this->view->json['item'] = $itemDao->toArray();
     $this->view->json['item']['message']['delete'] = $this->t('Delete');
+    $this->view->json['item']['message']['sharedItem'] = $this->t('This item is currrently shared by other folders and/or communities. Deletion will make it disappear in all these folders and/or communitites. ');
     $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undone.');
     $this->view->json['item']['message']['deleteMetadataMessage'] = $this->t('Do you really want to delete this metadata? It cannot be undone.');
-    $this->view->json['item']['message']['movecopy'] = $this->t('Copy Item.');
+    $this->view->json['item']['message']['share'] = $this->t('Share Item (Display the same item in the destination folder)');
+    $this->view->json['item']['message']['duplicate'] = $this->t('Duplicate Item (Create a new item in the destination folder)');
     }//end index
 
-  /** Edit  (ajax) */
+  /**
+   * Edit an item
+   *
+   * @method editAction()
+   * @throws Zend_Exception on invalid itemId and incorrect access permission
+  */
   function editAction()
     {
     $this->disableLayout();
@@ -292,13 +330,18 @@ class ItemController extends AppController
     $this->view->form = $formArray;
     }
 
-  /** Delete an item*/
+  /**
+   * Delete an item
+   *
+   * @method deleteAction()
+   * @throws Zend_Exception on invalid itemId and incorrect access permission
+  */
   function deleteAction()
     {
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
-    $itemId = $this->_getParam("itemId");
+    $itemId = $this->_getParam('itemId');
     if(!isset($itemId) || (!is_numeric($itemId) && strlen($itemId) != 32)) // This is tricky! and for Cassandra for now
       {
       throw new Zend_Exception("itemId should be a number");
@@ -306,7 +349,7 @@ class ItemController extends AppController
     $itemDao = $this->Item->load($itemId);
     if($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception("This community doesn't exist or you don't have the permissions.");
+      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
       }
 
     $this->Item->delete($itemDao);
@@ -315,7 +358,12 @@ class ItemController extends AppController
     }//end delete
 
 
-  /** Merge items*/
+  /**
+   * Merge items
+   *
+   * @method mergeAction()
+   * @throws Zend_Exception on invalid item name and incorrect access permission
+  */
   function mergeAction()
     {
     $this->_helper->layout->disableLayout();
@@ -367,6 +415,34 @@ class ItemController extends AppController
     $this->Item->save($mainItem);
 
     $this->_redirect('/browse/uploaded');
-    }//end delete
+    }//end merge
+
+  /**
+   * Check if an item is shared
+   *
+   * ajax function which checks if an item is shared in other folder/community
+   *
+   * @method checksharedAction()
+   * @throws Zend_Exception on non-ajax call
+  */
+  public function checksharedAction()
+    {
+    if(!$this->getRequest()->isXmlHttpRequest())
+      {
+      throw new Zend_Exception("Why are you here ? Should be ajax.");
+      }
+    $this->disableLayout();
+    $this->disableView();
+    $itemId = $this->_getParam("itemId");
+    $itemDao = $this->Item->load($itemId);
+    $shareCount = count($itemDao->getFolders());
+    $ifShared = false;
+    if($shareCount > 1)
+      {
+      $ifShared = true;
+      }
+
+    echo JsonComponent::encode($ifShared);
+    } // end checkshared
 
   }//end class

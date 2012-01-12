@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+
+  <community community_id="2000" name="Community 1" description=""
+    creation="2011-01-27 12:09:02"  privacy="0" folder_id="1003" publicfolder_id="1004"
+    privatefolder_id="1005" admingroup_id="3000" moderatorgroup_id="3001"
+    membergroup_id="3002" uuid='4e311fdf82107d245f0798d654fc24205f2621eb72777' />
+
+  <user user_id="1" firstname="FirstName1" lastname="LastName1" email="user1@user1.com" password="35fd8ba86ba403ffcc00feac5355ad20"
+    creation="2011-01-27 12:09:02" folder_id="1000" publicfolder_id="1001" privatefolder_id="1002" admin="0" />
+  <user user_id="2" firstname="FirstName2" lastname="LastName2" email="user2@user2.com" password="35fd8ba86ba403ffcc00feac5355ad20"
+    creation="2011-01-27 12:10:02" admin="0" />
+  <user user_id="3" firstname="FirstName3" lastname="LastName3" email="user3@user3.com" password="35fd8ba86ba403ffcc00feac5355ad20"
+    creation="2011-01-27 12:08:02" admin="0" />
+  <user user_id="4" firstname="Admin" lastname="Admin" email="admin@admin.com" password="35fd8ba86ba403ffcc00feac5355ad20"
+    creation="2011-01-27 12:11:02" admin="1" />
+
+  <group group_id="3000" community_id="2000" name="Community 1 Admin" />
+  <group group_id="3001" community_id="2000" name="Community 1 Moderator" />
+  <group group_id="3002" community_id="2000" name="Community 1 Member" />
+
+  <folder folder_id="1000" name="user_1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72760'
+    description="" left_indice="1000" right_indice="1005" parent_id="-1" />
+  <folder folder_id="1001" name="User 1 public folder" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761'
+    description="" left_indice="1001" right_indice="1002" parent_id="1000" />
+  <folder folder_id="1002" name="User 1 private folder" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72762'
+    description="" left_indice="1003" right_indice="1004" parent_id="1000" />
+  <folder folder_id="1003" name="community_2000" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72763'
+    description="" left_indice="1006" right_indice="10011" parent_id="-2" />
+  <folder folder_id="1004" name="Community 1 public folder" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72764'
+    description="" left_indice="1007" right_indice="1008" parent_id="1003" />
+  <folder folder_id="1005" name="Community 1 private folder" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72765'
+    description="" left_indice="1009" right_indice="1010" parent_id="1003" />
+  <folder folder_id="1006" name="Community 1 private sub_1" uuid='5e311fdf82007c245b17e8d6a4fcb42c3f2621a482965'
+    description="" left_indice="1010" right_indice="1011" parent_id="1005" />
+
+  <folder folder_id="1007" name="User 1 private sub_1" uuid='5e311fdf82007c245b17e8d6a4fcb42c3f2621a482966'
+    description="" left_indice="1011" right_indice="1012" parent_id="1002" />
+
+  <user2group group_id="3000" user_id="3" />
+  <user2group group_id="3001" user_id="3" />
+  <user2group group_id="3002" user_id="3" />
+
+  <item item_id="1" name="User 1 private sub_1 folder item" description="" type="1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
+  <item2folder item_id="1" folder_id='1007' />
+  <item item_id="2" name="Community 1 private folder item" description="" type="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72751' />
+  <item2folder item_id="2" folder_id='1005' />
+  <item item_id="3" name="User1 public folder item" description="" type="3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72752' />
+  <item2folder item_id="3" folder_id="1001" />
+
+  <!-- policies -->
+  <folderpolicygroup folder_id="1001" group_id="0" policy="0" />
+
+  <folderpolicyuser folder_id="1000" user_id="1" policy="2" />
+  <folderpolicyuser folder_id="1001" user_id="1" policy="2" />
+  <folderpolicyuser folder_id="1002" user_id="1" policy="2" />
+  <folderpolicyuser folder_id="1007" user_id="1" policy="2" />
+
+  <itempolicygroup item_id="2" group_id="0" policy="0" />
+
+  <itempolicyuser item_id="1" user_id="1" policy="2" />
+  <itempolicyuser item_id="3" user_id="1" policy="2" />
+
+</dataset>

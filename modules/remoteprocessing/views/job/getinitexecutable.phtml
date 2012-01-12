@@ -1,0 +1,76 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+
+$i = 0;
+foreach($this->metaContent->option as $option)
+  {
+  if(isset($option->field) && isset($option->field->required) && $option->field->required == 1)
+    {
+    echo "<div id='option_".$i."' name='".htmlentities(ucfirst($option->name))."' class='optionWrapper' isrequired ='true' tag='".htmlentities($option->tag)."'>";
+    echo "<h4>".ucfirst($option->name)." (required)</h4>";
+    }
+  else
+    {
+    echo "<div id='option_".$i."' name='".htmlentities(ucfirst($option->name))."' class='optionWrapper'  tag='".htmlentities($option->tag)."'>";
+    echo "<h4>".ucfirst($option->name)."</h4>";
+    }
+
+
+  $type = 'inputParam';
+  if($option->channel == 'ouput')
+    {
+    elementOuputFile($i, $option);
+    }
+  else if($option->field->external == 1)
+    {
+    elementInputFile($i, $option, $this->scheduled);
+    }
+  else
+    {
+    elementInputParam($i, $option);
+    }
+  echo "</div>";
+  $i++;
+  }
+
+
+function elementOuputFile($i, $option)
+  {
+  echo "<a class='selectOutputFolderLink' order='$i'>Select Ouput Folder</a><br/>";
+  echo "Selected: <span class='selectedFolder' element=''></span><br/>";
+  echo "Name of the output: <input qtip='MIDAS will automatically add paramaters information in the name.' type='text' class='nameOutputOption'/>";
+  }
+
+function elementInputFile($i, $option, $scheduled)
+  {
+  if(!$scheduled)
+    {
+    echo "<a class='selectInputFileLink' order='$i'>Select Input File</a> or <a qtip='All the data contained in the selected folder will be processed' class='selectInputFolderLink' order='$i'>Select Input Folder</a><br/>";
+    }
+  else
+    {
+    echo "<span class='selectInputFileLink' order='$i'></span> <a qtip='All the data contained in the selected folder will be processed' class='selectInputFolderLink' order='$i'>Select Input Folder</a><br/>";
+    }
+  echo "Selected: <span style='display:none'; class='selectedFolderContent' element=''></span><span class='selectedItem' element=''></span>";
+  }
+
+function elementInputParam($i, $option)
+  {
+  echo "Value (".ucfirst($option->field->type)."): <input variable='".$option->field->type."' type='text' qtip='Example multiple values: <b>5;6;9</b><br/>Example range with a step of 0.5: <b>5-10(0.5)</b>' class='valueInputOption'/>";
+  }
+?>
+
+
+
+
+

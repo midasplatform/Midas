@@ -1,13 +1,21 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /**
@@ -43,18 +51,45 @@ class MIDAS_ModelLoader
     {
     $databaseType = Zend_Registry::get('configDatabase')->database->type;
     $models = Zend_Registry::get('models');
+
     if(!isset($models[$module.$model]))
       {
       if($module == '')
         {
+        if(file_exists(BASE_PATH.'/core/models/base/'.$model.'ModelBase.php'))
+          {
+          include_once BASE_PATH.'/core/models/base/'.$model.'ModelBase.php';
+          }
         include_once BASE_PATH.'/core/models/'.$databaseType.'/'.$model.'Model.php';
         $name = $model . 'Model';
         }
       else
         {
-        include_once BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
+        if(file_exists(BASE_PATH.'/modules/'.$module.'/models/base/'.$model.'ModelBase.php'))
+          {
+          include_once BASE_PATH.'/modules/'.$module.'/models/base/'.$model.'ModelBase.php';
+          }
+        elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php'))
+          {
+          include_once BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php';
+          }
+
+        if(file_exists(BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
+          {
+          include_once BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
+          }
+        elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
+          {
+          include_once BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
+          }
+        else
+          {
+          throw new Zend_Exception("Unable to find model file ".$model);
+          }
+
         $name = ucfirst($module).'_'.$model.'Model';
         }
+
       if(class_exists($name))
         {
         $models[$module.$model] = new $name;

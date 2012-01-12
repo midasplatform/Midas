@@ -1,70 +1,146 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /** Utility componenet */
 class UtilityComponent extends AppComponent
 {
+
+  /**
+   * The main function for converting to an XML document.
+   * Pass in a multi dimensional array and this recrusively loops through and builds up an XML document.
+   *
+   * @param array $data
+   * @param string $rootNodeName - what you want the root node to be - defaultsto data.
+   * @param SimpleXMLElement $xml - should only be used recursively
+   * @return string XML
+   */
+  public function toXml($data, $rootNodeName = 'data', $xml = null)
+    {
+    // turn off compatibility mode as simple xml throws a wobbly if you don't.
+    if(ini_get('zend.ze1_compatibility_mode') == 1)
+      {
+      ini_set('zend.ze1_compatibility_mode', 0);
+      }
+
+    if($xml == null)
+      {
+      $xml = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><".$rootNodeName." />");
+      }
+
+    // loop through the data passed in.
+    foreach($data as $key => $value)
+      {
+      // no numeric keys in our xml please!
+      if(is_numeric($key))
+        {
+        // make string key...
+        $key = "unknownNode_". (string) $key;
+        }
+
+      // replace anything not alpha numeric
+      $key = preg_replace('/[^a-z]/i', '', $key);
+
+      // if there is another array found recrusively call this function
+      if(is_array($value))
+        {
+        $node = $xml->addChild($key);
+        // recrusive call.
+        $this->toXml($value, $rootNodeName, $node);
+        }
+      else
+        {
+        // add single node.
+        $value = htmlentities($value);
+        $xml->addChild($key, $value);
+        }
+      }
+    // pass back as string. or simple xml object if you want!
+    return $xml->asXML();
+    }
   /** Get all the modules */
-  static public function getAllModules()
+  public function getAllModules()
     {
     $modules = array();
     if(file_exists(BASE_PATH.'/modules/') && opendir(BASE_PATH.'/modules/'))
       {
-      $handle = opendir(BASE_PATH.'/modules/');
-      while(false !== ($file = readdir($handle)))
+      $array = $this->_initModulesConfig(BASE_PATH.'/modules/');
+      $modules = array_merge($modules, $array);
+      }
+
+    if(file_exists(BASE_PATH.'/privateModules/') && opendir(BASE_PATH.'/privateModules/'))
+      {
+      $array = $this->_initModulesConfig(BASE_PATH.'/privateModules/');
+      $modules = array_merge($modules, $array);
+      }
+
+    return $modules;
+    }
+
+  /** find modules configuration in a folder */
+  private function _initModulesConfig($dir)
+    {
+    $handle = opendir($dir);
+    $modules = array();
+    while(false !== ($file = readdir($handle)))
+      {
+      if(file_exists($dir.$file.'/configs/module.ini'))
         {
-        if(file_exists(BASE_PATH.'/modules/'.$file.'/configs/module.ini'))
+        $config = new Zend_Config_Ini($dir.$file.'/configs/module.ini', 'global', true);
+        $config->db = array();
+        if(!file_exists($dir.$file.'/database'))
           {
-          $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$file.'/configs/module.ini', 'global', true);
-          $config->db = array();
-          if(!file_exists(BASE_PATH.'/modules/'.$file.'/database'))
+          $config->db->PDO_MYSQL = true;
+          $config->db->PDO_IBM = true;
+          $config->db->PDO_OCI = true;
+          $config->db->PDO_SQLITE = true;
+          $config->db->CASSANDRA = true;
+          $config->db->MONGO = true;
+          }
+        else
+          {
+          $handleDB = opendir($dir.$file.'/database');
+          if(file_exists($dir.$file.'/database'))
             {
-            $config->db->PDO_MYSQL = true;
-            $config->db->PDO_IBM = true;
-            $config->db->PDO_OCI = true;
-            $config->db->PDO_SQLITE = true;
-            $config->db->CASSANDRA = true;
-            $config->db->MONGO = true;
-            }
-          else
-            {
-            $handleDB = opendir(BASE_PATH.'/modules/'.$file.'/database');
-            if(file_exists(BASE_PATH.'/modules/'.$file.'/database'))
+            while(false !== ($fileDB = readdir($handleDB)))
               {
-              while(false !== ($fileDB = readdir($handleDB)))
+              if(file_exists($dir.$file.'/database/'.$fileDB.'/'))
                 {
-                if(file_exists(BASE_PATH.'/modules/'.$file.'/database/'.$fileDB.'/'))
+                switch($fileDB)
                   {
-                  switch($fileDB)
-                    {
-                    case 'mysql' : $config->db->PDO_MYSQL = true; break;
-                    case 'pgsql' : $config->db->PDO_PGSQL = true;break;
-                    case 'ibm' : $config->db->PDO_IBM = true;break;
-                    case 'oci' : $config->db->PDO_OCI = true;break;
-                    case 'sqlite' : $config->db->PDO_SQLITE = true;break;
-                    case 'cassandra' : $config->db->CASSANDRA = true;break;
-                    case 'mongo' : $config->db->MONGO = true;break;
-                    default : break;
-                    }
+                  case 'mysql' : $config->db->PDO_MYSQL = true; break;
+                  case 'pgsql' : $config->db->PDO_PGSQL = true;break;
+                  case 'ibm' : $config->db->PDO_IBM = true;break;
+                  case 'oci' : $config->db->PDO_OCI = true;break;
+                  case 'sqlite' : $config->db->PDO_SQLITE = true;break;
+                  case 'cassandra' : $config->db->CASSANDRA = true;break;
+                  case 'mongo' : $config->db->MONGO = true;break;
+                  default : break;
                   }
                 }
               }
             }
-          $modules[$file] = $config;
           }
+        $modules[$file] = $config;
         }
-      closedir($handle);
       }
-
+    closedir($handle);
     return $modules;
     }
 
@@ -305,6 +381,44 @@ class UtilityComponent extends AppComponent
       $linnum++;
       } // end for each line
     return true;
+    }
+
+  /**
+   * @method public getTempDirectory()
+   * @param $subdir
+   * get the midas temporary directory, appending the param $subdir, which
+   * defaults to "misc"
+   * @return string
+   */
+  public static function getTempDirectory($subdir = "misc")
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $settingModel = $modelLoader->loadModel('Setting');
+    try
+      {
+      $tempDirectory = $settingModel->getValueByName('temp_directory');
+      }
+    catch(Exception $e)
+      {
+      // if the setting model hasn't been installed, or there is no
+      // value in the settings table for this, provide a default
+      $tempDirectory = null;
+      }
+    if(!isset($tempDirectory) || empty($tempDirectory))
+      {
+      $tempDirectory = BASE_PATH.'/tmp';
+      }
+    return $tempDirectory .'/'.$subdir.'/';
+    }
+
+  /**
+   * @method public getCacheDirectory()
+   * get the midas cache directory
+   * @return string
+   */
+  public static function getCacheDirectory()
+    {
+    return self::getTempDirectory('cache');
     }
 
 

@@ -1,35 +1,43 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 /** Notify modules using this class*/
 class MIDAS_Notifier
-  {  
+  {
   public $modules = array();
   public $tasks = array();
   private $tasksByModule = array();
   public $notifications = array();
-  
+
   /** get Notification */
   public function getNotifications()
     {
     return $this->notifications;
     }
-    
+
   /** get Tasks */
   public function getTasks()
     {
     return $this->tasks;
     }
-  
+
   /** init the notifier*/
   public function __construct($logged, $session)
     {
@@ -48,8 +56,20 @@ class MIDAS_Notifier
         $this->modules[$module]->logged = $logged;
         $this->modules[$module]->userSession = $session;
         }
+      if(file_exists(BASE_PATH.'/privateModules/'.$module.'/Notification.php'))
+        {
+        require_once BASE_PATH.'/privateModules/'.$module.'/Notification.php';
+        $name = ucfirst($module).'_Notification';
+        if(!class_exists($name))
+          {
+          throw new Zend_Exception('Unable to find notification class: '.$name);
+          }
+        $this->modules[$module] = new $name();
+        $this->modules[$module]->logged = $logged;
+        $this->modules[$module]->userSession = $session;
+        }
       }
-    
+
     if(file_exists(BASE_PATH.'/core/Notification.php'))
       {
       require_once BASE_PATH.'/core/Notification.php';
@@ -59,8 +79,10 @@ class MIDAS_Notifier
         throw new Zend_Exception('Unable to find notification class: '.$name);
         }
       $this->modules['core'] = new $name();
+      $this->modules['core']->logged = $logged;
+      $this->modules['core']->userSession = $session;
       }
-      
+
     foreach($this->modules as $module => $notificationClass)
       {
       $tasks = $notificationClass->getTasks();
@@ -76,12 +98,12 @@ class MIDAS_Notifier
           }
         $this->tasks[$name] = $task;
         $this->tasks[$name]['module'] = $module;
-        
+
         $this->tasksByModule[$module] = $task;
         $this->tasksByModule[$module]['name'] = $name;
-        }        
+        }
       }
-      
+
     foreach($this->modules as $module => $notificationClass)
       {
       $notifications = $notificationClass->getNotifications();
@@ -91,7 +113,7 @@ class MIDAS_Notifier
           {
           $this->notifications[$name] = array();
           }
-          
+
         foreach($notificationArray as $notification)
           {
           if($notification['type'] == 'callback')
@@ -117,8 +139,8 @@ class MIDAS_Notifier
           }
         }
       }
-    }//end contruct() 
-    
+    }//end contruct()
+
   /** notify enabled modules*/
   public function notifyEvent($name, $params = null, $moduleFilter = array())
     {
@@ -145,7 +167,7 @@ class MIDAS_Notifier
       }
     return $return;
     }//end notify
-    
+
   /** schedule or execute a task*/
   private function _setTask($name, $params, $priority)
     {
@@ -164,7 +186,7 @@ class MIDAS_Notifier
       call_user_func(array($this->modules[$this->tasks[$name]['module']], $this->tasks[$name]['method']), $params);
       }
     }
-    
+
   /** notify enabled modules*/
   public function callback($name, $params = null, $moduleFilter = array())
     {
@@ -195,7 +217,7 @@ class MIDAS_Notifier
       }
     return $return;
     }//end notify
-    
+
   /**
    * Get Logger
    * @return Zend_Log

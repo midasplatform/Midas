@@ -1,0 +1,64 @@
+.optionWrapper, .nameWrapper{
+  border: 1px solid grey;
+  margin-bottom: 2px;
+
+  border: #354856 1px solid;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -khtml-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: #666 0 0 5px;
+  box-shadow: #666 0 0 5px;
+  -moz-box-shadow: 0px 0px 5px #666;
+  padding: 0px 5px 6px 5px;
+}
+.optionWrapper h4, .nameWrapper h4{
+  margin-bottom: 0px;
+  margin-top: 2px;
+  font-size: 14px;
+  border-bottom: 1px solid grey;
+}
+
+#schedulerWrapper{
+  border: 1px solid grey;
+  margin-bottom: 2px;
+  border: #354856 1px solid;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -khtml-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: #666 0 0 5px;
+  box-shadow: #666 0 0 5px;
+  -moz-box-shadow: 0px 0px 5px #666;
+}
+
+
+#uploadContentBlock .ui-widget-content {
+background: #F8F8F8!important;
+}
+
+.reviewUploaded form{
+  display:none;
+}
+
+#wizard{
+  display:none;
+}
+
+#uploadTabs{
+  width: 571px!important;
+}
+
+#browseExecutableFile a img{
+  position:relative;
+  top:2px;
+  margin-right: 2px;
+}
+
+#metaWrapper{
+  display:none;
+}
+
+#metaWrapper .viewMain{
+  width: 95%!important;
+}
