@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS sizequota_folderquota;
 
 CREATE TABLE sizequota_folderquota (
-  folderquota_id bigint serial PRIMARY KEY,
+  folderquota_id serial PRIMARY KEY,
   folder_id bigint NOT NULL,
   quota character varying(50) NOT NULL
 );
