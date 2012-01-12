@@ -72,7 +72,7 @@ class PerformTest extends ControllerTestCase
 
     // Exception if invalid folder id is set
     $this->resetAll();
-    $this->dispatchUrI('/sizequota/config/folder?folderId=foo', null, true);
+    $this->dispatchUrI('/sizequota/config/folder?folderId=-2', null, true);
 
     // Exception if invalid policy
     $this->resetAll();
@@ -183,7 +183,7 @@ class PerformTest extends ControllerTestCase
 
     // Exception if invalid folder id is set
     $this->resetAll();
-    $this->dispatchUrI('/sizequota/config/getfreespace?folderId=foo', $adminUser);
+    $this->dispatchUrI('/sizequota/config/getfreespace?folderId=-7', $adminUser);
     $resp = JsonComponent::decode($this->getBody());
     $this->assertTrue($resp['status'] == false);
     $this->assertEquals($resp['message'], 'Invalid folder');
