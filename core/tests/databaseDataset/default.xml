@@ -113,4 +113,6 @@
 	<!-- MIDAS_FEED_CREATE_REVISION -->
 	<feed feed_id="10" date="2011-01-27 12:09:02" user_id='1' type="40"
 		ressource="1" />
+
+  <setting setting_id="1000" name="dummy" module="" value="dummy" />
 </dataset>
