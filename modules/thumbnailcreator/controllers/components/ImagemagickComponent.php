@@ -20,7 +20,7 @@
 
 class Thumbnailcreator_ImagemagickComponent extends AppComponent
 { 
-  /** createThumbnail */
+  /** createThumnail */
   public function createThumbnail($item,$inputFile=null)
     {
     $modelLoader = new MIDAS_ModelLoader;
@@ -28,7 +28,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     $item = $itemModel->load($item['item_id']);
     $revision = $itemModel->getLastRevision($item);
     $bitstreams = $revision->getBitstreams();
-    if(count($bitstreams) != 1)
+    if(count($bitstreams) < 1)
       {
       return;
       }

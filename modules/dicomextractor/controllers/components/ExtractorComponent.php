@@ -31,17 +31,20 @@ class Dicomextractor_ExtractorComponent extends AppComponent
       }
 
     $thumbnailComponent = $componentLoader->loadComponent('Imagemagick',
-                                                          'Thumbnailcreator');
-
+                                                          'thumbnailcreator');
+    $utilityComponent = $componentLoader->loadComponent('Utility');
     $bitstream = $bitstreams[$numBitstreams/2];
 
     // Turn the DICOM into a JPEG
-    $modulesConfig=Zend_Registry::get('configsModules');
-    $tmpSlice = KWUtils::getTempDirectory().'/'.$bitstream->getName().'.jpg';
+    $modulesConfig = Zend_Registry::get('configsModules');
+    $tempDirectory = $utilityComponent->getTempDirectory();
+    $tmpSlice = $tempDirectory.'/'.$bitstream->getName().'.jpg';
     $command = $modulesConfig['dicomextractor']->dcmj2pnm;
     $preparedCommand = str_replace("'", '"',$command);
     $preparedCommand .= ' "'.$bitstream->getFullPath().'" "'.$tmpSlice.'"';
+    var_dump($preparedCommand);
     exec($preparedCommand, $output);
+    var_dump($output);
 
     // We have to spoof an item array for the thumbnail component.
     $spoofedItem = array();

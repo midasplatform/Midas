@@ -44,7 +44,7 @@ class Dicomextractor_ApiComponent extends AppComponent
 
     $componentLoader = new MIDAS_ComponentLoader();
     $dicomComponent = $componentLoader->loadComponent('Extractor',
-                                                      'DicomExtractor');
+                                                      'dicomextractor');
     $dicomComponent->extract($revisionDao);
     $dicomComponent->thumbnail($itemDao);
     return json_encode($revisionDao);
