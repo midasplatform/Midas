@@ -1,3 +1,6 @@
+var midas = midas || {};
+midas.browser = midas.browser || {};
+
 var ajaxSelectRequest='';
 
 /**
@@ -520,3 +523,14 @@ function enableRangeSelect(node)
       }
     });
   }
+
+midas.browser.enableSelectAll = function()
+  {
+  // Select/deslect all rows. If we are doing deselect all, we include hidden rows
+  $('#browseTableHeaderCheckbox').click(function() {
+    var selector = this.checked ? '.treeCheckbox:visible' : '.treeCheckbox';
+    $('#browseTable').find(selector).prop("checked", this.checked);
+    genericCallbackCheckboxes($('#browseTable'));
+    });
+  };
+

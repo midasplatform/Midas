@@ -17,11 +17,7 @@ $(document).ready(function() {
     onNodeHide: enableRangeSelect
   });
   // Select/deslect all rows. If we are doing deselect all, we include hidden rows
-  $('#browseTableHeaderCheckbox').click(function() {
-    var selector = this.checked ? '.treeCheckbox:visible' : '.treeCheckbox';
-    $('#browseTable').find(selector).prop("checked", this.checked);
-    genericCallbackCheckboxes($('#browseTable'));
-  });
+  midas.browser.enableSelectAll();
   $("img.tableLoading").hide();
   $("table#browseTable").show();
 

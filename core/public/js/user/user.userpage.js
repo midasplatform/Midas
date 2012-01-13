@@ -19,11 +19,7 @@
       onNodeShow: enableRangeSelect,
       onNodeHide: enableRangeSelect
     });
-    $('#browseTableHeaderCheckbox').click(function() {
-      var selector = this.checked ? '.treeCheckbox:visible' : '.treeCheckbox';
-      $('#browseTable').find(selector).prop("checked", this.checked);
-      genericCallbackCheckboxes($('#browseTable'));
-    });
+    midas.browser.enableSelectAll();
     $("img.tableLoading").hide();
     $("table#browseTable").show();
   });

@@ -4,6 +4,7 @@
     
     $("img.tableLoading").hide();
     $("table#browseTable").show();
+    midas.browser.enableSelectAll();
   });
   
     function callbackSelect(node)
