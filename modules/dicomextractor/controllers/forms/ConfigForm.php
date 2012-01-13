@@ -24,11 +24,12 @@ class Dicomextractor_ConfigForm extends AppForm
     
     $dcm2xml = new Zend_Form_Element_Text('dcm2xml');
     $dcmj2pnm = new Zend_Form_Element_Text('dcmj2pnm');
+    $dcmftest = new Zend_Form_Element_Text('dcmftest');
     
     $submit = new  Zend_Form_Element_Submit('submitConfig');
     $submit ->setLabel('Save configuration');
      
-    $form->addElements(array($dcm2xml, $dcmj2pnm, $submit));
+    $form->addElements(array($dcm2xml, $dcmj2pnm, $dcmftest, $submit));
     return $form;
     }
    
