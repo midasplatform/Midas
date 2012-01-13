@@ -1,0 +1,8 @@
+span#deleteDialogUserName {
+  font-weight: bold;
+}
+
+span#deleteDialogCaution {
+  font-weight: bolder;
+  color: #bb0000;
+}

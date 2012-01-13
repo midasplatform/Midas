@@ -709,6 +709,8 @@ class UserController extends AppController
     $this->view->feeds = $this->Feed->getFeedsByUser($this->userSession->Dao, $userDao);
 
     $this->view->isViewAction = ($this->logged && ($this->userSession->Dao->getKey() == $userDao->getKey() || $this->userSession->Dao->isAdmin()));
+    $this->view->currentUser = $this->userSession->Dao;
+    $this->view->isAdmin = $this->logged && $this->userSession->Dao->isAdmin();
     $this->view->information = array();
 
     $this->view->disableFeedImages = true;
@@ -772,5 +774,56 @@ class UserController extends AppController
     $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     $this->view->userCommunities = $communities;
     $this->view->userCommunityFolders = $communityFolders;
+    }
+
+  /** Render the dialog related to user deletion */
+  public function deletedialogAction()
+    {
+    $this->requireAdminPrivileges();
+    $this->disableLayout();
+    $userId = $this->_getParam('userId');
+
+    if(!isset($userId))
+      {
+      throw new Zend_Exception('Must set a userId parameter');
+      }
+    $user = $this->User->load($userId);
+    if(!$user)
+      {
+      throw new Zend_Exception('Invalid user id');
+      }
+    $this->view->user = $user;
+    }
+
+  /** Delete a user */
+  public function deleteAction()
+    {
+    // make sure this gets completed even if user navigates away or it takes a long time
+    set_time_limit(0);
+    ignore_user_abort(true);
+
+    $this->requireAdminPrivileges();
+    $userId = $this->_getParam('userId');
+
+    if(!isset($userId))
+      {
+      throw new Zend_Exception('Must set a userId parameter');
+      }
+    $user = $this->User->load($userId);
+    if(!$user)
+      {
+      throw new Zend_Exception('Invalid user id');
+      }
+    if($user->isAdmin())
+      {
+      throw new Zend_Exception('Cannot delete an admin user');
+      }
+    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+
+    $name = $user->getFirstname().' '.$user->getLastname();
+    $this->User->delete($user);
+    $this->getLogger()->info('User '.$name.' successfully deleted');
+    echo JsonComponent::encode(array(true, 'User '.$name.' successfully deleted'));
     }
   }//end class
