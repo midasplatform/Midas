@@ -53,16 +53,16 @@ class AssetstoreController extends AppController
   function defaultassetstoreAction()
     {
     $this->requireAdminPrivileges();
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
     $change = $this->_getParam("submitDefaultAssetstore");
     $element = $this->_getParam("element");
-    if(isset($change))
+    if(isset($change) && isset($element))
       {
       $assetstore = $this->Assetstore->load($element);
       if($assetstore != false)
         {
-        $this->Setting->setConfig('default_assetstore', $assetstore->getKey());
+        $this->Setting->setConfig('default_assetstore', (string)$assetstore->getKey());
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
@@ -75,8 +75,8 @@ class AssetstoreController extends AppController
   function deleteAction()
     {
     $this->requireAdminPrivileges();
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
     $assetstoreId = $this->_getParam("assetstoreId");
     if(isset($assetstoreId))
       {
@@ -96,8 +96,8 @@ class AssetstoreController extends AppController
   function editAction()
     {
     $this->requireAdminPrivileges();
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
     $assetstoreId = $this->_getParam("assetstoreId");
     $assetstoreName = $this->_getParam("assetstoreName");
     $assetstorePath = $this->_getParam("assetstorePath");
@@ -131,8 +131,8 @@ class AssetstoreController extends AppController
   function addAction()
     {
     $this->requireAdminPrivileges();
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
 
     $form = $this->Form->Assetstore->createAssetstoreForm();
     if($this->getRequest()->isPost() && !$form->isValid($_POST))
