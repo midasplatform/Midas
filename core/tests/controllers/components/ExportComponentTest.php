@@ -98,26 +98,28 @@ class ExportComponentTest extends ControllerTestCase
    * Helper function to get ItemIds as an input parameter
    * for ExportComponentTest::exportBitstreams
    *
-   * @param UserDao $userDao
    * @param array $fileNames array of file names
    * @return array of itemIds
    */
-  public function getItemIds($userDao, $fileNames)
+  public function getItemIds($fileNames)
     {
-    $allItems = array();
     // get all the itemDaos
-    foreach($fileNames as $file)
-      {
-      $items = $this->Item->getItemsFromSearch($file, $userDao);
-      $allItems = array_merge($allItems, $items);
-      }
+    $allItems = array();
+    $allItems = $this->Item->getAll();
+
     $itemIds = array();
-     // process the items which pass the ITEM level policy check
+    // process the items which pass the ITEM level policy check
     if(!empty($allItems))
       {
-      foreach($allItems as $item)
+      foreach($fileNames as $file)
         {
-        $itemIds[] = $item->getKey();
+        foreach($allItems as $item)
+          {
+          if($item->getName() == $file)
+            {
+            $itemIds[] = $item->getKey();
+            }
+          }
         }
       }
     return $itemIds;
@@ -144,7 +146,7 @@ class ExportComponentTest extends ControllerTestCase
     $filenames = array();
     $filenames[] = "public.file";
     $filenames[] = "private.png";
-    $itemIds = $this->getItemIds($userDao, $filenames);
+    $itemIds = $this->getItemIds($filenames);
     // symlinks should not exist before export
     $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
     $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[1].'/private.png'));
@@ -203,7 +205,7 @@ class ExportComponentTest extends ControllerTestCase
     $exportCompoenent = new ExportComponent();
     $filenames = array();
     $filenames[] = "private.png";
-    $itemIds = $this->getItemIds($userDao, $filenames);
+    $itemIds = $this->getItemIds($filenames);
     // file should not exist before export
     $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[0].'/private.png'));
     // user1 export this item
