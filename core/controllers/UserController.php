@@ -779,10 +779,13 @@ class UserController extends AppController
   /** Render the dialog related to user deletion */
   public function deletedialogAction()
     {
-    $this->requireAdminPrivileges();
     $this->disableLayout();
     $userId = $this->_getParam('userId');
 
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('Must be logged in');
+      }
     if(!isset($userId))
       {
       throw new Zend_Exception('Must set a userId parameter');
@@ -791,6 +794,15 @@ class UserController extends AppController
     if(!$user)
       {
       throw new Zend_Exception('Invalid user id');
+      }
+    if($this->userSession->Dao->getKey() != $user->getKey())
+      {
+      $this->requireAdminPrivileges();
+      $this->view->deleteSelf = false;
+      }
+    else
+      {
+      $this->view->deleteSelf = true;
       }
     $this->view->user = $user;
     }
@@ -802,7 +814,10 @@ class UserController extends AppController
     set_time_limit(0);
     ignore_user_abort(true);
 
-    $this->requireAdminPrivileges();
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('Must be logged in');
+      }
     $userId = $this->_getParam('userId');
 
     if(!isset($userId))
@@ -817,6 +832,18 @@ class UserController extends AppController
     if($user->isAdmin())
       {
       throw new Zend_Exception('Cannot delete an admin user');
+      }
+
+    if($this->userSession->Dao->getKey() != $user->getKey())
+      {
+      $this->requireAdminPrivileges();
+      }
+    else
+      {
+      // log out if user is deleting his or her own account
+      $this->userSession->Dao = null;
+      Zend_Session::ForgetMe();
+      setcookie('midasUtil', null, time() + 60 * 60 * 24 * 30, '/');
       }
     $this->_helper->viewRenderer->setNoRender();
     $this->disableLayout();

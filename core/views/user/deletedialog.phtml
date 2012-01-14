@@ -15,10 +15,31 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.f
 ?>
 <link href="<?php echo $this->coreWebroot?>/public/css/user/user.deletedialog.css" rel="stylesheet" type="text/css" />
 
-<span id="deleteDialogCaution">CAUTION:</span> Are you sure you want to delete the user
+<span id="deleteDialogCaution">CAUTION:</span>
+<?php
+if($this->deleteSelf)
+  { ?>
+  Are you sure you want to delete your user account?
+<?php
+  }
+else
+  { ?>
+  Are you sure you want to delete the user
 <span id="deleteDialogUserName"><?php echo $this->user->getFirstname().' '.$this->user->getLastname(); ?></span>?
+<?php
+  } ?>
 <br /><br />
-The user's entire folder tree and all data within it will be deleted as well.  This action cannot be undone.
+<?php
+if($this->deleteSelf)
+  { ?>
+  Your entire folder tree and all data within it will be deleted as well. This action cannot be undone.
+<?php
+  }
+else
+  { ?>
+  The user's entire folder tree and all data within it will be deleted as well.  This action cannot be undone.
+<?php
+  } ?>
 <div>
   <br />
   <form id="deleteDialogForm" class="genericForm" method="POST" action="<?php echo $this->webroot?>/user/delete">
