@@ -114,5 +114,5 @@
 	<feed feed_id="10" date="2011-01-27 12:09:02" user_id='1' type="40"
 		ressource="1" />
 
-  <setting name="adminuser" module="core" value="3" />
+  <setting setting_id="1" name="adminuser" module="core" value="3" />
 </dataset>
