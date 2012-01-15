@@ -273,11 +273,18 @@ class UserControllerTest extends ControllerTestCase
     {
     $modelLoader = new MIDAS_ModelLoader();
     $settingModel = $modelLoader->loadModel('Setting');
+    $communityModel = $modelLoader->loadModel('Community');
+    $folderModel = $modelLoader->loadModel('Folder');
+    $itemModel = $modelLoader->loadModel('Item');
     $adminuserSetting = $settingModel->getValueByName('adminuser');
     $usersFile = $this->loadData('User', 'default');
+    $commFile = $this->loadData('Community', 'default');
+    $itemFile = $this->loadData('Item', 'default');
     $user1 = $this->User->load($usersFile[0]->getKey());
     $user2 = $this->User->load($usersFile[1]->getKey());
     $adminUser = $this->User->load($usersFile[2]->getKey());
+    $comm = $communityModel->load($commFile[0]->getKey());
+    $item = $itemModel->load($itemFile[0]->getKey());
 
     // Render the delete dialog and make sure it has correct text
     $this->resetAll();
@@ -296,6 +303,9 @@ class UserControllerTest extends ControllerTestCase
     // Should fail if a non admin user tries to delete a different user
     $this->resetAll();
     $this->dispatchUrI('/user/delete?userId='.$user2->getKey(), $user1, true);
+
+    // Make the item exist outside of the user's tree
+    $folderModel->addItem($comm->getPublicFolder(), $item);
 
     $oldRevisions = $user1->getItemrevisions();
     $this->assertTrue(count($oldRevisions) > 0);
@@ -333,15 +343,25 @@ class UserControllerTest extends ControllerTestCase
     {
     $modelLoader = new MIDAS_ModelLoader();
     $settingModel = $modelLoader->loadModel('Setting');
+    $communityModel = $modelLoader->loadModel('Community');
+    $folderModel = $modelLoader->loadModel('Folder');
+    $itemModel = $modelLoader->loadModel('Item');
     $adminuserSetting = $settingModel->getValueByName('adminuser');
     $usersFile = $this->loadData('User', 'default');
+    $commFile = $this->loadData('Community', 'default');
+    $itemFile = $this->loadData('Item', 'default');
     $user1 = $this->User->load($usersFile[0]->getKey());
+    $comm = $communityModel->load($commFile[0]->getKey());
+    $item = $itemModel->load($itemFile[0]->getKey());
 
     // Render the delete dialog and make sure it has correct text for self-deletion
     $this->resetAll();
     $this->dispatchUrI('/user/deletedialog?userId='.$user1->getKey(), $user1);
     $this->assertQuery('input[type="hidden"][name="userId"][value="'.$user1->getKey().'"]');
     $this->assertTrue(strpos($this->getBody(), 'Are you sure you want to delete your user account?') !== false);
+
+    // Make item exist outside of user's tree
+    $folderModel->addItem($comm->getPublicFolder(), $item);
 
     $oldRevisions = $user1->getItemrevisions();
     $this->assertTrue(count($oldRevisions) > 0);
