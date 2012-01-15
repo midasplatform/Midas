@@ -70,10 +70,7 @@ class UserControllerTest extends ControllerTestCase
     $this->dispatchUrI("/user/register");
 
     $userDao = $this->User->getByEmail($this->params['email']);
-    if($userDao == false)
-      {
-      $this->fail('Unable to register');
-      }
+    $this->assertTrue($userDao != false, 'Unable to register');
     }
 
   /** test login*/
@@ -99,12 +96,8 @@ class UserControllerTest extends ControllerTestCase
     $this->params['email'] = 'user1@user1.com';
     $this->params['password'] = 'test';
     $this->request->setMethod('POST');
-    $this->dispatchUrI("/user/login");
-
-    if(strpos($this->getBody(), 'Test Pass') === false)
-      {
-      $this->fail('Unable to authenticate');
-      }
+    $this->dispatchUrI('/user/login');
+    $this->assertTrue(strpos($this->getBody(), 'Test Pass') !== false, 'Unable to authenticate');
     }
 
   /** test terms */
@@ -136,10 +129,7 @@ class UserControllerTest extends ControllerTestCase
     $this->dispatchUrI("/user/recoverpassword", null);
 
     $userDao2 = $this->User->getByEmail($this->params['email']);
-    if($userDao->getPassword() == $userDao2->getPassword())
-      {
-      $this->fail('Unable to change password');
-      }
+    $this->assertNotEquals($userDao->getPassword(), $userDao2->getPassword(), 'Unable to change password');
     $this->setupDatabase(array('default'));
     }
 
@@ -149,10 +139,7 @@ class UserControllerTest extends ControllerTestCase
     $this->resetAll();
     $this->dispatchUrI("/user/settings", null, false);
     $body = $this->getBody();
-    if(!empty($body))
-      {
-      $this->fail('Should return nothing');
-      }
+    $this->assertTrue(empty($body), 'Should return nothing');
 
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
@@ -170,10 +157,8 @@ class UserControllerTest extends ControllerTestCase
     $this->dispatchUrI("/user/settings", $userDao);
 
     $userCheckDao = $this->User->getByEmail($userDao->getEmail());
-    if($userDao->getPassword() == $userCheckDao->getPassword())
-      {
-      $this->fail('Unable to change password');
-      }
+    $this->assertNotEquals($userDao->getPassword(), $userCheckDao->getPassword(), 'Unable to change password');
+
     $this->setupDatabase(array('default'));
 
     $this->resetAll();
@@ -187,10 +172,7 @@ class UserControllerTest extends ControllerTestCase
     $this->dispatchUrI("/user/settings", $userDao);
 
     $userCheckDao = $this->User->load($userDao->getKey());
-    if($this->params['firstname'] != $userCheckDao->getFirstname())
-      {
-      $this->fail('Unable to change account information');
-      }
+    $this->assertEquals($this->params['firstname'], $userCheckDao->getFirstname(), 'Unable to change account information');
 
     $this->resetAll();
     $this->params = array();
@@ -201,10 +183,7 @@ class UserControllerTest extends ControllerTestCase
     $userCheckDao = $this->User->load($userDao->getKey());
 
     $thumbnail = $userCheckDao->getThumbnail();
-    if(empty($thumbnail))
-      {
-      $this->fail('Unable to change avatar');
-      }
+    $this->assertTrue(!empty($thumbnail), 'Unable to change avatar');
 
     $this->setupDatabase(array('default'));
     }
@@ -216,10 +195,7 @@ class UserControllerTest extends ControllerTestCase
     $this->dispatchUrI("/user/manage", null, false);
 
     $body = $this->getBody();
-    if(!empty($body))
-      {
-      $this->fail('The page should be empty');
-      }
+    $this->assertTrue(empty($body), 'The page should be empty');
 
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
@@ -258,53 +234,141 @@ class UserControllerTest extends ControllerTestCase
   public function testValidentryAction()
     {
     $this->resetAll();
-    $this->dispatchUrI("/user/validentry");
-    if(strpos($this->getBody(), 'false') === false)
-      {
-      $this->fail();
-      }
+    $this->dispatchUrI('/user/validentry');
+    $this->assertTrue(strpos($this->getBody(), 'false') !== false);
 
     $this->resetAll();
     $this->params = array();
     $this->params['entry'] = 'user1@user1.com';
     $this->params['type'] = 'dbuser';
-    $this->dispatchUrI("/user/validentry");
-    if(strpos($this->getBody(), 'true') === false)
-      {
-      $this->fail();
-      }
+    $this->dispatchUrI('/user/validentry');
+    $this->assertTrue(strpos($this->getBody(), 'true') !== false);
 
     $this->resetAll();
     $this->params = array();
     $this->params['entry'] = 'test_email_not_in_db';
     $this->params['type'] = 'dbuser';
-    $this->dispatchUrI("/user/validentry");
-    if(strpos($this->getBody(), 'false') === false)
-      {
-      $this->fail();
-      }
+    $this->dispatchUrI('/user/validentry');
+    $this->assertTrue(strpos($this->getBody(), 'false') !== false);
 
     $this->resetAll();
     $this->params = array();
     $this->params['entry'] = 'user1@user1.com';
     $this->params['type'] = 'login';
     $this->params['password'] = 'wrong_password';
-    $this->dispatchUrI("/user/validentry");
-    if(strpos($this->getBody(), 'false') === false)
-      {
-      $this->fail();
-      }
+    $this->dispatchUrI('/user/validentry');
+    $this->assertTrue(strpos($this->getBody(), 'false') !== false);
 
     $this->resetAll();
     $this->params = array();
     $this->params['entry'] = 'user1@user1.com';
     $this->params['type'] = 'login';
     $this->params['password'] = 'test';
-    $this->dispatchUrI("/user/validentry");
-    if(strpos($this->getBody(), 'true') === false)
-      {
-      $this->fail();
-      }
+    $this->dispatchUrI('/user/validentry');
+    $this->assertTrue(strpos($this->getBody(), 'true') !== false);
     }
 
+  /** Test admin ability to delete a user */
+  public function testDeleteUserAction()
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $settingModel = $modelLoader->loadModel('Setting');
+    $adminuserSetting = $settingModel->getValueByName('adminuser');
+    $usersFile = $this->loadData('User', 'default');
+    $user1 = $this->User->load($usersFile[0]->getKey());
+    $user2 = $this->User->load($usersFile[1]->getKey());
+    $adminUser = $this->User->load($usersFile[2]->getKey());
+
+    // Render the delete dialog and make sure it has correct text
+    $this->resetAll();
+    $this->dispatchUrI('/user/deletedialog?userId='.$user1->getKey(), $adminUser);
+    $this->assertQueryContentContains('#deleteDialogUserName', $user1->getFirstname().' '.$user1->getLastname());
+
+    // Should fail if we aren't logged in
+    $this->resetAll();
+    $this->dispatchUrI('/user/delete?userId='.$user1->getKey(), null, true);
+
+    // Should fail if we try to delete an admin user
+    $this->resetAll();
+    $this->dispatchUrI('/user/delete?userId='.$adminUser->getKey(), $adminUser, true);
+
+    // Should fail if a non admin user tries to delete a different user
+    $this->resetAll();
+    $this->dispatchUrI('/user/delete?userId='.$user2->getKey(), $user1, true);
+
+    $oldRevisions = $user1->getItemrevisions();
+    $this->assertTrue(count($oldRevisions) > 0);
+    $revisionKeys = array();
+    foreach($oldRevisions as $oldRevision)
+      {
+      $this->assertEquals($oldRevision->getUserId(), $user1->getKey());
+      $revisionKeys[] = $oldRevision->getKey();
+      }
+    // Delete user 1 as administrator
+    $key = $user1->getKey();
+    $this->resetAll();
+    $this->dispatchUrI('/user/delete?userId='.$user1->getKey(), $adminUser);
+
+    // Make sure user record is now gone
+    $this->assertFalse($this->User->load($key));
+
+    // Make sure all of user's revisions that weren't removed are now listed as uploaded by superadmin
+    $revisionModel = $modelLoader->loadModel('ItemRevision');
+    $revisionNotDeleted = false;
+    foreach($revisionKeys as $revisionKey)
+      {
+      $revision = $revisionModel->load($revisionKey);
+      $this->assertTrue($revision === false || $revision->getUserId() == $adminuserSetting);
+      if($revision !== false)
+        {
+        $revisionNotDeleted = true;
+        }
+      }
+    $this->assertTrue($revisionNotDeleted, 'At least one revision should not have been deleted');
+    }
+
+  /** Test user's ability to delete himself */
+  public function testDeleteSelfAction()
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $settingModel = $modelLoader->loadModel('Setting');
+    $adminuserSetting = $settingModel->getValueByName('adminuser');
+    $usersFile = $this->loadData('User', 'default');
+    $user1 = $this->User->load($usersFile[0]->getKey());
+
+    // Render the delete dialog and make sure it has correct text for self-deletion
+    $this->resetAll();
+    $this->dispatchUrI('/user/deletedialog?userId='.$user1->getKey(), $user1);
+    $this->assertTrue(strpos($this->getBody(), 'Are you sure you want to delete your user account?') !== false);
+
+    $oldRevisions = $user1->getItemrevisions();
+    $this->assertTrue(count($oldRevisions) > 0);
+    $revisionKeys = array();
+    foreach($oldRevisions as $oldRevision)
+      {
+      $this->assertEquals($oldRevision->getUserId(), $user1->getKey());
+      $revisionKeys[] = $oldRevision->getKey();
+      }
+    // Delete user 1 as user 1
+    $key = $user1->getKey();
+    $this->resetAll();
+    $this->dispatchUrI('/user/delete?userId='.$user1->getKey(), $user1);
+
+    // Make sure user record is now gone
+    $this->assertFalse($this->User->load($key));
+
+    // Make sure all of user's revisions that weren't removed are now listed as uploaded by superadmin
+    $revisionModel = $modelLoader->loadModel('ItemRevision');
+    $revisionNotDeleted = false;
+    foreach($revisionKeys as $revisionKey)
+      {
+      $revision = $revisionModel->load($revisionKey);
+      $this->assertTrue($revision === false || $revision->getUserId() == $adminuserSetting);
+      if($revision !== false)
+        {
+        $revisionNotDeleted = true;
+        }
+      }
+    $this->assertTrue($revisionNotDeleted, 'At least one revision should not have been deleted');
+    }
   }
