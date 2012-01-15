@@ -843,7 +843,10 @@ class UserController extends AppController
       // log out if user is deleting his or her own account
       $this->userSession->Dao = null;
       Zend_Session::ForgetMe();
-      setcookie('midasUtil', null, time() + 60 * 60 * 24 * 30, '/');
+      if(!$this->isTestingEnv())
+        {
+        setcookie('midasUtil', null, time() + 60 * 60 * 24 * 30, '/');
+        }
       }
     $this->_helper->viewRenderer->setNoRender();
     $this->disableLayout();

@@ -282,6 +282,7 @@ class UserControllerTest extends ControllerTestCase
     // Render the delete dialog and make sure it has correct text
     $this->resetAll();
     $this->dispatchUrI('/user/deletedialog?userId='.$user1->getKey(), $adminUser);
+    $this->assertQuery('input[type="hidden"][name="userId"][value="'.$user1->getKey().'"]');
     $this->assertQueryContentContains('#deleteDialogUserName', $user1->getFirstname().' '.$user1->getLastname());
 
     // Should fail if we aren't logged in
@@ -339,6 +340,7 @@ class UserControllerTest extends ControllerTestCase
     // Render the delete dialog and make sure it has correct text for self-deletion
     $this->resetAll();
     $this->dispatchUrI('/user/deletedialog?userId='.$user1->getKey(), $user1);
+    $this->assertQuery('input[type="hidden"][name="userId"][value="'.$user1->getKey().'"]');
     $this->assertTrue(strpos($this->getBody(), 'Are you sure you want to delete your user account?') !== false);
 
     $oldRevisions = $user1->getItemrevisions();
