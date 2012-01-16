@@ -692,6 +692,23 @@ class UserController extends AppController
         $filteredCommunities[] = $community;
         }
       }
+
+    // If this is the user's own page, show any pending community invitations
+    if($this->logged && $this->userSession->Dao->getKey() == $userDao->getKey())
+      {
+      $invitations = $userDao->getInvitations();
+      $communityInvitations = array();
+      foreach($invitations as $invitation)
+        {
+        $community = $this->Community->load($invitation->getCommunityId());
+        if($community)
+          {
+          $communityInvitations[] = $community;
+          }
+        }
+      $this->view->communityInvitations = $communityInvitations;
+      }
+
     $this->view->userCommunities = $filteredCommunities;
     $this->view->folders = array();
     if(!empty($this->userSession->Dao) && ($userDao->getKey() == $this->userSession->Dao->getKey() || $this->userSession->Dao->isAdmin()))

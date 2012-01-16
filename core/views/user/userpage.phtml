@@ -178,9 +178,25 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <ul>";
 
     foreach($this->userCommunities as $community)
-        {
-        echo "<li><a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></li>";
-        }
+      {
+      echo "<li><a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></li>";
+      }
+   echo "
+     </ul>
+     </div>";
+    }
+
+  if(!empty($this->communityInvitations))
+    {
+    echo "
+    <div class='sideElement genericCommunities'>
+    <h1>{$this->t('Community Invitations')}</h1>
+    <ul>";
+
+    foreach($this->communityInvitations as $community)
+      {
+      echo "<li><a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></li>";
+      }
    echo "
      </ul>
      </div>";
