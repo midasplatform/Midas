@@ -2,3 +2,8 @@
   color:grey;
   font-size: 10px;
 }
+
+div.sideElementFirst ul li:hover {
+  background-color: #e5e5e5;
+  color:black;
+}

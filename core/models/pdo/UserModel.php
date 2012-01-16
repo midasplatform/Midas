@@ -83,26 +83,31 @@ class UserModel extends UserModelBase
     } // end getUserCommunities
 
   /** Get all */
-  function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null)
+  function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null, $currentUser = null)
     {
     $sql = $this->database->select();
     if($onlyPublic)
       {
-      $sql ->where('privacy = ?', MIDAS_USER_PUBLIC);
+      $orClause = '';
+      if($currentUser !== null && $currentUser->getPrivacy() == MIDAS_USER_PRIVATE)
+        {
+        $orClause = ' OR '.$this->database->getDB()->quoteInto('user_id = ? ', $currentUser->getUserId());
+        }
+      $sql->where('privacy = ?'.$orClause, MIDAS_USER_PUBLIC);
       }
 
     if($offset == null)
       {
-      $sql  ->limit($limit);
+      $sql->limit($limit);
       }
     elseif(!is_numeric($offset))
       {
-      $sql ->where('lastname LIKE ?', $offset.'%');
-      $sql  ->limit($limit);
+      $sql->where('lastname LIKE ?', $offset.'%');
+      $sql->limit($limit);
       }
     else
       {
-      $sql  ->limit($limit, $offset);
+      $sql->limit($limit, $offset);
       }
     switch($order)
       {
