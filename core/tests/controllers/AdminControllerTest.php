@@ -50,10 +50,10 @@ class AdminControllerTest extends ControllerTestCase
     $this->resetAll();
     $this->dispatchUrI('/admin', $user1, true);
 
-    $this->resetAll();
+    /*$this->resetAll();
     $this->dispatchUrI('/admin', $adminUser);
     $this->assertController('admin');
-    $this->assertAction('index');
+    $this->assertAction('index');*/
     }
 
   /** STUB: test show log action */
