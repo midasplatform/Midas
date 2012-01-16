@@ -461,7 +461,8 @@ class UserController extends AppController
         $userDao->setPrivacy($privacy);
         if($this->userSession->Dao->isAdmin() && $this->userSession->Dao->getKey() != $userDao->getKey())
           {
-          $userDao->setAdmin((bool)$this->_getParam('adminStatus'));
+          $adminStatus = (bool)$this->_getParam('adminStatus');
+          $userDao->setAdmin($adminStatus ? 1 : 0);
           }
         $this->User->save($userDao);
         if(!isset($userId))
