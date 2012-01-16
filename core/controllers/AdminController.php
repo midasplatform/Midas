@@ -310,8 +310,7 @@ class AdminController extends AppController
   function showlogAction()
     {
     $this->requireAdminPrivileges();
-    $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
 
     $start = $this->_getParam('startlog');
     $end = $this->_getParam('endlog');
@@ -388,8 +387,7 @@ class AdminController extends AppController
   function deletelogAction()
     {
     $this->requireAdminPrivileges();
-    $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $ids = $this->_getParam('idList');
     $count = 0;
@@ -414,9 +412,7 @@ class AdminController extends AppController
   function dashboardAction()
     {
     $this->requireAdminPrivileges();
-    $this->requireAjaxRequest();
-
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
 
     $this->view->dashboard = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_DASHBOARD");
 
