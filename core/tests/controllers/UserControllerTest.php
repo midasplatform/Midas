@@ -143,8 +143,17 @@ class UserControllerTest extends ControllerTestCase
 
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $this->dispatchUrI("/user/settings", $userDao);
+    $user2Dao = $this->User->load($usersFile[1]->getKey());
+    $adminDao = $this->User->load($usersFile[2]->getKey());
 
+    // Non admin user should not be able to edit other user's profiles
+    $this->resetAll();
+    $this->dispatchUrI('/user/settings?userId='.$adminDao->getKey(), $userDao, true);
+    $this->resetAll();
+    $this->dispatchUrI('/user/settings?userId='.$user2Dao->getKey(), $userDao, true);
+    
+    $this->resetAll();
+    $this->dispatchUrI("/user/settings", $userDao);
     $this->assertQuery("div#tabsSettings");
     $this->assertQuery("li.settingsCommunityList");
 
@@ -392,5 +401,93 @@ class UserControllerTest extends ControllerTestCase
         }
       }
     $this->assertTrue($revisionNotDeleted, 'At least one revision should not have been deleted');
+    }
+
+  /** Test setting the admin status of users */
+  public function testSetAdminStatus()
+    {
+    $usersFile = $this->loadData('User', 'default');
+    $user1 = $this->User->load($usersFile[0]->getKey());
+    $adminUser = $this->User->load($usersFile[2]->getKey());
+
+    $this->assertFalse($user1->isAdmin());
+    $this->assertTrue($adminUser->isAdmin());
+
+    // Admin checkbox should be visible for an admin on his own view, it should be checked and disabled
+    $this->resetAll();
+    $this->dispatchUrI('/user/settings', $adminUser);
+    $this->assertQuery('input[type="checkbox"][name="adminStatus"][checked="checked"][disabled="disabled"]');
+
+    // Admin checkbox should be visible for an admin on user 1's view, it should be unchecked and enabled
+    $this->resetAll();
+    $this->dispatchUrI('/user/settings?userId='.$user1->getKey(), $adminUser);
+    $this->assertQuery('input[type="checkbox"][name="adminStatus"]');
+    $this->assertNotQuery('input[type="checkbox"][name="adminStatus"][checked="checked"]');
+    $this->assertNotQuery('input[type="checkbox"][name="adminStatus"][disabled="disabled"]');
+
+    // Admin checkbox should not be visible on user 1's setting page at all
+    $this->resetAll();
+    $this->dispatchUrI('/user/settings?userId='.$user1->getKey(), $user1);
+    $this->assertNotQuery('input[type="checkbox"][name="adminStatus"]');
+
+    // If non admin user attempts to maliciously become admin, make sure we ignore it.
+    $this->resetAll();
+    $this->params = array();
+    $this->params['firstname'] = 'First Name';
+    $this->params['lastname'] = 'Last Name';
+    $this->params['company'] = 'Company';
+    $this->params['privacy'] = MIDAS_USER_PRIVATE;
+    $this->params['adminStatus'] = 'on';
+    $this->params['modifyAccount'] = 'true';
+    $this->request->setMethod('POST');
+    $this->dispatchUrI('/user/settings', $user1);
+
+    $user1 = $this->User->load($user1->getKey());
+    $this->assertFalse($user1->isAdmin());
+
+    // Admin user should be allowed to set user 1 as admin
+    $this->resetAll();
+    $this->params = array();
+    $this->params['firstname'] = 'First Name';
+    $this->params['lastname'] = 'Last Name';
+    $this->params['company'] = 'Company';
+    $this->params['privacy'] = MIDAS_USER_PRIVATE;
+    $this->params['adminStatus'] = 'on';
+    $this->params['modifyAccount'] = 'true';
+    $this->request->setMethod('POST');
+    $this->dispatchUrI('/user/settings?userId='.$user1->getKey(), $adminUser);
+
+    $user1 = $this->User->load($user1->getKey());
+    $this->assertTrue($user1->isAdmin());
+
+    // Admin user should be able to unset another admin user's status
+    $this->resetAll();
+    $this->params = array();
+    $this->params['firstname'] = 'First Name';
+    $this->params['lastname'] = 'Last Name';
+    $this->params['company'] = 'Company';
+    $this->params['privacy'] = MIDAS_USER_PRIVATE;
+    $this->params['adminStatus'] = '';
+    $this->params['modifyAccount'] = 'true';
+    $this->request->setMethod('POST');
+    $this->dispatchUrI('/user/settings?userId='.$user1->getKey(), $adminUser);
+
+    $user1 = $this->User->load($user1->getKey());
+    $this->assertFalse($user1->isAdmin());
+
+    // But an admin should not be able to remove their own admin status
+    $this->resetAll();
+    $this->params = array();
+    $this->params['firstname'] = 'First Name';
+    $this->params['lastname'] = 'Last Name';
+    $this->params['company'] = 'Company';
+    $this->params['privacy'] = MIDAS_USER_PRIVATE;
+    $this->params['adminStatus'] = '';
+    $this->params['modifyAccount'] = 'true';
+    $this->request->setMethod('POST');
+    $this->dispatchUrI('/user/settings?userId='.$adminUser->getKey(), $adminUser);
+
+    $adminUser = $this->User->load($adminUser->getKey());
+    $this->assertTrue($adminUser->isAdmin());
     }
   }
