@@ -459,6 +459,10 @@ class UserController extends AppController
           $userDao->setBiography($biography);
           }
         $userDao->setPrivacy($privacy);
+        if($this->userSession->Dao->isAdmin() && $this->userSession->Dao->getKey() != $userDao->getKey())
+          {
+          $userDao->setAdmin((bool)$this->_getParam('adminStatus'));
+          }
         $this->User->save($userDao);
         if(!isset($userId))
           {
@@ -637,6 +641,7 @@ class UserController extends AppController
 
     $this->view->communities = $communities;
     $this->view->user = $userDao;
+    $this->view->currentUser = $this->userSession->Dao;
     $this->view->thumbnail = $userDao->getThumbnail();
     $this->view->jsonSettings = array();
     $this->view->jsonSettings['accountErrorFirstname'] = $this->t('Please set your firstname');

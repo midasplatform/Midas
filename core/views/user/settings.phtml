@@ -57,16 +57,37 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
           </div>
           </td>
         </tr>
+        <?php
+          if($this->currentUser->isAdmin())
+            { ?>
+            <tr>
+              <td colspan="2">
+                <?php echo $this->t('Administrator');?>:
+                <input type="checkbox" name="adminStatus" id="adminStatusCheckbox"
+                <?php
+                if($this->user->isAdmin())
+                  {
+                  echo ' checked="checked" ';
+                  }
+                if($this->user->getKey() == $this->currentUser->getKey())
+                  {
+                  echo ' disabled="disabled" ';
+                  } ?>
+                  />
+             </td>
+           </tr>
+        <?php
+            } ?>
         <tr>
           <td><?php echo $this->accountForm['modifyAccount']?></td>
         </tr>
       </table>
     </form>
-    
+
   </div>
-  
+
   <div id="tabs-image">
-    
+
     <div id="imageActual">
     <h4><?php echo $this->t('Current Avatar')?>:</h4>
       <?php
@@ -82,17 +103,17 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
       <br/>
       <input type="submit" name='modifyPicture' value="<?php echo $this->t('Upload new avatar')?>">
       <br/>
-      <?php 
+      <?php
       echo "<br/>";
       if(strpos($this->thumbnail, 'http://') === false && $this->isGravatar)
         {
         echo ' <input type="submit" name="modifyPictureGravatar" value="'.$this->t('Use gravatar').'">';
         }
       ?>
-      <br/>      
-    </form>    
+      <br/>
+    </form>
   </div>
-  
+
 	<div id="tabs-password">
     <h3><?php echo $this->t('My Password')?>:</h3>
     <form  class="genericForm" id="modifyPassword" method='POST' action='<?php echo $this->webroot?>/user/settings<?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>'>
