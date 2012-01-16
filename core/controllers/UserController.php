@@ -693,8 +693,9 @@ class UserController extends AppController
         }
       }
 
-    // If this is the user's own page, show any pending community invitations
-    if($this->logged && $this->userSession->Dao->getKey() == $userDao->getKey())
+    // If this is the user's own page (or admin user), show any pending community invitations
+    if($this->logged &&
+      ($this->userSession->Dao->getKey() == $userDao->getKey() || $this->userSession->Dao->isAdmin()))
       {
       $invitations = $userDao->getInvitations();
       $communityInvitations = array();
