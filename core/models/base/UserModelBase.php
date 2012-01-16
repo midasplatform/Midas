@@ -67,7 +67,7 @@ abstract class UserModelBase extends AppModel
   /** Returns a user given its folder (either public,private or base folder) */
   abstract function getByFolder($folder);
   /** Returns all the users */
-  abstract function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null);
+  abstract function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null, $currentUser = null);
 
   /** save */
   public function save($dao)
