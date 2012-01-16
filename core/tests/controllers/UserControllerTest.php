@@ -151,7 +151,7 @@ class UserControllerTest extends ControllerTestCase
     $this->dispatchUrI('/user/settings?userId='.$adminDao->getKey(), $userDao, true);
     $this->resetAll();
     $this->dispatchUrI('/user/settings?userId='.$user2Dao->getKey(), $userDao, true);
-    
+
     $this->resetAll();
     $this->dispatchUrI("/user/settings", $userDao);
     $this->assertQuery("div#tabsSettings");
