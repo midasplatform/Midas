@@ -644,9 +644,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($resp->data->size, $expectedSize);
     }
 
-
-
-
   /** test item creation and deletion */
   public function testCreateitemDeleteitem()
     {
@@ -706,8 +703,70 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertFalse($itemDao, 'Item should have been deleted, but was not.');
     }
 
+  /** Test the server info reporting methods */
+  public function testInfoMethods()
+    {
+    // Test midas.version
+    $this->params['method'] = 'midas.version';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->version, Zend_Registry::get('configDatabase')->version);
 
+    // Test midas.modules.list
+    $this->resetAll();
+    $this->params['method'] = 'midas.modules.list';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertNotEmpty($resp->data->modules);
+    $this->assertTrue(in_array('api', $resp->data->modules));
 
+    // Test midas.methods.list
+    $this->resetAll();
+    $this->params['method'] = 'midas.methods.list';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertNotEmpty($resp->data->methods);
+    foreach($resp->data->methods as $method)
+      {
+      $this->assertNotEmpty($method->name);
+      $this->assertNotEmpty($method->help);
+      $this->assertTrue(isset($method->help->description));
+      $this->assertTrue(isset($method->help->params));
+      $this->assertTrue(isset($method->help->example));
+      $this->assertTrue(isset($method->help->return));
 
+      // Test a specific method's params list
+      if($method->name == 'login')
+        {
+        $this->assertNotEmpty($method->help->params->appname);
+        $this->assertNotEmpty($method->help->params->apikey);
+        $this->assertNotEmpty($method->help->params->email);
+        }
+      }
 
+    // Test midas.info
+    $this->resetAll();
+    $this->params['method'] = 'midas.info';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    // We should get version
+    $this->assertEquals($resp->data->version, Zend_Registry::get('configDatabase')->version);
+
+    // We should get modules list
+    $this->assertNotEmpty($resp->data->modules);
+    $this->assertTrue(in_array('api', $resp->data->modules));
+
+    // We should get methods list
+    $this->assertNotEmpty($resp->data->methods);
+    foreach($resp->data->methods as $method)
+      {
+      $this->assertNotEmpty($method->name);
+      $this->assertNotEmpty($method->help);
+      $this->assertTrue(isset($method->help->description));
+      $this->assertTrue(isset($method->help->params));
+      $this->assertTrue(isset($method->help->example));
+      $this->assertTrue(isset($method->help->return));
+      }
+    }
   }
