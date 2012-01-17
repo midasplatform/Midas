@@ -1,7 +1,14 @@
-To build MidasUploader, simply execute the build.sh script.
+To build MidasUploader, simply execute the build.sh or build.bat script.
 
 This requires a JDK>1.3, and that the binary files are
 in your path.
 It also requires you to have created a Certificate using
-the "keytool" supplied with the SUN jdk.  The certificate
-should be named tstkey.
+the "keytool" supplied with the SUN jdk. There is one in the keystore that
+is shipped in the Midas repository (see the file kitware!.keystore), but if
+it expires you can use the following command to generate a replacement:
+
+keytool -genkey -alias mycert -keypass kitware! -validity 730
+
+That will create a key that is valid for 730 days (2 years).  Note that
+this key is still not verified by a trusted authority, so a warning will
+appear the first time it is loaded.
