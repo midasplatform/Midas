@@ -299,7 +299,7 @@ class CommunityController extends AppController
     $this->view->json['community']['message']['createGroup'] = $this->t('Create a group');
     $this->view->json['community']['message']['editGroup'] = $this->t('Edit a group');
 
-    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', array());
+    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', array('community' => $communityDao));
     }//end manageAction
 
 

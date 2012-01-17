@@ -1,0 +1,62 @@
+<?php 
+/*=========================================================================
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+=========================================================================*/
+
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/jquery/jquery.form.js"></script>';
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js"></script>';
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/jquery/jqplot/jqplot.pieRenderer.min.js"></script>';
+echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/config/config.folder.js"></script>';
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.folder.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.jqplot.css" />
+
+</div>
+  <span><?php echo $this->t('Current used space:'); ?> <span id='hUsedSpaceValue'><?php echo $this->hUsedSpace; ?></span></span>
+  <br />
+  <span><?php echo $this->t('Total space:'); ?> <span id='hQuotaValue'><?php echo $this->hQuota; ?></span></span>
+  <span style="display: none;" id="hFreeSpaceValue"><?php echo $this->hFreeSpace; ?></span>
+  <span style="display: none;" id="quotaValue"><?php echo $this->quota; ?></span>
+  <span style="display: none;" id="usedSpaceValue"><?php echo $this->usedSpace; ?></span>
+  <div id='quotaChart' style="height: 200px; width: 400px; display: none;"></div>
+  <br />
+  <?php
+  if($this->isAdmin)
+    { ?>
+    <hr />
+    <form class='quotaConfigForm' id='configForm' method='<?php echo $this->configForm['method'] ?>' action='<?php echo $this->configForm['action'] ?>'>
+      <div>
+        <?php
+          echo $this->configForm['usedefault'];
+          echo $this->configForm['quota'];
+        ?>
+      <div>
+        <?php echo $this->configForm['submitQuota']; ?>
+      </div>
+      <input type="hidden" name="folderId" value="<?php echo $this->folder->getKey(); ?>" />
+    </form>
+  <?php
+    } ?>
+</div>
+
+
+
+
+
+

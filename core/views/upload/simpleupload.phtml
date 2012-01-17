@@ -59,21 +59,25 @@ PURPOSE.  See the above copyright notices for more information.
             </div>
             <div class="file_upload_overall_progress" style='display:none;'><div style="display:none;"></div></div>
         </div>
+        <div class="uploadValidationError"><img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/><b></b><hr></div>
         <div class="tooBigUpload">
           <img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/> <b><?php echo $this->t('Please use the large file tool, the following files are too big:')?></b>
           <ul>
 
           </ul>
         </div>
+
       </div>
       <b><?php echo $this->t('Step 2: Where do you want to upload your files')?>?</b>
       <div>
       <br/>
-      <b><?php echo $this->t('Curent selected location:')?></b>
+      <b><?php echo $this->t('Current selected location:')?></b>
           <span id="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
         <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>
+        <br/><br/>
+        <div class="belowDestinationUpload" style="display: none;"></div>
         <br/>
-        <input style="margin-left:0px;"  class="browseMIDASLink globalButton" type="button" value="Change location" />
+        <input style="margin-left:0px;" class="browseMIDASLink globalButton" type="button" value="Change location" />
         <br/>
         <br/>
       </div>
@@ -136,7 +140,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 
 <?php
-    if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+    if(Zend_Registry::get("configGlobal")->smartoptimizer == 1)
       {
       echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/jquery/jquery.fileupload.js,jquery.fileupload-ui.js,jquery.fileupload-uix.js,jquery.form.js"></script>';
       }
@@ -148,6 +152,11 @@ PURPOSE.  See the above copyright notices for more information.
       <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-uix.js"></script>
       <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
       <?php
+      }
+
+    foreach($this->extraHtml as $module => $extra)
+      {
+      echo $extra."\n";
       }
 ?>
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.simpleupload.js"></script>

@@ -712,6 +712,7 @@ class UserController extends AppController
     $this->view->information = array();
 
     $this->view->disableFeedImages = true;
+    $this->view->moduleTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_USER_TABS', array('user' => $userDao));
     }
 
   /** Manage files page action*/

@@ -103,7 +103,7 @@ class FolderModel extends FolderModelBase
     return true;
     }//end policyCheck
 
-/** get the size and the number of item in a folder*/
+  /** get the size and the number of item in a folder*/
   public function getSizeFiltered($folders, $userDao = null, $policy = 0)
     {
     $isAdmin = false;
@@ -212,6 +212,37 @@ class FolderModel extends FolderModelBase
         }
       }
     return $folders;
+    }
+
+  /** get the total size for a folder (with no filtered results) */
+  public function getSize($folder)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder");
+      }
+    $folders = $this->database->select()
+                    ->setIntegrityCheck(false)
+                    ->from(array('f' => 'folder'), array('folder_id'))
+                    ->where('left_indice > ?', $folder->getLeftIndice())
+                    ->where('right_indice < ?', $folder->getRightIndice());
+
+    $sql = $this->database->select()
+                ->distinct()
+                ->setIntegrityCheck(false)
+                ->from(array('i' => 'item'))
+                ->join(array('i2f' => 'item2folder'),
+                  '( '.$this->database->getDB()->quoteInto('i2f.folder_id IN (?)', $folders).'
+                  OR i2f.folder_id = '.$folder->getKey().'
+                  )
+                  AND i2f.item_id = i.item_id', array());
+
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from(array('i' => $sql), array('sum' => 'sum(i.sizebytes)'));
+
+    $row = $this->database->fetchRow($sql);
+    return $row['sum'];
     }
 
   /** Get the root folder */
@@ -389,7 +420,7 @@ class FolderModel extends FolderModelBase
       $tmpParent = $tmpParent->getParent();
       }
 
-    if(!$folder instanceof  FolderDao)
+    if(!$folder instanceof FolderDao)
       {
       throw new Zend_Exception("Error parameter.");
       }

@@ -434,6 +434,22 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('Invalid upload mode', MIDAS_INVALID_PARAMETER);
       }
 
+    if(array_key_exists('folderid', $args))
+      {
+      $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD',
+                                                              array('filename' => $filename,
+                                                                    'size' => $filesize,
+                                                                    'path' => $filepath,
+                                                                    'folderId' => $args['folderid']));
+      foreach($validations as $validation)
+        {
+        if(!$validation['status'])
+          {
+          unlink($filepath);
+          throw new Exception($validation['message'], MIDAS_INVALID_POLICY);
+          }
+        }
+      }
     $uploadComponent = $componentLoader->loadComponent('Upload');
     $license = null;
     if(isset($folder))

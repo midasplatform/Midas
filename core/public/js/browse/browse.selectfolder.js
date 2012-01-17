@@ -11,15 +11,19 @@ $("table#moveTable").show();
 if($('div.MainDialogContent #selectElements') != undefined)
   {
   $('div.MainDialogContent #selectElements').click(function(){
-    $('#destinationUpload').html($('#selectedDestination').html());
-    $('#destinationId').val($('#selectedDestinationHidden').val());
-    $('.destinationUpload').html($('#selectedDestination').html());
-    $('.destinationId').val($('#selectedDestinationHidden').val());
+    var folderName = $('#selectedDestination').html();
+    var folderId = $('#selectedDestinationHidden').val();
+    midas.doCallback('CALLBACK_CORE_UPLOAD_FOLDER_CHANGED', {folderName: folderName, folderId: folderId});
+
+    $('#destinationUpload').html(folderName);
+    $('#destinationId').val(folderId);
+    $('.destinationUpload').html(folderName);
+    $('.destinationId').val(folderId);
     $( "div.MainDialog" ).dialog('close');
 
     if(typeof folderSelectionCallback == 'function')
       {
-      folderSelectionCallback($('#selectedDestination').html(), $('#selectedDestinationHidden').val());
+      folderSelectionCallback(folderName, folderId);
       }
     return false;
     });

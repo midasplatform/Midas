@@ -1,0 +1,1 @@
+add_midas_test( SizequotaConfigController ConfigControllerTest.php )
