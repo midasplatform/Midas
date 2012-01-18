@@ -25,6 +25,18 @@ midas.upload.revision.initJqueryFileupload = function()
   //see http://aquantum-demo.appspot.com/file-upload
   $('.file_upload:visible').fileUploadUIX({
     beforeSend: function (event, files, index, xhr, handler, callBack) {
+      if(index == 0) //only do this once since we have all the files every time
+        {
+        var retVal = midas.doCallback('CALLBACK_CORE_VALIDATE_UPLOAD', {files: files, revision: true});
+        $.each(retVal, function(module, resp) {
+          if(resp.status === false)
+            {
+            $('div.uploadValidationError b').html(resp.message);
+            $('div.uploadValidationError').show();
+            }
+          });
+        }
+
       handler.uploadRow.find('.file_upload_start').click(function () {
         handler.formData = {
           parent: $('#destinationId').val(),
@@ -162,3 +174,6 @@ $('#browseMIDASLink').click(function() {
   loadDialog("select", "/browse/movecopy/?selectElement=true");
   showDialog('Browse');
   });
+
+midas.doCallback('CALLBACK_CORE_REVISIONUPLOAD_LOADED');
+

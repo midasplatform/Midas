@@ -167,6 +167,8 @@ class UploadController extends AppController
     $this->view->item = $item;
     $itemRevision = $this->Item->getLastRevision($item);
     $this->view->lastrevision = $itemRevision;
+    $this->view->extraHtml = Zend_Registry::get('notifier')->callback(
+      'CALLBACK_CORE_GET_REVISIONUPLOAD_EXTRA_HTML', array('item' => $item));
     }//end revisionAction
 
 

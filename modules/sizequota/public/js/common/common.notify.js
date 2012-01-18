@@ -15,10 +15,22 @@ midas.sizequota.validateUpload = function(args)
 
   if(freeSpace != '' && midas.sizequota.totalSize > parseInt(freeSpace))
     {
-    return {
-      status: false,
-      message: 'Uploading these files would exceed the maximum quota for the selected folder.  Please choose a different folder or remove some of the files.'
-      };
+    if(args.revision)
+      {
+      return {
+        status: false,
+        message: 'Uploading these files would exceed the maximum quota for the parent folder. '
+                + 'Please remove some of the files.'
+        };
+      }
+    else
+      {
+      return {
+        status: false,
+        message: 'Uploading these files would exceed the maximum quota for the selected folder. '
+                + 'Please choose a different folder or remove some of the files.'
+        };
+      }
     }
   else
     {
@@ -98,4 +110,5 @@ midas.registerCallback('CALLBACK_CORE_RESET_UPLOAD_TOTAL', 'sizequota', midas.si
 midas.registerCallback('CALLBACK_CORE_UPLOAD_FOLDER_CHANGED', 'sizequota', midas.sizequota.folderChanged);
 midas.registerCallback('CALLBACK_CORE_SIMPLEUPLOAD_LOADED', 'sizequota', midas.sizequota.onPageLoad);
 midas.registerCallback('CALLBACK_CORE_JAVAUPLOAD_LOADED', 'sizequota', midas.sizequota.onPageLoad);
+midas.registerCallback('CALLBACK_CORE_REVISIONUPLOAD_LOADED', 'sizequota', midas.sizequota.updateFreeSpaceMessage);
 

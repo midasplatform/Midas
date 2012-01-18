@@ -78,6 +78,15 @@ PURPOSE.  See the above copyright notices for more information.
         <div class="file_upload_overall_progress" style='display:none;'><div style="display:none;"></div></div>
       </div>
     </div>
+    <div class="belowDestinationUpload"></div>
+    <div class="uploadValidationError"><img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/><b></b><hr></div>
+    <div class="tooBigUpload">
+      <img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/> <b><?php echo $this->t('Please use the large file tool, the following files are too big:')?></b>
+      <ul>
+
+      </ul>
+    </div>
+    <br />
     <b><?php echo $this->t('Step 2: Select a license')?></b>
     <div>
       <?php
@@ -112,6 +121,9 @@ PURPOSE.  See the above copyright notices for more information.
 <input type="hidden" class="uploadedSimple" value="0"/>
 <input type="hidden" class="uploadedJava" value="0"/>
 <input type="hidden" class="uploadedLinks" value="0"/>
-
-
-
+<?php
+foreach($this->extraHtml as $module => $extra)
+  {
+  echo $extra."\n";
+  }
+?>
