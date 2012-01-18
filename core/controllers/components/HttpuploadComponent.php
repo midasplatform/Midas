@@ -74,7 +74,37 @@ class HttpuploadComponent extends AppComponent
 
     if(!file_exists($dir))
       {
-      if(!is_writable($dir) || !mkdir($dir, 0700, true))
+
+      // this bit of logic will detect permissions problems, and prevent the
+      // json encoding from breaking, when mkdir attempts to create a dir that
+      // it doesn't have permissions for.
+      //
+      // search backwards up towards the root, look for the first existing dir
+      $correctPermissions = false;
+      // back up one directory to the current dir's root
+      $dirRoot = dirname($dir);
+      while(!$correctPermissions)
+        {
+        if(file_exists($dirRoot))
+          {
+          if(!is_writeable($dirRoot))
+            {
+            // if the closest existing root dir isn't writable that is an error
+            throw new Exception('Failed to create temporary upload dir because a parent dir is not writeable', MIDAS_HTTPUPLOAD_TMP_DIR_CREATION_FAILED);
+            }
+          else
+            {
+            $correctPermissions = true;
+            }
+          }
+        else
+          {
+          // back up one directory to the current dirRoot's root
+          $dirRoot = dirname($dir);
+          }
+        }
+
+      if(!mkdir($dir, 0700, true))
         {
         throw new Exception('Failed to create temporary upload dir', MIDAS_HTTPUPLOAD_TMP_DIR_CREATION_FAILED);
         }
