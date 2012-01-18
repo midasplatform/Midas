@@ -69,6 +69,10 @@ class Visualize_IndexController extends Visualize_AppController
       {
       $this->_redirect('/visualize/pdf/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
+    elseif($this->ModuleComponent->Main->canVisualizeWebgl($itemDao))
+      {
+      $this->_redirect('/visualize/webgl/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+      }
     else
       {
       throw new Zend_Exception('Unable to visualize');

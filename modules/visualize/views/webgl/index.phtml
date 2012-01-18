@@ -1,0 +1,54 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<html>
+	<title>MIDAS Visualization</title>
+
+	<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/Three.js"></script>
+	<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/Detector.js"></script>
+	<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/RequestAnimationFrame.js"></script>
+	<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/utils.js"></script>
+
+  <?php
+  echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
+  echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery-ui.js"></script>';
+  ?>
+  <script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/webgl.index.js"></script>
+  <link type="text/css" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.css" rel="stylesheet" />
+  <link type="text/css" href="<?php echo $this->moduleWebroot?>/public/css/webgl/webgl.index.css" rel="stylesheet" />
+</head>
+
+<body>
+
+<button onclick="cameraUp();" id="buttonUp" class="buttonNav"></button>
+<button onclick="cameraDown();" id="buttonDown" class="buttonNav"></button>
+<button onclick="cameraLeft();" id="buttonLeft" class="buttonNav"></button>
+<button onclick="cameraRight();" id="buttonRight" class="buttonNav"></button>
+<button onclick="resetCameraPosition(objects3D);" id="buttonReset" class="buttonNav"></button>
+<button onclick="zoomIn();" id="buttonPlus" class="buttonNav"></button>
+<button onclick="zoomOut();" id="buttonMinus" class="buttonNav"></button>
+<div id="info">
+	<b>MOVE</b> mouse & press <b>LEFT/A:</b> rotate, <b>MIDDLE/S:</b> zoom, <b>RIGHT/D:</b> pan
+</div>
+
+<div id="onliver" style="display:none">
+	Over tooltip
+</div>
+
+<div id="axesContainer" >
+</div>
+
+<div id="container" ></div>
+
+<div id="datacontent" style="display:none"><?php echo $this->data?></div>
+</body>
+</html>
