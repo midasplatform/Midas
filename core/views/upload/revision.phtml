@@ -14,21 +14,21 @@ PURPOSE.  See the above copyright notices for more information.
 <link href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.fileupload-ui.css?<?php echo time()?>" rel="stylesheet" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-    <?php
-        if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
-          {
-          echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/swfupload/js/swfupload.js,swfupload.queue.js,fileprogress.js,handlers.js"></script>';
-          }
-        else
-          {
-          ?>
-          <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.js"></script>
-          <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.queue.js"></script>
-          <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/fileprogress.js"></script>
-          <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/handlers.js"></script>
-          <?php
-          }
+<?php
+  if(Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+    {
+    echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/swfupload/js/swfupload.js,swfupload.queue.js,fileprogress.js,handlers.js"></script>';
+    }
+  else
+    {
     ?>
+    <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.js"></script>
+    <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.queue.js"></script>
+    <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/fileprogress.js"></script>
+    <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/handlers.js"></script>
+    <?php
+    }
+?>
 
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload.js"></script>
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-ui.js"></script>
@@ -41,62 +41,70 @@ PURPOSE.  See the above copyright notices for more information.
     <li><a href="#uploadTabs-1">Simple</a></li>
   </ul>
   <div id="uploadTabs-1">
-      <b><?php echo $this->t('Step 1: Select files to upload')?></b>
-      <br/>
-      <div id="swfuploadContent">
-        <span id="spanButtonPlaceHolder"></span>
-        <div>
-        <div class="fieldset flash"  id="fsUploadProgress">
-        </div>
-        </div>
-      </div>
-      <div id="jqueryFileUploadContent">
-        <div class="file_upload">
-            <form action="<?php echo $this->webroot?>/upload/saveuploaded" method="POST" enctype="multipart/form-data">
-                <input type="file" name="file[]" multiple>
-                <button type="submit">Upload</button>
-                <div class="file_upload_label"><?php echo $this->t('Browse or drop files')?></div>
-            </form>
-            <table class="files">
-                <tr class="file_upload_template" style="display:none;">
-                    <td class="file_name"></td>
-                    <td class="file_size"></td>
-                    <td class="file_upload_progress"><div></div></td>
-                    <td class="file_upload_start" style='display:none;'><button>Start</button></td>
-                    <td class="file_upload_cancel"><button></button></td>
-                </tr>
-                <tr class="file_download_template" style="display:none;">
-                    <td class="file_name"><a></a></td>
-                    <td class="file_size"></td>
-                </tr>
-                <div class="file_upload_buttons" style='display:none;'>
-                  <button class="file_upload_start">Start All</button>
-                  <button class="file_upload_cancel">Cancel All</button>
-                  <button class="file_download_delete">Delete All</button>
-                </div>
-            </table>
-            <div class="file_upload_overall_progress" style='display:none;'><div style="display:none;"></div></div>
-        </div>
-      </div>
-      <b><?php echo $this->t('Step 2: Select a license')?></b>
+    <b><?php echo $this->t('Step 1: Select files to upload')?></b>
+    <br/>
+    <div id="swfuploadContent">
+      <span id="spanButtonPlaceHolder"></span>
       <div>
-        <?php
-        echo $this->element('license')?>
+      <div class="fieldset flash"  id="fsUploadProgress">
       </div>
-      <br/>
-      <b><?php echo $this->t('Step 3: Set the changes')?></b>
-      <div>
-        <textarea style="width:80%;" name="revisionChanges"/>
       </div>
-      <br/>
-      <b><?php echo $this->t('Step 4: Start the upload')?></b>
-      <br/>
-      <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
-      <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->item->getKey().'-'.($this->lastrevision->getRevision()+1)?>"/>
-      <span id="btnStartUpload" >
-        <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" value="<?php echo $this->t('Start Upload')?>" />
-      </span>
+    </div>
+    <div id="jqueryFileUploadContent">
+      <div class="file_upload">
+        <form action="<?php echo $this->webroot?>/upload/saveuploaded" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file[]" multiple>
+            <button type="submit">Upload</button>
+            <div class="file_upload_label"><?php echo $this->t('Browse or drop files')?></div>
+        </form>
+        <table class="files">
+            <tr class="file_upload_template" style="display:none;">
+                <td class="file_name"></td>
+                <td class="file_size"></td>
+                <td class="file_upload_progress"><div></div></td>
+                <td class="file_upload_start" style='display:none;'><button>Start</button></td>
+                <td class="file_upload_cancel"><button></button></td>
+            </tr>
+            <tr class="file_download_template" style="display:none;">
+                <td class="file_name"><a></a></td>
+                <td class="file_size"></td>
+            </tr>
+            <div class="file_upload_buttons" style='display:none;'>
+              <button class="file_upload_start">Start All</button>
+              <button class="file_upload_cancel">Cancel All</button>
+              <button class="file_download_delete">Delete All</button>
+            </div>
+        </table>
+        <div class="file_upload_overall_progress" style='display:none;'><div style="display:none;"></div></div>
+      </div>
+    </div>
+    <div class="belowDestinationUpload"></div>
+    <div class="uploadValidationError"><img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/><b></b><hr></div>
+    <div class="tooBigUpload">
+      <img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/> <b><?php echo $this->t('Please use the large file tool, the following files are too big:')?></b>
+      <ul>
 
+      </ul>
+    </div>
+    <br />
+    <b><?php echo $this->t('Step 2: Select a license')?></b>
+    <div>
+      <?php
+      echo $this->element('license')?>
+    </div>
+    <br/>
+    <b><?php echo $this->t('Step 3: Set the changes')?></b>
+    <div>
+      <textarea style="width:80%;" name="revisionChanges"/>
+    </div>
+    <br/>
+    <b><?php echo $this->t('Step 4: Start the upload')?></b>
+    <br/>
+    <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="midas.upload.revision.swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
+    <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->item->getKey().'-'.($this->lastrevision->getRevision()+1)?>"/>
+    <span id="btnStartUpload" >
+      <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" value="<?php echo $this->t('Start Upload')?>" />
+    </span>
 </div>
 
 <div>
@@ -113,6 +121,9 @@ PURPOSE.  See the above copyright notices for more information.
 <input type="hidden" class="uploadedSimple" value="0"/>
 <input type="hidden" class="uploadedJava" value="0"/>
 <input type="hidden" class="uploadedLinks" value="0"/>
-
-
-
+<?php
+foreach($this->extraHtml as $module => $extra)
+  {
+  echo $extra."\n";
+  }
+?>
