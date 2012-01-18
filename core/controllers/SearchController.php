@@ -60,7 +60,7 @@ class SearchController extends AppController
     $results = $this->Component->Search->searchAll($this->userSession->Dao, $keyword, $order);
     if(isset($ajax))
       {
-      $this->_helper->layout->disableLayout();
+      $this->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
       echo JsonComponent::encode($results);
       }
@@ -86,7 +86,7 @@ class SearchController extends AppController
     // ajax requests simultaneously
     session_write_close();
 
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
     $search = $this->getRequest()->getParam('term');
@@ -188,7 +188,7 @@ class SearchController extends AppController
       }
 
     // Return the JSON results
-    echo '[';
+    $results = array();
     $id = 1;
     $n = 0;
     // Items
@@ -198,54 +198,40 @@ class SearchController extends AppController
         {
         break;
         }
-      if($id > 1)
-        {
-        echo ', ';
-        }
-      echo '{';
-      echo '"id":"'.$id.'"';
-      echo ', "label":"'.$this->Component->Utility->sliceName($itemDao->getName(), 55);
+      $label = $this->Component->Utility->sliceName($itemDao->getName(), 55);
       if(isset($itemDao->count) && $itemDao->count > 1)
         {
-        echo ' ('.$itemDao->count.')"';
+        $label .= ' ('.$itemDao->count.')';
         }
-      else
-        {
-        echo '"';
-        }
-
-      echo ', "value":"'.$itemDao->getName().'"';
+      $result = array('id' => $id,
+                      'label' => $label,
+                      'value' => $itemDao->getName(),
+                      'category' => $this->t('Items'));
 
       if(!isset($itemDao->count) || $itemDao->count == 1)
         {
-        echo ', "itemid":"'.$itemDao->getItemId().'"';
+        $result['itemid'] = $itemDao->getItemId();
         }
-      echo ', "category":"'.$this->t('Items').'"';
       $id++;
       $n++;
-      echo '}';
+      $results[] = $result;
       }
     // Groups
+    $n = 0;
     foreach($GroupsDao as $groupDao)
       {
       if($n == $ngroups)
         {
         break;
         }
-      if($id > 1)
-        {
-        echo ', ';
-        }
-      echo '{';
-      echo '"id":"'.$id.'"';
-      echo ', "label":"'.$this->Component->Utility->sliceName($groupDao->getName(), 55);
-      echo '"';
-      echo ', "value":"'.$groupDao->getName().'"';
-      echo ', "groupid":"'.$groupDao->getKey().'"';
-      echo ', "category":"'.$this->t('Groups').'"';
+
+      $results[] = array('id' => $id,
+                         'label' => $this->Component->Utility->sliceName($groupDao->getName(), 55),
+                         'value' => $groupDao->getName(),
+                         'groupid' => $groupDao->getKey(),
+                         'category' => $this->t('Groups'));
       $id++;
       $n++;
-      echo '}';
       }
 
     // Folder
@@ -256,30 +242,23 @@ class SearchController extends AppController
         {
         break;
         }
-      if($id > 1)
-        {
-        echo ', ';
-        }
-      echo '{';
-      echo '"id":"'.$id.'"';
-      echo ', "label":"'.$this->Component->Utility->sliceName($folderDao->getName(), 55);
+      $label = $this->Component->Utility->sliceName($folderDao->getName(), 55);
       if(isset($folderDao->count) && $folderDao->count > 1)
         {
-        echo ' ('.$folderDao->count.')"';
+        $label .= ' ('.$folderDao->count.')';
         }
-      else
+      $result = array('id' => $id,
+                      'label' => $label,
+                      'value' => $folderDao->getName(),
+                      'category' => $this->t('Folders'));
+
+      if(!isset($folderDao->count) || $folderDao->count == 1)
         {
-        echo '"';
+        $result['folderid'] = $folderDao->getFolderId();
         }
-      echo ', "value":"'.$folderDao->getName().'"';
-      if(isset($folderDao->count) && $folderDao->count == 1)
-        {
-        echo ', "folderid":"'.$folderDao->getFolderId().'"';
-        }
-      echo ', "category":"'.$this->t('Folders').'"';
       $id++;
       $n++;
-      echo '}';
+      $results[] = $result;
       }
 
     // Community
@@ -290,30 +269,23 @@ class SearchController extends AppController
         {
         break;
         }
-      if($id > 1)
-        {
-        echo ', ';
-        }
-      echo '{';
-      echo '"id":"'.$id.'"';
-      echo ', "label":"'.$this->Component->Utility->sliceName($communityDao->getName(), 55);
+      $label = $this->Component->Utility->sliceName($communityDao->getName(), 55);
       if(isset($communityDao->count) && $communityDao->count > 1)
         {
-        echo ' ('.$communityDao->count.')"';
+        $label .= ' ('.$communityDao->count.')';
         }
-      else
-        {
-        echo '"';
-        }
-      echo ', "value":"'.$communityDao->getName().'"';
+      $result = array('id' => $id,
+                      'label' => $label,
+                      'value' => $communityDao->getName(),
+                      'category' => $this->t('Communities'));
+
       if(!isset($communityDao->count) || $communityDao->count == 1)
         {
-        echo ', "communityid":"'.$communityDao->getKey().'"';
+        $result['communityid'] = $communityDao->getKey();
         }
-      echo ', "category":"'.$this->t('Communities').'"';
       $id++;
       $n++;
-      echo '}';
+      $results[] = $result;
       }
 
     // User
@@ -324,33 +296,27 @@ class SearchController extends AppController
         {
         break;
         }
-      if($id > 1)
+      $label = $userDao->getFirstname().' '.$userDao->getLastname();
+      $value = $label;
+      if(isset($userDao->count) && $userDao->count > 1)
         {
-        echo ', ';
+        $label .= ' ('.$userDao->count.')';
         }
-      echo '{';
-      echo '"id":"'.$id.'"';
-      echo ', "label":"'.$userDao->getFirstname().' '.$userDao->getLastname();
-      if($userDao->count > 1)
+      $result = array('id' => $id,
+                      'label' => $label,
+                      'value' => $value,
+                      'category' => $this->t('Users'));
+
+      if(!isset($userDao->count) || $userDao->count == 1)
         {
-        echo ' ('.$userDao->count.')"';
+        $result['userid'] = $userDao->getKey();
         }
-      else
-        {
-        echo '"';
-        }
-      echo ', "value":"'.$userDao->getFirstname().' '.$userDao->getLastname().'"';
-      if($userDao->count == 1)
-        {
-        echo ', "userid":"'.$userDao->getUserId().'"';
-        }
-      echo ', "category":"'.$this->t('Users').'"';
       $id++;
       $n++;
-      echo '}';
+      $results[] = $result;
       }
 
-    echo ']';
+    echo JsonComponent::encode($results);
     }
 
 } // end class
