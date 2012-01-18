@@ -58,22 +58,54 @@ class Api_ApiComponent extends AppComponent
 
   /**
    * Get the server version
-   * @return Server version
+   * @return Server version in the form <major>.<minor>.<patch>
    */
   public function version($args)
     {
-    $data['version'] = Zend_Registry::get('configDatabase')->version;
+    return array('version' => Zend_Registry::get('configDatabase')->version);
+    }
+
+  /**
+   * Get the enabled modules on the server
+   * @return List of enabled modules on the server
+   */
+  public function modulesList($args)
+    {
+    return array('modules' => array_keys(Zend_Registry::get('configsModules')));
+    }
+
+  /**
+   * List all available web api methods on the server
+   * @return List of api method names and their corresponding documentation
+   */
+  public function methodsList($args)
+    {
+    $data = array();
+    $data['methods'] = array();
+
+    $apiMethods = Zend_Registry::get('notifier')->callback('CALLBACK_API_HELP', array());
+    foreach($apiMethods as $module => $methods)
+      {
+      foreach($methods as $method)
+        {
+        $apiMethodName = $module != 'api' ? $module.'.' : '';
+        $apiMethodName .= $method['name'];
+        $data['methods'][] = array('name' => $apiMethodName, 'help' => $method['help']);
+        }
+      }
     return $data;
     }
 
   /**
-   * Get the server information
+   * Get the server information including version, modules enabled,
+     and available web api methods (names do not include the global prefix)
    * @return Server information
    */
   public function info($args)
     {
-    $data['version'] = Zend_Registry::get('configDatabase')->version;
-    return $data;
+    return array_merge($this->version($args),
+                       $this->modulesList($args),
+                       $this->methodsList($args));
     }
 
   /**
