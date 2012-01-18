@@ -20,6 +20,83 @@
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 class Visualize_MainComponent extends AppComponent
 {
+  /** convert to threejs */
+  public function convertToThreejs($revision)
+    {
+    $componentLoader = new MIDAS_ComponentLoader();
+    $uploadComponent = $componentLoader->loadComponent('Upload');
+
+    $modulesConfig=Zend_Registry::get('configsModules');
+    $userwebgl = $modulesConfig['visualize']->userwebgl;
+    if(!isset($userwebgl) || !$userwebgl)
+      {
+      return false;
+      }
+
+    $modelLoad = new MIDAS_ModelLoader();
+    $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
+    $itemModel = $modelLoad->loadModel('Item');
+
+    if(is_array($revision))
+      {
+      $revision = $itemRevisionModel->load($revision['itemrevision_id']);
+      }
+
+    $bitstreams = $revision->getBitstreams();
+    $item = $revision->getItem();
+    $parents = $item->getFolders();
+    $userDao = $revision->getUser();
+    if(count($parents) == 0 )
+      {
+      return;
+      }
+    $parent = $parents[0];
+    if(count($bitstreams) != 1)
+      {
+      return;
+      }
+    $bitstream = $bitstreams[0];
+    $ext = end(explode(".", $bitstream->getName()));
+    if($ext != "obj")
+      {
+      return;
+      }
+
+    if(file_exists(UtilityComponent::getTempDirectory()."/tmpThreeJs.js"))
+      {
+      unlink(UtilityComponent::getTempDirectory()."/tmpThreeJs.js");
+      }
+    exec("python ".dirname(__FILE__)."/scripts/convert_obj_three.py -i ".$bitstream->GetFullPath()." -o ".UtilityComponent::getTempDirectory()."/tmpThreeJs.js -t binary" , $output);
+    if(file_exists(UtilityComponent::getTempDirectory()."/tmpThreeJs.js") && file_exists(UtilityComponent::getTempDirectory()."/tmpThreeJs.bin"))
+      {
+      $assetstoreModel = $modelLoad->loadModel('Assetstore');
+      $assetstoreDao = $assetstoreModel->getDefault();
+
+      $newItem = $uploadComponent->createUploadedItem($userDao, $item->getName().".threejs.bin", UtilityComponent::getTempDirectory()."/tmpThreeJs.bin", $parent);
+      $itemModel->copyParentPolicies($newItem, $parent);
+      $newRevision = $itemModel->getLastRevision($newItem);
+      $bitstreams = $newRevision->getBitstreams();
+      $bitstreamDao = $bitstreams[0];
+
+      Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
+      $content = file_get_contents(UtilityComponent::getTempDirectory()."/tmpThreeJs.js");
+      $fc = Zend_Controller_Front::getInstance();
+      $content = str_replace("tmpThreeJs.bin", $fc->getBaseUrl()."/download/?bitstream=".$bitstreamDao->getKey(), $content);
+      file_put_contents(UtilityComponent::getTempDirectory()."/tmpThreeJs.js", $content);
+
+      $bitstreamDao = new BitstreamDao;
+      $bitstreamDao->setName($item->getName().".threejs.js");
+      $bitstreamDao->setPath(UtilityComponent::getTempDirectory()."/tmpThreeJs.js");
+      $bitstreamDao->setChecksum("");
+      $bitstreamDao->fillPropertiesFromPath();
+      $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
+
+      // Upload the bitstream if necessary (based on the assetstore type)
+      $uploadComponent->uploadBitstream($bitstreamDao, $assetstoreDao);
+      $itemRevisionModel->addBitstream($newRevision, $bitstreamDao);
+      }
+    }
+
   /** can visualize */
   public function canVisualizeWithParaview($itemDao)
     {
@@ -53,6 +130,28 @@ class Visualize_MainComponent extends AppComponent
     $revision = $itemModel->getLastRevision($itemDao);
     $bitstreams = $revision->getBitstreams();
     if(count($bitstreams) == 0)
+      {
+      return false;
+      }
+
+    $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
+    return in_array($ext, $extensions);
+    }//end canVisualize
+
+  /* visualize*/
+  public function canVisualizeWebgl($itemDao)
+    {
+    $extensions = array('bin');
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $revision = $itemModel->getLastRevision($itemDao);
+    $bitstreams = $revision->getBitstreams();
+    if(strpos($itemDao->getName(), "threejs") === false)
+      {
+      return false;
+      }
+
+    if(count($bitstreams) != 2)
       {
       return false;
       }

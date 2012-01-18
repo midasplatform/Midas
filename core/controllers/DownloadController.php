@@ -23,9 +23,9 @@
  */
 class DownloadController extends AppController
 {
-  public $_models = array('Folder', 'Item', 'Community', 'User');
+  public $_models = array('Folder', 'Item', 'Community', 'User', 'Bitstream');
   public $_daos = array();
-  public $_components = array();
+  public $_components = array("DownloadBitstream");
 
   /** index
    * @param ?folders = 12-13 (will download a zip of the folder 12 and 13 ,recusively)
@@ -33,6 +33,7 @@ class DownloadController extends AppController
    * @param ?items = 12-13 (will download a zip containing the last revisions of the items 12 and 13)
    * @param ?items = 12, 1-13 (will download a zip containing the revision 1 of item 12 and last revision of item 13)
    * @param ?items = 12, 1 (will download the revision 1 of the item 12, a zip ifthere are multiple bitstream or simply the file)
+   * @param ?bitstream = 1 (will download related bitstream)
    */
   public function indexAction()
     {
@@ -40,6 +41,19 @@ class DownloadController extends AppController
     $this->disableLayout();
     $itemIds = $this->_getParam('items');
     $folderIds = $this->_getParam('folders');
+    $bitsreamid = $this->_getParam('bitstream');
+    if(isset($bitsreamid) && is_numeric($bitsreamid))
+      {
+      $bitstream = $this->Bitstream->load($bitsreamid);
+      $revision = $bitstream->getItemrevision();
+      $item = $revision->getItem();
+      if($item == false || !$this->Item->policyCheck($item, $this->userSession->Dao))
+        {
+        throw new Zend_Exception("Error Policy");
+        }
+      $this->Component->DownloadBitstream->download($bitstream);
+      return;
+      }
     if(!isset($itemIds) && !isset($folderIds))
       {
       throw new Zend_Exception("No parameters");

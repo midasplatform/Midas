@@ -166,7 +166,7 @@ Group's members;Membres du groupe
 Create a new Folder;Créer un nouveau répertoire
 Advanced search;Recherche avancée
 Sort by;Trier par
-All the results;Tous les résultats
+All results;Tous les résultats
 Number of views;Nombre de vues
 No result found.;Aucun résultat trouvé pour votre recherche.
 Show more results.;Montrer plus de résultats.
@@ -258,7 +258,14 @@ Name of the folder;Nom du répertoire
 Optional;Optionel
 Teaser;Courte descriptionMy Language;Ma Langue
 Delete the post;Supprimer la publication
+Please select an item.;S�lectionnez un document.
+Or search it...;Ou recherchez le...
 Step 3: Set the changes;Etape 3 : Indiquez les changements
+Delete the post;Supprimer la publication
+Please select an item.;S�lectionnez un document.
+My Language;Ma Langue
+Teaser;Courte description
+Delete the post;Supprimer la publication
 View new Revision;Voir nouvelle révision
 or;ou
 upload a folder;ajouter un répertoire
@@ -266,4 +273,3 @@ Please select an item.;Sélectionnez un document.
 Or search it...;Ou recherchez le...
 upload files;ajouter des fichiers
 Don't forget to start the upload.;N'oubliez pas de lancer l'upload.
-
