@@ -44,6 +44,7 @@ class UserController extends AppController
 
     $order = $this->_getParam('order');
     $offset = $this->_getParam('offset');
+
     if(!isset($order))
       {
       $order = 'view';
@@ -59,7 +60,7 @@ class UserController extends AppController
       }
     else
       {
-      $users = $this->User->getAll(true, 100, $order, $offset);
+      $users = $this->User->getAll(true, 100, $order, $offset, $this->userSession->Dao);
       }
 
     $this->view->order = $order;
@@ -674,7 +675,9 @@ class UserController extends AppController
     else
       {
       $userDao = $this->User->load($user_id);
-      if($userDao->getPrivacy() == MIDAS_USER_PRIVATE && (!isset($this->userSession->Dao) || !$this->userSession->Dao->isAdmin()))
+      if($userDao->getPrivacy() == MIDAS_USER_PRIVATE &&
+        (!$this->logged || $this->userSession->Dao->getKey() != $userDao->getKey()) &&
+        (!isset($this->userSession->Dao) || !$this->userSession->Dao->isAdmin()))
         {
         throw new Zend_Exception("Permission error");
         }
@@ -695,6 +698,24 @@ class UserController extends AppController
         $filteredCommunities[] = $community;
         }
       }
+
+    // If this is the user's own page (or admin user), show any pending community invitations
+    if($this->logged &&
+      ($this->userSession->Dao->getKey() == $userDao->getKey() || $this->userSession->Dao->isAdmin()))
+      {
+      $invitations = $userDao->getInvitations();
+      $communityInvitations = array();
+      foreach($invitations as $invitation)
+        {
+        $community = $this->Community->load($invitation->getCommunityId());
+        if($community)
+          {
+          $communityInvitations[] = $community;
+          }
+        }
+      $this->view->communityInvitations = $communityInvitations;
+      }
+
     $this->view->userCommunities = $filteredCommunities;
     $this->view->folders = array();
     if(!empty($this->userSession->Dao) && ($userDao->getKey() == $this->userSession->Dao->getKey() || $this->userSession->Dao->isAdmin()))

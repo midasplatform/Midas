@@ -222,21 +222,29 @@ class UserControllerTest extends ControllerTestCase
     $this->resetAll();
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $this->dispatchUrI("/user/userpage", $userDao);
+    $this->dispatchUrI('/user/userpage', $userDao);
 
     $this->assertQuery('div.genericInfo');
 
     $folder = $userDao->getPublicFolder();
     $this->assertQuery("tr[element='".$folder->getKey()."']");
 
-    $this->params = array();
-    $this->params['user_id'] = $userDao->getKey();
-    $this->dispatchUrI("/user/userpage", null, false);
+    // Should be able to see this user page since user is public
+    $this->resetAll();
+    $this->dispatchUrI('/user/'.$userDao->getKey(), null);
 
     $userDao->setPrivacy(MIDAS_USER_PRIVATE);
     $this->User->save($userDao);
 
-    $this->dispatchUrI("/user/userpage", null, true);
+    // Should throw an exception since the user is now private
+    $this->resetAll();
+    $this->dispatchUrI('/user/'.$userDao->getKey(), null, true);
+
+    // Private user should be able to view his own user page
+    $this->resetAll();
+    $this->dispatchUrI('/user/'.$userDao->getKey(), $userDao);
+    $this->assertController('user');
+    $this->assertAction('userpage');
     }
 
   /** test validentry */
