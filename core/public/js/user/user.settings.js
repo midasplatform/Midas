@@ -3,11 +3,11 @@ $( "#tabsSettings" ).tabs();
 $( "#tabsSettings" ).css('display','block');
 $( "#tabsSettings" ).show();
 
-$('#modifyPassword').ajaxForm( { beforeSubmit: validatePasswordChange, success:       successPasswordChange  } );
+$('#modifyPassword').ajaxForm( { beforeSubmit: validatePasswordChange, success: successPasswordChange  } );
 
-$('#modifyAccount').ajaxForm( { beforeSubmit: validateAccountChange, success:       successAccountChange  } );
+$('#modifyAccount').ajaxForm( { beforeSubmit: validateAccountChange, success: successAccountChange  } );
 
-$('#modifyPicture').ajaxForm( { beforeSubmit: validatePictureChange, success:       successPictureChange  } );
+$('#modifyPicture').ajaxForm( { beforeSubmit: validatePictureChange, success: successPictureChange  } );
 
 jsonSettings = jQuery.parseJSON($('div.jsonSettingsContent').html());
 
@@ -15,94 +15,93 @@ $('textarea#biography').attr('onkeyup', 'this.value = this.value.slice(0, 255)')
 $('textarea#biography').attr('onchange', 'this.value = this.value.slice(0, 255)');
 
 
-function validatePasswordChange(formData, jqForm, options) { 
- 
-    var form = jqForm[0]; 
-    if (form.newPassword.value.length<2)
-      {
-        createNotive(jsonSettings.passwordErrorShort,4000);
-        return false;
-      }
-    if (form.newPassword.value.length<2||form.newPassword.value != form.newPasswordConfirmation.value) { 
-        createNotive(jsonSettings.passwordErrorMatch,4000);
-        return false;
+function validatePasswordChange(formData, jqForm, options)
+{
+  var form = jqForm[0]; 
+  if(form.newPassword.value.length < 2)
+    {
+    createNotice(jsonSettings.passwordErrorShort, 4000);
+    return false;
+    }
+  if(form.newPassword.value.length < 2 || form.newPassword.value != form.newPasswordConfirmation.value)
+    { 
+    createNotice(jsonSettings.passwordErrorMatch, 4000);
+    return false;
     } 
 }
 
-function validatePictureChange(formData, jqForm, options) { 
- 
-    var form = jqForm[0]; 
-
+function validatePictureChange(formData, jqForm, options)
+{  
+  var form = jqForm[0]; 
 }
 
-function validateAccountChange(formData, jqForm, options) { 
- 
-    var form = jqForm[0]; 
-    if (form.firstname.value.length<1)
-      {
-        createNotive(jsonSettings.accountErrorFirstname,4000);
-        return false;
-      }
-    if (form.lastname.value.length<1)
-      {
-        createNotive(jsonSettings.accountErrorLastname,4000);
-        return false;
-      }
+function validateAccountChange(formData, jqForm, options)
+{  
+  var form = jqForm[0]; 
+  if(form.firstname.value.length < 1)
+    {
+    createNotice(jsonSettings.accountErrorFirstname, 4000);
+    return false;
+    }
+  if(form.lastname.value.length < 1)
+    {
+    createNotice(jsonSettings.accountErrorLastname, 4000);
+    return false;
+    }
 }
 
-function successPasswordChange(responseText, statusText, xhr, $form) 
+function successPasswordChange(responseText, statusText, xhr, form) 
 {
   jsonResponse = jQuery.parseJSON(responseText);
-  if(jsonResponse==null)
+  if(jsonResponse == null)
     {
-      createNotive('Error',4000);
-      return;
+    createNotice('Error', 4000);
+    return;
     }
   if(jsonResponse[0])
     {
-      createNotive(jsonResponse[1],4000);
+    createNotice(jsonResponse[1], 4000);
     }
   else
     {
-      $('#modifyPassword input[type=password]').val(''); 
-      createNotive(jsonResponse[1],4000);
+    $('#modifyPassword input[type=password]').val(''); 
+    createNotice(jsonResponse[1], 4000);
     }
 }
 
-function successAccountChange(responseText, statusText, xhr, $form) 
+function successAccountChange(responseText, statusText, xhr, form) 
 {
   jsonResponse = jQuery.parseJSON(responseText);
-  if(jsonResponse==null)
+  if(jsonResponse == null)
     {
-      createNotive('Error',4000);
-      return;
+    createNotice('Error', 4000);
+    return;
     }
   if(jsonResponse[0])
     {
-      $('a#topUserName').html($('#modifyAccount input[name=firstname]').val()+' '+$('#modifyAccount input[name=lastname]').val()+' <img class="arrowUser" src="'+json.global.coreWebroot+'/public/images/icons/arrow-user.gif" alt ="" />');
-      createNotive(jsonResponse[1],4000);
+    createNotice(jsonResponse[1], 4000);
     }
   else
     {
-      createNotive(jsonResponse[1],4000);
+    createNotice(jsonResponse[1], 4000);
     }
 }
 
-function successPictureChange(responseText, statusText, xhr, $form) 
+function successPictureChange(responseText, statusText, xhr, form) 
 {
   jsonResponse = jQuery.parseJSON(responseText);
-  if(jsonResponse==null)
+  if(jsonResponse == null)
     {
-      createNotive('Error',4000);
-      return;
+    createNotice('Error', 4000);
+    return;
     }
   if(jsonResponse[0])
     {
-       $('img#userTopThumbnail').attr('src', jsonResponse[2]);
-       createNotive(jsonResponse[1],4000);
+    $('img#userTopThumbnail').attr('src', jsonResponse[2]);
+    createNotice(jsonResponse[1], 4000);
     }
   else
     {
-      createNotive(jsonResponse[1],4000);
+    createNotice(jsonResponse[1], 4000);
     }
 }

@@ -245,31 +245,31 @@ class FeedModel extends FeedModelBase
     } // end addCommunity
 
   /** Delete Dao
-   * @param FeedDao $feeDao
+   * @param FeedDao $feedDao
    */
-  function delete($feeDao)
+  function delete($feedDao)
     {
     $this->ModelLoader = new MIDAS_ModelLoader();
-    $feedpolicygroups = $feeDao->getFeedpolicygroup();
+    $feedpolicygroups = $feedDao->getFeedpolicygroup();
     $feedpolicygroupModel = $this->ModelLoader->loadModel('Feedpolicygroup');
     foreach($feedpolicygroups as $f)
       {
       $feedpolicygroupModel->delete($f);
       }
 
-    $feedpolicyuser = $feeDao->getFeedpolicyuser();
+    $feedpolicyuser = $feedDao->getFeedpolicyuser();
     $feedpolicyuserModel = $this->ModelLoader->loadModel('Feedpolicyuser');
     foreach($feedpolicyuser as $f)
       {
       $feedpolicyuserModel->delete($f);
       }
 
-    $communities = $feeDao->getCommunities();
+    $communities = $feedDao->getCommunities();
     foreach($communities as $c)
       {
-      $this->database->removeLink('communities', $feeDao, $c);
+      $this->database->removeLink('communities', $feedDao, $c);
       }
-    return parent::delete($feeDao);
+    return parent::delete($feedDao);
     } // end delete
 
 } // end class

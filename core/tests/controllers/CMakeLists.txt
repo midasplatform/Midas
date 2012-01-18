@@ -1,4 +1,5 @@
 add_midas_test( AssetstoreController AssetstoreControllerTest.php )
+add_midas_test( AdminController AdminControllerTest.php )
 add_midas_test( BrowseController BrowseControllerTest.php )
 add_midas_test( FeedController FeedControllerTest.php )
 add_midas_test( ItemController ItemControllerTest.php )

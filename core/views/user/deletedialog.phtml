@@ -1,0 +1,57 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/user/user.deletedialog.js?'.time().'"></script>';
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+?>
+<link href="<?php echo $this->coreWebroot?>/public/css/user/user.deletedialog.css" rel="stylesheet" type="text/css" />
+
+<span id="deleteDialogCaution">CAUTION:</span>
+<?php
+if($this->deleteSelf)
+  { ?>
+  Are you sure you want to delete your user account?
+<?php
+  }
+else
+  { ?>
+  Are you sure you want to delete the user
+<span id="deleteDialogUserName"><?php echo $this->user->getFirstname().' '.$this->user->getLastname(); ?></span>?
+<?php
+  } ?>
+<br /><br />
+<?php
+if($this->deleteSelf)
+  { ?>
+  Your entire folder tree and all data within it will be deleted as well. This action cannot be undone.
+<?php
+  }
+else
+  { ?>
+  The user's entire folder tree and all data within it will be deleted as well.  This action cannot be undone.
+<?php
+  } ?>
+<div>
+  <br />
+  <form id="deleteDialogForm" class="genericForm" method="POST" action="<?php echo $this->webroot?>/user/delete">
+    <input type='hidden' name="userId" value="<?php echo $this->user->getKey(); ?>" />
+    <input type="checkbox" id="deleteDialogAgreeCheckbox">I understand the implications and wish to proceed.</input>
+    <br /><br />
+    <div style="float: right;">
+      <input class="genericButton" disabled="disabled" type='submit' name='submitButton' id='deleteDialogDeleteButton'
+             value='<?php echo $this->t('Delete')?>' />
+      <input class="genericButton" style="margin-left: 15px;" type='button' name='deleteDialogCancelButton' id='deleteDialogCancelButton'
+             value='<?php echo $this->t('Cancel')?>' />
+    </div>
+  </form>
+  <img id="deleteDialogLoadingGif" style="display: none; float: left" alt="" src="<?php echo  $this->coreWebroot?>/public/images/icons/loading.gif" />
+</div>
