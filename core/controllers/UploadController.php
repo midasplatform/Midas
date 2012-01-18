@@ -417,6 +417,22 @@ class UploadController extends AppController
         $changes = $this->_getParam('changes');
         $itemId = $itemId_itemRevisionNumber[0];
         $itemRevisionNumber = $itemId_itemRevisionNumber[1];
+
+        $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD_REVISION',
+                                                                array('filename' => $filename,
+                                                                      'size' => $file_size,
+                                                                      'path' => $path,
+                                                                      'itemId' => $itemId,
+                                                                      'changes' => $changes,
+                                                                      'revisionNumber' => $itemRevisionNumber));
+        foreach($validations as $validation)
+          {
+          if(!$validation['status'])
+            {
+            unlink($path);
+            throw new Zend_Exception($validation['message']);
+            }
+          }
         $this->Component->Upload->createNewRevision($this->userSession->Dao, $filename, $path, $changes, $itemId, $itemRevisionNumber, $license);
         }
       else
