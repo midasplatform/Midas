@@ -74,7 +74,7 @@ class HttpuploadComponent extends AppComponent
 
     if(!file_exists($dir))
       {
-      if(!mkdir($dir, 0700, true))
+      if(!is_writable($dir) || !mkdir($dir, 0700, true))
         {
         throw new Exception('Failed to create temporary upload dir', MIDAS_HTTPUPLOAD_TMP_DIR_CREATION_FAILED);
         }
