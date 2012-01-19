@@ -37,6 +37,7 @@ class FeedController extends AppController
   public function indexAction()
     {
     $this->view->feeds = $this->Feed->getGlobalFeeds($this->userSession->Dao);
+    $this->view->loggedUser = $this->userSession->Dao;
     $this->view->itemThumbnails = $this->Item->getRandomThumbnails($this->userSession->Dao, 0, 12, true);
     $this->view->nUsers = $this->User->getCountAll();
     $this->view->nCommunities = $this->Community->getCountAll();
