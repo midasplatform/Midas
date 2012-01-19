@@ -46,7 +46,15 @@ PURPOSE.  See the above copyright notices for more information.
           echo "{$view->t("added the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
           break;
         case MIDAS_FEED_COMMUNITY_INVITATION:
-          echo "{$view->t("invited you to the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getCommunity()->getKey()}'>".$view->slicename($feed->getRessource()->getCommunity()->getName(),30)."</a>";
+          if($view->loggedUser && $view->loggedUser->getKey() == $feed->getRessource()->getUser()->getKey())
+            {
+            echo $view->t('invited you to the community');
+            }
+          else
+            {
+            echo $view->t('invited').' '.$view->linkuser($feed->getRessource()->getUser()).' '.$view->t('to the community');
+            }
+          echo  " <a href='{$view->webroot}/community/{$feed->getRessource()->getCommunity()->getKey()}'>".$view->slicename($feed->getRessource()->getCommunity()->getName(),30)."</a>";
           break;
         case MIDAS_FEED_UPDATE_COMMUNITY:
         case MIDAS_FEED_CREATE_FOLDER:
