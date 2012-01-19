@@ -113,6 +113,9 @@ function createNewFolder(id)
   {
   loadDialog('folderId'+id,'/folder/createfolder?folderId='+id);
   showDialog(json.browse.createFolder,false);
+  $('#createFolderForm input[name=name]').val('');
+  $('#createFolderForm textarea[name=description]').val('');
+  $('#createFolderForm input[name=teaser]').val('');
   }
 
 function removeNodeFromTree(node, recursive)
