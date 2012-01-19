@@ -33,6 +33,7 @@ class Api_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_CORE_GET_CONFIG_TABS', 'getConfigTabs');
     $this->addCallBack('CALLBACK_CORE_PASSWORD_CHANGED', 'setDefaultWebApiKey');
     $this->addCallBack('CALLBACK_CORE_NEW_USER_ADDED', 'setDefaultWebApiKey');
+    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
 
     $this->enableWebAPI('api');
     }//end init
@@ -55,6 +56,26 @@ class Api_Notification extends ApiEnabled_Notification
     $this->ModelLoader = new MIDAS_ModelLoader();
     $userApiModel = $this->ModelLoader->loadModel('Userapi', 'api');
     $userApiModel->createDefaultApiKey($params['userDao']);
+    }
+
+  /**
+   * If a user is deleted, we should delete their api keys
+   * @param userDao the user dao that is about to be deleted
+   */
+  public function handleUserDeleted($params)
+    {
+    if(!isset($params['userDao']))
+      {
+      throw new Zend_Exception('Error: userDao parameter required');
+      }
+    $modelLoader = new MIDAS_ModelLoader();
+    $userApiModel = $modelLoader->loadModel('Userapi', 'api');
+    $apiKeys = $userApiModel->getByUser($params['userDao']);
+
+    foreach($apiKeys as $apiKey)
+      {
+      $userApiModel->delete($apiKey);
+      }
     }
   } //end class
 ?>
