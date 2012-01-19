@@ -748,22 +748,22 @@ class UserController extends AppController
   public function manageAction()
     {
     $this->view->Date = $this->Component->Date;
-    $user_id = $this->_getParam("user_id");
+    $userId = $this->_getParam('userId');
 
-    if(!isset($user_id) && !$this->logged)
+    if(!isset($userId) && !$this->logged)
       {
       $this->view->header = $this->t(MIDAS_LOGIN_REQUIRED);
       $this->_helper->viewRenderer->setNoRender();
       return false;
       }
-    elseif(!isset($user_id))
+    elseif(!isset($userId))
       {
       $userDao = $this->userSession->Dao;
       $this->view->activemenu = 'user'; // set the active menu
       }
     else
       {
-      $userDao = $this->User->load($user_id);
+      $userDao = $this->User->load($userId);
       if(!$this->userSession->Dao->isAdmin())
         {
         throw new Zend_Exception("Permission error");
@@ -796,10 +796,10 @@ class UserController extends AppController
 
     $this->view->user = $userDao;
     $this->view->mainFolder = $userDao->getFolder();
-    $this->view->folders = $this->Folder->getChildrenFoldersFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $this->view->folders = $this->Folder->getChildrenFoldersFiltered($this->view->mainFolder, $userDao, MIDAS_POLICY_READ);
     $this->view->privateFolderId = $userDao->getPrivatefolderId();
     $this->view->publicFolderId = $userDao->getPublicfolderId();
-    $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $userDao, MIDAS_POLICY_READ);
     $this->view->userCommunities = $communities;
     $this->view->userCommunityFolders = $communityFolders;
     }
