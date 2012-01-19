@@ -47,6 +47,7 @@ abstract class Scheduler_JobModelBase extends Scheduler_AppModel
   public abstract function getJobsByTask($task);
   public abstract function getJobsToRun();
   public abstract function getFutureScheduledJobs();
+  public abstract function removeUserReferences($userId);
 
   /** get server load*/
   protected function getServerLoad()
@@ -80,4 +81,5 @@ abstract class Scheduler_JobModelBase extends Scheduler_AppModel
     return array();
   }
 } // end class JobModelBase
+
 ?>

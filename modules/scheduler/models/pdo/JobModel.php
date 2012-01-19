@@ -150,5 +150,14 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
     return $return;
     }
 
+  /**
+   * Removes all references to the given userId in the job table by replacing
+   * creator_id with NULL.
+   */
+  public function removeUserReferences($userId)
+    {
+    $this->database->update(array('creator_id' => null), array('creator_id = ?' => $userId));
+    }
+
 }  // end class
 ?>
