@@ -111,4 +111,3 @@ midas.registerCallback('CALLBACK_CORE_UPLOAD_FOLDER_CHANGED', 'sizequota', midas
 midas.registerCallback('CALLBACK_CORE_SIMPLEUPLOAD_LOADED', 'sizequota', midas.sizequota.onPageLoad);
 midas.registerCallback('CALLBACK_CORE_JAVAUPLOAD_LOADED', 'sizequota', midas.sizequota.onPageLoad);
 midas.registerCallback('CALLBACK_CORE_REVISIONUPLOAD_LOADED', 'sizequota', midas.sizequota.updateFreeSpaceMessage);
-

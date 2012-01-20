@@ -98,8 +98,8 @@ $(document).ready(function() {
       $('div.genericCommunities').hide();
       $('div.genericStats').hide();
       $('div.viewInfo').show();
-      $('div.viewAction').show()
-      genericCallbackSelect(node);  
+      $('div.viewAction').show();
+      midas.genericCallbackSelect(node);
     }
 
     function callbackDblClick(node)
@@ -108,7 +108,7 @@ $(document).ready(function() {
     
     function callbackCheckboxes(node)
     {
-      genericCallbackCheckboxes(node);
+      midas.genericCallbackCheckboxes(node);
     }
     
     function callbackCreateElement(node)

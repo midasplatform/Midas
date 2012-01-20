@@ -1,10 +1,10 @@
-
+var midas = midas || {};
 var disableElementSize=true;
 
 $(document).ready(function() {
     
     //init tree
-    $('img.tabsLoading').hide()
+    $('img.tabsLoading').hide();
     
     $('div.sideElementFirst').show();
     $('div.viewAction').hide();
@@ -43,7 +43,7 @@ $(document).ready(function() {
         $('div.viewAction').show();
         }
       
-      genericCallbackSelect(node);  
+      midas.genericCallbackSelect(node);  
     }
 
     function callbackDblClick(node)
@@ -52,7 +52,7 @@ $(document).ready(function() {
     
     function callbackCheckboxes(node)
     {
-      genericCallbackCheckboxes(node);
+      midas.genericCallbackCheckboxes(node);
     }
     
     function callbackCreateElement(node)
