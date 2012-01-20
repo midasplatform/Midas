@@ -406,16 +406,16 @@ function performRayCast()
   var intersects = ray.intersectScene( scene );
   if(intersects.length > 0)
     {
-    previouslySelectedObject = selectedObject;
-    selectedObject = intersects[0];
-    /*for( i = 0; i < intersects.length; i++ )
+    for( i = 0; i < intersects.length; i++ )
       {
-      if(intersectsObjectState == null || distance > intersects[i].distance)
+      var object = intersects[0];
+      if(object.object.material.opacity>0)
         {
-        intersectsObjectState = intersects[i];
-        distance = intersectsObjectState.distance;
+        previouslySelectedObject = selectedObject;
+        selectedObject = intersects[0];
+        break;
         }
-      }*/
+      }
     }
 }
 
