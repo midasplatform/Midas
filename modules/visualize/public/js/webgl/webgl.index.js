@@ -134,8 +134,6 @@ function init()
       i++;
 
       resetCameraPosition(objects3D);
-      //zoomIn();
-      //zoomIn();
     };
 
     files.push([jsonData.webroot+"/download/?bitstream="+value.bitstream.bitstream_id, callback]);
@@ -156,39 +154,12 @@ function onWindowResize()
   return [width, height];
   }
 
-
 function render()
   {
   defaultInitRenderer();
-
-  if(selectedObject3D != undefined && selectedObject3D != null)
-    {
-    selectedObject3D.materials[ 1 ].opacity = $('#opacitySelected').val()/100;
-    }
-
-  if ( intersectsObjectState != null  )
-    {
-    $('#helpDialog2').html(intersectsObjectState.object.name);
-    $('#helpDialog2').dialog('open');
-    }
-  else
-    {
-    $('#helpDialog2').dialog('close');
-    }
   defaultEndRenderer();
 	};
 
 function onDocumentMouseDown( event )
   {
-	if ( intersectsObjectState != null )
-    {
-    meshLiver.materials[1].color.setHex(meshLiver.colorDefault);
-    meshStomach.materials[1].color.setHex(meshStomach.colorDefault);
-    meshVenacava.materials[1].color.setHex(meshVenacava.colorDefault);
-    $('#selectedObject').show();
-    intersectsObjectState.object.materials[ 1 ].color.setHex( 0xff0000 );
-    selectedObject3D = intersectsObjectState.object;
-    $('#selectedName').html(intersectsObjectState.object.name);
-    $('#opacitySelected').val(intersectsObjectState.object.materials[ 1 ].opacity*100)
-    }
 	}
