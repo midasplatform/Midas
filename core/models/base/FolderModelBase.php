@@ -67,6 +67,7 @@ abstract class FolderModelBase extends AppModel
   abstract function getRoot($folder);
   abstract function getAll();
   abstract function isDeleteable($folder);
+  abstract function getSize($folder);
 
   /** Increment the view count */
   function incrementViewCount($folder)

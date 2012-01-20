@@ -66,9 +66,10 @@ class GroupModel  extends GroupModelBase
     $this->database->link('users', $group, $user);
     } // end function addItem
 
-  /** Remove an user from a group
-   * @return void
-   *  */
+  /**
+   * Remove an user from a group. If you remove them from the "members" group for
+   * a community, it removes them from all of that community's groups as well.
+   */
   function removeUser($group, $user)
     {
     if(!$group instanceof GroupDao)

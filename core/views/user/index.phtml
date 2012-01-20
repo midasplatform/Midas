@@ -33,11 +33,11 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.j
   if($this->order == 'lastname')
     {
     echo "<a href='{$this->webroot}/user?order=lastname'>{$this->t('All')}</a> ";
-    for ($i=ord("A");$i<ord("Z");$i++)
+    for ($i = ord('A'); $i <= ord('Z'); $i++)
       {
       if($this->offset === chr($i))
         {
-        echo chr($i)." ";
+        echo chr($i).' ';
         }
       else
         {

@@ -1,5 +1,8 @@
+var midas = midas || {};
+midas.user = midas.user || {};
+
   $(document).ready(function() {
-    
+
     $( "#tabsGeneric" ).tabs({
       select: function(event, ui) {
         $('div.genericAction').show();
@@ -13,7 +16,7 @@
       });
     $("#tabsGeneric").show();
     $('img.tabsLoading').hide();
-    
+
     $("#browseTable").treeTable({
       onFirstInit: midas.enableRangeSelect,
       onNodeShow: midas.enableRangeSelect,
@@ -25,8 +28,8 @@
     $("img.tableLoading").hide();
     $("table#browseTable").show();
   });
-  
-  
+
+
     //dependance: common/browser.js
     var ajaxSelectRequest='';
     function callbackSelect(node)
@@ -46,9 +49,16 @@
     {
       midas.genericCallbackDblClick(node);
     }
-    
+
     function callbackCheckboxes(node)
     {
       midas.genericCallbackCheckboxes(node);
     }
-    
+
+/**
+ * Will render the delete user dialog for the specified user
+ */
+midas.user.showDeleteDialog = function(userId) {
+    loadDialog('userId'+userId, '/user/deletedialog?userId='+userId);
+    showDialog('Delete User', false);
+};

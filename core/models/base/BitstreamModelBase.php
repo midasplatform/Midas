@@ -59,13 +59,14 @@ abstract class BitstreamModelBase extends AppModel
     {
     if(!$bitstream instanceof BitstreamDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception('Must pass a bitstream dao');
       }
     $checksum = $bitstream->getChecksum();
     $path = $bitstream->getFullPath();
     $assetstore = $bitstream->getAssetstore();
     parent::delete($bitstream);
-    if($assetstore->getType() != MIDAS_ASSETSTORE_REMOTE && $this->getByChecksum($checksum) == false)
+    if(file_exists($path) && $assetstore->getType() != MIDAS_ASSETSTORE_REMOTE
+       && $this->getByChecksum($checksum) == false)
       {
       unlink($path);
       }

@@ -65,14 +65,13 @@
 	<itemrevision itemrevision_id="3" item_id="1" revision="2"
 		date="2011-01-27 12:09:02" user_id='1' changes="Description 1" />
 	<itempolicygroup item_id="1" group_id="0" policy='0'  />
-	<item2folder  item_id="1" folder_id='1001' />
+	<item2folder item_id="1" folder_id='1001' />
 	<item item_id="2" name="name 2" description="Description 2" type="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72751' />
 	<itemrevision itemrevision_id="2" item_id="2" revision="1"
 		date="2011-01-27 12:09:02" user_id='1' changes="Description 1" />
 	<itempolicyuser item_id="2" user_id="1" policy='2' />
 	<item2folder item_id="2" folder_id='1001' />
 	<item item_id="3" name="name 3" description="Description 3" type="3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72752' />
-
 	<bitstream bitstream_id="1" itemrevision_id="3" name="foo.png" mimetype="image/png" sizebytes="64" checksum="f283bc88b24491ba85c65ba960642753"
 		path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="1" date="2011-01-27 12:09:02" />
 
@@ -113,4 +112,8 @@
 	<!-- MIDAS_FEED_CREATE_REVISION -->
 	<feed feed_id="10" date="2011-01-27 12:09:02" user_id='1' type="40"
 		ressource="1" />
+
+  <setting setting_id="1000" name="dummy" module="" value="dummy" />
+  <setting setting_id="1" name="adminuser" module="core" value="3" />
+
 </dataset>

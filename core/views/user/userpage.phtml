@@ -69,6 +69,13 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <li><a href="#tabs-5"><?php echo $this->t('Shared to me');?></a></li>
     <?php
       }
+    foreach($this->moduleTabs as $module)
+      {
+      foreach($module as $name => $url)
+        {
+        echo "<li><a href='{$url}'>{$name}</a></li>";
+        }
+      }
       ?>
   </ul>
   <div id="tabs-1">
@@ -165,7 +172,19 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <ul>
       <li class="myAccountLink" userid="'.$this->user->getKey().'"><a><img alt="" src="'.$this->coreWebroot.'/public/images/icons/user.png"/> '.$this->t('Manage Profile').'</a></li>
       <li><a href="'.$this->webroot.'/user/manage/?userId='.$this->user->getKey().'"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/data.png"/> '.$this->t('Manage Files').'</a></li>
-      <li><a onclick="createNewFolder('.$this->mainFolder->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/folder_add.png"/> '.$this->t('Create a top level Folder').'</a></li>
+      <li><a onclick="createNewFolder('.$this->mainFolder->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/folder_add.png"/> '.$this->t('Create a top level Folder').'</a></li>';
+      
+    if($this->isAdmin && !$this->user->isAdmin())
+      {
+      echo '
+      <li><a onclick="midas.user.showDeleteDialog('.$this->user->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/> '.$this->t('Delete User').'</a></li>';
+      }
+    else if(!$this->user->isAdmin() && $this->user->getKey() == $this->currentUser->getKey())
+      {
+      echo '
+      <li><a onclick="midas.user.showDeleteDialog('.$this->user->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/> '.$this->t('Delete My Account').'</a></li>';
+      }
+    echo '
     </ul>
   </div>';
     }
@@ -178,9 +197,25 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <ul>";
 
     foreach($this->userCommunities as $community)
-        {
-        echo "<li><a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></li>";
-        }
+      {
+      echo "<li><a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></li>";
+      }
+   echo "
+     </ul>
+     </div>";
+    }
+
+  if(!empty($this->communityInvitations))
+    {
+    echo "
+    <div class='sideElement genericCommunities'>
+    <h1>{$this->t('Community Invitations')}</h1>
+    <ul>";
+
+    foreach($this->communityInvitations as $community)
+      {
+      echo "<li><a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a></li>";
+      }
    echo "
      </ul>
      </div>";

@@ -8,6 +8,5 @@ jar cvfm ../dist/MidasUploader.jar ../src/manifest com
 cd ..
 cd dist
 jarsigner -keystore ../kitware!.keystore MidasUploader.jar mycert
-REM del "E:\kitware\Midas\midas\tmp\logs\*.log"
-REM del "E:\kitware\MidasData\temp\*.tmp"
+
 cd ..

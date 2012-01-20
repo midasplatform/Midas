@@ -94,10 +94,54 @@ class UploadController extends AppController
         $this->view->defaultUploadLocationText = $parent->getName();
         }
       }
-
+    else
+      {
+      $parent = $this->Folder->load($this->userSession->Dao->getPrivatefolderId());
+      }
+    $this->view->extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', array('folder' => $parent));
     }//end simple upload
 
-  /**  upload new revision */
+  /** Render the large file upload view */
+  public function javauploadAction()
+    {
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('You have to be logged in to do that');
+      }
+    $this->requireAjaxRequest();
+    $this->_helper->layout->disableLayout();
+    $this->view->protocol = 'http';
+    $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+    $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
+    $this->view->defaultUploadLocation = $this->userSession->Dao->getPrivatefolderId();
+    $this->view->defaultUploadLocationText = $this->t('My Private Folder');
+
+    $parent = $this->_getParam('parent');
+    $license = $this->_getParam('license');
+    if(!empty($parent) && !empty($license))
+      {
+      $this->disableView();
+      $this->userSession->JavaUpload->parent = $parent;
+      $this->userSession->JavaUpload->license = $license;
+      }
+    if(isset($parent))
+      {
+      $folder = $this->Folder->load($parent);
+      if($this->logged && $folder != false)
+        {
+        $this->view->defaultUploadLocation = $folder->getKey();
+        $this->view->defaultUploadLocationText = $folder->getName();
+        }
+      }
+    else
+      {
+      $folder = $this->Folder->load($this->userSession->Dao->getPrivatefolderId());
+      }
+    $this->view->extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_JAVAUPLOAD_EXTRA_HTML',
+                                                                      array('folder' => $folder));
+    }//end java upload
+
+  /** upload new revision */
   public function revisionAction()
     {
     if(!$this->logged)
@@ -123,6 +167,8 @@ class UploadController extends AppController
     $this->view->item = $item;
     $itemRevision = $this->Item->getLastRevision($item);
     $this->view->lastrevision = $itemRevision;
+    $this->view->extraHtml = Zend_Registry::get('notifier')->callback(
+      'CALLBACK_CORE_GET_REVISIONUPLOAD_EXTRA_HTML', array('item' => $item));
     }//end revisionAction
 
 
@@ -151,30 +197,6 @@ class UploadController extends AppController
       $this->userSession->uploaded[] = $item->getKey();
       }
     }//end simple upload
-
-  /** java upload*/
-  public function javauploadAction()
-    {
-    if(!$this->logged)
-      {
-      throw new Zend_Exception('You have to be logged in to do that');
-      }
-    $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
-    $this->view->protocol = 'http';
-    $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
-    $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
-
-    $parent = $this->_getParam('parent');
-    $license = $this->_getParam('license');
-    if(!empty($parent) && !empty($license))
-      {
-      $this->disableView();
-      $this->userSession->JavaUpload->parent = $parent;
-      $this->userSession->JavaUpload->license = $license;
-      }
-    }//end java upload
-
 
   /**
    * Used to see how much of a file made it to the server during an interrupted upload attempt
@@ -278,10 +300,26 @@ class UploadController extends AppController
       throw new Zend_Exception('You are attempting to upload into the incorrect parent folder');
       }
 
+    $testingMode = Zend_Registry::get('configGlobal')->environment == 'testing';
     $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
-    $this->Component->Httpupload->setTestingMode(Zend_Registry::get('configGlobal')->environment == 'testing');
+    $this->Component->Httpupload->setTestingMode($testingMode);
     $this->Component->Httpupload->setTokenParamName('uploadUniqueIdentifier');
     $data = $this->Component->Httpupload->process($params);
+
+    $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD',
+                                                            array('filename' => $data['filename'],
+                                                                  'size' => $data['size'],
+                                                                  'path' => $data['path'],
+                                                                  'folderId' => $parentId));
+    foreach($validations as $validation)
+      {
+      if(!$validation['status'])
+        {
+        unlink($data['path']);
+        echo '[ERROR]'.$validation['message'];
+        throw new Zend_Exception($validation['message']);
+        }
+      }
 
     if(!empty($data['path']) && file_exists($data['path']) && $data['size'] > 0)
       {
@@ -305,9 +343,17 @@ class UploadController extends AppController
       try
         {
         $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $data['filename'], $data['path'], $parent, $license, $data['md5']);
+        if(!$testingMode)
+          {
+          unlink($data['path']);
+          }
         }
       catch(Exception $e)
         {
+        if(!$testingMode)
+          {
+          unlink($data['path']);
+          }
         echo "[ERROR] ".$e->getMessage();
         throw $e;
         }
@@ -371,6 +417,22 @@ class UploadController extends AppController
         $changes = $this->_getParam('changes');
         $itemId = $itemId_itemRevisionNumber[0];
         $itemRevisionNumber = $itemId_itemRevisionNumber[1];
+
+        $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD_REVISION',
+                                                                array('filename' => $filename,
+                                                                      'size' => $file_size,
+                                                                      'path' => $path,
+                                                                      'itemId' => $itemId,
+                                                                      'changes' => $changes,
+                                                                      'revisionNumber' => $itemRevisionNumber));
+        foreach($validations as $validation)
+          {
+          if(!$validation['status'])
+            {
+            unlink($path);
+            throw new Zend_Exception($validation['message']);
+            }
+          }
         $this->Component->Upload->createNewRevision($this->userSession->Dao, $filename, $path, $changes, $itemId, $itemRevisionNumber, $license);
         }
       else
@@ -408,14 +470,31 @@ class UploadController extends AppController
             }
           $parent = $parentDao->getKey();
           }
+        $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD',
+                                                                array('filename' => $filename,
+                                                                      'size' => $file_size,
+                                                                      'path' => $path,
+                                                                      'folderId' => $parent));
+        foreach($validations as $validation)
+          {
+          if(!$validation['status'])
+            {
+            unlink($path);
+            throw new Zend_Exception($validation['message']);
+            }
+          }
         $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename, $path, $parent, $license);
+        if(!$this->isTestingEnv())
+          {
+          unlink($path);
+          }
         $this->userSession->uploaded[] = $item->getKey();
         }
 
       $info = array();
       $info['name'] = basename($path);
       $info['size'] = $file_size;
-      echo json_encode($info);
+      echo JsonComponent::encode($info);
       }
     }//end saveuploaded
 

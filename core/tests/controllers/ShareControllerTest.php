@@ -234,4 +234,71 @@ class ShareControllerTest extends ControllerTestCase
     $this->assertTrue($this->Folder->policyCheck($subfolder, $user2, MIDAS_POLICY_READ));
     $this->assertTrue($this->Item->policyCheck($item, $user2, MIDAS_POLICY_READ));
     }
+
+  /** Test that creating a folder or item gives admin access to the creator */
+  public function testPoliciesOnCreation()
+    {
+    $usersFile = $this->loadData('User', 'policies');
+    $user1 = $this->User->load($usersFile[0]->getKey());
+    $user2 = $this->User->load($usersFile[1]->getKey());
+
+    // user 2 should not have read privileges yet
+    $folder = $this->Folder->load(1007);
+    $this->assertFalse($this->Folder->policyCheck($folder, $user2, MIDAS_POLICY_READ));
+
+    // now create a new privilege entry for user2
+    $this->resetAll();
+    $this->request->setMethod('POST');
+    $url = '/share/dialog?type=folder&element=1007&createPolicy&newPolicyType=user';
+    $url .= '&newPolicyId='.$user2->getKey();
+    $this->dispatchUrI($url, $user1);
+
+    // user 2 should now have read privileges, but not any higher
+    $folder = $this->Folder->load(1007);
+    $this->assertTrue($this->Folder->policyCheck($folder, $user2, MIDAS_POLICY_READ));
+    $this->assertFalse($this->Folder->policyCheck($folder, $user2, MIDAS_POLICY_WRITE));
+
+    // now change permissions for user 2 to add edit privileges
+    $this->resetAll();
+    $this->request->setMethod('POST');
+    $url = '/share/dialog?type=folder&element=1007&changePolicy&changeType=user';
+    $url .= '&changeId='.$user2->getKey().'&changeVal='.MIDAS_POLICY_WRITE;
+    $this->dispatchUrI($url, $user1);
+
+    // user 2 should now have write privileges, but not any higher
+    $folder = $this->Folder->load(1007);
+    $this->assertTrue($this->Folder->policyCheck($folder, $user2, MIDAS_POLICY_WRITE));
+    $this->assertFalse($this->Folder->policyCheck($folder, $user2, MIDAS_POLICY_ADMIN));
+
+    // Create a folder inside the parent where we have write access
+    $this->resetAll();
+    $this->request->setMethod('POST');
+    $this->dispatchUrI('/folder/createfolder?folderId=1007&createFolder&name=HelloWorld', $user2);
+    $resp = json_decode($this->getBody());
+    $this->assertTrue($resp[0] != false);
+    $this->assertNotEmpty($resp[2]);
+    $this->assertNotEmpty($resp[3]);
+    $this->assertEquals($resp[2]->folder_id, '1007');
+    $this->assertEquals($resp[3]->parent_id, '1007');
+
+    // The user should have admin access to the child, but not the parent
+    $parentFolder = $this->Folder->load($resp[2]->folder_id);
+    $childFolder = $this->Folder->load($resp[3]->folder_id);
+    $this->assertTrue($this->Folder->policyCheck($childFolder, $user2, MIDAS_POLICY_ADMIN));
+    $this->assertFalse($this->Folder->policyCheck($parentFolder, $user2, MIDAS_POLICY_ADMIN));
+
+    // Create an item inside the parent where we have write access
+    $this->resetAll();
+    $this->params = array();
+    $this->params['parent'] = '1007';
+    $this->params['license'] = 0;
+    $this->params['testpath'] = BASE_PATH.'/tests/testfiles/search.png'; //testing mode param
+    $this->dispatchUrI('/upload/saveuploaded', $user2);
+    $search = $this->Item->getItemsFromSearch('search.png', $user2);
+    $this->assertNotEmpty($search, 'Unable to find uploaded item');
+
+    // The user should have admin access to the item
+    $item = $this->Item->load($search[0]->item_id);
+    $this->assertTrue($this->Item->policyCheck($item, $user2, MIDAS_POLICY_ADMIN));
+    }
   }

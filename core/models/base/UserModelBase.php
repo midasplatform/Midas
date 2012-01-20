@@ -54,7 +54,10 @@ abstract class UserModelBase extends AppModel
       'groups' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Group', 'table' => 'user2group', 'parent_column' => 'user_id', 'child_column' => 'group_id'),
       'invitations' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'CommunityInvitation', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
       'folderpolicyuser' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Folderpolicyuser', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
+      'itempolicyuser' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Itempolicyuser', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
       'feeds' => array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Feed', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
+      'feedpolicyuser' => array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Feedpolicyuser', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
+      'itemrevisions' => array('type' => MIDAS_ONE_TO_MANY, 'model' => 'ItemRevision', 'parent_column' => 'user_id', 'child_column' => 'user_id')
       );
     $this->initialize(); // required
     } // end __construct()
@@ -67,7 +70,7 @@ abstract class UserModelBase extends AppModel
   /** Returns a user given its folder (either public,private or base folder) */
   abstract function getByFolder($folder);
   /** Returns all the users */
-  abstract function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null);
+  abstract function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null, $currentUser = null);
 
   /** save */
   public function save($dao)
@@ -79,20 +82,88 @@ abstract class UserModelBase extends AppModel
     parent::save($dao);
     }
 
-  /** delete*/
-  public function delete($dao)
+  /**
+   * Deletes a user and all record of their existence, including:
+   * -Community invitations
+   * -Policies (folder, item, and feed)
+   * -User's folder tree
+   * -Group memberships
+   * -Itemrevision upload records (replace with superadmin)
+   * -Feeds
+   * Issues the CALLBACK_CORE_USER_DELETED signal that modules can use to handle user deletion events,
+   * passing the argument 'userDao'. Signal is emitted before any core data is deleted.
+   */
+  public function delete($user)
     {
-    //TODO
-    $modelLoad = new MIDAS_ModelLoader();
-    $ciModel = $modelLoad->loadModel('CommunityInvitation');
-    $invitations = $dao->getInvitations();
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_USER_DELETED', array('userDao' => $user));
+    $modelLoader = new MIDAS_ModelLoader();
+
+    // Delete any community invitations for this user
+    $ciModel = $modelLoader->loadModel('CommunityInvitation');
+    $invitations = $user->getInvitations();
     foreach($invitations as $invitation)
       {
       $ciModel->delete($invitation);
       }
 
-    parent::delete($dao);
-    }// delete
+    // Delete this user's folder tree recursively
+    $folderModel = $modelLoader->loadModel('Folder');
+    $folderModel->delete($user->getFolder(), true);
+
+    // Delete remaining folder policies for the user
+    $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicyuser');
+    $folderpolicies = $user->getFolderpolicyuser();
+    foreach($folderpolicies as $folderpolicy)
+      {
+      $folderpolicyuserModel->delete($folderpolicy);
+      }
+
+    // Delete remaining item policies for the user
+    $itempolicyuserModel = $modelLoader->loadModel('Itempolicyuser');
+    $itempolicies = $user->getItempolicyuser();
+    foreach($itempolicies as $itempolicy)
+      {
+      $itempolicyuserModel->delete($itempolicy);
+      }
+
+    // Delete all user's feeds
+    $feedModel = $modelLoader->loadModel('Feed');
+    $feeds = $user->getFeeds();
+    foreach($feeds as $feed)
+      {
+      $feedModel->delete($feed);
+      }
+
+    // Delete remaining feed policies for the user
+    $feedpolicyuserModel = $modelLoader->loadModel('Feedpolicyuser');
+    $feedpolicies = $user->getFeedpolicyuser();
+    foreach($feedpolicies as $feedpolicy)
+      {
+      $feedpolicyuserModel->delete($feedpolicy);
+      }
+
+    // Remove the user from all groups
+    $groupModel = $modelLoader->loadModel('Group');
+    $groups = $user->getGroups();
+    foreach($groups as $group)
+      {
+      $groupModel->removeUser($group, $user);
+      }
+
+    // Remove references to this user as the uploader of item revisions (replace with superadmin)
+    $settingModel = $modelLoader->loadModel('Setting');
+    $adminId = $settingModel->getValueByName('adminuser');
+    $itemRevisionModel = $modelLoader->loadModel('ItemRevision');
+    $itemRevisions = $user->getItemrevisions();
+    foreach($itemRevisions as $revision)
+      {
+      $revision->setUserId($adminId);
+      $itemRevisionModel->save($revision);
+      }
+
+    // Delete the user record
+    parent::delete($user);
+    }
 
   /** plus one view*/
   function incrementViewCount($userDao)

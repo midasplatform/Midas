@@ -44,6 +44,7 @@ class UserController extends AppController
 
     $order = $this->_getParam('order');
     $offset = $this->_getParam('offset');
+
     if(!isset($order))
       {
       $order = 'view';
@@ -59,7 +60,7 @@ class UserController extends AppController
       }
     else
       {
-      $users = $this->User->getAll(true, 100, $order, $offset);
+      $users = $this->User->getAll(true, 100, $order, $offset, $this->userSession->Dao);
       }
 
     $this->view->order = $order;
@@ -459,6 +460,11 @@ class UserController extends AppController
           $userDao->setBiography($biography);
           }
         $userDao->setPrivacy($privacy);
+        if($this->userSession->Dao->isAdmin() && $this->userSession->Dao->getKey() != $userDao->getKey())
+          {
+          $adminStatus = (bool)$this->_getParam('adminStatus');
+          $userDao->setAdmin($adminStatus ? 1 : 0);
+          }
         $this->User->save($userDao);
         if(!isset($userId))
           {
@@ -637,6 +643,7 @@ class UserController extends AppController
 
     $this->view->communities = $communities;
     $this->view->user = $userDao;
+    $this->view->currentUser = $this->userSession->Dao;
     $this->view->thumbnail = $userDao->getThumbnail();
     $this->view->jsonSettings = array();
     $this->view->jsonSettings['accountErrorFirstname'] = $this->t('Please set your firstname');
@@ -668,7 +675,9 @@ class UserController extends AppController
     else
       {
       $userDao = $this->User->load($user_id);
-      if($userDao->getPrivacy() == MIDAS_USER_PRIVATE && (!isset($this->userSession->Dao) || !$this->userSession->Dao->isAdmin()))
+      if($userDao->getPrivacy() == MIDAS_USER_PRIVATE &&
+        (!$this->logged || $this->userSession->Dao->getKey() != $userDao->getKey()) &&
+        (!isset($this->userSession->Dao) || !$this->userSession->Dao->isAdmin()))
         {
         throw new Zend_Exception("Permission error");
         }
@@ -689,6 +698,24 @@ class UserController extends AppController
         $filteredCommunities[] = $community;
         }
       }
+
+    // If this is the user's own page (or admin user), show any pending community invitations
+    if($this->logged &&
+      ($this->userSession->Dao->getKey() == $userDao->getKey() || $this->userSession->Dao->isAdmin()))
+      {
+      $invitations = $userDao->getInvitations();
+      $communityInvitations = array();
+      foreach($invitations as $invitation)
+        {
+        $community = $this->Community->load($invitation->getCommunityId());
+        if($community)
+          {
+          $communityInvitations[] = $community;
+          }
+        }
+      $this->view->communityInvitations = $communityInvitations;
+      }
+
     $this->view->userCommunities = $filteredCommunities;
     $this->view->folders = array();
     if(!empty($this->userSession->Dao) && ($userDao->getKey() == $this->userSession->Dao->getKey() || $this->userSession->Dao->isAdmin()))
@@ -709,9 +736,12 @@ class UserController extends AppController
     $this->view->feeds = $this->Feed->getFeedsByUser($this->userSession->Dao, $userDao);
 
     $this->view->isViewAction = ($this->logged && ($this->userSession->Dao->getKey() == $userDao->getKey() || $this->userSession->Dao->isAdmin()));
+    $this->view->currentUser = $this->userSession->Dao;
+    $this->view->isAdmin = $this->logged && $this->userSession->Dao->isAdmin();
     $this->view->information = array();
 
     $this->view->disableFeedImages = true;
+    $this->view->moduleTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_USER_TABS', array('user' => $userDao));
     }
 
   /** Manage files page action*/
@@ -772,5 +802,86 @@ class UserController extends AppController
     $this->view->items = $this->Folder->getItemsFiltered($this->view->mainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
     $this->view->userCommunities = $communities;
     $this->view->userCommunityFolders = $communityFolders;
+    }
+
+  /** Render the dialog related to user deletion */
+  public function deletedialogAction()
+    {
+    $this->disableLayout();
+    $userId = $this->_getParam('userId');
+
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('Must be logged in');
+      }
+    if(!isset($userId))
+      {
+      throw new Zend_Exception('Must set a userId parameter');
+      }
+    $user = $this->User->load($userId);
+    if(!$user)
+      {
+      throw new Zend_Exception('Invalid user id');
+      }
+    if($this->userSession->Dao->getKey() != $user->getKey())
+      {
+      $this->requireAdminPrivileges();
+      $this->view->deleteSelf = false;
+      }
+    else
+      {
+      $this->view->deleteSelf = true;
+      }
+    $this->view->user = $user;
+    }
+
+  /** Delete a user */
+  public function deleteAction()
+    {
+    // make sure this gets completed even if user navigates away or it takes a long time
+    set_time_limit(0);
+    ignore_user_abort(true);
+
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('Must be logged in');
+      }
+    $userId = $this->_getParam('userId');
+
+    if(!isset($userId))
+      {
+      throw new Zend_Exception('Must set a userId parameter');
+      }
+    $user = $this->User->load($userId);
+    if(!$user)
+      {
+      throw new Zend_Exception('Invalid user id');
+      }
+    if($user->isAdmin())
+      {
+      throw new Zend_Exception('Cannot delete an admin user');
+      }
+
+    if($this->userSession->Dao->getKey() != $user->getKey())
+      {
+      $this->requireAdminPrivileges();
+      }
+    else
+      {
+      // log out if user is deleting his or her own account
+      $this->userSession->Dao = null;
+      Zend_Session::ForgetMe();
+      if(!$this->isTestingEnv())
+        {
+        setcookie('midasUtil', null, time() + 60 * 60 * 24 * 30, '/');
+        }
+      }
+    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+
+    $name = $user->getFirstname().' '.$user->getLastname();
+    $this->User->delete($user);
+    $this->getLogger()->info('User '.$name.' successfully deleted');
+    echo JsonComponent::encode(array(true, 'User '.$name.' successfully deleted'));
     }
   }//end class

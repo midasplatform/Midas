@@ -14,6 +14,22 @@ PURPOSE.  See the above copyright notices for more information.
 <link href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.fileupload-ui.css?<?php echo time()?>" rel="stylesheet" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
+<?php
+  if(Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+    {
+    echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/swfupload/js/swfupload.js,swfupload.queue.js,fileprogress.js,handlers.js"></script>';
+    }
+  else
+    {
+    ?>
+    <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.js"></script>
+    <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.queue.js"></script>
+    <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/fileprogress.js"></script>
+    <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/handlers.js"></script>
+    <?php
+    }
+    ?>
+
 <div class="tabs uploadTabs" id='uploadTabs'>
   <ul>
     <li><a href="#uploadTabs-1">Simple</a></li>
@@ -23,7 +39,13 @@ PURPOSE.  See the above copyright notices for more information.
   <div id="uploadTabs-1">
       <b><?php echo $this->t('Step 1: Select files to upload')?></b>
       <br/>
-      <div id="jqueryFileUploadContent">
+      <div id="swfuploadContent" style="display: none;">
+        <span id="spanButtonPlaceHolder"></span>
+        <div>
+          <div class="fieldset flash" id="fsUploadProgress"></div>
+        </div>
+      </div>
+      <div id="jqueryFileUploadContent" style="display: none;">
         <div class="file_upload">
             <form action="<?php echo $this->webroot?>/upload/saveuploaded" method="POST" enctype="multipart/form-data">
                 <input class="fileUploaderInput" type="file" name="file[]" multiple>
@@ -59,21 +81,25 @@ PURPOSE.  See the above copyright notices for more information.
             </div>
             <div class="file_upload_overall_progress" style='display:none;'><div style="display:none;"></div></div>
         </div>
+        <div class="uploadValidationError"><img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/><b></b><hr></div>
         <div class="tooBigUpload">
           <img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/> <b><?php echo $this->t('Please use the large file tool, the following files are too big:')?></b>
           <ul>
 
           </ul>
         </div>
+
       </div>
       <b><?php echo $this->t('Step 2: Where do you want to upload your files')?>?</b>
       <div>
       <br/>
-      <b><?php echo $this->t('Curent selected location:')?></b>
+      <b><?php echo $this->t('Current selected location:')?></b>
           <span id="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
         <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>
+        <br/><br/>
+        <div class="belowDestinationUpload" style="display: none;"></div>
         <br/>
-        <input style="margin-left:0px;"  class="browseMIDASLink globalButton" type="button" value="Change location" />
+        <input style="margin-left:0px;" class="browseMIDASLink globalButton" type="button" value="Change location" />
         <br/>
         <br/>
       </div>
@@ -85,7 +111,7 @@ PURPOSE.  See the above copyright notices for more information.
       <br/>
       <b><?php echo $this->t('Step 4: Start the upload')?></b>
       <br/>
-      <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
+      <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="midas.upload.simpleupload.swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
 
       <span id="btnStartUpload" >
         <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" qtip="<?php echo $this->t("Don't forget to start the upload.")?>" value="<?php echo $this->t('Start Upload')?>" />
@@ -136,7 +162,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 
 <?php
-    if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+    if(Zend_Registry::get("configGlobal")->smartoptimizer == 1)
       {
       echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/jquery/jquery.fileupload.js,jquery.fileupload-ui.js,jquery.fileupload-uix.js,jquery.form.js"></script>';
       }
@@ -148,6 +174,11 @@ PURPOSE.  See the above copyright notices for more information.
       <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-uix.js"></script>
       <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
       <?php
+      }
+
+    foreach($this->extraHtml as $module => $extra)
+      {
+      echo $extra."\n";
       }
 ?>
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.simpleupload.js"></script>

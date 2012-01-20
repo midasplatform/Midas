@@ -1,0 +1,45 @@
+form.quotaConfigForm div label{
+  display: inline;
+  margin-right: 5px;
+  text-align: left;
+  line-height: 2em;
+}
+
+form.quotaConfigForm input[type=text],form.quotaConfigForm input[type=password] ,form.quotaConfigForm textarea{
+  margin-right: 10px;
+  background: #F3F1EC;
+  border: 1px solid grey;
+  color: black;
+  height: 18px;
+}
+
+form.quotaConfigForm input[type=text]:hover,form.quotaConfigForm input[type=password]:hover, form.quotaConfigForm textarea:hover{
+  background: white;
+}
+
+form.quotaConfigForm div input[type=submit], input.globalButton ,form.quotaConfigForm input[type=button]
+{
+  border: 1px solid grey;
+  color: #2E6E9E;
+  font-weight: bold;
+  cursor: pointer;
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 0.1em;
+  overflow: visible;
+  position: relative;
+  text-align: center;
+  text-decoration: none !important;
+  zoom: 1;
+  -webkit-box-align: center;
+  -webkit-box-sizing: border-box;
+  line-height: 1.4;
+}
+
+form.quotaConfigForm input[type=submit]:hover ,input.globalButton:hover
+{
+  color: #1d5987;
+  text-decoration: none;
+  background: #cbd9e3;
+  background-image: none;
+}
