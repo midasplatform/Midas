@@ -1,3 +1,4 @@
+var midas = midas || {};
 // Log priority enum
 var priorityMap = { 2 : 'critical', 4: 'warning', 6: 'info' };
 
@@ -51,7 +52,7 @@ $('button#deleteSelected').click(function() {
   if(selected != '')
     {
     $('table#listLogs').trigger('update');
-    ajaxSelectRequest = $.ajax({
+    midas.ajaxSelectRequest = $.ajax({
       type: 'POST',
       url: json.global.webroot+'/admin/deletelog',
       dataType: 'json',

@@ -127,12 +127,12 @@ function selectFolderCallbackReloadNode(mainNode)
 
 function selectFolderCallbackDblClick(node)
   {
-  //  genericCallbackDblClick(node);
+  //  midas.genericCallbackDblClick(node);
   }
 
 function selectFolderCallbackCheckboxes(node)
   {
-  //  genericCallbackCheckboxes(node);
+  //  midas.genericCallbackCheckboxes(node);
   }
 
 function selectFolderCallbackCustomElements(node,elements,first)

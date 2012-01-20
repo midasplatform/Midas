@@ -1,9 +1,11 @@
+var midas = midas || {};
+
 $(document).ready(function() {
 
   $("#browseTable").treeTable({
-    onFirstInit: enableRangeSelect,
-    onNodeShow: enableRangeSelect,
-    onNodeHide: enableRangeSelect
+    onFirstInit: midas.enableRangeSelect,
+    onNodeShow: midas.enableRangeSelect,
+    onNodeHide: midas.enableRangeSelect
   });
   /**
    * Non-ajax'd pages (ones with only items in the view) do not get their
@@ -12,19 +14,19 @@ $(document).ready(function() {
    */
   $('input.treeCheckbox').enableCheckboxRangeSelection({
     onRangeSelect: function() {
-      genericCallbackCheckboxes($('#browseTable'));
+      midas.genericCallbackCheckboxes($('#browseTable'));
       }
     });
   // Select/deslect all rows. If we are doing deselect all, we include hidden rows
   $('#browseTableHeaderCheckbox').click(function() {
     var selector = this.checked ? '.treeCheckbox:visible' : '.treeCheckbox';
     $('#browseTable').find(selector).prop("checked", this.checked);
-    genericCallbackCheckboxes($('#browseTable'));
+    midas.genericCallbackCheckboxes($('#browseTable'));
   });
 
   $("img.tableLoading").hide();
   $("table#browseTable").show();
-  genericCallbackSelect($('div.defaultSideTrigger'));
+  midas.genericCallbackSelect($('div.defaultSideTrigger'));
 
   $( "#tabsGeneric" ).tabs();
   $("#tabsGeneric").show();
@@ -42,18 +44,18 @@ $(document).ready(function() {
 });
 
 //dependance: common/browser.js
-var ajaxSelectRequest='';
+midas.ajaxSelectRequest= '';
 function callbackSelect(node)
   {
-  genericCallbackSelect(node);
+  midas.genericCallbackSelect(node);
   }
 
 function callbackDblClick(node)
   {
-  genericCallbackDblClick(node);
+  midas.genericCallbackDblClick(node);
   }
 
 function callbackCheckboxes(node)
   {
-  genericCallbackCheckboxes(node);
+  midas.genericCallbackCheckboxes(node);
   }
