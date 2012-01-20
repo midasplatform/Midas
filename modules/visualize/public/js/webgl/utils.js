@@ -1,7 +1,8 @@
 // mouse objects
 var projector;
 var ray;
-var intersectsObjectState;
+var previouslySelectedObject = null;
+var selectedObject = null;
 var mouse2D;
 
 // scene
@@ -36,7 +37,7 @@ function initAxes(divObj)
   sceneAxes.add(cameraAxes);
 
   axesMesh = new THREE.Mesh(new THREE.CubeGeometry(20, 20, 20), new THREE.MeshNormalMaterial);
-  axesMesh.add(new THREE.Axes());
+  //axesMesh.add(new THREE.Axes());
   sceneAxes.add(axesMesh);
 
   var font = "optimer"; 		// helvetiker, optimer, gentilis, droid sans, droid serif
@@ -57,7 +58,7 @@ function initAxes(divObj)
 
   text3d.computeBoundingBox();
 
-  var textMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, overdraw: true } );
+  var textMaterial = new THREE.MeshBasicMaterial( {color: 0xffffff, overdraw: true} );
   text = new THREE.Mesh( text3d, textMaterial );
 
   text.doubleSided = false;
@@ -82,7 +83,7 @@ function initAxes(divObj)
 
   text3d.computeBoundingBox();
 
-  var textMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, overdraw: true } );
+  var textMaterial = new THREE.MeshBasicMaterial( {color: 0xffffff, overdraw: true} );
   text = new THREE.Mesh( text3d, textMaterial );
 
   text.doubleSided = false;
@@ -107,7 +108,7 @@ function initAxes(divObj)
 
   text3d.computeBoundingBox();
 
-  var textMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, overdraw: true } );
+  var textMaterial = new THREE.MeshBasicMaterial( {color: 0xffffff, overdraw: true} );
   text = new THREE.Mesh( text3d, textMaterial );
 
   text.doubleSided = false;
@@ -140,7 +141,7 @@ function initAxes(divObj)
 // init moving camera
 function initCamera(altitude, fov, panSpeed)
   {
-  camera = new THREE.PerspectiveCamera( fov, widthContainer / heightContainer, 50, 1e7 );
+  camera = new THREE.PerspectiveCamera( fov, widthContainer / heightContainer, 1, 1e7 );
   camera.position.set( -1200, 800, 1200 );
 
   scene.add( camera );
@@ -155,7 +156,7 @@ function initCamera(altitude, fov, panSpeed)
   controls.noZoom = false;
   controls.noPan = false;
 
-  controls.staticMoving = true;
+  controls.staticMoving = false;
   controls.dynamicDampingFactor = 0.3;
 
   controls.keys = [ 65, 83, 68 ];
@@ -169,17 +170,17 @@ function initLights()
   dirLight = new THREE.DirectionalLight( 0xFFFFFF );
   dirLight.position.set( 1, 0, -1 );
   dirLight.position.normalize();
-  scene.addObject( dirLight );
+  scene.add( dirLight );
 
   dirLight = new THREE.DirectionalLight( 0xFFFFFF );
   dirLight.position.set( -1, 0, 1 );
   dirLight.position.normalize();
-  scene.addObject( dirLight );
+  scene.add( dirLight );
 
   dirLight = new THREE.DirectionalLight( 0xFFFFFF );
   dirLight.position.set( 0, 0, 0 );
   dirLight.position.normalize();
-  scene.addObject( dirLight );
+  scene.add( dirLight );
   }
 
 // create a webgl renderer and an empty scene
@@ -207,8 +208,7 @@ function initInteractions()
   });
 
   // mouse interactions et objects
-  ray = new THREE.Ray( camera.position, null );
-  mouse2D = new THREE.Vector3( 0, 10000, 0.5 );
+  mouse2D = new THREE.Vector3( 0, 0, 0 );
   projector = new THREE.Projector();
   }
 
@@ -222,38 +222,40 @@ function resetCameraPosition(objects)
       var zmax = null;
       var radiusMax = null;
 
-      $.each(objects, function(key, value) {
+     $.each(objects, function(key, value) {
          if ( value.geometry.boundingBox == null )
            {
-            value.geometry.computeBoundingBox();
+           value.geometry.computeBoundingBox();
            }
 
          var boundingBox = value.geometry.boundingBox;
-         if ( xmin == null || xmin > boundingBox.x[0]  )
+         if ( xmin == null || xmin > boundingBox.min.x  )
            {
-           xmin = boundingBox.x[0];
+           xmin = boundingBox.min.x;
            }
-         if ( zmin == null || zmin > boundingBox.z[0]  )
+         if ( ymin == null || ymin > boundingBox.min.y  )
            {
-           zmin = boundingBox.z[0];
+           ymin = boundingBox.min.y;
            }
-         if ( ymin == null || ymin > boundingBox.y[0]  )
+         if ( zmin == null || zmin > boundingBox.min.z  )
            {
-           ymin = boundingBox.y[0];
+           zmin = boundingBox.min.z;
            }
 
-         if ( xmax == null || xmax < boundingBox.x[1]  )
+
+         if ( xmax == null || xmax < boundingBox.max.x  )
            {
-           xmax = boundingBox.x[1];
+           xmax = boundingBox.max.x;
            }
-         if ( zmax == null || zmax < boundingBox.z[1]  )
+          if ( ymax == null || ymax < boundingBox.max.y  )
            {
-           zmax = boundingBox.z[1];
+           ymax = boundingBox.max.y;
            }
-         if ( ymax == null || ymax < boundingBox.y[1]  )
+         if ( zmax == null || zmax < boundingBox.max.z  )
            {
-           ymax = boundingBox.y[1];
+           zmax = boundingBox.max.z;
            }
+
 
          if ( radiusMax == null || radiusMax < value.geometry.boundingSphere.radius  )
            {
@@ -310,7 +312,7 @@ function cameraDown()
 function cameraLeft()
   {
     var quaternion = new THREE.Quaternion();
-    quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), -0.05 );
+    quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), 0.05 );
     var eye = camera.position.subSelf( controls.target );
 		quaternion.multiplyVector3( eye );
 		quaternion.multiplyVector3( camera.up );
@@ -321,7 +323,7 @@ function cameraLeft()
 function cameraRight()
   {
     var quaternion = new THREE.Quaternion();
-    quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), 0.05 );
+    quaternion.setFromAxisAngle( new THREE.Vector3(0, 0, 1), -0.05 );
     var eye = camera.position.subSelf( controls.target );
 		quaternion.multiplyVector3( eye );
 		quaternion.multiplyVector3( camera.up );
@@ -349,8 +351,8 @@ function onWindowResizeWebGL( event )
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
 
-  camera.screen.width = width;
-  camera.screen.height = height;
+  //camera.screen.width = width;
+  //camera.screen.height = height;
 
   camera.radius = ( width + height ) / 4;
 	}
@@ -375,16 +377,13 @@ function onDocumentMouseMoveWebGL( event )
 
   mouse2D.x = ( event.clientX / window.innerWidth ) * 2 - 1;
   mouse2D.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  mouse2D.z = 1;
   }
 
 var normalizedDirection
 
 function defaultInitRenderer()
   {
-  // process mouse collisions
-  mouse3D = projector.unprojectVector( mouse2D.clone(), camera );
-  ray.direction = mouse3D.subSelf( camera.position ).normalize();
-
   if ( focalpoint != undefined && cameraAxes != undefined)
     {
       normalizedDirection = new THREE.Vector3(camera.position.x - focalpoint.x, camera.position.y - focalpoint.y, camera.position.z - focalpoint.z);
@@ -394,29 +393,39 @@ function defaultInitRenderer()
       cameraAxes.position.z = normalizedDirection.normalize().z * 200;
       cameraAxes.lookAt(new THREE.Vector3(0, 0, 0));
     }
+  }
 
-	var intersects = ray.intersectScene( scene );
+function performRayCast()
+{
+  // process mouse collisions
+  ray = new THREE.Ray( camera.position, null );
+  mouse3D = projector.unprojectVector( mouse2D.clone(), camera );
+  ray.direction = mouse3D.subSelf( camera.position ).normalize();
 
+  selectedObject = null;
+  var intersects = ray.intersectScene( scene );
   if(intersects.length > 0)
     {
-    console.log(intersects);
-    for( i = 0; i < intersects.length; i++ )
+    previouslySelectedObject = selectedObject;
+    selectedObject = intersects[0];
+    /*for( i = 0; i < intersects.length; i++ )
       {
       if(intersectsObjectState == null || distance > intersects[i].distance)
         {
         intersectsObjectState = intersects[i];
         distance = intersectsObjectState.distance;
         }
-      }
+      }*/
     }
-  }
+}
+
 
 function defaultEndRenderer()
   {
   controls.update();
   renderer.clear();
   renderer.render( scene, camera );
-  ray = new THREE.Ray( camera.position, null );
+  //ray = new THREE.Ray( camera.position, null );
   if(rendererAxes != undefined)
     {
       rendererAxes.clear();

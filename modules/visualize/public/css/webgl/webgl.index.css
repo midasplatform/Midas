@@ -1,8 +1,8 @@
 	body {
       background:#000000;
-      background-image: -webkit-gradient(linear,left top,left bottom,from(#FFFFFF),to(#000000));
-      background-image: -moz-linear-gradient(center top,#FFFFFF 0%,#000000 100% );
-      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF',endColorstr='#000000');
+      background-image: -webkit-gradient(linear,left top,left bottom,from(#336699),to(#72b9ff));
+      background-image: -moz-linear-gradient(center top,#336699 0%,#72b9ff 100% );
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#336699',endColorstr='#72b9ff');
 			color: #EEE;
 			padding: 0;
 			margin: 0;

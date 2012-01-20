@@ -64,7 +64,7 @@ function showDialogs()
         autoOpen: false,
         draggable: true,
         modal: false,
-        width: 200,
+        width: 200
     });
    $('#helpDialog1').dialog('close');
    $('#helpDialog2').dialog('close');
@@ -93,12 +93,31 @@ function init()
 
       var color = new THREE.Color( 0x000000 );
       color.setRGB( value.red , value.green, value.blue );
-      var material = new THREE.MeshPhongMaterial( { color: color.getHex() , shading: THREE.SmoothShading,opacity: 1, transparent: true} ) ;
+      var material = new THREE.MeshPhongMaterial(
+         {
+         color: color.getHex(),
+         shading: THREE.SmoothShading,
+         opacity: 1.0,
+         transparent: true} ) ;
+      // material.depthWrite = true;
+      // material.depthTest = true;
+
       var mesh = new THREE.Mesh( geometry, material );
-      mesh.scale.x = mesh.scale.y = mesh.scale.z = 1000;
+      mesh.scale.x = mesh.scale.y = mesh.scale.z = 1;
       mesh.name = value.name;
-      objects3D.push ( mesh );
-      scene.addObject( objects3D[i] );
+
+      // Apparently the meshes are flipped
+      mesh.flipSided = true;
+
+      //  mesh.dynamic = true;
+      mesh.geometry.computeFaceNormals();
+		  mesh.geometry.computeVertexNormals();
+	  	mesh.__dirtyVertices = true;
+		  mesh.__dirtyNormals = true;
+
+
+      objects3D.push( mesh );
+      scene.add( objects3D[i] );
 
       $('#helpDialog1').append('<input type="checkbox" class="objectVisibility" objectid="'+i+'" name="object'+i+'" checked> <label for="object'+i+'">'+mesh.name+'</label><br/>');
       $('.objectVisibility').unbind('change').change(function(){
@@ -111,11 +130,12 @@ function init()
           objects3D[$(this).attr('objectid')].visible = false;
           }
       });
+
       i++;
 
       resetCameraPosition(objects3D);
-      zoomIn();
-      zoomIn();
+      //zoomIn();
+      //zoomIn();
     };
 
     files.push([jsonData.webroot+"/download/?bitstream="+value.bitstream.bitstream_id, callback]);
