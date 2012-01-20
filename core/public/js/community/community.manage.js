@@ -1,7 +1,26 @@
-  var disableElementSize=true;
+var midas = midas || {};
+midas.community = midas.community || {};
+midas.community.manage = {};
+
+var disableElementSize=true;
+
+midas.community.manage.promoteMember = function(userId)
+{
+  alert('promoting member ' + userId);
+}
+
+midas.community.manage.removeMember = function(userId)
+{
+  alert('removing member ' + userId);
+}
+
+midas.community.manage.removeFromGroup = function(userId, groupId)
+{
+  alert('removing member ' + userId + ' from group ' + groupId);
+}
 
 $(document).ready(function() {
-    
+
     initCommunityPrivacy();
 
     $( "#tabsGeneric" ).tabs({
@@ -18,8 +37,8 @@ $(document).ready(function() {
       });
     $("#tabsGeneric").show();
     $('img.tabsLoading').hide();
-    
-    
+
+
      $('a#communityDeleteLink').click(function()
     {
       var html='';
@@ -29,51 +48,35 @@ $(document).ready(function() {
       html+='<br/>';
       html+='<input style="margin-left:140px;" class="globalButton deleteCommunityYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
       html+='<input style="margin-left:50px;" class="globalButton deleteCommunityNo" type="button" value="'+json.global.No+'"/>';
-      
+
       showDialogWithContent(json.community.message['delete'],html,false);
-      
+
       $('input.deleteCommunityYes').unbind('click').click(function()
-        { 
+        {
           location.replace(json.global.webroot+'/community/delete?communityId='+json.community.community_id);
         });
       $('input.deleteCommunityNo').unbind('click').click(function()
         {
            $( "div.MainDialog" ).dialog('close');
-        });         
-      
+        });
+
     });
-    
-    $('#editCommunityForm').ajaxForm( {beforeSubmit: validateInfoChange, success:       successInfoChange} );
-    
-    
+
+    $('#editCommunityForm').ajaxForm( {beforeSubmit: validateInfoChange, success: successInfoChange} );
+
     //init group tab
     init();
-    $('.dataTable').each(function(){
-      var obj= $(this).dataTable(
-      {
-      "sScrollY": "100px",
-      "bScrollCollapse": true,
-      "bPaginate": true,
-      "bLengthChange": false,
-      "bFilter": false,
-      "bSort": true,
-      "bInfo": false,
-      "bAutoWidth": true ,
-      "oLanguage": {
-        "sEmptyTable": "No users in this group"
-        }
-      });
-      var groupid=$(this).attr('groupid');
-      if(groupid!=undefined)
-        {
-          datatable[groupid]=obj;
+    $('table.tablesorter').tablesorter({
+      widgets: ['zebra'],
+      headers: {
+        1: {sorter: false} // Actions column not sortable
         }
     });
-    
+
     //init tree
     $('img.tabsLoading').hide()
-    
-  
+
+
      $('table')
         .filter(function() {
             return this.id.match(/browseTable*/);
@@ -82,14 +85,14 @@ $(document).ready(function() {
     ;
     $("img.tableLoading").hide();
     $("table#browseTable").show();
-    
+
     $('div.userPersonalData').hide();
-    
-    initDragAndDrop();    
+
+    initDragAndDrop();
     $('td.tdUser input').removeAttr('checked');
   });
-  
-  
+
+
       //dependance: common/browser.js
     var ajaxSelectRequest='';
     function callbackSelect(node)
@@ -99,18 +102,18 @@ $(document).ready(function() {
       $('div.genericStats').hide();
       $('div.viewInfo').show();
       $('div.viewAction').show()
-      genericCallbackSelect(node);  
+      genericCallbackSelect(node);
     }
 
     function callbackDblClick(node)
     {
     }
-    
+
     function callbackCheckboxes(node)
     {
       genericCallbackCheckboxes(node);
     }
-    
+
     function callbackCreateElement(node)
     {
       initDragAndDrop();
@@ -126,16 +129,16 @@ function initDragAndDrop()
       revert: "invalid",
       revertDuration: 300,
       scroll: true,
-      start: function() {            
-          $('div.userPersonalData').show();            
+      start: function() {
+          $('div.userPersonalData').show();
         }
       });
-      
+
       // Configure droppable rows
       $("#browseTable .folder").each(function() {
         $(this).parents("tr").droppable({
           accept: ".file, .folder",
-          drop: function(e, ui) { 
+          drop: function(e, ui) {
             // Call jQuery treeTable plugin to move the branch
            var elements='';
            if($(ui.draggable).parents("tr").attr('type')=='folder')
@@ -150,11 +153,11 @@ function initDragAndDrop()
            var classNames=$(ui.draggable).parents("tr").attr('class').split(' ');
             for(key in classNames) {
               if(classNames[key].match('child-of-')) {
-                from_obj = "#" + classNames[key].substring(9); 
+                from_obj = "#" + classNames[key].substring(9);
               }
             }
            var destination_obj=this;
-           
+
            // do nothing if drop item(s) to its current folder
            if ($(this).attr('id') != $(from_obj).attr('id')){
              $.post(json.global.webroot+'/browse/movecopy', {moveElement: true, elements: elements , destination:$(this).attr('element'),from:$(from_obj).attr('element'),ajax:true},
@@ -169,14 +172,14 @@ function initDragAndDrop()
                 if(jsonResponse[0])
                   {
                     createNotive(jsonResponse[1],1500);
-                    $($(ui.draggable).parents("tr")).appendBranchTo(destination_obj);       
+                    $($(ui.draggable).parents("tr")).appendBranchTo(destination_obj);
                   }
                 else
                   {
                     createNotive(jsonResponse[1],4000);
                   }
              });
-           }       
+           }
           },
           hoverClass: "accept",
           over: function(e, ui) {
@@ -210,7 +213,7 @@ function init()
         showDialogWithContent(json.community.message.createGroup,createGroupFromDiv.html(),false);
         mainDialogContentDiv.find('form.editGroupForm').ajaxForm( {beforeSubmit: validateGroupChange, success:       successGroupChange} );
       });
-      
+
     $('a.editGroupLink').click(function()
       {
         mainDialogContentDiv.html('');
@@ -221,7 +224,7 @@ function init()
         $('form.editGroupForm input#name').val(groupName);
         mainDialogContentDiv.find('form.editGroupForm').ajaxForm( {beforeSubmit: validateGroupChange, success:       successGroupChange} );
       });
-      
+
     $('a.groupLink').click(function()
       {
         $('td#userGroupSelected').html('');
@@ -233,13 +236,13 @@ function init()
         $('td.tdUser input').removeAttr('checked');
         groupSelected=id;
       });
-      
+
     $('td.tdUser input').click(function()
       {
         initCheckboxSelection();
       });
-      
-      
+
+
     $('a.deleteGroupLink').click(function()
     {
       var html='';
@@ -249,11 +252,11 @@ function init()
       html+='<br/>';
       html+='<input style="margin-left:140px;" class="globalButton deleteGroupYes" element="'+$(this).attr('groupid')+'" type="button" value="'+json.global.Yes+'"/>';
       html+='<input style="margin-left:50px;" class="globalButton deleteGroupNo" type="button" value="'+json.global.No+'"/>';
-      
+
       showDialogWithContent(json.community.message['delete'],html,false);
-      
+
       $('input.deleteGroupYes').unbind('click').click(function()
-        { 
+        {
           var groupid=$(this).attr('element');
           $.post(json.global.webroot+'/community/manage', {communityId: json.community.community_id, deleteGroup: 'true', groupId:groupid},
            function(data) {
@@ -279,10 +282,10 @@ function init()
       $('input.deleteGroupNo').unbind('click').click(function()
         {
            $( "div.MainDialog" ).dialog('close');
-        });         
+        });
 
     });
-    
+
 
 }
 var datatable=new Array();
@@ -306,7 +309,7 @@ function initCheckboxSelection()
       memberSelected.push($(this).attr('userid'));
       $('.memberSelection').show();
     });
-    
+
 
     $('a.removeUserLink').click(function()
     {
@@ -335,14 +338,14 @@ function initCheckboxSelection()
      });
 
     });
-    
+
     $('a.removeFromCommunity').click(function()
     {
     var users='';
     $.each( memberSelected, function(i, v){
       if($('div#memberList input[admin=false][userid='+v+']').length>0)
       {
-       users+=v+'-'; 
+       users+=v+'-';
       }
 
      });
@@ -367,7 +370,7 @@ function initCheckboxSelection()
      });
 
     });
-    
+
     $('a.addUserLink').click(function()
     {
     var users='';
@@ -395,7 +398,7 @@ function initCheckboxSelection()
      });
      $(this).remove();
     });
-    
+
     $('a.addModeratorLink').click(function()
     {
     var users='';
@@ -424,9 +427,9 @@ function initCheckboxSelection()
      $(this).remove();
     });
   }
-function validateGroupChange(formData, jqForm, options) { 
- 
-    var form = jqForm[0]; 
+function validateGroupChange(formData, jqForm, options) {
+
+    var form = jqForm[0];
     if (form.name.value.length<1)
       {
         createNotive(json.community.message.infoErrorName,4000);
@@ -434,7 +437,7 @@ function validateGroupChange(formData, jqForm, options) {
       }
 }
 
-function successGroupChange(responseText, statusText, xhr, form) 
+function successGroupChange(responseText, statusText, xhr, form)
 {
   $( "div.MainDialog" ).dialog("close");
   jsonResponse = jQuery.parseJSON(responseText);
@@ -453,7 +456,7 @@ function successGroupChange(responseText, statusText, xhr, form)
         }
        else
          {
-         
+
          }
        init();
        window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
@@ -465,9 +468,9 @@ function successGroupChange(responseText, statusText, xhr, form)
     }
 }
 
-function validateInfoChange(formData, jqForm, options) { 
- 
-    var form = jqForm[0]; 
+function validateInfoChange(formData, jqForm, options) {
+
+    var form = jqForm[0];
     if (form.name.value.length<1)
       {
         createNotive(json.community.message.infoErrorName,4000);
@@ -475,7 +478,7 @@ function validateInfoChange(formData, jqForm, options) {
       }
 }
 
-function successInfoChange(responseText, statusText, xhr, form) 
+function successInfoChange(responseText, statusText, xhr, form)
 {
   jsonResponse = jQuery.parseJSON(responseText);
   if(jsonResponse==null)
@@ -517,4 +520,3 @@ else
     initCommunityPrivacy();
   });
 }
-    

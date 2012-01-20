@@ -1,22 +1,22 @@
 
- div.radioElement label{
+div.radioElement label{
   float: inherit!important;
   width: 600px!important;
 }
 
- div.radioElement ul{
+div.radioElement ul{
   list-style: none;
   margin: 0px 0px 0px 100px;
   padding: 0px 0px 0px 0px;
   width: 600px!important;
 }
 
- div.radioElement h4{
+div.radioElement h4{
   margin-bottom: 4px;
 }
 
 
- div.radioElement br{
+div.radioElement br{
   display:none;
 }
 
@@ -42,4 +42,17 @@ span.userDataTitle{
 
 div.userPersonalData{
   opacity: .90;
+}
+
+img.tableActions{
+  height: 14px;
+  margin-left: 5px;
+}
+
+a.tableActions{
+  text-decoration: none;
+}
+
+span.actionsList{
+  float: right;
 }

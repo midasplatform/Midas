@@ -10,15 +10,17 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.dataTable.js');
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/community/community.manage.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.dataTable.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/community/community.manage.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tablesorter.min.js');
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/community/community.manage.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.dataTable.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.tablesorter.css" />
+
 <div class="viewMain">
   <div class="genericThumbnail">
   <?php
@@ -51,8 +53,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   <div class="tabs" id='tabsGeneric'>
     <ul>
       <li><a href="#tabs-1"><?php echo $this->t("Info")?></a></li>
-      <li><a href="#tabs-members"><?php echo $this->t('Members');?></a></li>
-      <li><a href="#tabs-2"><?php echo $this->t('Groups');?></a></li>
+      <li><a href="#tabs-members"><?php echo $this->t('Members & Groups');?></a></li>
       <li><a href="#tabs-3"><?php echo $this->t('Files');?></a></li>
       <?php
           foreach($this->customTabs as $modules)
@@ -114,95 +115,125 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
             $moderatorsIds[] = $user->getKey();
             }
           ?>
-          <h4><?php echo $this->t('Community\'s Members')?>:</h4>
-          <?php
-          echo "<div  id='memberList'>";
-          echo '<table cellpadding="0" cellspacing="0" border="0" class="display dataTable">';
-          echo "<thead>
-                <tr>
-                  <th>Name</th><th style='display:none'></th><th style='display:none'></th>
-                </tr>
-              </thead>";
-          foreach($this->members as $user)
-            {
-            echo "<tr>";
-            echo "<td width='70%' class='tdUser userid_{$user->getKey()}'><input ";
-            if(in_array($user->getKey(), $administratorIds))
+          <h4><?php echo $this->t('Community Members')?>:</h4>
+          <div id='memberList'>
+          <table id='memberListTable' class="tablesorter">
+            <thead>
+              <tr>
+                <th>Member</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            <?php
+            $stripeIndex = 0;
+            foreach($this->members as $user)
               {
-              echo "admin = 'true' ";
+              $stripeIndex++;
+              $class = $stripeIndex % 2 ? 'odd' : 'even';
+              echo '<tr class='.$class.'>';
+              echo '  <td width="80%">'.$this->linkuser($user).'</td>';
+              echo '  <td><span class="actionsList">';
+              echo '  <a qtip="Add member to other groups" '.
+                   '     class="tableActions promoteMember" onclick="midas.community.manage.promoteMember('.$user->getKey().');">';
+              echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/add.png" /></a>';
+              echo '  <a qtip="Remove member from this community" '.
+                   '     class="tableActions removeMember" onclick="midas.community.manage.removeMember('.$user->getKey().');">';
+              echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
+              echo '  </span></td>';
+              echo '</tr>';
               }
-            else
-              {
-              echo "admin = 'false' ";
-              }
-            echo "userid='{$user->getKey()}' type='checkbox'/>{$user->getFullName()}</td>";
-            if(in_array($user->getKey(), $administratorIds))
-              {
-              echo "<td>Administrator</td>";
-              }
-            if(in_array($user->getKey(), $moderatorsIds))
-              {
-              echo "<td>Moderator</td>";
-              }
-            else
-              {
-              echo "<td></td>";
-              }
-            echo "</tr>";
-            }
-          echo "</table>";
-          echo "</div>";
-          ?>
+            ?>
+            </tbody>
+          </table>
         </div>
-
-    </div>
-
-    <div id="tabs-2">
-      <a href="javascript:;" id='createGroupLink'> <?php echo $this->t('Create a group')?></a>
-      <div id="groupsList">
-        <h4><?php echo $this->t('Groups')?>:</h4>
+        <h4><?php echo $this->t('Community Moderators')?>:</h4>
+          <div id='moderatorList'>
+          <table id='moderatorListTable' class="tablesorter">
+            <thead>
+              <tr>
+                <th>Moderator</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            <?php
+            $stripeIndex = 0;
+            foreach($this->moderatorGroup->users as $user)
+              {
+              $stripeIndex++;
+              $class = $stripeIndex % 2 ? 'odd' : 'even';
+              echo '<tr class='.$class.'>';
+              echo '  <td width="80%">'.$this->linkuser($user).'</td>';
+              echo '  <td><span class="actionsList">';
+              echo '  <a qtip="Remove member from moderators group" '.
+                   '     class="tableActions removeMember" onclick="midas.community.manage.removeFromGroup('.$user->getKey().','.$this->moderatorGroup->getKey().');">';
+              echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
+              echo '  </span></td>';
+              echo '</tr>';
+              }
+            ?>
+            </tbody>
+          </table>
+        </div>
+        <h4><?php echo $this->t('Community Administrators')?>:</h4>
+          <div id='adminList'>
+          <table id='adminListTable' class="tablesorter">
+            <thead>
+              <tr>
+                <th>Administrator</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            <?php
+            $stripeIndex = 0;
+            foreach($this->adminGroup->users as $user)
+              {
+              $stripeIndex++;
+              $class = $stripeIndex % 2 ? 'odd' : 'even';
+              echo '<tr class='.$class.'>';
+              echo '  <td width="80%">'.$this->linkuser($user).'</td>';
+              echo '  <td><span class="actionsList">';
+              echo '  <a qtip="Remove member from administrators group" '.
+                   '     class="tableActions removeMember" onclick="midas.community.manage.removeFromGroup('.$user->getKey().','.$this->adminGroup->getKey().');">';
+              echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
+              echo '  </span></td>';
+              echo '</tr>';
+              }
+            ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="customGroupsList">
         <?php
-        echo '<ul>';
-        if(empty($this->groups))
+        foreach($this->groups as $group)
           {
-          echo "{$this->t('There is no custom group.')}";
-          }
-        else
-          {
-          foreach($this->groups as $group)
+          echo '<h4>'.$group->getName().': ';
+          echo '[<a class="editGroupLink" groupid="'.$group->getKey().'" href="javascript:;">Edit</a>]';
+          echo '[<a class="deleteGroupLink" groupid="'.$group->getKey().'" href="javascript:;">Delete</a>]';
+          echo '</h4>';
+          echo '<div><table class="tablesorter">';
+          echo '  <thead><tr><th>Name</th><th>Actions</th></tr></thead>';
+          echo '  <tbody>';
+          $stripeIndex = 0;
+          foreach($group->users as $user)
             {
-            echo "<li><a class='groupLink' groupid='{$group->getKey()}' href='javascript:;'>{$group->getName()}</a> [<a class='editGroupLink' groupid='{$group->getKey()}' href='javascript:;'>Edit</a>][<a class='deleteGroupLink' groupid='{$group->getKey()}' href='javascript:;'>Delete</a>]<span/> </li>";
+            $stripeIndex++;
+            $class = $stripeIndex % 2 ? 'odd' : 'even';
+            echo '<tr class='.$class.'>';
+            echo '  <td width="80%">'.$this->linkuser($user).'</td>';
+            echo '  <td><span class="actionsList">';
+            echo '  <a qtip="Remove user from group '.$group->getName().'" '.
+                 '     class="tableActions removeMember" onclick="midas.community.manage.removeFromGroup('.$user->getKey().','.$group->getKey().');">';
+            echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
+            echo '  </span></td>';
+            echo '</tr>';
             }
+          echo '  </tbody></table></div>';
           }
-        echo '</ul>';
         ?>
       </div>
-
-            <div class='groupMemberList'>
-              <?php
-
-              foreach($allgroups as $group)
-                {
-                echo "<div style='display:none;' class='groupList' id='groupList_{$group->getKey()}'>";
-                echo "<h4>{$this->t('Group\'s members')}</h4>";
-                echo '<table cellpadding="0" cellspacing="0" border="0" groupid="'.$group->getKey().'" class="display dataTable">';
-                echo "<thead>
-                      <tr>
-                        <th>Name</th>
-                      </tr>
-                    </thead>";
-                foreach($group->users as $user)
-                  {
-                  echo "<tr>";
-                  echo "<td  class='tdUser userid_{$user->getKey()}'><input  userid='{$user->getKey()}' type='checkbox'/>{$user->getFullName()}</td>";
-                  echo "</tr>";
-                  }
-                echo "</table>";
-                echo "</div>";
-                }
-              ?>
-            </div>
-
+      <hr>
+      <a href="javascript:;" id='createGroupLink'> <?php echo $this->t('Create a new group')?></a>
 
       <div style="display:none;" id='createGroupFrom'>
         <form class="editGroupForm genericForm" method="<?php echo $this->createGroupForm['method']?>"  action="<?php echo $this->createGroupForm['action']?>">
@@ -343,25 +374,6 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       ?>
       </ul>
    </div>
-   <div class="sideElement memberSelection" style="display:none;">
-     <h1><?php echo $this->t('Selected')?></h1>
-     <ul>
-       <?php
-       foreach($this->groups as $group)
-          {
-          echo "<li><a class='addUserLink' element='{$group->getKey()}'>{$this->t('Add in group')} {$group->getName()}</a></li>";
-          }
-       ?>
-       <li><a class='addModeratorLink'><?php echo $this->t('Set as moderator')?></a></li>
-       <li><a class='removeFromCommunity'><?php echo $this->t('Remove from community')?></a></li>
-     </ul>
-   </div>
-   <div class="sideElement groupUsersSelection" style="display:none;">
-     <h1><?php echo $this->t('Selected')?></h1>
-     <ul>
-       <li><a class='removeUserLink'><?php echo $this->t('Remove from group')?></a></li>
-     </ul>
-   </div>
    <div class="sideElementLast genericStats">
     <h1>Stats</h1>
 
@@ -387,9 +399,3 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       </div>
     </div>
 </div>
-
-
-
-
-
-
