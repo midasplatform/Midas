@@ -1,3 +1,4 @@
+var midas = midas || {};
   $(document).ready(function() {
 
     tabs=$( "#tabsGeneric" ).tabs({
@@ -34,7 +35,7 @@
       $('input.deleteAssetstoreYes').unbind('click').click(function()
          {
           $( "div.MainDialog" ).dialog('close');
-          ajaxSelectRequest = $.ajax({
+          midas.ajaxSelectRequest = $.ajax({
             type: "POST",
             url: json.global.webroot+'/assetstore/delete',
             data: {assetstoreId: element},
@@ -71,7 +72,7 @@
 
       $('input#assetstoreSubmit').unbind('click').click(function()
          {
-          ajaxSelectRequest = $.ajax({
+           midas.ajaxSelectRequest = $.ajax({
             type: "POST",
             url: json.global.webroot+'/assetstore/edit',
             data: {assetstoreId: element, assetstoreName: $('input#assetstoreName').val(), assetstorePath: $('input#assetstorePath').val()},

@@ -15,11 +15,13 @@
     $('img.tabsLoading').hide();
     
     $("#browseTable").treeTable({
-      onFirstInit: enableRangeSelect,
-      onNodeShow: enableRangeSelect,
-      onNodeHide: enableRangeSelect
+      onFirstInit: midas.enableRangeSelect,
+      onNodeShow: midas.enableRangeSelect,
+      onNodeHide: midas.enableRangeSelect
     });
+
     midas.browser.enableSelectAll();
+
     $("img.tableLoading").hide();
     $("table#browseTable").show();
   });
@@ -36,16 +38,17 @@
       $('div.websiteBlock').hide();
       $('div.viewInfo').show();
       $('div.viewAction').show();
-      genericCallbackSelect(node);  
+
+      midas.genericCallbackSelect(node);
     }
 
     function callbackDblClick(node)
     {
-      genericCallbackDblClick(node);
+      midas.genericCallbackDblClick(node);
     }
     
     function callbackCheckboxes(node)
     {
-      genericCallbackCheckboxes(node);
+      midas.genericCallbackCheckboxes(node);
     }
     

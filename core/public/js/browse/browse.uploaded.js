@@ -1,21 +1,23 @@
-  $(document).ready(function() {
+var midas = midas || {};
+midas.browse = midas.browse || {};
+$(document).ready(
+    function() {
+        $("#browseTable").treeTable();
+        $("img.tableLoading").hide();
+        $("table#browseTable").show();
+        midas.browse.enableSelectAll();
+    });
 
-    $("#browseTable").treeTable();
-    
-    $("img.tableLoading").hide();
-    $("table#browseTable").show();
-    midas.browser.enableSelectAll();
-  });
-  
-    function callbackSelect(node)
+
+function callbackSelect(node)
     {
       $('div.viewAction').show();
       $('div.viewInfo').show();
       $('img.infoLoading').show();
       $('div.ajaxInfoElement').html('');
-      if(ajaxSelectRequest!='')
+      if(midas.ajaxSelectRequest!='')
         {        
-        ajaxSelectRequest.abort();
+        midas.ajaxSelectRequest.abort();
         }
       var type=node.attr('type');
       var element=node.attr('element');
@@ -45,12 +47,12 @@
          $('div.viewAction ul').fadeIn('fast');
       });
       
-        ajaxSelectRequest = $.ajax({
+        midas.ajaxSelectRequest = $.ajax({
           type: "POST",
           url: json.global.webroot+'/browse/getelementinfo',
           data: {type: node.attr('type'), id: node.attr('element')},
           success: function(jsonContent){
-            createInfo(jsonContent);
+            midas.createInfo(jsonContent);
             $('img.infoLoading').hide();
 
           }
@@ -72,7 +74,7 @@
 
         $('input.deleteItemYes').unbind('click').click(function()
           { 
-              ajaxSelectRequest = $.ajax({
+              midas.ajaxSelectRequest = $.ajax({
                 type: "POST",
                 url: json.global.webroot+'/item/delete',
                 data: {itemId: element},
@@ -92,12 +94,12 @@
 
     function callbackDblClick(node)
     {
-      genericCallbackDblClick(node);
+      midas.genericCallbackDblClick(node);
     }
     
     function callbackCheckboxes(node)
     {
-      arraySelected=new Array();
+      var arraySelected = new Array();
       arraySelected['items']=new Array();
       
       var items='';
