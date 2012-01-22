@@ -231,8 +231,21 @@ midas.community.manage.removeMember = function(userId)
 
 midas.community.manage.removeFromGroup = function(userId, groupId)
 {
-  // No confirmation dialog here, just remove from the group
-  alert('removing member ' + userId + ' from group ' + groupId);
+  $.post(json.global.webroot+'/community/removeuserfromgroup', {groupId: groupId, userId: userId}, function(data) {
+    jsonResponse = jQuery.parseJSON(data);
+    if(jsonResponse == null)
+      {
+      createNotice('Error', 4000);
+      return;
+      }
+    createNotice(jsonResponse[0], 4000);
+    if(jsonResponse[0])
+      {
+      window.location.replace(json.global.webroot+'/community/manage?communityId='+
+                              json.community.community_id+'#tabs-2');
+      window.location.reload();
+      }
+    });
 }
 
 midas.community.manage.initCommunityPrivacy = function()
@@ -356,25 +369,3 @@ function callbackCreateElement(node)
   {
   midas.community.manage.initDragAndDrop();
   }
-
-/*//////////// kept for copy/paste purposes //////////////////
-     $.post(json.global.webroot+'/community/manage', {communityId: json.community.community_id, removeUser: 'true', groupId:groupSelected,users:users},
-     function(data) {
-         jsonResponse = jQuery.parseJSON(data);
-          if(jsonResponse==null)
-            {
-              createNotive('Error',4000);
-              return;
-            }
-          if(jsonResponse[0])
-            {
-              createNotive(jsonResponse[1],4000);
-              window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
-              window.location.reload();
-            }
-          else
-            {
-              createNotive(jsonResponse[1],4000);
-            }
-     });
-////////////// kept for copy/paste purposes /////////////////*/

@@ -614,11 +614,11 @@ class CommunityController extends AppController
     $userId = $this->_getParam('userId');
     if(!isset($commId))
       {
-      throw new Zend_Exception('Must pass a community parameter');
+      throw new Zend_Exception('Must pass a communityId parameter');
       }
     if(!isset($userId))
       {
-      throw new Zend_Exception('Must pass a user parameter');
+      throw new Zend_Exception('Must pass a userId parameter');
       }
 
     $community = $this->Community->load($commId);
@@ -655,5 +655,49 @@ class CommunityController extends AppController
         }
       }
     echo JsonComponent::encode(array(true, 'Successfully added user to groups'));
+    }
+
+  /**
+   * Remove a user from a group
+   */
+  public function removeuserfromgroupAction()
+    {
+    $this->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('Must be logged in');
+      }
+    $groupId = $this->_getParam('groupId');
+    $userId = $this->_getParam('userId');
+    if(!isset($groupId))
+      {
+      throw new Zend_Exception('Must pass a groupId parameter');
+      }
+    if(!isset($userId))
+      {
+      throw new Zend_Exception('Must pass a userId parameter');
+      }
+
+    $group = $this->Group->load($groupId);
+    $user = $this->User->load($userId);
+    if(!$user || !$group)
+      {
+      throw new Zend_Exception('Invalid parameter');
+      }
+    $community = $group->getCommunity();
+
+    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception('Must be moderator or admin to manage groups');
+      }
+    if($community->getAdmingroupId() == $groupId &&
+       !$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception('Only admin users can remove from the admin group');
+      }
+    $this->Group->removeUser($group, $user);
+    echo JsonComponent::encode(array(true, 'Removed user '.$user->getFullName().' from group '.$group->getName()));
     }
   }//end class
