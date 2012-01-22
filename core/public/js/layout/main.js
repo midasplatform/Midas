@@ -11,14 +11,13 @@ midas.callbacks = midas.callbacks || {};
  * @param module The module name registering the callback
  * @param fn The callback function
  */
-midas.registerCallback = function(name, module, fn)
-{
+midas.registerCallback = function(name, module, fn) {
   if(midas.callbacks[name] == undefined)
     {
     midas.callbacks[name] = {};
     }
   midas.callbacks[name][module] = fn;
-}
+};
 
 /**
  * Perform a callback.
@@ -27,8 +26,7 @@ midas.registerCallback = function(name, module, fn)
  * @return A json object whose keys are the module names and whose values are
  * the return value for that module's registered callback.
  */
-midas.doCallback = function(name, args)
-{
+midas.doCallback = function(name, args) {
   if(midas.callbacks[name] == undefined)
     {
     return {};
@@ -38,14 +36,14 @@ midas.doCallback = function(name, args)
     retVal[index] = value(args);
     });
   return retVal;
-}
+};
 
 // Prevent error if console.log is called
 if (typeof console != "object") {
   var console = {
-    'log':function(){}
+    'log': function() {}
   };
-} 
+}
 
 // Main calls
 $(function() { 
@@ -306,7 +304,7 @@ $(function() {
          style: {
             classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
          }
-      })
+      });
     $('.uploadqtip').css('z-index:500');
     }
     
@@ -325,7 +323,7 @@ $(function() {
     }
     else
     {     
-      createNotive(json.login.contentUploadLogin,4000)
+      createNotive(json.login.contentUploadLogin,4000);
       $("div.TopDynamicBar").show('blind');
       loadAjaxDynamicBar('login','/user/login');
     }
@@ -356,7 +354,7 @@ $(function() {
    content: {
       attr: 'qtip'
    }
-})
+});
     
   $('div.TopbarRighta li.first').hover(
       function() {$('ul', this).css('display', 'block');},
@@ -382,7 +380,7 @@ function globalAuthAsk(url)
     }
   else
     {
-    createNotive(json.login.titleUploadLogin,4000)
+    createNotive(json.login.titleUploadLogin,4000);
     $("div.TopDynamicBar").show('blind');
     loadAjaxDynamicBar('login','/user/login');
     }
@@ -682,7 +680,7 @@ function sliceFileName(name,nchar)
  
                   // Update positions
                   updateGrowls();
-               })
+               });
             }
          },
          style: {
