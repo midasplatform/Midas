@@ -37,12 +37,12 @@ midas.community.manage.init = function()
 
   $('a.deleteGroupLink').click(function() {
     var html='';
-    html+=json.community.message['deleteGroupMessage'];
-    html+='<br/>';
-    html+='<br/>';
-    html+='<br/>';
-    html+='<input style="margin-left:140px;" class="globalButton deleteGroupYes" element="'+$(this).attr('groupid')+'" type="button" value="'+json.global.Yes+'"/>';
-    html+='<input style="margin-left:50px;" class="globalButton deleteGroupNo" type="button" value="'+json.global.No+'"/>';
+    html += json.community.message['deleteGroupMessage'];
+    html += '<br/>';
+    html += '<br/>';
+    html += '<br/>';
+    html += '<input style="margin-left:140px;" class="globalButton deleteGroupYes" element="'+$(this).attr('groupid')+'" type="button" value="'+json.global.Yes+'"/>';
+    html += '<input style="margin-left:50px;" class="globalButton deleteGroupNo" type="button" value="'+json.global.No+'"/>';
 
     showDialogWithContent(json.community.message['delete'],html,false);
 
@@ -61,6 +61,8 @@ midas.community.manage.init = function()
           $('a.groupLink[groupid='+groupid+']').parent('li').remove();
           createNotice(jsonResponse[1], 4000);
           midas.community.manage.init();
+          window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
+          window.location.reload();
           }
         else
           {
@@ -223,12 +225,6 @@ midas.community.manage.promoteMember = function(userId)
   showDialog('Add user to groups', false);
 }
 
-midas.community.manage.removeMember = function(userId)
-{
-  //TODO show confirmation dialog
-  alert('removing member ' + userId);
-}
-
 midas.community.manage.removeFromGroup = function(userId, groupId)
 {
   $.post(json.global.webroot+'/community/removeuserfromgroup', {groupId: groupId, userId: userId}, function(data) {
@@ -245,6 +241,28 @@ midas.community.manage.removeFromGroup = function(userId, groupId)
                               json.community.community_id+'#tabs-2');
       window.location.reload();
       }
+    });
+}
+
+/** Used to remove a user from the members group, and thus all other groups */
+midas.community.manage.removeMember = function(userId, groupId)
+{
+  var html='';
+  html += 'Are you sure you want to remove the user from this community? They will be removed from all groups.';
+  html += '<br/>';
+  html += '<br/>';
+  html += '<br/>';
+  html += '<span style="float: right">';
+  html += '<input class="globalButton removeUserYes" type="button" value="'+json.global.Yes+'"/>';
+  html += '<input style="margin-left:15px;" class="globalButton removeUserNo" type="button" value="'+json.global.No+'"/>';
+
+  showDialogWithContent('Remove user from community', html, false);
+  $('input.removeUserYes').unbind('click').click(function() {
+    midas.community.manage.removeFromGroup(userId, groupId);
+    });
+  $('input.removeUserNo').unbind('click').click(function() {
+    $( "div.MainDialog" ).dialog('close');
+    alert('user not deleted');
     });
 }
 
