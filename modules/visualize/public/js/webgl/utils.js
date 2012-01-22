@@ -1,7 +1,6 @@
 // mouse objects
 var projector;
 var ray;
-var previouslySelectedObject = null;
 var selectedObject = null;
 var mouse2D;
 
@@ -21,6 +20,7 @@ var progresBarStep;progressBar = 0;
 // axes
 var cameraAxes, sceneAxes, rendererAxes;
 var axesMesh;
+var mouseDownTime;
 
 function initAxes(divObj)
   {
@@ -180,6 +180,19 @@ function initLights()
   dirLight = new THREE.DirectionalLight( 0xFFFFFF );
   dirLight.position.set( 0, 0, 0 );
   dirLight.position.normalize();
+  //dirLight.intensity = 0.5
+  scene.add( dirLight );
+
+  dirLight = new THREE.DirectionalLight( 0xFFFFFF );
+  dirLight.position.set( 0, 1, 0 );
+  dirLight.position.normalize();
+  dirLight.intensity = 0.3
+  scene.add( dirLight );
+
+  dirLight = new THREE.DirectionalLight( 0xFFFFFF );
+  dirLight.position.set( 0, 0, 0 );
+  dirLight.position.normalize();
+  dirLight.intensity = 0.3
   scene.add( dirLight );
   }
 
@@ -203,9 +216,18 @@ function initInteractions()
   // events
   window.addEventListener( 'resize', onWindowResizeWebGL, false );
   document.addEventListener( 'mousemove', onDocumentMouseMoveWebGL, false );
-  $('body').click(function(e){
-    onDocumentMouseDownWebGL(e);
-  });
+  containerWebgl.mousedown(function() {
+     mouseDownTime = new Date();
+    });
+
+  containerWebgl.mouseup(function() {
+    var currentTime = new Date();
+    var elapsedTime = currentTime.valueOf()- mouseDownTime.valueOf();
+    if(elapsedTime < 300)
+      {
+      shortMouseClick();
+      }
+    });
 
   // mouse interactions et objects
   mouse2D = new THREE.Vector3( 0, 0, 0 );
@@ -357,19 +379,6 @@ function onWindowResizeWebGL( event )
   camera.radius = ( width + height ) / 4;
 	}
 
-// event when mouse click. Please define onDocumentMouseDown
-function onDocumentMouseDownWebGL( event )
-  {
-  if(typeof onDocumentMouseDown == 'function')
-    {
-    onDocumentMouseDown(event);
-    }
-  else
-    {
-    return;
-    }
-	}
-
 // store mouse location
 function onDocumentMouseMoveWebGL( event )
   {
@@ -408,17 +417,15 @@ function performRayCast()
     {
     for( i = 0; i < intersects.length; i++ )
       {
-      var object = intersects[0];
+      var object = intersects[i];
       if(object.object.material.opacity>0)
         {
-        previouslySelectedObject = selectedObject;
-        selectedObject = intersects[0];
+        selectedObject = intersects[i];
         break;
         }
       }
     }
 }
-
 
 function defaultEndRenderer()
   {
@@ -433,7 +440,6 @@ function defaultEndRenderer()
     }
   }
 
-
 function animate()
   {
 	requestAnimationFrame( animate );
@@ -442,15 +448,10 @@ function animate()
 
 function loaderElements(files)
   {
-  containerWebgl.before('  <progress id="progressBarWebgl" value="0" max="100"><span id="fallback"><!-- Your fallback goes here --></span></progress>');
-  $('#progressBarWebgl').hide();
-  $('#progressBarWebgl').css('position', 'absolute');
-  $('#progressBarWebgl').css('top', '5px');
-  $('#progressBarWebgl').css('right', '5px');
-  $('#progressBarWebgl').css('z-index', '100');
   var loader = new THREE.BinaryLoader();
   if(files.length != 0)
     {
+    $('#loadingBox').show();
     progresBarStep = 100/files.length;
     $('#progressBarWebgl').show();
     $('#progressBarWebgl').val(progressBar);
@@ -468,7 +469,7 @@ function incrementProgressBar()
   $('#progressBarWebgl').val(progressBar);
   if(progressBar >= 100)
     {
-    $('#progressBarWebgl').hide();
+    $('#loadingBox').hide();
     progressBar = 0;
     }
   }
