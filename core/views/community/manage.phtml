@@ -192,9 +192,13 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
               echo '<tr class='.$class.'>';
               echo '  <td width="80%">'.$this->linkuser($user).'</td>';
               echo '  <td><span class="actionsList">';
-              echo '  <a qtip="Remove member from administrators group" '.
-                   '     class="tableActions removeMember" onclick="midas.community.manage.removeFromGroup('.$user->getKey().','.$this->adminGroup->getKey().');">';
-              echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
+              if($this->isAdmin) //only admins can remove from admin group
+                {
+                echo '<a qtip="Remove member from administrators group" '.
+                     '   class="tableActions removeMember" onclick="midas.community.manage.removeFromGroup('.
+                     $user->getKey().','.$this->adminGroup->getKey().');">';
+                echo '<img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
+                }
               echo '  </span></td>';
               echo '</tr>';
               }

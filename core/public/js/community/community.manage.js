@@ -183,7 +183,7 @@ midas.community.manage.successGroupChange = function(responseText, statusText, x
     }
   else
     {
-    createNotice(jsonResponse[1],4000);
+    createNotice(jsonResponse[1], 4000);
     }
 }
 
@@ -234,7 +234,7 @@ midas.community.manage.removeFromGroup = function(userId, groupId)
       createNotice('Error', 4000);
       return;
       }
-    createNotice(jsonResponse[0], 4000);
+    createNotice(jsonResponse[1], 4000);
     if(jsonResponse[0])
       {
       window.location.replace(json.global.webroot+'/community/manage?communityId='+
@@ -258,11 +258,11 @@ midas.community.manage.removeMember = function(userId, groupId)
 
   showDialogWithContent('Remove user from community', html, false);
   $('input.removeUserYes').unbind('click').click(function() {
+    $('div.MainDialog').dialog('close');
     midas.community.manage.removeFromGroup(userId, groupId);
     });
   $('input.removeUserNo').unbind('click').click(function() {
-    $( "div.MainDialog" ).dialog('close');
-    alert('user not deleted');
+    $('div.MainDialog').dialog('close');
     });
 }
 
@@ -290,7 +290,6 @@ midas.community.manage.initCommunityPrivacy = function()
 }
 
 $(document).ready(function() {
-
   midas.community.manage.initCommunityPrivacy();
 
   $("#tabsGeneric").tabs({
@@ -307,7 +306,6 @@ $(document).ready(function() {
     });
   $("#tabsGeneric").show();
   $('img.tabsLoading').hide();
-
 
   $('a#communityDeleteLink').click(function() {
     var html='';
@@ -343,24 +341,18 @@ $(document).ready(function() {
     });
 
     //init tree
-    $('img.tabsLoading').hide()
+    $('img.tabsLoading').hide();
 
-
-     $('table')
-        .filter(function() {
-            return this.id.match(/browseTable*/);
-        })
-        .treeTable();
-    ;
+    $('table').filter(function() {
+      return this.id.match(/browseTable*/);
+      }).treeTable();
     $("img.tableLoading").hide();
     $("table#browseTable").show();
-
     $('div.userPersonalData').hide();
 
     midas.community.manage.initDragAndDrop();
     $('td.tdUser input').removeAttr('checked');
   });
-
 
 //depends on common.browser.js
 var ajaxSelectRequest='';
