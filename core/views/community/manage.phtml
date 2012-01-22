@@ -137,7 +137,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
                    '     class="tableActions promoteMember" onclick="midas.community.manage.promoteMember('.$user->getKey().');">';
               echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/add.png" /></a>';
               echo '  <a qtip="Remove member from this community" '.
-                   '     class="tableActions removeMember" onclick="midas.community.manage.removeMember('.$user->getKey().');">';
+                   '     class="tableActions removeMember" onclick="midas.community.manage.removeMember('.$user->getKey().','.$this->memberGroup->getKey().');">';
               echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
               echo '  </span></td>';
               echo '</tr>';
