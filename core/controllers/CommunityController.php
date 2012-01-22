@@ -692,10 +692,11 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception('Must be moderator or admin to manage groups');
       }
-    if($community->getAdmingroupId() == $groupId &&
-       !$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN) &&
+       $this->Community->policyCheck($community, $user, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception('Only admin users can remove from the admin group');
+      echo JsonComponent::encode(array(false, 'Only admins can remove users with admin privileges'));
+      return;
       }
     $this->Group->removeUser($group, $user);
     echo JsonComponent::encode(array(true, 'Removed user '.$user->getFullName().' from group '.$group->getName()));
