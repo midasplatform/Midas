@@ -24,7 +24,7 @@ require_once BASE_PATH.'/core/models/base/GroupModelBase.php';
  *  UserModel
  *  Pdo Model
  */
-class GroupModel  extends GroupModelBase
+class GroupModel extends GroupModelBase
 {
 
   /** Get a groups by Community */

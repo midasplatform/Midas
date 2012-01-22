@@ -21,7 +21,9 @@
 /** Community Controller*/
 class CommunityController extends AppController
   {
-  public $_models = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Itempolicygroup', 'Group', 'User', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Item', 'CommunityInvitation');
+  public $_models = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Itempolicygroup',
+                          'Group', 'User', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser',
+                          'Item', 'CommunityInvitation');
   public $_daos = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Group', 'User');
   public $_components = array('Sortdao', 'Date');
   public $_forms = array('Community');
@@ -537,4 +539,165 @@ class CommunityController extends AppController
         return;
       }
     } //end valid entry
+
+  /** Show the dialog for adding a member to groups */
+  public function promotedialogAction()
+    {
+    $this->disableLayout();
+
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('Must be logged in');
+      }
+
+    $commId = $this->_getParam('community');
+    $userId = $this->_getParam('user');
+    if(!isset($commId))
+      {
+      throw new Zend_Exception('Must pass a community parameter');
+      }
+    if(!isset($userId))
+      {
+      throw new Zend_Exception('Must pass a user parameter');
+      }
+
+    $community = $this->Community->load($commId);
+    $user = $this->User->load($userId);
+    if(!$user || !$community)
+      {
+      throw new Zend_Exception('Invalid parameter');
+      }
+    if(!$this->Group->userInGroup($user, $community->getMemberGroup()))
+      {
+      throw new Zend_Exception('User is not in community members group');
+      }
+    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception('Must be moderator or admin to manage groups');
+      }
+    $groups = $community->getGroups();
+    $availableGroups = array();
+    foreach($groups as $group)
+      {
+      if($group->getKey() == $community->getAdminGroup()->getKey())
+        {
+        if($this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN)
+           && !$this->Group->userInGroup($user, $group))
+          {
+          $availableGroups[] = $group; // admins can promote other users to admins
+          }
+        }
+      else if(!$this->Group->userInGroup($user, $group))
+        {
+        $availableGroups[] = $group; // only show groups they aren't already in
+        }
+      }
+    $this->view->availableGroups = $availableGroups;
+    $this->view->user = $user;
+    $this->view->community = $community;
+    }
+
+  /**
+   * Submitted by the promotedialog view; actually performs the logic of
+   * adding users to groups
+   */
+  public function promoteuserAction()
+    {
+    $this->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('Must be logged in');
+      }
+    $commId = $this->_getParam('communityId');
+    $userId = $this->_getParam('userId');
+    if(!isset($commId))
+      {
+      throw new Zend_Exception('Must pass a communityId parameter');
+      }
+    if(!isset($userId))
+      {
+      throw new Zend_Exception('Must pass a userId parameter');
+      }
+
+    $community = $this->Community->load($commId);
+    $user = $this->User->load($userId);
+    if(!$user || !$community)
+      {
+      throw new Zend_Exception('Invalid parameter');
+      }
+    if(!$this->Group->userInGroup($user, $community->getMemberGroup()))
+      {
+      throw new Zend_Exception('User is not in community members group');
+      }
+    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception('Must be moderator or admin to manage groups');
+      }
+    $params = $this->_getAllParams();
+    foreach($params as $name => $value)
+      {
+      if(strpos($name, 'groupCheckbox') !== false && $value)
+        {
+        list(, $id) = explode('_', $name);
+        $group = $this->Group->load($id);
+        if(!$group)
+          {
+          throw new Zend_Exception('Invalid group id: '.$id);
+          }
+        if($id == $community->getAdmingroupId() &&
+           !$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+          {
+          throw new Zend_Exception('Cannot add users to admin unless you are admin');
+          }
+        $this->Group->addUser($group, $user);
+        }
+      }
+    echo JsonComponent::encode(array(true, 'Successfully added user to groups'));
+    }
+
+  /**
+   * Remove a user from a group
+   */
+  public function removeuserfromgroupAction()
+    {
+    $this->disableLayout();
+    $this->_helper->viewRenderer->setNoRender();
+
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('Must be logged in');
+      }
+    $groupId = $this->_getParam('groupId');
+    $userId = $this->_getParam('userId');
+    if(!isset($groupId))
+      {
+      throw new Zend_Exception('Must pass a groupId parameter');
+      }
+    if(!isset($userId))
+      {
+      throw new Zend_Exception('Must pass a userId parameter');
+      }
+
+    $group = $this->Group->load($groupId);
+    $user = $this->User->load($userId);
+    if(!$user || !$group)
+      {
+      throw new Zend_Exception('Invalid parameter');
+      }
+    $community = $group->getCommunity();
+
+    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception('Must be moderator or admin to manage groups');
+      }
+    if($community->getAdmingroupId() == $groupId &&
+       !$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception('Only admin users can remove from the admin group');
+      }
+    $this->Group->removeUser($group, $user);
+    echo JsonComponent::encode(array(true, 'Removed user '.$user->getFullName().' from group '.$group->getName()));
+    }
   }//end class

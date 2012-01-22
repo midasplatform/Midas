@@ -33,8 +33,6 @@ $('table#listLogs').tablesorter({
   }).bind('sortEnd', function() {
     $('input.logSelect').enableCheckboxRangeSelection();
   });
-// Remove dummy row (it's required to instantiate the tablesorter properly
-$('tr#dummy').remove();
 
 // Select/deslect all entries action
 $('#selectAllCheckbox').click(function() {
