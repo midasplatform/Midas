@@ -53,7 +53,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
   <div class="tabs" id='tabsGeneric'>
     <ul>
       <li><a href="#tabs-1"><?php echo $this->t("Info")?></a></li>
-      <li><a href="#tabs-members"><?php echo $this->t('Members & Groups');?></a></li>
+      <li><a href="#tabs-2"><?php echo $this->t('Members & Groups');?></a></li>
       <li><a href="#tabs-3"><?php echo $this->t('Files');?></a></li>
       <?php
           foreach($this->customTabs as $modules)
@@ -92,7 +92,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
 
     </div>
 
-    <div id="tabs-members">
+    <div id="tabs-2">
       <td style="width: 50%;vertical-align: top;">
         <div  class='communityMemberList'>
           <?php
@@ -120,7 +120,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
           <table id='memberListTable' class="tablesorter">
             <thead>
               <tr>
-                <th>Member</th><th>Actions</th>
+                <th width="80%">Member</th><th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -151,7 +151,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
           <table id='moderatorListTable' class="tablesorter">
             <thead>
               <tr>
-                <th>Moderator</th><th>Actions</th>
+                <th width="80%">Moderator</th><th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -179,7 +179,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
           <table id='adminListTable' class="tablesorter">
             <thead>
               <tr>
-                <th>Administrator</th><th>Actions</th>
+                <th width="80%">Administrator</th><th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -212,7 +212,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
           echo '[<a class="deleteGroupLink" groupid="'.$group->getKey().'" href="javascript:;">Delete</a>]';
           echo '</h4>';
           echo '<div><table class="tablesorter">';
-          echo '  <thead><tr><th>Name</th><th>Actions</th></tr></thead>';
+          echo '  <thead><tr><th width="80%">User</th><th>Actions</th></tr></thead>';
           echo '  <tbody>';
           $stripeIndex = 0;
           foreach($group->users as $user)

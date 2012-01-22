@@ -110,4 +110,28 @@ abstract class GroupModelBase extends AppModel
     return $group;
     }
 
+  /**
+   * Return (bool) whether or not the user is in the group
+   */
+  public function userInGroup($user, $group)
+    {
+    if(!$user instanceof UserDao)
+      {
+      throw new Zend_Exception('Should be a user');
+      }
+    if(!$group instanceof GroupDao)
+      {
+      throw new Zend_Exception('Should be a group');
+      }
+
+    foreach($user->getGroups() as $usergroup)
+      {
+      if($usergroup->getKey() == $group->getKey())
+        {
+        return true;
+        }
+      }
+    return false;
+    }
+
 } // end class GroupModelBase

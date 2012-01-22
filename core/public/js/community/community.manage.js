@@ -4,68 +4,306 @@ midas.community.manage = {};
 
 var disableElementSize=true;
 
+midas.community.manage.init = function()
+{
+  var mainDialogContentDiv = $('div.MainDialogContent');
+  var createGroupFromDiv = $('div#createGroupFrom');
+
+  $('a#createGroupLink').click(function() {
+    $('div.groupUsersSelection').hide();
+    $('td.tdUser input').removeAttr('checked');
+    mainDialogContentDiv.html('');
+    createGroupFromDiv.find('input[name=groupId]').val('0');
+    createGroupFromDiv.find('input[name=name]').val('');
+    showDialogWithContent(json.community.message.createGroup, createGroupFromDiv.html(), false);
+    mainDialogContentDiv.find('form.editGroupForm').ajaxForm({
+      beforeSubmit: midas.community.manage.validateGroupChange,
+      success: midas.community.manage.successGroupChange
+      });
+    });
+
+  $('a.editGroupLink').click(function() {
+    mainDialogContentDiv.html('');
+    var id = $(this).attr('groupid');
+    createGroupFromDiv.find('input[name=groupId]').val(id);
+    var groupName=$(this).parent('li').find('a:first').html();
+    showDialogWithContent(json.community.message.editGroup,createGroupFromDiv.html(), false);
+    $('form.editGroupForm input#name').val(groupName);
+    mainDialogContentDiv.find('form.editGroupForm').ajaxForm({
+      beforeSubmit: midas.community.manage.validateGroupChange,
+      success: midas.community.manage.successGroupChange
+      });
+    });
+
+  $('a.deleteGroupLink').click(function() {
+    var html='';
+    html+=json.community.message['deleteGroupMessage'];
+    html+='<br/>';
+    html+='<br/>';
+    html+='<br/>';
+    html+='<input style="margin-left:140px;" class="globalButton deleteGroupYes" element="'+$(this).attr('groupid')+'" type="button" value="'+json.global.Yes+'"/>';
+    html+='<input style="margin-left:50px;" class="globalButton deleteGroupNo" type="button" value="'+json.global.No+'"/>';
+
+    showDialogWithContent(json.community.message['delete'],html,false);
+
+    $('input.deleteGroupYes').unbind('click').click(function() {
+      var groupid = $(this).attr('element');
+      $.post(json.global.webroot+'/community/manage', {communityId: json.community.community_id, deleteGroup: 'true', groupId:groupid}, function(data) {
+        var jsonResponse = jQuery.parseJSON(data);
+        if(jsonResponse == null)
+          {
+          createNotice('Error', 4000);
+          return;
+          }
+        if(jsonResponse[0])
+          {
+          $("div.MainDialog").dialog("close");
+          $('a.groupLink[groupid='+groupid+']').parent('li').remove();
+          createNotice(jsonResponse[1], 4000);
+          midas.community.manage.init();
+          }
+        else
+          {
+          createNotice(jsonResponse[1], 4000);
+          }
+        });
+      });
+    $('input.deleteGroupNo').unbind('click').click(function() {
+      $( "div.MainDialog" ).dialog('close');
+      });
+    });
+}
+
+midas.community.manage.initDragAndDrop = function()
+{
+  $("#browseTable .file, #browseTable .folder:not(.notdraggable)").draggable({
+    helper: "clone",
+    cursor: "move",
+    opacity: .75,
+    refreshPositions: true, // Performance?
+    revert: "invalid",
+    revertDuration: 300,
+    scroll: true,
+    start: function() {
+      $('div.userPersonalData').show();
+      }
+    });
+
+  // Configure droppable rows
+  $("#browseTable .folder").each(function() {
+    $(this).parents("tr").droppable({
+      accept: ".file, .folder",
+      drop: function(e, ui) {
+        // Call jQuery treeTable plugin to move the branch
+        var elements='';
+        if($(ui.draggable).parents("tr").attr('type') == 'folder')
+          {
+          elements = $(ui.draggable).parents("tr").attr('element')+';';
+          }
+        else
+          {
+          elements = ';'+$(ui.draggable).parents("tr").attr('element');
+          }
+        var from_ojbect;
+        var classNames=$(ui.draggable).parents("tr").attr('class').split(' ');
+        for(key in classNames) {
+          if(classNames[key].match('child-of-')) {
+            from_obj = "#" + classNames[key].substring(9);
+            }
+          }
+        var destination_obj=this;
+
+        // do nothing if drop item(s) to its current folder
+        if($(this).attr('id') != $(from_obj).attr('id')) {
+          $.post(json.global.webroot+'/browse/movecopy',
+                 {moveElement: true, elements: elements , destination:$(this).attr('element'),from:$(from_obj).attr('element'),ajax:true},
+                 function(data) {
+            var jsonResponse = jQuery.parseJSON(data);
+            if(jsonResponse==null)
+              {
+              createNotice('Error', 4000);
+              return;
+              }
+            if(jsonResponse[0])
+              {
+              createNotice(jsonResponse[1], 1500);
+              $($(ui.draggable).parents("tr")).appendBranchTo(destination_obj);
+              }
+            else
+              {
+              createNotice(jsonResponse[1], 4000);
+              }
+            });
+          }
+        },
+      hoverClass: "accept",
+      over: function(e, ui) {
+        // Make the droppable branch expand when a draggable node is moved over it.
+        if(this.id != $(ui.draggable.parents("tr")[0]).id && !$(this).is(".expanded")) {
+          $(this).expand();
+          }
+        }
+      });
+    });
+}
+
+midas.community.manage.validateGroupChange = function (formData, jqForm, options)
+{
+  var form = jqForm[0];
+  if(form.name.value.length < 1)
+    {
+    createNotice(json.community.message.infoErrorName, 4000);
+    return false;
+    }
+}
+
+midas.community.manage.successGroupChange = function(responseText, statusText, xhr, form)
+{
+  $("div.MainDialog").dialog("close");
+  var jsonResponse = jQuery.parseJSON(responseText);
+  if(jsonResponse == null)
+    {
+    createNotice('Error',4000);
+    return;
+    }
+  if(jsonResponse[0])
+    {
+    createNotice(jsonResponse[1], 4000);
+    var obj = $('a.groupLink[groupId='+jsonResponse[2].group_id+']');
+    if(obj.length > 0)
+      {
+      obj.html(jsonResponse[2].name);
+      }
+
+    midas.community.manage.init();
+    window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
+    window.location.reload();
+    }
+  else
+    {
+    createNotice(jsonResponse[1],4000);
+    }
+}
+
+midas.community.manage.validateInfoChange = function(formData, jqForm, options)
+{
+  var form = jqForm[0];
+  if(form.name.value.length < 1)
+    {
+    createNotice(json.community.message.infoErrorName, 4000);
+    return false;
+    }
+}
+
+midas.community.manage.successInfoChange = function(responseText, statusText, xhr, form)
+{
+  var jsonResponse = jQuery.parseJSON(responseText);
+  if(jsonResponse == null)
+    {
+    createNotice('Error', 4000);
+    return;
+    }
+  if(jsonResponse[0])
+    {
+    $('div.genericName').html(jsonResponse[2]);
+    createNotice(jsonResponse[1], 4000);
+    }
+  else
+    {
+    createNotice(jsonResponse[1], 4000);
+    }
+}
+
 midas.community.manage.promoteMember = function(userId)
 {
-  alert('promoting member ' + userId);
+  loadDialog('promoteId'+userId+'.'+
+             json.community.community_id+
+             new Date().getTime(),
+             '/community/promotedialog?user='+userId+'&community='+json.community.community_id);
+  showDialog('Add user to groups', false);
 }
 
 midas.community.manage.removeMember = function(userId)
 {
+  //TODO show confirmation dialog
   alert('removing member ' + userId);
 }
 
 midas.community.manage.removeFromGroup = function(userId, groupId)
 {
+  // No confirmation dialog here, just remove from the group
   alert('removing member ' + userId + ' from group ' + groupId);
+}
+
+midas.community.manage.initCommunityPrivacy = function()
+{
+  var inputCanJoin = $('input[name=canJoin]');
+  var inputPrivacy = $('input[name=privacy]');
+  var canJoinDiv = $('div#canJoinDiv');
+
+  if(inputPrivacy.filter(':checked').val() == 1) //private
+    {
+    inputCanJoin.attr('disabled', 'disabled');
+    inputCanJoin.removeAttr('checked');
+    inputCanJoin.filter('[value=0]').attr('checked', true); //invitation
+    canJoinDiv.hide();
+    }
+  else
+    {
+    inputCanJoin.removeAttr('disabled');
+    canJoinDiv.show();
+    }
+  inputPrivacy.change(function(){
+  midas.community.manage.initCommunityPrivacy();
+  });
 }
 
 $(document).ready(function() {
 
-    initCommunityPrivacy();
+  midas.community.manage.initCommunityPrivacy();
 
-    $( "#tabsGeneric" ).tabs({
-      select: function(event, ui) {
-        $('div.genericAction').show();
-        $('div.genericCommunities').show();
-        $('div.genericStats').show();
-        $('div.viewInfo').hide();
-        $('div.memberSelection').hide();
-        $('div.groupUsersSelection').hide();
-        $('div.viewAction').hide();
-        $('td.tdUser input').removeAttr('checked');
-        }
+  $("#tabsGeneric").tabs({
+    select: function(event, ui) {
+      $('div.genericAction').show();
+      $('div.genericCommunities').show();
+      $('div.genericStats').show();
+      $('div.viewInfo').hide();
+      $('div.memberSelection').hide();
+      $('div.groupUsersSelection').hide();
+      $('div.viewAction').hide();
+      $('td.tdUser input').removeAttr('checked');
+      }
+    });
+  $("#tabsGeneric").show();
+  $('img.tabsLoading').hide();
+
+
+  $('a#communityDeleteLink').click(function() {
+    var html='';
+    html += json.community.message['deleteMessage'];
+    html += '<br/>';
+    html += '<br/>';
+    html += '<br/>';
+    html += '<input style="margin-left:140px;" class="globalButton deleteCommunityYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
+    html += '<input style="margin-left:50px;" class="globalButton deleteCommunityNo" type="button" value="'+json.global.No+'"/>';
+
+    showDialogWithContent(json.community.message['delete'], html, false);
+
+    $('input.deleteCommunityYes').unbind('click').click(function() {
+      location.replace(json.global.webroot+'/community/delete?communityId='+json.community.community_id);
       });
-    $("#tabsGeneric").show();
-    $('img.tabsLoading').hide();
-
-
-     $('a#communityDeleteLink').click(function()
-    {
-      var html='';
-      html+=json.community.message['deleteMessage'];
-      html+='<br/>';
-      html+='<br/>';
-      html+='<br/>';
-      html+='<input style="margin-left:140px;" class="globalButton deleteCommunityYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
-      html+='<input style="margin-left:50px;" class="globalButton deleteCommunityNo" type="button" value="'+json.global.No+'"/>';
-
-      showDialogWithContent(json.community.message['delete'],html,false);
-
-      $('input.deleteCommunityYes').unbind('click').click(function()
-        {
-          location.replace(json.global.webroot+'/community/delete?communityId='+json.community.community_id);
-        });
-      $('input.deleteCommunityNo').unbind('click').click(function()
-        {
-           $( "div.MainDialog" ).dialog('close');
-        });
-
+    $('input.deleteCommunityNo').unbind('click').click(function() {
+      $( "div.MainDialog" ).dialog('close');
+      });
     });
 
-    $('#editCommunityForm').ajaxForm( {beforeSubmit: validateInfoChange, success: successInfoChange} );
+    $('#editCommunityForm').ajaxForm({
+      beforeSubmit: midas.community.manage.validateInfoChange,
+      success: midas.community.manage.successInfoChange
+      });
 
     //init group tab
-    init();
+    midas.community.manage.init();
     $('table.tablesorter').tablesorter({
       widgets: ['zebra'],
       headers: {
@@ -88,235 +326,38 @@ $(document).ready(function() {
 
     $('div.userPersonalData').hide();
 
-    initDragAndDrop();
+    midas.community.manage.initDragAndDrop();
     $('td.tdUser input').removeAttr('checked');
   });
 
 
-      //dependance: common/browser.js
-    var ajaxSelectRequest='';
-    function callbackSelect(node)
-    {
-      $('div.genericAction').show();
-      $('div.genericCommunities').hide();
-      $('div.genericStats').hide();
-      $('div.viewInfo').show();
-      $('div.viewAction').show()
-      genericCallbackSelect(node);
-    }
-
-    function callbackDblClick(node)
-    {
-    }
-
-    function callbackCheckboxes(node)
-    {
-      genericCallbackCheckboxes(node);
-    }
-
-    function callbackCreateElement(node)
-    {
-      initDragAndDrop();
-    }
-
-function initDragAndDrop()
-{
-      $("#browseTable .file, #browseTable .folder:not(.notdraggable)").draggable({
-      helper: "clone",
-      cursor: "move",
-      opacity: .75,
-      refreshPositions: true, // Performance?
-      revert: "invalid",
-      revertDuration: 300,
-      scroll: true,
-      start: function() {
-          $('div.userPersonalData').show();
-        }
-      });
-
-      // Configure droppable rows
-      $("#browseTable .folder").each(function() {
-        $(this).parents("tr").droppable({
-          accept: ".file, .folder",
-          drop: function(e, ui) {
-            // Call jQuery treeTable plugin to move the branch
-           var elements='';
-           if($(ui.draggable).parents("tr").attr('type')=='folder')
-             {
-               elements=$(ui.draggable).parents("tr").attr('element')+';';
-             }
-           else
-             {
-               elements=';'+$(ui.draggable).parents("tr").attr('element');
-             }
-           var from_ojbect;
-           var classNames=$(ui.draggable).parents("tr").attr('class').split(' ');
-            for(key in classNames) {
-              if(classNames[key].match('child-of-')) {
-                from_obj = "#" + classNames[key].substring(9);
-              }
-            }
-           var destination_obj=this;
-
-           // do nothing if drop item(s) to its current folder
-           if ($(this).attr('id') != $(from_obj).attr('id')){
-             $.post(json.global.webroot+'/browse/movecopy', {moveElement: true, elements: elements , destination:$(this).attr('element'),from:$(from_obj).attr('element'),ajax:true},
-             function(data) {
-
-               jsonResponse = jQuery.parseJSON(data);
-                if(jsonResponse==null)
-                  {
-                    createNotive('Error',4000);
-                    return;
-                  }
-                if(jsonResponse[0])
-                  {
-                    createNotive(jsonResponse[1],1500);
-                    $($(ui.draggable).parents("tr")).appendBranchTo(destination_obj);
-                  }
-                else
-                  {
-                    createNotive(jsonResponse[1],4000);
-                  }
-             });
-           }
-          },
-          hoverClass: "accept",
-          over: function(e, ui) {
-            // Make the droppable branch expand when a draggable node is moved over it.
-            if(this.id != $(ui.draggable.parents("tr")[0]).id && !$(this).is(".expanded")) {
-              $(this).expand();
-            }
-          }
-        });
-      });
-}
-
-function init()
-{
-  groupUsersSelected=new Array();
-  memberSelected=new Array();
-  var mainDialogContentDiv = $('div.MainDialogContent');
-  var createGroupFromDiv = $('div#createGroupFrom');
-  $('a.groupLink').each(function(){
-    var id=$(this).attr('groupid');
-    $(this).parent('li').find('span').html(' ('+($('div#groupList_'+id+' td.tdUser').size())+')');
-  });
-
-      $('a#createGroupLink').click(function()
-      {
-        $('div.groupUsersSelection').hide();
-        $('td.tdUser input').removeAttr('checked');
-        mainDialogContentDiv.html('');
-        createGroupFromDiv.find('input[name=groupId]').val('0');
-        createGroupFromDiv.find('input[name=name]').val('');
-        showDialogWithContent(json.community.message.createGroup,createGroupFromDiv.html(),false);
-        mainDialogContentDiv.find('form.editGroupForm').ajaxForm( {beforeSubmit: validateGroupChange, success:       successGroupChange} );
-      });
-
-    $('a.editGroupLink').click(function()
-      {
-        mainDialogContentDiv.html('');
-        var id=$(this).attr('groupid');
-        createGroupFromDiv.find('input[name=groupId]').val(id);
-        var groupName=$(this).parent('li').find('a:first').html();
-        showDialogWithContent(json.community.message.editGroup,createGroupFromDiv.html(),false);
-        $('form.editGroupForm input#name').val(groupName);
-        mainDialogContentDiv.find('form.editGroupForm').ajaxForm( {beforeSubmit: validateGroupChange, success:       successGroupChange} );
-      });
-
-    $('a.groupLink').click(function()
-      {
-        $('td#userGroupSelected').html('');
-        $('td#userMemberSelected').html('');
-        $('div.communityMemberList').show();
-        $('div.groupList').hide();
-        var id=$(this).attr('groupid');
-        $('div#groupList_'+ id).show();
-        $('td.tdUser input').removeAttr('checked');
-        groupSelected=id;
-      });
-
-    $('td.tdUser input').click(function()
-      {
-        initCheckboxSelection();
-      });
-
-
-    $('a.deleteGroupLink').click(function()
-    {
-      var html='';
-      html+=json.community.message['deleteGroupMessage'];
-      html+='<br/>';
-      html+='<br/>';
-      html+='<br/>';
-      html+='<input style="margin-left:140px;" class="globalButton deleteGroupYes" element="'+$(this).attr('groupid')+'" type="button" value="'+json.global.Yes+'"/>';
-      html+='<input style="margin-left:50px;" class="globalButton deleteGroupNo" type="button" value="'+json.global.No+'"/>';
-
-      showDialogWithContent(json.community.message['delete'],html,false);
-
-      $('input.deleteGroupYes').unbind('click').click(function()
-        {
-          var groupid=$(this).attr('element');
-          $.post(json.global.webroot+'/community/manage', {communityId: json.community.community_id, deleteGroup: 'true', groupId:groupid},
-           function(data) {
-               jsonResponse = jQuery.parseJSON(data);
-                if(jsonResponse==null)
-                  {
-                    createNotive('Error',4000);
-                    return;
-                  }
-                if(jsonResponse[0])
-                  {
-                    $( "div.MainDialog" ).dialog("close");
-                    $('a.groupLink[groupid='+groupid+']').parent('li').remove();
-                    createNotive(jsonResponse[1],4000);
-                    init();
-                  }
-                else
-                  {
-                    createNotive(jsonResponse[1],4000);
-                  }
-           });
-        });
-      $('input.deleteGroupNo').unbind('click').click(function()
-        {
-           $( "div.MainDialog" ).dialog('close');
-        });
-
-    });
-
-
-}
-var datatable=new Array();
-var groupSelected;
-var groupUsersSelected=new Array();
-var memberSelected=new Array();
-function initCheckboxSelection()
+//depends on common.browser.js
+var ajaxSelectRequest='';
+function callbackSelect(node)
   {
-    $('td#userGroupSelected').html('');
-    $('.memberSelection').hide();
-    $('.groupUsersSelection').hide();
-    groupUsersSelected=new Array();
-    memberSelected=new Array();
-    $('div.groupMemberList input:checked').each(function()
-    {
-      groupUsersSelected.push($(this).attr('userid'));
-      $('.groupUsersSelection').show();
-    });
-    $('div.communityMemberList input:checked').each(function()
-    {
-      memberSelected.push($(this).attr('userid'));
-      $('.memberSelection').show();
-    });
+  $('div.genericAction').show();
+  $('div.genericCommunities').hide();
+  $('div.genericStats').hide();
+  $('div.viewInfo').show();
+  $('div.viewAction').show()
+  genericCallbackSelect(node);
+  }
 
+function callbackDblClick(node)
+  {
+  }
 
-    $('a.removeUserLink').click(function()
-    {
-    var users='';
-    $.each( groupUsersSelected, function(i, v){
-       users+=v+'-';
-     });
+function callbackCheckboxes(node)
+  {
+  genericCallbackCheckboxes(node);
+  }
+
+function callbackCreateElement(node)
+  {
+  midas.community.manage.initDragAndDrop();
+  }
+
+/*//////////// kept for copy/paste purposes //////////////////
      $.post(json.global.webroot+'/community/manage', {communityId: json.community.community_id, removeUser: 'true', groupId:groupSelected,users:users},
      function(data) {
          jsonResponse = jQuery.parseJSON(data);
@@ -336,187 +377,4 @@ function initCheckboxSelection()
               createNotive(jsonResponse[1],4000);
             }
      });
-
-    });
-
-    $('a.removeFromCommunity').click(function()
-    {
-    var users='';
-    $.each( memberSelected, function(i, v){
-      if($('div#memberList input[admin=false][userid='+v+']').length>0)
-      {
-       users+=v+'-';
-      }
-
-     });
-     $.post(json.global.webroot+'/community/manage', {communityId: json.community.community_id, removeUser: 'true', groupId:json.community.memberGroup.group_id,users:users},
-     function(data) {
-         jsonResponse = jQuery.parseJSON(data);
-          if(jsonResponse==null)
-            {
-              createNotive('Error',4000);
-              return;
-            }
-          if(jsonResponse[0])
-            {
-              createNotive(jsonResponse[1],4000);
-              window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
-              window.location.reload();
-            }
-          else
-            {
-              createNotive(jsonResponse[1],4000);
-            }
-     });
-
-    });
-
-    $('a.addUserLink').click(function()
-    {
-    var users='';
-    $.each( memberSelected, function(i, v){
-       users+=v+'-';
-     });
-     $.post(json.global.webroot+'/community/manage', {communityId: json.community.community_id, addUser: 'true', groupId:$(this).attr('element'),users:users},
-     function(data) {
-         jsonResponse = jQuery.parseJSON(data);
-          if(jsonResponse==null)
-            {
-              createNotive('Error',4000);
-              return;
-            }
-          if(jsonResponse[0])
-            {
-              createNotive(jsonResponse[1],4000);
-              window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
-              window.location.reload();
-            }
-          else
-            {
-              createNotive(jsonResponse[1],4000);
-            }
-     });
-     $(this).remove();
-    });
-
-    $('a.addModeratorLink').click(function()
-    {
-    var users='';
-    $.each( memberSelected, function(i, v){
-       users+=v+'-';
-     });
-     $.post(json.global.webroot+'/community/manage', {communityId: json.community.community_id, addUser: 'true', groupId:json.community.moderatorGroup.group_id,users:users},
-     function(data) {
-         jsonResponse = jQuery.parseJSON(data);
-          if(jsonResponse==null)
-            {
-              createNotive('Error',4000);
-              return;
-            }
-          if(jsonResponse[0])
-            {
-              createNotive(jsonResponse[1],4000);
-              window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
-              window.location.reload();
-            }
-          else
-            {
-              createNotive(jsonResponse[1],4000);
-            }
-     });
-     $(this).remove();
-    });
-  }
-function validateGroupChange(formData, jqForm, options) {
-
-    var form = jqForm[0];
-    if (form.name.value.length<1)
-      {
-        createNotive(json.community.message.infoErrorName,4000);
-        return false;
-      }
-}
-
-function successGroupChange(responseText, statusText, xhr, form)
-{
-  $( "div.MainDialog" ).dialog("close");
-  jsonResponse = jQuery.parseJSON(responseText);
-  if(jsonResponse==null)
-    {
-      createNotive('Error',4000);
-      return;
-    }
-  if(jsonResponse[0])
-    {
-      createNotive(jsonResponse[1],4000);
-      var obj=$('a.groupLink[groupId='+jsonResponse[2].group_id+']');
-      if(obj.length>0)
-        {
-        obj.html(jsonResponse[2].name);
-        }
-       else
-         {
-
-         }
-       init();
-       window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
-       window.location.reload();
-    }
-  else
-    {
-      createNotive(jsonResponse[1],4000);
-    }
-}
-
-function validateInfoChange(formData, jqForm, options) {
-
-    var form = jqForm[0];
-    if (form.name.value.length<1)
-      {
-        createNotive(json.community.message.infoErrorName,4000);
-        return false;
-      }
-}
-
-function successInfoChange(responseText, statusText, xhr, form)
-{
-  jsonResponse = jQuery.parseJSON(responseText);
-  if(jsonResponse==null)
-    {
-      createNotive('Error',4000);
-      return;
-    }
-  if(jsonResponse[0])
-    {
-      $('div.genericName').html(jsonResponse[2]);
-      createNotive(jsonResponse[1],4000);
-    }
-  else
-    {
-      createNotive(jsonResponse[1],4000);
-    }
-}
-
-
-function initCommunityPrivacy()
-{
-var inputCanJoin = $('input[name=canJoin]');
-var inputPrivacy = $('input[name=privacy]');
-var canJoinDiv = $('div#canJoinDiv');
-
-if(inputPrivacy.filter(':checked').val()== 1) //private
-  {
-    inputCanJoin.attr('disabled','disabled');
-    inputCanJoin.removeAttr('checked');
-    inputCanJoin.filter('[value=0]').attr('checked', true); //invitation
-    canJoinDiv.hide();
-  }
-else
-  {
-    inputCanJoin.removeAttr('disabled');
-    canJoinDiv.show();
-  }
-    inputPrivacy.change(function(){
-    initCommunityPrivacy();
-  });
-}
+////////////// kept for copy/paste purposes /////////////////*/
