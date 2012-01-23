@@ -185,7 +185,7 @@ foreach($this->customCSSs as $Uris)
       echo "
           <li><a id='sendInvitationLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/email.png'/> {$this->t('Send invitation')}</a></li>
           ";
-      echo "<li><a onclick='createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t('Create a top level Folder')}</a></li>
+      echo "<li><a onclick='midas.createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t('Create a top level Folder')}</a></li>
           ";
       }
     if($this->isMember&&!$this->isAdmin)
