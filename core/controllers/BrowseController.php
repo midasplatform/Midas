@@ -65,8 +65,9 @@ class BrowseController extends AppController
     $select = $this->_getParam('selectElement');
     $share = $this->_getParam('share');
     $duplicate = $this->_getParam('duplicate');
+    $move = $this->_getParam('move');
 
-    // used for drag-and-drop actions
+    // used for movecopyAction
     if(isset($moveSubmit) || isset($shareSubmit) || isset($duplicateSubmit))
       {
       $elements = explode(';', $this->_getParam('elements'));
@@ -86,6 +87,7 @@ class BrowseController extends AppController
         throw new Zend_Exception("Unable to load destination");
         }
 
+      // Move folder(s)
       foreach($folders as $folder)
         {
         if(isset($moveSubmit))
@@ -118,19 +120,24 @@ class BrowseController extends AppController
           {
           $this->Item->duplicateItem($item, $this->userSession->Dao, $destinationFolder);
           }
-        else //moveSubmit
+        else //moveSubmit, Move item(s)
           {
           $from = $this->_getParam('from');
-          $from = $this->Folder->load($from);
+          $fromFolder = $this->Folder->load($from);
           if($destinationFolder == false)
             {
             throw new Zend_Exception("Unable to load destination");
             }
+          if($fromFolder == false)
+            {
+            throw new Zend_Exception("Unable to load move from folder");
+            }
           $this->Folder->addItem($destinationFolder, $item);
           $this->Item->copyParentPolicies($item, $destinationFolder);
-          $this->Folder->removeItem($from, $item);
+          $this->Folder->removeItem($fromFolder, $item);
           }
         }
+      // Drag-and-drop actions
       if(isset($ajax))
         {
         $this->_helper->layout->disableLayout();
@@ -141,11 +148,11 @@ class BrowseController extends AppController
       $this->_redirect('/folder/'.$destinationFolder->getKey());
       }
 
-    // Used for movecopy dialog
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
-    if(isset($share) || isset($duplicate))
+    // Used for moveCopyForm (movecopy.phtml)
+    if(isset($share) || isset($duplicate) || isset($move))
       {
       $folderIds = $this->_getParam('folders');
       $itemIds = $this->_getParam('items');
@@ -168,16 +175,19 @@ class BrowseController extends AppController
       if(isset($share))
         {
         $this->view->shareEnabled = true;
-        $this->view->duplicateEnabled = false;
         }
-      else
+      elseif(isset($duplicate))
         {
         $this->view->duplicateEnabled = true;
-        $this->view->shareEnabled = false;
         }
-      $this->view->selectEnabled = false;
+      else // isset($move)
+        {
+        $this->view->moveEnabled = true;
+        $from = $this->_getParam('from');
+        $this->view->from = $from;
+        }
       }
-    else //isset($select)
+    else // isset($select)
       {
       $this->view->selectEnabled = true;
       }
