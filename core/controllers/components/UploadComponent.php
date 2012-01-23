@@ -61,12 +61,15 @@ class UploadComponent extends AppComponent
     $path = substr($checksum, 0, 2).'/'.substr($checksum, 2, 2).'/'.$checksum;
     $fullpath = $assetstoredao->getPath().'/'.$path;
 
-    // This should be rare (MD5 has a low probably for collisions)
+    // We assume this is the same file contents rather than an md5 collision
     if(file_exists($fullpath))
       {
-      // Set the new path
+      if($copy === false)
+        {
+        unlink($bitstreamdao->getPath()); // Remove the temporary uploaded file
+        }
       $bitstreamdao->setPath($path);
-      return false;
+      return;
       }
 
     //Create the directories
