@@ -36,7 +36,7 @@ class UploadComponent extends AppComponent
     } // end _createAssetstoreDirectory()
 
   /** Upload local bitstream */
-  private function _uploadLocalBitstream($bitstreamdao, $assetstoredao)
+  private function _uploadLocalBitstream($bitstreamdao, $assetstoredao, $copy = false)
     {
     // Check ifthe type of the assestore is suitable
     if($assetstoredao->getType() != MIDAS_ASSETSTORE_LOCAL)
@@ -75,22 +75,27 @@ class UploadComponent extends AppComponent
     $currentdir .= '/'.substr($checksum, 2, 2);
     $this->_createAssetstoreDirectory($currentdir);
 
-    // Do the actual copy
-    // Do not delete anything. This is the responsability of the controller
-    copy($bitstreamdao->getPath(), $fullpath);
+    if($copy)
+      {
+      copy($bitstreamdao->getPath(), $fullpath);
+      }
+    else
+      {
+      rename($bitstreamdao->getPath(), $fullpath);
+      }
 
     // Set the new path
     $bitstreamdao->setPath($path);
     } // end _uploadLocalBitstream()
 
   /** Upload a bitstream */
-  function uploadBitstream($bitstreamdao, $assetstoredao)
+  function uploadBitstream($bitstreamdao, $assetstoredao, $copy = false)
     {
     $assetstoretype = $assetstoredao->getType();
     switch($assetstoretype)
       {
       case MIDAS_ASSETSTORE_LOCAL:
-        $this->_uploadLocalBitstream($bitstreamdao, $assetstoredao);
+        $this->_uploadLocalBitstream($bitstreamdao, $assetstoredao, $copy);
         break;
       case MIDAS_ASSETSTORE_REMOTE:
         // Nothing to upload in that case, we return silently
@@ -180,8 +185,17 @@ class UploadComponent extends AppComponent
     }//end createUploadedItem
 
 
-  /** save upload item in the DB */
-  public function createUploadedItem($userDao, $name, $path, $parent = null, $license = null, $filemd5 = '')
+  /**
+   * Save an uploaded file in the database as an item with a new revision
+   * @param userDao The user who is uploading the item
+   * @param name The name of the item
+   * @param path The path of the uploaded file on disk
+   * @param parent The id of the parent folder to create the item in
+   * @param license [optional][default=null] License text for the item
+   * @param filemd5 [optional][default=''] If passed, will be used instead of calculating it ourselves
+   * @param copy [optiona][default=false] Boolean value for whether to copy or just move the item into the assetstore
+   */
+  public function createUploadedItem($userDao, $name, $path, $parent = null, $license = null, $filemd5 = '', $copy = false)
     {
     $modelLoad = new MIDAS_ModelLoader();
     $itemModel = $modelLoad->loadModel('Item');
@@ -254,7 +268,7 @@ class UploadComponent extends AppComponent
       }
 
     // Upload the bitstream if necessary (based on the assetstore type)
-    $this->uploadBitstream($bitstreamDao, $assetstoreDao);
+    $this->uploadBitstream($bitstreamDao, $assetstoreDao, $copy);
     $checksum = $bitstreamDao->getChecksum();
     $tmpBitstreamDao = $bitstreamModel->getByChecksum($checksum);
     if($tmpBitstreamDao != false)
@@ -269,8 +283,18 @@ class UploadComponent extends AppComponent
     return $item;
     }//end createUploadedItem
 
-  /** save upload item in the DB */
-  public function createNewRevision($userDao, $name, $path, $changes, $itemId, $itemRevisionNumber = null, $license = null, $filemd5 = '')
+  /**
+   * Save new revision in the database
+   * @param userDao The user who is creating the revision
+   * @param name The name of the file being used to create the revision
+   * @param changes The changes comment by the user
+   * @param itemId The item to create the new revision in
+   * @param itemRevisionNumber [optional][default=null] Revision number for the item
+   * @param license [optional][default=null] License text for the revision
+   * @param filemd5 [optional][default=''] If passed, will use it instead of calculating it ourselves
+   * @param copy [optional][default=false] If true, will copy the file. Otherwise it will just move it into the assetstore.
+   */
+  public function createNewRevision($userDao, $name, $path, $changes, $itemId, $itemRevisionNumber = null, $license = null, $filemd5 = '', $copy = false)
     {
     if($userDao == null)
       {
@@ -361,7 +385,7 @@ class UploadComponent extends AppComponent
     $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
 
     // Upload the bitstream if necessary (based on the assetstore type)
-    $this->uploadBitstream($bitstreamDao, $assetstoreDao);
+    $this->uploadBitstream($bitstreamDao, $assetstoreDao, $copy);
     $checksum = $bitstreamDao->getChecksum();
     $tmpBitstreamDao = $bitstreamModel->getByChecksum($checksum);
     if($tmpBitstreamDao != false)

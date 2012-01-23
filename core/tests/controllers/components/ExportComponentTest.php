@@ -78,7 +78,7 @@ class ExportComponentTest extends ControllerTestCase
     $user1_public_parent = $userDao->getPublicFolder()->getKey();
     $license = 0;
     $uploadCompoenent->createUploadedItem($userDao, $user1_public_filename,
-                                          $user1_public_path, $user1_public_parent, $license);
+                                          $user1_public_path, $user1_public_parent, $license, '', true);
 
     // upload an item to user1's private folder
     $user1_private_path = $midas_exporttest_dir.'/private.png';
@@ -91,7 +91,7 @@ class ExportComponentTest extends ControllerTestCase
     $user1_private_parent = $userDao->getPrivateFolder()->getKey();
     $license = 0;
     $uploadCompoenent->createUploadedItem($userDao, $user1_private_filename,
-                                          $user1_private_path, $user1_private_parent, $license);
+                                          $user1_private_path, $user1_private_parent, $license, '', true);
     }
 
   /**

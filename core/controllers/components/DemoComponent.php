@@ -112,8 +112,8 @@ class DemoComponent extends AppComponent
 
     require_once BASE_PATH.'/core/controllers/components/UploadComponent.php';
     $uploadCompoenent = new UploadComponent();
-    $item = $uploadCompoenent->createUploadedItem($admin, 'midasLogo.gif', BASE_PATH.'/core/public/images/midasLogo.gif', $communityDao->getPublicFolder());
-    $item = $uploadCompoenent->createUploadedItem($admin, 'cow.vtp', BASE_PATH.'/core/public/demo/cow.vtp', $communityDao->getPublicFolder());
+    $item = $uploadCompoenent->createUploadedItem($admin, 'midasLogo.gif', BASE_PATH.'/core/public/images/midasLogo.gif', $communityDao->getPublicFolder(), null, '', true);
+    $item = $uploadCompoenent->createUploadedItem($admin, 'cow.vtp', BASE_PATH.'/core/public/demo/cow.vtp', $communityDao->getPublicFolder(), null, '', true);
     }
 
   /** recursively delete a folder*/
