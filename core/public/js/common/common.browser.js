@@ -340,7 +340,7 @@ midas.createAction = function (node) {
                 }
             }
             if(type == 'item') {
-                var from = parentOf(node);
+                var from = midas.parentOf(node);
                 var fromFolder = from.attr('element');
                 html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
                 html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLatest+'</a></li>';

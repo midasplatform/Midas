@@ -28,8 +28,6 @@ $(document).ready(
                     return false;
                 });
         }
-        $('img.infoLoading').show();
-        $('div.ajaxInfoElement').html('');
     });
 
 //dependance: common/browser.js
