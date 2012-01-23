@@ -246,10 +246,10 @@ midas.deleteSelected = function (folders, items) {
                            createNotive(message, 5000);
                            $('div.MainDialog').dialog('close');
                            for (var curFolder in resp.success.folders) {
-                               midas.removeNodeFromTree($('table.treeTable tr.parent[element=' + curFolder  + ']'), true);
+                               midas.removeNodeFromTree($('table.treeTable tr.parent[element='+resp.success.folders[curFolder]+']'), true);
                            }
                            for (var curItem in resp.success.items) {
-                               midas.removeNodeFromTree($('table.treeTable tr[type=item][element='+resp.success.items[i]+']'), false);
+                               midas.removeNodeFromTree($('table.treeTable tr[type=item][element='+resp.success.items[curItem]+']'), false);
                            }
                            midas.genericCallbackCheckboxes($('#browseTable'));
                            midas.genericCallbackSelect(null);
