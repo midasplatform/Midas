@@ -24,10 +24,18 @@ midas.browse.moveCopyCallbackSelect = function (node) {
 
     $('#selectedDestinationHidden').val(node.attr('element'));
     $('#selectedDestination').html(sliceFileName(selectedElement, 40));
-    $('#selectElement').removeAttr('disabled');
-    $('#shareElement').removeAttr('disabled');
-    $('#duplicateElement').removeAttr('disabled');
-    $('#moveElement').removeAttr('disabled');
+    if(node.attr('element') == -1 || node.attr('element') == -2 ) {
+        $('#selectElement').attr('disabled', 'disabled');
+        $('#shareElement').attr('disabled', 'disabled');
+        $('#duplicateElement').attr('disabled', 'disabled');
+        $('#moveElement').attr('disabled', 'disabled');
+    } 
+    else {
+        $('#selectElement').removeAttr('disabled');
+        $('#shareElement').removeAttr('disabled');
+        $('#duplicateElement').removeAttr('disabled');
+        $('#moveElement').removeAttr('disabled');
+    }   
 };
 
 
