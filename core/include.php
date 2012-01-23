@@ -29,7 +29,6 @@ require_once BASE_PATH . '/core/models/MIDASModel.php';
 
 require_once BASE_PATH . '/core/models/MIDASDatabaseInterface.php';
 require_once BASE_PATH . '/core/models/MIDASDatabasePdo.php';
-require_once BASE_PATH . '/core/models/MIDASDatabaseCassandra.php';
 require_once BASE_PATH . '/core/models/MIDASDatabaseMongo.php';
 require_once BASE_PATH . '/core/models/GlobalDao.php';
 

@@ -31,7 +31,7 @@ class CommunityController extends AppController
     {
     $this->view->activemenu = 'community'; // set the active menu
     $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
-    if(isset($actionName) && (is_numeric($actionName) || strlen($actionName) == 32)) // This is tricky! and for Cassandra for now
+    if(isset($actionName) && is_numeric($actionName))
       {
       $this->_forward('view', null, null, array('communityId' => $actionName));
       }
@@ -47,7 +47,7 @@ class CommunityController extends AppController
       }
 
     $communityId = $this->_getParam("communityId");
-    if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId) != 32)) // This is tricky! and for Cassandra for now
+    if(!isset($communityId) || !is_numeric($communityId))
       {
       throw new Zend_Exception("Community ID should be a number");
       }
@@ -337,7 +337,7 @@ class CommunityController extends AppController
     {
     $this->view->Date = $this->Component->Date;
     $communityId = $this->_getParam("communityId");
-    if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId) != 32)) // This is tricky! and for Cassandra for now
+    if(!isset($communityId) || !is_numeric($communityId))
       {
       throw new Zend_Exception("Community ID should be a number");
       }
@@ -425,7 +425,7 @@ class CommunityController extends AppController
     $this->_helper->viewRenderer->setNoRender();
 
     $communityId = $this->_getParam("communityId");
-    if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId) != 32)) // This is tricky! and for Cassandra for now
+    if(!isset($communityId) || !is_numeric($communityId))
       {
       throw new Zend_Exception("Community ID should be a number");
       }
@@ -446,7 +446,7 @@ class CommunityController extends AppController
     $this->_helper->layout->disableLayout();
 
     $communityId = $this->_getParam("communityId");
-    if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId) != 32)) // This is tricky! and for Cassandra for now
+    if(!isset($communityId) || !is_numeric($communityId))
       {
       throw new Zend_Exception("Community ID should be a number");
       }
