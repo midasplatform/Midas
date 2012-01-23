@@ -505,10 +505,6 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception('Upload failed', MIDAS_INTERNAL_ERROR);
       }
-    if($filesize == $args['length'])
-      {
-      unlink($filepath);
-      }
     return $item->toArray();
     }
 

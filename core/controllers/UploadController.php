@@ -342,11 +342,7 @@ class UploadController extends AppController
 
       try
         {
-        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $data['filename'], $data['path'], $parent, $license, $data['md5']);
-        if(!$testingMode)
-          {
-          unlink($data['path']);
-          }
+        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $data['filename'], $data['path'], $parent, $license, $data['md5'], (bool)$testingMode);
         }
       catch(Exception $e)
         {
@@ -433,7 +429,9 @@ class UploadController extends AppController
             throw new Zend_Exception($validation['message']);
             }
           }
-        $this->Component->Upload->createNewRevision($this->userSession->Dao, $filename, $path, $changes, $itemId, $itemRevisionNumber, $license);
+        $this->Component->Upload->createNewRevision($this->userSession->Dao, $filename, $path,
+                                                    $changes, $itemId, $itemRevisionNumber, $license,
+                                                    '', (bool)$this->isTestingEnv());
         }
       else
         {
@@ -483,11 +481,9 @@ class UploadController extends AppController
             throw new Zend_Exception($validation['message']);
             }
           }
-        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename, $path, $parent, $license);
-        if(!$this->isTestingEnv())
-          {
-          unlink($path);
-          }
+        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename,
+                                                             $path, $parent, $license, '',
+                                                             (bool)$this->isTestingEnv());
         $this->userSession->uploaded[] = $item->getKey();
         }
 

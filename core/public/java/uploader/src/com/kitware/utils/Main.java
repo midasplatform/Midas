@@ -336,7 +336,7 @@ public class Main extends JApplet
 
   public void setByteUploadedLabel(long uploadedByte, long fileSize)
     {
-    bytesUploadedLabel.setText("Transfered: " + uploadedByte + " bytes");
+    bytesUploadedLabel.setText("Transfered: " + Utility.bytesToString(uploadedByte));
     }
 
   public void setFileNameLabel(String value)
@@ -351,7 +351,7 @@ public class Main extends JApplet
 
   public void setFileSizeLabel(long size)
     {
-    this.fileSizeLabel.setText(FILESIZE_LABEL_TITLE + size + " bytes");
+    this.fileSizeLabel.setText(FILESIZE_LABEL_TITLE + Utility.bytesToString(size));
     }
 
   public void setUploadStatusLabel(String value)
@@ -379,6 +379,8 @@ public class Main extends JApplet
 
   public void onSuccessfulUpload()
     {
+    this.uploadFileButton.setEnabled(true);
+    this.stopUploadButton.setEnabled(false);
     if (this.onSuccessfulUploadRedirectEnable)
       {
       this.getAppletContext().showDocument(this.onSuccessRedirectURLObj);
@@ -389,8 +391,6 @@ public class Main extends JApplet
     {
     this.uploadUniqueIdentifier = null;
     this.uploadProgressBar.setValue(0);
-    this.uploadFileButton.setEnabled(true);
-    this.stopUploadButton.setEnabled(false);
     }
 
   public void uploadFileButtonActionPerformed(ActionEvent evt)
