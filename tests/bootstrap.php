@@ -89,12 +89,6 @@ if ($configDatabase->database->type == 'pdo')
   Zend_Db_Table::setDefaultAdapter($db);
   Zend_Registry::set('dbAdapter', $db);
   }
-elseif ($configDatabase->database->type == 'cassandra')
-  {
-  set_include_path('.'
-  . PATH_SEPARATOR . './core/models/cassandra/'
-  . PATH_SEPARATOR . get_include_path());
-  }
 else
   {
   throw new Zend_Exception("Database type Error. Please check the environment config file.");

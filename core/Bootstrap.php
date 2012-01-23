@@ -112,15 +112,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       $database = $db->$dbname;
       Zend_Registry::set('dbAdapter', $database);
       }
-    elseif($configDatabase->database->type == 'cassandra')
-      {
-      Zend_Loader::loadClass("connection", BASE_PATH . '/library/phpcassa');
-      Zend_Loader::loadClass("columnfamily", BASE_PATH . '/library/phpcassa');
-
-      $db = new Connection('midas', array(array('host' => $configDatabase->database->params->host,
-                                                'port' => $configDatabase->database->params->port)));
-      Zend_Registry::set('dbAdapter', $db);
-      }
     else
       {
       throw new Zend_Exception("Database type Error. Please check the environment config file.");

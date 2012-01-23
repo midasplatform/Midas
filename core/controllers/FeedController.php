@@ -71,7 +71,7 @@ class FeedController extends AppController
     $this->disableView();
 
     $feedId = $this->_getParam('feed');
-    if(!isset($feedId) || (!is_numeric($feedId) && strlen($feedId) != 32)) // This is tricky! and for Cassandra for now)
+    if(!isset($feedId) || !is_numeric($feedId))
       {
       throw new Zend_Exception("Please set the feed Id");
       }

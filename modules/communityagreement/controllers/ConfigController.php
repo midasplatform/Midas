@@ -59,7 +59,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
       }
 
     $communityId = $this->_getParam("communityId");
-    if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId) != 32)) // This is tricky! and for Cassandra for now
+    if(!isset($communityId) || !is_numeric($communityId))
       {
       throw new Zend_Exception("Community ID should be a number");
       }
@@ -129,7 +129,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
       }
 
     $communityId = $this->_getParam("communityId");
-    if(!isset($communityId) || (!is_numeric($communityId) && strlen($communityId) != 32)) // This is tricky! and for Cassandra for now
+    if(!isset($communityId) || !is_numeric($communityId))
       {
       throw new Zend_Exception("Community ID should be a number");
       }
