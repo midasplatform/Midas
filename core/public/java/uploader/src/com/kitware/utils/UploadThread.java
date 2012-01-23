@@ -26,6 +26,7 @@ public class UploadThread extends Thread
   // private String reply;
   private String getUploadUniqueIdentifierBaseURL;
   private String uploadFileBaseURL, uploadFileURL;
+  private boolean paused;
 
   public static String IOEXCEPTION_ERROR_WRITING_REQUEST_BODY_TO_SERVER = "Error writing request body to server";
 
@@ -40,7 +41,7 @@ public class UploadThread extends Thread
     this.getUploadUniqueIdentifierBaseURL = this.uploader
         .getGetUploadUniqueIdentifierBaseURL();
     this.uploadFileBaseURL = this.uploader.getUploadFileBaseURL();
-
+    this.paused = false;
     }
 
   public void setStartIndex(int index)
@@ -53,6 +54,7 @@ public class UploadThread extends Thread
     if (conn != null)
       {
       conn.disconnect();
+      this.paused = true;
       }
     }
 
@@ -79,6 +81,11 @@ public class UploadThread extends Thread
         uploader.setFileSizeLabel(this.uploader.getFileLength(i));
         uploader.setFileNameLabel(this.uploader.getFiles()[i].getName());
         uploadFile(i, this.uploader.getFiles()[i]);
+        this.uploadOffset = 0;
+        if(this.paused)
+          {
+          return;
+          }
         }
       }
     catch (JavaUploaderException e)
@@ -228,21 +235,14 @@ public class UploadThread extends Thread
         InputStream inputStream = null;
         try
           {
-          inputStream = conn.getInputStream(); // Input stream (
-                                               // Server -> Applet )
+          inputStream = conn.getInputStream();
           }
         catch (Exception e)
           {
           inputStream = null;
           }
 
-        InputStream errorInputStream = conn.getErrorStream(); // Error
-                                                              // stream
-                                                              // (
-                                                              // Server
-                                                              // ->
-                                                              // Applet
-                                                              // )
+        InputStream errorInputStream = conn.getErrorStream();
 
         if (inputStream == null && errorInputStream != null)
           {
