@@ -57,7 +57,7 @@ function selectFolderCallbackSelect(node)
     }
 
   $('div.MainDialogContent #createFolderContent').hide();
-  if(node.attr('element') == -1)
+  if(node.attr('element') == -1 || node.attr('element') == -2)
     {
     $('div.MainDialogContent #selectElements').attr('disabled', 'disabled');
     $('div.MainDialogContent #createFolderButton').hide();
