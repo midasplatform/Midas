@@ -103,7 +103,8 @@ abstract class UserModelBase extends AppModel
     $invitations = $user->getInvitations();
     foreach($invitations as $invitation)
       {
-      $ciModel->delete($invitation);
+      //Must call removeInvitation instead of delete so the corresponding feed is also deleted
+      $ciModel->removeInvitation($invitation->getCommunity(), $user);
       }
 
     // Delete this user's folder tree recursively
