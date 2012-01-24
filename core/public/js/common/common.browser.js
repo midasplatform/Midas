@@ -430,10 +430,7 @@ midas.createInfo = function (jsonContent) {
     html+='  </tr>';
     if(arrayElement['type']=='community') {
         html+='  <tr>';
-        html+='    <td>Member';
-        if(parseInt(arrayElement['members'])>1) {
-            html+='s';
-        }
+        html+='    <td>Members';
         html += '</td>';
         html+='    <td>'+arrayElement['members']+'</td>';
         html+='  </tr>';
@@ -451,29 +448,28 @@ midas.createInfo = function (jsonContent) {
             html+='    <td><a href="'+json.global.webroot+'/user/'+arrayElement['uploaded']['user_id']+'">'+arrayElement['uploaded']['firstname']+' '+arrayElement['uploaded']['lastname']+'</a></td>';
             html+='  </tr>';
             html+='  <tr>';
-            html+='    <td>Revision';
-            if(parseInt(arrayElement['revision']['revision'])>1) {
-                html+='s';
-            }
-            html+=     '</td>';
+            html+='    <td>Revisions</td>';
             html+='    <td>'+arrayElement['revision']['revision']+'</td>';
             html+='  </tr>';
             html+='  <tr>';
-            html+='    <td>'+arrayElement.translation.File;
-            if(parseInt(arrayElement['nbitstream'])>1) {
-                html+='s';
-            }
-            html+=    '</td>';
+            html+='    <td>Files</td>';
             html+='    <td>'+arrayElement['nbitstream']+'</td>';
+            html+='  </tr>';
+            html+='  </tr>';
+            html+='    <td>Size</td>';
+            html+='    <td>'+arrayElement['sizebytes']+' B</td>';
             html+='  </tr>';
         }
     }
 
     if(arrayElement['type']=='folder') {
         html+='  <tr>';
-        html+='    <td colspan="2">';
-        html+= arrayElement['teaser'];
-        html+=     '</td>';
+        html+='    <td>Last Updated</td>';
+        html+='    <td>'+arrayElement['updated']+'</td>';
+        html+='  </tr>';
+        html+='  <tr>';
+        html+='    <td>Size</td>';
+        html+='    <td>'+arrayElement['sizebytes']+' B</td>';
         html+='  </tr>';
     }
     html+='</table>';
