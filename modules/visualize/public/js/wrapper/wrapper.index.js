@@ -1,15 +1,8 @@
   $(document).ready(function() {
-    
+
        var currentElement = json.item.item_id;
-   
-   function highlightCurrentPreview()
-   {
-     $('#fullscreenVisualize a.linkedcontentLink').css('font-weight','normal');
-     $('#fullscreenVisualize a.linkedcontentLink[element='+currentElement+']').css('font-weight','bold');
-   }
-    /** preview */
-     $('a#itemPreviewLink').click(function(){
-       
+
+       /** create preview page */
       var height = $(window).height()-100;
       var width = 800;
       var url  = json.global.webroot+"/visualize/?itemId="+json.item.item_id+'&height='+height+'&width='+width;
@@ -32,19 +25,19 @@
       html +=   ' <div class="ajaxInfoElement">';
       html +=   ' </div>';
       html +=   '</div>';
-      
+
       html +=   '</div>';
       html +=   '<iframe name="fullscreenVisualizeIframe" height="'+height+'" width="'+width+'" id="fullscreenVisualizeIframe" src="'+url+'"></iframe>';
       html +=   '</div>';
-      
+
       $('.Wrapper').append(html);
-      
-      $('#fullscreenVisualize a.linkedcontentLink[preview=false]').remove();
+
+      $('#fullscreenVisualize a.linkedcontentLink[preview=false]').parents('li').remove();
       $('#fullscreenVisualize a.linkedcontentLink[preview=true]').removeAttr('href');
-      
+
       highlightCurrentPreview();
       createInfoAjaxVisualize(json.item.item_id);
-      
+
       $('#fullscreenVisualize a.linkedcontentLink').click(function(){
         var height = $(window).height()-100;
         var width = 900;
@@ -53,7 +46,7 @@
         currentElement = $(this).attr('element');
         highlightCurrentPreview();
         createInfoAjaxVisualize(currentElement);
-        
+
         var obj = $('#fullscreenVisualize a.linkedcontentLink[element='+currentElement+']');
         var objTmp = obj.parents('li').prev().find('a');
         $('a.nextVisu').show();
@@ -62,14 +55,14 @@
           {
           $('a.previousVisu').hide();
           }
-          
+
         objTmp = obj.parents('li').next().find('a');
         if(objTmp.length == 0)
           {
           $('a.nextVisu').hide();
           }
       });
-      
+
       $('a.previousVisu').click(function(){
         var obj = $('#fullscreenVisualize a.linkedcontentLink[element='+currentElement+']').parents('li').prev().find('a');
         var height = $(window).height()-100;
@@ -80,7 +73,7 @@
         highlightCurrentPreview();
         createInfoAjaxVisualize(currentElement);
         $('a.nextVisu').show();
-        
+
         obj = obj.parents('li').prev().find('a');
         if(obj.length == 0)
           {
@@ -97,38 +90,42 @@
         currentElement = obj.attr('element');
         highlightCurrentPreview();
         createInfoAjaxVisualize(currentElement);
-        
+
         obj = obj.parents('li').next().find('a');
         if(obj.length == 0)
           {
           $('a.nextVisu').hide();
           }
       });
-      
+
       $('.MainDialog').hide();
       $('.TopDynamicBar').hide();
       $('.Topbar').show();
       //$('.Header').hide();
       $('.SubWrapper').hide();
       $('#fullscreenVisualize a.closeVisuButton').click(function(){
-        $('#fullscreenVisualize').remove();
-        $('.Header').show();
-        $('.SubWrapper').show();
+        window.location.replace(json.global.webroot+"/item/"+json.item.item_id);
       });
-    });
+
+   function highlightCurrentPreview()
+   {
+     $('#fullscreenVisualize a.linkedcontentLink').css('font-weight','normal');
+     $('#fullscreenVisualize a.linkedcontentLink[element='+currentElement+']').css('font-weight','bold');
+   }
+
   });
-  
+
   function createInfoAjaxVisualize(itemId)
   {
     $('img.infoLoading').show();
-    $('div.ajaxInfoElement').html(''); 
+    $('div.ajaxInfoElement').html('');
      $.ajax({
           type: "POST",
           url: json.global.webroot+'/browse/getelementinfo',
           data: {type: 'item', id: itemId},
           success: function(jsonContent){
-            createInfo(jsonContent);
+            midas.createInfo(jsonContent);
             $('img.infoLoading').hide();
           }
-        });     
+        });
   }

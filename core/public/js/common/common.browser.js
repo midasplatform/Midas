@@ -475,9 +475,49 @@ midas.createInfo = function (jsonContent) {
     if(arrayElement['type']=='community'&&arrayElement['privacy']==2) {
         html+='<h4>'+arrayElement.translation.Private+'</h4>';
     }
-    
-    if(arrayElement['thumbnail']!=undefined&&arrayElement['thumbnail']!='') {
-        html+='<h1>'+json.browse.preview+'</h1><a href="'+json.global.webroot+'/item/'+arrayElement['item_id']+'"><img class="infoLogo" alt="" src="'+json.global.webroot+'/'+arrayElement['thumbnail']+'" /></a>';
+
+
+  if(arrayElement['metadata']!=undefined&&arrayElement['metadata'].length > 0)
+    {
+    html+='<h1>'+json.browse.metadata+'</h1>';
+    html+='<table style="width:230px">';
+    $.each(arrayElement['metadata'], function(key, value) {
+        if(key > 10){return;}
+        if(value.value == ''){return;}
+        html+='  <tr>';
+        html+='    <td>'+value.element+' - '+value.qualifier+':';
+        var qualifierText = value.element+' - '+value.qualifier+':';
+        var valueElement = value.value.replace('þÿ','');
+        console.log((qualifierText.length) + (valueElement.length));
+        if( ((qualifierText.length) + (valueElement.length)) <= 31 )
+          {
+          html+= "<span style='font-style: italic ;padding-left: 5px;font-size: 11px;float:right;'>"+value.value.replace('þÿ','')+"<span>";
+          }
+        html+='  </td>';
+        html+='  </tr>';
+        if( ((qualifierText.length) + (valueElement.length)) > 31 )
+          {
+            html+='  <tr>';
+            html+='    <td style="float:right;font-style: italic ;padding-left: 5px;font-size: 11px;"> '+cutName(value.value.replace('þÿ',''), 40)+'</td>';
+            html+='  </tr>';
+          }
+
+
+        if(key == 10)
+          {
+          html+='  <tr>';
+          html+='    <td>...</td>';
+          html+='  </tr>';
+          return;
+          }
+    });
+    html+='</table>';
+    }
+
+
+  if(arrayElement['thumbnail']!=undefined&&arrayElement['thumbnail']!='')
+    {
+    html+='<h1>'+json.browse.preview+'</h1><a href="'+json.global.webroot+'/item/'+arrayElement['item_id']+'"><img class="infoLogo" alt="" src="'+json.global.webroot+'/'+arrayElement['thumbnail']+'" /></a>';
     }
 
     $('div.ajaxInfoElement').html(html);

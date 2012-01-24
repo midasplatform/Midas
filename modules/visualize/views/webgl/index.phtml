@@ -17,6 +17,7 @@ PURPOSE.  See the above copyright notices for more information.
 	<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/Detector.js"></script>
 	<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/RequestAnimationFrame.js"></script>
 	<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/utils.js"></script>
+  <script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/TrackballControlsMidas.js"></script>
 
   <?php
   echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
@@ -37,7 +38,7 @@ PURPOSE.  See the above copyright notices for more information.
 <button onclick="zoomIn();" id="buttonPlus" class="buttonNav"></button>
 <button onclick="zoomOut();" id="buttonMinus" class="buttonNav"></button>
 <div id="info">
-	<b>MOVE</b> mouse & press <b>LEFT/A:</b> rotate, <b>MIDDLE/S:</b> zoom, <b>RIGHT/D:</b> pan
+	<b>MOVE</b> mouse & press <b>LEFT button:</b> rotate, <b>MIDDLE button:</b> pan , <b>RIGHT button:</b> zoom
 </div>
 
 <div id="onliver" style="display:none">

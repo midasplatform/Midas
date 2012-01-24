@@ -16,11 +16,6 @@ PURPOSE.  See the above copyright notices for more information.
 
 <?php
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.js');
-if($this->preview) // module visualize
-  {
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
-  $this->headScript()->appendFile($this->webroot . '/modules/visualize/public/js/main.js');
-  }
 ?>
 <div class="viewMain">
 
@@ -41,6 +36,9 @@ if($this->preview) // module visualize
       </div>
 
        <?php
+      $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_ITEM_VIEW_BUTTON", array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin));
+      $htmltArray = array_diff($htmltArray, array(''));
+      echo join(" ",$htmltArray);
       if($this->backUploaded)
         {
         echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
@@ -57,6 +55,8 @@ if($this->preview) // module visualize
           echo "</a>";
         echo '</div>';
         }
+
+
       ?>
 
       <br/>
@@ -64,7 +64,7 @@ if($this->preview) // module visualize
       <?php echo $this->itemDao->getView()?> <?php echo $this->t('views'); ?>,
       <?php echo $this->itemDao->getDownload()?> <?php echo $this->t('downloads');?></div>
   </div>
-  <div style='width:400px;' class="genericInfo">
+  <div style='width:350px;' class="genericInfo">
      <div class="genericThumbnail">
     <?php
       echo "<img src='{$this->coreWebroot}/public/images/icons/document-big.png' alt=''/>";
@@ -144,8 +144,8 @@ if($this->preview) // module visualize
   <a onclick="$('#revisionContent').show();$(this).remove();"><?php echo $this->t('Show Content')?></a>
 
   <div id="revisionContent">
-  <?php if(isset($this->itemDao->lastrevision) && $this->itemDao->lastrevision !== false)       
-        { ?>        
+  <?php if(isset($this->itemDao->lastrevision) && $this->itemDao->lastrevision !== false)
+        { ?>
     <h4 style="margin-top: 0px;margin-bottom: 5px;"><?php echo $this->t('Latest revision content')?>:</h4>
 
     <table style='display:block;'  id="browseTable" class="midasTree">
@@ -176,21 +176,15 @@ if($this->preview) // module visualize
 </div>
 <div class="viewSideBar">
   <?php
-  if($this->preview || $this->isModerator || $this->isAdmin)
+  $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_ITEM_VIEW_ACTIONMENU", array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin));
+  $htmltArray = array_diff($htmltArray, array(''));
+  if(!empty($htmltArray) || $this->isModerator || $this->isAdmin)
     {?>
   <div class="sideElementFirst viewAction">
 
     <h1>Actions</h1>
     <ul>
       <?php
-      if($this->preview)
-        {
-      echo
-     "<li>
-        <a id='itemPreviewLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/view.png'/> {$this->t('Preview')}</a>
-      </li>
-        ";
-        }
       if($this->isModerator)
         {
         echo
@@ -199,7 +193,7 @@ if($this->preview) // module visualize
         </li>
         <li>
           <a href='javascript:;' class='duplicateItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/copy.png'/> {$this->t('Duplicate')}</a>
-        </li> 
+        </li>
         <li>
           <a href='javascript:;' class='editItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/> {$this->t('Edit')}</a>
         </li>
@@ -221,7 +215,6 @@ if($this->preview) // module visualize
           <a  href='javascript:;' id='itemDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Delete')}</a>
         </li>";
         }
-      $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_ITEM_VIEW_ACTIONMENU", array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin));
       foreach($htmltArray as $html)
         {
         if(!empty($html))
@@ -237,7 +230,7 @@ if($this->preview) // module visualize
     <h1>Info</h1>
     <table>
       <tbody>
-      <?php if(isset($this->itemDao->lastrevision) && $this->itemDao->lastrevision !== false)       
+      <?php if(isset($this->itemDao->lastrevision) && $this->itemDao->lastrevision !== false)
             { ?>
         <tr>
           <td><?php echo $this->t('Created')?></td>
@@ -255,7 +248,7 @@ if($this->preview) // module visualize
           <td><?php echo $this->t('Files');?></td>
           <td><?php echo count($this->itemDao->lastrevision->getBitstreams())?></td>
         </tr>
-      <?php } // check for $this->itemDao->lastRevision 
+      <?php } // check for $this->itemDao->lastRevision
           else
             { ?>
         <tr>
