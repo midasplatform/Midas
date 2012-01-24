@@ -764,7 +764,7 @@ class UserController extends AppController
     else
       {
       $userDao = $this->User->load($userId);
-      if(!$this->userSession->Dao->isAdmin())
+      if(!$this->userSession->Dao->isAdmin() && $this->userSession->Dao->getKey() != $userId)
         {
         throw new Zend_Exception("Permission error");
         }
