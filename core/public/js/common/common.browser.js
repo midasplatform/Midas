@@ -153,18 +153,18 @@ midas.removeItem = function (id) {
                    function(data) {
                        jsonResponse = jQuery.parseJSON(data);
                        if(jsonResponse==null) {
-                           createNotive('Error',4000);
+                           createNotice('Error',4000);
                            return;
                        }
                        if(jsonResponse[0]) {
-                           createNotive(jsonResponse[1],1500);
+                           createNotice(jsonResponse[1],1500);
                            $( "div.MainDialog" ).dialog('close');
                            midas.removeNodeFromTree(node, false);
                            midas.genericCallbackCheckboxes($('#browseTable'));
                            midas.genericCallbackSelect(null);
                        }
                        else {
-                           createNotive(jsonResponse[1],4000);
+                           createNotice(jsonResponse[1],4000);
                        }
                    });
         });
@@ -191,18 +191,18 @@ midas.deleteFolder = function (id) {
                    function(data) {
                        jsonResponse = jQuery.parseJSON(data);
                        if(jsonResponse==null) {
-                           createNotive('Error',4000);
+                           createNotice('Error',4000);
                            return;
                        }
                        if(jsonResponse[0]) {
-                           createNotive(jsonResponse[1],1500);
+                           createNotice(jsonResponse[1],1500);
                            $('div.MainDialog').dialog('close');
                            midas.removeNodeFromTree(node, true);
                            midas.genericCallbackCheckboxes($('#browseTable'));
                            midas.genericCallbackSelect(null);
                        }
                        else {
-                           createNotive(jsonResponse[1],4000);
+                           createNotice(jsonResponse[1],4000);
                        }
                    });
         });
@@ -221,45 +221,50 @@ midas.deleteSelected = function (folders, items) {
     var html='';
     html+=json.browse['deleteSelectedMessage'];
     html+='<br/><br/><br/>';
-    html+='<input style="margin-left:140px;" class="globalButton deleteSelectedYes" type="button" value="' + json.global.Yes + '"/>';
-    html+='<input style="margin-left:50px;" class="globalButton deleteSelectedNo" type="button" value="' + json.global.No + '"/>';
+    html+='<form class="genericForm"><div class="dialogButtons">';
+    html+='  <input class="globalButton deleteSelectedYes" type="button" value="' + json.global.Yes + '"/>';
+    html+='  <input class="globalButton deleteSelectedNo" type="button" value="' + json.global.No + '"/>';
+    html+='</div></form>';
+    html+='<img id="deleteSelectedLoadingGif" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>';
 
     showDialogWithContent(json.browse['deleteSelected'],html,false);
-    $('input.deleteSelectedYes').unbind('click').click(
-        function() {
-            $.post(json.global.webroot+'/browse/delete',
-                   {folders: folders, items: items},
-                   function(data) {
-                       var resp = jQuery.parseJSON(data);
-                       if(resp == null) {
-                           createNotive('Error during folder delete. Check the log.', 4000);
-                           return;
-                       }
-                       if(resp.success) {
-                           var message = 'Deleted ' + resp.success.folders.length + ' folders and ';
-                           message += resp.success.items.length + ' items.';
-                           if(resp.failure.folders.length || resp.failure.items.length) {
-                               message += ' Invalid delete permissions on ';
-                               message += resp.failure.folders.length + ' folders and ';
-                               message += resp.failure.items.length + ' items.';
-                           }
-                           createNotive(message, 5000);
-                           $('div.MainDialog').dialog('close');
-                           for (var curFolder in resp.success.folders) {
-                               midas.removeNodeFromTree($('table.treeTable tr.parent[element='+resp.success.folders[curFolder]+']'), true);
-                           }
-                           for (var curItem in resp.success.items) {
-                               midas.removeNodeFromTree($('table.treeTable tr[type=item][element='+resp.success.items[curItem]+']'), false);
-                           }
-                           midas.genericCallbackCheckboxes($('#browseTable'));
-                           midas.genericCallbackSelect(null);
-                       }
-                   });
+    $('input.deleteSelectedYes').unbind('click').click(function() {
+        $('input.deleteSelectedYes').attr('disabled', 'disabled');
+        $('input.deleteSelectedNo').attr('disabled', 'disabled');
+        $('#deleteSelectedLoadingGif').show();
+        $.post(json.global.webroot+'/browse/delete', {folders: folders, items: items}, function(data) {
+            $('input.deleteSelectedYes').removeAttr('disabled');
+            $('input.deleteSelectedNo').removeAttr('disabled');
+            $('#deleteSelectedLoadingGif').hide();
+            var resp = jQuery.parseJSON(data);
+            if(resp == null) {
+                createNotice('Error during folder delete. Check the log.', 4000);
+                return;
+            }
+            if(resp.success) {
+                var message = 'Deleted ' + resp.success.folders.length + ' folders and ';
+                message += resp.success.items.length + ' items.';
+                if(resp.failure.folders.length || resp.failure.items.length) {
+                    message += ' Invalid delete permissions on ';
+                    message += resp.failure.folders.length + ' folders and ';
+                    message += resp.failure.items.length + ' items.';
+                }
+                createNotice(message, 5000);
+                $('div.MainDialog').dialog('close');
+                for (var curFolder in resp.success.folders) {
+                    midas.removeNodeFromTree($('table.treeTable tr.parent[element='+resp.success.folders[curFolder]+']'), true);
+                }
+                for (var curItem in resp.success.items) {
+                    midas.removeNodeFromTree($('table.treeTable tr[type=item][element='+resp.success.items[curItem]+']'), false);
+                }
+                midas.genericCallbackCheckboxes($('#browseTable'));
+                midas.genericCallbackSelect(null);
+            }
         });
-    $('input.deleteSelectedNo').unbind('click').click(
-        function() {
-            $('div.MainDialog').dialog('close');
-        });
+    });
+    $('input.deleteSelectedNo').unbind('click').click(function() {
+        $('div.MainDialog').dialog('close');
+    });
 };
 
 /**
@@ -317,8 +322,7 @@ midas.createAction = function (node) {
     var policy = node.attr('policy');
     $('div.viewAction ul').fadeOut(
         'fast',
-        function()
-        {
+        function() {
             $('div.viewAction ul').html('');
             var html = '';
             if(type=='community') {
