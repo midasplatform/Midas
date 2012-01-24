@@ -11,7 +11,7 @@ var serverUrl = "/PWService";
   var x2;
   var z2;
   var stateController = {};
-  
+
   var isControlVisible = false;
   var isOrientationAxisVisible = true;
   var isRotationAxisVisible = true;
@@ -21,6 +21,11 @@ var serverUrl = "/PWService";
       // Create a paraview proxy
       var file = json.visualize.url;
       var stateEnable = json.visualize.openState;
+      if(typeof Paraview != 'function')
+        {
+        alert('Unable to connect to the Paraview server. Please contact an administrator.');
+        return;
+        }
       paraview = new Paraview(serverUrl);
       paraview.createSession("midas", "midas webviz","default");
       if(stateEnable)
@@ -50,16 +55,16 @@ $(window).load(function() {
    json = jQuery.parseJSON($('div.jsonContent').html());
    start();
   });
-   
+
    $(window).unload( function () {paraview.disconnect()} );
-   
- 
+
+
     function initController(){
     stateController.iso = paraview.FindSource({name: "Contour1" });
     console.log(stateController.iso);
 }
- 
-   
+
+
     function resetCamera() {
         paraview.ResetCamera();
         activeView.setCenterOfRotation(activeView.getCameraFocalPoint());
@@ -67,9 +72,9 @@ $(window).load(function() {
         var height = json.visualize.height-50;
         renderers.current.setSize(width, height);
     }
-    
-    
-    
+
+
+
     function changeOrientationAxisVisibility() {
         isOrientationAxisVisible = !isOrientationAxisVisible;
         activeView.setOrientationAxesVisibility(isOrientationAxisVisible);
@@ -78,7 +83,7 @@ $(window).load(function() {
         isRotationAxisVisible = !isRotationAxisVisible;
         activeView.setCenterAxesVisibility(isRotationAxisVisible);
     }
-    
+
     function isoUpdate(value){
     str = 'stateController.iso.setIsosurfaces(value)';
     eval(str);
@@ -95,7 +100,7 @@ $(window).load(function() {
     }
     }
 
-    
+
     function switchRenderer(first){
           var type = $('#renderer-type').val();
           if(type == 'js')
@@ -135,7 +140,7 @@ $(window).load(function() {
                 }
               else
                 {
-                paraview.updateConfiguration(true, "JPEG", "WebGL"); 
+                paraview.updateConfiguration(true, "JPEG", "WebGL");
                 }
           }
       }

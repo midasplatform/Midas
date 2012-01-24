@@ -247,6 +247,7 @@ class AppController extends MIDAS_GlobalController
       'uploadIn' => $this->t('Upload here'),
       'createFolder' => $this->t('Create a new Folder'),
       'preview' => $this->t('Preview'),
+      'metadata' => $this->t('Metadata'),
       'download' => $this->t('Download'),
       'downloadLatest' => $this->t('Download latest revision'),
       'manage' => $this->t('Manage'),

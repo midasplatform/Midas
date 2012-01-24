@@ -40,6 +40,10 @@ function initAxes(divObj)
   //axesMesh.add(new THREE.Axes());
   sceneAxes.add(axesMesh);
 
+  sceneAxes.add(new THREE.AxisHelper());
+
+
+
   var font = "optimer"; 		// helvetiker, optimer, gentilis, droid sans, droid serif
   var weight = "bold";		// normal bold
   var style = "normal";		// normal italic
@@ -146,9 +150,8 @@ function initCamera(altitude, fov, panSpeed)
 
   scene.add( camera );
 
-  controls = new THREE.TrackballControls( camera );
+  controls = new THREE.TrackballControlsMidas( camera );
   controls.target.set( 0, 0, 0 );
-
   controls.rotateSpeed = 1.0;
   controls.zoomSpeed = 1.2;
   controls.panSpeed = panSpeed;
@@ -159,7 +162,7 @@ function initCamera(altitude, fov, panSpeed)
   controls.staticMoving = false;
   controls.dynamicDampingFactor = 0.3;
 
-  controls.keys = [ 65, 83, 68 ];
+  controls.keys = [ 65,68,83 ];
 
   camera.position.z = altitude;
   }
@@ -216,6 +219,7 @@ function initInteractions()
   // events
   window.addEventListener( 'resize', onWindowResizeWebGL, false );
   document.addEventListener( 'mousemove', onDocumentMouseMoveWebGL, false );
+  document.addEventListener( 'mousewheel', onDocumentMouseWheel, false);
   containerWebgl.mousedown(function() {
      mouseDownTime = new Date();
     });
@@ -388,6 +392,29 @@ function onDocumentMouseMoveWebGL( event )
   mouse2D.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
   mouse2D.z = 1;
   }
+
+function onDocumentMouseWheel( event ) {
+
+    var delta = 0;
+    if ( event.wheelDeltaY ) { // WebKit
+        delta = event.wheelDeltaY * 0.05;
+    } else if ( event.wheelDelta ) { // Opera / Explorer 9
+        delta = event.wheelDelta * 0.05;
+    } else if ( event.detail ) { // Firefox
+        delta = event.detail * 0.05;
+    }
+
+    if ( delta > 0 )
+      {
+      zoomIn();
+      }
+    else
+      {
+      zoomOut();
+      }
+
+    render();
+}
 
 var normalizedDirection
 
