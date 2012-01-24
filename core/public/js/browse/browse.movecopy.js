@@ -76,9 +76,9 @@ $(document).ready(
             });
         $("img.tableLoading").hide();
         $("table#moveTable").show();
-
+     
         $('applet').hide();
-
+       
         if($('#selectElement') != undefined) {
             $('#selectElement').click(
                 function() {
