@@ -17,8 +17,10 @@ $(document).ready(function() {
       midas.genericCallbackCheckboxes($('#browseTable'));
       }
     });
-  // Select/deslect all rows. If we are doing deselect all, we include hidden rows
-
+  /**
+   * Select/deslect all rows. If we are doing deselect all, we include hidden
+   * ones
+   */
   midas.browser.enableSelectAll();
 
   $("img.tableLoading").hide();

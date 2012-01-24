@@ -1,11 +1,21 @@
+/**
+ * This module is for the page at core/views/browse/uploaded.phtml. Most of the
+ * logic deals with the treetable and merging on that page.
+ */
+
+/** 
+ * Standard namespacing
+ */
 var midas = midas || {};
 midas.browse = midas.browse || {};
+midas.browse.uploaded = midas.browse.uploaded || {};
+
 $(document).ready(
     function() {
         $("#browseTable").treeTable();
         $("img.tableLoading").hide();
         $("table#browseTable").show();
-        midas.browse.enableSelectAll();
+        midas.browser.enableSelectAll({ callback : callbackCheckboxes});
     });
 
 
@@ -97,15 +107,17 @@ function callbackSelect(node)
       midas.genericCallbackDblClick(node);
     }
     
-    function callbackCheckboxes(node)
-    {
-      var arraySelected = new Array();
-      arraySelected['items']=new Array();
+    function callbackCheckboxes(node) {
+        var arraySelected = [];
+        arraySelected['items'] = [];
+        var selectedRows = [];
       
-      var items='';
-      node.find(".treeCheckbox:checked").each(function(){
-        arraySelected['items'].push($(this).attr('element'));
-        items+=$(this).attr('element')+'-';
+      var items = '';
+      node.find(".treeCheckbox:checked").each(
+          function(){
+              arraySelected['items'].push($(this).attr('element'));
+              items+=$(this).attr('element')+'-';
+              selectedRows.push($(this).closest('tr').attr('id'));
       }); 
 
       var link=json.global.webroot+'/item/merge?items='+items;
@@ -139,8 +151,68 @@ function callbackSelect(node)
 
         showDialogWithContent(json.item.message.merge,html,false);
         
-        $('.mergeItemSubmit').click(function(){
-           window.location.replace(link+'&name='+$('#mergeItemValue').val());
+        $('.mergeItemSubmit').click(
+            function() {
+                midas.browse.uploaded.mergeItems(link+'&name='+$('#mergeItemValue').val(),
+                                                 selectedRows);
+//           window.location.replace(link+'&name='+$('#mergeItemValue').val());
         });
       });
     }
+
+/**
+ * Makes an ajax call to merge items by calling the passed link. It then
+ * @param link the url oto perform the merge.
+ */
+midas.browse.uploaded.mergeItems = function (link, selectedRows) {
+    $("table#browseTable").hide();
+    $("img.tableLoading").show();
+    $.getJSON(link, function(data) {
+        var lastId = selectedRows[selectedRows.length-1];
+        var newRow = "<tr id='" + lastId + "'";
+        newRow += " policy='"+ data.policy + "' class='' type='item' ";
+        newRow += "element='" + data.item_id + "' >";
+        newRow += "  <td class='treeBrowseElement'>";
+        newRow += "    <span class='file'>" + data.name + "</span></td>";
+        newRow += "  <td>" + data.size + "</td>";
+        newRow += "  <td>" + data.date + "</td>";
+        newRow += "  <td><input type='checkbox' ";
+        newRow += "class='treeCheckbox' type='item' ";
+        newRow += "element='" + data.item_id + "' /></td>";
+        newRow += "</tr>";
+        for (var curIndex in selectedRows) {
+            $('tr#'+selectedRows[curIndex]).remove();
+        }
+        // Insert the new row as the first in the table or as the only row
+        // if a first row does not exist.
+        var newNode = '';
+        if($("#browseTable > tbody > tr:first").length > 0) {
+            newNode = $(newRow).insertBefore("#browseTable > tbody > tr:first");
+        } 
+        else {
+            newNode = $(newRow).appendTo("#browseTable > tbody");
+        }
+        // Make the new row checked and selected.
+        newNode.addClass("selected");
+        var newCheck = newNode.find(".treeCheckbox");
+        newCheck.attr("checked", true);
+        callbackCheckboxes(newCheck);
+        callbackSelect(newNode);
+        createNotice("Item, " + data.name + ", merged from " +
+                     selectedRows.length + " items.", 5000);
+    })
+    .error( function() { 
+        createNotice("The item merge failed. Please contact an administrator.", 
+                     5000);
+    })                
+    .complete( function() {
+        // Close the dialog
+        $( "div.MainDialog" ).dialog("close");
+
+        // Refresh the table
+        $("#browseTable").treeTable();
+        $("img.tableLoading").hide();
+        $("table#browseTable").show();
+        midas.browser.enableSelectAll({ callback : callbackCheckboxes});
+   });
+};

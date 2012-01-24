@@ -468,14 +468,21 @@ midas.createInfo = function (jsonContent) {
     $('div.ajaxInfoElement').html(html);
 };
 
-midas.enableSelectAll = function() {
+/**
+ * Enable selecting all of the elements in a treeview browser
+ * @param opts an object with an optional callback
+ */
+midas.browser.enableSelectAll = function (opts) {
+    var default_args = { callback: midas.genericCallbackCheckboxes };
+    var options = $.extend({}, default_args, opts);
+
     // Select/deslect all rows. If we are doing deselect all, we include
     // hidden rows
     $('#browseTableHeaderCheckbox').click(
         function() {
             var selector = this.checked ? '.treeCheckbox:visible' : '.treeCheckbox';
             $('#browseTable').find(selector).prop("checked", this.checked);
-            genericCallbackCheckboxes($('#browseTable'));
+            options.callback($('#browseTable'));
         });
 };
 

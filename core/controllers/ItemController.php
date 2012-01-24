@@ -413,8 +413,14 @@ class ItemController extends AppController
     $mainItem->setSizebytes($this->ItemRevision->getSize($mainItemLastResision));
     $mainItem->setName($name);
     $this->Item->save($mainItem);
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_MERGED', array('item' => $mainItem));
 
-    $this->_redirect('/browse/uploaded');
+    $itemArray = $mainItem->toArray();
+    $itemArray['policy'] = MIDAS_POLICY_ADMIN;
+    $itemArray['size'] = $this->Component->Utility->formatSize($mainItem->getSizebytes());
+    $itemArray['date'] = $this->Component->Date->ago($mainItem->getDateUpdate(),true);
+    echo JsonComponent::encode($itemArray);
+    return;
     }//end merge
 
   /**
@@ -427,6 +433,13 @@ class ItemController extends AppController
   */
   public function checksharedAction()
     {
+
+
+
+
+
+
+
     if(!$this->getRequest()->isXmlHttpRequest())
       {
       throw new Zend_Exception("Why are you here ? Should be ajax.");
