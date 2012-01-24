@@ -112,7 +112,8 @@ class BrowseController extends AppController
             }
           else
             {
-            $this->Folder->addItem($destinationFolder, $item);
+            // Do not update item name in item share action
+            $this->Folder->addItem($destinationFolder, $item, false);
             $this->Item->addReadonlyPolicy($item, $destinationFolder);
             }
           }
