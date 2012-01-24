@@ -344,7 +344,13 @@ midas.createAction = function (node) {
             }
             if(type == 'item') {
                 var from = midas.parentOf(node);
-                var fromFolder = from.attr('element');
+                // we are in a subfolder view and the parent is the current folder
+                if(from) {
+                    var fromFolder = from.attr('element');
+                }
+                else {
+                    var fromFolder = json.folder.folder_id;
+                }
                 html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
                 html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLatest+'</a></li>';
                 if (policy>=2) {
