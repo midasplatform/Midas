@@ -551,17 +551,6 @@ function createInfo(jsonContent)
   $('div.ajaxInfoElement').html(html);
 }
 
-function cutName(name, nchar)
-{
-  if(name.length>nchar)
-      {
-      name=name.substring(0,nchar)+'...';
-      return name;
-      }
-  return name;
-  }
-
-
 function enableRangeSelect(node)
   {
   $('input.treeCheckbox:visible').enableCheckboxRangeSelection({

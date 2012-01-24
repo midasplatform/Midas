@@ -124,7 +124,7 @@
           url: json.global.webroot+'/browse/getelementinfo',
           data: {type: 'item', id: itemId},
           success: function(jsonContent){
-            createInfo(jsonContent);
+            midas.createInfo(jsonContent);
             $('img.infoLoading').hide();
           }
         });
