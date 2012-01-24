@@ -363,7 +363,10 @@ class BrowseController extends AppController
       case 'folder':
         $folder = $this->Folder->load($id);
         $jsonContent = array_merge($jsonContent, $folder->toArray());
-        $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($jsonContent['date_update']));
+        $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($jsonContent['date_creation']));
+        $jsonContent['updated'] = $this->Component->Date->formatDate(strtotime($jsonContent['date_update']));
+        $sizeList = $this->Folder->getSizeFiltered($folder, $this->userSession->Dao, MIDAS_POLICY_READ);
+        $jsonContent['sizebytes'] = $sizeList[0]->size;
         if(!isset($this->userSession->recentFolders))
           {
           $this->userSession->recentFolders = array();
