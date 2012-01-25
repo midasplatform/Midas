@@ -105,11 +105,15 @@ class FolderController extends AppController
     $header = "";
     if(!isset($folder_id))
       {
-      throw new Zend_Exception("Please set the folderId.");
+      throw new Zend_Exception('Please set the folderId.');
       }
     elseif($folder === false)
       {
-      throw new Zend_Exception("The folder doesn t exist.");
+      throw new Zend_Exception('The folder doesn t exist.');
+      }
+    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      throw new Zend_Exception('Invalid policy: no read access');
       }
     else
       {
