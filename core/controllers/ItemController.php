@@ -95,7 +95,7 @@ class ItemController extends AppController
   */
   function viewAction()
     {
-    $this->view->header = $this->t("Item");
+
     $this->view->Date = $this->Component->Date;
     $this->view->Utility = $this->Component->Utility;
     $itemId = $this->_getParam("itemId");
@@ -108,9 +108,9 @@ class ItemController extends AppController
       {
       throw new Zend_Exception("This item doesn't exist.");
       }
-    if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao))
+    if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
-      throw new Zend_Exception("Problem policies.");
+      throw new Zend_Exception('Invalid policy: no read permission');
       }
 
     $this->view->isAdmin = $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
@@ -186,7 +186,6 @@ class ItemController extends AppController
     // Display the good link if the item is pointing to a website
     $this->view->itemIsLink = false;
 
-
     if(isset($itemRevision) && $itemRevision !== false)
       {
       $bitstreams = $itemRevision->getBitstreams();
@@ -199,7 +198,12 @@ class ItemController extends AppController
           }
         }
       $itemDao->creation = $this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
-      $this->view->metadatavalues = $this->ItemRevision->getMetadata($itemRevision);
+      }
+
+    // Add the metadata for each revision
+    foreach($itemDao->getRevisions() as $revision)
+      {
+      $revision->metadatavalues = $this->ItemRevision->getMetadata($revision);
       }
 
     $this->Component->Sortdao->field = 'revision';
@@ -213,9 +217,7 @@ class ItemController extends AppController
     $this->view->title .= ' - '.$itemDao->getName();
     $this->view->metaDescription = substr($itemDao->getDescription(), 0, 160);
 
-
-
-    $tmp = Zend_Registry::get('notifier')->callback("CALLBACK_VISUALIZE_CAN_VISUALIZE", array('item' => $itemDao));
+    $tmp = Zend_Registry::get('notifier')->callback('CALLBACK_VISUALIZE_CAN_VISUALIZE', array('item' => $itemDao));
     if(isset($tmp['visualize']) && $tmp['visualize'] == true)
       {
       $this->view->preview = true;
@@ -225,55 +227,72 @@ class ItemController extends AppController
       $this->view->preview = false;
       }
 
-    $items = array();
-    $this->view->backUploaded = false;
-    $this->view->currentFolder = false;
-    if(isset($this->userSession->uploaded) && in_array($itemDao->getKey(), $this->userSession->uploaded))
+    $currentFolder = false;
+    $parents = $itemDao->getFolders();
+    if(count($parents) == 1)
       {
-      $this->view->backUploaded = true;
-      $items = $this->Item->load($this->userSession->uploaded);
+      $currentFolder = $parents[0];
       }
-    else
+    elseif(isset($this->userSession->recentFolders))
       {
-      $parents = $itemDao->getFolders();
-      if(count($parents) == 1)
+      foreach($this->userSession->recentFolders as $recent)
         {
-        $currentFolder = $parents[0];
-        }
-      elseif(isset($this->userSession->recentFolders))
-        {
-        foreach($parents as $p)
+        foreach($parents as $parent)
           {
-          if(in_array($p->getKey(), $this->userSession->recentFolders))
+          if($parent->getKey() == $recent)
             {
-            $currentFolder = $p;
+            $currentFolder = $parent;
             break;
             }
           }
-
         }
-      if(isset($currentFolder))
+      if($currentFolder === false && count($parents) > 0)
         {
-        $items = $this->Folder->getItemsFiltered($currentFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
-        $this->view->currentFolder = $currentFolder;
+        $currentFolder = $parents[0];
         }
       }
-
-    foreach($items as $key => $item)
+    else if(count($parents) > 0)
       {
-      $tmp = Zend_Registry::get('notifier')->callback("CALLBACK_VISUALIZE_CAN_VISUALIZE", array('item' => $item));
-      if(isset($tmp['visualize']) && $tmp['visualize'] == true)
+      $currentFolder = $parents[0];
+      }
+    $this->view->currentFolder = $currentFolder;
+    $parent = $currentFolder;
+
+    $header = '';
+    while($parent !== false)
+      {
+      if(strpos($parent->getName(), 'community') !== false && $this->Folder->getCommunity($parent) !== false)
         {
-        $items[$key]->preview = 'true';
+        $community = $this->Folder->getCommunity($parent);
+        $header = " <li class = 'pathCommunity'><img alt = '' src = '".$this->view->coreWebroot."/public/images/icons/community.png' /><span><a href = '".$this->view->webroot."/community/".$community->getKey()."#tabs-3'>".$this->Component->Utility->sliceName($community->getName(), 25)."</a></span></li>".$header;
+        }
+      elseif(strpos($parent->getName(), 'user') !== false && $this->Folder->getUser($parent) !== false)
+        {
+        $user = $this->Folder->getUser($parent);
+        $header = " <li class = 'pathUser'><img alt = '' src = '".$this->view->coreWebroot."/public/images/icons/unknownUser-small.png' /><span><a href = '".$this->view->webroot."/user/".$user->getKey()."'>".$this->Component->Utility->sliceName($user->getFullName(), 25)."</a></span></li>".$header;
         }
       else
         {
-        $items[$key]->preview = 'false';
+        $header = " <li class = 'pathFolder'><img alt = '' src = '".$this->view->coreWebroot."/public/images/FileTree/directory.png' /><span><a href = '".$this->view->webroot."/folder/".$parent->getKey()."'>".$this->Component->Utility->sliceName($parent->getName(), 15)."</a></span></li>".$header;
+        }
+      $parent = $parent->getParent();
+      }
+    $header = "<ul class='pathBrowser'>".$header;
+    $header .= "</ul>";
+    $this->view->header = $header;
+
+    $folders = array();
+    $parents = $itemDao->getFolders();
+    foreach($parents as $parent)
+      {
+      if($this->Folder->policyCheck($parent, $this->userSession->Dao, MIDAS_POLICY_READ))
+        {
+        $folders[] = $parent;
         }
       }
+    $this->view->folders = $folders;
 
-    $this->view->sameLocation = $items;
-
+    $itemDao->setDescription(htmlentities($itemDao->getDescription()));
     $this->view->json['item'] = $itemDao->toArray();
     $this->view->json['item']['message']['delete'] = $this->t('Delete');
     $this->view->json['item']['message']['sharedItem'] = $this->t('This item is currrently shared by other folders and/or communities. Deletion will make it disappear in all these folders and/or communitites. ');
