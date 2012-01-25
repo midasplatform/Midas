@@ -136,7 +136,6 @@ class FolderController extends AppController
           {
           $user = $this->Folder->getUser($parent);
           $header = " <li class = 'pathUser'><img alt = '' src = '".$this->view->coreWebroot."/public/images/icons/unknownUser-small.png' /><span><a href = '".$this->view->webroot."/user/".$user->getKey()."'>".$this->Component->Utility->sliceName($user->getFullName(), 25)."</a></span></li>".$header;
-
           }
         else
           {
@@ -144,7 +143,7 @@ class FolderController extends AppController
           }
         $parent = $parent->getParent();
         }
-      $header = "<ul class = 'pathBrowser'>".$header;
+      $header = "<ul class='pathBrowser'>".$header;
       $header .= "</ul>";
       }
 
@@ -169,6 +168,7 @@ class FolderController extends AppController
 
     $this->view->title .= ' - '.$folder->getName();
     $this->view->metaDescription = substr($folder->getDescription(), 0, 160);
+    $folder->setDescription(htmlentities($folder->getDescription()));
     $this->view->json['folder'] = $folder;
     }// end View Action
 
