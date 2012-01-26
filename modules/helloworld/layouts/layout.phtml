@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -40,7 +40,7 @@ echo $this->doctype() ?>
     <![endif]-->
     <?php echo $this->headLink();  // import the css ?>
     <?php echo $this->headStyle(); // import the css ?>
-    
+
   </head>
   <body>
     <div class="MainDialog" style="display:none;">
@@ -99,7 +99,7 @@ echo $this->doctype() ?>
                 {
                 echo '<b><a class="loginLink" href="#" >'.$this->t('Login').'</a></b>';
                 }
-                ?>              
+                ?>
             </li>
             <li>
               <?php
@@ -111,7 +111,7 @@ echo $this->doctype() ?>
                 {
                 echo '<a class="registerLink" href="#" > '.$this->t('Register').'</a>';
                 }
-                ?>  
+                ?>
             </li>
             <li>
               <a href="#" > <?= $this->t('Help') ?></a>
@@ -154,7 +154,7 @@ echo $this->doctype() ?>
         </div>
       </div>
     </div>
-    
+
     <div class="Wrapper">
       <?php
       if($this->needUpgrade)
@@ -170,7 +170,7 @@ echo $this->doctype() ?>
               <li <?php if($this->activemenu=='feed') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/feed');" ><a href="<?php echo $this->webroot?>/feed"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/feed.png" /><span> <?php echo $this->t('Feed');?></span></a></li>
               <li <?php if($this->activemenu=='browse') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/browse');" ><a href="<?php echo $this->webroot?>/browse"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/data.png" /><span> <?php echo $this->t('Data');?></span></a></li>
               <li <?php if($this->activemenu=='community') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/community');" ><a href="<?php echo $this->webroot?>/community"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/community.png" /><span> <?php echo $this->t('Communities');?></span></a></li>
-              <li id="menuUserInfo" <?php if($this->activemenu=='user') {echo 'class="active"';} ?>  ><a href="javascript:;"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/upload.png" /><span> <?php echo $this->t('My Uploads');?></span></a></li>
+              <li id="menuUserInfo" <?php if($this->activemenu=='user') {echo 'class="active"';} ?>  ><a href="javascript:;"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/upload.png" /><span> <?php echo $this->t('Recent Uploads');?></span></a></li>
             </ul>
             <hr/>
             <?php
@@ -184,7 +184,7 @@ echo $this->doctype() ?>
                 if(is_array($item))
                   {
                   echo "<li onclick=\"location.replace('{$this->webroot}/item/{$item['item_id']}');\" class='recentItem' title='".  str_replace("'", '"', $item['name'])." | todo'><a  href='{$this->webroot}/item/{$item['item_id']}'>".$this->slicename($item['name'],20)."</a></li>";
-                  }                  
+                  }
                 }
               echo '</ul>';
               }
@@ -197,13 +197,13 @@ echo $this->doctype() ?>
               echo "<div class='viewHeader'>{$this->header} </div>";
               }
             ?>
-            
+
             <div class="viewWrapper">
               <!-- Content -->
               <?php echo $this->layout()->content ?>
               <!-- End Content -->
-          
-            </div>    
+
+            </div>
             <div class="clear"/>
           </div>
         </div>
@@ -214,7 +214,7 @@ echo $this->doctype() ?>
         </div>
       </div>
       <hr style="display: none;"/>
-    </div> 
+    </div>
     <?php
               if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
                 {
