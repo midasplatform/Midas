@@ -125,13 +125,13 @@ if($this->preview) // module visualize
                 echo '<tr>';
                 echo '  <td>'.$metadata->getElement().'</td>';
                 echo '  <td>'.$metadata->getQualifier().'</td>';
-                echo '  <td>'.$metadata->getValue();
+                echo '  <td><span style="float: left;">'.$metadata->getValue().'</span>';
                 if($this->isModerator)
                   {
-                  echo "<div class='manageMetadata'>";
+                  echo "<span class='manageMetadata'>";
                   echo "<a href='javascript:;' element='".$metadata->getKey()."' class='metadataEditLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/></a>";
                   echo "<a href='javascript:;' element='".$metadata->getKey()."' class='metadataDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/></a>";
-                  echo "</div>";
+                  echo "</span>";
                   }
                 echo "  </td>";
                 echo "</tr>";

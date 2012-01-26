@@ -73,8 +73,9 @@ img.closeVisuButton{
   float:right;
 }
 
-div.manageMetadata{
+span.manageMetadata{
   float:right;
+  display: inline;
 }
 
 #revisionList h3 a {
