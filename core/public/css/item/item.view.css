@@ -6,7 +6,7 @@ div.viewInfo{
   display:block!important;
 }
 
-table#browseTable{
+table.bitstreamList{
   display: table!important;
 }
 
@@ -32,10 +32,6 @@ div.genericInfo {
 
 div.genericInfo .genericSubtitle {
   font-size: 10px;
-}
-
-#browseTable {
-  margin-top:0px;
 }
 
 .itemStats {
@@ -77,8 +73,9 @@ img.closeVisuButton{
   float:right;
 }
 
-div.manageMetadata{
+span.manageMetadata{
   float:right;
+  display: inline;
 }
 
 #revisionList h3 a {

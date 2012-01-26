@@ -125,13 +125,13 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
                 echo '<tr>';
                 echo '  <td>'.$metadata->getElement().'</td>';
                 echo '  <td>'.$metadata->getQualifier().'</td>';
-                echo '  <td>'.$metadata->getValue();
+                echo '  <td><span style="float: left;">'.$metadata->getValue().'</span>';
                 if($this->isModerator)
                   {
-                  echo "<div class='manageMetadata'>";
+                  echo "<span class='manageMetadata'>";
                   echo "<a href='javascript:;' element='".$metadata->getKey()."' class='metadataEditLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/></a>";
                   echo "<a href='javascript:;' element='".$metadata->getKey()."' class='metadataDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/></a>";
-                  echo "</div>";
+                  echo "</span>";
                   }
                 echo "  </td>";
                 echo "</tr>";
@@ -145,12 +145,11 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
         echo '</div>';
         echo '<div class="revisionContent">';
         echo '<h4 style="margin-top: 0px;margin-bottom: 5px;">'.$this->t('CONTENT').'</h4>';
-        echo '<table style="display:block;" id="browseTable" class="bitstreamList">'; ?>
+        echo '<table style="display:block;" class="bitstreamList">'; ?>
                 <thead>
                   <tr>
                     <th><?php echo $this->t('Name');?></th>
                     <th><?php echo $this->t('Size');?></th>
-                    <th><?php echo $this->t('Type');?></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -158,11 +157,18 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
                   $bitstreams = $revision->getBitstreams();
                   foreach($bitstreams as $bitstream)
                     {
-                    echo "<tr>";
-                    echo "  <td>{$this->slicename($bitstream->getName(),50)}</td>";
-                    echo "  <td>{$this->Utility->formatSize($bitstream->getSizebytes())}  </td>";
-                    echo "  <td>{$bitstream->getMimetype()}</td>";
-                    echo "</tr>";
+                    echo '<tr class="bitstreamRow">';
+                    echo '<td>';
+                    echo '  <div style="display: none;">';
+                    echo '    <span name="filename">'.$bitstream->getName().'</span>';
+                    echo '    <span name="md5">'.$bitstream->getChecksum().'</span>';
+                    echo '    <span name="sizeBytes">'.$bitstream->getSizebytes().'</span>';
+                    echo '    <span name="mimeType">'.$bitstream->getMimetype().'</span>';
+                    echo '  </div>';
+                    echo $this->slicename($bitstream->getName(), 50);
+                    echo '</td>';
+                    echo '<td>'.$this->Utility->formatSize($bitstream->getSizebytes()).'</td>';
+                    echo '</tr>';
                     }
                   ?>
                 </tbody>
