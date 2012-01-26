@@ -698,12 +698,3 @@ function createNotive(text, delay)
   createNotice(text,delay);
 }
 
-function cutName(name, nchar)
-{
-  if(name.length>nchar)
-      {
-      name=name.substring(0,nchar)+'...';
-      return name;
-      }
-  return name;
-  }

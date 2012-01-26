@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+/** Image controler*/
 class Visualize_ImageController extends Visualize_AppController
 {
   public $_models = array('Item', 'ItemRevision', 'Bitstream');
@@ -27,23 +28,21 @@ class Visualize_ImageController extends Visualize_AppController
     $this->disableLayout();
     $itemid = $this->_getParam('itemId');
     $item = $this->Item->load($itemid);
-    
+
     if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
       throw new Zend_Exception("This item doesn't exist  or you don't have the permissions.");
-      }   
-    
+      }
+
     $revision = $this->Item->getLastRevision($item);
-    $bitstreams = $revision->getBitstreams();    
+    $bitstreams = $revision->getBitstreams();
     if(count($bitstreams) != 1)
       {
       throw new Zend_Exception('Error');
       }
     $this->bistream = $bitstreams[0];
-    
+
     $this->view->imageUrl = $this->view->webroot."/download?items=".$item->getKey();
-
-
     }
 } // end class
 ?>

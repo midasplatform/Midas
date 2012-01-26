@@ -519,14 +519,14 @@ function createInfo(jsonContent)
         console.log((qualifierText.length) + (valueElement.length));
         if( ((qualifierText.length) + (valueElement.length)) <= 31 )
           {
-          html+= "<span style='font-style: italic ;padding-left: 5px;font-size: 11px;float:right;'>"+value.value.replace('þÿ','')+"<span>";
+          html+= "<span style='font-style: italic ;padding-left: 5px;font-size: 11px;float:right;'>"+value.value+"<span>";
           }
         html+='  </td>';
         html+='  </tr>';
         if( ((qualifierText.length) + (valueElement.length)) > 31 )
           {
             html+='  <tr>';
-            html+='    <td style="float:right;font-style: italic ;padding-left: 5px;font-size: 11px;"> '+cutName(value.value.replace('þÿ',''), 40)+'</td>';
+            html+='    <td style="float:right;font-style: italic ;padding-left: 5px;font-size: 11px;"> '+midas.cutName(value.value.replace('þÿ',''), 40)+'</td>';
             html+='  </tr>';
           }
 
@@ -558,4 +558,14 @@ function enableRangeSelect(node)
       genericCallbackCheckboxes($('#browseTable'));
       }
     });
+  }
+
+midas.cutName = function(name, nchar) {
+
+  if(name.length>nchar)
+      {
+      name=name.substring(0,nchar)+'...';
+      return name;
+      }
+  return name;
   }
