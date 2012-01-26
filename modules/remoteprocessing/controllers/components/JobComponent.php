@@ -48,25 +48,157 @@ class Remoteprocessing_JobComponent extends AppComponent
 
     foreach($inputArray as $input)
       {
-      if(!$input instanceof ItemDao)
-        {
-        throw new Zend_Exception("Error params. Shoud be an itemdao");
-        }
-      $return['input'][] = $input->getKey();
+      $return['input'][] = $input;
       }
 
     foreach($ouputArray as $output)
       {
-      if(!is_string($output))
-        {
-        throw new Zend_Exception("Error params. Shoud be a string");
-        }
       $return['output'][] = $output;
       }
 
     return $return;
     }
 
+  /** parse parameters and create job tree*/
+  public function processJobParameters($params)
+    {
+    // convert array keys to uuid
+    $newParams = array();
+    foreach($params as $key => $jobParam)
+      {
+      $params[$key]['uuid'] = uniqid() . md5(mt_rand());
+      }
+
+    foreach($params as $key => $jobParam)
+      {
+      $newParams[$jobParam['uuid']] = $jobParam;
+      unset($newParams[$jobParam['uuid']]['parents']);
+      $newParams[$jobParam['uuid']]['parents'] = array();
+      foreach($jobParam['parents'] as $parent)
+        {
+        $newParams[$jobParam['uuid']]['parents'][] = $params[$parent]['uuid'];
+        }
+      }
+
+    // create tree
+    $tree = $this->_createJobTree($newParams);
+
+    // spicific tree modification
+    $componentLoader = new MIDAS_ComponentLoader();
+    $executableComponent = $componentLoader->loadComponent('Executable', 'remoteprocessing');
+    $internalComponent = $componentLoader->loadComponent('Internal', 'remoteprocessing');
+    $userComponent = $componentLoader->loadComponent('User', 'remoteprocessing');
+
+    list($newParams, $tree) = $executableComponent->treeProcessing($newParams, $tree);
+    list($newParams, $tree) = $internalComponent->treeProcessing($newParams, $tree);
+    list($newParams, $tree) = $userComponent->treeProcessing($newParams, $tree);
+
+    // create and save job workflow
+    $this->_createWorkflow($newParams, $tree);
+    }
+
+  /** create a tree of the job's workflow */
+  private function _createJobTree($params, $parent = null)
+    {
+    $tree = array();
+    foreach($params as $key => $jobParam)
+      {
+      if((empty($jobParam['parents']) && $parent == null) || (!empty($jobParam['parents']) && in_array($parent, $jobParam['parents'])))
+        {
+        $tree[$jobParam['uuid']] = $this->_createJobTree($params, $key);
+        }
+      }
+    return $tree;
+    }
+
+  /** create and save workflow */
+  private function _createWorkflow($params, $tree, $parent = null)
+    {
+    foreach($tree as $uuid => $children)
+      {
+      $jobParam = $params[$uuid];
+      $parents = array();
+      if($parent != null)
+        {
+        $parents[] = $parent;
+        }
+      $job = $this->createJob($jobParam, $parents, $jobParam['script'], $jobParam['type'], $jobParam['os'], $jobParam['condition'], $jobParam['expiration'], $jobParam['uuid']);
+      $this->_createWorkflow($params, $children, $job);
+      }
+    }
+
+  /** create a job */
+  public function createJob($params = array(), $parents = array(), $script = '', $type = MIDAS_REMOTEPROCESSING_TYPE_REMOTE_PYTHON, $os = "linux", $condition = "", $expiration = null, $uuid = null )
+    {
+    if($uuid == null)
+      {
+      $uuid = uniqid() . md5(mt_rand());
+      $params['uuid'] = $uuid;
+      }
+    $modelLoader = new MIDAS_ModelLoader;
+    $jobModel = $modelLoader->loadModel("Job", "remoteprocessing");
+    $job = $jobModel->getByUuid($uuid);
+    if($job == null)
+      {
+      $itemModel = $modelLoader->loadModel("Item");
+      require_once BASE_PATH.'/module/remoteprocessing/models/dao/JobDao.php';
+      $job = new Remoteprocessing_JobDao();
+      $job->setScript($script);
+      unset($params['script']);
+      $job->setOs($os);
+      unset($params['os']);
+      $job->setCondition($condition);
+      unset($params['condition']);
+      if(isset($expiration) && $expiration != null)
+        {
+        $job->setExpirationDate($expiration);
+        }
+      else
+        {
+        $date = new Zend_Date();
+        $date->add('5', Zend_Date::HOUR);
+        $job->setExpirationDate($date->toString('c'));
+        }
+
+      if(isset($params['params']['creator_id']))
+        {
+        $job->setCreatorId($params['params']['creator_id']);
+        }
+      if(isset($params['params']['job_name']))
+        {
+        $job->setName($params['params']['job_name']);
+        }
+
+      $job->setParams(JsonComponent::encode($params['params']));
+      $jobModel->save($job);
+
+      if(!empty($params['params']['input']))
+        {
+        foreach($params['params']['input'] as $itemId)
+          {
+          $item = $itemModel->load($itemId);
+          if($item != false && $item->getKey() != $params['params']['executable'])
+            {
+            $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT);
+            }
+          elseif($item != false)
+            {
+            $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_EXECUTABLE);
+            }
+          }
+        }
+      }
+
+    foreach($parents as $parent)
+      {
+      if(!$parent instanceof Remoteprocessing_JobDao)
+        {
+        throw new Zend_Exception("Should be a job.");
+        }
+      $jobModel->addParent($job, $parent);
+      }
+    return $job;
+    }
 
   /** init Job*/
   public function scheduleJob($parameters, $script, $os = MIDAS_REMOTEPROCESSING_OS_WINDOWS, $fire_time = false, $time_interval = false, $only_once = true, $condition = '')

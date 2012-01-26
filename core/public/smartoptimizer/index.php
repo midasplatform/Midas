@@ -135,7 +135,9 @@ if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
 	$fileDir = $settings['baseDir'].$matchResult[1];
 } else debugExit("Invalid file name ($query)");
 
-if (strpos(realpath($fileDir), realpath($settings['baseDir'])) !== 0) debugExit("File is out of base directory.");
+
+$joinedGet = join('', $_GET);
+if (empty($joinedGet) && strpos(realpath($fileDir), realpath($settings['baseDir'])) !== 0) debugExit("File is out of base directory.");
 
 if ($settings['concatenate']) {
 	$files = explode($settings['separator'], $fileNames);
@@ -149,6 +151,14 @@ foreach ($files as $key => $file) {
 
 	$files[$key] = $fileDir.$file;
 }
+
+if(!empty($joinedGet))
+  {
+  	foreach ($files as $key => $file)
+      {
+      $files[$key] = str_replace($settings['baseDir'], $joinedGet, $file);
+      }
+  }
 
 if ($settings['concatenate']) {
 	if (count(array_unique($fileTypes)) > 1) debugExit("Files must be of the same type.");
@@ -175,6 +185,9 @@ if ($settings['serverCache']) {
 	$cachedFile = $settings['cacheDir'].$settings['cachePrefix'].md5($query.($settings['embed']?'1':'0')).'.'.$fileType.($settings['gzip'] ? '.gz' : '');
 }
 
+
+
+
 $generateContent = ((!$settings['serverCache'] && (!$settings['clientCache'] || !$settings['clientCacheCheck'] || !isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != gmdatestr(filesmtime()))) ||
 	($settings['serverCache'] && (!file_exists($cachedFile) || ($settings['serverCacheCheck'] && filesmtime() > filemtime($cachedFile)))));
 
@@ -184,6 +197,7 @@ if ($settings['clientCache'] && $settings['clientCacheCheck']) {
 	else $mtime = filesmtime();
 	$mtimestr = gmdatestr($mtime);
 }
+
 
 if (!$settings['clientCache'] || !$settings['clientCacheCheck'] || !isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $mtimestr) {
 	if ($settings['clientCache'] && $settings['clientCacheCheck']) {
@@ -196,7 +210,7 @@ if (!$settings['clientCache'] || !$settings['clientCacheCheck'] || !isset($_SERV
 	if ($generateContent) {
 		if ($settings['minify']) include('minifiers/'.$fileType.'.php');
 		$content = array();
-		foreach ($files as $file) (($content[] = @file_get_contents($file)) !== false) || debugExit("File not found ($file).");
+		foreach ($files as $file) (($content[] = file_get_contents($file)) !== false) || debugExit("File not found ($file).");
 		$content = implode("\n", $content);
 		if ($settings['minify']) $content = call_user_func('minify_' . $fileType, $content);
 		if ($settings['gzip']) $content = gzencode($content, $settings['compressionLevel']);
@@ -206,6 +220,7 @@ if (!$settings['clientCache'] || !$settings['clientCacheCheck'] || !isset($_SERV
 			fclose($handle);
 		}
 		header('Content-Length: ' . strlen($content));
+
 		echo $content;
 	} else {
 		header('Content-Length: ' . filesize($cachedFile));

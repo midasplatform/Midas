@@ -11,8 +11,23 @@ table#moveTable{
   display: none;
 }
 
-.treeTable .browserPrivacyInformation{
-  right: 10px!important;
+#browserWrapper{
+  height:auto;
+  max-height: 450px;
+  overflow-x: hidden!important;
+  overflow-y: auto!important;
+  border-bottom: 1px dotted #E4E4E4;
+  border-top: 1px dotted #E4E4E4;
+  margin-bottom: 3px;
+  margin-top: 3px;
+}
+
+.treeTable .browserPrivacyInformation {
+  position: relative!important;
+  float: right!important;
+  left: -20px!important;
+  padding-right: 0px!important;
+  padding-left: 0px!important;
 }
 
 input#live_search_item {

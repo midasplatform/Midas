@@ -76,12 +76,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     $this->view->scheduled = $scheduled;
     if($this->_request->isPost())
       {
-      $itemId = $this->_getParam("itemId");
-      if(!isset($itemId) || !is_numeric($itemId))
-        {
-        throw new Zend_Exception("itemId  should be a number");
-        }
-
+      
       $itemDao = $this->Item->load($itemId);
       if($itemDao === false)
         {

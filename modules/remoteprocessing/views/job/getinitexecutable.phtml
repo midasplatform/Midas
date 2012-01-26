@@ -16,7 +16,7 @@ foreach($this->metaContent->option as $option)
   {
   if(isset($option->field) && isset($option->field->required) && $option->field->required == 1)
     {
-    echo "<div id='option_".$i."' name='".htmlentities(ucfirst($option->name))."' class='optionWrapper' isrequired ='true' tag='".htmlentities($option->tag)."'>";
+    echo "<div id='option_".$i."' name='".htmlentities(ucfirst($option->name))."' channel='".$option->channel."' class='optionWrapper' isrequired ='true' tag='".htmlentities($option->tag)."'>";
     echo "<h4>".ucfirst($option->name)." (required)</h4>";
     }
   else
