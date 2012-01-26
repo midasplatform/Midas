@@ -492,18 +492,18 @@ midas.createInfo = function (jsonContent) {
         html+='  <tr>';
         html+='    <td>'+value.element+' - '+value.qualifier+':';
         var qualifierText = value.element+' - '+value.qualifier+':';
-        var valueElement = value.value.replace('þÿ','');
+        var valueElement = value.value;
         console.log((qualifierText.length) + (valueElement.length));
         if( ((qualifierText.length) + (valueElement.length)) <= 31 )
           {
-          html+= "<span style='font-style: italic ;padding-left: 5px;font-size: 11px;float:right;'>"+value.value.replace('þÿ','')+"<span>";
+          html+= "<span style='font-style: italic ;padding-left: 5px;font-size: 11px;float:right;'>"+value.value+"<span>";
           }
         html+='  </td>';
         html+='  </tr>';
         if( ((qualifierText.length) + (valueElement.length)) > 31 )
           {
             html+='  <tr>';
-            html+='    <td style="float:right;font-style: italic ;padding-left: 5px;font-size: 11px;"> '+cutName(value.value.replace('þÿ',''), 40)+'</td>';
+            html+='    <td style="float:right;font-style: italic ;padding-left: 5px;font-size: 11px;"> '+midas.cutName(value.value, 40)+'</td>';
             html+='  </tr>';
           }
 
@@ -528,11 +528,21 @@ midas.createInfo = function (jsonContent) {
     $('div.ajaxInfoElement').html(html);
 };
 
-midas.enableRangeSelect = function (node) {
-    $('input.treeCheckbox:visible').enableCheckboxRangeSelection(
-        {
-            onRangeSelect: function() {
-                midas.genericCallbackCheckboxes($('#browseTable'));
-            }
-        });
-};
+function enableRangeSelect(node)
+  {
+  $('input.treeCheckbox:visible').enableCheckboxRangeSelection({
+    onRangeSelect: function() {
+      genericCallbackCheckboxes($('#browseTable'));
+      }
+    });
+  }
+
+midas.cutName = function(name, nchar) {
+
+  if(name.length>nchar)
+      {
+      name=name.substring(0,nchar)+'...';
+      return name;
+      }
+  return name;
+  }

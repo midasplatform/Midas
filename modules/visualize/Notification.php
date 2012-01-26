@@ -20,8 +20,8 @@
 /** notification manager*/
 class Visualize_Notification extends MIDAS_Notification
   {
-  public $_moduleComponents=array('Main');
-  public $moduleName='visualize';
+  public $_moduleComponents = array('Main');
+  public $moduleName = 'visualize';
 
   /** init notification process*/
   public function init()
@@ -72,18 +72,13 @@ class Visualize_Notification extends MIDAS_Notification
   /** can visualize?*/
   public function canVisualize($params)
     {
-    return $this->ModuleComponent->Main->canVisualizeWithParaview($params['item']) ||
-           $this->ModuleComponent->Main->canVisualizeMedia($params['item']) ||
-           $this->ModuleComponent->Main->canVisualizeTxt($params['item']) ||
-           $this->ModuleComponent->Main->canVisualizeImage($params['item']) ||
-           $this->ModuleComponent->Main->canVisualizePdf($params['item']) ||
-           $this->ModuleComponent->Main->canVisualizeWebgl($params['item']);
+    return $this->ModuleComponent->Main->canVisualizeWithParaview($params['item']) || $this->ModuleComponent->Main->canVisualizeMedia($params['item']) || $this->ModuleComponent->Main->canVisualizeTxt($params['item']) || $this->ModuleComponent->Main->canVisualizeImage($params['item']) || $this->ModuleComponent->Main->canVisualizePdf($params['item']) || $this->ModuleComponent->Main->canVisualizeWebgl($params['item']);
     }
 
   /** generate Dasboard information */
   public function getDasboard()
     {
-    $modulesConfig=Zend_Registry::get('configsModules');
+    $modulesConfig = Zend_Registry::get('configsModules');
     $useparaview = $modulesConfig['visualize']->useparaview;
     if(!isset($useparaview) || !$useparaview)
       {
@@ -121,4 +116,3 @@ class Visualize_Notification extends MIDAS_Notification
     return $prefix.$_SERVER['SERVER_NAME'].$currentPort;
     }
   } //end class
-?>
