@@ -66,7 +66,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       {
       ?>
     <li><a href="#tabs-4"><?php echo $this->t('Owned by me');?></a></li>
-    <li><a href="#tabs-5"><?php echo $this->t('Shared to me');?></a></li>
+    <li><a href="#tabs-5"><?php echo $this->t('Shared with me');?></a></li>
     <?php
       }
     foreach($this->moduleTabs as $module)
@@ -173,7 +173,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       <li class="myAccountLink" userid="'.$this->user->getKey().'"><a><img alt="" src="'.$this->coreWebroot.'/public/images/icons/user.png"/> '.$this->t('Manage Profile').'</a></li>
       <li><a href="'.$this->webroot.'/user/manage/?userId='.$this->user->getKey().'"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/data.png"/> '.$this->t('Manage Files').'</a></li>
       <li><a onclick="midas.createNewFolder('.$this->mainFolder->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/folder_add.png"/> '.$this->t('Create a top level Folder').'</a></li>';
-      
+
     if($this->isAdmin && !$this->user->isAdmin())
       {
       echo '
