@@ -153,7 +153,7 @@ midas.upload.simpleupload.initSwfupload = function()
   }
 
 $('img#uploadAFile').show();
-$('img#uploadAFileLoadiing').hide();
+$('img#uploadAFileLoading').hide();
 
 // detect chrom or firefox 7+
 try
@@ -163,7 +163,7 @@ try
   version = parseInt(version[0]);
   var is_firefox = jQuery.browser.mozilla != undefined && version > 6;
 
-  if(is_chrome)
+  if(is_chrome) //|| is_firefox
     {
     $('#changeUploadMode').show();
     }
