@@ -21,7 +21,7 @@
 /** Item Controller */
 class ItemController extends AppController
   {
-  public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Folder', 'Metadata');
+  public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Folder', 'Metadata', 'License');
   public $_daos = array();
   public $_components = array('Date', 'Utility', 'Sortdao');
   public $_forms = array('Item');
@@ -330,13 +330,20 @@ class ItemController extends AppController
       {
       $name = $this->_getParam('name');
       $description = $this->_getParam('description');
+      $license = $this->_getParam('licenseSelect');
 
+      $revision = $this->ItemRevision->getLatestRevision($item);
+
+      if($revision != false)
+        {
+        $revision->setLicenseId($license);
+        $this->ItemRevision->save($revision);
+        }
       if(strlen($name) > 0)
         {
         $item->setName($name);
         }
       $item->setDescription($description);
-
       $this->Item->save($item);
       $this->_redirect('/item/'.$item->getKey());
       }
@@ -347,6 +354,13 @@ class ItemController extends AppController
     $formArray['name']->setValue($item->getName());
     $formArray['description']->setValue($item->getDescription());
     $this->view->form = $formArray;
+
+    $this->view->allLicenses = $this->License->getAll();
+    $revision = $this->ItemRevision->getLatestRevision($item);
+    if($revision != false)
+      {
+      $this->view->selectedLicense = $revision->getLicenseId();
+      }
     }
 
   /**

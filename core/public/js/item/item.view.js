@@ -153,7 +153,9 @@ $(document).ready(function() {
 
     $('a.editItemLink').click(function() {
         loadDialog("editItem"+json.item.item_id,"/item/edit?itemId="+json.item.item_id);
-        showDialog(json.browse.edit, false);
+        showDialog(json.browse.edit, false, {
+            width: 545
+        });
     });
     $('#revisionList').accordion({
         clearStyle: true,
