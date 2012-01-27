@@ -52,3 +52,20 @@ ul.pathBrowser li a{
 span.infoTitle{
   font-weight: bold;
 }
+
+input.deleteSelectedYes {
+  margin-left: 0 !important;
+}
+
+input.deleteSelectedNo {
+  margin-left: 15px !important;
+}
+
+div.dialogButtons {
+  float: right;
+}
+
+#deleteSelectedLoadingGif {
+  display: none;
+  float: left;
+}
