@@ -31,6 +31,7 @@ class Statistics_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_GET_USER_MENU', 'getUserMenu');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemMenuLink');
     $this->addCallBack('CALLBACK_CORE_PLUS_ONE_DOWNLOAD', 'addDownload');
+    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
 
     $this->addTask('TASK_STATISTICS_SEND_REPORT', 'sendReport', 'Send a daily report');
     $this->addTask('TASK_STATISTICS_PERFORM_GEOLOCATION', 'performGeolocation', 'Perform geolocation based on IP');
@@ -101,6 +102,23 @@ class Statistics_Notification extends MIDAS_Notification
       </script><noscript><p><img src=\"".$url."/piwik.php?idsite=".$id."\" style=\"border:0\" alt=\"\" /></p></noscript>
       <!-- End Piwik Tracking Code -->
       ";
+    }
+
+  /**
+   * If a user is deleted, we should remove references to them in the
+   * statistics_download table
+   * @param userDao the user dao that is about to be deleted
+   */
+  public function handleUserDeleted($params)
+    {
+    if(!isset($params['userDao']))
+      {
+      throw new Zend_Exception('Error: userDao parameter required');
+      }
+    $user = $params['userDao'];
+    $modelLoader = new MIDAS_ModelLoader();
+    $downloadModel = $modelLoader->loadModel('Download', $this->moduleName);
+    $downloadModel->removeUserReferences($user->getKey());
     }
   } //end class
 ?>

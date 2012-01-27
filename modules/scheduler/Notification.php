@@ -20,16 +20,18 @@
 /** notification manager*/
 class Scheduler_Notification extends MIDAS_Notification
   {
-  public $_moduleModels=array('Job');
-  public $_moduleDaos=array('Job');
-  public $_components=array('Json');
+  public $_moduleModels = array('Job');
+  public $_moduleDaos = array('Job');
+  public $_components = array('Json');
   public $moduleName = 'scheduler';
 
   /** init notification process*/
   public function init()
     {
-    $this->addTask("TASK_SCHEDULER_SCHEDULE_TASK", 'scheduleTask', "Schedule a task. Parameters: task, priority, params");
+    $this->addTask('TASK_SCHEDULER_SCHEDULE_TASK', 'scheduleTask', "Schedule a task. Parameters: task, priority, params");
+    
     $this->addCallBack('CALLBACK_SCHEDULER_SCHEDULE_TASK', 'scheduleTask');
+    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
     }//end init
 
   /** get Config Tabs */
@@ -87,6 +89,23 @@ class Scheduler_Notification extends MIDAS_Notification
 
     $this->Scheduler_Job->save($job);
     return;
+    }
+
+  /**
+   * If a user is deleted, we should remove references to them in the
+   * scheduler_job table.
+   * @param userDao The user dao that is about to be deleted
+   */
+  public function handleUserDeleted($params)
+    {
+    if(!isset($params['userDao']))
+      {
+      throw new Zend_Exception('Error: userDao parameter required');
+      }
+    $user = $params['userDao'];
+    $modelLoader = new MIDAS_ModelLoader();
+    $jobModel = $modelLoader->loadModel('Job', $this->moduleName);
+    $jobModel->removeUserReferences($user->getKey());
     }
   } //end class
 ?>

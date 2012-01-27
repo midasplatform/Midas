@@ -68,5 +68,15 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
       }
     return $result;
     }
+
+  /**
+   * Set user id = NULL for all entries in the database referencing the user.
+   * Called when a user is about to be deleted
+   * @param userId The id of the user being deleted.
+   */
+  function removeUserReferences($userId)
+    {
+    $this->database->update(array('user_id' => null), array('user_id = ?' => $userId));
+    }
 }  // end class
 ?>

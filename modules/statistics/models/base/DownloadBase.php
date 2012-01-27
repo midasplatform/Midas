@@ -29,17 +29,19 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
     $this->_key = 'download_id';
 
     $this->_mainData = array(
-        'download_id' => array('type' => MIDAS_DATA),
-        'item_id' => array('type' => MIDAS_DATA),
-        'user_id' => array('type' => MIDAS_DATA),
-        'ip_location_id' => array('type' => MIDAS_DATA),
-        'date' => array('type' => MIDAS_DATA),
-        'item' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Item', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
-        'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
-        'ip_location' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'IpLocation', 'module' => 'statistics', 'parent_column' => 'ip_location_id', 'child_column' => 'ip_location_id')
-        );
+      'download_id' => array('type' => MIDAS_DATA),
+      'item_id' => array('type' => MIDAS_DATA),
+      'user_id' => array('type' => MIDAS_DATA),
+      'ip_location_id' => array('type' => MIDAS_DATA),
+      'date' => array('type' => MIDAS_DATA),
+      'item' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Item', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
+      'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
+      'ip_location' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'IpLocation', 'module' => 'statistics', 'parent_column' => 'ip_location_id', 'child_column' => 'ip_location_id')
+      );
     $this->initialize(); // required
     } // end __construct()
+
+  abstract function removeUserReferences($userId);
 
   /** add a download record for the given item */
   public function addDownload($item, $user)
