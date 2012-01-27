@@ -377,43 +377,8 @@ class ItemController extends AppController
       }
     $itemIds = explode('-', $itemIds);
 
-    $items = array();
-    foreach($itemIds as $item)
-      {
-      $itemDao = $this->Item->load($item);
-      if($itemDao != false && $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
-        {
-        $items[] = $itemDao;
-        }
-      }
-
-    if(empty($items))
-      {
-      throw new Zend_Exception('Permissions error');
-      }
-
-
-    $mainItem = $items[0];
-    $mainItemLastResision = $this->Item->getLastRevision($mainItem);
-    foreach($items as $key => $item)
-      {
-      if($key != 0)
-        {
-        $revision = $this->Item->getLastRevision($item);
-        $bitstreams = $revision->getBitstreams();
-        foreach($bitstreams as $b)
-          {
-          $b->setItemrevisionId($mainItemLastResision->getKey());
-          $this->Bitstream->save($b);
-          }
-        $this->Item->delete($item);
-        }
-      }
-
-    $mainItem->setSizebytes($this->ItemRevision->getSize($mainItemLastResision));
-    $mainItem->setName($name);
-    $this->Item->save($mainItem);
-    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_MERGED', array('item' => $mainItem));
+    $mainItem = $this->Item->mergeItems($itemIds, $name,
+                                        $this->userSession->Dao);
 
     $itemArray = $mainItem->toArray();
     $itemArray['policy'] = MIDAS_POLICY_ADMIN;
@@ -433,13 +398,6 @@ class ItemController extends AppController
   */
   public function checksharedAction()
     {
-
-
-
-
-
-
-
     if(!$this->getRequest()->isXmlHttpRequest())
       {
       throw new Zend_Exception("Why are you here ? Should be ajax.");
