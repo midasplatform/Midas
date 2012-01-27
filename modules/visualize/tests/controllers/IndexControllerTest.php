@@ -57,9 +57,6 @@ class IndexControllerTest extends ControllerTestCase
     $this->dispatchUrI("/visualize/image/index");
     $this->assertController("image");
 
-    $this->dispatchUrI("/visualize/paraview/index");
-    $this->assertController("paraview");
-
     $this->dispatchUrI("/visualize/media/index");
     $this->assertController("media");
 
