@@ -515,7 +515,7 @@ function createInfo(jsonContent)
         html+='  <tr>';
         html+='    <td>'+value.element+' - '+value.qualifier+':';
         var qualifierText = value.element+' - '+value.qualifier+':';
-        var valueElement = value.value.replace('þÿ','');
+        var valueElement = value.value;
         console.log((qualifierText.length) + (valueElement.length));
         if( ((qualifierText.length) + (valueElement.length)) <= 31 )
           {
@@ -526,7 +526,7 @@ function createInfo(jsonContent)
         if( ((qualifierText.length) + (valueElement.length)) > 31 )
           {
             html+='  <tr>';
-            html+='    <td style="float:right;font-style: italic ;padding-left: 5px;font-size: 11px;"> '+midas.cutName(value.value.replace('þÿ',''), 40)+'</td>';
+            html+='    <td style="float:right;font-style: italic ;padding-left: 5px;font-size: 11px;"> '+midas.cutName(value.value, 40)+'</td>';
             html+='  </tr>';
           }
 

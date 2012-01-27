@@ -24,7 +24,6 @@ class Visualize_IndexController extends Visualize_AppController
   public $_moduleComponents = array('Main');
   public $_models = array('Item');
 
-
   /** index*/
   function indexAction()
     {
@@ -41,6 +40,7 @@ class Visualize_IndexController extends Visualize_AppController
       }
     $itemId = $this->_getParam('itemId');
     $itemDao = $this->Item->load($itemId);
+    
     if($this->ModuleComponent->Main->canVisualizeWithParaview($itemDao))
       {
       $this->_redirect('/visualize/paraview/?itemId='.$itemId.'&height='.$height.'&width='.$width);

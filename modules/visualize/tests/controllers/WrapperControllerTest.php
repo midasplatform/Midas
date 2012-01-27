@@ -48,7 +48,7 @@ class WrappergControllerTest extends ControllerTestCase
 
     Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     Zend_Registry::set('configsModules', array());
-    $item = $uploadComponent->createUploadedItem($userDao, "test.png", BASE_PATH.'/tests/testfiles/search.png');
+    $item = $uploadComponent->createUploadedItem($userDao, "test.png", BASE_PATH.'/tests/testfiles/search.png', null, null, '', true);
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
     $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
 
