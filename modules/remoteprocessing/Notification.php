@@ -223,7 +223,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
         $oldfilepath = $filepath;
         $filepath = str_replace(".".$tmpArray[1].".", ".", $filepath);
         rename($oldfilepath, $filepath);
-        $item = $uploadComponent->createUploadedItem($userDao, basename($filepath), $filepath, $folder);
+        $item = $uploadComponent->createUploadedItem($userDao, basename($filepath), $filepath, $folder, null, '', true);
         $params['outputKeys'][$tmpArray[1]][] = $item->getKey();
         $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT);
         // add parameter metadata
@@ -255,7 +255,6 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       $item = $uploadComponent->createUploadedItem($userDao, 'job-'.$params['job_id'].'_results.xml', $logFile, $folder);
       $itempolicyuserModel->createPolicy($creatorDao, $item, MIDAS_POLICY_READ);
       $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS);
-      unlink($logFile);
       }
     }
 

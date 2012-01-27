@@ -1,13 +1,13 @@
 package com.kitware.utils;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
-
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 
 import com.kitware.utils.exception.JavaUploaderException;
 import com.kitware.utils.exception.JavaUploaderHttpServerErrorException;
@@ -159,19 +159,25 @@ public class Utility
       }
     }
 
-//  public static void error(Throwable cause)
-//    {
-//      Utility.error("", cause);
-//    }
-//
-//  public static void error(String message, Throwable e)
-//    { 
-//      System.err.println("[ERROR] " + (message.equals("") ? "" : message + " - Exception: ") + e.getClass().getName() + (e.getMessage()==null?"":(" - " + e.getMessage())) );
-//      e.printStackTrace();
-//    }
-//
-//  public static void error(String message)
-//    {
-//      System.err.println("[ERROR] " + message);
-//    }
+  /**
+   * Convert a number of bytes into a human readable string
+   * @param bytes Numeric bytes (ex: 123899381)
+   * @return Human readable version of bytes (ex: 1.4 GB)
+   */
+  public static String bytesToString(long bytes)
+    {
+    if(bytes > 1024 * 1024 * 1024)
+      {
+      return new DecimalFormat("#.##").format((double)bytes / (1024.0 * 1024.0 * 1024.0)) + " GB";
+      }
+    if(bytes > 1024 * 1024)
+      {
+      return new DecimalFormat("#.##").format((double)bytes / (1024.0 * 1024.0)) + " MB";
+      }
+    if(bytes > 1024)
+      {
+      return new DecimalFormat("#.##").format((double)bytes / 1024.0) + " KB";
+      }
+    return bytes + " B";
+    }
 }
