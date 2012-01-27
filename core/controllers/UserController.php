@@ -30,7 +30,7 @@ class UserController extends AppController
   function init()
     {
     $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
-    if(isset($actionName) && (is_numeric($actionName) || strlen($actionName) == 32)) // This is tricky! and for Cassandra for now
+    if(isset($actionName) && is_numeric($actionName))
       {
       $this->_forward('userpage', null, null, array('user_id' => $actionName));
       }

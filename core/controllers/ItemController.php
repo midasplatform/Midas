@@ -35,7 +35,7 @@ class ItemController extends AppController
     {
     $this->view->activemenu = ''; // set the active menu
     $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
-    if(isset($actionName) && (is_numeric($actionName) || strlen($actionName) == 32)) // This is tricky! and for Cassandra for now
+    if(isset($actionName) && is_numeric($actionName))
       {
       $this->_forward('view', null, null, array('itemId' => $actionName));
       }
@@ -342,7 +342,7 @@ class ItemController extends AppController
     $this->_helper->viewRenderer->setNoRender();
 
     $itemId = $this->_getParam('itemId');
-    if(!isset($itemId) || (!is_numeric($itemId) && strlen($itemId) != 32)) // This is tricky! and for Cassandra for now
+    if(!isset($itemId) || !is_numeric($itemId))
       {
       throw new Zend_Exception("itemId should be a number");
       }
