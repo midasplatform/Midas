@@ -105,7 +105,14 @@ class AdminController extends AppController
       $formArray['dynamichelp']->setValue($applicationConfig['global']['dynamichelp']);
       }
     $this->view->selectedLicense = $applicationConfig['global']['defaultlicense'];
-    $this->view->allLicenses = $this->License->getAll();
+    try
+      {
+      $this->view->allLicenses = $this->License->getAll();
+      }
+    catch(Exception $e)
+      {
+      $this->view->allLicenses = array();
+      }
     $this->view->configForm = $formArray;
 
     $allModules = $this->Component->Utility->getAllModules();
