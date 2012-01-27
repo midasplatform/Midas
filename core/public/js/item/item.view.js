@@ -153,11 +153,17 @@ $(document).ready(function() {
 
     $('a.editItemLink').click(function() {
         loadDialog("editItem"+json.item.item_id,"/item/edit?itemId="+json.item.item_id);
-        showDialog(json.browse.edit,false);
+        showDialog(json.browse.edit, false);
     });
     $('#revisionList').accordion({
         clearStyle: true,
         collapsible: true,
         active: false
+    });
+
+    $('a.licenseLink').click(function() {
+        var licenseId = $(this).attr('element');
+        loadDialog('viewLicense'+licenseId, '/license/view?licenseId='+licenseId);
+        showDialog($(this).attr('name'), false);
     });
 });

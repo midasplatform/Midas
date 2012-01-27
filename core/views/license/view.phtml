@@ -9,24 +9,11 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-
-$this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.license.js');
-
-if(!isset($this->selectedLicense))
-  {
-  $this->selectedLicense = LICENSE_PDDL;
-  }
 ?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
 
-<div class="licenseSelectContent">
-  <select name="licenseSelect">
+<div class="licenseView">
   <?php
-    foreach($this->allLicenses as $license)
-      {
-      echo '<option value="'.$license->getKey().'" '.(($this->selectedLicense == $license->getKey()) ? 'selected' : '').
-           '>'.$license->getName().'</option>';
-      }
+  echo $this->license->getFulltext();
   ?>
-        
-  </select>
 </div>

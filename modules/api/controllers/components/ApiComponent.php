@@ -271,7 +271,7 @@ class Api_ApiComponent extends AppComponent
           $revision->setChanges('Initial revision');
           $revision->setUser_id($userDao->getKey());
           $revision->setDate(date('c'));
-          $revision->setLicense(null);
+          $revision->setLicenseId(null);
           $itemModel->addRevision($item, $revision);
           }
 
@@ -374,7 +374,7 @@ class Api_ApiComponent extends AppComponent
           $revision->setChanges('Initial revision');
           $revision->setUser_id($userDao->getKey());
           $revision->setDate(date('c'));
-          $revision->setLicense(null);
+          $revision->setLicenseId(null);
           $itemModel->addRevision($item, $revision);
           }
         }

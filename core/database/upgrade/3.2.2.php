@@ -1,5 +1,17 @@
 <?php
 
+// The old constants file is removed now; copied its contents here for the upgrade
+define("LICENSE_PDDL", 0);
+define("LICENSE_ODC_BY", 1);
+define("LICENSE_ODBL", 2);
+define("LICENSE_RESERVED", 3);
+define("LICENSE_CC_ATTRIBUTION", 4);
+define("LICENSE_CC_ATTRIBUTION_SHAREALIKE", 5);
+define("LICENSE_CC_NODERIVS", 6);
+define("LICENSE_CC_NONCOMMERCIAL", 7);
+define("LICENSE_CC_NONCOMMERCIAL_SHARELIKE", 8);
+define("LICENSE_CC_NONCOMMERCIAL_NODERIVS", 9);
+
 class Upgrade_3_2_2 extends MIDASUpgrade
 {
   var $existingLicenses;
@@ -13,7 +25,7 @@ class Upgrade_3_2_2 extends MIDASUpgrade
                           '<li>To Share: To copy, distribute and use the database.</li>'.
                           '<li>To Create: To produce works from the database.</li>'.
                           '<li>To Adapt: To modify, transform, and build upon the database.</li></ul>'.
-                          '<a href="opendatacommons.org/licenses/pddl/summary">Full License Information</a>'),
+                          '<a href="http://opendatacommons.org/licenses/pddl/summary">Full License Information</a>'),
       array('constant' => LICENSE_ODC_BY,
             'name' => 'Public: Attribution (ODC-BY)',
             'fulltext' => '<b>You are free:</b><ul>'.
@@ -25,7 +37,7 @@ class Upgrade_3_2_2 extends MIDASUpgrade
                           'in the manner specified in the license. For any use or redistribution of the database, or works produced '.
                           'from it, you must make clear to others the license of the database and keep intact any notices on the '.
                           'original database.</li></ul>'.
-                          '<a href="opendatacommons.org/licenses/by/summary">Full License Information</a>'),
+                          '<a href="http://opendatacommons.org/licenses/by/summary">Full License Information</a>'),
       array('constant' => LICENSE_ODBL,
             'name' => 'Public: Attribution, Share-Alike (ODBL)',
             'fulltext' => '<b>You are free:</b><ul>'.
@@ -41,7 +53,7 @@ class Upgrade_3_2_2 extends MIDASUpgrade
                           'database, you must also offer that adapted database under the ODbL.</li>'.
                           '<li>Keep open: If you redistribute the database, or an adapted version of it, then you may use technological '.
                           'measures that restrict the work (such as DRM) as long as you also redistribute a version without such measures.</li></ul>'.
-                          '<a href="opendatacommons.org/licenses/odbl/summary">Full License Information</a>'),
+                          '<a href="http://opendatacommons.org/licenses/odbl/summary">Full License Information</a>'),
       array('constant' => LICENSE_RESERVED,
             'name' => 'Private: All right reserved',
             'fulltext' => 'This work is copyrighted by its owner and cannot be shared, distributed or modified without prior consent of the author.'),
@@ -126,8 +138,8 @@ class Upgrade_3_2_2 extends MIDASUpgrade
       PRIMARY KEY (`license_id`)
       )");
 
-    // Add a logical foreign key for license into the itemrevision table
-    $this->db->query("ALTER TABLE `itemrevision` ADD COLUMN `license_id` bigint(20) NOT NULL");
+    // Add a logical foreign key for license into the itemrevision table. Can be nullable for no license
+    $this->db->query("ALTER TABLE `itemrevision` ADD COLUMN `license_id` bigint(20) NULL");
 
     // Add existing licenses to the database
     foreach($this->existingLicenses as $value)

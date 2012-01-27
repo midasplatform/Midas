@@ -15,11 +15,11 @@ PURPOSE.  See the above copyright notices for more information.
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
 
 <?php
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/item/item.view.js');
 if($this->preview) // module visualize
   {
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
-  $this->headScript()->appendFile($this->webroot . '/modules/visualize/public/js/main.js');
+  $this->headScript()->appendFile($this->webroot.'/modules/visualize/public/js/main.js');
   }
 ?>
 <div class="viewMain">
@@ -60,9 +60,19 @@ if($this->preview) // module visualize
       <?php
       if(count($this->itemDao->revisions) > 0)
         {
-        $license = $this->itemDao->revisions[0]->getLicense();
-        // TODO license management
-        echo $license;
+        $license = $this->itemDao->lastrevision->getLicense();
+        if($license != null)
+          {
+          echo '<a name="'.$license->getName().'" class="licenseLink" href="javascript:;" element="'.$license->getKey().'">'.$license->getName().'</a>';
+          }
+        else
+          {
+          echo 'No license set on the current revision.';
+          }
+        }
+      else
+        {
+        echo 'No license (zero revisions in this item)';
         }
       ?>
     </div>
