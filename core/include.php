@@ -54,7 +54,6 @@ include_once BASE_PATH.'/core/constant/group.php';
 include_once BASE_PATH.'/core/constant/policy.php';
 include_once BASE_PATH.'/core/constant/folder.php';
 include_once BASE_PATH.'/core/constant/feed.php';
-include_once BASE_PATH.'/core/constant/license.php';
 include_once BASE_PATH.'/core/constant/metadata.php';
 include_once BASE_PATH.'/core/constant/notification.php';
 include_once BASE_PATH.'/core/constant/user.php';

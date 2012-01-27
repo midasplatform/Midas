@@ -245,7 +245,7 @@ abstract class ItemModelBase extends AppModel
       $itemRevisionDao->setDate($revision->getDate());
       $itemRevisionDao->setChanges($revision->getChanges());
       $itemRevisionDao->setUserId($userDao->getUserId());
-      $itemRevisionDao->setLicense($revision->getLicense());
+      $itemRevisionDao->setLicenseId($revision->getLicenseId());
       $ItemRevisionModel->save($itemRevisionDao);
       }
     }//end duplicateItem

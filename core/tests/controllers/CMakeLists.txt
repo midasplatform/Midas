@@ -26,6 +26,7 @@ add_midas_style_test( StyleCoreImportController ${CMAKE_SOURCE_DIR}/core/control
 add_midas_style_test( StyleCoreIndexController ${CMAKE_SOURCE_DIR}/core/controllers/IndexController.php )
 add_midas_style_test( StyleCoreInstallController ${CMAKE_SOURCE_DIR}/core/controllers/InstallController.php )
 add_midas_style_test( StyleCoreItemController ${CMAKE_SOURCE_DIR}/core/controllers/ItemController.php )
+add_midas_style_test( StyleCoreLicenseController ${CMAKE_SOURCE_DIR}/core/controllers/LicenseController.php )
 add_midas_style_test( StyleCoreSearchController ${CMAKE_SOURCE_DIR}/core/controllers/SearchController.php )
 add_midas_style_test( StyleCoreShareController ${CMAKE_SOURCE_DIR}/core/controllers/ShareController.php )
 add_midas_style_test( StyleCoreUploadController ${CMAKE_SOURCE_DIR}/core/controllers/UploadController.php )

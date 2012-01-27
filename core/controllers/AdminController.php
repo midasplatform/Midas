@@ -23,7 +23,7 @@
  */
 class AdminController extends AppController
 {
-  public $_models = array('Errorlog', 'Assetstore');
+  public $_models = array('Errorlog', 'Assetstore', 'License');
   public $_daos = array();
   public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration', 'Demo');
   public $_forms = array('Admin', 'Assetstore', 'Migrate');
@@ -105,6 +105,15 @@ class AdminController extends AppController
       $formArray['dynamichelp']->setValue($applicationConfig['global']['dynamichelp']);
       }
     $this->view->selectedLicense = $applicationConfig['global']['defaultlicense'];
+
+    try
+      {
+      $this->view->allLicenses = $this->License->getAll();
+      }
+    catch(Exception $e)
+      {
+      $this->view->allLicenses = array();
+      }
     $this->view->configForm = $formArray;
 
     $allModules = $this->Component->Utility->getAllModules();
