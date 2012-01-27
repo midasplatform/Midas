@@ -22,11 +22,9 @@ midas.user = midas.user || {};
       onNodeShow: midas.enableRangeSelect,
       onNodeHide: midas.enableRangeSelect
     });
-    $('#browseTableHeaderCheckbox').click(function() {
-      var selector = this.checked ? '.treeCheckbox:visible' : '.treeCheckbox';
-      $('#browseTable').find(selector).prop("checked", this.checked);
-      midas.genericCallbackCheckboxes($('#browseTable'));
-    });
+
+    midas.browser.enableSelectAll();
+
     $("img.tableLoading").hide();
     $("table#browseTable").show();
   });
@@ -43,6 +41,7 @@ midas.user = midas.user || {};
       $('div.websiteBlock').hide();
       $('div.viewInfo').show();
       $('div.viewAction').show();
+
       midas.genericCallbackSelect(node);
     }
 
@@ -59,8 +58,7 @@ midas.user = midas.user || {};
 /**
  * Will render the delete user dialog for the specified user
  */
-midas.user.showDeleteDialog = function(userId)
-  {
-  loadDialog('userId'+userId, '/user/deletedialog?userId='+userId);
-  showDialog('Delete User', false);
-  }
+midas.user.showDeleteDialog = function(userId) {
+    loadDialog('userId'+userId, '/user/deletedialog?userId='+userId);
+    showDialog('Delete User', false);
+};

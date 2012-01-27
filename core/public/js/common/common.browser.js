@@ -1,4 +1,6 @@
 var midas = midas || {};
+midas.browser = midas.browser || {};
+n
 midas.ajaxSelectRequest= '';
 
 /**
@@ -191,11 +193,11 @@ midas.deleteFolder = function (id) {
                    function(data) {
                        jsonResponse = jQuery.parseJSON(data);
                        if(jsonResponse==null) {
-                           createNotice('Error',4000);
+                           createNotive('Error',4000);
                            return;
                        }
                        if(jsonResponse[0]) {
-                           createNotice(jsonResponse[1],1500);
+                           createNotive(jsonResponse[1],1500);
                            $('div.MainDialog').dialog('close');
                            midas.removeNodeFromTree(node, true);
                            midas.genericCallbackCheckboxes($('#browseTable'));
@@ -291,12 +293,12 @@ midas.editFolder = function (id) {
 midas.moveFolder = function (id) {
   loadDialog("moveFolder"+id,"/browse/movecopy?move=true&folders="+id);
   showDialog(json.browse.move);
-  } 
+};
   
 midas.moveItem = function (itemId, fromFolderId) {
   loadDialog("moveItem"+itemId,"/browse/movecopy?move=true&items="+itemId+"&from="+fromFolderId);
   showDialog(json.browse.move);
-  }  
+};
 
 midas.parentOf = function (node) {
     var classNames = node[0].className.split(' ');
@@ -434,7 +436,10 @@ midas.createInfo = function (jsonContent) {
     html+='  </tr>';
     if(arrayElement['type']=='community') {
         html+='  <tr>';
-        html+='    <td>Members';
+        html+='    <td>Member';
+        if(parseInt(arrayElement['members'])>1) {
+            html+='s';
+        }
         html += '</td>';
         html+='    <td>'+arrayElement['members']+'</td>';
         html+='  </tr>';
@@ -528,15 +533,6 @@ midas.createInfo = function (jsonContent) {
     $('div.ajaxInfoElement').html(html);
 };
 
-function enableRangeSelect(node)
-  {
-  $('input.treeCheckbox:visible').enableCheckboxRangeSelection({
-    onRangeSelect: function() {
-      genericCallbackCheckboxes($('#browseTable'));
-      }
-    });
-  }
-
 midas.cutName = function(name, nchar) {
 
   if(name.length>nchar)
@@ -545,4 +541,31 @@ midas.cutName = function(name, nchar) {
       return name;
       }
   return name;
-  }
+};
+
+/**
+ * Enable selecting all of the elements in a treeview browser
+ * @param opts an object with an optional callback
+ */
+midas.browser.enableSelectAll = function (opts) {
+    var default_args = { callback: midas.genericCallbackCheckboxes };
+    var options = $.extend({}, default_args, opts);
+
+    // Select/deslect all rows. If we are doing deselect all, we include
+    // hidden rows
+    $('#browseTableHeaderCheckbox').click(
+        function() {
+            var selector = this.checked ? '.treeCheckbox:visible' : '.treeCheckbox';
+            $('#browseTable').find(selector).prop("checked", this.checked);
+            options.callback($('#browseTable'));
+        });
+};
+
+midas.enableRangeSelect = function (node) {
+    $('input.treeCheckbox:visible').enableCheckboxRangeSelection(
+        {
+            onRangeSelect: function() {
+                midas.genericCallbackCheckboxes($('#browseTable'));
+            }
+        });
+};

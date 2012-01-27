@@ -42,14 +42,14 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     $command = $modulesConfig['dicomextractor']->dcmj2pnm;
     $preparedCommand = str_replace("'", '"',$command);
     $preparedCommand .= ' "'.$bitstream->getFullPath().'" "'.$tmpSlice.'"';
-    var_dump($preparedCommand);
     exec($preparedCommand, $output);
-    var_dump($output);
 
-    // We have to spoof an item array for the thumbnail component.
+    // We have to spoof an item array for the thumbnail component. This
+    // should certainly be fixed one day. It's a hack, but not my hack.
     $spoofedItem = array();
     $spoofedItem['item_id'] = $item->getKey();
     $thumbnailComponent->createThumbnail($spoofedItem,$tmpSlice);
+    unlink($tmpSlice);
   }
 
   /** extract metadata
@@ -120,12 +120,17 @@ class Dicomextractor_ExtractorComponent extends AppComponent
           $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL,
                                       'DICOM',
                                       $row['name'],
-                                      '');
+                                      $row['name']);
           }
-        $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL,
-                                         'DICOM',
-                                         $row['name'],
-                                         $row['value']);
+        $metadataDao->setItemrevisionId($revision->getKey());
+        $metadataDao->setValue($row['value']);
+        if(!$MetadataModel->getMetadataValueExists($metadataDao))
+          {
+          $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL,
+                                           'DICOM',
+                                           $row['name'],
+                                           $row['value']);
+          }
         }
       catch (Zend_Exception $exc)
         {

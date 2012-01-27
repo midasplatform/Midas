@@ -396,44 +396,15 @@ class ItemController extends AppController
       }
     $itemIds = explode('-', $itemIds);
 
-    $items = array();
-    foreach($itemIds as $item)
-      {
-      $itemDao = $this->Item->load($item);
-      if($itemDao != false && $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
-        {
-        $items[] = $itemDao;
-        }
-      }
+    $mainItem = $this->Item->mergeItems($itemIds, $name,
+                                        $this->userSession->Dao);
 
-    if(empty($items))
-      {
-      throw new Zend_Exception('Permissions error');
-      }
-
-
-    $mainItem = $items[0];
-    $mainItemLastResision = $this->Item->getLastRevision($mainItem);
-    foreach($items as $key => $item)
-      {
-      if($key != 0)
-        {
-        $revision = $this->Item->getLastRevision($item);
-        $bitstreams = $revision->getBitstreams();
-        foreach($bitstreams as $b)
-          {
-          $b->setItemrevisionId($mainItemLastResision->getKey());
-          $this->Bitstream->save($b);
-          }
-        $this->Item->delete($item);
-        }
-      }
-
-    $mainItem->setSizebytes($this->ItemRevision->getSize($mainItemLastResision));
-    $mainItem->setName($name);
-    $this->Item->save($mainItem);
-
-    $this->_redirect('/browse/uploaded');
+    $itemArray = $mainItem->toArray();
+    $itemArray['policy'] = MIDAS_POLICY_ADMIN;
+    $itemArray['size'] = $this->Component->Utility->formatSize($mainItem->getSizebytes());
+    $itemArray['date'] = $this->Component->Date->ago($mainItem->getDateUpdate(),true);
+    echo JsonComponent::encode($itemArray);
+    return;
     }//end merge
 
   /**

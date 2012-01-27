@@ -34,6 +34,52 @@ midas.community.manage.init = function()
       success: midas.community.manage.successGroupChange
       });
     });
+    
+    //init tree
+    $('img.tabsLoading').hide()
+    
+  
+     $('table')
+        .filter(function() {
+            return this.id.match(/browseTable*/);
+        })
+        .treeTable();
+    ;
+    $("img.tableLoading").hide();
+    $("table#browseTable").show();
+    
+    $('div.userPersonalData').hide();
+    
+    midas.community.manage.initDragAndDrop();
+    $('td.tdUser input').removeAttr('checked');
+  };
+  
+  
+      //dependance: common/browser.js
+  midas.ajaxSelectRequest='';
+    function callbackSelect(node)
+    {
+      $('div.genericAction').show();
+      $('div.genericCommunities').hide();
+      $('div.genericStats').hide();
+      $('div.viewInfo').show();
+      $('div.viewAction').show();
+      midas.genericCallbackSelect(node);
+    }
+
+    function callbackDblClick(node)
+    {
+    }
+    
+    function callbackCheckboxes(node)
+    {
+      midas.genericCallbackCheckboxes(node);
+    }
+    
+    function callbackCreateElement(node)
+    {
+      midas.community.manage.initDragAndDrop();
+    }
 
   $('a.deleteGroupLink').click(function() {
     var html='';
@@ -74,7 +120,6 @@ midas.community.manage.init = function()
       $( "div.MainDialog" ).dialog('close');
       });
     });
-}
 
 midas.community.manage.initDragAndDrop = function()
 {
@@ -353,29 +398,3 @@ $(document).ready(function() {
     midas.community.manage.initDragAndDrop();
     $('td.tdUser input').removeAttr('checked');
   });
-
-//depends on common.browser.js
-var ajaxSelectRequest='';
-function callbackSelect(node)
-  {
-  $('div.genericAction').show();
-  $('div.genericCommunities').hide();
-  $('div.genericStats').hide();
-  $('div.viewInfo').show();
-  $('div.viewAction').show()
-  genericCallbackSelect(node);
-  }
-
-function callbackDblClick(node)
-  {
-  }
-
-function callbackCheckboxes(node)
-  {
-  genericCallbackCheckboxes(node);
-  }
-
-function callbackCreateElement(node)
-  {
-  midas.community.manage.initDragAndDrop();
-  }
