@@ -106,96 +106,127 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     $jobParameters = $jobComponent->scheduleJob($parameters, '', $os, $fire_time, $time_interval, $only_once);
     }
 
-  /** init job */
-  public function processScheduledJobParameters($params)
+  /** preprocessing*/
+  public function treeProcessing($params, $tree)
     {
-    $cmdOptions = $params['params']['cmdOptions'];
+    list($params, $tree) = $this->_treeJobProcessing($params, $tree);
+    return $this->_treeItemsProcessing($params, $tree);
+    }
+
+  /** preprocessing*/
+  public function _treeItemsProcessing($params, $tree)
+    {
+    foreach($tree as $uuid => $children)
+      {
+      $inputs = $params[$uuid]['params']['input'];
+      list($params,  $tree[$uuid]) = $this->treeProcessing($params, $tree[$uuid]);
+      }
+    return array($params, $tree);
+    }
+
+  /** preprocessing*/
+  public function _treeJobProcessing($params, $tree)
+    {
     $componentLoader = new MIDAS_ComponentLoader();
     $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $folderModel = $modelLoader->loadModel('Folder');
-    $executable = $itemModel->load($params['params']['executable']);
 
-    $params['params']['ouputFolders'] = array();
-    $inputArray = array();
-    $ouputArray = array();
-    $inputArray[] = $executable;
-
-    foreach($cmdOptions as $key => $option)
+    foreach($tree as $uuid => $children)
       {
-      if($option['type'] == 'output')
+      $jobParam = $params[$uuid];
+      if($jobParam['type'] == MIDAS_REMOTEPROCESSING_TYPE_EXECUTABLE)
         {
-        $params['params']['ouputFolders'][] = $option['folderId'];
-        $ouputArray[] = $option['fileName'];
-        }
-      elseif($option['type'] == 'input')
-        {
-        if(isset($option['folder']))
+        $tree[$uuid] = array();
+        $executable = $itemModel->load($params[$uuid]['params']['executable']);
+        $commandMatrix = $this->_createParametersMatrix($params[$uuid]['params']['cmdOptions']);
+        unset($params[$uuid]['params']['cmdOptions']);
+        foreach($commandMatrix as $command)
           {
-          $folder = $folderModel->load($option['folder']);
-          $items = $folder->getItems();
-          foreach($items as $item)
+          $newJobParam = $params[$uuid];
+          $newJobParam['uuid'] = uniqid() . md5(mt_rand());
+          $newJobParam['params']['ouputFolders'] = array();
+          $inputArray = array();
+          $ouputArray = array();
+          $inputArray[] = $executable;
+
+          foreach($newJobParam['params']['cmdOptions'] as $key => $option)
             {
-            $cmdOptions[$key]['item'][] = $item;
+            if($option['type'] == 'output')
+              {
+              $params['params']['ouputFolders'][] = $option['folderId'];
+              $ouputArray[] = $option['fileName'];
+              }
+            elseif($option['type'] == 'input')
+              {
+              if(isset($option['folder']))
+                {
+                $folder = $folderModel->load($option['folder']);
+                $items = $folder->getItems();
+                foreach($items as $item)
+                  {
+                  $cmdOptions[$key]['item'][] = $item;
+                  }
+                }
+              foreach($cmdOptions[$key]['item'] as $item)
+                {
+                if($item instanceof ItemDao)
+                  {
+                  $inputArray[] = array($item->getName(), $item->getUuid());
+                  }
+                else
+                  {
+                  $inputArray[] = $item;
+                  }
+                }
+              }
             }
+          list($script, $ouputArray) = $this->_createScript($newJobParam['params']['parametersList'], $command, $executable, $ouputArray);
+          $newJobParam['params']['optionMatrix'] = $commandMatrix;
+          $newJobParam['params'] = $jobComponent->initJobParameters('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', $inputArray, $ouputArray, $newJobParam['params']);
+          $newJobParam['params']['script'] = $script;
+          $newUuid = uniqid() . md5(mt_rand());
+          $newJobParam['uuid'] = $newUuid;
+          $params[$newUuid] = $newJobParam;
+          $tree[$uuid][$newUuid] = $children;
           }
-        foreach($cmdOptions[$key]['item'] as $item)
-          {
-          $inputArray[] = $item;
-          }
+        list($params,  $tree[$uuid]) = $this->treeProcessing($params, $tree[$uuid]);
         }
       }
-
-    $commandMatrix = $this->_createParametersMatrix($cmdOptions);
-    $tmp = $this->_createScript($params['params']['parametersList'], $commandMatrix, $executable, $ouputArray);
-
-    $ouputArray = $tmp['outputArray'];
-    $script = $tmp['script'];
-
-    $params['params']['optionMatrix'] = $commandMatrix;
-
-    $parameters = $jobComponent->initJobParameters('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', $inputArray, $ouputArray, $params['params']);
-    return array('parameters' => $parameters, 'script' => $script);
+    return array($params, $tree);
     }
 
   /** create Script */
-  private function _createScript($parametersList, $commandMatrix, $executable, $ouputArray)
+  private function _createScript($parametersList, $commandList, $executable, $ouputArray)
     {
+    $command = $executable->getName().' '.  join('', $commandList);
+    $command = str_replace('{{key}}', '.'.$this->_generateSuffixOutputName($commandList, $parametersList).'.'.$key, $command);
+
     $script = "#! /usr/bin/python\n";
     $script .= "import subprocess\n";
     $script .= "import time\n";
-    foreach($commandMatrix as $key => $commandList)
-      {
-      $command = $executable->getName().' '.  join('', $commandList);
-      $command = str_replace('{{key}}', '.'.$this->_generateSuffixOutputName($commandList, $parametersList).'.'.$key, $command);
-
-      $script .= "start = time.clock()\n";
-      $script .= "process = subprocess.Popen('".$command."', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n";
-      $script .= "process.wait()\n";
-      $script .= "returnArray = process.communicate()\n";
-      $script .= "end = time.clock()\n";
-      $script .= "print '-COMMAND'\n";
-      $script .= "print '".$command."'\n";
-      $script .= "print '-EXECUTION TIME'\n";
-      $script .= "print '%.2gs' % (end-start)\n";
-      $script .= "print '-STDOUT'\n";
-      $script .= "print returnArray[0]\n";
-      $script .= "print '-STDERR'\n";
-      $script .= "print returnArray[1]\n";
-      }
-
+    $script .= "start = time.clock()\n";
+    $script .= "process = subprocess.Popen('".$command."', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n";
+    $script .= "process.wait()\n";
+    $script .= "returnArray = process.communicate()\n";
+    $script .= "end = time.clock()\n";
+    $script .= "print '-COMMAND'\n";
+    $script .= "print '".$command."'\n";
+    $script .= "print '-EXECUTION TIME'\n";
+    $script .= "print '%.2gs' % (end-start)\n";
+    $script .= "print '-STDOUT'\n";
+    $script .= "print returnArray[0]\n";
+    $script .= "print '-STDERR'\n";
+    $script .= "print returnArray[1]\n";
 
     $tmpOutputArray = $ouputArray;
     foreach($tmpOutputArray as $ouput)
       {
       $ext = end(explode('.', $ouput));
-      foreach($commandMatrix as $key => $commandList)
-        {
-        $ouputArray[] = str_replace('.'.$ext, '.'.$this->_generateSuffixOutputName($commandList, $parametersList).'.'.$key.'.'.$ext, $ouput);
-        }
+      $ouputArray[] = array(uniqid() . md5(mt_rand()), str_replace('.'.$ext, '.'.$this->_generateSuffixOutputName($commandList, $parametersList).'.'.$ext, $ouput));
       }
-    return array('script' => $script, 'outputArray' => $ouputArray);
+    return array($script, $ouputArray);
     }
 
   /** generate suffix output name */

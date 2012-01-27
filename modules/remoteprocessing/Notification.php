@@ -184,7 +184,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     return "";
     }
 
-    /** Process results*/
+    /** Process results. The result are usually sent by a remote machine. See api component.*/
   public function processProcessingResults($params)
     {
     $modulesConfig=Zend_Registry::get('configsModules');
@@ -258,80 +258,12 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       }
     }
 
-  /** get Config Tabs */
+  /** Add a job. This is probably the main method of the module. It will create the job workflow. */
   public function addJob($params)
     {
-    // dynamically process the params
-    if(isset($params['params']['cmdOptions']) && empty($params['script'])&& isset($params['params']['executable']))
-      {
-      $componentLoader = new MIDAS_ComponentLoader();
-      $executableComponent = $componentLoader->loadComponent('Executable', 'remoteprocessing');
-      $tmp = $executableComponent->processScheduledJobParameters($params);
-      $params['params'] = $tmp['parameters'];
-      $params['script'] = $tmp['script'];
-      }
-
-    if(!isset($params['script']) || empty($params['script']))
-      {
-      throw new Zend_Exception('Unable to find script');
-      }
-    if(!isset($params['os']) || empty($params['os']))
-      {
-      throw new Zend_Exception('Unable to find os');
-      }
-    if(!isset($params['condition']))
-      {
-      throw new Zend_Exception('Unable to find condition');
-      }
-
-    $job = new Remoteprocessing_JobDao();
-    $job->setScript($params['script']);
-    unset($params['script']);
-    $job->setOs($params['os']);
-    unset($params['os']);
-    $job->setCondition($params['condition']);
-    unset($params['condition']);
-
-    if(isset($params['expiration']))
-      {
-      $job->setExpirationDate($params['expiration']);
-      }
-    else
-      {
-      $date = new Zend_Date();
-      $date->add('5', Zend_Date::HOUR);
-      $job->setExpirationDate($date->toString('c'));
-      }
-
-    if(isset($params['params']['creator_id']))
-      {
-      $job->setCreatorId($params['params']['creator_id']);
-      }
-    if(isset($params['params']['job_name']))
-      {
-      $job->setName($params['params']['job_name']);
-      }
-
-    $job->setParams(JsonComponent::encode($params['params']));
-    $this->Remoteprocessing_Job->save($job);
-
-    if(!empty($params['params']['input']))
-      {
-      foreach($params['params']['input'] as $itemId)
-        {
-        $item = $this->Item->load($itemId);
-        if($item != false && $item->getKey() != $params['params']['executable'])
-          {
-          $this->Remoteprocessing_Job->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT);
-          }
-        elseif($item != false)
-          {
-          $this->Remoteprocessing_Job->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_EXECUTABLE);
-          }
-        }
-      }
-    return;
+    $componentLoader = new MIDAS_ComponentLoader();
+    $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
+    $jobComponent->processJobParameters($params);
     }
-
   } //end class
 ?>

@@ -101,6 +101,28 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
     $this->database->getDb()->update('remoteprocessing_job2item', $data, 'job_id = '.$job->getKey().' AND item_id = '.$item->getKey());
     }
 
+  /** get by uuid*/
+  function getByUuid($uuid)
+    {
+    $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid));
+    $dao = $this->initDao('Job', $row, 'remoteprocessing');
+    return $dao;
+    }
+
+  /** add parent job*/
+  function addParent($job, $parent)
+    {
+    if(!$job instanceof Remoteprocessing_JobDao)
+      {
+      throw new Zend_Exception("Should be a job.");
+      }
+    if(!$parent instanceof Remoteprocessing_JobDao)
+      {
+      throw new Zend_Exception("Should be a job.");
+      }
+    $this->database->link('parents', $job, $parent);
+    }
+
   /** get related job */
   function getRelatedJob($item)
     {
