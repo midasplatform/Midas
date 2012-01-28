@@ -41,6 +41,9 @@ class LicenseController extends AppController
    */
   function indexAction()
     {
+    $this->requireAdminPrivileges();
+    $this->disableLayout();
+    $this->view->licenses = $this->License->getAll();
     }
 
   /** View the license text in a dialog */

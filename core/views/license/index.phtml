@@ -1,0 +1,44 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/license/license.index.js"></script>
+
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/license/license.index.css" />
+
+<span class="headerText">EXISTING LICENSES</span>
+
+<div class="licenseList">
+  <?php
+  foreach($this->licenses as $license)
+    {
+    echo '<div class="licenseContainer">';
+    echo '<form class="genericForm" action="'.$this->webroot.'/license/save" method="POST" />';
+    echo '  <div><input class="licenseName" type="text" name="name" value="'.$license->getName().'" /></div>';
+    echo '  <div><textarea class="licenseText" name="fulltext">'.htmlentities($license->getFulltext()).'</textarea></div>';
+    echo '  <input type="hidden" name="licenseId" value="'.$license->getKey().'" />';
+    echo '  <div><input class="globalButton" style="margin-left: 0px;" type="submit" name="submit" value="Save" /></div>';
+    echo '</form>';
+    echo '</div>';
+    }
+  ?>
+</div>
+
+<span class="headerText">CREATE NEW LICENSE</span>
+<div class="licenseContainer">
+  <form class="genericForm" action="<?php echo $this->webroot; ?>/license/create" method="POST" />
+    <div><input class="licenseName" type="text" name="name" value="" /></div>
+    <div><textarea class="licenseText" name="fulltext"></textarea></div>
+    <div><input class="globalButton" style="margin-left: 0px;" type="submit" name="submit" value="Create" /></div>
+  </form>
+</div>
