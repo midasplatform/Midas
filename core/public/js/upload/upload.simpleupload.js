@@ -155,7 +155,7 @@ midas.upload.simpleupload.initSwfupload = function()
 $('img#uploadAFile').show();
 $('img#uploadAFileLoading').hide();
 
-// detect chrom or firefox 7+
+// detect chrome or firefox 7+
 try
   {
   var is_chrome = /chrome/.test(navigator.userAgent.toLowerCase());
@@ -185,6 +185,7 @@ $('.uploadModeLink').click(function() {
     $('.file_upload_label').html(midas.upload.simpleupload.htmlFolderMode);
     $('#uploadModeFileLink').show();
     $('#uploadModeFolderLink').hide();
+    $('div.file_upload').fileUploadUIX('option','dragDropSupport',false); // disable drag and drop support
     }
   else
     {
@@ -195,6 +196,7 @@ $('.uploadModeLink').click(function() {
     $('.file_upload_label').html(midas.upload.simpleupload.htmlFileMode);
     $('#uploadModeFileLink').hide();
     $('#uploadModeFolderLink').show();
+    $('div.file_upload').fileUploadUIX('option','dragDropSupport',true); // enable drag and drop support
     }
 });
 
