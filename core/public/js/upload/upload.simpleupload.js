@@ -153,9 +153,9 @@ midas.upload.simpleupload.initSwfupload = function()
   }
 
 $('img#uploadAFile').show();
-$('img#uploadAFileLoadiing').hide();
+$('img#uploadAFileLoading').hide();
 
-// detect chrom or firefox 7+
+// detect chrome or firefox 7+
 try
   {
   var is_chrome = /chrome/.test(navigator.userAgent.toLowerCase());
@@ -163,7 +163,7 @@ try
   version = parseInt(version[0]);
   var is_firefox = jQuery.browser.mozilla != undefined && version > 6;
 
-  if(is_chrome)
+  if(is_chrome) //|| is_firefox
     {
     $('#changeUploadMode').show();
     }
@@ -185,6 +185,7 @@ $('.uploadModeLink').click(function() {
     $('.file_upload_label').html(midas.upload.simpleupload.htmlFolderMode);
     $('#uploadModeFileLink').show();
     $('#uploadModeFolderLink').hide();
+    $('div.file_upload').fileUploadUIX('option','dragDropSupport',false); // disable drag and drop support
     }
   else
     {
@@ -195,6 +196,7 @@ $('.uploadModeLink').click(function() {
     $('.file_upload_label').html(midas.upload.simpleupload.htmlFileMode);
     $('#uploadModeFileLink').hide();
     $('#uploadModeFolderLink').show();
+    $('div.file_upload').fileUploadUIX('option','dragDropSupport',true); // enable drag and drop support
     }
 });
 

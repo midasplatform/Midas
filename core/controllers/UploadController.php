@@ -397,18 +397,21 @@ class UploadController extends AppController
       ob_end_clean();
       }
 
+    // If we are uploading a directory
+    // $pathClient stores the list of full path for the files in the directory
     if(!empty($pathClient))
       {
-      $tmpArray = explode(';;', $pathClient);
-      foreach($tmpArray as $value)
+      if(!isset($this->userSession->filePosition))
         {
-        $tmpPathValue = explode('/', $value);
-        if(end($tmpPathValue) == $filename)
-          {
-          $pathClient = $value;
-          break;
-          }
+        $this->userSession->filePosition = 0;
         }
+      else
+        {
+        $this->userSession->filePosition++;
+        }
+
+      $tmpArray = explode(';;', $pathClient);
+      $pathClient = $tmpArray[$this->userSession->filePosition];
       }
 
     $parent = $this->_getParam("parent");
