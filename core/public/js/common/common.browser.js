@@ -1,6 +1,5 @@
 var midas = midas || {};
 midas.browser = midas.browser || {};
-n
 midas.ajaxSelectRequest= '';
 
 /**
@@ -498,7 +497,6 @@ midas.createInfo = function (jsonContent) {
         html+='    <td>'+value.element+' - '+value.qualifier+':';
         var qualifierText = value.element+' - '+value.qualifier+':';
         var valueElement = value.value;
-        console.log((qualifierText.length) + (valueElement.length));
         if( ((qualifierText.length) + (valueElement.length)) <= 31 )
           {
           html+= "<span style='font-style: italic ;padding-left: 5px;font-size: 11px;float:right;'>"+value.value+"<span>";
