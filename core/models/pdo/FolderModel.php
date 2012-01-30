@@ -849,7 +849,7 @@ class FolderModel extends FolderModelBase
   /** Add an item to a folder
    * @return void
    */
-  function addItem($folder, $item)
+  function addItem($folder, $item, $update = true)
     {
     if(!$folder instanceof FolderDao)
       {
@@ -861,7 +861,11 @@ class FolderModel extends FolderModelBase
       }
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel("Item");
-    $item->setName($itemModel->updateItemName($item->getName(), $folder));
+    // Update item name to avoid duplicated names within the same folder
+    if($update)
+      {
+      $item->setName($itemModel->updateItemName($item->getName(), $folder));
+      }
     $this->database->link('items', $folder, $item);
     } // end function addItem
 
