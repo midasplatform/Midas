@@ -167,6 +167,9 @@ class UploadController extends AppController
     $this->view->item = $item;
     $itemRevision = $this->Item->getLastRevision($item);
     $this->view->lastrevision = $itemRevision;
+    $this->view->protocol = 'http';
+    $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+    $this->view->selectedLicense = $itemRevision ? $itemRevision->getLicense() : Zend_Registry::get('configGlobal')->defaultlicense;
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback(
       'CALLBACK_CORE_GET_REVISIONUPLOAD_EXTRA_HTML', array('item' => $item));
     }//end revisionAction

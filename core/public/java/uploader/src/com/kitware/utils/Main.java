@@ -2,6 +2,7 @@ package com.kitware.utils;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -100,7 +101,7 @@ public class Main extends JApplet
 
     // Get the main pane to add content to.
     Container pane = getContentPane();
-    pane.setLayout(new GridLayout(3, 1));
+    pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -147,6 +148,7 @@ public class Main extends JApplet
     buttonPanel.add(stopUploadButton);
 
     pane.add(buttonPanel);
+    pane.add(Box.createVerticalStrut(15));
 
     // info labels
     fileNameLabel = new JLabel(FILENAME_LABEL_TITLE);
@@ -154,7 +156,8 @@ public class Main extends JApplet
     fileCountLabel = new JLabel(FILECOUNT_LABEL_TITLE);
     bytesUploadedLabel = new JLabel(BYTE_TRANSFERRED_LABEL_TITLE + "0 bytes");
 
-    JPanel labelPanel = new JPanel(new GridLayout(4, 1));
+    JPanel labelPanel = new JPanel();
+    labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
     labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     labelPanel.add(fileCountLabel);
     labelPanel.add(fileNameLabel);
@@ -164,17 +167,13 @@ public class Main extends JApplet
     scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     pane.add(scrollPane);
 
-    JPanel progressBarPanel = new JPanel(new GridLayout(2, 1));
+    JPanel progressBarPanel = new JPanel(new GridLayout(1, 1));
     progressBarPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-
-    uploadStatusLabel = new JLabel("upload progress");
-    progressBarPanel.add(uploadStatusLabel);
 
     uploadProgressBar = new JProgressBar();
     uploadProgressBar.setStringPainted(true);
 
     progressBarPanel.add(uploadProgressBar);
-    progressBarPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
     // background color
     pane.setBackground(appletBackgroundColor);
