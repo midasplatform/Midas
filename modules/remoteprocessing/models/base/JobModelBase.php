@@ -42,7 +42,7 @@ class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
         'type' =>  array('type' => MIDAS_DATA),
         'return_code' =>  array('type' => MIDAS_DATA),
         'uuid' =>  array('type' => MIDAS_DATA),
-        'parents' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Job', 'module' => 'remoteprocessing', 'table' => 'remoteprocessing_job2job', 'parent_column' => 'job_id', 'child_column' => 'parent_id'),
+        'parents' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Job', 'module' => 'remoteprocessing', 'table' => 'remoteprocessing_job2job', 'parent_column' => 'parent_id', 'child_column' => 'job_id'),
         'children' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Job', 'module' => 'remoteprocessing', 'table' => 'remoteprocessing_job2job', 'parent_column' => 'parent_id', 'child_column' => 'job_id'),
         'items' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Item', 'table' => 'remoteprocessing_job2item', 'parent_column' => 'job_id', 'child_column' => 'item_id'),
         'creator' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'creator_id', 'child_column' => 'user_id'),
