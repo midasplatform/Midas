@@ -244,7 +244,7 @@ function onFinishCallback()
            url: json.global.webroot+"/remoteprocessing/job/init?itemId="+$('#selectedExecutableId').val(),
            data: req ,
            success: function(x){
-             window.location.replace($('.webroot').val()+'/remoteprocessing/job/manage')
+             //window.location.replace($('.webroot').val()+'/remoteprocessing/job/manage')
            }
          });
      }

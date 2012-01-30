@@ -64,19 +64,22 @@ class Remoteprocessing_JobComponent extends AppComponent
     {
     // convert array keys to uuid
     $newParams = array();
-    foreach($params as $key => $jobParam)
+    foreach($params['params'] as $key => $jobParam)
       {
-      $params[$key]['uuid'] = uniqid() . md5(mt_rand());
+      $params['params'][$key]['uuid'] = uniqid() . md5(mt_rand());
       }
 
-    foreach($params as $key => $jobParam)
+    foreach($params['params'] as $key => $jobParam)
       {
-      $newParams[$jobParam['uuid']] = $jobParam;
-      unset($newParams[$jobParam['uuid']]['parents']);
-      $newParams[$jobParam['uuid']]['parents'] = array();
-      foreach($jobParam['parents'] as $parent)
+      $tmpUuid = $jobParam['uuid'];
+      $newParams[$tmpUuid] = $jobParam;
+      $newParams[$tmpUuid]['parents'] = array();
+      if(isset($jobParam['parents']))
         {
-        $newParams[$jobParam['uuid']]['parents'][] = $params[$parent]['uuid'];
+        foreach($jobParam['parents'] as $parent)
+          {
+          $newParams[$tmpUuid]['parents'][] = $params['params'][$parent]['uuid'];
+          }
         }
       }
 
@@ -92,7 +95,6 @@ class Remoteprocessing_JobComponent extends AppComponent
     list($newParams, $tree) = $executableComponent->treeProcessing($newParams, $tree);
     list($newParams, $tree) = $internalComponent->treeProcessing($newParams, $tree);
     list($newParams, $tree) = $userComponent->treeProcessing($newParams, $tree);
-
     // create and save job workflow
     $this->_createWorkflow($newParams, $tree);
     }
@@ -122,7 +124,16 @@ class Remoteprocessing_JobComponent extends AppComponent
         {
         $parents[] = $parent;
         }
-      $job = $this->createJob($jobParam, $parents, $jobParam['script'], $jobParam['type'], $jobParam['os'], $jobParam['condition'], $jobParam['expiration'], $jobParam['uuid']);
+
+      $script = (isset($jobParam['script'])) ? $jobParam['script'] : "";
+      $os = (isset($jobParam['os'])) ? $jobParam['os'] : "linux";
+      $type = (isset($jobParam['type'])) ? $jobParam['type'] : MIDAS_REMOTEPROCESSING_TYPE_REMOTE_PYTHON;
+      $condition = (isset($jobParam['condition'])) ? $jobParam['condition'] : "";
+      $expiration = (isset($jobParam['expiration'])) ? $jobParam['expiration'] : null;
+      $uuid = (isset($jobParam['uuid'])) ? $jobParam['uuid'] : null;
+
+      $job = $this->createJob($jobParam, $parents, $script, $type, $os, $condition, $expiration, $uuid);
+      var_dump($job);
       $this->_createWorkflow($params, $children, $job);
       }
     }
@@ -141,12 +152,22 @@ class Remoteprocessing_JobComponent extends AppComponent
     if($job == null)
       {
       $itemModel = $modelLoader->loadModel("Item");
-      require_once BASE_PATH.'/module/remoteprocessing/models/dao/JobDao.php';
+      require_once BASE_PATH.'/modules/remoteprocessing/models/dao/JobDao.php';
       $job = new Remoteprocessing_JobDao();
       $job->setScript($script);
+      if($uuid != null)
+        {
+        $job->setUuid($uuid);
+        }
+      else
+        {
+        $job->setUuid(uniqid() . md5(mt_rand()));
+        }
       unset($params['script']);
       $job->setOs($os);
       unset($params['os']);
+      $job->setType($type);
+      unset($params['type']);
       $job->setCondition($condition);
       unset($params['condition']);
       if(isset($expiration) && $expiration != null)
@@ -160,24 +181,36 @@ class Remoteprocessing_JobComponent extends AppComponent
         $job->setExpirationDate($date->toString('c'));
         }
 
-      if(isset($params['params']['creator_id']))
+      if(isset($params['creator_id']))
         {
-        $job->setCreatorId($params['params']['creator_id']);
+        $job->setCreatorId($params['creator_id']);
         }
-      if(isset($params['params']['job_name']))
+      if(isset($params['job_name']))
         {
-        $job->setName($params['params']['job_name']);
+        $job->setName($params['job_name']);
         }
 
-      $job->setParams(JsonComponent::encode($params['params']));
+      $job->setParams(JsonComponent::encode($params));
       $jobModel->save($job);
 
-      if(!empty($params['params']['input']))
+      if(!empty($params['input']))
         {
-        foreach($params['params']['input'] as $itemId)
+        foreach($params['input'] as $itemId)
           {
-          $item = $itemModel->load($itemId);
-          if($item != false && $item->getKey() != $params['params']['executable'])
+          if($itemId instanceof ItemDao)
+            {
+            $item = $itemId;
+            }
+          elseif(is_numeric($itemId))
+            {
+            $item = $itemModel->load($itemId);
+            }
+          else
+            {
+            continue;
+            }
+
+          if($item != false && $item->getKey() != $params['executable'])
             {
             $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT);
             }

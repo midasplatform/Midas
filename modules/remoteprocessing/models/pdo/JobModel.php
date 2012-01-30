@@ -120,7 +120,26 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
       {
       throw new Zend_Exception("Should be a job.");
       }
-    $this->database->link('parents', $job, $parent);
+
+    $data = array();
+    $data[$this->_mainData['parents']['parent_column']] = $parent->getKey();
+    $data[$this->_mainData['parents']['child_column']] = $job->getKey();
+    $db = Zend_Registry::get('dbAdapter');
+
+    $parentcolumn = $this->_mainData['parents']['parent_column'];
+    $childcolumn = $this->_mainData['parents']['child_column'];
+
+    // By definition a link is unique, so we should check
+    $select = $db->select()->from($this->_mainData['parents']['table'], array('nrows' => 'COUNT(*)'))
+                             ->where($parentcolumn."=?", $data[$this->_mainData['parents']['parent_column']])
+                             ->where($childcolumn."=?", $data[$this->_mainData['parents']['child_column']]);
+
+    $row = $db->fetchRow($select);
+    if($row['nrows'] == 0)
+      {
+      return $db->insert($this->_mainData['parents']['table'], $data);
+      }
+    return false;
     }
 
   /** get related job */

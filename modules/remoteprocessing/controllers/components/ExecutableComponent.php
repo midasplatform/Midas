@@ -114,18 +114,18 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     }
 
   /** preprocessing*/
-  public function _treeItemsProcessing($params, $tree)
+  private function _treeItemsProcessing($params, $tree)
     {
     foreach($tree as $uuid => $children)
       {
-      $inputs = $params[$uuid]['params']['input'];
-      list($params,  $tree[$uuid]) = $this->treeProcessing($params, $tree[$uuid]);
+    //  $inputs = $params[$uuid]['input'];
+     // list($params,  $tree[$uuid]) = $this->treeProcessing($params, $tree[$uuid]);
       }
     return array($params, $tree);
     }
 
   /** preprocessing*/
-  public function _treeJobProcessing($params, $tree)
+  private function _treeJobProcessing($params, $tree)
     {
     $componentLoader = new MIDAS_ComponentLoader();
     $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
@@ -136,26 +136,25 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     foreach($tree as $uuid => $children)
       {
       $jobParam = $params[$uuid];
-      if($jobParam['type'] == MIDAS_REMOTEPROCESSING_TYPE_EXECUTABLE)
+      if(isset($jobParam['type']) && $jobParam['type'] == MIDAS_REMOTEPROCESSING_TYPE_EXECUTABLE)
         {
         $tree[$uuid] = array();
-        $executable = $itemModel->load($params[$uuid]['params']['executable']);
-        $commandMatrix = $this->_createParametersMatrix($params[$uuid]['params']['cmdOptions']);
-        unset($params[$uuid]['params']['cmdOptions']);
+        $executable = $itemModel->load($params[$uuid]['executable']);
+        $commandMatrix = $this->_createParametersMatrix($params[$uuid]['cmdOptions']);
         foreach($commandMatrix as $command)
           {
           $newJobParam = $params[$uuid];
           $newJobParam['uuid'] = uniqid() . md5(mt_rand());
-          $newJobParam['params']['ouputFolders'] = array();
+          $newJobParam['ouputFolders'] = array();
           $inputArray = array();
           $ouputArray = array();
           $inputArray[] = $executable;
 
-          foreach($newJobParam['params']['cmdOptions'] as $key => $option)
+          foreach($newJobParam['cmdOptions'] as $key => $option)
             {
             if($option['type'] == 'output')
               {
-              $params['params']['ouputFolders'][] = $option['folderId'];
+              $params['ouputFolders'][] = $option['folderId'];
               $ouputArray[] = $option['fileName'];
               }
             elseif($option['type'] == 'input')
@@ -166,10 +165,10 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
                 $items = $folder->getItems();
                 foreach($items as $item)
                   {
-                  $cmdOptions[$key]['item'][] = $item;
+                  $newJobParam['cmdOptions'][$key]['item'][] = $item;
                   }
                 }
-              foreach($cmdOptions[$key]['item'] as $item)
+              foreach($newJobParam['cmdOptions'][$key]['item'] as $item)
                 {
                 if($item instanceof ItemDao)
                   {
@@ -182,16 +181,24 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
                 }
               }
             }
-          list($script, $ouputArray) = $this->_createScript($newJobParam['params']['parametersList'], $command, $executable, $ouputArray);
-          $newJobParam['params']['optionMatrix'] = $commandMatrix;
-          $newJobParam['params'] = $jobComponent->initJobParameters('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', $inputArray, $ouputArray, $newJobParam['params']);
-          $newJobParam['params']['script'] = $script;
+
+          list($script, $ouputArray) = $this->_createScript($newJobParam['parametersList'], $command, $executable, $ouputArray);
+          $newJobParam['optionMatrix'] = $commandMatrix;
+          $newJobParam = $jobComponent->initJobParameters('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', $inputArray, $ouputArray, $newJobParam);
+          $newJobParam['script'] = $script;
           $newUuid = uniqid() . md5(mt_rand());
           $newJobParam['uuid'] = $newUuid;
           $params[$newUuid] = $newJobParam;
-          $tree[$uuid][$newUuid] = $children;
+          if(!is_array($children))
+            {
+            $tree[$uuid][$newUuid] = array();
+            }
+          else
+            {
+            $tree[$uuid][$newUuid] = $children;
+            }
+          list($params,  $tree[$uuid][$newUuid]) = $this->treeProcessing($params, $tree[$uuid][$newUuid]);
           }
-        list($params,  $tree[$uuid]) = $this->treeProcessing($params, $tree[$uuid]);
         }
       }
     return array($params, $tree);
@@ -201,7 +208,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
   private function _createScript($parametersList, $commandList, $executable, $ouputArray)
     {
     $command = $executable->getName().' '.  join('', $commandList);
-    $command = str_replace('{{key}}', '.'.$this->_generateSuffixOutputName($commandList, $parametersList).'.'.$key, $command);
+    $command = str_replace('{{key}}', '.'.$this->_generateSuffixOutputName($commandList, $parametersList).'.', $command);
 
     $script = "#! /usr/bin/python\n";
     $script .= "import subprocess\n";
@@ -273,11 +280,26 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
 
       if($cmdOption['type'] == 'input')
         {
-        $values = $cmdOption['item'];
+        if(isset($cmdOption['job']))
+          {
+          $values = array("{".$cmdOption['job'].';;'.$cmdOption['parameter']."}");
+          }
+        else
+          {
+          $values = $cmdOption['item'];
+          }
         $j = 0;
         for($i = 1; $i <= $totalLine; $i++)
           {
-          $tmpvalue = $value.$values[$j]->getName().' ';
+          if($value.$values[$j] instanceof ItemDao)
+            {
+            $tmpvalue = $value.$values[$j]->getName().' ';
+            }
+          else
+            {
+            $tmpvalue = $value.$values[$j].' ';
+            }
+
           if($i % $multipleElement == 0)
             {
             $j++;
