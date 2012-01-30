@@ -18,16 +18,101 @@
  limitations under the License.
 =========================================================================*/
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
+
+/** main  component */
 class Visualize_MainComponent extends AppComponent
 {
+  /** convert to threejs */
+  public function convertToThreejs($revision)
+    {
+    $componentLoader = new MIDAS_ComponentLoader();
+    $uploadComponent = $componentLoader->loadComponent('Upload');
+
+    $modulesConfig = Zend_Registry::get('configsModules');
+    if(Zend_Registry::get('configGlobal')->environment != 'testing')
+      {
+      $userwebgl = $modulesConfig['visualize']->userwebgl;
+      if(!isset($userwebgl) || !$userwebgl)
+        {
+        return false;
+        }
+      }
+    $modelLoad = new MIDAS_ModelLoader();
+    $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
+    $itemModel = $modelLoad->loadModel('Item');
+
+    if(is_array($revision))
+      {
+      $revision = $itemRevisionModel->load($revision['itemrevision_id']);
+      }
+
+    $bitstreams = $revision->getBitstreams();
+    $item = $revision->getItem();
+    $parents = $item->getFolders();
+    $userDao = $revision->getUser();
+    if(count($parents) == 0 )
+      {
+      return;
+      }
+    $parent = $parents[0];
+    if(count($bitstreams) != 1)
+      {
+      return;
+      }
+    $bitstream = $bitstreams[0];
+    $filnameArray = explode(".", $bitstream->getName());
+    $ext = end($filnameArray);
+    if($ext != "obj")
+      {
+      return;
+      }
+
+    if(file_exists(UtilityComponent::getTempDirectory()."/tmpThreeJs.js"))
+      {
+      unlink(UtilityComponent::getTempDirectory()."/tmpThreeJs.js");
+      }
+    exec("python ".dirname(__FILE__)."/scripts/convert_obj_three.py -i ".$bitstream->GetFullPath()." -o ".UtilityComponent::getTempDirectory()."/tmpThreeJs.js -t binary", $output);
+    if(file_exists(UtilityComponent::getTempDirectory()."/tmpThreeJs.js") && file_exists(UtilityComponent::getTempDirectory()."/tmpThreeJs.bin"))
+      {
+      $assetstoreModel = $modelLoad->loadModel('Assetstore');
+      $assetstoreDao = $assetstoreModel->getDefault();
+
+      $newItem = $uploadComponent->createUploadedItem($userDao, $item->getName().".threejs.bin", UtilityComponent::getTempDirectory()."/tmpThreeJs.bin", $parent);
+      $itemModel->copyParentPolicies($newItem, $parent);
+      $newRevision = $itemModel->getLastRevision($newItem);
+      $bitstreams = $newRevision->getBitstreams();
+      $bitstreamDao = $bitstreams[0];
+
+      Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
+      $content = file_get_contents(UtilityComponent::getTempDirectory()."/tmpThreeJs.js");
+      $fc = Zend_Controller_Front::getInstance();
+      $content = str_replace("tmpThreeJs.bin", $fc->getBaseUrl()."/download/?bitstream=".$bitstreamDao->getKey(), $content);
+      file_put_contents(UtilityComponent::getTempDirectory()."/tmpThreeJs.js", $content);
+
+      $bitstreamDao = new BitstreamDao;
+      $bitstreamDao->setName($item->getName().".threejs.js");
+      $bitstreamDao->setPath(UtilityComponent::getTempDirectory()."/tmpThreeJs.js");
+      $bitstreamDao->setChecksum("");
+      $bitstreamDao->fillPropertiesFromPath();
+      $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
+
+      // Upload the bitstream if necessary (based on the assetstore type)
+      $uploadComponent->uploadBitstream($bitstreamDao, $assetstoreDao);
+      $itemRevisionModel->addBitstream($newRevision, $bitstreamDao);
+      }
+    }
+
   /** can visualize */
   public function canVisualizeWithParaview($itemDao)
     {
-    $modulesConfig=Zend_Registry::get('configsModules');
-    $useparaview = $modulesConfig['visualize']->useparaview;
-    if(!isset($useparaview) || !$useparaview)
+    $modulesConfig = Zend_Registry::get('configsModules');
+    if(Zend_Registry::get('configGlobal')->environment != 'testing')
       {
-      return false;
+      $useparaview = $modulesConfig['visualize']->useparaview;
+      if(!isset($useparaview) || !$useparaview)
+        {
+        return false;
+        }
       }
 
     $extensions = array('vtk', 'ply', 'vtp', 'pvsm', 'mha', 'vtu');
@@ -44,7 +129,7 @@ class Visualize_MainComponent extends AppComponent
     return in_array($ext, $extensions);
     }//end canVisualize
 
-  /* visualize*/
+  /** visualize*/
   public function canVisualizeTxt($itemDao)
     {
     $extensions = array('txt', 'php', 'js', 'html', 'cpp', 'java', 'py', 'h', 'log');
@@ -61,7 +146,29 @@ class Visualize_MainComponent extends AppComponent
     return in_array($ext, $extensions);
     }//end canVisualize
 
-  /* visualize*/
+  /** visualize*/
+  public function canVisualizeWebgl($itemDao)
+    {
+    $extensions = array('bin');
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $revision = $itemModel->getLastRevision($itemDao);
+    $bitstreams = $revision->getBitstreams();
+    if(strpos($itemDao->getName(), "threejs") === false)
+      {
+      return false;
+      }
+
+    if(count($bitstreams) != 2)
+      {
+      return false;
+      }
+
+    $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
+    return in_array($ext, $extensions);
+    }//end canVisualize
+
+  /** visualize*/
   public function canVisualizePdf($itemDao)
     {
     $extensions = array('pdf');
@@ -78,7 +185,7 @@ class Visualize_MainComponent extends AppComponent
     return in_array($ext, $extensions);
     }//end canVisualize
 
-  /* visualize*/
+  /** visualize*/
   public function canVisualizeImage($itemDao)
     {
     $extensions = array('jpg', 'jpeg', 'gif', 'bmp', 'png');
@@ -127,7 +234,7 @@ class Visualize_MainComponent extends AppComponent
       return;
       }
 
-    $modulesConfig=Zend_Registry::get('configsModules');
+    $modulesConfig = Zend_Registry::get('configsModules');
     $pwapp = $modulesConfig['visualize']->pwapp;
     $pvbatch = $modulesConfig['visualize']->pvbatch;
     $usesymlinks = $modulesConfig['visualize']->usesymlinks;
@@ -172,7 +279,7 @@ class Visualize_MainComponent extends AppComponent
         $file_contents = file_get_contents($path.'/'.$bitstream->getName());
         $file_contents = preg_replace('/\"([a-zA-Z0-9_.\/\\\:]{1,1000})'.  str_replace('.', '\.', $mainBitstream->getName())."/", '"'.$filePath, $file_contents);
         $filePath = $paraviewworkdir."/".$tmpFolderName.'/'.$bitstream->getName();
-        $inF = fopen($path.'/'.$bitstream->getName(),"w");
+        $inF = fopen($path.'/'.$bitstream->getName(), "w");
         fwrite($inF, $file_contents);
         fclose($inF);
         $this->view->json['visualize']['openState'] = true;
@@ -331,7 +438,7 @@ class Visualize_MainComponent extends AppComponent
   /** createParaviewPath*/
   public function createParaviewPath()
     {
-    $modulesConfig=Zend_Registry::get('configsModules');
+    $modulesConfig = Zend_Registry::get('configsModules');
     $customtmp = $modulesConfig['visualize']->customtmp;
     if(isset($customtmp) && !empty($customtmp))
       {
@@ -353,26 +460,28 @@ class Visualize_MainComponent extends AppComponent
     $dir = opendir($tmp_dir);
     while($entry = readdir($dir))
       {
-      if(is_dir($tmp_dir.'/'.$entry) && filemtime($tmp_dir.'/'.$entry) < strtotime('-1 hours') && !in_array($entry, array('.','..')))
+      if(is_dir($tmp_dir.'/'.$entry) && filemtime($tmp_dir.'/'.$entry) < strtotime('-1 hours') && !in_array($entry, array('.', '..')))
         {
         if(strpos($entry, 'Paraview') !== false)
           {
-          $this->rrmdir($tmp_dir.'/'.$entry);
+          $this->_rrmdir($tmp_dir.'/'.$entry);
           }
         }
       }
-    do
+
+    $tmpFolderName = 'ParaviewWeb_'.mt_rand(0, 9999999);
+    $path = $tmp_dir.'/'.$tmpFolderName;
+    while(!mkdir($path))
       {
       $tmpFolderName = 'ParaviewWeb_'.mt_rand(0, 9999999);
       $path = $tmp_dir.'/'.$tmpFolderName;
       }
-    while (!mkdir($path));
     return array('path' => $path, 'foderName' => $tmpFolderName);
     }
 
 
   /** recursively delete a folder*/
-  private function rrmdir($dir)
+  private function _rrmdir($dir)
     {
     if(is_dir($dir))
       {
@@ -385,7 +494,7 @@ class Visualize_MainComponent extends AppComponent
         {
         if(filetype($dir."/".$object) == "dir")
           {
-          $this->rrmdir($dir."/".$object);
+          $this->_rrmdir($dir."/".$object);
           }
         else
           {
@@ -393,8 +502,7 @@ class Visualize_MainComponent extends AppComponent
           }
         }
       }
-     reset($objects);
-     rmdir($dir);
-   }
+    reset($objects);
+    rmdir($dir);
+    }
 } // end class
-?>

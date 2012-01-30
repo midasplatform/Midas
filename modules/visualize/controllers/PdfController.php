@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+/** Pdf controller*/
 class Visualize_PdfController extends Visualize_AppController
 {
   public $_models = array('Item', 'ItemRevision', 'Bitstream');
@@ -28,14 +29,14 @@ class Visualize_PdfController extends Visualize_AppController
     $this->disableView();
     $itemid = $this->_getParam('itemId');
     $item = $this->Item->load($itemid);
-    
+
     if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
       throw new Zend_Exception("This item doesn't exist  or you don't have the permissions.");
-      }   
-    
+      }
+
     $revision = $this->Item->getLastRevision($item);
-    $bitstreams = $revision->getBitstreams();    
+    $bitstreams = $revision->getBitstreams();
     if(count($bitstreams) != 1)
       {
       throw new Zend_Exception('Error');
@@ -43,7 +44,7 @@ class Visualize_PdfController extends Visualize_AppController
     $this->bistream = $bitstreams[0];
     echo "<html>";
     echo "<object height='750' width='750' type='application/pdf' data='".$this->view->webroot."/download?items=".$item->getKey()."'> <param name='src' value='".$this->view->webroot."/download?items=".$item->getKey()."'/></object>";
-    
+
     echo "</html>";
     }
 } // end class

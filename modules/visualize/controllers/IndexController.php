@@ -18,16 +18,16 @@
  limitations under the License.
 =========================================================================*/
 
+/** Index controller*/
 class Visualize_IndexController extends Visualize_AppController
 {
-  public $_moduleComponents=array('Main');
-  public $_models=array('Item');
-  
-    
+  public $_moduleComponents = array('Main');
+  public $_models = array('Item');
+
   /** index*/
   function indexAction()
     {
-     $itemId = $this->_getParam('itemId');
+    $itemId = $this->_getParam('itemId');
     $height = $this->_getParam('height');
     $width = $this->_getParam('width');
     if(!isset($height))
@@ -55,11 +55,16 @@ class Visualize_IndexController extends Visualize_AppController
       }
     elseif($this->ModuleComponent->Main->canVisualizeImage($itemDao))
       {
+
       $this->_redirect('/visualize/image/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
     elseif($this->ModuleComponent->Main->canVisualizePdf($itemDao))
       {
       $this->_redirect('/visualize/pdf/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+      }
+    elseif($this->ModuleComponent->Main->canVisualizeWebgl($itemDao))
+      {
+      $this->_redirect('/visualize/webgl/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
     else
       {

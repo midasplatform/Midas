@@ -23,7 +23,7 @@
  */
 class BrowseController extends AppController
 {
-  public $_models = array('User', 'Community', 'Folder', 'Item');
+  public $_models = array('User', 'Community', 'Folder', 'Item', 'ItemRevision');
   public $_daos = array('User', 'Community', 'Folder', 'Item');
   public $_components = array('Date', 'Utility', 'Sortdao');
 
@@ -381,12 +381,19 @@ class BrowseController extends AppController
         $item = $this->Item->load($id);
         $jsonContent = array_merge($jsonContent, $item->toArray());
         $itemRevision = $this->Item->getLastRevision($item);
+        $jsonContent['metadata'] = array();
         if(isset($itemRevision) && $itemRevision !== false)
           {
           $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($itemRevision->getDate()));
           $jsonContent['uploaded'] = $itemRevision->getUser()->toArray();
           $jsonContent['revision'] = $itemRevision->toArray();
           $jsonContent['nbitstream'] = count($itemRevision->getBitstreams());
+          $metadatavalues = $this->ItemRevision->getMetadata($itemRevision);
+
+          foreach($metadatavalues as $metadata)
+            {
+            $jsonContent['metadata'][] = array('element' => $metadata->getElement(), 'qualifier' => $metadata->getQualifier(), 'value' => $metadata->getValue());
+            }
           }
         else
           {

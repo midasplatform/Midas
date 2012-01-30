@@ -18,20 +18,20 @@
  limitations under the License.
 =========================================================================*/
 
+/** Config controller*/
 class Visualize_ConfigController extends Visualize_AppController
 {
-   public $_moduleForms=array('Config');
-   public $_components=array('Utility', 'Date');
-   public $_moduleModels=array();
+  public $_moduleForms = array('Config');
+  public $_components = array('Utility', 'Date');
+  public $_moduleModels = array();
 
-   
-   /** index action*/
-   function indexAction()
+  /** index action*/
+  function indexAction()
     {
     $this->requireAdminPrivileges();
-    
+
     $module = 'visualize';
-    
+
     if(file_exists(BASE_PATH."/core/configs/".$module.".local.ini"))
       {
       $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/".$module.".local.ini", true);
@@ -41,8 +41,8 @@ class Visualize_ConfigController extends Visualize_AppController
       $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$module.'/configs/module.ini', true);
       }
     $configForm = $this->ModuleForm->Config->createConfigForm();
-    
-    $formArray = $this->getFormAsArray($configForm);    
+
+    $formArray = $this->getFormAsArray($configForm);
     $formArray['useparaview']->setValue($applicationConfig['global']['useparaview']);
     $formArray['userwebgl']->setValue($applicationConfig['global']['userwebgl']);
     $formArray['pwapp']->setValue($applicationConfig['global']['pwapp']);
@@ -50,9 +50,9 @@ class Visualize_ConfigController extends Visualize_AppController
     $formArray['usesymlinks']->setValue($applicationConfig['global']['usesymlinks']);
     $formArray['pvbatch']->setValue($applicationConfig['global']['pvbatch']);
     $formArray['paraviewworkdir']->setValue($applicationConfig['global']['paraviewworkdir']);
-    
+
     $this->view->configForm = $formArray;
-    
+
     if($this->_request->isPost())
       {
       $this->_helper->layout->disableLayout();
@@ -66,7 +66,7 @@ class Visualize_ConfigController extends Visualize_AppController
           }
         if(file_exists(BASE_PATH."/core/configs/".$module.".local.ini"))
           {
-          rename(BASE_PATH."/core/configs/".$module.".local.ini",BASE_PATH."/core/configs/".$module.".local.ini.old");
+          rename(BASE_PATH."/core/configs/".$module.".local.ini", BASE_PATH."/core/configs/".$module.".local.ini.old");
           }
         $applicationConfig['global']['useparaview'] = $this->_getParam('useparaview');
         $applicationConfig['global']['customtmp'] = $this->_getParam('customtmp');
@@ -79,6 +79,6 @@ class Visualize_ConfigController extends Visualize_AppController
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }
-    } 
-    
+    }
+
 }//end class
