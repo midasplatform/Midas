@@ -91,7 +91,8 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     $forward = $this->_getParam("forwardModule");
     $request = $this->getRequest();
     $response = $this->getResponse();
-    if(!isset($forward))
+
+    if(!isset($forward) && $request->getModuleName() == 'default')
       {
       foreach($configs as $key => $config)
         {
