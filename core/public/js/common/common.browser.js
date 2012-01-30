@@ -86,15 +86,7 @@ midas.genericCallbackCheckboxes = function(node) {
 };
 
 midas.genericCallbackDblClick = function(node) {
-    if(node.attr('type')=='community') {
-        window.location.replace(json.global.webroot+'/community/'+node.attr('element'));
-    }
-    if(node.attr('type')=='folder') {
-        window.location.replace(json.global.webroot+'/folder/'+node.attr('element'));
-    }
-    if(node.attr('type')=='item') {
-        window.location.replace(json.global.webroot+'/item/'+node.attr('element'));
-    }
+  // no-op currently
 };
 
 midas.createNewFolder = function (id) {
