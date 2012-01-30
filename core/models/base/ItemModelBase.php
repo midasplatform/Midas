@@ -237,16 +237,43 @@ abstract class ItemModelBase extends AppModel
 
     $modelLoad = new MIDAS_ModelLoader();
     $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
+    $BitstreamModel = $modelLoad->loadModel('Bitstream');
+    $MetadataModel = $modelLoad->loadModel('Metadata');
     foreach($itemDao->getRevisions() as $revision)
       {
-      $itemRevisionDao = new ItemRevisionDao;
-      $itemRevisionDao->setItemId($newItem->getItemId());
-      $itemRevisionDao->setRevision($revision->getRevision());
-      $itemRevisionDao->setDate($revision->getDate());
-      $itemRevisionDao->setChanges($revision->getChanges());
-      $itemRevisionDao->setUserId($userDao->getUserId());
-      $itemRevisionDao->setLicense($revision->getLicense());
-      $ItemRevisionModel->save($itemRevisionDao);
+      $dupItemRevision = new ItemRevisionDao;
+      $dupItemRevision->setItemId($newItem->getItemId());
+      $dupItemRevision->setRevision($revision->getRevision());
+      $dupItemRevision->setDate($revision->getDate());
+      $dupItemRevision->setChanges($revision->getChanges());
+      $dupItemRevision->setUserId($userDao->getUserId());
+      $dupItemRevision->setLicense($revision->getLicense());
+      $ItemRevisionModel->save($dupItemRevision);
+      // duplicate metadata value
+      $metadatavalues = array();
+      $metadatavalues = $ItemRevisionModel->getMetadata($revision);
+      foreach($metadatavalues as $metadata)
+        {
+        $MetadataModel->addMetadataValue($dupItemRevision,
+                                        $metadata->getMetadatatype(),
+                                        $metadata->getElement(),
+                                        $metadata->getQualifier(),
+                                        $metadata->getValue());
+        }
+      // duplicate bitstream
+      foreach($revision->getBitstreams() as $bitstream)
+        {
+        $dupBitstream = new BitstreamDao;
+        $dupBitstream->setItemrevisionId($dupItemRevision->getItemrevisionId());
+        $dupBitstream->setName($bitstream->getName());
+        $dupBitstream->setMimetype($bitstream->getMimetype());
+        $dupBitstream->setSizebytes($bitstream->getSizebytes());
+        $dupBitstream->setChecksum($bitstream->getChecksum());
+        $dupBitstream->setPath($bitstream->getPath());
+        $dupBitstream->setAssetstoreId($bitstream->getAssetstoreId());
+        $dupBitstream->setDate($bitstream->getDate());
+        $BitstreamModel->save($dupBitstream);
+        }
       }
     }//end duplicateItem
 
