@@ -136,8 +136,9 @@ PURPOSE.  See the above copyright notices for more information.
       <param name="onSuccessfulUploadRedirectEnable" value="true"/>
       <param name="onSuccessRedirectURL" value="review"/>
       <param name="uploadUniqueIdentifierURL" value="gethttpuploaduniqueidentifier/"/>
-      <param name="uploadFileBaseURL" value="processjavaupload/?sid="/>
+      <param name="uploadFileBaseURL" value="processjavarevisionupload/?sid="/>
       <param name="uploadType" value="revision"/>
+      <param name="parentItem" value="<?php echo $this->item->getKey(); ?>"/>
     </applet>
   </div>
 

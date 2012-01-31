@@ -239,18 +239,37 @@ class UploadController extends AppController
       throw new Zend_Exception('You have to be logged in to do that');
       }
 
-    if(!isset($params['testingmode']) && $this->userSession->JavaUpload->parent)
+    if(isset($params['revision']))
       {
-      $folderId = $this->userSession->JavaUpload->parent;
+      $parentId = $params['itemId'];
+      $item = $this->Item->load($parentId);
+      if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+        {
+        throw new Zend_Exception('Write permissions required');
+        }
+      }
+    else if(!isset($params['testingmode']) && $this->userSession->JavaUpload->parent)
+      {
+      $parentId = $this->userSession->JavaUpload->parent;
+      $folder = $this->Folder->load($parentId);
+      if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+        {
+        throw new Zend_Exception('Write permissions required');
+        }
       }
     else
       {
-      $folderId = $this->userSession->Dao->getPrivatefolderId();
+      $parentId = $this->userSession->Dao->getPrivatefolderId();
+      $folder = $this->Folder->load($parentId);
+      if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+        {
+        throw new Zend_Exception('Write permissions required');
+        }
       }
 
     $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
 
-    $dir = $this->userSession->Dao->getUserId().'/'.$folderId;
+    $dir = $this->userSession->Dao->getUserId().'/'.$parentId;
     try
       {
       $token = $this->Component->Httpupload->generateToken($params, $dir);
@@ -360,6 +379,98 @@ class UploadController extends AppController
       echo "[OK]";
       }
     } //end processjavaupload
+
+  /**
+   * Process a java upload of a new revision
+   * @param uploadUniqueIdentifier The upload token (see gethttpuploaduniqueidentifierAction)
+   * @param filename The name of the file being uploaded
+   * @param length The length of the file being uploaded
+   * @param item The id of the item being uploaded into
+   */
+  function processjavarevisionuploadAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    $params = $this->_getAllParams();
+
+    if(!$this->logged)
+      {
+      echo '[ERROR]You must be logged in to upload';
+      throw new Zend_Exception('You have to be logged in to do that');
+      }
+    list($userId, $parentId, ) = explode('/', $params['uploadUniqueIdentifier']);
+    if($userId != $this->userSession->Dao->getUserId())
+      {
+      echo '[ERROR]User id does not match upload token user id';
+      throw new Zend_Exception('User id does not match upload token user id');
+      }
+    if($params['itemId'] != $parentId)
+      {
+      echo '[ERROR]You are attempting to upload into the incorrect parent item';
+      throw new Zend_Exception('You are attempting to upload into the incorrect parent item');
+      }
+
+    $testingMode = Zend_Registry::get('configGlobal')->environment == 'testing';
+    $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
+    $this->Component->Httpupload->setTestingMode($testingMode);
+    $this->Component->Httpupload->setTokenParamName('uploadUniqueIdentifier');
+    $data = $this->Component->Httpupload->process($params);
+
+    $item = $this->Item->load($parentId);
+    $parentFolders = $item->getFolders();
+
+    $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD',
+                                                            array('filename' => $data['filename'],
+                                                                  'size' => $data['size'],
+                                                                  'path' => $data['path'],
+                                                                  'folderId' => $parentFolders[0]->getKey()));
+    foreach($validations as $validation)
+      {
+      if(!$validation['status'])
+        {
+        unlink($data['path']);
+        echo '[ERROR]'.$validation['message'];
+        throw new Zend_Exception($validation['message']);
+        }
+      }
+
+    if(!empty($data['path']) && file_exists($data['path']) && $data['size'] > 0)
+      {
+      if(!isset($params['testingmode']) && isset($this->userSession->JavaUpload->changes))
+        {
+        $changes = $this->userSession->JavaUpload->changes;
+        }
+      else
+        {
+        $changes = '';
+        }
+      if(isset($this->userSession->JavaUpload->license))
+        {
+        $license = $this->userSession->JavaUpload->license;
+        }
+      else
+        {
+        $license = null;
+        }
+
+      try
+        {
+        $item = $this->Component->Upload->createNewRevision($this->userSession->Dao, $data['filename'],
+                                                            $data['path'], $changes, $parentId, null,
+                                                            $license, $data['md5'], (bool)$testingMode);
+        }
+      catch(Exception $e)
+        {
+        if(!$testingMode)
+          {
+          unlink($data['path']);
+          }
+        echo "[ERROR] ".$e->getMessage();
+        throw $e;
+        }
+      echo "[OK]";
+      }
+    }
 
   /** save an uploaded file */
   public function saveuploadedAction()

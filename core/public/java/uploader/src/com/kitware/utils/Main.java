@@ -55,6 +55,8 @@ public class Main extends JApplet
   private String uploadFileBaseURL, uploadFileURL;
   private String getUploadFileOffsetBaseURL, getUploadFileOffsetURL;
   private String sessionId, uploadUniqueIdentifier = null;
+  private String parentItem = "";
+  private boolean revisionUpload = false;
   private URL onSuccessRedirectURLObj;
   boolean onSuccessfulUploadRedirectEnable = true;
 
@@ -68,7 +70,8 @@ public class Main extends JApplet
       }
     catch (JavaUploaderException e)
       {
-      Utility.log(Utility.LOG_LEVEL.FATAL, "[CLIENT] Applet initialization failed", e);
+      Utility.log(Utility.LOG_LEVEL.FATAL,
+        "[CLIENT] Applet initialization failed", e);
       }
 
     try
@@ -96,7 +99,8 @@ public class Main extends JApplet
       }
     catch (Exception e)
       {
-      Utility.log(Utility.LOG_LEVEL.WARNING, "[CLIENT] Failed to set applet 'look&feel'", e);
+      Utility.log(Utility.LOG_LEVEL.WARNING,
+        "[CLIENT] Failed to set applet 'look&feel'", e);
       }
 
     // Get the main pane to add content to.
@@ -111,13 +115,10 @@ public class Main extends JApplet
     uploadFileButton = new JButton("Upload");
     uploadFileButton.addActionListener(new java.awt.event.ActionListener()
       {
-        
-        public void actionPerformed(ActionEvent evt)
-          {
-          uploadFileButtonActionPerformed(evt);
-          }
-        
-        
+      public void actionPerformed(ActionEvent evt)
+        {
+        uploadFileButtonActionPerformed(evt);
+        }
       });
 
     buttonPanel.add(uploadFileButton);
@@ -128,10 +129,10 @@ public class Main extends JApplet
     resumeUploadButton = new JButton("Resume");
     resumeUploadButton.addActionListener(new java.awt.event.ActionListener()
       {
-        public void actionPerformed(ActionEvent evt)
-          {
-          resumeUploadButtonActionPerformed(evt);
-          }
+      public void actionPerformed(ActionEvent evt)
+        {
+        resumeUploadButtonActionPerformed(evt);
+        }
       });
     resumeUploadButton.setEnabled(false);
     buttonPanel.add(resumeUploadButton);
@@ -208,8 +209,7 @@ public class Main extends JApplet
       }
 
     this.sessionId = getParameter("sessionId");
-    Utility
-        .log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] sessionId:" + this.sessionId);
+    Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] sessionId:" + this.sessionId);
 
     String baseURL = getParameter("baseURL");
     Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] baseURL:" + baseURL);
@@ -240,8 +240,7 @@ public class Main extends JApplet
     Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] getUploadFileOffsetBaseURL:"
         + this.getUploadFileOffsetBaseURL);
 
-    this.onSuccessRedirectURLObj = Utility.buildURL("onSuccessRedirect",
-        this.onSuccessRedirectURL);
+    this.onSuccessRedirectURLObj = Utility.buildURL("onSuccessRedirect", this.onSuccessRedirectURL);
 
     // applet background color
     String background = "";
@@ -259,9 +258,8 @@ public class Main extends JApplet
       }
     catch (NullPointerException e)
       {
-      Utility
-          .log(Utility.LOG_LEVEL.WARNING,
-              "[CLIENT] 'background' applet parameter unspecified: Rollback to default");
+      Utility.log(Utility.LOG_LEVEL.WARNING,
+        "[CLIENT] 'background' applet parameter unspecified: Rollback to default");
       }
 
     try
@@ -270,9 +268,15 @@ public class Main extends JApplet
       }
     catch (NullPointerException e)
       {
-      Utility
-          .log(Utility.LOG_LEVEL.WARNING,
-              "[CLIENT] 'fileextensions' applet parameter unspecified: Rollback to default");
+      Utility.log(Utility.LOG_LEVEL.WARNING,
+        "[CLIENT] 'fileextensions' applet parameter unspecified: Rollback to default");
+      }
+
+    String uploadType = getParameter("uploadType");
+    this.revisionUpload = uploadType != null && uploadType.equals("revision");
+    if (this.revisionUpload)
+      {
+      this.parentItem = getParameter("parentItem");
       }
     }
 
@@ -335,7 +339,8 @@ public class Main extends JApplet
 
   public void setByteUploadedLabel(long uploadedByte, long fileSize)
     {
-    bytesUploadedLabel.setText("Transfered: " + Utility.bytesToString(uploadedByte));
+    bytesUploadedLabel.setText("Transfered: "
+        + Utility.bytesToString(uploadedByte));
     }
 
   public void setFileNameLabel(String value)
@@ -350,7 +355,8 @@ public class Main extends JApplet
 
   public void setFileSizeLabel(long size)
     {
-    this.fileSizeLabel.setText(FILESIZE_LABEL_TITLE + Utility.bytesToString(size));
+    this.fileSizeLabel.setText(FILESIZE_LABEL_TITLE
+        + Utility.bytesToString(size));
     }
 
   public void setUploadStatusLabel(String value)
@@ -363,7 +369,7 @@ public class Main extends JApplet
     this.uploadedBytes = value;
     increaseUploadProgress(index, 0);
     }
-  
+
   public void setIndex(int index)
     {
     this.index = index;
@@ -481,12 +487,30 @@ public class Main extends JApplet
       {
       this.setEnableResumeButton(true);
       this.setEnableStopButton(false);
-      // JOptionPane.showMessageDialog(this, e.getMessage(),
-      // "Resume upload failed", JOptionPane.ERROR_MESSAGE);
       JOptionPane.showMessageDialog(this,
         "Retry later - Connection with remote server impossible (open Java Console for more informations)",
         "Resume upload failed", JOptionPane.ERROR_MESSAGE);
-      Utility.log(Utility.LOG_LEVEL.ERROR, "[CLIENT] Resume upload failed - Connection with remote server impossible", e);
+      Utility.log(Utility.LOG_LEVEL.ERROR,
+        "[CLIENT] Resume upload failed - Connection with remote server impossible", e);
       }
+    }
+
+  /**
+   * Are we uploading a revision?
+   * 
+   * @return True if uploading a new revision, otherwise false
+   */
+  public boolean isRevisionUpload()
+    {
+    return this.revisionUpload;
+    }
+
+  /**
+   * Get the parent item in the case of a revision upload
+   * @return the parent item id
+   */
+  public String getParentItem()
+    {
+    return this.parentItem;
     }
   }
