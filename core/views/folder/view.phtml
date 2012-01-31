@@ -110,13 +110,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
 <div class="viewSideBar">
   <?php
-  if(empty($this->folders)&&empty($this->items))
-    {
-    echo '<div class="sideElementFirst viewInfo">';
-    }
-  else
-    {
-    echo '
+  echo '
   <div class="sideElementFirst viewAction">
     <h1>Actions</h1>
     <ul>
@@ -130,7 +124,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <span></span>
   </div>
   <div class="sideElementLast viewInfo">';
-    }?>
+  ?>
     
   
     <h1>Info</h1>    
