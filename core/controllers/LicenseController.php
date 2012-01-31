@@ -123,5 +123,4 @@ class LicenseController extends AppController
     $this->License->save($license);
     echo JsonComponent::encode(array(true, 'Created new license'));
     }
-} // end class
-
+}
