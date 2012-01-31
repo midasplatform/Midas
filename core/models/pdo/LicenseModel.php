@@ -49,7 +49,7 @@ class LicenseModel extends LicenseModelBase
     // Replace references to this license with null values
     $this->database->getDB()->update('itemrevision',
                                      array('license_id' => null),
-                                     array('license_id' => $license->getKey()));
+                                     array('license_id = ?' => $license->getKey()));
     parent::delete($license);
     unset($license->license_id);
     $license->saved = false;
