@@ -146,7 +146,7 @@ class Upgrade_3_2_2 extends MIDASUpgrade
       {
       $this->db->insert('license', array('name' => $value['name'], 'fulltext' => $value['fulltext']));
       $id = $this->db->lastInsertId('license', 'license_id');
-      
+
       // Update existing license references to point to our new table
       $this->db->update('itemrevision',
                         array('license_id' => $id),
@@ -159,6 +159,30 @@ class Upgrade_3_2_2 extends MIDASUpgrade
 
   public function pgsql()
     {
+    // Create the license table
+    $this->db->query("CREATE TABLE license (
+      license_id serial PRIMARY KEY,
+      name TEXT NOT NULL DEFAULT '',
+      fulltext TEXT NOT NULL DEFAULT ''
+      )");
+
+    // Add a logical foreign key for license into the itemrevision table. Can be nullable for no license
+    $this->db->query("ALTER TABLE itemrevision ADD COLUMN license_id bigint NULL");
+
+    // Add existing licenses to the database
+    foreach($this->existingLicenses as $value)
+      {
+      $this->db->insert('license', array('name' => $value['name'], 'fulltext' => $value['fulltext']));
+      $id = $this->db->lastInsertId('license', 'license_id');
+
+      // Update existing license references to point to our new table
+      $this->db->update('itemrevision',
+                        array('license_id' => $id),
+                        array('license = ?' => $value['constant']));
+      }
+
+    // Remove the obsolete column from the item revision table
+    $this->db->query("ALTER TABLE itemrevision DROP COLUMN license");
     }
 
   public function postUpgrade()

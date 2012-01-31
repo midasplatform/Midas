@@ -1,0 +1,20 @@
+input.licenseName {
+  width: 80% !important;
+  margin-bottom: 8px !important;
+}
+
+textarea.licenseText {
+  width: 80% !important;
+  height: 72px !important;
+}
+
+div.licenseContainer {
+  border-bottom: 1px solid #d7d7d7;
+  margin-bottom: 15px;
+}
+
+span.headerText {
+  color: #777777;
+  font-size: 13px;
+  font-weight: bolder;
+}
