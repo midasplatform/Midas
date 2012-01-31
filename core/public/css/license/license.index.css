@@ -1,10 +1,11 @@
 input.licenseName {
-  width: 540px;
+  width: 80% !important;
+  margin-bottom: 8px !important;
 }
 
 textarea.licenseText {
-  width: 540px;
-  height: 72px;
+  width: 80% !important;
+  height: 72px !important;
 }
 
 div.licenseContainer {
