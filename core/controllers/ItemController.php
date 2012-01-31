@@ -106,7 +106,7 @@ class ItemController extends AppController
     $itemDao = $this->Item->load($itemId);
     if($itemDao === false)
       {
-      throw new Zend_Exception("This item doesn't exist.");
+      throw new Zend_Controller_Action_Exception("This item doesn't exist.", 404);
       }
     if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
