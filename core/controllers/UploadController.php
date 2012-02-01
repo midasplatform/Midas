@@ -415,7 +415,7 @@ class UploadController extends AppController
         $i = -1;
         foreach($filesArray as $extractedFilename)
           {
-          if(substr($extractedFilename,strlen($extractedFilename)-2,2) != '/.')
+          if(substr($extractedFilename, strlen($extractedFilename)-2, 2) != '/.')
             {
             $i++;
             }
