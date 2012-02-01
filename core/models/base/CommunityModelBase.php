@@ -182,16 +182,13 @@ abstract class CommunityModelBase extends AppModel
     $folderpolicygroupModel->createPolicy($adminGroup, $folderPublic, MIDAS_POLICY_ADMIN);
     $folderpolicygroupModel->createPolicy($adminGroup, $folderPrivate, MIDAS_POLICY_ADMIN);
 
-
     $folderpolicygroupModel->createPolicy($moderatorsGroup, $folderGlobal, MIDAS_POLICY_READ);
     $folderpolicygroupModel->createPolicy($moderatorsGroup, $folderPublic, MIDAS_POLICY_WRITE);
     $folderpolicygroupModel->createPolicy($moderatorsGroup, $folderPrivate, MIDAS_POLICY_WRITE);
 
-
     $folderpolicygroupModel->createPolicy($memberGroup, $folderGlobal, MIDAS_POLICY_READ);
-    $folderpolicygroupModel->createPolicy($memberGroup, $folderPublic, MIDAS_POLICY_WRITE);
-    $folderpolicygroupModel->createPolicy($memberGroup, $folderPrivate, MIDAS_POLICY_WRITE);
-
+    $folderpolicygroupModel->createPolicy($memberGroup, $folderPublic, MIDAS_POLICY_READ);
+    $folderpolicygroupModel->createPolicy($memberGroup, $folderPrivate, MIDAS_POLICY_READ);
 
     if($communityDao->getPrivacy() != MIDAS_COMMUNITY_PRIVATE)
       {
