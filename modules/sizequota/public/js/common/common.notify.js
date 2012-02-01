@@ -38,7 +38,7 @@ midas.sizequota.validateUpload = function(args)
       status: true
       };
     }
-}
+};
 
 /**
  * Called when the upload is complete
@@ -46,7 +46,7 @@ midas.sizequota.validateUpload = function(args)
 midas.sizequota.resetTotal = function()
 {
   midas.sizequota.totalSize = 0;
-}
+};
 
 /**
  * Call this to update the message
@@ -56,7 +56,7 @@ midas.sizequota.updateFreeSpaceMessage = function()
   var hFreeSpace = $('#sizequotaHFreeSpace').html();
   $('.belowDestinationUpload').html('<b>Free space:</b> ' + hFreeSpace);
   $('.belowDestinationUpload').show();
-}
+};
 
 /**
  * Called when a different upload location is selected
@@ -94,7 +94,7 @@ midas.sizequota.folderChanged = function(args)
         }
       }
     });
-}
+};
 
 /**
  * Correctly initializes the free space message
@@ -103,7 +103,7 @@ midas.sizequota.onPageLoad = function()
 {
   var folderId = $('.destinationId').val();
   midas.sizequota.folderChanged({folderId: folderId});
-}
+};
 
 midas.registerCallback('CALLBACK_CORE_VALIDATE_UPLOAD', 'sizequota', midas.sizequota.validateUpload);
 midas.registerCallback('CALLBACK_CORE_RESET_UPLOAD_TOTAL', 'sizequota', midas.sizequota.resetTotal);

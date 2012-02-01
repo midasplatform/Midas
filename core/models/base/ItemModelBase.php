@@ -475,4 +475,69 @@ abstract class ItemModelBase extends AppModel
 
     return array('size' => $totalSize, 'count' => $totalCount);
     } //end countBitstreams
+
+  /**
+   * Merge the items in the specified array into one item.
+   */
+  function mergeItems($itemIds, $name, $userSessionDao)
+    {
+    $items = array();
+    foreach($itemIds as $item)
+      {
+      $itemDao = $this->load($item);
+      if($item != false && $this->policyCheck($itemDao, $userSessionDao,
+                                                MIDAS_POLICY_ADMIN))
+        {
+        if($itemDao)
+          {
+          $items[] = $itemDao;
+          }
+        else
+          {
+          $this->getLogger()->info(__METHOD__ . " User unable to merge item ".
+                                   $itemDao->getKey() . " due to insufficient ".
+                                   "permissions.");
+          }
+        }
+      else
+        {
+        $this->getLogger()->info(__METHOD__ . " User unable to merge item ".
+                                 $item . " because it does not exist.");
+        }
+      }
+
+    if(empty($items))
+      {
+      throw new Zend_Exception('Insufficient permissions to merge these '.
+                               'items.');
+      }
+
+    $mainItem = $items[0];
+    $mainItemLastResision = $this->getLastRevision($mainItem);
+    $modelLoad = new MIDAS_ModelLoader();
+    $bitstreamModel = $modelLoad->loadModel('Bitstream');
+    $revisionModel = $modelLoad->loadModel('ItemRevision');
+    foreach($items as $key => $item)
+      {
+      if($key != 0)
+        {
+        $revision = $this->getLastRevision($item);
+        $bitstreams = $revision->getBitstreams();
+        foreach($bitstreams as $b)
+          {
+          $b->setItemrevisionId($mainItemLastResision->getKey());
+          $bitstreamModel->save($b);
+          }
+        $this->delete($item);
+        }
+      }
+
+    $mainItem->setSizebytes($revisionModel->getSize($mainItemLastResision));
+    $mainItem->setName($name);
+    $this->save($mainItem);
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_MERGED',
+                                             array('item' => $mainItem,
+                                                   'itemIds' => $itemIds));
+    return $mainItem;
+    }
 } // end class ItemModelBase

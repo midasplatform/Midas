@@ -20,19 +20,29 @@
 
 class Thumbnailcreator_ImagemagickComponent extends AppComponent
 { 
-  /** createThumbnail */
-  public function createThumbnail($item)
+  /** createThumnail */
+  public function createThumbnail($item,$inputFile=null)
     {
     $modelLoader = new MIDAS_ModelLoader;
     $itemModel = $modelLoader->loadModel("Item");  
     $item = $itemModel->load($item['item_id']);
     $revision = $itemModel->getLastRevision($item);
     $bitstreams = $revision->getBitstreams();
-    if(count($bitstreams) != 1)
+    if(count($bitstreams) < 1)
       {
       return;
       }
     $bitstream = $bitstreams[0];
+    $fullPath = null;
+    if($inputFile)
+      {
+      $fullPath = $inputFile;
+      }
+    else
+      {
+      $fullPath = $bitstream->getFullPath();
+      }
+    $ext = null;
     $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
     
     // create destination
@@ -78,12 +88,12 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
         case "rm":
           $p = new phMagick("", $pathThumbnail);
           $p->setImageMagickPath($imageMagickPath);
-          $p->acquireFrame($bitstream->getFullPath(), 0);
+          $p->acquireFrame($fullPath, 0);
           $p->resizeExactly(100,100);
           break;
           break;
         default:
-          $p = new phMagick($bitstream->getFullPath(), $pathThumbnail);
+          $p = new phMagick($fullPath, $pathThumbnail);
           $p->setImageMagickPath($imageMagickPath);
           $p->resizeExactly(100,100);
         }
@@ -94,9 +104,9 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       }
     catch (Exception $exc)
       {
-
+      echo $exc->getMessage();
       }
-      
+
     if(file_exists($pathThumbnail))
       {
       $oldThumbnail = $item->getThumbnail();
@@ -111,4 +121,3 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     }
     
 } // end class
-?>

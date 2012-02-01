@@ -1,4 +1,6 @@
 var midas = midas || {};
+midas.browser = midas.browser || {};
+
 midas.ajaxSelectRequest= '';
 
 /**
@@ -418,6 +420,7 @@ midas.createInfo = function (jsonContent) {
     else {
         html+='<img class="infoLogo" alt="Data Type" src="'+json.global.coreWebroot+'/public/images/icons/document-big.png" />';
     }
+
     html+='<span class="infoTitle" >'+sliceFileName(arrayElement['name'],27)+'</span>';
     html+='<table>';
     html+='  <tr>';
@@ -519,6 +522,24 @@ midas.createInfo = function (jsonContent) {
     $('div.ajaxInfoElement').html(html);
 };
 
+/**
+ * Enable selecting all of the elements in a treeview browser
+ * @param opts an object with an optional callback
+ */
+midas.browser.enableSelectAll = function (opts) {
+    var default_args = { callback: midas.genericCallbackCheckboxes };
+    var options = $.extend({}, default_args, opts);
+
+    // Select/deslect all rows. If we are doing deselect all, we include
+    // hidden rows
+    $('#browseTableHeaderCheckbox').click(
+        function() {
+            var selector = this.checked ? '.treeCheckbox:visible' : '.treeCheckbox';
+            $('#browseTable').find(selector).prop("checked", this.checked);
+            options.callback($('#browseTable'));
+        });
+};
+
 midas.enableRangeSelect = function (node) {
     $('input.treeCheckbox:visible').enableCheckboxRangeSelection(
         {
@@ -527,4 +548,5 @@ midas.enableRangeSelect = function (node) {
             }
         });
 };
+
 midas.cutName = function(name, nchar) {  if(name.length>nchar)      {      name=name.substring(0,nchar)+'...';      return name;      }  return name;  }
