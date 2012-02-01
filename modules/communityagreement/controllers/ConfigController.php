@@ -143,28 +143,4 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
     $this->view->agreementDao = $agreementDao;
     }
 
-  /**
-   * ajax function which checks if the community agreement has been set
-   *
-   * @method checkagreementAction()
-   * @throws Zend_Exception on invalid request
-  */
-  public function checkagreementAction()
-    {
-    $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
-
-    $communityId = $this->_getParam("communityId");
-    $agreementDao = $this->Communityagreement_Agreement->getByCommunityId($communityId);
-    if($agreementDao != false)
-      {
-      echo JsonComponent::encode(MIDAS_COMMUNITYAGREEMENT_AGREEMENT_NOT_EMPTY);
-      }
-    else
-      {
-      echo JsonComponent::encode(MIDAS_COMMUNITYAGREEMENT_AGREEMENT_IS_EMPTY);
-      }
-    }
-
 }//end class
