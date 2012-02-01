@@ -402,7 +402,7 @@ class UploadController extends AppController
     // $pathClient stores the list of full path for the files in the directory
     if(!empty($pathClient))
       {
-      if(strlen(str_replace(';','',$pathClient))>0) // Check that we are dealing with folders
+      if(strlen(str_replace(';', '', $pathClient)) > 0) // Check that we are dealing with folders
         {
         if(!isset($this->userSession->filePosition) || ($this->userSession->filePosition === null) )
           {
