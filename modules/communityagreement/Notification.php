@@ -36,7 +36,7 @@ class Communityagreement_Notification extends MIDAS_Notification
     {
     $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', 'getCommunityManageTabs');
     $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_VIEW_JSS', 'getCommunityViewJSs');
-    $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_VIEW_CSSS', 'getCommunityViewCSSs');
+    $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_VIEW_EXTRA_HTML', 'getCommunityViewExtraHtml');
     }//end init
 
   /**
@@ -60,19 +60,23 @@ class Communityagreement_Notification extends MIDAS_Notification
     {
     $fc = Zend_Controller_Front::getInstance();
     $moduleUriroot = $fc->getBaseUrl().'/modules/communityagreement';
-    return array($moduleUriroot.'/public/js/config/config.agreementcheckbox.js');
+    return array($moduleUriroot.'/public/js/config/config.agreementenforce.js');
     }
 
   /**
-   * callback function to get CSS
-   *
-   * @return array
+   * Callback function to get extra html on the community view page.
+   * Adds an element for whether the community has an agreement set or not
    */
-  public function getCommunityViewCSSs()
+  public function getCommunityViewExtraHtml($params)
     {
-    $fc = Zend_Controller_Front::getInstance();
-    $moduleUriroot = $fc->getBaseUrl().'/modules/communityagreement';
-    return array($moduleUriroot.'/public/css/config/config.agreementcheckbox.css');
+    $modelLoader = new MIDAS_ModelLoader();
+    $agreementModel = $modelLoader->loadModel('Agreement', 'communityagreement');
+    $comm = $params['community'];
+    $agreementDao = $agreementModel->getByCommunityId($comm->getKey());
+    $val = '<span style="display: none;" id="hasAgreement">';
+    $val .= $agreementDao != false ? 'true' : 'false';
+    $val .= '</span>';
+    return $val;
     }
 
   } //end class

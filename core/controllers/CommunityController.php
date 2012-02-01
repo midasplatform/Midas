@@ -354,6 +354,7 @@ class CommunityController extends AppController
 
     $this->view->isInvited = $this->CommunityInvitation->isInvited($communityDao, $this->userSession->Dao);
     $this->view->canJoin = $canJoin;
+
     if($this->userSession->Dao != null && isset($joinCommunity) && ($canJoin || $this->view->isInvited))
       {
       $member_group = $communityDao->getMemberGroup();
@@ -418,6 +419,8 @@ class CommunityController extends AppController
     $this->addDynamicHelp('#tabInfoLink', 'Description of the community.');
     $this->addDynamicHelp('#tabSharedLink', 'Data shared to the member of the community.');
 
+    $this->view->extraHtml = Zend_Registry::get('notifier')->callback(
+      'CALLBACK_CORE_GET_COMMUNITY_VIEW_EXTRA_HTML', array('community' => $communityDao));
     } //end index
 
   /** Delete a community*/
