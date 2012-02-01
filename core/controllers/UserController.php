@@ -685,7 +685,7 @@ class UserController extends AppController
 
     if(!$userDao instanceof UserDao)
       {
-      throw new Zend_Exception("Unable to find user");
+      throw new Zend_Controller_Action_Exception("Unable to find user", 404);
       }
 
     $this->view->user = $userDao;
