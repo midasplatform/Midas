@@ -133,7 +133,6 @@ class Remoteprocessing_JobComponent extends AppComponent
       $uuid = (isset($jobParam['uuid'])) ? $jobParam['uuid'] : null;
 
       $job = $this->createJob($jobParam, $parents, $script, $type, $os, $condition, $expiration, $uuid);
-      var_dump($job);
       $this->_createWorkflow($params, $children, $job);
       }
     }

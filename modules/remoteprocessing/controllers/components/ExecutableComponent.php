@@ -116,11 +116,6 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
   /** preprocessing*/
   private function _treeItemsProcessing($params, $tree)
     {
-    foreach($tree as $uuid => $children)
-      {
-    //  $inputs = $params[$uuid]['input'];
-     // list($params,  $tree[$uuid]) = $this->treeProcessing($params, $tree[$uuid]);
-      }
     return array($params, $tree);
     }
 
