@@ -45,7 +45,7 @@ class Batchmake_ApiComponent extends AppComponent
     {
     $componentLoader = new MIDAS_ComponentLoader();
     $authComponent = $componentLoader->loadComponent('Authentication', 'api');
-    return $authComponent->getUser($args, $this->userSession->Dao);
+    return $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
     }
 
 
