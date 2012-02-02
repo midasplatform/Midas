@@ -62,10 +62,7 @@ abstract class MetadataModelBase extends AppModel
     $metadataDao->setQualifier($qualifier);
     $metadataDao->setDescription($description);
 
-    if(!$this->save($metadataDao))
-      {
-      return false;
-      }
+    $this->save($metadataDao);
     return $metadataDao;
     } // end addMetadataValue()
 
