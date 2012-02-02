@@ -277,6 +277,9 @@ public class Main extends JApplet
     if (this.revisionUpload)
       {
       this.parentItem = getParameter("parentItem");
+      // We don't use the base url here (we don't redirect to the upload controller)
+      this.onSuccessRedirectURL = getParameter("onSuccessRedirectURL");
+      this.onSuccessRedirectURLObj = Utility.buildURL("onSuccessRedirect", this.onSuccessRedirectURL);
       }
     }
 

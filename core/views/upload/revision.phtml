@@ -134,7 +134,7 @@ PURPOSE.  See the above copyright notices for more information.
       <param name="baseURL" value="<?php echo $this->protocol."://".$this->host . $this->webroot ?>/upload/"/>
       <param name="getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
       <param name="onSuccessfulUploadRedirectEnable" value="true"/>
-      <param name="onSuccessRedirectURL" value="review"/>
+      <param name="onSuccessRedirectURL" value="<?php echo $this->protocol."://".$this->host . $this->webroot ?>/item/<?php echo $this->item->getKey(); ?>"/>
       <param name="uploadUniqueIdentifierURL" value="gethttpuploaduniqueidentifier/"/>
       <param name="uploadFileBaseURL" value="processjavarevisionupload/?sid="/>
       <param name="uploadType" value="revision"/>
