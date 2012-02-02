@@ -60,9 +60,10 @@ if($this->preview) // module visualize
       <?php
       if(count($this->itemDao->revisions) > 0)
         {
-        $license = $this->itemDao->lastrevision->getLicense();
-        if($license != null)
+        $licenseId = $this->itemDao->lastrevision->getLicenseId();
+        if($licenseId != null)
           {
+          $license = $this->itemDao->lastrevision->getLicense();
           echo '<a name="'.$license->getName().'" class="licenseLink" href="javascript:;" element="'.$license->getKey().'">'.$license->getName().'</a>';
           }
         else
