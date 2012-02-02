@@ -141,6 +141,24 @@ class UploadController extends AppController
                                                                       array('folder' => $folder));
     }//end java upload
 
+  /**
+   * Handles the user setting changes and licenses when using the large revision upload applet
+   */
+  public function javarevisionsessionAction()
+    {
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('You have to be logged in to do that');
+      }
+    $this->disableLayout();
+    $this->disableView();
+
+    $changes = $this->_getParam('changes');
+    $license = $this->_getParam('license');
+    $this->userSession->JavaUpload->changes = $changes;
+    $this->userSession->JavaUpload->license = $license;
+    }
+
   /** upload new revision */
   public function revisionAction()
     {
