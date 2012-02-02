@@ -20,18 +20,15 @@ public class UploadThread extends Thread
   {
   private HttpURLConnection conn = null;
   private Main uploader;
-  // private int attempts;
   private long uploadOffset = 0;
   private int startIndex = 0;
-  // private String reply;
   private String getUploadUniqueIdentifierBaseURL;
   private String uploadFileBaseURL, uploadFileURL;
   private boolean paused;
 
   public static String IOEXCEPTION_ERROR_WRITING_REQUEST_BODY_TO_SERVER = "Error writing request body to server";
 
-  private DataOutputStream output = null; // Output stream ( Applet -> Server
-                                          // )
+  private DataOutputStream output = null; 
 
   public UploadThread(Main uploader)
     {
@@ -103,23 +100,24 @@ public class UploadThread extends Thread
     String filename = file.getName().replace(" ", "_");
     String getUploadUniqueIdentifierURL = this.getUploadUniqueIdentifierBaseURL
         + "?filename=" + filename;
+    if(uploader.isRevisionUpload())
+      {
+      getUploadUniqueIdentifierURL += "&revision=true&itemId=" + uploader.getParentItem();
+      }
 
     // retrieve uploadUniqueIdentifier
     if (this.uploader.getUploadUniqueIdentifier() == null)
       {
       Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] Query server using:"
           + getUploadUniqueIdentifierURL);
-      this.uploader.setUploadUniqueIdentifier(Utility
-          .queryHttpServer(getUploadUniqueIdentifierURL));
+      this.uploader.setUploadUniqueIdentifier(Utility.queryHttpServer(getUploadUniqueIdentifierURL));
       Utility.log(Utility.LOG_LEVEL.DEBUG, "[SERVER] uploadUniqueIdentifier:"
           + this.uploader.getUploadUniqueIdentifier());
       }
     else
       {
-      Utility.log(
-          Utility.LOG_LEVEL.DEBUG,
-          "[CLIENT] Re-use existing uploadUniqueIdentifier:"
-              + this.uploader.getUploadUniqueIdentifier());
+      Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] Re-use existing uploadUniqueIdentifier:"
+        + this.uploader.getUploadUniqueIdentifier());
       }
 
     FileInputStream fileStream = null;
@@ -142,15 +140,17 @@ public class UploadThread extends Thread
       }
 
     this.uploadFileURL = this.uploadFileBaseURL + "&filename=" + filename
-        + "&uploadUniqueIdentifier="
-        + this.uploader.getUploadUniqueIdentifier() + "&length="
-        + uploader.getFileLength(i);
+      + "&uploadUniqueIdentifier=" + this.uploader.getUploadUniqueIdentifier() + "&length="
+      + uploader.getFileLength(i);
+    if(uploader.isRevisionUpload())
+      {
+      this.uploadFileURL += "&itemId=" + uploader.getParentItem();
+      }
     URL uploadFileURLObj = Utility.buildURL("UploadFile", this.uploadFileURL);
 
     try
       {
-      Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] Query server using:"
-          + this.uploadFileURL);
+      Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] Query server using:" + this.uploadFileURL);
       conn = (HttpURLConnection) uploadFileURLObj.openConnection();
       conn.setDoInput(true); // Allow Inputs
       conn.setDoOutput(true); // Allow Outputs
@@ -219,9 +219,6 @@ public class UploadThread extends Thread
         this.uploader.setEnableResumeButton(true);
         this.uploader.setEnableUploadButton(false);
         this.uploader.setEnableStopButton(false);
-        // JOptionPane.showMessageDialog(this.uploader,
-        // "Connection with remote server broken - Try to Resume (open Java Console for more informations) ",
-        // "Upload problem", JOptionPane.WARNING_MESSAGE);
         }
       else
         {
@@ -251,8 +248,7 @@ public class UploadThread extends Thread
 
         if (inputStream != null)
           {
-          String msg = Utility.getMessage(new BufferedReader(
-              new InputStreamReader(inputStream)));
+          String msg = Utility.getMessage(new BufferedReader(new InputStreamReader(inputStream)));
           Utility.log(Utility.LOG_LEVEL.DEBUG, "[SERVER] " + msg);
           this.uploader.setUploadStatusLabel(msg);
           try
@@ -261,8 +257,7 @@ public class UploadThread extends Thread
             }
           catch (IOException e)
             {
-            Utility.log(Utility.LOG_LEVEL.ERROR,
-                "[CLIENT] Failed to close ErrorStream", e);
+            Utility.log(Utility.LOG_LEVEL.ERROR, "[CLIENT] Failed to close ErrorStream", e);
             }
           }
         conn.disconnect();

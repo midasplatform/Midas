@@ -20,10 +20,10 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
 </div>
 <br/>
 <b><?php echo $this->t('Step 3: Select files to upload')?></b>
-<br/>
+<br/><br/>
 <applet name="MidasUploader" code="com.kitware.utils.Main"
         archive="<?php echo $this->coreWebroot?>/public/java/uploader/dist/MidasUploader.jar?rev=3&<?php echo time()?>"
-        width="305" height="200" mayscript="">
+        width="360" height="150" mayscript="true">
   <param name = "type"      value = "application/x-java-applet;version=1.5" />
   <param name = "background" value = "ffffff" />
   <param name = "loglevel" value = "WARNING" />
@@ -34,6 +34,8 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
   <param name = "onSuccessRedirectURL" value="review"/>
   <param name = "uploadUniqueIdentifierURL" value="gethttpuploaduniqueidentifier/"/>
   <param name = "uploadFileBaseURL" value="processjavaupload/?sid="/>
+  <param name = "uploadType" value="item"/>
+  You must install and enable Java on your system in order to use the large file uploader.
 </applet>
 <?php
 foreach($this->extraHtml as $module => $extra)
