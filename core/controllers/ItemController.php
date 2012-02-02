@@ -416,7 +416,7 @@ class ItemController extends AppController
     $itemArray = $mainItem->toArray();
     $itemArray['policy'] = MIDAS_POLICY_ADMIN;
     $itemArray['size'] = $this->Component->Utility->formatSize($mainItem->getSizebytes());
-    $itemArray['date'] = $this->Component->Date->ago($mainItem->getDateUpdate(),true);
+    $itemArray['date'] = $this->Component->Date->ago($mainItem->getDateUpdate(), true);
     echo JsonComponent::encode($itemArray);
     return;
     }//end merge

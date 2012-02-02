@@ -1,5 +1,6 @@
 var midas = midas || {};
 midas.browser = midas.browser || {};
+
 midas.ajaxSelectRequest= '';
 
 /**
@@ -184,11 +185,11 @@ midas.deleteFolder = function (id) {
                    function(data) {
                        jsonResponse = jQuery.parseJSON(data);
                        if(jsonResponse==null) {
-                           createNotive('Error',4000);
+                           createNotice('Error',4000);
                            return;
                        }
                        if(jsonResponse[0]) {
-                           createNotive(jsonResponse[1],1500);
+                           createNotice(jsonResponse[1],1500);
                            $('div.MainDialog').dialog('close');
                            midas.removeNodeFromTree(node, true);
                            midas.genericCallbackCheckboxes($('#browseTable'));
@@ -427,10 +428,7 @@ midas.createInfo = function (jsonContent) {
     html+='  </tr>';
     if(arrayElement['type']=='community') {
         html+='  <tr>';
-        html+='    <td>Member';
-        if(parseInt(arrayElement['members'])>1) {
-            html+='s';
-        }
+        html+='    <td>Members';
         html += '</td>';
         html+='    <td>'+arrayElement['members']+'</td>';
         html+='  </tr>';
