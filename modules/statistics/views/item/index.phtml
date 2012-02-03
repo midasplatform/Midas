@@ -25,16 +25,6 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.spinbox.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/index/index.index.css" />
 <div class="viewMain">
-  <div class ="genericWrapperTopRight">
-    <?php
-      echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-        echo "<a  href='{$this->webroot}/item/".$this->itemDao->getKey()."'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-          echo $this->t('Back');
-        echo "</a>";
-      echo '</div>';
-    ?>
-  </div>
-  <h3>Statistics - <?php echo $this->itemDao->getName()?></h3>
 
   <img class="tabsLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <div class="tabs" id='tabsGeneric'>
