@@ -39,15 +39,16 @@ PURPOSE.  See the above copyright notices for more information.
 <div class="tabs uploadTabs" id='uploadTabs'>
   <ul>
     <li><a href="#uploadTabs-1">Simple</a></li>
+    <li><a href="#uploadTabs-2">Large Files</a></li>
   </ul>
+
   <div id="uploadTabs-1">
     <b><?php echo $this->t('Step 1: Select files to upload')?></b>
     <br/>
     <div id="swfuploadContent">
       <span id="spanButtonPlaceHolder"></span>
       <div>
-      <div class="fieldset flash"  id="fsUploadProgress">
-      </div>
+        <div class="fieldset flash"  id="fsUploadProgress"></div>
       </div>
     </div>
     <div id="jqueryFileUploadContent">
@@ -82,9 +83,7 @@ PURPOSE.  See the above copyright notices for more information.
     <div class="uploadValidationError"><img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/><b></b><hr></div>
     <div class="tooBigUpload">
       <img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/> <b><?php echo $this->t('Please use the large file tool, the following files are too big:')?></b>
-      <ul>
-
-      </ul>
+      <ul></ul>
     </div>
     <br />
     <b><?php echo $this->t('Step 2: Select a license')?></b>
@@ -105,11 +104,45 @@ PURPOSE.  See the above copyright notices for more information.
     <span id="btnStartUpload" >
       <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" value="<?php echo $this->t('Start Upload')?>" />
     </span>
-</div>
+    <div>
+      <?php echo $this->t('Number of uploaded files');?> <span class="globalUploadedCount">0</span>
+    </div>
+  </div>
 
-<div>
-  <?php echo $this->t('Number of uploaded files');?> <span class="globalUploadedCount">0</span>
-</div>
+  <div id="uploadTabs-2">
+    <div class="belowDestinationUpload" style="display: none;"></div>
+    <b><?php echo $this->t('Step 1: Select a license')?></b>
+    <div>
+      <?php
+      echo $this->element('license')?>
+    </div>
+    <br/>
+    <b><?php echo $this->t('Step 2: Set the changes')?></b>
+    <div>
+      <textarea style="width:80%;" name="revisionChanges"/>
+    </div>
+    <br/>
+    <b><?php echo $this->t('Step 3: Upload files')?></b>
+    <br/><br/>
+    <applet name="MidasUploader" code="com.kitware.utils.Main"
+            archive="<?php echo $this->coreWebroot?>/public/java/uploader/dist/MidasUploader.jar?rev=3&<?php echo time()?>"
+            width="360" height="150" mayscript="true">
+      <param name="type" value="application/x-java-applet;version=1.5" />
+      <param name="background" value="ffffff" />
+      <param name="loglevel" value="WARNING" />
+      <param name="sessionId" value="<?php echo session_id();?>"/>
+      <param name="baseURL" value="<?php echo $this->protocol."://".$this->host . $this->webroot ?>/upload/"/>
+      <param name="getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
+      <param name="onSuccessfulUploadRedirectEnable" value="true"/>
+      <param name="onSuccessRedirectURL" value="<?php echo $this->protocol."://".$this->host . $this->webroot ?>/item/<?php echo $this->item->getKey(); ?>"/>
+      <param name="uploadUniqueIdentifierURL" value="gethttpuploaduniqueidentifier/"/>
+      <param name="uploadFileBaseURL" value="processjavarevisionupload/?sid="/>
+      <param name="uploadType" value="revision"/>
+      <param name="parentItem" value="<?php echo $this->item->getKey(); ?>"/>
+      You must install and enable Java on your system in order to use the large file uploader.
+    </applet>
+  </div>
+
 <div class="reviewUploaded">
   <form method="post" action="<?php echo $this->webroot?>/item/<?php echo $this->item->getKey()?>">
     <input class="globalButton" type="submit" value="<?php echo $this->t('View new Revision');?>" />

@@ -113,7 +113,14 @@ class UploadController extends AppController
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->view->protocol = 'http';
-    $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+    if(!$this->isTestingEnv())
+      {
+      $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+      }
+    else
+      {
+      $this->view->host = 'localhost';
+      }
     $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
     $this->view->allLicenses = $this->License->getAll();
     $this->view->defaultUploadLocation = $this->userSession->Dao->getPrivatefolderId();
@@ -144,6 +151,24 @@ class UploadController extends AppController
                                                                       array('folder' => $folder));
     }//end java upload
 
+  /**
+   * Handles the user setting changes and licenses when using the large revision upload applet
+   */
+  public function javarevisionsessionAction()
+    {
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('You have to be logged in to do that');
+      }
+    $this->disableLayout();
+    $this->disableView();
+
+    $changes = $this->_getParam('changes');
+    $license = $this->_getParam('license');
+    $this->userSession->JavaUpload->changes = $changes;
+    $this->userSession->JavaUpload->license = $license;
+    }
+
   /** upload new revision */
   public function revisionAction()
     {
@@ -170,11 +195,29 @@ class UploadController extends AppController
     $this->view->item = $item;
     $itemRevision = $this->Item->getLastRevision($item);
     $this->view->lastrevision = $itemRevision;
-    if($itemRevision != false)
+
+    // Check if the revision exists and if it does, we send its license ID to
+    // the view. If it does not exist we use our default license
+    if($itemRevision)
       {
       $this->view->selectedLicense = $itemRevision->getLicenseId();
       }
+    else
+      {
+      $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
+      }
+
     $this->view->allLicenses = $this->License->getAll();
+    $this->view->protocol = 'http';
+    if(!$this->isTestingEnv())
+      {
+      $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+      }
+    else
+      {
+      $this->view->host = 'localhost';
+      }
+
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback(
       'CALLBACK_CORE_GET_REVISIONUPLOAD_EXTRA_HTML', array('item' => $item));
     }//end revisionAction
@@ -244,18 +287,37 @@ class UploadController extends AppController
       throw new Zend_Exception('You have to be logged in to do that');
       }
 
-    if(!isset($params['testingmode']) && $this->userSession->JavaUpload->parent)
+    if(isset($params['revision']))
       {
-      $folderId = $this->userSession->JavaUpload->parent;
+      $parentId = $params['itemId'];
+      $item = $this->Item->load($parentId);
+      if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+        {
+        throw new Zend_Exception('Write permissions required');
+        }
+      }
+    else if(!isset($params['testingmode']) && $this->userSession->JavaUpload->parent)
+      {
+      $parentId = $this->userSession->JavaUpload->parent;
+      $folder = $this->Folder->load($parentId);
+      if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+        {
+        throw new Zend_Exception('Write permissions required');
+        }
       }
     else
       {
-      $folderId = $this->userSession->Dao->getPrivatefolderId();
+      $parentId = $this->userSession->Dao->getPrivatefolderId();
+      $folder = $this->Folder->load($parentId);
+      if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+        {
+        throw new Zend_Exception('Write permissions required');
+        }
       }
 
     $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
 
-    $dir = $this->userSession->Dao->getUserId().'/'.$folderId;
+    $dir = $this->userSession->Dao->getUserId().'/'.$parentId;
     try
       {
       $token = $this->Component->Httpupload->generateToken($params, $dir);
@@ -365,6 +427,98 @@ class UploadController extends AppController
       echo "[OK]";
       }
     } //end processjavaupload
+
+  /**
+   * Process a java upload of a new revision
+   * @param uploadUniqueIdentifier The upload token (see gethttpuploaduniqueidentifierAction)
+   * @param filename The name of the file being uploaded
+   * @param length The length of the file being uploaded
+   * @param item The id of the item being uploaded into
+   */
+  function processjavarevisionuploadAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    $params = $this->_getAllParams();
+
+    if(!$this->logged)
+      {
+      echo '[ERROR]You must be logged in to upload';
+      throw new Zend_Exception('You have to be logged in to do that');
+      }
+    list($userId, $parentId, ) = explode('/', $params['uploadUniqueIdentifier']);
+    if($userId != $this->userSession->Dao->getUserId())
+      {
+      echo '[ERROR]User id does not match upload token user id';
+      throw new Zend_Exception('User id does not match upload token user id');
+      }
+    if($params['itemId'] != $parentId)
+      {
+      echo '[ERROR]You are attempting to upload into the incorrect parent item';
+      throw new Zend_Exception('You are attempting to upload into the incorrect parent item');
+      }
+
+    $testingMode = Zend_Registry::get('configGlobal')->environment == 'testing';
+    $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
+    $this->Component->Httpupload->setTestingMode($testingMode);
+    $this->Component->Httpupload->setTokenParamName('uploadUniqueIdentifier');
+    $data = $this->Component->Httpupload->process($params);
+
+    $item = $this->Item->load($parentId);
+    $parentFolders = $item->getFolders();
+
+    $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD',
+                                                            array('filename' => $data['filename'],
+                                                                  'size' => $data['size'],
+                                                                  'path' => $data['path'],
+                                                                  'folderId' => $parentFolders[0]->getKey()));
+    foreach($validations as $validation)
+      {
+      if(!$validation['status'])
+        {
+        unlink($data['path']);
+        echo '[ERROR]'.$validation['message'];
+        throw new Zend_Exception($validation['message']);
+        }
+      }
+
+    if(!empty($data['path']) && file_exists($data['path']) && $data['size'] > 0)
+      {
+      if(!isset($params['testingmode']) && isset($this->userSession->JavaUpload->changes))
+        {
+        $changes = $this->userSession->JavaUpload->changes;
+        }
+      else
+        {
+        $changes = '';
+        }
+      if(isset($this->userSession->JavaUpload->license))
+        {
+        $license = $this->userSession->JavaUpload->license;
+        }
+      else
+        {
+        $license = null;
+        }
+
+      try
+        {
+        $item = $this->Component->Upload->createNewRevision($this->userSession->Dao, $data['filename'],
+                                                            $data['path'], $changes, $parentId, null,
+                                                            $license, $data['md5'], (bool)$testingMode);
+        }
+      catch(Exception $e)
+        {
+        if(!$testingMode)
+          {
+          unlink($data['path']);
+          }
+        echo "[ERROR] ".$e->getMessage();
+        throw $e;
+        }
+      echo "[OK]";
+      }
+    }
 
   /** save an uploaded file */
   public function saveuploadedAction()
