@@ -248,8 +248,6 @@ foreach($this->customCSSs as $Uris)
 </div>
 
 
-
-
 <div id="guideRobot">
    <?php
     foreach($this->folders as $folder)
@@ -259,3 +257,9 @@ foreach($this->customCSSs as $Uris)
     ?>
 </div>
 
+<?php
+foreach($this->extraHtml as $module => $content)
+  {
+  echo $content."\n";
+  }
+?>
