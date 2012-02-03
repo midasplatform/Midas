@@ -80,7 +80,15 @@ class ErrorlogModel extends ErrorlogModelBase
       }
 
     $row = $this->database->fetchRow($sql);
-    return $row['count(*)'];
+    if(isset($row['count(*)']))
+      {
+      return $row['count(*)'];
+      }
+    if(isset($row['count'])) //for pgsql
+      {
+      return $row['count'];
+      }
+    return 0;
     }
 } // end class
 ?>
