@@ -1,0 +1,17 @@
+textarea#agreement {
+  height: 160px;
+  width: 100% !important;
+}
+
+div.formLabel {
+  color: #999;
+  font-size: 11px;
+  text-transform: uppercase;
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+  font-weight: bold;
+}
+
+#createAgreementForm input[type=submit]{
+  margin-left: 0px !important;
+}
