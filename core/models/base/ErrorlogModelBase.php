@@ -39,4 +39,6 @@ abstract class ErrorlogModelBase extends AppModel
 
   /** get Log Error */
   abstract function getLog($startDate, $endDate, $module = 'all', $priority = 'all', $limit = 99999);
+  /** Count log entries since a certain date */
+  abstract function countSince($startDate, $priorities = null);
 } // end class FeedModelBase
