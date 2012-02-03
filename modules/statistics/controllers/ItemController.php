@@ -28,7 +28,7 @@ class Statistics_ItemController extends Statistics_AppController
   /** index action*/
   function indexAction()
     {
-    $item = $this->Item->load($_GET['id']);
+    $item = $this->Item->load($this->_getParam('id'));
     if(!$item)
       {
       throw new Zend_Exception("Item doesn't exist");
@@ -38,12 +38,10 @@ class Statistics_ItemController extends Statistics_AppController
       throw new Zend_Exception('You do not have read permission on this item');
       }
 
-    //TODO instead of last 21 days, have that number be an adjustable parameter to the controller
     $downloads = $this->Statistics_Download->getDownloads($item, date('c', strtotime('-20 day'.date( 'Y-m-j G:i:s'))), date('c'));
 
-    $arrayDownload = array();
     $format = 'Y-m-j';
-    $markers = array();
+    $arrayDownload = array();
     for($i = 0; $i < 21; $i++)
       {
       $key = date($format, strtotime(date('c', strtotime('-'.$i.' day'.date( 'Y-m-j G:i:s')))));
@@ -53,15 +51,6 @@ class Statistics_ItemController extends Statistics_AppController
       {
       $key = date($format, strtotime($download->getDate()));
       $arrayDownload[$key]++;
-      $latitude = $download->getIpLocation()->getLatitude();
-      $longitude = $download->getIpLocation()->getLongitude();
-
-      if($latitude || $longitude)
-        {
-        $markers[] = array('latitude' => $latitude,
-                           'longitude' => $longitude,
-                           'date' => $key);
-        }
       }
 
     $jqplotArray = array();
@@ -70,8 +59,77 @@ class Statistics_ItemController extends Statistics_AppController
       $jqplotArray[] = array($key.' 8:00AM', $value);
       }
     $this->view->json['stats']['downloads'] = $jqplotArray;
-    $this->view->markers = $markers;
     $this->view->itemDao = $item;
+    $this->view->json['itemId'] = $item->getKey();
+    $this->view->json['initialStartDate'] = date('m/d/Y', strtotime('-20 days'));
+    $this->view->json['initialEndDate'] = date('m/d/Y');
+    }
+
+  /**
+   * Outputs a json object of and item's download history filtered by the following parameters.
+   * @param itemId The id of the item (key)
+   * @param startdate Start of the date range (date string)
+   * @param enddate End of the date range (date string)
+   * @param limit Limit of the result count (integer)
+   * @return An array with a "download" key, which is a list of tuples with the following data:
+   *   -latitude
+   *   -longitude
+   *   -date
+   */
+  public function filterAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+
+    $item = $this->Item->load($this->_getParam('itemId'));
+    if($this->_getParam('startdate') == '')
+      {
+      $startDate = date('Y-m-d');
+      }
+    else
+      {
+      $startDate = date('Y-m-d', strtotime($this->_getParam('startdate')));
+      }
+    if($this->_getParam('enddate') == '')
+      {
+      $endDate = date('Y-m-d');
+      }
+    else
+      {
+      $endDate = date('Y-m-d', strtotime($this->_getParam('enddate')));
+      }
+    $limit = $this->_getParam('limit');
+
+    if(!isset($limit) || $limit < 0)
+      {
+      $limit = 100;
+      }
+    if(!$item)
+      {
+      throw new Zend_Exception("Item doesn't exist");
+      }
+    if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      throw new Zend_Exception('You do not have read permission on this item');
+      }
+
+    $downloads = $this->Statistics_Download->getDownloads($item, $startDate, $endDate, $limit);
+
+    $markers = array();
+    foreach($downloads as $download)
+      {
+      $date = date('Y-m-d G:i:s', strtotime($download->getDate()));
+      $latitude = $download->getIpLocation()->getLatitude();
+      $longitude = $download->getIpLocation()->getLongitude();
+
+      if($latitude || $longitude)
+        {
+        $markers[] = array('latitude' => $latitude,
+                           'longitude' => $longitude,
+                           'date' => $date);
+        }
+      }
+    echo JsonComponent::encode(array('downloads' => $markers));
     }
 
 }//end class
