@@ -114,7 +114,14 @@ class UploadController extends AppController
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->view->protocol = 'http';
-    $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+    if(!$this->isTestingEnv())
+      {
+      $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+      }
+    else
+      {
+      $this->view->host = 'localhost';
+      }
     $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
     $this->view->allLicenses = $this->License->getAll();
     $this->view->defaultUploadLocation = $this->userSession->Dao->getPrivatefolderId();
@@ -196,7 +203,14 @@ class UploadController extends AppController
       }
     $this->view->allLicenses = $this->License->getAll();
     $this->view->protocol = 'http';
-    $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+    if(!$this->isTestingEnv())
+      {
+      $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+      }
+    else
+      {
+      $this->view->host = 'localhost';
+      }
     $this->view->selectedLicense = $itemRevision ? $itemRevision->getLicense() : Zend_Registry::get('configGlobal')->defaultlicense;
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback(
       'CALLBACK_CORE_GET_REVISIONUPLOAD_EXTRA_HTML', array('item' => $item));
