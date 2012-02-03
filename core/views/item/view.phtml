@@ -16,11 +16,6 @@ PURPOSE.  See the above copyright notices for more information.
 
 <?php
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/item/item.view.js');
-if($this->preview) // module visualize
-  {
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
-  $this->headScript()->appendFile($this->webroot.'/modules/visualize/public/js/main.js');
-  }
 ?>
 <div class="viewMain">
 

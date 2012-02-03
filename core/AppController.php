@@ -140,15 +140,9 @@ class AppController extends MIDAS_GlobalController
             $this->view->needUpgrade = true;
             }
           $errorlogModel = $modelLoad->loadModel('Errorlog');
-          $logs = $errorlogModel->getLog(date('c', strtotime("-24 hour")), date('c'), 'all', 'all');
-          foreach($logs as $key => $l)
-            {
-            if($l->getPriority() == MIDAS_PRIORITY_INFO)
-              {
-              unset($logs[$key]);
-              }
-            }
-          if(count($logs) > 5)
+          $count = $errorlogModel->countSince(date('c', strtotime('-24 hour')), array(MIDAS_PRIORITY_CRITICAL, MIDAS_PRIORITY_WARNING));
+
+          if($count > 5)
             {
             $this->view->highNumberError = true;
             }
