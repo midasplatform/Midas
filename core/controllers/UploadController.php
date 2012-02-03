@@ -197,10 +197,17 @@ class UploadController extends AppController
     $itemRevision = $this->Item->getLastRevision($item);
     $this->view->lastrevision = $itemRevision;
 
-    if($itemRevision != false)
+    // Check if the revision exists and if it does, we send its license ID to
+    // the view. If it does not exist we use our default license
+    if($itemRevision)
       {
       $this->view->selectedLicense = $itemRevision->getLicenseId();
       }
+    else
+      {
+      $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
+      }
+
     $this->view->allLicenses = $this->License->getAll();
     $this->view->protocol = 'http';
     if(!$this->isTestingEnv())
@@ -211,7 +218,7 @@ class UploadController extends AppController
       {
       $this->view->host = 'localhost';
       }
-    $this->view->selectedLicense = $itemRevision ? $itemRevision->getLicense() : Zend_Registry::get('configGlobal')->defaultlicense;
+
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback(
       'CALLBACK_CORE_GET_REVISIONUPLOAD_EXTRA_HTML', array('item' => $item));
     }//end revisionAction
