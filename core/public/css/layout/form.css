@@ -49,6 +49,7 @@ form.genericForm input[type=submit][disabled],form.genericForm input[type=button
 color: grey; text-decoration: none;
 background: #dbdbdb;
 background-image: none;
+cursor: default;
 }
 
 form.genericForm input[type=submit][disabled]:hover,form.genericForm input[type=button][disabled]:hover
@@ -56,6 +57,7 @@ form.genericForm input[type=submit][disabled]:hover,form.genericForm input[type=
 color: grey!important; text-decoration: none;
 background: #dbdbdb!important;
 background-image: none;
+cursor: default;
 }
 
 
@@ -109,7 +111,6 @@ background: #F6F9FE url(images/ui-bg_glass_85_f6f9fe_1x400.png) repeat-x 50% 50%
 border: 1px solid grey;
 color: #2E6E9E;
 font-weight: bold;
-cursor: pointer;
 cursor: pointer;
 display: inline-block;
 margin-right: 0.1em;
