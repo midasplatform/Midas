@@ -82,7 +82,7 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
       $itemRevisionDao->setChanges('Modification Definition File');
       $itemRevisionDao->setUser_id($this->userSession->Dao->getKey());
       $itemRevisionDao->setDate(date('c'));
-      $itemRevisionDao->setLicense(null);
+      $itemRevisionDao->setLicenseId(null);
       $this->Item->addRevision($itemDao, $itemRevisionDao);
 
       foreach($bitstreams as $b)

@@ -271,7 +271,7 @@ class Api_ApiComponent extends AppComponent
           $revision->setChanges('Initial revision');
           $revision->setUser_id($userDao->getKey());
           $revision->setDate(date('c'));
-          $revision->setLicense(null);
+          $revision->setLicenseId(null);
           $itemModel->addRevision($item, $revision);
           }
 
@@ -374,7 +374,7 @@ class Api_ApiComponent extends AppComponent
           $revision->setChanges('Initial revision');
           $revision->setUser_id($userDao->getKey());
           $revision->setDate(date('c'));
-          $revision->setLicense(null);
+          $revision->setLicenseId(null);
           $itemModel->addRevision($item, $revision);
           }
         }
@@ -1291,7 +1291,7 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('Invalid revision id', MIDAS_INTERNAL_ERROR);
       }
     $itemModel = $modelLoader->loadModel('Item');
-    $item = $itemModel->load($revision->getItemId());
+    $item = $revision->getItem();
     if(!$item || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
       {
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
@@ -1302,6 +1302,11 @@ class Api_ApiComponent extends AppComponent
       return;
       }
     $offset = array_key_exists('offset', $args) ? $args['offset'] : 0;
+
+    if($offset == 0)
+      {
+      $itemModel->incrementDownloadCount($item);
+      }
 
     $componentLoader = new MIDAS_ComponentLoader();
     $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');

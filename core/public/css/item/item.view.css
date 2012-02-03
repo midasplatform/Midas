@@ -1,6 +1,3 @@
-div#revisionContent{
-  display:none;
-}
 div.viewAction{
   display:block!important;
 }
@@ -9,13 +6,12 @@ div.viewInfo{
   display:block!important;
 }
 
-table#browseTable{
+table.bitstreamList{
   display: table!important;
 }
 
 table#metadataTable {
   display: table!important;
-  width: 580px;
   table-layout: fixed;
 }
 
@@ -38,12 +34,8 @@ div.genericInfo .genericSubtitle {
   font-size: 10px;
 }
 
-#browseTable {
-  margin-top:0px;
-}
-
 .itemStats {
-	float: right;
+  float: right;
   font-size: 10px;
   color: #777777;
   margin-right: 10px;
@@ -81,6 +73,64 @@ img.closeVisuButton{
   float:right;
 }
 
-div.manageMetadata{
+span.manageMetadata{
   float:right;
+  display: inline;
+}
+
+#revisionList h3 a {
+  text-decoration: none;
+}
+
+#revisionList a img {
+  float: left;
+  margin-right: 2px;
+}
+
+#parentList a img {
+  position: relative;
+  top: 3px;
+}
+
+#licenseDiv {
+
+}
+
+div.itemViewMainSection {
+  border-top: 1px solid #D7D7D7;
+  margin-bottom: 14px;
+}
+
+div.itemViewMainSection h4 {
+  color: #999;
+  font-size: 11px;
+  text-shadow: white 0px 1px 1px;
+  text-transform: uppercase;
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+}
+
+table.bitstreamList, table.metadataList {
+  width: 100%;
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+
+table.bitstreamList th, table.metadataList th {
+  border: 1px solid gray;
+  background-color: #D0D0F6;
+}
+
+table.bitstreamList td, table.metadataList td {
+  border: 1px solid #B5B5B5;
+}
+
+div.viewHeader{
+  padding: 0px 0px 4px 15px!important;
+}
+
+div.revisionEntry {
+  padding-left: 13px !important;
+  padding-right: 13px !important;
+  border-top: 1px solid #A7A7A7 !important;
 }

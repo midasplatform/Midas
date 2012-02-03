@@ -23,18 +23,19 @@ require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 class Batchmake_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'batchmake';
-  public $_components = array('Utility', 'Internationalization');     
-  public $_moduleComponents=array('KWBatchmake','Api'); 
-    
+  public $_components = array('Utility', 'Internationalization');
+  public $_moduleComponents=array('KWBatchmake','Api');
+
   /** init notification process*/
   public function init()
     {
-    $this->enableWebAPI($this->moduleName);  
+    $this->enableWebAPI($this->moduleName);
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
-    $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLink');
+    // hiding left link Batchmake icon, this isn't necessary to show
+    // $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLink');
     }//end init
 
-    
+
   /**
    *@method getDashboard
    * will generate information about this module to display on the Dashboard
@@ -42,7 +43,7 @@ class Batchmake_Notification extends ApiEnabled_Notification
    * the module is correct or not, and value being a 1/0 for the same info.
    */
   public function getDashboard()
-    {    
+    {
     $return = array();
     if($this->ModuleComponent->KWBatchmake->isConfigCorrect())
       {
@@ -53,9 +54,9 @@ class Batchmake_Notification extends ApiEnabled_Notification
       $return[$this->Component->Internationalization->translate(MIDAS_BATCHMAKE_CONFIG_ERROR)] = 0;
       }
     return $return;
-    } 
+    }
 
-    
+
   /**
    *@method getLeftLink
    * will generate a link for this module to be displayed in the main view.
@@ -68,8 +69,8 @@ class Batchmake_Notification extends ApiEnabled_Notification
     $moduleWebroot = $baseURL . '/' . MIDAS_BATCHMAKE_MODULE;
     return array(ucfirst(MIDAS_BATCHMAKE_MODULE) => array($moduleWebroot . '/index',  $baseURL . '/modules/batchmake/public/images/cmake.png'));
     }
-        
+
   } //end class
-    
-    
+
+
 ?>

@@ -21,7 +21,8 @@
 /** Upload Controller */
 class UploadController extends AppController
   {
-  public $_models = array('Folderpolicygroup', 'Folderpolicyuser', 'Assetstore', 'User', 'Item', 'ItemRevision', 'Folder', 'Itempolicyuser', 'Itempolicygroup', 'Group', 'Feed', "Feedpolicygroup", "Feedpolicyuser", 'Bitstream', 'Assetstore');
+  public $_models = array('Folderpolicygroup', 'Folderpolicyuser', 'Assetstore', 'User', 'Item', 'ItemRevision', 'Folder', 'Itempolicyuser',
+                          'Itempolicygroup', 'Group', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser', 'Bitstream', 'Assetstore', 'License');
   public $_daos = array('Assetstore', 'User', 'Item', 'ItemRevision', 'Bitstream', 'Folder');
   public $_components = array('Httpupload', 'Upload');
   public $_forms = array('Upload');
@@ -80,6 +81,7 @@ class UploadController extends AppController
     $this->view->form = $this->getFormAsArray($this->Form->Upload->createUploadLinkForm());
     $this->userSession->uploaded = array();
     $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
+    $this->view->allLicenses = $this->License->getAll();
 
     $this->view->defaultUploadLocation = $this->userSession->Dao->getPrivatefolderId();
     $this->view->defaultUploadLocationText = $this->t('My Private Folder');
@@ -120,6 +122,7 @@ class UploadController extends AppController
       $this->view->host = 'localhost';
       }
     $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
+    $this->view->allLicenses = $this->License->getAll();
     $this->view->defaultUploadLocation = $this->userSession->Dao->getPrivatefolderId();
     $this->view->defaultUploadLocationText = $this->t('My Private Folder');
 
@@ -192,6 +195,11 @@ class UploadController extends AppController
     $this->view->item = $item;
     $itemRevision = $this->Item->getLastRevision($item);
     $this->view->lastrevision = $itemRevision;
+    if($itemRevision != false)
+      {
+      $this->view->selectedLicense = $itemRevision->getLicenseId();
+      }
+    $this->view->allLicenses = $this->License->getAll();
     $this->view->protocol = 'http';
     if(!$this->isTestingEnv())
       {
