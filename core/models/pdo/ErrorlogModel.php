@@ -62,5 +62,25 @@ class ErrorlogModel extends ErrorlogModelBase
     return $result;
     }//getLog
 
+  /**
+   * Count the number of log entries since a certain date
+   * @param startDate The start date
+   * @param priorities Array of priorities to filter by.  If null, selects all
+   */
+  function countSince($startDate, $priorities = null)
+    {
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from(array('e' => 'errorlog'), array('count(*)'))
+                ->where('datetime >= ?', $startDate);
+
+    if($priorities != null)
+      {
+      $sql->where('priority IN (?)', $priorities);
+      }
+
+    $row = $this->database->fetchRow($sql);
+    return $row['count(*)'];
+    }
 } // end class
 ?>
