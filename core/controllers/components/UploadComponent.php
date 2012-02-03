@@ -161,12 +161,12 @@ class UploadComponent extends AppComponent
     $feedpolicyuserModel->createPolicy($userDao, $feed, MIDAS_POLICY_ADMIN);
     $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
 
-    Zend_Loader::loadClass("ItemRevisionDao", BASE_PATH . '/core/models/dao');
+    Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH . '/core/models/dao');
     $itemRevisionDao = new ItemRevisionDao;
     $itemRevisionDao->setChanges('Initial revision');
     $itemRevisionDao->setUser_id($userDao->getKey());
     $itemRevisionDao->setDate(date('c'));
-    $itemRevisionDao->setLicense(null);
+    $itemRevisionDao->setLicenseId(null);
     $itemModel->addRevision($item, $itemRevisionDao);
 
     // Add bitstreams to the revision
@@ -251,7 +251,7 @@ class UploadComponent extends AppComponent
     $itemRevisionDao->setChanges('Initial revision');
     $itemRevisionDao->setUser_id($userDao->getKey());
     $itemRevisionDao->setDate(date('c'));
-    $itemRevisionDao->setLicense($license);
+    $itemRevisionDao->setLicenseId($license);
     $itemModel->addRevision($item, $itemRevisionDao);
 
     // Add bitstreams to the revision
@@ -347,7 +347,7 @@ class UploadComponent extends AppComponent
       $itemRevisionDao->setChanges($changes);
       $itemRevisionDao->setUser_id($userDao->getKey());
       $itemRevisionDao->setDate(date('c'));
-      $itemRevisionDao->setLicense($license);
+      $itemRevisionDao->setLicenseId($license);
       $itemModel->addRevision($item, $itemRevisionDao);
 
       $feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_REVISION, $itemRevisionDao);
@@ -371,7 +371,7 @@ class UploadComponent extends AppComponent
     else
       {
       $itemRevisionDao->setChanges($changes);
-      $itemRevisionDao->setLicense($license);
+      $itemRevisionDao->setLicenseId($license);
       $itemRevisionModel->save($itemRevisionDao);
       }
 
