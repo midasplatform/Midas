@@ -1,0 +1,62 @@
+div.viewSideBar input.globalButton{
+  margin-left: 0px!important;
+}
+
+div.viewWrapper {
+  padding-right: 40px !important;
+}
+
+input.dateSelect {
+  background: white url(../../images/calendar.png) no-repeat scroll 2px 0px;
+  border: 1px solid grey;
+  padding-left: 20px;
+}
+
+#downloadResultLimit {
+  width: 80px;
+  border: 1px solid grey;
+}
+
+#logFilterForm {
+  padding-bottom: 5px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #a7a7a7;
+}
+
+input.filterButton {
+  background: #F6F9FE;
+  border: 1px solid grey;
+  color: #2E6E9E;
+  font-weight: bold;
+  cursor: pointer;
+  margin-right: 0.1em;
+  overflow: visible;
+  position: relative;
+  text-align: center;
+  text-decoration: none !important;
+  zoom: 1;
+  -webkit-box-align: center;
+  -webkit-box-sizing: border-box;
+  line-height: 1.4;
+}
+
+input.filterButton:hover {
+  color: #1d5987;
+  text-decoration: none;
+  background: #cbd9e3;
+  background-image: none;
+}
+
+input.filterButton[disabled] {
+  color: grey;
+  text-decoration: none;
+  background: #dbdbdb;
+  background-image: none;
+  cursor: default;
+}
+
+img#loadingStatistics {
+  display: none;
+  margin-left: 10px;
+}
+

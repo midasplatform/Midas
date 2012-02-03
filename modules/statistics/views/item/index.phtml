@@ -11,16 +11,18 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 $this->headScript()->appendFile('http://maps.googleapis.com/maps/api/js?sensor=false');
-$this->headScript()->appendFile($this->moduleWebroot.'/public/js/item/index.index.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/item/item.index.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jquery.jqplot.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jqplot/jqplot.dateAxisRenderer.min.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jqplot/jqplot.pieRenderer.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.spinbox.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 ?>
 <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/excanvas.min.js"></script><![endif]-->
 <link rel="stylesheet" type="text/css" href="<?php echo $this->moduleWebroot?>/public/css/jquery.jqplot.css" />
-
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/item/index.index.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/item/item.index.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.spinbox.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/index/index.index.css" />
 <div class="viewMain">
   <div class ="genericWrapperTopRight">
@@ -41,25 +43,24 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jqplot/jqplot.p
       <li><a href="#tabs-chart">Daily Totals</a></li>
     </ul>
     <div id="tabs-map">
-      <div id="map_canvas" style="width:800px; height:450px;"></div>
+      <div id="logFilterForm">
+        <form id="filterForm" method="post" action="<?php echo $this->webroot?>/statistics/item/filter">
+          <label for="startdate">From</label>
+          <input class="dateSelect" type="text" id="startdate" name="startdate"/>
+          <label for="enddate">to</label>
+          <input class="dateSelect" type="text" id="enddate" name="enddate"/>
+          <label for="downloadResultLimit">Result limit</label>
+          <input qtip="Limit the maximum number of downloads to show on the map" name="limit" id="downloadResultLimit" type="text" value="100" />
+          <input class="filterButton" type='submit' value='Apply Filter' />
+          <img id="loadingStatistics" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+          <input type="hidden" name="itemId" value="<?php echo $this->itemDao->getKey()?>" />
+        </form>
+      </div>
+      <div id="map_canvas" style="width:800px; height:470px;"></div>
+      <span id="filteredCount"></span> downloads displayed
     </div>
     <div id="tabs-chart">
       <div id="chartDownloads" style="height:450px; width:800px;"></div>
     </div>
   </div>
-
-  <!-- START! -->
-  <script type="text/javascript">
-  function placeDownloadPins(theMap)
-    {
-    <?php
-    foreach($this->markers as $marker)
-      {
-      echo 'var myLatlng = new google.maps.LatLng('.$marker['latitude'].', '.$marker['longitude'].');';
-      echo 'new google.maps.Marker({ position: myLatlng, map: theMap, title: "'.$marker['date'].'"});';
-      }
-    ?>
-    }
-  </script>
-<!-- END -->
 </div>
