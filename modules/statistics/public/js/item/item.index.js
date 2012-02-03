@@ -106,6 +106,7 @@ $(document).ready(function() {
         },
         success: midas.statistics.populateMap
     });
+
     $('#startdate').val(json.initialStartDate);
     $('#enddate').val(json.initialEndDate);
     $('#filterForm').submit();

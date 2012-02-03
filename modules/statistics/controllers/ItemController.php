@@ -38,6 +38,10 @@ class Statistics_ItemController extends Statistics_AppController
       throw new Zend_Exception('You do not have read permission on this item');
       }
 
+    $header = '<img style="position: relative; top: 3px" alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_bar.png" />';
+    $header .= ' Item Statistics: ';
+    $header .= '<a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
+    $this->view->header = $header;
     $downloads = $this->Statistics_Download->getDownloads($item, date('c', strtotime('-20 day'.date( 'Y-m-j G:i:s'))), date('c'));
 
     $format = 'Y-m-j';
@@ -61,7 +65,7 @@ class Statistics_ItemController extends Statistics_AppController
     $this->view->json['stats']['downloads'] = $jqplotArray;
     $this->view->itemDao = $item;
     $this->view->json['itemId'] = $item->getKey();
-    $this->view->json['initialStartDate'] = date('m/d/Y', strtotime('-20 days'));
+    $this->view->json['initialStartDate'] = date('m/d/Y', strtotime('-1 month'));
     $this->view->json['initialEndDate'] = date('m/d/Y');
     }
 
