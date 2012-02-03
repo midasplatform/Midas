@@ -473,7 +473,9 @@ class CommunityController extends AppController
         $invitation = $this->CommunityInvitation->createInvitation($communityDao, $this->userSession->Dao, $userDao);
         if($invitation == false)
           {
-          echo JsonComponent::encode(array(false, $this->t('Error')));
+          echo JsonComponent::encode(array(false, $userDao->getFullName() .
+                                           $this->t(' is already invited to' .
+                                                    ' this community.')));
           }
         else
           {
