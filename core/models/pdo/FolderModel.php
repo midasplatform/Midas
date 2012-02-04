@@ -411,6 +411,11 @@ class FolderModel extends FolderModelBase
 
     $tmpParent = $parent->getParent();
     $currentParent = $folder->getParent();
+    if($currentParent->getKey() == $parent->getKey())
+      {
+      return; //no-op
+      }
+
     while($tmpParent != false)
       {
       if($tmpParent->getKey() == $folder->getKey())
