@@ -37,7 +37,7 @@ midas.genericCallbackCheckboxes = function(node) {
     arraySelected['items'] = [];
     var folders = '';
     var items = '';
-    node.find(".treeCheckbox:checked").each( 
+    node.find(".treeCheckbox:checked").each(
         function() {
             if($(this).parents('tr').attr('type')!='item') {
                 arraySelected['folders'].push($(this).attr('element'));
@@ -126,7 +126,7 @@ midas.removeItem = function (id) {
     html+='<br/>';
     html+='<input style="margin-left:140px;" class="globalButton deleteFolderYes" element="'+id+'" type="button" value="'+json.global.Yes+'"/>';
     html+='<input style="margin-left:50px;" class="globalButton deleteFolderNo" type="button" value="'+json.global.No+'"/>';
-    
+
     showDialogWithContent(json.browse['delete'],html,false);
 
     $('input.deleteFolderYes').unbind('click').click(
@@ -285,16 +285,16 @@ midas.editFolder = function (id) {
 midas.moveFolder = function (id) {
   loadDialog("moveFolder"+id,"/browse/movecopy?move=true&folders="+id);
   showDialog(json.browse.move);
-  } 
-  
+  }
+
 midas.moveItem = function (itemId, fromFolderId) {
   loadDialog("moveItem"+itemId,"/browse/movecopy?move=true&items="+itemId+"&from="+fromFolderId);
   showDialog(json.browse.move);
-  }  
+  }
 
 midas.parentOf = function (node) {
     var classNames = node[0].className.split(' ');
-    
+
     for(key in classNames) {
         if(classNames[key].match("child-of-")) {
             return $("#" + classNames[key].substring(9));
@@ -385,7 +385,7 @@ midas.createAction = function (node) {
                         effect: true // Disable positioning animation
                     },
                     show: {
-                        modal: { 
+                        modal: {
                             on: true,
                             blur: false
                         },
@@ -475,44 +475,6 @@ midas.createInfo = function (jsonContent) {
     if(arrayElement['type']=='community'&&arrayElement['privacy']==2) {
         html+='<h4>'+arrayElement.translation.Private+'</h4>';
     }
-
-
-  if(arrayElement['metadata']!=undefined&&arrayElement['metadata'].length > 0)
-    {
-    html+='<h1>'+json.browse.metadata+'</h1>';
-    html+='<table style="width:230px">';
-    $.each(arrayElement['metadata'], function(key, value) {
-        if(key > 10){return;}
-        if(value.value == ''){return;}
-        html+='  <tr>';
-        html+='    <td>'+value.element+' - '+value.qualifier+':';
-        var qualifierText = value.element+' - '+value.qualifier+':';
-        var valueElement = value.value;
-        if( ((qualifierText.length) + (valueElement.length)) <= 31 )
-          {
-          html+= "<span style='font-style: italic ;padding-left: 5px;font-size: 11px;float:right;'>"+value.value+"<span>";
-          }
-        html+='  </td>';
-        html+='  </tr>';
-        if( ((qualifierText.length) + (valueElement.length)) > 31 )
-          {
-            html+='  <tr>';
-            html+='    <td style="float:right;font-style: italic ;padding-left: 5px;font-size: 11px;"> '+midas.cutName(value.value, 40)+'</td>';
-            html+='  </tr>';
-          }
-
-
-        if(key == 10)
-          {
-          html+='  <tr>';
-          html+='    <td>...</td>';
-          html+='  </tr>';
-          return;
-          }
-    });
-    html+='</table>';
-    }
-
 
   if(arrayElement['thumbnail']!=undefined&&arrayElement['thumbnail']!='')
     {
