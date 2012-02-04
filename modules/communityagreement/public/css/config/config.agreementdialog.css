@@ -23,6 +23,10 @@ div.licenseDisplay {
   padding-top: 8px;
   padding-bottom: 8px;
   margin-bottom: 8px;
+  max-height: 180px;
+  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 div.agreementWarning img {
