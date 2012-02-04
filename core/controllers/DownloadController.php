@@ -170,7 +170,10 @@ class DownloadController extends AppController
         $zip = new ZipStream($name.'.zip');
         foreach($bitstreams as $bitstream)
           {
-          $zip->add_file_from_path($bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
+          $filename = $bitstream->getName();
+          $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
+          Zend_Registry::get('dbAdapter')->closeConnection();
+          $zip->add_file_from_path($filename, $path);
           }
         $zip->finish();
         exit();
@@ -268,7 +271,10 @@ class DownloadController extends AppController
           {
           $currPath = $path;
           }
-        $zip->add_file_from_path($currPath.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
+        $filename = $currPath.'/'.$bitstream->getName();
+        $fullpath = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
+        Zend_Registry::get('dbAdapter')->closeConnection();
+        $zip->add_file_from_path($filename, $fullpath);
         }
       }
     foreach($folders as $folder)
@@ -304,7 +310,10 @@ class DownloadController extends AppController
                 {
                 $currPath = $path;
                 }
-              $zip->add_file_from_path($currPath.'/'.$bitstream->getName(), $bitstream->getAssetstore()->getPath().'/'. $bitstream->getPath());
+              $filename = $currPath.'/'.$bitstream->getName();
+              $fullpath = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
+              Zend_Registry::get('dbAdapter')->closeConnection();
+              $zip->add_file_from_path($filename, $fullpath);
               }
             }
           }
