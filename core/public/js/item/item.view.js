@@ -162,6 +162,8 @@ $(document).ready(function() {
         collapsible: true,
         active: false
     });
+    $('#revisionList').show();
+    $('#historyLoading').hide();
 
     $('a.licenseLink').click(function() {
         var licenseId = $(this).attr('element');

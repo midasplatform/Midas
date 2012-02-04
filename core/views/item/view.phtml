@@ -95,7 +95,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/item/item.view.js
 
   <div class="itemViewMainSection">
     <h4>HISTORY</h4>
-    <div id="revisionList">
+    <img id="historyLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+    <div id="revisionList" style="display:none;">
       <?php
       foreach($this->itemDao->revisions as $revision)
         {
