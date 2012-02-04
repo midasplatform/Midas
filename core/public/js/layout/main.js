@@ -659,12 +659,16 @@ function sliceFileName(name,nchar)
             my: 'top right', // Not really important...
             at: (target.length ? 'bottom' : 'top') + ' right', // If target is window use 'top right' instead of 'bottom right'
             target: target.length ? target : $(document.body), // Use our target declared above
-            adjust: {y: 5} // Add some vertical spacing
+            adjust: { // show at the top of the visible page, or just below header
+                y: Math.max($(window).scrollTop() + 10, $('div.Wrapper').position().top)
+            }
          },
          show: {
             event: false, // Don't show it on a regular event
             ready: true, // Show it when ready (rendered)
-            effect: function() {$(this).stop(0,1).fadeIn(400);}, // Matches the hide effect
+            effect: function() {
+                $(this).stop(0,1).fadeIn(400);
+            }, // Matches the hide effect
             delay: 0, // Needed to prevent positioning issues
 
             // Custom option for use with the .get()/.set() API, awesome!
@@ -673,18 +677,18 @@ function sliceFileName(name,nchar)
          hide: {
             event: false, // Don't hide it on a regular event
             effect: function(api) {
-               // Do a regular fadeOut, but add some spice!
-               $(this).stop(0,1).fadeOut(400).queue(function() {
-                  // Destroy this tooltip after fading out
-                  api.destroy();
+                // Do a regular fadeOut, but add some spice!
+                $(this).stop(0,1).fadeOut(400).queue(function() {
+                    // Destroy this tooltip after fading out
+                    api.destroy();
 
-                  // Update positions
-                  updateGrowls();
+                    // Update positions
+                    updateGrowls();
                });
             }
          },
          style: {
-            classes: 'jgrowl ui-tooltip-dark ui-tooltip-rounded', // Some nice visual classes
+            classes: 'jgrowl ui-tooltip-dark ui-tooltip-rounded',
             tip: false // No tips for this one (optional ofcourse)
          },
          events: {
