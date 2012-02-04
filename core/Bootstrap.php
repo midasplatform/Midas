@@ -42,7 +42,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
    */
   protected function _initConfig()
     {
-
     // init language
     $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
     if(isset($_COOKIE['lang']))
