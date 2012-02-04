@@ -109,7 +109,7 @@ midas.removeNodeFromTree = function (node, recursive) {
     node.remove();
     // mark ancestor nodes
     for (var curNode in ancestorNodes) {
-        var jCurNode = $(curNode);
+        var jCurNode = $(ancestorNodes[curNode]);
         jCurNode.find('span.elementCount').remove();
         jCurNode.find('span.elementSize').after("<img class='folderLoading'  element='"+jCurNode.attr('element')+"' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/>");
         jCurNode.find('span.elementSize').remove();
