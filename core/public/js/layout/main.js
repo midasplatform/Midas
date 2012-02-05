@@ -365,10 +365,24 @@ $(function() {
 
  // Javascript uilts ----------------------------------
 
-// show a jgrowl notice
-function createNotice(text,delay)
-{
-    createGrowl(false, text, delay);
+/**
+ * Show a jGrowl notice in the top right of the visible screen.
+ * @param text The text to display
+ * @param delay Time in milliseconds to display the notice
+ * @param state (optional) Set to either "error" or "warning" to display special state
+ */
+function createNotice(text, delay, state) {
+    var extraClasses = '';
+    if(state == 'error') {
+        extraClasses += ' growlError';
+    }
+    else if(state == 'warning') {
+        extraClasses += ' growlWarning';
+    }
+    else { // state is ok
+        extraClasses += ' growlOk';
+    }
+    createGrowl(false, text, delay, extraClasses);
 }
 
 // asks the user to authenticate
@@ -645,25 +659,25 @@ function sliceFileName(name,nchar)
 
 
 // Setup jgrowl --------------------------------------
- window.createGrowl = function(persistent, text, delay) {
-      // Use the last visible jGrowl qtip as our positioning target
-      var target = $('.qtip.jgrowl:visible:last');
+ window.createGrowl = function(persistent, text, delay, extraClasses) {
+    // Use the last visible jGrowl qtip as our positioning target
+    var target = $('.qtip.jgrowl:visible:last');
 
-      // Create your jGrowl qTip...
-      $(document.body).qtip({
-         // Any content config you want here really.... go wild!
-         content: {
-            text: text
-         },
-         position: {
+    // Create your jGrowl qTip...
+    $(document.body).qtip({
+        // Any content config you want here really.... go wild!
+        content: {
+            text: '<span class="'+extraClasses+'">'+text+'</span>'
+        },
+        position: {
             my: 'top right', // Not really important...
             at: (target.length ? 'bottom' : 'top') + ' right', // If target is window use 'top right' instead of 'bottom right'
             target: target.length ? target : $(document.body), // Use our target declared above
             adjust: { // show at the top of the visible page, or just below header
                 y: Math.max($(window).scrollTop() + 10, $('div.Wrapper').position().top)
             }
-         },
-         show: {
+        },
+        show: {
             event: false, // Don't show it on a regular event
             ready: true, // Show it when ready (rendered)
             effect: function() {
@@ -673,8 +687,8 @@ function sliceFileName(name,nchar)
 
             // Custom option for use with the .get()/.set() API, awesome!
             persistent: persistent
-         },
-         hide: {
+        },
+        hide: {
             event: false, // Don't hide it on a regular event
             effect: function(api) {
                 // Do a regular fadeOut, but add some spice!
@@ -684,22 +698,22 @@ function sliceFileName(name,nchar)
 
                     // Update positions
                     updateGrowls();
-               });
+                });
             }
-         },
-         style: {
+        },
+        style: {
             classes: 'jgrowl ui-tooltip-dark ui-tooltip-rounded',
             tip: false // No tips for this one (optional ofcourse)
-         },
-         events: {
+        },
+        events: {
             render: function(event, api) {
-               // Trigger the timer (below) on render
-               timerGrowl.call(api.elements.tooltip, event, delay);
+                // Trigger the timer (below) on render
+                timerGrowl.call(api.elements.tooltip, event, delay);
             }
-         }
-      })
-      .removeData('qtip');
-   };
+        }
+    })
+    .removeData('qtip');
+};
 
    // Make it a window property see we can call it outside via updateGrowls() at any point
    window.updateGrowls = function() {
@@ -733,9 +747,9 @@ function sliceFileName(name,nchar)
  $(document).delegate('.qtip.jgrowl', 'mouseover mouseout', timerGrowl);
 
 
- // deprecated
+ // deprecated: use createNotice
 function createNotive(text, delay)
 {
-  createNotice(text,delay);
+  createNotice(text,delay, '');
 }
 

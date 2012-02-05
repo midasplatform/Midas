@@ -663,3 +663,18 @@ Starting Guide
 #dialogStartingGuide h4{
   margin-bottom: 2px;
 }
+
+.growlError {
+  background: url(../../images/icons/nok.png) no-repeat;
+  padding-left: 18px;
+}
+
+.growlWarning {
+  background: url(../../images/icons/warning.png) no-repeat;
+  padding-left: 18px;
+}
+
+.growlOk {
+  background: url(../../images/icons/ok.png) no-repeat;
+  padding-left: 18px;
+}
