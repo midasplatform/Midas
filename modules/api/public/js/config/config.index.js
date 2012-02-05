@@ -24,7 +24,7 @@ function successConfig(responseText, statusText, xhr, form)
     }
   if(jsonResponse[0])
     {
-      createNotive(jsonResponse[1],4000);
+      createNotice(jsonResponse[1],4000);
     }
   else
     {
