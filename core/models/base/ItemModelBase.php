@@ -247,7 +247,7 @@ abstract class ItemModelBase extends AppModel
       $dupItemRevision->setDate($revision->getDate());
       $dupItemRevision->setChanges($revision->getChanges());
       $dupItemRevision->setUserId($userDao->getUserId());
-      $dupItemRevision->setLicense($revision->getLicense());
+      $dupItemRevision->setLicenseId($revision->getLicenseId());
       $ItemRevisionModel->save($dupItemRevision);
       // duplicate metadata value
       $metadatavalues = array();
