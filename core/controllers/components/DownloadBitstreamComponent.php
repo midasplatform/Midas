@@ -127,6 +127,9 @@ class DownloadBitstreamComponent extends AppComponent
       }
     set_time_limit(0);
 
+    //close the database connection so we don't get too many connections problems
+    Zend_Registry::get('dbAdapter')->closeConnection();
+
     //kill the whole ob stack (Zend uses double nested output buffers)
     while(!$this->testingmode && ob_get_level() > 0)
       {
