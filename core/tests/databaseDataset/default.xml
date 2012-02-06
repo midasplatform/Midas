@@ -37,6 +37,11 @@
     description="Description Folder 3" left_indice="1009" right_indice="1010"
     parent_id="1003" />
 
+  <!-- Admin's folders -->
+  <folder folder_id="1006" name="user_3" description="" parent_id="-1" left_indice="1" right_indice="2" uuid="123890231890" />
+  <folder folder_id="1007" name="Public" description="" parent_id="1006" left_indice="2" right_indice="3" uuid="123890231891" />
+  <folder folder_id="1008" name="Private" description="" parent_id="1007" left_indice="3" right_indice="4" uuid="123890231892" />
+
   <group group_id="3000" community_id="2000" name="Community test User 1 Admin" />
   <group group_id="3001" community_id="2000"
     name="Community test User 1 Moderator" />
@@ -54,7 +59,8 @@
   <folderpolicygroup folder_id="1001" group_id="0" policy="0" />
 <!-- To test admin user capabilities -->
   <user user_id="3" firstname="Admin" lastname="Admin"
-    email="admin@admin.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" admin="1" />
+    email="admin@admin.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" admin="1"
+    folder_id="1006" publicfolder_id="1007" privatefolder_id="1008"/>
 
   <user2group group_id="3000" user_id="1" />
   <user2group group_id="3002" user_id="1" />
@@ -73,11 +79,11 @@
   <itempolicyuser item_id="2" user_id="1" policy='2' />
   <item2folder item_id="2" folder_id='1001' />
   <item item_id="3" name="name 3" description="Description 3" type="3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72752' />
-  <bitstream bitstream_id="1" itemrevision_id="3" name="foo.png" mimetype="image/png" sizebytes="64" checksum="f283bc88b24491ba85c65ba960642753"
-    path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="1" date="2011-01-27 12:09:02" />
-
   <itemrevision itemrevision_id="3" item_id="1" revision="2"
     date="2011-01-27 12:09:02" user_id='1' changes="Description 1" />
+
+  <bitstream bitstream_id="1" itemrevision_id="3" name="foo.png" mimetype="image/png" sizebytes="64" checksum="f283bc88b24491ba85c65ba960642753"
+    path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="1" date="2011-01-27 12:09:02" />
 
   <!-- MIDAS_FEED_CREATE_COMMUNITY -->
   <feed feed_id="1" date="2011-01-27 12:09:02" user_id='1' type="0"
