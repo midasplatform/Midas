@@ -133,9 +133,12 @@ class BrowseController extends AppController
             {
             throw new Zend_Exception("Unable to load move from folder");
             }
-          $this->Folder->addItem($destinationFolder, $item);
-          $this->Item->copyParentPolicies($item, $destinationFolder);
-          $this->Folder->removeItem($fromFolder, $item);
+          if($destinationFolder->getKey() != $fromFolder->getKey())
+            {
+            $this->Folder->addItem($destinationFolder, $item);
+            $this->Item->copyParentPolicies($item, $destinationFolder);
+            $this->Folder->removeItem($fromFolder, $item);
+            }
           }
         }
       // Drag-and-drop actions
