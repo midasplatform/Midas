@@ -135,6 +135,7 @@ div.viewAction hr, div.genericAction hr{
 .jgrowl{
   min-width: 300px!important;
   min-height: 70px!important;
+  z-index: 15102!important;
 }
 
 .jgrowl div{
