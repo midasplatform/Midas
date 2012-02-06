@@ -104,10 +104,11 @@ class ItemModelTest extends DatabaseTestCase
     // Make sure revisions were copied correctly
     $oldRevs = $item1->getRevisions();
     $newRevs = $duplicate->getRevisions();
-    $this->assertTrue(count($oldRevs) > 0);
-    $this->assertEquals(count($oldRevs), count($newRevs));
+    $rcount = count($oldRevs);
+    $this->assertTrue($rcount > 0);
+    $this->assertEquals($rcount, count($newRevs));
 
-    for($i = 0; $i < count($oldRevs); $i++)
+    for($i = 0; $i < $rcount; $i++)
       {
       $this->assertNotEquals($oldRevs[$i]->getKey(), $newRevs[$i]->getKey());
       $this->assertNotEquals($oldRevs[$i]->getUuid(), $newRevs[$i]->getUuid());
@@ -120,8 +121,9 @@ class ItemModelTest extends DatabaseTestCase
       // Make sure the bitstream records are duplicated
       $oldBitstreams = $oldRevs[$i]->getBitstreams();
       $newBitstreams = $newRevs[$i]->getBitstreams();
-      $this->assertEquals(count($oldBitstreams), count($newBitstreams));
-      for($b = 0; $b < count($oldBitstreams); $b++)
+      $bcount = count($oldBitstreams);
+      $this->assertEquals($bcount, count($newBitstreams));
+      for($b = 0; $b < $bcount; $b++)
         {
         $this->assertNotEquals($oldBitstreams[$b]->getKey(), $newBitstreams[$b]->getKey());
         $this->assertNotEquals($oldBitstreams[$b]->getItemrevisionId(), $newBitstreams[$b]->getItemrevisionId());
