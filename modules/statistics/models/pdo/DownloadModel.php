@@ -51,6 +51,29 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
     return $result;
     }
 
+  /** Return only downloads that have been successfully geolocated */
+  function getLocatedDownloads($item, $startDate, $endDate, $limit = 99999)
+    {
+    $result = array();
+    $sql = $this->database->select()
+            ->setIntegrityCheck(false)
+            ->from(array('d' => 'statistics_download'))
+            ->joinLeft(array('ipl' => 'statistics_ip_location'), 'd.ip_location_id = ipl.ip_location_id')
+            ->where('date >= ?', $startDate)
+            ->where('date <= ?', $endDate)
+            ->where('item_id = ?', $item->getKey())
+            ->where('latitude != 0')
+            ->where('latitude != ?', '')
+            ->order('date DESC')
+            ->limit($limit);
+    $rowset = $this->database->fetchAll($sql);
+    foreach($rowset as $keyRow => $row)
+      {
+      $result[] = $this->initDao('Download', $row, 'statistics');
+      }
+    return $result;
+    }
+
   /**
    * Return a list of downloads that have not yet had geolocation run on them
    */
