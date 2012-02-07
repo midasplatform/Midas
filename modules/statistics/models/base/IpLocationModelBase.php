@@ -77,13 +77,13 @@ abstract class Statistics_IpLocationModelBase extends Statistics_AppModel
           else
             {
             $this->save($location);
-            throw new Zend_Exception('IpInfoDb lookup failed ('.$url.'): '.$resp);
+            continue;
             }
           }
         else
           {
           $this->save($location);
-          throw new Zend_Exception('IpInfoDb lookup failed ('.$url.'): empty response');
+          continue;
           }
         }
       $this->save($location);
