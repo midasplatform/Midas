@@ -44,7 +44,7 @@ function successCreateFolder(responseText, statusText, xhr, form)
         {
           node.reload();
         }
-      // the new folder is a top level folder  
+      // The new folder is a top level folder  
       else
         {
           var newNodeId = '';
