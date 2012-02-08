@@ -38,9 +38,10 @@ class Statistics_ItemController extends Statistics_AppController
       throw new Zend_Exception('You do not have read permission on this item');
       }
 
-    $header = '<img style="position: relative; top: 3px" alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_bar.png" />';
-    $header .= ' Item Statistics: ';
-    $header .= '<a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
+    $header = '<img style="position: relative; top: 3px; margin-left: -10px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_bar.png" />';
+    $header .= ' Statistics: ';
+    $header .= '<a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a> ';
+    $header .= '<span class="headerSmall">['.$item->getDownload().' downloads, '.$item->getView().' views]</span>';
     $this->view->header = $header;
     $downloads = $this->Statistics_Download->getDownloads($item, date('c', strtotime('-20 day'.date( 'Y-m-j G:i:s'))), date('c'));
 
