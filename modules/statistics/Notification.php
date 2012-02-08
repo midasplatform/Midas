@@ -55,7 +55,7 @@ class Statistics_Notification extends MIDAS_Notification
   /** perform download geolocation by ip address */
   public function performGeolocation($params)
     {
-    $this->Statistics_IpLocation->performGeolocation($params['apikey']);
+    return $this->Statistics_IpLocation->performGeolocation($params['apikey']);
     }
 
   /** user Menu link */

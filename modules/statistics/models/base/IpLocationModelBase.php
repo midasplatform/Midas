@@ -44,14 +44,15 @@ abstract class Statistics_IpLocationModelBase extends Statistics_AppModel
     {
     if(function_exists('curl_init') == false)
       {
-      return;
+      throw new Exception('Curl must be enabled on the server');
       }
 
     if(empty($apiKey))
       {
-      return;
+      return 'Empty api key. No geolocations performed';
       }
 
+    $log = '';
     $locations = $this->getAllUnlocated();
     foreach($locations as $location)
       {
@@ -77,17 +78,20 @@ abstract class Statistics_IpLocationModelBase extends Statistics_AppModel
           else
             {
             $this->save($location);
+            $log .= 'IpInfoDb lookup failed for ip '.$location->getIp().' (id='.$location->getKey().")\n";
             continue;
             }
           }
         else
           {
           $this->save($location);
+          $log .= 'IpInfoDb lookup failed (empty response) for ip '.$location->getIp().' (id='.$location->getKey().")\n";
           continue;
           }
         }
       $this->save($location);
       }
+    return $log;
     }
 
 } // end class
