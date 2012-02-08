@@ -202,10 +202,6 @@ public class UploadThread extends Thread
 
       uploader.increaseUploadProgress(i, finalByteSize); // update GUI
       uploader.reset();
-      if (i + 1 == uploader.getFiles().length)
-        {
-        uploader.onSuccessfulUpload();
-        }
       }
     catch (IOException e)
       {
@@ -248,9 +244,14 @@ public class UploadThread extends Thread
 
         if (inputStream != null)
           {
+          uploader.setProgressIndeterminate(true);
           String msg = Utility.getMessage(new BufferedReader(new InputStreamReader(inputStream)));
           Utility.log(Utility.LOG_LEVEL.DEBUG, "[SERVER] " + msg);
-          this.uploader.setUploadStatusLabel(msg);
+          if (i + 1 == uploader.getFiles().length)
+            {
+            uploader.onSuccessfulUpload();            
+            }
+          uploader.setProgressIndeterminate(false);
           try
             {
             inputStream.close();

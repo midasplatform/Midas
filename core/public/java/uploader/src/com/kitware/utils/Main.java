@@ -35,7 +35,7 @@ public class Main extends JApplet
   JButton uploadFileButton, resumeUploadButton, stopUploadButton;
   TableColumn sizeColumn;
   JProgressBar uploadProgressBar;
-  JLabel uploadStatusLabel, fileCountLabel, fileNameLabel, fileSizeLabel,
+  JLabel fileCountLabel, fileNameLabel, fileSizeLabel,
       bytesUploadedLabel;
   private Color appletBackgroundColor = new Color(225, 225, 225);
 
@@ -362,11 +362,6 @@ public class Main extends JApplet
         + Utility.bytesToString(size));
     }
 
-  public void setUploadStatusLabel(String value)
-    {
-    this.uploadStatusLabel.setText(value);
-    }
-
   public void setUploadProgress(int index, long value)
     {
     this.uploadedBytes = value;
@@ -383,6 +378,11 @@ public class Main extends JApplet
     this.uploadedBytes += value;
     int progress = (int) (100.0 * (double) this.uploadedBytes / (double) this.fileLengths[index]);
     this.uploadProgressBar.setValue(progress);
+    }
+
+  public void setProgressIndeterminate(boolean value)
+    {
+    this.uploadProgressBar.setIndeterminate(value);
     }
 
   public void onSuccessfulUpload()
