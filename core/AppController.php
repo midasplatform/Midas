@@ -439,7 +439,7 @@ class AppController extends MIDAS_GlobalController
     $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
 
     $upgradeComponent->initUpgrade('core', $db, $dbtype);
-    if($upgradeComponent->getNewestVersion() != $upgradeComponent->transformVersionToNumeric(Zend_Registry::get('configDatabase')->version))
+    if($upgradeComponent->getNewestVersion() > $upgradeComponent->transformVersionToNumeric(Zend_Registry::get('configDatabase')->version))
       {
       return true;
       }
@@ -448,7 +448,7 @@ class AppController extends MIDAS_GlobalController
     foreach($modulesConfig as $key => $module)
       {
       $upgradeComponent->initUpgrade($key, $db, $dbtype);
-      if($upgradeComponent->getNewestVersion() != 0 && $upgradeComponent->getNewestVersion() != $upgradeComponent->transformVersionToNumeric($module->version))
+      if($upgradeComponent->getNewestVersion() != 0 && $upgradeComponent->getNewestVersion() > $upgradeComponent->transformVersionToNumeric($module->version))
         {
         return true;
         }

@@ -155,7 +155,7 @@ class UpgradeComponent extends AppComponent
 
     $version = $this->getNewestVersion($text = false);
 
-    if($currentVersion == $version || $version == 0)
+    if($currentVersion >= $version || $version == 0)
       {
       return false;
       }
