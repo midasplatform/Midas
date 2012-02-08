@@ -336,7 +336,8 @@ class FolderController extends AppController
               {
               $this->Folderpolicyuser->createPolicy($this->userSession->Dao, $new_folder, MIDAS_POLICY_ADMIN);
               }
-            echo JsonComponent::encode(array(true, $this->t('Changes saved'), $folder->toArray(), $new_folder->toArray()));
+            $newFolder_dateUpdate = $this->Component->Date->ago($new_folder->getDateUpdate(), true);
+            echo JsonComponent::encode(array(true, $this->t('Changes saved'), $folder->toArray(), $new_folder->toArray(), $newFolder_dateUpdate));
             }
           }
         }
