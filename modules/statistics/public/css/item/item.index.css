@@ -60,3 +60,8 @@ img#loadingStatistics {
   margin-left: 10px;
 }
 
+span.headerSmall {
+  font-weight: lighter;
+  color: #959595;
+}
+
