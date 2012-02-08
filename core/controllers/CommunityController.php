@@ -56,7 +56,7 @@ class CommunityController extends AppController
     $communityDao = $this->Community->load($communityId);
     if($communityDao === false || !$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
-      throw new Zend_Exception("This community doesn't exist  or you don't have the permissions.");
+      throw new Zend_Controller_Action_Exception("This community doesn't exist or you don't have the permissions.", 403);
       }
     $formInfo = $this->Form->Community->createCreateForm();
     $formCreateGroup = $this->Form->Community->createCreateGroupForm();
@@ -346,7 +346,7 @@ class CommunityController extends AppController
     $communityDao = $this->Community->load($communityId);
     if($communityDao === false || !$this->Community->policyCheck($communityDao, $this->userSession->Dao))
       {
-      throw new Zend_Exception("This community doesn't exist  or you don't have the permissions.");
+      throw new Zend_Controller_Action_Exception("This community doesn't exist or you don't have the permissions.", 403);
       }
     $joinCommunity = $this->_getParam('joinCommunity');
     $leaveCommunity = $this->_getParam('leaveCommunity');

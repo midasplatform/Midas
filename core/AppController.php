@@ -489,7 +489,7 @@ class AppController extends MIDAS_GlobalController
     {
     if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
       {
-      throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED);
+      throw new Zend_Controller_Action_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED, 403);
       }
     }
 
