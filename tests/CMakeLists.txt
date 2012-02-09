@@ -76,4 +76,11 @@ endfunction(add_midas_style_test)
 add_midas_style_test( StyleTestsControllerTestCase ${CMAKE_SOURCE_DIR}/tests/ControllerTestCase.php )
 add_midas_style_test( StyleTestsDatabaseTestCase ${CMAKE_SOURCE_DIR}/tests/DatabaseTestCase.php )
 
+
+add_test(Utf8encoding ${PHP} ${CMAKE_SOURCE_DIR}/tests/Utf8tools.php --src ${CMAKE_SOURCE_DIR})
+set_tests_properties(
+  Utf8encoding PROPERTIES
+  FAIL_REGULAR_EXPRESSION "ERROR;WARNING"
+  )
+
 add_subdirectory( library )
