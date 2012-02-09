@@ -36,6 +36,12 @@ class DownloadBitstreamComponent extends AppComponent
    */
   function download($bitstream, $offset = 0)
     {
+    // Disable gzip output on apache servers (otherwise no progress in browser)
+    if(function_exists('apache_setenv'))
+      {
+      apache_setenv('no-gzip', '1');
+      }
+
     $mimetype = $bitstream->getMimetype();
     $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
     $name = $bitstream->getName();
