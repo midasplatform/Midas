@@ -117,7 +117,7 @@ class Statistics_ItemController extends Statistics_AppController
       throw new Zend_Exception('You do not have read permission on this item');
       }
 
-    $downloads = $this->Statistics_Download->getDownloads($item, $startDate, $endDate, $limit);
+    $downloads = $this->Statistics_Download->getLocatedDownloads($item, $startDate, $endDate, $limit);
 
     $markers = array();
     foreach($downloads as $download)
