@@ -79,7 +79,7 @@ class DownloadBitstreamComponent extends AppComponent
       if(preg_match('%Opera(/| )([0-9].[0-9]{1,2})%', $agent) || preg_match('/MSIE ([0-9].[0-9]{1,2})/', $agent))
         {
         header('Content-Type: '.$contentType);
-        header('Content-Disposition: attachment; filename="'.$name.'";');
+        header('Content-Disposition: attachment; filename="'.$name.'"');
         header('Expires: 0');
         header('Accept-Ranges: bytes');
         header('Cache-Control: private', false);
@@ -110,7 +110,7 @@ class DownloadBitstreamComponent extends AppComponent
         header('Content-Length: '.$fileSize);
         if(!isset($enableContentDisposition) || $enableContentDisposition == true)
           {
-          header('Content-Disposition: attachment; filename="'.$name.'";');
+          header('Content-Disposition: attachment; filename="'.$name.'"');
           }
         if(isset($httpRange))
           {
