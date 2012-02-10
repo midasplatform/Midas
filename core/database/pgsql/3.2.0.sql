@@ -323,13 +323,11 @@ CREATE TABLE metadata (
 --
 
 CREATE TABLE metadatadocumentvalue (
-    id serial PRIMARY KEY,
-    metadata_id bigint NOT NULL,
-    itemrevision_id bigint NOT NULL,
-    value character varying(1024) NOT NULL,
-    metadatavalue_id integer NOT NULL
+  metadata_id serial PRIMARY KEY,
+  itemrevision_id bigint NOT NULL,
+  value character varying(1024) NOT NULL,
+  metadatavalue_id bigint NOT NULL
 );
-
 
 --
 -- TOC entry 1620 (class 1259 OID 43213)
@@ -338,11 +336,10 @@ CREATE TABLE metadatadocumentvalue (
 --
 
 CREATE TABLE metadatavalue (
-    id serial PRIMARY KEY,
+    metadatavalue_id serial PRIMARY KEY,
     metadata_id bigint NOT NULL,
     itemrevision_id bigint NOT NULL,
-    value character varying(1024) NOT NULL,
-    metadatavalue_id integer NOT NULL
+    value character varying(1024) NOT NULL
 );
 
 INSERT INTO metadata (metadatatype,element,qualifier,description)
