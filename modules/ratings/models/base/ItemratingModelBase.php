@@ -42,5 +42,7 @@ abstract class Ratings_ItemratingModelBase extends Ratings_AppModel
   abstract function setRating($user, $item, $rating);
   /** Get the average rating and total rating count on an item */
   abstract function getAggregateInfo($item);
+  /** Get rating by user, or return 0 if none exists for that user */
+  abstract function getByUser($user, $item);
 }
 ?>

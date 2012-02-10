@@ -80,5 +80,25 @@ class Ratings_ItemratingModel extends Ratings_ItemratingModelBase
       }
     return $info;
     }
+
+  /**
+   * Return the user's rating for the item (1-5), or 0 if none exists
+   */
+  function getByUser($user, $item)
+    {
+    $sql = $this->database->select()
+                ->from(array('i' => 'ratings_item'), array('rating'))
+                ->where('item_id = ?', $item->getKey())
+                ->where('user_id = ?', $user->getKey());
+    $row = $this->database->fetchRow($sql);
+    if(!$row || !isset($row['rating']))
+      {
+      return 0;
+      }
+    else
+      {
+      return $row['rating'];
+      }
+    }
 }
 ?>

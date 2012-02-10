@@ -13,6 +13,7 @@ class Ratings_Notification extends MIDAS_Notification
 
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JS', 'getJs');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_CSS', 'getCss');
+    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JSON', 'getJson');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_APPEND_ELEMENTS', 'getElement');
     }
 
@@ -34,6 +35,19 @@ class Ratings_Notification extends MIDAS_Notification
   public function getElement($params)
     {
     return array('rating');
+    }
+
+  /** Get json to pass to the view */
+  public function getJson($params)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemRatingModel = $modelLoader->loadModel('Itemrating', $this->moduleName);
+    $data = $itemRatingModel->getAggregateInfo($params['item']);
+    if($this->userSession->Dao)
+      {
+      $data['userRating'] = $itemRatingModel->getByUser($this->userSession->Dao, $params['item']);
+      }
+    return $data;
     }
   }
 ?>

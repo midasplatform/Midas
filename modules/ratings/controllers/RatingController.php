@@ -39,8 +39,10 @@ class Ratings_RatingController extends Ratings_AppController
     $itemRatingModel = $modelLoader->loadModel('Itemrating', $this->moduleName);
     $itemRatingModel->setRating($this->userSession->Dao, $item, $rating);
 
+    $info = $itemRatingModel->getAggregateInfo($item);
     $message = $rating == 0 ? 'Rating removed' : 'Rating saved';
-    echo JsonComponent::encode(array('status' => true, 'message' => $message));
+    echo JsonComponent::encode(array('status' => 'ok', 'message' => $message,
+                                     'average' => $info['average'], 'total' => $info['total']));
     }
 
 }//end class
