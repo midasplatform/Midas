@@ -58,25 +58,24 @@ class Ratings_ItemratingModel extends Ratings_ItemratingModelBase
   function getAggregateInfo($item)
     {
     $sql = $this->database->select()
-                ->from(array('i' => 'ratings_item'), array('count(*)', 'avg(rating)'))
+                ->from(array('i' => 'ratings_item'), array('count' => 'count(*)', 'avg' => 'avg(rating)'))
                 ->where('item_id = ?', $item->getKey());
     $row = $this->database->fetchRow($sql);
     $info = array();
-    if(isset($row['count(*)'])) //mysql
+    $info['total'] = $row['count'];
+    $info['average'] = $row['avg'];
+    $info['distribution'] = array(0, 0, 0, 0, 0);
+
+    $sql = $this->database->select()
+                ->from(array('i' => 'ratings_item'), array('count' => 'count(*)', 'rating' => 'rating'))
+                ->where('item_id = ?', $item->getKey())
+                ->group('rating')
+                ->order('rating ASC');
+    $rows = $this->database->fetchAll($sql);
+
+    foreach($rows as $row)
       {
-      $info['total'] = $row['count(*)'];
-      }
-    else if(isset($row['count'])) //pgsql
-      {
-      $info['total'] = $row['count'];
-      }
-    if(isset($row['avg(rating)'])) //mysql
-      {
-      $info['average'] = $row['avg(rating)'];
-      }
-    else if(isset($row['avg'])) //pgsql
-      {
-      $info['average'] = $row['avg'];
+      $info['distribution'][$row['rating'] - 1] = $row['count'];
       }
     return $info;
     }

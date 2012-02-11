@@ -41,8 +41,7 @@ class Ratings_RatingController extends Ratings_AppController
 
     $info = $itemRatingModel->getAggregateInfo($item);
     $message = $rating == 0 ? 'Rating removed' : 'Rating saved';
-    echo JsonComponent::encode(array('status' => 'ok', 'message' => $message,
-                                     'average' => $info['average'], 'total' => $info['total']));
+    echo JsonComponent::encode(array_merge(array('status' => 'ok', 'message' => $message), $info));
     }
 
 }//end class

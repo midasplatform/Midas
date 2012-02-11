@@ -10,6 +10,7 @@ class Ratings_Notification extends MIDAS_Notification
     {
     $fc = Zend_Controller_Front::getInstance();
     $this->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
+    $this->coreWebroot = $fc->getBaseUrl().'/core';
 
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JS', 'getJs');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_CSS', 'getCss');
@@ -21,14 +22,19 @@ class Ratings_Notification extends MIDAS_Notification
   public function getJs($params)
     {
     return array($this->moduleWebroot.'/public/js/star_rating/jquery.ui.stars.min.js',
-                 $this->moduleWebroot.'/public/js/item/item.ratings.js');
+                 $this->moduleWebroot.'/public/js/item/item.ratings.js',
+                 $this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js',
+                 $this->coreWebroot.'/public/js/jquery/jqplot/jqplot.barRenderer.min.js',
+                 $this->coreWebroot.'/public/js/jquery/jqplot/jqplot.categoryAxisRenderer.min.js',
+                 $this->coreWebroot.'/public/js/jquery/jqplot/jqplot.pointLabels.min.js');
     }
 
   /** Get stylesheets for the ratings */
   public function getCss($params)
     {
     return array($this->moduleWebroot.'/public/css/star_rating/jquery.ui.stars.css',
-                 $this->moduleWebroot.'/public/css/item/item.ratings.css');
+                 $this->moduleWebroot.'/public/css/item/item.ratings.css',
+                 $this->coreWebroot.'/public/css/jquery/jquery.jqplot.css');
     }
 
   /** Get the element to render at the bottom of the item view */
