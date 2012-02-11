@@ -350,11 +350,6 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    */
   public function delete($dao)
     {
-    $instance = ucfirst($this->_name)."Dao";
-    if(strtolower(get_class($dao)) !=  strtolower($instance))
-      {
-      throw new Zend_Exception("Should be an object (".$instance."). It was: ".get_class($dao) );
-      }
     if(!$dao->saved)
       {
       throw new Zend_Exception("The dao should be saved first ...");

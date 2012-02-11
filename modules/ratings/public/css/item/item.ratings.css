@@ -1,0 +1,29 @@
+#ratingsAverage {
+  width: 250px;
+  float: left;
+}
+
+
+#ratingsUser {
+  width: 200px;
+  float: right;
+}
+
+div.ratingsVSpacer {
+  height: 30px;
+}
+
+div.ratingCountWrapper {
+
+}
+
+span.averageStats {
+  margin-left: 7px;
+  color: #676767;
+}
+
+span.addRating {
+  margin-right: 7px;
+  color: #676767;
+  float: left;
+}

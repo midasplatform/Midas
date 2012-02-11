@@ -1,0 +1,42 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<div id="ratingsDiv">
+
+  <h4>RATINGS</h4>
+  <div id="ratingsAverage" style="display: none;">
+    <input type="radio" name="avgrate" value="1"/>
+    <input type="radio" name="avgrate" value="2"/>
+    <input type="radio" name="avgrate" value="3"/>
+    <input type="radio" name="avgrate" value="4"/>
+    <input type="radio" name="avgrate" value="5"/>
+    <input type="radio" name="avgrate" value="6"/>
+    <input type="radio" name="avgrate" value="7"/>
+    <input type="radio" name="avgrate" value="8"/>
+    <input type="radio" name="avgrate" value="9"/>
+    <input type="radio" name="avgrate" value="10"/>
+    <span class="averageStats"><span id="averageValue"></span> (<span id="voteTotal"></span> votes)</span>
+  </div>
+  
+  <div id="ratingsUser" style="display: none;">
+    <span class="addRating">Click to rate</span>
+    <input type="radio" name="newrate" value="1" title="1 star" />
+    <input type="radio" name="newrate" value="2" title="2 stars" />
+    <input type="radio" name="newrate" value="3" title="3 stars" />
+    <input type="radio" name="newrate" value="4" title="4 stars" />
+    <input type="radio" name="newrate" value="5" title="5 stars" />
+  </div>
+  <div class="ratingsVSpacer"></div>
+  <div id="ratingsChart" style="height: 140px; width: 250px;"></div>
+</div>
+
+

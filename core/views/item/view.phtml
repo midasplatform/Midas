@@ -16,6 +16,24 @@ PURPOSE.  See the above copyright notices for more information.
 
 <?php
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/item/item.view.js');
+
+$cssArray = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_VIEW_CSS', array('item' => $this->itemDao));
+$jsArray = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_VIEW_JS', array('item' => $this->itemDao));
+
+foreach($jsArray as $module => $list)
+  {
+  foreach($list as $script)
+    {
+    $this->headScript()->appendFile($script);
+    }
+  }
+foreach($cssArray as $module => $list)
+  {
+  foreach($list as $stylesheet)
+    {
+    echo '<link type="text/css" rel="stylesheet" href="'.$stylesheet.'" />';
+    }
+  }
 ?>
 <div class="viewMain">
 
@@ -190,7 +208,18 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/item/item.view.js
         <?php } ?>
     </div>
   </div>
-
+  <?php
+  $elements = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_VIEW_APPEND_ELEMENTS', array('item' => $this->itemDao));
+  foreach($elements as $module => $elementList)
+    {
+    foreach($elementList as $element)
+      {
+      echo '<div class="itemViewMainSection">';
+      echo $this->element($element, $module);
+      echo '</div>';
+      }
+    }
+    ?>
 </div>
 <div class="viewSideBar">
   <?php
