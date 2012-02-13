@@ -28,16 +28,17 @@ class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
   function getComments($item, $limit = 25, $offset = 0)
     {
     $sql = $this->database->select()
-                ->where('item_id = ?', $item->getKey())
+                ->where('c.item_id = ?', $item->getKey())
                 ->limit($limit, $offset)
                 ->order('date ASC');
 
-    $rowset = $this->database->fetchAll());
+    $rowset = $this->database->fetchAll();
     $comments = array();
     foreach($rowset as $row)
       {
       $comments[] = $this->initDao('Itemcomment', $row, 'comments');
       }
+    return $comments;
     }
 }
 ?>

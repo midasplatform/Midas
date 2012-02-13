@@ -25,6 +25,16 @@ PURPOSE.  See the above copyright notices for more information.
       <input class="globalButton" type="button" id="addCommentButton" value="Post" />
     </div>
   </div>
+
+  <div id="existingCommentsList">
+  </div>
+
+  <div id="existingCommentTemplate" class="aComment" style="display: none;">
+    <img class="commentThumbnail" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/unknownUser.png" />
+    <a class="commentUserName"></a>
+    <span class="commentDate"></span>
+    <div class="commentTextDiv">
+      <span class="commentText"></span>
+    </div>
+  </div>
 </div>
-
-

@@ -31,6 +31,10 @@ class Comments_CommentController extends Comments_AppController
 
     $this->disableView();
     $this->disableLayout();
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemCommentModel = $modelLoader->loadModel('Itemcomment', $this->moduleName);
+    $itemCommentModel->addComment($this->userSession->Dao, $item, $comment);
+
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Comment added'));
     }
 

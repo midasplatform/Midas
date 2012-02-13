@@ -32,6 +32,7 @@ abstract class Comments_ItemcommentModelBase extends Comments_AppModel
       'user_id' => array('type' => MIDAS_DATA),
       'item_id' => array('type' => MIDAS_DATA),
       'comment' => array('type' => MIDAS_DATA),
+      'date' => array('type' => MIDAS_DATA),
       'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
       'item' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Item', 'parent_column' => 'item_id', 'child_column' => 'item_id')
       );
@@ -39,13 +40,13 @@ abstract class Comments_ItemcommentModelBase extends Comments_AppModel
     }
 
   /** Get all the comments for an item */
-  abstract public function getComments($item, $limit = 25);
+  abstract public function getComments($item, $limit = 25, $offset = 0);
 
   /** Add a comment to an item */
   public function addComment($user, $item, $comment)
     {
     $this->loadDaoClass('ItemcommentDao', 'comments');
-    $commentDao = new Commetns_ItemcommentDao();
+    $commentDao = new Comments_ItemcommentDao();
     $commentDao->setUserId($user->getKey());
     $commentDao->setItemId($item->getKey());
     $commentDao->setComment($comment);

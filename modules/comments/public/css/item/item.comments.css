@@ -46,3 +46,39 @@ div.addCommentFooter {
   float: right;
   margin-right: 4px;
 }
+
+#existingCommentsList {
+  width: 100%;
+  border-top: 1px dashed #c0c0c0;
+  margin-top: 10px;
+}
+
+.aComment {
+  width: 100%;
+  border-bottom: 1px solid #c0c0c0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  min-height: 32px;
+}
+
+.commentUserName {
+  margin-left: 8px;
+}
+
+.commentTextDiv {
+  margin-top: 8px;
+  margin-left: 40px;
+}
+
+.commentText {
+
+}
+
+.commentDate {
+  color: #a0a0a0;
+  float: right;
+}
+
+.commentThumbnail {
+  float: left;
+}

@@ -43,8 +43,23 @@ class Comments_Notification extends MIDAS_Notification
     $json = array();
     if($this->userSession->Dao != null)
       {
-      $json['username'] = $this->userSession->Dao->getFullName();
+      $json['user'] = $this->userSession->Dao;
       }
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemCommentModel = $modelLoader->loadModel('Itemcomment', $this->moduleName);
+    $componentLoader = new MIDAS_ComponentLoader();
+    $dateComponent = $componentLoader->loadComponent('Date');
+    $comments = $itemCommentModel->getComments($params['item']);
+    $commentsList = array();
+    foreach($comments as $comment)
+      {
+      $commentArray = $comment->toArray();
+      $commentArray['user'] = $comment->getUser()->toArray();
+      $commentArray['comment'] = htmlentities($commentArray['comment']);
+      $commentArray['ago'] = $dateComponent->ago($commentArray['date']);
+      $commentsList[] = $commentArray;
+      }
+    $json['comments'] = $commentsList;
     return $json;
     }
   }
