@@ -40,7 +40,7 @@ abstract class Comments_ItemcommentModelBase extends Comments_AppModel
     }
 
   /** Get all the comments for an item */
-  abstract public function getComments($item, $limit = 25, $offset = 0);
+  abstract public function getComments($item, $limit = 10, $offset = 0);
 
   /** Add a comment to an item */
   public function addComment($user, $item, $comment)

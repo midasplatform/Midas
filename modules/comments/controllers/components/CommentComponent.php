@@ -17,28 +17,26 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-require_once BASE_PATH.'/modules/comments/models/base/ItemcommentModelBase.php';
 
-/** Item comment model implementation */
-class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
+/** Helper component for the comments module */
+class Comments_CommentComponent extends AppComponent
 {
-  /**
-   * Get (paginated) comments on an item
-   */
-  function getComments($item, $limit = 10, $offset = 0)
+  public function getComments($item, $limit, $offset)
     {
-    $sql = $this->database->select()
-                ->where('item_id = ?', $item->getKey())
-                ->limit($limit, $offset)
-                ->order('date ASC');
-
-    $rowset = $this->database->fetchAll($sql);
-    $comments = array();
-    foreach($rowset as $row)
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemCommentModel = $modelLoader->loadModel('Itemcomment', 'comments');
+    $componentLoader = new MIDAS_ComponentLoader();
+    $dateComponent = $componentLoader->loadComponent('Date');
+    $comments = $itemCommentModel->getComments($item, $limit, $offset);
+    $commentsList = array();
+    foreach($comments as $comment)
       {
-      $comments[] = $this->initDao('Itemcomment', $row, 'comments');
+      $commentArray = $comment->toArray();
+      $commentArray['user'] = $comment->getUser()->toArray();
+      $commentArray['comment'] = htmlentities($commentArray['comment']);
+      $commentArray['ago'] = $dateComponent->ago($commentArray['date']);
+      $commentsList[] = $commentArray;
       }
-    return $comments;
+    return $commentsList;
     }
-}
-?>
+} // end class
