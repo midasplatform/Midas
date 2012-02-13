@@ -25,8 +25,12 @@ midas.comments.initAddComment = function() {
  * Init the comment list. Pass a list of comment dao objects to display
  */
 midas.comments.initCommentList = function(comments) {
-    var isAdmin = json.modules.comments.user.admin == '1';
-    var currentUser = json.modules.comments.user.user_id;
+    var isAdmin = false;
+    var currentUser = 0;
+    if(json.modules.comments.user) {
+        isAdmin = json.modules.comments.user.admin == '1';
+        json.modules.comments.user.user_id;
+    }
 
     $('#existingCommentsList').html('');
     $.each(comments, function() {
