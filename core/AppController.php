@@ -24,8 +24,9 @@ define('MIDAS_AJAX_REQUEST_ONLY', "This page should only be requested by ajax.")
 define('MIDAS_LOGIN_REQUIRED', "User should be logged in to access this page.");
 
 /**
- * GlobalAction
- * Provides global function to the controllers
+ * @class AppController
+ * @package Core
+ * Provides global functions to the controllers
  */
 class AppController extends MIDAS_GlobalController
   {
@@ -62,7 +63,7 @@ class AppController extends MIDAS_GlobalController
     $this->view->metaKeywords = Zend_Registry::get('configGlobal')->application->keywords;
 
     // Set the version
-    $this->view->version = '3.0.0';
+    $this->view->version = '3.2.2';
     if(isset(Zend_Registry::get('configDatabase')->version))
       {
       $this->view->version = Zend_Registry::get('configDatabase')->version;
