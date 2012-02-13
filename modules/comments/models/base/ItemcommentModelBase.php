@@ -41,6 +41,11 @@ abstract class Comments_ItemcommentModelBase extends Comments_AppModel
 
   /** Get all the comments for an item */
   abstract public function getComments($item, $limit = 10, $offset = 0);
+  /** Delete all comments made by the user */
+  abstract public function deleteByUser($user);
+  /** Delete all comments on the given item */
+  abstract public function deleteByItem($item);
+  
 
   /** Add a comment to an item */
   public function addComment($user, $item, $comment)

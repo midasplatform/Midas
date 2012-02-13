@@ -25,7 +25,7 @@ class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
   /**
    * Get (paginated) comments on an item
    */
-  function getComments($item, $limit = 10, $offset = 0)
+  public function getComments($item, $limit = 10, $offset = 0)
     {
     $sql = $this->database->select()
                 ->where('item_id = ?', $item->getKey())
@@ -39,6 +39,22 @@ class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
       $comments[] = $this->initDao('Itemcomment', $row, 'comments');
       }
     return $comments;
+    }
+
+  /**
+   * Delete all comments made by the user. Called when user is about to be deleted.
+   */
+  public function deleteByUser($user)
+    {
+    Zend_Registry::get('dbAdapter')->delete($this->_name, 'user_id = '.$user->getKey());
+    }
+
+  /**
+   * Delete all comments on a given item. Called when item is about to be deleted.
+   */
+  public function deleteByItem($item)
+    {
+    Zend_Registry::get('dbAdapter')->delete($this->_name, 'item_id = '.$item->getKey());
     }
 }
 ?>

@@ -22,7 +22,7 @@ midas.comments.initAddComment = function() {
 }
 
 /**
- * Init the comment list. Pass a list of comment dao objects
+ * Init the comment list. Pass a list of comment dao objects to display
  */
 midas.comments.initCommentList = function(comments) {
     var isAdmin = json.modules.comments.user.admin == '1';

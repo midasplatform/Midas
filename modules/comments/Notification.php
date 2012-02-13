@@ -16,6 +16,8 @@ class Comments_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_CSS', 'getCss');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JSON', 'getJson');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_APPEND_ELEMENTS', 'getElement');
+    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
+    $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'handleItemDeleted');
     }
 
   /** Get javascript for the comments */
@@ -49,6 +51,26 @@ class Comments_Notification extends MIDAS_Notification
     $commentComponent = $componentLoader->loadComponent('Comment', $this->moduleName);
     $json['comments'] = $commentComponent->getComments($params['item'], $json['limit'], $json['offset']);
     return $json;
+    }
+
+  /**
+   * When a user is getting deleted, we should delete their comments
+   */
+  public function handleUserDeleted($params)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemCommentModel = $modelLoader->loadModel('Itemcomment', $this->moduleName);
+    $itemCommentModel->deleteByUser($params['userDao']);
+    }
+
+  /**
+   * When an item is getting deleted, we should delete associated comments
+   */
+  public function handleItemDeleted($params)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemCommentModel = $modelLoader->loadModel('Itemcomment', $this->moduleName);
+    $itemCommentModel->deleteByItem($params['item']);
     }
   }
 ?>
