@@ -64,9 +64,9 @@ class Comments_CommentController extends Comments_AppController
     $this->disableLayout();
     $componentLoader = new MIDAS_ComponentLoader();
     $commentComponent = $componentLoader->loadComponent('Comment', $this->moduleName);
-    $comments = $commentComponent->getComments($item, $limit, $offset);
+    list($comments, $total) = $commentComponent->getComments($item, $limit, $offset);
 
-    echo JsonComponent::encode(array('status' => 'ok', 'comments' => $comments));
+    echo JsonComponent::encode(array('status' => 'ok', 'comments' => $comments, 'total' => $total));
     }
 
   /**
@@ -77,7 +77,7 @@ class Comments_CommentController extends Comments_AppController
     {
     if(!$this->logged)
       {
-      throw new Zend_Exception('Must be logged in to comment on an item');
+      throw new Zend_Exception('Must be logged in to delete an item');
       }
     $commentId = $this->_getParam('commentId');
     if(!isset($commentId) || !$commentId)

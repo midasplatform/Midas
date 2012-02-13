@@ -91,9 +91,10 @@ img.deleteCommentIcon {
   cursor: pointer;
 }
 
-div.noCommentsMessage {
+div.commentsBottomMessage {
   margin-top: 8px;
   color: #969696;
+  float: left;
 }
 
 #refreshingCommentDiv {
@@ -102,4 +103,9 @@ div.noCommentsMessage {
 
 span.loadingCommentsMessage {
   color: #969696;
+}
+
+div.commentPaginateWrapper {
+  margin-top: 8px;
+  float: right;
 }

@@ -1,6 +1,8 @@
 var midas = midas || {};
 midas.comments = midas.comments || {};
 midas.comments.offset = 0;
+midas.comments.total = 0;
+midas.comments.PAGE_LIMIT = 10;
 
 /**
  * Init (or re-init) the add comment section. Only call this if the
@@ -54,12 +56,13 @@ midas.comments.initCommentList = function(comments) {
         template.appendTo('#existingCommentsList');
         template.show();
     });
-    if(comments.length == 0) {
-        $('#existingCommentsList').append('<div class="noCommentsMessage">0 comments on this item</div>');
+    var bottomMessage = '0 comments on this item';
+    if(comments.length > 0) {
+        bottomMessage = 'showing comments ' + (midas.comments.offset + 1);
+        bottomMessage += '-' + (midas.comments.offset + comments.length);
+        bottomMessage += ' of ' + midas.comments.total;
     }
-    else {
-        //todo render message about total number of comments and currently displayed
-    }
+    $('#existingCommentsList').append('<div class="commentsBottomMessage">'+bottomMessage+'</div>');
     $('img[qtip],.commentDate[qtip]').qtip({
         content: {
             attr: 'qtip'
@@ -74,11 +77,12 @@ midas.comments.refreshCommentList = function() {
     $('#refreshingCommentDiv').show();
     $.post(json.global.webroot+'/comments/comment/get', {
         itemId: json.item.item_id,
-        limit: 10,
+        limit: midas.comments.PAGE_LIMIT,
         offset: midas.comments.offset
     }, function(data) {
         var resp = $.parseJSON(data);
         if(resp != null && resp.status == 'ok') {
+            midas.comments.total = resp.total;
             midas.comments.initCommentList(resp.comments);
         }
         else {
@@ -115,8 +119,33 @@ midas.comments.deleteComment = function(commentId) {
     });
 }
 
+/**
+ * Render the next page of comments
+ */
+midas.comments.nextPage = function() {
+    if(midas.comments.offset + midas.comments.PAGE_LIMIT >= midas.comments.total) {
+        return;
+    }
+    midas.comments.offset += midas.comments.PAGE_LIMIT;
+    midas.comments.refreshCommentList();
+}
+
+/**
+ * Render the previous page of comments
+ */
+midas.comments.previousPage = function() {
+    if(midas.comments.offset <= 0) {
+        return;
+    }
+    midas.comments.offset -= midas.comments.PAGE_LIMIT;
+    midas.comments.refreshCommentList();
+}
+
 $(document).ready(function() {
+    midas.comments.total = json.modules.comments.total;
     midas.comments.initCommentList(json.modules.comments.comments);
+    $('#nextComments').click(midas.comments.nextPage);
+    $('#prevComments').click(midas.comments.previousPage);
 
     if(json.global.logged == '1') {
         midas.comments.initAddComment();

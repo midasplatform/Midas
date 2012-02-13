@@ -56,5 +56,18 @@ class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
     {
     Zend_Registry::get('dbAdapter')->delete($this->_name, 'item_id = '.$item->getKey());
     }
+
+  /**
+   * Get the total number of comments on the item
+   */
+  public function getTotal($item)
+    {
+    $sql = $this->database->select()
+                ->from(array($this->_name), array('count' => 'count(*)'))
+                ->where('item_id = ?', $item->getKey());
+
+    $row = $this->database->fetchRow($sql);
+    return $row['count'];
+    }
 }
 ?>
