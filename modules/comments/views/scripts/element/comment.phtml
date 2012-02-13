@@ -11,8 +11,9 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 ?>
 <div id="commentsDiv">
-
+  
   <h4>COMMENTS</h4>
+
   <div class="addCommentWrapper" style="display: none;">
     <div id="addCommentDiv">
       <textarea placeholder="Write a comment..." maxlength="1200" id="commentText"></textarea>
@@ -31,6 +32,12 @@ PURPOSE.  See the above copyright notices for more information.
   <div id="existingCommentsList">
   </div>
 
+  <div style="display: none;" id="refreshingCommentDiv">
+    <img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+    <span class="loadingCommentsMessage">Loading comments...</span>
+  </div>
+
+  <!-- TEMPLATE: user comment -->
   <div id="existingCommentTemplate" class="aComment" style="display: none;">
     <img class="commentThumbnail" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/unknownUser.png" />
     <a class="commentUserName"></a>
@@ -41,6 +48,7 @@ PURPOSE.  See the above copyright notices for more information.
     </div>
   </div>
 
+  <!-- TEMPLATE: delete comment confirmation dialog -->
   <div id="deleteCommentConfirmation" style="display: none;">
     Are you sure you want to delete this comment?
     <div style="float: right; margin-top: 20px;">

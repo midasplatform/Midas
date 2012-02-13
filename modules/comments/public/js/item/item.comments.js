@@ -1,5 +1,6 @@
 var midas = midas || {};
 midas.comments = midas.comments || {};
+midas.comments.offset = 0;
 
 /**
  * Init (or re-init) the add comment section. Only call this if the
@@ -9,7 +10,6 @@ midas.comments.initAddComment = function() {
   $('#commentText').val('');
   $('#commentLengthRemaining').html('1200');
   $('#commentText').focus(function() {
-        console.log('hello');
         $('div.addCommentFooter').show();
         $(this).css('height', '50px');
         $('#commentText').autogrow();
@@ -68,6 +68,27 @@ midas.comments.initCommentList = function(comments) {
 }
 
 /**
+ * Requests a page of comments from the server using the current offset
+ */
+midas.comments.refreshCommentList = function() {
+    $('#refreshingCommentDiv').show();
+    $.post(json.global.webroot+'/comments/comment/get', {
+        itemId: json.item.item_id,
+        limit: 10,
+        offset: midas.comments.offset
+    }, function(data) {
+        var resp = $.parseJSON(data);
+        if(resp != null && resp.status == 'ok') {
+            midas.comments.initCommentList(resp.comments);
+        }
+        else {
+            createNotice('Error refreshing comment list', 4000, 'error');
+        }
+        $('#refreshingCommentDiv').hide();
+    });
+}
+
+/**
  * When the user clicks the delete comment icon, this function is called
  * with the id of the comment that they requested to delete
  */
@@ -86,7 +107,7 @@ midas.comments.deleteComment = function(commentId) {
                 return;
             }
             if(resp.status == 'ok') {
-                //delete comment node/refresh the list?
+                midas.comments.refreshCommentList();
                 $('div.MainDialog').dialog('close');
             }
             createNotice(resp.message, 4000, resp.status);
@@ -115,7 +136,7 @@ $(document).ready(function() {
                         $('div.addCommentFooter').hide();
                         $('#commentText').css('height', '25px');
                         midas.comments.initAddComment();
-                        //todo add the comment to the list or refresh the list
+                        midas.comments.refreshCommentList();
                     }
                     createNotice(resp.message, 4000, resp.status);
                 });
