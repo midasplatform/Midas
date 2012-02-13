@@ -56,6 +56,8 @@ abstract class Comments_ItemcommentModelBase extends Comments_AppModel
     $commentDao->setItemId($item->getKey());
     $commentDao->setComment($comment);
     $this->save($commentDao);
+
+    Zend_Registry::get('notifier')->callback('CALLBACK_COMMENTS_ADDED_COMMENT', array('comment' => $commentDao));
     }
 }
 ?>
