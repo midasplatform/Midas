@@ -41,12 +41,8 @@ midas.ratings.createChart = function(distribution) {
             drawGridlines: false,
             shadow: false,
             drawBorder: true,
-            borderColor: 'white'
-        },
-        title: {
-            textAlign: 'left',
-            text: 'Rating Distribution',
-            fontSize: 10
+            borderColor: 'white',
+            background: 'white'
         }
     });
 }
@@ -95,6 +91,7 @@ $(document).ready(function() {
         disabled: true,
         split: 2
     });
+    $('#ratingsChart').appendTo('#sideElementRatings');
     midas.ratings.renderAggregate(json.modules.ratings.average,
                                   json.modules.ratings.total,
                                   json.modules.ratings.distribution);

@@ -15,7 +15,16 @@ class Ratings_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JS', 'getJs');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_CSS', 'getCss');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JSON', 'getJson');
+    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_INFO', 'getItemInfo');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_APPEND_ELEMENTS', 'getElement');
+    }
+
+  /** Some html to be appended to the item view sidebar */
+  public function getItemInfo($params)
+    {
+    return '<div class="sideElement" id="sideElementRatings">
+              <h1>Rating Distribution</h1>
+            </div>';
     }
 
   /** Get javascript for the ratings */
