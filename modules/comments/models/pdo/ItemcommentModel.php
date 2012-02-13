@@ -28,7 +28,7 @@ class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
   function getComments($item, $limit = 25, $offset = 0)
     {
     $sql = $this->database->select()
-                ->where('c.item_id = ?', $item->getKey())
+                ->where('item_id = ?', $item->getKey())
                 ->limit($limit, $offset)
                 ->order('date ASC');
 
