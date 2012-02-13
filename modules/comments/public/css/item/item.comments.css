@@ -1,0 +1,84 @@
+#addCommentDiv {
+  width: 100%;
+  border: 1px solid #bdc7d8;
+  border-spacing: 0;
+  border-collapse: separate;
+}
+
+#commentText {
+  width: 99%;
+  height: 25px;
+  resize: none;
+  font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
+  font-size: 13px;
+  padding: 2px;
+  margin-bottom: 0px;
+  border: 0;
+  outline: 0;
+}
+
+.commentLimit,.commentAs{
+  color: #777777;
+  font-size: 11px;
+  float: left;
+  height: 100%;
+  border-right: 1px solid #e2e2e2;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.commentLimitString ,.postingAsString{
+  margin-top: 5px;
+}
+
+div.addCommentFooter {
+  background-color: #f2f2f2;
+  border-top: 1px solid #e2e2e2;
+  height: 26px;
+  margin: 0;
+}
+
+#postingAsUsername {
+  color: #555555;
+}
+
+#addCommentButton {
+  float: right;
+  margin-right: 4px;
+}
+
+#existingCommentsList {
+  width: 100%;
+  border-top: 1px dashed #c0c0c0;
+  margin-top: 10px;
+}
+
+.aComment {
+  width: 100%;
+  border-bottom: 1px solid #c0c0c0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  min-height: 32px;
+}
+
+.commentUserName {
+  margin-left: 8px;
+}
+
+.commentTextDiv {
+  margin-top: 8px;
+  margin-left: 40px;
+}
+
+.commentText {
+
+}
+
+.commentDate {
+  color: #a0a0a0;
+  float: right;
+}
+
+.commentThumbnail {
+  float: left;
+}

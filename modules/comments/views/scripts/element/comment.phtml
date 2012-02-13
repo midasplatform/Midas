@@ -1,0 +1,40 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<div id="commentsDiv">
+
+  <h4>COMMENTS</h4>
+  <div id="addCommentDiv" style="display: none;">
+    <textarea placeholder="Write a comment..." maxlength="1200" id="commentText"></textarea>
+    <div class="addCommentFooter" style="display: none;">
+      <div class="commentLimit">
+        <div class="commentLimitString"><span id="commentLengthRemaining"></span> remaining</div>
+      </div>
+      <div class="commentAs">
+        <div class="postingAsString">posting as <span id="postingAsUsername"></span></div>
+      </div>
+      <input class="globalButton" type="button" id="addCommentButton" value="Post" />
+    </div>
+  </div>
+
+  <div id="existingCommentsList">
+  </div>
+
+  <div id="existingCommentTemplate" class="aComment" style="display: none;">
+    <img class="commentThumbnail" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/unknownUser.png" />
+    <a class="commentUserName"></a>
+    <span class="commentDate"></span>
+    <div class="commentTextDiv">
+      <span class="commentText"></span>
+    </div>
+  </div>
+</div>
