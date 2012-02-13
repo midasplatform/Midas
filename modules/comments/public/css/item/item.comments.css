@@ -1,3 +1,8 @@
+div.addCommentWrapper {
+  padding-bottom: 5px;
+  border-bottom: 1px dashed #c0c0c0;
+}
+
 #addCommentDiv {
   width: 100%;
   border: 1px solid #bdc7d8;
@@ -49,8 +54,6 @@ div.addCommentFooter {
 
 #existingCommentsList {
   width: 100%;
-  border-top: 1px dashed #c0c0c0;
-  margin-top: 10px;
 }
 
 .aComment {
@@ -63,6 +66,7 @@ div.addCommentFooter {
 
 .commentUserName {
   margin-left: 8px;
+  font-weight: bolder !important;
 }
 
 .commentTextDiv {
@@ -75,10 +79,27 @@ div.addCommentFooter {
 }
 
 .commentDate {
-  color: #a0a0a0;
-  float: right;
+  color: #969696;
 }
 
 .commentThumbnail {
   float: left;
+}
+
+img.deleteCommentIcon {
+  float: right;
+  cursor: pointer;
+}
+
+div.noCommentsMessage {
+  margin-top: 8px;
+  color: #969696;
+}
+
+#refreshingCommentDiv {
+  margin-top: 5px;
+}
+
+span.loadingCommentsMessage {
+  color: #969696;
 }

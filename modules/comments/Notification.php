@@ -16,6 +16,8 @@ class Comments_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_CSS', 'getCss');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JSON', 'getJson');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_APPEND_ELEMENTS', 'getElement');
+    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
+    $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'handleItemDeleted');
     }
 
   /** Get javascript for the comments */
@@ -37,30 +39,38 @@ class Comments_Notification extends MIDAS_Notification
     return array('comment');
     }
 
-  /** Get json to pass to the view */
+  /** Get json to pass to the view initially */
   public function getJson($params)
     {
-    $json = array();
+    $json = array('limit' => 10, 'offset' => 0);
     if($this->userSession->Dao != null)
       {
       $json['user'] = $this->userSession->Dao;
       }
+    $componentLoader = new MIDAS_ComponentLoader();
+    $commentComponent = $componentLoader->loadComponent('Comment', $this->moduleName);
+    $json['comments'] = $commentComponent->getComments($params['item'], $json['limit'], $json['offset']);
+    return $json;
+    }
+
+  /**
+   * When a user is getting deleted, we should delete their comments
+   */
+  public function handleUserDeleted($params)
+    {
     $modelLoader = new MIDAS_ModelLoader();
     $itemCommentModel = $modelLoader->loadModel('Itemcomment', $this->moduleName);
-    $componentLoader = new MIDAS_ComponentLoader();
-    $dateComponent = $componentLoader->loadComponent('Date');
-    $comments = $itemCommentModel->getComments($params['item']);
-    $commentsList = array();
-    foreach($comments as $comment)
-      {
-      $commentArray = $comment->toArray();
-      $commentArray['user'] = $comment->getUser()->toArray();
-      $commentArray['comment'] = htmlentities($commentArray['comment']);
-      $commentArray['ago'] = $dateComponent->ago($commentArray['date']);
-      $commentsList[] = $commentArray;
-      }
-    $json['comments'] = $commentsList;
-    return $json;
+    $itemCommentModel->deleteByUser($params['userDao']);
+    }
+
+  /**
+   * When an item is getting deleted, we should delete associated comments
+   */
+  public function handleItemDeleted($params)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemCommentModel = $modelLoader->loadModel('Itemcomment', $this->moduleName);
+    $itemCommentModel->deleteByItem($params['item']);
     }
   }
 ?>
