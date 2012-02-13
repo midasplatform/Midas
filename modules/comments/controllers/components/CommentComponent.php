@@ -28,6 +28,7 @@ class Comments_CommentComponent extends AppComponent
     $componentLoader = new MIDAS_ComponentLoader();
     $dateComponent = $componentLoader->loadComponent('Date');
     $comments = $itemCommentModel->getComments($item, $limit, $offset);
+    $total = $itemCommentModel->getTotal($item);
     $commentsList = array();
     foreach($comments as $comment)
       {
@@ -37,6 +38,6 @@ class Comments_CommentComponent extends AppComponent
       $commentArray['ago'] = $dateComponent->ago($commentArray['date']);
       $commentsList[] = $commentArray;
       }
-    return $commentsList;
+    return array($commentsList, $total);
     }
 } // end class
