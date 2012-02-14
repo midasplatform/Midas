@@ -17,6 +17,8 @@ class Ratings_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JSON', 'getJson');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_INFO', 'getItemInfo');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_APPEND_ELEMENTS', 'getElement');
+    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
+    $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'handleItemDeleted');
     }
 
   /** Some html to be appended to the item view sidebar */
@@ -64,6 +66,26 @@ class Ratings_Notification extends MIDAS_Notification
       $data['userRating'] = $itemRatingModel->getByUser($this->userSession->Dao, $params['item']);
       }
     return $data;
+    }
+
+  /**
+   * When a user is getting deleted, we should delete their comments
+   */
+  public function handleUserDeleted($params)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemRatingModel = $modelLoader->loadModel('Itemrating', $this->moduleName);
+    $itemRatingModel->deleteByUser($params['userDao']);
+    }
+
+  /**
+   * When an item is getting deleted, we should delete associated comments
+   */
+  public function handleItemDeleted($params)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemRatingModel = $modelLoader->loadModel('Itemrating', $this->moduleName);
+    $itemRatingModel->deleteByItem($params['item']);
     }
   }
 ?>

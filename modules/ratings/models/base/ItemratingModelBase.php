@@ -44,5 +44,9 @@ abstract class Ratings_ItemratingModelBase extends Ratings_AppModel
   abstract function getAggregateInfo($item);
   /** Get rating by user, or return 0 if none exists for that user */
   abstract function getByUser($user, $item);
+  /** Delete all comments made by the user. Called when user is about to be deleted. */
+  abstract public function deleteByUser($user);
+  /** Delete all comments on a given item. Called when item is about to be deleted. */
+  abstract public function deleteByItem($item);
 }
 ?>
