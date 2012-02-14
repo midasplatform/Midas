@@ -173,17 +173,22 @@ class CommunityController extends AppController
             }
 
           // users in Midas_anonymouse_group can see CREATE_COMMUNITY feed for this community only if the community is set as public
-          $feedcreatecommunityDaoArray = array();
-          // there exist 1 and only 1 feed in 'MIDAS_FEED_CREATE_COMMUNITY' type for any commuinty
-          $feedcreatecommunityDaoArray = $this->Feed->getFeedByResourceAndType(MIDAS_FEED_CREATE_COMMUNITY, $communityDao);
-          $feedpolicygroupDao = $this->Feedpolicygroup->getPolicy($anonymousGroup, $feedcreatecommunityDaoArray[0]);
-          if($forminfo_privacy == MIDAS_COMMUNITY_PRIVATE && $feedpolicygroupDao !== false)
+          $feedcreatecommunityDaos = array();
+          $feedcreatecommunityDaos = $this->Feed->getFeedByResourceAndType(MIDAS_FEED_CREATE_COMMUNITY, $communityDao);
+          if(!empty($feedcreatecommunityDaos))
             {
-            $this->Feedpolicygroup->delete($feedpolicygroupDao);
-            }
-          else if($forminfo_privacy == MIDAS_COMMUNITY_PUBLIC && $feedpolicygroupDao == false)
-            {
-            $this->Feedpolicygroup->createPolicy($anonymousGroup, $feedcreatecommunityDaoArray[0], MIDAS_POLICY_READ);
+            foreach($feedcreatecommunityDaos as $feedcreatecommunityDao)
+              {
+              $feedpolicygroupDao = $this->Feedpolicygroup->getPolicy($anonymousGroup, $feedcreatecommunityDao);
+              if($forminfo_privacy == MIDAS_COMMUNITY_PRIVATE && $feedpolicygroupDao !== false)
+                {
+                $this->Feedpolicygroup->delete($feedpolicygroupDao);
+                }
+              else if($forminfo_privacy == MIDAS_COMMUNITY_PUBLIC && $feedpolicygroupDao == false)
+                {
+                $this->Feedpolicygroup->createPolicy($anonymousGroup, $feedcreatecommunityDao, MIDAS_POLICY_READ);
+                }
+              }
             }
 
           $communityDao->setCanJoin($formInfo->getValue('canJoin'));
