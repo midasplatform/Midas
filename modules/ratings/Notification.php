@@ -32,6 +32,7 @@ class Ratings_Notification extends MIDAS_Notification
     {
     return array($this->moduleWebroot.'/public/js/star_rating/jquery.ui.stars.min.js',
                  $this->moduleWebroot.'/public/js/item/item.ratings.js',
+                 $this->moduleWebroot.'/public/js/common/common.ratings.js',
                  $this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js',
                  $this->coreWebroot.'/public/js/jquery/jqplot/jqplot.barRenderer.min.js',
                  $this->coreWebroot.'/public/js/jquery/jqplot/jqplot.categoryAxisRenderer.min.js',
