@@ -21,6 +21,10 @@
 /** Helper component for the comments module */
 class Comments_CommentComponent extends AppComponent
 {
+  /**
+   * Returns a page of comments and all required information
+   * to be rendered in the view
+   */
   public function getComments($item, $limit, $offset)
     {
     $modelLoader = new MIDAS_ModelLoader();

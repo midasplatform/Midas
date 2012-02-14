@@ -17,6 +17,8 @@ class Ratings_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JSON', 'getJson');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_INFO', 'getItemInfo');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_APPEND_ELEMENTS', 'getElement');
+    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
+    $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'handleItemDeleted');
     }
 
   /** Some html to be appended to the item view sidebar */
@@ -30,20 +32,23 @@ class Ratings_Notification extends MIDAS_Notification
   /** Get javascript for the ratings */
   public function getJs($params)
     {
-    return array($this->moduleWebroot.'/public/js/star_rating/jquery.ui.stars.min.js',
-                 $this->moduleWebroot.'/public/js/item/item.ratings.js',
-                 $this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js',
-                 $this->coreWebroot.'/public/js/jquery/jqplot/jqplot.barRenderer.min.js',
-                 $this->coreWebroot.'/public/js/jquery/jqplot/jqplot.categoryAxisRenderer.min.js',
-                 $this->coreWebroot.'/public/js/jquery/jqplot/jqplot.pointLabels.min.js');
+    return array(
+    $this->moduleWebroot.'/public/js/star_rating/jquery.ui.stars.min.js',
+    $this->moduleWebroot.'/public/js/item/item.ratings.js',
+    $this->moduleWebroot.'/public/js/common/common.ratings.js',
+    $this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js',
+    $this->coreWebroot.'/public/js/jquery/jqplot/jqplot.barRenderer.min.js',
+    $this->coreWebroot.'/public/js/jquery/jqplot/jqplot.categoryAxisRenderer.min.js',
+    $this->coreWebroot.'/public/js/jquery/jqplot/jqplot.pointLabels.min.js');
     }
 
   /** Get stylesheets for the ratings */
   public function getCss($params)
     {
-    return array($this->moduleWebroot.'/public/css/star_rating/jquery.ui.stars.css',
-                 $this->moduleWebroot.'/public/css/item/item.ratings.css',
-                 $this->coreWebroot.'/public/css/jquery/jquery.jqplot.css');
+    return array(
+    $this->moduleWebroot.'/public/css/star_rating/jquery.ui.stars.css',
+    $this->moduleWebroot.'/public/css/item/item.ratings.css',
+    $this->coreWebroot.'/public/css/jquery/jquery.jqplot.css');
     }
 
   /** Get the element to render at the bottom of the item view */
@@ -63,6 +68,26 @@ class Ratings_Notification extends MIDAS_Notification
       $data['userRating'] = $itemRatingModel->getByUser($this->userSession->Dao, $params['item']);
       }
     return $data;
+    }
+
+  /**
+   * When a user is getting deleted, we should delete their comments
+   */
+  public function handleUserDeleted($params)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemRatingModel = $modelLoader->loadModel('Itemrating', $this->moduleName);
+    $itemRatingModel->deleteByUser($params['userDao']);
+    }
+
+  /**
+   * When an item is getting deleted, we should delete associated comments
+   */
+  public function handleItemDeleted($params)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemRatingModel = $modelLoader->loadModel('Itemrating', $this->moduleName);
+    $itemRatingModel->deleteByItem($params['item']);
     }
   }
 ?>

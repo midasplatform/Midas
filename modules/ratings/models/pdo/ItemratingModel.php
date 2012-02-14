@@ -99,5 +99,21 @@ class Ratings_ItemratingModel extends Ratings_ItemratingModelBase
       return $row['rating'];
       }
     }
+
+  /**
+   * Delete all ratings made by the user. Called when user is about to be deleted.
+   */
+  public function deleteByUser($user)
+    {
+    Zend_Registry::get('dbAdapter')->delete($this->_name, 'user_id = '.$user->getKey());
+    }
+
+  /**
+   * Delete all ratings on a given item. Called when item is about to be deleted.
+   */
+  public function deleteByItem($item)
+    {
+    Zend_Registry::get('dbAdapter')->delete($this->_name, 'item_id = '.$item->getKey());
+    }
 }
 ?>

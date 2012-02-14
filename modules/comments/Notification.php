@@ -23,8 +23,9 @@ class Comments_Notification extends MIDAS_Notification
   /** Get javascript for the comments */
   public function getJs($params)
     {
-    return array($this->moduleWebroot.'/public/js/item/item.comments.js',
-                 $this->coreWebroot.'/public/js/jquery/jquery.autogrow-textarea.js');
+    return array(
+    $this->moduleWebroot.'/public/js/item/item.comments.js',
+    $this->coreWebroot.'/public/js/jquery/jquery.autogrow-textarea.js');
     }
 
   /** Get stylesheets for the comments */
@@ -76,4 +77,3 @@ class Comments_Notification extends MIDAS_Notification
     }
   }
 ?>
-
