@@ -58,6 +58,7 @@
     top: 15px;
 /*    padding-right: 10px;*/
     text-align: right;
+    white-space: nowrap;
 }
 
 .jqplot-yaxis-tick.jqplot-breakTick {

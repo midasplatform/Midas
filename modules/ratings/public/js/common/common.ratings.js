@@ -28,9 +28,12 @@ midas.ratings.createChart = function(distribution) {
         axes: {
             yaxis: {
                 renderer: $.jqplot.CategoryAxisRenderer,
-                ticks: ['1', '2', '3', '4', '5'],
+                ticks: ['1 star', '2 star', '3 star', '4 star', '5 star'],
                 borderWidth: 1,
-                borderColor: 'black'
+                borderColor: 'black',
+                tickOptions: {
+                    markSize: 0
+                }
             },
             xaxis: {
                 min: 0,
