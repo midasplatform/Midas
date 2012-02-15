@@ -78,7 +78,8 @@ abstract class FolderModelBase extends AppModel
 
     $root = $folder;
     $parent = $folder->getParent();
-    while($parent->getKey() > 0)
+
+    while($parent !== false && intval($parent->getKey()) > 0)
       {
       $root = $parent;
       $parent = $parent->getParent();
@@ -86,7 +87,7 @@ abstract class FolderModelBase extends AppModel
 
     return $root;
     } // end getRoot()
-  
+
   /** Increment the view count */
   function incrementViewCount($folder)
     {
