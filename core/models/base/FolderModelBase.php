@@ -64,10 +64,29 @@ abstract class FolderModelBase extends AppModel
   abstract function policyCheck($folderDao, $userDao = null, $policy = 0);
   abstract function getFolderExists($name, $parent);
   abstract function getByUuid($uuid);
-  abstract function getRoot($folder);
   abstract function getAll();
   abstract function isDeleteable($folder);
   abstract function getSize($folder);
+
+  /** Get the root folder */
+  function getRoot($folder)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder");
+      }
+
+    $root = $folder;
+    $parent = $folder->getParent();
+
+    while($parent !== false && intval($parent->getKey()) > 0)
+      {
+      $root = $parent;
+      $parent = $parent->getParent();
+      }
+
+    return $root;
+    } // end getRoot()
 
   /** Increment the view count */
   function incrementViewCount($folder)
