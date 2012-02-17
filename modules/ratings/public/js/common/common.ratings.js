@@ -89,7 +89,7 @@ midas.ratings.setRating = function(value) {
 
 }
 
-$(document).ready(function() {
+$(window).load(function() {
     midas.doCallback('CALLBACK_RATINGS_BEFORE_LOAD');
     $('#ratingsAverage').stars({
         disabled: true,
