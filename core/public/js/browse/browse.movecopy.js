@@ -13,7 +13,7 @@ midas.browse.moveCopyCallbackSelect = function (node) {
         var classNames = current[0].className.split(' ');
         for(key in classNames) {
             if(classNames[key].match("child-of-")) {
-                parent = $("#" + classNames[key].substring(9));
+                parent = $("#moveCopyTable #" + classNames[key].substring(9));
             }
         }
         if(parent != null) {
@@ -67,7 +67,7 @@ midas.browse.moveCopyCallbackCustomElements = function (node,elements,first) {
 
 $(document).ready(
     function() {
-        $("#moveTable").treeTable(
+        $("#moveCopyTable").treeTable(
             {
                 callbackSelect: midas.browse.moveCopyCallbackSelect,
                 callbackCheckboxes: midas.browse.moveCopyCallbackCheckboxes,
@@ -75,7 +75,7 @@ $(document).ready(
                 callbackCustomElements: midas.browse.moveCopyCallbackCustomElements
             });
         $("img.tableLoading").hide();
-        $("table#moveTable").show();
+        $("table#moveCopyTable").show();
      
         $('applet').hide();
        
