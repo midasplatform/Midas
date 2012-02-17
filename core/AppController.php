@@ -250,7 +250,7 @@ class AppController extends MIDAS_GlobalController
       'delete' => $this->t('Delete'),
       'deleteSelected' => $this->t('Delete all selected'),
       'duplicateSelected' => $this->t('Duplicate all selected'),
-      'ignoreSelectedFolders' => $this->t('(This action does not support folder; all selected folders are ignored.)'),
+      'ignoreSelectedFolders' => $this->t('(Folder type does not support this action; all selected folders are ignored.)'),
       'deleteSelectedMessage' => $this->t('Do you really want to delete all selected resources?'),
       'removeItem' => $this->t('Remove Item from Folder'),
       'deleteMessage' => $this->t('Do you really want to delete the folder?'),
