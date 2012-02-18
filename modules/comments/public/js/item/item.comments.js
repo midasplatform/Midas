@@ -66,6 +66,12 @@ midas.comments.initCommentList = function(comments) {
     $('img[qtip],.commentDate[qtip]').qtip({
         content: {
             attr: 'qtip'
+        },
+        position: {
+            at: 'bottom right',
+            my: 'top left',
+            viewport: $(window),
+            effect: true
         }
     });
 }
@@ -97,26 +103,41 @@ midas.comments.refreshCommentList = function() {
  * with the id of the comment that they requested to delete
  */
 midas.comments.deleteComment = function(commentId) {
-    showDialogWithContent('Delete comment', $('#deleteCommentConfirmation').html(), false);
-    $('input.deleteCommentNo').click(function() {
-        $('div.MainDialog').dialog('close');
-    });
-    $('input.deleteCommentYes').click(function() {
+    if(typeof showDialogWithContent == 'function') {
+        showDialogWithContent('Delete comment', $('#deleteCommentConfirmation').html(), false);
+        $('input.deleteCommentNo').click(function() {
+            $('div.MainDialog').dialog('close');
+        });
+        $('input.deleteCommentYes').click(function() {
+            $.post(json.global.webroot+'/comments/comment/delete', {
+                commentId: commentId
+            }, function(data) {
+                var resp = $.parseJSON(data);
+                if(resp == null) {
+                    createNotice('Error occurred, check the logs', 4000, 'error');
+                    return;
+                }
+                if(resp.status == 'ok') {
+                    midas.comments.refreshCommentList();
+                    $('div.MainDialog').dialog('close');
+                }
+                createNotice(resp.message, 4000, resp.status);
+            });
+        });
+    } else { // we have not loaded the layout...
         $.post(json.global.webroot+'/comments/comment/delete', {
             commentId: commentId
         }, function(data) {
             var resp = $.parseJSON(data);
             if(resp == null) {
-                createNotice('Error occurred, check the logs', 4000, 'error');
+                alert('Error occurred, check the logs');
                 return;
             }
             if(resp.status == 'ok') {
                 midas.comments.refreshCommentList();
-                $('div.MainDialog').dialog('close');
             }
-            createNotice(resp.message, 4000, resp.status);
         });
-    });
+    }
 }
 
 /**

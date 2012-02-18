@@ -64,9 +64,15 @@ div.addCommentFooter {
   min-height: 32px;
 }
 
-.commentUserName {
+a.commentUserName,a.commentUserName:visited {
   margin-left: 8px;
-  font-weight: bolder !important;
+  font-weight: bold !important;
+  text-decoration: none;
+  color: #56758B;
+}
+
+a.commentUserName:hover {
+  text-decoration: underline;
 }
 
 .commentTextDiv {
