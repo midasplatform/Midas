@@ -1,16 +1,16 @@
-table#moveTable{
+table#moveCopyTable{
   width: 420px !important;
 }
 
-table#moveTable th.thData {
+table#moveCopyTable th.thData {
 width: auto!important;
 border-right: none!important;
 }
 
-table#moveTable{
+table#moveCopyTable{
   display: none;
 }
 
-.treeTable .browserPrivacyInformation{
+#moveCopyTable .browserPrivacyInformation{
   right: 10px!important;
 }

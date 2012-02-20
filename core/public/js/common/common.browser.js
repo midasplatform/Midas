@@ -70,6 +70,13 @@ midas.genericCallbackCheckboxes = function(node) {
             links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> ';
             links += '  <a onclick="midas.deleteSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.deleteSelected + '</a></li>';
             links += '</li>';
+            if( arraySelected['items'].length > 0)
+              {
+              links += '<li style="background-color: white;">';
+              links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/copy.png"/> ';
+              links += '  <a onclick="midas.duplicateSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.duplicateSelected + '</a></li>';
+              links += '</li>'; 
+              }
         }
         links += '</ul>';
         $('div.viewSelected>span').html(links);
@@ -264,6 +271,25 @@ midas.deleteSelected = function (folders, items) {
     $('input.deleteSelectedNo').unbind('click').click(function() {
         $('div.MainDialog').dialog('close');
     });
+};
+
+/**
+ * Duplicates the set of folders and items selected with the checkboxes.
+ * The folders and items params should be strings of ids separated by - (empty
+ * ids will be ignored)
+ */
+midas.duplicateSelected = function (folders, items) {
+    
+    loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+items);
+    if(folders == '')
+      {
+      showDialog(json.browse.duplicateSelected);
+      }
+    else
+      {
+      showDialog(json.browse.duplicateSelected + ' ' + json.browse.ignoreSelectedFolders);
+      }
+    
 };
 
 /**
