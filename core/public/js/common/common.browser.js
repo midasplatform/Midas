@@ -71,7 +71,11 @@ midas.genericCallbackCheckboxes = function(node) {
             links += '  <a onclick="midas.deleteSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.deleteSelected + '</a></li>';
             links += '</li>';
             if( arraySelected['items'].length > 0)
-              {
+              {   
+              links += '<li style="background-color: white;">';
+              links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/item-share.png"/> ';
+              links += '  <a onclick="midas.shareSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.shareSelected + '</a></li>';
+              links += '</li>'; 
               links += '<li style="background-color: white;">';
               links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/copy.png"/> ';
               links += '  <a onclick="midas.duplicateSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.duplicateSelected + '</a></li>';
@@ -274,12 +278,31 @@ midas.deleteSelected = function (folders, items) {
 };
 
 /**
- * Duplicates the set of folders and items selected with the checkboxes.
- * The folders and items params should be strings of ids separated by - (empty
+ * Shares the set of items selected with the checkboxes.
+ * This action does not support folder type, selected folder will be ignored.
+ * The items param should be strings of ids separated by - (empty
  * ids will be ignored)
  */
-midas.duplicateSelected = function (folders, items) {
-    
+midas.shareSelected = function (folders, items) {  
+    loadDialog("ShareItem","/browse/movecopy/?share=true&items="+items);
+    if(folders == '')
+      {
+      showDialog(json.browse.shareSelected);
+      }
+    else
+      {
+      showDialog(json.browse.shareSelected + ' ' + json.browse.ignoreSelectedFolders);
+      }   
+};
+
+
+/**
+ * Duplicates the set of items selected with the checkboxes. 
+ * This action does not support folder type, selected folder will be ignored.
+ * The items param should be strings of ids separated by - (empty
+ * ids will be ignored)
+ */
+midas.duplicateSelected = function (folders, items) {  
     loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+items);
     if(folders == '')
       {
@@ -288,8 +311,7 @@ midas.duplicateSelected = function (folders, items) {
     else
       {
       showDialog(json.browse.duplicateSelected + ' ' + json.browse.ignoreSelectedFolders);
-      }
-    
+      }   
 };
 
 /**
