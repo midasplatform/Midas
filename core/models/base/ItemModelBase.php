@@ -275,6 +275,7 @@ abstract class ItemModelBase extends AppModel
         $BitstreamModel->save($dupBitstream);
         }
       }
+      return $newItem;
     }//end duplicateItem
 
   /** plus one view*/
