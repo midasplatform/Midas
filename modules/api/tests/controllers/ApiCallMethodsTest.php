@@ -249,7 +249,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($resp->data->items[0]->description, 'Description 1');
     $this->assertEquals($resp->data->items[1]->description, 'Description 2');
     }
-
+    
   /** Test the item.get method */
   public function testItemGet()
     {
@@ -287,7 +287,40 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertTrue(is_array($resp->data->revisions[0]->bitstreams));
     $this->assertEquals($resp->data->revisions[0]->revision, '2');
     }
+  
+  /** Test the item.duplicate method */
+  public function testItemDuplicate()
+    {
+    $itemsFile = $this->loadData('Item', 'default');
 
+    $this->resetAll();
+    $token = $this->_loginAsNormalUser();
+    $this->params['token'] = $token;
+    $this->params['method'] = 'midas.item.duplicate';
+    $this->params['id'] = $itemsFile[0]->getKey();
+    $this->params['dstfolderid'] = 1002;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    
+    $dupItemId = $resp->data->item_id;
+    $dupItemDao = $this->Item->load($dupItemId);
+    $parentFolders = $dupItemDao->getFolders();
+    $this->assertEquals($parentFolders[0]->getKey(), 1002);
+
+    $origItemDao = $this->Item->load($itemsFile[0]->getKey());
+    $this->assertEquals($resp->data->name, $origItemDao->getName());
+    $this->assertEquals($resp->data->description, $origItemDao->getDescription());
+    
+    $revisions = $dupItemDao->getRevisions();
+    $this->assertEquals(count($revisions), 2); //make sure both revisions are duplicated
+    $revision1 = $revisions[0]->toArray();
+    $this->assertEquals($revision1['revision'], '1');
+    $revision2 = $revisions[1]->toArray();
+    $this->assertEquals($revision2['revision'], '2');
+
+    
+    }
+    
   /** Test get user's default API key using username and password */
   public function testUserApikeyDefault()
     {
