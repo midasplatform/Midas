@@ -182,26 +182,40 @@ class Api_ApiComponent extends AppComponent
 
     $componentLoader = new MIDAS_ComponentLoader();
     $uuidComponent = $componentLoader->loadComponent('Uuid');
-    $folder = $uuidComponent->getByUid($args['uuid']);
+    $element = $uuidComponent->getByUid($args['uuid']);
 
     $return = array();
-    $return[] = $folder->toArray();
+    $return[] = $element->toArray();
 
-    if($folder == false)
+    if($element == false)
       {
       throw new Exception('No resource for the given UUID.', MIDAS_INVALID_PARAMETER);
       }
 
-    if(!$folder instanceof FolderDao)
+    if($element instanceof FolderDao)
       {
-      throw new Exception('Should be a folder.', MIDAS_INVALID_PARAMETER);
+      $parent = $element->getParent();
+      while($parent !== false)
+        {
+        $return[] = $parent->toArray();
+        $parent = $parent->getParent();
+        }
       }
-
-    $parent = $folder->getParent();
-    while($parent !== false)
+    else if($element instanceof ItemDao)
       {
-      $return[] = $parent->toArray();
-      $parent = $parent->getParent();
+      $owningFolders = $element->getFolders();
+      // randomly pick one parent folder
+      $parent = $owningFolders[0];
+      while($parent !== false)
+        {
+        $return[] = $parent->toArray();
+        $parent = $parent->getParent();
+        }
+      }
+    // community element itself is the root
+    else if(!$element instanceof CommunityDao)
+      {
+      throw new Exception('Should be a folder, an item or a community.', MIDAS_INVALID_PARAMETER);
       }
     return $return;
     }
