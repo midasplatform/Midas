@@ -921,6 +921,7 @@ class Api_ApiComponent extends AppComponent
    * @param token Authentication token
    * @param id The id of the folder
    * @param dstfolderid The id of destination folder (new parent folder) where the folder is moved to
+   * @return The folder object
    */
   function folderMove($args)
     {
@@ -943,6 +944,9 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("Unable to load destination folder.", MIDAS_INVALID_POLICY);
       }
     $folderModel->move($folder, $dstFolder);
+
+    $folder = $folderModel->load($id);
+    return $folder->toArray();
     }
 
   /**
@@ -1229,6 +1233,7 @@ class Api_ApiComponent extends AppComponent
    * @param token Authentication token
    * @param id The id of the item
    * @param dstfolderid The id of destination folder where the item is shared to
+   * @return The item object
    */
   function itemShare($args)
     {
@@ -1251,18 +1256,24 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
-    $srcFolderIds = array();
+    $itemArray = $item->toArray();
+    $owningFolderIds = array();
+    $owningFolderArray = array();
     foreach($item->getFolders() as $owningFolder)
       {
-      $folderId = $owningFolder->getKey();
-      array_push($srcFolderIds, $folderId);
+      $owningFolderIds[] = $owningFolder->getKey();
+      $owningFolderArray[] = $owningFolder->toArray();
       }
-    if(!in_array($dstFolder->getKey(), $srcFolderIds))
+    if(!in_array($dstFolder->getKey(), $owningFolderIds))
       {
       // Do not update item name in item share action
       $folderModel->addItem($dstFolder, $item, false);
       $itemModel->addReadonlyPolicy($item, $dstFolder);
+      $owningFolderArray[] = $dstFolder->toArray();
       }
+
+    $itemArray['owningfolders'] = $owningFolderArray;
+    return $itemArray;
     }
 
   /**
@@ -1271,6 +1282,7 @@ class Api_ApiComponent extends AppComponent
    * @param id The id of the item
    * @param srcfolderid The id of source folder where the item is located
    * @param dstfolderid The id of destination folder where the item is moved to
+   * @return The item object
    */
   function itemMove($args)
     {
@@ -1290,7 +1302,6 @@ class Api_ApiComponent extends AppComponent
     $dstFolderId = $args['dstfolderid'];
     $dstFolder = $folderModel->load($dstFolderId);
 
-
     if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
       {
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
@@ -1306,6 +1317,15 @@ class Api_ApiComponent extends AppComponent
       $itemModel->copyParentPolicies($item, $dstFolder);
       $folderModel->removeItem($srcFolder, $item);
       }
+
+    $itemArray = $item->toArray();
+    $owningFolderArray = array();
+    foreach($item->getFolders() as $owningFolder)
+      {
+      $owningFolderArray[] = $owningFolder->toArray();
+      }
+    $itemArray['owningfolders'] = $owningFolderArray;
+    return $itemArray;
     }
 
   /**
