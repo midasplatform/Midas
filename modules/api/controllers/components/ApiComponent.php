@@ -917,6 +917,39 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Move a folder to the desination folder
+   * @param token Authentication token
+   * @param id The id of the folder
+   * @param dstfolderid The id of destination folder (new parent folder) where the folder is moved to
+   * @return The folder object
+   */
+  function folderMove($args)
+    {
+    $this->_validateParams($args, array('id', 'dstfolderid'));
+    $userDao = $this->_getUser($args);
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $folderModel = $modelLoader->loadModel('Folder');
+    $id = $args['id'];
+    $folder = $folderModel->load($id);
+    $dstFolderId = $args['dstfolderid'];
+    $dstFolder = $folderModel->load($dstFolderId);
+
+    if($folder === false || !$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
+      {
+      throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
+      }
+    if($dstFolder == false)
+      {
+      throw new Exception("Unable to load destination folder.", MIDAS_INVALID_POLICY);
+      }
+    $folderModel->move($folder, $dstFolder);
+
+    $folder = $folderModel->load($id);
+    return $folder->toArray();
+    }
+
+  /**
    * Create an item or update an existing one if one exists by the uuid passed
    * @param token Authentication token
    * @param name The name of the item to create
@@ -1160,6 +1193,139 @@ class Api_ApiComponent extends AppComponent
       $metadataArray[] = $m->toArray();
       }
     return $metadataArray;
+    }
+
+  /**
+   * Duplicate an item to the desination folder
+   * @param token Authentication token
+   * @param id The id of the item
+   * @param dstfolderid The id of destination folder where the item is duplicated to
+   * @return The item object that was created
+   */
+  function itemDuplicate($args)
+    {
+    $this->_validateParams($args, array('id', 'dstfolderid'));
+    $userDao = $this->_getUser($args);
+    if($userDao == false)
+      {
+      throw new Exception('Cannot duplicate item anonymously', MIDAS_INVALID_POLICY);
+      }
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $folderModel = $modelLoader->loadModel('Folder');
+    $id = $args['id'];
+    $item = $itemModel->load($id);
+    $dstFolderId = $args['dstfolderid'];
+    $dstFolder = $folderModel->load($dstFolderId);
+
+    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+      {
+      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
+      }
+
+    $duplicatedItem = $itemModel->duplicateItem($item, $userDao, $dstFolder);
+
+    return $duplicatedItem->toArray();
+    }
+
+  /**
+   * Share an item to the destination folder
+   * @param token Authentication token
+   * @param id The id of the item
+   * @param dstfolderid The id of destination folder where the item is shared to
+   * @return The item object
+   */
+  function itemShare($args)
+    {
+    $this->_validateParams($args, array('id', 'dstfolderid'));
+    $userDao = $this->_getUser($args);
+    if($userDao == false)
+      {
+      throw new Exception('Cannot share item anonymously', MIDAS_INVALID_POLICY);
+      }
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $folderModel = $modelLoader->loadModel('Folder');
+    $id = $args['id'];
+    $item = $itemModel->load($id);
+    $dstFolderId = $args['dstfolderid'];
+    $dstFolder = $folderModel->load($dstFolderId);
+
+    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+      {
+      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
+      }
+
+    $itemArray = $item->toArray();
+    $owningFolderIds = array();
+    $owningFolderArray = array();
+    foreach($item->getFolders() as $owningFolder)
+      {
+      $owningFolderIds[] = $owningFolder->getKey();
+      $owningFolderArray[] = $owningFolder->toArray();
+      }
+    if(!in_array($dstFolder->getKey(), $owningFolderIds))
+      {
+      // Do not update item name in item share action
+      $folderModel->addItem($dstFolder, $item, false);
+      $itemModel->addReadonlyPolicy($item, $dstFolder);
+      $owningFolderArray[] = $dstFolder->toArray();
+      }
+
+    $itemArray['owningfolders'] = $owningFolderArray;
+    return $itemArray;
+    }
+
+  /**
+   * Move an item from the source folder to the desination folder
+   * @param token Authentication token
+   * @param id The id of the item
+   * @param srcfolderid The id of source folder where the item is located
+   * @param dstfolderid The id of destination folder where the item is moved to
+   * @return The item object
+   */
+  function itemMove($args)
+    {
+    $this->_validateParams($args, array('id', 'srcfolderid', 'dstfolderid'));
+    $userDao = $this->_getUser($args);
+    if($userDao == false)
+      {
+      throw new Exception('Cannot move item anonymously', MIDAS_INVALID_POLICY);
+      }
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $folderModel = $modelLoader->loadModel('Folder');
+    $id = $args['id'];
+    $item = $itemModel->load($id);
+    $srcFolderId = $args['srcfolderid'];
+    $srcFolder = $folderModel->load($srcFolderId);
+    $dstFolderId = $args['dstfolderid'];
+    $dstFolder = $folderModel->load($dstFolderId);
+
+    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+      {
+      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
+      }
+
+    if($srcFolder == false || $dstFolder == false)
+      {
+      throw new Exception("Unable to load source or destination folder.", MIDAS_INVALID_POLICY);
+      }
+    if($dstFolder->getKey() != $srcFolder->getKey())
+      {
+      $folderModel->addItem($dstFolder, $item);
+      $itemModel->copyParentPolicies($item, $dstFolder);
+      $folderModel->removeItem($srcFolder, $item);
+      }
+
+    $itemArray = $item->toArray();
+    $owningFolderArray = array();
+    foreach($item->getFolders() as $owningFolder)
+      {
+      $owningFolderArray[] = $owningFolder->toArray();
+      }
+    $itemArray['owningfolders'] = $owningFolderArray;
+    return $itemArray;
     }
 
   /**
