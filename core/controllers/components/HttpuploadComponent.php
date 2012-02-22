@@ -129,7 +129,7 @@ class HttpuploadComponent extends AppComponent
       }
     else
       {
-      $uploadOffset = filesize($pathTemporaryFilename);
+      $uploadOffset = UtilityComponent::fileSize($pathTemporaryFilename);
       }
 
     // can't do streaming checksum if we have a partial file already.
@@ -203,7 +203,7 @@ class HttpuploadComponent extends AppComponent
       throw new Exception('Parameter '.$this->tokenParamName.' is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
       }
     $uploadToken = $args[$this->tokenParamName];
-    $offset = filesize($this->tmpDirectory.'/'.$uploadToken);
+    $offset = UtilityComponent::fileSize($this->tmpDirectory.'/'.$uploadToken);
     return array('offset' => $offset);
     }
   }
