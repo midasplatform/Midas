@@ -57,20 +57,24 @@ class UploadComponent extends AppComponent
       throw new Zend_Exception("Checksum is not set.");
       }
 
-    // Two-level hierarchy.
-    $path = substr($checksum, 0, 2).'/'.substr($checksum, 2, 2).'/'.$checksum;
-    $fullpath = $assetstoredao->getPath().'/'.$path;
-
-    // We assume this is the same file contents rather than an md5 collision
-    if(file_exists($fullpath))
+    // If we already have a file of this checksum in any assetstore, we point to it
+    $modelLoader = new MIDAS_ModelLoader();
+    $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    $existing = $bitstreamModel->getByChecksum($checksum);
+    if($existing)
       {
       if($copy === false)
         {
         unlink($bitstreamdao->getPath()); // Remove the temporary uploaded file
         }
-      $bitstreamdao->setPath($path);
+      $bitstreamdao->setPath($existing->getPath());
+      $bitstreamdao->setAssetstoreId($existing->getAssetstoreId());
       return;
       }
+
+    // Two-level hierarchy.
+    $path = substr($checksum, 0, 2).'/'.substr($checksum, 2, 2).'/'.$checksum;
+    $fullpath = $assetstoredao->getPath().'/'.$path;
 
     //Create the directories
     $currentdir = $assetstoredao->getPath().'/'.substr($checksum, 0, 2);
@@ -272,13 +276,6 @@ class UploadComponent extends AppComponent
 
     // Upload the bitstream if necessary (based on the assetstore type)
     $this->uploadBitstream($bitstreamDao, $assetstoreDao, $copy);
-    $checksum = $bitstreamDao->getChecksum();
-    $tmpBitstreamDao = $bitstreamModel->getByChecksum($checksum);
-    if($tmpBitstreamDao != false)
-      {
-      $bitstreamDao->setPath($tmpBitstreamDao->getPath());
-      $bitstreamDao->setAssetstoreId($tmpBitstreamDao->getAssetstoreId());
-      }
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
 
     $this->getLogger()->info(__METHOD__.' Upload ok :'.$path);
