@@ -297,7 +297,7 @@ class UtilityComponent extends AppComponent
     {
     if(strpos(strtolower(PHP_OS), 'win') !==  false)
       {
-      $filesystem = new COM('Scripting.FileSystemObject'); 
+      $filesystem = new COM('Scripting.FileSystemObject');
       $file = $filesystem->GetFile($path);
       return $file->Size();
       }
