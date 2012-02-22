@@ -24,7 +24,7 @@ class Sizequota_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'sizequota';
   public $_moduleComponents = array('Api');
-  public $_models = array('Folder');
+  public $_models = array('Assetstore', 'Folder');
 
   /** init notification process */
   public function init()
@@ -87,19 +87,21 @@ class Sizequota_Notification extends ApiEnabled_Notification
     $folder = $args['folder'];
     $rootFolder = $folderModel->getRoot($folder);
     $quota = $folderQuotaModel->getFolderQuota($rootFolder);
+    $assetstoreFree = disk_free_space($this->Assetstore->getDefault()->getPath());
     if($quota == '')
       {
-      return '<div id="sizequotaFreeSpace" style="display:none;"></div>'.
-             '<div id="sizequotaHFreeSpace" style="display:none;">'.$this->t('Unlimited').'</div>';
+      $free = $assetstoreFree;
       }
     else
       {
       $used = $folderModel->getSize($rootFolder);
-      $freeSpace = number_format($quota - $used, 0, '.', '');
-      $hFreeSpace = UtilityComponent::formatSize($quota - $used);
-      return '<div id="sizequotaFreeSpace" style="display:none;">'.$freeSpace.'</div>'.
-             '<div id="sizequotaHFreeSpace" style="display:none;">'.$hFreeSpace.'</div>';
+      $free = min($assetstoreFree, $quota - $used);
       }
+
+    $free = number_format($free, 0, '.', '');
+    $hFree = UtilityComponent::formatSize($free);
+    return '<div id="sizequotaFreeSpace" style="display:none;">'.$free.'</div>'.
+           '<div id="sizequotaHFreeSpace" style="display:none;">'.$hFree.'</div>';
     }
 
   /**
@@ -124,19 +126,21 @@ class Sizequota_Notification extends ApiEnabled_Notification
       {
       $rootFolder = $folderModel->getRoot($folders[0]);
       $quota = $folderQuotaModel->getFolderQuota($rootFolder);
+      $assetstoreFree = disk_free_space($this->Assetstore->getDefault()->getPath());
       if($quota == '')
         {
-        return '<div id="sizequotaFreeSpace" style="display:none;"></div>'.
-               '<div id="sizequotaHFreeSpace" style="display:none;">'.$this->t('Unlimited').'</div>';
+        $free = $assetstoreFree;
         }
       else
         {
         $used = $folderModel->getSize($rootFolder);
-        $freeSpace = number_format($quota - $used, 0, '.', '');
-        $hFreeSpace = UtilityComponent::formatSize($quota - $used);
-        return '<div id="sizequotaFreeSpace" style="display:none;">'.$freeSpace.'</div>'.
-               '<div id="sizequotaHFreeSpace" style="display:none;">'.$hFreeSpace.'</div>';
+        $free = min($assetstoreFree, $quota - $used);
         }
+
+      $free = number_format($free, 0, '.', '');
+      $hFree = UtilityComponent::formatSize($free);
+      return '<div id="sizequotaFreeSpace" style="display:none;">'.$free.'</div>'.
+             '<div id="sizequotaHFreeSpace" style="display:none;">'.$hFree.'</div>';
       }
     }
 

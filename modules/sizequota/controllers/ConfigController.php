@@ -25,7 +25,7 @@
  */
 class Sizequota_ConfigController extends Sizequota_AppController
 {
-  public $_models = array('Folder', 'Setting');
+  public $_models = array('Assetstore', 'Folder', 'Setting');
   public $_moduleModels = array('FolderQuota');
   public $_moduleForms = array('Config');
 
@@ -197,20 +197,22 @@ class Sizequota_ConfigController extends Sizequota_AppController
       $rootFolder = $this->Folder->getRoot($folder);
       }
     $quota = $this->Sizequota_FolderQuota->getFolderQuota($rootFolder);
+    $assetstoreFree = disk_free_space($this->Assetstore->getDefault()->getPath());
     if($quota == '')
       {
-      $freeSpace = '';
-      $hFreeSpace = $this->t('Unlimited');
+      $free = $assetstoreFree;
       }
     else
       {
       $used = $this->Folder->getSize($rootFolder);
-      $freeSpace = number_format($quota - $used, 0, '.', '');
-      $hFreeSpace = UtilityComponent::formatSize($quota - $used);
+      $free = min($assetstoreFree, $quota - $used);
       }
+
+    $free = number_format($free, 0, '.', '');
+    $hFree = UtilityComponent::formatSize($free);
     echo JsonComponent::encode(array('status' => true,
-                                     'freeSpace' => $freeSpace,
-                                     'hFreeSpace' => $hFreeSpace));
+                                     'freeSpace' => $free,
+                                     'hFreeSpace' => $hFree));
     }
 
   /** Test whether the provided quota values are legal */
