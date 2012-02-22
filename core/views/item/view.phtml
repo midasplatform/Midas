@@ -195,8 +195,9 @@ foreach($cssArray as $module => $list)
                     echo '    <span name="sizeBytes">'.$bitstream->getSizebytes().'</span>';
                     echo '    <span name="mimeType">'.$bitstream->getMimetype().'</span>';
                     echo '  </div>';
+                    echo '<a href="'.$this->webroot.'/download?bitstream='.$bitstream->getKey().'">';
                     echo $this->slicename($bitstream->getName(), 50);
-                    echo '</td>';
+                    echo '</a></td>';
                     echo '<td>'.$this->Utility->formatSize($bitstream->getSizebytes()).'</td>';
                     echo '</tr>';
                     }
