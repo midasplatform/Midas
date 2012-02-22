@@ -51,7 +51,7 @@ class DownloadBitstreamComponent extends AppComponent
       }
     $chunkSize = 1024 * 8;
     $buffer = '';
-    $fileSize = filesize($path);
+    $fileSize = UtilityComponent::fileSize($path);
     $handle = fopen($path, 'rb');
     if($handle === false)
       {

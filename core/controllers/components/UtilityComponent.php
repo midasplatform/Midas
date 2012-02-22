@@ -287,6 +287,26 @@ class UtilityComponent extends AppComponent
     $text = "<b>ImageMagick</b> (>=6.0) is not found. Please install imagemagick from http://www.imagemagick.org";
     return array(false, $text);
     }
+
+  /**
+   * Get size in bytes of the file. This also supports files over 2GB in Windows,
+   * which is not supported by PHP's filesize()
+   * @param path Path of the file to check
+   */
+  static public function fileSize($path)
+    {
+    if(strpos(strtolower(PHP_OS), 'win') !==  false)
+      {
+      $filesystem = new COM('Scripting.FileSystemObject');
+      $file = $filesystem->GetFile($path);
+      return $file->Size();
+      }
+    else
+      {
+      return filesize($path);
+      }
+    }
+
   /** format file size*/
   static public function formatSize($sizeInByte)
     {

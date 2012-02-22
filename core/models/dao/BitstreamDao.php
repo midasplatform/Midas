@@ -43,7 +43,7 @@ class BitstreamDao extends AppDao
     // clear the stat cache, as the underlying file might have changed
     // since the last time filesize was called on the same filepath
     clearstatcache();
-    $this->setSizebytes(filesize($this->path));
+    $this->setSizebytes(UtilityComponent::fileSize($this->path));
     if(!isset($this->checksum) || empty($this->checksum))
       {
       $this->setChecksum(UtilityComponent::md5file($this->path));
