@@ -49,6 +49,18 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
     <div class="genericSubtitle" style="color:grey;"><?php echo $this->itemSize;?></div>
   </div>
   <div class="itemViewMainSection">
+    <?php
+    $elements = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_VIEW_PREPEND_ELEMENTS', array('item' => $this->itemDao));
+    foreach($elements as $module => $elementList)
+      {
+      foreach($elementList as $element)
+        {
+        echo '<div class="itemViewMainSection">';
+        echo $this->element($element, $module);
+        echo '</div>';
+        }
+      }
+    ?>
     <h4>LICENSE</h4>
     <div id="licenseDiv">
       <?php
