@@ -679,3 +679,10 @@ Starting Guide
   background: url(../../images/icons/ok.png) no-repeat;
   padding-left: 18px;
 }
+
+.recentItem {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  white-space: nowrap;
+}
