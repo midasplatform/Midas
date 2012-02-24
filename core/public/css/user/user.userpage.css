@@ -7,3 +7,10 @@ div.sideElementFirst ul li:hover {
   background-color: #e5e5e5;
   color:black;
 }
+
+.websiteBlock li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  white-space: nowrap;
+}
