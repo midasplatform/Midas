@@ -152,7 +152,7 @@ var midas = midas || {};
                 if(module != '')
                  {
                  found =true;
-                 createNotive("Dependancy: The module "+module+" requires "+mainModule+". Please, disable it first.",3500);
+                 createNotice("Dependency: The module "+module+" requires "+mainModule+". You must disable it first.", 4000, 'warning');
                  }
                });
              if(found)
