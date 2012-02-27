@@ -173,7 +173,8 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/item/item.view.
                     echo '  </div>';
                     echo '<a href="'.$this->webroot.'/download?bitstream='.$bitstream->getKey().'">';
                     echo $this->slicename($bitstream->getName(), 50);
-                    echo '</a></td>';
+                    echo '</a> <img class="bitstreamInfoIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/message.png" />';
+                    echo '</td>';
                     echo '<td>'.$this->Utility->formatSize($bitstream->getSizebytes()).'</td>';
                     echo '</tr>';
                     }
