@@ -122,7 +122,7 @@ $('form#registerForm').submit(function(){
 });
 
 function checkEmail(mailteste) {
-    var reg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    var reg = /^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/;
 
     if(reg.test(mailteste)) {
         return true;
