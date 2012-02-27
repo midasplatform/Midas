@@ -74,6 +74,25 @@ midas.comments.initCommentList = function(comments) {
             effect: true
         }
     });
+    // Conditionally display previous and next page links
+    var showNext = (midas.comments.offset + midas.comments.PAGE_LIMIT) < midas.comments.total;
+    var showPrev = midas.comments.offset > 0;
+    if(showNext) {
+        $('#nextComments').show();
+    } else {
+        $('#nextComments').hide();
+    }
+    if(showPrev) {
+        $('#prevComments').show();
+    } else {
+        $('#prevComments').hide();
+    }
+    if(showNext && showPrev) {
+        $('#nextPrevSeparator').show();
+    } else {
+        $('#nextPrevSeparator').hide();
+    }
+    
 }
 
 /**

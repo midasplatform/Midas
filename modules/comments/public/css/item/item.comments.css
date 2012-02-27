@@ -115,3 +115,16 @@ div.commentPaginateWrapper {
   margin-top: 8px;
   float: right;
 }
+
+a.commentItrLink,a.commentItrLink:visited {
+  font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
+  text-decoration: none;
+  font-weight: bold;
+  color: #56758B;
+  font-size: 13px;
+}
+
+a.commentItrLink:hover {
+  color: #b85541;
+  text-decoration: underline;
+}
