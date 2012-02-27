@@ -118,21 +118,17 @@ $('#registerForm input').focusin(function()
 
 
 $('form#registerForm').submit(function(){
-  return validRegisterForm();
+    return validRegisterForm();
 });
 
-function checkEmail(mailteste)
-{
-	var reg = new RegExp('^[a-z0-9]+([_|\.|-|\+]{1}[a-z0-9]+)*@[a-z0-9]+([_|\.|-]{1}[a-z0-9]+)*[\.]{1}[a-z]{2,6}$', 'i');
+function checkEmail(mailteste) {
+    var reg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
-	if(reg.test(mailteste))
-	{
-		return(true);
-	}
-	else
-	{
-		return(false);
-	}
+    if(reg.test(mailteste)) {
+        return true;
+    } else {
+        return(false);
+    }
 }
 
 function validRegisterForm()
