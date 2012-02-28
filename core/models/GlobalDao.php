@@ -105,6 +105,10 @@ class MIDAS_GlobalDao
         {
         $return[$name] = $this->$name;
         }
+      else if($type['type'] == MIDAS_DATA)
+        {
+        $return[$name] = null;
+        }
       }
     return $return;
     }
