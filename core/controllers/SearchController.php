@@ -72,7 +72,7 @@ class SearchController extends AppController
       $this->view->nusers = $results['nusers'];
       $this->view->json['search']['results'] = $results['results'];
       $this->view->json['search']['keyword'] = $keyword;
-      $this->view->json['search']['noResults'] = $this->t('No result found.');
+      $this->view->json['search']['noResults'] = $this->t('No results found.');
       $this->view->json['search']['moreResults'] = $this->t('Show more results.');
       }
     }//end indexAction
