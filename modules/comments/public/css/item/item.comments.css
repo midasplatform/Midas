@@ -100,7 +100,6 @@ img.deleteCommentIcon {
 div.commentsBottomMessage {
   margin-top: 8px;
   color: #969696;
-  float: left;
 }
 
 #refreshingCommentDiv {
@@ -113,7 +112,6 @@ span.loadingCommentsMessage {
 
 div.commentPaginateWrapper {
   margin-top: 8px;
-  float: right;
 }
 
 a.commentItrLink,a.commentItrLink:visited {
