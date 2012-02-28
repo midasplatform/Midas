@@ -300,6 +300,7 @@ class ItemController extends AppController
     $this->view->json['item']['message']['deleteMetadataMessage'] = $this->t('Do you really want to delete this metadata? It cannot be undone.');
     $this->view->json['item']['message']['share'] = $this->t('Share Item (Display the same item in the destination folder)');
     $this->view->json['item']['message']['duplicate'] = $this->t('Duplicate Item (Create a new item in the destination folder)');
+    $this->view->json['modules'] = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_VIEW_JSON', array('item' => $itemDao));
     }//end index
 
   /**

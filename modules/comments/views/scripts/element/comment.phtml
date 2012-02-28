@@ -1,0 +1,65 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<div id="commentsDiv">
+  
+  <h4>COMMENTS</h4>
+
+  <div class="addCommentWrapper" style="display: none;">
+    <div id="addCommentDiv">
+      <textarea placeholder="Write a comment..." maxlength="1200" id="commentText"></textarea>
+      <div class="addCommentFooter" style="display: none;">
+        <div class="commentLimit">
+          <div class="commentLimitString"><span id="commentLengthRemaining"></span> remaining</div>
+        </div>
+        <div class="commentAs">
+          <div class="postingAsString">posting as <span id="postingAsUsername"></span></div>
+        </div>
+        <input class="globalButton" type="button" id="addCommentButton" value="Post" />
+      </div>
+    </div>
+  </div>
+
+  <div id="existingCommentsList">
+  </div>
+
+  <div class="commentPaginateWrapper">
+    <a style="display: none;" href="javascript:;" class="commentItrLink" id="prevComments">prev</a>
+    <span style="display: none;" id="nextPrevSeparator" class="loadingCommentsMessage">|</span>
+    <a style="display: none;" href="javascript:;" class="commentItrLink" id="nextComments">next</a>
+  </div>
+
+  <div style="display: none;" id="refreshingCommentDiv">
+    <img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+    <span class="loadingCommentsMessage">Loading comments...</span>
+  </div>
+
+  <!-- TEMPLATE: user comment -->
+  <div id="existingCommentTemplate" class="aComment" style="display: none;">
+    <img class="commentThumbnail" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/unknownUser.png" />
+    <a class="commentUserName"></a>
+    <span class="commentDate"></span>
+    <img qtip="Delete comment" style="display: none;" class="deleteCommentIcon" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/close.png" />
+    <div class="commentTextDiv">
+      <span class="commentText"></span>
+    </div>
+  </div>
+
+  <!-- TEMPLATE: delete comment confirmation dialog -->
+  <div id="deleteCommentConfirmation" style="display: none;">
+    Are you sure you want to delete this comment?
+    <div style="float: right; margin-top: 20px;">
+      <input type="button" class="globalButton deleteCommentYes" value="Yes" />
+      <input style="margin-left: 10px;" type="button" class="globalButton deleteCommentNo" value="Cancel" />
+    </div>
+  </div>
+</div>

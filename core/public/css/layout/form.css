@@ -122,6 +122,7 @@ zoom: 1;
 -webkit-box-align: center;
 -webkit-box-sizing: border-box;
 line-height: 1.4;
+font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
 }
 
 form.genericForm input[type=submit]:hover ,input.globalButton:hover
