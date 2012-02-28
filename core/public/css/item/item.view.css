@@ -134,3 +134,8 @@ div.revisionEntry {
   padding-right: 13px !important;
   border-top: 1px solid #A7A7A7 !important;
 }
+
+img.bitstreamInfoIcon {
+  cursor: pointer;
+  float: right;
+}
