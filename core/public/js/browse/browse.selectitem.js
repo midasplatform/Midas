@@ -144,7 +144,7 @@
     {
     if(e.keyCode == 13 && !itemselected) // enter key has been pressed
       {
-      window.location.replace($('.webroot').val()+'/search/'+$('#live_search_item').val());
+      window.location.replace($('.webroot').val()+'/search/'+encodeURI($('#live_search_item').val()));
       }
     });
 

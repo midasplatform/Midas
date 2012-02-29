@@ -48,7 +48,6 @@ class SearchController extends AppController
 
     // Pass the keyword to javascript
     $keyword = $this->getRequest()->getParam('q');
-    $this->view->json['search']['keyword'] = $keyword;
 
     $ajax = $this->_getParam('ajax');
     $order = $this->_getParam('order');
