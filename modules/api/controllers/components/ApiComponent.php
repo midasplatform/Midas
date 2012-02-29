@@ -935,7 +935,8 @@ class Api_ApiComponent extends AppComponent
     $dstFolderId = $args['dstfolderid'];
     $dstFolder = $folderModel->load($dstFolderId);
 
-    if($folder === false || !$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
+    if($folder === false || !$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_READ)
+      || !$folderModel->policyCheck($dstFolder, $userDao, MIDAS_POLICY_WRITE))
       {
       throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
@@ -1218,7 +1219,8 @@ class Api_ApiComponent extends AppComponent
     $dstFolderId = $args['dstfolderid'];
     $dstFolder = $folderModel->load($dstFolderId);
 
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ)
+      || !$folderModel->policyCheck($dstFolder, $userDao, MIDAS_POLICY_WRITE))
       {
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
@@ -1251,7 +1253,8 @@ class Api_ApiComponent extends AppComponent
     $dstFolderId = $args['dstfolderid'];
     $dstFolder = $folderModel->load($dstFolderId);
 
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ)
+      || !$folderModel->policyCheck($dstFolder, $userDao, MIDAS_POLICY_WRITE))
       {
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
@@ -1302,7 +1305,8 @@ class Api_ApiComponent extends AppComponent
     $dstFolderId = $args['dstfolderid'];
     $dstFolder = $folderModel->load($dstFolderId);
 
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ)
+      || !$folderModel->policyCheck($dstFolder, $userDao, MIDAS_POLICY_WRITE))
       {
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
