@@ -46,6 +46,14 @@ class FolderModel extends FolderModelBase
     return $dao;
     }
 
+  /** get by name */
+  function getByName($name)
+    {
+    $row = $this->database->fetchRow($this->database->select()->where('name = ?', $name));
+    $dao = $this->initDao(ucfirst($this->_name), $row);
+    return $dao;
+    }
+
   /** check ifthe policy is valid*/
   function policyCheck($folderDao, $userDao = null, $policy = 0)
     {
