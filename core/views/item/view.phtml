@@ -202,6 +202,7 @@ foreach($cssArray as $module => $list)
                     echo '<tr class="bitstreamRow">';
                     echo '<td>';
                     echo '  <div style="display: none;">';
+                    echo '    <span name="bitstream_id">'.$bitstream->getKey().'</span>';
                     echo '    <span name="filename">'.$bitstream->getName().'</span>';
                     echo '    <span name="md5">'.$bitstream->getChecksum().'</span>';
                     echo '    <span name="sizeBytes">'.$bitstream->getSizebytes().'</span>';
@@ -209,7 +210,7 @@ foreach($cssArray as $module => $list)
                     echo '  </div>';
                     echo '<a href="'.$this->webroot.'/download?bitstream='.$bitstream->getKey().'">';
                     echo $this->slicename($bitstream->getName(), 50);
-                    echo '</a> <img class="bitstreamInfoIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/message.png" />';
+                    echo '</a> <img element="'.$bitstream->getKey().'" class="bitstreamInfoIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/message.png" />';
                     echo '</td>';
                     echo '<td>'.$this->Utility->formatSize($bitstream->getSizebytes()).'</td>';
                     echo '</tr>';
