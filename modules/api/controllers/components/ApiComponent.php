@@ -1120,7 +1120,7 @@ class Api_ApiComponent extends AppComponent
         $itemArray['extraFields'][$module.'_'.$name] = $value;
         }
       }
-    
+
     return $itemArray;
     }
 
