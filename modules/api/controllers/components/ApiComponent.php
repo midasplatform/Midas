@@ -1211,6 +1211,63 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Set a metadata field on an item
+   * @param token Authentication token
+   * @param itemId The id of the item
+   * @param element The metadata element
+   * @param value The metadata value for the field
+   * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
+   * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_GLOBAL type (0).
+   */
+  function itemSetmetadata($args)
+    {
+    $this->_validateParams($args, array('itemId', 'element', 'value'));
+    $userDao = $this->_getUser($args);
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $item = $itemModel->load($args['itemId']);
+
+    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
+      }
+    $revision = $itemModel->getLastRevision($item);
+    if(!$revision)
+      {
+      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+      }
+    $type = array_key_exists('type', $args) ? (int)$args['type'] : MIDAS_METADATA_GLOBAL;
+    $qualifier = array_key_exists('qualifier', $args) ? $args['qualifier'] : '';
+    $element = $args['element'];
+    $value = $args['value'];
+
+    $modules = Zend_Registry::get('notifier')->callback('CALLBACK_API_METADATA_SET',
+                                                        array('item' => $item,
+                                                              'revision' => $revision,
+                                                              'type' => $type,
+                                                              'element' => $element,
+                                                              'qualifier' => $qualifier,
+                                                              'value' => $value));
+    foreach($modules as $name => $retval)
+      {
+      if($retval('status') === true) //module has handled the event, so we don't have to
+        {
+        return;
+        }
+      }
+
+    // If no module handles this metadata, we add it as normal metadata on the item revision
+    $metadataModel = $modelLoader->loadModel('Metadata');
+    $metadataDao = $metadataModel->getMetadata($type, $element, $qualifier);
+    if($metadataDao == false)
+      {
+      $metadataModel->addMetadata($type, $element, $qualifier, '');
+      }
+    $metadataModel->addMetadataValue($revision, $type, $element, $qualifier, $value);
+    }
+
+  /**
    * Duplicate an item to the desination folder
    * @param token Authentication token
    * @param id The id of the item
