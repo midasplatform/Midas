@@ -3,6 +3,22 @@ div.addCommentWrapper {
   border-bottom: 1px dashed #c0c0c0;
 }
 
+div.loginToComment {
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #c0c0c0;
+}
+
+#registerToComment,#loginToComment {
+  font-weight: bold;
+  text-decoration: none;
+  color: #56758B;
+}
+
+#registerToComment:hover,#loginToComment:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 #addCommentDiv {
   width: 100%;
   border: 1px solid #bdc7d8;

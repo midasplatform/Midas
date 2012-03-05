@@ -214,6 +214,16 @@ $(document).ready(function() {
         $('div.addCommentWrapper').show();
         $('#postingAsUsername').html(json.modules.comments.user.firstname+' '+
                                      json.modules.comments.user.lastname);
+    } else {
+        $('div.loginToComment').show();
+        $('#loginToComment').click(function() {
+            showOrHideDynamicBar('login');
+            loadAjaxDynamicBar('login', '/user/login');
+        });
+        $('#registerToComment').click(function() {
+            showOrHideDynamicBar('register');
+            loadAjaxDynamicBar('register','/user/register');
+        });
     }
 });
 
