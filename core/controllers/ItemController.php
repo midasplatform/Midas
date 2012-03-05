@@ -120,7 +120,7 @@ class ItemController extends AppController
       {
       $deleteMetadata = $this->_getParam('deleteMetadata');
       $editMetadata = $this->_getParam('editMetadata');
-      if(isset($deleteMetadata) && !empty($deleteMetadata) && $this->view->isModerator) //remove users from group
+      if(isset($deleteMetadata) && !empty($deleteMetadata) && $this->view->isModerator) //delete metadata field
         {
         $this->disableView();
         $this->disableLayout();
@@ -129,7 +129,7 @@ class ItemController extends AppController
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
-      if(isset($editMetadata) && !empty($editMetadata) && $this->view->isModerator) //remove users from group
+      if(isset($editMetadata) && !empty($editMetadata) && $this->view->isModerator) //add metadata field
         {
         $metadataId = $this->_getParam('metadataId');
         $metadatatype = $this->_getParam('metadatatype');
@@ -146,6 +146,7 @@ class ItemController extends AppController
           $this->Metadata->addMetadata($metadatatype, $element, $qualifier, '');
           }
         $this->Metadata->addMetadataValue($itemRevision, $metadatatype, $element, $qualifier, $value);
+        $this->Item->save($itemDao);
         }
       }
 
