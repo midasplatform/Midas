@@ -966,8 +966,8 @@ class Api_ApiComponent extends AppComponent
 
   /**
    * Create an item or update an existing one if one exists by the uuid passed.
-     Note: any parameters passed other than those listed here will be added as key/value
-     metadata fields on the item, but only in the case of an already existing item.
+     Note: In the case of an already existing item, any parameters passed whose name
+     begins with an underscore are assumed to be metadata fields to set on the item.
    * @param token Authentication token
    * @param parentid The id of the parent folder. Only required for creating a new item.
    * @param name The name of the item to create
@@ -1012,13 +1012,12 @@ class Api_ApiComponent extends AppComponent
         {
         $record->setPrivacy($args['privacy']);
         }
-      // Any other parameters passed are assumed to be metadata for the item
       foreach($args as $key => $value)
         {
-        // Make sure it's not one of the explicit parameters
-        if(!in_array($key, array('token', 'useSession', 'method', 'format', 'uuid', 'privacy', 'parentid', 'name', 'description')))
+        // Params beginning with underscore are assumed to be metadata fields
+        if(substr($key, 0, 1) == '_')
           {
-          $this->_setMetadata($record, MIDAS_METADATA_GLOBAL, $key, '', $value);
+          $this->_setMetadata($record, MIDAS_METADATA_GLOBAL, substr($key, 1), '', $value);
           }
         }
       $itemModel->save($record);
@@ -1279,7 +1278,7 @@ class Api_ApiComponent extends AppComponent
                                                               'value' => $value));
     foreach($modules as $name => $retval)
       {
-      if($retval('status') === true) //module has handled the event, so we don't have to
+      if($retval['status'] === true) //module has handled the event, so we don't have to
         {
         return;
         }
