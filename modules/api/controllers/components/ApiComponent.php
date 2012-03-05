@@ -965,13 +965,15 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Create an item or update an existing one if one exists by the uuid passed
+   * Create an item or update an existing one if one exists by the uuid passed.
+     Note: any parameters passed other than those listed here will be added as key/value
+     metadata fields on the item, but only in the case of an already existing item.
    * @param token Authentication token
+   * @param parentid The id of the parent folder. Only required for creating a new item.
    * @param name The name of the item to create
    * @param description (Optional) The description of the item
    * @param uuid (Optional) Uuid of the item. If none is passed, will generate one.
    * @param privacy (Optional) Default 'Public'.
-   * @param parentid The id of the parent folder
    * @return The item object that was created
    */
   function itemCreate($args)
@@ -1009,6 +1011,15 @@ class Api_ApiComponent extends AppComponent
       if(isset($args['privacy']))
         {
         $record->setPrivacy($args['privacy']);
+        }
+      // Any other parameters passed are assumed to be metadata for the item
+      foreach($args as $key => $value)
+        {
+        // Make sure it's not one of the explicit parameters
+        if(!in_array($key, array('token', 'useSession', 'method', 'format', 'uuid', 'privacy', 'parentid', 'name', 'description')))
+          {
+          $this->_setMetadata($record, MIDAS_METADATA_GLOBAL, $key, '', $value);
+          }
         }
       $itemModel->save($record);
       return $record->toArray();
@@ -1098,6 +1109,19 @@ class Api_ApiComponent extends AppComponent
       $revisionsArray[] = $tmp;
       }
     $itemArray['revisions'] = $revisionsArray;
+    $itemArray['extraFields'] = array();
+
+    // Add any extra fields that modules want to attach to the item
+    $modules = Zend_Registry::get('notifier')->callback('CALLBACK_API_EXTRA_ITEM_FIELDS',
+                                                        array('item' => $item));
+    foreach($modules as $module => $extraFields)
+      {
+      foreach($extraFields as $name => $value)
+        {
+        $itemArray['extraFields'][$module.'_'.$name] = $value;
+        }
+      }
+    
     return $itemArray;
     }
 
@@ -1232,19 +1256,23 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
       }
-    $revision = $itemModel->getLastRevision($item);
-    if(!$revision)
-      {
-      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
-      }
+
     $type = array_key_exists('type', $args) ? (int)$args['type'] : MIDAS_METADATA_GLOBAL;
     $qualifier = array_key_exists('qualifier', $args) ? $args['qualifier'] : '';
     $element = $args['element'];
     $value = $args['value'];
 
+    $this->_setMetadata($item, $type, $element, $qualifier, $value);
+    }
+
+  /**
+   * Helper function to set metadata on an item.
+   * Does not perform permission checks; these should be done in advance.
+   */
+  private function _setMetadata($item, $type, $element, $qualifier, $value)
+    {
     $modules = Zend_Registry::get('notifier')->callback('CALLBACK_API_METADATA_SET',
                                                         array('item' => $item,
-                                                              'revision' => $revision,
                                                               'type' => $type,
                                                               'element' => $element,
                                                               'qualifier' => $qualifier,
@@ -1258,6 +1286,14 @@ class Api_ApiComponent extends AppComponent
       }
 
     // If no module handles this metadata, we add it as normal metadata on the item revision
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $revision = $itemModel->getLastRevision($item);
+    if(!$revision)
+      {
+      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+      }
+
     $metadataModel = $modelLoader->loadModel('Metadata');
     $metadataDao = $metadataModel->getMetadata($type, $element, $qualifier);
     if($metadataDao == false)
