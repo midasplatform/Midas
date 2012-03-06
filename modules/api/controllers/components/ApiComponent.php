@@ -1130,9 +1130,9 @@ class Api_ApiComponent extends AppComponent
     // Add any extra fields that modules want to attach to the item
     $modules = Zend_Registry::get('notifier')->callback('CALLBACK_API_EXTRA_ITEM_FIELDS',
                                                         array('item' => $item));
-    foreach($modules as $module => $extraFields)
+    foreach($modules as $module => $fields)
       {
-      foreach($extraFields as $name => $value)
+      foreach($fields as $name => $value)
         {
         $extraFields[$module.'_'.$name] = $value;
         }
