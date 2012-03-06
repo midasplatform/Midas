@@ -875,8 +875,15 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception($e->getMessage(), MIDAS_INTERNAL_ERROR);
       }
+    $itemsList = array();
+    foreach($items as $item)
+      {
+      $itemArray = $item->toArray();
+      $itemArray['extraFields'] = $this->_getItemExtraFields($item);
+      $itemsList[] = $itemArray;
+      }
 
-    return array('folders' => $folders, 'items' => $items);
+    return array('folders' => $folders, 'items' => $itemsList);
     }
 
   /**
@@ -1108,8 +1115,18 @@ class Api_ApiComponent extends AppComponent
       $revisionsArray[] = $tmp;
       }
     $itemArray['revisions'] = $revisionsArray;
-    $itemArray['extraFields'] = array();
+    $itemArray['extraFields'] = $this->_getItemExtraFields($item);
 
+    return $itemArray;
+    }
+
+  /**
+   * Helper function to return any extra fields that should be passed with an item
+   * @param item The item dao
+   */
+  private function _getItemExtraFields($item)
+    {
+    $extraFields = array();
     // Add any extra fields that modules want to attach to the item
     $modules = Zend_Registry::get('notifier')->callback('CALLBACK_API_EXTRA_ITEM_FIELDS',
                                                         array('item' => $item));
@@ -1117,11 +1134,10 @@ class Api_ApiComponent extends AppComponent
       {
       foreach($extraFields as $name => $value)
         {
-        $itemArray['extraFields'][$module.'_'.$name] = $value;
+        $extraFields[$module.'_'.$name] = $value;
         }
       }
-
-    return $itemArray;
+    return $extraFields;
     }
 
   /**
