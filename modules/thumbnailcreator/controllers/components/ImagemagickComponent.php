@@ -18,13 +18,20 @@
  limitations under the License.
 =========================================================================*/
 
+/** Component used to create thumbnails using phMagick library (on top of ImageMagick) */
 class Thumbnailcreator_ImagemagickComponent extends AppComponent
-{ 
-  /** createThumnail */
-  public function createThumbnail($item,$inputFile=null)
+{
+  /**
+   * Create a 100x100 thumbnail from an item. Called by the scheduler, will
+   * echo an error message if a problem occurs
+   * @param item The item to create the thumbnail for
+   * @param inputFile (optional) The file to thumbnail. If none is specified, uses
+   *                             the first bitstream in the head revision of the item.
+   */
+  public function createThumbnail($item, $inputFile = null)
     {
     $modelLoader = new MIDAS_ModelLoader;
-    $itemModel = $modelLoader->loadModel("Item");  
+    $itemModel = $modelLoader->loadModel('Item');
     $item = $itemModel->load($item['item_id']);
     $revision = $itemModel->getLastRevision($item);
     $bitstreams = $revision->getBitstreams();
@@ -42,9 +49,47 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       {
       $fullPath = $bitstream->getFullPath();
       }
-    $ext = null;
-    $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
-    
+
+    try
+      {
+      $pathThumbnail = $this->createThumbnailFromPath($fullPath, 100, 100, true);
+      }
+    catch(phMagickException $exc)
+      {
+      echo $exc->getMessage();
+      }
+    catch(Exception $exc)
+      {
+      echo $exc->getMessage();
+      }
+
+    if(file_exists($pathThumbnail))
+      {
+      $oldThumbnail = $item->getThumbnail();
+      if(!empty($oldThumbnail))
+        {
+        unlink($oldThumbnail);
+        }
+      $item->setThumbnail(substr($pathThumbnail, strlen(BASE_PATH) + 1));
+      $itemModel->save($item);
+      }
+    return;
+    }
+
+  /**
+   * Create a thumbnail for the given file with the given width & height
+   * @param fullPath Absolute path to the image to create the thumbnail of
+   * @param width Width to resize to (Set to 0 to preserve aspect ratio)
+   * @param height Height to resize to (Set to 0 to preserve aspect ratio)
+   * @param exact This will preserve aspect ratio by using a crop after the resize (Defaults to true)
+   * @return The path where the thumbnail was created
+   * @throws phMagickException if something goes wrong with the resize
+   * @throws Exception if something else goes wrong
+   */
+  public function createThumbnailFromPath($fullPath, $width, $height, $exact = true)
+    {
+    $ext = strtolower(substr(strrchr($fullPath, '.'), 1));
+
     // create destination
     $tmpPath = BASE_PATH.'/data/thumbnail/'.rand(1, 1000);
     if(!file_exists(BASE_PATH.'/data/thumbnail/'))
@@ -60,64 +105,59 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       {
       mkdir($tmpPath);
       }
-    $destionation = $tmpPath."/".rand(1, 1000).'.jpeg';
-    while(file_exists($destionation))
+    $destination = $tmpPath.'/'.rand(1, 1000).'.jpeg';
+    while(file_exists($destination))
       {
-      $destionation = $tmpPath."/".rand(1, 1000).'.jpeg';
+      $destination = $tmpPath.'/'.rand(1, 1000).'.jpeg';
       }
-    $pathThumbnail = $destionation;
-    
-    require_once BASE_PATH.'/modules/thumbnailcreator/library/Phmagick/phmagick.php';    
-    $modulesConfig=Zend_Registry::get('configsModules');
-    $imageMagickPath = $modulesConfig['thumbnailcreator']->imagemagick;
-    
-    // try to create a thumbnail (generic way)
-    try
-      {
-      switch($ext)
-        {
-        case "pdf":
-        case "mpg":
-        case "mpeg":
-        case "mp4":
-        case "m4v":
-        case "avi":
-        case "mov":
-        case "flv":
-        case "mp4":
-        case "rm":
-          $p = new phMagick("", $pathThumbnail);
-          $p->setImageMagickPath($imageMagickPath);
-          $p->acquireFrame($fullPath, 0);
-          $p->resizeExactly(100,100);
-          break;
-          break;
-        default:
-          $p = new phMagick($fullPath, $pathThumbnail);
-          $p->setImageMagickPath($imageMagickPath);
-          $p->resizeExactly(100,100);
-        }
-      }
-    catch (phMagickException $exc)
-      {
-      echo $exc->getMessage();
-      }
-    catch (Exception $exc)
-      {
-      echo $exc->getMessage();
-      }
+    $pathThumbnail = $destination;
 
-    if(file_exists($pathThumbnail))
+    require_once BASE_PATH.'/modules/thumbnailcreator/library/Phmagick/phmagick.php';
+    $modulesConfig = Zend_Registry::get('configsModules');
+    $imageMagickPath = $modulesConfig['thumbnailcreator']->imagemagick;
+
+    switch($ext)
       {
-      $oldThumbnail = $item->getThumbnail();
-      if(!empty($oldThumbnail))
-        {
-        unlink($oldThumbnail);
-        }
-      $item->setThumbnail(substr($pathThumbnail, strlen(BASE_PATH) + 1));
-      $itemModel->save($item);
-      }   
-    return;
+      case 'pdf':
+      case 'mpg':
+      case 'mpeg':
+      case 'mp4':
+      case 'm4v':
+      case 'avi':
+      case 'mov':
+      case 'flv':
+      case 'mp4':
+      case 'rm':
+        // Use first frame if this is a video
+        $p = new phMagick('', $pathThumbnail);
+        $p->setImageMagickPath($imageMagickPath);
+        $p->acquireFrame($fullPath, 0);
+        if($exact)
+          {
+          //preserve aspect ratio by performing a crop after the resize
+          $p->resizeExactly($width, $height);
+          }
+        else
+          {
+          $p->resize($width, $height);
+          }
+        break;
+      default:
+        // Otherwise it is just a normal image
+        $p = new phMagick($fullPath, $pathThumbnail);
+        $p->setImageMagickPath($imageMagickPath);
+        if($exact)
+          {
+          //preserve aspect ratio by performing a crop after the resize
+          $p->resizeExactly($width, $height);
+          }
+        else
+          {
+          $p->resize($width, $height);
+          }
+        break;
+      }
+    return $pathThumbnail;
     }
-    
+
 } // end class
