@@ -53,39 +53,53 @@ class ItemModel extends ItemModelBase
         }
       }
 
-    require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
-    $component = new SearchComponent();
-    $index = $component->getLuceneItemIndex();
+    // Allow modules to handle special search queries
+    $moduleSearch = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_SEARCH', array('search' => $searchterm, 'user' => $userDao));
+    foreach($moduleSearch as $module => $results)
+      {
+      if($results['status'] == 'accepted')
+        {
+        return $results['items'];
+        }
+      }
+
+    $componentLoader = new MIDAS_ComponentLoader();
+    $searchComponent = $componentLoader->loadComponent('Search');
+    $index = $searchComponent->getLuceneItemIndex();
+    Zend_Search_Lucene_Analysis_Analyzer::setDefault(new Zend_Search_Lucene_Analysis_Analyzer_Common_TextNum_CaseInsensitive());
     Zend_Search_Lucene_Search_QueryParser::setDefaultOperator(Zend_Search_Lucene_Search_QueryParser::B_AND);
     Zend_Search_Lucene::setResultSetLimit($limit * 3);
-    if($group && strpos($searchterm, ':') === false)
+    try
       {
-      $rowset = $index->find('title:'.$searchterm);
-      }
-    else
-      {
-      $rowset = $index->find($searchterm);
-      }
-
-
-    $return = array();
-    $itemIdsCount = array();
-    $itemIds = array();
-    foreach($rowset as $row)
-      {
-      if(isset($itemIdsCount[$row->item_id]))
+      if($group && strpos($searchterm, ':') === false)
         {
-        $itemIdsCount[$row->item_id]++;
+        $rowset = $index->find('title:'.$searchterm);
         }
       else
         {
-        $itemIdsCount[$row->item_id] = 1;
+        $rowset = $index->find($searchterm);
         }
       }
-    foreach($itemIdsCount as $key => $n)
+    catch(Exception $e)
       {
-      $itemIds[] = $key;
+      $rowset = array();
       }
+
+    $return = array();
+    $itemIds = array();
+    foreach($rowset as $row)
+      {
+      $names = $row->getDocument()->getFieldNames();
+      if(in_array('item_id', $names))
+        {
+        $itemIds[$row->item_id] = 1;
+        }
+      else if(in_array('module_item_id', $names))
+        {
+        $itemIds[$row->module_item_id] = 1;
+        }
+      }
+    $itemIds = array_keys($itemIds);
 
     if(empty($itemIds))
       {

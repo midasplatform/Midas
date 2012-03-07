@@ -224,7 +224,7 @@ $(function() {
     {
     if(e.keyCode == 13 && !itemselected) // enter key has been pressed
       {
-      window.location.replace($('.webroot').val()+'/search/'+$('#live_search').val());
+      window.location.replace($('.webroot').val()+'/search/index?q='+encodeURI($('#live_search').val()));
       }
     });
 
