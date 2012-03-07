@@ -240,8 +240,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals(count($resp->data->folders), 0);
     $this->assertEquals(count($resp->data->items), 2);
 
-    $this->assertEquals($resp->data->items[0]->_model, 'Item');
-    $this->assertEquals($resp->data->items[1]->_model, 'Item');
     $this->assertEquals($resp->data->items[0]->item_id, 1);
     $this->assertEquals($resp->data->items[1]->item_id, 2);
     $this->assertEquals($resp->data->items[0]->name, 'name 1');

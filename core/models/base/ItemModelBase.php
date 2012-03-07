@@ -110,7 +110,12 @@ abstract class ItemModelBase extends AppModel
 
       foreach($metadata as $m)
         {
-        $doc->addField(Zend_Search_Lucene_Field::Keyword($m->getElement().'-'.$m->getQualifier(), $m->getValue()));
+        $fieldName = $m->getElement();
+        if($m->getQualifier())
+          {
+          $fieldName .= '-'.$m->getQualifier();
+          }
+        $doc->addField(Zend_Search_Lucene_Field::Keyword($fieldName, $m->getValue()));
         if(!is_numeric($m->getValue()))
           {
           $metadataString .= ' '. $m->getValue();
