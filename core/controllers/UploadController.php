@@ -80,6 +80,7 @@ class UploadController extends AppController
     $this->disableLayout();
     $this->view->form = $this->getFormAsArray($this->Form->Upload->createUploadLinkForm());
     $this->userSession->uploaded = array();
+    $this->userSession->filePosition = null;
     $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
     $this->view->allLicenses = $this->License->getAll();
 
@@ -551,16 +552,36 @@ class UploadController extends AppController
       ob_end_clean();
       }
 
+    // If we are uploading a directory
+    // $pathClient stores the list of full path for the files in the directory
     if(!empty($pathClient))
       {
-      $tmpArray = explode(';;', $pathClient);
-      foreach($tmpArray as $value)
+      if(strlen(str_replace(';', '', $pathClient)) > 0) // Check that we are dealing with folders
         {
-        $tmpPathValue = explode('/', $value);
-        if(end($tmpPathValue) == $filename)
+        if(!isset($this->userSession->filePosition) || ($this->userSession->filePosition === null) )
           {
-          $pathClient = $value;
-          break;
+          $this->userSession->filePosition = 0;
+          }
+        else
+          {
+          $this->userSession->filePosition++;
+          }
+
+        $filesArray = explode(';;', $pathClient);
+
+        // The $filesArray also contains directories 'XXX/.' so we account for it
+        $i = -1;
+        foreach($filesArray as $extractedFilename)
+          {
+          if(substr($extractedFilename, strlen($extractedFilename)-2, 2) != '/.')
+            {
+            $i++;
+            }
+          if($i == $this->userSession->filePosition)
+            {
+            $pathClient = $extractedFilename;
+            break;
+            }
           }
         }
       }

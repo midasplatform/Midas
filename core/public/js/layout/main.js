@@ -281,7 +281,7 @@ $(function() {
     if(!uploadPageLoaded)
       {
       $('img#uploadAFile').hide();
-      $('img#uploadAFileLoadiing').show();
+      $('img#uploadAFileLoading').show();
       uploadPageLoaded = true;
       }
     }
