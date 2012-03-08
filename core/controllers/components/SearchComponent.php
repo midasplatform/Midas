@@ -38,6 +38,10 @@ class SearchComponent extends AppComponent
       Zend_Search_Lucene::create($path);
       }
 
+    Zend_Search_Lucene_Search_QueryParser::setDefaultOperator(Zend_Search_Lucene_Search_QueryParser::B_AND);
+    Zend_Search_Lucene_Search_Query_Wildcard::setMinPrefixLength(0);
+    Zend_Search_Lucene_Analysis_Analyzer::setDefault(
+          new Zend_Search_Lucene_Analysis_Analyzer_Common_TextNum_CaseInsensitive());
     return Zend_Search_Lucene::open($path);
     }
 
@@ -102,6 +106,13 @@ class SearchComponent extends AppComponent
 
     switch($order)
       {
+      case 'relevance':
+        $sortdaoComponent->field = 'score';
+        $sortdaoComponent->field2 = 'name';
+        $sortdaoComponent->order = 'desc';
+        $sortdaoComponent->order2 = 'asc';
+        usort($results, array($sortdaoComponent, 'sortByNumberThenName'));
+        break;
       case 'name':
         $sortdaoComponent->field = 'name';
         $sortdaoComponent->order = 'asc';
