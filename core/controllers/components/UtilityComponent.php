@@ -513,4 +513,17 @@ class UtilityComponent extends AppComponent
     $upgrade->initUpgrade($moduleName, $db, $dbtype);
     $upgrade->upgrade($version);
     }
+
+  /**
+   * Will remove all "unsafe" html tags from the text provided.
+   * @param text The text to filter
+   * @return The text stripped of all unsafe tags
+   */
+  public function filterHtmlTags($text)
+    {
+    $allowedTags = array('a', 'b', 'br', 'i', 'p', 'strong');
+    $allowedAttributes = array('href');
+    $stripTags = new Zend_Filter_StripTags($allowedTags, $allowedAttributes);
+    return $stripTags->filter($text);
+    }
 } // end class
