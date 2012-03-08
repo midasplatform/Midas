@@ -53,7 +53,7 @@ class SearchController extends AppController
     $order = $this->_getParam('order');
     if(!isset($order))
       {
-      $order = 'view';
+      $order = 'relevance';
       }
 
     $results = $this->Component->Search->searchAll($this->userSession->Dao, $keyword, $order);

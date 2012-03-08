@@ -78,6 +78,7 @@ class ItemModel extends ItemModelBase
       else
         {
         $rowset = $index->find($searchterm);
+
         }
       }
     catch(Exception $e)
@@ -92,13 +93,14 @@ class ItemModel extends ItemModelBase
       $names = $row->getDocument()->getFieldNames();
       if(in_array('item_id', $names))
         {
-        $itemIds[$row->item_id] = 1;
+        $itemIds[$row->item_id] = $row->score;
         }
       else if(in_array('module_item_id', $names))
         {
-        $itemIds[$row->module_item_id] = 1;
+        $itemIds[$row->module_item_id] = $row->score;
         }
       }
+    $itemsScores = $itemIds;
     $itemIds = array_keys($itemIds);
 
     if(empty($itemIds))
@@ -166,6 +168,7 @@ class ItemModel extends ItemModelBase
         {
         $tmpDao->count = $row['count(*)'];
         }
+      $tmpDao->score = (isset($itemsScores[$tmpDao->getKey()])) ? $itemsScores[$tmpDao->getKey()] : 0;
       $return[] = $tmpDao;
       unset($tmpDao);
       }
