@@ -77,6 +77,51 @@ class SortdaoComponent extends AppComponent
       }
     }//end sortByDate
 
+  /** sort the results by number then by name*/
+  public function sortByNumberThenName($a, $b)
+    {
+    $field = $this->field;
+    $field2 = $this->field2;
+    if($this->field == '' || !isset($a->$field) || $this->field2 == '' || !isset($a->$field2))
+      {
+      throw new Zend_Exception("Error field.");
+      }
+    $a_n = strtolower($a->$field);
+    $b_n = strtolower($b->$field);
+    $a2_n = strtolower($a->$field2);
+    $b2_n = strtolower($b->$field2);
+
+    if($a_n == $b_n && $a2_n == $b2_n)
+      {
+      return 0;
+      }
+
+    if($this->order == 'asc')
+      {
+      if($a_n == $b_n)
+        {
+        if($this->order2 == 'asc')
+          {
+          return ($a2_n < $b2_n) ? -1 : 1;
+          }
+        return ($a2_n < $b2_n) ? 1 : -1;
+        }
+      return ($a_n < $b_n) ? -1 : 1;
+      }
+    else
+      {
+      if($a_n == $b_n)
+        {
+        if($this->order2 == 'asc')
+          {
+          return ($a2_n < $b2_n) ? -1 : 1;
+          }
+        return ($a2_n < $b2_n) ? 1 : -1;
+        }
+      return ($a_n < $b_n ) ? 1 : -1;
+      }
+    }
+
   /** sort by number*/
   public function sortByNumber($a, $b)
     {

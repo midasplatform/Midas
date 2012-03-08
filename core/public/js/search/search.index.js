@@ -1,13 +1,13 @@
 $(document).ready(function() {
   json.search.keyword = $("<div/>").html(json.search.keyword).text(); //remove html entity encoding
   $('#live_search_value').val($('#live_search').val());
-  $('#live_search').val(json.search.keyword); 
-  
+  $('#live_search').val(json.search.keyword);
+
   initSearchResults('all',false);
-  
+
   $('a#allResults').css('font-weight','bold');
-  $('a#viewSort').css('font-weight','bold');
-  
+  $('a#relevanceSort').css('font-weight','bold');
+
   $('a#allResults').click(function()
     {
     $('#resultTypeLinks a').css('font-weight','normal');
@@ -43,26 +43,32 @@ $(document).ready(function() {
     $(this).css('font-weight','bold');
     type='user';
     });
-    
+
    $('a#viewSort').click(function()
     {
     $('#sortTypeLinks a').css('font-weight','normal');
     $(this).css('font-weight','bold');
     changeSorting('view');
-    });    
+    });
+  $('a#relevanceSort').click(function()
+    {
+    $('#sortTypeLinks a').css('font-weight','normal');
+    $(this).css('font-weight','bold');
+    changeSorting('relevance');
+    });
    $('a#nameSort').click(function()
     {
     $('#sortTypeLinks a').css('font-weight','normal');
     $(this).css('font-weight','bold');
     changeSorting('name');
-    });    
+    });
    $('a#dateSort').click(function()
     {
     $('#sortTypeLinks a').css('font-weight','normal');
     $(this).css('font-weight','bold');
     changeSorting('date');
-    });    
-    
+    });
+
   type='all';
 });
 

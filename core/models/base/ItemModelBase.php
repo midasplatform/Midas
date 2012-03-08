@@ -95,7 +95,9 @@ abstract class ItemModelBase extends AppModel
       $index->delete($hit->id);
       }
     $doc = new Zend_Search_Lucene_Document();
-    $doc->addField(Zend_Search_Lucene_Field::Text('title', $dao->getName()));
+    $field = Zend_Search_Lucene_Field::Text('title', $dao->getName());
+    $field->boost = 2;
+    $doc->addField($field);
     $doc->addField(Zend_Search_Lucene_Field::Keyword('item_id', $dao->getKey()));
     $doc->addField(Zend_Search_Lucene_Field::UnStored('description', $dao->getDescription()));
 

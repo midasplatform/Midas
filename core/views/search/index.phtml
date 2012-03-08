@@ -42,6 +42,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/search/search.ind
   <div class="sideElementLast" id="sortTypeLinks">
     <h1><?php echo $this->t('Sort by')?></h1>
     <ul>
+      <li><a id="relevanceSort"><?php echo $this->t('Relevance')?></a></li>
       <li><a id="viewSort"><?php echo $this->t('Number of views')?></a></li>
       <li><a id="nameSort"><?php echo $this->t('Name')?></a></li>
       <li><a id="dateSort"><?php echo $this->t('Date')?></a></li>
