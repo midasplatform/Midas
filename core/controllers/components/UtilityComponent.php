@@ -519,7 +519,7 @@ class UtilityComponent extends AppComponent
    * @param text The text to filter
    * @return The text stripped of all unsafe tags
    */
-  public function filterHtmlTags($text)
+  public static function filterHtmlTags($text)
     {
     $allowedTags = array('a', 'b', 'br', 'i', 'p', 'strong');
     $allowedAttributes = array('href');
