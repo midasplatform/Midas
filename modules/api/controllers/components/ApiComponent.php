@@ -1492,6 +1492,45 @@ class Api_ApiComponent extends AppComponent
     $defaultApiKey = $key = md5($args['email'].md5($salt.$args['password']).'Default');
     return array('apikey' => $defaultApiKey);
     }
+  
+  /**
+   * Returns a portion or the entire set of public users based on the limit var.
+   * @param limit The maximum number of users to return
+   * @return the list of users
+   */
+  function userList($args)
+    {
+    $this->_validateParams($args, array('limit'));
+    $modelLoader = new MIDAS_ModelLoader();
+    $userModel = $modelLoader->loadModel('User');
+    return $userModel->getAll(true, $args['limit']);
+    }
+
+  /**
+   * Returns a user either by id or by first name and last name.
+   * @param user_id The id of the user desired (ignores firstname and lastname)
+   * @param firstname The first name of the desired user (use with lastname)
+   * @param lastname The last name of the desired user (use with firstname)
+   * @return The user corresponding to the user_id or first and lastname
+   */
+  function userGet($args)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $userModel = $modelLoader->loadModel('User');
+    if(array_key_exists('user_id', $args))
+      {
+      return $userModel->getByUser_id($args['user_id']);
+      }
+    else if(array_key_exists('firstname', $args) &&
+            array_key_exists('lastname', $args))
+      {
+      return $userModel->getByName($args['firstname'], $args['lastname']);
+      }
+    else
+      {
+      throw new Exception('Please provide a user_id or both first and last name', MIDAS_INVALID_PARAMETER);
+      }
+    }
 
   /**
    * Fetch the information about a bitstream
