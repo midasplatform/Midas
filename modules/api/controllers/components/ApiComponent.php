@@ -608,22 +608,33 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Get a community's information
+   * Get a community's information based on the id OR name
    * @param token (Optional) Authentication token
    * @param id The id of the community
+   * @param name the name of the community
    * @return The community information
    */
   function communityGet($args)
     {
-    if(!array_key_exists('id', $args))
-      {
-      throw new Exception('Parameter id is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    $hasId = array_key_exists('id', $args);
+    $hasName = array_key_exists('name', $args);
+
     $userDao = $this->_getUser($args);
 
     $modelLoader = new MIDAS_ModelLoader();
     $communityModel = $modelLoader->loadModel('Community');
-    $community = $communityModel->load($args['id']);
+    if($hasId)
+      {
+      $community = $communityModel->load($args['id']);
+      }
+    else if($hasName)
+      {
+      $community = $communityModel->getByName($args['name']);
+      }
+    else
+      {
+      throw new Exception('Parameter id or name is not defined', MIDAS_INVALID_PARAMETER);
+      }
 
     if($community === false || !$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_READ))
       {
