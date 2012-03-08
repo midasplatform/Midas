@@ -111,6 +111,13 @@ class SearchComponent extends AppComponent
         $sortdaoComponent->field2 = 'name';
         $sortdaoComponent->order = 'desc';
         $sortdaoComponent->order2 = 'asc';
+        foreach($results as $key => $result)
+          {
+          if(!isset($result->score))
+            {
+            $results[$key]->score = 1;
+            }
+          }
         usort($results, array($sortdaoComponent, 'sortByNumberThenName'));
         break;
       case 'name':
