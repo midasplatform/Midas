@@ -200,8 +200,8 @@ can edit;peut modifier
 can read;peut voir
 Add a permission to ...;Ajouter une autorisation à ...
 Owned by me;M'appartenant
-Shared to me;Partagés avec moi
-Shared to Members;Partagés aux Membres
+Shared with me;Partagés avec moi
+Shared with members;Partagés aux Membres
 Remove Item from Folder;Enlever le document du répertoire
 My Private Folder;Mon Répertoire Privé
 Uploaded Files;Fichiers Uploadés
@@ -240,8 +240,8 @@ Save Link;Sauver Lien
 Please use the large file tool, the following files are too big:;Merci d'utiliser l'outil pour ajouter des fichiers volumineux pour les fichiers suivants:
 Not registered yet?;Pas encore enregistré?
 Register here;Enregistrez vous ici
-My profile;Mon profile
-My uploads;Mes uploads
+My space;Mon espace
+Recent uploads;Uploads recents
 Website;Site Internet
 City;Ville
 Country;Pays

@@ -82,7 +82,7 @@ foreach($this->customCSSs as $Uris)
     if($this->isMember)
       {
       ?>
-    <li><a id="tabSharedLink" href="#tabs-shared"><?php echo $this->t('Shared to Members');?></a></li>
+    <li><a id="tabSharedLink" href="#tabs-shared"><?php echo $this->t('Shared with members');?></a></li>
     <?php
       }?>
   </ul>
@@ -221,12 +221,12 @@ foreach($this->customCSSs as $Uris)
       echo "</ul>";
       ?>
    </div>
-  
+
     <div class="sideElementActions viewAction">
       <?php
       if((!$this->isModerator)&&(!$this->isAdmin)&&(!$this->isMember))
         {
-        echo "<h1>Actions</h1>";  
+        echo "<h1>Actions</h1>";
         }
       ?>
       <ul>
