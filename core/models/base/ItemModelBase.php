@@ -83,6 +83,7 @@ abstract class ItemModelBase extends AppModel
       $dao->setDateCreation(date('c'));
       }
     $dao->setDateUpdate(date('c'));
+    $dao->setDescription(UtilityComponent::filterHtmlTags($dao->getDescription()));
     parent::save($dao);
 
     require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';

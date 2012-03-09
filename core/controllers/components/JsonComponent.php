@@ -90,7 +90,7 @@ class JsonComponent extends AppComponent
       self::getInstance()->utf8_encode_array($valueToEncode);
       }
     // return encoded string
-    return json_encode($valueToEncode);
+    return json_encode($valueToEncode, JSON_HEX_TAG);
     }
 
   /** Encore Array */
