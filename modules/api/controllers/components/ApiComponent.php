@@ -1503,7 +1503,7 @@ class Api_ApiComponent extends AppComponent
     $defaultApiKey = $key = md5($args['email'].md5($salt.$args['password']).'Default');
     return array('apikey' => $defaultApiKey);
     }
-  
+
   /**
    * Returns a portion or the entire set of public users based on the limit var.
    * @param limit The maximum number of users to return
