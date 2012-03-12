@@ -68,8 +68,18 @@ class ItemController extends AppController
       {
       throw new Zend_Controller_Action_Exception("Write permissions required", 403);
       }
-    $itemRevision = $this->Item->getLastRevision($itemDao);
-    $metadatavalues = $this->ItemRevision->getMetadata($itemRevision);
+
+    $itemRevisionNumber = $this->_getParam("itemrevision");
+    if(isset($itemRevisionNumber))
+      {
+      $this->view->itemrevision = $itemRevisionNumber;
+      $metadataItemRevision = $this->Item->getRevision($itemDao, $itemRevisionNumber);
+      }
+    else
+      {
+      $metadataItemRevision = $this->Item->getLastRevision($itemDao);
+      }
+    $metadatavalues = $this->ItemRevision->getMetadata($metadataItemRevision);
     $this->view->metadata = null;
 
     foreach($metadatavalues as $value)
@@ -80,6 +90,7 @@ class ItemController extends AppController
         break;
         }
       }
+
 
     $this->view->itemDao = $itemDao;
     $this->view->metadataType = $this->Metadata->getAllMetadata();
@@ -95,7 +106,6 @@ class ItemController extends AppController
   */
   function viewAction()
     {
-
     $this->view->Date = $this->Component->Date;
     $this->view->Utility = $this->Component->Utility;
     $itemId = $this->_getParam("itemId");
@@ -118,6 +128,15 @@ class ItemController extends AppController
     $itemRevision = $this->Item->getLastRevision($itemDao);
     if($this->_request->isPost())
       {
+      $itemRevisionNumber = $this->_getParam("itemrevision");
+      if(isset($itemRevisionNumber))
+        {
+        $metadataItemRevision = $this->Item->getRevision($itemDao, $itemRevisionNumber);
+        }
+      else
+        {
+        $metadataItemRevision = $itemRevision;
+        }
       $deleteMetadata = $this->_getParam('deleteMetadata');
       $editMetadata = $this->_getParam('editMetadata');
       if(isset($deleteMetadata) && !empty($deleteMetadata) && $this->view->isModerator) //delete metadata field
@@ -125,7 +144,7 @@ class ItemController extends AppController
         $this->disableView();
         $this->disableLayout();
         $metadataId = $this->_getParam('element');
-        $this->ItemRevision->deleteMetadata($itemRevision, $metadataId);
+        $this->ItemRevision->deleteMetadata($metadataItemRevision, $metadataId);
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
@@ -136,20 +155,28 @@ class ItemController extends AppController
         $element = $this->_getParam('element');
         $qualifier = $this->_getParam('qualifier');
         $value = $this->_getParam('value');
+        $updateMetadata = $this->_getParam('updateMetadata');
         if(isset($metadataId) && !empty($metadataIds))
           {
-          $this->ItemRevision->deleteMetadata($itemRevision, $metadataId);
+          $this->ItemRevision->deleteMetadata($metadataItemRevision, $metadataId);
           }
         $metadataDao = $this->Metadata->getMetadata($metadatatype, $element, $qualifier);
         if($metadataDao == false)
           {
-          $this->Metadata->addMetadata($metadatatype, $element, $qualifier, '');
+          $metadataDao = $this->Metadata->addMetadata($metadatatype, $element, $qualifier, '');
           }
-        $this->Metadata->addMetadataValue($itemRevision, $metadatatype, $element, $qualifier, $value);
-        $this->Item->save($itemDao);
+        $metadataDao->setItemrevisionId($metadataItemRevision->getKey());
+        $metadataValueExists = $this->Metadata->getMetadataValueExists($metadataDao);
+        if($updateMetadata || !$metadataValueExists)
+          {
+          // if we are updating or no metadatavalue exists, then save it
+          // otherwise we are attempting to add a new value where one already
+          // exists, and we won't save in this case
+          $this->Metadata->addMetadataValue($metadataItemRevision, $metadatatype, $element, $qualifier, $value);
+          $this->Item->save($itemDao);
+          }
         }
       }
-
     if($this->logged)
       {
       $request = $this->getRequest();
@@ -449,5 +476,53 @@ class ItemController extends AppController
 
     echo JsonComponent::encode($ifShared);
     } // end checkshared
+
+
+  /**
+   * ajax function which checks if a metadata value is defined for a given
+   * item, itemrevision, metadatatype, element, and qualifier.
+   *
+   *
+   * @method getmetadatavalueexistsAction()
+   * @param itemId
+   * @param itemrevision
+   * @param metadatatype
+   * @param element
+   * @param qualifier
+   */
+  public function getmetadatavalueexistsAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    $itemId = $this->_getParam('itemId');
+    $itemRevisionNumber = $this->_getParam('$itemrevision');
+    $metadatatype = $this->_getParam('metadatatype');
+    $element = $this->_getParam('element');
+    $qualifier = $this->_getParam('qualifier');
+    $metadataDao = $this->Metadata->getMetadata($metadatatype, $element, $qualifier);
+    if($metadataDao == false)
+      {
+      echo false;
+      }
+    else
+      {
+      $itemDao = $this->Item->load($itemId);
+      if($itemDao === false)
+        {
+        throw new Zend_Controller_Action_Exception("This item doesn't exist.", 404);
+        }
+      if(isset($itemRevisionNumber))
+        {
+        $metadataItemRevision = $this->Item->getRevision($itemDao, $itemRevisionNumber);
+        }
+      else
+        {
+        $metadataItemRevision = $this->Item->getLastRevision($itemDao);
+        }
+      $metadataDao->setItemrevisionId($metadataItemRevision->getKey());
+      $metadataValueExists = $this->Metadata->getMetadataValueExists($metadataDao);
+      echo $metadataValueExists;
+      }
+    } // end getmetadatavalueexistsAction
 
   }//end class
