@@ -145,6 +145,8 @@ class ItemController extends AppController
         $this->disableLayout();
         $metadataId = $this->_getParam('element');
         $this->ItemRevision->deleteMetadata($metadataItemRevision, $metadataId);
+        // save the item to update the Lucene index
+        $this->Item->save($itemDao);
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
@@ -156,10 +158,6 @@ class ItemController extends AppController
         $qualifier = $this->_getParam('qualifier');
         $value = $this->_getParam('value');
         $updateMetadata = $this->_getParam('updateMetadata');
-        if(isset($metadataId) && !empty($metadataIds))
-          {
-          $this->ItemRevision->deleteMetadata($metadataItemRevision, $metadataId);
-          }
         $metadataDao = $this->Metadata->getMetadata($metadatatype, $element, $qualifier);
         if($metadataDao == false)
           {
@@ -173,6 +171,8 @@ class ItemController extends AppController
           // otherwise we are attempting to add a new value where one already
           // exists, and we won't save in this case
           $this->Metadata->addMetadataValue($metadataItemRevision, $metadatatype, $element, $qualifier, $value);
+          // save the item to update the Lucene index
+          $this->Item->save($itemDao);
           }
         }
       }
