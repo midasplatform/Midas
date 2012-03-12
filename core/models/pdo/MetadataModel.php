@@ -97,19 +97,19 @@ class MetadataModel extends MetadataModelBase
   /**
    * Save a metadata value, will update the row if it exists, otherwise insert
    */
-   function saveMetadataValue($metadataDao)
-     {
-     if(!$metadataDao instanceof MetadataDao)
-       {
-       throw new Zend_Exception("Should be a metadata.");
-       }
+  function saveMetadataValue($metadataDao)
+    {
+    if(!$metadataDao instanceof MetadataDao)
+      {
+      throw new Zend_Exception("Should be a metadata.");
+      }
 
     $cols = array('metadata_id' => $metadataDao->getKey(),
                   'itemrevision_id' => $metadataDao->getItemrevisionId());
 
-     $data['value'] = $metadataDao->getValue();
-     $tablename = $this->getTableValueName($metadataDao->getMetadatatype());
-     $table = new Zend_Db_Table(array('name' => $tablename, 'primary' => 'metadata_id'));
+    $data['value'] = $metadataDao->getValue();
+    $tablename = $this->getTableValueName($metadataDao->getMetadatatype());
+    $table = new Zend_Db_Table(array('name' => $tablename, 'primary' => 'metadata_id'));
     if($this->getMetadataValueExists($metadataDao))
       {
       $wheres = array();
@@ -127,8 +127,8 @@ class MetadataModel extends MetadataModelBase
         }
       $table->insert($data);
       }
-     return true;
-     } // end function saveMetadataValue()
+    return true;
+    } // end function saveMetadataValue()
 
 
 } // end class
