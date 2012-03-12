@@ -42,6 +42,16 @@ class UserModel extends UserModelBase
     return $dao;
     } // end getByEmail()
 
+  /** Get a user by first and last name */
+  function getByName($firstName, $lastName)
+    {
+    $row = $this->database->fetchRow($this->database->select()
+                                     ->where('firstname = ?', $firstName)
+                                     ->where('lastname = ?', $lastName));
+    $dao = $this->initDao(ucfirst($this->_name), $row);
+    return $dao;
+    }
+
   /** Get a user by email */
   function getByUser_id($userid)
     {

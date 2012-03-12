@@ -65,6 +65,7 @@ abstract class UserModelBase extends AppModel
   /** Abstract functions */
   abstract function getByEmail($email);
   abstract function getByUser_id($userid);
+  abstract function getByName($firstName, $lastName);
   abstract function getUserCommunities($userDao);
   abstract function getByUuid($uuid);
   /** Returns a user given its folder (either public,private or base folder) */

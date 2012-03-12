@@ -868,4 +868,59 @@ class ApiCallMethodsTest extends ControllerTestCase
       $this->assertTrue(isset($method->help->return));
       }
     }
+
+  /** Test getting user by id and firstname + lastname */
+  public function testUserGet()
+    {
+    // Test getting a user by id
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.user.get';
+    $this->params['user_id'] = '1';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->firstname, 'FirstName1');
+    $this->assertEquals($resp->data->lastname, 'LastName1');
+
+    // Test getting a user by first name and last name
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.user.get';
+    $this->params['firstname'] = 'FirstName2';
+    $this->params['lastname'] = 'LastName2';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->user_id, '2');
+    }
+
+  /** Test getting communities by id and name */
+  public function testCommunityGet()
+    {
+    // Test getting a community by id
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.community.get';
+    $this->params['id'] = '2000';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->name, 'Community test User 1');
+
+    // Test getting a community by name
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.community.get';
+    $this->params['name'] = 'Community test User 1';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->community_id, '2000');
+    }
+
+  /** Test listing the users */
+  public function testUserList()
+    {
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.user.list';
+    $this->params['limit'] = '20';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals(count($resp->data), 3);
+    }
   }
