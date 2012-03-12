@@ -3,7 +3,7 @@
 class Utf8tools
   {
   protected $excludedDirs = array("data", "library", "tmp", ".git", "log", "bin");
-  protected $excludedExts = array("jpg", "png", "gif", "swf", "jar", "ico", "psd", "swc", "keystore");
+  protected $excludedExts = array("ini", "jpg", "png", "gif", "swf", "jar", "ico", "psd", "swc", "keystore");
   protected $excludedFiles = array(".htaccess");
 
 
