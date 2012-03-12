@@ -72,7 +72,7 @@ class MetadataModel extends MetadataModelBase
     return 'metadatavalue';
     }
 
-  /** Get if a metadata value already exists */
+  /** Return true if a metadata value exists for this metadata. */
   function getMetadataValueExists($metadataDao)
     {
     if(!$metadataDao instanceof MetadataDao)
@@ -85,8 +85,7 @@ class MetadataModel extends MetadataModelBase
                                           ->setIntegrityCheck(false)
                                           ->from($this->getTableValueName($metadataDao->getMetadatatype()))
                                           ->where('metadata_id=?', $metadataDao->getKey())
-                                          ->where('itemrevision_id=?', $metadataDao->getItemrevisionId())
-                                          ->where('value=?', $metadataDao->getValue()));
+                                          ->where('itemrevision_id=?', $metadataDao->getItemrevisionId()));
 
     if(count($row) > 0)
       {
@@ -95,21 +94,41 @@ class MetadataModel extends MetadataModelBase
     return false;
     }  // end getMetadataValueExists()
 
-  /** Save a metadata value */
-  function saveMetadataValue($metadataDao)
-    {
-    if(!$metadataDao instanceof MetadataDao)
-      {
-      throw new Zend_Exception("Should be a metadata.");
-      }
+  /**
+   * Save a metadata value, will update the row if it exists, otherwise insert
+   */
+   function saveMetadataValue($metadataDao)
+     {
+     if(!$metadataDao instanceof MetadataDao)
+       {
+       throw new Zend_Exception("Should be a metadata.");
+       }
 
-    $data['metadata_id'] = $metadataDao->getKey();
-    $data['itemrevision_id'] = $metadataDao->getItemrevisionId();
-    $data['value'] = $metadataDao->getValue();
-    $tablename = $this->getTableValueName($metadataDao->getMetadatatype());
-    $table = new Zend_Db_Table(array('name' => $tablename, 'primary' => 'metadata_id'));
-    $table->insert($data);
-    return true;
-    } // end function saveMetadataValue()
+    $cols = array('metadata_id' => $metadataDao->getKey(),
+                  'itemrevision_id' => $metadataDao->getItemrevisionId());
+
+     $data['value'] = $metadataDao->getValue();
+     $tablename = $this->getTableValueName($metadataDao->getMetadatatype());
+     $table = new Zend_Db_Table(array('name' => $tablename, 'primary' => 'metadata_id'));
+    if($this->getMetadataValueExists($metadataDao))
+      {
+      $wheres = array();
+      foreach($cols as $col => $val)
+        {
+        $wheres[$col."=?"] = $val;
+        }
+      $table->update($data, $wheres);
+      }
+    else
+      {
+      foreach($cols as $col => $val)
+        {
+        $data[$col] = $val;
+        }
+      $table->insert($data);
+      }
+     return true;
+     } // end function saveMetadataValue()
+
 
 } // end class

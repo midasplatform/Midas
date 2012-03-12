@@ -66,7 +66,9 @@ abstract class MetadataModelBase extends AppModel
     return $metadataDao;
     } // end addMetadataValue()
 
-  /** Add a metadata to an itemRevision
+  /**
+   * Add a metadata to an itemRevision, updating the value if the row
+   * already exists
    * @return MetadataDao */
   function addMetadataValue($itemRevisionDao, $type, $element, $qualifier, $value)
     {
@@ -86,23 +88,20 @@ abstract class MetadataModelBase extends AppModel
       }
     $metadataDao->setItemrevisionId($itemRevisionDao->getKey());
     $metadataDao->setValue($value);
-    if($this->getMetadataValueExists($metadataDao))
-      {
-      throw new Zend_Exception("This metadata value already exists for that revision.");
-      }
 
     $item = $itemRevisionDao->getItem();
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $lastrevision = $itemModel->getLastRevision($item);
 
-    //refresh zend search index
+    //refresh zend search index if latest revision has changed
     if($lastrevision->getKey() == $itemRevisionDao->getKey())
       {
       $itemModel->save($item);
       }
 
     $this->saveMetadataValue($metadataDao);
+    return $metadataDao;
     } // end addMetadataValue()
 
 } // end class MetadataModelBase
