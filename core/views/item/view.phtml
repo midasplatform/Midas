@@ -165,8 +165,8 @@ foreach($cssArray as $module => $list)
                 if($this->isModerator)
                   {
                   echo "<span class='manageMetadata'>";
-                  echo "<a href='javascript:;' element='".$metadata->getKey()."' class='metadataEditLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/></a>";
-                  echo "<a href='javascript:;' element='".$metadata->getKey()."' class='metadataDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/></a>";
+                  echo "<a href='javascript:;' itemrevision='".$revision->getRevision()."' element='".$metadata->getKey()."' class='metadataEditLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/></a>";
+                  echo "<a href='javascript:;' itemrevision='".$revision->getRevision()."' element='".$metadata->getKey()."' class='metadataDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/></a>";
                   echo "</span>";
                   }
                 echo "  </td>";
