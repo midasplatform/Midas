@@ -502,7 +502,7 @@ class ItemController extends AppController
     $metadataDao = $this->Metadata->getMetadata($metadatatype, $element, $qualifier);
     if($metadataDao == false)
       {
-      echo false;
+      $metadataValueExists = array("exists" => 0);
       }
     else
       {
@@ -520,9 +520,17 @@ class ItemController extends AppController
         $metadataItemRevision = $this->Item->getLastRevision($itemDao);
         }
       $metadataDao->setItemrevisionId($metadataItemRevision->getKey());
-      $metadataValueExists = $this->Metadata->getMetadataValueExists($metadataDao);
-      echo $metadataValueExists;
+      if($this->Metadata->getMetadataValueExists($metadataDao))
+        {
+        $exists = 1;
+        }
+      else
+        {
+        $exists = 0;
+        }
+      $metadataValueExists = array("exists" => $exists);
       }
+    echo JsonComponent::encode ($metadataValueExists);
     } // end getmetadatavalueexistsAction
 
   }//end class

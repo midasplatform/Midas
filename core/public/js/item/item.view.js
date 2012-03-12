@@ -59,8 +59,9 @@ $(document).ready(function() {
               type: "POST",
               url: json.global.webroot+"/item/getmetadatavalueexists",
               data: requestData,
-              success: function(exists, textStatus) {
-                if(exists) {
+              success: function(jsonContent) {
+                data = $.parseJSON(jsonContent);
+                if(data.exists === "1") {
                   createNotice("Metadata already exists for that metadatatype, element and qualifier", 4000, 'error');
                   // clear the form values
                   $('#midas_item_metadata_element').val('');
