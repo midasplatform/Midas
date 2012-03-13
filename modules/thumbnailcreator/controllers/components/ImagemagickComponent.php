@@ -32,7 +32,10 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     {
     $modelLoader = new MIDAS_ModelLoader;
     $itemModel = $modelLoader->loadModel('Item');
-    $item = $itemModel->load($item['item_id']);
+    if(is_array($item))
+      {
+      $item = $itemModel->load($item['item_id']);
+      }
     $revision = $itemModel->getLastRevision($item);
     $bitstreams = $revision->getBitstreams();
     if(count($bitstreams) < 1)
