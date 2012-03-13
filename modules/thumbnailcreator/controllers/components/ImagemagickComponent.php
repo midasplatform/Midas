@@ -60,10 +60,12 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     catch(phMagickException $exc)
       {
       echo $exc->getMessage();
+      return;
       }
     catch(Exception $exc)
       {
       echo $exc->getMessage();
+      return;
       }
 
     if(file_exists($pathThumbnail))
