@@ -100,7 +100,7 @@ PURPOSE.  See the above copyright notices for more information.
     <b><?php echo $this->t('Step 4: Start the upload')?></b>
     <br/>
     <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="midas.upload.revision.swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
-    <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->item->getKey().'-'.($this->lastrevision->getRevision()+1)?>"/>
+    <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->item->getKey().'-'.($this->lastrevision?$this->lastrevision->getRevision()+1:1)?>"/>
     <span id="btnStartUpload" >
       <input style="margin-left:0px;" id='startUploadLink' class="globalButton" type="button" value="<?php echo $this->t('Start Upload')?>" />
     </span>
