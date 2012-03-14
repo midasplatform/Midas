@@ -116,9 +116,28 @@ class ItemRevisionModel extends ItemRevisionModelBase
         }
       }
 
+    // get the itemId before deleting
+    $itemId = $revisiondao->getItemId();
+
     parent::delete($revisiondao);
     $revisiondao->saved = false;
     unset($revisiondao->itemrevision_id);
+
+    // now that we have deleted a revision, recalculate size of item
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $item = $itemModel->load($itemId);
+    $lastrevision = $itemModel->getLastRevision($item);
+    if(empty($lastrevision))
+      {
+      $item->setSizebytes(0);
+      }
+    else
+      {
+      $item->setSizebytes($this->getSize($lastrevision));
+      }
+    $itemModel->save($item);
+
     }//end delete
 
 

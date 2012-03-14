@@ -132,11 +132,27 @@ foreach($cssArray as $module => $list)
         echo '</a></h3>';
         echo '<div class="revisionEntry">';
         echo '  <span>Uploaded '.$revision->getDate().' by '.$this->linkuser($revision->getUser()).'</span>';
-        echo '  <div style="float: right;" class="genericBigButton">';
+
+        echo '<div style="float: right;">';
+        echo '  <div class="genericBigButton">';
         echo '    <a href="'.$this->webroot.'/download/?items='.$this->itemDao->getKey().','.$revision->getRevision().'">';
         echo '    <img alt="" src="'.$this->coreWebroot.'/public/images/icons/download.png" />';
         echo '    Download revision '.$revision->getRevision().'</a>';
         echo '  </div>';
+        if($this->isModerator)
+          {
+          echo '  <div style="float: right; margin: 0 0 0 5px;">';
+          echo ' <form id="deleteItemrevisionForm'.$revision->getItemrevisionId().'" class="genericForm" method="POST"  action="'.$this->webroot.'/item/deleteitemrevision">';
+          echo ' <input type="hidden" name="itemrevisionId" value="'.$revision->getItemrevisionId().'"/>';
+          echo ' <input type="hidden" name="itemId" value="'.$this->itemDao->getKey().'"/>';
+          echo '    <a href="javascript:;" class="deleteItemRevision" itemrevisionId="'.$revision->getItemrevisionId().'" itemId="'.$this->itemDao->getKey().'">';
+          echo '    <img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
+          echo '  </form></div>';
+          }
+        echo '</div>';
+
+        
+        
         echo '<div class="revisionMetadata">';
         echo '<h4>METADATA</h4>';
         if(count($revision->metadatavalues) == 0)
