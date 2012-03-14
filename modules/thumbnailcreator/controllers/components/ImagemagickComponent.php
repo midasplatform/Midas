@@ -59,26 +59,23 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       }
     catch(phMagickException $exc)
       {
-      //echo $exc->getMessage();
       return;
       }
     catch(Exception $exc)
       {
-      //echo $exc->getMessage();
       return;
       }
 
     if(file_exists($pathThumbnail))
       {
       $oldThumbnail = $item->getThumbnail();
-      if(!empty($oldThumbnail))
+      if(!empty($oldThumbnail) && file_exists($pathThumbnail))
         {
         unlink($oldThumbnail);
         }
       $item->setThumbnail(substr($pathThumbnail, strlen(BASE_PATH) + 1));
       $itemModel->save($item);
       }
-    return;
     }
 
   /**
@@ -110,10 +107,12 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       {
       mkdir($tmpPath);
       }
-    $destination = $tmpPath.'/'.rand(1, 1000).'.jpeg';
+    $num = '0';
+    $destination = $tmpPath.'/'.$num.'.jpeg';
     while(file_exists($destination))
       {
-      $destination = $tmpPath.'/'.rand(1, 1000).'.jpeg';
+      $num++;
+      $destination = $tmpPath.'/'.$num.'.jpeg';
       }
     $pathThumbnail = $destination;
 
