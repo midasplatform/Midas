@@ -1,0 +1,10 @@
+img.makeThumbnailIcon {
+  cursor: pointer;
+  float: right;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+img.largeImage {
+  padding-top: 10px;
+}
