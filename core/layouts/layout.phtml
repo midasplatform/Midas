@@ -368,7 +368,7 @@ echo $this->doctype()
     <?php
       if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
         {
-        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,midas.callback.js,jquery.treeTable.js,jquery.qtip.min.js"></script>';
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,midas.callback.js,midas.dialog.js,jquery.treeTable.js,jquery.qtip.min.js"></script>';
         }
       else
         {
@@ -376,6 +376,7 @@ echo $this->doctype()
         echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery-ui.js"></script>';
         echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/main.js"></script>';
         echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/midas.callback.js"></script>';
+        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/midas.dialog.js"></script>';
         echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.treeTable.js"></script>';
         echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.qtip.min.js"></script>';
         }
