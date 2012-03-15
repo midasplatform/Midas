@@ -110,6 +110,16 @@ $(window).load(function() {
       });
       $('#ratingsUser').stars('selectID', json.modules.ratings.userRating - 1);
       $('#ratingsUser').show();
+    } else {
+        $('div.loginToRate').show();
+        $('#loginToRate').click(function () {
+            showOrHideDynamicBar('login');
+            loadAjaxDynamicBar('login', '/user/login');
+        });
+        $('#registerToRate').click(function () {
+            showOrHideDynamicBar('register');
+            loadAjaxDynamicBar('register','/user/register');
+        });
     }
     midas.doCallback('CALLBACK_RATINGS_AFTER_LOAD');
 });
