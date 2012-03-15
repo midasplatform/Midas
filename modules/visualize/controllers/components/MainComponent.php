@@ -119,6 +119,10 @@ class Visualize_MainComponent extends AppComponent
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
+    if(empty($revision))
+      {
+      return false;
+      }
     $bitstreams = $revision->getBitstreams();
     if(count($bitstreams) == 0)
       {
@@ -136,6 +140,10 @@ class Visualize_MainComponent extends AppComponent
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
+    if(empty($revision))
+      {
+      return false;
+      }
     $bitstreams = $revision->getBitstreams();
     if(count($bitstreams) == 0)
       {
@@ -153,6 +161,10 @@ class Visualize_MainComponent extends AppComponent
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
+    if(empty($revision))
+      {
+      return false;
+      }
     $bitstreams = $revision->getBitstreams();
     if(strpos($itemDao->getName(), "threejs") === false)
       {
@@ -175,6 +187,10 @@ class Visualize_MainComponent extends AppComponent
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
+    if(empty($revision))
+      {
+      return false;
+      }
     $bitstreams = $revision->getBitstreams();
     if(count($bitstreams) == 0)
       {
@@ -192,6 +208,10 @@ class Visualize_MainComponent extends AppComponent
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
+    if(empty($revision))
+      {
+      return false;
+      }
     $bitstreams = $revision->getBitstreams();
     if(count($bitstreams) == 0)
       {
@@ -209,6 +229,10 @@ class Visualize_MainComponent extends AppComponent
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
+    if(empty($revision))
+      {
+      return false;
+      }
     $bitstreams = $revision->getBitstreams();
     if(count($bitstreams) == 0)
       {

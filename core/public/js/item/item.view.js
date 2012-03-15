@@ -77,6 +77,37 @@ $(document).ready(function() {
         showDialog('MetaData', true, options);
     });
 
+    $('a.deleteItemRevision img').fadeTo('fast', 0.4);
+    $('a.deleteItemRevision img').hover(function() {
+        $(this).fadeTo('fast', 1.0);
+    },
+    function() {
+        $(this).fadeTo('fast', 0.4);
+    });
+
+    $('a.deleteItemRevision').click(function() {
+        var itemId = $(this).attr('itemId');
+        var itemrevisionId = $(this).attr('itemrevisionId');
+        var html='';
+        html+=json.item.message['deleteItemrevisionMessage'];
+        html+='<br/>';
+        html+='<br/>';
+        html+='<br/>';
+        html+='<input style="margin-left:140px;" class="globalButton deleteItemRevisionYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
+        html+='<input style="margin-left:50px;" class="globalButton deleteItemRevisionNo" type="button" value="'+json.global.No+'"/>';
+        showDialogWithContent(json.item.message['delete'],html,false);
+
+        $('input.deleteItemRevisionYes').unbind('click').click(function() {
+            $( "div.MainDialog" ).dialog('close');
+            $('#deleteItemrevisionForm'+itemrevisionId).submit();
+        });
+        $('input.deleteItemRevisionNo').unbind('click').click(function() {
+            $( "div.MainDialog" ).dialog('close');
+        });
+    });
+
+
+
     $('a.shareItemLink').click(function() {
         loadDialog("shareItem","/browse/movecopy/?share=true&items="+json.item.item_id);
         showDialog(json.item.message.share);

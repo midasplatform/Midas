@@ -324,6 +324,7 @@ class ItemController extends AppController
     $this->view->json['item']['message']['sharedItem'] = $this->t('This item is currrently shared by other folders and/or communities. Deletion will make it disappear in all these folders and/or communitites. ');
     $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undone.');
     $this->view->json['item']['message']['deleteMetadataMessage'] = $this->t('Do you really want to delete this metadata? It cannot be undone.');
+    $this->view->json['item']['message']['deleteItemrevisionMessage'] = $this->t('Do you really want to delete this revision? It cannot be undone.');
     $this->view->json['item']['message']['share'] = $this->t('Share Item (Display the same item in the destination folder)');
     $this->view->json['item']['message']['duplicate'] = $this->t('Duplicate Item (Create a new item in the destination folder)');
     $this->view->json['modules'] = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_VIEW_JSON', array('item' => $itemDao));
@@ -416,6 +417,46 @@ class ItemController extends AppController
 
     $this->_redirect('/?checkRecentItem = true');
     }//end delete
+
+
+
+  /**
+   * Delete an itemrevision
+   *
+   * @method deleteitemrevisionAction()
+   * @throws Zend_Exception on invalid itemId and incorrect access permission
+  */
+  function deleteitemrevisionAction()
+    {
+    // load item and check permissions
+    $itemId = $this->_getParam('itemId');
+    if(!isset($itemId) || !is_numeric($itemId))
+      {
+      throw new Zend_Exception("itemId should be a number");
+      }
+    $itemDao = $this->Item->load($itemId);
+    if($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
+      }
+
+    // load itemrevision, ensure it exists
+    $itemRevisionId = $this->_getParam('itemrevisionId');
+    if(!isset($itemRevisionId) || !is_numeric($itemRevisionId))
+      {
+      throw new Zend_Exception("itemrevisionId should be a number");
+      }
+    $itemRevisionDao = $this->ItemRevision->load($itemRevisionId);
+    if($itemRevisionDao === false)
+      {
+      throw new Zend_Exception("This item revision doesn't exist.");
+      }
+
+    $this->Item->removeRevision($itemDao, $itemRevisionDao);
+
+    // redirect to item view action
+    $this->_redirect('/item/'.$itemId);
+    }//end deleteitemrevisionAction
 
 
   /**
@@ -529,7 +570,7 @@ class ItemController extends AppController
         }
       $metadataValueExists = array("exists" => $exists);
       }
-    echo JsonComponent::encode ($metadataValueExists);
+    echo JsonComponent::encode($metadataValueExists);
     } // end getmetadatavalueexistsAction
 
   }//end class
