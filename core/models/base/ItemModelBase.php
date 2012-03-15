@@ -353,6 +353,71 @@ abstract class ItemModelBase extends AppModel
     } // end addRevision
 
   /**
+   * Delete an itemrevision from an item, will reduce all other
+   * itemrevision revision numbers appropriately.
+   *
+   * @return void
+   */
+  function removeRevision($itemdao, $revisiondao)
+    {
+    if(!$itemdao instanceof ItemDao)
+      {
+      throw new Zend_Exception("First argument should be an item" );
+      }
+    if(!$revisiondao instanceof ItemRevisionDao)
+      {
+      throw new Zend_Exception("Second argument should be an item revision" );
+      }
+    if($revisiondao->getItemId() !== $itemdao->getItemId())
+      {
+      throw new Zend_Exception("Revision needs to be associated with Item");
+      }
+
+    $modelLoad = new MIDAS_ModelLoader();
+    $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
+
+    $lastRevisionDao = $this->getLastRevision($itemdao);
+    $numRevisions = $lastRevisionDao->getRevision();
+    $deletedRevisionNum = $revisiondao->getRevision();
+    $itemRevisionModel->delete($revisiondao);
+
+    // compact the revision numbers if necessary
+    if($deletedRevisionNum < $numRevisions)
+      {
+      // reach past the deleted revision, reduce each revision number by 1
+      $revisions = range($deletedRevisionNum + 1, $numRevisions);
+      foreach($revisions as $revision)
+        {
+        $itemRevisionDao = $this->getRevision($itemdao, $revision);
+        $itemRevisionDao->setRevision($itemRevisionDao->getRevision() - 1);
+        $itemRevisionModel->save($itemRevisionDao);
+        }
+      }
+
+    // reload the item and last revision now that we have updated revisions
+    $itemId = $itemdao->getItemId();
+    $itemdao = $this->load($itemId);
+    $lastRevisionDao = $this->getLastRevision($itemdao);
+
+    // now that we have deleted a revision, recalculate size of item
+    if(empty($lastRevisionDao))
+      {
+      $itemdao->setSizebytes(0);
+      }
+    else
+      {
+      $itemdao->setSizebytes($itemRevisionModel->getSize($lastRevisionDao));
+      }
+    $this->save($itemdao);
+    }//end removeRevision
+
+
+
+
+
+
+
+  /**
    * Update Item name to avoid two or more items have same name within their parent folder.
    *
    * Check if an item with the same name already exists in the parent folder. If it exists, add appendix to the original file name.
