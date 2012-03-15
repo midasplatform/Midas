@@ -428,6 +428,7 @@ class ItemController extends AppController
   */
   function deleteitemrevisionAction()
     {
+    // load item and check permissions
     $itemId = $this->_getParam('itemId');
     if(!isset($itemId) || !is_numeric($itemId))
       {
@@ -438,45 +439,21 @@ class ItemController extends AppController
       {
       throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
       }
+
+    // load itemrevision, ensure it exists
     $itemRevisionId = $this->_getParam('itemrevisionId');
     if(!isset($itemRevisionId) || !is_numeric($itemRevisionId))
       {
       throw new Zend_Exception("itemrevisionId should be a number");
       }
-    $itemDao = $this->Item->load($itemId);
-    if($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
-      }
-
-    // get the revision, ensure it exists
     $itemRevisionDao = $this->ItemRevision->load($itemRevisionId);
     if($itemRevisionDao === false)
       {
       throw new Zend_Exception("This item revision doesn't exist.");
       }
 
-    $lastRevisionDao = $this->Item->getLastRevision($itemDao);
-    $numRevisions = $lastRevisionDao->getRevision();
-    $deletedRevisionNum = $itemRevisionDao->getRevision();
-    $this->ItemRevision->delete($itemRevisionDao);
+    $this->Item->removeRevision($itemDao, $itemRevisionDao);
 
-    // compact the revision numbers if necessary
-    if($deletedRevisionNum < $numRevisions)
-      {
-      // reach past the deleted revision, reduce each revision number by 1
-      $revisions = range($deletedRevisionNum+1, $numRevisions);
-      foreach($revisions as $revision)
-        {
-        $itemRevisionDao = $this->Item->getRevision($itemDao, $revision);
-        $itemRevisionDao->setRevision($itemRevisionDao->getRevision() - 1);
-        $this->ItemRevision->save($itemRevisionDao);
-        }
-      }
-    // reload the item now that we have updated revisions
-    $itemDao = $this->Item->load($itemId);
-    // save the item to refresh Lucene index
-    $this->Item->save($itemDao);
     // redirect to item view action
     $this->_redirect('/item/'.$itemId);
     }//end deleteitemrevisionAction
@@ -593,7 +570,7 @@ class ItemController extends AppController
         }
       $metadataValueExists = array("exists" => $exists);
       }
-    echo JsonComponent::encode ($metadataValueExists);
+    echo JsonComponent::encode($metadataValueExists);
     } // end getmetadatavalueexistsAction
 
   }//end class

@@ -77,6 +77,86 @@ class ItemModelTest extends DatabaseTestCase
     $this->assertEquals($revision->getKey(), $revisionTmp->getKey());
     }
 
+  /** testRemoveRevision*/
+  public function testRemoveRevision()
+    {
+    $itemsFile = $this->loadData('Item', 'default');
+    $usersFile = $this->loadData('User', 'default');
+    $item = $itemsFile[1];
+
+    // remove any revisions that may exist
+    while($this->Item->getLastRevision($itemsFile[1]))
+      {
+      $revision = $this->Item->getLastRevision($itemsFile[1]);
+      $this->Item->removeRevision($item, $revision);
+      }
+
+    // add on 3 revisions
+    $revision = new ItemRevisionDao();
+    $revision->setUserId($usersFile[0]->getKey());
+    $revision->setDate(date('c'));
+    $revision->setChanges("r1");
+    $revision->setItemId(0);
+    $revision->setRevision(1);
+    $this->ItemRevision->save($revision);
+
+    $this->Item->addRevision($itemsFile[1], $revision);
+    $lastRev = $this->Item->getLastRevision($item);
+    $this->assertEquals($revision->getKey(), $lastRev->getKey());
+    $this->assertEquals($revision->getChanges(), $lastRev->getChanges());
+
+    $revision = new ItemRevisionDao();
+    $revision->setUserId($usersFile[0]->getKey());
+    $revision->setDate(date('c'));
+    $revision->setChanges("r2");
+    $revision->setItemId(0);
+    $revision->setRevision(2);
+    $this->ItemRevision->save($revision);
+
+    $this->Item->addRevision($item, $revision);
+    $lastRev = $this->Item->getLastRevision($item);
+    $this->assertEquals($revision->getKey(), $lastRev->getKey());
+    $this->assertEquals($revision->getChanges(), $lastRev->getChanges());
+
+    $revision = new ItemRevisionDao();
+    $revision->setUserId($usersFile[0]->getKey());
+    $revision->setDate(date('c'));
+    $revision->setChanges("r3");
+    $revision->setItemId(0);
+    $revision->setRevision(3);
+    $this->ItemRevision->save($revision);
+
+    $this->Item->addRevision($item, $revision);
+    $lastRev = $this->Item->getLastRevision($item);
+    $this->assertEquals($revision->getKey(), $lastRev->getKey());
+    $this->assertEquals($revision->getChanges(), $lastRev->getChanges());
+
+    // we now have revision:changes 1:r1, 2:r2, 3:r3
+    // remove r3, check that lastrevision changes = r2
+    $this->Item->removeRevision($item, $lastRev);
+    $lastRev = $this->Item->getLastRevision($item);
+    $this->assertEquals($lastRev->getRevision(), "2");
+    $this->assertEquals($lastRev->getChanges(), "r2");
+
+    // now we have 1:r1, 2:r2
+    // remove r1, check that lastrevision changes = r2 and revision = 1
+    $rev1 = $this->Item->getRevision($item, 1);
+    $this->Item->removeRevision($item, $rev1);
+    $lastRev = $this->Item->getLastRevision($item);
+    $this->assertEquals($lastRev->getRevision(), "1");
+    $this->assertEquals($lastRev->getChanges(), "r2");
+
+    // now we have 1:r2
+    // remove r2, check that there are no revisions
+    $this->Item->removeRevision($item, $lastRev);
+    $lastRev = $this->Item->getLastRevision($item);
+    $this->assertFalse($lastRev);
+    }
+
+
+
+
+
   /** test duplication of an item */
   public function testDuplicate()
     {
