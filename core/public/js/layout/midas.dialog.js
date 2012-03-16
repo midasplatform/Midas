@@ -55,11 +55,11 @@ function showBigDialog (title, button) {
 }
 
 // showDialogWithContent
-function showDialogWithContent (title, content, button) {
+function showDialogWithContent (title, content, button, opts) {
     $('.DialogContentPage').val('');
     $('div.MainDialogContent').html(content);
     $('div.MainDialogLoading').hide();
-    showDialog(title, button);
+    showDialog(title, button, opts);
 }
 
 // showBigDialogWithContent
