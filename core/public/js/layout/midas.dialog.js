@@ -39,6 +39,8 @@ function showDialog (title, button, opts) {
                 $(this).dialog("close");
             }
         };
+    } else {
+        options.buttons = null;
     }
     for(var attrname in opts) {
         options[attrname] = opts[attrname]; //override defaults if set
