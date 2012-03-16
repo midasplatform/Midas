@@ -33,15 +33,15 @@ function showDialog (title, button, opts) {
         zIndex: 15100,
         modal: true
     };
-    for(var attrname in opts) {
-        options[attrname] = opts[attrname]; //override defaults if set
-    }
     if(button) {
         options.buttons = {
             "Ok": function() {
                 $(this).dialog("close");
             }
         };
+    }
+    for(var attrname in opts) {
+        options[attrname] = opts[attrname]; //override defaults if set
     }
     var x = ($(window).width() - options.width) / 2;
     var y = Math.min(150, $(window).scrollTop() + 150);
