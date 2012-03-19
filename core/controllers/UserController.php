@@ -141,12 +141,23 @@ class UserController extends AppController
       }
     } // end recoverpassword
 
-  /** Logout a user */
+  /**
+   * Logout a user.
+   * @param noRedirect Set this parameter if you are calling logout with ajax
+   *                   and do not want the controller to redirect
+   */
   function logoutAction()
     {
     $this->userSession->Dao = null;
     Zend_Session::ForgetMe();
     setcookie('midasUtil', null, time() + 60 * 60 * 24 * 30, '/'); //30 days
+    $noRedirect = $this->_getParam('noRedirect');
+    if(isset($noRedirect))
+      {
+      $this->disableView();
+      $this->disableLayout();
+      return;
+      }
     $this->_redirect('/');
     } //end logoutAction
 
