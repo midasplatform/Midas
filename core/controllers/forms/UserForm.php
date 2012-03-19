@@ -93,6 +93,7 @@ class UserForm extends AppForm
     $password2 = new Zend_Form_Element_Password('password2');
     $password2
              ->addValidator('NotEmpty', true)
+             ->addValidator('Identical', false, array('token' => 'password1'))
              ->setRequired(true);
 
     $condiftions = new Zend_Form_Element_Checkbox('conditions');
