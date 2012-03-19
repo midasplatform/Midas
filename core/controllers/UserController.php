@@ -193,7 +193,7 @@ class UserController extends AppController
       {
       if($this->User->getByEmail(strtolower($form->getValue('email'))) !== false)
         {
-        echo JsonComponent::encode(array('status' => 'error', 'message' => 'That email is already registered'));
+        echo JsonComponent::encode(array('status' => 'error', 'message' => 'That email is already registered', 'alreadyRegistered' => true));
         return;
         }
       $this->userSession->Dao = $this->User->createUser(
