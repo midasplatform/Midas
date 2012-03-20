@@ -65,7 +65,7 @@ class DownloadBitstreamComponent extends AppComponent
     $lock = $activeDownloadModel->acquireLock();
     if($lock === false)
       {
-      throw new Zend_Exception('You may only have one active download at a time.  Please wait a few minutes and try again.');
+      throw new Zend_Controller_Action_Exception('You may only have one active download at a time.  Please wait a few minutes and try again.', 403);
       }
 
     if(!$this->testingmode) //don't send any headers in testing mode since it will break it
