@@ -526,4 +526,15 @@ class UtilityComponent extends AppComponent
     $stripTags = new Zend_Filter_StripTags($allowedTags, $allowedAttributes);
     return $stripTags->filter($text);
     }
+
+  /**
+   * Convert a body of text from markdown to html.
+   * @param text The text to markdown
+   * @return The markdown rendered as HTML
+   */
+  public static function markDown($text)
+    {
+    require_once BASE_PATH.'/library/Markdown/markdown.php';
+    return Markdown($text);
+    }
 } // end class
