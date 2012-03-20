@@ -33,8 +33,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/community/communi
       $strippedDescription = strip_tags($description);
       if(!empty($rawDescription)) {
       ?>
-      <span class='communityDescription'">
-          <?php echo $strippedDescription; ?><a class="more" href="<?php echo $this->webroot.'/community/'.$community->getKey();?>#tabs-info">More &raquo;</a>
+      <span class="communityDescription">
+<?php echo substr($strippedDescription,0,240); ?><a class="more" href="<?php echo $this->webroot.'/community/'.$community->getKey();?>#tabs-info">More &raquo;</a>
       </span>
   <?php
         }
