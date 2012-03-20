@@ -68,7 +68,7 @@ $strippedDescription = strip_tags($description);
     <?php
         if(!empty($rawDescription))
         {
-        echo $strippedDescription.'<a href="#" class="more">More &raquo;</a>';
+        echo substr($strippedDescription,0,240).'<a href="#" class="more">More &raquo;</a>';
         }
     ?>
     </div>
