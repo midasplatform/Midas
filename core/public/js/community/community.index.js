@@ -1,33 +1,23 @@
-  $(document).ready(function() {
-    $('a.createCommunity').click(function()
-    {
-      if(json.global.logged)
-        {
-        loadDialog("createCommunity","/community/create");
-        showDialog(json.community.createCommunity,false);
-        }
-      else
-        {
-        createNotive(json.community.contentCreateLogin,4000)
-        $("div.TopDynamicBar").show('blind');
-        loadAjaxDynamicBar('login','/user/login');
+$(document).ready(function () {
+    'use strict';
+
+    $('a.createCommunity').click(function () {
+
+        if (json.global.logged) {
+            loadDialog("createCommunity","/community/create");
+            showDialog(json.community.createCommunity,false);
+        } else {
+            createNotive(json.community.contentCreateLogin,4000)
+            $("div.TopDynamicBar").show('blind');
+            loadAjaxDynamicBar('login', '/user/login');
         }
     });
-    
-    $('a.moreDescription').click(function(){
-      $(this).parents('div').find('.shortDescription').hide();
-      $(this).parents('div').find('.fullDescription').show();
-      return false;
-    })
-    $('a.lessDescription').click(function(){
-      $(this).parents('div').find('.shortDescription').show();
-      $(this).parents('div').find('.fullDescription').hide();
-      return false;
-    })
 
-   $('.communityBlock').click(function(){
-     $(location).attr('href',($('> .communityTitle',this).attr('href')));
-    }) 
-    
-  });
-  
+    $('.communityBlock').click(function () {
+        $(location).attr('href',($('> .communityTitle',this).attr('href')));
+    });
+
+    $('span.communityDescription').dotdotdot({height : 30,
+                                              wrapper : 'span',
+                                              after: 'a.more'});
+});

@@ -25,7 +25,7 @@ class CommunityController extends AppController
                           'Group', 'User', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser',
                           'Item', 'CommunityInvitation');
   public $_daos = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Group', 'User');
-  public $_components = array('Sortdao', 'Date');
+  public $_components = array('Sortdao', 'Date', 'Utility');
   public $_forms = array('Community');
 
   /** Init Controller */
@@ -330,6 +330,7 @@ class CommunityController extends AppController
     $communities = $this->Component->Sortdao->arrayUniqueDao($communities);
 
     $this->view->userCommunities = $communities;
+    $this->view->Utility = $this->Component->Utility;
 
     $this->addDynamicHelp('.communityList:first', 'List of current projects/communities hosted on MIDAS.', 'top right', 'bottom left');
     $this->addDynamicHelp('.createCommunity', 'Manage your own community or project.');
@@ -338,6 +339,7 @@ class CommunityController extends AppController
   /** View a community*/
   function viewAction()
     {
+    $this->view->Utility = $this->Component->Utility;
     $this->view->Date = $this->Component->Date;
     $communityId = $this->_getParam("communityId");
     if(!isset($communityId) || !is_numeric($communityId))
@@ -410,7 +412,7 @@ class CommunityController extends AppController
       }
 
     $this->view->title .= ' - '.$communityDao->getName();
-    $this->view->metaDescription = substr($communityDao->getDescription(), 0, 160);
+    $this->view->metaDescription = substr($this->Component->Utility->markDown($communityDao->getDescription()), 0, 160);
 
     $this->view->customJSs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_VIEW_JSS', array());
     $this->view->customCSSs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_VIEW_CSSS', array());

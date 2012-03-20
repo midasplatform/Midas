@@ -10,6 +10,7 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.dotdotdot-1.4.0-packed.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/community/community.index.js');
 ?>
 <link href="<?php echo $this->coreWebroot?>/public/css/community/community.index.css" rel="stylesheet" type="text/css" />
@@ -26,25 +27,18 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/community/communi
       <a class="communityTitle" href="<?php echo $this->webroot.'/community/'.$community->getKey();?>">
       <?php echo $community->getName()?></a>
       <br/>
-      <?php 
-      if(strlen($community->getDescription())>270)
-          { ?>
-        <span class='shortDescription'>
-        <?php 
-          echo substr($community->getDescription(), 0,270)."... <a class='moreDescription'>{$this->t('more')}</a>";
-        ?>
-        </span>
-        <span class="fullDescription" style="display:none;">
-        <?php echo $community->getDescription(); ?>
-        <a class='lessDescription'><?php echo $this->t('less'); ?></a>
-        </span>
-      <?php } else { ?>
-      <span class='fullDescription'">
-      <?php echo $community->getDescription(); ?>
+      <?php
+      $rawDescription = $community->getDescription();
+      $description = $this->Utility->markDown($rawDescription);
+      $strippedDescription = strip_tags($description);
+      if(!empty($rawDescription)) {
+      ?>
+      <span class='communityDescription'">
+          <?php echo $strippedDescription; ?><a class="more" href="<?php echo $this->webroot.'/community/'.$community->getKey();?>#tabs-info">More &raquo;</a>
       </span>
-      <?php } ?>
-      </div>
-  <?php    
+  <?php
+        }
+      echo '</div>';
       }
     }
   ?>

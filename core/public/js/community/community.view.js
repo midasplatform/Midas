@@ -23,16 +23,21 @@ $(document).ready(function() {
   $("img.tableLoading").hide();
   $("table#browseTable").show();
 
- $('a#sendInvitationLink').click(function()
-  {
+  $('a#sendInvitationLink').click(function()  {
   loadDialog("invitationCommunity", "/community/invitation?communityId=" + json.community.community_id);
   showDialog(json.community.sendInvitation,false);
   });
 
+    $('#communitySubtitle').dotdotdot({height: 20,
+                                       after: 'a.more'});
+    $('a.more').click(function () {
+        $('#tabInfoLink').click();
+    });
+
 });
 
 //dependency: common.browser.js
-var ajaxSelectRequest='';
+var ajaxSelectRequest = '';
 function callbackSelect(node)
   {
   $('div.genericAction').show();

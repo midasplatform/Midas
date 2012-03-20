@@ -12,6 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.checkboxrange.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.dotdotdot-1.4.0-packed.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/community/community.view.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 foreach($this->customJSs as $Urls)
@@ -33,6 +34,9 @@ foreach($this->customCSSs as $Uris)
     echo "<link type='text/css' rel='stylesheet' href={$uri} />";
     }
   }
+$rawDescription = $this->communityDao->getDescription();
+$description = $this->Utility->markDown($rawDescription);
+$strippedDescription = strip_tags($description);
 ?>
 
 <div class="viewMain">
@@ -52,8 +56,7 @@ foreach($this->customCSSs as $Uris)
   <div class="genericInfo">
   <?php
   if($this->logged && !$this->isMember && ($this->canJoin || $this->isInvited))
-    {
-      ?>
+    { ?>
      <div id="joinCommunityDiv" class="genericBigButton genericWrapperTopRight">
      <form id="joinCommunityForm" type='post' action=''>
       <input style="margin:0px;padding:0px;" id="joinCommunity_submit" name='joinCommunity' type='submit' value='<?php echo $this->t('Join the community') ?>' />
@@ -61,7 +64,14 @@ foreach($this->customCSSs as $Uris)
      </div>
    <?php } ?>
     <div class="genericName"><?php echo $this->communityDao->getName();?></div>
-    <div class="genericSubtitle" style="color:grey;"><?php echo $this->communityDao->getDescription(); ?></div>
+    <div id="communitySubtitle" class="genericSubtitle" style="color:grey;">
+    <?php
+        if(!empty($rawDescription))
+        {
+        echo $strippedDescription.'<a href="#" class="more">More &raquo;</a>';
+        }
+    ?>
+    </div>
   </div>
   <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <div class="tabs" id='tabsGeneric'>
@@ -69,7 +79,6 @@ foreach($this->customCSSs as $Uris)
     <li><a id="tabDataLink" href="#tabs-data"><?php echo $this->t('Data');?></a></li>
     <li><a id="tabFeedLink" href="#tabs-feed"><?php echo $this->t("Feed")?></a></li>
     <?php
-    $description=$this->communityDao->getDescription();
     if(!empty($description))
       {
       ?>
@@ -97,7 +106,7 @@ foreach($this->customCSSs as $Uris)
       ?>
     <div id="tabs-info">
       <?php
-      echo nl2br($description);
+      echo $description;
       ?>
     </div>
     <?php
