@@ -78,6 +78,8 @@ abstract class CommunityModelBase extends AppModel
       {
       throw new Zend_Exception("Please set a name.");
       }
+    $cleanDescription = UtilityComponent::filterHtmlTags($dao->getDescription());
+    $dao->setDescription($cleanDescription);
     parent::save($dao);
     }
 
