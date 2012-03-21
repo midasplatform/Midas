@@ -49,6 +49,11 @@ abstract class ActivedownloadModelBase extends AppModel
   public function acquireLock()
     {
     $ip = $_SERVER['REMOTE_ADDR'];
+    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+      {
+      $ip .= '_'.$_SERVER['HTTP_X_FORWARDED_FOR'];
+      }
+
     $oldLock = $this->getByIp($ip);
     if($oldLock !== false)
       {

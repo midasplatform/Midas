@@ -14,7 +14,7 @@ class Upgrade_3_2_4 extends MIDASUpgrade
     {
     $this->db->query("CREATE TABLE `activedownload` (
       `activedownload_id` bigint(20) NOT NULL AUTO_INCREMENT,
-      `ip` varchar(50) NOT NULL DEFAULT '',
+      `ip` varchar(100) NOT NULL DEFAULT '',
       `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
       `last_update` timestamp NOT NULL,
       PRIMARY KEY (`activedownload_id`),
@@ -26,7 +26,7 @@ class Upgrade_3_2_4 extends MIDASUpgrade
     {
     $this->db->query("CREATE TABLE activedownload (
       activedownload_id serial PRIMARY KEY,
-      ip character varying(50) NOT NULL DEFAULT '',
+      ip character varying(100) NOT NULL DEFAULT '',
       date_creation timestamp without time zone NOT NULL DEFAULT now(),
       last_update timestamp without time zone NOT NULL
       )");
