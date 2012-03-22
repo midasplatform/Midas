@@ -25,8 +25,8 @@ class UploadDownloadControllerTest extends ControllerTestCase
   /** init tests*/
   public function setUp()
     {
-    $this->_models = array('User', 'Feed', 'Assetstore', 'Item');
-    $this->_daos = array('User', 'Assetstore');
+    $this->_models = array('User', 'Feed', 'Assetstore', 'Item', 'Activedownload');
+    $this->_daos = array('User', 'Assetstore', 'Activedownload');
     parent::setUp();
     }
 
@@ -225,9 +225,46 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $this->assertTrue(count($search) > 0);
     $itemId = $search[0]->item_id;
 
+    $_SERVER['REMOTE_ADDR'] = '127.0.0.1'; //must be set in order to lock active download
+    $this->setupDatabase(array('activedownload')); //wipe any old locks
     $this->dispatchUrI('/download?testingmode=1&items='.$itemId, $userDao);
     $downloadedMd5 = md5($this->getBody());
 
     $this->assertEquals($actualMd5, $downloadedMd5);
+    }
+
+  /**
+   * Test active download locking mechanism
+   */
+  function testActiveDownloadLocking()
+    {
+    $_SERVER['REMOTE_ADDR'] = '127.0.0.1'; //simulate server environment (required)
+    $this->setupDatabase(array('activedownload')); //wipe any old locks
+
+    // Test that only one active download is allowed at a time
+    $lock = $this->Activedownload->acquireLock();
+    $this->assertTrue($lock instanceof ActivedownloadDao);
+
+    try
+      {
+      $otherLock = $this->Activedownload->acquireLock();
+      $this->fail('We should not be able to acquire a second lock');
+      }
+    catch(Exception $e)
+      {
+      $this->assertEquals($otherLock, null);
+      $this->Activedownload->delete($lock);
+      }
+
+    // Test that an old/orphaned lock is replaced without a problem
+    $oldLock = new ActivedownloadDao();
+    $oldLock->setIp($_SERVER['REMOTE_ADDR']);
+    $oldLock->setDateCreation(date('c', strtotime('-1 day')));
+    $oldLock->setLastUpdate(date('c', strtotime('-10 minutes')));
+    $this->Activedownload->save($oldLock);
+
+    $lock = $this->Activedownload->acquireLock();
+    $this->assertTrue($lock instanceof ActivedownloadDao);
+    $this->assertNotEquals($lock->getKey(), $oldLock->getKey());
     }
   }
