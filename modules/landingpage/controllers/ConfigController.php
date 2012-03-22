@@ -38,7 +38,8 @@ class Landingpage_ConfigController extends Landingpage_AppController
     else
       {
       $textDao = new Landingpage_TextDao();
-      $textDao->setText('foo');
+      $textDao->setText('Landing page content goes here. '.
+                        'You may use plain text or markdown.');
       }
     $text = $textDao->getText();
     $configForm = $this->ModuleForm->Config->createForm();
