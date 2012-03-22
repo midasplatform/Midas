@@ -214,7 +214,7 @@ $(document).ready(function() {
     $('#revisionList').accordion({
         clearStyle: true,
         collapsible: true,
-        active: false
+        autoHeight: false
     });
     $('#revisionList').show();
     $('#historyLoading').hide();
