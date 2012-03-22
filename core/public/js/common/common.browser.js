@@ -48,12 +48,12 @@ midas.genericCallbackCheckboxes = function(node) {
                 items += $(this).attr('element') + '-';
             }
         });
-
-    if((arraySelected['folders'].length + arraySelected['items'].length) > 0) {
+    var nselected = arraySelected['folders'].length + arraySelected['items'].length;
+    if(nselected > 0) {
         $('div.viewSelected').show();
-        var html = ' (' + (arraySelected['folders'].length + arraySelected['items'].length);
+        var html = ' (' + nselected;
         html += ' ' + json.browse.element;
-        if((arraySelected['folders'].length + arraySelected['items'].length) > 1) {
+        if(nselected != 1) {
             html += 's';
             $('div.sideElementActions').hide();
         }
@@ -79,6 +79,7 @@ midas.genericCallbackCheckboxes = function(node) {
             }, function() {
                 $(this).parents('li').css('background-color','white');
             });
+        $('div.viewSelected li a').append(' ('+nselected+')');
     }
     else {
         $('div.viewSelected').hide();
