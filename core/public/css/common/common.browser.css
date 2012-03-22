@@ -51,6 +51,7 @@ ul.pathBrowser li a{
 
 span.infoTitle{
   font-weight: bold;
+  word-wrap: break-word;
 }
 
 input.deleteSelectedYes {
