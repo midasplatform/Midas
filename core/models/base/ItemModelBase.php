@@ -453,17 +453,19 @@ abstract class ItemModelBase extends AppModel
       $parent = $this->load($parentId);
       }
 
-    $realName = preg_split('/ \(\d+\)/', $name);
+    $names = preg_split('/ \(\d+\)/', $name);
+    $realName = $names[0];
+    $escapedRealName = addcslashes($realName, '()');
     $siblings = $parent->getItems();
     $copyIndex = 0;
     foreach($siblings as $sibling)
       {
       $siblingName = $sibling->getName();
-      if(!strcmp($siblingName, $realName[0]) && ($copyIndex == 0))
+      if(!strcmp($siblingName, $realName) && ($copyIndex == 0))
         {
         $copyIndex = 1;
         }
-      else if(preg_match('/^'.$realName[0].'( \(\d+\))$/', $siblingName))
+      else if(preg_match('/^'.$escapedRealName.'( \(\d+\))$/', $siblingName))
         {
         // get copy index number from the item's name. e.g. get 1 from "aaa.txt (1)"
         $currentCopy = intval(substr(strrchr($siblingName, "("), 1, -1));
@@ -474,10 +476,10 @@ abstract class ItemModelBase extends AppModel
         }
       }
 
-    $updatedName = $realName[0];
+    $updatedName = $realName;
     if($copyIndex > 0)
       {
-      $updatedName = $realName[0].' ('.$copyIndex.')';
+      $updatedName = $realName.' ('.$copyIndex.')';
       }
     return $updatedName;
 
