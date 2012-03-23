@@ -1,5 +1,5 @@
 #ratingsAverage {
-  width: 250px;
+  width: 200px;
   float: left;
 }
 
@@ -26,4 +26,21 @@ span.addRating {
   margin-right: 7px;
   color: #676767;
   float: left;
+}
+
+div.loginToRate {
+  padding-bottom: 8px;
+  font-size: 12px;
+  float: right;
+}
+
+#registerToRate,#loginToRate {
+  font-weight: bold;
+  text-decoration: none;
+  color: #56758B;
+}
+
+#registerToRate:hover,#loginToRate:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }

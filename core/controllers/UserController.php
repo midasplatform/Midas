@@ -141,12 +141,23 @@ class UserController extends AppController
       }
     } // end recoverpassword
 
-  /** Logout a user */
+  /**
+   * Logout a user.
+   * @param noRedirect Set this parameter if you are calling logout with ajax
+   *                   and do not want the controller to redirect
+   */
   function logoutAction()
     {
     $this->userSession->Dao = null;
     Zend_Session::ForgetMe();
     setcookie('midasUtil', null, time() + 60 * 60 * 24 * 30, '/'); //30 days
+    $noRedirect = $this->_getParam('noRedirect');
+    if(isset($noRedirect))
+      {
+      $this->disableView();
+      $this->disableLayout();
+      return;
+      }
     $this->_redirect('/');
     } //end logoutAction
 
@@ -166,6 +177,38 @@ class UserController extends AppController
       $user = $this->User->load($this->userSession->Dao->getKey());
       $user->setDynamichelp($value);
       $this->User->save($user);
+      }
+    }
+
+  /**
+   * Function for registering a new user; provides an ajax response; does not attempt to redirect,
+   * instead post-register action is left up to the client
+   */
+  function ajaxregisterAction()
+    {
+    $this->disableView();
+    $this->disableLayout();
+    $form = $this->Form->User->createRegisterForm();
+    if($this->_request->isPost() && $form->isValid($this->getRequest()->getPost()))
+      {
+      if($this->User->getByEmail(strtolower($form->getValue('email'))) !== false)
+        {
+        echo JsonComponent::encode(array('status' => 'error', 'message' => 'That email is already registered', 'alreadyRegistered' => true));
+        return;
+        }
+      $this->userSession->Dao = $this->User->createUser(
+      trim($form->getValue('email')),
+      $form->getValue('password1'),
+      trim($form->getValue('firstname')),
+      trim($form->getValue('lastname')));
+
+      echo JsonComponent::encode(array('status' => 'ok', 'message' => 'User registered successfully'));
+      }
+    else
+      {
+      echo JsonComponent::encode(array('status' => 'error',
+                                       'message' => 'Registration failed',
+                                       'validValues' => $form->getValidValues($this->getRequest()->getPost())));
       }
     }
 
@@ -191,6 +234,41 @@ class UserController extends AppController
     ));
 
     } //end register
+
+  /**
+   * Function for logging in; provides an ajax response; does not attempt to redirect,
+   * instead post-login action is left up to the client.
+   * Does not currently support LDAP login.
+   */
+  function ajaxloginAction()
+    {
+    $this->disableView();
+    $this->disableLayout();
+
+    $form = $this->Form->User->createLoginForm();
+    if(!$form->isValid($this->getRequest()->getPost()))
+      {
+      echo JsonComponent::encode(array('status' => 'error', 'message' => 'Invalid login form'));
+      return;
+      }
+    $userDao = $this->User->getByEmail($form->getValue('email'));
+    $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
+    if($userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
+      {
+      setcookie('midasUtil', $userDao->getKey().'-'.md5($userDao->getPassword()), time() + 60 * 60 * 24 * 30, '/'); //30 days
+      Zend_Session::start();
+      $user = new Zend_Session_Namespace('Auth_User');
+      $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
+      $user->Dao = $userDao;
+      $user->lock();
+      $this->getLogger()->info(__METHOD__ . " Log in : " . $userDao->getFullName());
+      echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Login successful'));
+      }
+    else
+      {
+      echo JsonComponent::encode(array('status' => 'error', 'message' => 'Login failed'));
+      }
+    }
 
   /** Login action */
   function loginAction()
