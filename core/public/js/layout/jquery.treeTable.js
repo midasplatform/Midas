@@ -388,6 +388,25 @@
         options.callbackCheckboxes(table);
         }
       });
+    // Bind arrow keys and spacebar key to tree navigation
+    $(document).unbind('keydown').keydown(function(event) {
+        if(event.which == 38) { //up arrow
+            table.find('tbody tr.selected').prev().mousedown();
+            event.preventDefault();
+        } else if(event.which == 40) { //down arrow
+            table.find('tbody tr.selected').next().mousedown();
+            event.preventDefault();
+        } else if(event.which == 32) { //space bar
+            var checkbox = table.find('tbody tr.selected input.treeCheckbox');
+            if(checkbox.is(':checked')) {
+                checkbox.removeAttr('checked');
+            } else {
+                checkbox.attr('checked', 'checked');
+            }
+            checkbox.change();
+            event.preventDefault();
+        }
+    });
     }
 
   function colorLines(table, checkHidden)
