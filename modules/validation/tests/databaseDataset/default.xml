@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+  <validation_dashboard
+     dashboard_id="1"
+     owner_id="1"
+     name="foo"
+     description="bar"
+     truthfolder_id="1"
+     testingfolder_id="2"
+     trainingfolder_id="3"
+     metric_id="3000" />
+  <validation_dashboard2folder
+     dashboard2folder_id="1"
+     dashboard_id="1"
+     folder_id="1001" />
+  <validation_dashboard2folder
+     dashboard2folder_id="2"
+     dashboard_id="1"
+     folder_id="1002" />
+  <validation_scalarresult
+     scalarresult_id="1"
+     folder_id="1"
+     item_id="1001" />
+</dataset>
+

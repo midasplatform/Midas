@@ -1,0 +1,2 @@
+add_midas_mysql_test( ValidationDashboardModel DashboardModelTest.php )
+add_midas_mysql_test( ValidationScalarResultModel ScalarResultModelTest.php )
