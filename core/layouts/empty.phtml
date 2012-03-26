@@ -40,10 +40,17 @@ echo $this->doctype()
   <?php
   if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
     {
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/view.css,main.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css,jquery.qtip.min.css" />';
+    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/view.css,'.
+         'midas.empty.css,'.
+         'jquery-ui.css,'.
+         'form.css,'.
+         'loginForm.css,'.
+         'jquery.treeTable.css,'.
+         'jquery.qtip.min.css" />';
     }
   else
     {
+    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/midas.layout.css" />';
     echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/view.css" />';
     echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery-ui.css" />';
     echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/form.css" />';
@@ -53,10 +60,6 @@ echo $this->doctype()
     }
   ?>
 
-  <!--[if IE]>
-    <?php echo  '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/mainIE.css" />';?>
-    <?php echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/roundCornerIE.js"></script>';?>
-  <![endif]-->
   <?php echo $this->headLink();  // import the css ?>
   <?php echo $this->headStyle(); // import the css ?>
 
@@ -87,6 +90,7 @@ echo $this->doctype()
     {
     echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.js,'.
          'jquery-ui.js,'.
+         'midas.common.js,'.
          'midas.empty.js,'.
          'midas.notice.js,'.
          'midas.callback.js,'.
@@ -98,6 +102,7 @@ echo $this->doctype()
     {
     echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.js"></script>';
     echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery-ui.js"></script>';
+    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.common.js"></script>';
     echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.empty.js"></script>';
     echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.notice.js"></script>';
     echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.callback.js"></script>';

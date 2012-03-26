@@ -294,14 +294,6 @@ $(function() {
   });
 
   // Style -------------------------------------
-
-  // hover  link (view Action is the right menu in the file browser)
-  $('div.viewAction li a').hover(function(){
-    $(this).parents('li').css('background-color','#E5E5E5');
-  }, function(){
-    $(this).parents('li').css('background-color','white');
-  });
-
   // user menu
     $('#menuUserInfo').click(function(){
       globalAuthAsk(json.global.webroot+'/user/userpage');
@@ -313,12 +305,6 @@ $(function() {
       $("div.TopDynamicBar").hide('blind');
     }
   });
-
-    $('[qtip]').qtip({
-   content: {
-      attr: 'qtip'
-   }
-});
 
   $('div.TopbarRighta li.first').hover(
       function() {$('ul', this).css('display', 'block');},
@@ -342,38 +328,6 @@ function globalAuthAsk(url)
     $("div.TopDynamicBar").show('blind');
     loadAjaxDynamicBar('login','/user/login');
     }
-  }
-
-// trim name by the number of character
-function sliceFileName(name,nchar)
-  {
-    if(name.length>nchar)
-      {
-      toremove=(name.length)-nchar;
-      if(toremove<13)
-        {
-        return name;
-        }
-      name=name.substring(0,10)+'...'+name.substring(13+toremove);
-      return name;
-      }
-  return name;
-  }
-
-// trim name by the number of pixel
- function trimName(name,padding)
-  {
-    if(name.length*7+padding>350)
-      {
-      toremove=(name.length*7+padding-350)/8;
-      if(toremove<13)
-        {
-        return 'error';
-        }
-      name=name.substring(0,10)+'...'+name.substring(name.length+13-toremove);
-      return name;
-      }
-  return name;
   }
 
 

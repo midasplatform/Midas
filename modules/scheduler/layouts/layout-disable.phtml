@@ -22,11 +22,11 @@ echo $this->doctype() ?>
     <?php
     if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
       {
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/main.css,view.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css,jquery.cluetip.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/midas.layout.css,view.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css,jquery.cluetip.css" />';
       }
     else
       {
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/main.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/midas.layout.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery.cluetip.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/view.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery-ui.css" />';
