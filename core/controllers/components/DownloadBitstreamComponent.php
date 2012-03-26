@@ -59,15 +59,6 @@ class DownloadBitstreamComponent extends AppComponent
       throw new Zend_Exception('Unable to open the file');
       }
 
-    // Acquire the lock once we know we don't have an error condition
-    $modelLoader = new MIDAS_ModelLoader();
-    $activeDownloadModel = $modelLoader->loadModel('Activedownload');
-    $lock = $activeDownloadModel->acquireLock();
-    if($lock === false)
-      {
-      throw new Zend_Controller_Action_Exception('You may only have one active download at a time.  Please wait a few minutes and try again.', 403);
-      }
-
     if(!$this->testingmode) //don't send any headers in testing mode since it will break it
       {
       $modified = gmdate('D, d M Y H:i:s').' GMT';
@@ -158,19 +149,12 @@ class DownloadBitstreamComponent extends AppComponent
       {
       fseek($handle, $offset);
       }
-    $startTime = time();
+
     while(!feof($handle) && connection_status() == 0)
       {
       echo fread($handle, $chunkSize);
-      if(time() > ($startTime + 100)) // update lock every 100 seconds
-        {
-        $startTime = time();
-        $activeDownloadModel->updateLock($lock);
-        Zend_Registry::get('dbAdapter')->closeConnection();
-        }
       }
     fclose($handle);
-    $activeDownloadModel->delete($lock); //delete the active download lock
 
     if(!$this->testingmode) //don't exit if we are in testing mode
       {
