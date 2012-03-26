@@ -196,14 +196,14 @@ echo $this->doctype() ?>
     <?php
               if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
                 {
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,jquery.treeTable.js,jquery.cluetip.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,midas.layout.js,jquery.treeTable.js,jquery.cluetip.js"></script>';
                 }
               else
                 {
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.cluetip.js"></script>';
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery-ui.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/main.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/midas.layout.js"></script>';
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.treeTable.js"></script>';
                 }
     ?>
