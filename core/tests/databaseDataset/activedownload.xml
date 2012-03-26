@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
 
-  <activedownload activedownload_id="1" ip="dummy" date_creation="2012-01-01 01:00:00"
-   last_update="2012-01-01 01:00:00" />
+  <activedownload activedownload_id="1" ip="dummy" date_creation="0000-00-00 00:00:00"
+   last_update="0000-00-00 00:00:00" />
 
 </dataset>
