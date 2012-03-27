@@ -107,7 +107,7 @@ class Statistics_ItemController extends Statistics_AppController
 
     if(!isset($limit) || $limit < 0)
       {
-      $limit = 100;
+      $limit = 1000;
       }
     if(!$item)
       {

@@ -11,6 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 $this->headScript()->appendFile('http://maps.googleapis.com/maps/api/js?sensor=false');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/googlemaps/markerclusterer_compiled.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/item/item.index.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jquery.jqplot.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jqplot/jqplot.dateAxisRenderer.min.js');
@@ -40,7 +41,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
           <label for="enddate">to</label>
           <input class="dateSelect" type="text" id="enddate" name="enddate"/>
           <label for="downloadResultLimit">Result limit</label>
-          <input qtip="Limit the maximum number of downloads to show on the map" name="limit" id="downloadResultLimit" type="text" value="100" />
+          <input qtip="Limit the maximum number of downloads to show on the map" name="limit" id="downloadResultLimit" type="text" value="1000" />
           <input class="filterButton" type='submit' value='Apply Filter' />
           <img id="loadingStatistics" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
           <input type="hidden" name="itemId" value="<?php echo $this->itemDao->getKey()?>" />
