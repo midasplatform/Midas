@@ -559,3 +559,17 @@ function createNotive(text, delay)
   createNotice(text,delay, '');
 }
 
+/**
+ * When the window scrolls, we should move the sidebar view to the top of the page.
+ * Requires layout to work.
+ */
+$(window).scroll(function () {
+    var sidebar = $('div.viewSideBar');
+    if(sidebar.height() + 10 < $(window).height()) {
+        var padding = 5 + Math.max(0, $(window).scrollTop() - $('div.viewMain').offset().top);
+        sidebar.css('padding-top', padding+'px');
+    } else {
+        sidebar.css('padding-top', '5px');
+    }
+});
+
