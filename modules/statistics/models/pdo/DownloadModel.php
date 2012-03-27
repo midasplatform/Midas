@@ -25,14 +25,9 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
 {
   /**
    * Return a list of downloads
-   * @param type $startDate
-   * @param type $endDate
-   * @param type $module
-   * @param type $priority
-   * @param type $limit
-   * @return array ErrorlogDao
+   * @param ids Array of item ids to aggregate statistics for
    */
-  function getDownloads($item, $startDate, $endDate, $limit = 99999)
+  function getDownloads($ids, $startDate, $endDate, $limit = 99999)
     {
     $result = array();
     $sql = $this->database->select()
@@ -40,7 +35,7 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
             ->from(array('e' => 'statistics_download'))
             ->where('date >= ?', $startDate)
             ->where('date <= ?', $endDate)
-            ->where('item_id = ?', $item->getKey())
+            ->where('item_id IN (?)', $ids)
             ->order('date DESC')
             ->limit($limit);
     $rowset = $this->database->fetchAll($sql);
@@ -51,8 +46,11 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
     return $result;
     }
 
-  /** Return only downloads that have been successfully geolocated */
-  function getLocatedDownloads($item, $startDate, $endDate, $limit = 99999)
+  /**
+   * Return only downloads that have been successfully geolocated
+   * @param ids Array of item ids to aggregate statistics for
+   */
+  function getLocatedDownloads($ids, $startDate, $endDate, $limit = 99999)
     {
     $result = array();
     $sql = $this->database->select()
@@ -61,7 +59,7 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
             ->joinLeft(array('ipl' => 'statistics_ip_location'), 'd.ip_location_id = ipl.ip_location_id')
             ->where('date >= ?', $startDate)
             ->where('date <= ?', $endDate)
-            ->where('item_id = ?', $item->getKey())
+            ->where('item_id IN (?)', $ids)
             ->where('latitude != 0')
             ->where('latitude != ?', '')
             ->order('date DESC')

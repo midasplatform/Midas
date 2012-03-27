@@ -24,9 +24,7 @@ midas.statistics.populateMap = function(responseText, statusText, xhr, form) {
 
         for (var i = 0; i < response.downloads.length; i++) {
             var myLatlng = new google.maps.LatLng(response.downloads[i].latitude, response.downloads[i].longitude);
-            var marker = new google.maps.Marker({ //instantiating marker places the marker on the map
-                position: myLatlng,
-                title: response.downloads[i].date});
+            var marker = new google.maps.Marker({position: myLatlng});
             midas.statistics.mapMarkers.push(marker);
         }
         midas.statistics.clusterer.clearMarkers();

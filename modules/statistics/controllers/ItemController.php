@@ -28,22 +28,45 @@ class Statistics_ItemController extends Statistics_AppController
   /** index action*/
   function indexAction()
     {
-    $item = $this->Item->load($this->_getParam('id'));
-    if(!$item)
+    $itemIds = $this->_getParam('id');
+    $ids = explode(',', $itemIds);
+    $count = 0;
+    $totalview = 0;
+    $totaldownload = 0;
+    $idArray = array();
+    foreach($ids as $id)
       {
-      throw new Zend_Exception("Item doesn't exist");
-      }
-    if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
-      {
-      throw new Zend_Exception('You do not have read permission on this item');
+      if($id != '')
+        {
+        $item = $this->Item->load($id);
+        if(!$item)
+          {
+          throw new Zend_Exception("Item ".$id." doesn't exist");
+          }
+        if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+          {
+          throw new Zend_Exception('You do not have read permission on item '.$id);
+          }
+        $count ++;
+        $totalview += $item->getView();
+        $totaldownload += $item->getDownload();
+        $idArray[] = $item->getKey();
+        }
       }
 
     $header = '<img style="position: relative; top: 3px; margin-left: -10px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_bar.png" />';
     $header .= ' Statistics: ';
-    $header .= '<a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a> ';
-    $header .= '<span class="headerSmall">['.$item->getDownload().' downloads, '.$item->getView().' views]</span>';
+    if($count == 1)
+      {
+      $header .= '<a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a> ';
+      }
+    else
+      {
+      $header .= $count.' items ';
+      }
+    $header .= '<span class="headerSmall">['.$totaldownload.' downloads, '.$totalview.' views]</span>';
     $this->view->header = $header;
-    $downloads = $this->Statistics_Download->getDownloads($item, date('c', strtotime('-20 day'.date( 'Y-m-j G:i:s'))), date('c'));
+    $downloads = $this->Statistics_Download->getDownloads($idArray, date('c', strtotime('-20 day'.date( 'Y-m-j G:i:s'))), date('c'));
 
     $format = 'Y-m-j';
     $arrayDownload = array();
@@ -64,8 +87,8 @@ class Statistics_ItemController extends Statistics_AppController
       $jqplotArray[] = array($key.' 8:00AM', $value);
       }
     $this->view->json['stats']['downloads'] = $jqplotArray;
-    $this->view->itemDao = $item;
-    $this->view->json['itemId'] = $item->getKey();
+    $this->view->itemIds = $itemIds;
+    $this->view->json['itemId'] = $itemIds;
     $this->view->json['initialStartDate'] = date('m/d/Y', strtotime('-1 month'));
     $this->view->json['initialEndDate'] = date('m/d/Y');
     }
@@ -86,7 +109,25 @@ class Statistics_ItemController extends Statistics_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $item = $this->Item->load($this->_getParam('itemId'));
+    $itemIds = $this->_getParam('itemId');
+    $ids = explode(',', $itemIds);
+    $idArray = array();
+    foreach($ids as $id)
+      {
+      if($id != '')
+        {
+        $item = $this->Item->load($id);
+        if(!$item)
+          {
+          throw new Zend_Exception("Item ".$id." doesn't exist");
+          }
+        if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+          {
+          throw new Zend_Exception('You do not have read permission on item '.$id);
+          }
+        $idArray[] = $item->getKey();
+        }
+      }
     if($this->_getParam('startdate') == '')
       {
       $startDate = date('Y-m-d');
@@ -109,29 +150,19 @@ class Statistics_ItemController extends Statistics_AppController
       {
       $limit = 1000;
       }
-    if(!$item)
-      {
-      throw new Zend_Exception("Item doesn't exist");
-      }
-    if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
-      {
-      throw new Zend_Exception('You do not have read permission on this item');
-      }
 
-    $downloads = $this->Statistics_Download->getLocatedDownloads($item, $startDate, $endDate, $limit);
+    $downloads = $this->Statistics_Download->getLocatedDownloads($idArray, $startDate, $endDate, $limit);
 
     $markers = array();
     foreach($downloads as $download)
       {
-      $date = date('Y-m-d G:i:s', strtotime($download->getDate()));
       $latitude = $download->getIpLocation()->getLatitude();
       $longitude = $download->getIpLocation()->getLongitude();
 
       if($latitude || $longitude)
         {
         $markers[] = array('latitude' => $latitude,
-                           'longitude' => $longitude,
-                           'date' => $date);
+                           'longitude' => $longitude);
         }
       }
     echo JsonComponent::encode(array('downloads' => $markers));
