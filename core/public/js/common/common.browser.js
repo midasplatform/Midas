@@ -475,7 +475,7 @@ midas.createInfo = function (jsonContent) {
         html+='<img class="infoLogo" alt="Data Type" src="'+json.global.coreWebroot+'/public/images/icons/document-big.png" />';
     }
 
-    html+='<span class="infoTitle" >'+sliceFileName(arrayElement['name'],27)+'</span>';
+    html+='<span class="infoTitle" >'+arrayElement['name']+'</span>';
     html+='<table>';
     html+='  <tr>';
     html+='    <td>'+arrayElement.translation.Created+'</td>';
