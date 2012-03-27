@@ -273,7 +273,7 @@ class AppController extends MIDAS_GlobalController
       "deleteFeed" => $this->t('Do you really want to delete the feed?'));
 
     $this->view->json = array(
-      "global" => $jsonGlobal, "login" => $login, 'feed' => $feed, "browse" => $browse);
+      'global' => $jsonGlobal, 'login' => $login, 'feed' => $feed, 'browse' => $browse);
 
     // Init Dynamic Help (the order makes sense for the animation)
     if($this->isDemoMode())
@@ -306,22 +306,35 @@ class AppController extends MIDAS_GlobalController
 
     $this->addDynamicHelp('.SideBar ul:first', '<b>Navigation menu</b>. Browse, explore and manage data.');
 
-    Zend_Loader::loadClass("JsonComponent", BASE_PATH.'/core/controllers/components');
+    Zend_Loader::loadClass('JsonComponent', BASE_PATH.'/core/controllers/components');
 
     // init layout
-    $modulesConfig = Zend_Registry::get('configsModules');
-    foreach($modulesConfig as $key => $module)
+    if($this->_helper->hasHelper('layout'))
       {
-      if($this->_helper->hasHelper('layout') && file_exists(BASE_PATH . "/modules/".$key."/layouts/layout-core.phtml"))
+      // layout explicitly declared as a parameter
+      $layoutParam = $this->_getParam('layout');
+      if(isset($layoutParam) && file_exists($this->_helper->layout->getLayoutPath().'/'.$layoutParam.'.phtml'))
         {
-        $this->_helper->layout->setLayoutPath(BASE_PATH . "/modules/".$key."/layouts/");
-        $this->_helper->layout->setLayout('layout-core');
+        $this->_helper->layout->setLayout($layoutParam);
         }
-      if($this->_helper->hasHelper('layout') && file_exists(BASE_PATH . "/privateModules/".$key."/layouts/layout-core.phtml"))
+      else
         {
-        $this->_helper->layout->setLayoutPath(BASE_PATH . "/privateModules/".$key."/layouts/");
-        $this->_helper->layout->setLayout('layout-core');
+        $modulesConfig = Zend_Registry::get('configsModules');
+        foreach($modulesConfig as $key => $module)
+          {
+          if(file_exists(BASE_PATH.'/modules/'.$key.'/layouts/layout-core.phtml'))
+            {
+            $this->_helper->layout->setLayoutPath(BASE_PATH.'/modules/'.$key.'/layouts/');
+            $this->_helper->layout->setLayout('layout-core');
+            }
+          if(file_exists(BASE_PATH.'/privateModules/'.$key.'/layouts/layout-core.phtml'))
+            {
+            $this->_helper->layout->setLayoutPath(BASE_PATH.'/privateModules/'.$key.'/layouts/');
+            $this->_helper->layout->setLayout('layout-core');
+            }
+          }
         }
+      $this->view->json['layout'] = $this->_helper->layout->getLayout();
       }
     } // end preDispatch()
 
