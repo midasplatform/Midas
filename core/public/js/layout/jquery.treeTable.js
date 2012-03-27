@@ -388,6 +388,28 @@
         options.callbackCheckboxes(table);
         }
       });
+    // Bind arrow keys and spacebar key to tree navigation
+    $(document).unbind('keydown').keydown(function(event) {
+        if(event.which == 38) { //up arrow - select previous visible element
+            var selected = table.find('tbody tr.selected');
+            table.find('tbody tr.selected').prevAll(':visible').first().mousedown();
+            event.preventDefault();
+        } else if(event.which == 40) { //down arrow - select next visible row
+            table.find('tbody tr.selected').nextAll(':visible').first().mousedown();
+            event.preventDefault();
+        } else if(event.which == 32) { //space bar - toggle checkbox
+            var checkbox = table.find('tbody tr.selected input.treeCheckbox');
+            if(checkbox.is(':checked')) {
+                checkbox.removeAttr('checked');
+            } else {
+                checkbox.attr('checked', 'checked');
+            }
+            checkbox.change();
+            event.preventDefault();
+        } else if(event.which == 13) { //enter - toggle folder expanded state
+            table.find('tbody tr.selected .expander').click();
+        }
+    });
     }
 
   function colorLines(table, checkHidden)
