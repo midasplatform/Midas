@@ -44,7 +44,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
           <input qtip="Limit the maximum number of downloads to show on the map" name="limit" id="downloadResultLimit" type="text" value="1000" />
           <input class="filterButton" type='submit' value='Apply Filter' />
           <img id="loadingStatistics" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-          <input type="hidden" name="itemId" value="<?php echo $this->itemDao->getKey()?>" />
+          <input type="hidden" name="itemId" value="<?php echo $this->itemIds?>" />
         </form>
       </div>
       <div id="map_canvas" style="width:800px; height:470px;"></div>
