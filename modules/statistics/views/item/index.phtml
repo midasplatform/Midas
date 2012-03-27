@@ -11,6 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 $this->headScript()->appendFile('http://maps.googleapis.com/maps/api/js?sensor=false');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/googlemaps/markerclusterer_compiled.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/item/item.index.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jquery.jqplot.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jqplot/jqplot.dateAxisRenderer.min.js');

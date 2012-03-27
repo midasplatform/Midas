@@ -26,10 +26,11 @@ midas.statistics.populateMap = function(responseText, statusText, xhr, form) {
             var myLatlng = new google.maps.LatLng(response.downloads[i].latitude, response.downloads[i].longitude);
             var marker = new google.maps.Marker({ //instantiating marker places the marker on the map
                 position: myLatlng,
-                map: midas.statistics.map,
                 title: response.downloads[i].date});
             midas.statistics.mapMarkers.push(marker);
         }
+        midas.statistics.clusterer.clearMarkers();
+        midas.statistics.clusterer.addMarkers(midas.statistics.mapMarkers);
         $('#filteredCount').html(response.downloads.length);
     } catch (e) {
         alert("An error occured. Please check the logs.");
@@ -76,6 +77,7 @@ $(document).ready(function() {
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     midas.statistics.map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
+    midas.statistics.clusterer = new MarkerClusterer(midas.statistics.map, midas.statistics.mapMarkers);
 
     // Set up smart date picker widget logic
     var dates = $("#startdate, #enddate").datepicker({
