@@ -99,5 +99,43 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
     {
     $this->database->update(array('user_id' => null), array('user_id = ?' => $userId));
     }
+
+  /**
+   * Return the daily download counts for the item(s)
+   * @param items The array of items
+   * @param startDate (optional) start date
+   * @param endDate (optional) end date
+   */
+  function getDailyCounts($items, $startDate = null, $endDate = null)
+    {
+    if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL')
+      {
+      $sql = $this->database->select()
+                  ->setIntegrityCheck(false)
+                  ->from(array('statistics_download'), array('date' => 'DATE(date)', 'count' => 'count(*)'))
+                  ->where('item_id IN (?)', $items)
+                  ->group('DATE(date)');
+
+      if($startDate !== null)
+        {
+        $sql->where('date >= ?', $startDate);
+        }
+      if($endDate !== null)
+        {
+        $sql->where('date <= ?', $endDate);
+        }
+      $rowset = $this->database->fetchAll($sql);
+      $results = array();
+      foreach($rowset as $keyRow => $row)
+        {
+        $results[$row['date']] = $row['count'];
+        }
+      return $results;
+      }
+    else // PGSQL implementation
+      {
+
+      }
+    }
 }  // end class
 ?>
