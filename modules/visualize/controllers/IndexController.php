@@ -55,7 +55,6 @@ class Visualize_IndexController extends Visualize_AppController
       }
     elseif($this->ModuleComponent->Main->canVisualizeImage($itemDao))
       {
-
       $this->_redirect('/visualize/image/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
     elseif($this->ModuleComponent->Main->canVisualizePdf($itemDao))
