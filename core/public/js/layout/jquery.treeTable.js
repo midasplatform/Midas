@@ -390,6 +390,9 @@
       });
     // Bind arrow keys and spacebar key to tree navigation
     $(document).unbind('keydown').keydown(function(event) {
+        if($('div.MainDialog').is(':visible')) {
+            return;
+        }
         if(event.which == 38) { //up arrow - select previous visible element
             var selected = table.find('tbody tr.selected');
             table.find('tbody tr.selected').prevAll(':visible').first().mousedown();
@@ -405,7 +408,6 @@
                 checkbox.attr('checked', 'checked');
             }
             checkbox.change();
-            event.preventDefault();
         } else if(event.which == 13) { //enter - toggle folder expanded state
             table.find('tbody tr.selected .expander').click();
         }
