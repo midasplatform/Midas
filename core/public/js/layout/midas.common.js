@@ -27,8 +27,11 @@ $(document).ready(function() {
  */
 $(window).scroll(function () {
     var sidebar = $('div.viewSideBar');
+    var viewMain = $('div.viewMain');
+    var topOffset = viewMain.length > 0 ? viewMain.offset().top : 0;
+
     if(sidebar.height() + 10 < $(window).height()) {
-        var padding = 5 + Math.max(0, $(window).scrollTop() - $('div.viewMain').offset().top);
+        var padding = 5 + Math.max(0, $(window).scrollTop() - topOffset);
         sidebar.css('padding-top', padding+'px');
     } else {
         sidebar.css('padding-top', '5px');
