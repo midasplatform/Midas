@@ -84,6 +84,11 @@ midas.genericCallbackCheckboxes = function(node) {
         }
         links += '</ul>';
         $('div.viewSelected>span').html(links);
+        midas.doCallback('CALLBACK_CORE_RESOURCES_SELECTED', {
+            folders: arraySelected.folders,
+            items: arraySelected.items,
+            selectedActionsList: $('div.viewSelected>span ul')
+        });
         $('div.viewSelected li a').hover(
             function(){
                 $(this).parents('li').css('background-color','#E5E5E5');

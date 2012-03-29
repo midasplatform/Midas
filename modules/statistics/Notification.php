@@ -88,6 +88,11 @@ class Statistics_Notification extends MIDAS_Notification
     $modulesConfig = Zend_Registry::get('configsModules');
     $url = $modulesConfig['statistics']->piwik->url;
     $id = $modulesConfig['statistics']->piwik->id;
+
+    $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
+    $js = $baseUrl.'/modules/'.$this->moduleName.'/public/js/statistics.notify.js';
+    $html = '<script type="text/javascript" src="'.$js.'"></script>';
+
     return "
       <!-- Piwik -->
       <script type=\"text/javascript\">
@@ -101,7 +106,7 @@ class Statistics_Notification extends MIDAS_Notification
       } catch( err ) {}
       </script><noscript><p><img src=\"".$url."/piwik.php?idsite=".$id."\" style=\"border:0\" alt=\"\" /></p></noscript>
       <!-- End Piwik Tracking Code -->
-      ";
+      ".$html;
     }
 
   /**
