@@ -21,6 +21,23 @@ $(document).ready(function() {
   });
 });
 
+/**
+ * When the window scrolls, we should move the sidebar view to the top of the page.
+ * Requires layout to work.
+ */
+$(window).scroll(function () {
+    var sidebar = $('div.viewSideBar');
+    var viewMain = $('div.viewMain');
+    var topOffset = viewMain.length > 0 ? viewMain.offset().top : 0;
+
+    if(sidebar.height() + 10 < $(window).height()) {
+        var padding = 5 + Math.max(0, $(window).scrollTop() - topOffset);
+        sidebar.css('padding-top', padding+'px');
+    } else {
+        sidebar.css('padding-top', '5px');
+    }
+});
+
 // trim name by the number of character
 function sliceFileName (name, nchar) {
     if(name.length>nchar) {
