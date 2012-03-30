@@ -200,14 +200,12 @@ class PerformTest extends ControllerTestCase
     $this->dispatchUrI('/sizequota/config/getfreespace?folderId='.$user1->getFolderId(), $user1);
     $resp = JsonComponent::decode($this->getBody());
     $this->assertTrue($resp['status'] == true);
-    $this->assertTrue($resp['freeSpace'] == disk_free_space($this->Assetstore->getDefault()->getPath()));
 
     // This should also work on non-root folders
     $this->resetAll();
     $this->dispatchUrI('/sizequota/config/getfreespace?folderId='.$user1->getPublicfolderId(), $user1);
     $resp = JsonComponent::decode($this->getBody());
     $this->assertTrue($resp['status'] == true);
-    $this->assertTrue($resp['freeSpace'] == disk_free_space($this->Assetstore->getDefault()->getPath()));
 
     // Should also work for community folders
     $this->resetAll();
