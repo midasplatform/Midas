@@ -42,6 +42,7 @@ class DownloadBitstreamComponent extends AppComponent
       apache_setenv('no-gzip', '1');
       }
 
+
     $mimetype = $bitstream->getMimetype();
     $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
     $name = $bitstream->getName();
@@ -49,7 +50,7 @@ class DownloadBitstreamComponent extends AppComponent
       {
       throw new Zend_Exception('Unable to find file on the disk');
       }
-    $chunkSize = 1024 * 8;
+    $chunkSize = 1024 * 64;
     $buffer = '';
     $fileSize = UtilityComponent::fileSize($path);
     $handle = fopen($path, 'rb');
@@ -57,6 +58,7 @@ class DownloadBitstreamComponent extends AppComponent
       {
       throw new Zend_Exception('Unable to open the file');
       }
+
     if(!$this->testingmode) //don't send any headers in testing mode since it will break it
       {
       $modified = gmdate('D, d M Y H:i:s').' GMT';
@@ -132,6 +134,7 @@ class DownloadBitstreamComponent extends AppComponent
         }
       }
     set_time_limit(0);
+    ignore_user_abort(true); //must call this so the script doesn't end as soon as connection closed
 
     //close the database connection so we don't get too many connections problems
     Zend_Registry::get('dbAdapter')->closeConnection();
