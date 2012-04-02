@@ -98,21 +98,21 @@ midas.community.manage.init = function()
         var jsonResponse = jQuery.parseJSON(data);
         if(jsonResponse == null)
           {
-          createNotice('Error', 4000);
+          midas.createNotice('Error', 4000);
           return;
           }
         if(jsonResponse[0])
           {
           $("div.MainDialog").dialog("close");
           $('a.groupLink[groupid='+groupid+']').parent('li').remove();
-          createNotice(jsonResponse[1], 4000);
+          midas.createNotice(jsonResponse[1], 4000);
           midas.community.manage.init();
           window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
           window.location.reload();
           }
         else
           {
-          createNotice(jsonResponse[1], 4000);
+          midas.createNotice(jsonResponse[1], 4000);
           }
         });
       });
@@ -168,17 +168,17 @@ midas.community.manage.initDragAndDrop = function()
             var jsonResponse = jQuery.parseJSON(data);
             if(jsonResponse==null)
               {
-              createNotice('Error', 4000);
+              midas.createNotice('Error', 4000);
               return;
               }
             if(jsonResponse[0])
               {
-              createNotice(jsonResponse[1], 1500);
+              midas.createNotice(jsonResponse[1], 1500);
               $($(ui.draggable).parents("tr")).appendBranchTo(destination_obj);
               }
             else
               {
-              createNotice(jsonResponse[1], 4000);
+              midas.createNotice(jsonResponse[1], 4000);
               }
             });
           }
@@ -199,7 +199,7 @@ midas.community.manage.validateGroupChange = function (formData, jqForm, options
   var form = jqForm[0];
   if(form.name.value.length < 1)
     {
-    createNotice(json.community.message.infoErrorName, 4000);
+    midas.createNotice(json.community.message.infoErrorName, 4000);
     return false;
     }
 }
@@ -210,12 +210,12 @@ midas.community.manage.successGroupChange = function(responseText, statusText, x
   var jsonResponse = jQuery.parseJSON(responseText);
   if(jsonResponse == null)
     {
-    createNotice('Error',4000);
+    midas.createNotice('Error',4000);
     return;
     }
   if(jsonResponse[0])
     {
-    createNotice(jsonResponse[1], 4000);
+    midas.createNotice(jsonResponse[1], 4000);
     var obj = $('a.groupLink[groupId='+jsonResponse[2].group_id+']');
     if(obj.length > 0)
       {
@@ -228,7 +228,7 @@ midas.community.manage.successGroupChange = function(responseText, statusText, x
     }
   else
     {
-    createNotice(jsonResponse[1], 4000);
+    midas.createNotice(jsonResponse[1], 4000);
     }
 }
 
@@ -237,7 +237,7 @@ midas.community.manage.validateInfoChange = function(formData, jqForm, options)
   var form = jqForm[0];
   if(form.name.value.length < 1)
     {
-    createNotice(json.community.message.infoErrorName, 4000);
+    midas.createNotice(json.community.message.infoErrorName, 4000);
     return false;
     }
 }
@@ -247,17 +247,17 @@ midas.community.manage.successInfoChange = function(responseText, statusText, xh
   var jsonResponse = jQuery.parseJSON(responseText);
   if(jsonResponse == null)
     {
-    createNotice('Error', 4000);
+    midas.createNotice('Error', 4000);
     return;
     }
   if(jsonResponse[0])
     {
     $('div.genericName').html(jsonResponse[2]);
-    createNotice(jsonResponse[1], 4000);
+    midas.createNotice(jsonResponse[1], 4000);
     }
   else
     {
-    createNotice(jsonResponse[1], 4000);
+    midas.createNotice(jsonResponse[1], 4000);
     }
 }
 
@@ -276,10 +276,10 @@ midas.community.manage.removeFromGroup = function(userId, groupId)
     jsonResponse = jQuery.parseJSON(data);
     if(jsonResponse == null)
       {
-      createNotice('Error', 4000);
+      midas.createNotice('Error', 4000);
       return;
       }
-    createNotice(jsonResponse[1], 4000);
+    midas.createNotice(jsonResponse[1], 4000);
     if(jsonResponse[0])
       {
       window.location.replace(json.global.webroot+'/community/manage?communityId='+

@@ -15,7 +15,7 @@ function callbackSelect(node)
       $('img.infoLoading').show();
       $('div.ajaxInfoElement').html('');
       if(midas.ajaxSelectRequest!='')
-        {        
+        {
         midas.ajaxSelectRequest.abort();
         }
       var type=node.attr('type');
@@ -32,12 +32,12 @@ function callbackSelect(node)
             if(policy>=1)
               {
               html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
-              html+='<li ><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a class onclick="deleteItem('+element+');">'+json.browse['delete']+'</a></li>'; 
-              }   
+              html+='<li ><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a class onclick="deleteItem('+element+');">'+json.browse['delete']+'</a></li>';
+              }
           }
          $('div.viewAction ul').html(html);
-         
-         
+
+
 
          $('a.sharingLink').click(function(){
             loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
@@ -45,7 +45,7 @@ function callbackSelect(node)
           });
          $('div.viewAction ul').fadeIn('fast');
       });
-      
+
         midas.ajaxSelectRequest = $.ajax({
           type: "POST",
           url: json.global.webroot+'/browse/getelementinfo',
@@ -55,10 +55,10 @@ function callbackSelect(node)
             $('img.infoLoading').hide();
 
           }
-        });  
+        });
     }
-    
-    
+
+
     function deleteItem(element)
       {
         var html='';
@@ -72,7 +72,7 @@ function callbackSelect(node)
         showDialogWithContent(json.item.message['delete'],html,false);
 
         $('input.deleteItemYes').unbind('click').click(function()
-          { 
+          {
               midas.ajaxSelectRequest = $.ajax({
                 type: "POST",
                 url: json.global.webroot+'/item/delete',
@@ -81,13 +81,13 @@ function callbackSelect(node)
                    $('tr[element='+element+']').remove();
                   $( "div.MainDialog" ).dialog('close');
                 }
-              });  
+              });
 
           });
         $('input.deleteItemNo').unbind('click').click(function()
           {
              $( "div.MainDialog" ).dialog('close');
-          });         
+          });
 
       }
 
@@ -95,19 +95,19 @@ function callbackSelect(node)
     {
       midas.genericCallbackDblClick(node);
     }
-    
+
     function callbackCheckboxes(node) {
         var arraySelected = [];
         arraySelected['items'] = [];
         var selectedRows = [];
-      
+
       var items = '';
       node.find(".treeCheckbox:checked").each(
           function(){
               arraySelected['items'].push($(this).attr('element'));
               items+=$(this).attr('element')+'-';
               selectedRows.push($(this).closest('tr').attr('id'));
-      }); 
+      });
 
       var link=json.global.webroot+'/item/merge?items='+items;
       if((arraySelected['items'].length)>1)
@@ -117,17 +117,17 @@ function callbackSelect(node)
         html+=' '+json.browse.element;
         if((arraySelected['items'].length)>1)
           {
-           html+='s'; 
+           html+='s';
           }
-        html+='<br/><a class="mergeItemsLink" link="'+link+'">'+json.item.message.merge+'</a>'; 
-        $('div.viewSelected span').html(html); 
+        html+='<br/><a class="mergeItemsLink" link="'+link+'">'+json.item.message.merge+'</a>';
+        $('div.viewSelected span').html(html);
         }
       else
         {
         $('div.viewSelected').hide();
         $('div.viewSelected span').html('');
         }
-        
+
       $('a.mergeItemsLink').click(function(){
         var link=$(this).attr('link');
         var html='';
@@ -139,7 +139,7 @@ function callbackSelect(node)
         html+='<input style="margin-left:140px;" class="globalButton mergeItemSubmit" value="'+json.browse.edit+'"/>';
 
         showDialogWithContent(json.item.message.merge,html,false);
-        
+
         $('.mergeItemSubmit').click(
             function() {
                 midas.browse.uploaded.mergeItems(link+'&name='+$('#mergeItemValue').val(),
@@ -177,7 +177,7 @@ midas.browse.uploaded.mergeItems = function (link, selectedRows) {
         var newNode = '';
         if($("#browseTable > tbody > tr:first").length > 0) {
             newNode = $(newRow).insertBefore("#browseTable > tbody > tr:first");
-        } 
+        }
         else {
             newNode = $(newRow).appendTo("#browseTable > tbody");
         }
@@ -187,13 +187,13 @@ midas.browse.uploaded.mergeItems = function (link, selectedRows) {
         newCheck.attr("checked", true);
         callbackCheckboxes(newCheck);
         callbackSelect(newNode);
-        createNotice("Item, " + data.name + ", merged from " +
+        midas.createNotice("Item, " + data.name + ", merged from " +
                      selectedRows.length + " items.", 5000);
     })
-    .error( function() { 
-        createNotice("The item merge failed. Please contact an administrator.", 
+    .error( function() {
+        midas.createNotice("The item merge failed. Please contact an administrator.",
                      5000);
-    })                
+    })
     .complete( function() {
         // Close the dialog
         $( "div.MainDialog" ).dialog("close");

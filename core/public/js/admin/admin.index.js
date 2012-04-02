@@ -12,10 +12,10 @@ var midas = midas || {};
              jsonResponse = jQuery.parseJSON(data);
               if(jsonResponse==null)
                 {
-                  createNotive('Error',4000);
+                  midas.createNotice('Error',4000);
                   return;
                 }
-              createNotive(jsonResponse[1],1500);
+              midas.createNotice(jsonResponse[1],1500);
               window.location.replace(json.global.webroot+'/admin#tabs-assetstore');
               window.location.reload();
          });
@@ -41,7 +41,7 @@ var midas = midas || {};
             data: {assetstoreId: element},
             success: function(jsonContent){
               jsonResponse = jQuery.parseJSON(jsonContent);
-              createNotive(jsonResponse[1],1500);
+              midas.createNotice(jsonResponse[1],1500);
               if(jsonResponse[0])
                 {
                 window.location.replace(json.global.webroot+'/admin#tabs-assetstore');
@@ -80,13 +80,13 @@ var midas = midas || {};
               jsonResponse = jQuery.parseJSON(jsonContent);
               if(jsonResponse[0])
                 {
-                createNotive(jsonResponse[1],1500);
+                midas.createNotice(jsonResponse[1],1500);
                 window.location.replace(json.global.webroot+'/admin#tabs-assetstore');
                 window.location.reload();
                 }
               else
                 {
-                createNotive(jsonResponse[1],4000);
+                midas.createNotice(jsonResponse[1],4000);
                 }
             }
           });
@@ -124,7 +124,7 @@ var midas = midas || {};
                  if(!$('input[module='+l+']').is(':checked'))
                    {
                     $.post(json.global.webroot+'/admin/index', {submitModule: true, modulename: l , modulevalue:modulevalue});
-                    createNotive("Dependancy: Enabling module "+l,1500);
+                    midas.createNotice("Dependancy: Enabling module "+l,1500);
                    }
                  $('input[module='+l+']').attr('checked',true);
                  }
@@ -152,7 +152,7 @@ var midas = midas || {};
                 if(module != '')
                  {
                  found =true;
-                 createNotice("Dependency: The module "+module+" requires "+mainModule+". You must disable it first.", 4000, 'warning');
+                 midas.createNotice("Dependency: The module "+module+" requires "+mainModule+". You must disable it first.", 4000, 'warning');
                  }
                });
              if(found)
@@ -168,10 +168,10 @@ var midas = midas || {};
                jsonResponse = jQuery.parseJSON(data);
                 if(jsonResponse==null)
                   {
-                    createNotive('Error',4000);
+                    midas.createNotice('Error',4000);
                     return;
                   }
-                createNotive(jsonResponse[1],3500);
+                midas.createNotice(jsonResponse[1],3500);
                 initModulesConfigLinks();
            });
      });
@@ -241,7 +241,7 @@ function assetstoreAddCallback(responseText, statusText, xhr, $form)
       window.location.reload();
   	  }
 
-    createNotive(responseText.msg,4000);
+    midas.createNotice(responseText.msg,4000);
     }
 } // end assetstoreAddCallback
 
@@ -285,15 +285,15 @@ function successConfig(responseText, statusText, xhr, form)
     }
   if(jsonResponse==null)
     {
-      createNotive('Error',4000);
+      midas.createNotice('Error',4000);
       return;
     }
   if(jsonResponse[0])
     {
-      createNotive(jsonResponse[1],4000);
+      midas.createNotice(jsonResponse[1],4000);
     }
   else
     {
-      createNotive(jsonResponse[1],4000);
+      midas.createNotice(jsonResponse[1],4000);
     }
 }

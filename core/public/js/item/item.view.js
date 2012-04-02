@@ -62,7 +62,7 @@ $(document).ready(function() {
               success: function(jsonContent) {
                 data = $.parseJSON(jsonContent);
                 if(data.exists === "1") {
-                  createNotice("Metadata already exists for that metadatatype, element and qualifier", 4000, 'error');
+                  midas.createNotice("Metadata already exists for that metadatatype, element and qualifier", 4000, 'error');
                   // clear the form values
                   $('#midas_item_metadata_element').val('');
                   $('#midas_item_metadata_qualifier').val('');

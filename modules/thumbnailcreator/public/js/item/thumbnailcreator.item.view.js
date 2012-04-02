@@ -18,7 +18,7 @@ midas.thumbnailcreator.setup = function () {
             itemId: json.item.item_id
         }, function(data) {
             var resp = $.parseJSON(data);
-            createNotice(resp.message, 3500, resp.status);
+            midas.createNotice(resp.message, 3500, resp.status);
             if(resp.thumbnail && resp.status == 'ok') {
                 midas.thumbnailcreator.displayThumbnail(resp.thumbnail);
             }

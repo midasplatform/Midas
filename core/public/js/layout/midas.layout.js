@@ -287,7 +287,7 @@ $(function() {
     }
     else
     {
-      createNotive(json.login.contentUploadLogin,4000);
+      midas.createNotice(json.login.contentUploadLogin,4000);
       $("div.TopDynamicBar").show('blind');
       loadAjaxDynamicBar('login','/user/login');
     }
@@ -324,7 +324,7 @@ function globalAuthAsk(url)
     }
   else
     {
-    createNotive(json.login.titleUploadLogin,4000);
+    midas.createNotice(json.login.titleUploadLogin,4000);
     $("div.TopDynamicBar").show('blind');
     loadAjaxDynamicBar('login','/user/login');
     }

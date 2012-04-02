@@ -98,12 +98,12 @@ function successCreateFolderCallback(responseText, statusText, xhr, form)
   jsonResponse = jQuery.parseJSON(responseText);
   if(jsonResponse==null)
     {
-    createNotive('Error',4000);
+    midas.createNotice('Error',4000);
     return;
     }
   if(jsonResponse[0])
     {
-    createNotive(jsonResponse[1],4000);
+    midas.createNotice(jsonResponse[1],4000);
     var node = $('#moveTable tr[element='+jsonResponse[2].folder_id+']');
     node.reload();
 
@@ -113,7 +113,7 @@ function successCreateFolderCallback(responseText, statusText, xhr, form)
     }
   else
     {
-    createNotive(jsonResponse[1],4000);
+    midas.createNotice(jsonResponse[1],4000);
     }
   }
 

@@ -166,18 +166,18 @@ midas.removeItem = function (id) {
                    function(data) {
                        jsonResponse = jQuery.parseJSON(data);
                        if(jsonResponse==null) {
-                           createNotice('Error',4000);
+                           midas.createNotice('Error',4000);
                            return;
                        }
                        if(jsonResponse[0]) {
-                           createNotice(jsonResponse[1],1500);
+                           midas.createNotice(jsonResponse[1],1500);
                            $( "div.MainDialog" ).dialog('close');
                            midas.removeNodeFromTree(node, false);
                            midas.genericCallbackCheckboxes($('#browseTable'));
                            midas.genericCallbackSelect(null);
                        }
                        else {
-                           createNotice(jsonResponse[1],4000);
+                           midas.createNotice(jsonResponse[1],4000);
                        }
                    });
         });
@@ -208,18 +208,18 @@ midas.deleteFolder = function (id) {
             $(this).removeAttr('disabled');
             jsonResponse = jQuery.parseJSON(data);
             if(jsonResponse==null) {
-                createNotice('Error', 4000, 'error');
+                midas.createNotice('Error', 4000, 'error');
                 return;
             }
             if(jsonResponse[0]) {
-                createNotice(jsonResponse[1], 1500);
+                midas.createNotice(jsonResponse[1], 1500);
                 $('div.MainDialog').dialog('close');
                 midas.removeNodeFromTree(node, true);
                 midas.genericCallbackCheckboxes($('#browseTable'));
                 midas.genericCallbackSelect(null);
             }
             else {
-                createNotice(jsonResponse[1],4000, 'error');
+                midas.createNotice(jsonResponse[1],4000, 'error');
             }
         });
     });
@@ -254,7 +254,7 @@ midas.deleteSelected = function (folders, items) {
             $('#deleteSelectedLoadingGif').hide();
             var resp = jQuery.parseJSON(data);
             if(resp == null) {
-                createNotice('Error during folder delete. Check the log.', 4000);
+                midas.createNotice('Error during folder delete. Check the log.', 4000);
                 return;
             }
             if(resp.success) {
@@ -265,7 +265,7 @@ midas.deleteSelected = function (folders, items) {
                     message += resp.failure.folders.length + ' folders and ';
                     message += resp.failure.items.length + ' items.';
                 }
-                createNotice(message, 5000);
+                midas.createNotice(message, 5000);
                 $('div.MainDialog').dialog('close');
                 for (var curFolder in resp.success.folders) {
                     midas.removeNodeFromTree($('table.treeTable tr.parent[element='+resp.success.folders[curFolder]+']'), true);

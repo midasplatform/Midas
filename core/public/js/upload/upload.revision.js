@@ -69,7 +69,7 @@ midas.upload.revision.initJqueryFileupload = function()
   $('#startUploadLink').click(function () {
     if($('#destinationId').val() == undefined || $('#destinationId').val().length == 0)
       {
-      createNotice("Please select where you want to upload your files.", 4000);
+      midas.createNotice("Please select where you want to upload your files.", 4000);
       return false;
       }
     $('.file_upload_start button').click();
@@ -142,7 +142,7 @@ midas.upload.revision.initSwfupload = function()
   $('#startUploadLink').click(function() {
     if($('#destinationId').val() == undefined || $('#destinationId').val().length == 0)
       {
-      createNotice("Please select where you want to upload your files.", 4000);
+      midas.createNotice("Please select where you want to upload your files.", 4000);
       return false;
       }
     midas.upload.revision.swfu.startUpload();

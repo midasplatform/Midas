@@ -43,7 +43,7 @@ function validLoginForm()
         else
         {
         valid=false; 
-        createNotive($("form#loginForm div.loginError span").html(),8000);
+        midas.createNotice($("form#loginForm div.loginError span").html(),8000);
         }
   }
 });

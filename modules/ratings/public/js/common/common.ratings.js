@@ -83,7 +83,7 @@ midas.ratings.setRating = function(value) {
         rating: value
     }, function(data) {
         var resp = $.parseJSON(data);
-        createNotice(resp.message, 3000, resp.status);
+        midas.createNotice(resp.message, 3000, resp.status);
         midas.ratings.renderAggregate(resp.average, resp.total, resp.distribution);
     });
 

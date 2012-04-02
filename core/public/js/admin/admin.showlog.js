@@ -56,7 +56,7 @@ $('button#deleteSelected').click(function() {
       dataType: 'json',
       data: {idList: selected},
       success: function(resp) {
-        createNotive(resp.message, 3500);
+        midas.createNotice(resp.message, 3500);
         },
       });
     }
