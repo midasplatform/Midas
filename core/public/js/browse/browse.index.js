@@ -19,13 +19,13 @@ $(document).ready(
         $('a.createCommunity').click(
             function() {
                 if(json.global.logged) {
-                    loadDialog("createCommunity","/community/create");
-                    showDialog(json.community.createCommunity,false);
+                    midas.loadDialog("createCommunity","/community/create");
+                    midas.showDialog(json.community.createCommunity,false);
                 }
                 else {
                     midas.createNotice(json.community.contentCreateLogin,4000);
                     $("div.TopDynamicBar").show('blind');
-                    loadAjaxDynamicBar('login','/user/login');
+                    midas.loadAjaxDynamicBar('login','/user/login');
                 }
             });
    

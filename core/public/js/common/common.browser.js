@@ -108,8 +108,8 @@ midas.genericCallbackDblClick = function(node) {
 };
 
 midas.createNewFolder = function (id) {
-    loadDialog('folderId'+id,'/folder/createfolder?folderId='+id);
-    showDialog(json.browse.createFolder,false);
+    midas.loadDialog('folderId'+id,'/folder/createfolder?folderId='+id);
+    midas.showDialog(json.browse.createFolder,false);
     $('#createFolderForm input[name=name]').val('');
     $('#createFolderForm textarea[name=description]').val('');
     $('#createFolderForm input[name=teaser]').val('');
@@ -146,7 +146,7 @@ midas.removeItem = function (id) {
     html+='<input style="margin-left:15px;" class="globalButton deleteFolderNo" type="button" value="'+json.global.No+'"/>';
     html+='</div>';
     
-    showDialogWithContent(json.browse['delete'],html,false);
+    midas.showDialogWithContent(json.browse['delete'],html,false);
 
     $('input.deleteFolderYes').unbind('click').click(
         function() {
@@ -197,9 +197,9 @@ midas.deleteFolder = function (id) {
     html += '</div>';
     html += '<img id="deleteFolderProgress" style="display: none;" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>';
 
-    showDialogWithContent(json.browse['delete'], html, false);
+    midas.showDialogWithContent(json.browse['delete'], html, false);
 
-    $('input.deleteFolderYes').unbind('click').click(function() {
+    $('input.deleteFolderYes').unbind('click').click(function () {
         $('#deleteFolderProgress').show();
         $(this).attr('disabled', 'disabled');
         var node = $('table.treeTable tr.parent[element='+id+']');
@@ -243,7 +243,7 @@ midas.deleteSelected = function (folders, items) {
     html+='</div></form>';
     html+='<img id="deleteSelectedLoadingGif" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>';
 
-    showDialogWithContent(json.browse['deleteSelected'],html,false);
+    midas.showDialogWithContent(json.browse['deleteSelected'],html,false);
     $('input.deleteSelectedYes').unbind('click').click(function() {
         $('input.deleteSelectedYes').attr('disabled', 'disabled');
         $('input.deleteSelectedNo').attr('disabled', 'disabled');
@@ -290,14 +290,14 @@ midas.deleteSelected = function (folders, items) {
  * ids will be ignored)
  */
 midas.shareSelected = function (folders, items) {  
-    loadDialog("ShareItem","/browse/movecopy/?share=true&items="+items);
+    midas.loadDialog("ShareItem","/browse/movecopy/?share=true&items="+items);
     if(folders == '')
       {
-      showDialog(json.browse.shareSelected);
+      midas.showDialog(json.browse.shareSelected);
       }
     else
       {
-      showDialog(json.browse.shareSelected + ' ' + json.browse.ignoreSelectedFolders);
+      midas.showDialog(json.browse.shareSelected + ' ' + json.browse.ignoreSelectedFolders);
       }   
 };
 
@@ -309,15 +309,13 @@ midas.shareSelected = function (folders, items) {
  * ids will be ignored)
  */
 midas.duplicateSelected = function (folders, items) {  
-    loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+items);
-    if(folders == '')
-      {
-      showDialog(json.browse.duplicateSelected);
-      }
-    else
-      {
-      showDialog(json.browse.duplicateSelected + ' ' + json.browse.ignoreSelectedFolders);
-      }   
+    midas.loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+items);
+    if(folders == '') {
+        midas.showDialog(json.browse.duplicateSelected);
+    }
+    else {
+        midas.showDialog(json.browse.duplicateSelected + ' ' + json.browse.ignoreSelectedFolders);
+    }   
 };
 
 /**
@@ -337,19 +335,19 @@ midas.removeChildren = function (node) {
 };
 
 midas.editFolder = function (id) {
-    loadDialog("editFolder" + id,"/folder/edit?folderId=" + id);
-    showDialog(json.browse.edit, false);
+    midas.loadDialog("editFolder" + id,"/folder/edit?folderId=" + id);
+    midas.showDialog(json.browse.edit, false);
 };
 
 midas.moveFolder = function (id) {
-  loadDialog("moveFolder"+id,"/browse/movecopy?move=true&folders="+id);
-  showDialog(json.browse.move);
-  }
+    midas.loadDialog("moveFolder"+id,"/browse/movecopy?move=true&folders="+id);
+    midas.showDialog(json.browse.move);
+};
 
 midas.moveItem = function (itemId, fromFolderId) {
-  loadDialog("moveItem"+itemId,"/browse/movecopy?move=true&items="+itemId+"&from="+fromFolderId);
-  showDialog(json.browse.move);
-  }
+    midas.loadDialog("moveItem"+itemId,"/browse/movecopy?move=true&items="+itemId+"&from="+fromFolderId);
+    midas.showDialog(json.browse.move);
+};
 
 midas.parentOf = function (node) {
     var classNames = node[0].className.split(' ');
@@ -373,98 +371,95 @@ midas.createAction = function (node) {
     var type = node.attr('type');
     var element = node.attr('element');
     var policy = node.attr('policy');
-    $('div.viewAction ul').fadeOut(
-        'fast',
-        function() {
-            $('div.viewAction ul').html('');
-            var html = '';
-            if(type=='community') {
-                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/community/'+element+'">'+json.browse.view+'</a></li>';
-            }
-            if(type=='folder') {
-                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/folder/'+element+'">'+json.browse.view+'</a></li>';
-                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?folders='+element+'">'+json.browse.download+'</a></li>';
-                if(policy>=1) {
-                    html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/folder_add.png"/> <a onclick="midas.createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
-                    html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/upload.png"/> <a rel="'+json.global.webroot+'/upload/simpleupload/?parent='+element+'" class="uploadInFolder">'+json.browse.uploadIn+'</a></li>';
-                    if(node.attr('deletable')!=undefined && node.attr('deletable')=='true') {
-                        html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/edit.png"/> <a onclick="midas.editFolder('+element+');">'+json.browse.edit+'</a></li>';
-                        html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/move.png"/> <a onclick="midas.moveFolder('+element+');">'+json.browse.move+'</a></li>';
-                    }
-                }
-                if(policy>=2) {
-                    html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
-                    if(node.attr('deletable')!=undefined && node.attr('deletable')=='true') {
-                        html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="midas.deleteFolder('+element+');">'+json.browse['delete']+'</a></li>';
-                    }
+    $('div.viewAction ul').fadeOut('fast', function() {
+        $('div.viewAction ul').html('');
+        var html = '';
+        if(type=='community') {
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/community/'+element+'">'+json.browse.view+'</a></li>';
+        }
+        if(type=='folder') {
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/folder/'+element+'">'+json.browse.view+'</a></li>';
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?folders='+element+'">'+json.browse.download+'</a></li>';
+            if(policy>=1) {
+                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/folder_add.png"/> <a onclick="midas.createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
+                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/upload.png"/> <a rel="'+json.global.webroot+'/upload/simpleupload/?parent='+element+'" class="uploadInFolder">'+json.browse.uploadIn+'</a></li>';
+                if(node.attr('deletable')!=undefined && node.attr('deletable')=='true') {
+                    html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/edit.png"/> <a onclick="midas.editFolder('+element+');">'+json.browse.edit+'</a></li>';
+                    html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/move.png"/> <a onclick="midas.moveFolder('+element+');">'+json.browse.move+'</a></li>';
                 }
             }
-            if(type == 'item') {
-                var from = midas.parentOf(node);
-                if(from) {
-                    var fromFolder = from.attr('element');
-                }
-                else { // we are in a subfolder view and the parent is the current folder
-                    var fromFolder = json.folder.folder_id;
-                }
-                html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
-                html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLatest+'</a></li>';
-                if (policy>=2) {
-                    html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
-                    html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/move.png"/> <a onclick="midas.moveItem(\''+ element + '\',\'' + fromFolder + '\');">'+json.browse.move+'</a></li>';
-                    html+='<li class="removeItemLi"><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="midas.removeItem('+element+');">'+json.browse['removeItem']+'</a></li>';
+            if(policy>=2) {
+                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+                if(node.attr('deletable')!=undefined && node.attr('deletable')=='true') {
+                    html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="midas.deleteFolder('+element+');">'+json.browse['delete']+'</a></li>';
                 }
             }
-            $('div.viewAction ul').html(html);
-            $('div.viewAction li a').hover(
-                function() {
-                    $(this).parents('li').css('background-color','#E5E5E5');
-                },
-                function() {
-                    $(this).parents('li').css('background-color','white');
-                });
+        }
+        if(type == 'item') {
+            var from = midas.parentOf(node);
+            if(from) {
+                var fromFolder = from.attr('element');
+            }
+            else { // we are in a subfolder view and the parent is the current folder
+                var fromFolder = json.folder.folder_id;
+            }
+            html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
+            html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLatest+'</a></li>';
+            if (policy>=2) {
+                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/move.png"/> <a onclick="midas.moveItem(\''+ element + '\',\'' + fromFolder + '\');">'+json.browse.move+'</a></li>';
+                html+='<li class="removeItemLi"><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="midas.removeItem('+element+');">'+json.browse['removeItem']+'</a></li>';
+            }
+        }
+        $('div.viewAction ul').html(html);
+        $('div.viewAction li a').hover(
+            function() {
+                $(this).parents('li').css('background-color','#E5E5E5');
+            },
+            function() {
+                $(this).parents('li').css('background-color','white');
+            });
 
-            $('a.uploadInFolder').qtip(
-                {
-                    content: {
-                        // Set the text to an image HTML string with the correct src URL to the loading image you want to use
-                        text: '<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />',
-                        ajax: {
-                            url: $('a.uploadInFolder').attr('rel') // Use the rel attribute of each element for the url to load
-                        },
-                        title: {
-                            text: 'Upload', // Give the tooltip a title using each elements text
-                            button: true
-                        }
+        $('a.uploadInFolder').qtip(
+            {
+                content: {
+                    // Set the text to an image HTML string with the correct src URL to the loading image you want to use
+                    text: '<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />',
+                    ajax: {
+                        url: $('a.uploadInFolder').attr('rel') // Use the rel attribute of each element for the url to load
                     },
-                    position: {
-                        at: 'bottom center', // Position the tooltip above the link
-                        my: 'top right',
-                        viewport: $(window), // Keep the tooltip on-screen at all times
-                        effect: true // Disable positioning animation
-                    },
-                    show: {
-                        modal: {
-                            on: true,
-                            blur: false
-                        },
-                        event: 'click',
-                        solo: true // Only show one tooltip at a time
-                    },
-                    hide: {
-                        event: false
-                    },
-                    style: {
-                        classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
+                    title: {
+                        text: 'Upload', // Give the tooltip a title using each elements text
+                        button: true
                     }
-                });
-            $('a.sharingLink').click(
-                function(){
-                    loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
-                    showDialog(json.browse.share);
-                });
-            $('div.viewAction ul').fadeIn('fast');
+                },
+                position: {
+                    at: 'bottom center', // Position the tooltip above the link
+                    my: 'top right',
+                    viewport: $(window), // Keep the tooltip on-screen at all times
+                    effect: true // Disable positioning animation
+                },
+                show: {
+                    modal: {
+                        on: true,
+                        blur: false
+                    },
+                    event: 'click',
+                    solo: true // Only show one tooltip at a time
+                },
+                hide: {
+                    event: false
+                },
+                style: {
+                    classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
+                }
+            });
+        $('a.sharingLink').click(function () {
+            midas.loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
+            midas.showDialog(json.browse.share);
         });
+        $('div.viewAction ul').fadeIn('fast');
+    });
 };
 
 midas.createInfo = function (jsonContent) {

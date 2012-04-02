@@ -133,8 +133,8 @@ $("#live_share_search").catcomplete({
                 var jsonResponse = jQuery.parseJSON(data);
                 if(jsonResponse[0]) {
                     midas.createNotice(jsonResponse[1], 1500);
-                    loadDialog("sharing"+$(this).attr('type')+$(this).attr('element')+newPolicyId, "/share/dialog?type="+jsonShare.type+'&element='+jsonShare.element);
-                    showDialog(json.browse.share);
+                    midas.loadDialog("sharing"+$(this).attr('type')+$(this).attr('element')+newPolicyId, "/share/dialog?type="+jsonShare.type+'&element='+jsonShare.element);
+                    midas.showDialog(json.browse.share);
                 }
                 else {
                     midas.createNotice(jsonResponse[1], 4000, 'error');
@@ -163,8 +163,8 @@ $('#live_share_search').focusout(function () {
 $('input.permissionsDone').click(function () {
     $('div.MainDialog').dialog('close');
     if(jsonShare.type == "folder") {
-        loadDialog("applyRecursive"+jsonShare.element, "/share/applyrecursivedialog?folderId="+jsonShare.element);
-        showDialog(json.browse.share);
+        midas.loadDialog("applyRecursive"+jsonShare.element, "/share/applyrecursivedialog?folderId="+jsonShare.element);
+        midas.showDialog(json.browse.share);
     }
 });
   

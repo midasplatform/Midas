@@ -101,7 +101,7 @@ function initLogs()
 
     $('table#listLogs tr.logSum td.logMessage').click(function() {
       var id = $(this).attr('name');
-      showBigDialogWithContent('Log', $('#fullMessage'+id).html(), true);
+      midas.showBigDialogWithContent('Log', $('#fullMessage'+id).html(), true);
       });
     }
 }

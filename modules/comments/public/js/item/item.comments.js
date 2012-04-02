@@ -122,8 +122,8 @@ midas.comments.refreshCommentList = function() {
  * with the id of the comment that they requested to delete
  */
 midas.comments.deleteComment = function(commentId) {
-    if(typeof showDialogWithContent == 'function') {
-        showDialogWithContent('Delete comment', $('#deleteCommentConfirmation').html(), false);
+    if(typeof midas.showDialogWithContent == 'function') {
+        midas.showDialogWithContent('Delete comment', $('#deleteCommentConfirmation').html(), false);
         $('input.deleteCommentNo').click(function() {
             $('div.MainDialog').dialog('close');
         });
@@ -217,12 +217,12 @@ $(document).ready(function() {
     } else {
         $('div.loginToComment').show();
         $('#loginToComment').click(function() {
-            showOrHideDynamicBar('login');
-            loadAjaxDynamicBar('login', '/user/login');
+            midas.showOrHideDynamicBar('login');
+            midas.loadAjaxDynamicBar('login', '/user/login');
         });
         $('#registerToComment').click(function() {
-            showOrHideDynamicBar('register');
-            loadAjaxDynamicBar('register','/user/register');
+            midas.showOrHideDynamicBar('register');
+            midas.loadAjaxDynamicBar('register','/user/register');
         });
     }
 });

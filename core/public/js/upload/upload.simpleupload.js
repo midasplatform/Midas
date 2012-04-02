@@ -2,98 +2,88 @@ var midas = midas || {};
 midas.upload = midas.upload || {};
 midas.upload.simpleupload = {};
 
-midas.upload.simpleupload.updateUploadedCount = function()
-  {
-  var count = parseInt($('.uploadedSimple').val()) +
-              parseInt($('.uploadedLinks').val()) +
-              parseInt($('.uploadedJava').val());
-  $('.globalUploadedCount').html(count);
-  if(count > 0)
-    {
-    $('.reviewUploaded').show();
+midas.upload.simpleupload.updateUploadedCount = function () {
+    var count = parseInt($('.uploadedSimple').val()) +
+                parseInt($('.uploadedLinks').val()) +
+                parseInt($('.uploadedJava').val());
+    $('.globalUploadedCount').html(count);
+    if(count > 0) {
+        $('.reviewUploaded').show();
     }
-  else
-    {
-    $('.reviewUploaded').hide();
+    else {
+        $('.reviewUploaded').hide();
     }
-  }
+}
 
-midas.upload.simpleupload.initJqueryFileupload = function()
-  {
-  midas.upload.simpleupload.updateUploadedCount();
-  //see http://aquantum-demo.appspot.com/file-upload
-  $('.file_upload:visible').fileUploadUIX({
-    beforeSend: function (event, files, index, xhr, handler, callBack) {
-      if(index == 0) //only do this once since we have all the files every time
-        {
-        var retVal = midas.doCallback('CALLBACK_CORE_VALIDATE_UPLOAD', {files: files});
-        $.each(retVal, function(module, resp) {
-          if(resp.status === false)
-            {
-            $('div.uploadValidationError b').html(resp.message);
-            $('div.uploadValidationError').show();
+midas.upload.simpleupload.initJqueryFileupload = function () {
+    midas.upload.simpleupload.updateUploadedCount();
+    //see http://aquantum-demo.appspot.com/file-upload
+    $('.file_upload:visible').fileUploadUIX({
+        beforeSend: function (event, files, index, xhr, handler, callBack) {
+            if(index == 0) { //only do this once since we have all the files every time
+                var retVal = midas.doCallback('CALLBACK_CORE_VALIDATE_UPLOAD', {files: files});
+                $.each(retVal, function(module, resp) {
+                    if(resp.status === false) {
+                        $('div.uploadValidationError b').html(resp.message);
+                        $('div.uploadValidationError').show();
+                    }
+                });
             }
-          });
-        }
 
-      handler.uploadRow.find('.file_upload_start').click(function () {
-        var path = '';
-        $.each(files, function (index, file) {
-          path += file.webkitRelativePath+';;';
-          });
-        handler.formData = {
-          parent: $('#destinationId').val(),
-          path: path,
-          license: $('select[name=licenseSelect]').val()
-          };
-        callBack();
-        });
-      $('.file_name').each(function(){
-        if($(this).html() == '.' || $(this).html() == '..')
-          {
-          $(this).parent('tr').find('.file_upload_cancel button').click();
-          }
-        });
+            handler.uploadRow.find('.file_upload_start').click(function () {
+                var path = '';
+                $.each(files, function (index, file) {
+                    path += file.webkitRelativePath+';;';
+                });
+                handler.formData = {
+                    parent: $('#destinationId').val(),
+                    path: path,
+                    license: $('select[name=licenseSelect]').val()
+                };
+                callBack();
+            });
+            $('.file_name').each(function () {
+                if($(this).html() == '.' || $(this).html() == '..') {
+                    $(this).parent('tr').find('.file_upload_cancel button').click();
+                }
+            });
 
-      $('#startUploadLink').css('box-shadow', '0 0 5px blue');
-      $('#startUploadLink').css('-webkit-box-shadow', '0 0 5px blue');
-      $('#startUploadLink').css('-moz-box-shadow', '0 0 5px blue');
-      },
-    onComplete:  function (event, files, index, xhr, handler) {
-      midas.doCallback('CALLBACK_CORE_RESET_UPLOAD_TOTAL');
-      $('.uploadedSimple').val(parseInt($('.uploadedSimple').val())+1);
-        midas.upload.simpleupload.updateUploadedCount();
-      },
-    sequentialUploads: true
+            $('#startUploadLink').css('box-shadow', '0 0 5px blue');
+            $('#startUploadLink').css('-webkit-box-shadow', '0 0 5px blue');
+            $('#startUploadLink').css('-moz-box-shadow', '0 0 5px blue');
+        },
+        onComplete: function (event, files, index, xhr, handler) {
+            midas.doCallback('CALLBACK_CORE_RESET_UPLOAD_TOTAL');
+            $('.uploadedSimple').val(parseInt($('.uploadedSimple').val())+1);
+            midas.upload.simpleupload.updateUploadedCount();
+        },
+        sequentialUploads: true
     });
 
     $('#startUploadLink').click(function () {
-      if($('#destinationId').val() == undefined || $('#destinationId').val().length == 0)
-        {
-        midas.createNotice("Please select where you want to upload your files.", 4000, 'warning');
-        return false;
+        if($('#destinationId').val() == undefined || $('#destinationId').val().length == 0) {
+            midas.createNotice("Please select where you want to upload your files.", 4000, 'warning');
+            return false;
         }
-      $('.file_upload_start button').click();
-      $('#startUploadLink').css('box-shadow', '0 0 0px blue');
-      $('#startUploadLink').css('-webkit-box-shadow', '0 0 0px blue');
-      $('#startUploadLink').css('-moz-box-shadow', '0 0 0px blue');
-      return false;
+        $('.file_upload_start button').click();
+        $('#startUploadLink').css('box-shadow', '0 0 0px blue');
+        $('#startUploadLink').css('-webkit-box-shadow', '0 0 0px blue');
+        $('#startUploadLink').css('-moz-box-shadow', '0 0 0px blue');
+        return false;
     });
-  }
+}
 
 // Callback hook for the flash uploader
-midas.upload.simpleupload.uploadPreStart = function(file)
-  {
-  midas.upload.simpleupload.swfu.setPostParams({
-    'sid': $('.sessionId').val(),
-    'parent': $('#destinationId').val(),
-    'license': $('select[name=licenseSelect]').val()
+midas.upload.simpleupload.uploadPreStart = function (file) {
+    midas.upload.simpleupload.swfu.setPostParams({
+        'sid': $('.sessionId').val(),
+        'parent': $('#destinationId').val(),
+        'license': $('select[name=licenseSelect]').val()
     });
-  }
+}
 
 // We use shockwave flash uploader for IE (no multi-file upload support)
-midas.upload.simpleupload.initSwfupload = function()
-  {
+midas.upload.simpleupload.initSwfupload = function () {
   var settings = {
     flash_url: json.global.coreWebroot+"/public/js/swfupload/swfupload_fp10/swfupload.swf",
     flash9_url: json.global.coreWebroot+"/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
@@ -150,24 +140,22 @@ midas.upload.simpleupload.initSwfupload = function()
       }
     midas.upload.simpleupload.swfu.startUpload();
     });
-  }
+}
 
 $('img#uploadAFile').show();
 $('img#uploadAFileLoading').hide();
 
 // detect chrome or firefox 7+
-try
-  {
-  var is_chrome = /chrome/.test(navigator.userAgent.toLowerCase());
-  var version = jQuery.browser.version.split('.');
-  version = parseInt(version[0]);
-  var is_firefox = jQuery.browser.mozilla != undefined && version > 6;
+try {
+    var is_chrome = /chrome/.test(navigator.userAgent.toLowerCase());
+    var version = jQuery.browser.version.split('.');
+    version = parseInt(version[0]);
+    var is_firefox = jQuery.browser.mozilla != undefined && version > 6;
 
-  if(is_chrome) //|| is_firefox
-    {
-    $('#changeUploadMode').show();
+    if(is_chrome) { //|| is_firefox
+        $('#changeUploadMode').show();
     }
-  } catch (e) { }
+} catch (e) {}
 
 midas.upload.simpleupload.mode = "file";
 midas.upload.simpleupload.htmlFileMode = $('.file_upload_label').html();
@@ -175,73 +163,69 @@ midas.upload.simpleupload.htmlFolderMode = $('.file_upload_label_folder').html()
 
 $('#uploadModeFileLink').hide();
 
-$('.uploadModeLink').click(function() {
-  if(midas.upload.simpleupload.mode == 'file')
-    {
-    midas.upload.simpleupload.mode = 'folder';
-    $('.fileUploaderInput').attr('webkitdirectory', '');
-    $('.fileUploaderInput').attr('directory', '');
-    $('.fileUploaderInput').attr('mozdirectory', '');
-    $('.file_upload_label').html(midas.upload.simpleupload.htmlFolderMode);
-    $('#uploadModeFileLink').show();
-    $('#uploadModeFolderLink').hide();
-    $('div.file_upload').fileUploadUIX('option','dragDropSupport',false); // disable drag and drop support
+$('.uploadModeLink').click(function () {
+    if(midas.upload.simpleupload.mode == 'file') {
+        midas.upload.simpleupload.mode = 'folder';
+        $('.fileUploaderInput').attr('webkitdirectory', '');
+        $('.fileUploaderInput').attr('directory', '');
+        $('.fileUploaderInput').attr('mozdirectory', '');
+        $('.file_upload_label').html(midas.upload.simpleupload.htmlFolderMode);
+        $('#uploadModeFileLink').show();
+        $('#uploadModeFolderLink').hide();
+        $('div.file_upload').fileUploadUIX('option','dragDropSupport',false); // disable drag and drop support
     }
-  else
-    {
-    midas.upload.simpleupload.mode = 'file';
-    $('.fileUploaderInput').removeAttr('webkitdirectory');
-    $('.fileUploaderInput').removeAttr('directory');
-    $('.fileUploaderInput').removeAttr('mozdirectory');
-    $('.file_upload_label').html(midas.upload.simpleupload.htmlFileMode);
-    $('#uploadModeFileLink').hide();
-    $('#uploadModeFolderLink').show();
-    $('div.file_upload').fileUploadUIX('option','dragDropSupport',true); // enable drag and drop support
+    else {
+        midas.upload.simpleupload.mode = 'file';
+        $('.fileUploaderInput').removeAttr('webkitdirectory');
+        $('.fileUploaderInput').removeAttr('directory');
+        $('.fileUploaderInput').removeAttr('mozdirectory');
+        $('.file_upload_label').html(midas.upload.simpleupload.htmlFileMode);
+        $('#uploadModeFileLink').hide();
+        $('#uploadModeFolderLink').show();
+        $('div.file_upload').fileUploadUIX('option','dragDropSupport',true); // enable drag and drop support
     }
 });
 
 $(".uploadTabs").tabs({
-  ajaxOptions: {
-    beforeSend: function() {
-      $('div.MainDialogLoading').show();
-      },
-    success: function() {
-      $('div.MainDialogLoading').hide();
-      $(".uploadTabs").show();
-      },
-    error: function(xhr, status, index, anchor) {
-      $(anchor.hash).html("Couldn't load this tab. ");
-      }
+    ajaxOptions: {
+        beforeSend: function() {
+            $('div.MainDialogLoading').show();
+        },
+        success: function() {
+            $('div.MainDialogLoading').hide();
+            $(".uploadTabs").show();
+        },
+        error: function(xhr, status, index, anchor) {
+            $(anchor.hash).html("Couldn't load this tab. ");
+        }
     }
-  });
+});
 
 $(".uploadTabs").show();
-$('#linkForm').ajaxForm(function() {
-  $('.uploadedLinks').val(parseInt($('.uploadedLinks').val()) + 1);
-  midas.upload.simpleupload.updateUploadedCount();
-  });
+$('#linkForm').ajaxForm(function () {
+    $('.uploadedLinks').val(parseInt($('.uploadedLinks').val()) + 1);
+    midas.upload.simpleupload.updateUploadedCount();
+});
 
-if($.browser.msie)
-  {
-  $('#swfuploadContent').show();
-  $('#jqueryFileUploadContent').hide();
-  midas.upload.simpleupload.initSwfupload();
-  }
-else
-  {
-  $('#swfuploadContent').hide();
-  $('#jqueryFileUploadContent').show();
-  midas.upload.simpleupload.initJqueryFileupload();
-  }
+if($.browser.msie) {
+    $('#swfuploadContent').show();
+    $('#jqueryFileUploadContent').hide();
+    midas.upload.simpleupload.initSwfupload();
+}
+else {
+    $('#swfuploadContent').hide();
+    $('#jqueryFileUploadContent').show();
+    midas.upload.simpleupload.initJqueryFileupload();
+}
 
 $('#startUploadLink').qtip({
-  content: {
-    attr: 'qtip'
+    content: {
+        attr: 'qtip'
     }
-  });
+});
 
-$('.browseMIDASLink').click(function() {
-  loadDialog("select", "/browse/selectfolder/?policy=write");
-  showDialog('Browse');
-  });
+$('.browseMIDASLink').click(function () {
+    midas.loadDialog("select", "/browse/selectfolder/?policy=write");
+    midas.showDialog('Browse');
+});
 midas.doCallback('CALLBACK_CORE_SIMPLEUPLOAD_LOADED');

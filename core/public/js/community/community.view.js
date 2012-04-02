@@ -1,59 +1,57 @@
-$(document).ready(function() {
-  $( "#tabsGeneric" ).tabs({
-    select: function(event, ui) {
-      $('div.genericAction').show();
-      $('div.genericCommunities').show();
-      $('div.genericStats').show();
-      $('div.viewInfo').hide();
-      $('div.viewAction').hide();
-      }
+$(document).ready(function () {
+    $("#tabsGeneric").tabs({
+        select: function(event, ui) {
+            $('div.genericAction').show();
+            $('div.genericCommunities').show();
+            $('div.genericStats').show();
+            $('div.viewInfo').hide();
+            $('div.viewAction').hide();
+        }
     });
-  $("#tabsGeneric").show();
-  $('img.tabsLoading').hide();
+    $("#tabsGeneric").show();
+    $('img.tabsLoading').hide();
 
-  $("#browseTable").treeTable({
-    onFirstInit: midas.enableRangeSelect,
-    onNodeShow: midas.enableRangeSelect,
-    onNodeHide: midas.enableRangeSelect
-  });
-  // Select/deslect all rows. If we are doing deselect all, we include hidden rows
+    $("#browseTable").treeTable({
+        onFirstInit: midas.enableRangeSelect,
+        onNodeShow: midas.enableRangeSelect,
+        onNodeHide: midas.enableRangeSelect
+    });
+    // Select/deslect all rows. If we are doing deselect all, we include hidden rows
 
-  midas.browser.enableSelectAll();
+    midas.browser.enableSelectAll();
 
-  $("img.tableLoading").hide();
-  $("table#browseTable").show();
+    $("img.tableLoading").hide();
+    $("table#browseTable").show();
 
-  $('a#sendInvitationLink').click(function()  {
-  loadDialog("invitationCommunity", "/community/invitation?communityId=" + json.community.community_id);
-  showDialog(json.community.sendInvitation,false);
-  });
+    $('a#sendInvitationLink').click(function () {
+        midas.loadDialog("invitationCommunity", "/community/invitation?communityId=" + json.community.community_id);
+        midas.showDialog(json.community.sendInvitation, false);
+    });
 
-    $('#communitySubtitle').dotdotdot({height: 20,
-                                       after: 'a.more'});
+    $('#communitySubtitle').dotdotdot({
+        height: 20,
+        after: 'a.more'
+    });
     $('a.more').click(function () {
         $('#tabInfoLink').click();
     });
-
 });
 
 //dependency: common.browser.js
 var ajaxSelectRequest = '';
-function callbackSelect(node)
-  {
-  $('div.genericAction').show();
-  $('div.genericCommunities').hide();
-  $('div.genericStats').hide();
-  $('div.viewInfo').show();
-  $('div.viewAction').show();
-  midas.genericCallbackSelect(node);
-  }
+function callbackSelect (node) {
+    $('div.genericAction').show();
+    $('div.genericCommunities').hide();
+    $('div.genericStats').hide();
+    $('div.viewInfo').show();
+    $('div.viewAction').show();
+    midas.genericCallbackSelect(node);
+}
 
-function callbackDblClick(node)
-  {
-  midas.genericCallbackDblClick(node);
-  }
+function callbackDblClick (node) {
+    midas.genericCallbackDblClick(node);
+}
 
-function callbackCheckboxes(node)
-  {
-  midas.genericCallbackCheckboxes(node);
-  }
+function callbackCheckboxes (node) {
+    midas.genericCallbackCheckboxes(node);
+}

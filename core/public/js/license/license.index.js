@@ -39,7 +39,7 @@ $(document).ready(function() {
         html += '<input class="globalButton deleteLicenseYes" type="button" value="'+json.global.Yes+'"/>';
         html += '<input style="margin-left:15px;" class="globalButton deleteLicenseNo" type="button" value="'+json.global.No+'"/>';
         html += '</span>';
-        showDialogWithContent('Delete License', html, false);
+        midas.showDialogWithContent('Delete License', html, false);
 
         $('input.deleteLicenseYes').unbind('click').click(function() {
             $('div.MainDialog').dialog('close');

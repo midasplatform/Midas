@@ -79,7 +79,7 @@ $(document).ready(function() {
     $( "#tabsSettings" ).show();
 
     $('#modifyPassword').ajaxForm({
-        beforeSubmit: midas.user.validatePasswordChange,
+        beforeSubmit: midas.user.validatePasswordChange, 
         success: midas.user.successPasswordChange
     });
 

@@ -179,8 +179,8 @@ function onShowStepCallback(obj)
   if(step_num == 2)
     {
     $('#browseExecutableFile').click(function(){
-      loadDialog("selectitem_executable","/browse/selectitem");
-      showDialog('Browse');
+      midas.loadDialog("selectitem_executable","/browse/selectitem");
+      midas.showDialog('Browse');
       currentBrowser = 'executable';
     });
     loadRecentUpload();
@@ -247,20 +247,20 @@ function initExecutableForm()
   })
 
   $('.selectInputFileLink').click(function(){
-    loadDialog("selectitem_"+$(this).attr('order'),"/browse/selectitem");
-    showDialog('Browse');
+    midas.loadDialog("selectitem_"+$(this).attr('order'),"/browse/selectitem");
+    midas.showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
 
   $('.selectOutputFolderLink').click(function(){
-    loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=write");
-    showDialog('Browse');
+    midas.loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=write");
+    midas.showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
 
   $('.selectInputFolderLink').click(function(){
-    loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=read");
-    showDialog('Browse');
+    midas.loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=read");
+    midas.showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
   $('[qtip]').qtip({
@@ -291,8 +291,8 @@ function itemSelectionCallback(name, id)
               {
               isExecutableMeta = false;
               midas.createNotice("Please set the executable meta informaiton.", 4000);
-              loadDialog("meta_"+id, '/remoteprocessing/executable/define?itemId='+id);
-              showBigDialog("MetaInformation", false);
+              midas.loadDialog("meta_"+id, '/remoteprocessing/executable/define?itemId='+id);
+              midas.showBigDialog("MetaInformation", false);
               }
           });
         }

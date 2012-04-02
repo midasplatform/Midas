@@ -16,7 +16,7 @@ var uploadPageLoaded = false;
     {
     midas.createNotice(json.login.contentUploadLogin,4000)
     $("div.TopDynamicBar").show('blind');
-    loadAjaxDynamicBar('login','/user/login');
+    midas.loadAjaxDynamicBar('login','/user/login');
     }
   });
 
