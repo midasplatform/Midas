@@ -19,7 +19,7 @@ midas.share.applyrecursive.success = function(responseText, statusText, xhr, for
   
   if(jsonResponse == null)
     {
-    createNotice('Error', 4000);
+    midas.createNotice('Error', 4000);
     return;
     }
   if(jsonResponse[0])
@@ -28,16 +28,16 @@ midas.share.applyrecursive.success = function(responseText, statusText, xhr, for
     var failure = jsonResponse[1].failure;
     if(success > 0)
       {
-      createNotice('Successfully set policies on ' + success + ' resources', 4000);
+      midas.createNotice('Successfully set policies on ' + success + ' resources', 4000);
       }
     if(failure > 0)
       {
-      createNotice('Failed to set policies on ' + failure + ' resources', 5000);
+      midas.createNotice('Failed to set policies on ' + failure + ' resources', 5000, 'error');
       }
     }
   else
     {
-    createNotice(jsonResponse[1], 4000);
+    midas.createNotice(jsonResponse[1], 4000, 'error');
     }
 }
 

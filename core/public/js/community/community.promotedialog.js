@@ -17,10 +17,10 @@ midas.community.promotedialogSuccess = function(responseText, statusText, xhr, f
 
   if(jsonResponse == null)
     {
-    createNotice('Error occurred. Check the logs.', 4000);
+    midas.createNotice('Error occurred. Check the logs.', 4000);
     return;
     }
-  createNotice(jsonResponse[1], 4000);
+  midas.createNotice(jsonResponse[1], 4000);
   if(jsonResponse[0])
     {
     window.location.replace(json.global.webroot+

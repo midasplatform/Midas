@@ -250,7 +250,7 @@ function onFinishCallback()
      }
    else
      {
-     createNotive("There are some errors.", 4000);
+     midas.createNotice("There are some errors.", 4000);
      }
   }
 
@@ -274,7 +274,7 @@ function validateSteps(stepnumber)
 
     if($('.optionWrapper').length == 0)
       {
-      createNotive('The workflow is empty.', 4000);
+      midas.createNotice('The workflow is empty.', 4000);
       isStepValid = false;
       }
 
@@ -290,12 +290,12 @@ function validateSteps(stepnumber)
       {
       if($(this).find('.nameOutputOption').val() == '' || $(this).find('.selectedFolder').attr('element') == '')
         {
-        if(required) createNotive('Please set '+$(this).attr('name'), 4000);
+        if(required) midas.createNotice('Please set '+$(this).attr('name'), 4000);
         if(required) isStepValid = false;
         }
       else if($(this).find('.nameOutputOption').val().indexOf(".") == -1)
         {
-        if(required) createNotive('Please set an extension in the option '+$(this).attr('name'), 4000);
+        if(required) midas.createNotice('Please set an extension in the option '+$(this).attr('name'), 4000);
         if(required) isStepValid = false;
         }
       else
@@ -307,7 +307,7 @@ function validateSteps(stepnumber)
       {
       if(($(this).find('select').length == 0 || $(this).find('select').val() == -1) && $(this).find('.selectedItem').attr('element') == '' && $(this).find('.selectedFolderContent').attr('element') == '')
         {
-        if(required) createNotive('Please set '+$(this).attr('name'), 4000);
+        if(required) midas.createNotice('Please set '+$(this).attr('name'), 4000);
         if(required) isStepValid = false;
         }
       else if($(this).find('select').length != 0 && $(this).find('select').val() != -1 )
@@ -331,7 +331,7 @@ function validateSteps(stepnumber)
       {
       if($(this).find('.valueInputOption').val() == '')
         {
-        if(required) createNotive('Please set '+$(this).attr('name'), 4000);
+        if(required) midas.createNotice('Please set '+$(this).attr('name'), 4000);
         if(required) isStepValid = false;
         }
       else
@@ -386,7 +386,7 @@ function loadRecentUpload()
       $('.recentUploadItemLi').click(function(){
         $('#selectedExecutable').html($(this).find('a').html());
         $('#selectedExecutableId').val($(this).attr('element'));
-        createNotive("Please set the executable meta informaiton.", 4000);
+        midas.createNotice("Please set the executable meta informaiton.", 4000);
         $('#metaPageBlock').load(json.global.webroot+'/remoteprocessing/executable/define?itemId='+$(this).attr('element'));
         $('#metaWrapper').show();
         isExecutableMeta = false;
@@ -415,20 +415,20 @@ function initScheduler()
 function initExecutableForm()
 {
   $('.selectInputFileLink').click(function(){
-    loadDialog("selectitem_"+$(this).attr('order'),"/browse/selectitem");
-    showDialog('Browse');
+    midas.loadDialog("selectitem_"+$(this).attr('order'),"/browse/selectitem");
+    midas.showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
 
   $('.selectOutputFolderLink').click(function(){
-    loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=write");
-    showDialog('Browse');
+    midas.loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=write");
+    midas.showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
 
   $('.selectInputFolderLink').click(function(){
-    loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=read");
-    showDialog('Browse');
+    midas.loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=read");
+    midas.showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
   $('[qtip]').qtip({
@@ -458,16 +458,16 @@ function itemSelectionCallback(name, id)
             else
               {
               isExecutableMeta = false;
-              createNotive("Please set the executable meta informaiton.", 4000);
-              loadDialog("meta_"+id, '/remoteprocessing/executable/define?itemId='+id);
-              showBigDialog("MetaInformation", false);
+              midas.createNotice("Please set the executable meta informaiton.", 4000);
+              midas.loadDialog("meta_"+id, '/remoteprocessing/executable/define?itemId='+id);
+              midas.showBigDialog("MetaInformation", false);
               }
           });
         }
         else
         {
         executableValid = false;
-        createNotive("The selected item is not a valid executable", 4000);
+        midas.createNotice("The selected item is not a valid executable", 4000);
         }
       });
 

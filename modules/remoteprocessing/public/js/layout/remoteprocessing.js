@@ -14,9 +14,9 @@ var uploadPageLoaded = false;
     }
     else
     {
-    createNotive(json.login.contentUploadLogin,4000)
+    midas.createNotice(json.login.contentUploadLogin,4000)
     $("div.TopDynamicBar").show('blind');
-    loadAjaxDynamicBar('login','/user/login');
+    midas.loadAjaxDynamicBar('login','/user/login');
     }
   });
 

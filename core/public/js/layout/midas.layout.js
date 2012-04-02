@@ -18,14 +18,14 @@ $(function() {
   // Preload login page
   if(!json.global.logged)
     {
-    loadAjaxDynamicBar('login','/user/login');
+    midas.loadAjaxDynamicBar('login','/user/login');
     }
 
   // Show log page.
   if(json.global.needToLog)
     {
-    showOrHideDynamicBar('login');
-    loadAjaxDynamicBar('login','/user/login');
+    midas.showOrHideDynamicBar('login');
+    midas.loadAjaxDynamicBar('login','/user/login');
     return;
     }
 
@@ -73,7 +73,7 @@ $(function() {
    $('#blockExploreLink').click(function(){window.location.replace($('.webroot').val()+'/browse/');});
    $('#blockCommunityLink').click(function(){window.location.replace($('.webroot').val()+'/community/');});
    $('#blockSettingsLink').click(function(){
-      loadAjaxDynamicBar('settings','/user/settings');
+      midas.loadAjaxDynamicBar('settings','/user/settings');
       if($("div.TopDynamicBar").is(':hidden'))
         {
           $("div.TopDynamicBar").show('blind', function() {
@@ -86,8 +86,8 @@ $(function() {
   // Login
   $("a.loginLink").click(function()
     {
-    showOrHideDynamicBar('login');
-    loadAjaxDynamicBar('login','/user/login');
+    midas.showOrHideDynamicBar('login');
+    midas.loadAjaxDynamicBar('login','/user/login');
     });
 
 
@@ -102,11 +102,11 @@ $(function() {
       }
     if($(this).attr('userid')!=undefined)
       {
-      loadAjaxDynamicBar('settings'+$(this).attr('userid'),'/user/settings?userId='+$(this).attr('userid'));
+      midas.loadAjaxDynamicBar('settings'+$(this).attr('userid'),'/user/settings?userId='+$(this).attr('userid'));
       }
     else
       {
-      loadAjaxDynamicBar('settings','/user/settings');
+      midas.loadAjaxDynamicBar('settings','/user/settings');
       }
     });
 
@@ -118,7 +118,7 @@ $(function() {
         $("div.TopDynamicBar").show('blind', function() {
         });
       }
-    loadAjaxDynamicBar('settings','/user/settings');
+    midas.loadAjaxDynamicBar('settings','/user/settings');
     });
 
   // Module link
@@ -129,15 +129,15 @@ $(function() {
         $("div.TopDynamicBar").show('blind', function() {
         });
       }
-    loadAjaxDynamicBar('settings','/user/settings');
+    midas.loadAjaxDynamicBar('settings','/user/settings');
     });
 
 
   // Register link
   $("a.registerLink").click(function()
     {
-    showOrHideDynamicBar('register');
-    loadAjaxDynamicBar('register','/user/register');
+    midas.showOrHideDynamicBar('register');
+    midas.loadAjaxDynamicBar('register','/user/register');
     });
 
   // Search Bar -----------------------
@@ -287,9 +287,9 @@ $(function() {
     }
     else
     {
-      createNotive(json.login.contentUploadLogin,4000);
+      midas.createNotice(json.login.contentUploadLogin,4000);
       $("div.TopDynamicBar").show('blind');
-      loadAjaxDynamicBar('login','/user/login');
+      midas.loadAjaxDynamicBar('login','/user/login');
     }
   });
 
@@ -332,9 +332,9 @@ function globalAuthAsk(url)
     }
   else
     {
-    createNotive(json.login.titleUploadLogin,4000);
+    midas.createNotice(json.login.titleUploadLogin,4000);
     $("div.TopDynamicBar").show('blind');
-    loadAjaxDynamicBar('login','/user/login');
+    midas.loadAjaxDynamicBar('login','/user/login');
     }
   }
 

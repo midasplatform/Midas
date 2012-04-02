@@ -1,10 +1,12 @@
+var midas = midas || {};
+
 /**
  * Show a jGrowl notice in the top right of the visible screen.
  * @param text The text to display
  * @param delay Time in milliseconds to display the notice
  * @param state (optional) Set to either "error" or "warning" to display special state
  */
-function createNotice(text, delay, state) {
+midas.createNotice = function (text, delay, state) {
     var extraClasses = '';
     if(state == 'error') {
         extraClasses += ' growlError';
@@ -15,11 +17,18 @@ function createNotice(text, delay, state) {
     else { // state is ok
         extraClasses += ' growlOk';
     }
-    createGrowl(false, text, delay, extraClasses);
+    midas.createGrowl(false, text, delay, extraClasses);
 }
 
-// Setup jgrowl --------------------------------------
-window.createGrowl = function (persistent, text, delay, extraClasses) {
+/**
+ * @deprecated use midas.createNotice
+ */
+function createNotice(text, delay, state) {
+  console.log('WARNING: createNotice is deprecated, use midas.createNotice instead');
+  midas.createNotice(text, delay, state);
+}
+
+midas.createGrowl = function (persistent, text, delay, extraClasses) {
     // Use the last visible jGrowl qtip as our positioning target
     var target = $('.qtip.jgrowl:visible:last');
 
@@ -56,7 +65,7 @@ window.createGrowl = function (persistent, text, delay, extraClasses) {
                     // Destroy this tooltip after fading out
                     api.destroy();
                     // Update positions
-                    updateGrowls();
+                    midas.updateGrowls();
                 });
             }
         },
@@ -75,7 +84,7 @@ window.createGrowl = function (persistent, text, delay, extraClasses) {
 };
 
  // Make it a window property see we can call it outside via updateGrowls() at any point
-window.updateGrowls = function () {
+midas.updateGrowls = function () {
     // Loop over each jGrowl qTip
     var each = $('.qtip.jgrowl:not(:animated)');
     each.each(function(i) {
@@ -105,9 +114,3 @@ function timerGrowl (event, delay) {
   }
 
 $(document).delegate('.qtip.jgrowl', 'mouseover mouseout', timerGrowl);
-
-
- // deprecated: use createNotice
-function createNotive (text, delay) {
-    createNotice(text, delay, '');
-}
