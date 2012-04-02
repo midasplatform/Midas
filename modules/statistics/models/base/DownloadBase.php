@@ -34,6 +34,7 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
       'user_id' => array('type' => MIDAS_DATA),
       'ip_location_id' => array('type' => MIDAS_DATA),
       'date' => array('type' => MIDAS_DATA),
+      'user_agent' => array('type' => MIDAS_DATA),
       'item' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Item', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
       'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
       'ip_location' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'IpLocation', 'module' => 'statistics', 'parent_column' => 'ip_location_id', 'child_column' => 'ip_location_id')
@@ -51,6 +52,7 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
       throw new Zend_Exception('Error: item parameter is not an item dao');
       }
 
+    $userAgent = $_SERVER['HTTP_USER_AGENT'];
     $ip = $_SERVER['REMOTE_ADDR'];
     if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
       {
@@ -77,6 +79,7 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
     $download->setItemId($item->getKey());
     $download->setIpLocationId($ipLocation->getKey());
     $download->setDate(date('c'));
+    $download->setUserAgent($userAgent);
     if($user instanceof UserDao)
       {
       $download->setUserId($user->getKey());
