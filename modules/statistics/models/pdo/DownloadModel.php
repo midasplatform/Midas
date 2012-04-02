@@ -108,15 +108,10 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
    */
   function getDailyCounts($items, $startDate = null, $endDate = null)
     {
-    if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL')
-      {
-      $sql = $this->database->select()
-                  ->setIntegrityCheck(false)
-                  ->from(array('statistics_download'), array('date' => 'DATE(date)', 'count' => 'count(*)'))
-                  ->where('item_id IN (?)', $items)
-                  ->group('DATE(date)');
-
-      if($startDate !== null)
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->where('item_id IN (?)', $items);
+    if($startDate !== null)
         {
         $sql->where('date >= ?', $startDate);
         }
@@ -124,18 +119,25 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
         {
         $sql->where('date <= ?', $endDate);
         }
-      $rowset = $this->database->fetchAll($sql);
-      $results = array();
-      foreach($rowset as $keyRow => $row)
-        {
-        $results[$row['date']] = $row['count'];
-        }
-      return $results;
+
+    if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL')
+      {
+      $sql->from(array('statistics_download'), array('day' => 'DATE(date)', 'count' => 'count(*)'))
+          ->group('DATE(date)');
       }
     else // PGSQL implementation
       {
-
+      $sql->from(array('statistics_download'), array('day' => "date_trunc('day', date_creation)",
+                                                     'count' => 'count(*)'))
+          ->group('day');
       }
+    $rowset = $this->database->fetchAll($sql);
+    $results = array();
+    foreach($rowset as $keyRow => $row)
+      {
+      $results[$row['day']] = $row['count'];
+      }
+    return $results;
     }
 }  // end class
 ?>
