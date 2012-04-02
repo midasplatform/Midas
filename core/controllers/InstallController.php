@@ -116,6 +116,7 @@ class InstallController extends AppController
 
     if($this->_request->isPost())
       {
+      set_time_limit(0);
       $type = $this->_getParam('type');
       $form = $this->Form->Install->createDBForm($type);
       if($form->isValid($this->getRequest()->getPost()))
