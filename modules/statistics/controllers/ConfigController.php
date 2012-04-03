@@ -109,8 +109,8 @@ class Statistics_ConfigController extends Statistics_AppController
           {
           $job = new Scheduler_JobDao();
           $job->setTask('TASK_STATISTICS_PERFORM_GEOLOCATION');
-          $job->setPriority('1');
-          $job->setRunOnlyOnce(false);
+          $job->setPriority(1);
+          $job->setRunOnlyOnce(0);
           $job->setFireTime(date('Y-m-j', strtotime('+1 day'.date('Y-m-j G:i:s'))).' 1:00:00');
           $job->setTimeInterval(1 * 60 * 60);
           $jobLocation = $job;

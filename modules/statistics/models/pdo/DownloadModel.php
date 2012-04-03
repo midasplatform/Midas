@@ -112,13 +112,13 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
                 ->setIntegrityCheck(false)
                 ->where('item_id IN (?)', $items);
     if($startDate !== null)
-        {
-        $sql->where('date >= ?', $startDate);
-        }
-      if($endDate !== null)
-        {
-        $sql->where('date <= ?', $endDate);
-        }
+      {
+      $sql->where('date >= ?', $startDate);
+      }
+    if($endDate !== null)
+      {
+      $sql->where('date <= ?', $endDate);
+      }
 
     if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL')
       {
