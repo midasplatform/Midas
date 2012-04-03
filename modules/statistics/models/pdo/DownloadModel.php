@@ -127,7 +127,7 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
       }
     else // PGSQL implementation
       {
-      $sql->from(array('statistics_download'), array('day' => "date_trunc('day', date_creation)",
+      $sql->from(array('statistics_download'), array('day' => "date_trunc('day', date)",
                                                      'count' => 'count(*)'))
           ->group('day');
       }
@@ -135,7 +135,8 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
     $results = array();
     foreach($rowset as $keyRow => $row)
       {
-      $results[$row['day']] = $row['count'];
+      $key = date('Y-m-d', strtotime($row['day']));
+      $results[$key] = $row['count'];
       }
     return $results;
     }
