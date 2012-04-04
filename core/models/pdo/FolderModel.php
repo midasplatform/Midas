@@ -485,6 +485,10 @@ class FolderModel extends FolderModelBase
     else
       {
       $parentFolder = $folder->getParent();
+      if(!$parentFolder)
+        {
+        return false; //deleting orphaned folder
+        }
       $rightParent = $parentFolder->getRightIndice();
       }
     $data = array();
@@ -1026,4 +1030,32 @@ class FolderModel extends FolderModelBase
     return true;
     }
 
+  /**
+   * Call this to delete all folders whose parent folder no longer exists
+   */
+  function deleteOrphanedFolders()
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                   ->from(array('f' => 'folder'), array('folder_id'))
+                   ->where('f.parent_id > ?', 0)
+                   ->where('(NOT f.parent_id IN ('.new Zend_Db_Expr(
+                            $this->database->select()->setIntegrityCheck(false)
+                                 ->from(array('subf' => 'folder'), array('folder_id'))
+                           .'))' ));
+    $rowset = $this->database->fetchAll($sql);
+    $ids = array();
+    foreach($rowset as $row)
+      {
+      $ids[] = $row['folder_id'];
+      }
+    foreach($ids as $id)
+      {
+      $folder = $this->load($id);
+      if(!$folder)
+        {
+        continue;
+        }
+      $this->delete($folder);
+      }
+    }
 } // end class

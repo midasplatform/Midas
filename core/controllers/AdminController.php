@@ -23,7 +23,7 @@
  */
 class AdminController extends AppController
 {
-  public $_models = array('Errorlog', 'Assetstore', 'License');
+  public $_models = array('Assetstore', 'Errorlog', 'Folder', 'License');
   public $_daos = array();
   public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration', 'Demo');
   public $_forms = array('Admin', 'Assetstore', 'Migrate');
@@ -428,6 +428,19 @@ class AdminController extends AppController
     ksort($this->view->dashboard);
 
     }//end dashboardAction
+
+  /**
+   * This will delete all orphaned items and folders from the instance.
+   * Call directly using /admin/removeorphans, there is no UI hook for this action.
+   */
+  function removeorphansAction()
+    {
+    $this->requireAdminPrivileges();
+    set_time_limit(0);
+    $this->disableLayout();
+    $this->disableView();
+    $this->Folder->deleteOrphanedFolders();
+    }
 
   /** upgrade database*/
   function upgradeAction()
