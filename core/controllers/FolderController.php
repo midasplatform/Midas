@@ -224,7 +224,7 @@ class FolderController extends AppController
         throw new Zend_Exception("User Default Folder. You cannot delete it.");
         }
       }
-    $this->Folder->delete($folder, true);
+    $this->Folder->delete($folder);
     $folderInfo = $folder->toArray();
     echo JsonComponent::encode(array(true, $this->t('Changes saved'), $folderInfo));
     }// end deleteAction

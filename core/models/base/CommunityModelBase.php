@@ -221,7 +221,7 @@ abstract class CommunityModelBase extends AppModel
 
     $folder_model = $this->ModelLoader->loadModel('Folder');
     $folder = $communityDao->getFolder();
-    $folder_model->delete($folder, true);
+    $folder_model->delete($folder);
 
     $feed_model = $this->ModelLoader->loadModel('Feed');
     $feeds = $communityDao->getFeeds();
