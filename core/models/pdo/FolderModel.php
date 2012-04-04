@@ -332,7 +332,7 @@ class FolderModel extends FolderModelBase
     }
 
   /** Custom delete function */
-  function delete($folder, $recursive = false)
+  function delete($folder)
     {
     if(!$folder instanceof FolderDao)
       {
@@ -355,13 +355,10 @@ class FolderModel extends FolderModelBase
       $this->removeItem($folder, $item);
       }
 
-    if($recursive)
+    $children = $folder->getFolders();
+    foreach($children as $child)
       {
-      $children = $folder->getFolders();
-      foreach($children as $child)
-        {
-        $this->delete($child, true);
-        }
+      $this->delete($child, true);
       }
 
     $policy_group_model = $this->ModelLoader->loadModel('Folderpolicygroup');
