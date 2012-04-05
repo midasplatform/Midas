@@ -1031,7 +1031,27 @@ class FolderModel extends FolderModelBase
     }
 
   /**
-   * Call this to delete all folders whose parent folder no longer exists
+   * Will return all root folder daos.  There is a root folder for each
+   * user, and one for each community.
+   */
+  function getRootFolders()
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                          ->where('parent_id < ?', 0);
+    $rowset = $this->database->fetchAll($sql);
+    $rootFolders = array();
+    foreach($rowset as $row)
+      {
+      $rootFolders[] = $this->initDao('Folder', $row);
+      }
+    return $rootFolders;
+    }
+
+  /**
+   * Call this to delete all folders whose parent folder no longer exists.
+   * After orphans are deleted, the tree indices will be recomputed so they
+   * will be consistent.  As such, server should not be written to
+   * during this operation.
    */
   function deleteOrphanedFolders()
     {
@@ -1056,6 +1076,49 @@ class FolderModel extends FolderModelBase
         continue;
         }
       $this->delete($folder);
+      }
+    // Wipe the current tree indices from all rows
+    $this->database->update(array('left_indice' => 0, 'right_indice' => 0), array());
+
+    // Recompute the indices for all rows
+    $rootFolders = $this->getRootFolders();
+    foreach($rootFolders as $rootFolder)
+      {
+      $this->_recomputeSubtree($rootFolder);
+      }
+    }
+
+  /**
+   * Will recompute the left and right indices of the subtree of the given node.
+   */
+  protected function _recomputeSubtree($folder)
+    {
+    if($folder->getParentId() <= 0)
+      {
+      $rightParent = 0;
+      }
+    else
+      {
+      $parentFolder = $folder->getParent();
+      $rightParent = $parentFolder->getRightIndice();
+      }
+
+    $folder->setLeftIndice($rightParent);
+    $folder->setRightIndice($rightParent + 1);
+
+    $this->database->getDB()->update('folder',
+      array('right_indice' => new Zend_Db_Expr('2 + right_indice')),
+      array('right_indice >= ? AND left_indice != right_indice' => $rightParent));
+    $this->database->getDB()->update('folder',
+      array('left_indice' => new Zend_Db_Expr('2 + left_indice')),
+      array('left_indice >= ? AND left_indice != right_indice' => $rightParent));
+
+    parent::save($folder);
+
+    $children = $folder->getFolders();
+    foreach($children as $child)
+      {
+      $this->_recomputeSubtree($child);
       }
     }
 } // end class
