@@ -124,7 +124,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
           {
           $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$f.".xml";
           }
-        $databaseFixture =  new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
+        $databaseFixture = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
         $databaseTester->setupDatabase($databaseFixture);
         }
       }
@@ -135,7 +135,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
         {
         $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$files.".xml";
         }
-      $databaseFixture =  new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
+      $databaseFixture = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
       $databaseTester->setupDatabase($databaseFixture);
       }
 
