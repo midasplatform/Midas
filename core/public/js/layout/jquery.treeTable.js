@@ -461,7 +461,7 @@
     //  var padding=parseInt(node.find('td:first').css('padding-left').slice(0,-2));
 
       var j = 1;
-      var sliceValue = 42 - (id.split('-').length - 1) * 3;
+      var sliceValue = 55 - (id.split('-').length - 1) * 3;
 
       var drag_option = "";
 
@@ -483,9 +483,17 @@
           {
           drag_option = ""
           }
+        var privacyClass;
+        if(value['privacy_status'] == 0) { //public
+            privacyClass = 'Public';
+        }
+        else {
+            privacyClass = 'Private';
+        }
+        
         html+= "<tr id='"+id+"-"+i+"' deletable='"+value['deletable']+"' privacy='"+value['privacy_status']+"'  class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
-        html+=     "  <td><span class='folder"+drag_option+"'>"+sliceFileName(value['name'],sliceValue)+"</span></td>";
-        html+=     "  <td>"+'<img class="folderLoading"  element="'+value['folder_id']+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>'+"</td>";
+        html+=     "  <td><span class='folder"+privacyClass+drag_option+"'>"+sliceFileName(value['name'],sliceValue)+"</span></td>";
+        html+=     "  <td>"+'<img class="folderLoading" element="'+value['folder_id']+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>'+"</td>";
         html+=     "  <td>"+value['date_update']+"</td>";
         html+=     "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='"+value['folder_id']+"'/></td>";
         html+=     "</tr>";
@@ -511,8 +519,15 @@
           {
           drag_option = ""
           }
+        var privacyClass;
+        if(value['privacy_status'] == 0) { //public
+            privacyClass = 'Public';
+        }
+        else {
+            privacyClass = 'Private';
+        }
         html+=  "<tr id='"+id+"-"+i+"' class='child-of-"+id+"' privacy='"+value['privacy_status']+"'  type='item' policy='"+value['policy']+"' element='"+value['item_id']+"'>";
-        html+=     "  <td><span class='file"+drag_option+"'>"+sliceFileName(value['name'],sliceValue)+"</span></td>";
+        html+=     "  <td><span class='file"+privacyClass+drag_option+"'>"+sliceFileName(value['name'],sliceValue)+"</span></td>";
         html+=     "  <td>"+value['size']+"</td>";
         html+=     "  <td>"+value['date_update']+"</td>";
         html+=     "  <td><input type='checkbox' class='treeCheckbox' type='item' element='"+value['item_id']+"'/></td>";
@@ -579,22 +594,6 @@
     if(!node.hasClass("initialized")) {
       node.addClass("initialized");
 
-      var privacy = '';
-      if(node.attr('privacy') == undefined || node.attr('privacy') == 0)
-        {
-        privacy = json.browse['public'];
-        }
-      else if(node.attr('privacy') == 1)
-        {
-        privacy = json.browse['shared'];
-        }
-      else if(node.attr('privacy') == 2)
-        {
-        privacy = json.browse['private'];
-        }
-
-      node.find('td:first span').after('<span class="browserPrivacyInformation">'+privacy+'</span>');
-
       var childNodes = childrenOf(node);
       if(!node.hasClass("parent") && childNodes.length > 0) {
         node.addClass("parent");
@@ -604,7 +603,7 @@
         var padding = getPaddingLeft(cell) + options.indent;
 
         childNodes.each(function() {
-          $(this).children("td:first")[options.treeColumn].style.paddingLeft =  padding + "px";
+          $(this).children("td:first")[options.treeColumn].style.paddingLeft = padding + "px";
           });
 
         if(options.expandable) {
@@ -701,7 +700,7 @@ function getElementsSize(table)
       $.each(arrayElement, function(index, value) {
         var img = table.find('img.folderLoading[element='+value.id+']');
         img.after('<span class="elementSize">'+value.size+'</span>');
-        img.parents('tr').find('td:first span:last').before('<span style="padding-left:0px;" class="elementCount">'+' ('+value.count+')'+'</span>');
+        img.parents('tr').find('td:first span:last').after('<span style="padding-left:0px;" class="elementCount">'+' ('+value.count+')'+'</span>');
         img.remove();
         });
       getElementsSize(table);
