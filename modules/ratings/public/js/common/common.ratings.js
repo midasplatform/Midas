@@ -83,7 +83,7 @@ midas.ratings.setRating = function(value) {
         rating: value
     }, function(data) {
         var resp = $.parseJSON(data);
-        createNotice(resp.message, 3000, resp.status);
+        midas.createNotice(resp.message, 3000, resp.status);
         midas.ratings.renderAggregate(resp.average, resp.total, resp.distribution);
     });
 
@@ -113,12 +113,12 @@ $(window).load(function() {
     } else {
         $('div.loginToRate').show();
         $('#loginToRate').click(function () {
-            showOrHideDynamicBar('login');
-            loadAjaxDynamicBar('login', '/user/login');
+            midas.showOrHideDynamicBar('login');
+            midas.loadAjaxDynamicBar('login', '/user/login');
         });
         $('#registerToRate').click(function () {
-            showOrHideDynamicBar('register');
-            loadAjaxDynamicBar('register','/user/register');
+            midas.showOrHideDynamicBar('register');
+            midas.loadAjaxDynamicBar('register','/user/register');
         });
     }
     midas.doCallback('CALLBACK_RATINGS_AFTER_LOAD');

@@ -16,17 +16,17 @@ function successUpgrade(responseText, statusText, xhr, form)
     }
   if(jsonResponse==null)
     {
-      createNotive('Error',4000);
+      midas.createNotice('Error',4000);
       return;
     }
   if(jsonResponse[0])
     {
-      createNotive(jsonResponse[1],4000);
+      midas.createNotice(jsonResponse[1],4000);
       window.location.replace(json.global.webroot+'/admin#ui-tabs-1');
       window.location.reload();
     }
   else
     {
-      createNotive(jsonResponse[1],4000);
+      midas.createNotice(jsonResponse[1],4000);
     }
 }

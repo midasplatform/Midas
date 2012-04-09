@@ -65,7 +65,7 @@ class AssetstoreForm extends AppForm
 
     // Submit
     $addassetstore = new Zend_Form_Element_Submit('addassetstore', $this->t('Add this assetstore'));
-    $addassetstore->setDescription($this->t('or').' <a href="#" onClick="return newAssetstoreHide()">'.$this->t('cancel').'</a>')
+    $addassetstore->setDescription($this->t('or').' <a href="#" onClick="return midas.admin.newAssetstoreHide()">'.$this->t('cancel').'</a>')
         ->setDecorators(array(
         'ViewHelper',
         array('Description', array('escape' => false, 'tag' => false)),

@@ -109,17 +109,17 @@ function initDragAndDrop()
                jsonResponse = jQuery.parseJSON(data);
                 if(jsonResponse==null)
                   {
-                    createNotive('Error',4000);
+                    midas.createNotice('Error',4000);
                     return;
                   }
                 if(jsonResponse[0])
                   {
-                    createNotive(jsonResponse[1],1500);
+                    midas.createNotice(jsonResponse[1],1500);
                     $($(ui.draggable).parents("tr")[0]).appendBranchTo(destination_obj);
                   }
                 else
                   {
-                    createNotive(jsonResponse[1],4000);
+                    midas.createNotice(jsonResponse[1],4000);
                   }
               });
            }

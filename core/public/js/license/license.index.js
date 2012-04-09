@@ -6,7 +6,7 @@ midas.license.newValidate = function(formData, jqForm, options) {
 
 midas.license.newSuccess = function(responseText, statusText, xhr, form) {
     var resp = $.parseJSON(responseText);
-    createNotice(resp[1], 3000);
+    midas.createNotice(resp[1], 3000);
     window.location.replace(json.global.webroot+'/admin#ui-tabs-1');
     window.location.reload();
 }
@@ -16,7 +16,7 @@ midas.license.existingValidate = function(formData, jqForm, options) {
 
 midas.license.existingSuccess = function(responseText, statusText, xhr, form) {
     var resp = $.parseJSON(responseText);
-    createNotice(resp[1], 3000);
+    midas.createNotice(resp[1], 3000);
 }
 
 $(document).ready(function() {
@@ -39,7 +39,7 @@ $(document).ready(function() {
         html += '<input class="globalButton deleteLicenseYes" type="button" value="'+json.global.Yes+'"/>';
         html += '<input style="margin-left:15px;" class="globalButton deleteLicenseNo" type="button" value="'+json.global.No+'"/>';
         html += '</span>';
-        showDialogWithContent('Delete License', html, false);
+        midas.showDialogWithContent('Delete License', html, false);
 
         $('input.deleteLicenseYes').unbind('click').click(function() {
             $('div.MainDialog').dialog('close');
@@ -48,8 +48,8 @@ $(document).ready(function() {
                 url: json.global.webroot+'/license/delete',
                 data: {licenseId: id},
                 success: function(jsonContent) {
-                    jsonResponse = jQuery.parseJSON(jsonContent);
-                    createNotice(jsonResponse[1], 3000);
+                    var jsonResponse = jQuery.parseJSON(jsonContent);
+                    midas.createNotice(jsonResponse[1], 3000);
                     if(jsonResponse[0]) {
                         $('div.licenseContainer[element='+id+']').remove();
                     }
