@@ -66,22 +66,16 @@ class Statistics_ItemController extends Statistics_AppController
       }
     $header .= '<span class="headerSmall">['.$totaldownload.' downloads, '.$totalview.' views]</span>';
     $this->view->header = $header;
-    $downloads = $this->Statistics_Download->getDownloads($idArray, date('c', strtotime('-20 day'.date( 'Y-m-j G:i:s'))), date('c'));
-
-    $format = 'Y-m-j';
-    $arrayDownload = array();
-    for($i = 0; $i < 21; $i++)
+    $arrayDownload = $this->Statistics_Download->getDailyCounts($idArray, date('c', strtotime('-20 day'.date('Y-m-j G:i:s'))), date('c'));
+    for($i = 20; $i >= 0; $i--)
       {
-      $key = date($format, strtotime(date('c', strtotime('-'.$i.' day'.date( 'Y-m-j G:i:s')))));
-      $arrayDownload[$key] = 0;
-      }
-    foreach($downloads as $download)
-      {
-      $key = date($format, strtotime($download->getDate()));
-      $arrayDownload[$key]++;
+      $dateKey = date('Y-m-j', strtotime('-'.$i.' day'));
+      if(!array_key_exists($dateKey, $arrayDownload))
+        {
+        $arrayDownload[$dateKey] = 0;
+        }
       }
 
-    $jqplotArray = array();
     foreach($arrayDownload as $key => $value)
       {
       $jqplotArray[] = array($key.' 8:00AM', $value);

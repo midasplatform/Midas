@@ -1,1 +1,1 @@
-
+add_midas_test( StatisticsDownloadModel StatisticsDownloadModelTest.php )
