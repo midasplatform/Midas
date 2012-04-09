@@ -4,15 +4,6 @@
  * table is assigned the +treeTable+ class.
  * ========================================================================= */
 
-.treeTable .browserPrivacyInformation{
-  position: absolute;
-  right: 195px; 
-  color: grey;
-  font-size: 10px;
-  padding-right: 8px;
-  padding-left  : 0px;
-}
-
 /* jquery.treeTable.collapsible
  * ------------------------------------------------------------------------- */
 .treeTable tr td .expander {
@@ -146,8 +137,24 @@ table.midasTree span.file {
   background-image: url(../../images/TreeTable/page_white_text.png);
 }
 
+table.midasTree span.filePrivate {
+  background-image: url(../../images/TreeTable/page_white_text_private.png);
+}
+
+table.midasTree span.filePublic {
+  background-image: url(../../images/TreeTable/page_white_text_world.png);
+}
+
 table.midasTree span.folder {
   background-image: url(../../images/TreeTable/folder.png);
+}
+
+table.midasTree span.folderPrivate {
+  background-image: url(../../images/TreeTable/folder_private.png);
+}
+
+table.midasTree span.folderPublic {
+  background-image: url(../../images/TreeTable/folder_world.png);
 }
 
 table.midasTree span.loading {
