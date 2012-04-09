@@ -109,7 +109,7 @@
     {
     var table = getContainer(node);
     var options = getOptions(table);
-    
+
     if(node == undefined)
       {
       return ;
@@ -233,7 +233,8 @@
     var id = $(this).attr('id');
 
     $(this).removeClass("collapsed").addClass("expanded");
-    childrenOf($(this)).each(function() {
+    var children = childrenOf($(this));
+    children.each(function () {
       initialize($(this));
 
       if($(this).is(".expanded.parent")) {
@@ -242,11 +243,10 @@
 
       // this.style.display = "table-row"; // Unfortunately this is not possible with IE :-(
       $(this).show();
-
-      if($.isFunction(options.onNodeShow)) {
-        options.onNodeShow.call(this);
-        }
       });
+    if($.isFunction(options.onNodeShow)) {
+        options.onNodeShow.call(this);
+    }
 
     initializeAjax($(this), false, false);
     colorLines(table, true);
@@ -490,7 +490,7 @@
         else {
             privacyClass = 'Private';
         }
-        
+
         html+= "<tr id='"+id+"-"+i+"' deletable='"+value['deletable']+"' privacy='"+value['privacy_status']+"'  class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
         html+=     "  <td><span class='folder"+privacyClass+drag_option+"'>"+sliceFileName(value['name'],sliceValue)+"</span></td>";
         html+=     "  <td>"+'<img class="folderLoading" element="'+value['folder_id']+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>'+"</td>";
