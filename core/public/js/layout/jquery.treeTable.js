@@ -538,7 +538,8 @@
 
       if(j > 70)
         {
-        html+="<tr id='"+id+"-10000000' element='"+id+"'><td colspan = 1 align=right><a class='treeBrowserShowMore'>Show more</a></td><td></td><td></td><td></td></tr>";
+        html+="<tr class='child-of-"+id+"' id='"+id+"-10000000' element='"+id+"'>"+
+              "<td colspan = 1 align=right><a class='treeBrowserShowMore'>Show more</a></td><td></td><td></td><td></td></tr>";
         }
       if(elementsRaw['last'] != undefined)
         {
