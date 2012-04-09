@@ -42,12 +42,18 @@ class DownloadController extends AppController
     $itemIds = $this->_getParam('items');
     $folderIds = $this->_getParam('folders');
     $bitsreamid = $this->_getParam('bitstream');
+    $sessionUser = $this->userSession->Dao;
+    if($sessionUser != null)
+      {
+      // Make sure this is a copy and not a reference
+      $sessionUser = $this->User->load($sessionUser->getKey());
+      }
     if(isset($bitsreamid) && is_numeric($bitsreamid))
       {
       $bitstream = $this->Bitstream->load($bitsreamid);
       $revision = $bitstream->getItemrevision();
       $item = $revision->getItem();
-      if($item == false || !$this->Item->policyCheck($item, $this->userSession->Dao))
+      if($item == false || !$this->Item->policyCheck($item, $sessionUser))
         {
         throw new Zend_Exception("Error Policy");
         }
@@ -96,7 +102,7 @@ class DownloadController extends AppController
           continue;
           }
         $item = $this->Item->load($tmp[0]);
-        if($item == false || !$this->Item->policyCheck($item, $this->userSession->Dao))
+        if($item == false || !$this->Item->policyCheck($item, $sessionUser))
           {
           continue;
           }
@@ -215,7 +221,7 @@ class DownloadController extends AppController
         }
       ob_start();
       $zip = new ZipStream($name.'.zip');
-      $zip = $this->_createZipRecursive($zip, '', $folders, $revisions);
+      $zip = $this->_createZipRecursive($zip, '', $folders, $revisions, $sessionUser);
       $zip->finish();
       exit();
       }
@@ -249,11 +255,8 @@ class DownloadController extends AppController
     exit();
     }
 
-
-
-
   /** create zip recursive*/
-  private function _createZipRecursive($zip, $path, $folders, $revisions)
+  private function _createZipRecursive($zip, $path, $folders, $revisions, $sessionUser)
     {
     foreach($revisions as $revision)
       {
@@ -279,7 +282,7 @@ class DownloadController extends AppController
       }
     foreach($folders as $folder)
       {
-      if(!$this->Folder->policyCheck($folder, $this->userSession->Dao))
+      if(!$this->Folder->policyCheck($folder, $sessionUser))
         {
         continue;
         }
@@ -288,7 +291,7 @@ class DownloadController extends AppController
       foreach($items as $item)
         {
         $itemName = $item->getName();
-        if(!$this->Item->policyCheck($item, $this->userSession->Dao))
+        if(!$this->Item->policyCheck($item, $sessionUser))
           {
           continue;
           }
@@ -320,7 +323,7 @@ class DownloadController extends AppController
         }
       if(!isset($folder->recursive) || $folder->recursive)
         {
-        $zip = $this->_createZipRecursive($zip, $path.'/'.$folder->getName(), $folder->getFolders(), $subRevisions);
+        $zip = $this->_createZipRecursive($zip, $path.'/'.$folder->getName(), $folder->getFolders(), $subRevisions, $sessionUser);
         }
       }
     return $zip;
