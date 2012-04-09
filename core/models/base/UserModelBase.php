@@ -110,7 +110,7 @@ abstract class UserModelBase extends AppModel
 
     // Delete this user's folder tree recursively
     $folderModel = $modelLoader->loadModel('Folder');
-    $folderModel->delete($user->getFolder(), true);
+    $folderModel->delete($user->getFolder());
 
     // Delete remaining folder policies for the user
     $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicyuser');
