@@ -8,7 +8,7 @@ midas.ajaxSelectRequest= '';
  * Pass null if there is no selected row.
  */
 midas.genericCallbackSelect = function(node) {
-    if(!node) {
+    if(!node || !node.attr('type')) {
         $('div.ajaxInfoElement').html('');
         $('div.viewAction ul').html('');
         return;
