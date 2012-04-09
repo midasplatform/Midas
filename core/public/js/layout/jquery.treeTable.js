@@ -244,7 +244,7 @@
       // this.style.display = "table-row"; // Unfortunately this is not possible with IE :-(
       $(this).show();
       });
-    if($.isFunction(options.onNodeShow)) {
+    if(children.length && $.isFunction(options.onNodeShow)) {
         options.onNodeShow.call(this);
     }
 
