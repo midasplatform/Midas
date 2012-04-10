@@ -7,12 +7,11 @@ $(document).ready(function() {
 
     if(hasAgreement == 'true') {
         $('form#joinCommunityForm').unbind('submit').submit(function() {
-            loadDialog('agreement', '/communityagreement/config/agreementdialog?communityId='+json.community.community_id);
-            showDialog('Community Agreement', false, {
+            midas.loadDialog('agreement', '/communityagreement/config/agreementdialog?communityId='+json.community.community_id);
+            midas.showDialog('Community Agreement', false, {
                 width: 500
             });
             return false;
         });
     }
-
 });

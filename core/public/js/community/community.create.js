@@ -11,7 +11,7 @@ $('div.createNameElement input').focusout(function()
       function(data){
         if(data.search('true')!=-1)
         {
-          createNotive('Name already exists', 4000);
+          midas.createNotice('Name already exists', 4000);
           nameValid=false;
         }
         else

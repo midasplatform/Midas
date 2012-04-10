@@ -1,31 +1,32 @@
-$('#recoverPasswordForm').ajaxForm( {beforeSubmit: validateRecoverPassword, success:       successRecoverPassword} );
+var midas = midas || {};
+midas.user = midas.user || {};
 
-
-function validateRecoverPassword(formData, jqForm, options) { 
- 
+midas.user.validateRecoverPassword = function (formData, jqForm, options) { 
     var form = jqForm[0]; 
-    if (form.email.value.length<1)
-      {
-        createNotive('Error email',4000);
+    if (form.email.value.length < 1) {
+        midas.createNotice('Error email', 4000, 'error');
         return false;
-      }
+    }
 }
 
-function successRecoverPassword(responseText, statusText, xhr, form) 
-{
-  jsonResponse = jQuery.parseJSON(responseText);
-  if(jsonResponse==null)
-    {
-      createNotive('Error',4000);
+midas.user.successRecoverPassword = function (responseText, statusText, xhr, form) {
+  var jsonResponse = jQuery.parseJSON(responseText);
+  if(jsonResponse == null) {
+      midas.createNotice('Error', 4000, 'error');
       return;
-    }
-  if(jsonResponse[0])
-    {
-      createNotive(jsonResponse[1],4000);
-      $( "div.MainDialog" ).dialog("close");
-    }
-  else
-    {
-      createNotive(jsonResponse[1],4000);
-    }
+  }
+  if(jsonResponse[0]) {
+      midas.createNotice(jsonResponse[1], 4000);
+      $("div.MainDialog").dialog("close");
+  }
+  else {
+      midas.createNotice(jsonResponse[1], 4000, 'error');
+  }
 }
+
+$(document).ready(function() {
+    $('#recoverPasswordForm').ajaxForm({
+        beforeSubmit: midas.user.validateRecoverPassword,
+        success: midas.user.successRecoverPassword
+    });
+});

@@ -2,14 +2,13 @@ $(document).ready(function () {
     'use strict';
 
     $('a.createCommunity').click(function () {
-
         if (json.global.logged) {
-            loadDialog("createCommunity","/community/create");
-            showDialog(json.community.createCommunity,false);
+            midas.loadDialog("createCommunity","/community/create");
+            midas.showDialog(json.community.createCommunity, false);
         } else {
-            createNotive(json.community.contentCreateLogin,4000)
+            midas.createNotice(json.community.contentCreateLogin, 4000)
             $("div.TopDynamicBar").show('blind');
-            loadAjaxDynamicBar('login', '/user/login');
+            midas.loadAjaxDynamicBar('login', '/user/login');
         }
     });
 
@@ -17,7 +16,9 @@ $(document).ready(function () {
         $(location).attr('href',($('> .communityTitle',this).attr('href')));
     });
 
-    $('span.communityDescription').dotdotdot({height : 30,
-                                              wrapper : 'span',
-                                              after: 'a.more'});
+    $('span.communityDescription').dotdotdot({
+        height : 30,
+        wrapper : 'span',
+        after: 'a.more'
+    });
 });

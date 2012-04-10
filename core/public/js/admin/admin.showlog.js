@@ -56,7 +56,7 @@ $('button#deleteSelected').click(function() {
       dataType: 'json',
       data: {idList: selected},
       success: function(resp) {
-        createNotive(resp.message, 3500);
+        midas.createNotice(resp.message, 3500);
         },
       });
     }
@@ -101,7 +101,7 @@ function initLogs()
 
     $('table#listLogs tr.logSum td.logMessage').click(function() {
       var id = $(this).attr('name');
-      showBigDialogWithContent('Log', $('#fullMessage'+id).html(), true);
+      midas.showBigDialogWithContent('Log', $('#fullMessage'+id).html(), true);
       });
     }
 }

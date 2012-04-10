@@ -16,24 +16,26 @@ midas.ldap.config.successConfig = function (responseText,
     try {
         jsonResponse = jQuery.parseJSON(responseText);
     } catch (e) {
-        createNotice("An error occured. Please check the logs.");
+        midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
         return false;
     }
     if (jsonResponse === null) {
-        createNotice('Error',4000);
+        midas.createNotice('Error', 4000, 'error');
         return false;
     }
     if(jsonResponse[0]) {
-        createNotice(jsonResponse[1],4000);
+        midas.createNotice(jsonResponse[1], 4000);
         return true;
     } else {
-        createNotice(jsonResponse[1],4000);
+        midas.createNotice(jsonResponse[1], 4000, 'error');
         return true;
     }
 };
 
 $(document).ready(function () {
     'use strict';
-    $('#configForm').ajaxForm({beforeSubmit: midas.ldap.config.validateConfig,
-                               success: midas.ldap.config.successConfig});
+    $('#configForm').ajaxForm({
+        beforeSubmit: midas.ldap.config.validateConfig,
+        success: midas.ldap.config.successConfig
+    });
 });

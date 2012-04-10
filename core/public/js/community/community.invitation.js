@@ -46,12 +46,12 @@ var jsonShare = jQuery.parseJSON($('div.jsonShareContent').html());
          jsonResponse = jQuery.parseJSON(data);
           if(jsonResponse[0])
             {
-              createNotive(jsonResponse[1],1500);
+              midas.createNotice(jsonResponse[1],1500);
               $( "div.MainDialog" ).dialog('close');
             }
           else
             {
-              createNotive(jsonResponse[1],4000);
+              midas.createNotice(jsonResponse[1],4000);
             }
        });
      itemShareSelected = true;

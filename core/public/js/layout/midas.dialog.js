@@ -1,5 +1,7 @@
+var midas = midas || {};
+
 // load a dialog (ajax)
-function loadDialog (name, url) {
+midas.loadDialog = function (name, url) {
     if($('.DialogContentPage').val()!=name) {
         $('.DialogContentPage').val(name);
         $('div.MainDialogContent').html("");
@@ -23,7 +25,7 @@ function loadDialog (name, url) {
  * @param button Boolean: whether to show an Ok button or not
  * @param opts An object that will override any default options to jQuery dialog function
  */
-function showDialog (title, button, opts) {
+midas.showDialog = function (title, button, opts) {
     var options = {
         resizable: false,
         width: 450,
@@ -52,32 +54,31 @@ function showDialog (title, button, opts) {
 }
 
 // show a dialog with a width of 700px
-function showBigDialog (title, button) {
-    showDialog(title, button, {width: 700});
+midas.showBigDialog = function (title, button) {
+    midas.showDialog(title, button, {width: 700});
 }
 
 // showDialogWithContent
-function showDialogWithContent (title, content, button, opts) {
+midas.showDialogWithContent = function (title, content, button, opts) {
     $('.DialogContentPage').val('');
     $('div.MainDialogContent').html(content);
     $('div.MainDialogLoading').hide();
-    showDialog(title, button, opts);
+    midas.showDialog(title, button, opts);
 }
 
 // showBigDialogWithContent
-function showBigDialogWithContent (title, content, button) {
+midas.showBigDialogWithContent = function (title, content, button) {
     $('.DialogContentPage').val('');
     $('div.MainDialogContent').html(content);
     $("div.MainDialogLoading").hide();
-    showBigDialog(title, button);
+    midas.showBigDialog(title, button);
 }
 
 // load the content of the black top bar
-function loadAjaxDynamicBar(name,url)
-{
+midas.loadAjaxDynamicBar = function (name,url) {
     // If we don't have the top dynamic content div, just use a dialog
     if(!$('div.TopDynamicContent').length) {
-        loadDialog(name, url);
+        midas.loadDialog(name, url);
         return;
     }
 
@@ -102,11 +103,10 @@ function loadAjaxDynamicBar(name,url)
 }
 
 // show or hide the bar
-function showOrHideDynamicBar(name)
-{
+midas.showOrHideDynamicBar = function (name) {
     // If we don't have the top dynamic content div, just use a dialog
     if(!$('div.TopDynamicContent').length) {
-        showDialog(name);
+        midas.showDialog(name);
         return;
     }
     if($("div.TopDynamicBar").is(':hidden')) {
