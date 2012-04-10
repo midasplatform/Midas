@@ -2,8 +2,6 @@ var midas = midas || {};
 midas.community = midas.community || {};
 midas.community.manage = {};
 
-var disableElementSize = true;
-
 midas.community.manage.init = function () {
     var mainDialogContentDiv = $('div.MainDialogContent');
     var createGroupFromDiv = $('div#createGroupFrom');
@@ -39,7 +37,9 @@ midas.community.manage.init = function () {
 
     $('table').filter(function () {
         return this.id.match(/browseTable*/);
-    }).treeTable();
+    }).treeTable({
+        disableElementSize: true
+    });
 
     $("img.tableLoading").hide();
     $("table#browseTable").show();

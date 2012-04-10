@@ -135,22 +135,21 @@ function selectFolderCallbackCheckboxes(node)
   //  midas.genericCallbackCheckboxes(node);
   }
 
-function selectFolderCallbackCustomElements(node,elements,first)
-  {
-  var i = 1;
-  var id = node.attr('id');
-  elements['folders'] = jQuery.makeArray(elements['folders']);
+function selectFolderCallbackCustomElements(node, elements) {
+    console.log(node);
+    console.log(elements);
+    var i = 1;
+    var id = node.attr('id');
 
-  var padding = parseInt(node.find('td:first').css('padding-left').slice(0,-2));
-  var html = '';
-  $.each(elements['folders'], function(index, value) {
-    if(value['policy'] >= parseInt($('div.MainDialogContent #defaultPolicy').val()))
-      {
-      html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
-      html+=     "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";
-      html+=     "</tr>";
-      i++;
-      }
+    var padding = parseInt(node.find('td:first').css('padding-left').slice(0,-2));
+    var html = '';
+    $.each(elements.folders, function(index, value) {
+        if(value.policy >= parseInt($('div.MainDialogContent #defaultPolicy').val())) {
+          html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value.folder_id+"'type='folder' policy='"+value.policy+"' element='"+value.folder_id+"'>";
+          html+= "  <td><span class='folder'>"+trimName(value.name, padding)+"</span></td>";
+          html+= "</tr>";
+          i++;
+          }
     });
-  return html;
-  }
+    return html;
+}

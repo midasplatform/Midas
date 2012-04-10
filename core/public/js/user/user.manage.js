@@ -1,5 +1,4 @@
 var midas = midas || {};
-var disableElementSize=true;
 
 $(document).ready(function() {
     
@@ -14,8 +13,9 @@ $(document).ready(function() {
         .filter(function() {
             return this.id.match(/browseTable*/);
         })
-        .treeTable();
-    ;
+        .treeTable({
+            disableElementSize: true
+        });
     
     $("img.tableLoading").hide();
     $("table#browseTable").show();
