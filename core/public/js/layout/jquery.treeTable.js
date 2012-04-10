@@ -145,7 +145,10 @@
         $.post(json.global.webroot+'/browse/getfolderscontent', {folders: node.attr('element')} , function (data) {
             var children = jQuery.parseJSON(data);
             // Store the children in the dom node
-            $.data(node[0], 'children', children[node.attr('element')]);
+            for(var key in children) {
+                $.data(node[0], 'children', children[key]);
+                break; //just fetching one folder at a time for now.
+            }
             // Render the children (one chunk at a time)
             node.ttRenderChildren(0);
             table.ttRenderElementsSize();
@@ -352,6 +355,9 @@
         return ancestors;
     };
 
+    /**
+     * Get all *rendered* children of a node
+     */
     $.fn.ttChildren = function () {
         var node = $(this);
         if(node[0] == undefined) {

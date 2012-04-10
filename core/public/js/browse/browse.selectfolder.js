@@ -31,49 +31,41 @@ if($('div.MainDialogContent #selectElements') != undefined)
 
 //dependance: common/browser.js
 var ajaxSelectRequest = '';
-function selectFolderCallbackSelect(node)
-  {
-  var selectedElement = node.find('span:eq(1)').html();
+function selectFolderCallbackSelect(node) {
+    var selectedElement = node.find('span:eq(1)').html();
 
-  var parent = true;
-  var current = node;
+    var parent = true;
+    var current = node;
 
-  while(parent != null)
-    {
-    parent = null;
-    var classNames = current[0].className.split(' ');
-    for(key in classNames)
-      {
-      if(classNames[key].match("child-of-"))
-        {
-        parent = $("div.MainDialogContent #" + classNames[key].substring(9));
+    while(parent != null) {
+        parent = null;
+        var classNames = current[0].className.split(' ');
+        for(key in classNames) {
+            if(classNames[key].match("child-of-")) {
+                parent = $("div.MainDialogContent #" + classNames[key].substring(9));
+            }
         }
-      }
-    if(parent != null)
-      {
-      selectedElement = parent.find('span:eq(1)').html()+'/'+selectedElement;
-      current = parent;
-      }
+        if(parent != null) {
+            selectedElement = parent.find('span:eq(1)').html()+'/'+selectedElement;
+            current = parent;
+        }
     }
 
-  $('div.MainDialogContent #createFolderContent').hide();
-  if(node.attr('element') == -1 || node.attr('element') == -2)
-    {
-    $('div.MainDialogContent #selectElements').attr('disabled', 'disabled');
-    $('div.MainDialogContent #createFolderButton').hide();
+    $('div.MainDialogContent #createFolderContent').hide();
+    if(node.attr('element') == -1 || node.attr('element') == -2) {
+        $('div.MainDialogContent #selectElements').attr('disabled', 'disabled');
+        $('div.MainDialogContent #createFolderButton').hide();
     }
-  else
-    {
-    $('div.MainDialogContent #selectedDestinationHidden').val(node.attr('element'));
-    $('div.MainDialogContent #selectedDestination').html(sliceFileName(selectedElement, 40));
-    $('div.MainDialogContent #selectElements').removeAttr('disabled');
+    else {
+        $('div.MainDialogContent #selectedDestinationHidden').val(node.attr('element'));
+        $('div.MainDialogContent #selectedDestination').html(sliceFileName(selectedElement, 40));
+        $('div.MainDialogContent #selectElements').removeAttr('disabled');
 
-    if($('div.MainDialogContent #defaultPolicy').val() != 0)
-      {
-      $('div.MainDialogContent #createFolderButton').show();
-      }
+        if($('div.MainDialogContent #defaultPolicy').val() != 0) {
+            $('div.MainDialogContent #createFolderButton').show();
+        }
     }
-  }
+}
 
 $('#moveTable ajaimg.infoLoading').show();
 $('div.MainDialogContent div.ajaxInfoElement').html('');
@@ -136,8 +128,6 @@ function selectFolderCallbackCheckboxes(node)
   }
 
 function selectFolderCallbackCustomElements(node, elements) {
-    console.log(node);
-    console.log(elements);
     var i = 1;
     var id = node.attr('id');
 

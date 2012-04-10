@@ -132,7 +132,7 @@ midas.removeNodeFromTree = function (node, recursive) {
         jCurNode.find('span.elementSize').remove();
     }
     // update folder size
-    getElementsSize($('#browseTable')); //todo select table ancestor of node instead of using global scope
+    $('#browseTable').ttRenderElementsSize();
 };
 
 midas.removeItem = function (id) {
