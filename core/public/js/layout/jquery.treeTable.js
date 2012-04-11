@@ -569,6 +569,9 @@
      */
     $.fn.ttOptions = function () {
         var table = $(this).ttTable();
+        if(table.length == 0) {
+            return $.fn.treeTable.defaults;
+        }
         var options = $.data(table[0], 'options');
         return options ? options : $.fn.treeTable.defaults;
     }
