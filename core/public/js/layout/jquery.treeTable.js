@@ -293,9 +293,21 @@
         });
     }
 
+    /**
+     * Reload a node by clearing and re-fetching its children
+     */
     $.fn.reload = function () {
         var node = $(this);
-        // TODO implement reload of a node
+        var options = node.ttOptions();
+        $.removeData(node[0], 'lastchild');
+        $.removeData(node[0], 'elements');
+        node.ttChildren().remove();
+        node.removeAttr('fetched');
+        node.expand();
+
+        if(typeof options.callbackReloadNode == 'function') {
+            options.callbackReloadNode(node);
+        }
     }
 
     // Add an entire branch to +destination+
