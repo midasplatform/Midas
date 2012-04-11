@@ -78,7 +78,7 @@
         var node = $(this);
         var id = node.attr('id');
         var table = node.ttTable();
-        table.find('tr[id*="'+id+'"]').addClass('collapsed').hide();
+        table.find('tr[id*="'+id+'"]').removeClass('expanded').addClass('collapsed').hide();
         $(this).show();
         table.ttColorLines();
         return this;
@@ -301,7 +301,7 @@
         var options = node.ttOptions();
         $.removeData(node[0], 'lastchild');
         $.removeData(node[0], 'children');
-        node.ttChildren().remove();
+        node.ttRemoveSubtree();
         node.removeAttr('fetched');
         node.expand();
 
@@ -379,6 +379,17 @@
         var options = table.ttOptions();
 
         return table.find("tbody tr." + options.childPrefix + node[0].id);
+    };
+
+    /**
+     * Remove the entire subtree of a node
+     */
+    $.fn.ttRemoveSubtree = function () {
+        var node = $(this);
+        node.ttChildren().each(function () {
+            $(this).ttRemoveSubtree();
+            $(this).remove();
+        });
     };
 
     $.fn.ttPaddingLeft = function () {
