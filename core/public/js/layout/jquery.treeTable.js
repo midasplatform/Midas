@@ -378,10 +378,13 @@
         return (isNaN(paddingLeft)) ? defaultPaddingLeft : paddingLeft;
     }
 
-    $.fn.ttIndent = function (node, value) {
+    /**
+     * Indent a node by the given value.  Will apply recursively to children
+     */
+    $.ttIndent = function (node, value) {
         var options = node.ttOptions();
-        var cell = $(node.children("td")[options.treeColumn]);
-        cell[0].style.paddingLeft = cell.ttPaddingLeft() + value + "px";
+        var cell = $(node.children('td')[options.treeColumn]);
+        cell[0].style.paddingLeft = cell.ttPaddingLeft() + value + 'px';
 
         node.ttChildren().each(function () {
             $.ttIndent($(this), value);
@@ -530,7 +533,7 @@
      * @param node The node to move
      * @param destination The destination parent to move under
      */
-    $.fn.ttMove = function (node, destination) {
+    $.ttMove = function (node, destination) {
         node.insertAfter(destination);
         node.ttChildren().reverse().each(function () {
             $.ttMove($(this), node[0]);
@@ -542,7 +545,7 @@
      */
     $.fn.ttParent = function () {
         var classNames = $(this)[0].className.split(' ');
-        var options = $(this).getOptions();
+        var options = $(this).ttOptions();
 
         for(key in classNames) {
             if(classNames[key].match(options.childPrefix)) {
