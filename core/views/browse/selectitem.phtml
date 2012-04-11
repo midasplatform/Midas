@@ -38,23 +38,23 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
       ?>
       </thead>
       <tbody>
-        <?php
-        $node=1;
-        foreach($this->communities as $community)
-          {
-          $folder=$community->getFolder();
-          echo "<tr id='node--$node' class='parent' privacy='".($community->getPrivacy() == 1 ? MIDAS_PRIVACY_PRIVATE : MIDAS_PRIVACY_PUBLIC )."' type='community' element='{$community->getCommunityId()}' ajax='{$folder->getFolderId()}'>";
-          echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
-          echo "</tr>";
-          $node++;
-          }
+      <?php
+      $node=1;
+      foreach($this->communities as $community)
+        {
+        $folder=$community->getFolder();
+        echo "<tr id='node--$node' class='parent' privacy='".($community->getPrivacy() == 1 ? MIDAS_PRIVACY_PRIVATE : MIDAS_PRIVACY_PUBLIC )."' type='community' element='{$folder->getFolderId()}'>";
+        echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
+        echo "</tr>";
+        $node++;
+        }
 
-          $folder=$this->user->getFolder();
-          echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='-1' ajax='{$folder->getFolderId()}'>";
-          echo "  <td class='treeBrowseElement'><span class='folder'>{$this->t('My Files')} ({$this->user->getFullName()})</span></td>";
-          echo "</tr>";
-          $node++;
-        ?>
+        $folder=$this->user->getFolder();
+        echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='{$folder->getFolderId()}'>";
+        echo "  <td class='treeBrowseElement'><span class='folder'>{$this->t('My Files')} ({$this->user->getFullName()})</span></td>";
+        echo "</tr>";
+        $node++;
+      ?>
       </tbody>
     </table>
   </div>
