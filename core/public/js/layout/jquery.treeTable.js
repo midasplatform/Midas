@@ -300,7 +300,7 @@
         var node = $(this);
         var options = node.ttOptions();
         $.removeData(node[0], 'lastchild');
-        $.removeData(node[0], 'elements');
+        $.removeData(node[0], 'children');
         node.ttChildren().remove();
         node.removeAttr('fetched');
         node.expand();
