@@ -36,7 +36,7 @@ abstract class ItemModelBase extends AppModel
       'sizebytes' => array('type' => MIDAS_DATA),
       'date_creation' => array('type' => MIDAS_DATA),
       'date_update' => array('type' => MIDAS_DATA),
-      'thumbnail' => array('type' => MIDAS_DATA),
+      'thumbnail_id' => array('type' => MIDAS_DATA),
       'view' => array('type' => MIDAS_DATA),
       'download' => array('type' => MIDAS_DATA),
       'privacy_status' => array('type' => MIDAS_DATA),
@@ -232,21 +232,39 @@ abstract class ItemModelBase extends AppModel
       {
       throw new Zend_Exception("Should be an user.");
       }
-    $name = $itemDao->getName();
-    $description = $itemDao->getDescription();
-    $newItem = $this->createItem($name, $description, $folderDao);
-    $newItem->setType($itemDao->getType());
-    $newItem->setThumbnail($itemDao->getThumbnail());
-    $newItem->setSizebytes($itemDao->getSizebytes());
-    $newItem->setPrivacyStatus($itemDao->getPrivacyStatus());
-    $newItem->setDateCreation(date('c'));
-    $newItem->setDateUpdate(date('c'));
-    $this->save($newItem);
-
     $modelLoad = new MIDAS_ModelLoader();
     $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
     $BitstreamModel = $modelLoad->loadModel('Bitstream');
     $MetadataModel = $modelLoad->loadModel('Metadata');
+
+    $name = $itemDao->getName();
+    $description = $itemDao->getDescription();
+    $newItem = $this->createItem($name, $description, $folderDao);
+    $newItem->setType($itemDao->getType());
+    $newItem->setSizebytes($itemDao->getSizebytes());
+    $newItem->setPrivacyStatus($itemDao->getPrivacyStatus());
+    $newItem->setDateCreation(date('c'));
+    $newItem->setDateUpdate(date('c'));
+
+    $thumbnailId = $itemDao->getThumbnailId();
+    if($thumbnailId !== null)
+      {
+      $oldThumb = $BitstreamModel->load($thumbnailId);
+      $newThumb = new BitstreamDao;
+      $newThumb->setItemrevisionId(-1);
+      $newThumb->setName($oldThumb->getName());
+      $newThumb->setMimetype($oldThumb->getMimetype());
+      $newThumb->setSizebytes($oldThumb->getSizebytes());
+      $newThumb->setChecksum($oldThumb->getChecksum());
+      $newThumb->setPath($oldThumb->getPath());
+      $newThumb->setAssetstoreId($oldThumb->getAssetstoreId());
+      $newThumb->setDate($oldThumb->getDate());
+      $BitstreamModel->save($newThumb);
+      $newItem->setThumbnailId($newThumb->getKey());
+      }
+
+    $this->save($newItem);
+
     foreach($itemDao->getRevisions() as $revision)
       {
       $dupItemRevision = new ItemRevisionDao;
@@ -615,5 +633,28 @@ abstract class ItemModelBase extends AppModel
                                              array('item' => $mainItem,
                                                    'itemIds' => $itemIds));
     return $mainItem;
+    }
+
+  /**
+   * Delete the existing thumbnail on an item if there is one, and replace
+   * it with the one at the provided temp path.  The temp file will be
+   * moved into the assetstore.
+   */
+  public function replaceThumbnail(&$item, $tempThumbnailFile)
+    {
+    $modelLoad = new MIDAS_ModelLoader();
+    $assetstoreModel = $modelLoad->loadModel('Assetstore');
+    $bitstreamModel = $modelLoad->loadModel('Bitstream');
+
+    // Remove the existing thumbnail bitstream
+    if($item->getThumbnailId() !== null)
+      {
+      $oldThumb = $bitstreamModel->load($item->getThumbnailId());
+      $bitstreamModel->delete($oldThumb);
+      }
+
+    $thumb = $bitstreamModel->createThumbnail($assetstoreModel->getDefault(), $tempThumbnailFile);
+    $item->setThumbnailId($thumb->getKey());
+    $this->save($item);
     }
 } // end class ItemModelBase
