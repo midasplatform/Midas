@@ -442,7 +442,7 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception("This community doesn't exist or you don't have the permissions.");
       }
-
+    set_time_limit(0);
     $this->Community->delete($communityDao);
 
     $this->_redirect('/');
