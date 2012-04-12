@@ -68,61 +68,17 @@ class Upgrade_3_2_6 extends MIDASUpgrade
     {
     $modelLoader = new MIDAS_ModelLoader();
     $bitstreamModel = $modelLoader->loadModel('Bitstream');
-    $bitstreamModel->loadDaoClass('BitstreamDao');
-
-    $bitstreamDao = new BitstreamDao;
 
     $oldpath = BASE_PATH.'/'.$thumbnail;
     if(!file_exists($oldpath)) //thumbnail file no longer exists, so we remove its reference
       {
       return null;
       }
-    $md5 = md5_file($oldpath);
-    $bitstreamDao->setName('thumbnail.jpeg');
-    $bitstreamDao->setItemrevisionId(-1); //-1 indicates this does not belong to any revision
-    $bitstreamDao->setMimetype('image/jpeg');
-    $bitstreamDao->setSizebytes(filesize($oldpath));
-    $bitstreamDao->setChecksum($md5);
 
-    $existing = $bitstreamModel->getByChecksum($md5);
-    if($existing)
-      {
-      unlink($oldpath);
-      $bitstreamDao->setPath($existing->getPath());
-      $bitstreamDao->setAssetstoreId($existing->getAssetstoreId());
-      }
-    else
-      {
-      // Two-level hierarchy.
-      $path = substr($md5, 0, 2).'/'.substr($md5, 2, 2).'/'.$md5;
-      $fullpath = $this->assetstore->getPath().'/'.$path;
-
-      //Create the directories
-      $currentdir = $this->assetstore->getPath().'/'.substr($md5, 0, 2);
-      $this->_createAssetstoreDirectory($currentdir);
-      $currentdir .= '/'.substr($md5, 2, 2);
-      $this->_createAssetstoreDirectory($currentdir);
-      rename($oldpath, $fullpath);
-
-      $bitstreamDao->setAssetstoreId($this->assetstore->getKey());
-      $bitstreamDao->setPath($fullpath);
-      }
-
-    $bitstreamModel->save($bitstreamDao);
+    $bitstreamDao = $bitstreamModel->createThumbnail($this->assetstore, $oldPath);
     return $bitstreamDao;
     }
 
-  /** Helper function to create the two-level hierarchy in the assetstore */
-  private function _createAssetstoreDirectory($directorypath)
-    {
-    if(!file_exists($directorypath))
-      {
-      if(!mkdir($directorypath))
-        {
-        throw new Zend_Exception("Cannot create directory: ".$directorypath);
-        }
-      chmod($directorypath, 0777);
-      }
-    }
+
 }
 ?>
