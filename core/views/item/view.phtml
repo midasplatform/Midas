@@ -333,8 +333,8 @@ foreach($cssArray as $module => $list)
     if($this->itemDao->getThumbnailId())
       {
       echo '<h1>Preview</h1>'.
-           '<img class="infoLogo" alt="" src="'.$this->webroot.'/item/thumbnail/'.
-           $this->itemDao->getThumbnailId().'"/>';
+           '<img class="infoLogo" alt="" src="'.$this->webroot.'/item/thumbnail?itemId='.
+           $this->itemDao->getKey().'"/>';
       }
       ?>
   </div>
