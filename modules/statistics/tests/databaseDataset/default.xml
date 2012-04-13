@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
   <item item_id="1000" name="My Item" description="" date_update="2011-12-01 02:00:00"
-        date_creation="2011-12-01 02:00:00" sizebytes="100" view="0" download="7"
-        thumbnail="" type="0" />
+        date_creation="2011-12-01 02:00:00" sizebytes="100" view="0" download="7" type="0" />
 
   <statistics_ip_location ip_location_id="1000" ip="1.146.2.14" latitude="" longitude="" />
 
