@@ -25,15 +25,14 @@ abstract class Thumbnailcreator_ItemthumbnailModelBase extends Thumbnailcreator_
     $this->_mainData = array(
        'itemthumbnail_id' => array('type' => MIDAS_DATA),
        'item_id' => array('type' => MIDAS_DATA),
-       'thumbnail' => array('type' => MIDAS_DATA),
+       'thumbnail_id' => array('type' => MIDAS_DATA),
        'item' => array('type' => MIDAS_MANY_TO_ONE,
                        'model' => 'Item',
                        'parent_column' => 'item_id',
                        'child_column' => 'item_id'));
-    $this->initialize(); // required
-    } // end __construct()
+    $this->initialize();
+    }
 
   public abstract function getByItemId($itemId);
   public abstract function deleteByItem($item);
-
-} // end class Bdl_ExtensionModelBase
+}

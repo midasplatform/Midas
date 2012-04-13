@@ -19,8 +19,8 @@ midas.thumbnailcreator.setup = function () {
         }, function(data) {
             var resp = $.parseJSON(data);
             midas.createNotice(resp.message, 3500, resp.status);
-            if(resp.thumbnail && resp.status == 'ok') {
-                midas.thumbnailcreator.displayThumbnail(resp.thumbnail);
+            if(resp.itemthumbnail && resp.status == 'ok') {
+                midas.thumbnailcreator.displayThumbnail(resp.itemthumbnail);
             }
         });
     });
@@ -29,17 +29,17 @@ midas.thumbnailcreator.setup = function () {
 /**
  * Call this to display the thumbnail set on the item
  */
-midas.thumbnailcreator.displayThumbnail = function (thumbnail) {
+midas.thumbnailcreator.displayThumbnail = function (itemthumbnail) {
     'use strict';
     $('#thumbnailcreatorLargeImageSection').show()
       .find('img.largeImage')
-      .attr('src', json.global.webroot+'/'+thumbnail);
+      .attr('src', json.global.webroot+'/thumbnailcreator/thumbnail/item?itemthumbnail='+itemthumbnail.itemthumbnail_id);
 }
 
 $(document).ready(function () {
     'use strict';
     midas.thumbnailcreator.setup();
     if(json.modules.thumbnailcreator && json.modules.thumbnailcreator.itemthumbnail) {
-        midas.thumbnailcreator.displayThumbnail(json.modules.thumbnailcreator.itemthumbnail.thumbnail);
+        midas.thumbnailcreator.displayThumbnail(json.modules.thumbnailcreator.itemthumbnail);
     }
 });

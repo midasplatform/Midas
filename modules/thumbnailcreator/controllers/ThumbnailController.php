@@ -23,7 +23,7 @@
  */
 class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppController
 {
-  public $_models = array('Bitstream', 'Item');
+  public $_models = array('Assetstore', 'Bitstream', 'Item');
   public $_moduleModels = array('Itemthumbnail');
   public $_moduleDaos = array('Itemthumbnail');
 
@@ -69,11 +69,11 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
       {
       $itemThumbnail = new Thumbnailcreator_ItemthumbnailDao();
       $itemThumbnail->setItemId($item->getKey());
-      $oldThumbnail = '';
       }
     else
       {
-      $oldThumbnail = $itemThumbnail->getThumbnail();
+      $oldThumb = $this->Bitstream->load($itemThumbnail->getThumbnailId());
+      $this->Bitstream->delete($oldThumb);
       }
 
     try
@@ -84,18 +84,14 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
         echo JsonComponent::encode(array('status' => 'error', 'message' => 'Could not create thumbnail from the bitstream'));
         return;
         }
-      $thumbnail = substr($thumbnail, strlen(BASE_PATH) + 1); //convert to relative path from base directory
 
-      if(!empty($oldThumbnail) && file_exists(BASE_PATH.'/'.$oldThumbnail))
-        {
-        unlink(BASE_PATH.'/'.$oldThumbnail);
-        }
-
-      $itemThumbnail->setThumbnail($thumbnail);
+      $thumb = $this->Bitstream->createThumbnail($this->Assetstore->getDefault(), $thumbnail);
+      $itemThumbnail->setThumbnailId($thumb->getKey());
       $this->Thumbnailcreator_Itemthumbnail->save($itemThumbnail);
-      echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Thumbnail saved', 'thumbnail' => $thumbnail));
+
+      echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Thumbnail saved', 'itemthumbnail' => $itemThumbnail));
       }
-    catch(Exception $e)
+   catch(Exception $e)
       {
       echo JsonComponent::encode(array('status' => 'error', 'message' => 'Error: '.$e->getMessage()));
       }

@@ -69,7 +69,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       foreach($this->itemThumbnails as $item)
         {
         echo "<a href='{$this->webroot}/item/{$item->getKey()}'>";
-        echo "<img qtip='".$item->getName()."' src='{$this->webroot}/{$item->getThumbnail()}' alt=''/>"; 
+        echo "<img qtip='".$item->getName()."' src='{$this->webroot}/item/thumbnail?itemId={$item->getKey()}' alt=''/>"; 
         echo "</a>";
         }
       echo '</div>';

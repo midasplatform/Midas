@@ -128,10 +128,10 @@ abstract class ItemRevisionModelBase extends AppModel
           {
           throw new Zend_Exception("Problem thumbnail path: ".BASE_PATH.'/data/thumbnail/');
           }
-        $destination = $tmpPath.'/'.rand(1, 1000).'.jpeg';
+        $destination = $tmpPath.'/'.rand(1, 10000).'.jpeg';
         while(file_exists($destination))
           {
-          $destination = $tmpPath.'/'.rand(1, 1000).'.jpeg';
+          $destination = $tmpPath.'/'.rand(1, 10000).'.jpeg';
           }
         $pathThumbnail = $destination;
 

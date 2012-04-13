@@ -83,13 +83,14 @@ class Thumbnailcreator_Notification extends MIDAS_Notification
     $modelLoader = new MIDAS_ModelLoader();
     $itemthumbnailModel = $modelLoader->loadModel('Itemthumbnail', $this->moduleName);
     $itemthumbnail = $itemthumbnailModel->getByItemId($params['item']->getKey());
-    if($itemthumbnail)
+    if($itemthumbnail && $itemthumbnail->getThumbnailId() !== null)
       {
-      $thumb = $itemthumbnail->getThumbnail();
-      if(!empty($thumb) && file_exists($thumb))
-        {
-        unlink($thumb);
-        }
+      $bitstreamModel = $this->ModelLoader->loadModel('Bitstream');
+      $thumbnail = $bitstreamModel->load($itemthumbnail->getThumbnailId());
+      $bitstreamModel->delete($thumbnail);
+      }
+    else if($itemthumbnail)
+      {
       $itemthumbnailModel->delete($itemthumbnail);
       }
     }
