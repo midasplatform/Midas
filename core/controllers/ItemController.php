@@ -573,6 +573,11 @@ class ItemController extends AppController
     echo JsonComponent::encode($metadataValueExists);
     } // end getmetadatavalueexistsAction
 
+  /**
+   * Call this to download the thumbnail for the item.  Should only be called if the item has a thumbnail;
+   * otherwise the request produces no output.
+   * @param itemId The item whose thumbnail you wish to download
+   */
   public function thumbnailAction()
     {
     $itemId = $this->_getParam('itemId');
