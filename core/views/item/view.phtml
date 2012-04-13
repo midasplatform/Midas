@@ -336,14 +336,12 @@ foreach($cssArray as $module => $list)
       </tbody>
     </table>
     <?php
-    /*$path=$this->itemDao->getThumbnail();
-    if(!empty($path)&&  file_exists(BASE_PATH.'/'.$path))
+    if($this->itemDao->getThumbnailId())
       {
-      echo "
-        <h1>{$this->t('Preview')}</h1>
-        <img class='infoLogo' alt='' src='{$this->webroot}/{$path}'/>
-        ";
-      }*/
+      echo '<h1>Preview</h1>'.
+           '<img class="infoLogo" alt="" src="'.$this->webroot.'/item/thumbnail?itemId='.
+           $this->itemDao->getKey().'"/>';
+      }
       ?>
   </div>
   <?php

@@ -75,7 +75,7 @@ class Upgrade_3_2_6 extends MIDASUpgrade
       return null;
       }
 
-    $bitstreamDao = $bitstreamModel->createThumbnail($this->assetstore, $oldPath);
+    $bitstreamDao = $bitstreamModel->createThumbnail($this->assetstore, $oldpath);
     return $bitstreamDao;
     }
 
