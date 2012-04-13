@@ -247,6 +247,10 @@ abstract class ItemModelBase extends AppModel
     $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
     $BitstreamModel = $modelLoad->loadModel('Bitstream');
     $MetadataModel = $modelLoad->loadModel('Metadata');
+    $ItemPolicyGroupModel = $modelLoad->loadModel('Itempolicygroup');
+
+    $ItemPolicyGroupModel->computePolicyStatus($newItem);
+
     foreach($itemDao->getRevisions() as $revision)
       {
       $dupItemRevision = new ItemRevisionDao;
