@@ -54,5 +54,7 @@ PURPOSE.  See the above copyright notices for more information.
 </div>
 
 <script language="javascript">
-var assetstores = eval(<?php echo json_encode($this->assetstores)?>);
+   var midas = midas || {};
+   midas.import = midas.import || {};
+   midas.import.assetstores = '<?php echo json_encode($this->assetstores)?>';
 </script>
