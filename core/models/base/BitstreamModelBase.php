@@ -89,6 +89,7 @@ abstract class BitstreamModelBase extends AppModel
     $bitstreamDao->setItemrevisionId(-1); //-1 indicates this does not belong to any revision
     $bitstreamDao->setMimetype('image/jpeg');
     $bitstreamDao->setSizebytes(filesize($tempThumbnailFile));
+    $bitstreamDao->setDate(date('c'));
     $bitstreamDao->setChecksum($md5);
 
     $existing = $this->getByChecksum($md5);
