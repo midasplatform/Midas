@@ -97,4 +97,35 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
       }
     }
 
+  /**
+   * Call this to stream the large thumbnail for the item.  Should only be called if the item has a thumbnail;
+   * otherwise the request produces no output.
+   * @param itemthumbnail The itemthumbnail_id to stream
+   */
+  public function itemAction()
+    {
+    $itemthumbnailId = $this->_getParam('itemthumbnail');
+    if(!isset($itemthumbnailId))
+      {
+      throw new Zend_Exception('Must pass an itemthumbnail parameter');
+      }
+    $itemthumbnail = $this->Thumbnailcreator_Itemthumbnail->load($itemthumbnailId);
+    if(!$itemthumbnail)
+      {
+      throw new Zend_Exception('Invalid itemthumbnail parameter');
+      }
+    if(!$this->Item->policyCheck($itemthumbnail->getItem(), $this->userSession->Dao))
+      {
+      throw new Zend_Exception('Invalid policy');
+      }
+    $this->disableLayout();
+    $this->disableView();
+    if($itemthumbnail->getThumbnailId() !== null)
+      {
+      $bitstream = $this->Bitstream->load($itemthumbnail->getThumbnailId());
+      $componentLoader = new MIDAS_ComponentLoader();
+      $downloadBitstreamComponent = $componentLoader->loadComponent('DownloadBitstream');
+      $downloadBitstreamComponent->download($bitstream);
+      }
+    }
 }//end class

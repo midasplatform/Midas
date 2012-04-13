@@ -89,7 +89,7 @@ class Thumbnailcreator_Notification extends MIDAS_Notification
       $thumbnail = $bitstreamModel->load($itemthumbnail->getThumbnailId());
       $bitstreamModel->delete($thumbnail);
       }
-    else if($itemthumbnail)
+    if($itemthumbnail)
       {
       $itemthumbnailModel->delete($itemthumbnail);
       }
