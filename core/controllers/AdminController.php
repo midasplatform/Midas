@@ -518,7 +518,7 @@ class AdminController extends AppController
     // Display the tree
     $_POST['dir'] = urldecode($_POST['dir']);
     $files = array();
-    if(strpos(strtolower(PHP_OS), 'win') !==  false)
+    if(strpos(strtolower(PHP_OS), 'win') === 0)
       {
       $files = array();
       for($c = 'A'; $c <= 'Z'; $c++)
