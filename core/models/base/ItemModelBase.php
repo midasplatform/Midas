@@ -640,7 +640,7 @@ abstract class ItemModelBase extends AppModel
    * it with the one at the provided temp path.  The temp file will be
    * moved into the assetstore.
    */
-  public function replaceThumbnail(&$item, $tempThumbnailFile)
+  public function replaceThumbnail($item, $tempThumbnailFile)
     {
     $modelLoad = new MIDAS_ModelLoader();
     $assetstoreModel = $modelLoad->loadModel('Assetstore');

@@ -22,8 +22,8 @@
 class Thumbnailcreator_ImagemagickComponent extends AppComponent
 {
   /**
-   * Create a 100x100 thumbnail from an item. Called by the scheduler, will
-   * echo an error message if a problem occurs
+   * Create a 100x100 thumbnail from an item.
+   * Echoes an error message if a problem occurs (for the scheduler log)
    * @param item The item to create the thumbnail for
    * @param inputFile (optional) The file to thumbnail. If none is specified, uses
    *                             the first bitstream in the head revision of the item.
@@ -68,13 +68,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
 
     if(file_exists($pathThumbnail))
       {
-      $oldThumbnail = $item->getThumbnail();
-      if(!empty($oldThumbnail) && file_exists($pathThumbnail))
-        {
-        unlink($oldThumbnail);
-        }
-      $item->setThumbnail(substr($pathThumbnail, strlen(BASE_PATH) + 1));
-      $itemModel->save($item);
+      $itemModel->replaceThumbnail($item, $pathThumbnail);
       }
     }
 
@@ -93,26 +87,15 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     $ext = strtolower(substr(strrchr($fullPath, '.'), 1));
 
     // create destination
-    $tmpPath = BASE_PATH.'/data/thumbnail/'.rand(1, 1000);
-    if(!file_exists(BASE_PATH.'/data/thumbnail/'))
-      {
-      throw new Zend_Exception("Problem thumbnail path: ".BASE_PATH.'/data/thumbnail/');
-      }
+    $tmpPath = BASE_PATH.'/data/thumbnail';
     if(!file_exists($tmpPath))
       {
-      mkdir($tmpPath);
+      throw new Zend_Exception('Temporary thumbnail dir does not exist: '.BASE_PATH.'/data/thumbnail/');
       }
-    $tmpPath .= '/'.rand(1, 1000);
-    if(!file_exists($tmpPath))
-      {
-      mkdir($tmpPath);
-      }
-    $num = '0';
-    $destination = $tmpPath.'/'.$num.'.jpeg';
+    $destination = $tmpPath.'/'.rand(1, 10000).'.jpeg';
     while(file_exists($destination))
       {
-      $num++;
-      $destination = $tmpPath.'/'.$num.'.jpeg';
+      $destination = $tmpPath.'/'.rand(1, 10000).'.jpeg';
       }
     $pathThumbnail = $destination;
 
