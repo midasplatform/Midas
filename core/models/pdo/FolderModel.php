@@ -503,9 +503,13 @@ class FolderModel extends FolderModelBase
         $folder->$key = $rightParent + 1;
         $data[$key] = $rightParent + 1;
         }
-      if($key == 'left_indice')
+      else if($key == 'left_indice')
         {
         $data[$key] = $rightParent;
+        }
+      else if($key == 'description')
+        {
+        $data[$key] = UtilityComponent::filterHtmlTags($folder->getDescription());
         }
       }
 

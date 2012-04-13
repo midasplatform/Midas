@@ -168,7 +168,6 @@ class FolderController extends AppController
 
     $this->view->title .= ' - '.$folder->getName();
     $this->view->metaDescription = substr($folder->getDescription(), 0, 160);
-    $folder->setDescription(htmlentities($folder->getDescription()));
     $this->view->json['folder'] = $folder;
     }// end View Action
 
