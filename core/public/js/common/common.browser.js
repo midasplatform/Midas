@@ -530,9 +530,9 @@ midas.createInfo = function (jsonContent) {
         html+='<h4>'+arrayElement.translation.Private+'</h4>';
     }
 
-  if(arrayElement['thumbnail']!=undefined&&arrayElement['thumbnail']!='')
+  if(arrayElement['thumbnail_id']!=undefined&&arrayElement['thumbnail_id']!='')
     {
-    html+='<h1>'+json.browse.preview+'</h1><a href="'+json.global.webroot+'/item/'+arrayElement['item_id']+'"><img class="infoLogo" alt="" src="'+json.global.webroot+'/'+arrayElement['thumbnail']+'" /></a>';
+    html+='<h1>'+json.browse.preview+'</h1><a href="'+json.global.webroot+'/item/'+arrayElement['item_id']+'"><img class="infoLogo" alt="" src="'+json.global.webroot+'/item/thumbnail?itemId='+arrayElement['item_id']+'" /></a>';
     }
 
     $('div.ajaxInfoElement').html(html);
