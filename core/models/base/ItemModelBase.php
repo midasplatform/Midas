@@ -265,6 +265,13 @@ abstract class ItemModelBase extends AppModel
 
     $this->save($newItem);
 
+    $modelLoad = new MIDAS_ModelLoader();
+    $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
+    $BitstreamModel = $modelLoad->loadModel('Bitstream');
+    $MetadataModel = $modelLoad->loadModel('Metadata');
+    $ItemPolicyGroupModel = $modelLoad->loadModel('Itempolicygroup');
+    $ItemPolicyGroupModel->computePolicyStatus($newItem);
+
     foreach($itemDao->getRevisions() as $revision)
       {
       $dupItemRevision = new ItemRevisionDao;
