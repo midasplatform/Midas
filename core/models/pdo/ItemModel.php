@@ -377,6 +377,13 @@ class ItemModel extends ItemModelBase
       $policy_user_model->delete($policy);
       }
 
+    $thumbnailId = $itemdao->getThumbnailId();
+    if($thumbnailId !== null)
+      {
+      $bitstreamModel = $this->ModelLoader->loadModel('Bitstream');
+      $thumbnail = $bitstreamModel->load($thumbnailId);
+      $bitstreamModel->delete($thumbnail);
+      }
 
     require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
     $component = new SearchComponent();
@@ -505,7 +512,7 @@ class ItemModel extends ItemModelBase
         ->limit($limit);
     if($thumbnailFilter)
       {
-      $sql->where('thumbnail != ?', '');
+      $sql->where('NOT thumbnail_id IS NULL', '');
       }
 
     $rowset = $this->database->fetchAll($sql);

@@ -573,4 +573,35 @@ class ItemController extends AppController
     echo JsonComponent::encode($metadataValueExists);
     } // end getmetadatavalueexistsAction
 
+  /**
+   * Call this to download the thumbnail for the item.  Should only be called if the item has a thumbnail;
+   * otherwise the request produces no output.
+   * @param itemId The item whose thumbnail you wish to download
+   */
+  public function thumbnailAction()
+    {
+    $itemId = $this->_getParam('itemId');
+    if(!isset($itemId))
+      {
+      throw new Zend_Exception('Must pass an itemId parameter');
+      }
+    $item = $this->Item->load($itemId);
+    if(!$item)
+      {
+      throw new Zend_Exception('Invalid itemId');
+      }
+    if(!$this->Item->policyCheck($item, $this->userSession->Dao))
+      {
+      throw new Zend_Exception('Invalid policy');
+      }
+    $this->disableLayout();
+    $this->disableView();
+    if($item->getThumbnailId() !== null)
+      {
+      $bitstream = $this->Bitstream->load($item->getThumbnailId());
+      $componentLoader = new MIDAS_ComponentLoader();
+      $downloadBitstreamComponent = $componentLoader->loadComponent('DownloadBitstream');
+      $downloadBitstreamComponent->download($bitstream);
+      }
+    }
   }//end class
