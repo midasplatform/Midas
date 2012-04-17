@@ -54,7 +54,7 @@ class Statistics_ItemController extends Statistics_AppController
         }
       }
 
-    $header = '<img style="position: relative; top: 3px; margin-left: -10px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_bar.png" />';
+    $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_bar.png" />';
     $header .= ' Statistics: ';
     if($count == 1)
       {

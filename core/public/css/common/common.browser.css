@@ -1,52 +1,44 @@
-/*div.viewHeader {
-  padding: 0px 15px !important;
-  min-height: 24px !important;
-}*/
-
-ul.pathBrowser{
-  padding-top: 3px;
+ul.pathBrowser {
   display: block;
   list-style-type: disc;
   margin: 0px;
   padding-left: 0px;
-  float: left;
-  -webkit-margin-before: 0em;
-  -webkit-margin-after: 0em;
-  -webkit-margin-start: 0px;
-  -webkit-margin-end: 0px;
-  -webkit-padding-start: 0px;
 }
 
-ul.pathBrowser li{
+ul.pathBrowser li {
   margin: 0;
   list-style: none;
   float: left;
   background-repeat: no-repeat;
-  background-position: right -3px;
+  background-position: right;
   display: list-item;
-  padding: 0px 22px 7px 3px;
-  text-shadow: 0px 1px 0px #EEE;
+  padding: 5px 16px 0px 3px;
   background-image: url("../../images/icons/path-divider.png");
+  min-height: 19px;
 }
 
-
-ul.pathBrowser li img{
+ul.pathBrowser li img {
   position:relative;
-  top:0px;
+  top: -2px;
+  margin-right: 2px;
 }
 
 
-ul.pathBrowser li span{
+ul.pathBrowser li span {
   position:relative;
-  top:-2px;
+  top: -4px;
 }
 
 
-ul.pathBrowser li a{
+ul.pathBrowser li a {
   font-size: 14px;
-  text-shadow: white 0px 1px 1px;
-  color: #333BA0;
+  color: #333B80;
   font-weight: bold;
+}
+
+ul.pathBrowser li a:hover {
+  text-decoration: none;
+  color: #337755;
 }
 
 span.infoTitle{
