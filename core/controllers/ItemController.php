@@ -203,7 +203,10 @@ class ItemController extends AppController
       $recentItems = array_reverse($tmp);
       $recentItems[] = $itemDao->getKey();
 
-      setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($recentItems), time() + 60 * 60 * 24 * 30, '/'); //30 days
+      if($this->getEnvironment() != 'testing')
+        {
+        setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($recentItems), time() + 60 * 60 * 24 * 30, '/'); //30 days
+        }
       }
 
     $this->Item->incrementViewCount($itemDao);
@@ -499,10 +502,6 @@ class ItemController extends AppController
   */
   public function checksharedAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
     $this->disableLayout();
     $this->disableView();
     $itemId = $this->_getParam("itemId");

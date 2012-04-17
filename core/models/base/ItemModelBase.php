@@ -393,7 +393,7 @@ abstract class ItemModelBase extends AppModel
       {
       throw new Zend_Exception("Second argument should be an item revision" );
       }
-    if($revisiondao->getItemId() !== $itemdao->getItemId())
+    if($revisiondao->getItemId() != $itemdao->getItemId())
       {
       throw new Zend_Exception("Revision needs to be associated with Item");
       }
