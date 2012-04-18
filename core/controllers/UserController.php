@@ -916,8 +916,6 @@ class UserController extends AppController
   /** Delete a user */
   public function deleteAction()
     {
-    // make sure this gets completed even if user navigates away or it takes a long time
-    set_time_limit(0);
     ignore_user_abort(true);
 
     if(!$this->logged)

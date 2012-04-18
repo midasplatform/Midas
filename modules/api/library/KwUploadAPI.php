@@ -146,7 +146,6 @@ class KwUploadAPI
     // can't do streaming checksum if we have a partial file already.
     $streamChecksum = $uploadOffset == 0;
 
-    set_time_limit(0); // Timeout of the PHP script set to Infinite
     ignore_user_abort(TRUE);
 
     $inputfile = 'php://input'; // Stream (Client -> Server) Mode: Read, Binary

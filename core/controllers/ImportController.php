@@ -98,8 +98,6 @@ class ImportController extends AppController
   /** Import a directory recursively */
   private function _recursiveParseDirectory($path, $currentdir)
     {
-    set_time_limit(0); // No time limit since import can take a long time
-
     $it = new DirectoryIterator($path);
     foreach($it as $fileInfo)
       {
@@ -235,7 +233,6 @@ class ImportController extends AppController
       return false;
       }
 
-    set_time_limit(0); // No time limit since import can take a long time
     $this->view->title = $this->t("Import");
     $this->view->header = $this->t("Import server-side data");
 
