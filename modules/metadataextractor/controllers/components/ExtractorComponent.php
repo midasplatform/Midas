@@ -26,6 +26,10 @@ class Metadataextractor_ExtractorComponent extends AppComponent
     $modelLoader = new MIDAS_ModelLoader;
     $itemRevisionModel = $modelLoader->loadModel("ItemRevision");  
     $revision = $itemRevisionModel->load($revision['itemrevision_id']);
+    if(!$revision)
+      {
+      return;
+      }
     $bitstreams = $revision->getBitstreams();
     if(count($bitstreams) != 1)
       {
