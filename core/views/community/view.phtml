@@ -93,7 +93,15 @@ $strippedDescription = strip_tags($description);
       ?>
     <li><a id="tabSharedLink" href="#tabs-shared"><?php echo $this->t('Shared with members');?></a></li>
     <?php
-      }?>
+      }
+    foreach($this->customAnonymousTabs as $modules)
+      {
+      foreach($modules as $name => $url)
+        {
+        echo "<li><a href='{$url}'>{$name}</a></li>";
+        }
+      }
+     ?>
   </ul>
   <div id="tabs-feed">
      <?

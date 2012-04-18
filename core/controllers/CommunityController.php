@@ -424,6 +424,7 @@ class CommunityController extends AppController
 
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback(
       'CALLBACK_CORE_GET_COMMUNITY_VIEW_EXTRA_HTML', array('community' => $communityDao));
+    $this->view->customAnonymousTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_ANONYMOUS_VIEW_TABS', array('community' => $communityDao));
     } //end index
 
   /** Delete a community*/
