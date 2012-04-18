@@ -10,7 +10,6 @@ class Thumbnailcreator_Upgrade_1_0_2 extends MIDASUpgrade
 
   public function preUpgrade()
     {
-    set_time_limit(0);
     $modelLoader = new MIDAS_ModelLoader();
     $assetstoreModel = $modelLoader->loadModel('Assetstore');
     $this->assetstore = $assetstoreModel->getDefault();

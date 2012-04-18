@@ -133,7 +133,6 @@ class DownloadBitstreamComponent extends AppComponent
           }
         }
       }
-    set_time_limit(0);
     ignore_user_abort(true); //must call this so the script doesn't end as soon as connection closed
 
     //close the database connection so we don't get too many connections problems

@@ -54,7 +54,6 @@ class MIDAS2MigrationComponent extends AppComponent
   /** function to create the items */
   private function _createFolderForItem($collectionId, $parentFolderid)
     {
-    set_time_limit(0);
     $modelLoader = new MIDAS_ModelLoader;
     $Folder = $modelLoader->loadModel("Folder");
     $Bitstream = $modelLoader->loadModel("Bitstream");
@@ -295,7 +294,6 @@ class MIDAS2MigrationComponent extends AppComponent
   /** function to create the collections */
   private function _createFolderForCollection($communityId, $parentFolderid)
     {
-    set_time_limit(0);
     $modelLoader = new MIDAS_ModelLoader;
     $Folder = $modelLoader->loadModel("Folder");
     $User = $modelLoader->loadModel("User");
@@ -382,7 +380,6 @@ class MIDAS2MigrationComponent extends AppComponent
   /** Recursive function to create the communities */
   private function _createFolderForCommunity($communityidMIDAS2, $parentFolderid)
     {
-    set_time_limit(0);
     $modelLoader = new MIDAS_ModelLoader;
     $Folder = $modelLoader->loadModel("Folder");
     $Folderpolicygroup = $modelLoader->loadModel("Folderpolicygroup");
@@ -473,7 +470,6 @@ class MIDAS2MigrationComponent extends AppComponent
   /** */
   function migrate($userid)
     {
-    set_time_limit(0);
     $this->userId = $userid;
 
 

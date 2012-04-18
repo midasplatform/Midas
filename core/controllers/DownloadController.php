@@ -37,7 +37,6 @@ class DownloadController extends AppController
    */
   public function indexAction()
     {
-    set_time_limit(0);
     $this->disableLayout();
     $itemIds = $this->_getParam('items');
     $folderIds = $this->_getParam('folders');

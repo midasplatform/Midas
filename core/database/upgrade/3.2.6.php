@@ -10,7 +10,6 @@ class Upgrade_3_2_6 extends MIDASUpgrade
 
   public function preUpgrade()
     {
-    set_time_limit(0);
     $modelLoader = new MIDAS_ModelLoader();
     $assetstoreModel = $modelLoader->loadModel('Assetstore');
     try
