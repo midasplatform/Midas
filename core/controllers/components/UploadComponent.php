@@ -173,7 +173,7 @@ class UploadComponent extends AppComponent
     $itemModel->addRevision($item, $itemRevisionDao);
 
     // Add bitstreams to the revision
-    Zend_Loader::loadClass("BitstreamDao", BASE_PATH . '/core/models/dao');
+    Zend_Loader::loadClass('BitstreamDao', BASE_PATH . '/core/models/dao');
     $bitstreamDao = new BitstreamDao;
     $bitstreamDao->setName($url);
     $bitstreamDao->setPath($url);
@@ -186,7 +186,7 @@ class UploadComponent extends AppComponent
 
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
 
-    $this->getLogger()->info(__METHOD__." Upload ok ");
+    $this->getLogger()->info('Link item created ('.$item->getName().', id='.$item->getKey().')');
     return $item;
     }//end createUploadedItem
 
@@ -233,7 +233,7 @@ class UploadComponent extends AppComponent
       throw new Zend_Exception('Parent permissions errors');
       }
 
-    Zend_Loader::loadClass("ItemDao", BASE_PATH . '/core/models/dao');
+    Zend_Loader::loadClass('ItemDao', BASE_PATH . '/core/models/dao');
     $item = new ItemDao;
     $item->setName($name);
     $item->setDescription('');
@@ -248,7 +248,7 @@ class UploadComponent extends AppComponent
     $feedpolicyuserModel->createPolicy($userDao, $feed, MIDAS_POLICY_ADMIN);
     $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
 
-    Zend_Loader::loadClass("ItemRevisionDao", BASE_PATH . '/core/models/dao');
+    Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH . '/core/models/dao');
     $itemRevisionDao = new ItemRevisionDao;
     $itemRevisionDao->setChanges('Initial revision');
     $itemRevisionDao->setUser_id($userDao->getKey());
@@ -276,8 +276,8 @@ class UploadComponent extends AppComponent
     $this->uploadBitstream($bitstreamDao, $assetstoreDao, $copy);
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
 
-    $this->getLogger()->info(__METHOD__.' Upload ok :'.$path);
-    Zend_Registry::get('notifier')->notifyEvent("EVENT_CORE_UPLOAD_FILE", array($item->toArray(), $itemRevisionDao->toArray()));
+    $this->getLogger()->info('Item uploaded ('.$item->getName().', id='.$item->getKey().')');
+    Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_UPLOAD_FILE', array($item->toArray(), $itemRevisionDao->toArray()));
     return $item;
     }//end createUploadedItem
 
@@ -372,7 +372,7 @@ class UploadComponent extends AppComponent
 
 
     // Add bitstreams to the revision
-    Zend_Loader::loadClass("BitstreamDao", BASE_PATH . '/core/models/dao');
+    Zend_Loader::loadClass('BitstreamDao', BASE_PATH . '/core/models/dao');
     $bitstreamDao = new BitstreamDao;
     $bitstreamDao->setName($name);
     $bitstreamDao->setPath($path);
@@ -395,8 +395,10 @@ class UploadComponent extends AppComponent
     // now that we have updated the itemRevision, the item may be stale
     $item = $itemModel->load($itemId);
 
-    $this->getLogger()->info(__METHOD__." Upload ok :".$path);
-    Zend_Registry::get('notifier')->notifyEvent("EVENT_CORE_UPLOAD_FILE", array($itemRevisionDao->getItem()->toArray(), $itemRevisionDao->toArray()));
+    $this->getLogger()->info('Revision uploaded: ['.$bitstreamDao->getName().
+                             '] into revision '.$itemRevisionDao->getKey().
+                             ' (item '.$item->getKey().')');
+    Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_UPLOAD_FILE', array($itemRevisionDao->getItem()->toArray(), $itemRevisionDao->toArray()));
 
     return $item;
     }//end
