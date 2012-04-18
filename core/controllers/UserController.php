@@ -820,6 +820,7 @@ class UserController extends AppController
 
     $this->view->disableFeedImages = true;
     $this->view->moduleTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_USER_TABS', array('user' => $userDao));
+    $this->view->moduleActions = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_USER_ACTIONS', array('user' => $userDao));
     }
 
   /** Manage files page action*/

@@ -183,7 +183,15 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       {
       echo '
       <li><a onclick="midas.user.showDeleteDialog('.$this->user->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/> '.$this->t('Delete My Account').'</a></li>';
-      }
+      }       
+    foreach($this->moduleActions as $module)
+      {
+      foreach($module as $name => $urlNimage)
+        {
+        echo ' 
+        <li><a href="'.$urlNimage["url"].'"><img alt="" src="'.$urlNimage["image"].'"/> '.$this->t("$name").'</a></li>' ;
+        }
+      }  
     echo '
     </ul>
   </div>';
