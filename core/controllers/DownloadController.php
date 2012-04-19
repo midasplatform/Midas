@@ -54,9 +54,9 @@ class DownloadController extends AppController
       $item = $revision->getItem();
       if($item == false || !$this->Item->policyCheck($item, $sessionUser))
         {
-        throw new Zend_Exception("Error Policy");
+        throw new Zend_Exception('Permission denied');
         }
-      $this->Component->DownloadBitstream->download($bitstream);
+      $this->Component->DownloadBitstream->download($bitstream, 0, true);
       return;
       }
     if(!isset($itemIds) && !isset($folderIds))
