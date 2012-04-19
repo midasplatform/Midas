@@ -1645,14 +1645,9 @@ class Api_ApiComponent extends AppComponent
       }
     $offset = array_key_exists('offset', $args) ? $args['offset'] : 0;
 
-    if($offset == 0)
-      {
-      $itemModel->incrementDownloadCount($item);
-      }
-
     $componentLoader = new MIDAS_ComponentLoader();
     $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');
-    $downloadComponent->download($bitstream, $offset);
+    $downloadComponent->download($bitstream, $offset, true);
     }
 
   /**
