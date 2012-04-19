@@ -1,5 +1,4 @@
 var midas = midas || {};
-var disableElementSize=true;
 
 $(document).ready(function() {
     
@@ -14,8 +13,9 @@ $(document).ready(function() {
         .filter(function() {
             return this.id.match(/browseTable*/);
         })
-        .treeTable();
-    ;
+        .treeTable({
+            disableElementSize: true
+        });
     
     $("img.tableLoading").hide();
     $("table#browseTable").show();
@@ -62,7 +62,8 @@ $(document).ready(function() {
 
 function initDragAndDrop()
 {
-      $("#browseTable .file:not(.notdraggable), #browseTable .folder:not(.notdraggable)").draggable({
+      $("#browseTable .file, #browseTable .filePublic, #browseTable .filePrivate,"+
+        "#browseTable .folderPublic:not(.notdraggable), #browseTable .folderPrivate:not(.notdraggable)").draggable({
         helper: "clone",
         cursor: "move",
         opacity: .75,
@@ -77,10 +78,10 @@ function initDragAndDrop()
       });
       
       
-      $("#browseTable .folder").each(function() {
+      $("#browseTable .folder, #browseTable .folderPrivate, #browseTable .folderPublic").each(function() {
         // Configure droppable folders/items
         $(this).parents("tr:[policy!=0]").droppable({
-          accept: ".file, .folder",
+          accept: ".file, .filePublic, .filePrivate, .folder, .folderPublic, .folderPrivate",
           drop: function(e, ui) { 
             // Call jQuery treeTable plugin to move the branch
            var elements='';

@@ -66,32 +66,10 @@ class ItempolicygroupModelBase extends AppModel
         $itemModel->save($item);
         return MIDAS_PRIVACY_PUBLIC;
         }
-      else
-        {
-        $shared = true;
-        }
       }
-    foreach($userPolicies as $key => $policy)
-      {
-      if($policy->getPolicy() != MIDAS_POLICY_ADMIN)
-        {
-        $shared = true;
-        break;
-        }
-      }
-
-    if($shared)
-      {
-      $item->setPrivacyStatus(MIDAS_PRIVACY_SHARED);
-      $itemModel->save($item);
-      return MIDAS_PRIVACY_SHARED;
-      }
-    else
-      {
-      $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
-      $itemModel->save($item);
-      return MIDAS_PRIVACY_PRIVATE;
-      }
+    $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
+    $itemModel->save($item);
+    return MIDAS_PRIVACY_PRIVATE;
     }// end computePolicyStatus
 
 } // end class ItempolicygroupModelBase

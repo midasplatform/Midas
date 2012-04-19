@@ -2,8 +2,6 @@ var midas = midas || {};
 midas.community = midas.community || {};
 midas.community.manage = {};
 
-var disableElementSize = true;
-
 midas.community.manage.init = function () {
     var mainDialogContentDiv = $('div.MainDialogContent');
     var createGroupFromDiv = $('div#createGroupFrom');
@@ -39,7 +37,9 @@ midas.community.manage.init = function () {
 
     $('table').filter(function () {
         return this.id.match(/browseTable*/);
-    }).treeTable();
+    }).treeTable({
+        disableElementSize: true
+    });
 
     $("img.tableLoading").hide();
     $("table#browseTable").show();
@@ -112,7 +112,8 @@ $('a.deleteGroupLink').click(function () {
 });
 
 midas.community.manage.initDragAndDrop = function () {
-    $("#browseTable .file, #browseTable .folder:not(.notdraggable)").draggable({
+    $("#browseTable .file, #browseTable .filePublic, #browseTable .filePrivate,"+
+      "#browseTable .folderPublic:not(.notdraggable), #browseTable .folderPrivate:not(.notdraggable)").draggable({
         helper: "clone",
         cursor: "move",
         opacity: .75,
@@ -126,9 +127,9 @@ midas.community.manage.initDragAndDrop = function () {
     });
 
     // Configure droppable rows
-    $("#browseTable .folder").each(function () {
+    $("#browseTable .folder, #browseTable .folderPublic, #browseTable .folderPrivate").each(function() {
         $(this).parents("tr").droppable({
-            accept: ".file, .folder",
+            accept: ".file, .filePublic, .filePrivate, .folder, .folderPublic, .folderPrivate",
             drop: function(e, ui) {
                 // Call jQuery treeTable plugin to move the branch
                 var elements='';
