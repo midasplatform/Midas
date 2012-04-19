@@ -48,6 +48,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
    */
   public function preDispatch()
     {
+    set_time_limit(0);
     // Init the translater
 
     $translate = new Zend_Translate('csv', BASE_PATH.'/core/translation/fr-main.csv', 'en');

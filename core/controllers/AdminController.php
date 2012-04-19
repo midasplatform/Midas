@@ -56,7 +56,6 @@ class AdminController extends AppController
   /** run a task **/
   function taskAction()
     {
-    set_time_limit(0);
     if(!$this->logged)
       {
       $this->haveToBeLogged();
@@ -436,7 +435,6 @@ class AdminController extends AppController
   function removeorphansAction()
     {
     $this->requireAdminPrivileges();
-    set_time_limit(0);
     $this->disableLayout();
     $this->disableView();
     $this->Folder->deleteOrphanedFolders();
