@@ -71,18 +71,15 @@ class MIDAS_GlobalModule extends AppController
   public function preDispatch()
     {
     parent::preDispatch();
-    if(file_exists(BASE_PATH."/modules/".$this->moduleName."/views"))
+    if(file_exists(BASE_PATH.'/modules/'.$this->moduleName.'/views'))
       {
-      $this->view->setScriptPath(BASE_PATH."/modules/".$this->moduleName."/views");
+      $this->view->setScriptPath(BASE_PATH.'/modules/'.$this->moduleName.'/views');
       }
-    elseif(file_exists(BASE_PATH."/privateModules/".$this->moduleName."/views"))
+    elseif(file_exists(BASE_PATH.'/privateModules/'.$this->moduleName.'/views'))
       {
-      $this->view->setScriptPath(BASE_PATH."/privateModules/".$this->moduleName."/views");
+      $this->view->setScriptPath(BASE_PATH.'/privateModules/'.$this->moduleName.'/views');
       }
-    else
-      {
-      throw new Zend_Exception('Unable to find module '.$this->moduleName.' view directory');
-      }
+
     if($this->isTestingEnv())
       {
       $this->disableLayout();
