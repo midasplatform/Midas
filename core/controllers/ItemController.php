@@ -203,7 +203,7 @@ class ItemController extends AppController
       $recentItems = array_reverse($tmp);
       $recentItems[] = $itemDao->getKey();
 
-      if($this->getEnvironment() != 'testing')
+      if(!headers_sent())
         {
         setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($recentItems), time() + 60 * 60 * 24 * 30, '/'); //30 days
         }
