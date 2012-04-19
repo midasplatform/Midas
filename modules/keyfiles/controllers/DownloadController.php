@@ -71,18 +71,25 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
 
     $checksum = $bitstream->getChecksum();
 
-    $this->_emptyOutputBuffer();
-
-    header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename="'.$bitstream->getName().'.md5"');
-    header('Content-Length: '.strlen($checksum));
-    header('Expires: 0');
-    header('Accept-Ranges: bytes');
-    header('Cache-Control: private', false);
-    header('Pragma: private');
+    $download = !headers_sent();
+    if($download)
+      {
+      $this->_emptyOutputBuffer();
+      header('Content-Type: application/octet-stream');
+      header('Content-Disposition: attachment; filename="'.$bitstream->getName().'.md5"');
+      header('Content-Length: '.strlen($checksum));
+      header('Expires: 0');
+      header('Accept-Ranges: bytes');
+      header('Cache-Control: private', false);
+      header('Pragma: private');
+      }
 
     echo $checksum;
-    exit();
+
+    if($download)
+      {
+      exit();
+      }
     }
 
   /**
