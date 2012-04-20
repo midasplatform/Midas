@@ -127,7 +127,7 @@ class ImportControllerTest extends ControllerTestCase
    */
   protected function writeFileWithText($filename, $text)
     {
-    $fh = fopen($filename, 'w') || die("can't open file");
+    $fh = fopen($filename, 'w');
     fwrite($fh, $text);
     fclose($fh);
     }
