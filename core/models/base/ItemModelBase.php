@@ -82,6 +82,10 @@ abstract class ItemModelBase extends AppModel
       {
       $dao->setDateCreation(date('c'));
       }
+    if(!isset($dao->type) || empty($dao->type))
+      {
+      $dao->setType(0);
+      }
     $dao->setDateUpdate(date('c'));
     $dao->setDescription(UtilityComponent::filterHtmlTags($dao->getDescription()));
     parent::save($dao);
