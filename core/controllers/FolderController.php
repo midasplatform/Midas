@@ -230,8 +230,6 @@ class FolderController extends AppController
   /** remove an item from a folder (dialog,ajax only)*/
   public function removeitemAction()
     {
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
     $folder_id = $this->_getParam('folderId');
     $item_id = $this->_getParam('itemId');
     $folder = $this->Folder->load($folder_id);
@@ -262,6 +260,8 @@ class FolderController extends AppController
       throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED);
       }
 
+    $this->disableLayout();
+    $this->disableView();
     $this->Folder->removeItem($folder, $item);
     echo JsonComponent::encode(array(true, $this->t('Changes saved')));
     }// end deleteAction
@@ -281,7 +281,7 @@ class FolderController extends AppController
       }
     elseif($folder === false)
       {
-      throw new Zend_Exception("The folder doesn t exist.");
+      throw new Zend_Exception("The folder doesn't exist.");
       }
     elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
@@ -290,14 +290,14 @@ class FolderController extends AppController
     $this->view->parentFolder = $folder;
     if($this->_request->isPost())
       {
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableView();
       $createFolder = $this->_getParam('createFolder');
       if(isset($createFolder))
         {
         $name = $this->_getParam('name');
         if(!isset($name))
           {
-          echo JsonComponent::encode(array(false, $this->t('Error')));
+          echo JsonComponent::encode(array(false, $this->t('Error: name parameter required')));
           }
         else
           {
