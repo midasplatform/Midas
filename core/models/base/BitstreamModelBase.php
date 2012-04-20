@@ -51,6 +51,10 @@ abstract class BitstreamModelBase extends AppModel
   /** save */
   public function save($dao)
     {
+    if(!isset($dao->date) || empty($dao->date))
+      {
+      $dao->setDate(date('c'));
+      }
     parent::save($dao);
     }
 
