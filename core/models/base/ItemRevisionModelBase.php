@@ -172,6 +172,10 @@ abstract class ItemRevisionModelBase extends AppModel
       {
       $dao->setUuid(uniqid() . md5(mt_rand()));
       }
+    if(!isset($dao->date) || empty($dao->date))
+      {
+      $dao->setDate(date('c'));
+      }
     parent::save($dao);
     }
 
