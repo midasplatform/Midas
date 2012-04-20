@@ -45,6 +45,20 @@ class FolderControllerTest extends ControllerTestCase
     $this->dispatchUri('/folder/'.$folder->getKey(), $userWithPermission);
     $this->assertController('folder');
     $this->assertAction('view');
+
+    // Create a new folder under a private folder
+    $this->resetAll();
+    $this->getRequest()->setMethod('POST');
+    $this->dispatchUri('/folder/createfolder?folderId=1001&createFolder&name=Sub', $userWithPermission);
+
+    $folder = $this->Folder->load(1001);
+    $children = $folder->getFolders();
+    $this->assertEquals(count($children), 1);
+
+    $this->resetAll();
+    $this->dispatchUri('/folder/1001');
+    $this->resetAll();
+    $this->dispatchUri('/folder/'.$children[0]->getKey());
     }
 
   /** Test edit action */
@@ -131,5 +145,67 @@ class FolderControllerTest extends ControllerTestCase
     // We should not be able to delete a community public folder
     $this->resetAll();
     $this->dispatchUri('/folder/delete?folderId=1005', $userWithPermission, true);
+
+    // Create a new folder under a private folder
+    $this->resetAll();
+    $this->getRequest()->setMethod('POST');
+    $this->dispatchUri('/folder/createfolder?folderId=1001&createFolder&name=Sub', $userWithPermission);
+
+    $folder = $this->Folder->load(1001);
+    $children = $folder->getFolders();
+    $this->assertEquals(count($children), 1);
+
+    // Delete the child folder should succeed
+    $this->resetAll();
+    $this->dispatchUri('/folder/delete?folderId='.$children[0]->getKey(), $userWithPermission);
+    $folder = $this->Folder->load(1001);
+    $children = $folder->getFolders();
+    $this->assertEquals(count($children), 0);
+    }
+
+  /** Test the view for createfolder */
+  public function testCreateFolderView()
+    {
+    $usersFile = $this->loadData('User', 'default');
+    $userWithPermission = $this->User->load($usersFile[2]->getKey());
+    $this->dispatchUri('/folder/createfolder?folderId=1001', $userWithPermission);
+    $this->assertController('folder');
+    $this->assertAction('createfolder');
+    $this->assertQuery('form#createFolderForm');
+    $this->assertQuery('input[name="folderId"][value="1001"]');
+    $this->assertQuery('input[type="submit"][name="createFolder"]');
+    $this->assertQueryContentContains('label', 'Name');
+    $this->assertQueryContentContains('label', 'Description');
+    $this->assertQueryContentContains('label', 'Teaser');
+    }
+
+  /** Test removeitem action */
+  public function testRemoveItemAction()
+    {
+    $usersFile = $this->loadData('User', 'default');
+    $userWithPermission = $this->User->load($usersFile[2]->getKey());
+
+    // Anonymous user should not be able to remove an item
+    $this->dispatchUri('/folder/removeitem?itemId=1&folderId=1001', null, true);
+
+    // Should get an exception for no item id/no folder id
+    $this->resetAll();
+    $this->dispatchUri('/folder/removeitem', $userWithPermission, true);
+
+    // Should get an exception for invalid item/folder id
+    $this->resetAll();
+    $this->dispatchUri('/folder/removeitem?itemId=2190381&folderId=91230', $userWithPermission, true);
+
+    // We should be able to remove an item from a folder
+    $folder = $this->Folder->load(1001);
+    $items = $folder->getItems();
+    $count = count($items);
+    $this->assertTrue($count >= 1);
+
+    $this->resetAll();
+    $this->dispatchUri('/folder/removeitem?itemId=1&folderId=1001', $userWithPermission);
+    $folder = $this->Folder->load(1001);
+    $items = $folder->getItems();
+    $this->assertTrue(count($items) === $count - 1);
     }
   }
