@@ -155,9 +155,9 @@ class DownloadController extends AppController
         $this->disableView();
         if($this->_getParam('testingmode') == '1')
           {
-          $this->Component->DownloadComponent->testingmode = true;
+          $this->Component->DownloadBitstream->testingmode = true;
           }
-        $this->Component->DownloadComponent->download($bitstreams[0], 0, true);
+        $this->Component->DownloadBitstream->download($bitstreams[0], 0, true);
         }
       else
         {
