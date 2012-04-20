@@ -24,7 +24,7 @@
  * This controller exists to drive the local import, available from the
  * assetstore pane in the admin panel. This allows a Midas administrator
  * to pull in large amounts of data from a directory local to the server.
- * 
+ *
  * There are a few architectural issues to note:
  *  1) This uses temporary files to mark progress in the local import.
  *  2) This assumes you do not want multiple copies of files an folders
@@ -54,7 +54,7 @@ class ImportController extends AppController
 
   // number of files that have been processed
   private $nfilesprocessed;
-  
+
   // id of the assetstore to import the data
   private $assetstoreid;
 
@@ -151,7 +151,7 @@ class ImportController extends AppController
 
       if($fileInfo->isDir()) // we have a directory
         {
-        
+
         // If the the directory actually doesn't exist at this point,
         // skip it.
         if(!file_exists($fileInfo->getPathName()))
@@ -172,7 +172,7 @@ class ImportController extends AppController
         // Find if the child exists
         $child = $this->Folder->getFolderByName($currentdir,
                                                 $fileInfo->getFilename());
-        
+
         // If the folder does not exist, create one.
         if(!$child)
           {
@@ -180,11 +180,12 @@ class ImportController extends AppController
           $child->setName($fileInfo->getFilename());
           $child->setParentId($currentdir->getFolderId());
           $child->setDateCreation(date('c'));
+          $child->setDescription('');
           $this->Folder->save($child);
           $this->Folderpolicyuser->createPolicy($this->userSession->Dao,
                                                 $child, MIDAS_POLICY_ADMIN);
           }
-        
+
         // Keep decending
         $this->_recursiveParseDirectory($fileInfo->getPathName(), $child);
         }
@@ -218,10 +219,10 @@ class ImportController extends AppController
           $newrevision = false;
           $bitstream = $this->ItemRevision->getBitstreamByName($revision,
                                                                $fileInfo->getFilename());
+          $curMD5 = UtilityComponent::md5file($fileInfo->getPathName());
           $diskFileIsNewer = strtotime($bitstream->getDate()) < filemtime($fileInfo->getPathName());
-          $md5IsDifferent = $bitstream->getChecksum() != 
-            UtilityComponent::md5file($fileInfo->getPathName());
-          if(!$bitstream || ($diskFileIsNewer && md5IsDifferent))
+          $md5IsDifferent = $bitstream->getChecksum() != $curMD5;
+          if(!$bitstream || ($diskFileIsNewer && $md5IsDifferent))
             {
             $newrevision = true;
             }
@@ -267,11 +268,7 @@ class ImportController extends AppController
    */
   function indexAction()
     {
-    if(!$this->logged)
-      {
-      $this->haveToBeLogged();
-      return false;
-      }
+    $this->requireAdminPrivileges();
 
     // No time limit since import can take a long time
     set_time_limit(0);
@@ -290,11 +287,7 @@ class ImportController extends AppController
    */
   function importAction()
     {
-    if(!$this->logged)
-      {
-      echo json_encode(array('error' => $this->t('User should be logged in')));
-      return false;
-      }
+    $this->requireAdminPrivileges();
 
     // This is necessary in order to avoid session lock and being able to run two
     // ajax requests simultaneously
@@ -302,8 +295,8 @@ class ImportController extends AppController
 
     $this->nfilesprocessed = 0;
 
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
 
     $this->assetstores = $this->Assetstore->getAll();
     $form = $this->Form->Import->createImportForm($this->assetstores);
@@ -382,8 +375,9 @@ class ImportController extends AppController
   function getprogressAction()
     {
     session_write_close();
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+
+    $this->disableLayout();
+    $this->disableView();
 
     if(isset($this->_request->id))
       {
@@ -411,8 +405,10 @@ class ImportController extends AppController
   function stopAction()
     {
     session_write_close();
+
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
+
     if(isset($this->_request->id))
       {
       $this->stopfile = $this->getTempDirectory()."/importstop_".$this->_request->id;

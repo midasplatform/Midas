@@ -9,6 +9,7 @@ add_midas_test( ShareController ShareControllerTest.php )
 add_midas_test( SearchController SearchControllerTest.php )
 add_midas_test( UploadDownloadController UploadDownloadControllerTest.php )
 add_midas_test( UserController UserControllerTest.php )
+add_midas_test( ImportController ImportControllerTest.php )
 
 add_subdirectory( components )
 

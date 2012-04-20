@@ -33,13 +33,12 @@ PURPOSE.  See the above copyright notices for more information.
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.css');
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/import/import.index.css');
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/assetstore.add.css');
- 
   
   echo $this->importForm;
 ?>
 
-<div id=progress style="display:none"></div>
-<div id=progress_status></div>
+<div id="progress" style="display:none"></div>
+<div id="progress_status"></div>
 
 <?php echo $this->element('serversidefilechooser', 
                      array('id'=>'inputdirectorybutton',
