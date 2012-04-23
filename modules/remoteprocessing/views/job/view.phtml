@@ -200,13 +200,12 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
         {
         echo "<tr>";
         echo "<td ><a href='".$this->webroot."/item/".$output->getKey()."' elementItem='".$output->getKey()."'>".$output->getName()."</a></td>";
-        $path = $output->getThumbnail();
         echo "<td>";
-        if(!empty($path)&&  file_exists(BASE_PATH.'/'.$path))
+        if($output->getThumbnailId())
           {
-          echo "
-            <img class='infoLogo' alt='' src='{$this->webroot}/{$path}'/>
-            ";
+          echo '<h1>Preview</h1>'.
+              '<img class="infoLogo" alt="" src="'.$this->webroot.'/item/thumbnail?itemId='.
+              $output->getKey().'"/>';
           }
         echo "</td>";
         if(isset($output->metadataValues) )

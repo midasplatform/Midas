@@ -41,6 +41,9 @@ require_once BASE_PATH.'/core/AppForm.php';
 require_once BASE_PATH.'/core/models/AppModel.php';
 require_once BASE_PATH.'/core/models/AppDao.php';
 
+// library
+include_once BASE_PATH.'/library/lessphp/lessc.inc.php';
+
 //include constant files
 include_once BASE_PATH.'/core/constant/global.php';
 include_once BASE_PATH.'/core/constant/error.php';
