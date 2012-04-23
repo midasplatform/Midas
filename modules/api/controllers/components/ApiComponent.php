@@ -1493,6 +1493,32 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Return all items
+   * @param token (Optional) Authentication token
+   * @param name The name of the item to search by
+   * @return A list of all items with the given name
+   */
+  function itemSearchbyname($args)
+    {
+    $this->_validateParams($args, array('name'));
+    $userDao = $this->_getUser($args);
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $items = $itemModel->getByName($args['name']);
+
+    $matchList = array();
+    foreach($items as $item)
+      {
+      if($itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+        {
+        $matchList[] = $item->toArray();
+        }
+      }
+
+    return array('items' => $matchList);
+    }
+
+  /**
    * Return a list of top level folders belonging to the user
    * @param token Authentication token
    * @return List of the user's top level folders
