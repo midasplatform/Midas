@@ -1,5 +1,4 @@
 var currentBrowser = false;
-var inittializedExecutableForm = false;
 var executableValid = false;
 var isExecutableMeta = false;
 var isDefineAjax = true;
@@ -20,7 +19,7 @@ $(document).ready(function(){
     errorSteps:[],    // array of step numbers to highlighting as error steps
     labelNext:'Next', // label for Next button
     labelPrevious:'Previous', // label for Previous button
-    labelFinish:'Create Job',  // label for Finish button
+    labelFinish:'Create',  // label for Finish button
     // Events
     onLeaveStep: onLeaveStepCallback, // triggers when leaving a step
     onShowStep: onShowStepCallback,  // triggers when showing a step
@@ -36,12 +35,192 @@ $(document).ready(function(){
     executableValid = true;
     isExecutableMeta = true;
     }
+
+  $('#addJobLink').click(function(){
+    showCreationJobDialog();
+  })
+
+  initScheduler();
+
 });
+
+function showCreationJobDialog()
+  {
+  var x= $('div.HeaderSearch').position().left+250;
+  var y= 100;
+  $('#selectExecutable').hide();
+  $('#jobNameForm').val('');
+  $('#dialogJobCreation select:first').val('-1');
+  $( "#dialogJobCreation" ).dialog({
+      position: [x,y],
+      width:300,
+			modal: true
+		});
+
+  $('#jobTypeForm').change(function(){
+    $('#selectExecutable').hide();
+    if($(this).val() == 'executable')
+      {
+      $('#selectExecutable').show();
+      $('#selectedExecutable').html('None');
+      $('#selectedExecutableId').val('');
+      $('#browseExecutableFile').click(function(){
+        loadDialog("selectitem_executable","/browse/selectitem");
+        showDialog('Browse');
+        currentBrowser = 'executable';
+      });
+      }
+  });
+
+  $('#createJobLink').unbind('click').click(function(){createJobLink()})
+  }
+
+function createJobLink()
+  {
+  var isValid = true;
+  if($('#jobNameForm').val() == '')
+    {
+    createNotive("Please select a job name.", 4000);
+    isValid = false;
+    }
+  if($('#jobTypeForm').val() == '-1')
+    {
+    createNotive("Please select a job type.", 4000);
+    isValid = false;
+    }
+  if($('#jobTypeForm').val() == 'executable' && !executableValid)
+    {
+    createNotive("The selected item is not a valid executable.", 4000);
+    isValid = false;
+    }
+
+  var nameUsed = false;
+  $( ".executableForm b:first").each(function(){
+    if($('#jobNameForm').val() == $(this).html())
+      {
+      nameUsed = true;
+      }
+  });
+
+  if(nameUsed)
+    {
+    createNotive("This name is already used.", 4000);
+    isValid = false;
+    }
+
+  if(isValid)
+    {
+    $( "#dialogJobCreation" ).dialog('close');
+    $('#jobListing').append('<div class="executableForm" loaded=""></div>');
+    var itemid = $('#selectedExecutableId').val();
+    var name = $('#jobNameForm').val();
+    if($('.executableForm:last').attr('loaded') != itemid)
+      {
+      $('.executableForm:last').attr('loaded',itemid);
+      $('.executableForm:last').load(json.global.webroot+'/remoteprocessing/job/getinitexecutable?scheduled='+json.job.scheduled+'&itemId='+ itemid, new Array(), function(){
+        initExecutableForm();
+        $('.executableForm:last').prepend('<button class="toggleJob"></button><b style="position:relative;top:-6px;left:5px;font-size:14px;">'+name+'</b>');
+        $('.executableForm:last .optionWrapper').each(function(){
+          $(this).attr('id',  $(this).attr('id')+"--"+name);
+        });
+
+        $('.executableForm:last .selectInputFileLink').each(function(){
+          $(this).attr('order',  $(this).attr('order')+"--"+name);
+        });
+
+        $('.executableForm:last .selectOutputFolderLink').each(function(){
+          $(this).attr('order',  $(this).attr('order')+"--"+name);
+        });
+
+        $( ".executableForm:last button.toggleJob" ).button({
+            icons: {
+                primary: "ui-icon-triangle-1-s"
+            },
+            text: false
+        });
+        $( ".executableForm:last button.toggleJob" ).click(function(){
+          if($(this).parent('div').find('.optionWrapper:first').is(':hidden'))
+            {
+            $(this).parent('div').find('.optionWrapper').fadeIn();
+            $(this).find('span').removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');
+            }
+          else
+            {
+            $(this).parent('div').find('.optionWrapper').fadeOut();
+            $(this).find('span').removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
+            }
+        });
+        synchronizeJobs();
+      });
+      }
+    }
+  }
+
+function synchronizeJobs()
+  {
+  var outputsParams = new Array();
+  var i = 0;
+  $( ".executableForm").each(function(){
+    $(this).attr('orderIndice', i);
+    var name = $(this).find('b:first').html();
+    var tmp = new Array();
+    tmp['name'] = name;
+    tmp['indice'] = i;
+    tmp['params'] = new Array();
+    $(this).find('[channel=output]').each(function(){
+       tmp['params'].push($(this).attr('name'));
+    });
+    $(this).find('[channel=ouput]').each(function(){
+       tmp['params'].push($(this).attr('name'));
+    });
+    outputsParams.push(tmp);
+    i++;
+  });
+  $( ".executableForm").each(function(){
+    var name = $(this).find('b:first').html();
+    var indice = $(this).attr('orderIndice');
+    $(this).find('.selectInputFileLink').each(function(){
+       var html = '';
+       var parentDiv = $(this).parent('div');
+       var willBeAdded = false;
+       var selectedValue = parentDiv.find('select').val();
+       parentDiv.find('select').remove()
+       html += '<select style="margin-left:5px;"><option value="-1">-Or select a job output-</option>';
+       $.each(outputsParams, function(key, valueArray) {
+          if(name == valueArray['name']) return;
+          if(indice < valueArray['indice']) return;
+          html += '<optgroup label="Job: '+valueArray['name']+'"></optgroup>';
+          $.each(valueArray['params'], function(key, value) {
+              html += '<option value="'+valueArray['name']+'-'+value+'">'+valueArray['name']+'-'+value+'</option>';
+              willBeAdded = true;
+            });
+        });
+       html += '</select>';
+       if (willBeAdded)
+         {
+         parentDiv.find('a:last').after(html);
+         parentDiv.find('select').val(selectedValue);
+         parentDiv.find('select').unbind('change').change(function(){
+            parentDiv.find('.selectedItem').html('Job Output: '+$(this).val());
+            parentDiv.find('.selectedItem').attr('element', '');
+            parentDiv.find('.selectedFolder').attr('element', '');
+         });
+         }
+    });
+  });
+  }
 
 function onLeaveStepCallback(obj)
   {
-  var step_num= obj.attr('rel'); // get the current step number
-  return validateSteps(step_num); // return false to stay on step and true to continue navigation
+  if(obj.attr('rel') == 3)
+    {
+    return validateSteps(3);
+    }
+  if(obj.attr('rel') == 2)
+    {
+    return validateSteps(2);
+    }
+  return true;
   }
 
 function onFinishCallback()
@@ -55,12 +234,20 @@ function onFinishCallback()
         date = $('#datepicker').val();
         every = $('#intervalSelect').val();
         }
-      req = {'results[]' : results, 'name': $('#jobName').val(), 'date' : date, 'interval': every};
+
+      var objResults = {};
+      $.each(results, function(index, value) {
+        objResults[index] = $.extend({}, results[index]);
+      });
+
+      req = {'results' :  objResults, 'name': $('#jobName').val(), 'date' : date, 'interval': every, 'workflowName': $('#workflowName').val(),
+          'workflowDescription': $('#workflowDescription').val(), 'workflowDomainName': $('#workflowDomainName').val(), 'workflowDomainDescription': $('#workflowDomainDescription').val(),
+          'workflowDomain': $('#workflowDomain').val(), 'workflowUuid': $('#workflowUuid').val()};
       $(this).after('<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Saving..." />')
       $(this).remove();
       $.ajax({
            type: "POST",
-           url: json.global.webroot+"/remoteprocessing/job/init?itemId="+$('#selectedExecutableId').val(),
+           url: json.global.webroot+"/remoteprocessing/job/init",
            data: req ,
            success: function(x){
              window.location.replace($('.webroot').val()+'/remoteprocessing/job/manage')
@@ -69,7 +256,7 @@ function onFinishCallback()
      }
    else
      {
-     midas.createNotice("There are some errors.", 4000);
+     createNotive("There are some errors.", 4000);
      }
   }
 
@@ -77,26 +264,35 @@ function onFinishCallback()
 function validateSteps(stepnumber)
   {
   var isStepValid = true;
-  // validate step 1
+
   if(stepnumber == 2)
     {
-    if($('#selectedExecutableId').val() == '' || executableValid == false || isExecutableMeta == false)
+    if($('#workflowName').val().length == 0)
       {
-      midas.createNotice("Please select an Executable and set its Option information", 4000);
       isStepValid = false;
+      if(required) createNotive('Please set a name', 4000);
       }
     }
-
   if(stepnumber == 3)
     {
     var i = 0;
     results = new Array();
-    if($('#jobName').val() == '')
+    $( ".executableForm").each(function(){
+      var name = $(this).find('b:first').html();
+      var indice = $(this).attr('orderIndice');
+      results[indice] = new Array();
+      results[indice]['name'] = name;
+      results[indice]['options'] = new Array();
+      results[indice]['executable'] = $(this).attr('loaded');
+    });
+
+    if($('.optionWrapper').length == 0)
       {
-      midas.createNotice('Please set the job\'s name.', 4000);
-      isStepValid = false;
+      return true;
       }
+
     $('.optionWrapper').each(function(){
+    var indice = $(this).parents('.executableForm').attr('orderIndice');
     var required = false;
     if($(this).attr('isrequired') == 'true')
       {
@@ -107,36 +303,40 @@ function validateSteps(stepnumber)
       {
       if($(this).find('.nameOutputOption').val() == '' || $(this).find('.selectedFolder').attr('element') == '')
         {
-        if(required) midas.createNotice('Please set '+$(this).attr('name'), 4000);
+        if(required) createNotive('Please set '+$(this).attr('name'), 4000);
         if(required) isStepValid = false;
         }
       else if($(this).find('.nameOutputOption').val().indexOf(".") == -1)
         {
-        if(required) midas.createNotice('Please set an extension in the option '+$(this).attr('name'), 4000);
+        if(required) createNotive('Please set an extension in the option '+$(this).attr('name'), 4000);
         if(required) isStepValid = false;
         }
       else
         {
-        results[i] = $(this).find('.selectedFolder').attr('element')+';;'+$(this).find('.nameOutputOption').val();
+        results[indice]['options'].push($(this).find('.selectedFolder').attr('element')+';;'+$(this).find('.nameOutputOption').val());
         }
       }
     else if($(this).find('.selectInputFileLink').length > 0)
       {
-      if($(this).find('.selectedItem').attr('element') == '' && $(this).find('.selectedFolderContent').attr('element') == '')
+      if(($(this).find('select').length == 0 || $(this).find('select').val() == -1) && $(this).find('.selectedItem').attr('element') == '' && $(this).find('.selectedFolderContent').attr('element') == '')
         {
-        if(required) midas.createNotice('Please set '+$(this).attr('name'), 4000);
+        if(required) createNotive('Please set '+$(this).attr('name'), 4000);
         if(required) isStepValid = false;
+        }
+      else if($(this).find('select').length != 0 && $(this).find('select').val() != -1 )
+        {
+          results[indice]['options'].push('jobOuput;;'+$(this).find('select').val());
         }
       else
         {
         var folderElement = $(this).find('.selectedFolderContent').attr('element');
         if(folderElement != '')
           {
-          results[i] = 'folder'+folderElement;
+          results[indice]['options'].push('folder'+folderElement);
           }
         else
           {
-          results[i] = $(this).find('.selectedItem').attr('element');
+          results[indice]['options'].push($(this).find('.selectedItem').attr('element'));
           }
         }
       }
@@ -144,12 +344,12 @@ function validateSteps(stepnumber)
       {
       if($(this).find('.valueInputOption').val() == '')
         {
-        if(required) midas.createNotice('Please set '+$(this).attr('name'), 4000);
+        if(required) createNotive('Please set '+$(this).attr('name'), 4000);
         if(required) isStepValid = false;
         }
       else
         {
-        results[i] = $(this).find('.valueInputOption').val();
+        results[indice]['options'].push($(this).find('.valueInputOption').val());
         }
       }
 
@@ -170,35 +370,14 @@ function validateSteps(stepnumber)
 
 function validateAllSteps()
   {
-  return validateSteps(1) && validateSteps(2) && validateSteps(3) && validateSteps(4);
+  return validateSteps(1) && validateSteps(2) && validateSteps(3);
   }
 
 function onShowStepCallback(obj)
   {
-  var step_num = obj.attr('rel'); // get the current step number
-  if(step_num == 2)
-    {
-    $('#browseExecutableFile').click(function(){
-      midas.loadDialog("selectitem_executable","/browse/selectitem");
-      midas.showDialog('Browse');
-      currentBrowser = 'executable';
-    });
-    loadRecentUpload();
-    }
-  if(step_num == 3)
-    {
-    var itemid = $('#selectedExecutableId').val();
-    if($('#executableForm').attr('loaded') != itemid)
-      {
-      $('#executableForm').attr('loaded',itemid);
-      $('#executableForm').load(json.global.webroot+'/remoteprocessing/job/getinitexecutable?scheduled='+json.job.scheduled+'&itemId='+ itemid, new Array(), function(){
-        initExecutableForm();
-      });
-
-      }
-    }
   }
 
+/* not currently used*/
 function loadRecentUpload()
   {
   $.getJSON(json.global.webroot+'/remoteprocessing/job/getentry?type=getRecentExecutable', function(data) {
@@ -219,7 +398,7 @@ function loadRecentUpload()
       $('.recentUploadItemLi').click(function(){
         $('#selectedExecutable').html($(this).find('a').html());
         $('#selectedExecutableId').val($(this).attr('element'));
-        midas.createNotice("Please set the executable meta informaiton.", 4000);
+        createNotive("Please set the executable meta informaiton.", 4000);
         $('#metaPageBlock').load(json.global.webroot+'/remoteprocessing/executable/define?itemId='+$(this).attr('element'));
         $('#metaWrapper').show();
         isExecutableMeta = false;
@@ -229,10 +408,8 @@ function loadRecentUpload()
     });
   }
 
-
-function initExecutableForm()
-{
-  inittializedExecutableForm = true;
+function initScheduler()
+  {
   $( "#datepicker" ).datetimepicker();
   $('#ui-datepicker-div').hide();
   $('#checkboxSchedule').change(function(){
@@ -245,22 +422,25 @@ function initExecutableForm()
        $('#schedulerWrapper').hide();
       }
   })
+  }
 
+function initExecutableForm()
+{
   $('.selectInputFileLink').click(function(){
-    midas.loadDialog("selectitem_"+$(this).attr('order'),"/browse/selectitem");
-    midas.showDialog('Browse');
+    loadDialog("selectitem_"+$(this).attr('order'),"/browse/selectitem");
+    showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
 
   $('.selectOutputFolderLink').click(function(){
-    midas.loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=write");
-    midas.showDialog('Browse');
+    loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=write");
+    showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
 
   $('.selectInputFolderLink').click(function(){
-    midas.loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=read");
-    midas.showDialog('Browse');
+    loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=read");
+    showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
   $('[qtip]').qtip({
@@ -290,16 +470,16 @@ function itemSelectionCallback(name, id)
             else
               {
               isExecutableMeta = false;
-              midas.createNotice("Please set the executable meta informaiton.", 4000);
-              midas.loadDialog("meta_"+id, '/remoteprocessing/executable/define?itemId='+id);
-              midas.showBigDialog("MetaInformation", false);
+              createNotive("Please set the executable meta informaiton.", 4000);
+              loadDialog("meta_"+id, '/remoteprocessing/executable/define?itemId='+id);
+              showBigDialog("MetaInformation", false);
               }
           });
         }
         else
         {
         executableValid = false;
-        midas.createNotice("The selected item is not a valid executable", 4000);
+        createNotive("The selected item is not a valid executable", 4000);
         }
       });
 

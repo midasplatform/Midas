@@ -23,7 +23,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
   public $_models = array('Item', 'Bitstream', 'ItemRevision', 'Assetstore', 'Folder');
   public $_components = array('Upload');
   public $_moduleComponents = array('Executable', 'Job');
-  public $_moduleModels = array('Job');
+  public $_moduleModels = array('Job', 'Workflow', 'Workflowdomain', 'WorkflowdomainPolicyuser');
 
   /** manage jobs */
   function manageAction()
@@ -33,18 +33,19 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       $this->haveToBeLogged();
       return false;
       }
-    $this->view->header = $this->t("Manage Your Jobs");
+    $this->view->header = $this->t("Manage Your Workflows");
 
     $modelLoad = new MIDAS_ModelLoader();
     $schedulerJobModel = $modelLoad->loadModel('Job', 'scheduler');
     $this->view->scheduledJobs = $schedulerJobModel->getJobsByTaskAndCreator('TASK_REMOTEPROCESSING_ADD_JOB', $this->userSession->Dao);
     $this->view->relatedJobs = $this->Remoteprocessing_Job->getByUser($this->userSession->Dao, 10);
+    $this->view->domains = $this->Remoteprocessing_Workflowdomain->getUserDomains($this->userSession->Dao);
     }
 
   /** init a job*/
   function initAction()
     {
-    $this->view->header = $this->t("Create Job Wizard");
+    $this->view->header = $this->t("Workflow Wizard");
     if(!$this->logged)
       {
       $this->haveToBeLogged();
@@ -54,7 +55,6 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     if(isset($scheduled))
       {
       $scheduled = true;
-      $this->view->header = $this->t("Schedule Job Wizard");
       }
     else
       {
@@ -72,117 +72,186 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       $this->view->itemDao = $itemDao;
       }
 
+    $this->view->domains = $this->Remoteprocessing_Workflowdomain->getUserDomains($this->userSession->Dao, MIDAS_POLICY_WRITE);
+
     $this->view->json['job']['scheduled'] = $scheduled;
     $this->view->scheduled = $scheduled;
     if($this->_request->isPost())
       {
-      $itemId = $this->_getParam("itemId");
-      if(!isset($itemId) || !is_numeric($itemId))
+      $jobResults = $this->_getParam("results");
+      $workflowDomainId = $this->_getParam("workflowName");
+      if(isset($workflowDomainId))
         {
-        throw new Zend_Exception("itemId  should be a number");
+        $workflowDomain = $this->Remoteprocessing_Workflowdomain->load($this->_getParam("workflowDomain"));
         }
 
-      $itemDao = $this->Item->load($itemId);
-      if($itemDao === false)
+      if(!isset($workflowDomain) || $workflowDomain == false)
         {
-        throw new Zend_Exception("This item doesn't exist.");
+        require_once BASE_PATH.'/modules/remoteprocessing/models/dao/WorkflowdomainDao.php';
+        $workflowDomain = new Remoteprocessing_WorkflowdomainDao();
+        $workflowDomain->setName($this->_getParam("workflowDomainName"));
+        $workflowDomain->setDescription($this->_getParam("workflowDomainDescription"));
+        $this->Remoteprocessing_Workflowdomain->save($workflowDomain);
+        $this->Remoteprocessing_WorkflowdomainPolicyuser->createPolicy($this->userSession->Dao, $workflowDomain, MIDAS_POLICY_ADMIN);
         }
-      if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
-        {
-        throw new Zend_Exception("Problem policies.");
-        }
+
+      require_once BASE_PATH.'/modules/remoteprocessing/models/dao/WorkflowDao.php';
+      $workflow = new Remoteprocessing_WorkflowDao();
+      $workflow->setName($this->_getParam("workflowName"));
+      $workflow->setDescription($this->_getParam("workflowDescription"));
+      $workflow->setUuid($this->_getParam("workflowUuid"));
+      $workflow->setWorkflowdomainId($workflowDomain->getKey());
+      $this->Remoteprocessing_Workflow->save($workflow);
+      return;
 
       $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
       $metaContent = new SimpleXMLElement(file_get_contents($metaFile->getFullPath()));
       $this->disableLayout();
       $this->disableView();
 
-      // transform post results to a command array using the executable definition file
-      $cmdOptions = array();
-      $parametersList = array();
-      $i = 0;
-      foreach($metaContent->option as $option)
+      $jobCommands = array();
+
+      foreach($jobResults as $jobResult)
         {
-        if(!isset($_POST['results'][$i]))
+        $jobCommand = array();
+        $itemDao = $this->Item->load($jobResult['executable']);
+        if($itemDao === false)
           {
-          continue;
+          throw new Zend_Exception("This item doesn't exist.");
+          }
+        if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+          {
+          throw new Zend_Exception("Problem policies.");
           }
 
-        $result = $_POST['results'][$i];
-        if($option->channel == 'ouput')
+        $jobCommand['parents'] = array();
+        $jobCommand['executable'] = $itemDao->getKey();
+        $jobCommand['job_name'] = $jobResult['name'];
+        $jobCommand['creator_id'] = $this->userSession->Dao->getKey();
+        $jobCommand['type'] = MIDAS_REMOTEPROCESSING_TYPE_EXECUTABLE;
+        $ext = end(explode('.', $itemDao->getName()));
+        if($ext == 'exe')
           {
-          $resultArray = explode(";;", $result);
-          $folder = $this->Folder->load($resultArray[0]);
-          if($folder == false || !$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
-            {
-            throw new Zend_Exception('Unable to find folder or permission error');
-            }
-          $cmdOptions[$i] = array('type' => 'output', 'folderId' => $resultArray[0], 'fileName' => $resultArray[1]);
-          }
-        else if($option->field->external == 1)
-          {
-          $parametersList[$i] = (string)$option->name;
-          if(strpos($result, 'folder') !== false)
-            {
-            $folder = $this->Folder->load(str_replace('folder', '', $result));
-            if($folder == false || !$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
-              {
-              throw new Zend_Exception('Unable to find folder or permission error');
-              }
-            $items = $folder->getItems();
-            $cmdOptions[$i] = array('type' => 'input', 'item' => array(), 'folder' => $folder->getKey());
-            }
-          else
-            {
-            $item = $this->Item->load($result);
-            if($item == false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
-              {
-              throw new Zend_Exception('Unable to find item');
-              }
-            $cmdOptions[$i] = array('type' => 'input', 'item' => array($item));
-            }
+          $jobCommand['os'] = MIDAS_REMOTEPROCESSING_OS_WINDOWS;
           }
         else
           {
-          $parametersList[$i] = (string)$option->name;
-          $cmdOptions[$i] = array('type' => 'param', 'values' => array());
-          if(strpos($result, ';') !== false)
+          $jobCommand['os'] = MIDAS_REMOTEPROCESSING_OS_LINUX;
+          }
+
+        // transform post results to a command array using the executable definition file
+        $cmdOptions = array();
+        $parametersList = array();
+        $i = 0;
+        foreach($metaContent->option as $option)
+          {
+          if(!isset($jobResult['options'][$i]))
             {
-            $cmdOptions[$i]['values'] = explode(';', $result);
+            continue;
             }
-          elseif(strpos($result, '-') !== false && strpos($result, '-') !== 0)
+
+          $result = $jobResult['options'][$i];
+          if($option->channel == 'ouput')
             {
-            $tmpArray = explode('(', $result);
-            if(count($tmpArray) == 1)
+            $resultArray = explode(";;", $result);
+            $folder = $this->Folder->load($resultArray[0]);
+            if($folder == false || !$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
               {
-              $step = 1;
+              throw new Zend_Exception('Unable to find folder or permission error');
+              }
+            $cmdOptions[$i] = array('type' => 'output', 'folderId' => $resultArray[0], 'fileName' => $resultArray[1]);
+            }
+          else if($option->field->external == 1)
+            {
+            $parametersList[$i] = (string)$option->name;
+            if(strpos($result, 'folder') !== false)
+              {
+              $folder = $this->Folder->load(str_replace('folder', '', $result));
+              if($folder == false || !$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
+                {
+                throw new Zend_Exception('Unable to find folder or permission error');
+                }
+              $items = $folder->getItems();
+              $cmdOptions[$i] = array('type' => 'input', 'item' => array(), 'folder' => $folder->getKey());
+              }
+            else if(is_numeric($result))
+              {
+              $item = $this->Item->load($result);
+              if($item == false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+                {
+                throw new Zend_Exception('Unable to find item');
+                }
+              $cmdOptions[$i] = array('type' => 'input', 'item' => array($item));
               }
             else
               {
-              $step = substr($tmpArray[1], 0, strlen($tmpArray[1])-1);
-              }
-
-            $tmpArray = explode('-', $tmpArray[0]);
-            $start = $tmpArray[0];
-            $end = $tmpArray[1];
-            for($j = $start;$j <= $end;$j = $j + $step)
-              {
-              $cmdOptions[$i]['values'][] = $j;
+              $result = str_replace("jobOuput;;", "", $result);
+              $resultArray = explode("-", $result);
+              $cmdOptions[$i] = array('type' => 'input', 'item' => array(), 'job' => $resultArray[0], 'parameter' => $resultArray[1]);
               }
             }
           else
             {
-            $cmdOptions[$i]['values'][] = $result;
-            }
+            $parametersList[$i] = (string)$option->name;
+            $cmdOptions[$i] = array('type' => 'param', 'values' => array());
+            if(strpos($result, ';') !== false)
+              {
+              $cmdOptions[$i]['values'] = explode(';', $result);
+              }
+            elseif(strpos($result, '-') !== false && strpos($result, '-') !== 0)
+              {
+              $tmpArray = explode('(', $result);
+              if(count($tmpArray) == 1)
+                {
+                $step = 1;
+                }
+              else
+                {
+                $step = substr($tmpArray[1], 0, strlen($tmpArray[1])-1);
+                }
 
-          if(!empty($option->tag))
-            {
-            $cmdOptions[$i]['tag'] = (string)$option->tag;
+              $tmpArray = explode('-', $tmpArray[0]);
+              $start = $tmpArray[0];
+              $end = $tmpArray[1];
+              for($j = $start;$j <= $end;$j = $j + $step)
+                {
+                $cmdOptions[$i]['values'][] = $j;
+                }
+              }
+            else
+              {
+              $cmdOptions[$i]['values'][] = $result;
+              }
+
+            if(!empty($option->tag))
+              {
+              $cmdOptions[$i]['tag'] = (string)$option->tag;
+              }
             }
+          $i++;
           }
-        $i++;
+        $jobCommand['parametersList'] = $parametersList;
+        $jobCommand['cmdOptions'] = $cmdOptions;
+        $jobCommands[] = $jobCommand;
         }
 
+      // init parents
+      foreach($jobCommands as $key => $jobCommand)
+        {
+        foreach($jobCommand['cmdOptions'] as $option)
+          {
+          if(isset($option['job']))
+            {
+            foreach($jobCommands as $key2 => $jc)
+              {
+              if($jc['job_name'] == $option['job'])
+                {
+                $jobCommands[$key]['parents'][] = $key2;
+                }
+              }
+            }
+          }
+        }
 
       $fire_time = false;
       $time_interval = false;
@@ -194,8 +263,15 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           $time_interval = $_POST['interval'];
           }
         }
-
-      $this->ModuleComponent->Executable->initAndSchedule($this->userSession->Dao, $itemDao, $_POST['name'], $cmdOptions, $parametersList, $fire_time, $time_interval);
+      if($time_interval === false)
+        {
+        $only_once = true;
+        }
+      else
+        {
+        $only_once = false;
+        }
+      $this->ModuleComponent->Job->scheduleJob($jobCommands, '', MIDAS_REMOTEPROCESSING_OS_LINUX, $fire_time, $time_interval, $only_once);
       }
     }
 
@@ -254,7 +330,15 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       throw new Zend_Exception("Unable to find job.");
       }
 
+    if(!$this->Remoteprocessing_Job->policyCheck($jobDao, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      throw new Zend_Exception("Permissions error.");
+      }
+
     $this->view->job = $jobDao;
+    $workflow = $jobDao->getWorkflows();
+    $this->view->workflow = $workflow[0];
+    $this->view->domain = $workflow[0]->getDomain();
     $this->view->header = $this->t("Job: ".$jobDao->getName());
     $items = $jobDao->getItems();
     $inputs = array();
@@ -286,11 +370,16 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 
         foreach($metadata as $m)
           {
-          if($m->getElement() == 'parameter' && !in_array($m->getQualifier(), $parametersList))
+          if($m->getElement() == 'parameter')
             {
             $parametersList[$m->getQualifier()] = $m->getQualifier();
+            $item->metadataValues[$m->getQualifier()] = $m->getValue();
             }
-          $item->metadataParameters[$m->getQualifier()] = $m->getValue();
+          elseif($m->getElement() == 'fileInput')
+            {
+            $parametersList[$m->getQualifier()] = $m->getQualifier();
+            $item->metadataValues[$m->getQualifier()] = $this->Item->getByUuid($m->getValue());
+            }
           }
 
         $outputs[] = $item;
@@ -308,11 +397,12 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           }
         }
       }
-
     $this->view->outputs = $outputs;
     $this->view->log = $log;
     $this->view->results =  $this->ModuleComponent->Job->convertXmlREsults($log);
     $this->view->inputs = $inputs;
+    list($this->view->inputs, $this->view->inputsValues) = $this->ModuleComponent->Job->getInputParams($this->view->results);
+    list($this->view->metrics, $this->view->metricsValues) = $this->ModuleComponent->Job->getOutputParams($this->view->results);
     $this->view->executable = $executable;
     $this->view->parameters = $parametersList;
     }

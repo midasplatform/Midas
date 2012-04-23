@@ -43,7 +43,34 @@ class SearchComponent extends AppComponent
     Zend_Search_Lucene_Analysis_Analyzer::setDefault(
           new Zend_Search_Lucene_Analysis_Analyzer_Common_TextNum_CaseInsensitive());
     return Zend_Search_Lucene::open($path);
-    }
+    }    
+    
+  /** search items */
+  public function searchItems($userDao, $search, $folder = false, $order = 'view')
+    {
+    $modelLoad = new MIDAS_ModelLoader();
+    $itemModel = $modelLoad->loadModel('Item');
+    $folderModel = $modelLoad->loadModel('Folder');
+    $ItemsDao = $itemModel->getItemsFromSearch($search, $userDao, 200, false, $order);
+
+    if(is_string($folder))
+      {
+      $folder = $folderModel->getByUuid($folder);
+      }
+    if($folder != false)
+      {
+      $ItemsDao = $folderModel->filterItemsByFolder($ItemsDao, $folder);
+      }
+
+    $return = array();
+    $return['nitems'] = count($ItemsDao);
+    $return['nfolders'] = 0;
+    $return['ncommunities'] = 0;
+    $return['nusers'] = 0;
+    $return['results'] = $this->_formatResults($order, $ItemsDao, array(), array(), array());
+
+    return $return;
+    }       
 
   /** search all the results */
   public function searchAll($userDao, $search, $order)

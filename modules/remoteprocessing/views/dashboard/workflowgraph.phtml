@@ -1,0 +1,27 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<link type="text/css" rel="stylesheet" href="/Midas/Midas3/core/public/css/layout/jquery-ui.css,form.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.jsdot.editor.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.jsdot.shapes.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<h4>Workflow graph:</h4>
+<div id="graph" style="width:800px; height:450px;"></div>
+
+
+<script type="text/javascript" src="<?php echo $this->webroot?>/core/public/js/layout/jquery.js,jquery-ui.js"></script>
+<script type="text/javascript" src="<?php echo $this->webroot?>/modules/remoteprocessing/public/js/dashboard/dashboard.workflowgraph.js"></script>
+<script type="text/javascript" src="<?php echo $this->webroot?>/core/public/js/common/common.browser.js"></script>
+<script type="text/javascript" src="<?php echo $this->webroot?>/core/public/js/jquery/jquery.jsdot.js"></script>
+<div style="display: none;" class="jsonGraph"><?php echo $this->jsonGraph?></div>
+<div style="display: none;" class="jsonContent">{"global":{"webroot":"\/Midas\/Midas3"}}</div>

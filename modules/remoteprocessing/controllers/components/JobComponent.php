@@ -48,25 +48,189 @@ class Remoteprocessing_JobComponent extends AppComponent
 
     foreach($inputArray as $input)
       {
-      if(!$input instanceof ItemDao)
-        {
-        throw new Zend_Exception("Error params. Shoud be an itemdao");
-        }
-      $return['input'][] = $input->getKey();
+      $return['input'][] = $input;
       }
 
     foreach($ouputArray as $output)
       {
-      if(!is_string($output))
-        {
-        throw new Zend_Exception("Error params. Shoud be a string");
-        }
       $return['output'][] = $output;
       }
 
     return $return;
     }
 
+  /** parse parameters and create job tree*/
+  public function processJobParameters($params)
+    {
+    // convert array keys to uuid
+    $newParams = array();
+    foreach($params['params'] as $key => $jobParam)
+      {
+      $params['params'][$key]['uuid'] = uniqid() . md5(mt_rand());
+      }
+
+    foreach($params['params'] as $key => $jobParam)
+      {
+      $tmpUuid = $jobParam['uuid'];
+      $newParams[$tmpUuid] = $jobParam;
+      $newParams[$tmpUuid]['parents'] = array();
+      if(isset($jobParam['parents']))
+        {
+        foreach($jobParam['parents'] as $parent)
+          {
+          $newParams[$tmpUuid]['parents'][] = $params['params'][$parent]['uuid'];
+          }
+        }
+      }
+
+    // create tree
+    $tree = $this->_createJobTree($newParams);
+
+    // spicific tree modification
+    $componentLoader = new MIDAS_ComponentLoader();
+    $executableComponent = $componentLoader->loadComponent('Executable', 'remoteprocessing');
+    $internalComponent = $componentLoader->loadComponent('Internal', 'remoteprocessing');
+    $userComponent = $componentLoader->loadComponent('User', 'remoteprocessing');
+
+    list($newParams, $tree) = $executableComponent->treeProcessing($newParams, $tree);
+    list($newParams, $tree) = $internalComponent->treeProcessing($newParams, $tree);
+    list($newParams, $tree) = $userComponent->treeProcessing($newParams, $tree);
+    // create and save job workflow
+    $this->_createWorkflow($newParams, $tree);
+    }
+
+  /** create a tree of the job's workflow */
+  private function _createJobTree($params, $parent = null)
+    {
+    $tree = array();
+    foreach($params as $key => $jobParam)
+      {
+      if((empty($jobParam['parents']) && $parent == null) || (!empty($jobParam['parents']) && in_array($parent, $jobParam['parents'])))
+        {
+        $tree[$jobParam['uuid']] = $this->_createJobTree($params, $key);
+        }
+      }
+    return $tree;
+    }
+
+  /** create and save workflow */
+  private function _createWorkflow($params, $tree, $parent = null)
+    {
+    foreach($tree as $uuid => $children)
+      {
+      $jobParam = $params[$uuid];
+      $parents = array();
+      if($parent != null)
+        {
+        $parents[] = $parent;
+        }
+
+      $script = (isset($jobParam['script'])) ? $jobParam['script'] : "";
+      $os = (isset($jobParam['os'])) ? $jobParam['os'] : "linux";
+      $type = (isset($jobParam['type'])) ? $jobParam['type'] : MIDAS_REMOTEPROCESSING_TYPE_REMOTE_PYTHON;
+      $condition = (isset($jobParam['condition'])) ? $jobParam['condition'] : "";
+      $expiration = (isset($jobParam['expiration'])) ? $jobParam['expiration'] : null;
+      $uuid = (isset($jobParam['uuid'])) ? $jobParam['uuid'] : null;
+
+      $job = $this->createJob($jobParam, $parents, $script, $type, $os, $condition, $expiration, $uuid);
+      $this->_createWorkflow($params, $children, $job);
+      }
+    }
+
+  /** create a job */
+  public function createJob($params = array(), $parents = array(), $script = '', $type = MIDAS_REMOTEPROCESSING_TYPE_REMOTE_PYTHON, $os = "linux", $condition = "", $expiration = null, $uuid = null )
+    {
+    if($uuid == null)
+      {
+      $uuid = uniqid() . md5(mt_rand());
+      $params['uuid'] = $uuid;
+      }
+    $modelLoader = new MIDAS_ModelLoader;
+    $jobModel = $modelLoader->loadModel("Job", "remoteprocessing");
+    $job = $jobModel->getByUuid($uuid);
+    if($job == null)
+      {
+      $itemModel = $modelLoader->loadModel("Item");
+      require_once BASE_PATH.'/modules/remoteprocessing/models/dao/JobDao.php';
+      $job = new Remoteprocessing_JobDao();
+      $job->setScript($script);
+      if($uuid != null)
+        {
+        $job->setUuid($uuid);
+        }
+      else
+        {
+        $job->setUuid(uniqid() . md5(mt_rand()));
+        }
+      unset($params['script']);
+      $job->setOs($os);
+      unset($params['os']);
+      $job->setType($type);
+      unset($params['type']);
+      $job->setCondition($condition);
+      unset($params['condition']);
+      if(isset($expiration) && $expiration != null)
+        {
+        $job->setExpirationDate($expiration);
+        }
+      else
+        {
+        $date = new Zend_Date();
+        $date->add('5', Zend_Date::HOUR);
+        $job->setExpirationDate($date->toString('c'));
+        }
+
+      if(isset($params['creator_id']))
+        {
+        $job->setCreatorId($params['creator_id']);
+        }
+      if(isset($params['job_name']))
+        {
+        $job->setName($params['job_name']);
+        }
+
+      $job->setParams(JsonComponent::encode($params));
+      $jobModel->save($job);
+
+      if(!empty($params['input']))
+        {
+        foreach($params['input'] as $itemId)
+          {
+          if($itemId instanceof ItemDao)
+            {
+            $item = $itemId;
+            }
+          elseif(is_numeric($itemId))
+            {
+            $item = $itemModel->load($itemId);
+            }
+          else
+            {
+            continue;
+            }
+
+          if($item != false && $item->getKey() != $params['executable'])
+            {
+            $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT);
+            }
+          elseif($item != false)
+            {
+            $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_EXECUTABLE);
+            }
+          }
+        }
+      }
+
+    foreach($parents as $parent)
+      {
+      if(!$parent instanceof Remoteprocessing_JobDao)
+        {
+        throw new Zend_Exception("Should be a job.");
+        }
+      $jobModel->addParent($job, $parent);
+      }
+    return $job;
+    }
 
   /** init Job*/
   public function scheduleJob($parameters, $script, $os = MIDAS_REMOTEPROCESSING_OS_WINDOWS, $fire_time = false, $time_interval = false, $only_once = true, $condition = '')
@@ -99,117 +263,366 @@ class Remoteprocessing_JobComponent extends AppComponent
       }
     }
 
-  /** compute logs (return an xml file) */
-  public function computeLogs($job, $logs, $params)
+  /** createFormatedXml*/
+  public function createFormatedXmlFromArray($array)
     {
-    unset($params['log']);
-    $componentLoader = new MIDAS_ComponentLoader();
-    $utilityComponent = $componentLoader->loadComponent('Utility');
-    $logs = str_replace("\r\n", "", $logs);
-    $logs = str_replace("\r\r", "\r", $logs);
-    $xml = "<?xml version='1.0'?>\n";
-    $xml .= "<Job id='".$job->getKey()."' name='".$job->getName()."'>\n";
-    $xml .= "<JobParameters>\n";
-    $xml .= "<![CDATA[".JsonComponent::encode($params)."]]>";
-    $xml .= "</JobParameters>\n";
-    $logs = explode("-COMMAND\r", $logs);
-    if(count($logs) < 2)
+    $string = "<?xml version='1.0'?>\n";
+    $string .= "<Job uuid='".$array['jobUuid']."' creator_id='".$array['creatorId']."' workflow_uuid='".$array['workflowUuid']."' >\n";
+    $string .= "<Name>".$array['name']."</Name>\n";
+    $string .= "<StartDate>".$array['job']->getStartDate()."</StartDate>\n";
+    $string .= "<Parents>\n";
+    foreach($array['parents'] as $parent)
       {
-      return "";
+      $string .= "<Parents>".$parent['uuid']."</Parents>\n";
       }
-    unset($logs[0]);
-    foreach($logs as $log)
+    $string .= "</Parents>\n";
+    $string .= "<JobParameters>".JsonComponent::encode($array['params'])."</JobParameters>\n";
+    $string .= "<MidasOutputFolder>".$array['outputFolder']['uuid']."</MidasOutputFolder>\n";
+    $string .= "<Tasks>\n";
+    foreach($array['tasks'] as $task)
       {
-      $failed = false;
-      $tmp = explode("-EXECUTION TIME\r", $log);
-      $command = $tmp[0];
-      $tmp = explode("-STDOUT\r", $tmp[1]);
-      $executionTime = $tmp[0];
-      $tmp = explode("-STDERR\r", $tmp[1]);
-      $stdout = $tmp[0];
-      $stderr = $tmp[1];
-
-      $search = array(' ', "\t", "\n", "\r");
-      $cleanedStderr = str_replace($search, '', $stderr);
-      if(!empty($cleanedStderr))
+      if($task['status'] == 'passed')
         {
-        $failed = true;
-        }
-      $lowerout = strtolower($stdout);
-      if(strpos($lowerout, "error") !== false)
-        {
-        $failed = true;
-        }
-
-      $xml .= "<Process status=";
-      if($failed)
-        {
-        $xml .= "'failed'";
+        $string .= "<Task status = 'passed'>\n";
         }
       else
         {
-        $xml .= "'passed'";
+        $string .= "<Task status = 'failed'>\n";
         }
-      $xml .= ">\n";
-      $xml .= "<Command>\n";
-      $xml .= "<![CDATA[".$command."]]>";
-      $xml .= "</Command>\n";
-      $xml .= "<ExecutionTime>\n";
-      $xml .= "<![CDATA[".$executionTime."]]>";
-      $xml .= "</ExecutionTime>\n";
-      $xml .= "<Output>\n";
-      $xml .= "<![CDATA[".$stdout."]]>";
-      $xml .= "</Output>\n";
-      $xml .= "<Error>\n";
-      $xml .= "<![CDATA[".$stderr."]]>";
-      $xml .= "</Error>\n";
-      $xml .= "</Process>";
+      $string .= "<Command><![CDATA[".$task['command']."]]></Command>\n";
+      $string .= "<ExecutionTime><![CDATA[".$task['time']."]]></ExecutionTime>\n";
+      $string .= "<RawOutput><![CDATA[".$task['stdout']."]]></RawOutput>\n";
+      $string .= "<Error><![CDATA[".$task['stderr']."]]></Error>\n";
+      $string .= "<TaskParameters>".JsonComponent::encode($task['parameters'])."</TaskParameters>\n";
+      $string .= "<Outputs>\n";
+      foreach($task['outputFiles'] as $output)
+        {
+        if(!empty($output['name']))
+          {
+          $string .= "<Output type='file' uuid='".$output['uuid']."' name='".$output['name']."'>".$output['fileName']."</Output>\n";
+          }
+        }
+      foreach($task['outputParam'] as $output)
+        {
+        if(!empty($output['name']))
+          {
+          $string .= "<Output type='".$output['type']."'  name='".$output['name']."'>".$output['value']."</Output>\n";
+          }
+        }
+      $string .= "</Outputs>\n";
+      $string .= "<Inputs>\n";
+      foreach($task['inputFiles'] as $output)
+        {
+        if(!empty($output['name']))
+          {
+          $string .= "<Input type='file' uuid='".$output['uuid']."' name='".$output['name']."'>".$output['fileName']."</Input>\n";
+          }
+        }
+      foreach($task['inputParam'] as $output)
+        {
+        if(!empty($output['name']))
+          {
+          $string .= "<Input type='".$output['type']."'  name='".$output['name']."'>".$output['value']."</Input>\n";
+          }
+        }
+      $string .= "</Inputs>\n";
+      $string .= "</Task>\n";
       }
-    $xml .= "</Job>\n";
-    return $xml;
+    $string .= "</Tasks>\n";
+    $string .= "</Job>\n";
+    return $string;
+    }
+
+  /** getOutputParamsFromDao */
+  public function getOutputParamsFromDao($job, $includeItems = false)
+    {
+    if(!$job instanceof Remoteprocessing_JobDao)
+      {
+      throw new Zend_Exception("Should be a job.");
+      }
+    $modelLoader = new MIDAS_ModelLoader();
+    $jobModel = $modelLoader->loadModel('Job', 'remoteprocessing');
+    $itemModel = $modelLoader->loadModel('Item');
+    $items = $jobModel->getRelatedItems($job, MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS);
+    if(!empty($items))
+      {
+      $revision = $itemModel->getLastRevision($items[0]);
+      $bitstreams = $revision->getBitstreams();
+      if(count($bitstreams) == 1)
+        {
+        return  $this->getOutputParams($this->convertXmlResults(file_get_contents($bitstreams[0]->getFullPath())), $includeItems);
+        }
+      }
+    return array(array(), array());
+    }
+
+  /** getInputParamsFromDao */
+  public function getInputParamsFromDao($job)
+    {
+    if(!$job instanceof Remoteprocessing_JobDao)
+      {
+      throw new Zend_Exception("Should be a job.");
+      }
+    $modelLoader = new MIDAS_ModelLoader();
+    $jobModel = $modelLoader->loadModel('Job', 'remoteprocessing');
+    $itemModel = $modelLoader->loadModel('Item');
+    $items = $jobModel->getRelatedItems($job, MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS);
+    if(!empty($items))
+      {
+      $revision = $itemModel->getLastRevision($items[0]);
+      $bitstreams = $revision->getBitstreams();
+      if(count($bitstreams) == 1)
+        {
+        return  $this->getInputParams($this->convertXmlResults(file_get_contents($bitstreams[0]->getFullPath())));
+        }
+      }
+    return array(array(), array());
+    }
+
+  /** getOutputParams from a formatted array */
+  public function getOutputParams($array, $includeItems = false)
+    {
+    $metrics = array();
+    $values = array();
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    foreach($array['tasks'] as $keyTask => $task)
+      {
+      $name = ucfirst(strtolower("Execution-Time"));
+      if(!isset($metrics[$name]))
+        {
+        $metrics[$name] = array(0, 0);
+        }
+      if(is_numeric($task['time']))
+        {
+        $metrics[$name][0]++;
+        $metrics[$name][1] += $task['time'];
+        }
+      $values[$keyTask][$name] = $task['time'];
+      foreach($task['outputParam'] as $output)
+        {
+        $name = ucfirst(strtolower($output['name']));
+        if(!isset($metrics[$name]))
+          {
+          $metrics[$name] = array(0, 0);
+          }
+        if(is_numeric($output['value']))
+          {
+          $metrics[$name][0]++;
+          $metrics[$name][1] += $output['value'];
+          }
+        $values[$keyTask][$name] = $output['value'];
+        }
+     
+      if($includeItems && !empty($task['outputFiles']))
+        {
+          foreach($task['outputFiles'] as $output)
+            {
+            $name = ucfirst(strtolower($output['name']));
+            $values[$keyTask][$name] = $output['item'];
+            }
+        }
+      }
+
+    return array($metrics, $values);
+    }
+
+  /** getMetrics from a formatted array */
+  public function getInputParams($array)
+    {
+    $metrics = array();
+    $values = array();
+    foreach($array['tasks'] as $keyTask => $task)
+      {
+      foreach($task['inputParam'] as $output)
+        {
+        $name = ucfirst(strtolower($output['name']));
+        if(!isset($metrics[$name]))
+          {
+          $metrics[$name] = true;
+          }
+        $values[$keyTask][$name] = $output['value'];
+        }
+      }
+    return array($metrics, $values);
     }
 
   /** convertXmlREsults */
-  public function convertXmlREsults($xml)
+  public function convertXmlResults($xml)
     {
     $modelLoader = new MIDAS_ModelLoader();
     $jobModel = $modelLoader->loadmodel('Job', 'remoteprocessing');
+    $workflowModel = $modelLoader->loadmodel('Workflow', 'remoteprocessing');
     $itemModel = $modelLoader->loadmodel('Item');
+    $folderModel = $modelLoader->loadmodel('Folder');
 
     $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
     if(!$xml)
       {
       return;
       }
-    $return = array();
-    $return['job'] = $jobModel->load((int) $xml->attributes()->id[0]);
-    $return['params'] = JsonComponent::decode((string) $xml->JobParameters);
-    $return['process'] = array();
-    $i = 1;
-    foreach($xml->Process as $process)
+
+    try
       {
-      $tmp = array();
-      $tmp['status'] = (string) $process->attributes()->status[0];
-      $tmp['command'] = trim((string) $process->Command);
-      $tmp['stderr'] = trim((string) $process->Error);
-      $tmp['stdout'] = trim((string) $process->Output);
-      $tmp['xmlStdout'] = simplexml_load_string($tmp['stdout'], 'SimpleXMLElement', LIBXML_NOCDATA);
-      $tmp['time'] = (float) trim(str_replace("s", "", (string) $process->ExecutionTime)); //convert in milliseconds
-      $tmp['output'] = array();
-      $tmp['parameters'] = array();
-      foreach($return['params']['parametersList'] as $key => $parameter)
+      $return = array();
+      if(isset($xml->attributes()->uuid[0]))
         {
-        $tmp['parameters'][$key] = trim($return['params']['optionMatrix'][$i][$key]);
+        $return['jobUuid'] = (string) $xml->attributes()->uuid[0];
         }
-      if(isset($return['params']['outputKeys'][$i]))
+      else
         {
-        foreach($return['params']['outputKeys'][$i] as $itemId)
+         $return['jobUuid'] = uniqid() . md5(mt_rand());
+        }
+      $return['job'] = $jobModel->getByUuid($return['jobUuid']);
+
+      if(isset( $xml->attributes()->creator_id[0]))
+        {
+        $return['creatorId'] = (int) $xml->attributes()->creator_id[0];
+        }
+
+      $return['params'] = array();
+      if(isset($xml->JobParameters))
+        {
+        $return['params'] = JsonComponent::decode((string) $xml->JobParameters);
+        }
+
+      $return['name'] = $return['jobUuid'];
+      if(isset($xml->Name))
+        {
+        $return['name'] = trim((string) $xml->Name);
+        }
+
+      $return['startDate'] = date('c');
+      if(isset($xml->StartDate))
+        {
+        $return['startDate'] = trim((string) $xml->StartDate);
+        if(is_numeric($return['startDate']))
           {
-          $tmp['output'][] = $itemModel->load($itemId);
+          $return['startDate'] = date('c', $return['startDate']);
+          }
+        elseif(strtotime($return['startDate']) !== false)
+          {
+          $return['startDate'] = date('c', strtotime($return['startDate']));
+          }
+        else
+          {
+          $return['startDate'] = date('c');
           }
         }
-      $return['process'][] = $tmp;
-      $i++;
+
+      $return['workflowUuid'] = (string) $xml->attributes()->workflow_uuid[0];
+
+      $return['workflow'] = $workflowModel->getByUuid($return['workflowUuid']);
+      $return['parents'] = array();
+      if(isset($xml->Parents))
+        {
+        foreach($xml->Parents->Parent as $parent)
+          {
+          $return['parents'][] = array('uuid' => (string) $parent, 'job' => $jobModel->getByUuid((string) $parent));
+          }
+        }
+
+      $return['outputFolder'] = array('uuid' => '', 'folder' => false);
+      if(isset($xml->MidasOutputFolder))
+        {
+        if(is_numeric((string) $xml->MidasOutputFolder))
+          {
+          $tmpFolder = $folderModel->load((string) $xml->MidasOutputFolder);
+          if($tmpFolder != false)
+            {
+            $return['outputFolder'] = array('uuid' => $tmpFolder->getUuid(), 'folder' => $tmpFolder);
+            }
+          }
+        else
+          {
+          $return['outputFolder'] = array('uuid' => (string) $xml->MidasOutputFolder, 'folder' => $folderModel->getByUuid((string) $xml->MidasOutputFolder));
+          }
+        }
+      $return['tasks'] = array();
+      foreach($xml->Tasks->Task as $process)
+        {
+        $tmp = array();
+        $tmp['status'] = (string) $process->attributes()->status[0];
+        $tmp['command'] = trim((string) $process->Command);
+        $tmp['stderr'] = trim((string) $process->Error);
+        $tmp['stdout'] = trim((string) $process->RawOutput);
+        $tmp['time'] = (float) trim(str_replace("s", "", (string) $process->ExecutionTime)); //convert in milliseconds
+        $tmp['outputFiles'] = array();
+        $tmp['outputParam'] = array();
+        $tmp['inputFiles'] = array();
+        $tmp['inputParam'] = array();
+        $tmp['parameters'] = array();
+        if(isset($process->TaskParameters))
+          {
+          $tmp['parameters'] = JsonComponent::decode((string) $process->TaskParameters);
+          }
+
+        if(!empty($tmp['parameters']))
+          {
+          foreach($return['params']['parametersList'] as $key => $parameter)
+            {
+            $tmp['parameters'][$key] = trim($return['params']['optionMatrix'][$i][$key]);
+            }
+          }
+        if(isset($process->Outputs))
+          {
+          foreach($process->Outputs->Output as $output)
+            {
+            $type = (string) $output->attributes()->type[0];
+            switch ($type)
+              {
+              case 'file':
+                $uuid = "";
+                if(isset($output->attributes()->uuid[0]))
+                  {
+                  $uuid = (string) $output->attributes()->uuid[0];
+                  }
+                $tmp['outputFiles'][] = array('uuid' => $uuid, 'name' => (string) $output->attributes()->name[0], 'fileName' => trim((string) $output), 'item' => $itemModel->getByUuid($uuid));
+                break;
+              case 'float':
+              case 'int':
+              case 'double':
+              case 'string':
+                $tmp['outputParam'][] = array('type' => $type, 'name' => (string) $output->attributes()->name[0], 'value' => trim((string) $output));
+                break;
+              default:
+                throw new Zend_Exception("Error Output type");
+              }
+            }
+          }
+
+        if(isset($process->Inputs))
+          {
+          foreach($process->Inputs->Input as $input)
+            {
+            $type = (string) $input->attributes()->type[0];
+            switch ($type)
+              {
+              case 'file':
+                $uuid = "";
+                if(isset($input->attributes()->uuid[0]))
+                  {
+                  $uuid = (string) $input->attributes()->uuid[0];
+                  }
+                $tmp['inputFiles'][] = array('uuid' => $uuid, 'name' => (string) $input->attributes()->name[0], 'fileName' => trim((string) $input), 'item' => $itemModel->getByUuid($uuid));
+                break;
+              case 'float':
+              case 'int':
+              case 'double':
+              case 'string':
+                $tmp['inputParam'][] = array('type' => $type, 'name' => (string) $input->attributes()->name[0], 'value' => trim((string) $input));
+                break;
+              default:
+                throw new Zend_Exception("Error Input type");
+              }
+            }
+          }
+        $return['tasks'][] = $tmp;
+        }
+      }
+    catch(Exception $e)
+      {
+      throw new Zend_Exception($e->getMessage());
       }
     return $return;
     }

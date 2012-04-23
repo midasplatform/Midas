@@ -1,0 +1,39 @@
+<?xml version='1.0'?>
+<Job creator_id='1' workflow_uuid='4f4e311b241cd3c35a9ad33c396cff9c3fc19aa8f00d1'>
+ <Name>Test job 1</Name>
+ <StartDate></StartDate>
+ <Parents></Parents>
+ <JobParameters></JobParameters>
+ <MidasOutputFolder>4f57689fd683a52869580ec625611ee5dd7dd3057d236</MidasOutputFolder>
+ <Tasks>
+   <Task status='passed'>
+  <Command></Command>
+  <ExecutionTime>0</ExecutionTime>
+  <Outputs>
+  <Output type='int' name='nVIDefects'>9</Output>
+  <Output type='int' name='nSegmentedDefects'>125</Output>
+  <Output type='int' name='nTruePositives'>4</Output>
+  <Output type='int' name='nFalsePositives'>121</Output>
+  <Output type='int' name='nFalseNegatives'>121</Output>
+  <Output type='float' name='overkill'>0.968000</Output>
+  <Output type='float' name='escape'>0.000000</Output>
+  <Output type='file' name='outputoverlay'>431007_CAM02_3D_validation.png</Output>
+  </Outputs>
+  </Task>
+  <Task status='passed'>
+  <Command></Command>
+  <ExecutionTime>0</ExecutionTime>
+  <Outputs>
+  <Output type='int' name='nVIDefects'>24</Output>
+  <Output type='int' name='nSegmentedDefects'>185</Output>
+  <Output type='int' name='nTruePositives'>10</Output>
+  <Output type='int' name='nFalsePositives'>175</Output>
+  <Output type='int' name='nFalseNegatives'>175</Output>
+  <Output type='float' name='overkill'>0.945946</Output>
+  <Output type='float' name='escape'>0.000000</Output>
+  <Output type='file' name='outputoverlay'>431007_CAM03_3D_validation.png</Output>
+  </Outputs>
+  </Task>
+ </Tasks>
+   </Job>
+   

@@ -211,7 +211,6 @@ class AppController extends MIDAS_GlobalController
     // init notifier
     Zend_Registry::set('notifier', new MIDAS_Notifier($this->logged, $this->userSession));
 
-
     $this->view->lang = Zend_Registry::get('configGlobal')->application->lang;
 
     $this->view->isStartingGuide = $this->isStartingGuide();
@@ -341,14 +340,15 @@ class AppController extends MIDAS_GlobalController
   /** show dynamic help ? */
   function isDynamicHelp()
     {
-    if($this->isDemoMode())
+    $fc = Zend_Controller_Front::getInstance();
+    if($this->isDemoMode() || $fc->getRequest()->getControllerName() == 'error')
       {
       return true;
       }
     try
       {
       $dynamichelp = Zend_Registry::get('configGlobal')->dynamichelp;
-      if($dynamichelp && $this->userSession != null && $this->userSession->Dao != null)
+      if($dynamichelp && $this->userSession != null && $this->userSession->Dao != null && isset($this->userSession->Dao))
         {
         return $this->userSession->Dao->getDynamichelp() == 1;
         }

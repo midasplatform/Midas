@@ -2,7 +2,7 @@ div.viewWrapper {
   padding-right: 40px !important;
 }
 
-table#tableResults, table#tableXml{
+table#tableResults, table#tableXml, table#tableMetricsXml{
   width:100%;
 
 }

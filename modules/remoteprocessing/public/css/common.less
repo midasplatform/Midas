@@ -1,0 +1,175 @@
+
+.border-radius (@radius: 5px) {
+    -webkit-border-radius:@radius;
+    -khtml-border-radius: @radius;
+    -moz-border-radius:@radius;
+    -o-border-radius: @radius;
+    -ms-border-radius:@radius;
+    border-radius: @radius;
+}
+
+.transition (@object : background, @time : 0.4s , @type:linear , @delay : 0s){
+    -webkit-transition: @object @time @type @delay;
+    -khtml-transition:  @object @time @type @delay;
+    -moz-transition: @object @time @type @delay;
+    -o-transition: @object @time @type @delay;
+    -ms-transition: @object @time @type @delay;
+    transition: @object @time @type @delay;
+}
+
+.rotate(@degree:active 35deg,@degMatrix: 35){
+    -webkit-transform: rotate(@degree);
+    -moz-transform: rotate(@degree);
+    -o-transform: rotate(@degree);
+    -ms-transform: rotate(@degree);
+    transform: rotate(@degree);
+    // IE rotation avec Matrix
+    @deg2radians: 3.1416 * 2 / 360;
+    @rad: @degMatrix * @deg2radians;
+    @sintheta: 'Math.sin(@{rad})';
+    @costheta: 'Math.cos(@{rad})';
+    @M11: @costheta;
+    @M12: -@sintheta;
+    @M21: @sintheta;
+    @M22: @costheta;
+    filter: e(%("progid:DXImageTransform.Microsoft.Matrix(M11=%d, M12=%d, M21=%d, M22=%d, sizingMethod='auto expand')", @M11, @M12, @M21, @M22));
+    zoom: 1;
+}
+
+.boxShadow (@horiz:0px, @vertic:0px, @blurRad:5px, @color: #000) {
+    -webkit-box-shadow:@arguments;
+    -moz-box-shadow:@arguments;
+    -o-box-shadow:@arguments;
+    box-shadow:@arguments;
+}
+
+.border-radius(@radii) {
+    -webkit-border-radius:@radii;
+    -moz-border-radius:@radii;
+    -o-border-radius:@radii;
+    border-radius:@radii;
+}
+
+.border-radius (@topleft: 4px, @bottomleft: 4px, @topright: 4px, @bottomright: 4px) {
+    -webkit-border-top-right-radius: @topright;
+    -webkit-border-bottom-right-radius: @bottomright;
+    -webkit-border-bottom-left-radius: @bottomleft;
+    -webkit-border-top-left-radius: @topleft;
+    -moz-border-radius-topright: @topright;
+    -moz-border-radius-bottomright: @bottomright;
+    -moz-border-radius-bottomleft: @bottomleft;
+    -moz-border-radius-topleft: @topleft;
+    -o-border-radius-topright: @topright;
+    -o-border-radius-bottomright: @bottomright;
+    -o-border-radius-bottomleft: @bottomleft;
+    -o-border-radius-topleft: @topleft;
+    border-top-right-radius: @topright;
+    border-bottom-right-radius: @bottomright;
+    border-bottom-left-radius: @bottomleft;
+    border-top-left-radius: @topleft;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+}
+
+.column-count(@count) {
+    -moz-column-count: @count;
+    webkit-column-count: @count;
+    column-count: @count;
+}
+
+.column-gap(@gap) {
+    -moz-column-gap: @gap;
+    -webkit-column-gap: @gap;
+    column-gap: @gap;
+}
+
+
+// Gradients
+.gradient-x(@start:#000, @stop:#111) {
+    background-color:@stop;
+    background-repeat:repeat-x;
+    background-image:-webkit-gradient(linear, left top, right top, from(@start), to(@stop));
+    background-image:-webkit-linear-gradient(left, @start, @stop);
+    background-image:-moz-linear-gradient(left, @start 0%, @stop 100%);
+    background-image:-o-linear-gradient(left, @start 0%, @stop 100%);
+    background-image:-ms-linear-gradient(left, @start 0%, @stop 100%);
+    background-image:linear-gradient(left, @start 0%, @stop 100%);
+}
+
+.gradient-y(@start:#000, @stop:#111) {
+    background-color:@stop;
+    background-repeat:repeat-x;
+    background-image:-webkit-gradient(linear, left top, left bottom, from(@start), to(@stop));
+    background-image:-webkit-linear-gradient(top, @start, @stop);
+    background-image:-moz-linear-gradient(top, @start 0%, @stop 100%);
+    background-image:-o-linear-gradient(top, @start 0%, @stop 100%);
+    background-image:-ms-linear-gradient(top, @start 0%, @stop 100%);
+    background-image:linear-gradient(top, @start 0%, @stop 100%);
+}
+
+.gradient-y-percent(@start:#000, @pstart:0%, @stop:#111, @pstop:100%) {
+    background-repeat:repeat-x;
+    background-image:-webkit-gradient(linear, left top, left bottom, from(@start), to(@stop));
+    background-image:-webkit-linear-gradient(top, @start @pstart, @stop @pstop);
+    background-image:-moz-linear-gradient(top, @start @pstart, @stop @pstop);
+    background-image:-o-linear-gradient(top, @start @pstart, @stop @pstop);
+    background-image:-ms-linear-gradient(top, @start @pstart, @stop @pstop);
+    background-image:linear-gradient(top, @start @pstart, @stop @pstop);
+}
+
+.gradient-deg(@start: #555, @stop: #333, @deg: 45deg) {
+    background-color: @stop;
+    background-repeat:repeat-x;
+    background-image: -webkit-linear-gradient(@deg, @start, @stop);
+    background-image: -moz-linear-gradient(@deg, @start, @stop);
+    background-image: -o-linear-gradient(@deg, @start, @stop);
+    background-image: -ms-linear-gradient(@deg, @start, @stop);
+    background-image: linear-gradient(@deg, @start, @stop);
+}
+
+.genericButton(){
+  .border-radius (3px);
+  .gradient-y(white, #C4C4C4);
+  .boxShadow (0, 0, 2px, #666);
+  font-size: 12px;
+  font-weight: normal;
+  color: black;
+  cursor: pointer;
+  display: block;
+  float: left;
+  border: #354856 1px solid;
+  list-style-type: none;
+  background-color: white;
+  padding: 1px 3px 2px 3px;
+  a{
+  font-size: 12px!important;
+  font-weight: normal!important;
+  color:black!important;
+  }
+  a:hover{
+    text-decoration: none!important;
+  }
+  hover{
+  background-color: #bddcc9;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#bddcc9), to(#8ab79b));
+  background-image: -moz-linear-gradient(center top, #bddcc9 0%, #8ab79b 100% );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bddcc9', endColorstr='#8ab79b');
+  }
+}
+
+.genericShadowDiv(@width){
+  border: 1px #CCD7E0 dotted!important;
+  margin-top: 5px;
+  width: @width;
+  margin-bottom: 2px;
+  border: #354856 1px solid;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -khtml-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: #666 0 0 2px;
+  box-shadow: #666 0 0 2px;
+  -moz-box-shadow: 0px 0px 2px #666;
+  padding: 0px 5px 6px 5px;
+}

@@ -219,6 +219,33 @@ class Api_ApiComponent extends AppComponent
       }
     return $return;
     }
+    
+        /**
+   * Search items for the given words
+   * @param token (Optional) Authentication token
+   * @param search The search query
+   * @param folder Parent uuid folder
+   * @return An array of matching resources
+   */
+  function itemSearch($args)
+    {
+    $this->_validateParams($args, array('search'));
+    $userDao = $this->_getUser($args);
+
+    $order = 'view';
+    if(isset($args['order']))
+      {
+      $order = $args['order'];
+      }
+    $folder = false;
+    if(isset($args['folder']))
+      {
+      $folder = $args['folder'];
+      }
+    $componentLoader = new MIDAS_ComponentLoader();
+    $searchComponent = $componentLoader->loadComponent('Search');
+    return $searchComponent->searchItems($userDao, $args['search'], $folder, $order);
+    }
 
   /**
    * Search resources for the given words

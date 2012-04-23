@@ -1,3 +1,51 @@
+@import "/modules/remoteprocessing/public/css/common.less";
+
+@fieldsPadding : 90px;
+@workflowFieldsWidth : 300px;
+
+// Step 2 Form
+#workflowForm, #workflowDomainForm{
+  span{
+    width:@fieldsPadding;
+    font-weight: bold;
+    display: inline-block;
+  }
+  input{
+    width:@workflowFieldsWidth;
+  }
+  textarea{
+    width:(@workflowFieldsWidth -4px);
+    margin-left:(@fieldsPadding+4px);
+    position:relative;
+    top:-14px;
+  }
+}
+
+div#createDomain{
+  display:none;
+  .genericShadowDiv(460px);
+}
+
+div#dialogJobCreation{
+  display:none;
+}
+
+div#jobListing{
+  clear:both;
+  margin-top:10px;
+}
+
+.executableForm{
+  border: 1px solid #CCC;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  margin-top: 10px;
+}
+
+button.toggleJob{
+  height:25px;
+}
+
 .optionWrapper, .nameWrapper{
   border: 1px solid grey;
   margin-bottom: 2px;
@@ -53,6 +101,11 @@ background: #F8F8F8!important;
   position:relative;
   top:2px;
   margin-right: 2px;
+}
+
+#browseExecutableFile a span{
+  position:relative;
+  top:-2px;
 }
 
 #metaWrapper{

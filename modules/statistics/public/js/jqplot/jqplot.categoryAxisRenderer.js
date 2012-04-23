@@ -2,7 +2,7 @@
  * jqPlot
  * Pure JavaScript plotting plugin using jQuery
  *
- * Version: 1.0.0b2_r792
+ * Version: 1.0.0b2_r1012
  *
  * Copyright (c) 2009-2011 Chris Leonello
  * jqPlot is currently available for use in all personal or commercial projects 
@@ -259,7 +259,7 @@
             var track = 0;
             
             // todo: adjust this so more ticks displayed.
-            var maxVisibleTicks = parseInt(3+dim/20, 10);
+            var maxVisibleTicks = parseInt(3+dim/10, 10);
             var skip = parseInt(numcats/maxVisibleTicks, 10);
 
             if (this.tickInterval == null) {
