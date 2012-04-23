@@ -6,6 +6,7 @@ $(document).ready(function(){
   $(document).ready(function() {
     $('#tableResults').dataTable();
     $('#tableXml').dataTable();
+    $('#tableMetricsXml').dataTable();
 
 
   $('.showInDialog').click(function()

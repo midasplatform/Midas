@@ -263,117 +263,366 @@ class Remoteprocessing_JobComponent extends AppComponent
       }
     }
 
-  /** compute logs (return an xml file) */
-  public function computeLogs($job, $logs, $params)
+  /** createFormatedXml*/
+  public function createFormatedXmlFromArray($array)
     {
-    unset($params['log']);
-    $componentLoader = new MIDAS_ComponentLoader();
-    $utilityComponent = $componentLoader->loadComponent('Utility');
-    $logs = str_replace("\r\n", "", $logs);
-    $logs = str_replace("\r\r", "\r", $logs);
-    $xml = "<?xml version='1.0'?>\n";
-    $xml .= "<Job id='".$job->getKey()."' name='".$job->getName()."'>\n";
-    $xml .= "<JobParameters>\n";
-    $xml .= "<![CDATA[".JsonComponent::encode($params)."]]>";
-    $xml .= "</JobParameters>\n";
-    $logs = explode("-COMMAND\r", $logs);
-    if(count($logs) < 2)
+    $string = "<?xml version='1.0'?>\n";
+    $string .= "<Job uuid='".$array['jobUuid']."' creator_id='".$array['creatorId']."' workflow_uuid='".$array['workflowUuid']."' >\n";
+    $string .= "<Name>".$array['name']."</Name>\n";
+    $string .= "<StartDate>".$array['job']->getStartDate()."</StartDate>\n";
+    $string .= "<Parents>\n";
+    foreach($array['parents'] as $parent)
       {
-      return "";
+      $string .= "<Parents>".$parent['uuid']."</Parents>\n";
       }
-    unset($logs[0]);
-    foreach($logs as $log)
+    $string .= "</Parents>\n";
+    $string .= "<JobParameters>".JsonComponent::encode($array['params'])."</JobParameters>\n";
+    $string .= "<MidasOutputFolder>".$array['outputFolder']['uuid']."</MidasOutputFolder>\n";
+    $string .= "<Tasks>\n";
+    foreach($array['tasks'] as $task)
       {
-      $failed = false;
-      $tmp = explode("-EXECUTION TIME\r", $log);
-      $command = $tmp[0];
-      $tmp = explode("-STDOUT\r", $tmp[1]);
-      $executionTime = $tmp[0];
-      $tmp = explode("-STDERR\r", $tmp[1]);
-      $stdout = $tmp[0];
-      $stderr = $tmp[1];
-
-      $search = array(' ', "\t", "\n", "\r");
-      $cleanedStderr = str_replace($search, '', $stderr);
-      if(!empty($cleanedStderr))
+      if($task['status'] == 'passed')
         {
-        $failed = true;
-        }
-      $lowerout = strtolower($stdout);
-      if(strpos($lowerout, "error") !== false)
-        {
-        $failed = true;
-        }
-
-      $xml .= "<Process status=";
-      if($failed)
-        {
-        $xml .= "'failed'";
+        $string .= "<Task status = 'passed'>\n";
         }
       else
         {
-        $xml .= "'passed'";
+        $string .= "<Task status = 'failed'>\n";
         }
-      $xml .= ">\n";
-      $xml .= "<Command>\n";
-      $xml .= "<![CDATA[".$command."]]>";
-      $xml .= "</Command>\n";
-      $xml .= "<ExecutionTime>\n";
-      $xml .= "<![CDATA[".$executionTime."]]>";
-      $xml .= "</ExecutionTime>\n";
-      $xml .= "<Output>\n";
-      $xml .= "<![CDATA[".$stdout."]]>";
-      $xml .= "</Output>\n";
-      $xml .= "<Error>\n";
-      $xml .= "<![CDATA[".$stderr."]]>";
-      $xml .= "</Error>\n";
-      $xml .= "</Process>";
+      $string .= "<Command><![CDATA[".$task['command']."]]></Command>\n";
+      $string .= "<ExecutionTime><![CDATA[".$task['time']."]]></ExecutionTime>\n";
+      $string .= "<RawOutput><![CDATA[".$task['stdout']."]]></RawOutput>\n";
+      $string .= "<Error><![CDATA[".$task['stderr']."]]></Error>\n";
+      $string .= "<TaskParameters>".JsonComponent::encode($task['parameters'])."</TaskParameters>\n";
+      $string .= "<Outputs>\n";
+      foreach($task['outputFiles'] as $output)
+        {
+        if(!empty($output['name']))
+          {
+          $string .= "<Output type='file' uuid='".$output['uuid']."' name='".$output['name']."'>".$output['fileName']."</Output>\n";
+          }
+        }
+      foreach($task['outputParam'] as $output)
+        {
+        if(!empty($output['name']))
+          {
+          $string .= "<Output type='".$output['type']."'  name='".$output['name']."'>".$output['value']."</Output>\n";
+          }
+        }
+      $string .= "</Outputs>\n";
+      $string .= "<Inputs>\n";
+      foreach($task['inputFiles'] as $output)
+        {
+        if(!empty($output['name']))
+          {
+          $string .= "<Input type='file' uuid='".$output['uuid']."' name='".$output['name']."'>".$output['fileName']."</Input>\n";
+          }
+        }
+      foreach($task['inputParam'] as $output)
+        {
+        if(!empty($output['name']))
+          {
+          $string .= "<Input type='".$output['type']."'  name='".$output['name']."'>".$output['value']."</Input>\n";
+          }
+        }
+      $string .= "</Inputs>\n";
+      $string .= "</Task>\n";
       }
-    $xml .= "</Job>\n";
-    return $xml;
+    $string .= "</Tasks>\n";
+    $string .= "</Job>\n";
+    return $string;
+    }
+
+  /** getOutputParamsFromDao */
+  public function getOutputParamsFromDao($job, $includeItems = false)
+    {
+    if(!$job instanceof Remoteprocessing_JobDao)
+      {
+      throw new Zend_Exception("Should be a job.");
+      }
+    $modelLoader = new MIDAS_ModelLoader();
+    $jobModel = $modelLoader->loadModel('Job', 'remoteprocessing');
+    $itemModel = $modelLoader->loadModel('Item');
+    $items = $jobModel->getRelatedItems($job, MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS);
+    if(!empty($items))
+      {
+      $revision = $itemModel->getLastRevision($items[0]);
+      $bitstreams = $revision->getBitstreams();
+      if(count($bitstreams) == 1)
+        {
+        return  $this->getOutputParams($this->convertXmlResults(file_get_contents($bitstreams[0]->getFullPath())), $includeItems);
+        }
+      }
+    return array(array(), array());
+    }
+
+  /** getInputParamsFromDao */
+  public function getInputParamsFromDao($job)
+    {
+    if(!$job instanceof Remoteprocessing_JobDao)
+      {
+      throw new Zend_Exception("Should be a job.");
+      }
+    $modelLoader = new MIDAS_ModelLoader();
+    $jobModel = $modelLoader->loadModel('Job', 'remoteprocessing');
+    $itemModel = $modelLoader->loadModel('Item');
+    $items = $jobModel->getRelatedItems($job, MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS);
+    if(!empty($items))
+      {
+      $revision = $itemModel->getLastRevision($items[0]);
+      $bitstreams = $revision->getBitstreams();
+      if(count($bitstreams) == 1)
+        {
+        return  $this->getInputParams($this->convertXmlResults(file_get_contents($bitstreams[0]->getFullPath())));
+        }
+      }
+    return array(array(), array());
+    }
+
+  /** getOutputParams from a formatted array */
+  public function getOutputParams($array, $includeItems = false)
+    {
+    $metrics = array();
+    $values = array();
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    foreach($array['tasks'] as $keyTask => $task)
+      {
+      $name = ucfirst(strtolower("Execution-Time"));
+      if(!isset($metrics[$name]))
+        {
+        $metrics[$name] = array(0, 0);
+        }
+      if(is_numeric($task['time']))
+        {
+        $metrics[$name][0]++;
+        $metrics[$name][1] += $task['time'];
+        }
+      $values[$keyTask][$name] = $task['time'];
+      foreach($task['outputParam'] as $output)
+        {
+        $name = ucfirst(strtolower($output['name']));
+        if(!isset($metrics[$name]))
+          {
+          $metrics[$name] = array(0, 0);
+          }
+        if(is_numeric($output['value']))
+          {
+          $metrics[$name][0]++;
+          $metrics[$name][1] += $output['value'];
+          }
+        $values[$keyTask][$name] = $output['value'];
+        }
+     
+      if($includeItems && !empty($task['outputFiles']))
+        {
+          foreach($task['outputFiles'] as $output)
+            {
+            $name = ucfirst(strtolower($output['name']));
+            $values[$keyTask][$name] = $output['item'];
+            }
+        }
+      }
+
+    return array($metrics, $values);
+    }
+
+  /** getMetrics from a formatted array */
+  public function getInputParams($array)
+    {
+    $metrics = array();
+    $values = array();
+    foreach($array['tasks'] as $keyTask => $task)
+      {
+      foreach($task['inputParam'] as $output)
+        {
+        $name = ucfirst(strtolower($output['name']));
+        if(!isset($metrics[$name]))
+          {
+          $metrics[$name] = true;
+          }
+        $values[$keyTask][$name] = $output['value'];
+        }
+      }
+    return array($metrics, $values);
     }
 
   /** convertXmlREsults */
-  public function convertXmlREsults($xml)
+  public function convertXmlResults($xml)
     {
     $modelLoader = new MIDAS_ModelLoader();
     $jobModel = $modelLoader->loadmodel('Job', 'remoteprocessing');
+    $workflowModel = $modelLoader->loadmodel('Workflow', 'remoteprocessing');
     $itemModel = $modelLoader->loadmodel('Item');
+    $folderModel = $modelLoader->loadmodel('Folder');
 
     $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
     if(!$xml)
       {
       return;
       }
-    $return = array();
-    $return['job'] = $jobModel->load((int) $xml->attributes()->id[0]);
-    $return['params'] = JsonComponent::decode((string) $xml->JobParameters);
-    $return['process'] = array();
-    $i = 1;
-    foreach($xml->Process as $process)
+
+    try
       {
-      $tmp = array();
-      $tmp['status'] = (string) $process->attributes()->status[0];
-      $tmp['command'] = trim((string) $process->Command);
-      $tmp['stderr'] = trim((string) $process->Error);
-      $tmp['stdout'] = trim((string) $process->Output);
-      $tmp['xmlStdout'] = simplexml_load_string($tmp['stdout'], 'SimpleXMLElement', LIBXML_NOCDATA);
-      $tmp['time'] = (float) trim(str_replace("s", "", (string) $process->ExecutionTime)); //convert in milliseconds
-      $tmp['output'] = array();
-      $tmp['parameters'] = array();
-      foreach($return['params']['parametersList'] as $key => $parameter)
+      $return = array();
+      if(isset($xml->attributes()->uuid[0]))
         {
-        $tmp['parameters'][$key] = trim($return['params']['optionMatrix'][$i][$key]);
+        $return['jobUuid'] = (string) $xml->attributes()->uuid[0];
         }
-      if(isset($return['params']['outputKeys'][$i]))
+      else
         {
-        foreach($return['params']['outputKeys'][$i] as $itemId)
+         $return['jobUuid'] = uniqid() . md5(mt_rand());
+        }
+      $return['job'] = $jobModel->getByUuid($return['jobUuid']);
+
+      if(isset( $xml->attributes()->creator_id[0]))
+        {
+        $return['creatorId'] = (int) $xml->attributes()->creator_id[0];
+        }
+
+      $return['params'] = array();
+      if(isset($xml->JobParameters))
+        {
+        $return['params'] = JsonComponent::decode((string) $xml->JobParameters);
+        }
+
+      $return['name'] = $return['jobUuid'];
+      if(isset($xml->Name))
+        {
+        $return['name'] = trim((string) $xml->Name);
+        }
+
+      $return['startDate'] = date('c');
+      if(isset($xml->StartDate))
+        {
+        $return['startDate'] = trim((string) $xml->StartDate);
+        if(is_numeric($return['startDate']))
           {
-          $tmp['output'][] = $itemModel->load($itemId);
+          $return['startDate'] = date('c', $return['startDate']);
+          }
+        elseif(strtotime($return['startDate']) !== false)
+          {
+          $return['startDate'] = date('c', strtotime($return['startDate']));
+          }
+        else
+          {
+          $return['startDate'] = date('c');
           }
         }
-      $return['process'][] = $tmp;
-      $i++;
+
+      $return['workflowUuid'] = (string) $xml->attributes()->workflow_uuid[0];
+
+      $return['workflow'] = $workflowModel->getByUuid($return['workflowUuid']);
+      $return['parents'] = array();
+      if(isset($xml->Parents))
+        {
+        foreach($xml->Parents->Parent as $parent)
+          {
+          $return['parents'][] = array('uuid' => (string) $parent, 'job' => $jobModel->getByUuid((string) $parent));
+          }
+        }
+
+      $return['outputFolder'] = array('uuid' => '', 'folder' => false);
+      if(isset($xml->MidasOutputFolder))
+        {
+        if(is_numeric((string) $xml->MidasOutputFolder))
+          {
+          $tmpFolder = $folderModel->load((string) $xml->MidasOutputFolder);
+          if($tmpFolder != false)
+            {
+            $return['outputFolder'] = array('uuid' => $tmpFolder->getUuid(), 'folder' => $tmpFolder);
+            }
+          }
+        else
+          {
+          $return['outputFolder'] = array('uuid' => (string) $xml->MidasOutputFolder, 'folder' => $folderModel->getByUuid((string) $xml->MidasOutputFolder));
+          }
+        }
+      $return['tasks'] = array();
+      foreach($xml->Tasks->Task as $process)
+        {
+        $tmp = array();
+        $tmp['status'] = (string) $process->attributes()->status[0];
+        $tmp['command'] = trim((string) $process->Command);
+        $tmp['stderr'] = trim((string) $process->Error);
+        $tmp['stdout'] = trim((string) $process->RawOutput);
+        $tmp['time'] = (float) trim(str_replace("s", "", (string) $process->ExecutionTime)); //convert in milliseconds
+        $tmp['outputFiles'] = array();
+        $tmp['outputParam'] = array();
+        $tmp['inputFiles'] = array();
+        $tmp['inputParam'] = array();
+        $tmp['parameters'] = array();
+        if(isset($process->TaskParameters))
+          {
+          $tmp['parameters'] = JsonComponent::decode((string) $process->TaskParameters);
+          }
+
+        if(!empty($tmp['parameters']))
+          {
+          foreach($return['params']['parametersList'] as $key => $parameter)
+            {
+            $tmp['parameters'][$key] = trim($return['params']['optionMatrix'][$i][$key]);
+            }
+          }
+        if(isset($process->Outputs))
+          {
+          foreach($process->Outputs->Output as $output)
+            {
+            $type = (string) $output->attributes()->type[0];
+            switch ($type)
+              {
+              case 'file':
+                $uuid = "";
+                if(isset($output->attributes()->uuid[0]))
+                  {
+                  $uuid = (string) $output->attributes()->uuid[0];
+                  }
+                $tmp['outputFiles'][] = array('uuid' => $uuid, 'name' => (string) $output->attributes()->name[0], 'fileName' => trim((string) $output), 'item' => $itemModel->getByUuid($uuid));
+                break;
+              case 'float':
+              case 'int':
+              case 'double':
+              case 'string':
+                $tmp['outputParam'][] = array('type' => $type, 'name' => (string) $output->attributes()->name[0], 'value' => trim((string) $output));
+                break;
+              default:
+                throw new Zend_Exception("Error Output type");
+              }
+            }
+          }
+
+        if(isset($process->Inputs))
+          {
+          foreach($process->Inputs->Input as $input)
+            {
+            $type = (string) $input->attributes()->type[0];
+            switch ($type)
+              {
+              case 'file':
+                $uuid = "";
+                if(isset($input->attributes()->uuid[0]))
+                  {
+                  $uuid = (string) $input->attributes()->uuid[0];
+                  }
+                $tmp['inputFiles'][] = array('uuid' => $uuid, 'name' => (string) $input->attributes()->name[0], 'fileName' => trim((string) $input), 'item' => $itemModel->getByUuid($uuid));
+                break;
+              case 'float':
+              case 'int':
+              case 'double':
+              case 'string':
+                $tmp['inputParam'][] = array('type' => $type, 'name' => (string) $input->attributes()->name[0], 'value' => trim((string) $input));
+                break;
+              default:
+                throw new Zend_Exception("Error Input type");
+              }
+            }
+          }
+        $return['tasks'][] = $tmp;
+        }
+      }
+    catch(Exception $e)
+      {
+      throw new Zend_Exception($e->getMessage());
       }
     return $return;
     }

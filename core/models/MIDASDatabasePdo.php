@@ -150,8 +150,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     $this->ModelLoader = new MIDAS_ModelLoader();
     if(isset($this->_mainData[$var]['module']))
       {
-      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model'],
-                                             $this->_mainData[$var]['module']);
+      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model'], $this->_mainData[$var]['module']);
       }
     else
       {
@@ -171,9 +170,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       {
       if(isset($this->_mainData[$var]['module']))
         {
-        $return[] = $model->initDao($this->_mainData[$var]['model'],
-                                    $row,
-                                    $this->_mainData[$var]['module']);
+        $return[] = $model->initDao($this->_mainData[$var]['model'], $row, $this->_mainData[$var]['module']);
         }
       else
         {
@@ -211,13 +208,13 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     $modelloader = new MIDAS_ModelLoader();
     if(isset($this->_mainData[$var]['module']))
       {
-      $model = $modelloader->loadModel($this->_mainData[$var]['model'],
-                                       $this->_mainData[$var]['module']);
+      $model = $modelloader->loadModel($this->_mainData[$var]['model'], $this->_mainData[$var]['module']);
       }
     else
       {
       $model = $modelloader->loadModel($this->_mainData[$var]['model']);
       }
+
     foreach($objs as $obj)
       {
       if($model->compareDao($obj, $daoSon))
@@ -247,6 +244,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       }
     return false;
     } //end method link
+
 
 
   /**
@@ -350,6 +348,11 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    */
   public function delete($dao)
     {
+    $instance = ucfirst($this->_name)."Dao";
+    if(str_replace('_', '', strtolower($instance)) !=  str_replace('_', '', strtolower($instance)))
+      {
+      throw new Zend_Exception("Should be an object (".$instance."). It was: ".get_class($dao) );
+      }
     if(!$dao->saved)
       {
       throw new Zend_Exception("The dao should be saved first ...");

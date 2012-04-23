@@ -23,6 +23,30 @@ require_once BASE_PATH.'/modules/remoteprocessing/models/base/JobModelBase.php';
 /** job model */
 class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
 {
+    /** check ifthe policy is valid*/
+  function policyCheck($job, $userDao = null, $policy = 0)
+    {
+    if(!$job instanceof Remoteprocessing_JobDao)
+      {
+      throw new Zend_Exception("Should be a job.");
+      }
+
+    $workflow = $job->getWorkflows();
+    if(empty($workflow))
+      {
+      return false;
+      }
+    $workflowDomain = $workflow[0]->getDomain();
+    if($workflowDomain == false)
+      {
+      return false;
+      }
+
+    $modelLoad = new MIDAS_ModelLoader();
+    $workflowDomainModel = $modelLoad->loadModel('Workflowdomain', 'remoteprocessing');
+    return $workflowDomainModel->policyCheck($workflowDomain, $userDao, $policy);
+    }
+
   /** get jobs */
   function getBy($os, $condition, $expiration_date = false, $status = MIDAS_REMOTEPROCESSING_STATUS_WAIT)
     {
@@ -48,8 +72,151 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
     return $return;
     }
 
+  /** get root job*/
+  function getRoot($job)
+    {
+    if(!$job instanceof Remoteprocessing_JobDao)
+      {
+      throw new Zend_Exception("Should be a job.");
+      }
+
+    $tmp = $job->getParents();
+    while(!empty($tmp))
+      {
+      $job = $tmp[0];
+      $tmp = $job->getParents();
+      }
+    return $job;
+    }
+
+  /** get parents job */
+  function getParents($job)
+    {
+    if(!$job instanceof Remoteprocessing_JobDao)
+      {
+      throw new Zend_Exception("Should be a job.");
+      }
+    $sql = $this->database->select()
+            ->setIntegrityCheck(false)
+            ->from($this->getName())
+            ->join(array('w' => 'remoteprocessing_job2job'),
+                        'w.parent_id = remoteprocessing_job.job_id ', array())
+            ->where('w.job_id = ?', $job->getKey());
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->initDao('Job', $row, 'remoteprocessing');
+      if($tmpDao != false)
+        {
+        $return[] = $tmpDao;
+        unset($tmpDao);
+        }
+      }
+    return $return;
+    }
+
+  /** get children job */
+  function getChildren($job)
+    {
+    if(!$job instanceof Remoteprocessing_JobDao)
+      {
+      throw new Zend_Exception("Should be a job.");
+      }
+    $sql = $this->database->select()
+            ->setIntegrityCheck(false)
+            ->from($this->getName())
+            ->joinUsing('remoteprocessing_job2job', 'job_id')
+            ->where('remoteprocessing_job2job.parent_id = ?', $job->getKey());
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->initDao('Job', $row, 'remoteprocessing');
+      if($tmpDao != false)
+        {
+        $return[] = $tmpDao;
+        unset($tmpDao);
+        }
+      }
+    return $return;
+    }
+
+  /** get job tree*/
+  function getJobTree($job)
+    {
+    if(!$job instanceof Remoteprocessing_JobDao)
+      {
+      return array();
+      }
+    $job = $this->getRoot($job);
+    $tree = array($job);
+    return $this->_getJobTree($tree);
+    }
+
+  /** get job tree*/
+  function getGraphFromTree($tree, $graph = array('nodes' => array(), 'edges' => array()), $level = 0)
+    {
+    foreach($tree as $key => $job)
+      {
+      if(!$this->_isNodeExits($graph['nodes'], $job->getKey()))
+        {
+        $graph['nodes'][] = array('name' => $job->getKey(), "label" => array('type' => 'plain', 'value' => $job->getName()), 'stencil' => $this->_getStencil($job), "position" => array( 80 + $key * 100, 30 + $level * 40));
+        }
+      foreach($job->children as $keyChild => $child)
+        {
+        if(!$this->_isNodeExits($graph['nodes'], $child->getKey()))
+          {
+          $graph['nodes'][] = array('name' => $child->getKey(), "label" => array('type' => 'plain', 'value' => $child->getName()), 'stencil' => $this->_getStencil($child), "position" => array(80 + $keyChild * 100, 30 + ($level+1) * 40));
+          }
+        $graph['edges'][] = array('src' => $job->getKey(), 'dst' => $child->getKey());
+        }
+      $graph = $this->getGraphFromTree($job->children, $graph, $level + 1);
+      $graph['nodes'] = array_unique ( $graph['nodes'], SORT_REGULAR  );
+      $graph['edges'] = array_unique ( $graph['edges'], SORT_REGULAR );
+      }
+    return $graph;
+    }
+
+  /** convert status to JSDot Stenciel*/
+  private function _getStencil($job)
+    {
+    if($job->getReturnCode() == MIDAS_REMOTEPROCESSING_RETURN_FAILED)
+      {
+      return 'boxred';
+      }
+    if($job->getReturnCode() == MIDAS_REMOTEPROCESSING_RETURN_SUCESS)
+      {
+      return 'boxgreen';
+      }
+    return 'box';
+    }
+
+  /** check if node exists */
+  private function _isNodeExits($nodes, $name)
+    {
+    foreach($nodes as $node)
+      {
+      if($name == $node['name'])
+        {
+        return true;
+        }
+      }
+    return false;
+    }
+
+  /** get job tree */
+  private function _getJobTree($tree)
+    {
+    foreach($tree as $key => $job)
+      {
+      $tree[$key]->children = $this->_getJobTree($job->getChildren());
+      }
+    return $tree;
+    }
+
   /** get Related Items */
-  function getRelatedItems($job)
+  function getRelatedItems($job, $type = null)
     {
     if(!$job instanceof Remoteprocessing_JobDao)
       {
@@ -61,6 +228,16 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
           ->setIntegrityCheck(false)
           ->where('job_id = ?', $job->getKey())
           ->order('item_id DESC');
+
+    if($type != null)
+      {
+      $sql = $this->database->select()
+          ->from('remoteprocessing_job2item')
+          ->setIntegrityCheck(false)
+          ->where('job_id = ?', $job->getKey())
+          ->where('type = ?', $type)
+          ->order('item_id DESC');
+      }
 
     $loader = new MIDAS_ModelLoader();
     $itemModel = $loader->loadModel('Item');

@@ -2,7 +2,7 @@
  * jqPlot
  * Pure JavaScript plotting plugin using jQuery
  *
- * Version: 1.0.0b2_r792
+ * Version: 1.0.0b2_r1012
  *
  * Copyright (c) 2009-2011 Chris Leonello
  * jqPlot is currently available for use in all personal or commercial projects 
@@ -92,6 +92,19 @@
         // prop: highlightColors
         // an array of colors to use when highlighting a bar.
         this.highlightColors = [];
+        // prop: transposedData
+        // NOT IMPLEMENTED YET.  True if this is a horizontal bar plot and 
+        // x and y values are "transposed".  Tranposed, or "swapped", data is 
+        // required prior to rev. 894 builds of jqPlot with horizontal bars. 
+        // Allows backward compatability of bar renderer horizontal bars with 
+        // old style data sets.
+        this.transposedData = true;
+        this.renderer.animation = {
+            show: false,
+            direction: 'down',
+            speed: 3000,
+            _supported: true
+        };
         this._type = 'bar';
         
         // if user has passed in highlightMouseDown option and not set highlightMouseOver, disable highlightMouseOver
@@ -99,10 +112,25 @@
             options.highlightMouseOver = false;
         }
         
+        //////
+        // This is probably wrong here.
+        // After going back and forth on wether renderer should be the thing
+        // or extend the thing, it seems that it it best if it is a property
+        // on the thing.  This should be something that is commonized 
+        // among series renderers in the future.
+        //////
         $.extend(true, this, options);
+
+        // really should probably do this
+        $.extend(true, this.renderer, options);
         // fill is still needed to properly draw the legend.
         // bars have to be filled.
         this.fill = true;
+
+        // if horizontal bar and animating, reset the default direction
+        if (this.barDirection === 'horizontal' && this.rendererOptions.animation && this.rendererOptions.animation.direction == null) {
+            this.renderer.animation.direction = 'left';
+        }
         
         if (this.waterfall) {
             this.fillToZero = false;
@@ -152,7 +180,7 @@
         if (this.rendererOptions.waterfall == true) {
             this._data = $.extend(true, [], this.data);
             var sum = 0;
-            var pos = (!this.rendererOptions.barDirection || this.rendererOptions.barDirection == 'vertical') ? 1 : 0;
+            var pos = (!this.rendererOptions.barDirection || this.rendererOptions.barDirection === 'vertical' || this.transposedData === false) ? 1 : 0;
             for(var i=0; i<this.data.length; i++) {
                 sum += this.data[i][pos];
                 if (i>0) {
@@ -463,10 +491,20 @@
                         }                    
                     }
                     
-                    points.push([xstart, base+this.barWidth/2]);
-                    points.push([xstart, base-this.barWidth/2]);
-                    points.push([gridData[i][0], base-this.barWidth/2]);
-                    points.push([gridData[i][0], base+this.barWidth/2]);
+
+                    if (!this.fillToZero || this._plotData[i][0] >= 0) {
+                        points.push([xstart, base + this.barWidth / 2]);
+                        points.push([xstart, base - this.barWidth / 2]);
+                        points.push([gridData[i][0], base - this.barWidth / 2]);
+                        points.push([gridData[i][0], base + this.barWidth / 2]);
+                    }
+                    else {
+                        points.push([gridData[i][0], base + this.barWidth / 2]);
+                        points.push([gridData[i][0], base - this.barWidth / 2]);
+                        points.push([xstart, base - this.barWidth / 2]);
+                        points.push([xstart, base + this.barWidth / 2]);
+                    }
+
                     this._barPoints.push(points);
                     // now draw the shadows if not stacked.
                     // for stacked plots, they are predrawn by drawShadow
@@ -483,7 +521,7 @@
         }                
         
         if (this.highlightColors.length == 0) {
-            this.highlightColors = computeHighlightColors(this._dataColors);
+            this.highlightColors = $.jqplot.computeHighlightColors(this._dataColors);
         }
         
         else if (typeof(this.highlightColors) == 'string') {
@@ -594,7 +632,6 @@
                 }
             }
         }
-        this.target.bind('mouseout', {plot:this}, function (ev) { unhighlight(ev.data.plot); });
     }
     
     // called within context of plot
@@ -613,6 +650,7 @@
         
         this.eventCanvas._elem.before(this.plugins.barRenderer.highlightCanvas.createElement(this._gridPadding, 'jqplot-barRenderer-highlight-canvas', this._plotDimensions, this));
         this.plugins.barRenderer.highlightCanvas.setContext();
+        this.eventCanvas._elem.bind('mouseleave', {plot:this}, function (ev) { unhighlight(ev.data.plot); });
     }   
     
     function highlight (plot, sidx, pidx, points) {

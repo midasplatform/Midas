@@ -1,0 +1,89 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/dashboard/dashboard.domain.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
+
+echo $this->lesscss($this->moduleWebroot.'/public/css/dashboard/dashboard.domain.less');
+?>
+<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="<?php echo $this->webroot?>/modules/statistics/public/js/excanvas.min.js"></script><![endif]-->
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+
+<div class="viewMain">
+  <div>
+    <div class="genericSubtitle" style='color:grey;'>Uuid: <span ><?php echo $this->domain->getUuid()?></span></div>
+    <?php
+    $description = $this->domain->getDescription();
+    if(!empty($description))
+      {
+      ?>
+      <div class="genericSubtitle" style='color:grey;'>Description: <?php echo $description?></div>
+    <?php
+      }?>
+      <br/>
+  </div>
+  <div class="tabs" id='tabsGeneric'>
+    <ul>
+      <li><a href="#tabs-workflows">Workflows</a></li>
+      <?php
+      if($this->isAdmin)
+        {?>
+        <li><a href="#tabs-permissions">Manage Permissions</a></li>
+        <li><a href="#tabs-manage">Manage Domain</a></li>
+        <?php
+        }?>
+    </ul>
+    <?php
+    if($this->isAdmin)
+      {?>
+      <div id="tabs-manage">
+           <form id="workflowDomainForm" action="" method="POST" class="genericForm">
+              <b>Provide details of your the domain below:</b><br/><br/>
+            <span>Name:</span> <input type="text" id="workflowDomainName" name="workflowDomainName" value="<?php echo $this->domain->getName()?>"/><br/>
+            <span>Description:</span><br/>
+            <textarea name="workflowDomainDescription" id="workflowDomainDescription" rows="24" cols="80" ><?php echo $this->domain->getDescription()?></textarea><br/>
+            <input type="submit" name="manageWorkflowSave" id="manageWorkflowSave" value="Save"/>
+            </form>
+      </div>
+      <div id="tabs-permissions">
+        <div id="shareDiv" src="<?php echo $this->webroot?>/remoteprocessing/dashboard/sharedomain?domainId=<?php echo $this->domain->getKey()?>"> </div>
+      </div>
+    <?php
+      }?>
+    <div id="tabs-workflows">
+      <table style='display:block;'  class="midasTree">
+        <thead>
+          <tr>
+            <th style="width:200px;" >Name</th>
+            <th style="width:340px;" >Creation Date</th>
+          </tr>
+        </thead>
+        <?php
+        foreach($this->workflows as $workflow)
+          {
+          echo "<tr element='".$workflow->getKey()."'>";
+          echo  "<td><a href='".$this->webroot."/remoteprocessing/dashboard/workflow?workflowId=".$workflow->getKey()."'>".$workflow->getName()."</a></td>";
+          echo  "<td>".$workflow->getCreationDate()."</td>";
+
+          echo "</tr>";
+          }
+          ?>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+
+

@@ -19,7 +19,7 @@ $(document).ready(function(){
     errorSteps:[],    // array of step numbers to highlighting as error steps
     labelNext:'Next', // label for Next button
     labelPrevious:'Previous', // label for Previous button
-    labelFinish:'Create Job',  // label for Finish button
+    labelFinish:'Create',  // label for Finish button
     // Events
     onLeaveStep: onLeaveStepCallback, // triggers when leaving a step
     onShowStep: onShowStepCallback,  // triggers when showing a step
@@ -212,6 +212,10 @@ function synchronizeJobs()
 
 function onLeaveStepCallback(obj)
   {
+  if(obj.attr('rel') == 3)
+    {
+    return validateSteps(3);
+    }
   if(obj.attr('rel') == 2)
     {
     return validateSteps(2);
@@ -236,21 +240,23 @@ function onFinishCallback()
         objResults[index] = $.extend({}, results[index]);
       });
 
-      req = {'results' :  objResults, 'name': $('#jobName').val(), 'date' : date, 'interval': every};
+      req = {'results' :  objResults, 'name': $('#jobName').val(), 'date' : date, 'interval': every, 'workflowName': $('#workflowName').val(),
+          'workflowDescription': $('#workflowDescription').val(), 'workflowDomainName': $('#workflowDomainName').val(), 'workflowDomainDescription': $('#workflowDomainDescription').val(),
+          'workflowDomain': $('#workflowDomain').val(), 'workflowUuid': $('#workflowUuid').val()};
       $(this).after('<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Saving..." />')
       $(this).remove();
       $.ajax({
            type: "POST",
-           url: json.global.webroot+"/remoteprocessing/job/init?itemId="+$('#selectedExecutableId').val(),
+           url: json.global.webroot+"/remoteprocessing/job/init",
            data: req ,
            success: function(x){
-             //window.location.replace($('.webroot').val()+'/remoteprocessing/job/manage')
+             window.location.replace($('.webroot').val()+'/remoteprocessing/job/manage')
            }
          });
      }
    else
      {
-     midas.createNotice("There are some errors.", 4000);
+     createNotive("There are some errors.", 4000);
      }
   }
 
@@ -260,6 +266,14 @@ function validateSteps(stepnumber)
   var isStepValid = true;
 
   if(stepnumber == 2)
+    {
+    if($('#workflowName').val().length == 0)
+      {
+      isStepValid = false;
+      if(required) createNotive('Please set a name', 4000);
+      }
+    }
+  if(stepnumber == 3)
     {
     var i = 0;
     results = new Array();
@@ -274,8 +288,7 @@ function validateSteps(stepnumber)
 
     if($('.optionWrapper').length == 0)
       {
-      midas.createNotice('The workflow is empty.', 4000);
-      isStepValid = false;
+      return true;
       }
 
     $('.optionWrapper').each(function(){
@@ -290,12 +303,12 @@ function validateSteps(stepnumber)
       {
       if($(this).find('.nameOutputOption').val() == '' || $(this).find('.selectedFolder').attr('element') == '')
         {
-        if(required) midas.createNotice('Please set '+$(this).attr('name'), 4000);
+        if(required) createNotive('Please set '+$(this).attr('name'), 4000);
         if(required) isStepValid = false;
         }
       else if($(this).find('.nameOutputOption').val().indexOf(".") == -1)
         {
-        if(required) midas.createNotice('Please set an extension in the option '+$(this).attr('name'), 4000);
+        if(required) createNotive('Please set an extension in the option '+$(this).attr('name'), 4000);
         if(required) isStepValid = false;
         }
       else
@@ -307,7 +320,7 @@ function validateSteps(stepnumber)
       {
       if(($(this).find('select').length == 0 || $(this).find('select').val() == -1) && $(this).find('.selectedItem').attr('element') == '' && $(this).find('.selectedFolderContent').attr('element') == '')
         {
-        if(required) midas.createNotice('Please set '+$(this).attr('name'), 4000);
+        if(required) createNotive('Please set '+$(this).attr('name'), 4000);
         if(required) isStepValid = false;
         }
       else if($(this).find('select').length != 0 && $(this).find('select').val() != -1 )
@@ -331,7 +344,7 @@ function validateSteps(stepnumber)
       {
       if($(this).find('.valueInputOption').val() == '')
         {
-        if(required) midas.createNotice('Please set '+$(this).attr('name'), 4000);
+        if(required) createNotive('Please set '+$(this).attr('name'), 4000);
         if(required) isStepValid = false;
         }
       else
@@ -357,12 +370,11 @@ function validateSteps(stepnumber)
 
 function validateAllSteps()
   {
-  return validateSteps(1) && validateSteps(2);
+  return validateSteps(1) && validateSteps(2) && validateSteps(3);
   }
 
 function onShowStepCallback(obj)
   {
-
   }
 
 /* not currently used*/
@@ -386,7 +398,7 @@ function loadRecentUpload()
       $('.recentUploadItemLi').click(function(){
         $('#selectedExecutable').html($(this).find('a').html());
         $('#selectedExecutableId').val($(this).attr('element'));
-        midas.createNotice("Please set the executable meta informaiton.", 4000);
+        createNotive("Please set the executable meta informaiton.", 4000);
         $('#metaPageBlock').load(json.global.webroot+'/remoteprocessing/executable/define?itemId='+$(this).attr('element'));
         $('#metaWrapper').show();
         isExecutableMeta = false;
@@ -415,20 +427,20 @@ function initScheduler()
 function initExecutableForm()
 {
   $('.selectInputFileLink').click(function(){
-    midas.loadDialog("selectitem_"+$(this).attr('order'),"/browse/selectitem");
-    midas.showDialog('Browse');
+    loadDialog("selectitem_"+$(this).attr('order'),"/browse/selectitem");
+    showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
 
   $('.selectOutputFolderLink').click(function(){
-    midas.loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=write");
-    midas.showDialog('Browse');
+    loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=write");
+    showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
 
   $('.selectInputFolderLink').click(function(){
-    midas.loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=read");
-    midas.showDialog('Browse');
+    loadDialog("selectfolder_"+$(this).attr('order'),"/browse/selectfolder?policy=read");
+    showDialog('Browse');
     currentBrowser = $(this).attr('order');
   });
   $('[qtip]').qtip({
@@ -458,16 +470,16 @@ function itemSelectionCallback(name, id)
             else
               {
               isExecutableMeta = false;
-              midas.createNotice("Please set the executable meta informaiton.", 4000);
-              midas.loadDialog("meta_"+id, '/remoteprocessing/executable/define?itemId='+id);
-              midas.showBigDialog("MetaInformation", false);
+              createNotive("Please set the executable meta informaiton.", 4000);
+              loadDialog("meta_"+id, '/remoteprocessing/executable/define?itemId='+id);
+              showBigDialog("MetaInformation", false);
               }
           });
         }
         else
         {
         executableValid = false;
-        midas.createNotice("The selected item is not a valid executable", 4000);
+        createNotive("The selected item is not a valid executable", 4000);
         }
       });
 

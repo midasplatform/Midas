@@ -1,0 +1,74 @@
+.jsdot-container { overflow: auto; }
+
+.jsdot_circle {
+	stroke: black;
+	fill: lightgray;
+}
+
+.jsdot_box-green {
+	stroke: black;
+	fill: #8ABA5A;
+}
+
+.jsdot_box-red {
+	stroke: black;
+	fill: #DE6868;
+}
+.jsdot_box {
+	stroke: black;
+	fill: lightgray;
+}
+
+.jsdot_hexagon {
+	stroke: black;
+	fill: lightgray;
+}
+
+.jsdot_concave_hexagon {
+	stroke: black;
+	fill: lightgray;
+}
+
+.jsdot_line_edge {
+	stroke: black;
+	fill: none;
+	stroke-width: 1;
+	marker-end: url(#Arrow);
+}
+
+.jsdot_dirline_edge {
+	stroke: black;
+	fill: none;
+	stroke-width: 1;
+	marker-end: url(#Arrow);
+}
+
+.jsdot_bidiline_edge {
+	stroke: black;
+	fill: none;
+	stroke-width: 1;
+	marker-end: url(#Arrow);
+}
+
+.jsdot_node_label {
+	stroke: none;
+	fill: black;
+	text-anchor: middle;
+	dominant-baseline: middle;
+}
+
+.jsdot-edge-label {
+	stroke: none;
+	fill: black;
+}
+
+.jsdot-edge-handle {
+	stroke-width: 5;
+	opacity: 0;
+}
+
+/* this must be last, so that it overrides others when used */
+.jsdot_def_hl {
+	stroke: red;
+/*	stroke-width: 2; */
+}

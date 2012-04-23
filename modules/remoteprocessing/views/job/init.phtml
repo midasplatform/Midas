@@ -15,7 +15,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.t
 $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.init.js');
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.smartWizard-2.0.js');
 
-echo $this->lesscss($this->moduleWebroot.'/public/css/job/job.init.less');
+echo $this->lesscss($this->moduleWebroot.'/public/css/job/job.init.less', array());
 ?>
 <!-- <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/job/job.init.css" /> -->
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.timepicker-addon.css" />
@@ -35,14 +35,22 @@ echo $this->lesscss($this->moduleWebroot.'/public/css/job/job.init.less');
       <a href="#step-2">
           <span class="stepDesc">
              2. Workflow<br />
-             <small>Set up the jobs</small>
+             <small>Create workflow</small>
           </span>
       </a>
     </li>
     <li>
       <a href="#step-3">
           <span class="stepDesc">
-             3. Schedule<br />
+             3. Jobs<br />
+             <small>Set up the jobs</small>
+          </span>
+      </a>
+    </li>
+    <li>
+      <a href="#step-4">
+          <span class="stepDesc">
+             4. Schedule<br />
              <small>Schedule the workflow</small>
           </span>
       </a>
@@ -61,6 +69,37 @@ echo $this->lesscss($this->moduleWebroot.'/public/css/job/job.init.less');
 
   </div>
   <div id="step-2">
+    <h2 class="StepTitle">Set up your Workflow</h2>
+    <form id="workflowForm" class="genericForm">
+      <span>Name:</span> <input type="text" id="workflowName" name="workflowName" value="Workflow_<?php echo time()?>"/><br/>
+      <span qtip="The Uuid is used to submit external job." >Uuid:</span> <input type="text" id="workflowUuid" disabled name="workflowUuid" value="<?php echo uniqid() . md5(mt_rand())?>"/><br/>
+      <span>Description:</span><br/>
+      <textarea name="workflowDescription" id="workflowDescription" rows="24" cols="80" ></textarea><br/>
+
+      <span>Domain:</span>
+      <select id="workflowDomain" name="workflowDomain" onchange="if($('#workflowDomain').val()==-1)$('#createDomain').show();else $('#createDomain').hide();">
+        <?php
+        foreach($this->domains as $domain)
+          {
+          echo "<option value='".$domain->getKey()."'>".$domain->getName()."</option>";
+          }
+        ?>
+        <option value="-1">Register a new Domain</option>
+      </select>
+
+    </form>
+    <div id="createDomain">
+      <form id="workflowDomainForm" class="genericForm">
+        <b>Provide details of your new Domain below:</b><br/><br/>
+      <span>Name:</span> <input type="text" id="workflowDomainName" name="workflowDomainName" value="Domain_<?php echo time()?>"/><br/>
+      <span>Description:</span><br/>
+      <textarea name="workflowDomainDescription" id="workflowDomainDescription" rows="24" cols="80" ></textarea><br/>
+      </form>
+    </div>
+
+
+  </div>
+  <div id="step-3">
         <?php
           echo '<div  class="genericBigButton ">';
             echo "<a id='addJobLink' ><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/add.png'/>";
@@ -69,7 +108,6 @@ echo $this->lesscss($this->moduleWebroot.'/public/css/job/job.init.less');
           echo '</div>';
         ?>
     <div id="jobListing">
-
     </div>
 
     <br/>
@@ -82,6 +120,7 @@ echo $this->lesscss($this->moduleWebroot.'/public/css/job/job.init.less');
         }
       ?>
 
+    <b>This feature is currently disabled</b>
     <div id="dialogJobCreation">
       <h3>Create a job</h3>
       <label for="jobNameForm">Name:</label><input type="text" name="jobNameForm" id="jobNameForm"/><br/>
@@ -112,8 +151,8 @@ echo $this->lesscss($this->moduleWebroot.'/public/css/job/job.init.less');
     </div>
   </div>
 
-  <div id="step-3">
-      <h2 class="StepTitle">Schedule (Optional)</h2>
+  <div id="step-4">
+    <h2 class="StepTitle">Schedule (Optional)</h2>
     <input type='checkbox' id="checkboxSchedule" name="checkboxSchedule"/> <label for="checkboxSchedule">Run as soon as possible</label>
     <br/>
     <div id="schedulerWrapper" >
@@ -127,67 +166,3 @@ echo $this->lesscss($this->moduleWebroot.'/public/css/job/job.init.less');
     <br/>
   </div>
 </div>
-
-<?php /*
-
-<h2 class="StepTitle">Executable</h2>
-      <br/><b>Select the executable you want to use.</b>
-      <br/><br/>
-      <?php
-        echo '<div id="browseExecutableFile" class="genericBigButton ">';
-          echo "<a  ><img  alt='' src='{$this->coreWebroot}/public/images/FileTree/file.png'/>";
-          echo $this->t('Browse');
-          echo "</a>";
-        echo '</div>';
-        ?>
-
-      <div id='recentuploadContentBlock'>
-        <img  src="<?php echo $this->webroot?>/core/public/images/icons/loading.gif" alt="Loading..." />
-      </div>
-      <br/><br/>
-      <b>Selected Item:</b> <span id="selectedExecutable"><?php echo (isset($this->itemDao))? $this->itemDao->getName():'None'?></span>
-      <input type="hidden" id="selectedExecutableId" value="<?php echo (isset($this->itemDao))? $this->itemDao->getKey():''?>"/>
-
-      <div id="metaWrapper">
-        <h3>Meta information</h3>
-        <div id="metaPageBlock">
-          <img  src="<?php echo $this->webroot?>/core/public/images/icons/loading.gif" alt="Loading..." />
-        </div>
-      </div>
-
-            <h2 class="StepTitle">Parameters</h2>
-      <br/>
-      <b>Here are listed the options executable options. Please fill the form using the data you want to process.</b><br/><br/>
-      <?php
-      if($this->scheduled)
-        {?>
-        A scheduled job require folder inputs. All the data located in these folders will be periodically processed.<br/><br/>
-        <?php
-        }
-      ?>
-
-      <br/>
-      <div class="nameWrapper" >
-        <h4>Name (required)</h4>
-        <input type="text" id="jobName" name="jobName"/>
-      </div>
-      <div id="executableForm" loaded="">
-      </div>
-
-    <?php if($this->scheduled)
-      {?>
-    <input type='checkbox' id="checkboxSchedule" name="checkboxSchedule"/> <label for="checkboxSchedule">Run as soon as possible</label>
-    <div id="schedulerWrapper" >
-      Date and Time: <input type="text" id="datepicker"> Every: <select id="intervalSelect">
-        <option value="0">Only once</option>
-        <option value="3600">Hours</option>
-        <option value="86400">Days</option>
-        <option value="604800">Weeks</option>
-      </select>
-    </div>
-    <br/>
-    <?php
-      }?>
-
-   */?>
-

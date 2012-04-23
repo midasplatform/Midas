@@ -197,6 +197,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
    */
   public function resultsserver($args)
     {
+    set_time_limit(0);
     $testingmode = false;
     if(isset($_GET['testingmode']) && $_GET['testingmode'] == 1)
       {
@@ -207,10 +208,10 @@ class Remoteprocessing_ApiComponent extends AppComponent
       throw new Exception('Should be a put request.', MIDAS_INVALID_PARAMETER);
       }
 
-
     $modelLoad = new MIDAS_ModelLoader();
     $componentLoader = new MIDAS_ComponentLoader();
     $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
     $userDao = $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
     if($userDao == false)
       {
@@ -235,6 +236,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
       }
 
     $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
+    $workflowModel = $modelLoad->loadModel('Workflow', 'remoteprocessing');
     if(!file_exists(UtilityComponent::getTempDirectory().'/remoteprocessing'))
       {
       mkdir(UtilityComponent::getTempDirectory().'/remoteprocessing');
@@ -268,19 +270,46 @@ class Remoteprocessing_ApiComponent extends AppComponent
             )
         ));
       $compressed = $filter->filter($destionation."/results.zip");
-      if($compressed && file_exists($target_directory.'/parameters.txt'))
+      if($compressed)
         {
-        $info = file_get_contents($target_directory.'/parameters.txt');
-        $info = JsonComponent::decode($info);
-        $job_id = $info['job_id'];
-        $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
-        $jobDao = $jobModel->load($job_id);
-        $jobDao->setStatus(MIDAS_REMOTEPROCESSING_STATUS_DONE);
-        $jobModel->save($jobDao);
-        $info['pathResults'] = $destionation.'/content';
-        $info['log'] = file_get_contents($target_directory.'/log.txt');
-        $info['userKey'] = $userDao->getKey();
-        Zend_Registry::get('notifier')->callback($info['resultCallback'], $info);
+        if(file_exists($target_directory.'/job.xml'))
+          {
+          $xmlResults = $jobComponent->convertXmlResults(file_get_contents($target_directory.'/job.xml'));
+          if($xmlResults['workflow'] == false)
+            {
+            throw new Exception('Error, the workflow doesn\'t exit.', MIDAS_INVALID_PARAMETER);
+            }
+          if($xmlResults['job'] == false)
+            {
+            require_once BASE_PATH.'/modules/remoteprocessing/models/dao/JobDao.php';
+            $xmlResults['job'] = new Remoteprocessing_JobDao();
+            $xmlResults['job']->setScript("");
+            $xmlResults['job']->setUuid($xmlResults['jobUuid']);
+            $xmlResults['job']->setType(MIDAS_REMOTEPROCESSING_TYPE_EXECUTABLE);
+            $xmlResults['job']->setCondition("");
+            $xmlResults['job']->setStartDate($xmlResults['startDate']);
+            $date = new Zend_Date();
+            $date->add('5', Zend_Date::HOUR);
+            $xmlResults['job']->setExpirationDate($date->toString('c'));
+            if(isset($xmlResults['creatorId']))
+              {
+              $xmlResults['job']->setCreatorId($xmlResults['creatorId']);
+              }
+            $xmlResults['job']->setName($xmlResults['name']);
+
+            $xmlResults['job']->setParams(JsonComponent::encode($xmlResults['params']));
+            }
+          $xmlResults['job']->setStatus(MIDAS_REMOTEPROCESSING_STATUS_DONE);
+          $jobModel->save($xmlResults['job']);
+          $workflowModel->addJob($xmlResults['job'], $xmlResults['workflow']);
+          $xmlResults['pathResults'] = $destionation.'/content';
+          $xmlResults['userKey'] = $userDao->getKey();
+          Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_PROCESS_RESULTS", $xmlResults);
+          }
+        else
+          {
+          throw new Exception('Error, unable to find job description (job.xml).', MIDAS_INVALID_PARAMETER);
+          }
         }
       else
         {

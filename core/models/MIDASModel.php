@@ -322,7 +322,7 @@ class MIDASModel
         {
         require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php';
         }
-      if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. '.php'))
+      elseif(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. '.php'))
         {
         require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. '.php';
         }

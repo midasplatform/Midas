@@ -23,7 +23,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
   public $_models = array('Item', 'Bitstream', 'ItemRevision', 'Assetstore', 'Folder');
   public $_components = array('Upload');
   public $_moduleComponents = array('Executable', 'Job');
-  public $_moduleModels = array('Job');
+  public $_moduleModels = array('Job', 'Workflow', 'Workflowdomain', 'WorkflowdomainPolicyuser');
 
   /** manage jobs */
   function manageAction()
@@ -33,18 +33,19 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       $this->haveToBeLogged();
       return false;
       }
-    $this->view->header = $this->t("Manage Your Jobs");
+    $this->view->header = $this->t("Manage Your Workflows");
 
     $modelLoad = new MIDAS_ModelLoader();
     $schedulerJobModel = $modelLoad->loadModel('Job', 'scheduler');
     $this->view->scheduledJobs = $schedulerJobModel->getJobsByTaskAndCreator('TASK_REMOTEPROCESSING_ADD_JOB', $this->userSession->Dao);
     $this->view->relatedJobs = $this->Remoteprocessing_Job->getByUser($this->userSession->Dao, 10);
+    $this->view->domains = $this->Remoteprocessing_Workflowdomain->getUserDomains($this->userSession->Dao);
     }
 
   /** init a job*/
   function initAction()
     {
-    $this->view->header = $this->t("Create Job Wizard");
+    $this->view->header = $this->t("Workflow Wizard");
     if(!$this->logged)
       {
       $this->haveToBeLogged();
@@ -54,7 +55,6 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     if(isset($scheduled))
       {
       $scheduled = true;
-      $this->view->header = $this->t("Schedule Job Wizard");
       }
     else
       {
@@ -72,15 +72,37 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       $this->view->itemDao = $itemDao;
       }
 
+    $this->view->domains = $this->Remoteprocessing_Workflowdomain->getUserDomains($this->userSession->Dao, MIDAS_POLICY_WRITE);
+
     $this->view->json['job']['scheduled'] = $scheduled;
     $this->view->scheduled = $scheduled;
     if($this->_request->isPost())
       {
       $jobResults = $this->_getParam("results");
-      if(!isset($jobResults) || empty($jobResults))
+      $workflowDomainId = $this->_getParam("workflowName");
+      if(isset($workflowDomainId))
         {
-        throw new Zend_Exception("Empty results.");
+        $workflowDomain = $this->Remoteprocessing_Workflowdomain->load($this->_getParam("workflowDomain"));
         }
+
+      if(!isset($workflowDomain) || $workflowDomain == false)
+        {
+        require_once BASE_PATH.'/modules/remoteprocessing/models/dao/WorkflowdomainDao.php';
+        $workflowDomain = new Remoteprocessing_WorkflowdomainDao();
+        $workflowDomain->setName($this->_getParam("workflowDomainName"));
+        $workflowDomain->setDescription($this->_getParam("workflowDomainDescription"));
+        $this->Remoteprocessing_Workflowdomain->save($workflowDomain);
+        $this->Remoteprocessing_WorkflowdomainPolicyuser->createPolicy($this->userSession->Dao, $workflowDomain, MIDAS_POLICY_ADMIN);
+        }
+
+      require_once BASE_PATH.'/modules/remoteprocessing/models/dao/WorkflowDao.php';
+      $workflow = new Remoteprocessing_WorkflowDao();
+      $workflow->setName($this->_getParam("workflowName"));
+      $workflow->setDescription($this->_getParam("workflowDescription"));
+      $workflow->setUuid($this->_getParam("workflowUuid"));
+      $workflow->setWorkflowdomainId($workflowDomain->getKey());
+      $this->Remoteprocessing_Workflow->save($workflow);
+      return;
 
       $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
       $metaContent = new SimpleXMLElement(file_get_contents($metaFile->getFullPath()));
@@ -308,7 +330,15 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       throw new Zend_Exception("Unable to find job.");
       }
 
+    if(!$this->Remoteprocessing_Job->policyCheck($jobDao, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      throw new Zend_Exception("Permissions error.");
+      }
+
     $this->view->job = $jobDao;
+    $workflow = $jobDao->getWorkflows();
+    $this->view->workflow = $workflow[0];
+    $this->view->domain = $workflow[0]->getDomain();
     $this->view->header = $this->t("Job: ".$jobDao->getName());
     $items = $jobDao->getItems();
     $inputs = array();
@@ -340,11 +370,16 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 
         foreach($metadata as $m)
           {
-          if($m->getElement() == 'parameter' && !in_array($m->getQualifier(), $parametersList))
+          if($m->getElement() == 'parameter')
             {
             $parametersList[$m->getQualifier()] = $m->getQualifier();
+            $item->metadataValues[$m->getQualifier()] = $m->getValue();
             }
-          $item->metadataParameters[$m->getQualifier()] = $m->getValue();
+          elseif($m->getElement() == 'fileInput')
+            {
+            $parametersList[$m->getQualifier()] = $m->getQualifier();
+            $item->metadataValues[$m->getQualifier()] = $this->Item->getByUuid($m->getValue());
+            }
           }
 
         $outputs[] = $item;
@@ -362,11 +397,12 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           }
         }
       }
-
     $this->view->outputs = $outputs;
     $this->view->log = $log;
     $this->view->results =  $this->ModuleComponent->Job->convertXmlREsults($log);
     $this->view->inputs = $inputs;
+    list($this->view->inputs, $this->view->inputsValues) = $this->ModuleComponent->Job->getInputParams($this->view->results);
+    list($this->view->metrics, $this->view->metricsValues) = $this->ModuleComponent->Job->getOutputParams($this->view->results);
     $this->view->executable = $executable;
     $this->view->parameters = $parametersList;
     }

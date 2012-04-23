@@ -1,7 +1,7 @@
 <?php
 /*=========================================================================
  MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis GuÃ©rin. 69100 Villeurbanne, FRANCE
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
  All rights reserved.
  More information http://www.kitware.com
 
@@ -24,6 +24,11 @@ class  Zend_View_Helper_Lesscss
   function lesscss($pathLessScript, $variables = array())
     {
     $in = str_replace($this->view->webroot, BASE_PATH, $pathLessScript);
+    if(empty($this->view->webroot))
+      {
+      $in = BASE_PATH.'/'. $pathLessScript;
+      }
+    $variables['webroot'] = '"'.$this->view->webroot.'"';
     $module = "core";
     $nameArray = explode("/", $pathLessScript);
     foreach($nameArray as $key => $value)
@@ -36,11 +41,12 @@ class  Zend_View_Helper_Lesscss
       }
 
     $outFilename = $module.'-'.basename($pathLessScript).'.css';
-    $out = BASE_PATH.'/data/compiledCSS/'.$outFilename;
+    $out = BASE_PATH.'/data/compiledCss/'.$outFilename;
 
-    if (true || !is_file($out) || filemtime($in) > filemtime($out))
+    if (!is_file($out) || filemtime($in) > filemtime($out))
       {
 			$less = new lessc();
+      $less->importDir = BASE_PATH;
       try
         {
         file_put_contents($out, $less->parse(file_get_contents($in), $variables));
@@ -50,8 +56,33 @@ class  Zend_View_Helper_Lesscss
         throw new Zend_Exception($ex->getMessage());
         }
       }
+
+    // if it's a small file, add the css inline to improve performances
+    if(filesize($out) < 500)
+      {
+      return '<style>'.$this->minifyCSS(file_get_contents($out)).'</style>';
+      }
     return '<link type="text/css" rel="stylesheet" href="'.$this->view->webroot.'/data/compiledCss/'.$outFilename.'?'.filemtime($out).'" />';
     }
+
+    /** minify CSS*/
+    private function minifyCSS($string)
+      {
+      /* Strips Comments */
+      $string = preg_replace('!/\*.*?\*/!s','', $string);
+      $string = preg_replace('/\n\s*\n/',"\n", $string);
+
+      /* Minifies */
+      $string = preg_replace('/[\n\r \t]/',' ', $string);
+      $string = preg_replace('/ +/',' ', $string);
+      $string = preg_replace('/ ?([,:;{}]) ?/','$1',$string);
+
+      /* Kill Trailing Semicolon, Contributed by Oliver */
+      $string = preg_replace('/;}/','}',$string);
+
+      /* Return Minified CSS */
+      return $string;
+      }
 
     /** does nothing*/
     public function nothing()

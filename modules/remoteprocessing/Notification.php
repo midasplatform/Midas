@@ -39,7 +39,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_CORE_LAYOUT_TOPBUTTONS', 'getButton');
     $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getFooter');
     $this->addCallBack('CALLBACK_CORE_GET_FOOTER_HEADER', 'getHeader');
-    $this->addCallBack('CALLBACK_REMOTEPROCESSING_EXECUTABLE_RESULTS', 'processProcessingResults');
+    $this->addCallBack('CALLBACK_REMOTEPROCESSING_PROCESS_RESULTS', 'processProcessingResults');
     $this->addCallBack('CALLBACK_REMOTEPROCESSING_ADD_JOB', 'addJob');
     }//end init
 
@@ -97,6 +97,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     if($params['item'] instanceof ItemDao)
       {
       $jobs = $this->Remoteprocessing_Job->getRelatedJob($params['item']);
+
       $items = array();
       foreach($jobs as $job)
         {
@@ -148,12 +149,13 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
           }
         $i++;
         }
-      if($i == 0)
-        {
-        return "";
-        }
+
       $html .=  "</ul>";
       $html .=  "</div>";
+      if($i == 0)
+        {
+        $html =   "";
+        }
 
       $html .= "<div class='sideElementLast'>
                   <h1>".$this->t('Related Jobs')."</h1>
@@ -184,11 +186,9 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     return "";
     }
 
-    /** Process results. The result are usually sent by a remote machine. See api component.*/
+  /** Process results. The result are usually sent by a remote machine. See api component.*/
   public function processProcessingResults($params)
     {
-    $modulesConfig=Zend_Registry::get('configsModules');
-
     $modelLoad = new MIDAS_ModelLoader();
     $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
     $userModel = $modelLoad->loadModel('User');
@@ -196,66 +196,112 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     $itemModel = $modelLoad->loadModel('Item');
     $metadataModel = $modelLoad->loadModel('Metadata');
     $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
-    $job = $jobModel->load($params['job_id']);
+    $folderpolicyuserModel = $modelLoad->loadModel('Folderpolicyuser');
+    $job = $params['job'];
 
     $userDao = $userModel->load($params['userKey']);
-    $creatorDao = $userModel->load($params['creator_id']);
+    $creatorDao = $userModel->load($params['creatorId']);
 
-    if(isset($params['ouputFolders'][0]))
+    $folder = false;
+    $privateFolder = $userDao->getPrivateFolder();
+    if(isset($params['outputFolder']))
       {
-      $folder = $folderModel->load($params['ouputFolders'][0]);
+      $folder = $folderModel->load($params['outputFolder']);
       }
-    else
+
+    if(!$folder)
       {
-      $folder = $userDao->getPrivateFolder();
+      $folder = $privateFolder;
       }
+
+    $folderpolicyuserModel->createPolicy($userDao, $folder, MIDAS_POLICY_WRITE);
 
     $componentLoader = new MIDAS_ComponentLoader();
     $uploadComponent = $componentLoader->loadComponent('Upload');
     $params['outputKeys'] = array();
 
-    foreach($params['output'] as $file)
+    foreach($params['tasks'] as $keyTask => $task)
       {
-      $filepath = $params['pathResults'].'/'.$file;
-      if(file_exists($filepath))
+      foreach($task['inputFiles'] as $keyFile => $file)
         {
-        $tmpArray = array_reverse(explode('.', basename($filepath)));
-        $oldfilepath = $filepath;
-        $filepath = str_replace(".".$tmpArray[1].".", ".", $filepath);
-        rename($oldfilepath, $filepath);
-        $item = $uploadComponent->createUploadedItem($userDao, basename($filepath), $filepath, $folder, null, '', true);
-        $params['outputKeys'][$tmpArray[1]][] = $item->getKey();
-        $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT);
-        // add parameter metadata
-        if(is_numeric($tmpArray[1]) && isset($params['parametersList']) && isset($params['optionMatrix']))
+        $filepath = $params['pathResults'].'/'.$file['fileName'];
+        if(file_exists($filepath))
           {
-          $revision = $itemModel->getLastRevision($item);
-          foreach($params['parametersList'] as $key => $name)
+          $tmpArray = array_reverse(explode('.', basename($filepath)));
+          $oldfilepath = $filepath;
+          $filepath = str_replace(".".$tmpArray[1].".", ".", $filepath);
+          rename($oldfilepath, $filepath);
+          $item = false;
+          if(!empty($file['uuid']))
             {
-            if(isset($params['optionMatrix'][$tmpArray[1]][$key]))
+            $item = $itemModel->getByUuid($file['uuid']);
+            }
+          if($item == false)
+            {
+            $item = $uploadComponent->createUploadedItem($userDao, basename($filepath), $filepath, $folder, null, '', true);
+            $itempolicyuserModel->createPolicy($creatorDao, $item, MIDAS_POLICY_WRITE);
+            }
+          $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT);
+          $params['tasks'][$keyTask]['inputFiles'][$keyFile]['uuid'] = $item->getUuid();
+          $task['inputFiles'][$keyFile]['uuid'] = $item->getUuid();
+          }
+        }
+      foreach($task['outputFiles'] as $keyFile => $file)
+        {
+        $filepath = $params['pathResults'].'/'.$file['fileName'];
+
+        if(file_exists($filepath))
+          {
+          $tmpArray = array_reverse(explode('.', basename($filepath)));
+          $oldfilepath = $filepath;
+          $filepath = str_replace(".".$tmpArray[1].".", ".", $filepath);
+          rename($oldfilepath, $filepath);
+          $item = false;
+          if(!empty($file['uuid']))
+            {
+            $item = $itemModel->getByUuid($file['uuid']);
+            }
+          if($item == false)
+            {
+            $item = $uploadComponent->createUploadedItem($userDao, basename($filepath), $filepath, $folder, null, '', true);
+            $itempolicyuserModel->createPolicy($creatorDao, $item, MIDAS_POLICY_WRITE);
+            }
+          $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT);
+          $params['tasks'][$keyTask]['outputFiles'][$keyFile]['uuid'] = $item->getUuid();
+
+          $revision = $itemModel->getLastRevision($item);
+          foreach($task['inputFiles'] as $key => $input)
+            {
+            $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'fileInput', $input['name']);
+            if(!$metadataDao)
               {
-              $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'parameter', $name);
-              if(!$metadataDao)
-                {
-                $metadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'parameter', $name, '');
-                }
-              $metadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL,
-                           'parameter', $name, $params['optionMatrix'][$tmpArray[1]][$key]);
+              $metadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'fileInput', $input['name'], '');
               }
+            $metadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL,
+                        'fileInput', $input['name'], $input['uuid']);
+            }
+
+          foreach($task['inputParam'] as $key => $input)
+            {
+            $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'parameter', $input['name']);
+            if(!$metadataDao)
+              {
+              $metadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'parameter', $input['name'], '');
+              }
+            $metadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL,
+                        'parameter', $input['name'], $input['value']);
             }
           }
         }
       }
-    if(isset($params['log']) && !empty($params['log']))
-      {
-      $jobComponenet = $componentLoader->loadComponent('Job', 'remoteprocessing');
-      $xmlResults = $jobComponenet->computeLogs($job, $params['log'], $params);
-      $logFile = $pathFile = $this->getTempDirectory().'/'.uniqid();
-      file_put_contents($logFile, $xmlResults);
-      $item = $uploadComponent->createUploadedItem($userDao, 'job-'.$params['job_id'].'_results.xml', $logFile, $folder);
-      $itempolicyuserModel->createPolicy($creatorDao, $item, MIDAS_POLICY_READ);
-      $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS);
-      }
+
+    $componentLoader = new MIDAS_ComponentLoader();
+    $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
+
+    unlink($params['pathResults'].'/job.xml');
+    file_put_contents($params['pathResults'].'/job.xml', $jobComponent->createFormatedXmlFromArray($params));
+    $item = $uploadComponent->createUploadedItem($userDao, 'job-'.$params['job']->getKey().'_results.xml', $params['pathResults'].'/job.xml', $privateFolder);
+    $jobModel->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS);
     }
 
   /** Add a job. This is probably the main method of the module. It will create the job workflow. */

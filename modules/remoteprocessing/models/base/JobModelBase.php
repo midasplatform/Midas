@@ -26,6 +26,7 @@ class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
     parent::__construct();
     $this->_name = 'remoteprocessing_job';
     $this->_key = 'job_id';
+    $this->_daoName = 'JobDao';
 
     $this->_mainData = array(
         'job_id' =>  array('type' => MIDAS_DATA),
@@ -46,6 +47,7 @@ class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
         'children' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Job', 'module' => 'remoteprocessing', 'table' => 'remoteprocessing_job2job', 'parent_column' => 'parent_id', 'child_column' => 'job_id'),
         'items' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Item', 'table' => 'remoteprocessing_job2item', 'parent_column' => 'job_id', 'child_column' => 'item_id'),
         'creator' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'creator_id', 'child_column' => 'user_id'),
+        'workflows' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Workflow', 'module' => 'remoteprocessing', 'table' => 'remoteprocessing_workflow2job', 'parent_column' => 'job_id', 'child_column' => 'workflow_id'),
         );
     $this->initialize(); // required
     } // end __construct()
@@ -53,6 +55,14 @@ class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
   /** save */
   public function save($dao)
     {
+    if(!isset($dao->uuid) || empty($dao->uuid))
+      {
+      $dao->setUuid(uniqid() . md5(mt_rand()));
+      }
+    if(!isset($dao->start_date) || empty($dao->start_date))
+      {
+      $dao->setStartDate(date('c'));
+      }
     $dao->setCreationDate(date('c'));
     parent::save($dao);
     }

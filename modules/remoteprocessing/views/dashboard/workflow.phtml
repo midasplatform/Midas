@@ -1,0 +1,135 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/dashboard/dashboard.workflow.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.jsdot.js');
+$this->headScript()->appendFile($this->webroot.'/modules/statistics/public/js/jquery.jqplot.js');
+$this->headScript()->appendFile($this->webroot.'/modules/statistics/public/js/jqplot/jqplot.dateAxisRenderer.min.js');
+$this->headScript()->appendFile($this->webroot.'/modules/statistics/public/js/jqplot/jqplot.pieRenderer.min.js');
+
+echo $this->lesscss($this->moduleWebroot.'/public/css/dashboard/dashboard.workflow.less');
+?>
+<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="<?php echo $this->webroot?>/modules/statistics/public/js/excanvas.min.js"></script><![endif]-->
+<link rel="stylesheet" type="text/css" href="<?php echo $this->webroot?>/modules/statistics/public/css/jquery.jqplot.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.jsdot.editor.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.jsdot.shapes.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+
+<div class="viewMain">
+  <div>
+    <div class="genericSubtitle" style='color:grey;'>Uuid: <span ><?php echo $this->workflow->getUuid()?></span></div>
+    <div class="genericSubtitle" style='color:grey;'>Domain: <a href="<?php echo $this->webroot?>/remoteprocessing/dashboard/domain?domainId=<?php echo $this->workflow->getDomain()->getKey() ?>"><?php echo $this->workflow->getDomain()->getName()?></a></div>
+    <?php
+    $description = $this->workflow->getDescription();
+    if(!empty($description))
+      {
+      ?>
+      <div class="genericSubtitle" style='color:grey;'>Description: <?php echo $description?></div>
+    <?php
+      }?>
+      <br/>
+  </div>
+  <div class="tabs" id='tabsGeneric'>
+  <ul>
+    <li><a href="#tabs-lastjobs">Last jobs</a></li>
+    <?php
+    if($this->isAdmin)
+      {?>
+      <li><a href="#tabs-manage">Manage Workflow</a></li>
+      <?php
+      }?>
+    <?php
+    /*foreach($this->metrics as $metric => $notUsed)
+      {
+      echo "<li><a href='#tabs-".str_replace("'","",$metric)."'>".ucfirst($metric)."</a></li>";
+      }*/
+    ?>
+  </ul>
+  <?php
+    /*foreach($this->metrics as $metric => $notUsed)
+      {
+      echo "<div id='tabs-".str_replace("'","",$metric)."'>";
+      echo "<div id='chart-".$metric."' style='height:450px; width:800px;'></div>";
+      echo "</div>";
+      }*/
+  ?>
+    <?php
+    if($this->isAdmin)
+      {?>
+      <div id="tabs-manage">
+          <form id="workflowForm" action="" method="POST" class="genericForm">
+            <b>Provide details of your the workflow below:</b><br/><br/>
+          <span>Name:</span> <input type="text" id="workflowName" name="workflowName" value="<?php echo $this->workflow->getName()?>"/><br/>
+          <span>Description:</span><br/>
+          <textarea name="workflowDescription" id="workflowDescription" rows="24" cols="80" ><?php echo $this->workflow->getDescription()?></textarea><br/>
+          <input type="submit" name="manageWorkflowSave" id="manageWorkflowSave" value="Save"/>
+          </form>
+      </div>
+    <?php
+      }?>
+  <div id="tabs-lastjobs">
+    <?php
+    if(empty($this->jobs))
+      {
+      echo "No related jobs.";
+      }
+    else
+      {?>
+      <table style='display:block;' class="midasTree">
+        <thead>
+          <tr>
+            <th style="width:100px;" >Name</th>
+            <th style="width:240px;" >Creation Date</th>
+            <th  style="width:250px;">Status</th>
+          </tr>
+        </thead>
+        <?php
+        foreach($this->jobs as $job)
+          {
+          echo "<tr element='".$job->getKey()."'>";
+          echo  "<td><a qtipajax='".$this->webroot."/remoteprocessing/dashboard/workflowgraph?jobId=".$job->getKey()."' href='".$this->webroot."/remoteprocessing/job/view?jobId=".$job->getKey()."'>".$job->getName()."</a></td>";
+          echo  "<td>".$job->getCreationDate()."</td>";
+          if($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE)
+            {
+            echo  "<td class='elementStatus'>Done</td>";
+            }
+          elseif(strtotime($job->getExpirationDate()) < strtotime(date('c')))
+            {
+            echo  "<td class='elementStatus'>Expired</td>";
+            }
+          elseif($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_WAIT)
+            {
+            echo  "<td class='elementStatus'>Waiting</td>";
+            }
+          elseif($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_STARTED)
+            {
+            echo  "<td class='elementStatus'>Started</td>";
+            }
+          else
+            {
+            echo  "<td class='elementStatus'>Done</td>";
+            }
+          echo "</tr>";
+          }
+          ?>
+      </table>
+    <?php
+      }?>
+  </div>
+</div>
+
+</div>
+
+
+

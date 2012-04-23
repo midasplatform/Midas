@@ -13,7 +13,7 @@ PURPOSE.  See the above copyright notices for more information.
 $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manage.js');
 
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/job/job.manage.css"
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/job/job.manage.css"/>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
 
@@ -22,7 +22,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
     <?php
           echo '<div  class="genericBigButton ">';
             echo "<a href='{$this->webroot}/remoteprocessing/job/init' ><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/add.png'/>";
-            echo $this->t('Create a Job');
+            echo $this->t('Create a Workflow');
             echo "</a>";
           echo '</div>';
         ?>
@@ -35,13 +35,13 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
     <?php
   if(empty($this->relatedJobs))
     {
-    echo "No started Jobs";
+    echo "No started Workflow.<br/>";
     }
   else
     {
     ?>
   <h4>10 last Jobs</h4>
-  <table style='display:block;' class="midasTree">
+  <table style='display:block;' class="midasTree jobTree">
 
     <thead>
       <tr>
@@ -53,7 +53,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
     <?php
     foreach($this->relatedJobs as $job)
       {
-      echo "<tr element='".$job->getKey()."v'>";
+      echo "<tr element='".$job->getKey()."'>";
       echo  "<td>".$job->getName()."</td>";
       echo  "<td>".$job->getCreationDate()."</td>";
       if($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE)
@@ -86,15 +86,14 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
 
 
     <?php
-  if(empty($this->relatedJobs))
+  if(empty($this->scheduledJobs))
     {
-    echo "No scheduled Jobs";
     }
   else
     {
     ?>
-  <h4>Scheluded Jobs</h4>
-  <table style='display:block;' class="midasTree">
+  <h4>Scheluded Workflows</h4>
+  <table style='display:block;' class="midasTree jobTree">
 
     <thead>
       <tr>
@@ -107,7 +106,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
     foreach($this->scheduledJobs as $job)
       {
       $params = JsonComponent::decode($job->getParams());
-      echo "<tr element='".$job->getKey()."v'>";
+      echo "<tr element='".$job->getKey()."'>";
       echo  "<td>".$params['params']['job_name']."</td>";
       echo  "<td>".$job->getFireTime()."</td>";
       echo  "<td>Scheduled</td>";
@@ -118,6 +117,34 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
   <?php
     }
     ?>
+
+  <?php
+  if(!empty($this->domains))
+    {
+    ?>
+  <h4>User domains</h4>
+  <table style='display:block;' class="midasTree domainTree">
+
+    <thead>
+      <tr>
+        <th style="width:100px;" >Name</th>
+        <th  style="width:250px;">Workflows</th>
+      </tr>
+    </thead>
+    <?php
+    foreach($this->domains as $domain)
+      {
+      echo "<tr element='".$domain->getKey()."'>";
+      echo  "<td>".$domain->getName()."</td>";
+      echo  "<td>".count($domain->getWorkflows())."</td>";
+      echo "</tr>";
+      }
+      ?>
+  </table>
+  <?php
+    }
+    ?>
+
 
 </div>
 <div class="viewSideBar">

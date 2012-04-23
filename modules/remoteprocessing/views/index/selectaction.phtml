@@ -21,49 +21,7 @@ PURPOSE.  See the above copyright notices for more information.
      <div id="seperatorSelectAction">
      </div>
      <br/>
-       <div class="blockSet" id="blockDashboardLink">
-        <table>
-          <tbody><tr>
-            <td class="logo">
-              <img alt="" src="<?php echo  $this->moduleWebroot?>/public/images/bigicon-dashboard.png" />
-            </td>
-            <td>
-              <h4 >Access your dashboard</h4>
-              <span style="color:grey;">The dasboard shows the results and the status of your jobs.</span>
-            </td>
-          </tr>
-        </tbody>
-        </table>
-      </div>
-      <div class="blockSet" id="blockManageScheduledLink">
-        <table>
-          <tbody><tr>
-            <td class="logo">
-              <img alt="" src="<?php echo  $this->moduleWebroot?>/public/images/bigicon-managescheduled.png" />
-            </td>
-            <td>
-              <h4>Manage your scheduled jobs</h4>
-              <span style="color:grey;">Allow you to view and manage scheduled jobs.</span>
-            </td>
-          </tr>
-        </tbody>
-        </table>
-      </div>
-     <br/>
-     <div class="blockSet" id="blockCreateLink">
-        <table>
-          <tbody><tr>
-            <td class="logo">
-              <img alt="" src="<?php echo  $this->moduleWebroot?>/public/images/bigicon-job.png" />
-            </td>
-            <td>
-              <h4 >Create a new job</h4>
-              <span style="color:grey;">Run a process one or multiple inputs and parameters.</span>
-            </td>
-          </tr>
-        </tbody>
-        </table>
-      </div>
+     <!--
       <div class="blockSet" id="blockCreateScheduledLink">
         <table>
           <tbody><tr>
@@ -71,13 +29,55 @@ PURPOSE.  See the above copyright notices for more information.
               <img alt="" src="<?php echo  $this->moduleWebroot?>/public/images/bigicon-scheduled.png" />
             </td>
             <td>
-              <h4>Schedule a new job</h4>
-              <span style="color:grey;">Allow you to run periodically a job on a set of data.</span>
+              <h4>Schedule a new workflow</h4>
+              <span style="color:grey;">Allow you to run periodically a workflow on a set of data.</span>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+     -->
+      <div class="blockSet" id="blockManageScheduledLink">
+        <table>
+          <tbody><tr>
+            <td class="logo">
+              <img alt="" src="<?php echo  $this->moduleWebroot?>/public/images/bigicon-managescheduled.png" />
+            </td>
+            <td>
+              <h4>Manage your scheduled workflows</h4>
+              <span style="color:grey;">Allow you to view and manage scheduled workflows.</span>
             </td>
           </tr>
         </tbody>
         </table>
       </div>
      <br/>
+     <?php
+     $results = Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_ENABLEDASHBOARD", array());
+     foreach($results as $result)
+        {
+        if($result !==false)
+          {
+          ?>
+          <div class="blockSet" id="blockDashboardLink">
+            <input type="hidden" id="customDashboardUrl" value ="<?php echo $result?>"/>
+            <table>
+              <tbody><tr>
+                <td class="logo">
+                  <img alt="" src="<?php echo  $this->moduleWebroot?>/public/images/bigicon-dashboard.png" />
+                </td>
+                <td>
+                  <h4 >Access your dashboard</h4>
+                  <span style="color:grey;">The dasboard shows the results and the status of your workflow.</span>
+                </td>
+              </tr>
+            </tbody>
+            </table>
+          </div>
+          <?php
+          }
+        }
+      ?>
+
 
 </div>

@@ -26,6 +26,67 @@ require_once BASE_PATH.'/core/models/base/FolderModelBase.php';
  */
 class FolderModel extends FolderModelBase
 {
+
+  /** This method will remove all the items that are not locaded in the folder from the input array $items
+   * @return
+   */
+  function filterItemsByFolder($items, $parent)
+    {
+    if(!is_array($items))
+      {
+      $items = array($items);
+      }
+
+    if(!$parent instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+
+    foreach($items as $key => $item)
+      {
+      if(!$item instanceof ItemDao)
+        {
+        throw new Zend_Exception("Should be an item.");
+        }
+
+      $remove = true;
+      foreach($item->getFolders() as $folder)
+        {
+        if($this->isFolderInFolder($folder, $parent))
+          {
+          $remove = false;
+          break;
+          }
+        }
+      if($remove)
+        {
+        unset($items[$key]);
+        }
+      }
+
+    return $items;
+    }
+
+  /** check if folder is a children of parent*/
+  function isFolderInFolder($folder, $parent)
+    {
+    if(!$folder instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+    if(!$parent instanceof FolderDao)
+      {
+      throw new Zend_Exception("Should be a folder.");
+      }
+    if($folder->getLeftIndice() >= $parent->getLeftIndice() && $folder->getRightIndice() <= $parent->getRightIndice() )
+      {
+      return true;
+      }
+    else
+      {
+      return false;
+      }
+    }
   /** get All*/
   function getAll()
     {

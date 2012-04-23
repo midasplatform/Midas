@@ -170,9 +170,6 @@ class Communicator(object):
         message = respnseRequest.reason
         data = respnseRequest.read() 
         
-        if os.path.isdir(destination) == False:
-          destination = os.path.dirname(path)
-        
         bitstreamInfo = self.getBitstream(bitstreamId, token)
         destination = destination+'/'+bitstreamInfo['name']
 

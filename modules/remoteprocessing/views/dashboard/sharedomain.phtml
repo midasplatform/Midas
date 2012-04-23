@@ -1,0 +1,99 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+echo '<script type="text/javascript" src="' . $this->moduleWebroot . '/public/js/dashboard/dashboard.sharedomain.js?'.time().'"></script>';
+echo $this->lesscss($this->moduleWebroot.'/public/css/dashboard/dashboard.sharedomain.less');
+?>
+<div id='permissionsContent'>
+  <div id='permissionPublic' <?php echo (($this->private)?'style="display:none;"':'')?>>
+   <b><?php echo $this->t('Public')?></b> <?php echo $this->t('Anyone can find and access. No sign-in required.')?>
+   <a id='setElementPrivateLink'><?php echo $this->t('You can set the permission as private.')?></a>
+  </div>
+
+  <div id='permissionPrivate' <?php echo ((!$this->private)?'style="display:none;"':'')?>>
+     <b><?php echo $this->t('Private')?></b> <?php echo $this->t('Only people explicitly granted permission can access. Sign-in required.')?>
+     <a id='setElementPublicLink'><?php echo $this->t('You can set the permission as public.')?></a>
+  </div>
+
+  <h4><?php echo $this->t('Permissions')?></h4>
+  <div id='permissionEntity'>
+    <table>
+    <?php
+    foreach($this->groupPolicies as $policy)
+      {
+      ?>
+      <tr type='group' element='<?php echo $policy->group->getKey()?>'>
+        <td>
+        <img src='<?php echo $this->coreWebroot?>/public/images/icons/community.png'/>
+        </td>
+        <td class='changePermissionSelect'>
+          <?php echo $policy->group->getCommunity()->getName().' ('.$policy->group->getName().')'?>
+        </td>
+        <td class='changePermissionSelectBox'>
+          <select class='changePermissionSelect'>
+          <?php
+            echo "<option value='".MIDAS_POLICY_ADMIN."' ".(($policy->getPolicy() == MIDAS_POLICY_ADMIN) ? 'selected' : '').">{$this->t('is owner')}</option>";
+            echo "<option value='".MIDAS_POLICY_WRITE."' ".(($policy->getPolicy() == MIDAS_POLICY_WRITE) ? 'selected' : '').">{$this->t('can edit')}</option>";
+            echo "<option value='".MIDAS_POLICY_READ."' ".(($policy->getPolicy() == MIDAS_POLICY_READ) ? 'selected' : '').">{$this->t('can read')}</option>";
+           ?>
+          </select>
+        </td>
+        <td class='changePermissionDelete'>
+          <a class='removeShareLink'><img  src='<?php echo $this->coreWebroot?>/public/images/icons/close.png' alt=''/></a>
+        </td>
+      </tr>
+      <?php
+      }
+
+    foreach($this->userPolicies as $policy)
+      {
+      ?>
+      <tr type='user' element='<?php echo $policy->user->getKey()?>'>
+        <td>
+         <img src='<?php echo $this->coreWebroot?>/public/images/icons/unknownUser-small.png'/>
+        </td>
+        <td class='changePermissionSelect'>
+          <?php echo $policy->user->getFullName() ?>
+        </td>
+        <td class='changePermissionSelectBox'>
+          <select class='changePermissionSelect'>
+          <?php
+             echo "<option value='".MIDAS_POLICY_ADMIN."' ".(($policy->getPolicy() == MIDAS_POLICY_ADMIN) ? 'selected' : '').">{$this->t('is owner')}</option>";
+             echo "<option value='".MIDAS_POLICY_WRITE."' ".(($policy->getPolicy() == MIDAS_POLICY_WRITE) ? 'selected' : '').">{$this->t('can edit')}</option>";
+             echo "<option value='".MIDAS_POLICY_READ."' ".(($policy->getPolicy() == MIDAS_POLICY_READ) ? 'selected' : '').">{$this->t('can read')}</option>";
+           ?>
+          </select>
+        </td>
+        <?php
+        if($policy->user->getKey() != $this->userDao->getKey())
+          {
+          echo "<td class='changePermissionDelete'>";
+          echo "  <a class='removeShareLink' ><img src='{$this->coreWebroot}/public/images/icons/close.png' alt=''/></a>";
+          echo "</td>";
+          }
+        ?>
+      </tr>
+      <?php
+      }
+      ?>
+    </table>
+    <br/>
+    <div class='shareSearch'>
+      <input type='text' id='live_share_search' value='<?php echo $this->t('Add a permission to ...')?>' autocomplete='off' autocorrect='off' autocapitalize='off' />
+      <input type='hidden' id='live_share_search_value' value='init' />
+      <div id='searchShareLoading' style='display:none'></div>
+    </div>
+  </div>
+</div>
+
+<div style="display: none;" class="jsonShareContent">
+  <?php echo $this->jsonShare?>
+</div>
