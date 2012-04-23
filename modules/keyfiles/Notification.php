@@ -14,6 +14,7 @@ class Keyfiles_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemMenuLink');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JS', 'getItemViewJs');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_CSS', 'getItemViewCss');
+    $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getFooter');
     }
 
   /** Get the link to place in the item action menu */
@@ -34,6 +35,12 @@ class Keyfiles_Notification extends MIDAS_Notification
   public function getItemViewCss($params)
     {
     return array($this->moduleWebroot.'/public/css/item/keyfiles.item.view.css');
+    }
+
+  /** Get js to append to footer */
+  public function getFooter()
+    {
+    return '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/'.$this->moduleName.'.notify.js"></script>';
     }
   } //end class
 ?>

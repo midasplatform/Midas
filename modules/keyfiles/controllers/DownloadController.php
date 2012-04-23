@@ -135,7 +135,6 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
     ob_start(); //must start a new buffer for ZipStream to work
 
     Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
-    $zip = new ZipStream($item->getName().'.zip');
     ob_start();
     $zip = new ZipStream('Keyfiles.zip');
     $zip = $this->_createZipRecursive($zip, '', $folders, $revisions, $this->userSession->Dao);
