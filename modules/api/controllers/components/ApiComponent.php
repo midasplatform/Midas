@@ -219,8 +219,8 @@ class Api_ApiComponent extends AppComponent
       }
     return $return;
     }
-    
-        /**
+
+  /**
    * Search items for the given words
    * @param token (Optional) Authentication token
    * @param search The search query

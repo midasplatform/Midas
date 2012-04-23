@@ -84,7 +84,7 @@ class Remoteprocessing_DashboardController extends Remoteprocessing_AppControlle
     $domainId = $this->_getParam("domainId");
     if(!isset($domainId) || !is_numeric($domainId))
       {
-      throw new Zend_Exception("$domainId  should be a number");
+      throw new Zend_Exception($domainId."  should be a number");
       }
     $domain = $this->Remoteprocessing_Workflowdomain->load($domainId);
     $this->view->header = $this->t("Domain: ".$domain->getName());
@@ -125,14 +125,14 @@ class Remoteprocessing_DashboardController extends Remoteprocessing_AppControlle
       }
     }
 
-   /** ajax dialog for managing permissions */
+  /** ajax dialog for managing permissions */
   function sharedomainAction()
     {
     $this->disableLayout();
     $domainId = $this->_getParam("domainId");
     if(!isset($domainId) || !is_numeric($domainId))
       {
-      throw new Zend_Exception("$domainId  should be a number");
+      throw new Zend_Exception($domainId."  should be a number");
       }
     $domain = $this->Remoteprocessing_Workflowdomain->load($domainId);
     if(!$domain)
@@ -310,7 +310,7 @@ class Remoteprocessing_DashboardController extends Remoteprocessing_AppControlle
     $jobId = $this->_getParam("jobId");
     if(!isset($jobId) || !is_numeric($jobId))
       {
-      throw new Zend_Exception("$jobId  should be a number");
+      throw new Zend_Exception($jobId." should be a number");
       }
     $job = $this->Remoteprocessing_Job->load($jobId);
     if(!$job)

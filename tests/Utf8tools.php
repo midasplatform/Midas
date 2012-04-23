@@ -1,4 +1,4 @@
-<?php 
+<?php
 /** tools for detecting non utf8 files and tranforming non utf8 files to utf8. */
 class Utf8tools
   {
@@ -11,30 +11,30 @@ class Utf8tools
    * return true if the string is UTF8 encoded.
    */
   protected function isUtf8($str)
-    { 
-    $len = strlen($str); 
+    {
+    $len = strlen($str);
     for($i = 0; $i < $len; $i++)
-      { 
-      $c = ord($str[$i]); 
+      {
+      $c = ord($str[$i]);
       if ($c > 128)
-        { 
-        if (($c > 247)) return false; 
-        elseif ($c > 239) $bytes = 4; 
-        elseif ($c > 223) $bytes = 3; 
-        elseif ($c > 191) $bytes = 2; 
-        else return false; 
-        if (($i + $bytes) > $len) return false; 
+        {
+        if (($c > 247)) return false;
+        elseif ($c > 239) $bytes = 4;
+        elseif ($c > 223) $bytes = 3;
+        elseif ($c > 191) $bytes = 2;
+        else return false;
+        if (($i + $bytes) > $len) return false;
         while ($bytes > 1)
-          { 
-          $i++; 
-          $b = ord($str[$i]); 
-          if ($b < 128 || $b > 191) return false; 
-          $bytes--; 
-          } 
-        } 
-      } 
-      return true; 
-    } // end of check_utf8 
+          {
+          $i++;
+          $b = ord($str[$i]);
+          if ($b < 128 || $b > 191) return false;
+          $bytes--;
+          }
+        }
+      }
+      return true;
+    } // end of check_utf8
 
 
   /**
