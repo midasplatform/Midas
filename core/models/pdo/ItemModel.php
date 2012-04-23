@@ -26,7 +26,6 @@ require_once BASE_PATH.'/core/models/base/ItemModelBase.php';
  */
 class ItemModel extends ItemModelBase
 {
-
   /** Get the keyword from the search.
    * @return Array of ItemDao */
   function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view')
@@ -194,6 +193,19 @@ class ItemModel extends ItemModelBase
     $dao = $this->initDao(ucfirst($this->_name), $row);
     return $dao;
     }
+
+  /** Get all items with the name provided */
+  function getByName($name)
+    {
+    $rowset = $this->database->fetchAll($this->database->select()->where('name = ?', $name));
+    $daos = array();
+    foreach($rowset as $row)
+      {
+      $daos[] = $this->initDao(ucfirst($this->_name), $row);
+      }
+    return $daos;
+    }
+
   /**
    * Get Items where user policy exists and is != admin
    * @param type $userDao

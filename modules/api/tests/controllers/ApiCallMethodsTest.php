@@ -802,6 +802,42 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertFalse($itemDao, 'Item should have been deleted, but was not.');
     }
 
+  /** Test searching for item by name */
+  public function testItemSearchByName()
+    {
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.searchbyname';
+    $this->params['name'] = 'invalid name of an item';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEmpty($resp->data->items);
+
+    // Anon user should not get search results for private item
+    $this->resetAll();
+    $this->params['method'] = 'midas.item.searchbyname';
+    $this->params['name'] = 'name 2';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEmpty($resp->data->items);
+
+    // Anon user should get search results for public item
+    $this->resetAll();
+    $this->params['method'] = 'midas.item.searchbyname';
+    $this->params['name'] = 'name 1';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals(count($resp->data->items), 1);
+
+    // Logged-in user should get search results for private item that they have access to
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.searchbyname';
+    $this->params['name'] = 'name 2';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals(count($resp->data->items), 1);
+    }
+
   /** Test the server info reporting methods */
   public function testInfoMethods()
     {
