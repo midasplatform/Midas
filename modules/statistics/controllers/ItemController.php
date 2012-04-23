@@ -41,7 +41,7 @@ class Statistics_ItemController extends Statistics_AppController
         $item = $this->Item->load($id);
         if(!$item)
           {
-          throw new Zend_Exception("Item ".$id." doesn't exist");
+          throw new Zend_Controller_Action_Exception("Item ".$id." doesn't exist", 404);
           }
         if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
           {
