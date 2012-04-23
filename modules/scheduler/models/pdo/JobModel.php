@@ -72,7 +72,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
     }
 
   /** get the jobs that should be run on the current run invocation */
-  public function getJobsToRun()
+  public function getJobsToRun($limit = 1000)
     {
     $load = $this->getServerLoad();
     $minPriority = MIDAS_EVENT_PRIORITY_LOW;
@@ -98,6 +98,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
           ->where('priority >= ?', $minPriority)
           ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN)
           ->where('fire_time <= ?', date('c'))
+          ->limit($limit)
           ->order(array('priority DESC',
                            'fire_time ASC'));
     $rowset = $this->database->fetchAll($sql);
