@@ -51,7 +51,7 @@ class Remoteprocessing_WorkflowModel extends Remoteprocessing_WorkflowModelBase
     return $workflowDomainModel->policyCheck($workflowDomain, $userDao, $policy);
     }
 
-   /** get job by user */
+  /** get job by user */
   function getJobsByDate($workflow, $date)
     {
     if(!$workflow instanceof Remoteprocessing_WorkflowDao)

@@ -23,7 +23,7 @@ require_once BASE_PATH.'/modules/remoteprocessing/models/base/JobModelBase.php';
 /** job model */
 class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
 {
-    /** check ifthe policy is valid*/
+  /** check ifthe policy is valid*/
   function policyCheck($job, $userDao = null, $policy = 0)
     {
     if(!$job instanceof Remoteprocessing_JobDao)
@@ -161,19 +161,19 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
       {
       if(!$this->_isNodeExits($graph['nodes'], $job->getKey()))
         {
-        $graph['nodes'][] = array('name' => $job->getKey(), "label" => array('type' => 'plain', 'value' => $job->getName()), 'stencil' => $this->_getStencil($job), "position" => array( 80 + $key * 100, 30 + $level * 40));
+        $graph['nodes'][] = array('name' => $job->getKey(), "label" => array('type' => 'plain', 'value' => $job->getName()), 'stencil' => $this->_getStencil($job), "position" => array(80 + $key * 100, 30 + $level * 40));
         }
       foreach($job->children as $keyChild => $child)
         {
         if(!$this->_isNodeExits($graph['nodes'], $child->getKey()))
           {
-          $graph['nodes'][] = array('name' => $child->getKey(), "label" => array('type' => 'plain', 'value' => $child->getName()), 'stencil' => $this->_getStencil($child), "position" => array(80 + $keyChild * 100, 30 + ($level+1) * 40));
+          $graph['nodes'][] = array('name' => $child->getKey(), "label" => array('type' => 'plain', 'value' => $child->getName()), 'stencil' => $this->_getStencil($child), "position" => array(80 + $keyChild * 100, 30 + ($level + 1) * 40));
           }
         $graph['edges'][] = array('src' => $job->getKey(), 'dst' => $child->getKey());
         }
       $graph = $this->getGraphFromTree($job->children, $graph, $level + 1);
-      $graph['nodes'] = array_unique ( $graph['nodes'], SORT_REGULAR  );
-      $graph['edges'] = array_unique ( $graph['edges'], SORT_REGULAR );
+      $graph['nodes'] = array_unique($graph['nodes'], SORT_REGULAR);
+      $graph['edges'] = array_unique($graph['edges'], SORT_REGULAR);
       }
     return $graph;
     }

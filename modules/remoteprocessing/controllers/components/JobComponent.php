@@ -413,14 +413,14 @@ class Remoteprocessing_JobComponent extends AppComponent
           }
         $values[$keyTask][$name] = $output['value'];
         }
-     
+
       if($includeItems && !empty($task['outputFiles']))
         {
-          foreach($task['outputFiles'] as $output)
-            {
-            $name = ucfirst(strtolower($output['name']));
-            $values[$keyTask][$name] = $output['item'];
-            }
+        foreach($task['outputFiles'] as $output)
+          {
+          $name = ucfirst(strtolower($output['name']));
+          $values[$keyTask][$name] = $output['item'];
+          }
         }
       }
 
@@ -471,11 +471,11 @@ class Remoteprocessing_JobComponent extends AppComponent
         }
       else
         {
-         $return['jobUuid'] = uniqid() . md5(mt_rand());
+        $return['jobUuid'] = uniqid() . md5(mt_rand());
         }
       $return['job'] = $jobModel->getByUuid($return['jobUuid']);
 
-      if(isset( $xml->attributes()->creator_id[0]))
+      if(isset($xml->attributes()->creator_id[0]))
         {
         $return['creatorId'] = (int) $xml->attributes()->creator_id[0];
         }
@@ -569,7 +569,7 @@ class Remoteprocessing_JobComponent extends AppComponent
           foreach($process->Outputs->Output as $output)
             {
             $type = (string) $output->attributes()->type[0];
-            switch ($type)
+            switch($type)
               {
               case 'file':
                 $uuid = "";
@@ -596,7 +596,7 @@ class Remoteprocessing_JobComponent extends AppComponent
           foreach($process->Inputs->Input as $input)
             {
             $type = (string) $input->attributes()->type[0];
-            switch ($type)
+            switch($type)
               {
               case 'file':
                 $uuid = "";

@@ -30,7 +30,6 @@ class SearchComponent extends AppComponent
       {
       mkdir($path);
       }
-
     $path .= '/item';
     if(!file_exists($path))
       {
@@ -43,8 +42,8 @@ class SearchComponent extends AppComponent
     Zend_Search_Lucene_Analysis_Analyzer::setDefault(
           new Zend_Search_Lucene_Analysis_Analyzer_Common_TextNum_CaseInsensitive());
     return Zend_Search_Lucene::open($path);
-    }    
-    
+    }
+
   /** search items */
   public function searchItems($userDao, $search, $folder = false, $order = 'view')
     {
@@ -70,7 +69,7 @@ class SearchComponent extends AppComponent
     $return['results'] = $this->_formatResults($order, $ItemsDao, array(), array(), array());
 
     return $return;
-    }       
+    }
 
   /** search all the results */
   public function searchAll($userDao, $search, $order)
