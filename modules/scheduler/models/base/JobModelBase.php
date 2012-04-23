@@ -45,7 +45,7 @@ abstract class Scheduler_JobModelBase extends Scheduler_AppModel
     } // end __construct()
 
   public abstract function getJobsByTask($task);
-  public abstract function getJobsToRun();
+  public abstract function getJobsToRun($limit = 1000);
   public abstract function getFutureScheduledJobs();
   public abstract function removeUserReferences($userId);
 

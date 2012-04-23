@@ -24,6 +24,7 @@
  */
 class Scheduler_RunController extends Scheduler_AppController
 {
+  public $_models = array('Setting');
   public $_moduleModels = array('Job', 'JobLog');
   public $_components = array('Json');
 
@@ -38,8 +39,18 @@ class Scheduler_RunController extends Scheduler_AppController
 
   function indexAction()
     {
+    $startTime = time();
     $this->disableLayout();
     $this->disableView();
+
+    $lastStart = $this->Setting->getValueByName('lastrun', $this->moduleName);
+    if($lastStart !== null && $startTime < (int)$lastStart + 270)
+      {
+      throw new Zend_Exception('The scheduler is already running. Please wait for it to complete before invoking again.');
+      }
+    ignore_user_abort(true);
+
+    $this->Setting->setConfig('lastrun', ''.$startTime, $this->moduleName);
 
     $id = $this->_getParam('id');
     if(isset($id))
@@ -53,12 +64,16 @@ class Scheduler_RunController extends Scheduler_AppController
       }
     else
       {
-      $jobs = $this->Scheduler_Job->getJobsToRun();
+      $jobs = $this->Scheduler_Job->getJobsToRun(1000);
       }
     $modules = Zend_Registry::get('notifier')->modules;
     $tasks = Zend_Registry::get('notifier')->tasks;
     foreach($jobs as $job)
       {
+      if(time() - $startTime > 270) // After 4.5 minutes, do not start any new tasks
+        {
+        break;
+        }
       $job->setStatus(SCHEDULER_JOB_STATUS_STARTED);
       if($job->getRunOnlyOnce() == 0)
         {
@@ -101,6 +116,11 @@ class Scheduler_RunController extends Scheduler_AppController
         $job->setStatus(SCHEDULER_JOB_STATUS_DONE);
         }
       $this->Scheduler_Job->save($job);
+      }
+    $lastRunSetting = $this->Setting->getDaoByName('lastrun', $this->moduleName);
+    if($lastRunSetting)
+      {
+      $this->Setting->delete($lastRunSetting);
       }
     }
 
