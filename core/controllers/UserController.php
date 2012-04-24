@@ -220,6 +220,10 @@ class UserController extends AppController
   /** Register a user */
   function registerAction()
     {
+    if(isset(Zend_Registry::get('configGlobal')->closeregistration) && Zend_Registry::get('configGlobal')->closeregistration == "1")
+      {
+      throw new Zend_Exception('New user registration is disabled.');
+      }
     $form = $this->Form->User->createRegisterForm();
     if($this->_request->isPost() && $form->isValid($this->getRequest()->getPost()))
       {
@@ -228,6 +232,7 @@ class UserController extends AppController
         throw new Zend_Exception("User already exists.");
         }
 
+      
       $this->userSession->Dao = $this->User->createUser(trim($form->getValue('email')), $form->getValue('password1'), trim($form->getValue('firstname')), trim($form->getValue('lastname')));
 
       $this->_redirect("/feed?first=true");
