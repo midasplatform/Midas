@@ -59,6 +59,7 @@ abstract class ItemModelBase extends AppModel
   abstract function getByUuid($uuid);
   abstract function getAll();
   abstract function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view');
+  abstract function getByName($name);
 
   /** delete an item */
   public function delete($dao)
