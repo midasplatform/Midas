@@ -39,5 +39,5 @@ function validLoginForm() {
             }
             midas.createNotice($("form#loginForm div.loginError span").html(), 8000, 'error');
         }
-    }
-});
+    });
+};
