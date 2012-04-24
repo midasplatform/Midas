@@ -64,28 +64,6 @@ class DownloadController extends AppController
       throw new Zend_Exception("No parameters");
       }
     $folderIds = explode('-', $folderIds);
-    $folders = array();
-    foreach($folderIds as $folderId)
-      {
-      $tmp = explode(', ', $folderId);
-      if(empty($tmp[0]))
-        {
-        continue;
-        }
-      $folder = $this->Folder->load($tmp[0]);
-      if($folder == false)
-        {
-        continue;
-        }
-      if(!isset($tmp[0]) || $tmp[0] == 1)
-        {
-        $folder->recursive = true;
-        }
-      else
-        {
-        $folder->recursive = false;
-        }
-      }
     $folders = $this->Folder->load($folderIds);
 
     $itemIds = explode('-', $itemIds);
