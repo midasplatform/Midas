@@ -1,7 +1,7 @@
 ﻿<?php
 /*=========================================================================
  MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis Gu�rin. 69100 Villeurbanne, FRANCE
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
  All rights reserved.
  More information http://www.kitware.com
 
@@ -65,21 +65,19 @@ class  Zend_View_Helper_Lesscss
     return '<link type="text/css" rel="stylesheet" href="'.$this->view->webroot.'/data/compiledCss/'.$outFilename.'?'.filemtime($out).'" />';
     }
 
+    
     /** minify CSS*/
     private function minifyCSS($string)
-      {
+      {      
       /* Strips Comments */
       $string = preg_replace('!/\*.*?\*/!s','', $string);
       $string = preg_replace('/\n\s*\n/',"\n", $string);
-
       /* Minifies */
       $string = preg_replace('/[\n\r \t]/',' ', $string);
       $string = preg_replace('/ +/',' ', $string);
       $string = preg_replace('/ ?([,:;{}]) ?/','$1',$string);
-
       /* Kill Trailing Semicolon, Contributed by Oliver */
       $string = preg_replace('/;}/','}',$string);
-
       /* Return Minified CSS */
       return $string;
       }
@@ -93,7 +91,7 @@ class  Zend_View_Helper_Lesscss
 
     /** Set view*/
     public function setView(Zend_View_Interface $view)
-    {
-        $this->view = $view;
-    }
+      {
+      $this->view = $view;
+      }
 }// end class
