@@ -225,6 +225,11 @@ class ImportControllerTest extends ControllerTestCase
       }
     $subSubFolders = $subFoldersMap['1']->getFolders();
     $subSubItems = $subSubFolders[0]->getItems();
+    $subSubItemsMap = array();
+    foreach( $subSubItems as $sub )
+      {
+      $subSubItemsMap[$sub->getName()] = $sub;
+      }
     $this->assertEquals('1', $subFoldersMap['1']->getName(),
                         'Subfolder improperly imported via local import.');
     $this->assertEquals('2', $subFoldersMap['2']->getName(),
@@ -235,9 +240,9 @@ class ImportControllerTest extends ControllerTestCase
                         'SubItem improperly imported via local import.');
     $this->assertEquals('B', $subSubFolders[0]->getName(),
                         'SubSubfolder improperly imported via local import.');
-    $this->assertEquals('bar.txt', $subSubItems[0]->getName(),
+    $this->assertEquals('bar.txt', $subSubItemsMap['bar.txt']->getName(),
                         'SubSubItem improperly imported via local import.');
-    $this->assertEquals('baz.txt', $subSubItems[1]->getName(),
+    $this->assertEquals('baz.txt', $subSubItemsMap['baz.txt']->getName(),
                         'SubSubItem improperly imported via local import.');
     }
 
