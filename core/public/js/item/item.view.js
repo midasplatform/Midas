@@ -224,4 +224,11 @@ $(document).ready(function() {
         midas.loadDialog('viewLicense'+licenseId, '/license/view?licenseId='+licenseId);
         midas.showDialog($(this).attr('name'), false);
     });
+
+    if($('.pathBrowser li').length > 5) {
+        while($('.pathBrowser li').length > 5) {
+            $('.pathBrowser li:first').remove();
+        }
+        $('.pathBrowser li:first').before('<li><span>...</span></li>');
+    }
 });
