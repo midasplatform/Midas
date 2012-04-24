@@ -34,7 +34,7 @@ class DownloadBitstreamComponent extends AppComponent
    * The parameter is a bitstream dao.
    * Optional second parameter is the download offset in bytes.
    */
-  function download($bitstream, $offset = 0)
+  function download($bitstream, $offset = 0, $incrementDownload = false)
     {
     // Disable gzip output on apache servers (otherwise no progress in browser)
     if(function_exists('apache_setenv'))
@@ -152,6 +152,13 @@ class DownloadBitstreamComponent extends AppComponent
     while(!feof($handle) && connection_status() == 0)
       {
       echo fread($handle, $chunkSize);
+      }
+
+    if($incrementDownload && feof($handle)) // Only record downloads that actually complete
+      {
+      $modelLoader = new MIDAS_ModelLoader();
+      $itemModel = $modelLoader->loadModel('Item');
+      $itemModel->incrementDownloadCount($bitstream->getItemrevision()->getItem());
       }
     fclose($handle);
 
