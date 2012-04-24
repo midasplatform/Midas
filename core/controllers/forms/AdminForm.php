@@ -58,11 +58,13 @@ class AdminForm extends AppForm
     $smartoptimizer = new Zend_Form_Element_Checkbox("smartoptimizer");
     $dynamichelp = new Zend_Form_Element_Checkbox("dynamichelp");
 
+    $closeRegistration = new Zend_Form_Element_Checkbox("closeregistration");
 
     $submit = new  Zend_Form_Element_Submit('submitConfig');
     $submit ->setLabel('Save configuration');
 
-    $form->addElements(array($dynamichelp, $keywords, $description, $timezone, $environment, $lang, $name, $smartoptimizer, $submit));
+    $form->addElements(array($dynamichelp, $keywords, $description, $timezone, $environment, $lang, $name, $smartoptimizer, $closeRegistration, $submit));
     return $form;
     }
+
 } // end class

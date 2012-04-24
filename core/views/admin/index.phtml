@@ -72,6 +72,10 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                 <label for='dynamichelp'>Dynamic Help</label>
                 {$this->configForm['dynamichelp']}
               </div>
+              <div qtip='If you enable this feature, Midas will no longer allow user registration.' class='closeRegistration'>
+                <label for='closeRegistration'>Close Registration</label>
+                {$this->configForm['closeregistration']}
+              </div>
               <div class='defaultLicense'>
                 <label for='licenseSelect'>Default license</label>
                 ".$this->element('license')."
