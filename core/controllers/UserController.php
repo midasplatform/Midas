@@ -188,6 +188,11 @@ class UserController extends AppController
     {
     $this->disableView();
     $this->disableLayout();
+    if(isset(Zend_Registry::get('configGlobal')->closeregistration) && Zend_Registry::get('configGlobal')->closeregistration == "1")
+      {
+      echo JsonComponent::encode(array('status' => 'error', 'message' => 'New user registration is disabled.'));
+      return;
+      }
     $form = $this->Form->User->createRegisterForm();
     if($this->_request->isPost() && $form->isValid($this->getRequest()->getPost()))
       {

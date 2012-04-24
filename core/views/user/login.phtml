@@ -35,7 +35,12 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
      </tr>
      <tr>
        
-       <td><?php echo $this->t("Not registered yet?")?> <a class="registerLink" style='text-decoration: underline;'><?php echo $this->t("Register here")?></a></td>
+       <td>
+         <?php if (!isset(Zend_Registry::get('configGlobal')->closeregistration) ||
+                   Zend_Registry::get('configGlobal')->closeregistration == "0") { 
+                 echo $this->t("Not registered yet?"); ?> 
+         <a class="registerLink" style='text-decoration: underline;'><?php echo $this->t("Register here")?></a></td>
+<?php } else { echo '</td>'; } ?>
        <td><?php echo $this->form['remerberMe']?>
         <label id="rememberMeText" for="remerberMe"><?php echo $this->t("Remember Me")?></label></td>
        <td></td>
