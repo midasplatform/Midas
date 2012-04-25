@@ -232,7 +232,6 @@ class UserController extends AppController
         throw new Zend_Exception("User already exists.");
         }
 
-      
       $this->userSession->Dao = $this->User->createUser(trim($form->getValue('email')), $form->getValue('password1'), trim($form->getValue('firstname')), trim($form->getValue('lastname')));
 
       $this->_redirect("/feed?first=true");
