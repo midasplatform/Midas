@@ -232,45 +232,48 @@ $(function() {
 
  // Upload -------------------------------------
 
- // init Upload dialog
-  if(json.global.logged)
-    {
-    $('div.HeaderAction li.uploadFile').qtip(
-      {
-         content: {
-            // Set the text to an image HTML string with the correct src URL to the loading image you want to use
-            text: '<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />',
-            ajax: {
-               url: $('div.HeaderAction li.uploadFile').attr('rel') // Use the rel attribute of each element for the url to load
+midas.resetUploadButton = function () {
+    // init Upload dialog
+    if(json.global.logged) {
+        var button = $('div.HeaderAction li.uploadFile');
+        button.qtip('destroy');
+        button.qtip({
+            content: {
+                // Set the text to an image HTML string with the correct src URL to the loading image you want to use
+                text: '<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />',
+                ajax: {
+                    url: $('div.HeaderAction li.uploadFile').attr('rel') // Use the rel attribute of each element for the url to load
+                },
+                title: {
+                    text: 'Upload', // Give the tooltip a title using each elements text
+                    button: true
+                }
             },
-            title: {
-               text: 'Upload', // Give the tooltip a title using each elements text
-               button: true
+            position: {
+                at: 'bottom center', // Position the tooltip above the link
+                my: 'top right',
+                viewport: $(window), // Keep the tooltip on-screen at all times
+                effect: true // Disable positioning animation
+            },
+            show: {
+                modal: {
+                    on: true,
+                    blur: false
+                },
+                event: 'click',
+                solo: true // Only show one tooltip at a time
+            },
+            hide: {
+                event: false
+            },
+            style: {
+                classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
             }
-         },
-         position: {
-            at: 'bottom center', // Position the tooltip above the link
-            my: 'top right',
-            viewport: $(window), // Keep the tooltip on-screen at all times
-            effect: true // Disable positioning animation
-         },
-         show: {
-            modal: {
-              on: true,
-              blur: false
-              },
-            event: 'click',
-            solo: true // Only show one tooltip at a time
-         },
-         hide: {
-          event: false
-         },
-         style: {
-            classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
-         }
-      });
-    $('.uploadqtip').css('z-index:500');
+        });
+        $('.uploadqtip').css('z-index:500');
     }
+};
+midas.resetUploadButton();
 
   // ask the user to log in if we want to upload a file
   var uploadPageLoaded = false;
