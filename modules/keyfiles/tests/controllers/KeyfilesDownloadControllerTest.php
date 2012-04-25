@@ -24,9 +24,9 @@ class KeyfilesDownloadControllerTest extends ControllerTestCase
     }
 
   /**
-   * Test downloading of key files
+   * Test downloading of a single bitstream key file
    */
-  public function testDownloadKeyfiles()
+  public function testDownloadBitstreamKeyfile()
     {
     $usersFile = $this->loadData('User', 'default');
     $bitstreamsFile = $this->loadData('Bitstream', 'default');
@@ -46,5 +46,23 @@ class KeyfilesDownloadControllerTest extends ControllerTestCase
     $this->resetAll();
     $this->dispatchUrI($url, $userDao);
     $this->assertEquals($bitstreamDao->getChecksum(), $this->getBody());
+    }
+
+  /**
+   * Test downloading of a recursive zip of keyfiles
+   */
+  public function testDownloadZip()
+    {
+    $usersFile = $this->loadData('User', 'default');
+    $userDao = $this->User->load($usersFile[2]->getKey());
+
+    // Should throw an exception for no bitstream parameter
+    $this->dispatchUrI('/keyfiles/download/batch', null, true);
+
+    // Get some coverage on the batch controller
+    $this->resetAll();
+    $this->dispatchUrI('/keyfiles/download/batch?items=1-2-3-&folders=1000', null);
+    $this->assertController('download');
+    $this->assertAction('batch');
     }
 }
