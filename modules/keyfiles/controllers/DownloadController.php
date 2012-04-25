@@ -32,6 +32,11 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
     $this->disableView();
     $this->disableLayout();
 
+    if(headers_sent())
+      {
+      return;
+      }
+
     $this->_emptyOutputBuffer();
     ob_start(); //must start a new buffer for ZipStream to work
 
@@ -110,13 +115,14 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
    */
   public function batchAction()
     {
-    $this->disableLayout();
     $itemIds = $this->_getParam('items');
     $folderIds = $this->_getParam('folders');
     if(!isset($itemIds) && !isset($folderIds))
       {
       throw new Zend_Exception('No parameters');
       }
+    $this->disableLayout();
+    $this->disableView();
     $folderIds = explode('-', $folderIds);
     $folders = $this->Folder->load($folderIds);
 
@@ -130,6 +136,10 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
         {
         $revisions[] = $tmp;
         }
+      }
+    if(headers_sent())
+      {
+      return;
       }
     $this->_emptyOutputBuffer();
     ob_start(); //must start a new buffer for ZipStream to work
