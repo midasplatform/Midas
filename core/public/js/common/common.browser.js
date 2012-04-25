@@ -434,6 +434,7 @@ midas.createAction = function (node) {
                     }
                 },
                 position: {
+                    target: $('li.uploadFile'),
                     at: 'bottom center', // Position the tooltip above the link
                     my: 'top right',
                     viewport: $(window), // Keep the tooltip on-screen at all times
