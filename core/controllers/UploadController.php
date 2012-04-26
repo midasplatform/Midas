@@ -680,6 +680,14 @@ class UploadController extends AppController
   /** Link for the java applet to review uploaded files */
   public function reviewAction()
     {
-    $this->_redirect('/browse/uploaded');
+    if($this->userSession->JavaUpload->parent)
+      {
+      $expectedParentId = $this->userSession->JavaUpload->parent;
+      }
+    else
+      {
+      $expectedParentId = $this->userSession->Dao->getPrivatefolderId();
+      }
+    $this->_redirect('/folder/'.$expectedParentId);
     }
 }//end class

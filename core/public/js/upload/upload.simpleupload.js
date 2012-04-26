@@ -7,12 +7,6 @@ midas.upload.simpleupload.updateUploadedCount = function () {
                 parseInt($('.uploadedLinks').val()) +
                 parseInt($('.uploadedJava').val());
     $('.globalUploadedCount').html(count);
-    if(count > 0) {
-        $('.reviewUploaded').show();
-    }
-    else {
-        $('.reviewUploaded').hide();
-    }
 }
 
 midas.upload.simpleupload.initJqueryFileupload = function () {
@@ -56,6 +50,9 @@ midas.upload.simpleupload.initJqueryFileupload = function () {
             midas.doCallback('CALLBACK_CORE_RESET_UPLOAD_TOTAL');
             $('.uploadedSimple').val(parseInt($('.uploadedSimple').val())+1);
             midas.upload.simpleupload.updateUploadedCount();
+            if(index == files.length - 1) { //after all files are done, redirect to parent folder
+                window.location.href = json.global.webroot+'/folder/'+$('.destinationId').val();
+            }
         },
         sequentialUploads: true
     });
