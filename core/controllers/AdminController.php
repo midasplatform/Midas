@@ -314,7 +314,16 @@ class AdminController extends AppController
     $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
     }//end indexAction
 
-  /** Used to display and filter the list of log messages */
+  /**
+   * Used to display and filter the list of log messages
+   * @param startlog The start date to filter log entries by
+   * @param endlog The end date to filter log entries by
+   * @param modulelog What module to filter by
+   * @param prioritylog Priority to filter by
+   * @param priorityOperator Priority operator ('==' | '<=')
+   * @param limit Page limit
+   * @param offset Page offset
+   */
   function showlogAction()
     {
     $this->requireAdminPrivileges();
@@ -324,6 +333,9 @@ class AdminController extends AppController
     $end = $this->_getParam('endlog');
     $module = $this->_getParam('modulelog');
     $priority = $this->_getParam('prioritylog');
+    $priorityOperator = $this->_getParam('priorityOperator');
+    $limit = $this->_getParam('limit');
+    $offset = $this->_getParam('offset');
     if(!isset($start) || empty($start))
       {
       $start = date('c', strtotime('-24 hour'));
@@ -346,15 +358,33 @@ class AdminController extends AppController
       }
     if(!isset($priority) || empty($priority))
       {
-      $priority = 'all';
+      $priority = MIDAS_PRIORITY_WARNING;
+      }
+    if(!isset($priorityOperator) || empty($priorityOperator))
+      {
+      $priorityOperator = '<=';
+      }
+    if(!isset($limit) || empty($limit))
+      {
+      $limit = 100;
+      }
+    if(!isset($offset) || empty($offset))
+      {
+      $offset = 0;
       }
 
-    $this->view->currentFilter = array('start' => $start,
-                                       'end' => $end,
-                                       'module' => $module,
-                                       'priority' => $priority);
 
-    $logs = $this->Errorlog->getLog($start, $end, $module, $priority);
+
+    $results = $this->Errorlog->getLog($start, $end, $module, $priority, $limit, $offset, $priorityOperator);
+    $this->view->jsonContent = array();
+    $this->view->jsonContent['currentFilter'] = array('start' => $start,
+                                                      'end' => $end,
+                                                      'module' => $module,
+                                                      'priority' => $priority,
+                                                      'priorityOperator' => $priorityOperator,
+                                                      'limit' => $limit,
+                                                      'offset' => $offset);
+    $logs = $results['logs'];
     foreach($logs as $key => $log)
       {
       $logs[$key] = $log->toArray();
@@ -373,11 +403,13 @@ class AdminController extends AppController
       $logs[$key]['shortMessage'] = $shortMessage.' ...';
       }
 
+    $this->view->jsonContent['logs'] = $logs;
+    $this->view->jsonContent['total'] = $results['total'];
+
     if($this->_request->isPost())
       {
-      $this->_helper->viewRenderer->setNoRender();
-      echo JsonComponent::encode(array('currentFilter' => $this->view->currentFilter,
-                                       'logs' => $logs));
+      $this->disableView();
+      echo JsonComponent::encode($this->view->jsonContent);
       return;
       }
 
@@ -388,7 +420,6 @@ class AdminController extends AppController
       $modules[] = $key;
       }
     $this->view->modulesLog = $modules;
-    $this->view->jsonLogs = htmlentities(JsonComponent::encode($logs));
     }//showlogAction
 
   /** Used to delete a list of log entries */
