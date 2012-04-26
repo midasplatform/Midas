@@ -69,7 +69,7 @@ abstract class AssetstoreModelBase extends AppModel
         else
           {
           // the current dao does already exist
-          if($existingAssetstoreDao->getKey() !== $keyVal)
+          if($existingAssetstoreDao->getKey() != $keyVal)
             {
             // if the current dao does exist and it is different than
             // the existingAssestoreDao then

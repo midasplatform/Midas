@@ -126,4 +126,6 @@
   <setting setting_id="1000" name="dummy" module="" value="dummy" />
   <setting setting_id="1" name="adminuser" module="core" value="3" />
 
+  <assetstore assetstore_id="1000" path="" name="Default" type="0" />
+
 </dataset>
