@@ -2,11 +2,6 @@ var midas = midas || {};
 midas.browse = midas.browse || {};
 midas.browse.uploaded = midas.browse.uploaded || {};
 
-$(document).ready(function() {
-    $("#browseTable").treeTable();
-    $("img.tableLoading").hide();
-    $("table#browseTable").show();
-});
 
 function callbackSelect(node) {
     $('div.viewAction').show();
