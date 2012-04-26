@@ -43,7 +43,7 @@ class ItemModelTest extends DatabaseTestCase
     $found = false;
     foreach($revisionsFile as $revisionDao)
       {
-      if($revisionDao->getItemId() === $itemId)
+      if((int)$revisionDao->getItemId() === (int)$itemId)
         {
         // see if we find the matching highest
         if($revisionDao->getKey() === $revisionKey)
