@@ -36,7 +36,7 @@ class ErrorlogModel extends ErrorlogModelBase
    * @param type $limit
    * @return array ErrorlogDao
    */
-  function getLog($startDate, $endDate, $module = 'all', $priority = 'all', $limit = 99999)
+  function getLog($startDate, $endDate, $module = 'all', $priority = 'warning', $limit = 99999, $offset = 0, $operator = '<=')
     {
     $result = array();
     $sql = $this->database->select()
@@ -44,21 +44,30 @@ class ErrorlogModel extends ErrorlogModelBase
             ->from(array('e' => 'errorlog'))
             ->where('datetime >= ?', $startDate)
             ->where('datetime <= ?', $endDate)
+            ->where('priority '.$operator.' ?', $priority)
             ->order('datetime DESC')
-            ->limit($limit);
+            ->limit($limit, $offset);
+    $sqlCount = $this->database->select()
+            ->setIntegrityCheck(false)
+            ->from(array('e' => 'errorlog'), array('count' => 'count(*)'))
+            ->where('datetime >= ?', $startDate)
+            ->where('datetime <= ?', $endDate)
+            ->where('priority '.$operator.' ?', $priority);
     if($module != 'all')
       {
       $sql->where('module = ?', $module);
+      $sqlCount->where('module = ?', $module);
       }
-    if($priority != 'all')
-      {
-      $sql->where('priority = ?', $priority);
-      }
+
     $rowset = $this->database->fetchAll($sql);
+    $result = array('logs' => array());
     foreach($rowset as $keyRow => $row)
       {
-      $result[] = $this->initDao('Errorlog', $row);
+      $result['logs'][] = $this->initDao('Errorlog', $row);
       }
+    $countrow = $this->database->fetchRow($sqlCount);
+    $result['total'] = $countrow['count'];
+
     return $result;
     }//getLog
 
