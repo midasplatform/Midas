@@ -63,6 +63,12 @@ class KWUtilsTest extends ControllerTestCase
   /** tests exec function */
   public function testExec()
     {
+    // Do not run this on Windows until can figure out how to test it
+    if(KWUtils::isWindows())
+      {
+      return;
+      }
+
     // not sure how to test this exactly, for now create a tmp dir, check
     // the value of pwd in it
 
@@ -149,11 +155,17 @@ class KWUtilsTest extends ControllerTestCase
     {
     // first try something that should be in the path, php, and check that it
     // is executable
-    $pathToApp = KWUtils::findApp('php', true);
+    $app = "php";
+    if(KWUtils::isWindows())
+      {
+      $app .= ".exe";
+      }
+
+    $pathToApp = KWUtils::findApp($app, true);
     // now try something that is unlikely to be in the path
     try
       {
-      $pathToApp = KWUtils::findApp('php_exe_that_is_vanishingly_likley_to_be_in_the_path', true);
+      $pathToApp = KWUtils::findApp('php_exe_that_is_vanishingly_likeley_to_be_in_the_path', true);
       $this->fail('Should have caught exception but did not, testFindApp');
       }
     catch(Zend_Exception $ze)
@@ -168,18 +180,29 @@ class KWUtilsTest extends ControllerTestCase
     {
     // this is tricky to test, as it is hard to make assumptions that hold
     // up across platforms
-    //
-    // for now assume that 'pwd' will not be found
-    $this->assertFalse(KWUtils::isExecutable('pwd', false));
-    // but 'pwd' will be found in the path
-    $this->assertTrue(KWUtils::isExecutable('pwd', true));
+    $app = "php";
+    if(KWUtils::isWindows())
+      {
+      $app .= ".exe";
+      }
+
+    // for now assume that 'php' will not be found when not looking in the path
+    $this->assertFalse(KWUtils::isExecutable($app, false));
+    // but 'php' will be found in the path
+    $this->assertTrue(KWUtils::isExecutable($app, true));
     }
 
   /** tests prepareExecCommand function */
   public function testPrepareExecCommand()
     {
-    $returnVal = KWUtils::prepareExecCommand('php', array('blah1', 'blah2', 'blah3'));
-    $appPath = KWUtils::findApp('php', true);
+    $app = "php";
+    if(KWUtils::isWindows())
+      {
+      $app .= ".exe";
+      }
+
+    $returnVal = KWUtils::prepareExecCommand($app, array('blah1', 'blah2', 'blah3'));
+    $appPath = KWUtils::findApp($app, true);
     $this->assertEquals($returnVal, "'".$appPath."' 'blah1' 'blah2' 'blah3'");
     }
 
