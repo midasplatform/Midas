@@ -379,17 +379,9 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     switch($type)
       {
       case 'getRecentExecutable' :
-        $recent = array();
-        foreach($this->userSession->uploaded as $item)
-          {
-          $item = $this->Item->load($item);
-
-          if($item != false && $this->ModuleComponent->Executable->getExecutable($item) !== false)
-            {
-            $recent[] = $item->toArray();
-            }
-          }
-        echo JsonComponent::encode($recent);
+        // We no longer store a list of "recent uploads" in the session.  For now
+        // this action is vestigial.
+        echo JsonComponent::encode(array());
         return;
       default :
         echo JsonComponent::encode(false);
