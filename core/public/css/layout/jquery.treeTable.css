@@ -53,42 +53,51 @@
 
 /* Body
  * ------------------------------------------------------------------------- */
+
 table.midasTree{
   width:580px;
   display:none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select:none;
-  border-collapse:collapse;
+  border-collapse: collapse;
 }
 
-table.midasTree th{
+table.midasTree thead th{
+  font-family: Arial;
+  font-size: 8pt;
   color: black;
-  cursor: default;
+  background-color: #e6EEEE;
+  border: 1px solid #aaa;
+  padding: 3px;
+  background-repeat: no-repeat;
+  background-position: center right;
 }
 
-table.midasTree th.thData{
-  width:480px;
-  padding-left: 36px;
-  background-color: #CCD7E0;
-  border: 1px #888888 solid;
-}
-table.midasTree th.thDate{
-  width:100px;
+table.midasTree thead th.thData{
   padding-left: 10px;
-  background-color: #CCD7E0;
-  border: 1px #888888 solid;
+  cursor: pointer;
+  background-image: url(images/asc.gif);
 }
-table.midasTree th.thSize{
-  width:75px;
+table.midasTree thead th.thDate{
+  width:15%;
   padding-left: 10px;
-  background-color: #CCD7E0;
-  border: 1px #888888 solid;
+  cursor: pointer;
+  background-image: url(images/bg.gif);
 }
+table.midasTree thead th.thSize{
+  width:14%;
+  padding-left: 10px;
+  cursor: pointer;
+  background-image: url(images/bg.gif);
+}
+
+table.midasTree th.thSize:hover,table.midasTree th.thData:hover,table.midasTree th.thDate:hover {
+  background-color: #ccdddd;
+}
+
 table.midasTree th.thCheckbox{
   width:20px;
-  background-color: #CCD7E0;
-  border: 1px #888888 solid;
 }
 #browseTableHeaderCheckbox{
   margin-top: 2px;
@@ -97,26 +106,24 @@ table.midasTree th.thCheckbox{
   margin-right: 3px;
 }
 
-table.midasTree td{
-  border-bottom: 1px  #CCD7E0 dotted;
+table.midasTree tbody tr td{
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select:none;
+  cursor: default;
+  padding-left: 3px;
 }
+
 table.midasTree tr{
-  cursor: pointer;
+  border-bottom: 1px #CCD7E0 dotted;
 }
 table.midasTree tr:hover{
   background-color: #F3F1EC;
 }
 
-table.midasTree tbody tr td {
-  cursor: default;
-}
-
 table.midasTree tbody tr td.treeBrowseElement {
-  cursor: default;
-  padding-left: 1.5em !important ;
+  padding-left: 1.5em !important;
+  cursor: pointer;
 }
 
 table.midasTree tbody tr.even {
