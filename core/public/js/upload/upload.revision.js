@@ -19,12 +19,6 @@ midas.upload.revision.updateUploadedCount = function () {
                 parseInt($('.uploadedLinks').val()) +
                 parseInt($('.uploadedJava').val());
     $('.globalUploadedCount').html(count);
-    if(count > 0) {
-        $('.reviewUploaded').show();
-    }
-    else {
-        $('.reviewUploaded').hide();
-    }
 }
 
 // Use jquery file upload for real browsers (no flash required)
@@ -55,6 +49,9 @@ midas.upload.revision.initJqueryFileupload = function () {
         onComplete: function (event, files, index, xhr, handler) {
             $('.uploadedSimple').val(parseInt($('.uploadedSimple').val())+1);
             midas.upload.revision.updateUploadedCount();
+            if(index == files.length - 1) { //after all files are done, redirect to parent folder
+                window.location.reload();
+            }
         },
         sequentialUploads: true
     });

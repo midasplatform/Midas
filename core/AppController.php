@@ -129,7 +129,6 @@ class AppController extends MIDAS_GlobalController
         }
       $this->userSession = $user;
       $this->view->recentItems = array();
-      $this->view->showUploadedLink = false;
       $this->view->needUpgrade = false;
       $this->view->highNumberError = false;
       if($user->Dao != null && $user->Dao instanceof UserDao)
@@ -149,11 +148,6 @@ class AppController extends MIDAS_GlobalController
             }
           }
 
-
-        if(!empty($user->uploaded))
-          {
-          $this->view->showUploadedLink = true;
-          }
         $this->logged = true;
         $this->view->logged = true;
 

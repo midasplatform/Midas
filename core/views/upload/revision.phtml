@@ -143,11 +143,6 @@ PURPOSE.  See the above copyright notices for more information.
     </applet>
   </div>
 
-<div class="reviewUploaded">
-  <form method="post" action="<?php echo $this->webroot?>/item/<?php echo $this->item->getKey()?>">
-    <input class="globalButton" type="submit" value="<?php echo $this->t('View new Revision');?>" />
-  </form>
-</div>
 <input type="hidden" class="buttonBrowse" value="<?php echo $this->t('Browse');?>"/>
 <input type="hidden" class="sessionId" value="<?php echo session_id();?>"/>
 <input type="hidden" class="maxSizeFile" value="<?php echo $this->maxSizeFile;?>"/>

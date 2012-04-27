@@ -70,20 +70,36 @@ midas.genericCallbackCheckboxes = function(node) {
             links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> ';
             links += '  <a onclick="midas.deleteSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.deleteSelected + '</a></li>';
             links += '</li>';
-            if( arraySelected['items'].length > 0)
-              {   
-              links += '<li style="background-color: white;">';
-              links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/item-share.png"/> ';
-              links += '  <a onclick="midas.shareSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.shareSelected + '</a></li>';
-              links += '</li>'; 
-              links += '<li style="background-color: white;">';
-              links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/copy.png"/> ';
-              links += '  <a onclick="midas.duplicateSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.duplicateSelected + '</a></li>';
-              links += '</li>'; 
-              }
+            if(arraySelected['items'].length > 0) {
+                links += '<li style="background-color: white;">';
+                links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/item-share.png"/> ';
+                links += '  <a onclick="midas.shareSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.shareSelected + '</a></li>';
+                links += '</li>';
+                links += '<li style="background-color: white;">';
+                links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/copy.png"/> ';
+                links += '  <a onclick="midas.duplicateSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.duplicateSelected + '</a></li>';
+                links += '</li>';
+            }
+            if(arraySelected['items'].length > 1 && arraySelected['folders'].length == 0) {
+                var itemsParam = arraySelected['items'].join('-');
+                links += '<li>';
+                links +=   '<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/page_white_stack.png"/> ';
+                links +=   '<a class="mergeItemsLink" element="'+itemsParam+'">Merge items</a>';
+                links += '</li>';
+                json.global.webroot+'/item/merge?items='+items;
+            }
         }
         links += '</ul>';
         $('div.viewSelected>span').html(links);
+        $('a.mergeItemsLink').click(function () {
+            var html = '<form method="POST" action="'+json.global.webroot+'/item/merge?items='+$(this).attr('element')+'">';
+            html+='Select a name: ';
+            html+='<input type="text" name="name" value=""/><br/><br/>';
+            html+='<input class="globalButton" type="submit" value="Merge" />';
+            html+='</form>';
+            midas.showDialogWithContent('Merge items', html, false, {width: 300});
+        });
+
         midas.doCallback('CALLBACK_CORE_RESOURCES_SELECTED', {
             folders: arraySelected.folders,
             items: arraySelected.items,
@@ -145,7 +161,7 @@ midas.removeItem = function (id) {
     html+='<input class="globalButton deleteFolderYes" element="'+id+'" type="button" value="'+json.global.Yes+'"/>';
     html+='<input style="margin-left:15px;" class="globalButton deleteFolderNo" type="button" value="'+json.global.No+'"/>';
     html+='</div>';
-    
+
     midas.showDialogWithContent(json.browse['delete'],html,false);
 
     $('input.deleteFolderYes').unbind('click').click(
@@ -289,7 +305,7 @@ midas.deleteSelected = function (folders, items) {
  * The items param should be strings of ids separated by - (empty
  * ids will be ignored)
  */
-midas.shareSelected = function (folders, items) {  
+midas.shareSelected = function (folders, items) {
     midas.loadDialog("ShareItem","/browse/movecopy/?share=true&items="+items);
     if(folders == '')
       {
@@ -298,24 +314,24 @@ midas.shareSelected = function (folders, items) {
     else
       {
       midas.showDialog(json.browse.shareSelected + ' ' + json.browse.ignoreSelectedFolders);
-      }   
+      }
 };
 
 
 /**
- * Duplicates the set of items selected with the checkboxes. 
+ * Duplicates the set of items selected with the checkboxes.
  * This action does not support folder type, selected folder will be ignored.
  * The items param should be strings of ids separated by - (empty
  * ids will be ignored)
  */
-midas.duplicateSelected = function (folders, items) {  
+midas.duplicateSelected = function (folders, items) {
     midas.loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+items);
     if(folders == '') {
         midas.showDialog(json.browse.duplicateSelected);
     }
     else {
         midas.showDialog(json.browse.duplicateSelected + ' ' + json.browse.ignoreSelectedFolders);
-    }   
+    }
 };
 
 /**
