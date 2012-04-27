@@ -470,11 +470,11 @@ class ItemController extends AppController
   */
   function mergeAction()
     {
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
 
-    $itemIds = $this->_getParam("items");
-    $name = $this->_getParam("name");
+    $itemIds = $this->_getParam('items');
+    $name = $this->_getParam('name');
     if(empty($name))
       {
       throw new Zend_Exception('Please set a name');
@@ -484,12 +484,7 @@ class ItemController extends AppController
     $mainItem = $this->Item->mergeItems($itemIds, $name,
                                         $this->userSession->Dao);
 
-    $itemArray = $mainItem->toArray();
-    $itemArray['policy'] = MIDAS_POLICY_ADMIN;
-    $itemArray['size'] = $this->Component->Utility->formatSize($mainItem->getSizebytes());
-    $itemArray['date'] = $this->Component->Date->ago($mainItem->getDateUpdate(), true);
-    echo JsonComponent::encode($itemArray);
-    return;
+    $this->_redirect('/item/'.$mainItem->getKey());
     }//end merge
 
   /**
