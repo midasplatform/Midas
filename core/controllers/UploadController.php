@@ -79,7 +79,6 @@ class UploadController extends AppController
       }
     $this->disableLayout();
     $this->view->form = $this->getFormAsArray($this->Form->Upload->createUploadLinkForm());
-    $this->userSession->uploaded = array();
     $this->userSession->filePosition = null;
     $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
     $this->view->allLicenses = $this->License->getAll();
@@ -246,7 +245,6 @@ class UploadController extends AppController
     if(!empty($url) && !empty($name))
       {
       $item = $this->Component->Upload->createLinkItem($this->userSession->Dao, $name, $url, $parent);
-      $this->userSession->uploaded[] = $item->getKey();
       }
     }//end simple upload
 
@@ -424,7 +422,6 @@ class UploadController extends AppController
         echo "[ERROR] ".$e->getMessage();
         throw $e;
         }
-      $this->userSession->uploaded[] = $item->getKey();
       echo "[OK]";
       }
     } //end processjavaupload
@@ -667,7 +664,6 @@ class UploadController extends AppController
         $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename,
                                                              $path, $parent, $license, '',
                                                              (bool)$this->isTestingEnv());
-        $this->userSession->uploaded[] = $item->getKey();
         }
 
       $info = array();
