@@ -359,7 +359,7 @@
                     var privacyClass = folder.privacy_status == 0 ? 'Public' : 'Private';
                     var row = '<tr id="node--'+index+'" policy="'+folder.policy+'" deletable="false" class="parent" privacy="'+
                               folder.privacy_status+'" type="folder" element="'+folder.folder_id+'">';
-                    row += '<td class="treeBrowseElement"><span class="folder'+privacyClass+'">'+folder.name+'</span></td>';
+                    row += '<td class="treeBrowseElement"><span class="folder'+privacyClass+'">'+sliceFileName(folder.name,43)+'</span></td>';
                     row += '<td><img class="folderLoading" element="'+folder.folder_id+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/></td>';
                     row += '<td>'+folder.date_update+'</td>';
                     row += '<td><input type="checkbox" class="treeCheckbox" type="folder" element="'+folder.folder_id+'" id="folderCheckbox'+folder.folder_id+'"/></td>';
@@ -372,7 +372,7 @@
                     var privacyClass = item.privacy_status == 0 ? 'Public' : 'Private';
                     var row = '<tr id="node--'+index+'" policy="'+item.policy+'" privacy="'+
                               item.privacy_status+'" type="item" element="'+item.item_id+'">';
-                    row += '<td class="treeBrowseElement"><span class="file'+privacyClass+'">'+item.name+'</span></td>';
+                    row += '<td class="treeBrowseElement"><span class="file'+privacyClass+'">'+sliceFileName(item.name,43)+'</span></td>';
                     row += '<td>'+item.size+'</td>';
                     row += '<td>'+item.date_update+'</td>';
                     row += '<td><input type="checkbox" class="treeCheckbox" type="folder" element="'+item.item_id+'" id="itemCheckbox'+item.item_id+'"/></td>';
