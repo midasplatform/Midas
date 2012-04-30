@@ -345,6 +345,7 @@
         var table = $(this);
         var options = table.ttOptions();
         table.find('tbody tr').remove();
+        table.after('<img class="reloadTableIndicator" alt=""  src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" />');
 
         $.post(json.global.webroot+'/browse/getfolderscontent', {
             folders: table.attr('root'),
@@ -359,7 +360,7 @@
                     var privacyClass = folder.privacy_status == 0 ? 'Public' : 'Private';
                     var row = '<tr id="node--'+index+'" policy="'+folder.policy+'" deletable="false" class="parent" privacy="'+
                               folder.privacy_status+'" type="folder" element="'+folder.folder_id+'">';
-                    row += '<td class="treeBrowseElement"><span class="folder'+privacyClass+'">'+folder.name+'</span></td>';
+                    row += '<td class="treeBrowseElement"><span class="folder'+privacyClass+'">'+sliceFileName(folder.name,43)+'</span></td>';
                     row += '<td><img class="folderLoading" element="'+folder.folder_id+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/></td>';
                     row += '<td>'+folder.date_update+'</td>';
                     row += '<td><input type="checkbox" class="treeCheckbox" type="folder" element="'+folder.folder_id+'" id="folderCheckbox'+folder.folder_id+'"/></td>';
@@ -372,7 +373,7 @@
                     var privacyClass = item.privacy_status == 0 ? 'Public' : 'Private';
                     var row = '<tr id="node--'+index+'" policy="'+item.policy+'" privacy="'+
                               item.privacy_status+'" type="item" element="'+item.item_id+'">';
-                    row += '<td class="treeBrowseElement"><span class="file'+privacyClass+'">'+item.name+'</span></td>';
+                    row += '<td class="treeBrowseElement"><span class="file'+privacyClass+'">'+sliceFileName(item.name,43)+'</span></td>';
                     row += '<td>'+item.size+'</td>';
                     row += '<td>'+item.date_update+'</td>';
                     row += '<td><input type="checkbox" class="treeCheckbox" type="folder" element="'+item.item_id+'" id="itemCheckbox'+item.item_id+'"/></td>';
@@ -380,17 +381,15 @@
                     table.find('tbody').append(row);
                     index++;
                 }
-                
+
             }
+            $('img.reloadTableIndicator').hide();
             table.find('tbody tr').each(function() {
                 if(!options.expandable || $(this)[0].className.search(options.childPrefix) == -1) {
                     if (isNaN(defaultPaddingLeft)) {
                         defaultPaddingLeft = parseInt($($(this).children('td:first')[options.treeColumn]).css('padding-left'), 10);
                     }
                     $(this).ttInitNode();
-                }
-                else if(options.initialState == 'collapsed') {
-                    $(this).hide();
                 }
             });
             table.ttInitTable();
