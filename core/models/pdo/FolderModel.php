@@ -649,10 +649,15 @@ class FolderModel extends FolderModelBase
     }
 
 
-  /** getItems with policy check
-   * @return
+  /**
+   * Get child items of a folder filtered by policy check for the provided user
+   * @param folder The parent folder
+   * @param userDao The user requesting the folder children (default anonymous)
+   * @param policy What policy to filter by (default MIDAS_POLICY_READ)
+   * @param sortfield What field to sort the results by (name | date | size, default = name)
+   * @param sortdir Sort direction (asc | desc, default = asc)
    */
-  function getItemsFiltered($folder, $userDao = null, $policy = 0)
+  function getItemsFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc')
     {
     $isAdmin = false;
     if(is_array($folder))
@@ -774,15 +779,31 @@ class FolderModel extends FolderModelBase
         unset($policyArray[$row['item_id']]);
         }
       }
-    $this->Component->Sortdao->field = 'name';
-    $this->Component->Sortdao->order = 'asc';
+    $this->Component->Sortdao->field = $sortfield;
+    $this->Component->Sortdao->order = $sortdir;
+    $sortFn = 'sortByName';
+    if($sortfield == 'date')
+      {
+      $sortFn = 'sortByDate';
+      }
+    else if($sortfield == 'sizebytes')
+      {
+      $sortFn = 'sortByNumber';
+      }
     usort($return, array($this->Component->Sortdao, 'sortByName'));
 
     return $return;
     }
 
-  /** getFolder with policy check */
-  function getChildrenFoldersFiltered($folder, $userDao = null, $policy = 0)
+  /**
+   * Get child folders of a folder filtered by policy check for the provided user
+   * @param folder The parent folder
+   * @param userDao The user requesting the folder children (default anonymous)
+   * @param policy What policy to filter by (default MIDAS_POLICY_READ)
+   * @param sortfield What field to sort the results by (name | date, default = name)
+   * @param sortdir Sort direction (asc | desc, default = asc)
+   */
+  function getChildrenFoldersFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc')
     {
     $isAdmin = false;
     if(is_array($folder))
@@ -885,9 +906,14 @@ class FolderModel extends FolderModelBase
         }
       }
 
-    $this->Component->Sortdao->field = 'name';
-    $this->Component->Sortdao->order = 'asc';
-    usort($return, array($this->Component->Sortdao, 'sortByName'));
+    $this->Component->Sortdao->field = $sortfield;
+    $this->Component->Sortdao->order = $sortdir;
+    $sortFn = 'sortByName';
+    if($sortfield == 'date')
+      {
+      $sortFn = 'sortByDate';
+      }
+    usort($return, array($this->Component->Sortdao, $sortFn));
     return $return;
     }
 

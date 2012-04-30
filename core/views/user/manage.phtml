@@ -10,8 +10,8 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/user/user.manage.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.manage.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/user/user.manage.css" />
@@ -43,7 +43,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
   <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   Drag and drop to move elements.
-  <table id="browseTable" class="midasTree">
+  <table id="browseTable" class="midasTree"  root="<?php echo $this->user->getFolderId(); ?>">
     <thead>
           <th class="thData"><?php echo $this->t('Name');?></th>
           <th class="thSize"><?php echo $this->t('Size');?></th>

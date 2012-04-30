@@ -25,12 +25,12 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
   <div class="tabs" id='tabsGeneric'>
     <ul>
-      <li><a href="#tabs-1"><?php echo $this->t("Data")?></a></li>
+      <li><a href="#tabs-1"><?php echo $this->t('Data')?></a></li>
       <li><a href="#tabs-2"><?php echo $this->t('Info');?></a></li>
     </ul>
   <div class="genericBigButton genericWrapperTopRight">
     <?php
-    echo "<a  href='{$this->webroot}/download/?folders={$this->mainFolder->getKey()}'>";
+    echo "<a href='{$this->webroot}/download/?folders={$this->mainFolder->getKey()}'>";
     echo $this->t('Download');  
     echo '</a>';
      ?>
@@ -39,7 +39,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
 
   <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
-  <table id="browseTable" class="midasTree">
+  <table id="browseTable" class="midasTree" root="<?php echo $this->mainFolder->getKey(); ?>">
     <thead>
       <tr>
         <th class="thData"><?php echo $this->t('Name');?></th>

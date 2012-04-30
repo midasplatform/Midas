@@ -51,7 +51,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   <div class="tabs" id='tabsGeneric'>
   <ul>
     <li><a href="#tabs-3"><?php echo $this->t('Data');?></a></li>
-    <li><a href="#tabs-1"><?php echo $this->t("Feed")?></a></li>
+    <li><a href="#tabs-1"><?php echo $this->t('Feed')?></a></li>
     <?php
     if(!empty($this->information))
       {
@@ -95,7 +95,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       ?>
     <div id="tabs-3">
       <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-      <table id="browseTable" class="midasTree">
+      <table id="browseTable" class="midasTree" root="<?php echo $this->user->getFolderId(); ?>">
         <thead>
               <th class="thData"><?php echo $this->t('Name');?></th>
               <th class="thSize"><?php echo $this->t('Size');?></th>
