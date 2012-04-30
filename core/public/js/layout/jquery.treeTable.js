@@ -345,6 +345,7 @@
         var table = $(this);
         var options = table.ttOptions();
         table.find('tbody tr').remove();
+        table.after('<img class="reloadTableIndicator" alt=""  src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" />');
 
         $.post(json.global.webroot+'/browse/getfolderscontent', {
             folders: table.attr('root'),
@@ -380,17 +381,15 @@
                     table.find('tbody').append(row);
                     index++;
                 }
-                
+
             }
+            $('img.reloadTableIndicator').hide();
             table.find('tbody tr').each(function() {
                 if(!options.expandable || $(this)[0].className.search(options.childPrefix) == -1) {
                     if (isNaN(defaultPaddingLeft)) {
                         defaultPaddingLeft = parseInt($($(this).children('td:first')[options.treeColumn]).css('padding-left'), 10);
                     }
                     $(this).ttInitNode();
-                }
-                else if(options.initialState == 'collapsed') {
-                    $(this).hide();
                 }
             });
             table.ttInitTable();
