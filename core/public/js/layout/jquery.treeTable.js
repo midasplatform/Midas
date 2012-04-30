@@ -353,6 +353,7 @@
             sortdir: options.sortdir
           } , function (data) {
             var children = $.parseJSON(data);
+            table.find('tbody tr').remove(); // in case concurrent requests were made, clear tree
             for(var key in children) {
                 var index = 1;
                 for(var folderIndex in children[key].folders) {
