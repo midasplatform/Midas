@@ -115,7 +115,7 @@ $strippedDescription = strip_tags($description);
     <div id="tabs-data">
       <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
 
-      <table id="browseTable" class="midasTree">
+      <table id="browseTable" class="midasTree"  root="<?php echo $this->communityDao->getFolderId(); ?>">
         <thead>
               <th class="thData"><?php echo $this->t('Name');?></th>
               <th class="thSize"><?php echo $this->t('Size');?></th>

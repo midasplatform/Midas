@@ -267,9 +267,28 @@ class BrowseController extends AppController
   /** get getfolders content (ajax function for the treetable) */
   public function getfolderscontentAction()
     {
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
     $folderIds = $this->_getParam('folders');
+    $sort = $this->_getParam('sort', 'name');
+    $sortdir = $this->_getParam('sortdir', 'asc');
+    $foldersort = 'name';
+    $foldersortdir = $sortdir;
+    $itemsort = 'name';
+    $itemsortdir = $sortdir;
+    if($sort == 'size')
+      {
+      $itemsort = 'sizebytes';
+      $itemsortdir = $sortdir;
+      }
+    else if($sort == 'date')
+      {
+      $foldersort = 'date_update';
+      $itemsort = 'date_update';
+      $foldersortdir = $sortdir;
+      $itemsortdir = $sortdir;
+      }
+
     if(!isset($folderIds))
       {
       throw new Zend_Exception("Please set the folder Id");
@@ -281,8 +300,8 @@ class BrowseController extends AppController
       throw new Zend_Exception("Folder doesn't exist");
       }
 
-    $folders = $this->Folder->getChildrenFoldersFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ);
-    $items = $this->Folder->getItemsFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $folders = $this->Folder->getChildrenFoldersFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ, $foldersort, $foldersortdir);
+    $items = $this->Folder->getItemsFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ, $itemsort, $itemsortdir);
     $jsonContent = array();
     foreach($parents as $parent)
       {

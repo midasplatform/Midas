@@ -92,6 +92,18 @@ table.midasTree thead th.thSize{
   background-image: url(images/bg.gif);
 }
 
+table.midasTree th.sortasc {
+  background-image: url(images/asc.gif) !important;
+}
+
+table.midasTree th.sortdesc {
+  background-image: url(images/desc.gif) !important;
+}
+
+table.midasTree th.sortnone {
+  background-image: url(images/bg.gif) !important;
+}
+
 table.midasTree th.thSize:hover,table.midasTree th.thData:hover,table.midasTree th.thDate:hover {
   background-color: #ccdddd;
 }
