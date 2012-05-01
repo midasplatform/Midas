@@ -1,0 +1,25 @@
+div.Header {
+  background-color: #FFFFFF;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#fefefe));
+  background-image: -moz-linear-gradient(center top, #ffffff 0%, #fefefe 100% );
+}
+
+div.Header div.HeaderContent {
+  height: 65px;
+}
+
+div.Header div.HeaderLogo {
+  background: url('../images/slicerheader.png') no-repeat 0% 0%;
+  height: 65px;
+  width: 126px;
+  float: left;
+  cursor: pointer;
+}
+
+div.Header div.HeaderAction {
+  padding-top: 16px;
+}
+
+div.Header div.HeaderSearch {
+  padding-top: 16px;
+}

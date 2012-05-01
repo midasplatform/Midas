@@ -1,0 +1,128 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<?php
+$this->headScript()->appendFile(
+  $this->apiWebroot . '/public/js/common/common.ajaxapi.js');
+$this->headScript()->appendFile(
+  $this->moduleWebroot . '/public/js/index/'.$this->moduleName.'.index.js');
+$this->headScript()->appendFile(
+  $this->moduleWebroot . '/public/js/jquery.client.js');
+$this->headScript()->appendFile(
+  $this->moduleWebroot . '/public/js/jquery.effects.core.js');
+$this->headScript()->appendFile(
+  $this->moduleWebroot . '/public/js/jquery.effects.slide.js');
+$this->headScript()->appendFile(
+  $this->moduleWebroot . '/public/js/jquery.corner.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot.'/public/css/'.$this->moduleName ?>.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot.'/public/css/'.$this->moduleName ?>.index.css" />
+<div class="viewMain">
+  <div class="paragraph">Slicer 4 is the latest version of 3D Slicer, our medical image processing and data visualization software package. The new Slicer 4 is a complete re-architecture of 3D Slicer based on the Qt toolkit and the latest versions of the VTK and ITK packages.</div>
+  <h3 style="float:left;">Download packages</h3>
+<?php
+  $osMapping = array('win' => 'Windows', 'macosx' => 'Mac OSX', 'linux' => 'GNU/Linux');
+  $archMapping = array('i386' => '32-bit', 'amd64' => '64-bit');
+  echo '  <div class="last-updated" style="float:right;">Last updated: '.$this->lastupdated.'</div>';
+?>
+  <div class="spacer"></div>
+  <!-- Designed inspired from http://search.npmjs.org/ -->
+  <div class="versions-container">
+    <div class="version-list">
+<?php
+    foreach($this->packageSetsByOs as $os => $packageSuperset)
+      {
+      echo '<div class="packageOS '.$os.'">'.$osMapping[$os].'</div>';
+      foreach($packageSuperset as $releaseName => $packageSet)
+        {
+        $releaseNameNoDots = str_replace(".", "", $releaseName);
+        echo '  <div class="package-download">';
+        echo '    <div id="'.$os.'-'.$releaseNameNoDots.'" class="version-link">'.$releaseName.'</div>';
+        echo '  </div>';
+        }
+      }
+    echo '  </div>';
+    echo '  <div class="version-info-list">';
+    foreach($this->packageSetsByOs as $os => $packageSuperset)
+      {
+      foreach($packageSuperset as $releaseName => $packageSet)
+        {
+        $releaseNameNoDots = str_replace(".", "", $releaseName);
+        echo '  <div id="version-info-'.$os.'-'.$releaseNameNoDots.'" class="version-info">';
+        foreach($packageSet as $arch => $package)
+          {
+          $packageDao = $package['dao'];
+          $packageSize = $package['size'];
+          $packageChecksum = $package['checksum'];
+          $packageDateCreation = $package['date_creation'];
+          $packageLastupdated = $package['lastupdated'];
+          $packageExtensionCount = $package['extensioncount'];
+          $echoInfoCell = function($key, $value, $class = '', $arch = '&nbsp;')
+            {
+            echo '      <div class="version-arch-cell '.$class.'">';
+            echo '        <div class="version-info-key version-arch-key">'.$arch.'</div>';
+            echo '      </div>';
+            echo '      <div class="version-info-cell '.$class.'">';
+            echo '        <div class="version-info-key">'.$key.'</div>';
+            echo '        <div class="version-info-value">'.$value.'</div>';
+            echo '      </div>';
+            echo '      <div class="spacer '.$class.'"></div>';
+            };
+          echo '    <div class="version-arch-container">';
+          $downloadText = '<a class="download external" title="MD5 '.$packageChecksum.'" href="'.$this->webroot.'/download/?items='.$packageDao->getItemId().'">Download</a>';
+          if($releaseName != $this->latestCategoryText)
+            {
+            $downloadText .= '&nbsp;<a class="statistics" title="Click to display download statistics" href="'.$this->webroot.'/statistics/item?id='.$packageDao->getItemId().'"></a>';
+            }
+          $echoInfoCell('', $downloadText, /* class */ '', $archMapping[$arch]);
+          $echoInfoCell('MD5', $packageChecksum, 'version-cell-md5');
+          $echoInfoCell('Size', $packageSize);
+          $echoInfoCell('Revision', $packageDao->getRevision());
+          if($releaseName == $this->latestCategoryText)
+            {
+            $echoInfoCell('Last updated', $packageLastupdated);
+            }
+          else
+            {
+            $echoInfoCell('Release date', $packageDateCreation);
+            }
+          if($packageExtensionCount > 0)
+            {
+            $queryArray = array();
+            $queryArray[] = 'os=' . urlencode($packageDao->getOs());
+            $queryArray[] = 'arch=' . urlencode($packageDao->getArch());
+            $queryArray[] = 'slicer_revision=' . urlencode($packageDao->getRevision());
+            $release = $packageDao->getRelease() != '' ? $packageDao->getRelease() : 'any';
+            $queryArray[] = 'release=' . urlencode($release);
+            $queryArray[] = 'packagetype=any';
+            $listExtensionUrl = $this->webroot.'/'.$this->moduleName.'/view/advanced';
+            $listExtensionUrl .= '?' . implode('&', $queryArray);
+            $echoInfoCell('Extensions', '<a href="'.$listExtensionUrl.'">'.$packageExtensionCount.'</a>');
+            }
+          else
+            {
+            $echoInfoCell('Extensions', 'No extension available');
+            }
+          echo '    </div>';
+          }
+        echo '  </div>';
+        }
+      }
+?>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <h3>License</h3>
+  <div class="paragraph">3D Slicer is open source software, available for free and without restrictions of use. Slicer3 and Slicer4 are distributed under a BSD-style license with some changes specific to the healthcare environment.</div>
+</div>
+
+<?php echo $this->render('index/viewsidebar.phtml'); ?>

@@ -1,0 +1,124 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<?php
+$this->headScript()->appendFile(
+  $this->apiWebroot . '/public/js/common/common.ajaxapi.js');
+$this->headScript()->appendFile(
+  $this->moduleWebroot . '/public/js/jquery.tablesorter.js');
+$this->headScript()->appendFile(
+  $this->moduleWebroot . '/public/js/jquery.client.js');
+$this->headScript()->appendFile(
+  $this->moduleWebroot . '/public/js/index/slicerpackages.advanced.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot.'/public/css/'.$this->moduleName ?>.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot.'/public/css/'.$this->moduleName ?>.advanced.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/style.css" />
+<div class="viewMain">
+  <!--<h3>Search packages</h3>-->
+  <div>
+    <form id="releaseForm">
+      <h4>Release</h4>
+      <select>
+        <option name="releaseGroup" value="any">Any</option>
+<?php
+  foreach($this->releaseNames as $releaseName)
+    {
+    echo '        <option name="releaseGroup" value="'.$releaseName.'">'.$releaseName.'</option>';
+    }
+?>
+      </select>
+    </form>
+    <form id="slicerRevisionForm">
+      <h4>Slicer revision</h4>
+      <input id="slicerRevisionInput" type="text" name="slicer_revision"/>
+    </form>
+    <div class="spacer"></div>
+    <form id="osRadios">
+      <h4>Operating System</h4>
+      <span class="choice">
+        <input type="radio" name="osGroup" id="osGroup_0" value="any" checked><label class="noicon" for="osGroup_0">Any</label>
+      </span>
+<?php
+  foreach($this->available_oss as $os)
+    {
+    $os_longname = $this->os_shortname_to_longname[$os];
+    echo '      <span class="choice">';
+    echo '        <input type="radio" name="osGroup" id="osGroup_'.$os.'" value="'.$os.'">';
+    echo '        <label class="'.$os.'" for="osGroup_'.$os.'">'.$os_longname.'</label>';
+    echo '      </span>';
+    }
+?>
+    </form>
+    <form id="archRadios">
+      <h4>Architecture</h4>
+      <span class="choice">
+        <input type="radio" name="archGroup" id="archGroup_0" value="any" checked><label class="noicon" for="archGroup_0">Any</label>
+      </span>
+<?php
+  foreach($this->available_archs as $arch)
+    {
+    $arch_longname = $this->arch_shortname_to_longname[$arch];
+    echo '      <span class="choice">';
+    echo '        <input type="radio" name="archGroup" id="archGroup'.$arch.'" value="'.$arch.'">';
+    echo '        <label class="noicon" for="archGroup_'.$arch.'">'.$arch_longname.'</label>';
+    echo '      </span>';
+    }
+?>
+    </form>
+    <!--
+    <form id="buildtypeRadios">
+      <h4>Build Type</h4>
+      <span class="choice">
+        <input type="radio" name="buildtypeGroup" id="buildtypeGroup_0" value="any" checked><label class="noicon" for="buildtypeGroup_0">Any</label>
+      </span>
+      <span class="choice">
+        <input type="radio" name="buildtypeGroup" id="buildtypeGroup_1" value="experimental"><label for="buildtypeGroup_1">Experimental</label>
+      </span>
+      <span class="choice">
+        <input type="radio" name="buildtypeGroup" id="buildtypeGroup_2" value="nightly"><label for="buildtypeGroup_2">Nightly</label>
+      </span>
+    </form>
+    -->
+    <form id="packagetypeRadios" style="display:none;">
+      <h4>Package Type</h4>
+      <span class="choice">
+        <input type="radio" name="packagetypeGroup" id="packagetypeGroup_0" value="any" checked><label class="noicon" for="packagetypeGroup_0">Any</label>
+      </span>
+      <span class="choice">
+        <input type="radio" name="packagetypeGroup" id="packagetypeGroup_1" value="application"><label class="application" for="packagetypeGroup_1">Application</label>
+      </span>
+      <span class="choice">
+        <input type="radio" name="packagetypeGroup" id="packagetypeGroup_2" value="extension"><label class="extension" for="packagetypeGroup_2">Extension</label>
+      </span>
+    </form>
+  </div>
+  <table id="dataTable" class="tablesorter">
+    <thead>
+      <tr>
+        <!-- <th>Type</th> -->
+        <th>Name</th>
+        <th>Release</th>
+        <th>Platform</th>
+        <!--<th>Build Type</th>-->
+        <th>Slicer Revision</th>
+      </tr>
+    </thead>
+    <tbody id="dataTableContent">
+    </tbody>
+  </table>
+  <div id="dataTableLoading">
+    <img alt="" src="<?php echo  $this->coreWebroot?>/public/images/icons/loading.gif" />
+  </div>
+</div>
+
+<?php echo $this->render('index/viewsidebar.phtml') ?>
