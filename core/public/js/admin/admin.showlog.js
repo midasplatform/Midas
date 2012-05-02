@@ -104,11 +104,19 @@ midas.errorlog.fetchPreviousPage = function () {
     }
 }
 
+midas.errorlog.applyFilter = function () {
+    // reset offset to 0, as user has clicked apply and
+    // desires a new result set, which should start at page 0
+    midas.errorlog.pageOffset = 0;
+    $('#errorlogOffset').val(0);
+}
+
 $(document).ready(function () {
     $('#errorlogOffset').val(midas.errorlog.pageOffset);
     $('#errorlogPageLimit').val(midas.errorlog.PAGE_LIMIT);
     $('#errorlogPreviousPage').click(midas.errorlog.fetchPreviousPage);
     $('#errorlogNextPage').click(midas.errorlog.fetchNextPage);
+    $('#applyFilter').click(midas.errorlog.applyFilter);
 
     // Log priority enum
     midas.errorlog.operationMap = { '<=' : '>=', '=' : '==' };
