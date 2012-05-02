@@ -1,4 +1,4 @@
-<?php
+g<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -41,12 +41,12 @@ class Packages_ExtensionModel extends Packages_ExtensionModelBase
         if($option == 'category') //category searches by prefix and among a list of categories
           {
           $category = $params['category'];
-          $filterClause = "packages_extension.category = '".$category."'"
-                      ." OR packages_extension.category LIKE '".$category.".%'"
-                      ." OR packages_extension.category LIKE '".$category.";%'"
-                      ." OR packages_extension.category LIKE '%;".$category.".%'"
-                      ." OR packages_extension.category LIKE '%;".$category.";%'"
-                      ." OR packages_extension.category LIKE '%;".$category."'";
+          $filterClause = "packages_extension.category = '".$category."'".
+            " OR packages_extension.category LIKE '".$category.".%'".
+            " OR packages_extension.category LIKE '".$category.";%'".
+            " OR packages_extension.category LIKE '%;".$category.".%'".
+            " OR packages_extension.category LIKE '%;".$category.";%'".
+            " OR packages_extension.category LIKE '%;".$category."'";
 
           $sql->where($filterClause);
           $sqlCount->where($filterClause);
