@@ -115,6 +115,8 @@ class CommunityController extends AppController
           $communityDao->setName($formInfo->getValue('name'));
           $communityDao->setDescription($formInfo->getValue('description'));
 
+          Zend_Registry::get('notifier')->callback('CALLBACK_CORE_EDIT_COMMUNITY_INFO', array('community' => $communityDao, 'params' => $this->_getAllParams()));
+
           // update folderpolicygroup, itempolicygroup and feedpolicygroup tables when community privacy is changed between public and private
           // users in Midas_anonymouse_group can see community's public folder only if the community is set as public
           $forminfo_privacy = $formInfo->getValue('privacy');

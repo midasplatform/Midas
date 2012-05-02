@@ -1,0 +1,156 @@
+
+div.viewMain h3, .last-updated {
+  padding-top: 1em;
+  margin-bottom: 0px;
+}
+
+/* TODO a paragraph class should probably be defined in MIDAS core */
+div.paragraph {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+a.download {
+  font-size: 1.3em !important;
+}
+
+div.versions-container {
+  margin-top: 10px;
+  width: 100%;
+}
+div.versions-container div.packageOS {
+  margin-top: 0.5em;
+  font-weight: bold;
+}
+div.version-arch-container {
+  padding-bottom: 0.8em;
+}
+div.version-info div.version-arch-container:last-child {
+  padding-bottom: 0em;
+}
+div.version-list, div.version-arch-cell {
+  float: left;
+  width: 18%;
+}
+div.version-arch-key {
+  font-weight: bold;
+}
+div.version-info-list > div {
+  display: none;
+}
+div.version-info-selected {
+  display: inline !important;
+}
+div.version-info {
+  float: left;
+  width: 79%;
+  background-color: #c2c2ff;
+  padding: 1.5% 1.5% 1.5% 1.5%;
+}
+div.version-info-cell {
+  width: 100%;
+}
+div.version-cell-md5 {
+  display: none;
+}
+div.version-info-key {
+  float: left;
+}
+div.version-info-value {
+  float: right;
+  text-align: right;
+}
+div.version-selected {
+  font-weight: bold;
+  padding-left: 20px !important;
+  background-color: #c2c2ff;
+}
+div.version-highlighted {
+  font-weight: none;
+  color: darkgray;
+}
+div.version-link {
+  width: 100%;
+  padding: 5px 0px 3px 10px;
+  cursor: pointer;
+}
+
+div.linux {
+  background-image:url(../images/os_linux.png);
+}
+
+div.win {
+  background-image:url(../images/os_win.png);
+}
+
+div.macosx {
+  background-image:url(../images/os_macosx.png);
+}
+
+
+/* ReleaseFolder */
+div.releaseFolder {
+  clear: left;
+  align: center;
+}
+
+div.releaseFolder:not([class~="firstReleaseFolder"]) {
+  padding-top: 4ex;
+}
+
+div.releaseFolder > h3 {
+  padding: 0px;
+  margin: 0px;
+  }
+
+/* package */
+div.packageTile {
+  height: 14ex;
+  width: 29%;
+  border: 1px dotted #999;
+  margin-top: 1ex;
+  margin-left: 1ex;
+  float: left;
+  padding: 1ex;
+}
+
+div.packageOS {
+  padding-left: 20px;
+  vertical-align: middle;
+  background-repeat: no-repeat;
+  background-position: left center;
+}
+
+ul.packageLinks  {
+  padding-left: 3ex;
+  vertical-align: middle;
+}
+
+ul.packageLinks li a {
+
+}
+
+ul.packageLinks li {
+  -moz-border-radius: 6px 6px 6px 6px;
+  -moz-box-shadow: 0 0 5px #666666;
+  background-color: #57BB7D;
+  background-image: -moz-linear-gradient(center top , #57BB7D 0%, #32724A 100%);
+  border: 1px solid #354856;
+  cursor: pointer;
+  display: block;
+  float: left;
+  list-style-type: none;
+  padding: 0.5ex 2ex 0.5ex;
+  margin-bottom: 1ex;
+}
+
+ul.packageLinks li a {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+ul.packageLinks li img {
+  vertical-align: middle;
+  margin-right: 0.5ex;
+}

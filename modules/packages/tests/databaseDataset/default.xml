@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+  <packages_package
+    package_id="1"
+    item_id="3"
+    os="windows"
+    arch="i386"
+    revision="18284"
+    submissiontype="nightly"
+    packagetype="full" />
+</dataset>
+
