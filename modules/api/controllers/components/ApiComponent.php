@@ -1660,34 +1660,49 @@ class Api_ApiComponent extends AppComponent
     $userDao = $this->_getUser($args);
     $modelLoader = new MIDAS_ModelLoader();
     $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    $itemModel = $modelLoader->loadModel('Item');
+
     if(array_key_exists('id', $args))
       {
       $bitstream = $bitstreamModel->load($args['id']);
       }
     else
       {
-      $bitstream = $bitstreamModel->getByChecksum($args['checksum']);
+      $bitstreams = $bitstreamModel->getByChecksum($args['checksum'], true);
+      $bitstream = null;
+      foreach($bitstreams as $candidate)
+        {
+        $rev = $candidate->getItemrevision();
+        if(!$rev)
+          {
+          continue;
+          }
+        $item = $rev->getItem();
+        if($itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+          {
+          $bitstream = $candidate;
+          break;
+          }
+        }
       }
 
     if(!$bitstream)
       {
-      throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
+      throw new Exception('The bitstream does not exist or you do not have the permissions', MIDAS_INVALID_PARAMETER);
       }
 
     if(array_key_exists('name', $args))
       {
       $bitstream->setName($args['name']);
       }
-    $revisionModel = $modelLoader->loadModel('ItemRevision');
-    $revision = $revisionModel->load($bitstream->getItemrevisionId());
+    $revision = $bitstream->getItemrevision();
 
     if(!$revision)
       {
-      throw new Exception('Invalid revision id', MIDAS_INTERNAL_ERROR);
+      throw new Exception('Bitstream does not belong to a revision', MIDAS_INTERNAL_ERROR);
       }
-    $itemModel = $modelLoader->loadModel('Item');
     $item = $revision->getItem();
-    if(!$item || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+    if(array_key_exists('id', $args) && (!$item || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ)))
       {
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }

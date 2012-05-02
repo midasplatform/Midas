@@ -46,7 +46,7 @@ abstract class BitstreamModelBase extends AppModel
     } // end __construct()
 
   /** Abstract functions */
-  abstract function getByChecksum($checksum);
+  abstract function getByChecksum($checksum, $getAll = false);
 
   /** save */
   public function save($dao)
