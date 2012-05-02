@@ -729,7 +729,7 @@ class FolderModel extends FolderModelBase
       {
       $sortFn = 'sortByNumber';
       }
-    usort($return, array($this->Component->Sortdao, 'sortByName'));
+    usort($return, array($this->Component->Sortdao, $sortFn));
 
     return $return;
     }
