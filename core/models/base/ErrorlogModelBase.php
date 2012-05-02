@@ -38,7 +38,7 @@ abstract class ErrorlogModelBase extends AppModel
     } // end __construct()
 
   /** get Log Error */
-  abstract function getLog($startDate, $endDate, $module = 'all', $priority = 'warning', $limit = 99999, $offset = 0, $operator = '<=');
+  abstract function getLog($startDate, $endDate, $module = 'all', $priority = MIDAS_PRIORITY_WARNING, $limit = 99999, $offset = 0, $operator = '<=');
   /** Count log entries since a certain date */
   abstract function countSince($startDate, $priorities = null);
 } // end class FeedModelBase

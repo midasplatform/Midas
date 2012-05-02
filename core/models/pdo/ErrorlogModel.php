@@ -36,7 +36,7 @@ class ErrorlogModel extends ErrorlogModelBase
    * @param type $limit
    * @return array ErrorlogDao
    */
-  function getLog($startDate, $endDate, $module = 'all', $priority = 'warning', $limit = 99999, $offset = 0, $operator = '<=')
+  function getLog($startDate, $endDate, $module = 'all', $priority = MIDAS_PRIORITY_WARNING, $limit = 99999, $offset = 0, $operator = '<=')
     {
     $result = array();
     $sql = $this->database->select()
