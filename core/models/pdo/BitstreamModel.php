@@ -28,11 +28,27 @@ class BitstreamModel extends BitstreamModelBase
   {
 
   /** Get bitstream by checksum */
-  function getByChecksum($checksum)
+  function getByChecksum($checksum, $getAll = false)
     {
-    $row = $this->database->fetchRow($this->database->select()->where('checksum = ?', $checksum));
-    $dao = $this->initDao(ucfirst($this->_name), $row);
-    return $dao;
-    } // end getByChecksum()
-  }  // end class
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->where('checksum = ?', $checksum);
+    if($getAll)
+      {
+      $results = array();
+      $rowset = $this->database->fetchAll($sql);
+      foreach($rowset as $row)
+        {
+        $results[] = $this->initDao(ucfirst($this->_name), $row);
+        }
+      return $results;
+      }
+    else
+      {
+      $row = $this->database->fetchRow($sql);
+      $dao = $this->initDao(ucfirst($this->_name), $row);
+      return $dao;
+      }
+    }
+  }
 ?>
