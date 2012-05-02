@@ -1,6 +1,5 @@
-div.ui-tabs {
-position: relative!important;
-left: 11px!important;
+#uploadTabs>div {
+  margin-left: 10px;
 }
 
 .cluetip-jtip #cluetip-inner {

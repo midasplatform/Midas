@@ -420,40 +420,12 @@ midas.createAction = function (node) {
                 $(this).parents('li').css('background-color','white');
             });
 
-        $('a.uploadInFolder').qtip(
-            {
-                content: {
-                    // Set the text to an image HTML string with the correct src URL to the loading image you want to use
-                    text: '<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />',
-                    ajax: {
-                        url: $('a.uploadInFolder').attr('rel') // Use the rel attribute of each element for the url to load
-                    },
-                    title: {
-                        text: 'Upload', // Give the tooltip a title using each elements text
-                        button: true
-                    }
-                },
-                position: {
-                    at: 'bottom center', // Position the tooltip above the link
-                    my: 'top right',
-                    viewport: $(window), // Keep the tooltip on-screen at all times
-                    effect: true // Disable positioning animation
-                },
-                show: {
-                    modal: {
-                        on: true,
-                        blur: false
-                    },
-                    event: 'click',
-                    solo: true // Only show one tooltip at a time
-                },
-                hide: {
-                    event: false
-                },
-                style: {
-                    classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
-                }
-            });
+        $('a.uploadInFolder').click(function () {
+            var button = $('li.uploadFile');
+            button.attr('rel', $(this).attr('rel'));
+            midas.resetUploadButton();
+            button.click();
+        });
         $('a.sharingLink').click(function () {
             midas.loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
             midas.showDialog(json.browse.share);
