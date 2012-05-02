@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `packages_package` (
 CREATE TABLE IF NOT EXISTS `packages_project` (
   `project_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `community_id` bigint(20) NOT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`project_id`)
 );
 

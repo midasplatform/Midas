@@ -85,6 +85,19 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
             <?php echo $this->infoForm['canJoin']?>
           </div>
         </div>
+          <?php
+          $extraForm = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_COMMUNITY_MANAGE_FORM', array('community' => $this->communityDao));
+          foreach($extraForm as $module => $value)
+            {
+            if($value)
+              {
+              foreach($value as $sectionTitle => $content)
+                {
+                echo '<div class="extraManageFormContent"><h4>'.$sectionTitle.'</h4>'.$content.'</div>';
+                }
+              }
+            }
+          ?>
         <div>
           <?php echo $this->infoForm['submit']?>
           <input type="hidden" name='modifyInfo' value='1'/>

@@ -59,7 +59,8 @@ CREATE INDEX packages_package_application_id ON packages_package (application_id
 
 CREATE TABLE packages_project (
   project_id serial PRIMARY KEY,
-  community_id bigint NOT NULL
+  community_id bigint NOT NULL,
+  enabled int NOT NULL DEFAULT '1'
 );
 
 

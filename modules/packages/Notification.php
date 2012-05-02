@@ -16,14 +16,22 @@ class Packages_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'packages';
   public $_moduleComponents = array('Api');
-  public $_models = array();
+  public $_moduleModels = array('Project');
+  public $_models = array('Community');
 
   /** init notification process*/
   public function init()
     {
+    $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
+    $this->moduleWebroot = $baseUrl.'/'.$this->moduleName;
+    $this->webroot = $baseUrl;
+
     $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLinks');
     $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'itemDeleted');
     //TODO $this->addCallBack('CALLBACK_CORE_COMMUNITY_DELETED', 'communityDeleted');
+    $this->addCallBack('CALLBACK_CORE_COMMUNITY_MANAGE_FORM', 'communityManageForm');
+    $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_VIEW_TABS', 'communityViewTabs');
+    $this->addCallBack('CALLBACK_CORE_EDIT_COMMUNITY_INFO', 'communityEditInfo');
     $this->enableWebAPI($this->moduleName);
     }//end init
 
@@ -32,35 +40,30 @@ class Packages_Notification extends ApiEnabled_Notification
    */
   public function getLeftLinks()
     {
-    $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
-    $moduleWebroot = $baseUrl.'/'.$this->moduleName;
-    // TODO iterate over all projects
-    return array('<Project> Packages' => array(
-      $moduleWebroot.'/view',
-      $baseUrl.'/modules/'.$this->moduleName.'/public/images/package.png'));
+    $enabledProjects = $this->Packages_Project->getAllEnabled();
+
+    $list = array();
+    foreach($enabledProjects as $project)
+      {
+      $list[$project->name.' Packages'] =
+        array($this->webroot.'/community/'.$project->getCommunityId().'#Packages',
+        $this->webroot.'/modules/'.$this->moduleName.'/public/images/package.png');
+      }
+    return $list;
     }
 
   /**
-   * When an item is deleted, we must delete associated package/extension records
+   * If this community is a project with packages, show the packages tab
    */
-  public function itemDeleted($args)
+  public function communityViewTabs($args)
     {
-    $itemDao = $args['item'];
-    $modelLoader = new MIDAS_ModelLoader();
-
-    $packageModel = $modelLoader->loadModel('Package', $this->moduleName);
-    $package = $packageModel->getByItemId($itemDao->getKey());
-    if($package)
+    $community = $args['community'];
+    $project = $this->Packages_Project->getByCommunityId($community->getKey());
+    if($project && $project->getEnabled())
       {
-      $packageModel->delete($package);
+      return array('Packages' => $this->moduleWebroot.'/view/project?projectId='.$project->getKey());
       }
-
-    $extensionModel = $modelLoader->loadModel('Extension', $this->moduleName);
-    $extension = $extensionModel->getByItemId($itemDao->getKey());
-    if($extension)
-      {
-      $extensionModel->delete($extension);
-      }
+    return null;
     }
 
   /**
@@ -71,6 +74,34 @@ class Packages_Notification extends ApiEnabled_Notification
     // TODO
     }
 
+  /**
+   * Render the checkbox to allow a community to be a project
+   */
+  public function communityManageForm($args)
+    {
+    $community = $args['community'];
+    $project = $this->Packages_Project->getByCommunityId($community->getKey());
+
+    $html = '<input type="checkbox" name="packages_project" ';
+    if($project && $project->getEnabled() == 1)
+      {
+      $html .= 'checked="checked"';
+      }
+    $html .= '/ >This community hosts packages for a project';
+    return array('Packages' => $html);
+    }
+
+  /**
+   * Used to set the project flag on a community
+   */
+  public function communityEditInfo($args)
+    {
+    $community = $args['community'];
+    $params = $args['params'];
+    
+    $enabled = isset($params['packages_project']);
+    $this->Packages_Project->setEnabled($community, $enabled);
+    }
   } //end class
 
 ?>

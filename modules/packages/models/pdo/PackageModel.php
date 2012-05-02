@@ -9,17 +9,17 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-require_once BASE_PATH.'/modules/slicerpackages/models/base/PackageModelBase.php';
+require_once BASE_PATH.'/modules/packages/models/base/PackageModelBase.php';
 
 /**
  * Package PDO Model
  */
-class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
+class Packages_PackageModel extends Packages_PackageModelBase
 {
   /**
    * Return all the record in the table
    * @param params Optional associative array specifying an 'os', 'arch', 'submissiontype' and 'packagetype'.
-   * @return Array of SlicerpackagesDao
+   * @return Array of package Daos
    */
   function get($params = array('os' => 'any', 'arch' => 'any',
                                'submissiontype' => 'any', 'packagetype' => 'any',
@@ -31,7 +31,7 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
       {
       if(array_key_exists($option, $params) && $params[$option] != 'any')
         {
-        $sql->where('slicerpackages_package.'.$option.' = ?', $params[$option]);
+        $sql->where('packages_package.'.$option.' = ?', $params[$option]);
         }
       }
     if(array_key_exists('order', $params))
@@ -47,7 +47,7 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
     $rowsetAnalysed = array();
     foreach($rowset as $keyRow => $row)
       {
-      $tmpDao = $this->initDao('Package', $row, 'slicerpackages');
+      $tmpDao = $this->initDao('Package', $row, 'packages');
       $rowsetAnalysed[] = $tmpDao;
       }
     return $rowsetAnalysed;
@@ -56,17 +56,17 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
   /** get all package records */
   public function getAll()
     {
-    return $this->database->getAll('Package', 'slicerpackages');
+    return $this->database->getAll('Package', 'packages');
     }
 
   /**
-   * Return a slicerpackage_Package dao based on an itemId.
+   * Return a package_Package dao based on an itemId.
    */
   public function getByItemId($itemId)
     {
     $sql = $this->database->select()->where('item_id = ?', $itemId);
     $row = $this->database->fetchRow($sql);
-    $dao = $this->initDao('Package', $row, 'slicerpackages');
+    $dao = $this->initDao('Package', $row, 'packages');
     return $dao;
     }
 
@@ -103,7 +103,7 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
                       ->from(array('i' => 'item'), array('date_creation'))
                       ->join(array('i2f' => 'item2folder'), 'i2f.item_id = i.item_id', array())
                       ->join(array('f' => 'folder'), 'f.folder_id = i2f.folder_id', array())
-                      ->join(array('sp' => 'slicerpackages_package'),
+                      ->join(array('sp' => 'packages_package'),
                              'sp.item_id = i.item_id', array('package_id'));
     if(!$skipOperatingSystems)
       {
@@ -196,7 +196,7 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
                    ->from(array('i' => 'item'), array())
                    ->join(array('i2f' => 'item2folder'), 'i2f.item_id = i.item_id', array())
                    ->join(array('f' => 'folder'), 'f.folder_id = i2f.folder_id', array())
-                   ->join(array('sp' => 'slicerpackages_package'), 'sp.item_id = i.item_id');
+                   ->join(array('sp' => 'packages_package'), 'sp.item_id = i.item_id');
 
     if (count($releases) > 0)
       {
@@ -210,7 +210,7 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
     $packageDaos = array();
     foreach($rowset as $row)
       {
-      $packageDaos[] = $this->initDao('Slicerpackages_Package', $row);
+      $packageDaos[] = $this->initDao('Packages_Package', $row);
       }
     return $packageDaos;
     }
