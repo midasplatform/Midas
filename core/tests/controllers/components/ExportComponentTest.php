@@ -160,7 +160,7 @@ class ExportComponentTest extends ControllerTestCase
     $user1_public_lastbitstream = end($user1_public_bitstreams);
     $user1_public_bitstream_path = $user1_public_lastbitstream->getAssetstore()->getPath().'/'.$user1_public_lastbitstream->getPath();
     $this->assertTrue(is_link($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
-    $this->assertEquals($user1_public_bitstream_path, readlink($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
+    $this->assertEquals(realpath($user1_public_bitstream_path), realpath(readlink($midas_exporttest_dir.'/'.$itemIds[0].'/public.file')));
 
     // user1's private file will be exported as a symlink file and the linked bitstream is also asserted
     $user1_private_item = $this->Item->load($itemIds[1]);
@@ -169,7 +169,7 @@ class ExportComponentTest extends ControllerTestCase
     $user1_private_lastbitstream = end($user1_private_bitstreams);
     $user1_private_bitstream_path = $user1_private_lastbitstream->getAssetstore()->getPath().'/'.$user1_private_lastbitstream->getPath();
     $this->assertTrue(is_link($midas_exporttest_dir.'/'.$itemIds[1].'/private.png'));
-    $this->assertEquals($user1_private_bitstream_path, readlink($midas_exporttest_dir.'/'.$itemIds[1].'/private.png'));
+    $this->assertEquals(realpath($user1_private_bitstream_path), realpath(readlink($midas_exporttest_dir.'/'.$itemIds[1].'/private.png')));
 
     // switch to user2
     $userDao = $this->User->load($usersFile[1]->getKey());
@@ -177,7 +177,7 @@ class ExportComponentTest extends ControllerTestCase
     $exportCompoenent->exportBitstreams($userDao, $midas_exporttest_dir, $itemIds, true);
     // user1's public file will be exported as a symlink file and the linked bitstream is also asserted
     $this->assertTrue(is_link($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
-    $this->assertEquals($user1_public_bitstream_path, readlink($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
+    $this->assertEquals(realpath($user1_public_bitstream_path), realpath(readlink($midas_exporttest_dir.'/'.$itemIds[0].'/public.file')));
     // user1's private file will NOT be exported
     $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[1].'/private.png'));
     // clean up
