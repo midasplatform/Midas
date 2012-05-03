@@ -1,0 +1,63 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/view/packages.view.project.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.autogrow-textarea.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/view/packages.view.project.css" />
+
+<div class="packagesTabWrapper">
+  <div class="introText">The <?php echo $this->community->getName(); ?> project hosts packages for the following applications:</div>
+
+  <div class="applicationList">
+    <?php
+    if(count($this->applications) == 0)
+      {
+      echo '<div class="noApplications">There are no applications for this project yet.</div>';
+      }
+
+    foreach($this->applications as $application)
+      {
+      echo '<div class="applicationContainer">';
+      echo   '<a class="applicationLink" href="'.$this->webroot.'/packages/view/application?applicationId='.$application->getKey().'">';
+      echo   $application->getName().'</a>';
+      if($application->getDescription() != '')
+        {
+        echo '<div class="applicationDescription">'.$application->getDescription().'</div>';
+        }
+      echo '</div>';
+      }
+    ?>
+  </div>
+
+  <?php
+  if($this->isAdmin)
+    { ?>
+    <div class="createApplicationContainer">
+      <a href="javascript:;" id="createApplicationLink">Create new application</a>
+    </div>
+  <?php
+    }
+  ?>
+</div>
+
+<!-- TEMPLATE: create new application dialog -->
+<div id="createDialogTemplate" style="display: none;">
+  <form class="createApplication" method="POST" action="<?php echo $this->webroot; ?>/packages/application/create">
+    <table><tbody>
+      <tr><td>Name</td><td><input type="text" name="name" /></td></tr>
+      <tr><td>Description</td><td><textarea class="expanding" name="description"></textarea></td>
+    </tbody></table>
+    <input type="hidden" name="projectId" value="<?php echo $this->project->getKey(); ?>"/>
+    <input type="submit" class="globalButton" value="Create" />
+  </form>
+</div>
+
