@@ -5,6 +5,7 @@
     var defaultPaddingLeft;
 
     $.fn.treeTable = function(opts) {
+        var table = $(this);
         var options = $.extend({}, $.fn.treeTable.defaults, opts);
 
         // default to global callbacks in none were passed
@@ -27,8 +28,11 @@
             options.callbackCustomElements = callbackCustomElements;
         }
 
+        options.sort = 'name';
+        options.sortdir = 'asc';
+
         // Store the options in the dom (on the table element) for later lookup
-        $.data($(this)[0], 'options', options);
+        $.data(table[0], 'options', options);
 
         var tmp = this.each(function() {
             $(this).addClass('treeTable').find('tbody tr').each(function() {
@@ -48,6 +52,16 @@
         if($.isFunction(options.onFirstInit)) {
             options.onFirstInit.call();
         }
+
+        table.find('th.thData').click(function () {
+            $(this).ttSortClicked('name');
+        });
+        table.find('th.thSize').click(function () {
+            $(this).ttSortClicked('size');
+        });
+        table.find('th.thDate').click(function () {
+            $(this).ttSortClicked('date');
+        });
 
         return tmp;
     };
@@ -71,6 +85,33 @@
         callbackCreateElement: null,
         callbackReloadNode: null,
         callbackCustomElements: null
+    };
+
+    /**
+     * When a header field is clicked, we want to sort by that header field
+     */
+    $.fn.ttSortClicked = function(fieldname) {
+        var table = $(this).ttTable();
+        table.find('th.thData,th.thSize,th.thDate').ttShowNoSort();
+        var options = table.ttOptions();
+        var sortdir = 'asc';
+        if(options.sort == fieldname && options.sortdir == 'asc') {
+            sortdir = 'desc';
+        }
+        table.ttSetOption('sort', fieldname);
+        table.ttSetOption('sortdir', sortdir);
+        $(this).ttShowSort(sortdir);
+        table.ttReloadTree();
+    };
+
+    $.fn.ttShowNoSort = function() {
+        $(this).removeClass('sortasc sortdesc');
+        $(this).addClass('sortnone');
+    };
+
+    $.fn.ttShowSort = function(sortdir) {
+        $(this).removeClass('sortnone sortasc sortdesc');
+        $(this).addClass('sort'+sortdir);
     };
 
     // Collapse a branch
@@ -142,7 +183,11 @@
         node.attr('fetched', 'true');
         node.ttToggleLoading(true);
 
-        $.post(json.global.webroot+'/browse/getfolderscontent', {folders: node.attr('element')} , function (data) {
+        $.post(json.global.webroot+'/browse/getfolderscontent', {
+            folders: node.attr('element'),
+            sort: options.sort,
+            sortdir: options.sortdir
+          } , function (data) {
             var children = jQuery.parseJSON(data);
             // Store the children in the dom node
             for(var key in children) {
@@ -290,6 +335,66 @@
             if(typeof options.callbackCreateElement == 'function') {
                 options.callbackCreateElement($(this));
             }
+        });
+    }
+
+    /**
+     * Reloads the entire tree (should be called on the table)
+     */
+    $.fn.ttReloadTree = function () {
+        var table = $(this);
+        var options = table.ttOptions();
+        table.find('tbody tr').remove();
+        table.after('<img class="reloadTableIndicator" alt=""  src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" />');
+
+        $.post(json.global.webroot+'/browse/getfolderscontent', {
+            folders: table.attr('root'),
+            sort: options.sort,
+            sortdir: options.sortdir
+          } , function (data) {
+            var children = $.parseJSON(data);
+            table.find('tbody tr').remove(); // in case concurrent requests were made, clear tree
+            for(var key in children) {
+                var index = 1;
+                for(var folderIndex in children[key].folders) {
+                    var folder = children[key].folders[folderIndex];
+                    var privacyClass = folder.privacy_status == 0 ? 'Public' : 'Private';
+                    var row = '<tr id="node--'+index+'" policy="'+folder.policy+'" deletable="false" class="parent" privacy="'+
+                              folder.privacy_status+'" type="folder" element="'+folder.folder_id+'">';
+                    row += '<td class="treeBrowseElement"><span class="folder'+privacyClass+'">'+sliceFileName(folder.name,43)+'</span></td>';
+                    row += '<td><img class="folderLoading" element="'+folder.folder_id+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/></td>';
+                    row += '<td>'+folder.date_update+'</td>';
+                    row += '<td><input type="checkbox" class="treeCheckbox" type="folder" element="'+folder.folder_id+'" id="folderCheckbox'+folder.folder_id+'"/></td>';
+                    row += '</tr>';
+                    table.find('tbody').append(row);
+                    index++;
+                }
+                for(var itemIndex in children[key].items) {
+                    var item = children[key].items[itemIndex];
+                    var privacyClass = item.privacy_status == 0 ? 'Public' : 'Private';
+                    var row = '<tr id="node--'+index+'" policy="'+item.policy+'" privacy="'+
+                              item.privacy_status+'" type="item" element="'+item.item_id+'">';
+                    row += '<td class="treeBrowseElement"><span class="file'+privacyClass+'">'+sliceFileName(item.name,43)+'</span></td>';
+                    row += '<td>'+item.size+'</td>';
+                    row += '<td>'+item.date_update+'</td>';
+                    row += '<td><input type="checkbox" class="treeCheckbox" type="folder" element="'+item.item_id+'" id="itemCheckbox'+item.item_id+'"/></td>';
+                    row += '</tr>';
+                    table.find('tbody').append(row);
+                    index++;
+                }
+
+            }
+            $('img.reloadTableIndicator').hide();
+            table.find('tbody tr').each(function() {
+                if(!options.expandable || $(this)[0].className.search(options.childPrefix) == -1) {
+                    if (isNaN(defaultPaddingLeft)) {
+                        defaultPaddingLeft = parseInt($($(this).children('td:first')[options.treeColumn]).css('padding-left'), 10);
+                    }
+                    $(this).ttInitNode();
+                }
+            });
+            table.ttInitTable();
+            table.ttRenderElementsSize();
         });
     }
 
@@ -597,6 +702,15 @@
         }
         var options = $.data(table[0], 'options');
         return options ? options : $.fn.treeTable.defaults;
+    }
+
+    /**
+     * Call this on the table object to set an option on it
+     */
+    $.fn.ttSetOption = function(name, value) {
+        var options = $.data($(this)[0], 'options');
+        options[name] = value;
+        $.data($(this)[0], 'options', options);
     }
 
     $.fn.ttRenderElementsSize = function () {
