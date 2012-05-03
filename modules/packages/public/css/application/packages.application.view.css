@@ -1,0 +1,15 @@
+div.titleWrapper {
+  border-bottom: 1px solid #d7d7d7;
+}
+
+div.applicationName {
+  color: #525252;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+div.applicationDescription {
+  color: #6d6d6d;
+  margin-bottom:8px;
+}

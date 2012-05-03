@@ -84,5 +84,6 @@ class Packages_ApplicationController extends Packages_AppController
                           $comm->getName().' Packages</a></span></li>'.
                           '<li><img alt="" src="'.$this->view->moduleWebroot.'/public/images/application_terminal.png" />'.
                           '<span><a href="#">'.$application->getName().'</a></span></li></ul>';
+    $this->view->application = $application;
     }
 }//end class
