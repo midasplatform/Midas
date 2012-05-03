@@ -429,34 +429,6 @@ class BrowseController extends AppController
     echo JsonComponent::encode($jsonContent);
     }//end getElementInfo
 
-
-  /** review (browse) uploaded files*/
-  public function uploadedAction()
-    {
-    if(empty($this->userSession->uploaded) || !$this->logged)
-      {
-      $this->_redirect('/');
-      }
-    $this->view->activemenu = 'uploaded'; // set the active menu
-    $this->view->items = array();
-    $this->view->header = $this->t('Uploaded Files');
-    $this->view->Date = $this->Component->Date;
-    foreach($this->userSession->uploaded as $item)
-      {
-      $item = $this->Item->load($item);
-      if($item != false)
-        {
-        $item->policy = MIDAS_POLICY_ADMIN;
-        $item->size = $this->Component->Utility->formatSize($item->getSizebytes());
-        $this->view->items[] = $item;
-        }
-      }
-    $this->view->json['item']['message']['delete'] = $this->t('Delete');
-    $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undone.');
-    $this->view->json['item']['message']['merge'] = $this->t('Merge Files in one Item');
-    $this->view->json['item']['message']['mergeName'] = $this->t('Name of the item');
-    }
-
   /**
    * Delete a set of folders and items. Called by ajax from common.browser.js
    * @param folders A list of folder ids separated by '-'
