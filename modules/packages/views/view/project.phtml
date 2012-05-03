@@ -27,7 +27,7 @@ PURPOSE.  See the above copyright notices for more information.
     foreach($this->applications as $application)
       {
       echo '<div class="applicationContainer">';
-      echo   '<a class="applicationLink" href="'.$this->webroot.'/packages/view/application?applicationId='.$application->getKey().'">';
+      echo   '<a class="applicationLink" href="'.$this->webroot.'/packages/application/view?applicationId='.$application->getKey().'">';
       echo   $application->getName().'</a>';
       if($application->getDescription() != '')
         {
