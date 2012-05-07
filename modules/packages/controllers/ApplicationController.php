@@ -14,7 +14,7 @@ class Packages_ApplicationController extends Packages_AppController
 {
   public $_models = array('Community');
   public $_moduleDaos = array('Application');
-  public $_moduleModels = array('Application', 'Project');
+  public $_moduleModels = array('Application', 'Package', 'Project');
 
   /**
    * Create a new application under a project
@@ -61,6 +61,9 @@ class Packages_ApplicationController extends Packages_AppController
     $this->_redirect('/packages/application/view?applicationId='.$application->getKey());
     }
 
+  /**
+   * View the release packages for an application
+   */
   public function viewAction()
     {
     $applicationId = $this->_getParam('applicationId');
@@ -84,6 +87,65 @@ class Packages_ApplicationController extends Packages_AppController
                           $comm->getName().' Packages</a></span></li>'.
                           '<li><img alt="" src="'.$this->view->moduleWebroot.'/public/images/application_terminal.png" />'.
                           '<span><a href="#">'.$application->getName().'</a></span></li></ul>';
+
     $this->view->application = $application;
+    $this->view->json['applicationId'] = $application->getKey();
+
+    $this->view->releases = $this->Packages_Application->getAllReleases($application);
+    usort($this->view->releases, array($this, '_releaseSort'));
+
+    if(count($this->view->releases > 0))
+      {
+      $this->view->json['openRelease'] = $this->view->releases[0];
+      $this->view->json['latestReleasePackages'] = $this->Packages_Package->get(array(
+        'application_id' => $application->getKey(),
+        'release' => $this->view->releases[0]));
+      }
+    }
+
+  /**
+   * Helper function for sorting releases (desc)
+   */
+  private function _releaseSort($a, $b)
+    {
+    $a_tok = explode('.', $a);
+    $b_tok = explode('.', $b);
+
+    for($i = 0; $i < count($a_tok) && $i < count($b_tok); $i++)
+      {
+      $a_v = (int)$a_tok[$i];
+      $b_v = (int)$b_tok[$i];
+      if($a_v > $b_v)
+        {
+        return -1;
+        }
+      else if($a_v < $b_v)
+        {
+        return 1;
+        }
+      }
+
+    if(count($a_tok) == count($b_tok))
+      {
+      return 0;
+      }
+    if(count($a_tok) < count($b_tok))
+      {
+      return 1;
+      }
+    return -1;
+    }
+
+  /**
+   * Ajax action to return a list of packages for a given application and release
+   */
+  public function getpackagesAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    $releasePackages = $this->Packages_Package->get(array(
+        'application_id' => $this->_getParam('applicationId'),
+        'release' => $this->_getParam('release')));
+    echo JsonComponent::encode($releasePackages);
     }
 }//end class

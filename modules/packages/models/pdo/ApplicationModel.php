@@ -34,4 +34,28 @@ class Packages_ApplicationModel extends Packages_ApplicationModelBase
       }
     return $results;
     }
+
+  /**
+   * Get all distinct releases for an application.
+   * Sorting of release names is left to the caller.
+   */
+  public function getAllReleases($application)
+    {
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from('packages_package', array('release'))
+                ->where('application_id = ?', $application->getKey())
+                ->distinct();
+    $rowset = $this->database->fetchAll($sql);
+    $releases = array();
+    foreach($rowset as $row)
+      {
+      $release = $row['release'];
+      if($release != '')
+        {
+        $releases[] = $release;
+        }
+      }
+    return $releases;
+    }
 }
