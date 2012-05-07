@@ -18,25 +18,28 @@
  limitations under the License.
 =========================================================================*/
 
+/**
+ * Thumbnailcreator_ConfigForm
+ */
 class Thumbnailcreator_ConfigForm extends AppForm
 {
- 
+
   /** create  form */
   public function createConfigForm()
     {
     $form = new Zend_Form;
 
     $form->setAction($this->webroot.'/thumbnailcreator/config/index')
-          ->setMethod('post'); 
-    
+          ->setMethod('post');
+
     $imagemagick = new Zend_Form_Element_Text('imagemagick');
-    
+
     $submit = new  Zend_Form_Element_Submit('submitConfig');
     $submit ->setLabel('Save configuration');
-     
+
     $form->addElements(array($imagemagick, $submit));
     return $form;
     }
-   
+
 } // end class
 ?>

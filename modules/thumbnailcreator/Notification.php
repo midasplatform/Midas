@@ -18,13 +18,17 @@
  limitations under the License.
 =========================================================================*/
 /** notification manager*/
-class Thumbnailcreator_Notification extends MIDAS_Notification
+require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
+
+class Thumbnailcreator_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'thumbnailcreator';
+  public $_moduleComponents = array('Api');
   
   /** init notification process*/
   public function init()
     {
+    $this->enableWebAPI($this->moduleName);
     $fc = Zend_Controller_Front::getInstance();
     $this->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
     $this->coreWebroot = $fc->getBaseUrl().'/core';
