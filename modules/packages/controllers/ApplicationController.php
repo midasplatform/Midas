@@ -81,6 +81,8 @@ class Packages_ApplicationController extends Packages_AppController
       {
       throw new Zend_Exception('You do not have read permissions on the project');
       }
+    $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+
     $this->view->header = '<ul class="pathBrowser"><li>'.
                           '<img alt="" src="'.$this->view->moduleWebroot.'/public/images/package.png" />'.
                           '<span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Packages">'.$comm->getName().

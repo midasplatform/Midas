@@ -43,6 +43,18 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/pac
   </div>
 </div>
 <div class="viewSideBar">
+  <?php
+  if($this->isAdmin)
+    { ?>
+    <div class="sideElementFirst viewAction">
+      <h1>Admin</h1>
+      <ul>
+        <li><a class="editApplication"><img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/edit.png" /> Edit Application</a></li>
+        <li><a class="deleteApplication"><img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/close.png" /> Delete Application</a></li>
+      </ul>
+    </div>
+  <?php
+    } ?>
 </div>
 
 <!-- TEMPLATE: package list -->
