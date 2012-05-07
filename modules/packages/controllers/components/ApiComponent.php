@@ -203,7 +203,7 @@ class Packages_ApiComponent extends AppComponent
       unlink($tmpfile);
       throw new Exception('Invalid policy on folder '.$folderId, -1);
       }
-    
+
     $componentLoader = new MIDAS_ComponentLoader();
     $uploadComponent = $componentLoader->loadComponent('Upload');
     $extensionModel = $modelLoader->loadModel('Extension', 'packages');
@@ -350,7 +350,7 @@ class Packages_ApiComponent extends AppComponent
                          'submissiontype' => $dao->getSubmissiontype(),
                          'package' => $dao->getPackagetype(),
                          'name' => $dao->getItem()->getName(),
-                         'productname' =>$dao->getProductname(),
+                         'productname' => $dao->getProductname(),
                          'codebase' => $dao->getCodebase(),
                          'release' => $dao->getRelease(),
                          'checkoutdate' => $dao->getCheckoutdate(),
@@ -465,8 +465,8 @@ class Packages_ApiComponent extends AppComponent
     $utlityComponent = $componentLoader->loadComponent('Utility', 'packages');
 
     $folderDaos = array(
-      $utlityComponent->getPackageFolder($userDao, 'Package', 'nightly'),
-      $utlityComponent->getPackageFolder($userDao, 'Package', 'experimental'));
+    $utlityComponent->getPackageFolder($userDao, 'Package', 'nightly'),
+    $utlityComponent->getPackageFolder($userDao, 'Package', 'experimental'));
 
     $desc = true;
     if(array_key_exists('order', $args))
