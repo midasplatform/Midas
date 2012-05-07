@@ -99,13 +99,13 @@ class Packages_ExtensionModel extends Packages_ExtensionModelBase
     }
 
   /**
-   * Return a list of all distinct categories of all the extensions
-   * in the database
+   * Return a list of all distinct categories for the given application
    */
-  public function getAllCategories()
+  public function getAllCategories($applicationId)
     {
     $sql = $this->database->select()
                 ->from(array('e' => 'packages_extension'), array('category'))
+                ->where('application_id = ?', $applicationId)
                 ->where('category != ?', '')
                 ->distinct();
     $categories = array();

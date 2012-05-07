@@ -1,0 +1,52 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.autogrow-textarea.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/packages.application.view.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/application/packages.application.view.css" />
+
+<div class="viewMain">
+  <div class="titleWrapper">
+    <div class="applicationName">
+      <?php echo $this->application->getName(); ?>
+    </div>
+    <?php
+    if($this->application->getDescription() != '')
+      {
+      echo '<div class="applicationDescription">'.$this->application->getDescription().'</div>';
+      }
+    ?>
+  </div>
+
+  <div class="packageListArea">
+    <div id="packageList">
+      <?php
+      foreach($this->releases as $release)
+        {
+        echo '<h3><a href="#">Version '.$release.'</a></h3>';
+        echo '<div class="releaseEntry" element="'.$release.'">';
+        echo '</div>';
+        }
+      ?>
+    </div>
+  </div>
+</div>
+<div class="viewSideBar">
+</div>
+
+<!-- TEMPLATE: package list -->
+<table id="packageListTemplate" class="packagesTable" style="display: none;">
+  <thead><tr><th class="platform">Platform</th><th class="type">Package Type</th><th class="actions">Actions</th></tr></thead>
+  <tbody></tbody>
+</table>

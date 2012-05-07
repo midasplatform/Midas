@@ -27,7 +27,7 @@ class Packages_PackageModel extends Packages_PackageModelBase
                                'codebase' => 'any', 'release' => 'any'))
     {
     $sql = $this->database->select();
-    foreach(array('os', 'arch', 'submissiontype', 'packagetype', 'revision', 'productname', 'codebase', 'release') as $option)
+    foreach(array('os', 'arch', 'submissiontype', 'packagetype', 'revision', 'productname', 'codebase', 'release', 'application_id') as $option)
       {
       if(array_key_exists($option, $params) && $params[$option] != 'any')
         {
