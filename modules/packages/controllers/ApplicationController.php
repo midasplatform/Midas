@@ -83,8 +83,8 @@ class Packages_ApplicationController extends Packages_AppController
       }
     $this->view->header = '<ul class="pathBrowser"><li>'.
                           '<img alt="" src="'.$this->view->moduleWebroot.'/public/images/package.png" />'.
-                          '<span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Packages">'.
-                          $comm->getName().' Packages</a></span></li>'.
+                          '<span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Packages">'.$comm->getName().
+                          ' Packages</a></span></li>'.
                           '<li><img alt="" src="'.$this->view->moduleWebroot.'/public/images/application_terminal.png" />'.
                           '<span><a href="#">'.$application->getName().'</a></span></li></ul>';
 
@@ -94,7 +94,7 @@ class Packages_ApplicationController extends Packages_AppController
     $this->view->releases = $this->Packages_Application->getAllReleases($application);
     usort($this->view->releases, array($this, '_releaseSort'));
 
-    if(count($this->view->releases > 0))
+    if(count($this->view->releases) > 0)
       {
       $this->view->json['openRelease'] = $this->view->releases[0];
       $this->view->json['latestReleasePackages'] = $this->Packages_Package->get(array(
@@ -111,7 +111,9 @@ class Packages_ApplicationController extends Packages_AppController
     $a_tok = explode('.', $a);
     $b_tok = explode('.', $b);
 
-    for($i = 0; $i < count($a_tok) && $i < count($b_tok); $i++)
+    $a_count = count($a_tok);
+    $b_count = count($b_tok);
+    for($i = 0; $i < $a_count && $i < $b_count; $i++)
       {
       $a_v = (int)$a_tok[$i];
       $b_v = (int)$b_tok[$i];
@@ -125,11 +127,11 @@ class Packages_ApplicationController extends Packages_AppController
         }
       }
 
-    if(count($a_tok) == count($b_tok))
+    if($a_count == $b_count)
       {
       return 0;
       }
-    if(count($a_tok) < count($b_tok))
+    if($a_count < $b_count)
       {
       return 1;
       }
