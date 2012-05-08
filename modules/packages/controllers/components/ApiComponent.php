@@ -283,27 +283,6 @@ class Packages_ApiComponent extends AppComponent
     }
 
   /**
-   * [DEPRECATED] Get a filtered list of available packages
-   * @param os (Optional) The target operating system of the package (linux | win | macosx)
-   * @param arch (Optional) The os chip architecture (i386 | amd64)
-   * @param submissiontype (Optional) Dashboard model used to submit (nightly | experimental | continuous)
-   * @param packagetype (Optional) The package type (installer | data | extension)
-   * @param productname (Optional) The product name (Example: Slicer)
-   * @param codebase (Optional) The codebase name (Example: Slicer4)
-   * @param revision (Optional) The revision of the package
-   * @param release (Optional) Release identifier associated with a package.
-   If not set, it will return both released and non-released packages.
-   * @param order (Optional) What parameter to order results by (revision | packagetype | submissiontype | arch | os)
-   * @param direction (Optional) What direction to order results by (asc | desc).  Default asc
-   * @param limit (Optional) Limit result count. Must be a positive integer.
-   * @return An array of packages
-   */
-  public function getPackages($args)
-    {
-    return $this->packageList($args);
-    }
-
-  /**
    * Get a filtered list of available packages
    * @param os (Optional) The target operating system of the package (linux | win | macosx)
    * @param arch (Optional) The os chip architecture (i386 | amd64)
@@ -367,11 +346,13 @@ class Packages_ApiComponent extends AppComponent
    * @param name The name of the package (ie installer name)
    * @param revision The svn or git revision of the installer
    * @param submissiontype Whether this is from a nightly, experimental, continuous, etc dashboard
-   * @param packagetype Installer, data, etc
+   * @param packagetype The type of the package (zip installer, NSIS installer, OSX Bundle, Source, etc)
+   * @param folderId The id of the folder to upload into
+   * @param applicationId The id of the application that this package corresponds to
    * @param productname The product name (Ex: Slicer)
    * @param codebase The codebase name (Ex: Slicer4)
    * @param release (Optional) Release identifier (Ex: 4.0.0, 4.2)
-   * @param checkoutdate (Optional) The date of the checkout
+   * @param checkoutdate (Optional) The checkout date of the repository that the package was built from
    * @return Status of the upload
    */
   public function packageUpload($args)
@@ -383,7 +364,9 @@ class Packages_ApiComponent extends AppComponent
                             'submissiontype',
                             'packagetype',
                             'productname',
-                            'codebase'), $args);
+                            'codebase',
+                            'applicationId',
+                            'folderId'), $args);
 
     $userDao = $this->_getUser($args);
     if($userDao === false)
@@ -394,28 +377,37 @@ class Packages_ApiComponent extends AppComponent
     $tmpfile = $this->_readUploadedFile('package');
 
     $modelLoader = new MIDAS_ModelLoader();
-    $settingModel = $modelLoader->loadModel('Setting');
     $folderModel = $modelLoader->loadModel('Folder');
-    $key = 'packages.'.$args['submissiontype'].'.folder';
-    $folderId = $settingModel->getValueByName($key, 'packages');
+    $communityModel = $modelLoader->loadModel('Community');
+    $applicationModel = $modelLoader->loadModel('Application', 'packages');
 
-    if(!$folderId || !is_numeric($folderId))
-      {
-      unlink($tmpfile);
-      throw new Exception('You must configure a folder id for key '.$key, -1);
-      }
+    $folderId = $args['folderId'];
+    $applicationId = $args['applicationId'];
+
     $folder = $folderModel->load($folderId);
+    $application = $applicationModel->load($applicationId);
 
     if(!$folder)
       {
       unlink($tmpfile);
       throw new Exception('Folder with id '.$folderId.' does not exist', -1);
       }
+    if(!$application)
+      {
+      unlink($tmpfile);
+      throw new Exception('Application with id '.$applicationId.' does not exist', -1);
+      }
     if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
       {
       unlink($tmpfile);
       throw new Exception('Invalid policy on folder '.$folderId, -1);
       }
+    if(!$communityModel->policyCheck($application->getProject()->getCommunity(), $userDao, MIDAS_POLICY_WRITE))
+      {
+      unlink($tmpfile);
+      throw new Exception('Must have write access into the project to upload packages to application');
+      }
+
     $componentLoader = new MIDAS_ComponentLoader();
     $uploadComponent = $componentLoader->loadComponent('Upload');
     $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $folder);
@@ -428,6 +420,7 @@ class Packages_ApiComponent extends AppComponent
     $packageModel->loadDaoClass('PackageDao', 'packages');
     $packageDao = new Packages_PackageDao();
     $packageDao->setItemId($item->getKey());
+    $packageDao->setApplicationId($application->getKey());
     $packageDao->setSubmissiontype($args['submissiontype']);
     $packageDao->setPackagetype($args['packagetype']);
     $packageDao->setOs($args['os']);
@@ -449,31 +442,25 @@ class Packages_ApiComponent extends AppComponent
     }
 
   /**
-   * Get a list of release identifiers associated with the packages
-   * @param direction (Optional) What direction to order results by (asc | desc).  Default desc
-   * @return An array of release identifiers
+   * Call this to download the version of the client script corresponding to this server instance.
+   * @param client (Optional) Which client to download (default is cmake)
+   * @return The script containing functions to allow package uploads
    */
-  public function packageReleaseidentifierList($args)
+  public function scriptDownload($args)
     {
-    $userDao = $this->_getUser($args);
-    if($userDao === false)
+    $client = array_key_exists('client', $args) ? $args['client'] : 'cmake';
+    $path = BASE_PATH.'/modules/packages/public/clients/'.$client;
+    if(!$client || !is_dir($path))
       {
-      throw new Exception('Invalid user authentication', -1);
+      throw new Exception('Could not find directory for client '.$client, -1);
       }
-
-    $componentLoader = new MIDAS_ComponentLoader();
-    $utlityComponent = $componentLoader->loadComponent('Utility', 'packages');
-
-    $folderDaos = array(
-    $utlityComponent->getPackageFolder($userDao, 'Package', 'nightly'),
-    $utlityComponent->getPackageFolder($userDao, 'Package', 'experimental'));
-
-    $desc = true;
-    if(array_key_exists('order', $args))
+    $file = $path.'/MidasAPIScript.'.$client;
+    if(!file_exists($file))
       {
-      $desc = $args['order'] == 'asc' ? false : true;
+      throw new Exception('Could not find script file '.$file, -1);
       }
-    return $utlityComponent->getReleaseIdentifiers($folderDaos, $desc);
+    // our scripts should never be large enough to have to worry about memory constraints
+    echo file_get_contents($file);
+    exit();
     }
-
 } // end class
