@@ -64,3 +64,8 @@ table.packagesTable tbody td {
   padding-bottom: 3px;
   font-family: Arial;
 }
+
+table.packagesTable tbody td img {
+  position: relative;
+  top: 2px;
+}

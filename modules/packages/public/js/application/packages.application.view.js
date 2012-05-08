@@ -29,9 +29,12 @@ midas.packages.renderPackages = function(release, packages) {
         var html = '<tr>';
         html += '<td>'+midas.packages.transformOs(val.os)+' '+val.arch+'</td>';
         html += '<td>'+val.packagetype+'</td>';
-        html += '<td><a href="'+json.global.webroot+'/download?items='+val.item_id+'">Download</a> / ';
-        html += '<a href="'+json.global.webroot+'/item/'+val.item_id+'">View</a> / ';
-        html += '<a href="'+json.global.webroot+'/statistics/item?id='+val.item_id+'">Stats</a></td>';
+        html += '<td><a href="'+json.global.webroot+'/download?items='+val.item_id+'">'+
+          '<img alt="" src="'+json.global.webroot+'/modules/packages/public/images/package.png"/> Download</a> / ';
+        html += '<a href="'+json.global.webroot+'/item/'+val.item_id+'">'+
+          '<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/page_white_go.png"/> View</a> / ';
+        html += '<a href="'+json.global.webroot+'/statistics/item?id='+val.item_id+'">'+
+          '<img alt="" src="'+json.global.webroot+'/modules/statistics/public/images/chart_bar.png"/> Stats</a></td>';
         html += '</tr>';
         table.find('tbody').append(html);
     });
