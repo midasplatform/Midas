@@ -58,4 +58,28 @@ class Packages_ApplicationModel extends Packages_ApplicationModelBase
       }
     return $releases;
     }
+
+  /**
+   * Return all distinct (os, arch) tuples corresponding to this application
+   * @param application The application dao
+   * @return set of tuples with 'os' and 'arch' keys
+   */
+  public function getDistinctPlatforms($application)
+    {
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from('packages_package', array('os', 'arch'))
+                ->where('application_id = ?', $application->getKey())
+                //->where('submissiontype LIKE ?', 'nightly')
+                ->distinct();
+    $rowset = $this->database->fetchAll($sql);
+    $platforms = array();
+    foreach($rowset as $row)
+      {
+      $platforms[] = array(
+        'os' => $row['os'],
+        'arch' => $row['arch']);
+      }
+    return $platforms;
+    }
 }

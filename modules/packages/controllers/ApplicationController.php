@@ -106,6 +106,39 @@ class Packages_ApplicationController extends Packages_AppController
     }
 
   /**
+   * View for latest builds
+   */
+  public function latestAction()
+    {
+    $applicationId = $this->_getParam('applicationId');
+    if(!isset($applicationId))
+      {
+      throw new Zend_Exception('Must specify an applicationId parameter');
+      }
+    $application = $this->Packages_Application->load($applicationId);
+    if(!$application)
+      {
+      throw new Zend_Controller_Action_Exception('Invalid applicationId', 404);
+      }
+    $comm = $application->getProject()->getCommunity();
+    if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      throw new Zend_Exception('You do not have read permissions on the project');
+      }
+    $this->view->header = '<ul class="pathBrowser"><li>'.
+                          '<img alt="" src="'.$this->view->moduleWebroot.'/public/images/package.png" />'.
+                          '<span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Packages">'.$comm->getName().
+                          ' Packages</a></span></li>'.
+                          '<li><img alt="" src="'.$this->view->moduleWebroot.'/public/images/application_terminal.png" />'.
+                          '<span><a href="'.$this->view->webroot.'/packages/application/view?applicationId='.$application->getKey().
+                          '">'.$application->getName().'</a></span></li>'.
+                          '<li><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/time.png" /><span>'.
+                          '<a href="#">Latest Nightly Packages</a></span></li></ul>';
+
+    $this->view->platforms = $this->Packages_Application->getDistinctPlatforms($application);
+    }
+
+  /**
    * Helper function for sorting releases (desc)
    */
   private function _releaseSort($a, $b)

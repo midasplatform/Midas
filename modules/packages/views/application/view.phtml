@@ -55,6 +55,15 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/pac
     </div>
   <?php
     } ?>
+  <div class="sideElementActions viewAction">
+    <h1>Actions</h1>
+    <ul>
+      <li>
+        <a href="<?php echo $this->webroot; ?>/packages/application/latest?applicationId=<?php echo $this->application->getKey(); ?>">
+          <img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/time.png" />
+          Latest nightly packages
+        </a>
+  </div>
 </div>
 
 <!-- TEMPLATE: package list -->
