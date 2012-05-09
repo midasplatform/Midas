@@ -28,6 +28,7 @@ class Packages_Notification extends ApiEnabled_Notification
 
     $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLinks');
     $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'itemDeleted');
+    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemMenuLink');
     //TODO $this->addCallBack('CALLBACK_CORE_COMMUNITY_DELETED', 'communityDeleted');
     $this->addCallBack('CALLBACK_CORE_COMMUNITY_MANAGE_FORM', 'communityManageForm');
     $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_VIEW_TABS', 'communityViewTabs');
@@ -98,10 +99,50 @@ class Packages_Notification extends ApiEnabled_Notification
     {
     $community = $args['community'];
     $params = $args['params'];
-    
+
     $enabled = isset($params['packages_project']);
     $this->Packages_Project->setEnabled($community, $enabled);
     }
-  } //end class
 
+  /**
+   * Add link to the right hand menu in the item view if the item is a package
+   */
+  public function getItemMenuLink($params)
+    {
+    $item = $params['item'];
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $packageModel = $modelLoader->loadModel('Package', $this->moduleName);
+    $package = $packageModel->getByItemId($item->getKey());
+
+    if(!$itemModel->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      return '';
+      }
+    if($package)
+      {
+      $type = 'package';
+      $id = $package->getKey();
+      }
+    else
+      {
+      $extensionModel = $modelLoader->loadModel('Extension', $this->moduleName);
+      $extension = $extensionModel->getByItemId($item->getKey());
+      if($extension)
+        {
+        $type = 'extension';
+        $id = $extension->getKey();
+        }
+      else
+        {
+        return '';
+        }
+      }
+
+    $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
+    return '<li><a href="'.$baseUrl.'/'.$this->moduleName.'/'.$type.'/manage?id='.$id.
+           '"><img alt="" src="'.$baseUrl.'/modules/'.$this->moduleName.
+           '/public/images/package_go.png" /> '.$this->t('Manage '.$type).'</a></li>';
+    }
+  } //end class
 ?>
