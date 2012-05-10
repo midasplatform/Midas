@@ -1276,6 +1276,10 @@ class Api_ApiComponent extends AppComponent
       {
       $revisionDao = $itemModel->getLastRevision($item);
       }
+    if(!$revisionDao)
+      {
+      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+      }
 
     $itemRevisionModel = $modelLoader->loadModel('ItemRevision');
     $metadata = $itemRevisionModel->getMetadata($revisionDao);
@@ -1341,8 +1345,8 @@ class Api_ApiComponent extends AppComponent
     // If no module handles this metadata, we add it as normal metadata on the item revision
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
-    $revision = $itemModel->getLastRevision($item);
-    if(!$revision)
+    $revisionDao = $itemModel->getLastRevision($item);
+    if(!$revisionDao)
       {
       throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
       }
@@ -1353,7 +1357,7 @@ class Api_ApiComponent extends AppComponent
       {
       $metadataModel->addMetadata($type, $element, $qualifier, '');
       }
-    $metadataModel->addMetadataValue($revision, $type, $element, $qualifier, $value);
+    $metadataModel->addMetadataValue($revisionDao, $type, $element, $qualifier, $value);
     }
 
   /**
