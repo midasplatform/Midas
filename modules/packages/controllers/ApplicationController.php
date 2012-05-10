@@ -136,6 +136,7 @@ class Packages_ApplicationController extends Packages_AppController
                           '<a href="#">Latest Nightly Packages</a></span></li></ul>';
 
     $this->view->platforms = $this->Packages_Application->getDistinctPlatforms($application);
+    $this->view->json['applicationId'] = $application->getKey();
     }
 
   /**

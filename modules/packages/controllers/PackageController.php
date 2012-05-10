@@ -74,4 +74,18 @@ class Packages_PackageController extends Packages_AppController
 
     echo JsonComponent::encode(array('message' => 'Changes saved', 'status' => 'ok'));
     }
+
+  /**
+   * Ajax action for getting the latest package of each package type for the given os and arch
+   * @param os The os to match on
+   * @param arch The arch to match on
+   * @param applicationId The application id
+   * @return (json) - The latest uploaded package of each installer type for the given os, arch, and application
+   */
+  public function latestAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    echo JsonComponent::encode(array());
+    }
 }//end class
