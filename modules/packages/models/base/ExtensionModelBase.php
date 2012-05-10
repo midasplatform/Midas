@@ -60,8 +60,8 @@ abstract class Packages_ExtensionModelBase extends Packages_AppModel
 
   public abstract function getAll();
   public abstract function getByItemId($itemId);
-  public abstract function getAllCategories();
-  public abstract function getAllReleases();
+  public abstract function getAllCategories($applicationId);
+  public abstract function getAllReleases($applicationId);
 
   /**
    * If an extension already exists that matches the given
