@@ -111,7 +111,8 @@ class Packages_PackageController extends Packages_AppController
       {
       if($this->Item->policyCheck($package->getItem(), $this->userSession->Dao, MIDAS_POLICY_READ))
         {
-        $filtered[] = $package;
+        $sizestr = UtilityComponent::formatSize($package->getItem()->getSizebytes());
+        $filtered[] = array_merge($package->toArray(), array('size_formatted' => $sizestr));
         }
       }
     echo JsonComponent::encode($filtered);

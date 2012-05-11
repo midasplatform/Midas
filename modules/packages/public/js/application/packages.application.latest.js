@@ -22,8 +22,24 @@ midas.packages.showPlatform = function (event, ui) {
  */
 midas.packages.renderPackages = function (os, arch, packages) {
     var container = $('div.platformContainer[os="'+os+'"][arch="'+arch+'"]');
-    container.html('');
-    console.log(packages);
+    container.html('<div class="platformContainerTitle">Available package types:</div>');
+    var table = $('#packageListTemplate').clone();
+    table.attr('id', 'packageList'+os+arch);
+    table.show();
+
+    var index = 0;
+    $.each(packages, function(k, val) {
+        var trClass = index % 2 ? 'odd' : 'even';
+        var html = '<tr class="'+trClass+'">';
+        html += '<td><a href="'+json.global.webroot+'/download?items='+val.item_id+'">'+
+          '<img alt="" src="'+json.global.webroot+'/modules/packages/public/images/package_go.png" /> '+
+          'Download '+val.packagetype+'</a> - ';
+        html += val.size_formatted + ' ('+val.checkoutdate+')</td>';
+        html += '</tr>';
+        table.find('tbody').append(html);
+        index++;
+    });
+    table.appendTo(container);
 };
 
 /**
