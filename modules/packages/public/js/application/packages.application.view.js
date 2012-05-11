@@ -49,6 +49,22 @@ midas.packages.transformOs = function(os) {
     return os;
 };
 
+midas.packages.successConfig = function (responseText, statusText, xhr, form) {
+    var resp = $.parseJSON(responseText);
+    midas.createNotice(resp.message, 3500, resp.status);
+    if(resp.status == 'ok') {
+        $('input[name="name"]').attr('value', resp.name);
+        $('div.applicationName').html(resp.name);
+        $('textarea[name="description"]').html(resp.description);
+        $('div.applicationDescription').html(resp.description);
+    }
+};
+
+midas.packages.validateConfig = function (formData, jqForm, options) {
+    $('div.MainDialog').dialog('close');
+    return true;
+};
+
 $(document).ready(function () {
     if(json.openRelease) {
         midas.packages.openRelease = json.openRelease;
@@ -62,4 +78,14 @@ $(document).ready(function () {
         autoHeight: false
     }).bind('accordionchange', midas.packages.showRelease);
     $('#packageList').show();
+
+    $('a.editApplication').click(function () {
+        midas.showDialogWithContent('Edit Application', $('#applicationEditDialog').html(), false);
+        $('textarea.expanding').autogrow();
+        $('form.editApplication').ajaxForm({
+            beforeSubmit: midas.packages.validateConfig,
+            success: midas.packages.successConfig
+        });
+    });
+    
 });

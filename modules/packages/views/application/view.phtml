@@ -71,3 +71,15 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/pac
   <thead><tr><th class="platform">Platform</th><th class="type">Package Type</th><th class="actions">Actions</th></tr></thead>
   <tbody></tbody>
 </table>
+
+<!-- TEMPLATE: edit dialog -->
+<div id="applicationEditDialog" style="display: none;">
+  <form class="editApplication" method="POST" action="<?php echo $this->webroot; ?>/packages/application/edit">
+    <table><tbody>
+      <tr><td>Name</td><td><input type="text" name="name" value="<?php echo $this->application->getName(); ?>" /></td></tr>
+      <tr><td>Description</td><td><textarea class="expanding" name="description"><?php echo htmlentities($this->application->getDescription()); ?></textarea></td>
+    </tbody></table>
+    <input type="hidden" name="applicationId" value="<?php echo $this->application->getKey(); ?>"/>
+    <input type="submit" class="globalButton" value="Save" />
+  </form>
+</div>

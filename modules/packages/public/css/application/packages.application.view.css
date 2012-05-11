@@ -69,3 +69,12 @@ table.packagesTable tbody td img {
   position: relative;
   top: 2px;
 }
+
+form.editApplication input[type=text] {
+  width: 300px;
+}
+
+form.editApplication textarea {
+  width: 298px;
+  resize: none;
+}
