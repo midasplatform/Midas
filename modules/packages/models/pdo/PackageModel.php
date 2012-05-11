@@ -70,149 +70,50 @@ class Packages_PackageModel extends Packages_PackageModelBase
     return $dao;
     }
 
-  private function _getMostRecentCreatedPackages($folderDaos, $operatingSystems = array(), $architectures = array())
+  /**
+   * For the given os, arch, and application (and optionally submission type),
+   * return the most recent package of each package type
+   */
+  public function getLatestOfEachPackageType($application, $os, $arch, $submissiontype = null)
     {
-    if(!is_array($folderDaos))
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from('packages_package', array('packagetype'))
+                ->where('application_id = ?', $application->getKey())
+                ->where('os = ?', $os)
+                ->where('arch = ?', $arch)
+                ->distinct();
+    if($submissiontype)
       {
-      $folderDaos = array($folderDaos);
+      $sql->where('submissiontype = ?', $submissiontype);
       }
-
-    $skipOperatingSystems = $operatingSystems === false;
-    if($skipOperatingSystems and !is_array($operatingSystems))
-      {
-      $operatingSystems = array($operatingSystems);
-      }
-
-    $skipArchitecture = $architectures === false;
-    if(!$skipArchitecture and !is_array($architectures))
-      {
-      $architectures = array($architectures);
-      }
-
-    $folderIds = array();
-    foreach($folderDaos as $key => $folderDao)
-      {
-      if(!$folderDao instanceof FolderDao)
-        {
-        throw new Zend_Exception("Should be a folder.");
-        }
-      $folderIds[] = $folderDao->getKey();
-      }
-    $subSelect = $this->database->select()
-                      ->setIntegrityCheck(false)
-                      ->from(array('i' => 'item'), array('date_creation'))
-                      ->join(array('i2f' => 'item2folder'), 'i2f.item_id = i.item_id', array())
-                      ->join(array('f' => 'folder'), 'f.folder_id = i2f.folder_id', array())
-                      ->join(array('sp' => 'packages_package'),
-                             'sp.item_id = i.item_id', array('package_id'));
-    if(!$skipOperatingSystems)
-      {
-      $subSelect->columns('sp.os');
-      }
-    if(!$skipArchitecture)
-      {
-      $subSelect->columns('sp.arch');
-      }
-    if(count($folderIds) > 0)
-      {
-      $subSelect->where('f.folder_id IN (?)', $folderIds);
-      }
-    if(!$skipOperatingSystems and count($operatingSystems) > 0)
-      {
-      $subSelect->where('sp.os IN (?)', $operatingSystems);
-      }
-    if(!$skipArchitecture and count($architectures) > 0)
-      {
-      $subSelect->where('sp.arch IN (?)', $architectures);
-      }
-    $orderColumns = array();
-    if(!$skipOperatingSystems)
-      {
-      $orderColumns[] = 'sp.os';
-      }
-    if(!$skipArchitecture)
-      {
-      $orderColumns[] = 'sp.arch';
-      }
-    $orderColumns[] = 'i.date_creation DESC';
-    $subSelect->order($orderColumns);
-
-
-    $select = $this->database->select()
-                   ->setIntegrityCheck(false)
-                   ->from(array('ordered_list'=>$subSelect));
-    $groupByColumns = array();
-    if(!$skipOperatingSystems)
-      {
-      $groupByColumns[] = 'ordered_list.os';
-      }
-    if(!$skipArchitecture)
-      {
-      $groupByColumns[] = 'ordered_list.arch';
-      }
-    if(count($groupByColumns) > 0)
-      {
-      $select->group($groupByColumns);
-      }
-
-    return $this->database->fetchAll($select)->toArray();
-    }
-
-  function getMostRecentCreatedItem($folderDaos)
-    {
-    $mostRecentCreatedItems = $this->_getMostRecentCreatedPackages($folderDaos, false, false);
-    if(count($mostRecentCreatedItems) > 0)
-      {
-      return $mostRecentCreatedItems[0];
-      }
-    else
-      {
-      return array();
-      }
-    }
-
-  function getMostRecentCreatedItemsByOs($folderDaos, $operatingSystems = array())
-    {
-    return $this->_getMostRecentCreatedPackages($folderDaos, $operatingSystems, false);
-    }
-
-  function getMostRecentCreatedItemsByOsAndArch($folderDaos, $operatingSystems = array(), $architectures = array())
-    {
-    return $this->_getMostRecentCreatedPackages($folderDaos, $operatingSystems, $architectures);
-    }
-
-  function getReleasedPackages($folderDaos, $releases = array())
-    {
-    if(!is_array($folderDaos))
-      {
-      $folderDaos = array($folderDaos);
-      }
-    if(!is_array($releases))
-      {
-      $releases = array($releases);
-      }
-    $select = $this->database->select()
-                   ->setIntegrityCheck(false)
-                   ->from(array('i' => 'item'), array())
-                   ->join(array('i2f' => 'item2folder'), 'i2f.item_id = i.item_id', array())
-                   ->join(array('f' => 'folder'), 'f.folder_id = i2f.folder_id', array())
-                   ->join(array('sp' => 'packages_package'), 'sp.item_id = i.item_id');
-
-    if (count($releases) > 0)
-      {
-      $select->where('sp.release IN (?)', $releases);
-      }
-    else
-      {
-      $select->where('sp.release != ""');
-      }
-    $rowset = $this->database->fetchAll($select);
-    $packageDaos = array();
+    $rowset = $this->database->fetchAll($sql);
+    $types = array();
     foreach($rowset as $row)
       {
-      $packageDaos[] = $this->initDao('Packages_Package', $row);
+      $types[] = $row['packagetype'];
       }
-    return $packageDaos;
+
+    // For each distinct package type, get the most recent matching dao
+    $latestPackages = array();
+    foreach($types as $type)
+      {
+      $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->where('application_id = ?', $application->getKey())
+                ->where('os = ?', $os)
+                ->where('arch = ?', $arch)
+                ->where('packagetype = ?', $type)
+                ->order('checkoutdate', 'DESC')
+                ->limit(1);
+      if($submissiontype)
+        {
+        $sql->where('submissiontype = ?', $submissiontype);
+        }
+      $row = $this->database->fetchRow($sql);
+      $latestPackages[] = $this->initDao('Package', $row, 'packages');
+      }
+    return $latestPackages;
     }
 
 }  // end class

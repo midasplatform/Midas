@@ -1,7 +1,34 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.autogrow-textarea.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/packages.application.latest.js');
+?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/application/packages.application.latest.css" />
 
 <div class="viewMain">
-   <h2>Select your platform and installer type</h2>
-   
-   <?php print_r($this->platforms); ?>
+  <h2>Select your platform and installer type</h2>
+    <div class="platformListArea">
+      <div id="platformList" class="display: none;">
+      <?php
+      foreach($this->platforms as $platform)
+        {
+        echo '<h3 os="'.$platform['os'].'" arch="'.$platform['arch'].'"><a href="#">Dummy</a></h3>';
+        echo '<div class="platformContainer" os="'.$platform['os'].'" arch="'.$platform['arch'].'">';
+        echo '</div>';
+        }
+      ?>
+      </div>
+    </div>
+
 </div>

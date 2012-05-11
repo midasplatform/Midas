@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 /** package controller*/
 class Packages_PackageController extends Packages_AppController
 {
-  public $_models = array('Item');
+  public $_models = array('Community', 'Item');
   public $_moduleModels = array('Application', 'Package', 'Project');
 
   /**
@@ -73,5 +73,47 @@ class Packages_PackageController extends Packages_AppController
     $this->Packages_Package->save($package);
 
     echo JsonComponent::encode(array('message' => 'Changes saved', 'status' => 'ok'));
+    }
+
+  /**
+   * Ajax action for getting the latest package of each package type for the given os and arch
+   * @param os The os to match on
+   * @param arch The arch to match on
+   * @param applicationId The application id
+   * @return (json) - The latest uploaded package of each installer type for the given os, arch, and application
+   */
+  public function latestAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+
+    $os = $this->_getParam('os');
+    $arch = $this->_getParam('arch');
+    $applicationId = $this->_getParam('applicationId');
+    if(!isset($applicationId))
+      {
+      throw new Zend_Exception('Must specify an applicationId parameter');
+      }
+    $application = $this->Packages_Application->load($applicationId);
+    if(!$application)
+      {
+      throw new Zend_Controller_Action_Exception('Invalid applicationId', 404);
+      }
+    $comm = $application->getProject()->getCommunity();
+    if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      throw new Zend_Exception('You do not have read permissions on the project');
+      }
+
+    $latest = $this->Packages_Package->getLatestOfEachPackageType($application, $os, $arch);
+    $filtered = array();
+    foreach($latest as $package)
+      {
+      if($this->Item->policyCheck($package->getItem(), $this->userSession->Dao, MIDAS_POLICY_READ))
+        {
+        $filtered[] = $package;
+        }
+      }
+    echo JsonComponent::encode($filtered);
     }
 }//end class
