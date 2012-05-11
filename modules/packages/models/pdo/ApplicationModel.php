@@ -82,4 +82,14 @@ class Packages_ApplicationModel extends Packages_ApplicationModelBase
       }
     return $platforms;
     }
+
+  /**
+   * Deletes the application, as well as all associated package and extension records
+   */
+  public function delete($application)
+    {
+    $this->database->getDB()->delete('packages_package', 'application_id = '.$application->getKey());
+    $this->database->getDB()->delete('packages_extension', 'application_id = '.$application->getKey());
+    parent::delete($application);
+    }
 }

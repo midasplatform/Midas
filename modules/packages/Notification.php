@@ -27,9 +27,9 @@ class Packages_Notification extends ApiEnabled_Notification
     $this->webroot = $baseUrl;
 
     $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLinks');
+    $this->addCallBack('CALLBACK_CORE_COMMUNITY_DELETED', 'communityDeleted');
     $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'itemDeleted');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemMenuLink');
-    //TODO $this->addCallBack('CALLBACK_CORE_COMMUNITY_DELETED', 'communityDeleted');
     $this->addCallBack('CALLBACK_CORE_COMMUNITY_MANAGE_FORM', 'communityManageForm');
     $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_VIEW_TABS', 'communityViewTabs');
     $this->addCallBack('CALLBACK_CORE_EDIT_COMMUNITY_INFO', 'communityEditInfo');
@@ -72,7 +72,15 @@ class Packages_Notification extends ApiEnabled_Notification
    */
   public function communityDeleted($args)
     {
-    // TODO
+    $community = $args['community'];
+    $modelLoader = new MIDAS_ModelLoader();
+
+    $projectModel = $modelLoader->loadModel('Project', $this->moduleName);
+    $project = $projectModel->getByCommunityId($community->getKey());
+    if($project)
+      {
+      $projectModel->delete($project);
+      }
     }
 
   /**

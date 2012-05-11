@@ -58,4 +58,19 @@ abstract class Packages_ProjectModelBase extends Packages_AppModel
     $project->setEnabled($value ? 1 : 0);
     $this->save($project);
     }
+
+  /**
+   * Delete the project (deletes all applications within the project as well)
+   */
+  public function delete($project)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $applicationModel = $modelLoader->loadModel('Application', 'packages');
+    $applications = $project->getApplications();
+    foreach($applications as $application)
+      {
+      $applicationModel->delete($application);
+      }
+    parent::delete($project);
+    }
 }
