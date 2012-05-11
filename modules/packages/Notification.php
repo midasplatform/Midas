@@ -76,6 +76,29 @@ class Packages_Notification extends ApiEnabled_Notification
     }
 
   /**
+   * When an item is deleted, we must delete associated package/extension records
+   */
+  public function itemDeleted($args)
+    {
+    $itemDao = $args['item'];
+    $modelLoader = new MIDAS_ModelLoader();
+
+    $packageModel = $modelLoader->loadModel('Package', $this->moduleName);
+    $package = $packageModel->getByItemId($itemDao->getKey());
+    if($package)
+      {
+      $packageModel->delete($package);
+      }
+
+    $extensionModel = $modelLoader->loadModel('Extension', $this->moduleName);
+    $extension = $extensionModel->getByItemId($itemDao->getKey());
+    if($extension)
+      {
+      $extensionModel->delete($extension);
+      }
+    }
+
+  /**
    * Render the checkbox to allow a community to be a project
    */
   public function communityManageForm($args)
