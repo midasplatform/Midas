@@ -62,6 +62,51 @@ class Packages_ApplicationController extends Packages_AppController
     }
 
   /**
+   * Edit an application's name and description
+   */
+  public function editAction()
+    {
+    $applicationId = $this->_getParam('applicationId');
+    if(!isset($applicationId))
+      {
+      throw new Zend_Exception('Must specify an applicationId parameter');
+      }
+    $name = $this->_getParam('name');
+    $description = $this->_getParam('description');
+
+    if(!isset($name))
+      {
+      throw new Zend_Exception('Parameter "name" must be set');
+      }
+    if(!isset($description))
+      {
+      throw new Zend_Exception('Parameter "description" must be set');
+      }
+    $application = $this->Packages_Application->load($applicationId);
+    if(!$application)
+      {
+      throw new Zend_Exception('Invalid applicationId');
+      }
+
+    if(!$this->Community->policyCheck($application->getProject()->getCommunity(), $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception('Must be community administrator to edit an application');
+      }
+    $this->disableLayout();
+    $this->disableView();
+
+    $application->setName($name);
+    $application->setDescription($description);
+    $this->Packages_Application->save($application);
+
+    echo JsonComponent::encode(array(
+      'status' => 'ok',
+      'message' => 'Changes saved',
+      'name' => $application->getName(),
+      'description' => $application->getDescription()));
+    }
+
+  /**
    * View the release packages for an application
    */
   public function viewAction()
