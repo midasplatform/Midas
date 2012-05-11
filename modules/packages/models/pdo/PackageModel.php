@@ -70,4 +70,50 @@ class Packages_PackageModel extends Packages_PackageModelBase
     return $dao;
     }
 
+  /**
+   * For the given os, arch, and application (and optionally submission type),
+   * return the most recent package of each package type
+   */
+  public function getLatestOfEachPackageType($application, $os, $arch, $submissiontype = null)
+    {
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from('packages_package', array('packagetype'))
+                ->where('application_id = ?', $application->getKey())
+                ->where('os = ?', $os)
+                ->where('arch = ?', $arch)
+                ->distinct();
+    if($submissiontype)
+      {
+      $sql->where('submissiontype = ?', $submissiontype);
+      }
+    $rowset = $this->database->fetchAll($sql);
+    $types = array();
+    foreach($rowset as $row)
+      {
+      $types[] = $row['packagetype'];
+      }
+
+    // For each distinct package type, get the most recent matching dao
+    $latestPackages = array();
+    foreach($types as $type)
+      {
+      $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->where('application_id = ?', $application->getKey())
+                ->where('os = ?', $os)
+                ->where('arch = ?', $arch)
+                ->where('packagetype = ?', $type)
+                ->order('checkoutdate', 'DESC')
+                ->limit(1);
+      if($submissiontype)
+        {
+        $sql->where('submissiontype = ?', $submissiontype);
+        }
+      $row = $this->database->fetchRow($sql);
+      $latestPackages[] = $this->initDao('Package', $row, 'packages');
+      }
+    return $latestPackages;
+    }
+
 }  // end class

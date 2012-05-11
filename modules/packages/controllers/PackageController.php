@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 /** package controller*/
 class Packages_PackageController extends Packages_AppController
 {
-  public $_models = array('Item');
+  public $_models = array('Community', 'Item');
   public $_moduleModels = array('Application', 'Package', 'Project');
 
   /**
@@ -86,6 +86,35 @@ class Packages_PackageController extends Packages_AppController
     {
     $this->disableLayout();
     $this->disableView();
-    echo JsonComponent::encode(array());
+
+    $os = $this->_getParam('os');
+    $arch = $this->_getParam('arch');
+    $applicationId = $this->_getParam('applicationId');
+    if(!isset($applicationId))
+      {
+      throw new Zend_Exception('Must specify an applicationId parameter');
+      }
+    $application = $this->Packages_Application->load($applicationId);
+    if(!$application)
+      {
+      throw new Zend_Controller_Action_Exception('Invalid applicationId', 404);
+      }
+    $comm = $application->getProject()->getCommunity();
+    if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      throw new Zend_Exception('You do not have read permissions on the project');
+      }
+
+    $latest = $this->Packages_Package->getLatestOfEachPackageType($application, $os, $arch);
+    $filtered = array();
+    foreach($latest as $package)
+      {
+      if($this->Item->policyCheck($package->getItem(), $this->userSession->Dao, MIDAS_POLICY_READ))
+        {
+        $sizestr = UtilityComponent::formatSize($package->getItem()->getSizebytes());
+        $filtered[] = array_merge($package->toArray(), array('size_formatted' => $sizestr));
+        }
+      }
+    echo JsonComponent::encode($filtered);
     }
 }//end class

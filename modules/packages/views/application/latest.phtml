@@ -17,7 +17,7 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/pac
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/application/packages.application.latest.css" />
 
 <div class="viewMain">
-  <h2>Select your platform and installer type</h2>
+  <h2>Select your platform and package type</h2>
     <div class="platformListArea">
       <div id="platformList" class="display: none;">
       <?php
@@ -30,5 +30,9 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/pac
       ?>
       </div>
     </div>
-
 </div>
+
+<!-- TEMPLATE: package list -->
+<table id="packageListTemplate" class="packagesTable" style="display: none;">
+  <tbody></tbody>
+</table>
