@@ -87,5 +87,12 @@ $(document).ready(function () {
             success: midas.packages.successConfig
         });
     });
-    
+
+    $('a.deleteApplication').click(function () {
+        midas.showDialogWithContent('Delete Application', $('#applicationDeleteDialog').html(), false);
+        $('input.cancelDelete').click(function () {
+            $('div.MainDialog').dialog('close');
+        });
+    });
+
 });

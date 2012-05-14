@@ -151,6 +151,31 @@ class Packages_ApplicationController extends Packages_AppController
     }
 
   /**
+   * Delete an application (ajax). All package and extension records for this application will be deleted,
+   * but their underlying items will remain in place. Requires admin privileges on the application's
+   * project community.
+   * @param applicationId The id of the application to delete
+   */
+  public function deleteAction()
+    {
+    $applicationId = $this->_getParam('applicationId');
+    if(!$applicationId)
+      {
+      throw new Zend_Exception('Must pass applicationId parameter');
+      }
+    $application = $this->Packages_Application->load($applicationId);
+    $community = $application->getProject()->getCommunity();
+    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception('Must be project community administrator to delete applications');
+      }
+    $this->disableLayout();
+    $this->disableView();
+    $this->Packages_Application->delete($application);
+    $this->_redirect('/community/'.$community->getKey().'#Packages');
+    }
+
+  /**
    * View for latest builds
    */
   public function latestAction()
