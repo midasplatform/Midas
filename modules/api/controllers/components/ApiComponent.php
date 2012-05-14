@@ -1776,6 +1776,6 @@ class Api_ApiComponent extends AppComponent
       $bitstream->setMimetype($args['mimetype']);
       }
     $bitstreamModel->save($bitstream);
-    return $bitstream;
+    return $bitstream->toArray();
     }
   } // end class
