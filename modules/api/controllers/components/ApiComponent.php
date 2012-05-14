@@ -1739,4 +1739,43 @@ class Api_ApiComponent extends AppComponent
       }
     }
 
+  /**
+   * Change the properties of a bitstream. Requires write access to the containing item.
+   * @param token Authentication token
+   * @param bitstreamId The id of the bitstream to edit
+   * @param name (optional) New name for the bitstream
+   * @param mimetype (optional) New MIME type for the bitstream
+   * @return The bitstream dao
+   */
+  function bitstreamEdit($args)
+    {
+    $this->_validateParams($args, array('bitstreamId'));
+    $userDao = $this->_getUser($args);
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    $itemModel = $modelLoader->loadModel('Item');
+
+    $bitstream = $bitstreamModel->load($args['bitstreamId']);
+    if(!$bitstream)
+      {
+      throw new Exception('Invalid bitstreamId', MIDAS_INVALID_PARAMETER);
+      }
+
+    if(!$itemModel->policyCheck($bitstream->getItemrevision()->getItem(), $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception('Write access on item is required', MIDAS_INVALID_POLICY);
+      }
+
+    if(array_key_exists('name', $args))
+      {
+      $bitstream->setName($args['name']);
+      }
+    if(array_key_exists('mimetype', $args))
+      {
+      $bitstream->setMimetype($args['mimetype']);
+      }
+    $bitstreamModel->save($bitstream);
+    return $bitstream;
+    }
   } // end class
