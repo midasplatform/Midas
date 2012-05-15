@@ -21,7 +21,7 @@
 class Thumbnailcreator_Notification extends MIDAS_Notification
   {
   public $moduleName = 'thumbnailcreator';
-  
+
   /** init notification process*/
   public function init()
     {
@@ -38,7 +38,7 @@ class Thumbnailcreator_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_CSS', 'getCss');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JSON', 'getJson');
     }//end init
-    
+
   /** createThumbnail */
   public function createThumbnail($params)
     {

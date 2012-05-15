@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 /** test hello model*/
-class JobModelTest extends DatabaseTestCase
+class WorkflowdomainModelTest extends DatabaseTestCase
   {
   /** set up tests*/
   public function setUp()
@@ -29,69 +29,60 @@ class JobModelTest extends DatabaseTestCase
     parent::setUp();
     }
 
-  /** test getRelatedJob($item)*/
-  public function testGetRelatedJob()
+  /** test getLastJobs*/
+  public function testGetLastJobs()
     {
     $modelLoad = new MIDAS_ModelLoader();
-    $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
-    $itemModel = $modelLoad->loadModel('Item');
-
-    $item = $itemModel->load(1);
-
-    $jobs = $jobModel->getRelatedJob($item);
+    $domainModel = $modelLoad->loadModel('Workflowdomain', 'remoteprocessing');
+    $domain = $domainModel->load(1);
+    $jobs = $domainModel->getLastJobs($domain);
     $this->assertEquals(1, count($jobs));
     }
 
-  /** test getBy*/
-  public function testGetBy()
+  /** test getByUuid()*/
+  public function testGetByUuid()
     {
-    include BASE_PATH.'/modules/remoteprocessing/constant/module.php';
     $modelLoad = new MIDAS_ModelLoader();
-    $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
-
-    $jobs = $jobModel->getBy(MIDAS_REMOTEPROCESSING_OS_WINDOWS, '', '2000-10-26 22:32:58', MIDAS_REMOTEPROCESSING_STATUS_WAIT);
-    $this->assertEquals(1, count($jobs));
-
-    $jobs = $jobModel->getBy(MIDAS_REMOTEPROCESSING_OS_LINUX, '', '2000-10-26 22:32:58', MIDAS_REMOTEPROCESSING_STATUS_WAIT);
-    $this->assertEquals(0, count($jobs));
-
-    $jobs = $jobModel->getBy(MIDAS_REMOTEPROCESSING_OS_WINDOWS, '', '2100-10-26 22:32:58', MIDAS_REMOTEPROCESSING_STATUS_WAIT);
-    $this->assertEquals(0, count($jobs));
+    $domainModel = $modelLoad->loadModel('Workflowdomain', 'remoteprocessing');
+    $domain = $domainModel->getByUuid('1234567');
+    $this->assertEquals(1, $domain->getKey());
     }
 
-  /** test addItemRelation*/
-  public function testAddItemRelation()
+  /** test getUserDomains()*/
+  public function testGetUserDomains()
     {
     $modelLoad = new MIDAS_ModelLoader();
-    $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
-    $itemsFile = $this->loadData('Item', 'default');
-    $jobFile = $this->loadData('Job', 'default', 'remoteprocessing', 'remoteprocessing');
+    $domainModel = $modelLoad->loadModel('Workflowdomain', 'remoteprocessing');
+    $userModel = $modelLoad->loadModel('User');
+    $user = $userModel->load(1);
+    $domains = $domainModel->getUserDomains($user);
+    $this->assertEquals(1, count($domains));
+    $this->assertEquals(1, $domains[0]->getKey());
 
-    $jobModel->addItemRelation($jobFile[0], $itemsFile[1]);
-    $jobs = $jobModel->getRelatedJob($itemsFile[1]);
-    $this->assertEquals(1, count($jobs));
+    $user = $userModel->load(2);
+    $domains = $domainModel->getUserDomains($user);
+    $this->assertEquals(1, count($domains));
     }
 
   /** test policyCheck($workflowDomainDao, $userDao = null, $policy = 0)*/
   public function testPolicyCheck()
     {
     $modelLoad = new MIDAS_ModelLoader();
-    $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
+    $domainModel = $modelLoad->loadModel('Workflowdomain', 'remoteprocessing');
     $userModel = $modelLoad->loadModel('User');
-    $job = $jobModel->load(1);
-    $user = $userModel->load(1);
-
     $groupModel = $modelLoad->loadModel('Group');
     $policygroupModel = $modelLoad->loadModel('WorkflowdomainPolicygroup', 'remoteprocessing');
+    $domain = $domainModel->load(1);
+    $user = $userModel->load(1);
+
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-    $workflows = $job->getWorkflows();
-    $policyDao = $policygroupModel->getPolicy($anonymousGroup, $workflows[0]->getDomain());
+    $policyDao = $policygroupModel->getPolicy($anonymousGroup, $domain);
     if($policyDao)
       {
       $policygroupModel->delete($policyDao);
       }
 
-    $this->assertEquals(false, $jobModel->policyCheck($job));
-    $this->assertEquals(true, $jobModel->policyCheck($job, $user));
+    $this->assertEquals(false, $domainModel->policyCheck($domain));
+    $this->assertEquals(true, $domainModel->policyCheck($domain, $user));
     }
   }

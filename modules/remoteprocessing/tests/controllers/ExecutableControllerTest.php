@@ -52,8 +52,6 @@ class ExecutableControllerTest extends ControllerTestCase
     $this->dispatchUrI("/remoteprocessing/executable/define?itemId=".$itemFile[0]->getKey(), $userDao);
 
     $revisionNext = $this->Item->getLastRevision($itemFile[0]);
-
-    // create new revision
     $this->assertNotEquals($revision->getRevision(), $revisionNext->getRevision());
     $this->ItemRevision->delete($revisionNext);
     }

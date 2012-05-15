@@ -350,14 +350,14 @@ class Remoteprocessing_JobComponent extends AppComponent
       $bitstreams = $revision->getBitstreams();
       if(count($bitstreams) == 1)
         {
-        return  $this->getOutputParams($this->convertXmlResults(file_get_contents($bitstreams[0]->getFullPath())), $includeItems);
+        return  $this->getOutputParams($this->convertXmlResults(file_get_contents($bitstreams[0]->getFullPath()), $includeItems));
         }
       }
     return array(array(), array());
     }
 
   /** getInputParamsFromDao */
-  public function getInputParamsFromDao($job)
+  public function getInputParamsFromDao($job, $includeItems = false)
     {
     if(!$job instanceof Remoteprocessing_JobDao)
       {
@@ -373,19 +373,17 @@ class Remoteprocessing_JobComponent extends AppComponent
       $bitstreams = $revision->getBitstreams();
       if(count($bitstreams) == 1)
         {
-        return  $this->getInputParams($this->convertXmlResults(file_get_contents($bitstreams[0]->getFullPath())));
+        return  $this->getInputParams($this->convertXmlResults(file_get_contents($bitstreams[0]->getFullPath()), $includeItems));
         }
       }
     return array(array(), array());
     }
 
   /** getOutputParams from a formatted array */
-  public function getOutputParams($array, $includeItems = false)
+  public function getOutputParams($array)
     {
     $metrics = array();
     $values = array();
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
     foreach($array['tasks'] as $keyTask => $task)
       {
       $name = ucfirst(strtolower("Execution-Time"));
@@ -414,12 +412,19 @@ class Remoteprocessing_JobComponent extends AppComponent
         $values[$keyTask][$name] = $output['value'];
         }
 
-      if($includeItems && !empty($task['outputFiles']))
+      if(!empty($task['outputFiles']))
         {
         foreach($task['outputFiles'] as $output)
           {
           $name = ucfirst(strtolower($output['name']));
-          $values[$keyTask][$name] = $output['item'];
+          if(isset($output['item']))
+            {
+            $values[$keyTask][$name] = $output['item'];
+            }
+          else
+            {
+            $values[$keyTask][$name] = $output['uuid'];
+            }
           }
         }
       }
@@ -448,7 +453,7 @@ class Remoteprocessing_JobComponent extends AppComponent
     }
 
   /** convertXmlREsults */
-  public function convertXmlResults($xml)
+  public function convertXmlResults($xml, $includeDaos = true)
     {
     $modelLoader = new MIDAS_ModelLoader();
     $jobModel = $modelLoader->loadmodel('Job', 'remoteprocessing');
@@ -511,14 +516,23 @@ class Remoteprocessing_JobComponent extends AppComponent
         }
 
       $return['workflowUuid'] = (string) $xml->attributes()->workflow_uuid[0];
-
-      $return['workflow'] = $workflowModel->getByUuid($return['workflowUuid']);
+      if($includeDaos)
+        {
+        $return['workflow'] = $workflowModel->getByUuid($return['workflowUuid']);
+        }
       $return['parents'] = array();
       if(isset($xml->Parents))
         {
         foreach($xml->Parents->Parent as $parent)
           {
-          $return['parents'][] = array('uuid' => (string) $parent, 'job' => $jobModel->getByUuid((string) $parent));
+          if($includeDaos)
+            {
+            $return['parents'][] = array('uuid' => (string) $parent, 'job' => $jobModel->getByUuid((string) $parent));
+            }
+          else
+            {
+            $return['parents'][] = array('uuid' => (string) $parent);
+            }
           }
         }
 
@@ -535,7 +549,14 @@ class Remoteprocessing_JobComponent extends AppComponent
           }
         else
           {
-          $return['outputFolder'] = array('uuid' => (string) $xml->MidasOutputFolder, 'folder' => $folderModel->getByUuid((string) $xml->MidasOutputFolder));
+          if($includeDaos)
+            {
+            $return['outputFolder'] = array('uuid' => (string) $xml->MidasOutputFolder, 'folder' => $folderModel->getByUuid((string) $xml->MidasOutputFolder));
+            }
+          else
+            {
+            $return['outputFolder'] = array('uuid' => (string) $xml->MidasOutputFolder);
+            }
           }
         }
       $return['tasks'] = array();
@@ -577,7 +598,14 @@ class Remoteprocessing_JobComponent extends AppComponent
                   {
                   $uuid = (string) $output->attributes()->uuid[0];
                   }
-                $tmp['outputFiles'][] = array('uuid' => $uuid, 'name' => (string) $output->attributes()->name[0], 'fileName' => trim((string) $output), 'item' => $itemModel->getByUuid($uuid));
+                if($includeDaos)
+                  {
+                  $tmp['outputFiles'][] = array('uuid' => $uuid, 'name' => (string) $output->attributes()->name[0], 'fileName' => trim((string) $output), 'item' => $itemModel->getByUuid($uuid));
+                  }
+                else
+                  {
+                  $tmp['outputFiles'][] = array('uuid' => $uuid, 'name' => (string) $output->attributes()->name[0], 'fileName' => trim((string) $output));
+                  }
                 break;
               case 'float':
               case 'int':
@@ -604,7 +632,14 @@ class Remoteprocessing_JobComponent extends AppComponent
                   {
                   $uuid = (string) $input->attributes()->uuid[0];
                   }
-                $tmp['inputFiles'][] = array('uuid' => $uuid, 'name' => (string) $input->attributes()->name[0], 'fileName' => trim((string) $input), 'item' => $itemModel->getByUuid($uuid));
+                if($includeDaos)
+                  {
+                  $tmp['inputFiles'][] = array('uuid' => $uuid, 'name' => (string) $input->attributes()->name[0], 'fileName' => trim((string) $input), 'item' => $itemModel->getByUuid($uuid));
+                  }
+                else
+                  {
+                  $tmp['inputFiles'][] = array('uuid' => $uuid, 'name' => (string) $input->attributes()->name[0], 'fileName' => trim((string) $input));
+                  }
                 break;
               case 'float':
               case 'int':

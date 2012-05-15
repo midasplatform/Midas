@@ -24,7 +24,8 @@ class JobControllerTest extends ControllerTestCase
   /** set up tests*/
   public function setUp()
     {
-    $this->setupDatabase(array('default', 'adminUser'));
+    $this->setupDatabase(array('default'));
+    $this->setupDatabase(array('default'), 'remoteprocessing'); // module dataset
     $this->_models = array('User', 'Item');
     $this->enabledModules = array('scheduler', 'remoteprocessing', 'api');
     parent::setUp();
@@ -33,37 +34,41 @@ class JobControllerTest extends ControllerTestCase
   /** test manage */
   public function testManage()
     {
-    $usersFile = $this->loadData('User', 'adminUser');
-    $userDao = $this->User->load($usersFile[0]->getKey());
-    $itemFile = $this->loadData('Item', 'default');
+    $userDao = $this->User->load(1);
+    $this->dispatchUrI('/remoteprocessing/job/manage', null, false);
+    $this->resetAll();
+    $this->dispatchUrI('/remoteprocessing/job/manage', $userDao, false);
+    $this->assertQuery('table.jobTree');
 
-    $revision = $this->Item->getLastRevision($itemFile[0]);
-
-    $this->dispatchUrI('/remoteprocessing/job/manage?itemId='.$itemFile[0]->getKey(), null, true);
-    $this->dispatchUrI('/remoteprocessing/job/manage?itemId='.$itemFile[0]->getKey(), $userDao, false);
-
-    $modelLoader = new MIDAS_ModelLoader();
-    $jobModel = $modelLoader->loadModel('Job', 'remoteprocessing');
-    $jobs = $jobModel->getRelatedJob($itemFile[0]);
-    if(empty($jobs))
-      {
-      $this->assertNotQuery('table#tableJobsList');
-      }
-    else
-      {
-      $this->assertQuery('table#tableJobsList');
-      }
     }
 
+  /** test viewAction */
+  public function testViewAction()
+    {
+    $userDao = $this->User->load(1);
+    $modelLoad = new MIDAS_ModelLoader();
+    $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
+    $job = $jobModel->load(1);
+    $this->resetAll();
+    $this->dispatchUrI('/remoteprocessing/job/view', null, true);
+    $this->resetAll();
+    $this->dispatchUrI('/remoteprocessing/job/view?jobId=10000', null, true);
+    $this->resetAll();
+    $this->dispatchUrI('/remoteprocessing/job/view?jobId=1', null, true);
+    $this->resetAll();
+    $this->dispatchUrI('/remoteprocessing/job/view?jobId=1', $userDao, false);
+    $this->assertQueryContentContains('body', 'Job Status');
+    }
+
+
   /** test init*/
-  public function testInit()
+  /*public function testInit()
     {
     $usersFile = $this->loadData('User', 'adminUser');
     $userDao = $this->User->load($usersFile[0]->getKey());
     $itemFile = $this->loadData('Item', 'default');
 
     $this->resetAll();
-    $revision = $this->Item->getLastRevision($itemFile[0]);
     $this->dispatchUrI('/remoteprocessing/job/init?itemId='.$itemFile[0]->getKey(), $userDao, false);
 
     // page empty because there is a redirection
@@ -80,5 +85,5 @@ class JobControllerTest extends ControllerTestCase
     $this->dispatchUrI('/remoteprocessing/job/init?itemId='.$itemFile[0]->getKey(), $userDao, false);
 
     $this->assertQuery('#creatJobLink');
-    }
+    }*/
   }

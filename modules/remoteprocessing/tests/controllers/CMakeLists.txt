@@ -1,6 +1,8 @@
-#add_midas_mysql_test( RemoteprocessingJobController JobControllerTest.php )
-#add_midas_mysql_test( RemoteprocessingExecutableController ExecutableControllerTest.php )
+add_midas_mysql_test( RemoteprocessingJobController JobControllerTest.php )
+add_midas_mysql_test( RemoteprocessingExecutableController ExecutableControllerTest.php )
 add_midas_mysql_test( RemoteprocessingConfigController ConfigControllerTest.php )
+add_midas_mysql_test( RemoteprocessingDashboardController DashboardControllerTest.php )
+
 
 # Syle
 add_midas_style_test( StyleRemoteprocessingControllers ${CMAKE_SOURCE_DIR}/modules/remoteprocessing/controllers )

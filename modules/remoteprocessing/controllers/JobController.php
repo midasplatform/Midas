@@ -103,7 +103,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       $workflow->setWorkflowdomainId($workflowDomain->getKey());
       $this->Remoteprocessing_Workflow->save($workflow);
       return;
-
+      /** Work in progress
       $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
       $metaContent = new SimpleXMLElement(file_get_contents($metaFile->getFullPath()));
       $this->disableLayout();
@@ -271,11 +271,12 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
         {
         $only_once = false;
         }
-      $this->ModuleComponent->Job->scheduleJob($jobCommands, '', MIDAS_REMOTEPROCESSING_OS_LINUX, $fire_time, $time_interval, $only_once);
+      $this->ModuleComponent->Job->scheduleJob($jobCommands, '', MIDAS_REMOTEPROCESSING_OS_LINUX, $fire_time, $time_interval, $only_once);     */
       }
     }
 
   /** return the executable form (should be an ajax call) */
+  /*
   function getinitexecutableAction()
     {
     $this->disableLayout();
@@ -318,6 +319,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     $this->view->itemDao = $itemDao;
     $this->view->json['item'] = $itemDao->toArray();
     }
+  */
 
   /** view a job */
   function viewAction()
@@ -401,8 +403,18 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     $this->view->log = $log;
     $this->view->results =  $this->ModuleComponent->Job->convertXmlREsults($log);
     $this->view->inputs = $inputs;
-    list($this->view->inputs, $this->view->inputsValues) = $this->ModuleComponent->Job->getInputParams($this->view->results);
-    list($this->view->metrics, $this->view->metricsValues) = $this->ModuleComponent->Job->getOutputParams($this->view->results);
+    if(empty($this->view->results))
+      {
+      $this->view->inputs = array();
+      $this->view->metrics = array();
+      $this->view->inputsValues = array();
+      $this->view->metricsValues = array();
+      }
+    else
+      {
+      list($this->view->inputs, $this->view->inputsValues) = $this->ModuleComponent->Job->getInputParams($this->view->results);
+      list($this->view->metrics, $this->view->metricsValues) = $this->ModuleComponent->Job->getOutputParams($this->view->results);
+      }
     $this->view->executable = $executable;
     $this->view->parameters = $parametersList;
     }
@@ -454,7 +466,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       }
     } //end valid entry
 
-  /** Get  entries (ajax) */
+  /** Get  entries (ajax)*/
   public function getentryAction()
     {
     $this->disableLayout();

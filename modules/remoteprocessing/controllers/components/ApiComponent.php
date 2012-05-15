@@ -275,6 +275,10 @@ class Remoteprocessing_ApiComponent extends AppComponent
         if(file_exists($target_directory.'/job.xml'))
           {
           $xmlResults = $jobComponent->convertXmlResults(file_get_contents($target_directory.'/job.xml'));
+          if(empty($xmlResults))
+            {
+            throw new Exception('Error, unable to parse xml file.', MIDAS_INVALID_PARAMETER);
+            }
           if($xmlResults['workflow'] == false)
             {
             throw new Exception('Error, the workflow doesn\'t exit.', MIDAS_INVALID_PARAMETER);

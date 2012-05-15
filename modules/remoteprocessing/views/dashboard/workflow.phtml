@@ -98,7 +98,8 @@ echo $this->lesscss($this->moduleWebroot.'/public/css/dashboard/dashboard.workfl
         foreach($this->jobs as $job)
           {
           echo "<tr element='".$job->getKey()."'>";
-          echo  "<td><a qtipajax='".$this->webroot."/remoteprocessing/dashboard/workflowgraph?jobId=".$job->getKey()."' href='".$this->webroot."/remoteprocessing/job/view?jobId=".$job->getKey()."'>".$job->getName()."</a></td>";
+          echo  "<td><a"; // qtipajax='".$this->webroot."/remoteprocessing/dashboard/workflowgraph?jobId=".$job->getKey().'"
+          echo  " href='".$this->webroot."/remoteprocessing/job/view?jobId=".$job->getKey()."'>".$job->getName()."</a></td>";
           echo  "<td>".$job->getCreationDate()."</td>";
           if($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE)
             {

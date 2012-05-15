@@ -23,6 +23,45 @@ require_once BASE_PATH.'/modules/remoteprocessing/models/base/WorkflowdomainMode
 /** job model */
 class Remoteprocessing_WorkflowdomainModel extends Remoteprocessing_WorkflowdomainModelBase
 {
+  /** get last jobs*/
+  function getLastJobs($domain, $limit = 20)
+    {
+    if(!$domain instanceof Remoteprocessing_WorkflowdomainDao)
+      {
+      throw new Zend_Exception("Should be a domain.");
+      }
+    $workflows = $domain->getWorkflows();
+    if(empty($workflows))
+      {
+      return array();
+      }
+    $workflowsId = array();
+    foreach($workflows as $w)
+      {
+      $workflowsId[] = $w->getKey();
+      }
+    $sql = $this->database->select()
+          ->from(array('j' => 'remoteprocessing_job'))
+          ->join(array('w' => 'remoteprocessing_workflow2job'),
+                        'w.job_id = j.job_id', array())
+          ->setIntegrityCheck(false)
+          ->where(' w.workflow_id IN (?)', $workflowsId)
+          ->order('j.start_date DESC')
+          ->limit($limit);
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->initDao('Job', $row, 'remoteprocessing');
+      if($tmpDao != false)
+        {
+        $return[] = $tmpDao;
+        unset($tmpDao);
+        }
+      }
+    return $return;
+    }
+
   /** get by uuid*/
   function getByUuid($uuid)
     {
