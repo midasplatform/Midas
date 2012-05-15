@@ -11,6 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 ?>
 <link href="<?php echo $this->coreWebroot?>/public/css/user/user.index.css" rel="stylesheet" type="text/css" />
 
@@ -44,31 +45,55 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.j
         echo "<a href='{$this->webroot}/user?order=lastname&offset=".chr($i)."'>".chr($i)."</a> ";
         }
       }
-    
+
     }
   if(!empty($this->users))
     {
     foreach($this->users as $user)
       {
-      ?>  
+      ?>
       <div class="userBlock">
       <?php
         echo $this->linkuser($user);
       ?>
       <div class="userStats"><?php echo $user->getView(); ?> views</div>
       </div>
-  <?php    
+  <?php
       }
     }
   ?>
   </div>
-  
-    <?php 
+
+    <?php
   if(empty($this->users))
-    {    
+    {
     echo "<h4>{$this->t("No public user to show.")}. </h4>";
     }
-    ?>
+
+  if($this->isAdmin)
+    { ?>
+    <div class="adminCreateUser">
+      <a class="createUserLink" href="javascript:;">Create new user</a>
+    </div>
+    <!-- TEMPLATE: register form -->
+    <div id="registerFormTemplate" style="display:none;">
+      <div class="registerError">
+      </div>
+      <form class="registerForm dialogForm" method="POST" action="<?php echo $this->webroot?>/user/ajaxregister">
+        <table>
+          <tr><td>E-mail</td><td><input name="email" type="text" /></td></tr>
+          <tr><td>First Name</td><td><input name="firstname" type="text" /></td></tr>
+          <tr><td>Last Name</td><td><input name="lastname" type="text" /></td></tr>
+          <tr><td>Password</td><td><input name="password1" type="password" /></td></tr>
+          <tr><td>Confirm Password</td><td><input name="password2" type="password" /></td></tr>
+          <tr><td></td><td><input type="submit" value="Create" /></td></tr>
+        </table>
+        <input type="hidden" name="adminCreate" value="adminCreate" />
+      </form>
+    </div>
+  <?php
+    }
+  ?>
 </div>
 <div class="viewSideBar">
   <div class="sideElementFirst viewAction">
@@ -81,7 +106,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.j
         }
       else
         {
-         echo "<li><img alt='' src='{$this->coreWebroot}/public/images/icons/alphabet.png'/> {$this->t('Alphabetic')}</li>"; 
+         echo "<li><img alt='' src='{$this->coreWebroot}/public/images/icons/alphabet.png'/> {$this->t('Alphabetic')}</li>";
         }
       ?>
       <?php
@@ -91,7 +116,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.j
         }
       else
         {
-         echo "<li><img alt='' src='{$this->coreWebroot}/public/images/icons/fire.png'/> {$this->t('Popularity')}</li>"; 
+         echo "<li><img alt='' src='{$this->coreWebroot}/public/images/icons/fire.png'/> {$this->t('Popularity')}</li>";
         }
       ?>
     </ul>
@@ -101,9 +126,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.j
       <h1><?php echo $this->t('Selected')?></h1>
       <span></span>
   </div>
-      
+
   <div class="sideElementLast viewInfo">
-    <h1>Info</h1>    
+    <h1>Info</h1>
     <?php
     echo $this->nUsers.' '.$this->t('user').($this->nUsers>1?'s':'');
     ?>
