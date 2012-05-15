@@ -249,13 +249,8 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       foreach($task['outputFiles'] as $keyFile => $file)
         {
         $filepath = $params['pathResults'].'/'.$file['fileName'];
-
         if(file_exists($filepath))
           {
-          $tmpArray = array_reverse(explode('.', basename($filepath)));
-          $oldfilepath = $filepath;
-          $filepath = str_replace(".".$tmpArray[1].".", ".", $filepath);
-          rename($oldfilepath, $filepath);
           $item = false;
           if(!empty($file['uuid']))
             {
@@ -292,6 +287,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
                         'parameter', $input['name'], $input['value']);
             }
           }
+        Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_POSTPROCESS_TASKOUTPUTFILE", array('file' => $file,  'item' => $item, 'task' => $task));
         }
       }
 

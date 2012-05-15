@@ -34,7 +34,7 @@ class Remoteprocessing_DashboardController extends Remoteprocessing_AppControlle
       throw new Zend_Exception("worfklowId  should be a number");
       }
     $workflow = $this->Remoteprocessing_Workflow->load($worfklowId);
-    $this->view->header = $this->t("Worfklow: ".$workflow->getName());
+
     if(!$workflow)
       {
       throw new Zend_Exception("Unable to find workflow.");
@@ -44,7 +44,7 @@ class Remoteprocessing_DashboardController extends Remoteprocessing_AppControlle
       {
       throw new Zend_Exception("Permissions error.");
       }
-
+    $this->view->header = $this->t("Worfklow: ".$workflow->getName());
     $this->view->isAdmin = $this->Remoteprocessing_Workflow->policyCheck($workflow, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
 
     $date = new Zend_Date();
@@ -55,8 +55,8 @@ class Remoteprocessing_DashboardController extends Remoteprocessing_AppControlle
     //ajax posts
     if($this->_request->isPost() && $this->view->isAdmin)
       {
-      $this->_helper->layout->disableLayout();
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableLayout();
+      $this->disableView();
       $name = $this->_getParam('workflowName');
       $description = $this->_getParam('workflowDescription');
       if(!empty($name))
@@ -87,7 +87,6 @@ class Remoteprocessing_DashboardController extends Remoteprocessing_AppControlle
       throw new Zend_Exception($domainId."  should be a number");
       }
     $domain = $this->Remoteprocessing_Workflowdomain->load($domainId);
-    $this->view->header = $this->t("Domain: ".$domain->getName());
     if(!$domain)
       {
       throw new Zend_Exception("Unable to find workflow.");
@@ -97,7 +96,7 @@ class Remoteprocessing_DashboardController extends Remoteprocessing_AppControlle
       {
       throw new Zend_Exception("Permissions error.");
       }
-
+    $this->view->header = $this->t("Domain: ".$domain->getName());
     $this->view->isAdmin = $this->Remoteprocessing_Workflowdomain->policyCheck($domain, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
 
     $workflows = $domain->getWorkflows();
@@ -107,8 +106,8 @@ class Remoteprocessing_DashboardController extends Remoteprocessing_AppControlle
     //ajax posts
     if($this->_request->isPost() && $this->view->isAdmin)
       {
-      $this->_helper->layout->disableLayout();
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableLayout();
+      $this->disableView();
       $name = $this->_getParam('workflowDomainName');
       $description = $this->_getParam('workflowDomainDescription');
       if(!empty($name))
@@ -304,6 +303,7 @@ class Remoteprocessing_DashboardController extends Remoteprocessing_AppControlle
     } //end dialogAction
 
   /** view workflow Graph */
+  /* The Parent job part is not completed
   function workflowgraphAction()
     {
     $this->disableLayout();
@@ -328,5 +328,5 @@ class Remoteprocessing_DashboardController extends Remoteprocessing_AppControlle
 
     // trick to convert position type in json
     $this->view->jsonGraph = preg_replace('/"(-?\d+\.?\d*)"/', '$1', $this->view->jsonGraph);
-    }
+    }*/
 }//end class

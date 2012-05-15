@@ -136,27 +136,6 @@ class ApiTest extends ControllerTestCase
       $this->fail('Error json');
       }
     $results = JsonComponent::decode($jsonResults);
-
-    /*
-    if($results['data']['action'] != 'process')
-      {
-      $this->fail('Should be process, was '.$results['data']['action']);
-      }
-
-    // send results
-    $this->params = array();
-    $this->params['token'] = $token;
-    $this->params['os'] = MIDAS_REMOTEPROCESSING_OS_WINDOWS;
-    $this->request->setMethod('POST');
-
-    $this->dispatchUrI('/api/json?method=midas.remoteprocessing.resultsserver&testingmode=1');
-    $jsonResults = $this->getBody();
-    $this->resetAll();
-    if(strpos($jsonResults, '{"stat":"ok"') === false)
-      {
-      $this->fail('Error json');
-      }
-    */
     }
 
   }

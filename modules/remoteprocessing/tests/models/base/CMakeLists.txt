@@ -1,1 +1,3 @@
 add_midas_mysql_test( RemoteprocessingJobModel JobModelTest.php )
+add_midas_mysql_test( RemoteprocessingWorkflowModel WorkflowModelTest.php )
+add_midas_mysql_test( RemoteprocessingWorkflowdomainModel WorkflowdomainModelTest.php )
