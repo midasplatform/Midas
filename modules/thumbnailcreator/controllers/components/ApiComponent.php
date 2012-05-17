@@ -81,7 +81,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
 
     try
       {
-      $thumbnail = $imComponent->createThumbnailFromPath($bitstream->getFullPath(), (int)$width, 0, false);
+      $thumbnail = $imComponent->createThumbnailFromPath($bitstream->getName(), $bitstream->getFullPath(), (int)$width, 0, false);
       if(!file_exists($thumbnail))
         {
         throw new Exception('Could not create thumbnail from the bitstream', MIDAS_INTERNAL_ERROR);
@@ -131,11 +131,12 @@ class Thumbnailcreator_ApiComponent extends AppComponent
       throw new Exception('The head revision of the item does not contain any bitstream', MIDAS_INVALID_PARAMETER);
       }
     $bitstream = $bitstreams[0];
+    $name = $bitstream->getName();
     $fullPath = $bitstream->getFullPath();
 
     try
       {
-      $pathThumbnail = $imComponent->createThumbnailFromPath($fullPath, 100, 100, true);
+      $pathThumbnail = $imComponent->createThumbnailFromPath($name, $fullPath, 100, 100, true);
       }
     catch(Exception $e)
       {
