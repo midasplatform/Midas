@@ -30,11 +30,33 @@ class Thumbnailcreator_ConfigForm extends AppForm
           ->setMethod('post'); 
     
     $imagemagick = new Zend_Form_Element_Text('imagemagick');
-    
     $submit = new  Zend_Form_Element_Submit('submitConfig');
-    $submit ->setLabel('Save configuration');
+    $submit ->setLabel('Save image magick configuration');
      
     $form->addElements(array($imagemagick, $submit));
+    return $form;
+    }
+    
+ /** create  form */
+  public function createThumbnailerForm()
+    {
+    $form = new Zend_Form;
+
+    $form->setAction($this->webroot.'/thumbnailcreator/config/index')
+          ->setMethod('post'); 
+    
+    $useThumbnailer = new Zend_Form_Element_Radio('useThumbnailer');
+    $useThumbnailer->addMultiOptions(array(
+                 MIDAS_THUMBNAILCREATOR_NOT_USE_THUMBNAILER => $this->t("Do not has thumbnailer or do not want to use it."),
+                 MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER => $this->t("Has thumbnailer and want to use it to support more image formats."),
+                  ))
+            ->setRequired(true)
+            ->setValue(MIDAS_THUMBNAILCREATOR_NOT_USE_THUMBNAILER);
+    $thumbnailer = new Zend_Form_Element_Text('thumbnailer');
+    $submit = new  Zend_Form_Element_Submit('submitThumbnailer');
+    $submit ->setLabel('Save thumbnailer configuration');
+     
+    $form->addElements(array($useThumbnailer, $thumbnailer, $submit));
     return $form;
     }
    

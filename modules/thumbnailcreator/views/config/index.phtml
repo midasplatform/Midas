@@ -36,16 +36,37 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>Image Magick Configuration:</h3>
             <div >
-              <label for='imagemagick'>Image magick location (path)</label>
+              <h4><label for='imagemagick'>Image magick location (path)</label></h4>
               {$this->configForm['imagemagick']}
-            </div>
+            </div> 
           <div>
             {$this->configForm['submitConfig']}
           </div>
        </form>";
        ?>
+    </br>
+    </br>
+    Optional: this module may need 'thumbnailer', a <a href="http://www.simpleitk.org/" target='_blank'>Simple-ITK</a>-based thumb-nailing application.<br/>
+    If your items include these image formats( .nrrd and .mha) which are not supported by image magick, and you also want to have thumbnails for these items, please specify the location of your 'thumbnailer' executable.<br>
     
- 
+     <?php
+      echo "
+      <form class='genericForm' id='thumbnailerForm' method='{$this->thumbnailerForm['method']}'  action='{$this->thumbnailerForm['action']}'>
+      <h3>Thumbnailer Configuration:</h3>
+          <div class='radioElement'>
+            <h4><label for='useThumbnailer'>Use Thumbnailer</label></h4>
+            {$this->thumbnailerForm['useThumbnailer']}
+          </div>
+          <div id='thumbnailerDiv'>
+            <h4><label for='thumbnailer'>Thumbnailer location (path)</label><h4>
+            {$this->thumbnailerForm['thumbnailer']}
+          </div>
+          <div>
+            {$this->thumbnailerForm['submitThumbnailer']}
+          </div>
+       </form>";
+       ?>
+
 </div>
 
 

@@ -38,18 +38,23 @@ class Thumbnailcreator_ConfigController extends Thumbnailcreator_AppController
       $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
       }
     $configForm = $this->ModuleForm->Config->createConfigForm();
-    
     $formArray = $this->getFormAsArray($configForm);    
     $formArray['imagemagick']->setValue($applicationConfig['global']['imagemagick']);
-    
     $this->view->configForm = $formArray;
-    
+
+    $thumbnailerForm = $this->ModuleForm->Config->createThumbnailerForm();
+    $thumbnailerFormArray = $this->getFormAsArray($thumbnailerForm);
+    $thumbnailerFormArray['useThumbnailer']->setValue($applicationConfig['global']['useThumbnailer']);
+    $thumbnailerFormArray['thumbnailer']->setValue($applicationConfig['global']['thumbnailer']);
+    $this->view->thumbnailerForm = $thumbnailerFormArray;
+
     if($this->_request->isPost())
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
       $submitConfig = $this->_getParam('submitConfig');
-      if(isset($submitConfig))
+      $submitThumbnailer = $this->_getParam('submitThumbnailer');
+      if(isset($submitConfig) || isset($submitThumbnailer))
         {
         if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old"))
           {
@@ -59,7 +64,15 @@ class Thumbnailcreator_ConfigController extends Thumbnailcreator_AppController
           {
           rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini",BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
           }
-        $applicationConfig['global']['imagemagick'] = $this->_getParam('imagemagick');
+        if (isset($submitConfig))
+          {
+          $applicationConfig['global']['imagemagick'] = $this->_getParam('imagemagick');
+          }
+        if (isset($submitThumbnailer))
+          {
+          $applicationConfig['global']['useThumbnailer'] = $this->_getParam('useThumbnailer');
+          $applicationConfig['global']['thumbnailer'] = $this->_getParam('thumbnailer');
+          }
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
