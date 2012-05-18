@@ -337,6 +337,14 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       throw new Zend_Exception("Permissions error.");
       }
 
+    $this->view->isJobAdmin = $this->logged && ($this->Remoteprocessing_Job->policyCheck($jobDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN) || $jobDao->getCreatorId() == $this->userSession->Dao->getKey());
+
+    if(isset($_GET['delete']) && $this->view->isJobAdmin)
+      {
+      $this->Remoteprocessing_Job->delete($jobDao);
+      $this->_redirect('/');
+      }
+
     $this->view->job = $jobDao;
     $workflow = $jobDao->getWorkflows();
     $this->view->workflow = $workflow[0];
@@ -402,6 +410,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     $this->view->outputs = $outputs;
     $this->view->log = $log;
     $this->view->results =  $this->ModuleComponent->Job->convertXmlREsults($log);
+
     $this->view->inputs = $inputs;
     if(empty($this->view->results))
       {
