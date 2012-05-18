@@ -170,9 +170,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     // delete temerary file generated in pre-process step
     if(isset($preprecessedJpeg) && file_exists($preprecessedJpeg))
       {
-      $rmParams = array('-f', $preprecessedJpeg);
-      $rmCmd = KWUtils::prepareExeccommand('rm', $rmParams);
-      KWUtils::exec($rmCmd);
+      unlink($preprecessedJpeg);
       }
     return $pathThumbnail;
     }
@@ -190,11 +188,9 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       {
       throw new Zend_Exception('Temporary thumbnail dir does not exist: '.BASE_PATH.'/data/thumbnail/');
       }
-
+    
     $copyDestination = $tmpPath.'/'.$name;
-    $copyParams = array("-f", $fullpath, $copyDestination);
-    $copyCmd = KWUtils::prepareExeccommand('cp', $copyParams);
-    KWUtils::exec($copyCmd);
+    copy($fullpath, $copyDestination);
 
     $jpegDestination = $tmpPath.'/'.$name.'.jpeg';
     while(file_exists($jpegDestination))
@@ -221,9 +217,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       }
     else
       {
-      $rmParams = array('-f', $copyDestination);
-      $rmCmd = KWUtils::prepareExeccommand('rm', $rmParams);
-      KWUtils::exec($rmCmd);
+      unlink($copyDestination);
       return $jpegDestination;
       }
     }
