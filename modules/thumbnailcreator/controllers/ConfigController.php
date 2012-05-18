@@ -18,17 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
-
+/** Thumbnailcreator_ConfigController class*/
 class Thumbnailcreator_ConfigController extends Thumbnailcreator_AppController
 {
-   public $_moduleForms=array('Config');
-   public $_components=array('Utility', 'Date');
-   
-   /** index action*/
-   function indexAction()
+  public $_moduleForms = array('Config');
+  public $_components = array('Utility', 'Date');
+
+  /** index action*/
+  function indexAction()
     {
     $this->requireAdminPrivileges();
-    
+
     if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
       {
       $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", true);
@@ -38,7 +38,7 @@ class Thumbnailcreator_ConfigController extends Thumbnailcreator_AppController
       $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
       }
     $configForm = $this->ModuleForm->Config->createConfigForm();
-    $formArray = $this->getFormAsArray($configForm);    
+    $formArray = $this->getFormAsArray($configForm);
     $formArray['imagemagick']->setValue($applicationConfig['global']['imagemagick']);
     $this->view->configForm = $formArray;
 
@@ -62,13 +62,13 @@ class Thumbnailcreator_ConfigController extends Thumbnailcreator_AppController
           }
         if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
           {
-          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini",BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
+          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
           }
-        if (isset($submitConfig))
+        if(isset($submitConfig))
           {
           $applicationConfig['global']['imagemagick'] = $this->_getParam('imagemagick');
           }
-        if (isset($submitThumbnailer))
+        if(isset($submitThumbnailer))
           {
           $applicationConfig['global']['useThumbnailer'] = $this->_getParam('useThumbnailer');
           $applicationConfig['global']['thumbnailer'] = $this->_getParam('thumbnailer');
@@ -77,6 +77,6 @@ class Thumbnailcreator_ConfigController extends Thumbnailcreator_AppController
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }
-    } 
-    
+    }
+
 }//end class

@@ -52,7 +52,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       }
     else
       {
-      $fullPath = $bitstream->getFullPath(); 
+      $fullPath = $bitstream->getFullPath();
       }
 
     try
@@ -101,13 +101,13 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     $preprocessedFormats = array_map('trim', explode(',', $applicationConfig['global']['imageFormats']));
     if(($useThumbnailer == "1") && in_array($ext, $preprocessedFormats))
       {
-      // pre-process the file to get a temporary jpeg file and then feed it to image magick later. 
+      // pre-process the file to get a temporary jpeg file and then feed it to image magick later.
       $preprecessedJpeg = $this->preprocessByThumbnailer($name, $fullPath);
       if(isset($preprecessedJpeg) && file_exists($preprecessedJpeg))
         {
         $fullPath = $preprecessedJpeg;
         $ext = strtolower(substr(strrchr($preprecessedJpeg, '.'), 1));
-        }  
+        }
       }
     // create destination
     $tmpPath = BASE_PATH.'/data/thumbnail';
@@ -166,17 +166,17 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
           $p->resize($width, $height);
           }
         break;
-      }  
-    // delete temerary file generated in pre-process step  
+      }
+    // delete temerary file generated in pre-process step
     if(isset($preprecessedJpeg) && file_exists($preprecessedJpeg))
       {
       $rmParams = array('-f', $preprecessedJpeg);
       $rmCmd = KWUtils::prepareExeccommand('rm', $rmParams);
       KWUtils::exec($rmCmd);
-      }  
+      }
     return $pathThumbnail;
     }
-  
+
   /**
    * Use thumbnailer to pre-process a bitstream to generate a jpeg file.
    * Echoes an error message if a problem occurs (for the scheduler log)
@@ -184,19 +184,15 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
    * @param fullPath Absolute path to the image to be pre-processed
    */
   public function preprocessByThumbnailer($name, $fullpath)
-    {  
+    {
     $tmpPath = BASE_PATH.'/data/thumbnail';
     if(!file_exists($tmpPath))
       {
       throw new Zend_Exception('Temporary thumbnail dir does not exist: '.BASE_PATH.'/data/thumbnail/');
       }
-      
+
     $copyDestination = $tmpPath.'/'.$name;
-    while(file_exists($copyDestination))
-      {
-      $copyDestination = $tmpPath.'/'.$name.rand(1, 10000);
-      }
-    $copyParams = array($fullpath, $copyDestination);
+    $copyParams = array("-f", $fullpath, $copyDestination);
     $copyCmd = KWUtils::prepareExeccommand('cp', $copyParams);
     KWUtils::exec($copyCmd);
 
@@ -217,7 +213,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       {
       throw new Zend_Exception('Thumbnailer does not exist or you do not have execute permission. Please check the configuration of thumbnailcreator module.');
       }
-   
+
     if(!file_exists($jpegDestination))
       {
       throw new Zend_Exception('Problem executing thumbnailer on your system');
@@ -230,6 +226,6 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       KWUtils::exec($rmCmd);
       return $jpegDestination;
       }
-    } 
+    }
 
 } // end class

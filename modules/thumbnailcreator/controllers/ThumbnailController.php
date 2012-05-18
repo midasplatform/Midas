@@ -91,7 +91,7 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
 
       echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Thumbnail saved', 'itemthumbnail' => $itemThumbnail));
       }
-   catch(Exception $e)
+    catch(Exception $e)
       {
       echo JsonComponent::encode(array('status' => 'error', 'message' => 'Error: '.$e->getMessage()));
       }
