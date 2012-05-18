@@ -52,9 +52,6 @@ class ItempolicygroupModelBase extends AppModel
   public function computePolicyStatus($item)
     {
     $groupPolicies = $item->getItempolicygroup();
-    $userPolicies = $item->getItempolicyuser();
-
-    $shared = false;
     $modelLoad = new MIDAS_ModelLoader();
     $itemModel = $modelLoad->loadModel('Item');
 
@@ -63,12 +60,12 @@ class ItempolicygroupModelBase extends AppModel
       if($policy->getGroupId() == MIDAS_GROUP_ANONYMOUS_KEY)
         {
         $item->setPrivacyStatus(MIDAS_PRIVACY_PUBLIC);
-        $itemModel->save($item);
+        $itemModel->save($item, false);
         return MIDAS_PRIVACY_PUBLIC;
         }
       }
     $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
-    $itemModel->save($item);
+    $itemModel->save($item, false);
     return MIDAS_PRIVACY_PRIVATE;
     }// end computePolicyStatus
 

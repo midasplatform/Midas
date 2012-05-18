@@ -73,7 +73,7 @@ abstract class ItemModelBase extends AppModel
     }// delete
 
   /** save */
-  public function save($dao)
+  public function save($dao, $updateSearchIndex = true)
     {
     if(!isset($dao->uuid) || empty($dao->uuid))
       {
@@ -91,49 +91,52 @@ abstract class ItemModelBase extends AppModel
     $dao->setDescription(UtilityComponent::filterHtmlTags($dao->getDescription()));
     parent::save($dao);
 
-    require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
-    $component = new SearchComponent();
-    $index = $component->getLuceneItemIndex();
-
-    $hits = $index->find("item_id:".$dao->getKey());
-    foreach($hits as $hit)
+    if($updateSearchIndex)
       {
-      $index->delete($hit->id);
-      }
-    $doc = new Zend_Search_Lucene_Document();
-    $field = Zend_Search_Lucene_Field::Text('title', $dao->getName());
-    $field->boost = 2;
-    $doc->addField($field);
-    $doc->addField(Zend_Search_Lucene_Field::Keyword('item_id', $dao->getKey()));
-    $doc->addField(Zend_Search_Lucene_Field::UnStored('description', $dao->getDescription()));
+      require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
+      $component = new SearchComponent();
+      $index = $component->getLuceneItemIndex();
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $revisionModel = $modelLoad->loadModel('ItemRevision');
-    $revision = $this->getLastRevision($dao);
-
-    if($revision != false)
-      {
-      $metadata = $revisionModel->getMetadata($revision);
-      $metadataString = '';
-
-      foreach($metadata as $m)
+      $hits = $index->find("item_id:".$dao->getKey());
+      foreach($hits as $hit)
         {
-        $fieldName = $m->getElement();
-        if($m->getQualifier())
-          {
-          $fieldName .= '-'.$m->getQualifier();
-          }
-        $doc->addField(Zend_Search_Lucene_Field::Keyword($fieldName, $m->getValue()));
-        if(!is_numeric($m->getValue()))
-          {
-          $metadataString .= ' '. $m->getValue();
-          }
+        $index->delete($hit->id);
         }
+      $doc = new Zend_Search_Lucene_Document();
+      $field = Zend_Search_Lucene_Field::Text('title', $dao->getName());
+      $field->boost = 2;
+      $doc->addField($field);
+      $doc->addField(Zend_Search_Lucene_Field::Keyword('item_id', $dao->getKey()));
+      $doc->addField(Zend_Search_Lucene_Field::UnStored('description', $dao->getDescription()));
 
-      $doc->addField(Zend_Search_Lucene_Field::Text('metadata', $metadataString));
+      $modelLoad = new MIDAS_ModelLoader();
+      $revisionModel = $modelLoad->loadModel('ItemRevision');
+      $revision = $this->getLastRevision($dao);
+
+      if($revision != false)
+        {
+        $metadata = $revisionModel->getMetadata($revision);
+        $metadataString = '';
+
+        foreach($metadata as $m)
+          {
+          $fieldName = $m->getElement();
+          if($m->getQualifier())
+            {
+            $fieldName .= '-'.$m->getQualifier();
+            }
+          $doc->addField(Zend_Search_Lucene_Field::Keyword($fieldName, $m->getValue()));
+          if(!is_numeric($m->getValue()))
+            {
+            $metadataString .= ' '. $m->getValue();
+            }
+          }
+
+        $doc->addField(Zend_Search_Lucene_Field::Text('metadata', $metadataString));
+        }
+      $index->addDocument($doc);
+      $index->commit();
       }
-    $index->addDocument($doc);
-    $index->commit();
     }
 
   /** copy parent folder policies*/
@@ -379,7 +382,7 @@ abstract class ItemModelBase extends AppModel
       }
     $revisiondao->setItemId($itemdao->getItemId());
     $ItemRevisionModel->save($revisiondao);
-    $this->save($itemdao);//update date
+    $this->save($itemdao, false);//update date
     } // end addRevision
 
   /**

@@ -154,7 +154,7 @@ class UploadComponent extends AppComponent
     $item->setName($itemModel->updateItemName($name, $parent));
     $item->setDescription('');
     $item->setType(0);
-    $itemModel->save($item);
+    $itemModel->save($item, false);
 
     $feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_ITEM, $item);
 
@@ -187,6 +187,7 @@ class UploadComponent extends AppComponent
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
 
     $this->getLogger()->info('Link item created ('.$item->getName().', id='.$item->getKey().')');
+    $itemModel->save($item, true); // save and update lucene index
     return $item;
     }//end createUploadedItem
 
@@ -232,16 +233,13 @@ class UploadComponent extends AppComponent
       {
       throw new Zend_Exception('Parent permissions errors');
       }
-
     Zend_Loader::loadClass('ItemDao', BASE_PATH . '/core/models/dao');
     $item = new ItemDao;
     $item->setName($name);
     $item->setDescription('');
     $item->setType(0);
-    $itemModel->save($item);
-
+    $itemModel->save($item, false);
     $feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_ITEM, $item);
-
     $folderModel->addItem($parent, $item);
     $itemModel->copyParentPolicies($item, $parent, $feed);
 
@@ -278,6 +276,7 @@ class UploadComponent extends AppComponent
 
     $this->getLogger()->info('Item uploaded ('.$item->getName().', id='.$item->getKey().')');
     Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_UPLOAD_FILE', array($item->toArray(), $itemRevisionDao->toArray()));
+    $itemModel->save($item, true); // save and update lucene index
     return $item;
     }//end createUploadedItem
 
@@ -399,7 +398,7 @@ class UploadComponent extends AppComponent
                              '] into revision '.$itemRevisionDao->getKey().
                              ' (item '.$item->getKey().')');
     Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_UPLOAD_FILE', array($itemRevisionDao->getItem()->toArray(), $itemRevisionDao->toArray()));
-
+    $itemModel->save($item, true); // save and update lucene index
     return $item;
     }//end
 } // end class UploadComponent
