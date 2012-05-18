@@ -44,6 +44,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       }
     $bitstream = $bitstreams[0];
     $fullPath = null;
+    $name = $bitstream->getName();
     if($inputFile)
       {
       $fullPath = $inputFile;
@@ -55,7 +56,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
 
     try
       {
-      $pathThumbnail = $this->createThumbnailFromPath($fullPath, 100, 100, true);
+      $pathThumbnail = $this->createThumbnailFromPath($name, $fullPath, 100, 100, true);
       }
     catch(phMagickException $exc)
       {
@@ -74,6 +75,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
 
   /**
    * Create a thumbnail for the given file with the given width & height
+   * @param name name of the image to create the thumbnail of
    * @param fullPath Absolute path to the image to create the thumbnail of
    * @param width Width to resize to (Set to 0 to preserve aspect ratio)
    * @param height Height to resize to (Set to 0 to preserve aspect ratio)
@@ -82,9 +84,9 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
    * @throws phMagickException if something goes wrong with the resize
    * @throws Exception if something else goes wrong
    */
-  public function createThumbnailFromPath($fullPath, $width, $height, $exact = true)
+  public function createThumbnailFromPath($name, $fullPath, $width, $height, $exact = true)
     {
-    $ext = strtolower(substr(strrchr($fullPath, '.'), 1));
+    $ext = strtolower(substr(strrchr($name, '.'), 1));
 
     // create destination
     $tmpPath = BASE_PATH.'/data/thumbnail';
