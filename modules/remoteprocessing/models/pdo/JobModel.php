@@ -23,6 +23,22 @@ require_once BASE_PATH.'/modules/remoteprocessing/models/base/JobModelBase.php';
 /** job model */
 class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
 {
+
+  /** delete */
+  public function delete($dao)
+    {
+    $db = Zend_Registry::get('dbAdapter');
+    $modelLoad = new MIDAS_ModelLoader();
+    $itemModel = $modelLoad->loadModel('Item');
+    $db->delete('remoteprocessing_workflow2job', 'job_id = '.$dao->getKey());
+
+    $items = $this->getRelatedItems($dao);
+    foreach($items as $i)
+      {
+      $itemModel->delete($i);
+      }
+    parent::delete($dao);
+    }
   /** check ifthe policy is valid*/
   function policyCheck($job, $userDao = null, $policy = 0)
     {

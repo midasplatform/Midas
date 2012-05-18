@@ -192,3 +192,14 @@ $(document).ready(function(){
 
       return html;
     }
+
+  function deleteJob()
+  {
+    if(confirm('Do you really want to delete the job?'))
+      {
+      $.get($('#deleteJobLink').attr('href'));
+      alert('Deletion in progress.');
+      document.location.href = json.global.webroot;
+      }
+    return false;
+  }

@@ -35,14 +35,13 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
       {
       $jobStatus =  "Started";
       }
-
-
   ?>
 
   <h4 style="margin-bottom: 0px;">Job Status: <?php echo $jobStatus?></h4>
   <h4 style="margin-top: 0px;">Workflow: <a href="<?php echo $this->webroot?>/remoteprocessing/dashboard/workflow?workflowId=<?php echo $this->workflow->getKey()?>"><?php echo $this->workflow->getName();?></a></h4>
+  <a onclick="return deleteJob();" id="deleteJobLink" href="<?php echo $this->webroot?>/remoteprocessing/job/view/?jobId=<?php echo $this->job->getKey(); ?>&delete=true">Delete job</a><br/>
 
-  <?php
+    <?php
     if($this->executable != false)
       {
       ?>
@@ -203,8 +202,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
         echo "<td>";
         if($output->getThumbnailId())
           {
-          echo '<h1>Preview</h1>'.
-              '<img class="infoLogo" alt="" src="'.$this->webroot.'/item/thumbnail?itemId='.
+          echo '<img class="infoLogo" alt="" src="'.$this->webroot.'/item/thumbnail?itemId='.
               $output->getKey().'"/>';
           }
         echo "</td>";
