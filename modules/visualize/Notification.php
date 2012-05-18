@@ -44,11 +44,12 @@ class Visualize_Notification extends MIDAS_Notification
     if($this->canVisualize($params))
       {
       $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
-      $html = '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-      $html .= "<a  href='".$webroot.'/visualize/wrapper/?itemId='.$params['item']->getKey()."'><img style='float:left;margin-right:2px;' alt='' src='".$webroot."/core/public/images/icons/view.png'/>";
+      $html = '<div style="float:right;position:absolute;top:51px;">';
+      $html .= '<button class="topDownloadButton" onclick="window.location.href=\''.$webroot.'/visualize/wrapper/?itemId='.$params['item']->getKey().'\'">';
       $html .= $this->t('Preview');
-      $html .= "</a>";
+      $html .= "</button>";
       $html .= '</div>';
+
       return $html;
       }
 
