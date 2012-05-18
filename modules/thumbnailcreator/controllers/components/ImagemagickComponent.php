@@ -188,7 +188,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       {
       throw new Zend_Exception('Temporary thumbnail dir does not exist: '.BASE_PATH.'/data/thumbnail/');
       }
-    
+
     $copyDestination = $tmpPath.'/'.$name;
     copy($fullpath, $copyDestination);
 
