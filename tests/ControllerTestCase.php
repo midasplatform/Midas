@@ -75,6 +75,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     $this->ModelLoader = new MIDAS_ModelLoader();
     parent::setUp();
     $this->startCodeCoverage();
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     }
 
   /** end test */
