@@ -61,14 +61,6 @@ class MetadataModel extends MetadataModelBase
   /** Return the table name based on the type of metadata*/
   function getTableValueName($metadatatype)
     {
-    switch($metadatatype)
-      {
-      case MIDAS_METADATA_GLOBAL: return 'metadatavalue';
-      case MIDAS_METADATA_DOCUMENT: return 'metadatadocumentvalue';
-      case MIDAS_METADATA_VIDEO: return 'metadatavideovalue';
-      case MIDAS_METADATA_IMAGE: return 'metadataimagevalue';
-      default: return 'metadatavalue';
-      }
     return 'metadatavalue';
     }
 

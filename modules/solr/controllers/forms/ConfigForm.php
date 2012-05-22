@@ -18,11 +18,26 @@
  limitations under the License.
 =========================================================================*/
 
-define("MIDAS_METADATA_TEXT", 0);
-define("MIDAS_METADATA_INT", 1);
-define("MIDAS_METADATA_DOUBLE", 2);
-define("MIDAS_METADATA_FLOAT", 3);
-define("MIDAS_METADATA_BOOLEAN", 4);
-define("MIDAS_METADATA_LONG", 5);
-define("MIDAS_METADATA_STRING", 6);
+/** module config form */
+class Solr_ConfigForm extends AppForm
+{
+  /** create the admin->modules page config form */
+  public function createConfigForm()
+    {
+    $form = new Zend_Form;
+    $form->setAction($this->webroot.'/solr/config/submit')
+         ->setMethod('post');
+
+    $host = new Zend_Form_Element_Text('host');
+    $port = new Zend_Form_Element_Text('port');
+    $webroot = new Zend_Form_Element_Text('webroot');
+
+    $submit = new Zend_Form_Element_Submit('submitConfig');
+    $submit->setLabel('Save configuration');
+
+    $form->addElements(array($host, $port, $webroot, $submit));
+    return $form;
+    }
+
+} // end class
 ?>

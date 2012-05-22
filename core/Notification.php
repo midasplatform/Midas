@@ -29,7 +29,6 @@ class Notification extends MIDAS_Notification
   public function init()
     {
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDasboard');
-    $this->addTask('TASK_CORE_RESET_ITEM_INDEXES', 'resetItemIndexes', 'Recompute lucene indexes');
     }//end init
 
   /** generate Dasboard information */
@@ -45,26 +44,5 @@ class Notification extends MIDAS_Notification
 
     return $return;
     }//end _getDasboard
-
-
-  /** reset item indexes */
-  public function resetItemIndexes()
-    {
-    $users = $this->User->getAll();
-    foreach($users as $user)
-      {
-      $items = $this->Item->getOwnedByUser($user, 999999);
-      foreach($items as $item)
-        {
-        $this->Item->save($item);
-        }
-      }
-
-    require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
-    $component = new SearchComponent();
-    $index = $component->getLuceneItemIndex();
-
-    $index->optimize();
-    }
   } //end class
 ?>
