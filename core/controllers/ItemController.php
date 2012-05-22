@@ -92,13 +92,13 @@ class ItemController extends AppController
       }
     $this->view->itemDao = $itemDao;
     $this->view->metadataTypes = array(
-      MIDAS_METADATA_TEXT => 'Text',
-      MIDAS_METADATA_INT => 'Integer',
-      MIDAS_METADATA_LONG => 'Long Integer',
-      MIDAS_METADATA_FLOAT => 'Floating Point',
-      MIDAS_METADATA_DOUBLE => 'Double Precision',
-      MIDAS_METADATA_STRING => 'String',
-      MIDAS_METADATA_BOOLEAN => 'Boolean');
+    MIDAS_METADATA_TEXT => 'Text',
+    MIDAS_METADATA_INT => 'Integer',
+    MIDAS_METADATA_LONG => 'Long Integer',
+    MIDAS_METADATA_FLOAT => 'Floating Point',
+    MIDAS_METADATA_DOUBLE => 'Double Precision',
+    MIDAS_METADATA_STRING => 'String',
+    MIDAS_METADATA_BOOLEAN => 'Boolean');
     }
 
   /**
