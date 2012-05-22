@@ -25,10 +25,16 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
           echo '</div>';
         ?>
     </div>
+    <h3>Solr Lucene Search Module Configuration:</h3>
+    <div class="instructionContainer">
+      This module requires you to run a specially configured Apache Solr server.  Install instructions and a link to download
+      the server are hosted <a href="http://midas3.kitware.com/midas/item/19589">here</a>.
+      If you have existing content in this instance, make sure to rebuild the index using the link
+      at the bottom of this page once the Solr server is installed and running.
+    </div>
     <?php
       echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
-        <h3>Solr Lucene Search Module Configuration:</h3>
         <br /><br />
         <div>
           <label for='defaultuserquota'>Solr Host</label>
