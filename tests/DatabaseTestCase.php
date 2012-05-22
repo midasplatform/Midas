@@ -92,7 +92,6 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
 
     parent::setUp();
     $this->startCodeCoverage();
-    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     }
 
   /** end tests*/

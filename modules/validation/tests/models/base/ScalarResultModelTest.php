@@ -36,6 +36,8 @@ class ScalarResultModelTest extends DatabaseTestCase
   /** testGetSetValue */
   public function testGetSetValue()
     {
+    Zend_Registry::set('modulesEnable', $this->enabledModules);
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $modelLoad = new MIDAS_ModelLoader();
     $scalarResultModel = $modelLoad->loadModel('ScalarResult', 'validation');
     $daos = $scalarResultModel->getAll();
