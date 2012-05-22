@@ -18,11 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-define("MIDAS_METADATA_TEXT", 0);
-define("MIDAS_METADATA_INT", 1);
-define("MIDAS_METADATA_DOUBLE", 2);
-define("MIDAS_METADATA_FLOAT", 3);
-define("MIDAS_METADATA_BOOLEAN", 4);
-define("MIDAS_METADATA_LONG", 5);
-define("MIDAS_METADATA_STRING", 6);
+/** module App Dao */
+class Solr_AppDao extends MIDAS_GlobalDao
+  {
+
+  } //end class
+
 ?>

@@ -281,7 +281,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
             $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'parameter', $input['name']);
             if(!$metadataDao)
               {
-              $metadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'parameter', $input['name'], '');
+              $metadataModel->addMetadata(MIDAS_METADATA_TEXT, 'parameter', $input['name'], '');
               }
             $metadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL,
                         'parameter', $input['name'], $input['value']);

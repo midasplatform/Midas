@@ -1,0 +1,9 @@
+div.notSavedWarning {
+  color: red;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+div.rebuildIndexContainer {
+  margin-top: 20px;
+}

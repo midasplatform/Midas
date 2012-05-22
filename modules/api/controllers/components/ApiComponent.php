@@ -1062,7 +1062,7 @@ class Api_ApiComponent extends AppComponent
         // Params beginning with underscore are assumed to be metadata fields
         if(substr($key, 0, 1) == '_')
           {
-          $this->_setMetadata($record, MIDAS_METADATA_GLOBAL, substr($key, 1), '', $value);
+          $this->_setMetadata($record, MIDAS_METADATA_TEXT, substr($key, 1), '', $value);
           }
         }
       $itemModel->save($record);
@@ -1298,7 +1298,7 @@ class Api_ApiComponent extends AppComponent
    * @param element The metadata element
    * @param value The metadata value for the field
    * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
-   * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_GLOBAL type (0).
+   * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
    */
   function itemSetmetadata($args)
     {
@@ -1314,7 +1314,7 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
       }
 
-    $type = array_key_exists('type', $args) ? (int)$args['type'] : MIDAS_METADATA_GLOBAL;
+    $type = array_key_exists('type', $args) ? (int)$args['type'] : MIDAS_METADATA_TEXT;
     $qualifier = array_key_exists('qualifier', $args) ? $args['qualifier'] : '';
     $element = $args['element'];
     $value = $args['value'];
