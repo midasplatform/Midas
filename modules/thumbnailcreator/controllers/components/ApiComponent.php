@@ -57,7 +57,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
     $bitstreamModel = $modelLoad->loadModel('Bitstream');
     $itemModel = $modelLoad->loadModel('Item');
     $itemthumbnailModel = $modelLoad->loadModel('Itemthumbnail', 'thumbnailcreator');
-   
+
     $bitstream = $bitstreamModel->load($bitstreamId);
     $item = $itemModel->load($itemId);
 
