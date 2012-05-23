@@ -52,7 +52,7 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
       throw new Zend_Exception('Error: item parameter is not an item dao');
       }
 
-    $userAgent = $_SERVER['HTTP_USER_AGENT'];
+    $userAgent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : '';
     $ip = $_SERVER['REMOTE_ADDR'];
     if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
       {
