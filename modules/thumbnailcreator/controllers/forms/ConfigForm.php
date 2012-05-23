@@ -50,8 +50,8 @@ class Thumbnailcreator_ConfigForm extends AppForm
 
     $useThumbnailer = new Zend_Form_Element_Radio('useThumbnailer');
     $useThumbnailer->addMultiOptions(array(
-                 MIDAS_THUMBNAILCREATOR_NOT_USE_THUMBNAILER => $this->t("Do not has thumbnailer or do not want to use it."),
-                 MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER => $this->t("Has thumbnailer and want to use it to support more image formats."),
+                 MIDAS_THUMBNAILCREATOR_NOT_USE_THUMBNAILER => $this->t("Do not have thumbnailer or do not want to use it."),
+                 MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER => $this->t("Have thumbnailer and want to use it to support more image formats."),
                   ))
             ->setRequired(true)
             ->setValue(MIDAS_THUMBNAILCREATOR_NOT_USE_THUMBNAILER);

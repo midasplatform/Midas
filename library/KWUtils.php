@@ -91,15 +91,8 @@ class KWUtils
    * @return the $command, $escaped for the current platform
    * @TODO, how to test this?
    */
-  public static function escapeCommand($command )
+  public static function escapeCommand($command)
     {
-    // if windows platform, add extra double-quote
-    // See http://www.mail-archive.com/internals@lists.php.net/msg29874.html
-    if(KWUtils::isWindows() )
-      {
-      $command = '"'.$command.'"';
-      }
-
     return $command;
     }
 
@@ -112,7 +105,7 @@ class KWUtils
    */
   public static function appendStringIfNot($subject, $ext)
     {
-    if(!(substr($subject, strlen($subject) - strlen($ext)) === $ext)  )
+    if(!(substr($subject, strlen($subject) - strlen($ext)) === $ext))
       {
       $subject .= $ext;
       }
@@ -128,7 +121,7 @@ class KWUtils
    * @param $return_val, a reference to put the return value of the command
    *  the temporary work dir
    */
-  public static function exec($command, &$output = null, $chdir = "", &$return_val = null)
+  public static function exec($command, &$output = null, $chdir = '', &$return_val = null)
     {
     $changed = false;
     if(!empty($chdir))
@@ -154,8 +147,9 @@ class KWUtils
       }
 
     // on Linux need to add redirection to handle stderr
-    $redirect_error = KWUtils::isLinux() ? " 2>&1" : "";
-    exec(KWUtils::escapeCommand($command) . $redirect_error, $output, $return_val);
+    $redirect_error = KWUtils::isLinux() ? ' 2>&1' : '';
+    $escaped = KWUtils::escapeCommand($command);
+    exec($escaped.$redirect_error, $output, $return_val);
 
     // change back to original directory if necessary
     if($changed && !chdir($currCwd))
@@ -202,7 +196,7 @@ class KWUtils
       }
 
     // glue together app_name and params using spaces
-    return escapeshellarg($app_name)." ".implode(" ", $escapedParams);
+    return escapeshellarg($app_name).' '.implode(' ', $escapedParams);
     }
 
 
@@ -215,7 +209,7 @@ class KWUtils
    */
   public static function isExecutable($app_name, $check_in_path = false)
     {
-    if(!is_executable($app_name ))
+    if(!is_executable($app_name))
       {
       if($check_in_path)
         {
