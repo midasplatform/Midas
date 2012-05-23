@@ -46,8 +46,10 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
        ?>
     </br>
     </br>
-    Optional: this module may need 'thumbnailer', a <a href="http://www.simpleitk.org/" target='_blank'>Simple-ITK</a>-based thumb-nailing application.<br/>
-    If your items include these image formats( .nrrd and .mha) which are not supported by image magick, and you also want to have thumbnails for these items, please specify the location of your 'thumbnailer' executable.<br>
+    Optional: this module may need 'thumbnailer', a <a href="http://www.simpleitk.org/" target='_blank'>Simple-ITK</a>-based thumbnailing application.<br/><br/>
+    Thumbnailer can be downloaded for many platforms <a href="http://midas3.kitware.com/midas/folder/5750" target='_blank'>here</a>.<br/><br/>
+    Enabling this will allow the server to create thumbnails for .nrrd and .mha 2D or 3D image files.  If you wish to use it,
+    please download the executable for your platform and specify the location of the Thumbnailer executable here.<br>
     
      <?php
       echo "
