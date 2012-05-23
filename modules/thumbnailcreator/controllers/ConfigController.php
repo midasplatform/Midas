@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /**
  * Thumbnailcreator module configuration
  */
@@ -39,6 +40,7 @@ class Thumbnailcreator_ConfigController extends Thumbnailcreator_AppController
       $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
       }
     $configForm = $this->ModuleForm->Config->createConfigForm();
+
     $formArray = $this->getFormAsArray($configForm);
     $formArray['imagemagick']->setValue($applicationConfig['global']['imagemagick']);
     $this->view->configForm = $formArray;

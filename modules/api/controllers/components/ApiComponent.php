@@ -1695,31 +1695,16 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('The bitstream does not exist or you do not have the permissions', MIDAS_INVALID_PARAMETER);
       }
 
-    if(array_key_exists('name', $args))
-      {
-      $bitstream->setName($args['name']);
-      }
     $revision = $bitstream->getItemrevision();
-
     if(!$revision)
       {
       throw new Exception('Bitstream does not belong to a revision', MIDAS_INTERNAL_ERROR);
       }
-    $item = $revision->getItem();
-    if(array_key_exists('id', $args) && (!$item || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ)))
-      {
-      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-    if(strpos($bitstream->getPath(), 'http://') !== false)
-      {
-      $this->_redirect($bitstream->getPath());
-      return;
-      }
-    $offset = array_key_exists('offset', $args) ? $args['offset'] : 0;
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');
-    $downloadComponent->download($bitstream, $offset, true);
+    $name = array_key_exists('name', $args) ? $args['name'] : $bitstream->getName();
+    $offset = array_key_exists('offset', $args) ? $args['offset'] : '0';
+
+    $this->controller->redirect('/download/?bitstream='.$bitstream->getKey().'&offset='.$offset.'&name='.$name);
     }
 
   /**
