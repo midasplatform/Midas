@@ -207,13 +207,14 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       }
     else
       {
+      unlink($copyDestination);
       throw new Zend_Exception('Thumbnailer does not exist or you do not have execute permission. Please check the configuration of thumbnailcreator module.');
       }
 
     if(!file_exists($jpegDestination))
       {
+      unlink($copyDestination);
       throw new Zend_Exception('Problem executing thumbnailer on your system');
-      return;
       }
     else
       {
