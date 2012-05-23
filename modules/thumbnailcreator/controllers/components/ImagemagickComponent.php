@@ -109,6 +109,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
         $ext = strtolower(substr(strrchr($preprecessedJpeg, '.'), 1));
         }
       }
+
     // create destination
     $tmpPath = BASE_PATH.'/data/thumbnail';
     if(!file_exists($tmpPath))

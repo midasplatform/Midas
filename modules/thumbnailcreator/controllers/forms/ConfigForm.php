@@ -17,7 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** Thumbnailcreator_ConfigForm class*/
+
+/**
+ * Thumbnailcreator_ConfigForm
+ */
 class Thumbnailcreator_ConfigForm extends AppForm
 {
 
@@ -30,6 +33,7 @@ class Thumbnailcreator_ConfigForm extends AppForm
           ->setMethod('post');
 
     $imagemagick = new Zend_Form_Element_Text('imagemagick');
+
     $submit = new  Zend_Form_Element_Submit('submitConfig');
     $submit ->setLabel('Save image magick configuration');
 
