@@ -57,7 +57,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
     $bitstreamModel = $modelLoad->loadModel('Bitstream');
     $itemModel = $modelLoad->loadModel('Item');
     $itemthumbnailModel = $modelLoad->loadModel('Itemthumbnail', 'thumbnailcreator');
-
+   
     $bitstream = $bitstreamModel->load($bitstreamId);
     $item = $itemModel->load($itemId);
 
@@ -69,7 +69,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
     $itemThumbnail = $itemthumbnailModel->getByItemId($item->getKey());
     if(!$itemThumbnail)
       {
-      Zend_Loader::loadClass('Thumbnailcreator_ItemthumbnailDao', BASE_PATH.'/modules/thumbnailcreator/models/dao');
+      $itemthumbnailModelmodel->loadDaoClass('ItemthumbnailDao', 'thumbnailcreator');
       $itemThumbnail = new Thumbnailcreator_ItemthumbnailDao();
       $itemThumbnail->setItemId($item->getKey());
       }
