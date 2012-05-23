@@ -1,10 +1,11 @@
 var midas = midas || {};
 midas.thumbnailcreator = midas.thumbnailcreator || {};
+midas.thumbnailcreator.config = midas.thumbnailcreator.config || {};
 
-midas.thumbnailcreator.validateConfig = function (formData, jqForm, options) {
+midas.thumbnailcreator.config.validateConfig = function (formData, jqForm, options) {
 }
 
-midas.thumbnailcreator.successConfig = function (responseText, statusText, xhr, form) {
+midas.thumbnailcreator.config.successConfig = function (responseText, statusText, xhr, form) {
   try {
       var jsonResponse = jQuery.parseJSON(responseText);
   } catch (e) {
@@ -23,9 +24,36 @@ midas.thumbnailcreator.successConfig = function (responseText, statusText, xhr, 
   }
 }
 
+midas.thumbnailcreator.config.initUseThumbnailer = function () {
+    var inputThumbnailer = $('input[name=thumbnailer]');
+    var inputUseThumbnailer = $('input[name=useThumbnailer]');
+    var thumbnailerDiv = $('div#thumbnailerDiv');
+
+    if(inputUseThumbnailer.filter(':checked').val() == 0) { //private
+        inputThumbnailer.attr('disabled', 'disabled');
+        inputThumbnailer.removeAttr('checked');
+        inputThumbnailer.filter('[value=0]').attr('checked', true); //invitation
+        thumbnailerDiv.hide();
+    }
+    else {
+        inputThumbnailer.removeAttr('disabled');
+        thumbnailerDiv.show();
+    }
+    inputUseThumbnailer.change(function () {
+        midas.thumbnailcreator.config.initUseThumbnailer();
+    });
+}
+
+
 $(document).ready(function() {
+    midas.thumbnailcreator.config.initUseThumbnailer();
+  
     $('#configForm').ajaxForm({
-        beforeSubmit: midas.thumbnailcreator.validateConfig,
-        success: midas.thumbnailcreator.successConfig
+        beforeSubmit: midas.thumbnailcreator.config.validateConfig,
+        success: midas.thumbnailcreator.config.successConfig
+    });
+    $('#thumbnailerForm').ajaxForm({
+        beforeSubmit: midas.thumbnailcreator.config.validateConfig,
+        success: midas.thumbnailcreator.config.successConfig
     });
 });
