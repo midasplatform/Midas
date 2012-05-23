@@ -69,7 +69,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
     $itemThumbnail = $itemthumbnailModel->getByItemId($item->getKey());
     if(!$itemThumbnail)
       {
-      $itemthumbnailModelmodel->loadDaoClass('ItemthumbnailDao', 'thumbnailcreator');
+      $itemthumbnailModel->loadDaoClass('ItemthumbnailDao', 'thumbnailcreator');
       $itemThumbnail = new Thumbnailcreator_ItemthumbnailDao();
       $itemThumbnail->setItemId($item->getKey());
       }
