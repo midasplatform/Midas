@@ -14,6 +14,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JApplet;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -37,6 +38,7 @@ public class Main extends JApplet
   JProgressBar uploadProgressBar;
   JLabel fileCountLabel, fileNameLabel, fileSizeLabel,
       bytesUploadedLabel;
+  JCheckBox revOnCollisionCheckbox;
   private Color appletBackgroundColor = new Color(225, 225, 225);
 
   private final static String FILECOUNT_LABEL_TITLE = "File #: ";
@@ -111,6 +113,17 @@ public class Main extends JApplet
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
     buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
+    // new revision on name collision checkbox
+    JPanel revOnCollisionPanel = new JPanel();
+    revOnCollisionPanel.setBackground(Color.white);
+    revOnCollisionPanel.setLayout(new BoxLayout(revOnCollisionPanel, BoxLayout.X_AXIS));
+    revOnCollisionPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+    revOnCollisionCheckbox = new JCheckBox("Upload new revision if item name already exists");
+    revOnCollisionCheckbox.setBackground(Color.white);
+    revOnCollisionCheckbox.setSelected(false);
+    revOnCollisionPanel.add(revOnCollisionCheckbox);
+    revOnCollisionPanel.add(Box.createHorizontalGlue());
+    
     // upload button
     uploadFileButton = new JButton("Upload");
     uploadFileButton.addActionListener(new java.awt.event.ActionListener()
@@ -148,6 +161,11 @@ public class Main extends JApplet
     stopUploadButton.setEnabled(false);
     buttonPanel.add(stopUploadButton);
 
+    if(!this.isRevisionUpload())
+      {
+      pane.add(revOnCollisionPanel);
+      pane.add(Box.createVerticalStrut(10));
+      }
     pane.add(buttonPanel);
     pane.add(Box.createVerticalStrut(15));
 
@@ -515,5 +533,14 @@ public class Main extends JApplet
   public String getParentItem()
     {
     return this.parentItem;
+    }
+
+  public boolean revOnCollision()
+    {
+    if(this.revisionUpload)
+      {
+      return false;
+      }
+    return this.revOnCollisionCheckbox.isSelected();
     }
   }
