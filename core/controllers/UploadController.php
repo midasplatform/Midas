@@ -411,7 +411,9 @@ class UploadController extends AppController
 
       try
         {
-        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $data['filename'], $data['path'], $parent, $license, $data['md5'], (bool)$testingMode);
+        $newRevision = (bool)$this->_getParam('newRevision'); //on name collision, should we create new revision?
+        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $data['filename'], $data['path'],
+        $parent, $license, $data['md5'], (bool)$testingMode, $newRevision);
         }
       catch(Exception $e)
         {
