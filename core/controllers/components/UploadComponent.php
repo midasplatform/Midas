@@ -235,6 +235,9 @@ class UploadComponent extends AppComponent
       throw new Zend_Exception('Parent permissions errors');
       }
 
+    // Note the conditional inner assignment of $item if user has selected new revision on name collision.
+    // This is done so that we can elegantly fall through to the new item clause unless both the new
+    // revision on collision option is on and a collision has actually occurred.
     if($revOnCollision && ($item = $folderModel->getItemByName($parent, $name)) != null)
       {
       $changes = '';
