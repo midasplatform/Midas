@@ -223,4 +223,65 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       }
     }
 
+  /**
+   * Check ifImageMagick is available on the path specified
+   * Return an array of the form [Is_Ok, Message]
+   */
+  public function isImageMagickWorking()
+    {
+    $modulesConfig = Zend_Registry::get('configsModules');
+    $imageMagickPath = $modulesConfig['thumbnailcreator']->imagemagick;
+
+    if(empty($imageMagickPath))
+      {
+      return array(false, 'No ImageMagick path set in the module config');
+      }
+
+    if(strpos(strtolower(PHP_OS), 'win') === 0)
+      {
+      $ext = '.exe';
+      }
+    else
+      {
+      $ext = '';
+      }
+
+    if(file_exists($imageMagickPath.'/convert'.$ext))
+      {
+      $cmd = $imageMagickPath.'/convert'.$ext;
+      }
+    else if(file_exists($imageMagickPath.'/im-convert'.$ext))
+      {
+      $cmd = $imageMagickPath.'/im-convert'.$ext;
+      }
+    else
+      {
+      return array(false, 'Neither convert nor im-convert found at '.$imageMagickPath);
+      }
+
+    exec($cmd, $output, $returnvalue);
+
+    if(count($output) > 0)
+      {
+      // version line should look like: "Version: ImageMagick 6.4.7 2008-12-04 Q16 http://www.imagemagick.org"
+      list($version_line, $copyright_line) = $output;
+
+      // split version by spaces
+      $version_chunks = explode(' ', $version_line);
+
+      // assume version is the third element
+      $version = $version_chunks[2];
+
+      // get major, minor and patch number
+      list($major, $minor, $patch) = explode('.', $version);
+
+      if($major < 6)
+        {
+        $text = "<b>ImageMagick</b> (".$version.") is found. Version (>=6.0) is required.";
+        return array(false, $text);
+        }
+      return array(true, $cmd.' (version '.$version.')');
+      }
+    return array(false, 'No output from '.$cmd);
+    }
 } // end class

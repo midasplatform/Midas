@@ -54,7 +54,6 @@ class Helloworld_IndexController extends Helloworld_AppController
     $this->view->componentTest = $this->ModuleComponent->Hello->hello();
     $users = $this->User->getAll();
     $this->view->users = $users;
-    $this->view->imageMagick = $this->Component->Utility->isImageMagickWorking();
     $this->view->helloModel = $this->Helloworld_Hello->getAll();
 
     $this->view->installForm = $this->Form->Install->createConfigForm();
