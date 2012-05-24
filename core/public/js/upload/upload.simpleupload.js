@@ -32,7 +32,8 @@ midas.upload.simpleupload.initJqueryFileupload = function () {
                 handler.formData = {
                     parent: $('#destinationId').val(),
                     path: path,
-                    license: $('select[name=licenseSelect]').val()
+                    license: $('select[name=licenseSelect]').val(),
+                    newRevision: $('#newRevisionCheckbox').is(':checked') ? '1' : '0'
                 };
                 callBack();
             });
