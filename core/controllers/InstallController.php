@@ -111,7 +111,6 @@ class InstallController extends AppController
       }
     $this->view->phpextension_missing = $this->Component->Utility->checkPhpExtensions($phpextensions);
     $this->view->writable = is_writable(BASE_PATH);
-    $this->view->convertfound = $this->Component->Utility->isImageMagickWorking();
     $this->view->basePath = BASE_PATH;
 
     if($this->_request->isPost())

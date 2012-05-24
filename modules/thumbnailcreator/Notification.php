@@ -23,7 +23,7 @@ require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 class Thumbnailcreator_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'thumbnailcreator';
-  public $_moduleComponents = array('Api');
+  public $_moduleComponents = array('Api', 'Imagemagick');
   
   /** init notification process*/
   public function init()
@@ -41,6 +41,7 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JS', 'getJs');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_CSS', 'getCss');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JSON', 'getJson');
+    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
     }//end init
     
   /** createThumbnail */
@@ -99,9 +100,19 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
       }
     }
 
+  /** Get the module's phtml element for the item view */
   public function getItemElement($params)
     {
     return array('itemview');
     }
+
+  /** Add admin dashboard entry for ImageMagick */
+  public function getDashboard()
+    {
+    $return = array();
+    $return['Image Magick'] = $this->ModuleComponent->Imagemagick->isImageMagickWorking();
+
+    return $return;
+    }//end _getDasboard
   } //end class
 ?>
