@@ -50,6 +50,10 @@ class DownloadController extends AppController
     if(isset($bitsreamid) && is_numeric($bitsreamid))
       {
       $bitstream = $this->Bitstream->load($bitsreamid);
+      if(!$bitstream)
+        {
+        throw new Zend_Controller_Action_Exception('Invalid bitstream id', 404);
+        }
       $revision = $bitstream->getItemrevision();
       $item = $revision->getItem();
       if($item == false || !$this->Item->policyCheck($item, $sessionUser))
