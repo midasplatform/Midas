@@ -58,10 +58,16 @@ class DownloadController extends AppController
         $offset = 0;
         }
       $bitstream = $this->Bitstream->load($bitsreamid);
+      if(!$bitstream)
+        {
+        throw new Zend_Controller_Action_Exception('Invalid bitstream id', 404);
+        }
+
       if(isset($name))
         {
         $bitstream->setName($name); //don't save name, just set it on this dao
         }
+
       $revision = $bitstream->getItemrevision();
       $item = $revision->getItem();
       if($item == false || !$this->Item->policyCheck($item, $sessionUser))

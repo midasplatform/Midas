@@ -231,6 +231,10 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $downloadedMd5 = md5($this->getBody());
 
     $this->assertEquals($actualMd5, $downloadedMd5);
+
+    // Downloading an invalid bitstream id should respond with 404 and exception
+    $this->resetAll();
+    $this->dispatchUrI('/download?bitstream=934192', $userDao, true, '404');
     }
 
   /**

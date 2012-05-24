@@ -221,7 +221,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     - $userDao : user you want to log in with
     - $withException : You may want to test if you will get an exception
    */
-  public function dispatchUrI($uri, $userDao = null, $withException = false)
+  public function dispatchUrI($uri, $userDao = null, $withException = false, $assertResponseCode = null)
     {
     if($userDao != null)
       {
@@ -246,7 +246,14 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       $this->request->setQuery($this->params);
       }
     $this->dispatch($uri);
-    $this->assertNotResponseCode('404');
+    if($assertResponseCode === null)
+      {
+      $this->assertNotResponseCode('404');
+      }
+    else
+      {
+      $this->assertResponseCode($assertResponseCode);
+      }
     if($this->request->getControllerName() == "error")
       {
       if($withException)
