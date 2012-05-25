@@ -146,6 +146,10 @@ public class UploadThread extends Thread
       {
       this.uploadFileURL += "&itemId=" + uploader.getParentItem();
       }
+    else
+      {
+      this.uploadFileURL += uploader.revOnCollision() ? "&newRevision=1" : "&newRevision=0";
+      }
     URL uploadFileURLObj = Utility.buildURL("UploadFile", this.uploadFileURL);
 
     try

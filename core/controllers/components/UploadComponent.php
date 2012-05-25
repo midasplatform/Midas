@@ -188,7 +188,7 @@ class UploadComponent extends AppComponent
 
     $this->getLogger()->info('Link item created ('.$item->getName().', id='.$item->getKey().')');
     return $item;
-    }//end createUploadedItem
+    }
 
 
   /**
@@ -199,9 +199,10 @@ class UploadComponent extends AppComponent
    * @param parent The id of the parent folder to create the item in
    * @param license [optional][default=null] License text for the item
    * @param filemd5 [optional][default=''] If passed, will be used instead of calculating it ourselves
-   * @param copy [optiona][default=false] Boolean value for whether to copy or just move the item into the assetstore
+   * @param copy [optional][default=false] Boolean value for whether to copy or just move the item into the assetstore
+   * @param revOnCollision[optional][default=false] Boolean value for whether to create a new revision on item name collision
    */
-  public function createUploadedItem($userDao, $name, $path, $parent = null, $license = null, $filemd5 = '', $copy = false)
+  public function createUploadedItem($userDao, $name, $path, $parent = null, $license = null, $filemd5 = '', $copy = false, $revOnCollision = false)
     {
     $modelLoad = new MIDAS_ModelLoader();
     $itemModel = $modelLoad->loadModel('Item');
@@ -233,24 +234,37 @@ class UploadComponent extends AppComponent
       throw new Zend_Exception('Parent permissions errors');
       }
 
-    Zend_Loader::loadClass('ItemDao', BASE_PATH . '/core/models/dao');
-    $item = new ItemDao;
-    $item->setName($name);
-    $item->setDescription('');
-    $item->setType(0);
-    $itemModel->save($item);
+    // Note the conditional inner assignment of $item if user has selected new revision on name collision.
+    // This is done so that we can elegantly fall through to the new item clause unless both the new
+    // revision on collision option is on and a collision has actually occurred.
+    if($revOnCollision && ($item = $folderModel->getItemByName($parent, $name)) != null)
+      {
+      $changes = '';
+      $this->getLogger()->info('Item uploaded: revision overwrite ('.$item->getName().', id='.$item->getKey().')');
+      }
+    else // new item
+      {
+      Zend_Loader::loadClass('ItemDao', BASE_PATH.'/core/models/dao');
+      $item = new ItemDao;
+      $item->setName($name);
+      $item->setDescription('');
+      $item->setType(0);
+      $itemModel->save($item);
+      $changes = 'Initial revision';
 
-    $feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_ITEM, $item);
+      $folderModel->addItem($parent, $item);
 
-    $folderModel->addItem($parent, $item);
-    $itemModel->copyParentPolicies($item, $parent, $feed);
+      $feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_ITEM, $item);
 
-    $feedpolicyuserModel->createPolicy($userDao, $feed, MIDAS_POLICY_ADMIN);
-    $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
+      $itemModel->copyParentPolicies($item, $parent, $feed);
+      $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
+      $feedpolicyuserModel->createPolicy($userDao, $feed, MIDAS_POLICY_ADMIN);
+      $this->getLogger()->info('Item uploaded ('.$item->getName().', id='.$item->getKey().')');
+      }
 
-    Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH . '/core/models/dao');
+    Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
     $itemRevisionDao = new ItemRevisionDao;
-    $itemRevisionDao->setChanges('Initial revision');
+    $itemRevisionDao->setChanges($changes);
     $itemRevisionDao->setUser_id($userDao->getKey());
     $itemRevisionDao->setDate(date('c'));
     $itemRevisionDao->setLicenseId($license);
@@ -276,7 +290,6 @@ class UploadComponent extends AppComponent
     $this->uploadBitstream($bitstreamDao, $assetstoreDao, $copy);
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
 
-    $this->getLogger()->info('Item uploaded ('.$item->getName().', id='.$item->getKey().')');
     Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_UPLOAD_FILE', array($item->toArray(), $itemRevisionDao->toArray()));
     return $item;
     }//end createUploadedItem

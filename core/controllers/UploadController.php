@@ -411,7 +411,9 @@ class UploadController extends AppController
 
       try
         {
-        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $data['filename'], $data['path'], $parent, $license, $data['md5'], (bool)$testingMode);
+        $newRevision = (bool)$this->_getParam('newRevision'); //on name collision, should we create new revision?
+        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $data['filename'], $data['path'],
+        $parent, $license, $data['md5'], (bool)$testingMode, $newRevision);
         }
       catch(Exception $e)
         {
@@ -528,7 +530,7 @@ class UploadController extends AppController
 
     $this->disableLayout();
     $this->disableView();
-    $pathClient = $this->_getParam("path");
+    $pathClient = $this->_getParam('path');
 
     if($this->isTestingEnv())
       {
@@ -583,8 +585,9 @@ class UploadController extends AppController
         }
       }
 
-    $parent = $this->_getParam("parent");
-    $license = $this->_getParam("license");
+    $parent = $this->_getParam('parent');
+    $license = $this->_getParam('license');
+
     if(!empty($path) && file_exists($path))
       {
       $itemId_itemRevisionNumber = explode('-', $parent);
@@ -615,6 +618,7 @@ class UploadController extends AppController
         }
       else
         {
+        $newRevision = (bool)$this->_getParam('newRevision'); //on name collision, should we create new revision?
         if(!empty($pathClient) && $pathClient != ";;")
           {
           $parentDao = $this->Folder->load($parent);
@@ -663,7 +667,8 @@ class UploadController extends AppController
           }
         $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename,
                                                              $path, $parent, $license, '',
-                                                             (bool)$this->isTestingEnv());
+                                                             (bool)$this->isTestingEnv(),
+                                                             $newRevision);
         }
 
       $info = array();
