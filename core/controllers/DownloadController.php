@@ -28,12 +28,14 @@ class DownloadController extends AppController
   public $_components = array('DownloadBitstream');
 
   /** index
-   * @param ?folders = 12-13 (will download a zip of the folder 12 and 13 ,recusively)
-   * @param ?folders = 12, 1-13, 1 (will download a zip of the folder 12 and 13 ,recusively) //Need testing
-   * @param ?items = 12-13 (will download a zip containing the last revisions of the items 12 and 13)
-   * @param ?items = 12, 1-13 (will download a zip containing the revision 1 of item 12 and last revision of item 13)
-   * @param ?items = 12, 1 (will download the revision 1 of the item 12, a zip ifthere are multiple bitstream or simply the file)
-   * @param ?bitstream = 1 (will download related bitstream)
+   * @param folders = 12-13 (will download a zip of the folder 12 and 13 ,recusively)
+   * @param folders = 12, 1-13, 1 (will download a zip of the folder 12 and 13 ,recusively) //Need testing
+   * @param items = 12-13 (will download a zip containing the last revisions of the items 12 and 13)
+   * @param items = 12, 1-13 (will download a zip containing the revision 1 of item 12 and last revision of item 13)
+   * @param items = 12, 1 (will download the revision 1 of the item 12, a zip ifthere are multiple bitstream or simply the file)
+   * @param bitstream = 1 (will download related bitstream)
+   * @param offset The offset in bytes if downloading a bitstream (defaults to 0)
+   * @param name Alternate filename when downloading a bitstream (defaults to bitstream name)
    */
   public function indexAction()
     {
@@ -49,14 +51,24 @@ class DownloadController extends AppController
       }
     if(isset($bitsreamid) && is_numeric($bitsreamid))
       {
+      $name = $this->_getParam('name');
+      $offset = $this->_getParam('offset');
+      if(!isset($offset))
+        {
+        $offset = 0;
+        }
       $bitstream = $this->Bitstream->load($bitsreamid);
+      if(isset($name))
+        {
+        $bitstream->setName($name); //don't save name, just set it on this dao
+        }
       $revision = $bitstream->getItemrevision();
       $item = $revision->getItem();
       if($item == false || !$this->Item->policyCheck($item, $sessionUser))
         {
         throw new Zend_Exception('Permission denied');
         }
-      $this->Component->DownloadBitstream->download($bitstream, 0, true);
+      $this->Component->DownloadBitstream->download($bitstream, $offset, true);
       return;
       }
     if(!isset($itemIds) && !isset($folderIds))
