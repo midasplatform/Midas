@@ -335,7 +335,10 @@ class ZipStream {
     if ($meth_str == 'store') {
       # store method
       $meth = 0x00;
-      $crc  = unpack('V', hash_file($algo, $path, true));
+      // hash_file for crc32b does return the octes in reverse order so we use
+      // this call to switch this. If we do not do this, many archive handlers
+      // complain about crc32 failures
+      $crc = unpack('N', pack('H*', hash_file($algo, $path)));
       $crc = $crc[1];
     } elseif ($meth_str == 'deflate') {
       # deflate method
