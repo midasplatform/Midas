@@ -481,7 +481,7 @@ class AdminController extends AppController
     {
     $this->requireAdminPrivileges();
     $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
 
     $db = Zend_Registry::get('dbAdapter');
     $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
@@ -489,21 +489,22 @@ class AdminController extends AppController
 
     if($this->_request->isPost())
       {
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableView();
       $upgraded = false;
-      $modulesConfig = Zend_Registry::get('configsModules');
-      $modules = array();
       foreach($modulesConfig as $key => $module)
         {
         $this->Component->Upgrade->initUpgrade($key, $db, $dbtype);
-        $upgraded = $upgraded || $this->Component->Upgrade->upgrade($module->version);
+        if($this->Component->Upgrade->upgrade($module->version))
+          {
+          $upgraded = true;
+          }
         }
       $this->Component->Upgrade->initUpgrade('core', $db, $dbtype);
-      $upgraded = $upgraded || $this->Component->Upgrade->upgrade(Zend_Registry::get('configDatabase')->version);
-      $this->view->upgraded = $upgraded;
+      if($this->Component->Upgrade->upgrade(Zend_Registry::get('configDatabase')->version))
+        {
+        $upgraded = true;
+        }
 
-      $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
-      $modulesConfig = Zend_Registry::get('configsModules');
       if($upgraded)
         {
         echo JsonComponent::encode(array(true, 'Upgraded'));
