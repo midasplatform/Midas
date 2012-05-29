@@ -60,14 +60,19 @@ class ItemRevisionModel extends ItemRevisionModelBase
     }  // end getMetadata
 
   /** get the metadata associated with the revision */
-  function deleteMetadata($revisiondao, $metadataId)
+  function deleteMetadata($revisiondao, $metadataId = null)
     {
-    if(!$revisiondao instanceof ItemRevisionDao || !is_numeric($metadataId))
+    if(!$revisiondao instanceof ItemRevisionDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception('Must pass a revision dao parameter');
       }
 
-    Zend_Registry::get('dbAdapter')->delete('metadatavalue', 'itemrevision_id = '.$revisiondao->getKey().' AND metadata_id = '.$metadataId);
+    $clause = 'itemrevision_id = '.$revisiondao->getKey();
+    if($metadataId !== null)
+      {
+      $clause .= ' AND metadata_id = '.$metadataId;
+      }
+    Zend_Registry::get('dbAdapter')->delete('metadatavalue', $clause);
 
     $item = $revisiondao->getItem();
     $modelLoader = new MIDAS_ModelLoader();
@@ -82,7 +87,12 @@ class ItemRevisionModel extends ItemRevisionModelBase
     return;
     }  // end getMetadata
 
-  /** delete a revision*/
+  /** Delete a revision.  Calling this will delete:
+   * -The revision itself
+   * -All bitstreams of the revision
+   * -The feed for the creation of the revision
+   * -The metadata associated with the revision
+   */
   function delete($revisiondao)
     {
     if(!$revisiondao instanceof ItemRevisionDao)
@@ -115,6 +125,9 @@ class ItemRevisionModel extends ItemRevisionModelBase
         $feed_model->delete($feed);
         }
       }
+
+    // Delete metadata values for this revision
+    $this->deleteMetadata($revisiondao);
 
     parent::delete($revisiondao);
     $revisiondao->saved = false;
