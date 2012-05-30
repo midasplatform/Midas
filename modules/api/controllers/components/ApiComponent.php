@@ -1018,7 +1018,7 @@ class Api_ApiComponent extends AppComponent
    * @param name The name of the item to create
    * @param description (Optional) The description of the item
    * @param uuid (Optional) Uuid of the item. If none is passed, will generate one.
-   * @param privacy (Optional) Default 'Public'.
+   * @param privacy (Optional) Default 'Public', possible values [Public|Private].
    * @return The item object that was created
    */
   function itemCreate($args)
@@ -1055,7 +1055,20 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['privacy']))
         {
-        $record->setPrivacy($args['privacy']);
+        $privacy = $args['privacy'];
+        if($privacy !== 'Public' && $privacy !== 'Private')
+          {
+          throw new Exception('privacy should be one of [Public|Private]');
+          }
+        if($privacy === 'Public')
+          {
+          $privacy_status = MIDAS_PRIVACY_PUBLIC;
+          }
+        else
+          {
+          $privacy_status = MIDAS_PRIVACY_PRIVATE;
+          }
+        $record->setPrivacyStatus($privacy_status);
         }
       foreach($args as $key => $value)
         {
