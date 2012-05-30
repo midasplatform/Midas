@@ -778,7 +778,8 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['method'] = 'midas.item.create';
     $this->params['name'] = 'created_item_2';
     $this->params['description'] = 'my item description';
-    $this->params['uuid'] = uniqid() . md5(mt_rand());
+    $uuid = uniqid() . md5(mt_rand());
+    $this->params['uuid'] = $uuid;
     $this->params['parentid'] = '1000';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
@@ -787,6 +788,21 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($itemDao->getName(), $this->params['name'], 'Item name is not set correctly');
     $this->assertEquals($itemDao->getUuid(), $this->params['uuid'], 'Item uuid is not set correctly');
     $this->assertEquals($itemDao->getDescription(), $this->params['description'], 'Item description is not set correctly');
+
+    // change the name of the item by passing in the uuid
+    $changedName = 'created_item_2_changed_name';
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.create';
+    $this->params['name'] = $changedName;
+    $this->params['uuid'] = $uuid;
+    $this->params['privacy'] = 'Public';
+    $this->params['parentid'] = '1000';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $generatedItemId = $resp->data->item_id;
+    $itemDao = $this->Item->load($generatedItemId);
+    $this->assertEquals($itemDao->getName(), $changedName, 'Item name is not set correctly');
 
     // delete the second one
     $this->resetAll();
