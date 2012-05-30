@@ -90,6 +90,14 @@ class Solr_Notification extends MIDAS_Notification
             }
           }
         $doc->addField('metadata', $metadataString);
+
+        $bitstreams = $revision->getBitstreams();
+        $md5String = '';
+        foreach($bitstreams as $bitstream)
+          {
+          $md5String = $bitstream->getChecksum().' ';
+          }
+        $doc->addField('md5', trim($md5String));
         }
       $index->addDocument($doc);
       $index->commit();
