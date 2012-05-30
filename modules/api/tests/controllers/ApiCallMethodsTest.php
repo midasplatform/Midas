@@ -971,7 +971,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.bitstream.edit';
     $this->params['name'] = 'fail';
-    $this->params['bitstreamId'] = '1';
+    $this->params['id'] = '1';
     $resp = $this->_callJsonApi();
     $this->assertEquals($resp->stat, 'fail');
 
@@ -981,7 +981,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['method'] = 'midas.bitstream.edit';
     $this->params['name'] = 'newname.jpeg';
     $this->params['mimetype'] = 'image/jpeg';
-    $this->params['bitstreamId'] = '1';
+    $this->params['id'] = '1';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
