@@ -125,7 +125,11 @@ class Solr_Notification extends MIDAS_Notification
     try
       {
       $index = $this->ModuleComponent->Solr->getSolrIndex();
+
+      set_error_handler('Solr_Notification::eatWarnings'); //must not print and log warnings
       $response = $index->search($solrQuery, 0, ((int)$limit) * 3); //multiply limit by 3 to allow some room for policy filtering
+      restore_error_handler(); //restore the existing error handler
+
       foreach($response->response->docs as $doc)
         {
         $items['itemIds'][] = $doc->key;
@@ -192,6 +196,15 @@ class Solr_Notification extends MIDAS_Notification
       {
       return array('Solr server accepting queries' => array(false));
       }
+    }
+
+  /**
+   * This is used to suppress warnings from being written to the output and the
+   * error log.  When searching, we don't want warnings to appear for invalid searches.
+   */
+  static function eatWarnings($errno, $errstr, $errfile, $errline)
+    {
+    return true;
     }
   } //end class
 ?>
