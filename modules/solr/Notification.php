@@ -185,7 +185,7 @@ class Solr_Notification extends MIDAS_Notification
     try
       {
       $index = $this->ModuleComponent->Solr->getSolrIndex();
-      $index->search('metadata: *', 0, 1); //run a simple test query
+      $index->search('metadata: foo', 0, 1); //run a simple test query
       return array('Solr server accepting queries' => array(true));
       }
     catch(Exception $e)
