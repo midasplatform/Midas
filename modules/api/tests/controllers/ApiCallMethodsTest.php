@@ -959,4 +959,34 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->_assertStatusOk($resp);
     $this->assertEquals(count($resp->data), 3);
     }
+
+  /** Test bitstream edit function */
+  public function testBitstreamEdit()
+    {
+    $oldBitstream = $this->Bitstream->load(1);
+    $this->assertNotEquals($oldBitstream->getName(), 'newname.jpeg');
+    $this->assertNotEquals($oldBitstream->getMimetype(), 'image/jpeg');
+
+    // User without item write access should throw an exception
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.bitstream.edit';
+    $this->params['name'] = 'fail';
+    $this->params['id'] = '1';
+    $resp = $this->_callJsonApi();
+    $this->assertEquals($resp->stat, 'fail');
+
+    // Test getting a user by first name and last name
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.bitstream.edit';
+    $this->params['name'] = 'newname.jpeg';
+    $this->params['mimetype'] = 'image/jpeg';
+    $this->params['id'] = '1';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    $newBitstream = $this->Bitstream->load(1);
+    $this->assertEquals($newBitstream->getName(), 'newname.jpeg');
+    $this->assertEquals($newBitstream->getMimetype(), 'image/jpeg');
+    }
   }
