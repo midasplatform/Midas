@@ -41,22 +41,24 @@ var jsonShare = jQuery.parseJSON($('div.jsonShareContent').html());
       });
    }, // end source
    select: function(event, ui) { 
-     $.post(json.global.webroot+'/community/invitation', {sendInvitation:true,userId:ui.item.userid,communityId:json.community.community_id},
-       function(data) {
-         jsonResponse = jQuery.parseJSON(data);
-          if(jsonResponse[0])
-            {
-              midas.createNotice(jsonResponse[1],1500);
-              $( "div.MainDialog" ).dialog('close');
-            }
-          else
-            {
-              midas.createNotice(jsonResponse[1],4000);
-            }
+      $.post(json.global.webroot+'/community/invitation', {
+          sendInvitation:true,
+          userId:ui.item.userid,
+          communityId:json.community.community_id
+       },
+      function(data) {
+          jsonResponse = jQuery.parseJSON(data);
+          if(jsonResponse[0]) {
+              midas.createNotice(jsonResponse[1], 3000);
+              $('div.MainDialog').dialog('close');
+          }
+          else {
+              midas.createNotice(jsonResponse[1], 4000, 'error');
+          }
        });
      itemShareSelected = true;
 
-     $( "div.MainDialog" ).dialog('close');
+     $('div.MainDialog').dialog('close');
      }
    });
 
