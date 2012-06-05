@@ -43,6 +43,10 @@ class CommunityModelTest extends DatabaseTestCase
 
     $folder = $this->Folder->load($community->getFolderId());
     $this->assertEquals($folder->getName(), 'community_'.$community->getKey());
+
+    $community = $this->Community->createCommunity('0', 'test description',
+                                                   0, $user, null, '');
+    $this->assertTrue($community != false);
     }
 
   }
