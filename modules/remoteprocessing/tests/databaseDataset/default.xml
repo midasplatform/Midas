@@ -5,7 +5,6 @@
   <remoteprocessing_workflow workflow_id = "1" creation_date ="2011-10-26 18:01:02" name="test_workflow" uuid="1234" workflowdomain_id="1"/>
 	<remoteprocessing_job job_id = "1" uuid="4567" os = "windows" script = "script" status = "0" expiration_date = "2011-10-26 22:32:58" creator_id="1"	creation_date ="2011-10-26 18:01:02" start_date ="2011-10-26 18:01:02"/>
 	<remoteprocessing_workflow2job job_id = "1" workflow_id = "1"/>
-  <remoteprocessing_job2item job_id = "1" item_id = "1" />
-
+  <remoteprocessing_job2item job_id = "1" item_id = "1000" />
 </dataset>
 

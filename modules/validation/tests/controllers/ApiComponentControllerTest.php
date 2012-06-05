@@ -543,7 +543,7 @@ class ApiControllerTest extends ControllerTestCase
     $this->params['method'] = 'midas.validation.setscalarresult';
     $this->params['dashboard_id'] = 1;
     $this->params['folder_id'] = 1001;
-    $this->params['item_id'] = 1;
+    $this->params['item_id'] = 1000;
     $this->params['value'] = 3.14;
     $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
@@ -553,11 +553,11 @@ class ApiControllerTest extends ControllerTestCase
     $this->params['method'] = 'midas.validation.getscalarresult';
     $this->params['dashboard_id'] = 1;
     $this->params['folder_id'] = 1001;
-    $this->params['item_id'] = 1;
+    $this->params['item_id'] = 1000;
     $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
-    $this->assertEquals(1, $resp->data->item_id);
+    $this->assertEquals(1000, $resp->data->item_id);
     $this->assertEquals(3.14, $resp->data->value);
     $this->resetAll();
 
@@ -566,7 +566,7 @@ class ApiControllerTest extends ControllerTestCase
     $this->params['method'] = 'midas.validation.setscalarresult';
     $this->params['dashboard_id'] = 1;
     $this->params['folder_id'] = 1001;
-    $this->params['item_id'] = 1;
+    $this->params['item_id'] = 1000;
     $this->params['value'] = 3.14;
     $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
@@ -595,7 +595,7 @@ class ApiControllerTest extends ControllerTestCase
     $this->params['method'] = 'midas.validation.setscalarresult';
     $this->params['dashboard_id'] = 1;
     $this->params['folder_id'] = 1001;
-    $this->params['item_id'] = 1;
+    $this->params['item_id'] = 1000;
     $this->params['value'] = 3;
     $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
@@ -607,7 +607,7 @@ class ApiControllerTest extends ControllerTestCase
     $this->params['method'] = 'midas.validation.setscalarresult';
     $this->params['dashboard_id'] = 1;
     $this->params['folder_id'] = 1001;
-    $this->params['item_id'] = 2;
+    $this->params['item_id'] = 1001;
     $this->params['value'] = 7;
     $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
@@ -624,8 +624,8 @@ class ApiControllerTest extends ControllerTestCase
     $expected[1] = 3;
     $expected[2] = 7;
     $this->assertEquals(1, $resp->data->dashboard_id);
-    $this->assertEquals($expected[1], $resp->data->scores->{1});
-    $this->assertEquals($expected[2], $resp->data->scores->{2});
+    $this->assertEquals($expected[1], $resp->data->scores->{1000});
+    $this->assertEquals($expected[2], $resp->data->scores->{1001});
 
     }
 
@@ -678,7 +678,7 @@ class ApiControllerTest extends ControllerTestCase
     $this->params['method'] = 'midas.validation.setscalarresult';
     $this->params['dashboard_id'] = 1;
     $this->params['folder_id'] = 1001;
-    $this->params['item_id'] = 1;
+    $this->params['item_id'] = 1000;
     $this->params['value'] = 3;
     $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
@@ -690,7 +690,7 @@ class ApiControllerTest extends ControllerTestCase
     $this->params['method'] = 'midas.validation.setscalarresult';
     $this->params['dashboard_id'] = 1;
     $this->params['folder_id'] = 1001;
-    $this->params['item_id'] = 2;
+    $this->params['item_id'] = 1001;
     $this->params['value'] = 7;
     $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
@@ -704,8 +704,8 @@ class ApiControllerTest extends ControllerTestCase
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
     $expected[1001] = array();
-    $expected[1001][1] = 3;
-    $expected[1001][2] = 7;
+    $expected[1001][1000] = 3;
+    $expected[1001][1001] = 7;
     $this->assertEquals(1, $resp->data->dashboard_id);
 
     // Crazy looping because the json is parsed in as an object rather than

@@ -246,7 +246,7 @@ class ExportComponentTest extends ControllerTestCase
     $validItems = $this->Item->getItemsFromSearch($validFile, $userDao);
     $validItemId = $validItems[0]->getKey();
     $invalidRevision = 100;
-    $invalidItemId = 1000;
+    $invalidItemId = 99999;
     // test case 1)
     try
       {
