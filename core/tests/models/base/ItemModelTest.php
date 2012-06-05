@@ -34,6 +34,8 @@ class ItemModelTest extends DatabaseTestCase
    **/
   public function testCreateItem()
     {
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $usersFile = $this->loadData('User', 'default');
     $adminUser = $this->User->load($usersFile[2]->getKey());
 
