@@ -35,7 +35,8 @@ class FolderModelTest extends DatabaseTestCase
     parent::setUp();
     }
 
-  /** testCreateSaveAndDelete*/
+  /** testCreateSaveAndDelete. We also have an additional check for the name
+      '0' */
   public function testCreateSaveAndDelete()
     {
     $folder = $this->Folder->createFolder("TestNameFolder", "Description", 0);
@@ -48,6 +49,12 @@ class FolderModelTest extends DatabaseTestCase
     $this->Folder->delete($folder);
     $folder = $this->Folder->load($id);
     $this->assertEquals(false, $folder);
+
+    // Test creating a folder named 0
+    $folder = $this->Folder->createFolder('0', "Description", 0);
+    $id = $folder->getKey();
+    $folderTmp = $this->Folder->load($id);
+    $this->assertEquals('0', $folderTmp->getName());
     }
 
   /** testGetCommunity*/
