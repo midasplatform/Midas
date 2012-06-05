@@ -203,7 +203,7 @@ class FolderControllerTest extends ControllerTestCase
     $this->assertTrue($count >= 1);
 
     $this->resetAll();
-    $this->dispatchUri('/folder/removeitem?itemId=1&folderId=1001', $userWithPermission);
+    $this->dispatchUri('/folder/removeitem?itemId=1000&folderId=1001', $userWithPermission);
     $folder = $this->Folder->load(1001);
     $items = $folder->getItems();
     $this->assertTrue(count($items) === $count - 1);
