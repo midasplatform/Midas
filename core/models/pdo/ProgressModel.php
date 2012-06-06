@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH.'/core/models/base/ProgresModelBase.php';
+require_once BASE_PATH.'/core/models/base/ProgressModelBase.php';
 
 /**
  * \class ProgressModel
