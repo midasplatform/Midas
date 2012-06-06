@@ -946,7 +946,7 @@ abstract class Zend_File_Transfer_Adapter_Abstract
         $result    = array();
         $directory = "";
         foreach($files as $file) {
-            if (empty($this->_files[$file]['name'])) {
+            if (empty($this->_files[$file]['name']) && $this->_files[$file]['name'] !== '0') {
                 continue;
             }
 
