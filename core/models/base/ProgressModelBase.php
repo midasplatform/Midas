@@ -75,11 +75,23 @@ abstract class ProgressModelBase extends AppModel
    * @param progressDao The progress record to update
    * @param currentValue The current value of the progress
    */
-  public function updateProgress($progressDao, $currentValue)
+  public function updateProgress($progressDao, $currentValue, $message = '')
     {
     $progressDao->setCurrent((int)$currentValue);
+    $progressDao->setMessage($message);
     $progressDao->setLastUpdate(date('c'));
 
-    $this->save($progress);
+    $this->save($progressDao);
+    }
+
+  /** 
+   * Override default save so that we can unlock the session,
+   * which is required for concurrent progress polling.  See documentation of
+   * session_write_close for explanation.
+   */
+  public function save($dao)
+    {
+    session_write_close();
+    parent::save($dao);
     }
 }
