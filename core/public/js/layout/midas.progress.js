@@ -9,6 +9,7 @@ var midas = midas || {};
  * @param success The success function
  */
 midas.ajaxWithProgress = function (widget, messageContainer, url, params, onSuccess) {
+    $(widget).progressbar({ value: 0 });
     // First we have to create a new progress record on the server
     $.ajax({
         url: json.global.webroot+'/progress/create',
@@ -16,6 +17,7 @@ midas.ajaxWithProgress = function (widget, messageContainer, url, params, onSucc
             var progress = $.parseJSON(data);
             params.progressId = progress.progress_id;
             $.post(url, params, function (data) {
+                $(widget).progressbar({ value: 100 });
                 onSuccess(data);
             });
             midas._pollProgress(widget, messageContainer, progress.progress_id);

@@ -84,7 +84,7 @@ abstract class ProgressModelBase extends AppModel
     $this->save($progressDao);
     }
 
-  /** 
+  /**
    * Override default save so that we can unlock the session,
    * which is required for concurrent progress polling.  See documentation of
    * session_write_close for explanation.
