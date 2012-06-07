@@ -69,8 +69,9 @@ class AppController extends MIDAS_GlobalController
       $this->view->version = Zend_Registry::get('configDatabase')->version;
       }
 
-    require_once BASE_PATH . '/core/models/dao/UserDao.php';
-    require_once BASE_PATH . '/core/models/dao/ItemDao.php';
+    $modelLoad = new MIDAS_ModelLoader();
+    require_once BASE_PATH.'/core/models/dao/UserDao.php';
+    require_once BASE_PATH.'/core/models/dao/ItemDao.php';
     //Init Session
     if($fc->getRequest()->getActionName() != 'login' || $fc->getRequest()->getControllerName() != 'user')
       {
@@ -82,7 +83,6 @@ class AppController extends MIDAS_GlobalController
 
       // log in when testing
       $testingUserId = $this->_getParam('testingUserId');
-      $modelLoad = new MIDAS_ModelLoader();
       if(Zend_Registry::get('configGlobal')->environment == 'testing' && isset($testingUserId))
         {
         $user = new Zend_Session_Namespace('Auth_User_Testing');
@@ -133,7 +133,7 @@ class AppController extends MIDAS_GlobalController
       $this->view->highNumberError = false;
       if($user->Dao != null && $user->Dao instanceof UserDao)
         {
-        if($fc->getRequest()->getControllerName() != 'install' && $fc->getRequest()->getControllerName() != 'error' && $user->Dao->isAdmin())
+        if($user->Dao->isAdmin() && $fc->getRequest()->getControllerName() != 'install' && $fc->getRequest()->getControllerName() != 'error')
           {
           if($this->isUpgradeNeeded())
             {
@@ -156,7 +156,6 @@ class AppController extends MIDAS_GlobalController
         $this->view->recentItems = array();
         if(isset($cookieData) && file_exists(BASE_PATH.'/core/configs/database.local.ini')) //check if midas installed
           {
-          $modelLoad = new MIDAS_ModelLoader();
           $itemModel = $modelLoad->loadModel('Item');
           $tmpRecentItems = unserialize($cookieData);
           $recentItems = array();
@@ -225,7 +224,6 @@ class AppController extends MIDAS_GlobalController
       "Yes" => $this->t('Yes'),
       "No" => $this->t('No'));
 
-
     $login = array(
       "titleUploadLogin" => $this->t('Please log in'),
       "contentUploadLogin" => $this->t('You need to be logged in to be able to upload files.'));
@@ -258,7 +256,6 @@ class AppController extends MIDAS_GlobalController
       'copy' => $this->t('Copy'),
       'element' => $this->t('element'),
       'community' => array(
-
           'invit' => $this->t('Invite collaborators'),
           'advanced' => $this->t('Advanced properties')));
 
@@ -269,35 +266,37 @@ class AppController extends MIDAS_GlobalController
       'global' => $jsonGlobal, 'login' => $login, 'feed' => $feed, 'browse' => $browse);
 
     // Init Dynamic Help (the order makes sense for the animation)
-    if($this->isDemoMode())
+    if($this->view->isDynamicHelp)
       {
-      $this->addDynamicHelp('.loginLink', "<b>Authenticate.</b><br/><br/>Demo Administrator:<br/>- Login: admin@kitware.com<br/>- Password: admin<br/><br/>
-                            Demo User:<br/>-Login: user@kitware.com<br/>-Password: user", 'bottom left', 'top right');
-      }
+      if($this->isDemoMode())
+        {
+        $this->addDynamicHelp('.loginLink', "<b>Authenticate.</b><br/><br/>Demo Administrator:<br/>- Login: admin@kitware.com<br/>- Password: admin<br/><br/>
+                              Demo User:<br/>-Login: user@kitware.com<br/>-Password: user", 'bottom left', 'top right');
+        }
 
-    if($this->logged)
-      {
-      $this->addDynamicHelp('#startingGuideLink', 'Show the <b>Starting Guide</b>. You can disable these messages from this panel.');
-      }
-    else
-      {
-      $this->addDynamicHelp('.HeaderLogo', 'The <b>MIDAS Platform</b> integrates multimedia server technology with open-source data analysis and visualization clients.');
-      }
+      if($this->logged)
+        {
+        $this->addDynamicHelp('#startingGuideLink', 'Show the <b>Starting Guide</b>. You can disable these messages from this panel.');
+        }
+      else
+        {
+        $this->addDynamicHelp('.HeaderLogo', 'The <b>MIDAS Platform</b> integrates multimedia server technology with open-source data analysis and visualization clients.');
+        }
 
+      $this->addDynamicHelp('.HeaderSearch', '<b>Quick search</b>. Use this tool to quickly find information and data.');
+      $this->addDynamicHelp('li.uploadFile a', '<b>Upload</b> files, data using this button.');
 
-    $this->addDynamicHelp('.HeaderSearch', '<b>Quick search</b>. Use this tool to quickly find information and data.');
-    $this->addDynamicHelp('li.uploadFile a', '<b>Upload</b> files, data using this button.');
+      if($this->logged)
+        {
+        $this->addDynamicHelp('#topUserName', '<b>Manage</b> your information.', 'bottom left', 'top right');
+        }
+      else
+        {
+        $this->addDynamicHelp('.registerLink', '<b>Register</b> to create your personal space.', 'bottom left', 'top right');
+        }
 
-    if($this->logged)
-      {
-      $this->addDynamicHelp('#topUserName', '<b>Manage</b> your information.', 'bottom left', 'top right');
+      $this->addDynamicHelp('.SideBar ul:first', '<b>Navigation menu</b>. Browse, explore and manage data.');
       }
-    else
-      {
-      $this->addDynamicHelp('.registerLink', '<b>Register</b> to create your personal space.', 'bottom left', 'top right');
-      }
-
-    $this->addDynamicHelp('.SideBar ul:first', '<b>Navigation menu</b>. Browse, explore and manage data.');
 
     Zend_Loader::loadClass('JsonComponent', BASE_PATH.'/core/controllers/components');
 
@@ -328,6 +327,18 @@ class AppController extends MIDAS_GlobalController
           }
         }
       $this->view->json['layout'] = $this->_helper->layout->getLayout();
+      }
+
+    // Handle progress tracking if client specifies a progressId parameter
+    $progressId = $this->_getParam('progressId');
+    if(isset($progressId) && $fc->getRequest()->getControllerName() != 'progress')
+      {
+      $progressModel = $modelLoad->loadModel('Progress');
+      $this->progressDao = $progressModel->load($progressId);
+      }
+    else
+      {
+      $this->progressDao = null;
       }
     } // end preDispatch()
 
@@ -476,6 +487,13 @@ class AppController extends MIDAS_GlobalController
     if(Zend_Registry::get('configGlobal')->environment != 'testing')
       {
       header('Content-Type: text/html; charset=UTF-8');
+      }
+    if($this->progressDao != null)
+      {
+      // delete progress object since execution is complete
+      $modelLoader = new MIDAS_ModelLoader();
+      $progressModel = $modelLoader->loadModel('Progress');
+      $progressModel->delete($this->progressDao);
       }
     }
 

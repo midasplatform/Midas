@@ -9,13 +9,17 @@ var midas = midas || {};
  * @param success The success function
  */
 midas.ajaxWithProgress = function (widget, messageContainer, url, params, onSuccess) {
+    $(widget).progressbar({ value: 0 });
     // First we have to create a new progress record on the server
     $.ajax({
+        type: 'POST',
         url: json.global.webroot+'/progress/create',
         success: function (data) {
             var progress = $.parseJSON(data);
             params.progressId = progress.progress_id;
             $.post(url, params, function (data) {
+                $(widget).progressbar({ value: 100 });
+                $(messageContainer).html('');
                 onSuccess(data);
             });
             midas._pollProgress(widget, messageContainer, progress.progress_id);
@@ -33,7 +37,7 @@ midas._pollProgress = function (widget, messageContainer, progressId) {
             var progress = $.parseJSON(data);
             if(progress.progress_id) {
                 midas._updateProgress(widget, messageContainer, progress);
-                setTimeout(midas._pollProgress(widget, progressId), 500);
+                setTimeout(midas._pollProgress(widget, messageContainer, progressId), 400);
             }
         }
     });
