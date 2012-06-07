@@ -111,6 +111,35 @@ class FolderModel extends FolderModelBase
     return true;
     }//end policyCheck
 
+  /**
+   * Get the total number of folders and items contained within this folder,
+   * irrespective of policies
+   */
+  public function getRecursiveChildCount($folder)
+    {
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from(array('f' => 'folder'), array('count' => 'count(*)'))
+                ->where('left_indice > ?', $folder->getLeftIndice())
+                ->where('right_indice < ?', $folder->getRightIndice());
+    $row = $this->database->fetchRow($sql);
+    $folderChildCount = $row['count'];
+
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from(array('i2f' => 'item2folder'), array('count' => 'count(*)'))
+                ->where('i2f.folder_id = '.$folder->getKey().' OR i2f.folder_id IN (' .new Zend_Db_Expr(
+                  $this->database->select()
+                       ->setIntegrityCheck(false)
+                       ->from(array('f' => 'folder'), array('folder_id'))
+                       ->where('left_indice > ?', $folder->getLeftIndice())
+                       ->where('right_indice < ?', $folder->getRightIndice())).')');
+    $row = $this->database->fetchRow($sql);
+    $itemChildCount = $row['count'];
+
+    return $folderChildCount + $itemChildCount;
+    }
+
   /** get the size and the number of item in a folder*/
   public function getSizeFiltered($folders, $userDao = null, $policy = 0)
     {
