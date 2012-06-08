@@ -37,7 +37,10 @@ midas._pollProgress = function (widget, messageContainer, progressId) {
             var progress = $.parseJSON(data);
             if(progress.progress_id) {
                 midas._updateProgress(widget, messageContainer, progress);
-                setTimeout(midas._pollProgress(widget, messageContainer, progressId), 400);
+                var delayedCall = function () { // scope closure
+                    midas._pollProgress(widget, messageContainer, progressId);
+                };
+                setTimeout(delayedCall, 200);
             }
         }
     });
