@@ -441,12 +441,6 @@ abstract class ItemModelBase extends AppModel
     $this->save($itemdao);
     }//end removeRevision
 
-
-
-
-
-
-
   /**
    * Update Item name to avoid two or more items have same name within their parent folder.
    *
@@ -512,8 +506,6 @@ abstract class ItemModelBase extends AppModel
       $updatedName = $realName.' ('.$copyIndex.')';
       }
     return $updatedName;
-
-
     }
 
   /** Create a new empty item */
@@ -585,14 +577,20 @@ abstract class ItemModelBase extends AppModel
   /**
    * Merge the items in the specified array into one item.
    */
-  function mergeItems($itemIds, $name, $userSessionDao)
+  function mergeItems($itemIds, $name, $userSessionDao, $progress = null)
     {
+    $modelLoad = new MIDAS_ModelLoader();
+    if($progress)
+      {
+      $current = 0;
+      $progressModel = $modelLoad->loadModel('Progress');
+      }
+
     $items = array();
     foreach($itemIds as $item)
       {
       $itemDao = $this->load($item);
-      if($item != false && $this->policyCheck($itemDao, $userSessionDao,
-                                                MIDAS_POLICY_ADMIN))
+      if($item != false && $this->policyCheck($itemDao, $userSessionDao, MIDAS_POLICY_ADMIN))
         {
         if($itemDao)
           {
@@ -603,24 +601,34 @@ abstract class ItemModelBase extends AppModel
           $this->getLogger()->info(__METHOD__ . " User unable to merge item ".
                                    $itemDao->getKey() . " due to insufficient ".
                                    "permissions.");
+          if($progress)
+            {
+            $current++;
+            $message = 'Merging items: '.$current.' of '.$progress->getMaximum();
+            $progressModel->updateProgress($progress, $current, $message);
+            }
           }
         }
       else
         {
         $this->getLogger()->info(__METHOD__ . " User unable to merge item ".
                                  $item . " because it does not exist.");
+        if($progress)
+          {
+          $current++;
+          $message = 'Merging items: '.$current.' of '.$progress->getMaximum();
+          $progressModel->updateProgress($progress, $current, $message);
+          }
         }
       }
 
     if(empty($items))
       {
-      throw new Zend_Exception('Insufficient permissions to merge these '.
-                               'items.');
+      throw new Zend_Exception('Insufficient permissions to merge these items.');
       }
 
     $mainItem = $items[0];
     $mainItemLastResision = $this->getLastRevision($mainItem);
-    $modelLoad = new MIDAS_ModelLoader();
     $bitstreamModel = $modelLoad->loadModel('Bitstream');
     $revisionModel = $modelLoad->loadModel('ItemRevision');
     foreach($items as $key => $item)
@@ -635,6 +643,12 @@ abstract class ItemModelBase extends AppModel
           $bitstreamModel->save($b);
           }
         $this->delete($item);
+        }
+      if($progress)
+        {
+        $current++;
+        $message = 'Merging items: '.$current.' of '.$progress->getMaximum();
+        $progressModel->updateProgress($progress, $current, $message);
         }
       }
 
