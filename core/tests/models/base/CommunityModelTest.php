@@ -48,6 +48,8 @@ class CommunityModelTest extends DatabaseTestCase
   /** test delete community */
   public function testDeleteCommunity()
     {
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $prevCount = count($this->Community->getAll());
     $usersFile = $this->loadData('User', 'default');
     $adminUser = $this->User->load($usersFile[2]->getKey());
