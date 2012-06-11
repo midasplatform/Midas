@@ -331,7 +331,7 @@ class UserController extends AppController
         {
         try
           {
-          $notifications = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_AUTHENTIFICATION", array('email' => $form->getValue('email'), 'password' => $form->getValue('password')));
+          $notifications = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_AUTHENTICATION", array('email' => $form->getValue('email'), 'password' => $form->getValue('password')));
           }
         catch(Zend_Exception $exc)
           {
@@ -445,7 +445,7 @@ class UserController extends AppController
 
         try
           {
-          $notifications = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_AUTHENTIFICATION", array('email' => $entry, 'password' => $password));
+          $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTHENTICATION', array('email' => $entry, 'password' => $password));
           }
         catch(Zend_Exception $exc)
           {

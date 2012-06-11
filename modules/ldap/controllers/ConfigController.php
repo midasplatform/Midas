@@ -20,8 +20,8 @@
 
 class Ldap_ConfigController extends Ldap_AppController
 {
-   public $_moduleForms=array('Config');
-   public $_components=array('Utility');
+   public $_moduleForms = array('Config');
+   public $_components = array('Utility');
 
    function indexAction()
     {
@@ -39,6 +39,7 @@ class Ldap_ConfigController extends Ldap_AppController
     
     $formArray = $this->getFormAsArray($configForm);    
     $formArray['hostname']->setValue($applicationConfig['global']['ldap.hostname']);
+    $formArray['port']->setValue($applicationConfig['global']['ldap.port']);
     $formArray['basedn']->setValue($applicationConfig['global']['ldap.basedn']);
     $formArray['protocolVersion']->setValue($applicationConfig['global']['ldap.protocolVersion']);
     $formArray['search']->setValue($applicationConfig['global']['ldap.search']);
@@ -57,22 +58,23 @@ class Ldap_ConfigController extends Ldap_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(BASE_PATH."/core/configs/ldap.local.ini.old"))
+        if(file_exists(BASE_PATH.'/core/configs/ldap.local.ini.old'))
           {
-          unlink(BASE_PATH."/core/configs/ldap.local.ini.old");
+          unlink(BASE_PATH.'/core/configs/ldap.local.ini.old');
           }
-        if(file_exists(BASE_PATH."/core/configs/ldap.local.ini"))
+        if(file_exists(BASE_PATH.'/core/configs/ldap.local.ini'))
           {
-          rename(BASE_PATH."/core/configs/ldap.local.ini",BASE_PATH."/core/configs/ldap.local.ini.old");
+          rename(BASE_PATH.'/core/configs/ldap.local.ini', BASE_PATH.'/core/configs/ldap.local.ini.old');
           }
         $applicationConfig['global']['ldap.hostname'] = $this->_getParam('hostname');
-        $applicationConfig['global']['ldap.basedn'] = '"'.$this->_getParam('basedn').'"';
+        $applicationConfig['global']['ldap.port'] = $this->_getParam('port');
+        $applicationConfig['global']['ldap.basedn'] = $this->_getParam('basedn');
         $applicationConfig['global']['ldap.protocolVersion'] = $this->_getParam('protocolVersion');
         $applicationConfig['global']['ldap.search'] = $this->_getParam('search');
         $applicationConfig['global']['ldap.proxyBasedn'] = $this->_getParam('proxyBasedn');
         $applicationConfig['global']['ldap.autoAddUnknownUser'] = $this->_getParam('autoAddUnknownUser');
         $applicationConfig['global']['ldap.useActiveDirectory'] = $this->_getParam('useActiveDirectory');
-        $applicationConfig['global']['ldap.bindn'] = '"'.$this->_getParam('bindn').'"';
+        $applicationConfig['global']['ldap.bindn'] = $this->_getParam('bindn');
         
         $bindpw = $this->_getParam('bindpw');
         if(isset($bindpw))
@@ -86,8 +88,8 @@ class Ldap_ConfigController extends Ldap_AppController
           $applicationConfig['global']['ldap.proxyPassword'] = $this->_getParam('proxyPassword');
           }        
         $applicationConfig['global']['ldap.backup'] = $this->_getParam('backup');
-        $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/ldap.local.ini", $applicationConfig);
-        echo JsonComponent::encode(array(true, 'Changed saved'));
+        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/ldap.local.ini', $applicationConfig);
+        echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
     } 
