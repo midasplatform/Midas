@@ -125,7 +125,7 @@ class Ldap_Notification extends MIDAS_Notification
     if($ldap !== false)
       {
       ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, $protocolVersion);
-      if($useActiveDirectory)
+      if($useActiveDirectory == 'true')
         {
         ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
         }

@@ -45,10 +45,11 @@ class Ldap_ConfigController extends Ldap_AppController
     $formArray['search']->setValue($applicationConfig['global']['ldap.search']);
     $formArray['proxyBasedn']->setValue($applicationConfig['global']['ldap.proxyBasedn']);
     $formArray['proxyPassword']->setValue($applicationConfig['global']['ldap.proxyPassword']);
-    $formArray['autoAddUnknownUser']->setValue($applicationConfig['global']['ldap.autoAddUnknownUser']);
     $formArray['bindn']->setValue($applicationConfig['global']['ldap.bindn']);
     $formArray['bindpw']->setValue($applicationConfig['global']['ldap.bindpw']);
     $formArray['backup']->setValue($applicationConfig['global']['ldap.backup']);
+    $formArray['useActiveDirectory']->setValue($applicationConfig['global']['ldap.useActiveDirectory']);
+    $formArray['autoAddUnknownUser']->setValue($applicationConfig['global']['ldap.autoAddUnknownUser']);
     $this->view->configForm = $formArray;
     
     if($this->_request->isPost())
