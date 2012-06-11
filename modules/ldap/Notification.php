@@ -83,7 +83,7 @@ class Ldap_Notification extends MIDAS_Notification
     return $return;
     }//end _getDasboard
 
-  /** login using ldap*/
+  /** login using ldap instead of the normal mechanism */
   public function ldapLogin($params)
     {
     if(!isset($params['email']) || !isset($params['password']))
@@ -139,13 +139,13 @@ class Ldap_Notification extends MIDAS_Notification
         }
 
       $ldapbind = ldap_bind($ldap, $bindn, $bindpw);
-      if(!$ldapbind)
+      if(!$ldapbind && $backup)
         {
         $ldap = ldap_connect($backup);
         $ldapbind = ldap_bind($ldap, $bindn, $bindpw);
         }
 
-      /* search for pid dn */
+      // do an ldap search for the specified user
       $result = ldap_search($ldap, $baseDn, $ldapsearch, array('uid', 'cn'));
       $someone = false;
       if($result != 0)
@@ -175,7 +175,7 @@ class Ldap_Notification extends MIDAS_Notification
 
               $names = explode(' ', $givenname);
               $firstname = ' ';
-              if(count($names)>1)
+              if(count($names) > 1)
                 {
                 $firstname = $names[0];
                 $lastname = $names[1];
