@@ -173,13 +173,13 @@ class ApiCallMethodsTest extends ControllerTestCase
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
-    $this->assertEquals(count($resp->data), 1);
+    $this->assertEquals(count($resp->data), 2);
     $this->assertEquals($resp->data[0]->_model, 'Community');
-    $this->assertEquals($resp->data[0]->community_id, 2000);
-    $this->assertEquals($resp->data[0]->folder_id, 1003);
-    $this->assertEquals($resp->data[0]->publicfolder_id, 1004);
-    $this->assertEquals($resp->data[0]->privatefolder_id, 1005);
-    $this->assertEquals($resp->data[0]->name, 'Community test User 1');
+    $this->assertEquals($resp->data[1]->community_id, 2000);
+    $this->assertEquals($resp->data[1]->folder_id, 1003);
+    $this->assertEquals($resp->data[1]->publicfolder_id, 1004);
+    $this->assertEquals($resp->data[1]->privatefolder_id, 1005);
+    $this->assertEquals($resp->data[1]->name, 'Community test User 1');
 
     //TODO test that a private community is not returned (requires another community in the data set)
     }
