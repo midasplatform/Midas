@@ -39,6 +39,7 @@ abstract class FolderpolicygroupModelBase extends AppModel
 
   /** Abstract functions */
   abstract function getPolicy($group, $folder);
+  abstract function deleteGroupPolicies($group);
 
   /** delete */
   public function delete($dao)
