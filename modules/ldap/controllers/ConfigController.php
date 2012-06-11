@@ -20,8 +20,8 @@
 
 class Ldap_ConfigController extends Ldap_AppController
 {
-   public $_moduleForms=array('Config');
-   public $_components=array('Utility');
+   public $_moduleForms = array('Config');
+   public $_components = array('Utility');
 
    function indexAction()
     {
@@ -39,6 +39,7 @@ class Ldap_ConfigController extends Ldap_AppController
     
     $formArray = $this->getFormAsArray($configForm);    
     $formArray['hostname']->setValue($applicationConfig['global']['ldap.hostname']);
+    $formArray['port']->setValue($applicationConfig['global']['ldap.port']);
     $formArray['basedn']->setValue($applicationConfig['global']['ldap.basedn']);
     $formArray['protocolVersion']->setValue($applicationConfig['global']['ldap.protocolVersion']);
     $formArray['search']->setValue($applicationConfig['global']['ldap.search']);
@@ -66,6 +67,7 @@ class Ldap_ConfigController extends Ldap_AppController
           rename(BASE_PATH."/core/configs/ldap.local.ini",BASE_PATH."/core/configs/ldap.local.ini.old");
           }
         $applicationConfig['global']['ldap.hostname'] = $this->_getParam('hostname');
+        $applicationConfig['global']['ldap.port'] = $this->_getParam('port');
         $applicationConfig['global']['ldap.basedn'] = '"'.$this->_getParam('basedn').'"';
         $applicationConfig['global']['ldap.protocolVersion'] = $this->_getParam('protocolVersion');
         $applicationConfig['global']['ldap.search'] = $this->_getParam('search');
@@ -86,7 +88,7 @@ class Ldap_ConfigController extends Ldap_AppController
           $applicationConfig['global']['ldap.proxyPassword'] = $this->_getParam('proxyPassword');
           }        
         $applicationConfig['global']['ldap.backup'] = $this->_getParam('backup');
-        $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/ldap.local.ini", $applicationConfig);
+        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/ldap.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }

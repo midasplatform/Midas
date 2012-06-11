@@ -18,50 +18,50 @@
  limitations under the License.
 =========================================================================*/
 
-/** notification manager*/
+/** notification manager */
 class Ldap_Notification extends MIDAS_Notification
   {
-  public $_models=array('User');
-  
+  public $_models = array('User');
+
   /** init notification process*/
   public function init()
     {
-    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDasboard');
-    $this->addCallBack("CALLBACK_CORE_AUTHENTIFICATION", 'ldapLogin');
-    }//end init  
+    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
+    $this->addCallBack('CALLBACK_CORE_AUTHENTICATION', 'ldapLogin');
+    }//end init
 
-    
-  /** generate Dasboard information */
-  public function getDasboard()
-    {    
+
+  /** generate admin Dashboard information */
+  public function getDashboard()
+    {
     $config = Zend_Registry::get('configsModules');
-    $baseDn =  $config['ldap']->ldap->basedn;
-    $hostname =  $config['ldap']->ldap->hostname;
+    $baseDn = $config['ldap']->ldap->basedn;
+    $hostname = $config['ldap']->ldap->hostname;
     $proxybasedn = $config['ldap']->ldap->proxyBasedn;
     $proxyPassword = $config['ldap']->ldap->proxyPassword;
     $backupServer = $config['ldap']->ldap->backup;
     $bindn = $config['ldap']->ldap->bindn;
     $bindpw = $config['ldap']->ldap->bindpw;
     $proxyPassword = $config['ldap']->ldap->proxyPassword;
-    
+
     $ldap = ldap_connect($hostname);
-    
+
     $server = false;
     $backup = false;
-    
-     if(isset($ldap) && $ldap != '')
+
+     if(isset($ldap) && $ldap !== false)
       {
       if($proxybasedn != '')
         {
         $proxybind = ldap_bind($ldap, $proxybasedn, $proxyPassword);
         }
-        
+
       $ldapbind = ldap_bind($ldap, $bindn, $bindpw);
       if($ldapbind != false)
         {
         $server = true;
         }
-        
+
       if(!empty($backupServer))
         {
         $ldap = ldap_connect($backupServer);
@@ -72,9 +72,9 @@ class Ldap_Notification extends MIDAS_Notification
           }
         }
       }
-    
+
     $return = array();
-    $return['LDAP Server'] = $server; 
+    $return['LDAP Server'] = $server;
     if(!empty($backup))
       {
       $return['LDAP Backup Server'] = $backup;
@@ -82,7 +82,7 @@ class Ldap_Notification extends MIDAS_Notification
 
     return $return;
     }//end _getDasboard
-    
+
   /** login using ldap*/
   public function ldapLogin($params)
     {
@@ -90,16 +90,17 @@ class Ldap_Notification extends MIDAS_Notification
       {
       throw new Zend_Exception('Error parameters');
       }
-      
+
     $email = $params['email'];
     $password = $params['password'];
-    
+
     $config = Zend_Registry::get('configsModules');
-    $baseDn =  $config['ldap']->ldap->basedn;
-    $hostname =  $config['ldap']->ldap->hostname;
-    $protocolVersion =  $config['ldap']->ldap->protocolVersion;
-    $credential =  $password;
-    $autoAddUnknownUser =  $config['ldap']->ldap->autoAddUnknownUser;
+    $baseDn = $config['ldap']->ldap->basedn;
+    $hostname = $config['ldap']->ldap->hostname;
+    $port = (int)$config['ldap']->ldap->port;
+    $protocolVersion = $config['ldap']->ldap->protocolVersion;
+    $credential = $password;
+    $autoAddUnknownUser = $config['ldap']->ldap->autoAddUnknownUser;
     $searchTerm =  $config['ldap']->ldap->search;
     $useActiveDirectory = $config['ldap']->ldap->useActiveDirectory;
     $proxybasedn = $config['ldap']->ldap->proxyBasedn;
@@ -108,27 +109,26 @@ class Ldap_Notification extends MIDAS_Notification
     $bindn = $config['ldap']->ldap->bindn;
     $bindpw = $config['ldap']->ldap->bindpw;
     $proxyPassword = $config['ldap']->ldap->proxyPassword;
-    $passwordPrefix=Zend_Registry::get('configGlobal')->password->prefix;
-    
+    $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
+
     if($searchTerm == 'uid')
       {
-      $ldapsearch = 'uid='.substr($email,0,strpos($email,'@'));
+      $ldapsearch = 'uid='.substr($email, 0, strpos($email, '@'));
       }
     else
       {
       $ldapsearch = $searchTerm.'='.$email;
       }
-      
-    $ldap = ldap_connect($hostname);
-    ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, $protocolVersion);
-    if($useActiveDirectory)
-      {
-      ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-      }
-      
 
-    if(isset($ldap) && $ldap != '')
+    $ldap = ldap_connect($hostname, $port);
+
+    if($ldap !== false)
       {
+      ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, $protocolVersion);
+      if($useActiveDirectory)
+        {
+        ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+        }
       if($proxybasedn != '')
         {
         $proxybind = ldap_bind($ldap, $proxybasedn, $proxyPassword);
@@ -137,7 +137,7 @@ class Ldap_Notification extends MIDAS_Notification
           throw new Zend_Exception('Cannot bind proxy');
           }
         }
-        
+
       $ldapbind = ldap_bind($ldap, $bindn, $bindpw);
       if(!$ldapbind)
         {
@@ -146,13 +146,13 @@ class Ldap_Notification extends MIDAS_Notification
         }
 
       /* search for pid dn */
-      $result = ldap_search($ldap, $baseDn, $ldapsearch, array("uid",'cn'));
+      $result = ldap_search($ldap, $baseDn, $ldapsearch, array('uid', 'cn'));
       $someone = false;
       if($result != 0)
         {
         $entries = ldap_get_entries($ldap, $result);
-        
-        if($entries['count']!=0)
+
+        if($entries['count'] != 0)
           {
           $principal = $entries[0]['dn'];
           }
@@ -160,7 +160,7 @@ class Ldap_Notification extends MIDAS_Notification
           {
           /* bind as this user */
           if(@ldap_bind($ldap, $principal, $credential))
-            {            
+            {
             // Try to find the user in the MIDAS database
             $someone = $this->User->getByEmail($email);
             // If the user doesn't exist we add it, but without email
@@ -173,15 +173,15 @@ class Ldap_Notification extends MIDAS_Notification
                 throw new Zend_Exception('No givenname (cn) set in LDAP, cannot register user into MIDAS');
                 }
 
-              $names = explode(" ", $givenname);
+              $names = explode(' ', $givenname);
               $firstname = ' ';
               if(count($names)>1)
                 {
                 $firstname = $names[0];
                 $lastname = $names[1];
-                for($i=2;$i<count($names);$i++)
+                for($i = 2; $i < count($names); $i++)
                   {
-                  $lastname .= " ".$names[$i];
+                  $lastname .= ' '.$names[$i];
                   }
                 }
               else
@@ -192,7 +192,7 @@ class Ldap_Notification extends MIDAS_Notification
               }
             else if($someone->getPassword() != md5($passwordPrefix.$password))
               {
-              $someone->setPassword(md5($passwordPrefix.$password));              
+              $someone->setPassword(md5($passwordPrefix.$password));
               $this->User->save($someone);
               }
             }
@@ -209,7 +209,7 @@ class Ldap_Notification extends MIDAS_Notification
     else
       {
       throw new Zend_Exception('Could not connect to LDAP at '.$hostname);
-      }     
-    }//end ldaplogin    
+      }
+    }//end ldaplogin
   } //end class
 ?>
