@@ -71,6 +71,10 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
               {$this->configForm['proxyBasedn']}
             </div>
             <div >
+              <label for='proxyPassword'>Proxy Password</label>
+              {$this->configForm['proxyPassword']}
+            </div>
+            <div >
               <label for='useActiveDirectory'>Use Active Directory?</label>
               {$this->configForm['useActiveDirectory']}
             </div>

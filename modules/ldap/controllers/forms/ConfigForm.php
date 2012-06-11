@@ -58,8 +58,10 @@ class Ldap_ConfigForm extends AppForm
     $bindn = new Zend_Form_Element_Text('bindn');
 
     $bindpw = new Zend_Form_Element_Password('bindpw');
+    $bindpw->setRenderPassword(true);
 
     $proxyPassword = new Zend_Form_Element_Password('proxyPassword');
+    $proxyPassword->setRenderPassword(true);
 
     $autoAddUnknownUser = new Zend_Form_Element_Select('autoAddUnknownUser');
     $autoAddUnknownUser->addMultiOptions(array(
