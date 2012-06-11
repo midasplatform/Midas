@@ -76,5 +76,20 @@ class ItempolicygroupModel extends ItempolicygroupModelBase
       }
     return $this->initDao('Itempolicygroup', $this->database->fetchRow($this->database->select()->where('item_id = ?', $item->getKey())->where('group_id = ?', $group->getKey())));
     }
+
+  /**
+   * deletes all itempolicygroup rows associated with the passed in group
+   * @param GroupDao
+   */
+  public function deleteGroupPolicies($group)
+    {
+    if(!$group instanceof GroupDao)
+      {
+      throw new Zend_Exception("Should be a group.");
+      }
+    $clause = 'group_id = '.$group->getKey();
+    Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
+    }
+
 } // end class
 ?>

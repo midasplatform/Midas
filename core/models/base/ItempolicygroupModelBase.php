@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** ItempolicygroupModelBase */
-class ItempolicygroupModelBase extends AppModel
+abstract class ItempolicygroupModelBase extends AppModel
 {
   /** Constructor */
   public function __construct()
@@ -38,6 +38,7 @@ class ItempolicygroupModelBase extends AppModel
     $this->initialize(); // required
     } // end __construct()
 
+  abstract function deleteGroupPolicies($group);
 
   /** delete */
   public function delete($dao)
