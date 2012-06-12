@@ -40,7 +40,7 @@ midas._pollProgress = function (widget, messageContainer, progressId) {
                 var delayedCall = function () { // scope closure
                     midas._pollProgress(widget, messageContainer, progressId);
                 };
-                setTimeout(delayedCall, 200);
+                setTimeout(delayedCall, 650);
             }
         }
     });
