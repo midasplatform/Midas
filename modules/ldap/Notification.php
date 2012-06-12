@@ -37,14 +37,17 @@ class Ldap_Notification extends MIDAS_Notification
     $config = Zend_Registry::get('configsModules');
     $baseDn = $config['ldap']->ldap->basedn;
     $hostname = $config['ldap']->ldap->hostname;
+    $port = (int)$config['ldap']->ldap->port;
     $proxybasedn = $config['ldap']->ldap->proxyBasedn;
     $proxyPassword = $config['ldap']->ldap->proxyPassword;
+    $protocolVersion = $config['ldap']->ldap->protocolVersion;
     $backupServer = $config['ldap']->ldap->backup;
     $bindn = $config['ldap']->ldap->bindn;
     $bindpw = $config['ldap']->ldap->bindpw;
     $proxyPassword = $config['ldap']->ldap->proxyPassword;
 
-    $ldap = ldap_connect($hostname);
+    $ldap = ldap_connect($hostname, $port);
+    ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, $protocolVersion);
 
     $server = false;
     $backup = false;
@@ -65,6 +68,7 @@ class Ldap_Notification extends MIDAS_Notification
       if(!empty($backupServer))
         {
         $ldap = ldap_connect($backupServer);
+        ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, $protocolVersion);
         $ldapbind = ldap_bind($ldap, $bindn, $bindpw);
         if($ldapbind != false)
           {
@@ -74,10 +78,10 @@ class Ldap_Notification extends MIDAS_Notification
       }
 
     $return = array();
-    $return['LDAP Server'] = $server;
+    $return['LDAP Server'] = array($server);
     if(!empty($backup))
       {
-      $return['LDAP Backup Server'] = $backup;
+      $return['LDAP Backup Server'] = array($backup);
       }
 
     return $return;
