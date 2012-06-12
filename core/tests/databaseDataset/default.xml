@@ -126,4 +126,20 @@
   <setting setting_id="1000" name="dummy" module="" value="dummy" />
   <setting setting_id="1" name="adminuser" module="core" value="3" />
 
+  <!-- second community, associated folders and groups -->
+  <community community_id="2001" name="Community For Deletion"
+    description="Community test User 1" creation="2011-01-27 12:09:02"
+    privacy="0" folder_id="1009" publicfolder_id="1010" privatefolder_id="1011"
+    admingroup_id="3003" moderatorgroup_id="3004" membergroup_id="3005"
+    uuid='4e311fdf82107d245f0798d654fc24205f2621eb72777' />
+  <group group_id="3003" community_id="2001" name="Community For Deletion Admin" />
+  <group group_id="3004" community_id="2001" name="Community For Deletion Moderator" />
+  <group group_id="3005" community_id="2001" name="Community For Deletion Member" />
+  <folder folder_id="1009" name="Community For Deletion Folder" description="" parent_id="-1" left_indice="1" right_indice="2" uuid="123890231890" />
+  <folder folder_id="1010" name="Community For Deletion Folder Public" description="" parent_id="1009" left_indice="2" right_indice="3" uuid="123890231891" />
+  <folder folder_id="1011" name="Community For Deletion Folder Private" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="123890231892" />
+  <folderpolicygroup folder_id="1009" group_id="3003" policy='2' />
+  <folderpolicygroup folder_id="1009" group_id="3004" policy='1' />
+  <folderpolicygroup folder_id="1009" group_id="3005" policy='0' />
+
 </dataset>

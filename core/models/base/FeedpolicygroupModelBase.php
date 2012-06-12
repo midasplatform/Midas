@@ -40,6 +40,8 @@ abstract class FeedpolicygroupModelBase extends AppModel
 
   /** Abstract functions */
   abstract function getPolicy($group, $feed);
+  abstract function deleteGroupPolicies($group);
+
 
   /** create a policy
    * @return FeedpolicygroupDao*/

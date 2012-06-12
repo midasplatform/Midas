@@ -43,5 +43,19 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
     return $this->initDao('Feedpolicygroup', $this->database->fetchRow($this->database->select()->where('feed_id = ?', $feed->getKey())->where('group_id = ?', $group->getKey())));
     }  // end getPolicy
 
+  /**
+   * deletes all feedpolicygroup rows associated with the passed in group
+   * @param GroupDao
+   */
+  public function deleteGroupPolicies($group)
+    {
+    if(!$group instanceof GroupDao)
+      {
+      throw new Zend_Exception("Should be a group.");
+      }
+    $clause = 'group_id = '.$group->getKey();
+    Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
+    }
+
 } // end class
 ?>
