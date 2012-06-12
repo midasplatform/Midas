@@ -36,7 +36,7 @@ class JobModelTest extends DatabaseTestCase
     $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
     $itemModel = $modelLoad->loadModel('Item');
 
-    $item = $itemModel->load(1);
+    $item = $itemModel->load(1000);
 
     $jobs = $jobModel->getRelatedJob($item);
     $this->assertEquals(1, count($jobs));

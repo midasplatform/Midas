@@ -475,7 +475,7 @@ class ItemController extends AppController
 
     $itemIds = $this->_getParam('items');
     $name = $this->_getParam('name');
-    if(empty($name))
+    if(empty($name) && $name !== '0')
       {
       throw new Zend_Exception('Please set a name');
       }

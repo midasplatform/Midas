@@ -474,7 +474,7 @@ class FolderModel extends FolderModelBase
       $folder->setUuid(uniqid() . md5(mt_rand()));
       }
     $name = $folder->getName();
-    if(empty($name))
+    if(empty($name) && $name !== '0')
       {
       throw new Zend_Exception("Please set a name.");
       }
