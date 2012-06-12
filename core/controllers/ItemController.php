@@ -57,8 +57,8 @@ class ItemController extends AppController
       throw new Zend_Exception(MIDAS_LOGIN_REQUIRED);
       }
 
-    $itemId = $this->_getParam("itemId");
-    $metadataId = $this->_getParam("metadataId");
+    $itemId = $this->_getParam('itemId');
+    $metadataId = $this->_getParam('metadataId');
     $itemDao = $this->Item->load($itemId);
     if($itemDao === false)
       {
@@ -90,12 +90,15 @@ class ItemController extends AppController
         break;
         }
       }
-
-
     $this->view->itemDao = $itemDao;
-    $this->view->metadataType = $this->Metadata->getAllMetadata();
-    $this->view->metadataType = $this->view->metadataType['sorted'];
-    $this->view->jsonMetadataType = JsonComponent::encode($this->view->metadataType);
+    $this->view->metadataTypes = array(
+    MIDAS_METADATA_TEXT => 'Text',
+    MIDAS_METADATA_INT => 'Integer',
+    MIDAS_METADATA_LONG => 'Long Integer',
+    MIDAS_METADATA_FLOAT => 'Floating Point',
+    MIDAS_METADATA_DOUBLE => 'Double Precision',
+    MIDAS_METADATA_STRING => 'String',
+    MIDAS_METADATA_BOOLEAN => 'Boolean');
     }
 
   /**

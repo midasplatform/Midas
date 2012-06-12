@@ -248,7 +248,7 @@ class MIDAS2MigrationComponent extends AppComponent
 
             if($element != "")
               {
-              $MetadataModel->addMetadataValue($itemRevisionDao, MIDAS_METADATA_GLOBAL,
+              $MetadataModel->addMetadataValue($itemRevisionDao, MIDAS_METADATA_TEXT,
                                                $element, $qualifier, $text_value);
               }
             }

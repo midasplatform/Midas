@@ -79,7 +79,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
     $itemModel = $modelLoader->loadModel('Item');
     $lastrevision = $itemModel->getLastRevision($item);
 
-    //refresh zend search index
+    //refresh lucene search index
     if($lastrevision->getKey() == $revisiondao->getKey())
       {
       $itemModel->save($item);

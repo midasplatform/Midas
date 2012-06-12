@@ -52,7 +52,8 @@ class ItemModel extends ItemModelBase
         }
       }
 
-    // Allow modules to handle special search queries
+    // Allow modules to handle special search queries.  If any module accepts the query given its format,
+    // its results are returned.
     $moduleSearch = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_SEARCH', array('search' => $searchterm, 'user' => $userDao));
     foreach($moduleSearch as $module => $results)
       {
@@ -62,45 +63,35 @@ class ItemModel extends ItemModelBase
         }
       }
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $searchComponent = $componentLoader->loadComponent('Search');
-    $index = $searchComponent->getLuceneItemIndex();
-    Zend_Search_Lucene_Analysis_Analyzer::setDefault(new Zend_Search_Lucene_Analysis_Analyzer_Common_TextNum_CaseInsensitive());
-    Zend_Search_Lucene_Search_QueryParser::setDefaultOperator(Zend_Search_Lucene_Search_QueryParser::B_AND);
-    Zend_Search_Lucene::setResultSetLimit($limit * 3);
-    try
+    // If a module wishes to override the default (slow) SQL-based item searching, it should register to this callback.
+    // This overrides *all* queries, not just specific ones, so at most one module per instance should be handling this callback.
+    $overrideSearch = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_SEARCH_DEFAULT_BEHAVIOR_OVERRIDE', array(
+                                                               'query' => $searchterm,
+                                                               'user' => $userDao,
+                                                               'limit' => $limit));
+    $override = false;
+    foreach($overrideSearch as $module => $results)
       {
-      if($group && strpos($searchterm, ':') === false)
-        {
-        $rowset = $index->find('title:'.$searchterm);
-        }
-      else
-        {
-        $rowset = $index->find($searchterm);
-
-        }
+      $override = true;
+      $itemIds = $results['itemIds'];
+      break;
       }
-    catch(Exception $e)
-      {
-      $rowset = array();
-      }
-
     $return = array();
-    $itemIds = array();
-    foreach($rowset as $row)
+    if(!$override)
       {
-      $names = $row->getDocument()->getFieldNames();
-      if(in_array('item_id', $names))
+      // If no special search modules are enabled, we fall back to a naive/slow SQL search
+      $sql = $this->database->select()
+                  ->setIntegrityCheck(false)
+                  ->from(array('item'), array('item_id'))
+                  ->where('name LIKE ? OR description LIKE ?', '%'.$searchterm.'%')
+                  ->limit($limit * 3); //extend limit to allow for policy-based result culling
+      $rowset = $this->database->fetchAll($sql);
+      $itemIds = array();
+      foreach($rowset as $row)
         {
-        $itemIds[$row->item_id] = $row->score;
-        }
-      else if(in_array('module_item_id', $names))
-        {
-        $itemIds[$row->module_item_id] = $row->score;
+        $itemIds[] = $row['item_id'];
         }
       }
-    $itemsScores = $itemIds;
-    $itemIds = array_keys($itemIds);
 
     if(empty($itemIds))
       {
@@ -167,7 +158,11 @@ class ItemModel extends ItemModelBase
         {
         $tmpDao->count = $row['count(*)'];
         }
-      $tmpDao->score = (isset($itemsScores[$tmpDao->getKey()])) ? $itemsScores[$tmpDao->getKey()] : 0;
+      else if(isset($row['count']))
+        {
+        $tmpDao->count = $row['count'];
+        }
+      $tmpDao->score = 0; // maybe later we can handle scoring in a robust way
       $return[] = $tmpDao;
       unset($tmpDao);
       }
@@ -343,7 +338,6 @@ class ItemModel extends ItemModelBase
 
     $deleteType = array(MIDAS_FEED_CREATE_ITEM, MIDAS_FEED_CREATE_LINK_ITEM);
 
-
     // explicitly typecast the itemId to a string, for postgres
     $sql = $this->database->select()
                           ->setIntegrityCheck(false)
@@ -395,16 +389,6 @@ class ItemModel extends ItemModelBase
       $bitstreamModel = $this->ModelLoader->loadModel('Bitstream');
       $thumbnail = $bitstreamModel->load($thumbnailId);
       $bitstreamModel->delete($thumbnail);
-      }
-
-    require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
-    $component = new SearchComponent();
-    $index = $component->getLuceneItemIndex();
-
-    $hits = $index->find("item_id:".$itemdao->getKey());
-    foreach($hits as $hit)
-      {
-      $index->delete($hit->id);
       }
 
     parent::delete($itemdao);
@@ -588,6 +572,22 @@ class ItemModel extends ItemModelBase
                                               ->limit(1)
                                               ->setIntegrityCheck(false)
                                               ));
+    }
+
+  /**
+   * Call a callback function on every item in the database
+   * @param callback Name of the Midas callback to call
+   * @param paramName what parameter name the item should be passed as to the callback (default is 'item')
+   */
+  function iterateWithCallback($callback, $paramName = 'item')
+    {
+    $rowset = $this->database->fetchAll();
+    foreach($rowset as $row)
+      {
+      $item = $this->initDao('Item', $row);
+      Zend_Registry::get('notifier')->callback($callback, array($paramName => $item));
+      }
+
     }
 }  // end class
 ?>

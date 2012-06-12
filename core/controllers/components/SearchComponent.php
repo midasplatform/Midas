@@ -18,33 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
-/** Search */
+/** Search component */
 class SearchComponent extends AppComponent
 {
-
-  /** get Zend Lucene index */
-  public function getLuceneItemIndex()
-    {
-    $path = BASE_PATH.'/tmp/cache/searchIndex';
-    if(!file_exists($path))
-      {
-      mkdir($path);
-      }
-
-    $path .= '/item';
-    if(!file_exists($path))
-      {
-      mkdir($path);
-      Zend_Search_Lucene::create($path);
-      }
-
-    Zend_Search_Lucene_Search_QueryParser::setDefaultOperator(Zend_Search_Lucene_Search_QueryParser::B_AND);
-    Zend_Search_Lucene_Search_Query_Wildcard::setMinPrefixLength(0);
-    Zend_Search_Lucene_Analysis_Analyzer::setDefault(
-          new Zend_Search_Lucene_Analysis_Analyzer_Common_TextNum_CaseInsensitive());
-    return Zend_Search_Lucene::open($path);
-    }
-
   /** search all the results */
   public function searchAll($userDao, $search, $order)
     {
@@ -169,4 +145,4 @@ class SearchComponent extends AppComponent
       }
     return $resultsArray;
     }//formatResults
-} // end class UploadComponent
+}

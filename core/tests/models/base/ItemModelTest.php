@@ -24,6 +24,7 @@ class ItemModelTest extends DatabaseTestCase
   public function setUp()
     {
     $this->setupDatabase(array());
+    $this->enabledModules = array();
     $this->_models = array('Bitstream', 'Item', 'ItemRevision', 'User');
     $this->_daos = array('Item');
     parent::setUp();
@@ -87,6 +88,8 @@ class ItemModelTest extends DatabaseTestCase
   /** testAddRevision*/
   public function testAddRevision()
     {
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $itemsFile = $this->loadData('Item', 'default');
     $usersFile = $this->loadData('User', 'default');
     $revision = new ItemRevisionDao();
@@ -105,6 +108,8 @@ class ItemModelTest extends DatabaseTestCase
   /** testRemoveRevision*/
   public function testRemoveRevision()
     {
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $itemsFile = $this->loadData('Item', 'default');
     $usersFile = $this->loadData('User', 'default');
     $item = $itemsFile[1];
@@ -178,13 +183,11 @@ class ItemModelTest extends DatabaseTestCase
     $this->assertFalse($lastRev);
     }
 
-
-
-
-
   /** test duplication of an item */
   public function testDuplicate()
     {
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $itemsFile = $this->loadData('Item', 'default');
     $usersFile = $this->loadData('User', 'default');
     $item1 = $this->Item->load($itemsFile[0]->getKey());

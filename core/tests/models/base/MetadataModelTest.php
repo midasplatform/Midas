@@ -37,12 +37,12 @@ class MetadataModelTest extends DatabaseTestCase
   public function testGetMetadata()
     {
     // certain values are expected to be in the db by default
-    $metadata = $this->Metadata->getMetadata(MIDAS_METADATA_GLOBAL, "contributor", "author");
+    $metadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, "contributor", "author");
     $this->assertEquals("Author of the data", $metadata->getDescription(), "author metadata had incorrect description");
 
     $metadata->setQualifier('artiste', 'more artistic than an artist');
-    $this->Metadata->addMetadata(MIDAS_METADATA_GLOBAL, 'contributor', 'artiste', 'more artistic than an artist');
-    $newMetadata = $this->Metadata->getMetadata(MIDAS_METADATA_GLOBAL, "contributor", "artiste");
+    $this->Metadata->addMetadata(MIDAS_METADATA_TEXT, 'contributor', 'artiste', 'more artistic than an artist');
+    $newMetadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, "contributor", "artiste");
     $this->assertEquals("Author of the data", $metadata->getDescription(), "more artistic than an artist");
     $this->Metadata->delete($newMetadata);
     }
@@ -60,7 +60,7 @@ class MetadataModelTest extends DatabaseTestCase
     $created = array("element" => "date", "qualifier" => "created", "description" => "Date when the data was created");
 
     $rawMetadata = $metadataDaos['raw'];
-    $sortedGlobalMetadata = $metadataDaos['sorted'][MIDAS_METADATA_GLOBAL];
+    $sortedGlobalMetadata = $metadataDaos['sorted'][MIDAS_METADATA_TEXT];
     $this->assertGreaterThan(13, sizeof($rawMetadata), "expected at least 14 raw metadata");
     $this->assertGreaterThan(3, sizeof($sortedGlobalMetadata['identifier']), "expected at least 4 sorted identifier metadata");
     $this->assertGreaterThan(3, sizeof($sortedGlobalMetadata['description']), "expected at least 4 sorted description metadata");
@@ -94,7 +94,7 @@ class MetadataModelTest extends DatabaseTestCase
   public function testGetTableValueName()
     {
     // for now just test the GLOBAL
-    $this->assertEquals($this->Metadata->getTableValueName(MIDAS_METADATA_GLOBAL), 'metadatavalue', 'GLOBAL table should be metadatavalue');
+    $this->assertEquals($this->Metadata->getTableValueName(MIDAS_METADATA_TEXT), 'metadatavalue', 'GLOBAL table should be metadatavalue');
     }
 
   /**
@@ -103,13 +103,13 @@ class MetadataModelTest extends DatabaseTestCase
   public function testGetMetadataValueExists()
     {
     // get a metadata
-    $metadata = $this->Metadata->getMetadata(MIDAS_METADATA_GLOBAL, "contributor", "author");
+    $metadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, "contributor", "author");
     $metadata->setItemrevisionId(1);
     $metadata->setValue("DFW");
     $this->assertFalse($this->Metadata->getMetadataValueExists($metadata));
 
     $itemRevision = $this->ItemRevision->load(1);
-    $this->Metadata->addMetadataValue($itemRevision, MIDAS_METADATA_GLOBAL, 'contributor', 'author', 'DFW');
+    $this->Metadata->addMetadataValue($itemRevision, MIDAS_METADATA_TEXT, 'contributor', 'author', 'DFW');
     $this->assertTrue($this->Metadata->getMetadataValueExists($metadata));
     }
 

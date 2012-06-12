@@ -345,49 +345,49 @@ class Visualize_MainComponent extends AppComponent
 
     $MetadataModel = $modelLoader->loadModel('Metadata');
 
-    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'image', 'type');
+    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'type');
     if(!$metadataDao)
       {
-      $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'image', 'type', '');
+      $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'type', '');
       }
-    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL, 'image', 'type', $metadata[0]);
+    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'type', $metadata[0]);
 
-    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'image', 'points');
+    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'points');
     if(!$metadataDao)
       {
-      $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'image', 'points', '');
+      $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'points', '');
       }
-    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL, 'image', 'points', $metadata[1]);
+    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'points', $metadata[1]);
 
-    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'image', 'cells');
+    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'cells');
     if(!$metadataDao)
       {
-      $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'image', 'cells', '');
+      $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'cells', '');
       }
-    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL, 'image', 'cells', $metadata[2]);
+    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'cells', $metadata[2]);
 
-    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'image', 'polygons');
+    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'polygons');
     if(!$metadataDao)
       {
-      $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'image', 'polygons', '');
+      $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'polygons', '');
       }
 
-    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL, 'image', 'polygons', $metadata[3]);
+    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'polygons', $metadata[3]);
 
-    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'image', 'x-range');
+    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'x-range');
     if(!$metadataDao)
       {
-      $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'image', 'x-range', '');
+      $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'x-range', '');
       }
 
-    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL, 'image', 'x-range', $metadata[4][0].' to '.$metadata[4][1]);
-    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'image', 'y-range');
+    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'x-range', $metadata[4][0].' to '.$metadata[4][1]);
+    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'y-range');
     if(!$metadataDao)
       {
-      $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'image', 'y-range', '');
+      $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'y-range', '');
       }
 
-    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL, 'image', 'y-range', $metadata[4][2].' to '.$metadata[4][3]);
+    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'y-range', $metadata[4][2].' to '.$metadata[4][3]);
 
     // create thumbnail
     try

@@ -112,12 +112,12 @@ class Dicomextractor_ExtractorComponent extends AppComponent
       {
       try
         {
-        $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_GLOBAL,
+        $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT,
                                                    'DICOM',
                                                    $row['name']);
         if(!$metadataDao)
           {
-          $metadataDao = $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL,
+          $metadataDao = $MetadataModel->addMetadata(MIDAS_METADATA_TEXT,
                                       'DICOM',
                                       $row['name'],
                                       $row['name']);
@@ -126,7 +126,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
         $metadataDao->setValue($row['value']);
         if(!$MetadataModel->getMetadataValueExists($metadataDao))
           {
-          $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL,
+          $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT,
                                            'DICOM',
                                            $row['name'],
                                            $row['value']);

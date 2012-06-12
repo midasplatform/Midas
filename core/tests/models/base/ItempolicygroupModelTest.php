@@ -34,6 +34,8 @@ class ItempolicygroupModelTest extends DatabaseTestCase
   /** testCreatePolicyAndGetPolicy*/
   public function testCreatePolicyAndGetPolicy()
     {
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $groupsFile = $this->loadData('Group', 'default');
     $itemsFile = $this->loadData('Item', 'default');
     $policy = $this->Itempolicygroup->createPolicy($groupsFile[0], $itemsFile[1], 1);

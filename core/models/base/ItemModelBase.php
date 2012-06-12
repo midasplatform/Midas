@@ -60,6 +60,7 @@ abstract class ItemModelBase extends AppModel
   abstract function getAll();
   abstract function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view');
   abstract function getByName($name);
+  abstract function iterateWithCallback($callback, $paramName = 'item');
 
   /** delete an item */
   public function delete($dao)
@@ -91,49 +92,7 @@ abstract class ItemModelBase extends AppModel
     $dao->setDescription(UtilityComponent::filterHtmlTags($dao->getDescription()));
     parent::save($dao);
 
-    require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
-    $component = new SearchComponent();
-    $index = $component->getLuceneItemIndex();
-
-    $hits = $index->find("item_id:".$dao->getKey());
-    foreach($hits as $hit)
-      {
-      $index->delete($hit->id);
-      }
-    $doc = new Zend_Search_Lucene_Document();
-    $field = Zend_Search_Lucene_Field::Text('title', $dao->getName());
-    $field->boost = 2;
-    $doc->addField($field);
-    $doc->addField(Zend_Search_Lucene_Field::Keyword('item_id', $dao->getKey()));
-    $doc->addField(Zend_Search_Lucene_Field::UnStored('description', $dao->getDescription()));
-
-    $modelLoad = new MIDAS_ModelLoader();
-    $revisionModel = $modelLoad->loadModel('ItemRevision');
-    $revision = $this->getLastRevision($dao);
-
-    if($revision != false)
-      {
-      $metadata = $revisionModel->getMetadata($revision);
-      $metadataString = '';
-
-      foreach($metadata as $m)
-        {
-        $fieldName = $m->getElement();
-        if($m->getQualifier())
-          {
-          $fieldName .= '-'.$m->getQualifier();
-          }
-        $doc->addField(Zend_Search_Lucene_Field::Keyword($fieldName, $m->getValue()));
-        if(!is_numeric($m->getValue()))
-          {
-          $metadataString .= ' '. $m->getValue();
-          }
-        }
-
-      $doc->addField(Zend_Search_Lucene_Field::Text('metadata', $metadataString));
-      }
-    $index->addDocument($doc);
-    $index->commit();
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_SAVED', array('item' => $dao));
     }
 
   /** copy parent folder policies*/
