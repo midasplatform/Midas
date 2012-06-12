@@ -92,7 +92,7 @@ class Ldap_Notification extends MIDAS_Notification
     {
     if(!isset($params['email']) || !isset($params['password']))
       {
-      throw new Zend_Exception('Error parameters');
+      throw new Zend_Exception('Required parameter "email" or "password" missing');
       }
 
     $email = $params['email'];
@@ -117,7 +117,15 @@ class Ldap_Notification extends MIDAS_Notification
 
     if($searchTerm == 'uid')
       {
-      $ldapsearch = 'uid='.substr($email, 0, strpos($email, '@'));
+      $atCharPos = strpos($email, '@');
+      if($atCharPos === false)
+        {
+        $ldapsearch = 'uid='.$email;
+        }
+      else
+        {
+        $ldapsearch = 'uid='.substr($email, 0, $atCharPos);
+        }
       }
     else
       {

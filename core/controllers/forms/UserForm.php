@@ -33,8 +33,7 @@ class UserForm extends AppForm
     $email = new Zend_Form_Element_Text('email');
     $email
           ->setRequired(true)
-          ->addValidator('NotEmpty', true)
-          ->addValidator('EmailAddress');
+          ->addValidator('NotEmpty', true);
 
     $password = new Zend_Form_Element_Password('password');
     $password
