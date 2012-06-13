@@ -18,9 +18,27 @@
  limitations under the License.
 =========================================================================*/
 
-/** Base model class for the ldap module */
-class Ldap_AppModel extends MIDASModel
+/** Base class for the ldap user model */
+abstract class Ldap_UserModelBase extends Ldap_AppModel
 {
-  public $moduleName = 'ldap';
+  /** constructor */
+  public function __construct()
+    {
+    parent::__construct();
+    $this->_name = 'ldap_user';
+    $this->_daoName = 'UserDao';
+    $this->_key = 'ldap_user_id';
+
+    $this->_mainData = array(
+      'ldap_user_id' => array('type' => MIDAS_DATA),
+      'user_id' => array('type' => MIDAS_DATA),
+      'login' => array('type' => MIDAS_DATA),
+      'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id')
+      );
+    $this->initialize();
+    }
+
+  public abstract function getLdapUser($login);
+
 }
 ?>

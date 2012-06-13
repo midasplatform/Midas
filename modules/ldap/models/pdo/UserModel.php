@@ -18,9 +18,35 @@
  limitations under the License.
 =========================================================================*/
 
-/** Base model class for the ldap module */
-class Ldap_AppModel extends MIDASModel
+require_once BASE_PATH.'/modules/ldap/models/base/UserModelBase.php';
+
+/**
+ * Ldap user pdo model
+ */
+class Ldap_UserModel extends Ldap_UserModelBase
 {
-  public $moduleName = 'ldap';
+  /**
+   * Pass the user's login credentials and see if they are an ldap user
+   * @param login The user's login name
+   * @return The Ldap_UserDao if this corresponds to an ldap user, otherwise false
+   */
+  public function getLdapUser($login)
+    {
+    if($login === '')
+      {
+      return false;
+      }
+    $sql = $this->database->select()->where('login = ?', $login);
+    $row = $this->database->fetchRow($sql);
+    $dao = $this->initDao('User', $row, 'ldap');
+    if($dao)
+      {
+      return $dao;
+      }
+    else
+      {
+      return false;
+      }
+    }
+
 }
-?>
