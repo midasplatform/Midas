@@ -40,5 +40,31 @@ abstract class Ldap_UserModelBase extends Ldap_AppModel
 
   public abstract function getLdapUser($login);
 
+  /**
+   * Create a new ldap user and an underlying core user entry.
+   * @param ldapLogin What the user uses to actually login to the ldap
+   * @param email The user's email (because it might be different from ldap login)
+   * @param password The user's password (not stored, just used to generate initial default api key)
+   * @param firstName User's first name
+   * @param lastName User's last name
+   * @return The ldap user dao that was created
+   */
+  public function createLdapUser($ldapLogin, $email, $password, $firstName, $lastName)
+    {
+    $modelLoader = new MIDAS_ModelLoader();
+    $userModel = $modelLoader->loadModel('User');
+    $userDao = $userModel->createUser($email, $password, $firstName, $lastName);
+
+    $userDao->setPassword(''); //remove password so that normal password based auth won't work
+    $userModel->save($userDao);
+
+    $this->loadDaoClass('UserDao', 'ldap');
+    $ldapUserDao = new Ldap_UserDao();
+    $ldapUserDao->setUserId($userDao->getKey());
+    $ldapUserDao->setLogin($ldapLogin);
+    $this->save($ldapUserDao);
+
+    return $ldapUserDao;
+    }
 }
 ?>

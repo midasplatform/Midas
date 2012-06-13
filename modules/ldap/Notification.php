@@ -22,6 +22,8 @@
 class Ldap_Notification extends MIDAS_Notification
   {
   public $_models = array('User');
+  public $_moduleModels = array('User');
+  public $moduleName = 'ldap';
 
   /** init notification process*/
   public function init()
@@ -103,7 +105,6 @@ class Ldap_Notification extends MIDAS_Notification
     $hostname = $config['ldap']->ldap->hostname;
     $port = (int)$config['ldap']->ldap->port;
     $protocolVersion = $config['ldap']->ldap->protocolVersion;
-    $credential = $password;
     $autoAddUnknownUser = $config['ldap']->ldap->autoAddUnknownUser;
     $searchTerm =  $config['ldap']->ldap->search;
     $useActiveDirectory = $config['ldap']->ldap->useActiveDirectory;
@@ -158,7 +159,7 @@ class Ldap_Notification extends MIDAS_Notification
         }
 
       // do an ldap search for the specified user
-      $result = ldap_search($ldap, $baseDn, $ldapsearch, array('uid', 'cn'));
+      $result = ldap_search($ldap, $baseDn, $ldapsearch, array('uid', 'cn', 'mail'));
       $someone = false;
       if($result != 0)
         {
@@ -170,19 +171,37 @@ class Ldap_Notification extends MIDAS_Notification
           }
         if(isset($principal))
           {
-          /* bind as this user */
-          if(@ldap_bind($ldap, $principal, $credential))
+          // Bind as this user
+          if(@ldap_bind($ldap, $principal, $password))
             {
             // Try to find the user in the MIDAS database
-            $someone = $this->User->getByEmail($email);
-            // If the user doesn't exist we add it, but without email
-            if(!$someone && $autoAddUnknownUser)
+            $someone = $this->Ldap_User->getLdapUser($email);
+            if($someone)
               {
+              // convert to core user dao
+              $someone = $someone->getUser();
+              }
+            else if($autoAddUnknownUser)
+              {
+              // If the user doesn't exist we add it
               $user = array();
               @$givenname = $entries[0]['cn'][0];
               if(!isset($givenname))
                 {
-                throw new Zend_Exception('No givenname (cn) set in LDAP, cannot register user into MIDAS');
+                throw new Zend_Exception('No common name (cn) set in LDAP, cannot register user into Midas');
+                }
+
+              if($searchTerm == 'mail')
+                {
+                $ldapEmail = $email;
+                }
+              else
+                {
+                @$ldapEmail = $entries[0]['mail'][0]; //use ldap email listing for their actual email
+                if(!isset($ldapEmail))
+                  {
+                  $ldapEmail = $email;
+                  }
                 }
 
               $names = explode(' ', $givenname);
@@ -200,12 +219,8 @@ class Ldap_Notification extends MIDAS_Notification
                 {
                 $lastname = $names[0];
                 }
-              $someone = $this->User->createUser($email, $password , $firstname, $lastname);
-              }
-            else if($someone->getPassword() != md5($passwordPrefix.$password))
-              {
-              $someone->setPassword(md5($passwordPrefix.$password));
-              $this->User->save($someone);
+              $someone = $this->Ldap_User->createLdapUser($ldapEmail, $email, $password, $firstname, $lastname);
+              $someone = $someone->getUser(); // convert to core user dao
               }
             }
           }
