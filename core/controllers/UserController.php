@@ -294,6 +294,7 @@ class UserController extends AppController
         {
         try
           {
+          $notifications = array(); //initialize first in case of exception
           $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTHENTICATION', array(
             'email' => $form->getValue('email'),
             'password' => $form->getValue('password')));
