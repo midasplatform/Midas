@@ -21,8 +21,8 @@
 /** User Controller */
 class UserController extends AppController
   {
-  public $_models = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser', 'Group', 'Item', 'Community' );
-  public $_daos = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group'  );
+  public $_models = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser', 'Group', 'Item', 'Community');
+  public $_daos = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group');
   public $_components = array('Date', 'Filter', 'Sortdao');
   public $_forms = array('User');
 
@@ -331,26 +331,33 @@ class UserController extends AppController
         {
         try
           {
-          $notifications = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_AUTHENTICATION", array('email' => $form->getValue('email'), 'password' => $form->getValue('password')));
+          $notifications = array(); //initialize first in case of exception
+          $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTHENTICATION', array(
+            'email' => $form->getValue('email'),
+            'password' => $form->getValue('password')));
           }
         catch(Zend_Exception $exc)
           {
           $this->getLogger()->crit($exc->getMessage());
           }
-
-        if(!empty($notifications['ldap']) && $notifications['ldap'] != false)
+        $authModule = false;
+        foreach($notifications as $module => $user)
           {
-          $userDao = $notifications['ldap'];
-          $authLdap = true;
+          if($user)
+            {
+            $userDao = $user;
+            $authModule = true;
+            break;
+            }
           }
-        else
+
+        if(!$authModule)
           {
           $userDao = $this->User->getByEmail($form->getValue('email'));
-          $authLdap = false;
           }
 
         $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-        if($authLdap || $userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
+        if($authModule || $userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
           {
           $remember = $form->getValue('remerberMe');
           if(isset($remember) && $remember == 1)
@@ -382,6 +389,7 @@ class UserController extends AppController
             }
           }
         }
+        
 
       if(isset($previousUri) && strpos($previousUri, $this->view->webroot) !== false && strpos($previousUri, "logout") === false)
         {
@@ -415,8 +423,8 @@ class UserController extends AppController
 
     $this->disableLayout();
     $this->disableView();
-    $entry = $this->_getParam("entry");
-    $type = $this->_getParam("type");
+    $entry = $this->_getParam('entry');
+    $type = $this->_getParam('type');
     if(!is_string($entry) || !is_string($type))
       {
       echo 'false';
@@ -426,17 +434,17 @@ class UserController extends AppController
       {
       case 'dbuser' :
         $userDao = $this->User->getByEmail(strtolower($entry));
-        if($userDao == !false)
+        if($userDao)
           {
-          echo "true";
+          echo 'true';
           }
         else
           {
-          echo "false";
+          echo 'false';
           }
         return;
       case 'login' :
-        $password = $this->_getParam("password");
+        $password = $this->_getParam('password');
         if(!is_string($password))
           {
           echo 'false';
@@ -451,11 +459,16 @@ class UserController extends AppController
           {
           $this->getLogger()->crit($exc->getMessage());
           }
-        if(!empty($notifications['ldap']) && $notifications['ldap'] != false)
+
+        foreach($notifications as $module => $user)
           {
-          echo "true";
-          return;
+          if($user)
+            {
+            echo 'true';
+            return;
+            }
           }
+
         $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
         $userDao = $this->User->getByEmail($entry);
         if($userDao != false && md5($passwordPrefix.$password) == $userDao->getPassword())
@@ -464,7 +477,7 @@ class UserController extends AppController
           return;
           }
       default :
-        echo "false";
+        echo 'false';
         return;
       }
     } //end valid entry
