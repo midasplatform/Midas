@@ -390,20 +390,22 @@ class ApiCallMethodsTest extends ControllerTestCase
   /** Test get user's default API key using username and password */
   public function testUserApikeyDefault()
     {
-    $this->resetAll();
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $this->params['method'] = 'midas.user.apikey.default';
-    $this->params['email'] = $userDao->getEmail();
-    $this->params['password'] = 'test';
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusOk($resp);
 
     // Expected API key
     $modelLoad = new MIDAS_ModelLoader();
     $userApiModel = $modelLoad->loadModel('Userapi', 'api');
     $userApiModel->createDefaultApiKey($userDao);
     $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
+
+    $this->resetAll();
+
+    $this->params['method'] = 'midas.user.apikey.default';
+    $this->params['email'] = $userDao->getEmail();
+    $this->params['password'] = 'test';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
 
     $this->assertEquals($resp->data->apikey, $apiKey);
     }

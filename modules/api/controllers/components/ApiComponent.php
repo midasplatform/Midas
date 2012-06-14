@@ -1604,7 +1604,7 @@ class Api_ApiComponent extends AppComponent
     $salt = Zend_Registry::get('configGlobal')->password->prefix;
     if($authModule || $userDao !== false && md5($salt.$password) == $userDao->getPassword())
       {
-      $defaultApiKey = $userApiModel->getByAppAndEmail('Default', $email);
+      $defaultApiKey = $userApiModel->getByAppAndEmail('Default', $email)->getApikey();
       return array('apikey' => $defaultApiKey);
       }
     else

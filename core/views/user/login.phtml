@@ -9,43 +9,38 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-
-echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/user/user.login.js"></script>';
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/jquery/jquery.form.js"></script>';
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/user/user.login.js"></script>';
 ?>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
- <form id="loginForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
-   <div class="loginError">
-     <span><?php echo $this->t('Your e-mail or password is invalid - please try again'); ?>.</span><br/>
-   </div>
-   <div class="loginError">
-      <img id="loginLoading" alt="" src="<?php echo  $this->coreWebroot?>/public/images/icons/loading.gif" />
-   </div>
-   <input type="hidden" name="previousuri" value=""/>
-   <table>
-     <tr>
-       <td><label for="email"><?php echo $this->t("E-mail")?></label></td>
-       <td><label for="password"><?php echo $this->t("Password")?></label> <a id='forgotPasswordLink' style='text-decoration: underline;font-size: 10px;' href="#"><?php echo $this->t("Forgot your password")?>?</a></td>
-       <td></td>
-     </tr>
-     <tr>
-       <td><?php echo $this->form['email']?></td>
-       <td><?php echo $this->form['password']?></td>
-       <td><?php echo $this->form['submit']?></td>
-     </tr>
-     <tr>
-       
-       <td>
-         <?php if (!isset(Zend_Registry::get('configGlobal')->closeregistration) ||
-                   Zend_Registry::get('configGlobal')->closeregistration == "0") { 
-                 echo $this->t("Not registered yet?"); ?> 
-         <a class="registerLink" style='text-decoration: underline;'><?php echo $this->t("Register here")?></a></td>
-<?php } else { echo '</td>'; } ?>
-       <td><?php echo $this->form['remerberMe']?>
+<form id="loginForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
+  <input type="hidden" name="previousuri" value=""/>
+  <table>
+    <tr>
+      <td><label for="email"><?php echo $this->t('E-mail')?></label></td>
+      <td>
+        <label for="password"><?php echo $this->t('Password')?></label>
+        <a id='forgotPasswordLink' style='text-decoration: underline;font-size: 10px;' href="#"><?php echo $this->t('Forgot your password')?>?</a>
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><?php echo $this->form['email']?></td>
+      <td><?php echo $this->form['password']?></td>
+      <td><?php echo $this->form['submit']?></td>
+    </tr>
+    <tr>
+      <td>
+        <?php if(!isset(Zend_Registry::get('configGlobal')->closeregistration) ||
+                 Zend_Registry::get('configGlobal')->closeregistration == "0") { 
+                echo $this->t("Not registered yet?"); ?> 
+        <a class="registerLink" style='text-decoration: underline;'><?php echo $this->t("Register here")?></a></td>
+        <?php } else { echo '</td>'; } ?>
+      <td><?php echo $this->form['remerberMe']?>
         <label id="rememberMeText" for="remerberMe"><?php echo $this->t("Remember Me")?></label></td>
-       <td></td>
-     </tr>
-   </table>
+      <td></td>
+    </tr>
+  </table>
 </form>
 <br/>
-

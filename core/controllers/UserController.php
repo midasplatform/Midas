@@ -325,7 +325,7 @@ class UserController extends AppController
     $this->disableLayout();
     if($this->_request->isPost())
       {
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableView();
       $previousUri = $this->_getParam('previousuri');
       if($form->isValid($this->getRequest()->getPost()))
         {
@@ -372,32 +372,34 @@ class UserController extends AppController
             if(!$this->isTestingEnv())
               {
               setcookie('midasUtil', null, time() + 60 * 60 * 24 * 30, '/'); //30 days
+              Zend_Session::start();
+              $user = new Zend_Session_Namespace('Auth_User');
+              $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
+              $user->Dao = $userDao;
+              $url = $form->getValue('url');
+              $user->lock();
               }
             }
-          Zend_Session::start();
-          $user = new Zend_Session_Namespace('Auth_User');
-          $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
-          $user->Dao = $userDao;
-          $url = $form->getValue('url');
-          $user->lock();
           $this->getLogger()->info(__METHOD__ . " Log in : " . $userDao->getFullName());
-          if($this->isTestingEnv())
-            {
-            echo 'Test Pass';
-            $this->disableView();
-            return;
-            }
-          }
-        }
-        
 
-      if(isset($previousUri) && strpos($previousUri, $this->view->webroot) !== false && strpos($previousUri, "logout") === false)
-        {
-        $this->_redirect(substr($previousUri, strlen($this->view->webroot)).'?first=true');
-        }
-      else
-        {
-        $this->_redirect("/feed?first=true");
+          if(isset($previousUri) && strpos($previousUri, $this->view->webroot) !== false && strpos($previousUri, 'logout') === false)
+            {
+            $redirect = $previousUri.'?first=true';
+            }
+          else
+            {
+            $redirect = $this->view->webroot.'/feed?first=true';
+            }
+          echo JsonComponent::encode(array(
+            'status' => true,
+            'redirect' => $redirect));
+          }
+        else
+          {
+          echo JsonComponent::encode(array(
+            'status' => false,
+            'message' => 'Invalid email or password'));
+          }
         }
       }
     } // end method login
@@ -413,72 +415,41 @@ class UserController extends AppController
     } // end term of service
 
 
-  /** Valid  entries (ajax) */
-  public function validentryAction()
+  /**
+   * Test whether a given user already exists or not.
+   * @param entry The email/login to test.
+   * @return Echoes "true" or "false".
+   */
+  public function userexistsAction()
     {
-    if(!$this->isTestingEnv())
-      {
-      $this->requireAjaxRequest();
-      }
-
     $this->disableLayout();
     $this->disableView();
     $entry = $this->_getParam('entry');
-    $type = $this->_getParam('type');
-    if(!is_string($entry) || !is_string($type))
+    if(!is_string($entry))
       {
       echo 'false';
       return;
       }
-    switch($type)
+
+    $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_CHECK_USER_EXISTS',
+      array('entry' => $entry));
+    foreach($notifications as $module => $value)
       {
-      case 'dbuser' :
-        $userDao = $this->User->getByEmail(strtolower($entry));
-        if($userDao)
-          {
-          echo 'true';
-          }
-        else
-          {
-          echo 'false';
-          }
+      if($value === true)
+        {
+        echo 'true';
         return;
-      case 'login' :
-        $password = $this->_getParam('password');
-        if(!is_string($password))
-          {
-          echo 'false';
-          return;
-          }
+        }
+      }
 
-        try
-          {
-          $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTHENTICATION', array('email' => $entry, 'password' => $password));
-          }
-        catch(Zend_Exception $exc)
-          {
-          $this->getLogger()->crit($exc->getMessage());
-          }
-
-        foreach($notifications as $module => $user)
-          {
-          if($user)
-            {
-            echo 'true';
-            return;
-            }
-          }
-
-        $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-        $userDao = $this->User->getByEmail($entry);
-        if($userDao != false && md5($passwordPrefix.$password) == $userDao->getPassword())
-          {
-          echo 'true';
-          return;
-          }
-      default :
-        echo 'false';
-        return;
+    $userDao = $this->User->getByEmail(strtolower($entry));
+    if($userDao)
+      {
+      echo 'true';
+      }
+    else
+      {
+      echo 'false';
       }
     } //end valid entry
 
@@ -626,7 +597,6 @@ class UserController extends AppController
           $path = $upload->getFileName();
           $size =  $upload->getFileSize();
           }
-
 
         if(!empty($path) && file_exists($path) && $size > 0)
           {

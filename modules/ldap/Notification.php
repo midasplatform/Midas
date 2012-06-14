@@ -30,6 +30,7 @@ class Ldap_Notification extends MIDAS_Notification
     {
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
     $this->addCallBack('CALLBACK_CORE_AUTHENTICATION', 'ldapLogin');
+    $this->addCallBack('CALLBACK_CORE_CHECK_USER_EXISTS', 'userExists');
     }//end init
 
 
@@ -88,6 +89,20 @@ class Ldap_Notification extends MIDAS_Notification
 
     return $return;
     }//end _getDasboard
+
+  /**
+   * Look up whether the user exists in the ldap_user table
+   * @return true or false
+   */
+  public function userExists($params)
+    {
+    $someone = $this->Ldap_User->getLdapUser($params['entry']);
+    if($someone)
+      {
+      return true;
+      }
+    return false;
+    }
 
   /** login using ldap instead of the normal mechanism */
   public function ldapLogin($params)
@@ -172,6 +187,7 @@ class Ldap_Notification extends MIDAS_Notification
         if(isset($principal))
           {
           // Bind as this user
+          set_error_handler('Ldap_Notification::eatWarnings'); //must not print and log warnings
           if(@ldap_bind($ldap, $principal, $password))
             {
             // Try to find the user in the MIDAS database
@@ -185,7 +201,7 @@ class Ldap_Notification extends MIDAS_Notification
               {
               // If the user doesn't exist we add it
               $user = array();
-              @$givenname = $entries[0]['cn'][0];
+              $givenname = $entries[0]['cn'][0];
               if(!isset($givenname))
                 {
                 throw new Zend_Exception('No common name (cn) set in LDAP, cannot register user into Midas');
@@ -223,6 +239,7 @@ class Ldap_Notification extends MIDAS_Notification
               $someone = $someone->getUser(); // convert to core user dao
               }
             }
+          restore_error_handler();
           }
         ldap_free_result($result);
         }
@@ -238,5 +255,14 @@ class Ldap_Notification extends MIDAS_Notification
       throw new Zend_Exception('Could not connect to LDAP at '.$hostname);
       }
     }//end ldaplogin
+
+  /**
+   * This is used to suppress warnings from being written to the output and the
+   * error log.  When searching, we don't want warnings to appear for invalid searches.
+   */
+  static function eatWarnings($errno, $errstr, $errfile, $errline)
+    {
+    return true;
+    }
   } //end class
 ?>
