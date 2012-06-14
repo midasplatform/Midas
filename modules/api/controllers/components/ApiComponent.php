@@ -1078,7 +1078,7 @@ class Api_ApiComponent extends AppComponent
           $this->_setMetadata($record, MIDAS_METADATA_TEXT, substr($key, 1), '', $value);
           }
         }
-      $itemModel->save($record);
+      $itemModel->save($record, true);
       return $record->toArray();
       }
     else

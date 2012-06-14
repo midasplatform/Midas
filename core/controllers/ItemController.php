@@ -148,7 +148,7 @@ class ItemController extends AppController
         $metadataId = $this->_getParam('element');
         $this->ItemRevision->deleteMetadata($metadataItemRevision, $metadataId);
         // save the item to update the Lucene index
-        $this->Item->save($itemDao);
+        $this->Item->save($itemDao, true);
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
@@ -173,8 +173,6 @@ class ItemController extends AppController
           // otherwise we are attempting to add a new value where one already
           // exists, and we won't save in this case
           $this->Metadata->addMetadataValue($metadataItemRevision, $metadatatype, $element, $qualifier, $value);
-          // save the item to update the Lucene index
-          $this->Item->save($itemDao);
           }
         }
       }
@@ -377,7 +375,7 @@ class ItemController extends AppController
         $item->setName($name);
         }
       $item->setDescription($description);
-      $this->Item->save($item);
+      $this->Item->save($item, true);
       $this->_redirect('/item/'.$item->getKey());
       }
 
