@@ -108,7 +108,7 @@ class Solr_Notification extends MIDAS_Notification
       }
     catch(Exception $e)
       {
-      $this->getLogger()->warn('Error saving item to Solr index: '.$e->getMessage());
+      $this->getLogger()->warn('Error saving item ('.$item->getKey().') to Solr index: '.$e->getMessage());
       }
     }
 
