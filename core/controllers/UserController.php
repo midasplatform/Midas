@@ -288,7 +288,7 @@ class UserController extends AppController
     $this->disableLayout();
     if($this->_request->isPost())
       {
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableView();
       $previousUri = $this->_getParam('previousuri');
       if($form->isValid($this->getRequest()->getPost()))
         {
@@ -347,21 +347,33 @@ class UserController extends AppController
           if($this->isTestingEnv())
             {
             echo 'Test Pass';
-            $this->disableView();
             return;
             }
+          else
+            {
+            if(isset($previousUri) && strpos($previousUri, $this->view->webroot) !== false && strpos($previousUri, 'logout') === false)
+              {
+              $redirect = $previousUri.'?first=true';
+              }
+            else
+              {
+              $redirect = $this->view->webroot.'/feed?first=true';
+              }
+            echo JsonComponent::encode(array(
+              'status' => true,
+              'redirect' => $redirect));
+            }
+          }
+        else
+          {
+          echo JsonComponent::encode(array(
+            'status' => false,
+            'message' => 'Invalid email or password'));
           }
         }
         
 
-      if(isset($previousUri) && strpos($previousUri, $this->view->webroot) !== false && strpos($previousUri, "logout") === false)
-        {
-        $this->_redirect(substr($previousUri, strlen($this->view->webroot)).'?first=true');
-        }
-      else
-        {
-        $this->_redirect("/feed?first=true");
-        }
+      
       }
     } // end method login
 
