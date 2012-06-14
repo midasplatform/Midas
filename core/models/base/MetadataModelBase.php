@@ -70,7 +70,7 @@ abstract class MetadataModelBase extends AppModel
    * Add a metadata to an itemRevision, updating the value if the row
    * already exists
    * @return MetadataDao */
-  function addMetadataValue($itemRevisionDao, $type, $element, $qualifier, $value)
+  function addMetadataValue($itemRevisionDao, $type, $element, $qualifier, $value, $passItemMetadataChanged = true)
     {
 
     if(!$itemRevisionDao instanceof $itemRevisionDao)
@@ -97,7 +97,7 @@ abstract class MetadataModelBase extends AppModel
     //refresh zend search index if latest revision has changed
     if($lastrevision->getKey() == $itemRevisionDao->getKey())
       {
-      $itemModel->save($item);
+      $itemModel->save($item, $passItemMetadataChanged);
       }
 
     $this->saveMetadataValue($metadataDao);

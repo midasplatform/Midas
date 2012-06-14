@@ -161,7 +161,7 @@ abstract class ItemRevisionModelBase extends AppModel
       $ItemModel->replaceThumbnail($item, $pathThumbnail);
       }
 
-    $ItemModel->save($item);
+    $ItemModel->save($item, true);
     } // end addBitstream
 
 

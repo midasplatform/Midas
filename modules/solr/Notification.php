@@ -40,6 +40,10 @@ class Solr_Notification extends MIDAS_Notification
   /** Add a tab to the manage community page for size quota */
   public function indexItem($args)
     {
+    if(!$args['metadataChanged'])
+      {
+      return;
+      }
     $item = $args['item'];
     try
       {

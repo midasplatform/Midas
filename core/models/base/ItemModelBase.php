@@ -73,8 +73,14 @@ abstract class ItemModelBase extends AppModel
     parent::delete($dao);
     }// delete
 
-  /** save */
-  public function save($dao)
+  /**
+   * Default save override.
+   * @param dao The item dao to save
+   * @param metadataChanged (bool, default = false) This parameter is passed to the
+   *                        CALLBACK_CORE_ITEM_SAVED and should only be set to true on the
+   *                        final save of the item in the controller's execution.
+   */
+  public function save($dao, $metadataChanged = false)
     {
     if(!isset($dao->uuid) || empty($dao->uuid))
       {
@@ -92,7 +98,9 @@ abstract class ItemModelBase extends AppModel
     $dao->setDescription(UtilityComponent::filterHtmlTags($dao->getDescription()));
     parent::save($dao);
 
-    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_SAVED', array('item' => $dao));
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_SAVED', array(
+      'item' => $dao,
+      'metadataChanged' => $metadataChanged));
     }
 
   /** copy parent folder policies*/
@@ -227,8 +235,6 @@ abstract class ItemModelBase extends AppModel
       $newItem->setThumbnailId($newThumb->getKey());
       }
 
-    $this->save($newItem);
-
     $modelLoad = new MIDAS_ModelLoader();
     $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
     $BitstreamModel = $modelLoad->loadModel('Bitstream');
@@ -255,7 +261,7 @@ abstract class ItemModelBase extends AppModel
                                         $metadata->getMetadatatype(),
                                         $metadata->getElement(),
                                         $metadata->getQualifier(),
-                                        $metadata->getValue());
+                                        $metadata->getValue(), false);
         }
       // duplicate bitstream
       foreach($revision->getBitstreams() as $bitstream)
@@ -272,6 +278,7 @@ abstract class ItemModelBase extends AppModel
         $BitstreamModel->save($dupBitstream);
         }
       }
+    $this->save($newItem, true); // call save with metadata changed flag
     return $newItem;
     }//end duplicateItem
 
@@ -397,7 +404,7 @@ abstract class ItemModelBase extends AppModel
       {
       $itemdao->setSizebytes($itemRevisionModel->getSize($lastRevisionDao));
       }
-    $this->save($itemdao);
+    $this->save($itemdao, true);
     }//end removeRevision
 
 
@@ -509,7 +516,7 @@ abstract class ItemModelBase extends AppModel
     $item->setDescription($description);
     $item->setType(0);
     $item->setUuid($uuid);
-    $this->save($item);
+    $this->save($item, true);
 
     $modelLoad = new MIDAS_ModelLoader();
     $folderModel = $modelLoad->loadModel('Folder');
