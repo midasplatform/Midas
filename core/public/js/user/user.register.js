@@ -28,7 +28,7 @@ function checkAll(obj) {
             email=false;
         }
         else {
-            $.post(json.global.webroot+"/user/validentry", {entry: obj.val(), type: "dbuser"}, function(data) {
+            $.post(json.global.webroot+"/user/userexists", {entry: obj.val()}, function(data) {
                 if(data.search('true') != -1) {
                     obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/>'+jsonRegister.MessageNotAvailable);
                     email = false;

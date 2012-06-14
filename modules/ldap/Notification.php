@@ -30,6 +30,7 @@ class Ldap_Notification extends MIDAS_Notification
     {
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
     $this->addCallBack('CALLBACK_CORE_AUTHENTICATION', 'ldapLogin');
+    $this->addCallBack('CALLBACK_CORE_CHECK_USER_EXISTS', 'userExists');
     }//end init
 
 
@@ -88,6 +89,20 @@ class Ldap_Notification extends MIDAS_Notification
 
     return $return;
     }//end _getDasboard
+
+  /**
+   * Look up whether the user exists in the ldap_user table
+   * @return true or false
+   */
+  public function userExists($params)
+    {
+    $someone = $this->Ldap_User->getLdapUser($params['entry']);
+    if($someone)
+      {
+      return true;
+      }
+    return false;
+    }
 
   /** login using ldap instead of the normal mechanism */
   public function ldapLogin($params)

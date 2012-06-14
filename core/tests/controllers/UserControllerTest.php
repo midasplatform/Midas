@@ -77,27 +77,32 @@ class UserControllerTest extends ControllerTestCase
   public function testLoginAction()
     {
     $this->resetAll();
-    $this->dispatchUrI("/user/login");
-    $this->assertController("user");
-    $this->assertAction("login");
+    $this->dispatchUrI('/user/login');
+    $this->assertController('user');
+    $this->assertAction('login');
 
-    $this->assertQuery("form#loginForm");
+    $this->assertQuery('form#loginForm');
 
+    $this->resetAll();
     $this->params = array();
     $this->params['email'] = 'user1@user1.com';
     $this->params['password'] = 'wrong password';
     $this->request->setMethod('POST');
-    $this->dispatchUrI("/user/login");
-
-    $this->assertRedirect();
+    $this->dispatchUrI('/user/login');
+    $resp = json_decode($this->getBody());
+    $this->assertTrue($resp->status == false);
+    $this->assertTrue(is_string($resp->message) && strlen($resp->message) > 0);
     $this->assertFalse(Zend_Auth::getInstance()->hasIdentity());
 
+    $this->resetAll();
     $this->params = array();
     $this->params['email'] = 'user1@user1.com';
     $this->params['password'] = 'test';
     $this->request->setMethod('POST');
     $this->dispatchUrI('/user/login');
-    $this->assertTrue(strpos($this->getBody(), 'Test Pass') !== false, 'Unable to authenticate');
+    $resp = json_decode($this->getBody());
+    $this->assertTrue($resp->status == true);
+    $this->assertTrue(is_string($resp->redirect) && strlen($resp->redirect) > 0);
     }
 
   /** test terms */
@@ -247,42 +252,42 @@ class UserControllerTest extends ControllerTestCase
     $this->assertAction('userpage');
     }
 
-  /** test validentry */
-  public function testValidentryAction()
+  /** test the userexists action */
+  public function testUserexistsAction()
     {
     $this->resetAll();
-    $this->dispatchUrI('/user/validentry');
+    $this->dispatchUrI('/user/userexists');
     $this->assertTrue(strpos($this->getBody(), 'false') !== false);
 
     $this->resetAll();
     $this->params = array();
     $this->params['entry'] = 'user1@user1.com';
-    $this->params['type'] = 'dbuser';
-    $this->dispatchUrI('/user/validentry');
+    $this->dispatchUrI('/user/userexists');
     $this->assertTrue(strpos($this->getBody(), 'true') !== false);
 
     $this->resetAll();
     $this->params = array();
     $this->params['entry'] = 'test_email_not_in_db';
-    $this->params['type'] = 'dbuser';
-    $this->dispatchUrI('/user/validentry');
+    $this->dispatchUrI('/user/userexists');
     $this->assertTrue(strpos($this->getBody(), 'false') !== false);
 
     $this->resetAll();
     $this->params = array();
-    $this->params['entry'] = 'user1@user1.com';
-    $this->params['type'] = 'login';
+    $this->params['email'] = 'user1@user1.com';
     $this->params['password'] = 'wrong_password';
-    $this->dispatchUrI('/user/validentry');
-    $this->assertTrue(strpos($this->getBody(), 'false') !== false);
+    $this->request->setMethod('POST');
+    $this->dispatchUrI('/user/login');
+    $resp = json_decode($this->getBody());
+    $this->assertTrue($resp->status == false);
 
     $this->resetAll();
     $this->params = array();
-    $this->params['entry'] = 'user1@user1.com';
-    $this->params['type'] = 'login';
+    $this->params['email'] = 'user1@user1.com';
     $this->params['password'] = 'test';
-    $this->dispatchUrI('/user/validentry');
-    $this->assertTrue(strpos($this->getBody(), 'true') !== false);
+    $this->request->setMethod('POST');
+    $this->dispatchUrI('/user/login');
+    $resp = json_decode($this->getBody());
+    $this->assertTrue($resp->status == true);
     }
 
   /** Test admin ability to delete a user */
