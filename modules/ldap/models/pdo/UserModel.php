@@ -49,4 +49,12 @@ class Ldap_UserModel extends Ldap_UserModelBase
       }
     }
 
+  /**
+   * Delete an ldap_user corresponding to the core user.
+   * @param userDao The core user
+   */
+  public function deleteByUser($userDao)
+    {
+    $this->database->getDB()->delete('ldap_user', 'user_id = '.$userDao->getKey());
+    }
 }
