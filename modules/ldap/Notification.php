@@ -31,6 +31,7 @@ class Ldap_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
     $this->addCallBack('CALLBACK_CORE_AUTHENTICATION', 'ldapLogin');
     $this->addCallBack('CALLBACK_CORE_CHECK_USER_EXISTS', 'userExists');
+    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
     }//end init
 
 
@@ -255,6 +256,14 @@ class Ldap_Notification extends MIDAS_Notification
       throw new Zend_Exception('Could not connect to LDAP at '.$hostname);
       }
     }//end ldaplogin
+
+  /**
+   * If a user is deleted, we must delete any corresponding ldap_user entries
+   */
+  public function handleUserDeleted($params)
+    {
+    $this->Ldap_User->deleteByUser($params['userDao']);
+    }
 
   /**
    * This is used to suppress warnings from being written to the output and the

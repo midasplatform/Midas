@@ -39,6 +39,7 @@ abstract class Ldap_UserModelBase extends Ldap_AppModel
     }
 
   public abstract function getLdapUser($login);
+  public abstract function deleteByUser($userDao);
 
   /**
    * Create a new ldap user and an underlying core user entry.
