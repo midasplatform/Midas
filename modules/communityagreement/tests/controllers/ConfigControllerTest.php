@@ -97,7 +97,7 @@ class ConfigControllerTest extends ControllerTestCase
     $this->params['communityId'] = $community_id;
     $this->getRequest()->setMethod('POST');
     $this->dispatchUrI($page);
-    
+
     $saved_agreement = $agreementModel->getByCommunityId($community_id)->getAgreement();
     $this->assertNotEquals('should not work', $saved_agreement);
     }
