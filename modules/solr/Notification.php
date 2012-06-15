@@ -69,8 +69,8 @@ class Solr_Notification extends MIDAS_Notification
       $doc = new Apache_Solr_Document();
       $doc->addField('id', 'item_'.$item->getKey());
       $doc->addField('key', $item->getKey());
-      $doc->addField('name', $item->getName(), 3); //boost factor of 3 for name
-      $doc->addField('description', $item->getDescription(), 2); //boost factor of 2 for description
+      $doc->addField('name', $item->getName(), 3.0); //boost factor of 3 for name
+      $doc->addField('description', $item->getDescription(), 2.0); //boost factor of 2 for description
 
       $revision = $this->Item->getLastRevision($item);
 
@@ -125,18 +125,18 @@ class Solr_Notification extends MIDAS_Notification
                  ' OR description: '.$query.
                  ' OR metadata: '.$query;
 
-    $items = array('itemIds' => array());
+    $items = array();
     try
       {
       $index = $this->ModuleComponent->Solr->getSolrIndex();
 
       set_error_handler('Solr_Notification::eatWarnings'); //must not print and log warnings
-      $response = $index->search($solrQuery, 0, ((int)$limit) * 3); //multiply limit by 3 to allow some room for policy filtering
+      $response = $index->search($solrQuery, 0, ((int)$limit) * 3, array('fl' => '*,score')); //multiply limit by 3 to allow some room for policy filtering
       restore_error_handler(); //restore the existing error handler
 
       foreach($response->response->docs as $doc)
         {
-        $items['itemIds'][] = $doc->key;
+        $items[] = array('id' => $doc->key, 'score' => $doc->score);
         }
       }
     catch(Exception $e)
