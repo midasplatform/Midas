@@ -82,7 +82,6 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
     $formAgreement = $this->ModuleForm->Config->createCreateAgreementForm($communityId);
     if($this->_request->isPost() && $formAgreement->isValid($this->getRequest()->getPost()))
       {
-      print_r('form is valid');exit();
       $this->disableView();
       $agreementDao->setAgreement($formAgreement->getValue('agreement'));
       if($agreementDao != false)
@@ -94,12 +93,11 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
         echo JsonComponent::encode(array(false, $this->t('Error')));
         }
       }
-    print_r('form is not valid');exit();
 
     // If a community agreement only contains white spaces, it is treated as an empty agreement
     // and will be deleted from the database if it exists
     $chopped_agreement = chop($agreementDao->getAgreement());
-    if($chopped_agreement != '' )
+    if($chopped_agreement != '')
       {
       $this->Communityagreement_Agreement->save($agreementDao);
       }
