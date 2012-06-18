@@ -455,6 +455,19 @@ class UserController extends AppController
       throw new Zend_Exception("Unable to load user");
       }
 
+    $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ALLOW_PASSWORD_CHANGE',
+      array('user' => $userDao, 'currentUser' => $this->userSession->Dao));
+    $this->view->allowPasswordChange = true;
+
+    foreach($notifications as $module => $allow)
+      {
+      if($allow['allow'] === false)
+        {
+        $this->view->allowPasswordChange = false;
+        break;
+        }
+      }
+
     $defaultValue = array();
     $defaultValue['firstname'] = $userDao->getFirstname();
     $defaultValue['lastname'] = $userDao->getLastname();
@@ -476,6 +489,10 @@ class UserController extends AppController
       $modifyPictureGravatar = $this->_getParam('modifyPictureGravatar');
       if(isset($submitPassword) && $this->logged)
         {
+        if(!$this->view->allowPasswordChange)
+          {
+          throw new Zend_Exception('Changing password is disallowed for this user');
+          }
         $oldPass = $this->_getParam('oldPassword');
         $newPass = $this->_getParam('newPassword');
         $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;

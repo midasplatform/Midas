@@ -33,6 +33,7 @@ class Ldap_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_CHECK_USER_EXISTS', 'userExists');
     $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
     $this->addCallBack('CALLBACK_CORE_RESET_PASSWORD', 'handleResetPassword');
+    $this->addCallBack('CALLBACK_CORE_ALLOW_PASSWORD_CHANGE', 'allowPasswordChange');
     }//end init
 
 
@@ -297,6 +298,19 @@ class Ldap_Notification extends MIDAS_Notification
         'message' => 'An email has been sent to the specified address');
       }
     return array('status' => false);
+    }
+
+  /**
+   * We must disable password changes for ldap users
+   */
+  public function allowPasswordChange($params)
+    {
+    $user = $params['user'];
+    if($this->Ldap_User->getByUser($user) !== false)
+      {
+      return array('allow' => false);
+      }
+    return array('allow' => true);
     }
 
   /**
