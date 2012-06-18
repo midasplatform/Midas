@@ -469,6 +469,7 @@ class UserController extends AppController
       }
 
     $defaultValue = array();
+    $defaultValue['email'] = $userDao->getEmail();
     $defaultValue['firstname'] = $userDao->getFirstname();
     $defaultValue['lastname'] = $userDao->getLastname();
     $defaultValue['company'] = $userDao->getCompany();
@@ -516,6 +517,7 @@ class UserController extends AppController
 
       if(isset($modifyAccount) && $this->logged)
         {
+        $newEmail = trim($this->_getParam('email'));
         $firtname = trim($this->_getParam('firstname'));
         $lastname = trim($this->_getParam('lastname'));
         $company = trim($this->_getParam('company'));
@@ -525,15 +527,33 @@ class UserController extends AppController
         $website = $this->_getParam('website');
         $biography = $this->_getParam('biography');
 
+        if(!$accountForm->isValid($this->getRequest()->getPost()))
+          {
+          echo JsonComponent::encode(array(false, 'Invalid form value'));
+          return;
+          }
+
         $userDao = $this->User->load($userDao->getKey());
 
         if(!isset($privacy) || ($privacy != MIDAS_USER_PRIVATE && $privacy != MIDAS_USER_PUBLIC))
           {
-          echo JsonComponent::encode(array(false, 'Error'));
+          echo JsonComponent::encode(array(false, 'Error: invalid privacy flag'));
+          return;
           }
         if(!isset($lastname) || !isset($firtname) || empty($lastname) || empty($firtname))
           {
-          echo JsonComponent::encode(array(false, 'Error'));
+          echo JsonComponent::encode(array(false, 'Error: First and last name required'));
+          return;
+          }
+        if($newEmail != $userDao->getEmail())
+          {
+          $existingUser = $this->User->getByEmail($newEmail);
+          if($existingUser)
+            {
+            echo JsonComponent::encode(array(false, 'Error: that email address belongs to another account'));
+            return;
+            }
+          $userDao->setEmail($newEmail);
           }
         $userDao->setFirstname($firtname);
         $userDao->setLastname($lastname);
@@ -598,7 +618,7 @@ class UserController extends AppController
               }
             catch(Exception $exc)
               {
-              echo JsonComponent::encode(array(false, 'Error, Unable to read jpg file'));
+              echo JsonComponent::encode(array(false, 'Error: Unable to read jpg file'));
               return;
               }
             }
@@ -610,7 +630,7 @@ class UserController extends AppController
               }
             catch(Exception $exc)
               {
-              echo JsonComponent::encode(array(false, 'Error, Unable to read png file'));
+              echo JsonComponent::encode(array(false, 'Error: Unable to read png file'));
               return;
               }
             }
@@ -622,20 +642,20 @@ class UserController extends AppController
               }
             catch(Exception $exc)
               {
-              echo JsonComponent::encode(array(false, 'Error, Unable to read gif file'));
+              echo JsonComponent::encode(array(false, 'Error: Unable to read gif file'));
               return;
               }
             }
           else
             {
-            echo JsonComponent::encode(array(false, 'Error, wrong format'));
+            echo JsonComponent::encode(array(false, 'Error: wrong format'));
             return;
             }
 
           $tmpPath = BASE_PATH.'/data/thumbnail/'.rand(1, 1000);
           if(!file_exists(BASE_PATH.'/data/thumbnail/'))
             {
-            throw new Zend_Exception("Problem thumbnail path: ".BASE_PATH.'/data/thumbnail/');
+            throw new Zend_Exception("Thumbnail path does not exist: ".BASE_PATH.'/data/thumbnail/');
             }
           if(!file_exists($tmpPath))
             {

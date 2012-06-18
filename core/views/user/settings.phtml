@@ -40,8 +40,11 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
     <form  class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']?><?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>">
       <table>
         <tr>
-          <td><span><?php echo $this->t('Firstname');?>:</span><?php echo $this->accountForm['firstname']?></td>
-          <td><span><?php echo $this->t('Lastname');?>:</span><?php echo $this->accountForm['lastname']?></td>
+          <td><span><?php echo $this->t('E-mail');?>:</span><?php echo $this->accountForm['email']?></td><td></td>
+        </tr>
+        <tr>
+          <td><span><?php echo $this->t('First Name');?>:</span><?php echo $this->accountForm['firstname']?></td>
+          <td><span><?php echo $this->t('Last Name');?>:</span><?php echo $this->accountForm['lastname']?></td>
         </tr>
         <tr>
           <td><span><?php echo $this->t('Website');?>:</span><?php echo $this->accountForm['website']?></td>
