@@ -177,6 +177,7 @@ class UserControllerTest extends ControllerTestCase
 
     $this->resetAll();
     $this->params = array();
+    $this->params['email'] = $userDao->getEmail();
     $this->params['firstname'] = 'new First Name';
     $this->params['lastname'] = 'new Last Name';
     $this->params['company'] = 'Compagny';
@@ -198,6 +199,54 @@ class UserControllerTest extends ControllerTestCase
 
     $thumbnail = $userCheckDao->getThumbnail();
     $this->assertTrue(!empty($thumbnail), 'Unable to change avatar');
+
+    // Should not be able to change to an invalid email
+    $this->resetAll();
+    $this->params = array();
+    $this->params['email'] = 'invalid';
+    $this->params['firstname'] = 'bad';
+    $this->params['lastname'] = 'bad';
+    $this->params['company'] = 'Compagny';
+    $this->params['privacy'] = MIDAS_USER_PRIVATE;
+    $this->params['modifyAccount'] = 'true';
+    $this->request->setMethod('POST');
+    $this->dispatchUrI("/user/settings", $userDao);
+    $userCheckDao = $this->User->load($userDao->getKey());
+    $this->assertNotEquals($userCheckDao->getEmail(), 'invalid');
+    $this->assertEquals($userCheckDao->getFirstname(), 'new First Name');
+    $this->assertEquals($userCheckDao->getLastname(), 'new Last Name');
+
+    // Should not be able to change to a different user's email
+    $this->resetAll();
+    $this->params = array();
+    $this->params['email'] = $user2Dao->getEmail();
+    $this->params['firstname'] = 'bad';
+    $this->params['lastname'] = 'bad';
+    $this->params['company'] = 'Compagny';
+    $this->params['privacy'] = MIDAS_USER_PRIVATE;
+    $this->params['modifyAccount'] = 'true';
+    $this->request->setMethod('POST');
+    $this->dispatchUrI("/user/settings", $userDao);
+    $userCheckDao = $this->User->load($userDao->getKey());
+    $this->assertNotEquals($userCheckDao->getEmail(), $user2Dao->getEmail());
+    $this->assertEquals($userCheckDao->getFirstname(), 'new First Name');
+    $this->assertEquals($userCheckDao->getLastname(), 'new Last Name');
+
+    // Should be able to change email to something valid and unique
+    $this->resetAll();
+    $this->params = array();
+    $this->params['email'] = 'valid@unique.com';
+    $this->params['firstname'] = 'Good';
+    $this->params['lastname'] = 'Good';
+    $this->params['company'] = 'Compagny';
+    $this->params['privacy'] = MIDAS_USER_PRIVATE;
+    $this->params['modifyAccount'] = 'true';
+    $this->request->setMethod('POST');
+    $this->dispatchUrI("/user/settings", $userDao);
+    $userCheckDao = $this->User->load($userDao->getKey());
+    $this->assertEquals($userCheckDao->getEmail(), 'valid@unique.com');
+    $this->assertEquals($userCheckDao->getFirstname(), 'Good');
+    $this->assertEquals($userCheckDao->getLastname(), 'Good');
 
     $this->setupDatabase(array('default'));
     }
@@ -461,6 +510,7 @@ class UserControllerTest extends ControllerTestCase
     // Admin user should be allowed to set user 1 as admin
     $this->resetAll();
     $this->params = array();
+    $this->params['email'] = $user1->getEmail();
     $this->params['firstname'] = 'First Name';
     $this->params['lastname'] = 'Last Name';
     $this->params['company'] = 'Company';
@@ -476,6 +526,7 @@ class UserControllerTest extends ControllerTestCase
     // Admin user should be able to unset another admin user's status
     $this->resetAll();
     $this->params = array();
+    $this->params['email'] = $user1->getEmail();
     $this->params['firstname'] = 'First Name';
     $this->params['lastname'] = 'Last Name';
     $this->params['company'] = 'Company';
