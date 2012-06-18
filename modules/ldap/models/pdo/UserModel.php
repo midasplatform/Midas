@@ -57,4 +57,24 @@ class Ldap_UserModel extends Ldap_UserModelBase
     {
     $this->database->getDB()->delete('ldap_user', 'user_id = '.$userDao->getKey());
     }
+
+  /**
+   * Returns the ldap_user corresponding to the core user, or false if the
+   * user is not an ldap_user.
+   * @param userDao The core user
+   */
+  public function getByUser($userDao)
+    {
+    $sql = $this->database->select()->where('user_id = ?', $userDao->getKey());
+    $row = $this->database->fetchRow($sql);
+    $dao = $this->initDao('User', $row, 'ldap');
+    if($dao)
+      {
+      return $dao;
+      }
+    else
+      {
+      return false;
+      }
+    }
 }

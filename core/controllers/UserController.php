@@ -90,6 +90,16 @@ class UserController extends AppController
         exit;
         }
 
+      $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_RESET_PASSWORD', array('user' => $user));
+      foreach($notifications as $module => $result)
+        {
+        if($result['status'] === true)
+          {
+          echo JsonComponent::encode(array(true, $result['message']));
+          return;
+          }
+        }
+
       // Create a new password
       $keychars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       $length = 10;
