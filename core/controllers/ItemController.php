@@ -148,8 +148,6 @@ class ItemController extends AppController
         $this->disableLayout();
         $metadataId = $this->_getParam('element');
         $this->ItemRevision->deleteMetadata($metadataItemRevision, $metadataId);
-        // save the item to update the Lucene index
-        $this->Item->save($itemDao, true);
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
