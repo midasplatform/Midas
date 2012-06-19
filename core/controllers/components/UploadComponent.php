@@ -250,7 +250,7 @@ class UploadComponent extends AppComponent
       $item->setName($name);
       $item->setDescription('');
       $item->setType(0);
-      $itemModel->save($item);
+      $itemModel->save($item, false);
       $changes = 'Initial revision';
 
       $folderModel->addItem($parent, $item);

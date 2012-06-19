@@ -76,11 +76,11 @@ abstract class ItemModelBase extends AppModel
   /**
    * Default save override.
    * @param dao The item dao to save
-   * @param metadataChanged (bool, default = false) This parameter is passed to the
+   * @param metadataChanged (bool, default = true) This parameter is passed to the
    *                        CALLBACK_CORE_ITEM_SAVED and should only be set to true on the
    *                        final save of the item in the controller's execution.
    */
-  public function save($dao, $metadataChanged = false)
+  public function save($dao, $metadataChanged = true)
     {
     if(!isset($dao->uuid) || empty($dao->uuid))
       {
