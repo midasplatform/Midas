@@ -76,4 +76,4 @@ abstract class SettingModelBase extends AppModel
     return $dao;
     }
 
-} // end class AssetstoreModelBase
+}

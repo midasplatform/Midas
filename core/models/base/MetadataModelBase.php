@@ -104,4 +104,30 @@ abstract class MetadataModelBase extends AppModel
     return $metadataDao;
     } // end addMetadataValue()
 
+  /**
+   * Pass in one of the MIDAS_METADATA_* constants (see core/constants/metadata.php).
+   * Returns the typename (ex: 'int', 'text') expected as the prefix in the Solr schema
+   */
+  function mapTypeToName($typeVal)
+    {
+    switch($typeVal)
+      {
+      case MIDAS_METADATA_TEXT:
+        return 'text';
+      case MIDAS_METADATA_INT:
+        return 'int';
+      case MIDAS_METADATA_DOUBLE:
+        return 'double';
+      case MIDAS_METADATA_FLOAT:
+        return 'float';
+      case MIDAS_METADATA_BOOLEAN:
+        return 'bool';
+      case MIDAS_METADATA_LONG:
+        return 'long';
+      case MIDAS_METADATA_STRING:
+        return 'string';
+      default:
+        throw new Zend_Exception('Invalid metadata type constant passed');
+      }
+    }
 } // end class MetadataModelBase

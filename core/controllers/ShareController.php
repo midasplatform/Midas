@@ -318,7 +318,6 @@ class ShareController extends AppController
   /** controller for applying policies recursively to a folder */
   function applyrecursivedialogAction()
     {
-    set_time_limit(0); //may take a while.
     $this->disableLayout();
     $folderId = $this->_getParam('folderId');
     $this->view->folderId = $folderId;

@@ -42,17 +42,23 @@ echo $this->doctype()
     <?php
     if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
       {
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/main.css,view.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css,jquery.qtip.min.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/midas.layout.css,'.
+           'view.css,'.
+           'jquery-ui.css,'.
+           'form.css,'.
+           'loginForm.css,'.
+           'jquery.treeTable.css,'.
+           'jquery.qtip.min.css" />';
       }
     else
       {
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/main.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/view.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery-ui.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/form.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/loginForm.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery.treeTable.css" />';
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery.qtip.min.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/midas.layout.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/view.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery-ui.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/form.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/loginForm.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery.treeTable.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery.qtip.min.css" />';
       }
     ?>
     <?php
@@ -164,12 +170,15 @@ echo $this->doctype()
                 }
               else
                 {
-                echo '<a class="registerLink" href="#" > '.$this->t('Register').'</a>';
+                if (!isset(Zend_Registry::get('configGlobal')->closeregistration) || Zend_Registry::get('configGlobal')->closeregistration == "0")
+                  {
+                  echo '<a class="registerLink" href="#" > '.$this->t('Register').'</a>';
+                  }
                 }
                 ?>
             </li>
             <li>
-              <a href="#" > <?= $this->t('Help') ?></a>
+              <a href="http://www.kitware.com/midaswiki/index.php/Main_Page" > <?= $this->t('Help') ?></a>
             </li>
 
             <?php
@@ -279,14 +288,7 @@ echo $this->doctype()
               <li <?php if($this->activemenu=='user') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/user');" ><a href="<?php echo $this->webroot?>/user"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/users.png" /><span> <?php echo $this->t('Users');?></span></a></li>
               <li id="menuUserInfo" <?php if($this->activemenu=='myprofile') {echo 'class="active"';} ?>  ><a href="javascript:;"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/user.png" /><span> <?php echo $this->t('My space');?></span></a></li>
 
-               <?php
-              if($this->showUploadedLink)
-                {
-                ?>
-               <li <?php if($this->activemenu=='uploaded') {echo 'class="active"';} ?> onclick="location.replace('<?php echo $this->webroot?>/browse/uploaded');" ><a href="<?php echo $this->webroot?>/browse/uploaded"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/addfile.png" /><span> <?php echo $this->t('Recent uploads');?></span></a></li>
               <?php
-                }
-
               $linksModules = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_LEFT_LINKS", array());
               if(!empty($linksModules))
                 {
@@ -330,7 +332,7 @@ echo $this->doctype()
             <?php
             if (isset($this->header))
               {
-              echo "<div class='viewHeader'>{$this->header} </div>";
+              echo "<div class='viewHeader'><span class='headerSpan'>{$this->header} </span></div>";
               }
             ?>
 
@@ -367,17 +369,27 @@ echo $this->doctype()
     <?php
       if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
         {
-        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,midas.callback.js,midas.dialog.js,jquery.treeTable.js,jquery.qtip.min.js"></script>';
+        echo '<script type="text/javascript" src="' . $this->coreWebroot.'/public/js/layout/jquery.js,'.
+             'jquery-ui.js,'.
+             'midas.common.js,'.
+             'midas.layout.js,'.
+             'midas.callback.js,'.
+             'midas.dialog.js,'.
+             'midas.notice.js,'.
+             'jquery.treeTable.js,'.
+             'jquery.qtip.min.js"></script>';
         }
       else
         {
-        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
-        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery-ui.js"></script>';
-        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/main.js"></script>';
-        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/midas.callback.js"></script>';
-        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/midas.dialog.js"></script>';
-        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.treeTable.js"></script>';
-        echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.qtip.min.js"></script>';
+        echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.js"></script>';
+        echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery-ui.js"></script>';
+        echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.common.js"></script>';
+        echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.layout.js"></script>';
+        echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.callback.js"></script>';
+        echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.dialog.js"></script>';
+        echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.notice.js"></script>';
+        echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.treeTable.js"></script>';
+        echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.qtip.min.js"></script>';
         }
     ?>
     <?php echo $this->headScript() ?>

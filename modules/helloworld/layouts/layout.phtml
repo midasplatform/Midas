@@ -21,11 +21,11 @@ echo $this->doctype() ?>
     <?php
     if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
       {
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/main.css,view.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css,jquery.cluetip.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/midas.layout.css,view.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css,jquery.cluetip.css" />';
       }
     else
       {
-      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/main.css" />';
+      echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/midas.layout.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery.cluetip.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/view.css" />';
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/jquery-ui.css" />';
@@ -218,14 +218,14 @@ echo $this->doctype() ?>
     <?php
               if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
                 {
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,main.js,jquery.treeTable.js,jquery.cluetip.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,midas.layout.js,jquery.treeTable.js,jquery.cluetip.js"></script>';
                 }
               else
                 {
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.cluetip.js"></script>';
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery-ui.js"></script>';
-                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/main.js"></script>';
+                echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/midas.layout.js"></script>';
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.treeTable.js"></script>';
                 }
     ?>

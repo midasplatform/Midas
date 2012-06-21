@@ -93,7 +93,15 @@ $strippedDescription = strip_tags($description);
       ?>
     <li><a id="tabSharedLink" href="#tabs-shared"><?php echo $this->t('Shared with members');?></a></li>
     <?php
-      }?>
+      }
+    foreach($this->customTabs as $modules)
+      {
+      foreach($modules as $name => $url)
+        {
+        echo "<li><a href='{$url}'>{$name}</a></li>";
+        }
+      }
+     ?>
   </ul>
   <div id="tabs-feed">
      <?
@@ -115,7 +123,7 @@ $strippedDescription = strip_tags($description);
     <div id="tabs-data">
       <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
 
-      <table id="browseTable" class="midasTree">
+      <table id="browseTable" class="midasTree"  root="<?php echo $this->communityDao->getFolderId(); ?>">
         <thead>
               <th class="thData"><?php echo $this->t('Name');?></th>
               <th class="thSize"><?php echo $this->t('Size');?></th>
@@ -136,9 +144,10 @@ $strippedDescription = strip_tags($description);
                 {
                 $deletableStatus = 'true';
                 }
+              $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
               echo "<tr id='node--$node' policy='{$folder->policy}' deletable=$deletableStatus class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='$folderId' ajax='$folderId'>";
-              echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
-              echo "  <td><img class='folderLoading'  element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
+              echo "  <td class='treeBrowseElement'><span class='folder{$privacyClass}'>{$folder->getName()}</span></td>";
+              echo "  <td><img class='folderLoading' element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
               echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='$folderId' id='folderCheckbox{$folderId}' /></td>";
               echo "</tr>";
@@ -147,8 +156,9 @@ $strippedDescription = strip_tags($description);
 
             foreach($this->items as $item)
               {
+              $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
               echo "<tr id='node--$node' policy='{$item->policy}' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
-              echo "  <td class='treeBrowseElement'><span class='file'>{$this->slicename($item->getName(),40)}</span></td>";
+              echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename($item->getName(),40)}</span></td>";
               echo "  <td>{$item->size}</td>";
               echo "  <td>{$this->Date->ago($item->getDateUpdate(),true)}</td>";
               echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' id='itemCheckbox{$item->getItemId()}' /></td>";
@@ -196,6 +206,14 @@ $strippedDescription = strip_tags($description);
           ";
       echo "<li><a onclick='midas.createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t('Create a top level Folder')}</a></li>
           ";
+      foreach($this->customManageActions as $actions)
+        { 
+        foreach($actions as $name => $propertyNimage)
+          {
+          echo ' 
+          <li><a '.$propertyNimage["property"].'><img alt="" src="'.$propertyNimage["image"].'"/> '.$this->t("$name").'</a></li>' ;
+          }
+        }   
       }
     if($this->isMember&&!$this->isAdmin)
       {

@@ -67,9 +67,9 @@ abstract class ItemRevisionModelBase extends AppModel
 
     $item = $itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));
-    $item->setDateCreation(date('c'));
+    $item->setDateUpdate(date('c'));
 
-    $modulesThumbnail =  Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_CREATE_THUMBNAIL', array($item));
+    $modulesThumbnail = Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_CREATE_THUMBNAIL', array($item));
     $notifications = Zend_Registry::get('notifier')->getNotifications();
 
     $createThumb = false;
@@ -123,26 +123,17 @@ abstract class ItemRevisionModelBase extends AppModel
 
       if($createThumb)
         {
-        $tmpPath = BASE_PATH.'/data/thumbnail/'.rand(1, 1000);
-        if(!file_exists(BASE_PATH.'/data/thumbnail/'))
+        $tmpPath = BASE_PATH.'/data/thumbnail';
+        if(!file_exists($tmpPath))
           {
           throw new Zend_Exception("Problem thumbnail path: ".BASE_PATH.'/data/thumbnail/');
           }
-        if(!file_exists($tmpPath))
+        $destination = $tmpPath.'/'.rand(1, 10000).'.jpeg';
+        while(file_exists($destination))
           {
-          mkdir($tmpPath);
+          $destination = $tmpPath.'/'.rand(1, 10000).'.jpeg';
           }
-        $tmpPath .= '/'.rand(1, 1000);
-        if(!file_exists($tmpPath))
-          {
-          mkdir($tmpPath);
-          }
-        $destionation = $tmpPath."/".rand(1, 1000).'.jpeg';
-        while(file_exists($destionation))
-          {
-          $destionation = $tmpPath."/".rand(1, 1000).'.jpeg';
-          }
-        $pathThumbnail = $destionation;
+        $pathThumbnail = $destination;
 
         list ($x, $y) = getimagesize($tmpfile);  //--- get size of img ---
         $thumb = 100;  //--- max. size of thumb ---
@@ -167,13 +158,9 @@ abstract class ItemRevisionModelBase extends AppModel
 
     if($createThumb)
       {
-      $oldThumbnail = $item->getThumbnail();
-      if(!empty($oldThumbnail))
-        {
-        unlink($oldThumbnail);
-        }
-      $item->setThumbnail(substr($pathThumbnail, strlen(BASE_PATH) + 1));
+      $ItemModel->replaceThumbnail($item, $pathThumbnail);
       }
+
     $ItemModel->save($item);
     } // end addBitstream
 
@@ -184,6 +171,10 @@ abstract class ItemRevisionModelBase extends AppModel
     if(!isset($dao->uuid) || empty($dao->uuid))
       {
       $dao->setUuid(uniqid() . md5(mt_rand()));
+      }
+    if(!isset($dao->date) || empty($dao->date))
+      {
+      $dao->setDate(date('c'));
       }
     parent::save($dao);
     }

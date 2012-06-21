@@ -42,7 +42,7 @@ class FolderController extends AppController
   /** Edit Folder (ajax) */
   function editAction()
     {
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
     $folder_id = $this->_getParam('folderId');
     $folder = $this->Folder->load($folder_id);
     if(!isset($folder_id))
@@ -168,7 +168,6 @@ class FolderController extends AppController
 
     $this->view->title .= ' - '.$folder->getName();
     $this->view->metaDescription = substr($folder->getDescription(), 0, 160);
-    $folder->setDescription(htmlentities($folder->getDescription()));
     $this->view->json['folder'] = $folder;
     }// end View Action
 
@@ -177,18 +176,17 @@ class FolderController extends AppController
   /** delete a folder (dialog,ajax only)*/
   public function deleteAction()
     {
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
     $folder_id = $this->_getParam('folderId');
     $folder = $this->Folder->load($folder_id);
-    $header = "";
     if(!isset($folder_id))
       {
       throw new Zend_Exception("Please set the folderId.");
       }
     elseif($folder === false)
       {
-      throw new Zend_Exception("The folder doesn t exist.");
+      throw new Zend_Exception("The folder doesn't exist.");
       }
     elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
@@ -224,7 +222,7 @@ class FolderController extends AppController
         throw new Zend_Exception("User Default Folder. You cannot delete it.");
         }
       }
-    $this->Folder->delete($folder, true);
+    $this->Folder->delete($folder);
     $folderInfo = $folder->toArray();
     echo JsonComponent::encode(array(true, $this->t('Changes saved'), $folderInfo));
     }// end deleteAction
@@ -232,13 +230,11 @@ class FolderController extends AppController
   /** remove an item from a folder (dialog,ajax only)*/
   public function removeitemAction()
     {
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
     $folder_id = $this->_getParam('folderId');
     $item_id = $this->_getParam('itemId');
     $folder = $this->Folder->load($folder_id);
     $item = $this->Item->load($item_id);
-    $header = '';
+
     if(!isset($folder_id))
       {
       throw new Zend_Exception("Please set the folderId.");
@@ -264,6 +260,8 @@ class FolderController extends AppController
       throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED);
       }
 
+    $this->disableLayout();
+    $this->disableView();
     $this->Folder->removeItem($folder, $item);
     echo JsonComponent::encode(array(true, $this->t('Changes saved')));
     }// end deleteAction
@@ -274,7 +272,6 @@ class FolderController extends AppController
     $this->disableLayout();
     $folder_id = $this->_getParam('folderId');
     $folder = $this->Folder->load($folder_id);
-    $header = "";
     $form = $this->Form->Folder->createEditForm();
     $formArray = $this->getFormAsArray($form);
     $this->view->form = $formArray;
@@ -284,7 +281,7 @@ class FolderController extends AppController
       }
     elseif($folder === false)
       {
-      throw new Zend_Exception("The folder doesn t exist.");
+      throw new Zend_Exception("The folder doesn't exist.");
       }
     elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
@@ -293,14 +290,14 @@ class FolderController extends AppController
     $this->view->parentFolder = $folder;
     if($this->_request->isPost())
       {
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableView();
       $createFolder = $this->_getParam('createFolder');
       if(isset($createFolder))
         {
         $name = $this->_getParam('name');
         if(!isset($name))
           {
-          echo JsonComponent::encode(array(false, $this->t('Error')));
+          echo JsonComponent::encode(array(false, $this->t('Error: name parameter required')));
           }
         else
           {

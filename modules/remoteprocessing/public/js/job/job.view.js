@@ -10,7 +10,7 @@ $(document).ready(function(){
 
   $('.showInDialog').click(function()
     {
-      showBigDialogWithContent('Output', '<pre>'+$(this).attr('output').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")+'</pre>',true);
+      midas.showBigDialogWithContent('Output', '<pre>'+$(this).attr('output').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")+'</pre>',true);
     });
 
   initMetrics();

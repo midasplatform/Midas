@@ -53,8 +53,8 @@ abstract class FolderModelBase extends AppModel
     } // end __construct()
 
   /** Abstract functions */
-  abstract function getChildrenFoldersFiltered($folder, $userDao = null, $policy = 0);
-  abstract function getItemsFiltered($folder, $userDao = null, $policy = 0);
+  abstract function getChildrenFoldersFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc');
+  abstract function getItemsFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc');
   abstract function getSizeFiltered($folders, $userDao = null, $policy = 0);
   abstract function getCommunity($folder);
   abstract function getUser($folder);
@@ -120,14 +120,14 @@ abstract class FolderModelBase extends AppModel
       throw new Zend_Exception("Should be a folder.");
       }
 
-    if(empty($name))
-      {
-      throw new Zend_Exception("Name cannot be empty.");
-      }
-
     if(!is_string($name))
       {
       throw new Zend_Exception("Name should be a string.");
+      }
+
+    if(empty($name) && $name !== '0')
+      {
+      throw new Zend_Exception("Name cannot be empty.");
       }
 
     if($parent instanceof FolderDao)

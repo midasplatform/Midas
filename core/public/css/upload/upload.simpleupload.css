@@ -1,6 +1,5 @@
-div.ui-tabs {
-position: relative!important;
-left: 11px!important;
+#uploadTabs>div {
+  margin-left: 10px;
 }
 
 .cluetip-jtip #cluetip-inner {
@@ -78,10 +77,6 @@ div.uploadedFilesWrapper{
     -moz-border-radius-bottomright : 5px;
     -webkit-border-bottom-right-radius : 5px;
 
-}
-
-#swfuploadContent div.reviewUploaded{
-  display:none;
 }
 
  #swfuploadContentdiv#divStatus{

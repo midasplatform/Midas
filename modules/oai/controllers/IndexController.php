@@ -84,7 +84,7 @@ class Oai_IndexController extends Oai_AppController
                xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
                http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">'."\n";
 
-    $responseDate = gmstrftime('%Y-%m-%dT%T').'Z';
+    $responseDate = gmstrftime('%Y-%m-%dT%H:%M:%S').'Z';
     $xmlheader = $XMLHEADER .
             ' <responseDate>'.$responseDate."</responseDate>\n";
 
@@ -115,7 +115,7 @@ class Oai_IndexController extends Oai_AppController
     $MAXIDS = 5;
     $MAXRECORDS = 5;
     $tokenValid = 24 * 3600;
-    $expirationdatetime = gmstrftime('%Y-%m-%dT%TZ', time() + $tokenValid);
+    $expirationdatetime = gmstrftime('%Y-%m-%dT%H:%M:%SZ', time() + $tokenValid);
     $SQL['split'] = ';';
     $XMLSCHEMA = 'http://www.w3.org/2001/XMLSchema-instance';
 

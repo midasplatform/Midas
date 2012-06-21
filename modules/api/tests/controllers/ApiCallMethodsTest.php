@@ -173,13 +173,13 @@ class ApiCallMethodsTest extends ControllerTestCase
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
-    $this->assertEquals(count($resp->data), 1);
+    $this->assertEquals(count($resp->data), 2);
     $this->assertEquals($resp->data[0]->_model, 'Community');
-    $this->assertEquals($resp->data[0]->community_id, 2000);
-    $this->assertEquals($resp->data[0]->folder_id, 1003);
-    $this->assertEquals($resp->data[0]->publicfolder_id, 1004);
-    $this->assertEquals($resp->data[0]->privatefolder_id, 1005);
-    $this->assertEquals($resp->data[0]->name, 'Community test User 1');
+    $this->assertEquals($resp->data[1]->community_id, 2000);
+    $this->assertEquals($resp->data[1]->folder_id, 1003);
+    $this->assertEquals($resp->data[1]->publicfolder_id, 1004);
+    $this->assertEquals($resp->data[1]->privatefolder_id, 1005);
+    $this->assertEquals($resp->data[1]->name, 'Community test User 1');
 
     //TODO test that a private community is not returned (requires another community in the data set)
     }
@@ -240,8 +240,8 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals(count($resp->data->folders), 0);
     $this->assertEquals(count($resp->data->items), 2);
 
-    $this->assertEquals($resp->data->items[0]->item_id, 1);
-    $this->assertEquals($resp->data->items[1]->item_id, 2);
+    $this->assertEquals($resp->data->items[0]->item_id, 1000);
+    $this->assertEquals($resp->data->items[1]->item_id, 1001);
     $this->assertEquals($resp->data->items[0]->name, 'name 1');
     $this->assertEquals($resp->data->items[1]->name, 'name 2');
     $this->assertEquals($resp->data->items[0]->description, 'Description 1');
@@ -778,7 +778,8 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['method'] = 'midas.item.create';
     $this->params['name'] = 'created_item_2';
     $this->params['description'] = 'my item description';
-    $this->params['uuid'] = uniqid() . md5(mt_rand());
+    $uuid = uniqid() . md5(mt_rand());
+    $this->params['uuid'] = $uuid;
     $this->params['parentid'] = '1000';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
@@ -787,6 +788,21 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($itemDao->getName(), $this->params['name'], 'Item name is not set correctly');
     $this->assertEquals($itemDao->getUuid(), $this->params['uuid'], 'Item uuid is not set correctly');
     $this->assertEquals($itemDao->getDescription(), $this->params['description'], 'Item description is not set correctly');
+
+    // change the name of the item by passing in the uuid
+    $changedName = 'created_item_2_changed_name';
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.create';
+    $this->params['name'] = $changedName;
+    $this->params['uuid'] = $uuid;
+    $this->params['privacy'] = 'Public';
+    $this->params['parentid'] = '1000';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $generatedItemId = $resp->data->item_id;
+    $itemDao = $this->Item->load($generatedItemId);
+    $this->assertEquals($itemDao->getName(), $changedName, 'Item name is not set correctly');
 
     // delete the second one
     $this->resetAll();
@@ -800,6 +816,42 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($resp->code, 0);
     $itemDao = $this->Item->load($generatedItemId);
     $this->assertFalse($itemDao, 'Item should have been deleted, but was not.');
+    }
+
+  /** Test searching for item by name */
+  public function testItemSearchByName()
+    {
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.searchbyname';
+    $this->params['name'] = 'invalid name of an item';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEmpty($resp->data->items);
+
+    // Anon user should not get search results for private item
+    $this->resetAll();
+    $this->params['method'] = 'midas.item.searchbyname';
+    $this->params['name'] = 'name 2';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEmpty($resp->data->items);
+
+    // Anon user should get search results for public item
+    $this->resetAll();
+    $this->params['method'] = 'midas.item.searchbyname';
+    $this->params['name'] = 'name 1';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals(count($resp->data->items), 1);
+
+    // Logged-in user should get search results for private item that they have access to
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.searchbyname';
+    $this->params['name'] = 'name 2';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals(count($resp->data->items), 1);
     }
 
   /** Test the server info reporting methods */
@@ -922,5 +974,35 @@ class ApiCallMethodsTest extends ControllerTestCase
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
     $this->assertEquals(count($resp->data), 3);
+    }
+
+  /** Test bitstream edit function */
+  public function testBitstreamEdit()
+    {
+    $oldBitstream = $this->Bitstream->load(1);
+    $this->assertNotEquals($oldBitstream->getName(), 'newname.jpeg');
+    $this->assertNotEquals($oldBitstream->getMimetype(), 'image/jpeg');
+
+    // User without item write access should throw an exception
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.bitstream.edit';
+    $this->params['name'] = 'fail';
+    $this->params['id'] = '1';
+    $resp = $this->_callJsonApi();
+    $this->assertEquals($resp->stat, 'fail');
+
+    // Test getting a user by first name and last name
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.bitstream.edit';
+    $this->params['name'] = 'newname.jpeg';
+    $this->params['mimetype'] = 'image/jpeg';
+    $this->params['id'] = '1';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    $newBitstream = $this->Bitstream->load(1);
+    $this->assertEquals($newBitstream->getName(), 'newname.jpeg');
+    $this->assertEquals($newBitstream->getMimetype(), 'image/jpeg');
     }
   }

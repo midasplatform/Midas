@@ -41,5 +41,19 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
       }
     return $this->initDao('Folderpolicygroup', $this->database->fetchRow($this->database->select()->where('folder_id = ?', $folder->getKey())->where('group_id = ?', $group->getKey())));
     }
+
+  /**
+   * deletes all folderpolicygroup rows associated with the passed in group
+   * @param GroupDao
+   */
+  public function deleteGroupPolicies($group)
+    {
+    if(!$group instanceof GroupDao)
+      {
+      throw new Zend_Exception("Should be a group.");
+      }
+    $clause = 'group_id = '.$group->getKey();
+    Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
+    }
 }
 ?>

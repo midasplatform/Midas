@@ -6,20 +6,20 @@ $(document).ready(function() {
     function() {
         $(this).fadeTo('fast', 0.4);
     });
-    $('a.metadataDeleteLink').click(function() {
+    $('a.metadataDeleteLink').click(function () {
         var metadataCell = $(this).parents('tr');
         var metadataId = $(this).attr('element');
         var itemrevision = $(this).attr('itemrevision');
-        var html='';
+        var html = '';
         html+=json.item.message['deleteMetadataMessage'];
         html+='<br/>';
         html+='<br/>';
         html+='<br/>';
         html+='<input style="margin-left:140px;" class="globalButton deleteMetaDataYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
         html+='<input style="margin-left:50px;" class="globalButton deleteMetaDataNo" type="button" value="'+json.global.No+'"/>';
-        showDialogWithContent(json.item.message['delete'],html,false);
+        midas.showDialogWithContent(json.item.message['delete'],html,false);
 
-        $('input.deleteMetaDataYes').unbind('click').click(function() {
+        $('input.deleteMetaDataYes').unbind('click').click(function () {
             $.post(json.global.webroot+'/item/'+json.item.item_id, { element: metadataId, itemrevision: itemrevision, deleteMetadata: true});
             metadataCell.remove();
             $( "div.MainDialog" ).dialog('close');
@@ -35,18 +35,18 @@ $(document).ready(function() {
     function() {
         $(this).fadeTo('fast', 0.4);
     });
-    $('a.metadataEditLink').click(function() {
+    $('a.metadataEditLink').click(function () {
         var metadataId = $(this).attr('element');
         var itemrevision = $(this).attr('itemrevision');
-        loadDialog("editmetadata"+metadataId, "/item/editmetadata/?metadataId="+metadataId+"&itemId="+json.item.item_id+"&itemrevision="+itemrevision);
-        showDialog('MetaData');
+        midas.loadDialog("editmetadata"+metadataId, "/item/editmetadata/?metadataId="+metadataId+"&itemId="+json.item.item_id+"&itemrevision="+itemrevision);
+        midas.showDialog('MetaData');
     });
 
 
-    $('a.addMetadataLink').click(function() {
+    $('a.addMetadataLink').click(function () {
         var metadataId = $(this).attr('element');
-        loadDialog("editmetadata"+metadataId, "/item/editmetadata/?itemId="+json.item.item_id);
-        options = { buttons: {"Add": function() {
+        midas.loadDialog("editmetadata"+metadataId, "/item/editmetadata/?itemId="+json.item.item_id);
+        var options = { buttons: {"Add": function () {
             $(this).dialog("close");
             // since we are adding, be sure that the metadata doesn't already exist
             // if it does, give the user an error message and don't add the new metadata
@@ -56,46 +56,46 @@ $(document).ready(function() {
             requestData["metadatatype"] = $('#midas_item_metadata_metadatatype').val();
             requestData["itemId"] = json.item.item_id;
             $.ajax({
-              type: "POST",
-              url: json.global.webroot+"/item/getmetadatavalueexists",
-              data: requestData,
-              success: function(jsonContent) {
-                data = $.parseJSON(jsonContent);
-                if(data.exists === "1") {
-                  createNotice("Metadata already exists for that metadatatype, element and qualifier", 4000, 'error');
-                  // clear the form values
-                  $('#midas_item_metadata_element').val('');
-                  $('#midas_item_metadata_qualifier').val('');
-                  $('#midas_item_metadata_value').val('');
+                type: "POST",
+                url: json.global.webroot+"/item/getmetadatavalueexists",
+                data: requestData,
+                success: function (jsonContent) {
+                    var data = $.parseJSON(jsonContent);
+                    if(data.exists === "1") {
+                        midas.createNotice("Metadata already exists for that metadatatype, element and qualifier", 4000, 'error');
+                        // clear the form values
+                        $('#midas_item_metadata_element').val('');
+                        $('#midas_item_metadata_qualifier').val('');
+                        $('#midas_item_metadata_value').val('');
+                    }
+                    else {
+                        $('#editMetadataForm').submit();
+                    }
                 }
-                else {
-                  $('#editMetadataForm').submit();
-                }
-              }
             });
         }}};
-        showDialog('MetaData', true, options);
+        midas.showDialog('MetaData', true, options);
     });
 
     $('a.deleteItemRevision img').fadeTo('fast', 0.4);
-    $('a.deleteItemRevision img').hover(function() {
+    $('a.deleteItemRevision img').hover(function () {
         $(this).fadeTo('fast', 1.0);
     },
     function() {
         $(this).fadeTo('fast', 0.4);
     });
 
-    $('a.deleteItemRevision').click(function() {
+    $('a.deleteItemRevision').click(function () {
         var itemId = $(this).attr('itemId');
         var itemrevisionId = $(this).attr('itemrevisionId');
-        var html='';
+        var html = '';
         html+=json.item.message['deleteItemrevisionMessage'];
         html+='<br/>';
         html+='<br/>';
         html+='<br/>';
         html+='<input style="margin-left:140px;" class="globalButton deleteItemRevisionYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
         html+='<input style="margin-left:50px;" class="globalButton deleteItemRevisionNo" type="button" value="'+json.global.No+'"/>';
-        showDialogWithContent(json.item.message['delete'],html,false);
+        midas.showDialogWithContent(json.item.message['delete'],html,false);
 
         $('input.deleteItemRevisionYes').unbind('click').click(function() {
             $( "div.MainDialog" ).dialog('close');
@@ -109,13 +109,13 @@ $(document).ready(function() {
 
 
     $('a.shareItemLink').click(function() {
-        loadDialog("shareItem","/browse/movecopy/?share=true&items="+json.item.item_id);
-        showDialog(json.item.message.share);
+        midas.loadDialog("shareItem","/browse/movecopy/?share=true&items="+json.item.item_id);
+        midas.showDialog(json.item.message.share);
     });
 
     $('a.duplicateItemLink').click(function() {
-        loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+json.item.item_id);
-        showDialog(json.item.message.duplicate);
+        midas.loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+json.item.item_id);
+        midas.showDialog(json.item.message.duplicate);
     });
 
     $('tr.bitstreamRow img.bitstreamInfoIcon').qtip({
@@ -134,12 +134,12 @@ $(document).ready(function() {
         }
     });
 
-    $('a#itemDeleteLink').click(function() {
+    $('a#itemDeleteLink').click(function () {
         $.ajax({
             type: "GET",
             url: json.global.webroot+'/item/checkshared',
             data: {itemId: json.item.item_id},
-            success: function(jsonContent) {
+            success: function (jsonContent) {
                 var $itemIsShared = $.parseJSON(jsonContent);
                 var html='';
                 if ($itemIsShared == true) {
@@ -152,7 +152,7 @@ $(document).ready(function() {
                 html+='<input style="margin-left:140px;" class="globalButton deleteItemYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
                 html+='<input style="margin-left:50px;" class="globalButton deleteItemNo" type="button" value="'+json.global.No+'"/>';
 
-                showDialogWithContent(json.item.message['delete'], html, false);
+                midas.showDialogWithContent(json.item.message['delete'], html, false);
 
                 $('input.deleteItemYes').unbind('click').click(function() {
                     location.replace(json.global.webroot+'/item/delete?itemId='+json.item.item_id);
@@ -164,9 +164,9 @@ $(document).ready(function() {
         });
     });
 
-    $('a.sharingLink').click(function() {
-        loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
-        showDialog(json.browse.share);
+    $('a.sharingLink').click(function () {
+        midas.loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
+        midas.showDialog(json.browse.share);
     });
 
 
@@ -205,23 +205,30 @@ $(document).ready(function() {
         }
     });
 
-    $('a.editItemLink').click(function() {
-        loadDialog("editItem"+json.item.item_id,"/item/edit?itemId="+json.item.item_id);
-        showDialog(json.browse.edit, false, {
+    $('a.editItemLink').click(function () {
+        midas.loadDialog("editItem"+json.item.item_id,"/item/edit?itemId="+json.item.item_id);
+        midas.showDialog(json.browse.edit, false, {
             width: 545
         });
     });
     $('#revisionList').accordion({
         clearStyle: true,
         collapsible: true,
-        active: false
+        autoHeight: false
     });
     $('#revisionList').show();
     $('#historyLoading').hide();
 
-    $('a.licenseLink').click(function() {
+    $('a.licenseLink').click(function () {
         var licenseId = $(this).attr('element');
-        loadDialog('viewLicense'+licenseId, '/license/view?licenseId='+licenseId);
-        showDialog($(this).attr('name'), false);
+        midas.loadDialog('viewLicense'+licenseId, '/license/view?licenseId='+licenseId);
+        midas.showDialog($(this).attr('name'), false);
     });
+
+    if($('.pathBrowser li').length > 5) {
+        while($('.pathBrowser li').length > 5) {
+            $('.pathBrowser li:first').remove();
+        }
+        $('.pathBrowser li:first').before('<li><span>...</span></li>');
+    }
 });

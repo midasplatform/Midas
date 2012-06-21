@@ -112,13 +112,18 @@ div.genericWrapperTopRight{
   float:right;
 }
 
+div.viewAction li a {
+  display: inline-block;
+  padding-bottom: 2px;
+}
+
 div.viewAction li a:hover, div.genericAction li a:hover, div.viewSelected li a:hover{
   text-decoration: none;
 }
 
 div.viewAction li img, div.genericAction li img, div.viewSelected li img{
-  position:relative;
-  top:3px;
+  position: relative;
+  top: 2px;
 }
 
 div.viewAction hr, div.genericAction hr{

@@ -16,67 +16,50 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/i
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/item/item.editmetadata.css" />
 
 <form id="editMetadataForm" class="genericForm" method="POST"  action="<?php echo $this->webroot?>/item/<?php echo $this->itemDao->getKey()?>">
-   <?php if($this->metadata)
-     {
-     echo '<input type="hidden" name="updateMetadata" value ="true"/>';
-     }
+    <?php
+    if($this->metadata)
+      {
+      echo '<input type="hidden" name="updateMetadata" value ="true"/>';
+      $id = $this->metadata->getKey();
+      }
+    else
+      {
+      $id = '';
+      }
    ?>
    <?php if($this->itemrevision)
      {
      echo '<input type="hidden" name="itemrevision" value="'.$this->itemrevision.'"/>';
      }
    ?>
-   <input type="hidden" name="metadataId" value="<?php echo (!$this->metadata)?'':$this->metadata->getMetadataId()?>"/>
-   <input type="hidden" name="editMetadata" value="1"/>
-      <div >
-        <label for="metadatatype"><?php echo $this->t("Type")?></label>
+   <input type="hidden" name="metadataId" value="<?php echo $id; ?>"/>
+   <input type="hidden" name="editMetadata" value="1" />
+      <div>
+        <label for="metadatatype"><?php echo $this->t('Data Type'); ?></label>
         <select id="midas_item_metadata_metadatatype" name="metadatatype">
         <?php
-          if($this->metadata)
+          foreach($this->metadataTypes as $const => $name)
             {
-            echo ' disabled="disabled" ';
-            }
-          foreach($this->metadataType as $name => $v)
-            {
-            echo "<option value='$name'";
-            if($this->metadata && $name = $this->metadata->getMetadatatype() )
+            echo '<option value="'.$const.'"';
+            if($this->metadata && $const == $this->metadata->getMetadatatype())
               {
               echo ' selected ';
               }
-            echo ">";
-            switch ($name)
-              {
-              case MIDAS_METADATA_GLOBAL:
-                echo "Global";
-                break;
-              case MIDAS_METADATA_IMAGE:
-                echo "Image";
-                break;
-              case MIDAS_METADATA_DOCUMENT:
-                echo "Document";
-                break;
-              case MIDAS_METADATA_VIDEO:
-                echo "Video";
-                break;
-              default:
-                echo "Global";
-                break;
-              }
-            echo "</option>";
+            echo '>'.$name.'</option>';
             }
             ?>
         </select>
       </div>
-      <div >
-        <label for="element"><?php echo $this->t("Element")?></label>
+      <div>
+        <label for="element"><?php echo $this->t('Element')?></label>
         <input id="midas_item_metadata_element" name ="element" <?php if($this->metadata) { echo ' readonly '; } ?> value="<?php echo (!$this->metadata)?'':$this->metadata->getElement()?>"/>
       </div>
-      <div >
-        <label for="qualifier"><?php echo $this->t("Qualifier")?></label>
+      <div>
+        <label for="qualifier"><?php echo $this->t('Qualifier (Optional)')?></label>
         <input id="midas_item_metadata_qualifier" name ="qualifier" <?php if($this->metadata) { echo ' readonly '; } ?> value ="<?php echo (!$this->metadata)?'':$this->metadata->getQualifier()?>"/>
       </div>
-      <div >
-        <label for="value"><?php echo $this->t("Value")?></label>
+      <div>
+        <label for="value"><?php echo $this->t('Value')?></label>
         <input id="midas_item_metadata_value" name ="value" value ="<?php echo (!$this->metadata)?'':$this->metadata->getValue()?>"/>
       </div>
       <?php

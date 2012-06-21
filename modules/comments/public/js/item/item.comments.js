@@ -111,7 +111,7 @@ midas.comments.refreshCommentList = function() {
             midas.comments.initCommentList(resp.comments);
         }
         else {
-            createNotice('Error refreshing comment list', 4000, 'error');
+            midas.createNotice('Error refreshing comment list', 4000, 'error');
         }
         $('#refreshingCommentDiv').hide();
     });
@@ -122,8 +122,8 @@ midas.comments.refreshCommentList = function() {
  * with the id of the comment that they requested to delete
  */
 midas.comments.deleteComment = function(commentId) {
-    if(typeof showDialogWithContent == 'function') {
-        showDialogWithContent('Delete comment', $('#deleteCommentConfirmation').html(), false);
+    if(typeof midas.showDialogWithContent == 'function') {
+        midas.showDialogWithContent('Delete comment', $('#deleteCommentConfirmation').html(), false);
         $('input.deleteCommentNo').click(function() {
             $('div.MainDialog').dialog('close');
         });
@@ -133,14 +133,14 @@ midas.comments.deleteComment = function(commentId) {
             }, function(data) {
                 var resp = $.parseJSON(data);
                 if(resp == null) {
-                    createNotice('Error occurred, check the logs', 4000, 'error');
+                    midas.createNotice('Error occurred, check the logs', 4000, 'error');
                     return;
                 }
                 if(resp.status == 'ok') {
                     midas.comments.refreshCommentList();
                     $('div.MainDialog').dialog('close');
                 }
-                createNotice(resp.message, 4000, resp.status);
+                midas.createNotice(resp.message, 4000, resp.status);
             });
         });
     } else { // we have not loaded the layout...
@@ -198,7 +198,7 @@ $(document).ready(function() {
                 }, function(data) {
                     var resp = $.parseJSON(data);
                     if(resp == null) {
-                        createNotice('Error occurred, check the logs', 4000, 'error');
+                        midas.createNotice('Error occurred, check the logs', 4000, 'error');
                         return;
                     }
                     if(resp.status == 'ok') {
@@ -207,7 +207,7 @@ $(document).ready(function() {
                         midas.comments.initAddComment();
                         midas.comments.refreshCommentList();
                     }
-                    createNotice(resp.message, 4000, resp.status);
+                    midas.createNotice(resp.message, 4000, resp.status);
                 });
             }
         });
@@ -217,12 +217,12 @@ $(document).ready(function() {
     } else {
         $('div.loginToComment').show();
         $('#loginToComment').click(function() {
-            showOrHideDynamicBar('login');
-            loadAjaxDynamicBar('login', '/user/login');
+            midas.showOrHideDynamicBar('login');
+            midas.loadAjaxDynamicBar('login', '/user/login');
         });
         $('#registerToComment').click(function() {
-            showOrHideDynamicBar('register');
-            loadAjaxDynamicBar('register','/user/register');
+            midas.showOrHideDynamicBar('register');
+            midas.loadAjaxDynamicBar('register','/user/register');
         });
     }
 });

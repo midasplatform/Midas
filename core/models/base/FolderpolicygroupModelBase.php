@@ -39,6 +39,7 @@ abstract class FolderpolicygroupModelBase extends AppModel
 
   /** Abstract functions */
   abstract function getPolicy($group, $folder);
+  abstract function deleteGroupPolicies($group);
 
   /** delete */
   public function delete($dao)
@@ -101,32 +102,10 @@ abstract class FolderpolicygroupModelBase extends AppModel
         $folderModel->save($folder);
         return MIDAS_PRIVACY_PUBLIC;
         }
-      else
-        {
-        $shared = true;
-        }
       }
-    foreach($userPolicies as $key => $policy)
-      {
-      if($policy->getPolicy() != MIDAS_POLICY_ADMIN)
-        {
-        $shared = true;
-        break;
-        }
-      }
-
-    if($shared)
-      {
-      $folder->setPrivacyStatus(MIDAS_PRIVACY_SHARED);
-      $folderModel->save($folder);
-      return MIDAS_PRIVACY_SHARED;
-      }
-    else
-      {
-      $folder->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
-      $folderModel->save($folder);
-      return MIDAS_PRIVACY_PRIVATE;
-      }
+    $folder->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
+    $folderModel->save($folder);
+    return MIDAS_PRIVACY_PRIVATE;
     }// end computePolicyStatus
 
 } // end class FolderpolicygroupModelBase

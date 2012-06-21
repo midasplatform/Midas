@@ -73,7 +73,7 @@ abstract class GroupModelBase extends AppModel
     }
 
   /** Delete a group */
-  public function deleteGroup($group)
+  public function delete($group)
     {
     if(!$group instanceof GroupDao)
       {
@@ -84,6 +84,15 @@ abstract class GroupModelBase extends AppModel
       {
       $this->removeUser($group, $user);
       }
+
+    $this->ModelLoader = new MIDAS_ModelLoader();
+    $feedpolicygroup_model = $this->ModelLoader->loadModel('Feedpolicygroup');
+    $feedpolicygroup_model->deleteGroupPolicies($group);
+    $itempolicygroup_model = $this->ModelLoader->loadModel('Itempolicygroup');
+    $itempolicygroup_model->deleteGroupPolicies($group);
+    $folderpolicygroup_model = $this->ModelLoader->loadModel('Folderpolicygroup');
+    $folderpolicygroup_model->deleteGroupPolicies($group);
+
     parent::delete($group);
     unset($group->group_id);
     $group->saved = false;

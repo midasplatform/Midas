@@ -26,6 +26,10 @@ class Metadataextractor_ExtractorComponent extends AppComponent
     $modelLoader = new MIDAS_ModelLoader;
     $itemRevisionModel = $modelLoader->loadModel("ItemRevision");  
     $revision = $itemRevisionModel->load($revision['itemrevision_id']);
+    if(!$revision)
+      {
+      return;
+      }
     $bitstreams = $revision->getBitstreams();
     if(count($bitstreams) != 1)
       {
@@ -43,12 +47,12 @@ class Metadataextractor_ExtractorComponent extends AppComponent
         $name = strtolower($name);
         try
           {
-          $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'misc', $name); 
+          $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'misc', $name); 
           if(!$metadataDao)
             {
-            $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'misc', $name, '');
+            $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'misc', $name, '');
             }
-          $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL, 
+          $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 
                        'misc', $name, $property);
           }
         catch (Zend_Exception $exc)
@@ -76,12 +80,12 @@ class Metadataextractor_ExtractorComponent extends AppComponent
         $value = substr($out, $pos + 2);
         try
           {
-          $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_GLOBAL, 'misc', $name); 
+          $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'misc', $name); 
           if(!$metadataDao)
             {
-            $MetadataModel->addMetadata(MIDAS_METADATA_GLOBAL, 'misc', $name, '');
+            $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'misc', $name, '');
             }
-          $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_GLOBAL, 
+          $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 
                'misc', $name, $value);
           }
         catch (Zend_Exception $exc)

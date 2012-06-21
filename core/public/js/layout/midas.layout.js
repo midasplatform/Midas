@@ -18,14 +18,14 @@ $(function() {
   // Preload login page
   if(!json.global.logged)
     {
-    loadAjaxDynamicBar('login','/user/login');
+    midas.loadAjaxDynamicBar('login','/user/login');
     }
 
   // Show log page.
   if(json.global.needToLog)
     {
-    showOrHideDynamicBar('login');
-    loadAjaxDynamicBar('login','/user/login');
+    midas.showOrHideDynamicBar('login');
+    midas.loadAjaxDynamicBar('login','/user/login');
     return;
     }
 
@@ -73,7 +73,7 @@ $(function() {
    $('#blockExploreLink').click(function(){window.location.replace($('.webroot').val()+'/browse/');});
    $('#blockCommunityLink').click(function(){window.location.replace($('.webroot').val()+'/community/');});
    $('#blockSettingsLink').click(function(){
-      loadAjaxDynamicBar('settings','/user/settings');
+      midas.loadAjaxDynamicBar('settings','/user/settings');
       if($("div.TopDynamicBar").is(':hidden'))
         {
           $("div.TopDynamicBar").show('blind', function() {
@@ -86,8 +86,8 @@ $(function() {
   // Login
   $("a.loginLink").click(function()
     {
-    showOrHideDynamicBar('login');
-    loadAjaxDynamicBar('login','/user/login');
+    midas.showOrHideDynamicBar('login');
+    midas.loadAjaxDynamicBar('login','/user/login');
     });
 
 
@@ -102,11 +102,11 @@ $(function() {
       }
     if($(this).attr('userid')!=undefined)
       {
-      loadAjaxDynamicBar('settings'+$(this).attr('userid'),'/user/settings?userId='+$(this).attr('userid'));
+      midas.loadAjaxDynamicBar('settings'+$(this).attr('userid'),'/user/settings?userId='+$(this).attr('userid'));
       }
     else
       {
-      loadAjaxDynamicBar('settings','/user/settings');
+      midas.loadAjaxDynamicBar('settings','/user/settings');
       }
     });
 
@@ -118,7 +118,7 @@ $(function() {
         $("div.TopDynamicBar").show('blind', function() {
         });
       }
-    loadAjaxDynamicBar('settings','/user/settings');
+    midas.loadAjaxDynamicBar('settings','/user/settings');
     });
 
   // Module link
@@ -129,15 +129,15 @@ $(function() {
         $("div.TopDynamicBar").show('blind', function() {
         });
       }
-    loadAjaxDynamicBar('settings','/user/settings');
+    midas.loadAjaxDynamicBar('settings','/user/settings');
     });
 
 
   // Register link
   $("a.registerLink").click(function()
     {
-    showOrHideDynamicBar('register');
-    loadAjaxDynamicBar('register','/user/register');
+    midas.showOrHideDynamicBar('register');
+    midas.loadAjaxDynamicBar('register','/user/register');
     });
 
   // Search Bar -----------------------
@@ -232,45 +232,48 @@ $(function() {
 
  // Upload -------------------------------------
 
- // init Upload dialog
-  if(json.global.logged)
-    {
-    $('div.HeaderAction li.uploadFile').qtip(
-      {
-         content: {
-            // Set the text to an image HTML string with the correct src URL to the loading image you want to use
-            text: '<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />',
-            ajax: {
-               url: $('div.HeaderAction li.uploadFile').attr('rel') // Use the rel attribute of each element for the url to load
+midas.resetUploadButton = function () {
+    // init Upload dialog
+    if(json.global.logged) {
+        var button = $('div.HeaderAction li.uploadFile');
+        button.qtip('destroy');
+        button.qtip({
+            content: {
+                // Set the text to an image HTML string with the correct src URL to the loading image you want to use
+                text: '<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />',
+                ajax: {
+                    url: $('div.HeaderAction li.uploadFile').attr('rel') // Use the rel attribute of each element for the url to load
+                },
+                title: {
+                    text: 'Upload', // Give the tooltip a title using each elements text
+                    button: true
+                }
             },
-            title: {
-               text: 'Upload', // Give the tooltip a title using each elements text
-               button: true
+            position: {
+                at: 'bottom center', // Position the tooltip above the link
+                my: 'top right',
+                viewport: $(window), // Keep the tooltip on-screen at all times
+                effect: true // Disable positioning animation
+            },
+            show: {
+                modal: {
+                    on: true,
+                    blur: false
+                },
+                event: 'click',
+                solo: true // Only show one tooltip at a time
+            },
+            hide: {
+                event: false
+            },
+            style: {
+                classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
             }
-         },
-         position: {
-            at: 'bottom center', // Position the tooltip above the link
-            my: 'top right',
-            viewport: $(window), // Keep the tooltip on-screen at all times
-            effect: true // Disable positioning animation
-         },
-         show: {
-            modal: {
-              on: true,
-              blur: false
-              },
-            event: 'click',
-            solo: true // Only show one tooltip at a time
-         },
-         hide: {
-          event: false
-         },
-         style: {
-            classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
-         }
-      });
-    $('.uploadqtip').css('z-index:500');
+        });
+        $('.uploadqtip').css('z-index:500');
     }
+};
+midas.resetUploadButton();
 
   // ask the user to log in if we want to upload a file
   var uploadPageLoaded = false;
@@ -287,21 +290,13 @@ $(function() {
     }
     else
     {
-      createNotive(json.login.contentUploadLogin,4000);
+      midas.createNotice(json.login.contentUploadLogin,4000);
       $("div.TopDynamicBar").show('blind');
-      loadAjaxDynamicBar('login','/user/login');
+      midas.loadAjaxDynamicBar('login','/user/login');
     }
   });
 
   // Style -------------------------------------
-
-  // hover  link (view Action is the right menu in the file browser)
-  $('div.viewAction li a').hover(function(){
-    $(this).parents('li').css('background-color','#E5E5E5');
-  }, function(){
-    $(this).parents('li').css('background-color','white');
-  });
-
   // user menu
     $('#menuUserInfo').click(function(){
       globalAuthAsk(json.global.webroot+'/user/userpage');
@@ -314,12 +309,6 @@ $(function() {
     }
   });
 
-    $('[qtip]').qtip({
-   content: {
-      attr: 'qtip'
-   }
-});
-
   $('div.TopbarRighta li.first').hover(
       function() {$('ul', this).css('display', 'block');},
       function() {$('ul', this).css('display', 'none');});
@@ -328,26 +317,6 @@ $(function() {
 
 
  // Javascript uilts ----------------------------------
-
-/**
- * Show a jGrowl notice in the top right of the visible screen.
- * @param text The text to display
- * @param delay Time in milliseconds to display the notice
- * @param state (optional) Set to either "error" or "warning" to display special state
- */
-function createNotice(text, delay, state) {
-    var extraClasses = '';
-    if(state == 'error') {
-        extraClasses += ' growlError';
-    }
-    else if(state == 'warning') {
-        extraClasses += ' growlWarning';
-    }
-    else { // state is ok
-        extraClasses += ' growlOk';
-    }
-    createGrowl(false, text, delay, extraClasses);
-}
 
 // asks the user to authenticate
 function globalAuthAsk(url)
@@ -358,42 +327,10 @@ function globalAuthAsk(url)
     }
   else
     {
-    createNotive(json.login.titleUploadLogin,4000);
+    midas.createNotice(json.login.titleUploadLogin,4000);
     $("div.TopDynamicBar").show('blind');
-    loadAjaxDynamicBar('login','/user/login');
+    midas.loadAjaxDynamicBar('login','/user/login');
     }
-  }
-
-// trim name by the number of character
-function sliceFileName(name,nchar)
-  {
-    if(name.length>nchar)
-      {
-      toremove=(name.length)-nchar;
-      if(toremove<13)
-        {
-        return name;
-        }
-      name=name.substring(0,10)+'...'+name.substring(13+toremove);
-      return name;
-      }
-  return name;
-  }
-
-// trim name by the number of pixel
- function trimName(name,padding)
-  {
-    if(name.length*7+padding>350)
-      {
-      toremove=(name.length*7+padding-350)/8;
-      if(toremove<13)
-        {
-        return 'error';
-        }
-      name=name.substring(0,10)+'...'+name.substring(name.length+13-toremove);
-      return name;
-      }
-  return name;
   }
 
 
@@ -462,100 +399,3 @@ function sliceFileName(name,nchar)
          value.qtip('enable');
         });
     }
-
-
-// Setup jgrowl --------------------------------------
- window.createGrowl = function(persistent, text, delay, extraClasses) {
-    // Use the last visible jGrowl qtip as our positioning target
-    var target = $('.qtip.jgrowl:visible:last');
-
-    // Create your jGrowl qTip...
-    $(document.body).qtip({
-        // Any content config you want here really.... go wild!
-        content: {
-            text: '<span class="'+extraClasses+'">'+text+'</span>'
-        },
-        position: {
-            my: 'top right', // Not really important...
-            at: (target.length ? 'bottom' : 'top') + ' right', // If target is window use 'top right' instead of 'bottom right'
-            target: target.length ? target : $(document.body), // Use our target declared above
-            adjust: { // show at the top of the visible page, or just below header
-                y: Math.max($(window).scrollTop() + 10, $('div.Wrapper').position().top)
-            }
-        },
-        show: {
-            event: false, // Don't show it on a regular event
-            ready: true, // Show it when ready (rendered)
-            effect: function() {
-                $(this).stop(0,1).fadeIn(400);
-            }, // Matches the hide effect
-            delay: 0, // Needed to prevent positioning issues
-
-            // Custom option for use with the .get()/.set() API, awesome!
-            persistent: persistent
-        },
-        hide: {
-            event: false, // Don't hide it on a regular event
-            effect: function(api) {
-                // Do a regular fadeOut, but add some spice!
-                $(this).stop(0,1).fadeOut(400).queue(function() {
-                    // Destroy this tooltip after fading out
-                    api.destroy();
-
-                    // Update positions
-                    updateGrowls();
-                });
-            }
-        },
-        style: {
-            classes: 'jgrowl ui-tooltip-dark ui-tooltip-rounded',
-            tip: false // No tips for this one (optional ofcourse)
-        },
-        events: {
-            render: function(event, api) {
-                // Trigger the timer (below) on render
-                timerGrowl.call(api.elements.tooltip, event, delay);
-            }
-        }
-    })
-    .removeData('qtip');
-};
-
-   // Make it a window property see we can call it outside via updateGrowls() at any point
-   window.updateGrowls = function() {
-      // Loop over each jGrowl qTip
-      var each = $('.qtip.jgrowl:not(:animated)');
-      each.each(function(i) {
-         var api = $(this).data('qtip');
-
-         // Set the target option directly to prevent reposition() from being called twice.
-         api.options.position.target = !i ? $(document.body) : each.eq(i - 1);
-         api.set('position.at', (!i ? 'top' : 'bottom') + ' right');
-      });
-   };
-
-
- function timerGrowl(event, delay)
-  {
-    var api = $(this).data('qtip'),
-       lifespan = delay; // 5 second lifespan
-
-    // If persistent is set to true, don't do anything.
-    if(api.get('show.persistent') === true) {return;}
-
-    // Otherwise, start/clear the timer depending on event type
-    clearTimeout(api.timer);
-    if(event.type !== 'mouseover') {
-       api.timerGrowl = setTimeout(api.hide, lifespan);
-    }
-  }
-
- $(document).delegate('.qtip.jgrowl', 'mouseover mouseout', timerGrowl);
-
-
- // deprecated: use createNotice
-function createNotive(text, delay)
-{
-  createNotice(text,delay, '');
-}
-

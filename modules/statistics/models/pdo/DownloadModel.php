@@ -25,14 +25,9 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
 {
   /**
    * Return a list of downloads
-   * @param type $startDate
-   * @param type $endDate
-   * @param type $module
-   * @param type $priority
-   * @param type $limit
-   * @return array ErrorlogDao
+   * @param ids Array of item ids to aggregate statistics for
    */
-  function getDownloads($item, $startDate, $endDate, $limit = 99999)
+  function getDownloads($ids, $startDate, $endDate, $limit = 99999)
     {
     $result = array();
     $sql = $this->database->select()
@@ -40,7 +35,7 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
             ->from(array('e' => 'statistics_download'))
             ->where('date >= ?', $startDate)
             ->where('date <= ?', $endDate)
-            ->where('item_id = ?', $item->getKey())
+            ->where('item_id IN (?)', $ids)
             ->order('date DESC')
             ->limit($limit);
     $rowset = $this->database->fetchAll($sql);
@@ -51,8 +46,11 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
     return $result;
     }
 
-  /** Return only downloads that have been successfully geolocated */
-  function getLocatedDownloads($item, $startDate, $endDate, $limit = 99999)
+  /**
+   * Return only downloads that have been successfully geolocated
+   * @param ids Array of item ids to aggregate statistics for
+   */
+  function getLocatedDownloads($ids, $startDate, $endDate, $limit = 99999)
     {
     $result = array();
     $sql = $this->database->select()
@@ -61,7 +59,7 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
             ->joinLeft(array('ipl' => 'statistics_ip_location'), 'd.ip_location_id = ipl.ip_location_id')
             ->where('date >= ?', $startDate)
             ->where('date <= ?', $endDate)
-            ->where('item_id = ?', $item->getKey())
+            ->where('item_id IN (?)', $ids)
             ->where('latitude != 0')
             ->where('latitude != ?', '')
             ->order('date DESC')
@@ -100,6 +98,47 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
   function removeUserReferences($userId)
     {
     $this->database->update(array('user_id' => null), array('user_id = ?' => $userId));
+    }
+
+  /**
+   * Return the daily download counts for the item(s)
+   * @param items The array of items
+   * @param startDate (optional) start date
+   * @param endDate (optional) end date
+   */
+  function getDailyCounts($items, $startDate = null, $endDate = null)
+    {
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->where('item_id IN (?)', $items);
+    if($startDate !== null)
+      {
+      $sql->where('date >= ?', $startDate);
+      }
+    if($endDate !== null)
+      {
+      $sql->where('date <= ?', $endDate);
+      }
+
+    if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL')
+      {
+      $sql->from(array('statistics_download'), array('day' => 'DATE(date)', 'count' => 'count(*)'))
+          ->group('DATE(date)');
+      }
+    else // PGSQL implementation
+      {
+      $sql->from(array('statistics_download'), array('day' => "date_trunc('day', date)",
+                                                     'count' => 'count(*)'))
+          ->group('day');
+      }
+    $rowset = $this->database->fetchAll($sql);
+    $results = array();
+    foreach($rowset as $keyRow => $row)
+      {
+      $key = date('Y-m-d', strtotime($row['day']));
+      $results[$key] = $row['count'];
+      }
+    return $results;
     }
 }  // end class
 ?>

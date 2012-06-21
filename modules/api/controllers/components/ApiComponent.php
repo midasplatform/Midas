@@ -991,7 +991,7 @@ class Api_ApiComponent extends AppComponent
    * @param name The name of the item to create
    * @param description (Optional) The description of the item
    * @param uuid (Optional) Uuid of the item. If none is passed, will generate one.
-   * @param privacy (Optional) Default 'Public'.
+   * @param privacy (Optional) Default 'Public', possible values [Public|Private].
    * @return The item object that was created
    */
   function itemCreate($args)
@@ -1028,14 +1028,27 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['privacy']))
         {
-        $record->setPrivacy($args['privacy']);
+        $privacy = $args['privacy'];
+        if($privacy !== 'Public' && $privacy !== 'Private')
+          {
+          throw new Exception('privacy should be one of [Public|Private]');
+          }
+        if($privacy === 'Public')
+          {
+          $privacy_status = MIDAS_PRIVACY_PUBLIC;
+          }
+        else
+          {
+          $privacy_status = MIDAS_PRIVACY_PRIVATE;
+          }
+        $record->setPrivacyStatus($privacy_status);
         }
       foreach($args as $key => $value)
         {
         // Params beginning with underscore are assumed to be metadata fields
         if(substr($key, 0, 1) == '_')
           {
-          $this->_setMetadata($record, MIDAS_METADATA_GLOBAL, substr($key, 1), '', $value);
+          $this->_setMetadata($record, MIDAS_METADATA_TEXT, substr($key, 1), '', $value);
           }
         }
       $itemModel->save($record);
@@ -1249,6 +1262,10 @@ class Api_ApiComponent extends AppComponent
       {
       $revisionDao = $itemModel->getLastRevision($item);
       }
+    if(!$revisionDao)
+      {
+      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+      }
 
     $itemRevisionModel = $modelLoader->loadModel('ItemRevision');
     $metadata = $itemRevisionModel->getMetadata($revisionDao);
@@ -1267,7 +1284,7 @@ class Api_ApiComponent extends AppComponent
    * @param element The metadata element
    * @param value The metadata value for the field
    * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
-   * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_GLOBAL type (0).
+   * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
    */
   function itemSetmetadata($args)
     {
@@ -1283,7 +1300,7 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
       }
 
-    $type = array_key_exists('type', $args) ? (int)$args['type'] : MIDAS_METADATA_GLOBAL;
+    $type = array_key_exists('type', $args) ? (int)$args['type'] : MIDAS_METADATA_TEXT;
     $qualifier = array_key_exists('qualifier', $args) ? $args['qualifier'] : '';
     $element = $args['element'];
     $value = $args['value'];
@@ -1314,8 +1331,8 @@ class Api_ApiComponent extends AppComponent
     // If no module handles this metadata, we add it as normal metadata on the item revision
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
-    $revision = $itemModel->getLastRevision($item);
-    if(!$revision)
+    $revisionDao = $itemModel->getLastRevision($item);
+    if(!$revisionDao)
       {
       throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
       }
@@ -1326,7 +1343,7 @@ class Api_ApiComponent extends AppComponent
       {
       $metadataModel->addMetadata($type, $element, $qualifier, '');
       }
-    $metadataModel->addMetadataValue($revision, $type, $element, $qualifier, $value);
+    $metadataModel->addMetadataValue($revisionDao, $type, $element, $qualifier, $value);
     }
 
   /**
@@ -1463,6 +1480,32 @@ class Api_ApiComponent extends AppComponent
       }
     $itemArray['owningfolders'] = $owningFolderArray;
     return $itemArray;
+    }
+
+  /**
+   * Return all items
+   * @param token (Optional) Authentication token
+   * @param name The name of the item to search by
+   * @return A list of all items with the given name
+   */
+  function itemSearchbyname($args)
+    {
+    $this->_validateParams($args, array('name'));
+    $userDao = $this->_getUser($args);
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $items = $itemModel->getByName($args['name']);
+
+    $matchList = array();
+    foreach($items as $item)
+      {
+      if($itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+        {
+        $matchList[] = $item->toArray();
+        }
+      }
+
+    return array('items' => $matchList);
     }
 
   /**
@@ -1607,52 +1650,47 @@ class Api_ApiComponent extends AppComponent
     $userDao = $this->_getUser($args);
     $modelLoader = new MIDAS_ModelLoader();
     $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    $itemModel = $modelLoader->loadModel('Item');
+
     if(array_key_exists('id', $args))
       {
       $bitstream = $bitstreamModel->load($args['id']);
       }
     else
       {
-      $bitstream = $bitstreamModel->getByChecksum($args['checksum']);
+      $bitstreams = $bitstreamModel->getByChecksum($args['checksum'], true);
+      $bitstream = null;
+      foreach($bitstreams as $candidate)
+        {
+        $rev = $candidate->getItemrevision();
+        if(!$rev)
+          {
+          continue;
+          }
+        $item = $rev->getItem();
+        if($itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+          {
+          $bitstream = $candidate;
+          break;
+          }
+        }
       }
 
     if(!$bitstream)
       {
-      throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
+      throw new Exception('The bitstream does not exist or you do not have the permissions', MIDAS_INVALID_PARAMETER);
       }
 
-    if(array_key_exists('name', $args))
-      {
-      $bitstream->setName($args['name']);
-      }
-    $revisionModel = $modelLoader->loadModel('ItemRevision');
-    $revision = $revisionModel->load($bitstream->getItemrevisionId());
-
+    $revision = $bitstream->getItemrevision();
     if(!$revision)
       {
-      throw new Exception('Invalid revision id', MIDAS_INTERNAL_ERROR);
-      }
-    $itemModel = $modelLoader->loadModel('Item');
-    $item = $revision->getItem();
-    if(!$item || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
-      {
-      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-    if(strpos($bitstream->getPath(), 'http://') !== false)
-      {
-      $this->_redirect($bitstream->getPath());
-      return;
-      }
-    $offset = array_key_exists('offset', $args) ? $args['offset'] : 0;
-
-    if($offset == 0)
-      {
-      $itemModel->incrementDownloadCount($item);
+      throw new Exception('Bitstream does not belong to a revision', MIDAS_INTERNAL_ERROR);
       }
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');
-    $downloadComponent->download($bitstream, $offset);
+    $name = array_key_exists('name', $args) ? $args['name'] : $bitstream->getName();
+    $offset = array_key_exists('offset', $args) ? $args['offset'] : '0';
+
+    $this->controller->redirect('/download/?bitstream='.$bitstream->getKey().'&offset='.$offset.'&name='.$name);
     }
 
   /**
@@ -1703,4 +1741,43 @@ class Api_ApiComponent extends AppComponent
       }
     }
 
+  /**
+   * Change the properties of a bitstream. Requires write access to the containing item.
+   * @param token Authentication token
+   * @param id The id of the bitstream to edit
+   * @param name (optional) New name for the bitstream
+   * @param mimetype (optional) New MIME type for the bitstream
+   * @return The bitstream dao
+   */
+  function bitstreamEdit($args)
+    {
+    $this->_validateParams($args, array('id'));
+    $userDao = $this->_getUser($args);
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    $itemModel = $modelLoader->loadModel('Item');
+
+    $bitstream = $bitstreamModel->load($args['id']);
+    if(!$bitstream)
+      {
+      throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
+      }
+
+    if(!$itemModel->policyCheck($bitstream->getItemrevision()->getItem(), $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception('Write access on item is required', MIDAS_INVALID_POLICY);
+      }
+
+    if(array_key_exists('name', $args))
+      {
+      $bitstream->setName($args['name']);
+      }
+    if(array_key_exists('mimetype', $args))
+      {
+      $bitstream->setMimetype($args['mimetype']);
+      }
+    $bitstreamModel->save($bitstream);
+    return $bitstream->toArray();
+    }
   } // end class

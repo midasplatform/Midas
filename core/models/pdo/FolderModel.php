@@ -332,7 +332,7 @@ class FolderModel extends FolderModelBase
     }
 
   /** Custom delete function */
-  function delete($folder, $recursive = false)
+  function delete($folder)
     {
     if(!$folder instanceof FolderDao)
       {
@@ -355,13 +355,10 @@ class FolderModel extends FolderModelBase
       $this->removeItem($folder, $item);
       }
 
-    if($recursive)
+    $children = $folder->getFolders();
+    foreach($children as $child)
       {
-      $children = $folder->getFolders();
-      foreach($children as $child)
-        {
-        $this->delete($child, true);
-        }
+      $this->delete($child, true);
       }
 
     $policy_group_model = $this->ModelLoader->loadModel('Folderpolicygroup');
@@ -477,7 +474,7 @@ class FolderModel extends FolderModelBase
       $folder->setUuid(uniqid() . md5(mt_rand()));
       }
     $name = $folder->getName();
-    if(empty($name))
+    if(empty($name) && $name !== '0')
       {
       throw new Zend_Exception("Please set a name.");
       }
@@ -488,6 +485,10 @@ class FolderModel extends FolderModelBase
     else
       {
       $parentFolder = $folder->getParent();
+      if(!$parentFolder)
+        {
+        return false; //deleting orphaned folder
+        }
       $rightParent = $parentFolder->getRightIndice();
       }
     $data = array();
@@ -502,9 +503,13 @@ class FolderModel extends FolderModelBase
         $folder->$key = $rightParent + 1;
         $data[$key] = $rightParent + 1;
         }
-      if($key == 'left_indice')
+      else if($key == 'left_indice')
         {
         $data[$key] = $rightParent;
+        }
+      else if($key == 'description')
+        {
+        $data[$key] = UtilityComponent::filterHtmlTags($folder->getDescription());
         }
       }
 
@@ -583,10 +588,15 @@ class FolderModel extends FolderModelBase
     }
 
 
-  /** getItems with policy check
-   * @return
+  /**
+   * Get child items of a folder filtered by policy check for the provided user
+   * @param folder The parent folder
+   * @param userDao The user requesting the folder children (default anonymous)
+   * @param policy What policy to filter by (default MIDAS_POLICY_READ)
+   * @param sortfield What field to sort the results by (name | date | size, default = name)
+   * @param sortdir Sort direction (asc | desc, default = asc)
    */
-  function getItemsFiltered($folder, $userDao = null, $policy = 0)
+  function getItemsFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc')
     {
     $isAdmin = false;
     if(is_array($folder))
@@ -708,15 +718,31 @@ class FolderModel extends FolderModelBase
         unset($policyArray[$row['item_id']]);
         }
       }
-    $this->Component->Sortdao->field = 'name';
-    $this->Component->Sortdao->order = 'asc';
-    usort($return, array($this->Component->Sortdao, 'sortByName'));
+    $this->Component->Sortdao->field = $sortfield;
+    $this->Component->Sortdao->order = $sortdir;
+    $sortFn = 'sortByName';
+    if($sortfield == 'date')
+      {
+      $sortFn = 'sortByDate';
+      }
+    else if($sortfield == 'sizebytes')
+      {
+      $sortFn = 'sortByNumber';
+      }
+    usort($return, array($this->Component->Sortdao, $sortFn));
 
     return $return;
     }
 
-  /** getFolder with policy check */
-  function getChildrenFoldersFiltered($folder, $userDao = null, $policy = 0)
+  /**
+   * Get child folders of a folder filtered by policy check for the provided user
+   * @param folder The parent folder
+   * @param userDao The user requesting the folder children (default anonymous)
+   * @param policy What policy to filter by (default MIDAS_POLICY_READ)
+   * @param sortfield What field to sort the results by (name | date, default = name)
+   * @param sortdir Sort direction (asc | desc, default = asc)
+   */
+  function getChildrenFoldersFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc')
     {
     $isAdmin = false;
     if(is_array($folder))
@@ -819,9 +845,14 @@ class FolderModel extends FolderModelBase
         }
       }
 
-    $this->Component->Sortdao->field = 'name';
-    $this->Component->Sortdao->order = 'asc';
-    usort($return, array($this->Component->Sortdao, 'sortByName'));
+    $this->Component->Sortdao->field = $sortfield;
+    $this->Component->Sortdao->order = $sortdir;
+    $sortFn = 'sortByName';
+    if($sortfield == 'date')
+      {
+      $sortFn = 'sortByDate';
+      }
+    usort($return, array($this->Component->Sortdao, $sortFn));
     return $return;
     }
 
@@ -1029,4 +1060,95 @@ class FolderModel extends FolderModelBase
     return true;
     }
 
+  /**
+   * Will return all root folder daos.  There is a root folder for each
+   * user, and one for each community.
+   */
+  function getRootFolders()
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                          ->where('parent_id < ?', 0);
+    $rowset = $this->database->fetchAll($sql);
+    $rootFolders = array();
+    foreach($rowset as $row)
+      {
+      $rootFolders[] = $this->initDao('Folder', $row);
+      }
+    return $rootFolders;
+    }
+
+  /**
+   * Call this to delete all folders whose parent folder no longer exists.
+   * After orphans are deleted, the tree indices will be recomputed so they
+   * will be consistent.  As such, server should not be written to
+   * during this operation.
+   */
+  function deleteOrphanedFolders()
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                   ->from(array('f' => 'folder'), array('folder_id'))
+                   ->where('f.parent_id > ?', 0)
+                   ->where('(NOT f.parent_id IN ('.new Zend_Db_Expr(
+                            $this->database->select()->setIntegrityCheck(false)
+                                 ->from(array('subf' => 'folder'), array('folder_id'))
+                           .'))' ));
+    $rowset = $this->database->fetchAll($sql);
+    $ids = array();
+    foreach($rowset as $row)
+      {
+      $ids[] = $row['folder_id'];
+      }
+    foreach($ids as $id)
+      {
+      $folder = $this->load($id);
+      if(!$folder)
+        {
+        continue;
+        }
+      $this->delete($folder);
+      }
+    // Wipe the current tree indices from all rows
+    $this->database->update(array('left_indice' => 0, 'right_indice' => 0), array());
+
+    // Recompute the indices for all rows
+    $rootFolders = $this->getRootFolders();
+    foreach($rootFolders as $rootFolder)
+      {
+      $this->_recomputeSubtree($rootFolder);
+      }
+    }
+
+  /**
+   * Will recompute the left and right indices of the subtree of the given node.
+   */
+  protected function _recomputeSubtree($folder)
+    {
+    if($folder->getParentId() <= 0)
+      {
+      $rightParent = 0;
+      }
+    else
+      {
+      $parentFolder = $folder->getParent();
+      $rightParent = $parentFolder->getRightIndice();
+      }
+
+    $folder->setLeftIndice($rightParent);
+    $folder->setRightIndice($rightParent + 1);
+
+    $this->database->getDB()->update('folder',
+      array('right_indice' => new Zend_Db_Expr('2 + right_indice')),
+      array('right_indice >= ? AND left_indice != right_indice' => $rightParent));
+    $this->database->getDB()->update('folder',
+      array('left_indice' => new Zend_Db_Expr('2 + left_indice')),
+      array('left_indice >= ? AND left_indice != right_indice' => $rightParent));
+
+    parent::save($folder);
+
+    $children = $folder->getFolders();
+    foreach($children as $child)
+      {
+      $this->_recomputeSubtree($child);
+      }
+    }
 } // end class

@@ -1,1 +1,1 @@
-add_midas_mysql_test( StatisticsGeolocationLookup StatisticsGeolocationLookupTest.php )
+add_midas_test( StatisticsGeolocationLookup StatisticsGeolocationLookupTest.php )

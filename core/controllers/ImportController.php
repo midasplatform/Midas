@@ -19,23 +19,47 @@
 =========================================================================*/
 
 /**
- *  Import Controller
- *  Import Controller
+ * Import Controller
+ *
+ * This controller exists to drive the local import, available from the
+ * assetstore pane in the admin panel. This allows a Midas administrator
+ * to pull in large amounts of data from a directory local to the server.
+ *
+ * There are a few architectural issues to note:
+ *  1) This uses temporary files to mark progress in the local import.
+ *  2) This assumes you do not want multiple copies of files an folders
+ *     uploaded.
  */
 class ImportController extends AppController
   {
-  public $_models = array('Item', 'Folder', 'ItemRevision', 'Assetstore', 'Folderpolicyuser', 'Itempolicyuser', 'Itempolicygroup', 'Group', 'Folderpolicygroup');
-  public $_daos = array('Item', 'Folder', 'ItemRevision', 'Bitstream', 'Assetstore');
+  public $_models = array('Item', 'Folder', 'ItemRevision', 'Assetstore',
+                          'Folderpolicyuser', 'Itempolicyuser',
+                          'Itempolicygroup', 'Group', 'Folderpolicygroup');
+  public $_daos = array('Item', 'Folder', 'ItemRevision', 'Bitstream',
+                        'Assetstore');
   public $_components = array('Upload', 'Utility');
   public $_forms = array('Import', 'Assetstore');
 
-  private $assetstores = array(); // list of assetstores
-  private $progressfile; // location of the progress file for ajax request (in the temp dir)
-  private $stopfile; // location of the stop file for ajax request (in the temp dir)
-  private $ntotalfiles; // number of files to be processed
-  private $nfilesprocessed; // number of files that have been processed
-  private $assetstoreid; // id of the assetstore to import the data
-  private $importemptydirectories = true; // should we create empty folder for empty directories
+  // list of assetstores
+  private $assetstores = array();
+
+  // location of the progress file for ajax request (in the temp dir)
+  private $progressfile;
+
+  // location of the stop file for ajax request (in the temp dir)
+  private $stopfile;
+
+  // number of files to be processed
+  private $ntotalfiles;
+
+  // number of files that have been processed
+  private $nfilesprocessed;
+
+  // id of the assetstore to import the data
+  private $assetstoreid;
+
+  // should we create empty folder for empty directories
+  private $importemptydirectories = true;
 
   /** Init Controller */
   function init()
@@ -54,12 +78,15 @@ class ImportController extends AppController
         {
         continue;
         }
-      if(!$fileInfo->isReadable()) // file is not readable we skip
+
+      // file is not readable we skip
+      if(!$fileInfo->isReadable())
         {
         continue;
         }
 
-      if($fileInfo->isDir()) // we have a directory
+      // we have a directory
+      if($fileInfo->isDir())
         {
         $initialcount += $this->_recursiveCountFiles($fileInfo->getPathName());
         }
@@ -72,10 +99,11 @@ class ImportController extends AppController
     } // end function _recursiveCountFiles
 
 
-  /** Check ifthe import should be stopped */
+  /** Check if the import should be stopped */
   private function _checkStopImport()
     {
-    if(file_exists($this->stopfile)) // maybe we should check for the content of the file but not necessary
+    // maybe we should check for the content of the file but not necessary
+    if(file_exists($this->stopfile))
       {
       return true;
       }
@@ -98,19 +126,20 @@ class ImportController extends AppController
   /** Import a directory recursively */
   private function _recursiveParseDirectory($path, $currentdir)
     {
-    set_time_limit(0); // No time limit since import can take a long time
-
     $it = new DirectoryIterator($path);
+    $count = 0;
     foreach($it as $fileInfo)
       {
       if($fileInfo->isDot())
         {
         continue;
         }
+
       // If the file/dir is not readable (permission issue)
       if(!$fileInfo->isReadable())
         {
-        $this->getLogger()->crit($fileInfo->getPathName(). ' cannot be imported. Not readable.');
+        $this->getLogger()->crit($fileInfo->getPathName() .
+                                 ' cannot be imported. Not readable.');
         continue;
         }
 
@@ -122,52 +151,65 @@ class ImportController extends AppController
 
       if($fileInfo->isDir()) // we have a directory
         {
-        if(!file_exists($fileInfo->getPathName()) || $fileInfo->getFilename() == 'CVS')
-          {
-          continue;
-          }
-        $files = scandir($fileInfo->getPathName());
-        if(!$this->importemptydirectories
-           && $files && count($files) <= 2)
+
+        // If the the directory actually doesn't exist at this point,
+        // skip it.
+        if(!file_exists($fileInfo->getPathName()))
           {
           continue;
           }
 
-        // Find ifthe child exists
-        $child = $this->Folder->getFolderByName($currentdir, $fileInfo->getFilename());
+
+        // Get the files in the directory and skip the folder if it does not
+        // contain any files and we aren't set to import empty directories. The
+        // count($files) <= 2 is there to account for our our friends . and ..
+        $files = scandir($fileInfo->getPathName());
+        if(!$this->importemptydirectories && $files && count($files) <= 2)
+          {
+          continue;
+          }
+
+        // Find if the child exists
+        $child = $this->Folder->getFolderByName($currentdir,
+                                                $fileInfo->getFilename());
+
+        // If the folder does not exist, create one.
         if(!$child)
           {
           $child = new FolderDao;
           $child->setName($fileInfo->getFilename());
           $child->setParentId($currentdir->getFolderId());
           $child->setDateCreation(date('c'));
+          $child->setDescription('');
           $this->Folder->save($child);
-          $this->Folderpolicyuser->createPolicy($this->userSession->Dao, $child, MIDAS_POLICY_ADMIN);
-          $anonymousGroup = $this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
-          $this->Folderpolicygroup->createPolicy($anonymousGroup, $child, MIDAS_POLICY_READ);
+          $this->Folderpolicyuser->createPolicy($this->userSession->Dao,
+                                                $child, MIDAS_POLICY_ADMIN);
           }
+
+        // Keep decending
         $this->_recursiveParseDirectory($fileInfo->getPathName(), $child);
         }
-      else // we have a file
+      else // We have a file
         {
         $this->_incrementFileProcessed();
         $newrevision = true;
-        $item = $this->Folder->getItemByName($currentdir, $fileInfo->getFilename());
+        $item = $this->Folder->getItemByName($currentdir,
+                                             $fileInfo->getFilename());
         if(!$item)
           {
-          // Create the item
+
+          // Create an item
           $item = new ItemDao;
           $item->setName($fileInfo->getFilename());
+          $item->setDescription('');
           $this->Item->save($item);
 
           // Set the policy of the item
-          $this->Itempolicyuser->createPolicy($this->userSession->Dao, $item, MIDAS_POLICY_ADMIN);
-          $anonymousGroup = $this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
-          $this->Itempolicygroup->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+          $this->Itempolicyuser->createPolicy($this->userSession->Dao, $item,
+                                              MIDAS_POLICY_ADMIN);
 
           // Add the item to the current directory
           $this->Folder->addItem($currentdir, $item);
-
           } // end create item
 
         // Check ifthe bistream has been updated based on the local date
@@ -175,12 +217,12 @@ class ImportController extends AppController
         if($revision)
           {
           $newrevision = false;
-          $bitstream = $this->ItemRevision->getBitstreamByName($revision, $fileInfo->getFilename());
-          if(!$bitstream // no bitstream yet
-             ||
-           (strtotime($bitstream->getDate()) < filemtime($fileInfo->getPathName()) // file on disk is newer
-            && $bitstream->getChecksum() != UtilityComponent::md5file($fileInfo->getPathName()) // end md5 is different
-            ))
+          $bitstream = $this->ItemRevision->getBitstreamByName($revision,
+                                                               $fileInfo->getFilename());
+          $curMD5 = UtilityComponent::md5file($fileInfo->getPathName());
+          $diskFileIsNewer = strtotime($bitstream->getDate()) < filemtime($fileInfo->getPathName());
+          $md5IsDifferent = $bitstream->getChecksum() != $curMD5;
+          if(!$bitstream || ($diskFileIsNewer && $md5IsDifferent))
             {
             $newrevision = true;
             }
@@ -188,6 +230,7 @@ class ImportController extends AppController
 
         if($newrevision)
           {
+
           // Create a revision for the item
           $itemRevisionDao = new ItemRevisionDao;
           $itemRevisionDao->setChanges('Initial revision');
@@ -195,23 +238,19 @@ class ImportController extends AppController
           $this->Item->addRevision($item, $itemRevisionDao);
 
           // Add bitstreams to the revision
+          $this->getLogger()->debug('create New Bitstream');
           $bitstreamDao = new BitstreamDao;
           $bitstreamDao->setName($fileInfo->getFilename());
           $bitstreamDao->setPath($fileInfo->getPathName());
           $bitstreamDao->fillPropertiesFromPath();
 
+          // Set the Assetstore
           $bitstreamDao->setAssetstoreId($this->assetstoreid);
 
-          // Upload the bitstream if necessary (based on the assetstore type)
+          // Upload the bitstream
           $assetstoreDao = $this->Assetstore->load($this->assetstoreid);
-
-          $assetstorePath = $assetstoreDao->getPath();
-          $bitstreamPath = $bitstreamDao->getPath();
-
-          $bitstreamPath = substr($bitstreamPath, strlen($assetstorePath));
-          $bitstreamDao->setPath($bitstreamPath);
-
-          $this->Component->Upload->uploadBitstream($bitstreamDao, $assetstoreDao);
+          $this->Component->Upload->uploadBitstream($bitstreamDao,
+                                                    $assetstoreDao, TRUE);
 
           $this->ItemRevision->addBitstream($itemRevisionDao, $bitstreamDao);
           } // end new revision
@@ -229,13 +268,10 @@ class ImportController extends AppController
    */
   function indexAction()
     {
-    if(!$this->logged)
-      {
-      $this->haveToBeLogged();
-      return false;
-      }
+    $this->requireAdminPrivileges();
 
-    set_time_limit(0); // No time limit since import can take a long time
+    // No time limit since import can take a long time
+    set_time_limit(0);
     $this->view->title = $this->t("Import");
     $this->view->header = $this->t("Import server-side data");
 
@@ -251,11 +287,7 @@ class ImportController extends AppController
    */
   function importAction()
     {
-    if(!$this->logged)
-      {
-      echo json_encode(array('error' => $this->t('User should be logged in')));
-      return false;
-      }
+    $this->requireAdminPrivileges();
 
     // This is necessary in order to avoid session lock and being able to run two
     // ajax requests simultaneously
@@ -263,8 +295,8 @@ class ImportController extends AppController
 
     $this->nfilesprocessed = 0;
 
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
 
     $this->assetstores = $this->Assetstore->getAll();
     $form = $this->Form->Import->createImportForm($this->assetstores);
@@ -285,7 +317,8 @@ class ImportController extends AppController
       {
       // Count the total number of files in the directory and return it
       $this->ntotalfiles = $this->_recursiveCountFiles($form->inputdirectory->getValue());
-      echo json_encode(array('stage' => 'initialize', 'totalfiles' => $this->ntotalfiles));
+      echo json_encode(array('stage' => 'initialize',
+                             'totalfiles' => $this->ntotalfiles));
       return false;
       }
     else if($this->getRequest()->isPost() && $form->isValid($_POST))
@@ -299,7 +332,8 @@ class ImportController extends AppController
       $currentdir->setFolderId($currentdirid);
 
       // Set the file locations used to handle the async requests
-      $this->progressfile = $this->getTempDirectory()."/importprogress_".$form->uploadid->getValue();
+      $this->progressfile = $this->getTempDirectory().
+        "/importprogress_".$form->uploadid->getValue();
       $this->stopfile = $this->getTempDirectory()."/importstop_".$form->uploadid->getValue();
       $this->assetstoreid = $form->assetstore->getValue();
       $this->importemptydirectories = $form->importemptydirectories->getValue();
@@ -312,7 +346,10 @@ class ImportController extends AppController
           }
         else
           {
-          echo json_encode(array('error' => $this->t('Problem occured while importing. Check the log files or contact an administrator.')));
+          echo json_encode(array('error' =>
+                                 $this->t('Problem occured while importing. '.
+                                          'Check the log files or contact an '.
+                                          'administrator.')));
           }
         }
       catch(Exception $e)
@@ -320,27 +357,27 @@ class ImportController extends AppController
         echo json_encode(array('error' => $this->t($e->getMessage())));
         }
 
-
       // Remove the temp and stop files
       UtilityComponent::safedelete($this->progressfile);
       UtilityComponent::safedelete($this->stopfile);
       return true;
       }
 
-    echo json_encode(array('error' => $this->t('The request should be a post.')));
+    echo json_encode(array('error' =>
+                           $this->t('The request should be a post.')));
     return false;
     } // end import action
 
 
   /**
-   * \fn getprogressAction()
-   * \brief called from ajax
+   * This function pulls the progress for the temporary importprogress_ file.
    */
   function getprogressAction()
     {
     session_write_close();
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+
+    $this->disableLayout();
+    $this->disableView();
 
     if(isset($this->_request->id))
       {
@@ -368,8 +405,10 @@ class ImportController extends AppController
   function stopAction()
     {
     session_write_close();
+
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
+
     if(isset($this->_request->id))
       {
       $this->stopfile = $this->getTempDirectory()."/importstop_".$this->_request->id;
@@ -380,4 +419,3 @@ class ImportController extends AppController
     } // end stopAction
 
 } // end class
-

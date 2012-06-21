@@ -57,8 +57,8 @@ class ItemController extends AppController
       throw new Zend_Exception(MIDAS_LOGIN_REQUIRED);
       }
 
-    $itemId = $this->_getParam("itemId");
-    $metadataId = $this->_getParam("metadataId");
+    $itemId = $this->_getParam('itemId');
+    $metadataId = $this->_getParam('metadataId');
     $itemDao = $this->Item->load($itemId);
     if($itemDao === false)
       {
@@ -90,12 +90,15 @@ class ItemController extends AppController
         break;
         }
       }
-
-
     $this->view->itemDao = $itemDao;
-    $this->view->metadataType = $this->Metadata->getAllMetadata();
-    $this->view->metadataType = $this->view->metadataType['sorted'];
-    $this->view->jsonMetadataType = JsonComponent::encode($this->view->metadataType);
+    $this->view->metadataTypes = array(
+    MIDAS_METADATA_TEXT => 'Text',
+    MIDAS_METADATA_INT => 'Integer',
+    MIDAS_METADATA_LONG => 'Long Integer',
+    MIDAS_METADATA_FLOAT => 'Floating Point',
+    MIDAS_METADATA_DOUBLE => 'Double Precision',
+    MIDAS_METADATA_STRING => 'String',
+    MIDAS_METADATA_BOOLEAN => 'Boolean');
     }
 
   /**
@@ -203,7 +206,10 @@ class ItemController extends AppController
       $recentItems = array_reverse($tmp);
       $recentItems[] = $itemDao->getKey();
 
-      setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($recentItems), time() + 60 * 60 * 24 * 30, '/'); //30 days
+      if(!headers_sent())
+        {
+        setcookie('recentItems'.$this->userSession->Dao->getKey(), serialize($recentItems), time() + 60 * 60 * 24 * 30, '/'); //30 days
+        }
       }
 
     $this->Item->incrementViewCount($itemDao);
@@ -467,12 +473,12 @@ class ItemController extends AppController
   */
   function mergeAction()
     {
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
 
-    $itemIds = $this->_getParam("items");
-    $name = $this->_getParam("name");
-    if(empty($name))
+    $itemIds = $this->_getParam('items');
+    $name = $this->_getParam('name');
+    if(empty($name) && $name !== '0')
       {
       throw new Zend_Exception('Please set a name');
       }
@@ -481,12 +487,7 @@ class ItemController extends AppController
     $mainItem = $this->Item->mergeItems($itemIds, $name,
                                         $this->userSession->Dao);
 
-    $itemArray = $mainItem->toArray();
-    $itemArray['policy'] = MIDAS_POLICY_ADMIN;
-    $itemArray['size'] = $this->Component->Utility->formatSize($mainItem->getSizebytes());
-    $itemArray['date'] = $this->Component->Date->ago($mainItem->getDateUpdate(), true);
-    echo JsonComponent::encode($itemArray);
-    return;
+    $this->_redirect('/item/'.$mainItem->getKey());
     }//end merge
 
   /**
@@ -499,10 +500,6 @@ class ItemController extends AppController
   */
   public function checksharedAction()
     {
-    if(!$this->getRequest()->isXmlHttpRequest())
-      {
-      throw new Zend_Exception("Why are you here ? Should be ajax.");
-      }
     $this->disableLayout();
     $this->disableView();
     $itemId = $this->_getParam("itemId");
@@ -573,4 +570,35 @@ class ItemController extends AppController
     echo JsonComponent::encode($metadataValueExists);
     } // end getmetadatavalueexistsAction
 
+  /**
+   * Call this to download the thumbnail for the item.  Should only be called if the item has a thumbnail;
+   * otherwise the request produces no output.
+   * @param itemId The item whose thumbnail you wish to download
+   */
+  public function thumbnailAction()
+    {
+    $itemId = $this->_getParam('itemId');
+    if(!isset($itemId))
+      {
+      throw new Zend_Exception('Must pass an itemId parameter');
+      }
+    $item = $this->Item->load($itemId);
+    if(!$item)
+      {
+      throw new Zend_Exception('Invalid itemId');
+      }
+    if(!$this->Item->policyCheck($item, $this->userSession->Dao))
+      {
+      throw new Zend_Exception('Invalid policy');
+      }
+    $this->disableLayout();
+    $this->disableView();
+    if($item->getThumbnailId() !== null)
+      {
+      $bitstream = $this->Bitstream->load($item->getThumbnailId());
+      $componentLoader = new MIDAS_ComponentLoader();
+      $downloadBitstreamComponent = $componentLoader->loadComponent('DownloadBitstream');
+      $downloadBitstreamComponent->download($bitstream);
+      }
+    }
   }//end class

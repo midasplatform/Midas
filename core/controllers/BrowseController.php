@@ -267,9 +267,28 @@ class BrowseController extends AppController
   /** get getfolders content (ajax function for the treetable) */
   public function getfolderscontentAction()
     {
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
     $folderIds = $this->_getParam('folders');
+    $sort = $this->_getParam('sort', 'name');
+    $sortdir = $this->_getParam('sortdir', 'asc');
+    $foldersort = 'name';
+    $foldersortdir = $sortdir;
+    $itemsort = 'name';
+    $itemsortdir = $sortdir;
+    if($sort == 'size')
+      {
+      $itemsort = 'sizebytes';
+      $itemsortdir = $sortdir;
+      }
+    else if($sort == 'date')
+      {
+      $foldersort = 'date_update';
+      $itemsort = 'date_update';
+      $foldersortdir = $sortdir;
+      $itemsortdir = $sortdir;
+      }
+
     if(!isset($folderIds))
       {
       throw new Zend_Exception("Please set the folder Id");
@@ -281,8 +300,8 @@ class BrowseController extends AppController
       throw new Zend_Exception("Folder doesn't exist");
       }
 
-    $folders = $this->Folder->getChildrenFoldersFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ);
-    $items = $this->Folder->getItemsFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $folders = $this->Folder->getChildrenFoldersFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ, $foldersort, $foldersortdir);
+    $items = $this->Folder->getItemsFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ, $itemsort, $itemsortdir);
     $jsonContent = array();
     foreach($parents as $parent)
       {
@@ -409,34 +428,6 @@ class BrowseController extends AppController
     $jsonContent['translation']['Private'] = $this->t('This community is private');
     echo JsonComponent::encode($jsonContent);
     }//end getElementInfo
-
-
-  /** review (browse) uploaded files*/
-  public function uploadedAction()
-    {
-    if(empty($this->userSession->uploaded) || !$this->logged)
-      {
-      $this->_redirect('/');
-      }
-    $this->view->activemenu = 'uploaded'; // set the active menu
-    $this->view->items = array();
-    $this->view->header = $this->t('Uploaded Files');
-    $this->view->Date = $this->Component->Date;
-    foreach($this->userSession->uploaded as $item)
-      {
-      $item = $this->Item->load($item);
-      if($item != false)
-        {
-        $item->policy = MIDAS_POLICY_ADMIN;
-        $item->size = $this->Component->Utility->formatSize($item->getSizebytes());
-        $this->view->items[] = $item;
-        }
-      }
-    $this->view->json['item']['message']['delete'] = $this->t('Delete');
-    $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undone.');
-    $this->view->json['item']['message']['merge'] = $this->t('Merge Files in one Item');
-    $this->view->json['item']['message']['mergeName'] = $this->t('Name of the item');
-    }
 
   /**
    * Delete a set of folders and items. Called by ajax from common.browser.js

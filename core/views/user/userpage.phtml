@@ -51,7 +51,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   <div class="tabs" id='tabsGeneric'>
   <ul>
     <li><a href="#tabs-3"><?php echo $this->t('Data');?></a></li>
-    <li><a href="#tabs-1"><?php echo $this->t("Feed")?></a></li>
+    <li><a href="#tabs-1"><?php echo $this->t('Feed')?></a></li>
     <?php
     if(!empty($this->information))
       {
@@ -95,7 +95,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       ?>
     <div id="tabs-3">
       <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-      <table id="browseTable" class="midasTree">
+      <table id="browseTable" class="midasTree" root="<?php echo $this->user->getFolderId(); ?>">
         <thead>
               <th class="thData"><?php echo $this->t('Name');?></th>
               <th class="thSize"><?php echo $this->t('Size');?></th>
@@ -116,9 +116,10 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
                 {
                 $deletableStatus = 'true';
                 }
+              $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
               echo "<tr id='node--$node' policy='{$folder->policy}' deletable=$deletableStatus class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='$folderId' ajax='$folderId'>";
-              echo "  <td class='treeBrowseElement'><span class='folder'>{$folder->getName()}</span></td>";
-              echo "  <td><img class='folderLoading'  element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
+              echo "  <td class='treeBrowseElement'><span class='folder{$privacyClass}'>{$folder->getName()}</span></td>";
+              echo "  <td><img class='folderLoading' element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
               echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='$folderId' /></td>";
               echo "</tr>";
@@ -127,8 +128,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
             foreach($this->items as $item)
               {
+              $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
               echo "<tr id='node--$node' policy='{$item->policy}' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
-              echo "  <td class='treeBrowseElement'><span class='file'>{$this->slicename($item->getName(),40)}</span></td>";
+              echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename($item->getName(),40)}</span></td>";
               echo "  <td>{$item->size}</td>";
               echo "  <td>{$this->Date->ago($item->getDateUpdate(),true)}</td>";
               echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' /></td>";
@@ -183,7 +185,15 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       {
       echo '
       <li><a onclick="midas.user.showDeleteDialog('.$this->user->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/> '.$this->t('Delete My Account').'</a></li>';
-      }
+      }       
+    foreach($this->moduleActions as $module)
+      {
+      foreach($module as $name => $urlNimage)
+        {
+        echo ' 
+        <li><a href="'.$urlNimage["url"].'"><img alt="" src="'.$urlNimage["image"].'"/> '.$this->t("$name").'</a></li>' ;
+        }
+      }  
     echo '
     </ul>
   </div>';

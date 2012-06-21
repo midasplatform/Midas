@@ -38,26 +38,23 @@ foreach($cssArray as $module => $list)
 <div class="viewMain">
 
   <div class ="genericWrapperTopRight">
-      <div style="float:right;" class="genericBigButton ">
+      <div style="float:right;">
+        <button class="topDownloadButton" onclick="window.location.href='<?php echo $this->webroot.'/download?items='.$this->itemDao->getKey(); ?>'">
         <?php
-        echo "<a  href='{$this->webroot}/download/?items={$this->itemDao->getKey()}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/download.png'/>";
         if($this->itemIsLink)
           {
-          echo $this->t('View as weblink');
+          echo $this->t('View');
           }
         else
           {
           echo $this->t('Download');
           }
-        echo '</a>';
-         ?>
+        ?>
+        </button>
       </div>
       <br/>
-      <div class="itemStats">
-      <?php echo $this->itemDao->getView()?> <?php echo $this->t('views'); ?>,
-      <?php echo $this->itemDao->getDownload()?> <?php echo $this->t('downloads');?></div>
   </div>
-  <div style='width:350px;' class="genericInfo">
+  <div style='width:460px;' class="genericInfo">
      <div class="genericThumbnail">
     <?php
       echo "<img src='{$this->coreWebroot}/public/images/icons/document-big.png' alt=''/>";
@@ -137,15 +134,15 @@ foreach($cssArray as $module => $list)
         echo '  <div class="genericBigButton">';
         echo '    <a href="'.$this->webroot.'/download/?items='.$this->itemDao->getKey().','.$revision->getRevision().'">';
         echo '    <img alt="" src="'.$this->coreWebroot.'/public/images/icons/download.png" />';
-        echo '    Download revision '.$revision->getRevision().'</a>';
+        echo '    Download </a>';
         echo '  </div>';
-        if($this->isModerator)
+        if($this->isAdmin)
           {
           echo '  <div style="float: right; margin: 0 0 0 5px;">';
           echo ' <form id="deleteItemrevisionForm'.$revision->getItemrevisionId().'" class="genericForm" method="POST"  action="'.$this->webroot.'/item/deleteitemrevision">';
           echo ' <input type="hidden" name="itemrevisionId" value="'.$revision->getItemrevisionId().'"/>';
           echo ' <input type="hidden" name="itemId" value="'.$this->itemDao->getKey().'"/>';
-          echo '    <a href="javascript:;" class="deleteItemRevision" itemrevisionId="'.$revision->getItemrevisionId().'" itemId="'.$this->itemDao->getKey().'">';
+          echo '    <a qtip="Delete revision" href="javascript:;" class="deleteItemRevision" itemrevisionId="'.$revision->getItemrevisionId().'" itemId="'.$this->itemDao->getKey().'">';
           echo '    <img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
           echo '  </form></div>';
           }
@@ -313,6 +310,14 @@ foreach($cssArray as $module => $list)
           <td><?php echo $this->linkuser($this->itemDao->lastrevision->getUser())?></td>
         </tr>
         <tr>
+          <td>Views</td>
+          <td><?php echo $this->itemDao->getView(); ?></td>
+        </tr>
+        <tr>
+          <td>Downloads</td>
+          <td><?php echo $this->itemDao->getDownload(); ?></td>
+        </tr>
+        <tr>
           <td>Revisions</td>
           <td><?php echo $this->itemDao->lastrevision->getRevision()?></td>
         </tr>
@@ -330,13 +335,11 @@ foreach($cssArray as $module => $list)
       </tbody>
     </table>
     <?php
-    $path=$this->itemDao->getThumbnail();
-    if(!empty($path)&&  file_exists(BASE_PATH.'/'.$path))
+    if($this->itemDao->getThumbnailId())
       {
-      echo "
-        <h1>{$this->t('Preview')}</h1>
-        <img class='infoLogo' alt='' src='{$this->webroot}/{$path}'/>
-        ";
+      echo '<h1>Preview</h1>'.
+           '<img class="infoLogo" alt="" src="'.$this->webroot.'/item/thumbnail?itemId='.
+           $this->itemDao->getKey().'"/>';
       }
       ?>
   </div>

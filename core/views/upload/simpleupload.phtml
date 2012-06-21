@@ -85,22 +85,22 @@ PURPOSE.  See the above copyright notices for more information.
         <div class="tooBigUpload">
           <img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/> <b><?php echo $this->t('Please use the large file tool, the following files are too big:')?></b>
           <ul>
-
           </ul>
         </div>
 
       </div>
       <b><?php echo $this->t('Step 2: Select a target location')?></b>
       <div>
-      <br/>
-     <?php echo $this->t('Current location:')?>
+        <br/>
+        <?php echo $this->t('Current location:')?>
         <b><span id="destinationUpload"><?php echo $this->defaultUploadLocationText?></span></b>
         <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>
         <div class="belowDestinationUpload" style="display: none;"></div>
         <br/>
         <input style="margin-left:0px;" class="browseMIDASLink globalButton" type="button" value="Change location" />
-        <br/>
-        <br/>
+        <br/><br/>
+        <input type="checkbox" id="newRevisionCheckbox">Upload new revision if item name already exists</input>
+        <br/><br/>
       </div>
       <b><?php echo $this->t('Step 3: Select a license')?></b>
       <div>
@@ -147,11 +147,6 @@ PURPOSE.  See the above copyright notices for more information.
   </div>
 </div>
 
-<div class="reviewUploaded">
-  <form method="post" action="<?php echo $this->webroot?>/browse/uploaded">
-    <input class="globalButton" type="submit" value="<?php echo $this->t('Review uploaded files');?>" />
-  </form>
-</div>
 <input type="hidden" class="buttonBrowse" value="<?php echo $this->t('Browse');?>"/>
 <input type="hidden" class="sessionId" value="<?php echo session_id();?>"/>
 <input type="hidden" class="maxSizeFile" value="<?php echo $this->maxSizeFile;?>"/>

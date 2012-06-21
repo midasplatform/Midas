@@ -31,49 +31,41 @@ if($('div.MainDialogContent #selectElements') != undefined)
 
 //dependance: common/browser.js
 var ajaxSelectRequest = '';
-function selectFolderCallbackSelect(node)
-  {
-  var selectedElement = node.find('span:eq(1)').html();
+function selectFolderCallbackSelect(node) {
+    var selectedElement = node.find('span:eq(1)').html();
 
-  var parent = true;
-  var current = node;
+    var parent = true;
+    var current = node;
 
-  while(parent != null)
-    {
-    parent = null;
-    var classNames = current[0].className.split(' ');
-    for(key in classNames)
-      {
-      if(classNames[key].match("child-of-"))
-        {
-        parent = $("div.MainDialogContent #" + classNames[key].substring(9));
+    while(parent != null) {
+        parent = null;
+        var classNames = current[0].className.split(' ');
+        for(key in classNames) {
+            if(classNames[key].match("child-of-")) {
+                parent = $("div.MainDialogContent #" + classNames[key].substring(9));
+            }
         }
-      }
-    if(parent != null)
-      {
-      selectedElement = parent.find('span:eq(1)').html()+'/'+selectedElement;
-      current = parent;
-      }
+        if(parent != null) {
+            selectedElement = parent.find('span:eq(1)').html()+'/'+selectedElement;
+            current = parent;
+        }
     }
 
-  $('div.MainDialogContent #createFolderContent').hide();
-  if(node.attr('element') == -1 || node.attr('element') == -2)
-    {
-    $('div.MainDialogContent #selectElements').attr('disabled', 'disabled');
-    $('div.MainDialogContent #createFolderButton').hide();
+    $('div.MainDialogContent #createFolderContent').hide();
+    if(node.attr('element') == -1 || node.attr('element') == -2) {
+        $('div.MainDialogContent #selectElements').attr('disabled', 'disabled');
+        $('div.MainDialogContent #createFolderButton').hide();
     }
-  else
-    {
-    $('div.MainDialogContent #selectedDestinationHidden').val(node.attr('element'));
-    $('div.MainDialogContent #selectedDestination').html(sliceFileName(selectedElement, 40));
-    $('div.MainDialogContent #selectElements').removeAttr('disabled');
+    else {
+        $('div.MainDialogContent #selectedDestinationHidden').val(node.attr('element'));
+        $('div.MainDialogContent #selectedDestination').html(sliceFileName(selectedElement, 40));
+        $('div.MainDialogContent #selectElements').removeAttr('disabled');
 
-    if($('div.MainDialogContent #defaultPolicy').val() != 0)
-      {
-      $('div.MainDialogContent #createFolderButton').show();
-      }
+        if($('div.MainDialogContent #defaultPolicy').val() != 0) {
+            $('div.MainDialogContent #createFolderButton').show();
+        }
     }
-  }
+}
 
 $('#moveTable ajaimg.infoLoading').show();
 $('div.MainDialogContent div.ajaxInfoElement').html('');
@@ -98,12 +90,12 @@ function successCreateFolderCallback(responseText, statusText, xhr, form)
   jsonResponse = jQuery.parseJSON(responseText);
   if(jsonResponse==null)
     {
-    createNotive('Error',4000);
+    midas.createNotice('Error',4000);
     return;
     }
   if(jsonResponse[0])
     {
-    createNotive(jsonResponse[1],4000);
+    midas.createNotice(jsonResponse[1],4000);
     var node = $('#moveTable tr[element='+jsonResponse[2].folder_id+']');
     node.reload();
 
@@ -113,7 +105,7 @@ function successCreateFolderCallback(responseText, statusText, xhr, form)
     }
   else
     {
-    createNotive(jsonResponse[1],4000);
+    midas.createNotice(jsonResponse[1],4000);
     }
   }
 
@@ -135,22 +127,19 @@ function selectFolderCallbackCheckboxes(node)
   //  midas.genericCallbackCheckboxes(node);
   }
 
-function selectFolderCallbackCustomElements(node,elements,first)
-  {
-  var i = 1;
-  var id = node.attr('id');
-  elements['folders'] = jQuery.makeArray(elements['folders']);
+function selectFolderCallbackCustomElements(node, elements) {
+    var i = 1;
+    var id = node.attr('id');
 
-  var padding = parseInt(node.find('td:first').css('padding-left').slice(0,-2));
-  var html = '';
-  $.each(elements['folders'], function(index, value) {
-    if(value['policy'] >= parseInt($('div.MainDialogContent #defaultPolicy').val()))
-      {
-      html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
-      html+=     "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";
-      html+=     "</tr>";
-      i++;
-      }
+    var padding = parseInt(node.find('td:first').css('padding-left').slice(0,-2));
+    var html = '';
+    $.each(elements.folders, function(index, value) {
+        if(value.policy >= parseInt($('div.MainDialogContent #defaultPolicy').val())) {
+          html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value.folder_id+"'type='folder' policy='"+value.policy+"' element='"+value.folder_id+"'>";
+          html+= "  <td><span class='folder'>"+trimName(value.name, padding)+"</span></td>";
+          html+= "</tr>";
+          i++;
+          }
     });
-  return html;
-  }
+    return html;
+}

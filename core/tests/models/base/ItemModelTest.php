@@ -24,9 +24,35 @@ class ItemModelTest extends DatabaseTestCase
   public function setUp()
     {
     $this->setupDatabase(array());
+    $this->enabledModules = array();
     $this->_models = array('Bitstream', 'Item', 'ItemRevision', 'User');
-    $this->_daos = array();
+    $this->_daos = array('Item');
     parent::setUp();
+    }
+
+  /** Test creating an item with a "normal" name as well as the special case
+   *  of '0'.
+   **/
+  public function testCreateItem()
+    {
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
+    $usersFile = $this->loadData('User', 'default');
+    $adminUser = $this->User->load($usersFile[2]->getKey());
+
+    // Create normal item
+    $folderDao = $adminUser->getPrivateFolder();
+    $name = 'test name';
+    $description = 'test test test';
+    $newItem = $this->Item->createItem($name, $description, $folderDao);
+    $this->assertEquals($newItem->getName(), $name);
+    $this->assertEquals($newItem->getDescription(), $description);
+
+    // Create item with name of '0'
+    $name = '0';
+    $newItem = $this->Item->createItem($name, $description, $folderDao);
+    $this->assertEquals($newItem->getName(), $name);
+    $this->assertEquals($newItem->getDescription(), $description);
     }
 
   /** testGetLastRevision */
@@ -43,7 +69,7 @@ class ItemModelTest extends DatabaseTestCase
     $found = false;
     foreach($revisionsFile as $revisionDao)
       {
-      if($revisionDao->getItemId() === $itemId)
+      if((int)$revisionDao->getItemId() === (int)$itemId)
         {
         // see if we find the matching highest
         if($revisionDao->getKey() === $revisionKey)
@@ -62,6 +88,8 @@ class ItemModelTest extends DatabaseTestCase
   /** testAddRevision*/
   public function testAddRevision()
     {
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $itemsFile = $this->loadData('Item', 'default');
     $usersFile = $this->loadData('User', 'default');
     $revision = new ItemRevisionDao();
@@ -80,6 +108,8 @@ class ItemModelTest extends DatabaseTestCase
   /** testRemoveRevision*/
   public function testRemoveRevision()
     {
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $itemsFile = $this->loadData('Item', 'default');
     $usersFile = $this->loadData('User', 'default');
     $item = $itemsFile[1];
@@ -153,13 +183,11 @@ class ItemModelTest extends DatabaseTestCase
     $this->assertFalse($lastRev);
     }
 
-
-
-
-
   /** test duplication of an item */
   public function testDuplicate()
     {
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $itemsFile = $this->loadData('Item', 'default');
     $usersFile = $this->loadData('User', 'default');
     $item1 = $this->Item->load($itemsFile[0]->getKey());

@@ -33,26 +33,35 @@ PURPOSE.  See the above copyright notices for more information.
       ?>
   </select>
   <label for="prioritylog">Priority</label>
+  <select id="priorityOperator" name="priorityOperator">
+    <option value="<=">&gt;=</option>
+    <option value="=">==</option>
+  </select>
   <select id="prioritylog" name="prioritylog">
-    <option value="all">all</option>
     <option value="2">critical</option>
-    <option value="4">warning</option>
+    <option value="4" selected="selected">warning</option>
     <option value="6">info</option>
   </select>
   <br/>
-  <input type='submit' value='Apply Filter' />
+  <input type="hidden" id="errorlogOffset" name="offset" value="0" />
+  <input type="hidden" id="errorlogPageLimit" name="limit" />
+  <input type="submit" id="applyFilter" value="Apply Filter" />
 </form>
 
 
 <br/>
 
 <span><b>Current Filter:</b></span><br />
-From: <span id="currentFilterStart"><?php echo $this->currentFilter['start']; ?></span><br />
-To: <span id="currentFilterEnd"><?php echo $this->currentFilter['end']; ?></span><br />
-Module: <span id="currentFilterModule"><?php echo $this->currentFilter['module']; ?></span><br />
-Priority: <span id="currentFilterPriority"><?php echo $this->currentFilter['priority']; ?></span><br />
+From: <span id="currentFilterStart"><?php echo $this->jsonContent['currentFilter']['start']; ?></span><br />
+To: <span id="currentFilterEnd"><?php echo $this->jsonContent['currentFilter']['end']; ?></span><br />
+Module: <span id="currentFilterModule">all</span><br />
+Priority: <span id="currentFilterPriority">&gt;= warning</span><br />
 <hr/>
 <button type="button" id="deleteSelected">Delete Selected</button>
+<span id="paginationMessage"></span>
+<button id="errorlogPreviousPage" disabled="disabled">&lt;</button>
+<button id="errorlogNextPage" disabled="disabled">&gt;</button>
+<br/>
 <table id="listLogs" class="tablesorter">
   <thead>
     <tr>
@@ -69,5 +78,5 @@ Priority: <span id="currentFilterPriority"><?php echo $this->currentFilter['prio
 
 <img class="logsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
 
-<div id="jsonLogs" style="display:none;"><?php echo $this->jsonLogs?></div>
+<div id="jsonLogs" style="display:none;"><?php echo JsonComponent::encode($this->jsonContent); ?></div>
 <div id="fullLogMessages" style="display:none;"></div>

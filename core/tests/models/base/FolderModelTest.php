@@ -35,7 +35,8 @@ class FolderModelTest extends DatabaseTestCase
     parent::setUp();
     }
 
-  /** testCreateSaveAndDelete*/
+  /** testCreateSaveAndDelete. We also have an additional check for the name
+      '0' */
   public function testCreateSaveAndDelete()
     {
     $folder = $this->Folder->createFolder("TestNameFolder", "Description", 0);
@@ -48,6 +49,12 @@ class FolderModelTest extends DatabaseTestCase
     $this->Folder->delete($folder);
     $folder = $this->Folder->load($id);
     $this->assertEquals(false, $folder);
+
+    // Test creating a folder named 0
+    $folder = $this->Folder->createFolder('0', "Description", 0);
+    $id = $folder->getKey();
+    $folderTmp = $this->Folder->load($id);
+    $this->assertEquals('0', $folderTmp->getName());
     }
 
   /** testGetCommunity*/
@@ -155,7 +162,7 @@ class FolderModelTest extends DatabaseTestCase
     $itemid = $items[0]->getKey();
 
     // Make sure item gets deleted when we delete its parent folder
-    $this->Folder->delete($folder, true);
+    $this->Folder->delete($folder);
     $folder = $this->Folder->load($folderid);
     $this->assertEquals(false, $folder);
     $item = $this->Item->load($itemid);
@@ -192,7 +199,7 @@ class FolderModelTest extends DatabaseTestCase
     $itemid = $items2[0]->getKey();
 
     // Make sure item was not deleted
-    $this->Folder->delete($folder1, true);
+    $this->Folder->delete($folder1);
     $folder = $this->Folder->load($folderid1);
     $this->assertEquals(false, $folder);
     $item = $this->Item->load($itemid);
@@ -205,7 +212,7 @@ class FolderModelTest extends DatabaseTestCase
     $this->assertEquals($items[0]->getName(), 'subItemShared');
 
     // Delete second folder, make sure item is then deleted
-    $this->Folder->delete($folder2, true);
+    $this->Folder->delete($folder2);
     $item = $this->Item->load($itemid);
     $this->assertEquals(false, $item, 'Item should have been deleted');
     }

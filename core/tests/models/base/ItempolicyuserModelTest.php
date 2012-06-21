@@ -34,6 +34,8 @@ class ItempolicyuserModelTest extends DatabaseTestCase
   /** testCreatePolicyAndGetPolicy*/
   public function testCreatePolicyAndGetPolicy()
     {
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $usersFile = $this->loadData('User', 'default');
     $itemsFile = $this->loadData('Item', 'default');
     $policy = $this->Itempolicyuser->createPolicy($usersFile[0], $itemsFile[1], 1);

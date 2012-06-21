@@ -34,13 +34,14 @@ class DownloadBitstreamComponent extends AppComponent
    * The parameter is a bitstream dao.
    * Optional second parameter is the download offset in bytes.
    */
-  function download($bitstream, $offset = 0)
+  function download($bitstream, $offset = 0, $incrementDownload = false)
     {
     // Disable gzip output on apache servers (otherwise no progress in browser)
     if(function_exists('apache_setenv'))
       {
       apache_setenv('no-gzip', '1');
       }
+
 
     $mimetype = $bitstream->getMimetype();
     $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
@@ -49,7 +50,7 @@ class DownloadBitstreamComponent extends AppComponent
       {
       throw new Zend_Exception('Unable to find file on the disk');
       }
-    $chunkSize = 1024 * 8;
+    $chunkSize = 1024 * 64;
     $buffer = '';
     $fileSize = UtilityComponent::fileSize($path);
     $handle = fopen($path, 'rb');
@@ -57,6 +58,7 @@ class DownloadBitstreamComponent extends AppComponent
       {
       throw new Zend_Exception('Unable to open the file');
       }
+
     if(!$this->testingmode) //don't send any headers in testing mode since it will break it
       {
       $modified = gmdate('D, d M Y H:i:s').' GMT';
@@ -131,7 +133,7 @@ class DownloadBitstreamComponent extends AppComponent
           }
         }
       }
-    set_time_limit(0);
+    ignore_user_abort(true); //must call this so the script doesn't end as soon as connection closed
 
     //close the database connection so we don't get too many connections problems
     Zend_Registry::get('dbAdapter')->closeConnection();
@@ -150,6 +152,13 @@ class DownloadBitstreamComponent extends AppComponent
     while(!feof($handle) && connection_status() == 0)
       {
       echo fread($handle, $chunkSize);
+      }
+
+    if($incrementDownload && feof($handle)) // Only record downloads that actually complete
+      {
+      $modelLoader = new MIDAS_ModelLoader();
+      $itemModel = $modelLoader->loadModel('Item');
+      $itemModel->incrementDownloadCount($bitstream->getItemrevision()->getItem());
       }
     fclose($handle);
 

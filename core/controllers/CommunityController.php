@@ -424,6 +424,8 @@ class CommunityController extends AppController
 
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback(
       'CALLBACK_CORE_GET_COMMUNITY_VIEW_EXTRA_HTML', array('community' => $communityDao));
+    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_VIEW_TABS', array('community' => $communityDao));
+    $this->view->customManageActions = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_VIEW_ADMIN_ACTIONS', array('community' => $communityDao));
     } //end index
 
   /** Delete a community*/
@@ -442,7 +444,6 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception("This community doesn't exist or you don't have the permissions.");
       }
-
     $this->Community->delete($communityDao);
 
     $this->_redirect('/');

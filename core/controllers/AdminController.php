@@ -23,7 +23,7 @@
  */
 class AdminController extends AppController
 {
-  public $_models = array('Errorlog', 'Assetstore', 'License');
+  public $_models = array('Assetstore', 'Errorlog', 'Folder', 'License');
   public $_daos = array();
   public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration', 'Demo');
   public $_forms = array('Admin', 'Assetstore', 'Migrate');
@@ -56,7 +56,6 @@ class AdminController extends AppController
   /** run a task **/
   function taskAction()
     {
-    set_time_limit(0);
     if(!$this->logged)
       {
       $this->haveToBeLogged();
@@ -100,6 +99,10 @@ class AdminController extends AppController
     $formArray['lang']->setValue($applicationConfig['global']['application.lang']);
     $formArray['smartoptimizer']->setValue($applicationConfig['global']['smartoptimizer']);
     $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
+    if(isset($applicationConfig['global']['closeregistration']))
+      {
+      $formArray['closeregistration']->setValue($applicationConfig['global']['closeregistration']);
+      }
     if(isset($applicationConfig['global']['dynamichelp']))
       {
       $formArray['dynamichelp']->setValue($applicationConfig['global']['dynamichelp']);
@@ -141,6 +144,7 @@ class AdminController extends AppController
         $applicationConfig['global']['default.timezone'] = $this->_getParam('timezone');
         $applicationConfig['global']['defaultlicense'] = $this->_getParam('licenseSelect');
         $applicationConfig['global']['dynamichelp'] = $this->_getParam('dynamichelp');
+        $applicationConfig['global']['closeregistration'] = $this->_getParam('closeregistration');
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
@@ -315,7 +319,16 @@ class AdminController extends AppController
     $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
     }//end indexAction
 
-  /** Used to display and filter the list of log messages */
+  /**
+   * Used to display and filter the list of log messages
+   * @param startlog The start date to filter log entries by
+   * @param endlog The end date to filter log entries by
+   * @param modulelog What module to filter by
+   * @param prioritylog Priority to filter by
+   * @param priorityOperator Priority operator ('==' | '<=')
+   * @param limit Page limit
+   * @param offset Page offset
+   */
   function showlogAction()
     {
     $this->requireAdminPrivileges();
@@ -325,6 +338,9 @@ class AdminController extends AppController
     $end = $this->_getParam('endlog');
     $module = $this->_getParam('modulelog');
     $priority = $this->_getParam('prioritylog');
+    $priorityOperator = $this->_getParam('priorityOperator');
+    $limit = $this->_getParam('limit');
+    $offset = $this->_getParam('offset');
     if(!isset($start) || empty($start))
       {
       $start = date('c', strtotime('-24 hour'));
@@ -347,15 +363,33 @@ class AdminController extends AppController
       }
     if(!isset($priority) || empty($priority))
       {
-      $priority = 'all';
+      $priority = MIDAS_PRIORITY_WARNING;
+      }
+    if(!isset($priorityOperator) || empty($priorityOperator))
+      {
+      $priorityOperator = '<=';
+      }
+    if(!isset($limit) || empty($limit))
+      {
+      $limit = 100;
+      }
+    if(!isset($offset) || empty($offset))
+      {
+      $offset = 0;
       }
 
-    $this->view->currentFilter = array('start' => $start,
-                                       'end' => $end,
-                                       'module' => $module,
-                                       'priority' => $priority);
 
-    $logs = $this->Errorlog->getLog($start, $end, $module, $priority);
+
+    $results = $this->Errorlog->getLog($start, $end, $module, $priority, $limit, $offset, $priorityOperator);
+    $this->view->jsonContent = array();
+    $this->view->jsonContent['currentFilter'] = array('start' => $start,
+                                                      'end' => $end,
+                                                      'module' => $module,
+                                                      'priority' => $priority,
+                                                      'priorityOperator' => $priorityOperator,
+                                                      'limit' => $limit,
+                                                      'offset' => $offset);
+    $logs = $results['logs'];
     foreach($logs as $key => $log)
       {
       $logs[$key] = $log->toArray();
@@ -374,11 +408,13 @@ class AdminController extends AppController
       $logs[$key]['shortMessage'] = $shortMessage.' ...';
       }
 
+    $this->view->jsonContent['logs'] = $logs;
+    $this->view->jsonContent['total'] = $results['total'];
+
     if($this->_request->isPost())
       {
-      $this->_helper->viewRenderer->setNoRender();
-      echo JsonComponent::encode(array('currentFilter' => $this->view->currentFilter,
-                                       'logs' => $logs));
+      $this->disableView();
+      echo JsonComponent::encode($this->view->jsonContent);
       return;
       }
 
@@ -389,7 +425,6 @@ class AdminController extends AppController
       $modules[] = $key;
       }
     $this->view->modulesLog = $modules;
-    $this->view->jsonLogs = htmlentities(JsonComponent::encode($logs));
     }//showlogAction
 
   /** Used to delete a list of log entries */
@@ -429,12 +464,24 @@ class AdminController extends AppController
 
     }//end dashboardAction
 
+  /**
+   * This will delete all orphaned items and folders from the instance.
+   * Call directly using /admin/removeorphans, there is no UI hook for this action.
+   */
+  function removeorphansAction()
+    {
+    $this->requireAdminPrivileges();
+    $this->disableLayout();
+    $this->disableView();
+    $this->Folder->deleteOrphanedFolders();
+    }
+
   /** upgrade database*/
   function upgradeAction()
     {
     $this->requireAdminPrivileges();
     $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
 
     $db = Zend_Registry::get('dbAdapter');
     $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
@@ -442,21 +489,22 @@ class AdminController extends AppController
 
     if($this->_request->isPost())
       {
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableView();
       $upgraded = false;
-      $modulesConfig = Zend_Registry::get('configsModules');
-      $modules = array();
       foreach($modulesConfig as $key => $module)
         {
         $this->Component->Upgrade->initUpgrade($key, $db, $dbtype);
-        $upgraded = $upgraded || $this->Component->Upgrade->upgrade($module->version);
+        if($this->Component->Upgrade->upgrade($module->version))
+          {
+          $upgraded = true;
+          }
         }
       $this->Component->Upgrade->initUpgrade('core', $db, $dbtype);
-      $upgraded = $upgraded || $this->Component->Upgrade->upgrade(Zend_Registry::get('configDatabase')->version);
-      $this->view->upgraded = $upgraded;
+      if($this->Component->Upgrade->upgrade(Zend_Registry::get('configDatabase')->version))
+        {
+        $upgraded = true;
+        }
 
-      $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
-      $modulesConfig = Zend_Registry::get('configsModules');
       if($upgraded)
         {
         echo JsonComponent::encode(array(true, 'Upgraded'));
@@ -507,7 +555,7 @@ class AdminController extends AppController
     // Display the tree
     $_POST['dir'] = urldecode($_POST['dir']);
     $files = array();
-    if(strpos(strtolower(PHP_OS), 'win') !==  false)
+    if(strpos(strtolower(PHP_OS), 'win') === 0)
       {
       $files = array();
       for($c = 'A'; $c <= 'Z'; $c++)

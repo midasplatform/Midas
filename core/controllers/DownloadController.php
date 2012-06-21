@@ -25,33 +25,54 @@ class DownloadController extends AppController
 {
   public $_models = array('Folder', 'Item', 'Community', 'User', 'Bitstream');
   public $_daos = array();
-  public $_components = array("DownloadBitstream");
+  public $_components = array('DownloadBitstream');
 
   /** index
-   * @param ?folders = 12-13 (will download a zip of the folder 12 and 13 ,recusively)
-   * @param ?folders = 12, 1-13, 1 (will download a zip of the folder 12 and 13 ,recusively) //Need testing
-   * @param ?items = 12-13 (will download a zip containing the last revisions of the items 12 and 13)
-   * @param ?items = 12, 1-13 (will download a zip containing the revision 1 of item 12 and last revision of item 13)
-   * @param ?items = 12, 1 (will download the revision 1 of the item 12, a zip ifthere are multiple bitstream or simply the file)
-   * @param ?bitstream = 1 (will download related bitstream)
+   * @param folders = 12-13 (will download a zip of the folder 12 and 13 ,recusively)
+   * @param folders = 12, 1-13, 1 (will download a zip of the folder 12 and 13 ,recusively) //Need testing
+   * @param items = 12-13 (will download a zip containing the last revisions of the items 12 and 13)
+   * @param items = 12, 1-13 (will download a zip containing the revision 1 of item 12 and last revision of item 13)
+   * @param items = 12, 1 (will download the revision 1 of the item 12, a zip ifthere are multiple bitstream or simply the file)
+   * @param bitstream = 1 (will download related bitstream)
+   * @param offset The offset in bytes if downloading a bitstream (defaults to 0)
+   * @param name Alternate filename when downloading a bitstream (defaults to bitstream name)
    */
   public function indexAction()
     {
-    set_time_limit(0);
     $this->disableLayout();
     $itemIds = $this->_getParam('items');
     $folderIds = $this->_getParam('folders');
     $bitsreamid = $this->_getParam('bitstream');
+    $sessionUser = $this->userSession->Dao;
+    if($sessionUser != null)
+      {
+      // Make sure this is a copy and not a reference
+      $sessionUser = $this->User->load($sessionUser->getKey());
+      }
     if(isset($bitsreamid) && is_numeric($bitsreamid))
       {
+      $name = $this->_getParam('name');
+      $offset = $this->_getParam('offset');
+      if(!isset($offset))
+        {
+        $offset = 0;
+        }
       $bitstream = $this->Bitstream->load($bitsreamid);
+      if(!$bitstream)
+        {
+        throw new Zend_Controller_Action_Exception('Invalid bitstream id', 404);
+        }
+      if(isset($name))
+        {
+        $bitstream->setName($name); //don't save name, just set it on this dao
+        }
       $revision = $bitstream->getItemrevision();
       $item = $revision->getItem();
-      if($item == false || !$this->Item->policyCheck($item, $this->userSession->Dao))
+      if($item == false || !$this->Item->policyCheck($item, $sessionUser))
         {
-        throw new Zend_Exception("Error Policy");
+        throw new Zend_Exception('Permission denied');
         }
-      $this->Component->DownloadBitstream->download($bitstream);
+      $this->Component->DownloadBitstream->download($bitstream, $offset, true);
       return;
       }
     if(!isset($itemIds) && !isset($folderIds))
@@ -59,28 +80,6 @@ class DownloadController extends AppController
       throw new Zend_Exception("No parameters");
       }
     $folderIds = explode('-', $folderIds);
-    $folders = array();
-    foreach($folderIds as $folderId)
-      {
-      $tmp = explode(', ', $folderId);
-      if(empty($tmp[0]))
-        {
-        continue;
-        }
-      $folder = $this->Folder->load($tmp[0]);
-      if($folder == false)
-        {
-        continue;
-        }
-      if(!isset($tmp[0]) || $tmp[0] == 1)
-        {
-        $folder->recursive = true;
-        }
-      else
-        {
-        $folder->recursive = false;
-        }
-      }
     $folders = $this->Folder->load($folderIds);
 
     $itemIds = explode('-', $itemIds);
@@ -96,11 +95,10 @@ class DownloadController extends AppController
           continue;
           }
         $item = $this->Item->load($tmp[0]);
-        if($item == false || !$this->Item->policyCheck($item, $this->userSession->Dao))
+        if($item == false || !$this->Item->policyCheck($item, $sessionUser))
           {
           continue;
           }
-        $this->Item->incrementDownloadCount($item);
         if(isset($tmp[1]))
           {
           $tmp = $this->Item->getRevision($item, $tmp[1]);
@@ -138,7 +136,8 @@ class DownloadController extends AppController
       if(count($bitstreams) == 0)
         {
         // download an empty zip with the name of item (if it exists), then exit
-        $this->_downloadEmptyItem($item);
+        $this->Item->incrementDownloadCount($revision->getItem());
+        $this->_downloadEmptyItem($revision->getItem());
         }
       elseif(count($bitstreams) == 1)
         {
@@ -147,14 +146,12 @@ class DownloadController extends AppController
           $this->_redirect($bitstreams[0]->getPath());
           return;
           }
-        $this->_helper->viewRenderer->setNoRender();
-        $componentLoader = new MIDAS_ComponentLoader();
-        $downloadComponent = $componentLoader->loadComponent('DownloadBitstream');
+        $this->disableView();
         if($this->_getParam('testingmode') == '1')
           {
-          $downloadComponent->testingmode = true;
+          $this->Component->DownloadBitstream->testingmode = true;
           }
-        $downloadComponent->download($bitstreams[0]);
+        $this->Component->DownloadBitstream->download($bitstreams[0], 0, true);
         }
       else
         {
@@ -176,6 +173,7 @@ class DownloadController extends AppController
           $zip->add_file_from_path($filename, $path);
           }
         $zip->finish();
+        $this->Item->incrementDownloadCount($revision->getItem());
         exit();
         }
       }
@@ -215,7 +213,7 @@ class DownloadController extends AppController
         }
       ob_start();
       $zip = new ZipStream($name.'.zip');
-      $zip = $this->_createZipRecursive($zip, '', $folders, $revisions);
+      $zip = $this->_createZipRecursive($zip, '', $folders, $revisions, $sessionUser);
       $zip->finish();
       exit();
       }
@@ -249,11 +247,8 @@ class DownloadController extends AppController
     exit();
     }
 
-
-
-
   /** create zip recursive*/
-  private function _createZipRecursive($zip, $path, $folders, $revisions)
+  private function _createZipRecursive($zip, $path, $folders, $revisions, $sessionUser)
     {
     foreach($revisions as $revision)
       {
@@ -276,10 +271,11 @@ class DownloadController extends AppController
         Zend_Registry::get('dbAdapter')->closeConnection();
         $zip->add_file_from_path($filename, $fullpath);
         }
+      $this->Item->incrementDownloadCount($revision->getItem());
       }
     foreach($folders as $folder)
       {
-      if(!$this->Folder->policyCheck($folder, $this->userSession->Dao))
+      if(!$this->Folder->policyCheck($folder, $sessionUser))
         {
         continue;
         }
@@ -288,7 +284,7 @@ class DownloadController extends AppController
       foreach($items as $item)
         {
         $itemName = $item->getName();
-        if(!$this->Item->policyCheck($item, $this->userSession->Dao))
+        if(!$this->Item->policyCheck($item, $sessionUser))
           {
           continue;
           }
@@ -296,32 +292,9 @@ class DownloadController extends AppController
         if($tmp !== false)
           {
           $subRevisions[] = $tmp;
-          if(isset($folder->recursive) && $folder->recursive == false)
-            {
-            $bitstreams = $subRevisions->getBitstreams();
-            $count = count($bitstreams);
-            foreach($bitstreams as $bitstream)
-              {
-              if($count > 1 || $bitstream->getName() != $itemName)
-                {
-                $currPath = $path.'/'.$itemName;
-                }
-              else
-                {
-                $currPath = $path;
-                }
-              $filename = $currPath.'/'.$bitstream->getName();
-              $fullpath = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
-              Zend_Registry::get('dbAdapter')->closeConnection();
-              $zip->add_file_from_path($filename, $fullpath);
-              }
-            }
           }
         }
-      if(!isset($folder->recursive) || $folder->recursive)
-        {
-        $zip = $this->_createZipRecursive($zip, $path.'/'.$folder->getName(), $folder->getFolders(), $subRevisions);
-        }
+      $zip = $this->_createZipRecursive($zip, $path.'/'.$folder->getName(), $folder->getFolders(), $subRevisions, $sessionUser);
       }
     return $zip;
     }

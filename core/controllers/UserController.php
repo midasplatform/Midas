@@ -188,6 +188,11 @@ class UserController extends AppController
     {
     $this->disableView();
     $this->disableLayout();
+    if(isset(Zend_Registry::get('configGlobal')->closeregistration) && Zend_Registry::get('configGlobal')->closeregistration == "1")
+      {
+      echo JsonComponent::encode(array('status' => 'error', 'message' => 'New user registration is disabled.'));
+      return;
+      }
     $form = $this->Form->User->createRegisterForm();
     if($this->_request->isPost() && $form->isValid($this->getRequest()->getPost()))
       {
@@ -215,6 +220,10 @@ class UserController extends AppController
   /** Register a user */
   function registerAction()
     {
+    if(isset(Zend_Registry::get('configGlobal')->closeregistration) && Zend_Registry::get('configGlobal')->closeregistration == "1")
+      {
+      throw new Zend_Exception('New user registration is disabled.');
+      }
     $form = $this->Form->User->createRegisterForm();
     if($this->_request->isPost() && $form->isValid($this->getRequest()->getPost()))
       {
@@ -820,6 +829,7 @@ class UserController extends AppController
 
     $this->view->disableFeedImages = true;
     $this->view->moduleTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_USER_TABS', array('user' => $userDao));
+    $this->view->moduleActions = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_USER_ACTIONS', array('user' => $userDao));
     }
 
   /** Manage files page action*/
@@ -916,8 +926,6 @@ class UserController extends AppController
   /** Delete a user */
   public function deleteAction()
     {
-    // make sure this gets completed even if user navigates away or it takes a long time
-    set_time_limit(0);
     ignore_user_abort(true);
 
     if(!$this->logged)

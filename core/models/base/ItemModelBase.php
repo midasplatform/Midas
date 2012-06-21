@@ -36,7 +36,7 @@ abstract class ItemModelBase extends AppModel
       'sizebytes' => array('type' => MIDAS_DATA),
       'date_creation' => array('type' => MIDAS_DATA),
       'date_update' => array('type' => MIDAS_DATA),
-      'thumbnail' => array('type' => MIDAS_DATA),
+      'thumbnail_id' => array('type' => MIDAS_DATA),
       'view' => array('type' => MIDAS_DATA),
       'download' => array('type' => MIDAS_DATA),
       'privacy_status' => array('type' => MIDAS_DATA),
@@ -59,6 +59,8 @@ abstract class ItemModelBase extends AppModel
   abstract function getByUuid($uuid);
   abstract function getAll();
   abstract function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view');
+  abstract function getByName($name);
+  abstract function iterateWithCallback($callback, $paramName = 'item');
 
   /** delete an item */
   public function delete($dao)
@@ -82,53 +84,15 @@ abstract class ItemModelBase extends AppModel
       {
       $dao->setDateCreation(date('c'));
       }
+    if(!isset($dao->type) || empty($dao->type))
+      {
+      $dao->setType(0);
+      }
     $dao->setDateUpdate(date('c'));
     $dao->setDescription(UtilityComponent::filterHtmlTags($dao->getDescription()));
     parent::save($dao);
 
-    require_once BASE_PATH.'/core/controllers/components/SearchComponent.php';
-    $component = new SearchComponent();
-    $index = $component->getLuceneItemIndex();
-
-    $hits = $index->find("item_id:".$dao->getKey());
-    foreach($hits as $hit)
-      {
-      $index->delete($hit->id);
-      }
-    $doc = new Zend_Search_Lucene_Document();
-    $field = Zend_Search_Lucene_Field::Text('title', $dao->getName());
-    $field->boost = 2;
-    $doc->addField($field);
-    $doc->addField(Zend_Search_Lucene_Field::Keyword('item_id', $dao->getKey()));
-    $doc->addField(Zend_Search_Lucene_Field::UnStored('description', $dao->getDescription()));
-
-    $modelLoad = new MIDAS_ModelLoader();
-    $revisionModel = $modelLoad->loadModel('ItemRevision');
-    $revision = $this->getLastRevision($dao);
-
-    if($revision != false)
-      {
-      $metadata = $revisionModel->getMetadata($revision);
-      $metadataString = '';
-
-      foreach($metadata as $m)
-        {
-        $fieldName = $m->getElement();
-        if($m->getQualifier())
-          {
-          $fieldName .= '-'.$m->getQualifier();
-          }
-        $doc->addField(Zend_Search_Lucene_Field::Keyword($fieldName, $m->getValue()));
-        if(!is_numeric($m->getValue()))
-          {
-          $metadataString .= ' '. $m->getValue();
-          }
-        }
-
-      $doc->addField(Zend_Search_Lucene_Field::Text('metadata', $metadataString));
-      }
-    $index->addDocument($doc);
-    $index->commit();
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_SAVED', array('item' => $dao));
     }
 
   /** copy parent folder policies*/
@@ -232,21 +196,46 @@ abstract class ItemModelBase extends AppModel
       {
       throw new Zend_Exception("Should be an user.");
       }
+    $modelLoad = new MIDAS_ModelLoader();
+    $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
+    $BitstreamModel = $modelLoad->loadModel('Bitstream');
+    $MetadataModel = $modelLoad->loadModel('Metadata');
+
     $name = $itemDao->getName();
     $description = $itemDao->getDescription();
     $newItem = $this->createItem($name, $description, $folderDao);
     $newItem->setType($itemDao->getType());
-    $newItem->setThumbnail($itemDao->getThumbnail());
     $newItem->setSizebytes($itemDao->getSizebytes());
     $newItem->setPrivacyStatus($itemDao->getPrivacyStatus());
     $newItem->setDateCreation(date('c'));
     $newItem->setDateUpdate(date('c'));
+
+    $thumbnailId = $itemDao->getThumbnailId();
+    if($thumbnailId !== null)
+      {
+      $oldThumb = $BitstreamModel->load($thumbnailId);
+      $newThumb = new BitstreamDao;
+      $newThumb->setItemrevisionId(-1);
+      $newThumb->setName($oldThumb->getName());
+      $newThumb->setMimetype($oldThumb->getMimetype());
+      $newThumb->setSizebytes($oldThumb->getSizebytes());
+      $newThumb->setChecksum($oldThumb->getChecksum());
+      $newThumb->setPath($oldThumb->getPath());
+      $newThumb->setAssetstoreId($oldThumb->getAssetstoreId());
+      $newThumb->setDate($oldThumb->getDate());
+      $BitstreamModel->save($newThumb);
+      $newItem->setThumbnailId($newThumb->getKey());
+      }
+
     $this->save($newItem);
 
     $modelLoad = new MIDAS_ModelLoader();
     $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
     $BitstreamModel = $modelLoad->loadModel('Bitstream');
     $MetadataModel = $modelLoad->loadModel('Metadata');
+    $ItemPolicyGroupModel = $modelLoad->loadModel('Itempolicygroup');
+    $ItemPolicyGroupModel->computePolicyStatus($newItem);
+
     foreach($itemDao->getRevisions() as $revision)
       {
       $dupItemRevision = new ItemRevisionDao;
@@ -368,7 +357,7 @@ abstract class ItemModelBase extends AppModel
       {
       throw new Zend_Exception("Second argument should be an item revision" );
       }
-    if($revisiondao->getItemId() !== $itemdao->getItemId())
+    if($revisiondao->getItemId() != $itemdao->getItemId())
       {
       throw new Zend_Exception("Revision needs to be associated with Item");
       }
@@ -438,7 +427,7 @@ abstract class ItemModelBase extends AppModel
       throw new Zend_Exception('Parent should be a folder.');
       }
 
-    if(empty($name))
+    if(empty($name) && $name !== '0')
       {
       throw new Zend_Exception('Name cannot be empty.');
       }
@@ -494,14 +483,14 @@ abstract class ItemModelBase extends AppModel
       throw new Zend_Exception('Parent should be a folder.');
       }
 
-    if(empty($name))
-      {
-      throw new Zend_Exception('Name cannot be empty.');
-      }
-
     if(!is_string($name))
       {
       throw new Zend_Exception('Name should be a string.');
+      }
+
+    if(empty($name) && $name !== '0')
+      {
+      throw new Zend_Exception('Name cannot be empty.');
       }
 
     if($parent instanceof FolderDao)
@@ -615,5 +604,28 @@ abstract class ItemModelBase extends AppModel
                                              array('item' => $mainItem,
                                                    'itemIds' => $itemIds));
     return $mainItem;
+    }
+
+  /**
+   * Delete the existing thumbnail on an item if there is one, and replace
+   * it with the one at the provided temp path.  The temp file will be
+   * moved into the assetstore.
+   */
+  public function replaceThumbnail($item, $tempThumbnailFile)
+    {
+    $modelLoad = new MIDAS_ModelLoader();
+    $assetstoreModel = $modelLoad->loadModel('Assetstore');
+    $bitstreamModel = $modelLoad->loadModel('Bitstream');
+
+    // Remove the existing thumbnail bitstream
+    if($item->getThumbnailId() !== null)
+      {
+      $oldThumb = $bitstreamModel->load($item->getThumbnailId());
+      $bitstreamModel->delete($oldThumb);
+      }
+
+    $thumb = $bitstreamModel->createThumbnail($assetstoreModel->getDefault(), $tempThumbnailFile);
+    $item->setThumbnailId($thumb->getKey());
+    $this->save($item);
     }
 } // end class ItemModelBase

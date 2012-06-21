@@ -10,10 +10,6 @@ div.viewInfo{
   display:inherit!important;
 }
 
-div.viewHeader{
-  padding: 0px 0px 4px 15px!important;
-}
-
 div.genericBigButton{
   position: relative;
   top:-20px;

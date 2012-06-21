@@ -74,7 +74,7 @@ abstract class CommunityModelBase extends AppModel
       $dao->setUuid(uniqid() . md5(mt_rand()));
       }
     $name = $dao->getName();
-    if(empty($name))
+    if(empty($name) && $name !== '0')
       {
       throw new Zend_Exception("Please set a name.");
       }
@@ -116,7 +116,7 @@ abstract class CommunityModelBase extends AppModel
       {
       throw new Zend_Exception("Community already exists.");
       }
-    if(empty($name))
+    if(empty($name) && $name !== '0')
       {
       throw new Zend_Exception("Please set a name.");
       }
@@ -221,7 +221,7 @@ abstract class CommunityModelBase extends AppModel
 
     $folder_model = $this->ModelLoader->loadModel('Folder');
     $folder = $communityDao->getFolder();
-    $folder_model->delete($folder, true);
+    $folder_model->delete($folder);
 
     $feed_model = $this->ModelLoader->loadModel('Feed');
     $feeds = $communityDao->getFeeds();

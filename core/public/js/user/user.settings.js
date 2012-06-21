@@ -1,107 +1,100 @@
-$( "#tabsSettings" ).tabs();
+var midas = midas || {};
+midas.user = midas.user || {};
 
-$( "#tabsSettings" ).css('display','block');
-$( "#tabsSettings" ).show();
-
-$('#modifyPassword').ajaxForm( { beforeSubmit: validatePasswordChange, success: successPasswordChange  } );
-
-$('#modifyAccount').ajaxForm( { beforeSubmit: validateAccountChange, success: successAccountChange  } );
-
-$('#modifyPicture').ajaxForm( { beforeSubmit: validatePictureChange, success: successPictureChange  } );
-
-jsonSettings = jQuery.parseJSON($('div.jsonSettingsContent').html());
-
-$('textarea#biography').attr('onkeyup', 'this.value = this.value.slice(0, 255)');
-$('textarea#biography').attr('onchange', 'this.value = this.value.slice(0, 255)');
-
-
-function validatePasswordChange(formData, jqForm, options)
-{
-  var form = jqForm[0]; 
-  if(form.newPassword.value.length < 2)
-    {
-    createNotice(jsonSettings.passwordErrorShort, 4000);
-    return false;
+midas.user.validatePasswordChange = function (formData, jqForm, options) {
+    var form = jqForm[0];
+    if(form.newPassword.value.length < 2) {
+        midas.createNotice(jsonSettings.passwordErrorShort, 4000, 'error');
+        return false;
     }
-  if(form.newPassword.value.length < 2 || form.newPassword.value != form.newPasswordConfirmation.value)
-    { 
-    createNotice(jsonSettings.passwordErrorMatch, 4000);
-    return false;
-    } 
-}
-
-function validatePictureChange(formData, jqForm, options)
-{  
-  var form = jqForm[0]; 
-}
-
-function validateAccountChange(formData, jqForm, options)
-{  
-  var form = jqForm[0]; 
-  if(form.firstname.value.length < 1)
-    {
-    createNotice(jsonSettings.accountErrorFirstname, 4000);
-    return false;
-    }
-  if(form.lastname.value.length < 1)
-    {
-    createNotice(jsonSettings.accountErrorLastname, 4000);
-    return false;
+    if(form.newPassword.value.length < 2 || form.newPassword.value != form.newPasswordConfirmation.value) {
+        midas.createNotice(jsonSettings.passwordErrorMatch, 4000, 'error');
+        return false;
     }
 }
 
-function successPasswordChange(responseText, statusText, xhr, form) 
-{
-  jsonResponse = jQuery.parseJSON(responseText);
-  if(jsonResponse == null)
-    {
-    createNotice('Error', 4000);
-    return;
+midas.user.validatePictureChange = function (formData, jqForm, options) {
+}
+
+midas.user.validateAccountChange = function (formData, jqForm, options) {
+    var form = jqForm[0];
+    if(form.firstname.value.length < 1) {
+        midas.createNotice(jsonSettings.accountErrorFirstname, 4000, 'error');
+        return false;
     }
-  if(jsonResponse[0])
-    {
-    createNotice(jsonResponse[1], 4000);
-    }
-  else
-    {
-    $('#modifyPassword input[type=password]').val(''); 
-    createNotice(jsonResponse[1], 4000);
+    if(form.lastname.value.length < 1) {
+        midas.createNotice(jsonSettings.accountErrorLastname, 4000, 'error');
+        return false;
     }
 }
 
-function successAccountChange(responseText, statusText, xhr, form) 
-{
-  jsonResponse = jQuery.parseJSON(responseText);
-  if(jsonResponse == null)
-    {
-    createNotice('Error', 4000);
-    return;
+midas.user.successPasswordChange = function (responseText, statusText, xhr, form) {
+    var jsonResponse = jQuery.parseJSON(responseText);
+    if(jsonResponse == null) {
+        midas.createNotice('Error', 4000, 'error');
+        return;
     }
-  if(jsonResponse[0])
-    {
-    createNotice(jsonResponse[1], 4000);
+    if(jsonResponse[0]) {
+        midas.createNotice(jsonResponse[1], 4000);
     }
-  else
-    {
-    createNotice(jsonResponse[1], 4000);
+    else {
+        $('#modifyPassword input[type=password]').val('');
+        midas.createNotice(jsonResponse[1], 4000, 'error');
     }
 }
 
-function successPictureChange(responseText, statusText, xhr, form) 
-{
-  jsonResponse = jQuery.parseJSON(responseText);
-  if(jsonResponse == null)
-    {
-    createNotice('Error', 4000);
-    return;
+midas.user.successAccountChange = function (responseText, statusText, xhr, form) {
+    var jsonResponse = jQuery.parseJSON(responseText);
+    if(jsonResponse == null) {
+        midas.createNotice('Error', 4000);
+        return;
     }
-  if(jsonResponse[0])
-    {
-    $('img#userTopThumbnail').attr('src', jsonResponse[2]);
-    createNotice(jsonResponse[1], 4000);
+    if(jsonResponse[0]) {
+        midas.createNotice(jsonResponse[1], 4000);
     }
-  else
-    {
-    createNotice(jsonResponse[1], 4000);
+    else {
+        midas.createNotice(jsonResponse[1], 4000, 'error');
     }
 }
+
+midas.user.successPictureChange = function (responseText, statusText, xhr, form) {
+    var jsonResponse = jQuery.parseJSON(responseText);
+    if(jsonResponse == null) {
+        midas.createNotice('Error', 4000, 'error');
+        return;
+    }
+    if(jsonResponse[0]) {
+        $('img#userTopThumbnail').attr('src', jsonResponse[2]);
+        midas.createNotice(jsonResponse[1], 4000);
+    }
+    else {
+        midas.createNotice(jsonResponse[1], 4000, 'error');
+    }
+}
+
+$(document).ready(function() {
+    $( "#tabsSettings" ).tabs();
+
+    $( "#tabsSettings" ).css('display','block');
+    $( "#tabsSettings" ).show();
+
+    $('#modifyPassword').ajaxForm({
+        beforeSubmit: midas.user.validatePasswordChange, 
+        success: midas.user.successPasswordChange
+    });
+
+    $('#modifyAccount').ajaxForm({
+        beforeSubmit: midas.user.validateAccountChange,
+        success: midas.user.successAccountChange
+    });
+
+    $('#modifyPicture').ajaxForm({
+        beforeSubmit: midas.user.validatePictureChange,
+        success: midas.user.successPictureChange
+    });
+
+    var jsonSettings = jQuery.parseJSON($('div.jsonSettingsContent').html());
+
+    $('textarea#biography').attr('onkeyup', 'this.value = this.value.slice(0, 255)');
+    $('textarea#biography').attr('onchange', 'this.value = this.value.slice(0, 255)');
+});

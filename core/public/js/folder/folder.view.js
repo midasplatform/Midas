@@ -31,14 +31,14 @@ $(document).ready(function() {
   $( "#tabsGeneric" ).tabs();
   $("#tabsGeneric").show();
 
-  if($('.pathBrowser li').length > 4)
+  if($('.pathBrowser li').length > 5)
     {
-    while($('.pathBrowser li').length > 4)
+    while($('.pathBrowser li').length > 5)
       {
       $('.pathBrowser li:first').remove();
       }
 
-    $('.pathBrowser li:first').before('<li>...</li>');
+    $('.pathBrowser li:first').before('<li><span>...</span></li>');
     }
   $('.pathBrowser').show();
 });
