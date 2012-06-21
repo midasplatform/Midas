@@ -352,9 +352,9 @@ class AppController extends MIDAS_GlobalController
       {
       $entry .= $module.'/';
       }
-    $entry .= $fc->getRequest()->getControllerName()
-           .'/'.$fc->getRequest()->getActionName().' '
-           .$fc->getRequest()->getMethod()."\n";
+    $entry .= $fc->getRequest()->getControllerName();
+    $entry .= '/'.$fc->getRequest()->getActionName().' ';
+    $entry .= $fc->getRequest()->getMethod()."\n";
 
     $entry .= "Params=\n";
     $params = $this->_getAllParams();
