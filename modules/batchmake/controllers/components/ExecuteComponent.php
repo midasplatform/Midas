@@ -157,7 +157,7 @@ class Batchmake_ExecuteComponent extends AppComponent
           {
           $values[] = "'" . $indVarValue . "'";
           }
-        $configFileLine .= implode(", ", $values);
+        $configFileLine .= implode(" ", $values);
         $configFileLine .= ")";
         $configFileLines[] = $configFileLine;
         }
