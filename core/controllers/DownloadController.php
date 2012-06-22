@@ -164,6 +164,7 @@ class DownloadController extends AppController
         $this->_helper->viewRenderer->setNoRender();
         $name = $revision->getItem()->getName();
         $name = substr($name, 0, 50);
+        session_write_close(); //unlock session writing for concurrent access
         $zip = new ZipStream($name.'.zip');
         foreach($bitstreams as $bitstream)
           {
@@ -207,6 +208,7 @@ class DownloadController extends AppController
         $name = "Custom";
         }
 
+      session_write_close(); //unlock session writing for concurrent access
       while(ob_get_level() > 0)
         {
         ob_end_clean();

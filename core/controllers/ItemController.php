@@ -21,7 +21,7 @@
 /** Item Controller */
 class ItemController extends AppController
   {
-  public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Folder', 'Metadata', 'License');
+  public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Folder', 'Metadata', 'License', 'Progress');
   public $_daos = array();
   public $_components = array('Date', 'Utility', 'Sortdao');
   public $_forms = array('Item');
@@ -40,8 +40,6 @@ class ItemController extends AppController
       $this->_forward('view', null, null, array('itemId' => $actionName));
       }
     }  // end init()
-
-
 
   /**
    * create/edit metadata
@@ -90,6 +88,7 @@ class ItemController extends AppController
         break;
         }
       }
+
     $this->view->itemDao = $itemDao;
     $this->view->metadataTypes = array(
     MIDAS_METADATA_TEXT => 'Text',
@@ -483,11 +482,19 @@ class ItemController extends AppController
       throw new Zend_Exception('Please set a name');
       }
     $itemIds = explode('-', $itemIds);
+    if($this->progressDao)
+      {
+      $this->progressDao->setMaximum(count($itemIds));
+      $this->Progress->save($this->progressDao);
+      }
 
     $mainItem = $this->Item->mergeItems($itemIds, $name,
-                                        $this->userSession->Dao);
+                                        $this->userSession->Dao, $this->progressDao);
 
-    $this->_redirect('/item/'.$mainItem->getKey());
+    if(!$this->_request->isXmlHttpRequest())
+      {
+      $this->_redirect('/item/'.$mainItem->getKey());
+      }
     }//end merge
 
   /**

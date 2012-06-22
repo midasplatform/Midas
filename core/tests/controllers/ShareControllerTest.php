@@ -203,8 +203,7 @@ class ShareControllerTest extends ControllerTestCase
     $this->dispatchUrI('/share/applyrecursivedialog?folderId=1002', $user1);
     $this->assertController('share');
     $this->assertAction('applyrecursivedialog');
-    $this->assertQuery('form#applyPoliciesRecursiveForm');
-    $this->assertQuery('input[type="hidden"][name="folderId"][value="1002"]');
+    $this->assertQuery('input[type="hidden"][id="folderId"][value="1002"]');
 
     // make sure user 2 has no privileges on the item or folder
     $folder = $this->Folder->load(1002);

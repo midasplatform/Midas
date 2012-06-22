@@ -92,12 +92,32 @@ midas.genericCallbackCheckboxes = function(node) {
         links += '</ul>';
         $('div.viewSelected>span').html(links);
         $('a.mergeItemsLink').click(function () {
-            var html = '<form method="POST" action="'+json.global.webroot+'/item/merge?items='+$(this).attr('element')+'">';
-            html+='Select a name: ';
-            html+='<input type="text" name="name" value=""/><br/><br/>';
-            html+='<input class="globalButton" type="submit" value="Merge" />';
-            html+='</form>';
+            var html ='Select a name: ';
+            html+='<input type="text" id="mergeItemName" value=""/><br/><br/>';
+            html+='<div id="mergeProgressBar"></div>';
+            html+='<div id="mergeProgressMessage"></div>';
+            html+='<input id="mergeButton" class="globalButton" type="submit" value="Merge" element="'+$(this).attr('element')+'" />';
             midas.showDialogWithContent('Merge items', html, false, {width: 300});
+            $('#mergeButton').click(function () {
+                if($('#mergeItemName').val() == '') {
+                    midas.createNotice('You must enter an item name first', 3000, 'error');
+                    return;
+                }
+                $(this).attr('disabled', 'disabled');
+                midas.ajaxWithProgress(
+                  $('#mergeProgressBar'),
+                  $('#mergeProgressMessage'),
+                  json.global.webroot+'/item/merge',
+                  {
+                      items: $('#mergeButton').attr('element'),
+                      name: $('#mergeItemName').val()
+                  },
+                  function (data) {
+                      midas.createNotice('Successfully merged items', 3000);
+                      $('div.MainDialog').dialog('close');
+                  }
+                );
+            });
         });
 
         midas.doCallback('CALLBACK_CORE_RESOURCES_SELECTED', {
