@@ -364,6 +364,7 @@ class CommunityController extends AppController
       {
       $member_group = $communityDao->getMemberGroup();
       $this->Group->addUser($member_group, $this->userSession->Dao);
+      Zend_Registry::get('notifier')->callback('CALLBACK_CORE_USER_JOINED_COMMUNITY', array('user' => $this->userSession->Dao, 'community' => $communityDao));
       if($this->view->isInvited)
         {
         $this->CommunityInvitation->removeInvitation($communityDao, $this->userSession->Dao);
