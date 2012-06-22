@@ -57,10 +57,12 @@ class UserController extends AppController
     if($this->logged && $this->userSession->Dao->isAdmin())
       {
       $users = $this->User->getAll(false, 100, $order, $offset);
+      $this->view->isAdmin = true;
       }
     else
       {
       $users = $this->User->getAll(true, 100, $order, $offset, $this->userSession->Dao);
+      $this->view->isAdmin = false;
       }
 
     $this->view->order = $order;
@@ -186,9 +188,18 @@ class UserController extends AppController
    */
   function ajaxregisterAction()
     {
+    $adminCreate = $this->_getParam('adminCreate');
+    $adminCreate = isset($adminCreate);
+
+    if($adminCreate)
+      {
+      $this->requireAdminPrivileges();
+      }
     $this->disableView();
     $this->disableLayout();
-    if(isset(Zend_Registry::get('configGlobal')->closeregistration) && Zend_Registry::get('configGlobal')->closeregistration == "1")
+    if(!$adminCreate &&
+       isset(Zend_Registry::get('configGlobal')->closeregistration) &&
+       Zend_Registry::get('configGlobal')->closeregistration == "1")
       {
       echo JsonComponent::encode(array('status' => 'error', 'message' => 'New user registration is disabled.'));
       return;
@@ -201,13 +212,39 @@ class UserController extends AppController
         echo JsonComponent::encode(array('status' => 'error', 'message' => 'That email is already registered', 'alreadyRegistered' => true));
         return;
         }
-      $this->userSession->Dao = $this->User->createUser(
+      $email = $form->getValue('email');
+      $newUser = $this->User->createUser(
       trim($form->getValue('email')),
       $form->getValue('password1'),
       trim($form->getValue('firstname')),
       trim($form->getValue('lastname')));
 
-      echo JsonComponent::encode(array('status' => 'ok', 'message' => 'User registered successfully'));
+      if($adminCreate)
+        {
+        $subject = 'Midas user registration';
+        $headers = "From: \nReply-To: no-reply\nX-Mailer: PHP/".phpversion()."\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
+        $url = 'http://'.$_SERVER['HTTP_HOST'].'/'.$this->view->webroot;
+        $body = "An administrator has created a user account for you at the following Midas instance:<br/><br/>";
+        $body .= '<a href="'.$url.'">'.$url.'</a><br/><br/>';
+        $body .= "Log in using this email address (".$email.") and your initial password:<br/><br/>";
+        $body .= '<b>'.$form->getValue('password1').'</b><br/><br/>';
+        $body .= "-Midas administrators";
+        if($this->isTestingEnv() || mail($email, $subject, $body, $headers))
+          {
+          echo JsonComponent::encode(array('status' => 'ok', 'message' => 'User created successfully'));
+          }
+        else
+          {
+          echo JsonComponent::encode(array('status' => 'warning',
+                                           'message' => 'User created, but sending of email failed',
+                                           'validValues' => $form->getValidValues($this->getRequest()->getPost())));
+          }
+        }
+      else
+        {
+        $this->userSession->Dao = $newUser;
+        echo JsonComponent::encode(array('status' => 'ok', 'message' => 'User registered successfully'));
+        }
       }
     else
       {
