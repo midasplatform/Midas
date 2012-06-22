@@ -7,7 +7,6 @@ div.registerContent {
 div.registerInfo {
   float: left;
   color: white;
-  height: 110px;
   width: 250px;
   border: 1px solid grey;
   margin-top: 15px;
@@ -17,7 +16,7 @@ div.registerInfo {
   -khtml-border-radius: 4px;
   border-radius: 4px;
   background-color: #363535;
-  padding: 3px 3px 3px 3px;
+  padding: 8px;
 }
 
 div.registerInfo h4{
@@ -56,8 +55,8 @@ Register Form
 -------------------------------------------------*/
 form#registerForm {
   color: white;
-  margin-left: 270px;
-  padding-top: 15px;
+  margin-left: 280px;
+  padding-top: 19px;
 }
 
 form#registerForm div {
