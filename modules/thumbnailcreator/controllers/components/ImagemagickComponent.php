@@ -139,18 +139,22 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       case 'flv':
       case 'mp4':
       case 'rm':
-        // Use first frame if this is a video
-        $p = new phMagick('', $pathThumbnail);
-        $p->setImageMagickPath($imageMagickPath);
-        $p->acquireFrame($fullPath, 0);
-        if($exact)
+        // If this is a video, we have to have the file extension, so symlink it
+        if(function_exists('symlink') && symlink($fullPath, $fullPath.'.'.$ext))
           {
-          //preserve aspect ratio by performing a crop after the resize
-          $p->resizeExactly($width, $height);
-          }
-        else
-          {
-          $p->resize($width, $height);
+          $p = new phMagick('', $pathThumbnail);
+          $p->setImageMagickPath($imageMagickPath);
+          $p->acquireFrame($fullPath.'.'.$ext, 0);
+          if($exact)
+            {
+            //preserve aspect ratio by performing a crop after the resize
+            $p->resizeExactly($width, $height);
+            }
+          else
+            {
+            $p->resize($width, $height);
+            }
+          unlink($fullPath.'.'.$ext);
           }
         break;
       default:
