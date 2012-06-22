@@ -2,6 +2,7 @@
 <dataset>
   <packages_package
     package_id="1"
+    application_id="1"
     item_id="3"
     os="windows"
     arch="i386"
