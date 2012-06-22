@@ -245,49 +245,6 @@ class UtilityComponent extends AppComponent
     return $phpextension_missing;
     }
 
-
-  /**
-   * Check ifImageMagick is available.
-   * Return an array of the form [Is_Ok, Message]
-   *
-   * Where Is_Ok is a boolean indicating ifImageMagick is operational
-   * and where Message contains either:
-   *    - ifIs_ok == true, the version of ImageMagick
-   *    - If Is_Ok == false, details regarding the problem
-   */
-  static function isImageMagickWorking()
-    {
-    // ifcommand is successfull $ret shouldn't be empty
-    exec('convert', $output, $returnvalue);
-    if(count($output) == 0)
-      {
-      exec('im-convert', $output, $returnvalue);
-      }
-    if(count($output) > 0)
-      {
-      // version line should look like: "Version: ImageMagick 6.4.7 2008-12-04 Q16 http://www.imagemagick.org"
-      list($version_line, $copyright_line) = $output;
-
-      // split version by spaces
-      $version_chunks = explode(" ", $version_line);
-
-      // assume version is the third element
-      $version = $version_chunks[2];
-
-      // get major, minor and patch number
-      list($major, $minor, $patch) = explode(".", $version);
-
-      if($major < 6)
-        {
-        $text = "<b>ImageMagick</b> (".$version.") is found. Version (>=6.0) is required. Please install imagemagick from http://www.imagemagick.org";
-        return array(false, $text);
-        }
-      return array(true, "ImageMagick (".$version.") found");
-      }
-    $text = "<b>ImageMagick</b> (>=6.0) is not found. Please install imagemagick from http://www.imagemagick.org";
-    return array(false, $text);
-    }
-
   /**
    * Get size in bytes of the file. This also supports files over 2GB in Windows,
    * which is not supported by PHP's filesize()
