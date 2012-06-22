@@ -56,3 +56,8 @@ a.tableActions{
 span.actionsList{
   float: right;
 }
+
+div.extraManageFormContent {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}

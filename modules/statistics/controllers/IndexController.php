@@ -62,6 +62,7 @@ class Statistics_IndexController extends Statistics_AppController
       }
 
     $errors = $this->Errorlog->getLog(date('c', strtotime('-20 day'.date('Y-m-j G:i:s'))), date('c'), 'all', 2);
+    $errors = $errors['logs'];
     $arrayErrors = array();
 
     $format = 'Y-m-j';

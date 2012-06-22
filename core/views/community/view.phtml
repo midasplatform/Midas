@@ -94,11 +94,15 @@ $strippedDescription = strip_tags($description);
     <li><a id="tabSharedLink" href="#tabs-shared"><?php echo $this->t('Shared with members');?></a></li>
     <?php
       }
-    foreach($this->customTabs as $modules)
+    foreach($this->customTabs as $module => $value)
       {
-      foreach($modules as $name => $url)
+      if(!$value)
         {
-        echo "<li><a href='{$url}'>{$name}</a></li>";
+        continue;
+        }
+      foreach($value as $name => $url)
+        {
+        echo "<li><a title='".str_replace(' ', '_', $name)."' href='{$url}'>{$name}</a></li>";
         }
       }
      ?>
