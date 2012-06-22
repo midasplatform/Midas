@@ -43,11 +43,11 @@ class Packages_ExtensionModel extends Packages_ExtensionModelBase
           {
           $category = $params['category'];
           $filterClause = "packages_extension.category = '".$category."'"
-                      ." OR packages_extension.category LIKE '".$category.".%'"
-                      ." OR packages_extension.category LIKE '".$category.";%'"
-                      ." OR packages_extension.category LIKE '%;".$category.".%'"
-                      ." OR packages_extension.category LIKE '%;".$category.";%'"
-                      ." OR packages_extension.category LIKE '%;".$category."'";
+          ." OR packages_extension.category LIKE '".$category.".%'"
+          ." OR packages_extension.category LIKE '".$category.";%'"
+          ." OR packages_extension.category LIKE '%;".$category.".%'"
+          ." OR packages_extension.category LIKE '%;".$category.";%'"
+          ." OR packages_extension.category LIKE '%;".$category."'";
 
           $sql->where($filterClause);
           $sqlCount->where($filterClause);
