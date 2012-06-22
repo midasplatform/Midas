@@ -82,7 +82,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
     //refresh lucene search index
     if($lastrevision->getKey() == $revisiondao->getKey())
       {
-      $itemModel->save($item);
+      $itemModel->save($item, true);
       }
     return;
     }  // end getMetadata

@@ -202,7 +202,7 @@ class ImportController extends AppController
           $item = new ItemDao;
           $item->setName($fileInfo->getFilename());
           $item->setDescription('');
-          $this->Item->save($item);
+          $this->Item->save($item, true);
 
           // Set the policy of the item
           $this->Itempolicyuser->createPolicy($this->userSession->Dao, $item,
