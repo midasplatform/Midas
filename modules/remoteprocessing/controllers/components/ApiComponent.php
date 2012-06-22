@@ -91,7 +91,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
     $tokenDao = $Api_UserapiModel->getToken($email, $apikey, 'remoteprocessing');
     if(empty($tokenDao))
       {
-      throw new Exception('Unable to authenticate.Please check credentials.', MIDAS_INVALID_PARAMETER);
+      throw new Exception('Unable to authenticate. Please check credentials.', MIDAS_INVALID_PARAMETER);
       }
 
     $data['token'] = $tokenDao->getToken();
