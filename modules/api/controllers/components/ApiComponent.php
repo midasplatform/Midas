@@ -128,7 +128,7 @@ class Api_ApiComponent extends AppComponent
     $tokenDao = $Api_Userapi->getToken($email, $apikey, $appname);
     if(empty($tokenDao))
       {
-      throw new Exception('Unable to authenticate.Please check credentials.', MIDAS_INVALID_PARAMETER);
+      throw new Exception('Unable to authenticate. Please check credentials.', MIDAS_INVALID_PARAMETER);
       }
     $data['token'] = $tokenDao->getToken();
     return $data;
