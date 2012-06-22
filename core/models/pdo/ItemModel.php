@@ -34,7 +34,6 @@ class ItemModel extends ItemModelBase
       {
       $group = false; //Postgresql don't like the sql request with group by
       }
-    $isAdmin = false;
     if($userDao == null)
       {
       $userId = -1;
@@ -46,10 +45,6 @@ class ItemModel extends ItemModelBase
     else
       {
       $userId = $userDao->getUserId();
-      if($userDao->isAdmin())
-        {
-        $isAdmin = true;
-        }
       }
 
     // Allow modules to handle special search queries.  If any module accepts the query given its format,
@@ -73,10 +68,10 @@ class ItemModel extends ItemModelBase
     foreach($overrideSearch as $module => $results)
       {
       $override = true;
-      $itemIds = $results['itemIds'];
+      $queryResults = $results;
       break;
       }
-    $return = array();
+
     if(!$override)
       {
       // If no special search modules are enabled, we fall back to a naive/slow SQL search
@@ -86,87 +81,32 @@ class ItemModel extends ItemModelBase
                   ->where('name LIKE ? OR description LIKE ?', '%'.$searchterm.'%')
                   ->limit($limit * 3); //extend limit to allow for policy-based result culling
       $rowset = $this->database->fetchAll($sql);
-      $itemIds = array();
+      $queryResults = array();
       foreach($rowset as $row)
         {
-        $itemIds[] = $row['item_id'];
+        $queryResults[] = array('id' => $row['item_id'], 'score' => 0); //no boosting/scoring from sql search
         }
       }
 
-    if(empty($itemIds))
+    $i = 0;
+    $results = array();
+    foreach($queryResults as $result)
       {
-      return array();
-      }
-    $sql = $this->database->select();
-    if($group)
-      {
-      $sql->from(array('i' => 'item'), array('item_id', 'name', 'count(*)'));
-      }
-    else
-      {
-      $sql->from(array('i' => 'item'));
-      }
-
-    if(!$isAdmin)
-      {
-      $sql ->joinLeft(array('ipu' => 'itempolicyuser'), '
-                    i.item_id = ipu.item_id AND '.$this->database->getDB()->quoteInto('ipu.policy >= ?', MIDAS_POLICY_READ).'
-                       AND '.$this->database->getDB()->quoteInto('ipu.user_id = ? ', $userId).' ', array())
-          ->joinLeft(array('ipg' => 'itempolicygroup'), '
-                         i.item_id = ipg.item_id AND '.$this->database->getDB()->quoteInto('ipg.policy >= ?', MIDAS_POLICY_READ).'
-                             AND ( '.$this->database->getDB()->quoteInto('ipg.group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                                  ipg.group_id IN (' .new Zend_Db_Expr(
-                                  $this->database->select()
-                                       ->setIntegrityCheck(false)
-                                       ->from(array('u2g' => 'user2group'),
-                                              array('group_id'))
-                                       ->where('u2g.user_id = ?', $userId)
-                                       ) .'))', array())
-          ->where(
-           '(
-            ipu.item_id is not null or
-            ipg.item_id is not null)'
-            );
-      }
-    $sql->setIntegrityCheck(false)
-          ->where('i.item_id IN   (?)', $itemIds)
-          ->limit($limit);
-
-    if($group)
-      {
-      $sql->group('i.name');
-      }
-
-    switch($order)
-      {
-      case 'name':
-        $sql->order(array('i.name ASC'));
-        break;
-      case 'date':
-        $sql->order(array('i.date_update ASC'));
-        break;
-      case 'view':
-      default:
-        $sql->order(array('i.view DESC'));
-        break;
-      }
-    $rowset = $this->database->fetchAll($sql);
-    foreach($rowset as $row)
-      {
-      $tmpDao = $this->initDao('Item', $row);
-      if(isset($row['count(*)']))
+      $item = $this->load($result['id']);
+      if($item && $this->policyCheck($item, $userDao))
         {
-        $tmpDao->count = $row['count(*)'];
+        $item->count = 1;
+        $item->score = $result['score'];
+        $results[] = $item;
+        unset($item);
+        $i++;
+        if($i >= $limit)
+          {
+          break;
+          }
         }
-      else if(isset($row['count']))
-        {
-        $tmpDao->count = $row['count'];
-        }
-      $tmpDao->score = 0; // maybe later we can handle scoring in a robust way
-      $return[] = $tmpDao;
-      unset($tmpDao);
       }
-    return $return;
+    return $results;
     } // end getItemsFromSearch()
 
   /** get All*/
