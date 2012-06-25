@@ -478,8 +478,9 @@ class UtilityComponent extends AppComponent
    */
   public static function filterHtmlTags($text)
     {
-    $allowedTags = array('a', 'b', 'br', 'i', 'p', 'strong');
-    $allowedAttributes = array('href');
+    $allowedTags = array('a', 'b', 'br', 'i', 'p', 'strong', 'table', 'thead',
+      'tbody', 'th', 'tr', 'td', 'ul', 'ol', 'li', 'style', 'div', 'span');
+    $allowedAttributes = array('href', 'class', 'style', 'type');
     $stripTags = new Zend_Filter_StripTags($allowedTags, $allowedAttributes);
     return $stripTags->filter($text);
     }
