@@ -41,12 +41,12 @@ class UtilityComponentTest extends ControllerTestCase
     $this->assertEquals($text, $val);
 
     // Assert that we allow certain tags
-    $text = '<b>bold</b><br><br /><i>italic</i><p>paragraph</p><a href="http://site.com">anchor</a>';
+    $text = '<b>bold</b><br><br /><i>italic</i><p>paragraph</p><a href="http://site.com">anchor</a><div>Div</div>';
     $val = UtilityComponent::filterHtmlTags($text);
     $this->assertEquals($text, $val);
 
-    // Assert that we strip disallowed attributes such as style
-    $text = '<a style="color: red;">anchor</a>';
+    // Assert that we strip disallowed attributes such as id
+    $text = '<a id="idLink">anchor</a>';
     $val = UtilityComponent::filterHtmlTags($text);
     $this->assertEquals($val, '<a>anchor</a>');
 
