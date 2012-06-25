@@ -39,6 +39,13 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
     <h3><?php echo $this->t('My information')?>:</h3>
     <form  class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']?><?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>">
       <table>
+        <?php
+        foreach($this->prependFields as $field)
+          {
+          echo '<tr><td><span>'.$field['label'].':</span>';
+          echo '<input type="'.$field['type'].'" name="'.$field['name'].'" value="'.$field['value'].'" /></td><td></td></tr>';
+          }
+        ?>
         <tr>
           <td><span><?php echo $this->t('E-mail');?>:</span><?php echo $this->accountForm['email']?></td><td></td>
         </tr>
@@ -65,26 +72,32 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
           </td>
         </tr>
         <?php
-          if($this->currentUser->isAdmin())
-            { ?>
-            <tr>
-              <td colspan="2">
-                <?php echo $this->t('Administrator');?>:
-                <input type="checkbox" name="adminStatus" id="adminStatusCheckbox"
-                <?php
-                if($this->user->isAdmin())
-                  {
-                  echo ' checked="checked" ';
-                  }
-                if($this->user->getKey() == $this->currentUser->getKey())
-                  {
-                  echo ' disabled="disabled" ';
-                  } ?>
-                  />
-             </td>
-           </tr>
+        if($this->currentUser->isAdmin())
+          { ?>
+          <tr>
+            <td colspan="2">
+              <?php echo $this->t('Administrator');?>:
+              <input type="checkbox" name="adminStatus" id="adminStatusCheckbox"
+              <?php
+              if($this->user->isAdmin())
+                {
+                echo ' checked="checked" ';
+                }
+              if($this->user->getKey() == $this->currentUser->getKey())
+                {
+                echo ' disabled="disabled" ';
+                } ?>
+                />
+            </td>
+          </tr>
         <?php
-            } ?>
+          } 
+        foreach($this->appendFields as $field)
+          {
+          echo '<tr><td><span>'.$field['label'].':</span>';
+          echo '<input type="'.$field['type'].'" name="'.$field['name'].'" value="'.$field['value'].'" /></td><td></td></tr>';
+          }
+        ?>
         <tr>
           <td><?php echo $this->accountForm['modifyAccount']?></td>
         </tr>

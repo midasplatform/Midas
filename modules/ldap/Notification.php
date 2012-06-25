@@ -34,8 +34,72 @@ class Ldap_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
     $this->addCallBack('CALLBACK_CORE_RESET_PASSWORD', 'handleResetPassword');
     $this->addCallBack('CALLBACK_CORE_ALLOW_PASSWORD_CHANGE', 'allowPasswordChange');
-    }//end init
+    $this->addCallBack('CALLBACK_CORE_USER_PROFILE_FIELDS', 'getLdapLoginField');
+    $this->addCallBack('CALLBACK_CORE_USER_SETTINGS_CHANGED', 'userSettingsChanged');
+    }
 
+  /**
+   * Add an LDAP login field to the user profile form
+   */
+  public function getLdapLoginField($params)
+    {
+    $user = $params['user'];
+
+    $field = array('label' => 'LDAP Login',
+                   'name' => 'ldapLogin',
+                   'type' => 'text',
+                   'position' => 'top',
+                   'value' => '');
+    $ldapUser = $this->Ldap_User->getByUser($user);
+    if($ldapUser)
+      {
+      $field['value'] = $ldapUser->getLogin();
+      }
+    return $field;
+    }
+
+  /**
+   * Handle the LDAP login field from the user settings form.  If it is set to the empty string,
+   * deletes any existing ldap_user for the user. Otherwise will update or create an ldap_user record
+   * with the new value. The user will then use that on subsequent logins.
+   * @param fields The HTTP fields from the settings form
+   * @param user The user dao being changed
+   */
+  public function userSettingsChanged($params)
+    {
+    $user = $params['user'];
+    $fields = $params['fields'];
+
+    if(!array_key_exists('ldapLogin', $fields))
+      {
+      throw new Zend_Exception('LDAP Login parameter was not passed');
+      }
+    $ldapLogin = $fields['ldapLogin'];
+
+    $ldapUser = $this->Ldap_User->getByUser($user);
+    if($ldapUser)
+      {
+      if($ldapLogin == '')
+        {
+        $this->Ldap_User->delete($ldapUser);
+        }
+      else
+        {
+        $ldapUser->setLogin($ldapLogin);
+        }
+      }
+    else if($ldapLogin != '')
+      {
+      $this->Ldap_User->loadDaoClass('UserDao', 'ldap');
+      $ldapUserDao = new Ldap_UserDao();
+      $ldapUserDao->setUserId($user->getKey());
+      $ldapUserDao->setLogin($ldapLogin);
+      $this->Ldap_User->save($ldapUserDao);
+
+      $user->setPassword(''); // set existing password to empty when converting to ldap_user
+      $this->User->save($user);
+      }
+    }
 
   /** generate admin Dashboard information */
   public function getDashboard()
