@@ -38,6 +38,10 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
               <label for='hostname'>Ldap Hostname</label>
               {$this->configForm['hostname']}
             </div>
+            <div qtip='Port on which server is listening (required). Default is 389, or 636 for SSL.'  >
+              <label for='port'>Ldap Port</label>
+              {$this->configForm['port']}
+            </div>
             <div qtip=\"This is the url to the backup server. Leave blank if you don't want to use a backup server.\" >
               <label for='hostname'>Backup Server</label>
               {$this->configForm['backup']}
@@ -65,6 +69,10 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
             <div >
               <label for='proxyBasedn'>Proxy Base Dn</label>
               {$this->configForm['proxyBasedn']}
+            </div>
+            <div >
+              <label for='proxyPassword'>Proxy Password</label>
+              {$this->configForm['proxyPassword']}
             </div>
             <div >
               <label for='useActiveDirectory'>Use Active Directory?</label>

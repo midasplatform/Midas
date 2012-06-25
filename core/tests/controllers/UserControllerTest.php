@@ -77,27 +77,32 @@ class UserControllerTest extends ControllerTestCase
   public function testLoginAction()
     {
     $this->resetAll();
-    $this->dispatchUrI("/user/login");
-    $this->assertController("user");
-    $this->assertAction("login");
+    $this->dispatchUrI('/user/login');
+    $this->assertController('user');
+    $this->assertAction('login');
 
-    $this->assertQuery("form#loginForm");
+    $this->assertQuery('form#loginForm');
 
+    $this->resetAll();
     $this->params = array();
     $this->params['email'] = 'user1@user1.com';
     $this->params['password'] = 'wrong password';
     $this->request->setMethod('POST');
-    $this->dispatchUrI("/user/login");
-
-    $this->assertRedirect();
+    $this->dispatchUrI('/user/login');
+    $resp = json_decode($this->getBody());
+    $this->assertTrue($resp->status == false);
+    $this->assertTrue(is_string($resp->message) && strlen($resp->message) > 0);
     $this->assertFalse(Zend_Auth::getInstance()->hasIdentity());
 
+    $this->resetAll();
     $this->params = array();
     $this->params['email'] = 'user1@user1.com';
     $this->params['password'] = 'test';
     $this->request->setMethod('POST');
     $this->dispatchUrI('/user/login');
-    $this->assertTrue(strpos($this->getBody(), 'Test Pass') !== false, 'Unable to authenticate');
+    $resp = json_decode($this->getBody());
+    $this->assertTrue($resp->status == true);
+    $this->assertTrue(is_string($resp->redirect) && strlen($resp->redirect) > 0);
     }
 
   /** test terms */
@@ -172,6 +177,7 @@ class UserControllerTest extends ControllerTestCase
 
     $this->resetAll();
     $this->params = array();
+    $this->params['email'] = $userDao->getEmail();
     $this->params['firstname'] = 'new First Name';
     $this->params['lastname'] = 'new Last Name';
     $this->params['company'] = 'Compagny';
@@ -193,6 +199,54 @@ class UserControllerTest extends ControllerTestCase
 
     $thumbnail = $userCheckDao->getThumbnail();
     $this->assertTrue(!empty($thumbnail), 'Unable to change avatar');
+
+    // Should not be able to change to an invalid email
+    $this->resetAll();
+    $this->params = array();
+    $this->params['email'] = 'invalid';
+    $this->params['firstname'] = 'bad';
+    $this->params['lastname'] = 'bad';
+    $this->params['company'] = 'Compagny';
+    $this->params['privacy'] = MIDAS_USER_PRIVATE;
+    $this->params['modifyAccount'] = 'true';
+    $this->request->setMethod('POST');
+    $this->dispatchUrI("/user/settings", $userDao);
+    $userCheckDao = $this->User->load($userDao->getKey());
+    $this->assertNotEquals($userCheckDao->getEmail(), 'invalid');
+    $this->assertEquals($userCheckDao->getFirstname(), 'new First Name');
+    $this->assertEquals($userCheckDao->getLastname(), 'new Last Name');
+
+    // Should not be able to change to a different user's email
+    $this->resetAll();
+    $this->params = array();
+    $this->params['email'] = $user2Dao->getEmail();
+    $this->params['firstname'] = 'bad';
+    $this->params['lastname'] = 'bad';
+    $this->params['company'] = 'Compagny';
+    $this->params['privacy'] = MIDAS_USER_PRIVATE;
+    $this->params['modifyAccount'] = 'true';
+    $this->request->setMethod('POST');
+    $this->dispatchUrI("/user/settings", $userDao);
+    $userCheckDao = $this->User->load($userDao->getKey());
+    $this->assertNotEquals($userCheckDao->getEmail(), $user2Dao->getEmail());
+    $this->assertEquals($userCheckDao->getFirstname(), 'new First Name');
+    $this->assertEquals($userCheckDao->getLastname(), 'new Last Name');
+
+    // Should be able to change email to something valid and unique
+    $this->resetAll();
+    $this->params = array();
+    $this->params['email'] = 'valid@unique.com';
+    $this->params['firstname'] = 'Good';
+    $this->params['lastname'] = 'Good';
+    $this->params['company'] = 'Compagny';
+    $this->params['privacy'] = MIDAS_USER_PRIVATE;
+    $this->params['modifyAccount'] = 'true';
+    $this->request->setMethod('POST');
+    $this->dispatchUrI("/user/settings", $userDao);
+    $userCheckDao = $this->User->load($userDao->getKey());
+    $this->assertEquals($userCheckDao->getEmail(), 'valid@unique.com');
+    $this->assertEquals($userCheckDao->getFirstname(), 'Good');
+    $this->assertEquals($userCheckDao->getLastname(), 'Good');
 
     $this->setupDatabase(array('default'));
     }
@@ -247,42 +301,42 @@ class UserControllerTest extends ControllerTestCase
     $this->assertAction('userpage');
     }
 
-  /** test validentry */
-  public function testValidentryAction()
+  /** test the userexists action */
+  public function testUserexistsAction()
     {
     $this->resetAll();
-    $this->dispatchUrI('/user/validentry');
+    $this->dispatchUrI('/user/userexists');
     $this->assertTrue(strpos($this->getBody(), 'false') !== false);
 
     $this->resetAll();
     $this->params = array();
     $this->params['entry'] = 'user1@user1.com';
-    $this->params['type'] = 'dbuser';
-    $this->dispatchUrI('/user/validentry');
+    $this->dispatchUrI('/user/userexists');
     $this->assertTrue(strpos($this->getBody(), 'true') !== false);
 
     $this->resetAll();
     $this->params = array();
     $this->params['entry'] = 'test_email_not_in_db';
-    $this->params['type'] = 'dbuser';
-    $this->dispatchUrI('/user/validentry');
+    $this->dispatchUrI('/user/userexists');
     $this->assertTrue(strpos($this->getBody(), 'false') !== false);
 
     $this->resetAll();
     $this->params = array();
-    $this->params['entry'] = 'user1@user1.com';
-    $this->params['type'] = 'login';
+    $this->params['email'] = 'user1@user1.com';
     $this->params['password'] = 'wrong_password';
-    $this->dispatchUrI('/user/validentry');
-    $this->assertTrue(strpos($this->getBody(), 'false') !== false);
+    $this->request->setMethod('POST');
+    $this->dispatchUrI('/user/login');
+    $resp = json_decode($this->getBody());
+    $this->assertTrue($resp->status == false);
 
     $this->resetAll();
     $this->params = array();
-    $this->params['entry'] = 'user1@user1.com';
-    $this->params['type'] = 'login';
+    $this->params['email'] = 'user1@user1.com';
     $this->params['password'] = 'test';
-    $this->dispatchUrI('/user/validentry');
-    $this->assertTrue(strpos($this->getBody(), 'true') !== false);
+    $this->request->setMethod('POST');
+    $this->dispatchUrI('/user/login');
+    $resp = json_decode($this->getBody());
+    $this->assertTrue($resp->status == true);
     }
 
   /** Test admin ability to delete a user */
@@ -456,6 +510,7 @@ class UserControllerTest extends ControllerTestCase
     // Admin user should be allowed to set user 1 as admin
     $this->resetAll();
     $this->params = array();
+    $this->params['email'] = $user1->getEmail();
     $this->params['firstname'] = 'First Name';
     $this->params['lastname'] = 'Last Name';
     $this->params['company'] = 'Company';
@@ -471,6 +526,7 @@ class UserControllerTest extends ControllerTestCase
     // Admin user should be able to unset another admin user's status
     $this->resetAll();
     $this->params = array();
+    $this->params['email'] = $user1->getEmail();
     $this->params['firstname'] = 'First Name';
     $this->params['lastname'] = 'Last Name';
     $this->params['company'] = 'Company';

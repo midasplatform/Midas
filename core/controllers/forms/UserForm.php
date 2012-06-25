@@ -33,8 +33,7 @@ class UserForm extends AppForm
     $email = new Zend_Form_Element_Text('email');
     $email
           ->setRequired(true)
-          ->addValidator('NotEmpty', true)
-          ->addValidator('EmailAddress');
+          ->addValidator('NotEmpty', true);
 
     $password = new Zend_Form_Element_Password('password');
     $password
@@ -114,6 +113,13 @@ class UserForm extends AppForm
     $form->setAction($this->webroot.'/user/settings')
           ->setMethod('post');
 
+    $email = new Zend_Form_Element_Text('email');
+    $email
+          ->setRequired(true)
+          ->addValidator('NotEmpty', true)
+          ->setAttrib('maxLength', 255)
+          ->addValidator('EmailAddress');
+
     $firstname = new Zend_Form_Element_Text('firstname');
     $firstname
           ->setRequired(true)
@@ -153,12 +159,16 @@ class UserForm extends AppForm
 
     $privacy = new Zend_Form_Element_Radio('privacy');
     $privacy->addMultiOptions(array(
-                 MIDAS_USER_PUBLIC => $this->t("Public (Anyone can see my information)"),
-                 MIDAS_USER_PRIVATE => $this->t("Private (Nobody can see my information)"),
+                 MIDAS_USER_PUBLIC => $this->t("Public (Anyone can see my information, excluding email address)"),
+                 MIDAS_USER_PRIVATE => $this->t("Private (User information will be hidden)"),
                   ))
           ->setRequired(true)
           ->setValue(MIDAS_COMMUNITY_PUBLIC);
 
+    if(isset($defaultValue['email']))
+      {
+      $email->setValue($defaultValue['email']);
+      }
     if(isset($defaultValue['firstname']))
       {
       $firstname->setValue($defaultValue['firstname']);
@@ -192,7 +202,7 @@ class UserForm extends AppForm
       $biography->setValue($defaultValue['biography']);
       }
 
-    $form->addElements(array($website, $city, $country, $biography, $firstname, $lastname, $company, $privacy, $submit));
+    $form->addElements(array($email, $website, $city, $country, $biography, $firstname, $lastname, $company, $privacy, $submit));
 
     return $form;
     }

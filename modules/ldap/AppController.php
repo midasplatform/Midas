@@ -18,9 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
+/** Controller base class for the ldap module */
 class Ldap_AppController extends MIDAS_GlobalModule
   {
-    public $moduleName='ldap';
-    
+  public $moduleName = 'ldap';
   } //end class
 ?>
