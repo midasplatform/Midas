@@ -923,7 +923,7 @@ class ApiCallMethodsTest extends ControllerTestCase
       }
     }
 
-  /** Test getting user by id and firstname + lastname */
+  /** Test getting user by id and email and firstname + lastname */
   public function testUserGet()
     {
     // Test getting a user by id
@@ -934,6 +934,15 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->_assertStatusOk($resp);
     $this->assertEquals($resp->data->firstname, 'FirstName1');
     $this->assertEquals($resp->data->lastname, 'LastName1');
+
+    // Test getting a user by email
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.user.get';
+    $this->params['email'] = 'user1@user1.com';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->email, 'user1@user1.com');
 
     // Test getting a user by first name and last name
     $this->resetAll();
