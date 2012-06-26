@@ -806,7 +806,7 @@ class UserController extends AppController
     $this->view->jsonSettings['passwordErrorMatch'] = $this->t('The passwords are not the same');
     $this->view->jsonSettings = JsonComponent::encode($this->view->jsonSettings);
 
-    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_CONFIG_TABS', array());
+    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_CONFIG_TABS', array('user' => $userDao));
     }
 
   /** User page action*/
