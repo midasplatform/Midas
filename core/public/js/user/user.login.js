@@ -12,11 +12,16 @@ midas.user.login.validateLoginForm = function () {
 
 midas.user.login.loginResult = function (responseText) {
     'use strict';
-    var resp = $.parseJSON(responseText);
-    if(resp.status) {
-        window.location.href = resp.redirect;
-    } else {
-        midas.createNotice(resp.message, 5000, 'error');
+    try {
+        var resp = $.parseJSON(responseText);
+        if(resp.status) {
+            window.location.href = resp.redirect;
+        } else {
+            midas.createNotice(resp.message, 5000, 'error');
+        }
+    } catch(e) {
+        midas.createNotice('An internal error occured, please contact your administrator',
+                           5000, 'error');
     }
 };
 
