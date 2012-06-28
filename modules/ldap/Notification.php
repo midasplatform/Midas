@@ -43,6 +43,10 @@ class Ldap_Notification extends MIDAS_Notification
    */
   public function getLdapLoginField($params)
     {
+    if(!$this->userSession->Dao || !$this->userSession->Dao->isAdmin())
+      {
+      return null;
+      }
     $user = $params['user'];
 
     $field = array('label' => 'LDAP Login',
