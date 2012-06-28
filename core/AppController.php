@@ -356,7 +356,10 @@ class AppController extends MIDAS_GlobalController
     $fc = Zend_Controller_Front::getInstance();
 
     $entry  = date('c')."\n";
-    $entry .= 'IP='.$_SERVER['REMOTE_ADDR']."\n";
+    if(isset($_SERVER['REMOTE_ADDR']))
+      {
+      $entry .= 'IP='.$_SERVER['REMOTE_ADDR']."\n";
+      }
     $entry .= 'Action=';
     $module = $fc->getRequest()->getModuleName();
     if($module != 'default')
