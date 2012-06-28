@@ -1532,7 +1532,7 @@ class Api_ApiComponent extends AppComponent
        POST method required.
    * @param email The user's email
    * @param password The user's password
-   * @return The user's default API key
+   * @return Array with a single key, 'apikey', whose value is the user's default api key
    */
   function userApikeyDefault($args)
     {
@@ -1541,10 +1541,49 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception('POST method required', MIDAS_HTTP_ERROR);
       }
+    $email = $args['email'];
+    $password = $args['password'];
+
+    try
+      {
+      $notifications = array();
+      $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTHENTICATION', array(
+        'email' => $email,
+        'password' => $password));
+      }
+    catch(Zend_Exception $exc)
+      {
+      throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
+      }
+    $authModule = false;
+    foreach($notifications as $module => $user)
+      {
+      if($user)
+        {
+        $userDao = $user;
+        $authModule = true;
+        break;
+        }
+      }
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $userModel = $modelLoader->loadModel('User');
+    $userApiModel = $modelLoader->loadModel('Userapi', 'api');
+    if(!$authModule)
+      {
+      $userDao = $userModel->getByEmail($email);
+      }
 
     $salt = Zend_Registry::get('configGlobal')->password->prefix;
-    $defaultApiKey = $key = md5($args['email'].md5($salt.$args['password']).'Default');
-    return array('apikey' => $defaultApiKey);
+    if($authModule || $userDao !== false && md5($salt.$password) == $userDao->getPassword())
+      {
+      $defaultApiKey = $userApiModel->getByAppAndEmail('Default', $email)->getApikey();
+      return array('apikey' => $defaultApiKey);
+      }
+    else
+      {
+      throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
+      }
     }
 
   /**

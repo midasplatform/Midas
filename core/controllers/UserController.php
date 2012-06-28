@@ -21,8 +21,8 @@
 /** User Controller */
 class UserController extends AppController
   {
-  public $_models = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser', 'Group', 'Item', 'Community' );
-  public $_daos = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group'  );
+  public $_models = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser', 'Group', 'Item', 'Community');
+  public $_daos = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group');
   public $_components = array('Date', 'Filter', 'Sortdao');
   public $_forms = array('User');
 
@@ -90,6 +90,16 @@ class UserController extends AppController
         {
         echo JsonComponent::encode(array(false, $this->t('No user registered with that email.')));
         exit;
+        }
+
+      $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_RESET_PASSWORD', array('user' => $user));
+      foreach($notifications as $module => $result)
+        {
+        if($result['status'] === true)
+          {
+          echo JsonComponent::encode(array(true, $result['message']));
+          return;
+          }
         }
 
       // Create a new password
@@ -325,32 +335,39 @@ class UserController extends AppController
     $this->disableLayout();
     if($this->_request->isPost())
       {
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableView();
       $previousUri = $this->_getParam('previousuri');
       if($form->isValid($this->getRequest()->getPost()))
         {
         try
           {
-          $notifications = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_AUTHENTIFICATION", array('email' => $form->getValue('email'), 'password' => $form->getValue('password')));
+          $notifications = array(); //initialize first in case of exception
+          $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTHENTICATION', array(
+            'email' => $form->getValue('email'),
+            'password' => $form->getValue('password')));
           }
         catch(Zend_Exception $exc)
           {
           $this->getLogger()->crit($exc->getMessage());
           }
-
-        if(!empty($notifications['ldap']) && $notifications['ldap'] != false)
+        $authModule = false;
+        foreach($notifications as $module => $user)
           {
-          $userDao = $notifications['ldap'];
-          $authLdap = true;
+          if($user)
+            {
+            $userDao = $user;
+            $authModule = true;
+            break;
+            }
           }
-        else
+
+        if(!$authModule)
           {
           $userDao = $this->User->getByEmail($form->getValue('email'));
-          $authLdap = false;
           }
 
         $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-        if($authLdap || $userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
+        if($authModule || $userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
           {
           $remember = $form->getValue('remerberMe');
           if(isset($remember) && $remember == 1)
@@ -365,31 +382,34 @@ class UserController extends AppController
             if(!$this->isTestingEnv())
               {
               setcookie('midasUtil', null, time() + 60 * 60 * 24 * 30, '/'); //30 days
+              Zend_Session::start();
+              $user = new Zend_Session_Namespace('Auth_User');
+              $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
+              $user->Dao = $userDao;
+              $url = $form->getValue('url');
+              $user->lock();
               }
             }
-          Zend_Session::start();
-          $user = new Zend_Session_Namespace('Auth_User');
-          $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
-          $user->Dao = $userDao;
-          $url = $form->getValue('url');
-          $user->lock();
           $this->getLogger()->info(__METHOD__ . " Log in : " . $userDao->getFullName());
-          if($this->isTestingEnv())
-            {
-            echo 'Test Pass';
-            $this->disableView();
-            return;
-            }
-          }
-        }
 
-      if(isset($previousUri) && strpos($previousUri, $this->view->webroot) !== false && strpos($previousUri, "logout") === false)
-        {
-        $this->_redirect(substr($previousUri, strlen($this->view->webroot)).'?first=true');
-        }
-      else
-        {
-        $this->_redirect("/feed?first=true");
+          if(isset($previousUri) && strpos($previousUri, $this->view->webroot) !== false && strpos($previousUri, 'logout') === false)
+            {
+            $redirect = $previousUri.'?first=true';
+            }
+          else
+            {
+            $redirect = $this->view->webroot.'/feed?first=true';
+            }
+          echo JsonComponent::encode(array(
+            'status' => true,
+            'redirect' => $redirect));
+          }
+        else
+          {
+          echo JsonComponent::encode(array(
+            'status' => false,
+            'message' => 'Invalid email or password'));
+          }
         }
       }
     } // end method login
@@ -405,67 +425,41 @@ class UserController extends AppController
     } // end term of service
 
 
-  /** Valid  entries (ajax) */
-  public function validentryAction()
+  /**
+   * Test whether a given user already exists or not.
+   * @param entry The email/login to test.
+   * @return Echoes "true" or "false".
+   */
+  public function userexistsAction()
     {
-    if(!$this->isTestingEnv())
-      {
-      $this->requireAjaxRequest();
-      }
-
     $this->disableLayout();
     $this->disableView();
-    $entry = $this->_getParam("entry");
-    $type = $this->_getParam("type");
-    if(!is_string($entry) || !is_string($type))
+    $entry = $this->_getParam('entry');
+    if(!is_string($entry))
       {
       echo 'false';
       return;
       }
-    switch($type)
-      {
-      case 'dbuser' :
-        $userDao = $this->User->getByEmail(strtolower($entry));
-        if($userDao == !false)
-          {
-          echo "true";
-          }
-        else
-          {
-          echo "false";
-          }
-        return;
-      case 'login' :
-        $password = $this->_getParam("password");
-        if(!is_string($password))
-          {
-          echo 'false';
-          return;
-          }
 
-        try
-          {
-          $notifications = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_AUTHENTIFICATION", array('email' => $entry, 'password' => $password));
-          }
-        catch(Zend_Exception $exc)
-          {
-          $this->getLogger()->crit($exc->getMessage());
-          }
-        if(!empty($notifications['ldap']) && $notifications['ldap'] != false)
-          {
-          echo "true";
-          return;
-          }
-        $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-        $userDao = $this->User->getByEmail($entry);
-        if($userDao != false && md5($passwordPrefix.$password) == $userDao->getPassword())
-          {
-          echo 'true';
-          return;
-          }
-      default :
-        echo "false";
+    $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_CHECK_USER_EXISTS',
+      array('entry' => $entry));
+    foreach($notifications as $module => $value)
+      {
+      if($value === true)
+        {
+        echo 'true';
         return;
+        }
+      }
+
+    $userDao = $this->User->getByEmail(strtolower($entry));
+    if($userDao)
+      {
+      echo 'true';
+      }
+    else
+      {
+      echo 'false';
       }
     } //end valid entry
 
@@ -498,7 +492,21 @@ class UserController extends AppController
       throw new Zend_Exception("Unable to load user");
       }
 
+    $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ALLOW_PASSWORD_CHANGE',
+      array('user' => $userDao, 'currentUser' => $this->userSession->Dao));
+    $this->view->allowPasswordChange = true;
+
+    foreach($notifications as $module => $allow)
+      {
+      if($allow['allow'] === false)
+        {
+        $this->view->allowPasswordChange = false;
+        break;
+        }
+      }
+
     $defaultValue = array();
+    $defaultValue['email'] = $userDao->getEmail();
     $defaultValue['firstname'] = $userDao->getFirstname();
     $defaultValue['lastname'] = $userDao->getLastname();
     $defaultValue['company'] = $userDao->getCompany();
@@ -519,6 +527,10 @@ class UserController extends AppController
       $modifyPictureGravatar = $this->_getParam('modifyPictureGravatar');
       if(isset($submitPassword) && $this->logged)
         {
+        if(!$this->view->allowPasswordChange)
+          {
+          throw new Zend_Exception('Changing password is disallowed for this user');
+          }
         $oldPass = $this->_getParam('oldPassword');
         $newPass = $this->_getParam('newPassword');
         $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
@@ -542,6 +554,7 @@ class UserController extends AppController
 
       if(isset($modifyAccount) && $this->logged)
         {
+        $newEmail = trim($this->_getParam('email'));
         $firtname = trim($this->_getParam('firstname'));
         $lastname = trim($this->_getParam('lastname'));
         $company = trim($this->_getParam('company'));
@@ -551,15 +564,33 @@ class UserController extends AppController
         $website = $this->_getParam('website');
         $biography = $this->_getParam('biography');
 
+        if(!$accountForm->isValid($this->getRequest()->getPost()))
+          {
+          echo JsonComponent::encode(array(false, 'Invalid form value'));
+          return;
+          }
+
         $userDao = $this->User->load($userDao->getKey());
 
         if(!isset($privacy) || ($privacy != MIDAS_USER_PRIVATE && $privacy != MIDAS_USER_PUBLIC))
           {
-          echo JsonComponent::encode(array(false, 'Error'));
+          echo JsonComponent::encode(array(false, 'Error: invalid privacy flag'));
+          return;
           }
         if(!isset($lastname) || !isset($firtname) || empty($lastname) || empty($firtname))
           {
-          echo JsonComponent::encode(array(false, 'Error'));
+          echo JsonComponent::encode(array(false, 'Error: First and last name required'));
+          return;
+          }
+        if($newEmail != $userDao->getEmail())
+          {
+          $existingUser = $this->User->getByEmail($newEmail);
+          if($existingUser)
+            {
+            echo JsonComponent::encode(array(false, 'Error: that email address belongs to another account'));
+            return;
+            }
+          $userDao->setEmail($newEmail);
           }
         $userDao->setFirstname($firtname);
         $userDao->setLastname($lastname);
@@ -614,7 +645,6 @@ class UserController extends AppController
           $size =  $upload->getFileSize();
           }
 
-
         if(!empty($path) && file_exists($path) && $size > 0)
           {
           if(file_exists($path) && $mime == 'image/jpeg')
@@ -625,7 +655,7 @@ class UserController extends AppController
               }
             catch(Exception $exc)
               {
-              echo JsonComponent::encode(array(false, 'Error, Unable to read jpg file'));
+              echo JsonComponent::encode(array(false, 'Error: Unable to read jpg file'));
               return;
               }
             }
@@ -637,7 +667,7 @@ class UserController extends AppController
               }
             catch(Exception $exc)
               {
-              echo JsonComponent::encode(array(false, 'Error, Unable to read png file'));
+              echo JsonComponent::encode(array(false, 'Error: Unable to read png file'));
               return;
               }
             }
@@ -649,20 +679,20 @@ class UserController extends AppController
               }
             catch(Exception $exc)
               {
-              echo JsonComponent::encode(array(false, 'Error, Unable to read gif file'));
+              echo JsonComponent::encode(array(false, 'Error: Unable to read gif file'));
               return;
               }
             }
           else
             {
-            echo JsonComponent::encode(array(false, 'Error, wrong format'));
+            echo JsonComponent::encode(array(false, 'Error: wrong format'));
             return;
             }
 
           $tmpPath = BASE_PATH.'/data/thumbnail/'.rand(1, 1000);
           if(!file_exists(BASE_PATH.'/data/thumbnail/'))
             {
-            throw new Zend_Exception("Problem thumbnail path: ".BASE_PATH.'/data/thumbnail/');
+            throw new Zend_Exception("Thumbnail path does not exist: ".BASE_PATH.'/data/thumbnail/');
             }
           if(!file_exists($tmpPath))
             {

@@ -18,9 +18,11 @@
  limitations under the License.
 =========================================================================*/
 
-/** Base model class for the ldap module */
-class Ldap_AppModel extends MIDASModel
-{
-  public $moduleName = 'ldap';
-}
-?>
+/**
+ * Ldap User Dao
+ */
+class Ldap_UserDao extends Ldap_AppDao
+  {
+  public $_model = 'User';
+  public $_module = 'ldap';
+  }

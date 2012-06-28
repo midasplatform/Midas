@@ -61,6 +61,8 @@ class ConfigControllerTest extends ControllerTestCase
     {
     $communitiesFile = $this->loadData('Community', 'default');
     $community_id = $communitiesFile[0]->getKey();
+    $usersFile = $this->loadData('User', 'default');
+    $admin = $this->User->load($usersFile[2]->getKey());
 
     $this->params = array();
     $this->params['email'] = 'user1@user1.com';
@@ -68,6 +70,7 @@ class ConfigControllerTest extends ControllerTestCase
     $this->request->setMethod('POST');
     $this->dispatchUrI("/user/login");
 
+    $this->resetAll();
     $page = '/communityagreement/config/agreementtab?communityId='.$community_id;
     $this->params = array();
     $this->getRequest()->setMethod('GET');
@@ -77,13 +80,25 @@ class ConfigControllerTest extends ControllerTestCase
     $this->assertController("config");
     $this->assertAction("agreementtab");
 
+    $this->resetAll();
     $this->params['agreement'] = 'test agreement tab';
+    $this->params['communityId'] = $community_id;
     $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI($page);
+    $this->dispatchUrI($page, $admin);
 
     $modelLoad = new MIDAS_ModelLoader();
     $agreementModel = $modelLoad->loadModel('Agreement', 'communityagreement');
     $saved_agreement = $agreementModel->getByCommunityId($community_id)->getAgreement();
     $this->assertEquals('test agreement tab', $saved_agreement);
+
+    // Make sure anonymous users cannot change agreement
+    $this->resetAll();
+    $this->params['agreement'] = 'should not work';
+    $this->params['communityId'] = $community_id;
+    $this->getRequest()->setMethod('POST');
+    $this->dispatchUrI($page);
+
+    $saved_agreement = $agreementModel->getByCommunityId($community_id)->getAgreement();
+    $this->assertNotEquals('should not work', $saved_agreement);
     }
   }
