@@ -3,7 +3,7 @@ midas.mfa = midas.mfa || {};
 
 midas.mfa.validateConfig = function (formData, jqForm, options) {
 
-}
+};
 
 midas.mfa.successConfig = function (responseText, statusText, xhr, form) {
     try {
@@ -13,20 +13,35 @@ midas.mfa.successConfig = function (responseText, statusText, xhr, form) {
         return false;
     }
     if(jsonResponse == null) {
-        midas.createNotice('Error', 4000, 'error');
+        midas.createNotice('An internal error occurred, please contact an administrator', 4000, 'error');
         return;
     }
-    if(jsonResponse[0]) {
-        midas.createNotice(jsonResponse[1], 4000);
+    midas.createNotice(jsonResponse.message, 4000, jsonResponse.status);
+};
+
+/**
+ * Enable/disable the form elements based on the top checkbox
+ */
+midas.mfa.setEnabledState = function () {
+    if($('#useOtpCheckbox').is(':checked')) {
+        $('#otpSecret').removeAttr('disabled');
+        $('#otpAlgorithmSelect').removeAttr('disabled');
+        $('#otpLength').removeAttr('disabled');
     }
     else {
-        midas.createNotice(jsonResponse[1], 4000, 'error');
+        $('#otpSecret').attr('disabled', 'disabled');
+        $('#otpAlgorithmSelect').attr('disabled', 'disabled');
+        $('#otpLength').attr('disabled', 'disabled');
     }
-}
+};
 
 $(document).ready(function() {
     $('#mfaConfigForm').ajaxForm({
         beforeSubmit: midas.mfa.validateConfig,
         success: midas.mfa.successConfig
     });
+    $('#useOtpCheckbox').click(function () {
+        midas.mfa.setEnabledState();
+    });
+    midas.mfa.setEnabledState();
 });

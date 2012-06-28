@@ -18,6 +18,21 @@
  limitations under the License.
 =========================================================================*/
 
-define('MIDAS_MFA_OATH_HOTP', 'oath_hotp');
-define('MIDAS_MFA_RSA_SECURID', 'rsa_securid');
-?>
+require_once BASE_PATH.'/modules/mfa/models/base/OtpdeviceModelBase.php';
+
+/**
+ * PDO-level implementation of the OTP device model.
+ */
+class Mfa_OtpdeviceModel extends Mfa_OtpdeviceModelBase
+{
+  /**
+   * Get the user's OTP device dao.
+   * @param userDao The user dao
+   * @return The Otpdevice dao corresponding to the user, or null if this user doesn't have one
+   */
+  function getByUser($userDao)
+    {
+    $row = $this->database->fetchRow($this->database->select()->where('user_id = ?', $userDao->getKey()));
+    return $this->initDao('Otpdevice', $row, 'mfa');
+    }
+}

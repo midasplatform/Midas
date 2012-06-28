@@ -17,7 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-
-define('MIDAS_MFA_OATH_HOTP', 'oath_hotp');
-define('MIDAS_MFA_RSA_SECURID', 'rsa_securid');
-?>
+/** Dao a user's OTP device */
+class Mfa_OtpdeviceDao extends Mfa_AppDao
+  {
+  public $_model = 'Otpdevice';
+  public $_module = 'mfa';
+  }

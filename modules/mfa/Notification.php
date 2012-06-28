@@ -42,4 +42,3 @@ class Mfa_Notification extends MIDAS_Notification
     return array('OTP Device' => $this->moduleWebroot.'/config/usertab?userId='.$user->getKey());
     }
   } //end class
-?>

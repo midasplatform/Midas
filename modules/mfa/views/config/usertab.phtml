@@ -10,7 +10,44 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.usertab.js');
+echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/config/config.usertab.js"></script>';
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.usertab.css" />
 
+<form class="genericForm" id="mfaConfigForm" method="POST" action="<?php echo $this->webroot?>/mfa/config/usersubmit">
+  <input type="hidden" name="userId" value="<?php echo $this->user->getKey();?>" />
+  <div class="useOtpCheckboxContainer">
+    <input id="useOtpCheckbox" type="checkbox" name="useOtp" <?php if($this->useOtp) { echo 'checked="checked" '; } ?> />
+    Use a one-time-password device for authentication
+  </div>
+  <table>
+    <tr>
+      <td>Device Type:</td>
+      <td><select id="otpAlgorithmSelect" name="algorithm">
+        <?php foreach($this->algList as $val => $text)
+          {
+          echo '<option ';
+          if($this->algorithm == $val)
+            {
+            echo 'selected="selected" ';
+            }
+          echo 'value="'.$val.'">'.$text.'</option>';
+          }
+        ?>
+      </select></td>
+    </tr>
+
+    <tr>
+      <td>Device Key:</td>
+      <td><input id="otpSecret" type="text" name="secret" value="<?php echo $this->secret;?>" /></td>
+    </tr>
+
+    <tr>
+      <td>Token Length:</td>
+      <td><input id="otpLength" type="text" name="length" value="<?php echo $this->length;?>" /></td>
+    </tr>
+  </table>
+  <div>
+    <input type="submit" value="Save" id="otpConfigSubmit" />
+  </div>
+</form>
