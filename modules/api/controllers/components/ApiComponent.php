@@ -1600,8 +1600,9 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Returns a user either by id or by first name and last name.
+   * Returns a user either by id or by email or by first name and last name.
    * @param user_id The id of the user desired (ignores firstname and lastname)
+   * @param email The email of the user desired
    * @param firstname The first name of the desired user (use with lastname)
    * @param lastname The last name of the desired user (use with firstname)
    * @return The user corresponding to the user_id or first and lastname
@@ -1613,6 +1614,10 @@ class Api_ApiComponent extends AppComponent
     if(array_key_exists('user_id', $args))
       {
       return $userModel->getByUser_id($args['user_id']);
+      }
+    else if(array_key_exists('email', $args))
+      {
+      return $userModel->getByEmail($args['email']);
       }
     else if(array_key_exists('firstname', $args) &&
             array_key_exists('lastname', $args))
