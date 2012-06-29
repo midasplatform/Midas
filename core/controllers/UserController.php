@@ -411,6 +411,12 @@ class UserController extends AppController
             'message' => 'Invalid email or password'));
           }
         }
+      else
+        {
+        echo JsonComponent::encode(array(
+          'status' => false,
+          'message' => 'Invalid login'));
+        }
       }
     } // end method login
 
