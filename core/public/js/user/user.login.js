@@ -14,9 +14,14 @@ midas.user.login.loginResult = function (responseText) {
     'use strict';
     try {
         var resp = $.parseJSON(responseText);
-        if(resp.status) {
+        if(resp.status && resp.redirect) {
             window.location.href = resp.redirect;
-        } else {
+        }
+        else if(resp.dialog) {
+            midas.loadDialog('loginOverride', resp.dialog);
+            midas.showDialog(resp.title, false, resp.options);
+        }
+        else {
             midas.createNotice(resp.message, 5000, 'error');
         }
     } catch(e) {

@@ -30,6 +30,7 @@ class Mfa_Notification extends MIDAS_Notification
     $this->moduleWebroot = $fc->getBaseUrl().'/mfa';
 
     $this->addCallBack('CALLBACK_CORE_GET_CONFIG_TABS', 'getConfigTabs');
+    $this->addCallBack('CALLBACK_CORE_AUTH_INTERCEPT', 'authIntercept');
     }
 
   /**
@@ -40,5 +41,39 @@ class Mfa_Notification extends MIDAS_Notification
     {
     $user = $params['user'];
     return array('OTP Device' => $this->moduleWebroot.'/config/usertab?userId='.$user->getKey());
+    }
+
+  /**
+   * When a user logs in, if they have an OTP device we want to override the normal behavior of writing
+   * them to the session, and instead write a temporary session entry that will be moved to the expected
+   * place only after they successfully pass the OTP challenge.
+   */
+  public function authIntercept($params)
+    {
+    $user = $params['user'];
+    $modelLoader = new MIDAS_ModelLoader();
+    $otpDeviceModel = $modelLoader->loadModel('Otpdevice', 'mfa');
+    $otpDevice = $otpDeviceModel->getByUser($user);
+    if($otpDevice)
+      {
+      // write temp user into session for asynchronous confirmation
+      Zend_Session::start();
+      $userSession = new Zend_Session_Namespace('Mfa_Temp_User');
+      $userSession->setExpirationSeconds(600); // "limbo" state should invalidate after 10 minutes
+      $userSession->Dao = $user;
+      $userSession->lock();
+
+      $resp = JsonComponent::encode(array(
+        'dialog' => '/mfa/login/dialog',
+        'title' => 'Enter One-Time Password',
+        'options' => array('width' => 250)));
+      return array(
+        'override' => true,
+        'response' => $resp);
+      }
+    else
+      {
+      return array();
+      }
     }
   } //end class

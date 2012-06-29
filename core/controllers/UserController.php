@@ -369,6 +369,15 @@ class UserController extends AppController
         $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
         if($authModule || $userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
           {
+          $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTH_INTERCEPT', array('user' => $userDao));
+          foreach($notifications as $module => $value)
+            {
+            if($value['override'] && $value['response'])
+              {
+              echo $value['response'];
+              return;
+              }
+            }
           $remember = $form->getValue('remerberMe');
           if(isset($remember) && $remember == 1)
             {
