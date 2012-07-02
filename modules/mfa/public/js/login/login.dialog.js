@@ -12,11 +12,11 @@ midas.mfa.successSubmit = function (responseText, statusText, xhr, form) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
         return false;
     }
-    if(jsonResponse == null) {
-        midas.createNotice('An internal error occurred, please contact an administrator', 4000, 'error');
-        return;
+    if(jsonResponse.status == 'ok') {
+        window.location.reload();
+    } else {
+        midas.createNotice(jsonResponse.message, 3000, jsonResponse.status);
     }
-    midas.createNotice(jsonResponse.message, 4000, jsonResponse.status);
 };
 
 $(document).ready(function() {

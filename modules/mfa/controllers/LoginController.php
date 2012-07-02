@@ -23,7 +23,7 @@ class Mfa_LoginController extends Mfa_AppController
 {
   public $_models = array('User');
   public $_moduleModels = array('Otpdevice');
-  public $_moduleComponents = array();
+  public $_moduleComponents = array('Otp');
 
   /**
    * Renders the dialog for the user to enter his or her OTP
@@ -51,7 +51,38 @@ class Mfa_LoginController extends Mfa_AppController
     {
     $this->disableLayout();
     $this->disableView();
-    // TODO call the OTP authentication component to finish the login process
+
+    Zend_Session::start();
+    $mfaSession = new Zend_Session_Namespace('Mfa_Temp_User');
+    $user = $mfaSession->Dao;
+
+    if(!isset($user) || !$user)
+      {
+      echo JsonComponent::encode(array('status' => 'error', 'message' => 'Session has expired, refresh and try again'));
+      return;
+      }
+
+    $otpDevice = $this->Mfa_Otpdevice->getByUser($user);
+    if(!$otpDevice)
+      {
+      throw new Zend_Exception('User does not have an OTP device');
+      }
+    $token = $this->_getParam('token');
+    $valid = $this->ModuleComponent->Otp->authenticate($otpDevice, $token);
+
+    if($valid)
+      {
+      $authUser = new Zend_Session_Namespace('Auth_User');
+      $authUser->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
+      $authUser->Dao = $user;
+      $authUser->lock();
+
+      echo JsonComponent::encode(array('status' => 'ok'));
+      }
+    else
+      {
+      echo JsonComponent::encode(array('status' => 'error', 'message' => 'Incorrect token'));
+      }
     }
 
 }//end class
