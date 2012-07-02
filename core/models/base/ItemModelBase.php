@@ -57,6 +57,7 @@ abstract class ItemModelBase extends AppModel
   abstract function getMostPopulars($userDao, $limit = 20);
   abstract function getRandomThumbnails($userDao = null, $policy = 0, $limit = 10, $thumbnailFilter = false);
   abstract function getByUuid($uuid);
+  abstract function getByItemId($item_id);
   abstract function getAll();
   abstract function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view');
   abstract function getByName($name);
