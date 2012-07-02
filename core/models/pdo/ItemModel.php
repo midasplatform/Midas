@@ -129,14 +129,6 @@ class ItemModel extends ItemModelBase
     return $dao;
     }
 
-  /** get by item_id*/
-  function getByItemId($item_id)
-    {
-    $row = $this->database->fetchRow($this->database->select()->where('item_id = ?', $item_id));
-    $dao = $this->initDao(ucfirst($this->_name), $row);
-    return $dao;
-    }
-
   /** Get all items with the name provided */
   function getByName($name)
     {
