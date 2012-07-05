@@ -448,6 +448,13 @@ midas.createAction = function (node) {
             }
         }
         $('div.viewAction ul').html(html);
+
+        midas.doCallback('CALLBACK_CORE_RESOURCE_HIGHTLIGHTED', {
+            type: type,
+            id: element,
+            actionsList: $('div.viewAction ul')
+        });
+
         $('div.viewAction li a').hover(
             function() {
                 $(this).parents('li').css('background-color','#E5E5E5');
