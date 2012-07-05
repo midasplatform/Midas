@@ -28,11 +28,16 @@ class Solr_Notification extends MIDAS_Notification
   /** init notification process */
   public function init()
     {
+    $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
+    $this->moduleWebroot = $baseUrl.'/'.$this->moduleName;
+    $this->webroot = $baseUrl;
+
     $this->addCallBack('CALLBACK_CORE_ITEM_SAVED', 'indexItem');
     $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'itemDeleted');
     $this->addCallBack('CALLBACK_CORE_ITEM_SEARCH_DEFAULT_BEHAVIOR_OVERRIDE', 'itemSearch');
 
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getAdminDashboard');
+    $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLinks');
 
     $this->addTask('TASK_CORE_RESET_ITEM_INDEXES', 'resetItemIndexes', 'Recompute lucene indexes');
     }
@@ -130,9 +135,9 @@ class Solr_Notification extends MIDAS_Notification
       {
       $index = $this->ModuleComponent->Solr->getSolrIndex();
 
-      set_error_handler('Solr_Notification::eatWarnings'); //must not print and log warnings
+      UtilityComponent::beginIgnoreWarnings(); //must not print and log warnings
       $response = $index->search($solrQuery, 0, ((int)$limit) * 3, array('fl' => '*,score')); //multiply limit by 3 to allow some room for policy filtering
-      restore_error_handler(); //restore the existing error handler
+      UtilityComponent::endIgnoreWarnings();
 
       foreach($response->response->docs as $doc)
         {
@@ -192,23 +197,25 @@ class Solr_Notification extends MIDAS_Notification
     {
     try
       {
+      UtilityComponent::beginIgnoreWarnings();
       $index = $this->ModuleComponent->Solr->getSolrIndex();
       $index->search('metadata: foo', 0, 1); //run a simple test query
+      UtilityComponent::endIgnoreWarnings();
       return array('Solr server accepting queries' => array(true));
       }
     catch(Exception $e)
       {
+      UtilityComponent::endIgnoreWarnings();
       return array('Solr server accepting queries' => array(false));
       }
     }
 
-  /**
-   * This is used to suppress warnings from being written to the output and the
-   * error log.  When searching, we don't want warnings to appear for invalid searches.
-   */
-  static function eatWarnings($errno, $errstr, $errfile, $errline)
+  /** Add "Advanced Search" link to the left side links */
+  public function getLeftLinks()
     {
-    return true;
+    return array('Advanced search' => array(
+      $this->webroot.'/solr/advanced',
+      $this->webroot.'/core/public/images/icons/magnifier.png'));
     }
   } //end class
 ?>

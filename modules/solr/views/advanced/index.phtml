@@ -1,0 +1,81 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.autogrow-textarea.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/advanced/advanced.index.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/advanced/advanced.index.css" />
+<div class="viewMain">
+  <div class="topText">
+    Click <a href="javascript:;" id="showAdvancedSearchHelp">here</a> for syntax instructions.
+  </div>
+  <div class="queryArea">
+    <textarea id="advancedQueryField"></textarea>
+  </div>
+  <div>
+    <input class="globalButton" type="button" id="advancedSearchButton" value="Search" />
+  </div>
+
+  <div id="resultsArea">
+  </div>
+  <img style="display: none;" class="resultsLoading" alt="" src="<?php echo $this->coreWebroot;?>/public/images/icons/loading.gif" />
+  <div class="pageItrButtons">
+    <a style="display: none;" href="javascript:;" class="nextPageSearch">Show more results &gt;</a>
+  </div>
+</div>
+
+<!-- TEMPLATE: item result -->
+<div class="itemResult" id="itemResultTemplate" style="display: none;">
+  <a href="" class="itemLink"></a>
+</div>
+
+<!-- Content of syntax instructions to be displayed in a dialog -->
+<div style="display: none;" id="instructionsContent">
+  <div class="instructions">
+  Midas uses a Lucene engine to index item metadata. You may enter queries conforming to
+  <a target="_blank" href="http://lucene.apache.org/core/3_6_0/queryparsersyntax.html">Lucene search syntax</a>
+  into the text area, and click "Search" to fetch results.<br/><br/>
+  All item documents automatically contain the following fields:
+  <ul>
+    <li><b>name</b> - The name of the item</li>
+    <li><b>description</b> - The item description</li>
+    <li><b>md5</b> - A list of all the MD5 checksums of the bitstreams in the item</li>
+  </ul>
+  Searches are case insensitive.  If you wanted to search for an item whose name contained the token "turtle", you would type:
+  <p><code>name: turtle</code></p>
+  Which would return items such as TurtlePicture.jpg, MY_TURTLE, etc.<br/><br/>
+  If you wanted to search for an item whose description contains
+  any word starting with "foo", you can use the <b>wildcard character</b> *, as in the example below:
+  <p><code>description: foo*</code></p>
+  This would return items that had descriptions containing "foo", "fool", "football", etc.<br/><br/>
+  You can also use boolean operators <b>AND</b> and <b>OR</b> in these queries, such as:
+  <p><code>name: turtle AND description: foo*</code></p>
+  In addition to these default fields, you may also search on a custom metadata field set on the item. These fields have
+  user-defined types; each custom metadata field is prefixed with its type name. The list of type names is as follows:
+  <ul>
+    <li><b>text</b> - Tokenized text (the default)</li>
+    <li><b>int</b> - Integers</li>
+    <li><b>long</b> - Long Integers</li>
+    <li><b>float</b> - Floating Point numbers</li>
+    <li><b>double</b> - Double precision floating point numbers</li>
+    <li><b>string</b> - Non-tokenized string literals</li>
+    <li><b>boolean</b> - Boolean values</li>
+  </ul>
+  When searching, the type prefix must match the type that the field was declared as when it was added to the item.
+  The format for searching by a custom metadata field is &lt;type&gt;-&lt;element&gt;.&lt;qualifier&gt;.  For instance, if
+  a user had set a custom metadata field on an item with the type "Integer", the element "DICOM", the qualifier "NumSlices",
+  and the value "400", you could search for it using the metadata field as follows:
+  <p><code>int-DICOM.NumSlices: 400</code></p>
+  If the qualifier part was left empty, leave off the .qualifier portion of the field.
+  </div>
+</div>
