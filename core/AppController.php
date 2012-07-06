@@ -363,9 +363,9 @@ class AppController extends MIDAS_GlobalController
     $params = $this->_getAllParams();
     foreach($params as $key => $value)
       {
-      if(strpos(strtolower($key), 'password') === false)
+      if(strpos(strtolower($key), 'password') === false && is_scalar($value))
         {
-        $entry .= '  '.$key.'='.print_r($value, true)."\n";
+        $entry .= '  '.$key.'='.$value."\n";
         }
       }
 
