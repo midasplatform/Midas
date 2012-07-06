@@ -523,6 +523,22 @@ class UserController extends AppController
     $defaultValue['biography'] = $userDao->getBiography();
     $accountForm = $this->Form->User->createAccountForm($defaultValue);
     $this->view->accountForm = $this->getFormAsArray($accountForm);
+    $this->view->prependFields = array();
+    $this->view->appendFields = array();
+
+    $moduleFields = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_USER_PROFILE_FIELDS',
+      array('user' => $userDao, 'currentUser' => $this->userSession->Dao));
+    foreach($moduleFields as $module => $field)
+      {
+      if(isset($field['position']) && $field['position'] == 'top')
+        {
+        $this->view->prependFields[] = $field;
+        }
+      else
+        {
+        $this->view->appendFields[] = $field;
+        }
+      }
 
     if($this->_request->isPost())
       {
@@ -630,6 +646,18 @@ class UserController extends AppController
         if(!isset($userId))
           {
           $this->userSession->Dao = $userDao;
+          }
+        try
+          {
+          Zend_Registry::get('notifier')->callback('CALLBACK_CORE_USER_SETTINGS_CHANGED', array(
+            'user' => $userDao,
+            'currentUser' => $this->userSession->Dao,
+            'fields' => $this->_getAllParams()));
+          }
+        catch(Exception $e)
+          {
+          echo JsonComponent::encode(array(false, $e->getMessage()));
+          return;
           }
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         }
