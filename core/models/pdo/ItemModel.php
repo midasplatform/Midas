@@ -519,13 +519,14 @@ class ItemModel extends ItemModelBase
    * @param callback Name of the Midas callback to call
    * @param paramName what parameter name the item should be passed as to the callback (default is 'item')
    */
-  function iterateWithCallback($callback, $paramName = 'item')
+  function iterateWithCallback($callback, $paramName = 'item', $otherParams = array())
     {
     $rowset = $this->database->fetchAll();
     foreach($rowset as $row)
       {
       $item = $this->initDao('Item', $row);
-      Zend_Registry::get('notifier')->callback($callback, array($paramName => $item));
+      $params = array_merge($otherParams, array($paramName => $item));
+      Zend_Registry::get('notifier')->callback($callback, $params);
       }
 
     }
