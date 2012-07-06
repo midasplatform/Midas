@@ -365,7 +365,7 @@ class AppController extends MIDAS_GlobalController
       {
       if(strpos(strtolower($key), 'password') === false)
         {
-        $entry .= '  '.$key.'='.$value."\n";
+        $entry .= '  '.$key.'='.print_r($value, true)."\n";
         }
       }
 
