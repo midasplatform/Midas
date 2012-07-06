@@ -501,7 +501,7 @@ class UtilityComponent extends AppComponent
    * This is used to suppress warnings from being written to the output and the
    * error log. Users should not call this function; see beginIgnoreWarnings().
    */
-  static function _ignoreErrorHandler($errno, $errstr, $errfile, $errline)
+  static function ignoreErrorHandler($errno, $errstr, $errfile, $errline)
     {
     return true;
     }
@@ -513,7 +513,7 @@ class UtilityComponent extends AppComponent
    */
   public static function beginIgnoreWarnings()
     {
-    set_error_handler('UtilityComponent::_ignoreErrorHandler'); //must not print and log warnings
+    set_error_handler('UtilityComponent::ignoreErrorHandler'); //must not print and log warnings
     }
 
   /**
