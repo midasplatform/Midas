@@ -44,6 +44,20 @@ class Dicomextractor_ExtractorComponent extends AppComponent
   }
 
   /**
+   * remove any params to the command, returning only the characters
+   * up to but not including the first whitespace.
+   *
+   * @param type $commandWithParams
+   * @return type
+   */
+  private function removeParams($commandWithParams)
+    {
+    $commandWithParamsParts = explode(" ", $commandWithParams);
+    $command = $commandWithParamsParts[0];
+    return $command;
+    }
+
+  /**
    * Verify that DCMTK is setup properly
    */
   public function isDCMTKWorking()
@@ -52,7 +66,10 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     $modulesConfig=Zend_Registry::get('configsModules');
     $dcm2xmlCommand = $modulesConfig['dicomextractor']->dcm2xml;
     $dcmftestCommand = $modulesConfig['dicomextractor']->dcmftest;
-    $dcmj2pnmCommand = $modulesConfig['dicomextractor']->dcmj2pnm;
+    // dcmj2pnmCommand may have some params that will cause it to throw
+    // an error when no input is given, hence for existence and configuration
+    // testing just get the command itself, without params
+    $dcmj2pnmCommand = $this->removeParams($modulesConfig['dicomextractor']->dcmj2pnm);
     $ret['dcm2xml'] = $this->getApplicationStatus($dcm2xmlCommand, 'dcm2xml');
     $ret['dcmftest'] = $this->getApplicationStatus($dcmftestCommand,
                                                    'dcmftest',
