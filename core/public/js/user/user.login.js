@@ -8,6 +8,10 @@ midas.user.login = midas.user.login || {};
 
 midas.user.login.validateLoginForm = function () {
     $('input[name=previousuri]').val(json.global.currentUri);
+    if($('#password').val() == '') {
+        midas.createNotice('Password field must not be empty', 3500, 'error');
+        return false;
+    }
 };
 
 midas.user.login.loginResult = function (responseText) {
