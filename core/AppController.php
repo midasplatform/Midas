@@ -341,6 +341,7 @@ class AppController extends MIDAS_GlobalController
       $this->progressDao = null;
       }
 
+    // For Logging
     $logTrace = Zend_Registry::get('configGlobal')->logtrace;
     if(isset($logTrace) && $logTrace)
       {
