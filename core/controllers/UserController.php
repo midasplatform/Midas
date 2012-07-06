@@ -311,6 +311,15 @@ class UserController extends AppController
     $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
     if($userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
       {
+      $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTH_INTERCEPT', array('user' => $userDao));
+      foreach($notifications as $module => $value)
+        {
+        if($value['override'] && $value['response'])
+          {
+          echo $value['response'];
+          return;
+          }
+        }
       setcookie('midasUtil', $userDao->getKey().'-'.md5($userDao->getPassword()), time() + 60 * 60 * 24 * 30, '/'); //30 days
       Zend_Session::start();
       $user = new Zend_Session_Namespace('Auth_User');
