@@ -8,3 +8,10 @@ CREATE TABLE mfa_otpdevice (
   counter character varying(256) NOT NULL DEFAULT '',
   length integer NOT NULL
 );
+
+CREATE TABLE mfa_apitoken (
+  apitoken_id serial PRIMARY KEY,
+  user_id bigint NOT NULL,
+  token_id bigint NOT NULL,
+  creation_date timestamp without time zone NOT NULL
+);
