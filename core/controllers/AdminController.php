@@ -107,6 +107,10 @@ class AdminController extends AppController
       {
       $formArray['dynamichelp']->setValue($applicationConfig['global']['dynamichelp']);
       }
+    if(isset($applicationConfig['global']['logtrace']))
+      {
+      $formArray['logtrace']->setValue($applicationConfig['global']['logtrace']);
+      }
     $this->view->selectedLicense = $applicationConfig['global']['defaultlicense'];
 
     try
@@ -145,6 +149,7 @@ class AdminController extends AppController
         $applicationConfig['global']['defaultlicense'] = $this->_getParam('licenseSelect');
         $applicationConfig['global']['dynamichelp'] = $this->_getParam('dynamichelp');
         $applicationConfig['global']['closeregistration'] = $this->_getParam('closeregistration');
+        $applicationConfig['global']['logtrace'] = $this->_getParam('logtrace');
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
