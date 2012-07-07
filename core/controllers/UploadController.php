@@ -66,6 +66,12 @@ class UploadController extends AppController
       }
     }
 
+  private function is_https()
+    {
+    return $_SERVER["HTTPS"] === 'on';
+    }
+
+
   /** simple upload*/
   public function simpleuploadAction()
     {
@@ -112,7 +118,16 @@ class UploadController extends AppController
       }
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
-    $this->view->protocol = 'http';
+
+    if($this->is_https())
+      {
+      $this->view->protocol = 'https';
+      }
+    else
+      {
+      $this->view->protocol = 'http';
+      }
+
     if(!$this->isTestingEnv())
       {
       $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
@@ -208,7 +223,16 @@ class UploadController extends AppController
       }
 
     $this->view->allLicenses = $this->License->getAll();
-    $this->view->protocol = 'http';
+
+    if($this->is_https())
+      {
+      $this->view->protocol = 'https';
+      }
+    else
+      {
+      $this->view->protocol = 'http';
+      }
+
     if(!$this->isTestingEnv())
       {
       $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
