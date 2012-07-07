@@ -66,9 +66,9 @@ class UploadController extends AppController
       }
     }
 
-  private function is_https()
+  private function _is_https()
     {
-    return $_SERVER["HTTPS"] === 'on';
+    return array_key_exists('HTTPS', $_SERVER) && $_SERVER["HTTPS"] === 'on';
     }
 
 
@@ -119,7 +119,7 @@ class UploadController extends AppController
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
-    if($this->is_https())
+    if($this->_is_https())
       {
       $this->view->protocol = 'https';
       }
@@ -224,7 +224,7 @@ class UploadController extends AppController
 
     $this->view->allLicenses = $this->License->getAll();
 
-    if($this->is_https())
+    if($this->_is_https())
       {
       $this->view->protocol = 'https';
       }
