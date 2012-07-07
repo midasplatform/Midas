@@ -449,7 +449,7 @@ midas.createAction = function (node) {
         }
         $('div.viewAction ul').html(html);
 
-        midas.doCallback('CALLBACK_CORE_RESOURCE_HIGHTLIGHTED', {
+        midas.doCallback('CALLBACK_CORE_RESOURCE_HIGHLIGHTED', {
             type: type,
             id: element,
             actionsList: $('div.viewAction ul')
