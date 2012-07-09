@@ -24,4 +24,5 @@ $(document).ready(function() {
         beforeSubmit: midas.mfa.validateSubmit,
         success: midas.mfa.successSubmit
     });
+    $('#otpToken').focus();
 });

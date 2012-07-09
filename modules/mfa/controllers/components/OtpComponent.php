@@ -59,10 +59,13 @@ class Mfa_OtpComponent extends AppComponent
     }
 
   /**
-   * STUB: Perform RSA SecurID authentication
+   * Perform RSA SecurID Authentication
+   * In the current implementation, we rely on a correctly configured PAM setup
+   * on the server.
    */
   protected function _securIdAuth($otpDevice, $token)
     {
-    return true;
+    $err = '';
+    return pam_auth($otpDevice->getSecret(), $token, $err, false);
     }
 }
