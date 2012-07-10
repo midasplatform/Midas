@@ -20,6 +20,12 @@ class Keyfiles_Notification extends MIDAS_Notification
   /** Get the link to place in the item action menu */
   public function getItemMenuLink($params)
     {
+    $item = $params['item'];
+    $revisions = $item->getRevisions();
+    if(count($revisions) === 0)
+      {
+      return null;
+      }
     $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
     return '<li><a href="'.$webroot.'/'.$this->moduleName.'/download/item?itemId='.$params['item']->getKey().
            '"><img alt="" src="'.$webroot.'/core/public/images/icons/key.png" /> Download key files</a></li>';

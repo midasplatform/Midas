@@ -18,11 +18,11 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
     $item = $this->Item->load($itemId);
     if(!$item)
       {
-      throw new Exception('Invalid itemId');
+      throw new Zend_Controller_Action_Exception('Invalid itemId', 404);
       }
     if(!$this->Item->policyCheck($item, $this->userSession->Dao))
       {
-      throw new Exception('Read permission required');
+      throw new Zend_Controller_Action_Exception('Read permission required', 403);
       }
     $revision = $this->Item->getLastRevision($item);
     if(!$revision)
