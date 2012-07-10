@@ -945,7 +945,12 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
-    $this->controller->redirect('/download/?folders='.$folder->getKey());
+    $redirUrl = '/download/?folders='.$folder->getKey();
+    if($userDao && array_key_exists('token', $args))
+      {
+      $redirUrl .= '&authToken='.$args['token'];
+      }
+    $this->controller->redirect($redirUrl);
     }
 
   /**
@@ -1186,14 +1191,16 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
+    $redirUrl = '/download/?items='.$item->getKey();
     if(isset($args['revision']))
       {
-      $this->controller->redirect('/download/?items='.$item->getKey().','.$args['revision']);
+      $redirUrl .= ','.$args['revision'];
       }
-    else
+    if($userDao && array_key_exists('token', $args))
       {
-      $this->controller->redirect('/download/?items='.$item->getKey());
+      $redirUrl .= '&authToken='.$args['token'];
       }
+    $this->controller->redirect($redirUrl);
     }
 
   /**
@@ -1734,7 +1741,12 @@ class Api_ApiComponent extends AppComponent
     $name = array_key_exists('name', $args) ? $args['name'] : $bitstream->getName();
     $offset = array_key_exists('offset', $args) ? $args['offset'] : '0';
 
-    $this->controller->redirect('/download/?bitstream='.$bitstream->getKey().'&offset='.$offset.'&name='.$name);
+    $redirUrl = '/download/?bitstream='.$bitstream->getKey().'&offset='.$offset.'&name='.$name;
+    if($userDao && array_key_exists('token', $args))
+      {
+      $redirUrl .= '&authToken='.$args['token'];
+      }
+    $this->controller->redirect($redirUrl);
     }
 
   /**
