@@ -495,4 +495,33 @@ class UtilityComponent extends AppComponent
     require_once BASE_PATH.'/library/Markdown/markdown.php';
     return Markdown($text);
     }
+
+  /**
+   * INTERNAL FUNCTION
+   * This is used to suppress warnings from being written to the output and the
+   * error log. Users should not call this function; see beginIgnoreWarnings().
+   */
+  static function ignoreErrorHandler($errno, $errstr, $errfile, $errline)
+    {
+    return true;
+    }
+
+  /**
+   * Normally, PHP warnings are echoed by our default error handler.  If you expect them to happen
+   * from, for instance, an underlying library, but want to eat them instead of echoing them, wrap
+   * the offending lines in beginIgnoreWarnings() and endIgnoreWarnings()
+   */
+  public static function beginIgnoreWarnings()
+    {
+    set_error_handler('UtilityComponent::ignoreErrorHandler'); //must not print and log warnings
+    }
+
+  /**
+   * See documentation of UtilityComponent::beginIgnoreWarnings().
+   * Calling this restores the normal warning handler.
+   */
+  public static function endIgnoreWarnings()
+    {
+    restore_error_handler();
+    }
 } // end class
