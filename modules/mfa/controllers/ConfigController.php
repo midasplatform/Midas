@@ -28,6 +28,13 @@ class Mfa_ConfigController extends Mfa_AppController
   public $_components = array();
 
   /**
+   * Admin config page (stub)
+   */
+  function indexAction()
+    {
+    }
+
+  /**
    * User configuration tab for OTP parameters
    * @param userId The id of the user to edit
    */
@@ -70,8 +77,7 @@ class Mfa_ConfigController extends Mfa_AppController
       }
     $this->view->user = $user;
     $this->view->algList = array(
-      MIDAS_MFA_OATH_HOTP => 'OATH HOTP',
-      MIDAS_MFA_RSA_SECURID => 'RSA SecurID');
+      MIDAS_MFA_PAM => 'PAM');
     } 
 
   /**

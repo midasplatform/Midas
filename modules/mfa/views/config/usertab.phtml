@@ -18,11 +18,11 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/con
   <input type="hidden" name="userId" value="<?php echo $this->user->getKey();?>" />
   <div class="useOtpCheckboxContainer">
     <input id="useOtpCheckbox" type="checkbox" name="useOtp" <?php if($this->useOtp) { echo 'checked="checked" '; } ?> />
-    Use a one-time-password device for authentication
+    Use a one-time password device for authentication
   </div>
   <table>
     <tr>
-      <td>Device Type:</td>
+      <td>Type:</td>
       <td><select id="otpAlgorithmSelect" name="algorithm">
         <?php foreach($this->algList as $val => $text)
           {
@@ -38,7 +38,7 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/con
     </tr>
 
     <tr>
-      <td>Key/PIN:</td>
+      <td>Key:</td>
       <td><input id="otpSecret" type="text" name="secret" value="<?php echo $this->secret;?>" /></td>
     </tr>
 
