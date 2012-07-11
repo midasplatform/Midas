@@ -41,6 +41,8 @@ class Mfa_OtpComponent extends AppComponent
     $alg = $otpDevice->getAlgorithm();
     switch($alg)
       {
+      case MIDAS_MFA_PAM:
+        return $this->_pamAuth($otpDevice, $token);
       case MIDAS_MFA_OATH_HOTP:
         return $this->_hotpAuth($otpDevice, $token);
       case MIDAS_MFA_RSA_SECURID:
@@ -48,6 +50,17 @@ class Mfa_OtpComponent extends AppComponent
       default:
         throw new Zend_Exception('Unknown OTP algorithm for user '.$otpDevice->getUserId());
       }
+    }
+
+  /**
+   * Perform RSA SecurID Authentication
+   * In the current implementation, we rely on a correctly configured PAM setup
+   * on the server.
+   */
+  protected function _pamAuth($otpDevice, $token)
+    {
+    $err = '';
+    return pam_auth($otpDevice->getSecret(), $token, $err, false);
     }
 
   /**
@@ -59,13 +72,10 @@ class Mfa_OtpComponent extends AppComponent
     }
 
   /**
-   * Perform RSA SecurID Authentication
-   * In the current implementation, we rely on a correctly configured PAM setup
-   * on the server.
+   * STUB: Perform RSA SecurID Authentication
    */
   protected function _securIdAuth($otpDevice, $token)
     {
-    $err = '';
-    return pam_auth($otpDevice->getSecret(), $token, $err, false);
+    return true;
     }
 }
