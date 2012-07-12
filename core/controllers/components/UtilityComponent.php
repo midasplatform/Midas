@@ -495,4 +495,34 @@ class UtilityComponent extends AppComponent
     require_once BASE_PATH.'/library/Markdown/markdown.php';
     return Markdown($text);
     }
+
+  /** Recursively delete a directory on disk */
+  public static function rrmdir($dir)
+    {
+    if(!file_exists($dir))
+      {
+      return;
+      }
+    if(is_dir($dir))
+      {
+      $objects = scandir($dir);
+      }
+
+    foreach($objects as $object)
+      {
+      if($object != '.' && $object != '..')
+        {
+        if(filetype($dir.'/'.$object) == 'dir')
+          {
+          self::rrmdir($dir.'/'.$object);
+          }
+        else
+          {
+          unlink($dir.'/'.$object);
+          }
+        }
+      }
+    reset($objects);
+    rmdir($dir);
+    }
 } // end class
