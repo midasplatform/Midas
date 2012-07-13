@@ -63,7 +63,7 @@ class Archive_ExtractController extends Archive_AppController
     try
       {
       $parentFolder = $this->ModuleComponent->Extract->extractInPlace($item, $deleteArchive, $this->userSession->Dao, $this->progressDao);
-      
+
       echo JsonComponent::encode(array(
         'status' => 'ok',
         'redirect' => $this->view->webroot.'/folder/'.$parentFolder->getKey()));
