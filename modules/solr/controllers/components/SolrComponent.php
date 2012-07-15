@@ -41,7 +41,7 @@ class Solr_SolrComponent extends AppComponent
     {
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
-    $itemModel->iterateWithCallback('CALLBACK_CORE_ITEM_SAVED');
+    $itemModel->iterateWithCallback('CALLBACK_CORE_ITEM_SAVED', 'item', array('metadataChanged' => true));
 
     $index = $this->getSolrIndex();
     $index->optimize();
