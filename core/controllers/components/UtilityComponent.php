@@ -174,7 +174,7 @@ class UtilityComponent extends AppComponent
 
     if(!is_array($data) || empty($data))
       {
-      throw new Zend_Exception("Error parameters");
+      throw new Zend_Exception("Error in parameter: data, it should be a non-empty array");
       }
     $text = "";
 
