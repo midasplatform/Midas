@@ -227,21 +227,25 @@ midas.deleteFolder = function (id) {
     var html = '';
     html += json.browse['deleteMessage'];
     html += '<br/><br/>';
+    html += '<div id="deleteFolderProgress"></div>';
+    html += '<div id="deleteFolderProgressMessage"></div><br/><br/>';
     html += '<div style="float: right;">';
     html += '<input class="globalButton deleteFolderYes" element="'+id+'" type="button" value="' + json.global.Yes + '"/>';
     html += '<input style="margin-left:15px;" class="globalButton deleteFolderNo" type="button" value="' + json.global.No + '"/>';
     html += '</div>';
-    html += '<img id="deleteFolderProgress" style="display: none;" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>';
 
     midas.showDialogWithContent(json.browse['delete'], html, false);
 
     $('input.deleteFolderYes').unbind('click').click(function () {
-        $('#deleteFolderProgress').show();
         $(this).attr('disabled', 'disabled');
         var node = $('table.treeTable tr.parent[element='+id+']');
-        $.post(json.global.webroot+'/folder/delete', {folderId: id}, function(data) {
-            $('#deleteFolderProgress').hide();
-            $(this).removeAttr('disabled');
+        midas.ajaxWithProgress(
+          $('#deleteFolderProgress'),
+          $('#deleteFolderProgressMessage'),
+          json.global.webroot+'/folder/delete',
+          {folderId: id},
+          function(data) {
+            $('input.deleteFolderYes').removeAttr('disabled');
             jsonResponse = jQuery.parseJSON(data);
             if(jsonResponse==null) {
                 midas.createNotice('Error', 4000, 'error');

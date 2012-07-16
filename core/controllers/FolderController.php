@@ -21,7 +21,7 @@
 /** Folder Controller*/
 class FolderController extends AppController
   {
-  public $_models = array('Folder', 'Folder', 'Item', 'Folderpolicygroup', 'Folderpolicyuser');
+  public $_models = array('Folder', 'Folder', 'Item', 'Folderpolicygroup', 'Folderpolicyuser', 'Progress');
   public $_daos = array('Folder', 'Folder', 'Item');
   public $_components = array('Utility', 'Date');
   public $_forms = array('Folder');
@@ -222,7 +222,13 @@ class FolderController extends AppController
         throw new Zend_Exception("User Default Folder. You cannot delete it.");
         }
       }
-    $this->Folder->delete($folder);
+    if($this->progressDao)
+      {
+      $this->progressDao->setMaximum($this->Folder->getRecursiveChildCount($folder) + 1);
+      $this->progressDao->setMessage('Preparing to delete folder...');
+      $this->Progress->save($this->progressDao);
+      }
+    $this->Folder->delete($folder, $this->progressDao);
     $folderInfo = $folder->toArray();
     echo JsonComponent::encode(array(true, $this->t('Changes saved'), $folderInfo));
     }// end deleteAction

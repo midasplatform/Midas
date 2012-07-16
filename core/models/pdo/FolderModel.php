@@ -421,8 +421,11 @@ class FolderModel extends FolderModelBase
     return $folders;
     }
 
-  /** Custom delete function */
-  function delete($folder)
+  /**
+   * Custom delete function.
+   * Pass a progressDao with pre-computed maximum to keep track of delete progress
+   */
+  function delete($folder, $progressDao = null)
     {
     if(!$folder instanceof FolderDao)
       {
@@ -435,20 +438,35 @@ class FolderModel extends FolderModelBase
     $key = $folder->getKey();
     if(!isset($key))
       {
-      throw new Zend_Exception("Unable to find the key" );
+      throw new Zend_Exception("Unable to find the key");
       }
 
     $this->ModelLoader = new MIDAS_ModelLoader();
+    if($progressDao && !isset($this->Progress))
+      {
+      $this->Progress = $this->ModelLoader->loadModel('Progress');
+      }
     $items = $folder->getItems();
     foreach($items as $item)
       {
+      if($progressDao)
+        {
+        $message = 'Removing item '.$item->getName();
+        $this->Progress->updateProgress($progressDao, $progressDao->getCurrent() + 1, $message);
+        }
       $this->removeItem($folder, $item);
       }
 
     $children = $folder->getFolders();
     foreach($children as $child)
       {
-      $this->delete($child, true);
+      $this->delete($child, $progressDao);
+      }
+
+    if($progressDao)
+      {
+      $message = 'Removing folder '.$folder->getName();
+      $this->Progress->updateProgress($progressDao, $progressDao->getCurrent() + 1, $message);
       }
 
     $policy_group_model = $this->ModelLoader->loadModel('Folderpolicygroup');
