@@ -103,8 +103,7 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
       }
     if($quota !== null && $quota !== false)
       {
-      $this->loadDaoClass('FolderQuotaDao', 'sizequota');
-      $folderQuota = new Sizequota_FolderQuotaDao();
+      $folderQuota = MidasLoader::newDao('FolderQuotaDao', 'sizequota');
       $folderQuota->setFolderId($folder->getKey());
       $folderQuota->setQuota($quota);
       $this->save($folderQuota);

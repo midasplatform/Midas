@@ -86,7 +86,6 @@ class Packages_ApiComponent extends AppComponent
   public function extensionList($args)
     {
     $extensionsModel = MidasLoader::loadModel('Extension', 'packages');
-    $extensionsModel->loadDaoClass('ExtensionDao', 'packages');
     $itemModel = MidasLoader::loadModel('Item');
 
     $extensions = $extensionsModel->get($args);
@@ -219,8 +218,7 @@ class Packages_ApiComponent extends AppComponent
         {
         throw new Exception('Failed to create item', -1);
         }
-      $extensionModel->loadDaoClass('ExtensionDao', 'packages');
-      $extensionDao = new Packages_ExtensionDao();
+      $extensionDao = MidasLoader::newDao('ExtensionDao', 'packages');
       }
     else
       {
@@ -297,7 +295,6 @@ class Packages_ApiComponent extends AppComponent
   public function packageList($args)
     {
     $packagesModel = MidasLoader::loadModel('Package', 'packages');
-    $packagesModel->loadDaoClass('PackageDao', 'packages');
     $itemModel = MidasLoader::loadModel('Item');
 
     $daos = $packagesModel->get($args);
@@ -410,8 +407,7 @@ class Packages_ApiComponent extends AppComponent
       throw new Exception('Failed to create item', -1);
       }
     $packageModel = MidasLoader::loadModel('Package', 'packages');
-    $packageModel->loadDaoClass('PackageDao', 'packages');
-    $packageDao = new Packages_PackageDao();
+    $packageDao = MidasLoader::newDao('PackageDao', 'packages');
     $packageDao->setItemId($item->getKey());
     $packageDao->setApplicationId($application->getKey());
     $packageDao->setSubmissiontype($args['submissiontype']);

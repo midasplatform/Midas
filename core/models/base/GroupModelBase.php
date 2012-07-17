@@ -48,8 +48,7 @@ abstract class GroupModelBase extends AppModel
     {
     if($key == MIDAS_GROUP_ANONYMOUS_KEY)
       {
-      $this->loadDaoClass('GroupDao');
-      $dao = new GroupDao();
+      $dao = MidasLoader::newDao('GroupDao');
       $dao->setGroupId(MIDAS_GROUP_ANONYMOUS_KEY);
       $dao->setCommunityId(0);
       $dao->setName('Anonymous');
@@ -58,8 +57,7 @@ abstract class GroupModelBase extends AppModel
       }
     elseif($key == MIDAS_GROUP_SERVER_KEY)
       {
-      $this->loadDaoClass('GroupDao');
-      $dao = new GroupDao();
+      $dao = MidasLoader::newDao('GroupDao');
       $dao->setGroupId(MIDAS_GROUP_SERVER_KEY);
       $dao->setCommunityId(0);
       $dao->setName('Servers');
@@ -110,8 +108,7 @@ abstract class GroupModelBase extends AppModel
       {
       throw new Zend_Exception("Should be a string.");
       }
-    $this->loadDaoClass('GroupDao');
-    $group = new GroupDao();
+    $group = MidasLoader::newDao('GroupDao');
     $group->setName($name);
     $group->setCommunityId($communityDao->getCommunityId());
     $this->save($group);

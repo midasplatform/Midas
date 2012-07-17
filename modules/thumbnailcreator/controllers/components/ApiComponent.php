@@ -67,8 +67,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
     $itemThumbnail = $itemthumbnailModel->getByItemId($item->getKey());
     if(!$itemThumbnail)
       {
-      $itemthumbnailModel->loadDaoClass('ItemthumbnailDao', 'thumbnailcreator');
-      $itemThumbnail = new Thumbnailcreator_ItemthumbnailDao();
+      $itemThumbnail = MidasLoader::newDao('ItemthumbnailDao', 'thumbnailcreator');
       $itemThumbnail->setItemId($item->getKey());
       }
     else

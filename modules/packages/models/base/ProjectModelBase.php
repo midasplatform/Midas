@@ -51,8 +51,7 @@ abstract class Packages_ProjectModelBase extends Packages_AppModel
     $project = $this->getByCommunityId($community->getKey());
     if(!$project)
       {
-      $this->loadDaoClass('ProjectDao', $this->moduleName);
-      $project = new Packages_ProjectDao();
+      $project = MidasLoader::newDao('ProjectDao', $this->moduleName);
       $project->setCommunityId($community->getKey());
       }
     $project->setEnabled($value ? 1 : 0);

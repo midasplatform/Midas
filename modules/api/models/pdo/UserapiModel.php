@@ -176,8 +176,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
       return false;
       }
 
-    $this->loadDaoClass('TokenDao', 'api');
-    $tokenDao = new Api_TokenDao();
+    $tokenDao = MidasLoader::newDao('TokenDao', 'api');
     $tokenDao->setUserapiId($userapiDao->getKey());
     $tokenDao->setToken($token);
     $tokenDao->setExpirationDate(date("c", time() + $userapiDao->getTokenExpirationTime() * 60));

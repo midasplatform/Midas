@@ -50,8 +50,7 @@ class ItempolicyuserModel  extends ItempolicyuserModelBase
       {
       $this->delete($this->getPolicy($user, $item));
       }
-    $this->loadDaoClass('ItempolicyuserDao');
-    $policyUser = new ItempolicyuserDao();
+    $policyUser = MidasLoader::newDao('ItempolicyuserDao');
     $policyUser->setUserId($user->getUserId());
     $policyUser->setItemId($item->getItemId());
     $policyUser->setPolicy($policy);

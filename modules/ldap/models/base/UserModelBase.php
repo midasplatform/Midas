@@ -59,8 +59,7 @@ abstract class Ldap_UserModelBase extends Ldap_AppModel
     $userDao->setPassword(''); //remove password so that normal password based auth won't work
     $userModel->save($userDao);
 
-    $this->loadDaoClass('UserDao', 'ldap');
-    $ldapUserDao = new Ldap_UserDao();
+    $ldapUserDao = MidasLoader::newDao('UserDao', 'ldap');
     $ldapUserDao->setUserId($userDao->getKey());
     $ldapUserDao->setLogin($ldapLogin);
     $this->save($ldapUserDao);

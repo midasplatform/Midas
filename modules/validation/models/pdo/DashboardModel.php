@@ -102,13 +102,13 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
       throw new Zend_Exception("Should be a folder.");
       }
     $scalarResultModel = MidasLoader::loadModel('ScalarResult', 'validation');
-    $this->loadDaoClass('ScalarResultDao', 'validation');
+
     $items = $folder->getItems();
     $numItems = count($items);
     for($i = 0; $i < $numItems; ++$i)
       {
       $curItemKey = $items[$i]->getKey();
-      $scalarResult = new Validation_ScalarResultDao();
+      $scalarResult = MidasLoader::newDao('ScalarResultDao', 'validation');
       $scalarResult->setFolderId($folder->getKey());
       $scalarResult->setItemId($curItemKey);
       $scalarResult->setValue($values[$curItemKey]);
@@ -141,7 +141,6 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
       throw new Zend_Exception("Should be an item.");
       }
     $scalarResultModel = MidasLoader::loadModel('ScalarResult', 'validation');
-    $this->loadDaoClass('ScalarResultDao', 'validation');
     $items = $folder->getItems();
     $tgtItem = null;
     foreach($items as $curItem)
@@ -165,7 +164,7 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
       $this->database->removeLink('scores', $dashboard, $oldResult);
       }
 
-    $scalarResult = new Validation_ScalarResultDao();
+    $scalarResult = MidasLoader::newDao('ScalarResultDao', 'validation');
     $scalarResult->setFolderId($folder->getKey());
     $scalarResult->setItemId($tgtItem->getKey());
     $scalarResult->setValue($value);

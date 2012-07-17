@@ -73,8 +73,7 @@ abstract class FolderpolicyuserModelBase extends AppModel
       {
       $this->delete($this->getPolicy($user, $folder));
       }
-    $this->loadDaoClass('FolderpolicyuserDao');
-    $policyUser = new FolderpolicyuserDao();
+    $policyUser = MidasLoader::newDao('FolderpolicyuserDao');
     $policyUser->setUserId($user->getUserId());
     $policyUser->setFolderId($folder->getFolderId());
     $policyUser->setPolicy($policy);

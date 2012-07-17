@@ -165,14 +165,6 @@ class MidasLoader
       }
     else
       {
-      if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name.'Dao.php'))
-        {
-        require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name.'Dao.php';
-        }
-      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name.'Dao.php'))
-        {
-        require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name.'Dao.php';
-        }
       if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name.'.php'))
         {
         require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name.'.php';
@@ -187,14 +179,11 @@ class MidasLoader
         }
 
       $classname = ucfirst($module).'_'.$name;
-      if(class_exists($classname))
+      if(!class_exists($classname))
         {
-        return new $classname;
+        throw new Zend_Exception('Unable to load dao class '.$classname);
         }
-      else
-        {
-        throw new Zend_Exception('Unable to load dao class ' . ucfirst($module).'_'.$name);
-        }
+      return new $classname;
       }
     }
 } // end class

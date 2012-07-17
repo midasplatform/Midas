@@ -62,7 +62,6 @@ class Validation_ApiComponent extends AppComponent
   public function getAllDashboards($value)
     {
     $model = MidasLoader::loadModel('Dashboard', 'validation');
-    $model->loadDaoClass('DashboardDao', 'validation');
     $daos = $model->getAll();
 
     $results = array();
@@ -98,8 +97,7 @@ class Validation_ApiComponent extends AppComponent
       }
 
     $model = MidasLoader::loadModel('Dashboard', 'validation');
-    $model->loadDaoClass('DashboardDao', 'validation');
-    $dao = new Validation_DashboardDao();
+    $dao = MidasLoader::newDao('DashboardDao', 'validation');
     $dao->setName($value['name']);
     $dao->setDescription($value['description']);
     $model->save($dao);

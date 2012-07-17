@@ -148,8 +148,7 @@ abstract class FolderModelBase extends AppModel
       return $existingfolder;
       }
 
-    $this->loadDaoClass('FolderDao');
-    $folder = new FolderDao();
+    $folder = MidasLoader::newDao('FolderDao');
     $folder->setName($name);
     $folder->setDescription($description);
     $folder->setUuid($uuid);

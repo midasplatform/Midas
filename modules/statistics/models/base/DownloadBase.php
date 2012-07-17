@@ -64,8 +64,7 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
 
     if($ipLocation == false)
       {
-      $this->loadDaoClass('IpLocationDao', 'statistics');
-      $ipLocation = new Statistics_IpLocationDao();
+      $ipLocation = MidasLoader::newDao('IpLocationDao', 'statistics');
       $ipLocation->setIp($ip);
       // we will perform the geolocation later, since it can be slow
       $ipLocation->setLatitude('');
@@ -73,8 +72,7 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
       $ipLocationModel->save($ipLocation);
       }
 
-    $this->loadDaoClass('DownloadDao', 'statistics');
-    $download = new Statistics_DownloadDao();
+    $download = MidasLoader::newDao('DownloadDao', 'statistics');
     $download->setItemId($item->getKey());
     $download->setIpLocationId($ipLocation->getKey());
     $download->setDate(date('c'));
