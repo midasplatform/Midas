@@ -25,8 +25,7 @@ class UuidComponent extends AppComponent
   /** Get using id*/
   public function getByUid($uuid)
     {
-    $loader = new MIDAS_ModelLoader();
-    $model = $loader->loadModel('Community');
+    $model = MidasLoader::loadModel('Community');
     $dao = $model->getByUuid($uuid);
     if($dao != false)
       {
@@ -34,7 +33,7 @@ class UuidComponent extends AppComponent
       return $dao;
       }
 
-    $model = $loader->loadModel('Folder');
+    $model = MidasLoader::loadModel('Folder');
     $dao = $model->getByUuid($uuid);
     if($dao != false)
       {
@@ -42,7 +41,7 @@ class UuidComponent extends AppComponent
       return $dao;
       }
 
-    $model = $loader->loadModel('Item');
+    $model = MidasLoader::loadModel('Item');
     $dao = $model->getByUuid($uuid);
     if($dao != false)
       {
@@ -50,7 +49,7 @@ class UuidComponent extends AppComponent
       return $dao;
       }
 
-    $model = $loader->loadModel('ItemRevision');
+    $model = MidasLoader::loadModel('ItemRevision');
     $dao = $model->getByUuid($uuid);
     if($dao != false)
       {
@@ -58,7 +57,7 @@ class UuidComponent extends AppComponent
       return $dao;
       }
 
-    $model = $loader->loadModel('User');
+    $model = MidasLoader::loadModel('User');
     $dao = $model->getByUuid($uuid);
     if($dao != false)
       {

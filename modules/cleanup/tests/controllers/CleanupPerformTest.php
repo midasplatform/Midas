@@ -46,9 +46,8 @@ class CleanupPerformTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[2]->getKey());
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $jobModel = $modelLoader->loadModel('Job', 'scheduler');
-    $jobLogModel = $modelLoader->loadModel('JobLog', 'scheduler');
+    $jobModel = MidasLoader::loadModel('Job', 'scheduler');
+    $jobLogModel = MidasLoader::loadModel('JobLog', 'scheduler');
 
     $jobs = $jobModel->getJobsByTask('TASK_CLEANUP_PERFORM_CLEANUP');
     if(!empty($jobs))

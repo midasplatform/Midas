@@ -101,10 +101,9 @@ class MIDAS_Notification
   public function loadElements()
     {
     Zend_Registry::set('models', array());
-    $this->ModelLoader = new MIDAS_ModelLoader();
     if(isset($this->_models))
       {
-      $this->ModelLoader->loadModels($this->_models);
+      MidasLoader::loadModels($this->_models);
       }
     $modelsArray = Zend_Registry::get('models');
     foreach($modelsArray as $key => $tmp)
@@ -159,10 +158,9 @@ class MIDAS_Notification
    */
   public function loadModuleElements()
     {
-    $this->ModelLoader = new MIDAS_ModelLoader();
     if(isset($this->_moduleModels))
       {
-      $this->ModelLoader->loadModels($this->_moduleModels, $this->moduleName);
+      MidasLoader::loadModels($this->_moduleModels, $this->moduleName);
       $modelsArray = Zend_Registry::get('models');
       foreach($this->_moduleModels as  $value)
         {

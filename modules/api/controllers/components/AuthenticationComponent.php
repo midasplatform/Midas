@@ -45,8 +45,7 @@ class Api_AuthenticationComponent extends AppComponent
         return 0;
         }
       $token = $args['token'];
-      $modelLoad = new MIDAS_ModelLoader();
-      $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+      $userApiModel = MidasLoader::loadModel('Userapi', 'api');
       $userapiDao = $userApiModel->getUserapiFromToken($token);
       if(!$userapiDao)
         {
@@ -57,7 +56,7 @@ class Api_AuthenticationComponent extends AppComponent
         {
         return false;
         }
-      $userModel = $modelLoad->loadModel('User');
+      $userModel = MidasLoader::loadModel('User');
       $userDao = $userModel->load($userid);
 
       // Set the session in the notifier so callback handlers can use it

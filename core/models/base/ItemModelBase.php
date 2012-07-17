@@ -113,13 +113,12 @@ abstract class ItemModelBase extends AppModel
     $groupPolicies = $folderdao->getFolderpolicygroup();
     $userPolicies = $folderdao->getFolderpolicyuser();
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $ItempolicygroupModel = $modelLoad->loadModel('Itempolicygroup');
+    $ItempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
     foreach($groupPolicies as $key => $policy)
       {
       $ItempolicygroupModel->createPolicy($policy->getGroup(), $itemdao, $policy->getPolicy());
       }
-    $ItempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
+    $ItempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
     foreach($userPolicies as $key => $policy)
       {
       $ItempolicyuserModel->createPolicy($policy->getUser(), $itemdao, $policy->getPolicy());
@@ -127,12 +126,12 @@ abstract class ItemModelBase extends AppModel
 
     if($feeddao != null && $feeddao instanceof FeedDao)
       {
-      $FeedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
+      $FeedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
       foreach($groupPolicies as $key => $policy)
         {
         $FeedpolicygroupModel->createPolicy($policy->getGroup(), $feeddao, $policy->getPolicy());
         }
-      $FeedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
+      $FeedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
       foreach($userPolicies as $key => $policy)
         {
         $FeedpolicyuserModel->createPolicy($policy->getUser(), $feeddao, $policy->getPolicy());
@@ -167,8 +166,7 @@ abstract class ItemModelBase extends AppModel
         }
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $ItempolicygroupModel = $modelLoad->loadModel('Itempolicygroup');
+    $ItempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
     foreach($groupPolicies as $key => $policy)
       {
       $newGroup = $policy->getGroup();
@@ -204,11 +202,10 @@ abstract class ItemModelBase extends AppModel
       {
       throw new Zend_Exception("Should be an user.");
       }
-    $modelLoad = new MIDAS_ModelLoader();
-    $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
-    $BitstreamModel = $modelLoad->loadModel('Bitstream');
-    $MetadataModel = $modelLoad->loadModel('Metadata');
-    $ItemPolicyGroupModel = $modelLoad->loadModel('Itempolicygroup');
+    $ItemRevisionModel = MidasLoader::loadModel('ItemRevision');
+    $BitstreamModel = MidasLoader::loadModel('Bitstream');
+    $MetadataModel = MidasLoader::loadModel('Metadata');
+    $ItemPolicyGroupModel = MidasLoader::loadModel('Itempolicygroup');
 
     $name = $itemDao->getName();
     $description = $itemDao->getDescription();
@@ -326,8 +323,7 @@ abstract class ItemModelBase extends AppModel
       throw new Zend_Exception("Second argument should be an item revision" );
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
+    $ItemRevisionModel = MidasLoader::loadModel('ItemRevision');
 
     // Should check the latest revision for this item
     $latestrevision = $ItemRevisionModel->getLatestRevision($itemdao);
@@ -365,8 +361,7 @@ abstract class ItemModelBase extends AppModel
       throw new Zend_Exception("Revision needs to be associated with Item");
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
+    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
 
     $lastRevisionDao = $this->getLastRevision($itemdao);
     $numRevisions = $lastRevisionDao->getRevision();
@@ -497,17 +492,14 @@ abstract class ItemModelBase extends AppModel
       $parentId = $parent;
       $parent = $this->load($parentId);
       }
-
-    $this->loadDaoClass('ItemDao');
-    $item = new ItemDao();
+    $item = MidasLoader::newDao('ItemDao');
     $item->setName($this->updateItemName($name, $parent));
     $item->setDescription($description);
     $item->setType(0);
     $item->setUuid($uuid);
     $this->save($item, true);
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $folderModel = $modelLoad->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     $folderModel->addItem($parent, $item);
     $this->copyParentPolicies($item, $parent);
     return $item;
@@ -541,11 +533,10 @@ abstract class ItemModelBase extends AppModel
    */
   function mergeItems($itemIds, $name, $userSessionDao, $progress = null)
     {
-    $modelLoad = new MIDAS_ModelLoader();
     if($progress)
       {
       $current = 0;
-      $progressModel = $modelLoad->loadModel('Progress');
+      $progressModel = MidasLoader::loadModel('Progress');
       }
 
     $items = array();
@@ -591,8 +582,8 @@ abstract class ItemModelBase extends AppModel
 
     $mainItem = $items[0];
     $mainItemLastResision = $this->getLastRevision($mainItem);
-    $bitstreamModel = $modelLoad->loadModel('Bitstream');
-    $revisionModel = $modelLoad->loadModel('ItemRevision');
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
+    $revisionModel = MidasLoader::loadModel('ItemRevision');
     foreach($items as $key => $item)
       {
       if($key != 0)
@@ -630,9 +621,8 @@ abstract class ItemModelBase extends AppModel
    */
   public function replaceThumbnail($item, $tempThumbnailFile)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $assetstoreModel = $modelLoad->loadModel('Assetstore');
-    $bitstreamModel = $modelLoad->loadModel('Bitstream');
+    $assetstoreModel = MidasLoader::loadModel('Assetstore');
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
 
     // Remove the existing thumbnail bitstream
     if($item->getThumbnailId() !== null)

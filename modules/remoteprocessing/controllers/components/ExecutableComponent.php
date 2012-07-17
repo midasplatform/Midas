@@ -30,8 +30,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
   /** get Meta file*/
   function getMetaIoFile($itemDao)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
     $bitstreams = $revision->getBitstreams();
     $metaFile = false;
@@ -50,8 +49,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
   function getExecutable($itemDao)
     {
     $executable = false;
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
     $bitstreams = $revision->getBitstreams();
     foreach($bitstreams as $b)
@@ -67,10 +65,8 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
   /** schedule Job (create script and set parameters).*/
   function initAndSchedule($userDao, $executableItemDao, $jobName, $cmdOptions, $parametersList, $fire_time = false, $time_interval = false)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
-    $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
+    $itemModel = MidasLoader::loadModel('Item');
+    $jobComponent = MidasLoader::loadComponent('Job', 'remoteprocessing');
 
     if($time_interval === false)
       {
@@ -122,11 +118,9 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
   /** preprocessing*/
   private function _treeJobProcessing($params, $tree)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
-    $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
-    $folderModel = $modelLoader->loadModel('Folder');
+    $jobComponent = MidasLoader::loadComponent('Job', 'remoteprocessing');
+    $itemModel = MidasLoader::loadModel('Item');
+    $folderModel = MidasLoader::loadModel('Folder');
 
     foreach($tree as $uuid => $children)
       {

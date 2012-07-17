@@ -32,8 +32,7 @@ class HelloModelTest extends DatabaseTestCase
   /** testGetAll*/
   public function testGetAll()
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $helloModel = $modelLoad->loadModel('Hello', 'helloworld');
+    $helloModel = MidasLoader::loadModel('Hello', 'helloworld');
 
     $daos = $helloModel->getAll();
     $this->assertEquals(1, count($daos));

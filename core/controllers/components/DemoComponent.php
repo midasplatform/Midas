@@ -63,10 +63,9 @@ class DemoComponent extends AppComponent
       unlink(BASE_PATH.'/core/configs/ldap.local.ini');
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $userModel = $modelLoad->loadModel('User');
-    $communityModel = $modelLoad->loadModel('Community');
-    $assetstoreModel = $modelLoad->loadModel('Assetstore');
+    $userModel = MidasLoader::loadModel('User');
+    $communityModel = MidasLoader::loadModel('Community');
+    $assetstoreModel = MidasLoader::loadModel('Assetstore');
     $admin = $userModel->createUser('admin@kitware.com', 'admin', 'Demo', 'Administrator', 1);
     $user = $userModel->createUser('user@kitware.com', 'user', 'Demo', 'User', 0);
 

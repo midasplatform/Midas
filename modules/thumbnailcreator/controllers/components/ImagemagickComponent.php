@@ -31,8 +31,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
    */
   public function createThumbnail($item, $inputFile = null)
     {
-    $modelLoader = new MIDAS_ModelLoader;
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     if(is_array($item))
       {
       $item = $itemModel->load($item['item_id']);

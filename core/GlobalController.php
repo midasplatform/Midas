@@ -27,7 +27,6 @@ class MIDAS_GlobalController extends Zend_Controller_Action
   {
 
   protected $Models = array();
-  protected $ModelLoader = null;
 
   /** contructor*/
   public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
@@ -186,10 +185,9 @@ class MIDAS_GlobalController extends Zend_Controller_Action
   public function loadElements()
     {
     Zend_Registry::set('models', array());
-    $this->ModelLoader = new MIDAS_ModelLoader();
     if(isset($this->_models))
       {
-      $this->ModelLoader->loadModels($this->_models);
+      MidasLoader::loadModels($this->_models);
       }
     $modelsArray = Zend_Registry::get('models');
     foreach($modelsArray as $key => $tmp)
@@ -201,7 +199,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       {
       foreach($this->_daos as $dao)
         {
-        Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/core/models/dao');
+        Zend_Loader::loadClass($dao.'Dao', BASE_PATH.'/core/models/dao');
         }
       }
 
@@ -211,8 +209,8 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       {
       foreach($this->_components as $component)
         {
-        $nameComponent = $component . "Component";
-        Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
+        $nameComponent = $component.'Component';
+        Zend_Loader::loadClass($nameComponent, BASE_PATH.'/core/controllers/components');
         if(!isset($this->Component))
           {
           $this->Component =  new stdClass();

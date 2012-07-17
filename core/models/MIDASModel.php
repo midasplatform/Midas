@@ -301,7 +301,9 @@ class MIDASModel
 
 
 
-  /** load Dao class*/
+  /**
+   * DEPRECATED: Use MidasLoader::newDao to load the class and instantiate a dao
+   */
   public function loadDaoClass($name, $module = 'core')
     {
     if($module == 'core')

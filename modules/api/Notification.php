@@ -54,8 +54,7 @@ class Api_Notification extends ApiEnabled_Notification
       {
       throw new Zend_Exception('Error: userDao parameter required');
       }
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $userApiModel = $this->ModelLoader->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $userApiModel->createDefaultApiKey($params['userDao']);
     }
 
@@ -69,8 +68,7 @@ class Api_Notification extends ApiEnabled_Notification
       {
       throw new Zend_Exception('Error: userDao parameter required');
       }
-    $modelLoader = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoader->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $apiKeys = $userApiModel->getByUser($params['userDao']);
 
     foreach($apiKeys as $apiKey)

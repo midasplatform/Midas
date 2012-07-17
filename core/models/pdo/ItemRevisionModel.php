@@ -75,8 +75,8 @@ class ItemRevisionModel extends ItemRevisionModelBase
     Zend_Registry::get('dbAdapter')->delete('metadatavalue', $clause);
 
     $item = $revisiondao->getItem();
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+
+    $itemModel = MidasLoader::loadModel('Item');
     $lastrevision = $itemModel->getLastRevision($item);
 
     //refresh lucene search index
@@ -100,8 +100,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
       throw new Zend_Exception("Error param.");
       }
     $bitstreams = $revisiondao->getBitstreams();
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $bitstream_model = $this->ModelLoader->loadModel('Bitstream');
+    $bitstream_model = MidasLoader::loadModel('Bitstream');
     foreach($bitstreams as $bitstream)
       {
       $bitstream_model->delete($bitstream);
@@ -115,8 +114,8 @@ class ItemRevisionModel extends ItemRevisionModelBase
                           ->where('ressource = ?', (string)$revisiondao->getKey());
 
     $rowset = $this->database->fetchAll($sql);
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $feed_model = $this->ModelLoader->loadModel('Feed');
+
+    $feed_model = MidasLoader::loadModel('Feed');
     foreach($rowset as $row)
       {
       $feed = $this->initDao('Feed', $row);

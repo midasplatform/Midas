@@ -53,8 +53,7 @@ abstract class ItempolicygroupModelBase extends AppModel
   public function computePolicyStatus($item)
     {
     $groupPolicies = $item->getItempolicygroup();
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
 
     foreach($groupPolicies as $key => $policy)
       {

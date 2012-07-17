@@ -148,8 +148,7 @@ abstract class FolderModelBase extends AppModel
       return $existingfolder;
       }
 
-    $this->loadDaoClass('FolderDao');
-    $folder = new FolderDao();
+    $folder = MidasLoader::newDao('FolderDao');
     $folder->setName($name);
     $folder->setDescription($description);
     $folder->setUuid($uuid);
@@ -174,8 +173,7 @@ abstract class FolderModelBase extends AppModel
       $totalCount += $subtotal['count'];
       }
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $items = $this->getItemsFiltered($folderDao, $userDao);
     foreach($items as $item)
       {

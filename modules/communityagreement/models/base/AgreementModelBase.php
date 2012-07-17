@@ -51,8 +51,7 @@ class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
    */
   function createAgreement($community_id, $agreement)
     {
-    $this->loadDaoClass('AgreementDao', 'communityagreement');
-    $agreementDao = new Communityagreement_AgreementDao();
+    $agreementDao = MidasLoader::newDao('AgreementDao', 'communityagreement');
     $agreementDao->setCommunityId($community_id);
     $agreementDao->setAgreement($agreement);
     $this->save($agreementDao);

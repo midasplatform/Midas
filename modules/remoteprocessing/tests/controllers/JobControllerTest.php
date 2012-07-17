@@ -46,8 +46,7 @@ class JobControllerTest extends ControllerTestCase
   public function testViewAction()
     {
     $userDao = $this->User->load(1);
-    $modelLoad = new MIDAS_ModelLoader();
-    $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
+    $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
     $job = $jobModel->load(1);
     $this->resetAll();
     $this->dispatchUrI('/remoteprocessing/job/view', null, true);

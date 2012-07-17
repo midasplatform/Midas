@@ -369,8 +369,7 @@ class UtilityComponent extends AppComponent
    */
   public static function getTempDirectory($subdir = "misc")
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $settingModel = $modelLoader->loadModel('Setting');
+    $settingModel = MidasLoader::loadModel('Setting');
     try
       {
       $tempDirectory = $settingModel->getValueByName('temp_directory');

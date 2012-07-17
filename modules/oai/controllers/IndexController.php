@@ -67,7 +67,6 @@ class Oai_IndexController extends Oai_AppController
 
     // configuration, sorry, that's not simple :)
     $modulesConfig = Zend_Registry::get('configsModules');
-    $modelLoader = new MIDAS_ModelLoader();
 
     if($this->isTestingEnv())
       {

@@ -69,7 +69,6 @@ class AppController extends MIDAS_GlobalController
       $this->view->version = Zend_Registry::get('configDatabase')->version;
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
     require_once BASE_PATH.'/core/models/dao/UserDao.php';
     require_once BASE_PATH.'/core/models/dao/ItemDao.php';
     //Init Session
@@ -86,7 +85,7 @@ class AppController extends MIDAS_GlobalController
       if(Zend_Registry::get('configGlobal')->environment == 'testing' && isset($testingUserId))
         {
         $user = new Zend_Session_Namespace('Auth_User_Testing');
-        $userModel = $modelLoad->loadModel('User');
+        $userModel = MidasLoader::loadModel('User');
         $user->Dao = $userModel->load($testingUserId);
         if($user->Dao == false)
           {
@@ -101,7 +100,7 @@ class AppController extends MIDAS_GlobalController
 
       if($user->Dao == null)
         {
-        $userModel = $modelLoad->loadModel('User');
+        $userModel = MidasLoader::loadModel('User');
         $cookieData = $this->getRequest()->getCookie('midasUtil');
         if(!empty($cookieData))
           {
@@ -139,7 +138,7 @@ class AppController extends MIDAS_GlobalController
             {
             $this->view->needUpgrade = true;
             }
-          $errorlogModel = $modelLoad->loadModel('Errorlog');
+          $errorlogModel = MidasLoader::loadModel('Errorlog');
           $count = $errorlogModel->countSince(date('c', strtotime('-24 hour')), array(MIDAS_PRIORITY_CRITICAL, MIDAS_PRIORITY_WARNING));
 
           if($count > 5)
@@ -156,7 +155,7 @@ class AppController extends MIDAS_GlobalController
         $this->view->recentItems = array();
         if(isset($cookieData) && file_exists(BASE_PATH.'/core/configs/database.local.ini')) //check if midas installed
           {
-          $itemModel = $modelLoad->loadModel('Item');
+          $itemModel = MidasLoader::loadModel('Item');
           $tmpRecentItems = unserialize($cookieData);
           $recentItems = array();
           if(!empty($tmpRecentItems) && is_array($tmpRecentItems))
@@ -333,7 +332,7 @@ class AppController extends MIDAS_GlobalController
     $progressId = $this->_getParam('progressId');
     if(isset($progressId) && $fc->getRequest()->getControllerName() != 'progress')
       {
-      $progressModel = $modelLoad->loadModel('Progress');
+      $progressModel = MidasLoader::loadModel('Progress');
       $this->progressDao = $progressModel->load($progressId);
       }
     else
@@ -542,8 +541,7 @@ class AppController extends MIDAS_GlobalController
     if($this->progressDao != null)
       {
       // delete progress object since execution is complete
-      $modelLoader = new MIDAS_ModelLoader();
-      $progressModel = $modelLoader->loadModel('Progress');
+      $progressModel = MidasLoader::loadModel('Progress');
       $progressModel->delete($this->progressDao);
       }
     }

@@ -69,9 +69,8 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
   /** check if item contains an executable */
   public function isExecutable($params)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
     $item = $params['item'];
-    $executableComponent = $componentLoader->loadComponent("Executable", "remoteprocessing");
+    $executableComponent = MidasLoader::loadComponent("Executable", "remoteprocessing");
     return $executableComponent->getExecutable($item) !== false;
     }
 
@@ -189,14 +188,13 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
   /** Process results. The result are usually sent by a remote machine. See api component.*/
   public function processProcessingResults($params)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
-    $userModel = $modelLoad->loadModel('User');
-    $folderModel = $modelLoad->loadModel('Folder');
-    $itemModel = $modelLoad->loadModel('Item');
-    $metadataModel = $modelLoad->loadModel('Metadata');
-    $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
-    $folderpolicyuserModel = $modelLoad->loadModel('Folderpolicyuser');
+    $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
+    $userModel = MidasLoader::loadModel('User');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $itemModel = MidasLoader::loadModel('Item');
+    $metadataModel = MidasLoader::loadModel('Metadata');
+    $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
+    $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
     $job = $params['job'];
 
     $userDao = $userModel->load($params['userKey']);
@@ -216,8 +214,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
 
     $folderpolicyuserModel->createPolicy($userDao, $folder, MIDAS_POLICY_WRITE);
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $uploadComponent = $componentLoader->loadComponent('Upload');
+    $uploadComponent = MidasLoader::loadComponent('Upload');
     $params['outputKeys'] = array();
 
     foreach($params['tasks'] as $keyTask => $task)
@@ -290,9 +287,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
         Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_POSTPROCESS_TASKOUTPUTFILE", array('file' => $file,  'item' => $item, 'task' => $task));
         }
       }
-
-    $componentLoader = new MIDAS_ComponentLoader();
-    $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
+    $jobComponent = MidasLoader::loadComponent('Job', 'remoteprocessing');
 
     unlink($params['pathResults'].'/job.xml');
     file_put_contents($params['pathResults'].'/job.xml', $jobComponent->createFormatedXmlFromArray($params));
@@ -303,8 +298,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
   /** Add a job. This is probably the main method of the module. It will create the job workflow. */
   public function addJob($params)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
-    $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
+    $jobComponent = MidasLoader::loadComponent('Job', 'remoteprocessing');
     $jobComponent->processJobParameters($params);
     }
   } //end class

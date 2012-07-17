@@ -59,10 +59,9 @@ class Remoteprocessing_ApiComponent extends AppComponent
       throw new Exception('Error security key.', MIDAS_INVALID_PARAMETER);
       }
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $userModel = $modelLoader->loadModel('User');
-    $groupModel = $modelLoader->loadModel('Group');
-    $Api_UserapiModel = $modelLoader->loadModel('Userapi', 'api');
+    $userModel = MidasLoader::loadModel('User');
+    $groupModel = MidasLoader::loadModel('Group');
+    $Api_UserapiModel = MidasLoader::loadModel('Userapi', 'api');
     if(empty($apikey))
       {
       if(empty($os))
@@ -107,9 +106,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
    */
   public function keepaliveserver($args)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
     if($userDao == false)
       {
@@ -121,7 +118,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
       throw new Exception('Please set the os', MIDAS_INVALID_PARAMETER);
       }
 
-    $groupModel = $modelLoad->loadModel('Group');
+    $groupModel = MidasLoader::loadModel('Group');
     $groupServer = $groupModel->load(MIDAS_GROUP_SERVER_KEY);
     $users = $groupServer->getUsers();
 
@@ -139,7 +136,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
       throw new Exception('Unable to authenticate as a server. Please check credentials.', MIDAS_INVALID_PARAMETER);
       }
 
-    $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
+    $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
     $jobs = $jobModel->getBy($args['os'], '');
 
     if(empty($jobs))
@@ -158,10 +155,10 @@ class Remoteprocessing_ApiComponent extends AppComponent
       $jobs[0]->setStatus(MIDAS_REMOTEPROCESSING_STATUS_STARTED);
       $jobModel->save($jobs[0]);
 
-      $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
-      $folderpolicyuserModel = $modelLoad->loadModel('Folderpolicyuser');
-      $itemModel = $modelLoad->loadModel('Item');
-      $folderModel = $modelLoad->loadModel('Folder');
+      $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
+      $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
+      $itemModel = MidasLoader::loadModel('Item');
+      $folderModel = MidasLoader::loadModel('Folder');
 
       // set policies
       if(isset($paramsJob['input']))
@@ -208,16 +205,14 @@ class Remoteprocessing_ApiComponent extends AppComponent
       throw new Exception('Should be a put request.', MIDAS_INVALID_PARAMETER);
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
-    $jobComponent = $componentLoader->loadComponent('Job', 'remoteprocessing');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $jobComponent = MidasLoader::loadComponent('Job', 'remoteprocessing');
     $userDao = $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
     if($userDao == false)
       {
       throw new Exception('Unable to authenticate as a server. Please check credentials.', MIDAS_INVALID_PARAMETER);
       }
-    $groupModel = $modelLoad->loadModel('Group');
+    $groupModel = MidasLoader::loadModel('Group');
     $groupServer = $groupModel->load(MIDAS_GROUP_SERVER_KEY);
     $users = $groupServer->getUsers();
 
@@ -235,8 +230,9 @@ class Remoteprocessing_ApiComponent extends AppComponent
       throw new Exception('Unable to authenticate as a server. Please check credentials.', MIDAS_INVALID_PARAMETER);
       }
 
-    $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
-    $workflowModel = $modelLoad->loadModel('Workflow', 'remoteprocessing');
+    $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
+    $workflowModel = MidasLoader::loadModel('Workflow', 'remoteprocessing');
+
     if(!file_exists(UtilityComponent::getTempDirectory().'/remoteprocessing'))
       {
       mkdir(UtilityComponent::getTempDirectory().'/remoteprocessing');

@@ -34,8 +34,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
       throw new Zend_Exception("Error parameter");
       }
 
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $userModel = $this->ModelLoader->loadModel('User');
+    $userModel = MidasLoader::loadModel('User');
 
     // First check that the email and password are correct (ldap not supported for now)
     $userDao = $userModel->getByEmail($email);
@@ -73,8 +72,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
       {
       throw new Zend_Exception("Error parameter");
       }
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $userModel = $this->ModelLoader->loadModel('User');
+    $userModel = MidasLoader::loadModel('User');
     $userDao = $userModel->getByEmail($email);
     if($userDao == false)
       {
@@ -119,8 +117,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
       throw new Zend_Exception("Error parameter");
       }
     // Check if we don't have already a token
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $userModel = $this->ModelLoader->loadModel('User');
+    $userModel = MidasLoader::loadModel('User');
     $userDao = $userModel->getByEmail($email);
     if(!$userDao)
       {
@@ -179,14 +176,12 @@ class Api_UserapiModel extends Api_UserapiModelBase
       return false;
       }
 
-    $this->loadDaoClass('TokenDao', 'api');
-    $tokenDao = new Api_TokenDao();
+    $tokenDao = MidasLoader::newDao('TokenDao', 'api');
     $tokenDao->setUserapiId($userapiDao->getKey());
     $tokenDao->setToken($token);
     $tokenDao->setExpirationDate(date("c", time() + $userapiDao->getTokenExpirationTime() * 60));
 
-    $tokenModel = $this->ModelLoader->loadModel('Token', 'api');
-
+    $tokenModel = MidasLoader::loadModel('Token', 'api');
     $tokenModel->save($tokenDao);
 
     // We do some cleanup of all the other keys that have expired

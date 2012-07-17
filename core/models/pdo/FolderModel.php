@@ -441,11 +441,11 @@ class FolderModel extends FolderModelBase
       throw new Zend_Exception("Unable to find the key");
       }
 
-    $this->ModelLoader = new MIDAS_ModelLoader();
     if($progressDao && !isset($this->Progress))
       {
-      $this->Progress = $this->ModelLoader->loadModel('Progress');
+      $this->Progress = MidasLoader::loadModel('Progress');
       }
+
     $items = $folder->getItems();
     foreach($items as $item)
       {
@@ -469,14 +469,14 @@ class FolderModel extends FolderModelBase
       $this->Progress->updateProgress($progressDao, $progressDao->getCurrent() + 1, $message);
       }
 
-    $policy_group_model = $this->ModelLoader->loadModel('Folderpolicygroup');
+    $policy_group_model = MidasLoader::loadModel('Folderpolicygroup');
     $policiesGroup = $folder->getFolderpolicygroup();
     foreach($policiesGroup as $policy)
       {
       $policy_group_model->delete($policy);
       }
 
-    $policy_user_model = $this->ModelLoader->loadModel('Folderpolicyuser');
+    $policy_user_model = MidasLoader::loadModel('Folderpolicyuser');
     $policiesUser = $folder->getFolderpolicyuser();
     foreach($policiesUser as $policy)
       {
@@ -992,8 +992,7 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Should be an item.");
       }
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel("Item");
+    $itemModel = MidasLoader::loadModel('Item');
     // Update item name to avoid duplicated names within the same folder
     if($update)
       {
@@ -1018,8 +1017,7 @@ class FolderModel extends FolderModelBase
     $this->database->removeLink('items', $folder, $item);
     if(count($item->getFolders()) == 0)
       {
-      $modelLoader = new MIDAS_ModelLoader();
-      $itemModel = $modelLoader->loadModel('Item');
+      $itemModel = MidasLoader::loadModel('Item');
       $itemModel->delete($item);
       }
     } // end function addItem
