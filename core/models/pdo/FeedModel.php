@@ -63,7 +63,7 @@ class FeedModel extends FeedModelBase
     {
     if(!$feedDao instanceof FeedDao || !is_numeric($policy))
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in params when checking Feed Policy.");
       }
     if($userDao == null)
       {
