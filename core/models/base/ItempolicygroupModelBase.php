@@ -39,6 +39,8 @@ abstract class ItempolicygroupModelBase extends AppModel
     } // end __construct()
 
   abstract function deleteGroupPolicies($group);
+  abstract function createPolicy($group, $item, $policy);
+  abstract function getPolicy($group, $item);
 
   /** delete */
   public function delete($dao)
