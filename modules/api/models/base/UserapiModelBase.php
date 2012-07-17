@@ -54,7 +54,7 @@ abstract class Api_UserapiModelBase extends Api_AppModel
     {
     if(!$userDao instanceof UserDao)
       {
-      throw new Zend_Exception('Error parameter: must be a userDao object');
+      throw new Zend_Exception('Error parameter: must be a userDao object when creating default api key.');
       }
     $key = md5($userDao->getEmail().$userDao->getPassword().'Default');
 
@@ -86,7 +86,7 @@ abstract class Api_UserapiModelBase extends Api_AppModel
     {
     if(!$userDao instanceof UserDao || !is_string($applicationname) || !is_string($tokenexperiationtime) || empty($applicationname))
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error parameter when creating API key.");
       }
 
     // Check that the applicationname doesn't exist for this user

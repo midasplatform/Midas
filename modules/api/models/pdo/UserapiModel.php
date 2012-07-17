@@ -31,7 +31,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!is_string($appname) || !is_string($email) || !is_string($password))
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error in parameter hwen creating key from email password.");
       }
 
     $this->ModelLoader = new MIDAS_ModelLoader();
@@ -71,7 +71,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!is_string($appname) || !is_string($email))
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error in parameter when getting a Userapi by app and email.");
       }
     $this->ModelLoader = new MIDAS_ModelLoader();
     $userModel = $this->ModelLoader->loadModel('User');
@@ -96,7 +96,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!is_string($appname) || !$userDao instanceof UserDao)
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error in parameter when getting a Userapi by app and user.");
       }
     $row = $this->database->fetchRow($this->database->select()->where('application_name = ?', $appname)
                                                               ->where('user_id = ?', $userDao->getKey()));
@@ -116,7 +116,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!is_string($appname) || !is_string($apikey) || !is_string($email))
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error in parameter when getting Token.");
       }
     // Check if we don't have already a token
     $this->ModelLoader = new MIDAS_ModelLoader();
@@ -201,7 +201,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!is_string($token))
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error in parameter when getting Userapi from token.");
       }
     $now = date("c");
 
@@ -222,7 +222,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!$userDao instanceof UserDao)
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error in parameter when getting Userapi from user.");
       }
     $rowset = $this->database->fetchAll($this->database->select()->where('user_id = ?', $userDao->getKey()));
     $return = array();
