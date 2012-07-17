@@ -42,8 +42,7 @@ class Dicomextractor_ApiComponent extends AppComponent
     $itemDao = $itemModel->load($args['item']);
     $revisionDao = $itemModel->getLastRevision($itemDao);
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $dicomComponent = $componentLoader->loadComponent('Extractor',
+    $dicomComponent = MidasLoader::loadComponent('Extractor',
                                                       'dicomextractor');
     $dicomComponent->extract($revisionDao);
     $dicomComponent->thumbnail($itemDao);

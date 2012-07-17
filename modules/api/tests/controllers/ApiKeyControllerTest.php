@@ -89,8 +89,7 @@ class ApiKeyControllerTest extends ControllerTestCase
     $userApiDao = $userApiModel->getByAppAndEmail('Default', 'user1@user1.com');
 
     $this->assertTrue($userApiDao == false, 'Key should not exist before install');
-    $componentLoader = new MIDAS_ComponentLoader();
-    $utilityComponent = $componentLoader->loadComponent('Utility');
+    $utilityComponent = MidasLoader::loadComponent('Utility');
     $utilityComponent->installModule('api');
 
     $userApiDao = $userApiModel->getByAppAndEmail('Default', 'user1@user1.com');

@@ -62,8 +62,8 @@ class Comments_CommentController extends Comments_AppController
 
     $this->disableView();
     $this->disableLayout();
-    $componentLoader = new MIDAS_ComponentLoader();
-    $commentComponent = $componentLoader->loadComponent('Comment', $this->moduleName);
+
+    $commentComponent = MidasLoader::loadComponent('Comment', $this->moduleName);
     list($comments, $total) = $commentComponent->getComments($item, $limit, $offset);
 
     echo JsonComponent::encode(array('status' => 'ok', 'comments' => $comments, 'total' => $total));

@@ -402,8 +402,7 @@ class Packages_ApiComponent extends AppComponent
       throw new Exception('Must have write access into the project to upload packages to application');
       }
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $uploadComponent = $componentLoader->loadComponent('Upload');
+    $uploadComponent = MidasLoader::loadComponent('Upload');
     $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $folder);
 
     if(!$item)

@@ -43,8 +43,7 @@ class Batchmake_ApiComponent extends AppComponent
   /** Return the user dao */
   private function _getUser($args)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     return $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
     }
 
@@ -76,8 +75,7 @@ class Batchmake_ApiComponent extends AppComponent
         }
       }
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $kwbatchmakeComponent = $componentLoader->loadComponent('KWBatchmake', 'batchmake');
+    $kwbatchmakeComponent = MidasLoader::loadComponent('KWBatchmake', 'batchmake');
     return $kwbatchmakeComponent->testconfig($configParams);
     }
 

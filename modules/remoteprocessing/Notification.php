@@ -69,9 +69,8 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
   /** check if item contains an executable */
   public function isExecutable($params)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
     $item = $params['item'];
-    $executableComponent = $componentLoader->loadComponent("Executable", "remoteprocessing");
+    $executableComponent = MidasLoader::loadComponent("Executable", "remoteprocessing");
     return $executableComponent->getExecutable($item) !== false;
     }
 
@@ -262,8 +261,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     // dynamically process the params
     if(isset($params['params']['cmdOptions']) && empty($params['script'])&& isset($params['params']['executable']))
       {
-      $componentLoader = new MIDAS_ComponentLoader();
-      $executableComponent = $componentLoader->loadComponent('Executable', 'remoteprocessing');
+      $executableComponent = MidasLoader::loadComponent('Executable', 'remoteprocessing');
       $tmp = $executableComponent->processScheduledJobParameters($params);
       $params['params'] = $tmp['parameters'];
       $params['script'] = $tmp['script'];

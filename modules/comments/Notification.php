@@ -48,8 +48,7 @@ class Comments_Notification extends MIDAS_Notification
       {
       $json['user'] = $this->userSession->Dao;
       }
-    $componentLoader = new MIDAS_ComponentLoader();
-    $commentComponent = $componentLoader->loadComponent('Comment', $this->moduleName);
+    $commentComponent = MidasLoader::loadComponent('Comment', $this->moduleName);
     list($comments, $total) = $commentComponent->getComments($params['item'], $json['limit'], $json['offset']);
     $json['comments'] = $comments;
     $json['total'] = $total;

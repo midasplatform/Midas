@@ -103,8 +103,7 @@ class Remoteprocessing_JobComponent extends AppComponent
   public function computeLogs($job, $logs, $params)
     {
     unset($params['log']);
-    $componentLoader = new MIDAS_ComponentLoader();
-    $utilityComponent = $componentLoader->loadComponent('Utility');
+    $utilityComponent = MidasLoader::loadComponent('Utility');
     $logs = str_replace("\r\n", "", $logs);
     $logs = str_replace("\r\r", "\r", $logs);
     $xml = "<?xml version='1.0'?>\n";
