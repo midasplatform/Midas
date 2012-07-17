@@ -33,8 +33,7 @@ class Packages_ApiComponent extends AppComponent
    */
   private function _getUser($args)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     return $authComponent->getUser($args, null);
     }
 
@@ -86,10 +85,9 @@ class Packages_ApiComponent extends AppComponent
    */
   public function extensionList($args)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $extensionsModel = $modelLoad->loadModel('Extension', 'packages');
+    $extensionsModel = MidasLoader::loadModel('Extension', 'packages');
     $extensionsModel->loadDaoClass('ExtensionDao', 'packages');
-    $itemModel = $modelLoad->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
 
     $extensions = $extensionsModel->get($args);
     $daos = $extensions['extensions'];
@@ -180,9 +178,8 @@ class Packages_ApiComponent extends AppComponent
 
     $tmpfile = $this->_readUploadedFile('extension');
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $settingModel = $modelLoader->loadModel('Setting');
-    $folderModel = $modelLoader->loadModel('Folder');
+    $settingModel = MidasLoader::loadModel('Setting');
+    $folderModel = MidasLoader::loadModel('Folder');
     $key = 'extensions.'.$args['submissiontype'].'.folder';
     $folderId = $settingModel->getValueByName($key, 'packages');
 
@@ -204,17 +201,16 @@ class Packages_ApiComponent extends AppComponent
       throw new Exception('Invalid policy on folder '.$folderId, -1);
       }
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $uploadComponent = $componentLoader->loadComponent('Upload');
-    $extensionModel = $modelLoader->loadModel('Extension', 'packages');
+    $uploadComponent = MidasLoader::loadComponent('Upload');
+    $extensionModel = MidasLoader::loadModel('Extension', 'packages');
     $extensionDao = $extensionModel->matchExistingExtension($args);
     if($extensionDao == null)
       {
       $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $folder);
 
       // Set the revision comment to the extension's revision
-      $itemModel = $modelLoader->loadModel('Item');
-      $itemRevisionModel = $modelLoader->loadModel('ItemRevision');
+      $itemModel = MidasLoader::loadModel('Item');
+      $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
       $itemRevision = $itemModel->getLastRevision($item);
       $itemRevision->setChanges($args['revision']);
       $itemRevisionModel->save($itemRevision);
@@ -300,10 +296,9 @@ class Packages_ApiComponent extends AppComponent
    */
   public function packageList($args)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $packagesModel = $modelLoad->loadModel('Package', 'packages');
+    $packagesModel = MidasLoader::loadModel('Package', 'packages');
     $packagesModel->loadDaoClass('PackageDao', 'packages');
-    $itemModel = $modelLoad->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
 
     $daos = $packagesModel->get($args);
 
@@ -376,10 +371,9 @@ class Packages_ApiComponent extends AppComponent
 
     $tmpfile = $this->_readUploadedFile('package');
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
-    $communityModel = $modelLoader->loadModel('Community');
-    $applicationModel = $modelLoader->loadModel('Application', 'packages');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $communityModel = MidasLoader::loadModel('Community');
+    $applicationModel = MidasLoader::loadModel('Application', 'packages');
 
     $folderId = $args['folderId'];
     $applicationId = $args['applicationId'];
@@ -416,7 +410,7 @@ class Packages_ApiComponent extends AppComponent
       {
       throw new Exception('Failed to create item', -1);
       }
-    $packageModel = $modelLoader->loadModel('Package', 'packages');
+    $packageModel = MidasLoader::loadModel('Package', 'packages');
     $packageModel->loadDaoClass('PackageDao', 'packages');
     $packageDao = new Packages_PackageDao();
     $packageDao->setItemId($item->getKey());

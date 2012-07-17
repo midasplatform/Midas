@@ -253,16 +253,15 @@ class FeedModel extends FeedModelBase
    */
   function delete($feedDao)
     {
-    $this->ModelLoader = new MIDAS_ModelLoader();
     $feedpolicygroups = $feedDao->getFeedpolicygroup();
-    $feedpolicygroupModel = $this->ModelLoader->loadModel('Feedpolicygroup');
+    $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
     foreach($feedpolicygroups as $f)
       {
       $feedpolicygroupModel->delete($f);
       }
 
     $feedpolicyuser = $feedDao->getFeedpolicyuser();
-    $feedpolicyuserModel = $this->ModelLoader->loadModel('Feedpolicyuser');
+    $feedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
     foreach($feedpolicyuser as $f)
       {
       $feedpolicyuserModel->delete($f);

@@ -101,8 +101,7 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
       {
       throw new Zend_Exception("Should be a folder.");
       }
-    $modelLoad = new MIDAS_ModelLoader();
-    $scalarResultModel = $modelLoad->loadModel('ScalarResult', 'validation');
+    $scalarResultModel = MidasLoader::loadModel('ScalarResult', 'validation');
     $this->loadDaoClass('ScalarResultDao', 'validation');
     $items = $folder->getItems();
     $numItems = count($items);
@@ -141,8 +140,7 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
       {
       throw new Zend_Exception("Should be an item.");
       }
-    $modelLoad = new MIDAS_ModelLoader();
-    $scalarResultModel = $modelLoad->loadModel('ScalarResult', 'validation');
+    $scalarResultModel = MidasLoader::loadModel('ScalarResult', 'validation');
     $this->loadDaoClass('ScalarResultDao', 'validation');
     $items = $folder->getItems();
     $tgtItem = null;

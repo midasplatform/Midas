@@ -91,8 +91,7 @@ abstract class FolderpolicygroupModelBase extends AppModel
     $userPolicies = $folder->getFolderpolicyuser();
 
     $shared = false;
-    $modelLoad = new MIDAS_ModelLoader();
-    $folderModel = $modelLoad->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
 
     foreach($groupPolicies as $key => $policy)
       {

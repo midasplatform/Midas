@@ -57,8 +57,7 @@ class ItempolicyuserModel  extends ItempolicyuserModelBase
     $policyUser->setPolicy($policy);
     $this->save($policyUser);
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $fitemGroupModel = $modelLoad->loadModel('Itempolicygroup');
+    $fitemGroupModel = MidasLoader::loadModel('Itempolicygroup');
     $fitemGroupModel->computePolicyStatus($item);
     return $policyUser;
     }

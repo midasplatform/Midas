@@ -33,8 +33,8 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 ?>
 <?php 
-$itemModel = $modelLoader->loadModel('Item');
-$itemRevisionModel = $modelLoader->loadModel('ItemRevision');
+$itemModel = MidasLoader::loadModel('Item');
+$itemRevisionModel = MidasLoader::loadModel('ItemRevision');
 // parse and check arguments
 foreach($args as $key => $val)
   {

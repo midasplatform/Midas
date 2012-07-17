@@ -27,8 +27,7 @@ class ScalarResultModelTest extends DatabaseTestCase
   /** testGetAll */
   public function testGetAll()
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $scalarResultModel = $modelLoad->loadModel('ScalarResult', 'validation');
+    $scalarResultModel = MidasLoader::loadModel('ScalarResult', 'validation');
     $daos = $scalarResultModel->getAll();
     $this->assertEquals(1, count($daos));
     }
@@ -38,8 +37,8 @@ class ScalarResultModelTest extends DatabaseTestCase
     {
     Zend_Registry::set('modulesEnable', $this->enabledModules);
     Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
-    $modelLoad = new MIDAS_ModelLoader();
-    $scalarResultModel = $modelLoad->loadModel('ScalarResult', 'validation');
+
+    $scalarResultModel = MidasLoader::loadModel('ScalarResult', 'validation');
     $daos = $scalarResultModel->getAll();
     $sr = $daos[0];
 

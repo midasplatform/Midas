@@ -35,8 +35,7 @@ class TaskModelTest extends DatabaseTestCase
     {
     $usersFile = $this->loadData('User', 'default', '', 'batchmake');
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $taskModel = $modelLoad->loadModel('Task', 'batchmake');
+    $taskModel = MidasLoader::loadModel('Task', 'batchmake');
 
     $user1Dao = $usersFile[0];
 

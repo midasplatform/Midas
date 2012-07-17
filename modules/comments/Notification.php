@@ -61,8 +61,7 @@ class Comments_Notification extends MIDAS_Notification
    */
   public function handleUserDeleted($params)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemCommentModel = $modelLoader->loadModel('Itemcomment', $this->moduleName);
+    $itemCommentModel = MidasLoader::loadModel('Itemcomment', $this->moduleName);
     $itemCommentModel->deleteByUser($params['userDao']);
     }
 
@@ -71,8 +70,7 @@ class Comments_Notification extends MIDAS_Notification
    */
   public function handleItemDeleted($params)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemCommentModel = $modelLoader->loadModel('Itemcomment', $this->moduleName);
+    $itemCommentModel = MidasLoader::loadModel('Itemcomment', $this->moduleName);
     $itemCommentModel->deleteByItem($params['item']);
     }
   }

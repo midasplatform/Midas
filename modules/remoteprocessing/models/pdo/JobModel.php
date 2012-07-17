@@ -62,8 +62,7 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
           ->where('job_id = ?', $job->getKey())
           ->order('item_id DESC');
 
-    $loader = new MIDAS_ModelLoader();
-    $itemModel = $loader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $rowset = $this->database->fetchAll($sql);
     $return = array();
     foreach($rowset as $row)

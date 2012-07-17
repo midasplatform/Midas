@@ -18,8 +18,7 @@ class Solr_SolrComponent extends AppComponent
    */
   public function getSolrIndex()
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $settingModel = $modelLoader->loadModel('Setting');
+    $settingModel = MidasLoader::loadModel('Setting');
     $solrHost = $settingModel->getValueByName('solrHost', 'solr');
     $solrPort = $settingModel->getValueByName('solrPort', 'solr');
     $solrWebroot = $settingModel->getValueByName('solrWebroot', 'solr');
@@ -39,8 +38,7 @@ class Solr_SolrComponent extends AppComponent
    */
   public function rebuildIndex()
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $itemModel->iterateWithCallback('CALLBACK_CORE_ITEM_SAVED');
 
     $index = $this->getSolrIndex();

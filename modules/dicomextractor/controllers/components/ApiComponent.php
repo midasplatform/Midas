@@ -36,9 +36,9 @@ class Dicomextractor_ApiComponent extends AppComponent
   function extract($args)
   {
     $this->_validateParams($args, array('item'));
-    $modelLoader = new MIDAS_ModelLoader;
-    $itemModel = $modelLoader->loadModel("Item");
-    $itemRevisionModel = $modelLoader->loadModel("ItemRevision");
+
+    $itemModel = MidasLoader::loadModel("Item");
+    $itemRevisionModel = MidasLoader::loadModel("ItemRevision");
     $itemDao = $itemModel->load($args['item']);
     $revisionDao = $itemModel->getLastRevision($itemDao);
 

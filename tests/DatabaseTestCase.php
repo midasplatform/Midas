@@ -68,7 +68,6 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
   /** init tests*/
   public function setUp()
     {
-    $this->ModelLoader = new MIDAS_ModelLoader();
     $this->bootstrap = array($this, 'appBootstrap');
     $this->loadElements();
     if(isset($this->enabledModules) && !empty($this->enabledModules))
@@ -195,7 +194,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
    */
   protected function loadData($modelName, $file = null, $modelModule = '', $fileModule = '')
     {
-    $model = $this->ModelLoader->loadModel($modelName, $modelModule);
+    $model = MidasLoader::loadModel($modelName, $modelModule);
     if($file == null)
       {
       $file = strtolower($modelName);
@@ -220,8 +219,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     Zend_Registry::set('models', array());
     if(isset($this->_models))
       {
-      $this->ModelLoader = new MIDAS_ModelLoader();
-      $this->ModelLoader->loadModels($this->_models);
+      MidasLoader::loadModels($this->_models);
       $modelsArray = Zend_Registry::get('models');
       foreach($modelsArray as $key => $tmp)
         {

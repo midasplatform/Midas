@@ -26,9 +26,8 @@ class Statistics_ReportComponent extends AppComponent
   /** generate report */
   public function generate()
     {
-    $loader = new MIDAS_ModelLoader();
-    $errorModel = $loader->loadModel('Errorlog');
-    $assetstoreModel = $loader->loadModel('Assetstore');
+    $errorModel = MidasLoader::loadModel('Errorlog');
+    $assetstoreModel = MidasLoader::loadModel('Assetstore');
     $reportContent = '';
     $reportContent .= '<b>Midas Report: '.Zend_Registry::get('configGlobal')->application->name.'</b>';
     $reportContent .= '<br/>http://'.$_SERVER['SERVER_NAME'];
@@ -85,8 +84,7 @@ class Statistics_ReportComponent extends AppComponent
   /** send the report to admins */
   public function send()
     {
-    $loader = new MIDAS_ModelLoader();
-    $userModel = $loader->loadModel('User');
+    $userModel = MidasLoader::loadModel('User');
     $mail = new Zend_Mail();
     $mail->setBodyHtml($this->report);
     $mail->setFrom('admin@foo.com', 'MIDAS');

@@ -284,9 +284,9 @@ class ItemModel extends ItemModelBase
                           ->from(array('p' => 'feed'))
                           ->where('ressource = ?', (string)$itemdao->getKey());
     $rowset = $this->database->fetchAll($sql);
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $feed_model = $this->ModelLoader->loadModel('Feed');
-    $revision_model = $this->ModelLoader->loadModel('ItemRevision');
+
+    $feed_model = MidasLoader::loadModel('Feed');
+    $revision_model = MidasLoader::loadModel('ItemRevision');
     foreach($rowset as $row)
       {
       $feed = $this->initDao('Feed', $row);
@@ -296,7 +296,7 @@ class ItemModel extends ItemModelBase
         }
       }
 
-    $folder_model = $this->ModelLoader->loadModel('Folder');
+    $folder_model = MidasLoader::loadModel('Folder');
     $folders = $itemdao->getFolders();
     foreach($folders as $folder)
       {
@@ -309,14 +309,14 @@ class ItemModel extends ItemModelBase
       $revision_model->delete($revision);
       }
 
-    $policy_group_model = $this->ModelLoader->loadModel('Itempolicygroup');
+    $policy_group_model = MidasLoader::loadModel('Itempolicygroup');
     $policiesGroup = $itemdao->getItempolicygroup();
     foreach($policiesGroup as $policy)
       {
       $policy_group_model->delete($policy);
       }
 
-    $policy_user_model = $this->ModelLoader->loadModel('Itempolicyuser');
+    $policy_user_model = MidasLoader::loadModel('Itempolicyuser');
     $policiesUser = $itemdao->getItempolicyuser();
     foreach($policiesUser as $policy)
       {
@@ -326,7 +326,7 @@ class ItemModel extends ItemModelBase
     $thumbnailId = $itemdao->getThumbnailId();
     if($thumbnailId !== null)
       {
-      $bitstreamModel = $this->ModelLoader->loadModel('Bitstream');
+      $bitstreamModel = MidasLoader::loadModel('Bitstream');
       $thumbnail = $bitstreamModel->load($thumbnailId);
       $bitstreamModel->delete($thumbnail);
       }

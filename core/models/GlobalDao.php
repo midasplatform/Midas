@@ -188,21 +188,19 @@ class MIDAS_GlobalDao
    */
   public function getModel($name = null)
     {
-    require_once BASE_PATH . '/core/models/ModelLoader.php';
-    $this->ModelLoader = new MIDAS_ModelLoader();
     if($name != null)
       {
       if(isset($this->_module))
         {
-        return $this->ModelLoader->loadModel($name, $this->_module);
+        return MidasLoader::loadModel($name, $this->_module);
         }
-      return $this->ModelLoader->loadModel($name);
+      return MidasLoader::loadModel($name);
       }
     if(isset($this->_module))
       {
-      return $this->ModelLoader->loadModel($this->_model, $this->_module);
+      return MidasLoader::loadModel($this->_model, $this->_module);
       }
-    return $this->ModelLoader->loadModel($this->_model);
+    return MidasLoader::loadModel($this->_model);
     } //end method getModel()
 
   /**

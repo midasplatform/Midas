@@ -117,10 +117,9 @@ class MIDAS_GlobalModule extends AppController
    */
   public function loadModuleElements()
     {
-    $this->ModelLoader = new MIDAS_ModelLoader();
     if(isset($this->_moduleModels))
       {
-      $this->ModelLoader->loadModels($this->_moduleModels, $this->moduleName);
+      MidasLoader::loadModels($this->_moduleModels, $this->moduleName);
       $modelsArray = Zend_Registry::get('models');
       foreach($this->_moduleModels as  $value)
         {

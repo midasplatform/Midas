@@ -59,8 +59,7 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
       $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
       }
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $ipLocationModel = $modelLoader->loadModel('IpLocation', 'statistics');
+    $ipLocationModel = MidasLoader::loadModel('IpLocation', 'statistics');
     $ipLocation = $ipLocationModel->getByIp($ip);
 
     if($ipLocation == false)

@@ -86,8 +86,7 @@ class ConfigControllerTest extends ControllerTestCase
     $this->getRequest()->setMethod('POST');
     $this->dispatchUrI($page, $admin);
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $agreementModel = $modelLoad->loadModel('Agreement', 'communityagreement');
+    $agreementModel = MidasLoader::loadModel('Agreement', 'communityagreement');
     $saved_agreement = $agreementModel->getByCommunityId($community_id)->getAgreement();
     $this->assertEquals('test agreement tab', $saved_agreement);
 

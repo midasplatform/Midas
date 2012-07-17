@@ -129,44 +129,72 @@ class MidasLoader
     return $models[$module.$model];
     }
 
+  /**
+   * Loads multiple models into the zend registry
+   */
+  public static function loadModels($models, $module = '')
+    {
+    if(is_string($models))
+      {
+      self::loadModel($models, $module);
+      }
+    elseif(is_array($models))
+      {
+      foreach($models as $model)
+        {
+        self::loadModel($model, $module);
+        }
+      }
+    }
+
+  /**
+   * Instantiate a new Dao
+   * @param name The base name of the dao class (no module prefix)
+   * @param module (Optional) If the dao is in a module, the name of the module
+   */
   public static function newDao($name, $module = 'core')
     {
     if($module == 'core')
       {
-      Zend_Loader::loadClass($name, BASE_PATH . '/core/models/dao');
+      Zend_Loader::loadClass($name, BASE_PATH.'/core/models/dao');
       if(!class_exists($name))
         {
-        throw new Zend_Exception('Unable to load dao class ' . $name);
+        throw new Zend_Exception('Unable to load dao class '.$name);
         }
+      return new $name;
       }
     else
       {
-      if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+      if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name.'Dao.php'))
         {
-        require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
+        require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name.'Dao.php';
         }
-      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name.'Dao.php'))
         {
-        require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php';
+        require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name.'Dao.php';
         }
-      if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. '.php'))
+      if(file_exists(BASE_PATH.'/modules/'.$module.'/models/dao/'.$name.'.php'))
         {
-        require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. '.php';
+        require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name.'.php';
         }
-      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. '.php'))
+      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name.'.php'))
         {
-        require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. '.php';
+        require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name.'.php';
         }
       else
         {
         throw new Zend_Exception("Unable to find dao file ".$name);
         }
 
-      if(!class_exists(ucfirst($module).'_'.$name))
+      $classname = ucfirst($module).'_'.$name;
+      if(class_exists($classname))
+        {
+        return new $classname;
+        }
+      else
         {
         throw new Zend_Exception('Unable to load dao class ' . ucfirst($module).'_'.$name);
         }
       }
-
     }
 } // end class

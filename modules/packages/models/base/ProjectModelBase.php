@@ -64,8 +64,7 @@ abstract class Packages_ProjectModelBase extends Packages_AppModel
    */
   public function delete($project)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $applicationModel = $modelLoader->loadModel('Application', 'packages');
+    $applicationModel = MidasLoader::loadModel('Application', 'packages');
     $applications = $project->getApplications();
     foreach($applications as $application)
       {

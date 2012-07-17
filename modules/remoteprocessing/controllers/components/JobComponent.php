@@ -172,9 +172,8 @@ class Remoteprocessing_JobComponent extends AppComponent
   /** convertXmlREsults */
   public function convertXmlREsults($xml)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $jobModel = $modelLoader->loadmodel('Job', 'remoteprocessing');
-    $itemModel = $modelLoader->loadmodel('Item');
+    $jobModel = MidasLoader::loadmodel('Job', 'remoteprocessing');
+    $itemModel = MidasLoader::loadmodel('Item');
 
     $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
     if(!$xml)

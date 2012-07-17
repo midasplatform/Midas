@@ -57,9 +57,8 @@ class CommunityInvitationModelBase extends AppModel
     $invitationDao->setUserId($invitedUserDao->getKey());
     $this->save($invitationDao);
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $feedModel = $modelLoad->loadModel('Feed');
-    $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
+    $feedModel = MidasLoader::loadModel('Feed');
+    $feedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
 
     $feed = $feedModel->createFeed($userDao, MIDAS_FEED_COMMUNITY_INVITATION, $invitationDao, $communityDao);
     $feedpolicyuserModel->createPolicy($invitedUserDao, $feed, MIDAS_POLICY_ADMIN);
@@ -96,8 +95,7 @@ class CommunityInvitationModelBase extends AppModel
       {
       if($invitation->getCommunityId() == $communityDao->getKey())
         {
-        $modelLoad = new MIDAS_ModelLoader();
-        $feedModel = $modelLoad->loadModel('Feed');
+        $feedModel = MidasLoader::loadModel('Feed');
         $feeds = $feedModel->getFeedByResourceAndType(array(MIDAS_FEED_COMMUNITY_INVITATION), $invitation);
         foreach($feeds as $feed)
           {

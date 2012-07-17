@@ -90,8 +90,8 @@ abstract class MetadataModelBase extends AppModel
     $metadataDao->setValue($value);
 
     $item = $itemRevisionDao->getItem();
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+
+    $itemModel = MidasLoader::loadModel('Item');
     $lastrevision = $itemModel->getLastRevision($item);
 
     //refresh zend search index if latest revision has changed

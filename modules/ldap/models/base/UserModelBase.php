@@ -53,8 +53,7 @@ abstract class Ldap_UserModelBase extends Ldap_AppModel
    */
   public function createLdapUser($ldapLogin, $email, $password, $firstName, $lastName)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $userModel = $modelLoader->loadModel('User');
+    $userModel = MidasLoader::loadModel('User');
     $userDao = $userModel->createUser($email, $password, $firstName, $lastName);
 
     $userDao->setPassword(''); //remove password so that normal password based auth won't work

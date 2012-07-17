@@ -38,8 +38,7 @@ class ApiKeyControllerTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $userApiModel->createDefaultApiKey($userDao);
     $preKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
     $this->assertEquals(strlen($preKey), 32);
@@ -74,8 +73,7 @@ class ApiKeyControllerTest extends ControllerTestCase
     $this->dispatchUrI($page);
 
     // Check that their default api key was created
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $key = $userApiModel->getByAppAndEmail('Default', 'some.user@server.com')->getApikey();
     $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
     $this->assertEquals($key, md5('some.user@server.com'.md5($passwordPrefix.'midas').'Default'));
@@ -87,8 +85,7 @@ class ApiKeyControllerTest extends ControllerTestCase
    */
   public function testExistingUsersGetDefaultKeysOnInstall()
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoader->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $userApiDao = $userApiModel->getByAppAndEmail('Default', 'user1@user1.com');
 
     $this->assertTrue($userApiDao == false, 'Key should not exist before install');

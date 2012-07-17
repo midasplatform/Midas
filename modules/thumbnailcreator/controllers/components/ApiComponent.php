@@ -39,9 +39,8 @@ class Thumbnailcreator_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('itemId', 'bitstreamId'), $args);
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $imComponent = $componentLoader->loadComponent('Imagemagick', 'thumbnailcreator');
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $imComponent = MidasLoader::loadComponent('Imagemagick', 'thumbnailcreator');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($args,
                                        Zend_Registry::get('userSession')->Dao);
 
@@ -53,10 +52,9 @@ class Thumbnailcreator_ApiComponent extends AppComponent
       $width = $args['width'];
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $bitstreamModel = $modelLoad->loadModel('Bitstream');
-    $itemModel = $modelLoad->loadModel('Item');
-    $itemthumbnailModel = $modelLoad->loadModel('Itemthumbnail', 'thumbnailcreator');
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
+    $itemModel = MidasLoader::loadModel('Item');
+    $itemthumbnailModel = MidasLoader::loadModel('Itemthumbnail', 'thumbnailcreator');
 
     $bitstream = $bitstreamModel->load($bitstreamId);
     $item = $itemModel->load($itemId);
@@ -87,7 +85,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
         throw new Exception('Could not create thumbnail from the bitstream', MIDAS_INTERNAL_ERROR);
         }
 
-      $assetstoreModel = $modelLoad->loadModel('Assetstore');
+      $assetstoreModel = MidasLoader::loadModel('Assetstore');
       $thumb = $bitstreamModel->createThumbnail($assetstoreModel->getDefault(), $thumbnail);
       $itemThumbnail->setThumbnailId($thumb->getKey());
       $itemthumbnailModel->save($itemThumbnail);
@@ -111,14 +109,12 @@ class Thumbnailcreator_ApiComponent extends AppComponent
     $this->_checkKeys(array('itemId'), $args);
     $itemId = $args['itemId'];
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $imComponent = $componentLoader->loadComponent('Imagemagick', 'thumbnailcreator');
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $imComponent = MidasLoader::loadComponent('Imagemagick', 'thumbnailcreator');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($args,
                                        Zend_Registry::get('userSession')->Dao);
 
-    $modelLoader = new MIDAS_ModelLoader;
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $item = $itemModel->load($itemId);
     if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
       {

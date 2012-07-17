@@ -102,9 +102,8 @@ class Batchmake_ApiComponent extends AppComponent
       throw new Exception('Anonymous users may not add condor dags', MIDAS_BATCHMAKE_INVALID_POLICY);
       }
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $taskModel = $modelLoader->loadModel('Task', 'batchmake');
-    $condorDagModel = $modelLoader->loadModel('CondorDag', 'batchmake');
+    $taskModel = MidasLoader::loadModel('Task', 'batchmake');
+    $condorDagModel = MidasLoader::loadModel('CondorDag', 'batchmake');
 
     $batchmakeTaskId = $params["batchmaketaskid"];
     $dagFilename = $params["dagfilename"];
@@ -154,10 +153,9 @@ class Batchmake_ApiComponent extends AppComponent
       throw new Exception('Anonymous users may not add condor jobs', MIDAS_BATCHMAKE_INVALID_POLICY);
       }
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $taskModel = $modelLoader->loadModel('Task', 'batchmake');
-    $condorDagModel = $modelLoader->loadModel('CondorDag', 'batchmake');
-    $condorJobModel = $modelLoader->loadModel('CondorJob', 'batchmake');
+    $taskModel = MidasLoader::loadModel('Task', 'batchmake');
+    $condorDagModel = MidasLoader::loadModel('CondorDag', 'batchmake');
+    $condorJobModel = MidasLoader::loadModel('CondorJob', 'batchmake');
 
     $batchmakeTaskId = $params["batchmaketaskid"];
     $jobdefinitionFilename = $params["jobdefinitionfilename"];

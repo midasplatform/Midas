@@ -73,9 +73,8 @@ class Packages_Notification extends ApiEnabled_Notification
   public function communityDeleted($args)
     {
     $community = $args['community'];
-    $modelLoader = new MIDAS_ModelLoader();
 
-    $projectModel = $modelLoader->loadModel('Project', $this->moduleName);
+    $projectModel = MidasLoader::loadModel('Project', $this->moduleName);
     $project = $projectModel->getByCommunityId($community->getKey());
     if($project)
       {
@@ -89,16 +88,15 @@ class Packages_Notification extends ApiEnabled_Notification
   public function itemDeleted($args)
     {
     $itemDao = $args['item'];
-    $modelLoader = new MIDAS_ModelLoader();
 
-    $packageModel = $modelLoader->loadModel('Package', $this->moduleName);
+    $packageModel = MidasLoader::loadModel('Package', $this->moduleName);
     $package = $packageModel->getByItemId($itemDao->getKey());
     if($package)
       {
       $packageModel->delete($package);
       }
 
-    $extensionModel = $modelLoader->loadModel('Extension', $this->moduleName);
+    $extensionModel = MidasLoader::loadModel('Extension', $this->moduleName);
     $extension = $extensionModel->getByItemId($itemDao->getKey());
     if($extension)
       {
@@ -141,9 +139,8 @@ class Packages_Notification extends ApiEnabled_Notification
   public function getItemMenuLink($params)
     {
     $item = $params['item'];
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
-    $packageModel = $modelLoader->loadModel('Package', $this->moduleName);
+    $itemModel = MidasLoader::loadModel('Item');
+    $packageModel = MidasLoader::loadModel('Package', $this->moduleName);
     $package = $packageModel->getByItemId($item->getKey());
 
     if(!$itemModel->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_WRITE))
@@ -157,7 +154,7 @@ class Packages_Notification extends ApiEnabled_Notification
       }
     else
       {
-      $extensionModel = $modelLoader->loadModel('Extension', $this->moduleName);
+      $extensionModel = MidasLoader::loadModel('Extension', $this->moduleName);
       $extension = $extensionModel->getByItemId($item->getKey());
       if($extension)
         {

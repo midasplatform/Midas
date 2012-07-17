@@ -28,8 +28,7 @@ class StatisticsDownloadModelTest extends DatabaseTestCase
    */
   public function testDailyTotals()
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $downloadModel = $modelLoader->loadModel('Download', 'statistics');
+    $downloadModel = MidasLoader::loadModel('Download', 'statistics');
     $downloadModel->loadDaoClass('DownloadDao', 'statistics');
 
     // Add 50 downloads 3 days ago
