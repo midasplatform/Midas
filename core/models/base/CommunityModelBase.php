@@ -76,7 +76,7 @@ abstract class CommunityModelBase extends AppModel
     $name = $dao->getName();
     if(empty($name) && $name !== '0')
       {
-      throw new Zend_Exception("Please set a name.");
+      throw new Zend_Exception("Please set a name for the Community.");
       }
     $cleanDescription = UtilityComponent::filterHtmlTags($dao->getDescription());
     $dao->setDescription($cleanDescription);
@@ -88,7 +88,7 @@ abstract class CommunityModelBase extends AppModel
     {
     if(!$communityDao instanceof CommunityDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param: communityDao should be a CommunityDao.");
       }
     $user = Zend_Registry::get('userSession');
     if(isset($user))
@@ -118,7 +118,7 @@ abstract class CommunityModelBase extends AppModel
       }
     if(empty($name) && $name !== '0')
       {
-      throw new Zend_Exception("Please set a name.");
+      throw new Zend_Exception("Please set a name for the Community.");
       }
 
     if($canJoin == null || $privacy == MIDAS_COMMUNITY_PRIVATE)
@@ -209,7 +209,7 @@ abstract class CommunityModelBase extends AppModel
     {
     if(!$communityDao instanceof CommunityDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param: communityDao should be a CommunityDao.");
       }
     Zend_Registry::get('notifier')->callback('CALLBACK_CORE_COMMUNITY_DELETED', array('community' => $communityDao));
     $this->ModelLoader = new MIDAS_ModelLoader();
@@ -256,7 +256,7 @@ abstract class CommunityModelBase extends AppModel
     {
     if(!$communityDao instanceof CommunityDao || !is_numeric($policy))
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param: communityDao should be a CommunityDao and policy should be numeric.");
       }
     if($userDao == null)
       {
