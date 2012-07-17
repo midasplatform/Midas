@@ -95,7 +95,7 @@ abstract class FolderModelBase extends AppModel
     {
     if(!$folder instanceof FolderDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("folder should be instance of FolderDao.");
       }
     $user = Zend_Registry::get('userSession');
     if(isset($user))

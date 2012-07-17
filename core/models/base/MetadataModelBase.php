@@ -74,7 +74,7 @@ abstract class MetadataModelBase extends AppModel
 
     if(!$itemRevisionDao instanceof $itemRevisionDao)
       {
-      throw new Zend_Exception("Error parameters.");
+      throw new Zend_Exception("Error in itemRevisionDao when adding metadata value.");
       }
 
     // Gets the metadata

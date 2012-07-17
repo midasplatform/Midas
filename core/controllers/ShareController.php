@@ -41,7 +41,7 @@ class ShareController extends AppController
     $element = $this->_getParam('element');
     if(!isset($type) || !isset($element))
       {
-      throw new Zend_Exception("Parameters problem.");
+      throw new Zend_Exception("Parameters problem, expecting type or element to be set.");
       }
 
     switch($type)
@@ -53,7 +53,7 @@ class ShareController extends AppController
         $element = $this->Item->load($element);
         break;
       default:
-        throw new Zend_Exception("Unknown type.");
+        throw new Zend_Exception("Unknown type, expected folder or item.");
         break;
       }
 

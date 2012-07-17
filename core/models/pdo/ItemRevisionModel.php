@@ -39,7 +39,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
     {
     if(!$revisiondao instanceof ItemRevisionDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param revisiondao when getting Metadata.");
       }
 
     $metadatavalues = array();
@@ -97,7 +97,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
     {
     if(!$revisiondao instanceof ItemRevisionDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param revisiondao when deleting an ItemRevision.");
       }
     $bitstreams = $revisiondao->getBitstreams();
     $bitstream_model = MidasLoader::loadModel('Bitstream');

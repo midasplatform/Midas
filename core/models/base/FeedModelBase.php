@@ -76,7 +76,7 @@ abstract class FeedModelBase extends AppModel
     {
     if(!$userDao instanceof UserDao && !is_numeric($type) && !is_object($ressource))
       {
-      throw new Zend_Exception("Error parameters.");
+      throw new Zend_Exception("Error in parameters, userdao, type, and ressource.");
       }
     $feed = MidasLoader::newDao('FeedDao');
     $feed->setUserId($userDao->getKey());
@@ -88,21 +88,21 @@ abstract class FeedModelBase extends AppModel
       case MIDAS_FEED_UPDATE_COMMUNITY:
         if(!$ressource instanceof CommunityDao)
           {
-          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting CommunityDao, type:".$type);
           }
         $feed->setRessource($ressource->getKey());
         break;
       case MIDAS_FEED_COMMUNITY_INVITATION:
         if(!$ressource instanceof CommunityInvitationDao)
           {
-          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting CommunityInvitationDao,  type:".$type);
           }
         $feed->setRessource($ressource->getKey());
         break;
       case MIDAS_FEED_CREATE_FOLDER:
         if(!$ressource instanceof FolderDao)
           {
-          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting FolderDao,  type:".$type);
           }
         $feed->setRessource($ressource->getKey());
         break;
@@ -110,21 +110,21 @@ abstract class FeedModelBase extends AppModel
       case MIDAS_FEED_CREATE_ITEM:
         if(!$ressource instanceof ItemDao)
           {
-          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting ItemDao,  type:".$type);
           }
         $feed->setRessource($ressource->getKey());
         break;
       case MIDAS_FEED_CREATE_REVISION:
         if(!$ressource instanceof ItemRevisionDao)
           {
-          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting ItemRevisionDao,  type:".$type);
           }
         $feed->setRessource($ressource->getKey());
         break;
       case MIDAS_FEED_CREATE_USER:
         if(!$ressource instanceof UserDao)
           {
-          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting UserDao,  type:".$type);
           }
         $feed->setRessource($ressource->getKey());
         break;
@@ -133,12 +133,12 @@ abstract class FeedModelBase extends AppModel
       case MIDAS_FEED_DELETE_ITEM:
         if(!is_string($ressource))
           {
-          throw new Zend_Exception("Error parameter ressource, type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting string,  type:".$type);
           }
         $feed->setRessource($ressource);
         break;
       default:
-        throw new Zend_Exception("Unable to defined the type of feed");
+        throw new Zend_Exception("Unable to find an expected type of feed");
         break;
       }
     $this->save($feed);

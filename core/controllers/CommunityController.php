@@ -598,7 +598,7 @@ class CommunityController extends AppController
     $user = $this->User->load($userId);
     if(!$user || !$community)
       {
-      throw new Zend_Exception('Invalid parameter');
+      throw new Zend_Exception('Invalid user or community parameter');
       }
     if(!$this->Group->userInGroup($user, $community->getMemberGroup()))
       {
@@ -658,7 +658,7 @@ class CommunityController extends AppController
     $user = $this->User->load($userId);
     if(!$user || !$community)
       {
-      throw new Zend_Exception('Invalid parameter');
+      throw new Zend_Exception('Invalid user or community parameter');
       }
     if(!$this->Group->userInGroup($user, $community->getMemberGroup()))
       {
@@ -717,7 +717,7 @@ class CommunityController extends AppController
     $user = $this->User->load($userId);
     if(!$user || !$group)
       {
-      throw new Zend_Exception('Invalid parameter');
+      throw new Zend_Exception('Invalid user or group parameter');
       }
     $community = $group->getCommunity();
 

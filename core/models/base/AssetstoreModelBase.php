@@ -127,7 +127,7 @@ abstract class AssetstoreModelBase extends AppModel
     {
     if(!$dao instanceof AssetstoreDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Deleting an assetstore requires a valid instance of an AssetstoreDao.");
       }
     $bitreams = $dao->getBitstreams();
     $items = array();

@@ -120,7 +120,7 @@ class FolderModel extends FolderModelBase
     {
     if(!$folderDao instanceof  FolderDao || !is_numeric($policy))
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in params when checking Folder Policy.");
       }
     if($userDao == null)
       {
@@ -521,11 +521,11 @@ class FolderModel extends FolderModelBase
 
     if(!$folder instanceof FolderDao)
       {
-      throw new Zend_Exception("Error parameter.");
+      throw new Zend_Exception("Error in parameter folder when moving folder.");
       }
     if(!$parent instanceof  FolderDao)
       {
-      throw new Zend_Exception("Error parameter.");
+      throw new Zend_Exception("Error in parameter parent when moving folder.");
       }
 
     // Check ifa folder with the same name already exists for the same parent
