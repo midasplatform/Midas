@@ -438,6 +438,48 @@ class ApiCallMethodsTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $itemsFile = $this->loadData('Item', 'default');
 
+    // This method is quite complex, so here is a listing of all
+    // the tests performed.  Also, the upload.generatetoken and
+    // upload.perform have been reworked for 3.2.8, but the previous
+    // versions of the API are tested here for backwards compatability
+    // (the previous versions of the APIs should still work).
+    // Each request gets a new count, related requests are grouped.
+    /*
+     * 1 generate upload token for an item lacking permissions, ERROR
+     *
+     * 2 generate an upload token for an item with permissions
+     * 3 upload using 2's token to the head revision
+     * 4 upload again using 2's token, tokens should be 1 time use, ERROR
+     *
+     * 5 generate an upload token with a checksum of an existing bitstream
+     *
+     * 6 create a new item in the user root folder
+     * 7 generate an upload token for 6's item, using a checksum of an existing bitstream
+     *
+     * 8 create a new item in the user root folder
+     * 9 generate an upload token for 8's item, without a checksum
+     *10 upload to 8's item revision 1, which doesn't exist, ERROR
+     *11 upload to 8's item head revision, this will create a revision 1
+     *12 upload to 8's item head revision again, tests using head revision when one exists
+     *
+     *13 generatetoken without folderid or itemid, ERROR
+     *
+     *14 generatetoken with folderid and itemid, ERROR
+     *
+     *15 generatetoken passing in folderid
+     *
+     *16 generatetoken passing in folderid and setting optional values
+     *17 upload without passing a revision to 16's item, this should create a revision 1
+     *18 generate a token for 16's item
+     *19 upload to an item with an existing revision, without the revision parameter, which should create a new revision 2
+     *20 generate a token for 16's item, after creating 2 new revisions, 3 and 4
+     *21 upload to an item with 4 revisions, with revision parameter of 3, check that revision 3 has the bitstream and revision 4 has 0 bitstreams
+     *
+     *22 generatetoken passing in folderid and a checksum of an existing bitstream
+     *
+     */
+
+    // 1
     // generate an upload token
     $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.upload.generatetoken';
@@ -474,6 +516,7 @@ class ApiCallMethodsTest extends ControllerTestCase
       unlink($assetstoreFile);
       }
 
+    // 2
     // generate another upload token
     $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.upload.generatetoken';
@@ -491,6 +534,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertTrue(file_exists($this->getTempDirectory().'/'.$token),
       'Token placeholder file '.$token.' was not created in the temp dir');
 
+    // 3
     // attempt the upload
     $this->resetAll();
     $this->params['method'] = 'midas.upload.perform';
@@ -500,6 +544,8 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['itemid'] = $itemsFile[1]->getKey();
     $this->params['revision'] = 'head'; //upload into head revision
     $this->params['testingmode'] = 'true';
+    $changes = 'revision message';
+    $this->params['changes'] = $changes;
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
@@ -512,12 +558,14 @@ class ApiCallMethodsTest extends ControllerTestCase
     $revisions = $itemDao->getRevisions();
     $this->assertEquals(count($revisions), 1, 'Wrong number of revisions in the item');
     $bitstreams = $revisions[0]->getBitstreams();
+    $this->assertEquals($revisions[0]->getChanges(), $changes, 'Wrong number of bitstreams in the revision');
     $this->assertEquals(count($bitstreams), 1, 'Wrong number of bitstreams in the revision');
     $this->assertEquals($bitstreams[0]->name, 'test.txt');
     $this->assertEquals($bitstreams[0]->sizebytes, $length);
     $this->assertEquals($bitstreams[0]->checksum, $md5);
 
 
+    // 4
     // when calling midas.upload.perform 2x in a row with the same params
     // (same upload token, same file that had just been uploaded),
     // the response should be an invalid token, -141.
@@ -537,6 +585,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($resp->stat, 'fail');
     $this->assertEquals($resp->code, -141);
 
+    // 5
     // Check that a redundant upload yields a blank upload token and a new reference
     // redundant upload meaning uploading a checksum that already exists
     $this->resetAll();
@@ -564,7 +613,9 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($bitstreams[1]->sizebytes, $length);
     $this->assertEquals($bitstreams[1]->checksum, $md5);
 
-    //separate testing for item create and delete
+    // separate testing for item create and delete
+
+    // 6
     // create a new item in the user root folder
     // use folderid 1000
     $this->resetAll();
@@ -579,6 +630,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $revisions = $itemDao->getRevisions();
     $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
 
+    // 7
     // generate upload token
     // when we generate an upload token for a newly created item with a
     // previously uploaded bitstream, and we are passing the checksum,
@@ -608,6 +660,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     // delete the newly created item
     $this->Item->delete($itemDao);
 
+    // 8
     // create a new item in the user root folder
     // use folderid 1000
     // need a new item because we are testing functionality involved with
@@ -624,6 +677,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $revisions = $itemDao->getRevisions();
     $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
 
+    // 9
     // generate upload token
     // when we generate an upload token for a newly created item without any
     // previously uploaded bitstream (and we don't pass a checksum),
@@ -648,6 +702,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $revisions = $itemDao->getRevisions();
     $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
 
+    // 10
     // upload to revision 1, this should be an error since there is no such rev
     $this->resetAll();
     $this->params['method'] = 'midas.upload.perform';
@@ -655,13 +710,14 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['filename'] = 'test.txt';
     $this->params['length'] = $length;
     $this->params['itemid'] = $generatedItemId;
-    $this->params['revision'] = '1'; //upload into head revision
+    $this->params['revision'] = '1'; //upload into revision 1
     $this->params['testingmode'] = 'true';
     $resp = $this->_callJsonApi();
     $this->assertNotEquals($resp, false);
     $this->assertEquals($resp->stat, 'fail');
     $this->assertEquals($resp->code, -150);
 
+    // 11
     // upload to head revision, this should create a revision 1 and
     // put the bitstream there
     $this->resetAll();
@@ -683,6 +739,280 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($bitstreams[0]->name, 'test.txt');
     $this->assertEquals($bitstreams[0]->sizebytes, $length);
     $this->assertEquals($bitstreams[0]->checksum, $md5);
+
+    // 12
+    // upload to head revision again, to test using the head revision when one exists
+    $this->resetAll();
+    $this->params['method'] = 'midas.upload.perform';
+    $this->params['uploadtoken'] = $token;
+    $this->params['filename'] = 'test.txt';
+    $this->params['length'] = $length;
+    $this->params['itemid'] = $generatedItemId;
+    $this->params['revision'] = 'head'; //upload into head revision
+    $this->params['testingmode'] = 'true';
+    $this->params['DBG'] = 'true';
+    $resp = $this->_callJsonApi();
+
+    // ensure that there is 1 revision with 1 bitstream, will be only one bitstream
+    // since we are uploading the same file
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 1, 'Wrong number of revisions in the new item');
+    $bitstreams = $revisions[0]->getBitstreams();
+    $this->assertEquals(count($bitstreams), 1, 'Wrong number of bitstreams in the revision');
+    $this->assertEquals($bitstreams[0]->name, 'test.txt');
+    $this->assertEquals($bitstreams[0]->sizebytes, $length);
+    $this->assertEquals($bitstreams[0]->checksum, $md5);
+
+    // 13
+    // test upload.generatetoken without folderid or itemid
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $this->params['filename'] = 'test.txt';
+    $resp = $this->_callJsonApi();
+    // should be an error
+    $this->assertNotEquals($resp, false);
+    $this->assertEquals($resp->stat, 'fail');
+    $this->assertEquals($resp->code, -150);
+
+    // 14
+    // test upload.generatetoken with folderid and itemid
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $this->params['filename'] = 'test.txt';
+    $this->params['itemid'] = '0';
+    $this->params['folderid'] = '0';
+    $resp = $this->_callJsonApi();
+    // should be an error
+    $this->assertNotEquals($resp, false);
+    $this->assertEquals($resp->stat, 'fail');
+    $this->assertEquals($resp->code, -150);
+
+    // 15
+    // test upload.generatetoken passing in folderid
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $filename = 'test.txt';
+    $this->params['filename'] = $filename;
+    $this->params['folderid'] = '1000';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $token = $resp->data->token;
+    // don't know the itemid as it is generated, but can get it from the token
+    $this->assertTrue(
+      preg_match('/^'.$usersFile[0]->getKey().'\/(\d+)\/.+\..+$/', $token, $matches) > 0,
+      'Upload token ('.$token.') is not of the form <userid>/<itemid>/*.*');
+    $generatedItemId = $matches[1];
+    $this->assertTrue(file_exists($this->getTempDirectory().'/'.$token),
+      'Token placeholder file '.$token.' was not created in the temp dir');
+    // test that the item was created without any revisions
+    $itemDao = $this->Item->load($generatedItemId);
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
+    // test that the properties of the item are as expected with defaults
+    $this->assertEquals($itemDao->getName(), $filename, 'Expected a different name for generated item');
+    $this->assertEquals($itemDao->getDescription(), '', 'Expected a different description for generated item');
+    $this->assertEquals($itemDao->getPrivacyStatus(), MIDAS_PRIVACY_PUBLIC, 'Expected a different privacy_status for generated item');
+    // delete the newly created item
+    $this->Item->delete($itemDao);
+
+    // 16
+    // test upload.generatetoken passing in folderid and setting optional values
+    $filename = 'test.txt';
+    $description = 'generated item description';
+    $itemname = 'generated item name';
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $this->params['filename'] = $filename;
+    $this->params['folderid'] = '1000';
+    $this->params['itemprivacy'] = 'Private';
+    $this->params['itemdescription'] = $description;
+    $this->params['itemname'] = $itemname;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $token = $resp->data->token;
+    // don't know the itemid as it is generated, but can get it from the token
+    $this->assertTrue(
+      preg_match('/^'.$usersFile[0]->getKey().'\/(\d+)\/.+\..+$/', $token, $matches) > 0,
+      'Upload token ('.$token.') is not of the form <userid>/<itemid>/*.*');
+    $generatedItemId = $matches[1];
+    $this->assertTrue(file_exists($this->getTempDirectory().'/'.$token),
+      'Token placeholder file '.$token.' was not created in the temp dir');
+    // test that the item was created without any revisions
+    $itemDao = $this->Item->load($generatedItemId);
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
+    // test that the properties of the item are as expected with parameters
+    $this->assertEquals($itemDao->getName(), $itemname, 'Expected a different name for generated item');
+    $this->assertEquals($itemDao->getDescription(), $description, 'Expected a different description for generated item');
+    $this->assertEquals($itemDao->getPrivacyStatus(), MIDAS_PRIVACY_PRIVATE, 'Expected a different privacy_status for generated item');
+
+    // 17
+    // upload without passing a revision, this should create a revision 1 and
+    // put the bitstream there
+    $this->resetAll();
+    $this->params['method'] = 'midas.upload.perform';
+    $this->params['uploadtoken'] = $token;
+    $this->params['filename'] = $filename;
+    $this->params['length'] = $length;
+    $this->params['itemid'] = $generatedItemId;
+    //$this->params['revision'] = 'head'; //upload into head revision
+    $this->params['testingmode'] = 'true';
+    $this->params['DBG'] = 'true';
+    $resp = $this->_callJsonApi();
+
+    // ensure that there is 1 revision with 1 bitstream
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 1, 'Wrong number of revisions in the new item');
+    $bitstreams = $revisions[0]->getBitstreams();
+    $this->assertEquals(count($bitstreams), 1, 'Wrong number of bitstreams in the revision');
+    $this->assertEquals($bitstreams[0]->name, $filename);
+    $this->assertEquals($bitstreams[0]->sizebytes, $length);
+    $this->assertEquals($bitstreams[0]->checksum, $md5);
+
+    // 18
+    // test uploading a file into an existing item with an existing revision,
+    // but without passing the revision parameter, which should create a new
+    // revision.
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $this->params['filename'] = $filename;
+    $this->params['itemid'] = $generatedItemId;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $token = $resp->data->token;
+
+    // 19
+    $this->resetAll();
+    $this->params['method'] = 'midas.upload.perform';
+    $this->params['uploadtoken'] = $token;
+    $this->params['filename'] = $filename;
+    $this->params['length'] = $length;
+    $this->params['itemid'] = $generatedItemId;
+    $this->params['testingmode'] = 'true';
+    $this->params['DBG'] = 'true';
+    $resp = $this->_callJsonApi();
+
+    // ensure that there are now 2 revisions with 1 bitstream each
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 2, 'Wrong number of revisions in the new item');
+    $bitstreams = $revisions[0]->getBitstreams();
+    $this->assertEquals(count($bitstreams), 1, 'Wrong number of bitstreams in revision 1');
+    $this->assertEquals($bitstreams[0]->name, $filename);
+    $this->assertEquals($bitstreams[0]->sizebytes, $length);
+    $this->assertEquals($bitstreams[0]->checksum, $md5);
+    $bitstreams = $revisions[1]->getBitstreams();
+    $this->assertEquals(count($bitstreams), 1, 'Wrong number of bitstreams in revision 2');
+    $this->assertEquals($bitstreams[0]->name, $filename);
+    $this->assertEquals($bitstreams[0]->sizebytes, $length);
+    $this->assertEquals($bitstreams[0]->checksum, $md5);
+
+    // now to test upload a bitstream to a specific revision
+    // create 2 new revisions on this item, 3 and 4, then add to the 3rd
+    Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
+    $revision = new ItemRevisionDao();
+    $revision->setUser_id($usersFile[0]->getKey());
+    $revision->setChanges('revision 3');
+    $this->Item->addRevision($itemDao, $revision);
+    $revisions = $itemDao->getRevisions();
+    $revision = new ItemRevisionDao();
+    $revision->setUser_id($usersFile[0]->getKey());
+    $revision->setChanges('revision 4');
+    $this->Item->addRevision($itemDao, $revision);
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 4, 'Wrong number of revisions in the new item');
+
+    // 20
+    // test uploading a file into an existing item with an existing revision,
+    // passing the revision parameter of 3, which should add to revision 3
+    // first generate the token
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $this->params['filename'] = $filename;
+    $this->params['itemid'] = $generatedItemId;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $token = $resp->data->token;
+
+    // 21
+    // now upload to revision 3
+    $this->resetAll();
+    $this->params['method'] = 'midas.upload.perform';
+    $this->params['uploadtoken'] = $token;
+    $this->params['filename'] = $filename;
+    $this->params['length'] = $length;
+    $this->params['itemid'] = $generatedItemId;
+    $this->params['revision'] = '3';
+    $this->params['testingmode'] = 'true';
+    $this->params['DBG'] = 'true';
+    $resp = $this->_callJsonApi();
+
+    // ensure that there are now 4 revisions, the first 3 having 1 bitstream and the last having 0
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 4, 'Wrong number of revisions in the new item');
+    $rev1 = $this->Item->getRevision($itemDao, '1');
+    $bitstreams = $rev1->getBitstreams();
+    $this->assertEquals(count($bitstreams), 1, 'Wrong number of bitstreams in revision 1');
+    $this->assertEquals($bitstreams[0]->name, $filename);
+    $this->assertEquals($bitstreams[0]->sizebytes, $length);
+    $this->assertEquals($bitstreams[0]->checksum, $md5);
+    $rev2 = $this->Item->getRevision($itemDao, '2');
+    $bitstreams = $rev2->getBitstreams();
+    $this->assertEquals(count($bitstreams), 1, 'Wrong number of bitstreams in revision 2');
+    $this->assertEquals($bitstreams[0]->name, $filename);
+    $this->assertEquals($bitstreams[0]->sizebytes, $length);
+    $this->assertEquals($bitstreams[0]->checksum, $md5);
+    $rev3 = $this->Item->getRevision($itemDao, '3');
+    $bitstreams = $rev3->getBitstreams();
+    $this->assertEquals(count($bitstreams), 1, 'Wrong number of bitstreams in revision 3');
+    $this->assertEquals($bitstreams[0]->name, $filename);
+    $this->assertEquals($bitstreams[0]->sizebytes, $length);
+    $this->assertEquals($bitstreams[0]->checksum, $md5);
+    $rev4 = $this->Item->getRevision($itemDao, '4');
+    $bitstreams = $rev4->getBitstreams();
+    $this->assertEquals(count($bitstreams), 0, 'Wrong number of bitstreams in revision 4');
+
+    // delete the newly created item
+    $this->Item->delete($itemDao);
+
+    // 22
+    // test upload.generatetoken passing in folderid
+    // when we generate an upload token for an item that will be created by
+    // the upload.generatetoken method,
+    // with a previously uploaded bitstream, and we are passing the checksum,
+    // we expect that the item will create a new revision for the bitstream,
+    // but pass back an empty upload token, since we have the bitstream content
+    // already and do not need to actually upload it
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $this->params['filename'] = $filename;
+    $this->params['checksum'] = $md5;
+    $this->params['folderid'] = '1000';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $token = $resp->data->token;
+    $this->assertEquals($token, '', 'Redundant content upload did not return a blank token');
+
+    // this is hackish, since we aren't getting back the itemid for the
+    // newly generated item, we know it will be the next id in the sequence
+    // this at least allows us to test it
+    $generatedItemId = $generatedItemId + 1;
+    $itemDao = $this->Item->load($generatedItemId);
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 1, 'Wrong number of revisions in the item');
+    $bitstreams = $revisions[0]->getBitstreams();
+    $this->assertEquals(count($bitstreams), 1, 'Wrong number of bitstreams in the revision');
+    $this->assertEquals($bitstreams[0]->name, $filename);
+    $this->assertEquals($bitstreams[0]->sizebytes, $length);
+    $this->assertEquals($bitstreams[0]->checksum, $md5);
+    // delete the newly created item
+    $this->Item->delete($itemDao);
 
     unlink($this->getTempDirectory().'/test.txt');
     }
