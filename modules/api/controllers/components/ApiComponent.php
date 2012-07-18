@@ -242,30 +242,37 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Generate a unique upload token
-   * @param token Authentication token
-   * @param itemid (either itemid or folder id is required, but not both)
+   * Generate a unique upload token.  Either <b>itemid</b> or <b>folderid</b> is required,
+     but both are not allowed.
+   * @param token Authentication token.
+   * @param itemid
             The id of the item to upload into.
-   * @param folderid (either folderid or itemid is required, but not both)
-            The id of the folder to create a new item in and then upload to,
-            will have the same name as filename unless itemname is supplied.
+   * @param folderid
+            The id of the folder to create a new item in and then upload to.
+            The new item will have the same name as <b>filename</b> unless <b>itemname</b>
+            is supplied.
+   * @param filename The filename of the file you will upload, will be used as the
+            bitstream's name and the item's name (unless <b>itemname</b> is supplied).
    * @param itemprivacy (Optional)
-            When passing the folderid param, the privacy status of the newly
+            When passing the <b>folderid</b> param, the privacy status of the newly
             created item, Default 'Public', possible values [Public|Private].
    * @param itemdescription (Optional)
-            When passing the folderid param, the description of the item,
-            otherwise the item's descpription will be blank.
+            When passing the <b>folderid</b> param, the description of the item,
+            if not supplied the item's description will be blank.
    * @param itemname (Optional)
-            When passing the folderid param, the name of the newly created item,
-            otherwise the item will have the same name as filename.
-   * @param filename The filename of the bitstream you will upload
-   * @param checksum (Optional) The md5 checksum of the file to be uploaded
+            When passing the <b>folderid</b> param, the name of the newly created item,
+            if not supplied, the item will have the same name as <b>filename</b>.
+   * @param checksum (Optional) The md5 checksum of the file to be uploaded.
    * @return An upload token that can be used to upload a file.
-             If folderid is passed instead of itemid, a new item will be created
+             If <b>folderid</b> is passed instead of <b>itemid</b>, a new item will be created
              in that folder, but the id of the newly created item will not be
-             returned, if that is needed then call itemCreate instead.
-             If checksum is passed and the token returned is blank, the
-             server already has this file and there is no need to upload.
+             returned.  If the id of the newly created item is needed,
+             then call the <b>midas.item.create</b> method instead.
+             If <b>checksum</b> is passed and the token returned is blank, the
+             server already has this file and there is no need to follow this
+             call with a call to <b>midas.upload.perform</b>, as the passed in
+             file will have been added as a bitstream to the item's latest
+             revision, creating a new revision if one doesn't exist.
    */
   function uploadGeneratetoken($args)
     {
@@ -409,21 +416,22 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Upload a file to the server. PUT or POST is required, will add to the item
-   * that was specified when generating the upload token as a new revision to
-   * the item, unless <b>revision</b> param is set.
-   * @param uploadtoken The upload token (see upload.generatetoken)
-   * @param filename The upload filename
-   * @param length The length in bytes of the file being uploaded
-   * @param mode (Optional) Stream or multipart. Default is stream
+   * Upload a file to the server. PUT or POST is required.
+     Will add the file as a bitstream to the item that was specified when
+     generating the upload token in a new revision to that item, unless
+     <b>revision</b> param is set.
+   * @param uploadtoken The upload token (see <b>midas.upload.generatetoken</b>).
+   * @param filename The name of the bitstream that will be added to the item.
+   * @param length The length in bytes of the file being uploaded.
+   * @param mode (Optional) Stream or multipart. Default is stream.
    * @param revision (Optional)
-            If set, will add a new file into the existing passed in revision.
+            If set, will add a new file into the existing passed in revision number.
             If set to "head", will add a new file into the most recent revision,
-            and will create a new revision if none exists.
+            and will create a new revision in this case if none exists.
    * @param changes (Optional)
             The changes field on the affected item revision,
             e.g. for recording what has changed since the previous revision.
-   * @param return The item information of the item created or changed
+   * @param return The item information of the item created or changed.
    */
   function uploadPerform($args)
     {
