@@ -244,16 +244,41 @@ class Api_ApiComponent extends AppComponent
   /**
    * Generate a unique upload token
    * @param token Authentication token
-   * @param itemid The id of the parent item to upload into
+   * @param itemid (either itemid or folder id is required, but not both)
+            The id of the item to upload into.
+   * @param folderid (either folderid or itemid is required, but not both)
+            The id of the folder to create a new item in and then upload to,
+            will have the same name as filename unless itemname is supplied.
+   * @param itemprivacy (Optional)
+            When passing the folderid param, the privacy status of the newly
+            created item, Default 'Public', possible values [Public|Private].
+   * @param itemdescription (Optional)
+            When passing the folderid param, the description of the item,
+            otherwise the item's descpription will be blank.
+   * @param itemname (Optional)
+            When passing the folderid param, the name of the newly created item,
+            otherwise the item will have the same name as filename.
    * @param filename The filename of the bitstream you will upload
    * @param checksum (Optional) The md5 checksum of the file to be uploaded
    * @return An upload token that can be used to upload a file.
+             If folderid is passed instead of itemid, a new item will be created
+             in that folder, but the id of the newly created item will not be
+             returned, if that is needed then call itemCreate instead.
              If checksum is passed and the token returned is blank, the
              server already has this file and there is no need to upload.
    */
   function uploadGeneratetoken($args)
     {
-    $this->_validateParams($args, array('itemid', 'filename'));
+    $this->_validateParams($args, array('filename'));
+    if(!array_key_exists('itemid', $args) && !array_key_exists('folderid', $args))
+      {
+      throw new Exception('Parameter itemid or folderid must be defined', MIDAS_INVALID_PARAMETER);
+      }
+    if(array_key_exists('itemid', $args) && array_key_exists('folderid', $args))
+      {
+      throw new Exception('Parameter itemid or folderid must be defined, but not both', MIDAS_INVALID_PARAMETER);
+      }
+
     $userDao = $this->_getUser($args);
     if(!$userDao)
       {
@@ -261,11 +286,61 @@ class Api_ApiComponent extends AppComponent
       }
 
     $modelLoader = new MIDAS_ModelLoader();
+
     $itemModel = $modelLoader->loadModel('Item');
-    $item = $itemModel->load($args['itemid']);
-    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+    if(array_key_exists('itemid', $args))
       {
-      throw new Exception('Invalid policy or itemid', MIDAS_INVALID_POLICY);
+      $item = $itemModel->load($args['itemid']);
+      if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Invalid policy or itemid', MIDAS_INVALID_POLICY);
+        }
+      }
+    else if(array_key_exists('folderid', $args))
+      {
+      $folderModel = $modelLoader->loadModel('Folder');
+      $folder = $folderModel->load($args['folderid']);
+      if($folder == false)
+        {
+        throw new Exception('Parent folder corresponding to folderid doesn\'t exist', MIDAS_INVALID_PARAMETER);
+        }
+      if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Invalid policy or folderid', MIDAS_INVALID_POLICY);
+        }
+      // create a new item in this folder
+      if(isset($args['itemprivacy']))
+        {
+        $privacy = $args['itemprivacy'];
+        if($privacy !== 'Public' && $privacy !== 'Private')
+          {
+          throw new Exception('itemprivacy should be one of [Public|Private]');
+          }
+        if($privacy === 'Public')
+          {
+          $privacy_status = MIDAS_PRIVACY_PUBLIC;
+          }
+        else
+          {
+          $privacy_status = MIDAS_PRIVACY_PRIVATE;
+          }
+        }
+      else
+        {
+        // Public by default
+        $privacy_status = MIDAS_PRIVACY_PUBLIC;
+        }
+      $itemname = isset($args['itemname']) ? $args['itemname'] : $args['filename'];
+      $description = isset($args['itemdescription']) ? $args['itemdescription'] : '';
+      $item = $itemModel->createItem($itemname, $description, $folder);
+      if($item === false)
+        {
+        throw new Exception('Create new item failed', MIDAS_INTERNAL_ERROR);
+        }
+      $itempolicyuserModel = $modelLoader->loadModel('Itempolicyuser');
+      $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
+      $item->setPrivacyStatus($privacy_status);
+      $itemModel->save($item);
       }
 
     if(array_key_exists('checksum', $args))
