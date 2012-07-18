@@ -172,7 +172,7 @@ abstract class UserModelBase extends AppModel
     {
     if(!$userDao instanceof UserDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param userDao when incrementing view count.");
       }
     $user = Zend_Registry::get('userSession');
     if(isset($user))
@@ -196,7 +196,7 @@ abstract class UserModelBase extends AppModel
     if(!is_string($email) || empty($email) || !is_string($password) || empty($password) || !is_string($firstname)
         || empty($firstname) || !is_string($lastname) || empty($lastname) || !is_numeric($admin))
       {
-      throw new Zend_Exception("Error Parameters.");
+      throw new Zend_Exception("Error in Parameters when creating a user.");
       }
 
     // Check ifthe user already exists based on the email address

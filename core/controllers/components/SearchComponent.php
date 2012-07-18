@@ -112,7 +112,7 @@ class SearchComponent extends AppComponent
         usort($results, array($sortdaoComponent, 'sortByNumber'));
         break;
       default:
-        throw new Zend_Exception('Error order parameter');
+        throw new Zend_Exception('Error in order parameter, not one of the expected values.');
         break;
       }
     $resultsArray = array();

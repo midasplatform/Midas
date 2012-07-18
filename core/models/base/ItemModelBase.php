@@ -108,7 +108,7 @@ abstract class ItemModelBase extends AppModel
     {
     if(!$itemdao instanceof ItemDao || !$folderdao instanceof FolderDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param itemdao or folderdao when copying parent policies.");
       }
     $groupPolicies = $folderdao->getFolderpolicygroup();
     $userPolicies = $folderdao->getFolderpolicyuser();
@@ -153,7 +153,7 @@ abstract class ItemModelBase extends AppModel
     {
     if(!$itemdao instanceof ItemDao || !$folderdao instanceof FolderDao)
       {
-      throw new Zend_Exception("Error input parameter.");
+      throw new Zend_Exception("Error in itemdao or folderdao when adding read only policy.");
       }
     $groupPolicies = $folderdao->getFolderpolicygroup();
     $existingGroupPolicies = $itemdao->getItempolicygroup();
@@ -198,7 +198,7 @@ abstract class ItemModelBase extends AppModel
     {
     if(!$itemDao instanceof ItemDao || !$folderDao instanceof FolderDao)
       {
-      throw new Zend_Exception("Error ItemDao or FolderDao");
+      throw new Zend_Exception("Error in ItemDao or FolderDao when duplicating item");
       }
     if(!$userDao instanceof UserDao)
       {
@@ -287,7 +287,7 @@ abstract class ItemModelBase extends AppModel
     {
     if(!$itemdao instanceof ItemDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param itemdao when incrementing view count.");
       }
     $user = Zend_Registry::get('userSession');
     if(isset($user))
@@ -310,7 +310,7 @@ abstract class ItemModelBase extends AppModel
     {
     if(!$itemdao instanceof ItemDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param itemdao when incrementing download count.");
       }
     $itemdao->download++;
     parent::save($itemdao);

@@ -77,7 +77,7 @@ class DownloadController extends AppController
       }
     if(!isset($itemIds) && !isset($folderIds))
       {
-      throw new Zend_Exception("No parameters");
+      throw new Zend_Exception("No parameters, expecting itemIds or folderIds.");
       }
     $folderIds = explode('-', $folderIds);
     $folders = $this->Folder->load($folderIds);
