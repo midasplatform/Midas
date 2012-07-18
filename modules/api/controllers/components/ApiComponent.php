@@ -409,16 +409,20 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Upload a file to the server. PUT or POST is required. Either the itemid
-       or folderid parameter must be set
+   * Upload a file to the server. PUT or POST is required, will add to the item
+   * that was specified when generating the upload token as a new revision to
+   * the item, unless <b>revision</b> param is set.
    * @param uploadtoken The upload token (see upload.generatetoken)
    * @param filename The upload filename
    * @param length The length in bytes of the file being uploaded
    * @param mode (Optional) Stream or multipart. Default is stream
-   * @param folderid (Optional) The id of the folder to upload into
-   * @param itemid (Optional) If set, will create a new revision in the existing item
-   * @param revision (Optional) If set, will add a new file into an existing
-            revision. Set this to "head" to add to the most recent revision.
+   * @param revision (Optional)
+            If set, will add a new file into the existing passed in revision.
+            If set to "head", will add a new file into the most recent revision,
+            and will create a new revision if none exists.
+   * @param changes (Optional)
+            The changes field on the affected item revision,
+            e.g. for recording what has changed since the previous revision.
    * @param return The item information of the item created or changed
    */
   function uploadPerform($args)
@@ -429,43 +433,34 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('POST or PUT method required', MIDAS_HTTP_ERROR);
       }
 
-    list($userid, $resourceid, ) = explode('/', $args['uploadtoken']);
+    list($userid, $itemid, ) = explode('/', $args['uploadtoken']);
 
     $modelLoader = new MIDAS_ModelLoader();
     $itemModel = $modelLoader->loadModel('Item');
     $userModel = $modelLoader->loadModel('User');
+
     $userDao = $userModel->load($userid);
     if(!$userDao)
       {
       throw new Exception('Invalid user id from upload token', MIDAS_INVALID_PARAMETER);
       }
+    $item = $itemModel->load($args['itemid']);
 
-    if(array_key_exists('revision', $args) && array_key_exists('itemid', $args))
+    if($item == false)
       {
-      if($args['itemid'] != $resourceid)
-        {
-        throw new Exception('Upload token does not match itemid', MIDAS_INVALID_PARAMETER);
-        }
-      $item = $itemModel->load($args['itemid']);
-      if($item == false)
-        {
-        throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
-        }
+      throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
+      }
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception('Permission error', MIDAS_INVALID_POLICY);
+      }
+
+    if(array_key_exists('revision', $args))
+      {
       if(strtolower($args['revision']) == 'head')
         {
         $revision = $itemModel->getLastRevision($item);
-
-        if($revision == false)
-          {
-          // Create new revision if none exists yet
-          Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
-          $revision = new ItemRevisionDao();
-          $revision->setChanges('Initial revision');
-          $revision->setUser_id($userDao->getKey());
-          $revision->setDate(date('c'));
-          $revision->setLicenseId(null);
-          $itemModel->addRevision($item, $revision);
-          }
+        // if no revision exists, it will be created later
         }
       else
         {
@@ -476,43 +471,7 @@ class Api_ApiComponent extends AppComponent
           }
         }
       }
-    elseif(array_key_exists('itemid', $args))
-      {
-      if($args['itemid'] != $resourceid)
-        {
-        throw new Exception('Upload token does not match itemid', MIDAS_INVALID_PARAMETER);
-        }
-      $item = $itemModel->load($args['itemid']);
-      if($item == false)
-        {
-        throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
-        }
-      if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception('Permission error', MIDAS_INVALID_POLICY);
-        }
-      }
-    elseif(array_key_exists('folderid', $args))
-      {
-      if($args['folderid'] != $resourceid)
-        {
-        throw new Exception('Upload token does not match itemid', MIDAS_INVALID_PARAMETER);
-        }
-      $folderModel = $modelLoader->loadModel('Folder');
-      $folder = $folderModel->load($args['folderid']);
-      if($folder == false)
-        {
-        throw new Exception('Unable to find folder', MIDAS_INVALID_PARAMETER);
-        }
-      if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception('Permission error', MIDAS_INVALID_POLICY);
-        }
-      }
-    else
-      {
-      throw new Exception('You must specify an itemid or folderid to upload into', MIDAS_INVALID_PARAMETER);
-      }
+
 
     $mode = array_key_exists('mode', $args) ? $args['mode'] : 'stream';
 
@@ -555,40 +514,39 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('Invalid upload mode', MIDAS_INVALID_PARAMETER);
       }
 
-    if(array_key_exists('folderid', $args))
+    // get the parent folder of this item and notify the callback
+    // this is made more difficult by the fact the items can have many parents,
+    // just use the first in the list.
+    $parentFolders = $item->getFolders();
+    if(!isset($parentFolders) || !$parentFolders || sizeof($parentFolders) === 0)
       {
-      $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD',
-                                                              array('filename' => $filename,
-                                                                    'size' => $filesize,
-                                                                    'path' => $filepath,
-                                                                    'folderId' => $args['folderid']));
-      foreach($validations as $validation)
+      // this shouldn't happen with any self-respecting item
+      throw new Exception('Item does not have a parent folder', MIDAS_INVALID_PARAMETER);
+      }
+    $firstParent = $parentFolders[0];
+    $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD',
+                                                            array('filename' => $filename,
+                                                                  'size' => $filesize,
+                                                                  'path' => $filepath,
+                                                                  'folderId' => $firstParent->getFolderId()));
+    foreach($validations as $validation)
+      {
+      if(!$validation['status'])
         {
-        if(!$validation['status'])
-          {
-          unlink($filepath);
-          throw new Exception($validation['message'], MIDAS_INVALID_POLICY);
-          }
+        unlink($filepath);
+        throw new Exception($validation['message'], MIDAS_INVALID_POLICY);
         }
       }
+
     $uploadComponent = $componentLoader->loadComponent('Upload');
     $license = null;
-    if(isset($folder))
+    $changes = array_key_exists('changes', $args) ? $args['changes'] : '';
+    $revisionNumber = null;
+    if(isset($revision) && $revision !== false)
       {
-      $item = $uploadComponent->createUploadedItem($userDao, $filename, $filepath, $folder, $license, $filemd5);
+      $revisionNumber = $revision->getRevision();
       }
-    else if(isset($revision))
-      {
-      //an existing revision
-      $changes = '';
-      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $changes, $item->getKey(), $revision->getRevision(), $license, $filemd5);
-      }
-    else
-      {
-      // a new revision
-      $changes = '';
-      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $changes, $item->getKey(), $revision, $license, $filemd5);
-      }
+    $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $changes, $item->getKey(), $revisionNumber, $license, $filemd5);
 
     if(!$item)
       {
