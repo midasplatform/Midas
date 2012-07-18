@@ -17,13 +17,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+require_once BASE_PATH.'/modules/api/library/APIEnabledNotification.php';
 
 /** notification manager for solr module */
-class Solr_Notification extends MIDAS_Notification
+class Solr_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'solr';
   public $_models = array('Item', 'ItemRevision', 'Metadata');
-  public $_moduleComponents = array('Solr');
+  public $_moduleComponents = array('Api', 'Solr');
 
   /** init notification process */
   public function init()
@@ -40,6 +41,8 @@ class Solr_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLinks');
 
     $this->addTask('TASK_CORE_RESET_ITEM_INDEXES', 'resetItemIndexes', 'Recompute lucene indexes');
+
+    $this->enableWebAPI('solr');
     }
 
   /** Add a tab to the manage community page for size quota */
