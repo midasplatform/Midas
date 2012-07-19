@@ -298,7 +298,7 @@ class Api_ApiComponent extends AppComponent
       }
     else if(array_key_exists('folderid', $args))
       {
-      $folderModel = $modelLoader->loadModel('Folder');
+      $folderModel = MidasLoader::loadModel('Folder');
       $folder = $folderModel->load($args['folderid']);
       if($folder == false)
         {
@@ -337,7 +337,7 @@ class Api_ApiComponent extends AppComponent
         {
         throw new Exception('Create new item failed', MIDAS_INTERNAL_ERROR);
         }
-      $itempolicyuserModel = $modelLoader->loadModel('Itempolicyuser');
+      $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
       $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
       $item->setPrivacyStatus($privacy_status);
       $itemModel->save($item);
