@@ -342,11 +342,10 @@ class UserControllerTest extends ControllerTestCase
   /** Test admin ability to delete a user */
   public function testDeleteUserAction()
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $settingModel = $modelLoader->loadModel('Setting');
-    $communityModel = $modelLoader->loadModel('Community');
-    $folderModel = $modelLoader->loadModel('Folder');
-    $itemModel = $modelLoader->loadModel('Item');
+    $settingModel = MidasLoader::loadModel('Setting');
+    $communityModel = MidasLoader::loadModel('Community');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $itemModel = MidasLoader::loadModel('Item');
     $adminuserSetting = $settingModel->getValueByName('adminuser');
     $usersFile = $this->loadData('User', 'default');
     $commFile = $this->loadData('Community', 'default');
@@ -395,7 +394,7 @@ class UserControllerTest extends ControllerTestCase
     $this->assertFalse($this->User->load($key));
 
     // Make sure all of user's revisions that weren't removed are now listed as uploaded by superadmin
-    $revisionModel = $modelLoader->loadModel('ItemRevision');
+    $revisionModel = MidasLoader::loadModel('ItemRevision');
     $revisionNotDeleted = false;
     foreach($revisionKeys as $revisionKey)
       {
@@ -412,11 +411,10 @@ class UserControllerTest extends ControllerTestCase
   /** Test user's ability to delete himself */
   public function testDeleteSelfAction()
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $settingModel = $modelLoader->loadModel('Setting');
-    $communityModel = $modelLoader->loadModel('Community');
-    $folderModel = $modelLoader->loadModel('Folder');
-    $itemModel = $modelLoader->loadModel('Item');
+    $settingModel = MidasLoader::loadModel('Setting');
+    $communityModel = MidasLoader::loadModel('Community');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $itemModel = MidasLoader::loadModel('Item');
     $adminuserSetting = $settingModel->getValueByName('adminuser');
     $usersFile = $this->loadData('User', 'default');
     $commFile = $this->loadData('Community', 'default');
@@ -451,7 +449,7 @@ class UserControllerTest extends ControllerTestCase
     $this->assertFalse($this->User->load($key));
 
     // Make sure all of user's revisions that weren't removed are now listed as uploaded by superadmin
-    $revisionModel = $modelLoader->loadModel('ItemRevision');
+    $revisionModel = MidasLoader::loadModel('ItemRevision');
     $revisionNotDeleted = false;
     foreach($revisionKeys as $revisionKey)
       {

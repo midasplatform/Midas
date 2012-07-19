@@ -39,8 +39,7 @@ class Cleanup_ConfigController extends Cleanup_AppController
           {
           rename(BASE_PATH.'/core/configs/'.$this->moduleName.'.local.ini', BASE_PATH.'/core/configs/'.$this->moduleName.'.local.ini.old');
           }
-        $loader = new MIDAS_ModelLoader();
-        $jobModel = $loader->loadModel('Job', 'scheduler');
+        $jobModel = MidasLoader::loadModel('Job', 'scheduler');
         $jobs = $jobModel->getJobsByTask('TASK_CLEANUP_PERFORM_CLEANUP');
         $jobReport = false;
         foreach($jobs as $job)

@@ -50,8 +50,8 @@ foreach($args as $key => $val)
 
 if (isset($args['identifier']))
 {
-  $itemModel = $modelLoader->loadModel('Item');
-  $itemRevisionModel = $modelLoader->loadModel('ItemRevision');
+  $itemModel = MidasLoader::loadModel('Item');
+  $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
   require_once BASE_PATH.'/core/controllers/components/UuidComponent.php';
   $uuiComponent = new UuidComponent();
   // remove the OAI part to get the identifier

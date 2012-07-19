@@ -61,7 +61,6 @@ abstract class Api_UserapiModelBase extends Api_AppModel
     $rowset = $this->database->fetchAll($this->database->select()
                                                        ->where('user_id = ?', $userDao->getKey())
                                                        ->where('application_name = ?', 'Default'));
-    $this->loadDaoClass('UserapiDao', 'api');
 
     if(count($rowset)) //update existing record if we have one already
       {
@@ -72,7 +71,7 @@ abstract class Api_UserapiModelBase extends Api_AppModel
       }
 
     // Otherwise save new default key
-    $userApiDao = new Api_UserapiDao();
+    $userApiDao = MidasLoader::newDao('UserapiDao', 'api');
     $userApiDao->setUserId($userDao->getKey());
     $userApiDao->setApplicationName('Default');
     $userApiDao->setApikey($key);
@@ -112,8 +111,7 @@ abstract class Api_UserapiModelBase extends Api_AppModel
       $key .= substr($keychars, rand(0, $max), 1);
       }
 
-    $this->loadDaoClass('UserapiDao', 'api');
-    $userApiDao = new Api_UserapiDao();
+    $userApiDao = MidasLoader::newDao('UserapiDao', 'api');
     $userApiDao->setUserId($userDao->getKey());
     $userApiDao->setApikey($key);
     $userApiDao->setApplicationName($applicationname);

@@ -25,8 +25,7 @@ class Visualize_MainComponent extends AppComponent
   /** convert to threejs */
   public function convertToThreejs($revision)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
-    $uploadComponent = $componentLoader->loadComponent('Upload');
+    $uploadComponent = MidasLoader::loadComponent('Upload');
 
     $modulesConfig = Zend_Registry::get('configsModules');
     if(Zend_Registry::get('configGlobal')->environment != 'testing')
@@ -37,9 +36,8 @@ class Visualize_MainComponent extends AppComponent
         return false;
         }
       }
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
-    $itemModel = $modelLoad->loadModel('Item');
+    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+    $itemModel = MidasLoader::loadModel('Item');
 
     if(is_array($revision))
       {
@@ -74,7 +72,7 @@ class Visualize_MainComponent extends AppComponent
     exec("python ".dirname(__FILE__)."/scripts/convert_obj_three.py -i ".$bitstream->GetFullPath()." -o ".UtilityComponent::getTempDirectory()."/tmpThreeJs.js -t binary", $output);
     if(file_exists(UtilityComponent::getTempDirectory()."/tmpThreeJs.js") && file_exists(UtilityComponent::getTempDirectory()."/tmpThreeJs.bin"))
       {
-      $assetstoreModel = $modelLoad->loadModel('Assetstore');
+      $assetstoreModel = MidasLoader::loadModel('Assetstore');
       $assetstoreDao = $assetstoreModel->getDefault();
 
       $newItem = $uploadComponent->createUploadedItem($userDao, $item->getName().".threejs.bin", UtilityComponent::getTempDirectory()."/tmpThreeJs.bin", $parent);
@@ -116,8 +114,8 @@ class Visualize_MainComponent extends AppComponent
       }
 
     $extensions = array('vtk', 'ply', 'vtp', 'pvsm', 'mha', 'vtu');
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+
+    $itemModel = MidasLoader::loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
     if(empty($revision))
       {
@@ -137,8 +135,8 @@ class Visualize_MainComponent extends AppComponent
   public function canVisualizeTxt($itemDao)
     {
     $extensions = array('txt', 'php', 'js', 'html', 'cpp', 'java', 'py', 'h', 'log');
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+
+    $itemModel = MidasLoader::loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
     if(empty($revision))
       {
@@ -158,8 +156,7 @@ class Visualize_MainComponent extends AppComponent
   public function canVisualizeWebgl($itemDao)
     {
     $extensions = array('bin');
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
     if(empty($revision))
       {
@@ -184,8 +181,7 @@ class Visualize_MainComponent extends AppComponent
   public function canVisualizePdf($itemDao)
     {
     $extensions = array('pdf');
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
     if(empty($revision))
       {
@@ -205,8 +201,7 @@ class Visualize_MainComponent extends AppComponent
   public function canVisualizeImage($itemDao)
     {
     $extensions = array('jpg', 'jpeg', 'gif', 'bmp', 'png');
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
     if(empty($revision))
       {
@@ -226,8 +221,7 @@ class Visualize_MainComponent extends AppComponent
   public function canVisualizeMedia($itemDao)
     {
     $extensions = array('m4a', 'm4v', 'mp3', 'mp4', 'avi');
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
     if(empty($revision))
       {
@@ -247,8 +241,7 @@ class Visualize_MainComponent extends AppComponent
   /** processParaviewData*/
   public function processParaviewData($itemDao)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     if(!is_object($itemDao))
       {
       $itemDao = $itemModel->load($itemDao['item_id']);
@@ -343,7 +336,7 @@ class Visualize_MainComponent extends AppComponent
     //copy(str_replace("PWApp", 'processData', $pwapp)."/metadata.txt", $tmpPath.'/metadata.txt');
     $metadata = json_decode($json);
 
-    $MetadataModel = $modelLoader->loadModel('Metadata');
+    $MetadataModel = MidasLoader::loadModel('Metadata');
 
     $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'type');
     if(!$metadataDao)

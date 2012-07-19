@@ -25,15 +25,13 @@ class PolicyComponent extends AppComponent
   /** Constructor */
   function __construct()
     {
-    $modelLoader = new MIDAS_ModelLoader();
-
-    $this->Folder = $modelLoader->loadModel('Folder');
-    $this->Item = $modelLoader->loadModel('Item');
-    $this->Folderpolicygroup = $modelLoader->loadModel('Folderpolicygroup');
-    $this->Folderpolicyuser = $modelLoader->loadModel('Folderpolicyuser');
-    $this->Itempolicygroup = $modelLoader->loadModel('Itempolicygroup');
-    $this->Itempolicyuser = $modelLoader->loadModel('Itempolicyuser');
-    $this->Progress = $modelLoader->loadModel('Progress');
+    $this->Folder = MidasLoader::loadModel('Folder');
+    $this->Item = MidasLoader::loadModel('Item');
+    $this->Folderpolicygroup = MidasLoader::loadModel('Folderpolicygroup');
+    $this->Folderpolicyuser = MidasLoader::loadModel('Folderpolicyuser');
+    $this->Itempolicygroup = MidasLoader::loadModel('Itempolicygroup');
+    $this->Itempolicyuser = MidasLoader::loadModel('Itempolicyuser');
+    $this->Progress = MidasLoader::loadModel('Progress');
     }
 
   /**

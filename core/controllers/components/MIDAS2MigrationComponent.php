@@ -54,18 +54,17 @@ class MIDAS2MigrationComponent extends AppComponent
   /** function to create the items */
   private function _createFolderForItem($collectionId, $parentFolderid)
     {
-    $modelLoader = new MIDAS_ModelLoader;
-    $Folder = $modelLoader->loadModel("Folder");
-    $Bitstream = $modelLoader->loadModel("Bitstream");
-    $Item = $modelLoader->loadModel("Item");
-    $ItemRevision = $modelLoader->loadModel("ItemRevision");
-    $Group = $modelLoader->loadModel("Group");
-    $Assetstore = $modelLoader->loadModel("Assetstore");
-    $Folderpolicygroup = $modelLoader->loadModel("Folderpolicygroup");
-    $Folderpolicyuser = $modelLoader->loadModel("Folderpolicyuser");
-    $Itempolicygroup = $modelLoader->loadModel("Itempolicygroup");
-    $Itempolicyuser = $modelLoader->loadModel("Itempolicyuser");
-    $User = $modelLoader->loadModel("User");
+    $Folder = MidasLoader::loadModel("Folder");
+    $Bitstream = MidasLoader::loadModel("Bitstream");
+    $Item = MidasLoader::loadModel("Item");
+    $ItemRevision = MidasLoader::loadModel("ItemRevision");
+    $Group = MidasLoader::loadModel("Group");
+    $Assetstore = MidasLoader::loadModel("Assetstore");
+    $Folderpolicygroup = MidasLoader::loadModel("Folderpolicygroup");
+    $Folderpolicyuser = MidasLoader::loadModel("Folderpolicyuser");
+    $Itempolicygroup = MidasLoader::loadModel("Itempolicygroup");
+    $Itempolicyuser = MidasLoader::loadModel("Itempolicyuser");
+    $User = MidasLoader::loadModel("User");
 
     $colquery = pg_query("SELECT i.item_id, mtitle.text_value AS title, mabstract.text_value AS abstract ".
                          "FROM item AS i ".
@@ -213,7 +212,7 @@ class MIDAS2MigrationComponent extends AppComponent
           $Item->addRevision($itemdao, $itemRevisionDao);
 
           // Add the metadata
-          $MetadataModel = $modelLoader->loadModel("Metadata");
+          $MetadataModel = MidasLoader::loadModel("Metadata");
 
           //
           $metadataquery = pg_query("SELECT metadata_field_id, text_value FROM metadatavalue WHERE item_id=".$item_id);
@@ -294,11 +293,10 @@ class MIDAS2MigrationComponent extends AppComponent
   /** function to create the collections */
   private function _createFolderForCollection($communityId, $parentFolderid)
     {
-    $modelLoader = new MIDAS_ModelLoader;
-    $Folder = $modelLoader->loadModel("Folder");
-    $User = $modelLoader->loadModel("User");
-    $Folderpolicygroup = $modelLoader->loadModel("Folderpolicygroup");
-    $Folderpolicyuser = $modelLoader->loadModel("Folderpolicyuser");
+    $Folder = MidasLoader::loadModel("Folder");
+    $User = MidasLoader::loadModel("User");
+    $Folderpolicygroup = MidasLoader::loadModel("Folderpolicygroup");
+    $Folderpolicyuser = MidasLoader::loadModel("Folderpolicyuser");
 
     $colquery = pg_query("SELECT collection_id, name, short_description, introductory_text FROM collection WHERE owning_community=".$communityId);
     while($colquery_array = pg_fetch_array($colquery))
@@ -380,11 +378,10 @@ class MIDAS2MigrationComponent extends AppComponent
   /** Recursive function to create the communities */
   private function _createFolderForCommunity($communityidMIDAS2, $parentFolderid)
     {
-    $modelLoader = new MIDAS_ModelLoader;
-    $Folder = $modelLoader->loadModel("Folder");
-    $Folderpolicygroup = $modelLoader->loadModel("Folderpolicygroup");
-    $Folderpolicyuser = $modelLoader->loadModel("Folderpolicyuser");
-    $User = $modelLoader->loadModel("User");
+    $Folder = MidasLoader::loadModel("Folder");
+    $Folderpolicygroup = MidasLoader::loadModel("Folderpolicygroup");
+    $Folderpolicyuser = MidasLoader::loadModel("Folderpolicyuser");
+    $User = MidasLoader::loadModel("User");
 
     // Create the collections attached to this community
     $this->_createFolderForCollection($communityidMIDAS2, $parentFolderid);
@@ -495,11 +492,9 @@ class MIDAS2MigrationComponent extends AppComponent
       throw new Zend_Exception("Password prefix cannot be set because MIDAS2 doesn't use salt.");
       }
 
-    $modelLoader = new MIDAS_ModelLoader;
-
     // STEP 1: Import the users
-    $User = $modelLoader->loadModel("User");
-    $Group = $modelLoader->loadModel("Group");
+    $User = MidasLoader::loadModel("User");
+    $Group = MidasLoader::loadModel("Group");
     $query = pg_query("SELECT email, password, firstname, lastname FROM eperson");
     while($query_array = pg_fetch_array($query))
       {
@@ -522,7 +517,7 @@ class MIDAS2MigrationComponent extends AppComponent
       }
 
     // STEP 2: Import the communities. The MIDAS2 TopLevel communities are communities in MIDAS3
-    $Community = $modelLoader->loadModel("Community");
+    $Community = MidasLoader::loadModel("Community");
     $query = pg_query("SELECT community_id, name, short_description, introductory_text FROM community WHERE owning_community = 0");
     while($query_array = pg_fetch_array($query))
       {

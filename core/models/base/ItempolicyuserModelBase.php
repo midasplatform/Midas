@@ -42,8 +42,8 @@ class ItempolicyuserModelBase extends AppModel
     {
     $item = $dao->getItem();
     parent::delete($dao);
-    $modelLoad = new MIDAS_ModelLoader();
-    $fitemGroupModel = $modelLoad->loadModel('Itempolicygroup');
+
+    $fitemGroupModel = MidasLoader::loadModel('Itempolicygroup');
     $fitemGroupModel->computePolicyStatus($item);
     }//end delete
 } // end class ItempolicyuserModelBase

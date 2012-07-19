@@ -37,8 +37,7 @@ class Validation_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('dashboard_id'), $value);
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $model = $modelLoad->loadModel('Dashboard', 'validation');
+    $model = MidasLoader::loadModel('Dashboard', 'validation');
     $dao = $model->load($value['dashboard_id']);
 
     if(!$dao)
@@ -62,9 +61,7 @@ class Validation_ApiComponent extends AppComponent
    */
   public function getAllDashboards($value)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $model = $modelLoad->loadModel('Dashboard', 'validation');
-    $model->loadDaoClass('DashboardDao', 'validation');
+    $model = MidasLoader::loadModel('Dashboard', 'validation');
     $daos = $model->getAll();
 
     $results = array();
@@ -91,8 +88,7 @@ class Validation_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('name', 'description'), $value);
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao || !$userDao->isAdmin())
@@ -100,10 +96,8 @@ class Validation_ApiComponent extends AppComponent
       throw new Exception('Only an admin can create a dashboard.', -1);
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $model = $modelLoad->loadModel('Dashboard', 'validation');
-    $model->loadDaoClass('DashboardDao', 'validation');
-    $dao = new Validation_DashboardDao();
+    $model = MidasLoader::loadModel('Dashboard', 'validation');
+    $dao = MidasLoader::newDao('DashboardDao', 'validation');
     $dao->setName($value['name']);
     $dao->setDescription($value['description']);
     $model->save($dao);
@@ -121,8 +115,7 @@ class Validation_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao || !$userDao->isAdmin())
@@ -130,10 +123,9 @@ class Validation_ApiComponent extends AppComponent
       throw new Exception('Only an admin can set the testing folder.', -1);
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $model = $modelLoad->loadModel('Dashboard', 'validation');
+    $model = MidasLoader::loadModel('Dashboard', 'validation');
     $dao = $model->load($value['dashboard_id']);
-    $folderModel = $modelLoad->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     if($folderModel->load($value['folder_id']))
       {
       $dao->setTestingfolderId($value['folder_id']);
@@ -156,8 +148,7 @@ class Validation_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao || !$userDao->isAdmin())
@@ -165,10 +156,9 @@ class Validation_ApiComponent extends AppComponent
       throw new Exception('Only an admin can set the truth folder.', -1);
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $model = $modelLoad->loadModel('Dashboard', 'validation');
+    $model = MidasLoader::loadModel('Dashboard', 'validation');
     $dao = $model->load($value['dashboard_id']);
-    $folderModel = $modelLoad->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     if($folderModel->load($value['folder_id']))
       {
       $dao->setTruthfolderId($value['folder_id']);
@@ -191,8 +181,7 @@ class Validation_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao || !$userDao->isAdmin())
@@ -200,10 +189,9 @@ class Validation_ApiComponent extends AppComponent
       throw new Exception('Only an admin can set the training folder.', -1);
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $model = $modelLoad->loadModel('Dashboard', 'validation');
+    $model = MidasLoader::loadModel('Dashboard', 'validation');
     $dao = $model->load($value['dashboard_id']);
-    $folderModel = $modelLoad->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     if($folderModel->load($value['folder_id']))
       {
       $dao->setTrainingfolderId($value['folder_id']);
@@ -226,8 +214,7 @@ class Validation_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao)
@@ -235,10 +222,9 @@ class Validation_ApiComponent extends AppComponent
       throw new Exception('You must login to submit a result folder.', -1);
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $model = $modelLoad->loadModel('Dashboard', 'validation');
+    $model = MidasLoader::loadModel('Dashboard', 'validation');
     $dao = $model->load($value['dashboard_id']);
-    $folderModel = $modelLoad->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     $folderDao = $folderModel->load($value['folder_id']);
     if($folderDao)
       {
@@ -262,8 +248,7 @@ class Validation_ApiComponent extends AppComponent
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
 
     // Verify that the user is an admin
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao || !$userDao->isAdmin())
@@ -272,8 +257,7 @@ class Validation_ApiComponent extends AppComponent
       }
 
     // Load the dashboard
-    $modelLoad = new MIDAS_ModelLoader();
-    $model = $modelLoad->loadModel('Dashboard', 'validation');
+    $model = MidasLoader::loadModel('Dashboard', 'validation');
     $dao = $model->load($value['dashboard_id']);
     if(!$dao)
       {
@@ -281,7 +265,7 @@ class Validation_ApiComponent extends AppComponent
       }
 
     // disassociate the folder with the dashboard as a result
-    $folderModel = $modelLoad->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     $folderDao = $folderModel->load($value['folder_id']);
     if($folderDao)
       {
@@ -306,8 +290,7 @@ class Validation_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('dashboard_id'), $value);
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $model = $modelLoad->loadModel('Dashboard', 'validation');
+    $model = MidasLoader::loadModel('Dashboard', 'validation');
     $dao = $model->load($value['dashboard_id']);
     if(!$dao)
       {
@@ -339,8 +322,7 @@ class Validation_ApiComponent extends AppComponent
                       $value);
 
     // Verify authentication (only admins can set results)
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao || !$userDao->isAdmin())
@@ -349,11 +331,10 @@ class Validation_ApiComponent extends AppComponent
       }
 
     // Load the necessary models
-    $modelLoad = new MIDAS_ModelLoader();
-    $dashboardModel = $modelLoad->loadModel('Dashboard', 'validation');
-    $scalarResultModel = $modelLoad->loadModel('ScalarResult', 'validation');
-    $itemModel = $modelLoad->loadModel('Item');
-    $folderModel = $modelLoad->loadModel('Folder');
+    $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
+    $scalarResultModel = MidasLoader::loadModel('ScalarResult', 'validation');
+    $itemModel = MidasLoader::loadModel('Item');
+    $folderModel = MidasLoader::loadModel('Folder');
 
     // Verify that the dashboard exists
     $dashboardDao = $dashboardModel->load($value['dashboard_id']);
@@ -415,11 +396,10 @@ class Validation_ApiComponent extends AppComponent
                       $value);
 
     // Load the necessary models
-    $modelLoad = new MIDAS_ModelLoader();
-    $dashboardModel = $modelLoad->loadModel('Dashboard', 'validation');
-    $scalarResultModel = $modelLoad->loadModel('ScalarResult', 'validation');
-    $itemModel = $modelLoad->loadModel('Item');
-    $folderModel = $modelLoad->loadModel('Folder');
+    $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
+    $scalarResultModel = MidasLoader::loadModel('ScalarResult', 'validation');
+    $itemModel = MidasLoader::loadModel('Item');
+    $folderModel = MidasLoader::loadModel('Folder');
 
     // Verify that the dashboard exists
     $dashboardDao = $dashboardModel->load($value['dashboard_id']);
@@ -467,9 +447,8 @@ class Validation_ApiComponent extends AppComponent
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
 
     // Load the necessary models
-    $modelLoad = new MIDAS_ModelLoader();
-    $dashboardModel = $modelLoad->loadModel('Dashboard', 'validation');
-    $folderModel = $modelLoad->loadModel('Folder');
+    $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
+    $folderModel = MidasLoader::loadModel('Folder');
 
     // Verify that the dashboard exists
     $dashboardDao = $dashboardModel->load($value['dashboard_id']);
@@ -511,8 +490,7 @@ class Validation_ApiComponent extends AppComponent
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
 
     // Load the necessary models
-    $modelLoad = new MIDAS_ModelLoader();
-    $dashboardModel = $modelLoad->loadModel('Dashboard', 'validation');
+    $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
 
     // Verify that the dashboard exists
     $dashboardDao = $dashboardModel->load($value['dashboard_id']);

@@ -50,15 +50,13 @@ class ItempolicyuserModel  extends ItempolicyuserModelBase
       {
       $this->delete($this->getPolicy($user, $item));
       }
-    $this->loadDaoClass('ItempolicyuserDao');
-    $policyUser = new ItempolicyuserDao();
+    $policyUser = MidasLoader::newDao('ItempolicyuserDao');
     $policyUser->setUserId($user->getUserId());
     $policyUser->setItemId($item->getItemId());
     $policyUser->setPolicy($policy);
     $this->save($policyUser);
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $fitemGroupModel = $modelLoad->loadModel('Itempolicygroup');
+    $fitemGroupModel = MidasLoader::loadModel('Itempolicygroup');
     $fitemGroupModel->computePolicyStatus($item);
     return $policyUser;
     }

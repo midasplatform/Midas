@@ -57,8 +57,7 @@ class ApiControllerTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $userApiModel->createDefaultApiKey($userDao);
     $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
 
@@ -86,8 +85,7 @@ class ApiControllerTest extends ControllerTestCase
     $userDao->setAdmin(1);
     $this->User->save($userDao);
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $userApiModel->createDefaultApiKey($userDao);
     $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
 
@@ -636,10 +634,9 @@ class ApiControllerTest extends ControllerTestCase
     {
 
     // Acquire the dashboard from the database
-    $modelLoad = new MIDAS_ModelLoader();
-    $dashboardModel = $modelLoad->loadModel('Dashboard', 'validation');
-    $itemModel = $modelLoad->loadModel('Item');
-    $folderModel = $modelLoad->loadModel('Folder');
+    $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
+    $itemModel = MidasLoader::loadModel('Item');
+    $folderModel = MidasLoader::loadModel('Folder');
 
     $dashboardDao = $dashboardModel->load(1);
     $folderDao = $folderModel->load(1000);

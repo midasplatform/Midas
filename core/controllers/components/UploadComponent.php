@@ -58,8 +58,7 @@ class UploadComponent extends AppComponent
       }
 
     // If we already have a file of this checksum in any assetstore, we point to it
-    $modelLoader = new MIDAS_ModelLoader();
-    $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
     $existing = $bitstreamModel->getByChecksum($checksum);
     if($existing)
       {
@@ -119,16 +118,15 @@ class UploadComponent extends AppComponent
   /** save upload item in the DB */
   public function createLinkItem($userDao, $name, $url, $parent = null)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('Item');
-    $feedModel = $modelLoad->loadModel('Feed');
-    $folderModel = $modelLoad->loadModel('Folder');
-    $bitstreamModel = $modelLoad->loadModel('Bitstream');
-    $assetstoreModel = $modelLoad->loadModel('Assetstore');
-    $feedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
-    $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
-    $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
-    $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
+    $itemModel = MidasLoader::loadModel('Item');
+    $feedModel = MidasLoader::loadModel('Feed');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
+    $assetstoreModel = MidasLoader::loadModel('Assetstore');
+    $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
+    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+    $feedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
+    $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
 
     if($userDao == null)
       {
@@ -204,16 +202,15 @@ class UploadComponent extends AppComponent
    */
   public function createUploadedItem($userDao, $name, $path, $parent = null, $license = null, $filemd5 = '', $copy = false, $revOnCollision = false)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('Item');
-    $feedModel = $modelLoad->loadModel('Feed');
-    $folderModel = $modelLoad->loadModel('Folder');
-    $bitstreamModel = $modelLoad->loadModel('Bitstream');
-    $assetstoreModel = $modelLoad->loadModel('Assetstore');
-    $feedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
-    $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
-    $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
-    $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
+    $itemModel = MidasLoader::loadModel('Item');
+    $feedModel = MidasLoader::loadModel('Feed');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
+    $assetstoreModel = MidasLoader::loadModel('Assetstore');
+    $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
+    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+    $feedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
+    $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
 
     if($userDao == null)
       {
@@ -312,14 +309,13 @@ class UploadComponent extends AppComponent
       throw new Zend_Exception('Please log in');
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('Item');
-    $feedModel = $modelLoad->loadModel('Feed');
-    $bitstreamModel = $modelLoad->loadModel('Bitstream');
-    $assetstoreModel = $modelLoad->loadModel('Assetstore');
-    $feedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
-    $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
-    $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
+    $itemModel = MidasLoader::loadModel('Item');
+    $feedModel = MidasLoader::loadModel('Feed');
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
+    $assetstoreModel = MidasLoader::loadModel('Assetstore');
+    $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
+    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+    $feedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
 
     $item = $itemModel->load($itemId);
 

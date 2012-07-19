@@ -34,8 +34,7 @@ class AgreementModelTest extends DatabaseTestCase
   /** test AgreementModel::GetAll .*/
   public function testGetAll()
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $agreementModel = $modelLoad->loadModel('Agreement', 'communityagreement');
+    $agreementModel = MidasLoader::loadModel('Agreement', 'communityagreement');
 
     $daos = $agreementModel->getAll();
     $this->assertEquals(1, count($daos));
@@ -44,8 +43,7 @@ class AgreementModelTest extends DatabaseTestCase
   /** test AgreementModel::getByCommunityId*/
   public function testGetByCommunityId()
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $agreementModel = $modelLoad->loadModel('Agreement', 'communityagreement');
+    $agreementModel = MidasLoader::loadModel('Agreement', 'communityagreement');
 
     $dao = $agreementModel->getByCommunityId('2000');
     $this->assertEquals(1, count($dao));

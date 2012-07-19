@@ -103,8 +103,8 @@ class Scheduler_Notification extends MIDAS_Notification
       throw new Zend_Exception('Error: userDao parameter required');
       }
     $user = $params['userDao'];
-    $modelLoader = new MIDAS_ModelLoader();
-    $jobModel = $modelLoader->loadModel('Job', $this->moduleName);
+
+    $jobModel = MidasLoader::loadModel('Job', $this->moduleName);
     $jobModel->removeUserReferences($user->getKey());
     }
   } //end class

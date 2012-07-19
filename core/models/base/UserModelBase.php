@@ -97,10 +97,9 @@ abstract class UserModelBase extends AppModel
   public function delete($user)
     {
     Zend_Registry::get('notifier')->callback('CALLBACK_CORE_USER_DELETED', array('userDao' => $user));
-    $modelLoader = new MIDAS_ModelLoader();
 
     // Delete any community invitations for this user
-    $ciModel = $modelLoader->loadModel('CommunityInvitation');
+    $ciModel = MidasLoader::loadModel('CommunityInvitation');
     $invitations = $user->getInvitations();
     foreach($invitations as $invitation)
       {
@@ -109,11 +108,11 @@ abstract class UserModelBase extends AppModel
       }
 
     // Delete this user's folder tree recursively
-    $folderModel = $modelLoader->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     $folderModel->delete($user->getFolder());
 
     // Delete remaining folder policies for the user
-    $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicyuser');
+    $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
     $folderpolicies = $user->getFolderpolicyuser();
     foreach($folderpolicies as $folderpolicy)
       {
@@ -121,7 +120,7 @@ abstract class UserModelBase extends AppModel
       }
 
     // Delete remaining item policies for the user
-    $itempolicyuserModel = $modelLoader->loadModel('Itempolicyuser');
+    $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
     $itempolicies = $user->getItempolicyuser();
     foreach($itempolicies as $itempolicy)
       {
@@ -129,7 +128,7 @@ abstract class UserModelBase extends AppModel
       }
 
     // Delete all user's feeds
-    $feedModel = $modelLoader->loadModel('Feed');
+    $feedModel = MidasLoader::loadModel('Feed');
     $feeds = $user->getFeeds();
     foreach($feeds as $feed)
       {
@@ -137,7 +136,7 @@ abstract class UserModelBase extends AppModel
       }
 
     // Delete remaining feed policies for the user
-    $feedpolicyuserModel = $modelLoader->loadModel('Feedpolicyuser');
+    $feedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
     $feedpolicies = $user->getFeedpolicyuser();
     foreach($feedpolicies as $feedpolicy)
       {
@@ -145,7 +144,7 @@ abstract class UserModelBase extends AppModel
       }
 
     // Remove the user from all groups
-    $groupModel = $modelLoader->loadModel('Group');
+    $groupModel = MidasLoader::loadModel('Group');
     $groups = $user->getGroups();
     foreach($groups as $group)
       {
@@ -153,9 +152,9 @@ abstract class UserModelBase extends AppModel
       }
 
     // Remove references to this user as the uploader of item revisions (replace with superadmin)
-    $settingModel = $modelLoader->loadModel('Setting');
+    $settingModel = MidasLoader::loadModel('Setting');
     $adminId = $settingModel->getValueByName('adminuser');
-    $itemRevisionModel = $modelLoader->loadModel('ItemRevision');
+    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
     $itemRevisions = $user->getItemrevisions();
     foreach($itemRevisions as $revision)
       {
@@ -228,14 +227,13 @@ abstract class UserModelBase extends AppModel
 
     parent::save($userDao);
 
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $groupModel = $this->ModelLoader->loadModel('Group');
-    $folderModel = $this->ModelLoader->loadModel('Folder');
-    $folderpolicygroupModel = $this->ModelLoader->loadModel('Folderpolicygroup');
-    $folderpolicyuserModel = $this->ModelLoader->loadModel('Folderpolicyuser');
-    $feedModel = $this->ModelLoader->loadModel('Feed');
-    $feedpolicygroupModel = $this->ModelLoader->loadModel('Feedpolicygroup');
-    $feedpolicyuserModel = $this->ModelLoader->loadModel('Feedpolicyuser');
+    $groupModel = MidasLoader::loadModel('Group');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
+    $feedModel = MidasLoader::loadModel('Feed');
+    $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
+    $feedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
 
     $folderGlobal = $folderModel->createFolder('user_' . $userDao->getKey(), '', MIDAS_FOLDER_USERPARENT);

@@ -35,13 +35,11 @@ class WrappergControllerTest extends ControllerTestCase
   /** test index action*/
   public function testIndexAction()
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $groupModel = $modelLoad->loadModel('Group');
-    $itempolicygroupModel = $modelLoad->loadModel('Itempolicygroup');
-    $userModel = $modelLoad->loadModel('User');
+    $groupModel = MidasLoader::loadModel('Group');
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+    $userModel = MidasLoader::loadModel('User');
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $uploadComponent = $componentLoader->loadComponent('Upload');
+    $uploadComponent = MidasLoader::loadComponent('Upload');
 
     $usersFile = $this->loadData('User', 'default');
     $userDao = $userModel->load($usersFile[0]->getKey());
