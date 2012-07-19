@@ -127,7 +127,7 @@ abstract class AssetstoreModelBase extends AppModel
     {
     if(!$dao instanceof AssetstoreDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Deleting an assetstore requires a valid instance of an AssetstoreDao.");
       }
     $bitreams = $dao->getBitstreams();
     $items = array();
@@ -148,8 +148,7 @@ abstract class AssetstoreModelBase extends AppModel
       $items[$item->getKey()] = $item;
       }
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $item_model = $modelLoader->loadModel('Item');
+    $item_model = MidasLoader::loadModel('Item');
     foreach($items as $item)
       {
       $item_model->delete($item);
@@ -164,9 +163,8 @@ abstract class AssetstoreModelBase extends AppModel
    */
   public function getDefault()
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $settingModel = $modelLoader->loadModel('Setting');
-    $assetstoreModel = $modelLoader->loadModel('Assetstore');
+    $settingModel = MidasLoader::loadModel('Setting');
+    $assetstoreModel = MidasLoader::loadModel('Assetstore');
     $defaultAssetstoreId = $settingModel->getValueByName('default_assetstore');
 
     $defaultAssetstore = false;

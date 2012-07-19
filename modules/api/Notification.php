@@ -24,7 +24,7 @@ require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 class Api_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'api';
-  public $_moduleComponents = array('Api');
+  public $_moduleComponents = array('Api', 'Authentication');
   public $_models = array('User');
 
   /** init notification process*/
@@ -34,6 +34,7 @@ class Api_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_CORE_PASSWORD_CHANGED', 'setDefaultWebApiKey');
     $this->addCallBack('CALLBACK_CORE_NEW_USER_ADDED', 'setDefaultWebApiKey');
     $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
+    $this->addCallBack('CALLBACK_CORE_PARAMETER_AUTHENTICATION', 'tokenAuth');
 
     $this->enableWebAPI('api');
     }//end init
@@ -53,8 +54,7 @@ class Api_Notification extends ApiEnabled_Notification
       {
       throw new Zend_Exception('Error: userDao parameter required');
       }
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $userApiModel = $this->ModelLoader->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $userApiModel->createDefaultApiKey($params['userDao']);
     }
 
@@ -68,14 +68,23 @@ class Api_Notification extends ApiEnabled_Notification
       {
       throw new Zend_Exception('Error: userDao parameter required');
       }
-    $modelLoader = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoader->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $apiKeys = $userApiModel->getByUser($params['userDao']);
 
     foreach($apiKeys as $apiKey)
       {
       $userApiModel->delete($apiKey);
       }
+    }
+
+  /**
+   * When we redirect from the web api for downloads, we add the user's token as a parameter,
+   * and the controller makes a callback to this module to get the user.
+   */
+  public function tokenAuth($params)
+    {
+    $token = $params['authToken'];
+    return $this->ModuleComponent->Authentication->getUser(array('token' => $token), null);
     }
   } //end class
 ?>

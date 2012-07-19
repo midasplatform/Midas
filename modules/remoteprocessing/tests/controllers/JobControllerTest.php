@@ -42,8 +42,7 @@ class JobControllerTest extends ControllerTestCase
     $this->dispatchUrI('/remoteprocessing/job/manage?itemId='.$itemFile[0]->getKey(), null, true);
     $this->dispatchUrI('/remoteprocessing/job/manage?itemId='.$itemFile[0]->getKey(), $userDao, false);
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $jobModel = $modelLoader->loadModel('Job', 'remoteprocessing');
+    $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
     $jobs = $jobModel->getRelatedJob($itemFile[0]);
     if(empty($jobs))
       {

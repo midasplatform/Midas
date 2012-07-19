@@ -36,8 +36,8 @@ class NotificationTest extends ControllerTestCase
   public function testDeleteItemDeletesPackage()
     {
     Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
-    $modelLoad = new MIDAS_ModelLoader();
-    $packageModel = $modelLoad->loadModel('Package', 'packages');
+
+    $packageModel = MidasLoader::loadModel('Package', 'packages');
     $packagesFile = $this->loadData('Package', 'default', 'packages', 'packages');
     $packageDao = $packageModel->load($packagesFile[0]->getKey());
     $this->assertEquals(1, count($packageModel->getAll()));

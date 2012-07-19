@@ -40,8 +40,7 @@ class ItemmetricModelTest extends DatabaseTestCase
     {
     $usersFile = $this->loadData('User', 'default', '', 'batchmake');
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemmetricModel = $modelLoad->loadModel('Itemmetric', 'batchmake');
+    $itemmetricModel = MidasLoader::loadModel('Itemmetric', 'batchmake');
     $user1Dao = $usersFile[0];
 
 
@@ -95,8 +94,7 @@ class ItemmetricModelTest extends DatabaseTestCase
     {
     $itemmetricFileDaos = $this->loadData('Itemmetric', 'default', 'batchmake', 'batchmake');
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemmetricModel = $modelLoad->loadModel('Itemmetric', 'batchmake');
+    $itemmetricModel = MidasLoader::loadModel('Itemmetric', 'batchmake');
     $modelDaos = $itemmetricModel->getAll();
 
     // now check that each of the itemmetrics in the file are loaded as daos

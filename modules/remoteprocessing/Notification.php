@@ -69,9 +69,8 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
   /** check if item contains an executable */
   public function isExecutable($params)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
     $item = $params['item'];
-    $executableComponent = $componentLoader->loadComponent("Executable", "remoteprocessing");
+    $executableComponent = MidasLoader::loadComponent("Executable", "remoteprocessing");
     return $executableComponent->getExecutable($item) !== false;
     }
 
@@ -189,13 +188,12 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     {
     $modulesConfig=Zend_Registry::get('configsModules');
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $itempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
-    $userModel = $modelLoad->loadModel('User');
-    $folderModel = $modelLoad->loadModel('Folder');
-    $itemModel = $modelLoad->loadModel('Item');
-    $metadataModel = $modelLoad->loadModel('Metadata');
-    $jobModel = $modelLoad->loadModel('Job', 'remoteprocessing');
+    $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
+    $userModel = MidasLoader::loadModel('User');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $itemModel = MidasLoader::loadModel('Item');
+    $metadataModel = MidasLoader::loadModel('Metadata');
+    $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
     $job = $jobModel->load($params['job_id']);
 
     $userDao = $userModel->load($params['userKey']);
@@ -210,8 +208,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       $folder = $userDao->getPrivateFolder();
       }
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $uploadComponent = $componentLoader->loadComponent('Upload');
+    $uploadComponent = MidasLoader::loadComponent('Upload');
     $params['outputKeys'] = array();
 
     foreach($params['output'] as $file)
@@ -248,7 +245,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       }
     if(isset($params['log']) && !empty($params['log']))
       {
-      $jobComponenet = $componentLoader->loadComponent('Job', 'remoteprocessing');
+      $jobComponenet = MidasLoader::loadComponent('Job', 'remoteprocessing');
       $xmlResults = $jobComponenet->computeLogs($job, $params['log'], $params);
       $logFile = $pathFile = $this->getTempDirectory().'/'.uniqid();
       file_put_contents($logFile, $xmlResults);
@@ -264,8 +261,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     // dynamically process the params
     if(isset($params['params']['cmdOptions']) && empty($params['script'])&& isset($params['params']['executable']))
       {
-      $componentLoader = new MIDAS_ComponentLoader();
-      $executableComponent = $componentLoader->loadComponent('Executable', 'remoteprocessing');
+      $executableComponent = MidasLoader::loadComponent('Executable', 'remoteprocessing');
       $tmp = $executableComponent->processScheduledJobParameters($params);
       $params['params'] = $tmp['parameters'];
       $params['script'] = $tmp['script'];

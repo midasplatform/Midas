@@ -49,6 +49,20 @@ class DownloadController extends AppController
       // Make sure this is a copy and not a reference
       $sessionUser = $this->User->load($sessionUser->getKey());
       }
+    else //see if module can authenticate with a special parameter
+      {
+      $authToken = $this->_getParam('authToken');
+      if(isset($authToken))
+        {
+        $responses = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_PARAMETER_AUTHENTICATION',
+          array('authToken' => $authToken));
+        foreach($responses as $module => $user)
+          {
+          $sessionUser = $user;
+          break;
+          }
+        }
+      }
     if(isset($bitsreamid) && is_numeric($bitsreamid))
       {
       $name = $this->_getParam('name');
@@ -77,7 +91,7 @@ class DownloadController extends AppController
       }
     if(!isset($itemIds) && !isset($folderIds))
       {
-      throw new Zend_Exception("No parameters");
+      throw new Zend_Exception("No parameters, expecting itemIds or folderIds.");
       }
     $folderIds = explode('-', $folderIds);
     $folders = $this->Folder->load($folderIds);

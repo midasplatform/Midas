@@ -84,9 +84,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
    */
   public function thumbnail($item)
   {
-    $modelLoader = new MIDAS_ModelLoader;
-    $componentLoader = new MIDAS_ComponentLoader;
-    $itemModel = $modelLoader->loadModel("Item");
+    $itemModel = MidasLoader::loadModel("Item");
     $revision = $itemModel->getLastRevision($item);
     $bitstreams = $revision->getBitstreams();
     $numBitstreams = count($bitstreams);
@@ -95,9 +93,9 @@ class Dicomextractor_ExtractorComponent extends AppComponent
       return;
       }
 
-    $thumbnailComponent = $componentLoader->loadComponent('Imagemagick',
+    $thumbnailComponent = MidasLoader::loadComponent('Imagemagick',
                                                           'thumbnailcreator');
-    $utilityComponent = $componentLoader->loadComponent('Utility');
+    $utilityComponent = MidasLoader::loadComponent('Utility');
     $bitstream = $bitstreams[$numBitstreams/2];
 
     // Turn the DICOM into a JPEG
@@ -124,14 +122,13 @@ class Dicomextractor_ExtractorComponent extends AppComponent
    */
   public function extract($revision)
     {
-    $modelLoader = new MIDAS_ModelLoader;
     $bitstreams = $revision->getBitstreams();
     if(count($bitstreams) < 1)
       {
       return;
       }
     $bitstream = $bitstreams[0];
-    $modulesConfig=Zend_Registry::get('configsModules');
+    $modulesConfig = Zend_Registry::get('configsModules');
     $command = $modulesConfig['dicomextractor']->dcm2xml;
     $preparedCommand = str_replace("'", '"',$command);
     $preparedCommand .= ' "'.$bitstream->getFullPath().'"';
@@ -172,7 +169,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
           break;
         }
       }
-    $MetadataModel = $modelLoader->loadModel("Metadata");
+    $MetadataModel = MidasLoader::loadModel("Metadata");
     foreach($tagArray as $row)
       {
       try

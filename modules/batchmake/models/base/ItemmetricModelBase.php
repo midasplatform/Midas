@@ -42,8 +42,7 @@ abstract class Batchmake_ItemmetricModelBase extends Batchmake_AppModel {
    */
   public function createItemmetric($metricName, $bmsName)
     {
-    $this->loadDaoClass('ItemmetricDao', 'batchmake');
-    $itemmetric = new Batchmake_ItemmetricDao();
+    $itemmetric = MidasLoader::newDao('ItemmetricDao', 'batchmake');
 
     // make sure one isn't already there by this name
     $found = $this->findBy('metric_name', $metricName);

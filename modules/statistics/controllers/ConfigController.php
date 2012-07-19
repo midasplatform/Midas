@@ -65,8 +65,8 @@ class Statistics_ConfigController extends Statistics_AppController
           }
         $applicationConfig['global']['piwik.url'] = $this->_getParam('piwikurl');
         $applicationConfig['global']['report'] = $this->_getParam('report');
-        $loader = new MIDAS_ModelLoader();
-        $jobModel = $loader->loadModel('Job', 'scheduler');
+
+        $jobModel = MidasLoader::loadModel('Job', 'scheduler');
         $jobs = $jobModel->getJobsByTask('TASK_STATISTICS_SEND_REPORT');
         $jobReport = false;
         foreach($jobs as $job)

@@ -59,7 +59,7 @@ class FolderModel extends FolderModelBase
     {
     if(!$folderDao instanceof  FolderDao || !is_numeric($policy))
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in params when checking Folder Policy.");
       }
     if($userDao == null)
       {
@@ -377,7 +377,6 @@ class FolderModel extends FolderModelBase
       throw new Zend_Exception("Unable to find the key" );
       }
 
-    $this->ModelLoader = new MIDAS_ModelLoader();
     $items = $folder->getItems();
     foreach($items as $item)
       {
@@ -390,14 +389,14 @@ class FolderModel extends FolderModelBase
       $this->delete($child, true);
       }
 
-    $policy_group_model = $this->ModelLoader->loadModel('Folderpolicygroup');
+    $policy_group_model = MidasLoader::loadModel('Folderpolicygroup');
     $policiesGroup = $folder->getFolderpolicygroup();
     foreach($policiesGroup as $policy)
       {
       $policy_group_model->delete($policy);
       }
 
-    $policy_user_model = $this->ModelLoader->loadModel('Folderpolicyuser');
+    $policy_user_model = MidasLoader::loadModel('Folderpolicyuser');
     $policiesUser = $folder->getFolderpolicyuser();
     foreach($policiesUser as $policy)
       {
@@ -442,11 +441,11 @@ class FolderModel extends FolderModelBase
 
     if(!$folder instanceof FolderDao)
       {
-      throw new Zend_Exception("Error parameter.");
+      throw new Zend_Exception("Error in parameter folder when moving folder.");
       }
     if(!$parent instanceof  FolderDao)
       {
-      throw new Zend_Exception("Error parameter.");
+      throw new Zend_Exception("Error in parameter parent when moving folder.");
       }
 
     // Check ifa folder with the same name already exists for the same parent
@@ -913,8 +912,7 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Should be an item.");
       }
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel("Item");
+    $itemModel = MidasLoader::loadModel('Item');
     // Update item name to avoid duplicated names within the same folder
     if($update)
       {
@@ -939,8 +937,7 @@ class FolderModel extends FolderModelBase
     $this->database->removeLink('items', $folder, $item);
     if(count($item->getFolders()) == 0)
       {
-      $modelLoader = new MIDAS_ModelLoader();
-      $itemModel = $modelLoader->loadModel('Item');
+      $itemModel = MidasLoader::loadModel('Item');
       $itemModel->delete($item);
       }
     } // end function addItem

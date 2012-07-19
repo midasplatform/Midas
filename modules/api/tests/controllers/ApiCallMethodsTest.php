@@ -57,8 +57,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $userApiModel->createDefaultApiKey($userDao);
     $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
 
@@ -82,8 +81,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[2]->getKey());
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $userApiModel->createDefaultApiKey($userDao);
     $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
 
@@ -133,8 +131,7 @@ class ApiCallMethodsTest extends ControllerTestCase
   /** Test creation of a new community */
   public function testCommunityCreate()
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $communityModel = $modelLoader->loadModel('Community');
+    $communityModel = MidasLoader::loadModel('Community');
     $communities = $communityModel->getAll();
     $originalCount = count($communities);
 
@@ -394,8 +391,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $userDao = $this->User->load($usersFile[0]->getKey());
 
     // Expected API key
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $userApiModel->createDefaultApiKey($userDao);
     $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
 

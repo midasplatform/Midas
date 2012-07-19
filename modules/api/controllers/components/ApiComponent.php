@@ -51,8 +51,7 @@ class Api_ApiComponent extends AppComponent
   /** Return the user dao */
   private function _getUser($args)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     return $authComponent->getUser($args, $this->userSession->Dao);
     }
 
@@ -123,8 +122,7 @@ class Api_ApiComponent extends AppComponent
     $email = $args['email'];
     $appname = $args['appname'];
     $apikey = $args['apikey'];
-    $modelLoader = new MIDAS_ModelLoader();
-    $Api_Userapi = $modelLoader->loadModel('Userapi', 'api');
+    $Api_Userapi = MidasLoader::loadModel('Userapi', 'api');
     $tokenDao = $Api_Userapi->getToken($email, $apikey, $appname);
     if(empty($tokenDao))
       {
@@ -145,8 +143,7 @@ class Api_ApiComponent extends AppComponent
     $this->_validateParams($args, array('uuid'));
 
     $uuid = $args['uuid'];
-    $componentLoader = new MIDAS_ComponentLoader();
-    $uuidComponent = $componentLoader->loadComponent('Uuid');
+    $uuidComponent = MidasLoader::loadComponent('Uuid');
     $resource = $uuidComponent->getByUid($uuid);
 
     if($resource == false)
@@ -180,8 +177,7 @@ class Api_ApiComponent extends AppComponent
     {
     $this->_validateParams($args, array('uuid'));
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $uuidComponent = $componentLoader->loadComponent('Uuid');
+    $uuidComponent = MidasLoader::loadComponent('Uuid');
     $element = $uuidComponent->getByUid($args['uuid']);
 
     $return = array();
@@ -236,8 +232,7 @@ class Api_ApiComponent extends AppComponent
       {
       $order = $args['order'];
       }
-    $componentLoader = new MIDAS_ComponentLoader();
-    $searchComponent = $componentLoader->loadComponent('Search');
+    $searchComponent = MidasLoader::loadComponent('Search');
     return $searchComponent->searchAll($userDao, $args['search'], $order);
     }
 
@@ -292,9 +287,7 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('Anonymous users may not upload', MIDAS_INVALID_POLICY);
       }
 
-    $modelLoader = new MIDAS_ModelLoader();
-
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     if(array_key_exists('itemid', $args))
       {
       $item = $itemModel->load($args['itemid']);
@@ -353,7 +346,7 @@ class Api_ApiComponent extends AppComponent
     if(array_key_exists('checksum', $args))
       {
       // If we already have a bitstream with this checksum, create a reference and return blank token
-      $bitstreamModel = $modelLoader->loadModel('Bitstream');
+      $bitstreamModel = MidasLoader::loadModel('Bitstream');
       $existingBitstream = $bitstreamModel->getByChecksum($args['checksum']);
       if($existingBitstream)
         {
@@ -388,14 +381,13 @@ class Api_ApiComponent extends AppComponent
         $bitstream->setPath($existingBitstream->getPath());
         $bitstream->setAssetstoreId($existingBitstream->getAssetstoreId());
         $bitstream->setMimetype($existingBitstream->getMimetype());
-        $revisionModel = $modelLoader->loadModel('ItemRevision');
+        $revisionModel = MidasLoader::loadModel('ItemRevision');
         $revisionModel->addBitstream($revision, $bitstream);
         return array('token' => '');
         }
       }
     //we don't already have this content, so create the token
-    $componentLoader = new MIDAS_ComponentLoader();
-    $uploadComponent = $componentLoader->loadComponent('Httpupload');
+    $uploadComponent = MidasLoader::loadComponent('Httpupload');
     $uploadComponent->setTestingMode($this->apiSetup['testing']);
     $uploadComponent->setTmpDirectory($this->apiSetup['tmpDirectory']);
     return $uploadComponent->generateToken($args, $userDao->getKey().'/'.$item->getKey());
@@ -408,8 +400,7 @@ class Api_ApiComponent extends AppComponent
    */
   function uploadGetoffset($args)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
-    $uploadComponent = $componentLoader->loadComponent('Httpupload');
+    $uploadComponent = MidasLoader::loadComponent('Httpupload');
     $uploadComponent->setTestingMode($this->apiSetup['testing']);
     $uploadComponent->setTmpDirectory($this->apiSetup['tmpDirectory']);
     return $uploadComponent->getOffset($args);
@@ -443,9 +434,8 @@ class Api_ApiComponent extends AppComponent
 
     list($userid, $itemid, ) = explode('/', $args['uploadtoken']);
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
-    $userModel = $modelLoader->loadModel('User');
+    $itemModel = MidasLoader::loadModel('Item');
+    $userModel = MidasLoader::loadModel('User');
 
     $userDao = $userModel->load($userid);
     if(!$userDao)
@@ -480,11 +470,9 @@ class Api_ApiComponent extends AppComponent
         }
       }
 
-
     $mode = array_key_exists('mode', $args) ? $args['mode'] : 'stream';
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $httpUploadComponent = $componentLoader->loadComponent('Httpupload');
+    $httpUploadComponent = MidasLoader::loadComponent('Httpupload');
     $httpUploadComponent->setTestingMode($this->apiSetup['testing']);
     $httpUploadComponent->setTmpDirectory($this->apiSetup['tmpDirectory']);
 
@@ -545,8 +533,7 @@ class Api_ApiComponent extends AppComponent
         throw new Exception($validation['message'], MIDAS_INVALID_POLICY);
         }
       }
-
-    $uploadComponent = $componentLoader->loadComponent('Upload');
+    $uploadComponent = MidasLoader::loadComponent('Upload');
     $license = null;
     $changes = array_key_exists('changes', $args) ? $args['changes'] : '';
     $revisionNumber = null;
@@ -585,10 +572,8 @@ class Api_ApiComponent extends AppComponent
     $name = $args['name'];
     $uuid = isset($args['uuid']) ? $args['uuid'] : '';
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $modelLoader = new MIDAS_ModelLoader();
-    $uuidComponent = $componentLoader->loadComponent('Uuid');
-    $communityModel = $modelLoader->loadModel('Community');
+    $uuidComponent = MidasLoader::loadComponent('Uuid');
+    $communityModel = MidasLoader::loadModel('Community');
     $record = false;
     if(!empty($uuid))
       {
@@ -662,8 +647,7 @@ class Api_ApiComponent extends AppComponent
 
     $userDao = $this->_getUser($args);
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $communityModel = $modelLoader->loadModel('Community');
+    $communityModel = MidasLoader::loadModel('Community');
     if($hasId)
       {
       $community = $communityModel->load($args['id']);
@@ -697,9 +681,8 @@ class Api_ApiComponent extends AppComponent
 
     $id = $args['id'];
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $communityModel = $modelLoader->loadModel('Community');
-    $folderModel = $modelLoader->loadModel('Folder');
+    $communityModel = MidasLoader::loadModel('Community');
+    $folderModel = MidasLoader::loadModel('Folder');
     $community = $communityModel->load($id);
     if(!$community)
       {
@@ -728,9 +711,8 @@ class Api_ApiComponent extends AppComponent
   function communityList($args)
     {
     $userDao = $this->_getUser($args);
-    $modelLoader = new MIDAS_ModelLoader();
-    $communityModel = $modelLoader->loadModel('Community');
-    $userModel = $modelLoader->loadModel('User');
+    $communityModel = MidasLoader::loadModel('Community');
+    $userModel = MidasLoader::loadModel('User');
 
     if($userDao && $userDao->isAdmin())
       {
@@ -745,8 +727,7 @@ class Api_ApiComponent extends AppComponent
         }
       }
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $sortDaoComponent = $componentLoader->loadComponent('Sortdao');
+    $sortDaoComponent = MidasLoader::loadComponent('Sortdao');
     $sortDaoComponent->field = 'name';
     $sortDaoComponent->order = 'asc';
     usort($communities, array($sortDaoComponent, 'sortByName'));
@@ -769,8 +750,7 @@ class Api_ApiComponent extends AppComponent
       }
     $id = $args['id'];
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $communityModel = $modelLoader->loadModel('Community');
+    $communityModel = MidasLoader::loadModel('Community');
     $community = $communityModel->load($id);
 
     if($community === false || !$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
@@ -800,8 +780,7 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('Cannot create folder anonymously', MIDAS_INVALID_POLICY);
       }
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     $name = $args['name'];
     $description = isset($args['description']) ? $args['description'] : '';
 
@@ -809,8 +788,7 @@ class Api_ApiComponent extends AppComponent
     $record = false;
     if(!empty($uuid))
       {
-      $componentLoader = new MIDAS_ComponentLoader();
-      $uuidComponent = $componentLoader->loadComponent('Uuid');
+      $uuidComponent = MidasLoader::loadComponent('Uuid');
       $record = $uuidComponent->getByUid($uuid);
       }
     if($record != false && $record instanceof FolderDao)
@@ -855,8 +833,8 @@ class Api_ApiComponent extends AppComponent
           }
         $policyGroup = $folder->getFolderpolicygroup();
         $policyUser = $folder->getFolderpolicyuser();
-        $folderpolicygroupModel = $modelLoader->loadModel('Folderpolicygroup');
-        $folderpolicyuserModel = $modelLoader->loadModel('Folderpolicyuser');
+        $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+        $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
         foreach($policyGroup as $policy)
           {
           $folderpolicygroupModel->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
@@ -886,8 +864,7 @@ class Api_ApiComponent extends AppComponent
     $this->_validateParams($args, array('id'));
     $userDao = $this->_getUser($args);
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
 
     $id = $args['id'];
     $folder = $folderModel->load($id);
@@ -913,8 +890,7 @@ class Api_ApiComponent extends AppComponent
     $this->_validateParams($args, array('id'));
 
     $id = $args['id'];
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     $folder = $folderModel->load($id);
 
     $userDao = $this->_getUser($args);
@@ -953,8 +929,7 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
       }
     $id = $args['id'];
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     $folder = $folderModel->load($id);
 
     if($folder === false || !$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
@@ -977,8 +952,7 @@ class Api_ApiComponent extends AppComponent
     $userDao = $this->_getUser($args);
 
     $id = $args['id'];
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     $folder = $folderModel->load($id);
 
     if($folder === false || !$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
@@ -986,7 +960,12 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
-    $this->controller->redirect('/download/?folders='.$folder->getKey());
+    $redirUrl = '/download/?folders='.$folder->getKey();
+    if($userDao && array_key_exists('token', $args))
+      {
+      $redirUrl .= '&authToken='.$args['token'];
+      }
+    $this->controller->redirect($redirUrl);
     }
 
   /**
@@ -1001,8 +980,7 @@ class Api_ApiComponent extends AppComponent
     $this->_validateParams($args, array('id', 'dstfolderid'));
     $userDao = $this->_getUser($args);
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     $id = $args['id'];
     $folder = $folderModel->load($id);
     $dstFolderId = $args['dstfolderid'];
@@ -1043,8 +1021,7 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception('Cannot create item anonymously', MIDAS_INVALID_POLICY);
       }
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $name = $args['name'];
     $description = isset($args['description']) ? $args['description'] : '';
 
@@ -1052,8 +1029,7 @@ class Api_ApiComponent extends AppComponent
     $record = false;
     if(!empty($uuid))
       {
-      $componentLoader = new MIDAS_ComponentLoader();
-      $uuidComponent = $componentLoader->loadComponent('Uuid');
+      $uuidComponent = MidasLoader::loadComponent('Uuid');
       $record = $uuidComponent->getByUid($uuid);
       }
     if($record != false && $record instanceof ItemDao)
@@ -1101,7 +1077,7 @@ class Api_ApiComponent extends AppComponent
         {
         throw new Exception('Parameter parentid is not defined', MIDAS_INVALID_PARAMETER);
         }
-      $folderModel = $modelLoader->loadModel('Folder');
+      $folderModel = MidasLoader::loadModel('Folder');
       $folder = $folderModel->load($args['parentid']);
       if($folder == false)
         {
@@ -1116,7 +1092,7 @@ class Api_ApiComponent extends AppComponent
         {
         throw new Exception('Create new item failed', MIDAS_INTERNAL_ERROR);
         }
-      $itempolicyuserModel = $modelLoader->loadModel('Itempolicyuser');
+      $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
       $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
 
       return $item->toArray();
@@ -1136,8 +1112,7 @@ class Api_ApiComponent extends AppComponent
     $userDao = $this->_getUser($args);
 
     $itemid = $args['id'];
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $item = $itemModel->load($itemid);
 
     if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
@@ -1218,8 +1193,7 @@ class Api_ApiComponent extends AppComponent
     $userDao = $this->_getUser($args);
 
     $id = $args['id'];
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $item = $itemModel->load($id);
 
     if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
@@ -1227,14 +1201,16 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
+    $redirUrl = '/download/?items='.$item->getKey();
     if(isset($args['revision']))
       {
-      $this->controller->redirect('/download/?items='.$item->getKey().','.$args['revision']);
+      $redirUrl .= ','.$args['revision'];
       }
-    else
+    if($userDao && array_key_exists('token', $args))
       {
-      $this->controller->redirect('/download/?items='.$item->getKey());
+      $redirUrl .= '&authToken='.$args['token'];
       }
+    $this->controller->redirect($redirUrl);
     }
 
   /**
@@ -1252,8 +1228,7 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
       }
     $id = $args['id'];
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $item = $itemModel->load($id);
 
     if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
@@ -1276,8 +1251,7 @@ class Api_ApiComponent extends AppComponent
     $userDao = $this->_getUser($args);
 
     $itemid = $args['id'];
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $item = $itemModel->load($itemid);
 
     if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
@@ -1308,7 +1282,7 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
       }
 
-    $itemRevisionModel = $modelLoader->loadModel('ItemRevision');
+    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
     $metadata = $itemRevisionModel->getMetadata($revisionDao);
     $metadataArray = array();
     foreach($metadata as $m)
@@ -1332,8 +1306,7 @@ class Api_ApiComponent extends AppComponent
     $this->_validateParams($args, array('itemId', 'element', 'value'));
     $userDao = $this->_getUser($args);
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $item = $itemModel->load($args['itemId']);
 
     if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
@@ -1370,15 +1343,14 @@ class Api_ApiComponent extends AppComponent
       }
 
     // If no module handles this metadata, we add it as normal metadata on the item revision
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $revisionDao = $itemModel->getLastRevision($item);
     if(!$revisionDao)
       {
       throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
       }
 
-    $metadataModel = $modelLoader->loadModel('Metadata');
+    $metadataModel = MidasLoader::loadModel('Metadata');
     $metadataDao = $metadataModel->getMetadata($type, $element, $qualifier);
     if($metadataDao == false)
       {
@@ -1402,9 +1374,8 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception('Cannot duplicate item anonymously', MIDAS_INVALID_POLICY);
       }
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
-    $folderModel = $modelLoader->loadModel('Folder');
+    $itemModel = MidasLoader::loadModel('Item');
+    $folderModel = MidasLoader::loadModel('Folder');
     $id = $args['id'];
     $item = $itemModel->load($id);
     $dstFolderId = $args['dstfolderid'];
@@ -1436,9 +1407,8 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception('Cannot share item anonymously', MIDAS_INVALID_POLICY);
       }
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
-    $folderModel = $modelLoader->loadModel('Folder');
+    $itemModel = MidasLoader::loadModel('Item');
+    $folderModel = MidasLoader::loadModel('Folder');
     $id = $args['id'];
     $item = $itemModel->load($id);
     $dstFolderId = $args['dstfolderid'];
@@ -1486,9 +1456,8 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception('Cannot move item anonymously', MIDAS_INVALID_POLICY);
       }
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
-    $folderModel = $modelLoader->loadModel('Folder');
+    $itemModel = MidasLoader::loadModel('Item');
+    $folderModel = MidasLoader::loadModel('Folder');
     $id = $args['id'];
     $item = $itemModel->load($id);
     $srcFolderId = $args['srcfolderid'];
@@ -1533,8 +1502,7 @@ class Api_ApiComponent extends AppComponent
     {
     $this->_validateParams($args, array('name'));
     $userDao = $this->_getUser($args);
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $items = $itemModel->getByName($args['name']);
 
     $matchList = array();
@@ -1563,8 +1531,7 @@ class Api_ApiComponent extends AppComponent
       }
 
     $userRootFolder = $userDao->getFolder();
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     return $folderModel->getChildrenFoldersFiltered($userRootFolder, $userDao, MIDAS_POLICY_READ);
     }
 
@@ -1607,9 +1574,8 @@ class Api_ApiComponent extends AppComponent
         }
       }
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $userModel = $modelLoader->loadModel('User');
-    $userApiModel = $modelLoader->loadModel('Userapi', 'api');
+    $userModel = MidasLoader::loadModel('User');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     if(!$authModule)
       {
       $userDao = $userModel->getByEmail($email);
@@ -1635,8 +1601,8 @@ class Api_ApiComponent extends AppComponent
   function userList($args)
     {
     $this->_validateParams($args, array('limit'));
-    $modelLoader = new MIDAS_ModelLoader();
-    $userModel = $modelLoader->loadModel('User');
+
+    $userModel = MidasLoader::loadModel('User');
     return $userModel->getAll(true, $args['limit']);
     }
 
@@ -1650,8 +1616,7 @@ class Api_ApiComponent extends AppComponent
    */
   function userGet($args)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $userModel = $modelLoader->loadModel('User');
+    $userModel = MidasLoader::loadModel('User');
     if(array_key_exists('user_id', $args))
       {
       return $userModel->getByUser_id($args['user_id']);
@@ -1681,8 +1646,8 @@ class Api_ApiComponent extends AppComponent
     {
     $this->_validateParams($args, array('id'));
     $userDao = $this->_getUser($args);
-    $modelLoader = new MIDAS_ModelLoader();
-    $bitstreamModel = $modelLoader->loadModel('Bitstream');
+
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
     $bitstream = $bitstreamModel->load($args['id']);
 
     if(!$bitstream)
@@ -1694,14 +1659,14 @@ class Api_ApiComponent extends AppComponent
       {
       $bitstream->setName($args['name']);
       }
-    $revisionModel = $modelLoader->loadModel('ItemRevision');
+    $revisionModel = MidasLoader::loadModel('ItemRevision');
     $revision = $revisionModel->load($bitstream->getItemrevisionId());
 
     if(!$revision)
       {
       throw new Exception('Invalid revision id', MIDAS_INTERNAL_ERROR);
       }
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $item = $itemModel->load($revision->getItemId());
     if(!$item || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
       {
@@ -1733,9 +1698,9 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('Either an id or checksum parameter is required', MIDAS_INVALID_PARAMETER);
       }
     $userDao = $this->_getUser($args);
-    $modelLoader = new MIDAS_ModelLoader();
-    $bitstreamModel = $modelLoader->loadModel('Bitstream');
-    $itemModel = $modelLoader->loadModel('Item');
+
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
+    $itemModel = MidasLoader::loadModel('Item');
 
     if(array_key_exists('id', $args))
       {
@@ -1775,7 +1740,12 @@ class Api_ApiComponent extends AppComponent
     $name = array_key_exists('name', $args) ? $args['name'] : $bitstream->getName();
     $offset = array_key_exists('offset', $args) ? $args['offset'] : '0';
 
-    $this->controller->redirect('/download/?bitstream='.$bitstream->getKey().'&offset='.$offset.'&name='.$name);
+    $redirUrl = '/download/?bitstream='.$bitstream->getKey().'&offset='.$offset.'&name='.$name;
+    if($userDao && array_key_exists('token', $args))
+      {
+      $redirUrl .= '&authToken='.$args['token'];
+      }
+    $this->controller->redirect($redirUrl);
     }
 
   /**
@@ -1788,8 +1758,8 @@ class Api_ApiComponent extends AppComponent
     {
     $this->_validateParams($args, array('uuid'));
     $userDao = $this->_getUser($args);
-    $componentLoader = new MIDAS_ComponentLoader();
-    $uuidComponent = $componentLoader->loadComponent('Uuid');
+
+    $uuidComponent = MidasLoader::loadComponent('Uuid');
     $resource = $uuidComponent->getByUid($args['uuid']);
 
     if($resource == false)
@@ -1797,25 +1767,24 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('No resource for the given UUID.', MIDAS_INVALID_PARAMETER);
       }
 
-    $modelLoader = new MIDAS_ModelLoader();
     switch($resource->resourceType)
       {
       case MIDAS_RESOURCE_COMMUNITY:
-        $communityModel = $modelLoader->loadModel('Community');
+        $communityModel = MidasLoader::loadModel('Community');
         if(!$communityModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
           {
           throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
           }
         return $communityModel->countBitstreams($resource, $userDao);
       case MIDAS_RESOURCE_FOLDER:
-        $folderModel = $modelLoader->loadModel('Folder');
+        $folderModel = MidasLoader::loadModel('Folder');
         if(!$folderModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
           {
           throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
           }
         return $folderModel->countBitstreams($resource, $userDao);
       case MIDAS_RESOURCE_ITEM:
-        $itemModel = $modelLoader->loadModel('Item');
+        $itemModel = MidasLoader::loadModel('Item');
         if(!$itemModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
           {
           throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
@@ -1839,9 +1808,8 @@ class Api_ApiComponent extends AppComponent
     $this->_validateParams($args, array('id'));
     $userDao = $this->_getUser($args);
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $bitstreamModel = $modelLoader->loadModel('Bitstream');
-    $itemModel = $modelLoader->loadModel('Item');
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
+    $itemModel = MidasLoader::loadModel('Item');
 
     $bitstream = $bitstreamModel->load($args['id']);
     if(!$bitstream)

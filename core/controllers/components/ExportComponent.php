@@ -79,8 +79,7 @@ class ExportComponent extends AppComponent
     // if the path has a slash at the end, remove it here
     $targetDir = rtrim($targetDir, '/');
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
 
     // Get items
     $revisions = array();

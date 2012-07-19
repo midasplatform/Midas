@@ -267,9 +267,7 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
       }
     else if($this->_mainData[$var]['type'] == MIDAS_ONE_TO_MANY)
       {
-      require_once BASE_PATH . '/core/models/ModelLoader.php';
-      $this->ModelLoader = new MIDAS_ModelLoader();
-      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model']);
+      $model = MidasLoader::loadModel($this->_mainData[$var]['model']);
       if(!$dao->get($this->_mainData[$var]['parent_column']))
         {
         throw new Zend_Exception($this->_mainData[$var]['parent_column']. " is not defined in the dao: ".get_class($dao));
@@ -280,9 +278,7 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
       }
     else if($this->_mainData[$var]['type'] == MIDAS_MANY_TO_ONE)
       {
-      require_once BASE_PATH . '/core/models/ModelLoader.php';
-      $this->ModelLoader = new MIDAS_ModelLoader();
-      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model']);
+      $model = MidasLoader::loadModel($this->_mainData[$var]['model']);
       if(!method_exists($model, 'getBy'.ucfirst($this->_mainData[$var]['child_column'])))
         {
         throw new Zend_Exception(get_class($model).'::getBy'.ucfirst($this->_mainData[$var]['child_column'])." is not implemented");
@@ -292,9 +288,7 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
       }
     else if($this->_mainData[$var]['type'] == MIDAS_MANY_TO_MANY)
       {
-      require_once BASE_PATH . '/core/models/ModelLoader.php';
-      $this->ModelLoader = new MIDAS_ModelLoader();
-      $model = $this->ModelLoader->loadModel($dao->_model);
+      $model = MidasLoader::loadModel($dao->_model);
       if(!method_exists($model, 'get'.ucfirst($var)))
         {
         throw new Zend_Exception(get_class($model).'::get'.ucfirst($var)." is not implemented");

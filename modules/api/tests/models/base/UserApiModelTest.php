@@ -32,8 +32,7 @@ class UserApiModelTest extends DatabaseTestCase
   /** Test that UserapiModel::createKey works */
   public function testGenerateApiKeyModel()
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
 
     $apiKey = $userApiModel->createKeyFromEmailPassword('Test App', 'user1@user1.com', 'test');
     $this->assertTrue($apiKey instanceof Api_UserapiDao);
@@ -43,8 +42,7 @@ class UserApiModelTest extends DatabaseTestCase
   /** Test that UserapiModel::createDefaultApiKey works */
   public function testDefaultApiKeyModel()
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
 
     $userDao = new UserDao();
     $userDao->setUserId(1);

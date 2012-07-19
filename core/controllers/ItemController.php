@@ -599,8 +599,7 @@ class ItemController extends AppController
     if($item->getThumbnailId() !== null)
       {
       $bitstream = $this->Bitstream->load($item->getThumbnailId());
-      $componentLoader = new MIDAS_ComponentLoader();
-      $downloadBitstreamComponent = $componentLoader->loadComponent('DownloadBitstream');
+      $downloadBitstreamComponent = MidasLoader::loadComponent('DownloadBitstream');
       $downloadBitstreamComponent->download($bitstream);
       }
     }

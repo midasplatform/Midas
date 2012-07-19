@@ -47,9 +47,17 @@ abstract class SettingModelBase extends AppModel
   /** Set Configuration value. Set value as null to delete */
   public function setConfig($name, $value, $module = 'core')
     {
-    if(!is_string($name) || !is_string($value) || !is_string($module))
+    if(!is_string($name))
       {
-      throw new Zend_Exception('Error Parameters');
+      throw new Zend_Exception('SettingModelBase.setConfig: Error in Parameter: name is not a string');
+      }
+    if(!is_string($value))
+      {
+      throw new Zend_Exception('SettingModelBase.setConfig: Error in Parameter: value is not a string');
+      }
+    if(!is_string($module))
+      {
+      throw new Zend_Exception('SettingModelBase.setConfig: Error in Parameter: module is not a string');
       }
     $dao = $this->getDaoByName($name, $module);
     if($dao != false && $dao->getValue() == $value)

@@ -23,7 +23,7 @@ class SettingModel extends SettingModelBase
     {
     if(!is_string($name) || !is_string($module))
       {
-      throw new Zend_Exception('Error Parameters');
+      throw new Zend_Exception('Error in Parameters when getting Setting dao by name.');
       }
     $row = $this->database->fetchRow($this->database->select()->where('name = ?', $name)->where('module = ?', $module));
     $dao = $this->initDao(ucfirst($this->_name), $row);

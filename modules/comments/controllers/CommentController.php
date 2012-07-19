@@ -32,8 +32,8 @@ class Comments_CommentController extends Comments_AppController
 
     $this->disableView();
     $this->disableLayout();
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemCommentModel = $modelLoader->loadModel('Itemcomment', $this->moduleName);
+
+    $itemCommentModel = MidasLoader::loadModel('Itemcomment', $this->moduleName);
     $itemCommentModel->addComment($this->userSession->Dao, $item, $comment);
 
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Comment added'));
@@ -62,8 +62,8 @@ class Comments_CommentController extends Comments_AppController
 
     $this->disableView();
     $this->disableLayout();
-    $componentLoader = new MIDAS_ComponentLoader();
-    $commentComponent = $componentLoader->loadComponent('Comment', $this->moduleName);
+
+    $commentComponent = MidasLoader::loadComponent('Comment', $this->moduleName);
     list($comments, $total) = $commentComponent->getComments($item, $limit, $offset);
 
     echo JsonComponent::encode(array('status' => 'ok', 'comments' => $comments, 'total' => $total));
