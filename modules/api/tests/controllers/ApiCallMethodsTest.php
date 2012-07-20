@@ -1531,6 +1531,9 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($metadataArray[$ind2]->value, $value2, "Expected metadata value would be ".$value2);
     $this->assertEquals($metadataArray[$ind2]->qualifier, $qualifier2, "Expected metadata qualifier would be ".$qualifier2);
     $this->assertEquals($metadataArray[$ind2]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
+    
+    // delete the newly created item
+    $this->Item->delete($itemDao);
     }
     
     
