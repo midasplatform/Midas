@@ -18,12 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-// Web API error codes
-define('MIDAS_INTERNAL_ERROR', -100);
-define('MIDAS_INVALID_TOKEN', -101);
-define('MIDAS_INVALID_PARAMETER', -150);
-define('MIDAS_INVALID_POLICY', -151);
-define('MIDAS_HTTP_ERROR', -153);
+
 
 /** These are the implementations of the core web api methods */
 class Api_ApiComponent extends AppComponent
@@ -1238,6 +1233,56 @@ class Api_ApiComponent extends AppComponent
 
     $itemModel->delete($item);
     }
+    
+  /* 
+   * helper function to get a revision of a certain number from an item,
+   * if revisionNumber is null will get the last revision of the item; used
+   * by the metadata calls and so has exception handling built in for them.
+   */    
+  function _getItemRevision($item, $revisionNumber = null)
+    {
+    $itemModel = MidasLoader::loadModel('Item');  
+    if(!isset($revisionNumber))
+      {
+      $revisionDao = $itemModel->getLastRevision($item);
+      if($revisionDao)
+        {
+        return $revisionDao;
+        }
+      else
+        {
+        throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+        } 
+      }
+    
+    $revisionNumber = (int)$revisionNumber;  
+    if(!is_int($revisionNumber) || $revisionNumber < 1)
+      {
+      throw new Exception("Revision Numbers must be integers greater than 0.".$revisionNumber, MIDAS_INVALID_PARAMETER);
+      }
+    $revisions = $item->getRevisions();
+    if(sizeof($revisions) === 0)
+      {
+      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+      } 
+    // check revisions exist  
+    foreach($revisions as $revision)
+      {
+      if($revisionNumber == $revision->getRevision())
+        {
+        $revisionDao = $revision;
+        break;
+        }
+      }
+    if(isset($revisionDao))
+      {
+      return $revisionDao;
+      }
+    else
+      {
+      throw new Exception("This revision number is invalid for this item.", MIDAS_INVALID_PARAMETER);
+      }
+    }  
 
   /**
    * Get the item's metadata
@@ -1258,30 +1303,8 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
-
-    if(isset($args['revision']))
-      {
-      $revisionNumber = $args['revision'];
-      $revisions = $item->getRevisions();
-      foreach($revisions as $revision)
-        {
-        if($revisionNumber == $revision->getRevision())
-          {
-          $revisionDao = $revision;
-          break;
-          }
-        }
-      }
-
-    if(!isset($revisionDao))
-      {
-      $revisionDao = $itemModel->getLastRevision($item);
-      }
-    if(!$revisionDao)
-      {
-      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
-      }
-
+      
+    $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
     $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
     $metadata = $itemRevisionModel->getMetadata($revisionDao);
     $metadataArray = array();
