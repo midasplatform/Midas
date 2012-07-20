@@ -1300,6 +1300,7 @@ class Api_ApiComponent extends AppComponent
    * @param value The metadata value for the field
    * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
    * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
+   * @return true on success
    */
   function itemSetmetadata($args)
     {
@@ -1320,6 +1321,7 @@ class Api_ApiComponent extends AppComponent
     $value = $args['value'];
 
     $this->_setMetadata($item, $type, $element, $qualifier, $value);
+    return true;
     }
 
   /**
