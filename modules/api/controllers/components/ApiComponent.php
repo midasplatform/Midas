@@ -1233,15 +1233,15 @@ class Api_ApiComponent extends AppComponent
 
     $itemModel->delete($item);
     }
-    
-  /* 
+
+  /**
    * helper function to get a revision of a certain number from an item,
    * if revisionNumber is null will get the last revision of the item; used
    * by the metadata calls and so has exception handling built in for them.
-   */    
-  function _getItemRevision($item, $revisionNumber = null)
+   */
+  private function _getItemRevision($item, $revisionNumber = null)
     {
-    $itemModel = MidasLoader::loadModel('Item');  
+    $itemModel = MidasLoader::loadModel('Item');
     if(!isset($revisionNumber))
       {
       $revisionDao = $itemModel->getLastRevision($item);
@@ -1252,10 +1252,10 @@ class Api_ApiComponent extends AppComponent
       else
         {
         throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
-        } 
+        }
       }
-    
-    $revisionNumber = (int)$revisionNumber;  
+
+    $revisionNumber = (int)$revisionNumber;
     if(!is_int($revisionNumber) || $revisionNumber < 1)
       {
       throw new Exception("Revision Numbers must be integers greater than 0.".$revisionNumber, MIDAS_INVALID_PARAMETER);
@@ -1264,8 +1264,8 @@ class Api_ApiComponent extends AppComponent
     if(sizeof($revisions) === 0)
       {
       throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
-      } 
-    // check revisions exist  
+      }
+    // check revisions exist
     foreach($revisions as $revision)
       {
       if($revisionNumber == $revision->getRevision())
@@ -1282,7 +1282,7 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception("This revision number is invalid for this item.", MIDAS_INVALID_PARAMETER);
       }
-    }  
+    }
 
   /**
    * Get the item's metadata
@@ -1303,7 +1303,7 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
-      
+
     $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
     $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
     $metadata = $itemRevisionModel->getMetadata($revisionDao);
@@ -1390,11 +1390,11 @@ class Api_ApiComponent extends AppComponent
     $metadataModel->addMetadataValue($revisionDao, $type, $element, $qualifier, $value);
     }
 
-  /** 
+  /**
    * helper function to parse out the metadata tuples from the params for a
    * call to setmultiplemetadata, will validate matching tuples to count.
-   */  
-  function _parseMetadataTuples($args)
+   */
+  private function _parseMetadataTuples($args)
     {
     $count = (int)$args['count'];
     if(!is_int($count) || $count < 1)
@@ -1402,14 +1402,14 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("Count must be an integer greater than 0.", MIDAS_INVALID_PARAMETER);
       }
     $metadataTuples = array();
-    for($i = 0; $i < $count; $i = $i+1)
+    for($i = 0; $i < $count; $i = $i + 1)
       {
       // counters are 1 indexed
       $counter = $i + 1;
-      $element_i_key = 'element_'.$counter;  
-      $value_i_key = 'value_'.$counter;  
-      $qualifier_i_key = 'qualifier_'.$counter;  
-      $type_i_key = 'type_'.$counter;  
+      $element_i_key = 'element_'.$counter;
+      $value_i_key = 'value_'.$counter;
+      $qualifier_i_key = 'qualifier_'.$counter;
+      $type_i_key = 'type_'.$counter;
       if(!array_key_exists($element_i_key, $args))
         {
         throw new Exception("Count was ".$i." but param ".$element_i_key." is missing.", MIDAS_INVALID_PARAMETER);
@@ -1431,11 +1431,11 @@ class Api_ApiComponent extends AppComponent
                                 'type' => $type,
                                 'value' => $value);
       }
-      return $metadataTuples;      
+    return $metadataTuples;
     }
 
-    
-    
+
+
   /**
    * Set multiple metadata fields on an item, requires specifying the number of
      metadata tuples to add.
@@ -1447,17 +1447,17 @@ class Api_ApiComponent extends AppComponent
      at the end of each param name, from 1..<b>count</b>, following the example
      using the value <b>i</b> (i.e., replace <b>i</b> with values 1..<b>count</b>)
      (<b>element_i</b>, <b>value_i</b>, <b>qualifier_i</b>, <b>type_i</b>).
-   
+
      @param element_i metadata element for tuple i
      @param value_i   metadata value for the field, for tuple i
-     @param qualifier_i (Optional) metadata qualifier for tuple i. Defaults to empty string. 
+     @param qualifier_i (Optional) metadata qualifier for tuple i. Defaults to empty string.
      @param type_i (Optional) metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
    */
   function itemSetmultiplemetadata($args)
     {
     $this->_validateParams($args, array('itemid', 'count'));
     $metadataTuples = $this->_parseMetadataTuples($args);
-    
+
     $userDao = $this->_getUser($args);
 
     $itemModel = MidasLoader::loadModel('Item');
@@ -1472,11 +1472,11 @@ class Api_ApiComponent extends AppComponent
 
     foreach($metadataTuples as $tup)
       {
-      $this->_setMetadata($item, $tup['type'],$tup['element'], $tup['qualifier'], $tup['value'], $revision);
+      $this->_setMetadata($item, $tup['type'], $tup['element'], $tup['qualifier'], $tup['value'], $revision);
       }
     return true;
     }
-    
+
   /**
    * Duplicate an item to the desination folder
    * @param token Authentication token

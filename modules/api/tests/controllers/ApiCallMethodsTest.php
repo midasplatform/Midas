@@ -58,7 +58,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($resp->stat, 'fail');
     $this->assertEquals($resp->code, $code);
     }
-    
+
   /** Authenticate using the default api key for user 1 */
   private function _loginAsNormalUser()
     {
@@ -1349,7 +1349,8 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($newBitstream->getName(), 'newname.jpeg');
     $this->assertEquals($newBitstream->getMimetype(), 'image/jpeg');
     }
-    
+
+  /* helper function for item.setmetadata calls */
   private function _callSetmetadata($itemId, $element, $value, $qualifier = null, $type = null, $revision = null, $failureCode = null)
     {
     $this->resetAll();
@@ -1371,7 +1372,6 @@ class ApiCallMethodsTest extends ControllerTestCase
       $this->params['revision'] = $revision;
       }
     $resp = $this->_callJsonApi();
-    var_dump($resp);
     if(isset($failureCode))
       {
       $this->_assertStatusFail($resp, $failureCode);
@@ -1383,6 +1383,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     return $resp;
     }
 
+  /* helper function for item.setmultiplemetadata calls */
   private function _callSetmultiplemetadata($itemId, $metadata, $count = null, $revision = null, $failureCode = null)
     {
     $this->resetAll();
@@ -1397,27 +1398,25 @@ class ApiCallMethodsTest extends ControllerTestCase
       {
       $this->params['count'] = sizeof($metadata);
       }
-    
+
     $index = 1;
     $keys = array('element', 'value', 'qualifier', 'type');
     foreach($metadata as $metadatum)
       {
       foreach($keys as $key)
         {
-        if(array_key_exists($key, $metadatum)) 
+        if(array_key_exists($key, $metadatum))
           {
           $this->params[$key.'_'.$index] = $metadatum[$key];
           }
         }
-        $index = $index + 1;
+      $index = $index + 1;
       }
     if(isset($revision))
       {
       $this->params['revision'] = $revision;
       }
-    var_dump($this->params);
     $resp = $this->_callJsonApi();
-    var_dump($resp);
     if(isset($failureCode))
       {
       $this->_assertStatusFail($resp, $failureCode);
@@ -1428,7 +1427,8 @@ class ApiCallMethodsTest extends ControllerTestCase
       }
     return $resp;
     }
-    
+
+  /* helper function for item.getmetadata calls */
   private function _callGetmetadata($itemId, $revision = null, $failureCode = null)
     {
     $this->resetAll();
@@ -1450,10 +1450,10 @@ class ApiCallMethodsTest extends ControllerTestCase
       }
     return $resp;
     }
-    
-    
-    
-  /** Test item metadata functions */  
+
+
+
+  /** Test item metadata functions */
   public function testItemMetadata()
     {
     $usersFile = $this->loadData('User', 'default');
@@ -1473,18 +1473,18 @@ class ApiCallMethodsTest extends ControllerTestCase
     $multiValue2 = "multi_meta_value_2";
     $multiElement3 = "multi_meta_element_3";
     $multiValue3 = "multi_meta_value_3";
-    $metadata = array(array('element' => $multiElement1,'value' => $multiValue1),
-                array('element' => $multiElement2,'value' => $multiValue2),
-                array('element' => $multiElement3,'value' => $multiValue3));
-    $metadata_with_2 = array(array('element' => $multiElement1,'value' => $multiValue1),
-                       array('element' => $multiElement2,'value' => $multiValue2));
-    $metadata_mismatched = array(array('element' => $multiElement1,'value' => $multiValue1),
+    $metadata = array(array('element' => $multiElement1, 'value' => $multiValue1),
+                array('element' => $multiElement2, 'value' => $multiValue2),
+                array('element' => $multiElement3, 'value' => $multiValue3));
+    $metadata_with_2 = array(array('element' => $multiElement1, 'value' => $multiValue1),
+                       array('element' => $multiElement2, 'value' => $multiValue2));
+    $metadata_mismatched = array(array('element' => $multiElement1, 'value' => $multiValue1),
                        array('element' => $multiElement2));
 
-    
+
     // add multiple metadata to an invalid item, should be an error
     $this->_callSetmultiplemetadata("-1", $metadata, null, null, MIDAS_INVALID_POLICY);
-    
+
     // create a new item, it will have zero revisions
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
@@ -1497,7 +1497,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $itemDao = $this->Item->load($generatedItemId);
     $revisions = $itemDao->getRevisions();
     $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
-    
+
     // add metadata to this item, should be an error b/c no revisions
     $this->_callSetmetadata($generatedItemId, $element1, $value1, null, null, null, MIDAS_INVALID_POLICY);
 
@@ -1516,7 +1516,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $revision->setUser_id($usersFile[0]->getKey());
     $revision->setChanges('revision 1');
     $this->Item->addRevision($itemDao, $revision);
-    
+
     // add metadata to this item
     $resp = $this->_callSetmetadata($generatedItemId, $element1, $value1);
 
@@ -1535,13 +1535,13 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($metadataArray[0]->value, $value1, "Expected metadata value would be ".$value1);
     $this->assertEquals($metadataArray[0]->qualifier, '', "Expected metadata qualifier would be ''");
     $this->assertEquals($metadataArray[0]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
-    
+
     // add additional metadata
     $element2 = "meta_element_2";
     $value2 = "meta_value_2";
     $qualifier2 = "meta_qualifier_2";
     $resp = $this->_callSetmetadata($generatedItemId, $element2, $value2, $qualifier2);
-    
+
      // check that the metadata was added
     $resp = $this->_callGetmetadata($generatedItemId, "1");
     $metadataArray = $resp->data;
@@ -1563,18 +1563,18 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($metadataArray[$ind2]->value, $value2, "Expected metadata value would be ".$value2);
     $this->assertEquals($metadataArray[$ind2]->qualifier, $qualifier2, "Expected metadata qualifier would be ".$qualifier2);
     $this->assertEquals($metadataArray[$ind2]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
-    
+
     // add a revision 2 to the item
     $revision = MidasLoader::newDao('ItemRevisionDao');
     $revision->setUser_id($usersFile[0]->getKey());
     $revision->setChanges('revision 2');
     $this->Item->addRevision($itemDao, $revision);
-    
+
     // add metadata to rev 2
     $rev2element = "meta_element_rev_2";
     $rev2value = "meta_value_rev_2";
     $resp = $this->_callSetmetadata($generatedItemId, $rev2element, $rev2value);
-    
+
     // get the metadata from rev 2
     $resp = $this->_callGetmetadata($generatedItemId);
     $metadataArray = $resp->data;
@@ -1604,7 +1604,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($metadataArray[$ind2]->value, $value2, "Expected metadata value would be ".$value2);
     $this->assertEquals($metadataArray[$ind2]->qualifier, $qualifier2, "Expected metadata qualifier would be ".$qualifier2);
     $this->assertEquals($metadataArray[$ind2]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
-    
+
     // add a revision 3 to the item
     $revision = MidasLoader::newDao('ItemRevisionDao');
     $revision->setUser_id($usersFile[0]->getKey());
@@ -1620,7 +1620,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $rev3element = "meta_element_rev_3";
     $rev3value = "meta_value_rev_3";
     $resp = $this->_callSetmetadata($generatedItemId, $rev3element, $rev3value, null, null, '3');
-    
+
     // check that revision 3 has the metadata
     $resp = $this->_callGetmetadata($generatedItemId, "3");
     $metadataArray = $resp->data;
@@ -1633,7 +1633,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $resp = $this->_callGetmetadata($generatedItemId, "4");
     $this->assertTrue(is_array($resp->data), "Expected an empty array from the getmetadata call");
     $this->assertEquals(sizeof($resp->data), 0, "Expected an empty array from the getmetadata call, but size was ".sizeof($resp->data));
-    
+
     // add a revision 5 to the item
     $revision = MidasLoader::newDao('ItemRevisionDao');
     $revision->setUser_id($usersFile[0]->getKey());
@@ -1669,7 +1669,7 @@ class ApiCallMethodsTest extends ControllerTestCase
         }
       $this->assertTrue($found, "didn't find expected element ".$metadatum['element']);
       }
-    
+
     // check that revision 7 doesn't have any metadata
     $resp = $this->_callGetmetadata($generatedItemId, "7");
     $this->assertTrue(is_array($resp->data), "Expected an empty array from the getmetadata call");
@@ -1694,20 +1694,20 @@ class ApiCallMethodsTest extends ControllerTestCase
         }
       $this->assertTrue($found, "didn't find expected element ".$metadatum['element']);
       }
-    
+
     // delete the newly created item
     $this->Item->delete($itemDao);
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
   }
