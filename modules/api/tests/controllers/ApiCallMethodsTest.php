@@ -51,6 +51,14 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertTrue(isset($resp->data));
     }
 
+  /** Make sure we failed with a given message from the API call */
+  private function _assertStatusFail($resp, $code)
+    {
+    $this->assertNotEquals($resp, false);
+    $this->assertEquals($resp->stat, 'fail');
+    $this->assertEquals($resp->code, $code);
+    }
+    
   /** Authenticate using the default api key for user 1 */
   private function _loginAsNormalUser()
     {
@@ -859,7 +867,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['filename'] = $filename;
     $this->params['length'] = $length;
     $this->params['itemid'] = $generatedItemId;
-    //$this->params['revision'] = 'head'; //upload into head revision
     $this->params['testingmode'] = 'true';
     $this->params['DBG'] = 'true';
     $resp = $this->_callJsonApi();
@@ -1342,4 +1349,199 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($newBitstream->getName(), 'newname.jpeg');
     $this->assertEquals($newBitstream->getMimetype(), 'image/jpeg');
     }
+    
+  private function _callSetmetadata($itemId, $element, $value, $qualifier = null, $type = null, $failureCode = null)
+    {
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.setmetadata';
+    $this->params['itemId'] = $itemId;
+    $this->params['element'] = $element;
+    $this->params['value'] = $value;
+    if(isset($qualifier))
+      {
+      $this->params['qualifier'] = $qualifier;
+      }
+    if(isset($type))
+      {
+      $this->params['type'] = $type;
+      }
+    $resp = $this->_callJsonApi();
+    var_dump($resp);
+    if(isset($failureCode))
+      {
+      $this->_assertStatusFail($resp, $failureCode);
+      }
+    else
+      {
+      $this->_assertStatusOk($resp);
+      }
+    return $resp;
+    }
+  
+  private function _callGetmetadata($itemId, $revision = null, $failureCode = null)
+    {
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.getmetadata';
+    $this->params['id'] = $itemId;
+    if(isset($revision))
+      {
+      $this->params['revision'] = $revision;
+      }
+    $resp = $this->_callJsonApi();
+    if(isset($failureCode))
+      {
+      $this->_assertStatusFail($resp, $failureCode);
+      }
+    else
+      {
+      $this->_assertStatusOk($resp);
+      }
+    return $resp;
+    }
+    
+    
+    
+  /** Test item metadata functions */  
+  public function testItemMetadata()
+    {
+    $usersFile = $this->loadData('User', 'default');
+    $itemsFile = $this->loadData('Item', 'default');
+
+    // add metadata to an invalid item, should be an error
+    $element1 = "meta_element_1";
+    $value1 = "meta_value_1";
+    $this->_callSetmetadata("-1", $element1, $value1, null, null, MIDAS_INVALID_POLICY);
+
+    // get metadata to an invalid item, should be an error
+    $this->_callGetmetadata("-1", null, MIDAS_INVALID_POLICY);
+
+    // create a new item, it will have zero revisions
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.create';
+    $this->params['name'] = 'created_item';
+    $this->params['parentid'] = '1000';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $generatedItemId = $resp->data->item_id;
+    $itemDao = $this->Item->load($generatedItemId);
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
+    
+    // add metadata to this item, should be an error b/c no revisions
+    $this->_callSetmetadata($generatedItemId, $element1, $value1, null, null, MIDAS_INVALID_POLICY);
+
+    // get metadata on this item, should be an error b/c no revisions
+    $this->_callGetmetadata($generatedItemId, null, MIDAS_INVALID_POLICY);
+
+    // add a revision to the item
+    $revision = MidasLoader::newDao('ItemRevisionDao');
+    $revision->setUser_id($usersFile[0]->getKey());
+    $revision->setChanges('revision 1');
+    $this->Item->addRevision($itemDao, $revision);
+    
+    // add metadata to this item
+    $element1 = "meta_element_1";
+    $value1 = "meta_value_1";
+    $resp = $this->_callSetmetadata($generatedItemId, $element1, $value1);
+
+    // check that the values are correct, at the same time check getmetadata
+    $resp = $this->_callGetmetadata($generatedItemId);
+    $metadataArray = $resp->data;
+    $this->assertEquals($metadataArray[0]->element, $element1, "Expected metadata element would be ".$element1);
+    $this->assertEquals($metadataArray[0]->value, $value1, "Expected metadata value would be ".$value1);
+    $this->assertEquals($metadataArray[0]->qualifier, '', "Expected metadata qualifier would be ''");
+    $this->assertEquals($metadataArray[0]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
+
+    // check the same call, this time passing revision = 1
+    $resp = $this->_callGetmetadata($generatedItemId, "1");
+    $metadataArray = $resp->data;
+    $this->assertEquals($metadataArray[0]->element, $element1, "Expected metadata element would be ".$element1);
+    $this->assertEquals($metadataArray[0]->value, $value1, "Expected metadata value would be ".$value1);
+    $this->assertEquals($metadataArray[0]->qualifier, '', "Expected metadata qualifier would be ''");
+    $this->assertEquals($metadataArray[0]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
+    
+    // add additional metadata
+    $element2 = "meta_element_2";
+    $value2 = "meta_value_2";
+    $qualifier2 = "meta_qualifier_2";
+    $resp = $this->_callSetmetadata($generatedItemId, $element2, $value2, $qualifier2);
+    
+     // check that the metadata was added
+    $resp = $this->_callGetmetadata($generatedItemId, "1");
+    $metadataArray = $resp->data;
+    if($metadataArray[0]->element === $element1)
+      {
+      $ind1 = 0;
+      $ind2 = 1;
+      }
+    else
+      {
+      $ind1 = 1;
+      $ind2 = 0;
+      }
+    $this->assertEquals($metadataArray[$ind1]->element, $element1, "Expected metadata element would be ".$element1);
+    $this->assertEquals($metadataArray[$ind1]->value, $value1, "Expected metadata value would be ".$value1);
+    $this->assertEquals($metadataArray[$ind1]->qualifier, '', "Expected metadata qualifier would be ''");
+    $this->assertEquals($metadataArray[$ind1]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
+    $this->assertEquals($metadataArray[$ind2]->element, $element2, "Expected metadata element would be ".$element2);
+    $this->assertEquals($metadataArray[$ind2]->value, $value2, "Expected metadata value would be ".$value2);
+    $this->assertEquals($metadataArray[$ind2]->qualifier, $qualifier2, "Expected metadata qualifier would be ".$qualifier2);
+    $this->assertEquals($metadataArray[$ind2]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
+    
+    // add a revision 2 to the item
+    $revision = MidasLoader::newDao('ItemRevisionDao');
+    $revision->setUser_id($usersFile[0]->getKey());
+    $revision->setChanges('revision 2');
+    $this->Item->addRevision($itemDao, $revision);
+    
+    // add metadata to rev 2
+    $rev2element = "meta_element_rev_2";
+    $rev2value = "meta_value_rev_2";
+    $resp = $this->_callSetmetadata($generatedItemId, $rev2element, $rev2value);
+    
+    // get the metadata from rev 2
+    $resp = $this->_callGetmetadata($generatedItemId);
+    $metadataArray = $resp->data;
+    $this->assertEquals($metadataArray[0]->element, $rev2element, "Expected metadata element would be ".$rev2element);
+    $this->assertEquals($metadataArray[0]->value, $rev2value, "Expected metadata value would be ".$rev2value);
+    $this->assertEquals($metadataArray[0]->qualifier, '', "Expected metadata qualifier would be ''");
+    $this->assertEquals($metadataArray[0]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
+
+    // get the metadata from rev 1, checking if revision param works
+    $resp = $this->_callGetmetadata($generatedItemId, "1");
+    $metadataArray = $resp->data;
+    if($metadataArray[0]->element === $element1)
+      {
+      $ind1 = 0;
+      $ind2 = 1;
+      }
+    else
+      {
+      $ind1 = 1;
+      $ind2 = 0;
+      }
+    $this->assertEquals($metadataArray[$ind1]->element, $element1, "Expected metadata element would be ".$element1);
+    $this->assertEquals($metadataArray[$ind1]->value, $value1, "Expected metadata value would be ".$value1);
+    $this->assertEquals($metadataArray[$ind1]->qualifier, '', "Expected metadata qualifier would be ''");
+    $this->assertEquals($metadataArray[$ind1]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
+    $this->assertEquals($metadataArray[$ind2]->element, $element2, "Expected metadata element would be ".$element2);
+    $this->assertEquals($metadataArray[$ind2]->value, $value2, "Expected metadata value would be ".$value2);
+    $this->assertEquals($metadataArray[$ind2]->qualifier, $qualifier2, "Expected metadata qualifier would be ".$qualifier2);
+    $this->assertEquals($metadataArray[$ind2]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
   }
