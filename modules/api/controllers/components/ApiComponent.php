@@ -1323,6 +1323,7 @@ class Api_ApiComponent extends AppComponent
    * @param value The metadata value for the field
    * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
    * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
+   * @param revision (Optional) Revision of the item. Defaults to latest revision.
    * @return true on success
    */
   function itemSetmetadata($args)
@@ -1343,7 +1344,8 @@ class Api_ApiComponent extends AppComponent
     $element = $args['element'];
     $value = $args['value'];
 
-    $this->_setMetadata($item, $type, $element, $qualifier, $value);
+    $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
+    $this->_setMetadata($item, $type, $element, $qualifier, $value, $revisionDao);
     return true;
     }
 
@@ -1351,10 +1353,16 @@ class Api_ApiComponent extends AppComponent
    * Helper function to set metadata on an item.
    * Does not perform permission checks; these should be done in advance.
    */
-  private function _setMetadata($item, $type, $element, $qualifier, $value)
+  private function _setMetadata($item, $type, $element, $qualifier, $value, $revisionDao = null)
     {
+    $itemModel = MidasLoader::loadModel('Item');
+    if($revisionDao === null)
+      {
+      $revisionDao = $itemModel->getLastRevision($item);
+      }
     $modules = Zend_Registry::get('notifier')->callback('CALLBACK_API_METADATA_SET',
                                                         array('item' => $item,
+                                                              'revision' => $revisionDao,
                                                               'type' => $type,
                                                               'element' => $element,
                                                               'qualifier' => $qualifier,
@@ -1368,8 +1376,6 @@ class Api_ApiComponent extends AppComponent
       }
 
     // If no module handles this metadata, we add it as normal metadata on the item revision
-    $itemModel = MidasLoader::loadModel('Item');
-    $revisionDao = $itemModel->getLastRevision($item);
     if(!$revisionDao)
       {
       throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
@@ -1383,7 +1389,7 @@ class Api_ApiComponent extends AppComponent
       }
     $metadataModel->addMetadataValue($revisionDao, $type, $element, $qualifier, $value);
     }
-
+    
   /**
    * Duplicate an item to the desination folder
    * @param token Authentication token

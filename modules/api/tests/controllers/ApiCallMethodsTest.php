@@ -1350,7 +1350,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($newBitstream->getMimetype(), 'image/jpeg');
     }
     
-  private function _callSetmetadata($itemId, $element, $value, $qualifier = null, $type = null, $failureCode = null)
+  private function _callSetmetadata($itemId, $element, $value, $qualifier = null, $type = null, $revision = null, $failureCode = null)
     {
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
@@ -1365,6 +1365,10 @@ class ApiCallMethodsTest extends ControllerTestCase
     if(isset($type))
       {
       $this->params['type'] = $type;
+      }
+    if(isset($revision))
+      {
+      $this->params['revision'] = $revision;
       }
     $resp = $this->_callJsonApi();
     var_dump($resp);
@@ -1412,7 +1416,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     // add metadata to an invalid item, should be an error
     $element1 = "meta_element_1";
     $value1 = "meta_value_1";
-    $this->_callSetmetadata("-1", $element1, $value1, null, null, MIDAS_INVALID_POLICY);
+    $this->_callSetmetadata("-1", $element1, $value1, null, null, null, MIDAS_INVALID_POLICY);
 
     // get metadata to an invalid item, should be an error
     $this->_callGetmetadata("-1", null, MIDAS_INVALID_POLICY);
@@ -1431,7 +1435,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
     
     // add metadata to this item, should be an error b/c no revisions
-    $this->_callSetmetadata($generatedItemId, $element1, $value1, null, null, MIDAS_INVALID_POLICY);
+    $this->_callSetmetadata($generatedItemId, $element1, $value1, null, null, null, MIDAS_INVALID_POLICY);
 
     // get metadata on this item, should be an error b/c no revisions
     $this->_callGetmetadata($generatedItemId, null, MIDAS_INVALID_POLICY);
@@ -1531,6 +1535,35 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($metadataArray[$ind2]->value, $value2, "Expected metadata value would be ".$value2);
     $this->assertEquals($metadataArray[$ind2]->qualifier, $qualifier2, "Expected metadata qualifier would be ".$qualifier2);
     $this->assertEquals($metadataArray[$ind2]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
+    
+    // add a revision 3 to the item
+    $revision = MidasLoader::newDao('ItemRevisionDao');
+    $revision->setUser_id($usersFile[0]->getKey());
+    $revision->setChanges('revision 3');
+    $this->Item->addRevision($itemDao, $revision);
+    // add a revision 4 to the item
+    $revision = MidasLoader::newDao('ItemRevisionDao');
+    $revision->setUser_id($usersFile[0]->getKey());
+    $revision->setChanges('revision 3');
+    $this->Item->addRevision($itemDao, $revision);
+
+    // add metadata to rev 3
+    $rev3element = "meta_element_rev_3";
+    $rev3value = "meta_value_rev_3";
+    $resp = $this->_callSetmetadata($generatedItemId, $rev3element, $rev3value, null, null, '3');
+    
+    // check that revision 3 has the metadata
+    $resp = $this->_callGetmetadata($generatedItemId, "3");
+    $metadataArray = $resp->data;
+    $this->assertEquals($metadataArray[0]->element, $rev3element, "Expected metadata element would be ".$rev3element);
+    $this->assertEquals($metadataArray[0]->value, $rev3value, "Expected metadata value would be ".$rev3value);
+    $this->assertEquals($metadataArray[0]->qualifier, '', "Expected metadata qualifier would be ''");
+    $this->assertEquals($metadataArray[0]->metadatatype, MIDAS_METADATA_TEXT, "Expected metadata type would be ".MIDAS_METADATA_TEXT);
+
+    // check that revision 4 doesn't have any metadata
+    $resp = $this->_callGetmetadata($generatedItemId, "4");
+    $this->assertTrue(is_array($resp->data), "Expected an empty array from the getmetadata call");
+    $this->assertEquals(sizeof($resp->data), 0, "Expected an empty array from the getmetadata call, but size was ".sizeof($resp->data));
     
     // delete the newly created item
     $this->Item->delete($itemDao);
