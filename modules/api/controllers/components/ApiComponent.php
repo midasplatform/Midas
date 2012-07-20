@@ -18,12 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-// Web API error codes
-define('MIDAS_INTERNAL_ERROR', -100);
-define('MIDAS_INVALID_TOKEN', -101);
-define('MIDAS_INVALID_PARAMETER', -150);
-define('MIDAS_INVALID_POLICY', -151);
-define('MIDAS_HTTP_ERROR', -153);
+
 
 /** These are the implementations of the core web api methods */
 class Api_ApiComponent extends AppComponent
@@ -1278,6 +1273,56 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * helper function to get a revision of a certain number from an item,
+   * if revisionNumber is null will get the last revision of the item; used
+   * by the metadata calls and so has exception handling built in for them.
+   */
+  private function _getItemRevision($item, $revisionNumber = null)
+    {
+    $itemModel = MidasLoader::loadModel('Item');
+    if(!isset($revisionNumber))
+      {
+      $revisionDao = $itemModel->getLastRevision($item);
+      if($revisionDao)
+        {
+        return $revisionDao;
+        }
+      else
+        {
+        throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+        }
+      }
+
+    $revisionNumber = (int)$revisionNumber;
+    if(!is_int($revisionNumber) || $revisionNumber < 1)
+      {
+      throw new Exception("Revision Numbers must be integers greater than 0.".$revisionNumber, MIDAS_INVALID_PARAMETER);
+      }
+    $revisions = $item->getRevisions();
+    if(sizeof($revisions) === 0)
+      {
+      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+      }
+    // check revisions exist
+    foreach($revisions as $revision)
+      {
+      if($revisionNumber == $revision->getRevision())
+        {
+        $revisionDao = $revision;
+        break;
+        }
+      }
+    if(isset($revisionDao))
+      {
+      return $revisionDao;
+      }
+    else
+      {
+      throw new Exception("This revision number is invalid for this item.", MIDAS_INVALID_PARAMETER);
+      }
+    }
+
+  /**
    * Get the item's metadata
    * @param token (Optional) Authentication token
    * @param id The id of the item
@@ -1297,29 +1342,7 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
-    if(isset($args['revision']))
-      {
-      $revisionNumber = $args['revision'];
-      $revisions = $item->getRevisions();
-      foreach($revisions as $revision)
-        {
-        if($revisionNumber == $revision->getRevision())
-          {
-          $revisionDao = $revision;
-          break;
-          }
-        }
-      }
-
-    if(!isset($revisionDao))
-      {
-      $revisionDao = $itemModel->getLastRevision($item);
-      }
-    if(!$revisionDao)
-      {
-      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
-      }
-
+    $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
     $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
     $metadata = $itemRevisionModel->getMetadata($revisionDao);
     $metadataArray = array();
@@ -1338,6 +1361,8 @@ class Api_ApiComponent extends AppComponent
    * @param value The metadata value for the field
    * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
    * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
+   * @param revision (Optional) Revision of the item. Defaults to latest revision.
+   * @return true on success
    */
   function itemSetmetadata($args)
     {
@@ -1357,17 +1382,25 @@ class Api_ApiComponent extends AppComponent
     $element = $args['element'];
     $value = $args['value'];
 
-    $this->_setMetadata($item, $type, $element, $qualifier, $value);
+    $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
+    $this->_setMetadata($item, $type, $element, $qualifier, $value, $revisionDao);
+    return true;
     }
 
   /**
    * Helper function to set metadata on an item.
    * Does not perform permission checks; these should be done in advance.
    */
-  private function _setMetadata($item, $type, $element, $qualifier, $value)
+  private function _setMetadata($item, $type, $element, $qualifier, $value, $revisionDao = null)
     {
+    $itemModel = MidasLoader::loadModel('Item');
+    if($revisionDao === null)
+      {
+      $revisionDao = $itemModel->getLastRevision($item);
+      }
     $modules = Zend_Registry::get('notifier')->callback('CALLBACK_API_METADATA_SET',
                                                         array('item' => $item,
+                                                              'revision' => $revisionDao,
                                                               'type' => $type,
                                                               'element' => $element,
                                                               'qualifier' => $qualifier,
@@ -1381,8 +1414,6 @@ class Api_ApiComponent extends AppComponent
       }
 
     // If no module handles this metadata, we add it as normal metadata on the item revision
-    $itemModel = MidasLoader::loadModel('Item');
-    $revisionDao = $itemModel->getLastRevision($item);
     if(!$revisionDao)
       {
       throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
@@ -1395,6 +1426,93 @@ class Api_ApiComponent extends AppComponent
       $metadataModel->addMetadata($type, $element, $qualifier, '');
       }
     $metadataModel->addMetadataValue($revisionDao, $type, $element, $qualifier, $value);
+    }
+
+  /**
+   * helper function to parse out the metadata tuples from the params for a
+   * call to setmultiplemetadata, will validate matching tuples to count.
+   */
+  private function _parseMetadataTuples($args)
+    {
+    $count = (int)$args['count'];
+    if(!is_int($count) || $count < 1)
+      {
+      throw new Exception("Count must be an integer greater than 0.", MIDAS_INVALID_PARAMETER);
+      }
+    $metadataTuples = array();
+    for($i = 0; $i < $count; $i = $i + 1)
+      {
+      // counters are 1 indexed
+      $counter = $i + 1;
+      $element_i_key = 'element_'.$counter;
+      $value_i_key = 'value_'.$counter;
+      $qualifier_i_key = 'qualifier_'.$counter;
+      $type_i_key = 'type_'.$counter;
+      if(!array_key_exists($element_i_key, $args))
+        {
+        throw new Exception("Count was ".$i." but param ".$element_i_key." is missing.", MIDAS_INVALID_PARAMETER);
+        }
+      if(!array_key_exists($value_i_key, $args))
+        {
+        throw new Exception("Count was ".$i." but param ".$value_i_key." is missing.", MIDAS_INVALID_PARAMETER);
+        }
+      $element = $args[$element_i_key];
+      $value = $args[$value_i_key];
+      $qualifier = array_key_exists($qualifier_i_key, $args) ? $args[$qualifier_i_key] : '';
+      $type = array_key_exists($type_i_key, $args) ? $args[$qualifier_i_key] : MIDAS_METADATA_TEXT;
+      if(!is_int($type) || $type < 0 || $type > 6)
+        {
+        throw new Exception("param ".$type_i_key." must be an integer between 0 and 6.", MIDAS_INVALID_PARAMETER);
+        }
+      $metadataTuples[] = array('element' => $element,
+                                'qualifier' => $qualifier,
+                                'type' => $type,
+                                'value' => $value);
+      }
+    return $metadataTuples;
+    }
+
+
+
+  /**
+   * Set multiple metadata fields on an item, requires specifying the number of
+     metadata tuples to add.
+   * @param token Authentication token
+   * @param itemid The id of the item
+     @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
+   * @param count The number of metadata tuples that will be set.  For every one
+     of these metadata tuples there will be the following set of params with counters
+     at the end of each param name, from 1..<b>count</b>, following the example
+     using the value <b>i</b> (i.e., replace <b>i</b> with values 1..<b>count</b>)
+     (<b>element_i</b>, <b>value_i</b>, <b>qualifier_i</b>, <b>type_i</b>).
+
+     @param element_i metadata element for tuple i
+     @param value_i   metadata value for the field, for tuple i
+     @param qualifier_i (Optional) metadata qualifier for tuple i. Defaults to empty string.
+     @param type_i (Optional) metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
+   */
+  function itemSetmultiplemetadata($args)
+    {
+    $this->_validateParams($args, array('itemid', 'count'));
+    $metadataTuples = $this->_parseMetadataTuples($args);
+
+    $userDao = $this->_getUser($args);
+
+    $itemModel = MidasLoader::loadModel('Item');
+    $item = $itemModel->load($args['itemid']);
+    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
+      }
+
+    $revisionNumber = array_key_exists('revision', $args) ? (int)$args['revision'] : null;
+    $revision = $this->_getItemRevision($item, $revisionNumber);
+
+    foreach($metadataTuples as $tup)
+      {
+      $this->_setMetadata($item, $tup['type'], $tup['element'], $tup['qualifier'], $tup['value'], $revision);
+      }
+    return true;
     }
 
   /**
