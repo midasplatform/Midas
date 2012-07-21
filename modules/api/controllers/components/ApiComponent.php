@@ -1276,6 +1276,8 @@ class Api_ApiComponent extends AppComponent
    * helper function to get a revision of a certain number from an item,
    * if revisionNumber is null will get the last revision of the item; used
    * by the metadata calls and so has exception handling built in for them.
+   *
+   * will return a valid ItemRevision or else throw an exception.
    */
   private function _getItemRevision($item, $revisionNumber = null)
     {
@@ -1327,6 +1329,8 @@ class Api_ApiComponent extends AppComponent
    * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param revision (Optional) Revision of the item. Defaults to latest revision
+   * @return the sought metadata array on success,
+             will fail if there are no revisions or the specified revision is not found.
    */
   function itemGetmetadata($args)
     {
@@ -1362,7 +1366,8 @@ class Api_ApiComponent extends AppComponent
    * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
    * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
    * @param revision (Optional) Revision of the item. Defaults to latest revision.
-   * @return true on success
+   * @return true on success,
+             will fail if there are no revisions or the specified revision is not found.
    */
   function itemSetmetadata($args)
     {
@@ -1490,6 +1495,8 @@ class Api_ApiComponent extends AppComponent
      @param value_i   metadata value for the field, for tuple i
      @param qualifier_i (Optional) metadata qualifier for tuple i. Defaults to empty string.
      @param type_i (Optional) metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
+   * @return true on success,
+             will fail if there are no revisions or the specified revision is not found.
    */
   function itemSetmultiplemetadata($args)
     {
@@ -1512,6 +1519,101 @@ class Api_ApiComponent extends AppComponent
       {
       $this->_setMetadata($item, $tup['type'], $tup['element'], $tup['qualifier'], $tup['value'], $revision);
       }
+    return true;
+    }
+
+  /**
+     Delete a metadata tuple (element, qualifier, type) from a specific item revision,
+     defaults to the latest revision of the item.
+   * @param token Authentication token
+   * @param itemid The id of the item
+   * @param element The metadata element
+   * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
+   * @param type (Optional) metadata type (integer constant).
+     Defaults to MIDAS_METADATA_TEXT (0).
+   * @param revision (Optional) Revision of the item. Defaults to latest revision.
+   * @return true on success,
+             false if the metadata was not found on the item revision,
+             will fail if there are no revisions or the specified revision is not found.
+   */
+  function itemDeletemetadata($args)
+    {
+    $this->_validateParams($args, array('itemid', 'element'));
+    $userDao = $this->_getUser($args);
+
+    $itemModel = MidasLoader::loadModel('Item');
+    $item = $itemModel->load($args['itemid']);
+
+    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
+      }
+
+    $element = $args['element'];
+    $qualifier = array_key_exists('qualifier', $args) ? $args['qualifier'] : '';
+    $type = array_key_exists('type', $args) ? (int)$args['type'] : MIDAS_METADATA_TEXT;
+
+    $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
+
+    $metadataModel = MidasLoader::loadModel('Metadata');
+    $metadata = $metadataModel->getMetadata($type, $element, $qualifier);
+    if(!isset($metadata) || $metadata === false)
+      {
+      return false;
+      }
+
+    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+    $itemRevisionModel->deleteMetadata($revisionDao, $metadata->getMetadataId());
+
+    return true;
+    }
+
+  /**
+     Deletes all metadata associated with a specific item revision;
+     defaults to the latest revision of the item;
+     pass <b>revision</b>=<b>all</b> to delete all metadata from all revisions.
+   * @param token Authentication token
+   * @param itemid The id of the item
+   * @param revision (Optional)
+     Revision of the item. Defaults to latest revision; pass <b>all</b> to delete all metadata from all revisions.
+   * @return true on success,
+     will fail if there are no revisions or the specified revision is not found.
+   */
+  function itemDeletemetadataAll($args)
+    {
+    $this->_validateParams($args, array('itemid'));
+    $userDao = $this->_getUser($args);
+
+    $itemModel = MidasLoader::loadModel('Item');
+    $item = $itemModel->load($args['itemid']);
+
+    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
+      }
+
+    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+    if(array_key_exists('revision', $args) && $args['revision'] === 'all')
+      {
+      $revisions = $item->getRevisions();
+      if(sizeof($revisions) === 0)
+        {
+        throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+        }
+      foreach($revisions as $revisionDao)
+        {
+        $itemRevisionModel->deleteMetadata($revisionDao);
+        }
+      }
+    else
+      {
+      $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
+      if(isset($revisionDao) && $revisionDao !== false)
+        {
+        $itemRevisionModel->deleteMetadata($revisionDao);
+        }
+      }
+
     return true;
     }
 
