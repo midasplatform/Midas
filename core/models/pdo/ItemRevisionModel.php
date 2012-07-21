@@ -59,7 +59,9 @@ class ItemRevisionModel extends ItemRevisionModelBase
     return $metadatavalues;
     }  // end getMetadata
 
-  /** get the metadata associated with the revision */
+  /** delete the metadata associated with the revision, deleting all
+   *  metadata for that revision if no metadataId is passed.
+   */
   function deleteMetadata($revisiondao, $metadataId = null)
     {
     if(!$revisiondao instanceof ItemRevisionDao)
