@@ -18,12 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-// Web API error codes
-define('MIDAS_INTERNAL_ERROR', -100);
-define('MIDAS_INVALID_TOKEN', -101);
-define('MIDAS_INVALID_PARAMETER', -150);
-define('MIDAS_INVALID_POLICY', -151);
-define('MIDAS_HTTP_ERROR', -153);
+
 
 /** These are the implementations of the core web api methods */
 class Api_ApiComponent extends AppComponent
@@ -237,18 +232,50 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Generate a unique upload token
-   * @param token Authentication token
-   * @param itemid The id of the parent item to upload into
-   * @param filename The filename of the bitstream you will upload
-   * @param checksum (Optional) The md5 checksum of the file to be uploaded
+   * Generate a unique upload token.  Either <b>itemid</b> or <b>folderid</b> is required,
+     but both are not allowed.
+   * @param token Authentication token.
+   * @param itemid
+            The id of the item to upload into.
+   * @param folderid
+            The id of the folder to create a new item in and then upload to.
+            The new item will have the same name as <b>filename</b> unless <b>itemname</b>
+            is supplied.
+   * @param filename The filename of the file you will upload, will be used as the
+            bitstream's name and the item's name (unless <b>itemname</b> is supplied).
+   * @param itemprivacy (Optional)
+            When passing the <b>folderid</b> param, the privacy status of the newly
+            created item, Default 'Public', possible values [Public|Private].
+   * @param itemdescription (Optional)
+            When passing the <b>folderid</b> param, the description of the item,
+            if not supplied the item's description will be blank.
+   * @param itemname (Optional)
+            When passing the <b>folderid</b> param, the name of the newly created item,
+            if not supplied, the item will have the same name as <b>filename</b>.
+   * @param checksum (Optional) The md5 checksum of the file to be uploaded.
    * @return An upload token that can be used to upload a file.
-             If checksum is passed and the token returned is blank, the
-             server already has this file and there is no need to upload.
+             If <b>folderid</b> is passed instead of <b>itemid</b>, a new item will be created
+             in that folder, but the id of the newly created item will not be
+             returned.  If the id of the newly created item is needed,
+             then call the <b>midas.item.create</b> method instead.
+             If <b>checksum</b> is passed and the token returned is blank, the
+             server already has this file and there is no need to follow this
+             call with a call to <b>midas.upload.perform</b>, as the passed in
+             file will have been added as a bitstream to the item's latest
+             revision, creating a new revision if one doesn't exist.
    */
   function uploadGeneratetoken($args)
     {
-    $this->_validateParams($args, array('itemid', 'filename'));
+    $this->_validateParams($args, array('filename'));
+    if(!array_key_exists('itemid', $args) && !array_key_exists('folderid', $args))
+      {
+      throw new Exception('Parameter itemid or folderid must be defined', MIDAS_INVALID_PARAMETER);
+      }
+    if(array_key_exists('itemid', $args) && array_key_exists('folderid', $args))
+      {
+      throw new Exception('Parameter itemid or folderid must be defined, but not both', MIDAS_INVALID_PARAMETER);
+      }
+
     $userDao = $this->_getUser($args);
     if(!$userDao)
       {
@@ -256,10 +283,59 @@ class Api_ApiComponent extends AppComponent
       }
 
     $itemModel = MidasLoader::loadModel('Item');
-    $item = $itemModel->load($args['itemid']);
-    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+    if(array_key_exists('itemid', $args))
       {
-      throw new Exception('Invalid policy or itemid', MIDAS_INVALID_POLICY);
+      $item = $itemModel->load($args['itemid']);
+      if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Invalid policy or itemid', MIDAS_INVALID_POLICY);
+        }
+      }
+    else if(array_key_exists('folderid', $args))
+      {
+      $folderModel = MidasLoader::loadModel('Folder');
+      $folder = $folderModel->load($args['folderid']);
+      if($folder == false)
+        {
+        throw new Exception('Parent folder corresponding to folderid doesn\'t exist', MIDAS_INVALID_PARAMETER);
+        }
+      if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
+        {
+        throw new Exception('Invalid policy or folderid', MIDAS_INVALID_POLICY);
+        }
+      // create a new item in this folder
+      if(isset($args['itemprivacy']))
+        {
+        $privacy = $args['itemprivacy'];
+        if($privacy !== 'Public' && $privacy !== 'Private')
+          {
+          throw new Exception('itemprivacy should be one of [Public|Private]');
+          }
+        if($privacy === 'Public')
+          {
+          $privacy_status = MIDAS_PRIVACY_PUBLIC;
+          }
+        else
+          {
+          $privacy_status = MIDAS_PRIVACY_PRIVATE;
+          }
+        }
+      else
+        {
+        // Public by default
+        $privacy_status = MIDAS_PRIVACY_PUBLIC;
+        }
+      $itemname = isset($args['itemname']) ? $args['itemname'] : $args['filename'];
+      $description = isset($args['itemdescription']) ? $args['itemdescription'] : '';
+      $item = $itemModel->createItem($itemname, $description, $folder);
+      if($item === false)
+        {
+        throw new Exception('Create new item failed', MIDAS_INTERNAL_ERROR);
+        }
+      $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
+      $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
+      $item->setPrivacyStatus($privacy_status);
+      $itemModel->save($item);
       }
 
     if(array_key_exists('checksum', $args))
@@ -326,17 +402,22 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Upload a file to the server. PUT or POST is required. Either the itemid
-       or folderid parameter must be set
-   * @param uploadtoken The upload token (see upload.generatetoken)
-   * @param filename The upload filename
-   * @param length The length in bytes of the file being uploaded
-   * @param mode (Optional) Stream or multipart. Default is stream
-   * @param folderid (Optional) The id of the folder to upload into
-   * @param itemid (Optional) If set, will create a new revision in the existing item
-   * @param revision (Optional) If set, will add a new file into an existing
-            revision. Set this to "head" to add to the most recent revision.
-   * @param return The item information of the item created or changed
+   * Upload a file to the server. PUT or POST is required.
+     Will add the file as a bitstream to the item that was specified when
+     generating the upload token in a new revision to that item, unless
+     <b>revision</b> param is set.
+   * @param uploadtoken The upload token (see <b>midas.upload.generatetoken</b>).
+   * @param filename The name of the bitstream that will be added to the item.
+   * @param length The length in bytes of the file being uploaded.
+   * @param mode (Optional) Stream or multipart. Default is stream.
+   * @param revision (Optional)
+            If set, will add a new file into the existing passed in revision number.
+            If set to "head", will add a new file into the most recent revision,
+            and will create a new revision in this case if none exists.
+   * @param changes (Optional)
+            The changes field on the affected item revision,
+            e.g. for recording what has changed since the previous revision.
+   * @param return The item information of the item created or changed.
    */
   function uploadPerform($args)
     {
@@ -346,42 +427,33 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('POST or PUT method required', MIDAS_HTTP_ERROR);
       }
 
-    list($userid, $resourceid, ) = explode('/', $args['uploadtoken']);
+    list($userid, $itemid, ) = explode('/', $args['uploadtoken']);
 
     $itemModel = MidasLoader::loadModel('Item');
     $userModel = MidasLoader::loadModel('User');
+
     $userDao = $userModel->load($userid);
     if(!$userDao)
       {
       throw new Exception('Invalid user id from upload token', MIDAS_INVALID_PARAMETER);
       }
+    $item = $itemModel->load($args['itemid']);
 
-    if(array_key_exists('revision', $args) && array_key_exists('itemid', $args))
+    if($item == false)
       {
-      if($args['itemid'] != $resourceid)
-        {
-        throw new Exception('Upload token does not match itemid', MIDAS_INVALID_PARAMETER);
-        }
-      $item = $itemModel->load($args['itemid']);
-      if($item == false)
-        {
-        throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
-        }
+      throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
+      }
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception('Permission error', MIDAS_INVALID_POLICY);
+      }
+
+    if(array_key_exists('revision', $args))
+      {
       if(strtolower($args['revision']) == 'head')
         {
         $revision = $itemModel->getLastRevision($item);
-
-        if($revision == false)
-          {
-          // Create new revision if none exists yet
-          Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
-          $revision = new ItemRevisionDao();
-          $revision->setChanges('Initial revision');
-          $revision->setUser_id($userDao->getKey());
-          $revision->setDate(date('c'));
-          $revision->setLicenseId(null);
-          $itemModel->addRevision($item, $revision);
-          }
+        // if no revision exists, it will be created later
         }
       else
         {
@@ -391,43 +463,6 @@ class Api_ApiComponent extends AppComponent
           throw new Exception('Unable to find revision', MIDAS_INVALID_PARAMETER);
           }
         }
-      }
-    elseif(array_key_exists('itemid', $args))
-      {
-      if($args['itemid'] != $resourceid)
-        {
-        throw new Exception('Upload token does not match itemid', MIDAS_INVALID_PARAMETER);
-        }
-      $item = $itemModel->load($args['itemid']);
-      if($item == false)
-        {
-        throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
-        }
-      if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception('Permission error', MIDAS_INVALID_POLICY);
-        }
-      }
-    elseif(array_key_exists('folderid', $args))
-      {
-      if($args['folderid'] != $resourceid)
-        {
-        throw new Exception('Upload token does not match itemid', MIDAS_INVALID_PARAMETER);
-        }
-      $folderModel = MidasLoader::loadModel('Folder');
-      $folder = $folderModel->load($args['folderid']);
-      if($folder == false)
-        {
-        throw new Exception('Unable to find folder', MIDAS_INVALID_PARAMETER);
-        }
-      if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception('Permission error', MIDAS_INVALID_POLICY);
-        }
-      }
-    else
-      {
-      throw new Exception('You must specify an itemid or folderid to upload into', MIDAS_INVALID_PARAMETER);
       }
 
     $mode = array_key_exists('mode', $args) ? $args['mode'] : 'stream';
@@ -470,40 +505,38 @@ class Api_ApiComponent extends AppComponent
       throw new Exception('Invalid upload mode', MIDAS_INVALID_PARAMETER);
       }
 
-    if(array_key_exists('folderid', $args))
+    // get the parent folder of this item and notify the callback
+    // this is made more difficult by the fact the items can have many parents,
+    // just use the first in the list.
+    $parentFolders = $item->getFolders();
+    if(!isset($parentFolders) || !$parentFolders || sizeof($parentFolders) === 0)
       {
-      $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD',
-                                                              array('filename' => $filename,
-                                                                    'size' => $filesize,
-                                                                    'path' => $filepath,
-                                                                    'folderId' => $args['folderid']));
-      foreach($validations as $validation)
+      // this shouldn't happen with any self-respecting item
+      throw new Exception('Item does not have a parent folder', MIDAS_INVALID_PARAMETER);
+      }
+    $firstParent = $parentFolders[0];
+    $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD',
+                                                            array('filename' => $filename,
+                                                                  'size' => $filesize,
+                                                                  'path' => $filepath,
+                                                                  'folderId' => $firstParent->getFolderId()));
+    foreach($validations as $validation)
+      {
+      if(!$validation['status'])
         {
-        if(!$validation['status'])
-          {
-          unlink($filepath);
-          throw new Exception($validation['message'], MIDAS_INVALID_POLICY);
-          }
+        unlink($filepath);
+        throw new Exception($validation['message'], MIDAS_INVALID_POLICY);
         }
       }
     $uploadComponent = MidasLoader::loadComponent('Upload');
     $license = null;
-    if(isset($folder))
+    $changes = array_key_exists('changes', $args) ? $args['changes'] : '';
+    $revisionNumber = null;
+    if(isset($revision) && $revision !== false)
       {
-      $item = $uploadComponent->createUploadedItem($userDao, $filename, $filepath, $folder, $license, $filemd5);
+      $revisionNumber = $revision->getRevision();
       }
-    else if(isset($revision))
-      {
-      //an existing revision
-      $changes = '';
-      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $changes, $item->getKey(), $revision->getRevision(), $license, $filemd5);
-      }
-    else
-      {
-      // a new revision
-      $changes = '';
-      $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $changes, $item->getKey(), $revision, $license, $filemd5);
-      }
+    $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $changes, $item->getKey(), $revisionNumber, $license, $filemd5);
 
     if(!$item)
       {
@@ -1202,6 +1235,56 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * helper function to get a revision of a certain number from an item,
+   * if revisionNumber is null will get the last revision of the item; used
+   * by the metadata calls and so has exception handling built in for them.
+   */
+  private function _getItemRevision($item, $revisionNumber = null)
+    {
+    $itemModel = MidasLoader::loadModel('Item');
+    if(!isset($revisionNumber))
+      {
+      $revisionDao = $itemModel->getLastRevision($item);
+      if($revisionDao)
+        {
+        return $revisionDao;
+        }
+      else
+        {
+        throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+        }
+      }
+
+    $revisionNumber = (int)$revisionNumber;
+    if(!is_int($revisionNumber) || $revisionNumber < 1)
+      {
+      throw new Exception("Revision Numbers must be integers greater than 0.".$revisionNumber, MIDAS_INVALID_PARAMETER);
+      }
+    $revisions = $item->getRevisions();
+    if(sizeof($revisions) === 0)
+      {
+      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+      }
+    // check revisions exist
+    foreach($revisions as $revision)
+      {
+      if($revisionNumber == $revision->getRevision())
+        {
+        $revisionDao = $revision;
+        break;
+        }
+      }
+    if(isset($revisionDao))
+      {
+      return $revisionDao;
+      }
+    else
+      {
+      throw new Exception("This revision number is invalid for this item.", MIDAS_INVALID_PARAMETER);
+      }
+    }
+
+  /**
    * Get the item's metadata
    * @param token (Optional) Authentication token
    * @param id The id of the item
@@ -1221,29 +1304,7 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
 
-    if(isset($args['revision']))
-      {
-      $revisionNumber = $args['revision'];
-      $revisions = $item->getRevisions();
-      foreach($revisions as $revision)
-        {
-        if($revisionNumber == $revision->getRevision())
-          {
-          $revisionDao = $revision;
-          break;
-          }
-        }
-      }
-
-    if(!isset($revisionDao))
-      {
-      $revisionDao = $itemModel->getLastRevision($item);
-      }
-    if(!$revisionDao)
-      {
-      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
-      }
-
+    $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
     $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
     $metadata = $itemRevisionModel->getMetadata($revisionDao);
     $metadataArray = array();
@@ -1262,6 +1323,8 @@ class Api_ApiComponent extends AppComponent
    * @param value The metadata value for the field
    * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
    * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
+   * @param revision (Optional) Revision of the item. Defaults to latest revision.
+   * @return true on success
    */
   function itemSetmetadata($args)
     {
@@ -1281,17 +1344,25 @@ class Api_ApiComponent extends AppComponent
     $element = $args['element'];
     $value = $args['value'];
 
-    $this->_setMetadata($item, $type, $element, $qualifier, $value);
+    $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
+    $this->_setMetadata($item, $type, $element, $qualifier, $value, $revisionDao);
+    return true;
     }
 
   /**
    * Helper function to set metadata on an item.
    * Does not perform permission checks; these should be done in advance.
    */
-  private function _setMetadata($item, $type, $element, $qualifier, $value)
+  private function _setMetadata($item, $type, $element, $qualifier, $value, $revisionDao = null)
     {
+    $itemModel = MidasLoader::loadModel('Item');
+    if($revisionDao === null)
+      {
+      $revisionDao = $itemModel->getLastRevision($item);
+      }
     $modules = Zend_Registry::get('notifier')->callback('CALLBACK_API_METADATA_SET',
                                                         array('item' => $item,
+                                                              'revision' => $revisionDao,
                                                               'type' => $type,
                                                               'element' => $element,
                                                               'qualifier' => $qualifier,
@@ -1305,8 +1376,6 @@ class Api_ApiComponent extends AppComponent
       }
 
     // If no module handles this metadata, we add it as normal metadata on the item revision
-    $itemModel = MidasLoader::loadModel('Item');
-    $revisionDao = $itemModel->getLastRevision($item);
     if(!$revisionDao)
       {
       throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
@@ -1319,6 +1388,93 @@ class Api_ApiComponent extends AppComponent
       $metadataModel->addMetadata($type, $element, $qualifier, '');
       }
     $metadataModel->addMetadataValue($revisionDao, $type, $element, $qualifier, $value);
+    }
+
+  /**
+   * helper function to parse out the metadata tuples from the params for a
+   * call to setmultiplemetadata, will validate matching tuples to count.
+   */
+  private function _parseMetadataTuples($args)
+    {
+    $count = (int)$args['count'];
+    if(!is_int($count) || $count < 1)
+      {
+      throw new Exception("Count must be an integer greater than 0.", MIDAS_INVALID_PARAMETER);
+      }
+    $metadataTuples = array();
+    for($i = 0; $i < $count; $i = $i + 1)
+      {
+      // counters are 1 indexed
+      $counter = $i + 1;
+      $element_i_key = 'element_'.$counter;
+      $value_i_key = 'value_'.$counter;
+      $qualifier_i_key = 'qualifier_'.$counter;
+      $type_i_key = 'type_'.$counter;
+      if(!array_key_exists($element_i_key, $args))
+        {
+        throw new Exception("Count was ".$i." but param ".$element_i_key." is missing.", MIDAS_INVALID_PARAMETER);
+        }
+      if(!array_key_exists($value_i_key, $args))
+        {
+        throw new Exception("Count was ".$i." but param ".$value_i_key." is missing.", MIDAS_INVALID_PARAMETER);
+        }
+      $element = $args[$element_i_key];
+      $value = $args[$value_i_key];
+      $qualifier = array_key_exists($qualifier_i_key, $args) ? $args[$qualifier_i_key] : '';
+      $type = array_key_exists($type_i_key, $args) ? $args[$qualifier_i_key] : MIDAS_METADATA_TEXT;
+      if(!is_int($type) || $type < 0 || $type > 6)
+        {
+        throw new Exception("param ".$type_i_key." must be an integer between 0 and 6.", MIDAS_INVALID_PARAMETER);
+        }
+      $metadataTuples[] = array('element' => $element,
+                                'qualifier' => $qualifier,
+                                'type' => $type,
+                                'value' => $value);
+      }
+    return $metadataTuples;
+    }
+
+
+
+  /**
+   * Set multiple metadata fields on an item, requires specifying the number of
+     metadata tuples to add.
+   * @param token Authentication token
+   * @param itemid The id of the item
+     @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
+   * @param count The number of metadata tuples that will be set.  For every one
+     of these metadata tuples there will be the following set of params with counters
+     at the end of each param name, from 1..<b>count</b>, following the example
+     using the value <b>i</b> (i.e., replace <b>i</b> with values 1..<b>count</b>)
+     (<b>element_i</b>, <b>value_i</b>, <b>qualifier_i</b>, <b>type_i</b>).
+
+     @param element_i metadata element for tuple i
+     @param value_i   metadata value for the field, for tuple i
+     @param qualifier_i (Optional) metadata qualifier for tuple i. Defaults to empty string.
+     @param type_i (Optional) metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
+   */
+  function itemSetmultiplemetadata($args)
+    {
+    $this->_validateParams($args, array('itemid', 'count'));
+    $metadataTuples = $this->_parseMetadataTuples($args);
+
+    $userDao = $this->_getUser($args);
+
+    $itemModel = MidasLoader::loadModel('Item');
+    $item = $itemModel->load($args['itemid']);
+    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
+      }
+
+    $revisionNumber = array_key_exists('revision', $args) ? (int)$args['revision'] : null;
+    $revision = $this->_getItemRevision($item, $revisionNumber);
+
+    foreach($metadataTuples as $tup)
+      {
+      $this->_setMetadata($item, $tup['type'], $tup['element'], $tup['qualifier'], $tup['value'], $revision);
+      }
+    return true;
     }
 
   /**

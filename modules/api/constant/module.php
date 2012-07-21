@@ -17,5 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-//define("MIDAS_EXAMPLE", 0);
+// Web API error codes
+define('MIDAS_INTERNAL_ERROR', -100);
+define('MIDAS_INVALID_TOKEN', -101);
+define('MIDAS_INVALID_PARAMETER', -150);
+define('MIDAS_INVALID_POLICY', -151);
+define('MIDAS_HTTP_ERROR', -153);
 ?>
