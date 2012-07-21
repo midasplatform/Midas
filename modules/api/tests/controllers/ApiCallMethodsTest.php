@@ -1483,6 +1483,28 @@ class ApiCallMethodsTest extends ControllerTestCase
     return $resp;
     }
 
+  /* helper function for item.deletemetadata.all calls */
+  private function _callDeletemetadataAll($itemId, $revision = null, $failureCode = null)
+    {
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.deletemetadata.all';
+    $this->params['itemid'] = $itemId;
+    if(isset($revision))
+      {
+      $this->params['revision'] = $revision;
+      }
+    $resp = $this->_callJsonApi();
+    if(isset($failureCode))
+      {
+      $this->_assertStatusFail($resp, $failureCode);
+      }
+    else
+      {
+      $this->_assertStatusOk($resp);
+      }
+    return $resp;
+    }
 
   /** Test item metadata functions */
   public function testItemMetadata()
@@ -1519,6 +1541,9 @@ class ApiCallMethodsTest extends ControllerTestCase
     // delete metadata from an invalid item, should be an error
     $this->_callDeletemetadata("-1", $element1, null, null, null, MIDAS_INVALID_POLICY);
 
+    // delete all metadata from an invalid item, should be an error
+    $this->_callDeletemetadataAll("-1", null, MIDAS_INVALID_POLICY);
+
     // create a new item, it will have zero revisions
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
@@ -1547,6 +1572,12 @@ class ApiCallMethodsTest extends ControllerTestCase
 
     // delete metadata on this item, should be an error b/c no revisions
     $this->_callDeletemetadata($generatedItemId, $element1, null, null, null, MIDAS_INVALID_POLICY);
+
+    // delete all metadata from the last revision of this item, should be an error as no such revision exists
+    $this->_callDeletemetadataAll($generatedItemId, null, MIDAS_INVALID_POLICY);
+
+    // delete all metadata all revisions of this item, should be an error as no revisions exist
+    $this->_callDeletemetadataAll($generatedItemId, "all", MIDAS_INVALID_POLICY);
 
     // add a revision to the item
     $revision = MidasLoader::newDao('ItemRevisionDao');
@@ -1767,6 +1798,29 @@ class ApiCallMethodsTest extends ControllerTestCase
     // try to delete a non-existent metadata row, should return false
     $resp = $this->_callDeletemetadata($generatedItemId, "some_new_element");
     $this->assertFalse($resp->data, "Deleting a non-existent metadata row should return false.");
+
+    // delete all metadata from revision 5 of this item
+    $this->_callDeletemetadataAll($generatedItemId, "5");
+    $resp = $this->_callGetmetadata($generatedItemId, "5");
+    $this->assertEquals(sizeof($resp->data), 0, "Expected an empty array from the getmetadata call, but size was ".sizeof($resp->data));
+    // head revision should still have 2 metadata rows (and other revisions have metadata also)
+    $resp = $this->_callGetmetadata($generatedItemId);
+    $this->assertEquals(sizeof($resp->data), 2, "Expected an array of size 2, but size was ".sizeof($metadataArray));
+
+    // delete all metadata without passing revision, should delete from head
+    $this->_callDeletemetadataAll($generatedItemId);
+    $resp = $this->_callGetmetadata($generatedItemId);
+    $this->assertEquals(sizeof($resp->data), 0, "Expected an empty array from the getmetadata call, but size was ".sizeof($resp->data));
+
+    // delete all metadata from all revisions
+    $this->_callDeletemetadataAll($generatedItemId, "all");
+    $revisions = $itemDao->getRevisions();
+    foreach($revisions as $revision)
+      {
+      $revisionNumber = $revision->getRevision();
+      $resp = $this->_callGetmetadata($generatedItemId, $revisionNumber);
+      $this->assertEquals(sizeof($resp->data), 0, "Expected an empty array from the getmetadata call for revision ".$revisionNumber.", but size was ".sizeof($resp->data));
+      }
 
     // delete the newly created item
     $this->Item->delete($itemDao);
