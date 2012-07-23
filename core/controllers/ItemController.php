@@ -122,7 +122,19 @@ class ItemController extends AppController
       }
     if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
-      throw new Zend_Controller_Action_Exception('Invalid policy: no read permission', 403);
+      if(!$this->logged)
+        {
+        $this->haveToBeLogged();
+        return false;
+        }
+      else
+        {
+        $this->getResponse()->setHttpResponseCode(403);
+        $this->view->header = 'Access Denied';
+        $this->view->message = 'You lack the privileges to view this item.';
+        $this->_helper->viewRenderer->setNoRender();
+        return false;
+        }
       }
 
     $this->view->isAdmin = $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
