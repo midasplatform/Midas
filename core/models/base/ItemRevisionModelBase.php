@@ -50,6 +50,7 @@ abstract class ItemRevisionModelBase extends AppModel
 
   abstract function getByUuid($uuid);
   abstract function getMetadata($revisiondao);
+  abstract function deleteMetadata($revisiondao, $metadataId);
 
   /** Add a bitstream to a revision */
   function addBitstream($itemRevisionDao, $bitstreamDao)
