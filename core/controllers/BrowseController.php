@@ -86,12 +86,20 @@ class BrowseController extends AppController
         {
         throw new Zend_Exception("Unable to load destination");
         }
-
-      // Move folder(s)
-      foreach($folders as $folder)
+      if(!$this->Folder->policyCheck($destinationFolder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
         {
-        if(isset($moveSubmit))
+        throw new Zend_Exception('Write permission required into the destination folder');
+        }
+
+      // Folders can only be moved, not shared or duplicated
+      if(isset($moveSubmit))
+        {
+        foreach($folders as $folder)
           {
+          if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+            {
+            throw new Zend_Exception('You must own a folder in order to move it');
+            }
           $this->Folder->move($folder, $destinationFolder);
           }
         }
@@ -101,6 +109,10 @@ class BrowseController extends AppController
         {
         if(isset($shareSubmit))
           {
+          if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+            {
+            throw new Zend_Exception('You must have read permission on an item to share it');
+            }
           foreach($item->getFolders() as $parentFolder)
             {
             $folderId = $parentFolder->getKey();
@@ -119,10 +131,18 @@ class BrowseController extends AppController
           }
         elseif(isset($duplicateSubmit))
           {
+          if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+            {
+            throw new Zend_Exception('You must have read permission on an item to duplicate it');
+            }
           $this->Item->duplicateItem($item, $this->userSession->Dao, $destinationFolder);
           }
         else //moveSubmit, Move item(s)
           {
+          if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+            {
+            throw new Zend_Exception('You must own an item in order to move it');
+            }
           $from = $this->_getParam('from');
           $fromFolder = $this->Folder->load($from);
           if($destinationFolder == false)
