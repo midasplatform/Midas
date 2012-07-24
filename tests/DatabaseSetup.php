@@ -279,6 +279,7 @@ foreach($dbTypes as $dbType)
   {
   try
     {
+    echo "Dropping and installing tables for DB type: ".$dbType."\n";
     $dbAdapter = loadDbAdapter($testConfigDir, $dbType);
     dropTables($dbAdapter, $dbType);
     require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
