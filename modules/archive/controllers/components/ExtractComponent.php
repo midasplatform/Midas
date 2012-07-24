@@ -143,13 +143,18 @@ class Archive_ExtractComponent extends AppComponent
     $isDir = substr($entryName, -1) == '/';
     if($isDir)
       {
-      if(!is_dir($entryPath) && !mkdir($entryPath))
+      if(!is_dir($entryPath) && !mkdir($entryPath, 0755, true))
         {
         throw new Zend_Exception('Could not make directory for entry '.$entryPath);
         }
       }
     else
       {
+      $parentPath = $baseDir.'/'.dirname($entryName);
+      if(!is_dir($parentPath) && !mkdir($parentPath, 0755, true))
+        {
+        throw new Zend_Exception('Could not create zip entry parent directory: '.$parentPath);
+        }
       if(!zip_entry_open($zip, $zipEntry))
         {
         throw new Zend_Exception('Could not open zip entry '.$entryName);
