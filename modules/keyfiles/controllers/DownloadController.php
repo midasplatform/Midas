@@ -27,7 +27,7 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
     $revision = $this->Item->getLastRevision($item);
     if(!$revision)
       {
-      throw new Exception('Item must have at least one revision');
+      throw new Zend_Controller_Action_Exception('Item must have at least one revision', 404);
       }
     $this->disableView();
     $this->disableLayout();
@@ -64,12 +64,12 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
     $bitstream = $this->Bitstream->load($bitstreamId);
     if(!$bitstream)
       {
-      throw new Exception('Invalid bitstreamId');
+      throw new Zend_Controller_Action_Exception('Invalid bitstreamId', 404);
       }
     $item = $bitstream->getItemrevision()->getItem();
     if(!$this->Item->policyCheck($item, $this->userSession->Dao))
       {
-      throw new Exception('Read permission required');
+      throw new Zend_Controller_Action_Exception('Read permission required', 403);
       }
     $this->disableView();
     $this->disableLayout();
