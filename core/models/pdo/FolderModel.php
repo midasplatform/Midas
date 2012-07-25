@@ -445,7 +445,6 @@ class FolderModel extends FolderModelBase
       {
       $this->Progress = MidasLoader::loadModel('Progress');
       }
-
     $items = $folder->getItems();
     foreach($items as $item)
       {
