@@ -51,8 +51,7 @@ abstract class Packages_ProjectModelBase extends Packages_AppModel
     $project = $this->getByCommunityId($community->getKey());
     if(!$project)
       {
-      $this->loadDaoClass('ProjectDao', $this->moduleName);
-      $project = new Packages_ProjectDao();
+      $project = MidasLoader::newDao('ProjectDao', $this->moduleName);
       $project->setCommunityId($community->getKey());
       }
     $project->setEnabled($value ? 1 : 0);
@@ -64,8 +63,7 @@ abstract class Packages_ProjectModelBase extends Packages_AppModel
    */
   public function delete($project)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $applicationModel = $modelLoader->loadModel('Application', 'packages');
+    $applicationModel = MidasLoader::loadModel('Application', 'packages');
     $applications = $project->getApplications();
     foreach($applications as $application)
       {

@@ -27,10 +27,8 @@ class Comments_CommentComponent extends AppComponent
    */
   public function getComments($item, $limit, $offset)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemCommentModel = $modelLoader->loadModel('Itemcomment', 'comments');
-    $componentLoader = new MIDAS_ComponentLoader();
-    $dateComponent = $componentLoader->loadComponent('Date');
+    $itemCommentModel = MidasLoader::loadModel('Itemcomment', 'comments');
+    $dateComponent = MidasLoader::loadComponent('Date');
     $comments = $itemCommentModel->getComments($item, $limit, $offset);
     $total = $itemCommentModel->getTotal($item);
     $commentsList = array();

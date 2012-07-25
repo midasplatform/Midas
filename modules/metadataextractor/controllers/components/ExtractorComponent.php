@@ -23,8 +23,7 @@ class Metadataextractor_ExtractorComponent extends AppComponent
   /** extract metadata */
   public function extract($revision)
     {
-    $modelLoader = new MIDAS_ModelLoader;
-    $itemRevisionModel = $modelLoader->loadModel("ItemRevision");  
+    $itemRevisionModel = MidasLoader::loadModel("ItemRevision");  
     $revision = $itemRevisionModel->load($revision['itemrevision_id']);
     if(!$revision)
       {
@@ -38,7 +37,7 @@ class Metadataextractor_ExtractorComponent extends AppComponent
     $bitstream = $bitstreams[0];
     $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
     
-    $MetadataModel = $modelLoader->loadModel("Metadata");  
+    $MetadataModel = MidasLoader::loadModel("Metadata");  
     if($ext == 'pdf')
       {
       $pdf = Zend_Pdf::load($bitstream->getFullPath());

@@ -392,9 +392,9 @@ class UserController extends AppController
             }
           $this->getLogger()->info(__METHOD__ . " Log in : " . $userDao->getFullName());
 
-          if(isset($previousUri) && (!empty($this->view->webroot)) && strpos($previousUri, $this->view->webroot) !== false && strpos($previousUri, 'logout') === false)
+          if(isset($previousUri) && (!empty($this->view->webroot)) && strpos($previousUri, 'logout') === false)
             {
-            $redirect = $previousUri.'?first=true';
+            $redirect = $previousUri;
             }
           else
             {

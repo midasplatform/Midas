@@ -34,7 +34,6 @@ class Sizequota_ConfigController extends Sizequota_AppController
     {
     $this->requireAdminPrivileges();
 
-    $modelLoader = new MIDAS_ModelLoader();
     $defaultUserQuota = $this->Setting->getValueByName('defaultuserquota', $this->moduleName);
     $defaultCommunityQuota = $this->Setting->getValueByName('defaultcommunityquota', $this->moduleName);
 

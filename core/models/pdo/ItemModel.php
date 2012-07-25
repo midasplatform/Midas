@@ -152,7 +152,7 @@ class ItemModel extends ItemModelBase
     $groupId = $communityDao->getMemberGroup()->getKey();
     if(!is_numeric($groupId))
       {
-      throw new Zend_Exception('Error parameter');
+      throw new Zend_Exception('Error in parameter groupId when getting items shared to community.');
       }
     $sql = $this->database->select()
                   ->setIntegrityCheck(false)
@@ -211,7 +211,7 @@ class ItemModel extends ItemModelBase
     $userId = $userDao->getKey();
     if(!is_numeric($userId))
       {
-      throw new Zend_Exception('Error parameter');
+      throw new Zend_Exception('Error parameter userId when getting items owned by user.');
       }
     $sql = $this->database->select()
                   ->setIntegrityCheck(false)
@@ -245,7 +245,7 @@ class ItemModel extends ItemModelBase
     $userId = $userDao->getKey();
     if(!is_numeric($userId))
       {
-      throw new Zend_Exception('Error parameter');
+      throw new Zend_Exception('Error in parameter user Id when getting Items shared to user.');
       }
     $sql = $this->database->select()
                   ->setIntegrityCheck(false)
@@ -273,7 +273,7 @@ class ItemModel extends ItemModelBase
     {
     if(!$itemdao instanceof  ItemDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in parameter itemdao when deleting an Item.");
       }
 
     $deleteType = array(MIDAS_FEED_CREATE_ITEM, MIDAS_FEED_CREATE_LINK_ITEM);
@@ -284,9 +284,9 @@ class ItemModel extends ItemModelBase
                           ->from(array('p' => 'feed'))
                           ->where('ressource = ?', (string)$itemdao->getKey());
     $rowset = $this->database->fetchAll($sql);
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $feed_model = $this->ModelLoader->loadModel('Feed');
-    $revision_model = $this->ModelLoader->loadModel('ItemRevision');
+
+    $feed_model = MidasLoader::loadModel('Feed');
+    $revision_model = MidasLoader::loadModel('ItemRevision');
     foreach($rowset as $row)
       {
       $feed = $this->initDao('Feed', $row);
@@ -296,7 +296,7 @@ class ItemModel extends ItemModelBase
         }
       }
 
-    $folder_model = $this->ModelLoader->loadModel('Folder');
+    $folder_model = MidasLoader::loadModel('Folder');
     $folders = $itemdao->getFolders();
     foreach($folders as $folder)
       {
@@ -309,14 +309,14 @@ class ItemModel extends ItemModelBase
       $revision_model->delete($revision);
       }
 
-    $policy_group_model = $this->ModelLoader->loadModel('Itempolicygroup');
+    $policy_group_model = MidasLoader::loadModel('Itempolicygroup');
     $policiesGroup = $itemdao->getItempolicygroup();
     foreach($policiesGroup as $policy)
       {
       $policy_group_model->delete($policy);
       }
 
-    $policy_user_model = $this->ModelLoader->loadModel('Itempolicyuser');
+    $policy_user_model = MidasLoader::loadModel('Itempolicyuser');
     $policiesUser = $itemdao->getItempolicyuser();
     foreach($policiesUser as $policy)
       {
@@ -326,7 +326,7 @@ class ItemModel extends ItemModelBase
     $thumbnailId = $itemdao->getThumbnailId();
     if($thumbnailId !== null)
       {
-      $bitstreamModel = $this->ModelLoader->loadModel('Bitstream');
+      $bitstreamModel = MidasLoader::loadModel('Bitstream');
       $thumbnail = $bitstreamModel->load($thumbnailId);
       $bitstreamModel->delete($thumbnail);
       }
@@ -341,7 +341,7 @@ class ItemModel extends ItemModelBase
     {
     if(!$itemdao instanceof  ItemDao || !is_numeric($policy))
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in parameter itemdao or policy when checking Item policy.");
       }
     if($userDao == null)
       {
@@ -488,7 +488,7 @@ class ItemModel extends ItemModelBase
     {
     if(!$itemdao instanceof  ItemDao || !$itemdao->saved)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param itemdao when getting last Item revision.");
       }
     return $this->initDao('ItemRevision', $this->database->fetchRow($this->database->select()->from('itemrevision')
                                               ->where('item_id = ?', $itemdao->getItemId())
@@ -504,7 +504,7 @@ class ItemModel extends ItemModelBase
     {
     if(!$itemdao instanceof  ItemDao || !$itemdao->saved)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param itemdao when getting Item revision.");
       }
     return $this->initDao('ItemRevision', $this->database->fetchRow($this->database->select()->from('itemrevision')
                                               ->where('item_id = ?', $itemdao->getItemId())

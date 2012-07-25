@@ -37,8 +37,7 @@ class Ratings_ItemratingModel extends Ratings_ItemratingModelBase
         {
         return; //no need to save this rating at all
         }
-      $this->loadDaoClass('ItemratingDao', 'ratings');
-      $dao = new Ratings_ItemratingDao();
+      $dao = MidasLoader::newDao('ItemratingDao', 'ratings');
       $dao->setUserId($user->getKey());
       $dao->setItemId($item->getKey());
       }

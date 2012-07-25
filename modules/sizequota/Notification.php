@@ -80,9 +80,8 @@ class Sizequota_Notification extends ApiEnabled_Notification
    */
   public function getExtraHtmlSimple($args)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
-    $folderQuotaModel = $modelLoader->loadModel('FolderQuota', $this->moduleName);
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
 
     $folder = $args['folder'];
     $rootFolder = $folderModel->getRoot($folder);
@@ -110,9 +109,8 @@ class Sizequota_Notification extends ApiEnabled_Notification
    */
   public function getExtraHtmlRevision($args)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
-    $folderQuotaModel = $modelLoader->loadModel('FolderQuota', $this->moduleName);
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
 
     $item = $args['item'];
     $folders = $item->getFolders();
@@ -153,9 +151,8 @@ class Sizequota_Notification extends ApiEnabled_Notification
    */
   public function validateUpload($args)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
-    $folderQuotaModel = $modelLoader->loadModel('FolderQuota', $this->moduleName);
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
 
     $folder = $folderModel->load($args['folderId']);
     if(!$folder)
@@ -190,10 +187,9 @@ class Sizequota_Notification extends ApiEnabled_Notification
    */
   public function validateUploadRevision($args)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
-    $itemModel = $modelLoader->loadModel('Item');
-    $folderQuotaModel = $modelLoader->loadModel('FolderQuota', $this->moduleName);
+    $folderModel = MidasLoader::loadModel('Folder');
+    $itemModel = MidasLoader::loadModel('Item');
+    $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
 
     $item = $itemModel->load($args['itemId']);
     if(!$item)

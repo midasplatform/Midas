@@ -90,14 +90,12 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       }
     else if($this->_mainData[$var]['type'] == MIDAS_ONE_TO_MANY)
       {
-      require_once BASE_PATH . '/core/models/ModelLoader.php';
-      $this->ModelLoader = new MIDAS_ModelLoader();
       $module = '';
       if(isset($this->_mainData[$var]['module']) && $this->_mainData[$var]['module'] != 'core')
         {
         $module = $this->_mainData[$var]['module'];
         }
-      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model'], $module);
+      $model = MidasLoader::loadModel($this->_mainData[$var]['model'], $module);
       if(!$dao->get($this->_mainData[$var]['parent_column']))
         {
         throw new Zend_Exception($this->_mainData[$var]['parent_column']. " is not defined in the dao: ".get_class($dao));
@@ -106,14 +104,12 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       }
     else if($this->_mainData[$var]['type'] == MIDAS_MANY_TO_ONE)
       {
-      require_once BASE_PATH . '/core/models/ModelLoader.php';
-      $this->ModelLoader = new MIDAS_ModelLoader();
       $module = '';
       if(isset($this->_mainData[$var]['module']) && $this->_mainData[$var]['module'] != 'core')
         {
         $module = $this->_mainData[$var]['module'];
         }
-      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model'], $module);
+      $model = MidasLoader::loadModel($this->_mainData[$var]['model'], $module);
       $key = $model->getKey();
       if($this->_mainData[$var]['child_column'] == $key)
         {
@@ -146,16 +142,14 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    */
   protected function getLinkedObject($var, $dao)
     {
-    require_once BASE_PATH . '/core/models/ModelLoader.php';
-    $this->ModelLoader = new MIDAS_ModelLoader();
     if(isset($this->_mainData[$var]['module']))
       {
-      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model'],
+      $model = MidasLoader::loadModel($this->_mainData[$var]['model'],
                                              $this->_mainData[$var]['module']);
       }
     else
       {
-      $model = $this->ModelLoader->loadModel($this->_mainData[$var]['model']);
+      $model = MidasLoader::loadModel($this->_mainData[$var]['model']);
       }
 
     $parentColumn = $this->_mainData[$var]['parent_column'];
@@ -208,15 +202,14 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     {
     $objs = $daoParent->get($var);
 
-    $modelloader = new MIDAS_ModelLoader();
     if(isset($this->_mainData[$var]['module']))
       {
-      $model = $modelloader->loadModel($this->_mainData[$var]['model'],
+      $model = MidasLoader::loadModel($this->_mainData[$var]['model'],
                                        $this->_mainData[$var]['module']);
       }
     else
       {
-      $model = $modelloader->loadModel($this->_mainData[$var]['model']);
+      $model = MidasLoader::loadModel($this->_mainData[$var]['model']);
       }
     foreach($objs as $obj)
       {
@@ -292,8 +285,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     {
     $rowset = $this->fetchAll($this->select());
     $return = array();
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $model = $this->ModelLoader->loadModel($modelName, $module);
+    $model = MidasLoader::loadModel($modelName, $module);
     foreach($rowset as $row)
       {
       $return[] = $model->initDao($modelName, $row, $module);

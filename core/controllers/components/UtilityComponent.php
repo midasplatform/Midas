@@ -174,7 +174,7 @@ class UtilityComponent extends AppComponent
 
     if(!is_array($data) || empty($data))
       {
-      throw new Zend_Exception("Error parameters");
+      throw new Zend_Exception("Error in parameter: data, it should be a non-empty array");
       }
     $text = "";
 
@@ -369,8 +369,7 @@ class UtilityComponent extends AppComponent
    */
   public static function getTempDirectory($subdir = "misc")
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $settingModel = $modelLoader->loadModel('Setting');
+    $settingModel = MidasLoader::loadModel('Setting');
     try
       {
       $tempDirectory = $settingModel->getValueByName('temp_directory');
@@ -523,5 +522,35 @@ class UtilityComponent extends AppComponent
   public static function endIgnoreWarnings()
     {
     restore_error_handler();
+    }
+
+  /** Recursively delete a directory on disk */
+  public static function rrmdir($dir)
+    {
+    if(!file_exists($dir))
+      {
+      return;
+      }
+    if(is_dir($dir))
+      {
+      $objects = scandir($dir);
+      }
+
+    foreach($objects as $object)
+      {
+      if($object != '.' && $object != '..')
+        {
+        if(filetype($dir.'/'.$object) == 'dir')
+          {
+          self::rrmdir($dir.'/'.$object);
+          }
+        else
+          {
+          unlink($dir.'/'.$object);
+          }
+        }
+      }
+    reset($objects);
+    rmdir($dir);
     }
 } // end class

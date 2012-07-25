@@ -55,8 +55,7 @@ abstract class MetadataModelBase extends AppModel
       throw new Zend_Exception("Metadata already exists.");
       }
 
-    $this->loadDaoClass('MetadataDao');
-    $metadataDao = new MetadataDao();
+    $metadataDao = MidasLoader::newDao('MetadataDao');
     $metadataDao->setMetadatatype($type);
     $metadataDao->setElement($element);
     $metadataDao->setQualifier($qualifier);
@@ -75,7 +74,7 @@ abstract class MetadataModelBase extends AppModel
 
     if(!$itemRevisionDao instanceof $itemRevisionDao)
       {
-      throw new Zend_Exception("Error parameters.");
+      throw new Zend_Exception("Error in itemRevisionDao when adding metadata value.");
       }
 
     // Gets the metadata
@@ -90,8 +89,8 @@ abstract class MetadataModelBase extends AppModel
     $metadataDao->setValue($value);
 
     $item = $itemRevisionDao->getItem();
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+
+    $itemModel = MidasLoader::loadModel('Item');
     $lastrevision = $itemModel->getLastRevision($item);
 
     //refresh zend search index if latest revision has changed

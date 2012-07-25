@@ -19,8 +19,7 @@
 =========================================================================*/
 
 /**
- * \class ModelLoader
- * \brief Create Model object depending of the database type
+ * DEPRECATED: Use MidasLoader static methods loadModel() and loadModels() instead.
  */
 class MIDAS_ModelLoader
   {

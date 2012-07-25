@@ -79,7 +79,7 @@ class CommunityModel extends CommunityModelBase
     {
     if(!is_numeric($limit))
       {
-      throw new Zend_Exception("Error parameter.");
+      throw new Zend_Exception("limit should be numeric when getting public communities.");
       }
     $sql = $this->database->select()->from($this->_name)
                           ->where('privacy != ?', MIDAS_COMMUNITY_PRIVATE)

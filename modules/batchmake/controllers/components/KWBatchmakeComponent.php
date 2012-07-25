@@ -459,8 +459,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    */
   public function createTask($userDao)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $batchmakeTaskModel = $modelLoad->loadModel('Task', 'batchmake');
+    $batchmakeTaskModel = MidasLoader::loadModel('Task', 'batchmake');
     $taskDao = $batchmakeTaskModel->createTask($userDao, $this->configTmpDir);
     return $taskDao;
     }

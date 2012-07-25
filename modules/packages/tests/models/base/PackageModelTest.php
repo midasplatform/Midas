@@ -26,8 +26,7 @@ class PackageModelTest extends DatabaseTestCase
   /** testGetAll*/
   public function testGetAll()
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $packageModel = $modelLoad->loadModel('Package', 'packages');
+    $packageModel = MidasLoader::loadModel('Package', 'packages');
     $daos = $packageModel->getAll();
     $this->assertEquals(1, count($daos));
     }

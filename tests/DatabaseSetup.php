@@ -142,8 +142,7 @@ function installCore($db, $dbType, $utilityComponent)
 function createDefaultAssetstore()
   {
   Zend_Registry::set('models', array());
-  $modelLoader = new MIDAS_ModelLoader();
-  $modelLoader->loadModel('Assetstore');
+  MidasLoader::loadModel('Assetstore');
 
   // path munging
   require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
@@ -280,6 +279,7 @@ foreach($dbTypes as $dbType)
   {
   try
     {
+    echo "Dropping and installing tables for DB type: ".$dbType."\n";
     $dbAdapter = loadDbAdapter($testConfigDir, $dbType);
     dropTables($dbAdapter, $dbType);
     require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';

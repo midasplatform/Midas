@@ -94,8 +94,7 @@ class Ldap_Notification extends MIDAS_Notification
       }
     else if($ldapLogin != '')
       {
-      $this->Ldap_User->loadDaoClass('UserDao', 'ldap');
-      $ldapUserDao = new Ldap_UserDao();
+      $ldapUserDao = MidasLoader::newDao('UserDao', 'ldap');
       $ldapUserDao->setUserId($user->getKey());
       $ldapUserDao->setLogin($ldapLogin);
       $this->Ldap_User->save($ldapUserDao);

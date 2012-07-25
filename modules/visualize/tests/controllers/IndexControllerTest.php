@@ -33,14 +33,12 @@ class IndexControllerTest extends ControllerTestCase
   /** test index action*/
   public function testIndexAction()
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('Item');
-    $groupModel = $modelLoad->loadModel('Group');
-    $itempolicygroupModel = $modelLoad->loadModel('Itempolicygroup');
-    $userModel = $modelLoad->loadModel('User');
+    $itemModel = MidasLoader::loadModel('Item');
+    $groupModel = MidasLoader::loadModel('Group');
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+    $userModel = MidasLoader::loadModel('User');
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $uploadComponent = $componentLoader->loadComponent('Upload');
+    $uploadComponent = MidasLoader::loadComponent('Upload');
 
     $usersFile = $this->loadData('User', 'default');
     $userDao = $userModel->load($usersFile[0]->getKey());

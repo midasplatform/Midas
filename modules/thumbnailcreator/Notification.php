@@ -47,8 +47,7 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
   /** createThumbnail */
   public function createThumbnail($params)
     {
-    $componentLoader = new MIDAS_ComponentLoader;
-    $thumbnailComponent = $componentLoader->loadComponent('Imagemagick', $this->moduleName);
+    $thumbnailComponent = MidasLoader::loadComponent('Imagemagick', $this->moduleName);
     $thumbnailComponent->createThumbnail($params[0]);
     }
 
@@ -67,8 +66,7 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
   /** Get Json for the item view */
   public function getJson($params)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemthumbnailModel = $modelLoader->loadModel('Itemthumbnail', $this->moduleName);
+    $itemthumbnailModel = MidasLoader::loadModel('Itemthumbnail', $this->moduleName);
     $itemthumbnail = $itemthumbnailModel->getByItemId($params['item']->getKey());
     if($itemthumbnail != null)
       {
@@ -85,12 +83,11 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
    */
   public function handleItemDeleted($params)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemthumbnailModel = $modelLoader->loadModel('Itemthumbnail', $this->moduleName);
+    $itemthumbnailModel = MidasLoader::loadModel('Itemthumbnail', $this->moduleName);
     $itemthumbnail = $itemthumbnailModel->getByItemId($params['item']->getKey());
     if($itemthumbnail && $itemthumbnail->getThumbnailId() !== null)
       {
-      $bitstreamModel = $this->ModelLoader->loadModel('Bitstream');
+      $bitstreamModel = MidasLoader::loadModel('Bitstream');
       $thumbnail = $bitstreamModel->load($itemthumbnail->getThumbnailId());
       $bitstreamModel->delete($thumbnail);
       }

@@ -54,14 +54,13 @@ abstract class Api_UserapiModelBase extends Api_AppModel
     {
     if(!$userDao instanceof UserDao)
       {
-      throw new Zend_Exception('Error parameter: must be a userDao object');
+      throw new Zend_Exception('Error parameter: must be a userDao object when creating default api key.');
       }
     $key = md5($userDao->getEmail().$userDao->getPassword().'Default');
 
     $rowset = $this->database->fetchAll($this->database->select()
                                                        ->where('user_id = ?', $userDao->getKey())
                                                        ->where('application_name = ?', 'Default'));
-    $this->loadDaoClass('UserapiDao', 'api');
 
     if(count($rowset)) //update existing record if we have one already
       {
@@ -72,7 +71,7 @@ abstract class Api_UserapiModelBase extends Api_AppModel
       }
 
     // Otherwise save new default key
-    $userApiDao = new Api_UserapiDao();
+    $userApiDao = MidasLoader::newDao('UserapiDao', 'api');
     $userApiDao->setUserId($userDao->getKey());
     $userApiDao->setApplicationName('Default');
     $userApiDao->setApikey($key);
@@ -86,7 +85,7 @@ abstract class Api_UserapiModelBase extends Api_AppModel
     {
     if(!$userDao instanceof UserDao || !is_string($applicationname) || !is_string($tokenexperiationtime) || empty($applicationname))
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error parameter when creating API key.");
       }
 
     // Check that the applicationname doesn't exist for this user
@@ -112,8 +111,7 @@ abstract class Api_UserapiModelBase extends Api_AppModel
       $key .= substr($keychars, rand(0, $max), 1);
       }
 
-    $this->loadDaoClass('UserapiDao', 'api');
-    $userApiDao = new Api_UserapiDao();
+    $userApiDao = MidasLoader::newDao('UserapiDao', 'api');
     $userApiDao->setUserId($userDao->getKey());
     $userApiDao->setApikey($key);
     $userApiDao->setApplicationName($applicationname);

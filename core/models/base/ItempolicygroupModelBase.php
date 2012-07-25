@@ -39,6 +39,8 @@ abstract class ItempolicygroupModelBase extends AppModel
     } // end __construct()
 
   abstract function deleteGroupPolicies($group);
+  abstract function createPolicy($group, $item, $policy);
+  abstract function getPolicy($group, $item);
 
   /** delete */
   public function delete($dao)
@@ -56,8 +58,7 @@ abstract class ItempolicygroupModelBase extends AppModel
     $userPolicies = $item->getItempolicyuser();
 
     $shared = false;
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
 
     foreach($groupPolicies as $key => $policy)
       {

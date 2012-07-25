@@ -10,8 +10,7 @@ class Upgrade_3_2_6 extends MIDASUpgrade
 
   public function preUpgrade()
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $assetstoreModel = $modelLoader->loadModel('Assetstore');
+    $assetstoreModel = MidasLoader::loadModel('Assetstore');
     try
       {
       $this->assetstore = $assetstoreModel->getDefault();
@@ -65,8 +64,7 @@ class Upgrade_3_2_6 extends MIDASUpgrade
 
   private function _moveThumbnailToAssetstore($thumbnail)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $bitstreamModel = $modelLoader->loadModel('Bitstream');
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
 
     $oldpath = BASE_PATH.'/'.$thumbnail;
     if(!file_exists($oldpath)) //thumbnail file no longer exists, so we remove its reference

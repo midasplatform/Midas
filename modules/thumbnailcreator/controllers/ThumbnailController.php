@@ -61,8 +61,7 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
       echo JsonComponent::encode(array('status' => 'error', 'message' => 'Write permission required'));
       return;
       }
-    $componentLoader = new MIDAS_ComponentLoader();
-    $imComponent = $componentLoader->loadComponent('Imagemagick', 'thumbnailcreator');
+    $imComponent = MidasLoader::loadComponent('Imagemagick', 'thumbnailcreator');
 
     $itemThumbnail = $this->Thumbnailcreator_Itemthumbnail->getByItemId($item->getKey());
     if(!$itemThumbnail)
@@ -123,8 +122,8 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
     if($itemthumbnail->getThumbnailId() !== null)
       {
       $bitstream = $this->Bitstream->load($itemthumbnail->getThumbnailId());
-      $componentLoader = new MIDAS_ComponentLoader();
-      $downloadBitstreamComponent = $componentLoader->loadComponent('DownloadBitstream');
+
+      $downloadBitstreamComponent = MidasLoader::loadComponent('DownloadBitstream');
       $downloadBitstreamComponent->download($bitstream);
       }
     }
