@@ -160,6 +160,7 @@ class UserController extends AppController
    */
   function logoutAction()
     {
+    session_start(); //we closed session before, must restart it to logout
     $this->userSession->Dao = null;
     Zend_Session::ForgetMe();
     setcookie('midasUtil', null, time() + 60 * 60 * 24 * 30, '/'); //30 days
@@ -410,7 +411,7 @@ class UserController extends AppController
             }
           $this->getLogger()->info(__METHOD__ . " Log in : " . $userDao->getFullName());
 
-          if(isset($previousUri) && (!empty($this->view->webroot)) && strpos($previousUri, 'logout') === false)
+          if(isset($previousUri) && !empty($previousUri) && (!empty($this->view->webroot)) && strpos($previousUri, 'logout') === false)
             {
             $redirect = $previousUri;
             }
