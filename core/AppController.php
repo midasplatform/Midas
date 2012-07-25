@@ -115,7 +115,7 @@ class AppController extends MIDAS_GlobalController
             }
           }
         }
-      
+
       session_write_close();
       $controllerName = $fc->getRequest()->getControllerName();
       $actionName = $fc->getRequest()->getActionName();
