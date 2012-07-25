@@ -380,10 +380,9 @@ class FolderModel extends FolderModelBase
       throw new Zend_Exception("Unable to find the key");
       }
 
-    $this->ModelLoader = new MIDAS_ModelLoader();
     if($progressDao && !isset($this->Progress))
       {
-      $this->Progress = $this->ModelLoader->loadModel('Progress');
+      $this->Progress = MidasLoader::loadModel('Progress');
       }
     $items = $folder->getItems();
     foreach($items as $item)
