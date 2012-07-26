@@ -121,6 +121,13 @@ class ItemModel extends ItemModelBase
     return $results;
     }
 
+  /** Get the total number of items in the database */
+  function getTotalCount()
+    {
+    $row = $this->database->fetchRow($this->database->select()->from('item', array('count' => 'count(*)')));
+    return $row['count'];
+    }
+
   /** get by uuid*/
   function getByUuid($uuid)
     {

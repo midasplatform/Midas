@@ -36,11 +36,24 @@ class Solr_SolrComponent extends AppComponent
   /**
    * Rebuilds the search index by iterating over all items and indexing each of them
    */
-  public function rebuildIndex()
+  public function rebuildIndex($progressDao = null)
     {
     $itemModel = MidasLoader::loadModel('Item');
-    $itemModel->iterateWithCallback('CALLBACK_CORE_ITEM_SAVED', 'item', array('metadataChanged' => true));
+    $progressModel = MidasLoader::loadModel('Progress');
+    if($progressDao)
+      {
+      $progressDao->setMaximum($itemModel->getTotalCount());
+      $progressModel->save($progressDao);
+      }
+    $itemModel->iterateWithCallback('CALLBACK_CORE_ITEM_SAVED', 'item', array(
+      'metadataChanged' => true,
+      'progress' => $progressDao));
 
+    if($progressDao)
+      {
+      $progressDao->setMessage('Optimizing index...');
+      $progressModel->save($progressDao);
+      }
     $index = $this->getSolrIndex();
     $index->optimize();
     }
