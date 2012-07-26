@@ -23,7 +23,7 @@ require_once BASE_PATH.'/modules/api/library/APIEnabledNotification.php';
 class Solr_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'solr';
-  public $_models = array('Item', 'ItemRevision', 'Metadata');
+  public $_models = array('Item', 'ItemRevision', 'Metadata', 'Progress');
   public $_moduleComponents = array('Api', 'Solr');
 
   /** init notification process */
@@ -61,6 +61,13 @@ class Solr_Notification extends ApiEnabled_Notification
       {
       $this->getLogger()->warn($e->getMessage.' - Could not index item metadata ('.$item->getKey().')');
       return;
+      }
+
+    $progress = array_key_exists('progress', $args) ? $args['progress'] : null;
+    if($progress)
+      {
+      $message = 'Indexing item '.($progress->getCurrent() + 1).' / '.$progress->getMaximum();
+      $this->Progress->updateProgress($progress, $progress->getCurrent() + 1, $message);
       }
 
     try
@@ -189,10 +196,11 @@ class Solr_Notification extends ApiEnabled_Notification
     }
 
   /** Rebuild the solr lucene index */
-  public function resetItemIndexes()
+  public function resetItemIndexes($params)
     {
-    $this->ModuleComponent->Solr->rebuildIndex();
-    echo "Done!";
+    $progressDao = array_key_exists('progressDao', $params) ? $params['progressDao'] : null;
+    $this->ModuleComponent->Solr->rebuildIndex($progressDao);
+    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Index rebuild complete'));
     }
 
   /** Add a dashboard entry on the admin dashboard for showing solr status */
