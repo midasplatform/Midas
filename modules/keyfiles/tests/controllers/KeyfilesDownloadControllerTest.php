@@ -38,10 +38,6 @@ class KeyfilesDownloadControllerTest extends ControllerTestCase
     // Should throw an exception for no bitstream parameter
     $this->dispatchUrI('/keyfiles/download/bitstream', null, true);
 
-    // Should throw exception for invalid bitstream id
-    $this->resetAll();
-    $this->dispatchUrI('/keyfiles/download/bitstream?bitstreamId=98234', null, true);
-
     // Make sure we get the checksum as the response
     $this->resetAll();
     $this->dispatchUrI($url, $userDao);
