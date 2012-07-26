@@ -494,7 +494,6 @@ class AdminController extends AppController
   function upgradeAction()
     {
     $this->requireAdminPrivileges();
-    $this->requireAjaxRequest();
     $this->disableLayout();
 
     $db = Zend_Registry::get('dbAdapter');
@@ -637,8 +636,8 @@ class AdminController extends AppController
 
     if($this->getRequest()->isPost())
       {
-      $this->_helper->layout->disableLayout();
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableLayout();
+      $this->disableView();
 
       if(!$this->view->migrateForm->isValid($_POST))
         {
