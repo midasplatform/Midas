@@ -116,16 +116,10 @@ class AppController extends MIDAS_GlobalController
           }
         }
 
+      session_write_close();
       $controllerName = $fc->getRequest()->getControllerName();
       $actionName = $fc->getRequest()->getActionName();
-      if($fc->getRequest()->getControllerName() == 'browse' || $fc->getRequest()->getControllerName() == 'download')
-        {
-        $element = $this->_getParam('type');
-        if($actionName != 'getelementinfo' || !isset($element) || $element != 'folder')
-          {
-          session_write_close();
-          }
-        }
+
       $this->userSession = $user;
       $this->view->recentItems = array();
       $this->view->needUpgrade = false;
