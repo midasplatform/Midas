@@ -243,6 +243,10 @@ class NotifyErrorComponent  extends AppComponent
       {
       $message .= "Server IP: " . $this->_server['SERVER_ADDR'] . "\n";
       }
+    if(!empty($this->_server['REMOTE_ADDR']))
+      {
+      $message .= "Client IP: " . $this->_server['REMOTE_ADDR'] . "\n";
+      }
 
     if(!empty($this->_server['HTTP_USER_AGENT']))
       {
