@@ -92,7 +92,15 @@ class ErrorController extends AppController
         $this->view->message = 'Page not found';
         break;
       default:
-        $this->getResponse()->setHttpResponseCode(500);
+        $code = $this->_error->exception->getCode();
+        if($code == 0)
+          {
+          $this->getResponse()->setHttpResponseCode(500);
+          }
+        else
+          {
+          $this->getResponse()->setHttpResponseCode($code);
+          }
         $this->_applicationError();
         break;
       }
