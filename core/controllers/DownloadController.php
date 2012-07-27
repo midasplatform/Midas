@@ -74,7 +74,7 @@ class DownloadController extends AppController
       $bitstream = $this->Bitstream->load($bitsreamid);
       if(!$bitstream)
         {
-        throw new Zend_Controller_Action_Exception('Invalid bitstream id', 404);
+        throw new Zend_Exception('Invalid bitstream id', 404);
         }
       if(isset($name))
         {

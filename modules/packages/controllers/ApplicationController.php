@@ -119,7 +119,7 @@ class Packages_ApplicationController extends Packages_AppController
     $application = $this->Packages_Application->load($applicationId);
     if(!$application)
       {
-      throw new Zend_Controller_Action_Exception('Invalid applicationId', 404);
+      throw new Zend_Exception('Invalid applicationId', 404);
       }
     $comm = $application->getProject()->getCommunity();
     if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
@@ -188,7 +188,7 @@ class Packages_ApplicationController extends Packages_AppController
     $application = $this->Packages_Application->load($applicationId);
     if(!$application)
       {
-      throw new Zend_Controller_Action_Exception('Invalid applicationId', 404);
+      throw new Zend_Exception('Invalid applicationId', 404);
       }
     $comm = $application->getProject()->getCommunity();
     if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
