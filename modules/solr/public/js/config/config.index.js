@@ -46,7 +46,7 @@ $(document).ready(function () {
               } catch (e) {
                   midas.createNotice('Error occurred, please check the logs', 4000, 'error');
               }
-              $('#rebuildProgressMessage').html('Index rebuild finished');
+              $('#rebuildProgressMessage').html('Index rebuild complete.');
           });
     });
 });
