@@ -98,7 +98,14 @@ class AdminController extends AppController
     $this->view->header = "Administration";
     $configForm = $this->Form->Admin->createConfigForm();
 
-    $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
+    if(file_exists(BASE_PATH.'/core/configs/application.local.ini'))
+      {
+      $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
+      }
+    else
+      {
+      $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.ini', true);
+      }
     $formArray = $this->getFormAsArray($configForm);
 
     $formArray['name']->setValue($applicationConfig['global']['application.name']);
