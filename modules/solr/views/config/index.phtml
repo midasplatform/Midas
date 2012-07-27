@@ -56,8 +56,12 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
       if($this->saved)
         { ?>
         <div class="rebuildIndexContainer">
-          <a href="<?php echo $this->webroot; ?>/admin/task?task=TASK_CORE_RESET_ITEM_INDEXES">Rebuild full Lucene index</a>
-          (can take a very long time)
+          Click the button below to rebuild the Lucene index on all items in Midas.
+          <div>
+            <input class="globalButton" type="button" id="rebuildIndexButton" value="Rebuild index" />
+          </div>
+          <div id="rebuildProgressBar"></div>
+          <div id="rebuildProgressMessage"></div>
         </div>
         <?php
         }

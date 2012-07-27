@@ -69,6 +69,15 @@ class AdminController extends AppController
       {
       $params = JsonComponent::decode($params);
       }
+    else
+      {
+      $params = array();
+      }
+
+    if($this->progressDao)
+      {
+      $params['progressDao'] = $this->progressDao;
+      }
 
     $modules = Zend_Registry::get('notifier')->modules;
     $tasks = Zend_Registry::get('notifier')->tasks;
