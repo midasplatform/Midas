@@ -60,11 +60,11 @@ class ItemController extends AppController
     $itemDao = $this->Item->load($itemId);
     if($itemDao === false)
       {
-      throw new Zend_Controller_Action_Exception("This item doesn't exist.", 404);
+      throw new Zend_Exception("This item doesn't exist.", 404);
       }
     if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
-      throw new Zend_Controller_Action_Exception("Write permissions required", 403);
+      throw new Zend_Exception("Write permissions required", 403);
       }
 
     $itemRevisionNumber = $this->_getParam("itemrevision");
@@ -118,7 +118,7 @@ class ItemController extends AppController
     $itemDao = $this->Item->load($itemId);
     if($itemDao === false)
       {
-      throw new Zend_Controller_Action_Exception("This item doesn't exist.", 404);
+      throw new Zend_Exception("This item doesn't exist.", 404);
       }
     if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
@@ -561,7 +561,7 @@ class ItemController extends AppController
       $itemDao = $this->Item->load($itemId);
       if($itemDao === false)
         {
-        throw new Zend_Controller_Action_Exception("This item doesn't exist.", 404);
+        throw new Zend_Exception("This item doesn't exist.", 404);
         }
       if(isset($itemRevisionNumber))
         {
