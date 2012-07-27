@@ -103,7 +103,7 @@ class ErrorController extends AppController
       }
     else
       {
-      $this->getLogger()->warn('URL: '.$this->Component->NotifyError->curPageURL()."\n".$this->view->message);
+      $this->getLogger()->warn('URL: '.$this->Component->NotifyError->curPageURL()."\n".$fullMessage);
       }
 
     }
