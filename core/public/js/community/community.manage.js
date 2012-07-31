@@ -364,4 +364,5 @@ $(document).ready(function () {
 
     midas.community.manage.initDragAndDrop();
     $('td.tdUser input').removeAttr('checked');
+    $('#description').autogrow();
 });
