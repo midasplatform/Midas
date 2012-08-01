@@ -421,11 +421,11 @@ class ItemController extends AppController
       throw new Zend_Exception("itemId should be a number");
       }
     $itemDao = $this->Item->load($itemId);
-    $parents = $itemDao->getFolders();
     if($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
       throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
       }
+    $parents = $itemDao->getFolders();
 
     $this->Item->delete($itemDao);
 
