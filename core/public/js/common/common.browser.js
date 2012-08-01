@@ -584,4 +584,10 @@ midas.enableRangeSelect = function (node) {
         });
 };
 
+$(document).ready(function () {
+    $('#browseTableHeaderCheckbox').qtip({
+        content: 'Check/Uncheck All'
+    });
+});
+
 midas.cutName = function(name, nchar) {  if(name.length>nchar)      {      name=name.substring(0,nchar)+'...';      return name;      }  return name;  }
