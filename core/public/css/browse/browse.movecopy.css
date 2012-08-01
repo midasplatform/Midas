@@ -3,8 +3,8 @@ table#moveCopyTable{
 }
 
 table#moveCopyTable th.thData {
-width: auto!important;
-border-right: none!important;
+  width: auto!important;
+  border-right: none!important;
 }
 
 table#moveCopyTable{
@@ -13,4 +13,9 @@ table#moveCopyTable{
 
 #moveCopyTable .browserPrivacyInformation{
   right: 10px!important;
+}
+
+div.movecopySubmitWrapper {
+  margin-top: 10px;
+  float: right;
 }
