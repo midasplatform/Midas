@@ -12,11 +12,11 @@ $(document).ready(function() {
         var itemrevision = $(this).attr('itemrevision');
         var html = '';
         html+=json.item.message['deleteMetadataMessage'];
-        html+='<br/>';
-        html+='<br/>';
-        html+='<br/>';
-        html+='<input style="margin-left:140px;" class="globalButton deleteMetaDataYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
-        html+='<input style="margin-left:50px;" class="globalButton deleteMetaDataNo" type="button" value="'+json.global.No+'"/>';
+        html+='<br/><br/><br/>';
+        html+='<div style="float: right;">';
+        html+='<input class="globalButton deleteMetaDataYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
+        html+='<input style="margin-left:15px;" class="globalButton deleteMetaDataNo" type="button" value="'+json.global.No+'"/>';
+        html+='</div>';
         midas.showDialogWithContent(json.item.message['delete'],html,false);
 
         $('input.deleteMetaDataYes').unbind('click').click(function () {
@@ -93,8 +93,10 @@ $(document).ready(function() {
         html+='<br/>';
         html+='<br/>';
         html+='<br/>';
-        html+='<input style="margin-left:140px;" class="globalButton deleteItemRevisionYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
-        html+='<input style="margin-left:50px;" class="globalButton deleteItemRevisionNo" type="button" value="'+json.global.No+'"/>';
+        html+='<div style="float: right;">';
+        html+='<input class="globalButton deleteItemRevisionYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
+        html+='<input style="margin-left:15px;" class="globalButton deleteItemRevisionNo" type="button" value="'+json.global.No+'"/>';
+        html+='</div>';
         midas.showDialogWithContent(json.item.message['delete'],html,false);
 
         $('input.deleteItemRevisionYes').unbind('click').click(function() {
@@ -149,8 +151,10 @@ $(document).ready(function() {
                 html+='<br/>';
                 html+='<br/>';
                 html+='<br/>';
-                html+='<input style="margin-left:140px;" class="globalButton deleteItemYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
-                html+='<input style="margin-left:50px;" class="globalButton deleteItemNo" type="button" value="'+json.global.No+'"/>';
+                html+='<div style="float: right;">';
+                html+='<input class="globalButton deleteItemYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
+                html+='<input style="margin-left:15px;" class="globalButton deleteItemNo" type="button" value="'+json.global.No+'"/>';
+                html+='</div>';
 
                 midas.showDialogWithContent(json.item.message['delete'], html, false);
 
