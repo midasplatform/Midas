@@ -281,7 +281,7 @@ class InstallController extends AppController
       $applicationConfig['global']['default.timezone'] = $form->getValue('timezone');
 
       $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
-      $this->_redirect("/admin?checkRecentItem=true#tabs-modules");
+      $this->_redirect("/admin#tabs-modules");
       }
     } // end method step2Action
 
