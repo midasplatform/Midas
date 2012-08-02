@@ -553,4 +553,29 @@ class UtilityComponent extends AppComponent
     reset($objects);
     rmdir($dir);
     }
+
+  /**
+   * Generate a string of random characters. Seeds RNG within the function using microtime.
+   * @param $length The length of the random string
+   * @param $alphabet (Optional) The alphabet string; if none provided, uses base64
+   */
+  public static function generateRandomString($length, $alphabet = null)
+    {
+    if(!is_string($alphabet) || empty($alphabet))
+      {
+      $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/';
+      }
+
+    // Seed RNG with microtime (for lack of something more difficult to guess)
+    list($usec, $sec) = explode(' ', microtime());
+    srand((float) $sec + ((float) $usec * 100000));
+
+    $salt = '';
+    $max = strlen($alphabet) - 1;
+    for($i = 0; $i <= $length; $i++)
+      {
+      $salt .= substr($alphabet, rand(0, $max), 1);
+      }
+    return $salt;
+    }
 } // end class
