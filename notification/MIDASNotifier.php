@@ -141,7 +141,15 @@ class MIDAS_Notifier
       }
     }//end contruct()
 
-  /** notify enabled modules*/
+  /**
+   * notifyEvent is very similar to callback, with an important distinction.
+   * If the scheduler module is enabled, the event will be scheduled to run asynchronously.
+   * Otherwise, it will be called synchronously like a normal callback.
+   * @param $name The name of the event. Must start with "EVENT_".
+   * @param $params (Optional) Array of parameters to be passed to the registered handlers.
+   * @param $moduleFilter (Optional) Only the listed modules will receive the notification.
+   * @return null
+   */
   public function notifyEvent($name, $params = null, $moduleFilter = array())
     {
     if(strpos($name, "EVENT_") === false || !is_string($name))
@@ -156,7 +164,6 @@ class MIDAS_Notifier
       {
       $moduleFilter = array($moduleFilter);
       }
-    $return = array();
     foreach($this->notifications[$name] as $key => $notification)
       {
       $module = $this->modules[$notification['module']];
@@ -165,10 +172,12 @@ class MIDAS_Notifier
         $this->_setTask($notification['call'], $params, $notification['priority']);
         }
       }
-    return $return;
     }//end notify
 
-  /** schedule or execute a task*/
+  /**
+   * If the scheduler module is enabled, schedule the task for asynchronous execution.
+   * Otherwise, run it now synchronously.
+   */
   private function _setTask($name, $params, $priority)
     {
     $modules = Zend_Registry::get('modulesEnable');
@@ -187,7 +196,15 @@ class MIDAS_Notifier
       }
     }
 
-  /** notify enabled modules*/
+  /**
+   * Modules that have registered handlers for the specified callback will have their
+   * handlers called by this function. Handlers will be executed synchronously and serially,
+   * in the order that the enabled modules are listed in application.local.ini.
+   * @param $name The name of the callback (must begin with "CALLBACK_")
+   * @param $params (Optional) The array of parameters to pass to each registered handler
+   * @param $moduleFilter (Optional) Only the listed modules will receive the notification.
+   * @return An array mapping module names to the return values from their registered handlers for the callback.
+   */
   public function callback($name, $params = null, $moduleFilter = array())
     {
     if(strpos($name, "CALLBACK_") === false || !is_string($name))

@@ -68,7 +68,7 @@ abstract class ItemRevisionModelBase extends AppModel
     $item->setSizebytes($this->getSize($itemRevisionDao));
     $item->setDateUpdate(date('c'));
 
-    $modulesThumbnail = Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_CREATE_THUMBNAIL', array($item));
+    Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_CREATE_THUMBNAIL', array($item));
     $notifications = Zend_Registry::get('notifier')->getNotifications();
 
     $createThumb = false;
