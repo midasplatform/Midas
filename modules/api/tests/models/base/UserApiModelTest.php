@@ -33,6 +33,11 @@ class UserApiModelTest extends DatabaseTestCase
   public function testGenerateApiKeyModel()
     {
     $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userModel = MidasLoader::loadModel('User');
+    $userDao = $userModel->getByEmail('user1@user1.com');
+    // Must set the password here since our salt is dynamic
+    $userDao->setPassword(md5(Zend_Registry::get('configGlobal')->password->prefix.'test'));
+    $userModel->save($userDao);
 
     $apiKey = $userApiModel->createKeyFromEmailPassword('Test App', 'user1@user1.com', 'test');
     $this->assertTrue($apiKey instanceof Api_UserapiDao);

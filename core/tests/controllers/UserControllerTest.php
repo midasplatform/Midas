@@ -94,6 +94,11 @@ class UserControllerTest extends ControllerTestCase
     $this->assertTrue(is_string($resp->message) && strlen($resp->message) > 0);
     $this->assertFalse(Zend_Auth::getInstance()->hasIdentity());
 
+    // Must set the password here since our salt is dynamic
+    $userDao = $this->User->getByEmail('user1@user1.com');
+    $userDao->setPassword(md5(Zend_Registry::get('configGlobal')->password->prefix.'test'));
+    $this->User->save($userDao);
+
     $this->resetAll();
     $this->params = array();
     $this->params['email'] = 'user1@user1.com';
@@ -171,6 +176,10 @@ class UserControllerTest extends ControllerTestCase
     $this->dispatchUrI("/user/settings", $userDao);
 
     $userCheckDao = $this->User->getByEmail($userDao->getEmail());
+    // Must set the password here since our salt is dynamic
+    $userCheckDao->setPassword(md5(Zend_Registry::get('configGlobal')->password->prefix.'test'));
+    $this->User->save($userCheckDao);
+
     $this->assertNotEquals($userDao->getPassword(), $userCheckDao->getPassword(), 'Unable to change password');
 
     $this->setupDatabase(array('default'));
@@ -328,6 +337,11 @@ class UserControllerTest extends ControllerTestCase
     $this->dispatchUrI('/user/login');
     $resp = json_decode($this->getBody());
     $this->assertTrue($resp->status == false);
+
+    // Must set the password here since our salt is dynamic
+    $userDao = $this->User->getByEmail('user1@user1.com');
+    $userDao->setPassword(md5(Zend_Registry::get('configGlobal')->password->prefix.'test'));
+    $this->User->save($userDao);
 
     $this->resetAll();
     $this->params = array();

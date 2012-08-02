@@ -405,11 +405,16 @@ class ApiCallMethodsTest extends ControllerTestCase
 
     $this->resetAll();
 
+    // Must set the password here since our salt is dynamic
+    $userDao->setPassword(md5(Zend_Registry::get('configGlobal')->password->prefix.'test'));
+    $this->User->save($userDao);
+
     $this->params['method'] = 'midas.user.apikey.default';
     $this->params['email'] = $userDao->getEmail();
     $this->params['password'] = 'test';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
+
 
     $this->assertEquals($resp->data->apikey, $apiKey);
     }
