@@ -425,10 +425,18 @@ class ItemController extends AppController
       {
       throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
       }
+    $parents = $itemDao->getFolders();
 
     $this->Item->delete($itemDao);
 
-    $this->_redirect('/?checkRecentItem = true');
+    if(count($parents) > 0)
+      {
+      $this->_redirect('/folder/'.$parents[0]->getKey());
+      }
+    else
+      {
+      $this->_redirect('/');
+      }
     }//end delete
 
 

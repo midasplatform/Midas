@@ -168,7 +168,6 @@ class AppController extends MIDAS_GlobalController
             }
 
           $this->view->recentItems = $recentItems;
-          $check = $this->_getParam('checkRecentItem');
           }
         }
       else
