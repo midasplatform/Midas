@@ -31,7 +31,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!is_string($appname) || !is_string($email) || !is_string($password))
       {
-      throw new Zend_Exception("Error in parameter hwen creating key from email password.");
+      throw new Zend_Exception("Error in parameter when creating key from email password.");
       }
 
     $userModel = MidasLoader::loadModel('User');

@@ -60,10 +60,15 @@ class Api_AuthenticationComponent extends AppComponent
       $userDao = $userModel->load($userid);
 
       // Set the session in the notifier so callback handlers can use it
+      if(!headers_sent())
+        {
+        session_start();
+        }
       $userSession = new Zend_Session_Namespace('Auth_User');
       $userSession->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
       $userSession->Dao = $userDao;
       Zend_Registry::set('notifier', new MIDAS_Notifier(true, $userSession));
+      session_write_close();
 
       return $userDao;
       }

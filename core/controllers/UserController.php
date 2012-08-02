@@ -253,7 +253,10 @@ class UserController extends AppController
         }
       else
         {
-        session_start();
+        if(!headers_sent())
+          {
+          session_start();
+          }
         $this->userSession->Dao = $newUser;
         session_write_close();
         echo JsonComponent::encode(array('status' => 'ok', 'message' => 'User registered successfully'));
@@ -281,7 +284,10 @@ class UserController extends AppController
         {
         throw new Zend_Exception("User already exists.");
         }
-      session_start();
+      if(!headers_sent())
+        {
+        session_start();
+        }
       $this->userSession->Dao = $this->User->createUser(trim($form->getValue('email')), $form->getValue('password1'), trim($form->getValue('firstname')), trim($form->getValue('lastname')));
       session_write_close();
 
