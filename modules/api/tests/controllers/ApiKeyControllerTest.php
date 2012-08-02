@@ -38,6 +38,10 @@ class ApiKeyControllerTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
 
+    // Must set the password here since our salt is dynamic
+    $userDao->setPassword(md5(Zend_Registry::get('configGlobal')->password->prefix.'test'));
+    $this->User->save($userDao);
+
     $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $userApiModel->createDefaultApiKey($userDao);
     $preKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
