@@ -134,6 +134,18 @@ $(document).ready(function() {
                 return text;
             }
         }
+    }).click(function() {
+        var id = $(this).parents('td').find('div span[name=bitstream_id]').html();
+        var name = $(this).parents('td').find('div span[name=filename]').html();
+        var md5 = $(this).parents('td').find('div span[name=md5]').html();
+        var size = $(this).parents('td').find('div span[name=sizeBytes]').html();
+        var type = $(this).parents('td').find('div span[name=mimeType]').html();
+        var text = '<b>Filename:</b> ' + name + '<br/>';
+        text += '<b>Size:</b> ' + size + ' bytes<br/>';
+        text += '<b>MIME Type:</b> ' + type + '<br/>';
+        text += '<b>MD5:</b> ' + md5 + '<br/>';
+        text += '<b>Bitstream ID:</b> ' + id + '<br/>';
+        midas.showDialogWithContent('Bitstream Information', text, false);
     });
 
     $('a#itemDeleteLink').click(function () {
