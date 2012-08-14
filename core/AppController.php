@@ -333,6 +333,14 @@ class AppController extends MIDAS_GlobalController
       $this->progressDao = null;
       }
 
+    // If there is an outbound HTTP proxy configured on this server, set it up here
+    $httpProxy = Zend_Registry::get('configGlobal')->httpproxy;
+    if($httpProxy)
+      {
+      $opts = array('http' => array('proxy' => $httpProxy));
+      stream_context_set_default($opts);
+      }
+
     // For Logging
     $logTrace = Zend_Registry::get('configGlobal')->logtrace;
     if(isset($logTrace) && $logTrace)
