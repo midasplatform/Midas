@@ -365,7 +365,7 @@ midas.duplicateSelected = function (folders, items) {
  * @param folders The list of folders to move (separated by -)
  * @param items The list of items to move (separated by -)
  */
-midas.moveSelected = function (folders, items, fromlist) {
+midas.moveSelected = function (folders, items) {
     midas.loadDialog("moveItem", "/browse/movecopy/?move=true&items="+items+"&folders="+folders);
     midas.showDialog('Move all selected resources');
 };
