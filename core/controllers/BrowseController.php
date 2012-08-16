@@ -162,7 +162,7 @@ class BrowseController extends AppController
               }
             $fromFolder = $parents[0];
             }
-          
+
           if($destinationFolder->getKey() != $fromFolder->getKey())
             {
             $this->Folder->addItem($destinationFolder, $item);
