@@ -70,6 +70,10 @@ midas.genericCallbackCheckboxes = function(node) {
             links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> ';
             links += '  <a onclick="midas.deleteSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.deleteSelected + '</a></li>';
             links += '</li>';
+            links += '<li>';
+            links +=   '<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/move.png"/> ';
+            links +=   '<a onclick="midas.moveSelected(\''+folders+'\',\''+items+'\')" element="'+items+'">Move all selected</a>';
+            links += '</li>';
             if(arraySelected['items'].length > 0) {
                 links += '<li style="background-color: white;">';
                 links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/item-share.png"/> ';
@@ -81,12 +85,10 @@ midas.genericCallbackCheckboxes = function(node) {
                 links += '</li>';
             }
             if(arraySelected['items'].length > 1 && arraySelected['folders'].length == 0) {
-                var itemsParam = arraySelected['items'].join('-');
                 links += '<li>';
                 links +=   '<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/page_white_stack.png"/> ';
-                links +=   '<a class="mergeItemsLink" element="'+itemsParam+'">Merge items</a>';
+                links +=   '<a class="mergeItemsLink" element="'+items+'">Merge items</a>';
                 links += '</li>';
-                json.global.webroot+'/item/merge?items='+items;
             }
         }
         links += '</ul>';
@@ -186,7 +188,7 @@ midas.removeItem = function (id) {
 
     $('input.deleteFolderYes').unbind('click').click(
         function() {
-            var node = $('table.treeTable tr[element='+id+']');
+            var node = $('table.treeTable tr[type=item][element='+id+']');
             var folder = midas.parentOf(node);
             var folderId = '';
             // we are in a subfolder view and the parent is the current folder
@@ -330,7 +332,7 @@ midas.deleteSelected = function (folders, items) {
  * ids will be ignored)
  */
 midas.shareSelected = function (folders, items) {
-    midas.loadDialog("ShareItem","/browse/movecopy/?share=true&items="+items);
+    midas.loadDialog("ShareItem", "/browse/movecopy/?share=true&items="+items);
     if(folders == '')
       {
       midas.showDialog(json.browse.shareSelected);
@@ -349,13 +351,23 @@ midas.shareSelected = function (folders, items) {
  * ids will be ignored)
  */
 midas.duplicateSelected = function (folders, items) {
-    midas.loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+items);
+    midas.loadDialog("duplicateItem", "/browse/movecopy/?duplicate=true&items="+items);
     if(folders == '') {
         midas.showDialog(json.browse.duplicateSelected);
     }
     else {
         midas.showDialog(json.browse.duplicateSelected + ' ' + json.browse.ignoreSelectedFolders);
     }
+};
+
+/**
+ * Prompt the user with a dialog to move the selected items and folders.
+ * @param folders The list of folders to move (separated by -)
+ * @param items The list of items to move (separated by -)
+ */
+midas.moveSelected = function (folders, items, fromlist) {
+    midas.loadDialog("moveItem", "/browse/movecopy/?move=true&items="+items+"&folders="+folders);
+    midas.showDialog('Move all selected resources');
 };
 
 /**
