@@ -41,6 +41,7 @@ class Example_SampleController extends Example_AppController
     // get userId 1 for now
     $userDao = $this->User->load(1); // use a core model
     $this->view->wallet = $this->Example_Wallet->createWallet($userDao, '10'); // use a model from this module
+    $this->view->wallet->setCreditCardCount(3);
     }
 
   /**

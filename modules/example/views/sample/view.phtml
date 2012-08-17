@@ -19,4 +19,8 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/sample/example.
   }
 ?>
 </table>
-<?php echo 'wallet dollars: '.$this->wallet->getDollars(); ?>
+<?php
+echo 'wallet dollars: '.$this->wallet->getDollars(); 
+echo 'credit card count: '.$this->wallet->getCreditCardCount(); 
+?>
+

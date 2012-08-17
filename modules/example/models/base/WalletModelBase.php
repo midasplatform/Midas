@@ -34,6 +34,7 @@ class Example_WalletModelBase extends Example_AppModel
       'example_wallet_id' => array('type' => MIDAS_DATA),
       'user_id' => array('type' => MIDAS_DATA),
       'dollars' => array('type' => MIDAS_DATA),
+      'credit_card_count' => array('type' => MIDAS_DATA),
       'user' =>  array('type' => MIDAS_MANY_TO_ONE,
                         'model' => 'User',
                         'parent_column' => 'user_id',
