@@ -58,31 +58,26 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     $modulesEnable =  Zend_Registry::get('modulesEnable');
     foreach($modulesEnable as $module)
       {
-      if(file_exists(BASE_PATH."/modules/".$module."/translation/fr-main.csv"))
+      if(file_exists(BASE_PATH.'/modules/'.$module.'/translation/fr-main.csv'))
         {
-        $translationFile = BASE_PATH."/modules/".$module."/translation/fr-main.csv";
+        $translaters[$module] = new Zend_Translate('csv', BASE_PATH.'/modules/'.$module.'/translation/fr-main.csv', 'en');
         }
-      elseif(file_exists(BASE_PATH."/privateModules/".$module."/translation/fr-main.csv"))
+      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv'))
         {
-        $translationFile = BASE_PATH."/privateModules/".$module."/translation/fr-main.csv";
-        }
-      else
-        {
-        throw new Zend_Exception('No translation file found in module '.$module);
+        $translaters[$module] = new Zend_Translate('csv', BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv', 'en');
         }
 
-      $translaters[$module] = new Zend_Translate('csv', $translationFile, "en");
-      if(file_exists(BASE_PATH."/core/configs/".$module.".local.ini"))
+      if(file_exists(BASE_PATH.'/core/configs/'.$module.'.local.ini'))
         {
-        $configs[$module] = new Zend_Config_Ini(BASE_PATH."/core/configs/".$module.".local.ini", 'global');
+        $configs[$module] = new Zend_Config_Ini(BASE_PATH.'/core/configs/'.$module.'.local.ini', 'global');
         }
-      elseif(file_exists(BASE_PATH."/privateModules/".$module."/configs/module.ini"))
+      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/configs/module.ini'))
         {
-        $configs[$module] = new Zend_Config_Ini(BASE_PATH."/privateModules/".$module."/configs/module.ini", 'global');
+        $configs[$module] = new Zend_Config_Ini(BASE_PATH.'/privateModules/'.$module.'/configs/module.ini', 'global');
         }
       else
         {
-        $configs[$module] = new Zend_Config_Ini(BASE_PATH."/modules/".$module."/configs/module.ini", 'global');
+        $configs[$module] = new Zend_Config_Ini(BASE_PATH.'/modules/'.$module.'/configs/module.ini', 'global');
         }
       }
     Zend_Registry::set('translatersModules', $translaters);
