@@ -277,7 +277,7 @@ abstract class UserModelBase extends AppModel
    */
   public function getGravatarUrl($email, $s = 32, $d = '404', $r = 'g', $img = false, $atts = array() )
     {
-    $url = 'http://www.gravatar.com/avatar/';
+    $url = 'https://secure.gravatar.com/avatar/';
     $url .= md5(strtolower(trim($email)));
     $url .= "?s=".$s."&d=".$d."&r=".$r;
     if($img)
