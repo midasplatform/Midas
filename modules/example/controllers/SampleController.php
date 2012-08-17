@@ -22,10 +22,11 @@ require_once BASE_PATH . '/modules/example/AppController.php';
 /** example sample controller*/
 class Example_SampleController extends Example_AppController
   {
-  
+
   public $_models = array('User');
   public $_moduleModels = array('Wallet');
 
+  /** init method */
   function init()
     {
     }
@@ -53,9 +54,9 @@ class Example_SampleController extends Example_AppController
       {
       $this->haveToBeLogged();
       return false;
-      }  
+      }
     $this->view->header = 'Example Module Sample Controller Delete Action';
     }
-    
+
 
   }//end class

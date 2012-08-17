@@ -41,8 +41,8 @@ class Example_WalletModelBase extends Example_AppModel
                         'child_column' => 'user_id'));
     $this->initialize(); // required
     }
-    
-    
+
+
   /** Create a wallet
    * @return WalletDao */
   function createWallet($userDao, $dollars)

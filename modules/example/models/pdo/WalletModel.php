@@ -21,6 +21,6 @@ require_once BASE_PATH . '/modules/example/models/base/WalletModelBase.php';
 
 
 /** Example_WalletModel */
-class Example_WalletModel extends Example_WalletModelBase 
+class Example_WalletModel extends Example_WalletModelBase
   {
   }
