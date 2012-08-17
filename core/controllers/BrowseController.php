@@ -86,12 +86,20 @@ class BrowseController extends AppController
         {
         throw new Zend_Exception("Unable to load destination");
         }
-
-      // Move folder(s)
-      foreach($folders as $folder)
+      if(!$this->Folder->policyCheck($destinationFolder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
         {
-        if(isset($moveSubmit))
+        throw new Zend_Exception('Write permission required into the destination folder');
+        }
+
+      // Folders can only be moved, not shared or duplicated
+      if(isset($moveSubmit))
+        {
+        foreach($folders as $folder)
           {
+          if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+            {
+            throw new Zend_Exception('You must own a folder in order to move it');
+            }
           $this->Folder->move($folder, $destinationFolder);
           }
         }
@@ -101,6 +109,10 @@ class BrowseController extends AppController
         {
         if(isset($shareSubmit))
           {
+          if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+            {
+            throw new Zend_Exception('You must have read permission on an item to share it');
+            }
           foreach($item->getFolders() as $parentFolder)
             {
             $folderId = $parentFolder->getKey();
@@ -119,10 +131,18 @@ class BrowseController extends AppController
           }
         elseif(isset($duplicateSubmit))
           {
+          if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+            {
+            throw new Zend_Exception('You must have read permission on an item to duplicate it');
+            }
           $this->Item->duplicateItem($item, $this->userSession->Dao, $destinationFolder);
           }
         else //moveSubmit, Move item(s)
           {
+          if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+            {
+            throw new Zend_Exception('You must own an item in order to move it');
+            }
           $from = $this->_getParam('from');
           $fromFolder = $this->Folder->load($from);
           if($destinationFolder == false)
@@ -144,16 +164,16 @@ class BrowseController extends AppController
       // Drag-and-drop actions
       if(isset($ajax))
         {
-        $this->_helper->layout->disableLayout();
-        $this->_helper->viewRenderer->setNoRender();
+        $this->disableLayout();
+        $this->disableView();
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
       $this->_redirect('/folder/'.$destinationFolder->getKey());
+      return;
       }
 
-    $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
 
     // Used for moveCopyForm (movecopy.phtml)
     if(isset($share) || isset($duplicate) || isset($move))
@@ -212,8 +232,7 @@ class BrowseController extends AppController
   /** Ajax element used to select an item*/
   public function selectitemAction()
     {
-    $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
 
     $this->view->selectEnabled = true;
 
@@ -233,9 +252,8 @@ class BrowseController extends AppController
   /** Ajax element used to select a folder*/
   public function selectfolderAction()
     {
-    $this->requireAjaxRequest();
     $this->disableLayout();
-    $policy = $this->_getParam("policy");
+    $policy = $this->_getParam('policy');
 
     $communities = $this->User->getUserCommunities($this->userSession->Dao);
 
@@ -341,9 +359,8 @@ class BrowseController extends AppController
   /** get getfolders Items' size */
   public function getfolderssizeAction()
     {
-    $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
     $folderIds = $this->_getParam('folders');
     if(!isset($folderIds))
       {
@@ -364,9 +381,8 @@ class BrowseController extends AppController
   /** get element info (ajax function for the treetable) */
   public function getelementinfoAction()
     {
-    $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
     $element = $this->_getParam('type');
     $id = $this->_getParam('id');
     if(!isset($id) || !isset($element))
@@ -378,6 +394,10 @@ class BrowseController extends AppController
       {
       case 'community':
         $community = $this->Community->load($id);
+        if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_READ))
+          {
+          throw new Zend_Exception('User does not have read permission on the community');
+          }
         $jsonContent = array_merge($jsonContent, $community->toArray());
         $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($community->getCreation()));
         $members = $community->getMemberGroup()->getUsers();
@@ -385,6 +405,10 @@ class BrowseController extends AppController
         break;
       case 'folder':
         $folder = $this->Folder->load($id);
+        if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
+          {
+          throw new Zend_Exception('User does not have read permission on the folder');
+          }
         $jsonContent = array_merge($jsonContent, $folder->toArray());
         $jsonContent['creation'] = $this->Component->Date->formatDate(strtotime($jsonContent['date_creation']));
         $jsonContent['updated'] = $this->Component->Date->formatDate(strtotime($jsonContent['date_update']));
@@ -402,6 +426,10 @@ class BrowseController extends AppController
         break;
       case 'item':
         $item = $this->Item->load($id);
+        if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+          {
+          throw new Zend_Exception('User does not have read permission on the item');
+          }
         $jsonContent = array_merge($jsonContent, $item->toArray());
         $itemRevision = $this->Item->getLastRevision($item);
         if(isset($itemRevision) && $itemRevision !== false)
