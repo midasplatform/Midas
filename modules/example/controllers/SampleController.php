@@ -21,11 +21,13 @@ require_once BASE_PATH . '/modules/example/AppController.php';
 
 /** example sample controller*/
 class Example_SampleController extends Example_AppController
-{
+  {
+  
+  public $_models = array('User');
+  public $_moduleModels = array('Wallet');
 
   function init()
     {
-
     }
 
   /**
@@ -36,10 +38,13 @@ class Example_SampleController extends Example_AppController
     $this->view->header = 'Example Module Sample Controller View Action';
     $this->view->sampleList = array('sample 1', 'sample 2', 'sample 3');
     $this->view->json['json_sample'] = 'my_json_sample_value';
+    // get userId 1 for now
+    $userDao = $this->User->load(1); // use a core model
+    $this->view->wallet = $this->Example_Wallet->createWallet($userDao, '10'); // use a model from this module
     }
 
   /**
-   *  view Action
+   *  delete Action
    */
   function deleteAction()
     {
@@ -47,4 +52,4 @@ class Example_SampleController extends Example_AppController
     }
     
 
-}//end class
+  }//end class

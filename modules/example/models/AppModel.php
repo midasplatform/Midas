@@ -9,14 +9,11 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-$this->headScript()->appendFile($this->moduleWebroot.'/public/js/sample/example.sample.view.js');
-?>
-<table>
-<?php
-  foreach($this->sampleList as $sample)
+
+/**
+ * Example AppModel
+ */
+class Example_AppModel extends MIDASModel
   {
-  echo '<tr><td>'.$sample.'</td></tr>';    
+  public $moduleName = 'validation';
   }
-?>
-</table>
-<?php echo 'wallet dollars: '.$this->wallet->getDollars(); ?>

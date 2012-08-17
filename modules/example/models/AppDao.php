@@ -9,14 +9,12 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-$this->headScript()->appendFile($this->moduleWebroot.'/public/js/sample/example.sample.view.js');
-?>
-<table>
-<?php
-  foreach($this->sampleList as $sample)
+
+/**
+ * AppDao for the example module.
+ */
+class Example_AppDao extends MIDAS_GlobalDao
   {
-  echo '<tr><td>'.$sample.'</td></tr>';    
-  }
-?>
-</table>
-<?php echo 'wallet dollars: '.$this->wallet->getDollars(); ?>
+  public $moduleName = 'example';
+  } //end class
+
