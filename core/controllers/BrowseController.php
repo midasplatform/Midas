@@ -144,15 +144,25 @@ class BrowseController extends AppController
             throw new Zend_Exception('You must own an item in order to move it');
             }
           $from = $this->_getParam('from');
-          $fromFolder = $this->Folder->load($from);
+          $fromFolder = $from ? $this->Folder->load($from) : null;
           if($destinationFolder == false)
             {
             throw new Zend_Exception("Unable to load destination");
             }
-          if($fromFolder == false)
+          if($from && $fromFolder == false)
             {
             throw new Zend_Exception("Unable to load move from folder");
             }
+          if(!$from) // make sure item has only one parent in batch case
+            {
+            $parents = $item->getFolders();
+            if(count($parents) != 1) // if item has multiple parents, we don't do the move in batch case
+              {
+              continue;
+              }
+            $fromFolder = $parents[0];
+            }
+
           if($destinationFolder->getKey() != $fromFolder->getKey())
             {
             $this->Folder->addItem($destinationFolder, $item);
