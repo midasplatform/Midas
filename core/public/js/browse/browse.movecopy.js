@@ -24,7 +24,7 @@ midas.browse.moveCopyCallbackSelect = function (node) {
 
     $('#selectedDestinationHidden').val(node.attr('element'));
     $('#selectedDestination').html(sliceFileName(selectedElement, 40));
-    if(node.attr('element') == -1 || node.attr('element') == -2 ) {
+    if(node.attr('valid') == 'false') {
         $('#selectElement').attr('disabled', 'disabled');
         $('#shareElement').attr('disabled', 'disabled');
         $('#duplicateElement').attr('disabled', 'disabled');
