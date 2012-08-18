@@ -288,6 +288,7 @@ class UploadComponent extends AppComponent
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
 
     Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_UPLOAD_FILE', array($item->toArray(), $itemRevisionDao->toArray()));
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_UPLOAD_FILE', array($item->toArray(), $itemRevisionDao->toArray()));
     return $item;
     }//end createUploadedItem
 
@@ -408,6 +409,7 @@ class UploadComponent extends AppComponent
                              '] into revision '.$itemRevisionDao->getKey().
                              ' (item '.$item->getKey().')');
     Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_UPLOAD_FILE', array($itemRevisionDao->getItem()->toArray(), $itemRevisionDao->toArray()));
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_UPLOAD_FILE', array($itemRevisionDao->getItem()->toArray(), $itemRevisionDao->toArray()));
 
     return $item;
     }//end
