@@ -57,11 +57,14 @@ class AdminForm extends AppForm
     $closeRegistration = new Zend_Form_Element_Checkbox('closeregistration');
     $logtrace = new Zend_Form_Element_Checkbox('logtrace');
 
+    $httpProxy = new Zend_Form_Element_Text('httpProxy');
+
     $submit = new Zend_Form_Element_Submit('submitConfig');
     $submit ->setLabel('Save configuration');
 
     $form->addElements(
-      array($dynamichelp, $keywords, $description, $timezone, $environment, $lang, $name, $smartoptimizer, $closeRegistration, $submit, $logtrace));
+      array($dynamichelp, $keywords, $description, $timezone, $environment,
+      $lang, $name, $smartoptimizer, $closeRegistration, $submit, $logtrace, $httpProxy));
     return $form;
     }
 

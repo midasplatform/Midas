@@ -115,6 +115,10 @@ class AdminController extends AppController
     $formArray['lang']->setValue($applicationConfig['global']['application.lang']);
     $formArray['smartoptimizer']->setValue($applicationConfig['global']['smartoptimizer']);
     $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
+    if(isset($applicationConfig['global']['httpproxy']))
+      {
+      $formArray['httpProxy']->setValue($applicationConfig['global']['httpproxy']);
+      }
     if(isset($applicationConfig['global']['closeregistration']))
       {
       $formArray['closeregistration']->setValue($applicationConfig['global']['closeregistration']);
@@ -166,6 +170,7 @@ class AdminController extends AppController
         $applicationConfig['global']['dynamichelp'] = $this->_getParam('dynamichelp');
         $applicationConfig['global']['closeregistration'] = $this->_getParam('closeregistration');
         $applicationConfig['global']['logtrace'] = $this->_getParam('logtrace');
+        $applicationConfig['global']['httpproxy'] = $this->_getParam('httpProxy');
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
