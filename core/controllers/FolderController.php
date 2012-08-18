@@ -109,11 +109,11 @@ class FolderController extends AppController
       }
     elseif($folder === false)
       {
-      throw new Zend_Controller_Action_Exception("The folder doesn't exist.", 404);
+      throw new Zend_Exception("The folder doesn't exist.", 404);
       }
     elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
-      throw new Zend_Controller_Action_Exception('Invalid policy: no read access', 403);
+      throw new Zend_Exception('Invalid policy: no read access', 403);
       }
     else
       {
