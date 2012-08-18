@@ -61,3 +61,12 @@ div.extraManageFormContent {
   margin-top: 15px;
   margin-bottom: 15px;
 }
+
+#description {
+  width: 100%;
+  resize: none;
+}
+
+div.descriptionArea {
+  margin-top: 15px;
+}
