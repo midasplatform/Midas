@@ -59,6 +59,10 @@ class Mfa_OtpComponent extends AppComponent
    */
   protected function _pamAuth($otpDevice, $token)
     {
+    if(!function_exists('pam_auth'))
+      {
+      throw new Zend_Exception('PAM is not enabled on the server');
+      }
     $err = '';
     return pam_auth($otpDevice->getSecret(), $token, $err, false);
     }
