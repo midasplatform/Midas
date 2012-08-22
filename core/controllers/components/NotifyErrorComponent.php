@@ -55,8 +55,8 @@ class NotifyErrorComponent  extends AppComponent
         {
         case 'production':
           $message = "The system has encountered the following error:<br/><h3>";
-          $message .= $e->message . "<br/>";
-          $message .= "In " . $e->file . ", line: " . $e->line . "<br/>";
+          $message .= $e['message'] . "<br/>";
+          $message .= "In " . $e['file'] . ", line: " . $e['line'] . "<br/>";
           $message .= "At " . date("H:i:s Y-m-d") . "</h3><br/>";
           $message .= "Please notify your administrator with this information.<br/>";
           if($e['type'] == E_NOTICE)
@@ -91,7 +91,7 @@ class NotifyErrorComponent  extends AppComponent
             {
             return;
             }
-          header('content-type: text/plain');
+          header('content-type: text/html');
           if(count(ob_list_handlers()) > 0)
             {
             ob_clean();
