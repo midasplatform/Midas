@@ -18,7 +18,7 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/log
 <form class="genericForm" id="mfaLoginForm" method="POST" action="<?php echo $this->webroot?>/mfa/login/submit">
   <input type="hidden" name="userId" value="<?php echo $this->user->getKey();?>" />
   <div>
-    <input id="otpToken" type="text" name="token" />
+    <input id="otpToken" type="password" name="token" />
   </div>
   <div>
     <input type="submit" value="Enter" id="otpLoginSubmit" />
