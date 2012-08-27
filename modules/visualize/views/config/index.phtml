@@ -59,14 +59,18 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
             <div >
               <label for='paraviewworkdir'>ParaviewWeb server Work Dir </label>
               {$this->configForm['paraviewworkdir']}
-              <br/>
-              (where the paraview server mount the Temp directory)
+              <br/><br/>
             </div>
           <div>
             {$this->configForm['submitConfig']}
           </div>
        </form>";
        ?>
+<br/>
+<p>
+  <b>Important note:</b> If you use ParaViewWeb, you must use the Midas Apache server as a proxy for it to prevent
+  cross-site scripting issues. Instructions to do so are <a href="http://www.paraview.org/Wiki/ParaViewWeb_with_Apache_as_front-end" target="blank">here</a>.
+</p>
 </div>
 
 
