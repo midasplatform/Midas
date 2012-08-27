@@ -84,6 +84,16 @@ midas.genericCallbackCheckboxes = function(node) {
                 links += '  <a onclick="midas.duplicateSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.duplicateSelected + '</a></li>';
                 links += '</li>';
             }
+           if(arraySelected['items'].length == 1) {
+                links += '<li style="background-color: white;">';
+                links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> ';
+                links += '  <a onclick="midas.elementPermissions(\'item\',\'' + items + '\');">'+json.browse.share+'</a></li>';
+                links += '</li>';
+                links += '<li style="background-color: white;">';
+                links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> ';
+                links += '  <a onclick="midas.removeItem(\'' + items + '\');">'+json.browse.removeItem+'</a></li>';
+                links += '</li>';
+            }
             if(arraySelected['items'].length > 1 && arraySelected['folders'].length == 0) {
                 links += '<li>';
                 links +=   '<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/page_white_stack.png"/> ';
@@ -173,9 +183,12 @@ midas.removeNodeFromTree = function (node, recursive) {
     $('#browseTable').ttRenderElementsSize();
 };
 
+/**
+ * Remove item from folder
+ */
 midas.removeItem = function (id) {
     var html='';
-    html += json.browse['removeMessage'];
+    html += json.browse['removeItemMessage'];
     html+='<br/>';
     html+='<br/>';
     html+='<br/>';
@@ -225,9 +238,44 @@ midas.removeItem = function (id) {
         });
 };
 
+/**
+ * Delete Item
+ */
+midas.deleteItem = function (id) {
+            $.ajax({
+            type: "GET",
+            url: json.global.webroot+'/item/checkshared',
+            data: {itemId: id},
+            success: function (jsonContent) {
+                var $itemIsShared = $.parseJSON(jsonContent);
+                var html='';
+                if ($itemIsShared == true) {
+                    html+=json.item.message['sharedItem'];
+                }
+                html+=json.browse['deleteItemMessage'];
+                html+='<br/>';
+                html+='<br/>';
+                html+='<br/>';
+                html+='<div style="float: right;">';
+                html+='<input class="globalButton deleteItemYes" element="'+id+'" type="button" value="'+json.global.Yes+'"/>';
+                html+='<input style="margin-left:15px;" class="globalButton deleteItemNo" type="button" value="'+json.global.No+'"/>';
+                html+='</div>';
+
+                midas.showDialogWithContent(json.browse['delete'], html, false);
+
+                $('input.deleteItemYes').unbind('click').click(function() {
+                    location.replace(json.global.webroot+'/item/delete?itemId='+id);
+                });
+                $('input.deleteItemNo').unbind('click').click(function() {
+                    $( "div.MainDialog" ).dialog('close');
+                });
+            }
+        });
+};
+
 midas.deleteFolder = function (id) {
     var html = '';
-    html += json.browse['deleteMessage'];
+    html += json.browse['deleteFolderMessage'];
     html += '<br/><br/>';
     html += '<div id="deleteFolderProgress"></div>';
     html += '<div id="deleteFolderProgressMessage"></div><br/><br/>';
@@ -401,6 +449,21 @@ midas.moveItem = function (itemId, fromFolderId) {
     midas.showDialog(json.browse.move);
 };
 
+midas.shareItem = function (itemId) {
+        midas.loadDialog("shareItem","/browse/movecopy/?share=true&items="+itemId);
+        midas.showDialog(json.browse.shareitem);
+};
+
+midas.duplicateItem = function (itemId) {
+        midas.loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+itemId);
+        midas.showDialog(json.browse.duplicate);
+};
+
+midas.elementPermissions = function (elementType, elementId) {
+        midas.loadDialog("sharing"+elementType+elementId,"/share/dialog?type="+elementType+'&element='+elementId);
+        midas.showDialog(json.browse.share);
+};
+
 midas.parentOf = function (node) {
     var classNames = node[0].className.split(' ');
 
@@ -440,8 +503,8 @@ midas.createAction = function (node) {
                     html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/move.png"/> <a onclick="midas.moveFolder('+element+');">'+json.browse.move+'</a></li>';
                 }
             }
-            if(policy>=2) {
-                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+            if(policy>=2) {              
+                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a onclick="midas.elementPermissions(\''+ type + '\',\'' + element + '\');">'+json.browse.share+'</a></li>';
                 if(node.attr('deletable')!=undefined && node.attr('deletable')=='true') {
                     html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="midas.deleteFolder('+element+');">'+json.browse['delete']+'</a></li>';
                 }
@@ -458,8 +521,11 @@ midas.createAction = function (node) {
             html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
             html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLatest+'</a></li>';
             if (policy>=2) {
-                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
+                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="midas.deleteItem(\'' + element + '\');">'+json.browse.deleteItem+'</a></li>';
                 html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/move.png"/> <a onclick="midas.moveItem(\''+ element + '\',\'' + fromFolder + '\');">'+json.browse.move+'</a></li>';
+                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/item-share.png"/> <a onclick="midas.shareItem(\''+ element + '\');">'+json.browse.shareitem+'</a></li>';
+                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/copy.png"/> <a onclick="midas.duplicateItem(\''+ element + '\');">'+json.browse.duplicate+'</a></li>';
+                html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a onclick="midas.elementPermissions(\''+ type + '\',\'' + element + '\');">'+json.browse.share+'</a></li>';
                 html+='<li class="removeItemLi"><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="midas.removeItem('+element+');">'+json.browse['removeItem']+'</a></li>';
             }
         }
@@ -484,10 +550,6 @@ midas.createAction = function (node) {
             button.attr('rel', $(this).attr('rel'));
             midas.resetUploadButton();
             button.click();
-        });
-        $('a.sharingLink').click(function () {
-            midas.loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
-            midas.showDialog(json.browse.share);
         });
         $('div.viewAction ul').fadeIn('fast');
     });
