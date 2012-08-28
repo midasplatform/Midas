@@ -117,7 +117,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <h1>Actions</h1>
     <ul>
       <li>
-        
+
       </li>
     </ul>
   </div>
@@ -138,13 +138,16 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
 <?php
 $policy=MIDAS_POLICY_READ;
-if($this->isModerator||$this->isAdmin)
+if($this->isModerator)
   {
   $policy=MIDAS_POLICY_WRITE;
   }
+if($this->isAdmin)
+  {
+  $policy=MIDAS_POLICY_ADMIN;
+  }
 ?>
 
-<div class="defaultSideTrigger" policy='<?php echo $policy?>' type='folder' element='<?php echo $this->mainFolder->getFolderId() ?>'>
+<div class="defaultSideTrigger" policy='<?php echo $policy?>' type='folder' deletable='<?php echo $this->deletableFolder?>' element='<?php echo $this->mainFolder->getFolderId() ?>'>
 </div>
-
 
