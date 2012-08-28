@@ -102,9 +102,7 @@ class Batchmake_ExecuteComponent extends AppComponent
   public function generatePythonConfigParams($taskDao, $userDao, $configPrefix = null)
     {
     // generate an config file for this run
-    // HARDCODED
     $configs = array();
-    // HACK how to get domain??
     $midasPath = Zend_Registry::get('webroot');
     $configs[] = 'url http://' . $_SERVER['HTTP_HOST'] . $midasPath;
     $configs[] = 'appname Default';
