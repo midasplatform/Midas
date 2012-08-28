@@ -123,6 +123,17 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception('Unable to authenticate. Please check credentials.', MIDAS_INVALID_PARAMETER);
       }
+    $userDao = $tokenDao->getUserapi()->getUser();
+    $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_API_AUTH_INTERCEPT', array(
+      'user' => $userDao,
+      'tokenDao' => $tokenDao));
+    foreach($notifications as $module => $value)
+      {
+      if($value['response'])
+        {
+        return $value['response'];
+        }
+      }
     $data['token'] = $tokenDao->getToken();
     return $data;
     }

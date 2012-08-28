@@ -321,6 +321,15 @@ class UserController extends AppController
     $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
     if($userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
       {
+      $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTH_INTERCEPT', array('user' => $userDao));
+      foreach($notifications as $module => $value)
+        {
+        if($value['override'] && $value['response'])
+          {
+          echo $value['response'];
+          return;
+          }
+        }
       setcookie('midasUtil', $userDao->getKey().'-'.md5($userDao->getPassword()), time() + 60 * 60 * 24 * 30, '/'); //30 days
       Zend_Session::start();
       $user = new Zend_Session_Namespace('Auth_User');
@@ -379,6 +388,15 @@ class UserController extends AppController
         $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
         if($authModule || $userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
           {
+          $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTH_INTERCEPT', array('user' => $userDao));
+          foreach($notifications as $module => $value)
+            {
+            if($value['override'] && $value['response'])
+              {
+              echo $value['response'];
+              return;
+              }
+            }
           $remember = $form->getValue('remerberMe');
           if(isset($remember) && $remember == 1)
             {
@@ -850,7 +868,7 @@ class UserController extends AppController
     $this->view->jsonSettings['passwordErrorMatch'] = $this->t('The passwords are not the same');
     $this->view->jsonSettings = JsonComponent::encode($this->view->jsonSettings);
 
-    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_CONFIG_TABS', array());
+    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_CONFIG_TABS', array('user' => $userDao));
     }
 
   /** User page action*/
