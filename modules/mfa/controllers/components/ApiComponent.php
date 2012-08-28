@@ -54,7 +54,7 @@ class Mfa_ApiComponent extends AppComponent
       {
       throw new Exception('Invalid MFA token id', -1);
       }
-    
+
     $apiToken = $apiTokenModel->load($tempToken->getTokenId());
     if(!$apiToken)
       {
@@ -77,7 +77,7 @@ class Mfa_ApiComponent extends AppComponent
       {
       throw new Exception('Incorrect OTP', -1);
       }
-    
+
     $token = $apiToken->getToken();
     return array('token' => $token);
     }
