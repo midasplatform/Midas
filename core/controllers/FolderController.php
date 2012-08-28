@@ -103,6 +103,7 @@ class FolderController extends AppController
     $folders = array();
     $items = array();
     $header = "";
+    $folderLevel = 0;
     if(!isset($folder_id))
       {
       throw new Zend_Exception('Please set the folderId.');
@@ -127,6 +128,7 @@ class FolderController extends AppController
       $parent = $folder->getParent();
       while($parent !== false)
         {
+        $folderLevel += 1;
         if(strpos($parent->getName(), 'community') !== false && $this->Folder->getCommunity($parent) !== false)
           {
           $community = $this->Folder->getCommunity($parent);
@@ -156,7 +158,15 @@ class FolderController extends AppController
       {
       array_shift($this->userSession->recentFolders);
       }
-
+    // user or community's default folder cannot be deleted.
+    if($folderLevel == 1 && ($folder->getName() == 'Private' || $folder->getName() == 'Public'))
+      {
+      $this->view->deletableFolder = 'false';
+      }
+    else
+      {
+      $this->view->deletableFolder = 'true';
+      }
     $this->Folder->incrementViewCount($folder);
     $this->view->mainFolder = $folder;
     $this->view->folders = $folders;

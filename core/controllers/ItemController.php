@@ -332,6 +332,7 @@ class ItemController extends AppController
       }
     $this->view->folders = $folders;
 
+    $this->view->json['currentfolder'] = $currentFolder->toArray();
     $this->view->json['item'] = $itemDao->toArray();
     $this->view->json['item']['message']['delete'] = $this->t('Delete');
     $this->view->json['item']['message']['sharedItem'] = $this->t('This item is currrently shared by other folders and/or communities. Deletion will make it disappear in all these folders and/or communitites. ');

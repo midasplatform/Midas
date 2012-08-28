@@ -260,10 +260,26 @@ foreach($cssArray as $module => $list)
     <h1>Actions</h1>
     <ul>
       <?php
+     if($this->isAdmin)
+        {
+        echo "
+        <li>
+          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/lock.png'/> {$this->t('Permissions')}</a>
+        </li>
+        <li>
+          <a  href='javascript:;' id='itemDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Delete')}</a>
+        </li>";
+        }
       if($this->isModerator)
         {
-        echo
-       "<li>
+        echo"
+        <li>
+          <a href='{$this->webroot}/download?&items={$this->itemDao->getKey()}'><img alt='' src='{$this->coreWebroot}/public/images/icons/download.png'/> {$this->t('Download')}</a>
+        </li>
+        <li>
+          <a href='javascript:;' class='moveItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/move.png'/> {$this->t('Move')}</a>
+        </li>  
+        <li>
           <a href='javascript:;' class='shareItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/item-share.png'/> {$this->t('Share')}</a>
         </li>
         <li>
@@ -279,16 +295,6 @@ foreach($cssArray as $module => $list)
           <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='uploadRevisionLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/upload.png'/> {$this->t('Upload new revision')}</a>
         </li>
           ";
-        }
-      if($this->isAdmin)
-        {
-        echo "
-        <li>
-          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/lock.png'/> {$this->t('Permissions')}</a>
-        </li>
-        <li>
-          <a  href='javascript:;' id='itemDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Delete')}</a>
-        </li>";
         }
       foreach($htmltArray as $html)
         {
