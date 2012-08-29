@@ -17,18 +17,18 @@ class IndexControllerTest extends ControllerTestCase
   public function setUp()
     {
     $this->setupDatabase(array('default'));
-    $this->enabledModules = array('helloworld');
+    $this->enabledModules = array('example');
     parent::setUp();
     }
 
   /** test index action*/
   public function testIndexAction()
     {
-    $this->dispatchUrI("/helloworld/index/index");
+    $this->dispatchUrI("/example/index/index");
     $body = $this->getBody();
     $this->assertAction("index");
-    $this->assertModule("helloworld");
-    if(strpos($body, "Module version (config file):") === false)
+    $this->assertModule("example");
+    if(strpos($body, "Welcome to the Example Module") === false)
       {
       $this->fail('Unable to find body element');
       }

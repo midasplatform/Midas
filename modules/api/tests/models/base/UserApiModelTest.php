@@ -32,8 +32,12 @@ class UserApiModelTest extends DatabaseTestCase
   /** Test that UserapiModel::createKey works */
   public function testGenerateApiKeyModel()
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userModel = MidasLoader::loadModel('User');
+    $userDao = $userModel->getByEmail('user1@user1.com');
+    // Must set the password here since our salt is dynamic
+    $userDao->setPassword(md5(Zend_Registry::get('configGlobal')->password->prefix.'test'));
+    $userModel->save($userDao);
 
     $apiKey = $userApiModel->createKeyFromEmailPassword('Test App', 'user1@user1.com', 'test');
     $this->assertTrue($apiKey instanceof Api_UserapiDao);
@@ -43,8 +47,7 @@ class UserApiModelTest extends DatabaseTestCase
   /** Test that UserapiModel::createDefaultApiKey works */
   public function testDefaultApiKeyModel()
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
 
     $userDao = new UserDao();
     $userDao->setUserId(1);

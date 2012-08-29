@@ -50,14 +50,13 @@ abstract class ItemRevisionModelBase extends AppModel
 
   abstract function getByUuid($uuid);
   abstract function getMetadata($revisiondao);
+  abstract function deleteMetadata($revisiondao, $metadataId);
 
   /** Add a bitstream to a revision */
   function addBitstream($itemRevisionDao, $bitstreamDao)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $BitstreamModel = $modelLoad->loadModel('Bitstream');
-    $ItemModel = $modelLoad->loadModel('Item');
-    // $TaskModel = $modelLoad->loadModel('Task');
+    $BitstreamModel = MidasLoader::loadModel('Bitstream');
+    $ItemModel = MidasLoader::loadModel('Item');
 
     $bitstreamDao->setItemrevisionId($itemRevisionDao->getItemrevisionId());
 
@@ -69,7 +68,7 @@ abstract class ItemRevisionModelBase extends AppModel
     $item->setSizebytes($this->getSize($itemRevisionDao));
     $item->setDateUpdate(date('c'));
 
-    $modulesThumbnail = Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_CREATE_THUMBNAIL', array($item));
+    Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_CREATE_THUMBNAIL', array($item));
     $notifications = Zend_Registry::get('notifier')->getNotifications();
 
     $createThumb = false;
@@ -161,7 +160,7 @@ abstract class ItemRevisionModelBase extends AppModel
       $ItemModel->replaceThumbnail($item, $pathThumbnail);
       }
 
-    $ItemModel->save($item);
+    $ItemModel->save($item, true);
     } // end addBitstream
 
 

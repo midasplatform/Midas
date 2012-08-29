@@ -12,6 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.dataTable.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.autogrow-textarea.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/community/community.manage.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tablesorter.min.js');
@@ -68,13 +69,15 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
     <div id="tabs-1">
        <form id="editCommunityForm" class="genericForm" method="<?php echo $this->infoForm['method']?>"  action="<?php echo $this->infoForm['action']?>">
         <div class="createNameElement">
-          <label for="name"><?php echo $this->t('Name')?></label>
+          <?php echo $this->t('Name')?>
           <?php echo $this->infoForm['name']?>
         </div>
-        <div>
-          <label for="description"><?php echo $this->t('Description')?></label>
-          <?php echo $this->infoForm['description']?>
-          <div>Tip: You can use <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> in the description.</div>
+        <div class="descriptionArea">
+          <?php echo $this->t('Description')?>
+          <div>
+            <?php echo $this->infoForm['description']?>
+          </div>
+          <div>Tip: You can use <a target="_blank" href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> in the description.</div>
         </div>
         <div class="radioElement">
           <h4><?php echo $this->t('Privacy')?></h4>
@@ -85,6 +88,19 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
             <?php echo $this->infoForm['canJoin']?>
           </div>
         </div>
+          <?php
+          $extraForm = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_COMMUNITY_MANAGE_FORM', array('community' => $this->communityDao));
+          foreach($extraForm as $module => $value)
+            {
+            if($value)
+              {
+              foreach($value as $sectionTitle => $content)
+                {
+                echo '<div class="extraManageFormContent"><h4>'.$sectionTitle.'</h4>'.$content.'</div>';
+                }
+              }
+            }
+          ?>
         <div>
           <?php echo $this->infoForm['submit']?>
           <input type="hidden" name='modifyInfo' value='1'/>

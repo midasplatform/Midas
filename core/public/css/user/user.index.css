@@ -28,3 +28,59 @@ div.userStats {
   border: none;
   color: #777777;
 }
+
+div.adminCreateUser {
+  margin-top: 20px;
+}
+
+div.loginError,div.registerError {
+  color: red;
+  font-weight: bold;
+}
+
+div.loginError {
+  padding-bottom: 8px;
+}
+
+input.invalidField {
+  background-color: #ff9191;
+}
+
+input.validField {
+  background-color: #91ff91;
+}
+
+.dialogForm {
+  margin-bottom: 0px;
+}
+
+.dialogForm td,.dialogForm input {
+  font-size: 14px;
+}
+
+.dialogForm input[type=text],.dialogForm input[type=password] {
+  width: 200px;
+}
+
+.dialogForm input[type=button],.dialogForm input[type=submit] {
+  cursor: pointer;
+  background: #8689DE;
+  font-size: 13px;
+  border: 0;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px;
+  padding: 6px 8px 6px 8px;
+  color: white;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-right: 0;
+  float: right;
+}
+
+.dialogForm input[type=button]:hover,.dialogForm input[type=submit]:hover {
+  color: #1d5987;
+  text-decoration: none;
+  background: #cbd9e3;
+}

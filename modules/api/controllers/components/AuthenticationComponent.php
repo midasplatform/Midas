@@ -45,8 +45,7 @@ class Api_AuthenticationComponent extends AppComponent
         return 0;
         }
       $token = $args['token'];
-      $modelLoad = new MIDAS_ModelLoader();
-      $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+      $userApiModel = MidasLoader::loadModel('Userapi', 'api');
       $userapiDao = $userApiModel->getUserapiFromToken($token);
       if(!$userapiDao)
         {
@@ -57,14 +56,19 @@ class Api_AuthenticationComponent extends AppComponent
         {
         return false;
         }
-      $userModel = $modelLoad->loadModel('User');
+      $userModel = MidasLoader::loadModel('User');
       $userDao = $userModel->load($userid);
 
       // Set the session in the notifier so callback handlers can use it
+      if(!headers_sent())
+        {
+        session_start();
+        }
       $userSession = new Zend_Session_Namespace('Auth_User');
       $userSession->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
       $userSession->Dao = $userDao;
       Zend_Registry::set('notifier', new MIDAS_Notifier(true, $userSession));
+      session_write_close();
 
       return $userDao;
       }

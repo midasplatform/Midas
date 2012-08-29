@@ -30,3 +30,12 @@ div#permissionsContent a{
 div#permissionsContent a:hover{
   text-decoration: underline;
 }
+
+div#applyPoliciesRecursiveProgressBar {
+  height: 20px;
+}
+
+div#applyPoliciesRecursiveMessage {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}

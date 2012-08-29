@@ -17,29 +17,41 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+require_once BASE_PATH.'/modules/api/library/APIEnabledNotification.php';
 
 /** notification manager for solr module */
-class Solr_Notification extends MIDAS_Notification
+class Solr_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'solr';
-  public $_models = array('Item', 'ItemRevision', 'Metadata');
-  public $_moduleComponents = array('Solr');
+  public $_models = array('Item', 'ItemRevision', 'Metadata', 'Progress');
+  public $_moduleComponents = array('Api', 'Solr');
 
   /** init notification process */
   public function init()
     {
+    $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
+    $this->moduleWebroot = $baseUrl.'/'.$this->moduleName;
+    $this->webroot = $baseUrl;
+
     $this->addCallBack('CALLBACK_CORE_ITEM_SAVED', 'indexItem');
     $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'itemDeleted');
     $this->addCallBack('CALLBACK_CORE_ITEM_SEARCH_DEFAULT_BEHAVIOR_OVERRIDE', 'itemSearch');
 
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getAdminDashboard');
+    $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLinks');
 
     $this->addTask('TASK_CORE_RESET_ITEM_INDEXES', 'resetItemIndexes', 'Recompute lucene indexes');
+
+    $this->enableWebAPI('solr');
     }
 
   /** Add a tab to the manage community page for size quota */
   public function indexItem($args)
     {
+    if(!$args['metadataChanged'])
+      {
+      return;
+      }
     $item = $args['item'];
     try
       {
@@ -49,6 +61,13 @@ class Solr_Notification extends MIDAS_Notification
       {
       $this->getLogger()->warn($e->getMessage.' - Could not index item metadata ('.$item->getKey().')');
       return;
+      }
+
+    $progress = array_key_exists('progress', $args) ? $args['progress'] : null;
+    if($progress)
+      {
+      $message = 'Indexing item '.($progress->getCurrent() + 1).' / '.$progress->getMaximum();
+      $this->Progress->updateProgress($progress, $progress->getCurrent() + 1, $message);
       }
 
     try
@@ -65,8 +84,8 @@ class Solr_Notification extends MIDAS_Notification
       $doc = new Apache_Solr_Document();
       $doc->addField('id', 'item_'.$item->getKey());
       $doc->addField('key', $item->getKey());
-      $doc->addField('name', $item->getName(), 3); //boost factor of 3 for name
-      $doc->addField('description', $item->getDescription(), 2); //boost factor of 2 for description
+      $doc->addField('name', $item->getName(), 3.0); //boost factor of 3 for name
+      $doc->addField('description', $item->getDescription(), 2.0); //boost factor of 2 for description
 
       $revision = $this->Item->getLastRevision($item);
 
@@ -104,7 +123,7 @@ class Solr_Notification extends MIDAS_Notification
       }
     catch(Exception $e)
       {
-      $this->getLogger()->warn('Error saving item to Solr index: '.$e->getMessage());
+      $this->getLogger()->warn('Error saving item ('.$item->getKey().') to Solr index: '.$e->getMessage());
       }
     }
 
@@ -121,18 +140,18 @@ class Solr_Notification extends MIDAS_Notification
                  ' OR description: '.$query.
                  ' OR metadata: '.$query;
 
-    $items = array('itemIds' => array());
+    $items = array();
     try
       {
       $index = $this->ModuleComponent->Solr->getSolrIndex();
 
-      set_error_handler('Solr_Notification::eatWarnings'); //must not print and log warnings
-      $response = $index->search($solrQuery, 0, ((int)$limit) * 3); //multiply limit by 3 to allow some room for policy filtering
-      restore_error_handler(); //restore the existing error handler
+      UtilityComponent::beginIgnoreWarnings(); //must not print and log warnings
+      $response = $index->search($solrQuery, 0, ((int)$limit) * 3, array('fl' => '*,score')); //multiply limit by 3 to allow some room for policy filtering
+      UtilityComponent::endIgnoreWarnings();
 
       foreach($response->response->docs as $doc)
         {
-        $items['itemIds'][] = $doc->key;
+        $items[] = array('id' => $doc->key, 'score' => $doc->score);
         }
       }
     catch(Exception $e)
@@ -177,10 +196,11 @@ class Solr_Notification extends MIDAS_Notification
     }
 
   /** Rebuild the solr lucene index */
-  public function resetItemIndexes()
+  public function resetItemIndexes($params)
     {
-    $this->ModuleComponent->Solr->rebuildIndex();
-    echo "Done!";
+    $progressDao = array_key_exists('progressDao', $params) ? $params['progressDao'] : null;
+    $this->ModuleComponent->Solr->rebuildIndex($progressDao);
+    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Index rebuild complete'));
     }
 
   /** Add a dashboard entry on the admin dashboard for showing solr status */
@@ -188,23 +208,25 @@ class Solr_Notification extends MIDAS_Notification
     {
     try
       {
+      UtilityComponent::beginIgnoreWarnings();
       $index = $this->ModuleComponent->Solr->getSolrIndex();
       $index->search('metadata: foo', 0, 1); //run a simple test query
+      UtilityComponent::endIgnoreWarnings();
       return array('Solr server accepting queries' => array(true));
       }
     catch(Exception $e)
       {
+      UtilityComponent::endIgnoreWarnings();
       return array('Solr server accepting queries' => array(false));
       }
     }
 
-  /**
-   * This is used to suppress warnings from being written to the output and the
-   * error log.  When searching, we don't want warnings to appear for invalid searches.
-   */
-  static function eatWarnings($errno, $errstr, $errfile, $errline)
+  /** Add "Advanced Search" link to the left side links */
+  public function getLeftLinks()
     {
-    return true;
+    return array('Advanced search' => array(
+      $this->webroot.'/solr/advanced',
+      $this->webroot.'/core/public/images/icons/magnifier.png'));
     }
   } //end class
 ?>

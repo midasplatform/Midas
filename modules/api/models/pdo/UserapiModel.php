@@ -31,11 +31,10 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!is_string($appname) || !is_string($email) || !is_string($password))
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error in parameter when creating key from email password.");
       }
 
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $userModel = $this->ModelLoader->loadModel('User');
+    $userModel = MidasLoader::loadModel('User');
 
     // First check that the email and password are correct (ldap not supported for now)
     $userDao = $userModel->getByEmail($email);
@@ -71,10 +70,9 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!is_string($appname) || !is_string($email))
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error in parameter when getting a Userapi by app and email.");
       }
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $userModel = $this->ModelLoader->loadModel('User');
+    $userModel = MidasLoader::loadModel('User');
     $userDao = $userModel->getByEmail($email);
     if($userDao == false)
       {
@@ -96,7 +94,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!is_string($appname) || !$userDao instanceof UserDao)
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error in parameter when getting a Userapi by app and user.");
       }
     $row = $this->database->fetchRow($this->database->select()->where('application_name = ?', $appname)
                                                               ->where('user_id = ?', $userDao->getKey()));
@@ -116,11 +114,10 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!is_string($appname) || !is_string($apikey) || !is_string($email))
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error in parameter when getting Token.");
       }
     // Check if we don't have already a token
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $userModel = $this->ModelLoader->loadModel('User');
+    $userModel = MidasLoader::loadModel('User');
     $userDao = $userModel->getByEmail($email);
     if(!$userDao)
       {
@@ -179,14 +176,12 @@ class Api_UserapiModel extends Api_UserapiModelBase
       return false;
       }
 
-    $this->loadDaoClass('TokenDao', 'api');
-    $tokenDao = new Api_TokenDao();
+    $tokenDao = MidasLoader::newDao('TokenDao', 'api');
     $tokenDao->setUserapiId($userapiDao->getKey());
     $tokenDao->setToken($token);
     $tokenDao->setExpirationDate(date("c", time() + $userapiDao->getTokenExpirationTime() * 60));
 
-    $tokenModel = $this->ModelLoader->loadModel('Token', 'api');
-
+    $tokenModel = MidasLoader::loadModel('Token', 'api');
     $tokenModel->save($tokenDao);
 
     // We do some cleanup of all the other keys that have expired
@@ -201,7 +196,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!is_string($token))
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error in parameter when getting Userapi from token.");
       }
     $now = date("c");
 
@@ -222,7 +217,7 @@ class Api_UserapiModel extends Api_UserapiModelBase
     {
     if(!$userDao instanceof UserDao)
       {
-      throw new Zend_Exception("Error parameter");
+      throw new Zend_Exception("Error in parameter when getting Userapi from user.");
       }
     $rowset = $this->database->fetchAll($this->database->select()->where('user_id = ?', $userDao->getKey()));
     $return = array();

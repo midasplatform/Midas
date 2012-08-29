@@ -1,0 +1,33 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+
+<div class="viewMain">
+  <div class ="genericWrapperTopRight">
+    <div style="float:right;margin-right:2px;" class="genericBigButton ">
+      <a href="<?php echo $this->webroot; ?>/admin#tabs-modules">
+        <img style="float:left;margin-right:2px;"
+             alt=""
+             src="<?php echo $this->coreWebroot;?>/public/images/icons/back.png"/>
+        Back
+      </a>
+    </div>
+  </div>
+  <h3>Multi-Factor Authentication Configuration</h3>
+  <p>Each user should configure their One-Time Pass (OTP) device on the
+    "My Account" page. Administrators can configure this information for any
+    user.</p>
+  <p>Currently, configuration of multi-factor authentication is dependent on the
+    PAM configuration of the host machine and is thus restricted to hosts
+    running PAM. To this point, the verification of the OTP is entirely
+    delegated to PAM and custom configuration should take place there.
+</div>

@@ -16,11 +16,15 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/user/user.settings.css?<?php echo time(); ?>" />
 
 <div id="tabsSettings">
-	<ul>
-		<li><a href="#tabs-account"><?php echo $this->t('My Account') ?></a></li>
-		<li><a href="#tabs-image"><?php echo $this->t('My Avatar') ?></a></li>
-		<li><a href="#tabs-password"><?php echo $this->t('My Password') ?></a></li>
-		<li><a href="#tabs-communities"><?php echo $this->t('My Communities') ?></a></li>
+  <ul>
+    <li><a href="#tabs-account"><?php echo $this->t('My Account') ?></a></li>
+    <li><a href="#tabs-image"><?php echo $this->t('My Avatar') ?></a></li>
+    <?php if($this->allowPasswordChange)
+      { ?>
+      <li><a href="#tabs-password"><?php echo $this->t('My Password') ?></a></li>
+    <?php
+      } ?>
+    <li><a href="#tabs-communities"><?php echo $this->t('My Communities') ?></a></li>
     <?php
     foreach($this->customTabs as $modules)
       {
@@ -30,14 +34,24 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
         }
       }
       ?>
-	</ul>
-	<div id="tabs-account">
+  </ul>
+  <div id="tabs-account">
     <h3><?php echo $this->t('My information')?>:</h3>
     <form  class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']?><?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>">
       <table>
+        <?php
+        foreach($this->prependFields as $field)
+          {
+          echo '<tr><td><span>'.$field['label'].':</span>';
+          echo '<input type="'.$field['type'].'" name="'.$field['name'].'" value="'.$field['value'].'" /></td><td></td></tr>';
+          }
+        ?>
         <tr>
-          <td><span><?php echo $this->t('Firstname');?>:</span><?php echo $this->accountForm['firstname']?></td>
-          <td><span><?php echo $this->t('Lastname');?>:</span><?php echo $this->accountForm['lastname']?></td>
+          <td><span><?php echo $this->t('E-mail');?>:</span><?php echo $this->accountForm['email']?></td><td></td>
+        </tr>
+        <tr>
+          <td><span><?php echo $this->t('First Name');?>:</span><?php echo $this->accountForm['firstname']?></td>
+          <td><span><?php echo $this->t('Last Name');?>:</span><?php echo $this->accountForm['lastname']?></td>
         </tr>
         <tr>
           <td><span><?php echo $this->t('Website');?>:</span><?php echo $this->accountForm['website']?></td>
@@ -58,26 +72,32 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
           </td>
         </tr>
         <?php
-          if($this->currentUser->isAdmin())
-            { ?>
-            <tr>
-              <td colspan="2">
-                <?php echo $this->t('Administrator');?>:
-                <input type="checkbox" name="adminStatus" id="adminStatusCheckbox"
-                <?php
-                if($this->user->isAdmin())
-                  {
-                  echo ' checked="checked" ';
-                  }
-                if($this->user->getKey() == $this->currentUser->getKey())
-                  {
-                  echo ' disabled="disabled" ';
-                  } ?>
-                  />
-             </td>
-           </tr>
+        if($this->currentUser->isAdmin())
+          { ?>
+          <tr>
+            <td colspan="2">
+              <?php echo $this->t('Administrator');?>:
+              <input type="checkbox" name="adminStatus" id="adminStatusCheckbox"
+              <?php
+              if($this->user->isAdmin())
+                {
+                echo ' checked="checked" ';
+                }
+              if($this->user->getKey() == $this->currentUser->getKey())
+                {
+                echo ' disabled="disabled" ';
+                } ?>
+                />
+            </td>
+          </tr>
         <?php
-            } ?>
+          } 
+        foreach($this->appendFields as $field)
+          {
+          echo '<tr><td><span>'.$field['label'].':</span>';
+          echo '<input type="'.$field['type'].'" name="'.$field['name'].'" value="'.$field['value'].'" /></td><td></td></tr>';
+          }
+        ?>
         <tr>
           <td><?php echo $this->accountForm['modifyAccount']?></td>
         </tr>
@@ -114,31 +134,35 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
     </form>
   </div>
 
-	<div id="tabs-password">
-    <h3><?php echo $this->t('My Password')?>:</h3>
-    <form  class="genericForm" id="modifyPassword" method='POST' action='<?php echo $this->webroot?>/user/settings<?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>'>
-      <table>
-        <?php
-        if(!$this->userDao->isAdmin()||$this->user->isAdmin())
-          {
-          ?>
-        <tr>
-          <td><?php echo $this->t('My old password');?><input type="password" name="oldPassword"/></td>
-        </tr>
-        <?php
-          }
-          ?>
-        <tr>
-          <td><?php echo $this->t('My new password');?><input type="password" name="newPassword"/></td>
-          <td><?php echo $this->t('Retype new password');?><input type="password" name="newPasswordConfirmation"/></td>
-        </tr>
-        <tr>
-          <td><input type='submit' name='modifyPassword' value='<?php echo $this->t('Modify password');?>'/></td>
-        </tr>
-      </table>
-    </form>
-  </div>
-	<div id="tabs-communities">
+  <?php if($this->allowPasswordChange)
+    { ?>
+    <div id="tabs-password">
+      <h3><?php echo $this->t('My Password')?>:</h3>
+      <form  class="genericForm" id="modifyPassword" method='POST' action='<?php echo $this->webroot?>/user/settings<?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>'>
+        <table>
+          <?php
+          if(!$this->userDao->isAdmin()||$this->user->isAdmin())
+            {
+            ?>
+          <tr>
+            <td><?php echo $this->t('My old password');?><input type="password" name="oldPassword"/></td>
+          </tr>
+          <?php
+            }
+            ?>
+          <tr>
+            <td><?php echo $this->t('My new password');?><input type="password" name="newPassword"/></td>
+            <td><?php echo $this->t('Retype new password');?><input type="password" name="newPasswordConfirmation"/></td>
+          </tr>
+          <tr>
+            <td><input type='submit' name='modifyPassword' value='<?php echo $this->t('Modify password');?>'/></td>
+          </tr>
+        </table>
+      </form>
+    </div>
+  <?php
+    } ?>
+  <div id="tabs-communities">
     <?php
     if(empty($this->communities))
       {

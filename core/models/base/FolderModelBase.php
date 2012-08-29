@@ -68,6 +68,7 @@ abstract class FolderModelBase extends AppModel
   abstract function isDeleteable($folder);
   abstract function getSize($folder);
   abstract function getByName($name);
+  abstract function getRecursiveChildCount($folder);
 
   /** Get the root folder */
   function getRoot($folder)
@@ -94,7 +95,7 @@ abstract class FolderModelBase extends AppModel
     {
     if(!$folder instanceof FolderDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("folder should be instance of FolderDao.");
       }
     $user = Zend_Registry::get('userSession');
     if(isset($user))
@@ -147,8 +148,7 @@ abstract class FolderModelBase extends AppModel
       return $existingfolder;
       }
 
-    $this->loadDaoClass('FolderDao');
-    $folder = new FolderDao();
+    $folder = MidasLoader::newDao('FolderDao');
     $folder->setName($name);
     $folder->setDescription($description);
     $folder->setUuid($uuid);
@@ -173,8 +173,7 @@ abstract class FolderModelBase extends AppModel
       $totalCount += $subtotal['count'];
       }
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $items = $this->getItemsFiltered($folderDao, $userDao);
     foreach($items as $item)
       {

@@ -33,8 +33,9 @@ class InstallController extends AppController
    */
   function init()
     {
-    if(file_exists(BASE_PATH."/core/configs/database.local.ini") &&
-       file_exists(BASE_PATH."/core/configs/application.local.ini"))
+    if(file_exists(BASE_PATH.'/core/configs/database.local.ini') &&
+       file_exists(BASE_PATH.'/core/configs/application.local.ini') &&
+       Zend_Controller_Front::getInstance()->getRequest()->getActionName() != 'step3')
       {
       throw new Zend_Exception("Midas is already installed.");
       }
@@ -111,7 +112,6 @@ class InstallController extends AppController
       }
     $this->view->phpextension_missing = $this->Component->Utility->checkPhpExtensions($phpextensions);
     $this->view->writable = is_writable(BASE_PATH);
-    $this->view->convertfound = $this->Component->Utility->isImageMagickWorking();
     $this->view->basePath = BASE_PATH;
 
     if($this->_request->isPost())
@@ -207,6 +207,13 @@ class InstallController extends AppController
 
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/database.local.ini', $databaseConfig);
 
+        // Must generate and store our password salt before we create our first user
+        $appConfig = parse_ini_file(BASE_PATH.'/core/configs/application.ini', true);
+        $appConfig['global']['password.prefix'] = UtilityComponent::generateRandomString(32);
+        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $appConfig);
+        $configGlobal = new Zend_Config_Ini(BASE_PATH.'/core/configs/application.local.ini', 'global', true);
+        Zend_Registry::set('configGlobal', $configGlobal);
+
         require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
         $upgradeComponent = new UpgradeComponent();
         $db = Zend_Registry::get('dbAdapter');
@@ -214,8 +221,9 @@ class InstallController extends AppController
         $upgradeComponent->initUpgrade('core', $db, $dbtype);
         $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)));
 
-        $this->User = new UserModel(); //reset Database adapter
-        $this->userSession->Dao = $this->User->createUser($form->getValue('email'), $form->getValue('userpassword1'),
+        session_start();
+        $userModel = MidasLoader::loadModel('User');
+        $this->userSession->Dao = $userModel->createUser($form->getValue('email'), $form->getValue('userpassword1'),
                                 $form->getValue('firstname'), $form->getValue('lastname'), 1);
 
         //create default assetstrore
@@ -235,18 +243,20 @@ class InstallController extends AppController
    */
   function step3Action()
     {
-    if(!file_exists(BASE_PATH."/core/configs/database.local.ini"))
+    $this->requireAdminPrivileges();
+    if(!file_exists(BASE_PATH.'/core/configs/database.local.ini'))
       {
       $this->_redirect('/install/index');
       }
-    $this->view->header = "Step3: Midas Configuration";
+    $this->view->header = 'Step3: Midas Configuration';
     $userDao = $this->userSession->Dao;
     if(!isset($userDao) || !$userDao->isAdmin())
       {
       unlink(BASE_PATH."/core/configs/database.local.ini");
       $this->_redirect('/install/index');
       }
-    $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.ini', true);
+    $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
+
     $form = $this->Form->Install->createConfigForm();
     $formArray = $this->getFormAsArray($form);
     $formArray['name']->setValue($applicationConfig['global']['application.name']);
@@ -266,7 +276,7 @@ class InstallController extends AppController
       $allModules = $this->Component->Utility->getAllModules();
       foreach($allModules as $key => $module)
         {
-        $configLocal = BASE_PATH."/core/configs/".$key.".local.ini";
+        $configLocal = BASE_PATH.'/core/configs/'.$key.'.local.ini';
         if(file_exists($configLocal))
           {
           unlink($configLocal);
@@ -282,7 +292,7 @@ class InstallController extends AppController
       $applicationConfig['global']['default.timezone'] = $form->getValue('timezone');
 
       $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
-      $this->_redirect("/admin?checkRecentItem=true#tabs-modules");
+      $this->_redirect("/admin#tabs-modules");
       }
     } // end method step2Action
 

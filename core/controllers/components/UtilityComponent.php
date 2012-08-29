@@ -174,7 +174,7 @@ class UtilityComponent extends AppComponent
 
     if(!is_array($data) || empty($data))
       {
-      throw new Zend_Exception("Error parameters");
+      throw new Zend_Exception("Error in parameter: data, it should be a non-empty array");
       }
     $text = "";
 
@@ -243,49 +243,6 @@ class UtilityComponent extends AppComponent
         }
       }
     return $phpextension_missing;
-    }
-
-
-  /**
-   * Check ifImageMagick is available.
-   * Return an array of the form [Is_Ok, Message]
-   *
-   * Where Is_Ok is a boolean indicating ifImageMagick is operational
-   * and where Message contains either:
-   *    - ifIs_ok == true, the version of ImageMagick
-   *    - If Is_Ok == false, details regarding the problem
-   */
-  static function isImageMagickWorking()
-    {
-    // ifcommand is successfull $ret shouldn't be empty
-    exec('convert', $output, $returnvalue);
-    if(count($output) == 0)
-      {
-      exec('im-convert', $output, $returnvalue);
-      }
-    if(count($output) > 0)
-      {
-      // version line should look like: "Version: ImageMagick 6.4.7 2008-12-04 Q16 http://www.imagemagick.org"
-      list($version_line, $copyright_line) = $output;
-
-      // split version by spaces
-      $version_chunks = explode(" ", $version_line);
-
-      // assume version is the third element
-      $version = $version_chunks[2];
-
-      // get major, minor and patch number
-      list($major, $minor, $patch) = explode(".", $version);
-
-      if($major < 6)
-        {
-        $text = "<b>ImageMagick</b> (".$version.") is found. Version (>=6.0) is required. Please install imagemagick from http://www.imagemagick.org";
-        return array(false, $text);
-        }
-      return array(true, "ImageMagick (".$version.") found");
-      }
-    $text = "<b>ImageMagick</b> (>=6.0) is not found. Please install imagemagick from http://www.imagemagick.org";
-    return array(false, $text);
     }
 
   /**
@@ -412,8 +369,7 @@ class UtilityComponent extends AppComponent
    */
   public static function getTempDirectory($subdir = "misc")
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $settingModel = $modelLoader->loadModel('Setting');
+    $settingModel = MidasLoader::loadModel('Setting');
     try
       {
       $tempDirectory = $settingModel->getValueByName('temp_directory');
@@ -521,8 +477,9 @@ class UtilityComponent extends AppComponent
    */
   public static function filterHtmlTags($text)
     {
-    $allowedTags = array('a', 'b', 'br', 'i', 'p', 'strong');
-    $allowedAttributes = array('href');
+    $allowedTags = array('a', 'b', 'br', 'i', 'p', 'strong', 'table', 'thead',
+      'tbody', 'th', 'tr', 'td', 'ul', 'ol', 'li', 'style', 'div', 'span');
+    $allowedAttributes = array('href', 'class', 'style', 'type', 'target');
     $stripTags = new Zend_Filter_StripTags($allowedTags, $allowedAttributes);
     return $stripTags->filter($text);
     }
@@ -536,5 +493,89 @@ class UtilityComponent extends AppComponent
     {
     require_once BASE_PATH.'/library/Markdown/markdown.php';
     return Markdown($text);
+    }
+
+  /**
+   * INTERNAL FUNCTION
+   * This is used to suppress warnings from being written to the output and the
+   * error log. Users should not call this function; see beginIgnoreWarnings().
+   */
+  static function ignoreErrorHandler($errno, $errstr, $errfile, $errline)
+    {
+    return true;
+    }
+
+  /**
+   * Normally, PHP warnings are echoed by our default error handler.  If you expect them to happen
+   * from, for instance, an underlying library, but want to eat them instead of echoing them, wrap
+   * the offending lines in beginIgnoreWarnings() and endIgnoreWarnings()
+   */
+  public static function beginIgnoreWarnings()
+    {
+    set_error_handler('UtilityComponent::ignoreErrorHandler'); //must not print and log warnings
+    }
+
+  /**
+   * See documentation of UtilityComponent::beginIgnoreWarnings().
+   * Calling this restores the normal warning handler.
+   */
+  public static function endIgnoreWarnings()
+    {
+    restore_error_handler();
+    }
+
+  /** Recursively delete a directory on disk */
+  public static function rrmdir($dir)
+    {
+    if(!file_exists($dir))
+      {
+      return;
+      }
+    if(is_dir($dir))
+      {
+      $objects = scandir($dir);
+      }
+
+    foreach($objects as $object)
+      {
+      if($object != '.' && $object != '..')
+        {
+        if(filetype($dir.'/'.$object) == 'dir')
+          {
+          self::rrmdir($dir.'/'.$object);
+          }
+        else
+          {
+          unlink($dir.'/'.$object);
+          }
+        }
+      }
+    reset($objects);
+    rmdir($dir);
+    }
+
+  /**
+   * Generate a string of random characters. Seeds RNG within the function using microtime.
+   * @param $length The length of the random string
+   * @param $alphabet (Optional) The alphabet string; if none provided, uses base64
+   */
+  public static function generateRandomString($length, $alphabet = null)
+    {
+    if(!is_string($alphabet) || empty($alphabet))
+      {
+      $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/';
+      }
+
+    // Seed RNG with microtime (for lack of something more difficult to guess)
+    list($usec, $sec) = explode(' ', microtime());
+    srand((float) $sec + ((float) $usec * 100000));
+
+    $salt = '';
+    $max = strlen($alphabet) - 1;
+    for($i = 0; $i <= $length; $i++)
+      {
+      $salt .= substr($alphabet, rand(0, $max), 1);
+      }
+    return $salt;
     }
 } // end class

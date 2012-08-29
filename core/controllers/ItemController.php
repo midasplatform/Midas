@@ -21,7 +21,7 @@
 /** Item Controller */
 class ItemController extends AppController
   {
-  public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Folder', 'Metadata', 'License');
+  public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Folder', 'Metadata', 'License', 'Progress');
   public $_daos = array();
   public $_components = array('Date', 'Utility', 'Sortdao');
   public $_forms = array('Item');
@@ -40,8 +40,6 @@ class ItemController extends AppController
       $this->_forward('view', null, null, array('itemId' => $actionName));
       }
     }  // end init()
-
-
 
   /**
    * create/edit metadata
@@ -62,11 +60,11 @@ class ItemController extends AppController
     $itemDao = $this->Item->load($itemId);
     if($itemDao === false)
       {
-      throw new Zend_Controller_Action_Exception("This item doesn't exist.", 404);
+      throw new Zend_Exception("This item doesn't exist.", 404);
       }
     if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
-      throw new Zend_Controller_Action_Exception("Write permissions required", 403);
+      throw new Zend_Exception("Write permissions required", 403);
       }
 
     $itemRevisionNumber = $this->_getParam("itemrevision");
@@ -90,6 +88,7 @@ class ItemController extends AppController
         break;
         }
       }
+
     $this->view->itemDao = $itemDao;
     $this->view->metadataTypes = array(
     MIDAS_METADATA_TEXT => 'Text',
@@ -119,11 +118,23 @@ class ItemController extends AppController
     $itemDao = $this->Item->load($itemId);
     if($itemDao === false)
       {
-      throw new Zend_Controller_Action_Exception("This item doesn't exist.", 404);
+      throw new Zend_Exception("This item doesn't exist.", 404);
       }
     if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
-      throw new Zend_Controller_Action_Exception('Invalid policy: no read permission', 403);
+      if(!$this->logged)
+        {
+        $this->haveToBeLogged();
+        return false;
+        }
+      else
+        {
+        $this->getResponse()->setHttpResponseCode(403);
+        $this->view->header = 'Access Denied';
+        $this->view->message = 'You lack the privileges to view this item.';
+        $this->_helper->viewRenderer->setNoRender();
+        return false;
+        }
       }
 
     $this->view->isAdmin = $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
@@ -148,8 +159,6 @@ class ItemController extends AppController
         $this->disableLayout();
         $metadataId = $this->_getParam('element');
         $this->ItemRevision->deleteMetadata($metadataItemRevision, $metadataId);
-        // save the item to update the Lucene index
-        $this->Item->save($itemDao);
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
@@ -174,8 +183,6 @@ class ItemController extends AppController
           // otherwise we are attempting to add a new value where one already
           // exists, and we won't save in this case
           $this->Metadata->addMetadataValue($metadataItemRevision, $metadatatype, $element, $qualifier, $value);
-          // save the item to update the Lucene index
-          $this->Item->save($itemDao);
           }
         }
       }
@@ -378,7 +385,7 @@ class ItemController extends AppController
         $item->setName($name);
         }
       $item->setDescription($description);
-      $this->Item->save($item);
+      $this->Item->save($item, true);
       $this->_redirect('/item/'.$item->getKey());
       }
 
@@ -418,10 +425,18 @@ class ItemController extends AppController
       {
       throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
       }
+    $parents = $itemDao->getFolders();
 
     $this->Item->delete($itemDao);
 
-    $this->_redirect('/?checkRecentItem = true');
+    if(count($parents) > 0)
+      {
+      $this->_redirect('/folder/'.$parents[0]->getKey());
+      }
+    else
+      {
+      $this->_redirect('/');
+      }
     }//end delete
 
 
@@ -483,11 +498,19 @@ class ItemController extends AppController
       throw new Zend_Exception('Please set a name');
       }
     $itemIds = explode('-', $itemIds);
+    if($this->progressDao)
+      {
+      $this->progressDao->setMaximum(count($itemIds));
+      $this->Progress->save($this->progressDao);
+      }
 
     $mainItem = $this->Item->mergeItems($itemIds, $name,
-                                        $this->userSession->Dao);
+                                        $this->userSession->Dao, $this->progressDao);
 
-    $this->_redirect('/item/'.$mainItem->getKey());
+    if(!$this->_request->isXmlHttpRequest())
+      {
+      $this->_redirect('/item/'.$mainItem->getKey());
+      }
     }//end merge
 
   /**
@@ -546,7 +569,7 @@ class ItemController extends AppController
       $itemDao = $this->Item->load($itemId);
       if($itemDao === false)
         {
-        throw new Zend_Controller_Action_Exception("This item doesn't exist.", 404);
+        throw new Zend_Exception("This item doesn't exist.", 404);
         }
       if(isset($itemRevisionNumber))
         {
@@ -596,8 +619,7 @@ class ItemController extends AppController
     if($item->getThumbnailId() !== null)
       {
       $bitstream = $this->Bitstream->load($item->getThumbnailId());
-      $componentLoader = new MIDAS_ComponentLoader();
-      $downloadBitstreamComponent = $componentLoader->loadComponent('DownloadBitstream');
+      $downloadBitstreamComponent = MidasLoader::loadComponent('DownloadBitstream');
       $downloadBitstreamComponent->download($bitstream);
       }
     }

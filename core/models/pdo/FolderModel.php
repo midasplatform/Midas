@@ -59,7 +59,7 @@ class FolderModel extends FolderModelBase
     {
     if(!$folderDao instanceof  FolderDao || !is_numeric($policy))
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in params when checking Folder Policy.");
       }
     if($userDao == null)
       {
@@ -110,6 +110,35 @@ class FolderModel extends FolderModelBase
       }
     return true;
     }//end policyCheck
+
+  /**
+   * Get the total number of folders and items contained within this folder,
+   * irrespective of policies
+   */
+  public function getRecursiveChildCount($folder)
+    {
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from(array('f' => 'folder'), array('count' => 'count(*)'))
+                ->where('left_indice > ?', $folder->getLeftIndice())
+                ->where('right_indice < ?', $folder->getRightIndice());
+    $row = $this->database->fetchRow($sql);
+    $folderChildCount = $row['count'];
+
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from(array('i2f' => 'item2folder'), array('count' => 'count(*)'))
+                ->where('i2f.folder_id = '.$folder->getKey().' OR i2f.folder_id IN (' .new Zend_Db_Expr(
+                  $this->database->select()
+                       ->setIntegrityCheck(false)
+                       ->from(array('f' => 'folder'), array('folder_id'))
+                       ->where('left_indice > ?', $folder->getLeftIndice())
+                       ->where('right_indice < ?', $folder->getRightIndice())).')');
+    $row = $this->database->fetchRow($sql);
+    $itemChildCount = $row['count'];
+
+    return $folderChildCount + $itemChildCount;
+    }
 
   /** get the size and the number of item in a folder*/
   public function getSizeFiltered($folders, $userDao = null, $policy = 0)
@@ -331,8 +360,11 @@ class FolderModel extends FolderModelBase
     return $folders;
     }
 
-  /** Custom delete function */
-  function delete($folder)
+  /**
+   * Custom delete function.
+   * Pass a progressDao with pre-computed maximum to keep track of delete progress
+   */
+  function delete($folder, $progressDao = null)
     {
     if(!$folder instanceof FolderDao)
       {
@@ -345,30 +377,44 @@ class FolderModel extends FolderModelBase
     $key = $folder->getKey();
     if(!isset($key))
       {
-      throw new Zend_Exception("Unable to find the key" );
+      throw new Zend_Exception("Unable to find the key");
       }
 
-    $this->ModelLoader = new MIDAS_ModelLoader();
+    if($progressDao && !isset($this->Progress))
+      {
+      $this->Progress = MidasLoader::loadModel('Progress');
+      }
     $items = $folder->getItems();
     foreach($items as $item)
       {
+      if($progressDao)
+        {
+        $message = 'Removing item '.$item->getName();
+        $this->Progress->updateProgress($progressDao, $progressDao->getCurrent() + 1, $message);
+        }
       $this->removeItem($folder, $item);
       }
 
     $children = $folder->getFolders();
     foreach($children as $child)
       {
-      $this->delete($child, true);
+      $this->delete($child, $progressDao);
       }
 
-    $policy_group_model = $this->ModelLoader->loadModel('Folderpolicygroup');
+    if($progressDao)
+      {
+      $message = 'Removing folder '.$folder->getName();
+      $this->Progress->updateProgress($progressDao, $progressDao->getCurrent() + 1, $message);
+      }
+
+    $policy_group_model = MidasLoader::loadModel('Folderpolicygroup');
     $policiesGroup = $folder->getFolderpolicygroup();
     foreach($policiesGroup as $policy)
       {
       $policy_group_model->delete($policy);
       }
 
-    $policy_user_model = $this->ModelLoader->loadModel('Folderpolicyuser');
+    $policy_user_model = MidasLoader::loadModel('Folderpolicyuser');
     $policiesUser = $folder->getFolderpolicyuser();
     foreach($policiesUser as $policy)
       {
@@ -413,11 +459,11 @@ class FolderModel extends FolderModelBase
 
     if(!$folder instanceof FolderDao)
       {
-      throw new Zend_Exception("Error parameter.");
+      throw new Zend_Exception("Error in parameter folder when moving folder.");
       }
     if(!$parent instanceof  FolderDao)
       {
-      throw new Zend_Exception("Error parameter.");
+      throw new Zend_Exception("Error in parameter parent when moving folder.");
       }
 
     // Check ifa folder with the same name already exists for the same parent
@@ -884,8 +930,7 @@ class FolderModel extends FolderModelBase
       {
       throw new Zend_Exception("Should be an item.");
       }
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel("Item");
+    $itemModel = MidasLoader::loadModel('Item');
     // Update item name to avoid duplicated names within the same folder
     if($update)
       {
@@ -910,8 +955,7 @@ class FolderModel extends FolderModelBase
     $this->database->removeLink('items', $folder, $item);
     if(count($item->getFolders()) == 0)
       {
-      $modelLoader = new MIDAS_ModelLoader();
-      $itemModel = $modelLoader->loadModel('Item');
+      $itemModel = MidasLoader::loadModel('Item');
       $itemModel->delete($item);
       }
     } // end function addItem

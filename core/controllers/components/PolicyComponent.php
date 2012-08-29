@@ -22,24 +22,16 @@
 class PolicyComponent extends AppComponent
   {
 
-  var $Folder;
-  var $Item;
-  var $Folderpolicygroup;
-  var $Folderpolicyuser;
-  var $Itempolicygroup;
-  var $Itempolicyuser;
-
   /** Constructor */
   function __construct()
     {
-    $modelLoader = new MIDAS_ModelLoader();
-
-    $this->Folder = $modelLoader->loadModel('Folder');
-    $this->Item = $modelLoader->loadModel('Item');
-    $this->Folderpolicygroup = $modelLoader->loadModel('Folderpolicygroup');
-    $this->Folderpolicyuser = $modelLoader->loadModel('Folderpolicyuser');
-    $this->Itempolicygroup = $modelLoader->loadModel('Itempolicygroup');
-    $this->Itempolicyuser = $modelLoader->loadModel('Itempolicyuser');
+    $this->Folder = MidasLoader::loadModel('Folder');
+    $this->Item = MidasLoader::loadModel('Item');
+    $this->Folderpolicygroup = MidasLoader::loadModel('Folderpolicygroup');
+    $this->Folderpolicyuser = MidasLoader::loadModel('Folderpolicyuser');
+    $this->Itempolicygroup = MidasLoader::loadModel('Itempolicygroup');
+    $this->Itempolicyuser = MidasLoader::loadModel('Itempolicyuser');
+    $this->Progress = MidasLoader::loadModel('Progress');
     }
 
   /**
@@ -50,10 +42,16 @@ class PolicyComponent extends AppComponent
    * @return array('success' => number of resources whose policies were successfully changed,
                    'failure' => number of resources failed to change due to invalid permissions
    */
-  function applyPoliciesRecursive($folder, $user, $results = array('success' => 0, 'failure' => 0))
+  function applyPoliciesRecursive($folder, $user, $progress = null, $results = array('success' => 0, 'failure' => 0))
     {
     foreach($folder->getFolders() as $subfolder)
       {
+      if($progress)
+        {
+        $current = $progress->getCurrent() + 1;
+        $message = 'Set policies on '.$current.' of '.$progress->getMaximum().' resources';
+        $this->Progress->updateProgress($progress, $current, $message);
+        }
       if(!$this->Folder->policyCheck($subfolder, $user, MIDAS_POLICY_ADMIN))
         {
         $results['failure']++;
@@ -79,11 +77,17 @@ class PolicyComponent extends AppComponent
         $this->Folderpolicyuser->createPolicy($folderPolicyUser->getUser(), $subfolder, $folderPolicyUser->getPolicy());
         }
       $results['success']++;
-      $results = $this->applyPoliciesRecursive($subfolder, $user, $results);
+      $results = $this->applyPoliciesRecursive($subfolder, $user, $progress, $results);
       }
 
     foreach($folder->getItems() as $item)
       {
+      if($progress)
+        {
+        $current = $progress->getCurrent() + 1;
+        $message = 'Set policies on '.$current.' of '.$progress->getMaximum().' resources';
+        $this->Progress->updateProgress($progress, $current, $message);
+        }
       if(!$this->Item->policyCheck($item, $user, MIDAS_POLICY_ADMIN))
         {
         $results['failure']++;

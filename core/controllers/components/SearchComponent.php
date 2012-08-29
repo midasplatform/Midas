@@ -24,11 +24,10 @@ class SearchComponent extends AppComponent
   /** search all the results */
   public function searchAll($userDao, $search, $order)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('Item');
-    $folderModel = $modelLoad->loadModel('Folder');
-    $communityModel = $modelLoad->loadModel('Community');
-    $userModel = $modelLoad->loadModel('User');
+    $itemModel = MidasLoader::loadModel('Item');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $communityModel = MidasLoader::loadModel('Community');
+    $userModel = MidasLoader::loadModel('User');
 
     $ItemsDao = $itemModel->getItemsFromSearch($search, $userDao, 200, false, $order);
 
@@ -112,7 +111,7 @@ class SearchComponent extends AppComponent
         usort($results, array($sortdaoComponent, 'sortByNumber'));
         break;
       default:
-        throw new Zend_Exception('Error order parameter');
+        throw new Zend_Exception('Error in order parameter, not one of the expected values.');
         break;
       }
     $resultsArray = array();

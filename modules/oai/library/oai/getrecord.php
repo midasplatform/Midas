@@ -74,8 +74,8 @@ if (!isset($args['metadataPrefix']))
   $errors .= oai_error('missingArgument', 'metadataPrefix');
   } 
 
-$itemModel = $modelLoader->loadModel('Item');
-$itemRevisionModel = $modelLoader->loadModel('ItemRevision');
+$itemModel = MidasLoader::loadModel('Item');
+$itemRevisionModel = MidasLoader::loadModel('ItemRevision');
 require_once BASE_PATH.'/core/controllers/components/UuidComponent.php';
 $uuiComponent = new UuidComponent();
   

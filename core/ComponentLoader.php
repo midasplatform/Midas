@@ -19,8 +19,7 @@
 =========================================================================*/
 
 /**
- * \class MIDAS_ComponentLoader
- * \brief Create component object
+ * DEPRECATED: Use MidasLoader static method loadComponent() instead.
  */
 class MIDAS_ComponentLoader
   {

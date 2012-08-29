@@ -7,3 +7,11 @@ div.notSavedWarning {
 div.rebuildIndexContainer {
   margin-top: 20px;
 }
+
+#rebuildIndexButton {
+  margin: 10px 0px 10px 0px !important;
+}
+
+#rebuildProgressMessage {
+  margin-top: 5px;
+}

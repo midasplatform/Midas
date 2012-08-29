@@ -44,7 +44,7 @@ background-image: none;
 }
 
 
-form.genericForm input[type=submit][disabled],form.genericForm input[type=button][disabled]
+form.genericForm input[type=submit][disabled],form.genericForm input[type=button][disabled],.globalButton[disabled]
 {
 color: grey; text-decoration: none;
 background: #dbdbdb;
@@ -52,7 +52,7 @@ background-image: none;
 cursor: default;
 }
 
-form.genericForm input[type=submit][disabled]:hover,form.genericForm input[type=button][disabled]:hover
+form.genericForm input[type=submit][disabled]:hover,form.genericForm input[type=button][disabled]:hover,.globalButton[disabled]:hover
 {
 color: grey!important; text-decoration: none;
 background: #dbdbdb!important;

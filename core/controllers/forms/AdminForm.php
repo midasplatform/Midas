@@ -21,49 +21,50 @@
 /** Admin forms*/
 class AdminForm extends AppForm
 {
-  /** create  form */
+  /** create form */
   public function createConfigForm()
     {
     $form = new Zend_Form;
 
     $form->setAction($this->webroot.'/admin/index')
-          ->setMethod('post');
+         ->setMethod('post');
 
     $lang = new Zend_Form_Element_Select('lang');
-    $lang ->addMultiOptions(array(
-                    'en' => 'English',
-                    'fr' => 'French'
-                        ));
+    $lang->addMultiOptions(array(
+      'en' => 'English',
+      'fr' => 'French'));
 
     $description = new Zend_Form_Element_Textarea('description');
 
     $keywords = new Zend_Form_Element_Textarea('keywords');
 
     $timezone = new Zend_Form_Element_Select('timezone');
-    $timezone ->addMultiOptions(array(
-                    'America/New_York' => 'America/New_York',
-                    'Europe/Paris' => 'Europe/Paris'
-                        ));
+    $timezone->addMultiOptions(array(
+      'America/New_York' => 'America/New_York',
+      'Europe/Paris' => 'Europe/Paris'));
 
     $environment = new Zend_Form_Element_Select('environment');
-    $environment ->addMultiOptions(array(
-                    'production' => 'Production',
-                    'development' => 'Development'
-                        ));
+    $environment->addMultiOptions(array(
+      'production' => 'Production',
+      'development' => 'Development'));
 
     $name = new Zend_Form_Element_Text('name');
-    $name ->setRequired(true)
-          ->addValidator('NotEmpty', true);
+    $name->setRequired(true)
+         ->addValidator('NotEmpty', true);
 
-    $smartoptimizer = new Zend_Form_Element_Checkbox("smartoptimizer");
-    $dynamichelp = new Zend_Form_Element_Checkbox("dynamichelp");
+    $smartoptimizer = new Zend_Form_Element_Checkbox('smartoptimizer');
+    $dynamichelp = new Zend_Form_Element_Checkbox('dynamichelp');
+    $closeRegistration = new Zend_Form_Element_Checkbox('closeregistration');
+    $logtrace = new Zend_Form_Element_Checkbox('logtrace');
 
-    $closeRegistration = new Zend_Form_Element_Checkbox("closeregistration");
+    $httpProxy = new Zend_Form_Element_Text('httpProxy');
 
-    $submit = new  Zend_Form_Element_Submit('submitConfig');
+    $submit = new Zend_Form_Element_Submit('submitConfig');
     $submit ->setLabel('Save configuration');
 
-    $form->addElements(array($dynamichelp, $keywords, $description, $timezone, $environment, $lang, $name, $smartoptimizer, $closeRegistration, $submit));
+    $form->addElements(
+      array($dynamichelp, $keywords, $description, $timezone, $environment,
+      $lang, $name, $smartoptimizer, $closeRegistration, $submit, $logtrace, $httpProxy));
     return $form;
     }
 

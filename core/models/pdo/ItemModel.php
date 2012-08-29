@@ -34,7 +34,6 @@ class ItemModel extends ItemModelBase
       {
       $group = false; //Postgresql don't like the sql request with group by
       }
-    $isAdmin = false;
     if($userDao == null)
       {
       $userId = -1;
@@ -46,10 +45,6 @@ class ItemModel extends ItemModelBase
     else
       {
       $userId = $userDao->getUserId();
-      if($userDao->isAdmin())
-        {
-        $isAdmin = true;
-        }
       }
 
     // Allow modules to handle special search queries.  If any module accepts the query given its format,
@@ -73,10 +68,10 @@ class ItemModel extends ItemModelBase
     foreach($overrideSearch as $module => $results)
       {
       $override = true;
-      $itemIds = $results['itemIds'];
+      $queryResults = $results;
       break;
       }
-    $return = array();
+
     if(!$override)
       {
       // If no special search modules are enabled, we fall back to a naive/slow SQL search
@@ -86,87 +81,32 @@ class ItemModel extends ItemModelBase
                   ->where('name LIKE ? OR description LIKE ?', '%'.$searchterm.'%')
                   ->limit($limit * 3); //extend limit to allow for policy-based result culling
       $rowset = $this->database->fetchAll($sql);
-      $itemIds = array();
+      $queryResults = array();
       foreach($rowset as $row)
         {
-        $itemIds[] = $row['item_id'];
+        $queryResults[] = array('id' => $row['item_id'], 'score' => 0); //no boosting/scoring from sql search
         }
       }
 
-    if(empty($itemIds))
+    $i = 0;
+    $results = array();
+    foreach($queryResults as $result)
       {
-      return array();
-      }
-    $sql = $this->database->select();
-    if($group)
-      {
-      $sql->from(array('i' => 'item'), array('item_id', 'name', 'count(*)'));
-      }
-    else
-      {
-      $sql->from(array('i' => 'item'));
-      }
-
-    if(!$isAdmin)
-      {
-      $sql ->joinLeft(array('ipu' => 'itempolicyuser'), '
-                    i.item_id = ipu.item_id AND '.$this->database->getDB()->quoteInto('ipu.policy >= ?', MIDAS_POLICY_READ).'
-                       AND '.$this->database->getDB()->quoteInto('ipu.user_id = ? ', $userId).' ', array())
-          ->joinLeft(array('ipg' => 'itempolicygroup'), '
-                         i.item_id = ipg.item_id AND '.$this->database->getDB()->quoteInto('ipg.policy >= ?', MIDAS_POLICY_READ).'
-                             AND ( '.$this->database->getDB()->quoteInto('ipg.group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                                  ipg.group_id IN (' .new Zend_Db_Expr(
-                                  $this->database->select()
-                                       ->setIntegrityCheck(false)
-                                       ->from(array('u2g' => 'user2group'),
-                                              array('group_id'))
-                                       ->where('u2g.user_id = ?', $userId)
-                                       ) .'))', array())
-          ->where(
-           '(
-            ipu.item_id is not null or
-            ipg.item_id is not null)'
-            );
-      }
-    $sql->setIntegrityCheck(false)
-          ->where('i.item_id IN   (?)', $itemIds)
-          ->limit($limit);
-
-    if($group)
-      {
-      $sql->group('i.name');
-      }
-
-    switch($order)
-      {
-      case 'name':
-        $sql->order(array('i.name ASC'));
-        break;
-      case 'date':
-        $sql->order(array('i.date_update ASC'));
-        break;
-      case 'view':
-      default:
-        $sql->order(array('i.view DESC'));
-        break;
-      }
-    $rowset = $this->database->fetchAll($sql);
-    foreach($rowset as $row)
-      {
-      $tmpDao = $this->initDao('Item', $row);
-      if(isset($row['count(*)']))
+      $item = $this->load($result['id']);
+      if($item && $this->policyCheck($item, $userDao))
         {
-        $tmpDao->count = $row['count(*)'];
+        $item->count = 1;
+        $item->score = $result['score'];
+        $results[] = $item;
+        unset($item);
+        $i++;
+        if($i >= $limit)
+          {
+          break;
+          }
         }
-      else if(isset($row['count']))
-        {
-        $tmpDao->count = $row['count'];
-        }
-      $tmpDao->score = 0; // maybe later we can handle scoring in a robust way
-      $return[] = $tmpDao;
-      unset($tmpDao);
       }
-    return $return;
+    return $results;
     } // end getItemsFromSearch()
 
   /** get All*/
@@ -179,6 +119,13 @@ class ItemModel extends ItemModelBase
       $results[] = $this->initDao('Item', $row);
       }
     return $results;
+    }
+
+  /** Get the total number of items in the database */
+  function getTotalCount()
+    {
+    $row = $this->database->fetchRow($this->database->select()->from('item', array('count' => 'count(*)')));
+    return $row['count'];
     }
 
   /** get by uuid*/
@@ -212,7 +159,7 @@ class ItemModel extends ItemModelBase
     $groupId = $communityDao->getMemberGroup()->getKey();
     if(!is_numeric($groupId))
       {
-      throw new Zend_Exception('Error parameter');
+      throw new Zend_Exception('Error in parameter groupId when getting items shared to community.');
       }
     $sql = $this->database->select()
                   ->setIntegrityCheck(false)
@@ -271,7 +218,7 @@ class ItemModel extends ItemModelBase
     $userId = $userDao->getKey();
     if(!is_numeric($userId))
       {
-      throw new Zend_Exception('Error parameter');
+      throw new Zend_Exception('Error parameter userId when getting items owned by user.');
       }
     $sql = $this->database->select()
                   ->setIntegrityCheck(false)
@@ -305,7 +252,7 @@ class ItemModel extends ItemModelBase
     $userId = $userDao->getKey();
     if(!is_numeric($userId))
       {
-      throw new Zend_Exception('Error parameter');
+      throw new Zend_Exception('Error in parameter user Id when getting Items shared to user.');
       }
     $sql = $this->database->select()
                   ->setIntegrityCheck(false)
@@ -333,7 +280,7 @@ class ItemModel extends ItemModelBase
     {
     if(!$itemdao instanceof  ItemDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in parameter itemdao when deleting an Item.");
       }
 
     $deleteType = array(MIDAS_FEED_CREATE_ITEM, MIDAS_FEED_CREATE_LINK_ITEM);
@@ -344,9 +291,9 @@ class ItemModel extends ItemModelBase
                           ->from(array('p' => 'feed'))
                           ->where('ressource = ?', (string)$itemdao->getKey());
     $rowset = $this->database->fetchAll($sql);
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $feed_model = $this->ModelLoader->loadModel('Feed');
-    $revision_model = $this->ModelLoader->loadModel('ItemRevision');
+
+    $feed_model = MidasLoader::loadModel('Feed');
+    $revision_model = MidasLoader::loadModel('ItemRevision');
     foreach($rowset as $row)
       {
       $feed = $this->initDao('Feed', $row);
@@ -356,7 +303,7 @@ class ItemModel extends ItemModelBase
         }
       }
 
-    $folder_model = $this->ModelLoader->loadModel('Folder');
+    $folder_model = MidasLoader::loadModel('Folder');
     $folders = $itemdao->getFolders();
     foreach($folders as $folder)
       {
@@ -369,14 +316,14 @@ class ItemModel extends ItemModelBase
       $revision_model->delete($revision);
       }
 
-    $policy_group_model = $this->ModelLoader->loadModel('Itempolicygroup');
+    $policy_group_model = MidasLoader::loadModel('Itempolicygroup');
     $policiesGroup = $itemdao->getItempolicygroup();
     foreach($policiesGroup as $policy)
       {
       $policy_group_model->delete($policy);
       }
 
-    $policy_user_model = $this->ModelLoader->loadModel('Itempolicyuser');
+    $policy_user_model = MidasLoader::loadModel('Itempolicyuser');
     $policiesUser = $itemdao->getItempolicyuser();
     foreach($policiesUser as $policy)
       {
@@ -386,7 +333,7 @@ class ItemModel extends ItemModelBase
     $thumbnailId = $itemdao->getThumbnailId();
     if($thumbnailId !== null)
       {
-      $bitstreamModel = $this->ModelLoader->loadModel('Bitstream');
+      $bitstreamModel = MidasLoader::loadModel('Bitstream');
       $thumbnail = $bitstreamModel->load($thumbnailId);
       $bitstreamModel->delete($thumbnail);
       }
@@ -401,7 +348,7 @@ class ItemModel extends ItemModelBase
     {
     if(!$itemdao instanceof  ItemDao || !is_numeric($policy))
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in parameter itemdao or policy when checking Item policy.");
       }
     if($userDao == null)
       {
@@ -548,7 +495,7 @@ class ItemModel extends ItemModelBase
     {
     if(!$itemdao instanceof  ItemDao || !$itemdao->saved)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param itemdao when getting last Item revision.");
       }
     return $this->initDao('ItemRevision', $this->database->fetchRow($this->database->select()->from('itemrevision')
                                               ->where('item_id = ?', $itemdao->getItemId())
@@ -564,7 +511,7 @@ class ItemModel extends ItemModelBase
     {
     if(!$itemdao instanceof  ItemDao || !$itemdao->saved)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param itemdao when getting Item revision.");
       }
     return $this->initDao('ItemRevision', $this->database->fetchRow($this->database->select()->from('itemrevision')
                                               ->where('item_id = ?', $itemdao->getItemId())
@@ -579,13 +526,14 @@ class ItemModel extends ItemModelBase
    * @param callback Name of the Midas callback to call
    * @param paramName what parameter name the item should be passed as to the callback (default is 'item')
    */
-  function iterateWithCallback($callback, $paramName = 'item')
+  function iterateWithCallback($callback, $paramName = 'item', $otherParams = array())
     {
     $rowset = $this->database->fetchAll();
     foreach($rowset as $row)
       {
       $item = $this->initDao('Item', $row);
-      Zend_Registry::get('notifier')->callback($callback, array($paramName => $item));
+      $params = array_merge($otherParams, array($paramName => $item));
+      Zend_Registry::get('notifier')->callback($callback, $params);
       }
 
     }

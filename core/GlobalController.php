@@ -27,7 +27,6 @@ class MIDAS_GlobalController extends Zend_Controller_Action
   {
 
   protected $Models = array();
-  protected $ModelLoader = null;
 
   /** contructor*/
   public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
@@ -59,31 +58,26 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     $modulesEnable =  Zend_Registry::get('modulesEnable');
     foreach($modulesEnable as $module)
       {
-      if(file_exists(BASE_PATH."/modules/".$module."/translation/fr-main.csv"))
+      if(file_exists(BASE_PATH.'/modules/'.$module.'/translation/fr-main.csv'))
         {
-        $translationFile = BASE_PATH."/modules/".$module."/translation/fr-main.csv";
+        $translaters[$module] = new Zend_Translate('csv', BASE_PATH.'/modules/'.$module.'/translation/fr-main.csv', 'en');
         }
-      elseif(file_exists(BASE_PATH."/privateModules/".$module."/translation/fr-main.csv"))
+      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv'))
         {
-        $translationFile = BASE_PATH."/privateModules/".$module."/translation/fr-main.csv";
-        }
-      else
-        {
-        throw new Zend_Exception('No translation file found in module '.$module);
+        $translaters[$module] = new Zend_Translate('csv', BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv', 'en');
         }
 
-      $translaters[$module] = new Zend_Translate('csv', $translationFile, "en");
-      if(file_exists(BASE_PATH."/core/configs/".$module.".local.ini"))
+      if(file_exists(BASE_PATH.'/core/configs/'.$module.'.local.ini'))
         {
-        $configs[$module] = new Zend_Config_Ini(BASE_PATH."/core/configs/".$module.".local.ini", 'global');
+        $configs[$module] = new Zend_Config_Ini(BASE_PATH.'/core/configs/'.$module.'.local.ini', 'global');
         }
-      elseif(file_exists(BASE_PATH."/privateModules/".$module."/configs/module.ini"))
+      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/configs/module.ini'))
         {
-        $configs[$module] = new Zend_Config_Ini(BASE_PATH."/privateModules/".$module."/configs/module.ini", 'global');
+        $configs[$module] = new Zend_Config_Ini(BASE_PATH.'/privateModules/'.$module.'/configs/module.ini', 'global');
         }
       else
         {
-        $configs[$module] = new Zend_Config_Ini(BASE_PATH."/modules/".$module."/configs/module.ini", 'global');
+        $configs[$module] = new Zend_Config_Ini(BASE_PATH.'/modules/'.$module.'/configs/module.ini', 'global');
         }
       }
     Zend_Registry::set('translatersModules', $translaters);
@@ -186,10 +180,9 @@ class MIDAS_GlobalController extends Zend_Controller_Action
   public function loadElements()
     {
     Zend_Registry::set('models', array());
-    $this->ModelLoader = new MIDAS_ModelLoader();
     if(isset($this->_models))
       {
-      $this->ModelLoader->loadModels($this->_models);
+      MidasLoader::loadModels($this->_models);
       }
     $modelsArray = Zend_Registry::get('models');
     foreach($modelsArray as $key => $tmp)
@@ -201,7 +194,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       {
       foreach($this->_daos as $dao)
         {
-        Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/core/models/dao');
+        Zend_Loader::loadClass($dao.'Dao', BASE_PATH.'/core/models/dao');
         }
       }
 
@@ -211,8 +204,8 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       {
       foreach($this->_components as $component)
         {
-        $nameComponent = $component . "Component";
-        Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
+        $nameComponent = $component.'Component';
+        Zend_Loader::loadClass($nameComponent, BASE_PATH.'/core/controllers/components');
         if(!isset($this->Component))
           {
           $this->Component =  new stdClass();

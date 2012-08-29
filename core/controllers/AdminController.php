@@ -69,6 +69,15 @@ class AdminController extends AppController
       {
       $params = JsonComponent::decode($params);
       }
+    else
+      {
+      $params = array();
+      }
+
+    if($this->progressDao)
+      {
+      $params['progressDao'] = $this->progressDao;
+      }
 
     $modules = Zend_Registry::get('notifier')->modules;
     $tasks = Zend_Registry::get('notifier')->tasks;
@@ -89,7 +98,14 @@ class AdminController extends AppController
     $this->view->header = "Administration";
     $configForm = $this->Form->Admin->createConfigForm();
 
-    $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
+    if(file_exists(BASE_PATH.'/core/configs/application.local.ini'))
+      {
+      $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
+      }
+    else
+      {
+      $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.ini', true);
+      }
     $formArray = $this->getFormAsArray($configForm);
 
     $formArray['name']->setValue($applicationConfig['global']['application.name']);
@@ -99,6 +115,10 @@ class AdminController extends AppController
     $formArray['lang']->setValue($applicationConfig['global']['application.lang']);
     $formArray['smartoptimizer']->setValue($applicationConfig['global']['smartoptimizer']);
     $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
+    if(isset($applicationConfig['global']['httpproxy']))
+      {
+      $formArray['httpProxy']->setValue($applicationConfig['global']['httpproxy']);
+      }
     if(isset($applicationConfig['global']['closeregistration']))
       {
       $formArray['closeregistration']->setValue($applicationConfig['global']['closeregistration']);
@@ -106,6 +126,10 @@ class AdminController extends AppController
     if(isset($applicationConfig['global']['dynamichelp']))
       {
       $formArray['dynamichelp']->setValue($applicationConfig['global']['dynamichelp']);
+      }
+    if(isset($applicationConfig['global']['logtrace']))
+      {
+      $formArray['logtrace']->setValue($applicationConfig['global']['logtrace']);
       }
     $this->view->selectedLicense = $applicationConfig['global']['defaultlicense'];
 
@@ -145,6 +169,8 @@ class AdminController extends AppController
         $applicationConfig['global']['defaultlicense'] = $this->_getParam('licenseSelect');
         $applicationConfig['global']['dynamichelp'] = $this->_getParam('dynamichelp');
         $applicationConfig['global']['closeregistration'] = $this->_getParam('closeregistration');
+        $applicationConfig['global']['logtrace'] = $this->_getParam('logtrace');
+        $applicationConfig['global']['httpproxy'] = $this->_getParam('httpProxy');
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
@@ -183,15 +209,7 @@ class AdminController extends AppController
         }
       }
 
-    // Disable default assetstore feature is version less than 3.1.4
-    if($this->Component->Upgrade->transformVersionToNumeric(Zend_Registry::get('configDatabase')->version) < $this->Component->Upgrade->transformVersionToNumeric("3.1.4") )
-      {
-      $defaultAssetStoreId = 0;
-      }
-    else
-      {
-      $defaultAssetStoreId = $this->Assetstore->getDefault()->getKey();
-      }
+    $defaultAssetStoreId = $this->Assetstore->getDefault()->getKey();
 
     // get assetstore data
     $assetstores = $this->Assetstore->getAll();
@@ -480,7 +498,6 @@ class AdminController extends AppController
   function upgradeAction()
     {
     $this->requireAdminPrivileges();
-    $this->requireAjaxRequest();
     $this->disableLayout();
 
     $db = Zend_Registry::get('dbAdapter');
@@ -623,8 +640,8 @@ class AdminController extends AppController
 
     if($this->getRequest()->isPost())
       {
-      $this->_helper->layout->disableLayout();
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableLayout();
+      $this->disableView();
 
       if(!$this->view->migrateForm->isValid($_POST))
         {

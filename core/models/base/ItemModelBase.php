@@ -60,7 +60,8 @@ abstract class ItemModelBase extends AppModel
   abstract function getAll();
   abstract function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view');
   abstract function getByName($name);
-  abstract function iterateWithCallback($callback, $paramName = 'item');
+  abstract function iterateWithCallback($callback, $paramName = 'item', $otherParams = array());
+  abstract function getTotalCount();
 
   /** delete an item */
   public function delete($dao)
@@ -73,8 +74,14 @@ abstract class ItemModelBase extends AppModel
     parent::delete($dao);
     }// delete
 
-  /** save */
-  public function save($dao)
+  /**
+   * Default save override.
+   * @param dao The item dao to save
+   * @param metadataChanged (bool, default = true) This parameter is passed to the
+   *                        CALLBACK_CORE_ITEM_SAVED and should only be set to true on the
+   *                        final save of the item in the controller's execution.
+   */
+  public function save($dao, $metadataChanged = true)
     {
     if(!isset($dao->uuid) || empty($dao->uuid))
       {
@@ -92,7 +99,9 @@ abstract class ItemModelBase extends AppModel
     $dao->setDescription(UtilityComponent::filterHtmlTags($dao->getDescription()));
     parent::save($dao);
 
-    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_SAVED', array('item' => $dao));
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_SAVED', array(
+      'item' => $dao,
+      'metadataChanged' => $metadataChanged));
     }
 
   /** copy parent folder policies*/
@@ -100,18 +109,17 @@ abstract class ItemModelBase extends AppModel
     {
     if(!$itemdao instanceof ItemDao || !$folderdao instanceof FolderDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param itemdao or folderdao when copying parent policies.");
       }
     $groupPolicies = $folderdao->getFolderpolicygroup();
     $userPolicies = $folderdao->getFolderpolicyuser();
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $ItempolicygroupModel = $modelLoad->loadModel('Itempolicygroup');
+    $ItempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
     foreach($groupPolicies as $key => $policy)
       {
       $ItempolicygroupModel->createPolicy($policy->getGroup(), $itemdao, $policy->getPolicy());
       }
-    $ItempolicyuserModel = $modelLoad->loadModel('Itempolicyuser');
+    $ItempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
     foreach($userPolicies as $key => $policy)
       {
       $ItempolicyuserModel->createPolicy($policy->getUser(), $itemdao, $policy->getPolicy());
@@ -119,12 +127,12 @@ abstract class ItemModelBase extends AppModel
 
     if($feeddao != null && $feeddao instanceof FeedDao)
       {
-      $FeedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
+      $FeedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
       foreach($groupPolicies as $key => $policy)
         {
         $FeedpolicygroupModel->createPolicy($policy->getGroup(), $feeddao, $policy->getPolicy());
         }
-      $FeedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
+      $FeedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
       foreach($userPolicies as $key => $policy)
         {
         $FeedpolicyuserModel->createPolicy($policy->getUser(), $feeddao, $policy->getPolicy());
@@ -145,7 +153,7 @@ abstract class ItemModelBase extends AppModel
     {
     if(!$itemdao instanceof ItemDao || !$folderdao instanceof FolderDao)
       {
-      throw new Zend_Exception("Error input parameter.");
+      throw new Zend_Exception("Error in itemdao or folderdao when adding read only policy.");
       }
     $groupPolicies = $folderdao->getFolderpolicygroup();
     $existingGroupPolicies = $itemdao->getItempolicygroup();
@@ -159,8 +167,7 @@ abstract class ItemModelBase extends AppModel
         }
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $ItempolicygroupModel = $modelLoad->loadModel('Itempolicygroup');
+    $ItempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
     foreach($groupPolicies as $key => $policy)
       {
       $newGroup = $policy->getGroup();
@@ -190,16 +197,15 @@ abstract class ItemModelBase extends AppModel
     {
     if(!$itemDao instanceof ItemDao || !$folderDao instanceof FolderDao)
       {
-      throw new Zend_Exception("Error ItemDao or FolderDao");
+      throw new Zend_Exception("Error in ItemDao or FolderDao when duplicating item");
       }
     if(!$userDao instanceof UserDao)
       {
       throw new Zend_Exception("Should be an user.");
       }
-    $modelLoad = new MIDAS_ModelLoader();
-    $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
-    $BitstreamModel = $modelLoad->loadModel('Bitstream');
-    $MetadataModel = $modelLoad->loadModel('Metadata');
+    $ItemRevisionModel = MidasLoader::loadModel('ItemRevision');
+    $BitstreamModel = MidasLoader::loadModel('Bitstream');
+    $MetadataModel = MidasLoader::loadModel('Metadata');
 
     $name = $itemDao->getName();
     $description = $itemDao->getDescription();
@@ -227,13 +233,10 @@ abstract class ItemModelBase extends AppModel
       $newItem->setThumbnailId($newThumb->getKey());
       }
 
-    $this->save($newItem);
-
-    $modelLoad = new MIDAS_ModelLoader();
-    $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
-    $BitstreamModel = $modelLoad->loadModel('Bitstream');
-    $MetadataModel = $modelLoad->loadModel('Metadata');
-    $ItemPolicyGroupModel = $modelLoad->loadModel('Itempolicygroup');
+    $ItemRevisionModel = MidasLoader::loadModel('ItemRevision');
+    $BitstreamModel = MidasLoader::loadModel('Bitstream');
+    $MetadataModel = MidasLoader::loadModel('Metadata');
+    $ItemPolicyGroupModel = MidasLoader::loadModel('Itempolicygroup');
     $ItemPolicyGroupModel->computePolicyStatus($newItem);
 
     foreach($itemDao->getRevisions() as $revision)
@@ -255,7 +258,7 @@ abstract class ItemModelBase extends AppModel
                                         $metadata->getMetadatatype(),
                                         $metadata->getElement(),
                                         $metadata->getQualifier(),
-                                        $metadata->getValue());
+                                        $metadata->getValue(), false);
         }
       // duplicate bitstream
       foreach($revision->getBitstreams() as $bitstream)
@@ -272,6 +275,7 @@ abstract class ItemModelBase extends AppModel
         $BitstreamModel->save($dupBitstream);
         }
       }
+    $this->save($newItem, true); // call save with metadata changed flag
     return $newItem;
     }//end duplicateItem
 
@@ -280,7 +284,7 @@ abstract class ItemModelBase extends AppModel
     {
     if(!$itemdao instanceof ItemDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param itemdao when incrementing view count.");
       }
     $user = Zend_Registry::get('userSession');
     if(isset($user))
@@ -303,7 +307,7 @@ abstract class ItemModelBase extends AppModel
     {
     if(!$itemdao instanceof ItemDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param itemdao when incrementing download count.");
       }
     $itemdao->download++;
     parent::save($itemdao);
@@ -323,8 +327,7 @@ abstract class ItemModelBase extends AppModel
       throw new Zend_Exception("Second argument should be an item revision" );
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $ItemRevisionModel = $modelLoad->loadModel('ItemRevision');
+    $ItemRevisionModel = MidasLoader::loadModel('ItemRevision');
 
     // Should check the latest revision for this item
     $latestrevision = $ItemRevisionModel->getLatestRevision($itemdao);
@@ -362,8 +365,7 @@ abstract class ItemModelBase extends AppModel
       throw new Zend_Exception("Revision needs to be associated with Item");
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemRevisionModel = $modelLoad->loadModel('ItemRevision');
+    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
 
     $lastRevisionDao = $this->getLastRevision($itemdao);
     $numRevisions = $lastRevisionDao->getRevision();
@@ -397,14 +399,8 @@ abstract class ItemModelBase extends AppModel
       {
       $itemdao->setSizebytes($itemRevisionModel->getSize($lastRevisionDao));
       }
-    $this->save($itemdao);
+    $this->save($itemdao, true);
     }//end removeRevision
-
-
-
-
-
-
 
   /**
    * Update Item name to avoid two or more items have same name within their parent folder.
@@ -471,8 +467,6 @@ abstract class ItemModelBase extends AppModel
       $updatedName = $realName.' ('.$copyIndex.')';
       }
     return $updatedName;
-
-
     }
 
   /** Create a new empty item */
@@ -502,17 +496,14 @@ abstract class ItemModelBase extends AppModel
       $parentId = $parent;
       $parent = $this->load($parentId);
       }
-
-    $this->loadDaoClass('ItemDao');
-    $item = new ItemDao();
+    $item = MidasLoader::newDao('ItemDao');
     $item->setName($this->updateItemName($name, $parent));
     $item->setDescription($description);
     $item->setType(0);
     $item->setUuid($uuid);
-    $this->save($item);
+    $this->save($item, true);
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $folderModel = $modelLoad->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     $folderModel->addItem($parent, $item);
     $this->copyParentPolicies($item, $parent);
     return $item;
@@ -544,14 +535,19 @@ abstract class ItemModelBase extends AppModel
   /**
    * Merge the items in the specified array into one item.
    */
-  function mergeItems($itemIds, $name, $userSessionDao)
+  function mergeItems($itemIds, $name, $userSessionDao, $progress = null)
     {
+    if($progress)
+      {
+      $current = 0;
+      $progressModel = MidasLoader::loadModel('Progress');
+      }
+
     $items = array();
     foreach($itemIds as $item)
       {
       $itemDao = $this->load($item);
-      if($item != false && $this->policyCheck($itemDao, $userSessionDao,
-                                                MIDAS_POLICY_ADMIN))
+      if($item != false && $this->policyCheck($itemDao, $userSessionDao, MIDAS_POLICY_ADMIN))
         {
         if($itemDao)
           {
@@ -562,26 +558,36 @@ abstract class ItemModelBase extends AppModel
           $this->getLogger()->info(__METHOD__ . " User unable to merge item ".
                                    $itemDao->getKey() . " due to insufficient ".
                                    "permissions.");
+          if($progress)
+            {
+            $current++;
+            $message = 'Merging items: '.$current.' of '.$progress->getMaximum();
+            $progressModel->updateProgress($progress, $current, $message);
+            }
           }
         }
       else
         {
         $this->getLogger()->info(__METHOD__ . " User unable to merge item ".
                                  $item . " because it does not exist.");
+        if($progress)
+          {
+          $current++;
+          $message = 'Merging items: '.$current.' of '.$progress->getMaximum();
+          $progressModel->updateProgress($progress, $current, $message);
+          }
         }
       }
 
     if(empty($items))
       {
-      throw new Zend_Exception('Insufficient permissions to merge these '.
-                               'items.');
+      throw new Zend_Exception('Insufficient permissions to merge these items.');
       }
 
     $mainItem = $items[0];
     $mainItemLastResision = $this->getLastRevision($mainItem);
-    $modelLoad = new MIDAS_ModelLoader();
-    $bitstreamModel = $modelLoad->loadModel('Bitstream');
-    $revisionModel = $modelLoad->loadModel('ItemRevision');
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
+    $revisionModel = MidasLoader::loadModel('ItemRevision');
     foreach($items as $key => $item)
       {
       if($key != 0)
@@ -594,6 +600,12 @@ abstract class ItemModelBase extends AppModel
           $bitstreamModel->save($b);
           }
         $this->delete($item);
+        }
+      if($progress)
+        {
+        $current++;
+        $message = 'Merging items: '.$current.' of '.$progress->getMaximum();
+        $progressModel->updateProgress($progress, $current, $message);
         }
       }
 
@@ -613,9 +625,8 @@ abstract class ItemModelBase extends AppModel
    */
   public function replaceThumbnail($item, $tempThumbnailFile)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $assetstoreModel = $modelLoad->loadModel('Assetstore');
-    $bitstreamModel = $modelLoad->loadModel('Bitstream');
+    $assetstoreModel = MidasLoader::loadModel('Assetstore');
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
 
     // Remove the existing thumbnail bitstream
     if($item->getThumbnailId() !== null)

@@ -44,8 +44,7 @@ class Sizequota_ApiComponent extends AppComponent
   /** Authenticate via token or session */
   private function _getUser($args)
     {
-    $componentLoader = new MIDAS_ComponentLoader();
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $default = $this->userSession ? $this->userSession->Dao : null;
     return $authComponent->getUser($args, $default);
     }
@@ -62,9 +61,8 @@ class Sizequota_ApiComponent extends AppComponent
     $this->_checkKeys(array('token', 'user'), $args);
     $requestUser = $this->_getUser($args);
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
-    $userModel = $modelLoader->loadModel('User');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $userModel = MidasLoader::loadModel('User');
 
     $user = $userModel->load($args['user']);
     if(!$user)
@@ -76,7 +74,7 @@ class Sizequota_ApiComponent extends AppComponent
       {
       throw new Exception('Read permission required', MIDAS_SIZEQUOTA_INVALID_POLICY);
       }
-    $quotaModel = $modelLoader->loadModel('FolderQuota', 'sizequota');
+    $quotaModel = MidasLoader::loadModel('FolderQuota', 'sizequota');
     $quota = $quotaModel->getUserQuota($user);
     $used = $folderModel->getSize($user->getFolder());
     return array('quota' => $quota, 'used' => $used[0]->size);
@@ -94,9 +92,8 @@ class Sizequota_ApiComponent extends AppComponent
     $this->_checkKeys(array('token', 'community'), $args);
     $requestUser = $this->_getUser($args);
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
-    $commModel = $modelLoader->loadModel('Community');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $commModel = MidasLoader::loadModel('Community');
 
     $comm = $commModel->load($args['community']);
     if(!$comm)
@@ -108,7 +105,7 @@ class Sizequota_ApiComponent extends AppComponent
       {
       throw new Exception('Read permission required', MIDAS_SIZEQUOTA_INVALID_POLICY);
       }
-    $quotaModel = $modelLoader->loadModel('FolderQuota', 'sizequota');
+    $quotaModel = MidasLoader::loadModel('FolderQuota', 'sizequota');
     $quota = $quotaModel->getCommunityQuota($comm);
     $used = $folderModel->getSize($comm->getFolder());
     return array('quota' => $quota, 'used' => $used[0]->size);
@@ -130,9 +127,8 @@ class Sizequota_ApiComponent extends AppComponent
       {
       throw new Exception('Must be super-admin', MIDAS_SIZEQUOTA_INVALID_POLICY);
       }
-    $modelLoader = new MIDAS_ModelLoader();
-    $folderModel = $modelLoader->loadModel('Folder');
-    $folder = $folderModel->load($args['folder']);
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folder = MidasLoader::load($args['folder']);
     if(!$folder)
       {
       throw new Exception('Invalid folder id', MIDAS_SIZEQUOTA_INVALID_PARAMETER);
@@ -146,7 +142,7 @@ class Sizequota_ApiComponent extends AppComponent
       {
       throw new Exception('Quota must be empty string or an integer if specified', MIDAS_SIZEQUOTA_INVALID_PARAMETER);
       }
-    $quotaModel = $modelLoader->loadModel('FolderQuota', 'sizequota');
+    $quotaModel = MidasLoader::loadModel('FolderQuota', 'sizequota');
     return $quotaModel->setQuota($folder, $quota);
     }
 

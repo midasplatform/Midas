@@ -1,0 +1,10 @@
+#otpLoginSubmit {
+  float: right;
+  margin-top: 10px;
+}
+
+#otpToken {
+  width: 90%;
+  padding-left: 20px;
+  background: white url(../../../../../core/public/images/icons/lock.png) no-repeat scroll 2px 2px;
+}

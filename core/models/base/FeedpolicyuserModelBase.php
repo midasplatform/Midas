@@ -64,8 +64,7 @@ abstract class FeedpolicyuserModelBase extends AppModel
       {
       $this->delete($this->getPolicy($user, $feed));
       }
-    $this->loadDaoClass('FeedpolicyuserDao');
-    $policyUser = new FeedpolicyuserDao();
+    $policyUser = MidasLoader::newDao('FeedpolicyuserDao');
     $policyUser->setUserId($user->getUserId());
     $policyUser->setFeedId($feed->getFeedId());
     $policyUser->setPolicy($policy);

@@ -39,6 +39,8 @@ abstract class ItempolicygroupModelBase extends AppModel
     } // end __construct()
 
   abstract function deleteGroupPolicies($group);
+  abstract function createPolicy($group, $item, $policy);
+  abstract function getPolicy($group, $item);
 
   /** delete */
   public function delete($dao)
@@ -56,20 +58,19 @@ abstract class ItempolicygroupModelBase extends AppModel
     $userPolicies = $item->getItempolicyuser();
 
     $shared = false;
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
 
     foreach($groupPolicies as $key => $policy)
       {
       if($policy->getGroupId() == MIDAS_GROUP_ANONYMOUS_KEY)
         {
         $item->setPrivacyStatus(MIDAS_PRIVACY_PUBLIC);
-        $itemModel->save($item);
+        $itemModel->save($item, false);
         return MIDAS_PRIVACY_PUBLIC;
         }
       }
     $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
-    $itemModel->save($item);
+    $itemModel->save($item, false);
     return MIDAS_PRIVACY_PRIVATE;
     }// end computePolicyStatus
 

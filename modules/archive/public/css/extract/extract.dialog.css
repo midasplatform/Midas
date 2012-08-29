@@ -1,0 +1,13 @@
+#extractArchiveProgressMessage {
+  word-wrap: break-word;
+  margin-bottom: 20px;
+}
+
+#extractArchiveProgressBar {
+  margin-top: 15px;
+}
+
+div.archiveExtractPromptText {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

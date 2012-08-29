@@ -31,8 +31,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
    */
   public function createThumbnail($item, $inputFile = null)
     {
-    $modelLoader = new MIDAS_ModelLoader;
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     if(is_array($item))
       {
       $item = $itemModel->load($item['item_id']);
@@ -139,18 +138,22 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       case 'flv':
       case 'mp4':
       case 'rm':
-        // Use first frame if this is a video
-        $p = new phMagick('', $pathThumbnail);
-        $p->setImageMagickPath($imageMagickPath);
-        $p->acquireFrame($fullPath, 0);
-        if($exact)
+        // If this is a video, we have to have the file extension, so symlink it
+        if(function_exists('symlink') && symlink($fullPath, $fullPath.'.'.$ext))
           {
-          //preserve aspect ratio by performing a crop after the resize
-          $p->resizeExactly($width, $height);
-          }
-        else
-          {
-          $p->resize($width, $height);
+          $p = new phMagick('', $pathThumbnail);
+          $p->setImageMagickPath($imageMagickPath);
+          $p->acquireFrame($fullPath.'.'.$ext, 0);
+          if($exact)
+            {
+            //preserve aspect ratio by performing a crop after the resize
+            $p->resizeExactly($width, $height);
+            }
+          else
+            {
+            $p->resize($width, $height);
+            }
+          unlink($fullPath.'.'.$ext);
           }
         break;
       default:
@@ -224,4 +227,65 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       }
     }
 
+  /**
+   * Check ifImageMagick is available on the path specified
+   * Return an array of the form [Is_Ok, Message]
+   */
+  public function isImageMagickWorking()
+    {
+    $modulesConfig = Zend_Registry::get('configsModules');
+    $imageMagickPath = $modulesConfig['thumbnailcreator']->imagemagick;
+
+    if(empty($imageMagickPath))
+      {
+      return array(false, 'No ImageMagick path set in the module config');
+      }
+
+    if(strpos(strtolower(PHP_OS), 'win') === 0)
+      {
+      $ext = '.exe';
+      }
+    else
+      {
+      $ext = '';
+      }
+
+    if(file_exists($imageMagickPath.'/convert'.$ext))
+      {
+      $cmd = $imageMagickPath.'/convert'.$ext;
+      }
+    else if(file_exists($imageMagickPath.'/im-convert'.$ext))
+      {
+      $cmd = $imageMagickPath.'/im-convert'.$ext;
+      }
+    else
+      {
+      return array(false, 'Neither convert nor im-convert found at '.$imageMagickPath);
+      }
+
+    exec($cmd, $output, $returnvalue);
+
+    if(count($output) > 0)
+      {
+      // version line should look like: "Version: ImageMagick 6.4.7 2008-12-04 Q16 http://www.imagemagick.org"
+      list($version_line, $copyright_line) = $output;
+
+      // split version by spaces
+      $version_chunks = explode(' ', $version_line);
+
+      // assume version is the third element
+      $version = $version_chunks[2];
+
+      // get major, minor and patch number
+      list($major, $minor, $patch) = explode('.', $version);
+
+      if($major < 6)
+        {
+        $text = "<b>ImageMagick</b> (".$version.") is found. Version (>=6.0) is required.";
+        return array(false, $text);
+        }
+      return array(true, $cmd.' (version '.$version.')');
+      }
+    return array(false, 'No output from '.$cmd);
+    }
 } // end class

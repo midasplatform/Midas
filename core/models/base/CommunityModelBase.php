@@ -76,7 +76,7 @@ abstract class CommunityModelBase extends AppModel
     $name = $dao->getName();
     if(empty($name) && $name !== '0')
       {
-      throw new Zend_Exception("Please set a name.");
+      throw new Zend_Exception("Please set a name for the Community.");
       }
     $cleanDescription = UtilityComponent::filterHtmlTags($dao->getDescription());
     $dao->setDescription($cleanDescription);
@@ -88,7 +88,7 @@ abstract class CommunityModelBase extends AppModel
     {
     if(!$communityDao instanceof CommunityDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param: communityDao should be a CommunityDao.");
       }
     $user = Zend_Registry::get('userSession');
     if(isset($user))
@@ -118,7 +118,7 @@ abstract class CommunityModelBase extends AppModel
       }
     if(empty($name) && $name !== '0')
       {
-      throw new Zend_Exception("Please set a name.");
+      throw new Zend_Exception("Please set a name for the Community.");
       }
 
     if($canJoin == null || $privacy == MIDAS_COMMUNITY_PRIVATE)
@@ -133,8 +133,7 @@ abstract class CommunityModelBase extends AppModel
         }
       }
 
-    $this->loadDaoClass('CommunityDao');
-    $communityDao = new CommunityDao();
+    $communityDao = MidasLoader::newDao('CommunityDao');
     $communityDao->setName($name);
     $communityDao->setDescription($description);
     $communityDao->setPrivacy($privacy);
@@ -143,13 +142,12 @@ abstract class CommunityModelBase extends AppModel
     $communityDao->setUuid($uuid);
     $this->save($communityDao);
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $folderModel = $modelLoad->loadModel('Folder');
-    $groupModel = $modelLoad->loadModel('Group');
-    $feedModel = $modelLoad->loadModel('Feed');
-    $folderpolicygroupModel = $modelLoad->loadModel('Folderpolicygroup');
-    $feedpolicyuserModel = $modelLoad->loadModel('Feedpolicyuser');
-    $feedpolicygroupModel = $modelLoad->loadModel('Feedpolicygroup');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $groupModel = MidasLoader::loadModel('Group');
+    $feedModel = MidasLoader::loadModel('Feed');
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $feedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
+    $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
 
     $folderGlobal = $folderModel->createFolder('community_'.$communityDao->getKey(), '', MIDAS_FOLDER_COMMUNITYPARENT);
     $folderPublic = $folderModel->createFolder('Public', '', $folderGlobal);
@@ -209,29 +207,28 @@ abstract class CommunityModelBase extends AppModel
     {
     if(!$communityDao instanceof CommunityDao)
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param: communityDao should be a CommunityDao.");
       }
-    $this->ModelLoader = new MIDAS_ModelLoader();
-    $group_model = $this->ModelLoader->loadModel('Group');
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_COMMUNITY_DELETED', array('community' => $communityDao));
+    $group_model = MidasLoader::loadModel('Group');
     $groups = $group_model->findByCommunity($communityDao);
     foreach($groups as $group)
       {
       $group_model->delete($group);
       }
 
-    $folder_model = $this->ModelLoader->loadModel('Folder');
+    $folder_model = MidasLoader::loadModel('Folder');
     $folder = $communityDao->getFolder();
     $folder_model->delete($folder);
 
-    $feed_model = $this->ModelLoader->loadModel('Feed');
+    $feed_model = MidasLoader::loadModel('Feed');
     $feeds = $communityDao->getFeeds();
     foreach($feeds as $feed)
       {
       $feed_model->delete($feed);
       }
-    $modelLoad = new MIDAS_ModelLoader();
 
-    $ciModel = $modelLoad->loadModel('CommunityInvitation');
+    $ciModel = MidasLoader::loadModel('CommunityInvitation');
     $invitations = $communityDao->getInvitations();
     foreach($invitations as $invitation)
       {
@@ -255,7 +252,7 @@ abstract class CommunityModelBase extends AppModel
     {
     if(!$communityDao instanceof CommunityDao || !is_numeric($policy))
       {
-      throw new Zend_Exception("Error param.");
+      throw new Zend_Exception("Error in param: communityDao should be a CommunityDao and policy should be numeric.");
       }
     if($userDao == null)
       {
@@ -359,8 +356,7 @@ abstract class CommunityModelBase extends AppModel
    */
   function countBitstreams($communityDao, $userDao = null)
     {
-    $modelLoad = new MIDAS_ModelLoader();
-    $folderModel = $modelLoad->loadModel('Folder');
+    $folderModel = MidasLoader::loadModel('Folder');
     $folderDao = $folderModel->load($communityDao->getFolderId());
 
     return $folderModel->countBitstreams($folderDao, $userDao);

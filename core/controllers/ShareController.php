@@ -21,7 +21,7 @@
 /** Share Controller */
 class ShareController extends AppController
   {
-  public $_models = array('Item', 'Folder', 'Group', 'Folderpolicygroup', 'Folderpolicyuser', 'Itempolicygroup', 'Itempolicyuser', 'User', 'Community');
+  public $_models = array('Item', 'Folder', 'Group', 'Folderpolicygroup', 'Folderpolicyuser', 'Itempolicygroup', 'Itempolicyuser', 'User', 'Community', 'Progress');
   public $_daos = array();
   public $_components = array('Policy');
   public $_forms = array();
@@ -41,7 +41,7 @@ class ShareController extends AppController
     $element = $this->_getParam('element');
     if(!isset($type) || !isset($element))
       {
-      throw new Zend_Exception("Parameters problem.");
+      throw new Zend_Exception("Parameters problem, expecting type or element to be set.");
       }
 
     switch($type)
@@ -53,7 +53,7 @@ class ShareController extends AppController
         $element = $this->Item->load($element);
         break;
       default:
-        throw new Zend_Exception("Unknown type.");
+        throw new Zend_Exception("Unknown type, expected folder or item.");
         break;
       }
 
@@ -324,14 +324,21 @@ class ShareController extends AppController
 
     if($this->_request->isPost())
       {
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableView();
       $folder = $this->Folder->load($folderId);
       if(!$folder)
         {
         echo JsonComponent::encode(array(false, $this->t('Invalid folder id')));
         return;
         }
-      $results = $this->Component->Policy->applyPoliciesRecursive($folder, $this->userSession->Dao);
+      if($this->progressDao)
+        {
+        // Need to count up all the child folders and items of the folder
+        $this->progressDao->setMaximum($this->Folder->getRecursiveChildCount($folder));
+        $this->progressDao->setMessage('total count = '.$this->progressDao->getMaximum());
+        $this->Progress->save($this->progressDao);
+        }
+      $results = $this->Component->Policy->applyPoliciesRecursive($folder, $this->userSession->Dao, $this->progressDao);
       echo JsonComponent::encode(array(true, $results));
       return;
       }

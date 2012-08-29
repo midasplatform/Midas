@@ -21,7 +21,7 @@
 /** Folder Controller*/
 class FolderController extends AppController
   {
-  public $_models = array('Folder', 'Folder', 'Item', 'Folderpolicygroup', 'Folderpolicyuser');
+  public $_models = array('Folder', 'Folder', 'Item', 'Folderpolicygroup', 'Folderpolicyuser', 'Progress');
   public $_daos = array('Folder', 'Folder', 'Item');
   public $_components = array('Utility', 'Date');
   public $_forms = array('Folder');
@@ -109,11 +109,11 @@ class FolderController extends AppController
       }
     elseif($folder === false)
       {
-      throw new Zend_Controller_Action_Exception("The folder doesn't exist.", 404);
+      throw new Zend_Exception("The folder doesn't exist.", 404);
       }
     elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
-      throw new Zend_Controller_Action_Exception('Invalid policy: no read access', 403);
+      throw new Zend_Exception('Invalid policy: no read access', 403);
       }
     else
       {
@@ -222,7 +222,13 @@ class FolderController extends AppController
         throw new Zend_Exception("User Default Folder. You cannot delete it.");
         }
       }
-    $this->Folder->delete($folder);
+    if($this->progressDao)
+      {
+      $this->progressDao->setMaximum($this->Folder->getRecursiveChildCount($folder) + 1);
+      $this->progressDao->setMessage('Preparing to delete folder...');
+      $this->Progress->save($this->progressDao);
+      }
+    $this->Folder->delete($folder, $this->progressDao);
     $folderInfo = $folder->toArray();
     echo JsonComponent::encode(array(true, $this->t('Changes saved'), $folderInfo));
     }// end deleteAction

@@ -70,6 +70,10 @@ midas.genericCallbackCheckboxes = function(node) {
             links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> ';
             links += '  <a onclick="midas.deleteSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.deleteSelected + '</a></li>';
             links += '</li>';
+            links += '<li>';
+            links +=   '<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/move.png"/> ';
+            links +=   '<a onclick="midas.moveSelected(\''+folders+'\',\''+items+'\')" element="'+items+'">Move all selected</a>';
+            links += '</li>';
             if(arraySelected['items'].length > 0) {
                 links += '<li style="background-color: white;">';
                 links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/item-share.png"/> ';
@@ -81,23 +85,41 @@ midas.genericCallbackCheckboxes = function(node) {
                 links += '</li>';
             }
             if(arraySelected['items'].length > 1 && arraySelected['folders'].length == 0) {
-                var itemsParam = arraySelected['items'].join('-');
                 links += '<li>';
                 links +=   '<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/page_white_stack.png"/> ';
-                links +=   '<a class="mergeItemsLink" element="'+itemsParam+'">Merge items</a>';
+                links +=   '<a class="mergeItemsLink" element="'+items+'">Merge items</a>';
                 links += '</li>';
-                json.global.webroot+'/item/merge?items='+items;
             }
         }
         links += '</ul>';
         $('div.viewSelected>span').html(links);
         $('a.mergeItemsLink').click(function () {
-            var html = '<form method="POST" action="'+json.global.webroot+'/item/merge?items='+$(this).attr('element')+'">';
-            html+='Select a name: ';
-            html+='<input type="text" name="name" value=""/><br/><br/>';
-            html+='<input class="globalButton" type="submit" value="Merge" />';
-            html+='</form>';
+            var html ='Select a name: ';
+            html+='<input type="text" id="mergeItemName" value=""/><br/><br/>';
+            html+='<div id="mergeProgressBar"></div>';
+            html+='<div id="mergeProgressMessage"></div>';
+            html+='<input id="mergeButton" class="globalButton" type="submit" value="Merge" element="'+$(this).attr('element')+'" />';
             midas.showDialogWithContent('Merge items', html, false, {width: 300});
+            $('#mergeButton').click(function () {
+                if($('#mergeItemName').val() == '') {
+                    midas.createNotice('You must enter an item name first', 3000, 'error');
+                    return;
+                }
+                $(this).attr('disabled', 'disabled');
+                midas.ajaxWithProgress(
+                  $('#mergeProgressBar'),
+                  $('#mergeProgressMessage'),
+                  json.global.webroot+'/item/merge',
+                  {
+                      items: $('#mergeButton').attr('element'),
+                      name: $('#mergeItemName').val()
+                  },
+                  function (data) {
+                      midas.createNotice('Successfully merged items', 3000);
+                      $('div.MainDialog').dialog('close');
+                  }
+                );
+            });
         });
 
         midas.doCallback('CALLBACK_CORE_RESOURCES_SELECTED', {
@@ -166,7 +188,7 @@ midas.removeItem = function (id) {
 
     $('input.deleteFolderYes').unbind('click').click(
         function() {
-            var node = $('table.treeTable tr[element='+id+']');
+            var node = $('table.treeTable tr[type=item][element='+id+']');
             var folder = midas.parentOf(node);
             var folderId = '';
             // we are in a subfolder view and the parent is the current folder
@@ -207,21 +229,25 @@ midas.deleteFolder = function (id) {
     var html = '';
     html += json.browse['deleteMessage'];
     html += '<br/><br/>';
+    html += '<div id="deleteFolderProgress"></div>';
+    html += '<div id="deleteFolderProgressMessage"></div><br/><br/>';
     html += '<div style="float: right;">';
     html += '<input class="globalButton deleteFolderYes" element="'+id+'" type="button" value="' + json.global.Yes + '"/>';
     html += '<input style="margin-left:15px;" class="globalButton deleteFolderNo" type="button" value="' + json.global.No + '"/>';
     html += '</div>';
-    html += '<img id="deleteFolderProgress" style="display: none;" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>';
 
     midas.showDialogWithContent(json.browse['delete'], html, false);
 
     $('input.deleteFolderYes').unbind('click').click(function () {
-        $('#deleteFolderProgress').show();
         $(this).attr('disabled', 'disabled');
         var node = $('table.treeTable tr.parent[element='+id+']');
-        $.post(json.global.webroot+'/folder/delete', {folderId: id}, function(data) {
-            $('#deleteFolderProgress').hide();
-            $(this).removeAttr('disabled');
+        midas.ajaxWithProgress(
+          $('#deleteFolderProgress'),
+          $('#deleteFolderProgressMessage'),
+          json.global.webroot+'/folder/delete',
+          {folderId: id},
+          function(data) {
+            $('input.deleteFolderYes').removeAttr('disabled');
             jsonResponse = jQuery.parseJSON(data);
             if(jsonResponse==null) {
                 midas.createNotice('Error', 4000, 'error');
@@ -306,7 +332,7 @@ midas.deleteSelected = function (folders, items) {
  * ids will be ignored)
  */
 midas.shareSelected = function (folders, items) {
-    midas.loadDialog("ShareItem","/browse/movecopy/?share=true&items="+items);
+    midas.loadDialog("ShareItem", "/browse/movecopy/?share=true&items="+items);
     if(folders == '')
       {
       midas.showDialog(json.browse.shareSelected);
@@ -325,13 +351,23 @@ midas.shareSelected = function (folders, items) {
  * ids will be ignored)
  */
 midas.duplicateSelected = function (folders, items) {
-    midas.loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+items);
+    midas.loadDialog("duplicateItem", "/browse/movecopy/?duplicate=true&items="+items);
     if(folders == '') {
         midas.showDialog(json.browse.duplicateSelected);
     }
     else {
         midas.showDialog(json.browse.duplicateSelected + ' ' + json.browse.ignoreSelectedFolders);
     }
+};
+
+/**
+ * Prompt the user with a dialog to move the selected items and folders.
+ * @param folders The list of folders to move (separated by -)
+ * @param items The list of items to move (separated by -)
+ */
+midas.moveSelected = function (folders, items) {
+    midas.loadDialog("moveItem", "/browse/movecopy/?move=true&items="+items+"&folders="+folders);
+    midas.showDialog('Move all selected resources');
 };
 
 /**
@@ -428,6 +464,13 @@ midas.createAction = function (node) {
             }
         }
         $('div.viewAction ul').html(html);
+
+        midas.doCallback('CALLBACK_CORE_RESOURCE_HIGHLIGHTED', {
+            type: type,
+            id: element,
+            actionsList: $('div.viewAction ul')
+        });
+
         $('div.viewAction li a').hover(
             function() {
                 $(this).parents('li').css('background-color','#E5E5E5');
@@ -552,5 +595,11 @@ midas.enableRangeSelect = function (node) {
             }
         });
 };
+
+$(document).ready(function () {
+    $('#browseTableHeaderCheckbox').qtip({
+        content: 'Check/Uncheck All'
+    });
+});
 
 midas.cutName = function(name, nchar) {  if(name.length>nchar)      {      name=name.substring(0,nchar)+'...';      return name;      }  return name;  }

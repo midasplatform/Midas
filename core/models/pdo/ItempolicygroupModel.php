@@ -50,8 +50,7 @@ class ItempolicygroupModel extends ItempolicygroupModelBase
       {
       $this->delete($this->getPolicy($group, $item));
       }
-    $this->loadDaoClass('ItempolicygroupDao');
-    $policyGroupDao = new ItempolicygroupDao();
+    $policyGroupDao = MidasLoader::newDao('ItempolicygroupDao');
     $policyGroupDao->setGroupId($group->getGroupId());
     $policyGroupDao->setItemId($item->getItemId());
     $policyGroupDao->setPolicy($policy);

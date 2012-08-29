@@ -47,21 +47,26 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
   */
   function agreementtabAction()
     {
-
     if(!$this->logged)
       {
       $this->haveToBeLogged();
       return false;
       }
-    if($this->_helper->hasHelper('layout'))
-      {
-      $this->_helper->layout->disableLayout();
-      }
+    $this->disableLayout();
 
     $communityId = $this->_getParam("communityId");
     if(!isset($communityId) || !is_numeric($communityId))
       {
       throw new Zend_Exception("Community ID should be a number");
+      }
+    $community = $this->Community->load($communityId);
+    if(!$community)
+      {
+      throw new Zend_Exception('Community does not exist');
+      }
+    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception('Must have write permission on the community');
       }
 
     $agreementDao = $this->Communityagreement_Agreement->getByCommunityId($communityId);
@@ -77,11 +82,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
     $formAgreement = $this->ModuleForm->Config->createCreateAgreementForm($communityId);
     if($this->_request->isPost() && $formAgreement->isValid($this->getRequest()->getPost()))
       {
-      if($this->_helper->hasHelper('layout'))
-        {
-        $this->_helper->layout->disableLayout();
-        }
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableView();
       $agreementDao->setAgreement($formAgreement->getValue('agreement'));
       if($agreementDao != false)
         {
@@ -96,7 +97,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
     // If a community agreement only contains white spaces, it is treated as an empty agreement
     // and will be deleted from the database if it exists
     $chopped_agreement = chop($agreementDao->getAgreement());
-    if($chopped_agreement != '' )
+    if($chopped_agreement != '')
       {
       $this->Communityagreement_Agreement->save($agreementDao);
       }

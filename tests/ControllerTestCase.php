@@ -72,7 +72,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     {
     $this->bootstrap = array($this, 'appBootstrap');
     $this->loadElements();
-    $this->ModelLoader = new MIDAS_ModelLoader();
+
     parent::setUp();
     $this->startCodeCoverage();
     }
@@ -108,7 +108,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
   /** loadData */
   protected function loadData($modelName, $file = null, $module = '')
     {
-    $model = $this->ModelLoader->loadModel($modelName, $module);
+    $model = MidasLoader::loadModel($modelName, $module);
     if($file == null)
       {
       $file = strtolower($modelName);
@@ -351,8 +351,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     Zend_Registry::set('models', array());
     if(isset($this->_models))
       {
-      $this->ModelLoader = new MIDAS_ModelLoader();
-      $this->ModelLoader->loadModels($this->_models);
+      MidasLoader::loadModels($this->_models);
       $modelsArray = Zend_Registry::get('models');
       foreach($modelsArray as $key => $tmp)
         {
@@ -363,7 +362,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       {
       foreach($this->_daos as $dao)
         {
-        Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/core/models/dao');
+        Zend_Loader::loadClass($dao . "Dao", BASE_PATH.'/core/models/dao');
         }
       }
 

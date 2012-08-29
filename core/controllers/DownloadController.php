@@ -49,6 +49,20 @@ class DownloadController extends AppController
       // Make sure this is a copy and not a reference
       $sessionUser = $this->User->load($sessionUser->getKey());
       }
+    else //see if module can authenticate with a special parameter
+      {
+      $authToken = $this->_getParam('authToken');
+      if(isset($authToken))
+        {
+        $responses = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_PARAMETER_AUTHENTICATION',
+          array('authToken' => $authToken));
+        foreach($responses as $module => $user)
+          {
+          $sessionUser = $user;
+          break;
+          }
+        }
+      }
     if(isset($bitsreamid) && is_numeric($bitsreamid))
       {
       $name = $this->_getParam('name');
@@ -60,7 +74,7 @@ class DownloadController extends AppController
       $bitstream = $this->Bitstream->load($bitsreamid);
       if(!$bitstream)
         {
-        throw new Zend_Controller_Action_Exception('Invalid bitstream id', 404);
+        throw new Zend_Exception('Invalid bitstream id', 404);
         }
       if(isset($name))
         {
@@ -77,7 +91,7 @@ class DownloadController extends AppController
       }
     if(!isset($itemIds) && !isset($folderIds))
       {
-      throw new Zend_Exception("No parameters");
+      throw new Zend_Exception("No parameters, expecting itemIds or folderIds.");
       }
     $folderIds = explode('-', $folderIds);
     $folders = $this->Folder->load($folderIds);
@@ -164,6 +178,7 @@ class DownloadController extends AppController
         $this->_helper->viewRenderer->setNoRender();
         $name = $revision->getItem()->getName();
         $name = substr($name, 0, 50);
+        session_write_close(); //unlock session writing for concurrent access
         $zip = new ZipStream($name.'.zip');
         foreach($bitstreams as $bitstream)
           {
@@ -207,6 +222,7 @@ class DownloadController extends AppController
         $name = "Custom";
         }
 
+      session_write_close(); //unlock session writing for concurrent access
       while(ob_get_level() > 0)
         {
         ob_end_clean();
