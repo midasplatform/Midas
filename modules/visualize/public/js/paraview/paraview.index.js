@@ -110,7 +110,7 @@ function switchRenderer (first) {
     var type = $('#renderer-type').val();
     if(type == 'js') {
         if(renderers.js == undefined) {
-            renderers.js = new JavaScriptRenderer("jsRenderer", serverUrl);
+            renderers.js = new JavaScriptRenderer("jsRenderer", "/PWService");
             renderers.js.init(paraview.sessionId, activeView.__selfid__);
             $('img.toolButton').show();
         }
@@ -118,7 +118,7 @@ function switchRenderer (first) {
     if(type == 'webgl') {
         if(renderers.webgl == undefined) {
             paraview.updateConfiguration(true, "JPEG", "WebGL");
-            renderers.webgl = new WebGLRenderer("webglRenderer", serverUrl);
+            renderers.webgl = new WebGLRenderer("webglRenderer", "/PWService");
             renderers.webgl.init(paraview.sessionId, activeView.__selfid__);
             $('img.toolButton').hide();
         }
