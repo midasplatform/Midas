@@ -556,11 +556,11 @@
             if($('div.MainDialog').is(':visible')) {
                 return;
             }
-            if(event.which == 38) { //up arrow - select previous visible element
+            if(event.which == 38 && document.activeElement.tagName != 'TEXTAREA') { //up arrow - select previous visible element
                 var selected = table.find('tbody tr.selected');
                 table.find('tbody tr.selected').prevAll(':visible').first().mousedown();
                 event.preventDefault();
-            } else if(event.which == 40) { //down arrow - select next visible row
+            } else if(event.which == 40 && document.activeElement.tagName != 'TEXTAREA') { //down arrow - select next visible row
                 table.find('tbody tr.selected').nextAll(':visible').first().mousedown();
                 event.preventDefault();
             } else if(event.which == 32) { //space bar - toggle checkbox
