@@ -375,11 +375,11 @@ class Validation_ApiComponent extends AppComponent
       }
 
     // Assuming everything went according to plan, set the result scalar
-    $dashboardModel->setScore($dashboardDao,
+    $scalarResult = $dashboardModel->setScore($dashboardDao,
                               $tgtResult,
                               $tgtItem,
                               $value['value']);
-    return array('dashboard_id' => $dashboardDao->getKey());
+    return array('scalarresult_id' => $scalarResult->getScalarresultId());
     }
 
   /**

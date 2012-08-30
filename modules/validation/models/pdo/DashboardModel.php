@@ -124,7 +124,7 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
    * @param item the item associated with the result
    * @param value a scalar value representing a result
    *        scalar results
-   * @return void
+   * @return scalarResultDao
    */
   function setScore($dashboard, $folder, $item, $value)
     {
@@ -170,6 +170,7 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     $scalarResult->setValue($value);
     $scalarResultModel->save($scalarResult);
     $this->database->link('scores', $dashboard, $scalarResult);
+    return $scalarResult;
     }
 
   /**

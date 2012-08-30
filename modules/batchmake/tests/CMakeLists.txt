@@ -7,7 +7,6 @@ if(MIDAS_RUN_BATCHMAKE_TESTS)
 
   # Style tests for code
   add_midas_style_test( StyleBatchmakeControllers ${CMAKE_SOURCE_DIR}/modules/batchmake/controllers )
-  add_midas_style_test( StyleBatchmakeComponents ${CMAKE_SOURCE_DIR}/modules/batchmake/controllers/components )
   add_midas_style_test( StyleBatchmakeLibrary ${CMAKE_SOURCE_DIR}/modules/batchmake/library )
 
   add_midas_style_test( StyleBatchmakeModels ${CMAKE_SOURCE_DIR}/modules/batchmake/models )
