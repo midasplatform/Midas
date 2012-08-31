@@ -142,4 +142,9 @@
   <folderpolicygroup folder_id="1009" group_id="3004" policy='1' />
   <folderpolicygroup folder_id="1009" group_id="3005" policy='0' />
 
+  <folder folder_id="1012" name="Folder User 1 Read" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="123890231892" />
+  <folderpolicyuser folder_id="1012" user_id="1" policy='0' />
+  <folder folder_id="1013" name="Folder User 1 Write" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="123890231892" />
+  <folderpolicyuser folder_id="1013" user_id="1" policy='1' />
+  
 </dataset>
