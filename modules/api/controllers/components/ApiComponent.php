@@ -832,6 +832,10 @@ class Api_ApiComponent extends AppComponent
           {
           throw new Exception('Parent doesn\'t exist', MIDAS_INVALID_PARAMETER);
           }
+        if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
+          {
+          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+          }
         $new_folder = $folderModel->createFolder($name, $description, $folder, $uuid);
         if($new_folder === false)
           {
