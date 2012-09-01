@@ -146,5 +146,15 @@
   <folderpolicyuser folder_id="1012" user_id="1" policy='0' />
   <folder folder_id="1013" name="Folder User 1 Write" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="123890231892" />
   <folderpolicyuser folder_id="1013" user_id="1" policy='1' />
-  
+  <folder folder_id="1014" name="Folder User 1 Admin" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="123890231892" />
+  <folderpolicyuser folder_id="1014" user_id="1" policy='2' />
+  <item item_id="1004" name="Item User 1 Read" description="Description 1" type="1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
+  <itempolicyuser item_id="1004" user_id="1" policy='0' />
+  <item2folder item_id="1004" folder_id='1014' />
+  <item item_id="1005" name="Item User 1 Write" description="Description 1" type="1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
+  <itempolicyuser item_id="1005" user_id="1" policy='1' />
+  <item2folder item_id="1005" folder_id='1014' />
+  <item item_id="1006" name="Item User 1 Admin" description="Description 1" type="1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
+  <itempolicyuser item_id="1006" user_id="1" policy='2' />
+  <item2folder item_id="1006" folder_id='1014' />
 </dataset>
