@@ -26,7 +26,7 @@ class Visualize_Notification extends MIDAS_Notification
   /** init notification process*/
   public function init()
     {
-    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDasboard');
+    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
     $this->addCallBack("CALLBACK_VISUALIZE_CAN_VISUALIZE", 'canVisualize');
 
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_BUTTON', 'getButton');
@@ -38,17 +38,19 @@ class Visualize_Notification extends MIDAS_Notification
     $this->addEvent('EVENT_CORE_UPLOAD_FILE', 'TASK_CREATE_THREEJS_OBJECT');
     }//end init
 
-  /** Get the link to place in the item action menu */
+   /** Get the link to place in the item action menu */
   public function getButton($params)
     {
     if($this->canVisualize($params))
       {
       $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
-      $html = '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-      $html .= "<a  href='".$webroot.'/visualize/wrapper/?itemId='.$params['item']->getKey()."'><img style='float:left;margin-right:2px;' alt='' src='".$webroot."/core/public/images/icons/view.png'/>";
+      $html = '<div style="float:right;position:absolute;top:51px;">';
+      $html .= '<button class="topDownloadButton" onclick="window.location.href=\''.$webroot.
+        '/visualize/wrapper/?itemId='.$params['item']->getKey().'\'">';
       $html .= $this->t('Preview');
-      $html .= "</a>";
+      $html .= "</button>";
       $html .= '</div>';
+
       return $html;
       }
 
@@ -76,7 +78,7 @@ class Visualize_Notification extends MIDAS_Notification
     }
 
   /** generate Dasboard information */
-  public function getDasboard()
+  public function getDashboard()
     {
     $modulesConfig = Zend_Registry::get('configsModules');
     $useparaview = $modulesConfig['visualize']->useparaview;

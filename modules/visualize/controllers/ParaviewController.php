@@ -45,12 +45,12 @@ class Visualize_ParaviewController extends Visualize_AppController
     $pwapp = $modulesConfig['visualize']->pwapp;
     if(!isset($useparaview) || !$useparaview)
       {
-      throw new Zend_Exception('Please unable paraviewweb');
+      throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
       }
 
     if(!isset($paraviewworkdir) || empty($paraviewworkdir))
       {
-      throw new Zend_Exception('Please set the paraview work directory');
+      throw new Zend_Exception('Please set the ParaView work directory');
       }
 
 
