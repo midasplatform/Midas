@@ -38,7 +38,7 @@ class Visualize_Notification extends MIDAS_Notification
     $this->addEvent('EVENT_CORE_UPLOAD_FILE', 'TASK_CREATE_THREEJS_OBJECT');
     }//end init
 
-   /** Get the link to place in the item action menu */
+  /** Get the link to place in the item action menu */
   public function getButton($params)
     {
     if($this->canVisualize($params))
