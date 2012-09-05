@@ -32,13 +32,13 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 ?>
-<?php 
+<?php
 $itemModel = MidasLoader::loadModel('Item');
 // parse and check arguments
 foreach($args as $key => $val)
   {
   switch ($key)
-    { 
+    {
     case 'from':
       if (!isset($from))
         {
@@ -53,7 +53,7 @@ foreach($args as $key => $val)
     case 'until':
       if (!isset($until))
         {
-  $until = $val; 
+  $until = $val;
   }
       else
         {
@@ -70,7 +70,7 @@ foreach($args as $key => $val)
         {
   $errors .= oai_error('badArgument', $key, $val);
   }
-  break;      
+  break;
 
     case 'metadataPrefix':
       if (!isset($metadataPrefix))
@@ -109,7 +109,7 @@ foreach($args as $key => $val)
 
 // Resume previous session?
 if (isset($args['resumptionToken']))
-  {            
+  {
   if (count($args) > 1)
     {
     // overwrite all other errors
@@ -125,7 +125,7 @@ if (isset($args['resumptionToken']))
       $deliveredrecords = (int)$textparts[0];
       $extquery = $textparts[1];
       $metadataPrefix = $textparts[2];
-      fclose($fp); 
+      fclose($fp);
       unlink ("tokens/id-$resumptionToken");
       }
     else
@@ -152,14 +152,14 @@ else
       {
       $errors .= oai_error('badGranularity', 'from', $from);
       }
-    $extquery .= " and last_modified >= '$from'";    
+    $extquery .= " and last_modified >= '$from'";
     }
 
   if (isset($args['until']))
     {
     if (!checkDateFormat($until))
       {
-      $errors .= oai_error('badGranularity', 'until', $until); 
+      $errors .= oai_error('badGranularity', 'until', $until);
       }
     $extquery .= " and last_modified <= '$until'";
     }
@@ -172,7 +172,7 @@ else
       }
     else
       {
-      $errors .= oai_error('noSetHierarchy'); 
+      $errors .= oai_error('noSetHierarchy');
       oai_exit();
       }
     }
@@ -189,12 +189,12 @@ if (empty($errors))
     {
     if($itemModel->policyCheck($item, null, MIDAS_POLICY_READ))
       {
-      $publicItems[] = $item;  
+      $publicItems[] = $item;
       }
     }
   $items = $publicItems;
-    
-    
+
+
   if (empty($items))
     {
     $errors .= oai_error('noRecordsMatch');
@@ -216,13 +216,13 @@ if (count($items) - $deliveredrecords > $MAXIDS)
   $tokensDir = UtilityComponent::getTempDirectory() . '/tokens';
   if(!is_dir($tokensDir))
     {
-    mkdir($tokensDir);  
+    mkdir($tokensDir);
     }
   $tokensPath = $tokensDir . '/id-'.$token;
   $fp = fopen ($tokensPath, 'w');
   $thendeliveredrecords = (int)$deliveredrecords + $MAXIDS;
-  fputs($fp, "$thendeliveredrecords#"); 
-  fputs($fp, "$extquery#"); 
+  fputs($fp, "$thendeliveredrecords#");
+  fputs($fp, "$extquery#");
   fclose($fp);
   $num_rows = count($items);
   $restoken = '  <resumptionToken expirationDate="'.$expirationdatetime.'"
@@ -247,10 +247,10 @@ while ($countrec++ < $maxrec)
     continue;
     }
   $identifier = $oaiprefix.$element->getUuid();
-  $datestamp = formatDatestamp($element->getDateUpdate()); 
+  $datestamp = formatDatestamp($element->getDateUpdate());
 
   $output .= '  <header';
- 
+
   $output .='>'."\n";
 
   // use xmlrecord since we use stuff from database
@@ -261,7 +261,7 @@ while ($countrec++ < $maxrec)
 
   if (empty($folders))
     {
-    $errors .= oai_error('resourceIdDoesNotExist', '', $record[1]); 
+    $errors .= oai_error('resourceIdDoesNotExist', '', $record[1]);
     }
 
   foreach($folders as $folder)
@@ -269,11 +269,11 @@ while ($countrec++ < $maxrec)
     $setspec = $setspecprefix.str_replace('/', '_', $folder->getUuid());
     $output .= xmlrecord($setspec, 'setSpec', '', 3);
     }
-  $output .= '   </header>'."\n"; 
+  $output .= '   </header>'."\n";
   }
 
 // ResumptionToken
-if (isset($restoken)) 
+if (isset($restoken))
   {
   $output .= $restoken;
   }
