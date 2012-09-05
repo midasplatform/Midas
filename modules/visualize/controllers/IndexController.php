@@ -50,7 +50,7 @@ class Visualize_IndexController extends Visualize_AppController
       {
       if($viewMode == 'slice')
         {
-        $this->_redirect('/visualize/paraview/slice?itemId='.$itemId.'&height='.$height.'&width='.$width);        
+        $this->_redirect('/visualize/paraview/slice?itemId='.$itemId.'&height='.$height.'&width='.$width);
         }
       else //normal volume rendering
         {

@@ -209,8 +209,6 @@ class Visualize_ParaviewController extends Visualize_AppController
     $this->view->pwapp = $pwapp;
     $this->view->usewebgl = $userwebgl;
     $this->view->itemDao = $item;
-    $this->view->screenshotPath = '/data/visualize/_'.$item->getKey().'_1.png';
-    $this->view->useScreenshot = file_exists(BASE_PATH.$this->view->screenshotPath);
     $this->view->loadState = $this->view->json['visualize']['openState'];
     }
 

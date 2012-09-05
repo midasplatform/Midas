@@ -2,6 +2,10 @@ body {
   margin: 0;
 }
 
+#sliceSlider {
+  margin: 8px 14px 8px 10px;
+}
+
 div.helpContent{
   font-size: 10px;
   margin-bottom: 5px;
