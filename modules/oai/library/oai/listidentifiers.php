@@ -182,7 +182,19 @@ if (empty($errors))
 {
   // Hate that... Imagine if there are 2 millions items...
   $items = $itemModel->getAll();
-
+  // TODO change this call to get all items and filter the items
+  // to a new method in ItemModel getAllPublic
+  $publicItems = array();
+  foreach($items as $item)
+    {
+    if($itemModel->policyCheck($item, null, MIDAS_POLICY_READ))
+      {
+      $publicItems[] = $item;  
+      }
+    }
+  $items = $publicItems;
+    
+    
   if (empty($items))
     {
     $errors .= oai_error('noRecordsMatch');
@@ -200,12 +212,19 @@ $output .= " <ListIdentifiers>\n";
 // Will we need a ResumptionToken?
 if (count($items) - $deliveredrecords > $MAXIDS)
   {
-  $token = get_token(); 
-  $fp = fopen ("tokens/id-$token", 'w');
+  $token = get_token();
+  $tokensDir = UtilityComponent::getTempDirectory() . '/tokens';
+  if(!is_dir($tokensDir))
+    {
+    mkdir($tokensDir);  
+    }
+  $tokensPath = $tokensDir . '/id-'.$token;
+  $fp = fopen ($tokensPath, 'w');
   $thendeliveredrecords = (int)$deliveredrecords + $MAXIDS;
   fputs($fp, "$thendeliveredrecords#"); 
   fputs($fp, "$extquery#"); 
-  fclose($fp); 
+  fclose($fp);
+  $num_rows = count($items);
   $restoken = '  <resumptionToken expirationDate="'.$expirationdatetime.'"
      completeListSize="'.$num_rows.'"
      cursor="'.$deliveredrecords.'">'.$token."</resumptionToken>\n";
@@ -213,13 +232,13 @@ if (count($items) - $deliveredrecords > $MAXIDS)
 // Last delivery, return empty ResumptionToken
 elseif (isset($set_resumptionToken))
   {
+  $num_rows = count($items);
   $restoken = '  <resumptionToken completeListSize="'.$num_rows.'"
      cursor="'.$deliveredrecords.'"></resumptionToken>'."\n";
   }
 
-  $maxrec = min(count($items) - $deliveredrecords, $MAXIDS);
-
-  $countrec = 0;
+$maxrec = min(count($items) - $deliveredrecords, $MAXIDS);
+$countrec = 0;
 while ($countrec++ < $maxrec)
   {
   $element = $items[$countrec-1];
