@@ -1,5 +1,6 @@
 // Set the web service base URL
 
+var json;
 var renderers = {};
 var paraview;
 var activeView;
@@ -7,9 +8,10 @@ var input;
 var bounds, midI, midJ, midK;
 var stateController = {};
 
-function start(){
+function start () {
     // Create a paraview proxy
     var file = json.visualize.url;
+    var container = $('#renderercontainer');
 
     if(typeof Paraview != 'function') {
         alert('Paraview javascript was not fetched correctly from server.');
@@ -51,7 +53,7 @@ function start(){
     paraview.Show({proxy: sliceFilter});
 
     activeView = paraview.CreateIfNeededRenderView();
-    activeView.setViewSize(800, 640);
+    activeView.setViewSize(container.width(), container.height());
     activeView.setCenterAxesVisibility(false);
     activeView.setOrientationAxesVisibility(false);
     activeView.setCameraParallelProjection(true);
@@ -70,8 +72,7 @@ function start(){
     
     switchRenderer(true); // render in the div
     $('img.visuLoading').hide();
-    $('img#bigScreenshot').hide();
-    $('#renderercontainer').show();
+    container.show();
     $('#sliceSlider').slider({
         min: bounds[4],
         max: bounds[5] - 1,
@@ -108,7 +109,7 @@ function changeSlice (slice) {
         return;
     }
 
-    paraview.Hide(); //hide the previous slice
+    var prevSlice = paraview.GetActiveSource();
     activeView.setCameraFocalPoint([midI, midJ, slice]);
     var sliceFilter = paraview.ExtractSubset({
       Input: input,
@@ -124,6 +125,7 @@ function changeSlice (slice) {
         ColorArrayName: 'MetaImage'
     });
     paraview.Show({proxy: sliceFilter}); //show the next slice
+    paraview.Hide({proxy: prevSlice}); //hide the previous slice
 }
 
 /**
@@ -131,16 +133,6 @@ function changeSlice (slice) {
  */
 function updateSliceInfo(slice) {
     $('#sliceInfo').html('Slice: '+(slice+1)+' of '+bounds[5]);
-}
-
-function resetCamera () {
-    paraview.ResetCamera();
-    activeView.setCenterOfRotation(activeView.getCameraFocalPoint());
-    activeView.setCameraFocalPoint([midI, midJ, midK]);
-}
-
-function isoUpdate (value) {
-    stateController.iso.setIsosurfaces(value);
 }
 
 function switchRenderer (first) {
@@ -155,7 +147,6 @@ function switchRenderer (first) {
     }
     renderers.current = renderers.js;
     renderers.current.bindToElementId('renderercontainer');
-//    resetCamera();
     renderers.current.start();
     
 }
@@ -169,5 +160,4 @@ $(window).load(function () {
 $(window).unload(function () {
     paraview.disconnect();
 });
-
 

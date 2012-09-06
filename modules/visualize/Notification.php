@@ -27,14 +27,15 @@ class Visualize_Notification extends MIDAS_Notification
   public function init()
     {
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
-    $this->addCallBack("CALLBACK_VISUALIZE_CAN_VISUALIZE", 'canVisualize');
+    $this->addCallBack('CALLBACK_VISUALIZE_CAN_VISUALIZE', 'canVisualize');
+    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemViewLink');
 
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_BUTTON', 'getButton');
 
-    $this->addTask("TASK_VISUALIZE_PROCESSDATA", 'processParaviewData', "Create Screenshots and get Metadata. Parameters: Item, Revision");
+    $this->addTask('TASK_VISUALIZE_PROCESSDATA', 'processParaviewData', "Create Screenshots and get Metadata. Parameters: Item, Revision");
     $this->addEvent('EVENT_CORE_CREATE_THUMBNAIL', 'TASK_VISUALIZE_PROCESSDATA');
 
-    $this->addTask("TASK_CREATE_THREEJS_OBJECT", 'createThreejsObject', "Convert a vtk file to threejs binary file");
+    $this->addTask('TASK_CREATE_THREEJS_OBJECT', 'createThreejsObject', "Convert a vtk file to threejs binary file");
     $this->addEvent('EVENT_CORE_UPLOAD_FILE', 'TASK_CREATE_THREEJS_OBJECT');
     }//end init
 
@@ -55,6 +56,19 @@ class Visualize_Notification extends MIDAS_Notification
       }
 
     return "";
+    }
+
+  /** If this object is able to be slice viewed, we show a link for that */
+  public function getItemViewLink($params)
+    {
+    $item = $params['item'];
+    if($this->ModuleComponent->Main->canVisualizeWithSliceView($item))
+      {
+      $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
+      return '<li><a href="'.$webroot.'/visualize/paraview/slice?itemId='.$item->getKey().'">'.
+        '<img alt="" src="'.$webroot.'/modules/'.
+        $this->moduleName.'/public/images/sliceView.png" /> Slice Visualization</a></li>';
+      }
     }
 
   /** createThreejsObject */
