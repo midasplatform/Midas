@@ -229,8 +229,19 @@ class NotifyErrorComponent  extends AppComponent
       {
       $message .= "Referer: " . $this->_server['HTTP_REFERER'] . "\n";
       }
-    $message .= "Parameters (post): ".print_r($_POST, true)."\n";
-    $message .= "Parameters (get): ".print_r($_GET, true)."\n\n";
+    $message .= "Parameters (post): Array\n(\n";
+    foreach($_POST as $key => $value)
+      {
+      if(strpos(strtolower($key), 'password') !== false)
+        {
+        $message .= '    ['.$key."] => --redacted--\n";
+        }
+      else
+        {
+        $message .= '    ['.$key.'] => '.$value."\n";
+        }
+      }
+    $message .= ")\nParameters (get): ".print_r($_GET, true)."\n\n";
     return $message;
     }
 
