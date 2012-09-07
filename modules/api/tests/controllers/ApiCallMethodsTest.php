@@ -208,6 +208,24 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($userDao->getPublicfolderId(), $resp->data->parent_id);
     $this->assertEquals('testFolderCreate', $resp->data->name);
     $this->assertEquals('', $resp->data->description);
+
+    // try to create a folder where have read access on the parent folder
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.folder.create';
+    $this->params['name'] = 'testFolderCreate';
+    $this->params['parentid'] = "1012";
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+
+    // now with write access
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.folder.create';
+    $this->params['name'] = 'testFolderCreate';
+    $this->params['parentid'] = "1013";
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
     }
 
   /** Test listing of child folders */
