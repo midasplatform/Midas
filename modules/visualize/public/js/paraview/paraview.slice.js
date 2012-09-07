@@ -70,6 +70,8 @@ midas.visualize.start = function () {
                                                     midas.visualize.midJ,
                                                     midas.visualize.midK]);
     midas.visualize.activeView.setCenterOfRotation(midas.visualize.activeView.getCameraFocalPoint());
+    midas.visualize.activeView.setBackground([0.0, 0.0, 0.0]);
+    midas.visualize.activeView.setBackground2([0.0, 0.0, 0.0]); //solid black background
 
     var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
     lookupTable.setRGBPoints([midas.visualize.minVal,
