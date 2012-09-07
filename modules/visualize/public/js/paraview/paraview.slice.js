@@ -1,14 +1,10 @@
-var midas = midas || {};
-
-var renderers = {};
 var paraview;
-var activeView;
-var input;
-var bounds, midI, midJ, midK;
-var minVal, maxVal, imageWindow;
-var stateController = {};
+var midas = midas || {};
+midas.visualize = midas.visualize || {};
 
-function start () {
+midas.visualize.renderers = {};
+
+midas.visualize.start = function () {
     // Create a paraview proxy
     var file = json.visualize.url;
     var container = $('#renderercontainer');
@@ -28,101 +24,115 @@ function start () {
     };
     paraview.createSession("midas", "slice viz", "default");
 
-    input = paraview.OpenDataFile({filename: file});
+    midas.visualize.input = paraview.OpenDataFile({filename: file});
     paraview.Show();
     paraview.Hide();
 
     var imageData = paraview.GetDataInformation();
-    bounds = imageData.Bounds;
-    minVal = imageData.PointData.Arrays[0].Ranges[0][0];
-    maxVal = imageData.PointData.Arrays[0].Ranges[0][1];
+    midas.visualize.bounds = imageData.Bounds;
+    midas.visualize.minVal = imageData.PointData.Arrays[0].Ranges[0][0];
+    midas.visualize.maxVal = imageData.PointData.Arrays[0].Ranges[0][1];
+    midas.visualize.imageWindow = [midas.visualize.minVal, midas.visualize.maxVal];
 
-    if(bounds.length != 6) {
+    if(midas.visualize.bounds.length != 6) {
         console.log('Invalid image bounds:');
-        console.log(bounds);
+        console.log(midas.visualize.bounds);
         return;
     }
 
-    midI = (bounds[0] + bounds[1]) / 2.0;
-    midJ = (bounds[2] + bounds[3]) / 2.0;
-    midK = Math.ceil((bounds[4] + bounds[5]) / 2.0) - 1;
+    midas.visualize.midI = (midas.visualize.bounds[0] + midas.visualize.bounds[1]) / 2.0;
+    midas.visualize.midJ = (midas.visualize.bounds[2] + midas.visualize.bounds[3]) / 2.0;
+    midas.visualize.midK = Math.ceil((midas.visualize.bounds[4] + midas.visualize.bounds[5]) / 2.0) - 1;
 
     var sliceFilter = paraview.ExtractSubset({
-      Input: input,
+      Input: midas.visualize.input,
       SampleRateI: 1,
       SampleRateJ: 1,
       SampleRateK: 1,
-      VOI: [bounds[0], bounds[1], bounds[2], bounds[3], midK, midK + 1]
+      VOI: [midas.visualize.bounds[0],
+            midas.visualize.bounds[1],
+            midas.visualize.bounds[2],
+            midas.visualize.bounds[3],
+            midas.visualize.midK,
+            midas.visualize.midK + 1]
     });
     paraview.Show({proxy: sliceFilter});
 
-    activeView = paraview.CreateIfNeededRenderView();
-    activeView.setViewSize(container.width(), container.height());
-    activeView.setCenterAxesVisibility(false);
-    activeView.setOrientationAxesVisibility(false);
-    activeView.setCameraParallelProjection(true);
-    activeView.setCameraPosition([midI, midJ, bounds[5] + 1]);
-    activeView.setCameraFocalPoint([midI, midJ, midK]);
-    activeView.setCenterOfRotation(activeView.getCameraFocalPoint());
+    midas.visualize.activeView = paraview.CreateIfNeededRenderView();
+    midas.visualize.activeView.setViewSize(container.width(), container.height());
+    midas.visualize.activeView.setCenterAxesVisibility(false);
+    midas.visualize.activeView.setOrientationAxesVisibility(false);
+    midas.visualize.activeView.setCameraParallelProjection(true);
+    midas.visualize.activeView.setCameraPosition([midas.visualize.midI,
+                                                  midas.visualize.midJ,
+                                                  midas.visualize.bounds[5] + 1]);
+    midas.visualize.activeView.setCameraFocalPoint([midas.visualize.midI,
+                                                    midas.visualize.midJ,
+                                                    midas.visualize.midK]);
+    midas.visualize.activeView.setCenterOfRotation(midas.visualize.activeView.getCameraFocalPoint());
 
     var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
-    lookupTable.setRGBPoints([minVal, 0.0, 0.0, 0.0, maxVal, 1.0, 1.0, 1.0]); //initial transfer function def
+    lookupTable.setRGBPoints([midas.visualize.minVal,
+                              0.0, 0.0, 0.0,
+                              midas.visualize.maxVal,
+                              1.0, 1.0, 1.0]); //initial transfer function def
     lookupTable.setColorSpace(0); // 0 corresponds to RGB
 
     paraview.SetDisplayProperties({
         proxy: sliceFilter,
-        view: activeView,
+        view: midas.visualize.activeView,
         Representation: 'Volume',
         ColorArrayName: 'MetaImage',
         LookupTable: lookupTable
     });
     paraview.Render();
-    activeView.setCameraParallelScale(Math.max(midI, midJ));
+    midas.visualize.activeView.setCameraParallelScale(
+      Math.max(midas.visualize.midI, midas.visualize.midJ));
 
-    switchRenderer(true); // render in the div
+    midas.visualize.switchRenderer(true); // render in the div
     $('img.visuLoading').hide();
     container.show();
-    setupSliders();
+    midas.visualize.setupSliders();
 
-    updateSliceInfo(midK);
-    updateWindowInfo([minVal, maxVal]);
-    disableMouseInteraction();
-}
+    midas.visualize.updateSliceInfo(midas.visualize.midK);
+    midas.visualize.updateWindowInfo([midas.visualize.minVal, midas.visualize.maxVal]);
+    midas.visualize.disableMouseInteraction();
+};
 
 /**
  * Helper function to setup the slice and window/level sliders
  */
-function setupSliders () {
+midas.visualize.setupSliders = function () {
     $('#sliceSlider').slider({
-        min: bounds[4],
-        max: bounds[5] - 1,
-        value: midK,
+        min: midas.visualize.bounds[4],
+        max: midas.visualize.bounds[5] - 1,
+        value: midas.visualize.midK,
         change: function(event, ui) {
-            changeSlice(ui.value);
+            midas.visualize.changeSlice(ui.value);
         },
         slide: function(event, ui) {
-            updateSliceInfo(ui.value);
+            midas.visualize.updateSliceInfo(ui.value);
         }
     });
     $('#windowLevelSlider').slider({
         range: true,
-        min: minVal,
-        max: maxVal,
-        values: [minVal, maxVal],
+        min: midas.visualize.minVal,
+        max: midas.visualize.maxVal,
+        values: [midas.visualize.minVal, midas.visualize.maxVal],
         change: function(event, ui) {
-            changeWindow(ui.values);
+            midas.visualize.changeWindow(ui.values);
         },
         slide: function(event, ui) {
-            updateWindowInfo(ui.values);
+            midas.visualize.updateWindowInfo(ui.values);
         }
     });
-}
+};
 
 /**
  * Unregisters all mouse event handlers on the renderer
  */
-function disableMouseInteraction () {
-    var el = renderers.current.view;
+midas.visualize.disableMouseInteraction = function () {
+    var el = midas.visualize.renderers.current.view;
     el.onclick = null;
     el.onmousemove = null;
     el.onmousedown = null;
@@ -130,82 +140,94 @@ function disableMouseInteraction () {
     el.oncontextmenu = null;
     el.ontouchstart = null;
     el.ontouchmove = null;
-}
+};
 
 /**
  * Update the client GUI values for window and level, without
  * actually changing them in PVWeb
  */
-function updateWindowInfo(values) {
+midas.visualize.updateWindowInfo = function (values) {
     $('#windowLevelInfo').html('Window: '+values[0]+' - '+values[1]);
-}
+};
 
 /** Make the actual request to PVWeb to set the window */
-function changeWindow(values) {
+midas.visualize.changeWindow = function (values) {
     var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
-    imageWindow = values;
+    midas.visualize.imageWindow = values;
     lookupTable.setRGBPoints([values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0]);
 
     paraview.Render();
-}
+};
 
-function changeSlice (slice) {
-    if(slice < bounds[4] || slice > bounds[5] - 1) {
+midas.visualize.changeSlice = function (slice) {
+    if(slice < midas.visualize.bounds[4] || slice > midas.visualize.bounds[5] - 1) {
         console.log('Invalid slice number: '+slice);
         return;
     }
 
     var prevSlice = paraview.GetActiveSource();
-    activeView.setCameraFocalPoint([midI, midJ, slice]);
+    midas.visualize.activeView.setCameraFocalPoint([midas.visualize.midI,
+                                                    midas.visualize.midJ,
+                                                    slice]);
     var sliceFilter = paraview.ExtractSubset({
-      Input: input,
+      Input: midas.visualize.input,
       SampleRateI: 1,
       SampleRateJ: 1,
       SampleRateK: 1,
-      VOI: [bounds[0], bounds[1], bounds[2], bounds[3], slice, slice + 1]
+      VOI: [midas.visualize.bounds[0],
+            midas.visualize.bounds[1],
+            midas.visualize.bounds[2],
+            midas.visualize.bounds[3],
+            slice,
+            slice + 1]
     });
     var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
     // set current window state on this slice
-    lookupTable.setRGBPoints([imageWindow[0], 0.0, 0.0, 0.0, imageWindow[1], 1.0, 1.0, 1.0]);
+    lookupTable.setRGBPoints([midas.visualize.imageWindow[0],
+                              0.0, 0.0, 0.0,
+                              midas.visualize.imageWindow[1],
+                              1.0, 1.0, 1.0]);
     lookupTable.setColorSpace(0); // 0 corresponds to RGB
 
     paraview.SetDisplayProperties({
         proxy: sliceFilter,
-        view: activeView,
+        view: midas.visualize.activeView,
         Representation: 'Volume',
         ColorArrayName: 'MetaImage',
         LookupTable: lookupTable
     });
     paraview.Show({proxy: sliceFilter}); //show the next slice
     paraview.Hide({proxy: prevSlice}); //hide the previous slice
-}
+};
 
 /**
  * Update the value of the current slice, without rendering the slice.
  */
-function updateSliceInfo(slice) {
-    $('#sliceInfo').html('Slice: '+(slice+1)+' of '+bounds[5]);
-}
+midas.visualize.updateSliceInfo = function (slice) {
+    $('#sliceInfo').html('Slice: ' + (slice+1) + ' of '+ midas.visualize.bounds[5]);
+};
 
-function switchRenderer (first) {
-    if(renderers.js == undefined) {
-        renderers.js = new JavaScriptRenderer("jsRenderer", "/PWService");
-        renderers.js.init(paraview.sessionId, activeView.__selfid__);
+/**
+ * Initialize or re-initialize the renderer within the DOM
+ */
+midas.visualize.switchRenderer = function (first) {
+    if(midas.visualize.renderers.js == undefined) {
+        midas.visualize.renderers.js = new JavaScriptRenderer("jsRenderer", "/PWService");
+        midas.visualize.renderers.js.init(paraview.sessionId, midas.visualize.activeView.__selfid__);
         $('img.toolButton').show();
     }
 
     if(!first) {
-        renderers.current.unbindToElementId('renderercontainer');
+        midas.visualize.renderers.current.unbindToElementId('renderercontainer');
     }
-    renderers.current = renderers.js;
-    renderers.current.bindToElementId('renderercontainer');
-    renderers.current.start();
-    
-}
+    midas.visualize.renderers.current = midas.visualize.renderers.js;
+    midas.visualize.renderers.current.bindToElementId('renderercontainer');
+    midas.visualize.renderers.current.start();  
+};
 
 $(window).load(function () {
     json = jQuery.parseJSON($('div.jsonContent').html());
-    start();
+    midas.visualize.start();
 });
 
 $(window).unload(function () {
