@@ -1,0 +1,33 @@
+
+#sliceSlider, #windowLevelSlider {
+  margin: 8px 14px 8px 10px;
+  width: 826px;
+}
+
+#sliceInfo, #windowLevelInfo {
+  margin-left: 10px;
+}
+
+#renderercontainer{
+  z-index: 2;
+  overflow: hidden;
+  width: 850px;
+  height: 700px;
+  display: none;
+  margin-bottom: 8px;
+}
+
+img.visuLoading{
+  z-index: 100;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+#renderer-type{
+  z-index: 5;
+  width: 100px;
+  position: absolute;
+  right: 60px;
+  top: 8px;
+}
+

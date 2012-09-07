@@ -45,12 +45,12 @@ class Visualize_ParaviewController extends Visualize_AppController
     $pwapp = $modulesConfig['visualize']->pwapp;
     if(!isset($useparaview) || !$useparaview)
       {
-      throw new Zend_Exception('Please unable paraviewweb');
+      throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
       }
 
     if(!isset($paraviewworkdir) || empty($paraviewworkdir))
       {
-      throw new Zend_Exception('Please set the paraview work directory');
+      throw new Zend_Exception('Please set the ParaView work directory');
       }
 
 
@@ -97,7 +97,6 @@ class Visualize_ParaviewController extends Visualize_AppController
         }
       }
 
-
     if(!$userwebgl || $item->getSizebytes() > 1 * 1024 * 1024)
       {
       $this->view->renderer = 'js';
@@ -120,6 +119,68 @@ class Visualize_ParaviewController extends Visualize_AppController
     $this->view->loadState = $this->view->json['visualize']['openState'];
     }
 
+  /** Use the slice view mode for volume data */
+  public function sliceAction()
+    {
+    $itemid = $this->_getParam('itemId');
+    $item = $this->Item->load($itemid);
+
+    if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
+      }
+    $this->view->header = 'Slice view: <a href="'.$this->view->webroot.'/item/'.$itemid.'">'.$item->getName().'</a>';
+
+    $modulesConfig = Zend_Registry::get('configsModules');
+    $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
+    $customtmp = $modulesConfig['visualize']->customtmp;
+    $useparaview = $modulesConfig['visualize']->useparaview;
+    $userwebgl = $modulesConfig['visualize']->userwebgl;
+    $usesymlinks = $modulesConfig['visualize']->usesymlinks;
+    $pwapp = $modulesConfig['visualize']->pwapp;
+    if(!isset($useparaview) || !$useparaview)
+      {
+      throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
+      }
+
+    if(!isset($paraviewworkdir) || empty($paraviewworkdir))
+      {
+      throw new Zend_Exception('Please set the ParaView work directory');
+      }
+
+
+    $pathArray = $this->ModuleComponent->Main->createParaviewPath();
+    $path = $pathArray['path'];
+    $tmpFolderName = $pathArray['foderName'];
+
+    $revision = $this->Item->getLastRevision($item);
+    $bitstreams = $revision->getBitstreams();
+    foreach($bitstreams as $bitstream)
+      {
+      if($usesymlinks)
+        {
+        symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
+        }
+      else
+        {
+        copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
+        }
+
+      $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
+      if($ext != 'pvsm')
+        {
+        $filePath = $paraviewworkdir.'/'.$tmpFolderName.'/'.$bitstream->getName();
+        $mainBitstream = $bitstream;
+        }
+      }
+
+    $this->view->json['visualize']['url'] = $filePath;
+    $this->view->fileLocation = $filePath;
+    $this->view->pwapp = $pwapp;
+    $this->view->usewebgl = $userwebgl;
+    $this->view->itemDao = $item;
+    }
 
 } // end class
 ?>
+
