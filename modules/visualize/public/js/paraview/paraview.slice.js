@@ -65,11 +65,16 @@ function start () {
     activeView.setCameraFocalPoint([midI, midJ, midK]);
     activeView.setCenterOfRotation(activeView.getCameraFocalPoint());
 
+    var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
+    lookupTable.setRGBPoints([minVal, 0.0, 0.0, 0.0, maxVal, 1.0, 1.0, 1.0]); //initial transfer function def
+    lookupTable.setColorSpace(0); // 0 corresponds to RGB
+
     paraview.SetDisplayProperties({
         proxy: sliceFilter,
         view: activeView,
         Representation: 'Volume',
-        ColorArrayName: 'MetaImage'
+        ColorArrayName: 'MetaImage',
+        LookupTable: lookupTable
     });
     paraview.Render();
     activeView.setCameraParallelScale(Math.max(midI, midJ));
@@ -127,14 +132,21 @@ function disableMouseInteraction () {
     el.ontouchmove = null;
 }
 
+/**
+ * Update the client GUI values for window and level, without
+ * actually changing them in PVWeb
+ */
 function updateWindowInfo(values) {
     $('#windowLevelInfo').html('Window: '+values[0]+' - '+values[1]);
 }
 
+/** Make the actual request to PVWeb to set the window */
 function changeWindow(values) {
-    console.log(values);
+    var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
     imageWindow = values;
-    // TODO render with new window
+    lookupTable.setRGBPoints([values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0]);
+
+    paraview.Render();
 }
 
 function changeSlice (slice) {
@@ -152,11 +164,17 @@ function changeSlice (slice) {
       SampleRateK: 1,
       VOI: [bounds[0], bounds[1], bounds[2], bounds[3], slice, slice + 1]
     });
+    var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
+    // set current window state on this slice
+    lookupTable.setRGBPoints([imageWindow[0], 0.0, 0.0, 0.0, imageWindow[1], 1.0, 1.0, 1.0]);
+    lookupTable.setColorSpace(0); // 0 corresponds to RGB
+
     paraview.SetDisplayProperties({
         proxy: sliceFilter,
         view: activeView,
         Representation: 'Volume',
-        ColorArrayName: 'MetaImage'
+        ColorArrayName: 'MetaImage',
+        LookupTable: lookupTable
     });
     paraview.Show({proxy: sliceFilter}); //show the next slice
     paraview.Hide({proxy: prevSlice}); //hide the previous slice
