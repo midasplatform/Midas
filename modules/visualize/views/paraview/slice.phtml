@@ -23,6 +23,7 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paravi
 <img class="visuLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
 
 <div id='renderercontainer' style="">
+  <div id='rendererOverlay'></div>
   <!-- The renderer will be inserted here -->
 </div>
 
@@ -31,4 +32,7 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paravi
 
 <div id="windowLevelInfo"></div>
 <div id="windowLevelSlider"></div>
+
+<!-- UI Action widget templates -->
+<button id="actionButtonTemplate" style="display: none;" class="actionButton actionInactive"></button>
 
