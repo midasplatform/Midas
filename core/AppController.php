@@ -63,7 +63,7 @@ class AppController extends MIDAS_GlobalController
     $this->view->metaKeywords = Zend_Registry::get('configGlobal')->application->keywords;
 
     // Set the version
-    $this->view->version = '3.2.6';
+    $this->view->version = '3.2.8';
     if(isset(Zend_Registry::get('configDatabase')->version))
       {
       $this->view->version = Zend_Registry::get('configDatabase')->version;
