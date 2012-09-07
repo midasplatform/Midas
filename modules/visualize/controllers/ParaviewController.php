@@ -119,11 +119,22 @@ class Visualize_ParaviewController extends Visualize_AppController
     $this->view->loadState = $this->view->json['visualize']['openState'];
     }
 
-  /** Use the slice view mode for volume data */
+  /**
+   * Use the axial slice view mode for MetaImage volume data
+   * @param itemId The id of the MetaImage item to visualize
+   * @param operations (Optional) Actions to allow from the slice view, separated by ;
+   * @param forward (Optional) URL to forward result data to
+   */
   public function sliceAction()
     {
     $itemid = $this->_getParam('itemId');
     $item = $this->Item->load($itemid);
+
+    $operations = $this->_getParam('operations');
+    if(!isset($operations))
+      {
+      $operations = '';
+      }
 
     if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
@@ -135,7 +146,6 @@ class Visualize_ParaviewController extends Visualize_AppController
     $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
     $customtmp = $modulesConfig['visualize']->customtmp;
     $useparaview = $modulesConfig['visualize']->useparaview;
-    $userwebgl = $modulesConfig['visualize']->userwebgl;
     $usesymlinks = $modulesConfig['visualize']->usesymlinks;
     $pwapp = $modulesConfig['visualize']->pwapp;
     if(!isset($useparaview) || !$useparaview)
@@ -175,9 +185,10 @@ class Visualize_ParaviewController extends Visualize_AppController
       }
 
     $this->view->json['visualize']['url'] = $filePath;
+    $this->view->json['visualize']['operations'] = $operations;
+    $this->view->operations = $operations;
     $this->view->fileLocation = $filePath;
     $this->view->pwapp = $pwapp;
-    $this->view->usewebgl = $userwebgl;
     $this->view->itemDao = $item;
     }
 

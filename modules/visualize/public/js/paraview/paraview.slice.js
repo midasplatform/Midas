@@ -43,6 +43,8 @@ midas.visualize.start = function () {
     midas.visualize.midJ = (midas.visualize.bounds[2] + midas.visualize.bounds[3]) / 2.0;
     midas.visualize.midK = Math.ceil((midas.visualize.bounds[4] + midas.visualize.bounds[5]) / 2.0) - 1;
 
+    midas.visualize.currentSlice = midas.visualize.midK;
+
     midas.visualize.activeView = paraview.CreateIfNeededRenderView();
     midas.visualize.activeView.setViewSize(container.width(), container.height());
     midas.visualize.activeView.setCenterAxesVisibility(false);
@@ -79,8 +81,8 @@ midas.visualize.start = function () {
     midas.visualize.switchRenderer(true); // render in the div
     $('img.visuLoading').hide();
     container.show();
-    midas.visualize.setupSliders();
 
+    midas.visualize.setupSliders();
     midas.visualize.updateSliceInfo(midas.visualize.midK);
     midas.visualize.updateWindowInfo([midas.visualize.minVal, midas.visualize.maxVal]);
     midas.visualize.disableMouseInteraction();
@@ -146,13 +148,14 @@ midas.visualize.changeWindow = function (values) {
 
 midas.visualize.changeSlice = function (slice) {
     if(slice < midas.visualize.bounds[4] || slice > midas.visualize.bounds[5] - 1) {
-        console.log('Invalid slice number: '+slice);
+        midas.createNotice('Invalid slice number: ' + slice, 3000, error);
         return;
     }
 
     paraview.SetDisplayProperties({
         Slice: slice
     });
+    midas.visualize.currentSlice = slice;
 };
 
 /**
@@ -180,9 +183,74 @@ midas.visualize.switchRenderer = function (first) {
     midas.visualize.renderers.current.start();  
 };
 
+/**
+ * Set the mode to point selection within the image.
+ */
+midas.visualize.pointSelectMode = function () {
+    midas.createNotice('Click on the image to select a point', 3500);
+
+    // Bind click action on the render window
+    var el = $(midas.visualize.renderers.current.view);
+    el.unbind('click').click(function (e) {
+        var x = (midas.visualize.bounds[1] - midas.visualize.bounds[0]) * (e.offsetX / $(this).width());
+        x -= midas.visualize.bounds[0];
+        var y = (midas.visualize.bounds[3] - midas.visualize.bounds[2]) * (e.offsetY / $(this).height());
+        y = midas.visualize.bounds[3] - y; // invert direction of y; coordinate system starts with 0 at bottom
+        y -= midas.visualize.bounds[2];
+//        midas.visualize.handlePointSelectComplete(x, y, midas.visualize.currentSlice);
+        console.log([x, y, midas.visualize.currentSlice]);
+    });
+};
+
+/**
+ * Set an action as active
+ * @param button The button to display as active (all others will become inactive)
+ * @param callback The function to call when this button is activated
+ */
+midas.visualize.setActiveAction = function (button, callback) {
+    $('.actionActive').addClass('actionInactive').removeClass('actionActive');
+    button.removeClass('actionInactive').addClass('actionActive');
+    callback();
+};
+
+/**
+ * Enable point selection action
+ */
+midas.visualize._enablePointSelect = function () {
+    var button = $('#actionButtonTemplate').clone();
+    button.removeAttr('id');
+    button.addClass('pointSelectButton');
+    button.appendTo('#rendererOverlay');
+    button.qtip({
+        content: 'Select a single point in the image'
+    });
+    button.show();
+
+    button.click(function () {
+        midas.visualize.setActiveAction($(this), midas.visualize.pointSelectMode);
+    });
+};
+
+/**
+ * Enable the specified set of operations in the view
+ * Options:
+ *   -pointSelect: select a single point in the image
+ */
+midas.visualize.enableActions = function (operations) {
+    $.each(operations, function(k, operation) {
+        if(operation == 'pointSelect') {
+            midas.visualize._enablePointSelect();
+        }
+        else {
+            alert('Unsupported operation: '+operation);
+        }
+    });
+};
+
 $(window).load(function () {
     json = jQuery.parseJSON($('div.jsonContent').html());
     midas.visualize.start();
+    midas.visualize.enableActions(json.visualize.operations.split(';'));
 });
 
 $(window).unload(function () {

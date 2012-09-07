@@ -8,26 +8,53 @@
   margin-left: 10px;
 }
 
-#renderercontainer{
+#renderercontainer {
   z-index: 2;
   overflow: hidden;
   width: 850px;
   height: 700px;
   display: none;
   margin-bottom: 8px;
+  position: relative;
 }
 
-img.visuLoading{
+img.visuLoading {
   z-index: 100;
   margin-top: 10px;
   margin-left: 10px;
 }
 
-#renderer-type{
+#renderer-type {
   z-index: 5;
   width: 100px;
   position: absolute;
   right: 60px;
   top: 8px;
+}
+
+#rendererOverlay {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 3;
+}
+
+button.actionButton {
+  width: 25px;
+  height: 25px;
+  background-repeat: no-repeat;
+  background-position: 2px 1px;
+}
+
+button.actionActive {
+  background-color: #99cc99;
+}
+
+button.actionInactive {
+  background-color: #cccccc;
+}
+
+button.pointSelectButton {
+  background-image: url(../../images/pointSelect.png);
 }
 
