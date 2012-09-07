@@ -66,8 +66,8 @@ class Visualize_Notification extends MIDAS_Notification
       {
       $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
       return '<li><a href="'.$webroot.'/visualize/paraview/slice?itemId='.
-        $item->getKey().'"><img alt="" src="'.$webroot.'/modules/'.
-        $this->moduleName.'/public/images/sliceView.png" /> Slice Visualization</a></li>';
+      $item->getKey().'"><img alt="" src="'.$webroot.'/modules/'.
+      $this->moduleName.'/public/images/sliceView.png" /> Slice Visualization</a></li>';
       }
     }
 
