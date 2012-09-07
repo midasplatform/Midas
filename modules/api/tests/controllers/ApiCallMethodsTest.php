@@ -271,6 +271,51 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->_assertStatusOk($resp);
 
     $this->assertEquals($resp->data->parent_id, '1002');
+
+    // check that user can't move a folder they only have read on
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.folder.move';
+    $this->params['id'] = '1012';
+    $this->params['dstfolderid'] = '1002';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+
+    // check that user can't move a folder they only have read on
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.folder.move';
+    $this->params['id'] = '1012';
+    $this->params['dstfolderid'] = '1002';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+
+    // check that user can't move a folder they only have write on
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.folder.move';
+    $this->params['id'] = '1013';
+    $this->params['dstfolderid'] = '1002';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+
+    // check that user can't move to a folder they only have read on
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.folder.move';
+    $this->params['id'] = '1014';
+    $this->params['dstfolderid'] = '1012';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+
+    // check that user can move from admin to write
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.folder.move';
+    $this->params['id'] = '1014';
+    $this->params['dstfolderid'] = '1013';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
     }
 
   /** Test the item.get method */
@@ -369,27 +414,58 @@ class ApiCallMethodsTest extends ControllerTestCase
   /** Test the item.move method */
   public function testItemMove()
     {
-    $itemsFile = $this->loadData('Item', 'default');
+    $token = $this->_loginAsNormalUser();
+
+    // check that user can't move an item they only have read on
+    $this->resetAll();
+    $this->params['token'] = $token;
+    $this->params['method'] = 'midas.item.move';
+    $this->params['id'] = 1004;
+    $this->params['srcfolderid'] = 1014;
+    $this->params['dstfolderid'] = 1002;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+
+    // check that user can't move an item they only have read on
+    $this->resetAll();
+    $this->params['token'] = $token;
+    $this->params['method'] = 'midas.item.move';
+    $this->params['id'] = 1005;
+    $this->params['srcfolderid'] = 1014;
+    $this->params['dstfolderid'] = 1002;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+
+    // check that user can't move an item to a folder they only have read on
+    $this->resetAll();
+    $this->params['token'] = $token;
+    $this->params['method'] = 'midas.item.move';
+    $this->params['id'] = 1006;
+    $this->params['srcfolderid'] = 1014;
+    $this->params['dstfolderid'] = 1012;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
 
     $this->resetAll();
-    $origItemDao = $this->Item->load($itemsFile[0]->getKey());
+    $origItemDao = $this->Item->load(1006);
     $owningFolders = $origItemDao->getFolders();
     $this->assertTrue(is_array($owningFolders ));
     $this->assertEquals(count($owningFolders), 1);
-    $this->assertEquals($owningFolders[0]->getKey(), '1001');
+    $this->assertEquals($owningFolders[0]->getKey(), '1014');
 
-    $token = $this->_loginAsNormalUser();
+    // check that user can move from admin item to write folder
+    $this->resetAll();
     $this->params['token'] = $token;
     $this->params['method'] = 'midas.item.move';
-    $this->params['id'] = $itemsFile[0]->getKey();
-    $this->params['srcfolderid'] = 1001;
-    $this->params['dstfolderid'] = 1002;
+    $this->params['id'] = 1006;
+    $this->params['srcfolderid'] = 1014;
+    $this->params['dstfolderid'] = 1013;
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
     $this->assertTrue(is_array($resp->data->owningfolders));
     $this->assertEquals(count($resp->data->owningfolders), 1);
-    $this->assertEquals($resp->data->owningfolders[0]->folder_id, '1002');
+    $this->assertEquals($resp->data->owningfolders[0]->folder_id, '1013');
     }
 
   /** Test get user's default API key using username and password */
