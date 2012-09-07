@@ -26,7 +26,6 @@ midas.visualize.start = function () {
 
     midas.visualize.input = paraview.OpenDataFile({filename: file});
     paraview.Show();
-    paraview.Hide();
 
     var imageData = paraview.GetDataInformation();
     midas.visualize.bounds = imageData.Bounds;
@@ -43,20 +42,6 @@ midas.visualize.start = function () {
     midas.visualize.midI = (midas.visualize.bounds[0] + midas.visualize.bounds[1]) / 2.0;
     midas.visualize.midJ = (midas.visualize.bounds[2] + midas.visualize.bounds[3]) / 2.0;
     midas.visualize.midK = Math.ceil((midas.visualize.bounds[4] + midas.visualize.bounds[5]) / 2.0) - 1;
-
-    var sliceFilter = paraview.ExtractSubset({
-      Input: midas.visualize.input,
-      SampleRateI: 1,
-      SampleRateJ: 1,
-      SampleRateK: 1,
-      VOI: [midas.visualize.bounds[0],
-            midas.visualize.bounds[1],
-            midas.visualize.bounds[2],
-            midas.visualize.bounds[3],
-            midas.visualize.midK,
-            midas.visualize.midK + 1]
-    });
-    paraview.Show({proxy: sliceFilter});
 
     midas.visualize.activeView = paraview.CreateIfNeededRenderView();
     midas.visualize.activeView.setViewSize(container.width(), container.height());
@@ -81,10 +66,10 @@ midas.visualize.start = function () {
     lookupTable.setColorSpace(0); // 0 corresponds to RGB
 
     paraview.SetDisplayProperties({
-        proxy: sliceFilter,
         view: midas.visualize.activeView,
-        Representation: 'Volume',
+        Representation: 'Slice',
         ColorArrayName: 'MetaImage',
+        Slice: midas.visualize.midK,
         LookupTable: lookupTable
     });
     paraview.Render();
@@ -157,8 +142,6 @@ midas.visualize.changeWindow = function (values) {
     var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
     midas.visualize.imageWindow = values;
     lookupTable.setRGBPoints([values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0]);
-
-    paraview.Render();
 };
 
 midas.visualize.changeSlice = function (slice) {
@@ -167,39 +150,9 @@ midas.visualize.changeSlice = function (slice) {
         return;
     }
 
-    var prevSlice = paraview.GetActiveSource();
-    midas.visualize.activeView.setCameraFocalPoint([midas.visualize.midI,
-                                                    midas.visualize.midJ,
-                                                    slice]);
-    var sliceFilter = paraview.ExtractSubset({
-      Input: midas.visualize.input,
-      SampleRateI: 1,
-      SampleRateJ: 1,
-      SampleRateK: 1,
-      VOI: [midas.visualize.bounds[0],
-            midas.visualize.bounds[1],
-            midas.visualize.bounds[2],
-            midas.visualize.bounds[3],
-            slice,
-            slice + 1]
-    });
-    var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
-    // set current window state on this slice
-    lookupTable.setRGBPoints([midas.visualize.imageWindow[0],
-                              0.0, 0.0, 0.0,
-                              midas.visualize.imageWindow[1],
-                              1.0, 1.0, 1.0]);
-    lookupTable.setColorSpace(0); // 0 corresponds to RGB
-
     paraview.SetDisplayProperties({
-        proxy: sliceFilter,
-        view: midas.visualize.activeView,
-        Representation: 'Volume',
-        ColorArrayName: 'MetaImage',
-        LookupTable: lookupTable
+        Slice: slice
     });
-    paraview.Show({proxy: sliceFilter}); //show the next slice
-    paraview.Hide({proxy: prevSlice}); //hide the previous slice
 };
 
 /**
