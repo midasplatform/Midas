@@ -41,7 +41,7 @@ midas.visualize.start = function () {
 
     midas.visualize.midI = (midas.visualize.bounds[0] + midas.visualize.bounds[1]) / 2.0;
     midas.visualize.midJ = (midas.visualize.bounds[2] + midas.visualize.bounds[3]) / 2.0;
-    midas.visualize.midK = Math.ceil((midas.visualize.bounds[4] + midas.visualize.bounds[5]) / 2.0) - 1;
+    midas.visualize.midK = Math.floor((midas.visualize.bounds[4] + midas.visualize.bounds[5]) / 2.0);
 
     midas.visualize.currentSlice = midas.visualize.midK;
 
@@ -57,8 +57,8 @@ midas.visualize.start = function () {
                                                     midas.visualize.midJ,
                                                     midas.visualize.midK]);
     midas.visualize.activeView.setCenterOfRotation(midas.visualize.activeView.getCameraFocalPoint());
-    midas.visualize.activeView.setBackground([0.0, 0.0, 0.0]);
-    midas.visualize.activeView.setBackground2([0.0, 0.0, 0.0]); //solid black background
+    midas.visualize.activeView.setBackground([1.0, 1.0, 1.0]);
+    midas.visualize.activeView.setBackground2([1.0, 1.0, 1.0]); //solid black background
 
     var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
     lookupTable.setRGBPoints([midas.visualize.minVal,
@@ -72,9 +72,10 @@ midas.visualize.start = function () {
         Representation: 'Slice',
         ColorArrayName: 'MetaImage',
         Slice: midas.visualize.midK,
+        SliceMode: 'XY Plane',
         LookupTable: lookupTable
     });
-    paraview.Render();
+
     midas.visualize.activeView.setCameraParallelScale(
       Math.max(midas.visualize.midI, midas.visualize.midJ));
 
@@ -94,7 +95,7 @@ midas.visualize.start = function () {
 midas.visualize.setupSliders = function () {
     $('#sliceSlider').slider({
         min: midas.visualize.bounds[4],
-        max: midas.visualize.bounds[5] - 1,
+        max: midas.visualize.bounds[5],
         value: midas.visualize.midK,
         change: function(event, ui) {
             midas.visualize.changeSlice(ui.value);
@@ -147,8 +148,8 @@ midas.visualize.changeWindow = function (values) {
 };
 
 midas.visualize.changeSlice = function (slice) {
-    if(slice < midas.visualize.bounds[4] || slice > midas.visualize.bounds[5] - 1) {
-        midas.createNotice('Invalid slice number: ' + slice, 3000, error);
+    if(slice < midas.visualize.bounds[4] || slice > midas.visualize.bounds[5]) {
+        midas.createNotice('Invalid slice number: ' + slice, 3000, 'error');
         return;
     }
 
@@ -162,7 +163,7 @@ midas.visualize.changeSlice = function (slice) {
  * Update the value of the current slice, without rendering the slice.
  */
 midas.visualize.updateSliceInfo = function (slice) {
-    $('#sliceInfo').html('Slice: ' + (slice+1) + ' of '+ midas.visualize.bounds[5]);
+    $('#sliceInfo').html('Slice: ' + slice + ' of '+ midas.visualize.bounds[5]);
 };
 
 /**
@@ -194,11 +195,30 @@ midas.visualize.pointSelectMode = function () {
     el.unbind('click').click(function (e) {
         var x = (midas.visualize.bounds[1] - midas.visualize.bounds[0]) * (e.offsetX / $(this).width());
         x -= midas.visualize.bounds[0];
+        x = Math.floor(x);
         var y = (midas.visualize.bounds[3] - midas.visualize.bounds[2]) * (e.offsetY / $(this).height());
         y = midas.visualize.bounds[3] - y; // invert direction of y; coordinate system starts with 0 at bottom
+        y = Math.floor(y);
         y -= midas.visualize.bounds[2];
-//        midas.visualize.handlePointSelectComplete(x, y, midas.visualize.currentSlice);
-        console.log([x, y, midas.visualize.currentSlice]);
+
+        var html = 'You have selected the point:<p><b>('
+                 +x+ ', '+y+', '+midas.visualize.currentSlice+')</b></p>'
+                 +'Click OK to proceed or Cancel to re-select a point';
+        html += '<br/><br/><div style="float: right;"><button id="pointSelectOk">OK</button>';
+        html += '<button style="margin-left: 15px" id="pointSelectCancel">Cancel</button></div>';
+        midas.showDialogWithContent('Confirm Point Selection', html, false);
+
+        $('#pointSelectOk').unbind('click').click(function () {
+            if(typeof midas.visualize.handlePointSelect == 'function') {
+                midas.visualize.handlePointSelect([x, y, midas.visualize.currentSlice]);
+            }
+            else {
+                midas.createNotice('No point selection handler function has been loaded', 4000, 'error');
+            }
+        });
+        $('#pointSelectCancel').unbind('click').click(function () {
+            $('div.MainDialog').dialog('close');
+        });      
     });
 };
 
@@ -241,7 +261,7 @@ midas.visualize.enableActions = function (operations) {
         if(operation == 'pointSelect') {
             midas.visualize._enablePointSelect();
         }
-        else {
+        else if(operation != '') {
             alert('Unsupported operation: '+operation);
         }
     });

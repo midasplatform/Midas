@@ -123,7 +123,8 @@ class Visualize_ParaviewController extends Visualize_AppController
    * Use the axial slice view mode for MetaImage volume data
    * @param itemId The id of the MetaImage item to visualize
    * @param operations (Optional) Actions to allow from the slice view, separated by ;
-   * @param forward (Optional) URL to forward result data to
+   * @param jsImports (Optional) List of javascript files to import. These should contain handler
+   *                             functions for imported operations.
    */
   public function sliceAction()
     {
@@ -134,6 +135,15 @@ class Visualize_ParaviewController extends Visualize_AppController
     if(!isset($operations))
       {
       $operations = '';
+      }
+    $jsImports = $this->_getParam('jsImports');
+    if(!isset($jsImports))
+      {
+      $this->view->jsImports = array();
+      }
+    else
+      {
+      $this->view->jsImports = explode(';', $jsImports);
       }
 
     if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
