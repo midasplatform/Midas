@@ -14,24 +14,35 @@ PURPOSE.  See the above copyright notices for more information.
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.css" />
 
 <?php
-echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.js"></script>';
-echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery-ui.js"></script>';
 $this->headScript()->appendFile('/PWService/js/ParaViewWeb.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.slice.js');
+
+/** Dynamic js library imports for action handlers */
+foreach($this->jsImports as $jsImport)
+  {
+  $this->headScript()->appendFile($jsImport);
+  }
 ?>
 
 <img class="visuLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
 
 <div id='renderercontainer' style="">
   <div id='rendererOverlay'></div>
+  <div id="sliceControlContainer">
+    <div id="sliceSlider"></div>
+    <div id="sliceInfo"></div>
+  </div>
+
+  <div id="windowLevelControlContainer">
+    <div id="windowLevelInfo"></div>
+    <div id="windowLevelSlider"></div>
+  </div>
   <!-- The renderer will be inserted here -->
 </div>
 
-<div id="sliceInfo"></div>
-<div id="sliceSlider"></div>
-
-<div id="windowLevelInfo"></div>
-<div id="windowLevelSlider"></div>
+<div class="belowViewportContainer">
+  Click <a onclick="midas.visualize.toggleControlVisibility();">here</a> or press 'c' to toggle control visibility.
+</div>
 
 <!-- UI Action widget templates -->
 <button id="actionButtonTemplate" style="display: none;" class="actionButton actionInactive"></button>
