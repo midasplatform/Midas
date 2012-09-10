@@ -150,7 +150,9 @@ class Visualize_ParaviewController extends Visualize_AppController
       {
       throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
       }
-    $this->view->header = 'Slice view: <a href="'.$this->view->webroot.'/item/'.$itemid.'">'.$item->getName().'</a>';
+    $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/sliceView.png" />';
+    $header .= ' Slice view: <a href="'.$this->view->webroot.'/item/'.$itemid.'">'.$item->getName().'</a>';
+    $this->view->header = $header;
 
     $modulesConfig = Zend_Registry::get('configsModules');
     $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;

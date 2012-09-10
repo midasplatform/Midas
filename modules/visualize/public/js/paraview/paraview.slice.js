@@ -57,8 +57,10 @@ midas.visualize.start = function () {
                                                     midas.visualize.midJ,
                                                     midas.visualize.midK]);
     midas.visualize.activeView.setCenterOfRotation(midas.visualize.activeView.getCameraFocalPoint());
-    midas.visualize.activeView.setBackground([1.0, 1.0, 1.0]);
-    midas.visualize.activeView.setBackground2([1.0, 1.0, 1.0]); //solid black background
+    midas.visualize.activeView.setBackground([0.0, 0.0, 0.0]);
+    midas.visualize.activeView.setBackground2([0.0, 0.0, 0.0]); //solid black background
+    midas.visualize.activeView.setCameraParallelScale(
+      Math.max(midas.visualize.midI, midas.visualize.midJ));
 
     var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
     lookupTable.setRGBPoints([midas.visualize.minVal,
@@ -76,8 +78,7 @@ midas.visualize.start = function () {
         LookupTable: lookupTable
     });
 
-    midas.visualize.activeView.setCameraParallelScale(
-      Math.max(midas.visualize.midI, midas.visualize.midJ));
+    
 
     midas.visualize.switchRenderer(true); // render in the div
     $('img.visuLoading').hide();
@@ -267,10 +268,40 @@ midas.visualize.enableActions = function (operations) {
     });
 };
 
+/**
+ * Toggle the visibility of any controls overlaid on top of the render container
+ */
+midas.visualize.toggleControlVisibility = function () {
+    if($('#sliceControlContainer').is(':visible')) {
+        $('#sliceControlContainer').hide();
+        $('#windowLevelControlContainer').hide();
+        $('#rendererOverlay').hide();
+    }
+    else {
+        $('#sliceControlContainer').show();
+        $('#windowLevelControlContainer').show();
+        $('#rendererOverlay').show();
+    }
+};
+
 $(window).load(function () {
+    if(typeof midas.visualize.preInit == 'function') {
+        midas.visualize.preInit();
+    }
+
     json = jQuery.parseJSON($('div.jsonContent').html());
     midas.visualize.start();
     midas.visualize.enableActions(json.visualize.operations.split(';'));
+    $(document).unbind('keypress').keydown(function (event) {
+        if(event.which == 67) { // the 'c' key
+            midas.visualize.toggleControlVisibility();
+            event.preventDefault();
+        }
+    });
+
+    if(typeof midas.visualize.postInit == 'function') {
+        midas.visualize.postInit();
+    }
 });
 
 $(window).unload(function () {
