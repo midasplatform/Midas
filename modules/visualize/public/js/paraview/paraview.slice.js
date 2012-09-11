@@ -3,6 +3,7 @@ var midas = midas || {};
 midas.visualize = midas.visualize || {};
 
 midas.visualize.renderers = {};
+midas.visualize.meshes = [];
 
 midas.visualize.start = function () {
     // Create a paraview proxy
@@ -56,6 +57,7 @@ midas.visualize.start = function () {
     midas.visualize.activeView.setCameraFocalPoint([midas.visualize.midI,
                                                     midas.visualize.midJ,
                                                     midas.visualize.midK]);
+//    midas.visualize.activeView.setCameraViewUp([0, -1, 0]);
     midas.visualize.activeView.setCenterOfRotation(midas.visualize.activeView.getCameraFocalPoint());
     midas.visualize.activeView.setBackground([0.0, 0.0, 0.0]);
     midas.visualize.activeView.setBackground2([0.0, 0.0, 0.0]); //solid black background
@@ -78,7 +80,23 @@ midas.visualize.start = function () {
         LookupTable: lookupTable
     });
 
-    
+    // Load other meshes
+    $.each(json.visualize.meshes, function(k, mesh) {
+        var src = paraview.OpenDataFile({filename: mesh.path});
+        paraview.Show({proxy: src});
+        paraview.SetDisplayProperties({
+            proxy: src,
+            view: midas.visualize.activeView,
+            Representation: 'Surface'
+        });
+
+        midas.visualize.meshes.push({
+            path: mesh.path,
+            itemId: mesh.itemId,
+            source: src
+        });
+    });
+    paraview.SetActiveSource([midas.visualize.input]);
 
     midas.visualize.switchRenderer(true); // render in the div
     $('img.visuLoading').hide();
@@ -158,6 +176,10 @@ midas.visualize.changeSlice = function (slice) {
         Slice: slice
     });
     midas.visualize.currentSlice = slice;
+
+    if(typeof midas.visualize.changeSliceCallback == 'function') {
+        midas.visualize.changeSliceCallback(slice);
+    }
 };
 
 /**
@@ -196,14 +218,11 @@ midas.visualize.pointSelectMode = function () {
     el.unbind('click').click(function (e) {
         var x = (midas.visualize.bounds[1] - midas.visualize.bounds[0]) * (e.offsetX / $(this).width());
         x -= midas.visualize.bounds[0];
-        x = Math.floor(x);
         var y = (midas.visualize.bounds[3] - midas.visualize.bounds[2]) * (e.offsetY / $(this).height());
-        y = midas.visualize.bounds[3] - y; // invert direction of y; coordinate system starts with 0 at bottom
-        y = Math.floor(y);
         y -= midas.visualize.bounds[2];
 
         var html = 'You have selected the point:<p><b>('
-                 +x+ ', '+y+', '+midas.visualize.currentSlice+')</b></p>'
+                 +x.toFixed(1)+', '+y.toFixed(1)+', '+midas.visualize.currentSlice.toFixed(1)+')</b></p>'
                  +'Click OK to proceed or Cancel to re-select a point';
         html += '<br/><br/><div style="float: right;"><button id="pointSelectOk">OK</button>';
         html += '<button style="margin-left: 15px" id="pointSelectCancel">Cancel</button></div>';
@@ -285,8 +304,8 @@ midas.visualize.toggleControlVisibility = function () {
 };
 
 $(window).load(function () {
-    if(typeof midas.visualize.preInit == 'function') {
-        midas.visualize.preInit();
+    if(typeof midas.visualize.preInitCallback == 'function') {
+        midas.visualize.preInitCallback();
     }
 
     json = jQuery.parseJSON($('div.jsonContent').html());
@@ -299,8 +318,8 @@ $(window).load(function () {
         }
     });
 
-    if(typeof midas.visualize.postInit == 'function') {
-        midas.visualize.postInit();
+    if(typeof midas.visualize.postInitCallback == 'function') {
+        midas.visualize.postInitCallback();
     }
 });
 

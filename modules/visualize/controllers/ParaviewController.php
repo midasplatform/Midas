@@ -124,28 +124,39 @@ class Visualize_ParaviewController extends Visualize_AppController
    * @param itemId The id of the MetaImage item to visualize
    * @param operations (Optional) Actions to allow from the slice view, separated by ;
    * @param jsImports (Optional) List of javascript files to import. These should contain handler
-   *                             functions for imported operations.
+   *                             functions for imported operations. Separated by ;
+   * @param meshes (Optional) List of item ids to also load into the scene as meshes
    */
   public function sliceAction()
     {
-    $itemid = $this->_getParam('itemId');
-    $item = $this->Item->load($itemid);
-
     $operations = $this->_getParam('operations');
     if(!isset($operations))
       {
       $operations = '';
       }
+
     $jsImports = $this->_getParam('jsImports');
-    if(!isset($jsImports))
-      {
-      $this->view->jsImports = array();
-      }
-    else
+    if(isset($jsImports))
       {
       $this->view->jsImports = explode(';', $jsImports);
       }
+    else
+      {
+      $this->view->jsImports = array();
+      }
 
+    $meshes = $this->_getParam('meshes');
+    if(isset($meshes))
+      {
+      $meshes = explode(';', $meshes);
+      }
+    else
+      {
+      $meshes = array();
+      }
+
+    $itemid = $this->_getParam('itemId');
+    $item = $this->Item->load($itemid);
     if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
       throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
@@ -196,8 +207,36 @@ class Visualize_ParaviewController extends Visualize_AppController
         }
       }
 
+    // Load in other mesh sources
+    $meshObj = array();
+    foreach($meshes as $meshId)
+      {
+      $otherItem = $this->Item->load($meshId);
+      if($otherItem === false || !$this->Item->policyCheck($otherItem, $this->userSession->Dao, MIDAS_POLICY_READ))
+        {
+        throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
+        }
+      $revision = $this->Item->getLastRevision($otherItem);
+      $bitstreams = $revision->getBitstreams();
+      foreach($bitstreams as $bitstream)
+        {
+        $otherFile = $path.'/'.$bitstream->getName();
+        if($usesymlinks)
+          {
+          symlink($bitstream->getFullPath(), $otherFile);
+          }
+        else
+          {
+          copy($bitstream->getFullPath(), $otherFile);
+          }
+        $meshObj[] = array('path' => $otherFile, 'itemId' => $meshId);
+        }
+      }
+
     $this->view->json['visualize']['url'] = $filePath;
     $this->view->json['visualize']['operations'] = $operations;
+    $this->view->json['visualize']['meshes'] = $meshObj;
+    $this->view->json['visualize']['item'] = $item;
     $this->view->operations = $operations;
     $this->view->fileLocation = $filePath;
     $this->view->pwapp = $pwapp;
