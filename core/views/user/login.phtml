@@ -28,7 +28,10 @@ echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/user/
     <tr>
       <td><?php echo $this->form['email']?></td>
       <td><?php echo $this->form['password']?></td>
-      <td><?php echo $this->form['submit']?></td>
+      <td>
+        <?php echo $this->form['submit']?>
+        <img style="display: none;" alt="" src="<?php echo $this->coreWebroot;?>/public/images/icons/loading.gif" id="loginWaiting" />
+      </td>
     </tr>
     <tr>
       <td>
