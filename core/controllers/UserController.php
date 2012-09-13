@@ -1084,6 +1084,7 @@ class UserController extends AppController
     else
       {
       // log out if user is deleting his or her own account
+      session_start();
       $this->userSession->Dao = null;
       Zend_Session::ForgetMe();
       if(!$this->isTestingEnv())

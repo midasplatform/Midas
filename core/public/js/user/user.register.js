@@ -93,6 +93,8 @@ $('#registerForm input').focusin(function () {
 
 
 $('form#registerForm').submit(function () {
+    $('#registerWaiting').show();
+    $('#registerForm input[type=submit]').attr('disabled', 'disabled');
     return validRegisterForm();
 });
 
