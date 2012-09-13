@@ -25,17 +25,19 @@ class Remoteprocessing_ConfigForm extends AppForm
   public function createConfigForm()
     {
     $form = new Zend_Form;
-
     $form->setAction($this->webroot.'/remoteprocessing/config/index')
-          ->setMethod('post');
+         ->setMethod('post');
 
     $securitykey = new Zend_Form_Element_Text('securitykey');
 
-    $submit = new  Zend_Form_Element_Submit('submitConfig');
-    $submit ->setLabel('Save configuration');
+    $showbutton = new Zend_Form_Element_Checkbox('showbutton');
 
-    $form->addElements(array($securitykey, $submit));
+    $submit = new Zend_Form_Element_Submit('submitConfig');
+    $submit->setLabel('Save configuration');
+
+    $form->addElements(array($securitykey, $showbutton, $submit));
     return $form;
     }
 
 } // end class
+

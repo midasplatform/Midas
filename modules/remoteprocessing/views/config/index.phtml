@@ -31,15 +31,18 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
       echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>Remote processing Module Configuration:</h3>
-            <div >
-              <label for='hachoir'>Security Key</label>
-              {$this->configForm['securitykey']}
-            </div>
-
-          <div>
-            {$this->configForm['submitConfig']}
-          </div>
-       </form>";
+        <div>
+          <label for='hachoir'>Security Key</label>
+          {$this->configForm['securitykey']}
+        </div>
+        <div>
+          <label for='hachoir'>Show Process button</label>
+          {$this->configForm['showbutton']}
+        </div>
+        <div>
+          {$this->configForm['submitConfig']}
+        </div>
+      </form>";
        ?>
     <br/>
     <br/>
