@@ -40,11 +40,12 @@ class Api_Notification extends ApiEnabled_Notification
     }//end init
 
   /** get Config Tabs */
-  public function getConfigTabs()
+  public function getConfigTabs($params)
     {
+    $user = $params['user'];
     $fc = Zend_Controller_Front::getInstance();
     $moduleWebroot = $fc->getBaseUrl().'/api';
-    return array('Api' => $moduleWebroot.'/config/usertab');
+    return array('Api' => $moduleWebroot.'/config/usertab?userId='.$user->getKey());
     }
 
   /** Reset the user's default web API key */

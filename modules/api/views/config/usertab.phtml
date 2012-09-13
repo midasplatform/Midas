@@ -50,6 +50,7 @@ else
 <h3><?php echo $this->t('Generate new API key')?></h3>
 
 <form class="genericForm" id="generateKeyForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
+  <input type="hidden" name="userId" value="<?php echo $this->user->getKey(); ?>" />
   <div >
     <label for="appplication_name"><?php echo $this->t('Application Name')?>:</label>
     <?php echo $this->form['appplication_name']?>
