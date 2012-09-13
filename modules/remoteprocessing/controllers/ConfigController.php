@@ -80,6 +80,14 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
       $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", $applicationConfig);
       }
     $formArray['securitykey']->setValue($applicationConfig['global']['securitykey']);
+    if(isset($applicationConfig['global']['showbutton']))
+      {
+      $formArray['showbutton']->setValue($applicationConfig['global']['showbutton']);
+      }
+    else
+      {
+      $formArray['showbutton']->setValue(true);
+      }
 
     $this->view->configForm = $formArray;
 
@@ -100,10 +108,12 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
           rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
           }
         $applicationConfig['global']['securitykey'] = $this->_getParam('securitykey');
+        $applicationConfig['global']['showbutton'] = $this->_getParam('showbutton');
 
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", $applicationConfig);
-        echo JsonComponent::encode(array(true, 'Changed saved'));
+        echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
     }
 }//end class
+
