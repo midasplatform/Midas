@@ -36,7 +36,8 @@ class Dicomextractor_Notification extends ApiEnabled_Notification
   public function getItemMenuLink($params)
     {
     $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
-    return '<li><a id="dicomExtractAction" href="#">'.
+    return '<li id="dicomExtractListItem" style="display: none;">'.
+      '<a id="dicomExtractAction" href="#">'.
       '<img alt="" src="'.$webroot.'/modules/'.
       $this->moduleName.'/public/images/dicom_icon.jpg" /> '.
       $this->t('Extract Dicom Metadata').'</a></li>';

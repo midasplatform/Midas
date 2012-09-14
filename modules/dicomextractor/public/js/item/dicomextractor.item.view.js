@@ -12,7 +12,7 @@ midas.dicomextractor.extractAction = function () {
         method: 'midas.dicomextractor.extract',
         args: 'item=' + json.item.item_id,
         success: function (retVal) {
-            midas.createNotice('Metadata extraced successfully', 3000);
+            midas.createNotice('Metadata extracted successfully', 3000);
             window.location.reload();
         },
         error: function (retVal) {
@@ -25,5 +25,8 @@ midas.dicomextractor.extractAction = function () {
 
 $(document).ready(function () {
     'use strict';
-    $('#dicomExtractAction').click(midas.dicomextractor.extractAction);
+    if (json.item.isModerator === '1') {
+        $('#dicomExtractListItem').show();
+        $('#dicomExtractAction').click(midas.dicomextractor.extractAction);
+    }
 });
