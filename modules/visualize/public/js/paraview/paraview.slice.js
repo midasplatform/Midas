@@ -68,7 +68,7 @@ midas.visualize.start = function () {
     lookupTable.setRGBPoints([midas.visualize.minVal,
                               0.0, 0.0, 0.0,
                               midas.visualize.maxVal,
-                              1.0, 1.0, 1.0]); //initial transfer function def
+                              1.0, 1.0, 1.0]); //initial transfer function
     lookupTable.setColorSpace(0); // 0 corresponds to RGB
 
     paraview.SetDisplayProperties({
@@ -204,6 +204,8 @@ midas.visualize.switchRenderer = function (first) {
     }
     midas.visualize.renderers.current = midas.visualize.renderers.js;
     midas.visualize.renderers.current.bindToElementId('renderercontainer');
+    var el = $('#renderercontainer');
+    midas.visualize.renderers.current.setSize(el.width(), el.height());
     midas.visualize.renderers.current.start();  
 };
 

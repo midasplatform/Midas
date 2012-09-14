@@ -1,0 +1,75 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/paraview/paraview.volume.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.css" />
+
+<?php
+$this->headScript()->appendFile('/PWService/js/ParaViewWeb.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.volume.js');
+$this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/common.ajaxapi.js');
+
+/** Dynamic js library imports */
+foreach($this->jsImports as $jsImport)
+  {
+  $this->headScript()->appendFile($jsImport);
+  }
+?>
+
+<div class="viewMain">
+  <img class="visuLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+
+  <div id='renderercontainer' style="">
+    <div id='rendererOverlay'></div>
+    <!-- The renderer will be inserted here -->
+  </div>
+</div>
+
+<div class="viewSideBar">
+  <div class="sideElementFirst viewAction">
+    <h1>Display</h1>
+    <ul>
+      <li>
+        <a href="javascript:;" id="sofEditAction">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/contrast.png"/>
+        Scalar Opacity Mapping
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;" id="scmEditAction">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/color_wheel.png"/>
+        Scalar Color Mapping
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sideElementActions viewAction">
+    <h1>Filters</h1>
+    <ul>
+      <li>
+        <a href="javascript:;" id="extractSubgridAction">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/shape_handles.png"/>
+        Extract Subgrid
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="sideElement">
+    <h1>Info</h1>
+    Bounds (x): <span id="boundsXInfo" class="infoValue"></span><br/>
+    Bounds (y): <span id="boundsYInfo" class="infoValue"></span><br/>
+    Bounds (z): <span id="boundsZInfo" class="infoValue"></span><br/>
+    Scalar Range: <span id="scalarRangeInfo" class="infoValue"></span><br/>
+  </div>
+</div>
+
