@@ -12,10 +12,14 @@ midas.user.login.validateLoginForm = function () {
         midas.createNotice('Password field must not be empty', 3500, 'error');
         return false;
     }
+    $('#loginForm input[type=submit]').attr('disabled', 'disabled');
+    $('#loginWaiting').show();
 };
 
 midas.user.login.loginResult = function (responseText) {
     'use strict';
+    $('#loginWaiting').hide();
+    $('#loginForm input[type=submit]').removeAttr('disabled');
     try {
         var resp = $.parseJSON(responseText);
         if(resp.status && resp.redirect) {
