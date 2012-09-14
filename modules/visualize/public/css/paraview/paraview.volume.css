@@ -1,0 +1,27 @@
+
+#renderercontainer {
+  z-index: 2;
+  overflow: hidden;
+  width: 575px;
+  height: 575px;
+  display: none;
+  position: relative;
+}
+
+img.visuLoading {
+  z-index: 100;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+#rendererOverlay {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 5;
+}
+
+span.infoValue {
+  color: #7a7a7a;
+}
+

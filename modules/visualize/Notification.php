@@ -44,9 +44,15 @@ class Visualize_Notification extends MIDAS_Notification
     if($this->ModuleComponent->Main->canVisualizeWithSliceView($item))
       {
       $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
-      return '<li><a href="'.$webroot.'/visualize/paraview/slice?itemId='.
-      $item->getKey().'"><img alt="" src="'.$webroot.'/modules/'.
-      $this->moduleName.'/public/images/sliceView.png" /> Slice Visualization</a></li>';
+      $html = '<li><a href="'.$webroot.'/'.$this->moduleName.'/paraview/slice?itemId=';
+      $html .= $item->getKey().'"><img alt="" src="'.$webroot.'/modules/';
+      $html .= $this->moduleName.'/public/images/sliceView.png" /> Slice Visualization</a></li>';
+
+      $html .= '<li><a href="'.$webroot.'/'.$this->moduleName.'/paraview/volume?itemId=';
+      $html .= $item->getKey().'"><img alt="" src="'.$webroot.'/modules/';
+      $html .= $this->moduleName.'/public/images/volume.png" /> Volume Visualization</a></li>';
+
+      return $html;
       }
     }
 

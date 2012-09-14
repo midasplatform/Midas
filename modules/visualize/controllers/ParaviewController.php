@@ -167,10 +167,8 @@ class Visualize_ParaviewController extends Visualize_AppController
 
     $modulesConfig = Zend_Registry::get('configsModules');
     $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
-    $customtmp = $modulesConfig['visualize']->customtmp;
     $useparaview = $modulesConfig['visualize']->useparaview;
     $usesymlinks = $modulesConfig['visualize']->usesymlinks;
-    $pwapp = $modulesConfig['visualize']->pwapp;
     if(!isset($useparaview) || !$useparaview)
       {
       throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
@@ -239,7 +237,79 @@ class Visualize_ParaviewController extends Visualize_AppController
     $this->view->json['visualize']['item'] = $item;
     $this->view->operations = $operations;
     $this->view->fileLocation = $filePath;
-    $this->view->pwapp = $pwapp;
+    $this->view->itemDao = $item;
+    }
+
+  /**
+   * Display a volume rendering of the selected item
+   * @param itemId The id of the MetaImage item to visualize
+   * @param jsImports (Optional) List of javascript files to import. These should contain handler
+   *                             functions for imported operations. Separated by ;
+   */
+  public function volumeAction()
+    {
+    $jsImports = $this->_getParam('jsImports');
+    if(isset($jsImports))
+      {
+      $this->view->jsImports = explode(';', $jsImports);
+      }
+    else
+      {
+      $this->view->jsImports = array();
+      }
+
+    $itemid = $this->_getParam('itemId');
+    $item = $this->Item->load($itemid);
+    if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
+      }
+    $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/volume.png" />';
+    $header .= ' Volume rendering: <a href="'.$this->view->webroot.'/item/'.$itemid.'">'.$item->getName().'</a>';
+    $this->view->header = $header;
+
+    $modulesConfig = Zend_Registry::get('configsModules');
+    $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
+    $useparaview = $modulesConfig['visualize']->useparaview;
+    $usesymlinks = $modulesConfig['visualize']->usesymlinks;
+    if(!isset($useparaview) || !$useparaview)
+      {
+      throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
+      }
+
+    if(!isset($paraviewworkdir) || empty($paraviewworkdir))
+      {
+      throw new Zend_Exception('Please set the ParaView work directory');
+      }
+
+    $pathArray = $this->ModuleComponent->Main->createParaviewPath();
+    $path = $pathArray['path'];
+    $tmpFolderName = $pathArray['foderName'];
+
+    $revision = $this->Item->getLastRevision($item);
+    $bitstreams = $revision->getBitstreams();
+    foreach($bitstreams as $bitstream)
+      {
+      if($usesymlinks)
+        {
+        symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
+        }
+      else
+        {
+        copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
+        }
+
+      $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
+      if($ext != 'pvsm')
+        {
+        $filePath = $paraviewworkdir.'/'.$tmpFolderName.'/'.$bitstream->getName();
+        $mainBitstream = $bitstream;
+        }
+      }
+
+    $this->view->json['visualize']['url'] = $filePath;
+    $this->view->json['visualize']['item'] = $item;
+    $this->view->fileLocation = $filePath;
     $this->view->itemDao = $item;
     }
 
