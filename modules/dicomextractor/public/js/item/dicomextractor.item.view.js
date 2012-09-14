@@ -16,10 +16,11 @@ midas.dicomextractor.extractAction = function () {
             window.location.reload();
         },
         error: function (retVal) {
-            midas.createNotice(retVal.msg, 3000, 'error');
+            midas.createNotice(retVal.message, 3000, 'error');
         },
         complete: function () {
-        }
+        },
+        log: $('<p></p>')
     });
 };
 

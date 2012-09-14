@@ -39,7 +39,16 @@ class Dicomextractor_ApiComponent extends AppComponent
 
     $itemModel = MidasLoader::loadModel("Item");
     $itemRevisionModel = MidasLoader::loadModel("ItemRevision");
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $itemDao = $itemModel->load($args['item']);
+    $userDao = $authComponent->getUser($args,
+                                       Zend_Registry::get('userSession')->Dao);
+    if(!$itemModel->policyCheck($itemDao, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception('You didn\'t log in or you don\'t have the write '.
+        'permission for the given item.', MIDAS_INVALID_POLICY);
+      }
+
     $revisionDao = $itemModel->getLastRevision($itemDao);
 
     $dicomComponent = MidasLoader::loadComponent('Extractor',
