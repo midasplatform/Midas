@@ -3,6 +3,13 @@ midas.thumbnailcreator = midas.thumbnailcreator || {};
 
 midas.thumbnailcreator.setup = function () {
     'use strict';
+
+    // If the user lacks the permissions to make a thumbnail, don't display the
+    // icon
+    if(json.item.isModerator !== '1') {
+        return;
+    }
+
     // Add "make into thumbnail" actions to bitstream rows
     $('tr.bitstreamRow img.bitstreamInfoIcon').before(function () {
         var bitstream_id = $(this).attr('element');
