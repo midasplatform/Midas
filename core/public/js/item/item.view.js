@@ -120,6 +120,11 @@ $(document).ready(function() {
         midas.showDialog(json.item.message.duplicate);
     });
 
+    $('a.linkItemLink').click(function() {
+        midas.loadDialog("linkToItem","/share/links?type=item&id="+json.item.item_id);
+        midas.showDialog('Link to this item');
+    });
+
     $('tr.bitstreamRow img.bitstreamInfoIcon').qtip({
         content: {
             text: function(api) {
