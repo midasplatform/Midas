@@ -57,26 +57,27 @@ midas.visualize.start = function () {
     midas.visualize.activeView.setBackground([0.0, 0.0, 0.0]);
     midas.visualize.activeView.setBackground2([0.0, 0.0, 0.0]); //solid black background
 
-    var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
-    lookupTable.setRGBPoints([midas.visualize.minVal,
-                              0.0, 0.0, 0.0,
-                              midas.visualize.maxVal,
-                              1.0, 1.0, 1.0]); //initial transfer function def
-    lookupTable.setScalarRangeInitialized(1.0);
-    lookupTable.setColorSpace(0); // 0 corresponds to RGB
+    midas.visualize.lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
+    midas.visualize.lookupTable.setRGBPoints(
+      [midas.visualize.minVal,
+       0.0, 0.0, 0.0,
+       midas.visualize.maxVal,
+       1.0, 1.0, 1.0]); //initial transfer function def
+    midas.visualize.lookupTable.setScalarRangeInitialized(1.0);
+    midas.visualize.lookupTable.setColorSpace(0); // 0 corresponds to RGB
 
     // Create the scalar opacity transfer function
-    var sof = paraview.CreatePiecewiseFunction({
+    midas.visualize.sof = paraview.CreatePiecewiseFunction({
         Points: [midas.visualize.minVal, 0.0, 0.5, 0.0,
                  midas.visualize.maxVal, 1.0, 0.75, 0.0]
     });
 
     paraview.SetDisplayProperties({
         view: midas.visualize.activeView,
-        ScalarOpacityFunction: sof,
+        ScalarOpacityFunction: midas.visualize.sof,
         Representation: 'Volume',
         ColorArrayName: 'MetaImage',
-        LookupTable: lookupTable
+        LookupTable: midas.visualize.lookupTable
     });
 
     midas.visualize.switchRenderer(true); // render in the div
@@ -105,6 +106,29 @@ midas.visualize.switchRenderer = function (first) {
 };
 
 /**
+ * Display the subset of the volume defined by the bounds list
+ * of the form [xMin, xMax, yMin, yMax, zMin, zMax]
+ */
+midas.visualize.renderSubgrid = function (bounds) {
+    if(midas.visualize.subgrid) {
+      paraview.Hide({proxy: midas.visualize.subgrid});
+    }
+    paraview.SetActiveSource([midas.visualize.input]);
+    midas.visualize.subgrid = paraview.ExtractSubset({
+        VOI: bounds
+    });
+    paraview.SetDisplayProperties({
+        proxy: midas.visualize.subgrid,
+        view: midas.visualize.activeView,
+        ScalarOpacityFunction: midas.visualize.sof,
+        Representation: 'Volume',
+        ColorArrayName: 'MetaImage',
+        LookupTable: midas.visualize.lookupTable
+    });
+    paraview.Hide({proxy: midas.visualize.input});
+};
+
+/**
  * Display information about the volume
  */
 midas.visualize.populateInfo = function () {
@@ -114,14 +138,118 @@ midas.visualize.populateInfo = function () {
     $('#scalarRangeInfo').html(midas.visualize.minVal+' .. '+midas.visualize.maxVal);
 };
 
+/**
+ * Setup the actions for volume rendering controls
+ */
+midas.visualize.setupActions = function () {
+    // setup the extract subgrid controls
+    var dialog = $('#extractSubgridDialogTemplate').clone();
+    dialog.removeAttr('id');
+    $('#extractSubgridAction').click(function () {
+        midas.showDialogWithContent('Select subgrid bounds',
+          dialog.html(), false, {modal: false, width: 560});
+        var container = $('div.MainDialog');
+        container.find('.sliderX').slider({
+            range: true,
+            min: midas.visualize.bounds[0],
+            max: midas.visualize.bounds[1],
+            values: [midas.visualize.bounds[0], midas.visualize.bounds[1]],
+            slide: function (event, ui) {
+                container.find('.extractSubgridMinX').val(ui.values[0]);
+                container.find('.extractSubgridMaxX').val(ui.values[1]);
+            }
+        });
+        container.find('.sliderY').slider({
+            range: true,
+            min: midas.visualize.bounds[2],
+            max: midas.visualize.bounds[3],
+            values: [midas.visualize.bounds[2], midas.visualize.bounds[3]],
+            slide: function (event, ui) {
+                container.find('.extractSubgridMinY').val(ui.values[0]);
+                container.find('.extractSubgridMaxY').val(ui.values[1]);
+            }
+        });
+        container.find('.sliderZ').slider({
+            range: true,
+            min: midas.visualize.bounds[4],
+            max: midas.visualize.bounds[5],
+            values: [midas.visualize.bounds[4], midas.visualize.bounds[5]],
+            slide: function (event, ui) {
+                container.find('.extractSubgridMinZ').val(ui.values[0]);
+                container.find('.extractSubgridMaxZ').val(ui.values[1]);
+            }
+        });
+
+        // setup spinboxes with feedback into the range sliders
+        container.find('.extractSubgridMinX').spinbox({
+            min: midas.visualize.bounds[0],
+            max: midas.visualize.bounds[1]
+        }).change(function () {
+            container.find('.sliderX').slider('option', 'values',
+              [$(this).val(), container.find('.extractSubgridMaxX').val()]);
+        }).val(midas.visualize.bounds[0]);
+        container.find('.extractSubgridMaxX').spinbox({
+            min: midas.visualize.bounds[0],
+            max: midas.visualize.bounds[1]
+        }).change(function () {
+            container.find('.sliderX').slider('option', 'values',
+              [container.find('.extractSubgridMinX').val(), $(this).val()]);
+        }).val(midas.visualize.bounds[1]);
+        container.find('.extractSubgridMinY').spinbox({
+            min: midas.visualize.bounds[2],
+            max: midas.visualize.bounds[3]
+        }).change(function () {
+            container.find('.sliderY').slider('option', 'values',
+              [$(this).val(), container.find('.extractSubgridMaxY').val()]);
+        }).val(midas.visualize.bounds[2]);
+        container.find('.extractSubgridMaxY').spinbox({
+            min: midas.visualize.bounds[2],
+            max: midas.visualize.bounds[3]
+        }).change(function () {
+            container.find('.sliderY').slider('option', 'values',
+              [container.find('.extractSubgridMinY').val(), $(this).val()]);
+        }).val(midas.visualize.bounds[3]);
+        container.find('.extractSubgridMinZ').spinbox({
+            min: midas.visualize.bounds[4],
+            max: midas.visualize.bounds[5]
+        }).change(function () {
+            container.find('.sliderZ').slider('option', 'values',
+              [$(this).val(), container.find('.extractSubgridMaxZ').val()]);
+        }).val(midas.visualize.bounds[4]);
+        container.find('.extractSubgridMaxZ').spinbox({
+            min: midas.visualize.bounds[4],
+            max: midas.visualize.bounds[5]
+        }).change(function () {
+            container.find('.sliderZ').slider('option', 'values',
+              [container.find('.extractSubgridMinZ').val(), $(this).val()]);
+        }).val(midas.visualize.bounds[5]);
+
+        // setup button actions
+        container.find('button.extractSubgridApply').click(function () {
+            midas.visualize.renderSubgrid([
+              parseInt(container.find('.extractSubgridMinX').val()),
+              parseInt(container.find('.extractSubgridMaxX').val()),
+              parseInt(container.find('.extractSubgridMinY').val()),
+              parseInt(container.find('.extractSubgridMaxY').val()),
+              parseInt(container.find('.extractSubgridMinZ').val()),
+              parseInt(container.find('.extractSubgridMaxZ').val())
+            ]);
+        });
+        container.find('button.extractSubgridClose').click(function () {
+            $('div.MainDialog').dialog('close');
+        });
+    });
+};
+
 $(window).load(function () {
     if(typeof midas.visualize.preInitCallback == 'function') {
         midas.visualize.preInitCallback();
     }
 
     json = jQuery.parseJSON($('div.jsonContent').html());
-    midas.visualize.start();
+    midas.visualize.start(); // do the initial rendering
     midas.visualize.populateInfo();
+    midas.visualize.setupActions();
 
     if(typeof midas.visualize.postInitCallback == 'function') {
         midas.visualize.postInitCallback();
