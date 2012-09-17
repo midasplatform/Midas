@@ -25,3 +25,22 @@ span.infoValue {
   color: #7a7a7a;
 }
 
+table.extractSubgridTable {
+
+}
+
+table.extractSubgridTable td {
+  padding-bottom: 20px;
+}
+
+table.extractSubgridTable input.sb {
+  width: 55px;
+  border: 1px solid gray;
+}
+
+.sliderX,.sliderY,.sliderZ {
+  width: 370px;
+  margin-left: 11px;
+  margin-right: 11px;
+}
+
