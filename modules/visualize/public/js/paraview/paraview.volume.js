@@ -3,6 +3,7 @@ var midas = midas || {};
 midas.visualize = midas.visualize || {};
 
 midas.visualize.renderers = {};
+midas.visualize.DISTANCE_FACTOR = 1.6; // factor to zoom the camera out by
 
 midas.visualize.start = function () {
     // Create a paraview proxy
@@ -29,6 +30,9 @@ midas.visualize.start = function () {
 
     var imageData = paraview.GetDataInformation();
     midas.visualize.bounds = imageData.Bounds;
+    midas.visualize.maxDim = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
+                                      midas.visualize.bounds[3] - midas.visualize.bounds[2],
+                                      midas.visualize.bounds[5] - midas.visualize.bounds[4]);
     midas.visualize.minVal = imageData.PointData.Arrays[0].Ranges[0][0];
     midas.visualize.maxVal = imageData.PointData.Arrays[0].Ranges[0][1];
     midas.visualize.imageWindow = [midas.visualize.minVal, midas.visualize.maxVal];
@@ -48,7 +52,7 @@ midas.visualize.start = function () {
                                                     midas.visualize.midJ,
                                                     midas.visualize.midK]);
     midas.visualize.activeView.setCameraPosition([
-      midas.visualize.midI + 1.5*midas.visualize.bounds[1],
+      midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
       midas.visualize.midJ,
       midas.visualize.midK]);
     midas.visualize.activeView.setCameraViewUp([0.0, 0.0, 1.0]);
@@ -241,6 +245,51 @@ midas.visualize.setupActions = function () {
     });
 };
 
+midas.visualize.setupOverlay = function () {
+    $('button.plusX').click(function () {
+        midas.visualize.activeView.setCameraPosition([
+          midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
+          midas.visualize.midJ,
+          midas.visualize.midK]);
+        midas.visualize.activeView.setCameraViewUp([0.0, 0.0, 1.0]);
+    });
+    $('button.minusX').click(function () {
+        midas.visualize.activeView.setCameraPosition([
+          midas.visualize.midI + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
+          midas.visualize.midJ,
+          midas.visualize.midK]);
+        midas.visualize.activeView.setCameraViewUp([0.0, 0.0, 1.0]);
+    });
+    $('button.plusY').click(function () {
+        midas.visualize.activeView.setCameraPosition([
+          midas.visualize.midI,
+          midas.visualize.midJ - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
+          midas.visualize.midK]);
+        midas.visualize.activeView.setCameraViewUp([0.0, 0.0, 1.0]);
+    });
+    $('button.minusY').click(function () {
+        midas.visualize.activeView.setCameraPosition([
+          midas.visualize.midI,
+          midas.visualize.midJ + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
+          midas.visualize.midK]);
+        midas.visualize.activeView.setCameraViewUp([0.0, 0.0, 1.0]);
+    });
+    $('button.plusZ').click(function () {
+        midas.visualize.activeView.setCameraPosition([
+          midas.visualize.midI,
+          midas.visualize.midJ,
+          midas.visualize.midK - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim]);
+        midas.visualize.activeView.setCameraViewUp([0.0, 1.0, 0.0]);
+    });
+    $('button.minusZ').click(function () {
+        midas.visualize.activeView.setCameraPosition([
+          midas.visualize.midI,
+          midas.visualize.midJ,
+          midas.visualize.midK + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim]);
+        midas.visualize.activeView.setCameraViewUp([0.0, 1.0, 0.0]);
+    });
+};
+
 $(window).load(function () {
     if(typeof midas.visualize.preInitCallback == 'function') {
         midas.visualize.preInitCallback();
@@ -250,6 +299,7 @@ $(window).load(function () {
     midas.visualize.start(); // do the initial rendering
     midas.visualize.populateInfo();
     midas.visualize.setupActions();
+    midas.visualize.setupOverlay();
 
     if(typeof midas.visualize.postInitCallback == 'function') {
         midas.visualize.postInitCallback();
