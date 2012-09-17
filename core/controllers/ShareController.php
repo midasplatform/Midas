@@ -300,9 +300,6 @@ class ShareController extends AppController
       $userPolicies[$key]->user = $policy->getUser();
       }
 
-    $request = Zend_Controller_Front::getInstance()->getRequest();
-    $this->view->shareUrl = $request->getScheme() . '://' . $request->getHttpHost() . $this->view->webroot."/".$type."/".$element->getKey();
-
     $this->view->groupPolicies = $groupPolicies;
     $this->view->userPolicies = $userPolicies;
     $this->view->private = $private;
@@ -344,4 +341,24 @@ class ShareController extends AppController
       }
     }
 
+  /**
+   * Display link URLs for the given resource. No policy checking is performed
+   * since this is really just displaying a formatted string based on the input
+   * @param type The type (folder | item)
+   * @param id The id of the resource
+   */
+  function linksAction()
+    {
+    $this->disableLayout();
+    $type = $this->_getParam('type');
+    $id = $this->_getParam('id');
+
+    $request = Zend_Controller_Front::getInstance()->getRequest();
+    $baseUrl = $request->getScheme().'://'.$request->getHttpHost().$this->view->webroot;
+    $this->view->type = $type;
+    $this->view->id = $id;
+    $this->view->viewUrl = $baseUrl.'/'.$type.'/'.$id;
+    $this->view->downloadUrl = $baseUrl.'/download?'.$type.'s='.$id;
+    }
   }//end class
+

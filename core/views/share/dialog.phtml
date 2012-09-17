@@ -13,25 +13,20 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/s
 ?>
 <link href="<?php echo $this->coreWebroot?>/public/css/share/share.dialog.css?<?php echo time();?> " rel="stylesheet" type="text/css" />
 
-
-<div id='elementDirectLink' <?php echo (($this->private)?'style="display:none;"':'');?>>
-  <?php echo  $this->t('You can use the following direct link to share the').' '.$this->t($this->type)?>:<br/>
-  <input type='text' id='urlInput' readonly='readonly' value='<?php echo $this->shareUrl?>' />
-</div>
-<br/>
-
 <div id='permissionsContent'>
   <div id='permissionPublic' <?php echo (($this->private)?'style="display:none;"':'')?>>
+   <img alt="" src="<?php echo $this->coreWebroot;?>/public/images/icons/world.png" />
    <b><?php echo $this->t('Public')?></b> <?php echo $this->t('Anyone can find and access. No sign-in required.')?>
    <a id='setElementPrivateLink'><?php echo $this->t('You can set the permission as private.')?></a>
   </div>
 
   <div id='permissionPrivate' <?php echo ((!$this->private)?'style="display:none;"':'')?>>
+     <img alt="" src="<?php echo $this->coreWebroot;?>/public/images/icons/key.png" />
      <b><?php echo $this->t('Private')?></b> <?php echo $this->t('Only people explicitly granted permission can access. Sign-in required.')?>
      <a id='setElementPublicLink'><?php echo $this->t('You can set the permission as public.')?></a>
   </div>
 
-  <h4><?php echo $this->t('Permissions')?></h4>
+  <h4><?php echo $this->t('Permissions List')?></h4>
   <div id='permissionEntity'>
     <table>
     <?php
@@ -102,9 +97,12 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/s
   </div>
 
   <br /><br />
-  <input type='button' style='margin-left: 0px' class='globalButton permissionsDone' value='<?php echo $this->t('Done')?>' />
+  <div style="float: right;">
+    <input type='button' style='margin-left: 0px;' class='globalButton permissionsDone' value='<?php echo $this->t('Done')?>' />
+  </div>
 </div>
 
 <div style="display: none;" class="jsonShareContent">
   <?php echo $this->jsonShare?>
 </div>
+

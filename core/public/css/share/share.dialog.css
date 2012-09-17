@@ -27,6 +27,10 @@ div#permissionsContent a{
   font-weight: 500;
 }
 
+div#permissionsContent h4 {
+  margin-top: 10px;
+}
+
 div#permissionsContent a:hover{
   text-decoration: underline;
 }
@@ -38,4 +42,9 @@ div#applyPoliciesRecursiveProgressBar {
 div#applyPoliciesRecursiveMessage {
   padding-top: 5px;
   padding-bottom: 5px;
+}
+
+#permissionPublic,#permissionPrivate {
+  border-bottom: 1px solid #d7d7d7;
+  padding-bottom: 10px;
 }
