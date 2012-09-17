@@ -558,6 +558,7 @@ midas.createAction = function (node) {
             }
             html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
             html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.download+'</a></li>';
+            html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/link.png"/> <a type="item" element="'+element+'" href="javascript:;" class="getItemLinks">Link to item</a></li>';
             if (policy>=2) {
                 html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="midas.deleteItem(\'' + element + '\');">'+json.browse.deleteItem+'</a></li>';
                 html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a onclick="midas.elementPermissions(\''+ type + '\',\'' + element + '\');">'+json.browse.share+'</a></li>';
@@ -592,6 +593,12 @@ midas.createAction = function (node) {
             midas.resetUploadButton();
             button.click();
         });
+
+        $('a.getItemLinks').click(function () {
+            midas.loadDialog("links"+$(this).attr('type')+$(this).attr('element'),'/share/links?type='+$(this).attr('type')+'&id='+$(this).attr('element'));
+            midas.showDialog('Link to this item');
+        });
+
         $('div.viewAction ul').fadeIn('fast');
     });
 };
