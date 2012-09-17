@@ -44,3 +44,41 @@ table.extractSubgridTable input.sb {
   margin-right: 11px;
 }
 
+button.cameraPreset {
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  border: 1px solid #aaaaaa;
+  background-repeat: no-repeat;
+  background-position: 3px 3px;
+}
+
+button.plusX {
+  background-image: url(../../images/pqXPlus24.png);
+}
+
+button.minusX {
+  background-image: url(../../images/pqXMinus24.png);
+}
+
+button.plusY {
+  background-image: url(../../images/pqYPlus24.png);
+}
+
+button.minusY {
+  background-image: url(../../images/pqYMinus24.png);
+}
+
+button.plusZ {
+  background-image: url(../../images/pqZPlus24.png);
+}
+
+button.minusZ {
+  background-image: url(../../images/pqZMinus24.png);
+}
+
+button.cameraPreset:hover {
+  background-color: #aaddaa;
+}
+
+
