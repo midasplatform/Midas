@@ -73,7 +73,7 @@ midas.visualize.start = function () {
     // Create the scalar opacity transfer function
     midas.visualize.sof = paraview.CreatePiecewiseFunction({
         Points: [midas.visualize.minVal, 0.0, 0.5, 0.0,
-                 midas.visualize.maxVal, 1.0, 0.75, 0.0]
+                 midas.visualize.maxVal, 1.0, 0.5, 0.0]
     });
 
     paraview.SetDisplayProperties({
@@ -143,10 +143,121 @@ midas.visualize.populateInfo = function () {
 };
 
 /**
- * Setup the actions for volume rendering controls
+ * Get the plot data from the scalar opacity function
  */
-midas.visualize.setupActions = function () {
-    // setup the extract subgrid controls
+midas.visualize.getSofCurve = function () {
+    var points = midas.visualize.sof.getPoints();
+    var curve = [];
+    for(var i = 0; i < points.length; i++) {
+        curve[i] = [points[4*i], points[4*i+1]];
+    }
+    return curve;
+};
+
+/**
+ * Setup the scalar opacity function controls
+ */
+midas.visualize.setupScalarOpacity = function () {
+    var dialog = $('#sofDialogTemplate').clone();
+    dialog.removeAttr('id');
+    $('#sofEditAction').click(function () {
+        midas.showDialogWithContent('Scalar opacity function',
+          dialog.html(), false, {modal: false, width: 500});
+        var container = $('div.MainDialog');
+        container.find('div.sofPlot').attr('id', 'sofChartDiv');
+
+        midas.visualize.sofPlot = $.jqplot('sofChartDiv', [midas.visualize.getSofCurve()], {
+            series:[{showMarker:true}],
+            axes: {
+                xaxis: {
+                    min: midas.visualize.minVal,
+                    max: midas.visualize.maxVal,
+                    label: 'Scalar value',
+                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                    labelOptions: {
+                        fontSize: '8pt'
+                    }
+                },
+                yaxis: {
+                    min: 0,
+                    max: 1,
+                    label: 'Opacity',
+                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                    labelOptions: {
+                        angle: 270,
+                        fontSize: '8pt'
+                    },
+                    tickInterval: 1.0
+                }
+            },
+            grid: {
+                drawGridlines: false
+            },
+            cursor: {
+                show: true,
+                style: 'pointer',
+                tooltipLocation:'se'
+            },
+            highlighter: {
+                show: true
+            }
+        });
+        container.find('button.sofClose').click(function () {
+            $('div.MainDialog').dialog('close');
+        });
+        container.find('button.sofApply').click(function () {
+            midas.visualize.applySofCurve();
+        });
+        container.find('button.sofReset').click(function () {
+            midas.visualize.sofPlot.series[0].data = [
+              [midas.visualize.minVal, 0],
+              [midas.visualize.maxVal, 1]];
+            midas.visualize.sofPlot.replot();
+            midas.visualize.setupSofPlotBindings();
+        });
+        midas.visualize.setupSofPlotBindings();
+    });
+};
+
+/**
+ * Must call this anytime a redraw or replot is called on the sof plot
+ */
+midas.visualize.setupSofPlotBindings = function () {
+    $('#sofChartDiv').bind('jqplotMouseMove', function (ev, seriesIndex, pointIndex, data) {
+        //console.log(pointIndex);
+        //console.log(data);
+    });
+    $('#sofChartDiv').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
+        console.log('data clicked!');
+    });
+    $('#sofChartDiv').bind('jqplotClick', function (ev, seriesIndex, pointIndex, data) {
+        if(data) {
+            return; // we use the data click handler for this
+        }
+        // insert new data point in between closest x-axis values
+        var inserted = false;
+        var newData = [midas.visualize.sofPlot.series[0].data[0]];
+
+        for(var i = 1; i < midas.visualize.sofPlot.series[0].data.length; i++) {
+            if(!inserted && pointIndex.xaxis < midas.visualize.sofPlot.series[0].data[i][0]) {
+                inserted = true;
+                newData.push([pointIndex.xaxis, pointIndex.yaxis]);
+            }
+            newData.push(midas.visualize.sofPlot.series[0].data[i]);
+        }
+        if(!inserted) {
+            newData.push([pointIndex.xaxis, pointIndex.yaxis]);
+        }
+        midas.visualize.sofPlot.series[0].data = newData;
+        midas.visualize.sofPlot.replot();
+        midas.visualize.setupSofPlotBindings();
+    });
+};
+
+/**
+ * Setup the extract subgrid controls
+ */
+midas.visualize.setupExtractSubgrid = function () {
     var dialog = $('#extractSubgridDialogTemplate').clone();
     dialog.removeAttr('id');
     $('#extractSubgridAction').click(function () {
@@ -298,7 +409,8 @@ $(window).load(function () {
     json = jQuery.parseJSON($('div.jsonContent').html());
     midas.visualize.start(); // do the initial rendering
     midas.visualize.populateInfo();
-    midas.visualize.setupActions();
+    midas.visualize.setupExtractSubgrid();
+    midas.visualize.setupScalarOpacity();
     midas.visualize.setupOverlay();
 
     if(typeof midas.visualize.postInitCallback == 'function') {

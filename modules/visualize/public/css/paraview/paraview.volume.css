@@ -81,4 +81,8 @@ button.cameraPreset:hover {
   background-color: #aaddaa;
 }
 
+div.sofBottomButtons {
+  float: right;
+  margin-top: 15px;
+}
 
