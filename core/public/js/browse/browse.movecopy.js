@@ -29,13 +29,13 @@ midas.browse.moveCopyCallbackSelect = function (node) {
         $('#shareElement').attr('disabled', 'disabled');
         $('#duplicateElement').attr('disabled', 'disabled');
         $('#moveElement').attr('disabled', 'disabled');
-    } 
+    }
     else {
         $('#selectElement').removeAttr('disabled');
         $('#shareElement').removeAttr('disabled');
         $('#duplicateElement').removeAttr('disabled');
         $('#moveElement').removeAttr('disabled');
-    }   
+    }
 };
 
 
@@ -65,32 +65,34 @@ midas.browse.moveCopyCallbackCustomElements = function (node,elements,first) {
     return html;
 };
 
-$(document).ready(
-    function() {
-        $("#moveCopyTable").treeTable(
-            {
-                callbackSelect: midas.browse.moveCopyCallbackSelect,
-                callbackCheckboxes: midas.browse.moveCopyCallbackCheckboxes,
-                callbackDblClick: midas.browse.moveCopyCallbackDblClick,
-                callbackCustomElements: midas.browse.moveCopyCallbackCustomElements
-            });
-        $("img.tableLoading").hide();
-        $("table#moveCopyTable").show();
-     
-        $('applet').hide();
-       
-        if($('#selectElement') != undefined) {
-            $('#selectElement').click(
-                function() {
-                    var destHtml = $('#selectedDestination').html();
-                    var destValue = $('#selectedDestinationHidden').val();
-                    $('#destinationUpload').html(destHtml);
-                    $('#destinationId').val(destValue);
-                    $('.destinationUpload').html(destHtml);
-                    $('.destinationId').val(destValue);
-                    $( "div.MainDialog" ).dialog('close');
-                    $('applet').show();
-                    return false;
-                });
-        }
+$(document).ready(function () {
+    $('#moveCopyForm').submit(function () {
+        $('img.submitWaiting').show();
+        return true;
     });
+
+    $("#moveCopyTable").treeTable({
+        callbackSelect: midas.browse.moveCopyCallbackSelect,
+        callbackCheckboxes: midas.browse.moveCopyCallbackCheckboxes,
+        callbackDblClick: midas.browse.moveCopyCallbackDblClick,
+        callbackCustomElements: midas.browse.moveCopyCallbackCustomElements
+    });
+    $("img.tableLoading").hide();
+    $("table#moveCopyTable").show();
+
+    $('applet').hide();
+
+    if($('#selectElement') != undefined) {
+        $('#selectElement').click(function () {
+            var destHtml = $('#selectedDestination').html();
+            var destValue = $('#selectedDestinationHidden').val();
+            $('#destinationUpload').html(destHtml);
+            $('#destinationId').val(destValue);
+            $('.destinationUpload').html(destHtml);
+            $('.destinationId').val(destValue);
+            $( "div.MainDialog" ).dialog('close');
+            $('applet').show();
+            return false;
+        });
+    }
+});

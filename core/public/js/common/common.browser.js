@@ -76,10 +76,6 @@ midas.genericCallbackCheckboxes = function(node) {
             links += '</li>';
             if(arraySelected['items'].length > 0) {
                 links += '<li style="background-color: white;">';
-                links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/item-share.png"/> ';
-                links += '  <a onclick="midas.shareSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.shareSelected + '</a></li>';
-                links += '</li>';
-                links += '<li style="background-color: white;">';
                 links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/copy.png"/> ';
                 links += '  <a onclick="midas.duplicateSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.duplicateSelected + '</a></li>';
                 links += '</li>';

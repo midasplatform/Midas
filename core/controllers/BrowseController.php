@@ -58,7 +58,15 @@ class BrowseController extends AppController
   /** move or copy selected element*/
   public function movecopyAction()
     {
-    $shareSubmit = $this->_getParam('shareElement');
+    $copytype = $this->_getParam('copytype');
+    if(isset($copytype) && $copytype == 'reference')
+      {
+      $shareSubmit = true;
+      }
+    else if(isset($copytype))
+      {
+      $duplicateSubmit = true;
+      }
     $duplicateSubmit = $this->_getParam('duplicateElement');
     $moveSubmit = $this->_getParam('moveElement');
 
@@ -206,6 +214,16 @@ class BrowseController extends AppController
         }
       $this->view->folders = $folders;
       $this->view->items = $items;
+      if(count($items) == 1)
+        {
+        $this->view->referenceMessage = 'Create a reference to the existing item';
+        $this->view->copyMessage = 'Copy the existing item into a new item';
+        }
+      else
+        {
+        $this->view->referenceMessage = 'Create references to the existing items';
+        $this->view->copyMessage = 'Copy the existing items into new items';
+        }
       if(isset($share))
         {
         $this->view->shareEnabled = true;

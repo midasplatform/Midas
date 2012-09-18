@@ -108,13 +108,6 @@ $(document).ready(function() {
         });
     });
 
-
-
-    $('a.shareItemLink').click(function() {
-        midas.loadDialog("shareItem","/browse/movecopy/?share=true&items="+json.item.item_id);
-        midas.showDialog(json.item.message.share);
-    });
-
     $('a.duplicateItemLink').click(function() {
         midas.loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+json.item.item_id);
         midas.showDialog(json.item.message.duplicate);
