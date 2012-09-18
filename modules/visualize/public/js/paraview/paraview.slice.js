@@ -53,7 +53,7 @@ midas.visualize.start = function () {
     midas.visualize.activeView.setCameraParallelProjection(true);
     midas.visualize.activeView.setCameraPosition([midas.visualize.midI,
                                                   midas.visualize.midJ,
-                                                  midas.visualize.bounds[5] + 1]);
+                                                  midas.visualize.bounds[5] + 10]);
     midas.visualize.activeView.setCameraFocalPoint([midas.visualize.midI,
                                                     midas.visualize.midJ,
                                                     midas.visualize.midK]);
@@ -221,6 +221,7 @@ midas.visualize.pointSelectMode = function () {
         var x = (midas.visualize.bounds[1] - midas.visualize.bounds[0]) * (e.offsetX / $(this).width());
         x -= midas.visualize.bounds[0];
         var y = (midas.visualize.bounds[3] - midas.visualize.bounds[2]) * (e.offsetY / $(this).height());
+        y = midas.visualize.bounds[3] - y;
         y -= midas.visualize.bounds[2];
 
         var html = 'You have selected the point:<p><b>('
@@ -229,6 +230,21 @@ midas.visualize.pointSelectMode = function () {
         html += '<br/><br/><div style="float: right;"><button id="pointSelectOk">OK</button>';
         html += '<button style="margin-left: 15px" id="pointSelectCancel">Cancel</button></div>';
         midas.showDialogWithContent('Confirm Point Selection', html, false);
+
+        if(midas.visualize.glyph) {
+            paraview.Delete({proxy: midas.visualize.glyph});
+        }
+
+        midas.visualize.glyph = paraview.Sphere();
+        midas.visualize.glyph.setRadius(2);
+        midas.visualize.glyph.setCenter([x, y, midas.visualize.currentSlice + 1]);
+        paraview.SetDisplayProperties({
+            proxy: midas.visualize.glyph,
+            Representation: 'Surface',
+            DiffuseColor: [1.0, 0.0, 0.0]
+        });
+        paraview.Show({proxy: midas.visualize.glyph});
+        paraview.SetActiveSource([midas.visualize.input]);
 
         $('#pointSelectOk').unbind('click').click(function () {
             if(typeof midas.visualize.handlePointSelect == 'function') {
