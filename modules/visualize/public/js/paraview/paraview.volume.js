@@ -232,6 +232,7 @@ midas.visualize.applySofCurve = function () {
     for(var idx in curve) {
         points.push(curve[idx][0], curve[idx][1], 0.5, 0.0);
     }
+
     midas.visualize.sof = paraview.CreatePiecewiseFunction({
         Points: points
     });
@@ -254,8 +255,8 @@ midas.visualize.setupSofPlotBindings = function () {
         container.show();
 
         container.find('button.pointUpdate').unbind('click').click(function () {
-            var s = container.find('input.scalarValueEdit').val();
-            var o = container.find('input.opacityValueEdit').val();
+            var s = parseFloat(container.find('input.scalarValueEdit').val());
+            var o = parseFloat(container.find('input.opacityValueEdit').val());
             midas.visualize.sofPlot.series[0].data[pointIndex] = [s, o];
             midas.visualize.sofPlot.replot();
             midas.visualize.setupSofPlotBindings();
