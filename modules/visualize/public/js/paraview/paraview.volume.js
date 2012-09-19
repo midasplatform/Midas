@@ -199,7 +199,8 @@ midas.visualize.setupScalarOpacity = function () {
                 tooltipLocation:'se'
             },
             highlighter: {
-                show: true
+                show: true,
+                sizeAdjust: 7.5
             }
         });
         container.find('button.sofClose').click(function () {
@@ -214,8 +215,29 @@ midas.visualize.setupScalarOpacity = function () {
               [midas.visualize.maxVal, 1]];
             midas.visualize.sofPlot.replot();
             midas.visualize.setupSofPlotBindings();
+            container.find('div.sofPointEdit').hide();
         });
         midas.visualize.setupSofPlotBindings();
+    });
+};
+
+/**
+ * Called when the "apply" button on the sof dialog is clicked;
+ * updates the sof in paraview based on the jqplot curve
+ */
+midas.visualize.applySofCurve = function () {
+    // Create the scalar opacity transfer function
+    var points = [];
+    var curve = midas.visualize.sofPlot.series[0].data;
+    for(var idx in curve) {
+        points.push(curve[idx][0], curve[idx][1], 0.5, 0.0);
+    }
+    midas.visualize.sof = paraview.CreatePiecewiseFunction({
+        Points: points
+    });
+
+    paraview.SetDisplayProperties({
+        ScalarOpacityFunction: midas.visualize.sof
     });
 };
 
@@ -223,17 +245,34 @@ midas.visualize.setupScalarOpacity = function () {
  * Must call this anytime a redraw or replot is called on the sof plot
  */
 midas.visualize.setupSofPlotBindings = function () {
-    $('#sofChartDiv').bind('jqplotMouseMove', function (ev, seriesIndex, pointIndex, data) {
-        //console.log(pointIndex);
-        //console.log(data);
-    });
+
+    // Clicking an existing point should let you change its values
     $('#sofChartDiv').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
-        console.log('data clicked!');
+        var container = $('div.MainDialog').find('div.sofPointEdit');
+        container.find('input.scalarValueEdit').val(data[0]);
+        container.find('input.opacityValueEdit').val(data[1]);
+        container.show();
+
+        container.find('button.pointUpdate').unbind('click').click(function () {
+            var s = container.find('input.scalarValueEdit').val();
+            var o = container.find('input.opacityValueEdit').val();
+            midas.visualize.sofPlot.series[0].data[pointIndex] = [s, o];
+            midas.visualize.sofPlot.replot();
+            midas.visualize.setupSofPlotBindings();
+        });
+        container.find('button.pointDelete').unbind('click').click(function () {
+            midas.visualize.sofPlot.series[0].data.splice(pointIndex, 1);
+            midas.visualize.sofPlot.replot();
+            midas.visualize.setupSofPlotBindings();
+        });
     });
+
+    // Clicking on the plot (except on an existing point) should add a new one
     $('#sofChartDiv').bind('jqplotClick', function (ev, seriesIndex, pointIndex, data) {
         if(data) {
             return; // we use the data click handler for this
         }
+        $('div.MainDialog').find('div.sofPointEdit').hide();
         // insert new data point in between closest x-axis values
         var inserted = false;
         var newData = [midas.visualize.sofPlot.series[0].data[0]];

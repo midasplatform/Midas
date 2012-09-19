@@ -120,6 +120,12 @@ foreach($this->jsImports as $jsImport)
 <!-- TEMPLATE: scalar opacity function dialog -->
 <div id="sofDialogTemplate" style="display: none;">
   <div class="sofPlot" style="height:140px; width:460px;"></div>
+  <div class="sofPointEdit">
+    S:<input type="text" class="scalarValueEdit" />
+    O:<input type="text" class="opacityValueEdit" />
+    <button class="pointUpdate">Update</button>
+    <button class="pointDelete">Delete point</button>
+  </div>
   <div class="sofBottomButtons">
     <button class="sofReset">Restore default</button>
     <button class="sofApply">Apply</button>
