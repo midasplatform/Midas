@@ -158,7 +158,7 @@ class BrowseControllerTest extends ControllerTestCase
     $newFolder = $this->Folder->load(1002);
     $oldCountDst = count($newFolder->getItems());
     $this->resetAll();
-    $this->dispatchUri('/browse/movecopy?destination=1002&duplicateElement=Duplicate&elements=;1001-', $userDao);
+    $this->dispatchUri('/browse/movecopy?destination=1002&copytype=copy&duplicateElement=Duplicate&elements=;1001-', $userDao);
     $oldFolder = $this->Folder->load(1001);
     $newFolder = $this->Folder->load(1002);
     $this->assertEquals(count($oldFolder->getItems()), $oldCountSrc); //assert item stayed in old folder
@@ -173,7 +173,7 @@ class BrowseControllerTest extends ControllerTestCase
     $item = $this->Item->load(1001);
     $oldCountParents = count($item->getFolders());
     $this->resetAll();
-    $this->dispatchUri('/browse/movecopy?destination=1002&shareElement=Share&elements=;1001-', $userDao);
+    $this->dispatchUri('/browse/movecopy?destination=1002&copytype=reference&shareElement=Share&elements=;1001-', $userDao);
     $oldFolder = $this->Folder->load(1001);
     $newFolder = $this->Folder->load(1002);
     $item = $this->Item->load(1001);
