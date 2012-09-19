@@ -101,10 +101,6 @@ midas.genericCallbackCheckboxes = function(node) {
             }
             if(arraySelected['items'].length > 0) {
                 links += '<li style="background-color: white;">';
-                links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/item-share.png"/> ';
-                links += '  <a onclick="midas.shareSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.shareSelected + '</a></li>';
-                links += '</li>';
-                links += '<li style="background-color: white;">';
                 links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/copy.png"/> ';
                 links += '  <a onclick="midas.duplicateSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.duplicateSelected + '</a></li>';
                 links += '</li>';
@@ -557,8 +553,8 @@ midas.createAction = function (node) {
                 var fromFolder = json.folder.folder_id;
             }
             html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
-            html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.download+'</a></li>';
-            html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/link.png"/> <a type="item" element="'+element+'" href="javascript:;" class="getItemLinks">Link to item</a></li>';
+            html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLatest+'</a></li>';
+            html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/link.png"/> <a type="item" element="'+element+'" href="javascript:;" class="getItemLinks">Share</a></li>';
             if (policy>=2) {
                 html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="midas.deleteItem(\'' + element + '\');">'+json.browse.deleteItem+'</a></li>';
                 html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a onclick="midas.elementPermissions(\''+ type + '\',\'' + element + '\');">'+json.browse.share+'</a></li>';

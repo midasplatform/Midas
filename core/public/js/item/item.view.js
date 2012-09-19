@@ -108,15 +108,9 @@ $(document).ready(function() {
         });
     });
 
-    
     $('a.moveItemLink').click(function() {
         midas.loadDialog("moveItem","/browse/movecopy?move=true&items="+json.item.item_id+"&from="+json.currentfolder.folder_id);
         midas.showDialog(json.browse.move);
-    }); 
-
-    $('a.shareItemLink').click(function() {
-        midas.loadDialog("shareItem","/browse/movecopy/?share=true&items="+json.item.item_id);
-        midas.showDialog(json.item.message.share);
     });
 
     $('a.duplicateItemLink').click(function() {
