@@ -17,6 +17,11 @@ PURPOSE.  See the above copyright notices for more information.
 <?php
 $this->headScript()->appendFile('/PWService/js/ParaViewWeb.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.spinbox.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasTextRenderer.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasAxisLabelRenderer.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.cursor.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.highlighter.min.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.volume.js');
 $this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/common.ajaxapi.js');
 
@@ -84,7 +89,7 @@ foreach($this->jsImports as $jsImport)
   </div>
 </div>
 
-<!-- TEMPLATE: extract subgrid wizard -->
+<!-- TEMPLATE: extract subgrid dialog -->
 <div id="extractSubgridDialogTemplate" style="display: none;">
   <table class="extractSubgridTable">
     <tr>
@@ -112,3 +117,18 @@ foreach($this->jsImports as $jsImport)
   </div>
 </div>
 
+<!-- TEMPLATE: scalar opacity function dialog -->
+<div id="sofDialogTemplate" style="display: none;">
+  <div class="sofPlot" style="height:140px; width:460px;"></div>
+  <div class="sofPointEdit">
+    S:<input type="text" class="scalarValueEdit" />
+    O:<input type="text" class="opacityValueEdit" />
+    <button class="pointUpdate">Update</button>
+    <button class="pointDelete">Delete point</button>
+  </div>
+  <div class="sofBottomButtons">
+    <button class="sofReset">Restore default</button>
+    <button class="sofApply">Apply</button>
+    <button class="sofClose">Close</button>
+  </div>
+</div>

@@ -81,4 +81,24 @@ button.cameraPreset:hover {
   background-color: #aaddaa;
 }
 
+div.sofBottomButtons {
+  float: right;
+  margin-top: 15px;
+}
+
+div.sofPointEdit {
+  display: none;
+  margin-top: 10px;
+}
+
+div.sofPointEdit {
+  float: right;
+}
+
+input.scalarValueEdit,input.opacityValueEdit {
+  width: 65px;
+  border: 1px solid grey;
+  margin-left: 5px;
+  margin-right: 10px;
+}
 
