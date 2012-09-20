@@ -11,6 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/paraview/paraview.volume.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/colorpicker.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.spinbox.css" />
 
@@ -23,6 +24,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.cursor.min.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.highlighter.min.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.volume.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/colorpicker.js');
 $this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/common.ajaxapi.js');
 
 /** Dynamic js library imports */
@@ -132,3 +134,25 @@ foreach($this->jsImports as $jsImport)
     <button class="sofClose">Close</button>
   </div>
 </div>
+
+<!-- TEMPLATE: scalar color mapping dialog -->
+<div id="scmDialogTemplate" style="display: none;">
+  <div class="rgbPointList"></div>
+  <div class="pointListControls">
+    <button class="scmAddPoint">Add point</button>
+  </div>
+  <div class="scmDivider"></div>
+  <div class="scmBottomButtons">
+    <button class="scmReset">Restore default</button>
+    <button class="scmApply">Apply</button>
+    <button class="scmClose">Close</button>
+  </div>
+</div>
+
+<!-- TEMPLATE: scalar color mapping point tool -->
+<div id="scmPointMapTemplate" class="rgbPointContainer" style="display: none;">
+    Scalar value: <input type="text" class="scmScalarValue" />
+    <span>Color:</span><div class="scmColorPicker"></div>
+    <button style="display: none;" class="scmDeletePoint">Delete</button>
+</div>
+
