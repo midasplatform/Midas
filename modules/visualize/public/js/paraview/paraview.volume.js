@@ -61,12 +61,13 @@ midas.visualize.start = function () {
     midas.visualize.activeView.setBackground([0.0, 0.0, 0.0]);
     midas.visualize.activeView.setBackground2([0.0, 0.0, 0.0]); //solid black background
 
+    midas.visualize.defaultColorMap = [
+       midas.visualize.minVal, 0.0, 0.0, 0.0,
+       midas.visualize.maxVal, 1.0, 1.0, 1.0];
+    midas.visualize.colorMap = midas.visualize.defaultColorMap;
+
     midas.visualize.lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
-    midas.visualize.lookupTable.setRGBPoints(
-      [midas.visualize.minVal,
-       0.0, 0.0, 0.0,
-       midas.visualize.maxVal,
-       1.0, 1.0, 1.0]); //initial transfer function def
+    midas.visualize.lookupTable.setRGBPoints(midas.visualize.colorMap);
     midas.visualize.lookupTable.setScalarRangeInitialized(1.0);
     midas.visualize.lookupTable.setColorSpace(0); // 0 corresponds to RGB
 
@@ -152,6 +153,93 @@ midas.visualize.getSofCurve = function () {
         curve[i] = [points[4*i], points[4*i+1]];
     }
     return curve;
+};
+
+/**
+ * Setup the color mapping controls
+ */
+midas.visualize.setupColorMapping = function () {
+    var dialog = $('#scmDialogTemplate').clone();
+    dialog.removeAttr('id');
+    $('#scmEditAction').click(function () {
+        midas.showDialogWithContent('Scalar color mapping',
+          dialog.html(), false, {modal: false, width: 360});
+        var container = $('div.MainDialog');
+        var pointListDiv = container.find('div.rgbPointList');
+
+        function renderPointList (colorMap) {
+            for(var i = 0; i < colorMap.length; i += 4) {
+                var rgbPoint = $('#scmPointMapTemplate').clone();
+                var r = Math.round(255*colorMap[i+1]);
+                var g = Math.round(255*colorMap[i+2]);
+                var b = Math.round(255*colorMap[i+3])
+                rgbPoint.removeAttr('id').appendTo(pointListDiv).show();
+                rgbPoint.find('input.scmScalarValue').val(colorMap[i]);
+                if(i < 8) { // first two values must be present (min and max)
+                    rgbPoint.find('input.scmScalarValue').attr('disabled', 'disabled');
+                }
+                else {
+                    rgbPoint.find('button.scmDeletePoint').show().click(function () {
+                        $(this).parents('div.rgbPointContainer').remove();
+                    });
+                }
+                rgbPoint.find('.scmColorPicker').ColorPicker({
+                    color: {
+                        r: r,
+                        g: g,
+                        b: b
+                    },
+                    onSubmit: function(hsb, hex, rgb, el) {
+                        $(el).css('background-color', 'rgb('+rgb.r+','+rgb.g+','+rgb.b+')');
+                    }
+                }).css('background-color', 'rgb('+r+','+g+','+b+')');
+            }
+        };
+        renderPointList(midas.visualize.colorMap);
+
+        container.find('button.scmAddPoint').unbind('click').click(function () {
+            var rgbPoint = $('#scmPointMapTemplate').clone();
+            rgbPoint.removeAttr('id').appendTo(pointListDiv).show();
+            rgbPoint.find('input.scmScalarValue').val(midas.visualize.defaultColorMap[0]);
+            rgbPoint.removeAttr('id').appendTo(pointListDiv).show();
+            rgbPoint.find('button.scmDeletePoint').show().click(function () {
+                rgbPoint.remove();
+            });
+            rgbPoint.find('.scmColorPicker').ColorPicker({
+                color: {
+                    r: 0,
+                    g: 0,
+                    b: 0
+                },
+                onSubmit: function(hsb, hex, rgb, el) {
+                    $(el).css('background-color', 'rgb('+rgb.r+','+rgb.g+','+rgb.b+')');
+                }
+            }).css('background-color', 'rgb(0, 0, 0)');
+        });
+
+        container.find('button.scmClose').unbind('click').click(function () {
+            container.dialog('close');
+        });
+        container.find('button.scmReset').unbind('click').click(function () {
+            pointListDiv.html('');
+            renderPointList(midas.visualize.defaultColorMap);
+        });
+        container.find('button.scmApply').unbind('click').click(function () {
+            var colorMap = [];
+            $.each(pointListDiv.find('div.rgbPointContainer'), function(idx, template) {
+                var scalar = parseFloat($(template).find('input.scmScalarValue').val());
+                var tokens = $(template).find('div.scmColorPicker')
+                  .css('background-color').match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+                colorMap.push(scalar, parseFloat(tokens[1]) / 255.0, parseFloat(tokens[2]) / 255.0,
+                  parseFloat(tokens[3]) / 255.0);
+            });
+            midas.visualize.colorMap = colorMap;
+            midas.visualize.lookupTable.setRGBPoints(colorMap);
+            paraview.SetDisplayProperties({
+                LookupTable: midas.visualize.lookupTable
+            });
+        });
+    });
 };
 
 /**
@@ -451,6 +539,7 @@ $(window).load(function () {
     midas.visualize.populateInfo();
     midas.visualize.setupExtractSubgrid();
     midas.visualize.setupScalarOpacity();
+    midas.visualize.setupColorMapping();
     midas.visualize.setupOverlay();
 
     if(typeof midas.visualize.postInitCallback == 'function') {
