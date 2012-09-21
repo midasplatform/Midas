@@ -30,6 +30,11 @@ class Visualize_IndexController extends Visualize_AppController
     $itemId = $this->_getParam('itemId');
     $height = $this->_getParam('height');
     $width = $this->_getParam('width');
+    $viewMode = $this->_getParam('viewMode');
+    if(!isset($viewMode))
+      {
+      $viewMode = 'volume';
+      }
     if(!isset($height))
       {
       $height = 500;
@@ -43,7 +48,14 @@ class Visualize_IndexController extends Visualize_AppController
 
     if($this->ModuleComponent->Main->canVisualizeWithParaview($itemDao))
       {
-      $this->_redirect('/visualize/paraview/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+      if($viewMode == 'slice')
+        {
+        $this->_redirect('/visualize/paraview/slice?itemId='.$itemId.'&height='.$height.'&width='.$width);
+        }
+      else //normal volume rendering
+        {
+        $this->_redirect('/visualize/paraview/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+        }
       }
     elseif($this->ModuleComponent->Main->canVisualizeMedia($itemDao))
       {

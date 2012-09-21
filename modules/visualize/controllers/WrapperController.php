@@ -32,6 +32,11 @@ class Visualize_WrapperController extends Visualize_AppController
     $this->view->Date = $this->Component->Date;
     $this->view->Utility = $this->Component->Utility;
     $itemId = $this->_getParam("itemId");
+    $viewMode = $this->_getParam('viewMode');
+    if(!isset($viewMode))
+      {
+      $viewMode = 'volume';
+      }
     if(!isset($itemId) || !is_numeric($itemId))
       {
       throw new Zend_Exception("itemId  should be a number");
@@ -55,7 +60,7 @@ class Visualize_WrapperController extends Visualize_AppController
 
     $this->view->title .= ' - '.$itemDao->getName();
     $this->view->metaDescription = substr($itemDao->getDescription(), 0, 160);
-
+    $this->view->viewMode = $viewMode;
 
     $tmp = Zend_Registry::get('notifier')->callback("CALLBACK_VISUALIZE_CAN_VISUALIZE", array('item' => $itemDao));
     if(isset($tmp['visualize']) && $tmp['visualize'] == true)
@@ -109,6 +114,7 @@ class Visualize_WrapperController extends Visualize_AppController
     $this->view->sameLocation = $items;
 
     $this->view->json['item'] = $itemDao->toArray();
+    $this->view->json['viewMode'] = $viewMode;
     }//end index
   } // end class
 ?>
