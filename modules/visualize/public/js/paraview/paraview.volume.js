@@ -24,6 +24,7 @@ midas.visualize.start = function () {
         }
     };
     paraview.createSession("midas", "volume render", "default");
+    paraview.loadPlugins();
 
     midas.visualize.input = paraview.OpenDataFile({filename: file});
     paraview.Show();
@@ -47,48 +48,48 @@ midas.visualize.start = function () {
         return;
     }
 
-    midas.visualize.activeView = paraview.CreateIfNeededRenderView();
-    midas.visualize.activeView.setCameraFocalPoint([midas.visualize.midI,
-                                                    midas.visualize.midJ,
-                                                    midas.visualize.midK]);
-    midas.visualize.activeView.setCameraPosition([
-      midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
-      midas.visualize.midJ,
-      midas.visualize.midK]);
-    midas.visualize.activeView.setCameraViewUp([0.0, 0.0, 1.0]);
-    midas.visualize.activeView.setCameraParallelProjection(false);
-    midas.visualize.activeView.setCenterOfRotation(midas.visualize.activeView.getCameraFocalPoint());
-    midas.visualize.activeView.setBackground([0.0, 0.0, 0.0]);
-    midas.visualize.activeView.setBackground2([0.0, 0.0, 0.0]); //solid black background
-
     midas.visualize.defaultColorMap = [
        midas.visualize.minVal, 0.0, 0.0, 0.0,
        midas.visualize.maxVal, 1.0, 1.0, 1.0];
     midas.visualize.colorMap = midas.visualize.defaultColorMap;
 
-    midas.visualize.lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
-    midas.visualize.lookupTable.setRGBPoints(midas.visualize.colorMap);
-    midas.visualize.lookupTable.setScalarRangeInitialized(1.0);
-    midas.visualize.lookupTable.setColorSpace(0); // 0 corresponds to RGB
+    var params = {
+        cameraFocalPoint: [midas.visualize.midI, midas.visualize.midJ, midas.visualize.midK],
+        cameraPosition: [midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
+                         midas.visualize.midJ,
+                         midas.visualize.midK],
+        colorMap: midas.visualize.defaultColorMap,
+        sofPoints: [midas.visualize.minVal, 0.0, 0.5, 0.0,
+                    midas.visualize.maxVal, 1.0, 0.5, 0.0],
+        colorArrayName: 'MetaImage'
+    };
+    paraview.plugins.midasvr.AsyncInitialize(midas.visualize.initCallback, params);
+};
 
-    // Create the scalar opacity transfer function
-    midas.visualize.sof = paraview.CreatePiecewiseFunction({
-        Points: [midas.visualize.minVal, 0.0, 0.5, 0.0,
-                 midas.visualize.maxVal, 1.0, 0.5, 0.0]
-    });
-
-    paraview.SetDisplayProperties({
-        view: midas.visualize.activeView,
-        ScalarOpacityFunction: midas.visualize.sof,
-        Representation: 'Volume',
-        ColorArrayName: 'MetaImage',
-        LookupTable: midas.visualize.lookupTable
-    });
-
+/**
+ * Async callback from the plugin's Initialize function.
+ * Sets the return variables in the javascript global scope
+ * for use in other functions, and starts the render window
+ */
+midas.visualize.initCallback = function (retVal) {
+    midas.visualize.sof = retVal.sof;
+    midas.visualize.lookupTable = retVal.lookupTable;
+    midas.visualize.activeView = retVal.activeView;
+    
     midas.visualize.switchRenderer(true); // render in the div
     $('img.visuLoading').hide();
-    container.show();
-};
+    $('#renderercontainer').show();
+
+    midas.visualize.populateInfo();
+    midas.visualize.setupExtractSubgrid();
+    midas.visualize.setupScalarOpacity();
+    midas.visualize.setupColorMapping();
+    midas.visualize.setupOverlay();
+
+    if(typeof midas.visualize.postInitCallback == 'function') {
+        midas.visualize.postInitCallback();
+    }
+}
 
 /**
  * Initialize or re-initialize the renderer within the DOM
@@ -115,22 +116,19 @@ midas.visualize.switchRenderer = function (first) {
  * of the form [xMin, xMax, yMin, yMax, zMin, zMax]
  */
 midas.visualize.renderSubgrid = function (bounds) {
-    if(midas.visualize.subgrid) {
-      paraview.Hide({proxy: midas.visualize.subgrid});
-    }
-    paraview.SetActiveSource([midas.visualize.input]);
-    midas.visualize.subgrid = paraview.ExtractSubset({
-        VOI: bounds
-    });
-    paraview.SetDisplayProperties({
-        proxy: midas.visualize.subgrid,
-        view: midas.visualize.activeView,
-        ScalarOpacityFunction: midas.visualize.sof,
-        Representation: 'Volume',
-        ColorArrayName: 'MetaImage',
-        LookupTable: midas.visualize.lookupTable
-    });
-    paraview.Hide({proxy: midas.visualize.input});
+    var toHide = midas.visualize.subgrid ? midas.visualize.subgrid : null;
+
+    var container = $('div.MainDialog');
+    container.find('img.extractInProgress').show();
+    container.find('button.extractSubgridApply').attr('disabled', 'disabled');
+    paraview.plugins.midasvr.AsyncExtractSubgrid(function(subgrid) {
+        midas.visualize.subgrid = subgrid;
+        container.find('img.extractInProgress').hide();
+        container.find('button.extractSubgridApply').removeAttr('disabled');
+        },
+      midas.visualize.input, bounds, midas.visualize.lookupTable,
+      midas.visualize.sof, 'MetaImage', toHide
+    );
 };
 
 /**
@@ -147,7 +145,7 @@ midas.visualize.populateInfo = function () {
  * Get the plot data from the scalar opacity function
  */
 midas.visualize.getSofCurve = function () {
-    var points = midas.visualize.sof.getPoints();
+    var points = paraview.GetProperty(midas.visualize.sof, 'Points');
     var curve = [];
     for(var i = 0; i < points.length; i++) {
         curve[i] = [points[4*i], points[4*i+1]];
@@ -234,9 +232,9 @@ midas.visualize.setupColorMapping = function () {
                   parseFloat(tokens[3]) / 255.0);
             });
             midas.visualize.colorMap = colorMap;
-            midas.visualize.lookupTable.setRGBPoints(colorMap);
-            paraview.SetDisplayProperties({
-                LookupTable: midas.visualize.lookupTable
+            paraview.plugins.midasvr.AsyncUpdateColorMap(function() {}, {
+                colorArrayName: 'MetaImage',
+                colorMap: colorMap
             });
         });
     });
@@ -486,46 +484,58 @@ midas.visualize.setupExtractSubgrid = function () {
 
 midas.visualize.setupOverlay = function () {
     $('button.plusX').click(function () {
-        midas.visualize.activeView.setCameraPosition([
-          midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
-          midas.visualize.midJ,
-          midas.visualize.midK]);
-        midas.visualize.activeView.setCameraViewUp([0.0, 0.0, 1.0]);
+        paraview.plugins.midasvr.AsyncSetCamera(function () {}, {
+            cameraPosition: [
+              midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
+              midas.visualize.midJ,
+              midas.visualize.midK],
+            cameraViewUp: [0.0, 0.0, 1.0]
+        });
     });
     $('button.minusX').click(function () {
-        midas.visualize.activeView.setCameraPosition([
-          midas.visualize.midI + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
-          midas.visualize.midJ,
-          midas.visualize.midK]);
-        midas.visualize.activeView.setCameraViewUp([0.0, 0.0, 1.0]);
+        paraview.plugins.midasvr.AsyncSetCamera(function () {}, {
+            cameraPosition: [
+              midas.visualize.midI + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
+              midas.visualize.midJ,
+              midas.visualize.midK],
+            cameraViewUp: [0.0, 0.0, 1.0]
+        });
     });
     $('button.plusY').click(function () {
-        midas.visualize.activeView.setCameraPosition([
-          midas.visualize.midI,
-          midas.visualize.midJ - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
-          midas.visualize.midK]);
-        midas.visualize.activeView.setCameraViewUp([0.0, 0.0, 1.0]);
+        paraview.plugins.midasvr.AsyncSetCamera(function () {}, {
+            cameraPosition: [
+              midas.visualize.midI,
+              midas.visualize.midJ - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
+              midas.visualize.midK],
+            cameraViewUp: [0.0, 0.0, 1.0]
+        });
     });
     $('button.minusY').click(function () {
-        midas.visualize.activeView.setCameraPosition([
-          midas.visualize.midI,
-          midas.visualize.midJ + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
-          midas.visualize.midK]);
-        midas.visualize.activeView.setCameraViewUp([0.0, 0.0, 1.0]);
+        paraview.plugins.midasvr.AsyncSetCamera(function () {}, {
+            cameraPosition: [
+              midas.visualize.midI,
+              midas.visualize.midJ + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
+              midas.visualize.midK],
+            cameraViewUp: [0.0, 0.0, 1.0]
+        });
     });
     $('button.plusZ').click(function () {
-        midas.visualize.activeView.setCameraPosition([
-          midas.visualize.midI,
-          midas.visualize.midJ,
-          midas.visualize.midK - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim]);
-        midas.visualize.activeView.setCameraViewUp([0.0, 1.0, 0.0]);
+        paraview.plugins.midasvr.AsyncSetCamera(function () {}, {
+            cameraPosition: [
+              midas.visualize.midI,
+              midas.visualize.midJ,
+              midas.visualize.midK - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim],
+            cameraViewUp: [0.0, 1.0, 0.0]
+        });
     });
     $('button.minusZ').click(function () {
-        midas.visualize.activeView.setCameraPosition([
-          midas.visualize.midI,
-          midas.visualize.midJ,
-          midas.visualize.midK + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim]);
-        midas.visualize.activeView.setCameraViewUp([0.0, 1.0, 0.0]);
+        paraview.plugins.midasvr.AsyncSetCamera(function () {}, {
+            cameraPosition: [
+              midas.visualize.midI,
+              midas.visualize.midJ,
+              midas.visualize.midK + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim],
+            cameraViewUp: [0.0, 1.0, 0.0]
+        });
     });
 };
 
@@ -535,16 +545,7 @@ $(window).load(function () {
     }
 
     json = jQuery.parseJSON($('div.jsonContent').html());
-    midas.visualize.start(); // do the initial rendering
-    midas.visualize.populateInfo();
-    midas.visualize.setupExtractSubgrid();
-    midas.visualize.setupScalarOpacity();
-    midas.visualize.setupColorMapping();
-    midas.visualize.setupOverlay();
-
-    if(typeof midas.visualize.postInitCallback == 'function') {
-        midas.visualize.postInitCallback();
-    }
+    midas.visualize.start(); // warning: asynchronous. To add post logic, see initCallback
 });
 
 $(window).unload(function () {
