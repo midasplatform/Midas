@@ -140,3 +140,27 @@ button.scmDeletePoint {
   position: relative;
 }
 
+table.objectList {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table.objectList th.visibility {
+  width: 20px;
+}
+
+table.objectList th {
+  background-color: #d0d0f6;
+  padding-left: 4px;
+  border: 1px solid gray;
+}
+
+table.objectList td {
+  border: 1px solid gray;
+  padding-left: 2px;
+}
+
+div.objectListBottomButtons {
+  float: right;
+  margin-top: 10px;
+}

@@ -179,7 +179,6 @@ class Visualize_ParaviewController extends Visualize_AppController
       throw new Zend_Exception('Please set the ParaView work directory');
       }
 
-
     $pathArray = $this->ModuleComponent->Main->createParaviewPath();
     $path = $pathArray['path'];
     $tmpFolderName = $pathArray['foderName'];
@@ -258,6 +257,16 @@ class Visualize_ParaviewController extends Visualize_AppController
       $this->view->jsImports = array();
       }
 
+    $meshes = $this->_getParam('meshes');
+    if(isset($meshes))
+      {
+      $meshes = explode(';', $meshes);
+      }
+    else
+      {
+      $meshes = array();
+      }
+
     $itemid = $this->_getParam('itemId');
     $item = $this->Item->load($itemid);
     if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
@@ -307,8 +316,36 @@ class Visualize_ParaviewController extends Visualize_AppController
         }
       }
 
+    // Load in other mesh sources
+    $meshObj = array();
+    foreach($meshes as $meshId)
+      {
+      $otherItem = $this->Item->load($meshId);
+      if($otherItem === false || !$this->Item->policyCheck($otherItem, $this->userSession->Dao, MIDAS_POLICY_READ))
+        {
+        throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
+        }
+      $revision = $this->Item->getLastRevision($otherItem);
+      $bitstreams = $revision->getBitstreams();
+      foreach($bitstreams as $bitstream)
+        {
+        $otherFile = $path.'/'.$bitstream->getName();
+        if($usesymlinks)
+          {
+          symlink($bitstream->getFullPath(), $otherFile);
+          }
+        else
+          {
+          copy($bitstream->getFullPath(), $otherFile);
+          }
+        $meshObj[] = array('path' => $otherFile, 'item' => $otherItem, 'visible' => true);
+        }
+      }
+
     $this->view->json['visualize']['url'] = $filePath;
+    $this->view->json['visualize']['meshes'] = $meshObj;
     $this->view->json['visualize']['item'] = $item;
+    $this->view->json['visualize']['visible'] = true;
     $this->view->fileLocation = $filePath;
     $this->view->itemDao = $item;
     }
