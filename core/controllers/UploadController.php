@@ -119,6 +119,8 @@ class UploadController extends AppController
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
 
+    session_start();
+
     if($this->_is_https())
       {
       $this->view->protocol = 'https';
@@ -164,6 +166,7 @@ class UploadController extends AppController
       }
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_JAVAUPLOAD_EXTRA_HTML',
                                                                       array('folder' => $folder));
+    session_write_close();
     }//end java upload
 
   /**
@@ -178,10 +181,14 @@ class UploadController extends AppController
     $this->disableLayout();
     $this->disableView();
 
+    session_start();
+
     $changes = $this->_getParam('changes');
     $license = $this->_getParam('license');
     $this->userSession->JavaUpload->changes = $changes;
     $this->userSession->JavaUpload->license = $license;
+
+    session_write_close();
     }
 
   /** upload new revision */
