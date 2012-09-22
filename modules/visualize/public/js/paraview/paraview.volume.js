@@ -75,7 +75,7 @@ midas.visualize.initCallback = function (retVal) {
     midas.visualize.sof = retVal.sof;
     midas.visualize.lookupTable = retVal.lookupTable;
     midas.visualize.activeView = retVal.activeView;
-    
+
     midas.visualize.switchRenderer(true); // render in the div
     $('img.visuLoading').hide();
     $('#renderercontainer').show();
@@ -85,6 +85,7 @@ midas.visualize.initCallback = function (retVal) {
     midas.visualize.setupScalarOpacity();
     midas.visualize.setupColorMapping();
     midas.visualize.setupOverlay();
+    midas.visualize.setupObjectList();
 
     if(typeof midas.visualize.postInitCallback == 'function') {
         midas.visualize.postInitCallback();
@@ -151,6 +152,68 @@ midas.visualize.getSofCurve = function () {
         curve[i] = [points[4*i], points[4*i+1]];
     }
     return curve;
+};
+
+/**
+ * Setup the object list widget
+ */
+midas.visualize.setupObjectList = function () {
+    var dialog = $('#objectListTemplate').clone();
+    dialog.removeAttr('id');
+    $('#objectListAction').click(function () {
+        midas.showDialogWithContent('Objects in the scene',
+          dialog.html(), false, {modal: false, width: 430});
+        var container = $('div.MainDialog');
+        var objectList = container.find('table.objectList tbody');
+        var html = '<tr><td><input type="checkbox" vis="volume" element="'+json.visualize.item.item_id+'" ';
+        if(json.visualize.visible) {
+            html += 'checked="checked" ';
+        }
+        html += ' /></td><td>Volume</td><td>'+json.visualize.item.name+'</td></tr>';
+        objectList.append(html);
+        $.each(json.visualize.meshes, function(idx, mesh) {
+            var html = '<tr><td><input type="checkbox" vis="surface" element="'+mesh.item.item_id+'" ';
+            if(mesh.visible) {
+                html += 'checked="checked" ';
+            }
+            html += ' /></td><td>Surface</td><td>'+mesh.item.name+'</td></tr>';
+            objectList.append(html);
+        });
+
+        container.find('button.objectListClose').click(function () {
+            $('div.MainDialog').dialog('close');
+        });
+        container.find('button.objectListApply').click(function () {
+            $.each(objectList.find('input[type=checkbox]'), function(idx, checkbox) {
+                midas.visualize.toggleObjectVisibility($(checkbox));
+            });
+        });
+    });
+};
+
+midas.visualize.toggleObjectVisibility = function(checkbox) {
+    var type = checkbox.attr('vis');
+    var itemId = checkbox.attr('element');
+    var proxy;
+    if(type == 'volume') {
+        if(midas.visualize.subgrid) {
+            proxy = midas.visualize.subgrid;
+        }
+        else {
+            proxy = midas.visualize.input;
+        }
+    }
+    else if(type == 'surface') {
+        // todo hide the corresponding mesh
+    }
+
+    if(checkbox.is(':checked')) {
+        paraview.Show({proxy: proxy});
+    }
+    else {
+        console.log('hiding');
+        paraview.Hide({proxy: proxy});
+    }
 };
 
 /**

@@ -57,6 +57,12 @@ foreach($this->jsImports as $jsImport)
     <h1>Display</h1>
     <ul>
       <li>
+        <a href="javascript:;" id="objectListAction">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/bricks.png"/>
+        Object List
+        </a>
+      </li>
+      <li>
         <a href="javascript:;" id="sofEditAction">
         <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/contrast.png"/>
         Scalar Opacity Mapping
@@ -113,6 +119,10 @@ foreach($this->jsImports as $jsImport)
       <td><input type="text" class="sb extractSubgridMaxZ" /></td>
     </tr>
   </table>
+  <div style="float: left;">
+    <img class="extractInProgress" style="display: none;"
+    alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+  </div>
   <div style="float: right;">
     <button class="extractSubgridApply">Apply</button>
     <button class="extractSubgridClose">Close</button>
@@ -151,8 +161,33 @@ foreach($this->jsImports as $jsImport)
 
 <!-- TEMPLATE: scalar color mapping point tool -->
 <div id="scmPointMapTemplate" class="rgbPointContainer" style="display: none;">
-    Scalar value: <input type="text" class="scmScalarValue" />
-    <span>Color:</span><div class="scmColorPicker"></div>
-    <button style="display: none;" class="scmDeletePoint">Delete</button>
+  Scalar value: <input type="text" class="scmScalarValue" />
+  <span>Color:</span><div class="scmColorPicker"></div>
+  <button style="display: none;" class="scmDeletePoint">Delete</button>
+</div>
+
+<!-- TEMPLATE: object list dialog -->
+<div id="objectListTemplate" class="objectListContainer" style="display: none;">
+  <table class="objectList">
+    <thead>
+      <tr>
+        <th class="visibility">
+          <img alt="" src="<?php echo $this->moduleWebroot?>/public/images/pqEyeball16.png" />
+        </th>
+        <th>Type</th>
+        <th>Object</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <div class="objectListBottomButtons">
+    <button class="objectListApply">Apply</button>
+    <button class="objectListClose">Close</button>
+  </div>
+</div>
+
+<!-- TEMPLATE: object entry -->
+<div id="objectEntryTemplate" class="objectEntryContainer" style="display: none;">
+  <
 </div>
 
