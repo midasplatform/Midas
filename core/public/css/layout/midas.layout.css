@@ -126,6 +126,16 @@ div.viewAction li img, div.genericAction li img, div.viewSelected li img{
   top: 2px;
 }
 
+div.genericAction li:hover {
+  background-color: #e5e5e5;
+  color:black;
+}
+
+div.genericAction li a {
+  display: inline-block;
+  padding-bottom: 2px;
+}
+
 div.viewAction hr, div.genericAction hr{
   margin-bottom: 0px;
   margin-top: 3px;
