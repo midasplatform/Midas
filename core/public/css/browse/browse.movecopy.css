@@ -15,7 +15,20 @@ table#moveCopyTable{
   right: 10px!important;
 }
 
+#moveCopyForm input[type=submit] {
+  margin-left: 10px;
+}
+
 div.movecopySubmitWrapper {
   margin-top: 10px;
   float: right;
+}
+
+div.copySymlinkSelect {
+  margin-bottom: 8px;
+  padding-top: 6px;
+}
+
+div.destinationDisplay {
+  margin-bottom: 8px;
 }
