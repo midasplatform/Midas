@@ -2,8 +2,21 @@ import pwsimple
 
 # Midas volume rendering ParaviewWeb plugin
 
+# Read the data from the source file, show the object, and return the data information
+def OpenData (filename):
+  if type(filename) is unicode:
+    filename = filename.encode('ascii', 'ignore')
+  
+  srcObj = pwsimple.OpenDataFile(filename)
+  pwsimple.Show()
+  imageData = pwsimple.GetDataInformation()
+  retVal = {}
+  retVal['input'] = srcObj
+  retVal['imageData'] = imageData
+  return retVal
+
 # Initialize the volume rendering state
-def Initialize (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, sofPoints):
+def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, sofPoints):
   if type(colorArrayName) is unicode:
     colorArrayName = colorArrayName.encode('ascii', 'ignore')
   

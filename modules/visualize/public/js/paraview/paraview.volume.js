@@ -7,9 +7,6 @@ midas.visualize.DISTANCE_FACTOR = 1.6; // factor to zoom the camera out by
 
 midas.visualize.start = function () {
     // Create a paraview proxy
-    var file = json.visualize.url;
-    var container = $('#renderercontainer');
-
     if(typeof Paraview != 'function') {
         alert('Paraview javascript was not fetched correctly from server.');
         return;
@@ -23,19 +20,25 @@ midas.visualize.start = function () {
             return true;
         }
     };
+    $('#loadingStatus').html('Creating ParaView session on the server and loading plugins...');
     paraview.createSession("midas", "volume render", "default");
     paraview.loadPlugins();
 
-    midas.visualize.input = paraview.OpenDataFile({filename: file});
-    paraview.Show();
+    $('#loadingStatus').html('Reading the data from the input file...');
+    paraview.plugins.midasvr.AsyncOpenData(midas.visualize._dataOpened, {filename: json.visualize.url});
+};
 
-    var imageData = paraview.GetDataInformation();
-    midas.visualize.bounds = imageData.Bounds;
+/**
+ * Helper callback for after the data file has been opened
+ */
+midas.visualize._dataOpened = function (retVal) {
+    midas.visualize.input = retVal.input;
+    midas.visualize.bounds = retVal.imageData.Bounds;
     midas.visualize.maxDim = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
                                       midas.visualize.bounds[3] - midas.visualize.bounds[2],
                                       midas.visualize.bounds[5] - midas.visualize.bounds[4]);
-    midas.visualize.minVal = imageData.PointData.Arrays[0].Ranges[0][0];
-    midas.visualize.maxVal = imageData.PointData.Arrays[0].Ranges[0][1];
+    midas.visualize.minVal = retVal.imageData.PointData.Arrays[0].Ranges[0][0];
+    midas.visualize.maxVal = retVal.imageData.PointData.Arrays[0].Ranges[0][1];
     midas.visualize.imageWindow = [midas.visualize.minVal, midas.visualize.maxVal];
 
     midas.visualize.midI = (midas.visualize.bounds[0] + midas.visualize.bounds[1]) / 2.0;
@@ -63,7 +66,8 @@ midas.visualize.start = function () {
                     midas.visualize.maxVal, 1.0, 0.5, 0.0],
         colorArrayName: 'MetaImage'
     };
-    paraview.plugins.midasvr.AsyncInitialize(midas.visualize.initCallback, params);
+    $('#loadingStatus').html('Initializing view state and renderer...');
+    paraview.plugins.midasvr.AsyncInitViewState(midas.visualize.initCallback, params);
 };
 
 /**
@@ -86,6 +90,8 @@ midas.visualize.initCallback = function (retVal) {
     midas.visualize.setupColorMapping();
     midas.visualize.setupOverlay();
     midas.visualize.setupObjectList();
+
+    $('#loadingStatus').html('');
 
     if(typeof midas.visualize.postInitCallback == 'function') {
         midas.visualize.postInitCallback();
