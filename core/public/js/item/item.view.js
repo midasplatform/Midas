@@ -115,7 +115,7 @@ $(document).ready(function() {
 
     $('a.duplicateItemLink').click(function() {
         midas.loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+json.item.item_id);
-        midas.showDialog(json.item.message.duplicate);
+        midas.showDialog('Copy item');
     });
 
     $('a.linkItemLink').click(function() {

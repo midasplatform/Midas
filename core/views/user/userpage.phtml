@@ -170,7 +170,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     {
     echo '
   <div class="sideElementFirst genericAction">
-    <h1>Actions</h1>
+    <h1>User Actions</h1>
     <ul>
       <li class="myAccountLink" userid="'.$this->user->getKey().'"><a><img alt="" src="'.$this->coreWebroot.'/public/images/icons/user.png"/> '.$this->t('Manage Profile').'</a></li>
       <li><a href="'.$this->webroot.'/user/manage/?userId='.$this->user->getKey().'"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/data.png"/> '.$this->t('Manage Files').'</a></li>
@@ -264,7 +264,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       </ul>
     </div>
     <div class="sideElement viewSelected" >
-      <h1><?php echo $this->t('Selected')?><span></span></h1>
+      <h1><?php echo $this->t('Checked')?><span></span></h1>
       <span></span>
     </div>
     <div class="sideElementLast viewInfo">

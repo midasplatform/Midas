@@ -236,7 +236,7 @@ class AppController extends MIDAS_GlobalController
       'deleteItem' => $this->t('Delete'),
       'sharedItem' => $this->t('This item is currrently shared by other folders and/or communities. Deletion will make it disappear in all these folders and/or communitites.'),
       'deleteSelected' => $this->t('Delete all selected'),
-      'duplicateSelected' => $this->t('Duplicate all selected'),
+      'duplicateSelected' => $this->t('Copy all selected'),
       'shareSelected' => $this->t('Share all selected'),
       'ignoreSelectedFolders' => $this->t('(Folder type does not support this action; all selected folders are ignored.)'),
       'deleteSelectedMessage' => $this->t('Do you really want to delete all selected resources?'),

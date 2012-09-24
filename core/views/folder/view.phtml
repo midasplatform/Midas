@@ -113,16 +113,65 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 <div class="viewSideBar">
   <?php
   echo '
-  <div class="sideElementFirst viewAction">
-    <h1>Actions</h1>
+  <div class="sideElementFirst genericAction">
+    <h1>Folder Actions</h1>
     <ul>
       <li>
-
+        <img alt="" src="'.$this->coreWebroot.'/public/images/icons/download.png"/>
+        <a href="'.$this->webroot.'/download?folders='.$this->mainFolder->getKey().'">Download</a>
       </li>
+      <li>
+        <img alt="" src="'.$this->coreWebroot.'/public/images/icons/link.png"/>
+        <a type="folder" element="'.$this->mainFolder->getKey().'" href="javascript:;" class="getResourceLinks">Share</a>
+      </li>';
+    if($this->isModerator)
+      {
+      echo '
+      <li>
+        <img alt="" src="'.$this->coreWebroot.'/public/images/icons/folder_add.png"/>
+        <a onclick="midas.createNewFolder('.$this->mainFolder->getKey().');">Create new Folder</a>
+      </li>
+      <li>
+        <img alt="" src="'.$this->coreWebroot.'/public/images/icons/upload.png"/>
+        <a rel="'.$this->webroot.'/upload/simpleupload/?parent='.$this->mainFolder->getKey().'" class="uploadInFolder">Upload here</a>
+      </li>';
+      if($this->deletable)
+        {
+        echo '
+        <li>
+          <img alt="" src="'.$this->coreWebroot.'/public/images/icons/edit.png"/>
+          <a onclick="midas.editFolder('.$this->mainFolder->getKey().');">Edit</a>
+        </li>
+        <li>
+          <img alt="" src="'.$this->coreWebroot.'/public/images/icons/move.png"/>
+          <a onclick="midas.moveFolder('.$this->mainFolder->getKey().');">Move</a>
+        </li>';
+        }
+      }
+    if($this->isAdmin)
+      {
+      echo '
+      <li>
+        <img alt="" src="'.$this->coreWebroot.'/public/images/icons/lock.png"/>
+        <a type="folder" element="'.$this->mainFolder->getKey().'" class="sharingLink">Permissions</a>
+      </li>';
+      if($this->deletable)
+        {
+        echo '
+        <li>
+          <img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/>
+          <a onclick="midas.deleteFolder('.$this->mainFolder->getKey().');">Delete</a>
+        </li>';
+        }
+      }
+    echo '
     </ul>
   </div>
+  <div class="sideElement viewAction">
+    <ul></ul>
+  </div>
   <div class="sideElement viewSelected" >
-  <h1>'.$this->t('Selected').'<span></span></h1>
+  <h1>'.$this->t('Checked').'<span></span></h1>
     <span></span>
   </div>
   <div class="sideElementLast viewInfo">';
@@ -147,7 +196,3 @@ if($this->isAdmin)
   $policy=MIDAS_POLICY_ADMIN;
   }
 ?>
-
-<div class="defaultSideTrigger" policy='<?php echo $policy?>' type='folder' deletable='<?php echo $this->deletableFolder?>' element='<?php echo $this->mainFolder->getFolderId() ?>'>
-</div>
-

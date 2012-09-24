@@ -256,7 +256,7 @@ foreach($cssArray as $module => $list)
     {?>
   <div class="sideElementFirst viewAction">
 
-    <h1>Actions</h1>
+    <h1>Item Actions</h1>
     <ul>
       <?php
       echo 
@@ -281,12 +281,9 @@ foreach($cssArray as $module => $list)
         </li>
         <li>
           <a href='javascript:;' class='moveItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/move.png'/> {$this->t('Move')}</a>
-        </li>  
-        <li>
-          <a href='javascript:;' class='linkItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/link.png'/> Link to item</a>
         </li>
         <li>
-          <a href='javascript:;' class='duplicateItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/copy.png'/> {$this->t('Duplicate')}</a>
+          <a href='javascript:;' class='duplicateItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/copy.png'/> {$this->t('Copy')}</a>
         </li>
         <li>
           <a href='javascript:;' class='editItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/> {$this->t('Edit')}</a>
