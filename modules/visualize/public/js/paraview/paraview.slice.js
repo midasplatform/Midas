@@ -369,7 +369,7 @@ midas.visualize.setSliceMode = function (sliceMode) {
         slice = Math.floor(midas.visualize.midK);
         parallelScale = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
                                  midas.visualize.bounds[3] - midas.visualize.bounds[2]) / 2.0;
-        cameraPosition = [midas.visualize.midI, midas.visualize.midJ, midas.visualize.bounds[5] - 10];
+        cameraPosition = [midas.visualize.midI, midas.visualize.midJ, midas.visualize.bounds[4] - 10];
         cameraUp = [0.0, -1.0, 0.0];
         min = midas.visualize.bounds[4];
         max = midas.visualize.bounds[5];
