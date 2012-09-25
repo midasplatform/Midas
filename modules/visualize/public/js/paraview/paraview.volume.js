@@ -12,6 +12,7 @@ midas.visualize.start = function () {
         return;
     }
 
+    $('#loadingStatus').html('Creating ParaView session on the server and loading plugins...');
     paraview = new Paraview("/PWService");
     paraview.errorListener = {
         manageError: function(error) {
@@ -20,12 +21,12 @@ midas.visualize.start = function () {
             return true;
         }
     };
-    $('#loadingStatus').html('Creating ParaView session on the server and loading plugins...');
+
     paraview.createSession("midas", "volume render", "default");
     paraview.loadPlugins();
 
     $('#loadingStatus').html('Reading image data from files...');
-    paraview.plugins.midasvr.AsyncOpenData(midas.visualize._dataOpened, {
+    paraview.plugins.midascommon.AsyncOpenData(midas.visualize._dataOpened, {
         filename: json.visualize.url,
         otherMeshes: json.visualize.meshes
     });
@@ -100,7 +101,7 @@ midas.visualize.initCallback = function (retVal) {
         midas.visualize.postInitCallback();
     }
 
-    paraview.sendEvent('Render', ''); //force a view refresh
+    midas.visualize.renderers.current.updateServerSizeIfNeeded(); //force a view refresh
 }
 
 /**
@@ -312,7 +313,7 @@ midas.visualize.setupColorMapping = function () {
                   parseFloat(tokens[3]) / 255.0);
             });
             midas.visualize.colorMap = colorMap;
-            paraview.plugins.midasvr.AsyncUpdateColorMap(function() {
+            paraview.plugins.midascommon.AsyncUpdateColorMap(function() {
                 paraview.sendEvent('Render', ''); //force a view refresh
               }, {
                 colorArrayName: 'MetaImage',
@@ -567,7 +568,7 @@ midas.visualize.setupExtractSubgrid = function () {
 
 midas.visualize.setupOverlay = function () {
     $('button.plusX').click(function () {
-        paraview.plugins.midasvr.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
+        paraview.plugins.midascommon.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
             cameraPosition: [
               midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
               midas.visualize.midJ,
@@ -576,7 +577,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.minusX').click(function () {
-        paraview.plugins.midasvr.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
+        paraview.plugins.midascommon.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
             cameraPosition: [
               midas.visualize.midI + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
               midas.visualize.midJ,
@@ -585,7 +586,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.plusY').click(function () {
-        paraview.plugins.midasvr.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
+        paraview.plugins.midascommon.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
@@ -594,7 +595,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.minusY').click(function () {
-        paraview.plugins.midasvr.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
+        paraview.plugins.midascommon.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
@@ -603,7 +604,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.plusZ').click(function () {
-        paraview.plugins.midasvr.AsyncSetCamera(function () {paraview.sendEvent('Render', ''); }, {
+        paraview.plugins.midascommon.AsyncSetCamera(function () {paraview.sendEvent('Render', ''); }, {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ,
@@ -612,7 +613,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.minusZ').click(function () {
-        paraview.plugins.midasvr.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
+        paraview.plugins.midascommon.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ,
