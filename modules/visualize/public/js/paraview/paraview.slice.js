@@ -216,14 +216,54 @@ midas.visualize.pointSelectMode = function () {
 
     // Bind click action on the render window
     var el = $(midas.visualize.renderers.current.view);
+    var bounds = midas.visualize.bounds; //alias the variable for shorthand
     el.unbind('click').click(function (e) {
-        var x = (midas.visualize.bounds[1] - midas.visualize.bounds[0]) * (e.offsetX / $(this).width());
-        x -= midas.visualize.bounds[0];
-        var y = (midas.visualize.bounds[3] - midas.visualize.bounds[2]) * (e.offsetY / $(this).height());
-        y -= midas.visualize.bounds[2];
+        var x, y, z;
+        if(midas.visualize.sliceMode == 'XY Plane') {
+            var longLength = Math.max(bounds[1] - bounds[0], bounds[3] - bounds[2]);
+            var arWidth = (bounds[1] - bounds[0]) / longLength;
+            var arHeight = (bounds[3] - bounds[2]) / longLength;
+
+            x = (bounds[1] - bounds[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
+            x -= bounds[0];
+            
+            y = (bounds[3] - bounds[2]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
+            y -= bounds[2];
+            
+            z = midas.visualize.currentSlice;
+        }
+        else if(midas.visualize.sliceMode == 'XZ Plane') {
+            var longLength = Math.max(bounds[1] - bounds[0], bounds[5] - bounds[4]);
+            var arWidth = (bounds[1] - bounds[0]) / longLength;
+            var arHeight = (bounds[5] - bounds[4]) / longLength;
+
+            x = (bounds[1] - bounds[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
+            x = bounds[1] - x;
+            x -= midas.visualize.bounds[0];
+            
+            y = midas.visualize.currentSlice;
+            
+            z = (bounds[5] - bounds[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
+            z = bounds[5] - z;
+            z -= bounds[4];
+        }
+        else if(midas.visualize.sliceMode == 'YZ Plane') {
+            var longLength = Math.max(bounds[1] - bounds[0], bounds[5] - bounds[4]);
+            var arWidth = (bounds[1] - bounds[0]) / longLength;
+            var arHeight = (bounds[5] - bounds[4]) / longLength;
+
+            x = midas.visualize.currentSlice;
+            
+            y = (bounds[3] - bounds[2]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
+            y -= bounds[2];
+            
+            z = (bounds[5] - bounds[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
+            z = bounds[5] - z;
+            z -= bounds[4];
+        }
 
         var html = 'You have selected the point:<p><b>('
-                 +x.toFixed(1)+', '+y.toFixed(1)+', '+midas.visualize.currentSlice.toFixed(1)+')</b></p>'
+                 +x.toFixed(1)+', '+y.toFixed(1)+', '+z.toFixed(1)+')</b></p>'
                  +'Click OK to proceed or Cancel to re-select a point';
         html += '<br/><br/><div style="float: right;"><button id="pointSelectOk">OK</button>';
         html += '<button style="margin-left: 15px" id="pointSelectCancel">Cancel</button></div>';
@@ -231,7 +271,7 @@ midas.visualize.pointSelectMode = function () {
 
         $('#pointSelectOk').unbind('click').click(function () {
             if(typeof midas.visualize.handlePointSelect == 'function') {
-                midas.visualize.handlePointSelect([x, y, midas.visualize.currentSlice]);
+                midas.visualize.handlePointSelect([x, y, z]);
             }
             else {
                 midas.createNotice('No point selection handler function has been loaded', 4000, 'error');
@@ -242,7 +282,7 @@ midas.visualize.pointSelectMode = function () {
         });
 
         var params = {
-            point: [x, y, midas.visualize.currentSlice],
+            point: [x, y, z],
             color: [1.0, 0.0, 0.0],
             radius: midas.visualize.maxDim / 70.0, //make the sphere some small fraction of the image size
             objectToDelete: midas.visualize.glyph ? midas.visualize.glyph : false,
