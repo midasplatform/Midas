@@ -52,6 +52,11 @@ foreach($cssArray as $module => $list)
         ?>
         </button>
       </div>
+      <?php
+      $htmltArray = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_VIEW_BUTTON', array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin));
+      $htmltArray = array_diff($htmltArray, array(''));
+      echo join(" ",$htmltArray);
+      ?>
       <br/>
   </div>
   <div style='width:460px;' class="genericInfo">

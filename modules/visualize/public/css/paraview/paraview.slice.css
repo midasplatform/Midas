@@ -1,0 +1,70 @@
+
+#sliceSlider, #windowLevelSlider {
+  margin: 8px 14px 8px 10px;
+  width: 826px;
+}
+
+#sliceInfo, #windowLevelInfo {
+  margin-left: 10px;
+  color: white;
+  z-index: 3;
+}
+
+#renderercontainer {
+  z-index: 2;
+  overflow: hidden;
+  width: 850px;
+  height: 850px;
+  display: none;
+  position: relative;
+}
+
+img.visuLoading {
+  z-index: 100;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+#rendererOverlay {
+  position: absolute;
+  top: 40px;
+  right: 15px;
+  z-index: 5;
+}
+
+#sliceControlContainer {
+  position: absolute;
+  top: 5px;
+  z-index: 5;
+}
+
+#windowLevelControlContainer {
+  position: absolute;
+  bottom: 5px;
+  z-index: 5;
+}
+
+button.actionButton {
+  width: 25px;
+  height: 25px;
+  background-repeat: no-repeat;
+  background-position: 2px 1px;
+}
+
+button.actionActive {
+  background-color: #99cc99;
+}
+
+button.actionInactive {
+  background-color: #cccccc;
+}
+
+button.pointSelectButton {
+  background-image: url(../../images/pointSelect.png);
+}
+
+div.belowViewportContainer {
+  margin-top: 8px;
+  margin-left: 10px;
+}
+

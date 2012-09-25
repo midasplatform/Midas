@@ -30,7 +30,6 @@ if($this->useScreenshot)
 
 if(!empty($this->pwapp))
   {?>
-<a id="linkParaviewApplication" href="<?php echo $this->pwapp?>/ParaWeb.jsp?url=<?php echo urlencode(str_replace('PWApp', 'PWService', $this->pwapp))?>&name=midas_<?php echo rand(0, 1000)?>&data=<?php echo ($this->loadState)?'state':'file'?>:<?php echo urlencode($this->fileLocation)?>&setting=default&x=23&y=19" target="_blank">View data in ParaviewWeb Application</a>
 <br/>
 <?php
   }
