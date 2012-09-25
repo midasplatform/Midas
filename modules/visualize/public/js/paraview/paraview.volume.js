@@ -24,8 +24,11 @@ midas.visualize.start = function () {
     paraview.createSession("midas", "volume render", "default");
     paraview.loadPlugins();
 
-    $('#loadingStatus').html('Reading the data from the input file...');
-    paraview.plugins.midasvr.AsyncOpenData(midas.visualize._dataOpened, {filename: json.visualize.url});
+    $('#loadingStatus').html('Reading image data from files...');
+    paraview.plugins.midasvr.AsyncOpenData(midas.visualize._dataOpened, {
+        filename: json.visualize.url,
+        otherMeshes: json.visualize.meshes
+    });
 };
 
 /**
@@ -34,6 +37,7 @@ midas.visualize.start = function () {
 midas.visualize._dataOpened = function (retVal) {
     midas.visualize.input = retVal.input;
     midas.visualize.bounds = retVal.imageData.Bounds;
+    midas.visualize.meshes = retVal.meshes;
     midas.visualize.maxDim = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
                                       midas.visualize.bounds[3] - midas.visualize.bounds[2],
                                       midas.visualize.bounds[5] - midas.visualize.bounds[4]);
@@ -212,16 +216,21 @@ midas.visualize.toggleObjectVisibility = function(checkbox) {
         }
     }
     else if(type == 'surface') {
-        // todo hide the corresponding mesh
+        $.each(midas.visualize.meshes, function(k, mesh) {
+            if(mesh.item.item_id == itemId) {
+                proxy = mesh.source;
+                mesh.visible = checkbox.is(':checked');
+            }
+        });
     }
 
     if(checkbox.is(':checked')) {
         paraview.Show({proxy: proxy});
     }
     else {
-        console.log('hiding');
         paraview.Hide({proxy: proxy});
     }
+    paraview.sendEvent('Render', ''); //force a view refresh
 };
 
 /**
