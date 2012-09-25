@@ -1,7 +1,7 @@
 
 #sliceSlider, #windowLevelSlider {
   margin: 8px 14px 8px 10px;
-  width: 826px;
+  width: 551px;
 }
 
 #sliceInfo, #windowLevelInfo {
@@ -13,8 +13,8 @@
 #renderercontainer {
   z-index: 2;
   overflow: hidden;
-  width: 850px;
-  height: 850px;
+  width: 575px;
+  height: 575px;
   display: none;
   position: relative;
 }
@@ -63,8 +63,7 @@ button.pointSelectButton {
   background-image: url(../../images/pointSelect.png);
 }
 
-div.belowViewportContainer {
-  margin-top: 8px;
+#loadingStatus {
   margin-left: 10px;
 }
 

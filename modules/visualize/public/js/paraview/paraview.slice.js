@@ -15,6 +15,7 @@ midas.visualize.start = function () {
         return;
     }
 
+    $('#loadingStatus').html('Creating ParaView session on the server and loading plugins...');
     paraview = new Paraview("/PWService");
     paraview.errorListener = {
         manageError: function(error) {
@@ -23,16 +24,31 @@ midas.visualize.start = function () {
             return true;
         }
     };
-    paraview.createSession("midas", "slice viz", "default");
 
-    midas.visualize.input = paraview.OpenDataFile({filename: file});
-    paraview.Show();
+    paraview.createSession("midas", "slice view", "default");
+    paraview.loadPlugins();
 
-    var imageData = paraview.GetDataInformation();
-    midas.visualize.bounds = imageData.Bounds;
-    midas.visualize.minVal = imageData.PointData.Arrays[0].Ranges[0][0];
-    midas.visualize.maxVal = imageData.PointData.Arrays[0].Ranges[0][1];
+    $('#loadingStatus').html('Reading image data from files...');
+    paraview.plugins.midascommon.AsyncOpenData(midas.visualize._dataOpened, {
+        filename: json.visualize.url,
+        otherMeshes: json.visualize.meshes
+    });
+};
+
+midas.visualize._dataOpened = function (retVal) {
+    midas.visualize.input = retVal.input;
+    midas.visualize.bounds = retVal.imageData.Bounds;
+    midas.visualize.meshes = retVal.meshes;
+    midas.visualize.maxDim = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
+                                      midas.visualize.bounds[3] - midas.visualize.bounds[2],
+                                      midas.visualize.bounds[5] - midas.visualize.bounds[4]);
+    midas.visualize.minVal = retVal.imageData.PointData.Arrays[0].Ranges[0][0];
+    midas.visualize.maxVal = retVal.imageData.PointData.Arrays[0].Ranges[0][1];
     midas.visualize.imageWindow = [midas.visualize.minVal, midas.visualize.maxVal];
+
+    midas.visualize.midI = (midas.visualize.bounds[0] + midas.visualize.bounds[1]) / 2.0;
+    midas.visualize.midJ = (midas.visualize.bounds[2] + midas.visualize.bounds[3]) / 2.0;
+    midas.visualize.midK = Math.floor((midas.visualize.bounds[4] + midas.visualize.bounds[5]) / 2.0);
 
     if(midas.visualize.bounds.length != 6) {
         console.log('Invalid image bounds:');
@@ -40,72 +56,43 @@ midas.visualize.start = function () {
         return;
     }
 
-    midas.visualize.midI = (midas.visualize.bounds[0] + midas.visualize.bounds[1]) / 2.0;
-    midas.visualize.midJ = (midas.visualize.bounds[2] + midas.visualize.bounds[3]) / 2.0;
-    midas.visualize.midK = Math.floor((midas.visualize.bounds[4] + midas.visualize.bounds[5]) / 2.0);
-
+    midas.visualize.defaultColorMap = [
+       midas.visualize.minVal, 0.0, 0.0, 0.0,
+       midas.visualize.maxVal, 1.0, 1.0, 1.0];
+    midas.visualize.colorMap = midas.visualize.defaultColorMap;
     midas.visualize.currentSlice = midas.visualize.midK;
 
-    midas.visualize.activeView = paraview.CreateIfNeededRenderView();
-    midas.visualize.activeView.setViewSize(container.width(), container.height());
-    midas.visualize.activeView.setCenterAxesVisibility(false);
-    midas.visualize.activeView.setOrientationAxesVisibility(false);
-    midas.visualize.activeView.setCameraParallelProjection(true);
-    midas.visualize.activeView.setCameraPosition([midas.visualize.midI,
-                                                  midas.visualize.midJ,
-                                                  midas.visualize.bounds[5] + 10]);
-    midas.visualize.activeView.setCameraFocalPoint([midas.visualize.midI,
-                                                    midas.visualize.midJ,
-                                                    midas.visualize.midK]);
-//    midas.visualize.activeView.setCameraViewUp([0, -1, 0]);
-    midas.visualize.activeView.setCenterOfRotation(midas.visualize.activeView.getCameraFocalPoint());
-    midas.visualize.activeView.setBackground([0.0, 0.0, 0.0]);
-    midas.visualize.activeView.setBackground2([0.0, 0.0, 0.0]); //solid black background
-    midas.visualize.activeView.setCameraParallelScale(
-      Math.max(midas.visualize.midI, midas.visualize.midJ));
+    var params = {
+        cameraFocalPoint: [midas.visualize.midI, midas.visualize.midJ, midas.visualize.midK],
+        cameraPosition: [midas.visualize.midI, midas.visualize.midJ, midas.visualize.bounds[5] + 10],
+        colorMap: midas.visualize.defaultColorMap,
+        colorArrayName: 'MetaImage',
+        sliceVal: midas.visualize.currentSlice,
+        parallelScale: Math.max(midas.visualize.midI, midas.visualize.midJ)
+    };
+    $('#loadingStatus').html('Initializing view state and renderer...');
+    paraview.plugins.midasslice.AsyncInitViewState(midas.visualize.initCallback, params);
+};
 
-    var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
-    lookupTable.setRGBPoints([midas.visualize.minVal,
-                              0.0, 0.0, 0.0,
-                              midas.visualize.maxVal,
-                              1.0, 1.0, 1.0]); //initial transfer function
-    lookupTable.setColorSpace(0); // 0 corresponds to RGB
-
-    paraview.SetDisplayProperties({
-        view: midas.visualize.activeView,
-        Representation: 'Slice',
-        ColorArrayName: 'MetaImage',
-        Slice: midas.visualize.midK,
-        SliceMode: 'XY Plane',
-        LookupTable: lookupTable
-    });
-
-    // Load other meshes
-    $.each(json.visualize.meshes, function(k, mesh) {
-        var src = paraview.OpenDataFile({filename: mesh.path});
-        paraview.Show({proxy: src});
-        paraview.SetDisplayProperties({
-            proxy: src,
-            view: midas.visualize.activeView,
-            Representation: 'Surface'
-        });
-
-        midas.visualize.meshes.push({
-            path: mesh.path,
-            itemId: mesh.itemId,
-            source: src
-        });
-    });
-    paraview.SetActiveSource([midas.visualize.input]);
+midas.visualize.initCallback = function (retVal) {
+    midas.visualize.lookupTable = retVal.lookupTable;
+    midas.visualize.activeView = retVal.activeView;
 
     midas.visualize.switchRenderer(true); // render in the div
     $('img.visuLoading').hide();
-    container.show();
+    $('#loadingStatus').html('').hide();
+    $('#renderercontainer').show();
 
     midas.visualize.setupSliders();
     midas.visualize.updateSliceInfo(midas.visualize.midK);
     midas.visualize.updateWindowInfo([midas.visualize.minVal, midas.visualize.maxVal]);
     midas.visualize.disableMouseInteraction();
+
+    if(typeof midas.visualize.postInitCallback == 'function') {
+        midas.visualize.postInitCallback();
+    }
+
+    midas.visualize.renderers.current.updateServerSizeIfNeeded();
 };
 
 /**
@@ -161,25 +148,27 @@ midas.visualize.updateWindowInfo = function (values) {
 
 /** Make the actual request to PVWeb to set the window */
 midas.visualize.changeWindow = function (values) {
-    var lookupTable = paraview.GetLookupTableForArray('MetaImage', 1);
+    paraview.plugins.midasslice.AsyncChangeWindow(function (retVal) {
+        midas.visualize.lookupTable = retVal.lookupTable;
+        paraview.sendEvent('Render', ''); //force a view refresh
+    }, [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0], 'MetaImage');
     midas.visualize.imageWindow = values;
-    lookupTable.setRGBPoints([values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0]);
 };
 
 midas.visualize.changeSlice = function (slice) {
+    slice = parseInt(slice);
     if(slice < midas.visualize.bounds[4] || slice > midas.visualize.bounds[5]) {
         midas.createNotice('Invalid slice number: ' + slice, 3000, 'error');
         return;
     }
-
-    paraview.SetDisplayProperties({
-        Slice: slice
-    });
     midas.visualize.currentSlice = slice;
 
-    if(typeof midas.visualize.changeSliceCallback == 'function') {
-        midas.visualize.changeSliceCallback(slice);
-    }
+    paraview.plugins.midasslice.AsyncChangeSlice(function() {
+        if(typeof midas.visualize.changeSliceCallback == 'function') {
+            midas.visualize.changeSliceCallback(slice);
+        }
+        paraview.sendEvent('Render', ''); //force a view refresh
+    }, slice);
 };
 
 /**
@@ -229,22 +218,7 @@ midas.visualize.pointSelectMode = function () {
                  +'Click OK to proceed or Cancel to re-select a point';
         html += '<br/><br/><div style="float: right;"><button id="pointSelectOk">OK</button>';
         html += '<button style="margin-left: 15px" id="pointSelectCancel">Cancel</button></div>';
-        midas.showDialogWithContent('Confirm Point Selection', html, false);
-
-        if(midas.visualize.glyph) {
-            paraview.Delete({proxy: midas.visualize.glyph});
-        }
-
-        midas.visualize.glyph = paraview.Sphere();
-        midas.visualize.glyph.setRadius(2);
-        midas.visualize.glyph.setCenter([x, y, midas.visualize.currentSlice + 1]);
-        paraview.SetDisplayProperties({
-            proxy: midas.visualize.glyph,
-            Representation: 'Surface',
-            DiffuseColor: [1.0, 0.0, 0.0]
-        });
-        paraview.Show({proxy: midas.visualize.glyph});
-        paraview.SetActiveSource([midas.visualize.input]);
+        midas.showDialogWithContent('Confirm Point Selection', html, false, {modal: false});
 
         $('#pointSelectOk').unbind('click').click(function () {
             if(typeof midas.visualize.handlePointSelect == 'function') {
@@ -256,7 +230,19 @@ midas.visualize.pointSelectMode = function () {
         });
         $('#pointSelectCancel').unbind('click').click(function () {
             $('div.MainDialog').dialog('close');
-        });      
+        });
+
+        var params = {
+            point: [x, y, midas.visualize.currentSlice + 1],
+            color: [1.0, 0.0, 0.0],
+            radius: midas.visualize.maxDim / 100.0,
+            objectToDelete: midas.visualize.glyph ? midas.visualize.glyph : false,
+            input: midas.visualize.input
+        };
+        paraview.plugins.midasslice.AsyncShowSphere(function (retVal) {
+            midas.visualize.glyph = retVal.glyph;
+            paraview.sendEvent('Render', ''); //force a view refresh
+        }, params);
     });
 };
 

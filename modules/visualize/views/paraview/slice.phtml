@@ -25,24 +25,55 @@ foreach($this->jsImports as $jsImport)
   }
 ?>
 
-<img class="visuLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+<div class="viewMain">
+  <img class="visuLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+  <span id="loadingStatus"></span>
 
-<div id='renderercontainer' style="">
-  <div id='rendererOverlay'></div>
-  <div id="sliceControlContainer">
-    <div id="sliceSlider"></div>
-    <div id="sliceInfo"></div>
-  </div>
+  <div id='renderercontainer' style="">
+    <div id='rendererOverlay'></div>
+    <div id="sliceControlContainer">
+      <div id="sliceSlider"></div>
+      <div id="sliceInfo"></div>
+    </div>
 
-  <div id="windowLevelControlContainer">
-    <div id="windowLevelInfo"></div>
-    <div id="windowLevelSlider"></div>
+    <div id="windowLevelControlContainer">
+      <div id="windowLevelInfo"></div>
+      <div id="windowLevelSlider"></div>
+    </div>
+    <!-- The renderer will be inserted here -->
   </div>
-  <!-- The renderer will be inserted here -->
 </div>
 
-<div class="belowViewportContainer">
-  Click <a onclick="midas.visualize.toggleControlVisibility();">here</a> or press 'c' to toggle control visibility.
+<div class="viewSideBar">
+  <div class="sideElementFirst viewAction">
+  <h1>Display</h1>
+    <ul>
+      <li>
+        <a onclick="midas.visualize.toggleControlVisibility();">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/control_equalizer_blue.png"/>
+        Toggle Overlay Visibility
+        </a>
+      </li>
+      <li>
+        <a onclick="midas.visualize.setSliceMode('XY Plane');">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/camera_go.png"/>
+        XY Plane View
+        </a>
+      </li>
+      <li>
+        <a onclick="midas.visualize.setSliceMode('XY Plane');">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/camera_go.png"/>
+        XZ Plane View
+        </a>
+      </li>
+      <li>
+        <a onclick="midas.visualize.setSliceMode('YZ Plane');">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/camera_go.png"/>
+        YZ Plane View
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <!-- UI Action widget templates -->
