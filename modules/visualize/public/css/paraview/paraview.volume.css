@@ -164,3 +164,8 @@ div.objectListBottomButtons {
   float: right;
   margin-top: 10px;
 }
+
+#loadingStatus {
+  margin-left: 10px;
+}
+

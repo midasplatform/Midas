@@ -2,8 +2,36 @@ import pwsimple
 
 # Midas volume rendering ParaviewWeb plugin
 
+# Read the data from the source file, show the object, and return the data information
+def OpenData (filename, otherMeshes):
+  if type(filename) is unicode:
+    filename = filename.encode('ascii', 'ignore')
+  
+  srcObj = pwsimple.OpenDataFile(filename)
+  pwsimple.Show()
+  imageData = pwsimple.GetDataInformation()
+  
+  # Load other meshes into scene
+  meshes = []
+  for mesh in otherMeshes:
+    source = pwsimple.OpenDataFile(mesh['path'])
+    pwsimple.SetActiveSource(source)
+    properties = pwsimple.Show()
+    properties.Representation = 'Surface'
+    properties.DiffuseColor = [float(mesh['diffuseColor'][0]), float(mesh['diffuseColor'][1]), float(mesh['diffuseColor'][2])]
+    properties.Orientation = [float(mesh['orientation'][0]), float(mesh['orientation'][1]), float(mesh['orientation'][2])]
+    meshes.append({'source' : source, 'item': mesh['item'], 'visible': True})
+  
+  pwsimple.SetActiveSource(srcObj)
+  
+  retVal = {}
+  retVal['input'] = srcObj
+  retVal['imageData'] = imageData
+  retVal['meshes'] = meshes
+  return retVal
+
 # Initialize the volume rendering state
-def Initialize (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, sofPoints):
+def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, sofPoints):
   if type(colorArrayName) is unicode:
     colorArrayName = colorArrayName.encode('ascii', 'ignore')
   

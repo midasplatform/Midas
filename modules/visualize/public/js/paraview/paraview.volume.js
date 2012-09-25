@@ -7,9 +7,6 @@ midas.visualize.DISTANCE_FACTOR = 1.6; // factor to zoom the camera out by
 
 midas.visualize.start = function () {
     // Create a paraview proxy
-    var file = json.visualize.url;
-    var container = $('#renderercontainer');
-
     if(typeof Paraview != 'function') {
         alert('Paraview javascript was not fetched correctly from server.');
         return;
@@ -23,19 +20,29 @@ midas.visualize.start = function () {
             return true;
         }
     };
+    $('#loadingStatus').html('Creating ParaView session on the server and loading plugins...');
     paraview.createSession("midas", "volume render", "default");
     paraview.loadPlugins();
 
-    midas.visualize.input = paraview.OpenDataFile({filename: file});
-    paraview.Show();
+    $('#loadingStatus').html('Reading image data from files...');
+    paraview.plugins.midasvr.AsyncOpenData(midas.visualize._dataOpened, {
+        filename: json.visualize.url,
+        otherMeshes: json.visualize.meshes
+    });
+};
 
-    var imageData = paraview.GetDataInformation();
-    midas.visualize.bounds = imageData.Bounds;
+/**
+ * Helper callback for after the data file has been opened
+ */
+midas.visualize._dataOpened = function (retVal) {
+    midas.visualize.input = retVal.input;
+    midas.visualize.bounds = retVal.imageData.Bounds;
+    midas.visualize.meshes = retVal.meshes;
     midas.visualize.maxDim = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
                                       midas.visualize.bounds[3] - midas.visualize.bounds[2],
                                       midas.visualize.bounds[5] - midas.visualize.bounds[4]);
-    midas.visualize.minVal = imageData.PointData.Arrays[0].Ranges[0][0];
-    midas.visualize.maxVal = imageData.PointData.Arrays[0].Ranges[0][1];
+    midas.visualize.minVal = retVal.imageData.PointData.Arrays[0].Ranges[0][0];
+    midas.visualize.maxVal = retVal.imageData.PointData.Arrays[0].Ranges[0][1];
     midas.visualize.imageWindow = [midas.visualize.minVal, midas.visualize.maxVal];
 
     midas.visualize.midI = (midas.visualize.bounds[0] + midas.visualize.bounds[1]) / 2.0;
@@ -63,7 +70,8 @@ midas.visualize.start = function () {
                     midas.visualize.maxVal, 1.0, 0.5, 0.0],
         colorArrayName: 'MetaImage'
     };
-    paraview.plugins.midasvr.AsyncInitialize(midas.visualize.initCallback, params);
+    $('#loadingStatus').html('Initializing view state and renderer...');
+    paraview.plugins.midasvr.AsyncInitViewState(midas.visualize.initCallback, params);
 };
 
 /**
@@ -78,6 +86,7 @@ midas.visualize.initCallback = function (retVal) {
 
     midas.visualize.switchRenderer(true); // render in the div
     $('img.visuLoading').hide();
+    $('#loadingStatus').html('').hide();
     $('#renderercontainer').show();
 
     midas.visualize.populateInfo();
@@ -90,6 +99,8 @@ midas.visualize.initCallback = function (retVal) {
     if(typeof midas.visualize.postInitCallback == 'function') {
         midas.visualize.postInitCallback();
     }
+
+    paraview.sendEvent('Render', ''); //force a view refresh
 }
 
 /**
@@ -126,6 +137,7 @@ midas.visualize.renderSubgrid = function (bounds) {
         midas.visualize.subgrid = subgrid;
         container.find('img.extractInProgress').hide();
         container.find('button.extractSubgridApply').removeAttr('disabled');
+        paraview.sendEvent('Render', ''); //force a view refresh
         },
       midas.visualize.input, bounds, midas.visualize.lookupTable,
       midas.visualize.sof, 'MetaImage', toHide
@@ -204,16 +216,21 @@ midas.visualize.toggleObjectVisibility = function(checkbox) {
         }
     }
     else if(type == 'surface') {
-        // todo hide the corresponding mesh
+        $.each(midas.visualize.meshes, function(k, mesh) {
+            if(mesh.item.item_id == itemId) {
+                proxy = mesh.source;
+                mesh.visible = checkbox.is(':checked');
+            }
+        });
     }
 
     if(checkbox.is(':checked')) {
         paraview.Show({proxy: proxy});
     }
     else {
-        console.log('hiding');
         paraview.Hide({proxy: proxy});
     }
+    paraview.sendEvent('Render', ''); //force a view refresh
 };
 
 /**
@@ -295,7 +312,9 @@ midas.visualize.setupColorMapping = function () {
                   parseFloat(tokens[3]) / 255.0);
             });
             midas.visualize.colorMap = colorMap;
-            paraview.plugins.midasvr.AsyncUpdateColorMap(function() {}, {
+            paraview.plugins.midasvr.AsyncUpdateColorMap(function() {
+                paraview.sendEvent('Render', ''); //force a view refresh
+              }, {
                 colorArrayName: 'MetaImage',
                 colorMap: colorMap
             });
@@ -389,6 +408,7 @@ midas.visualize.applySofCurve = function () {
     paraview.SetDisplayProperties({
         ScalarOpacityFunction: midas.visualize.sof
     });
+    paraview.sendEvent('Render', ''); //force a view refresh
 };
 
 /**
@@ -547,7 +567,7 @@ midas.visualize.setupExtractSubgrid = function () {
 
 midas.visualize.setupOverlay = function () {
     $('button.plusX').click(function () {
-        paraview.plugins.midasvr.AsyncSetCamera(function () {}, {
+        paraview.plugins.midasvr.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
             cameraPosition: [
               midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
               midas.visualize.midJ,
@@ -556,7 +576,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.minusX').click(function () {
-        paraview.plugins.midasvr.AsyncSetCamera(function () {}, {
+        paraview.plugins.midasvr.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
             cameraPosition: [
               midas.visualize.midI + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
               midas.visualize.midJ,
@@ -565,7 +585,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.plusY').click(function () {
-        paraview.plugins.midasvr.AsyncSetCamera(function () {}, {
+        paraview.plugins.midasvr.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
@@ -574,7 +594,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.minusY').click(function () {
-        paraview.plugins.midasvr.AsyncSetCamera(function () {}, {
+        paraview.plugins.midasvr.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
@@ -583,7 +603,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.plusZ').click(function () {
-        paraview.plugins.midasvr.AsyncSetCamera(function () {}, {
+        paraview.plugins.midasvr.AsyncSetCamera(function () {paraview.sendEvent('Render', ''); }, {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ,
@@ -592,7 +612,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.minusZ').click(function () {
-        paraview.plugins.midasvr.AsyncSetCamera(function () {}, {
+        paraview.plugins.midasvr.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ,

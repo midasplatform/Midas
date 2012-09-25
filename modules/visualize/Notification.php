@@ -29,12 +29,6 @@ class Visualize_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
     $this->addCallBack('CALLBACK_VISUALIZE_CAN_VISUALIZE', 'canVisualize');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemViewLink');
-
-    $this->addTask('TASK_VISUALIZE_PROCESSDATA', 'processParaviewData', "Create Screenshots and get Metadata. Parameters: Item, Revision");
-    $this->addEvent('EVENT_CORE_CREATE_THUMBNAIL', 'TASK_VISUALIZE_PROCESSDATA');
-
-    $this->addTask('TASK_CREATE_THREEJS_OBJECT', 'createThreejsObject', "Convert a vtk file to threejs binary file");
-    $this->addEvent('EVENT_CORE_UPLOAD_FILE', 'TASK_CREATE_THREEJS_OBJECT');
     }//end init
 
   /** If this object is able to be slice viewed, we show a link for that */
@@ -54,20 +48,6 @@ class Visualize_Notification extends MIDAS_Notification
 
       return $html;
       }
-    }
-
-  /** createThreejsObject */
-  public function createThreejsObject($params)
-    {
-    $this->ModuleComponent->Main->convertToThreejs($params[1]);
-    return;
-    }
-
-  /** createThumbnail */
-  public function processParaviewData($params)
-    {
-    $this->ModuleComponent->Main->processParaviewData($params[0]);
-    return;
     }
 
   /** can visualize?*/

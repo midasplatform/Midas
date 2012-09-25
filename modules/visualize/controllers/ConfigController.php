@@ -76,7 +76,7 @@ class Visualize_ConfigController extends Visualize_AppController
         $applicationConfig['global']['pvbatch'] = $this->_getParam('pvbatch');
         $applicationConfig['global']['paraviewworkdir'] = $this->_getParam('paraviewworkdir');
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$module.".local.ini", $applicationConfig);
-        echo JsonComponent::encode(array(true, 'Changed saved'));
+        echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
     }
