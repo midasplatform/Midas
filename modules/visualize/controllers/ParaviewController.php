@@ -227,40 +227,39 @@ class Visualize_ParaviewController extends Visualize_AppController
           copy($bitstream->getFullPath(), $otherFile);
           }
         }
-        // Use metadata values for mesh color and orientation if they exist
-        $metadata = $this->ItemRevision->getMetadata($revision);
-        $diffuseColor = array(1.0, 0.0, 0.0); //default to red mesh
-        $orientation = array(0.0, 0.0, 0.0); //default to no orientation transform
-        foreach($metadata as $metadatum)
+      // Use metadata values for mesh color and orientation if they exist
+      $metadata = $this->ItemRevision->getMetadata($revision);
+      $diffuseColor = array(1.0, 0.0, 0.0); //default to red mesh
+      $orientation = array(0.0, 0.0, 0.0); //default to no orientation transform
+      foreach($metadata as $metadatum)
+        {
+        if(strtolower($metadatum->getElement()) == 'visualize')
           {
-          if(strtolower($metadatum->getElement()) == 'visualize')
+          if(strtolower($metadatum->getQualifier()) == 'diffusecolor')
             {
-            if(strtolower($metadatum->getQualifier()) == 'diffusecolor')
+            try //must be json encoded, otherwise we ignore it and use the default
               {
-              try //must be json encoded, otherwise we ignore it and use the default
-                {
-                $diffuseColor = json_decode($metadatum->getValue());
-                }
-              catch(Exception $e)
-                {
-                }
+              $diffuseColor = json_decode($metadatum->getValue());
               }
-            if(strtolower($metadatum->getQualifier()) == 'orientation')
+            catch(Exception $e)
               {
-              try //must be json encoded, otherwise we ignore it and use the default
-                {
-                $orientation = json_decode($metadatum->getValue());
-                }
-              catch(Exception $e)
-                {
-                }
+              }
+            }
+          if(strtolower($metadatum->getQualifier()) == 'orientation')
+            {
+            try //must be json encoded, otherwise we ignore it and use the default
+              {
+              $orientation = json_decode($metadatum->getValue());
+              }
+            catch(Exception $e)
+              {
               }
             }
           }
-
-        $meshObj[] = array('path' => $otherFile, 'item' => $otherItem, 'visible' => true,
-                           'diffuseColor' => $diffuseColor,
-                           'orientation' => $orientation);
+        }
+      $meshObj[] = array('path' => $otherFile, 'item' => $otherItem, 'visible' => true,
+                         'diffuseColor' => $diffuseColor,
+                         'orientation' => $orientation);
       }
 
     $this->view->json['visualize']['url'] = $filePath;

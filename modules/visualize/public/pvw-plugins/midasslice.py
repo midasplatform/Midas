@@ -3,15 +3,18 @@ import pwsimple
 # Midas volume rendering ParaviewWeb plugin
 
 # Initialize the volume rendering state
-def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, sliceVal, parallelScale):
+def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, sliceVal, sliceMode, parallelScale, cameraUp):
   if type(colorArrayName) is unicode:
     colorArrayName = colorArrayName.encode('ascii', 'ignore')
+  
+  if type(sliceMode) is unicode:
+    sliceMode = sliceMode.encode('ascii', 'ignore')
   
   activeView = pwsimple.CreateIfNeededRenderView()
   
   activeView.CameraFocalPoint = cameraFocalPoint
   activeView.CameraPosition = cameraPosition
-  activeView.CameraViewUp = [0.0, 1.0, 0.0]
+  activeView.CameraViewUp = cameraUp
   activeView.CameraParallelProjection = True
   activeView.CameraParallelScale = parallelScale
   activeView.CenterOfRotation = activeView.CameraFocalPoint
@@ -27,7 +30,7 @@ def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, s
   
   dataRep = pwsimple.Show()
   dataRep.Representation = 'Slice'
-  dataRep.SliceMode = 'XY Plane'
+  dataRep.SliceMode = sliceMode
   dataRep.Slice = sliceVal
   dataRep.LookupTable = lookupTable
   dataRep.ColorArrayName = colorArrayName
@@ -40,6 +43,20 @@ def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, s
 # Change the slice value
 def ChangeSlice (slice):
   dataRep = pwsimple.Show()
+  dataRep.Slice = slice
+
+# Change the slice mode (what plane we are slicing in)
+def ChangeSliceMode (slice, sliceMode, parallelScale, cameraPosition, cameraUp):
+  if type(sliceMode) is unicode:
+    sliceMode = sliceMode.encode('ascii', 'ignore')
+  
+  activeView = pwsimple.GetActiveView()
+  activeView.CameraPosition = cameraPosition
+  activeView.CameraViewUp = cameraUp
+  activeView.CameraParallelScale = parallelScale
+  
+  dataRep = pwsimple.Show()
+  dataRep.SliceMode = sliceMode
   dataRep.Slice = slice
 
 # Place a sphere surface into the scene
