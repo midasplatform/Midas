@@ -341,6 +341,17 @@ class Visualize_ParaviewController extends Visualize_AppController
         }
 
       $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
+      switch($ext)
+        {
+        case 'mha':
+          $colorArrayName = 'MetaImage';
+          break;
+        case 'nrrd':
+          $colorArrayName = 'ImageFile';
+          break;
+        default:
+          break;
+        }
       if($ext != 'pvsm')
         {
         $filePath = $paraviewworkdir.'/'.$tmpFolderName.'/'.$bitstream->getName();
@@ -411,6 +422,7 @@ class Visualize_ParaviewController extends Visualize_AppController
     $this->view->json['visualize']['meshes'] = $meshObj;
     $this->view->json['visualize']['item'] = $item;
     $this->view->json['visualize']['visible'] = true;
+    $this->view->json['visualize']['colorArrayName'] = $colorArrayName;
     $this->view->fileLocation = $filePath;
     $this->view->itemDao = $item;
     }

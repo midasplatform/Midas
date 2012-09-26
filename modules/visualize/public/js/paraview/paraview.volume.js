@@ -69,7 +69,7 @@ midas.visualize._dataOpened = function (retVal) {
         colorMap: midas.visualize.defaultColorMap,
         sofPoints: [midas.visualize.minVal, 0.0, 0.5, 0.0,
                     midas.visualize.maxVal, 1.0, 0.5, 0.0],
-        colorArrayName: 'MetaImage'
+        colorArrayName: json.visualize.colorArrayName
     };
     $('#loadingStatus').html('Initializing view state and renderer...');
     paraview.plugins.midasvr.AsyncInitViewState(midas.visualize.initCallback, params);
@@ -141,7 +141,7 @@ midas.visualize.renderSubgrid = function (bounds) {
         paraview.sendEvent('Render', ''); //force a view refresh
         },
       midas.visualize.input, bounds, midas.visualize.lookupTable,
-      midas.visualize.sof, 'MetaImage', toHide
+      midas.visualize.sof, json.visualize.colorArrayName, toHide
     );
 };
 
@@ -316,7 +316,7 @@ midas.visualize.setupColorMapping = function () {
             paraview.plugins.midascommon.AsyncUpdateColorMap(function() {
                 paraview.sendEvent('Render', ''); //force a view refresh
               }, {
-                colorArrayName: 'MetaImage',
+                colorArrayName: json.visualize.colorArrayName,
                 colorMap: colorMap
             });
         });

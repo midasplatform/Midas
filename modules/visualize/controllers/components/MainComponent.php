@@ -112,7 +112,7 @@ class Visualize_MainComponent extends AppComponent
         return false;
         }
       }
-    $extensions = array('mha');
+    $extensions = array('mha', 'nrrd');
 
     $itemModel = MidasLoader::loadModel('Item');
     $revision = $itemModel->getLastRevision($itemDao);
