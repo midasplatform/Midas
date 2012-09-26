@@ -14,13 +14,15 @@ def OpenData (filename, otherMeshes):
   # Load other meshes into scene
   meshes = []
   for mesh in otherMeshes:
+    diffuseColor = [float(mesh['diffuseColor'][0]), float(mesh['diffuseColor'][1]), float(mesh['diffuseColor'][2])]
+    orientation = [float(mesh['orientation'][0]), float(mesh['orientation'][1]), float(mesh['orientation'][2])]
     source = pwsimple.OpenDataFile(mesh['path'])
     pwsimple.SetActiveSource(source)
     properties = pwsimple.Show()
     properties.Representation = 'Surface'
-    properties.DiffuseColor = [float(mesh['diffuseColor'][0]), float(mesh['diffuseColor'][1]), float(mesh['diffuseColor'][2])]
-    properties.Orientation = [float(mesh['orientation'][0]), float(mesh['orientation'][1]), float(mesh['orientation'][2])]
-    meshes.append({'source' : source, 'item': mesh['item'], 'visible': True})
+    properties.DiffuseColor = diffuseColor
+    properties.Orientation = orientation
+    meshes.append({'source': source, 'item': mesh['item'], 'visible': True, 'diffuseColor': diffuseColor, 'orientation': orientation})
   
   pwsimple.SetActiveSource(srcObj)
   
