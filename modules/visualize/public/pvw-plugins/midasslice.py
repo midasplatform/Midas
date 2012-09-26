@@ -4,7 +4,7 @@ import math
 # Midas volume rendering ParaviewWeb plugin
 
 # Initialize the volume rendering state
-def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, sliceVal, sliceMode, parallelScale, cameraUp):
+def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, sliceVal, sliceMode, parallelScale, cameraUp, meshes, lineWidth):
   if type(colorArrayName) is unicode:
     colorArrayName = colorArrayName.encode('ascii', 'ignore')
   
@@ -36,9 +36,31 @@ def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, s
   dataRep.LookupTable = lookupTable
   dataRep.ColorArrayName = colorArrayName
   
+  volume = pwsimple.GetActiveSource()
+  meshSlices = []
+  for mesh in meshes:
+    pwsimple.SetActiveSource(mesh['source'])
+    pwsimple.Hide()
+    meshSlice = pwsimple.Slice(SliceType='Plane')
+    
+    meshSlice.SliceOffsetValues = [0.0]
+    meshSlice.SliceType = 'Plane'
+    meshSlice.SliceType.Origin = [0.0, 0.0, math.cos(math.radians(mesh['orientation'][2]))*sliceVal]
+    meshSlice.SliceType.Normal = [0.0, 0.0, 1.0]
+    meshDataRep = pwsimple.Show()
+    meshDataRep.Representation = 'Points'
+    meshDataRep.LineWidth = lineWidth
+    meshDataRep.PointSize = lineWidth
+    meshDataRep.AmbientColor = mesh['diffuseColor']
+    meshDataRep.Orientation = mesh['orientation']
+    meshSlices.append(meshSlice)
+  
+  pwsimple.SetActiveSource(volume)
+  
   retVal = {}
   retVal['lookupTable'] = lookupTable
   retVal['activeView'] = activeView
+  retVal['meshSlices'] = meshSlices
   return retVal
 
 # Change the slice value and run slice filter on meshes

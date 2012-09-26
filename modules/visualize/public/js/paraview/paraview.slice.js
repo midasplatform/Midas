@@ -74,7 +74,9 @@ midas.visualize._dataOpened = function (retVal) {
         sliceMode: midas.visualize.sliceMode,
         parallelScale: Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
                                 midas.visualize.bounds[3] - midas.visualize.bounds[2]) / 2.0,
-        cameraUp: [0.0, -1.0, 0.0]
+        cameraUp: [0.0, -1.0, 0.0],
+        meshes: midas.visualize.meshes,
+        lineWidth: midas.visualize.maxDim / 100.0
     };
     $('#loadingStatus').html('Initializing view state and renderer...');
     paraview.plugins.midasslice.AsyncInitViewState(midas.visualize.initCallback, params);
@@ -83,6 +85,7 @@ midas.visualize._dataOpened = function (retVal) {
 midas.visualize.initCallback = function (retVal) {
     midas.visualize.lookupTable = retVal.lookupTable;
     midas.visualize.activeView = retVal.activeView;
+    midas.visualize.meshSlices = retVal.meshSlices;
 
     midas.visualize.switchRenderer(true); // render in the div
     $('img.visuLoading').hide();
