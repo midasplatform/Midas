@@ -4,6 +4,7 @@ midas.visualize = midas.visualize || {};
 
 midas.visualize.renderers = {};
 midas.visualize.meshes = [];
+midas.visualize.meshSlices = [];
 
 midas.visualize.start = function () {
     // Create a paraview proxy
@@ -39,6 +40,7 @@ midas.visualize._dataOpened = function (retVal) {
     midas.visualize.input = retVal.input;
     midas.visualize.bounds = retVal.imageData.Bounds;
     midas.visualize.meshes = retVal.meshes;
+
     midas.visualize.maxDim = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
                                       midas.visualize.bounds[3] - midas.visualize.bounds[2],
                                       midas.visualize.bounds[5] - midas.visualize.bounds[4]);
@@ -159,16 +161,27 @@ midas.visualize.changeWindow = function (values) {
     midas.visualize.imageWindow = values;
 };
 
+/** Change the slice and run appropriate slice filter on any meshes in the scene */
 midas.visualize.changeSlice = function (slice) {
     slice = parseInt(slice);
     midas.visualize.currentSlice = slice;
+    
+    var params = {
+        slice: slice,
+        sliceMode: midas.visualize.sliceMode,
+        meshes: midas.visualize.meshes,
+        toDelete: midas.visualize.meshSlices,
+        lineWidth: midas.visualize.maxDim / 100.0
+    };
 
-    paraview.plugins.midasslice.AsyncChangeSlice(function() {
+    paraview.plugins.midasslice.AsyncChangeSlice(function(retVal) {
+        midas.visualize.meshSlices = retVal.meshSlices;
+
         if(typeof midas.visualize.changeSliceCallback == 'function') {
             midas.visualize.changeSliceCallback(slice);
         }
         paraview.sendEvent('Render', ''); //force a view refresh
-    }, slice);
+    }, params);
 };
 
 /**
@@ -410,11 +423,15 @@ midas.visualize.setSliceMode = function (sliceMode) {
     var params = {
         slice: slice,
         sliceMode: sliceMode,
+        meshes: midas.visualize.meshes,
+        toDelete: midas.visualize.meshSlices,
+        lineWidth: midas.visualize.maxDim / 100.0,
         parallelScale: parallelScale,
         cameraPosition: cameraPosition,
         cameraUp: cameraUp
     };
     paraview.plugins.midasslice.AsyncChangeSliceMode(function (retVal) {
+        midas.visualize.meshSlices = retVal.meshSlices;
         paraview.sendEvent('Render', ''); //force a view refresh
     }, params);
 };
