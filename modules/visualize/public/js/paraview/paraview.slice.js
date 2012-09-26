@@ -450,10 +450,6 @@ $(window).load(function () {
             event.preventDefault();
         }
     });
-
-    if(typeof midas.visualize.postInitCallback == 'function') {
-        midas.visualize.postInitCallback();
-    }
 });
 
 $(window).unload(function () {
