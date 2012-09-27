@@ -69,7 +69,7 @@ midas.visualize._dataOpened = function (retVal) {
         cameraFocalPoint: [midas.visualize.midI, midas.visualize.midJ, midas.visualize.midK],
         cameraPosition: [midas.visualize.midI, midas.visualize.midJ, midas.visualize.bounds[4] - 10],
         colorMap: midas.visualize.defaultColorMap,
-        colorArrayName: 'MetaImage',
+        colorArrayName: json.visualize.colorArrayName,
         sliceVal: midas.visualize.currentSlice,
         sliceMode: midas.visualize.sliceMode,
         parallelScale: Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
@@ -95,6 +95,7 @@ midas.visualize.initCallback = function (retVal) {
     midas.visualize.setupSliders();
     midas.visualize.updateSliceInfo(midas.visualize.midK);
     midas.visualize.updateWindowInfo([midas.visualize.minVal, midas.visualize.maxVal]);
+    midas.visualize.populateInfo();
     midas.visualize.disableMouseInteraction();
 
     if(typeof midas.visualize.postInitCallback == 'function') {
@@ -148,6 +149,16 @@ midas.visualize.disableMouseInteraction = function () {
 };
 
 /**
+ * Display information about the volume
+ */
+midas.visualize.populateInfo = function () {
+    $('#boundsXInfo').html(midas.visualize.bounds[0]+' .. '+midas.visualize.bounds[1]);
+    $('#boundsYInfo').html(midas.visualize.bounds[2]+' .. '+midas.visualize.bounds[3]);
+    $('#boundsZInfo').html(midas.visualize.bounds[4]+' .. '+midas.visualize.bounds[5]);
+    $('#scalarRangeInfo').html(midas.visualize.minVal+' .. '+midas.visualize.maxVal);
+};
+
+/**
  * Update the client GUI values for window and level, without
  * actually changing them in PVWeb
  */
@@ -160,7 +171,7 @@ midas.visualize.changeWindow = function (values) {
     paraview.plugins.midasslice.AsyncChangeWindow(function (retVal) {
         midas.visualize.lookupTable = retVal.lookupTable;
         paraview.sendEvent('Render', ''); //force a view refresh
-    }, [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0], 'MetaImage');
+    }, [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0], json.visualize.colorArrayName);
     midas.visualize.imageWindow = values;
 };
 
