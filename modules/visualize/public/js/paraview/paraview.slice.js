@@ -181,16 +181,15 @@ midas.visualize.changeSlice = function (slice) {
     midas.visualize.currentSlice = slice;
     
     var params = {
+        volume: midas.visualize.input,
         slice: slice,
         sliceMode: midas.visualize.sliceMode,
         meshes: midas.visualize.meshes,
-        toDelete: midas.visualize.meshSlices,
         lineWidth: midas.visualize.maxDim / 100.0
     };
 
     paraview.plugins.midasslice.AsyncChangeSlice(function(retVal) {
         midas.visualize.meshSlices = retVal.meshSlices;
-
         if(typeof midas.visualize.changeSliceCallback == 'function') {
             midas.visualize.changeSliceCallback(slice);
         }
@@ -435,10 +434,10 @@ midas.visualize.setSliceMode = function (sliceMode) {
     });
     
     var params = {
+        volume: midas.visualize.input,
         slice: slice,
         sliceMode: sliceMode,
         meshes: midas.visualize.meshes,
-        toDelete: midas.visualize.meshSlices,
         lineWidth: midas.visualize.maxDim / 100.0,
         parallelScale: parallelScale,
         cameraPosition: cameraPosition,

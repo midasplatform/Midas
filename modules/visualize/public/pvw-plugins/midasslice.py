@@ -47,7 +47,7 @@ def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, s
     meshSlice.SliceType = 'Plane'
     meshSlice.SliceType.Origin = [0.0, 0.0, math.cos(math.radians(mesh['orientation'][2]))*sliceVal]
     meshSlice.SliceType.Normal = [0.0, 0.0, 1.0]
-    meshDataRep = pwsimple.Show()
+    meshDataRep = pwsimple.Show(meshSlice)
     meshDataRep.Representation = 'Points'
     meshDataRep.LineWidth = lineWidth
     meshDataRep.PointSize = lineWidth
@@ -64,17 +64,18 @@ def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, s
   return retVal
 
 # Change the slice value and run slice filter on meshes
-def ChangeSlice (slice, sliceMode, meshes, toDelete, lineWidth):
+def ChangeSlice (volume, slice, sliceMode, meshes, lineWidth):
   if type(sliceMode) is unicode:
     sliceMode = sliceMode.encode('ascii', 'ignore')
   
-  dataRep = pwsimple.GetDisplayProperties()
+  dataRep = pwsimple.GetDisplayProperties(volume)
   dataRep.Slice = slice
   
-  volume = pwsimple.GetActiveSource()
-  
-  for obj in toDelete:
-    pwsimple.Delete(obj)
+  # Delete any previous slice objects in the scene
+  sources = pwsimple.GetSources()
+  for key, srcId in sources:
+    if key[:5] == 'Slice':
+      pwsimple.Delete(sources[(key, srcId)])
   
   meshSlices = []
   for mesh in meshes:
@@ -87,16 +88,17 @@ def ChangeSlice (slice, sliceMode, meshes, toDelete, lineWidth):
     else:
       origin = [math.cos(math.radians(mesh['orientation'][0]))*slice, 0.0, 0.0]
       normal = [1.0, 0.0, 0.0]
-
-    pwsimple.SetActiveSource(mesh['source'])
-    pwsimple.Hide()
-    meshSlice = pwsimple.Slice(SliceType='Plane')
+    
+    pwsimple.Hide(mesh['source'])
+    meshSlice = pwsimple.Slice(Input = mesh['source'], SliceType='Plane')
+    pwsimple.SetActiveSource(volume)
     
     meshSlice.SliceOffsetValues = [0.0]
     meshSlice.SliceType = 'Plane'
     meshSlice.SliceType.Origin = origin
     meshSlice.SliceType.Normal = normal
-    meshDataRep = pwsimple.Show()
+    meshDataRep = pwsimple.Show(meshSlice)
+    
     meshDataRep.Representation = 'Points'
     meshDataRep.LineWidth = lineWidth
     meshDataRep.PointSize = lineWidth
@@ -111,7 +113,7 @@ def ChangeSlice (slice, sliceMode, meshes, toDelete, lineWidth):
   return retVal
 
 # Change the slice mode (what plane we are slicing in)
-def ChangeSliceMode (slice, sliceMode, meshes, toDelete, lineWidth, parallelScale, cameraPosition, cameraUp):
+def ChangeSliceMode (volume, slice, sliceMode, meshes, lineWidth, parallelScale, cameraPosition, cameraUp):
   if type(sliceMode) is unicode:
     sliceMode = sliceMode.encode('ascii', 'ignore')
   
@@ -120,9 +122,9 @@ def ChangeSliceMode (slice, sliceMode, meshes, toDelete, lineWidth, parallelScal
   activeView.CameraViewUp = cameraUp
   activeView.CameraParallelScale = parallelScale
   
-  dataRep = pwsimple.GetDisplayProperties()
+  dataRep = pwsimple.GetDisplayProperties(volume)
   dataRep.SliceMode = sliceMode
-  return ChangeSlice(slice, sliceMode, meshes, toDelete, lineWidth)
+  return ChangeSlice(volume, slice, sliceMode, meshes, lineWidth)
 
 # Place a sphere surface into the scene
 def ShowSphere (point, color, radius, objectToDelete, input):
