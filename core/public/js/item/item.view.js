@@ -108,16 +108,14 @@ $(document).ready(function() {
         });
     });
 
-
-
-    $('a.shareItemLink').click(function() {
-        midas.loadDialog("shareItem","/browse/movecopy/?share=true&items="+json.item.item_id);
-        midas.showDialog(json.item.message.share);
-    });
-
     $('a.duplicateItemLink').click(function() {
         midas.loadDialog("duplicateItem","/browse/movecopy/?duplicate=true&items="+json.item.item_id);
-        midas.showDialog(json.item.message.duplicate);
+        midas.showDialog('Copy item');
+    });
+
+    $('a.linkItemLink').click(function() {
+        midas.loadDialog("linkToItem","/share/links?type=item&id="+json.item.item_id);
+        midas.showDialog('Link to this item');
     });
 
     $('tr.bitstreamRow img.bitstreamInfoIcon').qtip({

@@ -7,7 +7,7 @@ midas.ajaxSelectRequest= '';
  * Callback when a row is selected
  * Pass null if there is no selected row.
  */
-midas.genericCallbackSelect = function(node) {
+midas.genericCallbackSelect = function (node) {
     if(!node || !node.attr('type')) {
         $('div.ajaxInfoElement').html('');
         $('div.viewAction ul').html('');
@@ -19,16 +19,15 @@ midas.genericCallbackSelect = function(node) {
         midas.ajaxSelectRequest.abort();
     }
     midas.createAction(node);
-    midas.ajaxSelectRequest = $.ajax(
-        {
-            type: "POST",
-            url: json.global.webroot+'/browse/getelementinfo',
-            data: {type: node.attr('type'), id: node.attr('element')},
-            success: function(jsonContent) {
-                midas.createInfo(jsonContent);
-                $('img.infoLoading').hide();
-            }
-        });
+    midas.ajaxSelectRequest = $.ajax({
+        type: "POST",
+        url: json.global.webroot+'/browse/getelementinfo',
+        data: {type: node.attr('type'), id: node.attr('element')},
+        success: function (jsonContent) {
+            midas.createInfo(jsonContent);
+            $('img.infoLoading').hide();
+        }
+    });
 };
 
 midas.genericCallbackCheckboxes = function(node) {
@@ -75,10 +74,6 @@ midas.genericCallbackCheckboxes = function(node) {
             links +=   '<a onclick="midas.moveSelected(\''+folders+'\',\''+items+'\')" element="'+items+'">Move all selected</a>';
             links += '</li>';
             if(arraySelected['items'].length > 0) {
-                links += '<li style="background-color: white;">';
-                links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/item-share.png"/> ';
-                links += '  <a onclick="midas.shareSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.shareSelected + '</a></li>';
-                links += '</li>';
                 links += '<li style="background-color: white;">';
                 links += '  <img alt="" src="'+json.global.coreWebroot+'/public/images/icons/copy.png"/> ';
                 links += '  <a onclick="midas.duplicateSelected(\''+ folders + '\',\'' + items + '\')">' + json.browse.duplicateSelected + '</a></li>';
@@ -325,24 +320,6 @@ midas.deleteSelected = function (folders, items) {
     });
 };
 
-/**
- * Shares the set of items selected with the checkboxes.
- * This action does not support folder type, selected folder will be ignored.
- * The items param should be strings of ids separated by - (empty
- * ids will be ignored)
- */
-midas.shareSelected = function (folders, items) {
-    midas.loadDialog("ShareItem", "/browse/movecopy/?share=true&items="+items);
-    if(folders == '')
-      {
-      midas.showDialog(json.browse.shareSelected);
-      }
-    else
-      {
-      midas.showDialog(json.browse.shareSelected + ' ' + json.browse.ignoreSelectedFolders);
-      }
-};
-
 
 /**
  * Duplicates the set of items selected with the checkboxes.
@@ -352,12 +329,19 @@ midas.shareSelected = function (folders, items) {
  */
 midas.duplicateSelected = function (folders, items) {
     midas.loadDialog("duplicateItem", "/browse/movecopy/?duplicate=true&items="+items);
-    if(folders == '') {
-        midas.showDialog(json.browse.duplicateSelected);
+    var title = 'Copy selected items';
+    if(folders != '') {
+        title += ' ' + json.browse.ignoreSelectedFolders;
     }
-    else {
-        midas.showDialog(json.browse.duplicateSelected + ' ' + json.browse.ignoreSelectedFolders);
-    }
+    midas.showDialog(title);
+};
+
+/**
+ * Copy or symlink a single item
+ */
+midas.duplicateItem = function (item) {
+    midas.loadDialog("duplicateItem", "/browse/movecopy/?duplicate=true&items="+item);
+    midas.showDialog('Copy item');
 };
 
 /**
@@ -423,8 +407,9 @@ midas.createAction = function (node) {
     var type = node.attr('type');
     var element = node.attr('element');
     var policy = node.attr('policy');
+    var header = '<h1>Selected '+type+'</h1>';
     $('div.viewAction ul').fadeOut('fast', function() {
-        $('div.viewAction ul').html('');
+        $('div.viewAction ul').html(header);
         var html = '';
         if(type=='community') {
             html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/community/'+element+'">'+json.browse.view+'</a></li>';
@@ -432,6 +417,7 @@ midas.createAction = function (node) {
         if(type=='folder') {
             html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/folder/'+element+'">'+json.browse.view+'</a></li>';
             html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?folders='+element+'">'+json.browse.download+'</a></li>';
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/link.png"/> <a type="folder" element="'+element+'" href="javascript:;" class="getResourceLinks">Share</a></li>';
             if(policy>=1) {
                 html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/folder_add.png"/> <a onclick="midas.createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
                 html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/upload.png"/> <a rel="'+json.global.webroot+'/upload/simpleupload/?parent='+element+'" class="uploadInFolder">'+json.browse.uploadIn+'</a></li>';
@@ -456,14 +442,16 @@ midas.createAction = function (node) {
                 var fromFolder = json.folder.folder_id;
             }
             html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
-            html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.downloadLatest+'</a></li>';
+            html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?items='+element+'">'+json.browse.download+'</a></li>';
+            html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/copy.png"/> <a onclick="midas.duplicateItem(\''+element+'\');">Copy</a></li>';
+            html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/link.png"/> <a type="item" element="'+element+'" href="javascript:;" class="getResourceLinks">Share</a></li>';
             if (policy>=2) {
                 html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a  type="item" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
                 html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/move.png"/> <a onclick="midas.moveItem(\''+ element + '\',\'' + fromFolder + '\');">'+json.browse.move+'</a></li>';
                 html+='<li class="removeItemLi"><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="midas.removeItem('+element+');">'+json.browse['removeItem']+'</a></li>';
             }
         }
-        $('div.viewAction ul').html(html);
+        $('div.viewAction ul').append(html);
 
         midas.doCallback('CALLBACK_CORE_RESOURCE_HIGHLIGHTED', {
             type: type,
@@ -488,6 +476,10 @@ midas.createAction = function (node) {
         $('a.sharingLink').click(function () {
             midas.loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
             midas.showDialog(json.browse.share);
+        });
+        $('a.getResourceLinks').click(function () {
+            midas.loadDialog("links"+$(this).attr('type')+$(this).attr('element'),'/share/links?type='+$(this).attr('type')+'&id='+$(this).attr('element'));
+            midas.showDialog('Link to this item');
         });
         $('div.viewAction ul').fadeIn('fast');
     });

@@ -1,0 +1,30 @@
+#resourceViewDisplay,#resourceDownloadDisplay {
+
+  width: 360px;
+  height: 16px;
+}
+
+.viewLinkContainer,.downloadLinkContainer {
+  margin-bottom: 20px;
+}
+
+#selectViewUrl,#selectDownloadUrl {
+  width: 22px;
+  height: 22px;
+  background-repeat: no-repeat;
+  background-image: url(../../images/icons/paste_plain.png);
+  background-position: 2px 2px;
+  border: 1px solid #777777;
+  position: relative;
+  top: -2px;
+}
+
+#selectViewUrl:hover,#selectDownloadUrl:hover {
+  background-color: #aaddaa;
+  cursor: pointer;
+}
+
+.dialogQtip {
+  z-index: 15200 !important;
+}
+

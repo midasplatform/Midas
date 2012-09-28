@@ -251,17 +251,18 @@ foreach($cssArray as $module => $list)
     {?>
   <div class="sideElementFirst viewAction">
 
-    <h1>Actions</h1>
+    <h1>Item Actions</h1>
     <ul>
       <?php
+      echo 
+        "<li>
+          <a href='javascript:;' class='linkItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/link.png'/> Share</a>
+        </li>";
       if($this->isModerator)
         {
         echo
        "<li>
-          <a href='javascript:;' class='shareItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/item-share.png'/> {$this->t('Share')}</a>
-        </li>
-        <li>
-          <a href='javascript:;' class='duplicateItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/copy.png'/> {$this->t('Duplicate')}</a>
+          <a href='javascript:;' class='duplicateItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/copy.png'/> {$this->t('Copy')}</a>
         </li>
         <li>
           <a href='javascript:;' class='editItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/> {$this->t('Edit')}</a>
