@@ -24,7 +24,7 @@ midas.browse.moveCopyCallbackSelect = function (node) {
 
     $('#selectedDestinationHidden').val(node.attr('element'));
     $('#selectedDestination').html(sliceFileName(selectedElement, 40));
-    if(node.attr('valid') == 'false') {
+    if(node.attr('valid') == 'false' || parseInt(node.attr('policy')) < 1) {
         $('#selectElement').attr('disabled', 'disabled');
         $('#shareElement').attr('disabled', 'disabled');
         $('#duplicateElement').attr('disabled', 'disabled');
@@ -54,14 +54,12 @@ midas.browse.moveCopyCallbackCustomElements = function (node,elements,first) {
     var padding=parseInt(node.find('td:first').css('padding-left').slice(0,-2));
     var html='';
     $.each(elements['folders'],
-           function(index, value) {
-               if(value['policy']!='0') {
-                   html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
-                   html+=     "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";
-                   html+=     "</tr>";
-                   i++;
-               }
-           });
+        function(index, value) {
+            html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
+            html+= "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";
+            html+= "</tr>";
+            i++;
+        });
     return html;
 };
 
