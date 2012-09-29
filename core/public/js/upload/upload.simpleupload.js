@@ -224,6 +224,6 @@ $('#startUploadLink').qtip({
 
 $('.browseMIDASLink').click(function () {
     midas.loadDialog("select", "/browse/selectfolder/?policy=write");
-    midas.showDialog('Browse');
+    midas.showDialog('Select upload destination');
 });
 midas.doCallback('CALLBACK_CORE_SIMPLEUPLOAD_LOADED');
