@@ -109,11 +109,13 @@ midas.visualize.initCallback = function (side, retVal) {
     $('img.'+side+'Loading').hide();
     $('#'+side+'LoadingStatus').html('').hide();
     $('#'+side+'Renderer').show();
-
-    //midas.visualize.setupSliders();
-    //midas.visualize.updateSliceInfo(midas.visualize[side].midK);
-    //midas.visualize.updateWindowInfo([midas.visualize[side].minVal, midas.visualize[side].maxVal]);
     midas.visualize.disableMouseInteraction(side);
+
+    if(side == 'left') { //sliders will be based on left image
+        midas.visualize.setupSliders();
+        midas.visualize.updateSliceInfo(midas.visualize.left.midK);
+        midas.visualize.updateWindowInfo([midas.visualize.left.minVal, midas.visualize.left.maxVal]);
+    }
 
     if(typeof midas.visualize.postInitCallback == 'function') {
         midas.visualize.postInitCallback(side);
@@ -127,9 +129,9 @@ midas.visualize.initCallback = function (side, retVal) {
  */
 midas.visualize.setupSliders = function () {
     $('#sliceSlider').slider({
-        min: midas.visualize.bounds[4],
-        max: midas.visualize.bounds[5],
-        value: midas.visualize.midK,
+        min: midas.visualize.left.bounds[4],
+        max: midas.visualize.left.bounds[5],
+        value: midas.visualize.left.midK,
         change: function(event, ui) {
             midas.visualize.changeSlice(ui.value);
         },
@@ -137,11 +139,11 @@ midas.visualize.setupSliders = function () {
             midas.visualize.updateSliceInfo(ui.value);
         }
     });
-    $('#windowLevelSlider').slider({
+    $('#windowSlider').slider({
         range: true,
-        min: midas.visualize.minVal,
-        max: midas.visualize.maxVal,
-        values: [midas.visualize.minVal, midas.visualize.maxVal],
+        min: midas.visualize.left.minVal,
+        max: midas.visualize.left.maxVal,
+        values: [midas.visualize.left.minVal, midas.visualize.left.maxVal],
         change: function(event, ui) {
             midas.visualize.changeWindow(ui.values);
         },
@@ -170,16 +172,21 @@ midas.visualize.disableMouseInteraction = function (side) {
  * actually changing them in PVWeb
  */
 midas.visualize.updateWindowInfo = function (values) {
-    $('#windowLevelInfo').html('Window: '+values[0]+' - '+values[1]);
+    $('#windowInfo').html('Window: '+values[0]+' - '+values[1]);
 };
 
 /** Make the actual request to PVWeb to set the window */
 midas.visualize.changeWindow = function (values) {
-    paraview.plugins.midasslice.AsyncChangeWindow(function (retVal) {
-        midas.visualize.lookupTable = retVal.lookupTable;
-        paraview.sendEvent('Render', ''); //force a view refresh
-    }, [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0], json.visualize.colorArrayName);
-    midas.visualize.imageWindow = values;
+    paraview.left.plugins.midasdual.AsyncChangeWindow(function (retVal) {
+        midas.visualize.left.lookupTable = retVal.lookupTable;
+        paraview.left.sendEvent('Render', ''); //force a view refresh
+    }, [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0], json.visualize.colorArrayNames.left);
+    paraview.right.plugins.midasdual.AsyncChangeWindow(function (retVal) {
+        midas.visualize.right.lookupTable = retVal.lookupTable;
+        paraview.right.sendEvent('Render', ''); //force a view refresh
+    }, [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0], json.visualize.colorArrayNames.right);
+    midas.visualize.left.imageWindow = values;
+    midas.visualize.right.imageWindow = values;
 };
 
 /** Change the slice and run appropriate slice filter on any meshes in the scene */
@@ -188,20 +195,30 @@ midas.visualize.changeSlice = function (slice) {
     midas.visualize.currentSlice = slice;
     
     var params = {
-        volume: midas.visualize.input,
-        slice: slice,
-        sliceMode: midas.visualize.sliceMode,
-        meshes: midas.visualize.meshes,
-        lineWidth: midas.visualize.maxDim / 100.0
+        left: {
+            volume: midas.visualize.left.input,
+            slice: slice,
+            sliceMode: midas.visualize.sliceMode
+        },
+        right: {
+            volume: midas.visualize.right.input,
+            slice: slice,
+            sliceMode: midas.visualize.sliceMode
+        }
     };
 
-    paraview.plugins.midasslice.AsyncChangeSlice(function(retVal) {
-        midas.visualize.meshSlices = retVal.meshSlices;
+    paraview.left.plugins.midasdual.AsyncChangeSlice(function(retVal) {
         if(typeof midas.visualize.changeSliceCallback == 'function') {
-            midas.visualize.changeSliceCallback(slice);
+            midas.visualize.changeSliceCallback(slice, 'left');
         }
-        paraview.sendEvent('Render', ''); //force a view refresh
-    }, params);
+        paraview.left.sendEvent('Render', ''); //force a view refresh
+    }, params.left);
+    paraview.right.plugins.midasdual.AsyncChangeSlice(function(retVal) {
+        if(typeof midas.visualize.changeSliceCallback == 'function') {
+            midas.visualize.changeSliceCallback(slice, 'right');
+        }
+        paraview.right.sendEvent('Render', ''); //force a view refresh
+    }, params.right);
 };
 
 /**
@@ -210,13 +227,13 @@ midas.visualize.changeSlice = function (slice) {
 midas.visualize.updateSliceInfo = function (slice) {
     var max;
     if(midas.visualize.sliceMode == 'XY Plane') {
-        max = midas.visualize.bounds[5];
+        max = midas.visualize.left.bounds[5];
     }
     else if(midas.visualize.sliceMode == 'XZ Plane') {
-        max = midas.visualize.bounds[3];
+        max = midas.visualize.left.bounds[3];
     }
     else { // YZ Plane
-        max = midas.visualize.bounds[1];
+        max = midas.visualize.left.bounds[1];
     }
     $('#sliceInfo').html('Slice: ' + slice + ' of '+ max);
 };
@@ -366,22 +383,6 @@ midas.visualize.enableActions = function (operations) {
             alert('Unsupported operation: '+operation);
         }
     });
-};
-
-/**
- * Toggle the visibility of any controls overlaid on top of the render container
- */
-midas.visualize.toggleControlVisibility = function () {
-    if($('#sliceControlContainer').is(':visible')) {
-        $('#sliceControlContainer').hide();
-        $('#windowLevelControlContainer').hide();
-        $('#rendererOverlay').hide();
-    }
-    else {
-        $('#sliceControlContainer').show();
-        $('#windowLevelControlContainer').show();
-        $('#rendererOverlay').show();
-    }
 };
 
 /**

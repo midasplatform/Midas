@@ -1,17 +1,4 @@
-
-#sliceSlider, #windowLevelSlider {
-  margin: 8px 14px 8px 10px;
-  width: 551px;
-}
-
-#sliceInfo, #windowLevelInfo {
-  margin-left: 10px;
-  color: white;
-  z-index: 3;
-}
-
 div.rendererWrapper {
-  width: 820px;
   position: relative;
 }
 
@@ -45,16 +32,28 @@ img.leftLoading, img.rightLoading {
   z-index: 5;
 }
 
-#sliceControlContainer {
-  position: absolute;
-  top: 5px;
-  z-index: 5;
+div.slidersContainer {
+  position: relative;
+  top: 426px;
 }
 
-#windowLevelControlContainer {
+div.sliceControlContainer {
   position: absolute;
-  bottom: 5px;
-  z-index: 5;
+  width: 424px;
+}
+
+div.windowControlContainer {
+  position: absolute;
+  width: 424px;
+  left: 425px;
+}
+
+#windowSlider, #sliceSlider {
+  margin: 8px 14px 8px 15px;
+}
+
+#windowInfo, #sliceInfo {
+  margin-left: 15px;
 }
 
 button.actionButton {
