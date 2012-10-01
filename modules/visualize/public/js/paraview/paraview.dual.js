@@ -2,8 +2,8 @@ var paraview;
 var midas = midas || {};
 midas.visualize = midas.visualize || {};
 
-midas.visualize.left = {};
-midas.visualize.right = {};
+midas.visualize.left = {points: []};
+midas.visualize.right = {points: []};
 
 midas.visualize.start = function () {
     // Create a paraview proxy
@@ -53,6 +53,7 @@ midas.visualize.start = function () {
         filename: json.visualize.urls.right,
         otherMeshes: []
     });
+    midas.visualize.pointColors = midas.visualize._generateColorList(8);
 };
 
 midas.visualize._dataOpened = function (side, retVal) {
@@ -116,6 +117,8 @@ midas.visualize.initCallback = function (side, retVal) {
         midas.visualize.updateSliceInfo(midas.visualize.left.midK);
         midas.visualize.updateWindowInfo([midas.visualize.left.minVal, midas.visualize.left.maxVal]);
     }
+
+    midas.visualize.enableActions(side, json.visualize.operations.split(';'));
 
     if(typeof midas.visualize.postInitCallback == 'function') {
         midas.visualize.postInitCallback(side);
@@ -254,89 +257,118 @@ midas.visualize.switchRenderer = function (side) {
 };
 
 /**
+ * Generate a list of fully saturated colors.
+ * List will contain <size> color values that are RGB lists with each channel in [0, 1].
+ */
+midas.visualize._generateColorList = function (size) {
+   var list = [];
+   for(var i = 0; i < size; i++) {
+      var hue = i*(1.0 / size);
+      if(hue > 1.0) hue = 1.0;
+      list.push(midas.visualize._hsvToRgb(hue, 1.0, 1.0));
+   }
+   return list;
+};
+
+/**
+ * Helper function for converting HSV to RGB color space
+ * HSV input values should be in [0, 1]
+ * RGB output values will be in [0, 1]
+ */
+midas.visualize._hsvToRgb = function (h, s, v) {
+    var r, g, b;
+
+    var i = Math.floor(h * 6);
+    var f = h * 6 - i;
+    var p = v * (1 - s);
+    var q = v * (1 - f * s);
+    var t = v * (1 - (1 - f) * s);
+
+    switch(i % 6) {
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
+    }
+
+    return [r, g, b];
+};
+
+/**
  * Set the mode to point selection within the image.
  */
-midas.visualize.pointSelectMode = function () {
-    midas.createNotice('Click on the image to select a point', 3500);
+midas.visualize.pointMapMode = function () {
+    midas.createNotice('Click on the images to select points', 3500);
 
     // Bind click action on the render window
-    var el = $(midas.visualize.renderers.current.view);
-    var bounds = midas.visualize.bounds; //alias the variable for shorthand
-    el.unbind('click').click(function (e) {
-        var x, y, z;
-        if(midas.visualize.sliceMode == 'XY Plane') {
-            var longLength = Math.max(bounds[1] - bounds[0], bounds[3] - bounds[2]);
-            var arWidth = (bounds[1] - bounds[0]) / longLength;
-            var arHeight = (bounds[3] - bounds[2]) / longLength;
+    $.each(['left', 'right'], function(i, side) {
+        var el = $(midas.visualize[side].renderer.view);
+        var bounds = midas.visualize[side].bounds; //alias the variable for shorthand
+        el.unbind('click').click(function (e) {
+            var x, y, z;
+            if(midas.visualize.sliceMode == 'XY Plane') {
+                var longLength = Math.max(bounds[1] - bounds[0], bounds[3] - bounds[2]);
+                var arWidth = (bounds[1] - bounds[0]) / longLength;
+                var arHeight = (bounds[3] - bounds[2]) / longLength;
 
-            x = (bounds[1] - bounds[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-            x -= bounds[0];
-            
-            y = (bounds[3] - bounds[2]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-            y -= bounds[2];
-            
-            z = midas.visualize.currentSlice;
-        }
-        else if(midas.visualize.sliceMode == 'XZ Plane') {
-            var longLength = Math.max(bounds[1] - bounds[0], bounds[5] - bounds[4]);
-            var arWidth = (bounds[1] - bounds[0]) / longLength;
-            var arHeight = (bounds[5] - bounds[4]) / longLength;
-
-            x = (bounds[1] - bounds[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-            x = bounds[1] - x;
-            x -= midas.visualize.bounds[0];
-            
-            y = midas.visualize.currentSlice;
-            
-            z = (bounds[5] - bounds[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-            z = bounds[5] - z;
-            z -= bounds[4];
-        }
-        else if(midas.visualize.sliceMode == 'YZ Plane') {
-            var longLength = Math.max(bounds[1] - bounds[0], bounds[5] - bounds[4]);
-            var arWidth = (bounds[1] - bounds[0]) / longLength;
-            var arHeight = (bounds[5] - bounds[4]) / longLength;
-
-            x = midas.visualize.currentSlice;
-            
-            y = (bounds[3] - bounds[2]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-            y -= bounds[2];
-            
-            z = (bounds[5] - bounds[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-            z = bounds[5] - z;
-            z -= bounds[4];
-        }
-
-        var html = 'You have selected the point:<p><b>('
-                 +x.toFixed(1)+', '+y.toFixed(1)+', '+z.toFixed(1)+')</b></p>'
-                 +'Click OK to proceed or Cancel to re-select a point';
-        html += '<br/><br/><div style="float: right;"><button id="pointSelectOk">OK</button>';
-        html += '<button style="margin-left: 15px" id="pointSelectCancel">Cancel</button></div>';
-        midas.showDialogWithContent('Confirm Point Selection', html, false, {modal: false});
-
-        $('#pointSelectOk').unbind('click').click(function () {
-            if(typeof midas.visualize.handlePointSelect == 'function') {
-                midas.visualize.handlePointSelect([x, y, z]);
+                x = (bounds[1] - bounds[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
+                x -= bounds[0];
+                
+                y = (bounds[3] - bounds[2]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
+                y -= bounds[2];
+                
+                z = midas.visualize.currentSlice;
             }
-            else {
-                midas.createNotice('No point selection handler function has been loaded', 4000, 'error');
-            }
-        });
-        $('#pointSelectCancel').unbind('click').click(function () {
-            $('div.MainDialog').dialog('close');
-        });
+            else if(midas.visualize.sliceMode == 'XZ Plane') {
+                var longLength = Math.max(bounds[1] - bounds[0], bounds[5] - bounds[4]);
+                var arWidth = (bounds[1] - bounds[0]) / longLength;
+                var arHeight = (bounds[5] - bounds[4]) / longLength;
 
-        var params = {
-            point: [x, y, z],
-            color: [1.0, 0.0, 0.0],
-            radius: midas.visualize.maxDim / 70.0, //make the sphere some small fraction of the image size
-            objectToDelete: midas.visualize.glyph ? midas.visualize.glyph : false,
-            input: midas.visualize.input
-        };
-        paraview.plugins.midasslice.AsyncShowSphere(function (retVal) {
-            midas.visualize.glyph = retVal.glyph;
-            paraview.sendEvent('Render', ''); //force a view refresh
-        }, params);
+                x = (bounds[1] - bounds[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
+                x = bounds[1] - x;
+                x -= midas.visualize.bounds[0];
+                
+                y = midas.visualize.currentSlice;
+                
+                z = (bounds[5] - bounds[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
+                z = bounds[5] - z;
+                z -= bounds[4];
+            }
+            else if(midas.visualize.sliceMode == 'YZ Plane') {
+                var longLength = Math.max(bounds[1] - bounds[0], bounds[5] - bounds[4]);
+                var arWidth = (bounds[1] - bounds[0]) / longLength;
+                var arHeight = (bounds[5] - bounds[4]) / longLength;
+
+                x = midas.visualize.currentSlice;
+                
+                y = (bounds[3] - bounds[2]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
+                y -= bounds[2];
+                
+                z = (bounds[5] - bounds[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
+                z = bounds[5] - z;
+                z -= bounds[4];
+            }
+            var surfaceColor = midas.visualize.pointColors[midas.visualize[side].points.length % midas.visualize.pointColors.length];
+            var params = {
+                point: [x, y, z],
+                color: surfaceColor,
+                radius: midas.visualize[side].maxDim / 85.0, //make the sphere some small fraction of the image size
+                input: midas.visualize[side].input
+            };
+            paraview[side].plugins.midasdual.AsyncShowSphere(function (retVal) {
+                midas.visualize[side].points.push({
+                    object: retVal.glyph,
+                    color: retVal.surfaceColor,
+                    radius: retVal.radius,
+                    x: x,
+                    y: y,
+                    z: z
+                });
+                paraview[side].sendEvent('Render', ''); //force a view refresh
+            }, params);
+        });
     });
 };
 
@@ -354,18 +386,31 @@ midas.visualize.setActiveAction = function (button, callback) {
 /**
  * Enable point selection action
  */
-midas.visualize._enablePointSelect = function () {
+midas.visualize._enablePointMap = function () {
     var button = $('#actionButtonTemplate').clone();
     button.removeAttr('id');
     button.addClass('pointSelectButton');
-    button.appendTo('#rendererOverlay');
+    button.appendTo('#rightRendererOverlay');
     button.qtip({
         content: 'Select a single point in the image'
     });
     button.show();
 
     button.click(function () {
-        midas.visualize.setActiveAction($(this), midas.visualize.pointSelectMode);
+        midas.visualize.setActiveAction($(this), midas.visualize.pointMapMode);
+    });
+
+    var listButton = $('#actionButtonTemplate').clone();
+    listButton.removeAttr('id');
+    listButton.addClass('pointMapListButton');
+    listButton.appendTo('#rightRendererOverlay');
+    listButton.qtip({
+        content: 'Show selected point map'
+    });
+    listButton.show();
+    
+    listButton.click(function () {
+        alert('todo');
     });
 };
 
@@ -374,15 +419,17 @@ midas.visualize._enablePointSelect = function () {
  * Options:
  *   -pointSelect: select a single point in the image
  */
-midas.visualize.enableActions = function (operations) {
-    $.each(operations, function(k, operation) {
-        if(operation == 'pointSelect') {
-            midas.visualize._enablePointSelect();
-        }
-        else if(operation != '') {
-            alert('Unsupported operation: '+operation);
-        }
-    });
+midas.visualize.enableActions = function (side, operations) {
+    if(side == 'right') {
+        $.each(operations, function(k, operation) {
+            if(operation == 'pointMap') {
+                midas.visualize._enablePointMap();
+            }
+            else if(operation != '') {
+                alert('Unsupported operation: '+operation);
+            }
+        });
+    }
 };
 
 /**
@@ -459,7 +506,6 @@ $(window).load(function () {
 
     json = jQuery.parseJSON($('div.jsonContent').html());
     midas.visualize.start();
-    midas.visualize.enableActions(json.visualize.operations.split(';'));
 });
 
 $(window).unload(function () {

@@ -310,7 +310,7 @@ midas.visualize.pointSelectMode = function () {
         var params = {
             point: [x, y, z],
             color: [1.0, 0.0, 0.0],
-            radius: midas.visualize.maxDim / 70.0, //make the sphere some small fraction of the image size
+            radius: midas.visualize.maxDim / 100.0, //make the sphere some small fraction of the image size
             objectToDelete: midas.visualize.glyph ? midas.visualize.glyph : false,
             input: midas.visualize.input
         };
