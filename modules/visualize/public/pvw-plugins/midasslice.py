@@ -133,7 +133,7 @@ def ShowSphere (point, color, radius, objectToDelete, input):
     pwsimple.Delete()
   
   glyph = pwsimple.Sphere()
-  glyph.Radius = 2
+  glyph.Radius = radius
   glyph.Center = point
   dataRep = pwsimple.Show()
   dataRep.Representation = 'Surface'

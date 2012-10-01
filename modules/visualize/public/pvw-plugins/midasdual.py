@@ -64,13 +64,10 @@ def ChangeSliceMode (volume, slice, sliceMode, parallelScale, cameraPosition, ca
   return ChangeSlice(volume, slice, sliceMode)
 
 # Place a sphere surface into the scene
-def ShowSphere (point, color, radius, objectToDelete, input):
-  if objectToDelete is not False:
-    pwsimple.SetActiveSource(objectToDelete)
-    pwsimple.Delete()
+def ShowSphere (point, color, radius, input):
   
   glyph = pwsimple.Sphere()
-  glyph.Radius = 2
+  glyph.Radius = radius
   glyph.Center = point
   dataRep = pwsimple.Show()
   dataRep.Representation = 'Surface'
@@ -80,6 +77,8 @@ def ShowSphere (point, color, radius, objectToDelete, input):
   
   retVal = {}
   retVal['glyph'] = glyph
+  retVal['surfaceColor'] = color
+  retVal['radius'] = radius
   return retVal
 
 def ChangeWindow (rgbPoints, colorArrayName):

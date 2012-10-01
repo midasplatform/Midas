@@ -146,7 +146,7 @@ class Visualize_ParaviewController extends Visualize_AppController
 
     $left = $this->Item->load($this->_getParam('left'));
     $right = $this->Item->load($this->_getParam('right'));
-    
+
     if($left === false || !$this->Item->policyCheck($left, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
       throw new Zend_Exception("Left item doesn't exist or you don't have the permissions.");

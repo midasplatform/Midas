@@ -25,10 +25,10 @@ img.leftLoading, img.rightLoading {
   margin-left: 10px;
 }
 
-#rendererOverlay {
+#leftRendererOverlay, #rightRendererOverlay {
   position: absolute;
-  top: 40px;
-  right: 15px;
+  top: 3px;
+  right: 3px;
   z-index: 5;
 }
 
@@ -61,6 +61,8 @@ button.actionButton {
   height: 25px;
   background-repeat: no-repeat;
   background-position: 2px 1px;
+  margin-top: 10px;
+  margin-right: 10px;
 }
 
 button.actionActive {
@@ -73,6 +75,10 @@ button.actionInactive {
 
 button.pointSelectButton {
   background-image: url(../../images/pointSelect.png);
+}
+
+button.pointMapListButton {
+  background-image: url(../../images/pqNodeSetData16.png);
 }
 
 #leftLoadingStatus, #rightLoadingStatus {
