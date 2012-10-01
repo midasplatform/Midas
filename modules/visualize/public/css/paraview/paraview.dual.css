@@ -1,0 +1,85 @@
+div.rendererWrapper {
+  position: relative;
+}
+
+#leftRenderer {
+  z-index: 2;
+  overflow: hidden;
+  width: 424px;
+  height: 425px;
+  position: absolute;
+}
+
+#rightRenderer {
+  z-index: 2;
+  overflow: hidden;
+  width: 425px;
+  height: 425px;
+  position: absolute;
+  left: 425px;
+}
+
+img.leftLoading, img.rightLoading {
+  z-index: 100;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+#rendererOverlay {
+  position: absolute;
+  top: 40px;
+  right: 15px;
+  z-index: 5;
+}
+
+div.slidersContainer {
+  position: relative;
+  top: 426px;
+}
+
+div.sliceControlContainer {
+  position: absolute;
+  width: 424px;
+}
+
+div.windowControlContainer {
+  position: absolute;
+  width: 424px;
+  left: 425px;
+}
+
+#windowSlider, #sliceSlider {
+  margin: 8px 14px 8px 15px;
+}
+
+#windowInfo, #sliceInfo {
+  margin-left: 15px;
+}
+
+button.actionButton {
+  width: 25px;
+  height: 25px;
+  background-repeat: no-repeat;
+  background-position: 2px 1px;
+}
+
+button.actionActive {
+  background-color: #99cc99;
+}
+
+button.actionInactive {
+  background-color: #cccccc;
+}
+
+button.pointSelectButton {
+  background-image: url(../../images/pointSelect.png);
+}
+
+#leftLoadingStatus, #rightLoadingStatus {
+  margin-left: 10px;
+}
+
+span.infoValue {
+  color: #7a7a7a;
+}
+
