@@ -131,6 +131,10 @@ class AdminController extends AppController
       {
       $formArray['logtrace']->setValue($applicationConfig['global']['logtrace']);
       }
+    if(isset($applicationConfig['global']['gravatar']))
+      {
+      $formArray['gravatar']->setValue($applicationConfig['global']['gravatar']);
+      }
     $this->view->selectedLicense = $applicationConfig['global']['defaultlicense'];
 
     try
@@ -171,6 +175,7 @@ class AdminController extends AppController
         $applicationConfig['global']['closeregistration'] = $this->_getParam('closeregistration');
         $applicationConfig['global']['logtrace'] = $this->_getParam('logtrace');
         $applicationConfig['global']['httpproxy'] = $this->_getParam('httpProxy');
+        $applicationConfig['global']['gravatar'] = $this->_getParam('gravatar');
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }

@@ -54,6 +54,7 @@ class AdminForm extends AppForm
 
     $smartoptimizer = new Zend_Form_Element_Checkbox('smartoptimizer');
     $dynamichelp = new Zend_Form_Element_Checkbox('dynamichelp');
+    $gravatar = new Zend_Form_Element_Checkbox('gravatar');
     $closeRegistration = new Zend_Form_Element_Checkbox('closeregistration');
     $logtrace = new Zend_Form_Element_Checkbox('logtrace');
 
@@ -63,7 +64,7 @@ class AdminForm extends AppForm
     $submit ->setLabel('Save configuration');
 
     $form->addElements(
-      array($dynamichelp, $keywords, $description, $timezone, $environment,
+      array($dynamichelp, $keywords, $description, $timezone, $environment, $gravatar,
       $lang, $name, $smartoptimizer, $closeRegistration, $submit, $logtrace, $httpProxy));
     return $form;
     }

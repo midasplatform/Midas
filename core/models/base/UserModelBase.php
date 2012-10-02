@@ -219,10 +219,14 @@ abstract class UserModelBase extends AppModel
     $userDao->setAdmin($admin);
 
     // check gravatar
-    $gravatarUrl = $this->getGravatarUrl($email);
-    if($gravatarUrl != false)
+    $useGravatar = Zend_Registry::get('configGlobal')->gravatar;
+    if($useGravatar)
       {
-      $userDao->setThumbnail($gravatarUrl);
+      $gravatarUrl = $this->getGravatarUrl($email);
+      if($gravatarUrl != false)
+        {
+        $userDao->setThumbnail($gravatarUrl);
+        }
       }
 
     parent::save($userDao);
