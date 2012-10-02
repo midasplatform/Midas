@@ -39,6 +39,7 @@ midas.visualize.start = function () {
 midas.visualize._dataOpened = function (retVal) {
     midas.visualize.input = retVal.input;
     midas.visualize.bounds = retVal.imageData.Bounds;
+    midas.visualize.extent = retVal.imageData.Extent;
     midas.visualize.meshes = retVal.meshes;
 
     midas.visualize.maxDim = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
@@ -242,51 +243,54 @@ midas.visualize.pointSelectMode = function () {
 
     // Bind click action on the render window
     var el = $(midas.visualize.renderers.current.view);
-    var bounds = midas.visualize.bounds; //alias the variable for shorthand
+    var extent = midas.visualize.extent; //alias the variable for shorthand
     el.unbind('click').click(function (e) {
         var x, y, z;
         if(midas.visualize.sliceMode == 'XY Plane') {
-            var longLength = Math.max(bounds[1] - bounds[0], bounds[3] - bounds[2]);
-            var arWidth = (bounds[1] - bounds[0]) / longLength;
-            var arHeight = (bounds[3] - bounds[2]) / longLength;
+            var longLength = Math.max(extent[1] - extent[0], extent[3] - extent[2]);
+            var arWidth = (extent[1] - extent[0]) / longLength;
+            var arHeight = (extent[3] - extent[2]) / longLength;
 
-            x = (bounds[1] - bounds[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-            x -= bounds[0];
+            x = (extent[1] - extent[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
+            x -= extent[0];
             
-            y = (bounds[3] - bounds[2]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-            y -= bounds[2];
+            y = (extent[3] - extent[2]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
+            y -= extent[2];
             
             z = midas.visualize.currentSlice;
         }
         else if(midas.visualize.sliceMode == 'XZ Plane') {
-            var longLength = Math.max(bounds[1] - bounds[0], bounds[5] - bounds[4]);
-            var arWidth = (bounds[1] - bounds[0]) / longLength;
-            var arHeight = (bounds[5] - bounds[4]) / longLength;
+            var longLength = Math.max(extent[1] - extent[0], extent[5] - extent[4]);
+            var arWidth = (extent[1] - extent[0]) / longLength;
+            var arHeight = (extent[5] - extent[4]) / longLength;
 
-            x = (bounds[1] - bounds[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-            x = bounds[1] - x;
-            x -= midas.visualize.bounds[0];
+            x = (extent[1] - extent[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
+            x = extent[1] - x;
+            x -= extent[0];
             
             y = midas.visualize.currentSlice;
             
-            z = (bounds[5] - bounds[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-            z = bounds[5] - z;
-            z -= bounds[4];
+            z = (extent[5] - extent[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
+            z = extent[5] - z;
+            z -= extent[4];
         }
         else if(midas.visualize.sliceMode == 'YZ Plane') {
-            var longLength = Math.max(bounds[1] - bounds[0], bounds[5] - bounds[4]);
-            var arWidth = (bounds[1] - bounds[0]) / longLength;
-            var arHeight = (bounds[5] - bounds[4]) / longLength;
+            var longLength = Math.max(extent[1] - extent[0], extent[5] - extent[4]);
+            var arWidth = (extent[1] - extent[0]) / longLength;
+            var arHeight = (extent[5] - extent[4]) / longLength;
 
             x = midas.visualize.currentSlice;
             
-            y = (bounds[3] - bounds[2]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-            y -= bounds[2];
+            y = (extent[3] - extent[2]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
+            y -= extent[2];
             
-            z = (bounds[5] - bounds[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-            z = bounds[5] - z;
-            z -= bounds[4];
+            z = (extent[5] - extent[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
+            z = extent[5] - z;
+            z -= extent[4];
         }
+        x += midas.visualize.bounds[0] - extent[0];
+        y += midas.visualize.bounds[2] - extent[2];
+        z += midas.visualize.bounds[4] - extent[4];
 
         var html = 'You have selected the point:<p><b>('
                  +x.toFixed(1)+', '+y.toFixed(1)+', '+z.toFixed(1)+')</b></p>'

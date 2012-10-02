@@ -81,6 +81,10 @@ button.pointMapListButton {
   background-image: url(../../images/pqNodeSetData16.png);
 }
 
+button.cameraLinkButton {
+  background-image: url(../../images/camera_link.png);
+}
+
 #leftLoadingStatus, #rightLoadingStatus {
   margin-left: 10px;
 }

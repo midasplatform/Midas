@@ -4,6 +4,7 @@ midas.visualize = midas.visualize || {};
 
 midas.visualize.left = {points: []};
 midas.visualize.right = {points: []};
+midas.visualize.camerasLocked = false;
 
 midas.visualize.start = function () {
     // Create a paraview proxy
@@ -59,6 +60,7 @@ midas.visualize.start = function () {
 midas.visualize._dataOpened = function (side, retVal) {
     midas.visualize[side].input = retVal.input;
     midas.visualize[side].bounds = retVal.imageData.Bounds;
+    midas.visualize[side].extent = retVal.imageData.Extent;
 
     midas.visualize[side].maxDim = Math.max(midas.visualize[side].bounds[1] - midas.visualize[side].bounds[0],
                                            midas.visualize[side].bounds[3] - midas.visualize[side].bounds[2],
@@ -305,51 +307,57 @@ midas.visualize.pointMapMode = function () {
     // Bind click action on the render window
     $.each(['left', 'right'], function(i, side) {
         var el = $(midas.visualize[side].renderer.view);
-        var bounds = midas.visualize[side].bounds; //alias the variable for shorthand
+        var extent = midas.visualize[side].extent; //alias the variable for shorthand
+
         el.unbind('click').click(function (e) {
             var x, y, z;
             if(midas.visualize.sliceMode == 'XY Plane') {
-                var longLength = Math.max(bounds[1] - bounds[0], bounds[3] - bounds[2]);
-                var arWidth = (bounds[1] - bounds[0]) / longLength;
-                var arHeight = (bounds[3] - bounds[2]) / longLength;
+                var longLength = Math.max(extent[1] - extent[0], extent[3] - extent[2]);
+                var arWidth = (extent[1] - extent[0]) / longLength;
+                var arHeight = (extent[3] - extent[2]) / longLength;
 
-                x = (bounds[1] - bounds[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-                x -= bounds[0];
+                x = (extent[1] - extent[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
+                x -= extent[0];
                 
-                y = (bounds[3] - bounds[2]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-                y -= bounds[2];
+                y = (extent[3] - extent[2]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
+                y -= extent[2];
                 
                 z = midas.visualize.currentSlice;
             }
             else if(midas.visualize.sliceMode == 'XZ Plane') {
-                var longLength = Math.max(bounds[1] - bounds[0], bounds[5] - bounds[4]);
-                var arWidth = (bounds[1] - bounds[0]) / longLength;
-                var arHeight = (bounds[5] - bounds[4]) / longLength;
+                var longLength = Math.max(extent[1] - extent[0], extent[5] - extent[4]);
+                var arWidth = (extent[1] - extent[0]) / longLength;
+                var arHeight = (extent[5] - extent[4]) / longLength;
 
-                x = (bounds[1] - bounds[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-                x = bounds[1] - x;
-                x -= midas.visualize.bounds[0];
+                x = (extent[1] - extent[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
+                x = extent[1] - x;
+                x -= extent[0];
                 
                 y = midas.visualize.currentSlice;
                 
-                z = (bounds[5] - bounds[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-                z = bounds[5] - z;
-                z -= bounds[4];
+                z = (extent[5] - extent[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
+                z = extent[5] - z;
+                z -= extent[4];
             }
             else if(midas.visualize.sliceMode == 'YZ Plane') {
-                var longLength = Math.max(bounds[1] - bounds[0], bounds[5] - bounds[4]);
-                var arWidth = (bounds[1] - bounds[0]) / longLength;
-                var arHeight = (bounds[5] - bounds[4]) / longLength;
+                var longLength = Math.max(extent[1] - extent[0], extent[5] - extent[4]);
+                var arWidth = (extent[1] - extent[0]) / longLength;
+                var arHeight = (extent[5] - extent[4]) / longLength;
 
                 x = midas.visualize.currentSlice;
                 
-                y = (bounds[3] - bounds[2]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-                y -= bounds[2];
+                y = (extent[3] - extent[2]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
+                y -= extent[2];
                 
-                z = (bounds[5] - bounds[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-                z = bounds[5] - z;
-                z -= bounds[4];
+                z = (extent[5] - extent[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
+                z = extent[5] - z;
+                z -= extent[4];
             }
+
+            x += midas.visualize[side].bounds[0] - extent[0];
+            y += midas.visualize[side].bounds[2] - extent[2];
+            z += midas.visualize[side].bounds[4] - extent[4];
+
             var surfaceColor = midas.visualize.pointColors[midas.visualize[side].points.length % midas.visualize.pointColors.length];
             var params = {
                 point: [x, y, z],
@@ -392,7 +400,7 @@ midas.visualize._enablePointMap = function () {
     button.addClass('pointSelectButton');
     button.appendTo('#rightRendererOverlay');
     button.qtip({
-        content: 'Select a single point in the image'
+        content: 'Select points in the images'
     });
     button.show();
 
@@ -412,12 +420,47 @@ midas.visualize._enablePointMap = function () {
     listButton.click(function () {
         alert('todo');
     });
+
+    var camLinkButton = $('#actionButtonTemplate').clone();
+    camLinkButton.removeAttr('id');
+    camLinkButton.addClass('cameraLinkButton');
+    camLinkButton.appendTo('#rightRendererOverlay');
+    camLinkButton.qtip({
+        content: 'Lock with left side camera'
+    });
+    camLinkButton.show();
+    
+    camLinkButton.click(function () {
+        midas.visualize.camerasLocked = !midas.visualize.camerasLocked;
+        if(midas.visualize.camerasLocked) {
+            camLinkButton.removeClass('actionInactive').addClass('actionActive');
+            midas.visualize.lockCameraParameters();
+        }
+        else {
+            camLinkButton.addClass('actionInactive').removeClass('actionActive');
+            midas.visualize.centerRightCamera();
+        }
+    });
+};
+
+/**
+ * Apply the camera parameters from the left image to the right image
+ */
+midas.visualize.lockCameraParameters = function () {
+    midas.createNotice('todo: lock camera params', 2000, 'warning');
+};
+
+/**
+ * Apply the camera parameters from the left image to the right image
+ */
+midas.visualize.centerRightCamera = function () {
+    midas.createNotice('todo: center right camera', 2000, 'warning');
 };
 
 /**
  * Enable the specified set of operations in the view
  * Options:
- *   -pointSelect: select a single point in the image
+ *   -pointMap: select a single point in the image
  */
 midas.visualize.enableActions = function (side, operations) {
     if(side == 'right') {
