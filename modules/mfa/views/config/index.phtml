@@ -9,7 +9,11 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
 ?>
+
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.index.css" />
 
 <div class="viewMain">
   <div class ="genericWrapperTopRight">
@@ -23,11 +27,23 @@ PURPOSE.  See the above copyright notices for more information.
     </div>
   </div>
   <h3>Multi-Factor Authentication Configuration</h3>
-  <p>Each user should configure their One-Time Pass (OTP) device on the
+  <p>Configuration of One-Time Pass (OTP) devices can be done on the
     "My Account" page. Administrators can configure this information for any
     user.</p>
   <p>Currently, configuration of multi-factor authentication is dependent on the
     PAM configuration of the host machine and is thus restricted to hosts
     running PAM. To this point, the verification of the OTP is entirely
-    delegated to PAM and custom configuration should take place there.
+    delegated to PAM and custom configuration should take place there.</p>
+  
+  <form class="genericForm" id="configForm" method="POST" action="<?php echo $this->webroot?>/mfa/config/submit">
+    <div>
+      <input name="userOtpControl" type="checkbox"
+        <?php if($this->userOtpControl) { echo 'checked="checked" '; } ?> />
+      Allow users to configure their own two-factor authentication settings
+    </div>
+    <div class="saveButton">
+      <input type="submit" value="Save" />
+    </div>
+  </form>
 </div>
+

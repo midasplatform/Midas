@@ -23,7 +23,7 @@ require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 class Mfa_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'mfa';
-  public $_models = array('User');
+  public $_models = array('Setting', 'User');
   public $_moduleComponents = array('Api');
 
   /** init notification process*/
@@ -34,7 +34,6 @@ class Mfa_Notification extends ApiEnabled_Notification
 
     $this->addCallBack('CALLBACK_CORE_GET_CONFIG_TABS', 'getConfigTabs');
     $this->addCallBack('CALLBACK_CORE_AUTH_INTERCEPT', 'authIntercept');
-
     $this->addCallBack('CALLBACK_API_AUTH_INTERCEPT', 'authInterceptApi');
 
     $this->enableWebAPI($this->moduleName);
@@ -47,7 +46,12 @@ class Mfa_Notification extends ApiEnabled_Notification
   public function getConfigTabs($params)
     {
     $user = $params['user'];
-    return array('OTP Device' => $this->moduleWebroot.'/config/usertab?userId='.$user->getKey());
+    $userOtpSetting = $this->Setting->GetValueByName('userOtpControl', 'mfa');
+    $userOtpControl = $userOtpSetting === 'true';
+    if($userOtpControl || $this->userSession->Dao->isAdmin())
+      {
+      return array('OTP Device' => $this->moduleWebroot.'/config/usertab?userId='.$user->getKey());
+      }
     }
 
   /**
@@ -108,3 +112,4 @@ class Mfa_Notification extends ApiEnabled_Notification
       }
     }
   } //end class
+
