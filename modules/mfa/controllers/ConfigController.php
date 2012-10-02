@@ -21,17 +21,35 @@
 /** Config controller for MFA module */
 class Mfa_ConfigController extends Mfa_AppController
 {
-  public $_models = array('User');
+  public $_models = array('Setting', 'User');
   public $_moduleModels = array('Otpdevice');
   public $_moduleDaos = array('Otpdevice');
   public $_moduleForms = array();
   public $_components = array();
 
   /**
-   * Admin config page (stub)
+   * Admin config page
    */
   function indexAction()
     {
+    $userOtpSetting = $this->Setting->GetValueByName('userOtpControl', 'mfa');
+    $this->view->userOtpControl = $userOtpSetting === 'true';
+    }
+
+  /**
+   * Form submission handler for admin config page
+   * @param userOtpControl (checkbox value) non empty string will make this true
+   */
+  function submitAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+
+    $userOtpControl = $this->_getParam('userOtpControl');
+    $value = $userOtpControl ? 'true' : 'false';
+    $this->Setting->setConfig('userOtpControl', $value, 'mfa');
+
+    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved'));
     }
 
   /**
@@ -42,6 +60,12 @@ class Mfa_ConfigController extends Mfa_AppController
     {
     $this->disableLayout();
     $userId = $this->_getParam('userId');
+    $userOtpSetting = $this->Setting->GetValueByName('userOtpControl', 'mfa');
+    $userOtpControl = $userOtpSetting === 'true';
+    if(!$userOtpControl && !$this->userSession->Dao->isAdmin())
+      {
+      throw new Zend_Exception('Only administrators are allowed to manage OTP settings');
+      }
     if(!isset($userId))
       {
       throw new Zend_Exception('Must pass a userId parameter');
@@ -93,6 +117,13 @@ class Mfa_ConfigController extends Mfa_AppController
     $this->disableLayout();
     $this->disableView();
 
+    $userOtpSetting = $this->Setting->GetValueByName('userOtpControl', 'mfa');
+    $userOtpControl = $userOtpSetting === 'true';
+    if(!$userOtpControl && !$this->userSession->Dao->isAdmin())
+      {
+      throw new Zend_Exception('Only administrators are allowed to manage OTP settings');
+      }
+
     $userId = $this->_getParam('userId');
     if(!isset($userId))
       {
@@ -138,3 +169,4 @@ class Mfa_ConfigController extends Mfa_AppController
       }
     }
 }//end class
+
