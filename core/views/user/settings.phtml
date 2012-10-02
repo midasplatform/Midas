@@ -124,10 +124,14 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
       <input type="submit" name='modifyPicture' value="<?php echo $this->t('Upload new avatar')?>">
       <br/>
       <?php
-      echo "<br/>";
-      if(strpos($this->thumbnail, 'http://') === false && $this->isGravatar)
+      $useGravatar = Zend_Registry::get('configGlobal')->gravatar;
+      if($useGravatar)
         {
-        echo ' <input type="submit" name="modifyPictureGravatar" value="'.$this->t('Use gravatar').'">';
+        echo "<br/>";
+        if(strpos($this->thumbnail, 'http://') === false && $this->isGravatar)
+          {
+          echo ' <input type="submit" name="modifyPictureGravatar" value="'.$this->t('Use gravatar').'">';
+          }
         }
       ?>
       <br/>
