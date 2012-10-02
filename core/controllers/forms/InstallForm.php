@@ -54,6 +54,7 @@ class InstallForm extends AppForm
           ->setRequired(true)
           ->addValidator('NotEmpty', true);
 
+    $gravatar = new Zend_Form_Element_Checkbox('gravatar');
 
     $email = new Zend_Form_Element_Text('email');
     $email->setRequired(true)
@@ -83,7 +84,7 @@ class InstallForm extends AppForm
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel('Set up database');
 
-    $form->addElements(array($port, $type, $host, $username, $password, $dbname, $submit, $lastname, $firstname, $userpassword2, $userpassword1, $email));
+    $form->addElements(array($port, $gravatar, $type, $host, $username, $password, $dbname, $submit, $lastname, $firstname, $userpassword2, $userpassword1, $email));
     return $form;
     } //end createDBForm
 

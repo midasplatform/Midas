@@ -210,6 +210,11 @@ class InstallController extends AppController
         // Must generate and store our password salt before we create our first user
         $appConfig = parse_ini_file(BASE_PATH.'/core/configs/application.ini', true);
         $appConfig['global']['password.prefix'] = UtilityComponent::generateRandomString(32);
+
+        // Verify whether the user wants to use gravatars or not
+        $appConfig['global']['gravatar'] = $form->getValue('gravatar');
+
+        // Save the new config
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $appConfig);
         $configGlobal = new Zend_Config_Ini(BASE_PATH.'/core/configs/application.local.ini', 'global', true);
         Zend_Registry::set('configGlobal', $configGlobal);
