@@ -38,6 +38,12 @@ def SetCamera (cameraPosition, cameraViewUp):
   activeView.CameraPosition = cameraPosition
   activeView.CameraViewUp = cameraViewUp
 
+# Set the camera position and camera focal point
+def MoveCamera (cameraPosition, cameraFocalPoint):
+  activeView = pwsimple.GetActiveView()
+  activeView.CameraPosition = cameraPosition
+  activeView.CameraFocalPoint = cameraFocalPoint
+
 # Update the scalar color mapping
 def UpdateColorMap (colorMap, colorArrayName):
   if type(colorArrayName) is unicode:

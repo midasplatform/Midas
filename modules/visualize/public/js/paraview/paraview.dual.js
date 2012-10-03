@@ -381,17 +381,6 @@ midas.visualize.pointMapMode = function () {
 };
 
 /**
- * Set an action as active
- * @param button The button to display as active (all others will become inactive)
- * @param callback The function to call when this button is activated
- */
-midas.visualize.setActiveAction = function (button, callback) {
-    $('.actionActive').addClass('actionInactive').removeClass('actionActive');
-    button.removeClass('actionInactive').addClass('actionActive');
-    callback();
-};
-
-/**
  * Enable point selection action
  */
 midas.visualize._enablePointMap = function () {
@@ -405,7 +394,8 @@ midas.visualize._enablePointMap = function () {
     button.show();
 
     button.click(function () {
-        midas.visualize.setActiveAction($(this), midas.visualize.pointMapMode);
+        button.removeClass('actionInactive').addClass('actionActive');
+        midas.visualize.pointMapMode();
     });
 
     var listButton = $('#actionButtonTemplate').clone();
@@ -434,27 +424,26 @@ midas.visualize._enablePointMap = function () {
         midas.visualize.camerasLocked = !midas.visualize.camerasLocked;
         if(midas.visualize.camerasLocked) {
             camLinkButton.removeClass('actionInactive').addClass('actionActive');
-            midas.visualize.lockCameraParameters();
+            midas.visualize.setCameraMode('left');
         }
         else {
             camLinkButton.addClass('actionInactive').removeClass('actionActive');
-            midas.visualize.centerRightCamera();
+            midas.visualize.setCameraMode('right');
         }
     });
 };
 
 /**
- * Apply the camera parameters from the left image to the right image
+ * Apply default camera parameters from the left side to the right, or use the right side defaults
  */
-midas.visualize.lockCameraParameters = function () {
-    midas.createNotice('todo: lock camera params', 2000, 'warning');
-};
-
-/**
- * Apply the camera parameters from the left image to the right image
- */
-midas.visualize.centerRightCamera = function () {
-    midas.createNotice('todo: center right camera', 2000, 'warning');
+midas.visualize.setCameraMode = function (side) {
+    var params = {
+        cameraFocalPoint: [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].midK],
+        cameraPosition: [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].bounds[4] - 10]
+    };
+    paraview.right.plugins.midascommon.AsyncMoveCamera(function () {
+        paraview.right.sendEvent('Render', '');
+    }, params);
 };
 
 /**
