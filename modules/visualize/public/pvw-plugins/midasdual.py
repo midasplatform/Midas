@@ -65,7 +65,6 @@ def ChangeSliceMode (volume, slice, sliceMode, parallelScale, cameraPosition, ca
 
 # Place a sphere surface into the scene
 def ShowSphere (point, color, radius, input):
-  
   glyph = pwsimple.Sphere()
   glyph.Radius = radius
   glyph.Center = point
@@ -81,6 +80,11 @@ def ShowSphere (point, color, radius, input):
   retVal['radius'] = radius
   return retVal
 
+# Update the size of the sphere source
+def UpdateSphere (source, radius):
+  source.Radius = radius
+
+# Set the window/level
 def ChangeWindow (rgbPoints, colorArrayName):
   if type(colorArrayName) is unicode:
     colorArrayName = colorArrayName.encode('ascii', 'ignore')

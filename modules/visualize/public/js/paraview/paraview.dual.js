@@ -408,7 +408,7 @@ midas.visualize._enablePointMap = function () {
     listButton.show();
     
     listButton.click(function () {
-        alert('todo');
+        midas.visualize.displayPointMap();
     });
 
     var camLinkButton = $('#actionButtonTemplate').clone();
@@ -529,6 +529,125 @@ midas.visualize.setSliceMode = function (sliceMode) {
         midas.visualize.meshSlices = retVal.meshSlices;
         paraview.sendEvent('Render', ''); //force a view refresh
     }, params);
+};
+
+/**
+ * Display all the fiducial points selected in each image
+ */
+midas.visualize.displayPointMap = function () {
+    var dialog = $('#pointListDialogTemplate').clone();
+    dialog.removeAttr('id');
+    midas.showDialogWithContent('Fiducial point mapping',
+          dialog.html(), false, {modal: false, width: 460});
+    var container = $('div.MainDialog');
+    var tbody = container.find('.pointListTable tbody');
+
+    $.each(midas.visualize.left.points, function(idx, point) {
+        var rightPoint = midas.visualize.right.points[idx];
+        var tr = '<tr><td><div class="colorSwatchL"></div><span class="leftPointValue">('+point.x.toFixed(1)+', '+
+          point.y.toFixed(1)+', '+point.z.toFixed(1)+')</span></td><td><span class="rightPointValue">';
+        if(rightPoint == undefined) {
+            tr += '<i>None</i>';
+        }
+        else {
+            tr += '<div class="colorSwatchR"></div>('+
+              midas.visualize.right.points[idx].x.toFixed(1)+', '+
+              midas.visualize.right.points[idx].y.toFixed(1)+', '+
+              midas.visualize.right.points[idx].z.toFixed(1)+')';
+        }
+        tr += '</span></td><td><button class="highlightPoints';
+        if(point.highlighted) {
+            tr += ' highlightOn';
+        }
+        tr += '">Highlight</button>'+
+              '<button class="deletePoints">Delete</buttons>';
+        tr = $(tr); //create element from the html
+        tr.find('div.colorSwatchL').css('background-color',
+          'rgb('+Math.round(point.color[0]*255)+','+Math.round(point.color[1]*255)+','+
+          Math.round(point.color[2]*255)+')');
+        if(rightPoint != undefined) {
+            tr.find('div.colorSwatchR').css('background-color',
+              'rgb('+Math.round(rightPoint.color[0]*255)+','+
+              Math.round(rightPoint.color[1]*255)+','+
+              Math.round(rightPoint.color[2]*255)+')');
+        }
+
+        // Bind delete button
+        tr.find('button.deletePoints').click(function () {
+            tr.remove();
+            paraview.left.plugins.midascommon.AsyncDeleteSource(function () {
+                paraview.left.sendEvent('Render', '');
+            }, {source: point.object});
+
+            midas.visualize._removePointFromList('left', point);
+
+            if(rightPoint != undefined) {
+                paraview.right.plugins.midascommon.AsyncDeleteSource(function () {
+                    paraview.right.sendEvent('Render', '');
+                }, {source: rightPoint.object});
+
+                midas.visualize._removePointFromList('right', point);
+            }
+        });
+
+        // Bind highlight button
+        tr.find('button.highlightPoints').click(function () {
+            if($(this).hasClass('highlightOn')) {
+               $(this).removeClass('highlightOn');
+               midas.visualize.left.points[idx].highlighted = false;
+               paraview.left.plugins.midasdual.AsyncUpdateSphere(function () {
+                  paraview.left.sendEvent('Render', '');
+               }, {
+                   radius: point.radius,
+                   source: point.object
+               });
+
+               if(rightPoint) {
+                  midas.visualize.right.points[idx].highlighted = false;
+                  paraview.right.plugins.midasdual.AsyncUpdateSphere(function () {
+                      paraview.right.sendEvent('Render', '');
+                  }, {
+                      radius: rightPoint.radius,
+                      source: rightPoint.object
+                  });
+               }
+            }
+            else {
+               $(this).addClass('highlightOn');
+               midas.visualize.left.points[idx].highlighted = true;
+               paraview.left.plugins.midasdual.AsyncUpdateSphere(function () {
+                  paraview.left.sendEvent('Render', '');
+               }, {
+                   radius: point.radius * 2.5,
+                   source: point.object
+               });
+
+               if(rightPoint) {
+                  midas.visualize.right.points[idx].highlighted = true;
+                  paraview.right.plugins.midasdual.AsyncUpdateSphere(function () {
+                      paraview.right.sendEvent('Render', '');
+                  }, {
+                      radius: rightPoint.radius * 2.5,
+                      source: rightPoint.object
+                  });
+               }
+            }
+        });
+        tbody.append(tr);
+    });
+};
+
+/**
+ * Helper function to remove a point from the fiducial lists at global scope
+ */
+midas.visualize._removePointFromList = function(side, pointToRemove) {
+    var spliceIdx = -1;
+    $.each(midas.visualize[side].points, function(idx, point) {
+        if(point.object.__selfid__ == pointToRemove.object.__selfid__) {
+            spliceIdx = idx;
+        }
+    });
+    midas.visualize[side].points.splice(spliceIdx, 1);
 };
 
 $(window).load(function () {

@@ -55,3 +55,7 @@ def UpdateColorMap (colorMap, colorArrayName):
   dataRep = pwsimple.Show()
   dataRep.LookupTable = lookupTable
 
+# Delete the source from the scene
+def DeleteSource (source):
+  pwsimple.Delete(source)
+
