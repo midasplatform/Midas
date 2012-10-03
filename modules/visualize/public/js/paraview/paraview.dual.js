@@ -184,11 +184,11 @@ midas.visualize.updateWindowInfo = function (values) {
 midas.visualize.changeWindow = function (values) {
     paraview.left.plugins.midasdual.AsyncChangeWindow(function (retVal) {
         midas.visualize.left.lookupTable = retVal.lookupTable;
-        paraview.left.sendEvent('Render', ''); //force a view refresh
+        midas.visualize.forceRefreshView('left');
     }, [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0], json.visualize.colorArrayNames.left);
     paraview.right.plugins.midasdual.AsyncChangeWindow(function (retVal) {
         midas.visualize.right.lookupTable = retVal.lookupTable;
-        paraview.right.sendEvent('Render', ''); //force a view refresh
+        midas.visualize.forceRefreshView('right');
     }, [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0], json.visualize.colorArrayNames.right);
     midas.visualize.left.imageWindow = values;
     midas.visualize.right.imageWindow = values;
@@ -216,13 +216,13 @@ midas.visualize.changeSlice = function (slice) {
         if(typeof midas.visualize.changeSliceCallback == 'function') {
             midas.visualize.changeSliceCallback(slice, 'left');
         }
-        paraview.left.sendEvent('Render', ''); //force a view refresh
+        midas.visualize.forceRefreshView('left');
     }, params.left);
     paraview.right.plugins.midasdual.AsyncChangeSlice(function(retVal) {
         if(typeof midas.visualize.changeSliceCallback == 'function') {
             midas.visualize.changeSliceCallback(slice, 'right');
         }
-        paraview.right.sendEvent('Render', ''); //force a view refresh
+        midas.visualize.forceRefreshView('right');
     }, params.right);
 };
 
@@ -374,10 +374,16 @@ midas.visualize.pointMapMode = function () {
                     y: y,
                     z: z
                 });
-                paraview[side].sendEvent('Render', ''); //force a view refresh
+                midas.visualize.forceRefreshView(side);
             }, params);
         });
     });
+};
+
+midas.visualize.forceRefreshView = function (side) {
+    var el = $('#'+side+'Renderer');
+    updateRendererSize(paraview[side].sessionId,
+                       midas.visualize[side].activeView.__selfid__, el.width(), el.height());
 };
 
 /**
@@ -442,7 +448,7 @@ midas.visualize.setCameraMode = function (side) {
         cameraPosition: [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].bounds[4] - 10]
     };
     paraview.right.plugins.midascommon.AsyncMoveCamera(function () {
-        paraview.right.sendEvent('Render', '');
+        midas.visualize.forceRefreshView('right');
     }, params);
 };
 
@@ -527,7 +533,7 @@ midas.visualize.setSliceMode = function (sliceMode) {
     };
     paraview.plugins.midasslice.AsyncChangeSliceMode(function (retVal) {
         midas.visualize.meshSlices = retVal.meshSlices;
-        paraview.sendEvent('Render', ''); //force a view refresh
+        midas.visualize.forceRefreshView(side);
     }, params);
 };
 
@@ -576,14 +582,14 @@ midas.visualize.displayPointMap = function () {
         tr.find('button.deletePoints').click(function () {
             tr.remove();
             paraview.left.plugins.midascommon.AsyncDeleteSource(function () {
-                paraview.left.sendEvent('Render', '');
+                midas.visualize.forceRefreshView('left');
             }, {source: point.object});
 
             midas.visualize._removePointFromList('left', point);
 
             if(rightPoint != undefined) {
                 paraview.right.plugins.midascommon.AsyncDeleteSource(function () {
-                    paraview.right.sendEvent('Render', '');
+                    midas.visualize.forceRefreshView('right');
                 }, {source: rightPoint.object});
 
                 midas.visualize._removePointFromList('right', point);
@@ -596,7 +602,7 @@ midas.visualize.displayPointMap = function () {
                $(this).removeClass('highlightOn');
                midas.visualize.left.points[idx].highlighted = false;
                paraview.left.plugins.midasdual.AsyncUpdateSphere(function () {
-                  paraview.left.sendEvent('Render', '');
+                  midas.visualize.forceRefreshView('left');
                }, {
                    radius: point.radius,
                    source: point.object
@@ -605,7 +611,7 @@ midas.visualize.displayPointMap = function () {
                if(rightPoint) {
                   midas.visualize.right.points[idx].highlighted = false;
                   paraview.right.plugins.midasdual.AsyncUpdateSphere(function () {
-                      paraview.right.sendEvent('Render', '');
+                      midas.visualize.forceRefreshView('right');
                   }, {
                       radius: rightPoint.radius,
                       source: rightPoint.object
@@ -616,7 +622,7 @@ midas.visualize.displayPointMap = function () {
                $(this).addClass('highlightOn');
                midas.visualize.left.points[idx].highlighted = true;
                paraview.left.plugins.midasdual.AsyncUpdateSphere(function () {
-                  paraview.left.sendEvent('Render', '');
+                  midas.visualize.forceRefreshView('left');
                }, {
                    radius: point.radius * 2.5,
                    source: point.object
@@ -625,7 +631,7 @@ midas.visualize.displayPointMap = function () {
                if(rightPoint) {
                   midas.visualize.right.points[idx].highlighted = true;
                   paraview.right.plugins.midasdual.AsyncUpdateSphere(function () {
-                      paraview.right.sendEvent('Render', '');
+                      midas.visualize.forceRefreshView('right');
                   }, {
                       radius: rightPoint.radius * 2.5,
                       source: rightPoint.object
