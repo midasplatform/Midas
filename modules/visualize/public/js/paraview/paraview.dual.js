@@ -555,7 +555,7 @@ midas.visualize.displayPointMap = function () {
               midas.visualize.right.points[idx].y.toFixed(1)+', '+
               midas.visualize.right.points[idx].z.toFixed(1)+')';
         }
-        tr += '</span></td><td><button class="highlightPoints';
+        tr += '</span></td><td class="pointMapActions"><button class="highlightPoints';
         if(point.highlighted) {
             tr += ' highlightOn';
         }
@@ -634,6 +634,17 @@ midas.visualize.displayPointMap = function () {
             }
         });
         tbody.append(tr);
+    });
+    container.find('button.processButton').unbind('click').click(function () {
+        if(typeof midas.visualize.processPointMapHandler == 'function') {
+            midas.visualize.processPointMapHandler();
+        }
+        else {
+            midas.createNotice('No point map processing handler has been registered', 3000, 'warning');
+        }
+    });
+    container.find('button.closeButton').click(function() {
+        $('div.MainDialog').dialog('close');
     });
 };
 
