@@ -93,3 +93,55 @@ span.infoValue {
   color: #7a7a7a;
 }
 
+.pointListTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pointListTable th {
+  padding: 5px 3px 5px 5px;
+  background-color: #ccdddd;
+  border: 1px solid #a0a0a0;
+}
+
+.pointListTable tbody tr {
+  border-bottom: 1px dotted #a0a0a0;
+}
+
+div.colorSwatchL, div.colorSwatchR {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  border: 1px solid #707070;
+  position: relative;
+  top: 3px;
+  margin-right: 4px;
+}
+
+button.highlightPoints,button.deletePoints,button.processButton,button.closeButton {
+  border: 1px solid #b0b0b0;
+  border-radius: 1px;
+  padding: 3px 6px 3px 6px;
+  background-color: #f0f0f0;
+}
+
+button.highlightPoints:hover,button.deletePoints:hover,button.processButton:hover,button.closeButton:hover {
+  border: 1px solid #808080;
+  background-color: #dadada;
+}
+
+button.highlightOn {
+  background-color: #cdf9cd !important;
+  border: 1px solid #b0b0b0;
+  border-radius: 2px;
+}
+
+div.bottomButtons {
+  float: right;
+  margin-top: 15px;
+}
+
+td.pointMapActions {
+  float: right;
+}
+

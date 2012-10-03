@@ -51,6 +51,23 @@ foreach($this->jsImports as $jsImport)
   </div>
 </div>
 
-<!-- UI Action widget templates -->
+<!-- TEMPLATE: UI Action widget -->
 <button id="actionButtonTemplate" style="display: none;" class="actionButton actionInactive"></button>
+
+<!-- TEMPLATE: Fiducial point list dialog -->
+<div id="pointListDialogTemplate" style="display: none;">
+  <table class="pointListTable">
+    <thead>
+      <tr>
+        <th>Left image point</th><th>Right image point</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <div class="bottomButtons">
+    <button class="processButton">Process</button>
+    <button class="closeButton">Close</button>
+  </div>
+</div>
 
