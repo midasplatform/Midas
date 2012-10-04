@@ -65,17 +65,22 @@ midas.visualize._dataOpened = function (retVal) {
     midas.visualize.colorMap = midas.visualize.defaultColorMap;
     midas.visualize.currentSlice = midas.visualize.midK;
     midas.visualize.sliceMode = 'XY Plane';
+    midas.visualize.cameraViewUp = [0.0, -1.0, 0.0];
+    midas.visualize.cameraFocalPoint = [midas.visualize.midI, midas.visualize.midJ, midas.visualize.midK];
+    midas.visualize.cameraPosition = [midas.visualize.midI, midas.visualize.midJ, midas.visualize.bounds[4] - 10];
+    midas.visualize.cameraParallelScale = 
+      Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
+               midas.visualize.bounds[3] - midas.visualize.bounds[2]) / 2.0;
 
     var params = {
-        cameraFocalPoint: [midas.visualize.midI, midas.visualize.midJ, midas.visualize.midK],
-        cameraPosition: [midas.visualize.midI, midas.visualize.midJ, midas.visualize.bounds[4] - 10],
+        cameraFocalPoint: midas.visualize.cameraFocalPoint,
+        cameraPosition: midas.visualize.cameraPosition,
         colorMap: midas.visualize.defaultColorMap,
         colorArrayName: json.visualize.colorArrayName,
         sliceVal: midas.visualize.currentSlice,
         sliceMode: midas.visualize.sliceMode,
-        parallelScale: Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
-                                midas.visualize.bounds[3] - midas.visualize.bounds[2]) / 2.0,
-        cameraUp: [0.0, -1.0, 0.0],
+        parallelScale: midas.visualize.cameraParallelScale,
+        cameraUp: midas.visualize.cameraViewUp,
         meshes: midas.visualize.meshes,
         lineWidth: midas.visualize.maxDim / 100.0
     };
@@ -171,7 +176,7 @@ midas.visualize.updateWindowInfo = function (values) {
 midas.visualize.changeWindow = function (values) {
     paraview.plugins.midasslice.AsyncChangeWindow(function (retVal) {
         midas.visualize.lookupTable = retVal.lookupTable;
-        paraview.sendEvent('Render', ''); //force a view refresh
+        midas.visualize.forceRefreshView();
     }, [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0], json.visualize.colorArrayName);
     midas.visualize.imageWindow = values;
 };
@@ -194,7 +199,7 @@ midas.visualize.changeSlice = function (slice) {
         if(typeof midas.visualize.changeSliceCallback == 'function') {
             midas.visualize.changeSliceCallback(slice);
         }
-        paraview.sendEvent('Render', ''); //force a view refresh
+        midas.visualize.forceRefreshView();
     }, params);
 };
 
@@ -243,54 +248,38 @@ midas.visualize.pointSelectMode = function () {
 
     // Bind click action on the render window
     var el = $(midas.visualize.renderers.current.view);
-    var extent = midas.visualize.extent; //alias the variable for shorthand
     el.unbind('click').click(function (e) {
         var x, y, z;
-        if(midas.visualize.sliceMode == 'XY Plane') {
-            var longLength = Math.max(extent[1] - extent[0], extent[3] - extent[2]);
-            var arWidth = (extent[1] - extent[0]) / longLength;
-            var arHeight = (extent[3] - extent[2]) / longLength;
+        var pscale = midas.visualize.cameraParallelScale;
+        var focus = midas.visualize.cameraFocalPoint;
 
-            x = (extent[1] - extent[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-            x -= extent[0];
-            
-            y = (extent[3] - extent[2]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-            y -= extent[2];
-            
-            z = midas.visualize.currentSlice;
+        if(midas.visualize.sliceMode == 'XY Plane') {
+            var top = focus[1] - pscale;
+            var bottom = focus[1] + pscale;
+            var left = focus[0] - pscale;
+            var right = focus[0] + pscale;
+            x = (e.offsetX / $(this).width()) * (right - left) + left;
+            y = (e.offsetY / $(this).height()) * (bottom - top) + top;
+            z = midas.visualize.currentSlice + midas.visualize.bounds[4] - midas.visualize.extent[4];
         }
         else if(midas.visualize.sliceMode == 'XZ Plane') {
-            var longLength = Math.max(extent[1] - extent[0], extent[5] - extent[4]);
-            var arWidth = (extent[1] - extent[0]) / longLength;
-            var arHeight = (extent[5] - extent[4]) / longLength;
-
-            x = (extent[1] - extent[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-            x = extent[1] - x;
-            x -= extent[0];
-            
-            y = midas.visualize.currentSlice;
-            
-            z = (extent[5] - extent[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-            z = extent[5] - z;
-            z -= extent[4];
+            var top = focus[2] + pscale;
+            var bottom = focus[2] - pscale;
+            var left = focus[0] + pscale;
+            var right = focus[0] - pscale;
+            x = (e.offsetX / $(this).width()) * (right - left) + left;
+            y = midas.visualize.currentSlice + midas.visualize.bounds[2] - midas.visualize.extent[2];
+            z = (e.offsetY / $(this).height()) * (bottom - top) + top;
         }
         else if(midas.visualize.sliceMode == 'YZ Plane') {
-            var longLength = Math.max(extent[1] - extent[0], extent[5] - extent[4]);
-            var arWidth = (extent[1] - extent[0]) / longLength;
-            var arHeight = (extent[5] - extent[4]) / longLength;
-
-            x = midas.visualize.currentSlice;
-            
-            y = (extent[3] - extent[2]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-            y -= extent[2];
-            
-            z = (extent[5] - extent[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-            z = extent[5] - z;
-            z -= extent[4];
+            var top = focus[2] + pscale;
+            var bottom = focus[2] - pscale;
+            var left = focus[0] - pscale;
+            var right = focus[0] + pscale;
+            x = midas.visualize.currentSlice + midas.visualize.bounds[0] - midas.visualize.extent[0];
+            y = (e.offsetX / $(this).width()) * (right - left) + left;
+            z = (e.offsetY / $(this).height()) * (bottom - top) + top;
         }
-        x += midas.visualize.bounds[0] - extent[0];
-        y += midas.visualize.bounds[2] - extent[2];
-        z += midas.visualize.bounds[4] - extent[4];
 
         var html = 'You have selected the point:<p><b>('
                  +x.toFixed(1)+', '+y.toFixed(1)+', '+z.toFixed(1)+')</b></p>'
@@ -320,9 +309,17 @@ midas.visualize.pointSelectMode = function () {
         };
         paraview.plugins.midasslice.AsyncShowSphere(function (retVal) {
             midas.visualize.glyph = retVal.glyph;
-            paraview.sendEvent('Render', ''); //force a view refresh
+            midas.visualize.forceRefreshView();
         }, params);
     });
+};
+
+/**
+ * Force the renderer image to refresh from the server
+ */
+midas.visualize.forceRefreshView = function () {
+    var r = $('#renderercontainer');
+    updateRendererSize(paraview.sessionId, midas.visualize.activeView.__selfid__, r.width(), r.height());
 };
 
 /**
@@ -394,31 +391,35 @@ midas.visualize.setSliceMode = function (sliceMode) {
         return; //nothing to do, already in this mode
     }
 
-    var slice, parallelScale, cameraPosition, min, max;
+    var slice, min, max;
     if(sliceMode == 'XY Plane') {
         slice = Math.floor(midas.visualize.midK);
-        parallelScale = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
-                                 midas.visualize.bounds[3] - midas.visualize.bounds[2]) / 2.0;
-        cameraPosition = [midas.visualize.midI, midas.visualize.midJ, midas.visualize.bounds[4] - 10];
-        cameraUp = [0.0, -1.0, 0.0];
+        midas.visualize.cameraParallelScale = 
+          Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
+                   midas.visualize.bounds[3] - midas.visualize.bounds[2]) / 2.0;
+        midas.visualize.cameraPosition = 
+          [midas.visualize.midI, midas.visualize.midJ, midas.visualize.bounds[4] - 10];
+        midas.visualize.cameraViewUp = [0.0, -1.0, 0.0];
         min = midas.visualize.bounds[4];
         max = midas.visualize.bounds[5];
     }
     else if(sliceMode == 'XZ Plane') {
         slice = Math.floor(midas.visualize.midJ);
-        parallelScale = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
-                                 midas.visualize.bounds[5] - midas.visualize.bounds[4]) / 2.0;
-        cameraPosition = [midas.visualize.midI, midas.visualize.bounds[3] + 10, midas.visualize.midK];
-        cameraUp = [0.0, 0.0, 1.0];
+        midas.visualize.cameraParallelScale = 
+          Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
+                   midas.visualize.bounds[5] - midas.visualize.bounds[4]) / 2.0;
+        midas.visualize.cameraPosition = [midas.visualize.midI, midas.visualize.bounds[3] + 10, midas.visualize.midK];
+        midas.visualize.cameraViewUp = [0.0, 0.0, 1.0];
         min = midas.visualize.bounds[2];
         max = midas.visualize.bounds[3];
     }
     else { // YZ Plane
         slice = Math.floor(midas.visualize.midI);
-        parallelScale = Math.max(midas.visualize.bounds[3] - midas.visualize.bounds[2],
-                                 midas.visualize.bounds[5] - midas.visualize.bounds[4]) / 2.0;
-        cameraPosition = [midas.visualize.bounds[1] + 10, midas.visualize.midJ, midas.visualize.midK];
-        cameraUp = [0.0, 0.0, 1.0];
+        midas.visualize.cameraParallelScale =
+          Math.max(midas.visualize.bounds[3] - midas.visualize.bounds[2],
+                   midas.visualize.bounds[5] - midas.visualize.bounds[4]) / 2.0;
+        midas.visualize.cameraPosition = [midas.visualize.bounds[1] + 10, midas.visualize.midJ, midas.visualize.midK];
+        midas.visualize.cameraViewUp = [0.0, 0.0, 1.0];
         min = midas.visualize.bounds[0];
         max = midas.visualize.bounds[1];
     }
@@ -443,13 +444,13 @@ midas.visualize.setSliceMode = function (sliceMode) {
         sliceMode: sliceMode,
         meshes: midas.visualize.meshes,
         lineWidth: midas.visualize.maxDim / 100.0,
-        parallelScale: parallelScale,
-        cameraPosition: cameraPosition,
-        cameraUp: cameraUp
+        parallelScale: midas.visualize.cameraParallelScale,
+        cameraPosition: midas.visualize.cameraPosition,
+        cameraUp: midas.visualize.cameraViewUp
     };
     paraview.plugins.midasslice.AsyncChangeSliceMode(function (retVal) {
         midas.visualize.meshSlices = retVal.meshSlices;
-        paraview.sendEvent('Render', ''); //force a view refresh
+        midas.visualize.forceRefreshView();
     }, params);
 };
 
