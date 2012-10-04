@@ -138,7 +138,7 @@ midas.visualize.renderSubgrid = function (bounds) {
         midas.visualize.subgrid = subgrid;
         container.find('img.extractInProgress').hide();
         container.find('button.extractSubgridApply').removeAttr('disabled');
-        paraview.sendEvent('Render', ''); //force a view refresh
+        midas.visualize.forceRefreshView();
         },
       midas.visualize.input, bounds, midas.visualize.lookupTable,
       midas.visualize.sof, json.visualize.colorArrayName, toHide
@@ -204,6 +204,14 @@ midas.visualize.setupObjectList = function () {
     });
 };
 
+/**
+ * Force the renderer image to refresh from the server
+ */
+midas.visualize.forceRefreshView = function () {
+    var r = $('#renderercontainer');
+    updateRendererSize(paraview.sessionId, midas.visualize.activeView.__selfid__, r.width(), r.height());
+};
+
 midas.visualize.toggleObjectVisibility = function(checkbox) {
     var type = checkbox.attr('vis');
     var itemId = checkbox.attr('element');
@@ -231,7 +239,7 @@ midas.visualize.toggleObjectVisibility = function(checkbox) {
     else {
         paraview.Hide({proxy: proxy});
     }
-    paraview.sendEvent('Render', ''); //force a view refresh
+    midas.visualize.forceRefreshView();
 };
 
 /**
@@ -314,7 +322,7 @@ midas.visualize.setupColorMapping = function () {
             });
             midas.visualize.colorMap = colorMap;
             paraview.plugins.midascommon.AsyncUpdateColorMap(function() {
-                paraview.sendEvent('Render', ''); //force a view refresh
+                midas.visualize.forceRefreshView();
               }, {
                 colorArrayName: json.visualize.colorArrayName,
                 colorMap: colorMap
@@ -409,7 +417,7 @@ midas.visualize.applySofCurve = function () {
     paraview.SetDisplayProperties({
         ScalarOpacityFunction: midas.visualize.sof
     });
-    paraview.sendEvent('Render', ''); //force a view refresh
+    midas.visualize.forceRefreshView();
 };
 
 /**
@@ -568,7 +576,7 @@ midas.visualize.setupExtractSubgrid = function () {
 
 midas.visualize.setupOverlay = function () {
     $('button.plusX').click(function () {
-        paraview.plugins.midascommon.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
+        paraview.plugins.midascommon.AsyncSetCamera(function () {midas.visualize.forceRefreshView();}, {
             cameraPosition: [
               midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
               midas.visualize.midJ,
@@ -577,7 +585,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.minusX').click(function () {
-        paraview.plugins.midascommon.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
+        paraview.plugins.midascommon.AsyncSetCamera(function () {midas.visualize.forceRefreshView();}, {
             cameraPosition: [
               midas.visualize.midI + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
               midas.visualize.midJ,
@@ -586,7 +594,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.plusY').click(function () {
-        paraview.plugins.midascommon.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
+        paraview.plugins.midascommon.AsyncSetCamera(function () {midas.visualize.forceRefreshView();}, {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
@@ -595,7 +603,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.minusY').click(function () {
-        paraview.plugins.midascommon.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
+        paraview.plugins.midascommon.AsyncSetCamera(function () {midas.visualize.forceRefreshView();}, {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
@@ -604,7 +612,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.plusZ').click(function () {
-        paraview.plugins.midascommon.AsyncSetCamera(function () {paraview.sendEvent('Render', ''); }, {
+        paraview.plugins.midascommon.AsyncSetCamera(function () {midas.visualize.forceRefreshView();}, {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ,
@@ -613,7 +621,7 @@ midas.visualize.setupOverlay = function () {
         });
     });
     $('button.minusZ').click(function () {
-        paraview.plugins.midascommon.AsyncSetCamera(function () {paraview.sendEvent('Render', '');}, {
+        paraview.plugins.midascommon.AsyncSetCamera(function () {midas.visualize.forceRefreshView();}, {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ,

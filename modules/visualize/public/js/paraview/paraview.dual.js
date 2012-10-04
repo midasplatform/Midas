@@ -79,6 +79,7 @@ midas.visualize._dataOpened = function (side, retVal) {
         return;
     }
     
+    // Store data representation properties
     midas.visualize[side].defaultColorMap = [
        midas.visualize[side].minVal, 0.0, 0.0, 0.0,
        midas.visualize[side].maxVal, 1.0, 1.0, 1.0];
@@ -86,16 +87,25 @@ midas.visualize._dataOpened = function (side, retVal) {
     midas.visualize.currentSlice = midas.visualize[side].midK;
     midas.visualize.sliceMode = 'XY Plane';
 
+    // Store camera properties
+    midas.visualize[side].cameraFocalPoint = 
+      [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].midK];
+    midas.visualize[side].cameraPosition = 
+      [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].bounds[4] - 10];
+    midas.visualize[side].cameraParallelScale = 
+      Math.max(midas.visualize[side].bounds[1] - midas.visualize[side].bounds[0],
+      midas.visualize[side].bounds[3] - midas.visualize[side].bounds[2]) / 2.0;
+    midas.visualize[side].cameraViewUp = [0.0, -1.0, 0.0];
+    
     var params = {
-        cameraFocalPoint: [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].midK],
-        cameraPosition: [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].bounds[4] - 10],
+        cameraFocalPoint: midas.visualize[side].cameraFocalPoint,
+        cameraPosition: midas.visualize[side].cameraPosition,
         colorMap: midas.visualize[side].defaultColorMap,
         colorArrayName: json.visualize.colorArrayNames[side],
         sliceVal: midas.visualize.currentSlice,
         sliceMode: midas.visualize.sliceMode,
-        parallelScale: Math.max(midas.visualize[side].bounds[1] - midas.visualize[side].bounds[0],
-                                midas.visualize[side].bounds[3] - midas.visualize[side].bounds[2]) / 2.0,
-        cameraUp: [0.0, -1.0, 0.0]
+        parallelScale: midas.visualize[side].cameraParallelScale,
+        cameraUp: midas.visualize[side].cameraViewUp
     };
     $('#'+side+'LoadingStatus').html('Initializing view state and renderer...');
 
@@ -307,56 +317,39 @@ midas.visualize.pointMapMode = function () {
     // Bind click action on the render window
     $.each(['left', 'right'], function(i, side) {
         var el = $(midas.visualize[side].renderer.view);
-        var extent = midas.visualize[side].extent; //alias the variable for shorthand
 
         el.unbind('click').click(function (e) {
             var x, y, z;
-            if(midas.visualize.sliceMode == 'XY Plane') {
-                var longLength = Math.max(extent[1] - extent[0], extent[3] - extent[2]);
-                var arWidth = (extent[1] - extent[0]) / longLength;
-                var arHeight = (extent[3] - extent[2]) / longLength;
+            var pscale = midas.visualize[side].cameraParallelScale;
+            var focus = midas.visualize[side].cameraFocalPoint;
 
-                x = (extent[1] - extent[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-                x -= extent[0];
-                
-                y = (extent[3] - extent[2]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-                y -= extent[2];
-                
-                z = midas.visualize.currentSlice;
+            if(midas.visualize.sliceMode == 'XY Plane') {
+                var top = focus[1] - pscale;
+                var bottom = focus[1] + pscale;
+                var left = focus[0] - pscale;
+                var right = focus[0] + pscale;
+                x = (e.offsetX / $(this).width()) * (right - left) + left;
+                y = (e.offsetY / $(this).height()) * (bottom - top) + top;
+                z = midas.visualize.currentSlice + midas.visualize[side].bounds[4] - midas.visualize[side].extent[4];
             }
             else if(midas.visualize.sliceMode == 'XZ Plane') {
-                var longLength = Math.max(extent[1] - extent[0], extent[5] - extent[4]);
-                var arWidth = (extent[1] - extent[0]) / longLength;
-                var arHeight = (extent[5] - extent[4]) / longLength;
-
-                x = (extent[1] - extent[0]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-                x = extent[1] - x;
-                x -= extent[0];
-                
-                y = midas.visualize.currentSlice;
-                
-                z = (extent[5] - extent[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-                z = extent[5] - z;
-                z -= extent[4];
+                var top = focus[2] + pscale;
+                var bottom = focus[2] - pscale;
+                var left = focus[0] + pscale;
+                var right = focus[0] - pscale;
+                x = (e.offsetX / $(this).width()) * (right - left) + left;
+                y = midas.visualize.currentSlice + midas.visualize[side].bounds[2] - midas.visualize[side].extent[2];
+                z = (e.offsetY / $(this).height()) * (bottom - top) + top;
             }
             else if(midas.visualize.sliceMode == 'YZ Plane') {
-                var longLength = Math.max(extent[1] - extent[0], extent[5] - extent[4]);
-                var arWidth = (extent[1] - extent[0]) / longLength;
-                var arHeight = (extent[5] - extent[4]) / longLength;
-
-                x = midas.visualize.currentSlice;
-                
-                y = (extent[3] - extent[2]) * ((e.offsetX - ($(this).width() * (1-arWidth) / 2.0)) / ($(this).width() * arWidth));
-                y -= extent[2];
-                
-                z = (extent[5] - extent[4]) * ((e.offsetY - ($(this).height() * (1-arHeight) / 2.0)) / ($(this).height() * arHeight));
-                z = extent[5] - z;
-                z -= extent[4];
+                var top = focus[2] + pscale;
+                var bottom = focus[2] - pscale;
+                var left = focus[0] - pscale;
+                var right = focus[0] + pscale;
+                x = midas.visualize.currentSlice + midas.visualize[side].bounds[0] - midas.visualize[side].extent[0];
+                y = (e.offsetX / $(this).width()) * (right - left) + left;
+                z = (e.offsetY / $(this).height()) * (bottom - top) + top;
             }
-
-            x += midas.visualize[side].bounds[0] - extent[0];
-            y += midas.visualize[side].bounds[2] - extent[2];
-            z += midas.visualize[side].bounds[4] - extent[4];
 
             var surfaceColor = midas.visualize.pointColors[midas.visualize[side].points.length % midas.visualize.pointColors.length];
             var params = {
@@ -380,6 +373,9 @@ midas.visualize.pointMapMode = function () {
     });
 };
 
+/**
+ * Force the renderer image to refresh from the server
+ */
 midas.visualize.forceRefreshView = function (side) {
     var el = $('#'+side+'Renderer');
     updateRendererSize(paraview[side].sessionId,
@@ -443,10 +439,20 @@ midas.visualize._enablePointMap = function () {
  * Apply default camera parameters from the left side to the right, or use the right side defaults
  */
 midas.visualize.setCameraMode = function (side) {
+    midas.visualize.right.cameraFocalPoint = 
+      [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].midK];
+    midas.visualize.right.cameraPosition = 
+      [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].bounds[4] - 10];
+    midas.visualize.right.cameraParallelScale = 
+      Math.max(midas.visualize[side].bounds[1] - midas.visualize[side].bounds[0],
+      midas.visualize[side].bounds[3] - midas.visualize[side].bounds[2]) / 2.0;
+
     var params = {
-        cameraFocalPoint: [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].midK],
-        cameraPosition: [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].bounds[4] - 10]
+        cameraFocalPoint: midas.visualize.right.cameraFocalPoint,
+        cameraPosition: midas.visualize.right.cameraPosition,
+        cameraParallelScale: midas.visualize.right.cameraParallelScale
     };
+
     paraview.right.plugins.midascommon.AsyncMoveCamera(function () {
         midas.visualize.forceRefreshView('right');
     }, params);

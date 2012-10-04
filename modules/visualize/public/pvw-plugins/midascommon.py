@@ -38,11 +38,12 @@ def SetCamera (cameraPosition, cameraViewUp):
   activeView.CameraPosition = cameraPosition
   activeView.CameraViewUp = cameraViewUp
 
-# Set the camera position and camera focal point
-def MoveCamera (cameraPosition, cameraFocalPoint):
+# Set the camera position, focal point, and pscale
+def MoveCamera (cameraPosition, cameraFocalPoint, cameraParallelScale):
   activeView = pwsimple.GetActiveView()
   activeView.CameraPosition = cameraPosition
   activeView.CameraFocalPoint = cameraFocalPoint
+  activeView.CameraParallelScale = cameraParallelScale
 
 # Update the scalar color mapping
 def UpdateColorMap (colorMap, colorArrayName):
