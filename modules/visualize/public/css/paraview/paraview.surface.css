@@ -1,0 +1,21 @@
+#renderercontainer {
+  z-index: 2;
+  overflow: hidden;
+  width: 575px;
+  height: 575px;
+  display: none;
+  position: relative;
+}
+
+#renderer-type{
+  z-index: 5;width: 100px; position: absolute; right: 60px; top: 8px;
+}
+
+#loadingStatus {
+  margin-left: 10px;
+}
+
+span.infoValue {
+  color: #7a7a7a;
+}
+

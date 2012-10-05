@@ -24,17 +24,26 @@ class Visualize_ParaviewController extends Visualize_AppController
   public $_models = array('Item', 'ItemRevision', 'Bitstream');
   public $_moduleComponents = array('Main');
 
-  /** index */
-  public function indexAction()
+  /**
+   * Surface (mesh) model viewer action
+   * @param itemId The id of the item to view
+   */
+  public function surfaceAction()
     {
-    $this->disableLayout();
     $itemid = $this->_getParam('itemId');
+    if(!isset($itemid))
+      {
+      throw new Zend_Exception('Must specify an itemId parameter');
+      }
     $item = $this->Item->load($itemid);
 
     if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
-      throw new Zend_Exception("This item doesn't exist  or you don't have the permissions.");
+      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
       }
+    $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/pqUnstructuredGrid16.png" />';
+    $header .= ' Surface view: <a href="'.$this->view->webroot.'/item/'.$itemid.'">'.$item->getName().'</a>';
+    $this->view->header = $header;
 
     $modulesConfig = Zend_Registry::get('configsModules');
     $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
@@ -74,25 +83,7 @@ class Visualize_ParaviewController extends Visualize_AppController
       $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
       if($ext != 'pvsm')
         {
-        $filePath = $paraviewworkdir."/".$tmpFolderName.'/'.$bitstream->getName();
-        }
-      }
-
-    $this->view->json['visualize']['openState'] = false;
-
-    foreach($bitstreams as $bitstream)
-      {
-      $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
-      if($ext == 'pvsm')
-        {
-        $file_contents = file_get_contents($path.'/'.$bitstream->getName());
-        $file_contents = preg_replace('/\"([a-zA-Z0-9_.\/\\\:]{1,1000})'.  str_replace('.', '\.', $mainBitstream->getName())."/", '"'.$filePath, $file_contents);
-        $filePath = $paraviewworkdir."/".$tmpFolderName.'/'.$bitstream->getName();
-        $inF = fopen($path.'/'.$bitstream->getName(), "w");
-        fwrite($inF, $file_contents);
-        fclose($inF);
-        $this->view->json['visualize']['openState'] = true;
-        break;
+        $filePath = $paraviewworkdir.'/'.$tmpFolderName.'/'.$bitstream->getName();
         }
       }
 
@@ -105,17 +96,11 @@ class Visualize_ParaviewController extends Visualize_AppController
       $this->view->renderer = 'webgl';
       }
     $this->view->json['visualize']['url'] = $filePath;
-    $this->view->json['visualize']['width'] = $this->_getParam('width');
-    $this->view->json['visualize']['height'] = $this->_getParam('height');
-    $this->view->width = $this->_getParam('width');
-    $this->view->height = $this->_getParam('height');
+    $this->view->json['visualize']['item'] = $item;
     $this->view->fileLocation = $filePath;
-    $this->view->pwapp = $pwapp;
+    $this->view->jsImports = array(); //todo
     $this->view->usewebgl = $userwebgl;
     $this->view->itemDao = $item;
-    $this->view->screenshotPath = '/data/visualize/_'.$item->getKey().'_1.png';
-    $this->view->useScreenshot = file_exists(BASE_PATH.$this->view->screenshotPath);
-    $this->view->loadState = $this->view->json['visualize']['openState'];
     }
 
   /**

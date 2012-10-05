@@ -130,6 +130,36 @@ class Visualize_MainComponent extends AppComponent
     return in_array($ext, $extensions);
     }
 
+  /** Test whether we can visualize with surface model viewer */
+  public function canVisualizeWithSurfaceView($itemDao)
+    {
+    $modulesConfig = Zend_Registry::get('configsModules');
+    if(Zend_Registry::get('configGlobal')->environment != 'testing')
+      {
+      $useparaview = $modulesConfig['visualize']->useparaview;
+      if(!isset($useparaview) || !$useparaview)
+        {
+        return false;
+        }
+      }
+    $extensions = array('vtk', 'vtp', 'ply');
+
+    $itemModel = MidasLoader::loadModel('Item');
+    $revision = $itemModel->getLastRevision($itemDao);
+    if(empty($revision))
+      {
+      return false;
+      }
+    $bitstreams = $revision->getBitstreams();
+    if(count($bitstreams) == 0)
+      {
+      return false;
+      }
+
+    $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
+    return in_array($ext, $extensions);
+    }
+
   /** can visualize */
   public function canVisualizeWithParaview($itemDao)
     {

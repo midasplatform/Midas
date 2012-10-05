@@ -48,6 +48,14 @@ class Visualize_Notification extends MIDAS_Notification
 
       return $html;
       }
+    else if($this->ModuleComponent->Main->canVisualizeWithSurfaceView($item))
+      {
+      $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
+      $html = '<li><a href="'.$webroot.'/'.$this->moduleName.'/paraview/surface?itemId=';
+      $html .= $item->getKey().'"><img alt="" src="'.$webroot.'/modules/';
+      $html .= $this->moduleName.'/public/images/pqUnstructuredGrid16.png" /> Surface Visualization</a></li>';
+      return $html;
+      }
     }
 
   /** can visualize?*/
