@@ -412,7 +412,9 @@ midas.visualize._enablePointMap = function () {
     listButton.click(function () {
         midas.visualize.displayPointMap();
     });
+};
 
+midas.visualize._enableDefaultMode = function () {
     var camLinkButton = $('#actionButtonTemplate').clone();
     camLinkButton.removeAttr('id');
     camLinkButton.addClass('cameraLinkButton');
@@ -473,6 +475,7 @@ midas.visualize.enableActions = function (side, operations) {
                 alert('Unsupported operation: '+operation);
             }
         });
+        midas.visualize._enableDefaultMode();
     }
 };
 
