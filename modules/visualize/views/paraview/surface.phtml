@@ -54,6 +54,13 @@ foreach($this->jsImports as $jsImport)
     </ul>
   </div>
   <div class="sideElement">
+    <h1>Renderer</h1>
+    <select disabled="disabled" id="rendererSelect">
+      <option selected="selected" value="js">Server side</option>
+      <option value="webgl">WebGL</option>
+    </select>
+  </div>
+  <div class="sideElement">
     <h1>Info</h1>
     Number of Points: <span id="nbPointsInfo" class="infoValue"></span><br/>
     Number of Cells: <span id="nbCellsInfo" class="infoValue"></span><br/>

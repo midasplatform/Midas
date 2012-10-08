@@ -377,9 +377,9 @@ midas.visualize.pointMapMode = function () {
  * Force the renderer image to refresh from the server
  */
 midas.visualize.forceRefreshView = function (side) {
-    var el = $('#'+side+'Renderer');
+    /*var el = $('#'+side+'Renderer');
     updateRendererSize(paraview[side].sessionId,
-                       midas.visualize[side].activeView.__selfid__, el.width(), el.height());
+                       midas.visualize[side].activeView.__selfid__, el.width(), el.height());*/
 };
 
 /**

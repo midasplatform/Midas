@@ -55,9 +55,12 @@ midas.visualize.initCallback = function (retVal) {
     midas.visualize.activeView = retVal.activeView;
 
     // Create renderers
-    midas.visualize.switchRenderer(true);
+    midas.visualize.switchRenderer(true, 'js');
     $('img.visuLoading').hide();
     $('#renderercontainer').show();
+    $('#rendererSelect').removeAttr('disabled').change(function () {
+        midas.visualize.switchRenderer(false, $(this).val());
+    });
 };
 
 midas.visualize.resetCamera = function () {
@@ -72,21 +75,36 @@ midas.visualize.toggleEdges = function () {
     }
 };
 
-midas.visualize.switchRenderer = function (first) {
-    if(midas.visualize.renderers.js == undefined) {
-        midas.visualize.renderers.js = new JavaScriptRenderer('jsRenderer', '/PWService');
-        midas.visualize.renderers.js.init(paraview.sessionId, midas.visualize.activeView.__selfid__);
+midas.visualize.switchRenderer = function (first, type) {
+    if(type == 'js') {
+        if(midas.visualize.renderers.js == undefined) {
+            midas.visualize.renderers.js = new JavaScriptRenderer('jsRenderer', '/PWService');
+            midas.visualize.renderers.js.init(paraview.sessionId, midas.visualize.activeView.__selfid__);
+        }
+    }
+    else if(type == 'webgl') {
+        if(midas.visualize.renderers.webgl == undefined) {
+            paraview.updateConfiguration(true, 'JPEG', 'WebGL');
+            midas.visualize.renderers.webgl = new WebGLRenderer('webglRenderer', '/PWService');
+            midas.visualize.renderers.webgl.init(paraview.sessionId, midas.visualize.activeView.__selfid__);
+        }
     }
 
     if(!first) {
         midas.visualize.renderers.current.unbindToElementId('renderercontainer');
     }
-    midas.visualize.renderers.current = midas.visualize.renderers.js;
+    midas.visualize.renderers.current = midas.visualize.renderers[type];
+    midas.visualize.renderers.current.type = type;
     midas.visualize.renderers.current.bindToElementId('renderercontainer');
     var el = $('#renderercontainer');
     midas.visualize.renderers.current.setSize(el.width(), el.height());
     midas.visualize.renderers.current.start();
-    midas.visualize.renderers.current.updateServerSizeIfNeeded();
+    if(type == 'js') {
+        midas.visualize.renderers.current.updateServerSizeIfNeeded();
+    }
+    else {
+        paraview.updateConfiguration(true, 'JPEG', 'WebGL');
+    }
 };
 
 $(window).load(function () {
