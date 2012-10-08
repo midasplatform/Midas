@@ -377,9 +377,9 @@ midas.visualize.pointMapMode = function () {
  * Force the renderer image to refresh from the server
  */
 midas.visualize.forceRefreshView = function (side) {
-    var el = $('#'+side+'Renderer');
+    /*var el = $('#'+side+'Renderer');
     updateRendererSize(paraview[side].sessionId,
-                       midas.visualize[side].activeView.__selfid__, el.width(), el.height());
+                       midas.visualize[side].activeView.__selfid__, el.width(), el.height());*/
 };
 
 /**
@@ -412,7 +412,9 @@ midas.visualize._enablePointMap = function () {
     listButton.click(function () {
         midas.visualize.displayPointMap();
     });
+};
 
+midas.visualize._enableDefaultMode = function () {
     var camLinkButton = $('#actionButtonTemplate').clone();
     camLinkButton.removeAttr('id');
     camLinkButton.addClass('cameraLinkButton');
@@ -473,6 +475,7 @@ midas.visualize.enableActions = function (side, operations) {
                 alert('Unsupported operation: '+operation);
             }
         });
+        midas.visualize._enableDefaultMode();
     }
 };
 
