@@ -38,21 +38,13 @@ class Batchmake_Notification extends ApiEnabled_Notification
 
   /**
    *@method getDashboard
-   * will generate information about this module to display on the Dashboard
-   *@return array with key being a string describing if the configuration of
-   * the module is correct or not, and value being a 1/0 for the same info.
+   *will generate information about this module to display on the Dashboard
+   *@return array with key being the module name, the value being an array 
+    of configuration correctness values (0 or 1).
    */
   public function getDashboard()
     {
-    $return = array();
-    if($this->ModuleComponent->KWBatchmake->isConfigCorrect())
-      {
-      $return[$this->Component->Internationalization->translate(MIDAS_BATCHMAKE_CONFIG_CORRECT)] = 1;
-      }
-    else
-      {
-      $return[$this->Component->Internationalization->translate(MIDAS_BATCHMAKE_CONFIG_ERROR)] = 0;
-      }
+    $return = array('Batchmake' => array($this->ModuleComponent->KWBatchmake->isConfigCorrect()));
     return $return;
     }
 
