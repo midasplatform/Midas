@@ -16,9 +16,11 @@ midas.visualize.start = function () {
     paraview = new Paraview("/PWService");
     paraview.errorListener = {
         manageError: function(error) {
-            midas.createNotice('A ParaViewWeb error occurred; check the console for information', 4000, 'error');
-            console.log(error);
-            return true;
+            if(error) {
+                midas.createNotice('A ParaViewWeb error occurred; check the console for information', 4000, 'error');
+                console.log(error);
+                return false;
+            }
         }
     };
 
@@ -208,8 +210,7 @@ midas.visualize.setupObjectList = function () {
  * Force the renderer image to refresh from the server
  */
 midas.visualize.forceRefreshView = function () {
-    var r = $('#renderercontainer');
-    updateRendererSize(paraview.sessionId, midas.visualize.activeView.__selfid__, r.width(), r.height());
+    paraview.sendEvent('Render', '');
 };
 
 midas.visualize.toggleObjectVisibility = function(checkbox) {

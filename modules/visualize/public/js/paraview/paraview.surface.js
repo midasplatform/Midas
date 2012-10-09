@@ -17,9 +17,11 @@ midas.visualize.start = function () {
     paraview = new Paraview("/PWService");
     paraview.errorListener = {
         manageError: function(error) {
-            //alert('A ParaViewWeb error occurred; check the console for information');
-            console.log(error);
-            return true;
+            if(error) {
+                midas.createNotice('A ParaViewWeb error occurred; check the console for information', 4000, 'error');
+                console.log(error);
+                return false;
+            }
         }
     };
     paraview.createSession("midas", "surface view", "default");
@@ -30,7 +32,7 @@ midas.visualize.start = function () {
         filename: json.visualize.url,
         otherMeshes: []
     });
-}
+};
 
 midas.visualize._dataOpened = function (retVal) {
     $('#loadingStatus').html('Initializing view state and renderer...');

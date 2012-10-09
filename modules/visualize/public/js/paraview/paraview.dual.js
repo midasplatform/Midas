@@ -20,18 +20,22 @@ midas.visualize.start = function () {
     paraview.left = new Paraview('/PWService');
     paraview.left.errorListener = {
         manageError: function(error) {
-            midas.createNotice('A ParaViewWeb error occurred; check the console for information', 4000, 'error');
-            console.log(error);
-            return true;
+            if(error) {
+                midas.createNotice('A ParaViewWeb error occurred; check the console for information', 4000, 'error');
+                console.log(error);
+                return false;
+            }
         }
     };
     $('#rightLoadingStatus').html('Creating ParaView session on the server and loading plugins...');
     paraview.right = new Paraview('/PWService');
     paraview.right.errorListener = {
         manageError: function(error) {
-            midas.createNotice('A ParaViewWeb error occurred; check the console for information', 4000, 'error');
-            console.log(error);
-            return true;
+            if(error) {
+                midas.createNotice('A ParaViewWeb error occurred; check the console for information', 4000, 'error');
+                console.log(error);
+                return false;
+            }
         }
     };
 
@@ -377,9 +381,7 @@ midas.visualize.pointMapMode = function () {
  * Force the renderer image to refresh from the server
  */
 midas.visualize.forceRefreshView = function (side) {
-    /*var el = $('#'+side+'Renderer');
-    updateRendererSize(paraview[side].sessionId,
-                       midas.visualize[side].activeView.__selfid__, el.width(), el.height());*/
+    paraview[side].sendEvent('Render', '');
 };
 
 /**
