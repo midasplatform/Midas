@@ -177,7 +177,7 @@ class AdminController extends AppController
         $applicationConfig['global']['httpproxy'] = $this->_getParam('httpProxy');
         $applicationConfig['global']['gravatar'] = $this->_getParam('gravatar');
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
-        echo JsonComponent::encode(array(true, 'Changed saved'));
+        echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       if(isset($submitModule))
         {
@@ -210,7 +210,7 @@ class AdminController extends AppController
         rename(BASE_PATH.'/core/configs/application.local.ini', BASE_PATH.'/core/configs/application.local.ini.old');
         $applicationConfig['module'][$moduleName] = $modulevalue;
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
-        echo JsonComponent::encode(array(true, 'Changed saved'));
+        echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
 
