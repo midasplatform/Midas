@@ -94,6 +94,7 @@ class ApiEnabled_Notification extends MIDAS_Notification
   public function findWebApiMethod($params)
     {
     $methodName = $params['methodName'];
+    $this->ModuleComponent->Api->userSession = $this->userSession;
     if(method_exists($this->ModuleComponent->Api, $methodName))
       {
       return array('object' => &$this->ModuleComponent->Api, 'method' => $methodName);
