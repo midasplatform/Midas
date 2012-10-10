@@ -52,11 +52,35 @@ class ApiCallMethodsTest extends ControllerTestCase
     }
 
   /** Make sure we failed with a given message from the API call */
-  private function _assertStatusFail($resp, $code)
+  private function _assertStatusFail($resp, $code, $message = false)
     {
     $this->assertNotEquals($resp, false);
     $this->assertEquals($resp->stat, 'fail');
     $this->assertEquals($resp->code, $code);
+    if($message !== false)
+      {
+      $this->assertEquals($resp->message, $message);
+      }
+    }
+
+  private function _loginAsUser($userDao)
+    {
+    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userApiModel->createDefaultApiKey($userDao);
+    $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
+
+    $this->params['method'] = 'midas.login';
+    $this->params['email'] = $userDao->getEmail();
+    $this->params['appname'] = 'Default';
+    $this->params['apikey'] = $apiKey;
+
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals(strlen($resp->data->token), 40);
+
+    // **IMPORTANT** This will clear any params that were set before this function was called
+    $this->resetAll();
+    return $resp->data->token;
     }
 
   /** Authenticate using the default api key for user 1 */
@@ -64,23 +88,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
-    $userApiModel->createDefaultApiKey($userDao);
-    $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
-
-    $this->params['method'] = 'midas.login';
-    $this->params['email'] = $usersFile[0]->getEmail();
-    $this->params['appname'] = 'Default';
-    $this->params['apikey'] = $apiKey;
-
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusOk($resp);
-    $this->assertEquals(strlen($resp->data->token), 40);
-
-    // **IMPORTANT** This will clear any params that were set before this function was called
-    $this->resetAll();
-    return $resp->data->token;
+    return $this->_loginAsUser($userDao);
     }
 
   /** Authenticate using the default api key */
@@ -88,24 +96,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[2]->getKey());
-
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
-    $userApiModel->createDefaultApiKey($userDao);
-    $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
-
-    $this->params['method'] = 'midas.login';
-    $this->params['email'] = $usersFile[2]->getEmail();
-    $this->params['appname'] = 'Default';
-    $this->params['apikey'] = $apiKey;
-    $this->request->setMethod('POST');
-
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusOk($resp);
-    $this->assertEquals(strlen($resp->data->token), 40);
-
-    // **IMPORTANT** This will clear any params that were set before this function was called
-    $this->resetAll();
-    return $resp->data->token;
+    return $this->_loginAsUser($userDao);
     }
 
   /** Get the folders corresponding to the user */
@@ -149,9 +140,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['method'] = 'midas.community.create';
     $this->params['name'] = 'testNewComm';
     $resp = $this->_callJsonApi();
-    $this->assertEquals($resp->message, 'Only admins can create communities');
-    $this->assertEquals($resp->stat, 'fail');
-    $this->assertNotEquals($resp->code, 0);
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY, 'Only admins can create communities');
 
     $communities = $communityModel->getAll();
     $this->assertEquals(count($communities), $originalCount);
@@ -163,7 +152,6 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['name'] = 'testNewComm';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
-
     $communities = $communityModel->getAll();
     $this->assertEquals(count($communities), $originalCount + 1);
     }
@@ -595,9 +583,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     // call should fail for the first item since we don't have write permission
     $this->params['itemid'] = $itemsFile[0]->getKey();
     $resp = $this->_callJsonApi();
-    $this->assertEquals($resp->stat, 'fail');
-    $this->assertEquals($resp->message, 'Invalid policy or itemid');
-    $this->assertTrue($resp->code != 0);
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY, 'Invalid policy or itemid');
 
     //now upload using our token
     $this->resetAll();
@@ -675,7 +661,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     // 4
     // when calling midas.upload.perform 2x in a row with the same params
     // (same upload token, same file that had just been uploaded),
-    // the response should be an invalid token, -141.
+    // the response should be an invalid token.
     //
     // This is because the token is good for a single upload, and it no longer
     // exists once the original upload is finished.
@@ -688,9 +674,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['revision'] = 'head'; //upload into head revision
     $this->params['testingmode'] = 'true';
     $resp = $this->_callJsonApi();
-    $this->assertNotEquals($resp, false);
-    $this->assertEquals($resp->stat, 'fail');
-    $this->assertEquals($resp->code, -141);
+    $this->_assertStatusFail($resp, MIDAS_INVALID_UPLOAD_TOKEN);
 
     // 5
     // Check that a redundant upload yields a blank upload token and a new reference
@@ -820,9 +804,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['revision'] = '1'; //upload into revision 1
     $this->params['testingmode'] = 'true';
     $resp = $this->_callJsonApi();
-    $this->assertNotEquals($resp, false);
-    $this->assertEquals($resp->stat, 'fail');
-    $this->assertEquals($resp->code, -150);
+    $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
 
     // 11
     // upload to head revision, this should create a revision 1 and
@@ -878,9 +860,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['filename'] = 'test.txt';
     $resp = $this->_callJsonApi();
     // should be an error
-    $this->assertNotEquals($resp, false);
-    $this->assertEquals($resp->stat, 'fail');
-    $this->assertEquals($resp->code, -150);
+    $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
 
     // 14
     // test upload.generatetoken with folderid and itemid
@@ -892,9 +872,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['folderid'] = '0';
     $resp = $this->_callJsonApi();
     // should be an error
-    $this->assertNotEquals($resp, false);
-    $this->assertEquals($resp->stat, 'fail');
-    $this->assertEquals($resp->code, -150);
+    $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
 
     // 15
     // test upload.generatetoken passing in folderid
@@ -1134,9 +1112,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['method'] = 'midas.bitstream.count';
     $this->params['uuid'] = 'notavaliduuid';
     $resp = $this->_callJsonApi();
-    $this->assertEquals($resp->message, 'No resource for the given UUID.');
-    $this->assertEquals($resp->stat, 'fail');
-    $this->assertNotEquals($resp->code, 0);
+    $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER, 'No resource for the given UUID.');
 
     // Test count bitstreams in community
     $this->resetAll();
@@ -1152,9 +1128,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['method'] = 'midas.bitstream.count';
     $this->params['uuid'] = '4e311fdf82007c245b07d8d6c4fcb4205f2621eb72751';
     $resp = $this->_callJsonApi();
-    $this->assertEquals($resp->message, 'Invalid policy');
-    $this->assertEquals($resp->stat, 'fail');
-    $this->assertNotEquals($resp->code, 0);
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY, 'Invalid policy');
 
     // Test count bitstreams in folder with privileges - should succeed
     $this->resetAll();
@@ -1432,7 +1406,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['name'] = 'fail';
     $this->params['id'] = '1';
     $resp = $this->_callJsonApi();
-    $this->assertEquals($resp->stat, 'fail');
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
 
     // Test getting a user by first name and last name
     $this->resetAll();
