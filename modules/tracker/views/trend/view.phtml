@@ -11,12 +11,58 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/trend/trend.view.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js');
-$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.dateAxisRenderer.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.dateAxisRenderer.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasTextRenderer.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasAxisLabelRenderer.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasAxisTickRenderer.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.highlighter.min.js');
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/trend/trend.view.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.jqplot.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
 
 <div class="viewMain">
+  <div class="itemsContainer">
+    <div>
+      Configuration data: 
+      <?php
+      if($this->trend->getConfigItemId())
+        {
+        echo '<a href="'.$this->webroot.'/item/'.$this->trend->getConfigItemId().'">'.$this->trend->getConfigItem()->getName().'</a>';
+        }
+      else
+        {
+        echo '<span class="itemLinkNone">none</span>';
+        }
+      ?>
+    </div>
+    <div>
+      Test data:
+      <?php
+      if($this->trend->getTestDatasetId())
+        {
+        echo '<a href="'.$this->webroot.'/item/'.$this->trend->getTestDatasetId().'">'.$this->trend->getTestDatasetItem()->getName().'</a>';
+        }
+      else
+        {
+        echo '<span class="itemLinkNone">none</span>';
+        }
+      ?>
+    </div>
+    <div>
+      Ground truth data:
+      <?php
+      if($this->trend->getTruthDatasetId())
+        {
+        echo '<a href="'.$this->webroot.'/item/'.$this->trend->getTruthDatasetId().'">'.$this->trend->getTruthDatasetItem()->getName().'</a>';
+        }
+      else
+        {
+        echo '<span class="itemLinkNone">none</span>';
+        }
+      ?>
+    </div>
+  </div>
   <div id="chartDiv" class="chartContainer"></div>
 </div>
 
@@ -29,12 +75,20 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
       <li>
         <a class="editTrendInfo"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/edit.png"/> Edit</a>
       </li>
+      <li>
+        <a class="deleteTrend"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/close.png"/> Delete</a>
+      </li>
     <?php
       } ?>
+      <li>
+        <a class="editTrendInfo"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/email_error.png"/> Notifications</a>
+      </li>
     </ul>
   </div>
   <div class="sideElement viewInfo">
     <h1>Info</h1>
-    
+    <div>Points in range: <span class="infoItem" id="pointCount"></span></div>
+    <div>Min value: <span class="infoItem" id="minVal"></span></div>
+    <div>Max value: <span class="infoItem" id="maxVal"></span></div>
   </div>
 </div>

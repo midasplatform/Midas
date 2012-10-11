@@ -1,4 +1,18 @@
+div.itemsContainer {
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
+
 div.chartContainer {
   width: 560px;
   height: 360px;
+}
+
+span.infoItem {
+  color: #979797;
+}
+
+span.itemLinkNone {
+  color: #a5a5a5;
+  font-style: italic;
 }

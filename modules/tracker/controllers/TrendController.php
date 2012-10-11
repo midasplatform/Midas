@@ -22,6 +22,8 @@ class Tracker_TrendController extends Tracker_AppController
   public function viewAction()
     {
     $trendId = $this->_getParam('trendId');
+    $startDate = $this->_getParam('startDate');
+    $endDate = $this->_getParam('endDate');
     if(!isset($trendId))
       {
       throw new Zend_Exception('Must pass trendId parameter');
@@ -34,12 +36,15 @@ class Tracker_TrendController extends Tracker_AppController
       }
     $this->view->trend = $trend;
     $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
-    $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_line.png" />';
-    $header .= ' <a href="'.$this->view->webroot.'/'.$this->moduleName.'/producer/view?producerId='.$trend->getProducer()->getKey();
-    $header .= '">'.$trend->getProducer()->getDisplayName().'</a>: '.$trend->getDisplayName();
+    $header = '<ul class="pathBrowser">';
+    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/community.png" /><span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Trackers">'.$comm->getName().'</a></span></li>';
+    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/cog_go.png" /><span><a href="'.$this->view->webroot.'/tracker/producer/view?producerId='.$trend->getProducer()->getKey().'">'.$trend->getProducer()->getDisplayName().'</a></span></li>';
+    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_line.png" /><span>'.$trend->getDisplayName().'</span></li>';
+    $header .= '</ul>';
     $this->view->header = $header;
 
-    $this->view->json['tracker']['scalars'] = $this->Tracker_Trend->getScalars($trend);
+    $this->view->json['tracker']['scalars'] = $this->Tracker_Trend->getScalars($trend, $startDate, $endDate);
+    $this->view->json['tracker']['trend'] = $trend;
     }
 
   /**
