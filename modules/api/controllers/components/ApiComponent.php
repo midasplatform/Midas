@@ -1014,7 +1014,7 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Move a folder to the desination folder
+   * Move a folder to the destination folder
    * @param token Authentication token
    * @param id The id of the folder
    * @param dstfolderid The id of destination folder (new parent folder) where the folder is moved to
@@ -1045,6 +1045,60 @@ class Api_ApiComponent extends AppComponent
     $folder = $folderModel->load($id);
     return $folder->toArray();
     }
+
+  /**
+   * List the permissions on a folder, requires Admin access to the folder.
+   * @param folder_id The id of the folder
+   * @return A list with three keys: privacy, user, group.  privacy will be the
+     folder's privacy string [Public|Private].  user will be a list of user_id
+     to (policy, email) for that user.  group will be a list of group_id to
+     (policy, name) for that group.  policy for user and group will be a
+     policy string [Admin|Write|Read].
+   */
+  public function folderListPermissions($args)
+    {
+    $this->_validateParams($args, array('folder_id'));
+    $userDao = $this->_getUser($args);
+
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderId = $args['folder_id'];
+    $folder = $folderModel->load($folderId);
+
+    if($folder === false)
+      {
+      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the folder to list permissions.", MIDAS_INVALID_POLICY);
+      }
+
+    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+    $privilegeStrings = array(MIDAS_POLICY_ADMIN => "Admin", MIDAS_POLICY_WRITE => "Write", MIDAS_POLICY_READ => "Read");
+
+    $return = array('privacy' => $privacyStrings[$folder->getPrivacyStatus()]);
+
+    $userPolicies = $folder->getFolderpolicyuser();
+    $userPoliciesOutput = array();
+    foreach($userPolicies as $userPolicy)
+      {
+      $user = $userPolicy->getUser();
+      $userPoliciesOutput[$user->getUserId()] = array('policy' => $privilegeStrings[$userPolicy->getPolicy()], 'email' => $user->getEmail());
+      }
+    $return['user'] = $userPoliciesOutput;
+
+    $groupPolicies = $folder->getFolderpolicygroup();
+    $groupPoliciesOutput = array();
+    foreach($groupPolicies as $groupPolicy)
+      {
+      $group = $groupPolicy->getGroup();
+      $groupPoliciesOutput[$group->getGroupId()] = array('policy' => $privilegeStrings[$groupPolicy->getPolicy()], 'name' => $group->getName());
+      }
+    $return['group'] = $groupPoliciesOutput;
+
+    return $return;
+    }
+
 
   /**
    * helper method to validate passed in privacy status params and
