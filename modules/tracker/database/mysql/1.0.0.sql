@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS `tracker_scalar` (
   `producer_revision` varchar(255),
   `submit_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`scalar_id`),
-  KEY `trend_id` (`trend_id`)
+  KEY `trend_id` (`trend_id`),
+  KEY `submit_time` (`submit_time`)
 );
 
 CREATE TABLE IF NOT EXISTS `tracker_scalar2item` (

@@ -9,7 +9,7 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-/** packages application controller*/
+/** Producer controller*/
 class Tracker_ProducerController extends Tracker_AppController
 {
   public $_models = array('Community');

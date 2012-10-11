@@ -1,0 +1,40 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/trend/trend.view.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.dateAxisRenderer.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/trend/trend.view.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.jqplot.css" />
+
+<div class="viewMain">
+  <div id="chartDiv" class="chartContainer"></div>
+</div>
+
+<div class="viewSideBar">
+  <div class="sideElementFirst viewAction">
+    <h1>Actions</h1>
+    <ul>
+    <?php if($this->isAdmin)
+      { ?>
+      <li>
+        <a class="editTrendInfo"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/edit.png"/> Edit</a>
+      </li>
+    <?php
+      } ?>
+    </ul>
+  </div>
+  <div class="sideElement viewInfo">
+    <h1>Info</h1>
+    
+  </div>
+</div>

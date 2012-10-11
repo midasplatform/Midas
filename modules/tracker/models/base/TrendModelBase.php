@@ -57,6 +57,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     }
 
   public abstract function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
+  public abstract function getScalars($trend, $startDate = null, $endDate = null);
 
   /**
    * If the producer with the matching parameters exists, return it.

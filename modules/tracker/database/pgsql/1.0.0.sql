@@ -28,6 +28,7 @@ CREATE TABLE tracker_scalar (
   submit_time timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX tracker_scalar_trend_id ON tracker_scalar (trend_id);
+CREATE INDEX tracker_scalar_submit_time ON tracker_scalar (submit_time);
 
 CREATE TABLE tracker_scalar2item (
   scalar_id bigint NOT NULL,
