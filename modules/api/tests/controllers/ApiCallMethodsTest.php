@@ -154,6 +154,81 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->_assertStatusOk($resp);
     $communities = $communityModel->getAll();
     $this->assertEquals(count($communities), $originalCount + 1);
+
+    $comm2001 = $communityModel->load('2001');
+    $userModel = MidasLoader::loadModel('User');
+    $commMember = $userModel->load('4');
+    $commModerator = $userModel->load('5');
+    $commAdmin = $userModel->load('6');
+    $nonModerators = array($commMember);
+    $nonAdmins = array($commMember, $commModerator);
+    $moderators = array($commModerator, $commAdmin);
+
+    // try to set name as as member, should fail
+    foreach($nonModerators as $userDao)
+      {
+      $this->resetAll();
+      $this->params['token'] = $this->_loginAsUser($userDao);
+      $this->params['method'] = 'midas.community.create';
+      $this->params['name'] = '2001';
+      $this->params['uuid'] = $comm2001->getUuid();
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+
+    // try to set name as moderator and admin, should pass
+    foreach($moderators as $userDao)
+      {
+      // get the current community name
+      $freshcommunity = $communityModel->load($comm2001->getCommunityId());
+      $communityName = $freshcommunity->getName();
+      $newcommunityName = $communityName . "suffix";
+      $this->resetAll();
+      $this->params['token'] = $this->_loginAsUser($userDao);
+      $this->params['method'] = 'midas.community.create';
+      $this->params['name'] = $newcommunityName;
+      $this->params['uuid'] = $comm2001->getUuid();
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusOk($resp);
+      $refreshComm = $communityModel->load($comm2001->getCommunityId());
+      // ensure that the name was properly updated
+      $this->assertEquals($newcommunityName, $refreshComm->getName(), 'Community name should have been changed');
+      }
+
+    // try to set privacy as member and moderator, should fail
+    foreach($nonAdmins as $userDao)
+      {
+      $this->resetAll();
+      $this->params['token'] = $this->_loginAsUser($userDao);
+      $this->params['method'] = 'midas.community.create';
+      $this->params['name'] = '2001';
+      $this->params['uuid'] = $comm2001->getUuid();
+      $this->params['privacy'] = 'Public';
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+
+    // try to set privacy as admin, should work
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($commAdmin);
+    $this->params['method'] = 'midas.community.create';
+    $this->params['name'] = '2001';
+    $this->params['uuid'] = $comm2001->getUuid();
+    $this->params['privacy'] = 'Private';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $comm2001 = $communityModel->load('2001');
+    $this->assertEquals($comm2001->getPrivacy(), MIDAS_PRIVACY_PRIVATE, 'Comm2001 should be private');
+
+    // try to set privacy to an invalid string
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($commAdmin);
+    $this->params['method'] = 'midas.community.create';
+    $this->params['name'] = '2001';
+    $this->params['uuid'] = $comm2001->getUuid();
+    $this->params['privacy'] = 'El Duderino';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
     }
 
   /** Test listing of visible communities */
@@ -214,6 +289,77 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['parentid'] = "1013";
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
+
+
+    $userModel = MidasLoader::loadModel('User');
+    $userDao = $userModel->load('1');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $readFolder = $folderModel->load('1012');
+    $writeFolder = $folderModel->load('1013');
+    $adminFolder = $folderModel->load('1014');
+    $nonWrites = array($readFolder);
+    $nonAdmins = array($readFolder, $writeFolder);
+    $writes = array($writeFolder, $adminFolder);
+
+    // try to set name with read, should fail
+    foreach($nonWrites as $folder)
+      {
+      $this->resetAll();
+      $this->params['token'] = $this->_loginAsUser($userDao);
+      $this->params['method'] = 'midas.folder.create';
+      $this->params['name'] = 'readFolder';
+      $this->params['uuid'] = $folder->getUuid();
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+    // try to set name with writes, should pass
+    foreach($writes as $folder)
+      {
+      // get the current folder name
+      $freshfolder = $folderModel->load($folder->getFolderId());
+      $folderName = $freshfolder->getName();
+      $newfolderName = $folderName . "suffix";
+      $this->resetAll();
+      $this->params['token'] = $this->_loginAsUser($userDao);
+      $this->params['method'] = 'midas.folder.create';
+      $this->params['name'] = $newfolderName;
+      $this->params['uuid'] = $folder->getUuid();
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusOk($resp);
+      $refreshFolder = $folderModel->load($folder->getFolderId());
+      // ensure that the name was properly updated
+      $this->assertEquals($newfolderName, $refreshFolder->getName(), 'Folder name should have been changed');
+      }
+    // try to set privacy without admin, should fail
+    foreach($nonAdmins as $folder)
+      {
+      $this->resetAll();
+      $this->params['token'] = $this->_loginAsUser($userDao);
+      $this->params['method'] = 'midas.folder.create';
+      $this->params['name'] = 'writeFolder';
+      $this->params['uuid'] = $folder->getUuid();
+      $this->params['privacy'] = 'Private';
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+    // try to set privacy with admin, should pass
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($userDao);
+    $this->params['method'] = 'midas.folder.create';
+    $this->params['name'] = 'writeFolder';
+    $this->params['uuid'] = $adminFolder->getUuid();
+    $this->params['privacy'] = 'Private';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    // try to set privacy to an invalid string
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($userDao);
+    $this->params['method'] = 'midas.folder.create';
+    $this->params['name'] = 'writeFolder';
+    $this->params['uuid'] = $adminFolder->getUuid();
+    $this->params['privacy'] = 'El Duderino';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
     }
 
   /** Test listing of child folders */
@@ -1224,6 +1370,76 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->assertEquals($resp->code, 0);
     $itemDao = $this->Item->load($generatedItemId);
     $this->assertFalse($itemDao, 'Item should have been deleted, but was not.');
+
+    $userModel = MidasLoader::loadModel('User');
+    $userDao = $userModel->load('1');
+    $itemModel = MidasLoader::loadModel('Item');
+    $readItem = $itemModel->load('1004');
+    $writeItem = $itemModel->load('1005');
+    $adminItem = $itemModel->load('1006');
+    $nonWrites = array($readItem);
+    $nonAdmins = array($readItem, $writeItem);
+    $writes = array($writeItem, $adminItem);
+
+    // try to set name with read, should fail
+    foreach($nonWrites as $item)
+      {
+      $this->resetAll();
+      $this->params['token'] = $this->_loginAsUser($userDao);
+      $this->params['method'] = 'midas.item.create';
+      $this->params['name'] = 'readItem';
+      $this->params['uuid'] = $item->getUuid();
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+    // try to set name with writes, should pass
+    foreach($writes as $item)
+      {
+      // get the current item name
+      $freshItem = $itemModel->load($item->getItemId());
+      $itemName = $freshItem->getName();
+      $newItemName = $itemName . "suffix";
+      $this->resetAll();
+      $this->params['token'] = $this->_loginAsUser($userDao);
+      $this->params['method'] = 'midas.item.create';
+      $this->params['name'] = $newItemName;
+      $this->params['uuid'] = $item->getUuid();
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusOk($resp);
+      $refreshItem = $itemModel->load($item->getItemId());
+      // ensure that the name was properly updated
+      $this->assertEquals($newItemName, $refreshItem->getName(), 'Item name should have been changed');
+      }
+    // try to set privacy without admin, should fail
+    foreach($nonAdmins as $item)
+      {
+      $this->resetAll();
+      $this->params['token'] = $this->_loginAsUser($userDao);
+      $this->params['method'] = 'midas.item.create';
+      $this->params['name'] = 'write$item';
+      $this->params['uuid'] = $item->getUuid();
+      $this->params['privacy'] = 'Private';
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+    // try to set privacy with admin, should pass
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($userDao);
+    $this->params['method'] = 'midas.item.create';
+    $this->params['name'] = 'writeitem';
+    $this->params['uuid'] = $adminItem->getUuid();
+    $this->params['privacy'] = 'Private';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    // try to set privacy to an invalid string
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($userDao);
+    $this->params['method'] = 'midas.item.create';
+    $this->params['name'] = 'writeitem';
+    $this->params['uuid'] = $adminItem->getUuid();
+    $this->params['privacy'] = 'El Duderino';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
     }
 
   /** Test searching for item by name */
@@ -1390,7 +1606,8 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->params['limit'] = '20';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
-    $this->assertEquals(count($resp->data), 3);
+    $usersFile = $this->loadData('User', 'default');
+    $this->assertEquals(count($resp->data), count($usersFile));
     }
 
   /** Test bitstream edit function */
