@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS `tracker_scalar` (
   `producer_revision` varchar(255),
   `submit_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`scalar_id`),
-  KEY `trend_id` (`trend_id`)
+  KEY `trend_id` (`trend_id`),
+  KEY `submit_time` (`submit_time`)
 );
 
 CREATE TABLE IF NOT EXISTS `tracker_scalar2item` (
@@ -39,20 +40,13 @@ CREATE TABLE IF NOT EXISTS `tracker_scalar2item` (
   KEY `scalar_id` (`scalar_id`)
 );
 
-CREATE TABLE IF NOT EXISTS `tracker_threshold` (
+CREATE TABLE IF NOT EXISTS `tracker_threshold_notification` (
   `threshold_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `trend_id` bigint(20) NOT NULL,
   `value` double precision,
   `comparison` varchar(2),
-  PRIMARY KEY (`threshold_id`),
-  KEY `trend_id` (`trend_id`)
-);
-
-CREATE TABLE IF NOT EXISTS `tracker_threshold_notification` (
-  `threshold_notification_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `threshold_id` bigint(20) NOT NULL,
   `action` varchar(80) NOT NULL,
   `recipient_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`threshold_notification_id`),
-  KEY `threshold_id` (`threshold_id`)
+  PRIMARY KEY (`threshold_id`),
+  KEY `trend_id` (`trend_id`)
 );

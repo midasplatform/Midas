@@ -9,7 +9,7 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-/** packages application controller*/
+/** Producer controller*/
 class Tracker_ProducerController extends Tracker_AppController
 {
   public $_models = array('Community');
@@ -48,15 +48,20 @@ class Tracker_ProducerController extends Tracker_AppController
       throw new Zend_Exception('Must pass producerId parameter');
       }
     $producer = $this->Tracker_Producer->load($producerId);
-    if(!$producer || !$this->Community->policyCheck($producer->getCommunity(), $this->userSession->Dao, MIDAS_POLICY_READ))
+    $comm = $producer->getCommunity();
+    if(!$producer || !$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
       throw new Zend_Exception('Read permission required on the community', 403);
       }
     $this->view->producer = $producer;
     $this->view->trends = $producer->getTrends();
-    $this->view->isAdmin = $this->Community->policyCheck($producer->getCommunity(), $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+    $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
 
-    $this->view->header = $producer->getDisplayName();
+    $header = '<ul class="pathBrowser">';
+    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/community.png" /><span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Trackers">'.$comm->getName().'</a></span></li>';
+    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/cog_go.png" /><span>'.$producer->getDisplayName().'</span></li>';
+    $header .= '</ul>';
+    $this->view->header = $header;
     }
 
   /**

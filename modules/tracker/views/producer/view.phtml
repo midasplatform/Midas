@@ -10,9 +10,33 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 ?>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/producer/producer.list.js"></script>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/producer/producer.list.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/producer/producer.view.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
 
 <div class="viewMain">
+  <div class="producerInfoContainer">
+    <div class="sectionTitle">Producer Information</div>
+    <div class="producerData"><b>Description:</b> <span class="description"><?php echo $this->producer->getDescription();?></span></div>
+    <div class="producerData"><b>Repository:</b> <span class="repository"><?php echo $this->producer->getRepository();?></span></div>
+    <div class="producerData"><b>Executable:</b> <span class="executable"><?php echo $this->producer->getExecutableName();?></span></div>
+  </div>
 
+  <div class="producerTrendsContainer">
+    <div class="sectionTitle">Trends (<?php echo count($this->trends);?>)</div>
+      <?php
+      foreach($this->trends as $trend)
+        {
+        echo '<div class="trendContainer">';
+        echo '<a href="'.$this->webroot.'/tracker/trend/view?trendId='.$trend->getKey().'">';
+        echo '<img alt="" src="'.$this->moduleWebroot.'/public/images/chart_line.png" /> '.$trend->getDisplayName().'</a>'; 
+        echo '</div>';
+        }
+      ?>
+  </div>
+</div>
+
+<div class="viewSideBar">
+  <div class="sideElementFirst viewAction">
+    <h1>Actions</h1>
+  </div>
 </div>

@@ -53,4 +53,31 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
       }
     return $this->initDao('Trend', $this->database->fetchRow($sql), $this->moduleName);
     }
+
+  /**
+   * Return chronologically ordered list of scalars for this trend
+   */
+  public function getScalars($trend, $startDate = null, $endDate = null)
+    {
+    $sql = $this->database->select()
+                          ->setIntegrityCheck(false)
+                          ->from('tracker_scalar')
+                          ->where('trend_id = ?', $trend->getKey())
+                          ->order(array('submit_time ASC'));
+    if($startDate)
+      {
+      $sql->where('submit_date >= ?', $startDate);
+      }
+    if($endDate)
+      {
+      $sql->where('submit_date <= ?', $endDate);
+      }
+    $scalars = array();
+    $rowset = $this->database->fetchAll($sql);
+    foreach($rowset as $row)
+      {
+      $scalars[] = $this->initDao('Scalar', $row, $this->moduleName);
+      }
+    return $scalars;
+    }
 }
