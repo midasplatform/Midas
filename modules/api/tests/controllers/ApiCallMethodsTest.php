@@ -470,6 +470,69 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->_assertStatusOk($resp);
     }
 
+  /** Test the folder.list.permissions method */
+  public function testFolderListPermissions()
+    {
+    $userModel = MidasLoader::loadModel('User');
+    $userDao = $userModel->load('1');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $readFolder = $folderModel->load('1012');
+    $writeFolder = $folderModel->load('1013');
+    $adminFolder = $folderModel->load('1014');
+    $nonWrites = array($readFolder);
+    $nonAdmins = array($readFolder, $writeFolder);
+    $writes = array($writeFolder, $adminFolder);
+
+    $params = array('method' => 'midas.folder.list.permissions',
+                    'token' => $this->_loginAsUser($userDao));
+
+    // try to list permissions without admin, should fail
+    foreach($nonAdmins as $folder)
+      {
+      $this->resetAll();
+      $params['folder_id'] = $folder->getFolderId();
+      $this->params = $params;
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+
+    // now with admin perms
+    $this->resetAll();
+    $params['folder_id'] = $adminFolder->getFolderId();
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    // ensure privacy is correct
+    $privacyCodes = array("Public" => MIDAS_PRIVACY_PUBLIC, "Private" => MIDAS_PRIVACY_PRIVATE);
+    $this->assertEquals($adminFolder->getPrivacyStatus(), $privacyCodes[$resp->data->privacy], 'Unexepected privacy value');
+
+    // ensure user perms are correct
+    $privilegeCodes = array("Admin" => MIDAS_POLICY_ADMIN, "Write" => MIDAS_POLICY_WRITE, "Read" => MIDAS_POLICY_READ);
+    $userPolicies = $adminFolder->getFolderpolicyuser();
+    $apiUsers = $resp->data->user;
+    foreach($userPolicies as $userPolicy)
+      {
+      $user = $userPolicy->getUser();
+      $userId = (string)$user->getUserId();
+      $this->assertObjectHasAttribute($userId, $apiUsers, 'API call missing a user');
+      $apiPolicyCode = $privilegeCodes[$apiUsers->$userId->policy];
+      $this->assertEquals($apiPolicyCode, $userPolicy->getPolicy());
+      }
+    // ensure group perms are correct
+    $groupPolicies = $adminFolder->getFolderpolicygroup();
+    $apiGroups = $resp->data->group;
+    foreach($groupPolicies as $groupPolicy)
+      {
+      $group = $groupPolicy->getGroup();
+      $groupId = (string)$group->getGroupId();
+      $this->assertObjectHasAttribute($groupId, $apiGroups, 'API call missing a group');
+      $apiPolicyCode = $privilegeCodes[$apiGroups->$groupId->policy];
+      $this->assertEquals($apiPolicyCode, $groupPolicy->getPolicy());
+      }
+    }
+
+
   /** Test the item.get method */
   public function testItemGet()
     {
