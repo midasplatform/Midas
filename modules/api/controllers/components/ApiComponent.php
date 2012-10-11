@@ -562,7 +562,7 @@ class Api_ApiComponent extends AppComponent
    * @param name The community name
    * @param description (Optional) The community description
    * @param uuid (Optional) Uuid of the community. If none is passed, will generate one.
-   * @param privacy (Optional) Default 'Public'.
+   * @param privacy (Optional) Default 'Public', possible values [Public|Private].
    * @param canjoin (Optional) Default 'Everyone'.
    * @return The community dao that was created
    */
@@ -598,7 +598,11 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['privacy']))
         {
-        $record->setPrivacy($args['privacy']);
+        if(!$communityModel->policyCheck($record, $userDao, MIDAS_POLICY_ADMIN))
+          {
+          throw new Exception('Community Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
+          }
+        $record->setPrivacy($this->_getValidPrivacyCode($args['privacy']));
         }
       if(isset($args['canjoin']))
         {
@@ -773,7 +777,7 @@ class Api_ApiComponent extends AppComponent
    * @param name The name of the folder to create
    * @param description (Optional) The description of the folder
    * @param uuid (Optional) Uuid of the folder. If none is passed, will generate one.
-   * @param privacy (Optional) Default 'Public'.
+   * @param privacy (Optional) Default 'Public', possible values [Public|Private].
    * @param parentid The id of the parent folder. Set this to -1 to create a top level user folder.
    * @return The folder object that was created
    */
@@ -810,7 +814,11 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['privacy']))
         {
-        $record->setPrivacy($args['privacy']);
+        if(!$folderModel->policyCheck($record, $userDao, MIDAS_POLICY_ADMIN))
+          {
+          throw new Exception('Folder Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
+          }
+        $record->setPrivacyStatus($this->_getValidPrivacyCode($args['privacy']));
         }
       $folderModel->save($record);
       return $record->toArray();
@@ -1012,6 +1020,29 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * helper method to validate passed in privacy status params and
+   * map them to valid privacy codes.
+   * @param string $privacyStatus, should be 'Private' or 'Public'
+   * @return valid privacy code
+   */
+  private function _getValidPrivacyCode($privacyStatus)
+    {
+    if($privacyStatus !== 'Public' && $privacyStatus !== 'Private')
+      {
+      throw new Exception('privacy should be one of [Public|Private]', MIDAS_INVALID_PARAMETER);
+      }
+    if($privacyStatus === 'Public')
+      {
+      $privacyCode = MIDAS_PRIVACY_PUBLIC;
+      }
+    else
+      {
+      $privacyCode = MIDAS_PRIVACY_PRIVATE;
+      }
+    return $privacyCode;
+    }
+
+  /**
    * Create an item or update an existing one if one exists by the uuid passed.
      Note: In the case of an already existing item, any parameters passed whose name
      begins with an underscore are assumed to be metadata fields to set on the item.
@@ -1055,20 +1086,11 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['privacy']))
         {
-        $privacy = $args['privacy'];
-        if($privacy !== 'Public' && $privacy !== 'Private')
+        if(!$itemModel->policyCheck($record, $userDao, MIDAS_POLICY_ADMIN))
           {
-          throw new Exception('privacy should be one of [Public|Private]');
+          throw new Exception('Item Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
           }
-        if($privacy === 'Public')
-          {
-          $privacy_status = MIDAS_PRIVACY_PUBLIC;
-          }
-        else
-          {
-          $privacy_status = MIDAS_PRIVACY_PRIVATE;
-          }
-        $record->setPrivacyStatus($privacy_status);
+        $record->setPrivacyStatus($this->_getValidPrivacyCode($args['privacy']));
         }
       foreach($args as $key => $value)
         {
