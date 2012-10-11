@@ -131,7 +131,7 @@
     description="Community test User 1" creation="2011-01-27 12:09:02"
     privacy="0" folder_id="1009" publicfolder_id="1010" privatefolder_id="1011"
     admingroup_id="3003" moderatorgroup_id="3004" membergroup_id="3005"
-    uuid='4e311fdf82107d245f0798d654fc24205f2621eb72777' />
+    uuid='7811ff82107d245f0798d654fc24205f2621eb72777' />
   <group group_id="3003" community_id="2001" name="Community For Deletion Admin" />
   <group group_id="3004" community_id="2001" name="Community For Deletion Moderator" />
   <group group_id="3005" community_id="2001" name="Community For Deletion Member" />
@@ -142,20 +142,30 @@
   <folderpolicygroup folder_id="1009" group_id="3004" policy='1' />
   <folderpolicygroup folder_id="1009" group_id="3005" policy='0' />
 
-  <folder folder_id="1012" name="Folder User 1 Read" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="123890231892" />
+  <folder folder_id="1012" name="Folder User 1 Read" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="1012123890231892" />
   <folderpolicyuser folder_id="1012" user_id="1" policy='0' />
-  <folder folder_id="1013" name="Folder User 1 Write" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="123890231892" />
+  <folder folder_id="1013" name="Folder User 1 Write" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="1013123890231892" />
   <folderpolicyuser folder_id="1013" user_id="1" policy='1' />
-
-  <folder folder_id="1014" name="Folder User 1 Admin" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="123890231892" />
+  <folder folder_id="1014" name="Folder User 1 Admin" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="1014123890231892" />
   <folderpolicyuser folder_id="1014" user_id="1" policy='2' />
-  <item item_id="1004" name="Item User 1 Read" description="Description 1" type="1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
+  
+  <item item_id="1004" name="Item User 1 Read" description="Description 1" type="1" uuid='10041fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
   <itempolicyuser item_id="1004" user_id="1" policy='0' />
   <item2folder item_id="1004" folder_id='1014' />
-  <item item_id="1005" name="Item User 1 Write" description="Description 1" type="1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
+  <item item_id="1005" name="Item User 1 Write" description="Description 1" type="1" uuid='10051fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
   <itempolicyuser item_id="1005" user_id="1" policy='1' />
   <item2folder item_id="1005" folder_id='1014' />
-  <item item_id="1006" name="Item User 1 Admin" description="Description 1" type="1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
+  <item item_id="1006" name="Item User 1 Admin" description="Description 1" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
   <itempolicyuser item_id="1006" user_id="1" policy='2' />
   <item2folder item_id="1006" folder_id='1014' />
+  
+  <user user_id="4" firstname="community2001" lastname="Member"
+    admin="0" email="community2001@member.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" publicfolder_id="1007" privatefolder_id="1008"/>
+  <user2group group_id="3005" user_id="4" />
+  <user user_id="5" firstname="community2001" lastname="Moderator"
+    admin="0" email="community2001@moderator.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" publicfolder_id="1007" privatefolder_id="1008"/>
+  <user2group group_id="3004" user_id="5" />
+  <user user_id="6" firstname="community2001" lastname="Admin"
+    admin="0" email="community2001@admin.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" publicfolder_id="1007" privatefolder_id="1008"/>
+  <user2group group_id="3003" user_id="6" />
 </dataset>
