@@ -3,6 +3,43 @@ div.itemsContainer {
   margin-bottom: 10px;
 }
 
+div.dateControlContainer {
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #d7d7d7;
+}
+
+input.dateSelect {
+  background: white url(../../../../statistics/public/images/calendar.png) no-repeat scroll 2px 1px;
+  border: 1px solid grey;
+  padding-left: 20px;
+  width: 120px;
+}
+
+#filterButton {
+  background: #F6F9FE;
+  border: 1px solid grey;
+  color: #2E6E9E;
+  font-weight: bold;
+  cursor: pointer;
+  margin-right: 0.1em;
+  overflow: visible;
+  position: relative;
+  text-align: center;
+  text-decoration: none !important;
+  zoom: 1;
+  -webkit-box-align: center;
+  -webkit-box-sizing: border-box;
+  line-height: 1.4;
+}
+
+#filterButton:hover {
+  color: #1d5987;
+  text-decoration: none;
+  background: #cbd9e3;
+  background-image: none;
+}
+
 div.chartContainer {
   width: 560px;
   height: 360px;
@@ -15,4 +52,8 @@ span.infoItem {
 span.itemLinkNone {
   color: #a5a5a5;
   font-style: italic;
+}
+
+span.noPoints {
+  color: #909090;
 }

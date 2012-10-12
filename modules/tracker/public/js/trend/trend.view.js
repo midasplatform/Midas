@@ -38,37 +38,70 @@ $(window).load(function () {
     if(json.tracker.trend.unit) {
         yaxisLabel += ' ('+json.tracker.trend.unit+')';
     }
-    $.jqplot('chartDiv', [curveData.points], {
-        axes: {
-            xaxis: {
-                renderer: $.jqplot.DateAxisRenderer,
-                tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                tickOptions: {
-                    formatString: "%Y-%m-%d",
-                    angle: 270,
-                    fontSize: '11px',
-                    labelPosition: 'middle'
+
+    var dates = $("#startdate, #enddate").datepicker({
+        defaultDate: "today",
+        changeMonth: true,
+        numberOfMonths: 1,
+        onSelect: function(selectedDate) {
+          var option = this.id == "startdate" ? "minDate" : "maxDate";
+          var instance = $(this).data("datepicker");
+          var date = $.datepicker.parseDate(
+            instance.settings.dateFormat || $.datepicker._defaults.dateFormat,
+            selectedDate, instance.settings);
+          dates.not(this).datepicker("option", option, date);
+          },
+        dayNamesMin: ["S", "M", "T", "W", "T", "F", "S"]
+    });
+    //$('#startdate').val(json.tracker.initialStartDate);
+    //$('#enddate').val(json.tracker.initialEndDate);
+
+    if(curveData.points.length > 0) {
+        midas.tracker.plot = $.jqplot('chartDiv', [curveData.points], {
+            axes: {
+                xaxis: {
+                    pad: 1.05,
+                    renderer: $.jqplot.DateAxisRenderer,
+                    tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+                    tickOptions: {
+                        formatString: "%Y-%m-%d",
+                        angle: 270,
+                        fontSize: '11px',
+                        labelPosition: 'middle'
+                    }
+                    
+                },
+                yaxis: {
+                    pad: 1.05,
+                    label: yaxisLabel,
+                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                    labelOptions: {
+                        angle: 270,
+                        fontSize: '12px'
+                    }
                 }
-                
             },
-            yaxis: {
-                pad: 1,
-                label: yaxisLabel,
-                labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-                labelOptions: {
-                    angle: 270,
-                    fontSize: '12px'
-                }
+            highlighter: {
+                show: true,
+                showTooltip: true
+            },
+            cursor: {
+                show: true,
+                zoom: true,
+                showTooltip: false
             }
-        },
-        highlighter: {
-            show: true,
-            showTooltip: true
-        }
-    });
+        });
+        $('#chartDiv').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
+            midas.loadDialog('scalarPoint', '/tracker/scalar/details?scalarId='+json.tracker.scalars[pointIndex].scalar_id);
+            midas.showDialog('Scalar details', false);
+        });
+        $('a.resetZoomAction').click(function () {
+            midas.tracker.plot.resetZoom();
+        });
+    }
+    else {
+        $('#chartDiv').html('<span class="noPoints">There are no values for this trend in the specified date range.</span>');
+    }
     midas.tracker.populateInfo(curveData);
-    $('#chartDiv').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
-        midas.loadDialog('scalarPoint', '/tracker/scalar/details?scalarId='+json.tracker.scalars[pointIndex].scalar_id);
-        midas.showDialog('Scalar details', false);
-    });
+    
 });
