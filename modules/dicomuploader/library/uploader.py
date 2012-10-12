@@ -1,0 +1,29 @@
+import os
+from DICOMHandler import DICOMListener
+
+
+if __name__ == '__main__':
+    # read the config file for DICOM uploader
+    config_file = open('uploader.cfg')
+    config = {}
+    for line in config_file:
+        line = line.strip()
+        if line is not None and line != '':
+            cols = line.split('=')
+            config[cols[0]] = cols[1]
+    config_file.close()
+
+    if 'storescp_dir' not in config or not os.path.isdir(config['storescp_dir']):
+        print "You must specify storescp's output directory (storescp_dir)  in uploader.cfg"
+        exit(1)
+    if 'storescp_exe' not in config:
+        config['storescp_exe'] = 'scorescp'
+    if 'storescp_port' not in config:
+        config['storescp_port'] = 55555
+    if 'study_timeout' not in config:
+        config['study_timeout'] = 30
+
+    # Start storescup listener
+    myListener = DICOMListener(config['storescp_dir'], \
+      config['storescp_exe'], config['storescp_port'], config['study_timeout'])
+    myListener.start();
