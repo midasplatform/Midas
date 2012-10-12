@@ -1099,6 +1099,55 @@ class Api_ApiComponent extends AppComponent
     return $return;
     }
 
+  /**
+   * Set the privacy status on a folder, and push this value down recursively
+   * to all children folders and items, requires Admin access to the folder.
+   * @param folder_id The id of the folder
+   * @param privacy Desired privacy status, one of [Public|Private].
+   * @return An array with keys 'success' and 'failure' indicating a count
+   * of children resources that succeeded or failed the permission change.
+   */
+  function folderSetPrivacyRecursive($args)
+    {
+    $this->_validateParams($args, array('folder_id', 'privacy'));
+    $userDao = $this->_getUser($args);
+
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderId = $args['folder_id'];
+    $folder = $folderModel->load($folderId);
+
+    if($folder === false)
+      {
+      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the folder to set privacy.", MIDAS_INVALID_POLICY);
+      }
+
+    $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $groupModel = MidasLoader::loadModel('Group');
+    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+    if($privacyCode == MIDAS_PRIVACY_PRIVATE &&
+       $folderpolicygroupModel->computePolicyStatus($folder) == MIDAS_PRIVACY_PUBLIC)
+      {
+      $policyDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $folder);
+      $folderpolicygroupModel->delete($policyDao);
+      }
+    elseif($privacyCode == MIDAS_PRIVACY_PUBLIC &&
+          $folderpolicygroupModel->computePolicyStatus($folder) == MIDAS_PRIVACY_PRIVATE)
+      {
+      $policyDao = $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
+      }
+
+    // now push down the privacy recursively
+    $policyComponent = MidasLoader::loadComponent('Policy');
+    // send a null Progress since we aren't interested in progress
+    // prepopulate results with 1 success for the folder we have already changed
+    $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results = array('success' => 1, 'failure' => 0));
+    return $results;
+    }
 
   /**
    * helper method to validate passed in privacy status params and
