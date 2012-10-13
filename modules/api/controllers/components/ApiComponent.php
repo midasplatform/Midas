@@ -922,6 +922,11 @@ class Api_ApiComponent extends AppComponent
         $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
         $this->setFolderPrivacy($new_folder, $privacyCode);
         }
+      else
+        {
+        // explicitly set to Public
+        $this->setFolderPrivacy($new_folder, MIDAS_PRIVACY_PUBLIC);
+        }
 
       return $new_folder->toArray();
       }
@@ -1191,6 +1196,30 @@ class Api_ApiComponent extends AppComponent
     return $privacyCode;
     }
 
+
+  /**
+   *  helper function to set the privacy code on a passed in item.
+   */
+  protected function setItemPrivacy($item, $privacyCode)
+    {
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+    $groupModel = MidasLoader::loadModel('Group');
+    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+    if($privacyCode == MIDAS_PRIVACY_PRIVATE &&
+       $itempolicygroupModel->computePolicyStatus($item) == MIDAS_PRIVACY_PUBLIC)
+      {
+      $policyDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
+      $itempolicygroupModel->delete($policyDao);
+      }
+    elseif($privacyCode == MIDAS_PRIVACY_PUBLIC &&
+           $itempolicygroupModel->computePolicyStatus($item) == MIDAS_PRIVACY_PRIVATE)
+      {
+      $policyDao = $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+      }
+    }
+
+
+
   /**
    * Create an item or update an existing one if one exists by the uuid passed.
      Note: In the case of an already existing item, any parameters passed whose name
@@ -1239,7 +1268,8 @@ class Api_ApiComponent extends AppComponent
           {
           throw new Exception('Item Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
           }
-        $record->setPrivacyStatus($this->_getValidPrivacyCode($args['privacy']));
+        $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
+        $this->setItemPrivacy($record, $privacyCode);
         }
       foreach($args as $key => $value)
         {
@@ -1275,6 +1305,18 @@ class Api_ApiComponent extends AppComponent
         }
       $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
       $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
+
+      // set privacy if desired
+      if(isset($args['privacy']))
+        {
+        $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
+        $this->setItemPrivacy($item, $privacyCode);
+        }
+      else
+        {
+        // explicitly set to Public
+        $this->setItemPrivacy($item, MIDAS_PRIVACY_PUBLIC);
+        }
 
       return $item->toArray();
       }

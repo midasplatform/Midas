@@ -853,7 +853,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // test the default privacy is Public
     $this->assertPrivacyStatus(array(), array($itemDao), MIDAS_PRIVACY_PUBLIC);
     $this->Item->delete($itemDao);
-    
+
     // create an item with passed in Private, ensure that it is Private
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
@@ -870,7 +870,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // test the default privacy is Public
     $this->assertPrivacyStatus(array(), array($itemDao), MIDAS_PRIVACY_PRIVATE);
     $this->Item->delete($itemDao);
-    
+
     // create an item with required options, plus description and uuid
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
@@ -975,7 +975,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['privacy'] = 'El Duderino';
     $resp = $this->_callJsonApi();
     $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
-  
+
     // want to test changing privacy using this api method on an extant item
     // test cases   Public -> Public
     //              Public -> Private
