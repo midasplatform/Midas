@@ -272,17 +272,26 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
       }
 
     // now with admin perms
-    $this->resetAll();
-    $params['folder_id'] = $adminFolder->getFolderId();
-    $this->params = $params;
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusOk($resp);
 
-    // ensure privacy is correct
+    // first check both privacy statuses
     $privacyCodes = array("Public" => MIDAS_PRIVACY_PUBLIC, "Private" => MIDAS_PRIVACY_PRIVATE);
-    $this->assertEquals($adminFolder->getPrivacyStatus(), $privacyCodes[$resp->data->privacy], 'Unexepected privacy value');
+    $privacyStatuses = array(MIDAS_PRIVACY_PUBLIC, MIDAS_PRIVACY_PRIVATE);
+    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
 
-    // ensure user perms are correct
+    foreach($privacyStatuses as $privacyStatus)
+      {
+      $this->initializePrivacyStatus(array($adminFolder), array(), $privacyStatus);
+
+      $this->resetAll();
+      $params['folder_id'] = $adminFolder->getFolderId();
+      $this->params = $params;
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusOk($resp);
+
+      $this->assertPrivacyStatus(array($adminFolder), array(), $privacyStatus);
+      }
+
+    // ensure user perms are correct from the most recent call
     $privilegeCodes = array("Admin" => MIDAS_POLICY_ADMIN, "Write" => MIDAS_POLICY_WRITE, "Read" => MIDAS_POLICY_READ);
     $userPolicies = $adminFolder->getFolderpolicyuser();
     $apiUsers = $resp->data->user;
@@ -307,71 +316,7 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
       }
     }
 
-  /**
-   * helper function to initialize the passed in resources to the given privacy state.
-   */
-  protected function initializePrivacyStatus($testFolders, $testItems, $desiredPrivacyStatus)
-    {
-    $groupModel = MidasLoader::loadModel('Group');
-    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-    $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
-    $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
 
-    foreach($testFolders as $folder)
-      {
-      if($desiredPrivacyStatus != $folderpolicygroupModel->computePolicyStatus($folder))
-        {
-        if($desiredPrivacyStatus == MIDAS_PRIVACY_PUBLIC)
-          {
-          $policyDao = $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
-          }
-        else
-          {
-          $policyDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $folder);
-          $folderpolicygroupModel->delete($policyDao);
-          }
-        }
-      $this->assertEquals($folderpolicygroupModel->computePolicyStatus($folder), $desiredPrivacyStatus, $folder->getName() . " has wrong privacy value after initialization");
-      }
-
-    foreach($testItems as $item)
-      {
-      if($desiredPrivacyStatus != $itempolicygroupModel->computePolicyStatus($item))
-        {
-        if($desiredPrivacyStatus == MIDAS_PRIVACY_PUBLIC)
-          {
-          $policyDao = $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
-          }
-        else
-          {
-          $policyDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
-          $itempolicygroupModel->delete($policyDao);
-          }
-        }
-      $this->assertEquals($itempolicygroupModel->computePolicyStatus($item), $desiredPrivacyStatus, $item->getName() . " has wrong privacy value after initialization");
-      }
-    }
-
-  /**
-   * helper function to ensure that passed in resources have the given privacy.
-   */
-  protected function assertPrivacyStatus($testFolders, $testItems, $expectedPrivacyStatus)
-    {
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
-    $itemModel = MidasLoader::loadModel('Item');
-    $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
-    foreach($testFolders as $folder)
-      {
-      $folder = $folderModel->load($folder->getFolderId());
-      $this->assertEquals($folderpolicygroupModel->computePolicyStatus($folder), $expectedPrivacyStatus, $folder->getName() . " has wrong privacy value");
-      }
-    foreach($testItems as $item)
-      {
-      $item = $itemModel->load($item->getItemId());
-      $this->assertEquals($itempolicygroupModel->computePolicyStatus($item), $expectedPrivacyStatus, $item->getName() . " has wrong privacy value");
-      }
-    }
 
   /** Test the folder.set.privacy.recursive method */
   public function testFolderSetPrivacyRecursive()
