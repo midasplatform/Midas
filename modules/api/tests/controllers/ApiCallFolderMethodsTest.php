@@ -32,6 +32,8 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
+    $userModel = MidasLoader::loadModel('User');
+    $folderModel = MidasLoader::loadModel('Folder');
 
     $this->resetAll();
     $this->params['token'] = $this->_loginAsAdministrator();
@@ -46,6 +48,29 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->assertEquals($userDao->getPublicfolderId(), $resp->data->parent_id);
     $this->assertEquals('testFolderCreate', $resp->data->name);
     $this->assertEquals('', $resp->data->description);
+    // ensure default privacy is Public
+    $this->assertPrivacyStatus(array($folderModel->load($resp->data->folder_id)), array(), MIDAS_PRIVACY_PUBLIC);
+
+    // tests for creating a new folder passing in a privacy value
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.folder.create';
+    $this->params['name'] = 'testFolderCreatePublic';
+    $this->params['parentid'] = $userDao->getPublicfolderId();
+    $this->params['privacy'] = 'Public';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertPrivacyStatus(array($folderModel->load($resp->data->folder_id)), array(), MIDAS_PRIVACY_PUBLIC);
+
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.folder.create';
+    $this->params['name'] = 'testFolderCreatePrivate';
+    $this->params['parentid'] = $userDao->getPublicfolderId();
+    $this->params['privacy'] = 'Private';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertPrivacyStatus(array($folderModel->load($resp->data->folder_id)), array(), MIDAS_PRIVACY_PRIVATE);
 
     // try to create a folder where have read access on the parent folder
     $this->resetAll();
@@ -66,9 +91,7 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->_assertStatusOk($resp);
 
 
-    $userModel = MidasLoader::loadModel('User');
     $userDao = $userModel->load('1');
-    $folderModel = MidasLoader::loadModel('Folder');
     $readFolder = $folderModel->load('1012');
     $writeFolder = $folderModel->load('1013');
     $adminFolder = $folderModel->load('1014');
@@ -117,15 +140,7 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
       $resp = $this->_callJsonApi();
       $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
       }
-    // try to set privacy with admin, should pass
-    $this->resetAll();
-    $this->params['token'] = $this->_loginAsUser($userDao);
-    $this->params['method'] = 'midas.folder.create';
-    $this->params['name'] = 'writeFolder';
-    $this->params['uuid'] = $adminFolder->getUuid();
-    $this->params['privacy'] = 'Private';
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusOk($resp);
+
     // try to set privacy to an invalid string
     $this->resetAll();
     $this->params['token'] = $this->_loginAsUser($userDao);
@@ -135,6 +150,34 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->params['privacy'] = 'El Duderino';
     $resp = $this->_callJsonApi();
     $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
+
+    // want to test changing privacy using this method
+    // test cases   Public -> Public
+    //              Public -> Private
+    //              Private -> Private
+    //              Private -> Public
+    $privacyStatuses = array(MIDAS_PRIVACY_PUBLIC, MIDAS_PRIVACY_PRIVATE);
+    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+    foreach($privacyStatuses as $initialStatus)
+      {
+      foreach($privacyStatuses as $finalStatus)
+        {
+        $this->initializePrivacyStatus(array($adminFolder), array(), $initialStatus);
+
+        // try to set privacy with admin, should pass
+        $this->resetAll();
+        $this->params['token'] = $this->_loginAsUser($userDao);
+        $this->params['method'] = 'midas.folder.create';
+        $this->params['name'] = 'writeFolder';
+        $this->params['uuid'] = $adminFolder->getUuid();
+        $this->params['privacy'] = $privacyStrings[$finalStatus];
+        $resp = $this->_callJsonApi();
+        $this->_assertStatusOk($resp);
+
+        $adminFolder = $folderModel->load($adminFolder->getFolderId());
+        $this->assertPrivacyStatus(array($adminFolder), array(), $finalStatus);
+        }
+      }
     }
 
   /** Test listing of child folders */

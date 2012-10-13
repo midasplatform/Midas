@@ -799,6 +799,27 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   *  helper function to set the privacy code on a passed in folder.
+   */
+  protected function setFolderPrivacy($folder, $privacyCode)
+    {
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $groupModel = MidasLoader::loadModel('Group');
+    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+    if($privacyCode == MIDAS_PRIVACY_PRIVATE &&
+       $folderpolicygroupModel->computePolicyStatus($folder) == MIDAS_PRIVACY_PUBLIC)
+      {
+      $policyDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $folder);
+      $folderpolicygroupModel->delete($policyDao);
+      }
+    elseif($privacyCode == MIDAS_PRIVACY_PUBLIC &&
+           $folderpolicygroupModel->computePolicyStatus($folder) == MIDAS_PRIVACY_PRIVATE)
+      {
+      $policyDao = $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
+      }
+    }
+
+  /**
    * Create a folder or update an existing one if one exists by the uuid passed
    * @param token Authentication token
    * @param name The name of the folder to create
@@ -845,7 +866,8 @@ class Api_ApiComponent extends AppComponent
           {
           throw new Exception('Folder Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
           }
-        $record->setPrivacyStatus($this->_getValidPrivacyCode($args['privacy']));
+        $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
+        $this->setFolderPrivacy($record, $privacyCode);
         }
       $folderModel->save($record);
       return $record->toArray();
@@ -892,6 +914,13 @@ class Api_ApiComponent extends AppComponent
           {
           $folderpolicyuserModel->createPolicy($userDao, $new_folder, MIDAS_POLICY_ADMIN);
           }
+        }
+
+      // set privacy if desired
+      if(isset($args['privacy']))
+        {
+        $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
+        $this->setFolderPrivacy($new_folder, $privacyCode);
         }
 
       return $new_folder->toArray();
@@ -1129,20 +1158,7 @@ class Api_ApiComponent extends AppComponent
       }
 
     $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
-    $groupModel = MidasLoader::loadModel('Group');
-    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-    if($privacyCode == MIDAS_PRIVACY_PRIVATE &&
-       $folderpolicygroupModel->computePolicyStatus($folder) == MIDAS_PRIVACY_PUBLIC)
-      {
-      $policyDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $folder);
-      $folderpolicygroupModel->delete($policyDao);
-      }
-    elseif($privacyCode == MIDAS_PRIVACY_PUBLIC &&
-          $folderpolicygroupModel->computePolicyStatus($folder) == MIDAS_PRIVACY_PRIVATE)
-      {
-      $policyDao = $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
-      }
+    $this->setFolderPrivacy($folder, $privacyCode);
 
     // now push down the privacy recursively
     $policyComponent = MidasLoader::loadComponent('Policy');
