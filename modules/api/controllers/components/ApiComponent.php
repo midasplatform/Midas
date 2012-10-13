@@ -1033,6 +1033,9 @@ class Api_ApiComponent extends AppComponent
     $this->_validateParams($args, array('folder_id'));
     $userDao = $this->_getUser($args);
 
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $groupModel = MidasLoader::loadModel('Group');
+    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
     $folderModel = MidasLoader::loadModel('Folder');
     $folderId = $args['folder_id'];
     $folder = $folderModel->load($folderId);
@@ -1049,7 +1052,7 @@ class Api_ApiComponent extends AppComponent
     $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
     $privilegeStrings = array(MIDAS_POLICY_ADMIN => "Admin", MIDAS_POLICY_WRITE => "Write", MIDAS_POLICY_READ => "Read");
 
-    $return = array('privacy' => $privacyStrings[$folder->getPrivacyStatus()]);
+    $return = array('privacy' => $privacyStrings[$folderpolicygroupModel->computePolicyStatus($folder)]);
 
     $userPolicies = $folder->getFolderpolicyuser();
     $userPoliciesOutput = array();
