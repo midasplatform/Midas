@@ -806,6 +806,9 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
   /** test item creation and deletion */
   public function testCreateitemDeleteitem()
     {
+    $itemModel = MidasLoader::loadModel('Item');
+    $userModel = MidasLoader::loadModel('User');
+
     // create an item with only required options
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
@@ -818,8 +821,10 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $itemDao = $this->Item->load($generatedItemId);
     $this->assertEquals($itemDao->getName(), $this->params['name'], 'Item name is not set correctly');
     $this->assertEquals($itemDao->getDescription(), '', 'Item name is not set correctly');
+    // test the default privacy is Public
+    $this->assertPrivacyStatus(array(), array($itemDao), MIDAS_PRIVACY_PUBLIC);
 
-    // delete it
+    // delete the first created one via the api
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.item.delete';
@@ -832,6 +837,40 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $itemDao = $this->Item->load($generatedItemId);
     $this->assertFalse($itemDao, 'Item should have been deleted, but was not.');
 
+    // create an item with passed in Public, ensure that it is Public
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.create';
+    $this->params['name'] = 'created_item_Public';
+    $this->params['parentid'] = '1000';
+    $this->params['privacy'] = 'Public';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $generatedItemId = $resp->data->item_id;
+    $itemDao = $this->Item->load($generatedItemId);
+    $this->assertEquals($itemDao->getName(), $this->params['name'], 'Item name is not set correctly');
+    $this->assertEquals($itemDao->getDescription(), '', 'Item name is not set correctly');
+    // test the default privacy is Public
+    $this->assertPrivacyStatus(array(), array($itemDao), MIDAS_PRIVACY_PUBLIC);
+    $this->Item->delete($itemDao);
+    
+    // create an item with passed in Private, ensure that it is Private
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.create';
+    $this->params['name'] = 'created_item_Private';
+    $this->params['parentid'] = '1000';
+    $this->params['privacy'] = 'Private';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $generatedItemId = $resp->data->item_id;
+    $itemDao = $this->Item->load($generatedItemId);
+    $this->assertEquals($itemDao->getName(), $this->params['name'], 'Item name is not set correctly');
+    $this->assertEquals($itemDao->getDescription(), '', 'Item name is not set correctly');
+    // test the default privacy is Public
+    $this->assertPrivacyStatus(array(), array($itemDao), MIDAS_PRIVACY_PRIVATE);
+    $this->Item->delete($itemDao);
+    
     // create an item with required options, plus description and uuid
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
@@ -877,9 +916,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $itemDao = $this->Item->load($generatedItemId);
     $this->assertFalse($itemDao, 'Item should have been deleted, but was not.');
 
-    $userModel = MidasLoader::loadModel('User');
     $userDao = $userModel->load('1');
-    $itemModel = MidasLoader::loadModel('Item');
     $readItem = $itemModel->load('1004');
     $writeItem = $itemModel->load('1005');
     $adminItem = $itemModel->load('1006');
@@ -928,16 +965,8 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
       $resp = $this->_callJsonApi();
       $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
       }
-    // try to set privacy with admin, should pass
-    $this->resetAll();
-    $this->params['token'] = $this->_loginAsUser($userDao);
-    $this->params['method'] = 'midas.item.create';
-    $this->params['name'] = 'writeitem';
-    $this->params['uuid'] = $adminItem->getUuid();
-    $this->params['privacy'] = 'Private';
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusOk($resp);
-    // try to set privacy to an invalid string
+
+     // try to set privacy to an invalid string
     $this->resetAll();
     $this->params['token'] = $this->_loginAsUser($userDao);
     $this->params['method'] = 'midas.item.create';
@@ -946,6 +975,34 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['privacy'] = 'El Duderino';
     $resp = $this->_callJsonApi();
     $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
+  
+    // want to test changing privacy using this api method on an extant item
+    // test cases   Public -> Public
+    //              Public -> Private
+    //              Private -> Private
+    //              Private -> Public
+    $privacyStatuses = array(MIDAS_PRIVACY_PUBLIC, MIDAS_PRIVACY_PRIVATE);
+    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+    foreach($privacyStatuses as $initialStatus)
+      {
+      foreach($privacyStatuses as $finalStatus)
+        {
+        $this->initializePrivacyStatus(array(), array($adminItem), $initialStatus);
+
+        // try to set privacy with admin, should pass
+        $this->resetAll();
+        $this->params['token'] = $this->_loginAsUser($userDao);
+        $this->params['method'] = 'midas.item.create';
+        $this->params['name'] = 'writeitem';
+        $this->params['uuid'] = $adminItem->getUuid();
+        $this->params['privacy'] = $privacyStrings[$finalStatus];
+        $resp = $this->_callJsonApi();
+        $this->_assertStatusOk($resp);
+
+        $adminItem = $itemModel->load($adminItem->getItemId());
+        $this->assertPrivacyStatus(array(), array($adminItem), $finalStatus);
+        }
+      }
     }
 
   /** Test searching for item by name */
