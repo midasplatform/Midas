@@ -779,14 +779,12 @@ class Api_ApiComponent extends AppComponent
     $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
     $groupModel = MidasLoader::loadModel('Group');
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-    if($privacyCode == MIDAS_PRIVACY_PRIVATE &&
-       $folderpolicygroupModel->computePolicyStatus($folder) == MIDAS_PRIVACY_PUBLIC)
+    $folderpolicygroupDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $folder);
+    if($privacyCode == MIDAS_PRIVACY_PRIVATE && $folderpolicygroupDao !== false)
       {
-      $policyDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $folder);
-      $folderpolicygroupModel->delete($policyDao);
+      $folderpolicygroupModel->delete($folderpolicygroupDao);
       }
-    elseif($privacyCode == MIDAS_PRIVACY_PUBLIC &&
-           $folderpolicygroupModel->computePolicyStatus($folder) == MIDAS_PRIVACY_PRIVATE)
+    else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $folderpolicygroupDao == false)
       {
       $policyDao = $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
       }
@@ -1178,16 +1176,14 @@ class Api_ApiComponent extends AppComponent
     $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
     $groupModel = MidasLoader::loadModel('Group');
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-    if($privacyCode == MIDAS_PRIVACY_PRIVATE &&
-       $itempolicygroupModel->computePolicyStatus($item) == MIDAS_PRIVACY_PUBLIC)
+    $itempolicygroupDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
+    if($privacyCode == MIDAS_PRIVACY_PRIVATE && $itempolicygroupDao !== false)
       {
-      $policyDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
-      $itempolicygroupModel->delete($policyDao);
+      $itempolicygroupModel->delete($itempolicygroupDao);
       }
-    elseif($privacyCode == MIDAS_PRIVACY_PUBLIC &&
-           $itempolicygroupModel->computePolicyStatus($item) == MIDAS_PRIVACY_PRIVATE)
+    else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $itempolicygroupDao == false)
       {
-      $policyDao = $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+      $itempolicygroupDao = $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
       }
     }
 
