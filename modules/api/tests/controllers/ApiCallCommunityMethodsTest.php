@@ -54,6 +54,31 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
     $this->_assertStatusOk($resp);
     $communities = $communityModel->getAll();
     $this->assertEquals(count($communities), $originalCount + 1);
+    // check default privacy is Public
+    $createdComm = $communityModel->load($resp->data->community_id);
+    $this->assertEquals($createdComm->getPrivacy(), MIDAS_PRIVACY_PUBLIC, 'created community has wrong default privacy');
+
+    // create a comm with privacy Public
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.community.create';
+    $this->params['name'] = 'testNewCommPublic';
+    $this->params['privacy'] = 'Public';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $createdComm = $communityModel->load($resp->data->community_id);
+    $this->assertEquals($createdComm->getPrivacy(), MIDAS_PRIVACY_PUBLIC, 'created community has wrong default privacy');
+
+    // create a comm with privacy Private
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.community.create';
+    $this->params['name'] = 'testNewCommPrivate';
+    $this->params['privacy'] = 'Private';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $createdComm = $communityModel->load($resp->data->community_id);
+    $this->assertEquals($createdComm->getPrivacy(), MIDAS_PRIVACY_PRIVATE, 'created community has wrong default privacy');
 
     $comm2001 = $communityModel->load('2001');
     $userModel = MidasLoader::loadModel('User');
@@ -108,18 +133,6 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
       $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
       }
 
-    // try to set privacy as admin, should work
-    $this->resetAll();
-    $this->params['token'] = $this->_loginAsUser($commAdmin);
-    $this->params['method'] = 'midas.community.create';
-    $this->params['name'] = '2001';
-    $this->params['uuid'] = $comm2001->getUuid();
-    $this->params['privacy'] = 'Private';
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusOk($resp);
-    $comm2001 = $communityModel->load('2001');
-    $this->assertEquals($comm2001->getPrivacy(), MIDAS_PRIVACY_PRIVATE, 'Comm2001 should be private');
-
     // try to set privacy to an invalid string
     $this->resetAll();
     $this->params['token'] = $this->_loginAsUser($commAdmin);
@@ -129,6 +142,36 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
     $this->params['privacy'] = 'El Duderino';
     $resp = $this->_callJsonApi();
     $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
+
+    // want to test changing privacy using this api method on an extant community
+    // test cases   Public -> Public
+    //              Public -> Private
+    //              Private -> Private
+    //              Private -> Public
+    $privacyStatuses = array(MIDAS_PRIVACY_PUBLIC, MIDAS_PRIVACY_PRIVATE);
+    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+    foreach($privacyStatuses as $initialStatus)
+      {
+      foreach($privacyStatuses as $finalStatus)
+        {
+        // initialize privacy
+        $comm2001->setPrivacy($initialStatus);
+        $communityModel->save($comm2001);
+
+        // try to set privacy with admin, should pass
+        $this->resetAll();
+        $this->params['token'] = $this->_loginAsUser($commAdmin);
+        $this->params['method'] = 'midas.community.create';
+        $this->params['name'] = '2001';
+        $this->params['uuid'] = $comm2001->getUuid();
+        $this->params['privacy'] = $privacyStrings[$finalStatus];
+        $resp = $this->_callJsonApi();
+        $this->_assertStatusOk($resp);
+
+        $comm2001 = $communityModel->load($comm2001->getCommunityId());
+        $this->assertEquals($comm2001->getPrivacy(), $finalStatus, 'changed community has wrong default privacy');
+        }
+      }
     }
 
   /** Test listing of visible communities */
