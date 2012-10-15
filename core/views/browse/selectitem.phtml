@@ -17,50 +17,53 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/browse/browse.selectitem.css" />
 
-  <h4><?php echo $this->t('Please select an item.')?></h4>
-  <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
-    <input type="text" id="live_search_item" value="<?= $this->t('Or search it...') ?>"  autocomplete="off" autocorrect="off" autocapitalize="off" />
-    <input type="hidden" id="live_search_item_value" value="init"  />
-    <div id="searchloadingSelectItem" style="display:none"></div>
+<div class="selectedItemContainer"><b>Selection:</b> <span id="selectedDestination" > <?php echo $this->t('Please select an item.') ?> </span></div>
 
-  <table id="moveTable" class="midasTree">
-    <thead>
-      <?php
-    if(!empty($this->communities))
-      {  ?>
-      <tr>
-        <th class="thData"><?php echo $this->t('Name');?></th>
-      </tr>
-     <?php
+<img class="tableLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
+<table id="moveTable" class="midasTree">
+  <thead>
+    <?php
+  if(!empty($this->communities))
+    {  ?>
+    <tr>
+      <th><?php echo $this->t('Name');?></th>
+    </tr>
+   <?php
+    }
+   ?>
+  </thead>
+  <tbody>
+    <?php
+    $node=1;
+    foreach($this->communities as $community)
+      {
+      $folder=$community->getFolder();
+      echo "<tr id='node--$node' class='parent' privacy='".($community->getPrivacy() == 1 ? MIDAS_PRIVACY_PRIVATE : MIDAS_PRIVACY_PUBLIC )."' type='community' element='{$folder->getFolderId()}'>";
+      echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
+      echo "</tr>";
+      $node++;
       }
-     ?>
-    </thead>
-    <tbody>
-      <?php
-      $node=1;
-      foreach($this->communities as $community)
-        {
-        $folder=$community->getFolder();
-        echo "<tr id='node--$node' class='parent' privacy='".($community->getPrivacy() == 1 ? MIDAS_PRIVACY_PRIVATE : MIDAS_PRIVACY_PUBLIC )."' type='community' element='{$folder->getFolderId()}'>";
-        echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
-        echo "</tr>";
-        $node++;
-        }
 
-        $folder=$this->user->getFolder();
-        echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='{$folder->getFolderId()}'>";
-        echo "  <td class='treeBrowseElement'><span class='folder'>{$this->t('My Files')} ({$this->user->getFullName()})</span></td>";
-        echo "</tr>";
-        $node++;
-      ?>
-    </tbody>
-  </table>
+      $folder=$this->user->getFolder();
+      echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='{$folder->getFolderId()}'>";
+      echo "  <td class='treeBrowseElement'><span class='folder'>{$this->t('My Files')} ({$this->user->getFullName()})</span></td>";
+      echo "</tr>";
+      $node++;
+    ?>
+  </tbody>
+</table>
 
-   <br/> <br/>
+<br/>
+<input type="text" id="live_search_item" value="<?= $this->t('Or search it...') ?>"  autocomplete="off" autocorrect="off" autocapitalize="off" />
+<input type="hidden" id="live_search_item_value" value="init" />
+<div id="searchloadingSelectItem" style="display:none"></div>
+<br/>
 
+<div class="bottomButtons">
   <form class="genericForm" type='post' action="<?php echo $this->webroot?>/browse/selectitem">
     <input type='hidden' name='elements' value='<?php echo $this->folderIds?>;<?php echo $this->itemIds?>' />
     <input type='hidden' id="selectedDestinationHidden" name='destination' />
-    Selection: <span id="selectedDestination" > <?php echo $this->t('Please select an item.') ?> </span> <br/>
     <input type="submit" disabled  name='selectElements' id='selectElements'  value="<?php echo $this->t('Select')?>"/>
   </form>
+</div>
+
