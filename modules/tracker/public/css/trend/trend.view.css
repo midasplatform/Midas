@@ -17,27 +17,7 @@ input.dateSelect {
 }
 
 #filterButton {
-  background: #F6F9FE;
-  border: 1px solid grey;
-  color: #2E6E9E;
-  font-weight: bold;
-  cursor: pointer;
-  margin-right: 0.1em;
-  overflow: visible;
-  position: relative;
-  text-align: center;
-  text-decoration: none !important;
-  zoom: 1;
-  -webkit-box-align: center;
-  -webkit-box-sizing: border-box;
-  line-height: 1.4;
-}
-
-#filterButton:hover {
-  color: #1d5987;
-  text-decoration: none;
-  background: #cbd9e3;
-  background-image: none;
+  margin-left: 2px !important;
 }
 
 div.chartContainer {

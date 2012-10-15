@@ -18,6 +18,8 @@ class Tracker_TrendController extends Tracker_AppController
   /**
    * View a given trend
    * @param trendId The id of the trend to view
+   * @param startDate The start date to retrieve scalars
+   * @param endDate The end date to retrieve scalars
    */
   public function viewAction()
     {
@@ -43,8 +45,61 @@ class Tracker_TrendController extends Tracker_AppController
     $header .= '</ul>';
     $this->view->header = $header;
 
+    // Provide sensible default date range
+    if(!isset($startDate))
+      {
+      $startDate = strtotime('-1 month');
+      }
+    else
+      {
+      $startDate = strtotime($startDate);
+      }
+    if(!isset($endDate))
+      {
+      $endDate = time();
+      }
+    else
+      {
+      $endDate = strtotime($endDate);
+      }
+
+    $startDate = date('Y-m-d H:i:s', $startDate);
+    $endDate = date('Y-m-d H:i:s', $endDate);
     $this->view->json['tracker']['scalars'] = $this->Tracker_Trend->getScalars($trend, $startDate, $endDate);
     $this->view->json['tracker']['trend'] = $trend;
+    $this->view->json['tracker']['initialStartDate'] = date('n/j/Y', strtotime($startDate));
+    $this->view->json['tracker']['initialEndDate'] = date('n/j/Y', strtotime($endDate));
+    }
+
+  /**
+   * Ajax action for getting a new list of scalars for a specified date range
+   * @param trendId The id of the trend to view
+   * @param startDate The start date to retrieve scalars
+   * @param endDate The end date to retrieve scalars
+   */
+  public function scalarsAction()
+    {
+    $this->disableView();
+    $this->disableLayout();
+    $trendId = $this->_getParam('trendId');
+    $startDate = $this->_getParam('startDate');
+    $endDate = $this->_getParam('endDate');
+    if(!isset($trendId))
+      {
+      throw new Zend_Exception('Must pass trendId parameter');
+      }
+    $trend = $this->Tracker_Trend->load($trendId);
+    $comm = $trend->getProducer()->getCommunity();
+    if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
+      {
+      throw new Zend_Exception('Read permission required on the community', 403);
+      }
+    $startDate = date('Y-m-d H:i:s', strtotime($startDate));
+    $endDate = date('Y-m-d H:i:s', strtotime($endDate));
+
+    echo JsonComponent::encode(array(
+      'status' => 'ok',
+      'scalars' => $this->Tracker_Trend->getScalars($trend, $startDate, $endDate)));
     }
 
   /**

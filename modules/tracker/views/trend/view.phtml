@@ -69,7 +69,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
     <input class="dateSelect" type="text" id="startdate" name="startdate"/>
     <label for="enddate">to</label>
     <input class="dateSelect" type="text" id="enddate" name="enddate"/>
-    <input type="button" id="filterButton" value="Update" />
+    <input type="button" class="globalButton" id="filterButton" value="Update" />
     <img alt="" style="display: none;" id="dateRangeUpdating" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   </div>
   <div id="chartDiv" class="chartContainer"></div>

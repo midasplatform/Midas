@@ -66,11 +66,11 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
                           ->order(array('submit_time ASC'));
     if($startDate)
       {
-      $sql->where('submit_date >= ?', $startDate);
+      $sql->where('submit_time >= ?', $startDate);
       }
     if($endDate)
       {
-      $sql->where('submit_date <= ?', $endDate);
+      $sql->where('submit_time <= ?', $endDate);
       }
     $scalars = array();
     $rowset = $this->database->fetchAll($sql);
