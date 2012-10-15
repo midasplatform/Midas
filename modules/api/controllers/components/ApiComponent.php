@@ -622,10 +622,6 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['privacy']))
         {
-        if(!$communityModel->policyCheck($record, $userDao, MIDAS_POLICY_ADMIN))
-          {
-          throw new Exception('Community Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
-          }
         $privacyCode = $this->_getValidCommunityPrivacyCode($args['privacy']);
         $communityModel->setPrivacy($record, $privacyCode, $userDao);
         }

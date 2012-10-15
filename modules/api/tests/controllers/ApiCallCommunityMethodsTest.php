@@ -120,8 +120,8 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
       $this->assertEquals($newcommunityName, $refreshComm->getName(), 'Community name should have been changed');
       }
 
-    // try to set privacy as member and moderator, should fail
-    foreach($nonAdmins as $userDao)
+    // try to set privacy as member, should fail
+    foreach($nonModerators as $userDao)
       {
       $this->resetAll();
       $this->params['token'] = $this->_loginAsUser($userDao);
