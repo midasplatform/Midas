@@ -1,0 +1,35 @@
+div.sectionDivider {
+  height: 1px;
+  background-color: #c7c7c7;
+  margin-top: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+span.sectionTitle {
+  background-color: white;
+  position: relative;
+  top: -7px;
+  left: 12px;
+  padding-left: 3px;
+  padding-right: 3px;
+  color: #707070;
+}
+
+div.thisScalarInfo {
+  margin-bottom: 13px;
+}
+
+div.otherScalars {
+  margin-bottom: 15px;
+}
+
+table.scalarInfoTable th {
+  padding-right: 6px;
+  color: #555555;
+}
+
+div.bottomButtons {
+  float: right;
+  margin-top: 10px;
+}
