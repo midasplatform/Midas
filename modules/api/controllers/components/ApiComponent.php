@@ -584,6 +584,30 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * helper method to validate passed in community privacy status params and
+   * map them to valid community privacy codes.
+   * @param string $privacyStatus, should be 'Private' or 'Public'
+   * @return valid community privacy code
+   */
+  private function _getValidCommunityPrivacyCode($privacyStatus)
+    {
+    if($privacyStatus !== 'Public' && $privacyStatus !== 'Private')
+      {
+      throw new Exception('privacy should be one of [Public|Private]', MIDAS_INVALID_PARAMETER);
+      }
+    if($privacyStatus === 'Public')
+      {
+      $privacyCode = MIDAS_COMMUNITY_PUBLIC;
+      }
+    else
+      {
+      $privacyCode = MIDAS_COMMUNITY_PRIVATE;
+      }
+    return $privacyCode;
+    }
+
+
+  /**
    * Create a new community or update an existing one using the uuid
    * @param token Authentication token
    * @param name The community name
@@ -629,7 +653,8 @@ class Api_ApiComponent extends AppComponent
           {
           throw new Exception('Community Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
           }
-        $record->setPrivacy($this->_getValidPrivacyCode($args['privacy']));
+        $privacyCode = $this->_getValidCommunityPrivacyCode($args['privacy']);
+        $communityModel->setPrivacy($record, $privacyCode, $userDao);
         }
       if(isset($args['canjoin']))
         {
@@ -653,7 +678,7 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['privacy']))
         {
-        $privacy = $args['privacy'];
+        $privacy = $this->_getValidCommunityPrivacyCode($args['privacy'], $userDao);
         }
       if(isset($args['canjoin']))
         {
