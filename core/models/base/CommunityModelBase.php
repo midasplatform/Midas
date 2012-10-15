@@ -376,7 +376,8 @@ abstract class CommunityModelBase extends AppModel
       {
       throw new Zend_Exception("Error in param: communityDao should be a CommunityDao.");
       }
-    if($privacyCode !== MIDAS_COMMUNITY_PUBLIC && $privacyCode !== MIDAS_COMMUNITY_PRIVATE)
+    if($privacyCode === false ||
+      ($privacyCode != MIDAS_COMMUNITY_PUBLIC && $privacyCode != MIDAS_COMMUNITY_PRIVATE))
       {
       throw new Exception('invalid value for privacyCode: ' . $privacyCode);
       }
