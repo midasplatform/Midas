@@ -69,6 +69,32 @@ class CommunityControllerTest extends ControllerTestCase
     $this->dispatchUrI('/community/manage?communityId='.$comm->getKey(), $user1);
     $this->assertController('community');
     $this->assertAction('manage');
+
+    // exercise changing privacy status
+    $privacyStatuses = array(MIDAS_COMMUNITY_PUBLIC, MIDAS_COMMUNITY_PRIVATE);
+    foreach($privacyStatuses as $initialStatus)
+      {
+      foreach($privacyStatuses as $finalStatus)
+        {
+        // initialize privacy
+        $comm->setPrivacy($initialStatus);
+        $this->Community->save($comm);
+
+        // try to set privacy with admin, should pass
+        $this->resetAll();
+        $this->request->setMethod('POST');
+        $this->params['communityId'] = $comm->getKey();
+        $this->params['name'] = $comm->getName();
+        // send privacy as a string, since there was a bug with privacy codes as
+        // strings, which is how they would be sent from an actual rendered page
+        $this->params['privacy'] = (string)$finalStatus;
+        $this->params['modifyInfo'] = 'true';
+        $this->dispatchUrI('/community/manage', $user1);
+
+        $comm = $this->Community->load($comm->getCommunityId());
+        $this->assertEquals($comm->getPrivacy(), $finalStatus, 'changed community has wrong privacy');
+        }
+      }
     }
 
   /**
