@@ -1165,6 +1165,80 @@ class Api_ApiComponent extends AppComponent
     return $results;
     }
 
+
+  /**
+   * helper method to validate passed in policy params and
+   * map them to valid policy codes.
+   * @param string $policy, should be [Admin|Write|Read]
+   * @return valid policy code
+   */
+  private function _getValidPolicyCode($policy)
+    {
+    $policyCodes = array('Admin' => MIDAS_POLICY_ADMIN, 'Write' => MIDAS_POLICY_WRITE, 'Read' => MIDAS_POLICY_READ);
+    if(!array_key_exists($policy, $policyCodes))
+      {
+      $validCodes = '[' . implode('|', array_keys($policyCodes)) . ']';
+      throw new Exception('policy should be one of ' . $validCodes, MIDAS_INVALID_PARAMETER);
+      }
+    return $policyCodes[$policy];
+    }
+
+  /**
+   * Add a folderpolicygroup to a folder with the passed in group and policy;
+   * if a folderpolicygroup exists for that group and folder, it will be replaced
+   * with the passed in policy.
+   * @param folder_id The id of the folder
+   * @param group_id The id of the group
+   * @param policy Desired policy status, one of [Admin|Write|Read].
+   * @param recursive If included will push all policies from
+   * the passed in folder down to its child folders and items, default is non-recursive.
+   * @return An array with keys 'success' and 'failure' indicating a count
+   */
+  function folderAddpolicygroup($args)
+    {
+    $this->_validateParams($args, array('folder_id', 'group_id', 'policy'));
+    $userDao = $this->_getUser($args);
+
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderId = $args['folder_id'];
+    $folder = $folderModel->load($folderId);
+    if($folder === false)
+      {
+      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($args['group_id']);
+    if($group === false)
+      {
+      throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $policyCode = $this->_getValidPolicyCode($args['policy']);
+
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $folderpolicygroupModel->createPolicy($group, $folder, $policyCode);
+
+    // we have now changed 1 folder successfully
+    $results = array('success' => 1, 'failure' => 0);
+
+    if(isset($args['recursive']))
+      {
+      // now push down the privacy recursively
+      $policyComponent = MidasLoader::loadComponent('Policy');
+      // send a null Progress since we aren't interested in progress
+      $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results);
+      }
+
+    return $results;
+    }
+
+
+
   /**
    * helper method to validate passed in privacy status params and
    * map them to valid privacy codes.

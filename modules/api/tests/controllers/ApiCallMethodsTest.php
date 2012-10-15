@@ -166,6 +166,79 @@ class ApiCallMethodsTest extends ControllerTestCase
       }
     }
 
+  /**
+   * helper function to ensure that passed in resources have a policy with the
+   * given group and policy.
+   */
+  protected function assertPolicyExistence($testFolders, $testItems, $group, $policyCode)
+    {
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+    $itemModel = MidasLoader::loadModel('Item');
+    $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
+    foreach($testFolders as $folder)
+      {
+      $folder = $folderModel->load($folder->getFolderId());
+      $folderpolicygroup = $folderpolicygroupModel->getPolicy($group, $folder);
+      if($folderpolicygroup !== false)
+        {
+        $message = $folder->getName() . ' has the wrong policy for group '. $group->getGroupId() .' policy '. $policyCode;
+        $this->assertEquals($folderpolicygroup->getPolicy(), $policyCode, $message);
+        }
+      else
+        {
+        $message = $folder->getName() . ' does not have any policy for group '. $group->getGroupId() .' policy '. $policyCode;
+        $this->assertTrue(false, $message);
+        }
+      }
+    foreach($testItems as $item)
+      {
+      $item = $itemModel->load($item->getItemId());
+      $itempolicygroup = $itempolicygroupModel->getPolicy($group, $item);
+      if($itempolicygroup !== false)
+        {
+        $message = $item->getName() . ' has the wrong policy for group '. $group->getGroupId() .' policy '. $policyCode;
+        $this->assertEquals($itempolicygroup->getPolicy(), $policyCode, $message);
+        }
+      else
+        {
+        $message = $item->getName() . ' does not have any policy for group '. $group->getGroupId() .' policy '. $policyCode;
+        $this->assertTrue(false, $message);
+        }
+      }
+    }
+
+  /**
+   * helper function to ensure that passed in resources do not have a policy
+   * for the given group.
+   */
+  protected function assertPolicyNonexistence($testFolders, $testItems, $group)
+    {
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+    $itemModel = MidasLoader::loadModel('Item');
+    $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
+    foreach($testFolders as $folder)
+      {
+      $folder = $folderModel->load($folder->getFolderId());
+      $folderpolicygroup = $folderpolicygroupModel->getPolicy($group, $folder);
+      if($folderpolicygroup !== false)
+        {
+        $message = $folder->getName() . ' should not have a policy for group '. $group->getGroupId();
+        $this->assertTrue(false, $message);
+        }
+      }
+    foreach($testItems as $item)
+      {
+      $item = $itemModel->load($item->getItemId());
+      $itempolicygroup = $itempolicygroupModel->getPolicy($group, $item);
+      if($itempolicygroup !== false)
+        {
+        $message = $item->getName() . ' should not have a policy for group '. $group->getGroupId();
+        $this->assertTrue(false, $message);
+        }
+      }
+    }
 
 
   }
