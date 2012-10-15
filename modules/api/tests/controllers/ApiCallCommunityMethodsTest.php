@@ -56,7 +56,7 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
     $this->assertEquals(count($communities), $originalCount + 1);
     // check default privacy is Public
     $createdComm = $communityModel->load($resp->data->community_id);
-    $this->assertEquals($createdComm->getPrivacy(), MIDAS_PRIVACY_PUBLIC, 'created community has wrong default privacy');
+    $this->assertEquals($createdComm->getPrivacy(), MIDAS_COMMUNITY_PUBLIC, 'created community has wrong default privacy');
 
     // create a comm with privacy Public
     $this->resetAll();
@@ -67,7 +67,7 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
     $createdComm = $communityModel->load($resp->data->community_id);
-    $this->assertEquals($createdComm->getPrivacy(), MIDAS_PRIVACY_PUBLIC, 'created community has wrong default privacy');
+    $this->assertEquals($createdComm->getPrivacy(), MIDAS_COMMUNITY_PUBLIC, 'created community has wrong default privacy');
 
     // create a comm with privacy Private
     $this->resetAll();
@@ -78,7 +78,7 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
     $createdComm = $communityModel->load($resp->data->community_id);
-    $this->assertEquals($createdComm->getPrivacy(), MIDAS_PRIVACY_PRIVATE, 'created community has wrong default privacy');
+    $this->assertEquals($createdComm->getPrivacy(), MIDAS_COMMUNITY_PRIVATE, 'created community has wrong default privacy');
 
     $comm2001 = $communityModel->load('2001');
     $userModel = MidasLoader::loadModel('User');
@@ -148,8 +148,8 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
     //              Public -> Private
     //              Private -> Private
     //              Private -> Public
-    $privacyStatuses = array(MIDAS_PRIVACY_PUBLIC, MIDAS_PRIVACY_PRIVATE);
-    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+    $privacyStatuses = array(MIDAS_COMMUNITY_PUBLIC, MIDAS_COMMUNITY_PRIVATE);
+    $privacyStrings = array(MIDAS_COMMUNITY_PUBLIC => "Public", MIDAS_COMMUNITY_PRIVATE => "Private");
     foreach($privacyStatuses as $initialStatus)
       {
       foreach($privacyStatuses as $finalStatus)
