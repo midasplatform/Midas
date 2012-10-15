@@ -557,12 +557,36 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * helper method to validate passed in community privacy status params and
+   * map them to valid community privacy codes.
+   * @param string $privacyStatus, should be 'Private' or 'Public'
+   * @return valid community privacy code
+   */
+  private function _getValidCommunityPrivacyCode($privacyStatus)
+    {
+    if($privacyStatus !== 'Public' && $privacyStatus !== 'Private')
+      {
+      throw new Exception('privacy should be one of [Public|Private]', MIDAS_INVALID_PARAMETER);
+      }
+    if($privacyStatus === 'Public')
+      {
+      $privacyCode = MIDAS_COMMUNITY_PUBLIC;
+      }
+    else
+      {
+      $privacyCode = MIDAS_COMMUNITY_PRIVATE;
+      }
+    return $privacyCode;
+    }
+
+
+  /**
    * Create a new community or update an existing one using the uuid
    * @param token Authentication token
    * @param name The community name
    * @param description (Optional) The community description
    * @param uuid (Optional) Uuid of the community. If none is passed, will generate one.
-   * @param privacy (Optional) Default 'Public'.
+   * @param privacy (Optional) Default 'Public', possible values [Public|Private].
    * @param canjoin (Optional) Default 'Everyone'.
    * @return The community dao that was created
    */
@@ -598,7 +622,8 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['privacy']))
         {
-        $record->setPrivacy($args['privacy']);
+        $privacyCode = $this->_getValidCommunityPrivacyCode($args['privacy']);
+        $communityModel->setPrivacy($record, $privacyCode, $userDao);
         }
       if(isset($args['canjoin']))
         {
@@ -622,7 +647,7 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['privacy']))
         {
-        $privacy = $args['privacy'];
+        $privacy = $this->_getValidCommunityPrivacyCode($args['privacy'], $userDao);
         }
       if(isset($args['canjoin']))
         {
@@ -768,12 +793,31 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   *  helper function to set the privacy code on a passed in folder.
+   */
+  protected function setFolderPrivacy($folder, $privacyCode)
+    {
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $groupModel = MidasLoader::loadModel('Group');
+    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+    $folderpolicygroupDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $folder);
+    if($privacyCode == MIDAS_PRIVACY_PRIVATE && $folderpolicygroupDao !== false)
+      {
+      $folderpolicygroupModel->delete($folderpolicygroupDao);
+      }
+    else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $folderpolicygroupDao == false)
+      {
+      $policyDao = $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
+      }
+    }
+
+  /**
    * Create a folder or update an existing one if one exists by the uuid passed
    * @param token Authentication token
    * @param name The name of the folder to create
    * @param description (Optional) The description of the folder
    * @param uuid (Optional) Uuid of the folder. If none is passed, will generate one.
-   * @param privacy (Optional) Default 'Public'.
+   * @param privacy (Optional) Default 'Public', possible values [Public|Private].
    * @param parentid The id of the parent folder. Set this to -1 to create a top level user folder.
    * @return The folder object that was created
    */
@@ -810,7 +854,12 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['privacy']))
         {
-        $record->setPrivacy($args['privacy']);
+        if(!$folderModel->policyCheck($record, $userDao, MIDAS_POLICY_ADMIN))
+          {
+          throw new Exception('Folder Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
+          }
+        $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
+        $this->setFolderPrivacy($record, $privacyCode);
         }
       $folderModel->save($record);
       return $record->toArray();
@@ -857,6 +906,18 @@ class Api_ApiComponent extends AppComponent
           {
           $folderpolicyuserModel->createPolicy($userDao, $new_folder, MIDAS_POLICY_ADMIN);
           }
+        }
+
+      // set privacy if desired
+      if(isset($args['privacy']))
+        {
+        $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
+        $this->setFolderPrivacy($new_folder, $privacyCode);
+        }
+      else
+        {
+        // explicitly set to Public
+        $this->setFolderPrivacy($new_folder, MIDAS_PRIVACY_PUBLIC);
         }
 
       return $new_folder->toArray();
@@ -979,7 +1040,7 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Move a folder to the desination folder
+   * Move a folder to the destination folder
    * @param token Authentication token
    * @param id The id of the folder
    * @param dstfolderid The id of destination folder (new parent folder) where the folder is moved to
@@ -1010,6 +1071,144 @@ class Api_ApiComponent extends AppComponent
     $folder = $folderModel->load($id);
     return $folder->toArray();
     }
+
+  /**
+   * List the permissions on a folder, requires Admin access to the folder.
+   * @param folder_id The id of the folder
+   * @return A list with three keys: privacy, user, group.  privacy will be the
+     folder's privacy string [Public|Private].  user will be a list of user_id
+     to (policy, email) for that user.  group will be a list of group_id to
+     (policy, name) for that group.  policy for user and group will be a
+     policy string [Admin|Write|Read].
+   */
+  public function folderListPermissions($args)
+    {
+    $this->_validateParams($args, array('folder_id'));
+    $userDao = $this->_getUser($args);
+
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $groupModel = MidasLoader::loadModel('Group');
+    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderId = $args['folder_id'];
+    $folder = $folderModel->load($folderId);
+
+    if($folder === false)
+      {
+      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the folder to list permissions.", MIDAS_INVALID_POLICY);
+      }
+
+    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+    $privilegeStrings = array(MIDAS_POLICY_ADMIN => "Admin", MIDAS_POLICY_WRITE => "Write", MIDAS_POLICY_READ => "Read");
+
+    $return = array('privacy' => $privacyStrings[$folderpolicygroupModel->computePolicyStatus($folder)]);
+
+    $userPolicies = $folder->getFolderpolicyuser();
+    $userPoliciesOutput = array();
+    foreach($userPolicies as $userPolicy)
+      {
+      $user = $userPolicy->getUser();
+      $userPoliciesOutput[$user->getUserId()] = array('policy' => $privilegeStrings[$userPolicy->getPolicy()], 'email' => $user->getEmail());
+      }
+    $return['user'] = $userPoliciesOutput;
+
+    $groupPolicies = $folder->getFolderpolicygroup();
+    $groupPoliciesOutput = array();
+    foreach($groupPolicies as $groupPolicy)
+      {
+      $group = $groupPolicy->getGroup();
+      $groupPoliciesOutput[$group->getGroupId()] = array('policy' => $privilegeStrings[$groupPolicy->getPolicy()], 'name' => $group->getName());
+      }
+    $return['group'] = $groupPoliciesOutput;
+
+    return $return;
+    }
+
+  /**
+   * Set the privacy status on a folder, and push this value down recursively
+   * to all children folders and items, requires Admin access to the folder.
+   * @param folder_id The id of the folder
+   * @param privacy Desired privacy status, one of [Public|Private].
+   * @return An array with keys 'success' and 'failure' indicating a count
+   * of children resources that succeeded or failed the permission change.
+   */
+  function folderSetPrivacyRecursive($args)
+    {
+    $this->_validateParams($args, array('folder_id', 'privacy'));
+    $userDao = $this->_getUser($args);
+
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderId = $args['folder_id'];
+    $folder = $folderModel->load($folderId);
+
+    if($folder === false)
+      {
+      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the folder to set privacy.", MIDAS_INVALID_POLICY);
+      }
+
+    $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
+    $this->setFolderPrivacy($folder, $privacyCode);
+
+    // now push down the privacy recursively
+    $policyComponent = MidasLoader::loadComponent('Policy');
+    // send a null Progress since we aren't interested in progress
+    // prepopulate results with 1 success for the folder we have already changed
+    $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results = array('success' => 1, 'failure' => 0));
+    return $results;
+    }
+
+  /**
+   * helper method to validate passed in privacy status params and
+   * map them to valid privacy codes.
+   * @param string $privacyStatus, should be 'Private' or 'Public'
+   * @return valid privacy code
+   */
+  private function _getValidPrivacyCode($privacyStatus)
+    {
+    if($privacyStatus !== 'Public' && $privacyStatus !== 'Private')
+      {
+      throw new Exception('privacy should be one of [Public|Private]', MIDAS_INVALID_PARAMETER);
+      }
+    if($privacyStatus === 'Public')
+      {
+      $privacyCode = MIDAS_PRIVACY_PUBLIC;
+      }
+    else
+      {
+      $privacyCode = MIDAS_PRIVACY_PRIVATE;
+      }
+    return $privacyCode;
+    }
+
+
+  /**
+   *  helper function to set the privacy code on a passed in item.
+   */
+  protected function setItemPrivacy($item, $privacyCode)
+    {
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+    $groupModel = MidasLoader::loadModel('Group');
+    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+    $itempolicygroupDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
+    if($privacyCode == MIDAS_PRIVACY_PRIVATE && $itempolicygroupDao !== false)
+      {
+      $itempolicygroupModel->delete($itempolicygroupDao);
+      }
+    else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $itempolicygroupDao == false)
+      {
+      $itempolicygroupDao = $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+      }
+    }
+
+
 
   /**
    * Create an item or update an existing one if one exists by the uuid passed.
@@ -1055,20 +1254,12 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['privacy']))
         {
-        $privacy = $args['privacy'];
-        if($privacy !== 'Public' && $privacy !== 'Private')
+        if(!$itemModel->policyCheck($record, $userDao, MIDAS_POLICY_ADMIN))
           {
-          throw new Exception('privacy should be one of [Public|Private]');
+          throw new Exception('Item Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
           }
-        if($privacy === 'Public')
-          {
-          $privacy_status = MIDAS_PRIVACY_PUBLIC;
-          }
-        else
-          {
-          $privacy_status = MIDAS_PRIVACY_PRIVATE;
-          }
-        $record->setPrivacyStatus($privacy_status);
+        $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
+        $this->setItemPrivacy($record, $privacyCode);
         }
       foreach($args as $key => $value)
         {
@@ -1104,6 +1295,18 @@ class Api_ApiComponent extends AppComponent
         }
       $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
       $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
+
+      // set privacy if desired
+      if(isset($args['privacy']))
+        {
+        $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
+        $this->setItemPrivacy($item, $privacyCode);
+        }
+      else
+        {
+        // explicitly set to Public
+        $this->setItemPrivacy($item, MIDAS_PRIVACY_PUBLIC);
+        }
 
       return $item->toArray();
       }
