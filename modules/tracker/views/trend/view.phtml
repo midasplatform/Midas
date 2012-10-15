@@ -82,7 +82,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
     <?php if($this->isAdmin)
       { ?>
       <li>
-        <a class="editTrendInfo"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/edit.png"/> Edit</a>
+        <a href="<?php echo $this->webroot?>/tracker/trend/edit?trendId=<?php echo $this->trend->getKey()?>">
+          <img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/edit.png"/> Edit
+        </a>
       </li>
       <li>
         <a class="deleteTrend"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/close.png"/> Delete</a>

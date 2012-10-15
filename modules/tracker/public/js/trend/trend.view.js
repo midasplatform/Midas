@@ -32,6 +32,14 @@ midas.tracker.populateInfo = function (curveData) {
     $('#maxVal').html(curveData.maxVal);
 };
 
+midas.tracker.bindPlotEvents = function () {
+    $('#chartDiv').unbind('jqplotDataClick').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
+        var scalarId = json.tracker.scalars[pointIndex].scalar_id;
+        midas.loadDialog('scalarPoint'+scalarId, '/tracker/scalar/details?scalarId='+scalarId);
+        midas.showDialog('Scalar details', false);
+    });
+};
+
 $(window).load(function () {
     var curveData = midas.tracker.extractCurveData(json.tracker.scalars);
     var yaxisLabel = json.tracker.trend.display_name;
@@ -69,7 +77,7 @@ $(window).load(function () {
                         fontSize: '11px',
                         labelPosition: 'middle'
                     }
-                    
+
                 },
                 yaxis: {
                     pad: 1.05,
@@ -91,10 +99,9 @@ $(window).load(function () {
                 showTooltip: false
             }
         });
-        $('#chartDiv').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
-            midas.loadDialog('scalarPoint', '/tracker/scalar/details?scalarId='+json.tracker.scalars[pointIndex].scalar_id);
-            midas.showDialog('Scalar details', false);
-        });
+        $.jqplot.postDrawHooks.push(midas.tracker.bindPlotEvents); //must re-bind data click each time we redraw
+        midas.tracker.bindPlotEvents();
+
         $('a.resetZoomAction').click(function () {
             midas.tracker.plot.resetZoom();
         });
@@ -103,5 +110,4 @@ $(window).load(function () {
         $('#chartDiv').html('<span class="noPoints">There are no values for this trend in the specified date range.</span>');
     }
     midas.tracker.populateInfo(curveData);
-    
 });
