@@ -64,8 +64,8 @@ class CommunityController extends AppController
     //ajax posts
     if($this->_request->isPost())
       {
-      $this->_helper->layout->disableLayout();
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableLayout();
+      $this->disableView();
       $modifyInfo = $this->_getParam('modifyInfo');
       $editGroup = $this->_getParam('editGroup');
       $deleteGroup = $this->_getParam('deleteGroup');
