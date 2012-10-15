@@ -19,9 +19,18 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
   /**
    * Return all associated items
    */
-  public function getResultItems($scalar)
+  public function getAssociatedItems($scalar)
     {
     // TODO return a hash array where key is the label and value is the result item
+    return array();
+    }
+
+  /**
+   * Return other values that are from the same submission (same submit_time and same producer)
+   */
+  public function getOtherValuesFromSubmission($scalar)
+    {
+    return array();
     }
 
   /**
@@ -30,14 +39,15 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
   public function delete($scalar)
     {
     // TODO delete from tracker_scalar2item where scalar_id=$scalar->getKey()
-    parent::delete($producer);
+    parent::delete($scalar);
     }
 
   /**
-   * Used to overwrite trend points with identical timestamps
+   * Helper function used to overwrite trend points with identical timestamps
    */
   public function deleteByTrendAndTimestamp($trendId, $timestamp)
     {
+    // We do not need to protect against sql injection here because we only call this with a known valid timestamp value
     Zend_Registry::get('dbAdapter')->delete($this->_name, 'trend_id = '.$trendId.' AND submit_time = \''.$timestamp.'\'');
     }
 }

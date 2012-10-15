@@ -30,13 +30,14 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
         'trend' => array('type' => MIDAS_MANY_TO_ONE,
                          'model' => 'Trend',
                          'module' => $this->moduleName,
-                         'parent_column' => 'community_id',
-                         'child_column' => 'community_id')
+                         'parent_column' => 'trend_id',
+                         'child_column' => 'trend_id')
       );
     $this->initialize();
     }
 
-  public abstract function getResultItems($scalar);
+  public abstract function getAssociatedItems($scalar);
+  public abstract function getOtherValuesFromSubmission($scalar);
   public abstract function deleteByTrendAndTimestamp($trendId, $timestamp);
 
   /**

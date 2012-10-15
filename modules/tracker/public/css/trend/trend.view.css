@@ -3,6 +3,23 @@ div.itemsContainer {
   margin-bottom: 10px;
 }
 
+div.dateControlContainer {
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #d7d7d7;
+}
+
+input.dateSelect {
+  background: white url(../../../../statistics/public/images/calendar.png) no-repeat scroll 2px 1px;
+  border: 1px solid grey;
+  padding-left: 20px;
+  width: 120px;
+}
+
+#filterButton {
+  margin-left: 2px !important;
+}
+
 div.chartContainer {
   width: 560px;
   height: 360px;
@@ -15,4 +32,8 @@ span.infoItem {
 span.itemLinkNone {
   color: #a5a5a5;
   font-style: italic;
+}
+
+span.noPoints {
+  color: #909090;
 }
