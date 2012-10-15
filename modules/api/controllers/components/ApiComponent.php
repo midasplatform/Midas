@@ -795,7 +795,7 @@ class Api_ApiComponent extends AppComponent
   /**
    *  helper function to set the privacy code on a passed in folder.
    */
-  protected function setFolderPrivacy($folder, $privacyCode)
+  protected function _setFolderPrivacy($folder, $privacyCode)
     {
     $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
     $groupModel = MidasLoader::loadModel('Group');
@@ -859,7 +859,7 @@ class Api_ApiComponent extends AppComponent
           throw new Exception('Folder Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
           }
         $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-        $this->setFolderPrivacy($record, $privacyCode);
+        $this->_setFolderPrivacy($record, $privacyCode);
         }
       $folderModel->save($record);
       return $record->toArray();
@@ -912,12 +912,12 @@ class Api_ApiComponent extends AppComponent
       if(isset($args['privacy']))
         {
         $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-        $this->setFolderPrivacy($new_folder, $privacyCode);
+        $this->_setFolderPrivacy($new_folder, $privacyCode);
         }
       else
         {
         // explicitly set to Public
-        $this->setFolderPrivacy($new_folder, MIDAS_PRIVACY_PUBLIC);
+        $this->_setFolderPrivacy($new_folder, MIDAS_PRIVACY_PUBLIC);
         }
 
       return $new_folder->toArray();
@@ -1155,7 +1155,7 @@ class Api_ApiComponent extends AppComponent
       }
 
     $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-    $this->setFolderPrivacy($folder, $privacyCode);
+    $this->_setFolderPrivacy($folder, $privacyCode);
 
     // now push down the privacy recursively
     $policyComponent = MidasLoader::loadComponent('Policy');
@@ -1266,7 +1266,7 @@ class Api_ApiComponent extends AppComponent
   /**
    *  helper function to set the privacy code on a passed in item.
    */
-  protected function setItemPrivacy($item, $privacyCode)
+  protected function _setItemPrivacy($item, $privacyCode)
     {
     $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
     $groupModel = MidasLoader::loadModel('Group');
@@ -1333,7 +1333,7 @@ class Api_ApiComponent extends AppComponent
           throw new Exception('Item Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
           }
         $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-        $this->setItemPrivacy($record, $privacyCode);
+        $this->_setItemPrivacy($record, $privacyCode);
         }
       foreach($args as $key => $value)
         {
@@ -1374,12 +1374,12 @@ class Api_ApiComponent extends AppComponent
       if(isset($args['privacy']))
         {
         $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-        $this->setItemPrivacy($item, $privacyCode);
+        $this->_setItemPrivacy($item, $privacyCode);
         }
       else
         {
         // explicitly set to Public
-        $this->setItemPrivacy($item, MIDAS_PRIVACY_PUBLIC);
+        $this->_setItemPrivacy($item, MIDAS_PRIVACY_PUBLIC);
         }
 
       return $item->toArray();
