@@ -451,6 +451,139 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
       }
     }
 
+  /**
+   * Test the folder.add.policygroup api call.
+   */
+  public function testFolderAddpolicygroup()
+    {
+    $userModel = MidasLoader::loadModel('User');
+    $itemModel = MidasLoader::loadModel('Item');
+    $groupModel = MidasLoader::loadModel('Group');
 
+    $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+    $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+    $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
+    $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
+
+    $userDao = $userModel->load('1');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $readFolder = $folderModel->load('1012');
+    $writeFolder = $folderModel->load('1013');
+    $adminFolder = $folderModel->load('1014');
+    $nonAdmins = array($readFolder, $writeFolder);
+
+    $params = array('method' => 'midas.folder.add.policygroup',
+                    'token' => $this->_loginAsUser($userDao));
+
+    $deletioncommModeratorGroup = $groupModel->load('3004');
+    $deletioncommMemberGroup = $groupModel->load('3005');
+
+    // try to list permissions without admin, should fail
+    foreach($nonAdmins as $folder)
+      {
+      $this->resetAll();
+      $params['folder_id'] = $folder->getFolderId();
+      $params['group_id'] = $deletioncommMemberGroup->getGroupId();
+      $params['policy'] = 'Admin';
+      $this->params = $params;
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+
+    // try to set an invalid policy, should fail
+    $this->resetAll();
+    $params['folder_id'] = $adminFolder->getFolderId();
+    $params['group_id'] = $deletioncommMemberGroup->getGroupId();
+    $params['policy'] = 'Arithmatic';
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
+
+    // create a structure with a root folder, with two children, one grandchild,
+    // and 1 item in each of these folders
+    $testrootfolder = $folderModel->createFolder('testrootfolder', 'testrootfolder', $adminFolder);
+    $childfolder1 = $folderModel->createFolder('childfolder1', 'childfolder1', $testrootfolder);
+    $childfolder11 = $folderModel->createFolder('childfolder11', 'childfolder11', $childfolder1);
+    $childfolder2 = $folderModel->createFolder('childfolder2', 'childfolder2', $testrootfolder);
+
+    $itemroot = $itemModel->createItem('itemroot', 'itemroot', $childfolder11);
+    $item1 = $itemModel->createItem('item1', 'item1', $childfolder1);
+    $item11 = $itemModel->createItem('item11', 'item11', $childfolder11);
+    $item2 = $itemModel->createItem('item2', 'item2', $childfolder2);
+
+    $testFolders = array($testrootfolder, $childfolder1, $childfolder11, $childfolder2);
+    $testFoldersWithoutRoot = array($childfolder1, $childfolder11, $childfolder2);
+    $testItems = array($itemroot, $item1, $item11, $item2);
+
+    // set the user as an Admin on these test resources
+    foreach($testFolders as $folder)
+      {
+      $folderpolicyuserModel->createPolicy($userDao, $folder, MIDAS_POLICY_ADMIN);
+      $folderModel->save($folder);
+      }
+    foreach($testItems as $item)
+      {
+      $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
+      $itemModel->save($item);
+      }
+
+    // add a policy to root, check that root has the policy and no children do
+    $this->resetAll();
+    $params['folder_id'] = $testrootfolder->getFolderId();
+    $params['group_id'] = $deletioncommMemberGroup->getGroupId();
+    $params['policy'] = 'Write';
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->success, 1, 'Have added a foldergrouppolicy on an incorrect number of resources');
+
+    $this->assertPolicyExistence(array($testrootfolder), array(), $deletioncommMemberGroup, MIDAS_POLICY_WRITE);
+    $this->assertPolicyNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommMemberGroup);
+
+    // add a second policy to root, check that root has and no children do
+    $this->resetAll();
+    $params['folder_id'] = $testrootfolder->getFolderId();
+    $params['group_id'] = $deletioncommModeratorGroup->getGroupId();
+    $params['policy'] = 'Read';
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->success, 1, 'Have added a foldergrouppolicy on an incorrect number of resources');
+
+    $this->assertPolicyExistence(array($testrootfolder), array(), $deletioncommMemberGroup, MIDAS_POLICY_WRITE);
+    $this->assertPolicyNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommMemberGroup);
+    $this->assertPolicyExistence(array($testrootfolder), array(), $deletioncommModeratorGroup, MIDAS_POLICY_READ);
+    $this->assertPolicyNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommModeratorGroup);
+
+    // change the second policy
+    $this->resetAll();
+    $params['folder_id'] = $testrootfolder->getFolderId();
+    $params['group_id'] = $deletioncommModeratorGroup->getGroupId();
+    $params['policy'] = 'Admin';
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->success, 1, 'Have added a foldergrouppolicy on an incorrect number of resources');
+
+    $this->assertPolicyExistence(array($testrootfolder), array(), $deletioncommMemberGroup, MIDAS_POLICY_WRITE);
+    $this->assertPolicyNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommMemberGroup);
+    $this->assertPolicyExistence(array($testrootfolder), array(), $deletioncommModeratorGroup, MIDAS_POLICY_ADMIN);
+    $this->assertPolicyNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommModeratorGroup);
+
+    // change the first policy recursively
+    // what should happen now??
+    $this->resetAll();
+    $params['folder_id'] = $testrootfolder->getFolderId();
+    $params['group_id'] = $deletioncommMemberGroup->getGroupId();
+    $params['policy'] = 'Read';
+    $params['recursive'] = 'recursive';
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->success, count($testFolders) + count($testItems), 'Have added a foldergrouppolicy on an incorrect number of resources');
+
+    $this->assertPolicyExistence($testFolders, $testItems, $deletioncommMemberGroup, MIDAS_POLICY_READ);
+    $this->assertPolicyExistence($testFolders, $testItems, $deletioncommModeratorGroup, MIDAS_POLICY_ADMIN);
+    }
 
   }
