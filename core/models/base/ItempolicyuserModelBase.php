@@ -43,10 +43,6 @@ abstract class ItempolicyuserModelBase extends AppModel
   /** delete */
   public function delete($dao)
     {
-    $item = $dao->getItem();
     parent::delete($dao);
-
-    $fitemGroupModel = MidasLoader::loadModel('Itempolicygroup');
-    $fitemGroupModel->computePolicyStatus($item);
     }//end delete
 } // end class ItempolicyuserModelBase
