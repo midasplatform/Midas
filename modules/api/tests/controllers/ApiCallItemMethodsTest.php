@@ -1641,4 +1641,74 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->assertPolicygroupNonexistence(array(), array($adminItem), $deletioncommMemberGroup);
     }
 
+  /**
+   * Test the item.add.policygroup and item.remove.policyuser api calls.
+   */
+  public function testItemAddRemovePolicyuser()
+    {
+    $userModel = MidasLoader::loadModel('User');
+    $itemModel = MidasLoader::loadModel('Item');
+
+    $userDao = $userModel->load('1');
+    $itemModel = MidasLoader::loadModel('Item');
+    $readItem = $itemModel->load('1004');
+    $writeItem = $itemModel->load('1005');
+    $adminItem = $itemModel->load('1006');
+    $nonAdmins = array($readItem, $writeItem);
+
+    $params = array('method' => 'midas.item.add.policyuser',
+                    'token' => $this->_loginAsUser($userDao));
+
+    $targetUser = $userModel->load('2');
+    $targetUser3 = $userModel->load('3');
+
+    $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
+
+    // try to add without admin, should fail
+    foreach($nonAdmins as $item)
+      {
+      $this->resetAll();
+      $params['item_id'] = $item->getItemId();
+      $params['user_id'] = $targetUser->getUserId();
+      $params['policy'] = 'Admin';
+      $this->params = $params;
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+
+    // try to set an invalid policy, should fail
+    $this->resetAll();
+    $params['item_id'] = $adminItem->getItemId();
+    $params['user_id'] = $targetUser->getUserId();
+    $params['policy'] = 'Arithmatic';
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
+
+    // add a policy to the item, check that the item has the policy
+    $this->resetAll();
+    $params['item_id'] = $adminItem->getItemId();
+    $params['user_id'] = $targetUser->getUserId();
+    $params['policy'] = 'Write';
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->success, "true", 'itemuserpolicy addition did not work as expected.');
+
+    $this->assertPolicyuserExistence(array(), array($adminItem), $targetUser, MIDAS_POLICY_WRITE);
+
+    // change the policy on the item, check that the policy is correct
+    $this->resetAll();
+    $params['item_id'] = $adminItem->getItemId();
+    $params['user_id'] = $targetUser->getUserId();
+    $params['policy'] = 'Read';
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->success, "true", 'itemuserpolicy addition did not work as expected.');
+
+    $this->assertPolicyuserExistence(array(), array($adminItem), $targetUser, MIDAS_POLICY_READ);
+    }
+
+
   }
