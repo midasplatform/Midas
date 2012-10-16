@@ -41,36 +41,18 @@ abstract class ItempolicygroupModelBase extends AppModel
   abstract function deleteGroupPolicies($group);
   abstract function createPolicy($group, $item, $policy);
   abstract function getPolicy($group, $item);
+  abstract function computePolicyStatus($item);
 
   /** delete */
   public function delete($dao)
     {
     $item = $dao->getItem();
     parent::delete($dao);
-    $this->computePolicyStatus($item);
+    if($dao->getGroupId() == MIDAS_GROUP_ANONYMOUS_KEY)
+      {
+      $this->computePolicyStatus($item);
+      }
     }//end delete
 
-
-  /** compute policy status*/
-  public function computePolicyStatus($item)
-    {
-    $groupPolicies = $item->getItempolicygroup();
-
-    $shared = false;
-    $itemModel = MidasLoader::loadModel('Item');
-
-    foreach($groupPolicies as $key => $policy)
-      {
-      if($policy->getGroupId() == MIDAS_GROUP_ANONYMOUS_KEY)
-        {
-        $item->setPrivacyStatus(MIDAS_PRIVACY_PUBLIC);
-        $itemModel->save($item, false);
-        return MIDAS_PRIVACY_PUBLIC;
-        }
-      }
-    $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
-    $itemModel->save($item, false);
-    return MIDAS_PRIVACY_PRIVATE;
-    }// end computePolicyStatus
 
 } // end class ItempolicygroupModelBase

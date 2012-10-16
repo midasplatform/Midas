@@ -56,9 +56,33 @@ class ItempolicygroupModel extends ItempolicygroupModelBase
     $policyGroupDao->setPolicy($policy);
     $this->save($policyGroupDao);
 
-    $this->computePolicyStatus($item);
+    if($policyGroupDao->getGroupId() == MIDAS_GROUP_ANONYMOUS_KEY)
+      {
+      $this->computePolicyStatus($item);
+      }
     return $policyGroupDao;
     }
+
+  /** compute policy status*/
+  public function computePolicyStatus($item)
+    {
+    $sql = $this->database->select()->from(array('ipg' => 'itempolicygroup'), array('COUNT(*) as count'));
+    $sql->where('ipg.item_id = ?', $item->getItemId());
+    $sql->where('ipg.group_id = ?', MIDAS_GROUP_ANONYMOUS_KEY);
+    $row = $this->database->fetchRow($sql);
+    $count = (int)$row['count'];
+
+    $itemModel = MidasLoader::loadModel('Item');
+    if($count > 0)
+      {
+      $item->setPrivacyStatus(MIDAS_PRIVACY_PUBLIC);
+      $itemModel->save($item, false);
+      return MIDAS_PRIVACY_PUBLIC;
+      }
+    $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
+    $itemModel->save($item, false);
+    return MIDAS_PRIVACY_PRIVATE;
+    }// end computePolicyStatus
 
   /** getPolicy
    * @return ItempolicygroupDao
