@@ -29,7 +29,7 @@ span.resultItemLabel {
   font-weight: bold;
 }
 
-table.scalarInfoTable th {
+table.scalarInfoTable th, table.otherScalarTable th {
   padding-right: 6px;
   color: #555555;
   font-weight: bold;

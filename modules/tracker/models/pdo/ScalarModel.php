@@ -41,7 +41,19 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
    */
   public function getOtherValuesFromSubmission($scalar)
     {
-    return array();
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from(array('s' => 'tracker_scalar'))
+                ->join(array('t' => 'tracker_trend'), 's.trend_id = t.trend_id')
+                ->where('s.submit_time = ?', $scalar->getSubmitTime())
+                ->where('t.producer_id = ?', $scalar->getTrend()->getProducerId());
+    $rows = $this->database->fetchAll($sql);
+    $scalars = array();
+    foreach($rows as $row)
+      {
+      $scalars[$row['metric_name']] = $row['value'].' '.$row['unit'];
+      }
+    return $scalars;
     }
 
   /**
