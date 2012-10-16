@@ -452,9 +452,9 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     }
 
   /**
-   * Test the folder.add.policygroup api call.
+   * Test the folder.add.policygroup and folder.remove.policygroup api calls.
    */
-  public function testFolderAddpolicygroup()
+  public function testFolderAddRemovePolicygroup()
     {
     $userModel = MidasLoader::loadModel('User');
     $itemModel = MidasLoader::loadModel('Item');
@@ -478,7 +478,7 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $deletioncommModeratorGroup = $groupModel->load('3004');
     $deletioncommMemberGroup = $groupModel->load('3005');
 
-    // try to list permissions without admin, should fail
+    // try to add without admin, should fail
     foreach($nonAdmins as $folder)
       {
       $this->resetAll();
@@ -571,7 +571,6 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->assertPolicyNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommModeratorGroup);
 
     // change the first policy recursively
-    // what should happen now??
     $this->resetAll();
     $params['folder_id'] = $testrootfolder->getFolderId();
     $params['group_id'] = $deletioncommMemberGroup->getGroupId();
@@ -584,6 +583,47 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
 
     $this->assertPolicyExistence($testFolders, $testItems, $deletioncommMemberGroup, MIDAS_POLICY_READ);
     $this->assertPolicyExistence($testFolders, $testItems, $deletioncommModeratorGroup, MIDAS_POLICY_ADMIN);
+
+    // test remove
+    $params = array('method' => 'midas.folder.remove.policygroup',
+                    'token' => $params['token']);
+
+    // try to remove without admin, should fail
+    foreach($nonAdmins as $folder)
+      {
+      $this->resetAll();
+      $params['folder_id'] = $folder->getFolderId();
+      $params['group_id'] = $deletioncommMemberGroup->getGroupId();
+      $this->params = $params;
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+
+    // remove the member policy only from the testrootfolder
+    $this->resetAll();
+    $params['folder_id'] = $testrootfolder->getFolderId();
+    $params['group_id'] = $deletioncommMemberGroup->getGroupId();
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->success, 1, 'Have removed a foldergrouppolicy from an incorrect number of resources');
+
+    $this->assertPolicyExistence($testFoldersWithoutRoot, $testItems, $deletioncommMemberGroup, MIDAS_POLICY_READ);
+    $this->assertPolicyExistence($testFolders, $testItems, $deletioncommModeratorGroup, MIDAS_POLICY_ADMIN);
+    $this->assertPolicyNonexistence(array($testrootfolder), array(), $deletioncommMemberGroup);
+
+    // remove the moderator policy testrootfolder recursively
+    $this->resetAll();
+    $params['folder_id'] = $testrootfolder->getFolderId();
+    $params['group_id'] = $deletioncommModeratorGroup->getGroupId();
+    $params['recursive'] = 'recursive';
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->success, count($testFolders) + count($testItems), 'Have removed a foldergrouppolicy from an incorrect number of resources');
+
+    $this->assertPolicyNonexistence($testFolders, $testItems, $deletioncommMemberGroup);
+    $this->assertPolicyNonexistence($testFolders, $testItems, $deletioncommModeratorGroup);
     }
 
   }
