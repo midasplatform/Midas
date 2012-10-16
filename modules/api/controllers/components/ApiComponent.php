@@ -2235,6 +2235,47 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Remove a itempolicygroup from a item with the passed in group if the
+     itempolicygroup exists.
+   * @param item_id The id of the item.
+   * @param group_id The id of the group.
+   * @return success = true on success.
+   */
+  function itemRemovePolicygroup($args)
+    {
+    $this->_validateParams($args, array('item_id', 'group_id'));
+    $userDao = $this->_getUser($args);
+
+    $itemModel = MidasLoader::loadModel('Item');
+    $itemId = $args['item_id'];
+    $item = $itemModel->load($itemId);
+    if($item === false)
+      {
+      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($args['group_id']);
+    if($group === false)
+      {
+      throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+    $itempolicygroup = $itempolicygroupModel->getPolicy($group, $item);
+    if($itempolicygroup !== false)
+      {
+      $itempolicygroupModel->delete($itempolicygroup);
+      }
+
+    return array('success' => 'true');
+    }
+
+  /**
    * Return a list of top level folders belonging to the user
    * @param token Authentication token
    * @return List of the user's top level folders
