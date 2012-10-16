@@ -1547,5 +1547,72 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->Item->delete($itemDao);
     }
 
+  /**
+   * Test the item.add.policygroup and item.remove.policygroup api calls.
+   */
+  public function testItemAddRemovePolicygroup()
+    {
+    $userModel = MidasLoader::loadModel('User');
+    $itemModel = MidasLoader::loadModel('Item');
+    $groupModel = MidasLoader::loadModel('Group');
+
+    $userDao = $userModel->load('1');
+    $itemModel = MidasLoader::loadModel('Item');
+    $readItem = $itemModel->load('1004');
+    $writeItem = $itemModel->load('1005');
+    $adminItem = $itemModel->load('1006');
+    $nonAdmins = array($readItem, $writeItem);
+
+    $params = array('method' => 'midas.item.add.policygroup',
+                    'token' => $this->_loginAsUser($userDao));
+
+    $deletioncommModeratorGroup = $groupModel->load('3004');
+    $deletioncommMemberGroup = $groupModel->load('3005');
+
+    // try to add without admin, should fail
+    foreach($nonAdmins as $item)
+      {
+      $this->resetAll();
+      $params['item_id'] = $item->getItemId();
+      $params['group_id'] = $deletioncommMemberGroup->getGroupId();
+      $params['policy'] = 'Admin';
+      $this->params = $params;
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+
+    // try to set an invalid policy, should fail
+    $this->resetAll();
+    $params['item_id'] = $adminItem->getItemId();
+    $params['group_id'] = $deletioncommMemberGroup->getGroupId();
+    $params['policy'] = 'Arithmatic';
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
+
+    // add a policy to the item, check that the item has the policy
+    $this->resetAll();
+    $params['item_id'] = $adminItem->getItemId();
+    $params['group_id'] = $deletioncommMemberGroup->getGroupId();
+    $params['policy'] = 'Write';
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->success, "true", 'itemgroupolicy addition did not work as expected.');
+
+    $this->assertPolicygroupExistence(array(), array($adminItem), $deletioncommMemberGroup, MIDAS_POLICY_WRITE);
+
+    // change the policy, check that the item has the current policy
+    $this->resetAll();
+    $params['item_id'] = $adminItem->getItemId();
+    $params['group_id'] = $deletioncommMemberGroup->getGroupId();
+    $params['policy'] = 'Read';
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->success, "true", 'itemgroupolicy addition did not work as expected.');
+
+    $this->assertPolicygroupExistence(array(), array($adminItem), $deletioncommMemberGroup, MIDAS_POLICY_READ);
+    }
 
   }

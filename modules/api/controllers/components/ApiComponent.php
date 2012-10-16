@@ -2194,6 +2194,47 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Add an itempolicygroup to an item with the passed in group and policy;
+     if an itempolicygroup exists for that group and item, it will be replaced
+     with the passed in policy.
+   * @param item_id The id of the item.
+   * @param group_id The id of the group.
+   * @param policy Desired policy status, one of [Admin|Write|Read].
+   * @return success = true on success.
+   */
+  function itemAddPolicygroup($args)
+    {
+    $this->_validateParams($args, array('item_id', 'group_id', 'policy'));
+    $userDao = $this->_getUser($args);
+
+    $itemModel = MidasLoader::loadModel('Item');
+    $itemId = $args['item_id'];
+    $item = $itemModel->load($itemId);
+    if($item === false)
+      {
+      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($args['group_id']);
+    if($group === false)
+      {
+      throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $policyCode = $this->_getValidPolicyCode($args['policy']);
+
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+    $itempolicygroupModel->createPolicy($group, $item, $policyCode);
+
+    return array('success' => 'true');
+    }
+
+  /**
    * Return a list of top level folders belonging to the user
    * @param token Authentication token
    * @return List of the user's top level folders
