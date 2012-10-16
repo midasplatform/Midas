@@ -337,25 +337,41 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     // ensure user perms are correct from the most recent call
     $privilegeCodes = array("Admin" => MIDAS_POLICY_ADMIN, "Write" => MIDAS_POLICY_WRITE, "Read" => MIDAS_POLICY_READ);
     $userPolicies = $adminFolder->getFolderpolicyuser();
-    $apiUsers = $resp->data->user;
+    $apiUserPolicies = $resp->data->user;
     foreach($userPolicies as $userPolicy)
       {
       $user = $userPolicy->getUser();
       $userId = (string)$user->getUserId();
-      $this->assertObjectHasAttribute($userId, $apiUsers, 'API call missing a user');
-      $apiPolicyCode = $privilegeCodes[$apiUsers->$userId->policy];
-      $this->assertEquals($apiPolicyCode, $userPolicy->getPolicy());
+      $userFound = false;
+      foreach($apiUserPolicies as $apiUserPolicy)
+        {
+        if($apiUserPolicy->user_id == $userId)
+          {
+          $userFound = true;
+          $apiPolicyCode = $privilegeCodes[$apiUserPolicy->policy];
+          $this->assertEquals($apiPolicyCode, $userPolicy->getPolicy());
+          }
+        }
+      $this->assertTrue($userFound, 'API call missing user '. $userId);
       }
     // ensure group perms are correct
     $groupPolicies = $adminFolder->getFolderpolicygroup();
-    $apiGroups = $resp->data->group;
+    $apiGroupPolicies = $resp->data->group;
     foreach($groupPolicies as $groupPolicy)
       {
       $group = $groupPolicy->getGroup();
       $groupId = (string)$group->getGroupId();
-      $this->assertObjectHasAttribute($groupId, $apiGroups, 'API call missing a group');
-      $apiPolicyCode = $privilegeCodes[$apiGroups->$groupId->policy];
-      $this->assertEquals($apiPolicyCode, $groupPolicy->getPolicy());
+      $groupFound = false;
+      foreach($apiGroupPolicies as $apiGroupPolicy)
+        {
+        if($apiGroupPolicy->group_id == $groupId)
+          {
+          $groupFound = true;
+          $apiPolicyCode = $privilegeCodes[$apiGroupPolicy->policy];
+          $this->assertEquals($apiPolicyCode, $groupPolicy->getPolicy());
+          }
+        }
+      $this->assertTrue($groupFound, 'API call missing group '. $groupId);
       }
     }
 
