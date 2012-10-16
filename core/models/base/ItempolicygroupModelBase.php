@@ -39,9 +39,45 @@ abstract class ItempolicygroupModelBase extends AppModel
     } // end __construct()
 
   abstract function deleteGroupPolicies($group);
-  abstract function createPolicy($group, $item, $policy);
   abstract function getPolicy($group, $item);
   abstract function computePolicyStatus($item);
+
+  /** @return ItempolicygroupDao*/
+  public function createPolicy($group, $item, $policy)
+    {
+    if(!$group instanceof GroupDao)
+      {
+      throw new Zend_Exception("Should be a group.");
+      }
+    if(!$item instanceof ItemDao)
+      {
+      throw new Zend_Exception("Should be an item.");
+      }
+    if(!is_numeric($policy))
+      {
+      throw new Zend_Exception("Should be a number.");
+      }
+    if(!$group->saved && !$item->saved)
+      {
+      throw new Zend_Exception("Save the daos first.");
+      }
+    if($this->getPolicy($group, $item) !== false)
+      {
+      $this->delete($this->getPolicy($group, $item));
+      }
+    $policyGroupDao = MidasLoader::newDao('ItempolicygroupDao');
+    $policyGroupDao->setGroupId($group->getGroupId());
+    $policyGroupDao->setItemId($item->getItemId());
+    $policyGroupDao->setPolicy($policy);
+    $this->save($policyGroupDao);
+
+    if($policyGroupDao->getGroupId() == MIDAS_GROUP_ANONYMOUS_KEY)
+      {
+      $this->computePolicyStatus($item);
+      }
+    return $policyGroupDao;
+    }
+
 
   /** delete */
   public function delete($dao)
