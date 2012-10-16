@@ -553,8 +553,8 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->_assertStatusOk($resp);
     $this->assertEquals($resp->data->success, 1, 'Have added a foldergrouppolicy on an incorrect number of resources');
 
-    $this->assertPolicyExistence(array($testrootfolder), array(), $deletioncommMemberGroup, MIDAS_POLICY_WRITE);
-    $this->assertPolicyNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommMemberGroup);
+    $this->assertPolicygroupExistence(array($testrootfolder), array(), $deletioncommMemberGroup, MIDAS_POLICY_WRITE);
+    $this->assertPolicygroupNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommMemberGroup);
 
     // add a second policy to root, check that root has and no children do
     $this->resetAll();
@@ -566,10 +566,10 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->_assertStatusOk($resp);
     $this->assertEquals($resp->data->success, 1, 'Have added a foldergrouppolicy on an incorrect number of resources');
 
-    $this->assertPolicyExistence(array($testrootfolder), array(), $deletioncommMemberGroup, MIDAS_POLICY_WRITE);
-    $this->assertPolicyNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommMemberGroup);
-    $this->assertPolicyExistence(array($testrootfolder), array(), $deletioncommModeratorGroup, MIDAS_POLICY_READ);
-    $this->assertPolicyNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommModeratorGroup);
+    $this->assertPolicygroupExistence(array($testrootfolder), array(), $deletioncommMemberGroup, MIDAS_POLICY_WRITE);
+    $this->assertPolicygroupNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommMemberGroup);
+    $this->assertPolicygroupExistence(array($testrootfolder), array(), $deletioncommModeratorGroup, MIDAS_POLICY_READ);
+    $this->assertPolicygroupNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommModeratorGroup);
 
     // change the second policy
     $this->resetAll();
@@ -581,10 +581,10 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->_assertStatusOk($resp);
     $this->assertEquals($resp->data->success, 1, 'Have added a foldergrouppolicy on an incorrect number of resources');
 
-    $this->assertPolicyExistence(array($testrootfolder), array(), $deletioncommMemberGroup, MIDAS_POLICY_WRITE);
-    $this->assertPolicyNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommMemberGroup);
-    $this->assertPolicyExistence(array($testrootfolder), array(), $deletioncommModeratorGroup, MIDAS_POLICY_ADMIN);
-    $this->assertPolicyNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommModeratorGroup);
+    $this->assertPolicygroupExistence(array($testrootfolder), array(), $deletioncommMemberGroup, MIDAS_POLICY_WRITE);
+    $this->assertPolicygroupNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommMemberGroup);
+    $this->assertPolicygroupExistence(array($testrootfolder), array(), $deletioncommModeratorGroup, MIDAS_POLICY_ADMIN);
+    $this->assertPolicygroupNonexistence($testFoldersWithoutRoot, $testItems, $deletioncommModeratorGroup);
 
     // change the first policy recursively
     $this->resetAll();
@@ -597,8 +597,8 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->_assertStatusOk($resp);
     $this->assertEquals($resp->data->success, count($testFolders) + count($testItems), 'Have added a foldergrouppolicy on an incorrect number of resources');
 
-    $this->assertPolicyExistence($testFolders, $testItems, $deletioncommMemberGroup, MIDAS_POLICY_READ);
-    $this->assertPolicyExistence($testFolders, $testItems, $deletioncommModeratorGroup, MIDAS_POLICY_ADMIN);
+    $this->assertPolicygroupExistence($testFolders, $testItems, $deletioncommMemberGroup, MIDAS_POLICY_READ);
+    $this->assertPolicygroupExistence($testFolders, $testItems, $deletioncommModeratorGroup, MIDAS_POLICY_ADMIN);
 
     // test remove
     $params = array('method' => 'midas.folder.remove.policygroup',
@@ -624,9 +624,9 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->_assertStatusOk($resp);
     $this->assertEquals($resp->data->success, 1, 'Have removed a foldergrouppolicy from an incorrect number of resources');
 
-    $this->assertPolicyExistence($testFoldersWithoutRoot, $testItems, $deletioncommMemberGroup, MIDAS_POLICY_READ);
-    $this->assertPolicyExistence($testFolders, $testItems, $deletioncommModeratorGroup, MIDAS_POLICY_ADMIN);
-    $this->assertPolicyNonexistence(array($testrootfolder), array(), $deletioncommMemberGroup);
+    $this->assertPolicygroupExistence($testFoldersWithoutRoot, $testItems, $deletioncommMemberGroup, MIDAS_POLICY_READ);
+    $this->assertPolicygroupExistence($testFolders, $testItems, $deletioncommModeratorGroup, MIDAS_POLICY_ADMIN);
+    $this->assertPolicygroupNonexistence(array($testrootfolder), array(), $deletioncommMemberGroup);
 
     // remove the moderator policy testrootfolder recursively
     $this->resetAll();
@@ -638,8 +638,8 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->_assertStatusOk($resp);
     $this->assertEquals($resp->data->success, count($testFolders) + count($testItems), 'Have removed a foldergrouppolicy from an incorrect number of resources');
 
-    $this->assertPolicyNonexistence($testFolders, $testItems, $deletioncommMemberGroup);
-    $this->assertPolicyNonexistence($testFolders, $testItems, $deletioncommModeratorGroup);
+    $this->assertPolicygroupNonexistence($testFolders, $testItems, $deletioncommMemberGroup);
+    $this->assertPolicygroupNonexistence($testFolders, $testItems, $deletioncommModeratorGroup);
     }
 
   }

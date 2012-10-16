@@ -167,10 +167,10 @@ class ApiCallMethodsTest extends ControllerTestCase
     }
 
   /**
-   * helper function to ensure that passed in resources have a policy with the
+   * helper function to ensure that passed in resources have a policygroup with the
    * given group and policy.
    */
-  protected function assertPolicyExistence($testFolders, $testItems, $group, $policyCode)
+  protected function assertPolicygroupExistence($testFolders, $testItems, $group, $policyCode)
     {
     $folderModel = MidasLoader::loadModel('Folder');
     $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
@@ -209,10 +209,10 @@ class ApiCallMethodsTest extends ControllerTestCase
     }
 
   /**
-   * helper function to ensure that passed in resources do not have a policy
+   * helper function to ensure that passed in resources do not have a policygroup
    * for the given group.
    */
-  protected function assertPolicyNonexistence($testFolders, $testItems, $group)
+  protected function assertPolicygroupNonexistence($testFolders, $testItems, $group)
     {
     $folderModel = MidasLoader::loadModel('Folder');
     $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
