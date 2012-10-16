@@ -87,7 +87,6 @@ abstract class FolderpolicygroupModelBase extends AppModel
   public function computePolicyStatus($folder)
     {
     $groupPolicies = $folder->getFolderpolicygroup();
-    $userPolicies = $folder->getFolderpolicyuser();
 
     $shared = false;
     $folderModel = MidasLoader::loadModel('Folder');

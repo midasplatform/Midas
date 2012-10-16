@@ -55,7 +55,6 @@ abstract class ItempolicygroupModelBase extends AppModel
   public function computePolicyStatus($item)
     {
     $groupPolicies = $item->getItempolicygroup();
-    $userPolicies = $item->getItempolicyuser();
 
     $shared = false;
     $itemModel = MidasLoader::loadModel('Item');
