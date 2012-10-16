@@ -1598,7 +1598,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params = $params;
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
-    $this->assertEquals($resp->data->success, "true", 'itemgroupolicy addition did not work as expected.');
+    $this->assertEquals($resp->data->success, "true", 'itemgrouppolicy addition did not work as expected.');
 
     $this->assertPolicygroupExistence(array(), array($adminItem), $deletioncommMemberGroup, MIDAS_POLICY_WRITE);
 
@@ -1610,7 +1610,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params = $params;
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
-    $this->assertEquals($resp->data->success, "true", 'itemgroupolicy addition did not work as expected.');
+    $this->assertEquals($resp->data->success, "true", 'itemgrouppolicy addition did not work as expected.');
 
     $this->assertPolicygroupExistence(array(), array($adminItem), $deletioncommMemberGroup, MIDAS_POLICY_READ);
 
@@ -1636,7 +1636,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params = $params;
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
-    $this->assertEquals($resp->data->success, "true", 'itemgroupolicy removal did not work as expected.');
+    $this->assertEquals($resp->data->success, "true", 'itemgrouppolicy removal did not work as expected.');
 
     $this->assertPolicygroupNonexistence(array(), array($adminItem), $deletioncommMemberGroup);
     }
@@ -1708,6 +1708,32 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->assertEquals($resp->data->success, "true", 'itemuserpolicy addition did not work as expected.');
 
     $this->assertPolicyuserExistence(array(), array($adminItem), $targetUser, MIDAS_POLICY_READ);
+
+    // test remove
+    $params = array('method' => 'midas.item.remove.policyuser',
+                    'token' => $params['token']);
+
+    // try to remove without admin, should fail
+    foreach($nonAdmins as $item)
+      {
+      $this->resetAll();
+      $params['item_id'] = $item->getItemId();
+      $params['user_id'] = $targetUser->getUserId();
+      $this->params = $params;
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+
+    // remove the policy, check that it is gone
+    $this->resetAll();
+    $params['item_id'] = $adminItem->getItemId();
+    $params['user_id'] = $targetUser->getUserId();
+    $this->params = $params;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $this->assertEquals($resp->data->success, "true", 'itemuserpolicy removal did not work as expected.');
+
+    $this->assertPolicyuserNonexistence(array(), array($adminItem), $targetUser);
     }
 
 
