@@ -1192,7 +1192,8 @@ class Api_ApiComponent extends AppComponent
    * @param policy Desired policy status, one of [Admin|Write|Read].
    * @param recursive If included will push all policies from
    * the passed in folder down to its child folders and items, default is non-recursive.
-   * @return An array with keys 'success' and 'failure' indicating a count
+   * @return An array with keys 'success' and 'failure' indicating a count of
+   * resources affected by the removal.
    */
   function folderAddPolicygroup($args)
     {
@@ -1237,6 +1238,60 @@ class Api_ApiComponent extends AppComponent
     return $results;
     }
 
+  /**
+   * Remove a folderpolicygroup from a folder with the passed in group if the
+   * folderpolicygroup exists.
+   * @param folder_id The id of the folder
+   * @param group_id The id of the group
+   * @param recursive If included will push all policies after the removal from
+   * the passed in folder down to its child folders and items, default is non-recursive.
+   * @return An array with keys 'success' and 'failure' indicating a count of
+   * resources affected by the removal.
+   */
+  function folderRemovePolicygroup($args)
+    {
+    $this->_validateParams($args, array('folder_id', 'group_id'));
+    $userDao = $this->_getUser($args);
+
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderId = $args['folder_id'];
+    $folder = $folderModel->load($folderId);
+    if($folder === false)
+      {
+      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($args['group_id']);
+    if($group === false)
+      {
+      throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $folderpolicygroup = $folderpolicygroupModel->getPolicy($group, $folder);
+    if($folderpolicygroup !== false)
+      {
+      $folderpolicygroupModel->delete($folderpolicygroup);
+      }
+
+    // we have now changed 1 folder successfully
+    $results = array('success' => 1, 'failure' => 0);
+
+    if(isset($args['recursive']))
+      {
+      // now push down the privacy recursively
+      $policyComponent = MidasLoader::loadComponent('Policy');
+      // send a null Progress since we aren't interested in progress
+      $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results);
+      }
+
+    return $results;
+    }
 
 
   /**
