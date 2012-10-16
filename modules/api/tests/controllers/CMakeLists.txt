@@ -1,3 +1,7 @@
 add_midas_test( ApiKeyControllerTest ApiKeyControllerTest.php )
 add_midas_test( ApiIndexControllerTest ApiIndexControllerTest.php )
-add_midas_test( ApiCallMethodsTest ApiCallMethodsTest.php )
+add_midas_test( ApiCallUserMethodsTest ApiCallUserMethodsTest.php )
+add_midas_test( ApiCallItemMethodsTest ApiCallItemMethodsTest.php )
+add_midas_test( ApiCallFolderMethodsTest ApiCallFolderMethodsTest.php )
+add_midas_test( ApiCallCommunityMethodsTest ApiCallCommunityMethodsTest.php )
+

@@ -75,7 +75,7 @@ class KwUploadAPI
     {
     if(!array_key_exists('filename', $args))
       {
-      throw new Exception('Parameter filename is not defined', -150);
+      throw new Exception('Parameter filename is not defined', MIDAS_INVALID_PARAMETER);
       }
     $dir = $dirname == '' ? '' : '/'.$dirname;
     $dir = $this->tmp_directory.$dir;
@@ -93,7 +93,7 @@ class KwUploadAPI
 
     if(empty($unique_identifier))
       {
-      throw new Exception('Failed to generate upload token', -140);
+      throw new Exception('Failed to generate upload token', MIDAS_UPLOAD_TOKEN_GENERATION_FAILED);
       }
     return array('token' => $unique_identifier);
     }
@@ -107,7 +107,7 @@ class KwUploadAPI
     if (!array_key_exists('filename', $args))
       {
       error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter filename is not defined", $this->log_type, $this->log_file);
-      throw new Exception('Parameter filename is not defined', -150);
+      throw new Exception('Parameter filename is not defined', MIDAS_INVALID_PARAMETER);
       }
 
     $filename = $args['filename']; // XXXX.ISP
@@ -115,14 +115,14 @@ class KwUploadAPI
     if (!array_key_exists(self::PARAM_NAME_UPLOAD_TOKEN, $args))
       {
       error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter ".self::PARAM_NAME_UPLOAD_TOKEN." is not defined", $this->log_type, $this->log_file);
-      throw new Exception('Parameter '.self::PARAM_NAME_UPLOAD_TOKEN.' is not defined', -150);
+      throw new Exception('Parameter '.self::PARAM_NAME_UPLOAD_TOKEN.' is not defined', MIDAS_INVALID_PARAMETER);
       }
     $uploadToken = $args[self::PARAM_NAME_UPLOAD_TOKEN]; //XXX123.TMP
 
     if (!array_key_exists('length', $args))
       {
       error_log(__FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter length is not defined", $this->log_type, $this->log_file);
-      throw new Exception('Parameter length is not defined', -150);
+      throw new Exception('Parameter length is not defined', MIDAS_INVALID_PARAMETER);
       }
     $length = (float)($args['length']);
 
@@ -136,7 +136,7 @@ class KwUploadAPI
     if(!file_exists($pathTemporaryFilename))
       {
       error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '.'Invalid upload token', $this->log_type, $this->log_file);
-      throw new Exception('Invalid upload token', -141);
+      throw new Exception('Invalid upload token', MIDAS_INVALID_UPLOAD_TOKEN);
       }
     else
       {
@@ -158,7 +158,7 @@ class KwUploadAPI
      if($in === FALSE )
         {
         error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '."Failed to open source:$inputfile", $this->log_type, $this->log_file);
-        throw new Exception("Failed to open [$inputfile] source", -142);
+        throw new Exception("Failed to open [$inputfile] source", MIDAS_SOURCE_OPEN_FAILED);
         }
 
     // open target output
@@ -166,7 +166,7 @@ class KwUploadAPI
     if ($out === false)
         {
         error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '."Failed to open output file:$pathTemporaryFilename", $this->log_type, $this->log_file);
-        throw new Exception("Failed to open output file [$pathTemporaryFilename]", -143);
+        throw new Exception("Failed to open output file [$pathTemporaryFilename]", MIDAS_OUTPUT_OPEN_FAILED);
         }
 
     if($streamChecksum)
@@ -196,7 +196,7 @@ class KwUploadAPI
     if($uploadOffset < $length)
       {
       error_log(__FILE__.':'.__FUNCTION__.':'.__LINE__.' - '."Failed to upload file - {$uploadOffset}/{$length} bytes transferred", $this->log_type, $this->log_file);
-      throw new Exception("Failed to upload file - {$uploadOffset}/{$length} bytes transferred", -105);
+      throw new Exception("Failed to upload file - {$uploadOffset}/{$length} bytes transferred", MIDAS_UPLOAD_FAILED);
       }
 
     $data['filename'] = $filename;
@@ -213,7 +213,7 @@ class KwUploadAPI
     //check parameters
     if (!array_key_exists(self::PARAM_NAME_UPLOAD_TOKEN, $args))
       {
-      throw new Exception('Parameter '.self::PARAM_NAME_UPLOAD_TOKEN.' is not defined', -150);
+      throw new Exception('Parameter '.self::PARAM_NAME_UPLOAD_TOKEN.' is not defined', MIDAS_INVALID_PARAMETER);
       }
     $uploadToken = $args[self::PARAM_NAME_UPLOAD_TOKEN];
 
