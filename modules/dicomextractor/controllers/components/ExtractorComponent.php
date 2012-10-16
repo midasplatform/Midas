@@ -21,7 +21,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
    * @appendVersion whether we need the --version flag
    * @return an array indicating whether the app is valid or not
    */
-  private function getApplicationStatus($command, $appName,
+  public function getApplicationStatus($command, $appName,
                                         $appendVersion = true)
   {
     $preparedCommand = str_replace("'", '"',$command);
