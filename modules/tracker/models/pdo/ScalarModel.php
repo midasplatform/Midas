@@ -17,12 +17,23 @@ require_once BASE_PATH.'/modules/tracker/models/base/ScalarModelBase.php';
 class Tracker_ScalarModel extends Tracker_ScalarModelBase
 {
   /**
-   * Return all associated items
+   * Return all items associated with this scalar, and their corresponding labels
    */
   public function getAssociatedItems($scalar)
     {
-    // TODO return a hash array where key is the label and value is the result item
-    return array();
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from('tracker_scalar2item')
+                ->where('scalar_id = ?', $scalar->getKey());
+    $rows = $this->database->fetchAll($sql);
+    $results = array();
+    $itemModel = MidasLoader::loadModel('Item');
+    foreach($rows as $row)
+      {
+      $item = $itemModel->load($row['item_id']);
+      $results[] = array('label' => $row['label'], 'item' => $item);
+      }
+    return $results;
     }
 
   /**
@@ -30,7 +41,19 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
    */
   public function getOtherValuesFromSubmission($scalar)
     {
-    return array();
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from(array('s' => 'tracker_scalar'))
+                ->join(array('t' => 'tracker_trend'), 's.trend_id = t.trend_id')
+                ->where('s.submit_time = ?', $scalar->getSubmitTime())
+                ->where('t.producer_id = ?', $scalar->getTrend()->getProducerId());
+    $rows = $this->database->fetchAll($sql);
+    $scalars = array();
+    foreach($rows as $row)
+      {
+      $scalars[$row['metric_name']] = $row['value'].' '.$row['unit'];
+      }
+    return $scalars;
     }
 
   /**

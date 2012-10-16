@@ -27,10 +27,33 @@ PURPOSE.  See the above copyright notices for more information.
 
 <div class="otherScalars">
   <div class="sectionDivider"><span class="sectionTitle">All values for this submission</span></div>
+  <table class="otherScalarTable"><tbody>
+  <?php
+  foreach($this->otherValues as $metricName => $value)
+    {
+    echo '<tr><th>'.$metricName.':</th><td>'.$value.'</td></tr>';
+    }
+  ?>
+  </tbody></table>
 </div>
 
 <div class="resultItems">
   <div class="sectionDivider"><span class="sectionTitle">Result items</span></div>
+  <?php
+  foreach($this->resultItems as $result)
+    {
+    $item = $result['item'];
+    echo '<div class="resultItemContainer"><span class="resultItemLabel">'.$result['label'].':</span> ';
+    echo '<a element="'.$item->getKey().'" class="resultItemLink" href="'.$this->webroot.'/item/'.$item->getKey().'" ';
+    echo 'thumbnail="'.$item->getThumbnailId().'">'.$item->getName().'</a>';
+    echo '</div>';
+    }
+  if(count($this->resultItems) === 0)
+    {
+    echo '<span class="itemLinkNone">No result items submitted</span>';
+    }
+  ?>
+  
 </div>
 
 <div class="bottomButtons">
