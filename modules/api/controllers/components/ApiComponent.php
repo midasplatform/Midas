@@ -1194,7 +1194,7 @@ class Api_ApiComponent extends AppComponent
    * the passed in folder down to its child folders and items, default is non-recursive.
    * @return An array with keys 'success' and 'failure' indicating a count
    */
-  function folderAddpolicygroup($args)
+  function folderAddPolicygroup($args)
     {
     $this->_validateParams($args, array('folder_id', 'group_id', 'policy'));
     $userDao = $this->_getUser($args);

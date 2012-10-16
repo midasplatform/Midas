@@ -454,7 +454,7 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
   /**
    * Test the folder.add.policygroup api call.
    */
-  public function testFolderAddpolicygroup()
+  public function testFolderAddPolicygroup()
     {
     $userModel = MidasLoader::loadModel('User');
     $itemModel = MidasLoader::loadModel('Item');
