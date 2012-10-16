@@ -17,6 +17,21 @@ require_once BASE_PATH.'/modules/tracker/models/base/ScalarModelBase.php';
 class Tracker_ScalarModel extends Tracker_ScalarModelBase
 {
   /**
+   * Associate an item with a particular scalar
+   * @param scalar The scalar dao
+   * @param item The item dao
+   * @param label The association label
+   */
+  public function associateItem($scalar, $item, $label)
+    {
+    $data = array(
+      'scalar_id' => $scalar->getKey(),
+      'item_id' => $item->getKey(),
+      'label' => $label);
+    Zend_Registry::get('dbAdapter')->insert('tracker_scalar2item', $data);
+    }
+
+  /**
    * Return all items associated with this scalar, and their corresponding labels
    */
   public function getAssociatedItems($scalar)
@@ -61,16 +76,19 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
    */
   public function delete($scalar)
     {
-    // TODO delete from tracker_scalar2item where scalar_id=$scalar->getKey()
+    Zend_Registry::get('dbAdapter')->delete('tracker_scalar2item', 'scalar_id = '.$scalar->getKey());
     parent::delete($scalar);
     }
 
   /**
-   * Helper function used to overwrite trend points with identical timestamps
+   * Get a scalar dao based on trend and timestamp
    */
-  public function deleteByTrendAndTimestamp($trendId, $timestamp)
+  public function getByTrendAndTimestamp($trendId, $timestamp)
     {
-    // We do not need to protect against sql injection here because we only call this with a known valid timestamp value
-    Zend_Registry::get('dbAdapter')->delete($this->_name, 'trend_id = '.$trendId.' AND submit_time = \''.$timestamp.'\'');
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->where('trend_id = ?', $trendId)
+                ->where('submit_time = ?', $timestamp);
+    return $this->initDao('Scalar', $this->database->fetchRow($sql), $this->moduleName);
     }
 }

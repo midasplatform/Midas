@@ -36,9 +36,10 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     $this->initialize();
     }
 
+  public abstract function associateItem($scalar, $item, $label);
   public abstract function getAssociatedItems($scalar);
   public abstract function getOtherValuesFromSubmission($scalar);
-  public abstract function deleteByTrendAndTimestamp($trendId, $timestamp);
+  public abstract function getByTrendAndTimestamp($trendId, $timestamp);
 
   /**
    * Add a new scalar point to the trend.  If overwrite is true, and a scalar
@@ -48,7 +49,11 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     {
     if($overwrite)
       {
-      $this->deleteByTrendAndTimestamp($trend->getKey(), $submitTime);
+      $dao = $this->getByTrendAndTimestamp($trend->getKey(), $submitTime);
+      if($dao)
+        {
+        $this->delete($dao);
+        }
       }
     
     $scalar = MidasLoader::newDao('ScalarDao', $this->moduleName);
