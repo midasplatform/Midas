@@ -1348,6 +1348,60 @@ class Api_ApiComponent extends AppComponent
     return $results;
     }
 
+  /**
+   * Remove a folderpolicyuser from a folder with the passed in user if the
+     folderpolicyuser exists.
+   * @param folder_id The id of the folder.
+   * @param user_id The id of the target user.
+   * @param recursive If included will push all policies after the removal from
+     the passed in folder down to its child folders and items, default is non-recursive.
+   * @return An array with keys 'success' and 'failure' indicating a count of
+     resources affected by the removal.
+   */
+  function folderRemovePolicyuser($args)
+    {
+    $this->_validateParams($args, array('folder_id', 'user_id'));
+    $userDao = $this->_getUser($args);
+
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderId = $args['folder_id'];
+    $folder = $folderModel->load($folderId);
+    if($folder === false)
+      {
+      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
+      }
+
+    $userModel = MidasLoader::loadModel('User');
+    $user = $userModel->load($args['user_id']);
+    if($user === false)
+      {
+      throw new Exception("This user doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
+    $folderpolicyuser = $folderpolicyuserModel->getPolicy($user, $folder);
+    if($folderpolicyuser !== false)
+      {
+      $folderpolicyuserModel->delete($folderpolicyuser);
+      }
+
+    // we have now changed 1 folder successfully
+    $results = array('success' => 1, 'failure' => 0);
+
+    if(isset($args['recursive']))
+      {
+      // now push down the privacy recursively
+      $policyComponent = MidasLoader::loadComponent('Policy');
+      // send a null Progress since we aren't interested in progress
+      $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results);
+      }
+
+    return $results;
+    }
 
   /**
    * helper method to validate passed in privacy status params and
