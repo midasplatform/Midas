@@ -1102,11 +1102,10 @@ class Api_ApiComponent extends AppComponent
   /**
    * List the permissions on a folder, requires Admin access to the folder.
    * @param folder_id The id of the folder
-   * @return A list with three keys: privacy, user, group.  privacy will be the
-     folder's privacy string [Public|Private].  user will be a list of user_id
-     to (policy, email) for that user.  group will be a list of group_id to
-     (policy, name) for that group.  policy for user and group will be a
-     policy string [Admin|Write|Read].
+   * @return A list with three keys: privacy, user, group; privacy will be the
+     folder's privacy string [Public|Private]; user will be a list of
+     (user_id, policy, email); group will be a list of (group_id, policy, name).
+     policy for user and group will be a policy string [Admin|Write|Read].
    */
   public function folderListPermissions($args)
     {
@@ -1139,7 +1138,7 @@ class Api_ApiComponent extends AppComponent
     foreach($userPolicies as $userPolicy)
       {
       $user = $userPolicy->getUser();
-      $userPoliciesOutput[$user->getUserId()] = array('policy' => $privilegeStrings[$userPolicy->getPolicy()], 'email' => $user->getEmail());
+      $userPoliciesOutput[] = array('user_id' => $user->getUserId(), 'policy' => $privilegeStrings[$userPolicy->getPolicy()], 'email' => $user->getEmail());
       }
     $return['user'] = $userPoliciesOutput;
 
@@ -1148,7 +1147,7 @@ class Api_ApiComponent extends AppComponent
     foreach($groupPolicies as $groupPolicy)
       {
       $group = $groupPolicy->getGroup();
-      $groupPoliciesOutput[$group->getGroupId()] = array('policy' => $privilegeStrings[$groupPolicy->getPolicy()], 'name' => $group->getName());
+      $groupPoliciesOutput[] = array('group_id' => $group->getGroupId(), 'policy' => $privilegeStrings[$groupPolicy->getPolicy()], 'name' => $group->getName());
       }
     $return['group'] = $groupPoliciesOutput;
 
