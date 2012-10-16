@@ -795,7 +795,7 @@ class Api_ApiComponent extends AppComponent
   /**
    *  helper function to set the privacy code on a passed in folder.
    */
-  protected function setFolderPrivacy($folder, $privacyCode)
+  protected function _setFolderPrivacy($folder, $privacyCode)
     {
     $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
     $groupModel = MidasLoader::loadModel('Group');
@@ -859,7 +859,7 @@ class Api_ApiComponent extends AppComponent
           throw new Exception('Folder Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
           }
         $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-        $this->setFolderPrivacy($record, $privacyCode);
+        $this->_setFolderPrivacy($record, $privacyCode);
         }
       $folderModel->save($record);
       return $record->toArray();
@@ -912,12 +912,12 @@ class Api_ApiComponent extends AppComponent
       if(isset($args['privacy']))
         {
         $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-        $this->setFolderPrivacy($new_folder, $privacyCode);
+        $this->_setFolderPrivacy($new_folder, $privacyCode);
         }
       else
         {
         // explicitly set to Public
-        $this->setFolderPrivacy($new_folder, MIDAS_PRIVACY_PUBLIC);
+        $this->_setFolderPrivacy($new_folder, MIDAS_PRIVACY_PUBLIC);
         }
 
       return $new_folder->toArray();
@@ -1129,11 +1129,11 @@ class Api_ApiComponent extends AppComponent
 
   /**
    * Set the privacy status on a folder, and push this value down recursively
-   * to all children folders and items, requires Admin access to the folder.
-   * @param folder_id The id of the folder
+     to all children folders and items, requires Admin access to the folder.
+   * @param folder_id The id of the folder.
    * @param privacy Desired privacy status, one of [Public|Private].
    * @return An array with keys 'success' and 'failure' indicating a count
-   * of children resources that succeeded or failed the permission change.
+     of children resources that succeeded or failed the permission change.
    */
   function folderSetPrivacyRecursive($args)
     {
@@ -1154,13 +1154,252 @@ class Api_ApiComponent extends AppComponent
       }
 
     $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-    $this->setFolderPrivacy($folder, $privacyCode);
+    $this->_setFolderPrivacy($folder, $privacyCode);
 
     // now push down the privacy recursively
     $policyComponent = MidasLoader::loadComponent('Policy');
     // send a null Progress since we aren't interested in progress
     // prepopulate results with 1 success for the folder we have already changed
     $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results = array('success' => 1, 'failure' => 0));
+    return $results;
+    }
+
+
+  /**
+   * helper method to validate passed in policy params and
+   * map them to valid policy codes.
+   * @param string $policy, should be [Admin|Write|Read]
+   * @return valid policy code
+   */
+  private function _getValidPolicyCode($policy)
+    {
+    $policyCodes = array('Admin' => MIDAS_POLICY_ADMIN, 'Write' => MIDAS_POLICY_WRITE, 'Read' => MIDAS_POLICY_READ);
+    if(!array_key_exists($policy, $policyCodes))
+      {
+      $validCodes = '[' . implode('|', array_keys($policyCodes)) . ']';
+      throw new Exception('policy should be one of ' . $validCodes, MIDAS_INVALID_PARAMETER);
+      }
+    return $policyCodes[$policy];
+    }
+
+  /**
+   * Add a folderpolicygroup to a folder with the passed in group and policy;
+     if a folderpolicygroup exists for that group and folder, it will be replaced
+     with the passed in policy.
+   * @param folder_id The id of the folder.
+   * @param group_id The id of the group.
+   * @param policy Desired policy status, one of [Admin|Write|Read].
+   * @param recursive If included will push all policies from
+     the passed in folder down to its child folders and items, default is non-recursive.
+   * @return An array with keys 'success' and 'failure' indicating a count of
+     resources affected by the addition.
+   */
+  function folderAddPolicygroup($args)
+    {
+    $this->_validateParams($args, array('folder_id', 'group_id', 'policy'));
+    $userDao = $this->_getUser($args);
+
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderId = $args['folder_id'];
+    $folder = $folderModel->load($folderId);
+    if($folder === false)
+      {
+      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($args['group_id']);
+    if($group === false)
+      {
+      throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $policyCode = $this->_getValidPolicyCode($args['policy']);
+
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $folderpolicygroupModel->createPolicy($group, $folder, $policyCode);
+
+    // we have now changed 1 folder successfully
+    $results = array('success' => 1, 'failure' => 0);
+
+    if(isset($args['recursive']))
+      {
+      // now push down the privacy recursively
+      $policyComponent = MidasLoader::loadComponent('Policy');
+      // send a null Progress since we aren't interested in progress
+      $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results);
+      }
+
+    return $results;
+    }
+
+  /**
+   * Remove a folderpolicygroup from a folder with the passed in group if the
+     folderpolicygroup exists.
+   * @param folder_id The id of the folder.
+   * @param group_id The id of the group.
+   * @param recursive If included will push all policies after the removal from
+     the passed in folder down to its child folders and items, default is non-recursive.
+   * @return An array with keys 'success' and 'failure' indicating a count of
+     resources affected by the removal.
+   */
+  function folderRemovePolicygroup($args)
+    {
+    $this->_validateParams($args, array('folder_id', 'group_id'));
+    $userDao = $this->_getUser($args);
+
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderId = $args['folder_id'];
+    $folder = $folderModel->load($folderId);
+    if($folder === false)
+      {
+      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($args['group_id']);
+    if($group === false)
+      {
+      throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $folderpolicygroup = $folderpolicygroupModel->getPolicy($group, $folder);
+    if($folderpolicygroup !== false)
+      {
+      $folderpolicygroupModel->delete($folderpolicygroup);
+      }
+
+    // we have now changed 1 folder successfully
+    $results = array('success' => 1, 'failure' => 0);
+
+    if(isset($args['recursive']))
+      {
+      // now push down the privacy recursively
+      $policyComponent = MidasLoader::loadComponent('Policy');
+      // send a null Progress since we aren't interested in progress
+      $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results);
+      }
+
+    return $results;
+    }
+
+  /**
+   * Add a folderpolicyuser to a folder with the passed in user and policy;
+     if a folderpolicyuser exists for that user and folder, it will be replaced
+     with the passed in policy.
+   * @param folder_id The id of the folder.
+   * @param user_id The id of the targeted user to create the policy for.
+   * @param policy Desired policy status, one of [Admin|Write|Read].
+   * @param recursive If included will push all policies from
+     the passed in folder down to its child folders and items, default is non-recursive.
+   * @return An array with keys 'success' and 'failure' indicating a count of
+     resources affected by the addition.
+   */
+  function folderAddPolicyuser($args)
+    {
+    $this->_validateParams($args, array('folder_id', 'user_id', 'policy'));
+    $adminUser = $this->_getUser($args);
+
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderId = $args['folder_id'];
+    $folder = $folderModel->load($folderId);
+    if($folder === false)
+      {
+      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $adminUser, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
+      }
+
+    $userModel = MidasLoader::loadModel('User');
+    $targetUserId = $args['user_id'];
+    $targetUser = $userModel->load($targetUserId);
+    if($targetUser === false)
+      {
+      throw new Exception("This user doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $policyCode = $this->_getValidPolicyCode($args['policy']);
+
+    $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
+    $folderpolicyuserModel->createPolicy($targetUser, $folder, $policyCode);
+
+    // we have now changed 1 folder successfully
+    $results = array('success' => 1, 'failure' => 0);
+
+    if(isset($args['recursive']))
+      {
+      // now push down the privacy recursively
+      $policyComponent = MidasLoader::loadComponent('Policy');
+      // send a null Progress since we aren't interested in progress
+      $results = $policyComponent->applyPoliciesRecursive($folder, $adminUser, null, $results);
+      }
+
+    return $results;
+    }
+
+  /**
+   * Remove a folderpolicyuser from a folder with the passed in user if the
+     folderpolicyuser exists.
+   * @param folder_id The id of the folder.
+   * @param user_id The id of the target user.
+   * @param recursive If included will push all policies after the removal from
+     the passed in folder down to its child folders and items, default is non-recursive.
+   * @return An array with keys 'success' and 'failure' indicating a count of
+     resources affected by the removal.
+   */
+  function folderRemovePolicyuser($args)
+    {
+    $this->_validateParams($args, array('folder_id', 'user_id'));
+    $userDao = $this->_getUser($args);
+
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderId = $args['folder_id'];
+    $folder = $folderModel->load($folderId);
+    if($folder === false)
+      {
+      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
+      }
+
+    $userModel = MidasLoader::loadModel('User');
+    $user = $userModel->load($args['user_id']);
+    if($user === false)
+      {
+      throw new Exception("This user doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
+    $folderpolicyuser = $folderpolicyuserModel->getPolicy($user, $folder);
+    if($folderpolicyuser !== false)
+      {
+      $folderpolicyuserModel->delete($folderpolicyuser);
+      }
+
+    // we have now changed 1 folder successfully
+    $results = array('success' => 1, 'failure' => 0);
+
+    if(isset($args['recursive']))
+      {
+      // now push down the privacy recursively
+      $policyComponent = MidasLoader::loadComponent('Policy');
+      // send a null Progress since we aren't interested in progress
+      $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results);
+      }
+
     return $results;
     }
 
@@ -1191,7 +1430,7 @@ class Api_ApiComponent extends AppComponent
   /**
    *  helper function to set the privacy code on a passed in item.
    */
-  protected function setItemPrivacy($item, $privacyCode)
+  protected function _setItemPrivacy($item, $privacyCode)
     {
     $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
     $groupModel = MidasLoader::loadModel('Group');
@@ -1258,7 +1497,7 @@ class Api_ApiComponent extends AppComponent
           throw new Exception('Item Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
           }
         $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-        $this->setItemPrivacy($record, $privacyCode);
+        $this->_setItemPrivacy($record, $privacyCode);
         }
       foreach($args as $key => $value)
         {
@@ -1299,12 +1538,12 @@ class Api_ApiComponent extends AppComponent
       if(isset($args['privacy']))
         {
         $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-        $this->setItemPrivacy($item, $privacyCode);
+        $this->_setItemPrivacy($item, $privacyCode);
         }
       else
         {
         // explicitly set to Public
-        $this->setItemPrivacy($item, MIDAS_PRIVACY_PUBLIC);
+        $this->_setItemPrivacy($item, MIDAS_PRIVACY_PUBLIC);
         }
 
       return $item->toArray();

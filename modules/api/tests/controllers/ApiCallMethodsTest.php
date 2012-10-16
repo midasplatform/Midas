@@ -166,6 +166,152 @@ class ApiCallMethodsTest extends ControllerTestCase
       }
     }
 
+  /**
+   * helper function to ensure that passed in resources have a policygroup with the
+   * given group and policy.
+   */
+  protected function assertPolicygroupExistence($testFolders, $testItems, $group, $policyCode)
+    {
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+    $itemModel = MidasLoader::loadModel('Item');
+    $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
+    foreach($testFolders as $folder)
+      {
+      $folder = $folderModel->load($folder->getFolderId());
+      $folderpolicygroup = $folderpolicygroupModel->getPolicy($group, $folder);
+      if($folderpolicygroup !== false)
+        {
+        $message = $folder->getName() . ' has the wrong policy for group '. $group->getGroupId() .' policy '. $policyCode;
+        $this->assertEquals($folderpolicygroup->getPolicy(), $policyCode, $message);
+        }
+      else
+        {
+        $message = $folder->getName() . ' does not have any policy for group '. $group->getGroupId() .' policy '. $policyCode;
+        $this->assertTrue(false, $message);
+        }
+      }
+    foreach($testItems as $item)
+      {
+      $item = $itemModel->load($item->getItemId());
+      $itempolicygroup = $itempolicygroupModel->getPolicy($group, $item);
+      if($itempolicygroup !== false)
+        {
+        $message = $item->getName() . ' has the wrong policy for group '. $group->getGroupId() .' policy '. $policyCode;
+        $this->assertEquals($itempolicygroup->getPolicy(), $policyCode, $message);
+        }
+      else
+        {
+        $message = $item->getName() . ' does not have any policy for group '. $group->getGroupId() .' policy '. $policyCode;
+        $this->assertTrue(false, $message);
+        }
+      }
+    }
 
+  /**
+   * helper function to ensure that passed in resources do not have a policygroup
+   * for the given group.
+   */
+  protected function assertPolicygroupNonexistence($testFolders, $testItems, $group)
+    {
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+    $itemModel = MidasLoader::loadModel('Item');
+    $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
+    foreach($testFolders as $folder)
+      {
+      $folder = $folderModel->load($folder->getFolderId());
+      $folderpolicygroup = $folderpolicygroupModel->getPolicy($group, $folder);
+      if($folderpolicygroup !== false)
+        {
+        $message = $folder->getName() . ' should not have a policy for group '. $group->getGroupId();
+        $this->assertTrue(false, $message);
+        }
+      }
+    foreach($testItems as $item)
+      {
+      $item = $itemModel->load($item->getItemId());
+      $itempolicygroup = $itempolicygroupModel->getPolicy($group, $item);
+      if($itempolicygroup !== false)
+        {
+        $message = $item->getName() . ' should not have a policy for group '. $group->getGroupId();
+        $this->assertTrue(false, $message);
+        }
+      }
+    }
+
+  /**
+   * helper function to ensure that passed in resources have a policyuser with the
+   * given user and policy.
+   */
+  protected function assertPolicyuserExistence($testFolders, $testItems, $user, $policyCode)
+    {
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+    $itemModel = MidasLoader::loadModel('Item');
+    $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
+    foreach($testFolders as $folder)
+      {
+      $folder = $folderModel->load($folder->getFolderId());
+      $folderpolicyuser = $folderpolicyuserModel->getPolicy($user, $folder);
+      if($folderpolicyuser !== false)
+        {
+        $message = $folder->getName() . ' has the wrong policy for user '. $user->getUserId() .' policy '. $policyCode;
+        $this->assertEquals($folderpolicyuser->getPolicy(), $policyCode, $message);
+        }
+      else
+        {
+        $message = $folder->getName() . ' does not have any policy for user '. $user->getUserId() .' policy '. $policyCode;
+        $this->assertTrue(false, $message);
+        }
+      }
+    foreach($testItems as $item)
+      {
+      $item = $itemModel->load($item->getItemId());
+      $itempolicyuser = $itempolicyuserModel->getPolicy($user, $item);
+      if($itempolicyuser !== false)
+        {
+        $message = $item->getName() . ' has the wrong policy for user '. $user->getUserId() .' policy '. $policyCode;
+        $this->assertEquals($itempolicyuser->getPolicy(), $policyCode, $message);
+        }
+      else
+        {
+        $message = $item->getName() . ' does not have any policy for user '. $user->getUserId() .' policy '. $policyCode;
+        $this->assertTrue(false, $message);
+        }
+      }
+    }
+
+  /**
+   * helper function to ensure that passed in resources do not have a policyuser
+   * for the given user.
+   */
+  protected function assertPolicyuserNonexistence($testFolders, $testItems, $user)
+    {
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+    $itemModel = MidasLoader::loadModel('Item');
+    $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
+    foreach($testFolders as $folder)
+      {
+      $folder = $folderModel->load($folder->getFolderId());
+      $folderpolicyuser = $folderpolicyuserModel->getPolicy($user, $folder);
+      if($folderpolicyuser !== false)
+        {
+        $message = $folder->getName() . ' should not have a policy for user '. $user->getUserId();
+        $this->assertTrue(false, $message);
+        }
+      }
+    foreach($testItems as $item)
+      {
+      $item = $itemModel->load($item->getItemId());
+      $itempolicyuser = $itempolicyuserModel->getPolicy($user, $item);
+      if($itempolicyuser !== false)
+        {
+        $message = $item->getName() . ' should not have a policy for user '. $user->getUserId();
+        $this->assertTrue(false, $message);
+        }
+      }
+    }
 
   }
