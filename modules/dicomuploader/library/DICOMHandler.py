@@ -1,6 +1,5 @@
 import os
 import signal
-import pydas
 
 #########################################################
 #
@@ -49,11 +48,12 @@ class DICOMListener(DICOMCommand):
     """helper class to run dcmtk's storescp as listener
     """
 
-    def __init__(self, incomingDir, storeSCPExecutable = 'storescp', \
-      port = 55555, studyTimeout = 30):
+    def __init__(self, incomingDir, onReceptionCallback, \
+      storeSCPExecutable = 'storescp', port = 55555, studyTimeout = 30):
         self.incomingDir = incomingDir
         if not os.path.exists(self.incomingDir):
             os.mkdir(self.incomingDir)
+        self.onReceptionCallback = onReceptionCallback
         self.storeSCPExecutable = storeSCPExecutable
         self.port = port
         self.studyTimeout = studyTimeout #seconds
@@ -64,12 +64,10 @@ class DICOMListener(DICOMCommand):
         super(DICOMListener,self).__del__()
 
     def start(self):
-        callbackExecutable = 'echo'
         # start the server!
-        onReceptionCallback = '`%s finished`' % (callbackExecutable)
         args = str(self.port) + ' --eostudy-timeout ' + str(self.studyTimeout) \
             +' --output-directory ' + self.incomingDir \
             + ' --sort-on-study-uid  \'\'' \
-            + ' --exec-on-eostudy ' + onReceptionCallback
+            + ' --exec-on-eostudy ' + self.onReceptionCallback
         print("starting DICOM listener")
         super(DICOMListener,self).start(self.storeSCPExecutable, args)
