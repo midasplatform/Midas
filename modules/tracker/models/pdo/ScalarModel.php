@@ -17,12 +17,23 @@ require_once BASE_PATH.'/modules/tracker/models/base/ScalarModelBase.php';
 class Tracker_ScalarModel extends Tracker_ScalarModelBase
 {
   /**
-   * Return all associated items
+   * Return all items associated with this scalar, and their corresponding labels
    */
   public function getAssociatedItems($scalar)
     {
-    // TODO return a hash array where key is the label and value is the result item
-    return array();
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from('tracker_scalar2item')
+                ->where('scalar_id = ?', $scalar->getKey());
+    $rows = $this->database->fetchAll($sql);
+    $results = array();
+    $itemModel = MidasLoader::loadModel('Item');
+    foreach($rows as $row)
+      {
+      $item = $itemModel->load($row['item_id']);
+      $results[] = array('label' => $row['label'], 'item' => $item);
+      }
+    return $results;
     }
 
   /**

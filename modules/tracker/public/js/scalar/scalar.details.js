@@ -28,3 +28,14 @@ $('#deleteScalar').click(function () {
         $('div.MainDialog').dialog('close');
     });
 });
+
+$(document).ready(function () {
+    $.fn.qtip.zindex = 16000; //must show qtips on top of the dialog
+    $.each($('a.resultItemLink'), function(idx, link) {
+        if($(link).attr('thumbnail')) {
+            $(link).qtip({
+                content: '<img alt="" src="'+json.global.webroot+'/item/thumbnail?itemId='+$(link).attr('element')+'" />'
+            });
+        }
+    });
+});

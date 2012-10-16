@@ -80,9 +80,6 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 showTooltip: false
             }
         });
-        if(first) {
-            $.jqplot.postDrawHooks.push(midas.tracker.bindPlotEvents); //must re-bind data click each time we redraw
-        }
         midas.tracker.bindPlotEvents();
 
         $('a.resetZoomAction').unbind('click').click(function () {
@@ -91,6 +88,9 @@ midas.tracker.renderChartArea = function (curveData, first) {
     }
     else {
         $('#chartDiv').html('<span class="noPoints">There are no values for this trend in the specified date range.</span>');
+    }
+    if(first) {
+        $.jqplot.postDrawHooks.push(midas.tracker.bindPlotEvents); //must re-bind data click each time we redraw
     }
     midas.tracker.populateInfo(curveData);
 };

@@ -24,9 +24,19 @@ div.otherScalars {
   margin-bottom: 15px;
 }
 
+span.resultItemLabel {
+  color: #555555;
+  font-weight: bold;
+}
+
 table.scalarInfoTable th {
   padding-right: 6px;
   color: #555555;
+  font-weight: bold;
+}
+
+div.resultItemContainer {
+  margin-top: 3px;
 }
 
 div.bottomButtons {
