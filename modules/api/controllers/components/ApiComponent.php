@@ -579,6 +579,28 @@ class Api_ApiComponent extends AppComponent
     return $privacyCode;
     }
 
+  /**
+   * helper method to validate passed in community can join status params and
+   * map them to valid community can join codes.
+   * @param string $canjoinStatus, should be 'Everyone' or 'Invitation'
+   * @return valid community canjoin code
+   */
+  private function _getValidCommunityCanjoinCode($canjoinStatus)
+    {
+    if($canjoinStatus !== 'Everyone' && $canjoinStatus !== 'Invitation')
+      {
+      throw new Exception('privacy should be one of [Everyone|Invitation]', MIDAS_INVALID_PARAMETER);
+      }
+    if($canjoinStatus === 'Everyone')
+      {
+      $canjoinCode = MIDAS_COMMUNITY_CAN_JOIN;
+      }
+    else
+      {
+      $canjoinCode = MIDAS_COMMUNITY_INVITATION_ONLY;
+      }
+    return $canjoinCode;
+    }
 
   /**
    * Create a new community or update an existing one using the uuid
@@ -587,7 +609,7 @@ class Api_ApiComponent extends AppComponent
    * @param description (Optional) The community description
    * @param uuid (Optional) Uuid of the community. If none is passed, will generate one.
    * @param privacy (Optional) Default 'Public', possible values [Public|Private].
-   * @param canjoin (Optional) Default 'Everyone'.
+   * @param canjoin (Optional) Default 'Everyone', possible values [Everyone|Invitation].
    * @return The community dao that was created
    */
   function communityCreate($args)
@@ -622,12 +644,21 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['privacy']))
         {
+        if(!$communityModel->policyCheck($record, $userDao, MIDAS_POLICY_ADMIN))
+          {
+          throw new Exception('Admin access required.', MIDAS_INVALID_POLICY);
+          }
         $privacyCode = $this->_getValidCommunityPrivacyCode($args['privacy']);
         $communityModel->setPrivacy($record, $privacyCode, $userDao);
         }
       if(isset($args['canjoin']))
         {
-        $record->setCanJoin($args['canjoin']);
+        if(!$communityModel->policyCheck($record, $userDao, MIDAS_POLICY_ADMIN))
+          {
+          throw new Exception('Admin access required.', MIDAS_INVALID_POLICY);
+          }
+        $canjoinCode = $this->_getValidCommunityCanjoinCode($args['canjoin']);
+        $record->setCanJoin($canjoinCode);
         }
       $communityModel->save($record);
       return $record->toArray();
@@ -651,7 +682,7 @@ class Api_ApiComponent extends AppComponent
         }
       if(isset($args['canjoin']))
         {
-        $canJoin = $args['canjoin'];
+        $canJoin = $this->_getValidCommunityCanjoinCode($args['canjoin']);
         }
       $communityDao = $communityModel->createCommunity($name, $description, $privacy, $userDao, $canJoin, $uuid);
 
