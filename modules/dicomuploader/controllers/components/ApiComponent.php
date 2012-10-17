@@ -99,7 +99,7 @@ class Dicomuploader_ApiComponent extends AppComponent
     $python_cmd = '/usr/bin/python';
     $script_path = BASE_PATH .'/modules/dicomuploader/library/uploader.py';
     $storescp_params = array();
-    $storescp_params[] = BASE_PATH .'/modules/dicomuploader/library/uploaderWapper.py';
+    $storescp_params[] = BASE_PATH .'/modules/dicomuploader/library/uploaderWrapper.py';
     $storescp_params[] = '--start';
     $storescp_params[] = '-s ' . $storescp_cmd;
     $storescp_params[] = '-p ' . $storescp_port;
@@ -129,7 +129,7 @@ class Dicomuploader_ApiComponent extends AppComponent
       }
     $python_cmd = '/usr/bin/python';
     $storescp_params = array();
-    $storescp_params[] = BASE_PATH .'/modules/dicomuploader/library/uploaderWapper.py';
+    $storescp_params[] = BASE_PATH .'/modules/dicomuploader/library/uploaderWrapper.py';
     $storescp_params[] = '--stop';
     $storescp_command = KWUtils::prepareExeccommand($python_cmd, $storescp_params);
     KWUtils::exec($storescp_command);
