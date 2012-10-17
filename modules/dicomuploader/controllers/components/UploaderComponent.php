@@ -27,10 +27,35 @@ class Dicomuploader_UploaderComponent extends AppComponent
     $ret['dcm2xml'] = $kwdicomextractorComponent->getApplicationStatus($dcm2xmlCommand, 'dcm2xml');
     $ret['storescp'] = $kwdicomextractorComponent->getApplicationStatus($storescpCommand,
                                                    'storescp');
-    $tmpDir= $modulesConfig['dicomuploader']->tmpdir;
-    $ret['Uploader Temporary Folder Writable'] = array(is_writable($tmpDir));
+    $receptionDir= $modulesConfig['dicomuploader']->receptiondir;
+    if (empty($receptionDir))
+      {
+      $receptionDir = $this->getDefaultReceptionDir();
+      }
+    $ret['Uploader Reception Folder Writable'] = array(is_writable($receptionDir));
 
     return $ret;
+  }
+
+  /**
+   * Get default reception directory
+   */
+  public function getDefaultReceptionDir()
+  {
+    $utilityComponent = MidasLoader::loadComponent('Utility');
+    $default_reception_dir = $utilityComponent->getTempDirectory('');
+    if(substr($default_reception_dir, -1) == '/')
+      {
+      $default_reception_dir = substr($default_reception_dir, 0, -1);
+      }
+    $default_reception_dir .= 'dicomuploader';
+    if(!file_exists($default_reception_dir) && !KWUtils::mkDir($default_reception_dir, 0777))
+      {
+      throw new Zend_Exception("couldn't create dir ".$default_reception_dir);
+      }
+    $processing_dir = $default_reception_dir . '/processing';
+    KWUtils::mkDir($processing_dir, 0777);
+    return $default_reception_dir;
   }
 
 } // end class
