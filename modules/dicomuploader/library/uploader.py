@@ -1,14 +1,15 @@
+#!/usr/bin/python
+
 import os
 import sys
 import subprocess
 import re
 import shutil
 import getopt
-
 import pydas
 
 
-def groupFilesbySeriesUID(rootDir):
+def groupFilesbySeriesUID(dcm2xmlCmd, rootDir):
     """
     group DICOM files with SeriesInstanceUID and move them to the processing directory
     """
@@ -23,7 +24,7 @@ def groupFilesbySeriesUID(rootDir):
         for dicom_file in dicom_files:
             # TODO: use minidom or re to replace grep for cross-platform use
             dicom_file_abspath = os.path.join(rootDir, study_dir, dicom_file)
-            p1 = subprocess.Popen(["dcm2xml", dicom_file_abspath], stdout=subprocess.PIPE)
+            p1 = subprocess.Popen([dcm2xmlCmd, dicom_file_abspath], stdout=subprocess.PIPE)
             p2 = subprocess.Popen(["grep", "SeriesInstanceUID"], stdin=p1.stdout, stdout=subprocess.PIPE)
             series_instance_uid_element = p2.communicate()[0]
             uid_search = re.search('<.*>(.*)</.*>', series_instance_uid_element)
@@ -60,35 +61,37 @@ class Usage(Exception):
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "heuadi", ["help", "email=", "url=", "apikey=", "destination=", "incomingdir="])
+        opts, args = getopt.getopt(sys.argv[1:], "hc:i:u:e:a:d:", ["help", "dcm2xml=", "incoming=", "url=", "email=", "apikey=", "dest=", ])
     except getopt.error, msg:
         raise Usage(msg)
     url = ''
-    email = ''
+    user_email = ''
     apikey = ''
-    dest = 'Private'
+    dest_folder = ''
     incoming_dir = ''
     for opt, arg in opts:
         if opt in ('-h', "--help"):
-            print 'uploader.py --email=<midas_email> --url=<midas_url> --apikey=<midas_api_key> --destination=<midas_destination>, --incomingdir=<incoming_dir>'
+            print 'uploader.py -c <dcm2xml_cmd> -i <incoming_dir> -u <midas_url> -e <midas_user_email>  -a <midas_api_key> -d <midas_destination_folder>'
             sys.exit()
-        elif opt in ("-e", "--email"):
-            email = arg
+        elif opt in ("-c", "--dcm2xml"):
+            dcm2xml_cmd = arg
+        elif opt in ("-i", "--incoming"):
+            incoming_dir = arg
         elif opt in ("-u", "--url"):
             url = arg
+        elif opt in ("-e", "--email"):
+            user_email = arg
         elif opt in ("-a", "--apikey"):
             apikey = arg
-        elif opt in ("-d", "--destination"):
-            dest = arg
-        elif opt in ("-i", "--incomingdir"):
-            incoming_dir = arg
+        elif opt in ("-d", "--dest"):
+            dest_folder = arg
 
-    # move files to processing dir
-    groupFilesbySeriesUID(incoming_dir)
+    # move files to processing directory
+    groupFilesbySeriesUID(dcm2xml_cmd, incoming_dir)
 
     # upload files to midas
-    processingDir = os.path.join(incoming_dir, 'processing')
-    uploadToMidas(processingDir, email, apikey, url, dest)
+    processing_dir = os.path.join(incoming_dir, 'processing')
+    uploadToMidas(processing_dir, user_email, apikey, url, dest_folder)
 
 
 if __name__ == "__main__":
