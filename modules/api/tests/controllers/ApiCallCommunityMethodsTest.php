@@ -120,8 +120,8 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
       $this->assertEquals($newcommunityName, $refreshComm->getName(), 'Community name should have been changed');
       }
 
-    // try to set privacy as member, should fail
-    foreach($nonModerators as $userDao)
+    // try to set privacy as a nonAdmin, should fail
+    foreach($nonAdmins as $userDao)
       {
       $this->resetAll();
       $this->params['token'] = $this->_loginAsUser($userDao);
@@ -169,7 +169,60 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
         $this->_assertStatusOk($resp);
 
         $comm2001 = $communityModel->load($comm2001->getCommunityId());
-        $this->assertEquals($comm2001->getPrivacy(), $finalStatus, 'changed community has wrong default privacy');
+        $this->assertEquals($comm2001->getPrivacy(), $finalStatus, 'changed community has wrong privacy value');
+        }
+      }
+
+    // try to set canjoin as a nonAdmin, should fail
+    foreach($nonAdmins as $userDao)
+      {
+      $this->resetAll();
+      $this->params['token'] = $this->_loginAsUser($userDao);
+      $this->params['method'] = 'midas.community.create';
+      $this->params['name'] = '2001';
+      $this->params['uuid'] = $comm2001->getUuid();
+      $this->params['canjoin'] = 'Everyone';
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+      }
+
+    // try to set canjoin to an invalid string
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($commAdmin);
+    $this->params['method'] = 'midas.community.create';
+    $this->params['name'] = '2001';
+    $this->params['uuid'] = $comm2001->getUuid();
+    $this->params['canjoin'] = 'Some of the people Some of the time';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
+
+    // want to test changing canjoin using this api method on an extant community
+    // test cases   Everyone -> Everyone
+    //              Everyone -> Invitation
+    //              Invitation -> Invitation
+    //              Invitation -> Everyone
+    $canjoinStatuses = array(MIDAS_COMMUNITY_CAN_JOIN, MIDAS_COMMUNITY_INVITATION_ONLY);
+    $canjoinStrings = array(MIDAS_COMMUNITY_CAN_JOIN => "Everyone", MIDAS_COMMUNITY_INVITATION_ONLY => "Invitation");
+    foreach($canjoinStatuses as $initialStatus)
+      {
+      foreach($canjoinStatuses as $finalStatus)
+        {
+        // initialize privacy
+        $comm2001->setCanJoin($initialStatus);
+        $communityModel->save($comm2001);
+
+        // try to set privacy with admin, should pass
+        $this->resetAll();
+        $this->params['token'] = $this->_loginAsUser($commAdmin);
+        $this->params['method'] = 'midas.community.create';
+        $this->params['name'] = '2001';
+        $this->params['uuid'] = $comm2001->getUuid();
+        $this->params['canjoin'] = $canjoinStrings[$finalStatus];
+        $resp = $this->_callJsonApi();
+        $this->_assertStatusOk($resp);
+
+        $comm2001 = $communityModel->load($comm2001->getCommunityId());
+        $this->assertEquals($comm2001->getCanJoin(), $finalStatus, 'changed community has wrong canjoin value');
         }
       }
     }

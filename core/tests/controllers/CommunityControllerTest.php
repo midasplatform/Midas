@@ -70,6 +70,33 @@ class CommunityControllerTest extends ControllerTestCase
     $this->assertController('community');
     $this->assertAction('manage');
 
+    // User with write access should be able to change info
+    $this->resetAll();
+    $this->request->setMethod('POST');
+    $this->params['communityId'] = $comm->getKey();
+    $newName = "newname";
+    $newDesc = "newdesc";
+    $this->params['name'] = $newName;
+    $this->params['description'] = $newDesc;
+    $this->params['modifyInfo'] = 'true';
+    $this->dispatchUrI('/community/manage', $user1);
+    $comm = $this->Community->load($comm->getCommunityId());
+    $this->assertEquals($comm->getName(), $newName, 'changed community has wrong name');
+    $this->assertEquals($comm->getDescription(), $newDesc, 'changed community has wrong description');
+
+    // Non-admin users should not be able to change privacy
+    $nonAdmins = array($user1, $user2);
+    foreach($nonAdmins as $user)
+      {
+      $this->resetAll();
+      $this->request->setMethod('POST');
+      $this->params['communityId'] = $comm->getKey();
+      $this->params['name'] = $comm->getName();
+      $this->params['privacy'] = (string)MIDAS_COMMUNITY_PUBLIC;
+      $this->params['modifyPrivacy'] = 'true';
+      $this->dispatchUrI('/community/manage', $user, true);
+      }
+
     // exercise changing privacy status
     $privacyStatuses = array(MIDAS_COMMUNITY_PUBLIC, MIDAS_COMMUNITY_PRIVATE);
     foreach($privacyStatuses as $initialStatus)
@@ -88,8 +115,8 @@ class CommunityControllerTest extends ControllerTestCase
         // send privacy as a string, since there was a bug with privacy codes as
         // strings, which is how they would be sent from an actual rendered page
         $this->params['privacy'] = (string)$finalStatus;
-        $this->params['modifyInfo'] = 'true';
-        $this->dispatchUrI('/community/manage', $user1);
+        $this->params['modifyPrivacy'] = 'true';
+        $this->dispatchUrI('/community/manage', $adminUser);
 
         $comm = $this->Community->load($comm->getCommunityId());
         $this->assertEquals($comm->getPrivacy(), $finalStatus, 'changed community has wrong privacy');
@@ -124,12 +151,8 @@ class CommunityControllerTest extends ControllerTestCase
 
     // We should now be able to render a dialog for them
     $this->resetAll();
-    $this->dispatchUrI('/community/promotedialog?community='.$comm->getKey().'&user='.$user2->getKey(), $user1);
-    $this->assertController('community');
-    $this->assertAction('promotedialog');
-    // It should only display the moderator group as an available option for promotion
-    $this->assertQueryCount('input[type="checkbox"][name*="groupCheckbox_"]', 1);
-    $this->assertQuery('input[type="checkbox"][name="groupCheckbox_'.$comm->getModeratorgroupId().'"]');
+    // need admin perms to do this, so expect it to fail
+    $this->dispatchUrI('/community/promotedialog?community='.$comm->getKey().'&user='.$user2->getKey(), $user1, true);
 
     // Admin user should be able to promote to both moderator or admin group
     $this->resetAll();
@@ -156,26 +179,22 @@ class CommunityControllerTest extends ControllerTestCase
                        '&groupCheckbox_'.$comm->getAdmingroupId().'=on',
                        $user1, true);
 
-    // User 1 should be able to promote to moderator
+    // User 1 should not be able to promote to moderator
     $this->resetAll();
     $this->assertFalse($this->Community->policyCheck($comm, $user2, MIDAS_POLICY_WRITE));
     $this->dispatchUrI('/community/promoteuser?communityId='.$comm->getKey().
                        '&userId='.$user2->getKey().
                        '&groupCheckbox_'.$comm->getModeratorgroupId().'=on',
-                       $user1);
-    $this->assertTrue($this->Community->policyCheck($comm, $user2, MIDAS_POLICY_WRITE));
+                       $user1, true);
 
-    // User 1 should be able to remove moderator status on user 2
+    // User 1 should not be able to remove moderator status on user 2
     $this->resetAll();
     $this->dispatchUrI('/community/removeuserfromgroup?groupId='.$comm->getModeratorgroupId().
-                       '&userId='.$user2->getKey(), $user1);
-    $this->assertFalse($this->Community->policyCheck($comm, $user2, MIDAS_POLICY_WRITE));
+                       '&userId='.$user2->getKey(), $user1, true);
 
     // User 1 should not be able to remove admin user as a member
     $this->resetAll();
     $this->dispatchUrI('/community/removeuserfromgroup?groupId='.$comm->getMembergroupId().
-                       '&userId='.$adminUser->getKey(), $user1);
-    $resp = json_decode($this->getBody());
-    $this->assertTrue($resp[0] == false);
+                       '&userId='.$adminUser->getKey(), $user1, true);
     }
   }
