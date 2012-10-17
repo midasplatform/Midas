@@ -28,12 +28,16 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
         ?>
     </div>
 
-    This module requires dcm2xml and storescp from dcmtk.<br/>
+    This module requires dcm2xml and storescp from <b>DCMTK</b> to receive DICOM files.<br/>
     To install it: <a href="http://support.dcmtk.org/wiki/dcmtk/howto/start" target="_blank">http://support.dcmtk.org/wiki/dcmtk/howto/start</a><br/><br/>
-     <?php
+
+    This module requires <b>Pydas</b> to upload DICOM files.<br/>
+    To install it: <a href="https://github.com/midasplatform/pydas/blob/master/docs/source/intro.rst" target="_blank">https://github.com/midasplatform/pydas/blob/master/docs/source/intro.rst</a><br/><br/>
+
+    <?php
       echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
-      <h3>DICOM Extractor Configuration:</h3>
+      <h3>DICOM Uploader Configuration:</h3>
             <div >
               <label for='dcm2xml'>Command to run dcm2xml</label>
               {$this->configForm['dcm2xml']}
@@ -43,15 +47,34 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
               <label for='storescp'>Command to run storescp</label>
               {$this->configForm['storescp']}
             </div >
+            <div >
+              <label for='storescp_port'>Storescp port</label>
+              {$this->configForm['storescp_port']}
+            </div >
+            <div >
+              <label for='storescp_study_timeout'>Storescp study timeout</label>
+              {$this->configForm['storescp_study_timeout']}
+            </div >
             <br />
-            <div id='tmpdir'>
-              <label for='tmpdir'>Uploader temporary directory</label>
-              {$this->configForm['tmpdir']}
+            <div id='receptiondir'>
+              <label for='receptiondir'>Uploader reception directory</label>
+              {$this->configForm['receptiondir']}
+            </div>
+            <br />
+            <div id='pydas_dest_folder'>
+              <label for='receptiondir'>Pydas destination folder</label>
+              {$this->configForm['pydas_dest_folder']}
             </div>
           <div>
             {$this->configForm['submitConfig']}
           </div>
        </form>";
        ?>
+    <br/>
+    Check dashboard to verify your current configuration.
+
+
+
+    <br/>
 
 </div>
