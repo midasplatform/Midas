@@ -97,7 +97,7 @@ $('a.deleteGroupLink').click(function () {
                     $('a.groupLink[groupid='+groupid+']').parent('li').remove();
                     midas.createNotice(jsonResponse[1], 4000);
                     midas.community.manage.init();
-                    window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
+                    window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-3');
                     window.location.reload();
                 }
                 else {
@@ -203,7 +203,7 @@ midas.community.manage.successGroupChange = function (responseText, statusText, 
         }
 
         midas.community.manage.init();
-        window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-2');
+        window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-3');
         window.location.reload();
     }
     else {
@@ -234,6 +234,21 @@ midas.community.manage.successInfoChange = function (responseText, statusText, x
     }
 }
 
+midas.community.manage.successPrivacyChange = function (responseText, statusText, xhr, form) {
+    var jsonResponse = jQuery.parseJSON(responseText);
+    if(jsonResponse == null) {
+        midas.createNotice('Error', 4000, 'error');
+        return;
+    }
+    if(jsonResponse[0]) {
+        midas.createNotice(jsonResponse[1], 4000);
+    }
+    else {
+        midas.createNotice(jsonResponse[1], 4000, 'error');
+    }
+}
+
+
 midas.community.manage.promoteMember = function(userId) {
   midas.loadDialog('promoteId'+userId+'.'+
              json.community.community_id+
@@ -253,7 +268,7 @@ midas.community.manage.removeFromGroup = function(userId, groupId) {
             midas.createNotice(jsonResponse[1], 4000);
             if(jsonResponse[0]) {
                 window.location.replace(json.global.webroot+'/community/manage?communityId='+
-                                        json.community.community_id+'#tabs-2');
+                                        json.community.community_id+'#tabs-3');
                 window.location.reload();
             }
         }
@@ -338,9 +353,13 @@ $(document).ready(function () {
         });
     });
 
-    $('#editCommunityForm').ajaxForm({
+    $('#editCommunityInfoForm').ajaxForm({
         beforeSubmit: midas.community.manage.validateInfoChange,
         success: midas.community.manage.successInfoChange
+    });
+
+    $('#editCommunityPrivacyForm').ajaxForm({
+        success: midas.community.manage.successPrivacyChange
     });
 
     //init group tab

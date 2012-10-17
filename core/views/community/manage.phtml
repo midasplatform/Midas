@@ -54,8 +54,17 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
   <div class="tabs" id='tabsGeneric'>
     <ul>
       <li><a href="#tabs-1"><?php echo $this->t("Info")?></a></li>
-      <li><a href="#tabs-2"><?php echo $this->t('Members & Groups');?></a></li>
-      <li><a href="#tabs-3"><?php echo $this->t('Files');?></a></li>
+      <?php 
+      if($this->isAdmin)
+        {
+        // permissions/groups/user management is only for community admins
+        ?>
+        <li><a href="#tabs-2"><?php echo $this->t("Privacy");?></a></li>
+        <li><a href="#tabs-3"><?php echo $this->t("Members & Groups");?></a></li>
+      <?php
+        }
+      ?>
+      <li><a href="#tabs-4"><?php echo $this->t('Files');?></a></li>
       <?php
           foreach($this->customTabs as $modules)
             {
@@ -67,7 +76,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
       ?>
     </ul>
     <div id="tabs-1">
-       <form id="editCommunityForm" class="genericForm" method="<?php echo $this->infoForm['method']?>"  action="<?php echo $this->infoForm['action']?>">
+       <form id="editCommunityInfoForm" class="genericForm" method="<?php echo $this->infoForm['method']?>"  action="<?php echo $this->infoForm['action']?>">
         <div class="createNameElement">
           <?php echo $this->t('Name')?>
           <?php echo $this->infoForm['name']?>
@@ -79,16 +88,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
           </div>
           <div>Tip: You can use <a target="_blank" href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> in the description.</div>
         </div>
-        <div class="radioElement">
-          <h4><?php echo $this->t('Privacy')?></h4>
-          <?php echo $this->infoForm['privacy']?>
 
-          <div id="canJoinDiv">
-            <h4><?php echo $this->t('Who can join the community?')?></h4>
-            <?php echo $this->infoForm['canJoin']?>
-          </div>
-        </div>
-          <?php
+        <?php   
           $extraForm = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_COMMUNITY_MANAGE_FORM', array('community' => $this->communityDao));
           foreach($extraForm as $module => $value)
             {
@@ -108,8 +109,30 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
       </form>
 
     </div>
-
+<?php
+  // permissions/groups/user management is only for community admins
+  if($this->isAdmin)
+    {
+?>
     <div id="tabs-2">
+       <form id="editCommunityPrivacyForm" class="genericForm" method="<?php echo $this->privacyForm['method']?>"  action="<?php echo $this->privacyForm['action']?>">
+        <div class="radioElement">
+          <h4><?php echo $this->t('Privacy')?></h4>
+          <?php echo $this->privacyForm['privacy']?>
+
+          <div id="canJoinDiv">
+            <h4><?php echo $this->t('Who can join the community?')?></h4>
+            <?php echo $this->privacyForm['canJoin']?>
+          </div>
+        </div>
+        <div>
+          <?php echo $this->privacyForm['submit']?>
+          <input type="hidden" name='modifyPrivacy' value='1'/>
+        </div>
+       </form>
+    </div>
+
+    <div id="tabs-3">
       <td style="width: 50%;vertical-align: top;">
         <div  class='communityMemberList'>
           <?php
@@ -271,8 +294,11 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
         </form>
       </div>
     </div>
+<?php
+    } // if($this->isAdmin)
+?>
 
-    <div id="tabs-3">
+    <div id="tabs-4">
       <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
             Drag and drop to move elements.
             <br/>

@@ -29,12 +29,31 @@ class CommunityForm extends AppForm
     $form->setAction($this->webroot.'/community/create')
           ->setMethod('post');
 
+    list($name, $description) = $this->_getInfoFormElements();
+
+    list($privacy, $canJoin) = $this->_getPrivacyFormElements();
+
+    $submit = new  Zend_Form_Element_Submit('submit');
+    $submit ->setLabel($this->t("Create"));
+
+    $form->addElements(array($name, $description, $privacy, $submit, $canJoin));
+    return $form;
+    }
+
+  /** helper method to create info related form elements */
+  protected function _getInfoFormElements()
+    {
     $name = new Zend_Form_Element_Text('name');
     $name ->setRequired(true)
           ->addValidator('NotEmpty', true);
 
     $description = new Zend_Form_Element_Textarea('description');
+    return array($name, $description);
+    }
 
+  /** helper method to create privacy related form elements */
+  protected function _getPrivacyFormElements()
+    {
     $privacy = new Zend_Form_Element_Radio('privacy');
     $privacy->addMultiOptions(array(
                  MIDAS_COMMUNITY_PRIVATE => $this->t("Private, only member can see the community"),
@@ -50,10 +69,46 @@ class CommunityForm extends AppForm
                   ))
             ->setValue(MIDAS_COMMUNITY_CAN_JOIN);
 
-    $submit = new  Zend_Form_Element_Submit('submit');
-    $submit ->setLabel($this->t("Create"));
+    return array($privacy, $canJoin);
+    }
 
-    $form->addElements(array($name, $description, $privacy, $submit, $canJoin));
+  /** edit name or description */
+  public function createInfoForm($communityDao)
+    {
+    $form = new Zend_Form;
+
+    $action = $this->webroot . '/community/manage?communityId=' . $communityDao->getCommunityId();
+    $form->setAction($action)
+          ->setMethod('post');
+
+    list($name, $description) = $this->_getInfoFormElements();
+    $name->setValue($communityDao->getName());
+    $description->setValue($communityDao->getDescription());
+
+    $submit = new  Zend_Form_Element_Submit('submit');
+    $submit ->setLabel($this->t("Save"));
+
+    $form->addElements(array($name, $description, $submit));
+    return $form;
+    }
+
+  /** edit privacy status */
+  public function createPrivacyForm($communityDao)
+    {
+    $form = new Zend_Form;
+
+    $action = $this->webroot . '/community/manage?communityId=' . $communityDao->getCommunityId();
+    $form->setAction($action)
+          ->setMethod('post');
+
+    list($privacy, $canJoin) = $this->_getPrivacyFormElements();
+    $privacy->setValue($communityDao->getPrivacy());
+    $canJoin->setValue($communityDao->getCanJoin());
+
+    $submit = new  Zend_Form_Element_Submit('submit');
+    $submit ->setLabel($this->t("Save"));
+
+    $form->addElements(array($privacy, $submit, $canJoin));
     return $form;
     }
 
