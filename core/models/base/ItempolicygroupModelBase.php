@@ -61,9 +61,10 @@ abstract class ItempolicygroupModelBase extends AppModel
       {
       throw new Zend_Exception("Save the daos first.");
       }
-    if($this->getPolicy($group, $item) !== false)
+    $policyGroupDao = $this->getPolicy($group, $item);
+    if($policyGroupDao !== false)
       {
-      $this->delete($this->getPolicy($group, $item));
+      $this->delete($policyGroupDao);
       }
     $policyGroupDao = MidasLoader::newDao('ItempolicygroupDao');
     $policyGroupDao->setGroupId($group->getGroupId());
