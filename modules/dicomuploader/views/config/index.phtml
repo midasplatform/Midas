@@ -32,7 +32,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
     To install it: <a href="http://support.dcmtk.org/wiki/dcmtk/howto/start" target="_blank">http://support.dcmtk.org/wiki/dcmtk/howto/start</a><br/><br/>
 
     This module requires <b>Pydas</b> to upload DICOM files.<br/>
-    To install it: <a href="https://github.com/midasplatform/pydas/blob/master/docs/source/intro.rst" target="_blank">https://github.com/midasplatform/pydas/blob/master/docs/source/intro.rst</a><br/><br/>
+    To install it: <a href="http://pydas.readthedocs.org/" target="_blank">http://pydas.readthedocs.org/</a><br/><br/>
 
     <?php
       echo "
@@ -71,7 +71,30 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
        </form>";
        ?>
     <br/>
+
     Check dashboard to verify your current configuration.
+    <?php
+    echo "<table>";
+    foreach($this->dashboard as $name => $status)
+      {
+      echo "<tr>";
+      echo "  <td>$name </td>";
+      if($status[0])
+        {
+        echo "  <td><img src='{$this->coreWebroot}/public/images/icons/ok.png' /></td>";
+        }
+      else
+        {
+        echo "  <td><img src='{$this->coreWebroot}/public/images/icons/nok.png' /></td>";
+        }
+      if(isset($status[1]))
+        {
+        echo "  <td>$status[1]</td>";
+        }
+      echo "</tr>";
+      }
+    echo "</table>";
+ ?>
 
 
 
