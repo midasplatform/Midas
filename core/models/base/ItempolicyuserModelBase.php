@@ -37,8 +37,40 @@ abstract class ItempolicyuserModelBase extends AppModel
     $this->initialize(); // required
     } // end __construct()
 
-  abstract function createPolicy($user, $item, $policy);
   abstract function getPolicy($user, $item);
+
+  /** @return ItempolicyuserDao*/
+  public function createPolicy($user, $item, $policy)
+    {
+    if(!$user instanceof UserDao)
+      {
+      throw new Zend_Exception("Should be a user.");
+      }
+    if(!$item instanceof ItemDao)
+      {
+      throw new Zend_Exception("Should be an item.");
+      }
+    if(!is_numeric($policy))
+      {
+      throw new Zend_Exception("Should be a number.");
+      }
+    if(!$user->saved && !$item->saved)
+      {
+      throw new Zend_Exception("Save the daos first.");
+      }
+    $policyUser = $this->getPolicy($user, $item);
+    if($policyUser !== false)
+      {
+      $this->delete($policyUser);
+      }
+    $policyUser = MidasLoader::newDao('ItempolicyuserDao');
+    $policyUser->setUserId($user->getUserId());
+    $policyUser->setItemId($item->getItemId());
+    $policyUser->setPolicy($policy);
+    $this->save($policyUser);
+
+    return $policyUser;
+    }
 
   /** delete */
   public function delete($dao)
