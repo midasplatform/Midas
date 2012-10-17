@@ -10,7 +10,14 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-//define("MIDAS_EXAMPLE", 0);
-define('MIDAS_TRACKER_EMAIL_USER', 'emailuser');
-define('MIDAS_TRACKER_EMAIL_GROUP', 'emailgroup');
-?>
+/** Component for performing threshold notifications */
+class Tracker_ThresholdNotificationComponent extends AppComponent
+{
+  /**
+   * Add scheduled tasks for emailing users that the threshold was crossed
+   */
+  public function scheduleNotifications($scalar, $notifications)
+    {
+    // TODO
+    }
+} // end class

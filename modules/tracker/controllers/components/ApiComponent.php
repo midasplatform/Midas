@@ -88,6 +88,7 @@ class Tracker_ApiComponent extends AppComponent
    * @param configItemId (Optional) If this value pertains to a specific configuration item, pass its id here
    * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
    * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
+   * @param silent (Optional) If set, do not perform treshold-based email notifications for this scalar
    * @return The scalar dao that was created
    */
   public function scalarAdd($args)
@@ -163,6 +164,15 @@ class Tracker_ApiComponent extends AppComponent
 
     $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
     $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision, $value, true);
+
+    $silent = $this->_getParam('silent');
+    if(!isset($silent))
+      {
+      $notificationModel = MidasLoader::loadModel('ThresholdNotification', 'tracker');
+      $notifications = $notificationModel->getNotifications($scalar);
+      $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
+      $notifyComponent->scheduleNotifications($scalar, $notifications);
+      }
     return $scalar;
     }
 } // end class
