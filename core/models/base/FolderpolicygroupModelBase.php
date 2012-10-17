@@ -73,9 +73,10 @@ abstract class FolderpolicygroupModelBase extends AppModel
       {
       throw new Zend_Exception("Save the daos first.");
       }
-    if($this->getPolicy($group, $folder) !== false)
+    $policyGroupDao = $this->getPolicy($group, $folder);
+    if($policyGroupDao !== false)
       {
-      $this->delete($this->getPolicy($group, $folder));
+      $this->delete($policyGroupDao);
       }
     $policyGroupDao = MidasLoader::newDao('FolderpolicygroupDao');
     $policyGroupDao->setGroupId($group->getGroupId());
