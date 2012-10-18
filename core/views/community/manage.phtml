@@ -53,9 +53,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
   <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <div class="tabs" id='tabsGeneric'>
     <ul>
-      <li><a href="#tabs-1"><?php echo $this->t("Info")?></a></li>
-      <li><a href="#tabs-2"><?php echo $this->t('Members & Groups');?></a></li>
-      <li><a href="#tabs-3"><?php echo $this->t('Files');?></a></li>
+      <li><a href="#tabs-1"><?php echo $this->t('Info')?></a></li>
+      <li><a href="#tabs-2"><?php echo $this->t('Users');?></a></li>
+      <li><a href="#tabs-3"><?php echo $this->t('Data');?></a></li>
       <?php
           foreach($this->customTabs as $modules)
             {
