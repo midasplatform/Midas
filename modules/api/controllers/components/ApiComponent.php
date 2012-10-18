@@ -2194,6 +2194,171 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Add an itempolicygroup to an item with the passed in group and policy;
+     if an itempolicygroup exists for that group and item, it will be replaced
+     with the passed in policy.
+   * @param item_id The id of the item.
+   * @param group_id The id of the group.
+   * @param policy Desired policy status, one of [Admin|Write|Read].
+   * @return success = true on success.
+   */
+  function itemAddPolicygroup($args)
+    {
+    $this->_validateParams($args, array('item_id', 'group_id', 'policy'));
+    $userDao = $this->_getUser($args);
+
+    $itemModel = MidasLoader::loadModel('Item');
+    $itemId = $args['item_id'];
+    $item = $itemModel->load($itemId);
+    if($item === false)
+      {
+      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($args['group_id']);
+    if($group === false)
+      {
+      throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $policyCode = $this->_getValidPolicyCode($args['policy']);
+
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+    $itempolicygroupModel->createPolicy($group, $item, $policyCode);
+
+    return array('success' => 'true');
+    }
+
+  /**
+   * Remove a itempolicygroup from a item with the passed in group if the
+     itempolicygroup exists.
+   * @param item_id The id of the item.
+   * @param group_id The id of the group.
+   * @return success = true on success.
+   */
+  function itemRemovePolicygroup($args)
+    {
+    $this->_validateParams($args, array('item_id', 'group_id'));
+    $userDao = $this->_getUser($args);
+
+    $itemModel = MidasLoader::loadModel('Item');
+    $itemId = $args['item_id'];
+    $item = $itemModel->load($itemId);
+    if($item === false)
+      {
+      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($args['group_id']);
+    if($group === false)
+      {
+      throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+    $itempolicygroup = $itempolicygroupModel->getPolicy($group, $item);
+    if($itempolicygroup !== false)
+      {
+      $itempolicygroupModel->delete($itempolicygroup);
+      }
+
+    return array('success' => 'true');
+    }
+
+  /**
+   * Add a itempolicyuser to an item with the passed in user and policy;
+     if an itempolicyuser exists for that user and item, it will be replaced
+     with the passed in policy.
+   * @param item_id The id of the item.
+   * @param user_id The id of the targeted user to create the policy for.
+   * @param policy Desired policy status, one of [Admin|Write|Read].
+   * @return success = true on success.
+   */
+  function itemAddPolicyuser($args)
+    {
+    $this->_validateParams($args, array('item_id', 'user_id', 'policy'));
+    $adminUser = $this->_getUser($args);
+
+    $itemModel = MidasLoader::loadModel('Item');
+    $itemId = $args['item_id'];
+    $item = $itemModel->load($itemId);
+    if($item === false)
+      {
+      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$itemModel->policyCheck($item, $adminUser, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
+      }
+
+    $userModel = MidasLoader::loadModel('User');
+    $targetUserId = $args['user_id'];
+    $targetUser = $userModel->load($targetUserId);
+    if($targetUser === false)
+      {
+      throw new Exception("This user doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $policyCode = $this->_getValidPolicyCode($args['policy']);
+
+    $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
+    $itempolicyuserModel->createPolicy($targetUser, $item, $policyCode);
+
+    return array('success' => 'true');
+    }
+
+  /**
+   * Remove an itempolicyuser from an item with the passed in user if the
+     itempolicyuser exists.
+   * @param item_id The id of the item.
+   * @param user_id The id of the target user.
+   * @return success = true on success.
+   */
+  function itemRemovePolicyuser($args)
+    {
+    $this->_validateParams($args, array('item_id', 'user_id'));
+    $userDao = $this->_getUser($args);
+
+    $itemModel = MidasLoader::loadModel('Item');
+    $itemId = $args['item_id'];
+    $item = $itemModel->load($itemId);
+    if($item === false)
+      {
+      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
+      }
+
+    $userModel = MidasLoader::loadModel('User');
+    $user = $userModel->load($args['user_id']);
+    if($user === false)
+      {
+      throw new Exception("This user doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+
+    $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
+    $itempolicyuser = $itempolicyuserModel->getPolicy($user, $item);
+    if($itempolicyuser !== false)
+      {
+      $itempolicyuserModel->delete($itempolicyuser);
+      }
+
+    return array('success' => 'true');
+    }
+
+  /**
    * Return a list of top level folders belonging to the user
    * @param token Authentication token
    * @return List of the user's top level folders
