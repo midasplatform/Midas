@@ -48,7 +48,7 @@ class Communityagreement_Notification extends MIDAS_Notification
     {
     $fc = Zend_Controller_Front::getInstance();
     $moduleWebroot = $fc->getBaseUrl().'/communityagreement';
-    return array('Community Agreement' => $moduleWebroot.'/config/agreementtab');
+    return array('Agreement' => $moduleWebroot.'/config/agreementtab');
     }
 
   /**
