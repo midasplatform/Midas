@@ -40,13 +40,17 @@ abstract class FolderpolicygroupModelBase extends AppModel
   /** Abstract functions */
   abstract function getPolicy($group, $folder);
   abstract function deleteGroupPolicies($group);
+  abstract function computePolicyStatus($folder);
 
   /** delete */
   public function delete($dao)
     {
     $folder = $dao->getFolder();
     parent::delete($dao);
-    $this->computePolicyStatus($folder);
+    if($dao->getGroupId() == MIDAS_GROUP_ANONYMOUS_KEY)
+      {
+      $this->computePolicyStatus($folder);
+      }
     }//end delete
 
   /** create a policy
@@ -69,9 +73,10 @@ abstract class FolderpolicygroupModelBase extends AppModel
       {
       throw new Zend_Exception("Save the daos first.");
       }
-    if($this->getPolicy($group, $folder) !== false)
+    $policyGroupDao = $this->getPolicy($group, $folder);
+    if($policyGroupDao !== false)
       {
-      $this->delete($this->getPolicy($group, $folder));
+      $this->delete($policyGroupDao);
       }
     $policyGroupDao = MidasLoader::newDao('FolderpolicygroupDao');
     $policyGroupDao->setGroupId($group->getGroupId());
@@ -79,31 +84,12 @@ abstract class FolderpolicygroupModelBase extends AppModel
     $policyGroupDao->setPolicy($policy);
     $this->save($policyGroupDao);
 
-    $this->computePolicyStatus($folder);
+    if($policyGroupDao->getGroupId() == MIDAS_GROUP_ANONYMOUS_KEY)
+      {
+      $this->computePolicyStatus($folder);
+      }
     return $policyGroupDao;
     }
 
-  /** compute policy status*/
-  public function computePolicyStatus($folder)
-    {
-    $groupPolicies = $folder->getFolderpolicygroup();
-    $userPolicies = $folder->getFolderpolicyuser();
-
-    $shared = false;
-    $folderModel = MidasLoader::loadModel('Folder');
-
-    foreach($groupPolicies as $key => $policy)
-      {
-      if($policy->getGroupId() == MIDAS_GROUP_ANONYMOUS_KEY)
-        {
-        $folder->setPrivacyStatus(MIDAS_PRIVACY_PUBLIC);
-        $folderModel->save($folder);
-        return MIDAS_PRIVACY_PUBLIC;
-        }
-      }
-    $folder->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
-    $folderModel->save($folder);
-    return MIDAS_PRIVACY_PRIVATE;
-    }// end computePolicyStatus
 
 } // end class FolderpolicygroupModelBase
