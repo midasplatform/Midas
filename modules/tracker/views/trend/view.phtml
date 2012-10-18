@@ -25,7 +25,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
 <div class="viewMain">
   <div class="itemsContainer">
     <div>
-      Configuration data: 
+      Configuration data:
       <?php
       if($this->trend->getConfigItemId())
         {
@@ -80,7 +80,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
     <h1>Actions</h1>
     <ul>
     <?php if($this->isAdmin)
-      { ?>
+      {
+    ?>
       <li>
         <a href="<?php echo $this->webroot?>/tracker/trend/edit?trendId=<?php echo $this->trend->getKey()?>">
           <img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/edit.png"/> Edit
@@ -90,10 +91,16 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <a class="deleteTrend"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/close.png"/> Delete</a>
       </li>
     <?php
-      } ?>
+      }
+    if($this->logged)
+      {
+    ?>
       <li>
         <a class="thresholdAction"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/email_error.png"/> Notifications</a>
       </li>
+    <?php
+      }
+    ?>
       <li>
         <a class="resetZoomAction"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/magnifier_zoom_out.png"/> Reset Plot Zoom</a>
       </li>

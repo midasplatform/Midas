@@ -135,4 +135,9 @@ $(window).load(function () {
     });
 
     midas.tracker.renderChartArea(curveData, true);
+
+    $('a.thresholdAction').click(function () {
+        midas.loadDialog('thresholdNotification', '/tracker/trend/notify?trendId='+json.tracker.trend.trend_id);
+        midas.showDialog('Email notification settings', false);
+    });
 });

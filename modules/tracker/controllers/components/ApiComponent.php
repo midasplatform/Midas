@@ -37,14 +37,44 @@ class Tracker_ApiComponent extends AppComponent
     }
 
   /**
-   * Associate a result item with a particular scalar value
-   * @param scalarId The id of the scalar to associate the item with
+   * Associate a result item with a particular scalar value.
+   * @param scalarIds Comma separated list of scalar ids to associate the item with
    * @param itemId The id of the item to associate with the scalar
    * @param label The label describing the nature of the association
    */
   public function itemAssociate($args)
     {
-    // TODO
+    $communityModel = MidasLoader::loadModel('Community');
+    $itemModel = MidasLoader::loadModel('Item');
+    $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
+    $this->_checkKeys(array('scalarIds', 'itemId', 'label'), $args);
+    $user = $this->_getUser($args);
+
+    $item = $itemModel->load($args['itemId']);
+    if(!$item)
+      {
+      throw new Exception('Invalid itemId', 404);
+      }
+    if(!$itemModel->policyCheck($item, $user, MIDAS_POLICY_READ))
+      {
+      throw new Exception('Read permission on the item required', 403);
+      }
+
+    $scalarIds = explode(',', $args['scalarIds']);
+    foreach($scalarIds as $scalarId)
+      {
+      $scalar = $scalarModel->load($scalarId);
+
+      if(!$scalar)
+        {
+        throw new Exception('Invalid scalarId: '.$scalarId, 404);
+        }
+      if(!$communityModel->policyCheck($scalar->getTrend()->getProducer()->getCommunity(), $user, MIDAS_POLICY_ADMIN))
+        {
+        throw new Exception('Admin permission on the community required', 403);
+        }
+      $scalarModel->associateItem($scalar, $item, $args['label']);
+      }
     }
 
   /**
@@ -58,6 +88,7 @@ class Tracker_ApiComponent extends AppComponent
    * @param configItemId (Optional) If this value pertains to a specific configuration item, pass its id here
    * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
    * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
+   * @param silent (Optional) If set, do not perform treshold-based email notifications for this scalar
    * @return The scalar dao that was created
    */
   public function scalarAdd($args)
@@ -133,6 +164,15 @@ class Tracker_ApiComponent extends AppComponent
 
     $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
     $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision, $value, true);
+
+    $silent = $this->_getParam('silent');
+    if(!isset($silent))
+      {
+      $notificationModel = MidasLoader::loadModel('ThresholdNotification', 'tracker');
+      $notifications = $notificationModel->getNotifications($scalar);
+      $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
+      $notifyComponent->scheduleNotifications($scalar, $notifications);
+      }
     return $scalar;
     }
 } // end class

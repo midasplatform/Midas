@@ -13,7 +13,7 @@ PURPOSE.  See the above copyright notices for more information.
 class Tracker_TrendController extends Tracker_AppController
 {
   public $_models = array('Community');
-  public $_moduleModels = array('Producer', 'Trend');
+  public $_moduleModels = array('Producer', 'ThresholdNotification', 'Trend');
 
   /**
    * View a given trend
@@ -38,6 +38,7 @@ class Tracker_TrendController extends Tracker_AppController
       }
     $this->view->trend = $trend;
     $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+    $this->view->logged = $this->logged;
     $header = '<ul class="pathBrowser">';
     $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/community.png" /><span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Trackers">'.$comm->getName().'</a></span></li>';
     $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/cog_go.png" /><span><a href="'.$this->view->webroot.'/tracker/producer/view?producerId='.$trend->getProducer()->getKey().'">'.$trend->getProducer()->getDisplayName().'</a></span></li>';
@@ -188,6 +189,93 @@ class Tracker_TrendController extends Tracker_AppController
       $trend->setTruthDatasetId($truthItemId);
       }
     $this->Tracker_Trend->save($trend);
+    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved'));
+    }
+
+  /**
+   * Show the dialog for email notification
+   * @param trendId The id of the trend
+   */
+  public function notifyAction()
+    {
+    $this->disableLayout();
+    $trendId = $this->_getParam('trendId');
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('Must be logged in');
+      }
+    if(!isset($trendId))
+      {
+      throw new Zend_Exception('Must pass trendId parameter');
+      }
+    $trend = $this->Tracker_Trend->load($trendId);
+    if(!$trend)
+      {
+      throw new Zend_Exception('Invalid trendId', 404);
+      }
+    if(!$this->Community->policyCheck($trend->getProducer()->getCommunity(), $this->userSession->Dao))
+      {
+      throw new Zend_Exception('Permission denied', 403);
+      }
+    $this->view->trend = $trend;
+    $notificationModel = MidasLoader::loadModel('ThresholdNotification', $this->moduleName);
+    $this->view->setting = $notificationModel->getUserSetting($this->userSession->Dao, $trend);
+    }
+
+  /**
+   * Handle form submission from email notification dialog
+   * @param trendId The trend id
+   * @param doNotify Will be either "yes" or "no"
+   * @param operator One of "<", ">", "<=", ">="
+   * @param value The comparison value (must be numeric)
+   */
+  public function notifysubmitAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    if(!$this->logged)
+      {
+      echo JsonComponent::encode(array('status' => 'error', 'message' => 'You are not logged in'));
+      return;
+      }
+    $trendId = $this->_getParam('trendId');
+    if(!isset($trendId))
+      {
+      throw new Zend_Exception('Must pass trendId parameter');
+      }
+    $trend = $this->Tracker_Trend->load($trendId);
+    if(!$trend)
+      {
+      throw new Zend_Exception('Invalid trendId', 404);
+      }
+    if(!$this->Community->policyCheck($trend->getProducer()->getCommunity(), $this->userSession->Dao))
+      {
+      throw new Zend_Exception('Must have read permission on the community', 403);
+      }
+    $existing = $this->Tracker_ThresholdNotification->getUserSetting($this->userSession->Dao, $trend);
+    if($existing)
+      {
+      $this->Tracker_ThresholdNotification->delete($existing);
+      }
+
+    $doNotify = $this->_getParam('doNotify');
+    if(isset($doNotify) && $doNotify == 'yes')
+      {
+      $operator = $this->_getParam('operator');
+      $value = $this->_getParam('value');
+      if(!is_numeric($value))
+        {
+        echo JsonComponent::encode(array('status' => 'error', 'message' => 'Threshold value must be numeric'));
+        return;
+        }
+      $threshold = MidasLoader::newDao('ThresholdNotificationDao', $this->moduleName);
+      $threshold->setTrendId($trend->getKey());
+      $threshold->setValue((float)$value);
+      $threshold->setComparison($operator);
+      $threshold->setAction(MIDAS_TRACKER_EMAIL_USER);
+      $threshold->setRecipientId($this->userSession->Dao->getKey());
+      $this->Tracker_ThresholdNotification->save($threshold);
+      }
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved'));
     }
 }//end class

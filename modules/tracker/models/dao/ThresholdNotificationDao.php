@@ -10,7 +10,11 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-//define("MIDAS_EXAMPLE", 0);
-define('MIDAS_TRACKER_EMAIL_USER', 'emailuser');
-define('MIDAS_TRACKER_EMAIL_GROUP', 'emailgroup');
-?>
+/**
+ * ThresholdNotification DAO
+ */
+class Tracker_ThresholdNotificationDao extends Tracker_AppDao
+  {
+  public $_model = 'ThresholdNotification';
+  public $_module = 'tracker';
+  }
