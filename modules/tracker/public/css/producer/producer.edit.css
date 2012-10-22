@@ -1,0 +1,8 @@
+div.submitButtonContainer {
+  float: right;
+  margin-top: 20px;
+}
+
+textarea.description {
+  resize: none;
+}

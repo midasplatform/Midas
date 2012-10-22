@@ -4,20 +4,27 @@ midas.tracker = midas.tracker || {};
 /**
  * Extract the jqplot curve data from the scalar daos passed to us
  */
-midas.tracker.extractCurveData = function (scalars) {
-    var points = [], minVal, maxVal;
-    $.each(scalars, function(idx, scalar) {
-        var value = parseFloat(scalar.value);
-        points.push([scalar.submit_time, value]);
-        if(typeof minVal == 'undefined' || value < minVal) {
-            minVal = value;
+midas.tracker.extractCurveData = function (curves) {
+    var allPoints = [], minVal, maxVal;
+    $.each(curves, function(idx, scalars) {
+        if(!scalars) {
+            return;
         }
-        if(typeof maxVal == 'undefined' || value > maxVal) {
-            maxVal = value;
-        }
+        var points = [];
+        $.each(scalars, function(idx, scalar) {
+            var value = parseFloat(scalar.value);
+            points.push([scalar.submit_time, value]);
+            if(typeof minVal == 'undefined' || value < minVal) {
+                minVal = value;
+            }
+            if(typeof maxVal == 'undefined' || value > maxVal) {
+                maxVal = value;
+            }
+        });
+        allPoints.push(points);
     });
     return {
-        points: points,
+        points: allPoints,
         minVal: minVal,
         maxVal: maxVal
     };
@@ -34,7 +41,12 @@ midas.tracker.populateInfo = function (curveData) {
 
 midas.tracker.bindPlotEvents = function () {
     $('#chartDiv').unbind('jqplotDataClick').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
-        var scalarId = json.tracker.scalars[pointIndex].scalar_id;
+        var scalarId;
+        if(seriesIndex == 0) {
+            scalarId = json.tracker.scalars[pointIndex].scalar_id;
+        } else {
+            scalarId = json.tracker.rightScalars[pointIndex].scalar_id;
+        }
         midas.loadDialog('scalarPoint'+scalarId, '/tracker/scalar/details?scalarId='+scalarId);
         midas.showDialog('Scalar details', false);
     });
@@ -44,9 +56,9 @@ midas.tracker.renderChartArea = function (curveData, first) {
     if(midas.tracker.plot) {
         midas.tracker.plot.destroy();
     }
-    if(curveData.points.length > 0) {
+    if(curveData.points[0].length > 0) {
         $('#chartDiv').html('');
-        midas.tracker.plot = $.jqplot('chartDiv', [curveData.points], {
+        var opts = {
             axes: {
                 xaxis: {
                     pad: 1.05,
@@ -79,7 +91,28 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 zoom: true,
                 showTooltip: false
             }
-        });
+        };
+        if(json.tracker.rightTrend) {
+            opts.legend = {
+                show: true,
+                labels: [json.tracker.trend.display_name, json.tracker.rightTrend.display_name],
+                location: 'se'
+            };
+            opts.axes.y2axis = {
+                show: true,
+                pad: 1.05,
+                label: midas.tracker.yaxis2Label,
+                labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                labelOptions: {
+                    angle: 270,
+                    fontSize: '12px'
+                },
+                showLabel: true
+            };
+            opts.series = [{yaxis: 'yaxis'}, {yaxis: 'y2axis'}];
+        }
+
+        midas.tracker.plot = $.jqplot('chartDiv', curveData.points, opts);
         midas.tracker.bindPlotEvents();
 
         $('a.resetZoomAction').unbind('click').click(function () {
@@ -96,10 +129,17 @@ midas.tracker.renderChartArea = function (curveData, first) {
 };
 
 $(window).load(function () {
-    var curveData = midas.tracker.extractCurveData(json.tracker.scalars);
+    var curveData = midas.tracker.extractCurveData([json.tracker.scalars, json.tracker.rightScalars]);
+
     midas.tracker.yaxisLabel = json.tracker.trend.display_name;
     if(json.tracker.trend.unit) {
         midas.tracker.yaxisLabel += ' ('+json.tracker.trend.unit+')';
+    }
+    if(json.tracker.rightTrend) {
+        midas.tracker.yaxis2Label = json.tracker.rightTrend.display_name;
+        if(json.tracker.rightTrend.unit) {
+            midas.tracker.yaxis2Label += ' ('+json.tracker.rightTrend.unit+')';
+        }
     }
 
     var dates = $("#startdate, #enddate").datepicker({
@@ -121,14 +161,19 @@ $(window).load(function () {
     $('#filterButton').click(function () {
         $(this).attr('disabled', 'disabled');
         $('#dateRangeUpdating').show();
-        $.post(json.global.webroot+'/tracker/trend/scalars', {
+        var params = {
             trendId: json.tracker.trend.trend_id,
             startDate: $('#startdate').val(),
             endDate: $('#enddate').val()
-        }, function (retVal) {
+        };
+        if(json.tracker.rightTrend) {
+          params.rightTrendId = json.tracker.rightTrend.trend_id;
+        }
+        $.post(json.global.webroot+'/tracker/trend/scalars', params, function (retVal) {
             var resp = $.parseJSON(retVal);
             json.tracker.scalars = resp.scalars;
-            midas.tracker.renderChartArea(midas.tracker.extractCurveData(json.tracker.scalars), false);
+            json.tracker.rightScalars = resp.rightScalars;
+            midas.tracker.renderChartArea(midas.tracker.extractCurveData([json.tracker.scalars, json.tracker.rightScalars]), false);
             $('#filterButton').removeAttr('disabled');
             $('#dateRangeUpdating').hide();
         });

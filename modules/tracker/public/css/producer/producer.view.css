@@ -17,27 +17,30 @@ div.sectionTitle {
 div.trendContainer {
   font-size: 14px;
   color: #56758b;
-  padding-left: 3px;
   margin-bottom: 2px;
 }
 
-div.trendContainer a {
-  color: #56758b;
-  font-weight: bold;
+div.trendContainer input[type="checkbox"] {
+  position: relative;
+  top: 1px;
+}
+
+a.trendLink {
+  color: #56758b !important;
+  font-weight: bold !important;
   display: inline-block;
-  width: 100%;
+  width: 90%;
   padding-top: 3px;
   padding-bottom: 3px;
   padding-left: 3px;
 }
 
-div.trendContainer a img {
-  position: relative;
-  top: 2px;
-}
-
-div.trendContainer a:hover {
-  text-decoration: none;
+a.trendLink:hover {
+  text-decoration: none !important;
   color: #16354b;
   background-color: #e5e5e5;
+}
+
+input.selectTrend {
+  display: inline;
 }
