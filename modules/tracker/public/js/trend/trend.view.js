@@ -34,7 +34,11 @@ midas.tracker.extractCurveData = function (curves) {
  * Fill in the "info" sidebar section based on the curve data
  */
 midas.tracker.populateInfo = function (curveData) {
-    $('#pointCount').html(curveData.points.length);
+    var count = curveData.points[0].length;
+    if(json.tracker.rightTrend) {
+        count += curveData.points[1].length;
+    }
+    $('#pointCount').html(count);
     $('#minVal').html(curveData.minVal);
     $('#maxVal').html(curveData.maxVal);
 };
