@@ -26,6 +26,7 @@ class Tracker_TrendController extends Tracker_AppController
     $trendId = $this->_getParam('trendId');
     $startDate = $this->_getParam('startDate');
     $endDate = $this->_getParam('endDate');
+    $rightTrendId = $this->_getParam('rightTrendId');
     if(!isset($trendId))
       {
       throw new Zend_Exception('Must pass trendId parameter');
@@ -36,13 +37,27 @@ class Tracker_TrendController extends Tracker_AppController
       {
       throw new Zend_Exception('Read permission required on the community', 403);
       }
+    if(isset($rightTrendId))
+      {
+      $rightTrend = $this->Tracker_Trend->load($rightTrendId);
+      if($comm->getKey() != $rightTrend->getProducer()->getCommunityId())
+        {
+        throw new Zend_Exception('Right trend must belong to the same community', 403);
+        }
+      $this->view->rightTrend = $rightTrend;
+      }
     $this->view->trend = $trend;
     $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     $this->view->logged = $this->logged;
     $header = '<ul class="pathBrowser">';
     $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/community.png" /><span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Trackers">'.$comm->getName().'</a></span></li>';
     $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/cog_go.png" /><span><a href="'.$this->view->webroot.'/tracker/producer/view?producerId='.$trend->getProducer()->getKey().'">'.$trend->getProducer()->getDisplayName().'</a></span></li>';
-    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_line.png" /><span>'.$trend->getDisplayName().'</span></li>';
+    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_line.png" /><span>'.$trend->getDisplayName();
+    if($this->view->rightTrend)
+      {
+      $header .= ' &amp; '.$rightTrend->getDisplayName();
+      }
+    $header .= '</span></li>';
     $header .= '</ul>';
     $this->view->header = $header;
 
@@ -68,6 +83,11 @@ class Tracker_TrendController extends Tracker_AppController
     $endDate = date('Y-m-d H:i:s', $endDate);
     $this->view->json['tracker']['scalars'] = $this->Tracker_Trend->getScalars($trend, $startDate, $endDate);
     $this->view->json['tracker']['trend'] = $trend;
+    if(isset($rightTrend))
+      {
+      $this->view->json['tracker']['rightTrend'] = $rightTrend;
+      $this->view->json['tracker']['rightScalars'] = $this->Tracker_Trend->getScalars($rightTrend, $startDate, $endDate);
+      }
     $this->view->json['tracker']['initialStartDate'] = date('n/j/Y', strtotime($startDate));
     $this->view->json['tracker']['initialEndDate'] = date('n/j/Y', strtotime($endDate));
     }
@@ -83,6 +103,7 @@ class Tracker_TrendController extends Tracker_AppController
     $this->disableView();
     $this->disableLayout();
     $trendId = $this->_getParam('trendId');
+    $rightTrendId = $this->_getParam('rightTrendId');
     $startDate = $this->_getParam('startDate');
     $endDate = $this->_getParam('endDate');
     if(!isset($trendId))
@@ -95,12 +116,22 @@ class Tracker_TrendController extends Tracker_AppController
       {
       throw new Zend_Exception('Read permission required on the community', 403);
       }
+
     $startDate = date('Y-m-d H:i:s', strtotime($startDate));
     $endDate = date('Y-m-d H:i:s', strtotime($endDate));
+    $retVal = array('status' => 'ok', 'scalars' => $this->Tracker_Trend->getScalars($trend, $startDate, $endDate));
 
-    echo JsonComponent::encode(array(
-      'status' => 'ok',
-      'scalars' => $this->Tracker_Trend->getScalars($trend, $startDate, $endDate)));
+    if(isset($rightTrendId))
+      {
+      $rightTrend = $this->Tracker_Trend->load($rightTrendId);
+      if($comm->getKey() != $rightTrend->getProducer()->getCommunityId())
+        {
+        throw new Zend_Exception('Right trend must belong to the same community', 403);
+        }
+      $retVal['rightScalars'] = $this->Tracker_Trend->getScalars($rightTrend, $startDate, $endDate);
+      }
+
+    echo JsonComponent::encode($retVal);
     }
 
   /**
