@@ -56,6 +56,7 @@ class Tracker_ProducerController extends Tracker_AppController
     $this->view->producer = $producer;
     $this->view->trends = $producer->getTrends();
     $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+    $this->view->json['tracker']['producer'] = $producer;
 
     $header = '<ul class="pathBrowser">';
     $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/community.png" /><span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Trackers">'.$comm->getName().'</a></span></li>';
@@ -71,4 +72,73 @@ class Tracker_ProducerController extends Tracker_AppController
     {
     // TODO (include progress reporting)
     }
+
+  /**
+   * Show the dialog for editing the producer information
+   */
+  public function editAction()
+    {
+    $producerId = $this->_getParam('producerId');
+
+    if(!isset($producerId))
+      {
+      throw new Zend_Exception('Must pass producerId parameter');
+      }
+    $producer = $this->Tracker_Producer->load($producerId);
+    if(!$producer)
+      {
+      throw new Zend_Exception('Invalid producerId', 404);
+      }
+    if(!$this->Community->policyCheck($producer->getCommunity(), $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception('Admin permission required on the community', 403);
+      }
+    $this->disableLayout();
+    $this->view->producer = $producer;
+    }
+
+  /**
+   * Handle edit form submission
+   * @param producerId The id of the producer to edit
+   */
+  public function editsubmitAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    $producerId = $this->_getParam('producerId');
+
+    if(!isset($producerId))
+      {
+      throw new Zend_Exception('Must pass producerId parameter');
+      }
+    $producer = $this->Tracker_Producer->load($producerId);
+    if(!$this->Community->policyCheck($producer->getCommunity(), $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception('Admin permission required on the community', 403);
+      }
+    $displayName = $this->_getParam('displayName');
+    $description = $this->_getParam('description');
+    $repository = $this->_getParam('repository');
+    $executableName = $this->_getParam('executableName');
+
+    if(isset($displayName))
+      {
+      $producer->setDisplayName($displayName);
+      }
+    if(isset($description))
+      {
+      $producer->setDescription(UtilityComponent::filterHtmlTags($description));
+      }
+    if(isset($repository))
+      {
+      $producer->setRepository($repository);
+      }
+    if(isset($executableName))
+      {
+      $producer->setExecutableName($executableName);
+      }
+    $this->Tracker_Producer->save($producer);
+    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved', 'producer' => $producer));
+    }
+  
 }//end class
