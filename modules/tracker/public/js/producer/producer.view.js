@@ -5,15 +5,15 @@ $(document).ready(function () {
     });
     
     $('input.selectTrend').click(function () {
-        $('#selectedTrendCount').html('('+$('input.selectTrend:checked').length+')');
-        $('a.visualizeSelected').unbind('click').click(function () {
-            var trends = '';
-            $.each($('input.selectTrend:checked'), function (idx, checkbox) {
-                trends += $(checkbox).attr('element')+',';
+        var checked = $('input.selectTrend:checked');
+        if(checked.length == 2) {
+            $('a.visualizeSelected').show().unbind('click').click(function () {
+                window.location = json.global.webroot+'/tracker/trend/view?trendId='+$(checked[0]).attr('element')
+                  +'&rightTrendId='+$(checked[1]).attr('element');
             });
-            if(trends != '') {
-                window.location = json.global.webroot+'/tracker/trend/view?trendId='+trends;
-            }
-        });
+        }
+        else {
+            $('a.visualizeSelected').unbind('click').hide();
+        }
     });
 });
