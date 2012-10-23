@@ -58,7 +58,9 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception("This community doesn't exist or you don't have the permissions.", 403);
       }
-    $formInfo = $this->Form->Community->createCreateForm();
+
+    $infoForm = $this->Form->Community->createInfoForm($communityDao);
+    $privacyForm = $this->Form->Community->createPrivacyForm($communityDao);
     $formCreateGroup = $this->Form->Community->createCreateGroupForm();
 
     //ajax posts
@@ -67,12 +69,17 @@ class CommunityController extends AppController
       $this->disableLayout();
       $this->disableView();
       $modifyInfo = $this->_getParam('modifyInfo');
+      $modifyPrivacy = $this->_getParam('modifyPrivacy');
       $editGroup = $this->_getParam('editGroup');
       $deleteGroup = $this->_getParam('deleteGroup');
       $addUser = $this->_getParam('addUser');
       $removeUser = $this->_getParam('removeUser');
       if(isset($removeUser)) //remove users from group
         {
+        if(!$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+          {
+          throw new Zend_Exception("Community Admin permissions required.", 403);
+          }
         $group = $this->Group->load($this->_getParam('groupId'));
         if($group == false || $group->getCommunity()->getKey() != $communityDao->getKey())
           {
@@ -91,6 +98,10 @@ class CommunityController extends AppController
         }
       if(isset($addUser)) //add users to group
         {
+        if(!$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+          {
+          throw new Zend_Exception("Community Admin permissions required.", 403);
+          }
         $group = $this->Group->load($this->_getParam('groupId'));
         if($group == false || $group->getCommunity()->getKey() != $communityDao->getKey())
           {
@@ -109,19 +120,34 @@ class CommunityController extends AppController
         }
       if(isset($modifyInfo))
         {
-        if($formInfo->isValid($_POST))
+        if($infoForm->isValid($_POST))
           {
           $communityDao = $this->Community->load($communityDao->getKey());
-          $communityDao->setName($formInfo->getValue('name'));
-          $communityDao->setDescription($formInfo->getValue('description'));
-
+          $communityDao->setName($infoForm->getValue('name'));
+          $communityDao->setDescription($infoForm->getValue('description'));
           Zend_Registry::get('notifier')->callback('CALLBACK_CORE_EDIT_COMMUNITY_INFO', array('community' => $communityDao, 'params' => $this->_getAllParams()));
-
-          $forminfo_privacy = $formInfo->getValue('privacy');
-          $this->Community->setPrivacy($communityDao, $forminfo_privacy, $this->userSession->Dao);
-          $communityDao->setCanJoin($formInfo->getValue('canJoin'));
           $this->Community->save($communityDao);
-          echo JsonComponent::encode(array(true, $this->t('Changes saved'), $formInfo->getValue('name')));
+          echo JsonComponent::encode(array(true, $this->t('Changes saved'), $infoForm->getValue('name')));
+          }
+        else
+          {
+          echo JsonComponent::encode(array(false, $this->t('Error')));
+          }
+        }
+      if(isset($modifyPrivacy))
+        {
+        if(!$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+          {
+          throw new Zend_Exception("Community Admin permissions required.", 403);
+          }
+        if($privacyForm->isValid($_POST))
+          {
+          $communityDao = $this->Community->load($communityDao->getKey());
+          $forminfo_privacy = $privacyForm->getValue('privacy');
+          $this->Community->setPrivacy($communityDao, $forminfo_privacy, $this->userSession->Dao);
+          $communityDao->setCanJoin($privacyForm->getValue('canJoin'));
+          $this->Community->save($communityDao);
+          echo JsonComponent::encode(array(true, $this->t('Changes saved')));
           }
         else
           {
@@ -130,6 +156,10 @@ class CommunityController extends AppController
         }
       if(isset($editGroup))
         {
+        if(!$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+          {
+          throw new Zend_Exception("Community Admin permissions required.", 403);
+          }
         if($formCreateGroup->isValid($_POST))
           {
           if($this->_getParam('groupId') == 0)
@@ -157,6 +187,10 @@ class CommunityController extends AppController
 
       if(isset($deleteGroup))
         {
+        if(!$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+          {
+          throw new Zend_Exception("Community Admin permissions required.", 403);
+          }
         $group = $this->Group->load($this->_getParam('groupId'));
         if($group == false || $group->getCommunity()->getKey() != $communityDao->getKey())
           {
@@ -171,20 +205,10 @@ class CommunityController extends AppController
       return;
       }//end ajax posts
 
-    //init forms
-    $formInfo->setAction($this->view->webroot.'/community/manage?communityId='.$communityId);
+    //init and set forms
     $formCreateGroup->setAction($this->view->webroot.'/community/manage?communityId='.$communityId);
-    $name = $formInfo->getElement('name');
-    $name->setValue($communityDao->getName());
-    $description = $formInfo->getElement('description');
-    $description->setValue($communityDao->getDescription());
-    $privacy = $formInfo->getElement('privacy');
-    $privacy->setValue($communityDao->getPrivacy());
-    $canJoin = $formInfo->getElement('canJoin');
-    $canJoin->setValue($communityDao->getCanJoin());
-    $submit = $formInfo->getElement('submit');
-    $submit->setLabel($this->t('Save'));
-    $this->view->infoForm = $this->getFormAsArray($formInfo);
+    $this->view->infoForm = $this->getFormAsArray($infoForm);
+    $this->view->privacyForm = $this->getFormAsArray($privacyForm);
     $this->view->createGroupForm = $this->getFormAsArray($formCreateGroup);
 
     //init groups and members
@@ -534,23 +558,15 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception('User is not in community members group');
       }
-    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception('Must be moderator or admin to manage groups');
+      throw new Zend_Exception('Community Admin permissions required.');
       }
     $groups = $community->getGroups();
     $availableGroups = array();
     foreach($groups as $group)
       {
-      if($group->getKey() == $community->getAdminGroup()->getKey())
-        {
-        if($this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN)
-           && !$this->Group->userInGroup($user, $group))
-          {
-          $availableGroups[] = $group; // admins can promote other users to admins
-          }
-        }
-      else if(!$this->Group->userInGroup($user, $group))
+      if(!$this->Group->userInGroup($user, $group))
         {
         $availableGroups[] = $group; // only show groups they aren't already in
         }
@@ -594,9 +610,9 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception('User is not in community members group');
       }
-    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception('Must be moderator or admin to manage groups');
+      throw new Zend_Exception('Community Admin permissions required.');
       }
     $params = $this->_getAllParams();
     foreach($params as $name => $value)
@@ -608,11 +624,6 @@ class CommunityController extends AppController
         if(!$group)
           {
           throw new Zend_Exception('Invalid group id: '.$id);
-          }
-        if($id == $community->getAdmingroupId() &&
-           !$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
-          {
-          throw new Zend_Exception('Cannot add users to admin unless you are admin');
           }
         $this->Group->addUser($group, $user);
         }
@@ -651,15 +662,9 @@ class CommunityController extends AppController
       }
     $community = $group->getCommunity();
 
-    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception('Must be moderator or admin to manage groups');
-      }
-    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN) &&
-       $this->Community->policyCheck($community, $user, MIDAS_POLICY_ADMIN))
-      {
-      echo JsonComponent::encode(array(false, 'Only admins can remove users with admin privileges'));
-      return;
+      throw new Zend_Exception('Community Admin permissions required.');
       }
     $this->Group->removeUser($group, $user);
     echo JsonComponent::encode(array(true, 'Removed user '.$user->getFullName().' from group '.$group->getName()));
