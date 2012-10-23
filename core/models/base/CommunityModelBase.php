@@ -402,10 +402,10 @@ abstract class CommunityModelBase extends AppModel
       $items = $communityPublicFolder->getItems();
       foreach($items as $item)
         {
-        $itemolicygroupDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
+        $itempolicygroupDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
         if($itempolicygroupDao !== false)
           {
-          $itempolicygroupModel->delete($itemolicygroupDao);
+          $itempolicygroupModel->delete($itempolicygroupDao);
           }
         }
       // process all the children (and grandchildren ...) folders
