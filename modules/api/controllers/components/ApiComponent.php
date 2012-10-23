@@ -342,27 +342,6 @@ class Api_ApiComponent extends AppComponent
         throw new Exception('Invalid policy or folderid', MIDAS_INVALID_POLICY);
         }
       // create a new item in this folder
-      if(isset($args['itemprivacy']))
-        {
-        $privacy = $args['itemprivacy'];
-        if($privacy !== 'Public' && $privacy !== 'Private')
-          {
-          throw new Exception('itemprivacy should be one of [Public|Private]');
-          }
-        if($privacy === 'Public')
-          {
-          $privacy_status = MIDAS_PRIVACY_PUBLIC;
-          }
-        else
-          {
-          $privacy_status = MIDAS_PRIVACY_PRIVATE;
-          }
-        }
-      else
-        {
-        // Public by default
-        $privacy_status = MIDAS_PRIVACY_PUBLIC;
-        }
       $itemname = isset($args['itemname']) ? $args['itemname'] : $args['filename'];
       $description = isset($args['itemdescription']) ? $args['itemdescription'] : '';
       $item = $itemModel->createItem($itemname, $description, $folder);
@@ -372,8 +351,17 @@ class Api_ApiComponent extends AppComponent
         }
       $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
       $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
-      $item->setPrivacyStatus($privacy_status);
-      $itemModel->save($item);
+
+      if(isset($args['itemprivacy']))
+        {
+        $privacyCode = $this->_getValidPrivacyCode($args['itemprivacy']);
+        }
+      else
+        {
+        // Public by default
+        $privacyCode = MIDAS_PRIVACY_PUBLIC;
+        }
+      $this->_setItemPrivacy($item, $privacyCode);
       }
 
     if(array_key_exists('checksum', $args))
@@ -859,6 +847,7 @@ class Api_ApiComponent extends AppComponent
     $groupModel = MidasLoader::loadModel('Group');
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
     $folderpolicygroupDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $folder);
+
     if($privacyCode == MIDAS_PRIVACY_PRIVATE && $folderpolicygroupDao !== false)
       {
       $folderpolicygroupModel->delete($folderpolicygroupDao);
@@ -866,6 +855,11 @@ class Api_ApiComponent extends AppComponent
     else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $folderpolicygroupDao == false)
       {
       $policyDao = $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
+      }
+    else
+      {
+      // ensure the cached privacy status value is up to date
+      $folderpolicygroupModel->computePolicyStatus($folder);
       }
     }
 
@@ -977,7 +971,8 @@ class Api_ApiComponent extends AppComponent
         // explicitly set to Public
         $this->_setFolderPrivacy($new_folder, MIDAS_PRIVACY_PUBLIC);
         }
-
+      // reload folder to get up to date privacy status
+      $new_folder = $folderModel->load($new_folder->getFolderId());
       return $new_folder->toArray();
       }
     }
@@ -1501,6 +1496,11 @@ class Api_ApiComponent extends AppComponent
     else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $itempolicygroupDao == false)
       {
       $itempolicygroupDao = $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+      }
+    else
+      {
+      // ensure the cached privacy status value is up to date
+      $itempolicygroupModel->computePolicyStatus($item);
       }
     }
 
