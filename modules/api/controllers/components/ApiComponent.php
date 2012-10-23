@@ -789,6 +789,7 @@ class Api_ApiComponent extends AppComponent
     $groupModel = MidasLoader::loadModel('Group');
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
     $folderpolicygroupDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $folder);
+
     if($privacyCode == MIDAS_PRIVACY_PRIVATE && $folderpolicygroupDao !== false)
       {
       $folderpolicygroupModel->delete($folderpolicygroupDao);
@@ -796,6 +797,11 @@ class Api_ApiComponent extends AppComponent
     else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $folderpolicygroupDao == false)
       {
       $policyDao = $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
+      }
+    else
+      {
+      // ensure the cached privacy status value is up to date
+      $folderpolicygroupModel->computePolicyStatus($folder);
       }
     }
 
@@ -907,7 +913,8 @@ class Api_ApiComponent extends AppComponent
         // explicitly set to Public
         $this->_setFolderPrivacy($new_folder, MIDAS_PRIVACY_PUBLIC);
         }
-
+      // reload folder to get up to date privacy status
+      $new_folder = $folderModel->load($new_folder->getFolderId());
       return $new_folder->toArray();
       }
     }

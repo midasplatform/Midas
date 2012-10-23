@@ -48,6 +48,8 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->assertEquals($userDao->getPublicfolderId(), $resp->data->parent_id);
     $this->assertEquals('testFolderCreate', $resp->data->name);
     $this->assertEquals('', $resp->data->description);
+    // ensure privacy status is correct on returned array
+    $this->assertEquals($resp->data->privacy_status, MIDAS_PRIVACY_PUBLIC, 'created folder has wrong privacy status');
     // ensure default privacy is Public
     $this->assertPrivacyStatus(array($folderModel->load($resp->data->folder_id)), array(), MIDAS_PRIVACY_PUBLIC);
 
@@ -60,6 +62,8 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->params['privacy'] = 'Public';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
+    // ensure privacy status is correct on returned array
+    $this->assertEquals($resp->data->privacy_status, MIDAS_PRIVACY_PUBLIC, 'created folder has wrong privacy status');
     $this->assertPrivacyStatus(array($folderModel->load($resp->data->folder_id)), array(), MIDAS_PRIVACY_PUBLIC);
 
     $this->resetAll();
@@ -70,6 +74,9 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->params['privacy'] = 'Private';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
+    // ensure privacy status is correct on returned array
+    $this->assertEquals($resp->data->privacy_status, MIDAS_PRIVACY_PRIVATE, 'created folder has wrong privacy status');
+    // ensure privacy status is correct on loaded resource
     $this->assertPrivacyStatus(array($folderModel->load($resp->data->folder_id)), array(), MIDAS_PRIVACY_PRIVATE);
 
     // try to create a folder where have read access on the parent folder
