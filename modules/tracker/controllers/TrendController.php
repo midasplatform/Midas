@@ -31,36 +31,6 @@ class Tracker_TrendController extends Tracker_AppController
       {
       throw new Zend_Exception('Must pass trendId parameter');
       }
-    $trend = $this->Tracker_Trend->load($trendId);
-    $comm = $trend->getProducer()->getCommunity();
-    if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
-      {
-      throw new Zend_Exception('Read permission required on the community', 403);
-      }
-    if(isset($rightTrendId))
-      {
-      $rightTrend = $this->Tracker_Trend->load($rightTrendId);
-      if($comm->getKey() != $rightTrend->getProducer()->getCommunityId())
-        {
-        throw new Zend_Exception('Right trend must belong to the same community', 403);
-        }
-      $this->view->rightTrend = $rightTrend;
-      }
-    $this->view->trend = $trend;
-    $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
-    $this->view->logged = $this->logged;
-    $header = '<ul class="pathBrowser">';
-    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/community.png" /><span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Trackers">'.$comm->getName().'</a></span></li>';
-    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/cog_go.png" /><span><a href="'.$this->view->webroot.'/tracker/producer/view?producerId='.$trend->getProducer()->getKey().'">'.$trend->getProducer()->getDisplayName().'</a></span></li>';
-    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_line.png" /><span>'.$trend->getDisplayName();
-    if($this->view->rightTrend)
-      {
-      $header .= ' &amp; '.$rightTrend->getDisplayName();
-      }
-    $header .= '</span></li>';
-    $header .= '</ul>';
-    $this->view->header = $header;
-
     // Provide sensible default date range
     if(!isset($startDate))
       {
@@ -76,13 +46,56 @@ class Tracker_TrendController extends Tracker_AppController
       }
     else
       {
-      $endDate = strtotime($endDate);
+      $endDate = strtotime($endDate.' 23:59:59');
       }
-
     $startDate = date('Y-m-d H:i:s', $startDate);
     $endDate = date('Y-m-d H:i:s', $endDate);
-    $this->view->json['tracker']['scalars'] = $this->Tracker_Trend->getScalars($trend, $startDate, $endDate);
-    $this->view->json['tracker']['trend'] = $trend;
+
+    $trendIds = explode(' ', trim(str_replace(',', ' ', $trendId)));
+    $this->view->trends = array();
+    foreach($trendIds as $trendId)
+      {
+      $trend = $this->Tracker_Trend->load($trendId);
+      $comm = $trend->getProducer()->getCommunity();
+      if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
+        {
+        throw new Zend_Exception('Read permission required on the community', 403);
+        }
+      $this->view->json['tracker']['scalars'][] = $this->Tracker_Trend->getScalars($trend, $startDate, $endDate);
+      $this->view->json['tracker']['trends'][] = $trend;
+      $this->view->trends[] = $trend;
+      }
+    if(isset($rightTrendId))
+      {
+      $rightTrend = $this->Tracker_Trend->load($rightTrendId);
+      if($comm->getKey() != $rightTrend->getProducer()->getCommunityId())
+        {
+        throw new Zend_Exception('Right trend must belong to the same community', 403);
+        }
+      $this->view->rightTrend = $rightTrend;
+      }
+    $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+    $this->view->logged = $this->logged;
+    $header = '<ul class="pathBrowser">';
+    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/community.png" /><span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Trackers">'.$comm->getName().'</a></span></li>';
+    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/cog_go.png" /><span><a href="'.$this->view->webroot.'/tracker/producer/view?producerId='.$trend->getProducer()->getKey().'">'.$trend->getProducer()->getDisplayName().'</a></span></li>';
+    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_line.png" /><span>';
+    if(count($this->view->trends) == 1)
+      {
+      $header .= $this->view->trends[0]->getDisplayName();
+      }
+    else
+      {
+      $header .= count($this->view->trends).' trends';
+      }
+    if($this->view->rightTrend)
+      {
+      $header .= ' &amp; '.$rightTrend->getDisplayName();
+      }
+    $header .= '</span></li>';
+    $header .= '</ul>';
+    $this->view->header = $header;
+
     if(isset($rightTrend))
       {
       $this->view->json['tracker']['rightTrend'] = $rightTrend;
@@ -90,11 +103,12 @@ class Tracker_TrendController extends Tracker_AppController
       }
     $this->view->json['tracker']['initialStartDate'] = date('n/j/Y', strtotime($startDate));
     $this->view->json['tracker']['initialEndDate'] = date('n/j/Y', strtotime($endDate));
+    $this->view->json['tracker']['trendIds'] = $this->_getParam('trendId');
     }
 
   /**
-   * Ajax action for getting a new list of scalars for a specified date range
-   * @param trendId The id of the trend to view
+   * Ajax action for getting a new list of scalars belonging to a set of trends for a specified date range
+   * @param trendId Comma separated list of trend id's to view
    * @param startDate The start date to retrieve scalars
    * @param endDate The end date to retrieve scalars
    */
@@ -110,16 +124,22 @@ class Tracker_TrendController extends Tracker_AppController
       {
       throw new Zend_Exception('Must pass trendId parameter');
       }
-    $trend = $this->Tracker_Trend->load($trendId);
-    $comm = $trend->getProducer()->getCommunity();
-    if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
-      {
-      throw new Zend_Exception('Read permission required on the community', 403);
-      }
-
+    $trendIds = explode(' ', trim(str_replace(',', ' ', $trendId)));
     $startDate = date('Y-m-d H:i:s', strtotime($startDate));
-    $endDate = date('Y-m-d H:i:s', strtotime($endDate));
-    $retVal = array('status' => 'ok', 'scalars' => $this->Tracker_Trend->getScalars($trend, $startDate, $endDate));
+    $endDate = date('Y-m-d H:i:s', strtotime($endDate.' 23:59:59')); //go to end of the day
+    
+    $scalars = array();
+    foreach($trendIds as $trendId)
+      {
+      $trend = $this->Tracker_Trend->load($trendId);
+      $comm = $trend->getProducer()->getCommunity();
+      if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
+        {
+        throw new Zend_Exception('Read permission required on the community', 403);
+        }
+      $scalars[] = $this->Tracker_Trend->getScalars($trend, $startDate, $endDate);
+      }
+    $retVal = array('status' => 'ok', 'scalars' => $scalars);
 
     if(isset($rightTrendId))
       {

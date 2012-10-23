@@ -25,41 +25,46 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
 <div class="viewMain">
   <div class="itemsContainer">
     <div>
-      Configuration data:
       <?php
-      if($this->trend->getConfigItemId())
+      if(count($this->trends) == 1)
         {
-        echo '<a href="'.$this->webroot.'/item/'.$this->trend->getConfigItemId().'">'.$this->trend->getConfigItem()->getName().'</a>';
-        }
-      else
-        {
-        echo '<span class="itemLinkNone">none</span>';
-        }
       ?>
-    </div>
-    <div>
-      Test data:
-      <?php
-      if($this->trend->getTestDatasetId())
-        {
-        echo '<a href="'.$this->webroot.'/item/'.$this->trend->getTestDatasetId().'">'.$this->trend->getTestDatasetItem()->getName().'</a>';
-        }
-      else
-        {
-        echo '<span class="itemLinkNone">none</span>';
-        }
-      ?>
-    </div>
-    <div>
-      Ground truth data:
-      <?php
-      if($this->trend->getTruthDatasetId())
-        {
-        echo '<a href="'.$this->webroot.'/item/'.$this->trend->getTruthDatasetId().'">'.$this->trend->getTruthDatasetItem()->getName().'</a>';
-        }
-      else
-        {
-        echo '<span class="itemLinkNone">none</span>';
+        Configuration data:
+        <?php
+        if($this->trends[0]->getConfigItemId())
+          {
+          echo '<a href="'.$this->webroot.'/item/'.$this->trend->getConfigItemId().'">'.$this->trend->getConfigItem()->getName().'</a>';
+          }
+        else
+          {
+          echo '<span class="itemLinkNone">none</span>';
+          }
+        ?>
+      </div>
+      <div>
+        Test data:
+        <?php
+        if($this->trends[0]->getTestDatasetId())
+          {
+          echo '<a href="'.$this->webroot.'/item/'.$this->trend->getTestDatasetId().'">'.$this->trend->getTestDatasetItem()->getName().'</a>';
+          }
+        else
+          {
+          echo '<span class="itemLinkNone">none</span>';
+          }
+        ?>
+      </div>
+      <div>
+        Ground truth data:
+        <?php
+        if($this->trends[0]->getTruthDatasetId())
+          {
+          echo '<a href="'.$this->webroot.'/item/'.$this->trend->getTruthDatasetId().'">'.$this->trend->getTruthDatasetItem()->getName().'</a>';
+          }
+        else
+          {
+          echo '<span class="itemLinkNone">none</span>';
+          }
         }
       ?>
     </div>
@@ -79,11 +84,12 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
   <div class="sideElementFirst viewAction">
     <h1>Actions</h1>
     <ul>
-    <?php if($this->isAdmin)
+    <?php 
+    if($this->isAdmin && count($this->trends) == 1)
       {
     ?>
       <li>
-        <a href="<?php echo $this->webroot?>/tracker/trend/edit?trendId=<?php echo $this->trend->getKey()?>">
+        <a href="<?php echo $this->webroot?>/tracker/trend/edit?trendId=<?php echo $this->trends[0]->getKey()?>">
           <img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/edit.png"/> Edit
         </a>
       </li>
@@ -92,7 +98,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
       </li>
     <?php
       }
-    if($this->logged)
+    if($this->logged && count($this->trends) == 1)
       {
     ?>
       <li>

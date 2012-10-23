@@ -46,8 +46,8 @@ midas.tracker.populateInfo = function (curveData) {
 midas.tracker.bindPlotEvents = function () {
     $('#chartDiv').unbind('jqplotDataClick').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
         var scalarId;
-        if(seriesIndex == 0) {
-            scalarId = json.tracker.scalars[pointIndex].scalar_id;
+        if(!json.tracker.rightTrend || seriesIndex == 0) {
+            scalarId = json.tracker.scalars[seriesIndex][pointIndex].scalar_id;
         } else {
             scalarId = json.tracker.rightScalars[pointIndex].scalar_id;
         }
@@ -99,7 +99,7 @@ midas.tracker.renderChartArea = function (curveData, first) {
         if(json.tracker.rightTrend) {
             opts.legend = {
                 show: true,
-                labels: [json.tracker.trend.display_name, json.tracker.rightTrend.display_name],
+                labels: [json.tracker.trends[0].display_name, json.tracker.rightTrend.display_name],
                 location: 'se'
             };
             opts.axes.y2axis = {
@@ -114,6 +114,17 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 showLabel: true
             };
             opts.series = [{yaxis: 'yaxis'}, {yaxis: 'y2axis'}];
+        }
+        else if(json.tracker.trends.length > 1) {
+            var labels = [];
+            $.each(json.tracker.trends, function(key, trend) {
+                labels.push(trend.display_name);
+            });
+            opts.legend = {
+                show: true,
+                location: 'se',
+                labels: labels
+            };
         }
 
         midas.tracker.plot = $.jqplot('chartDiv', curveData.points, opts);
@@ -133,11 +144,20 @@ midas.tracker.renderChartArea = function (curveData, first) {
 };
 
 $(window).load(function () {
-    var curveData = midas.tracker.extractCurveData([json.tracker.scalars, json.tracker.rightScalars]);
+    var inputCurves = json.tracker.scalars;
+    if(json.tracker.rightTrend) {
+        inputCurves.push(json.tracker.rightScalars);
+    }
+    var curveData = midas.tracker.extractCurveData(inputCurves);
 
-    midas.tracker.yaxisLabel = json.tracker.trend.display_name;
-    if(json.tracker.trend.unit) {
-        midas.tracker.yaxisLabel += ' ('+json.tracker.trend.unit+')';
+    if(json.tracker.trends.length == 1) {
+        midas.tracker.yaxisLabel = json.tracker.trends[0].display_name;
+        if(json.tracker.trends[0].unit) {
+            midas.tracker.yaxisLabel += ' ('+json.tracker.trends[0].unit+')';
+        }
+    }
+    else {
+        midas.tracker.yaxisLabel = '';
     }
     if(json.tracker.rightTrend) {
         midas.tracker.yaxis2Label = json.tracker.rightTrend.display_name;
@@ -166,7 +186,7 @@ $(window).load(function () {
         $(this).attr('disabled', 'disabled');
         $('#dateRangeUpdating').show();
         var params = {
-            trendId: json.tracker.trend.trend_id,
+            trendId: json.tracker.trendIds,
             startDate: $('#startdate').val(),
             endDate: $('#enddate').val()
         };
@@ -177,7 +197,11 @@ $(window).load(function () {
             var resp = $.parseJSON(retVal);
             json.tracker.scalars = resp.scalars;
             json.tracker.rightScalars = resp.rightScalars;
-            midas.tracker.renderChartArea(midas.tracker.extractCurveData([json.tracker.scalars, json.tracker.rightScalars]), false);
+            var inputCurves = json.tracker.scalars;
+            if(json.tracker.rightTrend) {
+                inputCurves.push(json.tracker.rightScalars);
+            }
+            midas.tracker.renderChartArea(midas.tracker.extractCurveData(inputCurves), false);
             $('#filterButton').removeAttr('disabled');
             $('#dateRangeUpdating').hide();
         });

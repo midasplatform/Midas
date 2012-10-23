@@ -56,7 +56,10 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
       }
     ?>
       <li>
-        <a style="display: none;" class="visualizeSelected"><img alt="" src="<?php echo $this->moduleWebroot?>/public/images/chart_line.png"/> Dual trend plot</a>
+        <a style="display: none;" class="visualizeSelected"><img alt="" src="<?php echo $this->moduleWebroot?>/public/images/chart_line.png"/> Plot selected (<span class="selectedTrendCount"></span>)</a>
+      </li>
+      <li>
+        <a style="display: none;" class="visualizeDualAxis"><img alt="" src="<?php echo $this->moduleWebroot?>/public/images/chart_line.png"/> Dual axis plot</a>
       </li>
     </ul>
   </div>
