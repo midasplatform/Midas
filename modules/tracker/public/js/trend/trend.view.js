@@ -118,7 +118,11 @@ midas.tracker.renderChartArea = function (curveData, first) {
         else if(json.tracker.trends.length > 1) {
             var labels = [];
             $.each(json.tracker.trends, function(key, trend) {
-                labels.push(trend.display_name);
+                var label = trend.display_name;
+                if(trend.unit != '') {
+                    label+=' ('+trend.unit+')';
+                }
+                labels.push(label);
             });
             opts.legend = {
                 show: true,
