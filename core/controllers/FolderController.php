@@ -23,7 +23,7 @@ class FolderController extends AppController
   {
   public $_models = array('Folder', 'Folder', 'Item', 'Folderpolicygroup', 'Folderpolicyuser', 'Progress');
   public $_daos = array('Folder', 'Folder', 'Item');
-  public $_components = array('Utility', 'Date');
+  public $_components = array('Breadcrumb', 'Date');
   public $_forms = array('Folder');
 
   /** Init Controller */
@@ -102,7 +102,7 @@ class FolderController extends AppController
     $folder = $this->Folder->load($folder_id);
     $folders = array();
     $items = array();
-    $header = "";
+
     if(!isset($folder_id))
       {
       throw new Zend_Exception('Please set the folderId.');
@@ -121,30 +121,29 @@ class FolderController extends AppController
       $items = $this->Folder->getItemsFiltered($folder, $this->userSession->Dao, MIDAS_POLICY_READ);
       foreach($items as $key => $i)
         {
-        $items[$key]->size = $this->Component->Utility->formatSize($i->getSizebytes());
+        $items[$key]->size = UtilityComponent::formatSize($i->getSizebytes());
         }
-      $header .= " <li class = 'pathFolder'><img alt = '' src = '".$this->view->coreWebroot."/public/images/FileTree/folder_open.png' /><span><a href = '".$this->view->webroot."/folder/".$folder->getKey()."'>".$this->Component->Utility->sliceName($folder->getName(), 25)."</a></span></li>";
+
+      $breadcrumbs = array(array('type' => 'folder', 'object' => $folder, 'open' => true, 'link' => false));
       $parent = $folder->getParent();
       while($parent !== false)
         {
         if(strpos($parent->getName(), 'community') !== false && $this->Folder->getCommunity($parent) !== false)
           {
-          $community = $this->Folder->getCommunity($parent);
-          $header = " <li class = 'pathCommunity'><img alt = '' src = '".$this->view->coreWebroot."/public/images/icons/community.png' /><span><a href = '".$this->view->webroot."/community/".$community->getKey()."#tabs-3'>".$this->Component->Utility->sliceName($community->getName(), 25)."</a></span></li>".$header;
+          $breadcrumbs[] = array('type' => 'community', 'object' => $this->Folder->getCommunity($parent)); 
           }
         elseif(strpos($parent->getName(), 'user') !== false && $this->Folder->getUser($parent) !== false)
           {
-          $user = $this->Folder->getUser($parent);
-          $header = " <li class = 'pathUser'><img alt = '' src = '".$this->view->coreWebroot."/public/images/icons/unknownUser-small.png' /><span><a href = '".$this->view->webroot."/user/".$user->getKey()."'>".$this->Component->Utility->sliceName($user->getFullName(), 25)."</a></span></li>".$header;
+          $breadcrumbs[] = array('type' => 'user', 'object' => $this->Folder->getUser($parent));
           }
         else
           {
-          $header = " <li class = 'pathFolder'><img alt = '' src = '".$this->view->coreWebroot."/public/images/FileTree/directory.png' /><span><a href = '".$this->view->webroot."/folder/".$parent->getKey()."'>".$this->Component->Utility->sliceName($parent->getName(), 15)."</a></span></li>".$header;
+          $breadcrumbs[] = array('type' => 'folder', 'object' => $parent, 'open' => false);
+   
           }
         $parent = $parent->getParent();
         }
-      $header = "<ul class='pathBrowser'>".$header;
-      $header .= "</ul>";
+      $this->Component->Breadcrumb->setBreadcrumbHeader(array_reverse($breadcrumbs), $this->view);
       }
 
     if(!isset($this->userSession->recentFolders))
@@ -161,7 +160,6 @@ class FolderController extends AppController
     $this->view->mainFolder = $folder;
     $this->view->folders = $folders;
     $this->view->items = $items;
-    $this->view->header = $header;
 
     $this->view->isModerator = $this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE);
     $this->view->isAdmin = $this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
