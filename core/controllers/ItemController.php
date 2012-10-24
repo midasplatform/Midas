@@ -314,8 +314,7 @@ class ItemController extends AppController
         }
       $parent = $parent->getParent();
       }
-    $breadcrumbComponent = MidasLoader::loadComponent('Breadcrumb');
-    $breadcrumbComponent->setBreadcrumbHeader(array_reverse($breadcrumbs), $this->view);
+    $this->Component->Breadcrumb->setBreadcrumbHeader(array_reverse($breadcrumbs), $this->view);
 
     $folders = array();
     $parents = $itemDao->getFolders();
