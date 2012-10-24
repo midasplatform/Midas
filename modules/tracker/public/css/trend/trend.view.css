@@ -37,3 +37,14 @@ span.itemLinkNone {
 span.noPoints {
   color: #909090;
 }
+
+.yMin,.yMax,.y2Min,.y2Max {
+  width: 70px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+div.bottomButtons {
+  margin-top: 15px;
+  float: right;
+}
