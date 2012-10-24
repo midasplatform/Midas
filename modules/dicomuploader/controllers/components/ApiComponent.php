@@ -30,7 +30,9 @@ class Dicomuploader_ApiComponent extends AppComponent
     }
 
   /**
-   * Start uploader
+   * Start DICOM file uploader
+   * @param email (Optional) The user email to login
+   * @param apikey (Optional) The user apikey to login
    * @param dcm2xml_cmd (Optional) The command to run dcm2xml
    * @param storescp_cmd (Optional) The command to run storescp
    * @param storescp_port (Optional) The TCP/IP port that storescp listens to
@@ -43,22 +45,44 @@ class Dicomuploader_ApiComponent extends AppComponent
    */
   function start($args)
   {
-    // Get login information
+    // Only administrator can call this api
     $midas_path = Zend_Registry::get('webroot');
     $midas_url = 'http://' . $_SERVER['HTTP_HOST'] . $midas_path;
     $userDao = Zend_Registry::get('userSession')->Dao;
     if(!$userDao || !$userDao->isAdmin())
       {
-      throw new Exception('Only administrator can start DICOM uploader', MIDAS_INVALID_POLICY);
+      throw new Exception('Only administrator can start DICOM uploader!', MIDAS_INVALID_POLICY);
       }
-    $user_email = $userDao->getEmail();
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
-    $userApiDao = $userApiModel->getByAppAndUser('Default', $userDao);
-    if(!$userApiDao)
+    // check if it is already running
+    $status_args = array();
+    if(!empty($args['storescp_cmd']))
       {
-      throw new Zend_Exception('You need to create a web-api key for this user for application: Default');
+      $status_args['storescp_cmd'] = $args['storescp_cmd'];
       }
-    $api_key = $userApiDao->getApikey();
+    $running_status = $this->status($status_args);
+    if($running_status['status'] == MIDAS_DICOM_UPLOADER_IS_RUNNING)
+      {
+      throw new Exception('DICOM uploader is already running, please stop it first before use this api to start it again!', MIDAS_INVALID_POLICY);
+      }
+    // Get login information
+    $user_email = '';
+    $api_key = '';
+    if(!empty($args['email']) && !empty($args['apikey']))
+      {
+      $user_email = $args['email'];
+      $api_key = $args['apikey'];
+      }
+    else
+      {
+      $user_email = $userDao->getEmail();
+      $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+      $userApiDao = $userApiModel->getByAppAndUser('Default', $userDao);
+      if(!$userApiDao)
+        {
+        throw new Zend_Exception('You need to create a web-api key for this user for application: Default');
+        }
+      $api_key = $userApiDao->getApikey();
+      }
     // Seet default values of optional parameters
     $dest_folder = 'Public';
     if(!empty($args['dest_folder']))
@@ -96,7 +120,7 @@ class Dicomuploader_ApiComponent extends AppComponent
       $incoming_dir = $uploaderComponent->getDefaultReceptionDir();
       }
 
-    $python_cmd = '/usr/bin/python';
+    $python_cmd = 'python';
     $script_path = BASE_PATH .'/modules/dicomuploader/library/uploader.py';
     $storescp_params = array();
     $storescp_params[] = BASE_PATH .'/modules/dicomuploader/library/uploaderWrapper.py';
@@ -112,27 +136,83 @@ class Dicomuploader_ApiComponent extends AppComponent
     $storescp_params[] = '-a ' . $api_key;
     $storescp_params[] = '-d ' . $dest_folder;
     $storescp_command = KWUtils::prepareExeccommand($python_cmd, $storescp_params);
-    KWUtils::exec($storescp_command);
-    return true;
+    KWUtils::exec($storescp_command, $ouptut, '', $returnVal);
+    $ret = array();
+    $ret['message'] = 'Execution of storescp start script succeeded!';
+    if($returnVal)
+      {
+      $ret['message'] = 'Execution of storescp start script failed!';
+      }
+
+    return $ret;
   }
 
+  /**
+   * Check DICOM file uploader status
+   * @param storescp_cmd (Optional) The command to run storescp
+   * @return
+   */
+  function status($args)
+    {
+    // Only administrator can call this api
+    $userDao = Zend_Registry::get('userSession')->Dao;
+    if(!$userDao || !$userDao->isAdmin())
+      {
+      throw new Exception('Only administrator can check the running status of DICOM uploader!', MIDAS_INVALID_POLICY);
+      }
+    $storescp_cmd = 'storescp';
+    if(!empty($args['storescp_cmd']))
+      {
+      $storescp_cmd = $args['storescp_cmd'];
+      }
+
+    $ret = array();
+    $ret['status'] = MIDAS_DICOM_UPLOADER_NOT_RUNNING;
+    $ps_cmd = 'ps';
+    $cmd_params = array();
+    $cmd_params[] = 'ax';
+    $ps_command = KWUtils::prepareExeccommand($ps_cmd, $cmd_params);
+    KWUtils::exec($ps_command, $output);
+    foreach ($output as $line)
+      {
+      $fields = preg_split("/\s+/", trim($line), 7);
+      $process = $fields[4];
+      if(!strcmp($process, $storescp_cmd))
+        {
+        $ret['status'] = MIDAS_DICOM_UPLOADER_IS_RUNNING;
+        break;
+        }
+      }
+
+    return $ret;
+    }
+
  /**
-   * Stop uploader
+   * Stop DICOM file uploader
    * @return
    */
   function stop($args)
   {
+    // Only administrator can call this api
     $userDao = Zend_Registry::get('userSession')->Dao;
     if(!$userDao || !$userDao->isAdmin())
       {
       throw new Exception('Only administrator can stop DICOM uploader', MIDAS_INVALID_POLICY);
       }
-    $python_cmd = '/usr/bin/python';
+    $python_cmd = 'python';
     $storescp_params = array();
     $storescp_params[] = BASE_PATH .'/modules/dicomuploader/library/uploaderWrapper.py';
     $storescp_params[] = '--stop';
     $storescp_command = KWUtils::prepareExeccommand($python_cmd, $storescp_params);
-    KWUtils::exec($storescp_command);
+    KWUtils::exec($storescp_command, $ouptut, '', $returnVal);
+    $ret = array();
+    $ret['message'] = 'Execution of storescp stop script succeeded!';
+    if($returnVal)
+      {
+      $ret['message'] = 'Execution of storescp stop script failed!';
+      }
+
+    return $ret;
   }
 }
 
