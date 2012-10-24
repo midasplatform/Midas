@@ -23,7 +23,7 @@ class ItemController extends AppController
   {
   public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Folder', 'Metadata', 'License', 'Progress');
   public $_daos = array();
-  public $_components = array('Date', 'Utility', 'Sortdao');
+  public $_components = array('Breadcrumb', 'Date', 'Sortdao');
   public $_forms = array('Item');
 
   /**
@@ -109,7 +109,6 @@ class ItemController extends AppController
   function viewAction()
     {
     $this->view->Date = $this->Component->Date;
-    $this->view->Utility = $this->Component->Utility;
     $itemId = $this->_getParam("itemId");
     if(!isset($itemId) || !is_numeric($itemId))
       {
@@ -252,7 +251,7 @@ class ItemController extends AppController
 
     $this->view->itemDao = $itemDao;
 
-    $this->view->itemSize = $this->Component->Utility->formatSize($itemDao->getSizebytes());
+    $this->view->itemSize = UtilityComponent::formatSize($itemDao->getSizebytes());
 
     $this->view->title .= ' - '.$itemDao->getName();
     $this->view->metaDescription = substr($itemDao->getDescription(), 0, 160);
@@ -298,28 +297,25 @@ class ItemController extends AppController
     $this->view->currentFolder = $currentFolder;
     $parent = $currentFolder;
 
-    $header = '';
+    $breadcrumbs = array();
     while($parent !== false)
       {
       if(strpos($parent->getName(), 'community') !== false && $this->Folder->getCommunity($parent) !== false)
         {
-        $community = $this->Folder->getCommunity($parent);
-        $header = " <li class = 'pathCommunity'><img alt = '' src = '".$this->view->coreWebroot."/public/images/icons/community.png' /><span><a href = '".$this->view->webroot."/community/".$community->getKey()."#tabs-3'>".$this->Component->Utility->sliceName($community->getName(), 25)."</a></span></li>".$header;
+        $breadcrumbs[] = array('type' => 'community', 'object' => $this->Folder->getCommunity($parent));
         }
       elseif(strpos($parent->getName(), 'user') !== false && $this->Folder->getUser($parent) !== false)
         {
-        $user = $this->Folder->getUser($parent);
-        $header = " <li class = 'pathUser'><img alt = '' src = '".$this->view->coreWebroot."/public/images/icons/unknownUser-small.png' /><span><a href = '".$this->view->webroot."/user/".$user->getKey()."'>".$this->Component->Utility->sliceName($user->getFullName(), 25)."</a></span></li>".$header;
+        $breadcrumbs[] = array('type' => 'user', 'object' => $this->Folder->getUser($parent));
         }
       else
         {
-        $header = " <li class = 'pathFolder'><img alt = '' src = '".$this->view->coreWebroot."/public/images/FileTree/directory.png' /><span><a href = '".$this->view->webroot."/folder/".$parent->getKey()."'>".$this->Component->Utility->sliceName($parent->getName(), 15)."</a></span></li>".$header;
+        $breadcrumbs[] = array('type' => 'folder', 'object' => $parent);
         }
       $parent = $parent->getParent();
       }
-    $header = "<ul class='pathBrowser'>".$header;
-    $header .= "</ul>";
-    $this->view->header = $header;
+    $breadcrumbComponent = MidasLoader::loadComponent('Breadcrumb');
+    $breadcrumbComponent->setBreadcrumbHeader(array_reverse($breadcrumbs), $this->view);
 
     $folders = array();
     $parents = $itemDao->getFolders();

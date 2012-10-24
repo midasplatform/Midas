@@ -224,7 +224,7 @@ foreach($cssArray as $module => $list)
                     echo $this->slicename($bitstream->getName(), 50);
                     echo '</a> <img element="'.$bitstream->getKey().'" class="bitstreamInfoIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/message.png" />';
                     echo '</td>';
-                    echo '<td>'.$this->Utility->formatSize($bitstream->getSizebytes()).'</td>';
+                    echo '<td>'.UtilityComponent::formatSize($bitstream->getSizebytes()).'</td>';
                     echo '</tr>';
                     }
                   ?>
