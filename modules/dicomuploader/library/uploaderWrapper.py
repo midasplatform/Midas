@@ -2,14 +2,27 @@ import os
 import sys
 import getopt
 import signal
+import logging
 
 from DICOMHandler import DICOMListener
+
+#########################################################
+#
+"""
+Wrapper script called by DICOM uploader plugin
+"""
+#
+#########################################################
 
 class Usage(Exception):
     def __init__(self, msg):
         self.msg = msg
 
+
 def killUploader(application, cmd):
+    """
+    Kill uploader associated processes
+    """
     for line in os.popen("ps ax | grep %s" % cmd):
         fields = line.split()
         pid = fields[0]
@@ -83,14 +96,16 @@ def main():
         # callback command used by storescp '--eostudy-timeout' option
         callback_cmd = "'python %s -c %s -i %s -u %s -e %s -a %s -d %s'" % ( \
           script_path, dcm2xml_cmd, incoming_dir, url, user_email, apikey, dest_folder)
-        myListener.start(incoming_dir, callback_cmd, \
+        retcode = myListener.start(incoming_dir, callback_cmd, \
           storescp_cmd, storescp_port, storescp_timeout)
+        return retcode
     else:
         if not storescp_cmd:
             storescp_cmd = 'storescp'
         app_name = 'uploaderWapper'
-        killUploader(app_name, storescp_cmd)
+        retcode = killUploader(app_name, storescp_cmd)
+        return retcode
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
 
