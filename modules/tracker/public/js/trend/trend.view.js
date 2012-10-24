@@ -114,6 +114,12 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 showLabel: true
             };
             opts.series = [{yaxis: 'yaxis'}, {yaxis: 'y2axis'}];
+
+            if(typeof json.tracker.y2Min != 'undefined' && typeof json.tracker.y2Max != 'undefined') {
+                opts.axes.y2axis.min = parseFloat(json.tracker.y2Min);
+                opts.axes.y2axis.max = parseFloat(json.tracker.y2Max);
+                opts.axes.y2axis.pad = 1.0;
+            }
         }
         else if(json.tracker.trends.length > 1) {
             var labels = [];
@@ -129,6 +135,12 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 location: 'se',
                 labels: labels
             };
+        }
+
+        if(typeof json.tracker.yMin != 'undefined' && typeof json.tracker.yMax != 'undefined') {
+            opts.axes.yaxis.min = parseFloat(json.tracker.yMin);
+            opts.axes.yaxis.max = parseFloat(json.tracker.yMax);
+            opts.axes.yaxis.pad = 1.0;
         }
 
         midas.tracker.plot = $.jqplot('chartDiv', curveData.points, opts);
@@ -214,7 +226,25 @@ $(window).load(function () {
     midas.tracker.renderChartArea(curveData, true);
 
     $('a.thresholdAction').click(function () {
-        midas.loadDialog('thresholdNotification', '/tracker/trend/notify?trendId='+json.tracker.trend.trend_id);
+        midas.loadDialog('thresholdNotification', '/tracker/trend/notify?trendId='+json.tracker.trends[0].trend_id);
         midas.showDialog('Email notification settings', false);
+    });
+    $('a.axesControl').click(function () {
+        midas.showDialogWithContent('Axes Controls', $('#axesControlTemplate').html(), false, {width: 380});
+        var container = $('div.MainDialog');
+        container.find('input.yMin').val(json.tracker.yMin);
+        container.find('input.yMax').val(json.tracker.yMax);
+        container.find('input.y2Min').val(json.tracker.y2Min);
+        container.find('input.y2Max').val(json.tracker.y2Max);
+        container.find('input.updateAxes').unbind('click').click(function () {
+            json.tracker.yMin = container.find('input.yMin').val();
+            json.tracker.yMax = container.find('input.yMax').val();
+            if(json.tracker.rightTrend) {
+                json.tracker.y2Min = container.find('input.y2Min').val();
+                json.tracker.y2Max = container.find('input.y2Max').val();
+            }
+            midas.tracker.renderChartArea(curveData, false);
+            container.dialog('close');
+        });
     });
 });

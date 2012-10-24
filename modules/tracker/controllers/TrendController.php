@@ -17,9 +17,14 @@ class Tracker_TrendController extends Tracker_AppController
 
   /**
    * View a given trend
-   * @param trendId The id of the trend to view
-   * @param startDate The start date to retrieve scalars
-   * @param endDate The end date to retrieve scalars
+   * @param trendId Comma separated list of trends to show using the left Y axis
+   * @param rightTrendId (optional) The id of the trend to display on the right Y axis
+   * @param startDate (optional) The start date to retrieve scalars
+   * @param endDate (optional) The end date to retrieve scalars
+   * @param yMin (optional) Minimum value of the left y axis
+   * @param yMax (optional) Maximum value of the left y axis
+   * @param y2Min (optional) Minimum value of the right y axis
+   * @param y2Max (optional) Maximum value of the right y axis
    */
   public function viewAction()
     {
@@ -27,6 +32,11 @@ class Tracker_TrendController extends Tracker_AppController
     $startDate = $this->_getParam('startDate');
     $endDate = $this->_getParam('endDate');
     $rightTrendId = $this->_getParam('rightTrendId');
+    $yMin = $this->_getParam('yMin');
+    $yMax = $this->_getParam('yMax');
+    $y2Min = $this->_getParam('y2Min');
+    $y2Max = $this->_getParam('y2Max');
+
     if(!isset($trendId))
       {
       throw new Zend_Exception('Must pass trendId parameter');
@@ -104,6 +114,17 @@ class Tracker_TrendController extends Tracker_AppController
     $this->view->json['tracker']['initialStartDate'] = date('n/j/Y', strtotime($startDate));
     $this->view->json['tracker']['initialEndDate'] = date('n/j/Y', strtotime($endDate));
     $this->view->json['tracker']['trendIds'] = $this->_getParam('trendId');
+
+    if(isset($yMin) && isset($yMax))
+      {
+      $this->view->json['tracker']['yMin'] = (float)$yMin;
+      $this->view->json['tracker']['yMax'] = (float)$yMax;
+      }
+    if(isset($y2Min) && isset($y2Max))
+      {
+      $this->view->json['tracker']['y2Min'] = (float)$y2Min;
+      $this->view->json['tracker']['y2Max'] = (float)$y2Max;
+      }
     }
 
   /**

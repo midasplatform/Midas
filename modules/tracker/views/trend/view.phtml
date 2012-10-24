@@ -110,6 +110,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
       <li>
         <a class="resetZoomAction"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/magnifier_zoom_out.png"/> Reset Plot Zoom</a>
       </li>
+      <li>
+        <a class="axesControl"><img alt="" src="<?php echo $this->moduleWebroot?>/public/images/axes.png" /> Axes</a>
+      </li>
     </ul>
   </div>
   <div class="sideElement viewInfo">
@@ -118,4 +121,26 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
     <div>Min value: <span class="infoItem" id="minVal"></span></div>
     <div>Max value: <span class="infoItem" id="maxVal"></span></div>
   </div>
+</div>
+
+<!-- TEMPLATE: axes control dialog -->
+<div id="axesControlTemplate" style="display: none;">
+  <table class="yValuesTable"><tbody>
+    <tr>
+      <th>Y range:</th><td><input class="yMin" type="text" /></td><td>to</td><td><input class="yMax" type="text" /></td>
+    </tr>
+    <?php
+    if($this->rightTrend)
+      {
+    ?>
+      <tr>
+        <th>Y2 range:</th><td><input class="y2Min" type="text" /></td><td>to</td><td><input class="y2Max" type="text" /></td>
+      </tr>
+    <?php
+      }
+    ?>
+    </tbody></table>
+    <div class="bottomButtons">
+      <input type="button" class="globalButton updateAxes" value="Apply" />
+    </div>
 </div>
