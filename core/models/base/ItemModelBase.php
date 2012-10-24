@@ -212,7 +212,6 @@ abstract class ItemModelBase extends AppModel
     $newItem = $this->createItem($name, $description, $folderDao);
     $newItem->setType($itemDao->getType());
     $newItem->setSizebytes($itemDao->getSizebytes());
-    $newItem->setPrivacyStatus($itemDao->getPrivacyStatus());
     $newItem->setDateCreation(date('c'));
     $newItem->setDateUpdate(date('c'));
 

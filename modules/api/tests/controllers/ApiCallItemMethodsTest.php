@@ -213,16 +213,17 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
      *
      *14 generatetoken with folderid and itemid, ERROR
      *
-     *15 generatetoken passing in folderid
+     *15 generatetoken passing in folderid, default of Public
      *
-     *16 generatetoken passing in folderid and setting optional values
+     *16 generatetoken passing in folderid and setting optional values with Private itemprivacy
      *17 upload without passing a revision to 16's item, this should create a revision 1
      *18 generate a token for 16's item
      *19 upload to an item with an existing revision, without the revision parameter, which should create a new revision 2
      *20 generate a token for 16's item, after creating 2 new revisions, 3 and 4
      *21 upload to an item with 4 revisions, with revision parameter of 3, check that revision 3 has the bitstream and revision 4 has 0 bitstreams
      *
-     *22 generatetoken passing in folderid and a checksum of an existing bitstream
+     *22 generatetoken passing in folderid and a checksum of an existing bitstream,
+     *   and passing Public explicitly
      *
      */
 
@@ -527,7 +528,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
 
     // 15
-    // test upload.generatetoken passing in folderid
+    // test upload.generatetoken passing in folderid, default of Public
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.upload.generatetoken';
@@ -556,7 +557,8 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->Item->delete($itemDao);
 
     // 16
-    // test upload.generatetoken passing in folderid and setting optional values
+    // test upload.generatetoken passing in folderid and setting optional values,
+    // with Private itemprivacy
     $filename = 'test.txt';
     $description = 'generated item description';
     $itemname = 'generated item name';
@@ -723,13 +725,15 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // with a previously uploaded bitstream, and we are passing the checksum,
     // we expect that the item will create a new revision for the bitstream,
     // but pass back an empty upload token, since we have the bitstream content
-    // already and do not need to actually upload it
+    // already and do not need to actually upload it; also test passing in Public
+    // explictly
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.upload.generatetoken';
     $this->params['filename'] = $filename;
     $this->params['checksum'] = $md5;
     $this->params['folderid'] = '1000';
+    $this->params['itemprivacy'] = 'Public';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
     $token = $resp->data->token;
@@ -740,6 +744,8 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // this at least allows us to test it
     $generatedItemId = $generatedItemId + 1;
     $itemDao = $this->Item->load($generatedItemId);
+    // ensure privacy status when passing Public explicitly
+    $this->assertEquals($itemDao->getPrivacyStatus(), MIDAS_PRIVACY_PUBLIC, 'Expected a different privacy_status for generated item');
     $revisions = $itemDao->getRevisions();
     $this->assertEquals(count($revisions), 1, 'Wrong number of revisions in the item');
     $bitstreams = $revisions[0]->getBitstreams();
