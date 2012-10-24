@@ -8,6 +8,13 @@ import shutil
 import getopt
 import pydas
 
+#########################################################
+#
+"""
+Functions to process DICOM files and upload them to Midas
+"""
+#
+#########################################################
 
 def groupFilesbySeriesUID(dcm2xmlCmd, rootDir):
     """
@@ -40,7 +47,8 @@ def groupFilesbySeriesUID(dcm2xmlCmd, rootDir):
 
 def uploadToMidas(processingDir, midasEmail, midasApiKey, midasUrl, midasDestination):
     """
-    rename dicom files and put files with same SeriesInstanceUID into the same directory
+    rename DICOM files and put files with same SeriesInstanceUID into the same directory;
+    upload files to Midas using Pydas, one item per directory.
     """
     pydas.login(email=midasEmail, api_key=midasApiKey, url=midasUrl)
     extract_dicom_callback = lambda communicator, token, item_id: communicator.extract_dicommetadata(token, item_id)
@@ -54,10 +62,10 @@ def uploadToMidas(processingDir, midasEmail, midasApiKey, midasUrl, midasDestina
         shutil.rmtree(series_dir_abspath)
     return True
 
-
 class Usage(Exception):
     def __init__(self, msg):
         self.msg = msg
+
 
 def main():
     try:
@@ -92,7 +100,6 @@ def main():
     # upload files to midas
     processing_dir = os.path.join(incoming_dir, 'processing')
     uploadToMidas(processing_dir, user_email, apikey, url, dest_folder)
-
 
 if __name__ == "__main__":
     main()
