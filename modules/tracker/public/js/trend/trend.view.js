@@ -2,6 +2,30 @@ var midas = midas || {};
 midas.tracker = midas.tracker || {};
 
 /**
+ * In modern browsers that support window.history.replaceState,
+ * this updates the currently displayed URL in the browser to make
+ * permalinking easy.
+ */
+midas.tracker.updateUrlBar = function () {
+    if(typeof window.history.replaceState == 'function') {
+        var params = '?trendId='+json.tracker.trendIds;
+        params += '&startDate='+$('#startdate').val();
+        params += '&endDate='+$('#enddate').val();
+
+        if(json.tracker.rightTrend) {
+            params += '&rightTrendId='+json.tracker.rightTrend.trend_id;
+            if(typeof json.tracker.y2Min != 'undefined' && typeof json.tracker.y2Max != 'undefined') {
+                params += '&y2Min='+json.tracker.y2Min+'&y2Max='+json.tracker.y2Max;
+            }
+        }
+        if(typeof json.tracker.yMin != 'undefined' && typeof json.tracker.yMax != 'undefined') {
+            params += '&yMin='+json.tracker.yMin+'&yMax='+json.tracker.yMax;
+        }
+        window.history.replaceState({}, '', params);
+    }
+};
+
+/**
  * Extract the jqplot curve data from the scalar daos passed to us
  */
 midas.tracker.extractCurveData = function (curves) {
@@ -217,6 +241,7 @@ $(window).load(function () {
             if(json.tracker.rightTrend) {
                 inputCurves.push(json.tracker.rightScalars);
             }
+            midas.tracker.updateUrlBar();
             midas.tracker.renderChartArea(midas.tracker.extractCurveData(inputCurves), false);
             $('#filterButton').removeAttr('disabled');
             $('#dateRangeUpdating').hide();
@@ -244,6 +269,7 @@ $(window).load(function () {
                 json.tracker.y2Max = container.find('input.y2Max').val();
             }
             midas.tracker.renderChartArea(curveData, false);
+            midas.tracker.updateUrlBar();
             container.dialog('close');
         });
     });
