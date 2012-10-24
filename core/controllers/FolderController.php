@@ -130,7 +130,7 @@ class FolderController extends AppController
         {
         if(strpos($parent->getName(), 'community') !== false && $this->Folder->getCommunity($parent) !== false)
           {
-          $breadcrumbs[] = array('type' => 'community', 'object' => $this->Folder->getCommunity($parent)); 
+          $breadcrumbs[] = array('type' => 'community', 'object' => $this->Folder->getCommunity($parent));
           }
         elseif(strpos($parent->getName(), 'user') !== false && $this->Folder->getUser($parent) !== false)
           {
@@ -139,7 +139,7 @@ class FolderController extends AppController
         else
           {
           $breadcrumbs[] = array('type' => 'folder', 'object' => $parent, 'open' => false);
-   
+
           }
         $parent = $parent->getParent();
         }
