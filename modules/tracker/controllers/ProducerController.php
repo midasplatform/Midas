@@ -12,6 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 /** Producer controller*/
 class Tracker_ProducerController extends Tracker_AppController
 {
+  public $_components = array('Breadcrumb');
   public $_models = array('Community');
   public $_moduleModels = array('Producer');
 
@@ -58,11 +59,13 @@ class Tracker_ProducerController extends Tracker_AppController
     $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     $this->view->json['tracker']['producer'] = $producer;
 
-    $header = '<ul class="pathBrowser">';
-    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/community.png" /><span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Trackers">'.$comm->getName().'</a></span></li>';
-    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/cog_go.png" /><span>'.$producer->getDisplayName().'</span></li>';
-    $header .= '</ul>';
-    $this->view->header = $header;
+    $breadcrumbs = array(array('type' => 'community', 
+                               'object' => $comm,
+                               'tab' => 'Trackers'));
+    $breadcrumbs[] = array('type' => 'custom',
+                           'text' => $producer->getDisplayName(),
+                           'icon' => $this->view->coreWebroot.'/public/images/icons/cog_go.png');
+    $this->Component->Breadcrumb->setBreadcrumbHeader($breadcrumbs, $this->view);
     }
 
   /**
