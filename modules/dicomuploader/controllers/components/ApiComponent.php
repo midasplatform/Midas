@@ -62,7 +62,7 @@ class Dicomuploader_ApiComponent extends AppComponent
     $running_status = $this->status($status_args);
     if($running_status['status'] == MIDAS_DICOM_UPLOADER_IS_RUNNING)
       {
-      throw new Exception('DICOM uploader is already running, please stop it first before use this api to start it again!', MIDAS_INVALID_POLICY);
+      throw new Exception('DICOM uploader is already running. Please stop it first before start it again!', MIDAS_INVALID_POLICY);
       }
     // Get login information
     $user_email = '';
@@ -175,11 +175,13 @@ class Dicomuploader_ApiComponent extends AppComponent
     KWUtils::exec($ps_command, $output);
     foreach ($output as $line)
       {
-      $fields = preg_split("/\s+/", trim($line), 7);
+      $fields = preg_split("/\s+/", trim($line));
       $process = $fields[4];
       if(!strcmp($process, $storescp_cmd))
         {
         $ret['status'] = MIDAS_DICOM_UPLOADER_IS_RUNNING;
+        # need to be updated if python script is changed
+        $ret['user_email'] = $fields[22];
         break;
         }
       }
@@ -189,6 +191,7 @@ class Dicomuploader_ApiComponent extends AppComponent
 
  /**
    * Stop DICOM file uploader
+   * @param storescp_cmd (Optional) The command to run storescp
    * @return
    */
   function stop($args)
@@ -199,13 +202,22 @@ class Dicomuploader_ApiComponent extends AppComponent
       {
       throw new Exception('Only administrator can stop DICOM uploader', MIDAS_INVALID_POLICY);
       }
+    $ret = array();
+
+    $running_status = $this->status($args);
+    if($running_status['status'] == MIDAS_DICOM_UPLOADER_NOT_RUNNING)
+      {
+      $ret['message'] = 'DICOM uploader is not running now!';
+      return $ret;
+      }
+
     $python_cmd = 'python';
     $storescp_params = array();
     $storescp_params[] = BASE_PATH .'/modules/dicomuploader/library/uploaderWrapper.py';
     $storescp_params[] = '--stop';
     $storescp_command = KWUtils::prepareExeccommand($python_cmd, $storescp_params);
     KWUtils::exec($storescp_command, $ouptut, '', $returnVal);
-    $ret = array();
+
     $ret['message'] = 'Execution of storescp stop script succeeded!';
     if($returnVal)
       {

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import subprocess
+import logging
 
 #########################################################
 #
@@ -27,9 +28,10 @@ class DICOMCommand(object):
         self.args = args
 
         # start the cmd!
-        #print ("Starting %s with " % cmd, args)
         self.running = True
         p = subprocess.Popen(self.cmd + ' ' + self.args, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+        #TODO: logging stdout and stderr
+
     def stop(self, cmd):
         # dummy function, not kill process
         self.cmd = cmd
@@ -55,11 +57,11 @@ class DICOMListener(DICOMCommand):
         self.port = port
         self.studyTimeout = studyTimeout #seconds
         # start the server!
+        #TODO: logging
         args = str(self.port) + ' -ac --eostudy-timeout ' + str(self.studyTimeout) \
             + ' --output-directory ' + self.incomingDir \
             + ' --sort-on-study-uid  \'\'' \
             + ' --exec-on-eostudy ' + self.onReceptionCallback
-        #print("starting DICOM listener")
         retcode = super(DICOMListener,self).start(self.storeSCPExecutable, args)
         return retcode
 

@@ -14,7 +14,7 @@ PURPOSE.  See the above copyright notices for more information.
 class Dicomuploader_ConfigForm extends AppForm
 {
 
-  /** create  form */
+  /** create createConfigform */
   public function createConfigForm()
     {
     $form = new Zend_Form;
