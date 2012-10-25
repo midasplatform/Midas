@@ -165,8 +165,7 @@ class Tracker_ApiComponent extends AppComponent
     $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
     $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision, $value, true);
 
-    $silent = $this->_getParam('silent');
-    if(!isset($silent))
+    if(!isset($args['silent']))
       {
       $notificationModel = MidasLoader::loadModel('ThresholdNotification', 'tracker');
       $notifications = $notificationModel->getNotifications($scalar);
