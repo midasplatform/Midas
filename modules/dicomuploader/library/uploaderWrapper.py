@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import os
 import sys
 import getopt
@@ -32,8 +34,9 @@ def killUploader(application, cmd):
             shell_called_process = fields[6]
         if process.find('grep') == 0:
             continue
-        elif process.find('python') == 0 or process.find('storescp') == 0 or shell_called_process.find('storescp') == 0:
+        elif process.find('python') == 0 or process.find(cmd) == 0 or shell_called_process.find(cmd) == 0:
             #Kill the Process. Change signal.SIGHUP to signal.SIGKILL if you like
+            #TODO: logging
             os.kill(int(pid), signal.SIGHUP)
 
 def main():

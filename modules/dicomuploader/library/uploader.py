@@ -20,7 +20,7 @@ def groupFilesbySeriesUID(dcm2xmlCmd, rootDir):
     """
     group DICOM files with SeriesInstanceUID and move them to the processing directory
     """
-    print "start processing files"
+    #TODO: logging
     processing_dir = os.path.join(rootDir, 'processing')
     if not os.path.isdir(processing_dir):
         os.mkdir(processing_dir, 0777)
@@ -55,7 +55,7 @@ def uploadToMidas(processingDir, midasEmail, midasApiKey, midasUrl, midasDestina
     pydas.add_item_upload_callback(extract_dicom_callback)
 
     series_dirs = os.listdir(processingDir)
-    print "start uploading files to Midas"
+    #TODO: logging
     for series_dir in series_dirs:
         series_dir_abspath = os.path.join(processingDir, series_dir)
         pydas.upload(series_dir_abspath, destination=midasDestination, leaf_folders_as_items=True)
