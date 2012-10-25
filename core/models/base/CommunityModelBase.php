@@ -362,4 +362,114 @@ abstract class CommunityModelBase extends AppModel
     return $folderModel->countBitstreams($folderDao, $userDao);
     } //end countBitstreams
 
+
+  /**
+   * set the privacy on the passed in Community to the passed in privacyCode,
+   * which should be one of MIDAS_COMMUNITY_PUBLIC, MIDAS_COMMUNITY_PRIVATE.
+   * @param CommunityDao $communityDao
+   * @param type $privacyCode
+   * @param type $userDao
+   */
+  function setPrivacy($communityDao, $privacyCode, $userDao)
+    {
+    if(!$communityDao instanceof CommunityDao)
+      {
+      throw new Zend_Exception("Error in param: communityDao should be a CommunityDao.");
+      }
+    if($privacyCode === false ||
+      ($privacyCode != MIDAS_COMMUNITY_PUBLIC && $privacyCode != MIDAS_COMMUNITY_PRIVATE))
+      {
+      throw new Exception('invalid value for privacyCode: ' . $privacyCode);
+      }
+
+    $feedModel = MidasLoader::loadModel('Feed');
+    $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $groupModel = MidasLoader::loadModel('Group');
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+
+    // update folderpolicygroup, itempolicygroup and feedpolicygroup tables when community privacy is changed between public and private
+    // users in Midas_anonymouse_group can see community's public folder only if the community is set as public
+    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+    $communityPublicFolder = $communityDao->getPublicFolder();
+    $folderpolicygroupDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $communityPublicFolder);
+    if($privacyCode == MIDAS_COMMUNITY_PRIVATE && $folderpolicygroupDao !== false)
+      {
+      // process root folder
+      $folderpolicygroupModel->delete($folderpolicygroupDao);
+      // process items in root folder
+      $items = $communityPublicFolder->getItems();
+      foreach($items as $item)
+        {
+        $itemolicygroupDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
+        if($itempolicygroupDao !== false)
+          {
+          $itempolicygroupModel->delete($itemolicygroupDao);
+          }
+        }
+      // process all the children (and grandchildren ...) folders
+      $subfolders = $folderModel->getAllChildren($communityDao->getPublicFolder(), $userDao);
+      foreach($subfolders as $subfolder)
+        {
+        $subfolderpolicygroupDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $subfolder);
+        if($subfolderpolicygroupDao !== false)
+          {
+          $folderpolicygroupModel->delete($subfolderpolicygroupDao);
+          }
+        // process items in children folders
+        $subitems = $subfolder->getItems();
+        foreach($subitems as $subfolderItem)
+          {
+          $subfolderitemolicygroupDao = $itempolicygroupModel->getPolicy($anonymousGroup, $subfolderItem);
+          if($subfolderitemolicygroupDao !== false)
+            {
+            $itempolicygroupModel->delete($subfolderitemolicygroupDao);
+            }
+          }
+        }
+      }
+    else if($privacyCode == MIDAS_COMMUNITY_PUBLIC && $folderpolicygroupDao == false)
+      {
+      // process root folder
+      $folderpolicygroupModel->createPolicy($anonymousGroup, $communityPublicFolder, MIDAS_POLICY_READ);
+      // process items in root folder
+      $items = $communityPublicFolder->getItems();
+      foreach($items as $item)
+        {
+        $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+        }
+      // process all the children (and grandchildren ...) folders
+      $subfolders = $folderModel->getAllChildren($communityDao->getPublicFolder(), $userDao);
+      foreach($subfolders as $subfolder)
+        {
+        $folderpolicygroupModel->createPolicy($anonymousGroup, $subfolder, MIDAS_POLICY_READ);
+        // process items in children folders
+        $subitems = $subfolder->getItems();
+        foreach($subitems as $subfolderItem)
+          {
+          $itempolicygroupModel->createPolicy($anonymousGroup, $subfolderItem, MIDAS_POLICY_READ);
+          }
+        }
+      }
+
+    // users in Midas_anonymouse_group can see CREATE_COMMUNITY feed for this community only if the community is set as public
+    $feedcreatecommunityDaos = $feedModel->getFeedByResourceAndType(MIDAS_FEED_CREATE_COMMUNITY, $communityDao);
+    foreach($feedcreatecommunityDaos as $feedcreatecommunityDao)
+      {
+      $feedpolicygroupDao = $feedpolicygroupModel->getPolicy($anonymousGroup, $feedcreatecommunityDao);
+      if($privacyCode == MIDAS_COMMUNITY_PRIVATE && $feedpolicygroupDao !== false)
+        {
+        $feedpolicygroupModel->delete($feedpolicygroupDao);
+        }
+      else if($privacyCode == MIDAS_COMMUNITY_PUBLIC && $feedpolicygroupDao == false)
+        {
+        $feedpolicygroupModel->createPolicy($anonymousGroup, $feedcreatecommunityDao, MIDAS_POLICY_READ);
+        }
+      }
+
+    $communityDao->setPrivacy($privacyCode);
+    $this->save($communityDao);
+    }
+
 } // end class CommunityModelBase

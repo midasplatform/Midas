@@ -25,7 +25,7 @@ class CommunityController extends AppController
                           'Group', 'User', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser',
                           'Item', 'CommunityInvitation');
   public $_daos = array('Community', 'Folder', 'Group', 'Folderpolicygroup', 'Group', 'User');
-  public $_components = array('Sortdao', 'Date', 'Utility');
+  public $_components = array('Sortdao', 'Date', 'Utility', 'Policy');
   public $_forms = array('Community');
 
   /** Init Controller */
@@ -64,8 +64,8 @@ class CommunityController extends AppController
     //ajax posts
     if($this->_request->isPost())
       {
-      $this->_helper->layout->disableLayout();
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableLayout();
+      $this->disableView();
       $modifyInfo = $this->_getParam('modifyInfo');
       $editGroup = $this->_getParam('editGroup');
       $deleteGroup = $this->_getParam('deleteGroup');
@@ -117,78 +117,8 @@ class CommunityController extends AppController
 
           Zend_Registry::get('notifier')->callback('CALLBACK_CORE_EDIT_COMMUNITY_INFO', array('community' => $communityDao, 'params' => $this->_getAllParams()));
 
-          // update folderpolicygroup, itempolicygroup and feedpolicygroup tables when community privacy is changed between public and private
-          // users in Midas_anonymouse_group can see community's public folder only if the community is set as public
           $forminfo_privacy = $formInfo->getValue('privacy');
-          $communityDao->setPrivacy($forminfo_privacy);
-          $anonymousGroup = $this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
-          $communityPublicFolder = $communityDao->getPublicFolder();
-          $folderpolicygroupDao = $this->Folderpolicygroup->getPolicy($anonymousGroup, $communityPublicFolder);
-          if($forminfo_privacy == MIDAS_COMMUNITY_PRIVATE && $folderpolicygroupDao !== false)
-            {
-            // process root folder
-            $this->Folderpolicygroup->delete($folderpolicygroupDao);
-            // process items in root folder
-            $items = $communityPublicFolder->getItems();
-            foreach($items as $item)
-              {
-              $itemolicygroupDao = $this->Itempolicygroup->getPolicy($anonymousGroup, $item);
-              $this->Itempolicygroup->delete($itemolicygroupDao);
-              }
-            // process all the children (and grandchildren ...) folders
-            $subfolders = $this->Folder->getAllChildren($communityDao->getPublicFolder(), $this->userSession->Dao);
-            foreach($subfolders as $subfolder)
-              {
-              $subfolderpolicygroupDao = $this->Folderpolicygroup->getPolicy($anonymousGroup, $subfolder);
-              $this->Folderpolicygroup->delete($subfolderpolicygroupDao);
-              // process items in children folders
-              $subitems = $subfolder->getItems();
-              foreach($subitems as $subfolderItem)
-                {
-                $subfolderitemolicygroupDao = $this->Itempolicygroup->getPolicy($anonymousGroup, $subfolderItem);
-                $this->Itempolicygroup->delete($subfolderitemolicygroupDao);
-                }
-              }
-            }
-          else if($forminfo_privacy == MIDAS_COMMUNITY_PUBLIC && $folderpolicygroupDao == false)
-            {
-            // process root folder
-            $this->Folderpolicygroup->createPolicy($anonymousGroup, $communityPublicFolder, MIDAS_POLICY_READ);
-            // process items in root folder
-            $items = $communityPublicFolder->getItems();
-            foreach($items as $item)
-              {
-              $this->Itempolicygroup->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
-              }
-            // process all the children (and grandchildren ...) folders
-            $subfolders = $this->Folder->getAllChildren($communityDao->getPublicFolder(), $this->userSession->Dao);
-            foreach($subfolders as $subfolder)
-              {
-              $this->Folderpolicygroup->createPolicy($anonymousGroup, $subfolder, MIDAS_POLICY_READ);
-              // process items in children folders
-              $subitems = $subfolder->getItems();
-              foreach($subitems as $subfolderItem)
-                {
-                $this->Itempolicygroup->createPolicy($anonymousGroup, $subfolderItem, MIDAS_POLICY_READ);
-                }
-              }
-            }
-
-          // users in Midas_anonymouse_group can see CREATE_COMMUNITY feed for this community only if the community is set as public
-          $feedcreatecommunityDaos = $this->Feed->getFeedByResourceAndType(MIDAS_FEED_CREATE_COMMUNITY, $communityDao);
-          foreach($feedcreatecommunityDaos as $feedcreatecommunityDao)
-            {
-            $feedpolicygroupDao = $this->Feedpolicygroup->getPolicy($anonymousGroup, $feedcreatecommunityDao);
-            if($forminfo_privacy == MIDAS_COMMUNITY_PRIVATE && $feedpolicygroupDao !== false)
-              {
-              $this->Feedpolicygroup->delete($feedpolicygroupDao);
-              }
-            else if($forminfo_privacy == MIDAS_COMMUNITY_PUBLIC && $feedpolicygroupDao == false)
-              {
-              $this->Feedpolicygroup->createPolicy($anonymousGroup, $feedcreatecommunityDao, MIDAS_POLICY_READ);
-              }
-            }
-
+          $this->Community->setPrivacy($communityDao, $forminfo_privacy, $this->userSession->Dao);
           $communityDao->setCanJoin($formInfo->getValue('canJoin'));
           $this->Community->save($communityDao);
           echo JsonComponent::encode(array(true, $this->t('Changes saved'), $formInfo->getValue('name')));
