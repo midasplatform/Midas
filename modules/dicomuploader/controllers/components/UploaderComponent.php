@@ -32,7 +32,7 @@ class Dicomuploader_UploaderComponent extends AppComponent
       {
       $receptionDir = $this->getDefaultReceptionDir();
       }
-    $ret['Uploader Reception Folder Writable'] = array(is_writable($receptionDir));
+    $ret['Temporary Reception Directory Writable'] = array(is_writable($receptionDir));
 
     return $ret;
   }

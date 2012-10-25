@@ -1,0 +1,10 @@
+span#running_status{
+  font-weight: bold;
+  color: #009900;
+}
+
+
+span#not_running_status{
+  font-weight: bold;
+  color: #C80000;
+}
