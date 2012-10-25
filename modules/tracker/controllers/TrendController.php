@@ -12,6 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 /** Trend controller*/
 class Tracker_TrendController extends Tracker_AppController
 {
+  public $_components = array('Breadcrumb');
   public $_models = array('Community');
   public $_moduleModels = array('Producer', 'ThresholdNotification', 'Trend');
 
@@ -86,25 +87,32 @@ class Tracker_TrendController extends Tracker_AppController
       }
     $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     $this->view->logged = $this->logged;
-    $header = '<ul class="pathBrowser">';
-    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/community.png" /><span><a href="'.$this->view->webroot.'/community/'.$comm->getKey().'#Trackers">'.$comm->getName().'</a></span></li>';
-    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->coreWebroot.'/public/images/icons/cog_go.png" /><span><a href="'.$this->view->webroot.'/tracker/producer/view?producerId='.$trend->getProducer()->getKey().'">'.$trend->getProducer()->getDisplayName().'</a></span></li>';
-    $header .= '<li class="pathFolder"><img alt="" src="'.$this->view->moduleWebroot.'/public/images/chart_line.png" /><span>';
+
+    $breadcrumbs = array();
+    $breadcrumbs[] = array('type' => 'community',
+                               'object' => $comm,
+                               'tab' => 'Trackers');
+    $breadcrumbs[] = array('type' => 'custom',
+                           'text' => $trend->getProducer()->getDisplayName(),
+                           'icon' => $this->view->coreWebroot.'/public/images/icons/cog_go.png',
+                           'href' => $this->view->webroot.'/tracker/producer/view?producerId='.$trend->getProducer()->getKey());
+
     if(count($this->view->trends) == 1)
       {
-      $header .= $this->view->trends[0]->getDisplayName();
+      $text = $this->view->trends[0]->getDisplayName();
       }
     else
       {
-      $header .= count($this->view->trends).' trends';
+      $text = count($this->view->trends).' trends';
       }
     if($this->view->rightTrend)
       {
-      $header .= ' &amp; '.$rightTrend->getDisplayName();
+      $text .= ' &amp; '.$rightTrend->getDisplayName();
       }
-    $header .= '</span></li>';
-    $header .= '</ul>';
-    $this->view->header = $header;
+    $breadcrumbs[] = array('type' => 'custom',
+                           'text' => $text,
+                           'icon' => $this->view->moduleWebroot.'/public/images/chart_line.png');
+    $this->Component->Breadcrumb->setBreadcrumbHeader($breadcrumbs, $this->view);
 
     if(isset($rightTrend))
       {
@@ -148,7 +156,7 @@ class Tracker_TrendController extends Tracker_AppController
     $trendIds = explode(' ', trim(str_replace(',', ' ', $trendId)));
     $startDate = date('Y-m-d H:i:s', strtotime($startDate));
     $endDate = date('Y-m-d H:i:s', strtotime($endDate.' 23:59:59')); //go to end of the day
-    
+
     $scalars = array();
     foreach($trendIds as $trendId)
       {
