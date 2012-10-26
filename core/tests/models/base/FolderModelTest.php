@@ -24,12 +24,8 @@ class FolderModelTest extends DatabaseTestCase
   public function setUp()
     {
     $this->setupDatabase(array('default'));
-    $this->_models = array(
-      'Folder', "Community", "Item", "Folderpolicyuser"
-    );
-    $this->_daos = array(
-      'Folder'
-    );
+    $this->_models = array('Folder', 'Group', 'Community', 'Item', 'Folderpolicyuser', 'Folderpolicygroup');
+    $this->_daos = array('Folder');
     Zend_Registry::set('modulesEnable', array());
     Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     parent::setUp();
@@ -41,6 +37,11 @@ class FolderModelTest extends DatabaseTestCase
     {
     $folder = $this->Folder->createFolder("TestNameFolder", "Description", 0);
     $this->assertEquals(true, $folder->saved);
+
+    // Make sure adding anonymous read access recomputes the privacy status
+    $this->assertEquals(MIDAS_PRIVACY_PRIVATE, $folder->getPrivacyStatus());
+    $this->Folderpolicygroup->createPolicy($this->Group->load(MIDAS_GROUP_ANONYMOUS_KEY), $folder, MIDAS_POLICY_READ);
+    $this->assertEquals(MIDAS_PRIVACY_PUBLIC, $folder->getPrivacyStatus());
     $id = $folder->getKey();
     $folder->setName("NewName");
     $this->Folder->save($folder);
