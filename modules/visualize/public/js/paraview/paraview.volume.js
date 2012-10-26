@@ -24,13 +24,14 @@ midas.visualize.start = function () {
         }
     };
 
-    paraview.createSession("midas", "volume render", "default");
-    paraview.loadPlugins();
+    paraview.createSessionAsync("midas", "volume render","default", function () {
+        paraview.loadPlugins();
 
-    $('#loadingStatus').html('Reading image data from files...');
-    paraview.plugins.midascommon.AsyncOpenData(midas.visualize._dataOpened, {
-        filename: json.visualize.url,
-        otherMeshes: json.visualize.meshes
+        $('#loadingStatus').html('Reading image data from files...');
+        paraview.plugins.midascommon.AsyncOpenData(midas.visualize._dataOpened, {
+            filename: json.visualize.url,
+            otherMeshes: json.visualize.meshes
+        });
     });
 };
 

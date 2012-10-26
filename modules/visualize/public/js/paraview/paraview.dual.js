@@ -39,25 +39,29 @@ midas.visualize.start = function () {
         }
     };
 
-    paraview.left.createSession("midas", "dual view left", "default");
-    paraview.left.loadPlugins();
-    paraview.right.createSession("midas", "dual view right", "default");
-    paraview.right.loadPlugins();
+    paraview.left.createSessionAsync("midas", "dual view left", "default", function () {
+        paraview.left.loadPlugins();
+        $('#leftLoadingStatus').html('Reading image data from files...');
+        paraview.left.plugins.midascommon.AsyncOpenData(function (retVal) {
+            midas.visualize._dataOpened('left', retVal)
+        }, {
+            filename: json.visualize.urls.left,
+            otherMeshes: []
+        });
+    });
+    
+    paraview.right.createSessionAsync("midas", "dual view right", "default", function () {
+        paraview.right.loadPlugins();
 
-    $('#leftLoadingStatus').html('Reading image data from files...');
-    paraview.left.plugins.midascommon.AsyncOpenData(function (retVal) {
-        midas.visualize._dataOpened('left', retVal)
-    }, {
-        filename: json.visualize.urls.left,
-        otherMeshes: []
+        $('#rightLoadingStatus').html('Reading image data from files...');
+        paraview.right.plugins.midascommon.AsyncOpenData(function (retVal) {
+            midas.visualize._dataOpened('right', retVal)
+        }, {
+            filename: json.visualize.urls.right,
+            otherMeshes: []
+        });
     });
-    $('#rightLoadingStatus').html('Reading image data from files...');
-    paraview.right.plugins.midascommon.AsyncOpenData(function (retVal) {
-        midas.visualize._dataOpened('right', retVal)
-    }, {
-        filename: json.visualize.urls.right,
-        otherMeshes: []
-    });
+    
     midas.visualize.pointColors = midas.visualize._generateColorList(8);
 };
 

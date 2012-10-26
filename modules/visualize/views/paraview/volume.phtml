@@ -16,6 +16,7 @@ PURPOSE.  See the above copyright notices for more information.
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.spinbox.css" />
 
 <?php
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/get_modules.js');
 $this->headScript()->appendFile('/PWService/js/ParaViewWeb.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.spinbox.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js');
