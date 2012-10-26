@@ -153,6 +153,7 @@ abstract class FolderModelBase extends AppModel
     $folder->setDescription($description);
     $folder->setUuid($uuid);
     $folder->setParentId($parentId);
+    $folder->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE); // Must default privacy flag to private
     $this->save($folder);
     return $folder;
     }
