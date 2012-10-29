@@ -1,0 +1,17 @@
+div.thresholdInfoContainer {
+  margin-top: 10px;
+}
+
+input.thresholdValue {
+  width: 70px !important;
+}
+
+div.bottomButtons {
+  float: right;
+  margin-top: 15px;
+}
+
+div.registeredEmail {
+  margin-top: 10px;
+  color: #797979;
+}
