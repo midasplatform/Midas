@@ -62,7 +62,11 @@ class MIDASModel
     }
 
 
-  /** Save a Dao */
+  /**
+   * Save a Dao to the database.
+   * If you want to explicitly save null and unset fields as "NULL" in the database,
+   * set the member "setExplicitNullFields" on the dao to true.
+   */
   public function save($dao)
     {
     $instance = $this->_name."Dao";
@@ -81,6 +85,10 @@ class MIDASModel
       if(isset($dao->$key))
         {
         $dataarray[$key] = $dao->$key;
+        }
+      else if(isset($dao->setExplicitNullFields) && $dao->setExplicitNullFields && $this->_mainData[$key]['type'] == MIDAS_DATA)
+        {
+        $dataarray[$key] = null;
         }
       }
 

@@ -256,17 +256,39 @@ class Tracker_TrendController extends Tracker_AppController
       {
       $trend->setUnit($unit);
       }
+
     if(isset($configItemId))
       {
-      $trend->setConfigItemId($configItemId);
+      if($configItemId)
+        {
+        $trend->setConfigItemId($configItemId);
+        }
+      else
+        {
+        $trend->setConfigItemId(null);
+        }
       }
     if(isset($testItemId))
       {
-      $trend->setTestDatasetId($testItemId);
+      if($testItemId)
+        {
+        $trend->setTestDatasetId($testItemId);
+        }
+      else
+        {
+        $trend->setTestDatasetId(null);
+        }
       }
     if(isset($truthItemId))
       {
-      $trend->setTruthDatasetId($truthItemId);
+      if($truthItemId)
+        {
+        $trend->setTruthDatasetId($truthItemId);
+        }
+      else
+        {
+        $trend->setTruthDatasetId(null);
+        }
       }
     $this->Tracker_Trend->save($trend);
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved'));

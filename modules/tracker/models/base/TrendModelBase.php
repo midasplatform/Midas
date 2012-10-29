@@ -59,6 +59,15 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
   public abstract function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
   public abstract function getScalars($trend, $startDate = null, $endDate = null);
 
+  /** 
+   * Override the default save to make sure that we explicitly set null values in the database
+   */
+  public function save($trendDao)
+    {
+    $trendDao->setExplicitNullFields = true;
+    parent::save($trendDao);
+    }
+
   /**
    * If the producer with the matching parameters exists, return it.
    * If not, it will create it and return it.
