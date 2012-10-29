@@ -174,4 +174,154 @@ class Tracker_ApiComponent extends AppComponent
       }
     return $scalar;
     }
+
+  /**
+   * Upload a json file containing numeric scoring results to be added as scalars. File is parsed and then deleted from the server.
+   * @param communityId The id of the community that owns the producer
+   * @param producerDisplayName The display name of the producer
+   * @param producerRevision The repository revision of the producer that produced this value
+   * @param submitTime (Optional) The submit timestamp. Must be parseable with PHP strtotime(). If not set, uses current time.
+   * @param configItemId (Optional) If this value pertains to a specific configuration item, pass its id here
+   * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
+   * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
+   * @param parentKeys (Optional) Semicolon-separated list of parent keys to look for numeric results under.  Use '.' to denote nesting, like in normal javascript syntax.
+   * @param silent (Optional) If set, do not perform treshold-based email notifications for this scalar
+   * @return The list of scalars that were created.  Non-numeric values are ignored.
+   */
+  public function resultsUploadJson($args)
+    {
+    $communityModel = MidasLoader::loadModel('Community');
+    $itemModel = MidasLoader::loadModel('Item');
+    $this->_checkKeys(array('communityId', 'producerDisplayName', 'producerRevision'), $args);
+    $user = $this->_getUser($args);
+
+    $community = $communityModel->load($args['communityId']);
+    if(!$community || !$communityModel->policyCheck($community, $user, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception('Write permission required on community', 403);
+      }
+
+    $producerDisplayName = trim($args['producerDisplayName']);
+    if($producerDisplayName == '')
+      {
+      throw new Exception('Producer display name must not be empty', -1);
+      }
+
+    $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+    $producer = $producerModel->createIfNeeded($community->getKey(), $producerDisplayName);
+
+    list($configItemId, $testDatasetId, $truthDatasetId) = array(null, null, null);
+    if(isset($args['configItemId']))
+      {
+      $configItemId = $args['configItemId'];
+      $configItem = $itemModel->load($args['configItemId']);
+      if(!$configItem || !$itemModel->policyCheck($configItem, $user, MIDAS_POLICY_READ))
+        {
+        throw new Exception('Read permission required on config item', 403);
+        }
+      }
+    if(isset($args['testDatasetId']))
+      {
+      $truthDatasetId = $args['testDatasetId'];
+      $testDatasetItem = $itemModel->load($args['testDatasetId']);
+      if(!$testDatasetItem || !$itemModel->policyCheck($testDatasetItem, $user, MIDAS_POLICY_READ))
+        {
+        throw new Exception('Read permission required on test dataset item', 403);
+        }
+      }
+    if(isset($args['truthDatasetId']))
+      {
+      $truthDatasetId = $args['truthDatasetId'];
+      $truthDatasetItem = $itemModel->load($args['truthDatasetId']);
+      if(!$truthDatasetItem || !$itemModel->policyCheck($truthDatasetItem, $user, MIDAS_POLICY_READ))
+        {
+        throw new Exception('Read permission required on truth dataset item', 403);
+        }
+      }
+
+    $trendModel = MidasLoader::loadModel('Trend', 'tracker');
+
+    if(isset($args['submitTime']))
+      {
+      $submitTime = strtotime($args['submitTime']);
+      if($submitTime === false)
+        {
+        throw new Exception('Invalid submitTime value: '.$args['submitTime'], -1);
+        }
+      $submitTime = date('c', $submitTime);
+      }
+    else
+      {
+      $submitTime = date('c'); // Use current time if no submit time is explicitly set
+      }
+
+    $producerRevision = trim($args['producerRevision']);
+
+    $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
+    $json = json_decode(file_get_contents('php://input'), true);
+    if($json === null)
+      {
+      throw new Exception('Invalid JSON upload contents', -1);
+      }
+    $scalars = array();
+
+    if(isset($args['parentKeys'])) //iterate through all child keys of the set of specified parent keys
+      {
+      $parentKeys = explode(';', $args['parentKeys']);
+      foreach($parentKeys as $parentKey)
+        {
+        $nodes = explode('.', $parentKey);
+        $currentArr = $json;
+        foreach($nodes as $node)
+          {
+          if(!isset($currentArr[$node]) || !is_array($currentArr[$node]))
+            {
+            throw new Exception('Specified parent key "'.$parentKey.'" does not exist or is not an array type', -1);
+            }
+          $currentArr = $currentArr[$node];
+          }
+        foreach($currentArr as $metricName => $value) // iterate through all children of this parent key
+          {
+          if(!is_numeric($value)) // ignore non-numeric child keys
+            {
+            continue;
+            }
+          $trend = $trendModel->createIfNeeded($producer->getKey(), $metricName, $configItemId, $testDatasetId, $truthDatasetId);
+          $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision, $value, true);
+          $scalars[] = $scalar;
+
+          if(!isset($args['silent']))
+            {
+            $notificationModel = MidasLoader::loadModel('ThresholdNotification', 'tracker');
+            $notifications = $notificationModel->getNotifications($scalar);
+            $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
+            $notifyComponent->scheduleNotifications($scalar, $notifications);
+            }
+          }
+        }
+      }
+    else // just read all the top level keys
+      {
+      foreach($json as $metricName => $value)
+        {
+        if(!is_numeric($value))
+          {
+          continue;
+          }
+        $trend = $trendModel->createIfNeeded($producer->getKey(), $metricName, $configItemId, $testDatasetId, $truthDatasetId);
+        $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision, $value, true);
+        $scalars[] = $scalar;
+
+        if(!isset($args['silent']))
+          {
+          $notificationModel = MidasLoader::loadModel('ThresholdNotification', 'tracker');
+          $notifications = $notificationModel->getNotifications($scalar);
+          $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
+          $notifyComponent->scheduleNotifications($scalar, $notifications);
+          }
+        }
+      }
+
+    return $scalars;
+    }
 } // end class
