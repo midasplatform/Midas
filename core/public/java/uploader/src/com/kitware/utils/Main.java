@@ -2,6 +2,7 @@ package com.kitware.utils;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -33,11 +34,10 @@ public class Main extends JApplet
 
   // GUI elements
   JTable table;
-  JButton uploadFileButton, resumeUploadButton, stopUploadButton;
+  JButton uploadDownloadButton, resumeButton, stopButton;
   TableColumn sizeColumn;
-  JProgressBar uploadProgressBar;
-  JLabel fileCountLabel, fileNameLabel, fileSizeLabel,
-      bytesUploadedLabel;
+  JProgressBar progressBar;
+  JLabel fileCountLabel, fileNameLabel, fileSizeLabel, bytesTransferredLabel, totalSizeLabel, totalTransferredLabel;
   JCheckBox revOnCollisionCheckbox;
   private Color appletBackgroundColor = new Color(225, 225, 225);
 
@@ -45,22 +45,29 @@ public class Main extends JApplet
   private final static String FILENAME_LABEL_TITLE = "Name: ";
   private final static String FILESIZE_LABEL_TITLE = "Size: ";
   private final static String BYTE_TRANSFERRED_LABEL_TITLE = "Transferred: ";
+  private final static String TOTAL_SIZE_LABEL_TITLE = "Total size: ";
+  private final static String TOTAL_TRANSFERRED_LABEL_TITLE = "Total transferred: ";
 
   // File upload
+  private File downloadDest;
   private File[] files;
   private long[] fileLengths;
   private int index = 0;
   private long uploadedBytes = 0;
+  private long totalSize = 0;
+  private long totalTransferred = 0;
   private UploadThread uploadThread = null;
+  private DownloadThread downloadThread = null;
 
-  private String getUploadUniqueIdentifierBaseURL, onSuccessRedirectURL;
-  private String uploadFileBaseURL, uploadFileURL;
+  private String baseURL, getUploadUniqueIdentifierBaseURL, onSuccessRedirectURL;
+  private String uploadFileBaseURL, uploadFileURL, folderIds, itemIds;
   private String getUploadFileOffsetBaseURL, getUploadFileOffsetURL;
   private String sessionId, uploadUniqueIdentifier = null;
   private String parentItem = "";
   private boolean revisionUpload = false;
   private URL onSuccessRedirectURLObj;
   boolean onSuccessfulUploadRedirectEnable = true;
+  boolean download = false;
 
   private String[] fileExtensions;
 
@@ -68,7 +75,7 @@ public class Main extends JApplet
     {
     try
       {
-      getAppletParameters();
+      this.getAppletParameters();
       }
     catch (JavaUploaderException e)
       {
@@ -78,11 +85,20 @@ public class Main extends JApplet
 
     try
       {
+      final boolean downloadMode = this.download;
       javax.swing.SwingUtilities.invokeAndWait(new Runnable()
         {
         public void run()
           {
-          initComponents();
+          initComponentsCommon();
+          if(downloadMode)
+            {
+            initComponentsDownload();
+            }
+          else
+            {
+            initComponentsUpload();
+            }
           }
         });
       }
@@ -92,9 +108,12 @@ public class Main extends JApplet
       }
     }
 
-  private void initComponents()
+  /**
+   * Initialize the view components common to both upload and download mode
+   */
+  private void initComponentsCommon()
     {
-    // Set the look of the applet
+    // Set applet to native system L&F
     try
       {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -104,7 +123,105 @@ public class Main extends JApplet
       Utility.log(Utility.LOG_LEVEL.WARNING,
         "[CLIENT] Failed to set applet 'look&feel'", e);
       }
+    progressBar = new JProgressBar();
+    progressBar.setStringPainted(true);
 
+    // info labels
+    fileNameLabel = new JLabel(FILENAME_LABEL_TITLE);
+    fileSizeLabel = new JLabel(FILESIZE_LABEL_TITLE + "0 bytes");
+    fileCountLabel = new JLabel(FILECOUNT_LABEL_TITLE);
+    bytesTransferredLabel = new JLabel(BYTE_TRANSFERRED_LABEL_TITLE + "0 bytes");
+
+    stopButton = new JButton("Stop");
+    stopButton.setEnabled(false);
+
+    resumeButton = new JButton("Resume");
+    resumeButton.setEnabled(false);
+    }
+
+  private void initComponentsDownload()
+    {
+ // Get the main pane to add content to.
+    Container pane = getContentPane();
+    pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+    buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+    
+    // upload button
+    uploadDownloadButton = new JButton("Download");
+    uploadDownloadButton.addActionListener(new java.awt.event.ActionListener()
+      {
+      public void actionPerformed(ActionEvent evt)
+        {
+        downloadButtonActionPerformed(evt);
+        }
+      });
+
+    buttonPanel.add(uploadDownloadButton);
+    buttonPanel.add(Box.createHorizontalGlue());
+    
+    resumeButton.addActionListener(new java.awt.event.ActionListener()
+      {
+      public void actionPerformed(ActionEvent evt)
+        {
+        resumeButtonActionPerformed(evt);
+        }
+      });
+    buttonPanel.add(resumeButton);
+
+    stopButton.addActionListener(new java.awt.event.ActionListener()
+      {
+        public void actionPerformed(ActionEvent evt)
+          {
+          stopButtonActionPerformed(evt);
+          }
+      });
+    buttonPanel.add(stopButton);
+
+    totalSizeLabel = new JLabel(TOTAL_SIZE_LABEL_TITLE + Utility.bytesToString(this.totalSize));
+    totalTransferredLabel = new JLabel(TOTAL_TRANSFERRED_LABEL_TITLE + "0 bytes");
+
+    pane.add(buttonPanel);
+    pane.add(Box.createVerticalStrut(15));
+
+    JPanel labelPanel = new JPanel();
+    labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
+    labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+    labelPanel.add(fileCountLabel);
+    labelPanel.add(fileNameLabel);
+    labelPanel.add(fileSizeLabel);
+    labelPanel.add(bytesTransferredLabel);
+    labelPanel.add(Box.createVerticalStrut(15));
+    labelPanel.add(totalSizeLabel);
+    labelPanel.add(totalTransferredLabel);
+    JScrollPane scrollPane = new JScrollPane(labelPanel);
+    scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+    pane.add(scrollPane);
+
+    JPanel progressBarPanel = new JPanel(new GridLayout(1, 1));
+    progressBarPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+    progressBarPanel.add(progressBar);
+
+    // background color
+    pane.setBackground(appletBackgroundColor);
+    buttonPanel.setBackground(appletBackgroundColor);
+    scrollPane.setBackground(appletBackgroundColor);
+    progressBarPanel.setBackground(appletBackgroundColor);
+    labelPanel.setBackground(appletBackgroundColor);
+
+    // Always set the table background colour as White.
+    // May change this if required, only would require alot of Params!
+    scrollPane.getViewport().setBackground(Color.white);
+
+    pane.add(progressBarPanel);
+
+    uploadDownloadButton.requestFocus();
+    }
+
+  private void initComponentsUpload()
+    {
     // Get the main pane to add content to.
     Container pane = getContentPane();
     pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
@@ -125,8 +242,8 @@ public class Main extends JApplet
     revOnCollisionPanel.add(Box.createHorizontalGlue());
     
     // upload button
-    uploadFileButton = new JButton("Upload");
-    uploadFileButton.addActionListener(new java.awt.event.ActionListener()
+    uploadDownloadButton = new JButton("Upload");
+    uploadDownloadButton.addActionListener(new java.awt.event.ActionListener()
       {
       public void actionPerformed(ActionEvent evt)
         {
@@ -134,32 +251,27 @@ public class Main extends JApplet
         }
       });
 
-    buttonPanel.add(uploadFileButton);
-
+    buttonPanel.add(uploadDownloadButton);
     buttonPanel.add(Box.createHorizontalGlue());
 
     // resume button
-    resumeUploadButton = new JButton("Resume");
-    resumeUploadButton.addActionListener(new java.awt.event.ActionListener()
+    resumeButton.addActionListener(new java.awt.event.ActionListener()
       {
       public void actionPerformed(ActionEvent evt)
         {
-        resumeUploadButtonActionPerformed(evt);
+        resumeButtonActionPerformed(evt);
         }
       });
-    resumeUploadButton.setEnabled(false);
-    buttonPanel.add(resumeUploadButton);
+    buttonPanel.add(resumeButton);
 
-    stopUploadButton = new JButton("Stop");
-    stopUploadButton.addActionListener(new java.awt.event.ActionListener()
+    stopButton.addActionListener(new java.awt.event.ActionListener()
       {
         public void actionPerformed(ActionEvent evt)
           {
-          stopUploadButtonActionPerformed(evt);
+          stopButtonActionPerformed(evt);
           }
       });
-    stopUploadButton.setEnabled(false);
-    buttonPanel.add(stopUploadButton);
+    buttonPanel.add(stopButton);
 
     if(!this.isRevisionUpload())
       {
@@ -169,19 +281,13 @@ public class Main extends JApplet
     pane.add(buttonPanel);
     pane.add(Box.createVerticalStrut(15));
 
-    // info labels
-    fileNameLabel = new JLabel(FILENAME_LABEL_TITLE);
-    fileSizeLabel = new JLabel(FILESIZE_LABEL_TITLE + "0 bytes");
-    fileCountLabel = new JLabel(FILECOUNT_LABEL_TITLE);
-    bytesUploadedLabel = new JLabel(BYTE_TRANSFERRED_LABEL_TITLE + "0 bytes");
-
     JPanel labelPanel = new JPanel();
     labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
     labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     labelPanel.add(fileCountLabel);
     labelPanel.add(fileNameLabel);
     labelPanel.add(fileSizeLabel);
-    labelPanel.add(bytesUploadedLabel);
+    labelPanel.add(bytesTransferredLabel);
     JScrollPane scrollPane = new JScrollPane(labelPanel);
     scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     pane.add(scrollPane);
@@ -189,10 +295,7 @@ public class Main extends JApplet
     JPanel progressBarPanel = new JPanel(new GridLayout(1, 1));
     progressBarPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-    uploadProgressBar = new JProgressBar();
-    uploadProgressBar.setStringPainted(true);
-
-    progressBarPanel.add(uploadProgressBar);
+    progressBarPanel.add(progressBar);
 
     // background color
     pane.setBackground(appletBackgroundColor);
@@ -219,6 +322,13 @@ public class Main extends JApplet
     Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] EFFECTIVE_LOG_LEVEL:"
         + Utility.EFFECTIVE_LOG_LEVEL);
 
+    String downloadMode = getParameter("downloadMode");
+    if (downloadMode != null)
+      {
+      this.download = true;
+      }
+    Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] DOWNLOAD MODE ON");
+
     String onSuccessfulUploadRedirectEnableStr = getParameter("onSuccessfulUploadRedirectEnable");
     if (onSuccessfulUploadRedirectEnableStr != null)
       {
@@ -229,36 +339,8 @@ public class Main extends JApplet
     this.sessionId = getParameter("sessionId");
     Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] sessionId:" + this.sessionId);
 
-    String baseURL = getParameter("baseURL");
+    this.baseURL = getParameter("baseURL");
     Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] baseURL:" + baseURL);
-
-    // destURL is the address that this applet writes bytes to while
-    // uploading a file
-    this.uploadFileBaseURL = baseURL + getParameter("uploadFileBaseURL")
-        + this.sessionId;
-    Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] uploadFileBaseURL:"
-        + this.uploadFileBaseURL);
-
-    this.onSuccessRedirectURL = baseURL + getParameter("onSuccessRedirectURL");
-    Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] onSuccessRedirectURL:"
-        + this.onSuccessRedirectURL);
-
-    // idURL generates connectionIDs. This is useful for resuming broken
-    // downloads
-    this.getUploadUniqueIdentifierBaseURL = baseURL
-        + getParameter("uploadUniqueIdentifierURL") + this.sessionId;
-    Utility.log(Utility.LOG_LEVEL.DEBUG,
-        "[CLIENT] getUploadUniqueIdentifierBaseURL:"
-            + this.getUploadUniqueIdentifierBaseURL);
-
-    // offsetURL tells us how much of a file was received in the event
-    // of a broken download
-    this.getUploadFileOffsetBaseURL = baseURL
-        + getParameter("getUploadFileOffsetBaseURL") + this.sessionId;
-    Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] getUploadFileOffsetBaseURL:"
-        + this.getUploadFileOffsetBaseURL);
-
-    this.onSuccessRedirectURLObj = Utility.buildURL("onSuccessRedirect", this.onSuccessRedirectURL);
 
     // applet background color
     String background = "";
@@ -280,24 +362,61 @@ public class Main extends JApplet
         "[CLIENT] 'background' applet parameter unspecified: Rollback to default");
       }
 
-    try
+    if (this.download)
       {
-      this.fileExtensions = getParameter("fileextensions").split(",");
+      this.totalSize = Long.parseLong(getParameter("totalSize"));
+      this.folderIds = getParameter("folderIds");
+      this.itemIds = getParameter("itemIds");
       }
-    catch (NullPointerException e)
+    else
       {
-      Utility.log(Utility.LOG_LEVEL.WARNING,
-        "[CLIENT] 'fileextensions' applet parameter unspecified: Rollback to default");
-      }
-
-    String uploadType = getParameter("uploadType");
-    this.revisionUpload = uploadType != null && uploadType.equals("revision");
-    if (this.revisionUpload)
-      {
-      this.parentItem = getParameter("parentItem");
-      // We don't use the base url here (we don't redirect to the upload controller)
-      this.onSuccessRedirectURL = getParameter("onSuccessRedirectURL");
+      // destURL is the address that this applet writes bytes to while
+      // uploading a file
+      this.uploadFileBaseURL = baseURL + getParameter("uploadFileBaseURL")
+          + this.sessionId;
+      Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] uploadFileBaseURL:"
+          + this.uploadFileBaseURL);
+  
+      this.onSuccessRedirectURL = baseURL + getParameter("onSuccessRedirectURL");
+      Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] onSuccessRedirectURL:"
+          + this.onSuccessRedirectURL);
+  
+      // idURL generates connectionIDs. This is useful for resuming broken
+      // downloads
+      this.getUploadUniqueIdentifierBaseURL = baseURL
+          + getParameter("uploadUniqueIdentifierURL") + this.sessionId;
+      Utility.log(Utility.LOG_LEVEL.DEBUG,
+          "[CLIENT] getUploadUniqueIdentifierBaseURL:"
+              + this.getUploadUniqueIdentifierBaseURL);
+  
+      // offsetURL tells us how much of a file was received in the event
+      // of a broken download
+      this.getUploadFileOffsetBaseURL = baseURL
+          + getParameter("getUploadFileOffsetBaseURL") + this.sessionId;
+      Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] getUploadFileOffsetBaseURL:"
+          + this.getUploadFileOffsetBaseURL);
+  
       this.onSuccessRedirectURLObj = Utility.buildURL("onSuccessRedirect", this.onSuccessRedirectURL);
+ 
+      try
+        {
+        this.fileExtensions = getParameter("fileextensions").split(",");
+        }
+      catch (NullPointerException e)
+        {
+        Utility.log(Utility.LOG_LEVEL.WARNING,
+          "[CLIENT] 'fileextensions' applet parameter unspecified: Rollback to default");
+        }
+
+      String uploadType = getParameter("uploadType");
+      this.revisionUpload = uploadType != null && uploadType.equals("revision");
+      if (this.revisionUpload)
+        {
+        this.parentItem = getParameter("parentItem");
+        // We don't use the base url here (we don't redirect to the upload controller)
+        this.onSuccessRedirectURL = getParameter("onSuccessRedirectURL");
+        this.onSuccessRedirectURLObj = Utility.buildURL("onSuccessRedirect", this.onSuccessRedirectURL);
+        }
       }
     }
 
@@ -309,6 +428,11 @@ public class Main extends JApplet
   public long getFileLength(int index)
     {
     return this.fileLengths[index];
+    }
+
+  public String getBaseURL()
+    {
+    return baseURL;
     }
 
   public String getGetUploadUniqueIdentifierBaseURL()
@@ -345,22 +469,22 @@ public class Main extends JApplet
 
   public void setEnableResumeButton(boolean value)
     {
-    this.resumeUploadButton.setEnabled(value);
+    this.resumeButton.setEnabled(value);
     }
 
   public void setEnableStopButton(boolean value)
     {
-    this.stopUploadButton.setEnabled(value);
+    this.stopButton.setEnabled(value);
     }
 
   public void setEnableUploadButton(boolean value)
     {
-    this.uploadFileButton.setEnabled(value);
+    this.uploadDownloadButton.setEnabled(value);
     }
 
   public void setByteUploadedLabel(long uploadedByte, long fileSize)
     {
-    bytesUploadedLabel.setText("Transfered: "
+    bytesTransferredLabel.setText("Transferred: "
         + Utility.bytesToString(uploadedByte));
     }
 
@@ -395,18 +519,18 @@ public class Main extends JApplet
     {
     this.uploadedBytes += value;
     int progress = (int) (100.0 * (double) this.uploadedBytes / (double) this.fileLengths[index]);
-    this.uploadProgressBar.setValue(progress);
+    this.progressBar.setValue(progress);
     }
 
   public void setProgressIndeterminate(boolean value)
     {
-    this.uploadProgressBar.setIndeterminate(value);
+    this.progressBar.setIndeterminate(value);
     }
 
   public void onSuccessfulUpload()
     {
-    this.uploadFileButton.setEnabled(true);
-    this.stopUploadButton.setEnabled(false);
+    this.uploadDownloadButton.setEnabled(true);
+    this.stopButton.setEnabled(false);
     if (this.onSuccessfulUploadRedirectEnable)
       {
       this.getAppletContext().showDocument(this.onSuccessRedirectURLObj);
@@ -416,16 +540,65 @@ public class Main extends JApplet
   public void reset()
     {
     this.uploadUniqueIdentifier = null;
-    this.uploadProgressBar.setValue(0);
+    this.progressBar.setValue(0);
     }
 
-  public void uploadFileButtonActionPerformed(ActionEvent evt)
+  /**
+   * Called when the download button is pressed. Prompts the user for a destination
+   * directory, then starts the download thread.
+   * @param evt
+   */
+  public void downloadButtonActionPerformed(ActionEvent evt)
     {
+    progressBar.setValue(0);
 
     try
       {
       JFileChooser chooser = new JFileChooser();
-      uploadProgressBar.setValue(0);
+      chooser.setCurrentDirectory(new File("."));
+      chooser.setDialogTitle("Choose a download destination");
+      chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      chooser.setAcceptAllFileFilterUsed(false);
+
+      int returnVal = chooser.showSaveDialog(null);
+      if (returnVal == JFileChooser.APPROVE_OPTION)
+        {
+        this.downloadDest = chooser.getSelectedFile();
+
+        // button setup
+        this.uploadDownloadButton.setEnabled(false);
+        this.stopButton.setEnabled(true);
+        this.resumeButton.setEnabled(false);
+
+        // initialize upload details
+        this.uploadedBytes = 0;
+
+        // progress bar setup
+        this.progressBar.setMinimum(0);
+        this.progressBar.setMaximum(100);
+
+        this.downloadThread = new DownloadThread(this, this.folderIds, this.itemIds);
+        this.downloadThread.start();
+        }
+      }
+    catch (AccessControlException e)
+      {
+      Utility.log(Utility.LOG_LEVEL.WARNING,
+          "JAR certificate may be corrupted", e);
+      }
+    }
+
+  /**
+   * Called when the upload button is pressed. Prompts the user for files to upload,
+   * then kicks off the upload thread.
+   * @param evt
+   */
+  public void uploadFileButtonActionPerformed(ActionEvent evt)
+    {
+    try
+      {
+      JFileChooser chooser = new JFileChooser();
+      progressBar.setValue(0);
       if (fileExtensions != null)
         {
         UploaderFileFilter filter = new UploaderFileFilter();
@@ -455,16 +628,16 @@ public class Main extends JApplet
           }
 
         // button setup
-        this.uploadFileButton.setEnabled(false);
-        this.stopUploadButton.setEnabled(true);
-        this.resumeUploadButton.setEnabled(false);
+        this.uploadDownloadButton.setEnabled(false);
+        this.stopButton.setEnabled(true);
+        this.resumeButton.setEnabled(false);
 
         // initialize upload details
         this.uploadedBytes = 0;
 
         // progress bar setup
-        this.uploadProgressBar.setMinimum(0);
-        this.uploadProgressBar.setMaximum(100);
+        this.progressBar.setMinimum(0);
+        this.progressBar.setMaximum(100);
 
         this.uploadThread = new UploadThread(this);
         this.uploadThread.start();
@@ -477,18 +650,18 @@ public class Main extends JApplet
       }
     }
 
-  public void stopUploadButtonActionPerformed(ActionEvent evt)
+  public void stopButtonActionPerformed(ActionEvent evt)
     {
-    Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] StopUpload button clicked");
-    stopUploadButton.setEnabled(false);
-    resumeUploadButton.setEnabled(true);
+    Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] stop button clicked");
+    stopButton.setEnabled(false);
+    resumeButton.setEnabled(true);
     uploadThread.forceClose();
     uploadThread.interrupt();
     }
 
-  public void resumeUploadButtonActionPerformed(ActionEvent evt)
+  public void resumeButtonActionPerformed(ActionEvent evt)
     {
-    Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] ResumeUpload button clicked");
+    Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] resume button clicked");
     this.setEnableResumeButton(false);
     this.setEnableStopButton(true);
 
@@ -542,5 +715,10 @@ public class Main extends JApplet
       return false;
       }
     return this.revOnCollisionCheckbox.isSelected();
+    }
+
+  public File getDownloadDest()
+    {
+    return this.downloadDest;
     }
   }
