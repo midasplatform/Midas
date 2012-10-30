@@ -63,14 +63,15 @@ class DownloadController extends AppController
           }
         }
       }
+    $offset = $this->_getParam('offset');
+    if(!isset($offset))
+      {
+      $offset = 0;
+      }
+
     if(isset($bitsreamid) && is_numeric($bitsreamid))
       {
       $name = $this->_getParam('name');
-      $offset = $this->_getParam('offset');
-      if(!isset($offset))
-        {
-        $offset = 0;
-        }
       $bitstream = $this->Bitstream->load($bitsreamid);
       if(!$bitstream)
         {
@@ -165,7 +166,7 @@ class DownloadController extends AppController
           {
           $this->Component->DownloadBitstream->testingmode = true;
           }
-        $this->Component->DownloadBitstream->download($bitstreams[0], 0, true);
+        $this->Component->DownloadBitstream->download($bitstreams[0], $offset, true);
         }
       else
         {
@@ -234,6 +235,187 @@ class DownloadController extends AppController
       exit();
       }
     }//end index
+
+  /**
+   * Ajax action for determining what action to take based on the size of the requested download.
+   */
+  public function checksizeAction()
+    {
+    $this->disableView();
+    $this->disableLayout();
+    $itemIds = $this->_getParam('itemIds');
+    $folderIds = $this->_getParam('folderIds');
+    if(isset($itemIds))
+      {
+      $itemIdArray = explode(',', $itemIds);
+      }
+    else
+      {
+      $itemIdArray = array();
+      }
+
+    if(isset($folderIds))
+      {
+      $folderIdArray = explode(',', $folderIds);
+      }
+    else
+      {
+      $folderIdArray = array();
+      }
+
+    $items = array();
+    $folders = array();
+    foreach($itemIdArray as $itemId)
+      {
+      if($itemId)
+        {
+        $item = $this->Item->load($itemId);
+        if(!$item || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+          {
+          throw new Zend_Exception('Permission denied on item '.$itemId, 403);
+          }
+        $items[] = $item;
+        }
+      }
+    foreach($folderIdArray as $folderId)
+      {
+      if($folderId)
+        {
+        $folder = $this->Folder->load($folderId);
+        if(!$folder || !$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
+          {
+          throw new Zend_Exception('Permission denied on folder '.$folderId, 403);
+          }
+        $folders[] = $folder;
+        }
+      }
+    $totalSize = 0;
+    $folders = $this->Folder->getSizeFiltered($folders, $this->userSession->Dao, MIDAS_POLICY_READ);
+    foreach($folders as $folder)
+      {
+      $totalSize += $folder->size;
+      }
+    foreach($items as $item)
+      {
+      $totalSize += $item->getSizebytes();
+      }
+    if($totalSize <= 1024 * 1024 * 1024) // If total size is < 1GB, just download it
+      {
+      echo JsonComponent::encode(array('action' => 'download'));
+      }
+    else //otherwise prompt the user to use the large download applet
+      {
+      echo JsonComponent::encode(array(
+        'action' => 'promptApplet',
+        'sizeStr' => UtilityComponent::formatSize($totalSize)));
+      }
+    }
+
+  /**
+   * Render the view for the large data downloader applet
+   * @param itemIds Comma separated list of items to download
+   * @param folderIds Comma separated list of folders to download
+   */
+  public function appletAction()
+    {
+    $folderIds = $this->_getParam('folderIds');
+    if(isset($folderIds) && $folderIds)
+      {
+      $folderIdArray = explode(',', $folderIds);
+      $this->view->folderIds = $folderIds;
+      }
+    else
+      {
+      $folderIdArray = array();
+      $this->view->folderIds = '';
+      }
+    $itemIds = $this->_getParam('itemIds');
+    if(isset($itemIds) && $itemIds)
+      {
+      $itemIdArray = explode(',', $itemIds);
+      $this->view->itemIds = $itemIds;
+      }
+    else
+      {
+      $itemIdArray = array();
+      $this->view->itemIds = '';
+      }
+
+    $items = array();
+    $folders = array();
+    foreach($itemIdArray as $itemId)
+      {
+      if($itemId)
+        {
+        $items[] = $this->Item->load($itemId);
+        }
+      }
+    foreach($folderIdArray as $folderId)
+      {
+      if($folderId)
+        {
+        $folders[] = $this->Folder->load($folderId);
+        }
+      }
+    $totalSize = 0;
+    $folders = $this->Folder->getSizeFiltered($folders, $this->userSession->Dao, MIDAS_POLICY_READ);
+    foreach($folders as $folder)
+      {
+      $totalSize += $folder->size;
+      }
+    foreach($items as $item)
+      {
+      $totalSize += $item->getSizebytes();
+      }
+    $this->view->totalSize = $totalSize;
+
+    $fCount = count($folderIdArray);
+    $iCount = count($itemIdArray);
+
+    if($iCount === 0 && $fCount === 0)
+      {
+      throw new Zend_Exception('No items or folders specified');
+      }
+    else if($iCount === 1 && $fCount === 0)
+      {
+      $item = $this->Item->load($itemIdArray[0]);
+      $this->view->contentDescription = 'Item <b>'.$item->getName().'</b>';
+      }
+    else if($iCount === 0 && $fCount === 1)
+      {
+      $folder = $this->Folder->load($folderIdArray[0]);
+      $this->view->contentDescription = 'Folder <b>'.$folder->getName().'</b>';
+      }
+    else if($iCount === 0)
+      {
+      $this->view->contentDescription = $fCount.' folders';
+      }
+    else if($fCount === 0)
+      {
+      $this->view->contentDescription = $iCount.' items';
+      }
+    else
+      {
+      $this->view->contentDescription = $fCount.' folder(s) and '.$iCount.' item(s)';
+      }
+    if(array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] === 'on')
+      {
+      $this->view->protocol = 'https';
+      }
+    else
+      {
+      $this->view->protocol = 'http';
+      }
+    if(!$this->isTestingEnv())
+      {
+      $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+      }
+    else
+      {
+      $this->view->host = 'localhost';
+      }
+    $this->view->header = 'Large Data Download Applet';
+    }
 
   /**
    * will download a zip file with the same name as the item name,

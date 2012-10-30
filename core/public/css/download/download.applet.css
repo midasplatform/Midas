@@ -1,0 +1,22 @@
+div.downloadDescription {
+  margin-top: 6px;
+  padding: 6px 5px 6px 8px;
+  background-color: #aaffaa;
+  border-radius: 5px;
+  border: 2px solid #99dd99;
+}
+
+img.descriptionImage {
+  position: relative;
+  top: -1px;
+  float: left;
+  margin-right: 5px;
+}
+
+div.downloadInstructions {
+  margin-top: 12px;
+}
+
+img.pointToDownload {
+  margin-left: 28px;
+}
