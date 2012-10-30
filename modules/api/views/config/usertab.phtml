@@ -24,11 +24,11 @@ else
 ?>
 <table width="100%"  border="0">
  <tr bgcolor="#999999">
-   <td width="20%"><center><b><?php echo $this->t('Application Name')?></b></center></td>
-   <td width="40%"><center><b>API Key</b></center></td>
-   <td width="20%"><center><b><?php echo $this->t('Default expiration')?></b></center></td>
-   <td width="10%"><center><b>Creation</b></center></td>
-   <td width="10%"><center><b>Action</b></center></td>
+   <td><center><b><?php echo $this->t('Application Name')?></b></center></td>
+   <td><center><b>API Key</b></center></td>
+   <td><center><b><?php echo $this->t('Default expiration')?></b></center></td>
+   <td><center><b>Creation</b></center></td>
+   <td><center><b>Action</b></center></td>
  </tr>
 <?php foreach($this->userapiDaos as $userapiDao)
  {
@@ -38,19 +38,19 @@ else
    <td><?php echo $userapiDao->getApikey(); ?></td>
    <td><?php echo $userapiDao->getTokenExpirationTime(); ?> minutes</td>
    <td><?php echo $this->Date->ago($userapiDao->getCreationDate()); ?></td>
-   <td><a style='color:white;text-decoration: underline;' class='deleteApiKeyLink' element='<?php echo $userapiDao->getKey()?>'><?php echo $this->t('delete')?></a></td>
+   <td><a style='text-decoration: underline;' class='deleteApiKeyLink' element='<?php echo $userapiDao->getKey()?>'><?php echo $this->t('delete')?></a></td>
  </tr>
 <?php } // end foreach keys ?>
 </table>
 <?php } // end count ?>
 
-<a style='color:white;' href="<?php echo $this->webroot?>/api">Web API Information</a>
+<a href="<?php echo $this->webroot?>/api">Web API Information</a>
 
 <div class="separator"></div>
 <h3><?php echo $this->t('Generate new API key')?></h3>
 
 <form class="genericForm" id="generateKeyForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
-  <input type="hidden" name="userId" value="<?php echo $this->user->getKey(); ?>" />
+  <input type="hidden" id="apiUserId" name="userId" value="<?php echo $this->user->getKey(); ?>" />
   <div >
     <label for="appplication_name"><?php echo $this->t('Application Name')?>:</label>
     <?php echo $this->form['appplication_name']?>

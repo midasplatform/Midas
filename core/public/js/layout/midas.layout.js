@@ -90,26 +90,6 @@ $(function() {
     midas.loadAjaxDynamicBar('login','/user/login');
     });
 
-
-  // Account link
-  $("li.myAccountLink").click(function()
-    {
-    if($("div.TopDynamicBar").is(':hidden'))
-      {
-        $("div.TopDynamicBar").show('blind', function() {
-
-        });
-      }
-    if($(this).attr('userid')!=undefined)
-      {
-      midas.loadAjaxDynamicBar('settings'+$(this).attr('userid'),'/user/settings?userId='+$(this).attr('userid'));
-      }
-    else
-      {
-      midas.loadAjaxDynamicBar('settings','/user/settings');
-      }
-    });
-
   // Setting link
    $("li.settingsLink").click(function()
     {

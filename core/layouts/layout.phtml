@@ -131,7 +131,7 @@ echo $this->doctype()
                    <b><a id="topUserName" href="'.$this->webroot.'/user/'.$this->userDao->getUserId().'" >'.$this->userDao->getFullName().' <img class="arrowUser" src="'.$this->coreWebroot.'/public/images/icons/arrow-user.gif" alt ="" /> </a> </b>
                     <ul>
                       <li onclick="location.replace(\''.$this->webroot.'/user/userpage\');"><a>'.$this->t('My Page').'</a></li>
-                      <li class="myAccountLink"><a>'.$this->t('My Account').'</a></li>
+                      <li class="myAccountLink"><a href="'.$this->webroot.'/user/settings?userId='.$this->userDao->getKey().'">'.$this->t('My Account').'</a></li>
                       ';
                 if($this->userDao->isAdmin())
                   {

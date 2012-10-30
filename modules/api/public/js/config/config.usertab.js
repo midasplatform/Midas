@@ -31,7 +31,11 @@ $(document).ready(function() {
 
     $('a.deleteApiKeyLink').click(function () {
         var obj = $(this);
-        $.post(json.global.webroot+'/api/config/usertab', {deleteAPIKey: true, element: $(this).attr('element')},
+        $.post(json.global.webroot+'/api/config/usertab', {
+            deleteAPIKey: true,
+            element: $(this).attr('element'),
+            userId: $('#apiUserId').val()
+        },
             function(data) {
                 var jsonResponse = jQuery.parseJSON(data);
                 if(jsonResponse == null) {
