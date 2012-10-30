@@ -10,9 +10,10 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/jquery/jquery.form.js"></script>';
-echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/user/user.settings.js?'.time().'"></script>';
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.settings.js?'.time());
 ?>
+
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/user/user.settings.css?<?php echo time(); ?>" />
 
 <div id="tabsSettings">
@@ -35,8 +36,9 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
       }
       ?>
   </ul>
+
   <div id="tabs-account">
-    <h3><?php echo $this->t('My information')?>:</h3>
+    <h3><?php echo $this->t('My Information')?>:</h3>
     <form  class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']?><?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>">
       <table>
         <?php
@@ -149,19 +151,19 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
             {
             ?>
           <tr>
-            <td><?php echo $this->t('My old password');?><input type="password" name="oldPassword"/></td>
+            <td><?php echo $this->t('Old password:');?></td><td><input type="password" name="oldPassword"/></td>
           </tr>
           <?php
             }
             ?>
           <tr>
-            <td><?php echo $this->t('My new password');?><input type="password" name="newPassword"/></td>
-            <td><?php echo $this->t('Retype new password');?><input type="password" name="newPasswordConfirmation"/></td>
+            <td><?php echo $this->t('New password:');?></td><td><input type="password" name="newPassword"/></td>
           </tr>
           <tr>
-            <td><input type='submit' name='modifyPassword' value='<?php echo $this->t('Modify password');?>'/></td>
+            <td><?php echo $this->t('Retype new password:');?></td><td><input type="password" name="newPasswordConfirmation"/></td>
           </tr>
         </table>
+        <input type='submit' name='modifyPassword' value='<?php echo $this->t('Modify password');?>'/>
       </form>
     </div>
   <?php
@@ -178,7 +180,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
       echo "<ul>";
       foreach($this->communities as $community)
         {
-        echo "<li class='settingsCommunityList'><a style='color:white;' href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a>";
+        echo "<li class='settingsCommunityList'><a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a>";
         echo "<ul>";
         foreach($community->groups as $group)
           {

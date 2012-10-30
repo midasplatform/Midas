@@ -1,7 +1,6 @@
 div#tabsSettings{
-  width: 700px;
-  margin-left: auto; 
-  margin-right: auto;
+  width: 800px;
+  display: none;
 }
 
 form#modifyAccount span{
@@ -9,9 +8,12 @@ form#modifyAccount span{
   width: 80px;
 }
 
+form#modifyAccount input[type="text"], form#modifyAccount input[type="password"] {
+  width: 200px !important;
+}
 
-form#modifyAccount input[type="text"], form#modifyAccount input[type="password"]{
-width: 200px!important;
+form#modifyPassword input[type="password"] {
+  width: 200px !important;
 }
 
 div#accountPrivacy{
@@ -22,68 +24,52 @@ div#accountPrivacy label{
   width: auto!important;
   float: none!important;
 }
-div#accountPrivacy br{
+
+div#accountPrivacy br {
   display:none;
 }
+
 div#imageActual{
   float:right;
 }
 
+.ui-tabs-panel h3 {
+  margin-top: 0px;
+}
+
 /** Tabs*/
-
-div#tabsSettings .ui-tabs-nav{
-  border:0px !important;
+div#tabsSettings .ui-tabs-nav {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid #d7d7d7 !important;
   background: none !important;
-}
-
-div#tabsSettings .ui-tabs-nav{
-  border-bottom: 1px dotted grey;
-}
-
-div#tabsSettings .ui-state-default{
-}
-
-div#tabsSettings .ui-state-active,div#tabsSettings  .ui-widget-content .ui-state-active,div#tabsSettings  .ui-widget-header .ui-state-active {
-border: 1px solid #C5DBEC!important;
-}
-
-
-div#tabsSettings .ui-state-default,div#tabsSettings  .ui-widget-content .ui-state-default,div#tabsSettings  .ui-widget-header .ui-state-default {
-border: 1px solid #F3F1EC;
+  border-radius: 0;
+  padding-left: 10px;
+  height: 22px !important;
 }
 
 div#tabsSettings .ui-widget-content,div#tabsSettings{
   background: none!important;
-  color:white;
 }
-
 
 div#tabsSettings .ui-tabs .ui-tabs-nav li a{
-  padding: 3px 10px!important;
+  padding: 3px 10px !important;
 }
 .ui-tabs .ui-tabs-nav li a{
-  padding: 3px 10px!important;
+  padding: 3px 10px !important;
 }
 
 div#tabsSettings .ui-tabs-selected,div#tabsSettings .ui-tabs-selected a{
-  color:#1D5987 !important;
+  color: #1D5987 !important;
   font-weight: bold;
-  height:19px!important;
+  height: 19px!important;
 }
 
 div#tabsSettings .ui-state-default{
   height: 20px;
 }
 
-
 div#tabsSettings .ui-tabs-panel {
-  position: relative !important;
-  left: -75px!important;
-  border: 1px solid grey;
   width: 99%;
-}
-
-
-div#tabsSettings{
-  display: none;
 }

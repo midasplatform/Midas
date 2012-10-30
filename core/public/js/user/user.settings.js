@@ -29,7 +29,7 @@ midas.user.validateAccountChange = function (formData, jqForm, options) {
 }
 
 midas.user.successPasswordChange = function (responseText, statusText, xhr, form) {
-    var jsonResponse = jQuery.parseJSON(responseText);
+    var jsonResponse = $.parseJSON(responseText);
     if(jsonResponse == null) {
         midas.createNotice('Error', 4000, 'error');
         return;
@@ -44,7 +44,7 @@ midas.user.successPasswordChange = function (responseText, statusText, xhr, form
 }
 
 midas.user.successAccountChange = function (responseText, statusText, xhr, form) {
-    var jsonResponse = jQuery.parseJSON(responseText);
+    var jsonResponse = $.parseJSON(responseText);
     if(jsonResponse == null) {
         midas.createNotice('Error', 4000);
         return;
@@ -72,7 +72,7 @@ midas.user.successPictureChange = function (responseText, statusText, xhr, form)
     }
 }
 
-$(document).ready(function() {
+$(window).load(function () {
     $( "#tabsSettings" ).tabs();
 
     $( "#tabsSettings" ).css('display','block');
@@ -93,7 +93,7 @@ $(document).ready(function() {
         success: midas.user.successPictureChange
     });
 
-    var jsonSettings = jQuery.parseJSON($('div.jsonSettingsContent').html());
+    jsonSettings = jQuery.parseJSON($('div.jsonSettingsContent').html());
 
     $('textarea#biography').attr('onkeyup', 'this.value = this.value.slice(0, 255)');
     $('textarea#biography').attr('onchange', 'this.value = this.value.slice(0, 255)');

@@ -23,7 +23,7 @@ class UserController extends AppController
   {
   public $_models = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser', 'Group', 'Item', 'Community');
   public $_daos = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group');
-  public $_components = array('Date', 'Filter', 'Sortdao');
+  public $_components = array('Breadcrumb', 'Date', 'Filter', 'Sortdao');
   public $_forms = array('User');
 
   /** Init Controller */
@@ -505,7 +505,6 @@ class UserController extends AppController
       $this->disableView();
       return false;
       }
-    $this->disableLayout();
 
     $userId = $this->_getParam('userId');
     if(isset($userId) && $userId != $this->userSession->Dao->getKey() && !$this->userSession->Dao->isAdmin())
@@ -570,7 +569,8 @@ class UserController extends AppController
 
     if($this->_request->isPost())
       {
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableView();
+      $this->disableLayout();
       $submitPassword = $this->_getParam('modifyPassword');
       $modifyAccount = $this->_getParam('modifyAccount');
       $modifyPicture = $this->_getParam('modifyPicture');
@@ -869,6 +869,13 @@ class UserController extends AppController
     $this->view->jsonSettings = JsonComponent::encode($this->view->jsonSettings);
 
     $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_CONFIG_TABS', array('user' => $userDao));
+
+    $breadcrumbs = array();
+    $breadcrumbs[] = array('type' => 'user', 'object' => $userDao);
+    $breadcrumbs[] = array('type' => 'custom',
+                           'text' => 'My Account',
+                           'icon' => $this->view->coreWebroot.'/public/images/icons/edit.png');
+    $this->Component->Breadcrumb->setBreadcrumbHeader($breadcrumbs, $this->view);
     }
 
   /** User page action*/
