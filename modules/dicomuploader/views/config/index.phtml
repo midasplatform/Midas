@@ -109,6 +109,11 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
       <div id="start_uploader_user" class="start_uploader_user" style="display:none">
          Midas user who started DICOM uploader: <span id="span_start_uploader_user"></span>
       </div>
+      <br/>
+      <div style="margin-right:10px;display:none" class="genericBigButton " id="hideError">Hide Error</div>
+      <div id="apicall_failure" class="apicall_failure" style="display:none">
+         <textarea id="apicall_failure_reason" rows="5" cols="80" readonly> </textarea>
+      </div>
     </div>
 
 </div>

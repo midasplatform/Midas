@@ -25,8 +25,11 @@ midas.dicomuploader.start = function (email, apikey) {
         success: function (retVal) {
             midas.createNotice(retVal.data.message, 4000);
         },
-        error: function (retVal) {
-            midas.createNotice(retVal.message, 4000, 'error');
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            midas.createNotice("Execution of storescp start script failed!", 3000, 'error');
+            $('textarea#apicall_failure_reason').html(XMLHttpRequest.message);
+            $('div#apicall_failure').show();
+            $('div#hideError').show();
         },
         complete: function() {
             midas.dicomuploader.checkStatus();
@@ -37,15 +40,20 @@ midas.dicomuploader.start = function (email, apikey) {
 midas.dicomuploader.stop = function () {
     'use strict';
     var storescp_val  = $(document).find('#storescp').val();
+    var incoming_dir_val  = $(document).find('#receptiondir').val();
     ajaxWebApi.ajax({
         method: 'midas.dicomuploader.stop',
-        args: 'storescp_cmd=' + storescp_val,
+        args: 'storescp_cmd=' + storescp_val +
+              '&incoming_dir' + incoming_dir_val,
         log: $('<p></p>'),
         success: function (retVal) {
             midas.createNotice(retVal.data.message, 4000);
         },
-        error: function (retVal) {
-            midas.createNotice(retVal.message, 4000, 'error');
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            midas.createNotice("Execution of storescp stop script failed!", 3000, 'error');
+            $('textarea#apicall_failure_reason').html(XMLHttpRequest.message);
+            $('div#apicall_failure').show();
+            $('div#hideError').show();
         },
         complete: function() {
             midas.dicomuploader.checkStatus();
@@ -73,8 +81,8 @@ midas.dicomuploader.checkStatus = function () {
              $('div#start_uploader_user').hide();
              }
         },
-        error: function (retVal) {
-            midas.createNotice(retVal.message, 4000, 'error');
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            midas.createNotice(XMLHttpRequest.message, 3000, 'error');
         }
     });
 };
@@ -156,6 +164,11 @@ $(document).ready(function() {
         $('input.stopUploaderNo').unbind('click').click(function () {
             $( "div.MainDialog" ).dialog('close');
         });
+    });
+
+    $('div#hideError').click(function() {
+        $('div#hideError').hide();
+        $('div#apicall_failure').hide();
     });
 
 });

@@ -53,8 +53,7 @@ class Dicomuploader_UploaderComponent extends AppComponent
       {
       throw new Zend_Exception("couldn't create dir ".$default_reception_dir);
       }
-    $processing_dir = $default_reception_dir . '/processing';
-    KWUtils::mkDir($processing_dir, 0777);
+
     return $default_reception_dir;
   }
 
