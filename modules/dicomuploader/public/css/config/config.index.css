@@ -8,3 +8,8 @@ span#not_running_status{
   font-weight: bold;
   color: #C80000;
 }
+
+textarea#apicall_failure_reason{
+  font-weight: bold;
+  color: #C80000;
+}
