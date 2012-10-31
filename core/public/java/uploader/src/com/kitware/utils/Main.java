@@ -53,7 +53,9 @@ public class Main extends JApplet
   private File[] files;
   private long[] fileLengths;
   private int index = 0;
-  private long uploadedBytes = 0;
+  private long lastTopLevelDownloadOffset = 0;
+  private long currentSize = 0;
+  private long transferredBytes = 0;
   private long totalSize = 0;
   private long totalTransferred = 0;
   private UploadThread uploadThread = null;
@@ -132,7 +134,7 @@ public class Main extends JApplet
     fileCountLabel = new JLabel(FILECOUNT_LABEL_TITLE);
     bytesTransferredLabel = new JLabel(BYTE_TRANSFERRED_LABEL_TITLE + "0 bytes");
 
-    stopButton = new JButton("Stop");
+    stopButton = new JButton("Pause");
     stopButton.setEnabled(false);
 
     resumeButton = new JButton("Resume");
@@ -166,7 +168,7 @@ public class Main extends JApplet
       {
       public void actionPerformed(ActionEvent evt)
         {
-        resumeButtonActionPerformed(evt);
+        resumeDownload(evt);
         }
       });
     buttonPanel.add(resumeButton);
@@ -175,7 +177,7 @@ public class Main extends JApplet
       {
         public void actionPerformed(ActionEvent evt)
           {
-          stopButtonActionPerformed(evt);
+          pauseDownload(evt);
           }
       });
     buttonPanel.add(stopButton);
@@ -189,7 +191,6 @@ public class Main extends JApplet
     JPanel labelPanel = new JPanel();
     labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
     labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-    labelPanel.add(fileCountLabel);
     labelPanel.add(fileNameLabel);
     labelPanel.add(fileSizeLabel);
     labelPanel.add(bytesTransferredLabel);
@@ -506,7 +507,7 @@ public class Main extends JApplet
 
   public void setUploadProgress(int index, long value)
     {
-    this.uploadedBytes = value;
+    this.transferredBytes = value;
     increaseUploadProgress(index, 0);
     }
 
@@ -517,9 +518,37 @@ public class Main extends JApplet
 
   public void increaseUploadProgress(int index, int value)
     {
-    this.uploadedBytes += value;
-    int progress = (int) (100.0 * (double) this.uploadedBytes / (double) this.fileLengths[index]);
+    this.transferredBytes += value;
+    int progress = (int) (100.0 * (double) this.transferredBytes / (double) this.fileLengths[index]);
     this.progressBar.setValue(progress);
+    }
+
+  public void increaseDownloadProgress(long amount)
+    {
+    this.totalTransferred += amount;
+    this.transferredBytes += amount;
+    int totalProgress = (int) (100.0 * (double) this.totalTransferred / (double) this.totalSize);
+    this.progressBar.setValue(totalProgress);
+    bytesTransferredLabel.setText(BYTE_TRANSFERRED_LABEL_TITLE
+        + Utility.bytesToString(this.transferredBytes));
+    totalTransferredLabel.setText(TOTAL_TRANSFERRED_LABEL_TITLE
+        + Utility.bytesToString(this.totalTransferred));
+    }
+
+  public void resetCurrentDownload(long size)
+    {
+    if(size < 0)
+      {
+      this.fileSizeLabel.setText(FILESIZE_LABEL_TITLE + "-");
+      this.bytesTransferredLabel.setText(BYTE_TRANSFERRED_LABEL_TITLE + "-");
+      }
+    else
+      {
+      this.fileSizeLabel.setText(FILESIZE_LABEL_TITLE + Utility.bytesToString(size));
+      this.bytesTransferredLabel.setText(BYTE_TRANSFERRED_LABEL_TITLE + "0 bytes");
+      }
+    this.currentSize = size;
+    this.transferredBytes = 0;
     }
 
   public void setProgressIndeterminate(boolean value)
@@ -571,7 +600,7 @@ public class Main extends JApplet
         this.resumeButton.setEnabled(false);
 
         // initialize upload details
-        this.uploadedBytes = 0;
+        this.transferredBytes = 0;
 
         // progress bar setup
         this.progressBar.setMinimum(0);
@@ -633,7 +662,7 @@ public class Main extends JApplet
         this.resumeButton.setEnabled(false);
 
         // initialize upload details
-        this.uploadedBytes = 0;
+        this.transferredBytes = 0;
 
         // progress bar setup
         this.progressBar.setMinimum(0);
@@ -656,7 +685,40 @@ public class Main extends JApplet
     stopButton.setEnabled(false);
     resumeButton.setEnabled(true);
     uploadThread.forceClose();
-    uploadThread.interrupt();
+    }
+
+  public void pauseDownload(ActionEvent evt)
+    {
+    stopButton.setEnabled(false);
+    downloadThread.forceClose();
+    resumeButton.setEnabled(true);
+    }
+
+  public void resumeDownload(ActionEvent evt)
+    {
+    Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] resume button clicked");
+    this.setEnableResumeButton(false);
+    this.totalTransferred = this.lastTopLevelDownloadOffset;
+    this.increaseDownloadProgress(0);
+
+    int currItem = 0;
+    int currFolder = 0;
+    if(this.downloadThread != null)
+      {
+      currItem = this.downloadThread.getCurrentItem();
+      currFolder = this.downloadThread.getCurrentFolder();
+      }
+    this.downloadThread = new DownloadThread(this, this.folderIds, this.itemIds);
+    this.downloadThread.setCurrentItem(currItem);
+    this.downloadThread.setCurrentFolder(currFolder);
+    this.downloadThread.start();
+    this.setEnableStopButton(true);
+    
+    }
+
+  public void markTopLevelDownloadComplete()
+    {
+    this.lastTopLevelDownloadOffset = this.totalTransferred;
     }
 
   public void resumeButtonActionPerformed(ActionEvent evt)
