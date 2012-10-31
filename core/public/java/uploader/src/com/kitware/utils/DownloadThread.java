@@ -61,7 +61,7 @@ public class DownloadThread extends Thread
         {
         if(!folderIds[i].trim().equals(""))
           {
-          this.downloadFolderRecursive(folderIds[i], dest);
+          this.downloadFolderRecursive(folderIds[i], this.getFolderName(folderIds[i]), dest);
           }
         }
       for(int i = 0; i < itemIds.length; i++)
@@ -81,14 +81,122 @@ public class DownloadThread extends Thread
     }
 
   /**
-   * Download a folder recursively into the destination directory
-   * @param folderId
-   * @param directory
+   * Helper method to get the http response as a string.  Don't use for large responses,
+   * just smallish text ones.
    * @return
    */
-  private void downloadFolderRecursive(String folderId, File directory) throws JavaUploaderException
+  private String getResponseText() throws IOException
     {
-    
+    InputStream respStream = conn.getInputStream();
+    String resp = "";
+    int len;
+    byte[] buf = new byte[1024];
+    while((len = respStream.read(buf, 0, 1024)) != -1)
+      {
+      resp += new String(buf, 0, len);
+      }
+    return resp;    
+    }
+
+  /**
+   * Given the id of the folder, return its name
+   * @param folderId
+   * @return
+   * @throws JavaUploaderException
+   */
+  private String getFolderName(String folderId) throws JavaUploaderException
+    {
+    String url = this.baseURL + "folder/getname?id=" + folderId;
+    try
+      {
+      URL urlObj = Utility.buildURL("GetFolderName", url);
+      conn = (HttpURLConnection) urlObj.openConnection();
+      conn.setUseCaches(false);
+      conn.setRequestMethod("GET");
+      conn.setRequestProperty("Connection", "close");
+      conn.setRequestProperty("Host", urlObj.getHost());
+
+      if (conn.getResponseCode() != 200)
+        {
+        throw new JavaUploaderException("Exception occurred on server when requesting folder name for id="+folderId);
+        }
+      
+      return this.getResponseText().trim();
+      }
+    catch (IOException e)
+      {
+      throw new JavaUploaderException(e);
+      }
+    finally
+      {
+      conn.disconnect();
+      }
+    }
+
+  /**
+   * Download a folder recursively into the destination directory
+   * @param folderId
+   * @param name
+   * @param directory
+   */
+  private void downloadFolderRecursive(String folderId, String name, File directory) throws JavaUploaderException
+    {
+    String url = this.baseURL + "folder/javachildren?id=" + folderId;
+    // TODO update parent UI current resource name and count
+
+    File newDir = new File(directory, name);
+    if(!newDir.exists())
+      {
+      if(!newDir.mkdir())
+        {
+        throw new JavaUploaderException("Could not create directory: "+newDir.getAbsolutePath());
+        }
+      }
+
+    try
+      {
+      URL urlObj = Utility.buildURL("GetFolderChildren", url);
+      conn = (HttpURLConnection) urlObj.openConnection();
+      conn.setUseCaches(false);
+      conn.setRequestMethod("GET");
+      conn.setRequestProperty("Connection", "close");
+      conn.setRequestProperty("Host", urlObj.getHost());
+
+      if (conn.getResponseCode() != 200)
+        {
+        throw new JavaUploaderException("Exception occurred on server when requesting children for id="+folderId);
+        }
+      
+      String[] resp = this.getResponseText().split("\n");
+
+      for(String line : resp)
+        {
+        line = line.trim();
+        if(line.equals(""))
+          {
+          continue;
+          }
+        String[] tokens = line.split(" ", 3);
+
+        if(tokens[0].equals("f")) //folder
+          {
+          this.downloadFolderRecursive(tokens[1], tokens[2], newDir);
+          }
+        else //item
+          {
+          this.downloadItem(tokens[1], newDir);
+          }
+        }
+      
+      }
+    catch (IOException e)
+      {
+      throw new JavaUploaderException(e);
+      }
+    finally
+      {
+      conn.disconnect();
+      }
     }
 
   /**
@@ -169,10 +277,10 @@ public class DownloadThread extends Thread
         {
         Utility.log(Utility.LOG_LEVEL.WARNING, "[CLIENT] Catch IOException:"
             + IOEXCEPTION_ERROR_WRITING_REQUEST_BODY_TO_SERVER
-            + " => Enable ResumeUpload");
-        //this.uploader.setEnableResumeButton(true);
-        //this.uploader.setEnableUploadButton(false);
-        //this.uploader.setEnableStopButton(false);
+            + " => Enable Resume");
+        this.parentUI.setEnableResumeButton(true);
+        this.parentUI.setEnableUploadButton(false);
+        this.parentUI.setEnableStopButton(false);
         }
       else
         {
