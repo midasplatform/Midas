@@ -344,7 +344,6 @@ class UploadComponent extends AppComponent
       throw new Zend_Exception('Parent permissions errors');
       }
 
-
     if($itemRevisionDao == null)
       {
       Zend_Loader::loadClass("ItemRevisionDao", BASE_PATH . '/core/models/dao');
@@ -379,7 +378,6 @@ class UploadComponent extends AppComponent
       $itemRevisionDao->setLicenseId($license);
       $itemRevisionModel->save($itemRevisionDao);
       }
-
 
     // Add bitstreams to the revision
     Zend_Loader::loadClass('BitstreamDao', BASE_PATH . '/core/models/dao');

@@ -10,7 +10,8 @@ midas.upload.revision = {};
 midas.upload.revision.sendFormToJavaSession = function () {
     $.post(json.global.webroot+'/upload/javarevisionsession', {
         changes: $('textarea[name=revisionChanges]:last').val(),
-        license: $('select[name=licenseSelect]:last').val()
+        license: $('select[name=licenseSelect]:last').val(),
+        itemId: json.item.item_id
     });
 }
 

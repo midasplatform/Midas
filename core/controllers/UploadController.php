@@ -181,13 +181,28 @@ class UploadController extends AppController
     $this->disableLayout();
     $this->disableView();
 
-    session_start();
-
     $changes = $this->_getParam('changes');
     $license = $this->_getParam('license');
+    $itemId = $this->_getParam('itemId');
+    $item = $this->Item->load($itemId);
+    if(!isset($itemId) || !$item)
+      {
+      throw new Zend_Exception('Invalid itemId', 404);
+      }
+    $rev = $this->Item->getLastRevision($item);
+    if($rev)
+      {
+      $revNumber = $rev->getRevision() + 1;
+      }
+    else
+      {
+      $revNumber = 1;
+      }
+
+    session_start();
     $this->userSession->JavaUpload->changes = $changes;
     $this->userSession->JavaUpload->license = $license;
-
+    $this->userSession->JavaUpload->revNumber = $revNumber;
     session_write_close();
     }
 
@@ -531,12 +546,20 @@ class UploadController extends AppController
         {
         $license = null;
         }
+      if(isset($this->userSession->JavaUpload->revNumber))
+        {
+        $revNumber = $this->userSession->JavaUpload->revNumber;
+        }
+      else
+        {
+        $revNumber = 1;
+        }
 
       try
         {
-        $item = $this->Component->Upload->createNewRevision($this->userSession->Dao, $data['filename'],
-                                                            $data['path'], $changes, $parentId, null,
-                                                            $license, $data['md5'], (bool)$testingMode);
+        $this->Component->Upload->createNewRevision($this->userSession->Dao, $data['filename'],
+                                                    $data['path'], $changes, $parentId, $revNumber,
+                                                    $license, $data['md5'], (bool)$testingMode);
         }
       catch(Exception $e)
         {
