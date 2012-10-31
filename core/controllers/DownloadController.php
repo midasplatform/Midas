@@ -416,7 +416,7 @@ class DownloadController extends AppController
       {
       $this->view->host = 'localhost';
       }
-    $this->view->header = 'Large Data Download Applet';
+    $this->view->header = 'Large Data Downloader';
     }
 
   /**

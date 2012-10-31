@@ -38,6 +38,63 @@ class FolderController extends AppController
     $this->view->activemenu = 'browse'; // set the active menu
     }  // end init()
 
+  /**
+   * Simply prints the name of the requested folder.  Used by the large download applet
+   */
+  function getnameAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    $folderId = $this->_getParam('id');
+    if(!isset($folderId))
+      {
+      throw new Zend_Exception('Must pass id parameter');
+      }
+    $folder = $this->Folder->load($folderId);
+    if(!$folder)
+      {
+      throw new Zend_Exception('Invalid folderId', 404);
+      }
+    if(!$this->Folder->policyCheck($folder, $this->userSession->Dao))
+      {
+      throw new Zend_Exception('Read permission required', 403);
+      }
+    print $folder->getName();
+    }
+
+  /**
+   * Echoes the children of the folder (filtered on permissions) for the large download applet.
+   */
+  function javachildrenAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    $folderId = $this->_getParam('id');
+    if(!isset($folderId))
+      {
+      throw new Zend_Exception('Must pass id parameter');
+      }
+    $folder = $this->Folder->load($folderId);
+    if(!$folder)
+      {
+      throw new Zend_Exception('Invalid folderId', 404);
+      }
+    if(!$this->Folder->policyCheck($folder, $this->userSession->Dao))
+      {
+      throw new Zend_Exception('Read permission required', 403);
+      }
+    $childFolders = $this->Folder->getChildrenFoldersFiltered($folder, $this->userSession->Dao, MIDAS_POLICY_READ);
+    $childItems = $this->Folder->getItemsFiltered($folder, $this->userSession->Dao, MIDAS_POLICY_READ);
+
+    foreach($childFolders as $childFolder)
+      {
+      print 'f '.$childFolder->getKey().' '.$childFolder->getName()."\n";
+      }
+    foreach($childItems as $childItem)
+      {
+      print 'i '.$childItem->getKey().' '.$childItem->getName()."\n";
+      }
+    }
 
   /** Edit Folder (ajax) */
   function editAction()
