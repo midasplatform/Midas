@@ -7,6 +7,11 @@ import signal
 import logging
 
 from DICOMHandler import DICOMListener
+from logsetting import getHandler
+
+# create logger
+logger = logging.getLogger('uploaderWrapper')
+logger.setLevel(logging.INFO)
 
 #########################################################
 #
@@ -20,12 +25,12 @@ class Usage(Exception):
     def __init__(self, msg):
         self.msg = msg
 
-
 def killUploader(application, cmd):
     """
     Kill uploader associated processes
     """
-    for line in os.popen("ps ax | grep %s" % cmd):
+    logger.info("Stopping DICOM listener ...")
+    for line in os.popen("ps ax"):
         fields = line.split()
         pid = fields[0]
         process = fields[4]
@@ -36,8 +41,9 @@ def killUploader(application, cmd):
             continue
         elif process.find('python') == 0 or process.find(cmd) == 0 or shell_called_process.find(cmd) == 0:
             #Kill the Process. Change signal.SIGHUP to signal.SIGKILL if you like
-            #TODO: logging
             os.kill(int(pid), signal.SIGHUP)
+            logger.info("killed this process -  %s" % line)
+    logger.info("DICOM listener stopped")
 
 def main():
     """
@@ -93,12 +99,17 @@ def main():
             apikey = arg
         elif opt in ("-d", "--dest"):
             dest_folder = arg
+
+    # set up logger
+    logger.addHandler(getHandler(incoming_dir.strip()))
+
     # start/stop storescup listener
     myListener = DICOMListener()
     if start:
         # callback command used by storescp '--eostudy-timeout' option
         callback_cmd = "'python %s -c %s -i %s -u %s -e %s -a %s -d %s'" % ( \
           script_path, dcm2xml_cmd, incoming_dir, url, user_email, apikey, dest_folder)
+        logger.info("Starting DICOM listener ...")
         retcode = myListener.start(incoming_dir, callback_cmd, \
           storescp_cmd, storescp_port, storescp_timeout)
         return retcode

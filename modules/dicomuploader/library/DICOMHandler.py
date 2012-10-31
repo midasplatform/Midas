@@ -3,6 +3,12 @@
 import subprocess
 import logging
 
+from logsetting import getHandler
+
+# create logger
+logger = logging.getLogger('DICOMHandler')
+logger.setLevel(logging.INFO)
+
 #########################################################
 #
 """
@@ -30,7 +36,6 @@ class DICOMCommand(object):
         # start the cmd!
         self.running = True
         p = subprocess.Popen(self.cmd + ' ' + self.args, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
-        #TODO: logging stdout and stderr
 
     def stop(self, cmd):
         # dummy function, not kill process
@@ -45,7 +50,6 @@ class DICOMListener(DICOMCommand):
     def __init__(self):
         super(DICOMListener,self).__init__()
 
-
     def __del__(self):
         super(DICOMListener,self).__del__()
 
@@ -57,12 +61,14 @@ class DICOMListener(DICOMCommand):
         self.port = port
         self.studyTimeout = studyTimeout #seconds
         # start the server!
-        #TODO: logging
         args = str(self.port) + ' -ac --eostudy-timeout ' + str(self.studyTimeout) \
             + ' --output-directory ' + self.incomingDir \
             + ' --sort-on-study-uid  \'\'' \
             + ' --exec-on-eostudy ' + self.onReceptionCallback
         retcode = super(DICOMListener,self).start(self.storeSCPExecutable, args)
+        # set up logger
+        logger.addHandler(getHandler(self.incomingDir.strip()))
+        logger.info("Started DICOM listener with these args: %s" % args)
         return retcode
 
     def stop(self, storeSCPExecutable='storescp'):

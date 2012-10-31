@@ -119,6 +119,16 @@ class Dicomuploader_ApiComponent extends AppComponent
       $uploaderComponent = MidasLoader::loadComponent('Uploader', 'dicomuploader');
       $incoming_dir = $uploaderComponent->getDefaultReceptionDir();
       }
+    $processing_dir = $incoming_dir . '/processing';
+    if (!file_exists($processing_dir))
+      {
+      KWUtils::mkDir($processing_dir, 0777);
+      }
+    $log_dir = $incoming_dir . '/logs';
+    if (!file_exists($log_dir))
+      {
+       KWUtils::mkDir($log_dir, 0777);
+      }
 
     $python_cmd = 'python';
     $script_path = BASE_PATH .'/modules/dicomuploader/library/uploader.py';
@@ -136,12 +146,13 @@ class Dicomuploader_ApiComponent extends AppComponent
     $storescp_params[] = '-a ' . $api_key;
     $storescp_params[] = '-d ' . $dest_folder;
     $storescp_command = KWUtils::prepareExeccommand($python_cmd, $storescp_params);
-    KWUtils::exec($storescp_command, $ouptut, '', $returnVal);
+    KWUtils::exec($storescp_command, $output, '', $returnVal);
     $ret = array();
     $ret['message'] = 'Execution of storescp start script succeeded!';
     if($returnVal)
       {
-      $ret['message'] = 'Execution of storescp start script failed!';
+      $exception_string = "Execution of storescp start script failed! \n Reason:" . implode("\n", $output);
+      throw new Zend_Exception(htmlspecialchars($exception_string, ENT_QUOTES), MIDAS_INVALID_POLICY);
       }
 
     return $ret;
@@ -192,6 +203,8 @@ class Dicomuploader_ApiComponent extends AppComponent
  /**
    * Stop DICOM file uploader
    * @param storescp_cmd (Optional) The command to run storescp
+   * @param incoming_dir(Optional)
+   *   The incoming directory to receive and process DICOM files
    * @return
    */
   function stop($args)
@@ -211,17 +224,35 @@ class Dicomuploader_ApiComponent extends AppComponent
       return $ret;
       }
 
+    $incoming_dir = '';
+    if(!empty($args['incoming_dir']))
+      {
+      $incoming_dir = $args['incoming_dir'];
+      }
+    else
+      {
+      $uploaderComponent = MidasLoader::loadComponent('Uploader', 'dicomuploader');
+      $incoming_dir = $uploaderComponent->getDefaultReceptionDir();
+      }
+    $log_dir = $incoming_dir . '/logs';
+    if (!file_exists($log_dir))
+      {
+       KWUtils::mkDir($log_dir, 0777);
+      }
+
     $python_cmd = 'python';
     $storescp_params = array();
     $storescp_params[] = BASE_PATH .'/modules/dicomuploader/library/uploaderWrapper.py';
     $storescp_params[] = '--stop';
+    $storescp_params[] = '-i ' . $incoming_dir;
     $storescp_command = KWUtils::prepareExeccommand($python_cmd, $storescp_params);
-    KWUtils::exec($storescp_command, $ouptut, '', $returnVal);
+    KWUtils::exec($storescp_command, $output, '', $returnVal);
 
     $ret['message'] = 'Execution of storescp stop script succeeded!';
     if($returnVal)
       {
-      $ret['message'] = 'Execution of storescp stop script failed!';
+      $exception_string = "Execution of storescp stop script failed! \n Reason:" . implode("\n", $output);
+      throw new Zend_Exception(htmlspecialchars($exception_string, ENT_QUOTES), MIDAS_INVALID_POLICY);
       }
 
     return $ret;
