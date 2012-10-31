@@ -1,39 +1,36 @@
 $("#moveTable").treeTable({
-  callbackSelect: selectFolderCallbackSelect,
-  callbackDblClick: selectFolderCallbackDblClick,
-  callbackReloadNode: selectFolderCallbackReloadNode,
-  callbackCheckboxes: selectFolderCallbackCheckboxes,
-  callbackCustomElements: selectFolderCallbackCustomElements
-  });
+    callbackSelect: selectFolderCallbackSelect,
+    callbackDblClick: selectFolderCallbackDblClick,
+    callbackReloadNode: selectFolderCallbackReloadNode,
+    callbackCheckboxes: selectFolderCallbackCheckboxes,
+    callbackCustomElements: selectFolderCallbackCustomElements
+});
 $("div.MainDialogContent img.tableLoading").hide();
 $("table#moveTable").show();
 
-if($('div.MainDialogContent #selectElements') != undefined)
-  {
-  $('div.MainDialogContent #selectElements').click(function(){
-    var folderName = $('#selectedDestination').html();
-    var folderId = $('#selectedDestinationHidden').val();
-    midas.doCallback('CALLBACK_CORE_UPLOAD_FOLDER_CHANGED', {folderName: folderName, folderId: folderId});
+if($('div.MainDialogContent #selectElements') != undefined) {
+    $('div.MainDialogContent #selectElements').click(function () {
+        var folderName = $('#selectedDestination').html();
+        var folderId = $('#selectedDestinationHidden').val();
+        midas.doCallback('CALLBACK_CORE_UPLOAD_FOLDER_CHANGED', {folderName: folderName, folderId: folderId});
 
-    $('#destinationUpload').html(folderName);
-    $('#destinationId').val(folderId);
-    $('.destinationUpload').html(folderName);
-    $('.destinationId').val(folderId);
-    $( "div.MainDialog" ).dialog('close');
+        $('#destinationUpload').html(folderName);
+        $('#destinationId').val(folderId);
+        $('.destinationUpload').html(folderName);
+        $('.destinationId').val(folderId);
+        $( "div.MainDialog" ).dialog('close');
 
-    if(typeof folderSelectionCallback == 'function')
-      {
-      folderSelectionCallback(folderName, folderId);
-      }
-    return false;
+        if(typeof folderSelectionCallback == 'function') {
+            folderSelectionCallback(folderName, folderId);
+        }
+        return false;
     });
-  }
+}
 
 //dependance: common/browser.js
 var ajaxSelectRequest = '';
-function selectFolderCallbackSelect(node) {
+function selectFolderCallbackSelect (node) {
     var selectedElement = node.find('span:eq(1)').html();
-
     var parent = true;
     var current = node;
 
@@ -52,7 +49,8 @@ function selectFolderCallbackSelect(node) {
     }
 
     $('div.MainDialogContent #createFolderContent').hide();
-    if(node.attr('element') == -1 || node.attr('element') == -2) {
+    if(node.hasClass('userTopLevel') || node.hasClass('community') ||
+       parseInt(node.attr('policy')) < parseInt($('div.MainDialogContent #defaultPolicy').val())) {
         $('div.MainDialogContent #selectElements').attr('disabled', 'disabled');
         $('div.MainDialogContent #createFolderButton').hide();
     }
@@ -70,76 +68,62 @@ function selectFolderCallbackSelect(node) {
 $('#moveTable ajaimg.infoLoading').show();
 $('div.MainDialogContent div.ajaxInfoElement').html('');
 
-$('div.MainDialogContent #createFolderButton').click(function(){
-  if($('div.MainDialogContent #createFolderContent').is(':hidden'))
-    {
-    $('div.MainDialogContent #createFolderContent').html('<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />').show();
-    var url = json.global.webroot+'/folder/createfolder?folderId='+$('#selectedDestinationHidden').val();
-    $('div.MainDialogContent #createFolderContent').load(url);
+$('div.MainDialogContent #createFolderButton').click(function () {
+    if($('div.MainDialogContent #createFolderContent').is(':hidden')) {
+        $('div.MainDialogContent #createFolderContent').html('<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />').show();
+        var url = json.global.webroot+'/folder/createfolder?folderId='+$('#selectedDestinationHidden').val();
+        $('div.MainDialogContent #createFolderContent').load(url);
     }
-  else
-    {
-    $('div.MainDialogContent #createFolderContent').hide();
+    else {
+        $('div.MainDialogContent #createFolderContent').hide();
     }
-  });
+});
 
 
 var newFolder = false;
-function successCreateFolderCallback(responseText, statusText, xhr, form)
-  {
-  jsonResponse = jQuery.parseJSON(responseText);
-  if(jsonResponse==null)
-    {
-    midas.createNotice('Error',4000);
-    return;
+function successCreateFolderCallback (responseText, statusText, xhr, form) {
+    var jsonResponse = jQuery.parseJSON(responseText);
+    if(jsonResponse==null) {
+        midas.createNotice('Error',4000);
+        return;
     }
-  if(jsonResponse[0])
-    {
-    midas.createNotice(jsonResponse[1],4000);
-    var node = $('#moveTable tr[element='+jsonResponse[2].folder_id+']');
-    node.reload();
+    if(jsonResponse[0]) {
+        midas.createNotice(jsonResponse[1],4000);
+        var node = $('#moveTable tr[element='+jsonResponse[2].folder_id+']');
+        node.reload();
 
-    $('div.MainDialogContent #createFolderContent').hide();
+        $('div.MainDialogContent #createFolderContent').hide();
 
-    newFolder = jsonResponse[3].folder_id;
+        newFolder = jsonResponse[3].folder_id;
     }
-  else
-    {
-    midas.createNotice(jsonResponse[1],4000);
+    else {
+        midas.createNotice(jsonResponse[1],4000);
     }
-  }
+}
 
-function selectFolderCallbackReloadNode(mainNode)
-  {
-  if(newFolder != false)
-    {
-    callbackSelect($('#moveTable tr[element='+newFolder+']'));
+function selectFolderCallbackReloadNode (mainNode) {
+    if(newFolder != false) {
+        callbackSelect($('#moveTable tr[element='+newFolder+']'));
     }
-  }
+}
 
-function selectFolderCallbackDblClick(node)
-  {
-  //  midas.genericCallbackDblClick(node);
-  }
+function selectFolderCallbackDblClick (node) {
+}
 
-function selectFolderCallbackCheckboxes(node)
-  {
-  //  midas.genericCallbackCheckboxes(node);
-  }
+function selectFolderCallbackCheckboxes (node) {
+}
 
-function selectFolderCallbackCustomElements(node, elements) {
+function selectFolderCallbackCustomElements (node, elements) {
     var i = 1;
     var id = node.attr('id');
 
     var padding = parseInt(node.find('td:first').css('padding-left').slice(0,-2));
     var html = '';
     $.each(elements.folders, function(index, value) {
-        if(value.policy >= parseInt($('div.MainDialogContent #defaultPolicy').val())) {
-          html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value.folder_id+"'type='folder' policy='"+value.policy+"' element='"+value.folder_id+"'>";
-          html+= "  <td><span class='folder'>"+trimName(value.name, padding)+"</span></td>";
-          html+= "</tr>";
-          i++;
-          }
+        html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value.folder_id+"'type='folder' policy='"+value.policy+"' element='"+value.folder_id+"'>";
+        html+= "  <td><span class='folder'>"+trimName(value.name, padding)+"</span></td>";
+        html+= "</tr>";
+        i++;
     });
     return html;
 }
