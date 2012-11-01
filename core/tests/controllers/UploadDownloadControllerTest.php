@@ -271,4 +271,62 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $this->assertTrue($lock instanceof ActivedownloadDao);
     $this->assertNotEquals($lock->getKey(), $oldLock->getKey());
     }
+
+  /** Test the checksize method */
+  function testChecksizeAction()
+    {
+    $adminUser = $this->User->load(3);
+    // anon user should throw an exception if no permission on the folder
+    $this->dispatchUri('/download/checksize?folderIds=1002', null, true);
+
+    $this->resetAll();
+    $this->dispatchUri('/download/checksize?folderIds=1001', $adminUser);
+    $json = json_decode($this->getBody(), true);
+    $this->assertTrue(isset($json['action']));
+    $this->assertEquals($json['action'], 'download'); //below the threshold
+
+    $this->resetAll();
+    $this->dispatchUri('/download/checksize?folderIds=1002', $adminUser);
+    $json = json_decode($this->getBody(), true);
+    $this->assertTrue(isset($json['action']));
+    $this->assertEquals($json['action'], 'download'); //below the threshold
+
+    $this->resetAll();
+    $this->dispatchUri('/download/checksize?itemIds=1000', null);
+    $json = json_decode($this->getBody(), true);
+    $this->assertTrue(isset($json['action']));
+    $this->assertEquals($json['action'], 'download'); //below the threshold
+
+    $this->resetAll();
+    $item = $this->Item->load(1000);
+    $item->setSizebytes(1342177280); //1.25 GB
+    $this->Item->save($item);
+    $this->dispatchUri('/download/checksize?itemIds=1000', null);
+    $json = json_decode($this->getBody(), true);
+    $this->assertTrue(isset($json['action']));
+    $this->assertEquals($json['action'], 'promptApplet'); //now above the threshold
+    $this->assertEquals($json['sizeStr'], '1.3 GB'); //should round to 1 decimal place
+    }
+
+  /** Test rendering of the large downloader view */
+  function testAppletAction()
+    {
+    $adminUser = $this->User->load(3);
+    $this->dispatchUri('/download/applet?folderIds=1002', null, true);
+
+    $this->resetAll();
+    $this->dispatchUri('/download/applet?folderIds=1002', $adminUser);
+    $this->assertQuery('param[name="itemIds"]');
+    $this->assertQuery('param[name="folderIds"][value="1002"]');
+    $this->assertQuery('param[name="totalSize"][value="0"]');
+
+    $this->resetAll();
+    $item = $this->Item->load(1000);
+    $item->setSizebytes(1342177280); //1.25 GB
+    $this->Item->save($item);
+    $this->dispatchUri('/download/applet?itemIds=1000', $adminUser);
+    $this->assertQuery('param[name="itemIds"][value="1000"]');
+    $this->assertQuery('param[name="folderIds"]');
+    $this->assertQuery('param[name="totalSize"][value="1342177280"]');
+    }
   }
