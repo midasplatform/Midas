@@ -39,7 +39,7 @@ foreach($cssArray as $module => $list)
 
   <div class ="genericWrapperTopRight">
       <div style="float:right;">
-        <button class="topDownloadButton" onclick="window.location.href='<?php echo $this->webroot.'/download?items='.$this->itemDao->getKey(); ?>'">
+        <button class="topDownloadButton">
         <?php
         if($this->itemIsLink)
           {

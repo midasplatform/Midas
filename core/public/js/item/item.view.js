@@ -1,4 +1,34 @@
 $(document).ready(function() {
+    $('button.topDownloadButton').click(function () {
+        $.post(json.global.webroot+'/download/checksize', {
+            itemIds: json.item.item_id
+        }, function (text) {
+            var retVal = $.parseJSON(text);
+            if(retVal.action == 'download') {
+                window.location = json.global.webroot+'/download?items='+json.item.item_id;
+            }
+            else if(retVal.action == 'promptApplet') {
+                var html = 'Warning: you have requested a large download ('+retVal.sizeStr+') that might take a very long time to complete.';
+                html += ' It is recommended that you use the large data download applet in case your connection is interrupted. '+
+                'Would you like to use the applet?';
+                
+                html += '<div style="margin-top: 20px; float: right">';
+                html += '<input type="button" style="margin-left: 0px;" class="globalButton useLargeDataApplet" value="Yes, use large downloader"/>';
+                html += '<input type="button" style="margin-left: 10px;" class="globalButton useZipStream" value="No, use normal download"/>';
+                html += '</div>';
+                midas.showDialogWithContent('Large download requested', html, false, {width: 480});
+
+                $('input.useLargeDataApplet').unbind('click').click(function () {
+                    window.location = json.global.webroot+'/download/applet?itemIds='+json.item.item_id;
+                    $('div.MainDialog').dialog('close');
+                });
+                $('input.useZipStream').unbind('click').click(function () {
+                    window.location = json.global.webroot+'/download?items='+json.item.item_id;
+                    $('div.MainDialog').dialog('close');
+                });
+            }
+        });
+    });
     $('a.metadataDeleteLink img').fadeTo('fast', 0.4);
     $('a.metadataDeleteLink img').hover(function() {
         $(this).fadeTo('fast', 1.0);
