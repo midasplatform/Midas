@@ -26,47 +26,36 @@ class Visualize_Notification extends MIDAS_Notification
   /** init notification process*/
   public function init()
     {
-    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDasboard');
-    $this->addCallBack("CALLBACK_VISUALIZE_CAN_VISUALIZE", 'canVisualize');
-
-    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_BUTTON', 'getButton');
-
-    $this->addTask("TASK_VISUALIZE_PROCESSDATA", 'processParaviewData', "Create Screenshots and get Metadata. Parameters: Item, Revision");
-    $this->addEvent('EVENT_CORE_CREATE_THUMBNAIL', 'TASK_VISUALIZE_PROCESSDATA');
-
-    $this->addTask("TASK_CREATE_THREEJS_OBJECT", 'createThreejsObject', "Convert a vtk file to threejs binary file");
-    $this->addEvent('EVENT_CORE_UPLOAD_FILE', 'TASK_CREATE_THREEJS_OBJECT');
+    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
+    $this->addCallBack('CALLBACK_VISUALIZE_CAN_VISUALIZE', 'canVisualize');
+    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemViewLink');
     }//end init
 
-  /** Get the link to place in the item action menu */
-  public function getButton($params)
+  /** If this object is able to be slice viewed, we show a link for that */
+  public function getItemViewLink($params)
     {
-    if($this->canVisualize($params))
+    $item = $params['item'];
+    if($this->ModuleComponent->Main->canVisualizeWithSliceView($item))
       {
       $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
-      $html = '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-      $html .= "<a  href='".$webroot.'/visualize/wrapper/?itemId='.$params['item']->getKey()."'><img style='float:left;margin-right:2px;' alt='' src='".$webroot."/core/public/images/icons/view.png'/>";
-      $html .= $this->t('Preview');
-      $html .= "</a>";
-      $html .= '</div>';
+      $html = '<li><a href="'.$webroot.'/'.$this->moduleName.'/paraview/slice?itemId=';
+      $html .= $item->getKey().'"><img alt="" src="'.$webroot.'/modules/';
+      $html .= $this->moduleName.'/public/images/sliceView.png" /> Slice Visualization</a></li>';
+
+      $html .= '<li><a href="'.$webroot.'/'.$this->moduleName.'/paraview/volume?itemId=';
+      $html .= $item->getKey().'"><img alt="" src="'.$webroot.'/modules/';
+      $html .= $this->moduleName.'/public/images/volume.png" /> Volume Visualization</a></li>';
+
       return $html;
       }
-
-    return "";
-    }
-
-  /** createThreejsObject */
-  public function createThreejsObject($params)
-    {
-    $this->ModuleComponent->Main->convertToThreejs($params[1]);
-    return;
-    }
-
-  /** createThumbnail */
-  public function processParaviewData($params)
-    {
-    $this->ModuleComponent->Main->processParaviewData($params[0]);
-    return;
+    else if($this->ModuleComponent->Main->canVisualizeWithSurfaceView($item))
+      {
+      $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
+      $html = '<li><a href="'.$webroot.'/'.$this->moduleName.'/paraview/surface?itemId=';
+      $html .= $item->getKey().'"><img alt="" src="'.$webroot.'/modules/';
+      $html .= $this->moduleName.'/public/images/pqUnstructuredGrid16.png" /> Surface Visualization</a></li>';
+      return $html;
+      }
     }
 
   /** can visualize?*/
@@ -76,7 +65,7 @@ class Visualize_Notification extends MIDAS_Notification
     }
 
   /** generate Dasboard information */
-  public function getDasboard()
+  public function getDashboard()
     {
     $modulesConfig = Zend_Registry::get('configsModules');
     $useparaview = $modulesConfig['visualize']->useparaview;

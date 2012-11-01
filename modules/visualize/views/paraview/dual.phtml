@@ -1,0 +1,74 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/paraview/paraview.dual.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.css" />
+
+<?php
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/get_modules.js');
+$this->headScript()->appendFile('/PWService/js/ParaViewWeb.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.dual.js');
+$this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/common.ajaxapi.js');
+
+/** Dynamic js library imports for action handlers */
+foreach($this->jsImports as $jsImport)
+  {
+  $this->headScript()->appendFile($jsImport);
+  }
+?>
+
+<div class="rendererWrapper">
+  <div id="leftRenderer">
+    <img class="leftLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+    <span id="leftLoadingStatus"></span>
+    <div id="leftRendererOverlay"></div>
+    <!-- The left renderer will be inserted here -->
+  </div>
+  <div id="rightRenderer">
+    <img class="rightLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+    <span id="rightLoadingStatus"></span>
+    <div id="rightRendererOverlay"></div>
+    <!-- The right renderer will be inserted here -->
+  </div>
+</div>
+
+<div class="slidersContainer">
+  <div class="sliceControlContainer">
+    <div id="sliceSlider"></div>
+    <div id="sliceInfo"></div>
+  </div>
+  <div class="windowControlContainer">
+    <div id="windowSlider"></div>
+    <div id="windowInfo"></div>
+  </div>
+</div>
+
+<!-- TEMPLATE: UI Action widget -->
+<button id="actionButtonTemplate" style="display: none;" class="actionButton actionInactive"></button>
+
+<!-- TEMPLATE: Fiducial point list dialog -->
+<div id="pointListDialogTemplate" style="display: none;">
+  <table class="pointListTable">
+    <thead>
+      <tr>
+        <th>Left image point</th><th>Right image point</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <div class="bottomButtons">
+    <button class="processButton">Process</button>
+    <button class="closeButton">Close</button>
+  </div>
+</div>
+

@@ -34,55 +34,43 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
       <h3>Visualize Configuration:</h3>
             <div >
               <label for='customtmp'>Temp directory</label>
-              {$this->configForm['customtmp']}<br/>
-               (if empty: ".BASE_PATH."/tmp/visualize)<br/><br/>
+              {$this->configForm['customtmp']}<br/><br/>
             </div>
             <div >
               <label for='useparaview'>Use ParaviewWeb server</label>
               {$this->configForm['useparaview']}<br/><br/>
             </div>
             <div >
-              <label for='userwebgl'>Enable Webgl</label>
+              <label for='userwebgl'>Enable WebGL viewer</label>
               {$this->configForm['userwebgl']}<br/><br/>
             </div>
             <div >
-              <label for='userwebgl'>Use Symlinks (instead of copying files. Only works with samba)</label>
+              <label for='userwebgl'>Use symlinks instead of copying</label>
               {$this->configForm['usesymlinks']}<br/><br/>
             </div>
             <div >
-              <label for='userwebgl'>PWapp URL</label>
+              <label for='pwapp'>Tomcat Root URL</label>
               {$this->configForm['pwapp']}<br/><br/>
             </div>
             <div >
-              <label for='userwebgl'>pvbatch location</label>
+              <label for='pvbatch'>pvbatch executable location</label>
               {$this->configForm['pvbatch']}<br/><br/>
             </div>
             <div >
               <label for='paraviewworkdir'>ParaviewWeb server Work Dir </label>
               {$this->configForm['paraviewworkdir']}
-              <br/>
-              (where the paraview server mount the Temp directory)
+              <br/><br/>
             </div>
           <div>
             {$this->configForm['submitConfig']}
           </div>
        </form>";
        ?>
-    <br/>
-    <br/>
-    If you want to use symlinks. Please enable "follow symlinks" option in you samba configuration (smb.conf):
-    <pre>
-    [foo]
-       comment = FooComment
-       path = /foo
-       public = yes
-       writable =  no
-       printable = no
-       follow symlinks = yes
-       guest ok = yes
-       wide links = yes
-       unix extensions = no
-    </pre>
+<br/>
+<p>
+  <b>Important note:</b> If you use ParaViewWeb, you must use the Midas Apache server as a proxy for it to prevent
+  cross-site scripting issues. Instructions to do so are <a href="http://www.paraview.org/Wiki/ParaViewWeb_with_Apache_as_front-end" target="blank">here</a>.
+</p>
 </div>
 
 
