@@ -24,21 +24,19 @@ midas.visualize.start = function () {
         }
     };
 
-    paraview.createSessionAsync("midas", "volume render","default", function () {
-        paraview.loadPlugins();
-
+    paraview.createSessionAsync('midas', 'volume render', 'default', function () {
         $('#loadingStatus').html('Reading image data from files...');
-        paraview.plugins.midascommon.AsyncOpenData(midas.visualize._dataOpened, {
+        paraview.callPluginMethod('midascommon', 'OpenData', {
             filename: json.visualize.url,
             otherMeshes: json.visualize.meshes
-        });
+        }, midas.visualize._dataOpened);
     });
 };
 
 /**
  * Helper callback for after the data file has been opened
  */
-midas.visualize._dataOpened = function (retVal) {
+midas.visualize._dataOpened = function (view, retVal) {
     midas.visualize.input = retVal.input;
     midas.visualize.bounds = retVal.imageData.Bounds;
     midas.visualize.meshes = retVal.meshes;
@@ -75,7 +73,7 @@ midas.visualize._dataOpened = function (retVal) {
         colorArrayName: json.visualize.colorArrayName
     };
     $('#loadingStatus').html('Initializing view state and renderer...');
-    paraview.plugins.midasvr.AsyncInitViewState(midas.visualize.initCallback, params);
+    paraview.callPluginMethod('midasvr', 'InitViewState', params, midas.visualize.initCallback);
 };
 
 /**
@@ -83,7 +81,7 @@ midas.visualize._dataOpened = function (retVal) {
  * Sets the return variables in the javascript global scope
  * for use in other functions, and starts the render window
  */
-midas.visualize.initCallback = function (retVal) {
+midas.visualize.initCallback = function (view, retVal) {
     midas.visualize.sof = retVal.sof;
     midas.visualize.lookupTable = retVal.lookupTable;
     midas.visualize.activeView = retVal.activeView;
@@ -137,15 +135,15 @@ midas.visualize.renderSubgrid = function (bounds) {
     var container = $('div.MainDialog');
     container.find('img.extractInProgress').show();
     container.find('button.extractSubgridApply').attr('disabled', 'disabled');
-    paraview.plugins.midasvr.AsyncExtractSubgrid(function(subgrid) {
+    paraview.callPluginMethod('midasvr', 'ExtractSubgrid', [
+        midas.visualize.input, bounds, midas.visualize.lookupTable,
+        midas.visualize.sof, json.visualize.colorArrayName, toHide
+    ], function(view, subgrid) {
         midas.visualize.subgrid = subgrid;
         container.find('img.extractInProgress').hide();
         container.find('button.extractSubgridApply').removeAttr('disabled');
         midas.visualize.forceRefreshView();
-        },
-      midas.visualize.input, bounds, midas.visualize.lookupTable,
-      midas.visualize.sof, json.visualize.colorArrayName, toHide
-    );
+    });
 };
 
 /**
@@ -323,11 +321,11 @@ midas.visualize.setupColorMapping = function () {
                   parseFloat(tokens[3]) / 255.0);
             });
             midas.visualize.colorMap = colorMap;
-            paraview.plugins.midascommon.AsyncUpdateColorMap(function() {
-                midas.visualize.forceRefreshView();
-              }, {
+            paraview.callPluginMethod('midascommon', 'UpdateColorMap', {
                 colorArrayName: json.visualize.colorArrayName,
                 colorMap: colorMap
+            } , function() {
+                midas.visualize.forceRefreshView();
             });
         });
     });
@@ -578,57 +576,69 @@ midas.visualize.setupExtractSubgrid = function () {
 
 midas.visualize.setupOverlay = function () {
     $('button.plusX').click(function () {
-        paraview.plugins.midascommon.AsyncSetCamera(function () {midas.visualize.forceRefreshView();}, {
+        paraview.callPluginMethod('midascommon', 'SetCamera', {
             cameraPosition: [
               midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
               midas.visualize.midJ,
               midas.visualize.midK],
             cameraViewUp: [0.0, 0.0, 1.0]
+        }, function () {
+            midas.visualize.forceRefreshView();
         });
     });
     $('button.minusX').click(function () {
-        paraview.plugins.midascommon.AsyncSetCamera(function () {midas.visualize.forceRefreshView();}, {
+        paraview.callPluginMethod('midascommon', 'SetCamera', {
             cameraPosition: [
               midas.visualize.midI + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
               midas.visualize.midJ,
               midas.visualize.midK],
             cameraViewUp: [0.0, 0.0, 1.0]
+        }, function () {
+            midas.visualize.forceRefreshView();
         });
     });
     $('button.plusY').click(function () {
-        paraview.plugins.midascommon.AsyncSetCamera(function () {midas.visualize.forceRefreshView();}, {
+        paraview.callPluginMethod('midascommon', 'SetCamera', {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
               midas.visualize.midK],
             cameraViewUp: [0.0, 0.0, 1.0]
+        }, function () {
+            midas.visualize.forceRefreshView();
         });
     });
     $('button.minusY').click(function () {
-        paraview.plugins.midascommon.AsyncSetCamera(function () {midas.visualize.forceRefreshView();}, {
+        paraview.callPluginMethod('midascommon', 'SetCamera', {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
               midas.visualize.midK],
             cameraViewUp: [0.0, 0.0, 1.0]
+        }, function () {
+            midas.visualize.forceRefreshView();
         });
     });
     $('button.plusZ').click(function () {
-        paraview.plugins.midascommon.AsyncSetCamera(function () {midas.visualize.forceRefreshView();}, {
+        paraview.callPluginMethod('midascommon', 'SetCamera', {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ,
               midas.visualize.midK - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim],
             cameraViewUp: [0.0, 1.0, 0.0]
+        }, function () {
+            midas.visualize.forceRefreshView();
         });
     });
     $('button.minusZ').click(function () {
-        paraview.plugins.midascommon.AsyncSetCamera(function () {midas.visualize.forceRefreshView();}, {
+        paraview.callPluginMethod('midascommon', 'SetCamera', {
             cameraPosition: [
               midas.visualize.midI,
               midas.visualize.midJ,
               midas.visualize.midK + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim],
             cameraViewUp: [0.0, 1.0, 0.0]
+        }, function () {
+            midas.visualize.forceRefreshView();
         });
     });
 };
