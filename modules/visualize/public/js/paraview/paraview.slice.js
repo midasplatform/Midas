@@ -29,17 +29,15 @@ midas.visualize.start = function () {
     };
 
     paraview.createSessionAsync("midas", "slice view","default", function () {
-        paraview.loadPlugins();
-
         $('#loadingStatus').html('Reading image data from files...');
-        paraview.plugins.midascommon.AsyncOpenData(midas.visualize._dataOpened, {
+        paraview.callPluginMethod('midascommon', 'OpenData', {
             filename: json.visualize.url,
             otherMeshes: json.visualize.meshes
-        });
+        }, midas.visualize._dataOpened);
     });
 };
 
-midas.visualize._dataOpened = function (retVal) {
+midas.visualize._dataOpened = function (view, retVal) {
     midas.visualize.input = retVal.input;
     midas.visualize.bounds = retVal.imageData.Bounds;
     midas.visualize.extent = retVal.imageData.Extent;
@@ -88,10 +86,10 @@ midas.visualize._dataOpened = function (retVal) {
         lineWidth: midas.visualize.maxDim / 100.0
     };
     $('#loadingStatus').html('Initializing view state and renderer...');
-    paraview.plugins.midasslice.AsyncInitViewState(midas.visualize.initCallback, params);
+    paraview.callPluginMethod('midasslice', 'InitViewState', params, midas.visualize.initCallback);
 };
 
-midas.visualize.initCallback = function (retVal) {
+midas.visualize.initCallback = function (view, retVal) {
     midas.visualize.lookupTable = retVal.lookupTable;
     midas.visualize.activeView = retVal.activeView;
     midas.visualize.meshSlices = retVal.meshSlices;
@@ -177,10 +175,13 @@ midas.visualize.updateWindowInfo = function (values) {
 
 /** Make the actual request to PVWeb to set the window */
 midas.visualize.changeWindow = function (values) {
-    paraview.plugins.midasslice.AsyncChangeWindow(function (retVal) {
-        midas.visualize.lookupTable = retVal.lookupTable;
-        midas.visualize.forceRefreshView();
-    }, [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0], json.visualize.colorArrayName);
+    paraview.callPluginMethod('midasslice', 'ChangeWindow', 
+      [[values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0],
+      json.visualize.colorArrayName], 
+      function (view, retVal) {
+          midas.visualize.lookupTable = retVal.lookupTable;
+          midas.visualize.forceRefreshView();
+    });
     midas.visualize.imageWindow = values;
 };
 
@@ -197,13 +198,13 @@ midas.visualize.changeSlice = function (slice) {
         lineWidth: midas.visualize.maxDim / 100.0
     };
 
-    paraview.plugins.midasslice.AsyncChangeSlice(function(retVal) {
+    paraview.callPluginMethod('midasslice', 'ChangeSlice', params, function(view, retVal) {
         midas.visualize.meshSlices = retVal.meshSlices;
         if(typeof midas.visualize.changeSliceCallback == 'function') {
             midas.visualize.changeSliceCallback(slice);
         }
         midas.visualize.forceRefreshView();
-    }, params);
+    });
 };
 
 /**
@@ -310,10 +311,10 @@ midas.visualize.pointSelectMode = function () {
             objectToDelete: midas.visualize.glyph ? midas.visualize.glyph : false,
             input: midas.visualize.input
         };
-        paraview.plugins.midasslice.AsyncShowSphere(function (retVal) {
+        paraview.callPluginMethod('midasslice', 'ShowSphere', params, function (view, retVal) {
             midas.visualize.glyph = retVal.glyph;
             midas.visualize.forceRefreshView();
-        }, params);
+        });
     });
 };
 
@@ -450,10 +451,10 @@ midas.visualize.setSliceMode = function (sliceMode) {
         cameraPosition: midas.visualize.cameraPosition,
         cameraUp: midas.visualize.cameraViewUp
     };
-    paraview.plugins.midasslice.AsyncChangeSliceMode(function (retVal) {
+    paraview.callPluginMethod('midasslice', 'ChangeSliceMode', params, function (view, retVal) {
         midas.visualize.meshSlices = retVal.meshSlices;
         midas.visualize.forceRefreshView();
-    }, params);
+    });
 };
 
 $(window).load(function () {
