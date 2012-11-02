@@ -326,8 +326,7 @@ midas.visualize.pointSelectMode = function () {
  * Force the renderer image to refresh from the server
  */
 midas.visualize.forceRefreshView = function () {
-    midas.visualize.renderers.js.status = 0;
-    midas.visualize.renderers.js.loadImage();
+    midas.visualize.renderers.js.forceRefresh();
 };
 
 /**
