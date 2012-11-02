@@ -74,7 +74,6 @@ class Visualize_Notification extends MIDAS_Notification
       return false;
       }
 
-
     $header = get_headers($this->getServerURL().'/PWService', 1);
 
     if(strpos($header[0], '404 Not Found') !== false || strpos($header[0], '503 Service Temporarily Unavailable') !== false)

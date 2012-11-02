@@ -26,22 +26,21 @@ midas.visualize.start = function () {
     };
 
     paraview.createSessionAsync("midas", "surface view","default", function () {
-        paraview.loadPlugins();
-
         $('#loadingStatus').html('Reading image data from files...');
-        paraview.plugins.midascommon.AsyncOpenData(midas.visualize._dataOpened, {
+        paraview.callPluginMethod('midascommon', 'OpenData', {
             filename: json.visualize.url,
             otherMeshes: []
-        });
+        }, midas.visualize._dataOpened);
     });
 };
 
-midas.visualize._dataOpened = function (retVal) {
+midas.visualize._dataOpened = function (view, retVal) {
     $('#loadingStatus').html('Initializing view state and renderer...');
     midas.visualize.imageData = retVal.imageData;
     midas.visualize.input = retVal.input;
 
-    paraview.plugins.midassurface.AsyncInitViewState(midas.visualize.initCallback, {});
+    
+    paraview.callPluginMethod('midassurface', 'InitViewState', {}, midas.visualize.initCallback);
     midas.visualize.populateInfo();
 };
 
@@ -54,7 +53,7 @@ midas.visualize.populateInfo = function () {
     $('#nbCellsInfo').html(midas.visualize.imageData.NbCells);
 };
 
-midas.visualize.initCallback = function (retVal) {
+midas.visualize.initCallback = function (view, retVal) {
     $('#loadingStatus').html('').hide();
     midas.visualize.activeView = retVal.activeView;
 
@@ -68,21 +67,33 @@ midas.visualize.initCallback = function (retVal) {
 };
 
 midas.visualize.resetCamera = function () {
-    if(paraview.plugins.midassurface) {
-        paraview.plugins.midassurface.AsyncResetCamera(function () {}, {});
-    }
+    paraview.callPluginMethod('midassurface', 'ResetCamera', {}, function () {
+        midas.visualize.forceRefreshView();
+    });
 };
 
 midas.visualize.toggleEdges = function () {
-    if(paraview.plugins.midassurface) {
-        paraview.plugins.midassurface.AsyncToggleEdges(function() {}, {input: midas.visualize.input});
-    }
+    paraview.callPluginMethod('midassurface', 'ToggleEdges', {
+        input: midas.visualize.input
+    }, function() {
+        midas.visualize.forceRefreshView();
+    });
+};
+
+/**
+ * Force the renderer image to refresh from the server
+ */
+midas.visualize.forceRefreshView = function () {
+    midas.visualize.renderers.js.status = 0;
+    midas.visualize.renderers.js.loadImage();
 };
 
 midas.visualize.switchRenderer = function (first, type) {
     if(type == 'js') {
         if(midas.visualize.renderers.js == undefined) {
             midas.visualize.renderers.js = new JavaScriptRenderer('jsRenderer', '/PWService');
+            midas.visualize.renderers.js.enableWebSocket('ws://'+json.visualize.hostname
+              +':'+json.visualize.wsport+'/PWService/Websocket');
             midas.visualize.renderers.js.init(paraview.sessionId, midas.visualize.activeView.__selfid__);
         }
     }
