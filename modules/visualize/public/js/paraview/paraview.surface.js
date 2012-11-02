@@ -39,8 +39,10 @@ midas.visualize._dataOpened = function (view, retVal) {
     midas.visualize.imageData = retVal.imageData;
     midas.visualize.input = retVal.input;
 
-    
-    paraview.callPluginMethod('midassurface', 'InitViewState', {}, midas.visualize.initCallback);
+    var rw = $('#renderercontainer');
+    paraview.callPluginMethod('midassurface', 'InitViewState', {
+        viewSize: [rw.width(), rw.height()]
+    }, midas.visualize.initCallback);
     midas.visualize.populateInfo();
 };
 
