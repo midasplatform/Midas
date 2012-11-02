@@ -62,7 +62,6 @@ class Visualize_ParaviewController extends Visualize_AppController
       throw new Zend_Exception('Please set the ParaView work directory');
       }
 
-
     $pathArray = $this->ModuleComponent->Main->createParaviewPath();
     $path = $pathArray['path'];
     $tmpFolderName = $pathArray['foderName'];
@@ -97,6 +96,8 @@ class Visualize_ParaviewController extends Visualize_AppController
       }
     $this->view->json['visualize']['url'] = $filePath;
     $this->view->json['visualize']['item'] = $item;
+    $this->view->json['visualize']['hostname'] = $this->_getHostName();
+    $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwapp);
     $this->view->fileLocation = $filePath;
     $this->view->jsImports = array(); //todo
     $this->view->usewebgl = $userwebgl;
@@ -149,6 +150,7 @@ class Visualize_ParaviewController extends Visualize_AppController
     $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
     $useparaview = $modulesConfig['visualize']->useparaview;
     $usesymlinks = $modulesConfig['visualize']->usesymlinks;
+    $pwapp = $modulesConfig['visualize']->pwapp;
     if(!isset($useparaview) || !$useparaview)
       {
       throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
@@ -204,6 +206,8 @@ class Visualize_ParaviewController extends Visualize_AppController
     $this->view->json['visualize']['operations'] = $operations;
     $this->view->json['visualize']['colorArrayNames'] = $colorArrayNames;
     $this->view->json['visualize']['items'] = $items;
+    $this->view->json['visualize']['hostname'] = $this->_getHostName();
+    $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwapp);
     $this->view->operations = $operations;
     $this->view->fileLocations = $filePaths;
     $this->view->items = $items;
@@ -251,6 +255,7 @@ class Visualize_ParaviewController extends Visualize_AppController
     $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
     $useparaview = $modulesConfig['visualize']->useparaview;
     $usesymlinks = $modulesConfig['visualize']->usesymlinks;
+    $pwapp = $modulesConfig['visualize']->pwapp;
     if(!isset($useparaview) || !$useparaview)
       {
       throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
@@ -362,6 +367,8 @@ class Visualize_ParaviewController extends Visualize_AppController
     $this->view->json['visualize']['item'] = $item;
     $this->view->json['visualize']['visible'] = true;
     $this->view->json['visualize']['colorArrayName'] = $colorArrayName;
+    $this->view->json['visualize']['hostname'] = $this->_getHostName();
+    $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwapp);
     $this->view->fileLocation = $filePath;
     $this->view->itemDao = $item;
     }
@@ -416,6 +423,7 @@ class Visualize_ParaviewController extends Visualize_AppController
     $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
     $useparaview = $modulesConfig['visualize']->useparaview;
     $usesymlinks = $modulesConfig['visualize']->usesymlinks;
+    $pwapp = $modulesConfig['visualize']->pwapp;
     if(!isset($useparaview) || !$useparaview)
       {
       throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
@@ -526,11 +534,42 @@ class Visualize_ParaviewController extends Visualize_AppController
     $this->view->json['visualize']['meshes'] = $meshObj;
     $this->view->json['visualize']['colorArrayName'] = $colorArrayName;
     $this->view->json['visualize']['item'] = $item;
+    $this->view->json['visualize']['hostname'] = $this->_getHostName();
+    $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwapp);
     $this->view->operations = $operations;
     $this->view->fileLocation = $filePath;
     $this->view->itemDao = $item;
     }
 
+  /**
+   * Helper method to pass the server host name to json for using web socket renderer
+   */
+  protected function _getHostName()
+    {
+    if($this->isTestingEnv())
+      {
+      return 'localhost';
+      }
+    else
+      {
+      return empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+      }
+    }
+
+  /**
+   * Helper function to extract the port Tomcat is listening on
+   */
+  protected function _getTomcatPort($pwapp)
+    {
+    if(preg_match('/:([0-9]+)\//', $pwapp, $matches))
+      {
+      return $matches[1];
+      }
+    else
+      {
+      return '80';
+      }
+    }
 } // end class
 ?>
 
