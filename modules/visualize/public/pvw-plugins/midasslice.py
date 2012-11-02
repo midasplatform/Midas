@@ -4,7 +4,7 @@ import math
 # Midas volume rendering ParaviewWeb plugin
 
 # Initialize the volume rendering state
-def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, sliceVal, sliceMode, parallelScale, cameraUp, meshes, lineWidth):
+def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, sliceVal, sliceMode, parallelScale, cameraUp, meshes, lineWidth, viewSize):
   if type(colorArrayName) is unicode:
     colorArrayName = colorArrayName.encode('ascii', 'ignore')
   
@@ -23,6 +23,7 @@ def InitViewState (cameraFocalPoint, cameraPosition, colorArrayName, colorMap, s
   activeView.OrientationAxesVisibility = False
   activeView.Background = [0.0, 0.0, 0.0]
   activeView.Background2 = [0.0, 0.0, 0.0]
+  activeView.ViewSize = viewSize
   
   lookupTable = pwsimple.GetLookupTableForArray(colorArrayName, 1)
   lookupTable.RGBPoints = colorMap

@@ -62,7 +62,9 @@ midas.visualize._dataOpened = function (view, retVal) {
        midas.visualize.maxVal, 1.0, 1.0, 1.0];
     midas.visualize.colorMap = midas.visualize.defaultColorMap;
 
+    var rw = $('#renderercontainer');
     var params = {
+        viewSize: [rw.width(), rw.height()],
         cameraFocalPoint: [midas.visualize.midI, midas.visualize.midJ, midas.visualize.midK],
         cameraPosition: [midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
                          midas.visualize.midJ,

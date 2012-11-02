@@ -73,7 +73,9 @@ midas.visualize._dataOpened = function (view, retVal) {
       Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
                midas.visualize.bounds[3] - midas.visualize.bounds[2]) / 2.0;
 
+    var rw = $('#renderercontainer');
     var params = {
+        viewSize: [rw.width(), rw.height()],
         cameraFocalPoint: midas.visualize.cameraFocalPoint,
         cameraPosition: midas.visualize.cameraPosition,
         colorMap: midas.visualize.defaultColorMap,
