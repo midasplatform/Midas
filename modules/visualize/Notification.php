@@ -74,18 +74,14 @@ class Visualize_Notification extends MIDAS_Notification
       return false;
       }
 
-    $server = true;
 
     $header = get_headers($this->getServerURL().'/PWService', 1);
-    if(strpos($header[0], '404 Not Found') != false || strpos($header[0], '503 Service Temporarily Unavailable') != false)
+
+    if(strpos($header[0], '404 Not Found') !== false || strpos($header[0], '503 Service Temporarily Unavailable') !== false)
       {
-      $server = false;
+      return array('ParaviewWeb Server' => array(false, 'Could not connect to paraview web server'));
       }
-
-    $return = array();
-    $return['ParaviewWeb Server'] = $server;
-
-    return $return;
+    return array('ParaviewWeb Server' => array(true, ''));
     }//end _getDasboard
 
   /** get server's url */
