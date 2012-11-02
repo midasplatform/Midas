@@ -14,7 +14,7 @@ $(document).ready(function() {
         html+='<input style="margin-left:140px;" class="globalButton deleteFeedYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
         html+='<input style="margin-left:50px;" class="globalButton deleteFeedNo" type="button" value="'+json.global.No+'"/>';
 
-        midas.showDialogWithContent(json.feed.deleteFeed+'?', html, false);
+        midas.showDialogWithContent(json.feed.deleteFeed, html, false);
 
         $('input.deleteFeedYes').unbind('click').click(function () {
             var elementId = $(this).attr('element');
