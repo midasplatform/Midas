@@ -1,0 +1,9 @@
+div.databaseIntegrityWrapper {
+  margin-bottom: 5px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #d7d7d7;
+}
+
+#cleanupProgressMessage {
+  margin-top: 10px;
+}

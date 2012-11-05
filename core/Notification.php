@@ -35,7 +35,6 @@ class Notification extends MIDAS_Notification
   public function getDasboard()
     {
     $return = array();
-    $return['Database'] = array(true); //If you are here it works...
     $return['Config Folder Writable'] = array(is_writable(BASE_PATH.'/core/configs'));
     $return['Data Folder Writable'] = array(is_writable(BASE_PATH.'/data'));
     // pass in empty string since we want to check the overall root temp directory
