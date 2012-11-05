@@ -99,7 +99,7 @@ class ErrorController extends AppController
           }
         else
           {
-          //$this->getResponse()->setHttpResponseCode($code);
+          $this->getResponse()->setHttpResponseCode($code);
           }
         $this->_applicationError();
         break;
