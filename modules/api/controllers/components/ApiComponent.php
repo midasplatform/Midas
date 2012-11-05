@@ -2705,4 +2705,21 @@ class Api_ApiComponent extends AppComponent
     $bitstreamModel->save($bitstream);
     return $bitstream->toArray();
     }
+
+  /**
+   * Remove orphaned resources in the database.  Must be admin to use.
+   */
+  function adminDatabaseCleanup($args)
+    {
+    $userDao = $this->_getUser($args);
+
+    if(!$userDao || !$userDao->isAdmin())
+      {
+      throw new Exception('Only admin users may call this method', MIDAS_INVALID_POLICY);
+      }
+    foreach(array('Folder', 'Item', 'ItemRevision', 'Bitstream') as $model)
+      {
+      MidasLoader::loadModel($model)->removeOrphans();
+      }
+    }
   } // end class
