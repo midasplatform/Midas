@@ -535,7 +535,68 @@ class ItemModel extends ItemModelBase
       $params = array_merge($otherParams, array($paramName => $item));
       Zend_Registry::get('notifier')->callback($callback, $params);
       }
+    }
 
+  /**
+   * Used by the admin dashboard page. Counts the number of orphaned item
+   * records in the database.
+   */
+  function countOrphans()
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                   ->from(array('i' => 'item'), array('count' => 'count(*)'))
+                   ->where('(NOT i.item_id IN ('.new Zend_Db_Expr(
+                            $this->database->select()->setIntegrityCheck(false)
+                                 ->from(array('i2f' => 'item2folder'), array('item_id'))
+                           .'))' ));
+    $row = $this->database->fetchRow($sql);
+    return $row['count'];
+    }
+
+  /**
+   * Call this to remove all orphaned item records
+   */
+  function removeOrphans($progressDao = null)
+    {
+    if($progressDao)
+      {
+      $max = $this->countOrphans();
+      $progressDao->setMaximum($max);
+      $progressDao->setMessage('Removing orphaned items (0/'.$max.')');
+      $this->Progress = MidasLoader::loadModel('Progress');
+      $this->Progress->save($progressDao);
+      }
+
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                   ->from(array('i' => 'item'), array('item_id'))
+                   ->where('i.item_id > ?', 0)
+                   ->where('(NOT i.item_id IN ('.new Zend_Db_Expr(
+                            $this->database->select()->setIntegrityCheck(false)
+                                 ->from(array('i2f' => 'item2folder'), array('item_id'))
+                           .'))' ));
+    $rowset = $this->database->fetchAll($sql);
+    $ids = array();
+    foreach($rowset as $row)
+      {
+      $ids[] = $row['item_id'];
+      }
+    $itr = 0;
+    foreach($ids as $id)
+      {
+      if($progressDao)
+        {
+        $itr++;
+        $message = 'Removing orphaned items ('.$itr.'/'.$max.')';
+        $this->Progress->updateProgress($progressDao, $itr, $message);
+        }
+      $item = $this->load($id);
+      if(!$item)
+        {
+        continue;
+        }
+      $this->getLogger()->info('Deleting orphaned item '.$item->getName(). ' [id='.$item->getKey().']');
+      $this->delete($item);
+      }
     }
 }  // end class
 ?>

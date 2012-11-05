@@ -23,7 +23,7 @@
  */
 class AdminController extends AppController
 {
-  public $_models = array('Assetstore', 'Errorlog', 'Folder', 'License');
+  public $_models = array('Assetstore', 'Bitstream', 'Errorlog', 'Item', 'ItemRevision', 'Folder', 'License');
   public $_daos = array();
   public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration', 'Demo');
   public $_forms = array('Admin', 'Assetstore', 'Migrate');
@@ -481,10 +481,16 @@ class AdminController extends AppController
     $this->requireAdminPrivileges();
     $this->disableLayout();
 
-    $this->view->dashboard = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_DASHBOARD");
+    $this->view->nOrphanedFolders = $this->Folder->countOrphans();
+    $this->view->nOrphanedItems = $this->Item->countOrphans();
+    $this->view->nOrphanedRevisions = $this->ItemRevision->countOrphans();
+    $this->view->nOrphanedBitstreams = $this->Bitstream->countOrphans();
+    // TODO: number of orphaned thumbnail records?
+
+    $this->view->moduleIntegrityChecks = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_DATABASE_INTEGRITY_CHECKS');
+    $this->view->dashboard = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_DASHBOARD');
 
     ksort($this->view->dashboard);
-
     }//end dashboardAction
 
   /**
@@ -494,9 +500,18 @@ class AdminController extends AppController
   function removeorphansAction()
     {
     $this->requireAdminPrivileges();
+
+    $model = $this->_getParam('model');
+
+    if(!isset($model) || !in_array($model, array('Bitstream', 'Item', 'ItemRevision', 'Folder')))
+      {
+      throw new Zend_Exception('Invalid model parameter for remove orphans');
+      }
     $this->disableLayout();
     $this->disableView();
-    $this->Folder->deleteOrphanedFolders();
+
+    $this->$model->removeOrphans($this->progressDao);
+    echo JsonComponent::encode(array('status' => 'ok', 'message' => $model.' resources cleaned'));
     }
 
   /** upgrade database*/

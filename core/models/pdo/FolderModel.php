@@ -1183,13 +1183,49 @@ class FolderModel extends FolderModelBase
     }
 
   /**
+   * Return the total number of folders in this Midas instance (for admin use)
+   */
+  function countAll()
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                   ->from(array('f' => 'folder'), array('count' => 'count(*)'));
+    $row = $this->database->fetchRow($sql);
+    return $row['count'];
+    }
+
+  /**
+   * Used by the admin dashboard page. Counts the number of orphaned folder
+   * records in the database.
+   */
+  function countOrphans()
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                   ->from(array('f' => 'folder'), array('count' => 'count(*)'))
+                   ->where('f.parent_id > ?', 0)
+                   ->where('(NOT f.parent_id IN ('.new Zend_Db_Expr(
+                            $this->database->select()->setIntegrityCheck(false)
+                                 ->from(array('subf' => 'folder'), array('folder_id'))
+                           .'))' ));
+    $row = $this->database->fetchRow($sql);
+    return $row['count'];
+    }
+
+  /**
    * Call this to delete all folders whose parent folder no longer exists.
    * After orphans are deleted, the tree indices will be recomputed so they
    * will be consistent.  As such, server should not be written to
    * during this operation.
    */
-  function deleteOrphanedFolders()
+  function removeOrphans($progressDao = null)
     {
+    if($progressDao)
+      {
+      $max = $this->countOrphans();
+      $progressDao->setMaximum($max);
+      $progressDao->setMessage('Removing orphaned folders (0/'.$max.')');
+      $this->Progress = MidasLoader::loadModel('Progress');
+      $this->Progress->save($progressDao);
+      }
     $sql = $this->database->select()->setIntegrityCheck(false)
                    ->from(array('f' => 'folder'), array('folder_id'))
                    ->where('f.parent_id > ?', 0)
@@ -1203,31 +1239,54 @@ class FolderModel extends FolderModelBase
       {
       $ids[] = $row['folder_id'];
       }
+    $itr = 0;
     foreach($ids as $id)
       {
+      if($progressDao)
+        {
+        $itr++;
+        $message = 'Removing orphaned folders ('.$itr.'/'.$max.')';
+        $this->Progress->updateProgress($progressDao, $itr, $message);
+        }
       $folder = $this->load($id);
       if(!$folder)
         {
         continue;
         }
+      $this->getLogger()->info('Deleting orphaned folder '.$folder->getName(). ' [parent id='.$folder->getParentId().']');
       $this->delete($folder);
+      }
+
+    $max = $this->countAll();
+    if($progressDao)
+      {
+      $progressDao->setMaximum($max);
+      $progressDao->setMessage('Rebuilding entire folder tree index (0/'.$max.')');
+      $this->Progress->save($progressDao);
       }
     // Wipe the current tree indices from all rows
     $this->database->update(array('left_indice' => 0, 'right_indice' => 0), array());
 
     // Recompute the indices for all rows
     $rootFolders = $this->getRootFolders();
+    $count = 0;
     foreach($rootFolders as $rootFolder)
       {
-      $this->_recomputeSubtree($rootFolder);
+      $this->_recomputeSubtree($rootFolder, $count, $max, $progressDao);
       }
     }
 
   /**
    * Will recompute the left and right indices of the subtree of the given node.
    */
-  protected function _recomputeSubtree($folder)
+  protected function _recomputeSubtree($folder, &$count, $max, $progressDao = null)
     {
+    $count++;
+    if($progressDao && $count % 10 == 0) //only update progress every 10 folders
+      {
+      $message = 'Rebuilding entire folder tree index ('.$count.'/'.$max.')';
+      $this->Progress->updateProgress($progressDao, $count, $message);
+      }
     if($folder->getParentId() <= 0)
       {
       $rightParent = 0;
@@ -1253,7 +1312,7 @@ class FolderModel extends FolderModelBase
     $children = $folder->getFolders();
     foreach($children as $child)
       {
-      $this->_recomputeSubtree($child);
+      $this->_recomputeSubtree($child, $count, $max, $progressDao);
       }
     }
 } // end class

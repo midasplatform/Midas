@@ -50,5 +50,68 @@ class BitstreamModel extends BitstreamModelBase
       return $dao;
       }
     }
+
+  /**
+   * Used by the admin dashboard page. Counts the number of orphaned bitstream
+   * records in the database.
+   */
+  function countOrphans()
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                   ->from(array('b' => 'bitstream'), array('count' => 'count(*)'))
+                   ->where('b.itemrevision_id > ?', 0)
+                   ->where('(NOT b.itemrevision_id IN ('.new Zend_Db_Expr(
+                            $this->database->select()->setIntegrityCheck(false)
+                                 ->from(array('subr' => 'itemrevision'), array('itemrevision_id'))
+                           .'))'));
+    $row = $this->database->fetchRow($sql);
+    return $row['count'];
+    }
+
+  /**
+   * Call this to remove all orphaned item revision records
+   */
+  function removeOrphans($progressDao = null)
+    {
+    if($progressDao)
+      {
+      $max = $this->countOrphans();
+      $progressDao->setMaximum($max);
+      $progressDao->setMessage('Removing orphaned bitstreams (0/'.$max.')');
+      $this->Progress = MidasLoader::loadModel('Progress');
+      $this->Progress->save($progressDao);
+      }
+
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                   ->from(array('b' => 'bitstream'), array('bitstream_id'))
+                   ->where('b.itemrevision_id > ?', 0)
+                   ->where('(NOT b.itemrevision_id IN ('.new Zend_Db_Expr(
+                            $this->database->select()->setIntegrityCheck(false)
+                                 ->from(array('subr' => 'itemrevision'), array('itemrevision_id'))
+                           .'))'));
+    $rowset = $this->database->fetchAll($sql);
+    $ids = array();
+    foreach($rowset as $row)
+      {
+      $ids[] = $row['bitstream_id'];
+      }
+    $itr = 0;
+    foreach($ids as $id)
+      {
+      if($progressDao)
+        {
+        $itr++;
+        $message = 'Removing orphaned bitstreams ('.$itr.'/'.$max.')';
+        $this->Progress->updateProgress($progressDao, $itr, $message);
+        }
+      $bitstream = $this->load($id);
+      if(!$bitstream)
+        {
+        continue;
+        }
+      $this->getLogger()->info('Deleting orphaned bitstream '.$bitstream->getName(). ' [revision id='.$bitstream->getItemrevisionId().']');
+      $this->delete($bitstream);
+      }
+    }
   }
 ?>

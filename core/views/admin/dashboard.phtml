@@ -13,6 +13,32 @@ PURPOSE.  See the above copyright notices for more information.
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/admin/admin.dashboard.css" />
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/admin/admin.dashboard.js"></script>
 
+<div class="databaseIntegrityWrapper">
+  <h3>Database Integrity</h3>
+  <table class="integrityTable">
+    <tr>
+      <td>Number of orphaned folders:</td>
+      <td class="nFolder"><?php echo $this->nOrphanedFolders?></td>
+      <td><button element="Folder" class="removeOrphans">Clean</button></td>
+    </tr>
+    <tr>
+      <td>Number of orphaned items:</td>
+      <td class="nItem"><?php echo $this->nOrphanedItems?></td>
+      <td><button element="Item" class="removeOrphans">Clean</button></td>
+    </tr>
+    <tr>
+      <td>Number of orphaned revisions:</td>
+      <td class="nItemRevision"><?php echo $this->nOrphanedRevisions?></td>
+      <td><button element="ItemRevision" class="removeOrphans">Clean</button></td>
+    </tr>
+    <tr>
+      <td>Number of orphaned bitstreams:</td>
+      <td class="nBitstream"><?php echo $this->nOrphanedBitstreams?></td>
+      <td><button element="Bitstream" class="removeOrphans">Clean</button></td>
+    </tr>
+  </table>
+</div>
+
 <?php
   foreach($this->dashboard as $module => $dasboard)
     {
