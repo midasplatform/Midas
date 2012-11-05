@@ -26,4 +26,29 @@
   <!-- Orphaned folders -->
   <folder folder_id="5000" name="orphaned1" description="" left_indice="55" right_indice="100" uuid="a" parent_id="4999"/>
   <folder folder_id="5001" name="orphaned2" description="" left_indice="56" right_indice="101" uuid="b" parent_id="4998"/>
+
+  <!-- OK items -->
+  <item item_id="1001" name="notOrphan" description="" type="1"/>
+  <item2folder item_id="1001" folder_id="1001"/>
+
+  <!-- Orphaned items -->
+  <item item_id="2001" name="anOrphan" description="" type="1"/>
+  <item item_id="2002" name="anotherOrphan" description="" type="1"/>
+
+  <!-- OK item revisions -->
+  <itemrevision itemrevision_id="1001" item_id="1001" revision="1" date="1999-10-20 00:00:00" changes="none" user_id="1"/>
+
+  <!-- Orphaned item revisions -->
+  <itemrevision itemrevision_id="2001" item_id="781283" revision="1" date="1999-10-20 00:00:00" changes="none" user_id="1"/>
+  <itemrevision itemrevision_id="2002" item_id="72368" revision="2" date="1999-10-20 00:00:00" changes="none" user_id="1"/>
+
+  <!-- OK bitstreams -->
+  <bitstream bitstream_id="1001" itemrevision_id="1001" name="test.txt" mimetype="text/plain" sizebytes="259"
+             checksum="1234" path="12/34/1234" assetstore_id="1" date="1999-10-20 00:00:00"/>
+  <bitstream bitstream_id="1002" itemrevision_id="-1" name="thumbnail.jpeg" mimetype="image/jpeg" sizebytes="2805"
+             checksum="abcd" path="ab/cd/abcd" assetstore_id="1" date="1999-10-20 00:00:00"/>
+
+  <!-- Orphaned bitstreams -->
+  <bitstream bitstream_id="2001" itemrevision_id="658318" name="test.txt" mimetype="text/plain" sizebytes="259"
+             checksum="1234" path="12/34/1234" assetstore_id="1" date="1999-10-20 00:00:00"/>
 </dataset>

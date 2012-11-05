@@ -26,7 +26,10 @@ class TreeIndicesTest extends DatabaseTestCase
   /** init tests*/
   public function setUp()
     {
-    $this->_models = array('Folder');
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
+
+    $this->_models = array('Bitstream', 'Folder', 'Item', 'ItemRevision', 'Progress');
     parent::setUp();
 
     $this->setupDatabase(array('treeIndices'));
@@ -36,15 +39,17 @@ class TreeIndicesTest extends DatabaseTestCase
    * Make sure that calling remove orphans correctly removes our orphaned folders,
    * and also recomputes the tree indices and puts the tree in a correct state.
    */
-  public function testRemoveOrphans()
+  public function testRemoveOrphansFolder()
     {
+    $progress = $this->Progress->createProgress();
+
     $orphan0 = $this->Folder->load(5000);
     $orphan1 = $this->Folder->load(5001);
     $this->assertTrue($orphan0 instanceof FolderDao);
     $this->assertTrue($orphan1 instanceof FolderDao);
 
     // Run the operation to cleanup our folder tree
-    $this->Folder->deleteOrphanedFolders();
+    $this->Folder->removeOrphans($progress);
 
     // Make sure that orphaned folders were deleted
     $orphan0 = $this->Folder->load(5000);
@@ -115,6 +120,87 @@ class TreeIndicesTest extends DatabaseTestCase
           }
         }
       }
+    }
+
+  /**
+   * Test that orphaned items are successfully removed
+   */
+  public function testRemoveOrphanedItems()
+    {
+    $notOrphan = $this->Item->load(1001);
+    $orphan = $this->Item->load(2001);
+    $orphan2 = $this->Item->load(2002);
+
+    $this->assertTrue($notOrphan instanceof ItemDao);
+    $this->assertTrue($orphan instanceof ItemDao);
+    $this->assertTrue($orphan2 instanceof ItemDao);
+
+    $progress = $this->Progress->createProgress();
+    $this->Item->removeOrphans($progress);
+
+    $this->assertEquals($progress->getMaximum(), 2);
+
+    $notOrphan = $this->Item->load(1001);
+    $orphan = $this->Item->load(2001);
+    $orphan2 = $this->Item->load(2002);
+
+    $this->assertTrue($notOrphan instanceof ItemDao);
+    $this->assertEquals($orphan, null);
+    $this->assertEquals($orphan2, null);
+    }
+
+  /**
+   * Test that orphaned itemrevisions are successfully removed
+   */
+  public function testRemoveOrphanedRevisions()
+    {
+    $notOrphan = $this->ItemRevision->load(1001);
+    $orphan = $this->ItemRevision->load(2001);
+    $orphan2 = $this->ItemRevision->load(2002);
+
+    $this->assertTrue($notOrphan instanceof ItemRevisionDao);
+    $this->assertTrue($orphan instanceof ItemRevisionDao);
+    $this->assertTrue($orphan2 instanceof ItemRevisionDao);
+
+    $progress = $this->Progress->createProgress();
+    $this->ItemRevision->removeOrphans($progress);
+
+    $this->assertEquals($progress->getMaximum(), 2);
+
+    $notOrphan = $this->ItemRevision->load(1001);
+    $orphan = $this->ItemRevision->load(2001);
+    $orphan2 = $this->ItemRevision->load(2002);
+
+    $this->assertTrue($notOrphan instanceof ItemRevisionDao);
+    $this->assertEquals($orphan, null);
+    $this->assertEquals($orphan2, null);
+    }
+
+  /**
+   * Test that orphaned bitstreams are successfully removed
+   */
+  public function testRemoveOrphanedBitstreams()
+    {
+    $notOrphan = $this->Bitstream->load(1001);
+    $notOrphan2 = $this->Bitstream->load(1002);
+    $orphan = $this->Bitstream->load(2001);
+
+    $this->assertTrue($notOrphan instanceof BitstreamDao);
+    $this->assertTrue($notOrphan2 instanceof BitstreamDao);
+    $this->assertTrue($orphan instanceof BitstreamDao);
+
+    $progress = $this->Progress->createProgress();
+    $this->Bitstream->removeOrphans($progress);
+
+    $this->assertEquals($progress->getMaximum(), 1);
+
+    $notOrphan = $this->Bitstream->load(1001);
+    $notOrphan2 = $this->Bitstream->load(1002);
+    $orphan = $this->Bitstream->load(2001);
+
+    $this->assertTrue($notOrphan instanceof BitstreamDao);
+    $this->assertTrue($notOrphan2 instanceof BitstreamDao);
+    $this->assertEquals($orphan, null);
     }
 
   /**
