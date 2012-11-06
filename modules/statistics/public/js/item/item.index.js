@@ -29,7 +29,19 @@ midas.statistics.populateMap = function(responseText, statusText, xhr, form) {
         }
         midas.statistics.clusterer.clearMarkers();
         midas.statistics.clusterer.addMarkers(midas.statistics.mapMarkers);
-        $('#filteredCount').html(response.downloads.length);
+
+        if(typeof window.history.replaceState == 'function') {
+            var params = '?id='+json.itemId;
+            params += '&startDate='+$('#startdate').val();
+            params += '&endDate='+$('#enddate').val();
+            params += '&limit='+$('#downloadResultLimit').val();
+
+            window.history.replaceState({}, '', params);
+        }
+
+        var html = response.count + ' downloads in the selected period (';
+        html += (response.count - response.downloads.length) + ' from unknown locations)';
+        $('#filteredCount').html(html);
     } catch (e) {
         alert("An error occured. Please check the logs.");
         return false;
@@ -109,5 +121,6 @@ $(document).ready(function() {
 
     $('#startdate').val(json.initialStartDate);
     $('#enddate').val(json.initialEndDate);
+    $('#downloadResultLimit').val(json.limit);
     $('#filterForm').submit();
 });

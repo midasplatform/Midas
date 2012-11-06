@@ -25,7 +25,12 @@ class Statistics_ItemController extends Statistics_AppController
   public $_models = array('Item');
   public $_components = array('Utility');
 
-  /** index action*/
+  /**
+   * Render the statistics view for a set of items
+   * @param [startDate] The start of the date range (inclusive, default = 1 month ago)
+   * @param [endDate] The end of the date range (inclusive, default = today)
+   * @param [limit] Result limit for the map (default = 1000)
+   */
   function indexAction()
     {
     $itemIds = $this->_getParam('id');
@@ -76,6 +81,27 @@ class Statistics_ItemController extends Statistics_AppController
         }
       }
 
+    $limit = $this->_getParam('limit');
+    if(isset($limit) && is_numeric($limit) && $limit > 0)
+      {
+      $limit = (int)$limit;
+      }
+    else
+      {
+      $limit = 1000;
+      }
+
+    $startDate = $this->_getParam('startDate');
+    if(!isset($startDate))
+      {
+      $startDate = date('m/d/Y', strtotime('-1 month'));
+      }
+    $endDate = $this->_getParam('endDate');
+    if(!isset($endDate))
+      {
+      $endDate = date('m/d/Y');
+      }
+
     foreach($arrayDownload as $key => $value)
       {
       $jqplotArray[] = array($key.' 8:00AM', $value);
@@ -83,8 +109,9 @@ class Statistics_ItemController extends Statistics_AppController
     $this->view->json['stats']['downloads'] = $jqplotArray;
     $this->view->itemIds = $itemIds;
     $this->view->json['itemId'] = $itemIds;
-    $this->view->json['initialStartDate'] = date('m/d/Y', strtotime('-1 month'));
-    $this->view->json['initialEndDate'] = date('m/d/Y');
+    $this->view->json['initialStartDate'] = $startDate;
+    $this->view->json['initialEndDate'] = $endDate;
+    $this->view->json['limit'] = $limit;
     }
 
   /**
@@ -132,7 +159,7 @@ class Statistics_ItemController extends Statistics_AppController
       }
     if($this->_getParam('enddate') == '')
       {
-      $endDate = date('Y-m-d');
+      $endDate = date('Y-m-d  23:59:59');
       }
     else
       {
@@ -146,6 +173,7 @@ class Statistics_ItemController extends Statistics_AppController
       }
 
     $downloads = $this->Statistics_Download->getLocatedDownloads($idArray, $startDate, $endDate, $limit);
+    $totalCount = $this->Statistics_Download->getCountInRange($idArray, $startDate, $endDate, $limit);
 
     $markers = array();
     foreach($downloads as $download)
@@ -159,7 +187,7 @@ class Statistics_ItemController extends Statistics_AppController
                            'longitude' => $longitude);
         }
       }
-    echo JsonComponent::encode(array('downloads' => $markers));
+    echo JsonComponent::encode(array('downloads' => $markers, 'count' => $totalCount));
     }
 
 }//end class
