@@ -99,7 +99,7 @@ class ErrorController extends AppController
           }
         else if($code == 404 || $code == 403)
           {
-          //$this->getResponse()->setHttpResponseCode($code);
+          $this->getResponse()->setHttpResponseCode($code);
           }
         $this->_applicationError();
         break;
