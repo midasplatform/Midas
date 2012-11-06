@@ -73,6 +73,25 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
     }
 
   /**
+   * Return the total number of downloads for the given items in the given date range
+   * @param ids Array of item ids to aggregate statistics for
+   */
+  function getCountInRange($ids, $startDate, $endDate, $limit = 99999)
+    {
+    $result = array();
+    $sql = $this->database->select()
+            ->setIntegrityCheck(false)
+            ->from(array('d' => 'statistics_download'), array('count' => 'count(*)'))
+            ->joinLeft(array('ipl' => 'statistics_ip_location'), 'd.ip_location_id = ipl.ip_location_id')
+            ->where('date >= ?', $startDate)
+            ->where('date <= ?', $endDate)
+            ->where('item_id IN (?)', $ids)
+            ->limit($limit);
+    $row = $this->database->fetchRow($sql);
+    return $row['count'];
+    }
+
+  /**
    * Return a list of downloads that have not yet had geolocation run on them
    */
   function getAllUnlocated()
