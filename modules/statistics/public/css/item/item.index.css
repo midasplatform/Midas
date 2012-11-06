@@ -65,3 +65,7 @@ span.headerSmall {
   color: #959595;
 }
 
+span#filteredCount {
+  display: inline-block;
+  padding-top: 5px;
+}
