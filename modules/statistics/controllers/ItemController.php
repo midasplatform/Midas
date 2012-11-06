@@ -136,7 +136,7 @@ class Statistics_ItemController extends Statistics_AppController
       }
     else
       {
-      $endDate = date('Y-m-d', strtotime($this->_getParam('enddate')));
+      $endDate = date('Y-m-d 23:59:59', strtotime($this->_getParam('enddate')));
       }
     $limit = $this->_getParam('limit');
 
