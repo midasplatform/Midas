@@ -2725,4 +2725,31 @@ class Api_ApiComponent extends AppComponent
       MidasLoader::loadModel($model)->removeOrphans();
       }
     }
+
+  /**
+   * Delete a bitstream. Requires admin privileges on the containing item.
+   * @param token Authentication token
+   * @param id The id of the bitstream to delete
+   */
+  function bitstreamDelete($args)
+    {
+    $this->_validateParams($args, array('id'));
+    $userDao = $this->_getUser($args);
+
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
+    $itemModel = MidasLoader::loadModel('Item');
+
+    $bitstream = $bitstreamModel->load($args['id']);
+    if(!$bitstream)
+      {
+      throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
+      }
+
+    if(!$itemModel->policyCheck($bitstream->getItemrevision()->getItem(), $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception('Admin privileges required on the containing item', MIDAS_INVALID_POLICY);
+      }
+
+    $bitstreamModel->delete($bitstream);
+    }
   } // end class
