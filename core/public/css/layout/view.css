@@ -214,3 +214,9 @@ div.tabs .ui-tabs-panel {
 div.tabs{
   display: none;
 }
+
+img.progressIndeterminate {
+  display: block;
+  margin-top: 13px;
+  margin-bottom: 13px;
+}
