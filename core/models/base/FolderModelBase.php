@@ -91,7 +91,7 @@ abstract class FolderModelBase extends AppModel
       $FolderpolicyuserModel->createPolicy($policy->getUser(), $folderdao, $policy->getPolicy());
       }
     }//end copyParentPolicies
-    
+
   /** Get the root folder */
   function getRoot($folder)
     {

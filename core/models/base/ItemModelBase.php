@@ -139,7 +139,7 @@ abstract class ItemModelBase extends AppModel
         }
       }
     }//end copyParentPolicies
-    
+
   /** copy parent folder policies*/
   function copyParentPolicies($itemdao, $folderdao, $feeddao = null)
     {
