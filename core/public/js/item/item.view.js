@@ -176,6 +176,55 @@ $(document).ready(function() {
         midas.showDialogWithContent('Bitstream Information', text, false);
     });
 
+    $('tr.bitstreamRow img.editBitstreamIcon').qtip({
+        content: 'Edit bitstream'
+    }).click(function() {
+        var itemId = json.item.item_id;
+        var bitstreamId = $(this).attr('element');
+        midas.loadDialog("editBitstream"+bitstreamId,"/item/editbitstream?itemId="+itemId+"&bitstreamId="+bitstreamId);
+        midas.showDialog(json.browse.edit, false, {
+            width: 380
+        });
+
+    });
+
+    $('tr.bitstreamRow img.deleteBitstreamIcon').qtip({
+        content: 'Delete bitstream'
+    }).click(function() {
+        var itemId = json.item.item_id;
+        var bitstreamId = $(this).attr('element');
+        var that = this;
+        var html = '';
+        html+=json.item.message['deleteBitstreamMessage'];
+        html+='<br/>';
+        html+='<br/>';
+        html+='<br/>';
+        html+='<div style="float: right;">';
+        html+='<input class="globalButton deleteBitstreamYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
+        html+='<input style="margin-left:15px;" class="globalButton deleteBitstreamNo" type="button" value="'+json.global.No+'"/>';
+        html+='</div>';
+        midas.showDialogWithContent(json.item.message['delete'],html,false);
+        $('input.deleteBitstreamYes').unbind('click').click(function() {
+            $( "div.MainDialog" ).dialog('close');
+            $.ajax({
+                type: "POST",
+                url: json.global.webroot+'/item/deletebitstream',
+                data: {itemId: itemId, bitstreamId: bitstreamId},
+                dataType: 'json',
+                success: function (jsonContent) {
+                    var $deleted = $.parseJSON(jsonContent);
+                    if ($deleted)
+                        {
+                        $(that).parents('td').parents('tr').remove();
+                        }
+                }
+            });
+        });
+        $('input.deleteBitstreamNo').unbind('click').click(function() {
+            $( "div.MainDialog" ).dialog('close');
+        });
+    });
+
     $('a#itemDeleteLink').click(function () {
         $.ajax({
             type: "GET",
