@@ -842,7 +842,7 @@ class Api_ApiComponent extends AppComponent
    * @param name The name of the folder to create
    * @param description (Optional) The description of the folder
    * @param uuid (Optional) Uuid of the folder. If none is passed, will generate one.
-   * @param privacy (Optional) Default 'Public', possible values [Public|Private].
+   * @param privacy (Optional) Possible values [Public|Private]. Default behavior is to inherit from parent folder.
    * @param parentid The id of the parent folder. Set this to -1 to create a top level user folder.
    * @return The folder object that was created
    */
@@ -939,11 +939,7 @@ class Api_ApiComponent extends AppComponent
         $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
         $this->_setFolderPrivacy($new_folder, $privacyCode);
         }
-      else
-        {
-        // explicitly set to Public
-        $this->_setFolderPrivacy($new_folder, MIDAS_PRIVACY_PUBLIC);
-        }
+
       // reload folder to get up to date privacy status
       $new_folder = $folderModel->load($new_folder->getFolderId());
       return $new_folder->toArray();
