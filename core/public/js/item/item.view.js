@@ -198,8 +198,9 @@ $(document).ready(function() {
             }
         },
         position: {
-            at: 'bottom center', // Position the tooltip above the link
             my: 'top right',
+            at: 'bottom center', // Position the tooltip above the link
+            target: $('li.uploadFile'),
             viewport: $(window), // Keep the tooltip on-screen at all times
             effect: true // Disable positioning animation
         },

@@ -3,6 +3,7 @@ package com.kitware.utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.File;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -27,7 +28,8 @@ public class Utility
     {
     try
       {
-      return new URL(url); 
+      return new URL(url.replaceAll(" ", "%20")
+                        .replaceAll("#", "%23")); 
       }
     catch (MalformedURLException e)
       {
@@ -39,7 +41,44 @@ public class Utility
       throw new JavaUploaderException(name+" URL not specified", e);
       }
     }
+
+  /**
+   * Get the size of the directory (recursive)
+   * @param dir
+   * @return an array of Longs of length 2. 
+   *         First element is the total number of files and folders.
+   *         Second is the total size in bytes of all files.
+   */
+  public static Long[] directorySize(File dir)
+    {
+    Long[] size = new Long[] {new Long(0), new Long(0)};
+    Utility.directorySize(dir, size);
+    return size;
+    }
+
   
+  private static void directorySize(File dir, Long[] size)
+    {
+    if (dir.isFile())
+      {
+      size[1] += dir.length();
+      }
+    else
+      {
+      File[] subFiles = dir.listFiles();
+
+      if(subFiles == null)
+        {
+        return;
+        }
+      for(File file : subFiles)
+        {
+        size[0]++;
+        Utility.directorySize(file, size);
+        }
+      }
+    }
+
   public static String queryHttpServer(String queryURL) throws JavaUploaderQueryHttpServerException
     {
     HttpURLConnection conn = null; 
