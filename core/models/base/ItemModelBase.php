@@ -533,6 +533,7 @@ abstract class ItemModelBase extends AppModel
     $item->setDescription($description);
     $item->setType(0);
     $item->setUuid($uuid);
+    $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE); // Must set this flag private initially
     $this->save($item, true);
 
     $folderModel = MidasLoader::loadModel('Folder');

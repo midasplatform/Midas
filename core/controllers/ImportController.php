@@ -202,6 +202,7 @@ class ImportController extends AppController
           $item = new ItemDao;
           $item->setName($fileInfo->getFilename());
           $item->setDescription('');
+          $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE); // Must set this flag private initially
           $this->Item->save($item, true);
 
           // Set the policy of the item

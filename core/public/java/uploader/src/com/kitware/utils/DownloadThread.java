@@ -298,7 +298,7 @@ public class DownloadThread extends Thread
         {
         // skip the file if it has already been fully written
         conn.disconnect();
-        this.parentUI.increaseDownloadProgress(new File(directory, name).length());
+        this.parentUI.increaseOverallProgress(new File(directory, name).length());
         return;
         }
 
@@ -311,7 +311,7 @@ public class DownloadThread extends Thread
       else
         {
         this.parentUI.resetCurrentDownload(size);
-        this.parentUI.increaseDownloadProgress(offset);
+        this.parentUI.increaseOverallProgress(offset);
         }
 
       responseStream = new DataInputStream(conn.getInputStream());
@@ -321,7 +321,7 @@ public class DownloadThread extends Thread
       while ((len = responseStream.read(buf, 0, buf.length)) != -1)
         {
         fileStream.write(buf, 0, len);
-        this.parentUI.increaseDownloadProgress((long)len);
+        this.parentUI.increaseOverallProgress((long)len);
         }
 
       fileStream.close();

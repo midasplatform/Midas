@@ -152,6 +152,7 @@ class UploadComponent extends AppComponent
     $item->setName($itemModel->updateItemName($name, $parent));
     $item->setDescription('');
     $item->setType(0);
+    $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE); // Must set this flag private initially
     $itemModel->save($item, false);
 
     $feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_ITEM, $item);
@@ -247,6 +248,7 @@ class UploadComponent extends AppComponent
       $item->setName($name);
       $item->setDescription('');
       $item->setType(0);
+      $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE); // Must set this flag private initially
       $itemModel->save($item, false);
       $changes = 'Initial revision';
 
