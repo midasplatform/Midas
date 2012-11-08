@@ -336,6 +336,7 @@ class ItemController extends AppController
     $this->view->json['item']['message']['deleteMessage'] = $this->t('Do you really want to delete this item? It cannot be undone.');
     $this->view->json['item']['message']['deleteMetadataMessage'] = $this->t('Do you really want to delete this metadata? It cannot be undone.');
     $this->view->json['item']['message']['deleteItemrevisionMessage'] = $this->t('Do you really want to delete this revision? It cannot be undone.');
+    $this->view->json['item']['message']['deleteBitstreamMessage'] = $this->t('Do you really want to delete this bitstream? It cannot be undone.');
     $this->view->json['item']['message']['duplicate'] = $this->t('Duplicate Item');
     $this->view->json['modules'] = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_VIEW_JSON', array('item' => $itemDao));
     }//end index
@@ -476,6 +477,106 @@ class ItemController extends AppController
     $this->_redirect('/item/'.$itemId);
     }//end deleteitemrevisionAction
 
+  /**
+   * Edit an bitstream
+   *
+   * @method editbitstreamAction()
+   * @throws Zend_Exception on invalid itemId/bitstreamId and incorrect access permission
+  */
+  function editbitstreamAction()
+
+    {
+    $this->disableLayout();
+    // load item and check permissions
+    $itemId = $this->_getParam('itemId');
+    if(!isset($itemId) || !is_numeric($itemId))
+      {
+      throw new Zend_Exception("itemId should be a number");
+      }
+    $itemDao = $this->Item->load($itemId);
+    if($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
+      }
+
+    $bitstreamId = $this->_getParam('bitstreamId');
+    if(!isset($bitstreamId) || !is_numeric($bitstreamId))
+      {
+      throw new Zend_Exception("bitstreamId should be a number");
+      }
+    $bitstreamDao = $this->Bitstream->load($bitstreamId);
+    if($bitstreamDao === false)
+      {
+      throw new Zend_Exception("This bitstream doesn't exist.");
+      }
+
+    if($this->_request->isPost())
+      {
+      $name = $this->_getParam('name');
+      $mimetype = $this->_getParam('mimetype');
+
+      if(strlen($name) > 0)
+        {
+        $bitstreamDao->setName($name);
+        }
+      $bitstreamDao->setMimetype( $mimetype);
+      $this->Bitstream->save($bitstreamDao);
+      $this->_redirect('/item/'.$itemId);
+      }
+
+    $this->view->bitstreamDao = $bitstreamDao;
+    $this->view->itemId = $itemId;
+    $form = $this->Form->Item->createEditBitstreamForm();
+    $formArray = $this->getFormAsArray($form);
+    $formArray['name']->setValue($bitstreamDao->getName());
+    $formArray['mimetype']->setValue($bitstreamDao->getMimetype());
+    $this->view->bitstreamform = $formArray;
+
+    }//end editbitstreamAction
+
+  /**
+   * Delete a bitstream
+   *
+   * @method deletebitstreamAction()
+   * @throws Zend_Exception on invalid itemId/bitstreamId and incorrect access permission
+  */
+  function deletebitstreamAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    // load item and check permissions
+    $itemId = $this->_getParam('itemId');
+    if(!isset($itemId) || !is_numeric($itemId))
+      {
+      throw new Zend_Exception("itemId should be a number");
+      }
+    $itemDao = $this->Item->load($itemId);
+    if($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
+      }
+
+    $bitstreamId = $this->_getParam('bitstreamId');
+    if(!isset($bitstreamId) || !is_numeric($bitstreamId))
+      {
+      throw new Zend_Exception("bitstreamId should be a number");
+      }
+    $bitstreamDao = $this->Bitstream->load($bitstreamId);
+    if($bitstreamDao === false)
+      {
+      throw new Zend_Exception("This bitstream doesn't exist.");
+      }
+    $this->Bitstream->delete($bitstreamDao);
+
+    if(!$this->_request->isXmlHttpRequest())
+      {
+      $this->_redirect('/item/'.$itemId);
+      }
+    else
+      {
+      echo JsonComponent::encode(true);
+      }
+    }//end deletebitstreamAction
 
   /**
    * Merge items

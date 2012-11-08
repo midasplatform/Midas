@@ -124,6 +124,16 @@ div.revisionEntry {
   border-top: 1px solid #A7A7A7 !important;
 }
 
+img.editBitstreamIcon {
+  cursor: pointer;
+  float: none;
+}
+
+img.deleteBitstreamIcon {
+  cursor: pointer;
+  float: right;
+}
+
 img.bitstreamInfoIcon {
   cursor: pointer;
   float: right;

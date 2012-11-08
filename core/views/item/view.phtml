@@ -116,7 +116,7 @@ foreach($cssArray as $module => $list)
       </div>
     </div>
   <?php
-    } 
+    }
   ?>
 
   <div class="itemViewMainSection">
@@ -153,8 +153,8 @@ foreach($cssArray as $module => $list)
           }
         echo '</div>';
 
-        
-        
+
+
         echo '<div class="revisionMetadata">';
         echo '<h4>METADATA</h4>';
         if(count($revision->metadatavalues) == 0)
@@ -222,7 +222,16 @@ foreach($cssArray as $module => $list)
                     echo '  </div>';
                     echo '<a href="'.$this->webroot.'/download?bitstream='.$bitstream->getKey().'">';
                     echo $this->slicename($bitstream->getName(), 50);
-                    echo '</a> <img element="'.$bitstream->getKey().'" class="bitstreamInfoIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/message.png" />';
+                    echo '</a>';
+                    if($this->isModerator)
+                      {
+                      echo '<img element="'.$bitstream->getKey().'" class="editBitstreamIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/edit.png" />';
+                      }
+                    if($this->isAdmin)
+                      {
+                      echo '<img element="'.$bitstream->getKey().'" class="deleteBitstreamIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" />';
+                      }
+                    echo '<img element="'.$bitstream->getKey().'" class="bitstreamInfoIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/message.png" />';
                     echo '</td>';
                     echo '<td>'.UtilityComponent::formatSize($bitstream->getSizebytes()).'</td>';
                     echo '</tr>';
@@ -259,7 +268,7 @@ foreach($cssArray as $module => $list)
     <h1>Item Actions</h1>
     <ul>
       <?php
-      echo 
+      echo
         "<li>
           <a href='javascript:;' class='linkItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/link.png'/> Share</a>
         </li>";
