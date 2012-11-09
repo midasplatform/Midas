@@ -114,7 +114,7 @@ midas.visualize.initCallback = function (view, retVal) {
 midas.visualize.switchRenderer = function (first) {
     if(midas.visualize.renderers.js == undefined) {
         midas.visualize.renderers.js = new JavaScriptRenderer("jsRenderer", "/PWService");
-        midas.visualize.renderers.js.enableWebSocket('ws://'+json.visualize.hostname
+        midas.visualize.renderers.js.enableWebSocket(paraview, 'ws://'+json.visualize.hostname
           +':'+json.visualize.wsport+'/PWService/Websocket');
         midas.visualize.renderers.js.init(paraview.sessionId, midas.visualize.activeView.__selfid__);
         $('img.toolButton').show();
@@ -214,8 +214,7 @@ midas.visualize.setupObjectList = function () {
  * Force the renderer image to refresh from the server
  */
 midas.visualize.forceRefreshView = function () {
-    midas.visualize.renderers.js.status = 0;
-    midas.visualize.renderers.js.loadImage();
+    midas.visualize.renderers.js.forceRefresh();
 };
 
 midas.visualize.toggleObjectVisibility = function(checkbox) {
