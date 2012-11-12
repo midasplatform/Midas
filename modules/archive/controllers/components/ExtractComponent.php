@@ -101,9 +101,9 @@ class Archive_ExtractComponent extends AppComponent
       throw new Zend_Exception('Could not write into temp directory');
       }
 
-    $nativeCommand = $this->Setting->getValueByName('zipCommand', 'archive');
+    $nativeCommand = $this->Setting->getValueByName('unzipCommand', 'archive');
 
-    if($nativeCommand && $bitstreamDao->getSizebytes() > 1024*1024*1024) // Only use native exe on zips over 1GB
+    if($nativeCommand && $bitstreamDao->getSizebytes() > 1024 * 1024 * 1024) // Only use native exe on zips over 1GB
       {
       $this->_extractZipNative($bitstreamDao, $nativeCommand, $dir, $progressDao);
       }

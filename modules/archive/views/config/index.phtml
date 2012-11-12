@@ -1,0 +1,47 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+?>
+
+<div class="viewMain">
+  <div class="unzipCommandDescription">
+    <p>
+    If you want to use this module for extracting zip archives over 2GB, you will need to enter
+    an executable command here that will be used for large zip files, because PHP does not support opening zip files over 2GB.
+    </p>
+    <p>
+    The command should be the same as what you would call on the command line to unzip the archive.  In the place
+    where you would put the path of the file to unzip on the command line, instead put <b>%zip</b>.  That will be
+    substituted to the actual path of the zip file by Midas.  If your command also requires an unzip directory to be
+    explicitly specified (rather than using the working directory), you must add <b>%dir</b> to the command where
+    the output directory should be specified.
+    </p>
+    <p>
+    <b>Example:</b> /usr/bin/unzip -o %zip
+    </p>
+    <p>
+    Because that unzip executable uses the working directory by default, we do not need to specify <b>%dir</b>.
+    DO NOT put quotes around the <b>%zip</b> or <b>%dir</b> arguments, Midas will do that automatically when it is expanded.
+    The module will still work for zip files under 2GB if you leave this field blank.
+    </p>
+  </div>
+  <form class="genericForm" id="configForm" method="POST" action="<?php echo $this->webroot ?>/archive/config/submit">
+    <div>
+      <label for="unzipCommand">Unzip command</label>
+      <input type="text" id="unzipCommand" name="unzipCommand" />
+    </div>
+    <div class="bottomButtons">
+      <input type="submit" value="Save" />
+    </div>
+  </form>
+</div>
