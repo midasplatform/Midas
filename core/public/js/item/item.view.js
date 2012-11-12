@@ -182,7 +182,7 @@ $(document).ready(function() {
         var itemId = json.item.item_id;
         var bitstreamId = $(this).attr('element');
         midas.loadDialog("editBitstream"+bitstreamId,"/item/editbitstream?itemId="+itemId+"&bitstreamId="+bitstreamId);
-        midas.showDialog(json.browse.edit, false, {
+        midas.showDialog(json.browse.editBitstream, false, {
             width: 380
         });
 
@@ -301,7 +301,7 @@ $(document).ready(function() {
 
     $('a.editItemLink').click(function () {
         midas.loadDialog("editItem"+json.item.item_id,"/item/edit?itemId="+json.item.item_id);
-        midas.showDialog(json.browse.edit, false, {
+        midas.showDialog(json.browse.editItem, false, {
             width: 545
         });
     });

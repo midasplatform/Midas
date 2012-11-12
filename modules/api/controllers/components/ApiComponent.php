@@ -1492,6 +1492,9 @@ class Api_ApiComponent extends AppComponent
    * @param description (Optional) The description of the item
    * @param uuid (Optional) Uuid of the item. If none is passed, will generate one.
    * @param privacy (Optional) Default 'Public', possible values [Public|Private].
+   * @param updatebitstream (Optional) If set, the bitstream's name will be updated
+      simultaneously with the item's name if and only if the item has already
+      existed and its latest revision contains only one bitstream.
    * @return The item object that was created
    */
   function itemCreate($args)
@@ -1539,6 +1542,19 @@ class Api_ApiComponent extends AppComponent
         if(substr($key, 0, 1) == '_')
           {
           $this->_setMetadata($record, MIDAS_METADATA_TEXT, substr($key, 1), '', $value);
+          }
+        }
+      if(array_key_exists('updatebitstream', $args))
+        {
+        $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+        $bitstreamModel = MidasLoader::loadModel('Bitstream');
+        $revision = $itemRevisionModel->getLatestRevision($record);
+        $bitstreams = $revision->getBitstreams();
+        if(count($bitstreams) == 1)
+          {
+          $bitstream = $bitstreams[0];
+          $bitstream->setName($name);
+          $bitstreamModel->save($bitstream);
           }
         }
       $itemModel->save($record, true);
