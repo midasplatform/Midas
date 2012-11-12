@@ -24,7 +24,7 @@ midas.community.promotedialogSuccess = function(responseText, statusText, xhr, f
   if(jsonResponse[0])
     {
     window.location.replace(json.global.webroot+
-      '/community/manage?communityId='+$('#promoteCommunityId').val()+'#tabs-2');
+      '/community/manage?communityId='+$('#promoteCommunityId').val()+'#tabs-Users');
     window.location.reload();
     }
 }
