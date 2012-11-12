@@ -366,6 +366,7 @@ class ItemController extends AppController
 
     if($this->_request->isPost())
       {
+      $updateBitstream = $this->_getParam('updateBitstreamName');
       $name = $this->_getParam('name');
       $description = $this->_getParam('description');
       $license = $this->_getParam('licenseSelect');
@@ -376,6 +377,16 @@ class ItemController extends AppController
         {
         $revision->setLicenseId($license);
         $this->ItemRevision->save($revision);
+        if($updateBitstream)
+          {
+          $bitstreams = $revision->getBitstreams();
+          if((count($bitstreams) == 1) && (strlen($name) > 0))
+            {
+            $bitstream = $bitstreams[0];
+            $bitstream->setName($name);
+            $this->Bitstream->save($bitstream);
+            }
+          }
         }
       if(strlen($name) > 0)
         {
@@ -395,9 +406,15 @@ class ItemController extends AppController
 
     $this->view->allLicenses = $this->License->getAll();
     $revision = $this->ItemRevision->getLatestRevision($item);
+    $this->view->displayUpdateBitstream = "none";
     if($revision != false)
       {
       $this->view->selectedLicense = $revision->getLicenseId();
+      $bitstreams = $revision->getBitstreams();
+      if(count($bitstreams) == 1)
+        {
+        $this->view->displayUpdateBitstream = "block";
+        }
       }
     }
 
