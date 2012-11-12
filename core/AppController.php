@@ -232,6 +232,8 @@ class AppController extends MIDAS_GlobalController
       'manage' => $this->t('Manage'),
       'edit' => $this->t('Edit'),
       'editSelected' => $this->t('Edit selected'),
+      'editItem' => $this->t('Edit item'),
+      'editBitstream' => $this->t('Edit bitstream'),
       'delete' => $this->t('Delete'),
       'deleteItem' => $this->t('Delete'),
       'sharedItem' => $this->t('This item is currrently shared by other folders and/or communities. Deletion will make it disappear in all these folders and/or communitites.'),
