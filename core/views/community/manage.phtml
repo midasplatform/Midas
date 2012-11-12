@@ -53,18 +53,19 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
   <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <div class="tabs" id='tabsGeneric'>
     <ul>
-      <li><a href="#tabs-1"><?php echo $this->t("Info")?></a></li>
+      <li><a href="#tabs-Info"><?php echo $this->t("Info")?></a></li>
       <?php 
       if($this->isAdmin)
         {
         // permissions/groups/user management is only for community admins
         ?>
-        <li><a href="#tabs-2"><?php echo $this->t("Privacy");?></a></li>
+        <li><a href="#tabs-Privacy"><?php echo $this->t("Privacy");?></a></li>
       <?php
         }
       ?>
-      <li><a href="#tabs-3"><?php echo $this->t('Users');?></a></li>
-      <li><a href="#tabs-4"><?php echo $this->t('Files');?></a></li>
+      <li><a href="#tabs-Users"><?php echo $this->t("Users");?></a></li>
+      <li><a href="#tabs-Data"><?php echo $this->t('Data');?></a></li>
+
       <?php
           foreach($this->customTabs as $modules)
             {
@@ -75,7 +76,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
             }
       ?>
     </ul>
-    <div id="tabs-1">
+    <div id="tabs-Info">
        <form id="editCommunityInfoForm" class="genericForm" method="<?php echo $this->infoForm['method']?>"  action="<?php echo $this->infoForm['action']?>">
         <div class="createNameElement">
           <?php echo $this->t('Name')?>
@@ -114,7 +115,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
   if($this->isAdmin)
     {
 ?>
-    <div id="tabs-2">
+    <div id="tabs-Privacy">
        <form id="editCommunityPrivacyForm" class="genericForm" method="<?php echo $this->privacyForm['method']?>"  action="<?php echo $this->privacyForm['action']?>">
         <div class="radioElement">
           <h4><?php echo $this->t('Privacy')?></h4>
@@ -132,7 +133,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
        </form>
     </div>
 
-    <div id="tabs-3">
+    <div id="tabs-Users">
       <td style="width: 50%;vertical-align: top;">
         <div  class='communityMemberList'>
           <?php
@@ -298,7 +299,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
     } // if($this->isAdmin)
 ?>
 
-    <div id="tabs-4">
+    <div id="tabs-Data">
       <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
             Drag and drop to move elements.
             <br/>

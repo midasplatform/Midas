@@ -97,7 +97,7 @@ $('a.deleteGroupLink').click(function () {
                     $('a.groupLink[groupid='+groupid+']').parent('li').remove();
                     midas.createNotice(jsonResponse[1], 4000);
                     midas.community.manage.init();
-                    window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-3');
+                    window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-Users');
                     window.location.reload();
                 }
                 else {
@@ -203,7 +203,7 @@ midas.community.manage.successGroupChange = function (responseText, statusText, 
         }
 
         midas.community.manage.init();
-        window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-3');
+        window.location.replace(json.global.webroot+'/community/manage?communityId='+json.community['community_id']+'#tabs-Users');
         window.location.reload();
     }
     else {
@@ -268,7 +268,7 @@ midas.community.manage.removeFromGroup = function(userId, groupId) {
             midas.createNotice(jsonResponse[1], 4000);
             if(jsonResponse[0]) {
                 window.location.replace(json.global.webroot+'/community/manage?communityId='+
-                                        json.community.community_id+'#tabs-3');
+                                        json.community.community_id+'#tabs-Users');
                 window.location.reload();
             }
         }
