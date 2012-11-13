@@ -11,3 +11,4 @@
 /.zfproject.xml
 /bin
 /tests/Testing
+.DS_Store
