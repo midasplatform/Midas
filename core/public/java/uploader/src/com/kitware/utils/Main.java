@@ -584,12 +584,11 @@ public class Main extends JApplet
     try
       {
       JFileChooser chooser = new JFileChooser();
-      chooser.setCurrentDirectory(new File("."));
       chooser.setDialogTitle("Choose a download destination");
       chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
       chooser.setAcceptAllFileFilterUsed(false);
-
-      int returnVal = chooser.showSaveDialog(null);
+      chooser.setApproveButtonText("Download");
+      int returnVal = chooser.showOpenDialog(this);
       if (returnVal == JFileChooser.APPROVE_OPTION)
         {
         this.downloadDest = chooser.getSelectedFile();
@@ -645,7 +644,7 @@ public class Main extends JApplet
       chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
       chooser.setMultiSelectionEnabled(true);
       chooser.setDialogTitle("Select a file to upload");
-      int returnVal = chooser.showOpenDialog(null);
+      int returnVal = chooser.showOpenDialog(this);
       if (returnVal == JFileChooser.APPROVE_OPTION)
         {
         this.files = chooser.getSelectedFiles();

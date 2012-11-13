@@ -326,7 +326,10 @@ public class DownloadThread extends Thread
 
       fileStream.close();
       // Final step: move the file to its completed name
-      toWrite.renameTo(new File(directory, name)); 
+      if(!this.paused)
+        {
+        toWrite.renameTo(new File(directory, name));
+        }
       }
     catch (IOException e)
       {
