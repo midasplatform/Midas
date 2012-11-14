@@ -1059,6 +1059,17 @@ class UserController extends AppController
     $this->view->user = $user;
     }
 
+  /**
+   * Accept a new user invitation (clicked the link sent in the email)
+   * @param email The email address of the registering user
+   * @param authKey The auth key sent in the email
+   */
+  public function acceptinviteAction()
+    {
+    $email = $this->_getParam('email');
+    $authKey = $this->_getParam('authKey');
+    }
+
   /** Delete a user */
   public function deleteAction()
     {
