@@ -2,6 +2,13 @@ var midas = midas || {};
 midas.admin = midas.admin || {};
 
 $(document).ready(function () {
+    $('.databaseIntegrityWrapper').accordion({
+        clearStyle: true,
+        collapsible: true,
+        active: false,
+        autoHeight: false
+    }).show();
+    $('.databaseIntegrityWrapper').close();
     $('button.removeOrphans').click(function () {
         var html = '<div id="cleanupProgress"></div>';
         html += '<div id="cleanupProgressMessage"></div>';
@@ -14,7 +21,7 @@ $(document).ready(function () {
             {model: model},
             function(text) {
                 var retVal = $.parseJSON(text);
-                if(retVal == null) {
+                if(retVal === null) {
                     midas.createNotice('Error occurred, check the logs', 2500, 'error');
                 }
                 else {
