@@ -287,7 +287,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['uploadtoken'] = $token;
     $this->params['filename'] = 'test.txt';
     $this->params['length'] = $length;
-    $this->params['itemid'] = $itemsFile[1]->getKey();
     $this->params['revision'] = 'head'; //upload into head revision
     $this->params['testingmode'] = 'true';
     $changes = 'revision message';
@@ -323,7 +322,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['uploadtoken'] = $token;
     $this->params['filename'] = 'test.txt';
     $this->params['length'] = $length;
-    $this->params['itemid'] = $itemsFile[1]->getKey();
     $this->params['revision'] = 'head'; //upload into head revision
     $this->params['testingmode'] = 'true';
     $resp = $this->_callJsonApi();
@@ -453,7 +451,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['uploadtoken'] = $token;
     $this->params['filename'] = 'test.txt';
     $this->params['length'] = $length;
-    $this->params['itemid'] = $generatedItemId;
     $this->params['revision'] = '1'; //upload into revision 1
     $this->params['testingmode'] = 'true';
     $resp = $this->_callJsonApi();
@@ -467,7 +464,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['uploadtoken'] = $token;
     $this->params['filename'] = 'test.txt';
     $this->params['length'] = $length;
-    $this->params['itemid'] = $generatedItemId;
     $this->params['revision'] = 'head'; //upload into head revision
     $this->params['testingmode'] = 'true';
     $this->params['DBG'] = 'true';
@@ -489,7 +485,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['uploadtoken'] = $token;
     $this->params['filename'] = 'test.txt';
     $this->params['length'] = $length;
-    $this->params['itemid'] = $generatedItemId;
     $this->params['revision'] = 'head'; //upload into head revision
     $this->params['testingmode'] = 'true';
     $this->params['DBG'] = 'true';
@@ -597,7 +592,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['uploadtoken'] = $token;
     $this->params['filename'] = $filename;
     $this->params['length'] = $length;
-    $this->params['itemid'] = $generatedItemId;
     $this->params['testingmode'] = 'true';
     $this->params['DBG'] = 'true';
     $resp = $this->_callJsonApi();
@@ -630,7 +624,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['uploadtoken'] = $token;
     $this->params['filename'] = $filename;
     $this->params['length'] = $length;
-    $this->params['itemid'] = $generatedItemId;
     $this->params['testingmode'] = 'true';
     $this->params['DBG'] = 'true';
     $resp = $this->_callJsonApi();
@@ -684,7 +677,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['uploadtoken'] = $token;
     $this->params['filename'] = $filename;
     $this->params['length'] = $length;
-    $this->params['itemid'] = $generatedItemId;
     $this->params['revision'] = '3';
     $this->params['testingmode'] = 'true';
     $this->params['DBG'] = 'true';
