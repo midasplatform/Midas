@@ -53,6 +53,15 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     // ensure default privacy is Public
     $this->assertPrivacyStatus(array($folderModel->load($resp->data->folder_id)), array(), MIDAS_PRIVACY_PUBLIC);
 
+    // try to create a duplicate folder with same parent and same name, should fail
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.folder.create';
+    $this->params['name'] = 'testFolderCreate';
+    $this->params['parentid'] = $userDao->getPublicfolderId();
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
+
     // tests for creating a new folder passing in a privacy value
     $this->resetAll();
     $this->params['token'] = $this->_loginAsAdministrator();

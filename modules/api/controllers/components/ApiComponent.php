@@ -864,7 +864,10 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Create a folder or update an existing one if one exists by the uuid passed
+   * Create a folder or update an existing one if one exists by the uuid passed.
+   * If a folder is requested to be created with the same parentid and name as
+   * an existing folder, an exception will be thrown and no new folder will
+   * be created.
    * @param token Authentication token
    * @param name The name of the folder to create
    * @param description (Optional) The description of the folder
@@ -936,6 +939,10 @@ class Api_ApiComponent extends AppComponent
         if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
           {
           throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+          }
+        if($folderModel->getFolderExists($name, $folder))
+          {
+          throw new Exception('A folder already exists under that parent with that name', MIDAS_INVALID_PARAMETER);
           }
         $new_folder = $folderModel->createFolder($name, $description, $folder, $uuid);
         if($new_folder === false)
