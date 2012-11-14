@@ -463,7 +463,7 @@ class Api_ApiComponent extends AppComponent
       {
       throw new Exception('Invalid user id from upload token', MIDAS_INVALID_PARAMETER);
       }
-    $item = $itemModel->load($args['itemid']);
+    $item = $itemModel->load($itemid);
 
     if($item == false)
       {
