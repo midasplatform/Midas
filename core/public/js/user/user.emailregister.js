@@ -25,7 +25,6 @@ $(document).ready(function () {
         obj.parent('div').find('span').html('');
     });
 
-
     $('#registerForm').ajaxForm({
         beforeSubmit: function () {
             var valid = midas.register.validRegisterForm();
