@@ -190,7 +190,7 @@ abstract class UserModelBase extends AppModel
     }//end incrementViewCount
 
   /** create user */
-  public function createUser($email, $password, $firstname, $lastname, $admin = 0)
+  public function createUser($email, $password, $firstname, $lastname, $admin = 0, $rawPassword = false)
     {
     if(!is_string($email) || empty($email) || !is_string($password) || empty($password) || !is_string($firstname)
         || empty($firstname) || !is_string($lastname) || empty($lastname) || !is_numeric($admin))
@@ -204,18 +204,21 @@ abstract class UserModelBase extends AppModel
       throw new Zend_Exception("User already exists.");
       }
 
-    Zend_Loader::loadClass('UserDao', BASE_PATH.'/core/models/dao');
     $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-    if(isset($passwordPrefix) && !empty($passwordPrefix))
+    if(!$rawPassword && isset($passwordPrefix) && !empty($passwordPrefix))
       {
       $password = $passwordPrefix.$password;
       }
-    $userDao = new UserDao();
+    if(!$rawPassword)
+      {
+      $password = md5($password);
+      }
+    $userDao = MidasLoader::newDao('UserDao');
     $userDao->setFirstname(ucfirst($firstname));
     $userDao->setLastname(ucfirst($lastname));
     $userDao->setEmail(strtolower($email));
     $userDao->setCreation(date('c'));
-    $userDao->setPassword(md5($password));
+    $userDao->setPassword($password);
     $userDao->setAdmin($admin);
     $this->save($userDao); // save the record before gravatar lookup to shorten critical section
 

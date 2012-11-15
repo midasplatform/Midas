@@ -80,9 +80,13 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                 <label for='closeRegistration'>Close Registration</label>
                 {$this->configForm['closeregistration']}
               </div>
+              <div qtip='Require users to verify their email addresses during registration' class='emailVerification'>
+                <label for='verifyEmail'>Require Email Verification</label>
+                {$this->configForm['verifyemail']}
+              </div>
               <div qtip='If enabled, users will automatically have an icon if they have created one on gravatar.com'>
-              <label for='gravatar'>Gravatar user icons</label>
-                  {$this->configForm['gravatar']}
+                <label for='gravatar'>Gravatar user icons</label>
+                {$this->configForm['gravatar']}
               </div>
               <div qtip='If you enable this feature, all requests to Midas will be logged to trace.log' class='logtrace'>
                 <label for='logtrace'>Log all requests</label>
