@@ -201,6 +201,8 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
      * 5 generate an upload token with a checksum of an existing bitstream
      *
      * 6 create a new item in the user root folder
+     * 23 create a duplicate name item in user root folder with item.create
+     * 24 create a duplicate name item in user root folder with generatetoken
      * 7 generate an upload token for 6's item, using a checksum of an existing bitstream
      *
      * 8 create a new item in the user root folder
@@ -371,6 +373,47 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $itemDao = $this->Item->load($generatedItemId);
     $revisions = $itemDao->getRevisions();
     $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
+
+    // 23
+    // create a new item in the user root folder with a duplicate name, which
+    // will result in an item with an amended name from the request
+    // use folderid 1000
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.item.create';
+    $this->params['name'] = 'created_item';
+    $this->params['parentid'] = '1000';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $generatedDuplicateItemId = $resp->data->item_id;
+    $itemDao = $this->Item->load($generatedDuplicateItemId);
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
+    $this->assertEquals($itemDao->getName(), "created_item (1)", 'Duplicate Item has wrong name');
+    // delete the newly created item
+    $this->Item->delete($itemDao);
+
+    // 24
+    // create a new item in the user root folder with a duplicate name, which
+    // will result in an item with an amended name from the request, using
+    // upload.generatetoken, use folderid 1000
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $this->params['name'] = 'created_item';
+    $this->params['filename'] = 'created_item';
+    $this->params['folderid'] = '1000';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $token = $resp->data->token;
+    $tokenParts = explode("/", $token);
+    $generatedDuplicateItemId = $tokenParts[1];//var_dump($tokenParts);
+    $itemDao = $this->Item->load($generatedDuplicateItemId);
+    $revisions = $itemDao->getRevisions();
+    $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
+    $this->assertEquals($itemDao->getName(), "created_item (1)", 'Duplicate Item has wrong name');
+    // delete the newly created item
+    $this->Item->delete($itemDao);
 
     // 7
     // generate upload token

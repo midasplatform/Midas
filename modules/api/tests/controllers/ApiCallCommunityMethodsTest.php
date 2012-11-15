@@ -58,6 +58,14 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
     $createdComm = $communityModel->load($resp->data->community_id);
     $this->assertEquals($createdComm->getPrivacy(), MIDAS_COMMUNITY_PUBLIC, 'created community has wrong default privacy');
 
+    // Attempt to create a duplicate community
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.community.create';
+    $this->params['name'] = 'testNewComm';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, 0);
+
     // create a comm with privacy Public
     $this->resetAll();
     $this->params['token'] = $this->_loginAsAdministrator();
