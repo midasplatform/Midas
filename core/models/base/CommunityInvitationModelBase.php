@@ -31,29 +31,37 @@ class CommunityInvitationModelBase extends AppModel
 
     $this->_mainData = array(
       'communityinvitation_id' =>  array('type' => MIDAS_DATA),
-      'community_id' =>  array('type' => MIDAS_DATA),
-      'user_id' =>  array('type' => MIDAS_DATA),
-      'community' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Community', 'parent_column' => 'community_id', 'child_column' => 'community_id'),
-      'user' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
+      'community_id' => array('type' => MIDAS_DATA),
+      'group_id' => array('type' => MIDAS_DATA),
+      'user_id' => array('type' => MIDAS_DATA),
+      'community' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Community', 'parent_column' => 'community_id', 'child_column' => 'community_id'),
+      'group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'group_id', 'child_column' => 'group_id'),
+      'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
       );
     $this->initialize(); // required
     } // end __construct()
 
-  /** create invitation */
-  public function createInvitation($communityDao, $userDao, $invitedUserDao)
+  /**
+   * Create an invitation record for the user into the given group
+   * @param groupDao The group to invite the user to
+   * @param userDao The user performing the invitation (typically the session user)
+   * @param invitedUserDao The user being invited to the group
+   */
+  public function createInvitation($groupDao, $userDao, $invitedUserDao)
     {
+    $communityDao = $groupDao->getCommunity();
     $invitations = $invitedUserDao->getInvitations();
     foreach($invitations as $invitation)
       {
       if($invitation->getCommunityId() == $communityDao->getKey())
         {
-        return;
+        return false;
         }
       }
 
-    Zend_Loader::loadClass('CommunityInvitationDao', BASE_PATH.'/core/models/dao');
-    $invitationDao = new CommunityInvitationDao();
+    $invitationDao = MidasLoader::newDao('CommunityInvitationDao');
     $invitationDao->setCommunityId($communityDao->getKey());
+    $invitationDao->setGroupId($groupDao->getKey());
     $invitationDao->setUserId($invitedUserDao->getKey());
     $this->save($invitationDao);
 
@@ -66,7 +74,7 @@ class CommunityInvitationModelBase extends AppModel
     }
 
   /** is user invited */
-  public function isInvited($communityDao, $userDao)
+  public function isInvited($communityDao, $userDao, $returnDao = false)
     {
     if($userDao == null)
       {
@@ -77,7 +85,14 @@ class CommunityInvitationModelBase extends AppModel
       {
       if($invitation->getCommunityId() == $communityDao->getKey())
         {
-        return true;
+        if($returnDao)
+          {
+          return $invitation;
+          }
+        else
+          {
+          return true;
+          }
         }
       }
     return false;

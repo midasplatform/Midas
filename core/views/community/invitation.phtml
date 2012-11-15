@@ -10,15 +10,13 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/community/community.invitation.js?'.time().'"></script>';
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/community/community.invitation.js?'.time().'"></script>';
 ?>
-<link href="<?php echo $this->coreWebroot?>/public/css/community/community.invitation.css?<?php echo time();?> " rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot?>/public/css/community/community.invitation.css?<?php echo time();?>" rel="stylesheet" type="text/css" />
 
-<?php
-echo "      <div class='invitationSearch'>";
-echo "        <input style='width:300px' type='text' id='live_invitation_search' value='{$this->t('Invite the user ...')}' autocomplete='off' autocorrect='off' autocapitalize='off' />";
-echo "        <input type='hidden' id='live_invitation_search_value' value='init'  />";
-echo "        <div id='searchInvitationLoading' style='display:none'></div>";
-echo "      </div>";
+<div class='invitationSearch'>
+  <input type='text' id='live_invitation_search' value='Start typing a name or email address...' autocomplete='off' autocorrect='off' autocapitalize='off' />
+  <input type='hidden' id='live_invitation_search_value' value='init' />
+  <div id='searchInvitationLoading' style='display:none'></div>
+</div>
 
-?>

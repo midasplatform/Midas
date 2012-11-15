@@ -1,80 +1,80 @@
+var midas = midas || {};
+midas.invite = midas.invite || {};
+
 var jsonShare = jQuery.parseJSON($('div.jsonShareContent').html());
 
+/**
+ * Render group selection dialog for the community
+ * @param item The ui.item from the selected user or email node
+ */
+midas.invite.showGroupSelect = function (item) {
+    var dialogTitle = 'groupSelect';
+    var dialogUrl = '/community/selectgroup?communityId='+json.community.community_id;
 
-  // Live search
-  $.widget( "custom.catcomplete", $.ui.autocomplete, {
+    if(item.userid) {
+        dialogUrl += '&userId='+item.userid;
+        dialogTitle += item.userid;
+    }
+    else { // email address
+        dialogUrl += '&'+item.key+'='+item.value;
+        dialogTitle += item.value;
+    }
+
+    midas.invite.item = item;
+    $('div.MainDialog').dialog('close');
+    midas.loadDialog(dialogTitle, dialogUrl);
+    midas.showDialog('Select community group', false, {width: 400});
+};
+
+// Live search
+$.widget( "custom.catcomplete", $.ui.autocomplete, {
     _renderMenu: function( ul, items ) {
-      var self = this,
-        currentCategory = "";
-      $.each( items, function( index, item ) {
-        if ( item.category != currentCategory ) {
-          ul.append( '<li class="search-category">' + item.category + "</li>" );
-          currentCategory = item.category;
+        var self = this, currentCategory = "";
+        $.each(items, function (index, item) {
+            if(item.category != currentCategory) {
+                ul.append('<li class="search-category">' + item.category + "</li>" );
+                currentCategory = item.category;
+            }
+            self._renderItem( ul, item );
+        });
+    }
+});
+
+var invitationSearchcache = {}, lastShareXhr;
+
+$("#live_invitation_search").catcomplete({
+    minLength: 2,
+    delay: 10,
+    source: function (request, response) {
+        var term = request.term;
+        if(term in invitationSearchcache) {
+            response(invitationSearchcache[term]);
+            return;
         }
-        self._renderItem( ul, item );
-      });
+        $("#searchInvitationLoading").show();
+
+        lastShareXhr = $.getJSON( $('.webroot').val()+"/search/live?userSearch=true&allowEmail",
+          request, function(data, status, xhr) {
+            $("#searchInvitationLoading").hide();
+            invitationSearchcache[term] = data;
+            if(xhr === lastShareXhr) {
+                response(data);
+            }
+        });
+    }, // end source
+    select: function (event, ui) {
+        midas.invite.showGroupSelect(ui.item);
+    } //end select
+});
+
+$('#live_invitation_search').focus(function () {
+    if($('#live_invitation_search_value').val() == 'init') {
+        $('#live_invitation_search_value').val($(this).val());
+        $(this).val('');
     }
-  });
-  
-  var invitationSearchcache = {},
-  lastShareXhr;
-  var itemShareSelected;
-  $("#live_invitation_search").catcomplete({
-  minLength: 2,
-  delay: 10,
-  source: function( request, response ) {
-    var term = request.term;
-    if ( term in invitationSearchcache ) {
-      response( invitationSearchcache[ term ] );
-      return;
+}).focusout(function () {
+    if($(this).val() == '') {
+        $(this).val($('#live_invitation_search_value').val());
+        $('#live_invitation_search_value').val('init');
     }
-
-    $("#searchInvitationLoading").show();
-    
-    lastShareXhr = $.getJSON( $('.webroot').val()+"/search/live?userSearch=true", request, function( data, status, xhr ) {
-      $("#searchInvitationLoading").hide();
-      invitationSearchcache[ term ] = data;
-      if ( xhr === lastShareXhr ) {
-        itemShareSelected = false;
-        response( data );
-      }
-      });
-   }, // end source
-   select: function(event, ui) { 
-      $.post(json.global.webroot+'/community/invitation', {
-          sendInvitation:true,
-          userId:ui.item.userid,
-          communityId:json.community.community_id
-       },
-      function(data) {
-          jsonResponse = jQuery.parseJSON(data);
-          if(jsonResponse[0]) {
-              midas.createNotice(jsonResponse[1], 3000);
-              $('div.MainDialog').dialog('close');
-          }
-          else {
-              midas.createNotice(jsonResponse[1], 4000, 'error');
-          }
-       });
-     itemShareSelected = true;
-
-     $('div.MainDialog').dialog('close');
-     }
-   });
-
-  $('#live_invitation_search').focus(function() {
-    if($('#live_invitation_search_value').val() == 'init')
-      {
-      $('#live_invitation_search_value').val($('#live_invitation_search').val());
-      $('#live_invitation_search').val('');
-      }
-    });
-  
-  $('#live_invitation_search').focusout(function() {
-    if($('#live_invitation_search').val() == '')
-      {
-      $('#live_invitation_search').val($('#live_invitation_search_value').val());
-      $('#live_invitation_search_value').val('init');
-      }
-    });
-  
+});

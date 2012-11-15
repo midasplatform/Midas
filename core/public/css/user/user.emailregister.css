@@ -1,0 +1,16 @@
+div.viewMain {
+  width: 820px !important;
+}
+
+#registerForm {
+  margin-top: 20px;
+}
+
+div.emailLabelContainer {
+  height: 22px;
+}
+
+div.tosContainer {
+  margin-top: 12px;
+  margin-bottom: 10px;
+}

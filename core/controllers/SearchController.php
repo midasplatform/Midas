@@ -93,6 +93,8 @@ class SearchController extends AppController
     $userSearch = $this->getRequest()->getParam('userSearch');
     $itemSearch = $this->getRequest()->getParam('itemSearch');
 
+    $OtherOptions = array();
+
     if(isset($shareSearch))
       {
       $ItemsDao = array();
@@ -128,6 +130,18 @@ class SearchController extends AppController
       $GroupsDao = array();
       // Search for the users
       $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao);
+      $allowEmail = $this->_getParam('allowEmail');
+      if(isset($allowEmail))
+        {
+        $validator = new Zend_Validate_EmailAddress();
+        if($validator->isValid($search))
+          {
+          $OtherOptions[] = array('label' => 'Send to '.$search,
+                                  'key' => 'email',
+                                  'value' => $search,
+                                  'category' => 'Email invitation');
+          }
+        }
       }
     elseif(isset($itemSearch))
       {
@@ -313,6 +327,11 @@ class SearchController extends AppController
       $id++;
       $n++;
       $results[] = $result;
+      }
+    // Other live search options
+    foreach($OtherOptions as $option)
+      {
+      $results[] = $option;
       }
 
     echo JsonComponent::encode($results);

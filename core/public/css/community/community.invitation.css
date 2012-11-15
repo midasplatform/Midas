@@ -12,3 +12,7 @@ div#permissionsContent a{
 div#permissionsContent a:hover{
   text-decoration: underline;
 }
+
+#live_invitation_search {
+  width: 100%;
+}
