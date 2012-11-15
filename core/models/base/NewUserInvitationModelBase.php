@@ -48,7 +48,8 @@ abstract class NewUserInvitationModelBase extends AppModel
     } // end __construct()
 
   /** abstract functions */
-  public abstract function getByEmailAndCommunity($email, $communityId);
+  public abstract function getByParams($params);
+  public abstract function getAllByParams($params);
 
   /**
    * Create the database record for inviting a user via email that is not registered yet
@@ -59,6 +60,7 @@ abstract class NewUserInvitationModelBase extends AppModel
    */
   public function createInvitation($email, $group, $inviter)
     {
+    $email = strtolower($email);
     $newUserInvitation = MidasLoader::newDao('NewUserInvitationDao');
     $newUserInvitation->setEmail($email);
     $newUserInvitation->setAuthKey(UtilityComponent::generateRandomString(64, '0123456789abcdef'));
@@ -75,7 +77,7 @@ abstract class NewUserInvitationModelBase extends AppModel
       }
 
     // If the user has already been sent an invitation to this community, delete existing record
-    $existingInvitation = $this->getByEmailAndCommunity($email, $group->getCommunityId());
+    $existingInvitation = $this->getByParams(array('email' => $email, 'community_id' => $group->getCommunityId()));
     if($existingInvitation)
       {
       $this->delete($existingInvitation);

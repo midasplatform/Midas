@@ -27,16 +27,39 @@ require_once BASE_PATH.'/core/models/base/NewUserInvitationModelBase.php';
 class NewUserInvitationModel extends NewUserInvitationModelBase
 {
   /**
-   * Search the table for a matching record.  If one exists, returns it.  Otherwise returns false.
+   * Search the table for a matching record.  If any exists, returns the first dao.  Otherwise returns false.
    */
-  public function getByEmailAndCommunity($email, $communityId)
+  public function getByParams($params)
     {
     $sql = $this->database->select()
-                          ->setIntegrityCheck(false)
-                          ->where('email = ?', $email)
-                          ->where('community_id = ?', $communityId);
+                          ->setIntegrityCheck(false);
+    foreach($params as $column => $value)
+      {
+      $sql->where($column.' = ?', $value);
+      }
     $row = $this->database->fetchRow($sql);
     return $this->initDao('NewUserInvitation', $row);
+    }
+
+  /**
+   * Search the table for a matching record. Returns the matching set of daos.
+   */
+  public function getAllByParams($params)
+    {
+    $sql = $this->database->select()
+                          ->setIntegrityCheck(false);
+    foreach($params as $column => $value)
+      {
+      $sql->where($column.' = ?', $value);
+      }
+
+    $rows = $this->database->fetchAll($sql);
+    $daos = array();
+    foreach($rows as $row)
+      {
+      $daos[] = $this->initDao('NewUserInvitation', $row);
+      }
+    return $daos;
     }
 }
 ?>
