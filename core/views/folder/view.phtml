@@ -20,7 +20,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/folder/folder.view.css" />
 
 <div class="viewMain">
-  
+
 
 
   <div class="tabs" id='tabsGeneric'>
@@ -31,7 +31,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   <div class="genericBigButton genericWrapperTopRight">
     <?php
     echo "<a href='{$this->webroot}/download/?folders={$this->mainFolder->getKey()}'>";
-    echo $this->t('Download');  
+    echo $this->t('Download');
     echo '</a>';
      ?>
   </div>
@@ -50,8 +50,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     </thead>
     <tbody>
       <?php
-      $node=1;  
-        
+      $node=1;
+
       foreach($this->folders as $folder)
         {
         $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
@@ -63,7 +63,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         echo "</tr>";
         $node++;
         }
-      
+
       foreach($this->items as $item)
         {
         $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
@@ -75,21 +75,21 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         echo "</tr>";
         $node++;
         }
-      ?>          
-       
+      ?>
+
     </tbody>
   </table>
-  
-    <?php 
+
+    <?php
   if(empty($this->folders)&&empty($this->items))
-    {    
+    {
     echo "<h4>{$this->t("This folder is empty")}.</h4>";
     }
     ?>
 
     </div>
     <div id="tabs-2">
-      <?php 
+      <?php
       $descriptionMainFolder=$this->mainFolder->getDescription();
       echo $descriptionMainFolder?>
     </div>
@@ -99,15 +99,15 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
 <div id="guideRobot">
    <?php
-   foreach($this->folders as $folder)    
+   foreach($this->folders as $folder)
       {
       echo "<a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a> ";
-      } 
-   foreach($this->items as $item) 
+      }
+   foreach($this->items as $item)
       {
       echo "<a href='{$this->webroot}/item/{$item->getKey()}'>{$item->getName()}</a> ";
-      } 
-    ?>  
+      }
+    ?>
 </div>
 
 <div class="viewSideBar">
@@ -135,7 +135,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/upload.png"/>
         <a rel="'.$this->webroot.'/upload/simpleupload/?parent='.$this->mainFolder->getKey().'" class="uploadInFolder">Upload here</a>
       </li>';
-      if($this->deletable)
+      if($this->deleteable)
         {
         echo '
         <li>
@@ -155,7 +155,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/lock.png"/>
         <a type="folder" element="'.$this->mainFolder->getKey().'" class="sharingLink">Permissions</a>
       </li>';
-      if($this->deletable)
+      if($this->deleteable)
         {
         echo '
         <li>
@@ -176,9 +176,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   </div>
   <div class="sideElementLast viewInfo">';
   ?>
-    
-  
-    <h1>Info</h1>    
+
+
+    <h1>Info</h1>
     <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
     <div class="ajaxInfoElement">
     </div>

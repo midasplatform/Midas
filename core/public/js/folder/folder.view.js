@@ -18,6 +18,21 @@ $(document).ready(function() {
         }
     });
 
+    $('a.sharingLink').click(function () {
+        midas.loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
+        midas.showDialog(json.browse.share);
+    });
+    $('a.getResourceLinks').click(function () {
+        midas.loadDialog("links"+$(this).attr('type')+$(this).attr('element'),'/share/links?type='+$(this).attr('type')+'&id='+$(this).attr('element'));
+        midas.showDialog('Link to this item');
+    });
+    $('a.uploadInFolder').click(function () {
+        var button = $('li.uploadFile');
+        button.attr('rel', $(this).attr('rel'));
+        midas.resetUploadButton();
+        button.click();
+    });
+
     /**
      * Select/deslect all rows. If we are doing deselect all, we include hidden
      * ones
@@ -55,3 +70,15 @@ function callbackCheckboxes(node)
   {
   midas.genericCallbackCheckboxes(node);
   }
+
+$(window).load(function () {
+    $.ajax({
+        type: 'POST',
+        url: json.global.webroot+'/browse/getelementinfo',
+        data: {type: 'folder', id: json.folder.folder_id},
+        success: function (jsonContent) {
+            midas.createInfo(jsonContent);
+            $('img.infoLoading').hide();
+        }
+    });
+});

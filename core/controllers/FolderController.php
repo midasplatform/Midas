@@ -217,6 +217,7 @@ class FolderController extends AppController
     $this->view->mainFolder = $folder;
     $this->view->folders = $folders;
     $this->view->items = $items;
+    $this->view->deleteable = $this->Folder->isDeleteable($folder);
 
     $this->view->isModerator = $this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE);
     $this->view->isAdmin = $this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
