@@ -50,6 +50,8 @@ abstract class NewUserInvitationModelBase extends AppModel
   /** abstract functions */
   public abstract function getByParams($params);
   public abstract function getAllByParams($params);
+  public abstract function deleteByGroup($group);
+  public abstract function deleteByCommunity($community);
 
   /**
    * Create the database record for inviting a user via email that is not registered yet

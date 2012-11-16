@@ -61,5 +61,31 @@ class NewUserInvitationModel extends NewUserInvitationModelBase
       }
     return $daos;
     }
+
+  /**
+   * Deletes all new user invitations corresponding to a group
+   * @param group GroupDao
+   */
+  public function deleteByGroup($group)
+    {
+    if(!$group instanceof GroupDao)
+      {
+      throw new Zend_Exception('Must pass a group dao');
+      }
+    Zend_Registry::get('dbAdapter')->delete($this->_name, 'group_id = '.$group->getKey());
+    }
+
+  /**
+   * Deletes all new user invitations corresponding to a community
+   * @param community communityDao
+   */
+  public function deleteByCommunity($community)
+    {
+    if(!$community instanceof CommunityDao)
+      {
+      throw new Zend_Exception('Must pass a community dao');
+      }
+    Zend_Registry::get('dbAdapter')->delete($this->_name, 'community_id = '.$community->getKey());
+    }
 }
 ?>

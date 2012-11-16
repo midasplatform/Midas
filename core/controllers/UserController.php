@@ -383,8 +383,8 @@ class UserController extends AppController
       {
       session_start();
       }
-    $this->userSession->Dao =
-      $this->User->createUser($email, $pendingUser->getPassword(), $pendingUser->getFirstname(), $pendingUser->getLastname(), 0, true);
+    $this->userSession->Dao = $this->User->createUser(
+    $email, $pendingUser->getPassword(), $pendingUser->getFirstname(), $pendingUser->getLastname(), 0, true);
     session_write_close();
 
     $this->PendingUser->delete($pendingUser);
