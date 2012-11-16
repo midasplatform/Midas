@@ -20,9 +20,6 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/folder/folder.view.css" />
 
 <div class="viewMain">
-
-
-
   <div class="tabs" id='tabsGeneric'>
     <ul>
       <li><a href="#tabs-1"><?php echo $this->t('Data')?></a></li>
@@ -30,13 +27,12 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     </ul>
   <div class="genericBigButton genericWrapperTopRight">
     <?php
-    echo "<a href='{$this->webroot}/download/?folders={$this->mainFolder->getKey()}'>";
+    echo "<a href='javascript:;' class='downloadFolderLink' element='{$this->mainFolder->getKey()}'>";
     echo $this->t('Download');
     echo '</a>';
      ?>
   </div>
   <div id="tabs-1">
-
 
   <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
   <table id="browseTable" class="midasTree" root="<?php echo $this->mainFolder->getKey(); ?>">
@@ -81,17 +77,18 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   </table>
 
     <?php
-  if(empty($this->folders)&&empty($this->items))
-    {
-    echo "<h4>{$this->t("This folder is empty")}.</h4>";
-    }
+    if(empty($this->folders)&&empty($this->items))
+      {
+      echo "<h4>{$this->t("This folder is empty")}.</h4>";
+      }
     ?>
 
     </div>
     <div id="tabs-2">
       <?php
       $descriptionMainFolder=$this->mainFolder->getDescription();
-      echo $descriptionMainFolder?>
+      echo $descriptionMainFolder;
+      ?>
     </div>
   </div>
 
@@ -107,7 +104,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       {
       echo "<a href='{$this->webroot}/item/{$item->getKey()}'>{$item->getName()}</a> ";
       }
-    ?>
+  ?>
 </div>
 
 <div class="viewSideBar">
@@ -118,7 +115,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <ul>
       <li>
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/download.png"/>
-        <a href="'.$this->webroot.'/download?folders='.$this->mainFolder->getKey().'">Download</a>
+        <a href="javascript:;" class="downloadFolderLink" element="'.$this->mainFolder->getKey().'">Download</a>
       </li>
       <li>
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/link.png"/>
@@ -184,11 +181,3 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     </div>
   </div>
 </div>
-
-<?php
-$policy=MIDAS_POLICY_READ;
-if($this->isModerator||$this->isAdmin)
-  {
-  $policy=MIDAS_POLICY_WRITE;
-  }
-?>

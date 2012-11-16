@@ -32,6 +32,20 @@ $(document).ready(function() {
         midas.resetUploadButton();
         button.click();
     });
+    $('a.downloadFolderLink').click(function () {
+        var folderId = $(this).attr('element');
+        $.post(json.global.webroot+'/download/checksize', {
+            folderIds: folderId
+        }, function (text) {
+            var retVal = $.parseJSON(text);
+            if(retVal.action == 'download') {
+                window.location = json.global.webroot+'/download?folders='+folderId;
+            }
+            else if(retVal.action == 'promptApplet') {
+                midas.promptDownloadApplet(folderId, '', retVal.sizeStr);
+            }
+        });
+    });
 
     /**
      * Select/deslect all rows. If we are doing deselect all, we include hidden
