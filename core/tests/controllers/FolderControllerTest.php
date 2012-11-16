@@ -208,4 +208,48 @@ class FolderControllerTest extends ControllerTestCase
     $items = $folder->getItems();
     $this->assertTrue(count($items) === $count - 1);
     }
+
+  /** Test the getname action used by the large downloader applet */
+  public function testGetnameAction()
+    {
+    $usersFile = $this->loadData('User', 'default');
+    $userWithPermission = $this->User->load(1);
+    $folderPub = $this->Folder->load(1001);
+    $folderPriv = $this->Folder->load(1002);
+
+    // anon user shouldn't be able to get the folder name on a private folder
+    $this->dispatchUri('/folder/getname?id='.$folderPriv->getKey(), null, true);
+
+    // anon user should be able to get the folder name of a public folder
+    $this->resetAll();
+    $this->dispatchUri('/folder/getname?id='.$folderPub->getKey(), null);
+    $this->assertEquals(trim($this->getBody()), trim($folderPub->getName()));
+
+    // user with read access should be able to get name of private folder
+    $this->resetAll();
+    $this->dispatchUri('/folder/getname?id='.$folderPriv->getKey(), $userWithPermission);
+    $this->assertEquals(trim($this->getBody()), trim($folderPriv->getName()));
+    }
+
+  /** Test action used by the large download applet to list children info */
+  public function testJavachildrenAction()
+    {
+    $usersFile = $this->loadData('User', 'default');
+    $userWithPermission = $this->User->load(1);
+    $folderPub = $this->Folder->load(1001);
+    $folderPriv = $this->Folder->load(1002);
+
+    // anon user shouldn't be able to access on a private folder
+    $this->dispatchUri('/folder/javachildren?id='.$folderPriv->getKey(), null, true);
+
+    // anon user should be able to access on a public folder
+    $this->resetAll();
+    $this->dispatchUri('/folder/javachildren?id='.$folderPub->getKey(), null);
+    $this->assertEquals(trim($this->getBody()), 'i 1000 name 1');
+
+    // user with read access should be able access on a private folder
+    $this->resetAll();
+    $this->dispatchUri('/folder/javachildren?id='.$folderPriv->getKey(), $userWithPermission);
+    $this->assertEquals(trim($this->getBody()), '');
+    }
   }

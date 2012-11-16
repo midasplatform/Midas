@@ -347,14 +347,24 @@ class DownloadController extends AppController
       {
       if($itemId)
         {
-        $items[] = $this->Item->load($itemId);
+        $item = $this->Item->load($itemId);
+        if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
+          {
+          throw new Zend_Exception('Invalid policy on item '.$itemId, 403);
+          }
+        $items[] = $item;
         }
       }
     foreach($folderIdArray as $folderId)
       {
       if($folderId)
         {
-        $folders[] = $this->Folder->load($folderId);
+        $folder = $this->Folder->load($folderId);
+        if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
+          {
+          throw new Zend_Exception('Invalid policy on folder '.$folderId, 403);
+          }
+        $folders[] = $folder;
         }
       }
     $totalSize = 0;
