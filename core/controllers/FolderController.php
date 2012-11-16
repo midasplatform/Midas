@@ -59,7 +59,7 @@ class FolderController extends AppController
       {
       throw new Zend_Exception('Read permission required', 403);
       }
-    print $folder->getName();
+    echo $folder->getName();
     }
 
   /**
@@ -88,11 +88,11 @@ class FolderController extends AppController
 
     foreach($childFolders as $childFolder)
       {
-      print 'f '.$childFolder->getKey().' '.$childFolder->getName()."\n";
+      echo 'f '.$childFolder->getKey().' '.$childFolder->getName()."\n";
       }
     foreach($childItems as $childItem)
       {
-      print 'i '.$childItem->getKey().' '.$childItem->getName()."\n";
+      echo 'i '.$childItem->getKey().' '.$childItem->getName()."\n";
       }
     }
 
