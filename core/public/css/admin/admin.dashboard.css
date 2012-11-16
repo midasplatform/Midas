@@ -1,0 +1,22 @@
+.databaseIntegrityWrapper {
+  margin-top: 5px;
+  padding-top: 10px;
+  border-top: 1px solid #d7d7d7;
+}
+
+.sectionHeader {
+    padding-bottom: 1ex;
+}
+
+.integrityButton {
+    position: absolute;
+    right: 200px;
+}
+
+#cleanupProgressMessage {
+  margin-top: 10px;
+}
+
+.integrityItem {
+    margin: 6px;
+}

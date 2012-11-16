@@ -77,6 +77,10 @@ class ItemRevisionModel extends ItemRevisionModelBase
     Zend_Registry::get('dbAdapter')->delete('metadatavalue', $clause);
 
     $item = $revisiondao->getItem();
+    if(!$item)
+      {
+      return;
+      }
 
     $itemModel = MidasLoader::loadModel('Item');
     $lastrevision = $itemModel->getLastRevision($item);
@@ -86,7 +90,6 @@ class ItemRevisionModel extends ItemRevisionModelBase
       {
       $itemModel->save($item, true);
       }
-    return;
     }  // end getMetadata
 
   /** Delete a revision.  Calling this will delete:
@@ -160,4 +163,65 @@ class ItemRevisionModel extends ItemRevisionModelBase
                                           ->where('name=?', $name));
     return $this->initDao('Bitstream', $row);
     } // end getBitstreamByName
+
+  /**
+   * Used by the admin dashboard page. Counts the number of orphaned revision
+   * records in the database.
+   */
+  function countOrphans()
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                   ->from(array('r' => 'itemrevision'), array('count' => 'count(*)'))
+                   ->where('(NOT r.item_id IN ('.new Zend_Db_Expr(
+                            $this->database->select()->setIntegrityCheck(false)
+                                 ->from(array('subi' => 'item'), array('item_id'))
+                           .'))'));
+    $row = $this->database->fetchRow($sql);
+    return $row['count'];
+    }
+
+  /**
+   * Call this to remove all orphaned item revision records
+   */
+  function removeOrphans($progressDao = null)
+    {
+    if($progressDao)
+      {
+      $max = $this->countOrphans();
+      $progressDao->setMaximum($max);
+      $progressDao->setMessage('Removing orphaned revisions (0/'.$max.')');
+      $this->Progress = MidasLoader::loadModel('Progress');
+      $this->Progress->save($progressDao);
+      }
+
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                   ->from(array('r' => 'itemrevision'), array('itemrevision_id'))
+                   ->where('(NOT r.item_id IN ('.new Zend_Db_Expr(
+                            $this->database->select()->setIntegrityCheck(false)
+                                 ->from(array('subi' => 'item'), array('item_id'))
+                            .'))'));
+    $rowset = $this->database->fetchAll($sql);
+    $ids = array();
+    foreach($rowset as $row)
+      {
+      $ids[] = $row['itemrevision_id'];
+      }
+    $itr = 0;
+    foreach($ids as $id)
+      {
+      if($progressDao)
+        {
+        $itr++;
+        $message = 'Removing orphaned revisions ('.$itr.'/'.$max.')';
+        $this->Progress->updateProgress($progressDao, $itr, $message);
+        }
+      $revision = $this->load($id);
+      if(!$revision)
+        {
+        continue;
+        }
+      $this->getLogger()->info('Deleting orphaned revision '.$revision->getKey(). ' [item id='.$revision->getItemId().']');
+      $this->delete($revision);
+      }
+    }
 } // end class

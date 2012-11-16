@@ -128,7 +128,16 @@ class AdminControllerTest extends ControllerTestCase
     $this->dispatchUrI('/admin/removeorphans', $user1, true);
 
     $this->resetAll();
-    $this->dispatchUrI('/admin/removeorphans', $adminUser);
+    $this->dispatchUrI('/admin/removeorphans', $adminUser, true);
+
+    $this->resetAll();
+    $this->dispatchUrI('/admin/removeorphans?model=Blah', $adminUser, true);
+
+    $this->resetAll();
+    $this->dispatchUrI('/admin/removeorphans?model=Bitstream', $adminUser);
+    $resp = json_decode($this->getBody());
+    $this->assertEquals($resp->status, 'ok');
+    $this->assertEquals($resp->message, 'Bitstream resources cleaned');
     }
 
   /**

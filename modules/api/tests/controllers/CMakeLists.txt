@@ -4,4 +4,4 @@ add_midas_test( ApiCallUserMethodsTest ApiCallUserMethodsTest.php )
 add_midas_test( ApiCallItemMethodsTest ApiCallItemMethodsTest.php )
 add_midas_test( ApiCallFolderMethodsTest ApiCallFolderMethodsTest.php )
 add_midas_test( ApiCallCommunityMethodsTest ApiCallCommunityMethodsTest.php )
-
+add_midas_test( ApiCallMiscMethodsTest ApiCallMiscMethodsTest.php )
