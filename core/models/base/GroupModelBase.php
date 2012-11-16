@@ -83,12 +83,14 @@ abstract class GroupModelBase extends AppModel
       $this->removeUser($group, $user);
       }
 
-    $feedpolicygroup_model = MidasLoader::loadModel('Feedpolicygroup');
-    $feedpolicygroup_model->deleteGroupPolicies($group);
-    $itempolicygroup_model = MidasLoader::loadModel('Itempolicygroup');
-    $itempolicygroup_model->deleteGroupPolicies($group);
-    $folderpolicygroup_model = MidasLoader::loadModel('Folderpolicygroup');
-    $folderpolicygroup_model->deleteGroupPolicies($group);
+    $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
+    $feedpolicygroupModel->deleteGroupPolicies($group);
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+    $itempolicygroupModel->deleteGroupPolicies($group);
+    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    $folderpolicygroupModel->deleteGroupPolicies($group);
+    $newUserInvitationModel = MidasLoader::loadModel('NewUserInvitation');
+    $newUserInvitationModel->deleteByGroup($group);
 
     parent::delete($group);
     unset($group->group_id);
