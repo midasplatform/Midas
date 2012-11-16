@@ -8,7 +8,6 @@ $(document).ready(function () {
         active: false,
         autoHeight: false
     }).show();
-    $('.databaseIntegrityWrapper').close();
     $('button.removeOrphans').click(function () {
         var html = '<div id="cleanupProgress"></div>';
         html += '<div id="cleanupProgressMessage"></div>';
