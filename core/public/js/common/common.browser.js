@@ -61,7 +61,7 @@ midas.genericCallbackCheckboxes = function(node) {
         var links = '<ul>';
         links += '<li style="background-color: white;">';
         links += '  <img alt="" src="' + json.global.coreWebroot + '/public/images/icons/download.png"/> ';
-        links += '  <a href="' + json.global.webroot + '/download?folders=' + folders + '&items=' + items + '">' + json.browse.download + '</a></li>';
+        links += '  <a class="downloadSelectedLink">' + json.browse.download + '</a></li>';
         links += '</li>';
 
         if(json.global.logged) {
@@ -114,6 +114,21 @@ midas.genericCallbackCheckboxes = function(node) {
                       $('div.MainDialog').dialog('close');
                   }
                 );
+            });
+        });
+        $('a.downloadSelectedLink').click(function () {
+            $.post(json.global.webroot+'/download/checksize', {
+                folderIds: arraySelected['folders'].join(','),
+                itemIds: arraySelected['items'].join(',')
+            }, function (text) {
+                var retVal = $.parseJSON(text);
+                if(retVal.action == 'download') {
+                    window.location = json.global.webroot+'/download?folders='+folders;
+                }
+                else if(retVal.action == 'promptApplet') {
+                    midas.promptDownloadApplet(arraySelected['folders'].join(','), 
+                      arraySelected['items'].join(','), retVal.sizeStr);
+                }
             });
         });
 
@@ -416,7 +431,7 @@ midas.createAction = function (node) {
         }
         if(type=='folder') {
             html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/folder/'+element+'">'+json.browse.view+'</a></li>';
-            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a href="'+json.global.webroot+'/download?folders='+element+'">'+json.browse.download+'</a></li>';
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a element="'+element+'" class="downloadFolderLink">'+json.browse.download+'</a></li>';
             html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/link.png"/> <a type="folder" element="'+element+'" href="javascript:;" class="getResourceLinks">Share</a></li>';
             if(policy>=1) {
                 html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/folder_add.png"/> <a onclick="midas.createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
@@ -481,7 +496,47 @@ midas.createAction = function (node) {
             midas.loadDialog("links"+$(this).attr('type')+$(this).attr('element'),'/share/links?type='+$(this).attr('type')+'&id='+$(this).attr('element'));
             midas.showDialog('Link to this item');
         });
+        $('a.downloadFolderLink').click(function () {
+            var folderId = $(this).attr('element');
+            $.post(json.global.webroot+'/download/checksize', {
+                folderIds: folderId
+            }, function (text) {
+                var retVal = $.parseJSON(text);
+                if(retVal.action == 'download') {
+                    window.location = json.global.webroot+'/download?folders='+folderId;
+                }
+                else if(retVal.action == 'promptApplet') {
+                    midas.promptDownloadApplet(folderId, '', retVal.sizeStr);
+                }
+            });
+        });
         $('div.viewAction ul').fadeIn('fast');
+    });
+};
+
+/**
+ * Prompts the user to choose between normal zipstream download and applet downloader.
+ * Called if the requested download is suitably large.
+ */
+midas.promptDownloadApplet = function(folderIds, itemIds, sizeString) {
+    var html = 'Warning: you have requested a large download ('+sizeString+') that might take a very long time to complete.';
+    html += ' It is recommended that you use the large data download applet in case your connection is interrupted. '+
+    'Would you like to use the applet?';
+    
+    html += '<div style="margin-top: 20px; float: right">';
+    html += '<input type="button" style="margin-left: 0px;" class="globalButton useLargeDataApplet" value="Yes, use large downloader"/>';
+    html += '<input type="button" style="margin-left: 10px;" class="globalButton useZipStream" value="No, use normal download"/>';
+    html += '</div>';
+    midas.showDialogWithContent('Large download requested', html, false, {width: 480});
+
+    $('input.useLargeDataApplet').unbind('click').click(function () {
+        window.location = json.global.webroot+'/download/applet?folderIds='+folderIds+'&itemIds='+itemIds;
+        $('div.MainDialog').dialog('close');
+    });
+    $('input.useZipStream').unbind('click').click(function () {
+        window.location = json.global.webroot+'/download?folders='+folderIds.split(',').join('-')
+                        + '&items='+itemIds.split(',').join('-');
+        $('div.MainDialog').dialog('close');
     });
 };
 

@@ -23,12 +23,13 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
 <br/><br/>
 <applet name="MidasUploader" code="com.kitware.utils.Main"
         archive="<?php echo $this->coreWebroot?>/public/java/uploader/dist/MidasUploader.jar?rev=3&<?php echo time()?>"
-        width="360" height="150" mayscript="true">
-  <param name = "type"      value = "application/x-java-applet;version=1.5" />
+        width="480" height="170" mayscript="true">
+  <param name = "type" value = "application/x-java-applet;version=1.5" />
   <param name = "background" value = "ffffff" />
   <param name = "loglevel" value = "WARNING" />
   <param name = "sessionId" value = "<?php echo session_id();?>"/>
   <param name = "baseURL" value="<?php echo $this->protocol."://".$this->host . $this->webroot ?>/upload/"/>
+  <param name = "apiURL" value="<?php echo $this->protocol."://".$this->host . $this->webroot ?>/api/json"/>
   <param name = "getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
   <param name = "onSuccessfulUploadRedirectEnable" value="true"/>
   <param name = "onSuccessRedirectURL" value="review"/>

@@ -318,6 +318,16 @@ class UploadController extends AppController
     } //end gethttpuploadoffset
 
   /**
+   * Used when uploading a folder with the applet. Prints the destination folder id
+   */
+  function javadestinationfolderAction()
+    {
+    $this->disableView();
+    $this->disableLayout();
+    echo $this->userSession->JavaUpload->parent;
+    }
+
+  /**
    * Get a unique upload token for the java uploader. Must be logged in to do this
    * @param filename The name of the file to be uploaded
    */
@@ -332,7 +342,16 @@ class UploadController extends AppController
       throw new Zend_Exception('You have to be logged in to do that');
       }
 
-    if(isset($params['revision']))
+    if(isset($params['parentFolderId']))
+      {
+      $parentId = $params['parentFolderId'];
+      $folder = $this->Folder->load($parentId);
+      if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+        {
+        throw new Zend_Exception('Write permissions required');
+        }
+      }
+    else if(isset($params['revision']))
       {
       $parentId = $params['itemId'];
       $item = $this->Item->load($parentId);
@@ -381,6 +400,7 @@ class UploadController extends AppController
    * @param uploadUniqueIdentifier The upload token (see gethttpuploaduniqueidentifierAction)
    * @param filename The name of the file being uploaded
    * @param length The length of the file being uploaded
+   * @param [parentId] Optionally specify the parent id explicitly (used for folder upload)
    */
   function processjavauploadAction()
     {
@@ -400,7 +420,11 @@ class UploadController extends AppController
       throw new Zend_Exception('User id does not match upload token user id');
       }
 
-    if(!isset($params['testingmode']) && $this->userSession->JavaUpload->parent)
+    if(isset($params['parentId']))
+      {
+      $expectedParentId = $params['parentId'];
+      }
+    else if(!isset($params['testingmode']) && $this->userSession->JavaUpload->parent)
       {
       $expectedParentId = $this->userSession->JavaUpload->parent;
       }
@@ -438,7 +462,11 @@ class UploadController extends AppController
 
     if(!empty($data['path']) && file_exists($data['path']) && $data['size'] > 0)
       {
-      if(!isset($params['testingmode']) && isset($this->userSession->JavaUpload->parent))
+      if(isset($params['parentId']))
+        {
+        $parent = $params['parentId'];
+        }
+      else if(!isset($params['testingmode']) && isset($this->userSession->JavaUpload->parent))
         {
         $parent = $this->userSession->JavaUpload->parent;
         }
