@@ -81,8 +81,15 @@
   <item item_id="1002" name="name 3" description="Description 3" type="3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72752' />
   <itemrevision itemrevision_id="3" item_id="1000" revision="2"
     date="2011-01-27 12:09:02" user_id='1' changes="Description 1" />
+  <item item_id="1003" name="name 4" description="Description 4" type="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72753' />
+  <itemrevision itemrevision_id="4" item_id="1003" revision="1"
+    date="2011-01-27 12:09:02" user_id='1' changes="Description 4" license_id="2" />
+  <itempolicyuser item_id="1003" user_id="1" policy='2' />
+  <item2folder item_id="1003" folder_id='1001' />
 
   <bitstream bitstream_id="1" itemrevision_id="3" name="foo.png" mimetype="image/png" sizebytes="64" checksum="f283bc88b24491ba85c65ba960642753"
+    path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="1" date="2011-01-27 12:09:02" />
+  <bitstream bitstream_id="2" itemrevision_id="4" name="foo_2.png" mimetype="image/png" sizebytes="64" checksum="f283bc88b24491ba85c65ba960642753"
     path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="1" date="2011-01-27 12:09:02" />
 
   <!-- MIDAS_FEED_CREATE_COMMUNITY -->
@@ -152,7 +159,7 @@
   <folderpolicygroup folder_id="1014" group_id="3004" policy='1' />
   <folderpolicygroup folder_id="1014" group_id="3005" policy='0' />
 
-  
+
   <item item_id="1004" name="Item User 1 Read" description="Description 1" type="1" uuid='10041fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
   <itempolicyuser item_id="1004" user_id="1" policy='0' />
   <item2folder item_id="1004" folder_id='1014' />
@@ -162,7 +169,7 @@
   <item item_id="1006" name="Item User 1 Admin" description="Description 1" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
   <itempolicyuser item_id="1006" user_id="1" policy='2' />
   <item2folder item_id="1006" folder_id='1014' />
-  
+
   <user user_id="4" firstname="community2001" lastname="Member"
     admin="0" email="community2001@member.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" publicfolder_id="1007" privatefolder_id="1008"/>
   <user2group group_id="3005" user_id="4" />

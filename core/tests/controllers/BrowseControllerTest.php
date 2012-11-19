@@ -260,7 +260,7 @@ class BrowseControllerTest extends ControllerTestCase
     $resp = json_decode($this->getBody(), true);
     $this->assertEquals(count($resp), 2); //should have results for two folders
     $this->assertEquals($resp[0]['id'], 1001);
-    $this->assertEquals($resp[0]['count'], 2);
+    $this->assertEquals($resp[0]['count'], 3);
     $this->assertEquals($resp[0]['size'], '1.0 MB');
     $this->assertEquals($resp[1]['id'], 1002);
     $this->assertEquals($resp[1]['count'], 0);

@@ -3,7 +3,7 @@ form#editItemForm input[type="text"], form#editItemForm  input[type="password"] 
   width: 350px!important;
 }
 
-div.updateBistreamNameNotice
+div.updateBitstreamNameNotice
 {
   background-color: #CDD;
 }
