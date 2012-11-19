@@ -1,0 +1,146 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/trend/trend.view.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.dateAxisRenderer.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasTextRenderer.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasAxisLabelRenderer.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasAxisTickRenderer.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.highlighter.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.cursor.min.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/trend/trend.view.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.jqplot.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+
+<div class="viewMain">
+  <div class="itemsContainer">
+    <div>
+      <?php
+      if(count($this->trends) == 1)
+        {
+      ?>
+        Configuration data:
+        <?php
+        if($this->trends[0]->getConfigItemId())
+          {
+          echo '<a href="'.$this->webroot.'/item/'.$this->trend->getConfigItemId().'">'.$this->trend->getConfigItem()->getName().'</a>';
+          }
+        else
+          {
+          echo '<span class="itemLinkNone">none</span>';
+          }
+        ?>
+      </div>
+      <div>
+        Test data:
+        <?php
+        if($this->trends[0]->getTestDatasetId())
+          {
+          echo '<a href="'.$this->webroot.'/item/'.$this->trend->getTestDatasetId().'">'.$this->trend->getTestDatasetItem()->getName().'</a>';
+          }
+        else
+          {
+          echo '<span class="itemLinkNone">none</span>';
+          }
+        ?>
+      </div>
+      <div>
+        Ground truth data:
+        <?php
+        if($this->trends[0]->getTruthDatasetId())
+          {
+          echo '<a href="'.$this->webroot.'/item/'.$this->trend->getTruthDatasetId().'">'.$this->trend->getTruthDatasetItem()->getName().'</a>';
+          }
+        else
+          {
+          echo '<span class="itemLinkNone">none</span>';
+          }
+        }
+      ?>
+    </div>
+  </div>
+  <div class="dateControlContainer">
+    <label for="startdate">Date range:</label>
+    <input class="dateSelect" type="text" id="startdate" name="startdate"/>
+    <label for="enddate">to</label>
+    <input class="dateSelect" type="text" id="enddate" name="enddate"/>
+    <input type="button" class="globalButton" id="filterButton" value="Update" />
+    <img alt="" style="display: none;" id="dateRangeUpdating" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+  </div>
+  <div id="chartDiv" class="chartContainer"></div>
+</div>
+
+<div class="viewSideBar">
+  <div class="sideElementFirst viewAction">
+    <h1>Actions</h1>
+    <ul>
+    <?php 
+    if($this->isAdmin && count($this->trends) == 1)
+      {
+    ?>
+      <li>
+        <a href="<?php echo $this->webroot?>/tracker/trend/edit?trendId=<?php echo $this->trends[0]->getKey()?>">
+          <img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/edit.png"/> Edit
+        </a>
+      </li>
+      <li>
+        <a class="deleteTrend"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/close.png"/> Delete</a>
+      </li>
+    <?php
+      }
+    if($this->logged && count($this->trends) == 1)
+      {
+    ?>
+      <li>
+        <a class="thresholdAction"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/email_error.png"/> Notifications</a>
+      </li>
+    <?php
+      }
+    ?>
+      <li>
+        <a class="resetZoomAction"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/magnifier_zoom_out.png"/> Reset Plot Zoom</a>
+      </li>
+      <li>
+        <a class="axesControl"><img alt="" src="<?php echo $this->moduleWebroot?>/public/images/axes.png" /> Axes</a>
+      </li>
+    </ul>
+  </div>
+  <div class="sideElement viewInfo">
+    <h1>Info</h1>
+    <div>Points in range: <span class="infoItem" id="pointCount"></span></div>
+    <div>Min value: <span class="infoItem" id="minVal"></span></div>
+    <div>Max value: <span class="infoItem" id="maxVal"></span></div>
+  </div>
+</div>
+
+<!-- TEMPLATE: axes control dialog -->
+<div id="axesControlTemplate" style="display: none;">
+  <table class="yValuesTable"><tbody>
+    <tr>
+      <th>Y range:</th><td><input class="yMin" type="text" /></td><td>to</td><td><input class="yMax" type="text" /></td>
+    </tr>
+    <?php
+    if($this->rightTrend)
+      {
+    ?>
+      <tr>
+        <th>Y2 range:</th><td><input class="y2Min" type="text" /></td><td>to</td><td><input class="y2Max" type="text" /></td>
+      </tr>
+    <?php
+      }
+    ?>
+    </tbody></table>
+    <div class="bottomButtons">
+      <input type="button" class="globalButton updateAxes" value="Apply" />
+    </div>
+</div>

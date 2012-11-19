@@ -1,0 +1,28 @@
+div.formWrapper {
+  padding-left: 15px;
+  width: 840px;
+}
+
+div.editTitle {
+  margin-top: 8px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: #797979;
+}
+
+div.submitButtonContainer {
+  margin-top: 25px;
+}
+
+div.formRow {
+  margin-bottom: 6px;
+}
+
+span.noItem {
+  color: #a0a0a0;
+  font-style: italic;
+}
+
+input.selectItem,input.removeItem {
+  margin-left: 8px !important;
+}
