@@ -394,8 +394,8 @@ class CommunityController extends AppController
   /** Delete a community*/
   function deleteAction()
     {
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
 
     $communityId = $this->_getParam("communityId");
     if(!isset($communityId) || !is_numeric($communityId))
@@ -468,7 +468,7 @@ class CommunityController extends AppController
     if(isset($groupId))
       {
       $group = $this->Group->load($groupId);
-      if($group->getCommunityId() !== $community->getKey())
+      if($group->getCommunityId() != $community->getKey())
         {
         throw new Zend_Exception('Specified group is not in the specified community');
         }
