@@ -24,7 +24,7 @@ class UserControllerTest extends ControllerTestCase
   public function setUp()
     {
     $this->setupDatabase(array('default'));
-    $this->_models = array('User', 'Feed');
+    $this->_models = array('User', 'Community', 'Group', 'Feed', 'NewUserInvitation', 'PendingUser');
     $this->_daos = array('User');
     parent::setUp();
     }
@@ -141,6 +141,75 @@ class UserControllerTest extends ControllerTestCase
     $userDao2 = $this->User->getByEmail($this->params['email']);
     $this->assertNotEquals($userDao->getPassword(), $userDao2->getPassword(), 'Unable to change password');
     $this->setupDatabase(array('default'));
+    }
+
+  /** Test user accepting an email community invitation and registering */
+  public function testEmailregisterAction()
+    {
+    $commFile = $this->loadData('Community', 'default');
+    $userFile = $this->loadData('User', 'default');
+    $comm = $this->Community->load($commFile[0]->getKey());
+    $adminUser = $this->User->load($userFile[2]->getKey());
+
+    // We should not be able to call this without an email or auth key
+    $this->dispatchUri('/user/emailregister?authKey=abcd', null, true);
+    $this->resetAll();
+    $this->dispatchUri('/user/emailregister?email=test@test.com', null, true);
+
+    // Test rendering of the view
+    $inv = $this->NewUserInvitation->createInvitation('test@test.com', $comm->getModeratorGroup(), $adminUser);
+    $this->resetAll();
+    $this->dispatchUri('/user/emailregister?email='.$inv->getEmail().'&authKey='.$inv->getAuthKey(), null);
+    $this->assertQueryContentContains('span.emailDisplay', $inv->getEmail());
+    $this->assertQuery('input[type="hidden"][name="authKey"][value="'.$inv->getAuthKey().'"]');
+
+    // Test submitting the registration
+    $this->resetAll();
+    $this->params = array();
+    $this->params['email'] = $inv->getEmail();
+    $this->params['authKey'] = $inv->getAuthKey();
+    $this->params['firstName'] = 'Email';
+    $this->params['lastName'] = 'Registration';
+    $this->params['password1'] = 'badpassword';
+    $this->params['password2'] = 'badpassword';
+    $this->request->setMethod('POST');
+    $this->dispatchUri('/user/emailregister', null);
+
+    // We should now have a user who is a member of the moderator and members group of the community
+    $user = $this->User->getByEmail($inv->getEmail());
+    $this->assertTrue($user instanceof UserDao);
+    $this->assertEquals($user->getFullName(), 'Email Registration');
+    $this->assertTrue($this->Group->userInGroup($user, $comm->getMemberGroup()));
+    $this->assertTrue($this->Group->userInGroup($user, $comm->getModeratorGroup()));
+    $this->assertFalse($this->Group->userInGroup($user, $comm->getAdminGroup()));
+
+    $this->resetAll();
+    $this->dispatchUri('/user/emailsent'); // get some simple coverage of this action
+    }
+
+  /** Test email verification endpoint */
+  public function testVerifyemailAction()
+    {
+    $commFile = $this->loadData('Community', 'default');
+    $userFile = $this->loadData('User', 'default');
+    $comm = $this->Community->load($commFile[0]->getKey());
+    $adminUser = $this->User->load($userFile[2]->getKey());
+
+    // We should not be able to call this without an email or auth key
+    $this->dispatchUri('/user/verifyemail?authKey=abcd', null, true);
+    $this->resetAll();
+    $this->dispatchUri('/user/verifyemail?email=test@test.com', null, true);
+
+    $pending = $this->PendingUser->createPendingUser('testverify@email.com', 'Pending', 'User', 'badpassword');
+    $this->resetAll();
+    $this->dispatchUri('/user/verifyemail?email='.$pending->getEmail().'&authKey='.$pending->getAuthKey(), null);
+    $this->assertRedirectTo('/user/userpage');
+    $user = $this->User->getByEmail($pending->getEmail());
+    $this->assertTrue($user instanceof UserDao);
+    $this->assertEquals($user->getFirstname(), $pending->getFirstname());
+    $this->assertEquals($user->getLastname(), $pending->getLastname());
+    $pendingUsers = $this->PendingUser->getByParams(array('email' => $pending->getEmail()));
+    $this->assertEmpty($pendingUsers);
     }
 
   /** test settings */
