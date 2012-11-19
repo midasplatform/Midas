@@ -60,6 +60,9 @@ class BreadcrumbComponent extends AppComponent
         case 'user':
           $view->header .= $this->_createUserBreadcrumb($node, $view);
           break;
+        case 'moduleList':
+          $view->header .= $this->_createModuleListBreadcrumb($node, $view);
+          break;
         case 'custom':
         default:
           $view->header .= $this->_createCustomBreadcrumb($node, $view);
@@ -172,6 +175,18 @@ class BreadcrumbComponent extends AppComponent
       $str .= '<a href="'.$view->webroot.'/item/'.$node['object']->getKey().'">'.$name.'</a>';
       }
     $str .= '</span></li>';
+    return $str;
+    }
+
+  /**
+   * Create an item breadcrumb from the node. Node should have the following keys:
+   * -object The item dao from which to create the breadcrumb
+   * -[link] (bool, default = true) Whether to render as a link or just text
+   */
+  protected function _createModuleListBreadcrumb($node, &$view)
+    {
+    $str = '<li class="pathItem"><img alt="" src="'.$view->coreWebroot.'/public/images/icons/plugin.png" /><span>';
+    $str .= '<a href="'.$view->webroot.'/admin#tabs-modules">Modules</a></span></li>';
     return $str;
     }
 
