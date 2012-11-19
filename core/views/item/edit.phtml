@@ -17,7 +17,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/i
 
 <form id="editItemForm" class="genericForm" method="<?php echo $this->form['method'];?>" action="<?php echo $this->form['action'];?>">
    <input type="hidden" name="itemId" value="<?php echo $this->itemDao->getKey(); ?>"/>
-   <div class="updateBistreamNameNotice" style="display:<?php echo $this->displayUpdateBitstream;?>">
+   <div class="updateBitstreamNameNotice" style="display:<?php echo $this->displayUpdateBitstream;?>">
      The latest revision of this item contains only one bitstream.</br>
      Check the below checkbox if you want this bitstream's name to be updated simultaneously with the item's name.<br/>
      <input type="checkbox" name="updateBitstreamName" value="updateBitstreamName"/> Update bitstream's name to keep it same as item's name.<br/>

@@ -798,8 +798,10 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
   public function testBitstreamCount()
     {
     $bitstreamsFile = $this->loadData('Bitstream', 'default');
-    $bitstream = $this->Bitstream->load($bitstreamsFile[0]->getKey());
-    $expectedSize = $bitstream->getSizebytes();
+    $bitstream_1 = $this->Bitstream->load($bitstreamsFile[0]->getKey());
+    $bitstream_1_expectedSize = $bitstream_1->getSizebytes();
+    $bitstream_2 = $this->Bitstream->load($bitstreamsFile[1]->getKey());
+    $totalExpectedSize = $bitstream_1_expectedSize + $bitstream_2->getSizebytes();
 
     // Test passing a bad uuid
     $this->params['method'] = 'midas.bitstream.count';
@@ -830,8 +832,8 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['uuid'] = '4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
-    $this->assertEquals($resp->data->count, 1);
-    $this->assertEquals($resp->data->size, $expectedSize);
+    $this->assertEquals($resp->data->count, 2);
+    $this->assertEquals($resp->data->size, $totalExpectedSize);
 
     // Test count bitstreams in item
     $this->resetAll();
@@ -841,7 +843,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
     $this->assertEquals($resp->data->count, 1);
-    $this->assertEquals($resp->data->size, $expectedSize);
+    $this->assertEquals($resp->data->size, $bitstream_1_expectedSize);
     }
 
   /** test item creation and deletion */
@@ -849,6 +851,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     {
     $itemModel = MidasLoader::loadModel('Item');
     $userModel = MidasLoader::loadModel('User');
+    $itemsFile = $this->loadData('Item', 'default');
 
     // create an item with only required options
     $this->resetAll();
@@ -943,6 +946,39 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $generatedItemId = $resp->data->item_id;
     $itemDao = $this->Item->load($generatedItemId);
     $this->assertEquals($itemDao->getName(), $changedName, 'Item name is not set correctly');
+
+    // change the name of the item by passing in the uuid; its bitstream name is not updated.
+    $changedName = 'created_item_3_changed_name_not_update_bitstream';
+    $this->resetAll();
+    $itemDao = $this->Item->load($itemsFile[0]->getKey());
+    $revisionDao = $this->Item->getLastRevision($itemDao);
+    $bitstreams = $revisionDao->getBitstreams();
+    $this->assertEquals(count($bitstreams), 1);
+    $bitstream_id = $bitstreams[0]->getKey();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.item.create';
+    $this->params['name'] = $changedName;
+    $this->params['uuid'] = $itemDao->getUuid();
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $itemDao = $this->Item->load($itemsFile[0]->getKey());
+    $this->assertEquals($itemDao->getName(), $changedName, 'Item name is not set correctly');
+    $bitstreamDao = $this->Bitstream->load($bitstream_id);
+    $this->assertNotEquals($bitstreamDao->getName(), $changedName, 'Bitstream name should not be updated');
+    // bitstreamname is also updated
+    $changedName = 'created_item_4_changed_name_also_update_bitstream';
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.item.create';
+    $this->params['name'] = $changedName;
+    $this->params['uuid'] = $itemDao->getUuid();
+    $this->params['updatebitstream'] = '';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $itemDao = $this->Item->load($itemsFile[0]->getKey());
+    $this->assertEquals($itemDao->getName(), $changedName, 'Item name is not set correctly');
+    $bitstreamDao = $this->Bitstream->load($bitstream_id);
+    $this->assertEquals($bitstreamDao->getName(), $changedName, 'Bitstream name is not updated');
 
     // delete the second one
     $this->resetAll();
@@ -1110,6 +1146,33 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $newBitstream = $this->Bitstream->load(1);
     $this->assertEquals($newBitstream->getName(), 'newname.jpeg');
     $this->assertEquals($newBitstream->getMimetype(), 'image/jpeg');
+    }
+
+  /** Test bitstream delete function */
+  public function testBitstreamDelete()
+    {
+    $bitstreamsFile = $this->loadData('Bitstream', 'default');
+    $bitstream_id = $bitstreamsFile[0]->getKey();
+    // User without item write access should throw an exception
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.bitstream.delete';
+    $this->params['id'] = $bitstream_id;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+
+    // Test getting a user by first name and last name
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.bitstream.delete';
+    $this->params['id'] = $bitstream_id;
+    $resp = $this->_callJsonApi();
+    $this->assertNotEquals($resp, false);
+    $this->assertEquals($resp->message, '');
+    $this->assertEquals($resp->stat, 'ok');
+    $this->assertEquals($resp->code, 0);
+
+    $bitstreamDao = $this->Bitstream->load($bitstream_id);
+    $this->assertFalse($bitstreamDao, 'Bitstream should have been deleted, but was not.');
     }
 
   /* helper function for item.setmetadata calls */

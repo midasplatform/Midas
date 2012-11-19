@@ -229,7 +229,7 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
 
     // Should contain 0 folders and 2 items
     $this->assertEquals(count($resp->data->folders), 0);
-    $this->assertEquals(count($resp->data->items), 2);
+    $this->assertEquals(count($resp->data->items), 3);
 
     $this->assertEquals($resp->data->items[0]->item_id, 1000);
     $this->assertEquals($resp->data->items[1]->item_id, 1001);
