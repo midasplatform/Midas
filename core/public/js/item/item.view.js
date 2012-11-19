@@ -11,7 +11,7 @@ $(document).ready(function() {
                 var html = 'Warning: you have requested a large download ('+retVal.sizeStr+') that might take a very long time to complete.';
                 html += ' It is recommended that you use the large data download applet in case your connection is interrupted. '+
                 'Would you like to use the applet?';
-                
+
                 html += '<div style="margin-top: 20px; float: right">';
                 html += '<input type="button" style="margin-left: 0px;" class="globalButton useLargeDataApplet" value="Yes, use large downloader"/>';
                 html += '<input type="button" style="margin-left: 10px;" class="globalButton useZipStream" value="No, use normal download"/>';
@@ -179,9 +179,8 @@ $(document).ready(function() {
     $('tr.bitstreamRow img.editBitstreamIcon').qtip({
         content: 'Edit bitstream'
     }).click(function() {
-        var itemId = json.item.item_id;
         var bitstreamId = $(this).attr('element');
-        midas.loadDialog("editBitstream"+bitstreamId,"/item/editbitstream?itemId="+itemId+"&bitstreamId="+bitstreamId);
+        midas.loadDialog("editBitstream"+bitstreamId,"/item/editbitstream?bitstreamId="+bitstreamId);
         midas.showDialog(json.browse.editBitstream, false, {
             width: 380
         });
@@ -191,7 +190,6 @@ $(document).ready(function() {
     $('tr.bitstreamRow img.deleteBitstreamIcon').qtip({
         content: 'Delete bitstream'
     }).click(function() {
-        var itemId = json.item.item_id;
         var bitstreamId = $(this).attr('element');
         var that = this;
         var html = '';
@@ -209,7 +207,7 @@ $(document).ready(function() {
             $.ajax({
                 type: "POST",
                 url: json.global.webroot+'/item/deletebitstream',
-                data: {itemId: itemId, bitstreamId: bitstreamId},
+                data: {bitstreamId: bitstreamId},
                 dataType: 'json',
                 success: function (jsonContent) {
                     var $deleted = $.parseJSON(jsonContent);

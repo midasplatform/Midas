@@ -245,17 +245,12 @@ class ItemControllerTest extends ControllerTestCase
   /** Test edit a bitstream */
   public function testEditBitstreamAction()
     {
-    $itemsFile = $this->loadData('Item', 'default');
+    $bitsreamsFile = $this->loadData('Bitstream', 'default');
     $usersFile = $this->loadData('User', 'default');
     $userWithPermission = $this->User->load($usersFile[2]->getKey());
 
-    $itemDao = $this->Item->load($itemsFile[0]->getKey());
-    $revisionDao = $this->Item->getLastRevision($itemDao);
-    $bitstreams = $revisionDao->getBitstreams();
-    $this->assertEquals(count($bitstreams), 1);
-    $bitstreamToEdit = $bitstreams[0];
-    $url = '/item/editbitstream?itemId='.$itemDao->getKey().
-             '&bitstreamId='.$bitstreamToEdit->getKey();
+    $bitstreamToEditId = $bitsreamsFile[0]->getKey();
+    $url = '/item/editbitstream?bitstreamId='.$bitstreamToEditId;
 
     // Should throw an exception for anonymous user
     $this->dispatchUrI($url, null, true);
@@ -272,8 +267,7 @@ class ItemControllerTest extends ControllerTestCase
     $this->assertController('item');
     $this->assertAction('editbitstream');
     $this->assertQuery('form#editBitstreamForm');
-    $this->assertQuery('input[name="bitstreamId"][value="'.$bitstreamToEdit->getKey().'"]');
-    $this->assertQuery('input[name="itemId"][value="'.$itemDao->getKey().'"]');
+    $this->assertQuery('input[name="bitstreamId"][value="'.$bitstreamToEditId.'"]');
     $this->assertQuery('input[name="submit"][value="Save"]');
     $this->assertQueryContentContains('label', 'Name');
     $this->assertQueryContentContains('label', 'Mimetype');
@@ -289,7 +283,7 @@ class ItemControllerTest extends ControllerTestCase
     $this->assertAction('editbitstream');
     $this->assertRedirect();
 
-    $bitstreamDao = $this->Bitstream->load($bitstreamToEdit->getKey());
+    $bitstreamDao = $this->Bitstream->load($bitstreamToEditId);
     $this->assertEquals($bitstreamDao->getName(), 'newname.jpeg');
     $this->assertEquals($bitstreamDao->getMimetype(), 'image/jpeg');
     }
@@ -305,9 +299,8 @@ class ItemControllerTest extends ControllerTestCase
     $revisionDao = $this->Item->getLastRevision($itemDao);
     $old_bitstreams = $revisionDao->getBitstreams();
     $this->assertEquals(count($old_bitstreams), 1);
-    $bitstreamToDelete_id = $old_bitstreams[0]->getKey();
-    $url = '/item/deletebitstream?itemId='.$itemDao->getKey().
-             '&bitstreamId='.$bitstreamToDelete_id;
+    $bitstreamToDeleteId = $old_bitstreams[0]->getKey();
+    $url = '/item/deletebitstream?bitstreamId='.$bitstreamToDeleteId;
 
     // Should throw an exception for anonymous user
     $this->dispatchUrI($url, null, true);
@@ -324,7 +317,7 @@ class ItemControllerTest extends ControllerTestCase
     $this->assertRedirect();
     $new_bitstreams = $revisionDao->getBitstreams();
     $this->assertEquals(count($new_bitstreams), 0);
-    $bitstreamToDelete = $this->Bitstream->load($bitstreamToDelete_id);
+    $bitstreamToDelete = $this->Bitstream->load($bitstreamToDeleteId);
     $this->assertFalse($bitstreamToDelete, 'Bitstream should have been deleted, but was not.');
     }
   }

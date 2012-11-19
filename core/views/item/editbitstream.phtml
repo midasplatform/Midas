@@ -16,7 +16,6 @@ PURPOSE.  See the above copyright notices for more information.
 
 <form id="editBitstreamForm" class="genericForm" method="<?php echo $this->bitstreamform['method'];?>" action="<?php echo $this->bitstreamform['action'];?>">
    <input type="hidden" name="bitstreamId" value="<?php echo $this->bitstreamDao->getKey(); ?>"/>
-   <input type="hidden" name="itemId" value="<?php echo $this->itemId; ?>"/>
       <div>
         <label for="name"><?php echo $this->t('Name'); ?></label>
         <?php echo $this->bitstreamform['name']; ?>
