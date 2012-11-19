@@ -505,17 +505,6 @@ class ItemController extends AppController
     {
     $this->disableLayout();
     // load item and check permissions
-    $itemId = $this->_getParam('itemId');
-    if(!isset($itemId) || !is_numeric($itemId))
-      {
-      throw new Zend_Exception("itemId should be a number");
-      }
-    $itemDao = $this->Item->load($itemId);
-    if($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
-      {
-      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
-      }
-
     $bitstreamId = $this->_getParam('bitstreamId');
     if(!isset($bitstreamId) || !is_numeric($bitstreamId))
       {
@@ -525,6 +514,11 @@ class ItemController extends AppController
     if($bitstreamDao === false)
       {
       throw new Zend_Exception("This bitstream doesn't exist.");
+      }
+    $itemDao = $bitstreamDao->getItemrevision()->getItem();
+    if($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
       }
 
     if($this->_request->isPost())
@@ -538,11 +532,10 @@ class ItemController extends AppController
         }
       $bitstreamDao->setMimetype( $mimetype);
       $this->Bitstream->save($bitstreamDao);
-      $this->_redirect('/item/'.$itemId);
+      $this->_redirect('/item/'.$itemDao->getKey());
       }
 
     $this->view->bitstreamDao = $bitstreamDao;
-    $this->view->itemId = $itemId;
     $form = $this->Form->Item->createEditBitstreamForm();
     $formArray = $this->getFormAsArray($form);
     $formArray['name']->setValue($bitstreamDao->getName());
@@ -562,17 +555,6 @@ class ItemController extends AppController
     $this->disableLayout();
     $this->disableView();
     // load item and check permissions
-    $itemId = $this->_getParam('itemId');
-    if(!isset($itemId) || !is_numeric($itemId))
-      {
-      throw new Zend_Exception("itemId should be a number");
-      }
-    $itemDao = $this->Item->load($itemId);
-    if($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
-      }
-
     $bitstreamId = $this->_getParam('bitstreamId');
     if(!isset($bitstreamId) || !is_numeric($bitstreamId))
       {
@@ -583,11 +565,17 @@ class ItemController extends AppController
       {
       throw new Zend_Exception("This bitstream doesn't exist.");
       }
+    $itemDao = $bitstreamDao->getItemrevision()->getItem();
+    if($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
+      }
+
     $this->Bitstream->delete($bitstreamDao);
 
     if(!$this->_request->isXmlHttpRequest())
       {
-      $this->_redirect('/item/'.$itemId);
+      $this->_redirect('/item/'.$itemDao->getKey());
       }
     else
       {
