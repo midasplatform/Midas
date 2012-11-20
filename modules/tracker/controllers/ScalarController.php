@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 /** Scalar controller*/
 class Tracker_ScalarController extends Tracker_AppController
 {
-  public $_models = array('Community');
+  public $_models = array('Community', 'Setting');
   public $_moduleModels = array('Scalar', 'Trend');
 
   /**
@@ -39,6 +39,17 @@ class Tracker_ScalarController extends Tracker_AppController
       }
     $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     $this->view->scalar = $scalar;
+    $rev = $scalar->getProducerRevision();
+    $repoBrowserUrl = $this->Setting->getValueByName('repoBrowserUrl', $this->moduleName);
+    if($repoBrowserUrl)
+      {
+      $repoBrowserUrl = preg_replace('/%revision/', $rev, $repoBrowserUrl);
+      $this->view->revisionHtml = '<a target="_blank" href="'.$repoBrowserUrl.'">'.$rev.'</a>';
+      }
+    else
+      {
+      $this->view->revisionHtml = $rev; 
+      }
     $this->view->resultItems = $this->Tracker_Scalar->getAssociatedItems($scalar);
     $this->view->otherValues = $this->Tracker_Scalar->getOtherValuesFromSubmission($scalar);
     }
