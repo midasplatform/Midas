@@ -230,6 +230,8 @@ class AppController extends MIDAS_GlobalController
       'downloadLatest' => $this->t('Download latest revision'),
       'manage' => $this->t('Manage'),
       'edit' => $this->t('Edit'),
+      'editItem' => $this->t('Edit item'),
+      'editBitstream' => $this->t('Edit bitstream'),
       'delete' => $this->t('Delete'),
       'deleteSelected' => $this->t('Delete all selected'),
       'duplicateSelected' => $this->t('Copy all selected'),

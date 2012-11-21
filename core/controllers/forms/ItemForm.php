@@ -41,5 +41,25 @@ class ItemForm extends AppForm
     return $form;
     }
 
+  /** create edit bitstream form */
+  public function createEditBitstreamForm()
+    {
+    $form = new Zend_Form;
+
+    $form->setAction($this->webroot.'/item/editbitstream')
+          ->setMethod('post');
+
+    $name = new Zend_Form_Element_Text('name');
+    $name ->setRequired(true)
+          ->addValidator('NotEmpty', true);
+
+    $mimetype = new Zend_Form_Element_Text('mimetype');
+    $submit = new  Zend_Form_Element_Submit('submit');
+    $submit ->setLabel($this->t("Save"));
+
+    $form->addElements(array($name, $mimetype, $submit));
+    return $form;
+    }
+
 } // end class
 ?>

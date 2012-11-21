@@ -11,7 +11,7 @@ $(document).ready(function() {
                 var html = 'Warning: you have requested a large download ('+retVal.sizeStr+') that might take a very long time to complete.';
                 html += ' It is recommended that you use the large data download applet in case your connection is interrupted. '+
                 'Would you like to use the applet?';
-                
+
                 html += '<div style="margin-top: 20px; float: right">';
                 html += '<input type="button" style="margin-left: 0px;" class="globalButton useLargeDataApplet" value="Yes, use large downloader"/>';
                 html += '<input type="button" style="margin-left: 10px;" class="globalButton useZipStream" value="No, use normal download"/>';
@@ -176,6 +176,53 @@ $(document).ready(function() {
         midas.showDialogWithContent('Bitstream Information', text, false);
     });
 
+    $('tr.bitstreamRow img.editBitstreamIcon').qtip({
+        content: 'Edit bitstream'
+    }).click(function() {
+        var bitstreamId = $(this).attr('element');
+        midas.loadDialog("editBitstream"+bitstreamId,"/item/editbitstream?bitstreamId="+bitstreamId);
+        midas.showDialog(json.browse.editBitstream, false, {
+            width: 380
+        });
+
+    });
+
+    $('tr.bitstreamRow img.deleteBitstreamIcon').qtip({
+        content: 'Delete bitstream'
+    }).click(function() {
+        var bitstreamId = $(this).attr('element');
+        var that = this;
+        var html = '';
+        html+=json.item.message['deleteBitstreamMessage'];
+        html+='<br/>';
+        html+='<br/>';
+        html+='<br/>';
+        html+='<div style="float: right;">';
+        html+='<input class="globalButton deleteBitstreamYes" element="'+$(this).attr('element')+'" type="button" value="'+json.global.Yes+'"/>';
+        html+='<input style="margin-left:15px;" class="globalButton deleteBitstreamNo" type="button" value="'+json.global.No+'"/>';
+        html+='</div>';
+        midas.showDialogWithContent(json.item.message['delete'],html,false);
+        $('input.deleteBitstreamYes').unbind('click').click(function() {
+            $( "div.MainDialog" ).dialog('close');
+            $.ajax({
+                type: "POST",
+                url: json.global.webroot+'/item/deletebitstream',
+                data: {bitstreamId: bitstreamId},
+                dataType: 'json',
+                success: function (jsonContent) {
+                    var $deleted = $.parseJSON(jsonContent);
+                    if ($deleted)
+                        {
+                        $(that).parents('td').parents('tr').remove();
+                        }
+                }
+            });
+        });
+        $('input.deleteBitstreamNo').unbind('click').click(function() {
+            $( "div.MainDialog" ).dialog('close');
+        });
+    });
+
     $('a#itemDeleteLink').click(function () {
         $.ajax({
             type: "GET",
@@ -252,7 +299,7 @@ $(document).ready(function() {
 
     $('a.editItemLink').click(function () {
         midas.loadDialog("editItem"+json.item.item_id,"/item/edit?itemId="+json.item.item_id);
-        midas.showDialog(json.browse.edit, false, {
+        midas.showDialog(json.browse.editItem, false, {
             width: 545
         });
     });

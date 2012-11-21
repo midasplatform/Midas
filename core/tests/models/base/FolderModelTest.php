@@ -77,7 +77,7 @@ class FolderModelTest extends DatabaseTestCase
     $folder = $usersFile[0]->getPublicFolder();
     $items = $folder->getItems();
     $itemsFiltered = $this->Folder->getItemsFiltered($folder, $usersFile[0], 0);
-    $this->assertEquals(2, count($itemsFiltered));
+    $this->assertEquals(3, count($itemsFiltered));
     if(!isset($itemsFiltered[0]) || !isset($items[0]) || $itemsFiltered[0]->getKey() != $items[0]->getKey())
       {
       $this->fail("Unable to get community");

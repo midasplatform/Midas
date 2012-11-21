@@ -1492,6 +1492,9 @@ class Api_ApiComponent extends AppComponent
    * @param description (Optional) The description of the item
    * @param uuid (Optional) Uuid of the item. If none is passed, will generate one.
    * @param privacy (Optional) Default 'Public', possible values [Public|Private].
+   * @param updatebitstream (Optional) If set, the bitstream's name will be updated
+      simultaneously with the item's name if and only if the item has already
+      existed and its latest revision contains only one bitstream.
    * @return The item object that was created
    */
   function itemCreate($args)
@@ -1539,6 +1542,19 @@ class Api_ApiComponent extends AppComponent
         if(substr($key, 0, 1) == '_')
           {
           $this->_setMetadata($record, MIDAS_METADATA_TEXT, substr($key, 1), '', $value);
+          }
+        }
+      if(array_key_exists('updatebitstream', $args))
+        {
+        $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+        $bitstreamModel = MidasLoader::loadModel('Bitstream');
+        $revision = $itemRevisionModel->getLatestRevision($record);
+        $bitstreams = $revision->getBitstreams();
+        if(count($bitstreams) == 1)
+          {
+          $bitstream = $bitstreams[0];
+          $bitstream->setName($name);
+          $bitstreamModel->save($bitstream);
           }
         }
       $itemModel->save($record, true);
@@ -2724,5 +2740,32 @@ class Api_ApiComponent extends AppComponent
       {
       MidasLoader::loadModel($model)->removeOrphans();
       }
+    }
+
+  /**
+   * Delete a bitstream. Requires admin privileges on the containing item.
+   * @param token Authentication token
+   * @param id The id of the bitstream to delete
+   */
+  function bitstreamDelete($args)
+    {
+    $this->_validateParams($args, array('id'));
+    $userDao = $this->_getUser($args);
+
+    $bitstreamModel = MidasLoader::loadModel('Bitstream');
+    $itemModel = MidasLoader::loadModel('Item');
+
+    $bitstream = $bitstreamModel->load($args['id']);
+    if(!$bitstream)
+      {
+      throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
+      }
+
+    if(!$itemModel->policyCheck($bitstream->getItemrevision()->getItem(), $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception('Admin privileges required on the containing item', MIDAS_INVALID_POLICY);
+      }
+
+    $bitstreamModel->delete($bitstream);
     }
   } // end class

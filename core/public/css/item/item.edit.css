@@ -3,3 +3,11 @@ form#editItemForm input[type="text"], form#editItemForm  input[type="password"] 
   width: 350px!important;
 }
 
+div.updateBitstreamNameNotice
+{
+  background-color: #CDD;
+  padding: 8px;
+  border-radius: 4px;
+  border: 2px solid #acc;
+  margin-bottom: 5px;
+}
