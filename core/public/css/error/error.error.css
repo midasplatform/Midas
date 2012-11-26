@@ -1,0 +1,8 @@
+div.errorMessage {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+div.exceptionText {
+  margin-top: 20px;
+}

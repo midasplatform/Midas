@@ -50,11 +50,6 @@ class Example_SampleController extends Example_AppController
    */
   function deleteAction()
     {
-    if(!$this->logged)
-      {
-      $this->haveToBeLogged();
-      return false;
-      }
     $this->view->header = 'Example Module Sample Controller Delete Action';
     }
 

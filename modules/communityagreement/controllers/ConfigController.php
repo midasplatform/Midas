@@ -47,11 +47,6 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
   */
   function agreementtabAction()
     {
-    if(!$this->logged)
-      {
-      $this->haveToBeLogged();
-      return false;
-      }
     $this->disableLayout();
 
     $communityId = $this->_getParam("communityId");
@@ -62,11 +57,11 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
     $community = $this->Community->load($communityId);
     if(!$community)
       {
-      throw new Zend_Exception('Community does not exist');
+      throw new Zend_Exception('Community does not exist', 404);
       }
     if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
-      throw new Zend_Exception('Must have write permission on the community');
+      throw new Zend_Exception('Must have write permission on the community', 403);
       }
 
     $agreementDao = $this->Communityagreement_Agreement->getByCommunityId($communityId);
