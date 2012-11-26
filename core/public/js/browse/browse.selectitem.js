@@ -1,4 +1,6 @@
-    $("#moveTable").treeTable();
+    $("#moveTable").treeTable({
+        pageLength: 99999
+    });
     $("img.tableLoading").hide();
     $("table#moveTable").show();
 

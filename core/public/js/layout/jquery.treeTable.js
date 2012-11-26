@@ -73,10 +73,10 @@
         onFirstInit: null,
         onNodeShow: null,
         onNodeHide: null,
-        indent: 7,
+        indent: 9,
         initialState: "collapsed",
         treeColumn: 0,
-        pageLength: 70,
+        pageLength: 60,
         disableElementSize: false,
 
         callbackSelect: null,
@@ -179,6 +179,15 @@
         var table = node.ttTable();
         var options = table.ttOptions();
 
+        var data = $.data(node[0], 'children');
+        var itemOffset = 0, folderOffset = 0;
+        if(data && data.itemOffset) {
+            itemOffset = data.itemOffset;
+        }
+        if(data && data.folderOffset) {
+            folderOffset = data.folderOffset;
+        }
+
         // Mark the node as fetched so we don't try to fetch it multiple times
         node.attr('fetched', 'true');
         node.ttToggleLoading(true);
@@ -186,7 +195,10 @@
         $.post(json.global.webroot+'/browse/getfolderscontent', {
             folders: node.attr('element'),
             sort: options.sort,
-            sortdir: options.sortdir
+            sortdir: options.sortdir,
+            limit: options.pageLength,
+            itemOffset: itemOffset,
+            folderOffset: folderOffset
           } , function (data) {
             var children = jQuery.parseJSON(data);
             // Store the children in the dom node
@@ -195,7 +207,7 @@
                 break; //just fetching one folder at a time for now.
             }
             // Render the children (one chunk at a time)
-            node.ttRenderChildren(0);
+            node.ttRenderChildren();
             table.ttRenderElementsSize();
 
             // Table state has changed so we call init table
@@ -210,23 +222,26 @@
     /**
      * Once the data has been loaded onto a node, call this to actually
      * render the data in the tree.
-     * @param offset The page offset
      */
-    $.fn.ttRenderChildren = function(offset) {
+    $.fn.ttRenderChildren = function() {
         var node = $(this);
         var table = node.ttTable();
         var options = table.ttOptions();
         var elements = $.data(node[0], 'children');
         var lastchild = $.data(node[0], 'lastchild');
         var html = '';
+        var offset = $.data(node[0], 'offset');
+        if(!offset) {
+            offset = 0;
+        }
 
         if(typeof options.callbackCustomElements == 'function') {
             html = options.callbackCustomElements(node, elements);
             node.after(html);
         }
         else {
-            var i = offset;
             var id = node.attr('id');
+            var i = offset;
 
             // Calculate how many characters we should truncate to based on node depth
             var sliceValue = 55 - (id.split('-').length - 1) * 3;
@@ -234,13 +249,7 @@
 
             // Render the child folders
             $.each(elements.folders, function(index, value) {
-                if(index < offset || i >= options.pageLength + offset) { // only render a max of pageLength children at a time
-                    return;
-                }
                 i++;
-                if(table.find('#'+id+"-"+i).length > 0) {
-                    return;
-                }
                 if(value.policy == 0) {
                     drag_option = ' notdraggable';
                 }
@@ -266,13 +275,7 @@
 
             // Render the child items
             $.each(elements.items, function(index, value) {
-                if(index < offset || i >= options.pageLength + offset) { //only render a max of pageLength children at a time
-                    return;
-                }
                 i++;
-                if(table.find('#'+id+"-"+i).length > 0) {
-                    return;
-                }
                 if(value.policy == 0) {
                     drag_option = ' notdraggable';
                 }
@@ -294,10 +297,11 @@
                 html +=  "</tr>";
                 $.data(node[0], 'lastchild', id+"-"+i);
             });
+            $.data(node[0], 'offset', i);
 
-            if(i >= options.pageLength + offset) {
+            if(elements.showMoreLink) {
                 html += "<tr class='child-of-"+id+"' id='"+id+"-10000000' element='"+id+"'>"+
-                        "<td colspan='1' align='right'><a offset='"+i+"' class='treeBrowserShowMore'>Show more</a></td><td></td><td></td><td></td></tr>";
+                        "<td colspan='1' align='right'><a class='treeBrowserShowMore'>Show more</a></td><td></td><td></td><td></td></tr>";
             }
             if(lastchild == undefined) {
                 // We are rendering the first page
@@ -310,11 +314,13 @@
         }
 
         // Bind "Show more" action
-        table.find('a.treeBrowserShowMore:visible').click(function () {
-            table.find('tr#'+$(this).parents('tr').attr('element')).ttRenderChildren(parseInt($(this).attr('offset')));
+        table.find('a.treeBrowserShowMore:visible').unbind('click').click(function () {
+            var showMoreRow = $(this).parents('tr');
+            showMoreRow.hide();
+            table.find('tr#'+$(this).parents('tr').attr('element')).ttFetchChildren();
             table.ttInitTable();
-            $(this).parents('tr').ttInitNode();
-            $(this).parents('tr').remove();
+            showMoreRow.ttInitNode();
+            showMoreRow.remove();
         });
 
         var cell = $(node.children('td')[options.treeColumn]);

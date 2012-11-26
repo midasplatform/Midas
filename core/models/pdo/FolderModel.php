@@ -637,12 +637,14 @@ class FolderModel extends FolderModelBase
   /**
    * Get child items of a folder filtered by policy check for the provided user
    * @param folder The parent folder
-   * @param userDao The user requesting the folder children (default anonymous)
-   * @param policy What policy to filter by (default MIDAS_POLICY_READ)
-   * @param sortfield What field to sort the results by (name | date | size, default = name)
-   * @param sortdir Sort direction (asc | desc, default = asc)
+   * @param [userDao] The user requesting the folder children (default anonymous)
+   * @param [policy] What policy to filter by (default MIDAS_POLICY_READ)
+   * @param [sortfield] What field to sort the results by (name | date_update | sizebytes, default = name)
+   * @param [sortdir] Sort direction (asc | desc, default = asc)
+   * @param [limit] Result limit. Default is no limit.
+   * @param [offset] Offset into result list. Default is 0.
    */
-  function getItemsFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc')
+  function getItemsFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc', $limit = 0, $offset = 0)
     {
     $isAdmin = false;
     if(is_array($folder))
@@ -726,9 +728,9 @@ class FolderModel extends FolderModelBase
 
       $sql = $this->database->select()->union(array($subqueryUser, $subqueryGroup));
       }
+    $sql->order(array($sortfield.' '.strtoupper($sortdir)));
 
     $rowset = $this->database->fetchAll($sql);
-    $return = array();
     $policyArray = array();
     foreach($rowset as $keyRow => $row)
       {
@@ -744,39 +746,38 @@ class FolderModel extends FolderModelBase
 
     $listNamesArray = array();
 
+    $itrCount = 0;
+    $pageSize = 0;
+    $return = array();
     foreach($rowset as $keyRow => $row)
       {
       if(isset($policyArray[$row['item_id']]))
         {
-        $item = $this->initDao('Item', $row);
-        $folders = $item->getFolders();
-
-        foreach($folders as $folder)
+        $itrCount++;
+        if($itrCount > $offset)
           {
-          if(in_array($folder->getKey(), $folderIds))
+          $item = $this->initDao('Item', $row);
+          $folders = $item->getFolders();
+
+          foreach($folders as $folder)
             {
-            $tmpDao = clone $item;
-            $tmpDao->policy = $policyArray[$row['item_id']];
-            $tmpDao->parent_id = $folder->getKey();
-            $return[] = $tmpDao;
+            if(in_array($folder->getKey(), $folderIds))
+              {
+              $tmpDao = clone $item;
+              $tmpDao->policy = $policyArray[$row['item_id']];
+              $tmpDao->parent_id = $folder->getKey();
+              $return[] = $tmpDao;
+              }
+            }
+          unset($policyArray[$row['item_id']]);
+          $pageSize++;
+          if($limit > 0 && $pageSize >= $limit)
+            {
+            break;
             }
           }
-        unset($policyArray[$row['item_id']]);
         }
       }
-    $this->Component->Sortdao->field = $sortfield;
-    $this->Component->Sortdao->order = $sortdir;
-    $sortFn = 'sortByName';
-    if($sortfield == 'date')
-      {
-      $sortFn = 'sortByDate';
-      }
-    else if($sortfield == 'sizebytes')
-      {
-      $sortFn = 'sortByNumber';
-      }
-    usort($return, array($this->Component->Sortdao, $sortFn));
-
     return $return;
     }
 
@@ -788,7 +789,7 @@ class FolderModel extends FolderModelBase
    * @param sortfield What field to sort the results by (name | date, default = name)
    * @param sortdir Sort direction (asc | desc, default = asc)
    */
-  function getChildrenFoldersFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc')
+  function getChildrenFoldersFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc', $limit = 0, $offset = 0)
     {
     $isAdmin = false;
     if(is_array($folder))
@@ -828,35 +829,6 @@ class FolderModel extends FolderModelBase
         }
       }
 
-    $subqueryUser = $this->database->select()
-                          ->setIntegrityCheck(false)
-                          ->from(array('f' => 'folder'))
-                          ->join(array('p' => 'folderpolicyuser'),
-                                'f.folder_id = p.folder_id',
-                                 array('p.policy'))
-                          ->where('f.parent_id IN (?)', $folderIds)
-                          ->where('policy >= ?', $policy)
-                          ->where('user_id = ? ', $userId);
-
-    $subqueryGroup = $this->database->select()
-                    ->setIntegrityCheck(false)
-                    ->from(array('f' => 'folder'))
-                    ->join(array('p' => 'folderpolicygroup'),
-                          'f.folder_id = p.folder_id',
-                           array('p.policy'))
-                    ->where('f.parent_id IN (?)', $folderIds)
-                    ->where('policy >= ?', $policy)
-                    ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                              group_id IN (' .new Zend_Db_Expr(
-                              $this->database->select()
-                                   ->setIntegrityCheck(false)
-                                   ->from(array('u2g' => 'user2group'),
-                                          array('group_id'))
-                                   ->where('u2g.user_id = ?', $userId)
-                                   .'))' ));
-    $sql = $this->database->select()
-            ->union(array($subqueryUser, $subqueryGroup));
-
     if($isAdmin)
       {
       $sql = $this->database->select()
@@ -864,9 +836,41 @@ class FolderModel extends FolderModelBase
                           ->from(array('f' => 'folder'))
                           ->where('f.parent_id IN (?)', $folderIds);
       }
+    else
+      {
+      $subqueryUser = $this->database->select()
+                            ->setIntegrityCheck(false)
+                            ->from(array('f' => 'folder'))
+                            ->join(array('p' => 'folderpolicyuser'),
+                                  'f.folder_id = p.folder_id',
+                                   array('p.policy'))
+                            ->where('f.parent_id IN (?)', $folderIds)
+                            ->where('policy >= ?', $policy)
+                            ->where('user_id = ? ', $userId);
+
+      $subqueryGroup = $this->database->select()
+                      ->setIntegrityCheck(false)
+                      ->from(array('f' => 'folder'))
+                      ->join(array('p' => 'folderpolicygroup'),
+                            'f.folder_id = p.folder_id',
+                             array('p.policy'))
+                      ->where('f.parent_id IN (?)', $folderIds)
+                      ->where('policy >= ?', $policy)
+                      ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
+                                group_id IN (' .new Zend_Db_Expr(
+                                $this->database->select()
+                                     ->setIntegrityCheck(false)
+                                     ->from(array('u2g' => 'user2group'),
+                                            array('group_id'))
+                                     ->where('u2g.user_id = ?', $userId)
+                                     .'))' ));
+      $sql = $this->database->select()
+              ->union(array($subqueryUser, $subqueryGroup));
+      }
+
+    $sql->order(array($sortfield.' '.strtoupper($sortdir)));
 
     $rowset = $this->database->fetchAll($sql);
-    $return = array();
     $policyArray = array();
     foreach($rowset as $keyRow => $row)
       {
@@ -880,25 +884,29 @@ class FolderModel extends FolderModelBase
         }
       }
 
+    $itrCount = 0;
+    $pageSize = 0;
+    $return = array();
     foreach($rowset as $keyRow => $row)
       {
       if(isset($policyArray[$row['folder_id']]))
         {
-        $tmpDao = $this->initDao('Folder', $row);
-        $tmpDao->policy = $policyArray[$row['folder_id']];
-        $return[] = $tmpDao;
-        unset($policyArray[$row['folder_id']]);
+        $itrCount++;
+        if($itrCount > $offset)
+          {
+          $tmpDao = $this->initDao('Folder', $row);
+          $tmpDao->policy = $policyArray[$row['folder_id']];
+          $return[] = $tmpDao;
+          unset($policyArray[$row['folder_id']]);
+          $pageSize++;
+          if($limit > 0 && $pageSize >= $limit)
+            {
+            break;
+            }
+          }
         }
       }
 
-    $this->Component->Sortdao->field = $sortfield;
-    $this->Component->Sortdao->order = $sortdir;
-    $sortFn = 'sortByName';
-    if($sortfield == 'date')
-      {
-      $sortFn = 'sortByDate';
-      }
-    usort($return, array($this->Component->Sortdao, $sortFn));
     return $return;
     }
 
