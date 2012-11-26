@@ -310,11 +310,21 @@ class BrowseController extends AppController
     $this->view->communities = $communities;
     }
 
-  /** get getfolders content (ajax function for the treetable) */
+  /**
+   * Get the children of a set of folders (ajax).  Used
+   * by the tree table when a folder is expanded or "show more results" is clicked.
+   * @param folders List of folder ids whose children should be fetched, separated by -
+   * @param [sort] Sort field: (name | size | date), default is name
+   * @param [sortdir] Sort direction: (asc | desc), default is asc
+   * @param [folderOffset] The offset into the list of child folders, default is 0
+   * @param [itemOffset] The offset into the list of child items, default is 0
+   * @param [limit] The page size, default is unlimited
+   */
   public function getfolderscontentAction()
     {
     $this->disableLayout();
     $this->disableView();
+
     $folderIds = $this->_getParam('folders');
     $sort = $this->_getParam('sort', 'name');
     $sortdir = $this->_getParam('sortdir', 'asc');
@@ -335,6 +345,10 @@ class BrowseController extends AppController
       $itemsortdir = $sortdir;
       }
 
+    $folderOffset = (int)$this->_getParam('folderOffset', 0);
+    $itemOffset = (int)$this->_getParam('itemOffset', 0);
+    $limit = (int)$this->_getParam('limit', -1);
+
     if(!isset($folderIds))
       {
       throw new Zend_Exception("Please set the folder Id");
@@ -346,13 +360,44 @@ class BrowseController extends AppController
       throw new Zend_Exception("Folder doesn't exist");
       }
 
-    $folders = $this->Folder->getChildrenFoldersFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ, $foldersort, $foldersortdir);
-    $items = $this->Folder->getItemsFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ, $itemsort, $itemsortdir);
+    // We always show folders above items in the child list; fetch them first
+    $showMoreLink = false;
+    $folders = $this->Folder->getChildrenFoldersFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ,
+                                                         $foldersort, $foldersortdir, $limit + 1, $folderOffset);
+    $folderCount = count($folders);
+    $itemCount = 0;
+    $folderOffset += min($limit, $folderCount);
+    if($limit > 0 && $folderCount > $limit) // If we have more folder children than the page allows, no need to fetch items this pass
+      {
+      array_pop($folders); //remove the last element since it is one over the limit
+      $folderCount--;
+      $items = array();
+      $itemCount = 0;
+      $showMoreLink = true;
+      }
+    else
+      {
+      $itemLimit = $limit - $folderCount;
+      $items = $this->Folder->getItemsFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ,
+                                               $itemsort, $itemsortdir, $itemLimit + 1, $itemOffset);
+      $itemCount = count($items);
+      if($limit > 0 && $itemCount > $itemLimit)
+        {
+        array_pop($items);
+        $itemCount--;
+        $showMoreLink = true;
+        }
+      $itemOffset += min($limit, $itemCount);
+      }
+
     $jsonContent = array();
     foreach($parents as $parent)
       {
       $jsonContent[$parent->getKey()]['folders'] = array();
       $jsonContent[$parent->getKey()]['items'] = array();
+      $jsonContent[$parent->getKey()]['showMoreLink'] = $showMoreLink;
+      $jsonContent[$parent->getKey()]['folderOffset'] = $folderOffset;
+      $jsonContent[$parent->getKey()]['itemOffset'] = $itemOffset;
       }
     foreach($folders as $folder)
       {
@@ -382,7 +427,7 @@ class BrowseController extends AppController
       unset($tmp);
       }
     echo JsonComponent::encode($jsonContent);
-    }//end getfolderscontent
+    }
 
   /** get getfolders Items' size */
   public function getfolderssizeAction()
@@ -404,7 +449,7 @@ class BrowseController extends AppController
       $return[] = array('id' => $folder->getKey(), 'count' => $folder->count, 'size' => $this->Component->Utility->formatSize($folder->size));
       }
     echo JsonComponent::encode($return);
-    }//end getfolderscontent
+    }
 
   /** get element info (ajax function for the treetable) */
   public function getelementinfoAction()
