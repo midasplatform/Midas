@@ -93,6 +93,8 @@ class ErrorController extends AppController
         break;
       default:
         $code = $this->_error->exception->getCode();
+        $this->view->code = $code;
+        $this->view->exceptionText = $this->_error->exception->getMessage();
         if($code == 0)
           {
           $this->getResponse()->setHttpResponseCode(500);
@@ -100,6 +102,22 @@ class ErrorController extends AppController
         else if($code == 404 || $code == 403)
           {
           $this->getResponse()->setHttpResponseCode($code);
+          if($code == 403)
+            {
+            if($this->logged)
+              {
+              $this->view->header = 'Access Denied';
+              }
+            else
+              {
+              $this->haveToBeLogged();
+              return;
+              }
+            }
+          else if($code == 404)
+            {
+            $this->view->header = 'Not Found';
+            }
           }
         $this->_applicationError();
         break;
@@ -113,7 +131,6 @@ class ErrorController extends AppController
       {
       $this->getLogger()->warn('URL: '.$this->Component->NotifyError->curPageURL()."\n".$fullMessage);
       }
-
     }
 
   private function _applicationError()
@@ -128,18 +145,13 @@ class ErrorController extends AppController
         $this->view->message = $shortMessage;
         break;
       case 'testing':
-        if($this->_helper->hasHelper('layout'))
-          {
-          $this->_helper->layout->disableLayout();
-          }
-
-        $this->_helper->viewRenderer->setNoRender();
+        $this->disableLayout();
+        $this->disableView();
 
         $this->getResponse()->appendBody($shortMessage);
         break;
       default:
         $this->view->message = nl2br($fullMessage);
       }
-
     }
 }

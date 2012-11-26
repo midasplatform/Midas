@@ -30,8 +30,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     {
     if(!$this->logged)
       {
-      $this->haveToBeLogged();
-      return false;
+      throw new Zend_Exception('Must be logged in', 403);
       }
     $this->view->header = $this->t("Manage Your Workflows");
 
@@ -45,11 +44,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
   function initAction()
     {
     $this->view->header = $this->t("Workflow Wizard");
-    if(!$this->logged)
-      {
-      $this->haveToBeLogged();
-      return false;
-      }
+
     $scheduled = $this->_getParam("scheduled");
     if(isset($scheduled))
       {

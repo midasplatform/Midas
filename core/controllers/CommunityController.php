@@ -42,12 +42,6 @@ class CommunityController extends AppController
   /** Manage community*/
   function manageAction()
     {
-    if(!$this->logged)
-      {
-      $this->haveToBeLogged();
-      return false;
-      }
-
     $communityId = $this->_getParam("communityId");
     if(!isset($communityId) || !is_numeric($communityId))
       {
@@ -405,7 +399,7 @@ class CommunityController extends AppController
     $communityDao = $this->Community->load($communityId);
     if($communityDao === false || !$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception("This community doesn't exist or you don't have the permissions.");
+      throw new Zend_Exception("This community doesn't exist or you don't have the permissions.", 403);
       }
     $this->Community->delete($communityDao);
 
@@ -669,7 +663,7 @@ class CommunityController extends AppController
       }
     if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception('Community Admin permissions required.');
+      throw new Zend_Exception('Community Admin permissions required.', 403);
       }
     $groups = $community->getGroups();
     $availableGroups = array();
@@ -721,7 +715,7 @@ class CommunityController extends AppController
       }
     if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception('Community Admin permissions required.');
+      throw new Zend_Exception('Community Admin permissions required.', 403);
       }
     $params = $this->_getAllParams();
     foreach($params as $name => $value)
@@ -773,7 +767,7 @@ class CommunityController extends AppController
 
     if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
-      throw new Zend_Exception('Community Admin permissions required.');
+      throw new Zend_Exception('Community Admin permissions required.', 403);
       }
     $this->Group->removeUser($group, $user);
     echo JsonComponent::encode(array(true, 'Removed user '.$user->getFullName().' from group '.$group->getName()));
