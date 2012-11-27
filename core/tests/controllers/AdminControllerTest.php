@@ -43,8 +43,6 @@ class AdminControllerTest extends ControllerTestCase
     $this->dispatchUrI('/admin', null, true);
     $this->assertController('error');
     $this->assertAction('error');
-    $body = $this->getBody();
-    $this->assertTrue(empty($body));
 
     // If a non admin tries to access admin page, should throw exception
     $this->resetAll();
