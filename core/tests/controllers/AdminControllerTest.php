@@ -39,10 +39,10 @@ class AdminControllerTest extends ControllerTestCase
     $user1 = $this->User->load($usersFile[0]->getKey());
     $adminUser = $this->User->load($usersFile[2]->getKey());
 
-    // Should get empty body if we try to access admin controller unlogged
-    $this->dispatchUrI('/admin', null);
-    $this->assertController('admin');
-    $this->assertAction('index');
+    // Should get exception if we try to access admin controller unlogged
+    $this->dispatchUrI('/admin', null, true);
+    $this->assertController('error');
+    $this->assertAction('error');
     $body = $this->getBody();
     $this->assertTrue(empty($body));
 

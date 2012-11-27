@@ -39,10 +39,10 @@ class ItemControllerTest extends ControllerTestCase
     $itemDao = $this->Item->load($itemsFile[1]->getKey());
     $url = '/item/'.$itemDao->getItemId();
 
-    // Should not throw an exception for anonymous user
-    $this->dispatchUrI($url, null);
-    $this->assertController('item');
-    $this->assertAction('view');
+    // Should throw an exception for anonymous user (no read access)
+    $this->dispatchUrI($url, null, true);
+    $this->assertController('error');
+    $this->assertAction('error');
 
     // Should throw an exception for no item id parameter
     $this->resetAll();

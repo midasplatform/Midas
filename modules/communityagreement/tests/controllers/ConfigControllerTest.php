@@ -74,11 +74,10 @@ class ConfigControllerTest extends ControllerTestCase
     $page = '/communityagreement/config/agreementtab?communityId='.$community_id;
     $this->params = array();
     $this->getRequest()->setMethod('GET');
-    $this->dispatchUrI($page);
+    $this->dispatchUrI($page, null, true);
 
-    $this->assertModule("communityagreement");
-    $this->assertController("config");
-    $this->assertAction("agreementtab");
+    $this->assertController("error");
+    $this->assertAction("error");
 
     $this->resetAll();
     $this->params['agreement'] = 'test agreement tab';
@@ -95,7 +94,7 @@ class ConfigControllerTest extends ControllerTestCase
     $this->params['agreement'] = 'should not work';
     $this->params['communityId'] = $community_id;
     $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI($page);
+    $this->dispatchUrI($page, null, true);
 
     $saved_agreement = $agreementModel->getByCommunityId($community_id)->getAgreement();
     $this->assertNotEquals('should not work', $saved_agreement);
