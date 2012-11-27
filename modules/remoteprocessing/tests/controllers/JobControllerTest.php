@@ -35,7 +35,7 @@ class JobControllerTest extends ControllerTestCase
   public function testManage()
     {
     $userDao = $this->User->load(1);
-    $this->dispatchUrI('/remoteprocessing/job/manage', null, false);
+    $this->dispatchUrI('/remoteprocessing/job/manage', null, true);
     $this->resetAll();
     $this->dispatchUrI('/remoteprocessing/job/manage', $userDao, false);
     $this->assertQuery('table.jobTree');
@@ -69,9 +69,6 @@ class JobControllerTest extends ControllerTestCase
 
     $this->resetAll();
     $this->dispatchUrI('/remoteprocessing/job/init?itemId='.$itemFile[0]->getKey(), $userDao, false);
-
-    // page empty because there is a redirection
-    $this->assertEquals($this->getBody(), '');
 
     // create definition file
     $this->resetAll();
