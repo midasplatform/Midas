@@ -49,7 +49,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
       }
     else
       {
-      $sql->where('test_datasetid = ?', $testDatasetId);
+      $sql->where('test_dataset_id = ?', $testDatasetId);
       }
     return $this->initDao('Trend', $this->database->fetchRow($sql), $this->moduleName);
     }
