@@ -33,7 +33,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <?php
         if($this->trends[0]->getConfigItemId())
           {
-          echo '<a href="'.$this->webroot.'/item/'.$this->trend->getConfigItemId().'">'.$this->trend->getConfigItem()->getName().'</a>';
+          echo '<a href="'.$this->webroot.'/item/'.$this->trends[0]->getConfigItemId().'">'.$this->trends[0]->getConfigItem()->getName().'</a>';
           }
         else
           {
@@ -46,7 +46,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <?php
         if($this->trends[0]->getTestDatasetId())
           {
-          echo '<a href="'.$this->webroot.'/item/'.$this->trend->getTestDatasetId().'">'.$this->trend->getTestDatasetItem()->getName().'</a>';
+          echo '<a href="'.$this->webroot.'/item/'.$this->trends[0]->getTestDatasetId().'">'.$this->trends[0]->getTestDatasetItem()->getName().'</a>';
           }
         else
           {
@@ -59,7 +59,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <?php
         if($this->trends[0]->getTruthDatasetId())
           {
-          echo '<a href="'.$this->webroot.'/item/'.$this->trend->getTruthDatasetId().'">'.$this->trend->getTruthDatasetItem()->getName().'</a>';
+          echo '<a href="'.$this->webroot.'/item/'.$this->trends[0]->getTruthDatasetId().'">'.$this->trends[0]->getTruthDatasetItem()->getName().'</a>';
           }
         else
           {
