@@ -123,26 +123,52 @@ class Tracker_ApiComponent extends AppComponent
     if(isset($args['configItemId']))
       {
       $configItemId = $args['configItemId'];
-      $configItem = $itemModel->load($args['configItemId']);
+      $configItem = $itemModel->load($configItemId);
       if(!$configItem || !$itemModel->policyCheck($configItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on config item', 403);
         }
       }
+    else if(isset($args['configItemName']))
+      {
+      $configItem = $_this->_createOrFindByName($args['configItemName'], $community);
+      if(!$configItem || !$itemModel->policyCheck($configItem, $user, MIDAS_POLICY_READ))
+        {
+        throw new Exception('Read permission required on config item', 403);
+        }
+      }
+
     if(isset($args['testDatasetId']))
       {
-      $truthDatasetId = $args['testDatasetId'];
-      $testDatasetItem = $itemModel->load($args['testDatasetId']);
+      $testDatasetId = $args['testDatasetId'];
+      $testDatasetItem = $itemModel->load($testDatasetId);
       if(!$testDatasetItem || !$itemModel->policyCheck($testDatasetItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on test dataset item', 403);
         }
       }
+    else if(isset($args['testDatasetName']))
+      {
+      $testDatasetItem = $_this->_createOrFindByName($args['testDatasetName'], $community);
+      if(!$testDataset || !$itemModel->policyCheck($testDatasetItem, $user, MIDAS_POLICY_READ))
+        {
+        throw new Exception('Read permission required on test dataset item', 403);
+        }
+      }
+
     if(isset($args['truthDatasetId']))
       {
       $truthDatasetId = $args['truthDatasetId'];
-      $truthDatasetItem = $itemModel->load($args['truthDatasetId']);
+      $truthDatasetItem = $itemModel->load($truthDatasetId);
       if(!$truthDatasetItem || !$itemModel->policyCheck($truthDatasetItem, $user, MIDAS_POLICY_READ))
+        {
+        throw new Exception('Read permission required on truth dataset item', 403);
+        }
+      }
+    else if(isset($args['truthDatasetName']))
+      {
+      $truthDatasetItem = $_this->_createOrFindByName($args['truthDatasetName'], $community);
+      if(!$truthDataset || !$itemModel->policyCheck($truthDatasetItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on truth dataset item', 403);
         }
@@ -220,6 +246,15 @@ class Tracker_ApiComponent extends AppComponent
         throw new Exception('Read permission required on config item', 403);
         }
       }
+    else if(isset($args['configItemName']))
+      {
+      $configItem = $_this->_createOrFindByName($args['configItemName'], $community);
+      if(!$configItem || !$itemModel->policyCheck($configItem, $user, MIDAS_POLICY_READ))
+        {
+        throw new Exception('Read permission required on config item', 403);
+        }
+      }
+
     if(isset($args['testDatasetId']))
       {
       $truthDatasetId = $args['testDatasetId'];
@@ -229,11 +264,28 @@ class Tracker_ApiComponent extends AppComponent
         throw new Exception('Read permission required on test dataset item', 403);
         }
       }
+    else if(isset($args['testDatasetName']))
+      {
+      $testDatasetItem = $_this->_createOrFindByName($args['testDatasetName'], $community);
+      if(!$testDataset || !$itemModel->policyCheck($testDatasetItem, $user, MIDAS_POLICY_READ))
+        {
+        throw new Exception('Read permission required on test dataset item', 403);
+        }
+      }
+
     if(isset($args['truthDatasetId']))
       {
       $truthDatasetId = $args['truthDatasetId'];
       $truthDatasetItem = $itemModel->load($args['truthDatasetId']);
       if(!$truthDatasetItem || !$itemModel->policyCheck($truthDatasetItem, $user, MIDAS_POLICY_READ))
+        {
+        throw new Exception('Read permission required on truth dataset item', 403);
+        }
+      }
+    else if(isset($args['truthDatasetName']))
+      {
+      $truthDatasetItem = $_this->_createOrFindByName($args['truthDatasetName'], $community);
+      if(!$truthDataset || !$itemModel->policyCheck($truthDatasetItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on truth dataset item', 403);
         }
@@ -323,5 +375,22 @@ class Tracker_ApiComponent extends AppComponent
       }
 
     return $scalars;
+    }
+
+  /**
+   * Find an item by name within the community, or create it in the community's private folder if it doesn't exist
+   */
+  private function _createOrFindByName($itemName, $community)
+    {
+    $itemModel = MidasLoader::loadModel('Item');
+    $items = $itemModel->getByName($itemName);
+    if(count($items) == 0)
+      {
+      return $itemModel->createItem($itemName, '', $community->getPrivateFolder());
+      }
+    else
+      {
+      return $items[0];
+      }
     }
 } // end class
