@@ -1,0 +1,34 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
+?>
+
+<div class="viewMain">
+  <div class="explanation">
+    <p>Optionally set the Repository Browser URL to point to your repository browser. If set, users will be able
+       to click revision links for uploaded scalar values and go to the corresponding repository browser page for
+       that revision. In the field below, use the special placeholder string <b>%revision</b> where the revision
+       should go in the URL.</p>
+    <p><b>Example:</b> https://github.com/myuser/myproject/commit/%revision</p>
+    <p>Leave this field blank if you do not want the revision numbers to link to anything.</p>
+  </div>
+  <form id="configForm" class="genericForm" method="POST" action="<?php echo $this->webroot;?>/tracker/config/submit">
+    <div>
+      <label for="repoBrowserUrl">Repository Browser URL</label>
+      <input type="text" name="repoBrowserUrl" value="<?php echo $this->repoBrowserUrl;?>" />
+    </div>
+    <div>
+      <input type="submit" value="Save" />
+    </div>
+  </form>
+</div>

@@ -1,0 +1,50 @@
+div.itemsContainer {
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
+
+div.dateControlContainer {
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #d7d7d7;
+}
+
+input.dateSelect {
+  background: white url(../../../../statistics/public/images/calendar.png) no-repeat scroll 2px 1px;
+  border: 1px solid grey;
+  padding-left: 20px;
+  width: 120px;
+}
+
+#filterButton {
+  margin-left: 2px !important;
+}
+
+div.chartContainer {
+  width: 560px;
+  height: 360px;
+}
+
+span.infoItem {
+  color: #979797;
+}
+
+span.itemLinkNone {
+  color: #a5a5a5;
+  font-style: italic;
+}
+
+span.noPoints {
+  color: #909090;
+}
+
+.yMin,.yMax,.y2Min,.y2Max {
+  width: 70px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+div.bottomButtons {
+  margin-top: 15px;
+  float: right;
+}

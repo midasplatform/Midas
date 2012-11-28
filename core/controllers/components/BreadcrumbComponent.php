@@ -60,6 +60,9 @@ class BreadcrumbComponent extends AppComponent
         case 'user':
           $view->header .= $this->_createUserBreadcrumb($node, $view);
           break;
+        case 'moduleList':
+          $view->header .= $this->_createModuleListBreadcrumb($node, $view);
+          break;
         case 'custom':
         default:
           $view->header .= $this->_createCustomBreadcrumb($node, $view);
@@ -74,6 +77,7 @@ class BreadcrumbComponent extends AppComponent
    * Create a community breadcrumb from the node. Node should have the following keys:
    * -object The community dao from which to create the breadcrumb
    * -[link] (bool, default = true) Whether to render as a link or just text
+   * -[tab] Which tab anchor to go to if this is a link
    */
   protected function _createCommunityBreadcrumb($node, &$view)
     {
@@ -82,6 +86,7 @@ class BreadcrumbComponent extends AppComponent
       throw new Zend_Exception('Object must be a community to create community breadcrumb type');
       }
     $name = UtilityComponent::sliceName($node['object']->getName(), 25);
+    $anchor = isset($node['tab']) ? '#'.$node['tab'] : '';
     $str = '<li class="pathCommunity"><img alt="" src="'.$view->coreWebroot.'/public/images/icons/community.png" /><span>';
     if(isset($node['link']) && $node['link'] === false)
       {
@@ -89,7 +94,7 @@ class BreadcrumbComponent extends AppComponent
       }
     else
       {
-      $str .= '<a href="'.$view->webroot.'/community/'.$node['object']->getKey().'#tabs-3">'.$name.'</a>';
+      $str .= '<a href="'.$view->webroot.'/community/'.$node['object']->getKey().$anchor.'">'.$name.'</a>';
       }
     $str .= '</span></li>';
     return $str;
@@ -170,6 +175,18 @@ class BreadcrumbComponent extends AppComponent
       $str .= '<a href="'.$view->webroot.'/item/'.$node['object']->getKey().'">'.$name.'</a>';
       }
     $str .= '</span></li>';
+    return $str;
+    }
+
+  /**
+   * Create an item breadcrumb from the node. Node should have the following keys:
+   * -object The item dao from which to create the breadcrumb
+   * -[link] (bool, default = true) Whether to render as a link or just text
+   */
+  protected function _createModuleListBreadcrumb($node, &$view)
+    {
+    $str = '<li class="pathItem"><img alt="" src="'.$view->coreWebroot.'/public/images/icons/plugin.png" /><span>';
+    $str .= '<a href="'.$view->webroot.'/admin#tabs-modules">Modules</a></span></li>';
     return $str;
     }
 
