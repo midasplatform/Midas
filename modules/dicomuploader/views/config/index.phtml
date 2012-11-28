@@ -57,12 +57,12 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
             </div >
             <br />
             <br />
-            <div id='receptiondir'>
+            <div>
               <label for='receptiondir'>Temporary reception directory on local disk</label>
               {$this->configForm['receptiondir']}
             </div>
             <br />
-            <div id='pydas_dest_folder'>
+            <div>
               <label for='receptiondir'>Upload destination Midas folder</label>
               {$this->configForm['pydas_dest_folder']}
             </div>
@@ -115,5 +115,35 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
          <textarea id="apicall_failure_reason" rows="5" cols="80" readonly> </textarea>
       </div>
     </div>
+    In some platforms, the above start/stop buttons may not work because the web server user is lack of permissions. The following commands can be used to start/stop DICOM Uploader in command line.
+    <div class="manualCommandsWrapper" style="display: none">
+    <h3 class="sectionHeader"><a href="#">Start/Stop DICOM Uploader in command line</a></h3>
+    <ul>
+      <li>
+        Before start/stop DICOM uploader in command line, make sure the user to run the command:
+      </li>
+      <li>
+        1) has permission to run this command: <span class="set_bold" id="dcm2xml_command"/>
+      </li>
+      <li>
+        2) has permission to run this command: <span class="set_bold" id="storescp_command"/>
+      </li>
+      <li>
+        3) has write permission to this directory: <span class="set_bold" id="reception_dir"/>
+      </li>
+      <li>
+       If all above requirements are met, copy/paste the following commands to start/stop DIOCM Uploader in command line.
+       <span class="set_bold">Refresh the page to show the current running status if DIOCM Uploader is started/stopped in command line.</span>
+      </li>
+      <li class="manual_start">
+        <span class="set_bold" >Start DICOM Uploader:</span> <br/>
+        <span id="manual_start"></span>
+      </li>
+      <li class="manual_stop">
+        <span class="set_bold">Stop DICOM Uploader:</span> <br/>
+        <span id="manual_stop"></span>
+      </li>
+    </ul>
+  </div>
 
 </div>

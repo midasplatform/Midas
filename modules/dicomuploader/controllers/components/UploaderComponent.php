@@ -33,6 +33,17 @@ class Dicomuploader_UploaderComponent extends AppComponent
       $receptionDir = $this->getDefaultReceptionDir();
       }
     $ret['Temporary Reception Directory Writable'] = array(is_writable($receptionDir));
+    $apiComponent = MidasLoader::loadComponent('Api', 'dicomuploader');
+    $status_args['storescp_cmd']= 'storescp';
+    $status_results = $apiComponent->status($status_args);
+    if ($status_results['status'] == MIDAS_DICOM_UPLOADER_IS_RUNNING)
+      {
+      $ret['Status'] = array(true, MIDAS_DICOM_UPLOADER_IS_RUNNING);
+      }
+    else
+      {
+      $ret['Status'] = array(false, MIDAS_DICOM_UPLOADER_NOT_RUNNING);
+      }
 
     return $ret;
   }

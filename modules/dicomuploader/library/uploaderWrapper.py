@@ -41,7 +41,7 @@ def killUploader(application, cmd):
             continue
         elif process.find('python') == 0 or process.find(cmd) == 0 or shell_called_process.find(cmd) == 0:
             #Kill the Process. Change signal.SIGHUP to signal.SIGKILL if you like
-            os.kill(int(pid), signal.SIGHUP)
+            os.kill(int(pid), signal.SIGTERM)
             logger.info("killed this process -  %s" % line)
     logger.info("DICOM listener stopped")
 

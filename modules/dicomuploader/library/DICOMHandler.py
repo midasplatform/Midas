@@ -61,7 +61,7 @@ class DICOMListener(DICOMCommand):
         self.port = port
         self.studyTimeout = studyTimeout #seconds
         # start the server!
-        args = str(self.port) + ' -ac --eostudy-timeout ' + str(self.studyTimeout) \
+        args = str(self.port) + ' --eostudy-timeout ' + str(self.studyTimeout) \
             + ' --output-directory ' + self.incomingDir \
             + ' --sort-on-study-uid  \'\'' \
             + ' --exec-on-eostudy ' + self.onReceptionCallback

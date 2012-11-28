@@ -36,11 +36,10 @@ class Dicomuploader_ApiComponent extends AppComponent
    * @param dcm2xml_cmd (Optional) The command to run dcm2xml
    * @param storescp_cmd (Optional) The command to run storescp
    * @param storescp_port (Optional) The TCP/IP port that storescp listens to
-   * @param storescp_timeout(Optional)
-   *   study timeout (seconds) storescp uses as '--eostudy-timeout' argument
-   * @param incoming_dir(Optional)
-   *   The incoming directory to receive and process DICOM files
-   * @param dest_folder(Optional) pydas upload destination folder
+   * @param storescp_timeout (Optional) Study timeout (seconds) storescp uses as '--eostudy-timeout' argument
+   * @param incoming_dir (Optional) The incoming directory to receive and process DICOM files
+   * @param dest_folder (Optional) Pydas upload destination folder
+   * @param get_command (Optional) If set, will not start DICOM uplodaer, but only get command used to start DICOM uploader in command line.
    * @return
    */
   function start($args)
@@ -60,7 +59,8 @@ class Dicomuploader_ApiComponent extends AppComponent
       $status_args['storescp_cmd'] = $args['storescp_cmd'];
       }
     $running_status = $this->status($status_args);
-    if($running_status['status'] == MIDAS_DICOM_UPLOADER_IS_RUNNING)
+    if($running_status['status'] == MIDAS_DICOM_UPLOADER_IS_RUNNING &&
+      !array_key_exists('get_command', $args))
       {
       throw new Exception('DICOM uploader is already running. Please stop it first before start it again!', MIDAS_INVALID_POLICY);
       }
@@ -146,6 +146,11 @@ class Dicomuploader_ApiComponent extends AppComponent
     $storescp_params[] = '-a ' . $api_key;
     $storescp_params[] = '-d ' . $dest_folder;
     $storescp_command = KWUtils::prepareExeccommand($python_cmd, $storescp_params);
+    if(array_key_exists('get_command', $args))
+      {
+      $storescp_command_string = str_replace("'", "", $storescp_command);
+      return escapeshellarg($storescp_command_string);
+      }
     KWUtils::exec($storescp_command, $output, '', $returnVal);
     $ret = array();
     $ret['message'] = 'Execution of storescp start script succeeded!';
@@ -192,7 +197,7 @@ class Dicomuploader_ApiComponent extends AppComponent
         {
         $ret['status'] = MIDAS_DICOM_UPLOADER_IS_RUNNING;
         # need to be updated if python script is changed
-        $ret['user_email'] = $fields[22];
+        $ret['user_email'] = $fields[21];
         break;
         }
       }
@@ -203,8 +208,8 @@ class Dicomuploader_ApiComponent extends AppComponent
  /**
    * Stop DICOM file uploader
    * @param storescp_cmd (Optional) The command to run storescp
-   * @param incoming_dir(Optional)
-   *   The incoming directory to receive and process DICOM files
+   * @param incoming_dir (Optional) The incoming directory to receive and process DICOM files
+   * @param get_command (Optional) If set, will not stop DICOM uplodaer, but only get command used to stop DICOM uploader in command line.
    * @return
    */
   function stop($args)
@@ -218,7 +223,8 @@ class Dicomuploader_ApiComponent extends AppComponent
     $ret = array();
 
     $running_status = $this->status($args);
-    if($running_status['status'] == MIDAS_DICOM_UPLOADER_NOT_RUNNING)
+    if($running_status['status'] == MIDAS_DICOM_UPLOADER_NOT_RUNNING &&
+      !array_key_exists('get_command', $args))
       {
       $ret['message'] = 'DICOM uploader is not running now!';
       return $ret;
@@ -246,6 +252,11 @@ class Dicomuploader_ApiComponent extends AppComponent
     $storescp_params[] = '--stop';
     $storescp_params[] = '-i ' . $incoming_dir;
     $storescp_command = KWUtils::prepareExeccommand($python_cmd, $storescp_params);
+    if(array_key_exists('get_command', $args))
+      {
+      $storescp_command_string = str_replace("'", "", $storescp_command);
+      return escapeshellarg($storescp_command_string);
+      }
     KWUtils::exec($storescp_command, $output, '', $returnVal);
 
     $ret['message'] = 'Execution of storescp stop script succeeded!';
