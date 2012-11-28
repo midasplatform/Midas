@@ -132,6 +132,7 @@ class Tracker_ApiComponent extends AppComponent
     else if(isset($args['configItemName']))
       {
       $configItem = $this->_createOrFindByName($args['configItemName'], $community);
+      $configItemId = $configItem->getKey();
       if(!$configItem || !$itemModel->policyCheck($configItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on config item', 403);
@@ -150,7 +151,8 @@ class Tracker_ApiComponent extends AppComponent
     else if(isset($args['testDatasetName']))
       {
       $testDatasetItem = $this->_createOrFindByName($args['testDatasetName'], $community);
-      if(!$testDataset || !$itemModel->policyCheck($testDatasetItem, $user, MIDAS_POLICY_READ))
+      $testDatasetId = $testDatasetItem->getKey();
+      if(!$testDatasetItem || !$itemModel->policyCheck($testDatasetItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on test dataset item', 403);
         }
@@ -168,7 +170,8 @@ class Tracker_ApiComponent extends AppComponent
     else if(isset($args['truthDatasetName']))
       {
       $truthDatasetItem = $this->_createOrFindByName($args['truthDatasetName'], $community);
-      if(!$truthDataset || !$itemModel->policyCheck($truthDatasetItem, $user, MIDAS_POLICY_READ))
+      $truthDatasetId = $truthDatasetItem->getKey();
+      if(!$truthDatasetItem || !$itemModel->policyCheck($truthDatasetItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on truth dataset item', 403);
         }
@@ -240,7 +243,7 @@ class Tracker_ApiComponent extends AppComponent
     if(isset($args['configItemId']))
       {
       $configItemId = $args['configItemId'];
-      $configItem = $itemModel->load($args['configItemId']);
+      $configItem = $itemModel->load($configItemId);
       if(!$configItem || !$itemModel->policyCheck($configItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on config item', 403);
@@ -249,6 +252,7 @@ class Tracker_ApiComponent extends AppComponent
     else if(isset($args['configItemName']))
       {
       $configItem = $this->_createOrFindByName($args['configItemName'], $community);
+      $configItemId = $configItem->getKey();
       if(!$configItem || !$itemModel->policyCheck($configItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on config item', 403);
@@ -257,8 +261,8 @@ class Tracker_ApiComponent extends AppComponent
 
     if(isset($args['testDatasetId']))
       {
-      $truthDatasetId = $args['testDatasetId'];
-      $testDatasetItem = $itemModel->load($args['testDatasetId']);
+      $testDatasetId = $args['testDatasetId'];
+      $testDatasetItem = $itemModel->load($testDatasetId);
       if(!$testDatasetItem || !$itemModel->policyCheck($testDatasetItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on test dataset item', 403);
@@ -267,7 +271,8 @@ class Tracker_ApiComponent extends AppComponent
     else if(isset($args['testDatasetName']))
       {
       $testDatasetItem = $this->_createOrFindByName($args['testDatasetName'], $community);
-      if(!$testDataset || !$itemModel->policyCheck($testDatasetItem, $user, MIDAS_POLICY_READ))
+      $testDatasetId = $testDatasetItem->getKey();
+      if(!$testDatasetItem || !$itemModel->policyCheck($testDatasetItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on test dataset item', 403);
         }
@@ -276,7 +281,7 @@ class Tracker_ApiComponent extends AppComponent
     if(isset($args['truthDatasetId']))
       {
       $truthDatasetId = $args['truthDatasetId'];
-      $truthDatasetItem = $itemModel->load($args['truthDatasetId']);
+      $truthDatasetItem = $itemModel->load($truthDatasetId);
       if(!$truthDatasetItem || !$itemModel->policyCheck($truthDatasetItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on truth dataset item', 403);
@@ -285,7 +290,8 @@ class Tracker_ApiComponent extends AppComponent
     else if(isset($args['truthDatasetName']))
       {
       $truthDatasetItem = $this->_createOrFindByName($args['truthDatasetName'], $community);
-      if(!$truthDataset || !$itemModel->policyCheck($truthDatasetItem, $user, MIDAS_POLICY_READ))
+      $truthDatasetId = $truthDatasetItem->getKey();
+      if(!$truthDatasetItem || !$itemModel->policyCheck($truthDatasetItem, $user, MIDAS_POLICY_READ))
         {
         throw new Exception('Read permission required on truth dataset item', 403);
         }
