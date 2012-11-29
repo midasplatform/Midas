@@ -86,7 +86,10 @@ class Dicomuploader_ConfigController extends Dicomuploader_AppController
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }
-    $this->view->dashboard = $this->ModuleComponent->Uploader->isDICOMUploaderWorking();
+    $dashboard_array = $this->ModuleComponent->Uploader->isDICOMUploaderWorking();
+    // has shown status seperately; remove it from the dashboard to avoid redundancy
+    unset($dashboard_array['Status']);
+    $this->view->dashboard = $dashboard_array;
     }
 
 }//end class

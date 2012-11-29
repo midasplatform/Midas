@@ -37,6 +37,33 @@ midas.dicomuploader.start = function (email, apikey) {
     });
 };
 
+midas.dicomuploader.manualstart = function (email, apikey) {
+    'use strict';
+    var email_val  = typeof email !== 'undefined' ? email : '';
+    var apikey_val  = typeof email !== 'undefined' ? apikey : '';
+    var dcm2xml_val  = $(document).find('#dcm2xml').val();
+    var storescp_val  = $(document).find('#storescp').val();
+    var port_val  = $(document).find('#storescp_port').val();
+    var timeout_val  = $(document).find('#storescp_study_timeout').val();
+    var incoming_dir_val  = $(document).find('#receptiondir').val();
+    var dest_folder_val  = $(document).find('#pydas_dest_folder').val();
+    ajaxWebApi.ajax({
+        method: 'midas.dicomuploader.start',
+        args: 'email=' + email_val +
+              'apikey=' + apikey_val +
+              'dcm2xml_cmd=' + dcm2xml_val +
+              '&storescp_cmd=' + storescp_val +
+              '&storescp_port=' + port_val +
+              '&storescp_timeout=' + timeout_val +
+              '&incoming_dir' + incoming_dir_val +
+              '&dest_folder=' + dest_folder_val +
+              '&get_command=' + '',
+        success: function (retVal) {
+          $('span#manual_start').html(retVal.data);
+        }
+    });
+};
+
 midas.dicomuploader.stop = function () {
     'use strict';
     var storescp_val  = $(document).find('#storescp').val();
@@ -57,6 +84,21 @@ midas.dicomuploader.stop = function () {
         },
         complete: function() {
             midas.dicomuploader.checkStatus();
+        }
+    });
+};
+
+midas.dicomuploader.manualstop = function () {
+    'use strict';
+    var storescp_val  = $(document).find('#storescp').val();
+    var incoming_dir_val  = $(document).find('#receptiondir').val();
+    ajaxWebApi.ajax({
+        method: 'midas.dicomuploader.stop',
+        args: 'storescp_cmd=' + storescp_val +
+              '&incoming_dir' + incoming_dir_val +
+              '&get_command=' + '',
+        success: function (retVal) {
+          $('span#manual_stop').html(retVal.data);
         }
     });
 };
@@ -170,5 +212,22 @@ $(document).ready(function() {
         $('div#hideError').hide();
         $('div#apicall_failure').hide();
     });
+
+    $('.manualCommandsWrapper').accordion({
+        clearStyle: true,
+        collapsible: true,
+        active: false,
+        autoHeight: false,
+        change: function() {
+          var dcm2xml_val  = $(document).find('#dcm2xml').val();
+          var storescp_val  = $(document).find('#storescp').val();
+          var incoming_dir_val  = $(document).find('#receptiondir').val();
+          $('span#dcm2xml_command').html(dcm2xml_val);
+          $('span#storescp_command').html(storescp_val);
+          $('span#reception_dir').html(incoming_dir_val);
+          midas.dicomuploader.manualstart();
+          midas.dicomuploader.manualstop();
+        }
+    }).show();
 
 });

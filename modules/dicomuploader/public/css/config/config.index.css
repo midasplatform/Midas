@@ -3,7 +3,6 @@ span#running_status{
   color: #009900;
 }
 
-
 span#not_running_status{
   font-weight: bold;
   color: #C80000;
@@ -13,3 +12,12 @@ textarea#apicall_failure_reason{
   font-weight: bold;
   color: #C80000;
 }
+
+div.manualCommandsWrapper li {
+  margin: 10px 0px;
+}
+
+span.set_bold{
+  font-weight: bold;
+}
+
