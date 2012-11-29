@@ -93,6 +93,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
                 ->from($this->_name, array('config_item_id', 'test_dataset_id', 'truth_dataset_id'))
                 ->where('producer_id = ?', $producerDao->getKey())
                 ->distinct();
+    $itemModel = MidasLoader::loadModel('Item');
     $results = array();
     $rows = $this->database->fetchAll($sql);
     foreach($rows as $row)

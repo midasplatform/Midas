@@ -1,17 +1,32 @@
 div.producerInfoContainer {
   border-bottom: 1px solid #d7d7d7;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
 }
 
-div.producerData {
+div.producerData, div.datasetHeader {
   color: #777777;
+  margin-bottom: 6px;
 }
 
 div.sectionTitle {
   margin-bottom: 8px;
   color: #707070;
   font-size: 18px;
+}
+
+div.trendGroupContainer {
+  border-radius: 5px;
+  border: 1px solid #a7a7a7;
+  padding: 6px;
+}
+
+div.headerSeparator {
+  margin-top: 8px;
+  margin-bottom: 5px;
+  height: 1px;
+  background-color: #d7d7d7;
+  width: 100%;
 }
 
 div.trendContainer {

@@ -30,21 +30,25 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
     echo '<div class="trendGroupContainer">';
     if($trendGroup['configItem'])
       {
-      echo '<div class="datasetHeader">Configuration: ';
+      echo '<div class="datasetHeader"><b>Configuration:</b> ';
       echo '<a href='.$this->webroot.'/item/'.$trendGroup['configItem']->getKey().'>'.$trendGroup['configItem']->getName().'</a>';
       echo '</div>';
       }
     if($trendGroup['testDataset'])
       {
-      echo '<div class="datasetHeader">Test Data: ';
+      echo '<div class="datasetHeader"><b>Test Data:</b> ';
       echo '<a href='.$this->webroot.'/item/'.$trendGroup['testDataset']->getKey().'>'.$trendGroup['testDataset']->getName().'</a>';
       echo '</div>';
       }
     if($trendGroup['truthDataset'])
       {
-      echo '<div class="datasetHeader">Ground Truth Data: ';
+      echo '<div class="datasetHeader"><b>Ground Truth Data: </b>';
       echo '<a href='.$this->webroot.'/item/'.$trendGroup['truthDataset']->getKey().'>'.$trendGroup['truthDataset']->getName().'</a>';
       echo '</div>';
+      }
+    if($trendGroup['configItem'] || $trendGroup['testDataset'] || $trendGroup['truthDataset'])
+      {
+      echo '<div class="headerSeparator"></div>';
       }
   ?>
       <div class="producerTrendsContainer">
