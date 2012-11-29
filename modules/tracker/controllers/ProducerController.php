@@ -14,7 +14,7 @@ class Tracker_ProducerController extends Tracker_AppController
 {
   public $_components = array('Breadcrumb');
   public $_models = array('Community');
-  public $_moduleModels = array('Producer');
+  public $_moduleModels = array('Producer', 'Trend');
 
   /**
    * List all producers for a given community (in the tab). Requires read permission on community.
@@ -55,11 +55,11 @@ class Tracker_ProducerController extends Tracker_AppController
       throw new Zend_Exception('Read permission required on the community', 403);
       }
     $this->view->producer = $producer;
-    $this->view->trends = $producer->getTrends();
+    $this->view->trendGroups = $this->Tracker_Trend->getTrendsGroupByDatasets($producer);
     $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     $this->view->json['tracker']['producer'] = $producer;
 
-    $breadcrumbs = array(array('type' => 'community', 
+    $breadcrumbs = array(array('type' => 'community',
                                'object' => $comm,
                                'tab' => 'Trackers'));
     $breadcrumbs[] = array('type' => 'custom',
@@ -70,10 +70,24 @@ class Tracker_ProducerController extends Tracker_AppController
 
   /**
    * Delete a producer, deleting all trend data within it (requires community admin)
+   * @param producerId The id of the producer to delete
    */
   public function deleteAction()
     {
-    // TODO (include progress reporting)
+    $this->disableLayout();
+    $this->disableView();
+    $producerId = $this->_getParam('producerId');
+    if(!isset($producerId))
+      {
+      throw new Zend_Exception('Must pass producerId parameter');
+      }
+    $producer = $this->Tracker_Producer->load($producerId);
+    $comm = $producer->getCommunity();
+    if(!$producer || !$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception('Admin permission required on the community', 403);
+      }
+    $this->Tracker_Producer->delete($producer);
     }
 
   /**
@@ -143,5 +157,5 @@ class Tracker_ProducerController extends Tracker_AppController
     $this->Tracker_Producer->save($producer);
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved', 'producer' => $producer));
     }
-  
+
 }//end class

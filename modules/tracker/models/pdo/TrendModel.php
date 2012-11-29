@@ -25,6 +25,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
                           ->setIntegrityCheck(false)
                           ->where('producer_id = ?', $producerId)
                           ->where('metric_name = ?', $metricName);
+
     if($configItemId == null)
       {
       $sql->where('config_item_id IS NULL');
@@ -79,5 +80,62 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
       $scalars[] = $this->initDao('Scalar', $row, $this->moduleName);
       }
     return $scalars;
+    }
+
+  /**
+   * Return a list of all trends corresponding to the given producer.
+   * They will be grouped by distinct config/test/truth dataset combinations
+   */
+  public function getTrendsGroupByDatasets($producerDao)
+    {
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from($this->_name, array('config_item_id', 'test_dataset_id', 'truth_dataset_id'))
+                ->where('producer_id = ?', $producerDao->getKey())
+                ->distinct();
+    $results = array();
+    $rows = $this->database->fetchAll($sql);
+    foreach($rows as $row)
+      {
+      $configItem = $row['config_item_id'] == null ? null : $itemModel->load($row['config_item_id']);
+      $testDataset = $row['test_dataset_id'] == null ? null : $itemModel->load($row['test_dataset_id']);
+      $truthDataset = $row['truth_dataset_id'] == null ? null : $itemModel->load($row['truth_dataset_id']);
+      $result = array('configItem' => $configItem,
+                      'testDataset' => $testDataset,
+                      'truthDataset' => $truthDataset);
+      $result['trends'] = $this->getAllByParams(array('producer_id' => $producerDao->getKey(),
+                                                      'config_item_id' => $row['config_item_id'],
+                                                      'test_dataset_id' => $row['test_dataset_id'],
+                                                      'truth_dataset_id' => $row['truth_dataset_id']));
+      $results[] = $result;
+      }
+    return $results;
+    }
+
+  /**
+   * Return a set of daos that match the provided associative array of database columns and values
+   */
+  public function getAllByParams($params)
+    {
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false);
+    foreach($params as $column => $value)
+      {
+      if($value === null)
+        {
+        $sql->where($column.' IS NULL');
+        }
+      else
+        {
+        $sql->where($column.' = ?', $value);
+        }
+      }
+    $rows = $this->database->fetchAll($sql);
+    $trends = array();
+    foreach($rows as $row)
+      {
+      $trends[] = $this->initDao('Trend', $row, $this->moduleName);
+      }
+    return $trends;
     }
 }

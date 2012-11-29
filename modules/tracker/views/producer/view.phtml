@@ -22,19 +22,47 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
     <div class="producerData"><b>Executable:</b> <span class="executable"><?php echo $this->producer->getExecutableName();?></span></div>
   </div>
 
-  <div class="producerTrendsContainer">
-    <div class="sectionTitle">Trends (<?php echo count($this->trends);?>)</div>
-      <?php
-      foreach($this->trends as $trend)
-        {
-        echo '<div class="trendContainer">';
-        echo '<input type="checkbox" class="selectTrend" element="'.$trend->getKey().'" />';
-        echo '<a class="trendLink" href="'.$this->webroot.'/tracker/trend/view?trendId='.$trend->getKey().'">';
-        echo $trend->getDisplayName().'</a>'; 
-        echo '</div>';
-        }
-      ?>
-  </div>
+  <div class="sectionTitle">Trends</div>
+  
+  <?php
+  foreach($this->trendGroups as $trendGroup)
+    {
+    echo '<div class="trendGroupContainer">';
+    if($trendGroup['configItem'])
+      {
+      echo '<div class="datasetHeader">Configuration: ';
+      echo '<a href='.$this->webroot.'/item/'.$trendGroup['configItem']->getKey().'>'.$trendGroup['configItem']->getName().'</a>';
+      echo '</div>';
+      }
+    if($trendGroup['testDataset'])
+      {
+      echo '<div class="datasetHeader">Test Data: ';
+      echo '<a href='.$this->webroot.'/item/'.$trendGroup['testDataset']->getKey().'>'.$trendGroup['testDataset']->getName().'</a>';
+      echo '</div>';
+      }
+    if($trendGroup['truthDataset'])
+      {
+      echo '<div class="datasetHeader">Ground Truth Data: ';
+      echo '<a href='.$this->webroot.'/item/'.$trendGroup['truthDataset']->getKey().'>'.$trendGroup['truthDataset']->getName().'</a>';
+      echo '</div>';
+      }
+  ?>
+      <div class="producerTrendsContainer">
+          <?php
+          foreach($trendGroup['trends'] as $trend)
+            {
+            echo '<div class="trendContainer">';
+            echo '<input type="checkbox" class="selectTrend" element="'.$trend->getKey().'" />';
+            echo '<a class="trendLink" href="'.$this->webroot.'/tracker/trend/view?trendId='.$trend->getKey().'">';
+            echo $trend->getDisplayName().'</a>'; 
+            echo '</div>';
+            }
+          ?>
+      </div>
+    </div>
+  <?php
+    }
+  ?>
 </div>
 
 <div class="viewSideBar">
