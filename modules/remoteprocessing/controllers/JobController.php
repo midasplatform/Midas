@@ -30,8 +30,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     {
     if(!$this->logged)
       {
-      $this->haveToBeLogged();
-      return false;
+      throw new Zend_Exception('Must be logged in', 403);
       }
     $this->view->header = $this->t("Manage Your Jobs");
 
@@ -44,11 +43,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
   function initAction()
     {
     $this->view->header = $this->t("Create Job Wizard");
-    if(!$this->logged)
-      {
-      $this->haveToBeLogged();
-      return false;
-      }
+
     $scheduled = $this->_getParam("scheduled");
     if(isset($scheduled))
       {
@@ -84,11 +79,11 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       $itemDao = $this->Item->load($itemId);
       if($itemDao === false)
         {
-        throw new Zend_Exception("This item doesn't exist.");
+        throw new Zend_Exception("This item doesn't exist.", 404);
         }
       if(!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
         {
-        throw new Zend_Exception("Problem policies.");
+        throw new Zend_Exception("Write permission required", 403);
         }
 
       $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);

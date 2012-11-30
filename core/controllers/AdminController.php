@@ -56,11 +56,6 @@ class AdminController extends AppController
   /** run a task **/
   function taskAction()
     {
-    if(!$this->logged)
-      {
-      $this->haveToBeLogged();
-      return false;
-      }
     $this->requireAdminPrivileges();
 
     $task = $this->_getParam("task");
@@ -89,11 +84,6 @@ class AdminController extends AppController
   /** index*/
   function indexAction()
     {
-    if(!$this->logged)
-      {
-      $this->haveToBeLogged();
-      return false;
-      }
     $this->requireAdminPrivileges();
     $this->view->header = "Administration";
     $configForm = $this->Form->Admin->createConfigForm();
@@ -579,11 +569,6 @@ class AdminController extends AppController
    */
   function serversidefilechooserAction()
     {
-    if(!$this->logged)
-      {
-      $this->haveToBeLogged();
-      return false;
-      }
     $this->requireAdminPrivileges();
 
     $this->_helper->layout->disableLayout();
@@ -647,11 +632,6 @@ class AdminController extends AppController
    */
   function migratemidas2Action()
     {
-    if(!$this->logged)
-      {
-      $this->haveToBeLogged();
-      return false;
-      }
     $this->requireAdminPrivileges();
 
     $this->assetstores = $this->Assetstore->getAll();
