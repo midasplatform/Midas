@@ -3,7 +3,8 @@ $("#moveTable").treeTable({
     callbackDblClick: selectFolderCallbackDblClick,
     callbackReloadNode: selectFolderCallbackReloadNode,
     callbackCheckboxes: selectFolderCallbackCheckboxes,
-    callbackCustomElements: selectFolderCallbackCustomElements
+    callbackCustomElements: selectFolderCallbackCustomElements,
+    pageLength: 99999 // do not page this table (preserves old functionality)
 });
 $("div.MainDialogContent img.tableLoading").hide();
 $("table#moveTable").show();

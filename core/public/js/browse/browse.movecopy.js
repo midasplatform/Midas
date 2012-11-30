@@ -49,17 +49,16 @@ midas.browse.moveCopyCallbackCheckboxes = function (node) {
 
 midas.browse.moveCopyCallbackCustomElements = function (node,elements,first) {
     var i = 1;
-    var id=node.attr('id');
+    var id = node.attr('id');
     elements['folders'] = jQuery.makeArray(elements['folders']);
     var padding=parseInt(node.find('td:first').css('padding-left').slice(0,-2));
     var html='';
-    $.each(elements['folders'],
-        function(index, value) {
-            html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
-            html+= "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";
-            html+= "</tr>";
-            i++;
-        });
+    $.each(elements.folders, function(index, value) {
+        html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
+        html+= "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";
+        html+= "</tr>";
+        i++;
+    });
     return html;
 };
 
@@ -73,7 +72,8 @@ $(document).ready(function () {
         callbackSelect: midas.browse.moveCopyCallbackSelect,
         callbackCheckboxes: midas.browse.moveCopyCallbackCheckboxes,
         callbackDblClick: midas.browse.moveCopyCallbackDblClick,
-        callbackCustomElements: midas.browse.moveCopyCallbackCustomElements
+        callbackCustomElements: midas.browse.moveCopyCallbackCustomElements,
+        pageLength: 99999 // do not page this table (preserves old functionality)
     });
     $("img.tableLoading").hide();
     $("table#moveCopyTable").show();
