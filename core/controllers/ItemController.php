@@ -598,7 +598,11 @@ class ItemController extends AppController
     $mainItem = $this->Item->mergeItems($itemIds, $name,
                                         $this->userSession->Dao, $this->progressDao);
 
-    if(!$this->_request->isXmlHttpRequest())
+    if($this->_request->isXmlHttpRequest())
+      {
+      echo JsonComponent::encode(array('redirect' => $this->view->webroot.'/item/'.$mainItem->getKey()));
+      }
+    else
       {
       $this->_redirect('/item/'.$mainItem->getKey());
       }

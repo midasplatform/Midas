@@ -149,8 +149,13 @@ midas.genericCallbackCheckboxes = function(node) {
                       name: $('#mergeItemName').val()
                   },
                   function (data) {
-                      midas.createNotice('Successfully merged items', 3000);
-                      $('div.MainDialog').dialog('close');
+                      var resp = $.parseJSON(data);
+                      if(!resp || !resp.redirect) {
+                          midas.createNotice('An error occurred. Please check the logs', 3000, 'error');
+                      }
+                      else {
+                          window.location = resp.redirect;
+                      }
                   }
                 );
             });
