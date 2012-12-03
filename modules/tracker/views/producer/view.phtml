@@ -1,0 +1,98 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/producer.view.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/producer/producer.view.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+
+<div class="viewMain">
+  <div class="producerInfoContainer">
+    <div class="sectionTitle">Producer Information</div>
+    <div class="producerData"><b>Description:</b> <span class="description"><?php echo $this->producer->getDescription();?></span></div>
+    <div class="producerData"><b>Repository:</b> <span class="repository"><?php echo $this->producer->getRepository();?></span></div>
+    <div class="producerData"><b>Executable:</b> <span class="executable"><?php echo $this->producer->getExecutableName();?></span></div>
+  </div>
+
+  <div class="sectionTitle">Trends</div>
+  
+  <?php
+  foreach($this->trendGroups as $trendGroup)
+    {
+    echo '<div class="trendGroupContainer">';
+    if($trendGroup['configItem'])
+      {
+      echo '<div class="datasetHeader"><b>Configuration:</b> ';
+      echo '<a href='.$this->webroot.'/item/'.$trendGroup['configItem']->getKey().'>'.$trendGroup['configItem']->getName().'</a>';
+      echo '</div>';
+      }
+    if($trendGroup['testDataset'])
+      {
+      echo '<div class="datasetHeader"><b>Test Data:</b> ';
+      echo '<a href='.$this->webroot.'/item/'.$trendGroup['testDataset']->getKey().'>'.$trendGroup['testDataset']->getName().'</a>';
+      echo '</div>';
+      }
+    if($trendGroup['truthDataset'])
+      {
+      echo '<div class="datasetHeader"><b>Ground Truth Data: </b>';
+      echo '<a href='.$this->webroot.'/item/'.$trendGroup['truthDataset']->getKey().'>'.$trendGroup['truthDataset']->getName().'</a>';
+      echo '</div>';
+      }
+    if($trendGroup['configItem'] || $trendGroup['testDataset'] || $trendGroup['truthDataset'])
+      {
+      echo '<div class="headerSeparator"></div>';
+      }
+  ?>
+      <div class="producerTrendsContainer">
+          <?php
+          foreach($trendGroup['trends'] as $trend)
+            {
+            echo '<div class="trendContainer">';
+            echo '<input type="checkbox" class="selectTrend" element="'.$trend->getKey().'" />';
+            echo '<a class="trendLink" href="'.$this->webroot.'/tracker/trend/view?trendId='.$trend->getKey().'">';
+            echo $trend->getDisplayName().'</a>'; 
+            echo '</div>';
+            }
+          ?>
+      </div>
+    </div>
+  <?php
+    }
+  ?>
+</div>
+
+<div class="viewSideBar">
+  <div class="sideElementFirst viewAction">
+    <h1>Actions</h1>
+    <ul>
+    <?php if($this->isAdmin)
+      {
+    ?>
+      <li>
+        <a class="editProducerInfo">
+          <img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/edit.png"/> Edit
+        </a>
+      </li>
+      <li>
+        <a class="deleteProducer"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/close.png"/> Delete</a>
+      </li>
+    <?php
+      }
+    ?>
+      <li>
+        <a style="display: none;" class="visualizeSelected"><img alt="" src="<?php echo $this->moduleWebroot?>/public/images/chart_line.png"/> Plot selected (<span class="selectedTrendCount"></span>)</a>
+      </li>
+      <li>
+        <a style="display: none;" class="visualizeDualAxis"><img alt="" src="<?php echo $this->moduleWebroot?>/public/images/chart_line.png"/> Dual axis plot</a>
+      </li>
+    </ul>
+  </div>
+</div>

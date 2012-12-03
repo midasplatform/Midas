@@ -1,0 +1,62 @@
+div.producerInfoContainer {
+  border-bottom: 1px solid #d7d7d7;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+}
+
+div.producerData, div.datasetHeader {
+  color: #777777;
+  margin-bottom: 6px;
+}
+
+div.sectionTitle {
+  margin-bottom: 8px;
+  color: #707070;
+  font-size: 18px;
+}
+
+div.trendGroupContainer {
+  border-radius: 5px;
+  border: 1px solid #a7a7a7;
+  padding: 6px;
+  margin-bottom: 15px;
+}
+
+div.headerSeparator {
+  margin-top: 8px;
+  margin-bottom: 5px;
+  height: 1px;
+  background-color: #d7d7d7;
+  width: 100%;
+}
+
+div.trendContainer {
+  font-size: 14px;
+  color: #56758b;
+  margin-bottom: 2px;
+}
+
+div.trendContainer input[type="checkbox"] {
+  position: relative;
+  top: 1px;
+}
+
+a.trendLink {
+  color: #56758b !important;
+  font-weight: bold !important;
+  display: inline-block;
+  width: 90%;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 3px;
+}
+
+a.trendLink:hover {
+  text-decoration: none !important;
+  color: #16354b;
+  background-color: #e5e5e5;
+}
+
+input.selectTrend {
+  display: inline;
+}
