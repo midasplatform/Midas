@@ -558,19 +558,18 @@ class UtilityComponent extends AppComponent
    * Send an email.  This wraps the mail() function and adds our default headers and puts the
    * text into a template.
    */
-  public static function sendEmail($emailAddress, $subject, $text)
+  public static function sendEmail($email, $subject, $text)
     {
-    $from = 'Midas ('.self::getServerURL().')';
-    $headers = "From: ".$from."\nReply-To: no-reply\nX-Mailer: PHP/".phpversion()."\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
+    $headers = "From: Midas\nReply-To: no-reply\nX-Mailer: PHP/".phpversion()."\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
     $text .= '<br/><br/>--<br/>This is an auto-generated message from the Midas system. Please do not reply to this email.';
 
     if(Zend_Registry::get('configGlobal')->environment == 'testing' || mail($email, $subject, $text, $headers))
       {
-      $this->getLogger()->info('Sent email to '.$email.' with subject '.$subject);
+      self::getLogger()->info('Sent email to '.$email.' with subject '.$subject);
       }
     else
       {
-      $this->getLogger()->crit('Error sending email to '.$email.' with subject '.$subject);
+      self::getLogger()->crit('Error sending email to '.$email.' with subject '.$subject);
       }
     }
 
