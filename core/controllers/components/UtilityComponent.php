@@ -555,6 +555,49 @@ class UtilityComponent extends AppComponent
     }
 
   /**
+   * Send an email.  This wraps the mail() function and adds our default headers and puts the
+   * text into a template.
+   */
+  public static function sendEmail($emailAddress, $subject, $text)
+    {
+    $from = 'Midas ('.self::getServerURL().')';
+    $headers = "From: ".$from."\nReply-To: no-reply\nX-Mailer: PHP/".phpversion()."\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
+    $text .= '<br/><br/>--<br/>This is an auto-generated message from the Midas system. Please do not reply to this email.';
+
+    if(Zend_Registry::get('configGlobal')->environment == 'testing' || mail($email, $subject, $text, $headers))
+      {
+      $this->getLogger()->info('Sent email to '.$email.' with subject '.$subject);
+      }
+    else
+      {
+      $this->getLogger()->crit('Error sending email to '.$email.' with subject '.$subject);
+      }
+    }
+
+  /**
+   * Get the hostname for this instance
+   */
+  public static function getServerURL()
+    {
+    if(Zend_Registry::get('configGlobal')->environment == 'testing')
+      {
+      return 'http://localhost';
+      }
+    $currentPort = "";
+    $prefix = "http://";
+
+    if($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)
+      {
+      $currentPort = ":".$_SERVER['SERVER_PORT'];
+      }
+    if($_SERVER['SERVER_PORT'] == 443 || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])))
+      {
+      $prefix = "https://";
+      }
+    return $prefix.$_SERVER['SERVER_NAME'].$currentPort;
+    }
+
+  /**
    * Generate a string of random characters. Seeds RNG within the function using microtime.
    * @param $length The length of the random string
    * @param $alphabet (Optional) The alphabet string; if none provided, uses base64
