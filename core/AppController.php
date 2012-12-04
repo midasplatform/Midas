@@ -448,22 +448,7 @@ class AppController extends MIDAS_GlobalController
   /** get server's url */
   function getServerURL()
     {
-    if($this->isTestingEnv())
-      {
-      return 'http://localhost';
-      }
-    $currentPort = "";
-    $prefix = "http://";
-
-    if($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)
-      {
-      $currentPort = ":".$_SERVER['SERVER_PORT'];
-      }
-    if($_SERVER['SERVER_PORT'] == 443 || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])))
-      {
-      $prefix = "https://";
-      }
-    return $prefix.$_SERVER['SERVER_NAME'].$currentPort;
+    return UtilityComponent::getServerURL();
     }
 
   /** check if testing environement is set */
