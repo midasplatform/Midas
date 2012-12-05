@@ -113,6 +113,10 @@ class AdminControllerTest extends ControllerTestCase
     $this->dispatchUrI('/admin/dashboard', $adminUser);
     $this->assertController('admin');
     $this->assertAction('dashboard');
+
+    // Test integrity check action
+    $this->resetAll();
+    $this->dispatchUrI('/admin/integritycheck', $adminUser);
     }
 
   /**
