@@ -1,12 +1,30 @@
 var midas = midas || {};
 midas.admin = midas.admin || {};
+midas.admin.integrityComputed = false;
+
+midas.admin.computeDbIntegrity = function (event, ui) {
+    if(midas.admin.integrityComputed) {
+        return;
+    }
+    midas.admin.integrityComputed = true;
+    $.post(json.global.webroot+'/admin/integritycheck', {}, function (resp) {
+        $('div.integrityLoading').hide();
+        $('div.integrityList').show();
+        var json = $.parseJSON(resp);
+        $('span.nFolder').html(json.nOrphanedFolders);
+        $('span.nItem').html(json.nOrphanedItems);
+        $('span.nItemRevision').html(json.nOrphanedRevisions);
+        $('span.nBitstream').html(json.nOrphanedBitstreams);
+    });
+};
 
 $(document).ready(function () {
     $('.databaseIntegrityWrapper').accordion({
         clearStyle: true,
         collapsible: true,
         active: false,
-        autoHeight: false
+        autoHeight: false,
+        change: midas.admin.computeDbIntegrity
     }).show();
     $('button.removeOrphans').click(function () {
         var html = '<div id="cleanupProgress"></div>';

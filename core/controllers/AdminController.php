@@ -465,23 +465,38 @@ class AdminController extends AppController
     return;
     }
 
-  /** function dashboard*/
+  /** admin dashboard view */
   function dashboardAction()
     {
     $this->requireAdminPrivileges();
     $this->disableLayout();
 
-    $this->view->nOrphanedFolders = $this->Folder->countOrphans();
-    $this->view->nOrphanedItems = $this->Item->countOrphans();
-    $this->view->nOrphanedRevisions = $this->ItemRevision->countOrphans();
-    $this->view->nOrphanedBitstreams = $this->Bitstream->countOrphans();
-    // TODO: number of orphaned thumbnail records?
-
-    $this->view->moduleIntegrityChecks = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_DATABASE_INTEGRITY_CHECKS');
     $this->view->dashboard = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_DASHBOARD');
 
     ksort($this->view->dashboard);
-    }//end dashboardAction
+    }
+
+  /** Ajax action for performing tree integrity checks */
+  function integritycheckAction()
+    {
+    $this->requireAdminPrivileges();
+    $this->disableLayout();
+    $this->disableView();
+
+    $nOrphanedFolders = $this->Folder->countOrphans();
+    $nOrphanedItems = $this->Item->countOrphans();
+    $nOrphanedRevisions = $this->ItemRevision->countOrphans();
+    $nOrphanedBitstreams = $this->Bitstream->countOrphans();
+    // TODO: number of orphaned thumbnail records?
+
+    $moduleIntegrityChecks = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_DATABASE_INTEGRITY_CHECKS');
+
+    echo JsonComponent::encode(array('nOrphanedFolders' => $nOrphanedFolders,
+                                     'nOrphanedItems' => $nOrphanedItems,
+                                     'nOrphanedRevisions' => $nOrphanedRevisions,
+                                     'nOrphanedBitstreams' => $nOrphanedBitstreams,
+                                     'moduleIntegrityChecks' => $moduleIntegrityChecks));
+    }
 
   /**
    * This will delete all orphaned items and folders from the instance.

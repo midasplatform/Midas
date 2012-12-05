@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -42,28 +42,36 @@ PURPOSE.  See the above copyright notices for more information.
 
   <div class="databaseIntegrityWrapper" style="display: none">
     <h3 class="sectionHeader"><a href="#">Database Integrity</a></h3>
-    <ul>
-      <li class="integrityItem">
-        <span>Number of orphaned folders:</span>
-        <span class="nFolder"><?php echo $this->nOrphanedFolders?></span>
-        <span class="integrityButton"><button element="Folder" class="removeOrphans">Clean</button></span>
-      </li>
-    <li class="integrityItem">
-      <span>Number of orphaned items:</span>
-      <span class="nItem"><?php echo $this->nOrphanedItems?></span>
-      <span class="integrityButton"><button element="Item" class="removeOrphans">Clean</button></span>
-    </li>
-    <li class="integrityItem">
-      <span>Number of orphaned revisions:</span>
-      <span class="nItemRevision"><?php echo $this->nOrphanedRevisions?></span>
-      <span class="integrityButton"><button element="ItemRevision" class="removeOrphans">Clean</button></span>
-    </li>
-    <li class="integrityItem">
-      <span>Number of orphaned bitstreams:</span>
-      <span class="nBitstream"><?php echo $this->nOrphanedBitstreams?></span>
-      <span class="integrityButton"><button element="Bitstream" class="removeOrphans">Clean</button></span>
-    </li>
-  </ul>
+    <div>
+      <div class="integrityLoading">
+        <img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+        Computing database integrity. This may take several minutes...
+      </div>
+      <div class="integrityList" style="display: none">
+        <ul>
+          <li class="integrityItem">
+            <span>Number of orphaned folders:</span>
+            <span class="nFolder"></span>
+            <span class="integrityButton"><button element="Folder" class="removeOrphans">Clean</button></span>
+          </li>
+          <li class="integrityItem">
+            <span>Number of orphaned items:</span>
+            <span class="nItem"></span>
+            <span class="integrityButton"><button element="Item" class="removeOrphans">Clean</button></span>
+          </li>
+          <li class="integrityItem">
+            <span>Number of orphaned revisions:</span>
+            <span class="nItemRevision"></span>
+            <span class="integrityButton"><button element="ItemRevision" class="removeOrphans">Clean</button></span>
+          </li>
+          <li class="integrityItem">
+            <span>Number of orphaned bitstreams:</span>
+            <span class="nBitstream"></span>
+            <span class="integrityButton"><button element="Bitstream" class="removeOrphans">Clean</button></span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 
 </div>
