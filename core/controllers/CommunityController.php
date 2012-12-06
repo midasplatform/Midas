@@ -267,11 +267,13 @@ class CommunityController extends AppController
     if($this->logged && $this->userSession->Dao->isAdmin())
       {
       $communities = $this->Community->getAll();
+      $this->view->siteAdmin = true;
       }
     else
       {
       $communities = $this->User->getUserCommunities($this->userSession->Dao);
       $communities = array_merge($communities, $this->Community->getPublicCommunities());
+      $this->view->siteAdmin = false;
       }
 
     $this->Component->Sortdao->field = 'name';
@@ -576,10 +578,7 @@ class CommunityController extends AppController
   /** Create a community (ajax)*/
   function createAction()
     {
-    if(!$this->logged)
-      {
-      throw new Zend_Exception("You have to be logged in to do that");
-      }
+    $this->requireAdminPrivileges();
     $form = $this->Form->Community->createCreateForm();
     if($this->_request->isPost() && $form->isValid($this->getRequest()->getPost()))
       {
@@ -588,12 +587,11 @@ class CommunityController extends AppController
       $privacy = $form->getValue('privacy');
       $canJoin = $form->getValue('canJoin');
       $communityDao = $this->Community->createCommunity($name, $description, $privacy, $this->userSession->Dao, $canJoin);
-      $this->_redirect("/community/".$communityDao->getKey());
+      $this->_redirect('/community/'.$communityDao->getKey());
       }
     else
       {
-      $this->requireAjaxRequest();
-      $this->_helper->layout->disableLayout();
+      $this->disableLayout();
       $this->view->form = $this->getFormAsArray($form);
       }
     }//end create
