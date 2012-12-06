@@ -82,10 +82,12 @@ div.viewSideBar div.sideElement,div.viewSideBar div.sideElementActions,div.viewS
   padding-top: 3px;
   padding-bottom: 10px;
   border-bottom: 1px solid #DAD8D4;
+  border-top: none !important;
 }
 
 div.viewSideBar div.sideElementLast{
   border-bottom:none !important;
+  border-top: none !important;
   padding-top: 5px;
   padding-bottom: 10px;
 }
