@@ -1518,7 +1518,7 @@ class Api_ApiComponent extends AppComponent
    * @param name The name of the item to create
    * @param description (Optional) The description of the item
    * @param uuid (Optional) Uuid of the item. If none is passed, will generate one.
-   * @param privacy (Optional) Default 'Public', possible values [Public|Private].
+   * @param privacy (Optional) [Public|Private], default will inherit from parent folder
    * @param updatebitstream (Optional) If set, the bitstream's name will be updated
       simultaneously with the item's name if and only if the item has already
       existed and its latest revision contains only one bitstream.
@@ -1616,11 +1616,6 @@ class Api_ApiComponent extends AppComponent
         {
         $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
         $this->_setItemPrivacy($item, $privacyCode);
-        }
-      else
-        {
-        // explicitly set to Public
-        $this->_setItemPrivacy($item, MIDAS_PRIVACY_PUBLIC);
         }
 
       return $item->toArray();
