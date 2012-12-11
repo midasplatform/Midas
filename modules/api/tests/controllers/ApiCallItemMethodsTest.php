@@ -865,8 +865,8 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $itemDao = $this->Item->load($generatedItemId);
     $this->assertEquals($itemDao->getName(), $this->params['name'], 'Item name is not set correctly');
     $this->assertEquals($itemDao->getDescription(), '', 'Item name is not set correctly');
-    // test the default privacy is Public
-    $this->assertPrivacyStatus(array(), array($itemDao), MIDAS_PRIVACY_PUBLIC);
+    // default privacy should inherit from parents, so no public read access
+    $this->assertPrivacyStatus(array(), array($itemDao), MIDAS_PRIVACY_PRIVATE);
 
     // delete the first created one via the api
     $this->resetAll();
