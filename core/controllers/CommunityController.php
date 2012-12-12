@@ -240,8 +240,6 @@ class CommunityController extends AppController
     $this->view->userPersonalItems = $this->Folder->getItemsFiltered($this->view->userPersonalmainFolder, $this->userSession->Dao, MIDAS_POLICY_READ);
 
     $this->view->isAdmin = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
-    $this->view->privateFolderId = $communityDao->getPrivatefolderId();
-    $this->view->publicFolderId = $communityDao->getPublicfolderId();
     $this->view->json['community'] = $communityDao->toArray();
     $this->view->json['community']['moderatorGroup'] = $moderator_group->toArray();
     $this->view->json['community']['memberGroup'] = $group_member->toArray();
@@ -352,8 +350,6 @@ class CommunityController extends AppController
       }
     $this->view->isModerator = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_WRITE);
     $this->view->isAdmin = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
-    $this->view->privateFolderId = $communityDao->getPrivatefolderId();
-    $this->view->publicFolderId = $communityDao->getPublicfolderId();
     $this->view->json['community'] = $communityDao->toArray();
     $this->view->json['community']['sendInvitation'] = $this->t('Send invitation');
 

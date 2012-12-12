@@ -89,8 +89,8 @@ class UploadController extends AppController
     $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
     $this->view->allLicenses = $this->License->getAll();
 
-    $this->view->defaultUploadLocation = $this->userSession->Dao->getPrivatefolderId();
-    $this->view->defaultUploadLocationText = $this->t('My Private Folder');
+    $this->view->defaultUploadLocation = '';
+    $this->view->defaultUploadLocationText = 'You must select a folder';
 
     $parent = $this->_getParam('parent');
     if(isset($parent))
@@ -104,7 +104,7 @@ class UploadController extends AppController
       }
     else
       {
-      $parent = $this->Folder->load($this->userSession->Dao->getPrivatefolderId());
+      $parent = null;
       }
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', array('folder' => $parent));
     }//end simple upload
@@ -140,8 +140,8 @@ class UploadController extends AppController
       }
     $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
     $this->view->allLicenses = $this->License->getAll();
-    $this->view->defaultUploadLocation = $this->userSession->Dao->getPrivatefolderId();
-    $this->view->defaultUploadLocationText = $this->t('My Private Folder');
+    $this->view->defaultUploadLocation = '';
+    $this->view->defaultUploadLocationText = $this->t('You must select a folder');
 
     $parent = $this->_getParam('parent');
     $license = $this->_getParam('license');
@@ -162,7 +162,7 @@ class UploadController extends AppController
       }
     else
       {
-      $folder = $this->Folder->load($this->userSession->Dao->getPrivatefolderId());
+      $folder = null;
       }
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_JAVAUPLOAD_EXTRA_HTML',
                                                                       array('folder' => $folder));
@@ -371,12 +371,7 @@ class UploadController extends AppController
       }
     else
       {
-      $parentId = $this->userSession->Dao->getPrivatefolderId();
-      $folder = $this->Folder->load($parentId);
-      if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
-        {
-        throw new Zend_Exception('Write permissions required');
-        }
+      throw new Zend_Exception('Parent folderId or itemId must be set.');
       }
 
     $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
@@ -430,7 +425,7 @@ class UploadController extends AppController
       }
     else
       {
-      $expectedParentId = $this->userSession->Dao->getPrivatefolderId();
+      throw new Zend_Exception('You must set a parentId parameter or java session variable');
       }
 
     if($parentId != $expectedParentId)
@@ -765,12 +760,11 @@ class UploadController extends AppController
     {
     if($this->userSession->JavaUpload->parent)
       {
-      $expectedParentId = $this->userSession->JavaUpload->parent;
+      $this->_redirect('/folder/'.$this->userSession->JavaUpload->parent);
       }
     else
       {
-      $expectedParentId = $this->userSession->Dao->getPrivatefolderId();
+      $this->redirect('/community/');
       }
-    $this->_redirect('/folder/'.$expectedParentId);
     }
 }//end class

@@ -1082,7 +1082,7 @@ class FolderModel extends FolderModelBase
 
   /**
    * Returns whether the folder is able to be deleted.
-   * Any folder can be deleted unless it is a base, Public, or Private Folder
+   * Any folder can be deleted unless it is a base Folder
    * of a User or Community.
    */
   function isDeleteable($folder)
@@ -1094,18 +1094,14 @@ class FolderModel extends FolderModelBase
     $id = $folder->getFolderId();
     if($this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
                                       ->from('community')
-                                      ->where('folder_id=?', $id)
-                                      ->orwhere('publicfolder_id=?', $id)
-                                      ->orwhere('privatefolder_id=?', $id)))
+                                      ->where('folder_id=?', $id)))
       {
       return false;
       }
 
     if($this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
                                       ->from('user')
-                                      ->where('folder_id=?', $id)
-                                      ->orwhere('publicfolder_id=?', $id)
-                                      ->orwhere('privatefolder_id=?', $id)))
+                                      ->where('folder_id=?', $id)))
       {
       return false;
       }

@@ -264,7 +264,7 @@
                     privacyClass = 'Private';
                 }
 
-                html += "<tr id='"+id+"-"+i+"' deletable='"+value.deletable+"' privacy='"+value.privacy_status+"' class='parent child-of-"+id+"' type='folder' policy='"+value.policy+"' element='"+value.folder_id+"'>";
+                html += "<tr id='"+id+"-"+i+"' privacy='"+value.privacy_status+"' class='parent child-of-"+id+"' type='folder' policy='"+value.policy+"' element='"+value.folder_id+"'>";
                 html += "  <td><span class='folder"+privacyClass+drag_option+"'>"+sliceFileName(value.name, sliceValue)+"</span></td>";
                 html += "  <td><img class='folderLoading' element='"+value.folder_id+"' alt='' src='"+json.global.coreWebroot+"/public/images/icons/loading.gif'/></td>";
                 html += "  <td>"+value.date_update+"</td>";
@@ -365,7 +365,7 @@
                 for(var folderIndex in children[key].folders) {
                     var folder = children[key].folders[folderIndex];
                     var privacyClass = folder.privacy_status == 0 ? 'Public' : 'Private';
-                    var row = '<tr id="node--'+index+'" policy="'+folder.policy+'" deletable="false" class="parent" privacy="'+
+                    var row = '<tr id="node--'+index+'" policy="'+folder.policy+'" class="parent" privacy="'+
                               folder.privacy_status+'" type="folder" element="'+folder.folder_id+'">';
                     row += '<td class="treeBrowseElement"><span class="folder'+privacyClass+'">'+sliceFileName(folder.name,43)+'</span></td>';
                     row += '<td><img class="folderLoading" element="'+folder.folder_id+'" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/></td>';

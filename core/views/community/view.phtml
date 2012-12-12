@@ -140,16 +140,8 @@ $strippedDescription = strip_tags($description);
             foreach($this->folders as $folder)
               {
               $folderId = $folder->getFolderId();
-              if ($folderId == $this->privateFolderId || $folderId == $this->publicFolderId)
-                {
-                $deletableStatus = 'false';
-                }
-              else
-                {
-                $deletableStatus = 'true';
-                }
               $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-              echo "<tr id='node--$node' policy='{$folder->policy}' deletable=$deletableStatus class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='$folderId' ajax='$folderId'>";
+              echo "<tr id='node--$node' policy='{$folder->policy}' class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='$folderId' ajax='$folderId'>";
               echo "  <td class='treeBrowseElement'><span class='folder{$privacyClass}'>{$folder->getName()}</span></td>";
               echo "  <td><img class='folderLoading' element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";

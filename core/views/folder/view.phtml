@@ -55,7 +55,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       foreach($this->folders as $folder)
         {
         $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-        echo "<tr id='node--$node' deletable='true' privacy='{$folder->getPrivacyStatus()}' policy='{$folder->policy}' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
+        echo "<tr id='node--$node' privacy='{$folder->getPrivacyStatus()}' policy='{$folder->policy}' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
         echo "  <td class='treeBrowseElement'><span class='folder{$privacyClass}'>{$this->slicename($folder->getName(),40)}</span></td>";
         echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
         echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
@@ -135,18 +135,15 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/upload.png"/>
         <a rel="'.$this->webroot.'/upload/simpleupload/?parent='.$this->mainFolder->getKey().'" class="uploadInFolder">Upload here</a>
       </li>';
-      if($this->deletable)
-        {
-        echo '
-        <li>
-          <img alt="" src="'.$this->coreWebroot.'/public/images/icons/edit.png"/>
-          <a onclick="midas.editFolder('.$this->mainFolder->getKey().');">Edit</a>
-        </li>
-        <li>
-          <img alt="" src="'.$this->coreWebroot.'/public/images/icons/move.png"/>
-          <a onclick="midas.moveFolder('.$this->mainFolder->getKey().');">Move</a>
-        </li>';
-        }
+      echo '
+      <li>
+        <img alt="" src="'.$this->coreWebroot.'/public/images/icons/edit.png"/>
+        <a onclick="midas.editFolder('.$this->mainFolder->getKey().');">Edit</a>
+      </li>
+      <li>
+        <img alt="" src="'.$this->coreWebroot.'/public/images/icons/move.png"/>
+        <a onclick="midas.moveFolder('.$this->mainFolder->getKey().');">Move</a>
+      </li>';
       }
     if($this->isAdmin)
       {
@@ -155,14 +152,11 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/lock.png"/>
         <a type="folder" element="'.$this->mainFolder->getKey().'" class="sharingLink">Permissions</a>
       </li>';
-      if($this->deletable)
-        {
-        echo '
-        <li>
-          <img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/>
-          <a onclick="midas.deleteFolder('.$this->mainFolder->getKey().');">Delete</a>
-        </li>';
-        }
+      echo '
+      <li>
+        <img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/>
+        <a onclick="midas.deleteFolder('.$this->mainFolder->getKey().');">Delete</a>
+      </li>';
       }
     echo '
     </ul>

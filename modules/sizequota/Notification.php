@@ -84,6 +84,11 @@ class Sizequota_Notification extends ApiEnabled_Notification
     $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
 
     $folder = $args['folder'];
+    if(!$folder)
+      {
+      return '<div id="sizequotaFreeSpace" style="display:none;">0</div>'.
+             '<div id="sizequotaHFreeSpace" style="display:none;">--</div>';
+      }
     $rootFolder = $folderModel->getRoot($folder);
     $quota = $folderQuotaModel->getFolderQuota($rootFolder);
     $assetstoreFree = disk_free_space($this->Assetstore->getDefault()->getPath());
@@ -113,12 +118,17 @@ class Sizequota_Notification extends ApiEnabled_Notification
     $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
 
     $item = $args['item'];
+    if(!$item)
+      {
+      return '<div id="sizequotaFreeSpace" style="display:none;">0</div>'.
+             '<div id="sizequotaHFreeSpace" style="display:none;">--</div>';
+      }
     $folders = $item->getFolders();
     if(count($folders) == 0)
       {
       //don't allow any more uploading into an orphaned item
       return '<div id="sizequotaFreeSpace" style="display:none;">0</div>'.
-             '<div id="sizequotaHFreeSpace" style="display:none;">'.$this->t('None').'</div>';
+             '<div id="sizequotaHFreeSpace" style="display:none;">--</div>';
       }
     else
       {

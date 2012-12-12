@@ -42,19 +42,17 @@ class CommunityModel extends CommunityModelBase
     return $dao;
     } // end getByName()
 
-  /** Returns a community given its folder (either public,private or base folder) */
+  /** Returns a community given its root folder */
   function getByFolder($folder)
     {
     if(!$folder instanceof FolderDao)
       {
-      throw new Zend_Exception("Should be a folder" );
+      throw new Zend_Exception("Should be a folder");
       }
 
     $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
                                           ->from('community')
                                           ->where('folder_id=?', $folder->getFolderId())
-                                          ->orwhere('publicfolder_id=?', $folder->getFolderId())
-                                          ->orwhere('privatefolder_id=?', $folder->getFolderId())
                                           );
 
     $community = $this->initDao('Community', $row);
