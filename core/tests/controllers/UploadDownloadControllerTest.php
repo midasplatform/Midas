@@ -25,7 +25,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
   /** init tests*/
   public function setUp()
     {
-    $this->_models = array('User', 'Feed', 'Assetstore', 'Item', 'Activedownload');
+    $this->_models = array('User', 'Folder', 'Feed', 'Assetstore', 'Item', 'Activedownload');
     $this->_daos = array('User', 'Assetstore', 'Activedownload');
     parent::setUp();
     }
@@ -37,7 +37,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
 
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $dir = $this->getTempDirectory().$userDao->getUserId().'/'.$userDao->getPrivatefolderId();
+    $dir = $this->getTempDirectory().$userDao->getUserId().'/1002'; //private folder
     $identifier = $dir.'/httpupload.png';
     if(!file_exists($dir))
       {
@@ -48,7 +48,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
       unlink($identifier);
       }
     copy(BASE_PATH.'/tests/testfiles/search.png', $identifier);
-    $page = 'upload/gethttpuploadoffset/?uploadUniqueIdentifier='.$userDao->getUserId().'/'.$userDao->getPrivatefolderId().'/httpupload.png&testingmode=1';
+    $page = 'upload/gethttpuploadoffset/?uploadUniqueIdentifier='.$userDao->getUserId().'/1002/httpupload.png&testingmode=1';
     $this->dispatchUrI($page, $userDao);
 
     $content = $this->getBody();
@@ -76,8 +76,14 @@ class UploadDownloadControllerTest extends ControllerTestCase
       }
     copy(BASE_PATH.'/tests/testfiles/search.png', $identifier);
     $page = 'upload/gethttpuploaduniqueidentifier/?filename=httpupload.png&testingmode=1';
+    $this->dispatchUrI($page, $userDao, true);
+
+    $this->resetAll();
+    $folders = $userDao->getFolder()->getFolders();
+    $page .= '&parentFolderId='.$folders[0]->getKey();
     $this->dispatchUrI($page, $userDao);
     $content = $this->getBody();
+
     if(strpos($content, '[OK]') === false)
       {
       $this->fail();
@@ -95,7 +101,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
 
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $subdir = $userDao->getUserId().'/'.$userDao->getPrivatefolderId();
+    $subdir = $userDao->getUserId().'/1002'; // private folder
     $dir = $this->getTempDirectory().$subdir;
     $fileBase = BASE_PATH.'/tests/testfiles/search.png';
     $file = $this->getTempDirectory().'testing_file.png';
@@ -113,6 +119,10 @@ class UploadDownloadControllerTest extends ControllerTestCase
 
     $params = 'testingmode=1&filename=search.png&localinput='.$file.'&length='.filesize($file).'&uploadUniqueIdentifier='.$subdir.'/httpupload.png';
     $page = 'upload/processjavaupload/?'.$params;
+    $this->dispatchUrI($page, $userDao, true);
+
+    $this->resetAll();
+    $page .= '&parentId=1002';
     $this->dispatchUrI($page, $userDao);
 
     $search = $this->Item->getItemsFromSearch('search.png', $userDao);
@@ -132,14 +142,14 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
 
-    $folder = $userDao->getPublicFolder();
+    $folder = $this->Folder->load(1001); //public folder
     $this->dispatchUrI('/upload/simpleupload?parent='.$folder->getKey(), $userDao, false);
     $this->assertContains('id="destinationId" value="'.$folder->getKey(), $this->getBody());
 
     $this->resetAll();
-    $folder = $userDao->getPrivateFolder();
+    $folder = $this->Folder->load(1002); //private folder
     $this->dispatchUrI('/upload/simpleupload', $userDao, false);
-    $this->assertContains('id="destinationId" value="'.$folder->getKey(), $this->getBody());
+    $this->assertContains('id="destinationId" value=""', $this->getBody());
     }
 
   /** test UploadController::revision */
@@ -170,7 +180,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $itemDao = $this->Item->load($itemsFile[1]->getKey());
 
     $this->params = array();
-    $this->params['parent'] = $userDao->getPublicFolder()->getKey();
+    $this->params['parent'] = '1001'; //public folder
     $this->params['name'] = 'test name link';
     $this->params['url'] = 'http://www.kitware.com';
     $this->params['license'] = 0;
@@ -193,7 +203,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $userDao = $this->User->load($usersFile[0]->getKey());
 
     $this->params = array();
-    $this->params['parent'] = $userDao->getPublicFolder()->getKey();
+    $this->params['parent'] = '1001'; //public folder
     $this->params['license'] = 0;
     $this->params['testpath'] = BASE_PATH.'/tests/testfiles/search.png'; //testing mode param
     $this->dispatchUrI('/upload/saveuploaded', $userDao);
@@ -203,7 +213,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
 
     // Test to make sure uploading an empty file works
     $this->resetAll();
-    $this->params['parent'] = $userDao->getPublicFolder()->getKey();
+    $this->params['parent'] = '1001';
     $this->params['license'] = 0;
     $this->params['testpath'] = BASE_PATH.'/tests/testfiles/empty.txt'; //testing mode param
     $this->dispatchUrI('/upload/saveuploaded', $userDao);

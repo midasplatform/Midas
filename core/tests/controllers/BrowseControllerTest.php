@@ -49,22 +49,6 @@ class BrowseControllerTest extends ControllerTestCase
     $this->assertEmpty($resp->failure->folders);
     $this->assertEmpty($resp->failure->items);
 
-    // Assert that we cannot batch delete our private or public folder
-    $this->resetAll();
-    $this->params['items'] = '';
-    $this->params['folders'] = $userDao->getPrivatefolderId().'-'.$userDao->getPublicfolderId().'-';
-    $this->dispatchUrI('/browse/delete', $userDao);
-    $this->assertNotEmpty($this->getBody());
-    $resp = json_decode($this->getBody());
-    $this->assertNotEmpty($resp->success);
-    $this->assertNotEmpty($resp->failure);
-    $this->assertEmpty($resp->success->folders);
-    $this->assertEmpty($resp->success->items);
-    $this->assertEquals(count($resp->failure->folders), 2);
-    $this->assertEmpty($resp->failure->items);
-    $this->assertEquals($resp->failure->folders[0], $userDao->getPrivatefolderId());
-    $this->assertEquals($resp->failure->folders[1], $userDao->getPublicfolderId());
-
     // Assert that deleting a nonexistent item and folder returns success
     $this->resetAll();
     $this->params['items'] = '999875-';
@@ -85,7 +69,7 @@ class BrowseControllerTest extends ControllerTestCase
     $item = $this->Item->load($itemsFile[1]->getKey());
     $itemId = $item->getKey();
     $this->Itempolicyuser->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
-    $folder = $this->Folder->createFolder('DeleteableFolder', 'Description', $userDao->getPublicFolder());
+    $folder = $this->Folder->createFolder('DeleteableFolder', 'Description', $userDao->getFolder());
     $folderId = $folder->getKey();
     $this->Folderpolicyuser->createPolicy($userDao, $folder, MIDAS_POLICY_ADMIN);
 

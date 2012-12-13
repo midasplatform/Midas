@@ -133,10 +133,6 @@ class UploadComponent extends AppComponent
       throw new Zend_Exception('Please log in');
       }
 
-    if($parent == null)
-      {
-      $parent = $userDao->getPrivateFolder();
-      }
     if(is_numeric($parent))
       {
       $parent = $folderModel->load($parent);
@@ -219,10 +215,6 @@ class UploadComponent extends AppComponent
       throw new Zend_Exception('Please log in');
       }
 
-    if($parent == null)
-      {
-      $parent = $userDao->getPrivateFolder();
-      }
     if(is_numeric($parent))
       {
       $parent = $folderModel->load($parent);

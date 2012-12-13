@@ -60,7 +60,7 @@ function successCreateFolder(responseText, statusText, xhr, form)
           
           var newRow = '';
           // policy: 2 <=> MIDAS_POLICY_ADMIN
-          newRow += "<tr id='node--" + newNodeId + "' policy='2' deletable='true' class='parent' privacy='" + jsonResponse[3].privacy_status + "' type='folder' element='" + jsonResponse[3].folder_id + "' ajax='" + jsonResponse[3].folder_id + "'>";
+          newRow += "<tr id='node--" + newNodeId + "' policy='2' class='parent' privacy='" + jsonResponse[3].privacy_status + "' type='folder' element='" + jsonResponse[3].folder_id + "' ajax='" + jsonResponse[3].folder_id + "'>";
           newRow += "  <td class='treeBrowseElement'><span class='folder'>" + jsonResponse[3].name + "</span></td>";
           newRow += "  <td><img class='folderLoading'  element='" + jsonResponse[3].folder_id + "' alt='' /></td>";
           newRow += "  <td>" + jsonResponse[4] + "</td>";

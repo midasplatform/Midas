@@ -126,25 +126,21 @@ class FolderControllerTest extends ControllerTestCase
     $this->resetAll();
     $this->dispatchUri('/folder/delete?folderId=1000', $userWithPermission, true);
 
-    // We should not be able to delete a user private folder
+    // We should be able to delete a user public folder
     $this->resetAll();
-    $this->dispatchUri('/folder/delete?folderId=1001', $userWithPermission, true);
-
-    // We should not be able to delete a user public folder
-    $this->resetAll();
-    $this->dispatchUri('/folder/delete?folderId=1002', $userWithPermission, true);
+    $this->dispatchUri('/folder/delete?folderId=1002', $userWithPermission);
 
     // We should not be able to delete a community root folder
     $this->resetAll();
     $this->dispatchUri('/folder/delete?folderId=1003', $userWithPermission, true);
 
-    // We should not be able to delete a community private folder
+    // We should be able to delete a community private folder
     $this->resetAll();
-    $this->dispatchUri('/folder/delete?folderId=1004', $userWithPermission, true);
+    $this->dispatchUri('/folder/delete?folderId=1004', $userWithPermission);
 
-    // We should not be able to delete a community public folder
+    // We should be able to delete a community public folder
     $this->resetAll();
-    $this->dispatchUri('/folder/delete?folderId=1005', $userWithPermission, true);
+    $this->dispatchUri('/folder/delete?folderId=1005', $userWithPermission);
 
     // Create a new folder under a private folder
     $this->resetAll();

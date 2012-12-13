@@ -74,7 +74,7 @@ class FolderModelTest extends DatabaseTestCase
   public function testGetItemsFiltered()
     {
     $usersFile = $this->loadData('User', 'default');
-    $folder = $usersFile[0]->getPublicFolder();
+    $folder = $this->Folder->load('1001'); //public folder
     $items = $folder->getItems();
     $itemsFiltered = $this->Folder->getItemsFiltered($folder, $usersFile[0], 0);
     $this->assertEquals(3, count($itemsFiltered));
@@ -119,7 +119,7 @@ class FolderModelTest extends DatabaseTestCase
     $usersFile = $this->loadData('User', 'default');
     $results = $this->Folder->getFoldersFromSearch("aaaaaaaaaaZeroResults", $usersFile[0]);
     $this->assertEquals(0, count($results));
-    $folder = $this->Folder->createFolder("NameSearch", "Description", $usersFile[0]->getPublicFolder());
+    $folder = $this->Folder->createFolder("NameSearch", "Description", $usersFile[0]->getFolder());
     $this->Folderpolicyuser->createPolicy($usersFile[0], $folder, MIDAS_POLICY_ADMIN);
     $results = $this->Folder->getFoldersFromSearch("NameSearch", $usersFile[0]);
     $this->assertEquals(1, count($results));
@@ -255,26 +255,23 @@ class FolderModelTest extends DatabaseTestCase
 
     // Base, public, and private folders for user and community shouldn't be deleteable
     $this->assertFalse($this->Folder->isDeleteable($communitiesFile[0]->getFolder()));
-    $this->assertFalse($this->Folder->isDeleteable($communitiesFile[0]->getPublicFolder()));
-    $this->assertFalse($this->Folder->isDeleteable($communitiesFile[0]->getPrivateFolder()));
     $this->assertFalse($this->Folder->isDeleteable($usersFile[0]->getFolder()));
-    $this->assertFalse($this->Folder->isDeleteable($usersFile[0]->getPublicFolder()));
-    $this->assertFalse($this->Folder->isDeleteable($usersFile[0]->getPrivateFolder()));
 
     // Make a new top level community folder and make sure it is deleteable
     $folder = $this->Folder->createFolder('TestFolderDeleteable', 'Description', $communitiesFile[0]->getFolder());
     $this->assertTrue($this->Folder->isDeleteable($folder));
 
     // Make a new folder within the community private folder and make sure it is deleteable
-    $folder = $this->Folder->createFolder('TestFolderDeleteable', 'Description', $communitiesFile[0]->getPrivateFolder());
+    $folders = $communitiesFile[0]->getFolder()->getFolders();
+    $folder = $this->Folder->createFolder('TestFolderDeleteable', 'Description', $folders[0]);
     $this->assertTrue($this->Folder->isDeleteable($folder));
 
     // Make a new top level user folder and make sure it is deleteable
     $folder = $this->Folder->createFolder('TestFolderDeleteable', 'Description', $usersFile[0]->getFolder());
     $this->assertTrue($this->Folder->isDeleteable($folder));
 
-    // Make a new folder within the user's private folder and make sure it is deleteable
-    $folder = $this->Folder->createFolder('TestFolderDeleteable', 'Description', $usersFile[0]->getPrivateFolder());
+    // Make a new folder within the user's folder and make sure it is deleteable
+    $folder = $this->Folder->createFolder('TestFolderDeleteable', 'Description', $usersFile[0]->getFolder());
     $this->assertTrue($this->Folder->isDeleteable($folder));
     }
   }

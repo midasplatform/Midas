@@ -158,7 +158,7 @@ class UserModel extends UserModelBase
     return $return;
     } // end getAll()
 
-  /** Returns a user given its folder (either public,private or base folder) */
+  /** Returns a user given its root folder */
   function getByFolder($folder)
     {
     if(!$folder instanceof FolderDao)
@@ -168,9 +168,7 @@ class UserModel extends UserModelBase
 
     $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
                                           ->from('user')
-                                          ->where('folder_id=?', $folder->getFolderId())
-                                          ->orwhere('publicfolder_id=?', $folder->getFolderId())
-                                          ->orwhere('privatefolder_id=?', $folder->getFolderId())
+                                          ->where('folder_id = ?', $folder->getFolderId())
                                           );
 
     $user = $this->initDao('User', $row);

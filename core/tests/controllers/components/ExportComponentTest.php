@@ -75,7 +75,7 @@ class ExportComponentTest extends ControllerTestCase
     fclose($user1_public_fh);
     $user1_pulic_file_size = filesize($user1_public_path);
     $user1_public_filename = 'public.file';
-    $user1_public_parent = $userDao->getPublicFolder()->getKey();
+    $user1_public_parent = '1001';
     $license = 0;
     $uploadCompoenent->createUploadedItem($userDao, $user1_public_filename,
                                           $user1_public_path, $user1_public_parent, $license, '', true);
@@ -88,7 +88,7 @@ class ExportComponentTest extends ControllerTestCase
     fclose($user1_private_fh);
     $user1_pulic_file_size = filesize($user1_private_path);
     $user1_private_filename = 'private.png';
-    $user1_private_parent = $userDao->getPrivateFolder()->getKey();
+    $user1_private_parent = '1002';
     $license = 0;
     $uploadCompoenent->createUploadedItem($userDao, $user1_private_filename,
                                           $user1_private_path, $user1_private_parent, $license, '', true);
