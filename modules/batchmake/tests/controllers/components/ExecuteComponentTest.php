@@ -88,7 +88,7 @@ class ExecuteComponentTest extends BatchmakeControllerTest
     $user1_public_filename = 'public.file';
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $user1_public_parent = $userDao->getPublicFolder()->getKey();
+    $user1_public_parent = '1001';
     $license = 0;
     $this->tmpItem = $uploadComponent->createUploadedItem($userDao, $user1_public_filename,
                                           $user1_public_path, $user1_public_parent, $license, '', true);
