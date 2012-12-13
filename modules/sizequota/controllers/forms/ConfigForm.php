@@ -52,6 +52,10 @@ class Sizequota_ConfigForm extends AppForm
     $submit = new Zend_Form_Element_Submit('submitQuota');
     $submit->setLabel($this->t('Save'));
 
+    if($defaultQuota != 'Unlimited' && $defaultQuota !== '')
+      {
+      $defaultQuota = UtilityComponent::formatSize($defaultQuota);
+      }
     $useDefault = new Zend_Form_Element_Radio('usedefault');
     $useDefault->addMultiOptions(array(MIDAS_USE_DEFAULT_QUOTA => $this->t('Use the default quota: ').$defaultQuota,
                                        MIDAS_USE_SPECIFIC_QUOTA => $this->t('Use a specific quota:')))
