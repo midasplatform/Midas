@@ -41,10 +41,11 @@ class ItemModelTest extends DatabaseTestCase
     $adminUser = $this->User->load($usersFile[2]->getKey());
 
     // Create normal item
-    $folderDao = $adminUser->getPrivateFolder();
+    $folderDao = $adminUser->getFolder();
     $name = 'test name';
     $description = 'test test test';
-    $newItem = $this->Item->createItem($name, $description, $folderDao);
+    $folders = $adminUser->getFolder()->getFolders();
+    $newItem = $this->Item->createItem($name, $description, $folders[0]);
     $this->assertEquals($newItem->getName(), $name);
     $this->assertEquals($newItem->getDescription(), $description);
 
@@ -194,10 +195,11 @@ class ItemModelTest extends DatabaseTestCase
     $adminUser = $this->User->load($usersFile[2]->getKey());
 
     // Make sure the item is duplicated properly
-    $oldCount = count($adminUser->getPrivateFolder()->getItems());
-    $this->Item->duplicateItem($item1, $adminUser, $adminUser->getPrivateFolder());
+    $folders = $adminUser->getFolder()->getFolders();
+    $oldCount = count($folders[0]->getItems());
+    $this->Item->duplicateItem($item1, $adminUser, $folders[0]);
     $adminUser = $this->User->load($usersFile[2]->getKey());
-    $items = $adminUser->getPrivateFolder()->getItems();
+    $items = $folders[0]->getItems();
     $this->assertEquals(count($items), $oldCount + 1);
 
     // Make sure all the information is the same, but the key, date, and uuid are different

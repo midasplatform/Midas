@@ -39,13 +39,13 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->params['token'] = $this->_loginAsAdministrator();
     $this->params['method'] = 'midas.folder.create';
     $this->params['name'] = 'testFolderCreate';
-    $this->params['parentid'] = $userDao->getPublicfolderId();
+    $this->params['parentid'] = '1001';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
     // Make sure folder was created correctly
     $this->assertNotEmpty($resp->data->uuid);
-    $this->assertEquals($userDao->getPublicfolderId(), $resp->data->parent_id);
+    $this->assertEquals(1001, $resp->data->parent_id);
     $this->assertEquals('testFolderCreate', $resp->data->name);
     $this->assertEquals('', $resp->data->description);
     // ensure privacy status is correct on returned array
@@ -58,7 +58,7 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->params['token'] = $this->_loginAsAdministrator();
     $this->params['method'] = 'midas.folder.create';
     $this->params['name'] = 'testFolderCreate';
-    $this->params['parentid'] = $userDao->getPublicfolderId();
+    $this->params['parentid'] = '1001';
     $resp = $this->_callJsonApi();
     $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
 
@@ -67,7 +67,7 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->params['token'] = $this->_loginAsAdministrator();
     $this->params['method'] = 'midas.folder.create';
     $this->params['name'] = 'testFolderCreatePublic';
-    $this->params['parentid'] = $userDao->getPublicfolderId();
+    $this->params['parentid'] = '1001';
     $this->params['privacy'] = 'Public';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
@@ -79,7 +79,7 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->params['token'] = $this->_loginAsAdministrator();
     $this->params['method'] = 'midas.folder.create';
     $this->params['name'] = 'testFolderCreatePrivate';
-    $this->params['parentid'] = $userDao->getPublicfolderId();
+    $this->params['parentid'] = '1001';
     $this->params['privacy'] = 'Private';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);

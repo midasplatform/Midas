@@ -2,12 +2,11 @@
 <dataset>
 
   <community community_id="2000" name="Community 1" description=""
-    creation="2011-01-27 12:09:02"  privacy="0" folder_id="1003" publicfolder_id="1004"
-    privatefolder_id="1005" admingroup_id="3000" moderatorgroup_id="3001"
+    creation="2011-01-27 12:09:02"  privacy="0" folder_id="1003" admingroup_id="3000" moderatorgroup_id="3001"
     membergroup_id="3002" uuid='4e311fdf82107d245f0798d654fc24205f2621eb72777' />
 
   <user user_id="1" firstname="FirstName1" lastname="LastName1" email="user1@user1.com" password="35fd8ba86ba403ffcc00feac5355ad20"
-    creation="2011-01-27 12:09:02" folder_id="1000" publicfolder_id="1001" privatefolder_id="1002" admin="0" />
+    creation="2011-01-27 12:09:02" folder_id="1000" admin="0" />
   <user user_id="2" firstname="FirstName2" lastname="LastName2" email="user2@user2.com" password="35fd8ba86ba403ffcc00feac5355ad20"
     creation="2011-01-27 12:10:02" admin="0" />
   <user user_id="3" firstname="FirstName3" lastname="LastName3" email="user3@user3.com" password="35fd8ba86ba403ffcc00feac5355ad20"

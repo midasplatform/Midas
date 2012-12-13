@@ -275,8 +275,8 @@ class UserControllerTest extends ControllerTestCase
 
     $this->assertQuery('div.genericInfo');
 
-    $folder = $userDao->getPublicFolder();
-    $this->assertQuery("tr[element='".$folder->getKey()."']");
+    $folders = $userDao->getFolder()->getFolders();
+    $this->assertQuery("tr[element='".$folders[0]->getKey()."']");
     }
 
   /** test userpage */
@@ -289,8 +289,8 @@ class UserControllerTest extends ControllerTestCase
 
     $this->assertQuery('div.genericInfo');
 
-    $folder = $userDao->getPublicFolder();
-    $this->assertQuery("tr[element='".$folder->getKey()."']");
+    $folders = $userDao->getFolder()->getFolders();
+    $this->assertQuery("tr[element='".$folders[0]->getKey()."']");
 
     // Should be able to see this user page since user is public
     $this->resetAll();
@@ -389,7 +389,8 @@ class UserControllerTest extends ControllerTestCase
     $this->dispatchUrI('/user/delete?userId='.$user2->getKey(), $user1, true);
 
     // Make the item exist outside of the user's tree
-    $folderModel->addItem($comm->getPublicFolder(), $item);
+    $commFolders = $comm->getFolder()->getFolders();
+    $folderModel->addItem($commFolders[0], $item);
 
     $oldRevisions = $user1->getItemrevisions();
     $this->assertTrue(count($oldRevisions) > 0);
@@ -444,7 +445,8 @@ class UserControllerTest extends ControllerTestCase
     $this->assertTrue(strpos($this->getBody(), 'Are you sure you want to delete your user account?') !== false);
 
     // Make item exist outside of user's tree
-    $folderModel->addItem($comm->getPublicFolder(), $item);
+    $commFolders = $comm->getFolder()->getFolders();
+    $folderModel->addItem($commFolders[0], $item);
 
     $oldRevisions = $user1->getItemrevisions();
     $this->assertTrue(count($oldRevisions) > 0);
