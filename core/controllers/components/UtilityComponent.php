@@ -264,28 +264,36 @@ class UtilityComponent extends AppComponent
       }
     }
 
-  /** format file size*/
-  static public function formatSize($sizeInByte)
+  /**
+   * Format file size. Rounds to 1 decimal place and makes sure
+   * to use 3 or less digits before the decimal place.
+   */
+  static public function formatSize($sizeInBytes, $separator = ',')
     {
-    $dataNorme = 'B';
+    $suffix = 'B';
     if(Zend_Registry::get('configGlobal')->application->lang == 'fr')
       {
-      $dataNorme = 'o';
+      $suffix = 'o';
       }
-    if(strlen($sizeInByte) <= 9 && strlen($sizeInByte) >= 7)
+    if($sizeInBytes >= 1073741824000)
       {
-      $sizeInByte = number_format($sizeInByte / 1048576, 1);
-      return $sizeInByte." M".$dataNorme;
+      $sizeInBytes = number_format($sizeInBytes / 1099511627776, 1, '.', $separator);
+      return $sizeInBytes.' T'.$suffix;
       }
-    elseif(strlen($sizeInByte) >= 10)
+    else if($sizeInBytes >= 1048576000)
       {
-      $sizeInByte = number_format($sizeInByte / 1073741824, 1);
-      return $sizeInByte." G".$dataNorme;
+      $sizeInBytes = number_format($sizeInBytes / 1073741824, 1, '.', $separator);
+      return $sizeInBytes.' G'.$suffix;
+      }
+    else if($sizeInBytes >= 1024000)
+      {
+      $sizeInBytes = number_format($sizeInBytes / 1048576, 1, '.', $separator);
+      return $sizeInBytes.' M'.$suffix;
       }
     else
       {
-      $sizeInByte = number_format($sizeInByte / 1024, 1);
-      return $sizeInByte." K".$dataNorme;
+      $sizeInBytes = number_format($sizeInBytes / 1024, 1, '.', $separator);
+      return $sizeInBytes.' K'.$suffix;
       }
     }
 

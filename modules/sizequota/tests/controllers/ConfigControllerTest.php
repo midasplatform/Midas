@@ -45,6 +45,8 @@ class PerformTest extends ControllerTestCase
     $this->request->setMethod('POST');
     $this->params['defaultuserquota'] = '';
     $this->params['defaultcommunityquota'] = '10000';
+    $this->params['communityQuotaUnit'] = '100';
+    $this->params['userQuotaUnit'] = '1024';
     $this->params['submitConfig'] = 'true';
     $this->dispatchUrI('/sizequota/config/index', $userDao);
     $resp = JsonComponent::decode($this->getBody());
@@ -52,7 +54,7 @@ class PerformTest extends ControllerTestCase
 
     // Make sure our settings were set correctly
     $this->assertTrue($this->Setting->getValueByName('defaultuserquota', 'sizequota') === '');
-    $this->assertTrue($this->Setting->getValueByName('defaultcommunityquota', 'sizequota') === '10000');
+    $this->assertTrue($this->Setting->getValueByName('defaultcommunityquota', 'sizequota') === '1000000');
     }
 
   /** Test management of user- and community-specific quotas */
@@ -113,18 +115,18 @@ class PerformTest extends ControllerTestCase
 
     // User 1 should not be able to change their own quota
     $this->resetAll();
-    $this->dispatchUrI('/sizequota/config/foldersubmit?quota=1234&usedefault='.MIDAS_USE_SPECIFIC_QUOTA.
+    $this->dispatchUrI('/sizequota/config/foldersubmit?quota=1234&unit=1usedefault='.MIDAS_USE_SPECIFIC_QUOTA.
                        '&folderId='.$user1->getFolderId(), $user1, true);
     $this->assertEquals($folderQuotaModel->getUserQuota($user1), '');
 
     // Admin user should be able to change quota for a user
     $this->resetAll();
-    $this->dispatchUrI('/sizequota/config/foldersubmit?quota=1234&usedefault='.MIDAS_USE_SPECIFIC_QUOTA.
+    $this->dispatchUrI('/sizequota/config/foldersubmit?quota=1234&unit=100&usedefault='.MIDAS_USE_SPECIFIC_QUOTA.
                        '&folderId='.$user1->getFolderId(), $adminUser);
-    $this->assertEquals($folderQuotaModel->getUserQuota($user1), '1234');
+    $this->assertEquals($folderQuotaModel->getUserQuota($user1), '123400');
 
     $this->resetAll();
-    $this->dispatchUrI('/sizequota/config/foldersubmit?quota=1234&usedefault='.MIDAS_USE_DEFAULT_QUOTA.
+    $this->dispatchUrI('/sizequota/config/foldersubmit?quota=1234&unit=1usedefault='.MIDAS_USE_DEFAULT_QUOTA.
                        '&folderId='.$user1->getFolderId(), $adminUser);
     $this->assertEquals($folderQuotaModel->getUserQuota($user1), '');
 
@@ -150,12 +152,12 @@ class PerformTest extends ControllerTestCase
 
     // Admin should be able to set new community quota
     $this->resetAll();
-    $this->dispatchUrI('/sizequota/config/foldersubmit?quota=&usedefault='.MIDAS_USE_SPECIFIC_QUOTA.
+    $this->dispatchUrI('/sizequota/config/foldersubmit?quota=&unit=1024&usedefault='.MIDAS_USE_SPECIFIC_QUOTA.
                        '&folderId='.$comm->getFolderId(), $adminUser);
     $this->assertEquals($folderQuotaModel->getCommunityQuota($comm), '');
 
     $this->resetAll();
-    $this->dispatchUrI('/sizequota/config/foldersubmit?quota=&usedefault='.MIDAS_USE_DEFAULT_QUOTA.
+    $this->dispatchUrI('/sizequota/config/foldersubmit?quota=&unit=1024&usedefault='.MIDAS_USE_DEFAULT_QUOTA.
                        '&folderId='.$comm->getFolderId(), $adminUser);
     $this->assertEquals($folderQuotaModel->getCommunityQuota($comm), '10000');
     }

@@ -35,10 +35,38 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
         <div>
           <label for='defaultuserquota'>Default user quota</label>
           {$this->configForm['defaultuserquota']}
+          <select id='userQuotaUnit' name='userQuotaUnit'>";
+            $value = 1;
+            foreach(array('KB', 'MB', 'GB', 'TB') as $unit)
+              {
+              $value *= 1024;
+              echo '<option value="'.$value.'"';
+              if($this->unitValueUser == $unit)
+                {
+                echo ' selected="selected"';
+                }
+              echo '>'.$unit.'</option>';
+              }
+      echo "
+          </select>
         </div>
         <div>
           <label for='defaultcommunityquota'>Default community quota</label>
           {$this->configForm['defaultcommunityquota']}
+          <select id='communityQuotaUnit' name='communityQuotaUnit'>";
+            $value = 1;
+            foreach(array('KB', 'MB', 'GB', 'TB') as $unit)
+              {
+              $value *= 1024;
+              echo '<option value="'.$value.'"';
+              if($this->unitValueCommunity == $unit)
+                {
+                echo ' selected="selected"';
+                }
+              echo '>'.$unit.'</option>';
+              }
+      echo "
+          </select>
         </div>
         <div>
           {$this->configForm['submitConfig']}
