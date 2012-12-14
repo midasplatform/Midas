@@ -71,7 +71,7 @@ class AssetstoreController extends AppController
     }//defaultassetstoreAction
 
 
-  /** delete an assetstore assetstore*/
+  /** delete an assetstore */
   function deleteAction()
     {
     $this->requireAdminPrivileges();
@@ -91,7 +91,7 @@ class AssetstoreController extends AppController
     echo JsonComponent::encode(array(false, $this->t('Error')));
     }//deleteAction
 
-  /** edit an assetstore assetstore*/
+  /** edit an assetstore */
   function editAction()
     {
     $this->requireAdminPrivileges();
@@ -100,6 +100,16 @@ class AssetstoreController extends AppController
     $assetstoreId = $this->_getParam("assetstoreId");
     $assetstoreName = $this->_getParam("assetstoreName");
     $assetstorePath = $this->_getParam("assetstorePath");
+    if(!is_dir($assetstorePath))
+      {
+      echo JsonComponent::encode(array(false, 'The path provided is not a valid directory'));
+      return false;
+      }
+    if(!is_writable($assetstorePath))
+      {
+      echo JsonComponent::encode(array(false, 'The specified directory is not writable'));
+      return false;
+      }
     if(isset($assetstoreId) && !empty($assetstorePath) && file_exists($assetstorePath) && !empty($assetstoreName))
       {
       $assetstore = $this->Assetstore->load($assetstoreId);
@@ -136,7 +146,7 @@ class AssetstoreController extends AppController
     $form = $this->Form->Assetstore->createAssetstoreForm();
     if($this->getRequest()->isPost() && !$form->isValid($_POST))
       {
-      echo json_encode(array('error' => 'The form is invalid. Missing values.'));
+      echo json_encode(array('error' => 'Missing or invalid form values.'));
       return false;
       }
 
@@ -147,25 +157,37 @@ class AssetstoreController extends AppController
       $assetstoreDao->setName($form->name->getValue());
       $assetstoreDao->setPath($form->basedirectory->getValue());
       $assetstoreDao->setType($form->assetstoretype->getValue());
+
+      if(!is_dir($assetstoreDao->getPath()))
+        {
+        echo JsonComponent::encode(array('error' => 'The path provided is not a valid directory'));
+        return false;
+        }
+      if(!is_writable($assetstoreDao->getPath()))
+        {
+        echo JsonComponent::encode(array('error' => 'The specified directory is not writable'));
+        return false;
+        }
+
       try
         {
         $this->Assetstore->save($assetstoreDao);
         }
       catch(Zend_Exception $ze)
         {
-        echo json_encode(array('error' => $ze->getMessage()));
+        echo JsonComponent::encode(array('error' => $ze->getMessage()));
         return false;
         }
 
-      echo json_encode(array('msg' => 'The assetstore has been added.',
-                       'assetstore_id' => $assetstoreDao->getAssetstoreId(),
-                       'assetstore_name' => $assetstoreDao->getName(),
-                       'assetstore_type' => $assetstoreDao->getType(),
-                       'totalSpace' => disk_total_space($assetstoreDao->getPath()),
-                       'totalSpaceText' => $this->Component->Utility->formatSize(disk_total_space($assetstoreDao->getPath())),
-                       'freeSpace' => disk_free_space($assetstoreDao->getPath()),
-                       'freeSpaceText' => $this->Component->Utility->formatSize(disk_free_space($assetstoreDao->getPath())),
-                       ));
+      echo JsonComponent::encode(array(
+        'msg' => 'The assetstore has been added.',
+        'assetstore_id' => $assetstoreDao->getAssetstoreId(),
+        'assetstore_name' => $assetstoreDao->getName(),
+        'assetstore_type' => $assetstoreDao->getType(),
+        'totalSpace' => disk_total_space($assetstoreDao->getPath()),
+        'totalSpaceText' => $this->Component->Utility->formatSize(disk_total_space($assetstoreDao->getPath())),
+        'freeSpace' => disk_free_space($assetstoreDao->getPath()),
+        'freeSpaceText' => $this->Component->Utility->formatSize(disk_free_space($assetstoreDao->getPath()))));
       return true;
       }
 
