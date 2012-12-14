@@ -12,19 +12,17 @@ midas.admin.initModulesConfigLinks = function () {
     });
 }
 
-/** On assetstore add sucess */
+/** On assetstore add response */
 midas.admin.assetstoreAddCallback = function (responseText, statusText, xhr, $form) {
     $(".assetstoreLoading").hide();
     if(responseText.error) {
-        $(".viewNotice").html(responseText.error);
-        $(".viewNotice").fadeIn(100).delay(2000).fadeOut(100);
+        $(".addAssetstoreFormError").html('Error: '+responseText.error).show();
     }
     else if(responseText.msg) {
         $(document).trigger('hideCluetip');
 
-        // It worked, we add the assetstore to the list and we select it by default
         if(responseText.assetstore_id) {
-            window.location.replace(json.global.webroot+'/admin#tabs-assetstore');
+            window.location = json.global.webroot+'/admin#tabs-assetstore';
             window.location.reload();
         }
         midas.createNotice(responseText.msg,4000);
@@ -39,6 +37,7 @@ midas.admin.assetstoreSubmit = function (formData, jqForm, options) {
     assetstoretype.value = $("#importassetstoretype").val();
     formData.push(assetstoretype);
     $(".assetstoreLoading").show();
+    $(".addAssetstoreFormError").html('').hide();
 } // end assetstoreBeforeSubmit
 
 
@@ -81,22 +80,22 @@ $(document).ready(function() {
     $("#tabsGeneric").show();
     $('img.tabsLoading').hide()
 
-    $('a.defaultAssetstoreLink').click(function () {
+    $('.defaultAssetstoreLink').click(function () {
         $.post(json.global.webroot+'/assetstore/defaultassetstore', {submitDefaultAssetstore: true, element: $(this).attr('element')},
-            function(data) {
+            function (data) {
                 var jsonResponse = jQuery.parseJSON(data);
-                if(jsonResponse==null) {
-                    midas.createNotice('Error',4000);
+                if(jsonResponse == null) {
+                    midas.createNotice('Error', 4000);
                     return;
-                  }
-                midas.createNotice(jsonResponse[1],1500);
+                }
+                midas.createNotice(jsonResponse[1], 1500);
                 window.location.replace(json.global.webroot+'/admin#tabs-assetstore');
                 window.location.reload();
             }
         );
     });
 
-    $('a.removeAssetstoreLink').click(function () {
+    $('.removeAssetstoreLink').click(function () {
         var element = $(this).attr('element');
         var html = '';
         html += 'Do you really want to remove the assetstore? All the items located in it will be deleted. (Can take a while)';
@@ -116,7 +115,7 @@ $(document).ready(function() {
                     var jsonResponse = jQuery.parseJSON(jsonContent);
                     midas.createNotice(jsonResponse[1], 1500);
                     if(jsonResponse[0]) {
-                        window.location.replace(json.global.webroot+'/admin#tabs-assetstore');
+                        window.location = json.global.webroot+'/admin#tabs-assetstore';
                         window.location.reload();
                     }
                 }
@@ -127,7 +126,7 @@ $(document).ready(function() {
         });
     });
 
-    $('a.editAssetstoreLink').click(function () {
+    $('.editAssetstoreLink').click(function () {
         var element = $(this).attr('element');
         var html = '';
         html += '<form class="genericForm" onsubmit="false;">';
@@ -135,7 +134,7 @@ $(document).ready(function() {
         html += '<label>Path:</label> <input type="text" id="assetstorePath" value="'+$(this).parents('div').find('span.assetstorePath').html()+'"/>';
         html += '<br/>';
         html += '<br/>';
-        html += '<input type="submit" id="assetstoreSubmit" value="Save"/>';
+        html += '<input type="submit" id="assetstoreSubmit" style="float: right;" value="Save"/>';
         html += '</form>';
         html += '<br/>';
         midas.showDialogWithContent('Edit Assetstore', html, false);
@@ -176,10 +175,12 @@ $(document).ready(function() {
     $('a.load-newassetstore').cluetip({
         cluetipClass: 'jtip',
         activation: 'click',
-        local:true,
+        local: true,
         cursor: 'pointer',
         arrows: true,
-        clickOutClose: true,
+        closeText: 'Hide',
+        closePosition: 'title',
+        sticky: true,
         onShow: midas.admin.newAssetstoreShow
     });
 

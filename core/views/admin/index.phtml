@@ -52,11 +52,11 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                 ".$this->configForm['httpProxy']."
               </div>
               <div class='installLang'";
-      if(isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get('configCore')->internationalization == "0")
-        {
-        echo " style='display:none;' ";
-        }
-      echo ">
+              if(isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get('configCore')->internationalization == "0")
+                {
+                echo " style='display:none;' ";
+                }
+              echo ">
                 <label for='lang'>Language</label>
                 {$this->configForm['lang']}
               </div>
@@ -107,7 +107,8 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
      foreach($this->assetstores as $assetstore)
        {
        echo "<div class='assetstoreElement'>
-              <b><span class='assetstoreName'>{$assetstore->getName()}</span></b> ";
+               <div class='assetstoreNameContainer'>
+                 <span class='assetstoreName'>{$assetstore->getName()}</span> ";
        if($assetstore->default)
          {
          echo "(<span qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstore' element='{$assetstore->getKey()}'>default assetstore</span>)";
@@ -116,21 +117,17 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
          {
          echo "(<a qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstoreLink' element='{$assetstore->getKey()}'>set as default</a>)";
          }
-	      echo "<br/>";
-       if($assetstore->totalSpaceText==false)
+       echo '</div>';
+       if(!$assetstore->totalSpaceText)
          {
-         echo "<b>Unable to access assetstore</b>";
+         echo "<span class='errorText'>Error: Unable to access assetstore</span>";
          }
        else
          {
-         echo "Total space: {$assetstore->totalSpaceText}<br/>";
-         if(($assetstore->freeSpace/$assetstore->totalSpace<0.10))
+         echo "Space: {$assetstore->freeSpaceText} free of {$assetstore->totalSpaceText} total";
+         if(($assetstore->freeSpace/$assetstore->totalSpace < 0.1))
            {
-           echo "<b>Free space: {$assetstore->freeSpaceText}. Less than 10% free!</b>";
-           }
-         else
-           {
-           echo "<b>Free space: {$assetstore->freeSpaceText}</b>";
+           echo " <span class='freeSpaceWarning'>(Warning: less than 10% free)</span>";
            }
          }
        echo "<br/>Path: <span class='assetstorePath'>{$assetstore->getPath()}</span>";
@@ -151,16 +148,20 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
               echo $assetstore->getType();
               break;
          }
-       echo "<br/><a class='editAssetstoreLink' element='{$assetstore->getKey()}'>edit</a> <a class='removeAssetstoreLink' element='{$assetstore->getKey()}'>remove</a>";
-       echo"</div>";
+       echo "<div class='assetstoreActions'>
+               <button class='editAssetstoreLink' element='{$assetstore->getKey()}'>Edit</button>
+               <button class='removeAssetstoreLink' element='{$assetstore->getKey()}'>Delete</button>
+             </div>
+         </div>";
        }
      ?>
 
-      <a class="load-newassetstore" href="#newassetstore-form" rel="#newassetstore-form" title="<?php echo $this->t('Add a new assetstore')?>">Add a new assetstore</a>
+      <a class="load-newassetstore" href="#newassetstore-form" rel="#newassetstore-form" title="<?php echo $this->t('Add assetstore')?>">Add a new assetstore</a>
       <br/>
-      <a  href="<?php echo $this->webroot?>/import" >Import local files</a>
+      <a href="<?php echo $this->webroot?>/import" >Import local files</a>
 
-      <div id="newassetstore-form"  style="display:none">
+      <div id="newassetstore-form" style="display:none;">
+         <div class="addAssetstoreFormError errorText" style="display:none;"></div>
          <?php echo $this->assetstoreForm; ?>
       </div>
     </div>
