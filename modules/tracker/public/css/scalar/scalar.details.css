@@ -1,0 +1,45 @@
+div.sectionDivider {
+  height: 1px;
+  background-color: #c7c7c7;
+  margin-top: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+span.sectionTitle {
+  background-color: white;
+  position: relative;
+  top: -7px;
+  left: 12px;
+  padding-left: 3px;
+  padding-right: 3px;
+  color: #707070;
+}
+
+div.thisScalarInfo {
+  margin-bottom: 13px;
+}
+
+div.otherScalars {
+  margin-bottom: 15px;
+}
+
+span.resultItemLabel {
+  color: #555555;
+  font-weight: bold;
+}
+
+table.scalarInfoTable th, table.otherScalarTable th {
+  padding-right: 6px;
+  color: #555555;
+  font-weight: bold;
+}
+
+div.resultItemContainer {
+  margin-top: 3px;
+}
+
+div.bottomButtons {
+  float: right;
+  margin-top: 10px;
+}
