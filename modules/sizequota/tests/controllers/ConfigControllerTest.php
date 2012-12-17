@@ -79,8 +79,9 @@ class PerformTest extends ControllerTestCase
     $this->dispatchUrI('/sizequota/config/folder?folderId='.$user1->getFolderId(), null, true);
 
     // Exception if non-root folder is passed
+    $subfolders = $user1->getFolder()->getFolders();
     $this->resetAll();
-    $this->dispatchUrI('/sizequota/config/folder?folderId='.$user1->getPublicfolderId(), $user1, true);
+    $this->dispatchUrI('/sizequota/config/folder?folderId='.$subfolders[0]->getKey(), $user1, true);
 
     // User 1 should be able to view their own root folder's quota info, but not see the form to change it
     $this->resetAll();
@@ -202,13 +203,14 @@ class PerformTest extends ControllerTestCase
 
     // This should also work on non-root folders
     $this->resetAll();
-    $this->dispatchUrI('/sizequota/config/getfreespace?folderId='.$user1->getPublicfolderId(), $user1);
+    $this->dispatchUrI('/sizequota/config/getfreespace?folderId=1001', $user1);
     $resp = JsonComponent::decode($this->getBody());
     $this->assertTrue($resp['status'] == true);
 
     // Should also work for community folders
     $this->resetAll();
-    $this->dispatchUrI('/sizequota/config/getfreespace?folderId='.$comm->getPublicfolderId(), $adminUser);
+    $commFolders = $comm->getFolder()->getFolders();
+    $this->dispatchUrI('/sizequota/config/getfreespace?folderId='.$commFolders[0]->getKey(), $adminUser);
     $resp = JsonComponent::decode($this->getBody());
     $this->assertTrue($resp['status'] == true);
     $this->assertEquals($resp['freeSpace'], '10000');

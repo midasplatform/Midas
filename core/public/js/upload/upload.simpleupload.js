@@ -226,4 +226,13 @@ $('.browseMIDASLink').click(function () {
     midas.loadDialog("select", "/browse/selectfolder/?policy=write");
     midas.showDialog('Select upload destination');
 });
+
+if($('#destinationId').val()) {
+    $('#startUploadLink').removeAttr('disabled');
+}
+
+midas.registerCallback('CALLBACK_CORE_UPLOAD_FOLDER_CHANGED', 'core', function () {
+    $('#startUploadLink').removeAttr('disabled');
+});
+
 midas.doCallback('CALLBACK_CORE_SIMPLEUPLOAD_LOADED');

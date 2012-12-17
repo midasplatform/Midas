@@ -10,8 +10,7 @@
     parent_id="-1"/>
 
   <community community_id="2000" name="Community test User 1"
-    description="Community test User 1" creation="2011-01-27 12:09:02"
-    privacy="0" folder_id="1003" publicfolder_id="1004" privatefolder_id="1005"
+    description="Community test User 1" creation="2011-01-27 12:09:02" privacy="0" folder_id="1003"
     admingroup_id="3000" moderatorgroup_id="3001" membergroup_id="3002"
     uuid='4e311fdf82107d245f0798d654fc24205f2621eb72777' />
 
@@ -50,8 +49,8 @@
 
 
   <user user_id="1" firstname="FirstName1" lastname="LastName1"
-    email="user1@user1.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:09:02"
-    folder_id="1000" publicfolder_id="1001" privatefolder_id="1002" admin="0" />
+    email="user1@user1.com" password="35fd8ba86ba403ffcc00feac5355ad20"
+    creation="2011-01-27 12:09:02" folder_id="1000" admin="0" />
 
 <!-- To test Export component -->
   <user user_id="2" firstname="FirstName2" lastname="LastName2"
@@ -60,7 +59,7 @@
 <!-- To test admin user capabilities -->
   <user user_id="3" firstname="Admin" lastname="Admin"
     email="admin@admin.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" admin="1"
-    folder_id="1006" publicfolder_id="1007" privatefolder_id="1008"/>
+    folder_id="1006" />
 
   <user2group group_id="3000" user_id="1" />
   <user2group group_id="3002" user_id="1" />
@@ -136,9 +135,8 @@
   <!-- second community, associated folders and groups -->
   <community community_id="2001" name="Community For Deletion"
     description="Community test User 1" creation="2011-01-27 12:09:02"
-    privacy="0" folder_id="1009" publicfolder_id="1010" privatefolder_id="1011"
-    admingroup_id="3003" moderatorgroup_id="3004" membergroup_id="3005"
-    uuid='7811ff82107d245f0798d654fc24205f2621eb72777' />
+    privacy="0" folder_id="1009" admingroup_id="3003" moderatorgroup_id="3004"
+    membergroup_id="3005" uuid='7811ff82107d245f0798d654fc24205f2621eb72777' />
   <group group_id="3003" community_id="2001" name="Community For Deletion Admin" />
   <group group_id="3004" community_id="2001" name="Community For Deletion Moderator" />
   <group group_id="3005" community_id="2001" name="Community For Deletion Member" />
@@ -171,13 +169,13 @@
   <item2folder item_id="1006" folder_id='1014' />
 
   <user user_id="4" firstname="community2001" lastname="Member"
-    admin="0" email="community2001@member.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" publicfolder_id="1007" privatefolder_id="1008"/>
+    admin="0" email="community2001@member.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" />
   <user2group group_id="3005" user_id="4" />
   <user user_id="5" firstname="community2001" lastname="Moderator"
-    admin="0" email="community2001@moderator.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" publicfolder_id="1007" privatefolder_id="1008"/>
+    admin="0" email="community2001@moderator.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" />
   <user2group group_id="3004" user_id="5" />
   <user user_id="6" firstname="community2001" lastname="Admin"
-    admin="0" email="community2001@admin.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" publicfolder_id="1007" privatefolder_id="1008"/>
+    admin="0" email="community2001@admin.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" />
   <user2group group_id="3003" user_id="6" />
 
 </dataset>

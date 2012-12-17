@@ -11,7 +11,7 @@
 
   <community community_id="2000" name="Community test User 1"
     description="Community test User 1" creation="2011-01-27 12:09:02"
-    privacy="0" folder_id="1003" publicfolder_id="1004" privatefolder_id="1005"
+    privacy="0" folder_id="1003"
     admingroup_id="3000" moderatorgroup_id="3001" membergroup_id="3002"
     uuid='4e311fdf82107d245f0798d654fc24205f2621eb72777' />
 
@@ -46,7 +46,7 @@
 
   <user user_id="1" firstname="Firstname1" lastname="Lastname1"
     email="user1@user1.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:09:02"
-    folder_id="1000" publicfolder_id="1001" privatefolder_id="1002" admin="0" />
+    folder_id="1000" admin="0" />
 
 <!-- To test Export component -->
   <user user_id="2" firstname="Firstname2" lastname="Lastname2"

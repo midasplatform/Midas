@@ -34,8 +34,6 @@ abstract class CommunityModelBase extends AppModel
       'creation' => array('type' => MIDAS_DATA),
       'privacy' => array('type' => MIDAS_DATA),
       'folder_id' => array('type' => MIDAS_DATA),
-      'publicfolder_id' => array('type' => MIDAS_DATA),
-      'privatefolder_id' => array('type' => MIDAS_DATA),
       'admingroup_id' => array('type' => MIDAS_DATA),
       'moderatorgroup_id' => array('type' => MIDAS_DATA),
       'membergroup_id' => array('type' => MIDAS_DATA),
@@ -43,8 +41,6 @@ abstract class CommunityModelBase extends AppModel
       'view' => array('type' => MIDAS_DATA),
       'uuid' => array('type' => MIDAS_DATA),
       'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
-      'public_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'publicfolder_id', 'child_column' => 'folder_id'),
-      'private_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'privatefolder_id', 'child_column' => 'folder_id'),
       'admin_group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'admingroup_id', 'child_column' => 'group_id'),
       'moderator_group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'moderatorgroup_id', 'child_column' => 'group_id'),
       'invitations' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'CommunityInvitation', 'parent_column' => 'community_id', 'child_column' => 'community_id'),
@@ -63,7 +59,7 @@ abstract class CommunityModelBase extends AppModel
   abstract function getAll();
   /** Returns a community by its uuid */
   abstract function getByUuid($uuid);
-  /** Returns a community given its folder (either public,private or base folder) */
+  /** Returns a community given its root folder */
   abstract function getByFolder($folder);
 
   /** save */
@@ -150,7 +146,10 @@ abstract class CommunityModelBase extends AppModel
     $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
 
     $folderGlobal = $folderModel->createFolder('community_'.$communityDao->getKey(), '', MIDAS_FOLDER_COMMUNITYPARENT);
-    $folderPublic = $folderModel->createFolder('Public', '', $folderGlobal);
+    if($communityDao->getPrivacy() == MIDAS_COMMUNITY_PUBLIC)
+      {
+      $folderPublic = $folderModel->createFolder('Public', '', $folderGlobal);
+      }
     $folderPrivate = $folderModel->createFolder('Private', '', $folderGlobal);
 
     $adminGroup = $groupModel->createGroup($communityDao, 'Administrator');
@@ -159,8 +158,6 @@ abstract class CommunityModelBase extends AppModel
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
 
     $communityDao->setFolderId($folderGlobal->getKey());
-    $communityDao->setPublicfolderId($folderPublic->getKey());
-    $communityDao->setPrivatefolderId($folderPrivate->getKey());
     $communityDao->setAdmingroupId($adminGroup->getKey());
     $communityDao->setModeratorgroupId($moderatorsGroup->getKey());
     $communityDao->setMembergroupId($memberGroup->getKey());
@@ -179,19 +176,19 @@ abstract class CommunityModelBase extends AppModel
       }
 
     $folderpolicygroupModel->createPolicy($adminGroup, $folderGlobal, MIDAS_POLICY_ADMIN);
-    $folderpolicygroupModel->createPolicy($adminGroup, $folderPublic, MIDAS_POLICY_ADMIN);
     $folderpolicygroupModel->createPolicy($adminGroup, $folderPrivate, MIDAS_POLICY_ADMIN);
 
     $folderpolicygroupModel->createPolicy($moderatorsGroup, $folderGlobal, MIDAS_POLICY_READ);
-    $folderpolicygroupModel->createPolicy($moderatorsGroup, $folderPublic, MIDAS_POLICY_WRITE);
     $folderpolicygroupModel->createPolicy($moderatorsGroup, $folderPrivate, MIDAS_POLICY_WRITE);
 
     $folderpolicygroupModel->createPolicy($memberGroup, $folderGlobal, MIDAS_POLICY_READ);
-    $folderpolicygroupModel->createPolicy($memberGroup, $folderPublic, MIDAS_POLICY_READ);
     $folderpolicygroupModel->createPolicy($memberGroup, $folderPrivate, MIDAS_POLICY_READ);
 
-    if($communityDao->getPrivacy() != MIDAS_COMMUNITY_PRIVATE)
+    if($communityDao->getPrivacy() == MIDAS_COMMUNITY_PUBLIC)
       {
+      $folderpolicygroupModel->createPolicy($adminGroup, $folderPublic, MIDAS_POLICY_ADMIN);
+      $folderpolicygroupModel->createPolicy($moderatorsGroup, $folderPublic, MIDAS_POLICY_WRITE);
+      $folderpolicygroupModel->createPolicy($memberGroup, $folderPublic, MIDAS_POLICY_READ);
       $folderpolicygroupModel->createPolicy($anonymousGroup, $folderPublic, MIDAS_POLICY_READ);
       if($user != NULL)
         {
@@ -392,66 +389,6 @@ abstract class CommunityModelBase extends AppModel
     // update folderpolicygroup, itempolicygroup and feedpolicygroup tables when community privacy is changed between public and private
     // users in Midas_anonymouse_group can see community's public folder only if the community is set as public
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-    $communityPublicFolder = $communityDao->getPublicFolder();
-    $folderpolicygroupDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $communityPublicFolder);
-    if($privacyCode == MIDAS_COMMUNITY_PRIVATE && $folderpolicygroupDao !== false)
-      {
-      // process root folder
-      $folderpolicygroupModel->delete($folderpolicygroupDao);
-      // process items in root folder
-      $items = $communityPublicFolder->getItems();
-      foreach($items as $item)
-        {
-        $itempolicygroupDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
-        if($itempolicygroupDao !== false)
-          {
-          $itempolicygroupModel->delete($itempolicygroupDao);
-          }
-        }
-      // process all the children (and grandchildren ...) folders
-      $subfolders = $folderModel->getAllChildren($communityDao->getPublicFolder(), $userDao);
-      foreach($subfolders as $subfolder)
-        {
-        $subfolderpolicygroupDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $subfolder);
-        if($subfolderpolicygroupDao !== false)
-          {
-          $folderpolicygroupModel->delete($subfolderpolicygroupDao);
-          }
-        // process items in children folders
-        $subitems = $subfolder->getItems();
-        foreach($subitems as $subfolderItem)
-          {
-          $subfolderitemolicygroupDao = $itempolicygroupModel->getPolicy($anonymousGroup, $subfolderItem);
-          if($subfolderitemolicygroupDao !== false)
-            {
-            $itempolicygroupModel->delete($subfolderitemolicygroupDao);
-            }
-          }
-        }
-      }
-    else if($privacyCode == MIDAS_COMMUNITY_PUBLIC && $folderpolicygroupDao == false)
-      {
-      // process root folder
-      $folderpolicygroupModel->createPolicy($anonymousGroup, $communityPublicFolder, MIDAS_POLICY_READ);
-      // process items in root folder
-      $items = $communityPublicFolder->getItems();
-      foreach($items as $item)
-        {
-        $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
-        }
-      // process all the children (and grandchildren ...) folders
-      $subfolders = $folderModel->getAllChildren($communityDao->getPublicFolder(), $userDao);
-      foreach($subfolders as $subfolder)
-        {
-        $folderpolicygroupModel->createPolicy($anonymousGroup, $subfolder, MIDAS_POLICY_READ);
-        // process items in children folders
-        $subitems = $subfolder->getItems();
-        foreach($subitems as $subfolderItem)
-          {
-          $itempolicygroupModel->createPolicy($anonymousGroup, $subfolderItem, MIDAS_POLICY_READ);
-          }
-        }
-      }
 
     // users in Midas_anonymouse_group can see CREATE_COMMUNITY feed for this community only if the community is set as public
     $feedcreatecommunityDaos = $feedModel->getFeedByResourceAndType(MIDAS_FEED_CREATE_COMMUNITY, $communityDao);

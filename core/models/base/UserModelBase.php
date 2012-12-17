@@ -39,8 +39,6 @@ abstract class UserModelBase extends AppModel
       'folder_id' => array('type' => MIDAS_DATA),
       'admin' => array('type' => MIDAS_DATA),
       'privacy' => array('type' => MIDAS_DATA),
-      'publicfolder_id' => array('type' => MIDAS_DATA),
-      'privatefolder_id' => array('type' => MIDAS_DATA),
       'view' => array('type' => MIDAS_DATA),
       'uuid' => array('type' => MIDAS_DATA),
       'city' => array('type' => MIDAS_DATA),
@@ -49,8 +47,6 @@ abstract class UserModelBase extends AppModel
       'biography' => array('type' => MIDAS_DATA),
       'dynamichelp' => array('type' => MIDAS_DATA),
       'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id'),
-      'public_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'publicfolder_id', 'child_column' => 'folder_id'),
-      'private_folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'privatefolder_id', 'child_column' => 'folder_id'),
       'groups' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Group', 'table' => 'user2group', 'parent_column' => 'user_id', 'child_column' => 'group_id'),
       'invitations' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'CommunityInvitation', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
       'folderpolicyuser' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Folderpolicyuser', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
@@ -68,7 +64,7 @@ abstract class UserModelBase extends AppModel
   abstract function getByName($firstName, $lastName);
   abstract function getUserCommunities($userDao);
   abstract function getByUuid($uuid);
-  /** Returns a user given its folder (either public,private or base folder) */
+  /** Returns a user given its root folder */
   abstract function getByFolder($folder);
   /** Returns all the users */
   abstract function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null, $currentUser = null);
@@ -251,8 +247,6 @@ abstract class UserModelBase extends AppModel
     $folderpolicyuserModel->createPolicy($userDao, $folderPublic, MIDAS_POLICY_ADMIN);
 
     $userDao->setFolderId($folderGlobal->getKey());
-    $userDao->setPublicfolderId($folderPublic->getKey());
-    $userDao->setPrivatefolderId($folderPrivate->getKey());
 
     parent::save($userDao);
     $this->getLogger()->info(__METHOD__ . " Registration: " . $userDao->getFullName() . " " . $userDao->getKey());

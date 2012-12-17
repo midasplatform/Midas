@@ -47,7 +47,8 @@ class ArchiveExtractControllerTest extends ControllerTestCase
     $uploadComponent = $componentLoader->loadComponent('Upload');
 
     $adminUser = $this->User->load(3);
-    $parent = $adminUser->getPublicFolder();
+    $adminFolders = $adminUser->getFolder()->getFolders();
+    $parent = $adminFolders[0];
     $path = BASE_PATH.'/modules/archive/tests/data/test.zip';
     $item = $uploadComponent->createUploadedItem($adminUser, 'test.zip', $path, $parent, null, '', true);
 
