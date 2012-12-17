@@ -41,6 +41,7 @@ abstract class AssetstoreModelBase extends AppModel
 
   /** Abstract functions */
   abstract function getAll();
+  abstract function moveBitstreams($srcAssetstore, $dstAssetstore, $progressDao = null);
 
   /**
    * helper function to detect a collision between a row with the

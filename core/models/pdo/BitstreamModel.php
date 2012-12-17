@@ -69,6 +69,22 @@ class BitstreamModel extends BitstreamModelBase
     }
 
   /**
+   * Count the total number of bitstreams in the system. Provide an assetstore
+   * dao if you wish to count the number in a single assetstore.
+   */
+  function countAll($assetstoreDao = null)
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->from('bitstream', array('count' => 'count(*)'));
+    if($assetstoreDao)
+      {
+      $sql->where('assetstore_id = ?', $assetstoreDao->getKey());
+      }
+    $row = $this->database->fetchRow($sql);
+    return $row['count'];
+    }
+
+  /**
    * Call this to remove all orphaned item revision records
    */
   function removeOrphans($progressDao = null)
