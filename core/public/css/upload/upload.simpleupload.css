@@ -3,9 +3,12 @@
 }
 
 .cluetip-jtip #cluetip-inner {
-width:94%!important;
+  width:94%!important;
 }
 
+div.file_upload {
+  padding-right: 15px;
+}
 
 #swfuploadContent{
 
