@@ -16,12 +16,12 @@ class Batchmake_ExecuteComponent extends AppComponent
   {
 
   /**
-   * takes a list of itemIds, expects these to each have a single bitstream,
+   * takes a list of itemNames => itemIds, expects these to each have a single bitstream,
    * exports these items to a work dir, and returns a list of
    * itemName => fullExportPath
    * @param type $userDao
    * @param type $taskDao
-   * @param type $itemsForExport
+   * @param type $itemsForExport, array itemNames => itemIds
    * @return string
    */
   public function exportSingleBitstreamItemsToWorkDataDir($userDao, $taskDao, $itemsForExport)
