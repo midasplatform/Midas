@@ -225,7 +225,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
   /**
    * Test the download controller in the case of a one-bitstream item
    */
-  function testDownloadBitstream()
+  function testDownloadAction()
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
@@ -245,6 +245,23 @@ class UploadDownloadControllerTest extends ControllerTestCase
     // Downloading an invalid bitstream id should respond with 404 and exception
     $this->resetAll();
     $this->dispatchUrI('/download?bitstream=934192', $userDao, true, false);
+
+    // Should not throw an exception; we should reach download empty zip code
+    $this->resetAll();
+    $this->dispatchUrI('/download?items=', $userDao);
+    $this->assertEquals(trim($this->getBody()), 'No_item_selected');
+
+    // We should get a 403 when we try to download an item we have no permission on (1002)
+    $this->resetAll();
+    $this->dispatchUrI('/download?items=1004-1002', $userDao, true);
+    $this->assertResponseCode(403);
+    $this->assertTrue(preg_match('/Read permission required on item 1002/', $this->getBody()) > 0);
+
+    // We should get a 404 when we try to download an item that doesn't exist
+    $this->resetAll();
+    $this->dispatchUrI('/download?items=214529', $userDao, true, false);
+    $this->assertResponseCode(404);
+    $this->assertTrue(preg_match('/Item does not exist: 214529/', $this->getBody()) > 0);
     }
 
   /**
