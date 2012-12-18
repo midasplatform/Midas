@@ -251,17 +251,13 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $this->dispatchUrI('/download?items=', $userDao);
     $this->assertEquals(trim($this->getBody()), 'No_item_selected');
 
-    // We should get a 403 when we try to download an item we have no permission on (1002)
+    // We should get an exception if we try to download item 1002
     $this->resetAll();
     $this->dispatchUrI('/download?items=1004-1002', $userDao, true);
-    $this->assertResponseCode(403);
-    $this->assertTrue(preg_match('/Read permission required on item 1002/', $this->getBody()) > 0);
 
-    // We should get a 404 when we try to download an item that doesn't exist
+    // We should get an exception if trying to download an item that doesn't exist
     $this->resetAll();
     $this->dispatchUrI('/download?items=214529', $userDao, true, false);
-    $this->assertResponseCode(404);
-    $this->assertTrue(preg_match('/Item does not exist: 214529/', $this->getBody()) > 0);
     }
 
   /**
