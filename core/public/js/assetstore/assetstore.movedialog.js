@@ -12,8 +12,10 @@ $('#moveBitstreamsConfirm').click(function () {
       $('#moveBitstreamsProgressMessage'),
       json.global.webroot+'/assetstore/movecontents',
       params,
-      function (resp) {
-          window.location = json.global.webroot+'/admin#tabs-assetstore';
-          window.location.reload();
+      function (text) {
+          $('div.MainDialog').dialog('close');
+          $('#moveBitstreamsConfirm').removeAttr('disabled');
+          var resp = $.parseJSON(text);
+          midas.createNotice(resp.message, 3000, resp.status);
       });
 });
