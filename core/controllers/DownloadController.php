@@ -97,6 +97,7 @@ class DownloadController extends AppController
     $folderIds = explode('-', $folderIds);
     $folders = $this->Folder->load($folderIds);
 
+    $item = null;
     $itemIds = explode('-', $itemIds);
     $revisions = array();
     if(!empty($itemIds))
@@ -110,9 +111,13 @@ class DownloadController extends AppController
           continue;
           }
         $item = $this->Item->load($tmp[0]);
-        if($item == false || !$this->Item->policyCheck($item, $sessionUser))
+        if(!$item)
           {
-          continue;
+          throw new Zend_Exception('Item does not exist: '.$tmp[0], 404);
+          }
+        if(!$this->Item->policyCheck($item, $sessionUser))
+          {
+          throw new Zend_Exception('Read permission required on item '.$tmp[0], 403);
           }
         if(isset($tmp[1]))
           {
@@ -138,7 +143,7 @@ class DownloadController extends AppController
       // download an empty zip with the name of item (if it exists), then exit
       $this->_downloadEmptyItem($item);
       }
-    if(empty($folders) && count($revisions) == 1)
+    else if(empty($folders) && count($revisions) == 1)
       {
       $revision = $revisions[0];
       $bitstreams = $revision->getBitstreams();
@@ -441,7 +446,7 @@ class DownloadController extends AppController
     ob_start();
     Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
     $this->_helper->viewRenderer->setNoRender();
-    if(isset($item))
+    if(isset($item) && $item instanceof ItemDao)
       {
       $name = $item->getName();
       }
@@ -450,6 +455,11 @@ class DownloadController extends AppController
       $name = "No_item_selected";
       }
     $name = substr($name, 0, 50);
+    if(headers_sent())
+      {
+      echo $name; //this is used in testing mode since we cannot send headers from ZipStream
+      return;
+      }
     $zip = new ZipStream($name.'.zip');
     $zip->finish();
     exit();
