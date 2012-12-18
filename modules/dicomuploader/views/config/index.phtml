@@ -1,0 +1,149 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->apiWebroot.'/public/js/common/common.ajaxapi.js');
+$this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config.index.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.index.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<div class="viewMain">
+     <div class ="genericWrapperTopRight">
+         <?php
+          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+            echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+            echo $this->t('Back');
+            echo "</a>";
+          echo '</div>';
+
+        ?>
+    </div>
+    <h3>Requirements</h3>
+    This module requires dcm2xml and storescp from <b>DCMTK</b> to receive DICOM files.<br/>
+    To install it: <a href="http://support.dcmtk.org/wiki/dcmtk/howto/start" target="_blank">http://support.dcmtk.org/wiki/dcmtk/howto/start</a><br/><br/>
+
+    This module requires <b>Pydas</b> to upload DICOM files.<br/>
+    To install it: <a href="http://pydas.readthedocs.org/" target="_blank">http://pydas.readthedocs.org/</a><br/>
+
+    <?php
+      echo "
+      <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
+      <h3>DICOM Uploader configuration:</h3>
+            <div >
+              <label for='dcm2xml'>Command to run dcm2xml</label>
+              {$this->configForm['dcm2xml']}
+            </div>
+            <br />
+            <div >
+              <label for='storescp'>Command to run storescp</label>
+              {$this->configForm['storescp']}
+            </div >
+            <div >
+              <label for='storescp_port'>Storescp port to listen</label>
+              {$this->configForm['storescp_port']}
+            </div >
+            <div >
+              <label for='storescp_study_timeout'>Storescp study_timeout (in seconds, idle period before a study is considered complete)</label>
+              {$this->configForm['storescp_study_timeout']}
+            </div >
+            <br />
+            <br />
+            <div>
+              <label for='receptiondir'>Temporary reception directory on local disk</label>
+              {$this->configForm['receptiondir']}
+            </div>
+            <br />
+            <div>
+              <label for='receptiondir'>Upload destination Midas folder</label>
+              {$this->configForm['pydas_dest_folder']}
+            </div>
+          <div>
+            {$this->configForm['submitConfig']}
+          </div>
+       </form>";
+       ?>
+
+    <h3>Use this dashboard to verify current configuration:</h3>
+    <?php
+    echo "<table>";
+    foreach($this->dashboard as $name => $status)
+      {
+      echo "<tr>";
+      echo "  <td>$name </td>";
+      if($status[0])
+        {
+        echo "  <td><img src='{$this->coreWebroot}/public/images/icons/ok.png' /></td>";
+        }
+      else
+        {
+        echo "  <td><img src='{$this->coreWebroot}/public/images/icons/nok.png' /></td>";
+        }
+      if(isset($status[1]))
+        {
+        echo "  <td>$status[1]</td>";
+        }
+      echo "</tr>";
+      }
+    echo "</table>";
+    ?>
+
+    <h3>Start/Stop DICOM Uploader</h3>
+    <div>
+      <div style="margin-right:10px;" class="genericBigButton " id="startUploader">Start</div>
+      <div style="margin-right:10px;" class="genericBigButton " id="stopUploader">Stop</div>
+      <div style="margin-right:10px;">
+        <h3>Status:
+          <span class="running_status" id="running_status" style="display:none">Running</span>
+          <span class="not_running_status" id="not_running_status" style="display:none">Not Running</span>
+        </h3>
+      </div>
+      <div id="start_uploader_user" class="start_uploader_user" style="display:none">
+         Midas user who started DICOM uploader: <span id="span_start_uploader_user"></span>
+      </div>
+      <br/>
+      <div style="margin-right:10px;display:none" class="genericBigButton " id="hideError">Hide Error</div>
+      <div id="apicall_failure" class="apicall_failure" style="display:none">
+         <textarea id="apicall_failure_reason" rows="5" cols="80" readonly> </textarea>
+      </div>
+    </div>
+    In some platforms, the above start/stop buttons may not work because the web server user is lack of permissions. The following commands can be used to start/stop DICOM Uploader in command line.
+    <div class="manualCommandsWrapper" style="display: none">
+    <h3 class="sectionHeader"><a href="#">Start/Stop DICOM Uploader in command line</a></h3>
+    <ul>
+      <li>
+        Before start/stop DICOM uploader in command line, make sure the user to run the command:
+      </li>
+      <li>
+        1) has permission to run this command: <span class="set_bold" id="dcm2xml_command"/>
+      </li>
+      <li>
+        2) has permission to run this command: <span class="set_bold" id="storescp_command"/>
+      </li>
+      <li>
+        3) has write permission to this directory: <span class="set_bold" id="reception_dir"/>
+      </li>
+      <li>
+       If all above requirements are met, copy/paste the following commands to start/stop DIOCM Uploader in command line.
+       <span class="set_bold">Refresh the page to show the current running status if DIOCM Uploader is started/stopped in command line.</span>
+      </li>
+      <li class="manual_start">
+        <span class="set_bold" >Start DICOM Uploader:</span> <br/>
+        <span id="manual_start"></span>
+      </li>
+      <li class="manual_stop">
+        <span class="set_bold">Stop DICOM Uploader:</span> <br/>
+        <span id="manual_stop"></span>
+      </li>
+    </ul>
+  </div>
+
+</div>
