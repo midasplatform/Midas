@@ -31,7 +31,7 @@ class AssetstoreControllerTest extends ControllerTestCase
   public function setUp()
     {
     $this->setupDatabase(array('default'));
-    $this->_models = array('Assetstore', 'User');
+    $this->_models = array('Assetstore', 'Bitstream', 'User');
     $this->_daos = array('Assetstore', 'User');
     parent::setUp();
     $this->loadUsers();
@@ -322,4 +322,45 @@ class AssetstoreControllerTest extends ControllerTestCase
     $this->Assetstore->delete($createdAssetstoreDao);
     }
 
+  /**
+   * Test the move bitstreams between assetstores dialog
+   */
+  function testMoveDialog()
+    {
+    $pageURI = '/assetstore/movedialog?srcAssetstoreId='.$this->testAssetstoreDao->getKey();
+    $defaultAssetstore = $this->Assetstore->getDefault();
+
+    $this->ensureAdminRequired($pageURI);
+
+    $this->assertNotEquals($defaultAssetstore->getKey(), $this->testAssetstoreDao->getKey());
+    $this->assertQueryContentContains('option[value="'.$defaultAssetstore->getKey().'"]', $defaultAssetstore->getName());
+    $this->assertNotQuery('option[value="'.$this->testAssetstoreDao->getKey().'"]');
+    }
+
+  /**
+   * Testing moving bitstreams from one assetstore to another
+   */
+  function testMoveContents()
+    {
+    $defaultAssetstore = $this->Assetstore->getDefault();
+    $pageURI = '/assetstore/movecontents?srcAssetstoreId='.$defaultAssetstore->getKey();
+    $pageURI .= '&dstAssetstoreId='.$this->testAssetstoreDao->getKey();
+    $bitstream = $this->Bitstream->getByChecksum('f283bc88b24491ba85c65ba960642753');
+    $oldPath = $bitstream->getFullPath();
+    $newPath = $this->testAssetstoreDao->getPath().'/'.$bitstream->getPath();
+
+    if(!is_dir(dirname($oldPath)))
+      {
+      mkdir(dirname($oldPath), 0777, true);
+      }
+    touch($oldPath);
+
+    $this->assertTrue(is_file($oldPath));
+    $this->assertFalse(is_file($newPath));
+
+    $this->ensureAdminRequired($pageURI);
+
+    $this->assertFalse(is_file($oldPath));
+    $this->assertTrue(is_file($newPath));
+    }
   }
