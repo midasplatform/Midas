@@ -1,0 +1,32 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/community/community.selectgroup.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/community/community.selectgroup.css" />
+
+<div class="groupSelectContainer">
+  Which community group would you like to invite the user to?
+  <div>
+    <select id="groupSelect">
+      <?php
+      foreach($this->groups as $group)
+        {
+        echo '<option value="'.$group->getKey().'">'.$group->getName().'</option>';
+        }
+      ?>
+    </select>
+  </div>
+</div>
+
+<div class="bottomButtons">
+  <input id="groupSelectOk" type="button" class="globalButton" value="OK" />
+</div>

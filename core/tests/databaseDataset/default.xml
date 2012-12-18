@@ -178,4 +178,6 @@
     admin="0" email="community2001@admin.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" />
   <user2group group_id="3003" user_id="6" />
 
+  <newuserinvitation newuserinvitation_id="1001" email="dummy@dummy.com" auth_key="12345" inviter_id="4" community_id="2001" group_id="3003" date_creation="2011-01-27 12:11:02" />
+  <pendinguser pendinguser_id="1001" email="dummy@dummy.com" auth_key="12345" password="abcdef" firstname="Dummy" lastname="Dummy" date_creation="2011-01-27 12:11:02" />
 </dataset>

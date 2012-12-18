@@ -207,6 +207,7 @@ abstract class CommunityModelBase extends AppModel
       throw new Zend_Exception("Error in param: communityDao should be a CommunityDao.");
       }
     Zend_Registry::get('notifier')->callback('CALLBACK_CORE_COMMUNITY_DELETED', array('community' => $communityDao));
+
     $group_model = MidasLoader::loadModel('Group');
     $groups = $group_model->findByCommunity($communityDao);
     foreach($groups as $group)

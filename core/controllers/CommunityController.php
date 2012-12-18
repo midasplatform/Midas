@@ -313,6 +313,12 @@ class CommunityController extends AppController
       Zend_Registry::get('notifier')->callback('CALLBACK_CORE_USER_JOINED_COMMUNITY', array('user' => $this->userSession->Dao, 'community' => $communityDao));
       if($this->view->isInvited)
         {
+        $invitationDao = $this->CommunityInvitation->isInvited($communityDao, $this->userSession->Dao, true);
+        if($invitationDao->getGroupId() !== $member_group->getKey())
+          {
+          // If user is invited to something besides the member group, we should add them to that group also
+          $this->Group->addUser($invitationDao->getGroup(), $this->userSession->Dao);
+          }
         $this->CommunityInvitation->removeInvitation($communityDao, $this->userSession->Dao);
         }
       }
@@ -378,8 +384,8 @@ class CommunityController extends AppController
   /** Delete a community*/
   function deleteAction()
     {
-    $this->_helper->layout->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableLayout();
+    $this->disableView();
 
     $communityId = $this->_getParam("communityId");
     if(!isset($communityId) || !is_numeric($communityId))
@@ -396,69 +402,172 @@ class CommunityController extends AppController
     $this->_redirect('/');
     }//end delete
 
-  /** Invite a user to a community*/
+  /**
+   * Dialog for inviting a user to a community
+   * @param communityId Id of the community to invite into. Write permission required.
+   */
   function invitationAction()
     {
     $this->disableLayout();
 
-    $communityId = $this->_getParam("communityId");
-    if(!isset($communityId) || !is_numeric($communityId))
+    $communityId = $this->_getParam('communityId');
+    if(!isset($communityId))
       {
-      throw new Zend_Exception("Community ID should be a number");
+      throw new Zend_Exception('Must pass a communityId parameter');
       }
     $communityDao = $this->Community->load($communityId);
-    if($communityDao === false || !$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+    if(!$communityDao)
       {
-      throw new Zend_Exception("This community doesn't exist or you don't have the permissions.", 403);
+      throw new Zend_Exception('Invalid communityId', 404);
+      }
+    if(!$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception('Write permission required on the community', 403);
+      }
+    }
+
+  /**
+   * Ajax method for sending an invitation email to a user
+   * @param communityId Id of the community to invite into
+   * @param [groupId] Id of the group to invite into.  If none is passed, uses the members group
+   * @param [userId] Id of the user to invite. If not passed, must pass email parameter
+   * @param [email] Email of the user to invite.  If not passed, must pass userId parameter.
+                    If no such user exists, sends an email inviting the user to register and join the group.
+   */
+  function sendinvitationAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+
+    $communityId = $this->_getParam('communityId');
+    $userId = $this->_getParam('userId');
+    $email = $this->_getParam('email');
+
+    $community = $this->Community->load($communityId);
+    if(!$community)
+      {
+      throw new Zend_Exception('Invalid communityId', 404);
+      }
+    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception('Write permission required on the community', 403);
+      }
+    $isAdmin = $this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+
+    $groupId = $this->_getParam('groupId');
+    if(isset($groupId))
+      {
+      $group = $this->Group->load($groupId);
+      if($group->getCommunityId() != $community->getKey())
+        {
+        throw new Zend_Exception('Specified group is not in the specified community');
+        }
+      if(!$isAdmin && $groupId == $community->getAdmingroupId())
+        {
+        throw new Zend_Exception('Only members of the admin group may invite users to the admin group');
+        }
+      }
+    else
+      {
+      $group = $community->getMemberGroup();
       }
 
-    if($this->_request->isPost())
+    if(isset($userId)) // invite an existing user by id
       {
-      $this->disableView();
-      $sendInvitation = $this->_getParam('sendInvitation');
-      if(isset($sendInvitation))
+      $user = $this->User->load($userId);
+      if($user == false)
         {
-        $userId = $this->_getParam('userId');
-        $userDao = $this->User->load($userId);
-        if($userDao == false)
+        throw new Zend_Exception('Invalid userId');
+        }
+      $this->_sendUserInvitation($user, $group);
+      }
+    else if(isset($email)) // invite an existing or non-existing user by email
+      {
+      $email = strtolower($email);
+      $existingUser = $this->User->getByEmail($email);
+      if($existingUser)
+        {
+        $this->_sendUserInvitation($existingUser, $group);
+        }
+      else
+        {
+        $validator = new Zend_Validate_EmailAddress();
+        if(!$validator->isValid($email))
           {
-          throw new Zend_Exception("Unable to find user.");
+          throw new Zend_Exception('Invalid email syntax: '.$email);
           }
-        if($this->Group->userInGroup($userDao, $communityDao->getMemberGroup()))
+        $newuserModel = MidasLoader::loadModel('NewUserInvitation');
+        $newuserinvite = $newuserModel->createInvitation($email, $group, $this->userSession->Dao);
+
+        $url = $this->getServerURL().$this->view->webroot;
+        $subject = 'Midas invitation';
+        $text = $this->userSession->Dao->getFullName().
+                ' has invited you to join the <b>'.$community->getName().
+                '</b> community on Midas.<br/><br/>'.
+                '<a href="'.$url.'/user/emailregister?email='.$email.
+                '&authKey='.$newuserinvite->getAuthKey().
+                '">Click here</a> to complete your user registration '.
+                'if you wish to join.<br/><br/>Generated by Midas';
+        $headers = "From: Midas\nReply-To: no-reply\nX-Mailer: PHP/".phpversion().
+                "\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
+        if($this->isTestingEnv() || mail($email, $subject, $text, $headers))
           {
-          echo JsonComponent::encode(array(false, $userDao->getFullName().' is already a member of this community'));
-          return;
-          }
-        $invitation = $this->CommunityInvitation->createInvitation($communityDao, $this->userSession->Dao, $userDao);
-        // Check if there is already a pending invitation
-        if($invitation == false)
-          {
-          echo JsonComponent::encode(array(false, $userDao->getFullName().
-                                           $this->t(' is already invited to this community.')));
+          $this->getLogger()->info('User '.$this->userSession->Dao->getEmail().' emailed '.$email.' to join '
+            .$community->getName().' ('.$group->getName().' group)');
           }
         else
           {
-          if(!$this->isTestingEnv())
-            {
-            $url = $this->getServerURL().$this->view->webroot;
-            $email = $userDao->getEmail();
-            $subject = 'Midas community invitation';
-            $text = 'You have been invited to join the <b>'.$communityDao->getName().
-                    '</b> community at '.$url.'.<br/><br/>'.
-                    '<a href="'.$url.'/community/'.$communityDao->getKey().'">'.
-                    'Click here</a> to see the community, and click the "Join the community" button '.
-                    'if you wish to join.<br/><br/>Generated by Midas';
-            $headers = "From: Midas\nReply-To: no-reply\nX-Mailer: PHP/".phpversion()."\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
-            if(!mail($email, $subject, $text, $headers))
-              {
-              $this->getLogger()->warn('Failed sending community invitation email to '.$email.' for community '.$communityDao->getName());
-              }
-            }
-          echo JsonComponent::encode(array(true, $userDao->getFullName().' '.$this->t('has been invited')));
+          $this->getLogger()->warn('Failed sending register/community invitation email to '.$email.' for community '.$community->getName());
           }
+
+        echo JsonComponent::encode(array(true, 'Invitation sent to '.$email));
         }
       }
-    }//end invite
+    else
+      {
+      throw new Zend_Exception('Must pass userId or email parameter');
+      }
+    }
+
+  /**
+   * Helper method to create an invitaton record to the group and send an email to the existing user
+   */
+  private function _sendUserInvitation($userDao, $groupDao)
+    {
+    if($this->Group->userInGroup($userDao, $groupDao))
+      {
+      echo JsonComponent::encode(array(false, $userDao->getFullName().' is already a member of this community'));
+      return;
+      }
+    $community = $groupDao->getCommunity();
+    $invitation = $this->CommunityInvitation->createInvitation($groupDao, $this->userSession->Dao, $userDao);
+    // Check if there is already a pending invitation
+    if(!$invitation)
+      {
+      echo JsonComponent::encode(array(false, $userDao->getFullName().$this->t(' is already invited to this community.')));
+      }
+    else
+      {
+      $url = $this->getServerURL().$this->view->webroot;
+      $subject = 'Midas community invitation';
+      $text = 'You have been invited to join the <b>'.$community->getName().
+              '</b> community at '.$url.'.<br/><br/>'.
+              '<a href="'.$url.'/community/'.$community->getKey().'">'.
+              'Click here</a> to see the community, and click the "Join the community" button '.
+              'if you wish to join.<br/><br/>Generated by Midas';
+      $headers = "From: Midas\nReply-To: no-reply\nX-Mailer: PHP/".phpversion()."\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
+      if($this->isTestingEnv() || mail($userDao->getEmail(), $subject, $text, $headers))
+        {
+        $this->getLogger()->info('User '.$this->userSession->Dao->getEmail().' invited user '.$userDao->getEmail().' to '
+          .$community->getName().' ('.$groupDao->getName().' group)');
+        }
+      else
+        {
+        $this->getLogger()->warn('Failed sending community invitation email to '.$email.' for community '.$community->getName());
+        }
+      echo JsonComponent::encode(array(true, $userDao->getFullName().' '.$this->t('has been invited')));
+      }
+    }
 
   /** Create a community (ajax)*/
   function createAction()
@@ -658,5 +767,48 @@ class CommunityController extends AppController
       }
     $this->Group->removeUser($group, $user);
     echo JsonComponent::encode(array(true, 'Removed user '.$user->getFullName().' from group '.$group->getName()));
+    }
+
+  /**
+   * Show dialog for selecting a group from the community.
+   * Requires moderator or admin permission on the community
+   * @param communityId The id of the community
+   */
+  public function selectgroupAction()
+    {
+    $this->disableLayout();
+
+    $communityId = $this->_getParam('communityId');
+
+    if(!isset($communityId))
+      {
+      throw new Zend_Exception('Community id parameter required');
+      }
+    $community = $this->Community->load($communityId);
+    if(!$community)
+      {
+      throw new Zend_Exception('Community '.$communityId.' does not exist', 404);
+      }
+    if(!$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+      {
+      throw new Zend_Exception('Moderator or admin privileges required', 403);
+      }
+    $isAdmin = $this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+
+    $this->view->groups = array($community->getMemberGroup(), $community->getModeratorGroup());
+    if($isAdmin)
+      {
+      $this->view->groups[] = $community->getAdminGroup();
+      }
+    $allGroups = $community->getGroups();
+    foreach($allGroups as $group)
+      {
+      if($group->getKey() != $community->getMembergroupId() &&
+         $group->getKey() != $community->getModeratorgroupId() &&
+         $group->getKey() != $community->getAdmingroupId())
+        {
+        $this->view->groups[] = $group;
+        }
+      }
     }
   }//end class

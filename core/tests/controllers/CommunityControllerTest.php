@@ -16,7 +16,7 @@ class CommunityControllerTest extends ControllerTestCase
   public function setUp()
     {
     $this->setupDatabase(array('default'));
-    $this->_models = array('Community', 'Group', 'User');
+    $this->_models = array('Community', 'Group', 'User', 'NewUserInvitation', 'CommunityInvitation');
     $this->_daos = array();
     parent::setUp();
     }
@@ -40,6 +40,28 @@ class CommunityControllerTest extends ControllerTestCase
     $this->dispatchUrI('/community/'.$commFile[0]->getKey());
     $this->assertController('community');
     $this->assertAction('view');
+    }
+
+  /**
+   * STUB: Test delete action
+   */
+  public function testDeleteAction()
+    {
+    $commFile = $this->loadData('Community', 'default');
+    $userFile = $this->loadData('User', 'default');
+    $comm = $this->Community->load($commFile[0]->getKey());
+    $adminUser = $this->User->load($userFile[2]->getKey());
+
+    $this->assertTrue($comm instanceof CommunityDao);
+
+    // Anon should not be able to call this
+    $this->dispatchUrI('/community/delete?communityId='.$commFile[0]->getKey(), null, true);
+
+    // Admin should be able to call this
+    $this->resetAll();
+    $this->dispatchUrI('/community/delete?communityId='.$commFile[0]->getKey(), $adminUser);
+    $comm = $this->Community->load($commFile[0]->getKey());
+    $this->assertEquals($comm, null);
     }
 
   /**
@@ -187,6 +209,15 @@ class CommunityControllerTest extends ControllerTestCase
                        '&groupCheckbox_'.$comm->getModeratorgroupId().'=on',
                        $user1, true);
 
+    // Admin user should be able to promote user 2 to moderator
+    $this->resetAll();
+    $this->assertFalse($this->Community->policyCheck($comm, $user2, MIDAS_POLICY_WRITE));
+    $this->dispatchUrI('/community/promoteuser?communityId='.$comm->getKey().
+                       '&userId='.$user2->getKey().
+                       '&groupCheckbox_'.$comm->getModeratorgroupId().'=on',
+                       $adminUser);
+    $this->assertTrue($this->Group->userInGroup($user2, $comm->getModeratorGroup()));
+
     // User 1 should not be able to remove moderator status on user 2
     $this->resetAll();
     $this->dispatchUrI('/community/removeuserfromgroup?groupId='.$comm->getModeratorgroupId().
@@ -196,5 +227,153 @@ class CommunityControllerTest extends ControllerTestCase
     $this->resetAll();
     $this->dispatchUrI('/community/removeuserfromgroup?groupId='.$comm->getMembergroupId().
                        '&userId='.$adminUser->getKey(), $user1, true);
+
+    // Admin user should be able to remove users from groups
+    $this->resetAll();
+    $this->assertTrue($this->Group->userInGroup($user2, $comm->getMemberGroup()));
+    $this->dispatchUrI('/community/removeuserfromgroup?groupId='.$comm->getMembergroupId().
+                       '&userId='.$user2->getKey(), $adminUser);
+    $this->assertFalse($this->Group->userInGroup($user2, $comm->getMemberGroup()));
+    $this->assertFalse($this->Group->userInGroup($user2, $comm->getModeratorGroup()));
+    }
+
+  /**
+   * Test the community invitation dialog
+   */
+  public function testInvitationAction()
+    {
+    $commFile = $this->loadData('Community', 'default');
+    $userFile = $this->loadData('User', 'default');
+    $comm = $this->Community->load($commFile[0]->getKey());
+    $user1 = $this->User->load($userFile[0]->getKey());
+    $adminUser = $this->User->load($userFile[2]->getKey());
+
+    // Not passing a communityId should throw exception
+    $this->dispatchUrI('/community/invitation', $adminUser, true);
+
+    // Anonymous users should get exception
+    $this->resetAll();
+    $this->dispatchUrI('/community/invitation?communityId='.$comm->getKey(), null, true);
+
+    // Have user 1 join the community as a member; should not be able to see dialog
+    $this->Group->removeUser($comm->getModeratorGroup(), $user1);
+    $this->Group->removeUser($comm->getAdminGroup(), $user1);
+    $this->Group->addUser($comm->getMemberGroup(), $user1);
+    $this->resetAll();
+    $this->dispatchUrI('/community/invitation?communityId='.$comm->getKey(), $user1, true);
+
+    // Have user 1 join moderator group; now should be able to see dialog
+    $this->Group->addUser($comm->getModeratorGroup(), $user1);
+    $this->resetAll();
+    $this->dispatchUrI('/community/invitation?communityId='.$comm->getKey(), $user1);
+    }
+
+  /**
+   * Test select group dialog
+   */
+  public function testSelectgroupAction()
+    {
+    $commFile = $this->loadData('Community', 'default');
+    $userFile = $this->loadData('User', 'default');
+    $comm = $this->Community->load($commFile[0]->getKey());
+    $user1 = $this->User->load($userFile[0]->getKey());
+    $user2 = $this->User->load($userFile[1]->getKey());
+    $adminUser = $this->User->load($userFile[2]->getKey());
+
+    // Not passing a communityId should throw exception
+    $this->dispatchUrI('/community/selectgroup', $adminUser, true);
+
+    // Anonymous users should get exception
+    $this->resetAll();
+    $this->dispatchUrI('/community/selectgroup?communityId='.$comm->getKey(), null, true);
+
+    // Have user 1 join the community as a member; should not be able to see dialog
+    $this->Group->removeUser($comm->getModeratorGroup(), $user1);
+    $this->Group->removeUser($comm->getAdminGroup(), $user1);
+    $this->Group->addUser($comm->getMemberGroup(), $user1);
+    $this->resetAll();
+    $this->dispatchUrI('/community/selectgroup?communityId='.$comm->getKey(), $user1, true);
+
+    // Have user 1 join moderator group; now should be able to see dialog
+    $this->Group->addUser($comm->getModeratorGroup(), $user1);
+    $this->resetAll();
+    $this->dispatchUrI('/community/selectgroup?communityId='.$comm->getKey(), $user1);
+    $this->assertQuery('option[value="'.$comm->getMembergroupId().'"]');
+    $this->assertQuery('option[value="'.$comm->getModeratorgroupId().'"]');
+    $this->assertNotQuery('option[value="'.$comm->getAdmingroupId().'"]');
+
+    // Have user 1 join admin group; now should be able to see admin group also
+    $this->Group->addUser($comm->getAdminGroup(), $user1);
+    $this->resetAll();
+    $this->dispatchUrI('/community/selectgroup?communityId='.$comm->getKey(), $user1);
+    $this->assertQuery('option[value="'.$comm->getMembergroupId().'"]');
+    $this->assertQuery('option[value="'.$comm->getModeratorgroupId().'"]');
+    $this->assertQuery('option[value="'.$comm->getAdmingroupId().'"]');
+    }
+
+  /**
+   * Test sendinvitation action
+   */
+  public function testSendinvitationAction()
+    {
+    $commFile = $this->loadData('Community', 'default');
+    $userFile = $this->loadData('User', 'default');
+    $comm = $this->Community->load($commFile[0]->getKey());
+    $user1 = $this->User->load($userFile[0]->getKey());
+    $user2 = $this->User->load($userFile[1]->getKey());
+    $adminUser = $this->User->load($userFile[2]->getKey());
+
+    // Not passing a communityId should throw exception
+    $this->dispatchUrI('/community/sendinvitation', $adminUser, true);
+
+    // Anonymous users should get exception
+    $this->resetAll();
+    $this->dispatchUrI('/community/sendinvitation?communityId='.$comm->getKey(), null, true);
+
+    // Have user 1 join the community as a member; should not be able to see dialog
+    $this->Group->removeUser($comm->getModeratorGroup(), $user1);
+    $this->Group->removeUser($comm->getAdminGroup(), $user1);
+    $this->Group->addUser($comm->getMemberGroup(), $user1);
+    $this->resetAll();
+    $this->dispatchUrI('/community/sendinvitation?communityId='.$comm->getKey(), $user1, true);
+
+    // Have user 1 join moderator group; should not be able to invoke on admin group
+    $this->Group->addUser($comm->getModeratorGroup(), $user1);
+    $this->resetAll();
+    $this->dispatchUrI('/community/sendinvitation?communityId='.$comm->getKey().
+                       '&groupId='.$comm->getAdmingroupId().'&email=test@test.com', $user1, true);
+    // Should be able to invoke on moderator group
+    $this->resetAll();
+    $this->dispatchUrI('/community/sendinvitation?communityId='.$comm->getKey().
+                       '&groupId='.$comm->getModeratorgroupId().'&email=test@test.com', $user1);
+
+    // Default to member group
+    $this->resetAll();
+    $this->dispatchUrI('/community/sendinvitation?communityId='.$comm->getKey().
+                       '&email=test@test.com', $user1);
+    // Make sure we only have one record for test@test.com, and that it is the member group invitation
+    $invites = $this->NewUserInvitation->getAllByParams(array('email' => 'test@test.com', 'community_id' => $comm->getKey()));
+    $this->assertEquals(count($invites), 1);
+    $this->assertEquals($invites[0]->getGroupId(), $comm->getMembergroupId());
+
+    // Test the case of inviting an existing user by email (should not create new user invitation)
+    $this->resetAll();
+    $this->dispatchUrI('/community/sendinvitation?communityId='.$comm->getKey().
+                       '&email='.$user2->getEmail().'&groupId='.$comm->getModeratorgroupId(), $user1);
+    $newUserInvites = $this->NewUserInvitation->getAllByParams(array('email' => $user2->getEmail(), 'community_id' => $comm->getKey()));
+    $this->assertEquals(count($newUserInvites), 0);
+    $invite = $this->CommunityInvitation->isInvited($comm, $user2, true);
+    $this->assertTrue($invite instanceof CommunityInvitationDao);
+    $this->assertEquals($invite->getGroupId(), $comm->getModeratorgroupId());
+
+    // Test the case of inviting by user id
+    $this->resetAll();
+    $this->dispatchUrI('/community/sendinvitation?communityId='.$comm->getKey().
+                       '&userId='.$adminUser->getKey().'&groupId='.$comm->getModeratorgroupId(), $user1);
+    $newUserInvites = $this->NewUserInvitation->getAllByParams(array('email' => $adminUser->getEmail(), 'community_id' => $comm->getKey()));
+    $this->assertEquals(count($newUserInvites), 0);
+    $invite = $this->CommunityInvitation->isInvited($comm, $adminUser, true);
+    $this->assertTrue($invite instanceof CommunityInvitationDao);
+    $this->assertEquals($invite->getGroupId(), $comm->getModeratorgroupId());
     }
   }

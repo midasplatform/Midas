@@ -125,6 +125,10 @@ class AdminController extends AppController
       {
       $formArray['gravatar']->setValue($applicationConfig['global']['gravatar']);
       }
+    if(isset($applicationConfig['global']['verifyemail']))
+      {
+      $formArray['verifyemail']->setValue($applicationConfig['global']['verifyemail']);
+      }
     $this->view->selectedLicense = $applicationConfig['global']['defaultlicense'];
 
     try
@@ -166,6 +170,7 @@ class AdminController extends AppController
         $applicationConfig['global']['logtrace'] = $this->_getParam('logtrace');
         $applicationConfig['global']['httpproxy'] = $this->_getParam('httpProxy');
         $applicationConfig['global']['gravatar'] = $this->_getParam('gravatar');
+        $applicationConfig['global']['verifyemail'] = $this->_getParam('verifyemail');
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }

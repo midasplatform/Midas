@@ -93,9 +93,12 @@ $('#registerForm input').focusin(function () {
 
 
 $('form#registerForm').submit(function () {
-    $('#registerWaiting').show();
-    $('#registerForm input[type=submit]').attr('disabled', 'disabled');
-    return validRegisterForm();
+    var valid = validRegisterForm();
+    if(valid) {
+        $('#registerWaiting').show();
+        $('#registerForm input[type=submit]').attr('disabled', 'disabled');
+    }
+    return valid;
 });
 
 function checkEmail(mailteste) {

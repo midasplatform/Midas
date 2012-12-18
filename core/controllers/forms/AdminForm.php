@@ -56,6 +56,7 @@ class AdminForm extends AppForm
     $dynamichelp = new Zend_Form_Element_Checkbox('dynamichelp');
     $gravatar = new Zend_Form_Element_Checkbox('gravatar');
     $closeRegistration = new Zend_Form_Element_Checkbox('closeregistration');
+    $verifyEmail = new Zend_Form_Element_Checkbox('verifyemail');
     $logtrace = new Zend_Form_Element_Checkbox('logtrace');
 
     $httpProxy = new Zend_Form_Element_Text('httpProxy');
@@ -65,7 +66,8 @@ class AdminForm extends AppForm
 
     $form->addElements(
       array($dynamichelp, $keywords, $description, $timezone, $environment, $gravatar,
-      $lang, $name, $smartoptimizer, $closeRegistration, $submit, $logtrace, $httpProxy));
+      $lang, $name, $smartoptimizer, $closeRegistration, $submit, $logtrace, $httpProxy,
+      $verifyEmail));
     return $form;
     }
 

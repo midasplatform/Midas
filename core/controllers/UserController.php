@@ -21,7 +21,7 @@
 /** User Controller */
 class UserController extends AppController
   {
-  public $_models = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser', 'Group', 'Item', 'Community');
+  public $_models = array('User', 'NewUserInvitation', 'PendingUser', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group', 'Feed', 'Feedpolicygroup', 'Feedpolicyuser', 'Group', 'Item', 'Community');
   public $_daos = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group');
   public $_components = array('Breadcrumb', 'Date', 'Filter', 'Sortdao');
   public $_forms = array('User');
@@ -223,43 +223,65 @@ class UserController extends AppController
         echo JsonComponent::encode(array('status' => 'error', 'message' => 'That email is already registered', 'alreadyRegistered' => true));
         return;
         }
-      $email = $form->getValue('email');
-      $newUser = $this->User->createUser(
-      trim($form->getValue('email')),
-      $form->getValue('password1'),
-      trim($form->getValue('firstname')),
-      trim($form->getValue('lastname')));
-
-      if($adminCreate)
+      $email = strtolower(trim($form->getValue('email')));
+      if($adminCreate || !isset(Zend_Registry::get('configGlobal')->verifyemail) ||
+         Zend_Registry::get('configGlobal')->verifyemail != '1')
         {
-        $subject = 'Midas user registration';
-        $headers = "From: \nReply-To: no-reply\nX-Mailer: PHP/".phpversion()."\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
-        $url = 'http://'.$_SERVER['HTTP_HOST'].'/'.$this->view->webroot;
-        $body = "An administrator has created a user account for you at the following Midas instance:<br/><br/>";
-        $body .= '<a href="'.$url.'">'.$url.'</a><br/><br/>';
-        $body .= "Log in using this email address (".$email.") and your initial password:<br/><br/>";
-        $body .= '<b>'.$form->getValue('password1').'</b><br/><br/>';
-        $body .= "-Midas administrators";
-        if($this->isTestingEnv() || mail($email, $subject, $body, $headers))
+        $newUser = $this->User->createUser($email, $form->getValue('password1'), $form->getValue('firstname'), $form->getValue('lastname'));
+
+        if($adminCreate)
           {
-          echo JsonComponent::encode(array('status' => 'ok', 'message' => 'User created successfully'));
+          $subject = 'Midas user registration';
+          $headers = "From: Midas\nReply-To: no-reply\nX-Mailer: PHP/".phpversion()."\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
+          $url = $this->getServerURL().$this->view->webroot;
+          $body = "An administrator has created a user account for you at the following Midas instance:<br/><br/>";
+          $body .= '<a href="'.$url.'">'.$url.'</a><br/><br/>';
+          $body .= "Log in using this email address (".$email.") and your initial password:<br/><br/>";
+          $body .= '<b>'.$form->getValue('password1').'</b><br/><br/>';
+          $body .= "-Midas administrators";
+          if($this->isTestingEnv() || mail($email, $subject, $body, $headers))
+            {
+            echo JsonComponent::encode(array('status' => 'ok', 'message' => 'User created successfully'));
+            }
+          else
+            {
+            echo JsonComponent::encode(array('status' => 'warning',
+                                             'message' => 'User created, but sending of email failed',
+                                             'validValues' => $form->getValidValues($this->getRequest()->getPost())));
+            }
           }
         else
           {
-          echo JsonComponent::encode(array('status' => 'warning',
-                                           'message' => 'User created, but sending of email failed',
-                                           'validValues' => $form->getValidValues($this->getRequest()->getPost())));
+          if(!headers_sent())
+            {
+            session_start();
+            }
+          $this->userSession->Dao = $newUser;
+          session_write_close();
+          echo JsonComponent::encode(array('status' => 'ok', 'message' => 'User registered successfully'));
           }
         }
       else
         {
-        if(!headers_sent())
+        $pendingUser = $this->PendingUser->createPendingUser($email, $form->getValue('firstname'), $form->getValue('lastname'), $form->getValue('password1'));
+
+        $subject = 'Midas user registration';
+        $headers = "From: Midas\nReply-To: no-reply\nX-Mailer: PHP/".phpversion()."\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
+        $url = $this->getServerURL().$this->view->webroot.'/user/verifyemail?email='.$email;
+        $url .= '&authKey='.$pendingUser->getAuthKey();
+        $body = "You have created an account on Midas.<br/><br/>";
+        $body .= '<a href="'.$url.'">Click here</a> to verify your email and complete registration.<br/><br/>';
+        $body .= 'If you did not initiate this registration, please disregard this email.<br/><br/>';
+        $body .= "-Midas administrators";
+        if($this->isTestingEnv() || mail($email, $subject, $body, $headers))
           {
-          session_start();
+          echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Verification email sent'));
           }
-        $this->userSession->Dao = $newUser;
-        session_write_close();
-        echo JsonComponent::encode(array('status' => 'ok', 'message' => 'User registered successfully'));
+        else
+          {
+          echo JsonComponent::encode(array('status' => 'warning',
+                                           'message' => 'Failed to send verification email'));
+          }
         }
       }
     else
@@ -284,22 +306,90 @@ class UserController extends AppController
         {
         throw new Zend_Exception("User already exists.");
         }
-      if(!headers_sent())
-        {
-        session_start();
-        }
-      $this->userSession->Dao = $this->User->createUser(trim($form->getValue('email')), $form->getValue('password1'), trim($form->getValue('firstname')), trim($form->getValue('lastname')));
-      session_write_close();
 
-      $this->_redirect("/feed?first=true");
+      if(!isset(Zend_Registry::get('configGlobal')->verifyemail) || Zend_Registry::get('configGlobal')->verifyemail != '1')
+        {
+        if(!headers_sent())
+          {
+          session_start();
+          }
+        $this->userSession->Dao = $this->User->createUser(trim($form->getValue('email')), $form->getValue('password1'), trim($form->getValue('firstname')), trim($form->getValue('lastname')));
+        session_write_close();
+
+        $this->_redirect('/feed?first=true');
+        }
+      else
+        {
+        $email = strtolower(trim($form->getValue('email')));
+        $pendingUser = $this->PendingUser->createPendingUser($email, $form->getValue('firstname'), $form->getValue('lastname'), $form->getValue('password1'));
+
+        $subject = 'Midas user registration';
+        $headers = "From: Midas\nReply-To: no-reply\nX-Mailer: PHP/".phpversion()."\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
+        $url = $this->getServerURL().$this->view->webroot.'/user/verifyemail?email='.$email;
+        $url .= '&authKey='.$pendingUser->getAuthKey();
+        $body = "You have created an account on Midas.<br/><br/>";
+        $body .= '<a href="'.$url.'">Click here</a> to verify your email and complete registration.<br/><br/>';
+        $body .= 'If you did not initiate this registration, please disregard this email.<br/><br/>';
+        $body .= "-Midas administrators";
+        if($this->isTestingEnv() || mail($email, $subject, $body, $headers))
+          {
+          $this->_redirect('/user/emailsent');
+          }
+        }
       }
     $this->view->form = $this->getFormAsArray($form);
     $this->disableLayout();
     $this->view->jsonRegister = JsonComponent::encode(array(
-      'MessageNotValid' => $this->t('The e-mail is not valid'), 'MessageNotAvailable' => $this->t('That email is already registered'), 'MessagePassword' => $this->t('Password too short'), 'MessagePasswords' => $this->t('The passwords are not the same'), 'MessageLastname' => $this->t('Please set your lastname'), 'MessageTerms' => $this->t('Please validate the terms of service'), 'MessageFirstname' => $this->t('Please set your firstname')
+      'MessageNotValid' => $this->t('The e-mail is not valid'),
+      'MessageNotAvailable' => $this->t('That email is already registered'),
+      'MessagePassword' => $this->t('Password too short'),
+      'MessagePasswords' => $this->t('The passwords are not the same'),
+      'MessageLastname' => $this->t('Please set your lastname'),
+      'MessageTerms' => $this->t('Please validate the terms of service'),
+      'MessageFirstname' => $this->t('Please set your firstname')
     ));
-
     } //end register
+
+  /**
+   * Simple page to tell the user that an email has been sent to them
+   */
+  function emailsentAction()
+    {
+    $this->disableView();
+    echo '<div style="margin-top: 10px; padding-left: 10px;">'.
+         'An email with a link to complete registration has been sent to the '.
+         'specified address. You may close this page.</div>';
+    }
+
+  /**
+   * User will receive an email with a link to this action, which will move
+   * their pending user record into a user record if the authKey is correct
+   */
+  function verifyemailAction()
+    {
+    $email = $this->_getParam('email');
+    $authKey = $this->_getParam('authKey');
+    if(!isset($email) || !isset($authKey))
+      {
+      throw new Zend_Exception('Must pass email and authKey parameters');
+      }
+    $pendingUser = $this->PendingUser->getByParams(array('email' => $email, 'auth_key' => $authKey));
+    if(!$pendingUser)
+      {
+      throw new Zend_Exception('Invalid authKey or email');
+      }
+
+    if(!headers_sent())
+      {
+      session_start();
+      }
+    $this->userSession->Dao = $this->User->createUser(
+    $email, $pendingUser->getPassword(), $pendingUser->getFirstname(), $pendingUser->getLastname(), 0, true);
+    session_write_close();
+
+    $this->PendingUser->delete($pendingUser);
+    $this->_redirect('/user/userpage');
+    }
 
   /**
    * Function for logging in; provides an ajax response; does not attempt to redirect,
@@ -1053,6 +1143,84 @@ class UserController extends AppController
       $this->view->deleteSelf = true;
       }
     $this->view->user = $user;
+    }
+
+  /**
+   * When a non-existent user is invited to join a community, they will be sent an email
+   * with a link to this action that will allow them to complete registration.
+   * @param email The email that the registration was sent to
+   * @param authKey The authKey parameter that will be passed on to the submit action
+   * @param [firstName] User's first name
+   * @param [lastName] User's last name
+   * @param [password] User's password
+   * @param [password2] User's password retyped
+   */
+  public function emailregisterAction()
+    {
+    $email = $this->_getParam('email');
+    $authKey = $this->_getParam('authKey');
+
+    if(!isset($email) || !isset($authKey))
+      {
+      throw new Zend_Exception('Must pass email and authKey parameters');
+      }
+    $email = strtolower($email);
+    $invitation = $this->NewUserInvitation->getByParams(array('email' => $email, 'auth_key' => $authKey));
+    if(!$invitation)
+      {
+      throw new Zend_Exception('Invalid email or authKey ('.$email.', '.$authKey.')');
+      }
+
+    if($this->_request->isPost())
+      {
+      $this->disableLayout();
+      $this->disableView();
+      $firstName = trim($this->_getParam('firstName'));
+      $lastName = trim($this->_getParam('lastName'));
+      $password = $this->_getParam('password1');
+      $password2 = $this->_getParam('password2');
+
+      if($password !== $password2)
+        {
+        throw new Zend_Exception('Passwords do not match');
+        }
+      if(strlen($password) < 3)
+        {
+        throw new Zend_Exception('Password must be at least 3 characters');
+        }
+      if(empty($firstName) || empty($lastName))
+        {
+        throw new Zend_Exception('First name and last name are required');
+        }
+      if($this->User->getByEmail($email) !== false)
+        {
+        throw new Zend_Exception('User already exists.');
+        }
+      if(!isset($firstName) || !isset($lastName) || !isset($password))
+        {
+        throw new Zend_Exception('Must pass firstName, lastName, and password parameters');
+        }
+      if(!headers_sent())
+        {
+        session_start();
+        }
+      $this->userSession->Dao = $this->User->createUser($email, $password, $firstName, $lastName);
+      session_write_close();
+
+      $invitations = $this->NewUserInvitation->getAllByParams(array('email' => $email));
+      foreach($invitations as $invitation)
+        {
+        $this->Group->addUser($invitation->getGroup(), $this->userSession->Dao);
+        $this->NewUserInvitation->delete($invitation);
+        }
+      echo JsonComponent::encode(array('status' => 'ok', 'redirect' => $this->view->webroot.'/user/userpage'));
+      }
+    else
+      {
+      $this->view->email = $email;
+      $this->view->authKey = $authKey;
+      $this->view->header = 'Accept email invitation';
+      }
     }
 
   /** Delete a user */
