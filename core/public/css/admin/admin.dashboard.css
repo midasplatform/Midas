@@ -4,6 +4,12 @@
   border-top: 1px solid #d7d7d7;
 }
 
+.databaseIntegrityWrapper ul {
+  list-style-type: none;
+  margin-left: 0px;
+  padding-left: 0px;
+}
+
 .sectionHeader {
     padding-bottom: 1ex;
 }
