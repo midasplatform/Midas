@@ -701,3 +701,7 @@ Starting Guide
   -o-text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+div.errorText {
+  color: red;
+}

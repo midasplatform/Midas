@@ -112,6 +112,50 @@ class FolderModel extends FolderModelBase
     }//end policyCheck
 
   /**
+   * Get the maximum policy level for the given folder and user.
+   */
+  public function getMaxPolicy($folderId, $user)
+    {
+    $maxPolicy = -1;
+    if($user)
+      {
+      if($user->isAdmin())
+        {
+        return MIDAS_POLICY_ADMIN;
+        }
+      $userId = $user->getKey();
+      $sql = $this->database->select()->setIntegrityCheck(false)
+                  ->from('folderpolicyuser', array('maxpolicy' => 'max(policy)'))
+                  ->where('folder_id = ?', $folderId)
+                  ->where('user_id = ? ', $userId);
+      $row = $this->database->fetchRow($sql);
+      if($row != null && $row['maxpolicy'] > $maxPolicy)
+        {
+        $maxPolicy = $row['maxpolicy'];
+        }
+      }
+    else
+      {
+      $userId = -1;
+      }
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->from(array('p' => 'folderpolicygroup'), array('maxpolicy' => 'max(policy)'))
+                ->where('p.folder_id = ?', $folderId)
+                ->where('( '.$this->database->getDB()->quoteInto('group_id = ?', MIDAS_GROUP_ANONYMOUS_KEY).
+                        ' OR group_id IN ('.new Zend_Db_Expr(
+                          $this->database->select()->setIntegrityCheck(false)
+                               ->from(array('u2g' => 'user2group'), array('group_id'))
+                               ->where('u2g.user_id = ?', $userId)
+                               .'))'));
+    $row = $this->database->fetchRow($sql);
+    if($row != null && $row['maxpolicy'] > $maxPolicy)
+      {
+      $maxPolicy = $row['maxpolicy'];
+      }
+    return $maxPolicy;
+    }
+
+  /**
    * Get the total number of folders and items contained within this folder,
    * irrespective of policies
    */
@@ -646,137 +690,64 @@ class FolderModel extends FolderModelBase
    */
   function getItemsFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc', $limit = 0, $offset = 0)
     {
-    $isAdmin = false;
     if(is_array($folder))
       {
       $folderIds = array();
       foreach($folder as $f)
         {
-        if(!$f instanceof FolderDao)
-          {
-          throw new Zend_Exception("Should be a folder.");
-          }
         $folderIds[] = $f->getKey();
         }
-      }
-    else if(!$folder instanceof FolderDao)
-      {
-      throw new Zend_Exception("Should be a folder.");
       }
     else
       {
       $folderIds = array($folder->getKey());
       }
-    if($userDao == null)
+    $userId = $userDao instanceof UserDao ? $userDao->getKey() : -1;
+    $isAdmin = $userDao instanceof UserDao ? $userDao->isAdmin() : false;
+
+    // Step 1: Create an intermediate query that selects all child items from the specified folders.
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->from(array('i' => 'item'))
+                ->join(array('i2f' => 'item2folder'),
+                  $this->database->getDB()->quoteInto('i2f.folder_id IN (?)', $folderIds).'
+                  AND i2f.item_id = i.item_id', array('i2f.folder_id'))
+                ->order(array($sortfield.' '.strtoupper($sortdir)));
+
+    // Step 2: For non admin users, we want to cull the intermediate set by policy checking.
+    if(!$isAdmin)
       {
-      $userId = -1;
-      }
-    else if(!$userDao instanceof UserDao)
-      {
-      throw new Zend_Exception("Should be an user.");
-      }
-    else
-      {
-      $userId = $userDao->getUserId();
-      if($userDao->isAdmin())
-        {
-        $isAdmin = true;
-        }
+      $usrSql = $this->database->select()->setIntegrityCheck(false)
+                     ->from(array('ipu' => 'itempolicyuser'), array('item_id'))
+                     ->where('ipu.item_id = i.item_id')
+                     ->where('ipu.user_id = ?', $userId)
+                     ->where('policy >= ?', $policy);
+      $grpSql = $this->database->select()->setIntegrityCheck(false)
+                     ->from(array('ipg' => 'itempolicygroup'), array('item_id'))
+                     ->where('ipg.item_id = i.item_id')
+                     ->where('policy >= ?', $policy)
+                     ->where('('.$this->database->getDB()->quoteInto('ipg.group_id = ?', MIDAS_GROUP_ANONYMOUS_KEY).
+                             ' OR ipg.group_id IN ('.new Zend_Db_Expr(
+                               $this->database->select()->setIntegrityCheck(false)
+                                    ->from(array('u2g' => 'user2group'), array('group_id'))
+                                    ->where('u2g.user_id = ?', $userId).'))' ));
+      $sql = $this->database->select()->setIntegrityCheck(false)
+                  ->from(array('i' => $sql))
+                  ->where('i.item_id IN ('.new Zend_Db_Expr($usrSql).') OR '.
+                          'i.item_id IN ('.new Zend_Db_Expr($grpSql).')');
       }
 
-    if($isAdmin)
+    if($limit > 0)
       {
-      $sql = $this->database->select()
-                  ->setIntegrityCheck(false)
-                  ->from(array('f' => 'item'))
-                  ->join(array('i' => 'item2folder'),
-                    $this->database->getDB()->quoteInto('i.folder_id IN (?)', $folderIds).'
-                    AND i.item_id = f.item_id', array('i.folder_id'));
+      $sql->limit($limit, $offset);
       }
-    else
-      {
-      $subqueryUser = $this->database->select()
-                           ->setIntegrityCheck(false)
-                           ->from(array('f' => 'item'))
-                           ->join(array('p' => 'itempolicyuser'),
-                              'f.item_id = p.item_id',
-                               array('p.policy'))
-                           ->join(array('i' => 'item2folder'),
-                              $this->database->getDB()->quoteInto('i.folder_id IN (?)', $folderIds).'
-                              AND i.item_id = p.item_id', array('i.folder_id'))
-                           ->where('policy >= ?', $policy)
-                           ->where('user_id = ? ', $userId);
-
-      $subqueryGroup = $this->database->select()
-                            ->setIntegrityCheck(false)
-                            ->from(array('f' => 'item'))
-                            ->join(array('p' => 'itempolicygroup'),
-                              'f.item_id = p.item_id',
-                              array('p.policy'))
-                            ->join(array('i' => 'item2folder'),
-                                  $this->database->getDB()->quoteInto('i.folder_id IN (?)', $folderIds).'
-                                  AND i.item_id = p.item_id', array('i.folder_id'))
-                            ->where('policy >= ?', $policy)
-                            ->where('( '.$this->database->getDB()->quoteInto('p.group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                                p.group_id IN (' .new Zend_Db_Expr(
-                                $this->database->select()
-                                     ->setIntegrityCheck(false)
-                                     ->from(array('u2g' => 'user2group'),
-                                            array('group_id'))
-                                     ->where('u2g.user_id = ?', $userId)
-                                     .'))' ));
-
-      $sql = $this->database->select()->union(array($subqueryUser, $subqueryGroup));
-      }
-    $sql->order(array($sortfield.' '.strtoupper($sortdir)));
 
     $rowset = $this->database->fetchAll($sql);
-    $policyArray = array();
-    foreach($rowset as $keyRow => $row)
-      {
-      if($isAdmin)
-        {
-        $policyArray[$row['item_id']] = MIDAS_POLICY_ADMIN;
-        }
-      else if(!isset($policyArray[$row['item_id']]) || (isset($policyArray[$row['item_id']]) && $row['policy'] > $policyArray[$row['item_id']]))
-        {
-        $policyArray[$row['item_id']] = $row['policy'];
-        }
-      }
-
-    $listNamesArray = array();
-
-    $itrCount = 0;
-    $pageSize = 0;
     $return = array();
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
-      if(isset($policyArray[$row['item_id']]))
-        {
-        $itrCount++;
-        if($itrCount > $offset)
-          {
-          $item = $this->initDao('Item', $row);
-          $folders = $item->getFolders();
-
-          foreach($folders as $folder)
-            {
-            if(in_array($folder->getKey(), $folderIds))
-              {
-              $tmpDao = clone $item;
-              $tmpDao->policy = $policyArray[$row['item_id']];
-              $tmpDao->parent_id = $folder->getKey();
-              $return[] = $tmpDao;
-              }
-            }
-          unset($policyArray[$row['item_id']]);
-          $pageSize++;
-          if($limit > 0 && $pageSize >= $limit)
-            {
-            break;
-            }
-          }
-        }
+      $item = $this->initDao('Item', $row);
+      $item->parent_id = $row['folder_id'];
+      $return[] = $item;
       }
     return $return;
     }
@@ -791,122 +762,61 @@ class FolderModel extends FolderModelBase
    */
   function getChildrenFoldersFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc', $limit = 0, $offset = 0)
     {
-    $isAdmin = false;
     if(is_array($folder))
       {
       $folderIds = array();
       foreach($folder as $f)
         {
-        if(!$f instanceof FolderDao)
-          {
-          throw new Zend_Exception("Should be a folder.");
-          }
         $folderIds[] = $f->getKey();
         }
-      }
-    else if(!$folder instanceof FolderDao)
-      {
-      throw new Zend_Exception("Should be a folder.");
       }
     else
       {
       $folderIds = array($folder->getKey());
       }
-    if($userDao == null)
+    $userId = $userDao instanceof UserDao ? $userDao->getKey() : -1;
+    $isAdmin = $userDao instanceof UserDao ? $userDao->isAdmin() : false;
+
+    // Step 1: Create an intermediate query that selects all child folders from the specified folders.
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->from(array('f' => 'folder'))
+                ->where('f.parent_id IN (?)', $folderIds)
+                ->order(array($sortfield.' '.strtoupper($sortdir)));
+
+    // Step 2: For non admin users, we want to cull the intermediate set by policy checking.
+    if(!$isAdmin)
       {
-      $userId = -1;
-      }
-    else if(!$userDao instanceof UserDao)
-      {
-      throw new Zend_Exception("Should be an user.");
-      }
-    else
-      {
-      $userId = $userDao->getUserId();
-      if($userDao->isAdmin())
-        {
-        $isAdmin = true;
-        }
+      $usrSql = $this->database->select()->setIntegrityCheck(false)
+                     ->from(array('fpu' => 'folderpolicyuser'), array('folder_id'))
+                     ->where('fpu.folder_id = f.folder_id')
+                     ->where('fpu.user_id = ?', $userId)
+                     ->where('policy >= ?', $policy);
+      $grpSql = $this->database->select()->setIntegrityCheck(false)
+                     ->from(array('fpg' => 'folderpolicygroup'), array('folder_id'))
+                     ->where('fpg.folder_id = f.folder_id')
+                     ->where('policy >= ?', $policy)
+                     ->where('('.$this->database->getDB()->quoteInto('fpg.group_id = ?', MIDAS_GROUP_ANONYMOUS_KEY).
+                             ' OR fpg.group_id IN ('.new Zend_Db_Expr(
+                               $this->database->select()->setIntegrityCheck(false)
+                                    ->from(array('u2g' => 'user2group'), array('group_id'))
+                                    ->where('u2g.user_id = ?', $userId).'))' ));
+      $sql = $this->database->select()->setIntegrityCheck(false)
+                  ->from(array('f' => $sql))
+                  ->where('f.folder_id IN ('.new Zend_Db_Expr($usrSql).') OR '.
+                          'f.folder_id IN ('.new Zend_Db_Expr($grpSql).')');
       }
 
-    if($isAdmin)
+    if($limit > 0)
       {
-      $sql = $this->database->select()
-                          ->setIntegrityCheck(false)
-                          ->from(array('f' => 'folder'))
-                          ->where('f.parent_id IN (?)', $folderIds);
+      $sql->limit($limit, $offset);
       }
-    else
-      {
-      $subqueryUser = $this->database->select()
-                            ->setIntegrityCheck(false)
-                            ->from(array('f' => 'folder'))
-                            ->join(array('p' => 'folderpolicyuser'),
-                                  'f.folder_id = p.folder_id',
-                                   array('p.policy'))
-                            ->where('f.parent_id IN (?)', $folderIds)
-                            ->where('policy >= ?', $policy)
-                            ->where('user_id = ? ', $userId);
-
-      $subqueryGroup = $this->database->select()
-                      ->setIntegrityCheck(false)
-                      ->from(array('f' => 'folder'))
-                      ->join(array('p' => 'folderpolicygroup'),
-                            'f.folder_id = p.folder_id',
-                             array('p.policy'))
-                      ->where('f.parent_id IN (?)', $folderIds)
-                      ->where('policy >= ?', $policy)
-                      ->where('( '.$this->database->getDB()->quoteInto('group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
-                                group_id IN (' .new Zend_Db_Expr(
-                                $this->database->select()
-                                     ->setIntegrityCheck(false)
-                                     ->from(array('u2g' => 'user2group'),
-                                            array('group_id'))
-                                     ->where('u2g.user_id = ?', $userId)
-                                     .'))' ));
-      $sql = $this->database->select()
-              ->union(array($subqueryUser, $subqueryGroup));
-      }
-
-    $sql->order(array($sortfield.' '.strtoupper($sortdir)));
 
     $rowset = $this->database->fetchAll($sql);
-    $policyArray = array();
-    foreach($rowset as $keyRow => $row)
-      {
-      if($isAdmin)
-        {
-        $policyArray[$row['folder_id']] = MIDAS_POLICY_ADMIN;
-        }
-      else if(!isset($policyArray[$row['folder_id']]) || (isset($policyArray[$row['folder_id']]) && $row['policy'] > $policyArray[$row['folder_id']]))
-        {
-        $policyArray[$row['folder_id']] = $row['policy'];
-        }
-      }
-
-    $itrCount = 0;
-    $pageSize = 0;
     $return = array();
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
-      if(isset($policyArray[$row['folder_id']]))
-        {
-        $itrCount++;
-        if($itrCount > $offset)
-          {
-          $tmpDao = $this->initDao('Folder', $row);
-          $tmpDao->policy = $policyArray[$row['folder_id']];
-          $return[] = $tmpDao;
-          unset($policyArray[$row['folder_id']]);
-          $pageSize++;
-          if($limit > 0 && $pageSize >= $limit)
-            {
-            break;
-            }
-          }
-        }
+      $return[] = $this->initDao('Folder', $row);
       }
-
     return $return;
     }
 

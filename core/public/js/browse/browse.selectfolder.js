@@ -1,3 +1,21 @@
+var midas = midas || {};
+midas.browse = midas.browse || {};
+
+midas.browse.checkSelectedDestinationValid = function (node, policy) {
+    if(policy >= $('div.MainDialogContent #defaultPolicy').val()) {
+        midas.browse.selectFolderToggleButton(true);
+    }
+};
+
+midas.browse.selectFolderToggleButton = function (on) {
+    if(on) {
+        $('#selectElements').removeAttr('disabled');
+    }
+    else {
+        $('#selectElements').attr('disabled', 'disabled');
+    }
+};
+
 $("#moveTable").treeTable({
     callbackSelect: selectFolderCallbackSelect,
     callbackDblClick: selectFolderCallbackDblClick,
@@ -50,18 +68,31 @@ function selectFolderCallbackSelect (node) {
     }
 
     $('div.MainDialogContent #createFolderContent').hide();
-    if(node.hasClass('userTopLevel') || node.hasClass('community') ||
-       parseInt(node.attr('policy')) < parseInt($('div.MainDialogContent #defaultPolicy').val())) {
+    midas.browse.selectFolderToggleButton(false);
+    if(node.hasClass('userTopLevel') || node.hasClass('community')) {
         $('div.MainDialogContent #selectElements').attr('disabled', 'disabled');
         $('div.MainDialogContent #createFolderButton').hide();
     }
     else {
         $('div.MainDialogContent #selectedDestinationHidden').val(node.attr('element'));
         $('div.MainDialogContent #selectedDestination').html(sliceFileName(selectedElement, 40));
-        $('div.MainDialogContent #selectElements').removeAttr('disabled');
 
         if($('div.MainDialogContent #defaultPolicy').val() != 0) {
             $('div.MainDialogContent #createFolderButton').show();
+        }
+        if(typeof node.attr('policy') == 'undefined') {
+            var params = {
+                type: node.attr('type'),
+                id: node.attr('element')
+            };
+            $.post(json.global.webroot+'/browse/getmaxpolicy', params, function (retVal) {
+                var resp = $.parseJSON(retVal);
+                node.attr('policy', resp.policy);
+                midas.browse.checkSelectedDestinationValid(node, resp.policy);
+            });
+        }
+        else {
+            midas.browse.checkSelectedDestinationValid(node, node.attr('policy'));
         }
     }
 }
@@ -121,7 +152,7 @@ function selectFolderCallbackCustomElements (node, elements) {
     var padding = parseInt(node.find('td:first').css('padding-left').slice(0,-2));
     var html = '';
     $.each(elements.folders, function(index, value) {
-        html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value.folder_id+"'type='folder' policy='"+value.policy+"' element='"+value.folder_id+"'>";
+        html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value.folder_id+"'type='folder' element='"+value.folder_id+"'>";
         html+= "  <td><span class='folder'>"+trimName(value.name, padding)+"</span></td>";
         html+= "</tr>";
         i++;
