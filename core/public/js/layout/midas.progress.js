@@ -40,7 +40,7 @@ midas._pollProgress = function (widget, messageContainer, progressId) {
                 var delayedCall = function () { // scope closure
                     midas._pollProgress(widget, messageContainer, progressId);
                 };
-                setTimeout(delayedCall, 650);
+                setTimeout(delayedCall, 300);
             }
         }
     });
@@ -50,11 +50,17 @@ midas._pollProgress = function (widget, messageContainer, progressId) {
  * Internal function to render the progress in the widget
  */
 midas._updateProgress = function (widget, messageContainer, progress) {
+    $(messageContainer).html(progress.message);
+
     if(progress.maximum > 0) {
         var percent = Math.round(100 * (progress.current / progress.maximum));
-        $(widget).progressbar({ value: percent });
-        $(messageContainer).html(progress.message);
+        $('img.progressIndeterminate').remove();
+        $(widget).show().progressbar({ value: percent });
     } else {
-        // TODO somehow render indeterminate state
+        $(widget).hide();
+        if($('img.progressIndeterminate').length == 0) {
+            $(messageContainer).before(
+              ' <img class="progressIndeterminate" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" /> ');
+        }
     }
 };

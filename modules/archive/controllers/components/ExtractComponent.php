@@ -29,14 +29,13 @@ class Archive_ExtractComponent extends AppComponent
    */
   public function extractInPlace($itemDao, $deleteArchive, $user, $progressDao = null)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $componentLoader = new MIDAS_ComponentLoader();
-    $this->Item = $modelLoader->loadModel('Item');
-    $this->Folder = $modelLoader->loadModel('Folder');
-    $this->Folderpolicyuser = $modelLoader->loadModel('Folderpolicyuser');
-    $this->Folderpolicygroup = $modelLoader->loadModel('Folderpolicygroup');
-    $this->Progress = $modelLoader->loadModel('Progress');
-    $this->UploadComponent = $componentLoader->loadComponent('Upload');
+    $this->Item = MidasLoader::loadModel('Item');
+    $this->Folder = MidasLoader::loadModel('Folder');
+    $this->Folderpolicyuser = MidasLoader::loadModel('Folderpolicyuser');
+    $this->Folderpolicygroup = MidasLoader::loadModel('Folderpolicygroup');
+    $this->Progress = MidasLoader::loadModel('Progress');
+    $this->Setting = MidasLoader::loadModel('Setting');
+    $this->UploadComponent = MidasLoader::loadComponent('Upload');
     $this->user = $user;
 
     $rev = $this->Item->getLastRevision($itemDao);
@@ -61,7 +60,7 @@ class Archive_ExtractComponent extends AppComponent
     // First extract the archive into a temp location on disk
     if($this->_isFileExtension($name, '.zip'))
       {
-      $extractedPath = $this->_extractZip($bitstreamDao, $parentFolder, $progressDao);
+      $extractedPath = $this->_extractZip($bitstreamDao, $progressDao);
       }
     else
       {
@@ -94,7 +93,7 @@ class Archive_ExtractComponent extends AppComponent
   /**
    * Extract a zip and returns the path where it was extracted.
    */
-  protected function _extractZip($bitstreamDao, $parentFolder, $progressDao)
+  protected function _extractZip($bitstreamDao, $progressDao)
     {
     $dir = UtilityComponent::getTempDirectory().'/archive_'.$bitstreamDao->getKey().'_'.time();
     if(!mkdir($dir))
@@ -102,6 +101,81 @@ class Archive_ExtractComponent extends AppComponent
       throw new Zend_Exception('Could not write into temp directory');
       }
 
+    $nativeCommand = $this->Setting->getValueByName('unzipCommand', 'archive');
+
+    if($nativeCommand && $bitstreamDao->getSizebytes() > 1024 * 1024 * 1024) // Only use native exe on zips over 1GB
+      {
+      $this->_extractZipNative($bitstreamDao, $nativeCommand, $dir, $progressDao);
+      }
+    else
+      {
+      $this->_extractZipPhp($bitstreamDao, $dir, $progressDao);
+      }
+    return $dir;
+    }
+
+  /**
+   * Use the native unzip executable to extract the archive
+   */
+  private function _extractZipNative($bitstreamDao, $nativeCommand, $dir, $progressDao)
+    {
+    $nativeCommand = preg_replace('/%zip/', '"'.$bitstreamDao->getFullPath().'"', $nativeCommand);
+    $nativeCommand = preg_replace('/%dir/', '"'.$dir.'"', $nativeCommand);
+
+    if($progressDao)
+      {
+      $progressDao->setMaximum(0); //indeterminate state
+      $this->Progress->updateProgress($progressDao, 0, 'Extracting zip using native executable (progress unavailable)...');
+      }
+
+    $oldwd = getcwd();
+    chdir($dir);
+    exec($nativeCommand, $outputLines, $retVal);
+    chdir($oldwd);
+
+    if($retVal !== 0)
+      {
+      $this->getLogger()->crit('Native unzip executable ('.$nativeCommand.') failed on bitstream '.$bitstreamDao->getKey().' ('
+        .$bitstreamDao->getName().'):'."\n".implode("\n", $outputLines));
+      throw new Zend_Exception('Native unzip executable failed');
+      }
+
+    if($progressDao)
+      {
+      $this->Progress->updateProgress($progressDao, 0, 'Counting total extracted resources...');
+      $progressDao->setMaximum($this->_countDir($dir, 0));
+      $this->Progress->updateProgress($progressDao, 0, 'Finished counting resources...');
+      }
+    }
+
+  /**
+   * Recursively count the total number of entries in a directory
+   */
+  private function _countDir($dir)
+    {
+    $count = 0;
+    $objects = scandir($dir);
+    foreach($objects as $object)
+      {
+      if($object != '.' && $object != '..')
+        {
+        $count++;
+        if(filetype($dir.'/'.$object) == 'dir')
+          {
+          $count += $this->_countDir($dir.'/'.$object);
+          }
+        }
+      }
+    reset($objects);
+    return $count;
+    }
+
+  /**
+   * Use PHP's zip utils to extract the archive.
+   * WARNING: this does not support zip files over 2GB
+   */
+  private function _extractZipPhp($bitstreamDao, $dir, $progressDao)
+    {
     if($progressDao)
       {
       // If we want progress, let's read through the total entry count first
@@ -112,6 +186,10 @@ class Archive_ExtractComponent extends AppComponent
         $entryCount++;
         }
       zip_close($zip);
+      if($entryCount === 0)
+        {
+        throw new Zend_Exception('Could not read any zip entries in the file');
+        }
 
       $progressDao->setMaximum($entryCount);
       $this->Progress->save($progressDao);
@@ -131,7 +209,6 @@ class Archive_ExtractComponent extends AppComponent
       $this->_extractZipEntry($zip, $dir, $zipEntry, $entryName);
       }
     zip_close($zip);
-    return $dir;
     }
 
   /**
