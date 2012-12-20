@@ -341,10 +341,14 @@ class FolderController extends AppController
       {
       throw new Zend_Exception("The folder doesn't exist.");
       }
-    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+
+    if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
-      throw new Zend_Exception("Permissions error.");
+      $this->disableView();
+      echo '<div class="errorText">You do not have permission to create a folder here.</div>';
+      return;
       }
+
     $this->view->parentFolder = $folder;
     if($this->_request->isPost())
       {

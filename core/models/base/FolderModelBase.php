@@ -69,6 +69,7 @@ abstract class FolderModelBase extends AppModel
   abstract function getSize($folder);
   abstract function getByName($name);
   abstract function getRecursiveChildCount($folder);
+  abstract function getMaxPolicy($folderId, $user);
 
   /** copy  folder policies*/
   function copyFolderPolicies($folderdao, $referenceFolderdao)

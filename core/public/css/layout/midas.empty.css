@@ -179,3 +179,7 @@ div.viewWrapper a{
 div.viewWrapper a:hover{
   text-decoration: underline;
 }
+
+div.errorText,span.errorText {
+  color: red;
+}

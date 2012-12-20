@@ -23,7 +23,7 @@ PURPOSE.  See the above copyright notices for more information.
     function createFeedElement(&$view,$feed)
       {
       $type=$feed->getType();
-      if($feed->policy==2)
+      if($feed->policy == 2)
         {
         echo "<div class='feedDelete'>";
         echo "<img class='feedDeleteLink' qtip='".$view->t('Delete the post')."' element='{$feed->getKey()}' src='{$view->coreWebroot}/public/images/icons/close.png' alt=''/>";

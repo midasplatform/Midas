@@ -343,6 +343,50 @@ class ItemModel extends ItemModelBase
     $itemdao->saved = false;
     }//end delete
 
+  /**
+   * Get the maximum policy level for the given item and user.
+   */
+  public function getMaxPolicy($itemId, $user)
+    {
+    $maxPolicy = -1;
+    if($user)
+      {
+      if($user->isAdmin())
+        {
+        return MIDAS_POLICY_ADMIN;
+        }
+      $userId = $user->getKey();
+      $sql = $this->database->select()->setIntegrityCheck(false)
+                  ->from('itempolicyuser', array('maxpolicy' => 'max(policy)'))
+                  ->where('item_id = ?', $itemId)
+                  ->where('user_id = ? ', $userId);
+      $row = $this->database->fetchRow($sql);
+      if($row != null && $row['maxpolicy'] > $maxPolicy)
+        {
+        $maxPolicy = $row['maxpolicy'];
+        }
+      }
+    else
+      {
+      $userId = -1;
+      }
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->from(array('p' => 'itempolicygroup'), array('maxpolicy' => 'max(policy)'))
+                ->where('p.item_id = ?', $itemId)
+                ->where('( '.$this->database->getDB()->quoteInto('group_id = ?', MIDAS_GROUP_ANONYMOUS_KEY).
+                        ' OR group_id IN ('.new Zend_Db_Expr(
+                          $this->database->select()->setIntegrityCheck(false)
+                               ->from(array('u2g' => 'user2group'), array('group_id'))
+                               ->where('u2g.user_id = ?', $userId)
+                               .'))'));
+    $row = $this->database->fetchRow($sql);
+    if($row != null && $row['maxpolicy'] > $maxPolicy)
+      {
+      $maxPolicy = $row['maxpolicy'];
+      }
+    return $maxPolicy;
+    }
+
   /** check if the policy is valid*/
   function policyCheck($itemdao, $userDao = null, $policy = 0)
     {
