@@ -57,13 +57,17 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
   /** add a process button */
   public function getButton($params)
     {
-    $html =  "<li class='processButton' style='margin-left:5px;' title='Process' rel='".Zend_Registry::get('webroot')."/remoteprocessing/index/selectaction'>
-                <a href='#'><img id='processButtonImg' src='".Zend_Registry::get('webroot')."/modules/remoteprocessing/public/images/process-ok.png' alt='Start a process'/>
-                <img id='processButtonLoadiing' style='margin-top:5px;display:none;' src='".Zend_Registry::get('webroot')."/core/public/images/icons/loading.gif' alt=''/>
-                  Process
-                </a>
-              </li> ";
-    return $html;
+    $modulesConfig=Zend_Registry::get('configsModules');
+    if($modulesConfig[$this->moduleName]->showbutton)
+      {
+      $html =  "<li class='processButton' style='margin-left:5px;' title='Process' rel='".Zend_Registry::get('webroot')."/remoteprocessing/index/selectaction'>
+                  <a href='#'><img id='processButtonImg' src='".Zend_Registry::get('webroot')."/modules/remoteprocessing/public/images/process-ok.png' alt='Start a process'/>
+                  <img id='processButtonLoadiing' style='margin-top:5px;display:none;' src='".Zend_Registry::get('webroot')."/core/public/images/icons/loading.gif' alt=''/>
+                    Process
+                  </a>
+                </li> ";
+      return $html;
+      }
     }
 
   /** check if item contains an executable */
