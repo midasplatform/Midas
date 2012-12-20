@@ -51,9 +51,9 @@ div.viewSideBar{
   border-left: 1px solid #EFEFEF;
   border-top-left-radius: 0px 0px;
   border-top-right-radius: 0px 0px;
-  height: auto !important; 
-  height: 100%; 
-  min-height: 500px; 
+  height: auto !important;
+  height: 100%;
+  min-height: 500px;
 }
 
 div.viewSelected{
@@ -94,13 +94,20 @@ div.viewSideBar div.sideElementActions{
   border-top:1px solid #DAD8D4;
   border-bottom: 1px solid white;  
   padding-top: 5px;
+}
+
+div.viewSideBar div.sideElement,div.viewSideBar div.sideElementActions,div.viewSideBar div.sideElementFirst {
+  padding-top: 3px;
   padding-bottom: 10px;
+  border-bottom: 1px solid #DAD8D4;
+  border-top: none !important;
 }
 
 div.viewSideBar div.sideElementLast{
   border-bottom:none !important;
+  border-top: none !important;
+  padding-top: 5px;
   padding-bottom: 10px;
-  border-top: 1px solid #DAD8D4;
 }
 
 div.viewSideBar div.sideElement ul,div.viewSideBar div.sideElementFirst ul, div.viewSideBar div.sideElementActions ul, div.viewSideBar div.sideElementLast ul{

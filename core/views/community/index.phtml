@@ -52,18 +52,19 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/community/communi
     ?>
 </div>
 <div class="viewSideBar">
-  <div class="sideElementFirst viewAction">
-    <h1>Actions</h1>
-    <ul>
-      <li>
-        <a class="createCommunity" ><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/community2.png" /> <?php echo $this->t("Create a community");?></a>
-      </li>
-    </ul>
-  </div>
-  <div class="sideElement viewSelected" >
-      <h1><?php echo $this->t('Selected')?></h1>
-      <span></span>
-  </div>
+  <?php if($this->siteAdmin)
+    {
+  ?>
+    <div class="sideElementFirst viewAction">
+      <h1>Actions</h1>
+      <ul>
+        <li>
+          <a class="createCommunity"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/community2.png" /> <?php echo $this->t("Create a community");?></a>
+        </li>
+      </ul>
+    </div>
+  <?php
+    } ?>
   <div class="sideElementLast viewInfo">
     <h1>Info</h1>    
     <?php
