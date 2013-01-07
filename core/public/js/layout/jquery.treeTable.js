@@ -76,7 +76,7 @@
         indent: 9,
         initialState: "collapsed",
         treeColumn: 0,
-        pageLength: 60,
+        pageLength: 100,
         disableElementSize: false,
 
         callbackSelect: null,

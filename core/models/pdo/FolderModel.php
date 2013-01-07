@@ -666,15 +666,17 @@ class FolderModel extends FolderModelBase
     return $dao;
     }
 
-  /** Returns ifa folder exists based on the name and description */
+  /**
+   * Check whether folder exists by name in the given parent folder. If so, returns the dao,
+   * otherwise returns false.
+   */
   function getFolderExists($name, $parent)
     {
-    $dao = $this->initDao('Folder', $this->database->fetchRow($this->database->select()
-                                                           ->setIntegrityCheck(false)
-                                                           ->from('folder')
-                                                           ->where('name = ?', $name)
-                                                           ->where('parent_id = ?', $parent->getKey())));
-    return $dao;
+    return $this->initDao('Folder', $this->database->fetchRow($this->database->select()
+                                                                   ->setIntegrityCheck(false)
+                                                                   ->from('folder')
+                                                                   ->where('name = ?', $name)
+                                                                   ->where('parent_id = ?', $parent->getKey())));
     }
 
 

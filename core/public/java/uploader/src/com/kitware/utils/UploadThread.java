@@ -118,67 +118,32 @@ public class UploadThread extends Thread
 
   private void uploadFolder(File dir, String parentId) throws JavaUploaderException
     {
-    JSONObject children = this.getFolderChildren(parentId);
-
-    try
+    File[] localChildren = dir.listFiles();
+    if(localChildren == null)
       {
-      JSONArray childFolders = children.getJSONArray("folders");
-      JSONArray childItems = children.getJSONArray("items");
-
-      File[] localChildren = dir.listFiles();
-      if(localChildren == null)
+      return; // This can happen for weird special directories on windows.  Just ignore it.
+      }
+    for(File f : localChildren)
+      {
+      this.currentFileNumber++;
+      this.uploader.setFileNameLabel(f.getName());
+      this.uploader.setFileCountLabel(this.currentFileNumber, this.totalFiles);
+      if(f.isDirectory())
         {
-        return; // This can happen for weird special directories on windows.  Just ignore it.
+        String currId = this.createServerFolder(parentId, f.getName().trim(), true);
+        this.uploadFolder(f, currId);
         }
-      for(File f : localChildren)
+      else
         {
-        this.currentFileNumber++;
-        this.uploader.setFileNameLabel(f.getName());
-        this.uploader.setFileCountLabel(this.currentFileNumber, this.totalFiles);
-        if(f.isDirectory())
+        if(this.itemExists(parentId, f.getName().trim()))
           {
-          String currId = null;
-          for(int i = 0; i < childFolders.length(); i++)
-            {
-            JSONObject folder = childFolders.getJSONObject(i);
-            if(folder.getString("name").trim().equals(f.getName().trim()))
-              {
-              currId = folder.getString("folder_id");
-              break;
-              }
-            }
-          if(currId == null)
-            {
-            currId = this.createServerFolder(parentId, f.getName().trim());
-            }
-          this.uploadFolder(f, currId);
+          this.uploader.increaseOverallProgress(f.length());
           }
         else
           {
-          boolean exists = false;
-          for(int i = 0; i < childItems.length(); i++)
-            {
-            JSONObject item = childItems.getJSONObject(i);
-            if(item.getString("name").trim().equals(f.getName().trim()))
-              {
-              exists = true;
-              break;
-              }
-            }
-          if(exists)
-            {
-            this.uploader.increaseOverallProgress(f.length());
-            }
-          else
-            {
-            this.uploadItem(f, parentId);
-            }
-          }
+          this.uploadItem(f, parentId);
+          }        
         }
-      }
-    catch(JSONException e)
-      {
-      throw new JavaUploaderException("Invalid folder children JSON object: "+e.getMessage());
       }
     }
 
@@ -253,15 +218,64 @@ public class UploadThread extends Thread
     }
 
   /**
-   * Create a new folder on the server with the given name under the given existing parent
+   * Query the server to determine if an item with the given name already exists in the parent folder
    * @param parentId
    * @param name
-   * @return The id of the newly created folder
+   * @return True if the item with that name already exists in that parent, false otherwise
    */
-  private String createServerFolder(String parentId, String name) throws JavaUploaderException
+  private boolean itemExists(String parentId, String name) throws JavaUploaderException
+    {
+    String url = this.apiURL + "?method=midas.item.exists&useSession";
+    url += "&name="+name+"&parentid="+parentId;
+
+    try
+      {
+      URL urlObj = Utility.buildURL("ItemExists", url);
+      conn = (HttpURLConnection) urlObj.openConnection();
+      conn.setUseCaches(false);
+      conn.setRequestMethod("GET");
+      conn.setRequestProperty("Connection", "close");
+      conn.setRequestProperty("Host", urlObj.getHost());
+
+      if (conn.getResponseCode() != 200)
+        {
+        throw new JavaUploaderException("Exception occurred on server during item exists check with parentId="+parentId+" and name="+name);
+        }
+
+      String resp = this.getResponseText().trim();
+      conn.disconnect();
+ 
+      return new JSONObject(resp).getJSONObject("data").getBoolean("exists");
+      }
+    catch (IOException e)
+      {
+      conn.disconnect();
+      throw new JavaUploaderException(e);
+      }
+    catch (JSONException e)
+      {
+      throw new JavaUploaderException("Invalid JSON response for item exists check (name="+
+        name+", parentid="+parentId+"):" + e.getMessage());
+      }
+    }
+
+  /**
+   * Create a new folder on the server with the given name under the given existing parent
+   * @param parentId Id of the parent folder to create folder in
+   * @param name Name of the new child folder
+   * @param reuseExisting If a folder with the same name exists in this location, should we use the existing one
+   * @return The id of the newly created folder (or an existing one in the case of reuseExisting = true)
+   */
+  private String createServerFolder(String parentId, String name, boolean reuseExisting) throws JavaUploaderException
     {
     String url = this.apiURL + "?method=midas.folder.create&useSession";
     url += "&name="+name+"&parentid="+parentId;
+    
+    if(reuseExisting)
+      {
+      url += "&reuseExisting=true";
+      }
+
     try
       {
       URL urlObj = Utility.buildURL("CreateNewFolder", url);

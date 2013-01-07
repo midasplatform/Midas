@@ -149,6 +149,23 @@ class ItemModel extends ItemModelBase
     }
 
   /**
+   * Check whether an item exists with the given name in the given folder.
+   * If it does, returns the existing item dao. Otherwise returns false.
+   */
+  function existsInFolder($name, $folder)
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->from(array('i' => 'item'))
+                ->join(array('i2f' => 'item2folder'),
+                       'i.item_id = i2f.item_id AND '.
+                       $this->database->getDB()->quoteInto('i2f.folder_id = ?', $folder->getKey()),
+                       array())
+                ->where('i.name = ?', $name)
+                ->limit(1);
+    return $this->initDao('Item', $this->database->fetchRow($sql));
+    }
+
+  /**
    * Get Items where user policy exists and is != admin
    * @param type $userDao
    * @param type $limit
