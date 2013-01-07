@@ -63,6 +63,7 @@ abstract class ItemModelBase extends AppModel
   abstract function iterateWithCallback($callback, $paramName = 'item', $otherParams = array());
   abstract function getTotalCount();
   abstract function getMaxPolicy($itemId, $user);
+  abstract function existsInFolder($name, $folder);
 
   /** delete an item */
   public function delete($dao)

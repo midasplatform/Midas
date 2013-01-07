@@ -873,6 +873,7 @@ class Api_ApiComponent extends AppComponent
    * @param description (Optional) The description of the folder
    * @param uuid (Optional) Uuid of the folder. If none is passed, will generate one.
    * @param privacy (Optional) Possible values [Public|Private]. Default behavior is to inherit from parent folder.
+   * @param reuseExisting (Optional) If this parameter is set, will just return the existing folder if there is one with the name provided
    * @param parentid The id of the parent folder. Set this to -1 to create a top level user folder.
    * @return The folder object that was created
    */
@@ -940,9 +941,17 @@ class Api_ApiComponent extends AppComponent
           {
           throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
           }
-        if($folderModel->getFolderExists($name, $folder))
+        if(($existing = $folderModel->getFolderExists($name, $folder)))
           {
-          throw new Exception('A folder already exists under that parent with that name', MIDAS_INVALID_PARAMETER);
+          if(array_key_exists('reuseExisting', $args))
+            {
+            return $existing->toArray();
+            }
+          else
+            {
+            throw new Exception('A folder already exists in that parent with that name. Pass reuseExisting to reuse it.',
+              MIDAS_INVALID_PARAMETER);
+            }
           }
         $new_folder = $folderModel->createFolder($name, $description, $folder, $uuid);
         if($new_folder === false)
@@ -1507,7 +1516,37 @@ class Api_ApiComponent extends AppComponent
       }
     }
 
-
+  /**
+   * Check whether an item with the given name exists in the given folder
+   * @param parentid The id of the parent folder
+   * @param name The name of the item
+   * @return array('exists' => bool)
+   */
+  function itemExists($args)
+    {
+    $this->_validateParams($args, array('name', 'parentid'));
+    $userDao = $this->_getUser($args);
+    $folderModel = MidasLoader::loadModel('Folder');
+    $itemModel = MidasLoader::loadModel('Item');
+    $folder = $folderModel->load($args['parentid']);
+    if(!$folder)
+      {
+      throw new Exception('Invalid parentid', MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
+      {
+      throw new Exception('Read permission required on folder', MIDAS_INVALID_POLICY);
+      }
+    $existingItem = $itemModel->existsInFolder($args['name'], $folder);
+    if($existingItem instanceof ItemDao && $itemModel->policyCheck($existingItem, $userDao))
+      {
+      return array('exists' => true, 'item' => $existingItem->toArray());
+      }
+    else
+      {
+      return array('exists' => false);
+      }
+    }
 
   /**
    * Create an item or update an existing one if one exists by the uuid passed.
