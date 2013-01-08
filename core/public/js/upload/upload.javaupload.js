@@ -13,10 +13,10 @@ $('.browseMIDASLink').click(function () {
     midas.loadDialog("select","/browse/selectfolder/?policy=write");
     midas.showDialog('Browse', null, {
         close: function () {
-            $('applet').show();
+            $('.uploadApplet').show();
         }
     });
-    $('applet').hide();
+    $('.uploadApplet').hide();
 });
 
 $('.destinationId').val($('#destinationId').val());

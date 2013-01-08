@@ -78,7 +78,7 @@ $(document).ready(function () {
     $("img.tableLoading").hide();
     $("table#moveCopyTable").show();
 
-    $('applet').hide();
+    $('.uploadApplet').hide();
 
     if($('#selectElement') != undefined) {
         $('#selectElement').click(function () {
@@ -89,7 +89,7 @@ $(document).ready(function () {
             $('.destinationUpload').html(destHtml);
             $('.destinationId').val(destValue);
             $( "div.MainDialog" ).dialog('close');
-            $('applet').show();
+            $('.uploadApplet').show();
             return false;
         });
     }

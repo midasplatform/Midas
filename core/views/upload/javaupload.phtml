@@ -21,15 +21,17 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
 <br/>
 <b><?php echo $this->t('Step 3: Select files to upload')?></b>
 <br/><br/>
-<applet name="MidasUploader" code="com.kitware.utils.Main"
+<object name="MidasUploader"
+        class="uploadApplet"
         archive="<?php echo $this->coreWebroot?>/public/java/uploader/dist/MidasUploader.jar?rev=3&<?php echo time()?>"
-        width="480" height="170" mayscript="true">
+        width="480" height="170" mayscript="true"
+        code="com.kitware.utils.Main">
   <param name = "type" value = "application/x-java-applet;version=1.5" />
   <param name = "background" value = "ffffff" />
   <param name = "loglevel" value = "WARNING" />
   <param name = "sessionId" value = "<?php echo session_id();?>"/>
-  <param name = "baseURL" value="<?php echo $this->protocol."://".$this->host . $this->webroot ?>/upload/"/>
-  <param name = "apiURL" value="<?php echo $this->protocol."://".$this->host . $this->webroot ?>/api/json"/>
+  <param name = "baseURL" value="<?php echo $this->protocol."://".$this->host.$this->webroot ?>/upload/"/>
+  <param name = "apiURL" value="<?php echo $this->protocol."://".$this->host.$this->webroot ?>/api/json"/>
   <param name = "getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
   <param name = "onSuccessfulUploadRedirectEnable" value="true"/>
   <param name = "onSuccessRedirectURL" value="review"/>
@@ -37,7 +39,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
   <param name = "uploadFileBaseURL" value="processjavaupload/?sid="/>
   <param name = "uploadType" value="item"/>
   You must install and enable Java on your system in order to use the large file uploader.
-</applet>
+</object>
 <?php
 foreach($this->extraHtml as $module => $extra)
   {

@@ -307,7 +307,7 @@ class AdminController extends AppController
         }
       else
         {
-        $category = ucfirst(strtolower($module->category));
+        $category = ucfirst($module->category);
         }
       if(!isset($modulesList[$category]))
         {
