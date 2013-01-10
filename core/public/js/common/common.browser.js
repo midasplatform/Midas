@@ -128,7 +128,7 @@ midas.genericCallbackCheckboxes = function(node) {
             }, function (text) {
                 var retVal = $.parseJSON(text);
                 if(retVal.action == 'download') {
-                    window.location = json.global.webroot+'/download?folders='+folders;
+                    window.location = json.global.webroot+'/download?folders='+folders+'&items='+items;
                 }
                 else if(retVal.action == 'promptApplet') {
                     midas.promptDownloadApplet(arraySelected['folders'].join(','), 
