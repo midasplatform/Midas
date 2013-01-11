@@ -584,6 +584,7 @@ class ItemController extends AppController
 
     $itemIds = $this->_getParam('items');
     $name = $this->_getParam('name');
+    $outputItemId = $this->_getParam('outputItemId');
     if(empty($name) && $name !== '0')
       {
       throw new Zend_Exception('Please set a name');
@@ -598,7 +599,11 @@ class ItemController extends AppController
     $mainItem = $this->Item->mergeItems($itemIds, $name,
                                         $this->userSession->Dao, $this->progressDao);
 
-    if($this->_request->isXmlHttpRequest())
+    if(isset($outputItemId))
+      {
+      echo $mainItem->getKey();
+      }
+    else if($this->_request->isXmlHttpRequest())
       {
       echo JsonComponent::encode(array('redirect' => $this->view->webroot.'/item/'.$mainItem->getKey()));
       }

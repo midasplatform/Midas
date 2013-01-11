@@ -35,6 +35,15 @@ PURPOSE.  See the above copyright notices for more information.
     <li><a href="#uploadTabs-1">Simple</a></li>
     <li><a href="<?php echo $this->webroot?>/upload/javaupload"><?php echo $this->t('Files over 2 GB');?></a></li>
     <li><a href="#uploadTabs-3"><?php echo $this->t('Links');?></a></li>
+    <?php
+    foreach($this->customTabs as $module => $tabs)
+      {
+      foreach($tabs as $tabName => $tabUrl)
+        {
+        echo '<li><a href="'.$tabUrl.'">'.$tabName.'</a></li>';
+        }
+      }
+    ?>
   </ul>
   <div id="uploadTabs-1">
       <b><?php echo $this->t('Step 1: Select files to upload')?></b>

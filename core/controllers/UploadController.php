@@ -107,6 +107,7 @@ class UploadController extends AppController
       $parent = null;
       }
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', array('folder' => $parent));
+    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_UPLOAD_TABS', array());
     }//end simple upload
 
   /** Render the large file upload view */
@@ -493,7 +494,7 @@ class UploadController extends AppController
         echo "[ERROR] ".$e->getMessage();
         throw $e;
         }
-      echo "[OK]";
+      echo '[OK]'.$item->getKey();
       }
     } //end processjavaupload
 
