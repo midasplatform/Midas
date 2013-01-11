@@ -494,7 +494,7 @@ class UploadController extends AppController
         echo "[ERROR] ".$e->getMessage();
         throw $e;
         }
-      echo "[OK]";
+      echo '[OK]'.$item->getKey();
       }
     } //end processjavaupload
 
