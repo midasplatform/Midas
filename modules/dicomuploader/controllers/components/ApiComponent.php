@@ -183,7 +183,15 @@ class Dicomuploader_ApiComponent extends AppComponent
       }
 
     $ret = array();
-    $ret['status'] = MIDAS_DICOM_UPLOADER_NOT_RUNNING;
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+      { // currently not supported in windows
+      $ret['status'] = MIDAS_DICOM_UPLOADER_NOT_SUPPORTED;
+      return $ret;
+      }
+    else
+      {
+      $ret['status'] = MIDAS_DICOM_UPLOADER_NOT_RUNNING;
+      }
     $ps_cmd = 'ps';
     $cmd_params = array();
     $cmd_params[] = 'ax';

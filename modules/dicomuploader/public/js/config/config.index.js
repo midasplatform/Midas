@@ -111,16 +111,25 @@ midas.dicomuploader.checkStatus = function () {
         args: 'storescp_cmd=' + storescp_val,
         log: $('<p></p>'),
         success: function (retVal) {
-           if(retVal.data.status === 'running') {
+          if(retVal.data.status === 'running') {
              $('span#not_running_status').hide();
              $('span#running_status').show();
              $('span#span_start_uploader_user').html(retVal.data.user_email);
              $('div#start_uploader_user').show();
              }
-           else {
+          else if(retVal.data.status === 'not running') {
              $('span#running_status').hide();
              $('span#not_running_status').show();
              $('div#start_uploader_user').hide();
+             }
+          else { // this module is not supported
+             $('span#running_status').hide();
+             $('span#not_running_status').hide();
+             $('span#not_supported_status').show();
+             $('div#startUploader').hide();
+             $('div#stopUploader').hide();
+             $('div#start_uploader_user').hide();
+             $('div#manualCommandsWrapper').hide();
              }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
