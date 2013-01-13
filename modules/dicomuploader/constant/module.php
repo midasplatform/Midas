@@ -13,5 +13,6 @@ PURPOSE.  See the above copyright notices for more information.
 // Uploader status
 define("MIDAS_DICOM_UPLOADER_IS_RUNNING", "running");
 define("MIDAS_DICOM_UPLOADER_NOT_RUNNING", "not running");
+define("MIDAS_DICOM_UPLOADER_NOT_SUPPORTED", "This module is currently not supported in Windows.");
 
 ?>

@@ -38,11 +38,11 @@ class Dicomuploader_UploaderComponent extends AppComponent
     $status_results = $apiComponent->status($status_args);
     if ($status_results['status'] == MIDAS_DICOM_UPLOADER_IS_RUNNING)
       {
-      $ret['Status'] = array(true, MIDAS_DICOM_UPLOADER_IS_RUNNING);
+      $ret['Status'] = array(true, $status_results['status']);
       }
     else
       {
-      $ret['Status'] = array(false, MIDAS_DICOM_UPLOADER_NOT_RUNNING);
+      $ret['Status'] = array(false, $status_results['status']);
       }
 
     return $ret;

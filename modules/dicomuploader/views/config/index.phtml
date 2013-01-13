@@ -104,6 +104,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
         <h3>Status:
           <span class="running_status" id="running_status" style="display:none">Running</span>
           <span class="not_running_status" id="not_running_status" style="display:none">Not Running</span>
+          <span class="not_supported_status" id="not_supported_status" style="display:none">This module is currently not supported in Windows</span>
         </h3>
       </div>
       <div id="start_uploader_user" class="start_uploader_user" style="display:none">
@@ -115,8 +116,8 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
          <textarea id="apicall_failure_reason" rows="5" cols="80" readonly> </textarea>
       </div>
     </div>
+    <div class="manualCommandsWrapper" id="manualCommandsWrapper"  style="display: none">
     In some platforms, the above start/stop buttons may not work because the web server user is lack of permissions. The following commands can be used to start/stop DICOM Uploader in command line.
-    <div class="manualCommandsWrapper" style="display: none">
     <h3 class="sectionHeader"><a href="#">Start/Stop DICOM Uploader in command line</a></h3>
     <ul>
       <li>
