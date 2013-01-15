@@ -1,14 +1,19 @@
 package com.kitware.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.File;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Properties;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import com.kitware.utils.exception.JavaUploaderException;
 import com.kitware.utils.exception.JavaUploaderHttpServerErrorException;
@@ -218,5 +223,73 @@ public class Utility
       return new DecimalFormat("#.##").format((double)bytes / 1024.0) + " KB";
       }
     return bytes + " B";
+    }
+
+  public static Properties buildDaScriptProperties(Document xml)
+    {
+    Properties props = new Properties();
+    Element root = xml.getDocumentElement();
+    Node child = root.getFirstChild();
+    while (child != null)
+      {
+      if (child.getNodeType() == Node.ELEMENT_NODE)
+        {
+        Element eChild = (Element) child;
+        String tag = eChild.getTagName();
+        if (tag.equals("p"))
+          {
+          Utility.addParam(props, eChild);
+          }
+        else if (tag.equals("e"))
+          {
+          Utility.addElement(props, eChild);
+          }
+        else if (tag.equals("k"))
+          {
+          Utility.addKeep(props, eChild);
+          }
+        else if (tag.equals("r"))
+          {
+          Utility.addRemove(props, eChild);
+          }
+        }
+      child = child.getNextSibling();
+      }
+    return props;
+    }
+
+  private static void addParam(Properties props, Element x)
+    {
+    String key = "param." + x.getAttribute("t");
+    String value = x.getTextContent();
+    props.setProperty(key, value);
+    }
+
+  private static void addElement(Properties props, Element x)
+    {
+    String sel = (x.getAttribute("en").equals("T") ? "" : "#");
+    String t = x.getAttribute("t");
+    String elem = "[" + t.substring(0, 4) + "," + t.substring(4) + "]";
+    String name = x.getAttribute("n");
+    String key = sel + "set." + elem + name;
+    String value = x.getTextContent().trim();
+    props.setProperty(key, value);
+    }
+
+  private static void addKeep(Properties props, Element x)
+    {
+    String sel = (x.getAttribute("en").equals("T") ? "" : "#");
+    String t = x.getAttribute("t");
+    String group = "group" + t.substring(2, 4);
+    String key = sel + "keep." + group;
+    props.setProperty(key, "");
+    }
+
+  private static void addRemove(Properties props, Element x)
+    {
+    String sel = (x.getAttribute("en").equals("T") ? "" : "#");
+    String t = x.getAttribute("t");
+    String key = sel + "remove." + t;
+    props.setProperty(key, "");
     }
 }
