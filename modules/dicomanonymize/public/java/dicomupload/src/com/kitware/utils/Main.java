@@ -6,7 +6,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.net.URL;
 import java.security.AccessControlException;
 import java.util.ArrayList;
@@ -27,8 +26,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.TableColumn;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.rsna.ctp.stdstages.anonymizer.dicom.DAScript;
+import org.w3c.dom.Document;
 
 import com.kitware.utils.exception.JavaUploaderException;
 
@@ -510,18 +511,16 @@ public class Main extends JApplet
         throw new JavaUploaderException("Must pass a daScript parameter to the applet");
         }
       BufferedInputStream in = null;
-      FileOutputStream fout = null;
+      Document xmlDocument;
       try
         {
         in = new BufferedInputStream(new URL(daScriptUrl).openStream());
-        fout = new FileOutputStream("DA.script");
 
-        byte data[] = new byte[1024];
-        int count;
-        while ((count = in.read(data, 0, 1024)) != -1)
-          {
-          fout.write(data, 0, count);
-          }
+        // Build XML document from the input stream
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        xmlDocument = db.parse(in);
         }
       catch(Exception e)
         {
@@ -535,16 +534,16 @@ public class Main extends JApplet
             {
             in.close();
             }
-          if (fout != null)
-            {
-            fout.close();
-            }
           }
         catch(Exception e)
           {
           }
         }
-      this.daScriptProperties = DAScript.getInstance(new File("DA.script")).toProperties();
+      if(xmlDocument == null)
+        {
+        throw new JavaUploaderException("Could not create properties from DA.script xml file");
+        }
+      this.daScriptProperties = Utility.buildDaScriptProperties(xmlDocument);
       }
     return this.daScriptProperties;
     }
