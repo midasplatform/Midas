@@ -24,6 +24,8 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     $this->_mainData = array(
         'scalar_id' => array('type' => MIDAS_DATA),
         'trend_id' => array('type' => MIDAS_DATA),
+        'user_id' => array('type' => MIDAS_DATA),
+        'official' => array('type' => MIDAS_DATA),
         'submit_time' => array('type' => MIDAS_DATA),
         'value' => array('type' => MIDAS_DATA),
         'producer_revision' => array('type' => MIDAS_DATA),
@@ -31,7 +33,11 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
                          'model' => 'Trend',
                          'module' => $this->moduleName,
                          'parent_column' => 'trend_id',
-                         'child_column' => 'trend_id')
+                         'child_column' => 'trend_id'),
+        'user' => array('type' => MIDAS_MANY_TO_ONE,
+                        'model' => 'User',
+                        'parent_column' => 'user_id',
+                        'child_column' => 'user_id')
       );
     $this->initialize();
     }
@@ -39,17 +45,17 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
   public abstract function associateItem($scalar, $item, $label);
   public abstract function getAssociatedItems($scalar);
   public abstract function getOtherValuesFromSubmission($scalar);
-  public abstract function getByTrendAndTimestamp($trendId, $timestamp);
+  public abstract function getByTrendAndTimestamp($trendId, $timestamp, $user = null);
 
   /**
    * Add a new scalar point to the trend.  If overwrite is true, and a scalar
    * already exists on the trend with the same submit time, this will replace that scalar value.
    */
-  public function addToTrend($trend, $submitTime, $producerRevision, $value, $overwrite = true)
+  public function addToTrend($trend, $submitTime, $producerRevision, $value, $user, $overwrite = true, $official = true)
     {
     if($overwrite)
       {
-      $dao = $this->getByTrendAndTimestamp($trend->getKey(), $submitTime);
+      $dao = $this->getByTrendAndTimestamp($trend->getKey(), $submitTime, $user->getKey());
       if($dao)
         {
         $this->delete($dao);
@@ -61,6 +67,9 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     $scalar->setSubmitTime($submitTime);
     $scalar->setProducerRevision($producerRevision);
     $scalar->setValue($value);
+    $scalar->setUserId($user instanceof UserDao ? $user->getKey() : -1);
+    $scalar->setOfficial($official ? 1 : 0);
+
     $this->save($scalar);
     return $scalar;
     }

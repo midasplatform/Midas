@@ -52,7 +52,7 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
     }
 
   /**
-   * Return other values that are from the same submission (same submit_time and same producer)
+   * Return other values that are from the same submission (same submit_time, producer, and user id)
    */
   public function getOtherValuesFromSubmission($scalar)
     {
@@ -61,6 +61,7 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
                 ->from(array('s' => 'tracker_scalar'))
                 ->join(array('t' => 'tracker_trend'), 's.trend_id = t.trend_id')
                 ->where('s.submit_time = ?', $scalar->getSubmitTime())
+                ->where('s.user_id = ?', $scalar->getUserId())
                 ->where('t.producer_id = ?', $scalar->getTrend()->getProducerId());
     $rows = $this->database->fetchAll($sql);
     $scalars = array();
@@ -83,12 +84,16 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
   /**
    * Get a scalar dao based on trend and timestamp
    */
-  public function getByTrendAndTimestamp($trendId, $timestamp)
+  public function getByTrendAndTimestamp($trendId, $timestamp, $userId = null)
     {
     $sql = $this->database->select()
                 ->setIntegrityCheck(false)
                 ->where('trend_id = ?', $trendId)
                 ->where('submit_time = ?', $timestamp);
+    if($userId !== null)
+      {
+      $sql->where('user_id = ?', $userId);
+      }
     return $this->initDao('Scalar', $this->database->fetchRow($sql), $this->moduleName);
     }
 }
