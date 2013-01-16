@@ -81,8 +81,8 @@ public class UploadThread extends Thread
         {
         uploader.setIndex(i);
         uploader.setFileCountLabel(i + 1, files.length);
-        
-        uploadFile(i, this.anonymizeFile(files[i]));
+
+        this.uploadFile(i, this.anonymizeFile(files[i]));
         this.uploadOffset = 0;
         if(this.paused)
           {
@@ -97,6 +97,7 @@ public class UploadThread extends Thread
       uploader.setFileNameLabel("Extracting DICOM metadata on server...");
       this.runMetadataExtraction(itemId);
       uploader.setFileNameLabel("Finished!");
+      uploader.redirectToItem(itemId);
       }
     catch (JavaUploaderException e)
       {
@@ -210,12 +211,19 @@ public class UploadThread extends Thread
       }
     else
       {
-      throw new JavaUploaderException("Anonymization failed on "+file.getName()+": "+status.getMessage());
+      Utility.log(Utility.LOG_LEVEL.ERROR, "[CLIENT] Anonymization failed on "+file.getName()+": "
+        +status.getMessage()+", ignoring file");
+      return null;
       }
     }
 
   private void uploadFile(int i, File file) throws JavaUploaderException
     {
+    if(file == null)
+      {
+      uploader.setUploadProgress(i, 0);
+      return;
+      }
     long length = file.length();
     String filename = file.getName().replace(" ", "_");
     String actualFilename = filename.replace(".temp_anon", "");
@@ -386,10 +394,7 @@ public class UploadThread extends Thread
           String itemId = Utility.getMessage(new BufferedReader(new InputStreamReader(inputStream)));
           uploader.getItemIdList().add(new Integer(itemId)); //append item id to the list to merge
           Utility.log(Utility.LOG_LEVEL.DEBUG, "[SERVER] " + itemId);
-          if (i + 1 == uploader.getFiles().length)
-            {
-            uploader.onSuccessfulUpload();
-            }
+
           try
             {
             inputStream.close();

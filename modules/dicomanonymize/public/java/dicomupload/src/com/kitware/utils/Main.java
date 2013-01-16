@@ -64,7 +64,6 @@ public class Main extends JApplet
   private String uploadFileBaseURL, uploadFileURL;
   private String getUploadFileOffsetBaseURL, getUploadFileOffsetURL;
   private String sessionId, uploadUniqueIdentifier = null;
-  private URL onSuccessRedirectURLObj;
   boolean onSuccessfulUploadRedirectEnable = true;
 
   public void init()
@@ -250,9 +249,7 @@ public class Main extends JApplet
       }
     catch (NullPointerException e)
       {
-      Utility
-          .log(Utility.LOG_LEVEL.WARNING,
-              "[CLIENT] 'background' applet parameter unspecified: Rollback to default");
+      Utility.log(Utility.LOG_LEVEL.WARNING, "[CLIENT] 'background' applet parameter unspecified: Rollback to default");
       }
     this.webroot = getParameter("webroot");
     this.apiURL = getParameter("apiURL");
@@ -263,7 +260,7 @@ public class Main extends JApplet
     Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] uploadFileBaseURL:"
         + this.uploadFileBaseURL);
 
-    this.onSuccessRedirectURL = baseURL + getParameter("onSuccessRedirectURL");
+    this.onSuccessRedirectURL = this.webroot + getParameter("onSuccessRedirectURL");
     Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] onSuccessRedirectURL:"
         + this.onSuccessRedirectURL);
 
@@ -281,8 +278,6 @@ public class Main extends JApplet
         + getParameter("getUploadFileOffsetBaseURL") + this.sessionId;
     Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] getUploadFileOffsetBaseURL:"
         + this.getUploadFileOffsetBaseURL);
-
-    this.onSuccessRedirectURLObj = Utility.buildURL("onSuccessRedirect", this.onSuccessRedirectURL);
     }
 
   public File[] getFiles()
@@ -398,13 +393,14 @@ public class Main extends JApplet
     this.progressBar.setValue(progress);
     }
 
-  public void onSuccessfulUpload()
+  public void redirectToItem(int itemId) throws JavaUploaderException
     {
     this.chooseDirButton.setEnabled(true);
     this.stopButton.setEnabled(false);
     if (this.onSuccessfulUploadRedirectEnable)
       {
-      this.getAppletContext().showDocument(this.onSuccessRedirectURLObj);
+      URL redirectURL = Utility.buildURL("onSuccessRedirect", this.onSuccessRedirectURL + itemId);
+      this.getAppletContext().showDocument(redirectURL);
       }
     }
 
