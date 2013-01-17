@@ -228,8 +228,34 @@ class FolderController extends AppController
     }// end View Action
 
 
+  /**
+   * Prompt the user to confirm deletion of a folder
+   * @param folderId The id of the folder to be deleted
+   */
+  public function deletedialogAction()
+    {
+    $this->disableLayout();
+    $folderId = $this->_getParam('folderId');
 
-  /** delete a folder (dialog,ajax only)*/
+    if(!isset($folderId))
+      {
+      throw new Zend_Exception('Must pass folderId parameter');
+      }
+    $folder = $this->Folder->load($folderId);
+    if($folder === false)
+      {
+      throw new Zend_Exception('Invalid folderId', 404);
+      }
+    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception('Admin permission required', 403);
+      }
+    $this->view->folder = $folder;
+    $sizes = $this->Folder->getSizeFiltered(array($folder), $this->userSession->Dao);
+    $this->view->sizeStr = UtilityComponent::formatSize($sizes[0]->size);
+    }
+
+  /** delete a folder (ajax action)*/
   public function deleteAction()
     {
     $this->disableLayout();
