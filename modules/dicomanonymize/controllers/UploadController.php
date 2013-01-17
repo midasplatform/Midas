@@ -52,6 +52,10 @@ class Dicomanonymize_UploadController extends Dicomanonymize_AppController
       $this->disableView();
       $this->userSession->JavaUpload->parent = $parent;
       }
+    else
+      {
+      $this->userSession->JavaUpload->parent = null;
+      }
 
     if(isset($parent))
       {

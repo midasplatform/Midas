@@ -18,6 +18,7 @@ import org.rsna.ctp.stdstages.anonymizer.AnonymizerStatus;
 import org.rsna.ctp.stdstages.anonymizer.dicom.DICOMAnonymizer;
 
 import com.kitware.utils.exception.JavaUploaderException;
+import com.kitware.utils.exception.JavaUploaderQueryHttpServerException;
 
 public class UploadThread extends Thread
   {
@@ -241,6 +242,16 @@ public class UploadThread extends Thread
       try
         {
         this.uploader.setUploadUniqueIdentifier(Utility.queryHttpServer(getUploadUniqueIdentifierURL));
+        }
+      catch(JavaUploaderQueryHttpServerException e)
+        {
+        file.delete();
+        uploader.setFileNameLabel("");
+        uploader.setFileSizeLabel(-1);
+        uploader.chooseDirButton.setEnabled(true);
+        uploader.resumeButton.setEnabled(false);
+        uploader.stopButton.setEnabled(false);
+        throw new JavaUploaderException("Error: you must select an upload destination folder first");
         }
       catch(Exception e)
         {
