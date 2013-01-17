@@ -210,7 +210,7 @@ class BrowseController extends AppController
         }
       if(!$this->logged)
         {
-        throw new Zend_Exception(MIDAS_LOGIN_REQUIRED);
+        throw new Zend_Exception(MIDAS_LOGIN_REQUIRED, 403);
         }
       $this->view->folders = $folders;
       $this->view->items = $items;
@@ -405,7 +405,6 @@ class BrowseController extends AppController
       $tmp['folder_id'] = $folder->getFolderId();
       $tmp['name'] = $folder->getName();
       $tmp['date_update'] = $this->Component->Date->ago($folder->getDateUpdate(), true);
-      $tmp['policy'] = $folder->policy;
       $tmp['privacy_status'] = $folder->privacy_status;
       $jsonContent[$folder->getParentId()]['folders'][] = $tmp;
       unset($tmp);
@@ -418,7 +417,6 @@ class BrowseController extends AppController
       $tmp['parent_id'] = $item->parent_id;
       $tmp['date_update'] = $this->Component->Date->ago($item->getDateUpdate(), true);
       $tmp['size'] = $this->Component->Utility->formatSize($item->getSizebytes());
-      $tmp['policy'] = $item->policy;
       $tmp['privacy_status'] = $item->privacy_status;
       $jsonContent[$item->parent_id]['items'][] = $tmp;
       unset($tmp);
@@ -526,6 +524,46 @@ class BrowseController extends AppController
     $jsonContent['translation']['Private'] = $this->t('This community is private');
     echo JsonComponent::encode($jsonContent);
     }//end getElementInfo
+
+  /**
+   * The first time a user clicks on an item or folder in the tree table, it makes
+   * an ajax request to this method, which returns the maximum policy value for that
+   * item or folder for the given user. This value should be cached in the DOM to avoid
+   * repeated requests for the same resource.
+   * @param id The id of the resource
+   * @param type The type of the resource: (folder | item)
+   * @return JSON object with the "policy" field set to the max policy on the resource.
+   * Throws exception if the user has no access to the resource
+   */
+  public function getmaxpolicyAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+
+    $id = $this->_getParam('id');
+    $type = $this->_getParam('type');
+
+    if(!isset($id) || !isset($type))
+      {
+      throw new Zend_Exception('Must pass id and type parameters');
+      }
+    switch(strtolower($type))
+      {
+      case 'folder':
+        $maxpolicy = $this->Folder->getMaxPolicy($id, $this->userSession->Dao);
+        break;
+      case 'item':
+        $maxpolicy = $this->Item->getMaxPolicy($id, $this->userSession->Dao);
+        break;
+      default:
+        throw new Zend_Exception('Parameter type must be either item or folder');
+      }
+    if($maxpolicy < 0)
+      {
+      throw new Zend_Exception('You have no access to '.$type.' '.$id, 403);
+      }
+    echo JsonComponent::encode(array('policy' => $maxpolicy));
+    }
 
   /**
    * Delete a set of folders and items. Called by ajax from common.browser.js

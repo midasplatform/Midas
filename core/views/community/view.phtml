@@ -141,7 +141,7 @@ $strippedDescription = strip_tags($description);
               {
               $folderId = $folder->getFolderId();
               $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-              echo "<tr id='node--$node' policy='{$folder->policy}' class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='$folderId' ajax='$folderId'>";
+              echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='$folderId' ajax='$folderId'>";
               echo "  <td class='treeBrowseElement'><span class='folder{$privacyClass}'>{$folder->getName()}</span></td>";
               echo "  <td><img class='folderLoading' element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
@@ -153,7 +153,7 @@ $strippedDescription = strip_tags($description);
             foreach($this->items as $item)
               {
               $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-              echo "<tr id='node--$node' policy='{$item->policy}' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
+              echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
               echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename($item->getName(),40)}</span></td>";
               echo "  <td>{$item->size}</td>";
               echo "  <td>{$this->Date->ago($item->getDateUpdate(),true)}</td>";

@@ -22,40 +22,63 @@ midas.browse.moveCopyCallbackSelect = function (node) {
         }
     }
 
-    $('#selectedDestinationHidden').val(node.attr('element'));
-    $('#selectedDestination').html(sliceFileName(selectedElement, 40));
-    if(node.attr('valid') == 'false' || parseInt(node.attr('policy')) < 1) {
-        $('#selectElement').attr('disabled', 'disabled');
-        $('#shareElement').attr('disabled', 'disabled');
-        $('#duplicateElement').attr('disabled', 'disabled');
-        $('#moveElement').attr('disabled', 'disabled');
+    midas.browse.moveCopyToggleButton(false);
+    if(node.attr('type') == 'folder' || node.attr('type') == 'item') {
+        $('#selectedDestinationHidden').val(node.attr('element'));
+        $('#selectedDestination').html(sliceFileName(selectedElement, 40));
+        if(typeof node.attr('policy') == 'undefined') {
+            var params = {
+                type: node.attr('type'),
+                id: node.attr('element')
+            };
+            $.post(json.global.webroot+'/browse/getmaxpolicy', params, function (retVal) {
+                var resp = $.parseJSON(retVal);
+                node.attr('policy', resp.policy);
+                midas.browse.checkMoveDestinationValid(node, resp.policy);
+            });
+        }
+        else {
+            midas.browse.checkMoveDestinationValid(node, node.attr('policy'));
+        }
     }
-    else {
+};
+
+midas.browse.checkMoveDestinationValid = function (node, policy) {
+    if(node.attr('valid') != 'false' && policy >= 1) {
+        midas.browse.moveCopyToggleButton(true);
+    }
+};
+
+midas.browse.moveCopyToggleButton = function (on) {
+    if(on) {
         $('#selectElement').removeAttr('disabled');
         $('#shareElement').removeAttr('disabled');
         $('#duplicateElement').removeAttr('disabled');
         $('#moveElement').removeAttr('disabled');
     }
+    else {
+        $('#selectElement').attr('disabled', 'disabled');
+        $('#shareElement').attr('disabled', 'disabled');
+        $('#duplicateElement').attr('disabled', 'disabled');
+        $('#moveElement').attr('disabled', 'disabled');
+    }
 };
 
-
 midas.browse.moveCopyCallbackDblClick = function (node) {
-    //  midas.genericCallbackDblClick(node);
 };
 
 midas.browse.moveCopyCallbackCheckboxes = function (node) {
-    //  midas.genericCallbackCheckboxes(node);
 };
 
 midas.browse.moveCopyCallbackCustomElements = function (node,elements,first) {
     var i = 1;
     var id = node.attr('id');
     elements['folders'] = jQuery.makeArray(elements['folders']);
-    var padding=parseInt(node.find('td:first').css('padding-left').slice(0,-2));
-    var html='';
+    var padding = parseInt(node.find('td:first').css('padding-left').slice(0, -2));
+    var html = '';
     $.each(elements.folders, function(index, value) {
-        html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value['folder_id']+"'type='folder'  policy='"+value['policy']+"' element='"+value['folder_id']+"'>";
-        html+= "  <td><span class='folder'>"+trimName(value['name'],padding)+"</span></td>";
+        html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value.folder_id+"'type='folder' element='"+value.folder_id+"'>";
+        html+= "  <td><span class='folder'>"+trimName(value.name, padding)+"</span></td>";
         html+= "</tr>";
         i++;
     });

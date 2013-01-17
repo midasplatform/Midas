@@ -149,6 +149,23 @@ class ItemModel extends ItemModelBase
     }
 
   /**
+   * Check whether an item exists with the given name in the given folder.
+   * If it does, returns the existing item dao. Otherwise returns false.
+   */
+  function existsInFolder($name, $folder)
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->from(array('i' => 'item'))
+                ->join(array('i2f' => 'item2folder'),
+                       'i.item_id = i2f.item_id AND '.
+                       $this->database->getDB()->quoteInto('i2f.folder_id = ?', $folder->getKey()),
+                       array())
+                ->where('i.name = ?', $name)
+                ->limit(1);
+    return $this->initDao('Item', $this->database->fetchRow($sql));
+    }
+
+  /**
    * Get Items where user policy exists and is != admin
    * @param type $userDao
    * @param type $limit
@@ -342,6 +359,50 @@ class ItemModel extends ItemModelBase
     unset($itemdao->item_id);
     $itemdao->saved = false;
     }//end delete
+
+  /**
+   * Get the maximum policy level for the given item and user.
+   */
+  public function getMaxPolicy($itemId, $user)
+    {
+    $maxPolicy = -1;
+    if($user)
+      {
+      if($user->isAdmin())
+        {
+        return MIDAS_POLICY_ADMIN;
+        }
+      $userId = $user->getKey();
+      $sql = $this->database->select()->setIntegrityCheck(false)
+                  ->from('itempolicyuser', array('maxpolicy' => 'max(policy)'))
+                  ->where('item_id = ?', $itemId)
+                  ->where('user_id = ? ', $userId);
+      $row = $this->database->fetchRow($sql);
+      if($row != null && $row['maxpolicy'] > $maxPolicy)
+        {
+        $maxPolicy = $row['maxpolicy'];
+        }
+      }
+    else
+      {
+      $userId = -1;
+      }
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->from(array('p' => 'itempolicygroup'), array('maxpolicy' => 'max(policy)'))
+                ->where('p.item_id = ?', $itemId)
+                ->where('( '.$this->database->getDB()->quoteInto('group_id = ?', MIDAS_GROUP_ANONYMOUS_KEY).
+                        ' OR group_id IN ('.new Zend_Db_Expr(
+                          $this->database->select()->setIntegrityCheck(false)
+                               ->from(array('u2g' => 'user2group'), array('group_id'))
+                               ->where('u2g.user_id = ?', $userId)
+                               .'))'));
+    $row = $this->database->fetchRow($sql);
+    if($row != null && $row['maxpolicy'] > $maxPolicy)
+      {
+      $maxPolicy = $row['maxpolicy'];
+      }
+    return $maxPolicy;
+    }
 
   /** check if the policy is valid*/
   function policyCheck($itemdao, $userDao = null, $policy = 0)

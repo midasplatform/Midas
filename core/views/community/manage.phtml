@@ -331,7 +331,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
             foreach($this->items as $item)
               {
               $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-              echo "<tr id='node--$node' policy='{$item->policy}' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
+              echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
               echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename($item->getName(),40)}</span></td>";
               echo "  <td>{$item->size}</td>";
               echo "  <td>{$this->Date->ago($item->getDateUpdate(),true)}</td>";
@@ -374,7 +374,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
             foreach($this->userPersonalItems as $item)
               {
               $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-              echo "<tr id='node--$node' policy='{$item->policy}' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
+              echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
               echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename($item->getName(),40)}</span></td>";
               echo "  <td>{$item->size}</td>";
               echo "  <td>{$this->Date->ago($item->getDateUpdate(),true)}</td>";
