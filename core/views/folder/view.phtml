@@ -110,9 +110,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 <div class="viewSideBar">
   <?php
   echo '
-  <div class="sideElementFirst genericAction">
-    <h1>Folder Actions</h1>
+  <div class="sideElementFirst viewAction">
     <ul>
+      <h1>Folder Actions</h1>
       <li>
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/download.png"/>
         <a href="javascript:;" class="downloadFolderLink" element="'.$this->mainFolder->getKey().'">Download</a>
@@ -163,9 +163,6 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       }
     echo '
     </ul>
-  </div>
-  <div class="sideElement viewAction">
-    <ul></ul>
   </div>
   <div class="sideElement viewSelected" >
   <h1>'.$this->t('Checked').'<span></span></h1>

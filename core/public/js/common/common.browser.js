@@ -241,48 +241,8 @@ midas.removeItem = function (id) {
 };
 
 midas.deleteFolder = function (id) {
-    var html = '';
-    html += json.browse['deleteMessage'];
-    html += '<br/><br/>';
-    html += '<div id="deleteFolderProgress"></div>';
-    html += '<div id="deleteFolderProgressMessage"></div><br/><br/>';
-    html += '<div style="float: right;">';
-    html += '<input class="globalButton deleteFolderYes" element="'+id+'" type="button" value="' + json.global.Yes + '"/>';
-    html += '<input style="margin-left:15px;" class="globalButton deleteFolderNo" type="button" value="' + json.global.No + '"/>';
-    html += '</div>';
-
-    midas.showDialogWithContent(json.browse['delete'], html, false);
-
-    $('input.deleteFolderYes').unbind('click').click(function () {
-        $(this).attr('disabled', 'disabled');
-        var node = $('table.treeTable tr.parent[element='+id+']');
-        midas.ajaxWithProgress(
-          $('#deleteFolderProgress'),
-          $('#deleteFolderProgressMessage'),
-          json.global.webroot+'/folder/delete',
-          {folderId: id},
-          function(data) {
-            $('input.deleteFolderYes').removeAttr('disabled');
-            jsonResponse = jQuery.parseJSON(data);
-            if(jsonResponse==null) {
-                midas.createNotice('Error', 4000, 'error');
-                return;
-            }
-            if(jsonResponse[0]) {
-                midas.createNotice(jsonResponse[1], 1500);
-                $('div.MainDialog').dialog('close');
-                midas.removeNodeFromTree(node, true);
-                midas.genericCallbackCheckboxes($('#browseTable'));
-                midas.genericCallbackSelect(null);
-            }
-            else {
-                midas.createNotice(jsonResponse[1],4000, 'error');
-            }
-        });
-    });
-    $('input.deleteFolderNo').unbind('click').click(function() {
-        $('div.MainDialog').dialog('close');
-    });
+    midas.loadDialog('deleteFolder'+id, '/folder/deletedialog?folderId='+id);
+    midas.showDialog('Confirm Delete Folder', false);
 };
 
 /**
