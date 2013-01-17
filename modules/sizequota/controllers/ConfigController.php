@@ -41,21 +41,32 @@ class Sizequota_ConfigController extends Sizequota_AppController
     $formArray = $this->getFormAsArray($configForm);
     if($defaultUserQuota !== null)
       {
-      $formArray['defaultuserquota']->setValue($defaultUserQuota);
+      if($defaultUserQuota !== '')
+        {
+        list($userQuotaValue, $this->view->unitValueUser) = explode(' ', UtilityComponent::formatSize($defaultUserQuota, ''));
+        $formArray['defaultuserquota']->setValue($userQuotaValue);
+        }
       }
     if($defaultCommunityQuota !== null)
       {
-      $formArray['defaultcommunityquota']->setValue($defaultCommunityQuota);
+      if($defaultCommunityQuota !== '')
+        {
+        list($communityQuotaValue, $this->view->unitValueCommunity) = explode(' ', UtilityComponent::formatSize($defaultCommunityQuota, ''));
+        $formArray['defaultcommunityquota']->setValue($communityQuotaValue);
+        }
       }
+
     $this->view->configForm = $formArray;
 
     if($this->_request->isPost())
       {
       $this->disableLayout();
-      $this->_helper->viewRenderer->setNoRender();
+      $this->disableView();
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
+        $communityQuotaUnit = $this->_getParam('communityQuotaUnit');
+        $userQuotaUnit = $this->_getParam('userQuotaUnit');
         $defaultUserQuota = $this->_getParam('defaultuserquota');
         $defaultCommunityQuota = $this->_getParam('defaultcommunityquota');
         if(!$this->_isValidQuota(array($defaultUserQuota, $defaultCommunityQuota)))
@@ -63,8 +74,17 @@ class Sizequota_ConfigController extends Sizequota_AppController
           echo JsonComponent::encode(array(false, 'Invalid quota value. Please enter a positive integer.'));
           return;
           }
-        $this->Setting->setConfig('defaultuserquota', $defaultUserQuota, $this->moduleName);
-        $this->Setting->setConfig('defaultcommunityquota', $defaultCommunityQuota, $this->moduleName);
+        if($defaultUserQuota !== '')
+          {
+          $defaultUserQuota *= (float)$userQuotaUnit;
+          }
+        if($defaultCommunityQuota !== '')
+          {
+          $defaultCommunityQuota *= (float)$communityQuotaUnit;
+          }
+
+        $this->Setting->setConfig('defaultuserquota', (string)$defaultUserQuota, $this->moduleName);
+        $this->Setting->setConfig('defaultcommunityquota', (string)$defaultCommunityQuota, $this->moduleName);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
@@ -113,8 +133,12 @@ class Sizequota_ConfigController extends Sizequota_AppController
     else
       {
       $formArray['usedefault']->setValue(MIDAS_USE_SPECIFIC_QUOTA);
-      $formArray['quota']->setValue($currentQuota->getQuota());
       $this->view->quota = $currentQuota->getQuota();
+      if($this->view->quota !== '')
+        {
+        list($quotaFormValue, $this->view->unitFormValue) = explode(' ', UtilityComponent::formatSize($this->view->quota, ''));
+        $formArray['quota']->setValue($quotaFormValue);
+        }
       }
     $this->view->usedSpace = $this->Folder->getSize($folder);
     $this->view->hUsedSpace = UtilityComponent::formatSize($this->view->usedSpace);
@@ -141,6 +165,7 @@ class Sizequota_ConfigController extends Sizequota_AppController
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
     $quota = $this->_getParam('quota');
+    $multiplier = $this->_getParam('unit');
     $useDefault = $this->_getParam('usedefault');
     if($useDefault == MIDAS_USE_DEFAULT_QUOTA)
       {
@@ -154,8 +179,12 @@ class Sizequota_ConfigController extends Sizequota_AppController
       }
     if($quota !== null && !$this->_isValidQuota(array($quota)))
       {
-      echo JsonComponent::encode(array(false, 'Invalid quota value. Please enter a positive integer.'));
+      echo JsonComponent::encode(array(false, 'Invalid quota value. Please enter a positive number.'));
       return;
+      }
+    if($quota !== null && $quota !== '')
+      {
+      $quota *= $multiplier;
       }
 
     $this->Sizequota_FolderQuota->setQuota($folder, $quota);
@@ -219,7 +248,7 @@ class Sizequota_ConfigController extends Sizequota_AppController
     {
     foreach($quotas as $quota)
       {
-      if(!preg_match('/^[0-9]*$/', $quota))
+      if($quota !== '' && (!is_numeric($quota) || ((float)$quota) < 0))
         {
         return false;
         }
