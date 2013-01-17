@@ -76,7 +76,8 @@ class UploadDownloadControllerTest extends ControllerTestCase
       }
     copy(BASE_PATH.'/tests/testfiles/search.png', $identifier);
     $page = 'upload/gethttpuploaduniqueidentifier/?filename=httpupload.png&testingmode=1';
-    $this->dispatchUrI($page, $userDao, true);
+    $this->dispatchUrI($page, $userDao);
+    $this->assertEquals(trim($this->getBody()), '[ERROR]You must specify a parent folder or item.');
 
     $this->resetAll();
     $folders = $userDao->getFolder()->getFolders();

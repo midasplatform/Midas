@@ -1,8 +1,7 @@
 var midas = midas || {};
-midas.upload = midas.upload || {};
-midas.upload.javaupload = {};
+midas.dcma = midas.dcma || {};
 
-midas.upload.javaupload.sendParentToJavaSession = function () {
+midas.dcma.sendParentToJavaSession = function () {
     $.post(json.global.webroot+'/upload/javaupload', {
         parent: $('#destinationId').val(),
         license: $('select[name=licenseSelect]:last').val()
@@ -23,16 +22,17 @@ $('.destinationId').val($('#destinationId').val());
 $('.destinationUpload').html($('#destinationUpload').html());
 
 // Save initial state to the session
-midas.upload.javaupload.sendParentToJavaSession();
+midas.dcma.sendParentToJavaSession();
 
 // Save license change to the session
 $('select[name=licenseSelect]:last').change(function () {
-    midas.upload.javaupload.sendParentToJavaSession();
+    midas.dcma.sendParentToJavaSession();
 });
 
 // Save parent folder to the session
 function folderSelectionCallback() {
-    midas.upload.javaupload.sendParentToJavaSession();
+    midas.dcma.sendParentToJavaSession();
 }
 
+// Makes the same callback as the large upload applet
 midas.doCallback('CALLBACK_CORE_JAVAUPLOAD_LOADED');

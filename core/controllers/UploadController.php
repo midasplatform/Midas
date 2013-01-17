@@ -107,6 +107,7 @@ class UploadController extends AppController
       $parent = null;
       }
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', array('folder' => $parent));
+    $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_UPLOAD_TABS', array());
     }//end simple upload
 
   /** Render the large file upload view */
@@ -151,6 +152,11 @@ class UploadController extends AppController
       $this->userSession->JavaUpload->parent = $parent;
       $this->userSession->JavaUpload->license = $license;
       }
+    else
+      {
+      $this->userSession->JavaUpload->parent = null;
+      }
+
     if(isset($parent))
       {
       $folder = $this->Folder->load($parent);
@@ -371,7 +377,8 @@ class UploadController extends AppController
       }
     else
       {
-      throw new Zend_Exception('Parent folderId or itemId must be set.');
+      echo '[ERROR]You must specify a parent folder or item.';
+      return;
       }
 
     $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
@@ -493,7 +500,7 @@ class UploadController extends AppController
         echo "[ERROR] ".$e->getMessage();
         throw $e;
         }
-      echo "[OK]";
+      echo '[OK]'.$item->getKey();
       }
     } //end processjavaupload
 
