@@ -152,6 +152,11 @@ class UploadController extends AppController
       $this->userSession->JavaUpload->parent = $parent;
       $this->userSession->JavaUpload->license = $license;
       }
+    else
+      {
+      $this->userSession->JavaUpload->parent = null;
+      }
+
     if(isset($parent))
       {
       $folder = $this->Folder->load($parent);
@@ -372,7 +377,8 @@ class UploadController extends AppController
       }
     else
       {
-      throw new Zend_Exception('Parent folderId or itemId must be set.');
+      echo '[ERROR]You must specify a parent folder or item.';
+      return;
       }
 
     $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
