@@ -25,7 +25,7 @@
 class AssetstoreController extends AppController
   {
 
-  public $_models = array('Assetstore', 'Setting');
+  public $_models = array('Assetstore', 'Bitstream', 'Progress', 'Setting');
   public $_daos = array('Assetstore');
   public $_components = array('Utility');
   public $_forms = array('Assetstore');
@@ -195,6 +195,72 @@ class AssetstoreController extends AppController
     return false;
     } // end import action
 
+  /**
+   * Prompt an admin user to move files from one assetstore to another
+   * @param srcAssetstoreId The assetstore id to move files from
+   */
+  function movedialogAction()
+    {
+    $this->requireAdminPrivileges();
+    $this->disableLayout();
 
+    $srcAssetstoreId = $this->_getParam('srcAssetstoreId');
+
+    if(!$srcAssetstoreId)
+      {
+      throw new Zend_Exception('Must provide srcAssetstoreId parameter');
+      }
+
+    $srcAssetstore = $this->Assetstore->load($srcAssetstoreId);
+
+    if(!($srcAssetstore instanceof AssetstoreDao))
+      {
+      throw new Zend_Exception('Invalid srcAssetstoreId');
+      }
+    $this->view->assetstores = $this->Assetstore->getAll();
+    $this->view->srcAssetstore = $srcAssetstore;
+    }
+
+  /**
+   * Move all bitstreams from one assetstore into another. Asynchronous progress enabled.
+   * @param srcAssetstoreId The id of the source assetstore
+   * @param dstAssetstoreId The id of the destination assetstore
+   */
+  function movecontentsAction()
+    {
+    $this->requireAdminPrivileges();
+    $this->disableView();
+    $this->disableLayout();
+
+    $srcAssetstoreId = $this->_getParam('srcAssetstoreId');
+    $dstAssetstoreId = $this->_getParam('dstAssetstoreId');
+
+    if(!$srcAssetstoreId || !$dstAssetstoreId)
+      {
+      throw new Zend_Exception('Must provide srcAssetstoreId and dstAssetstoreId parameters');
+      }
+    if($srcAssetstoreId == $dstAssetstoreId)
+      {
+      return;
+      }
+    $srcAssetstore = $this->Assetstore->load($srcAssetstoreId);
+    $dstAssetstore = $this->Assetstore->load($dstAssetstoreId);
+
+    if(!($srcAssetstore instanceof AssetstoreDao) || !($dstAssetstore instanceof AssetstoreDao))
+      {
+      throw new Zend_Exception('Invalid srcAssetstoreId or dstAssetstoreId');
+      }
+
+    if($this->progressDao)
+      {
+      $this->progressDao->setMaximum($this->Bitstream->countAll($srcAssetstore));
+      $this->progressDao->setMessage('Moving all bitstreams...');
+      $this->Progress->save($this->progressDao);
+      }
+
+    $this->Assetstore->moveBitstreams($srcAssetstore, $dstAssetstore, $this->progressDao);
+
+    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Bitstreams moved'));
+    }
 } // end class
 

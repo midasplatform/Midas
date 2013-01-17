@@ -1,0 +1,38 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/assetstore/assetstore.movedialog.css" />
+
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/assetstore/assetstore.movedialog.js"></script>
+
+<form id='moveBitstreamsForm'  action="<?php echo $this->webroot?>/assetstore/movecontents" method="post">
+  Destination assetstore:
+  <select id="dstAssetstoreId">
+    <?php
+    foreach($this->assetstores as $assetstore)
+      {
+      if($assetstore->getKey() != $this->srcAssetstore->getKey())
+        {
+        echo '<option value="'.$assetstore->getKey().'">'.$assetstore->getName().'</option>';
+        }
+      }
+    ?>
+  </select>
+  <input type="hidden" id="srcAssetstoreId" value="<?php echo $this->srcAssetstore->getKey();?>" />
+
+  <div id="moveBitstreamsProgressBar"></div>
+  <div id="moveBitstreamsProgressMessage"></div>
+
+  <div class="bottomButtons">
+    <input type="button" class="globalButton" id="moveBitstreamsConfirm" value="Move" />
+  </div>
+</form>

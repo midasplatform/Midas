@@ -1,0 +1,9 @@
+div.bottomButtons {
+  margin-top: 15px;
+  float: right;
+}
+
+#moveBitstreamsProgressBar {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
