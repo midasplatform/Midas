@@ -20,7 +20,21 @@ PURPOSE.  See the above copyright notices for more information.
   <table class="scalarInfoTable"><tbody>
     <tr><th>Metric:</th><td><span id="thisMetric"><?php echo $this->scalar->getTrend()->getMetricName(); ?></span></td></tr>
     <tr><th>Value:</th><td><span id="thisValue"><?php echo $this->scalar->getValue().' '.$this->scalar->getTrend()->getUnit(); ?></span></td></tr>
-    <tr><th>Submitted:</th><td><span id="thisSubmitTime"><?php echo $this->scalar->getSubmitTime(); ?></span></td></tr>
+    <tr><th>Submitted:</th>
+        <td>
+          <span id="thisSubmitTime"><?php echo $this->scalar->getSubmitTime(); ?></span>
+          <?php
+          if($this->submittedBy)
+            {
+            echo ' by <a href="'.$this->webroot.'/user/'.$this->submittedBy->getKey().'">'.$this->submittedBy->getFullName().'</a> ';
+            }
+          if(!$this->scalar->getOfficial())
+            {
+            echo '(unofficial)';
+            }
+          ?>
+        </td>
+    </tr>
     <tr><th>Revision:</th><td><span id="thisProducerRev"><?php echo $this->revisionHtml; ?></span></td></tr>
   </tbody></table>
 </div>

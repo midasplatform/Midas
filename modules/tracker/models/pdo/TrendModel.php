@@ -58,7 +58,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
   /**
    * Return chronologically ordered list of scalars for this trend
    */
-  public function getScalars($trend, $startDate = null, $endDate = null)
+  public function getScalars($trend, $startDate = null, $endDate = null, $userId = null)
     {
     $sql = $this->database->select()
                           ->setIntegrityCheck(false)
@@ -72,6 +72,14 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
     if($endDate)
       {
       $sql->where('submit_time <= ?', $endDate);
+      }
+    if($userId)
+      {
+      $sql->where('official = 1 OR user_id = ?', $userId);
+      }
+    else
+      {
+      $sql->where('official = 1');
       }
     $scalars = array();
     $rowset = $this->database->fetchAll($sql);

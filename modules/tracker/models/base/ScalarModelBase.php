@@ -49,7 +49,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
 
   /**
    * Add a new scalar point to the trend.  If overwrite is true, and a scalar
-   * already exists on the trend with the same submit time, this will replace that scalar value.
+   * already exists on the trend with the same submit time and user, this will replace that scalar value.
    */
   public function addToTrend($trend, $submitTime, $producerRevision, $value, $user, $overwrite = true, $official = true)
     {
