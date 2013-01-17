@@ -1,0 +1,25 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+
+echo '<script type="text/javascript" src="' . $this->coreWebroot.'/public/js/folder/folder.deletedialog.js?'.time().'"></script>';
+?>
+
+Are you sure you want to delete the folder <b><?php echo $this->folder->getName()?></b>? (<?php echo $this->sizeStr?>)
+<br/><br/>
+<div id="deleteFolderProgress"></div>
+<div id="deleteFolderProgressMessage"></div>
+<br/><br/>
+<input id="deleteFolderId" type="hidden" value="<?php echo $this->folder->getKey()?>" />
+<div style="float: right;">
+  <input class="globalButton deleteFolderYes" element="'+id+'" type="button" value="Yes"/>
+  <input style="margin-left:15px;" class="globalButton deleteFolderNo" type="button" value="No"/>
+</div>
