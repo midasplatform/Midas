@@ -89,6 +89,7 @@ class Tracker_ApiComponent extends AppComponent
    * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
    * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
    * @param silent (Optional) If set, do not perform treshold-based email notifications for this scalar
+   * @param unofficial (Optional) If passed, creates an unofficial scalar visible only to the user performing the submission
    * @return The scalar dao that was created
    */
   public function scalarAdd($args)
@@ -98,8 +99,10 @@ class Tracker_ApiComponent extends AppComponent
     $this->_checkKeys(array('communityId', 'producerDisplayName', 'metricName', 'value', 'producerRevision', 'submitTime'), $args);
     $user = $this->_getUser($args);
 
+    $official = !array_key_exists('unofficial', $args);
+
     $community = $communityModel->load($args['communityId']);
-    if(!$community || !$communityModel->policyCheck($community, $user, MIDAS_POLICY_WRITE))
+    if(!$community || !$communityModel->policyCheck($community, $user, $official ? MIDAS_POLICY_WRITE : MIDAS_POLICY_READ))
       {
       throw new Exception('Write permission required on community', 403);
       }
@@ -192,7 +195,7 @@ class Tracker_ApiComponent extends AppComponent
     $producerRevision = trim($args['producerRevision']);
 
     $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
-    $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision, $value, true);
+    $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision, $value, $user, true, $official);
 
     if(!isset($args['silent']))
       {
@@ -215,6 +218,7 @@ class Tracker_ApiComponent extends AppComponent
    * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
    * @param parentKeys (Optional) Semicolon-separated list of parent keys to look for numeric results under.  Use '.' to denote nesting, like in normal javascript syntax.
    * @param silent (Optional) If set, do not perform treshold-based email notifications for this scalar
+   * @param unofficial (Optional) If passed, creates an unofficial scalar visible only to the user performing the submission
    * @return The list of scalars that were created.  Non-numeric values are ignored.
    */
   public function resultsUploadJson($args)
@@ -224,8 +228,11 @@ class Tracker_ApiComponent extends AppComponent
     $this->_checkKeys(array('communityId', 'producerDisplayName', 'producerRevision'), $args);
     $user = $this->_getUser($args);
 
+    $official = !array_key_exists('unofficial', $args);
+
+    // Unofficial submissions only require read access to the community
     $community = $communityModel->load($args['communityId']);
-    if(!$community || !$communityModel->policyCheck($community, $user, MIDAS_POLICY_WRITE))
+    if(!$community || !$communityModel->policyCheck($community, $user, $official ? MIDAS_POLICY_WRITE : MIDAS_POLICY_READ))
       {
       throw new Exception('Write permission required on community', 403);
       }
@@ -345,7 +352,7 @@ class Tracker_ApiComponent extends AppComponent
             continue;
             }
           $trend = $trendModel->createIfNeeded($producer->getKey(), $metricName, $configItemId, $testDatasetId, $truthDatasetId);
-          $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision, $value, true);
+          $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision, $value, $user, true, $official);
           $scalars[] = $scalar;
 
           if(!isset($args['silent']))
@@ -367,7 +374,7 @@ class Tracker_ApiComponent extends AppComponent
           continue;
           }
         $trend = $trendModel->createIfNeeded($producer->getKey(), $metricName, $configItemId, $testDatasetId, $truthDatasetId);
-        $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision, $value, true);
+        $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision, $value, $user, true, $official);
         $scalars[] = $scalar;
 
         if(!isset($args['silent']))

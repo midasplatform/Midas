@@ -76,11 +76,12 @@ midas.tracker.bindPlotEvents = function () {
             scalarId = json.tracker.rightScalars[pointIndex].scalar_id;
         }
         midas.loadDialog('scalarPoint'+scalarId, '/tracker/scalar/details?scalarId='+scalarId);
-        midas.showDialog('Scalar details', false);
+        midas.showDialog('Scalar details', false, {width: 500});
     });
 };
 
 midas.tracker.renderChartArea = function (curveData, first) {
+    console.log(curveData);
     if(midas.tracker.plot) {
         midas.tracker.plot.destroy();
     }

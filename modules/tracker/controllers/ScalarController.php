@@ -52,6 +52,15 @@ class Tracker_ScalarController extends Tracker_AppController
       }
     $this->view->resultItems = $this->Tracker_Scalar->getAssociatedItems($scalar);
     $this->view->otherValues = $this->Tracker_Scalar->getOtherValuesFromSubmission($scalar);
+
+    if($scalar->getUserId() != -1)
+      {
+      $this->view->submittedBy = $scalar->getUser();
+      }
+    else
+      {
+      $this->view->submittedBy = null;
+      }
     }
 
   /**

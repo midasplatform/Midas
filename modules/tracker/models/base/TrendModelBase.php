@@ -58,7 +58,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
 
   public abstract function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
   public abstract function getAllByParams($params);
-  public abstract function getScalars($trend, $startDate = null, $endDate = null);
+  public abstract function getScalars($trend, $startDate = null, $endDate = null, $userId = null);
   public abstract function getTrendsGroupByDatasets($producerDao);
 
   /** 
