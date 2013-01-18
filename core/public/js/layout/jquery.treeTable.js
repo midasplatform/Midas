@@ -520,7 +520,11 @@
         var options = table.ttOptions();
               // Make visible that a row is clicked
         table.find('tbody tr').unbind('mousedown');
-        table.find('tbody tr').mousedown(function() {
+        table.find('tbody tr').mousedown(function(event) {
+            // If the user is clicking on the row's checkbox, don't perform select behavior
+            if($(event.toElement).is('input.treeCheckbox')) {
+                return;
+            }
             $('tr.selected').removeClass('selected'); // Deselect currently selected rows
             $(this).addClass('selected');
             if(typeof options.callbackSelect == 'function') {
