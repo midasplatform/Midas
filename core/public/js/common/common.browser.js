@@ -191,55 +191,52 @@ midas.removeNodeFromTree = function (node, recursive) {
 };
 
 midas.removeItem = function (id) {
-    var html='';
-    html += json.browse['removeMessage'];
-    html+='<br/>';
-    html+='<br/>';
-    html+='<br/>';
-    html+='<div style="float: right;">';
-    html+='<input class="globalButton deleteFolderYes" element="'+id+'" type="button" value="'+json.global.Yes+'"/>';
-    html+='<input style="margin-left:15px;" class="globalButton deleteFolderNo" type="button" value="'+json.global.No+'"/>';
+    var node = $('table.treeTable tr[type=item][element='+id+']');
+    var itemName = node.find('td:first span').html();
+
+    var html = 'Are you sure you want to remove the item <b>' + itemName + '</b>?';
+    html+='<div style="float: right;margin-top:30px;">';
+    html+='<input class="globalButton removeItemYes" element="'+id+'" type="button" value="'+json.global.Yes+'"/>';
+    html+='<input style="margin-left:15px;" class="globalButton removeItemNo" type="button" value="'+json.global.No+'"/>';
     html+='</div>';
 
-    midas.showDialogWithContent(json.browse['delete'],html,false);
+    midas.showDialogWithContent('Confirm Delete Item', html, false);
 
-    $('input.deleteFolderYes').unbind('click').click(
-        function() {
-            var node = $('table.treeTable tr[type=item][element='+id+']');
-            var folder = midas.parentOf(node);
-            var folderId = '';
-            // we are in a subfolder view and the parent is the current folder
-            if(folder) {
-                folderId = folder.attr('element');
-            }
-            else {
-                folderId = json.folder.folder_id;
-            }
+    $('input.removeItemYes').unbind('click').click(function () {
+        $(this).attr('disabled', 'disabled');
+        var folder = midas.parentOf(node);
+        var folderId = '';
+        // we are in a subfolder view and the parent is the current folder
+        if(folder) {
+            folderId = folder.attr('element');
+        }
+        else {
+            folderId = json.folder.folder_id;
+        }
 
-            $.post(json.global.webroot+'/folder/removeitem',
-                   {folderId: folderId, itemId: id},
-                   function(data) {
-                       jsonResponse = jQuery.parseJSON(data);
-                       if(jsonResponse==null) {
-                           midas.createNotice('Error',4000);
-                           return;
-                       }
-                       if(jsonResponse[0]) {
-                           midas.createNotice(jsonResponse[1],1500);
-                           $( "div.MainDialog" ).dialog('close');
-                           midas.removeNodeFromTree(node, false);
-                           midas.genericCallbackCheckboxes($('#browseTable'));
-                           midas.genericCallbackSelect(null);
-                       }
-                       else {
-                           midas.createNotice(jsonResponse[1],4000);
-                       }
-                   });
-        });
-    $('input.deleteFolderNo').unbind('click').click(
-        function() {
-            $( "div.MainDialog" ).dialog('close');
-        });
+        $.post(json.global.webroot+'/folder/removeitem',
+               {folderId: folderId, itemId: id},
+               function(data) {
+                   jsonResponse = jQuery.parseJSON(data);
+                   if(jsonResponse==null) {
+                       midas.createNotice('Error',4000);
+                       return;
+                   }
+                   if(jsonResponse[0]) {
+                       midas.createNotice(jsonResponse[1],1500);
+                       $('div.MainDialog').dialog('close');
+                       midas.removeNodeFromTree(node, false);
+                       midas.genericCallbackCheckboxes($('#browseTable'));
+                       midas.genericCallbackSelect(null);
+                   }
+                   else {
+                       midas.createNotice(jsonResponse[1],4000);
+                   }
+               });
+    });
+    $('input.removeFolderNo').unbind('click').click(function () {
+        $('div.MainDialog').dialog('close');
+    });
 };
 
 midas.deleteFolder = function (id) {
