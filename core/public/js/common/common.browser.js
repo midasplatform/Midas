@@ -18,6 +18,8 @@ midas.genericCallbackSelect = function (node) {
     if(midas.ajaxSelectRequest != '') {
         midas.ajaxSelectRequest.abort();
     }
+    $('div.viewAction').show();
+ 
     midas.createAction(node);
     midas.ajaxSelectRequest = $.ajax({
         type: "POST",
@@ -50,18 +52,18 @@ midas.genericCallbackCheckboxes = function(node) {
     var nselected = arraySelected['folders'].length + arraySelected['items'].length;
     if(nselected > 0) {
         $('div.viewSelected').show();
+        $('div.sideElementActions').hide();
         var html = ' (' + nselected;
-        html += ' ' + json.browse.element;
+        html += ' Resource';
         if(nselected != 1) {
             html += 's';
-            $('div.sideElementActions').hide();
         }
         html += ')';
         $('div.viewSelected h1 span').html(html);
         var links = '<ul>';
         links += '<li style="background-color: white;">';
-        links += '  <img alt="" src="' + json.global.coreWebroot + '/public/images/icons/download.png"/> ';
-        links += '  <a class="downloadSelectedLink">' + json.browse.download + '</a></li>';
+        links += '  <img alt="" src="' + json.global.coreWebroot+'/public/images/icons/download.png"/> ';
+        links += '  <a class="downloadSelectedLink">Download all selected</a></li>';
         links += '</li>';
 
         if(json.global.logged) {
