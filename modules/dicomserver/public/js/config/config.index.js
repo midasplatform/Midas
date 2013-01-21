@@ -1,7 +1,7 @@
 var midas = midas || {};
-midas.dicomuploader = midas.dicomuploader || {};
+midas.dicomserver = midas.dicomserver || {};
 
-midas.dicomuploader.start = function (email, apikey) {
+midas.dicomserver.start = function (email, apikey) {
     'use strict';
     var email_val  = typeof email !== 'undefined' ? email : '';
     var apikey_val  = typeof email !== 'undefined' ? apikey : '';
@@ -11,33 +11,35 @@ midas.dicomuploader.start = function (email, apikey) {
     var timeout_val  = $(document).find('#storescp_study_timeout').val();
     var incoming_dir_val  = $(document).find('#receptiondir').val();
     var dest_folder_val  = $(document).find('#pydas_dest_folder').val();
+    var dcmqrscp_val  = $(document).find('#dcmqrscp').val();
     ajaxWebApi.ajax({
-        method: 'midas.dicomuploader.start',
+        method: 'midas.dicomserver.start',
         args: 'email=' + email_val +
               'apikey=' + apikey_val +
               'dcm2xml_cmd=' + dcm2xml_val +
               '&storescp_cmd=' + storescp_val +
               '&storescp_port=' + port_val +
               '&storescp_timeout=' + timeout_val +
-              '&incoming_dir' + incoming_dir_val +
-              '&dest_folder=' + dest_folder_val,
+              '&incoming_dir=' + incoming_dir_val +
+              '&dest_folder=' + dest_folder_val +
+              '&dcmqrscp_cmd=' + dcmqrscp_val,
         log: $('<p></p>'),
         success: function (retVal) {
             midas.createNotice(retVal.data.message, 4000);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            midas.createNotice("Execution of storescp start script failed!", 3000, 'error');
+            midas.createNotice("Failed to start storescp or dcmqrscp!", 3000, 'error');
             $('textarea#apicall_failure_reason').html(XMLHttpRequest.message);
             $('div#apicall_failure').show();
             $('div#hideError').show();
         },
         complete: function() {
-            midas.dicomuploader.checkStatus();
+            midas.dicomserver.checkStatus();
         }
     });
 };
 
-midas.dicomuploader.manualstart = function (email, apikey) {
+midas.dicomserver.manualstart = function (email, apikey) {
     'use strict';
     var email_val  = typeof email !== 'undefined' ? email : '';
     var apikey_val  = typeof email !== 'undefined' ? apikey : '';
@@ -47,16 +49,18 @@ midas.dicomuploader.manualstart = function (email, apikey) {
     var timeout_val  = $(document).find('#storescp_study_timeout').val();
     var incoming_dir_val  = $(document).find('#receptiondir').val();
     var dest_folder_val  = $(document).find('#pydas_dest_folder').val();
+    var dcmqrscp_val  = $(document).find('#dcmqrscp').val();
     ajaxWebApi.ajax({
-        method: 'midas.dicomuploader.start',
+        method: 'midas.dicomserver.start',
         args: 'email=' + email_val +
               'apikey=' + apikey_val +
               'dcm2xml_cmd=' + dcm2xml_val +
               '&storescp_cmd=' + storescp_val +
               '&storescp_port=' + port_val +
               '&storescp_timeout=' + timeout_val +
-              '&incoming_dir' + incoming_dir_val +
+              '&incoming_dir=' + incoming_dir_val +
               '&dest_folder=' + dest_folder_val +
+              '&dcmqrscp_cmd=' + dcmqrscp_val +
               '&get_command=' + '',
         success: function (retVal) {
           $('span#manual_start').html(retVal.data);
@@ -64,14 +68,16 @@ midas.dicomuploader.manualstart = function (email, apikey) {
     });
 };
 
-midas.dicomuploader.stop = function () {
+midas.dicomserver.stop = function () {
     'use strict';
     var storescp_val  = $(document).find('#storescp').val();
+    var dcmqrscp_val  = $(document).find('#dcmqrscp').val();
     var incoming_dir_val  = $(document).find('#receptiondir').val();
     ajaxWebApi.ajax({
-        method: 'midas.dicomuploader.stop',
+        method: 'midas.dicomserver.stop',
         args: 'storescp_cmd=' + storescp_val +
-              '&incoming_dir' + incoming_dir_val,
+              '&dcmqrscp_cmd=' + dcmqrscp_val +
+              '&incoming_dir=' + incoming_dir_val,
         log: $('<p></p>'),
         success: function (retVal) {
             midas.createNotice(retVal.data.message, 4000);
@@ -83,19 +89,21 @@ midas.dicomuploader.stop = function () {
             $('div#hideError').show();
         },
         complete: function() {
-            midas.dicomuploader.checkStatus();
+            midas.dicomserver.checkStatus();
         }
     });
 };
 
-midas.dicomuploader.manualstop = function () {
+midas.dicomserver.manualstop = function () {
     'use strict';
     var storescp_val  = $(document).find('#storescp').val();
+    var dcmqrscp_val  = $(document).find('#dcmqrscp').val();
     var incoming_dir_val  = $(document).find('#receptiondir').val();
     ajaxWebApi.ajax({
-        method: 'midas.dicomuploader.stop',
+        method: 'midas.dicomserver.stop',
         args: 'storescp_cmd=' + storescp_val +
-              '&incoming_dir' + incoming_dir_val +
+              '&dcmqrscp_cmd=' + dcmqrscp_val +
+              '&incoming_dir=' + incoming_dir_val +
               '&get_command=' + '',
         success: function (retVal) {
           $('span#manual_stop').html(retVal.data);
@@ -103,32 +111,53 @@ midas.dicomuploader.manualstop = function () {
     });
 };
 
-midas.dicomuploader.checkStatus = function () {
+midas.dicomserver.checkStatus = function () {
     'use strict';
     var storescp_val  = $(document).find('#storescp').val();
+    var dcmqrscp_val  = $(document).find('#dcmqrscp').val();
     ajaxWebApi.ajax({
-        method: 'midas.dicomuploader.status',
-        args: 'storescp_cmd=' + storescp_val,
+        method: 'midas.dicomserver.status',
+        args: 'storescp_cmd=' + storescp_val +
+              '&dcmqrscp_cmd=' + dcmqrscp_val,
         log: $('<p></p>'),
         success: function (retVal) {
-          if(retVal.data.status === 'running') {
+          if(retVal.data.status === 3) {
              $('span#not_running_status').hide();
+             $('span#only_storescp_running_status').hide();
+             $('span#only_dcmqrscp_running_status').hide();
              $('span#running_status').show();
-             $('span#span_start_uploader_user').html(retVal.data.user_email);
-             $('div#start_uploader_user').show();
+             $('span#span_start_server_user').html(retVal.data.user_email);
+             $('div#start_server_user').show();
              }
-          else if(retVal.data.status === 'not running') {
+          else if(retVal.data.status === 2) {
+             $('span#not_running_status').hide();
+             $('span#only_storescp_running_status').hide();
+             $('span#only_dcmqrscp_running_status').show();
              $('span#running_status').hide();
+             $('div#start_server_user').hide();
+             }
+          else if(retVal.data.status === 1) {
+             $('span#not_running_status').hide();
+             $('span#only_storescp_running_status').show();
+             $('span#only_dcmqrscp_running_status').hide();
+             $('span#span_start_server_user').html(retVal.data.user_email);
+             $('div#start_server_user').show();
+             }
+          else if(retVal.data.status === 0) {
              $('span#not_running_status').show();
-             $('div#start_uploader_user').hide();
+             $('span#only_storescp_running_status').hide();
+             $('span#only_dcmqrscp_running_status').hide();
+             $('span#running_status').hide();
+             $('div#start_server_user').hide();
              }
           else { // this module is not supported
-             $('span#running_status').hide();
+             $('span#only_storescp_running_status').hide();
+             $('span#only_dcmqrscp_running_status').hide();
              $('span#not_running_status').hide();
              $('span#not_supported_status').show();
-             $('div#startUploader').hide();
-             $('div#stopUploader').hide();
-             $('div#start_uploader_user').hide();
+             $('div#startServer').hide();
+             $('div#stopServer').hide();
+             $('div#start_server_user').hide();
              $('div#manualCommandsWrapper').hide();
              }
         },
@@ -138,10 +167,10 @@ midas.dicomuploader.checkStatus = function () {
     });
 };
 
-midas.dicomuploader.validateConfig = function (formData, jqForm, options) {
+midas.dicomserver.validateConfig = function (formData, jqForm, options) {
 }
 
-midas.dicomuploader.successConfig = function (responseText, statusText, xhr, form) {
+midas.dicomserver.successConfig = function (responseText, statusText, xhr, form) {
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     } catch (e) {
@@ -163,7 +192,7 @@ midas.dicomuploader.successConfig = function (responseText, statusText, xhr, for
 
 $(document).ready(function() {
     $("div#tmpdir").qtip({
-          content: 'The file-system location of the DICOM uploader work directory. (required)',
+          content: 'The file-system location of the DICOM server work directory. (required)',
           show: 'mouseover',
           hide: 'mouseout',
           position: {
@@ -175,44 +204,44 @@ $(document).ready(function() {
          })
 
     $('#configForm').ajaxForm({
-        beforeSubmit: midas.dicomuploader.validateConfig,
-        success: midas.dicomuploader.successConfig
+        beforeSubmit: midas.dicomserver.validateConfig,
+        success: midas.dicomserver.successConfig
     });
 
-    midas.dicomuploader.checkStatus();
+    midas.dicomserver.checkStatus();
 
-    $('div#startUploader').click(function() {
+    $('div#startServer').click(function() {
         var html = '';
-        html += 'Do you want to use current logged-in user to start DICOM uploader?';
+        html += 'Do you want to use current logged-in user to start DICOM server?';
         html += '<br/>';
         html += '<br/>';
-        html += '<input style="margin-left:140px;" class="globalButton startUploaderYes" type="button" value="'+json.global.Yes+'"/>';
-        html += '<input style="margin-left:50px;" class="globalButton startUploaderNo" type="button" value="'+json.global.No+'"/>';
-        midas.showDialogWithContent('Start DICOM uploader', html, false);
+        html += '<input style="margin-left:140px;" class="globalButton startServerYes" type="button" value="'+json.global.Yes+'"/>';
+        html += '<input style="margin-left:50px;" class="globalButton startServerNo" type="button" value="'+json.global.No+'"/>';
+        midas.showDialogWithContent('Start DICOM server', html, false);
 
-        $('input.startUploaderYes').unbind('click').click(function () {
+        $('input.startServerYes').unbind('click').click(function () {
             $( "div.MainDialog" ).dialog('close');
-            midas.dicomuploader.start();
+            midas.dicomserver.start();
         });
-        $('input.startUploaderNo').unbind('click').click(function () {
+        $('input.startServerNo').unbind('click').click(function () {
             $( "div.MainDialog" ).dialog('close');
         });
     })
 
-    $('div#stopUploader').click(function() {
+    $('div#stopServer').click(function() {
         var html = '';
-        html += 'Do you really want to stop DICOM uploader?';
+        html += 'Do you really want to stop DICOM server?';
         html += '<br/>';
         html += '<br/>';
-        html += '<input style="margin-left:140px;" class="globalButton stopUploaderYes" type="button" value="'+json.global.Yes+'"/>';
-        html += '<input style="margin-left:50px;" class="globalButton stopUploaderNo" type="button" value="'+json.global.No+'"/>';
-        midas.showDialogWithContent('Stop DICOM uploader', html, false);
+        html += '<input style="margin-left:140px;" class="globalButton stopServerYes" type="button" value="'+json.global.Yes+'"/>';
+        html += '<input style="margin-left:50px;" class="globalButton stopServerNo" type="button" value="'+json.global.No+'"/>';
+        midas.showDialogWithContent('Stop DICOM server', html, false);
 
-        $('input.stopUploaderYes').unbind('click').click(function () {
+        $('input.stopServerYes').unbind('click').click(function () {
             $( "div.MainDialog" ).dialog('close');
-            midas.dicomuploader.stop();
+            midas.dicomserver.stop();
         });
-        $('input.stopUploaderNo').unbind('click').click(function () {
+        $('input.stopServerNo').unbind('click').click(function () {
             $( "div.MainDialog" ).dialog('close');
         });
     });
@@ -230,12 +259,14 @@ $(document).ready(function() {
         change: function() {
           var dcm2xml_val  = $(document).find('#dcm2xml').val();
           var storescp_val  = $(document).find('#storescp').val();
+          var dcmqrscp_val  = $(document).find('#dcmqrscp').val();
           var incoming_dir_val  = $(document).find('#receptiondir').val();
           $('span#dcm2xml_command').html(dcm2xml_val);
           $('span#storescp_command').html(storescp_val);
+          $('span#dcmqrscp_command').html(dcmqrscp_val);
           $('span#reception_dir').html(incoming_dir_val);
-          midas.dicomuploader.manualstart();
-          midas.dicomuploader.manualstop();
+          midas.dicomserver.manualstart();
+          midas.dicomserver.manualstop();
         }
     }).show();
 

@@ -10,8 +10,15 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-class Dicomuploader_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName='dicomuploader';
-  } //end class
+// server status
+define("MIDAS_DICOM_STORESCP_IS_RUNNING", 1);
+define("MIDAS_DICOM_DCMQRSCP_IS_RUNNING", 2);
+define("MIDAS_DICOM_SERVER_NOT_RUNNING", 0);
+define("MIDAS_DICOM_SERVER_NOT_SUPPORTED", -1);
+// default subdirectories and files
+define("LOG_DIR", "/logs");
+define("PROCESSING_DIR", "/processing");
+define("PACS_DIR", "/pacs");
+define("DCMQRSCP_CFG_FILE", "/dcmqrscp_midas.cfg");
+
 ?>

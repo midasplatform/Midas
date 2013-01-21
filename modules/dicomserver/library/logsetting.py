@@ -5,7 +5,7 @@ import logging.handlers
 #########################################################
 #
 """
-Functions to set up logs for DICOM uploader plugin
+Functions to set up logs for DICOM server plugin
 """
 #
 #########################################################
@@ -14,7 +14,7 @@ def getHandler(root_log_dir):
     """
     Get a rotation file handler
     """
-    log_file = os.path.join(root_log_dir, 'logs', 'dicom_uploader.log')
+    log_file = os.path.join(root_log_dir, 'logs', 'dicom_server.log')
     # max file size is 5 MB, keep 5 backup logs
     rfh = logging.handlers.RotatingFileHandler(
               log_file, 'a', maxBytes=1024*1024*5, backupCount=5)

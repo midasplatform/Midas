@@ -35,7 +35,7 @@ class DICOMCommand(object):
 
         # start the cmd!
         self.running = True
-        p = subprocess.Popen(self.cmd + ' ' + self.args, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+        proc = subprocess.Popen(self.cmd + ' ' + self.args, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
 
     def stop(self, cmd):
         # dummy function, not kill process
@@ -54,22 +54,28 @@ class DICOMListener(DICOMCommand):
         super(DICOMListener,self).__del__()
 
     def start(self, incomingDir, onReceptionCallback, \
-      storeSCPExecutable, port, studyTimeout):
+      storeSCPExecutable, storeSCPport, studyTimeout, \
+      dcmqrSCPExecutable, dcmqrSCPConfigFile):
         self.incomingDir = incomingDir
         self.onReceptionCallback = onReceptionCallback
         self.storeSCPExecutable = storeSCPExecutable
-        self.port = port
+        self.storeSCPport = storeSCPport
         self.studyTimeout = studyTimeout #seconds
+        self.dcmqrSCPExecutable = dcmqrSCPExecutable
+        self.dcmqrSCPConfigFile = dcmqrSCPConfigFile
         # start the server!
-        args = str(self.port) + ' --eostudy-timeout ' + str(self.studyTimeout) \
+        storeSCP_args = str(self.storeSCPport) + ' --eostudy-timeout ' + str(self.studyTimeout) \
             + ' --output-directory ' + self.incomingDir \
             + ' --sort-on-study-uid  \'\'' \
             + ' --exec-on-eostudy ' + self.onReceptionCallback
-        retcode = super(DICOMListener,self).start(self.storeSCPExecutable, args)
+        dcmqrSCP_args = '--config ' + self.dcmqrSCPConfigFile
+        storeSCP_retcode = super(DICOMListener,self).start(self.storeSCPExecutable, storeSCP_args)
+        dcmqrSCP_retcode = super(DICOMListener,self).start(self.dcmqrSCPExecutable, dcmqrSCP_args)
         # set up logger
         logger.addHandler(getHandler(self.incomingDir.strip()))
-        logger.info("Started DICOM listener with these args: %s" % args)
-        return retcode
+        logger.info("Started storeSCP with these args: %s" % storeSCP_args)
+        logger.info("Started dcmqrSCP with these args: %s" % dcmqrSCP_args)
+        return storeSCP_retcode and dcmqrSCP_retcode
 
     def stop(self, storeSCPExecutable='storescp'):
         # dummy function, not kill process

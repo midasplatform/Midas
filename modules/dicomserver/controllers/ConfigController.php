@@ -10,9 +10,9 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-class Dicomuploader_ConfigController extends Dicomuploader_AppController
+class Dicomserver_ConfigController extends Dicomserver_AppController
 {
-   public $_moduleComponents = array('Uploader');
+   public $_moduleComponents = array('Server');
    public $_moduleForms=array('Config');
    public $_components=array('Utility', 'Date');
 
@@ -43,6 +43,11 @@ class Dicomuploader_ConfigController extends Dicomuploader_AppController
       $applicationConfig['global']['storescp_port']);
     $formArray['storescp_study_timeout']->setValue(
       $applicationConfig['global']['storescp_study_timeout']);
+    $formArray['dcmqrscp']->setValue($applicationConfig['global']['dcmqrscp']);
+    $formArray['dcmqridx']->setValue($applicationConfig['global']['dcmqridx']);
+    $formArray['dcmqrscp_port']->setValue($applicationConfig['global']['dcmqrscp_port']);
+    $formArray['server_ae_title']->setValue($applicationConfig['global']['server_ae_title']);
+    $formArray['peer_aes']->setValue($applicationConfig['global']['peer_aes']);
     if(!empty($applicationConfig['global']['receptiondir']))
       {
       $formArray['receptiondir']->setValue(
@@ -50,7 +55,7 @@ class Dicomuploader_ConfigController extends Dicomuploader_AppController
       }
     else
       {
-      $default_dir = $this->ModuleComponent->Uploader->getDefaultReceptionDir();
+      $default_dir = $this->ModuleComponent->Server->getDefaultReceptionDir();
       $formArray['receptiondir']->setValue($default_dir);
       }
     $formArray['pydas_dest_folder']->setValue(
@@ -82,11 +87,21 @@ class Dicomuploader_ConfigController extends Dicomuploader_AppController
           $this->_getParam('receptiondir');
         $applicationConfig['global']['pydas_dest_folder'] =
           $this->_getParam('pydas_dest_folder');
+        $applicationConfig['global']['dcmqrscp'] =
+          $this->_getParam('dcmqrscp');
+        $applicationConfig['global']['dcmqridx'] =
+          $this->_getParam('dcmqridx');
+        $applicationConfig['global']['dcmqrscp_port'] =
+          $this->_getParam('dcmqrscp_port');
+        $applicationConfig['global']['server_ae_title'] =
+          $this->_getParam('server_ae_title');
+        $applicationConfig['global']['peer_aes'] =
+          $this->_getParam('peer_aes');
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }
-    $dashboard_array = $this->ModuleComponent->Uploader->isDICOMUploaderWorking();
+    $dashboard_array = $this->ModuleComponent->Server->isDICOMServerWorking();
     // has shown status seperately; remove it from the dashboard to avoid redundancy
     unset($dashboard_array['Status']);
     $this->view->dashboard = $dashboard_array;

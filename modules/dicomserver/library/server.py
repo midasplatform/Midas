@@ -12,7 +12,7 @@ import logging
 from logsetting import getHandler, StreamToLogger
 
 # create logger
-logger = logging.getLogger('uploader')
+logger = logging.getLogger('server')
 logger.setLevel(logging.INFO)
 stdout_logger = logging.getLogger('STDOUT')
 stdout_logger.setLevel(logging.INFO)
@@ -38,6 +38,7 @@ def groupFilesbySeriesUID(dcm2xmlCmd, rootDir):
     study_dirs = os.listdir(rootDir)
     study_dirs.remove('processing')
     study_dirs.remove('logs')
+    study_dirs.remove('pacs')
     received_files_counter = 0
     processed_files_counter = 0
     for study_dir in study_dirs:
@@ -97,7 +98,7 @@ def main():
     incoming_dir = ''
     for opt, arg in opts:
         if opt in ('-h', "--help"):
-            print 'uploader.py -c <dcm2xml_cmd> -i <incoming_dir> -u <midas_url> -e <midas_user_email>  -a <midas_api_key> -d <midas_destination_folder>'
+            print 'server.py -c <dcm2xml_cmd> -i <incoming_dir> -u <midas_url> -e <midas_user_email>  -a <midas_api_key> -d <midas_destination_folder>'
             sys.exit()
         elif opt in ("-c", "--dcm2xml"):
             dcm2xml_cmd = arg
