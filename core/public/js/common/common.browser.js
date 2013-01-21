@@ -416,9 +416,9 @@ midas.createAction = function (node) {
             html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/folder_add.png"/> <a onclick="midas.createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
             html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/upload.png"/> <a rel="'+json.global.webroot+'/upload/simpleupload/?parent='+element+'" class="uploadInFolder">'+json.browse.uploadIn+'</a></li>';
             html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/edit.png"/> <a onclick="midas.editFolder('+element+');">'+json.browse.edit+'</a></li>';
-            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/move.png"/> <a onclick="midas.moveFolder('+element+');">'+json.browse.move+'</a></li>';
         }
         if(policy>=2) {
+            html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/move.png"/> <a onclick="midas.moveFolder('+element+');">'+json.browse.move+'</a></li>';
             html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/lock.png"/> <a type="folder" element="'+element+'" class="sharingLink">'+json.browse.share+'</a></li>';
             html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/close.png"/> <a onclick="midas.deleteFolder('+element+');">'+json.browse['delete']+'</a></li>';
         }
