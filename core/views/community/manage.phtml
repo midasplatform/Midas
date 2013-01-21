@@ -320,7 +320,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
               {
               $folderId = $folder->getFolderId();
               $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-              echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus()}' policy='".MIDAS_POLICY_ADMIN."' type='folder' element='$folderId' ajax='$folderId'>";
+              echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='$folderId' ajax='$folderId'>";
               echo "  <td class='treeBrowseElement'><span class='notdraggable folder{$privacyClass}'>{$folder->getName()}</span></td>";
               echo "  <td><img class='folderLoading' element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
@@ -363,7 +363,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
             foreach($this->userPersonalFolders as $folder)
               {
               $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-              echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus()}' policy='".MIDAS_POLICY_ADMIN."' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
+              echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
               echo "  <td class='treeBrowseElement'><span class='notdraggable folder{$privacyClass}'>{$folder->getName()}</span></td>";
               echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
               echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
