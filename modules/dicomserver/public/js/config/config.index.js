@@ -62,6 +62,7 @@ midas.dicomserver.manualstart = function (email, apikey) {
               '&dest_folder=' + dest_folder_val +
               '&dcmqrscp_cmd=' + dcmqrscp_val +
               '&get_command=' + '',
+        log: $('<p></p>'),
         success: function (retVal) {
           $('span#manual_start').html(retVal.data);
         }
@@ -105,6 +106,7 @@ midas.dicomserver.manualstop = function () {
               '&dcmqrscp_cmd=' + dcmqrscp_val +
               '&incoming_dir=' + incoming_dir_val +
               '&get_command=' + '',
+        log: $('<p></p>'),
         success: function (retVal) {
           $('span#manual_stop').html(retVal.data);
         }
@@ -183,6 +185,7 @@ midas.dicomserver.successConfig = function (responseText, statusText, xhr, form)
     }
     if(jsonResponse[0]) {
         midas.createNotice(jsonResponse[1], 4000);
+        window.location.reload();
     }
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
@@ -191,8 +194,20 @@ midas.dicomserver.successConfig = function (responseText, statusText, xhr, form)
 
 
 $(document).ready(function() {
-    $("div#tmpdir").qtip({
+    $("div#receptiondir").qtip({
           content: 'The file-system location of the DICOM server work directory. (required)',
+          show: 'mouseover',
+          hide: 'mouseout',
+          position: {
+                target: 'mouse',
+                my: 'bottom left',
+                viewport: $(window), // Keep the qtip on-screen at all times
+                effect: true // Disable positioning animation
+             }
+         });
+
+    $("div#peer_aes").qtip({
+          content: 'Please follow the above instructions to define your Peer AE list and it cannot be empty. (required)',
           show: 'mouseover',
           hide: 'mouseout',
           position: {
@@ -260,10 +275,12 @@ $(document).ready(function() {
           var dcm2xml_val  = $(document).find('#dcm2xml').val();
           var storescp_val  = $(document).find('#storescp').val();
           var dcmqrscp_val  = $(document).find('#dcmqrscp').val();
+          var dcmqridx_val  = $(document).find('#dcmqridx').val();
           var incoming_dir_val  = $(document).find('#receptiondir').val();
           $('span#dcm2xml_command').html(dcm2xml_val);
           $('span#storescp_command').html(storescp_val);
           $('span#dcmqrscp_command').html(dcmqrscp_val);
+          $('span#dcmqridx_command').html(dcmqridx_val);
           $('span#reception_dir').html(incoming_dir_val);
           midas.dicomserver.manualstart();
           midas.dicomserver.manualstop();

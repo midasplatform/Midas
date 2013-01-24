@@ -199,7 +199,7 @@ class Dicomserver_ApiComponent extends AppComponent
    * Check DICOM server status
    * @param storescp_cmd (Optional) The command to run storescp
    * @param dcmqrscp_cmd (Optional) The command to run dcmqrscp
-   * @return
+   * @return array('status' => string)
    */
   function status($args)
     {
@@ -353,9 +353,9 @@ class Dicomserver_ApiComponent extends AppComponent
   }
 
   /**
-   * Register dicom image files from a revision
+   * Register DICOM images from a revision to let them be available for DICOM query/retrieve services.
    * @param item the id of the item to be registered
-   * @return the id of the revision
+   * @return the revision dao (latest revision of the item) that was registered
    */
   function register($args)
   {
@@ -377,7 +377,39 @@ class Dicomserver_ApiComponent extends AppComponent
 
     $dicomComponent = MidasLoader::loadComponent('Server', 'dicomserver');
     $dicomComponent->register($revisionDao);
-    return json_encode($revisionDao);
+    return $revisionDao->toArray();
+  }
+
+  /**
+   * Check if the DICOM images in the item was registered and can be accessed by DICOM query/retrieve services.
+   * @param item the id of the item to be checked
+   * @return array('status' => bool)
+   */
+  function registrationStatus($args)
+  {
+    $this->_validateParams($args, array('item'));
+
+    $itemModel = MidasLoader::loadModel("Item");
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $itemDao = $itemModel->load($args['item']);
+    $userDao = $authComponent->getUser($args,
+                                       Zend_Registry::get('userSession')->Dao);
+    if(!$itemModel->policyCheck($itemDao, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception('You didn\'t log in or you don\'t have the write '.
+        'permission for the given item.', MIDAS_INVALID_POLICY);
+      }
+
+    $modelLoad = new MIDAS_ModelLoader();
+    $registrationModel = $modelLoad->loadModel('Registration', 'dicomserver');
+    if(!$registrationModel->checkByItemId($args['item']))
+      {
+      return array('status' => false);
+      }
+    else
+      {
+      return array('status' => true);
+      }
   }
 }
 

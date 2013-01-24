@@ -55,12 +55,12 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
                 {$this->configForm['storescp_port']}
               </div >
               <div >
-                <label for='storescp_study_timeout'>Storescp study_timeout (in seconds, idle period before a study is considered complete)</label>
+                <label for='storescp_study_timeout'>Storescp study_timeout (in seconds, idle period before receiving files from a study is considered complete)</label>
                 {$this->configForm['storescp_study_timeout']}
               </div >
               <br />
               <br />
-              <div>
+              <div id ='receptiondir'>
                 <label for='receptiondir'>Reception directory (on local disk) for DICOM files</label>
                 {$this->configForm['receptiondir']}
               </div>
@@ -71,7 +71,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
               </div>
             </div>
             <div id='c-find_c-move'>
-              <h4>DICOM Query/Retrieve services (C-Find and C-Move):</h4>
+              <h4>DICOM Query/Retrieve services (C-FIND and C-MOVE):</h4>
               <div>
                 <label for='dcmqrscp'>Command to run dcmqrscp</label>
                 {$this->configForm['dcmqrscp']}
@@ -85,15 +85,16 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
                 {$this->configForm['dcmqrscp_port']}
               </div>
               <div>
-                <label for='server_ae_title'>Server AE(Application Entity) Title</label>
+                <label for='server_ae_title'>Server AE (Application Entity) Title</label>
                 {$this->configForm['server_ae_title']}
               </div>
-              <div>
+              <div id='peer_aes'>
               <br/>
-                Peer AE(Application Entity) list allowed to use Query/Retrieve serices.</br>
-                Each peer AE is defined as a 3-element tuple (3 comma-delimited elements enlosed in parentheses).
-                These 3 elements have restrict order as AETitle, HostName, PortNumber. Different peer AEs are delimited with semicolon
-                eg: <b>(AE, localhost, 10001), (AE2, host2, 19530)</b>
+                Peer AE (Application Entity) list allowed to use Query/Retrieve serices.</br>
+                Each peer AE is defined as a 3-element tuple (3 comma-delimited elements enclosed in parentheses).
+                These 3 elements are in the strict order as AETitle, HostName, PortNumber, and cannot be empty.</br>
+                Different peer AEs are delimited with semicolons.
+                Sample list: <b>(AE, localhost, 10001); (AE2, host2, 19530)</b>
               <br/>
               <br/>
                 {$this->configForm['peer_aes']}
@@ -170,11 +171,14 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
         3) has permission to run this command: <span class="set_bold" id="dcmqrscp_command"/>
       </li>
       <li>
-        4) has write permission to this directory: <span class="set_bold" id="reception_dir"/>
+        4) has permission to run this command: <span class="set_bold" id="dcmqridx_command"/>
       </li>
       <li>
-       If all above requirements are met, copy/paste the following commands to start/stop DICOM server in command line.
-       <span class="set_bold">Refresh the page to show the current running status if DICOM server is started/stopped in command line.</span>
+        5) has write permission to this directory: <span class="set_bold" id="reception_dir"/>
+      </li>
+      <li>
+       If all above requirements are met, copy/paste the following commands (the leading and trailing quotes are not needed) to start/stop DICOM server in command line.
+       <span class="set_bold">Refresh the page to show the current running status if the DICOM server is started/stopped in command line.</span>
       </li>
       <li class="manual_start">
         <span class="set_bold" >Start DICOM server:</span> <br/>

@@ -1,29 +1,9 @@
-span#running_status{
+span.running_status{
   font-weight: bold;
   color: #009900;
 }
 
-span#not_running_status{
-  font-weight: bold;
-  color: #C80000;
-}
-
-span#only_storescp_running_status{
-  font-weight: bold;
-  color: #C80000;
-}
-
-span#only_dcmqrscp_running_status{
-  font-weight: bold;
-  color: #C80000;
-}
-
-span#not_supported_status{
-  font-weight: bold;
-  color: #C80000;
-}
-
-textarea#apicall_failure_reason{
+span.not_running_status, span.only_storescp_running_status, span.only_dcmqrscp_running_status, span.not_supported_status, textarea#apicall_failure_reason{
   font-weight: bold;
   color: #C80000;
 }
