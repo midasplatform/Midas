@@ -707,11 +707,11 @@ class ItemController extends AppController
     $item = $this->Item->load($itemId);
     if(!$item)
       {
-      throw new Zend_Exception('Invalid itemId');
+      throw new Zend_Exception('Invalid itemId', 404);
       }
     if(!$this->Item->policyCheck($item, $this->userSession->Dao))
       {
-      throw new Zend_Exception('Invalid policy');
+      throw new Zend_Exception('Invalid policy', 403);
       }
     $this->disableLayout();
     $this->disableView();
