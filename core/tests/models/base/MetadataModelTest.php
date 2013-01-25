@@ -24,7 +24,7 @@ class MetadataModelTest extends DatabaseTestCase
   /** init test*/
   public function setUp()
     {
-    $this->setupDatabase(array('default'));
+    $this->setupDatabase(array('metadata'));
     $this->_models = array('Metadata', 'ItemRevision');
     $this->_daos = array();
     parent::setUp();
@@ -61,9 +61,8 @@ class MetadataModelTest extends DatabaseTestCase
 
     $rawMetadata = $metadataDaos['raw'];
     $sortedGlobalMetadata = $metadataDaos['sorted'][MIDAS_METADATA_TEXT];
-    $this->assertGreaterThan(13, sizeof($rawMetadata), "expected at least 14 raw metadata");
-    $this->assertGreaterThan(3, sizeof($sortedGlobalMetadata['identifier']), "expected at least 4 sorted identifier metadata");
-    $this->assertGreaterThan(3, sizeof($sortedGlobalMetadata['description']), "expected at least 4 sorted description metadata");
+    $this->assertEquals(7, sizeof($rawMetadata), "expected at least 6 raw metadata");
+    $this->assertEquals(3, sizeof($sortedGlobalMetadata['DICOM']), "expected at least 4 sorted DICOM metadata");
 
     $authorFound = false;
     $createdFound = false;
@@ -94,7 +93,8 @@ class MetadataModelTest extends DatabaseTestCase
   public function testGetTableValueName()
     {
     // for now just test the GLOBAL
-    $this->assertEquals($this->Metadata->getTableValueName(MIDAS_METADATA_TEXT), 'metadatavalue', 'GLOBAL table should be metadatavalue');
+    $this->assertEquals($this->Metadata->getTableValueName(MIDAS_METADATA_TEXT),
+                        'metadatavalue', 'GLOBAL table should be metadatavalue');
     }
 
   /**
@@ -111,6 +111,36 @@ class MetadataModelTest extends DatabaseTestCase
     $itemRevision = $this->ItemRevision->load(1);
     $this->Metadata->addMetadataValue($itemRevision, MIDAS_METADATA_TEXT, 'contributor', 'author', 'DFW');
     $this->assertTrue($this->Metadata->getMetadataValueExists($metadata));
+    }
+
+  /**
+   * Testing the retrieval of valid metadata types
+   */
+  public function testGetMetadataTypes()
+    {
+    $types = $this->Metadata->getMetadataTypes();
+    sort($types);
+    $this->assertEquals($types, array('int', 'text'));
+    }
+
+  /**
+   * Testing the retrieval of valid metadata elements
+   */
+  public function testGetMetadataElements()
+    {
+    $elements = $this->Metadata->getMetadataElements(0);
+    sort($elements);
+    $this->assertEquals($elements, array('DICOM', 'Document', 'contributor', 'date'));
+    }
+
+  /**
+   * Testing the retrieval of valid metadata qualifiers
+   */
+  public function testGetMetadataQualifiers()
+    {
+    $qualifiers = $this->Metadata->getMetadataQualifiers(0, 'DICOM');
+    sort($qualifiers);
+    $this->assertEquals($qualifiers, array('Manufacturer', 'NumSlices', 'PatientName'));
     }
 
   }
