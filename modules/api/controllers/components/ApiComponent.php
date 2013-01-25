@@ -2802,4 +2802,64 @@ class Api_ApiComponent extends AppComponent
 
     $bitstreamModel->delete($bitstream);
     }
+
+  /**
+   * Get the metadata types stored in the system
+   */
+  function metadataTypesList()
+    {
+    $metadataModel = MidasLoader::loadModel('Metadata');
+    return $metadataModel->getMetadataTypes();
+    }
+
+  /**
+   * Get the metadata elements stored in the system for a given metadata type.
+   * If the typename is specified, it will be used instead of the index.
+   * @param type the metadata type index
+   * @param typename (optional) the metadata type name
+   */
+  function metadataElementsList($args)
+    {
+    $metadataModel = MidasLoader::loadModel('Metadata');
+    $type = $this->_checkMetadataTypeOrName($args, $metadataModel);
+    return $metadataModel->getMetadataElements($type);
+    }
+
+  /**
+   * Helper function for checking for a metadata type index or name and
+   * handling the error conditions.
+   */
+  protected function _checkMetadataTypeOrName(&$args, &$metadataModel)
+    {
+    if(array_key_exists('typename', $args))
+      {
+      return $metadataModel->mapNameToType($args['typename']);
+      }
+    else if(array_key_exists('type', $args))
+      {
+      return $args['type'];
+      }
+    else
+      {
+      throw new Exception('Parameter type is not defined', MIDAS_INVALID_PARAMETER);
+      }
+    }
+
+  /**
+   * Get the metadata qualifiers stored in the system for a given metadata type
+   * and element. If the typename is specified, it will be used instead of the
+   * type.
+   * @param type the metadata type index
+   * @param element the metadata element under which the qualifier is collated
+   * @param typename (optional) the metadata type name
+   */
+  function metadataQualifiersList($args)
+    {
+    $this->_validateParams($args, array('element'));
+    $metadataModel = MidasLoader::loadModel('Metadata');
+    $type = $this->_checkMetadataTypeOrName($args, $metadataModel);
+    $element = $args['element'];
+    return $metadataModel->getMetaDataQualifiers($type, $element);
+    }
+
   } // end class
