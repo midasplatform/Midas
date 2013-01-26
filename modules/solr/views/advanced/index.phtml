@@ -12,12 +12,27 @@ PURPOSE.  See the above copyright notices for more information.
 
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.autogrow-textarea.js');
+$this->headScript()->appendFile($this->apiWebroot.'/public/js/common/common.ajaxapi.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/advanced/advanced.index.js');
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/advanced/advanced.index.css" />
 <div class="viewMain">
   <div class="topText">
     Click <a href="javascript:;" id="showAdvancedSearchHelp">here</a> for syntax instructions.
+  </div>
+  <hr />
+  <div class="searchHelp">
+    <div>Use these combo boxes to insert metadata keys into the query area:</div>
+    <select id="typeCombo">
+      <option value="type">Type</option>
+    </select>
+    <select id="elementCombo">
+      <option value="element">Element</option>
+    </select>
+    <select id="qualifierCombo">
+      <option value="qualifier">Qualifier</option>
+    </select>
+    <input style="margin-left: 0px;" class="globalButton" type="button" id="insertKeyButton" value="Insert Key" />
   </div>
   <div class="queryArea">
     <textarea id="advancedQueryField"></textarea>
