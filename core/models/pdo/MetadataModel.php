@@ -26,6 +26,58 @@ require_once BASE_PATH.'/core/models/base/MetadataModelBase.php';
  */
 class MetadataModel extends MetadataModelBase
 {
+
+  /**
+   * Get all metadata types currently stored in the database.
+   */
+  function getMetadataTypes()
+    {
+    $rowset = $this->database->fetchAll($this->database->select()
+                                        ->from('metadata', 'metadatatype')
+                                        ->group('metadatatype'));
+    $types = array();
+    foreach($rowset as $row)
+      {
+      $types[] = $this->mapTypeToName($row['metadatatype']);
+      }
+    return $types;
+    }
+
+  /**
+   * Get all the valid elements for a given metadata type
+   */
+  function getMetadataElements($type)
+    {
+    $rowset = $this->database->fetchAll($this->database->select()
+                                        ->from('metadata', 'element')
+                                        ->where('metadatatype=?', $type)
+                                        ->group('element'));
+    $elements = array();
+    foreach($rowset as $row)
+      {
+      $elements[] = $row['element'];
+      }
+    return $elements;
+    }
+
+  /**
+   * Get all of the valid qualifiers for a given type and element
+   */
+  function getMetadataQualifiers($type, $element)
+    {
+    $rowset = $this->database->fetchAll($this->database->select()
+                                        ->from('metadata', 'qualifier')
+                                        ->where('metadatatype=?', $type)
+                                        ->where('element=?', $element)
+                                        ->group('qualifier'));
+    $qualifiers = array();
+    foreach($rowset as $row)
+      {
+      $qualifiers[] = $row['qualifier'];
+      }
+    return $qualifiers;
+    }
+
   /** Return an item by its name
    * @return MetadataDao*/
   function getMetadata($type, $element, $qualifier)

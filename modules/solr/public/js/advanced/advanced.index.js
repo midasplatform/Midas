@@ -58,6 +58,94 @@ midas.solr.fetchPage = function() {
     });
 };
 
+midas.solr.fetchTypes = function () {
+    ajaxWebApi.ajax({
+        method: 'midas.metadata.types.list',
+        success: function (retVal) {
+            var typeCombo = $("#typeCombo");
+            var typeArray = retVal.data;
+            var curType;
+            var i;
+            for(i = 0; i < typeArray.length; ++i) {
+                curType = typeArray[i];
+                typeCombo.append($('<option></option>').attr("value", curType).text(curType));
+            }
+            typeCombo.change(function() { midas.solr.fetchElements($(this).val()); });
+        },
+        error: function (retVal) {
+            midas.createNotice(retVal.message, 3000, 'error');
+        },
+        complete: function () {
+        },
+        log: $('<p></p>')
+    });
+};
+
+midas.solr.fetchElements = function (type) {
+    if (type === 'type') {
+        $('#elementCombo').empty()
+            .append($('<option></option>').attr("value", "element").text("Element"));
+        $('#qualifierCombo').empty()
+            .append($('<option></option>').attr("value", "qualifier").text("Qualifier"));
+        return;
+    }
+    ajaxWebApi.ajax({
+        method: 'midas.metadata.elements.list',
+        args: 'typename=' + type,
+        success: function (retVal) {
+            var elementCombo = $("#elementCombo");
+            var elementArray = retVal.data;
+            var curElement;
+            var i;
+            elementCombo.empty();
+            elementCombo.append($('<option></option>').attr("value", "element").text("Element"));
+            for(i = 0; i < elementArray.length; ++i) {
+                curElement = elementArray[i];
+                elementCombo.append($('<option></option>').attr("value", curElement).text(curElement));
+            }
+            elementCombo.change(function () { midas.solr.fetchQualifiers(type, $(this).val()); });
+        },
+        error: function (retVal) {
+            midas.createNotice(retVal.message, 3000, 'error');
+        },
+        complete: function () {
+        },
+        log: $('<p></p>')
+    });
+};
+
+midas.solr.fetchQualifiers = function (type, element) {
+    if (type === 'type' || element === 'element') {
+        $('#elementCombo').empty()
+            .append($('<option></option>').attr("value", "element").text("Element"));
+        $('#qualifierCombo').empty()
+            .append($('<option></option>').attr("value", "qualifier").text("Qualifier"));
+        return;
+    }
+    ajaxWebApi.ajax({
+        method: 'midas.metadata.qualifiers.list',
+        args: 'typename=' + type + '&element=' + element,
+        success: function (retVal) {
+            var qualifierCombo = $("#qualifierCombo");
+            var qualifierArray = retVal.data;
+            var curQualifier;
+            var i;
+            qualifierCombo.empty();
+            qualifierCombo.append($('<option></option>').attr("value", "qualifier").text("Qualifier"));
+            for(i = 0; i < qualifierArray.length; ++i) {
+                curQualifier = qualifierArray[i];
+                qualifierCombo.append($('<option></option>').attr("value", curQualifier).text(curQualifier));
+            }
+        },
+        error: function (retVal) {
+            midas.createNotice(retVal.message, 3000, 'error');
+        },
+        complete: function () {
+        },
+        log: $('<p></p>')
+    });
+};
+
 $(document).ready(function() {
     $('#advancedQueryField').autogrow();
     $('#advancedQueryField').focus();
@@ -79,5 +167,19 @@ $(document).ready(function() {
 
     $('.nextPageSearch').click(function() {
         midas.solr.fetchPage();
+    });
+
+    midas.solr.fetchTypes();
+    $('#insertKeyButton').click(function () {
+        var type = $('#typeCombo').val(),
+            element = $('#elementCombo').val(),
+            qualifier = $('#qualifierCombo').val();
+        var key = type + '-' + element + '.' + qualifier + ': ';
+        var queryField;
+        if (type !== 'type' && element !== 'element' && qualifier !== 'qualifier') {
+            queryField = $('#advancedQueryField');
+            queryField.focus();
+            queryField.val(queryField.val() + key);
+        }
     });
 });

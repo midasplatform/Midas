@@ -39,6 +39,10 @@ abstract class MetadataModelBase extends AppModel
     $this->initialize(); // required
     } // end __construct()
 
+  abstract function getMetadataTypes();
+  abstract function getMetadataElements($type);
+  abstract function getMetadataQualifiers($type, $element);
+
   abstract function getMetadata($type, $element, $qualifier);
   abstract function getAllMetadata();
   protected abstract function saveMetadataValue($metadataDao);
@@ -127,6 +131,33 @@ abstract class MetadataModelBase extends AppModel
         return 'string';
       default:
         throw new Zend_Exception('Invalid metadata type constant passed');
+      }
+    }
+
+  /**
+   * Pass in one of the string type name and return the MIDAS_METADATA_*
+   * constants (see core/constants/metadata.php).
+   */
+  function mapNameToType($typeName)
+    {
+    switch($typeName)
+      {
+      case 'text':
+        return MIDAS_METADATA_TEXT;
+      case 'int':
+        return MIDAS_METADATA_INT;
+      case 'double':
+        return MIDAS_METADATA_DOUBLE;
+      case 'float':
+        return MIDAS_METADATA_FLOAT;
+      case 'bool':
+        return MIDAS_METADATA_BOOLEAN;
+      case 'long':
+        return MIDAS_METADATA_LONG;
+      case 'string':
+        return MIDAS_METADATA_STRING;
+      default:
+        throw new Zend_Exception('Invalid metadata type string passed');
       }
     }
 } // end class MetadataModelBase
