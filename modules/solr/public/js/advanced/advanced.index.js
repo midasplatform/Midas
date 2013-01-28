@@ -175,9 +175,11 @@ $(document).ready(function() {
             element = $('#elementCombo').val(),
             qualifier = $('#qualifierCombo').val();
         var key = type + '-' + element + '.' + qualifier + ': ';
+        var queryField;
         if (type !== 'type' && element !== 'element' && qualifier !== 'qualifier') {
-            $('#advancedQueryField').focus();
-            $('#advancedQueryField').append(key);
+            queryField = $('#advancedQueryField');
+            queryField.focus();
+            queryField.val(queryField.val() + key);
         }
     });
 });
