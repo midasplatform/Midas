@@ -83,7 +83,8 @@ public class UploadThread extends Thread
         uploader.setIndex(i);
         uploader.setFileCountLabel(i + 1, files.length);
 
-        this.uploadFile(i, this.anonymizeFile(files[i]));
+        File toUpload = uploader.shouldAnonymize() ? this.anonymizeFile(files[i]) : files[i];
+        this.uploadFile(i, toUpload);
         this.uploadOffset = 0;
         if(this.paused)
           {
@@ -245,7 +246,10 @@ public class UploadThread extends Thread
         }
       catch(JavaUploaderQueryHttpServerException e)
         {
-        file.delete();
+        if(uploader.shouldAnonymize())
+          {
+          file.delete();
+          }
         uploader.setFileNameLabel("");
         uploader.setFileSizeLabel(-1);
         uploader.chooseDirButton.setEnabled(true);
@@ -255,7 +259,10 @@ public class UploadThread extends Thread
         }
       catch(Exception e)
         {
-        file.delete();
+        if(uploader.shouldAnonymize())
+          {
+          file.delete();
+          }
         throw new JavaUploaderException(e);
         }
       Utility.log(Utility.LOG_LEVEL.DEBUG, "[SERVER] uploadUniqueIdentifier:"
@@ -367,7 +374,10 @@ public class UploadThread extends Thread
         catch(IOException ioe)
           {
           }
-        file.delete();
+        if(uploader.shouldAnonymize())
+          {
+          file.delete();
+          }
         throw new JavaUploaderException(e);
         }
       }
@@ -380,7 +390,11 @@ public class UploadThread extends Thread
       catch(IOException ioe)
         {
         }
-      file.delete();
+      if(uploader.shouldAnonymize())
+        {
+        file.delete();
+        }
+
       if (conn != null)
         {
         InputStream inputStream = null;

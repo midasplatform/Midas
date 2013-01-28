@@ -34,7 +34,7 @@ PURPOSE.  See the above copyright notices for more information.
 <b><?php echo $this->t('Step 3: Select files to upload')?></b>
 
 <div class="chooseFolderMessage">
-Click the "Choose Folder" button to select a local directory that contains a DICOM series. All files in the
+Click the "Choose Folder" button to select a local directory that contains a DICOM series. By default, all files in the
 directory will be anonymized and then uploaded.  The temporary anonymized files will be deleted afterward.
 </div>
 
@@ -45,7 +45,7 @@ directory will be anonymized and then uploaded.  The temporary anonymized files 
                  <?php echo $this->moduleWebroot?>/public/java/dicomupload/lib/util.jar,
                  <?php echo $this->moduleWebroot?>/public/java/dicomupload/lib/dcm4che.jar,
                  <?php echo $this->moduleWebroot?>/public/java/dicomupload/lib/log4j.jar"
-        width="480" height="170" mayscript="true"
+        width="480" height="190" mayscript="true"
         code="com.kitware.utils.Main">
   <param name = "type" value = "application/x-java-applet;version=1.5" />
   <param name = "background" value = "ffffff" />
