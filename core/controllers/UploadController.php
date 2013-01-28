@@ -771,7 +771,7 @@ class UploadController extends AppController
       }
     else
       {
-      $this->redirect('/community/');
+      $this->_redirect('/community/');
       }
     }
 }//end class
