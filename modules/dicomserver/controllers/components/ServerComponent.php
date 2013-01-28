@@ -140,7 +140,12 @@ class Dicomserver_ServerComponent extends AppComponent
     $command = $modulesConfig['dicomserver']->dcmqridx;
     $command = str_replace("'", '',$command);
     $command_params = array();
-    $aeStorage = $modulesConfig['dicomserver']->receptiondir . PACS_DIR;
+    $reciptionDir = $modulesConfig['dicomserver']->receptiondir;
+    if(!is_writable($reciptionDir))
+      {
+      throw new Zend_Exception("Please configure Dicom Server module correctly. Its reception directory is NOT writable!", MIDAS_INVALID_POLICY);
+      }
+    $aeStorage = $reciptionDir . PACS_DIR;
     $aeStorage = str_replace("'", '', $aeStorage);
     $command_params[] = $aeStorage;
     foreach($bitstreams as $bitstream)
@@ -154,6 +159,14 @@ class Dicomserver_ServerComponent extends AppComponent
         $exception_string = "Failed to register DICOM images! \n Reason:" . implode("\n", $output);
         throw new Zend_Exception(htmlspecialchars($exception_string, ENT_QUOTES), MIDAS_INVALID_POLICY);
         }
+      }
+
+    $modelLoad = new MIDAS_ModelLoader();
+    $registrationModel = $modelLoad->loadModel('Registration', 'dicomserver');
+    $itemId =  $revision->getItemId();
+    if(!$registrationModel->checkByItemId($itemId))
+      {
+      $registrationModel->createRegistration($itemId);
       }
     }
 
