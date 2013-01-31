@@ -44,7 +44,7 @@ public class Main extends JApplet
   JProgressBar progressBar;
   JLabel fileCountLabel, fileNameLabel, fileSizeLabel, bytesTransferredLabel,
       totalSizeLabel, totalTransferredLabel;
-  JCheckBox revOnCollisionCheckbox;
+  JCheckBox anonymizeCheckbox;
   private Color appletBackgroundColor = new Color(225, 225, 225);
 
   private final static String FILECOUNT_LABEL_TITLE = "File #: ";
@@ -129,17 +129,18 @@ public class Main extends JApplet
     buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
     // new revision on name collision checkbox
-    JPanel revOnCollisionPanel = new JPanel();
-    revOnCollisionPanel.setBackground(Color.white);
-    revOnCollisionPanel.setLayout(new BoxLayout(revOnCollisionPanel,
-        BoxLayout.X_AXIS));
-    revOnCollisionPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-    revOnCollisionCheckbox = new JCheckBox(
-        "Upload new revision if item name already exists");
-    revOnCollisionCheckbox.setBackground(Color.white);
-    revOnCollisionCheckbox.setSelected(false);
-    revOnCollisionPanel.add(revOnCollisionCheckbox);
-    revOnCollisionPanel.add(Box.createHorizontalGlue());
+    JPanel anonymizePanel = new JPanel();
+    anonymizePanel.setBackground(Color.white);
+    anonymizePanel.setLayout(new BoxLayout(anonymizePanel, BoxLayout.X_AXIS));
+    anonymizePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+    anonymizeCheckbox = new JCheckBox("Anonymize files before uploading");
+    anonymizeCheckbox.setBackground(Color.white);
+    anonymizeCheckbox.setSelected(true);
+    anonymizePanel.add(anonymizeCheckbox);
+    anonymizePanel.add(Box.createHorizontalGlue());
+
+    pane.add(anonymizePanel);
+    pane.add(Box.createVerticalStrut(12));
 
     // upload button
     chooseDirButton = new JButton("Choose Folder");
@@ -547,5 +548,10 @@ public class Main extends JApplet
   public ArrayList<Integer> getItemIdList()
     {
     return this.itemIds;
+    }
+
+  public boolean shouldAnonymize()
+    {
+    return this.anonymizeCheckbox.isSelected();
     }
   }
