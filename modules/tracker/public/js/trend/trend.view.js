@@ -1,7 +1,7 @@
 var midas = midas || {};
 midas.tracker = midas.tracker || {};
 
-midas.tracker.OFFICIAL_COLOR_KEY = -1;
+midas.tracker.OFFICIAL_COLOR_KEY = 'black';
 midas.tracker.UNOFFICIAL_COLOR_KEY = 'red';
 
 /**
@@ -80,12 +80,15 @@ midas.tracker.populateInfo = function (curveData) {
 };
 
 midas.tracker.bindPlotEvents = function () {
-    $('#chartDiv').unbind('jqplotDataClick').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
+    $('#chartDiv').unbind('jqplotDataClick').bind('jqplotClick', function (ev, gridpos, datapos, dataPoint, plot) {
+        if(dataPoint == null || typeof dataPoint.seriesIndex == 'undefined') {
+            return;
+        }
         var scalarId;
-        if(!json.tracker.rightTrend || seriesIndex == 0) {
-            scalarId = json.tracker.scalars[seriesIndex][pointIndex].scalar_id;
+        if(!json.tracker.rightTrend || dataPoint.seriesIndex == 0) {
+            scalarId = json.tracker.scalars[dataPoint.seriesIndex][dataPoint.pointIndex].scalar_id;
         } else {
-            scalarId = json.tracker.rightScalars[pointIndex].scalar_id;
+            scalarId = json.tracker.rightScalars[dataPoint.pointIndex].scalar_id;
         }
         midas.loadDialog('scalarPoint'+scalarId, '/tracker/scalar/details?scalarId='+scalarId);
         midas.showDialog('Scalar details', false, {width: 500});
@@ -130,8 +133,20 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 show: true,
                 zoom: true,
                 showTooltip: false
-            }
+            },
+            series: []
         };
+        // Now assign official/unofficial color to each marker
+        $.each(curveData.colors, function(idx, trendColors) {
+            opts.series[idx] = {
+                renderer: $.jqplot.DifferentColorMarkerLineRenderer,
+                rendererOptions: {
+                    markerColors: curveData.colors[idx],
+                    shapeRenderer: $.jqplot.ShapeRenderer,
+                    shadowRenderer: $.jqplot.ShadowRenderer
+                }
+            };
+        });
         if(json.tracker.rightTrend) {
             opts.legend = {
                 show: true,
@@ -149,7 +164,8 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 },
                 showLabel: true
             };
-            opts.series = [{yaxis: 'yaxis'}, {yaxis: 'y2axis'}];
+            opts.series[0].yaxis = 'yaxis';
+            opts.series[1].yaxis = 'y2axis';
 
             if(typeof json.tracker.y2Min != 'undefined' && typeof json.tracker.y2Max != 'undefined') {
                 opts.axes.y2axis.min = parseFloat(json.tracker.y2Min);
