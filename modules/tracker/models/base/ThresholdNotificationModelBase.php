@@ -40,6 +40,7 @@ abstract class Tracker_ThresholdNotificationModelBase extends Tracker_AppModel
 
   public abstract function getNotifications($scalar);
   public abstract function getUserSetting($user, $trend);
+  public abstract function deleteByTrend($trend);
 
   /**
    * Check whether the given scalar value meets the threshold condition.

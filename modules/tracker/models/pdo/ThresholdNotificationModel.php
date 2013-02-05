@@ -49,4 +49,20 @@ class Tracker_ThresholdNotificationModel extends Tracker_ThresholdNotificationMo
                 ->where('recipient_id = ?', $user->getKey());
     return $this->initDao('ThresholdNotification', $this->database->fetchRow($sql), $this->moduleName);
     }
+
+  /**
+   * Delete all thresholds for the given trend
+   */
+  public function deleteByTrend($trend)
+    {
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->where('trend_id= ?', $trend->getKey());
+    $rows = $this->database->fetchAll($sql);
+    foreach($rows as $row)
+      {
+      $threshold = $this->initDao('ThresholdNotification', $row, $this->moduleName);
+      $this->delete($threshold);
+      }
+    }
 }
