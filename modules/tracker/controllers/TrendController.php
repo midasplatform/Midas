@@ -76,6 +76,10 @@ class Tracker_TrendController extends Tracker_AppController
         }
       $this->view->json['tracker']['scalars'][] = $this->Tracker_Trend->getScalars($trend, $startDate, $endDate, $userId);
       $this->view->json['tracker']['trends'][] = $trend;
+      if(!isset($this->view->json['tracker']['producerId']))
+        {
+        $this->view->json['tracker']['producerId'] = $trend->getProducerId();
+        }
       $this->view->trends[] = $trend;
       }
     if(isset($rightTrendId))
@@ -193,7 +197,22 @@ class Tracker_TrendController extends Tracker_AppController
    */
   public function deleteAction()
     {
-    // TODO (include progress reporting)
+    $this->disableLayout();
+    $this->disableView();
+
+    $trendId = $this->_getParam('trendId');
+
+    if(!isset($trendId))
+      {
+      throw new Zend_Exception('Must pass trendId parameter');
+      }
+    $trend = $this->Tracker_Trend->load($trendId);
+    $comm = $trend->getProducer()->getCommunity();
+    if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception('Admin permission required on the community', 403);
+      }
+    $this->Tracker_Trend->delete($trend, $this->progressDao);
     }
 
   /**

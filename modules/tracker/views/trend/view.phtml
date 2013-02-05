@@ -16,6 +16,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasAxisLabelRenderer.min.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasAxisTickRenderer.min.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.highlighter.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.differentColorMarkerLineRenderer.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.cursor.min.js');
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/trend/trend.view.css" />
@@ -143,4 +144,17 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
     <div class="bottomButtons">
       <input type="button" class="globalButton updateAxes" value="Apply" />
     </div>
+</div>
+
+<!-- TEMPLATE: delete trend dialog -->
+<div id="deleteTrendTemplate" style="display: none;">
+  <div class="deleteWarningText">
+    Are you sure you want to delete this trend? All points in the trend will be deleted.
+  </div>
+  <div class="deleteProgressBar"></div>
+  <div class="deleteProgressMessage"></div>
+  <div class="bottomButtonsDelete">
+    <input type="button" class="globalButton deleteYes" value="Yes" />
+    <input type="button" class="globalButton deleteNo" value="No" />
+  </div>
 </div>

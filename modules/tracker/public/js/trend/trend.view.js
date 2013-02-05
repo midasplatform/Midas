@@ -1,6 +1,9 @@
 var midas = midas || {};
 midas.tracker = midas.tracker || {};
 
+midas.tracker.OFFICIAL_COLOR_KEY = -1;
+midas.tracker.UNOFFICIAL_COLOR_KEY = 'red';
+
 /**
  * In modern browsers that support window.history.replaceState,
  * this updates the currently displayed URL in the browser to make
@@ -29,12 +32,13 @@ midas.tracker.updateUrlBar = function () {
  * Extract the jqplot curve data from the scalar daos passed to us
  */
 midas.tracker.extractCurveData = function (curves) {
-    var allPoints = [], minVal, maxVal;
+    var allPoints = [], allColors = [], minVal, maxVal;
     $.each(curves, function(idx, scalars) {
         if(!scalars) {
             return;
         }
         var points = [];
+        var colors = [];
         $.each(scalars, function(idx, scalar) {
             var value = parseFloat(scalar.value);
             points.push([scalar.submit_time, value]);
@@ -44,11 +48,19 @@ midas.tracker.extractCurveData = function (curves) {
             if(typeof maxVal == 'undefined' || value > maxVal) {
                 maxVal = value;
             }
+            if(scalar.official == 1) {
+                colors.push(midas.tracker.OFFICIAL_COLOR_KEY);
+            }
+            else {
+                colors.push(midas.tracker.UNOFFICIAL_COLOR_KEY);
+            }
         });
         allPoints.push(points);
+        allColors.push(colors);
     });
     return {
         points: allPoints,
+        colors: allColors,
         minVal: minVal,
         maxVal: maxVal
     };
@@ -81,7 +93,6 @@ midas.tracker.bindPlotEvents = function () {
 };
 
 midas.tracker.renderChartArea = function (curveData, first) {
-    console.log(curveData);
     if(midas.tracker.plot) {
         midas.tracker.plot.destroy();
     }
@@ -274,4 +285,26 @@ $(window).load(function () {
             container.dialog('close');
         });
     });
+    $('a.deleteTrend').click(function () {
+        midas.showDialogWithContent('Confirm Delete Trend', $('#deleteTrendTemplate').html(), false, {width: 420});
+        var container = $('div.MainDialog');
+        container.find('input.deleteYes').unbind('click').click(function () {
+            $(this).attr('disabled', 'disabled');
+            container.find('input.deleteNo').attr('disabled', 'disabled');
+
+            midas.ajaxWithProgress(container.find('div.deleteProgressBar'),
+                container.find('div.deleteProgressMessage'),
+                json.global.webroot+'/tracker/trend/delete',
+                {trendId: json.tracker.trendIds},
+                midas.tracker.trendDeleted
+            );
+        });
+        container.find('input.deleteNo').unbind('click').click(function () {
+            $('div.MainDialog').dialog('close');
+        });
+    });
 });
+
+midas.tracker.trendDeleted = function (resp) {
+    window.location = json.global.webroot+'/tracker/producer/view?producerId='+json.tracker.producerId;
+};
