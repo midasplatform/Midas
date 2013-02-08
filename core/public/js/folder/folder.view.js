@@ -85,6 +85,10 @@ function callbackCheckboxes(node)
   midas.genericCallbackCheckboxes(node);
   }
 
+$(document).ready(function () {
+    $('div.viewAction').show();
+});
+
 $(window).load(function () {
     $.ajax({
         type: 'POST',
