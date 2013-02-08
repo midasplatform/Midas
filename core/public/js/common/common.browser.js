@@ -276,7 +276,7 @@ midas.removeItem = function (id) {
                    }
                });
     });
-    $('input.removeFolderNo').unbind('click').click(function () {
+    $('input.removeItemNo').unbind('click').click(function () {
         $('div.MainDialog').dialog('close');
     });
 };
