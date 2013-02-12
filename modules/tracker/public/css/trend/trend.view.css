@@ -62,3 +62,14 @@ div.bottomButtonsDelete {
 input.deleteYes,input.deleteNo {
   margin-left: 10px !important;
 }
+
+div.belowChartText {
+  margin-top: 20px;
+  font-style: italic;
+  color: #707070;
+}
+
+span.redText {
+  font-weight: bold;
+  color: red;
+}
