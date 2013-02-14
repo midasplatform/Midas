@@ -324,9 +324,9 @@ class FolderController extends AppController
       {
       throw new Zend_Exception("The item doesn't exist.");
       }
-    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
-      throw new Zend_Exception('Admin permission on folder required');
+      throw new Zend_Exception('Write permission on folder required');
       }
     elseif(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
