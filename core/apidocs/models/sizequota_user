@@ -1,0 +1,54 @@
+{
+  "apiVersion":"1.0",
+  "swaggerVersion":"1.1",
+  "basePath":"http://localhost/midas/rest",
+  "resourcePath":"/sizequota/user",
+  "apis":[
+    {
+      "path":"/sizequota/user/{userId}",
+      "operations":[
+        {
+          "httpMethod":"GET",
+          "summary":"Get a user's sizequota",
+          "notes":"Return - user's sizequota",
+          "nickname": "sizequotaUserGet",
+          "responseClass":"void",
+          "parameters":[
+            {
+              "name":"userId",
+              "description":"The user id",
+              "paramType":"path",
+              "required":true,
+              "allowMultiple":false,
+              "dataType":"string"
+            },
+            {
+              "name":"token",
+              "description":"Authentication token",
+              "paramType":"query",
+              "required":true,
+              "allowMultiple":false,
+              "dataType":"string"
+            }
+          ],
+          "errorResponses":[
+            {
+              "code":400,
+              "reason":"Invalid parameter supplied or invalid access permission"
+            },
+            {
+              "code":401,
+              "reason":"Invalid token"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "models":{
+    "User":{
+    },
+    "Tag":{
+    }
+  }
+}
