@@ -259,9 +259,10 @@ midas.removeItem = function (id) {
         $.post(json.global.webroot+'/folder/removeitem',
                {folderId: folderId, itemId: id},
                function(data) {
-                   jsonResponse = jQuery.parseJSON(data);
-                   if(jsonResponse==null) {
-                       midas.createNotice('Error',4000);
+                   var jsonResponse = $.parseJSON(data);
+                   if(!jsonResponse) {
+                       $('div.MainDialog').dialog('close');
+                       midas.createNotice('An error occurred, check the error logs', 4000);
                        return;
                    }
                    if(jsonResponse[0]) {
