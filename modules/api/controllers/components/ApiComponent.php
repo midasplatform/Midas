@@ -43,11 +43,47 @@ class Api_ApiComponent extends AppComponent
       }
     }
 
+  /**
+   * Rename a request parameter's key to provide backward compatibility for existing WebAPIs .
+   */
+  private function _renameParamKey(&$args, $oldKey, $newKey, $oldKeyRequired = true)
+    {
+    if($oldKeyRequired)
+      {
+      $this->_validateParams($args, array($oldKey));
+      }
+    if(isset($args[$oldKey]))
+      {
+      $args[$newKey] = $args[$oldKey];
+      unset($args[$oldKey]);
+      }
+    }
+
   /** Return the user dao */
   private function _getUser($args)
     {
     $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     return $authComponent->getUser($args, $this->userSession->Dao);
+    }
+
+  /** Return the user dao */
+  private function _callCoreApiMethod($args, $coreApiMethod, $hasReturn = true, $needAuth = true)
+    {
+    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $ApiComponent = MidasLoader::loadComponent('Api');
+    if($needAuth)
+      {
+      $userDao = $authComponent->getUser($args, $this->userSession->Dao);
+      $rtn = $ApiComponent->$coreApiMethod($args, $userDao);
+      }
+    else
+      {
+      $rtn = $ApiComponent->$coreApiMethod($args);
+      }
+    if($hasReturn)
+      {
+      return $rtn;
+      }
     }
 
   /**
@@ -240,6 +276,30 @@ class Api_ApiComponent extends AppComponent
       }
     $searchComponent = MidasLoader::loadComponent('Search');
     return $searchComponent->searchAll($userDao, $args['search'], $order);
+    }
+
+  /**
+   *  helper function to set the privacy code on a passed in item.
+   */
+  protected function _setItemPrivacy($item, $privacyCode)
+    {
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+    $groupModel = MidasLoader::loadModel('Group');
+    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+    $itempolicygroupDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
+    if($privacyCode == MIDAS_PRIVACY_PRIVATE && $itempolicygroupDao !== false)
+      {
+      $itempolicygroupModel->delete($itempolicygroupDao);
+      }
+    else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $itempolicygroupDao == false)
+      {
+      $itempolicygroupDao = $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+      }
+    else
+      {
+      // ensure the cached privacy status value is up to date
+      $itempolicygroupModel->computePolicyStatus($item);
+      }
     }
 
   /**
@@ -545,52 +605,6 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * helper method to validate passed in community privacy status params and
-   * map them to valid community privacy codes.
-   * @param string $privacyStatus, should be 'Private' or 'Public'
-   * @return valid community privacy code
-   */
-  private function _getValidCommunityPrivacyCode($privacyStatus)
-    {
-    if($privacyStatus !== 'Public' && $privacyStatus !== 'Private')
-      {
-      throw new Exception('privacy should be one of [Public|Private]', MIDAS_INVALID_PARAMETER);
-      }
-    if($privacyStatus === 'Public')
-      {
-      $privacyCode = MIDAS_COMMUNITY_PUBLIC;
-      }
-    else
-      {
-      $privacyCode = MIDAS_COMMUNITY_PRIVATE;
-      }
-    return $privacyCode;
-    }
-
-  /**
-   * helper method to validate passed in community can join status params and
-   * map them to valid community can join codes.
-   * @param string $canjoinStatus, should be 'Everyone' or 'Invitation'
-   * @return valid community canjoin code
-   */
-  private function _getValidCommunityCanjoinCode($canjoinStatus)
-    {
-    if($canjoinStatus !== 'Everyone' && $canjoinStatus !== 'Invitation')
-      {
-      throw new Exception('privacy should be one of [Everyone|Invitation]', MIDAS_INVALID_PARAMETER);
-      }
-    if($canjoinStatus === 'Everyone')
-      {
-      $canjoinCode = MIDAS_COMMUNITY_CAN_JOIN;
-      }
-    else
-      {
-      $canjoinCode = MIDAS_COMMUNITY_INVITATION_ONLY;
-      }
-    return $canjoinCode;
-    }
-
-  /**
    * Create a new community or update an existing one using the uuid
    * @param token Authentication token
    * @param name The community name
@@ -602,85 +616,7 @@ class Api_ApiComponent extends AppComponent
    */
   function communityCreate($args)
     {
-    $this->_validateParams($args, array('name'));
-    $userDao = $this->_getUser($args);
-    if($userDao == false)
-      {
-      throw new Exception('Unable to find user', MIDAS_INVALID_POLICY);
-      }
-
-    $name = $args['name'];
-    $uuid = isset($args['uuid']) ? $args['uuid'] : '';
-
-    $uuidComponent = MidasLoader::loadComponent('Uuid');
-    $communityModel = MidasLoader::loadModel('Community');
-    $record = false;
-    if(!empty($uuid))
-      {
-      $record = $uuidComponent->getByUid($uuid);
-      }
-    if($record != false && $record instanceof CommunityDao)
-      {
-      if(!$communityModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
-        }
-      $record->setName($name);
-      if(isset($args['description']))
-        {
-        $record->setDescription($args['description']);
-        }
-      if(isset($args['privacy']))
-        {
-        if(!$communityModel->policyCheck($record, $userDao, MIDAS_POLICY_ADMIN))
-          {
-          throw new Exception('Admin access required.', MIDAS_INVALID_POLICY);
-          }
-        $privacyCode = $this->_getValidCommunityPrivacyCode($args['privacy']);
-        $communityModel->setPrivacy($record, $privacyCode, $userDao);
-        }
-      if(isset($args['canjoin']))
-        {
-        if(!$communityModel->policyCheck($record, $userDao, MIDAS_POLICY_ADMIN))
-          {
-          throw new Exception('Admin access required.', MIDAS_INVALID_POLICY);
-          }
-        $canjoinCode = $this->_getValidCommunityCanjoinCode($args['canjoin']);
-        $record->setCanJoin($canjoinCode);
-        }
-      $communityModel->save($record);
-      return $record->toArray();
-      }
-    else
-      {
-      if(!$userDao->isAdmin())
-        {
-        throw new Exception('Only admins can create communities', MIDAS_INVALID_POLICY);
-        }
-      $description = '';
-      $privacy = MIDAS_COMMUNITY_PUBLIC;
-      $canJoin = MIDAS_COMMUNITY_CAN_JOIN;
-      if(isset($args['description']))
-        {
-        $description = $args['description'];
-        }
-      if(isset($args['privacy']))
-        {
-        $privacy = $this->_getValidCommunityPrivacyCode($args['privacy'], $userDao);
-        }
-      if(isset($args['canjoin']))
-        {
-        $canJoin = $this->_getValidCommunityCanjoinCode($args['canjoin']);
-        }
-      $communityDao = $communityModel->createCommunity($name, $description, $privacy, $userDao, $canJoin, $uuid);
-
-      if($communityDao === false)
-        {
-        throw new Exception('Create community failed', MIDAS_INTERNAL_ERROR);
-        }
-
-      return $communityDao->toArray();
-      }
+    return $this->_callCoreApiMethod($args, 'communityCreate');
     }
 
   /**
@@ -692,31 +628,7 @@ class Api_ApiComponent extends AppComponent
    */
   function communityGet($args)
     {
-    $hasId = array_key_exists('id', $args);
-    $hasName = array_key_exists('name', $args);
-
-    $userDao = $this->_getUser($args);
-
-    $communityModel = MidasLoader::loadModel('Community');
-    if($hasId)
-      {
-      $community = $communityModel->load($args['id']);
-      }
-    else if($hasName)
-      {
-      $community = $communityModel->getByName($args['name']);
-      }
-    else
-      {
-      throw new Exception('Parameter id or name is not defined', MIDAS_INVALID_PARAMETER);
-      }
-
-    if($community === false || !$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_READ))
-      {
-      throw new Exception("This community doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    return $community->toArray();
+    return $this->_callCoreApiMethod($args, 'communityGet');
     }
 
   /**
@@ -727,30 +639,7 @@ class Api_ApiComponent extends AppComponent
    */
   function communityChildren($args)
     {
-    $this->_validateParams($args, array('id'));
-
-    $id = $args['id'];
-
-    $communityModel = MidasLoader::loadModel('Community');
-    $folderModel = MidasLoader::loadModel('Folder');
-    $community = $communityModel->load($id);
-    if(!$community)
-      {
-      throw new Exception('Invalid community id', MIDAS_INVALID_PARAMETER);
-      }
-    $folder = $folderModel->load($community->getFolderId());
-
-    $userDao = $this->_getUser($args);
-    try
-      {
-      $folders = $folderModel->getChildrenFoldersFiltered($folder, $userDao);
-      }
-    catch(Exception $e)
-      {
-      throw new Exception($e->getMessage(), MIDAS_INTERNAL_ERROR);
-      }
-
-    return array('folders' => $folders);
+    return $this->_callCoreApiMethod($args, 'communityChildren');
     }
 
   /**
@@ -760,28 +649,7 @@ class Api_ApiComponent extends AppComponent
    */
   function communityList($args)
     {
-    $userDao = $this->_getUser($args);
-    $communityModel = MidasLoader::loadModel('Community');
-    $userModel = MidasLoader::loadModel('User');
-
-    if($userDao && $userDao->isAdmin())
-      {
-      $communities = $communityModel->getAll();
-      }
-    else
-      {
-      $communities = $communityModel->getPublicCommunities();
-      if($userDao)
-        {
-        $communities = array_merge($communities, $userModel->getUserCommunities($userDao));
-        }
-      }
-
-    $sortDaoComponent = MidasLoader::loadComponent('Sortdao');
-    $sortDaoComponent->field = 'name';
-    $sortDaoComponent->order = 'asc';
-    usort($communities, array($sortDaoComponent, 'sortByName'));
-    return $sortDaoComponent->arrayUniqueDao($communities);
+    return $this->_callCoreApiMethod($args, 'communityList');
     }
 
   /**
@@ -791,85 +659,8 @@ class Api_ApiComponent extends AppComponent
    */
   function communityDelete($args)
     {
-    $this->_validateParams($args, array('id'));
-
-    $userDao = $this->_getUser($args);
-    if($userDao == false)
-      {
-      throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
-      }
-    $id = $args['id'];
-
-    $communityModel = MidasLoader::loadModel('Community');
-    $community = $communityModel->load($id);
-
-    if($community === false || !$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("This community doesn't exist  or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    $communityModel->delete($community);
+    $this->_callCoreApiMethod($args, 'communityDelete', false);
     }
-
-  /**
-   *  helper function to set the privacy code on a passed in folder.
-   */
-  protected function _setFolderPrivacy($folder, $privacyCode)
-    {
-    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
-    $groupModel = MidasLoader::loadModel('Group');
-    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-    $folderpolicygroupDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $folder);
-
-    if($privacyCode == MIDAS_PRIVACY_PRIVATE && $folderpolicygroupDao !== false)
-      {
-      $folderpolicygroupModel->delete($folderpolicygroupDao);
-      }
-    else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $folderpolicygroupDao == false)
-      {
-      $policyDao = $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
-      }
-    else
-      {
-      // ensure the cached privacy status value is up to date
-      $folderpolicygroupModel->computePolicyStatus($folder);
-      }
-    }
-
-
-  /**
-   *  helper function to return listing of permissions for a resource.
-   * @return A list with three keys: privacy, user, group; privacy will be the
-     resource's privacy string [Public|Private]; user will be a list of
-     (user_id, policy, email); group will be a list of (group_id, policy, name).
-     policy for user and group will be a policy string [Admin|Write|Read].
-   */
-  protected function _listResourcePermissions($policyStatus, $userPolicies, $groupPolicies)
-    {
-    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
-    $privilegeStrings = array(MIDAS_POLICY_ADMIN => "Admin", MIDAS_POLICY_WRITE => "Write", MIDAS_POLICY_READ => "Read");
-
-    $return = array('privacy' => $privacyStrings[$policyStatus]);
-
-    $userPoliciesOutput = array();
-    foreach($userPolicies as $userPolicy)
-      {
-      $user = $userPolicy->getUser();
-      $userPoliciesOutput[] = array('user_id' => $user->getUserId(), 'policy' => $privilegeStrings[$userPolicy->getPolicy()], 'email' => $user->getEmail());
-      }
-    $return['user'] = $userPoliciesOutput;
-
-    $groupPoliciesOutput = array();
-    foreach($groupPolicies as $groupPolicy)
-      {
-      $group = $groupPolicy->getGroup();
-      $groupPoliciesOutput[] = array('group_id' => $group->getGroupId(), 'policy' => $privilegeStrings[$groupPolicy->getPolicy()], 'name' => $group->getName());
-      }
-    $return['group'] = $groupPoliciesOutput;
-
-    return $return;
-    }
-
 
   /**
    * Create a folder or update an existing one if one exists by the uuid passed.
@@ -887,114 +678,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderCreate($args)
     {
-    $this->_validateParams($args, array('name'));
-    $userDao = $this->_getUser($args);
-    if($userDao == false)
-      {
-      throw new Exception('Cannot create folder anonymously', MIDAS_INVALID_POLICY);
-      }
-
-    $folderModel = MidasLoader::loadModel('Folder');
-    $name = $args['name'];
-    $description = isset($args['description']) ? $args['description'] : '';
-
-    $uuid = isset($args['uuid']) ? $args['uuid'] : '';
-    $record = false;
-    if(!empty($uuid))
-      {
-      $uuidComponent = MidasLoader::loadComponent('Uuid');
-      $record = $uuidComponent->getByUid($uuid);
-      }
-    if($record != false && $record instanceof FolderDao)
-      {
-      if(!$folderModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
-        }
-      $record->setName($name);
-      if(isset($args['description']))
-        {
-        $record->setDescription($args['description']);
-        }
-      if(isset($args['privacy']))
-        {
-        if(!$folderModel->policyCheck($record, $userDao, MIDAS_POLICY_ADMIN))
-          {
-          throw new Exception('Folder Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
-          }
-        $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-        $this->_setFolderPrivacy($record, $privacyCode);
-        }
-      $folderModel->save($record);
-      return $record->toArray();
-      }
-    else
-      {
-      if(!array_key_exists('parentid', $args))
-        {
-        throw new Exception('Parameter parentid is not defined', MIDAS_INVALID_PARAMETER);
-        }
-      if($args['parentid'] == -1) //top level user folder being created
-        {
-        $new_folder = $folderModel->createFolder($name, $description, $userDao->getFolderId(), $uuid);
-        }
-      else //child of existing folder
-        {
-        $folder = $folderModel->load($args['parentid']);
-        if($folder == false)
-          {
-          throw new Exception('Parent doesn\'t exist', MIDAS_INVALID_PARAMETER);
-          }
-        if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
-          {
-          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
-          }
-        if(($existing = $folderModel->getFolderExists($name, $folder)))
-          {
-          if(array_key_exists('reuseExisting', $args))
-            {
-            return $existing->toArray();
-            }
-          else
-            {
-            throw new Exception('A folder already exists in that parent with that name. Pass reuseExisting to reuse it.',
-              MIDAS_INVALID_PARAMETER);
-            }
-          }
-        $new_folder = $folderModel->createFolder($name, $description, $folder, $uuid);
-        if($new_folder === false)
-          {
-          throw new Exception('Create folder failed', MIDAS_INTERNAL_ERROR);
-          }
-        $policyGroup = $folder->getFolderpolicygroup();
-        $policyUser = $folder->getFolderpolicyuser();
-        $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
-        $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
-        foreach($policyGroup as $policy)
-          {
-          $folderpolicygroupModel->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
-          }
-        foreach($policyUser as $policy)
-          {
-          $folderpolicyuserModel->createPolicy($policy->getUser(), $new_folder, $policy->getPolicy());
-          }
-        if(!$folderModel->policyCheck($new_folder, $userDao, MIDAS_POLICY_ADMIN))
-          {
-          $folderpolicyuserModel->createPolicy($userDao, $new_folder, MIDAS_POLICY_ADMIN);
-          }
-        }
-
-      // set privacy if desired
-      if(isset($args['privacy']))
-        {
-        $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-        $this->_setFolderPrivacy($new_folder, $privacyCode);
-        }
-
-      // reload folder to get up to date privacy status
-      $new_folder = $folderModel->load($new_folder->getFolderId());
-      return $new_folder->toArray();
-      }
+    return $this->_callCoreApiMethod($args, 'folderCreate');
     }
 
   /**
@@ -1005,22 +689,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderGet($args)
     {
-    $this->_validateParams($args, array('id'));
-    $userDao = $this->_getUser($args);
-
-    $folderModel = MidasLoader::loadModel('Folder');
-
-    $id = $args['id'];
-    $folder = $folderModel->load($id);
-
-    if($folder === false || !$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
-      {
-      throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    $arr = $folder->toArray();
-    $arr['parent'] = $folder->getParent();
-    return $arr;
+    return $this->_callCoreApiMethod($args, 'folderGet');
     }
 
   /**
@@ -1031,31 +700,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderChildren($args)
     {
-    $this->_validateParams($args, array('id'));
-
-    $id = $args['id'];
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folder = $folderModel->load($id);
-
-    $userDao = $this->_getUser($args);
-    try
-      {
-      $folders = $folderModel->getChildrenFoldersFiltered($folder, $userDao);
-      $items = $folderModel->getItemsFiltered($folder, $userDao);
-      }
-    catch(Exception $e)
-      {
-      throw new Exception($e->getMessage(), MIDAS_INTERNAL_ERROR);
-      }
-    $itemsList = array();
-    foreach($items as $item)
-      {
-      $itemArray = $item->toArray();
-      $itemArray['extraFields'] = $this->_getItemExtraFields($item);
-      $itemsList[] = $itemArray;
-      }
-
-    return array('folders' => $folders, 'items' => $itemsList);
+    return $this->_callCoreApiMethod($args, 'folderChildren');
     }
 
   /**
@@ -1065,23 +710,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderDelete($args)
     {
-    $this->_validateParams($args, array('id'));
-
-    $userDao = $this->_getUser($args);
-    if($userDao == false)
-      {
-      throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
-      }
-    $id = $args['id'];
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folder = $folderModel->load($id);
-
-    if($folder === false || !$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("This folder doesn't exist  or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    $folderModel->delete($folder);
+    $this->_callCoreApiMethod($args, 'folderDelete', false);
     }
 
   /**
@@ -1121,28 +750,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderMove($args)
     {
-    $this->_validateParams($args, array('id', 'dstfolderid'));
-    $userDao = $this->_getUser($args);
-
-    $folderModel = MidasLoader::loadModel('Folder');
-    $id = $args['id'];
-    $folder = $folderModel->load($id);
-    $dstFolderId = $args['dstfolderid'];
-    $dstFolder = $folderModel->load($dstFolderId);
-
-    if($folder === false || !$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN)
-      || !$folderModel->policyCheck($dstFolder, $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-    if($dstFolder == false)
-      {
-      throw new Exception("Unable to load destination folder.", MIDAS_INVALID_POLICY);
-      }
-    $folderModel->move($folder, $dstFolder);
-
-    $folder = $folderModel->load($id);
-    return $folder->toArray();
+    return $this->_callCoreApiMethod($args, 'folderMove');
     }
 
   /**
@@ -1155,24 +763,8 @@ class Api_ApiComponent extends AppComponent
    */
   public function folderListPermissions($args)
     {
-    $this->_validateParams($args, array('folder_id'));
-    $userDao = $this->_getUser($args);
-
-    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folderId = $args['folder_id'];
-    $folder = $folderModel->load($folderId);
-
-    if($folder === false)
-      {
-      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("Admin privileges required on the folder to list permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    return $this->_listResourcePermissions($folderpolicygroupModel->computePolicyStatus($folder), $folder->getFolderpolicyuser(),  $folder->getFolderpolicygroup());
+    $this->_renameParamKey($args, 'folder_id', 'id');
+    return $this->_callCoreApiMethod($args, 'folderListPermissions');
     }
 
   /**
@@ -1185,49 +777,8 @@ class Api_ApiComponent extends AppComponent
    */
   function folderSetPrivacyRecursive($args)
     {
-    $this->_validateParams($args, array('folder_id', 'privacy'));
-    $userDao = $this->_getUser($args);
-
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folderId = $args['folder_id'];
-    $folder = $folderModel->load($folderId);
-
-    if($folder === false)
-      {
-      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("Admin privileges required on the folder to set privacy.", MIDAS_INVALID_POLICY);
-      }
-
-    $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-    $this->_setFolderPrivacy($folder, $privacyCode);
-
-    // now push down the privacy recursively
-    $policyComponent = MidasLoader::loadComponent('Policy');
-    // send a null Progress since we aren't interested in progress
-    // prepopulate results with 1 success for the folder we have already changed
-    $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results = array('success' => 1, 'failure' => 0));
-    return $results;
-    }
-
-
-  /**
-   * helper method to validate passed in policy params and
-   * map them to valid policy codes.
-   * @param string $policy, should be [Admin|Write|Read]
-   * @return valid policy code
-   */
-  private function _getValidPolicyCode($policy)
-    {
-    $policyCodes = array('Admin' => MIDAS_POLICY_ADMIN, 'Write' => MIDAS_POLICY_WRITE, 'Read' => MIDAS_POLICY_READ);
-    if(!array_key_exists($policy, $policyCodes))
-      {
-      $validCodes = '[' . implode('|', array_keys($policyCodes)) . ']';
-      throw new Exception('policy should be one of ' . $validCodes, MIDAS_INVALID_PARAMETER);
-      }
-    return $policyCodes[$policy];
+    $this->_renameParamKey($args, 'folder_id', 'id');
+    return $this->_callCoreApiMethod($args, 'folderSetPrivacyRecursive');
     }
 
   /**
@@ -1244,45 +795,8 @@ class Api_ApiComponent extends AppComponent
    */
   function folderAddPolicygroup($args)
     {
-    $this->_validateParams($args, array('folder_id', 'group_id', 'policy'));
-    $userDao = $this->_getUser($args);
-
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folderId = $args['folder_id'];
-    $folder = $folderModel->load($folderId);
-    if($folder === false)
-      {
-      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
-      }
-
-    $groupModel = MidasLoader::loadModel('Group');
-    $group = $groupModel->load($args['group_id']);
-    if($group === false)
-      {
-      throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-
-    $policyCode = $this->_getValidPolicyCode($args['policy']);
-
-    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
-    $folderpolicygroupModel->createPolicy($group, $folder, $policyCode);
-
-    // we have now changed 1 folder successfully
-    $results = array('success' => 1, 'failure' => 0);
-
-    if(isset($args['recursive']))
-      {
-      // now push down the privacy recursively
-      $policyComponent = MidasLoader::loadComponent('Policy');
-      // send a null Progress since we aren't interested in progress
-      $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results);
-      }
-
-    return $results;
+    $this->_renameParamKey($args, 'folder_id', 'id');
+    return $this->_callCoreApiMethod($args, 'folderAddPolicygroup');
     }
 
   /**
@@ -1297,47 +811,8 @@ class Api_ApiComponent extends AppComponent
    */
   function folderRemovePolicygroup($args)
     {
-    $this->_validateParams($args, array('folder_id', 'group_id'));
-    $userDao = $this->_getUser($args);
-
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folderId = $args['folder_id'];
-    $folder = $folderModel->load($folderId);
-    if($folder === false)
-      {
-      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
-      }
-
-    $groupModel = MidasLoader::loadModel('Group');
-    $group = $groupModel->load($args['group_id']);
-    if($group === false)
-      {
-      throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-
-    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
-    $folderpolicygroup = $folderpolicygroupModel->getPolicy($group, $folder);
-    if($folderpolicygroup !== false)
-      {
-      $folderpolicygroupModel->delete($folderpolicygroup);
-      }
-
-    // we have now changed 1 folder successfully
-    $results = array('success' => 1, 'failure' => 0);
-
-    if(isset($args['recursive']))
-      {
-      // now push down the privacy recursively
-      $policyComponent = MidasLoader::loadComponent('Policy');
-      // send a null Progress since we aren't interested in progress
-      $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results);
-      }
-
-    return $results;
+    $this->_renameParamKey($args, 'folder_id', 'id');
+    return $this->_callCoreApiMethod($args, 'folderRemovePolicygroup');
     }
 
   /**
@@ -1354,46 +829,8 @@ class Api_ApiComponent extends AppComponent
    */
   function folderAddPolicyuser($args)
     {
-    $this->_validateParams($args, array('folder_id', 'user_id', 'policy'));
-    $adminUser = $this->_getUser($args);
-
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folderId = $args['folder_id'];
-    $folder = $folderModel->load($folderId);
-    if($folder === false)
-      {
-      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-    if(!$folderModel->policyCheck($folder, $adminUser, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
-      }
-
-    $userModel = MidasLoader::loadModel('User');
-    $targetUserId = $args['user_id'];
-    $targetUser = $userModel->load($targetUserId);
-    if($targetUser === false)
-      {
-      throw new Exception("This user doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-
-    $policyCode = $this->_getValidPolicyCode($args['policy']);
-
-    $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
-    $folderpolicyuserModel->createPolicy($targetUser, $folder, $policyCode);
-
-    // we have now changed 1 folder successfully
-    $results = array('success' => 1, 'failure' => 0);
-
-    if(isset($args['recursive']))
-      {
-      // now push down the privacy recursively
-      $policyComponent = MidasLoader::loadComponent('Policy');
-      // send a null Progress since we aren't interested in progress
-      $results = $policyComponent->applyPoliciesRecursive($folder, $adminUser, null, $results);
-      }
-
-    return $results;
+    $this->_renameParamKey($args, 'folder_id', 'id');
+    return $this->_callCoreApiMethod($args, 'folderAddPolicyuser');
     }
 
   /**
@@ -1408,47 +845,8 @@ class Api_ApiComponent extends AppComponent
    */
   function folderRemovePolicyuser($args)
     {
-    $this->_validateParams($args, array('folder_id', 'user_id'));
-    $userDao = $this->_getUser($args);
-
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folderId = $args['folder_id'];
-    $folder = $folderModel->load($folderId);
-    if($folder === false)
-      {
-      throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
-      }
-
-    $userModel = MidasLoader::loadModel('User');
-    $user = $userModel->load($args['user_id']);
-    if($user === false)
-      {
-      throw new Exception("This user doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-
-    $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
-    $folderpolicyuser = $folderpolicyuserModel->getPolicy($user, $folder);
-    if($folderpolicyuser !== false)
-      {
-      $folderpolicyuserModel->delete($folderpolicyuser);
-      }
-
-    // we have now changed 1 folder successfully
-    $results = array('success' => 1, 'failure' => 0);
-
-    if(isset($args['recursive']))
-      {
-      // now push down the privacy recursively
-      $policyComponent = MidasLoader::loadComponent('Policy');
-      // send a null Progress since we aren't interested in progress
-      $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results);
-      }
-
-    return $results;
+    $this->_renameParamKey($args, 'folder_id', 'id');
+    return $this->_callCoreApiMethod($args, 'folderRemovePolicyuser');
     }
 
   /**
@@ -1476,30 +874,6 @@ class Api_ApiComponent extends AppComponent
 
 
   /**
-   *  helper function to set the privacy code on a passed in item.
-   */
-  protected function _setItemPrivacy($item, $privacyCode)
-    {
-    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
-    $groupModel = MidasLoader::loadModel('Group');
-    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-    $itempolicygroupDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
-    if($privacyCode == MIDAS_PRIVACY_PRIVATE && $itempolicygroupDao !== false)
-      {
-      $itempolicygroupModel->delete($itempolicygroupDao);
-      }
-    else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $itempolicygroupDao == false)
-      {
-      $itempolicygroupDao = $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
-      }
-    else
-      {
-      // ensure the cached privacy status value is up to date
-      $itempolicygroupModel->computePolicyStatus($item);
-      }
-    }
-
-  /**
    * Check whether an item with the given name exists in the given folder
    * @param parentid The id of the parent folder
    * @param name The name of the item
@@ -1507,28 +881,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemExists($args)
     {
-    $this->_validateParams($args, array('name', 'parentid'));
-    $userDao = $this->_getUser($args);
-    $folderModel = MidasLoader::loadModel('Folder');
-    $itemModel = MidasLoader::loadModel('Item');
-    $folder = $folderModel->load($args['parentid']);
-    if(!$folder)
-      {
-      throw new Exception('Invalid parentid', MIDAS_INVALID_PARAMETER);
-      }
-    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
-      {
-      throw new Exception('Read permission required on folder', MIDAS_INVALID_POLICY);
-      }
-    $existingItem = $itemModel->existsInFolder($args['name'], $folder);
-    if($existingItem instanceof ItemDao && $itemModel->policyCheck($existingItem, $userDao))
-      {
-      return array('exists' => true, 'item' => $existingItem->toArray());
-      }
-    else
-      {
-      return array('exists' => false);
-      }
+    return $this->_callCoreApiMethod($args, 'itemExists');
     }
 
   /**
@@ -1548,100 +901,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemCreate($args)
     {
-    $this->_validateParams($args, array('name'));
-    $userDao = $this->_getUser($args);
-    if($userDao == false)
-      {
-      throw new Exception('Cannot create item anonymously', MIDAS_INVALID_POLICY);
-      }
-    $itemModel = MidasLoader::loadModel('Item');
-    $name = $args['name'];
-    $description = isset($args['description']) ? $args['description'] : '';
-
-    $uuid = isset($args['uuid']) ? $args['uuid'] : '';
-    $record = false;
-    if(!empty($uuid))
-      {
-      $uuidComponent = MidasLoader::loadComponent('Uuid');
-      $record = $uuidComponent->getByUid($uuid);
-      }
-    if($record != false && $record instanceof ItemDao)
-      {
-      if(!$itemModel->policyCheck($record, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
-        }
-      $record->setName($name);
-      if(isset($args['description']))
-        {
-        $record->setDescription($args['description']);
-        }
-      if(isset($args['privacy']))
-        {
-        if(!$itemModel->policyCheck($record, $userDao, MIDAS_POLICY_ADMIN))
-          {
-          throw new Exception('Item Admin privileges required to set privacy', MIDAS_INVALID_POLICY);
-          }
-        $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-        $this->_setItemPrivacy($record, $privacyCode);
-        }
-      foreach($args as $key => $value)
-        {
-        // Params beginning with underscore are assumed to be metadata fields
-        if(substr($key, 0, 1) == '_')
-          {
-          $this->_setMetadata($record, MIDAS_METADATA_TEXT, substr($key, 1), '', $value);
-          }
-        }
-      if(array_key_exists('updatebitstream', $args))
-        {
-        $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
-        $bitstreamModel = MidasLoader::loadModel('Bitstream');
-        $revision = $itemRevisionModel->getLatestRevision($record);
-        $bitstreams = $revision->getBitstreams();
-        if(count($bitstreams) == 1)
-          {
-          $bitstream = $bitstreams[0];
-          $bitstream->setName($name);
-          $bitstreamModel->save($bitstream);
-          }
-        }
-      $itemModel->save($record, true);
-      return $record->toArray();
-      }
-    else
-      {
-      if(!array_key_exists('parentid', $args))
-        {
-        throw new Exception('Parameter parentid is not defined', MIDAS_INVALID_PARAMETER);
-        }
-      $folderModel = MidasLoader::loadModel('Folder');
-      $folder = $folderModel->load($args['parentid']);
-      if($folder == false)
-        {
-        throw new Exception('Parent folder doesn\'t exist', MIDAS_INVALID_PARAMETER);
-        }
-      if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception('Invalid permissions on parent folder', MIDAS_INVALID_POLICY);
-        }
-      $item = $itemModel->createItem($name, $description, $folder, $uuid);
-      if($item === false)
-        {
-        throw new Exception('Create new item failed', MIDAS_INTERNAL_ERROR);
-        }
-      $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
-      $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
-
-      // set privacy if desired
-      if(isset($args['privacy']))
-        {
-        $privacyCode = $this->_getValidPrivacyCode($args['privacy']);
-        $this->_setItemPrivacy($item, $privacyCode);
-        }
-
-      return $item->toArray();
-      }
+    return $this->_callCoreApiMethod($args, 'itemCreate');
     }
 
   /**
@@ -1653,76 +913,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemGet($args)
     {
-    $this->_validateParams($args, array('id'));
-    $userDao = $this->_getUser($args);
-
-    $itemid = $args['id'];
-    $itemModel = MidasLoader::loadModel('Item');
-    $item = $itemModel->load($itemid);
-
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
-      {
-      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    $itemArray = $item->toArray();
-
-    $owningFolders = $item->getFolders();
-    if(count($owningFolders) > 0)
-      {
-      $itemArray['folder_id'] = $owningFolders[0]->getKey();
-      }
-
-    $revisionsArray = array();
-    if(array_key_exists('head', $args))
-      {
-      $revisions = array($itemModel->getLastRevision($item));
-      }
-    else //get all revisions
-      {
-      $revisions = $item->getRevisions();
-      }
-
-    foreach($revisions as $revision)
-      {
-      if(!$revision)
-        {
-        continue;
-        }
-      $bitstreamArray = array();
-      $bitstreams = $revision->getBitstreams();
-      foreach($bitstreams as $b)
-        {
-        $bitstreamArray[] = $b->toArray();
-        }
-      $tmp = $revision->toArray();
-      $tmp['bitstreams'] = $bitstreamArray;
-      $revisionsArray[] = $tmp;
-      }
-    $itemArray['revisions'] = $revisionsArray;
-    $itemArray['extraFields'] = $this->_getItemExtraFields($item);
-
-    return $itemArray;
-    }
-
-  /**
-   * Helper function to return any extra fields that should be passed with an item
-   * @param item The item dao
-   */
-  private function _getItemExtraFields($item)
-    {
-    $extraFields = array();
-    // Add any extra fields that modules want to attach to the item
-    $modules = Zend_Registry::get('notifier')->callback('CALLBACK_API_EXTRA_ITEM_FIELDS',
-                                                        array('item' => $item));
-    foreach($modules as $module => $fields)
-      {
-      foreach($fields as $name => $value)
-        {
-        $extraFields[$module.'_'.$name] = $value;
-        }
-      }
-    return $extraFields;
+    return $this->_callCoreApiMethod($args, 'itemGet');
     }
 
   /**
@@ -1765,75 +956,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDelete($args)
     {
-    $this->_validateParams($args, array('id'));
-
-    $userDao = $this->_getUser($args);
-    if($userDao == false)
-      {
-      throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
-      }
-    $id = $args['id'];
-    $itemModel = MidasLoader::loadModel('Item');
-    $item = $itemModel->load($id);
-
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    $itemModel->delete($item);
-    }
-
-  /**
-   * helper function to get a revision of a certain number from an item,
-   * if revisionNumber is null will get the last revision of the item; used
-   * by the metadata calls and so has exception handling built in for them.
-   *
-   * will return a valid ItemRevision or else throw an exception.
-   */
-  private function _getItemRevision($item, $revisionNumber = null)
-    {
-    $itemModel = MidasLoader::loadModel('Item');
-    if(!isset($revisionNumber))
-      {
-      $revisionDao = $itemModel->getLastRevision($item);
-      if($revisionDao)
-        {
-        return $revisionDao;
-        }
-      else
-        {
-        throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
-        }
-      }
-
-    $revisionNumber = (int)$revisionNumber;
-    if(!is_int($revisionNumber) || $revisionNumber < 1)
-      {
-      throw new Exception("Revision Numbers must be integers greater than 0.".$revisionNumber, MIDAS_INVALID_PARAMETER);
-      }
-    $revisions = $item->getRevisions();
-    if(sizeof($revisions) === 0)
-      {
-      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
-      }
-    // check revisions exist
-    foreach($revisions as $revision)
-      {
-      if($revisionNumber == $revision->getRevision())
-        {
-        $revisionDao = $revision;
-        break;
-        }
-      }
-    if(isset($revisionDao))
-      {
-      return $revisionDao;
-      }
-    else
-      {
-      throw new Exception("This revision number is invalid for this item.", MIDAS_INVALID_PARAMETER);
-      }
+    $this->_callCoreApiMethod($args, 'itemDelete', false);
     }
 
   /**
@@ -1846,27 +969,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemGetmetadata($args)
     {
-    $this->_validateParams($args, array('id'));
-    $userDao = $this->_getUser($args);
-
-    $itemid = $args['id'];
-    $itemModel = MidasLoader::loadModel('Item');
-    $item = $itemModel->load($itemid);
-
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
-      {
-      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
-    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
-    $metadata = $itemRevisionModel->getMetadata($revisionDao);
-    $metadataArray = array();
-    foreach($metadata as $m)
-      {
-      $metadataArray[] = $m->toArray();
-      }
-    return $metadataArray;
+    return $this->_callCoreApiMethod($args, 'itemGetmetadata');
     }
 
   /**
@@ -1883,113 +986,9 @@ class Api_ApiComponent extends AppComponent
    */
   function itemSetmetadata($args)
     {
-    $this->_validateParams($args, array('itemId', 'element', 'value'));
-    $userDao = $this->_getUser($args);
-
-    $itemModel = MidasLoader::loadModel('Item');
-    $item = $itemModel->load($args['itemId']);
-
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
-      }
-
-    $type = array_key_exists('type', $args) ? (int)$args['type'] : MIDAS_METADATA_TEXT;
-    $qualifier = array_key_exists('qualifier', $args) ? $args['qualifier'] : '';
-    $element = $args['element'];
-    $value = $args['value'];
-
-    $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
-    $this->_setMetadata($item, $type, $element, $qualifier, $value, $revisionDao);
-    return true;
+    $this->_renameParamKey($args, 'itemId', 'id');
+    return $this->_callCoreApiMethod($args, 'itemSetmetadata');
     }
-
-  /**
-   * Helper function to set metadata on an item.
-   * Does not perform permission checks; these should be done in advance.
-   */
-  private function _setMetadata($item, $type, $element, $qualifier, $value, $revisionDao = null)
-    {
-    $itemModel = MidasLoader::loadModel('Item');
-    if($revisionDao === null)
-      {
-      $revisionDao = $itemModel->getLastRevision($item);
-      }
-    $modules = Zend_Registry::get('notifier')->callback('CALLBACK_API_METADATA_SET',
-                                                        array('item' => $item,
-                                                              'revision' => $revisionDao,
-                                                              'type' => $type,
-                                                              'element' => $element,
-                                                              'qualifier' => $qualifier,
-                                                              'value' => $value));
-    foreach($modules as $name => $retval)
-      {
-      if($retval['status'] === true) //module has handled the event, so we don't have to
-        {
-        return;
-        }
-      }
-
-    // If no module handles this metadata, we add it as normal metadata on the item revision
-    if(!$revisionDao)
-      {
-      throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
-      }
-
-    $metadataModel = MidasLoader::loadModel('Metadata');
-    $metadataDao = $metadataModel->getMetadata($type, $element, $qualifier);
-    if($metadataDao == false)
-      {
-      $metadataModel->addMetadata($type, $element, $qualifier, '');
-      }
-    $metadataModel->addMetadataValue($revisionDao, $type, $element, $qualifier, $value);
-    }
-
-  /**
-   * helper function to parse out the metadata tuples from the params for a
-   * call to setmultiplemetadata, will validate matching tuples to count.
-   */
-  private function _parseMetadataTuples($args)
-    {
-    $count = (int)$args['count'];
-    if(!is_int($count) || $count < 1)
-      {
-      throw new Exception("Count must be an integer greater than 0.", MIDAS_INVALID_PARAMETER);
-      }
-    $metadataTuples = array();
-    for($i = 0; $i < $count; $i = $i + 1)
-      {
-      // counters are 1 indexed
-      $counter = $i + 1;
-      $element_i_key = 'element_'.$counter;
-      $value_i_key = 'value_'.$counter;
-      $qualifier_i_key = 'qualifier_'.$counter;
-      $type_i_key = 'type_'.$counter;
-      if(!array_key_exists($element_i_key, $args))
-        {
-        throw new Exception("Count was ".$i." but param ".$element_i_key." is missing.", MIDAS_INVALID_PARAMETER);
-        }
-      if(!array_key_exists($value_i_key, $args))
-        {
-        throw new Exception("Count was ".$i." but param ".$value_i_key." is missing.", MIDAS_INVALID_PARAMETER);
-        }
-      $element = $args[$element_i_key];
-      $value = $args[$value_i_key];
-      $qualifier = array_key_exists($qualifier_i_key, $args) ? $args[$qualifier_i_key] : '';
-      $type = array_key_exists($type_i_key, $args) ? $args[$qualifier_i_key] : MIDAS_METADATA_TEXT;
-      if(!is_int($type) || $type < 0 || $type > 6)
-        {
-        throw new Exception("param ".$type_i_key." must be an integer between 0 and 6.", MIDAS_INVALID_PARAMETER);
-        }
-      $metadataTuples[] = array('element' => $element,
-                                'qualifier' => $qualifier,
-                                'type' => $type,
-                                'value' => $value);
-      }
-    return $metadataTuples;
-    }
-
-
 
   /**
    * Set multiple metadata fields on an item, requires specifying the number of
@@ -2012,26 +1011,8 @@ class Api_ApiComponent extends AppComponent
    */
   function itemSetmultiplemetadata($args)
     {
-    $this->_validateParams($args, array('itemid', 'count'));
-    $metadataTuples = $this->_parseMetadataTuples($args);
-
-    $userDao = $this->_getUser($args);
-
-    $itemModel = MidasLoader::loadModel('Item');
-    $item = $itemModel->load($args['itemid']);
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
-      }
-
-    $revisionNumber = array_key_exists('revision', $args) ? (int)$args['revision'] : null;
-    $revision = $this->_getItemRevision($item, $revisionNumber);
-
-    foreach($metadataTuples as $tup)
-      {
-      $this->_setMetadata($item, $tup['type'], $tup['element'], $tup['qualifier'], $tup['value'], $revision);
-      }
-    return true;
+    $this->_renameParamKey($args, 'itemid', 'id');
+    return $this->_callCoreApiMethod($args, 'itemSetmultiplemetadata');
     }
 
   /**
@@ -2050,34 +1031,8 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDeletemetadata($args)
     {
-    $this->_validateParams($args, array('itemid', 'element'));
-    $userDao = $this->_getUser($args);
-
-    $itemModel = MidasLoader::loadModel('Item');
-    $item = $itemModel->load($args['itemid']);
-
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
-      }
-
-    $element = $args['element'];
-    $qualifier = array_key_exists('qualifier', $args) ? $args['qualifier'] : '';
-    $type = array_key_exists('type', $args) ? (int)$args['type'] : MIDAS_METADATA_TEXT;
-
-    $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
-
-    $metadataModel = MidasLoader::loadModel('Metadata');
-    $metadata = $metadataModel->getMetadata($type, $element, $qualifier);
-    if(!isset($metadata) || $metadata === false)
-      {
-      return false;
-      }
-
-    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
-    $itemRevisionModel->deleteMetadata($revisionDao, $metadata->getMetadataId());
-
-    return true;
+    $this->_renameParamKey($args, 'itemid', 'id');
+    return $this->_callCoreApiMethod($args, 'itemDeletemetadata');
     }
 
   /**
@@ -2093,40 +1048,8 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDeletemetadataAll($args)
     {
-    $this->_validateParams($args, array('itemid'));
-    $userDao = $this->_getUser($args);
-
-    $itemModel = MidasLoader::loadModel('Item');
-    $item = $itemModel->load($args['itemid']);
-
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
-      }
-
-    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
-    if(array_key_exists('revision', $args) && $args['revision'] === 'all')
-      {
-      $revisions = $item->getRevisions();
-      if(sizeof($revisions) === 0)
-        {
-        throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
-        }
-      foreach($revisions as $revisionDao)
-        {
-        $itemRevisionModel->deleteMetadata($revisionDao);
-        }
-      }
-    else
-      {
-      $revisionDao = $this->_getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
-      if(isset($revisionDao) && $revisionDao !== false)
-        {
-        $itemRevisionModel->deleteMetadata($revisionDao);
-        }
-      }
-
-    return true;
+    $this->_renameParamKey($args, 'itemid', 'id');
+    return $this->_callCoreApiMethod($args, 'itemDeletemetadataAll');
     }
 
   /**
@@ -2138,28 +1061,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDuplicate($args)
     {
-    $this->_validateParams($args, array('id', 'dstfolderid'));
-    $userDao = $this->_getUser($args);
-    if($userDao == false)
-      {
-      throw new Exception('Cannot duplicate item anonymously', MIDAS_INVALID_POLICY);
-      }
-    $itemModel = MidasLoader::loadModel('Item');
-    $folderModel = MidasLoader::loadModel('Folder');
-    $id = $args['id'];
-    $item = $itemModel->load($id);
-    $dstFolderId = $args['dstfolderid'];
-    $dstFolder = $folderModel->load($dstFolderId);
-
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ)
-      || !$folderModel->policyCheck($dstFolder, $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    $duplicatedItem = $itemModel->duplicateItem($item, $userDao, $dstFolder);
-
-    return $duplicatedItem->toArray();
+    return $this->_callCoreApiMethod($args, 'itemDuplicate');
     }
 
   /**
@@ -2171,43 +1073,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemShare($args)
     {
-    $this->_validateParams($args, array('id', 'dstfolderid'));
-    $userDao = $this->_getUser($args);
-    if($userDao == false)
-      {
-      throw new Exception('Cannot share item anonymously', MIDAS_INVALID_POLICY);
-      }
-    $itemModel = MidasLoader::loadModel('Item');
-    $folderModel = MidasLoader::loadModel('Folder');
-    $id = $args['id'];
-    $item = $itemModel->load($id);
-    $dstFolderId = $args['dstfolderid'];
-    $dstFolder = $folderModel->load($dstFolderId);
-
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ)
-      || !$folderModel->policyCheck($dstFolder, $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    $itemArray = $item->toArray();
-    $owningFolderIds = array();
-    $owningFolderArray = array();
-    foreach($item->getFolders() as $owningFolder)
-      {
-      $owningFolderIds[] = $owningFolder->getKey();
-      $owningFolderArray[] = $owningFolder->toArray();
-      }
-    if(!in_array($dstFolder->getKey(), $owningFolderIds))
-      {
-      // Do not update item name in item share action
-      $folderModel->addItem($dstFolder, $item, false);
-      $itemModel->addReadonlyPolicy($item, $dstFolder);
-      $owningFolderArray[] = $dstFolder->toArray();
-      }
-
-    $itemArray['owningfolders'] = $owningFolderArray;
-    return $itemArray;
+    return $this->_callCoreApiMethod($args, 'itemShare');
     }
 
   /**
@@ -2220,24 +1086,8 @@ class Api_ApiComponent extends AppComponent
    */
   public function itemListPermissions($args)
     {
-    $this->_validateParams($args, array('item_id'));
-    $userDao = $this->_getUser($args);
-
-    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
-    $itemModel = MidasLoader::loadModel('Item');
-    $itemId = $args['item_id'];
-    $item = $itemModel->load($itemId);
-
-    if($item === false)
-      {
-      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("Admin privileges required on the item to list permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    return $this->_listResourcePermissions($itempolicygroupModel->computePolicyStatus($item), $item->getItempolicyuser(),  $item->getItempolicygroup());
+    $this->_renameParamKey($args, 'item_id', 'id');
+    return $this->_callCoreApiMethod($args, 'itemListPermissions');
     }
 
   /**
@@ -2250,46 +1100,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemMove($args)
     {
-    $this->_validateParams($args, array('id', 'srcfolderid', 'dstfolderid'));
-    $userDao = $this->_getUser($args);
-    if($userDao == false)
-      {
-      throw new Exception('Cannot move item anonymously', MIDAS_INVALID_POLICY);
-      }
-    $itemModel = MidasLoader::loadModel('Item');
-    $folderModel = MidasLoader::loadModel('Folder');
-    $id = $args['id'];
-    $item = $itemModel->load($id);
-    $srcFolderId = $args['srcfolderid'];
-    $srcFolder = $folderModel->load($srcFolderId);
-    $dstFolderId = $args['dstfolderid'];
-    $dstFolder = $folderModel->load($dstFolderId);
-
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN)
-      || !$folderModel->policyCheck($dstFolder, $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    if($srcFolder == false || $dstFolder == false)
-      {
-      throw new Exception("Unable to load source or destination folder.", MIDAS_INVALID_POLICY);
-      }
-    if($dstFolder->getKey() != $srcFolder->getKey())
-      {
-      $folderModel->addItem($dstFolder, $item);
-      $itemModel->copyParentPolicies($item, $dstFolder);
-      $folderModel->removeItem($srcFolder, $item);
-      }
-
-    $itemArray = $item->toArray();
-    $owningFolderArray = array();
-    foreach($item->getFolders() as $owningFolder)
-      {
-      $owningFolderArray[] = $owningFolder->toArray();
-      }
-    $itemArray['owningfolders'] = $owningFolderArray;
-    return $itemArray;
+    return $this->_callCoreApiMethod($args, 'itemMove');
     }
 
   /**
@@ -2300,21 +1111,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemSearchbyname($args)
     {
-    $this->_validateParams($args, array('name'));
-    $userDao = $this->_getUser($args);
-    $itemModel = MidasLoader::loadModel('Item');
-    $items = $itemModel->getByName($args['name']);
-
-    $matchList = array();
-    foreach($items as $item)
-      {
-      if($itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
-        {
-        $matchList[] = $item->toArray();
-        }
-      }
-
-    return array('items' => $matchList);
+    return $this->_callCoreApiMethod($args, 'itemSearchbyname');
     }
 
   /**
@@ -2328,34 +1125,8 @@ class Api_ApiComponent extends AppComponent
    */
   function itemAddPolicygroup($args)
     {
-    $this->_validateParams($args, array('item_id', 'group_id', 'policy'));
-    $userDao = $this->_getUser($args);
-
-    $itemModel = MidasLoader::loadModel('Item');
-    $itemId = $args['item_id'];
-    $item = $itemModel->load($itemId);
-    if($item === false)
-      {
-      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
-      }
-
-    $groupModel = MidasLoader::loadModel('Group');
-    $group = $groupModel->load($args['group_id']);
-    if($group === false)
-      {
-      throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-
-    $policyCode = $this->_getValidPolicyCode($args['policy']);
-
-    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
-    $itempolicygroupModel->createPolicy($group, $item, $policyCode);
-
-    return array('success' => 'true');
+    $this->_renameParamKey($args, 'item_id', 'id');
+    return $this->_callCoreApiMethod($args, 'itemAddPolicygroup');
     }
 
   /**
@@ -2367,36 +1138,8 @@ class Api_ApiComponent extends AppComponent
    */
   function itemRemovePolicygroup($args)
     {
-    $this->_validateParams($args, array('item_id', 'group_id'));
-    $userDao = $this->_getUser($args);
-
-    $itemModel = MidasLoader::loadModel('Item');
-    $itemId = $args['item_id'];
-    $item = $itemModel->load($itemId);
-    if($item === false)
-      {
-      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
-      }
-
-    $groupModel = MidasLoader::loadModel('Group');
-    $group = $groupModel->load($args['group_id']);
-    if($group === false)
-      {
-      throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-
-    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
-    $itempolicygroup = $itempolicygroupModel->getPolicy($group, $item);
-    if($itempolicygroup !== false)
-      {
-      $itempolicygroupModel->delete($itempolicygroup);
-      }
-
-    return array('success' => 'true');
+    $this->_renameParamKey($args, 'item_id', 'id');
+    return $this->_callCoreApiMethod($args, 'itemRemovePolicygroup');
     }
 
   /**
@@ -2410,35 +1153,8 @@ class Api_ApiComponent extends AppComponent
    */
   function itemAddPolicyuser($args)
     {
-    $this->_validateParams($args, array('item_id', 'user_id', 'policy'));
-    $adminUser = $this->_getUser($args);
-
-    $itemModel = MidasLoader::loadModel('Item');
-    $itemId = $args['item_id'];
-    $item = $itemModel->load($itemId);
-    if($item === false)
-      {
-      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-    if(!$itemModel->policyCheck($item, $adminUser, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
-      }
-
-    $userModel = MidasLoader::loadModel('User');
-    $targetUserId = $args['user_id'];
-    $targetUser = $userModel->load($targetUserId);
-    if($targetUser === false)
-      {
-      throw new Exception("This user doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-
-    $policyCode = $this->_getValidPolicyCode($args['policy']);
-
-    $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
-    $itempolicyuserModel->createPolicy($targetUser, $item, $policyCode);
-
-    return array('success' => 'true');
+    $this->_renameParamKey($args, 'item_id', 'id');
+    return $this->_callCoreApiMethod($args, 'itemAddPolicyuser');
     }
 
   /**
@@ -2450,36 +1166,8 @@ class Api_ApiComponent extends AppComponent
    */
   function itemRemovePolicyuser($args)
     {
-    $this->_validateParams($args, array('item_id', 'user_id'));
-    $userDao = $this->_getUser($args);
-
-    $itemModel = MidasLoader::loadModel('Item');
-    $itemId = $args['item_id'];
-    $item = $itemModel->load($itemId);
-    if($item === false)
-      {
-      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
-      }
-
-    $userModel = MidasLoader::loadModel('User');
-    $user = $userModel->load($args['user_id']);
-    if($user === false)
-      {
-      throw new Exception("This user doesn't exist.", MIDAS_INVALID_PARAMETER);
-      }
-
-    $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
-    $itempolicyuser = $itempolicyuserModel->getPolicy($user, $item);
-    if($itempolicyuser !== false)
-      {
-      $itempolicyuserModel->delete($itempolicyuser);
-      }
-
-    return array('success' => 'true');
+    $this->_renameParamKey($args, 'item_id', 'id');
+    return $this->_callCoreApiMethod($args, 'itemRemovePolicyuser');
     }
 
   /**
@@ -2489,15 +1177,7 @@ class Api_ApiComponent extends AppComponent
    */
   function userFolders($args)
     {
-    $userDao = $this->_getUser($args);
-    if($userDao == false)
-      {
-      return array();
-      }
-
-    $userRootFolder = $userDao->getFolder();
-    $folderModel = MidasLoader::loadModel('Folder');
-    return $folderModel->getChildrenFoldersFiltered($userRootFolder, $userDao, MIDAS_POLICY_READ);
+    return $this->_callCoreApiMethod($args, 'userFolders');
     }
 
   /**
@@ -2573,10 +1253,7 @@ class Api_ApiComponent extends AppComponent
    */
   function userList($args)
     {
-    $this->_validateParams($args, array('limit'));
-
-    $userModel = MidasLoader::loadModel('User');
-    return $userModel->getAll(true, $args['limit']);
+    return $this->_callCoreApiMethod($args, 'userList', true, false);
     }
 
   /**
@@ -2589,24 +1266,8 @@ class Api_ApiComponent extends AppComponent
    */
   function userGet($args)
     {
-    $userModel = MidasLoader::loadModel('User');
-    if(array_key_exists('user_id', $args))
-      {
-      return $userModel->getByUser_id($args['user_id']);
-      }
-    else if(array_key_exists('email', $args))
-      {
-      return $userModel->getByEmail($args['email']);
-      }
-    else if(array_key_exists('firstname', $args) &&
-            array_key_exists('lastname', $args))
-      {
-      return $userModel->getByName($args['firstname'], $args['lastname']);
-      }
-    else
-      {
-      throw new Exception('Please provide a user_id or both first and last name', MIDAS_INVALID_PARAMETER);
-      }
+    $this->_renameParamKey($args, 'user_id', 'id', false);
+    return $this->_callCoreApiMethod($args, 'userGet', true, false);
     }
 
   /**
@@ -2617,42 +1278,7 @@ class Api_ApiComponent extends AppComponent
    */
   function bitstreamGet($args)
     {
-    $this->_validateParams($args, array('id'));
-    $userDao = $this->_getUser($args);
-
-    $bitstreamModel = MidasLoader::loadModel('Bitstream');
-    $bitstream = $bitstreamModel->load($args['id']);
-
-    if(!$bitstream)
-      {
-      throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
-      }
-
-    if(array_key_exists('name', $args))
-      {
-      $bitstream->setName($args['name']);
-      }
-    $revisionModel = MidasLoader::loadModel('ItemRevision');
-    $revision = $revisionModel->load($bitstream->getItemrevisionId());
-
-    if(!$revision)
-      {
-      throw new Exception('Invalid revision id', MIDAS_INTERNAL_ERROR);
-      }
-    $itemModel = MidasLoader::loadModel('Item');
-    $item = $itemModel->load($revision->getItemId());
-    if(!$item || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
-      {
-      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-    $bitstreamArray = array();
-    $bitstreamArray['name'] = $bitstream->getName();
-    $bitstreamArray['size'] = $bitstream->getSizebytes();
-    $bitstreamArray['mimetype'] = $bitstream->getMimetype();
-    $bitstreamArray['checksum'] = $bitstream->getChecksum();
-    $bitstreamArray['itemrevision_id'] = $bitstream->getItemrevisionId();
-    $bitstreamArray['item_id'] = $revision->getItemId();
-    return $bitstreamArray;
+    return $this->_callCoreApiMethod($args, 'bitstreamGet');
     }
 
   /**
@@ -2778,33 +1404,7 @@ class Api_ApiComponent extends AppComponent
    */
   function bitstreamEdit($args)
     {
-    $this->_validateParams($args, array('id'));
-    $userDao = $this->_getUser($args);
-
-    $bitstreamModel = MidasLoader::loadModel('Bitstream');
-    $itemModel = MidasLoader::loadModel('Item');
-
-    $bitstream = $bitstreamModel->load($args['id']);
-    if(!$bitstream)
-      {
-      throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
-      }
-
-    if(!$itemModel->policyCheck($bitstream->getItemrevision()->getItem(), $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception('Write access on item is required', MIDAS_INVALID_POLICY);
-      }
-
-    if(array_key_exists('name', $args))
-      {
-      $bitstream->setName($args['name']);
-      }
-    if(array_key_exists('mimetype', $args))
-      {
-      $bitstream->setMimetype($args['mimetype']);
-      }
-    $bitstreamModel->save($bitstream);
-    return $bitstream->toArray();
+    return $this->_callCoreApiMethod($args, 'bitstreamEdit');
     }
 
   /**
@@ -2831,24 +1431,7 @@ class Api_ApiComponent extends AppComponent
    */
   function bitstreamDelete($args)
     {
-    $this->_validateParams($args, array('id'));
-    $userDao = $this->_getUser($args);
-
-    $bitstreamModel = MidasLoader::loadModel('Bitstream');
-    $itemModel = MidasLoader::loadModel('Item');
-
-    $bitstream = $bitstreamModel->load($args['id']);
-    if(!$bitstream)
-      {
-      throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
-      }
-
-    if(!$itemModel->policyCheck($bitstream->getItemrevision()->getItem(), $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Exception('Admin privileges required on the containing item', MIDAS_INVALID_POLICY);
-      }
-
-    $bitstreamModel->delete($bitstream);
+    $this->_callCoreApiMethod($args, 'bitstreamDelete', false);
     }
 
   /**
