@@ -247,16 +247,15 @@
                     this.renderer.shapeRenderer.draw(ctx, gd, opts);
                 }
             }
-           
 
             // now draw the markers
             if (this.markerRenderer.show && !fill) {
                 for (i=0; i<gd.length; i++) {
                     // Grab each color and send it to a new markerRenderer. 
                     opts.markerOptions = {
-                        color: this.markerColors[i]
+                        color: this.markerColors[i] || this.color
                     };
-                    this.markerRenderer = new  $.jqplot.MarkerRenderer
+                    this.markerRenderer = new $.jqplot.MarkerRenderer;
                     this.markerRenderer.init(opts.markerOptions);
                     this.markerRenderer.draw(gd[i][0], gd[i][1], ctx, opts.markerOptions);
                 }
