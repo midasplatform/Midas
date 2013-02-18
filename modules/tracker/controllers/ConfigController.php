@@ -30,6 +30,11 @@ class Tracker_ConfigController extends Tracker_AppController
     {
     $this->requireAdminPrivileges();
     $this->view->repoBrowserUrl = $this->Setting->getValueByName('repoBrowserUrl', $this->moduleName);
+    $this->view->tempScalarTtl = $this->Setting->getValueByName('tempScalarTtl', $this->moduleName);
+    if(!$this->view->tempScalarTtl)
+      {
+      $this->view->tempScalarTtl = 24; //default to 24 hours
+      }
 
     $breadcrumbs = array();
     $breadcrumbs[] = array('type' => 'moduleList');
@@ -49,7 +54,9 @@ class Tracker_ConfigController extends Tracker_AppController
     $this->disableView();
 
     $repoBrowserUrl = $this->_getParam('repoBrowserUrl');
-    $this->Setting->setConfig('repoBrowserUrl',  $repoBrowserUrl, $this->moduleName);
+    $tempScalarTtl = $this->_getParam('tempScalarTtl');
+    $this->Setting->setConfig('repoBrowserUrl', $repoBrowserUrl, $this->moduleName);
+    $this->Setting->setConfig('tempScalarTtl', $tempScalarTtl, $this->moduleName);
 
     echo JsonComponent::encode(array('message' => 'Changes saved', 'status' => 'ok'));
     }
