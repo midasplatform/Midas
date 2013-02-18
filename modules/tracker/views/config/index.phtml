@@ -27,6 +27,14 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
       <label for="repoBrowserUrl">Repository Browser URL</label>
       <input type="text" name="repoBrowserUrl" value="<?php echo $this->repoBrowserUrl;?>" />
     </div>
+    <div class="explanation">
+      <p>Set this field to the number of hours that unofficial submissions should be kept before being deleted automatically
+         by the scheduler.  The default value is 24 hours.</p>
+    </div>
+    <div>
+      <label for="tempScalarTtl">Unofficial Scalar TTL</label>
+      <input type="text" name="tempScalarTtl" value="<?php echo $this->tempScalarTtl;?>" />
+    </div>
     <div>
       <input type="submit" value="Save" />
     </div>

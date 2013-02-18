@@ -204,6 +204,29 @@ class Tracker_ApiComponent extends AppComponent
       $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
       $notifyComponent->scheduleNotifications($scalar, $notifications);
       }
+    if(!$official)
+      {
+      $jobModel = MidasLoader::loadModel('Job', 'scheduler');
+      $settingModel = MidasLoader::loadModel('Setting');
+      $nHours = $settingModel->getValueByName('tempScalarTtl', 'tracker');
+      if(!$nHours)
+        {
+        $nHours = 24; //default to 24 hours
+        }
+      foreach($notifications as $notification)
+        {
+        $job = MidasLoader::newDao('JobDao', 'scheduler');
+        $job->setTask('TASK_TRACKER_DELETE_TEMP_SCALAR');
+        $job->setPriority(1);
+        $job->setRunOnlyOnce(1);
+        $job->setFireTime(date('Y-m-j G:i:s', strtotime('+'.$nHours.' hours')));
+        $job->setTimeInterval(0);
+        $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
+        $job->setCreatorId($user->getKey());
+        $job->setParams(JsonComponent::encode(array('scalarId' => $scalar->getKey())));
+        $jobModel->save($job);
+        }
+      }
     return $scalar;
     }
 
@@ -229,6 +252,16 @@ class Tracker_ApiComponent extends AppComponent
     $user = $this->_getUser($args);
 
     $official = !array_key_exists('unofficial', $args);
+    if(!$official)
+      {
+      $jobModel = MidasLoader::loadModel('Job', 'scheduler');
+      $settingModel = MidasLoader::loadModel('Setting');
+      $nHours = $settingModel->getValueByName('tempScalarTtl', 'tracker');
+      if(!$nHours)
+        {
+        $nHours = 24; //default to 24 hours
+        }
+      }
 
     // Unofficial submissions only require read access to the community
     $community = $communityModel->load($args['communityId']);
@@ -361,6 +394,22 @@ class Tracker_ApiComponent extends AppComponent
             $notifications = $notificationModel->getNotifications($scalar);
             $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
             $notifyComponent->scheduleNotifications($scalar, $notifications);
+            }
+          if(!$official)
+            {
+            foreach($notifications as $notification)
+              {
+              $job = MidasLoader::newDao('JobDao', 'scheduler');
+              $job->setTask('TASK_TRACKER_DELETE_TEMP_SCALAR');
+              $job->setPriority(1);
+              $job->setRunOnlyOnce(1);
+              $job->setFireTime(date('Y-m-j G:i:s', strtotime('+'.$nHours.' hours')));
+              $job->setTimeInterval(0);
+              $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
+              $job->setCreatorId($user->getKey());
+              $job->setParams(JsonComponent::encode(array('scalarId' => $scalar->getKey())));
+              $jobModel->save($job);
+              }
             }
           }
         }
