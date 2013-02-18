@@ -1,7 +1,7 @@
 var midas = midas || {};
 midas.tracker = midas.tracker || {};
 
-midas.tracker.OFFICIAL_COLOR_KEY = 'black';
+midas.tracker.OFFICIAL_COLOR_KEY = null;
 midas.tracker.UNOFFICIAL_COLOR_KEY = 'red';
 
 /**
