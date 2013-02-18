@@ -16,7 +16,7 @@ class Tracker_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'tracker';
   public $_models = array('User');
-  public $_moduleModels = array('Trend');
+  public $_moduleModels = array('Scalar', 'Trend');
   public $_moduleComponents = array('Api');
 
   /** init notification process*/
@@ -33,6 +33,7 @@ class Tracker_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'userDeleted');
 
     $this->addTask('TASK_TRACKER_SEND_THRESHOLD_NOTIFICATION', 'sendEmail', 'Send threshold violation email');
+    $this->addTask('TASK_TRACKER_DELETE_TEMP_SCALAR', 'deleteTempScalar', 'Delete an unofficial/temporary scalar value');
     $this->enableWebAPI($this->moduleName);
     }//end init
 
@@ -70,6 +71,17 @@ class Tracker_Notification extends ApiEnabled_Notification
     {
     // TODO
     $user = $args['userDao'];
+    }
+
+  /**
+   * Delete temporary (unofficial) scalars after n hours, where n is specified as
+   * a module configuration option
+   */
+  public function deleteTempScalar($params)
+    {
+    $scalarId = $params['scalarId'];
+    $scalar = $this->Tracker_Scalar->load($scalarId);
+    $this->Tracker_Scalar->delete($scalar);
     }
 
   /**
