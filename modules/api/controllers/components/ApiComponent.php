@@ -836,6 +836,41 @@ class Api_ApiComponent extends AppComponent
       }
     }
 
+
+  /**
+   *  helper function to return listing of permissions for a resource.
+   * @return A list with three keys: privacy, user, group; privacy will be the
+     resource's privacy string [Public|Private]; user will be a list of
+     (user_id, policy, email); group will be a list of (group_id, policy, name).
+     policy for user and group will be a policy string [Admin|Write|Read].
+   */
+  protected function _listResourcePermissions($policyStatus, $userPolicies, $groupPolicies)
+    {
+    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+    $privilegeStrings = array(MIDAS_POLICY_ADMIN => "Admin", MIDAS_POLICY_WRITE => "Write", MIDAS_POLICY_READ => "Read");
+
+    $return = array('privacy' => $privacyStrings[$policyStatus]);
+
+    $userPoliciesOutput = array();
+    foreach($userPolicies as $userPolicy)
+      {
+      $user = $userPolicy->getUser();
+      $userPoliciesOutput[] = array('user_id' => $user->getUserId(), 'policy' => $privilegeStrings[$userPolicy->getPolicy()], 'email' => $user->getEmail());
+      }
+    $return['user'] = $userPoliciesOutput;
+
+    $groupPoliciesOutput = array();
+    foreach($groupPolicies as $groupPolicy)
+      {
+      $group = $groupPolicy->getGroup();
+      $groupPoliciesOutput[] = array('group_id' => $group->getGroupId(), 'policy' => $privilegeStrings[$groupPolicy->getPolicy()], 'name' => $group->getName());
+      }
+    $return['group'] = $groupPoliciesOutput;
+
+    return $return;
+    }
+
+
   /**
    * Create a folder or update an existing one if one exists by the uuid passed.
    * If a folder is requested to be created with the same parentid and name as
@@ -1124,8 +1159,6 @@ class Api_ApiComponent extends AppComponent
     $userDao = $this->_getUser($args);
 
     $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
-    $groupModel = MidasLoader::loadModel('Group');
-    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
     $folderModel = MidasLoader::loadModel('Folder');
     $folderId = $args['folder_id'];
     $folder = $folderModel->load($folderId);
@@ -1139,30 +1172,7 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("Admin privileges required on the folder to list permissions.", MIDAS_INVALID_POLICY);
       }
 
-    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
-    $privilegeStrings = array(MIDAS_POLICY_ADMIN => "Admin", MIDAS_POLICY_WRITE => "Write", MIDAS_POLICY_READ => "Read");
-
-    $return = array('privacy' => $privacyStrings[$folderpolicygroupModel->computePolicyStatus($folder)]);
-
-    $userPolicies = $folder->getFolderpolicyuser();
-    $userPoliciesOutput = array();
-    foreach($userPolicies as $userPolicy)
-      {
-      $user = $userPolicy->getUser();
-      $userPoliciesOutput[] = array('user_id' => $user->getUserId(), 'policy' => $privilegeStrings[$userPolicy->getPolicy()], 'email' => $user->getEmail());
-      }
-    $return['user'] = $userPoliciesOutput;
-
-    $groupPolicies = $folder->getFolderpolicygroup();
-    $groupPoliciesOutput = array();
-    foreach($groupPolicies as $groupPolicy)
-      {
-      $group = $groupPolicy->getGroup();
-      $groupPoliciesOutput[] = array('group_id' => $group->getGroupId(), 'policy' => $privilegeStrings[$groupPolicy->getPolicy()], 'name' => $group->getName());
-      }
-    $return['group'] = $groupPoliciesOutput;
-
-    return $return;
+    return $this->_listResourcePermissions($folderpolicygroupModel->computePolicyStatus($folder), $folder->getFolderpolicyuser(),  $folder->getFolderpolicygroup());
     }
 
   /**
