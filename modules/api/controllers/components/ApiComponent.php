@@ -2211,6 +2211,36 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * List the permissions on an item, requires Admin access to the item.
+   * @param item_id The id of the item
+   * @return A list with three keys: privacy, user, group; privacy will be the
+     item's privacy string [Public|Private]; user will be a list of
+     (user_id, policy, email); group will be a list of (group_id, policy, name).
+     policy for user and group will be a policy string [Admin|Write|Read].
+   */
+  public function itemListPermissions($args)
+    {
+    $this->_validateParams($args, array('item_id'));
+    $userDao = $this->_getUser($args);
+
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+    $itemModel = MidasLoader::loadModel('Item');
+    $itemId = $args['item_id'];
+    $item = $itemModel->load($itemId);
+
+    if($itemId === false)
+      {
+      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the item to list permissions.", MIDAS_INVALID_POLICY);
+      }
+
+    return $this->_listResourcePermissions($itempolicygroupModel->computePolicyStatus($item), $item->getItempolicyuser(),  $item->getItempolicygroup());
+    }
+
+  /**
    * Move an item from the source folder to the desination folder
    * @param token Authentication token
    * @param id The id of the item
