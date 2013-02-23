@@ -30,9 +30,9 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
   /** Test adding and removing a user from a group */
   public function testGroupUserAddRemove()
     {
-    $addMethod = "midas.group.add.user";  
-    $removeMethod = "midas.group.remove.user";  
-    $methods = array($addMethod, $removeMethod);      
+    $addMethod = "midas.group.add.user";
+    $removeMethod = "midas.group.remove.user";
+    $methods = array($addMethod, $removeMethod);
 
     $communityModel = MidasLoader::loadModel('Community');
     $comm2001 = $communityModel->load('2001');
@@ -48,7 +48,7 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
     $invalidGroupId = '-10';
     $validUserId = '2';
     $invalidUserId = '-10';
-    
+
     // test all the failure cases
     foreach($methods as $method)
       {
@@ -60,6 +60,22 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
       $resp = $this->_callJsonApi();
       $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
 
+      // missing group_id
+      $this->resetAll();
+      $this->params['token'] = $this->_loginAsUser($commAdmin);
+      $this->params['method'] = $method;
+      $this->params['user_id'] = $validUserId;
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
+
+      // missing user_id
+      $this->resetAll();
+      $this->params['token'] = $this->_loginAsUser($commAdmin);
+      $this->params['method'] = $method;
+      $this->params['group_id'] = $validGroupId;
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
+
       // an invalid group
       $this->resetAll();
       $this->params['token'] = $this->_loginAsUser($commAdmin);
@@ -68,7 +84,7 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
       $this->params['user_id'] = $validUserId;
       $resp = $this->_callJsonApi();
       $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
-      
+
       // an invalid user
       $this->resetAll();
       $this->params['token'] = $this->_loginAsUser($commAdmin);
@@ -77,7 +93,7 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
       $this->params['user_id'] = $invalidUserId;
       $resp = $this->_callJsonApi();
       $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
-      
+
       // as a non admin
       foreach($nonAdmins as $nonAdmin)
         {
@@ -90,35 +106,35 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
         $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
         }
       }
-      
-      // ensure the user isn't already in the group
-      $groupModel = MidasLoader::loadModel('Group');
-      $changedUser = $userModel->load($validUserId);
-      $group = $groupModel->load($validGroupId);
-      $this->assertFalse($groupModel->userInGroup($changedUser, $group), "This user is not expected to be in the group");
-  
-      // add the user to the group
-      $this->resetAll();
-      $this->params['token'] = $this->_loginAsUser($commAdmin);
-      $this->params['method'] = $addMethod;
-      $this->params['group_id'] = $validGroupId;
-      $this->params['user_id'] = $validUserId;
-      $resp = $this->_callJsonApi();
-      $this->_assertStatusOk($resp);
-      
-      // ensure the user is now in the group
-      $this->assertTrue($groupModel->userInGroup($changedUser, $group), "This user is expected to be in the group");
-      
-      // remove the user from the group
-      $this->resetAll();
-      $this->params['token'] = $this->_loginAsUser($commAdmin);
-      $this->params['method'] = $removeMethod;
-      $this->params['group_id'] = $validGroupId;
-      $this->params['user_id'] = $validUserId;
-      $resp = $this->_callJsonApi();
-      $this->_assertStatusOk($resp);
-      
-      $this->assertFalse($groupModel->userInGroup($changedUser, $group), "This user is not expected to be in the group");
+
+    // ensure the user isn't already in the group
+    $groupModel = MidasLoader::loadModel('Group');
+    $changedUser = $userModel->load($validUserId);
+    $group = $groupModel->load($validGroupId);
+    $this->assertFalse($groupModel->userInGroup($changedUser, $group), "This user is not expected to be in the group");
+
+    // add the user to the group
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($commAdmin);
+    $this->params['method'] = $addMethod;
+    $this->params['group_id'] = $validGroupId;
+    $this->params['user_id'] = $validUserId;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    // ensure the user is now in the group
+    $this->assertTrue($groupModel->userInGroup($changedUser, $group), "This user is expected to be in the group");
+
+    // remove the user from the group
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($commAdmin);
+    $this->params['method'] = $removeMethod;
+    $this->params['group_id'] = $validGroupId;
+    $this->params['user_id'] = $validUserId;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    $this->assertFalse($groupModel->userInGroup($changedUser, $group), "This user is not expected to be in the group");
     }
 
 
