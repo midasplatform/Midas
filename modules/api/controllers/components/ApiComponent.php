@@ -2902,4 +2902,72 @@ class Api_ApiComponent extends AppComponent
     return $metadataModel->getMetaDataQualifiers($type, $element);
     }
 
+  /**
+   * helper function to validate args of methods for adding or removing
+   * users from groups.
+   * @param type $args
+   * @return type
+   */
+  protected function _validateGroupUserChangeParams($args)
+    {
+    $this->_validateParams($args, array('group_id', 'user_id'));
+
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to add a user to a group', MIDAS_INVALID_POLICY);
+      }
+
+    $groupId = $args['group_id'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($groupId);
+    if($group == false)
+      {
+      throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
+      }
+
+    $communityModel = MidasLoader::loadModel('Community');
+    if(!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupUserId = $args['user_id'];
+    $userModel = MidasLoader::loadModel('User');
+    $groupUser = $userModel->load($groupUserId);
+    if($groupUser == false)
+      {
+      throw new Exception('This user does not exist', MIDAS_INVALID_PARAMETER);
+      }
+
+    return array($groupModel, $group, $groupUser);
+    }
+
+  /**
+   * Add a user to a group, returns 'success' => 'true' on success, requires
+   * admin privileges on the community associated with the group.
+   * @param group_id the group to add the user to
+   * @param user_id the user to add to the group
+   */
+  function groupAddUser($args)
+    {
+    list($groupModel, $group, $addedUser) = $this->_validateGroupUserChangeParams($args);
+    $groupModel->addUser($group, $addedUser);
+    return array('success' => 'true');
+    }
+
+  /**
+   * Remove a user to a group, returns 'success' => 'true' on success, requires
+   * admin privileges on the community associated with the group.
+   * @param group_id the group to remove the user from
+   * @param user_id the user to remove from the group
+   */
+  function groupRemoveUser($args)
+    {
+    list($groupModel, $group, $removedUser) = $this->_validateGroupUserChangeParams($args);
+    $groupModel->removeUser($group, $removedUser);
+    return array('success' => 'true');
+    }
+
+
   } // end class
