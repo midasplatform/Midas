@@ -2932,8 +2932,9 @@ class Api_ApiComponent extends AppComponent
   /**
    * helper function to validate args of methods for adding or removing
    * users from groups.
-   * @param type $args
-   * @return type
+   * @param group_id the group to add the user to
+   * @param user_id the user to add to the group
+   * @return an array of (groupModel, groupDao, groupUserDao)
    */
   protected function _validateGroupUserChangeParams($args)
     {
@@ -2975,6 +2976,7 @@ class Api_ApiComponent extends AppComponent
    * admin privileges on the community associated with the group.
    * @param group_id the group to add the user to
    * @param user_id the user to add to the group
+   * @return success = true on success.
    */
   function groupAddUser($args)
     {
@@ -2988,6 +2990,7 @@ class Api_ApiComponent extends AppComponent
    * admin privileges on the community associated with the group.
    * @param group_id the group to remove the user from
    * @param user_id the user to remove from the group
+   * @return success = true on success.
    */
   function groupRemoveUser($args)
     {
@@ -2996,5 +2999,76 @@ class Api_ApiComponent extends AppComponent
     return array('success' => 'true');
     }
 
+
+
+  /**
+   * add a group associated with a community, requires admin privileges on the
+   * community.
+   * @param community_id the id of the community the group will associate with
+   * @param name the name of the new group
+   * @return group_id of the newly created group on success.
+   */
+  function groupAdd($args)
+    {
+    $this->_validateParams($args, array('community_id', 'name'));
+
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to add group', MIDAS_INVALID_POLICY);
+      }
+
+    $communityModel = MidasLoader::loadModel('Community');
+    $communityId = $args['community_id'];
+    $community = $communityModel->load($communityId);
+    if($community == false)
+      {
+      throw new Exception('This community does not exist', MIDAS_INVALID_PARAMETER);
+      }
+    if(!$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $name = $args['name'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->createGroup($community, $name);
+
+    return array('group_id' => $group->getGroupId());
+    }
+
+  /**
+   * remove a group associated with a community, requires admin privileges on the
+   * community.
+   * @param group_id the id of the group to be removed
+   * @return success = true on success.
+   */
+  function groupRemove($args)
+    {
+    $this->_validateParams($args, array('group_id'));
+
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to remove a group', MIDAS_INVALID_POLICY);
+      }
+
+    $groupId = $args['group_id'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($groupId);
+    if($group == false)
+      {
+      throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
+      }
+
+    $communityModel = MidasLoader::loadModel('Community');
+    if(!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupModel->delete($group);
+    return array('success' => 'true');
+    }
 
   } // end class
