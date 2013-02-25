@@ -2571,10 +2571,14 @@ class Api_ApiComponent extends AppComponent
     if(!$authModule)
       {
       $userDao = $userModel->getByEmail($email);
+      if(!$userDao)
+        {
+        throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
+        }
       }
 
-    $salt = Zend_Registry::get('configGlobal')->password->prefix;
-    if($authModule || $userDao !== false && md5($salt.$password) == $userDao->getPassword())
+    $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+    if($authModule || $userModel->hashExists(hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$password)))
       {
       $defaultApiKey = $userApiModel->getByAppAndEmail('Default', $email)->getApikey();
       return array('apikey' => $defaultApiKey);

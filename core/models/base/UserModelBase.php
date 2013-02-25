@@ -34,7 +34,8 @@ abstract class UserModelBase extends AppModel
       'email' => array('type' => MIDAS_DATA),
       'thumbnail' => array('type' => MIDAS_DATA),
       'company' => array('type' => MIDAS_DATA),
-      'password' => array('type' => MIDAS_DATA),
+      'hash_alg' => array('type' => MIDAS_DATA),
+      'salt' => array('type' => MIDAS_DATA),
       'creation' => array('type' => MIDAS_DATA),
       'folder_id' => array('type' => MIDAS_DATA),
       'admin' => array('type' => MIDAS_DATA),
@@ -68,6 +69,7 @@ abstract class UserModelBase extends AppModel
   abstract function getByFolder($folder);
   /** Returns all the users */
   abstract function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null, $currentUser = null);
+  abstract function storePasswordHash($hash);
 
   /** save */
   public function save($dao)
@@ -185,37 +187,81 @@ abstract class UserModelBase extends AppModel
     $this->save($userDao);
     }//end incrementViewCount
 
-  /** create user */
-  public function createUser($email, $password, $firstname, $lastname, $admin = 0, $rawPassword = false)
+  /**
+   * Users who existed prior to the great salting and hashing switch will be
+   * transparently converted to the new system the next time they log in
+   */
+  public function convertLegacyPasswordHash($userDao, $password)
     {
-    if(!is_string($email) || empty($email) || !is_string($password) || empty($password) || !is_string($firstname)
-        || empty($firstname) || !is_string($lastname) || empty($lastname) || !is_numeric($admin))
+    $userSalt = UtilityComponent::generateRandomString(32);
+    $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+    $hashedPassword = hash('sha256', $instanceSalt.$userSalt.$password);
+    $this->storePasswordHash($hashedPassword);
+    $userDao->setHashAlg('sha256');
+    $userDao->setSalt($userSalt);
+    $this->save($userDao);
+
+    return $hashedPassword;
+    }
+
+  /**
+   * Change a user's password by generating a new salt and re-hashing
+   */
+  public function changePassword($userDao, $password)
+    {
+    $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+    $userSalt = UtilityComponent::generateRandomString(32);
+    $hashedPassword = hash('sha256', $instanceSalt.$userSalt.$password);
+    $this->storePasswordHash($hashedPassword);
+
+    $userDao->setHashAlg('sha256');
+    $userDao->setSalt($userSalt);
+    $this->save($userDao);
+    }
+
+  /** create user */
+  public function createUser($email, $password, $firstname, $lastname, $admin = 0, $salt = null)
+    {
+    if(!is_string($email) || empty($email) || !is_string($firstname) || empty($firstname)
+       || !is_string($lastname) || empty($lastname) || !is_numeric($admin))
       {
       throw new Zend_Exception("Error in Parameters when creating a user.");
       }
 
-    // Check ifthe user already exists based on the email address
+    // Check if the user already exists based on the email address
     if($this->getByEmail($email) != null)
       {
       throw new Zend_Exception("User already exists.");
       }
 
-    $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-    if(!$rawPassword && isset($passwordPrefix) && !empty($passwordPrefix))
-      {
-      $password = $passwordPrefix.$password;
-      }
-    if(!$rawPassword)
-      {
-      $password = md5($password);
-      }
     $userDao = MidasLoader::newDao('UserDao');
     $userDao->setFirstname(ucfirst($firstname));
     $userDao->setLastname(ucfirst($lastname));
     $userDao->setEmail(strtolower($email));
     $userDao->setCreation(date('c'));
-    $userDao->setPassword($password);
+    $userDao->setHashAlg('sha256');
     $userDao->setAdmin($admin);
+    if($password)
+      {
+      if($salt !== null)
+        {
+        throw new Zend_Exception('You must not pass a salt if you pass a plaintext password');
+        }
+      // Generate a random salt for this new user
+      $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+      $userSalt = UtilityComponent::generateRandomString(32);
+      $hashedPassword = hash('sha256', $instanceSalt.$userSalt.$password);
+      $userDao->setSalt($userSalt);
+      $this->storePasswordHash($hashedPassword);
+      }
+    else
+      {
+      if(!is_string($salt))
+        {
+        throw new Zend_Exception('Salt must be set to a string if no password is passed');
+        }
+      $userDao->setSalt($salt);
+      }
     $this->save($userDao); // save the record before gravatar lookup to shorten critical section
 
     // check gravatar
@@ -261,7 +307,6 @@ abstract class UserModelBase extends AppModel
 
     return $userDao;
     }
-
 
   /**
    * Get either a Gravatar URL or complete image tag for a specified email address.

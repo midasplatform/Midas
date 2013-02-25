@@ -175,6 +175,29 @@ class UserModel extends UserModelBase
     return $user;
     }
 
+  /**
+   * Stores the given hash (algorithm-agnostic) in the password hashes table only
+   * if it does not already exist there
+   */
+  function storePasswordHash($hash)
+    {
+    if(!$this->hashExists($hash))
+      {
+      $this->database->getDB()->insert('password', array('hash' => $hash));
+      }
+    }
+
+  /**
+   * Return true if hash exists in the password table, false otherwise.  Used to verify login.
+   */
+  function hashExists($hash)
+    {
+    $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
+                                          ->from('password')
+                                          ->where('hash = ?', $hash));
+    return $row != null;
+    }
+
   /** Return a list of users corresponding to the search */
   function getUsersFromSearch($search, $userDao, $limit = 14, $group = true, $order = 'view')
     {
