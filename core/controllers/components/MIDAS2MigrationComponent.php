@@ -505,7 +505,6 @@ class MIDAS2MigrationComponent extends AppComponent
       try
         {
         $userDao = $User->createUser($email, $password, $firstname, $lastname);
-        $userDao->setPassword($password); // this is the encrypted password
         $User->save($userDao);
         }
       catch(Zend_Exception $e)

@@ -38,7 +38,6 @@ abstract class Api_UserapiModelBase extends Api_AppModel
     $this->initialize(); // required
     } // end __construct()
 
-  abstract function createKeyFromEmailPassword($appname, $email, $password);
   abstract function getByAppAndEmail($appname, $email);
   abstract function getByAppAndUser($appname, $userDao);
   abstract function getToken($email, $apikey, $appname);
@@ -46,8 +45,8 @@ abstract class Api_UserapiModelBase extends Api_AppModel
   abstract function getByUser($userDao);
 
   /**
-   * Create the user's default API key
-   * @param string $userDao the user
+   * Create the user's default API key (now just a random string)
+   * @param userDao The user dao
    * @return success boolean
    */
   function createDefaultApiKey($userDao)
@@ -56,7 +55,7 @@ abstract class Api_UserapiModelBase extends Api_AppModel
       {
       throw new Zend_Exception('Error parameter: must be a userDao object when creating default api key.');
       }
-    $key = md5($userDao->getEmail().$userDao->getPassword().'Default');
+    $key = UtilityComponent::generateRandomString(32);
 
     $rowset = $this->database->fetchAll($this->database->select()
                                                        ->where('user_id = ?', $userDao->getKey())
@@ -96,20 +95,7 @@ abstract class Api_UserapiModelBase extends Api_AppModel
       }
     $now = date("c");
 
-    // We generate a challenge
-    $keychars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    $length = 40;
-
-    // seed with microseconds
-    list($usec, $sec) = explode(' ', microtime());
-    srand((float) $sec + ((float) $usec * 100000));
-
-    $key = "";
-    $max = strlen($keychars) - 1;
-    for($i = 0; $i < $length; $i++)
-      {
-      $key .= substr($keychars, rand(0, $max), 1);
-      }
+    $key = UtilityComponent::generateRandomString(40);
 
     $userApiDao = MidasLoader::newDao('UserapiDao', 'api');
     $userApiDao->setUserId($userDao->getKey());

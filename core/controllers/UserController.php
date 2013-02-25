@@ -102,34 +102,8 @@ class UserController extends AppController
           }
         }
 
-      // Create a new password
-      $keychars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      $length = 10;
-
-      /** make_seed_recoverpass */
-      function make_seed_recoverpass()
-        {
-        list($usec, $sec) = explode(' ', microtime());
-        return (float) $sec + ((float) $usec * 100000);
-        }
-      srand(make_seed_recoverpass());
-
-      $pass = "";
-      $max = strlen($keychars) - 1;
-      for($i = 0; $i <= $length; $i++)
-        {
-        $pass .= substr($keychars, rand(0, $max), 1);
-        }
-      $encrypted = md5($pass);
-
-      $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-      $salted = $pass;
-      if(isset($passwordPrefix) && !empty($passwordPrefix))
-        {
-        $salted = $passwordPrefix.$pass;
-        }
-
-      $user->setPassword(md5($salted));
+      $pass = UtilityComponent::generateRandomString(10);
+      $this->User->changePassword($user, $pass);
 
       // Send the email
       $url = $this->getServerURL().$this->view->webroot;
@@ -384,7 +358,7 @@ class UserController extends AppController
       session_start();
       }
     $this->userSession->Dao = $this->User->createUser(
-    $email, $pendingUser->getPassword(), $pendingUser->getFirstname(), $pendingUser->getLastname(), 0, true);
+    $email, null, $pendingUser->getFirstname(), $pendingUser->getLastname(), 0, $pendingUser->getSalt());
     session_write_close();
 
     $this->PendingUser->delete($pendingUser);
@@ -408,8 +382,15 @@ class UserController extends AppController
       return;
       }
     $userDao = $this->User->getByEmail($form->getValue('email'));
-    $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-    if($userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
+    if($userDao === false)
+      {
+      echo JsonComponent::encode(array('status' => 'error', 'message' => 'Invalid username or password'));
+      return;
+      }
+    $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+    $passwordHash = hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$form->getValue('password'));
+
+    if($this->User->hashExists($passwordHash))
       {
       $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTH_INTERCEPT', array('user' => $userDao));
       foreach($notifications as $module => $value)
@@ -420,7 +401,11 @@ class UserController extends AppController
           return;
           }
         }
-      setcookie('midasUtil', $userDao->getKey().'-'.md5($userDao->getPassword()), time() + 60 * 60 * 24 * 30, '/'); //30 days
+      if($userDao->getSalt() == '')
+        {
+        $passwordHash = $this->User->convertLegacyPasswordHash($userDao, $form->getValue('password'));
+        }
+      setcookie('midasUtil', $userDao->getKey().'-'.$passwordHash, time() + 60 * 60 * 24 * 30, '/'); //30 days
       Zend_Session::start();
       $user = new Zend_Session_Namespace('Auth_User');
       $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
@@ -431,7 +416,7 @@ class UserController extends AppController
       }
     else
       {
-      echo JsonComponent::encode(array('status' => 'error', 'message' => 'Login failed'));
+      echo JsonComponent::encode(array('status' => 'error', 'message' => 'Invalid username or password'));
       }
     }
 
@@ -473,10 +458,16 @@ class UserController extends AppController
         if(!$authModule)
           {
           $userDao = $this->User->getByEmail($form->getValue('email'));
+          if($userDao === false)
+            {
+            echo JsonComponent::encode(array('status' => false, 'message' => 'Invalid email or password'));
+            return;
+            }
           }
 
-        $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-        if($authModule || $userDao !== false && md5($passwordPrefix.$form->getValue('password')) == $userDao->getPassword())
+        $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+        $passwordHash = hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$form->getValue('password'));
+        if($authModule || $this->User->hashExists($passwordHash))
           {
           $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTH_INTERCEPT', array('user' => $userDao));
           foreach($notifications as $module => $value)
@@ -487,12 +478,16 @@ class UserController extends AppController
               return;
               }
             }
+          if($userDao->getSalt() == '')
+            {
+            $passwordHash = $this->User->convertLegacyPasswordHash($userDao, $form->getValue('password'));
+            }
           $remember = $form->getValue('remerberMe');
           if(isset($remember) && $remember == 1)
             {
             if(!$this->isTestingEnv())
               {
-              setcookie('midasUtil', $userDao->getKey().'-'.md5($userDao->getPassword()), time() + 60 * 60 * 24 * 30, '/'); //30 days
+              setcookie('midasUtil', $userDao->getKey().'-'.$passwordHash, time() + 60 * 60 * 24 * 30, '/'); //30 days
               }
             }
           else
@@ -533,7 +528,7 @@ class UserController extends AppController
         {
         echo JsonComponent::encode(array(
           'status' => false,
-          'message' => 'Invalid login'));
+          'message' => 'Invalid email or password'));
         }
       }
     } // end method login
@@ -673,22 +668,23 @@ class UserController extends AppController
           }
         $oldPass = $this->_getParam('oldPassword');
         $newPass = $this->_getParam('newPassword');
-        $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-        $userDao = $this->User->load($userDao->getKey());
-        if($userDao != false && ((!$userDao->isAdmin() && $this->userSession->Dao->isAdmin()) || md5($passwordPrefix.$oldPass) == $userDao->getPassword()))
+        $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+        $hashedPasswordOld = hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$oldPass);
+
+        if((!$userDao->isAdmin() && $this->userSession->Dao->isAdmin()) || $this->User->hashExists($hashedPasswordOld))
           {
-          $userDao->setPassword(md5($passwordPrefix.$newPass));
-          $this->User->save($userDao);
+          $this->User->changePassword($userDao, $newPass);
           if(!isset($userId))
             {
             $this->userSession->Dao = $userDao;
             }
           echo JsonComponent::encode(array(true, $this->t('Changes saved')));
-          Zend_Registry::get('notifier')->callback('CALLBACK_CORE_PASSWORD_CHANGED', array('userDao' => $userDao));
+          Zend_Registry::get('notifier')->callback('CALLBACK_CORE_PASSWORD_CHANGED', array('userDao' => $userDao, 'password' => $newPass));
           }
         else
           {
           echo JsonComponent::encode(array(false, $this->t('The old password is incorrect')));
+          return;
           }
         }
 

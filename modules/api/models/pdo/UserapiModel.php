@@ -24,43 +24,6 @@ require_once BASE_PATH.'/modules/api/models/base/UserapiModelBase.php';
 class Api_UserapiModel extends Api_UserapiModelBase
 {
   /**
-   * Create an API key from a login and password.  The password passed to this
-   * function should not be hashed, it should be the actual password.
-   */
-  function createKeyFromEmailPassword($appname, $email, $password)
-    {
-    if(!is_string($appname) || !is_string($email) || !is_string($password))
-      {
-      throw new Zend_Exception("Error in parameter when creating key from email password.");
-      }
-
-    $userModel = MidasLoader::loadModel('User');
-
-    // First check that the email and password are correct (ldap not supported for now)
-    $userDao = $userModel->getByEmail($email);
-    $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-    if($userDao == false || md5($passwordPrefix.$password) != $userDao->getPassword())
-      {
-      return false;
-      }
-
-    // Find if we already have an apikey
-    $ret = $this->getByAppAndEmail($appname, $email);
-
-    if($ret instanceof Api_UserapiDao)
-      {
-      return $ret;
-      }
-    else
-      {
-      // Create the APIKey
-      $tokenexperiationtime = '100';
-      return $this->createKey($userDao, $appname, $tokenexperiationtime);
-      }
-    return false;
-    } // end function createKeyFromEmailPassword
-
-  /**
    * Get UserapiDao by
    * @param string $appname Application Name
    * @param string $email

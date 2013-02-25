@@ -99,7 +99,7 @@ class Ldap_Notification extends MIDAS_Notification
       $ldapUserDao->setLogin($ldapLogin);
       $this->Ldap_User->save($ldapUserDao);
 
-      $user->setPassword(''); // set existing password to empty when converting to ldap_user
+      $user->setSalt('x'); // set an invalid salt so normal authentication won't work
       $this->User->save($user);
       }
     }

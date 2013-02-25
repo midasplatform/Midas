@@ -14,6 +14,7 @@ class Upgrade_3_2_12 extends MIDASUpgrade
     {
     $this->db->query("ALTER TABLE `user` ADD COLUMN `hash_alg` varchar(32) NOT NULL default ''");
     $this->db->query("ALTER TABLE `user` ADD COLUMN `salt` varchar(64) NOT NULL default ''");
+    $this->db->query("ALTER TABLE `pendinguser` ADD COLUMN `salt` varchar(64) NOT NULL default ''");
 
     $this->db->query("CREATE TABLE `password` (
                         `hash` varchar(128) NOT NULL,
@@ -22,12 +23,14 @@ class Upgrade_3_2_12 extends MIDASUpgrade
     $this->_movePasswords();
 
     $this->db->query("ALTER TABLE `user` DROP `password`");
+    $this->db->query("ALTER TABLE `pendinguser` DROP `password`");
     }
 
   public function pgsql()
     {
     $this->db->query("ALTER TABLE \"user\" ADD COLUMN hash_alg character varying(32) NOT NULL DEFAULT ''");
     $this->db->query("ALTER TABLE \"user\" ADD COLUMN salt character varying(64) NOT NULL DEFAULT ''");
+    $this->db->query("ALTER TABLE \"pendinguser\" ADD COLUMN salt character varying(64) NOT NULL DEFAULT ''");
 
     $this->db->query("CREATE TABLE password (
                         hash character varying(128) NOT NULL,
@@ -39,6 +42,7 @@ class Upgrade_3_2_12 extends MIDASUpgrade
     $this->db->query("CLUSTER password USING password_hash");
 
     $this->db->query("ALTER TABLE \"user\" DROP COLUMN password");
+    $this->db->query("ALTER TABLE \"pendinguser\" DROP COLUMN password");
     }
 
   public function postUpgrade()
@@ -59,9 +63,8 @@ class Upgrade_3_2_12 extends MIDASUpgrade
       {
       $this->db->insert('password', array('hash' => $row['password']));
       }
-    // Set the salt and hash alg to be the old instance wide salt and md5 for legacy users (i.e. all users currently in the system)
-    $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
-    $this->db->update('user', array('hash_alg' => 'md5', 'salt' => $instanceSalt));
+    // Set the salt and hash alg to the appropriate value to denote a legacy user
+    $this->db->update('user', array('hash_alg' => 'md5', 'salt' => ''));
     }
 }
 ?>
