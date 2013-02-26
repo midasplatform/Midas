@@ -107,6 +107,7 @@ class UtilityComponent extends AppComponent
         if(!file_exists($dir.$file.'/database'))
           {
           $config->db->PDO_MYSQL = true;
+          $config->db->PDO_PGSQL = true;
           $config->db->PDO_IBM = true;
           $config->db->PDO_OCI = true;
           $config->db->PDO_SQLITE = true;
