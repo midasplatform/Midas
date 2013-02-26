@@ -33,15 +33,15 @@ class UserApiModelTest extends DatabaseTestCase
   public function testDefaultApiKeyModel()
     {
     $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userModel = MidasLoader::loadModel('User');
 
-    $userDao = new UserDao();
+    $userDao = MidasLoader::newDao('UserDao');
     $userDao->setUserId(1);
     $userDao->setEmail('user1@user1.com');
-    $userDao->setPassword('35fd8ba86ba403ffcc00feac5355ad20');
+
     $userApiModel->createDefaultApiKey($userDao);
 
     $dao = $userApiModel->getByAppAndEmail('Default', 'user1@user1.com');
     $this->assertTrue($dao instanceof Api_UserapiDao);
-    $this->assertEquals(md5('user1@user1.com35fd8ba86ba403ffcc00feac5355ad20Default'), $dao->getApikey());
     }
   }

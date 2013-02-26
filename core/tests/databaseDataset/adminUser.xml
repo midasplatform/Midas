@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
     <user user_id="11111" firstname="FirstName11111" lastname="LastName11111"
-      email="user11111@user11111.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:09:02"
+      email="user11111@user11111.com" creation="2011-01-27 12:09:02" hash_alg="sha256"
       folder_id="11110" admin="1"/>
 
     <folder folder_id="11110" name="User 11111 name Folder 1"  uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb70'

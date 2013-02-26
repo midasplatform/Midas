@@ -44,17 +44,16 @@
     name="Community test User 1 Member" />
 
 
-  <user user_id="1" firstname="Firstname1" lastname="Lastname1"
-    email="user1@user1.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:09:02"
-    folder_id="1000" admin="0" />
+  <user user_id="1" firstname="Firstname1" lastname="Lastname1" email="user1@user1.com" creation="2011-01-27 12:09:02"
+    folder_id="1000" admin="0"  hash_alg="sha256" />
 
 <!-- To test Export component -->
-  <user user_id="2" firstname="Firstname2" lastname="Lastname2"
-    email="user2@user2.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:10:02" admin="0" />
+  <user user_id="2" firstname="Firstname2" lastname="Lastname2"  hash_alg="sha256"
+    email="user2@user2.com" creation="2011-01-27 12:10:02" admin="0" />
   <folderpolicygroup folder_id="1001" group_id="0" policy="0" />
 <!-- To test admin user capabilities -->
-  <user user_id="3" firstname="Admin" lastname="Admin"
-    email="admin@admin.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" admin="1" />
+  <user user_id="3" firstname="Admin" lastname="Admin"  hash_alg="sha256"
+    email="admin@admin.com" creation="2011-01-27 12:11:02" admin="1" />
 
   <user2group group_id="3000" user_id="1" />
   <user2group group_id="3002" user_id="1" />

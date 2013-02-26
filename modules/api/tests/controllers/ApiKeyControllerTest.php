@@ -38,8 +38,7 @@ class ApiKeyControllerTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
 
-    // Must set the password here since our salt is dynamic
-    $userDao->setPassword(md5(Zend_Registry::get('configGlobal')->password->prefix.'test'));
+    $this->User->changePassword($userDao, 'test');
     $this->User->save($userDao);
 
     $userApiModel = MidasLoader::loadModel('Userapi', 'api');
@@ -58,8 +57,6 @@ class ApiKeyControllerTest extends ControllerTestCase
 
     $postKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
     $this->assertNotEquals($preKey, $postKey);
-    $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-    $this->assertEquals($postKey, md5($userDao->getEmail().md5($passwordPrefix.'test1').'Default'));
     }
 
   /** Make sure adding a new user adds a default api key */
@@ -79,8 +76,7 @@ class ApiKeyControllerTest extends ControllerTestCase
     // Check that their default api key was created
     $userApiModel = MidasLoader::loadModel('Userapi', 'api');
     $key = $userApiModel->getByAppAndEmail('Default', 'some.user@server.com')->getApikey();
-    $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-    $this->assertEquals($key, md5('some.user@server.com'.md5($passwordPrefix.'midas').'Default'));
+    $this->assertNotEmpty($key);
     }
 
   /**
@@ -99,6 +95,6 @@ class ApiKeyControllerTest extends ControllerTestCase
     $userApiDao = $userApiModel->getByAppAndEmail('Default', 'user1@user1.com');
 
     $this->assertTrue($userApiDao != false, 'Api key was not created for existing user');
-    $this->assertEquals($userApiDao->getApikey(), md5('user1@user1.com35fd8ba86ba403ffcc00feac5355ad20Default'));
+    $this->assertNotEmpty($userApiDao->getApikey());
     }
   }
