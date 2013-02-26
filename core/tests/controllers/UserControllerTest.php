@@ -94,9 +94,8 @@ class UserControllerTest extends ControllerTestCase
     $this->assertTrue(is_string($resp->message) && strlen($resp->message) > 0);
     $this->assertFalse(Zend_Auth::getInstance()->hasIdentity());
 
-    // Must set the password here since our salt is dynamic
     $userDao = $this->User->getByEmail('user1@user1.com');
-    $userDao->setPassword(md5(Zend_Registry::get('configGlobal')->password->prefix.'test'));
+    $this->User->changePassword($userDao, 'test');
     $this->User->save($userDao);
 
     $this->resetAll();
@@ -139,7 +138,7 @@ class UserControllerTest extends ControllerTestCase
     $this->dispatchUrI("/user/recoverpassword", null);
 
     $userDao2 = $this->User->getByEmail($this->params['email']);
-    $this->assertNotEquals($userDao->getPassword(), $userDao2->getPassword(), 'Unable to change password');
+    $this->assertNotEquals($userDao->getSalt(), $userDao2->getSalt(), 'Salt should have changed');
     $this->setupDatabase(array('default'));
     }
 
@@ -243,14 +242,25 @@ class UserControllerTest extends ControllerTestCase
     $this->params['newPassword'] = 'newPassword';
     $this->request->setMethod('POST');
     $this->dispatchUrI("/user/settings", $userDao);
+    $resp = json_decode($this->getBody());
+    $this->assertTrue($resp[0] == false);
+
+    // Store old password so it will authenticate
+    $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+    $this->User->storePasswordHash(hash('sha256', $instanceSalt.$userDao->getSalt().'test'));
+    $this->resetAll();
+    $this->params = array();
+    $this->params['modifyPassword'] = 'true';
+    $this->params['oldPassword'] = 'test';
+    $this->params['newPassword'] = 'newPassword';
+    $this->request->setMethod('POST');
+    $this->dispatchUrI("/user/settings", $userDao);
+    $resp = json_decode($this->getBody());
+    $this->assertTrue($resp[0] == true);
 
     $userCheckDao = $this->User->getByEmail($userDao->getEmail());
-    // Must set the password here since our salt is dynamic
-    $userCheckDao->setPassword(md5(Zend_Registry::get('configGlobal')->password->prefix.'test'));
-    $this->User->save($userCheckDao);
-
-    $this->assertNotEquals($userDao->getPassword(), $userCheckDao->getPassword(), 'Unable to change password');
-
+    $this->assertNotEquals($userDao->getSalt(), $userCheckDao->getSalt(), 'Salt should have changed');
+    $this->assertTrue($this->User->hashExists(hash('sha256', $instanceSalt.$userCheckDao->getSalt().'newPassword')), 'New hash should have been added to password table');
     $this->setupDatabase(array('default'));
 
     $this->resetAll();
@@ -407,9 +417,8 @@ class UserControllerTest extends ControllerTestCase
     $resp = json_decode($this->getBody());
     $this->assertTrue($resp->status == false);
 
-    // Must set the password here since our salt is dynamic
     $userDao = $this->User->getByEmail('user1@user1.com');
-    $userDao->setPassword(md5(Zend_Registry::get('configGlobal')->password->prefix.'test'));
+    $this->User->changePassword($userDao, 'test');
     $this->User->save($userDao);
 
     $this->resetAll();

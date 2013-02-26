@@ -48,18 +48,16 @@
     name="Community test User 1 Member" />
 
 
-  <user user_id="1" firstname="FirstName1" lastname="LastName1"
-    email="user1@user1.com" password="35fd8ba86ba403ffcc00feac5355ad20"
-    creation="2011-01-27 12:09:02" folder_id="1000" admin="0" />
+  <user user_id="1" firstname="FirstName1" lastname="LastName1"  hash_alg="sha256"
+    email="user1@user1.com" creation="2011-01-27 12:09:02" folder_id="1000" admin="0" />
 
 <!-- To test Export component -->
-  <user user_id="2" firstname="FirstName2" lastname="LastName2"
-    email="user2@user2.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:10:02" admin="0" />
+  <user user_id="2" firstname="FirstName2" lastname="LastName2"  hash_alg="sha256"
+    email="user2@user2.com" creation="2011-01-27 12:10:02" admin="0" />
   <folderpolicygroup folder_id="1001" group_id="0" policy="0" />
 <!-- To test admin user capabilities -->
-  <user user_id="3" firstname="Admin" lastname="Admin"
-    email="admin@admin.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" admin="1"
-    folder_id="1006" />
+  <user user_id="3" firstname="Admin" lastname="Admin"  hash_alg="sha256"
+    email="admin@admin.com" creation="2011-01-27 12:11:02" admin="1" folder_id="1006" />
 
   <user2group group_id="3000" user_id="1" />
   <user2group group_id="3002" user_id="1" />
@@ -168,16 +166,17 @@
   <itempolicyuser item_id="1006" user_id="1" policy='2' />
   <item2folder item_id="1006" folder_id='1014' />
 
-  <user user_id="4" firstname="community2001" lastname="Member"
-    admin="0" email="community2001@member.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" />
+  <user user_id="4" firstname="community2001" lastname="Member" hash_alg="sha256"
+    admin="0" email="community2001@member.com" creation="2011-01-27 12:11:02" folder_id="1006" />
   <user2group group_id="3005" user_id="4" />
-  <user user_id="5" firstname="community2001" lastname="Moderator"
-    admin="0" email="community2001@moderator.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" />
+  <user user_id="5" firstname="community2001" lastname="Moderator"  hash_alg="sha256"
+    admin="0" email="community2001@moderator.com" creation="2011-01-27 12:11:02" folder_id="1006" />
   <user2group group_id="3004" user_id="5" />
-  <user user_id="6" firstname="community2001" lastname="Admin"
-    admin="0" email="community2001@admin.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:11:02" folder_id="1006" />
+  <user user_id="6" firstname="community2001" lastname="Admin"  hash_alg="sha256"
+    admin="0" email="community2001@admin.com" creation="2011-01-27 12:11:02" folder_id="1006" />
   <user2group group_id="3003" user_id="6" />
 
   <newuserinvitation newuserinvitation_id="1001" email="dummy@dummy.com" auth_key="12345" inviter_id="4" community_id="2001" group_id="3003" date_creation="2011-01-27 12:11:02" />
-  <pendinguser pendinguser_id="1001" email="dummy@dummy.com" auth_key="12345" password="abcdef" firstname="Dummy" lastname="Dummy" date_creation="2011-01-27 12:11:02" />
+  <pendinguser pendinguser_id="1001" email="dummy@dummy.com" auth_key="12345" firstname="Dummy" lastname="Dummy" date_creation="2011-01-27 12:11:02" />
+  <password hash="dummy_hash" />
 </dataset>
