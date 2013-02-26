@@ -2,11 +2,11 @@
 <dataset>
 
 	<user user_id="1" firstname="FirstName1" lastname="LastName1"
-		email="user1@user1.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:09:02"
+		email="user1@user1.com" hash_alg="sha256" creation="2011-01-27 12:09:02"
 		folder_id="1000" />
 
 	<user user_id="2" firstname="FirstName2" lastname="LastName2"
-		email="user2@user2.com" password="35fd8ba86ba403ffcc00feac5355ad20" creation="2011-01-27 12:09:02"
+		email="user2@user2.com" hash_alg="sha256" creation="2011-01-27 12:09:02"
 		folder_id="1003" />
 
 	<batchmake_itemmetric itemmetric_id="1" metric_name="metric1" bms_name="metric1.bms" />
