@@ -184,6 +184,13 @@ class UserModel extends UserModelBase
     if(!$this->hashExists($hash))
       {
       $this->database->getDB()->insert('password', array('hash' => $hash));
+      
+      if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_PGSQL')
+        {
+        // Pgsql doesn't store rows sorted by their pkey so we must explicitly cluster them after each new write,
+        // otherwise the order of hashes would correspond to the order of users
+        $this->database->getDB()->query('CLUSTER password USING password_hash');
+        }
       }
     }
 
