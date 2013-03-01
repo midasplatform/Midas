@@ -2228,7 +2228,7 @@ class Api_ApiComponent extends AppComponent
     $itemId = $args['item_id'];
     $item = $itemModel->load($itemId);
 
-    if($itemId === false)
+    if($item === false)
       {
       throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
       }
