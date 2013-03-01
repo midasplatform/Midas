@@ -165,4 +165,92 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
     $addedGroup = $groupModel->load($addedGroupId);
     $this->assertFalse($addedGroup, "group should have been removed but remains");
     }
+
+  /** Test adding and removing a group */
+  public function testGroupListUsers()
+    {
+    $validCommunityId = 2001;
+    $invalidCommunityId = -10;
+    $commAdminGroupId = 3003;
+    $invalidGroupId = -10;
+
+    $communityModel = MidasLoader::loadModel('Community');
+    $comm2001 = $communityModel->load('2001');
+    $userModel = MidasLoader::loadModel('User');
+    $commMemberId = '4';
+    $commModeratorId = '5';
+    $commAdminId = '6';
+    $commMember = $userModel->load($commMemberId);
+    $commModerator = $userModel->load($commModeratorId);
+    $commAdmin = $userModel->load($commAdminId);
+
+    // add in an anonymous user to non admins
+    $invalidUsers = array($commMember, $commModerator, false);
+
+    // group list users
+
+    $groupListMethod = "midas.group.list.users";
+    $requiredParams = array(
+      array('name' => 'group_id', 'valid' => $commAdminGroupId, 'invalid' => $invalidGroupId));
+
+    $this->exerciseInvalidCases($groupListMethod, $commAdmin, $invalidUsers, $requiredParams);
+
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($commAdmin);
+    $this->params['method'] = $groupListMethod;
+    $this->params['group_id'] = $commAdminGroupId;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    $users = $resp->data->users;
+    $users = (array)$users;
+    $this->assertEquals(1, sizeof($users), 'users should only have one entry');
+    foreach($users as $id => $email)
+      {
+      $this->assertEquals($id, $commAdminId, 'users should have commAdminId as an entry');
+      }
+
+    // add some users, test again
+
+    $groupModel = MidasLoader::loadModel('Group');
+    $commAdminGroup = $groupModel->load($commAdminGroupId);
+    $groupModel->addUser($commAdminGroup, $commMember);
+    $groupModel->addUser($commAdminGroup, $commModerator);
+
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($commAdmin);
+    $this->params['method'] = $groupListMethod;
+    $this->params['group_id'] = $commAdminGroupId;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $users = $resp->data->users;
+    $users = (array)$users;
+    $this->assertEquals(3, sizeof($users), 'users should have 3 entries');
+    $members = array($commAdminId, $commMemberId, $commModeratorId);
+    foreach($users as $id => $email)
+      {
+      $this->assertTrue(in_array($id, $members), 'users should have '.$id.' as an entry');
+      }
+
+    // remove some users, test again
+    $groupModel->removeUser($commAdminGroup, $commMember);
+    $groupModel->removeUser($commAdminGroup, $commModerator);
+
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($commAdmin);
+    $this->params['method'] = $groupListMethod;
+    $this->params['group_id'] = $commAdminGroupId;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    $users = $resp->data->users;
+    $users = (array)$users;
+    $this->assertEquals(1, sizeof($users), 'users should only have one entry');
+    foreach($users as $id => $email)
+      {
+      $this->assertEquals($id, $commAdminId, 'users should have commAdminId as an entry');
+      }
+
+    }
+
   }
