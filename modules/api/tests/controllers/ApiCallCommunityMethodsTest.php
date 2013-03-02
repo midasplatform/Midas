@@ -275,4 +275,48 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
     $this->assertEquals($resp->data->community_id, '2000');
     }
 
+  /** Test listing the groups in a community */
+  public function testCommunityListGroups()
+    {
+    $validCommunityId = 2001;
+    $invalidCommunityId = -10;
+
+    $communityModel = MidasLoader::loadModel('Community');
+    $comm2001 = $communityModel->load($validCommunityId);
+    $userModel = MidasLoader::loadModel('User');
+    $commMemberId = '4';
+    $commModeratorId = '5';
+    $commAdminId = '6';
+    $commMember = $userModel->load($commMemberId);
+    $commModerator = $userModel->load($commModeratorId);
+    $commAdmin = $userModel->load($commAdminId);
+
+    // add in an anonymous user to non admins
+    $invalidUsers = array($commMember, $commModerator, false);
+
+    // community list groups
+
+    $communityListMethod = "midas.community.list.groups";
+    $requiredParams = array(
+      array('name' => 'community_id', 'valid' => $validCommunityId, 'invalid' => $invalidCommunityId));
+
+    $this->exerciseInvalidCases($communityListMethod, $commAdmin, $invalidUsers, $requiredParams);
+
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($commAdmin);
+    $this->params['method'] = $communityListMethod;
+    $this->params['community_id'] = $validCommunityId;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $groups = (array)$resp->data->groups;
+    $this->assertEquals(3, sizeof($groups), 'groups should have 3 entries');
+
+    $expectedGroups = array('3003', '3004', '3005');
+    foreach($groups as $id => $name)
+      {
+      $this->assertTrue(in_array($id, $expectedGroups), 'id should have been in expectedGroups');
+      }
+    }
+
+
   }

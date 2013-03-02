@@ -166,7 +166,7 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
     $this->assertFalse($addedGroup, "group should have been removed but remains");
     }
 
-  /** Test adding and removing a group */
+  /** Test listing the users in a group */
   public function testGroupListUsers()
     {
     $validCommunityId = 2001;
