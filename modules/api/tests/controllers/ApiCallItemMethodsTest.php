@@ -1851,22 +1851,34 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $readItem = $itemModel->load('1004');
     $writeItem = $itemModel->load('1005');
     $adminItem = $itemModel->load('1006');
-    $nonAdmins = array($readItem, $writeItem);
 
     $params = array('method' => 'midas.item.list.permissions',
                     'token' => $this->_loginAsUser($userDao));
+    $invalidItemId = -10;
 
-    // try to list permissions without admin, should fail
-    foreach($nonAdmins as $item)
-      {
-      $this->resetAll();
-      $params['item_id'] = $item->getItemId();
-      $this->params = $params;
-      $resp = $this->_callJsonApi();
-      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
-      }
+    // test with item the user has admin over
+    $requiredParams = array(
+      array('name' => 'item_id', 'valid' => $adminItem->getItemId(), 'invalid' => $invalidItemId));
 
-    // now with admin perms
+    $memberUser = $userModel->load('4');
+    $modUser = $userModel->load('5');
+
+    // first assert that these invalid users have the expected rights
+    $this->assertFalse($itemModel->policyCheck($adminItem, null, MIDAS_POLICY_READ), 'anonymous user should not have read access to admin item');
+    $this->assertFalse($itemModel->policyCheck($adminItem, null, MIDAS_POLICY_WRITE), 'anonymous user should not have write access to admin item');
+    $this->assertFalse($itemModel->policyCheck($adminItem, null, MIDAS_POLICY_ADMIN), 'anonymous user should not have admin access to admin item');
+    $this->assertTrue($itemModel->policyCheck($adminItem, $memberUser, MIDAS_POLICY_READ), 'member user should have read access to admin item');
+    $this->assertFalse($itemModel->policyCheck($adminItem, $memberUser, MIDAS_POLICY_WRITE), 'member user should not have write access to admin item');
+    $this->assertFalse($itemModel->policyCheck($adminItem, $memberUser, MIDAS_POLICY_ADMIN), 'member user should not have admin access to admin item');
+    $this->assertTrue($itemModel->policyCheck($adminItem, $modUser, MIDAS_POLICY_READ), 'moderator user should have read access to admin item');
+    $this->assertTrue($itemModel->policyCheck($adminItem, $modUser, MIDAS_POLICY_WRITE), 'moderator user should have write access to admin item');
+    $this->assertFalse($itemModel->policyCheck($adminItem, $modUser, MIDAS_POLICY_ADMIN), 'moderator user should not have admin access to admin item');
+
+    $invalidUsers = array($memberUser, $modUser, null);
+    $this->exerciseInvalidCases($params['method'], $userDao, $invalidUsers, $requiredParams);
+
+    // now with admin perms which are valid
+    $this->assertTrue($itemModel->policyCheck($adminItem, $userDao, MIDAS_POLICY_ADMIN), 'admin user should have admin access to admin item');
 
     // first check both privacy statuses
     $privacyCodes = array("Public" => MIDAS_PRIVACY_PUBLIC, "Private" => MIDAS_PRIVACY_PRIVATE);

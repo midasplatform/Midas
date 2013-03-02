@@ -2255,7 +2255,7 @@ class Api_ApiComponent extends AppComponent
     $itemId = $args['item_id'];
     $item = $itemModel->load($itemId);
 
-    if($itemId === false)
+    if($item === false)
       {
       throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
       }
@@ -2990,7 +2990,7 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Remove a user to a group, returns 'success' => 'true' on success, requires
+   * Remove a user from a group, returns 'success' => 'true' on success, requires
    * admin privileges on the community associated with the group.
    * @param group_id the group to remove the user from
    * @param user_id the user to remove from the group
@@ -3074,5 +3074,81 @@ class Api_ApiComponent extends AppComponent
     $groupModel->delete($group);
     return array('success' => 'true');
     }
+
+  /**
+   * list the users for a group, requires admin privileges on the community
+   * assiated with the group
+   * @param group_id id of group
+   * @return array users => a list of user ids mapped to user emails
+   */
+  function groupListUsers($args)
+    {
+    $this->_validateParams($args, array('group_id'));
+
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to list users in a group', MIDAS_INVALID_POLICY);
+      }
+
+    $groupId = $args['group_id'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($groupId);
+    if($group == false)
+      {
+      throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
+      }
+
+    $communityModel = MidasLoader::loadModel('Community');
+    if(!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $users = $group->getUsers();
+    $userIdsToEmail = array();
+    foreach($users as $user)
+      {
+      $userIdsToEmail[$user->getUserId()] = $user->getEmail();
+      }
+    return array('users' => $userIdsToEmail);
+    }
+
+  /**
+   * list the groups for a community, requires admin privileges on the community
+   * @param community_id id of community
+   * @return array groups => a list of group ids mapped to group names
+   */
+  function communityListGroups($args)
+    {
+    $this->_validateParams($args, array('community_id'));
+
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to list groups in a community', MIDAS_INVALID_POLICY);
+      }
+
+    $communityId = $args['community_id'];
+    $communityModel = MidasLoader::loadModel('Community');
+    $community = $communityModel->load($communityId);
+    if(!$community)
+      {
+      throw new Exception('Invalid community_id', MIDAS_INVALID_PARAMETER);
+      }
+    if(!$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $groups = $community->getGroups();
+    $groupIdsToName = array();
+    foreach($groups as $group)
+      {
+      $groupIdsToName[$group->getGroupId()] = $group->getName();
+      }
+    return array('groups' => $groupIdsToName);
+    }
+
 
   } // end class

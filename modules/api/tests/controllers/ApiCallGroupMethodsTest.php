@@ -27,110 +27,6 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
     parent::setUp();
     }
 
-  /**
-   * helper function to test simple invalid cases:
-   * will test all invalid users sending in all required valid params
-   * will also test all combinations of invalid params with a valid user
-   * for each required param
-   * @param type $method
-   * @param type $validUser
-   * @param type $invalidUsers
-   * @param type $requiredParams
-   */
-  protected function exerciseInvalidCases($method, $validUser, $invalidUsers, $requiredParams)
-    {
-    // test all invalid users with valid params
-    foreach($invalidUsers as $invalidUser)
-      {
-      $this->resetAll();
-      if($invalidUser != null)
-        {
-        $this->params['token'] = $this->_loginAsUser($invalidUser);
-        }
-      $this->params['method'] = $method;
-      foreach($requiredParams as $requiredParam)
-        {
-        $this->params[$requiredParam['name']] = $requiredParam['valid'];
-        }
-      $resp = $this->_callJsonApi();
-      $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
-      }
-
-    // test valid user with all combinations of missing/invalid/valid params
-    // will not test a case of valid user and all valid params
-
-    $numParams = sizeof($requiredParams);
-    // create an int array that is initially all 0
-    $requiredParamStates = array_fill(0, $numParams, 0);
-    $allTwosSum = 2 * $numParams;
-
-    while(array_sum($requiredParamStates) < $allTwosSum)
-      {
-      $this->resetAll();
-      $this->params['token'] = $this->_loginAsUser($validUser);
-      $this->params['method'] = $method;
-      $skipTestCase = false;
-      foreach($requiredParams as $ind => $requiredParam)
-        {
-        // find the state corresponding to this param
-        $state = $requiredParamStates[$ind];
-        // 0s mean the param is missing (not sent)
-        if($state == 1)
-          {
-          // 1s mean an invalid form of the param is sent
-          if(!array_key_exists('invalid', $requiredParam))
-            {
-            // some params may not have an invalid form
-            // skip this test case as it would repeat the case of the missing param
-            $skipTestCase = true;
-            break;
-            }
-          $this->params[$requiredParam['name']] = $requiredParam['invalid'];
-          }
-        elseif($state == 2)
-          {
-          // 2s mean a valid form of the param is sent
-          $this->params[$requiredParam['name']] = $requiredParam['valid'];
-          }
-        elseif($state < 0 || $state > 2)
-          {
-          throw new Exception("left most param state is invalid value: ".$state);
-          }
-        }
-      if(!$skipTestCase)
-        {
-        $resp = $this->_callJsonApi();
-        $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
-        }
-
-      // now increment the parameter states
-      // add 1 to the right most value
-      $incrementIndex = $numParams - 1;
-      $rightMost = $requiredParamStates[$incrementIndex];
-      $rightMost += 1;
-      $requiredParamStates[$incrementIndex] = $rightMost;
-      while($rightMost == 3)
-        {
-        // if the right most goes to 3, set it to 0
-        // and repeat the process one index to the left, stop moving
-        // to the left when the last increment doesn't go to 3,
-        // i.e. there are no more carry bits
-        $rightMost = 0;
-        $requiredParamStates[$incrementIndex] = $rightMost;
-        if($incrementIndex > 0)
-          {
-          $incrementIndex -= 1;
-          $rightMost = $requiredParamStates[$incrementIndex];
-          $rightMost += 1;
-          $requiredParamStates[$incrementIndex] = $rightMost;
-          }
-        else
-          {
-          throw new Exception("left most param state is 3");
-          }
-        }
-      }
-    }
 
   /** Test adding and removing a user from a group */
   public function testGroupUserAddRemove()
@@ -269,4 +165,92 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
     $addedGroup = $groupModel->load($addedGroupId);
     $this->assertFalse($addedGroup, "group should have been removed but remains");
     }
+
+  /** Test listing the users in a group */
+  public function testGroupListUsers()
+    {
+    $validCommunityId = 2001;
+    $invalidCommunityId = -10;
+    $commAdminGroupId = 3003;
+    $invalidGroupId = -10;
+
+    $communityModel = MidasLoader::loadModel('Community');
+    $comm2001 = $communityModel->load('2001');
+    $userModel = MidasLoader::loadModel('User');
+    $commMemberId = '4';
+    $commModeratorId = '5';
+    $commAdminId = '6';
+    $commMember = $userModel->load($commMemberId);
+    $commModerator = $userModel->load($commModeratorId);
+    $commAdmin = $userModel->load($commAdminId);
+
+    // add in an anonymous user to non admins
+    $invalidUsers = array($commMember, $commModerator, false);
+
+    // group list users
+
+    $groupListMethod = "midas.group.list.users";
+    $requiredParams = array(
+      array('name' => 'group_id', 'valid' => $commAdminGroupId, 'invalid' => $invalidGroupId));
+
+    $this->exerciseInvalidCases($groupListMethod, $commAdmin, $invalidUsers, $requiredParams);
+
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($commAdmin);
+    $this->params['method'] = $groupListMethod;
+    $this->params['group_id'] = $commAdminGroupId;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    $users = $resp->data->users;
+    $users = (array)$users;
+    $this->assertEquals(1, sizeof($users), 'users should only have one entry');
+    foreach($users as $id => $email)
+      {
+      $this->assertEquals($id, $commAdminId, 'users should have commAdminId as an entry');
+      }
+
+    // add some users, test again
+
+    $groupModel = MidasLoader::loadModel('Group');
+    $commAdminGroup = $groupModel->load($commAdminGroupId);
+    $groupModel->addUser($commAdminGroup, $commMember);
+    $groupModel->addUser($commAdminGroup, $commModerator);
+
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($commAdmin);
+    $this->params['method'] = $groupListMethod;
+    $this->params['group_id'] = $commAdminGroupId;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $users = $resp->data->users;
+    $users = (array)$users;
+    $this->assertEquals(3, sizeof($users), 'users should have 3 entries');
+    $members = array($commAdminId, $commMemberId, $commModeratorId);
+    foreach($users as $id => $email)
+      {
+      $this->assertTrue(in_array($id, $members), 'users should have '.$id.' as an entry');
+      }
+
+    // remove some users, test again
+    $groupModel->removeUser($commAdminGroup, $commMember);
+    $groupModel->removeUser($commAdminGroup, $commModerator);
+
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsUser($commAdmin);
+    $this->params['method'] = $groupListMethod;
+    $this->params['group_id'] = $commAdminGroupId;
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+
+    $users = $resp->data->users;
+    $users = (array)$users;
+    $this->assertEquals(1, sizeof($users), 'users should only have one entry');
+    foreach($users as $id => $email)
+      {
+      $this->assertEquals($id, $commAdminId, 'users should have commAdminId as an entry');
+      }
+
+    }
+
   }
