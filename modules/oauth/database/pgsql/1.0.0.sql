@@ -1,7 +1,6 @@
 CREATE TABLE oauth_client (
   client_id serial PRIMARY KEY,
   name character varying(255) NOT NULL DEFAULT '',
-  identifier character varying(64) NOT NULL,
   secret character varying(64) NOT NULL,
   owner_id bigint NOT NULL,
   creation_date timestamp without time zone NULL DEFAULT NULL

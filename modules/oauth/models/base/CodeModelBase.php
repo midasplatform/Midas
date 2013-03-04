@@ -49,7 +49,7 @@ abstract class Oauth_CodeModelBase extends Oauth_AppModel
    * @param clientDao The client that will be receiving the code
    * @param scopes The array of permission scopes (see api module constants)
    */
-  public function create($userDao, $clientDao $scopes)
+  public function create($userDao, $clientDao, $scopes)
     {
     if(!($userDao instanceof UserDao))
       {
@@ -69,7 +69,7 @@ abstract class Oauth_CodeModelBase extends Oauth_AppModel
     $codeDao->setUserId($userDao->getKey());
     $codeDao->setClientId($clientDao->getKey());
     $codeDao->setCreationDate(date('c'));
-    $codeDao->setExpirationDate(date('c'), strtotime('+10 minutes'));
+    $codeDao->setExpirationDate(date('c', strtotime('+10 minutes')));
     $this->save($codeDao);
 
     return $codeDao;
