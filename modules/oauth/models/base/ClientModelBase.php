@@ -30,7 +30,6 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
         'client_id' => array('type' => MIDAS_DATA),
         'name' => array('type' => MIDAS_DATA),
         'secret' => array('type' => MIDAS_DATA),
-        'identifier' => array('type' => MIDAS_DATA),
         'creation_date' => array('type' => MIDAS_DATA),
         'owner_id' => array('type' => MIDAS_DATA),
         'owner' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'owner_id')
@@ -56,7 +55,6 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
     $clientDao = MidasLoader::newDao('ClientDao', $this->moduleName);
     $clientDao->setName($name);
     $clientDao->setOwnerId($userDao->getKey());
-    $clientDao->setIdentifier(UtilityComponent::generateRandomString(32));
     $clientDao->setSecret(UtilityComponent::generateRandomString(64));
     $clientDao->setCreationDate(date('c'));
     $this->save($clientDao);

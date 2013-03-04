@@ -30,8 +30,6 @@ class Oauth_Notification extends MIDAS_Notification
     {
     $this->addCallBack('CALLBACK_API_AUTH_INTERCEPT', 'handleAuth');
     $this->addCallBack('CALLBACK_API_REQUIRE_PERMISSIONS', 'requirePermissions');
-
-    $this->enableWebAPI('api');
     }//end init
 
   /**
@@ -53,13 +51,13 @@ class Oauth_Notification extends MIDAS_Notification
         }
       else
         {
-        $requiredScopes = array(MIDAS_MIDAS_API_PERMISSION_SCOPE_ALL);
+        $requiredScopes = array(MIDAS_API_PERMISSION_SCOPE_ALL);
         }
 
       $tokenDao = $this->Oauth_Token->getByToken($params['oauth_token']);
       if(!$tokenDao)
         {
-        throw new Zend_Exception('Invalid OAuth token', 403);
+        throw new Zend_Exception('Invalid OAuth token', 401);
         }
       if($tokenDao->isExpired())
         {

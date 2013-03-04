@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS `oauth_client` (
   `client_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
-  `identifier` varchar(64) NOT NULL,
   `secret` varchar(64) NOT NULL,
   `owner_id` bigint(20) NOT NULL,
   `creation_date` timestamp NULL DEFAULT NULL,
