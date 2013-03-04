@@ -1,4 +1,3 @@
-
 CREATE TABLE ratings_item (
   rating_id serial PRIMARY KEY,
   item_id bigint NOT NULL,

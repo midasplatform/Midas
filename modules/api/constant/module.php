@@ -28,4 +28,20 @@ define('MIDAS_OUTPUT_OPEN_FAILED', -143);
 define('MIDAS_INVALID_PARAMETER', -150);
 define('MIDAS_INVALID_POLICY', -151);
 define('MIDAS_HTTP_ERROR', -153);
+
+// List of permission scopes
+define('MIDAS_API_PERMISSION_SCOPE_ALL', 0);
+define('MIDAS_API_PERMISSION_SCOPE_READ_USER_INFO', 1);
+define('MIDAS_API_PERMISSION_SCOPE_WRITE_USER_INFO', 2);
+define('MIDAS_API_PERMISSION_SCOPE_READ_DATA', 3);
+define('MIDAS_API_PERMISSION_SCOPE_WRITE_DATA', 4);
+define('MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA', 5);
+Zend_Registry::set('permissionScopeMap', array(
+  MIDAS_API_PERMISSION_SCOPE_ALL => 'All permissions (total control)',
+  MIDAS_API_PERMISSION_SCOPE_READ_USER_INFO => 'Get basic user information',
+  MIDAS_API_PERMISSION_SCOPE_WRITE_USER_INFO => 'Edit user information',
+  MIDAS_API_PERMISSION_SCOPE_READ_DATA => 'View and download private data that you can access',
+  MIDAS_API_PERMISSION_SCOPE_WRITE_DATA => 'Change existing data and create new data',
+  MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA => 'Delete and manage permissions on data you own'
+));
 ?>
