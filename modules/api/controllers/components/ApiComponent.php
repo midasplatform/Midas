@@ -29,6 +29,17 @@ class Api_ApiComponent extends AppComponent
   public $userSession;
 
   /**
+   * This should be called before _getUser to define what policy scopes (see module.php constants)
+   * are required for the current API endpoint. If this is not called and _getUser is called,
+   * the default behavior is to require PERMISSION_SCOPE_ALL.
+   * @param scopes A list of scope constants that are required for the operation
+   */
+  private function _requirePolicyScopes($scopes)
+    {
+    Zend_Registry::get('notifier')->callback('CALLBACK_API_REQUIRE_PERMISSIONS', array('scopes' => $scopes));
+    }
+
+  /**
    * Pass the args and a list of required parameters.
    * Will throw an exception if a required one is missing.
    */
