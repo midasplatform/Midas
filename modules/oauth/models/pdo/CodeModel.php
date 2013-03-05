@@ -23,5 +23,20 @@ require_once BASE_PATH.'/modules/oauth/models/base/CodeModelBase.php';
 /** pdo model implementation */
 class Oauth_CodeModel extends Oauth_CodeModelBase
 {
+  /**
+   * Return all auth code records for the given user
+   */
+  public function getByUser($userDao)
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->where('user_id = ?', $userDao->getKey());
+    $rows = $this->database->fetchAll($sql);
+    $daos = array();
+    foreach($rows as $row)
+      {
+      $daos[] = $this->initDao('Code', $row, $this->moduleName);
+      }
+    return $daos;
+    }
 }
 ?>

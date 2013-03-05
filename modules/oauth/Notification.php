@@ -30,6 +30,7 @@ class Oauth_Notification extends MIDAS_Notification
     {
     $this->addCallBack('CALLBACK_API_AUTH_INTERCEPT', 'handleAuth');
     $this->addCallBack('CALLBACK_API_REQUIRE_PERMISSIONS', 'requirePermissions');
+    $this->addCallBack('CALLBACK_CORE_GET_CONFIG_TABS', 'getUserTabs');
     }//end init
 
   /**
@@ -77,6 +78,15 @@ class Oauth_Notification extends MIDAS_Notification
       {
       return false; // fall through to normal authentication
       }
+    }
+
+  /** User account tabs */
+  public function getUserTabs($params)
+    {
+    $user = $params['user'];
+    $fc = Zend_Controller_Front::getInstance();
+    $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
+    return array('OAuth' => $moduleWebroot.'/client?userId='.$user->getKey());
     }
   } //end class
 ?>
