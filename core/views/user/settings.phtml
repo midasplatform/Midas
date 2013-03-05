@@ -27,16 +27,28 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.setting
       } ?>
     <li><a href="#tabs-communities"><?php echo $this->t('My Communities') ?></a></li>
     <?php
-    foreach($this->customTabs as $modules)
+    foreach($this->customTabs as $moduleName => $module)
       {
-      foreach($modules as $name => $url)
+      foreach($module as $name => $url)
         {
-        echo "<li><a href='{$url}'>{$name}</a></li>";
+        $subname = str_replace(' ', '_', $name);
+        echo "<li><a href='{$url}' title='tabs-{$moduleName}_${subname}'>{$name}</a></li>";
         }
       }
       ?>
   </ul>
 
+  <?php
+  foreach($this->customTabs as $moduleName => $module)
+    {
+    $i = 1;
+    foreach($module as $name => $url)
+      {
+      $subname = str_replace(' ', '_', $name);
+      echo '<div id="tabs-'.$moduleName.'_'.$subname.'"></div>';
+      }
+    }
+  ?>
   <div id="tabs-account">
     <h3><?php echo $this->t('My Information')?>:</h3>
     <form  class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']?><?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>">

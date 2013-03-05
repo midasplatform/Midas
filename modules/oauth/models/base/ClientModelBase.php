@@ -37,6 +37,8 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
     $this->initialize(); // required
     } // end __construct()
 
+  public abstract function getByUser($userDao);
+
   /**
    * Create and return a new oauth client owned by the given user.
    * @param userDao The owner of the client
@@ -55,7 +57,7 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
     $clientDao = MidasLoader::newDao('ClientDao', $this->moduleName);
     $clientDao->setName($name);
     $clientDao->setOwnerId($userDao->getKey());
-    $clientDao->setSecret(UtilityComponent::generateRandomString(64));
+    $clientDao->setSecret(UtilityComponent::generateRandomString(40));
     $clientDao->setCreationDate(date('c'));
     $this->save($clientDao);
 

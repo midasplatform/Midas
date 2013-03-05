@@ -34,5 +34,21 @@ class Oauth_TokenModel extends Oauth_TokenModelBase
                      ->where('token = ?', $token)
       );
     }
+
+  /**
+   * Return all auth code records for the given user
+   */
+  public function getByUser($userDao)
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->where('user_id = ?', $userDao->getKey());
+    $rows = $this->database->fetchAll($sql);
+    $daos = array();
+    foreach($rows as $row)
+      {
+      $daos[] = $this->initDao('Token', $row, $this->moduleName);
+      }
+    return $daos;
+    }
 }
 ?>

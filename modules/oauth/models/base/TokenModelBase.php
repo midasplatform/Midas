@@ -44,6 +44,7 @@ abstract class Oauth_TokenModelBase extends Oauth_AppModel
     } // end __construct()
 
   public abstract function getByToken($token);
+  public abstract function getByUser($userDao);
 
   /**
    * Use the provided codeDao to create and return an oauth access token.
