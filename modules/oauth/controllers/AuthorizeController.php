@@ -79,6 +79,14 @@ class Oauth_AuthorizeController extends Oauth_AppController
     }
 
   /**
+   * Clients should call this to exchange a code for a token and refresh token
+   */
+  function grantAction()
+    {
+    
+    }
+
+  /**
    * Submit login form.  Will redirect the user to the redirect_uri on success
    * @param redirect_uri
    * @param [state]
@@ -94,6 +102,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
     $state = $this->_getParam('state');
     $login = $this->_getParam('login');
     $password = $this->_getParam('password');
+    $allow = $this->_getParam('allowOrDeny');
 
     if(!isset($clientId))
       {
@@ -115,11 +124,31 @@ class Oauth_AuthorizeController extends Oauth_AppController
       {
       $scope = JsonComponent::encode(array(MIDAS_API_PERMISSION_SCOPE_ALL));
       }
+    if($allow !== 'Allow')
+      {
+      $url = $redirectUri;
+      $url .= strpos($redirectUri, '?') === false ? '?' : '&';
+      $url .= 'error=access_denied';
+      if($state)
+        {
+        $url .= '&state='.$state;
+        }
+      echo JsonComponent::encode(array('status' => 'ok', 'redirect' => $url));
+      return;
+      }
 
     $client = $this->Oauth_Client->load($clientId);
     if(!$client)
       {
-      throw new Zend_Exception('Invalid clientId', 400);
+      $url = $redirectUri;
+      $url .= strpos($redirectUri, '?') === false ? '?' : '&';
+      $url .= 'error=invalid_request&error_description='.urlencode('Invalid client_id');
+      if($state)
+        {
+        $url .= '&state='.$state;
+        }
+      echo JsonComponent::encode(array('status' => 'ok', 'redirect' => $url));
+      return;
       }
 
     $userDao = $this->User->getByEmail($login);
