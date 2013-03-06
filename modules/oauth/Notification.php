@@ -56,9 +56,9 @@ class Oauth_Notification extends MIDAS_Notification
         }
 
       $tokenDao = $this->Oauth_Token->getByToken($params['oauth_token']);
-      if(!$tokenDao)
+      if(!$tokenDao || $tokenDao->getType() != MIDAS_OAUTH_TOKEN_TYPE_ACCESS)
         {
-        throw new Zend_Exception('Invalid OAuth token', 401);
+        throw new Zend_Exception('Invalid OAuth access token', 400);
         }
       if($tokenDao->isExpired())
         {

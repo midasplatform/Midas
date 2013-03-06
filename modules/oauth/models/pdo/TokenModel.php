@@ -29,10 +29,11 @@ class Oauth_TokenModel extends Oauth_TokenModelBase
    */
   public function getByToken($token)
     {
-    return $this->database->fetchRow(
+    $row = $this->database->fetchRow(
       $this->database->select()->setIntegrityCheck(false)
                      ->where('token = ?', $token)
       );
+    return $this->initDao('Token', $row, $this->moduleName);
     }
 
   /**

@@ -34,6 +34,11 @@ class Oauth_AuthorizeController extends Oauth_AppController
    */
   function indexAction()
     {
+    if(!$_SERVER['HTTPS'])
+      {
+      $this->_redirect('https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+      return;
+      }
     $this->disableLayout();
 
     $responseType = $this->_getParam('response_type');
@@ -94,6 +99,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
     $state = $this->_getParam('state');
     $login = $this->_getParam('login');
     $password = $this->_getParam('password');
+    $allow = $this->_getParam('allowOrDeny');
 
     if(!isset($clientId))
       {
@@ -115,11 +121,31 @@ class Oauth_AuthorizeController extends Oauth_AppController
       {
       $scope = JsonComponent::encode(array(MIDAS_API_PERMISSION_SCOPE_ALL));
       }
+    if($allow !== 'Allow')
+      {
+      $url = $redirectUri;
+      $url .= strpos($redirectUri, '?') === false ? '?' : '&';
+      $url .= 'error=access_denied';
+      if($state)
+        {
+        $url .= '&state='.$state;
+        }
+      echo JsonComponent::encode(array('status' => 'ok', 'redirect' => $url));
+      return;
+      }
 
     $client = $this->Oauth_Client->load($clientId);
     if(!$client)
       {
-      throw new Zend_Exception('Invalid clientId', 400);
+      $url = $redirectUri;
+      $url .= strpos($redirectUri, '?') === false ? '?' : '&';
+      $url .= 'error=invalid_request&error_description='.urlencode('Invalid client_id');
+      if($state)
+        {
+        $url .= '&state='.$state;
+        }
+      echo JsonComponent::encode(array('status' => 'ok', 'redirect' => $url));
+      return;
       }
 
     $userDao = $this->User->getByEmail($login);
@@ -133,7 +159,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
 
     if($this->User->hashExists($passwordHash))
       {
-      $codeDao = $this->Oauth_Code->create($userDao, $client, JsonComponent::decode($scope)); 
+      $codeDao = $this->Oauth_Code->create($userDao, $client, JsonComponent::decode($scope));
 
       $url = $redirectUri;
       $url .= strpos($redirectUri, '?') === false ? '?' : '&';

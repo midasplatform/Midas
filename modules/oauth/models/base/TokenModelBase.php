@@ -59,25 +59,33 @@ abstract class Oauth_TokenModelBase extends Oauth_AppModel
   /**
    * Use the provided codeDao to create and return an oauth access token.
    * @param codeDao The code dao that should be used to create the access token
-   * @param expire Argument to strtotime for the token expiration
    */
-  public function createRefreshToken($codeDao, $expire)
+  public function createRefreshToken($codeDao)
     {
-    return $this->_createToken($codeDao, MIDAS_OAUTH_TOKEN_TYPE_REFRESH, $expire);
+    return $this->_createToken($codeDao, MIDAS_OAUTH_TOKEN_TYPE_REFRESH);
     }
 
   /**
-   * Helper method to create the token dao
+   * Helper method to create the token dao from a code dao or refresh token dao
+   * @param fromDao The authorization code dao or refresh token dao
    */
-  private function _createToken($codeDao, $type, $expire)
+  private function _createToken($fromDao, $type, $expire = null)
     {
     $tokenDao = MidasLoader::newDao('TokenDao', $this->moduleName);
     $tokenDao->setToken(UtilityComponent::generateRandomString(32));
-    $tokenDao->setScopes($codeDao->getScopes());
-    $tokenDao->setUserId($codeDao->getUserId());
-    $tokenDao->setClientId($codeDao->getClientId());
+    $tokenDao->setType($type);
+    $tokenDao->setScopes($fromDao->getScopes());
+    $tokenDao->setUserId($fromDao->getUserId());
+    $tokenDao->setClientId($fromDao->getClientId());
     $tokenDao->setCreationDate(date('c'));
-    $tokenDao->setExpirationDate(date('c'), strtotime($expire));
+    if(is_string($expire))
+      {
+      $tokenDao->setExpirationDate(date('c', strtotime($expire)));
+      }
+    else
+      {
+      $tokenDao->setExpirationDate(date('c'));
+      }
     $this->save($tokenDao);
 
     return $tokenDao;
