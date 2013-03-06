@@ -22,5 +22,13 @@ class Oauth_CodeDao extends AppDao
   {
   public $_model = 'Code';
   public $_module = 'oauth';
+
+  /**
+   * Returns whether or not the token has expired. Value is not cached.
+   */
+  public function isExpired()
+    {
+    return time() > strtotime($this->getExpirationDate());
+    }
   }
 ?>

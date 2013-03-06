@@ -38,5 +38,15 @@ class Oauth_CodeModel extends Oauth_CodeModelBase
       }
     return $daos;
     }
+
+  /**
+   * Return the dao corresponding to this code string if it exists
+   */
+  public function getByCode($code)
+    {
+    $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
+                                          ->where('code = ?', $code));
+    return $this->initDao('Code', $row, $this->moduleName);
+    }
 }
 ?>

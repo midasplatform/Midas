@@ -34,6 +34,11 @@ class Oauth_AuthorizeController extends Oauth_AppController
    */
   function indexAction()
     {
+    if(!$_SERVER['HTTPS'])
+      {
+      $this->_redirect('https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+      return;
+      }
     $this->disableLayout();
 
     $responseType = $this->_getParam('response_type');
@@ -76,14 +81,6 @@ class Oauth_AuthorizeController extends Oauth_AppController
     $this->view->scope = $scope;
     $this->view->redirectUri = $redirectUri;
     $this->view->client = $client;
-    }
-
-  /**
-   * Clients should call this to exchange a code for a token and refresh token
-   */
-  function grantAction()
-    {
-    
     }
 
   /**
@@ -162,7 +159,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
 
     if($this->User->hashExists($passwordHash))
       {
-      $codeDao = $this->Oauth_Code->create($userDao, $client, JsonComponent::decode($scope)); 
+      $codeDao = $this->Oauth_Code->create($userDao, $client, JsonComponent::decode($scope));
 
       $url = $redirectUri;
       $url .= strpos($redirectUri, '?') === false ? '?' : '&';
