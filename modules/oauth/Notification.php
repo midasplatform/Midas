@@ -65,11 +65,14 @@ class Oauth_Notification extends MIDAS_Notification
         throw new Zend_Exception('Token has expired', 403);
         }
       $grantedScopes = JsonComponent::decode($tokenDao->getScopes());
-      foreach($requiredScopes as $requiredScope)
+      if(!in_array(MIDAS_API_PERMISSION_SCOPE_ALL, $grantedScopes))
         {
-        if(!in_array($requiredScope, $grantedScopes))
+        foreach($requiredScopes as $requiredScope)
           {
-          return array('userDao' => null); // Missing required scope, let caller determine permission failure
+          if(!in_array($requiredScope, $grantedScopes))
+            {
+            return array('userDao' => null); // Missing required scope, let caller determine permission failure
+            }
           }
         }
       return array('userDao' => $tokenDao->getUser());
