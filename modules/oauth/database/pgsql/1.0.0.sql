@@ -29,3 +29,4 @@ CREATE TABLE oauth_token (
   expiration_date timestamp without time zone NULL DEFAULT NULL
 );
 CREATE INDEX oauth_token_token ON oauth_token (token);
+CREATE INDEX oauth_token_user_id ON oauth_token (user_id);

@@ -42,7 +42,6 @@ midas.oauth.confirmDeleteClient = function () {
                 $('div.MainDialog').dialog('close');
                 if(resp.status == 'ok') {
                     midas.createNotice(resp.message, 3000, resp.status);
-                    console.log(parentRow);
                     $(parentRow).remove();
                 }
                 else {
@@ -50,6 +49,38 @@ midas.oauth.confirmDeleteClient = function () {
                 }
             }
         );
+    });
+    container.find('.deleteClientNo').click(function () {
+        $('div.MainDialog').dialog('close');
+    });
+};
+
+midas.oauth.confirmDeleteToken = function () {
+    var parentRow = $(this).parents('tr');
+    var tokenId = $(this).attr('element');
+    midas.showDialogWithContent('Deauthorize Token', $('#template-deleteTokenDialog').html());
+    var container = $('div.MainDialog');
+    container.find('.deleteTokenYes').click(function () {
+        container.find('input').attr('disabled', 'disabled');
+
+        $.post(json.global.webroot+'/oauth/token/delete', {
+                tokenId: tokenId
+            },
+            function (text) {
+                var resp = $.parseJSON(text);
+                $('div.MainDialog').dialog('close');
+                if(resp.status == 'ok') {
+                    midas.createNotice(resp.message, 3000, resp.status);
+                    $(parentRow).remove();
+                }
+                else {
+                    midas.createNotice(resp.message, 3000, resp.status);
+                }
+            }
+        );
+    });
+    container.find('.deleteTokenNo').click(function () {
+        $('div.MainDialog').dialog('close');
     });
 };
 
@@ -69,4 +100,5 @@ $(document).ready(function () {
     }).click(midas.oauth.newClientDialog);
 
     $('a.deleteClientLink').click(midas.oauth.confirmDeleteClient);
+    $('a.deauthorizeTokenLink').click(midas.oauth.confirmDeleteToken);
 });
