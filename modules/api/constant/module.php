@@ -36,12 +36,16 @@ define('MIDAS_API_PERMISSION_SCOPE_WRITE_USER_INFO', 2);
 define('MIDAS_API_PERMISSION_SCOPE_READ_DATA', 3);
 define('MIDAS_API_PERMISSION_SCOPE_WRITE_DATA', 4);
 define('MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA', 5);
+define('MIDAS_API_PERMISSION_SCOPE_READ_GROUPS', 6);
+define('MIDAS_API_PERMISSION_SCOPE_MANAGE_GROUPS', 7);
 Zend_Registry::set('permissionScopeMap', array(
   MIDAS_API_PERMISSION_SCOPE_ALL => 'All permissions (total control)',
   MIDAS_API_PERMISSION_SCOPE_READ_USER_INFO => 'Get basic user information',
   MIDAS_API_PERMISSION_SCOPE_WRITE_USER_INFO => 'Edit user information',
   MIDAS_API_PERMISSION_SCOPE_READ_DATA => 'View and download private data that you can access',
   MIDAS_API_PERMISSION_SCOPE_WRITE_DATA => 'Change existing data and create new data',
-  MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA => 'Delete and manage permissions on data you own'
+  MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA => 'Delete and manage permissions on data you own',
+  MIDAS_API_PERMISSION_SCOPE_READ_GROUPS => 'List group membership for communities you own',
+  MIDAS_API_PERMISSION_SCOPE_MANAGE_GROUPS => 'Manage groups for communities you own'
 ));
 ?>
