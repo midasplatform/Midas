@@ -30,5 +30,6 @@ CREATE TABLE IF NOT EXISTS `oauth_token` (
   `creation_date` timestamp NULL DEFAULT NULL,
   `expiration_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`token_id`),
-  INDEX (`token`)
+  INDEX (`token`),
+  INDEX (`user_id`)
 ) DEFAULT CHARSET=utf8;

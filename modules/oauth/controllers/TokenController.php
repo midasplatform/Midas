@@ -76,6 +76,39 @@ class Oauth_TokenController extends Oauth_AppController
     }
 
   /**
+   * When a user de-authorizes a token, this action is called
+   * @param tokenId The id of the token
+   */
+  function deleteAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+
+    $tokenId = $this->_getParam('tokenId');
+    if(!isset($tokenId))
+      {
+      throw new Zend_Exception('Must pass a tokenId parameter', 400);
+      }
+    $token = $this->Oauth_Token->load($tokenId);
+    if(!$token)
+      {
+      throw new Zend_Exception('Invalid tokenId', 404);
+      }
+
+    if(!$this->logged)
+      {
+      throw new Zend_Exception('Must be logged in', 401);
+      }
+    if(!$this->userSession->Dao->isAdmin() && $token->getUserId() != $this->userSession->Dao->getKey())
+      {
+      throw new Zend_Exception('Admin permission required', 403);
+      }
+    
+    $this->Oauth_Token->delete($token);
+    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Token deleted'));
+    }
+
+  /**
    * Client calls this to exchange an authorization code granted by user login for an access and refresh token
    */
   private function _authorizationCode($secret)
@@ -128,6 +161,9 @@ class Oauth_TokenController extends Oauth_AppController
       return;
       }
 
+    // We should expire any other valid tokens that exist for this user and client
+    $this->Oauth_Token->expireTokens($codeDao->getUser(), $clientDao);
+
     // Pad the time acceptably to leave room for latency delays
     $accessToken = $this->Oauth_Token->createAccessToken($codeDao, '+25 hours');
     $refreshToken = $this->Oauth_Token->createRefreshToken($codeDao);
@@ -163,6 +199,8 @@ class Oauth_TokenController extends Oauth_AppController
                              'error_description' => 'Client authentication failed'));
       return;
       }
+    // We should expire any other valid tokens that exist for this user and client
+    $this->Oauth_Token->expireTokens($refreshToken->getUser(), $client);
     $accessToken = $this->Oauth_Token->createAccessToken($refreshToken, '+25 hours');
 
     $obj = array('token_type' => 'bearer');

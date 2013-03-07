@@ -53,7 +53,7 @@ class Oauth_ClientController extends Oauth_AppController
       }
     $this->view->clients = $this->Oauth_Client->getByUser($user);
     $this->view->codes = $this->Oauth_Code->getByUser($user);
-    $this->view->tokens = $this->Oauth_Token->getByUser($user);
+    $this->view->tokens = $this->Oauth_Token->getByUser($user, true);
     $this->view->user = $user;
     }
 
