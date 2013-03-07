@@ -847,6 +847,41 @@ class Api_ApiComponent extends AppComponent
       }
     }
 
+
+  /**
+   *  helper function to return listing of permissions for a resource.
+   * @return A list with three keys: privacy, user, group; privacy will be the
+     resource's privacy string [Public|Private]; user will be a list of
+     (user_id, policy, email); group will be a list of (group_id, policy, name).
+     policy for user and group will be a policy string [Admin|Write|Read].
+   */
+  protected function _listResourcePermissions($policyStatus, $userPolicies, $groupPolicies)
+    {
+    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+    $privilegeStrings = array(MIDAS_POLICY_ADMIN => "Admin", MIDAS_POLICY_WRITE => "Write", MIDAS_POLICY_READ => "Read");
+
+    $return = array('privacy' => $privacyStrings[$policyStatus]);
+
+    $userPoliciesOutput = array();
+    foreach($userPolicies as $userPolicy)
+      {
+      $user = $userPolicy->getUser();
+      $userPoliciesOutput[] = array('user_id' => $user->getUserId(), 'policy' => $privilegeStrings[$userPolicy->getPolicy()], 'email' => $user->getEmail());
+      }
+    $return['user'] = $userPoliciesOutput;
+
+    $groupPoliciesOutput = array();
+    foreach($groupPolicies as $groupPolicy)
+      {
+      $group = $groupPolicy->getGroup();
+      $groupPoliciesOutput[] = array('group_id' => $group->getGroupId(), 'policy' => $privilegeStrings[$groupPolicy->getPolicy()], 'name' => $group->getName());
+      }
+    $return['group'] = $groupPoliciesOutput;
+
+    return $return;
+    }
+
+
   /**
    * Create a folder or update an existing one if one exists by the uuid passed.
    * If a folder is requested to be created with the same parentid and name as
@@ -1135,8 +1170,6 @@ class Api_ApiComponent extends AppComponent
     $userDao = $this->_getUser($args);
 
     $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
-    $groupModel = MidasLoader::loadModel('Group');
-    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
     $folderModel = MidasLoader::loadModel('Folder');
     $folderId = $args['folder_id'];
     $folder = $folderModel->load($folderId);
@@ -1150,30 +1183,7 @@ class Api_ApiComponent extends AppComponent
       throw new Exception("Admin privileges required on the folder to list permissions.", MIDAS_INVALID_POLICY);
       }
 
-    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
-    $privilegeStrings = array(MIDAS_POLICY_ADMIN => "Admin", MIDAS_POLICY_WRITE => "Write", MIDAS_POLICY_READ => "Read");
-
-    $return = array('privacy' => $privacyStrings[$folderpolicygroupModel->computePolicyStatus($folder)]);
-
-    $userPolicies = $folder->getFolderpolicyuser();
-    $userPoliciesOutput = array();
-    foreach($userPolicies as $userPolicy)
-      {
-      $user = $userPolicy->getUser();
-      $userPoliciesOutput[] = array('user_id' => $user->getUserId(), 'policy' => $privilegeStrings[$userPolicy->getPolicy()], 'email' => $user->getEmail());
-      }
-    $return['user'] = $userPoliciesOutput;
-
-    $groupPolicies = $folder->getFolderpolicygroup();
-    $groupPoliciesOutput = array();
-    foreach($groupPolicies as $groupPolicy)
-      {
-      $group = $groupPolicy->getGroup();
-      $groupPoliciesOutput[] = array('group_id' => $group->getGroupId(), 'policy' => $privilegeStrings[$groupPolicy->getPolicy()], 'name' => $group->getName());
-      }
-    $return['group'] = $groupPoliciesOutput;
-
-    return $return;
+    return $this->_listResourcePermissions($folderpolicygroupModel->computePolicyStatus($folder), $folder->getFolderpolicyuser(),  $folder->getFolderpolicygroup());
     }
 
   /**
@@ -2212,6 +2222,36 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * List the permissions on an item, requires Admin access to the item.
+   * @param item_id The id of the item
+   * @return A list with three keys: privacy, user, group; privacy will be the
+     item's privacy string [Public|Private]; user will be a list of
+     (user_id, policy, email); group will be a list of (group_id, policy, name).
+     policy for user and group will be a policy string [Admin|Write|Read].
+   */
+  public function itemListPermissions($args)
+    {
+    $this->_validateParams($args, array('item_id'));
+    $userDao = $this->_getUser($args);
+
+    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+    $itemModel = MidasLoader::loadModel('Item');
+    $itemId = $args['item_id'];
+    $item = $itemModel->load($itemId);
+
+    if($item === false)
+      {
+      throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
+      }
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Exception("Admin privileges required on the item to list permissions.", MIDAS_INVALID_POLICY);
+      }
+
+    return $this->_listResourcePermissions($itempolicygroupModel->computePolicyStatus($item), $item->getItempolicyuser(),  $item->getItempolicygroup());
+    }
+
+  /**
    * Move an item from the source folder to the desination folder
    * @param token Authentication token
    * @param id The id of the item
@@ -2876,5 +2916,223 @@ class Api_ApiComponent extends AppComponent
     $element = $args['element'];
     return $metadataModel->getMetaDataQualifiers($type, $element);
     }
+
+  /**
+   * helper function to validate args of methods for adding or removing
+   * users from groups.
+   * @param group_id the group to add the user to
+   * @param user_id the user to add to the group
+   * @return an array of (groupModel, groupDao, groupUserDao)
+   */
+  protected function _validateGroupUserChangeParams($args)
+    {
+    $this->_validateParams($args, array('group_id', 'user_id'));
+
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to add a user to a group', MIDAS_INVALID_POLICY);
+      }
+
+    $groupId = $args['group_id'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($groupId);
+    if($group == false)
+      {
+      throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
+      }
+
+    $communityModel = MidasLoader::loadModel('Community');
+    if(!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupUserId = $args['user_id'];
+    $userModel = MidasLoader::loadModel('User');
+    $groupUser = $userModel->load($groupUserId);
+    if($groupUser == false)
+      {
+      throw new Exception('This user does not exist', MIDAS_INVALID_PARAMETER);
+      }
+
+    return array($groupModel, $group, $groupUser);
+    }
+
+  /**
+   * Add a user to a group, returns 'success' => 'true' on success, requires
+   * admin privileges on the community associated with the group.
+   * @param group_id the group to add the user to
+   * @param user_id the user to add to the group
+   * @return success = true on success.
+   */
+  function groupAddUser($args)
+    {
+    list($groupModel, $group, $addedUser) = $this->_validateGroupUserChangeParams($args);
+    $groupModel->addUser($group, $addedUser);
+    return array('success' => 'true');
+    }
+
+  /**
+   * Remove a user from a group, returns 'success' => 'true' on success, requires
+   * admin privileges on the community associated with the group.
+   * @param group_id the group to remove the user from
+   * @param user_id the user to remove from the group
+   * @return success = true on success.
+   */
+  function groupRemoveUser($args)
+    {
+    list($groupModel, $group, $removedUser) = $this->_validateGroupUserChangeParams($args);
+    $groupModel->removeUser($group, $removedUser);
+    return array('success' => 'true');
+    }
+
+
+
+  /**
+   * add a group associated with a community, requires admin privileges on the
+   * community.
+   * @param community_id the id of the community the group will associate with
+   * @param name the name of the new group
+   * @return group_id of the newly created group on success.
+   */
+  function groupAdd($args)
+    {
+    $this->_validateParams($args, array('community_id', 'name'));
+
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to add group', MIDAS_INVALID_POLICY);
+      }
+
+    $communityModel = MidasLoader::loadModel('Community');
+    $communityId = $args['community_id'];
+    $community = $communityModel->load($communityId);
+    if($community == false)
+      {
+      throw new Exception('This community does not exist', MIDAS_INVALID_PARAMETER);
+      }
+    if(!$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $name = $args['name'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->createGroup($community, $name);
+
+    return array('group_id' => $group->getGroupId());
+    }
+
+  /**
+   * remove a group associated with a community, requires admin privileges on the
+   * community.
+   * @param group_id the id of the group to be removed
+   * @return success = true on success.
+   */
+  function groupRemove($args)
+    {
+    $this->_validateParams($args, array('group_id'));
+
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to remove a group', MIDAS_INVALID_POLICY);
+      }
+
+    $groupId = $args['group_id'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($groupId);
+    if($group == false)
+      {
+      throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
+      }
+
+    $communityModel = MidasLoader::loadModel('Community');
+    if(!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupModel->delete($group);
+    return array('success' => 'true');
+    }
+
+  /**
+   * list the users for a group, requires admin privileges on the community
+   * assiated with the group
+   * @param group_id id of group
+   * @return array users => a list of user ids mapped to user emails
+   */
+  function groupListUsers($args)
+    {
+    $this->_validateParams($args, array('group_id'));
+
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to list users in a group', MIDAS_INVALID_POLICY);
+      }
+
+    $groupId = $args['group_id'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($groupId);
+    if($group == false)
+      {
+      throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
+      }
+
+    $communityModel = MidasLoader::loadModel('Community');
+    if(!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $users = $group->getUsers();
+    $userIdsToEmail = array();
+    foreach($users as $user)
+      {
+      $userIdsToEmail[$user->getUserId()] = $user->getEmail();
+      }
+    return array('users' => $userIdsToEmail);
+    }
+
+  /**
+   * list the groups for a community, requires admin privileges on the community
+   * @param community_id id of community
+   * @return array groups => a list of group ids mapped to group names
+   */
+  function communityListGroups($args)
+    {
+    $this->_validateParams($args, array('community_id'));
+
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to list groups in a community', MIDAS_INVALID_POLICY);
+      }
+
+    $communityId = $args['community_id'];
+    $communityModel = MidasLoader::loadModel('Community');
+    $community = $communityModel->load($communityId);
+    if(!$community)
+      {
+      throw new Exception('Invalid community_id', MIDAS_INVALID_PARAMETER);
+      }
+    if(!$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $groups = $community->getGroups();
+    $groupIdsToName = array();
+    foreach($groups as $group)
+      {
+      $groupIdsToName[$group->getGroupId()] = $group->getName();
+      }
+    return array('groups' => $groupIdsToName);
+    }
+
 
   } // end class
