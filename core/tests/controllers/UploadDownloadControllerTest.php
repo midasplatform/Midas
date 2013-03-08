@@ -238,7 +238,15 @@ class UploadDownloadControllerTest extends ControllerTestCase
 
     $_SERVER['REMOTE_ADDR'] = '127.0.0.1'; //must be set in order to lock active download
     $this->setupDatabase(array('activedownload')); //wipe any old locks
-    $this->dispatchUrI('/download?testingmode=1&items='.$itemId, $userDao);
+    $this->dispatchUrI('/download?items='.$itemId, $userDao);
+    $downloadedMd5 = md5($this->getBody());
+
+    $this->assertEquals($actualMd5, $downloadedMd5);
+
+    // Test our special path-style URL endpoints for downloading single items or folders
+    $this->resetAll();
+    $this->setupDatabase(array('activedownload')); //wipe any old locks
+    $this->dispatchUrI('/download/item/'.$itemId.'/', $userDao);
     $downloadedMd5 = md5($this->getBody());
 
     $this->assertEquals($actualMd5, $downloadedMd5);

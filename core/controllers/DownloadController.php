@@ -44,6 +44,7 @@ class DownloadController extends AppController
     $folderIds = $this->_getParam('folders');
     $bitsreamid = $this->_getParam('bitstream');
     $sessionUser = $this->userSession->Dao;
+    $testingMode = Zend_Registry::get('configGlobal')->environment == 'testing';
     if($sessionUser != null)
       {
       // Make sure this is a copy and not a reference
@@ -148,7 +149,7 @@ class DownloadController extends AppController
       $revision = $revisions[0];
       $bitstreams = $revision->getBitstreams();
 
-      if($this->_getParam('testingmode') == '1')
+      if($testingMode)
         {
         $bitstreams = array($bitstreams[0]);
         }
@@ -167,10 +168,7 @@ class DownloadController extends AppController
           return;
           }
         $this->disableView();
-        if($this->_getParam('testingmode') == '1')
-          {
-          $this->Component->DownloadBitstream->testingmode = true;
-          }
+        $this->Component->DownloadBitstream->testingmode = $testingMode;
         $this->Component->DownloadBitstream->download($bitstreams[0], $offset, true);
         }
       else
@@ -317,6 +315,40 @@ class DownloadController extends AppController
     }
 
   /**
+   * This action exposes downloading a single item and should be called as
+   *   download/item/<item_id>/...
+   * Any extra parameters are ignored and can be used to force clients like wget to download to the correct filename
+   * if the content-disposition header is ignored by the user agent.
+   */
+  public function itemAction()
+    {
+    $pathParams = UtilityComponent::extractPathParams();
+    if(empty($pathParams))
+      {
+      throw new Zend_Exception('Must specify item id as a path parameter');
+      }
+
+    $this->_forward('index', null, null, array('items' => $pathParams[0]));
+    }
+
+  /**
+   * This action exposes downloading a single folder and should be called as
+   *   download/folder/<folder_id>/...
+   * Any extra parameters are ignored and can be used to force clients like wget to download to the correct filename
+   * if the content-disposition header is ignored by the user agent.
+   */
+  public function folderAction()
+    {
+    $pathParams = UtilityComponent::extractPathParams();
+    if(empty($pathParams))
+      {
+      throw new Zend_Exception('Must specify folder id as a path parameter');
+      }
+
+    $this->_forward('index', null, null, array('folders' => $pathParams[0]));
+    }
+
+  /**
    * Render the view for the large data downloader applet
    * @param itemIds Comma separated list of items to download
    * @param folderIds Comma separated list of folders to download
@@ -445,7 +477,7 @@ class DownloadController extends AppController
       }
     ob_start();
     Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
-    $this->_helper->viewRenderer->setNoRender();
+    $this->disableView();
     if(isset($item) && $item instanceof ItemDao)
       {
       $name = $item->getName();

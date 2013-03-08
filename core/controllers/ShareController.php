@@ -353,12 +353,25 @@ class ShareController extends AppController
     $type = $this->_getParam('type');
     $id = $this->_getParam('id');
 
-    $request = Zend_Controller_Front::getInstance()->getRequest();
-    $baseUrl = $request->getScheme().'://'.$request->getHttpHost().$this->view->webroot;
+    switch($type)
+      {
+      case 'folder':
+        $dao = $this->Folder->load($id);
+        $name = $dao->getName().'.zip';
+        break;
+      case 'item':
+        $dao = $this->Item->load($id);
+        $name = $dao->getName();
+        break;
+      default:
+        throw new Zend_Exception('Invalid type', 400);
+      }
+
+    $baseUrl = $this->getRequest()->getScheme().'://'.$this->getRequest()->getHttpHost().$this->view->webroot;
     $this->view->type = $type;
     $this->view->id = $id;
     $this->view->viewUrl = $baseUrl.'/'.$type.'/'.$id;
-    $this->view->downloadUrl = $baseUrl.'/download?'.$type.'s='.$id;
+    $this->view->downloadUrl = $baseUrl.'/download/'.$type.'/'.$id.'/'.urlencode($name);
     }
   }//end class
 
