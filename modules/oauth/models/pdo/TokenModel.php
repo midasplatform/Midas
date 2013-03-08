@@ -63,5 +63,22 @@ class Oauth_TokenModel extends Oauth_TokenModelBase
     $data = array('expiration_date' => date('c'));
     $this->database->getDB()->update('oauth_token', $data, 'user_id = '.$userDao->getKey().' AND client_id = '.$clientDao->getKey());
     }
+
+  /**
+   * Removes expired access tokens from the database
+   */
+  public function cleanExpired()
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->where('expiration_date < ?', date('c'))
+                ->where('type = ?', MIDAS_OAUTH_TOKEN_TYPE_ACCESS);
+    $rows = $this->database->fetchAll($sql);
+    foreach($rows as $row)
+      {
+      $tmpDao = $this->initDao('Token', $row, $this->moduleName);
+      $this->delete($tmpDao);
+      $tmpDao = null; //mark for memory reclamation
+      }
+    }
 }
 ?>

@@ -46,6 +46,7 @@ abstract class Oauth_TokenModelBase extends Oauth_AppModel
   public abstract function getByToken($token);
   public abstract function getByUser($userDao, $onlyValid = true);
   public abstract function expireTokens($userDao, $clientDao);
+  public abstract function cleanExpired();
 
   /**
    * Use the provided codeDao to create and return an oauth access token.
