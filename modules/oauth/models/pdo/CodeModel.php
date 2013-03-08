@@ -48,5 +48,22 @@ class Oauth_CodeModel extends Oauth_CodeModelBase
                                           ->where('code = ?', $code));
     return $this->initDao('Code', $row, $this->moduleName);
     }
+
+  /**
+   * Removes expired access tokens from the database
+   */
+  public function cleanExpired()
+    {
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->where('expiration_date < ?', date('c'));
+
+    $rows = $this->database->fetchAll($sql);
+    foreach($rows as $row)
+      {
+      $tmpDao = $this->initDao('Code', $row, $this->moduleName);
+      $this->delete($tmpDao);
+      $tmpDao = null; //mark for memory reclamation
+      }
+    }
 }
 ?>

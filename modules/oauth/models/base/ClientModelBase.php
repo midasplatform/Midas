@@ -32,7 +32,9 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
         'secret' => array('type' => MIDAS_DATA),
         'creation_date' => array('type' => MIDAS_DATA),
         'owner_id' => array('type' => MIDAS_DATA),
-        'owner' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'owner_id')
+        'owner' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'owner_id'),
+        'codes' => array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Code', 'module' => 'oauth', 'parent_column' => 'client_id', 'child_column' => 'client_id'),
+        'tokens' => array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Token', 'module' => 'oauth', 'parent_column' => 'client_id', 'child_column' => 'client_id')
         );
     $this->initialize(); // required
     } // end __construct()
@@ -62,6 +64,32 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
     $this->save($clientDao);
 
     return $clientDao;
+    }
+
+  /**
+   * Delete a client.  Deletes all associated tokens and codes
+   */
+  public function delete($clientDao)
+    {
+    $tokens = $clientDao->getTokens();
+    $tokenModel = MidasLoader::loadModel('Token', 'oauth');
+
+    foreach($tokens as $token)
+      {
+      $tokenModel->delete($token);
+      }
+    $tokens = null;
+
+    $codes = $clientDao->getCodes();
+    $codeModel = MidasLoader::loadModel('Code', 'oauth');
+
+    foreach($codes as $code)
+      {
+      $codeModel->delete($code);
+      }
+    $codes = null;
+
+    parent::delete($clientDao);
     }
 }
 ?>

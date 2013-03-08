@@ -23,7 +23,7 @@ class Oauth_Notification extends MIDAS_Notification
   {
   public $moduleName = 'oauth';
   public $_models = array('User');
-  public $_moduleModels = array('Token');
+  public $_moduleModels = array('Code', 'Token');
 
   /** init notification process*/
   public function init()
@@ -31,7 +31,18 @@ class Oauth_Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_API_AUTH_INTERCEPT', 'handleAuth');
     $this->addCallBack('CALLBACK_API_REQUIRE_PERMISSIONS', 'requirePermissions');
     $this->addCallBack('CALLBACK_CORE_GET_CONFIG_TABS', 'getUserTabs');
+
+    $this->addTask('TASK_CLEANUP_PERFORM_CLEANUP', 'cleanExpired', 'Delete expired codes and tokens');
     }//end init
+
+  /**
+   * Remove expired auth codes and access tokens from the database
+   */
+  public function cleanExpired()
+    {
+    $this->Oauth_Code->cleanExpired();
+    $this->Oauth_Token->cleanExpired();
+    }
 
   /**
    * Set the required permissions in global registry for use later
