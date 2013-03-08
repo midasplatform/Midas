@@ -117,7 +117,8 @@ class UtilityComponent extends AppComponent
       {
       $i++;
       }
-    for( ; $i < count($allTokens); $i++)
+    $max = count($allTokens);
+    for(; $i < $max; $i++)
       {
       $tokens[] = $allTokens[$i];
       }
