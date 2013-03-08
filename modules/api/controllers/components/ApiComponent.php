@@ -3138,7 +3138,8 @@ class Api_ApiComponent extends AppComponent
    * list the users for a group, requires admin privileges on the community
    * assiated with the group
    * @param group_id id of group
-   * @return array users => a list of user ids mapped to user emails
+   * @return array users => a list of user ids mapped to a two element list of
+   * user firstname and lastname
    */
   function groupListUsers($args)
     {
@@ -3169,7 +3170,7 @@ class Api_ApiComponent extends AppComponent
     $userIdsToEmail = array();
     foreach($users as $user)
       {
-      $userIdsToEmail[$user->getUserId()] = $user->getEmail();
+      $userIdsToEmail[$user->getUserId()] = array('firstname' => $user->getFirstname(), 'lastname' => $user->getLastname());
       }
     return array('users' => $userIdsToEmail);
     }

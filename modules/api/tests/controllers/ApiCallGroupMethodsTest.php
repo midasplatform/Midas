@@ -183,6 +183,9 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
     $commMember = $userModel->load($commMemberId);
     $commModerator = $userModel->load($commModeratorId);
     $commAdmin = $userModel->load($commAdminId);
+    $commUsers =
+      array($commMemberId => $commMember, $commModeratorId =>  $commModerator, $commAdminId =>  $commAdmin);
+
 
     // add in an anonymous user to non admins
     $invalidUsers = array($commMember, $commModerator, false);
@@ -205,9 +208,11 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
     $users = $resp->data->users;
     $users = (array)$users;
     $this->assertEquals(1, sizeof($users), 'users should only have one entry');
-    foreach($users as $id => $email)
+    foreach($users as $id => $names)
       {
       $this->assertEquals($id, $commAdminId, 'users should have commAdminId as an entry');
+      $this->assertEquals($commUsers[$commAdminId]->getFirstname(), $names->firstname);
+      $this->assertEquals($commUsers[$commAdminId]->getLastname(), $names->lastname);
       }
 
     // add some users, test again
@@ -227,9 +232,11 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
     $users = (array)$users;
     $this->assertEquals(3, sizeof($users), 'users should have 3 entries');
     $members = array($commAdminId, $commMemberId, $commModeratorId);
-    foreach($users as $id => $email)
+    foreach($users as $id => $names)
       {
       $this->assertTrue(in_array($id, $members), 'users should have '.$id.' as an entry');
+      $this->assertEquals($commUsers[$id]->getFirstname(), $names->firstname);
+      $this->assertEquals($commUsers[$id]->getLastname(), $names->lastname);
       }
 
     // remove some users, test again
@@ -246,11 +253,12 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
     $users = $resp->data->users;
     $users = (array)$users;
     $this->assertEquals(1, sizeof($users), 'users should only have one entry');
-    foreach($users as $id => $email)
+    foreach($users as $id => $names)
       {
       $this->assertEquals($id, $commAdminId, 'users should have commAdminId as an entry');
+      $this->assertEquals($commUsers[$id]->getFirstname(), $names->firstname);
+      $this->assertEquals($commUsers[$id]->getLastname(), $names->lastname);
       }
-
     }
 
   }
