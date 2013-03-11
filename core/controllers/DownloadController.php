@@ -349,6 +349,23 @@ class DownloadController extends AppController
     }
 
   /**
+   * This action exposes downloading a single bitstream and should be called as
+   *   download/bitstream/<bitstream_id>/...
+   * Any extra parameters are ignored and can be used to force clients like wget to download to the correct filename
+   * if the content-disposition header is ignored by the user agent.
+   */
+  public function bitstreamAction()
+    {
+    $pathParams = UtilityComponent::extractPathParams();
+    if(empty($pathParams))
+      {
+      throw new Zend_Exception('Must specify bitstream id as a path parameter');
+      }
+
+    $this->_forward('index', null, null, array('bitstream' => $pathParams[0]));
+    }
+
+  /**
    * Render the view for the large data downloader applet
    * @param itemIds Comma separated list of items to download
    * @param folderIds Comma separated list of folders to download

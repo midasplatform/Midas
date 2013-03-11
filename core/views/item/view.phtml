@@ -220,7 +220,7 @@ foreach($cssArray as $module => $list)
                     echo '    <span name="sizeBytes">'.$bitstream->getSizebytes().'</span>';
                     echo '    <span name="mimeType">'.$bitstream->getMimetype().'</span>';
                     echo '  </div>';
-                    echo '<a href="'.$this->webroot.'/download?bitstream='.$bitstream->getKey().'">';
+                    echo '<a href="'.$this->webroot.'/download/bitstream/'.$bitstream->getKey().'/'.urlencode($bitstream->getName()).'">';
                     echo $this->slicename($bitstream->getName(), 50);
                     echo '</a>';
                     if($this->isModerator)
