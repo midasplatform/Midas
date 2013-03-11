@@ -361,7 +361,12 @@ class ShareController extends AppController
         break;
       case 'item':
         $dao = $this->Item->load($id);
+        $headRev = $this->Item->getLastRevision($dao);
         $name = $dao->getName();
+        if(count($headRev->getBitstreams()) > 1)
+          {
+          $name .= '.zip';
+          }
         break;
       default:
         throw new Zend_Exception('Invalid type', 400);
