@@ -704,6 +704,32 @@ class FolderModel extends FolderModelBase
       {
       $folderIds = array($folder->getKey());
       }
+
+    $sql = $this->_buildChildItemsQuery($userDao, $folderIds, $policy, $sortfield, $sortdir);
+
+    if($limit > 0)
+      {
+      $sql->limit($limit, $offset);
+      }
+
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $item = $this->initDao('Item', $row);
+      $item->parent_id = $row['folder_id'];
+      $return[] = $item;
+      }
+    return $return;
+    }
+
+  /**
+   * Helper function to build the child selection query
+   * @param userDao The current user
+   * @param folderIds Array of parent folder ids
+   */
+  private function _buildChildItemsQuery(&$userDao, &$folderIds, $policy, $sortfield = 'name', $sortdir = 'asc')
+    {
     $userId = $userDao instanceof UserDao ? $userDao->getKey() : -1;
     $isAdmin = $userDao instanceof UserDao ? $userDao->isAdmin() : false;
 
@@ -737,21 +763,7 @@ class FolderModel extends FolderModelBase
                   ->where('i.item_id IN ('.new Zend_Db_Expr($usrSql).') OR '.
                           'i.item_id IN ('.new Zend_Db_Expr($grpSql).')');
       }
-
-    if($limit > 0)
-      {
-      $sql->limit($limit, $offset);
-      }
-
-    $rowset = $this->database->fetchAll($sql);
-    $return = array();
-    foreach($rowset as $row)
-      {
-      $item = $this->initDao('Item', $row);
-      $item->parent_id = $row['folder_id'];
-      $return[] = $item;
-      }
-    return $return;
+    return $sql;
     }
 
   /**
@@ -776,6 +788,30 @@ class FolderModel extends FolderModelBase
       {
       $folderIds = array($folder->getKey());
       }
+
+    $sql = $this->_buildChildFoldersQuery($userDao, $folderIds, $policy, $sortfield, $sortdir);
+
+    if($limit > 0)
+      {
+      $sql->limit($limit, $offset);
+      }
+
+    $rowset = $this->database->fetchAll($sql);
+    $return = array();
+    foreach($rowset as $row)
+      {
+      $return[] = $this->initDao('Folder', $row);
+      }
+    return $return;
+    }
+
+  /**
+   * Helper function to build the child selection query
+   * @param userDao The current user
+   * @param folderIds Array of parent folder ids
+   */
+  private function _buildChildFoldersQuery(&$userDao, &$folderIds, $policy, $sortfield = 'name', $sortdir = 'asc')
+    {
     $userId = $userDao instanceof UserDao ? $userDao->getKey() : -1;
     $isAdmin = $userDao instanceof UserDao ? $userDao->isAdmin() : false;
 
@@ -807,19 +843,7 @@ class FolderModel extends FolderModelBase
                   ->where('f.folder_id IN ('.new Zend_Db_Expr($usrSql).') OR '.
                           'f.folder_id IN ('.new Zend_Db_Expr($grpSql).')');
       }
-
-    if($limit > 0)
-      {
-      $sql->limit($limit, $offset);
-      }
-
-    $rowset = $this->database->fetchAll($sql);
-    $return = array();
-    foreach($rowset as $row)
-      {
-      $return[] = $this->initDao('Folder', $row);
-      }
-    return $return;
+    return $sql;
     }
 
   /** Get the child folder
@@ -1018,6 +1042,51 @@ class FolderModel extends FolderModelBase
       return false;
       }
     return true;
+    }
+
+  /**
+   * This will zip stream the filtered contents of the fold
+   */
+  public function zipStream(&$zip, $path, $folder, &$userDao)
+    {
+    $folderIds = array($folder->getKey());
+    $this->Item = MidasLoader::loadModel('Item');
+
+    $sql = $this->_buildChildItemsQuery($userDao, $folderIds, MIDAS_POLICY_READ);
+    $rows = $this->database->fetchAll($sql);
+    foreach($rows as $row)
+      {
+      $item = $this->initDao('Item', $row);
+      $bitstreams = $this->Item->getLastRevision($item)->getBitstreams();
+      $count = count($bitstreams);
+
+      foreach($bitstreams as $bitstream)
+        {
+        if($count > 1 || $bitstream->getName() != $item->getName())
+          {
+          $currPath = $path.'/'.$item->getName().'/'.$bitstream->getName();
+          }
+        else
+          {
+          $currPath = $path.'/'.$bitstream->getName();
+          }
+        $zip->add_file_from_path($currPath, $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
+        }
+      $this->Item->incrementDownloadCount($item);
+      unset($bitstreams);
+      unset($item);
+      }
+    unset($sql);
+    unset($rows);
+
+    $sql = $this->_buildChildFoldersQuery($userDao, $folderIds, MIDAS_POLICY_READ);
+    $rows = $this->database->fetchAll($sql);
+    foreach($rows as $row)
+      {
+      $subfolder = $this->initDao('Folder', $row);
+      $this->zipStream($zip, $path.'/'.$subfolder->getName(), $subfolder, $userDao);
+      unset($subfolder);
+      }
     }
 
   /**
