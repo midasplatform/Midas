@@ -235,7 +235,39 @@ class DownloadController extends AppController
         }
       ob_start();
       $zip = new ZipStream($name.'.zip');
-      $zip = $this->_createZipRecursive($zip, '', $folders, $revisions, $sessionUser);
+      foreach($revisions as $revision)
+        {
+        $item = $revision->getItem();
+        $bitstreams = $revision->getBitstreams();
+        $count = count($bitstreams);
+
+        foreach($bitstreams as $bitstream)
+          {
+          if($count > 1 || $bitstream->getName() != $item->getName())
+            {
+            $path = $item->getName().'/';
+            }
+          else
+            {
+            $path = '';
+            }
+          $filename = $path.$bitstream->getName();
+          $fullpath = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
+          Zend_Registry::get('dbAdapter')->closeConnection();
+          $zip->add_file_from_path($filename, $fullpath);
+          }
+        $this->Item->incrementDownloadCount($item);
+        unset($item);
+        unset($bitstreams);
+        }
+      foreach($folders as $folder)
+        {
+        if(!$this->Folder->policyCheck($folder, $sessionUser))
+          {
+          continue;
+          }
+        $this->Folder->zipStream($zip, $folder->getName(), $folder, $sessionUser);
+        }
       $zip->finish();
       exit();
       }
@@ -497,58 +529,6 @@ class DownloadController extends AppController
     $zip = new ZipStream($name.'.zip');
     $zip->finish();
     exit();
-    }
-
-  /** create zip recursive*/
-  private function _createZipRecursive($zip, $path, $folders, $revisions, $sessionUser)
-    {
-    foreach($revisions as $revision)
-      {
-      $itemName = $revision->getItem()->getName();
-      $bitstreams = $revision->getBitstreams();
-      $count = count($bitstreams);
-
-      foreach($bitstreams as $bitstream)
-        {
-        if($count > 1 || $bitstream->getName() != $itemName)
-          {
-          $currPath = $path.'/'.$itemName;
-          }
-        else
-          {
-          $currPath = $path;
-          }
-        $filename = $currPath.'/'.$bitstream->getName();
-        $fullpath = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
-        Zend_Registry::get('dbAdapter')->closeConnection();
-        $zip->add_file_from_path($filename, $fullpath);
-        }
-      $this->Item->incrementDownloadCount($revision->getItem());
-      }
-    foreach($folders as $folder)
-      {
-      if(!$this->Folder->policyCheck($folder, $sessionUser))
-        {
-        continue;
-        }
-      $items = $folder->getItems();
-      $subRevisions = array();
-      foreach($items as $item)
-        {
-        $itemName = $item->getName();
-        if(!$this->Item->policyCheck($item, $sessionUser))
-          {
-          continue;
-          }
-        $tmp = $this->Item->getLastRevision($item);
-        if($tmp !== false)
-          {
-          $subRevisions[] = $tmp;
-          }
-        }
-      $zip = $this->_createZipRecursive($zip, $path.'/'.$folder->getName(), $folder->getFolders(), $subRevisions, $sessionUser);
-      }
-    return $zip;
     }
 } // end class
 
