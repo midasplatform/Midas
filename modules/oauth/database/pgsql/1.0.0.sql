@@ -5,7 +5,7 @@ CREATE TABLE oauth_client (
   owner_id bigint NOT NULL,
   creation_date timestamp without time zone NULL DEFAULT NULL
 );
-CREATE INDEX oauth_client_identifier ON oauth_client (identifier);
+CREATE INDEX oauth_client_owner_id ON oauth_client (owner_id);
 
 CREATE TABLE oauth_code (
   code_id serial PRIMARY KEY,

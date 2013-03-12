@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `oauth_client` (
   `owner_id` bigint(20) NOT NULL,
   `creation_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`client_id`),
-  INDEX (`identifier`)
+  INDEX (`owner_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `oauth_code` (

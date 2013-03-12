@@ -85,8 +85,11 @@ class Oauth_AuthorizeController extends Oauth_AppController
 
   /**
    * Submit login form.  Will redirect the user to the redirect_uri on success
-   * @param redirect_uri
-   * @param [state]
+   * @param redirect_uri The client's desired redirect URI
+   * @param login The user's login
+   * @param password The user's password
+   * @param allowOrDeny Whether to allow or deny the request. Set to 'Allow' to allow.
+   * @param [state] Opaque state pointer string to be passed back to the client appended to the redirect URI
    */
   function submitAction()
     {
