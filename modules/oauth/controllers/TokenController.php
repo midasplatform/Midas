@@ -103,7 +103,7 @@ class Oauth_TokenController extends Oauth_AppController
       {
       throw new Zend_Exception('Admin permission required', 403);
       }
-    
+
     $this->Oauth_Token->delete($token);
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Token deleted'));
     }
@@ -168,7 +168,7 @@ class Oauth_TokenController extends Oauth_AppController
     $accessToken = $this->Oauth_Token->createAccessToken($codeDao, '+25 hours');
     $refreshToken = $this->Oauth_Token->createRefreshToken($codeDao);
     $this->Oauth_Code->delete($codeDao);
-    
+
     $obj = array('token_type' => 'bearer');
     $obj['access_token'] = $accessToken->getToken();
     $obj['refresh_token'] = $refreshToken->getToken();

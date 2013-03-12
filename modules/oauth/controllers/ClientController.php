@@ -124,7 +124,7 @@ class Oauth_ClientController extends Oauth_AppController
       {
       throw new Zend_Exception('Admin permission required', 403);
       }
-    
+
     $this->Oauth_Client->delete($client);
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Client deleted'));
     }
