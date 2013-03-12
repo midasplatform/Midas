@@ -583,7 +583,7 @@ midas.createAction = function (node) {
         }, function (text) {
             var retVal = $.parseJSON(text);
             if(retVal.action == 'download') {
-                window.location = json.global.webroot+'/download?folders='+folderId;
+                window.location = json.global.webroot+'/download/folder/'+folderId;
             }
             else if(retVal.action == 'promptApplet') {
                 midas.promptDownloadApplet(folderId, '', retVal.sizeStr);
@@ -597,7 +597,7 @@ midas.createAction = function (node) {
         }, function (text) {
             var retVal = $.parseJSON(text);
             if(retVal.action == 'download') {
-                window.location = json.global.webroot+'/download?items='+itemId;
+                window.location = json.global.webroot+'/download/item/'+itemId;
             }
             else if(retVal.action == 'promptApplet') {
                 midas.promptDownloadApplet('', itemId, retVal.sizeStr);

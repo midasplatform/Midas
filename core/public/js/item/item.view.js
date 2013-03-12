@@ -5,7 +5,7 @@ $(document).ready(function() {
         }, function (text) {
             var retVal = $.parseJSON(text);
             if(retVal.action == 'download') {
-                window.location = json.global.webroot+'/download?items='+json.item.item_id;
+                window.location = json.global.webroot+'/download/item/'+json.item.item_id;
             }
             else if(retVal.action == 'promptApplet') {
                 var html = 'Warning: you have requested a large download ('+retVal.sizeStr+') that might take a very long time to complete.';
@@ -23,7 +23,7 @@ $(document).ready(function() {
                     $('div.MainDialog').dialog('close');
                 });
                 $('input.useZipStream').unbind('click').click(function () {
-                    window.location = json.global.webroot+'/download?items='+json.item.item_id;
+                    window.location = json.global.webroot+'/download/item/'+json.item.item_id;
                     $('div.MainDialog').dialog('close');
                 });
             }
