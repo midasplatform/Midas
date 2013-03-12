@@ -1840,5 +1840,102 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->assertPolicyuserNonexistence(array(), array($adminItem), $targetUser);
     }
 
+  /** Test the item.list.permissions method */
+  public function testItemListPermissions()
+    {
+    $userModel = MidasLoader::loadModel('User');
+    $userDao = $userModel->load('1');
 
+    $userDao = $userModel->load('1');
+    $itemModel = MidasLoader::loadModel('Item');
+    $readItem = $itemModel->load('1004');
+    $writeItem = $itemModel->load('1005');
+    $adminItem = $itemModel->load('1006');
+
+    $params = array('method' => 'midas.item.list.permissions',
+                    'token' => $this->_loginAsUser($userDao));
+    $invalidItemId = -10;
+
+    // test with item the user has admin over
+    $requiredParams = array(
+      array('name' => 'item_id', 'valid' => $adminItem->getItemId(), 'invalid' => $invalidItemId));
+
+    $memberUser = $userModel->load('4');
+    $modUser = $userModel->load('5');
+
+    // first assert that these invalid users have the expected rights
+    $this->assertFalse($itemModel->policyCheck($adminItem, null, MIDAS_POLICY_READ), 'anonymous user should not have read access to admin item');
+    $this->assertFalse($itemModel->policyCheck($adminItem, null, MIDAS_POLICY_WRITE), 'anonymous user should not have write access to admin item');
+    $this->assertFalse($itemModel->policyCheck($adminItem, null, MIDAS_POLICY_ADMIN), 'anonymous user should not have admin access to admin item');
+    $this->assertTrue($itemModel->policyCheck($adminItem, $memberUser, MIDAS_POLICY_READ), 'member user should have read access to admin item');
+    $this->assertFalse($itemModel->policyCheck($adminItem, $memberUser, MIDAS_POLICY_WRITE), 'member user should not have write access to admin item');
+    $this->assertFalse($itemModel->policyCheck($adminItem, $memberUser, MIDAS_POLICY_ADMIN), 'member user should not have admin access to admin item');
+    $this->assertTrue($itemModel->policyCheck($adminItem, $modUser, MIDAS_POLICY_READ), 'moderator user should have read access to admin item');
+    $this->assertTrue($itemModel->policyCheck($adminItem, $modUser, MIDAS_POLICY_WRITE), 'moderator user should have write access to admin item');
+    $this->assertFalse($itemModel->policyCheck($adminItem, $modUser, MIDAS_POLICY_ADMIN), 'moderator user should not have admin access to admin item');
+
+    $invalidUsers = array($memberUser, $modUser, null);
+    $this->exerciseInvalidCases($params['method'], $userDao, $invalidUsers, $requiredParams);
+
+    // now with admin perms which are valid
+    $this->assertTrue($itemModel->policyCheck($adminItem, $userDao, MIDAS_POLICY_ADMIN), 'admin user should have admin access to admin item');
+
+    // first check both privacy statuses
+    $privacyCodes = array("Public" => MIDAS_PRIVACY_PUBLIC, "Private" => MIDAS_PRIVACY_PRIVATE);
+    $privacyStatuses = array(MIDAS_PRIVACY_PUBLIC, MIDAS_PRIVACY_PRIVATE);
+    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+
+    foreach($privacyStatuses as $privacyStatus)
+      {
+      $this->initializePrivacyStatus(array(), array($adminItem), $privacyStatus);
+
+      $this->resetAll();
+      $params['item_id'] = $adminItem->getItemId();
+      $this->params = $params;
+      $resp = $this->_callJsonApi();
+      $this->_assertStatusOk($resp);
+
+      $this->assertPrivacyStatus(array(), array($adminItem), $privacyStatus);
+      }
+
+    // ensure user perms are correct from the most recent call
+    $privilegeCodes = array("Admin" => MIDAS_POLICY_ADMIN, "Write" => MIDAS_POLICY_WRITE, "Read" => MIDAS_POLICY_READ);
+    $userPolicies = $adminItem->getItempolicyuser();
+    $apiUserPolicies = $resp->data->user;
+    foreach($userPolicies as $userPolicy)
+      {
+      $user = $userPolicy->getUser();
+      $userId = (string)$user->getUserId();
+      $userFound = false;
+      foreach($apiUserPolicies as $apiUserPolicy)
+        {
+        if($apiUserPolicy->user_id == $userId)
+          {
+          $userFound = true;
+          $apiPolicyCode = $privilegeCodes[$apiUserPolicy->policy];
+          $this->assertEquals($apiPolicyCode, $userPolicy->getPolicy());
+          }
+        }
+      $this->assertTrue($userFound, 'API call missing user '. $userId);
+      }
+    // ensure group perms are correct
+    $groupPolicies = $adminItem->getItempolicygroup();
+    $apiGroupPolicies = $resp->data->group;
+    foreach($groupPolicies as $groupPolicy)
+      {
+      $group = $groupPolicy->getGroup();
+      $groupId = (string)$group->getGroupId();
+      $groupFound = false;
+      foreach($apiGroupPolicies as $apiGroupPolicy)
+        {
+        if($apiGroupPolicy->group_id == $groupId)
+          {
+          $groupFound = true;
+          $apiPolicyCode = $privilegeCodes[$apiGroupPolicy->policy];
+          $this->assertEquals($apiPolicyCode, $groupPolicy->getPolicy());
+          }
+        }
+      $this->assertTrue($groupFound, 'API call missing group '. $groupId);
+      }
+    }
   }
