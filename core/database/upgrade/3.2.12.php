@@ -19,7 +19,7 @@ class Upgrade_3_2_12 extends MIDASUpgrade
     $this->db->query("CREATE TABLE `password` (
                         `hash` varchar(128) NOT NULL,
                         PRIMARY KEY (`hash`)
-                     )");
+                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
     $this->_movePasswords();
 
     $this->db->query("ALTER TABLE `user` DROP `password`");
