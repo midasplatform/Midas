@@ -70,6 +70,7 @@ abstract class UserModelBase extends AppModel
   /** Returns all the users */
   abstract function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null, $currentUser = null);
   abstract function storePasswordHash($hash);
+  abstract function legacyAuthenticate($userDao, $instanceSalt, $password);
 
   /** save */
   public function save($dao)

@@ -305,4 +305,31 @@ class UserModel extends UserModelBase
     return $return;
     } // end getUsersFromSearch()
 
+  /**
+   * Uses the pre-3.2.12 authentication mechanism. Only call this if the version
+   * of the database is below 3.2.12, will throw DB exceptions otherwise.
+   * NOTE: This may ONLY be used to authenticate site admins. This is meant to be
+   * used during the upgrade process only, not for general authentication.
+   * @return True or false: whether the authentication succeeded
+   */
+  function legacyAuthenticate($userDao, $instanceSalt, $password)
+    {
+    $hash = md5($instanceSalt.$password);
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->where('user_id = ?', $userDao->getKey());
+
+    
+    $row = $this->database->fetchRow($sql);
+    $pw = $row['password'];
+
+    if(!$pw)
+      {
+      throw new Zend_Exception('Tried to call legacyAuthenticate on 3.2.12+ schema');
+      }
+    if($row['admin'] != 1)
+      {
+      throw new Zend_Exception('Only admin users may use legacyAuthenticate');
+      }
+    return $pw === $hash;
+    }
 }// end class

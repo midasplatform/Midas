@@ -108,7 +108,9 @@ class AppController extends MIDAS_GlobalController
           if(count($tmp) == 2)
             {
             $userDao = $userModel->load($tmp[0]);
-            if($userDao != false && $userModel->hashExists($tmp[1]))
+
+            if(version_compare(Zend_Registry::get('configDatabase')->version, '3.2.12', '>=') && 
+               $userDao != false && $userModel->hashExists($tmp[1]))
               {
               $user->Dao = $userDao;
               }
