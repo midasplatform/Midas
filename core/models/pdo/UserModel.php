@@ -318,7 +318,6 @@ class UserModel extends UserModelBase
     $sql = $this->database->select()->setIntegrityCheck(false)
                 ->where('user_id = ?', $userDao->getKey());
 
-    
     $row = $this->database->fetchRow($sql);
     $pw = $row['password'];
 
