@@ -491,6 +491,10 @@ class UserController extends AppController
               return;
               }
             }
+          if(version_compare($currentVersion, '3.2.12', '>=') && $userDao->getSalt() == '')
+            {
+            $passwordHash = $this->User->convertLegacyPasswordHash($userDao, $form->getValue('password'));
+            }
           $remember = $form->getValue('remerberMe');
           if(isset($remember) && $remember == 1)
             {
