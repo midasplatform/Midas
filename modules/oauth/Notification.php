@@ -55,7 +55,8 @@ class Oauth_Notification extends MIDAS_Notification
   /** Handle web API authentication with an OAuth token */
   public function handleAuth($params)
     {
-    if(array_key_exists('oauth_token', $params))
+    $apiArgs = $params['args'];
+    if(array_key_exists('oauth_token', $apiArgs))
       {
       if(Zend_Registry::isRegistered('oauthRequiredScopes'))
         {
@@ -66,7 +67,7 @@ class Oauth_Notification extends MIDAS_Notification
         $requiredScopes = array(MIDAS_API_PERMISSION_SCOPE_ALL);
         }
 
-      $tokenDao = $this->Oauth_Token->getByToken($params['oauth_token']);
+      $tokenDao = $this->Oauth_Token->getByToken($apiArgs['oauth_token']);
       if(!$tokenDao || $tokenDao->getType() != MIDAS_OAUTH_TOKEN_TYPE_ACCESS)
         {
         throw new Zend_Exception('Invalid OAuth access token', 400);
