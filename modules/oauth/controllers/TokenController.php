@@ -49,7 +49,7 @@ class Oauth_TokenController extends Oauth_AppController
       if(!$authHeader)
         {
         $this->_doOutput(array('error' => 'invalid_client',
-                               'error_description' => 'Must pass client_secret parameter or pass client secret using Authentication header'));
+                               'error_description' => 'Must pass client_secret parameter or pass client secret using Authorization header'));
         return;
         }
       list($mode, $secret) = explode(' ', $authHeader);
@@ -57,6 +57,7 @@ class Oauth_TokenController extends Oauth_AppController
         {
         $this->_doOutput(array('error' => 'invalid_client',
                                'error_description' => 'Must use header form Authorization: Basic <client_secret>'));
+        return;
         }
       }
 
@@ -216,17 +217,20 @@ class Oauth_TokenController extends Oauth_AppController
    */
   private function _doOutput($array)
     {
-    header('Content-Type: application/json;charset=UTF-8');
-    header('Cache-Control: no-store');
-    header('Pragma: no-cache');
-    if(array_key_exists('error', $array))
+    if(!headers_sent())
       {
-      $this->getResponse()->setHttpResponseCode(400);
-      $this->getLogger()->crit('Access token denied ('.$array['error_description'].') '.print_r($this->_getAllParams(), true));
-      }
-    else
-      {
-      $this->getResponse()->setHttpResponseCode(200);
+      header('Content-Type: application/json;charset=UTF-8');
+      header('Cache-Control: no-store');
+      header('Pragma: no-cache');
+      if(array_key_exists('error', $array))
+        {
+        $this->getResponse()->setHttpResponseCode(400);
+        $this->getLogger()->crit('Access token denied ('.$array['error_description'].') '.print_r($this->_getAllParams(), true));
+        }
+      else
+        {
+        $this->getResponse()->setHttpResponseCode(200);
+        }
       }
     echo JsonComponent::encode($array);
     }

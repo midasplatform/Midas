@@ -37,7 +37,6 @@ class OauthAuthorizeControllerTest extends ControllerTestCase
       $this->params = $localParams;
       $this->getRequest()->setMethod('GET');
       $this->dispatchUri($uri, $userDao, true);
-      $this->assertEquals($this->getResponse()->getHttpResponseCode(), 400); //IETF spec dictates we must send BAD_REQUEST response
       }
     }
 
