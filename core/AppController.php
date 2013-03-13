@@ -108,11 +108,23 @@ class AppController extends MIDAS_GlobalController
           if(count($tmp) == 2)
             {
             $userDao = $userModel->load($tmp[0]);
-
-            if(version_compare(Zend_Registry::get('configDatabase')->version, '3.2.12', '>=') &&
-               $userDao != false && $userModel->hashExists($tmp[1]))
+            if($userDao != false)
               {
-              $user->Dao = $userDao;
+              // authenticate valid users in the appropriate method for the
+              // current application version
+              if(version_compare(Zend_Registry::get('configDatabase')->version, '3.2.12', '>='))
+                {
+                $auth = $userModel->hashExists($tmp[1]);
+                }
+              else
+                {
+                $auth = $this->User->legacyAuthenticate($userDao, '', '', $tmp[1]);
+                }
+              // if authenticated, set the session user to be this user
+              if($auth)
+                {
+                $user->Dao = $userDao;
+                }
               }
             }
           }

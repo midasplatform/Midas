@@ -476,6 +476,7 @@ class UserController extends AppController
           }
         else
           {
+          $passwordHash = md5($instanceSalt.$form->getValue('password'));
           $coreAuth = $this->User->legacyAuthenticate($userDao, $instanceSalt, $form->getValue('password'));
           }
 
@@ -489,10 +490,6 @@ class UserController extends AppController
               echo $value['response'];
               return;
               }
-            }
-          if(version_compare($currentVersion, '3.2.12', '>=') && $userDao->getSalt() == '')
-            {
-            $passwordHash = $this->User->convertLegacyPasswordHash($userDao, $form->getValue('password'));
             }
           $remember = $form->getValue('remerberMe');
           if(isset($remember) && $remember == 1)
