@@ -310,9 +310,12 @@ class UserModel extends UserModelBase
    * used during the upgrade process only, not for general authentication.
    * @return True or false: whether the authentication succeeded
    */
-  function legacyAuthenticate($userDao, $instanceSalt, $password)
+  function legacyAuthenticate($userDao, $instanceSalt, $password, $hash = false)
     {
-    $hash = md5($instanceSalt.$password);
+    if(!$hash)
+      {
+      $hash = md5($instanceSalt.$password);
+      }
     $sql = $this->database->select()->setIntegrityCheck(false)
                 ->where('user_id = ?', $userDao->getKey());
 
