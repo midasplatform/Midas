@@ -235,19 +235,8 @@ class UserControllerTest extends ControllerTestCase
     $this->assertQuery("div#tabsSettings");
     $this->assertQuery("li.settingsCommunityList");
 
-    $this->resetAll();
-    $this->params = array();
-    $this->params['modifyPassword'] = 'true';
-    $this->params['oldPassword'] = 'test';
-    $this->params['newPassword'] = 'newPassword';
-    $this->request->setMethod('POST');
-    $this->dispatchUrI("/user/settings", $userDao);
-    $resp = json_decode($this->getBody());
-    $this->assertTrue($resp[0] == false);
-
-    // Store old password so it will authenticate
     $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
-    $this->User->storePasswordHash(hash('sha256', $instanceSalt.$userDao->getSalt().'test'));
+    // By changing password we will update the salt and hash
     $this->resetAll();
     $this->params = array();
     $this->params['modifyPassword'] = 'true';
