@@ -50,8 +50,7 @@ PURPOSE.  See the above copyright notices for more information.
     <?php
     foreach($this->codes as $code)
       {
-      echo '<tr><td>'.$code->getClient()->getName().'</td><td>Authorization Code</td>'.
-           '<td><a class="deauthorizeCodeLink" element="'.$code->getKey().'">Deauthorize</a></td></tr>';
+      echo '<tr><td>'.$code->getClient()->getName().'</td><td>Authorization Code</td><td></td></tr>';
       }
     foreach($this->tokens as $token)
       {
