@@ -241,6 +241,37 @@ class OauthTokenControllerTest extends ControllerTestCase
    */
   public function testDeauthorize()
     {
-    // TODO stub
+    $adminUser = $this->User->load(3);
+    $normalUser = $this->User->load(2);
+    $clientModel = MidasLoader::loadModel('Client', 'oauth');
+    $codeModel = MidasLoader::loadModel('Code', 'oauth');
+    $tokenModel = MidasLoader::loadModel('Token', 'oauth');
+    $client = $clientModel->load(1000);
+    $codeDao = $codeModel->create($adminUser, $client, array(1, 2, 3));
+
+    $accessToken = $tokenModel->createAccessToken($codeDao, '+1 hour');
+    $refreshToken = $tokenModel->createRefreshToken($codeDao);
+
+    // 1. Test failure conditions
+    // a. Missing tokenId parameter
+    $this->dispatchUri('/oauth/token/delete', null, true);
+    $this->resetAll();
+    // b. Invalid tokenId parameter
+    $this->dispatchUri('/oauth/token/delete?tokenId=895698', null, true, false);
+    $this->resetAll();
+    // c. Not logged in
+    $this->dispatchUri('/oauth/token/delete?tokenId='.$accessToken->getKey(), null, true);
+    $this->resetAll();
+    // d. Non-admin user attempting to delete another user's token
+    $this->dispatchUri('/oauth/token/delete?tokenId='.$accessToken->getKey(), $normalUser, true);
+    $this->resetAll();
+
+    // 2. Test success conditions
+    // a. Deleting access token
+    $this->dispatchUri('/oauth/token/delete?tokenId='.$accessToken->getKey(), $adminUser);
+    $this->resetAll();
+    // b. Deleting refresh token
+    $this->dispatchUri('/oauth/token/delete?tokenId='.$refreshToken->getKey(), $adminUser);
+    $this->resetAll();
     }
 }
