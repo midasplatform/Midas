@@ -2513,6 +2513,10 @@ class Api_ApiComponent extends AppComponent
     $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
     if($authModule || $userModel->hashExists(hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$password)))
       {
+      if($userDao->getSalt() == '')
+        {
+        $passwordHash = $userModel->convertLegacyPasswordHash($userDao, $password);
+        }
       $defaultApiKey = $userApiModel->getByAppAndEmail('Default', $email)->getApikey();
       return array('apikey' => $defaultApiKey);
       }
