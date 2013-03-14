@@ -680,6 +680,10 @@ class UserController extends AppController
           throw new Zend_Exception('Changing password is disallowed for this user');
           }
         $oldPass = $this->_getParam('oldPassword');
+        if($userDao->getSalt() == '')
+          {
+          $passwordHash = $this->User->convertLegacyPasswordHash($userDao, $oldPass);
+          }
         $newPass = $this->_getParam('newPassword');
         $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
         $hashedPasswordOld = hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$oldPass);

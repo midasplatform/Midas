@@ -65,6 +65,16 @@ class Upgrade_3_2_12 extends MIDASUpgrade
       }
     // Set the salt and hash alg to the appropriate value to denote a legacy user
     $this->db->update('user', array('hash_alg' => 'md5', 'salt' => ''));
+    // Now the same for pending users
+    $sql = $this->db->select()
+            ->from(array('pendinguser'), array('password'))
+            ->distinct();
+    $rows = $this->db->fetchAll($sql);
+    foreach($rows as $row)
+      {
+      $this->db->insert('password', array('hash' => $row['password']));
+      }
+
     }
 }
 ?>
