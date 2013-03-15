@@ -177,6 +177,36 @@ class UserModel extends UserModelBase
     return $user;
     }
 
+  /**
+   * Stores the given hash (algorithm-agnostic) in the password hashes table only
+   * if it does not already exist there
+   */
+  function storePasswordHash($hash)
+    {
+    if(!$this->hashExists($hash))
+      {
+      $this->database->getDB()->insert('password', array('hash' => $hash));
+
+      if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_PGSQL')
+        {
+        // Pgsql doesn't store rows sorted by their pkey so we must explicitly cluster them after each new write,
+        // otherwise the order of hashes would correspond to the order of users
+        $this->database->getDB()->query('CLUSTER password USING password_hash');
+        }
+      }
+    }
+
+  /**
+   * Return true if hash exists in the password table, false otherwise.  Used to verify login.
+   */
+  function hashExists($hash)
+    {
+    $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
+                                          ->from('password')
+                                          ->where('hash = ?', $hash));
+    return $row != null;
+    }
+
   /** Return a list of users corresponding to the search */
   function getUsersFromSearch($search, $userDao, $limit = 14, $group = true, $order = 'view')
     {
@@ -275,4 +305,33 @@ class UserModel extends UserModelBase
     return $return;
     } // end getUsersFromSearch()
 
+  /**
+   * Uses the pre-3.2.12 authentication mechanism. Only call this if the version
+   * of the database is below 3.2.12, will throw DB exceptions otherwise.
+   * NOTE: This may ONLY be used to authenticate site admins. This is meant to be
+   * used during the upgrade process only, not for general authentication.
+   * @return True or false: whether the authentication succeeded
+   */
+  function legacyAuthenticate($userDao, $instanceSalt, $password, $hash = false)
+    {
+    if(!$hash)
+      {
+      $hash = md5($instanceSalt.$password);
+      }
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->where('user_id = ?', $userDao->getKey());
+
+    $row = $this->database->fetchRow($sql);
+    $pw = $row['password'];
+
+    if(!$pw)
+      {
+      throw new Zend_Exception('Tried to call legacyAuthenticate on 3.2.12+ schema');
+      }
+    if($row['admin'] != 1)
+      {
+      throw new Zend_Exception('Only admin users may use legacyAuthenticate');
+      }
+    return $pw === $hash;
+    }
 }// end class

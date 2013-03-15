@@ -38,7 +38,7 @@ abstract class PendingUserModelBase extends AppModel
       'email' => array('type' => MIDAS_DATA),
       'firstname' => array('type' => MIDAS_DATA),
       'lastname' => array('type' => MIDAS_DATA),
-      'password' => array('type' => MIDAS_DATA),
+      'salt' => array('type' => MIDAS_DATA),
       'date_creation' => array('type' => MIDAS_DATA)
       );
     $this->initialize(); // required
@@ -49,26 +49,20 @@ abstract class PendingUserModelBase extends AppModel
   public abstract function getAllByParams($params);
 
   /**
-   * Create the database record for inviting a user via email that is not registered yet
-   * @param email The email of the user (should not exist in Midas already)
-   * @param group The group to invite the user to
-   * @param inviter The user issuing the invitation (typically the session user)
-   * @return the created NewUserInvitationDao
+   * Create the database record for a user who has registered but not had their email verified yet
    */
   public function createPendingUser($email, $firstName, $lastName, $password)
     {
     $email = strtolower($email);
-    $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
-    if(isset($passwordPrefix) && !empty($passwordPrefix))
-      {
-      $password = $passwordPrefix.$password;
-      }
+    $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+    $userSalt = UtilityComponent::generateRandomString(32);
+
     $pendingUser = MidasLoader::newDao('PendingUserDao');
     $pendingUser->setEmail($email);
     $pendingUser->setAuthKey(UtilityComponent::generateRandomString(64, '0123456789abcdef'));
     $pendingUser->setFirstname($firstName);
     $pendingUser->setLastname($lastName);
-    $pendingUser->setPassword(md5($password));
+    $pendingUser->setSalt($userSalt);
     $pendingUser->setDateCreation(date('c'));
 
     $userModel = MidasLoader::loadModel('User');
@@ -82,6 +76,7 @@ abstract class PendingUserModelBase extends AppModel
       {
       $this->delete($existingPendingUser);
       }
+    $userModel->storePasswordHash(hash('sha256', $instanceSalt.$userSalt.$password));
 
     $this->save($pendingUser);
     return $pendingUser;

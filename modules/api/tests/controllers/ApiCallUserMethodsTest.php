@@ -68,8 +68,7 @@ class ApiCallUserMethodsTest extends ApiCallMethodsTest
 
     $this->resetAll();
 
-    // Must set the password here since our salt is dynamic
-    $userDao->setPassword(md5(Zend_Registry::get('configGlobal')->password->prefix.'test'));
+    $this->User->changePassword($userDao, 'test');
     $this->User->save($userDao);
 
     $this->params['method'] = 'midas.user.apikey.default';
