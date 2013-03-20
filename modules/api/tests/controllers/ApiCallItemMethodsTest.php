@@ -226,6 +226,8 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
      *
      *22 generatetoken passing in folderid and a checksum of an existing bitstream,
      *   and passing Public explicitly
+     *25 generatetoken passing in folderid and checksum of an existing bitstream, but the user
+     *   has no read access to the already existing item, so exception is thrown
      *
      */
 
@@ -414,6 +416,28 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->assertEquals($itemDao->getName(), "created_item (1)", 'Duplicate Item has wrong name');
     // delete the newly created item
     $this->Item->delete($itemDao);
+
+    // 25
+    // Just like #22, but we want to make sure the clone existing bitstream behavior
+    // doesn't happen when the user doesn't have read access to the item with the given checksum.
+    // Otherwise for an attacker, having the checksum of a bitstream would allow them to exploit
+    // upload.generatetoken to gain read access to that bitstream, even if they didn't have
+    // read access on it.
+    $existingItem = $this->Item->load(1001); // this should be the item with the existing bitstream in it
+    $policy = $this->Itempolicyuser->getPolicy($usersFile[0], $existingItem);
+    $this->Itempolicyuser->delete($policy); // delete permission for the user on the item
+    $this->resetAll();
+    $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.upload.generatetoken';
+    $this->params['filename'] = 'some_new_file.txt';
+    $this->params['checksum'] = $md5;
+    $this->params['folderid'] = '1000';
+    $this->params['itemprivacy'] = 'Public';
+    $resp = $this->_callJsonApi();
+    $this->_assertStatusOk($resp);
+    $token = $resp->data->token;
+    $this->assertNotEquals($token, '', 'User needs read access to existing bitstream to clone it');
+    $this->Itempolicyuser->createPolicy($usersFile[0], $existingItem, $policy->getPolicy()); //restore policy state
 
     // 7
     // generate upload token
