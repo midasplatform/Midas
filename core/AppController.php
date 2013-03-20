@@ -118,7 +118,7 @@ class AppController extends MIDAS_GlobalController
                 }
               else
                 {
-                $auth = $this->User->legacyAuthenticate($userDao, '', '', $tmp[1]);
+                $auth = $userModel->legacyAuthenticate($userDao, '', '', $tmp[1]);
                 }
               // if authenticated, set the session user to be this user
               if($auth)

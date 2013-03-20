@@ -27,7 +27,7 @@ class ApiCallMethodsTest extends ControllerTestCase
     $this->setupDatabase(array('default')); //core dataset
     $this->setupDatabase(array('default'), 'api'); // module dataset
     $this->enabledModules = array('api');
-    $this->_models = array('User', 'Folder', 'Item', 'ItemRevision', 'Assetstore', 'Bitstream');
+    $this->_models = array('User', 'Folder', 'Item', 'ItemRevision', 'Assetstore', 'Bitstream', 'Itempolicyuser');
     $this->_daos = array();
 
     parent::setUp();

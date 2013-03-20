@@ -385,40 +385,45 @@ class Api_ApiComponent extends AppComponent
       $existingBitstream = $bitstreamModel->getByChecksum($args['checksum']);
       if($existingBitstream)
         {
-        $revision = $itemModel->getLastRevision($item);
-
-        if($revision == false)
+        // User must have read access to the existing bitstream if they are circumventing the upload.
+        // Otherwise an attacker could spoof the checksum and read a private bitstream with a known checksum.
+        if($itemModel->policyCheck($existingBitstream->getItemrevision()->getItem(), $userDao, MIDAS_POLICY_READ))
           {
-          // Create new revision if none exists yet
-          Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
-          $revision = new ItemRevisionDao();
-          $revision->setChanges('Initial revision');
-          $revision->setUser_id($userDao->getKey());
-          $revision->setDate(date('c'));
-          $revision->setLicenseId(null);
-          $itemModel->addRevision($item, $revision);
-          }
+          $revision = $itemModel->getLastRevision($item);
 
-        $siblings = $revision->getBitstreams();
-        foreach($siblings as $sibling)
-          {
-          if($sibling->getName() == $args['filename'])
+          if($revision == false)
             {
-            // already have a file with this name. don't add new record.
-            return array('token' => '');
+            // Create new revision if none exists yet
+            Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
+            $revision = new ItemRevisionDao();
+            $revision->setChanges('Initial revision');
+            $revision->setUser_id($userDao->getKey());
+            $revision->setDate(date('c'));
+            $revision->setLicenseId(null);
+            $itemModel->addRevision($item, $revision);
             }
+
+          $siblings = $revision->getBitstreams();
+          foreach($siblings as $sibling)
+            {
+            if($sibling->getName() == $args['filename'])
+              {
+              // already have a file with this name. don't add new record.
+              return array('token' => '');
+              }
+            }
+          Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
+          $bitstream = new BitstreamDao();
+          $bitstream->setChecksum($args['checksum']);
+          $bitstream->setName($args['filename']);
+          $bitstream->setSizebytes($existingBitstream->getSizebytes());
+          $bitstream->setPath($existingBitstream->getPath());
+          $bitstream->setAssetstoreId($existingBitstream->getAssetstoreId());
+          $bitstream->setMimetype($existingBitstream->getMimetype());
+          $revisionModel = MidasLoader::loadModel('ItemRevision');
+          $revisionModel->addBitstream($revision, $bitstream);
+          return array('token' => '');
           }
-        Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
-        $bitstream = new BitstreamDao();
-        $bitstream->setChecksum($args['checksum']);
-        $bitstream->setName($args['filename']);
-        $bitstream->setSizebytes($existingBitstream->getSizebytes());
-        $bitstream->setPath($existingBitstream->getPath());
-        $bitstream->setAssetstoreId($existingBitstream->getAssetstoreId());
-        $bitstream->setMimetype($existingBitstream->getMimetype());
-        $revisionModel = MidasLoader::loadModel('ItemRevision');
-        $revisionModel->addBitstream($revision, $bitstream);
-        return array('token' => '');
         }
       }
     //we don't already have this content, so create the token
