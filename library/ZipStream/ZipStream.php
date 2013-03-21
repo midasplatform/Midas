@@ -155,9 +155,9 @@ class ZipStream {
     # save options
     $this->opt = $opt;
 
-    # set large file defaults: size = 20 megabytes, method = store
+    # set large file defaults: size = 3 megabytes, method = store
     if (!isset($this->opt['large_file_size']))
-      $this->opt['large_file_size'] = 20 * 1024 * 1024;
+      $this->opt['large_file_size'] = 3 * 1024 * 1024;
     if (!isset($this->opt['large_file_method']))
       $this->opt['large_file_method'] = 'store';
 
