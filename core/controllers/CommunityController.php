@@ -282,6 +282,10 @@ class CommunityController extends AppController
     $this->view->userCommunities = $communities;
     $this->view->Utility = $this->Component->Utility;
 
+    $this->view->otherJSs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_INDEX_JS');
+    $this->view->otherCSSs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_INDEX_CSS');
+    $this->view->otherActions = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_COMMUNITY_INDEX_ACTIONS');
+
     $this->addDynamicHelp('.communityList:first', 'List of current projects/communities hosted on MIDAS.', 'top right', 'bottom left');
     $this->addDynamicHelp('.createCommunity', 'Manage your own community or project.');
     }//end index
@@ -399,6 +403,7 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception("This community doesn't exist or you don't have the permissions.", 403);
       }
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_COMMUNITY_DELETED', array('community' => $communityDao));
     $this->Community->delete($communityDao);
 
     $this->_redirect('/');
