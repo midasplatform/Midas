@@ -18,5 +18,22 @@
  limitations under the License.
 =========================================================================*/
 
-// refer to core/constant/api.php
-?>
+/**
+ * Index Controller for WebApi
+ **/
+class Rest_IndexController extends AppController
+{
+
+  public function preDispatch()
+    {
+    parent::preDispatch();
+    $this->view->setScriptPath(BASE_PATH."/core/views/rest");
+    }
+
+
+  /** Index function */
+  function indexAction()
+    {
+    $this->view->header = 'RESTful Web API';
+    }
+}

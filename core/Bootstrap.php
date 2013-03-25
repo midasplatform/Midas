@@ -197,18 +197,37 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $modules = new Zend_Config_Ini(APPLICATION_CONFIG, 'module');
     // routes modules
     $listeModule = array();
+    $apiModules = array();
     foreach($modules as $key => $module)
       {
       if($module == 1 &&  file_exists(BASE_PATH.'/modules/'.$key) && file_exists(BASE_PATH . "/modules/".$key."/AppController.php"))
         {
         $listeModule[] = $key;
+        // get WebApi controller directories and WebApi module names for enabled modules
+        if(file_exists(BASE_PATH . "/modules/".$key."/controllers/api"))
+          {
+          $frontController->addControllerDirectory(BASE_PATH . "/modules/".$key."/controllers/api", "api".$key);
+          $apiModules[] = $key;
+          }
         }
       elseif($module == 1 &&  file_exists(BASE_PATH.'/privateModules/'.$key) && file_exists(BASE_PATH . "/privateModules/".$key."/AppController.php"))
         {
         $listeModule[] = $key;
+        // get WebApi controller directories and WebApi module names for enabled modules
+        if(file_exists(BASE_PATH . "/privateModules/".$key."/controllers/api"))
+          {
+          $frontController->addControllerDirectory(BASE_PATH . "/privateModules/".$key."/controllers/api", "api".$key);
+          $apiModules[] = $key;
+          }
         }
       }
 
+    // get WebApi controller directory for core Apis
+    require_once BASE_PATH . "/core/ApiController.php";
+    $frontController->addControllerDirectory(BASE_PATH . '/core/controllers/api', 'rest');
+    // add restful route for WebApis
+    $restRoute = new Zend_Rest_Route($frontController, array(), array('rest'));
+    $router->addRoute('api-core', $restRoute);
     // loading modules elements
     foreach($listeModule as $m)
       {
@@ -286,7 +305,26 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
       }
     Zend_Registry::set('modulesEnable', $listeModule);
+    Zend_Registry::set('modulesHaveApi', $apiModules);
     return $router;
     }
+
+  /** register plugins and helpers for REST_Controller*/
+  protected function _initREST()
+    {
+    $frontController = Zend_Controller_Front::getInstance();
+
+    // register the RestHandler plugin
+    $frontController->registerPlugin(new REST_Controller_Plugin_RestHandler($frontController));
+
+    // add REST contextSwitch helper
+    $contextSwitch = new REST_Controller_Action_Helper_ContextSwitch();
+    Zend_Controller_Action_HelperBroker::addHelper($contextSwitch);
+
+    // add restContexts helper
+    $restContexts = new REST_Controller_Action_Helper_RestContexts();
+    Zend_Controller_Action_HelperBroker::addHelper($restContexts);
+    }
+
   }
 

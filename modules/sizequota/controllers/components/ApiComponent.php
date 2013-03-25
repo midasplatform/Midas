@@ -50,6 +50,18 @@ class Sizequota_ApiComponent extends AppComponent
     }
 
   /**
+   * Rename a request parameter's key to provide backward compatibility for existing WebAPIs .
+   */
+  private function _renameParamKey(&$args, $oldKey, $newKey)
+    {
+    if(isset($args[$oldKey]))
+      {
+      $args[$newKey] = $args[$oldKey];
+      unset($args[$oldKey]);
+      }
+    }
+
+  /**
    * Get the size quota for a user.
    * @param token Authentication token
    * @param user Id of the user to check
@@ -58,13 +70,14 @@ class Sizequota_ApiComponent extends AppComponent
    */
   public function userGet($args)
     {
-    $this->_checkKeys(array('token', 'user'), $args);
+    $this->_renameParamKey($args, 'user', 'id');
+    $this->_checkKeys(array('token', 'id'), $args);
     $requestUser = $this->_getUser($args);
 
     $folderModel = MidasLoader::loadModel('Folder');
     $userModel = MidasLoader::loadModel('User');
 
-    $user = $userModel->load($args['user']);
+    $user = $userModel->load($args['id']);
     if(!$user)
       {
       throw new Exception('Invalid user id', MIDAS_SIZEQUOTA_INVALID_PARAMETER);
@@ -77,7 +90,7 @@ class Sizequota_ApiComponent extends AppComponent
     $quotaModel = MidasLoader::loadModel('FolderQuota', 'sizequota');
     $quota = $quotaModel->getUserQuota($user);
     $used = $folderModel->getSize($user->getFolder());
-    return array('quota' => $quota, 'used' => $used[0]->size);
+    return array('quota' => $quota, 'used' => $used);
     }
 
   /**
@@ -108,7 +121,7 @@ class Sizequota_ApiComponent extends AppComponent
     $quotaModel = MidasLoader::loadModel('FolderQuota', 'sizequota');
     $quota = $quotaModel->getCommunityQuota($comm);
     $used = $folderModel->getSize($comm->getFolder());
-    return array('quota' => $quota, 'used' => $used[0]->size);
+    return array('quota' => $quota, 'used' => $used);
     }
 
   /**

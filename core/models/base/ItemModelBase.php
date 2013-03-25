@@ -173,7 +173,7 @@ abstract class ItemModelBase extends AppModel
     foreach($groupPolicies as $key => $policy)
       {
       $newGroup = $policy->getGroup();
-      if(!in_array($group, $existingGroups))
+      if(!in_array($newGroup, $existingGroups))
         {
         $ItempolicygroupModel->createPolicy($newGroup, $itemdao, MIDAS_POLICY_READ);
         }
