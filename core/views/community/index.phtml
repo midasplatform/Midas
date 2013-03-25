@@ -12,8 +12,25 @@ PURPOSE.  See the above copyright notices for more information.
 
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.dotdotdot-1.4.0-packed.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/community/community.index.js');
+foreach($this->otherJSs as $uris)
+  {
+  foreach($uris as $uri)
+    {
+    $this->headScript()->appendFile($uri);
+    }
+  }
 ?>
+
 <link href="<?php echo $this->coreWebroot?>/public/css/community/community.index.css" rel="stylesheet" type="text/css" />
+<?php
+foreach($this->otherCSSs as $uris)
+  {
+  foreach($uris as $uri)
+    {
+    echo '<link type="text/css" rel="stylesheet" href="'.$uri.'" />';
+    }
+  }
+?>
 
 <div class="viewMain">
   <div class="communityList">
@@ -61,6 +78,26 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/community/communi
         <li>
           <a class="createCommunity"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/community2.png" /> <?php echo $this->t("Create a community");?></a>
         </li>
+        <?php
+        foreach($this->otherActions as $module => $actionList)
+          {
+          if(is_array($actionList))
+            {
+            foreach($actionList as $action)
+              {
+              echo '<li>'.$action.'</li>';
+              }
+            }
+          else if(is_string($actionList))
+            {
+            echo '<li>'.$actionList.'</li>';
+            }
+          else
+            {
+            echo '<li>Invalid action list entry from '.$module.'</li>';
+            }
+          }
+        ?>
       </ul>
     </div>
   <?php
