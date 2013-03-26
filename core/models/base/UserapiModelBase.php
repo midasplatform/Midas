@@ -17,13 +17,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-abstract class Api_UserapiModelBase extends Api_AppModel
+abstract class UserapiModelBase extends AppModel
 {
   /** constructor */
   public function __construct()
     {
     parent::__construct();
-    $this->_name = 'api_userapi';
+    $this->_name = 'userapi';
     $this->_key = 'userapi_id';
 
     $this->_mainData = array(
@@ -63,14 +63,14 @@ abstract class Api_UserapiModelBase extends Api_AppModel
 
     if(count($rowset)) //update existing record if we have one already
       {
-      $userApiDao = $this->initDao('Userapi', $rowset[0], 'api');
+      $userApiDao = $this->initDao('Userapi', $rowset[0]);
       $userApiDao->setApikey($key);
       $this->save($userApiDao);
       return;
       }
 
     // Otherwise save new default key
-    $userApiDao = MidasLoader::newDao('UserapiDao', 'api');
+    $userApiDao = MidasLoader::newDao('UserapiDao');
     $userApiDao->setUserId($userDao->getKey());
     $userApiDao->setApplicationName('Default');
     $userApiDao->setApikey($key);
@@ -97,7 +97,7 @@ abstract class Api_UserapiModelBase extends Api_AppModel
 
     $key = UtilityComponent::generateRandomString(40);
 
-    $userApiDao = MidasLoader::newDao('UserapiDao', 'api');
+    $userApiDao = MidasLoader::newDao('UserapiDao');
     $userApiDao->setUserId($userDao->getKey());
     $userApiDao->setApikey($key);
     $userApiDao->setApplicationName($applicationname);

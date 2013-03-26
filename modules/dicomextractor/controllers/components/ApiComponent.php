@@ -39,7 +39,7 @@ class Dicomextractor_ApiComponent extends AppComponent
 
     $itemModel = MidasLoader::loadModel("Item");
     $itemRevisionModel = MidasLoader::loadModel("ItemRevision");
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $itemDao = $itemModel->load($args['item']);
     $userDao = $authComponent->getUser($args,
                                        Zend_Registry::get('userSession')->Dao);

@@ -24,7 +24,7 @@ require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 class Api_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'api';
-  public $_moduleComponents = array('Api', 'Authentication');
+  public $_moduleComponents = array('Api');
   public $_models = array('User');
 
   /** init notification process*/
@@ -55,7 +55,7 @@ class Api_Notification extends ApiEnabled_Notification
       {
       throw new Zend_Exception('Error: userDao parameter required');
       }
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi');
     $userApiModel->createDefaultApiKey($params['userDao']);
     }
 
@@ -69,7 +69,7 @@ class Api_Notification extends ApiEnabled_Notification
       {
       throw new Zend_Exception('Error: userDao parameter required');
       }
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi');
     $apiKeys = $userApiModel->getByUser($params['userDao']);
 
     foreach($apiKeys as $apiKey)

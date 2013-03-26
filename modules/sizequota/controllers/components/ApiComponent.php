@@ -44,7 +44,7 @@ class Sizequota_ApiComponent extends AppComponent
   /** Authenticate via token or session */
   private function _getUser($args)
     {
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $default = $this->userSession ? $this->userSession->Dao : null;
     return $authComponent->getUser($args, $default);
     }

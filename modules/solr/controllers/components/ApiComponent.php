@@ -40,7 +40,7 @@ class Solr_ApiComponent extends AppComponent
 
     $componentLoader = new MIDAS_ComponentLoader();
     $solrComponent = $componentLoader->loadComponent('Solr', 'solr');
-    $authComponent = $componentLoader->loadComponent('Authentication', 'api');
+    $authComponent = $componentLoader->loadComponent('Authentication');
     $userDao = $authComponent->getUser($args,
                                        Zend_Registry::get('userSession')->Dao);
 

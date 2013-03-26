@@ -35,6 +35,13 @@ class ApiComponent extends AppComponent
     Zend_Registry::get('notifier')->callback('CALLBACK_API_REQUIRE_PERMISSIONS', array('scopes' => $scopes));
     }
 
+  /** Return the user dao */
+  private function _getUser($args)
+    {
+    $authComponent = MidasLoader::loadComponent('Authentication');
+    return $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
+    }
+
   /**
    * Pass the args and a list of required parameters.
    * Will throw an exception if a required one is missing.
@@ -337,10 +344,11 @@ class ApiComponent extends AppComponent
    * @return the sought metadata array on success,
              will fail if there are no revisions or the specified revision is not found.
    */
-  function itemGetmetadata($args, $userDao)
+  function itemGetmetadata($args)
     {
     $this->_validateParams($args, array('id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
+    $userDao = $this->_getUser($args);
 
     $itemid = $args['id'];
     $itemModel = MidasLoader::loadModel('Item');
@@ -374,10 +382,11 @@ class ApiComponent extends AppComponent
    * @return true on success,
              will fail if there are no revisions or the specified revision is not found.
    */
-  function itemSetmetadata($args, $userDao)
+  function itemSetmetadata($args)
     {
     $this->_validateParams($args, array('id', 'element', 'value'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
+    $userDao = $this->_getUser($args);
 
     $itemModel = MidasLoader::loadModel('Item');
     $item = $itemModel->load($args['id']);
@@ -416,10 +425,11 @@ class ApiComponent extends AppComponent
    * @return true on success,
              will fail if there are no revisions or the specified revision is not found.
    */
-  function itemSetmultiplemetadata($args, $userDao)
+  function itemSetmultiplemetadata($args)
     {
     $this->_validateParams($args, array('id', 'count'));
     $metadataTuples = $this->_parseMetadataTuples($args);
+    $userDao = $this->_getUser($args);
 
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
 
@@ -454,10 +464,11 @@ class ApiComponent extends AppComponent
              false if the metadata was not found on the item revision,
              will fail if there are no revisions or the specified revision is not found.
    */
-  function itemDeletemetadata($args, $userDao)
+  function itemDeletemetadata($args)
     {
     $this->_validateParams($args, array('id', 'element'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $itemModel = MidasLoader::loadModel('Item');
     $item = $itemModel->load($args['id']);
@@ -497,10 +508,11 @@ class ApiComponent extends AppComponent
    * @return true on success,
      will fail if there are no revisions or the specified revision is not found.
    */
-  function itemDeletemetadataAll($args, $userDao)
+  function itemDeletemetadataAll($args)
     {
     $this->_validateParams($args, array('id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $itemModel = MidasLoader::loadModel('Item');
     $item = $itemModel->load($args['id']);
@@ -542,10 +554,11 @@ class ApiComponent extends AppComponent
    * @param name The name of the item
    * @return array('exists' => bool)
    */
-  function itemExists($args, $userDao)
+  function itemExists($args)
     {
     $this->_validateParams($args, array('name', 'parentid'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
+    $userDao = $this->_getUser($args);
     $folderModel = MidasLoader::loadModel('Folder');
     $itemModel = MidasLoader::loadModel('Item');
     $folder = $folderModel->load($args['parentid']);
@@ -574,10 +587,11 @@ class ApiComponent extends AppComponent
    * @param name The name of the item to search by
    * @return A list of all items with the given name
    */
-  function itemSearchbyname($args, $userDao)
+  function itemSearchbyname($args)
     {
     $this->_validateParams($args, array('name'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
+    $userDao = $this->_getUser($args);
     $itemModel = MidasLoader::loadModel('Item');
     $items = $itemModel->getByName($args['name']);
 
@@ -600,10 +614,11 @@ class ApiComponent extends AppComponent
    * @param head (Optional) only list the most recent revision
    * @return The item object
    */
-  function itemGet($args, $userDao)
+  function itemGet($args)
     {
     $this->_validateParams($args, array('id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
+    $userDao = $this->_getUser($args);
 
     $itemid = $args['id'];
     $itemModel = MidasLoader::loadModel('Item');
@@ -662,10 +677,11 @@ class ApiComponent extends AppComponent
      (user_id, policy, email); group will be a list of (group_id, policy, name).
      policy for user and group will be a policy string [Admin|Write|Read].
    */
-  public function itemListPermissions($args, $userDao)
+  public function itemListPermissions($args)
     {
     $this->_validateParams($args, array('id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
     $itemModel = MidasLoader::loadModel('Item');
@@ -699,10 +715,11 @@ class ApiComponent extends AppComponent
       existed and its latest revision contains only one bitstream.
    * @return The item object that was created
    */
-  function itemCreate($args, $userDao)
+  function itemCreate($args)
     {
     $this->_validateParams($args, array('name'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
+    $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       throw new Exception('Cannot create item anonymously', MIDAS_INVALID_POLICY);
@@ -805,10 +822,11 @@ class ApiComponent extends AppComponent
    * @param dstfolderid The id of destination folder where the item is moved to
    * @return The item object
    */
-  function itemMove($args, $userDao)
+  function itemMove($args)
     {
     $this->_validateParams($args, array('id', 'srcfolderid', 'dstfolderid'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       throw new Exception('Cannot move item anonymously', MIDAS_INVALID_POLICY);
@@ -856,10 +874,11 @@ class ApiComponent extends AppComponent
    * @param dstfolderid The id of destination folder where the item is shared to
    * @return The item object
    */
-  function itemShare($args, $userDao)
+  function itemShare($args)
     {
     $this->_validateParams($args, array('id', 'dstfolderid'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
+    $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       throw new Exception('Cannot share item anonymously', MIDAS_INVALID_POLICY);
@@ -904,10 +923,11 @@ class ApiComponent extends AppComponent
    * @param dstfolderid The id of destination folder where the item is duplicated to
    * @return The item object that was created
    */
-  function itemDuplicate($args, $userDao)
+  function itemDuplicate($args)
     {
     $this->_validateParams($args, array('id', 'dstfolderid'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
+    $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       throw new Exception('Cannot duplicate item anonymously', MIDAS_INVALID_POLICY);
@@ -939,10 +959,11 @@ class ApiComponent extends AppComponent
    * @param policy Desired policy status, one of [Admin|Write|Read].
    * @return success = true on success.
    */
-  function itemAddPolicygroup($args, $userDao)
+  function itemAddPolicygroup($args)
     {
     $this->_validateParams($args, array('id', 'group_id', 'policy'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $itemModel = MidasLoader::loadModel('Item');
     $itemId = $args['id'];
@@ -978,10 +999,11 @@ class ApiComponent extends AppComponent
    * @param group_id The id of the group.
    * @return success = true on success.
    */
-  function itemRemovePolicygroup($args, $userDao)
+  function itemRemovePolicygroup($args)
     {
     $this->_validateParams($args, array('id', 'group_id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $itemModel = MidasLoader::loadModel('Item');
     $itemId = $args['id'];
@@ -1021,10 +1043,11 @@ class ApiComponent extends AppComponent
    * @param policy Desired policy status, one of [Admin|Write|Read].
    * @return success = true on success.
    */
-  function itemAddPolicyuser($args, $adminUser)
+  function itemAddPolicyuser($args)
     {
     $this->_validateParams($args, array('id', 'user_id', 'policy'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $adminUser = $this->_getUser($args);
 
     $itemModel = MidasLoader::loadModel('Item');
     $itemId = $args['id'];
@@ -1061,10 +1084,11 @@ class ApiComponent extends AppComponent
    * @param user_id The id of the target user.
    * @return success = true on success.
    */
-  function itemRemovePolicyuser($args, $userDao)
+  function itemRemovePolicyuser($args)
     {
     $this->_validateParams($args, array('id', 'user_id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $itemModel = MidasLoader::loadModel('Item');
     $itemId = $args['id'];
@@ -1100,11 +1124,12 @@ class ApiComponent extends AppComponent
    * @param token Authentication token
    * @param id The id of the item
    */
-  function itemDelete($args, $userDao)
+  function itemDelete($args)
     {
     $this->_validateParams($args, array('id'));
 
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
@@ -1177,10 +1202,11 @@ class ApiComponent extends AppComponent
    * @param canjoin (Optional) Default 'Everyone', possible values [Everyone|Invitation].
    * @return The community dao that was created
    */
-  function communityCreate($args, $userDao)
+  function communityCreate($args)
     {
     $this->_validateParams($args, array('name'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
+    $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       throw new Exception('Unable to find user', MIDAS_INVALID_POLICY);
@@ -1267,12 +1293,13 @@ class ApiComponent extends AppComponent
    * @param name the name of the community
    * @return The community information
    */
-  function communityGet($args, $userDao)
+  function communityGet($args)
     {
     $hasId = array_key_exists('id', $args);
     $hasName = array_key_exists('name', $args);
 
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
+    $userDao = $this->_getUser($args);
 
     $communityModel = MidasLoader::loadModel('Community');
     if($hasId)
@@ -1302,9 +1329,10 @@ class ApiComponent extends AppComponent
    * @param id The id of the community
    * @return The folders in the community
    */
-  function communityChildren($args, $userDao)
+  function communityChildren($args)
     {
     $this->_validateParams($args, array('id'));
+    $userDao = $this->_getUser($args);
 
     $id = $args['id'];
 
@@ -1335,11 +1363,12 @@ class ApiComponent extends AppComponent
    * @param token (Optional) Authentication token
    * @return A list of all communities
    */
-  function communityList($args, $userDao)
+  function communityList($args)
     {
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
     $communityModel = MidasLoader::loadModel('Community');
     $userModel = MidasLoader::loadModel('User');
+    $userDao = $this->_getUser($args);
 
     if($userDao && $userDao->isAdmin())
       {
@@ -1366,11 +1395,12 @@ class ApiComponent extends AppComponent
    * @param token Authentication token
    * @param id The id of the community
    */
-  function communityDelete($args, $userDao)
+  function communityDelete($args)
     {
     $this->_validateParams($args, array('id'));
 
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
@@ -1402,10 +1432,11 @@ class ApiComponent extends AppComponent
    * @param parentid The id of the parent folder. Set this to -1 to create a top level user folder.
    * @return The folder object that was created
    */
-  function folderCreate($args, $userDao)
+  function folderCreate($args)
     {
     $this->_validateParams($args, array('name'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
+    $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       throw new Exception('Cannot create folder anonymously', MIDAS_INVALID_POLICY);
@@ -1521,10 +1552,11 @@ class ApiComponent extends AppComponent
    * @param dstfolderid The id of destination folder (new parent folder) where the folder is moved to
    * @return The folder object
    */
-  function folderMove($args, $userDao)
+  function folderMove($args)
     {
     $this->_validateParams($args, array('id', 'dstfolderid'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $folderModel = MidasLoader::loadModel('Folder');
     $id = $args['id'];
@@ -1553,10 +1585,11 @@ class ApiComponent extends AppComponent
    * @param id The id of the folder
    * @return The folder object, including its parent object
    */
-  function folderGet($args, $userDao)
+  function folderGet($args)
     {
     $this->_validateParams($args, array('id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
+    $userDao = $this->_getUser($args);
 
     $folderModel = MidasLoader::loadModel('Folder');
 
@@ -1581,10 +1614,11 @@ class ApiComponent extends AppComponent
      (user_id, policy, email); group will be a list of (group_id, policy, name).
      policy for user and group will be a policy string [Admin|Write|Read].
    */
-  public function folderListPermissions($args, $userDao)
+  public function folderListPermissions($args)
     {
     $this->_validateParams($args, array('id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
     $folderModel = MidasLoader::loadModel('Folder');
@@ -1611,9 +1645,10 @@ class ApiComponent extends AppComponent
    * @param id The id of the folder
    * @return The items and folders in the given folder
    */
-  function folderChildren($args, $userDao)
+  function folderChildren($args)
     {
     $this->_validateParams($args, array('id'));
+    $userDao = $this->_getUser($args);
 
     $id = $args['id'];
     $folderModel = MidasLoader::loadModel('Folder');
@@ -1648,10 +1683,11 @@ class ApiComponent extends AppComponent
    * @return An array with keys 'success' and 'failure' indicating a count
      of children resources that succeeded or failed the permission change.
    */
-  function folderSetPrivacyRecursive($args, $userDao)
+  function folderSetPrivacyRecursive($args)
     {
     $this->_validateParams($args, array('id', 'privacy'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $folderModel = MidasLoader::loadModel('Folder');
     $folderId = $args['id'];
@@ -1689,10 +1725,11 @@ class ApiComponent extends AppComponent
    * @return An array with keys 'success' and 'failure' indicating a count of
      resources affected by the addition.
    */
-  function folderAddPolicygroup($args, $userDao)
+  function folderAddPolicygroup($args)
     {
     $this->_validateParams($args, array('id', 'group_id', 'policy'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $folderModel = MidasLoader::loadModel('Folder');
     $folderId = $args['id'];
@@ -1742,10 +1779,11 @@ class ApiComponent extends AppComponent
    * @return An array with keys 'success' and 'failure' indicating a count of
      resources affected by the removal.
    */
-  function folderRemovePolicygroup($args, $userDao)
+  function folderRemovePolicygroup($args)
     {
     $this->_validateParams($args, array('id', 'group_id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $folderModel = MidasLoader::loadModel('Folder');
     $folderId = $args['id'];
@@ -1799,10 +1837,11 @@ class ApiComponent extends AppComponent
    * @return An array with keys 'success' and 'failure' indicating a count of
      resources affected by the addition.
    */
-  function folderAddPolicyuser($args, $adminUser)
+  function folderAddPolicyuser($args)
     {
     $this->_validateParams($args, array('id', 'user_id', 'policy'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $adminUser = $this->_getUser($args);
 
     $folderModel = MidasLoader::loadModel('Folder');
     $folderId = $args['id'];
@@ -1853,10 +1892,11 @@ class ApiComponent extends AppComponent
    * @return An array with keys 'success' and 'failure' indicating a count of
      resources affected by the removal.
    */
-  function folderRemovePolicyuser($args, $userDao)
+  function folderRemovePolicyuser($args)
     {
     $this->_validateParams($args, array('id', 'user_id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $folderModel = MidasLoader::loadModel('Folder');
     $folderId = $args['id'];
@@ -1903,11 +1943,12 @@ class ApiComponent extends AppComponent
    * @param token Authentication token
    * @param id The id of the folder
    */
-  function folderDelete($args, $userDao)
+  function folderDelete($args)
     {
     $this->_validateParams($args, array('id'));
 
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
@@ -1929,9 +1970,10 @@ class ApiComponent extends AppComponent
    * @param token Authentication token
    * @return List of the user's top level folders
    */
-  function userFolders($args, $userDao)
+  function userFolders($args)
     {
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
+    $userDao = $this->_getUser($args);
     if($userDao == false)
       {
       return array();
@@ -1982,7 +2024,7 @@ class ApiComponent extends AppComponent
       }
 
     $userModel = MidasLoader::loadModel('User');
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi');
     if(!$authModule)
       {
       $userDao = $userModel->getByEmail($email);
@@ -2049,10 +2091,11 @@ class ApiComponent extends AppComponent
    * @param id The id of the bitstream
    * @return Bitstream dao
    */
-  function bitstreamGet($args, $userDao)
+  function bitstreamGet($args)
     {
     $this->_validateParams($args, array('id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
+    $userDao = $this->_getUser($args);
 
     $bitstreamModel = MidasLoader::loadModel('Bitstream');
     $bitstream = $bitstreamModel->load($args['id']);
@@ -2098,10 +2141,11 @@ class ApiComponent extends AppComponent
    * @param mimetype (optional) New MIME type for the bitstream
    * @return The bitstream dao
    */
-  function bitstreamEdit($args, $userDao)
+  function bitstreamEdit($args)
     {
     $this->_validateParams($args, array('id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
+    $userDao = $this->_getUser($args);
 
     $bitstreamModel = MidasLoader::loadModel('Bitstream');
     $itemModel = MidasLoader::loadModel('Item');
@@ -2134,10 +2178,11 @@ class ApiComponent extends AppComponent
    * @param token Authentication token
    * @param id The id of the bitstream to delete
    */
-  function bitstreamDelete($args, $userDao)
+  function bitstreamDelete($args)
     {
     $this->_validateParams($args, array('id'));
     $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
+    $userDao = $this->_getUser($args);
 
     $bitstreamModel = MidasLoader::loadModel('Bitstream');
     $itemModel = MidasLoader::loadModel('Item');

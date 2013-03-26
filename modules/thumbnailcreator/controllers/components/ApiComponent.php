@@ -40,7 +40,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
     $this->_checkKeys(array('itemId', 'bitstreamId'), $args);
 
     $imComponent = MidasLoader::loadComponent('Imagemagick', 'thumbnailcreator');
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $userDao = $authComponent->getUser($args,
                                        Zend_Registry::get('userSession')->Dao);
 
@@ -109,7 +109,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
     $itemId = $args['itemId'];
 
     $imComponent = MidasLoader::loadComponent('Imagemagick', 'thumbnailcreator');
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $userDao = $authComponent->getUser($args,
                                        Zend_Registry::get('userSession')->Dao);
 

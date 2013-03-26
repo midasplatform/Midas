@@ -62,7 +62,7 @@ class ApiCallUserMethodsTest extends ApiCallMethodsTest
     $userDao = $this->User->load($usersFile[0]->getKey());
 
     // Expected API key
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi');
     $userApiModel->createDefaultApiKey($userDao);
     $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
 

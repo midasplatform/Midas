@@ -18,10 +18,21 @@
  limitations under the License.
 =========================================================================*/
 
-/** Api App Dao */
-class Api_AppDao extends MIDAS_GlobalDao
-  {
+require_once BASE_PATH.'/core/models/base/TokenModelBase.php';
 
-  } //end class
-
+/** Api Token model implementation */
+class TokenModel extends TokenModelBase
+{
+  /** Remove all expired api tokens */
+  function cleanExpired()
+    {
+    $sql = $this->database->select()->where('expiration_date < ?', date("c"));
+    $rowset = $this->database->fetchAll($sql);
+    foreach($rowset as $row)
+      {
+      $tmpDao = $this->initDao('Token', $row);
+      parent::delete($tmpDao);
+      }
+    }
+}
 ?>

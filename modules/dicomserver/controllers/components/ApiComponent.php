@@ -80,7 +80,7 @@ class Dicomserver_ApiComponent extends AppComponent
     else
       {
       $user_email = $userDao->getEmail();
-      $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+      $userApiModel = MidasLoader::loadModel('Userapi');
       $userApiDao = $userApiModel->getByAppAndUser('Default', $userDao);
       if(!$userApiDao)
         {
@@ -363,7 +363,7 @@ class Dicomserver_ApiComponent extends AppComponent
 
     $itemModel = MidasLoader::loadModel("Item");
     $itemRevisionModel = MidasLoader::loadModel("ItemRevision");
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $itemDao = $itemModel->load($args['item']);
     $userDao = $authComponent->getUser($args,
                                        Zend_Registry::get('userSession')->Dao);
@@ -390,7 +390,7 @@ class Dicomserver_ApiComponent extends AppComponent
     $this->_validateParams($args, array('item'));
 
     $itemModel = MidasLoader::loadModel("Item");
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $itemDao = $itemModel->load($args['item']);
     $userDao = $authComponent->getUser($args,
                                        Zend_Registry::get('userSession')->Dao);
