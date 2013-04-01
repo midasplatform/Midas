@@ -19,21 +19,25 @@
 =========================================================================*/
 
 /**
- * Index Controller for WebApi
+ * Apidocs Controller for Sizequota WebApi
  **/
-class Rest_IndexController extends AppController
+class Apisizequota_ApidocsController extends AppController
 {
-  public function preDispatch()
-    {
-    parent::preDispatch();
-    $this->view->setScriptPath(BASE_PATH."/core/views/rest");
-    }
+  public $_components = array('Apidocs');
 
 
-  /** Index function */
-  function indexAction()
+  /** init api actions*/
+  public function init()
     {
-    $this->view->header = 'REST Web API';
-    $this->view->serverURL = $this->getServerURL();
+    $this->disableLayout();
+    $this->disableView();
     }
+
+  /** User function */
+  function userAction()
+    {
+    $results = $this->Component->Apidocs->getModelApiDocs('user', 'sizequota');
+    echo json_encode($results, JSON_UNESCAPED_SLASHES);
+    }
+
 }

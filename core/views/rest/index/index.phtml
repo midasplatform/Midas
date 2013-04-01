@@ -18,20 +18,30 @@
  limitations under the License.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot . '/apidocs/lib/jquery.slideto.min.js');
-$this->headScript()->appendFile($this->coreWebroot . '/apidocs/lib/jquery.wiggle.min.js');
-$this->headScript()->appendFile($this->coreWebroot . '/apidocs/lib/jquery.ba-bbq.min.js');
-$this->headScript()->appendFile($this->coreWebroot . '/apidocs/lib/handlebars-1.0.rc.1.js');
-$this->headScript()->appendFile($this->coreWebroot . '/apidocs/lib/underscore-min.js');
-$this->headScript()->appendFile($this->coreWebroot . '/apidocs/lib/backbone-min.js');
-$this->headScript()->appendFile($this->coreWebroot . '/apidocs/lib/swagger.js');
-$this->headScript()->appendFile($this->coreWebroot . '/apidocs/swagger-ui.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/jquery.slideto.min.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/jquery.wiggle.min.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/jquery.ba-bbq.min.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/handlebars-1.0.rc.1.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/underscore-min.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/backbone-min.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/swagger.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/swagger-ui.min.js');
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/rest/rest.index.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/apidocs/css/screen.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/library/SwaggerUI/css/screen.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/rest/rest.index.css" />
 
-<h1>RESTFul Web API Module Instruction page</h1>
+<div class="viewMain">
+  <h2>MIDAS REST Web API</h2>
+
+  Base URL:
+  <pre><?php echo $this->serverURL.$this->webroot?>/rest</pre>
+  <br/>
+    To authenticate requests you can provide a parameter of <b>token</b> with an
+    authentication token value or to authenticate using the current Midas session you can pass a parameter key of <b>useSession</b>.
+  <br/>
+  <br/>
+</div>
 
 <div id="message-bar" class="swagger-ui-wrap">
     &nbsp;

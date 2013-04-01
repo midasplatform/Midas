@@ -338,6 +338,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Get the item's metadata
+   * @path /item/{id}
+   * @http GET
    * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param revision (Optional) Revision of the item. Defaults to latest revision
@@ -372,6 +374,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Set a metadata field on an item
+   * @path /item/setmetadata/{id}
+   * @http PUT
    * @param token Authentication token
    *  The id of the item
    * @param element The metadata element
@@ -409,6 +413,8 @@ class ApiComponent extends AppComponent
   /**
    * Set multiple metadata fields on an item, requires specifying the number of
      metadata tuples to add.
+   * @path /item/setmultiplemetadata/{id}
+   * @http PUT
    * @param token Authentication token
    * @param id The id of the item
      @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
@@ -453,6 +459,8 @@ class ApiComponent extends AppComponent
   /**
      Delete a metadata tuple (element, qualifier, type) from a specific item revision,
      defaults to the latest revision of the item.
+   * @path /item/deletemetadata/{id}
+   * @http PUT
    * @param token Authentication token
    * @param id The id of the item
    * @param element The metadata element
@@ -501,6 +509,8 @@ class ApiComponent extends AppComponent
      Deletes all metadata associated with a specific item revision;
      defaults to the latest revision of the item;
      pass <b>revision</b>=<b>all</b> to delete all metadata from all revisions.
+   * @path /item/deletemetadataall/{id}
+   * @http PUT
    * @param token Authentication token
    * @param id The id of the item
    * @param revision (Optional)
@@ -550,6 +560,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Check whether an item with the given name exists in the given folder
+   * @path /item/search
+   * @http GET
    * @param parentid The id of the parent folder
    * @param name The name of the item
    * @return array('exists' => bool)
@@ -583,6 +595,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Return all items
+   * @path /item/search
+   * @http GET
    * @param token (Optional) Authentication token
    * @param name The name of the item to search by
    * @return A list of all items with the given name
@@ -609,6 +623,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Get an item's information
+   * @path /item/{id}
+   * @http GET
    * @param token (Optional) Authentication token
    * @param id The item id
    * @param head (Optional) only list the most recent revision
@@ -671,6 +687,8 @@ class ApiComponent extends AppComponent
 
   /**
    * List the permissions on an item, requires Admin access to the item.
+   * @path /item/permission/{id}
+   * @http GET
    * @param item_id The id of the item
    * @return A list with three keys: privacy, user, group; privacy will be the
      item's privacy string [Public|Private]; user will be a list of
@@ -704,6 +722,8 @@ class ApiComponent extends AppComponent
    * Create an item or update an existing one if one exists by the uuid passed.
      Note: In the case of an already existing item, any parameters passed whose name
      begins with an underscore are assumed to be metadata fields to set on the item.
+   * @path /item
+   * @http POST
    * @param token Authentication token
    * @param parentid The id of the parent folder. Only required for creating a new item.
    * @param name The name of the item to create
@@ -816,6 +836,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Move an item from the source folder to the desination folder
+   * @path /item/move/{id}
+   * @http PUT
    * @param token Authentication token
    * @param id The id of the item
    * @param srcfolderid The id of source folder where the item is located
@@ -869,6 +891,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Share an item to the destination folder
+   * @path /item/share/{id}
+   * @http PUT
    * @param token Authentication token
    * @param id The id of the item
    * @param dstfolderid The id of destination folder where the item is shared to
@@ -918,6 +942,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Duplicate an item to the desination folder
+   * @path /item/duplicate/{id}
+   * @http PUT
    * @param token Authentication token
    * @param id The id of the item
    * @param dstfolderid The id of destination folder where the item is duplicated to
@@ -954,6 +980,8 @@ class ApiComponent extends AppComponent
    * Add an itempolicygroup to an item with the passed in group and policy;
      if an itempolicygroup exists for that group and item, it will be replaced
      with the passed in policy.
+   * @path /item/addpolicygroup/{id}
+   * @http PUT
    * @param id The id of the item.
    * @param group_id The id of the group.
    * @param policy Desired policy status, one of [Admin|Write|Read].
@@ -995,6 +1023,8 @@ class ApiComponent extends AppComponent
   /**
    * Remove a itempolicygroup from a item with the passed in group if the
      itempolicygroup exists.
+   * @path /item/removepolicygroup/{id}
+   * @http PUT
    * @param id The id of the item.
    * @param group_id The id of the group.
    * @return success = true on success.
@@ -1038,6 +1068,8 @@ class ApiComponent extends AppComponent
    * Add a itempolicyuser to an item with the passed in user and policy;
      if an itempolicyuser exists for that user and item, it will be replaced
      with the passed in policy.
+   * @path /item/addpolicyuser/{id}
+   * @http PUT
    * @param id The id of the item.
    * @param user_id The id of the targeted user to create the policy for.
    * @param policy Desired policy status, one of [Admin|Write|Read].
@@ -1080,6 +1112,8 @@ class ApiComponent extends AppComponent
   /**
    * Remove an itempolicyuser from an item with the passed in user if the
      itempolicyuser exists.
+   * @path /item/removepolicyuser/{id}
+   * @http PUT
    * @param id The id of the item.
    * @param user_id The id of the target user.
    * @return success = true on success.
@@ -1121,6 +1155,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Delete an item
+   * @path /item/{id}
+   * @http DELETE
    * @param token Authentication token
    * @param id The id of the item
    */
@@ -1194,6 +1230,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Create a new community or update an existing one using the uuid
+   * @path /community
+   * @http POST
    * @param token Authentication token
    * @param name The community name
    * @param description (Optional) The community description
@@ -1288,6 +1326,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Get a community's information based on the id OR name
+   * @path /community/{id}
+   * @http GET
    * @param token (Optional) Authentication token
    * @param id The id of the community
    * @param name the name of the community
@@ -1325,6 +1365,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Get the immediate children of a community (non-recursive)
+   * @path /community/children/{id}
+   * @http GET
    * @param token (Optional) Authentication token
    * @param id The id of the community
    * @return The folders in the community
@@ -1360,6 +1402,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Return a list of all communities visible to a user
+   * @path /community
+   * @http GET
    * @param token (Optional) Authentication token
    * @return A list of all communities
    */
@@ -1392,6 +1436,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Delete a community. Requires admin privileges on the community
+   * @path /community/{id}
+   * @http DELETE
    * @param token Authentication token
    * @param id The id of the community
    */
@@ -1423,6 +1469,8 @@ class ApiComponent extends AppComponent
    * If a folder is requested to be created with the same parentid and name as
    * an existing folder, an exception will be thrown and no new folder will
    * be created.
+   * @path /folder
+   * @http POST
    * @param token Authentication token
    * @param name The name of the folder to create
    * @param description (Optional) The description of the folder
@@ -1547,6 +1595,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Move a folder to the destination folder
+   * @path /folder/move/{id}
+   * @http PUT
    * @param token Authentication token
    * @param id The id of the folder
    * @param dstfolderid The id of destination folder (new parent folder) where the folder is moved to
@@ -1581,6 +1631,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Get information about the folder
+   * @path /folder/{id}
+   * @http GET
    * @param token (Optional) Authentication token
    * @param id The id of the folder
    * @return The folder object, including its parent object
@@ -1608,6 +1660,8 @@ class ApiComponent extends AppComponent
 
   /**
    * List the permissions on a folder, requires Admin access to the folder.
+   * @path /folder/permission/{id}
+   * @http GET
    * @param id The id of the folder
    * @return A list with three keys: privacy, user, group; privacy will be the
      folder's privacy string [Public|Private]; user will be a list of
@@ -1641,6 +1695,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Get the immediate children of a folder (non-recursive)
+   * @path /folder/children/{id}
+   * @http GET
    * @param token (Optional) Authentication token
    * @param id The id of the folder
    * @return The items and folders in the given folder
@@ -1678,6 +1734,8 @@ class ApiComponent extends AppComponent
   /**
    * Set the privacy status on a folder, and push this value down recursively
      to all children folders and items, requires Admin access to the folder.
+   * @path /folder/setprivacyrecursive/{id}
+   * @http PUT
    * @param id The id of the folder.
    * @param privacy Desired privacy status, one of [Public|Private].
    * @return An array with keys 'success' and 'failure' indicating a count
@@ -1717,6 +1775,8 @@ class ApiComponent extends AppComponent
    * Add a folderpolicygroup to a folder with the passed in group and policy;
      if a folderpolicygroup exists for that group and folder, it will be replaced
      with the passed in policy.
+   * @path /folder/addpolicygroup/{id}
+   * @http PUT
    * @param id The id of the folder.
    * @param group_id The id of the group.
    * @param policy Desired policy status, one of [Admin|Write|Read].
@@ -1772,6 +1832,8 @@ class ApiComponent extends AppComponent
   /**
    * Remove a folderpolicygroup from a folder with the passed in group if the
      folderpolicygroup exists.
+   * @path /folder/removepolicygroup/{id}
+   * @http PUT
    * @param id The id of the folder.
    * @param group_id The id of the group.
    * @param recursive If included will push all policies after the removal from
@@ -1829,6 +1891,8 @@ class ApiComponent extends AppComponent
    * Add a folderpolicyuser to a folder with the passed in user and policy;
      if a folderpolicyuser exists for that user and folder, it will be replaced
      with the passed in policy.
+   * @path /folder/addpolicyuser/{id}
+   * @http PUT
    * @param id The id of the folder.
    * @param user_id The id of the targeted user to create the policy for.
    * @param policy Desired policy status, one of [Admin|Write|Read].
@@ -1885,6 +1949,8 @@ class ApiComponent extends AppComponent
   /**
    * Remove a folderpolicyuser from a folder with the passed in user if the
      folderpolicyuser exists.
+   * @path /folder/removepolicyuser/{id}
+   * @http PUT
    * @param id The id of the folder.
    * @param user_id The id of the target user.
    * @param recursive If included will push all policies after the removal from
@@ -1940,6 +2006,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Delete a folder. Requires admin privileges on the folder
+   * @path /folder/{id}
+   * @http DELETE
    * @param token Authentication token
    * @param id The id of the folder
    */
@@ -1967,6 +2035,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Return a list of top level folders belonging to the user
+   * @path /user/folders
+   * @http GET
    * @param token Authentication token
    * @return List of the user's top level folders
    */
@@ -2044,6 +2114,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Returns a portion or the entire set of public users based on the limit var.
+   * @path /user
+   * @http GET
    * @param limit The maximum number of users to return
    * @return the list of users
    */
@@ -2057,6 +2129,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Returns a user either by id or by email or by first name and last name.
+   * @path /user/{id}
+   * @http GET
    * @param id The id of the user desired (ignores firstname and lastname)
    * @param email The email of the user desired
    * @param firstname The first name of the desired user (use with lastname)
@@ -2087,6 +2161,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Fetch the information about a bitstream
+   * @path /bitstream/{id}
+   * @http GET
    * @param token (Optional) Authentication token
    * @param id The id of the bitstream
    * @return Bitstream dao
@@ -2135,6 +2211,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Change the properties of a bitstream. Requires write access to the containing item.
+   * @path /bitstream/{id}
+   * @http PUT
    * @param token Authentication token
    * @param id The id of the bitstream to edit
    * @param name (optional) New name for the bitstream
@@ -2175,6 +2253,8 @@ class ApiComponent extends AppComponent
 
   /**
    * Delete a bitstream. Requires admin privileges on the containing item.
+   * @path /bitstream/{id}
+   * @http DELETE
    * @param token Authentication token
    * @param id The id of the bitstream to delete
    */
