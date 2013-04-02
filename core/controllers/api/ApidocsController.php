@@ -23,7 +23,7 @@
  **/
 class Rest_ApidocsController extends AppController
 {
-  public $_components = array('Apidocs');
+  public $_components = array('Apidocs', 'Json');
 
   /** init api actions*/
   public function init()
@@ -57,21 +57,21 @@ class Rest_ApidocsController extends AppController
       $curModel['discription'] = 'Operations about '. $modelPath;
       array_push($results['apis'], $curModel);
       }
-    echo json_encode($results, JSON_UNESCAPED_SLASHES);
+    echo $this->Component->Json->encode($results);
     }
 
   /** Item function */
   function itemAction()
     {
     $results = $this->Component->Apidocs->getModelApiDocs('item');
-    echo json_encode($results, JSON_UNESCAPED_SLASHES);
+    echo $this->Component->Json->encode($results);
     }
 
   /** Folder function */
   function folderAction()
     {
     $results = $this->Component->Apidocs->getModelApiDocs('folder');
-    echo json_encode($results, JSON_UNESCAPED_SLASHES);
+    echo $this->Component->Json->encode($results);
     }
 
 
@@ -79,7 +79,7 @@ class Rest_ApidocsController extends AppController
   function communityAction()
     {
     $results = $this->Component->Apidocs->getModelApiDocs('community');
-    echo json_encode($results, JSON_UNESCAPED_SLASHES);
+    echo $this->Component->Json->encode($results);
     }
 
 
@@ -87,14 +87,14 @@ class Rest_ApidocsController extends AppController
   function bitstreamAction()
     {
     $results = $this->Component->Apidocs->getModelApiDocs('bitstream');
-    echo json_encode($results, JSON_UNESCAPED_SLASHES);
+    echo $this->Component->Json->encode($results);
     }
 
   /** User function */
   function userAction()
     {
     $results = $this->Component->Apidocs->getModelApiDocs('user');
-    echo json_encode($results, JSON_UNESCAPED_SLASHES);
+    echo $this->Component->Json->encode($results);
     }
 
 }

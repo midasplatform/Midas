@@ -23,7 +23,7 @@
  **/
 class Apisizequota_ApidocsController extends AppController
 {
-  public $_components = array('Apidocs');
+  public $_components = array('Apidocs', 'Json');
 
 
   /** init api actions*/
@@ -37,7 +37,7 @@ class Apisizequota_ApidocsController extends AppController
   function userAction()
     {
     $results = $this->Component->Apidocs->getModelApiDocs('user', 'sizequota');
-    echo json_encode($results, JSON_UNESCAPED_SLASHES);
+    echo $this->Component->Json->encode($results);
     }
 
 }
