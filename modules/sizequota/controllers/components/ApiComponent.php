@@ -63,10 +63,10 @@ class Sizequota_ApiComponent extends AppComponent
 
   /**
    * Get the size quota for a user.
-   * @path /user/{id}
+   * @path /sizequota/user/{id}
    * @http GET
-   * @param token Authentication token
-   * @param user Id of the user to check
+   * @param token (Optional) Authentication token
+   * @param id Id of the user to check
    * @return array('quota' => The size quota in bytes for the user, or empty string if unlimited,
                    'used' => Size in bytes currently used)
    */

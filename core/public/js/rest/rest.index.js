@@ -2,12 +2,16 @@ var midas = midas || {};
 midas.rest = midas.rest || {};
 
 $(document).ready(function() {
+    html = '<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/page_white_code_red.png"/>';
+    html += '<span> </span>';
+    $('div.viewHeader').prepend(html);
+
     window.swaggerUi = new SwaggerUi({
     discoveryUrl: json.global.webroot + '/apidocs/',
     apiKey:null,
     dom_id:"swagger-ui-container",
     supportHeaderParams: false,
-    supportedSubmitMethods: ['get', 'post', 'put'],
+    supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
     onComplete: function(swaggerApi, swaggerUi){
         if(console) {
             console.log("Loaded SwaggerUI")
