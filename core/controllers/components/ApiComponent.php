@@ -560,7 +560,7 @@ class ApiComponent extends AppComponent
 
   /**
    * Check whether an item with the given name exists in the given folder
-   * @path /item/search
+   * @path /item/exists
    * @http GET
    * @param parentid The id of the parent folder
    * @param name The name of the item
