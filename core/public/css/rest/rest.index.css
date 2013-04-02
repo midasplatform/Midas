@@ -1,3 +1,15 @@
+div.viewMain {
+  width: 820px !important;
+}
+
+div.footer {
+  display: none !important;
+}
+
+li.resource{
+  padding: 5px !important;
+}
+
 .swagger-ui-wrap {
   max-width: auto;
   margin-left: auto;

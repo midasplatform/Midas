@@ -376,8 +376,8 @@ class ApiComponent extends AppComponent
    * Set a metadata field on an item
    * @path /item/setmetadata/{id}
    * @http PUT
-   * @param token Authentication token
-   *  The id of the item
+   * @param token (Optional) Authentication token
+   * @param id The id of the item
    * @param element The metadata element
    * @param value The metadata value for the field
    * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
@@ -415,7 +415,7 @@ class ApiComponent extends AppComponent
      metadata tuples to add.
    * @path /item/setmultiplemetadata/{id}
    * @http PUT
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param id The id of the item
      @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
    * @param count The number of metadata tuples that will be set.  For every one
@@ -461,7 +461,7 @@ class ApiComponent extends AppComponent
      defaults to the latest revision of the item.
    * @path /item/deletemetadata/{id}
    * @http PUT
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param element The metadata element
    * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
@@ -511,7 +511,7 @@ class ApiComponent extends AppComponent
      pass <b>revision</b>=<b>all</b> to delete all metadata from all revisions.
    * @path /item/deletemetadataall/{id}
    * @http PUT
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param revision (Optional)
      Revision of the item. Defaults to latest revision; pass <b>all</b> to delete all metadata from all revisions.
@@ -724,7 +724,7 @@ class ApiComponent extends AppComponent
      begins with an underscore are assumed to be metadata fields to set on the item.
    * @path /item
    * @http POST
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param parentid The id of the parent folder. Only required for creating a new item.
    * @param name The name of the item to create
    * @param description (Optional) The description of the item
@@ -838,7 +838,7 @@ class ApiComponent extends AppComponent
    * Move an item from the source folder to the desination folder
    * @path /item/move/{id}
    * @http PUT
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param srcfolderid The id of source folder where the item is located
    * @param dstfolderid The id of destination folder where the item is moved to
@@ -893,7 +893,7 @@ class ApiComponent extends AppComponent
    * Share an item to the destination folder
    * @path /item/share/{id}
    * @http PUT
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param dstfolderid The id of destination folder where the item is shared to
    * @return The item object
@@ -944,7 +944,7 @@ class ApiComponent extends AppComponent
    * Duplicate an item to the desination folder
    * @path /item/duplicate/{id}
    * @http PUT
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param dstfolderid The id of destination folder where the item is duplicated to
    * @return The item object that was created
@@ -1157,7 +1157,7 @@ class ApiComponent extends AppComponent
    * Delete an item
    * @path /item/{id}
    * @http DELETE
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param id The id of the item
    */
   function itemDelete($args)
@@ -1232,7 +1232,7 @@ class ApiComponent extends AppComponent
    * Create a new community or update an existing one using the uuid
    * @path /community
    * @http POST
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param name The community name
    * @param description (Optional) The community description
    * @param uuid (Optional) Uuid of the community. If none is passed, will generate one.
@@ -1328,7 +1328,7 @@ class ApiComponent extends AppComponent
    * Get a community's information based on the id OR name
    * @path /community/{id}
    * @http GET
-   * @param token (Optional) Authentication token
+   * @param token (Optional) (Optional) Authentication token
    * @param id The id of the community
    * @param name the name of the community
    * @return The community information
@@ -1367,7 +1367,7 @@ class ApiComponent extends AppComponent
    * Get the immediate children of a community (non-recursive)
    * @path /community/children/{id}
    * @http GET
-   * @param token (Optional) Authentication token
+   * @param token (Optional) (Optional) Authentication token
    * @param id The id of the community
    * @return The folders in the community
    */
@@ -1404,7 +1404,7 @@ class ApiComponent extends AppComponent
    * Return a list of all communities visible to a user
    * @path /community
    * @http GET
-   * @param token (Optional) Authentication token
+   * @param token (Optional) (Optional) Authentication token
    * @return A list of all communities
    */
   function communityList($args)
@@ -1438,7 +1438,7 @@ class ApiComponent extends AppComponent
    * Delete a community. Requires admin privileges on the community
    * @path /community/{id}
    * @http DELETE
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param id The id of the community
    */
   function communityDelete($args)
@@ -1471,7 +1471,7 @@ class ApiComponent extends AppComponent
    * be created.
    * @path /folder
    * @http POST
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param name The name of the folder to create
    * @param description (Optional) The description of the folder
    * @param uuid (Optional) Uuid of the folder. If none is passed, will generate one.
@@ -1597,7 +1597,7 @@ class ApiComponent extends AppComponent
    * Move a folder to the destination folder
    * @path /folder/move/{id}
    * @http PUT
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param id The id of the folder
    * @param dstfolderid The id of destination folder (new parent folder) where the folder is moved to
    * @return The folder object
@@ -2008,7 +2008,7 @@ class ApiComponent extends AppComponent
    * Delete a folder. Requires admin privileges on the folder
    * @path /folder/{id}
    * @http DELETE
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param id The id of the folder
    */
   function folderDelete($args)
@@ -2037,7 +2037,7 @@ class ApiComponent extends AppComponent
    * Return a list of top level folders belonging to the user
    * @path /user/folders
    * @http GET
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @return List of the user's top level folders
    */
   function userFolders($args)
@@ -2213,7 +2213,7 @@ class ApiComponent extends AppComponent
    * Change the properties of a bitstream. Requires write access to the containing item.
    * @path /bitstream/{id}
    * @http PUT
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param id The id of the bitstream to edit
    * @param name (optional) New name for the bitstream
    * @param mimetype (optional) New MIME type for the bitstream
@@ -2255,7 +2255,7 @@ class ApiComponent extends AppComponent
    * Delete a bitstream. Requires admin privileges on the containing item.
    * @path /bitstream/{id}
    * @http DELETE
-   * @param token Authentication token
+   * @param token (Optional) Authentication token
    * @param id The id of the bitstream to delete
    */
   function bitstreamDelete($args)
