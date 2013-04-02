@@ -42,7 +42,7 @@ class ApiController extends REST_Controller
   /** Return the user dao */
   protected function _getUser($args)
     {
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     return $authComponent->getUser($args, $this->userSession->Dao);
     }
 

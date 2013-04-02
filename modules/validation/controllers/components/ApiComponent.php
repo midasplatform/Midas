@@ -88,7 +88,7 @@ class Validation_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('name', 'description'), $value);
 
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao || !$userDao->isAdmin())
@@ -115,7 +115,7 @@ class Validation_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
 
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao || !$userDao->isAdmin())
@@ -148,7 +148,7 @@ class Validation_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
 
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao || !$userDao->isAdmin())
@@ -181,7 +181,7 @@ class Validation_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
 
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao || !$userDao->isAdmin())
@@ -214,7 +214,7 @@ class Validation_ApiComponent extends AppComponent
     {
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
 
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao)
@@ -248,7 +248,7 @@ class Validation_ApiComponent extends AppComponent
     $this->_checkKeys(array('dashboard_id', 'folder_id'), $value);
 
     // Verify that the user is an admin
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao || !$userDao->isAdmin())
@@ -322,7 +322,7 @@ class Validation_ApiComponent extends AppComponent
                       $value);
 
     // Verify authentication (only admins can set results)
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $userDao = $authComponent->getUser($value,
                                        Zend_Registry::get('userSession')->Dao);
     if(!$userDao || !$userDao->isAdmin())

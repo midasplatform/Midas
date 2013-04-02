@@ -73,24 +73,15 @@ class Api_ApiComponent extends AppComponent
   /** Return the user dao */
   private function _getUser($args)
     {
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     return $authComponent->getUser($args, $this->userSession->Dao);
     }
 
   /** Return the user dao */
-  private function _callCoreApiMethod($args, $coreApiMethod, $hasReturn = true, $needAuth = true)
+  private function _callCoreApiMethod($args, $coreApiMethod, $hasReturn = true)
     {
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
     $ApiComponent = MidasLoader::loadComponent('Api');
-    if($needAuth)
-      {
-      $userDao = $authComponent->getUser($args, $this->userSession->Dao);
-      $rtn = $ApiComponent->$coreApiMethod($args, $userDao);
-      }
-    else
-      {
-      $rtn = $ApiComponent->$coreApiMethod($args);
-      }
+    $rtn = $ApiComponent->$coreApiMethod($args);
     if($hasReturn)
       {
       return $rtn;
@@ -164,8 +155,8 @@ class Api_ApiComponent extends AppComponent
     $email = $args['email'];
     $appname = $args['appname'];
     $apikey = $args['apikey'];
-    $Api_Userapi = MidasLoader::loadModel('Userapi', 'api');
-    $tokenDao = $Api_Userapi->getToken($email, $apikey, $appname);
+    $Userapi = MidasLoader::loadModel('Userapi');
+    $tokenDao = $Userapi->getToken($email, $apikey, $appname);
     if(empty($tokenDao))
       {
       throw new Exception('Unable to authenticate. Please check credentials.', MIDAS_INVALID_PARAMETER);
@@ -1216,7 +1207,6 @@ class Api_ApiComponent extends AppComponent
     {
     $this->_renameParamKey($args, 'item_id', 'id');
     return $this->_callCoreApiMethod($args, 'itemRemovePolicyuser');
-
     }
 
   /**
@@ -1269,7 +1259,7 @@ class Api_ApiComponent extends AppComponent
       }
 
     $userModel = MidasLoader::loadModel('User');
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi');
     if(!$authModule)
       {
       $userDao = $userModel->getByEmail($email);
@@ -1302,7 +1292,7 @@ class Api_ApiComponent extends AppComponent
    */
   function userList($args)
     {
-    return $this->_callCoreApiMethod($args, 'userList', true, false);
+    return $this->_callCoreApiMethod($args, 'userList');
     }
 
   /**
@@ -1316,7 +1306,7 @@ class Api_ApiComponent extends AppComponent
   function userGet($args)
     {
     $this->_renameParamKey($args, 'user_id', 'id', false);
-    return $this->_callCoreApiMethod($args, 'userGet', true, false);
+    return $this->_callCoreApiMethod($args, 'userGet');
     }
 
   /**

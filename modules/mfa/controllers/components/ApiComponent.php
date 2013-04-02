@@ -47,7 +47,7 @@ class Mfa_ApiComponent extends AppComponent
     $modelLoader = new MIDAS_ModelLoader();
     $tempTokenModel = $modelLoader->loadModel('Apitoken', 'mfa');
     $otpDeviceModel = $modelLoader->loadModel('Otpdevice', 'mfa');
-    $apiTokenModel = $modelLoader->loadModel('Token', 'api');
+    $apiTokenModel = $modelLoader->loadModel('Token');
 
     $tempToken = $tempTokenModel->load($params['mfaTokenId']);
     if(!$tempToken)

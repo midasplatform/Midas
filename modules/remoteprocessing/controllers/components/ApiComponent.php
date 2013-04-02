@@ -61,7 +61,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
 
     $userModel = MidasLoader::loadModel('User');
     $groupModel = MidasLoader::loadModel('Group');
-    $Api_UserapiModel = MidasLoader::loadModel('Userapi', 'api');
+    $UserapiModel = MidasLoader::loadModel('Userapi');
     if(empty($apikey))
       {
       if(empty($os))
@@ -76,10 +76,10 @@ class Remoteprocessing_ApiComponent extends AppComponent
       $serverGroup = $groupModel->load(MIDAS_GROUP_SERVER_KEY);
       $groupModel->addUser($serverGroup, $userDao);
 
-      $userapiDao = $Api_UserapiModel->getByAppAndUser('remoteprocessing', $userDao);
+      $userapiDao = $UserapiModel->getByAppAndUser('remoteprocessing', $userDao);
       if($userapiDao == false)
         {
-        $userapiDao = $Api_UserapiModel->createKey($userDao, 'remoteprocessing', '100');
+        $userapiDao = $UserapiModel->createKey($userDao, 'remoteprocessing', '100');
         }
 
       $apikey = $userapiDao->getApikey();
@@ -87,7 +87,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
       Zend_Registry::get('notifier')->callback('CALLBACK_REMOTEPROCESSING_CREATESERVER', $userDao->toArray());
       }
 
-    $tokenDao = $Api_UserapiModel->getToken($email, $apikey, 'remoteprocessing');
+    $tokenDao = $UserapiModel->getToken($email, $apikey, 'remoteprocessing');
     if(empty($tokenDao))
       {
       throw new Exception('Unable to authenticate. Please check credentials.', MIDAS_INVALID_PARAMETER);
@@ -106,7 +106,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
    */
   public function keepaliveserver($args)
     {
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $userDao = $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
     if($userDao == false)
       {
@@ -205,7 +205,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
       throw new Exception('Should be a put request.', MIDAS_INVALID_PARAMETER);
       }
 
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $jobComponent = MidasLoader::loadComponent('Job', 'remoteprocessing');
     $userDao = $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
     if($userDao == false)

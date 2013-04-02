@@ -21,10 +21,9 @@
 /** api config controller */
 class Api_ConfigController extends Api_AppController
 {
-  public $_models = array('User');
+  public $_models = array('User', 'Userapi');
   public $_moduleForms = array('Config');
   public $_components = array('Utility', 'Date');
-  public $_moduleModels = array('Userapi');
 
   /**
    * Configuration action for a user's api keys
@@ -60,7 +59,7 @@ class Api_ConfigController extends Api_AppController
       $this->disableView();
       $applicationName      = $this->_getParam('appplication_name');
       $tokenExperiationTime = $this->_getParam('expiration');
-      $userapiDao = $this->Api_Userapi->createKey($user, $applicationName, $tokenExperiationTime);
+      $userapiDao = $this->Userapi->createKey($user, $applicationName, $tokenExperiationTime);
       if($userapiDao != false)
         {
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
@@ -74,11 +73,11 @@ class Api_ConfigController extends Api_AppController
       {
       $this->disableView();
       $element = $this->_getParam('element');
-      $userapiDao = $this->Api_Userapi->load($element);
+      $userapiDao = $this->Userapi->load($element);
       // Make sure the key belongs to the user
       if($userapiDao != false && ($userapiDao->getUserId() == $userId || $this->userSession->Dao->isAdmin()))
         {
-        $this->Api_Userapi->delete($userapiDao);
+        $this->Userapi->delete($userapiDao);
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         }
       else
@@ -89,7 +88,7 @@ class Api_ConfigController extends Api_AppController
 
     // List the previously generated API keys
     $apikeys = array();
-    $userapiDaos = $this->Api_Userapi->getByUser($user);
+    $userapiDaos = $this->Userapi->getByUser($user);
     $this->view->userapiDaos = $userapiDaos;
     $this->view->user = $user;
     }

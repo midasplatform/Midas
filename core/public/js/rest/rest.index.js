@@ -3,7 +3,7 @@ midas.rest = midas.rest || {};
 
 $(document).ready(function() {
     window.swaggerUi = new SwaggerUi({
-    discoveryUrl:'/midas/core/apidocs/api-docs.json',
+    discoveryUrl: json.global.webroot + '/apidocs/',
     apiKey:null,
     dom_id:"swagger-ui-container",
     supportHeaderParams: false,

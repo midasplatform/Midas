@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Web API Authentication Component */
-class Api_AuthenticationComponent extends AppComponent
+class AuthenticationComponent extends AppComponent
 {
 
   /** Constructor */
@@ -56,7 +56,7 @@ class Api_AuthenticationComponent extends AppComponent
         return 0;
         }
       $token = $args['token'];
-      $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+      $userApiModel = MidasLoader::loadModel('Userapi');
       $userapiDao = $userApiModel->getUserapiFromToken($token);
       if(!$userapiDao)
         {

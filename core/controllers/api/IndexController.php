@@ -23,7 +23,6 @@
  **/
 class Rest_IndexController extends AppController
 {
-
   public function preDispatch()
     {
     parent::preDispatch();
@@ -34,6 +33,7 @@ class Rest_IndexController extends AppController
   /** Index function */
   function indexAction()
     {
-    $this->view->header = 'RESTful Web API';
+    $this->view->header = 'REST Web API';
+    $this->view->serverURL = $this->getServerURL();
     }
 }

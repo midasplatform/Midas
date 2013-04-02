@@ -18,9 +18,26 @@
  limitations under the License.
 =========================================================================*/
 
-/** App model for api module */
-class Api_AppModel extends MIDASModel
+/**
+ * Apidocs Controller for Sizequota WebApi
+ **/
+class Apisizequota_ApidocsController extends AppController
 {
-  public $moduleName = 'api';
+  public $_components = array('Apidocs');
+
+
+  /** init api actions*/
+  public function init()
+    {
+    $this->disableLayout();
+    $this->disableView();
+    }
+
+  /** User function */
+  function userAction()
+    {
+    $results = $this->Component->Apidocs->getModelApiDocs('user', 'sizequota');
+    echo json_encode($results, JSON_UNESCAPED_SLASHES);
+    }
+
 }
-?>

@@ -168,7 +168,7 @@ class ExecuteComponentTest extends BatchmakeControllerTest
     // need to falisfy a HTTP_HOST
     $_SERVER['HTTP_HOST'] = 'localhost';
     // need to create a web api-key for the user
-    $userapiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userapiModel = MidasLoader::loadModel('Userapi');
     $userapiModel->createDefaultApiKey($userDao);
 
     $this->executeComponent->generatePythonConfigParams($taskDao, $userDao);

@@ -44,7 +44,7 @@ class Sizequota_ApiComponent extends AppComponent
   /** Authenticate via token or session */
   private function _getUser($args)
     {
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $default = $this->userSession ? $this->userSession->Dao : null;
     return $authComponent->getUser($args, $default);
     }
@@ -63,6 +63,8 @@ class Sizequota_ApiComponent extends AppComponent
 
   /**
    * Get the size quota for a user.
+   * @path /user/{id}
+   * @http GET
    * @param token Authentication token
    * @param user Id of the user to check
    * @return array('quota' => The size quota in bytes for the user, or empty string if unlimited,

@@ -17,37 +17,26 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-
-/**
- * The install script for the api module
- */
-class Api_InstallScript extends MIDASModuleInstallScript
-  {
-
-  /**
-   * Pre-install callback does nothing
-   */
-  public function preInstall()
+abstract class TokenModelBase extends AppModel
+{
+  /** constructor */
+  public function __construct()
     {
-    }
+    parent::__construct();
+    $this->_name = 'token';
+    $this->_key = 'token_id';
 
-  /**
-   * Post-install callback creates default api keys
-   * for all existing users
-   */
-  public function postInstall()
-    {
-    include_once BASE_PATH.'/modules/api/models/AppModel.php';
-    $userModel = MidasLoader::loadModel('User');
-    $userapiModel = MidasLoader::loadModel('Userapi', 'api');
+    $this->_mainData = array(
+        'token_id' => array('type' => MIDAS_DATA),
+        'userapi_id' =>  array('type' => MIDAS_DATA),
+        'token' =>  array('type' => MIDAS_DATA),
+        'expiration_date' =>  array('type' => MIDAS_DATA),
+        'userapi' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Userapi', 'parent_column' => 'userapi_id', 'child_column' => 'userapi_id'),
+        );
+    $this->initialize(); // required
+    } // end __construct()
 
-    //limit this to 100 users; there shouldn't be very many when api is installed
-    $users = $userModel->getAll(false, 100, 'admin');
-    foreach($users as $user)
-      {
-      $userapiModel->createDefaultApiKey($user);
-      }
-    }
-  }
+  abstract function cleanExpired();
 
+} // end class AssetstoreModelBase
 ?>
