@@ -33,10 +33,11 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/rest/rest.index
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/rest/rest.index.css" />
 
 <div class="viewMain">
-  <pre>Base URL: <?php echo $this->serverURL.$this->webroot?>/rest</pre>
+  <pre>Web API URL = Base URL (<?php echo $this->serverURL.$this->webroot?>/rest) + individual API URL listed below</pre>
   <br/>
-    To authenticate requests you can provide a parameter of <b>token</b> with an
-    authentication token value or to authenticate using the current Midas session you can pass a parameter key of <b>useSession</b>.
+    To authenticate requests: You can provide a parameter of <b>token</b> with an authentication token value.
+  <br/>
+  <span> Or you can pass a parameter key of <b>useSession</b> to authenticate using the current Midas session.</span>
   <br/>
   <br/>
 
