@@ -154,7 +154,7 @@ class ApidocsComponent extends AppComponent
         $operation = array();
         $operation['httpMethod'] = $docs['http'];
         $operation['summary'] = $docs['description'];
-        $operation['notes'] = 'Return : ' . $docs['return'];
+        $operation['notes'] = empty($docs['return']) ? '' : 'Return: ' . $docs['return'];
         $operation['nickname'] = $module . '_' . $name;
         $operation['responseClass'] = 'void';
         $operation['parameters'] = array();

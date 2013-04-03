@@ -2215,8 +2215,8 @@ class ApiComponent extends AppComponent
    * @http PUT
    * @param token (Optional) Authentication token
    * @param id The id of the bitstream to edit
-   * @param name (optional) New name for the bitstream
-   * @param mimetype (optional) New MIME type for the bitstream
+   * @param name (Optional) New name for the bitstream
+   * @param mimetype (Optional) New MIME type for the bitstream
    * @return The bitstream dao
    */
   function bitstreamEdit($args)

@@ -198,6 +198,7 @@
       while(this.name.charAt(0) === '/') {
         this.name = this.name.substr(1);
       }
+      this.name = this.name.replace('/', '_');
       /* Midas changes end */
       this.basePath = this.api.basePath;
       this.operations = {};
