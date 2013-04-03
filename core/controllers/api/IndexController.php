@@ -33,7 +33,9 @@ class Rest_IndexController extends AppController
   /** Index function */
   function indexAction()
     {
-    $this->view->header = 'REST Web API';
+    $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->coreWebroot.'/public/images/icons/page_white_code_red.png" />';
+    $header .= ' REST Web API';
+    $this->view->header = $header;
     $this->view->serverURL = $this->getServerURL();
     }
 }

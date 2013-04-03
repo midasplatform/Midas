@@ -36,7 +36,7 @@ class Apisizequota_ApidocsController extends AppController
   /** User function */
   function userAction()
     {
-    $results = $this->Component->Apidocs->getModelApiDocs('user', 'sizequota');
+    $results = $this->Component->Apidocs->getResourceApiDocs('user', 'sizequota');
     echo $this->Component->Json->encode($results);
     }
 

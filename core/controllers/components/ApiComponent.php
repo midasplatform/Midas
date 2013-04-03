@@ -337,10 +337,318 @@ class ApiComponent extends AppComponent
     }
 
   /**
+   * helper function to validate args of methods for adding or removing
+   * users from groups.
+   * @param id the group to add the user to
+   * @param user_id the user to add to the group
+   * @return an array of (groupModel, groupDao, groupUserDao)
+   */
+  protected function _validateGroupUserChangeParams($args)
+    {
+    $this->_validateParams($args, array('id', 'user_id'));
+
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to add a user to a group', MIDAS_INVALID_POLICY);
+      }
+
+    $groupId = $args['id'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($groupId);
+    if($group == false)
+      {
+      throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
+      }
+
+    $communityModel = MidasLoader::loadModel('Community');
+    if(!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupUserId = $args['user_id'];
+    $userModel = MidasLoader::loadModel('User');
+    $groupUser = $userModel->load($groupUserId);
+    if($groupUser == false)
+      {
+      throw new Exception('This user does not exist', MIDAS_INVALID_PARAMETER);
+      }
+
+    return array($groupModel, $group, $groupUser);
+    }
+
+  /**
+   * Helper function for checking for a metadata type index or name and
+   * handling the error conditions.
+   */
+  protected function _checkMetadataTypeOrName(&$args, &$metadataModel)
+    {
+    if(array_key_exists('typename', $args))
+      {
+      return $metadataModel->mapNameToType($args['typename']);
+      }
+    else if(array_key_exists('type', $args))
+      {
+      return $args['type'];
+      }
+    else
+      {
+      throw new Exception('Parameter type is not defined', MIDAS_INVALID_PARAMETER);
+      }
+    }
+
+  /**
+   * Get the server version
+   * @path /system/version
+   * @http GET
+   * @return Server version in the form {major}.{minor}.{patch}
+   */
+  public function version($args)
+    {
+    return array('version' => Zend_Registry::get('configDatabase')->version);
+    }
+
+  /**
+   * Get the enabled modules on the server
+   * @path /system/module
+   * @http GET
+   * @return List of enabled modules on the server
+   */
+  public function modulesList($args)
+    {
+    return array('modules' => array_keys(Zend_Registry::get('configsModules')));
+    }
+
+  /**
+   * List all available web api resources on the server
+   * @path /system/resource
+   * @http GET
+   * @return List of api resources names and their corresponding url
+   */
+  public function resourcesList($args)
+    {
+    $data = array();
+    $docsComponent = MidasLoader::loadComponent('Apidocs');
+    $request = Zend_Controller_Front::getInstance()->getRequest();
+    $baseUrl = $request->getScheme().'://'.$request->getHttpHost().$request->getBaseUrl();;
+    $apiroot = $baseUrl.'/rest';
+    $resources = $docsComponent->getEnabledResources();
+    foreach($resources as $resource)
+      {
+      if(strpos($resource, '/') > 0)
+        {
+        $resource = '/' . $resource;
+        }
+      $data[$resource] = $apiroot . $resource;
+      }
+    return array('resources' => $data);
+
+    }
+
+  /**
+   * Get the server information including version, modules enabled,
+     and available resources
+   * @path /system/info
+   * @http GET
+   * @return Server information
+   */
+  public function info($args)
+    {
+    return array_merge($this->version($args),
+                       $this->modulesList($args),
+                       $this->resourcesList($args));
+    }
+
+  /**
+   * Login as a user using a web api key
+   * @path /system/login
+   * @http GET
+   * @param appname The application name
+   * @param email The user email
+   * @param apikey The api key corresponding to the given application name
+   * @return A web api token that will be valid for a set duration
+   */
+  function login($args)
+    {
+    $this->_validateParams($args, array('email', 'appname', 'apikey'));
+
+    $data['token'] = '';
+    $email = $args['email'];
+    $appname = $args['appname'];
+    $apikey = $args['apikey'];
+    $Userapi = MidasLoader::loadModel('Userapi');
+    $tokenDao = $Userapi->getToken($email, $apikey, $appname);
+    if(empty($tokenDao))
+      {
+      throw new Exception('Unable to authenticate. Please check credentials.', MIDAS_INVALID_PARAMETER);
+      }
+    $userDao = $tokenDao->getUserapi()->getUser();
+    $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_API_AUTH_INTERCEPT', array(
+      'user' => $userDao,
+      'tokenDao' => $tokenDao));
+    foreach($notifications as $module => $value)
+      {
+      if($value['response'])
+        {
+        return $value['response'];
+        }
+      }
+    $data['token'] = $tokenDao->getToken();
+    return $data;
+    }
+
+  /**
+   * Returns the user's default API key given their username and password.
+   * @param email The user's email
+   * @param password The user's password
+   * @return Array with a single key, 'apikey', whose value is the user's default api key
+   */
+  function userApikeyDefault($args)
+    {
+    $this->_validateParams($args, array('email', 'password'));
+    $request = Zend_Controller_Front::getInstance()->getRequest();
+    if(!$request->isPost())
+      {
+      throw new Exception('POST method required', MIDAS_HTTP_ERROR);
+      }
+    $email = $args['email'];
+    $password = $args['password'];
+
+    try
+      {
+      $notifications = array();
+      $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTHENTICATION', array(
+        'email' => $email,
+        'password' => $password));
+      }
+    catch(Zend_Exception $exc)
+      {
+      throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
+      }
+    $authModule = false;
+    foreach($notifications as $module => $user)
+      {
+      if($user)
+        {
+        $userDao = $user;
+        $authModule = true;
+        break;
+        }
+      }
+
+    $userModel = MidasLoader::loadModel('User');
+    $userApiModel = MidasLoader::loadModel('Userapi');
+    if(!$authModule)
+      {
+      $userDao = $userModel->getByEmail($email);
+      if(!$userDao)
+        {
+        throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
+        }
+      }
+
+    $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+    if($authModule || $userModel->hashExists(hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$password)))
+      {
+      if($userDao->getSalt() == '')
+        {
+        $passwordHash = $userModel->convertLegacyPasswordHash($userDao, $password);
+        }
+      $defaultApiKey = $userApiModel->getByAppAndEmail('Default', $email)->getApikey();
+      return array('apikey' => $defaultApiKey);
+      }
+    else
+      {
+      throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
+      }
+    }
+
+  /**
+   * Get the size of a partially completed upload
+   * @path /system/uploadeoffset
+   * @http GET
+   * @param uploadtoken The upload token for the file
+   * @return [offset] The size of the file currently on the server
+   */
+  function uploadGetoffset($args)
+    {
+    $uploadComponent = MidasLoader::loadComponent('Httpupload');
+    $uploadComponent->setTestingMode($this->apiSetup['testing']);
+    $uploadComponent->setTmpDirectory($this->apiSetup['tmpDirectory']);
+    return $uploadComponent->getOffset($args);
+    }
+
+  /**
+   * Get the metadata qualifiers stored in the system for a given metadata type
+   * and element. If the typename is specified, it will be used instead of the
+   * type.
+   * @path /system/metadataqualifiers
+   * @http GET
+   * @param type the metadata type index
+   * @param element the metadata element under which the qualifier is collated
+   * @param typename (Optional) the metadata type name
+   */
+  function metadataQualifiersList($args)
+    {
+    $this->_validateParams($args, array('element'));
+    $metadataModel = MidasLoader::loadModel('Metadata');
+    $type = $this->_checkMetadataTypeOrName($args, $metadataModel);
+    $element = $args['element'];
+    return $metadataModel->getMetaDataQualifiers($type, $element);
+    }
+
+  /**
+   * Get the metadata types stored in the system
+   * @path /system/metadatatypes
+   * @http GET
+   */
+  function metadataTypesList()
+    {
+    $metadataModel = MidasLoader::loadModel('Metadata');
+    return $metadataModel->getMetadataTypes();
+    }
+
+  /**
+   * Get the metadata elements stored in the system for a given metadata type.
+   * If the typename is specified, it will be used instead of the index.
+   * @path /system/metadaelements
+   * @http GET
+   * @param type the metadata type index
+   * @param typename (Optional) the metadata type name
+   */
+  function metadataElementsList($args)
+    {
+    $metadataModel = MidasLoader::loadModel('Metadata');
+    $type = $this->_checkMetadataTypeOrName($args, $metadataModel);
+    return $metadataModel->getMetadataElements($type);
+    }
+
+  /**
+   * Remove orphaned resources in the database.  Must be admin to use.
+   * @path /system/databasecleanup
+   * @http POST
+   * @param useSession (Optional) Authenticate using the current Midas session
+   * @param token (Optional) Authentication token
+   */
+  function adminDatabaseCleanup($args)
+    {
+    $userDao = $this->_getUser($args);
+
+    if(!$userDao || !$userDao->isAdmin())
+      {
+      throw new Exception('Only admin users may call this method', MIDAS_INVALID_POLICY);
+      }
+    foreach(array('Folder', 'Item', 'ItemRevision', 'Bitstream') as $model)
+      {
+      MidasLoader::loadModel($model)->removeOrphans();
+      }
+    }
+
+  /**
    * Get the item's metadata
    * @path /item/{id}
    * @http GET
-   * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param revision (Optional) Revision of the item. Defaults to latest revision
    * @return the sought metadata array on success,
@@ -376,7 +684,6 @@ class ApiComponent extends AppComponent
    * Set a metadata field on an item
    * @path /item/setmetadata/{id}
    * @http PUT
-   * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param element The metadata element
    * @param value The metadata value for the field
@@ -415,7 +722,6 @@ class ApiComponent extends AppComponent
      metadata tuples to add.
    * @path /item/setmultiplemetadata/{id}
    * @http PUT
-   * @param token (Optional) Authentication token
    * @param id The id of the item
      @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
    * @param count The number of metadata tuples that will be set.  For every one
@@ -461,7 +767,6 @@ class ApiComponent extends AppComponent
      defaults to the latest revision of the item.
    * @path /item/deletemetadata/{id}
    * @http PUT
-   * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param element The metadata element
    * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
@@ -511,7 +816,6 @@ class ApiComponent extends AppComponent
      pass <b>revision</b>=<b>all</b> to delete all metadata from all revisions.
    * @path /item/deletemetadataall/{id}
    * @http PUT
-   * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param revision (Optional)
      Revision of the item. Defaults to latest revision; pass <b>all</b> to delete all metadata from all revisions.
@@ -597,7 +901,6 @@ class ApiComponent extends AppComponent
    * Return all items
    * @path /item/search
    * @http GET
-   * @param token (Optional) Authentication token
    * @param name The name of the item to search by
    * @return A list of all items with the given name
    */
@@ -625,7 +928,6 @@ class ApiComponent extends AppComponent
    * Get an item's information
    * @path /item/{id}
    * @http GET
-   * @param token (Optional) Authentication token
    * @param id The item id
    * @param head (Optional) only list the most recent revision
    * @return The item object
@@ -724,7 +1026,6 @@ class ApiComponent extends AppComponent
      begins with an underscore are assumed to be metadata fields to set on the item.
    * @path /item
    * @http POST
-   * @param token (Optional) Authentication token
    * @param parentid The id of the parent folder. Only required for creating a new item.
    * @param name The name of the item to create
    * @param description (Optional) The description of the item
@@ -838,7 +1139,6 @@ class ApiComponent extends AppComponent
    * Move an item from the source folder to the desination folder
    * @path /item/move/{id}
    * @http PUT
-   * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param srcfolderid The id of source folder where the item is located
    * @param dstfolderid The id of destination folder where the item is moved to
@@ -893,7 +1193,6 @@ class ApiComponent extends AppComponent
    * Share an item to the destination folder
    * @path /item/share/{id}
    * @http PUT
-   * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param dstfolderid The id of destination folder where the item is shared to
    * @return The item object
@@ -944,7 +1243,6 @@ class ApiComponent extends AppComponent
    * Duplicate an item to the desination folder
    * @path /item/duplicate/{id}
    * @http PUT
-   * @param token (Optional) Authentication token
    * @param id The id of the item
    * @param dstfolderid The id of destination folder where the item is duplicated to
    * @return The item object that was created
@@ -1157,7 +1455,6 @@ class ApiComponent extends AppComponent
    * Delete an item
    * @path /item/{id}
    * @http DELETE
-   * @param token (Optional) Authentication token
    * @param id The id of the item
    */
   function itemDelete($args)
@@ -1232,7 +1529,6 @@ class ApiComponent extends AppComponent
    * Create a new community or update an existing one using the uuid
    * @path /community
    * @http POST
-   * @param token (Optional) Authentication token
    * @param name The community name
    * @param description (Optional) The community description
    * @param uuid (Optional) Uuid of the community. If none is passed, will generate one.
@@ -1328,7 +1624,6 @@ class ApiComponent extends AppComponent
    * Get a community's information based on the id OR name
    * @path /community/{id}
    * @http GET
-   * @param token (Optional) (Optional) Authentication token
    * @param id The id of the community
    * @param name the name of the community
    * @return The community information
@@ -1367,7 +1662,6 @@ class ApiComponent extends AppComponent
    * Get the immediate children of a community (non-recursive)
    * @path /community/children/{id}
    * @http GET
-   * @param token (Optional) (Optional) Authentication token
    * @param id The id of the community
    * @return The folders in the community
    */
@@ -1404,7 +1698,6 @@ class ApiComponent extends AppComponent
    * Return a list of all communities visible to a user
    * @path /community
    * @http GET
-   * @param token (Optional) (Optional) Authentication token
    * @return A list of all communities
    */
   function communityList($args)
@@ -1438,7 +1731,6 @@ class ApiComponent extends AppComponent
    * Delete a community. Requires admin privileges on the community
    * @path /community/{id}
    * @http DELETE
-   * @param token (Optional) Authentication token
    * @param id The id of the community
    */
   function communityDelete($args)
@@ -1466,13 +1758,51 @@ class ApiComponent extends AppComponent
     }
 
   /**
+   * list the groups for a community, requires admin privileges on the community
+   * @path /community/group/{id}
+   * @http GET
+   * @param id id of community
+   * @return array groups => a list of group ids mapped to group names
+   */
+  function communityListGroups($args)
+    {
+    $this->_validateParams($args, array('id'));
+
+    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_GROUPS));
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to list groups in a community', MIDAS_INVALID_POLICY);
+      }
+
+    $communityId = $args['id'];
+    $communityModel = MidasLoader::loadModel('Community');
+    $community = $communityModel->load($communityId);
+    if(!$community)
+      {
+      throw new Exception('Invalid id', MIDAS_INVALID_PARAMETER);
+      }
+    if(!$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $groups = $community->getGroups();
+    $groupIdsToName = array();
+    foreach($groups as $group)
+      {
+      $groupIdsToName[$group->getGroupId()] = $group->getName();
+      }
+    return array('groups' => $groupIdsToName);
+    }
+
+  /**
    * Create a folder or update an existing one if one exists by the uuid passed.
    * If a folder is requested to be created with the same parentid and name as
    * an existing folder, an exception will be thrown and no new folder will
    * be created.
    * @path /folder
    * @http POST
-   * @param token (Optional) Authentication token
    * @param name The name of the folder to create
    * @param description (Optional) The description of the folder
    * @param uuid (Optional) Uuid of the folder. If none is passed, will generate one.
@@ -1598,7 +1928,6 @@ class ApiComponent extends AppComponent
    * Move a folder to the destination folder
    * @path /folder/move/{id}
    * @http PUT
-   * @param token (Optional) Authentication token
    * @param id The id of the folder
    * @param dstfolderid The id of destination folder (new parent folder) where the folder is moved to
    * @return The folder object
@@ -1634,7 +1963,6 @@ class ApiComponent extends AppComponent
    * Get information about the folder
    * @path /folder/{id}
    * @http GET
-   * @param token (Optional) Authentication token
    * @param id The id of the folder
    * @return The folder object, including its parent object
    */
@@ -1693,12 +2021,10 @@ class ApiComponent extends AppComponent
 
     }
 
-
   /**
    * Get the immediate children of a folder (non-recursive)
    * @path /folder/children/{id}
    * @http GET
-   * @param token (Optional) Authentication token
    * @param id The id of the folder
    * @return The items and folders in the given folder
    */
@@ -2009,7 +2335,6 @@ class ApiComponent extends AppComponent
    * Delete a folder. Requires admin privileges on the folder
    * @path /folder/{id}
    * @http DELETE
-   * @param token (Optional) Authentication token
    * @param id The id of the folder
    */
   function folderDelete($args)
@@ -2038,7 +2363,6 @@ class ApiComponent extends AppComponent
    * Return a list of top level folders belonging to the user
    * @path /user/folders
    * @http GET
-   * @param token (Optional) Authentication token
    * @return List of the user's top level folders
    */
   function userFolders($args)
@@ -2053,64 +2377,6 @@ class ApiComponent extends AppComponent
     $userRootFolder = $userDao->getFolder();
     $folderModel = MidasLoader::loadModel('Folder');
     return $folderModel->getChildrenFoldersFiltered($userRootFolder, $userDao, MIDAS_POLICY_READ);
-    }
-
-  /**
-   * Returns the user's default API key given their username and password.
-       POST method required.
-   * @param email The user's email
-   * @param password The user's password
-   * @return Array with a single key, 'apikey', whose value is the user's default api key
-   */
-  function userApikeyDefault($args)
-    {
-    $this->_validateParams($args, array('email', 'password'));
-    if(!$this->controller->getRequest()->isPost())
-      {
-      throw new Exception('POST method required', MIDAS_HTTP_ERROR);
-      }
-    $email = $args['email'];
-    $password = $args['password'];
-
-    try
-      {
-      $notifications = array();
-      $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTHENTICATION', array(
-        'email' => $email,
-        'password' => $password));
-      }
-    catch(Zend_Exception $exc)
-      {
-      throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
-      }
-    $authModule = false;
-    foreach($notifications as $module => $user)
-      {
-      if($user)
-        {
-        $userDao = $user;
-        $authModule = true;
-        break;
-        }
-      }
-
-    $userModel = MidasLoader::loadModel('User');
-    $userApiModel = MidasLoader::loadModel('Userapi');
-    if(!$authModule)
-      {
-      $userDao = $userModel->getByEmail($email);
-      }
-
-    $salt = Zend_Registry::get('configGlobal')->password->prefix;
-    if($authModule || $userDao !== false && md5($salt.$password) == $userDao->getPassword())
-      {
-      $defaultApiKey = $userApiModel->getByAppAndEmail('Default', $email)->getApikey();
-      return array('apikey' => $defaultApiKey);
-      }
-    else
-      {
-      throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
-      }
     }
 
   /**
@@ -2164,7 +2430,6 @@ class ApiComponent extends AppComponent
    * Fetch the information about a bitstream
    * @path /bitstream/{id}
    * @http GET
-   * @param token (Optional) Authentication token
    * @param id The id of the bitstream
    * @return Bitstream dao
    */
@@ -2214,7 +2479,6 @@ class ApiComponent extends AppComponent
    * Change the properties of a bitstream. Requires write access to the containing item.
    * @path /bitstream/{id}
    * @http PUT
-   * @param token (Optional) Authentication token
    * @param id The id of the bitstream to edit
    * @param name (Optional) New name for the bitstream
    * @param mimetype (Optional) New MIME type for the bitstream
@@ -2256,7 +2520,6 @@ class ApiComponent extends AppComponent
    * Delete a bitstream. Requires admin privileges on the containing item.
    * @path /bitstream/{id}
    * @http DELETE
-   * @param token (Optional) Authentication token
    * @param id The id of the bitstream to delete
    */
   function bitstreamDelete($args)
@@ -2280,6 +2543,206 @@ class ApiComponent extends AppComponent
       }
 
     $bitstreamModel->delete($bitstream);
+    }
+
+  /**
+   * Count the bitstreams under a containing resource. Uses latest revision of each item.
+   * @path /bitstream/count
+   * @http GET
+   * @param uuid The uuid of the containing resource
+   * @return array(size=>total_size_in_bytes, count=>total_number_of_files)
+   */
+  function bitstreamCount($args)
+    {
+    $this->_validateParams($args, array('uuid'));
+    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
+    $userDao = $this->_getUser($args);
+
+    $uuidComponent = MidasLoader::loadComponent('Uuid');
+    $resource = $uuidComponent->getByUid($args['uuid']);
+
+    if($resource == false)
+      {
+      throw new Exception('No resource for the given UUID.', MIDAS_INVALID_PARAMETER);
+      }
+
+    switch($resource->resourceType)
+      {
+      case MIDAS_RESOURCE_COMMUNITY:
+        $communityModel = MidasLoader::loadModel('Community');
+        if(!$communityModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
+          {
+          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+          }
+        return $communityModel->countBitstreams($resource, $userDao);
+      case MIDAS_RESOURCE_FOLDER:
+        $folderModel = MidasLoader::loadModel('Folder');
+        if(!$folderModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
+          {
+          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+          }
+        return $folderModel->countBitstreams($resource, $userDao);
+      case MIDAS_RESOURCE_ITEM:
+        $itemModel = MidasLoader::loadModel('Item');
+        if(!$itemModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
+          {
+          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
+          }
+        return $itemModel->countBitstreams($resource);
+      default:
+        throw new Exception('Invalid resource type', MIDAS_INTERNAL_ERROR);
+      }
+    }
+
+  /**
+   * list the users for a group, requires admin privileges on the community
+   * assiated with the group
+   * @path /group/users/{id}
+   * @http GET
+   * @param id id of group
+   * @return array users => a list of user ids mapped to a two element list of
+   * user firstname and lastname
+   */
+  function groupListUsers($args)
+    {
+    $this->_validateParams($args, array('id'));
+
+    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_MANAGE_GROUPS));
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to list users in a group', MIDAS_INVALID_POLICY);
+      }
+
+    $groupId = $args['id'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($groupId);
+    if($group == false)
+      {
+      throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
+      }
+
+    $communityModel = MidasLoader::loadModel('Community');
+    if(!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $users = $group->getUsers();
+    $userIdsToEmail = array();
+    foreach($users as $user)
+      {
+      $userIdsToEmail[$user->getUserId()] = array('firstname' => $user->getFirstname(), 'lastname' => $user->getLastname());
+      }
+    return array('users' => $userIdsToEmail);
+    }
+
+  /**
+   * Add a user to a group, returns 'success' => 'true' on success, requires
+   * admin privileges on the community associated with the group.
+   * @path /group/adduser/{id}
+   * @http PUT
+   * @param id the group to add the user to
+   * @param user_id the user to add to the group
+   * @return success = true on success.
+   */
+  function groupAddUser($args)
+    {
+    list($groupModel, $group, $addedUser) = $this->_validateGroupUserChangeParams($args);
+    $groupModel->addUser($group, $addedUser);
+    return array('success' => 'true');
+    }
+
+  /**
+   * Remove a user from a group, returns 'success' => 'true' on success, requires
+   * admin privileges on the community associated with the group.
+   * @path /group/removeuser/{id}
+   * @http PUT
+   * @param id the group to remove the user from
+   * @param user_id the user to remove from the group
+   * @return success = true on success.
+   */
+  function groupRemoveUser($args)
+    {
+    list($groupModel, $group, $removedUser) = $this->_validateGroupUserChangeParams($args);
+    $groupModel->removeUser($group, $removedUser);
+    return array('success' => 'true');
+    }
+
+  /**
+   * add a group associated with a community, requires admin privileges on the
+   * community.
+   * @path /group
+   * @http POST
+   * @param community_id the id of the community the group will associate with
+   * @param name the name of the new group
+   * @return group_id of the newly created group on success.
+   */
+  function groupAdd($args)
+    {
+    $this->_validateParams($args, array('community_id', 'name'));
+
+    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_MANAGE_GROUPS));
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to add group', MIDAS_INVALID_POLICY);
+      }
+
+    $communityModel = MidasLoader::loadModel('Community');
+    $communityId = $args['community_id'];
+    $community = $communityModel->load($communityId);
+    if($community == false)
+      {
+      throw new Exception('This community does not exist', MIDAS_INVALID_PARAMETER);
+      }
+    if(!$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $name = $args['name'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->createGroup($community, $name);
+
+    return array('group_id' => $group->getGroupId());
+    }
+
+  /**
+   * remove a group associated with a community, requires admin privileges on the
+   * community.
+   * @path /group/{id}
+   * @http DELETE
+   * @param id the id of the group to be removed
+   * @return success = true on success.
+   */
+  function groupRemove($args)
+    {
+    $this->_validateParams($args, array('id'));
+
+    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_MANAGE_GROUPS));
+    $userDao = $this->_getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to remove a group', MIDAS_INVALID_POLICY);
+      }
+
+    $groupId = $args['id'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($groupId);
+    if($group == false)
+      {
+      throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
+      }
+
+    $communityModel = MidasLoader::loadModel('Community');
+    if(!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+      }
+
+    $groupModel->delete($group);
+    return array('success' => 'true');
     }
 
   } // end class

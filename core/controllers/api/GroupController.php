@@ -19,9 +19,9 @@
 =========================================================================*/
 
 /**
- *  WebApi Controller for Bitstream Resource
+ *  WebApi Controller for Group Resource
  */
-class Rest_BitstreamController extends ApiController
+class Rest_GroupController extends ApiController
 {
   /**
    * The index action handles index/list requests; it should respond with a
@@ -29,18 +29,7 @@ class Rest_BitstreamController extends ApiController
    */
   public function indexAction()
     {
-    $apiFunctions['default'] = 'bitstreamCount';
-    $apiFunctions['count'] = 'bitstreamCount';
-    $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions);
-    }
-
-  /**
-   * The options action handles OPTIONS requests; it should respond with
-   * the HTTP methods that the server supports for specified URL.
-   */
-  public function optionsAction()
-    {
-    $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, PUT, DELETE');
+    $this->_forward('get');
     }
 
   /**
@@ -60,19 +49,34 @@ class Rest_BitstreamController extends ApiController
    */
   public function getAction()
     {
-    $apiFunctions['default'] = 'bitstreamGet';
+    $apiFunctions['default'] = 'groupListUsers';
+    $apiFunctions['users'] = 'groupListUsers';
     $this->_genericAction($this->_request->getParams(), 'get', $apiFunctions);
     }
 
-  /**
+ /**
    * The put action handles PUT requests and receives an 'id' parameter; it
    * should update the server resource state of the resource identified by
    * the 'id' value.
    */
   public function putAction()
     {
-    $apiFunctions['default'] = 'bitstreamEdit';
+    $apiFunctions = array(
+      'default' => 'groupAddUser',
+      'adduser'=> 'groupAddUser',
+      'removeuser' => 'groupRemoveUser',
+      );
     $this->_genericAction($this->_request->getParams(), 'put', $apiFunctions);
+    }
+
+   /**
+   * The post action handles POST requests; it should accept and digest a
+   * POSTed resource representation and persist the resource state.
+   */
+  public function postAction()
+    {
+    $apiFunctions['default'] = 'groupAdd';
+    $this->_genericAction($this->_request->getParams(), 'post', $apiFunctions);
     }
 
   /**
@@ -82,7 +86,17 @@ class Rest_BitstreamController extends ApiController
    */
   public function deleteAction()
     {
-    $apiFunctions['default'] = 'bitstreamDelete';
+    $apiFunctions['default'] = 'groupRemove';
     $this->_genericAction($this->_request->getParams(), 'delete', $apiFunctions);
     }
+
+  /**
+   * The options action handles OPTIONS requests; it should respond with
+   * the HTTP methods that the server supports for specified URL.
+   */
+  public function optionsAction()
+    {
+    $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, PUT, POST, DELETE');
+    }
+
 }

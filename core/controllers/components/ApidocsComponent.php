@@ -26,7 +26,7 @@ class ApidocsComponent extends AppComponent
    * This function is for getting the webapi methods information defined in
    * all the API component of the implementing class.
    */
-  public function getWebApiDocs()
+  public function getEnabledResources()
     {
     $modulesHaveApi = Zend_Registry::get('modulesHaveApi');
     $modulesEnabled = Zend_Registry::get('modulesEnable');
@@ -34,7 +34,7 @@ class ApidocsComponent extends AppComponent
     $apiModules = array_intersect($modulesHaveApi, $modulesEnabled);
     array_unshift($apiModules, ''); // added core module
 
-    $apiInfo = array();
+    $apiResources = array();
     foreach($apiModules as $module)
       {
       $apiComponent = MidasLoader::loadComponent('Api', $module);
@@ -44,44 +44,20 @@ class ApidocsComponent extends AppComponent
         {
         if(strpos($m->getDeclaringClass()->getName(), 'ApiComponent') !== false)
           {
-          $name = $m->getName();
           $docString = $m->getDocComment();
           $docString = trim($docString, '/');
           $docAttributes = explode('@', $docString);
-          $return = '';
-          $description = '';
-          $http = '';
           $path = '';
-          $model = '';
-          $params = array();
+          $resource = '';
           foreach($docAttributes as $docEntry)
             {
             $explodedDoc = explode('*', $docEntry);
             array_walk($explodedDoc,
                        create_function('&$val', '$val = trim($val);'));
             $doc = implode('', $explodedDoc);
-            if(strpos($doc, 'param') === 0)
-              {
-              $splitParam = explode(' ', $doc);
-              $paramName = trim($splitParam[1]);
-              $paramValue = trim(implode(' ', array_slice($splitParam, 2)));
-              $params[$paramName] = $paramValue;
-              }
-            elseif(strpos($doc, 'return') === 0)
-              {
-              $return = trim(substr($doc, 6));
-              }
-            elseif(strpos($doc, 'path') === 0)
+            if(strpos($doc, 'path') === 0)
               {
               $path = trim(substr($doc, 5));
-              }
-            elseif(strpos($doc, 'http') === 0)
-              {
-              $http = trim(substr($doc, 5));
-              }
-            else
-              {
-              $description = $doc;
               }
             }
           if(!empty($path))
@@ -90,25 +66,103 @@ class ApidocsComponent extends AppComponent
             $count = count($tokens);
             if(empty($module) & !empty($tokens)) // core
               {
-              $model = $module. '/' . $tokens[0];
+              $resource = $module. '/' . $tokens[0];
               }
             else if(!empty($module) & count($tokens) > 1) // other modules
               {
-              $model = $module. '/' . $tokens[1];
+              $resource = $module. '/' . $tokens[1];
               }
             }
-          if(empty($model))
+          if(empty($resource) || in_array($resource, $apiResources))
             {
             continue;
             }
-          $docs = array();
-          $docs['params'] = $params;
-          $docs['return'] = $return;
-          $docs['http'] = $http;
-          $docs['path'] = $path;
-          $docs['description'] = $description;
-          $apiInfo[$model][$name] = $docs;
+          $apiResources[] = $resource;
           }
+        }
+      }
+
+    return $apiResources;
+    }
+
+  /**
+   * This function is for getting the webapi methods defined in the API
+   * component (in given module) of the implementing class.
+   */
+  public function getWebApiDocs($module = '')
+    {
+    $apiInfo = array();
+    $apiComponent = MidasLoader::loadComponent('Api', $module);
+    $r = new ReflectionClass($apiComponent);
+    $meths = $r->getMethods(ReflectionMethod::IS_PUBLIC);
+    foreach($meths as $m)
+      {
+      if(strpos($m->getDeclaringClass()->getName(), 'ApiComponent') !== false)
+        {
+        $name = $m->getName();
+        $docString = $m->getDocComment();
+        $docString = trim($docString, '/');
+        $docAttributes = explode('@', $docString);
+        $return = '';
+        $description = '';
+        $http = '';
+        $path = '';
+        $resource = '';
+        $params = array();
+        foreach($docAttributes as $docEntry)
+          {
+          $explodedDoc = explode('*', $docEntry);
+          array_walk($explodedDoc,
+                     create_function('&$val', '$val = trim($val);'));
+          $doc = implode('', $explodedDoc);
+          if(strpos($doc, 'param') === 0)
+            {
+            $splitParam = explode(' ', $doc);
+            $paramName = trim($splitParam[1]);
+            $paramValue = trim(implode(' ', array_slice($splitParam, 2)));
+            $params[$paramName] = $paramValue;
+            }
+          elseif(strpos($doc, 'return') === 0)
+            {
+            $return = trim(substr($doc, 6));
+            }
+          elseif(strpos($doc, 'path') === 0)
+            {
+            $path = trim(substr($doc, 5));
+            }
+          elseif(strpos($doc, 'http') === 0)
+            {
+            $http = trim(substr($doc, 5));
+            }
+          else
+            {
+            $description = $doc;
+            }
+          }
+        if(!empty($path))
+          {
+          $tokens = preg_split('@/@', $path, NULL, PREG_SPLIT_NO_EMPTY);
+          $count = count($tokens);
+          if(empty($module) & !empty($tokens)) // core
+            {
+            $resource = $module. '/' . $tokens[0];
+            }
+          else if(!empty($module) & count($tokens) > 1) // other modules
+            {
+            $resource = $module. '/' . $tokens[1];
+            }
+          }
+        if(empty($resource))
+          {
+          continue;
+          }
+        $docs = array();
+        $docs['params'] = $params;
+        $docs['return'] = $return;
+        $docs['http'] = $http;
+        $docs['path'] = $path;
+        $docs['description'] = $description;
+        $apiInfo[$resource][$name] = $docs;
         }
       }
 
@@ -118,9 +172,9 @@ class ApidocsComponent extends AppComponent
   /**
    * This function is for getting the Swagger Api docs for a single model
    */
-  public function getModelApiDocs($model, $module = '')
+  public function getResourceApiDocs($resource, $module = '')
     {
-    $apiInfo = $this->getWebApiDocs();
+    $apiInfo = $this->getWebApiDocs($module);
     $swaggerDoc = array();
     $swaggerDoc['apiVersion'] = '1.0';
     $swaggerDoc['swaggerVersion'] = '1.1';
@@ -134,19 +188,27 @@ class ApidocsComponent extends AppComponent
       'allowMultiple' => false,
       'dataType' => 'string'
     );
+    $tokenParam = array(
+      'name' => 'token',
+      'paramType' => 'query',
+      'required' => false,
+      'description' =>  'Authentication token',
+      'allowMultiple' => false,
+      'dataType' => 'string'
+    );
     if(empty($module))
       {
-      $swaggerDoc['resourcePath'] = '/'. $model; // core apis
+      $swaggerDoc['resourcePath'] = '/'. $resource; // core apis
       }
     else
       {
-      $swaggerDoc['resourcePath'] = '/'. $module . '/' . $model; // module apis
+      $swaggerDoc['resourcePath'] = '/'. $module . '/' . $resource; // module apis
       }
     $swaggerDoc['apis'] = array();
-    if(key_exists($module.'/'.$model, $apiInfo))
+    if(key_exists($module.'/'.$resource, $apiInfo))
       {
-      $modelApiInfo = $apiInfo[$module.'/'.$model];
-      foreach($modelApiInfo as $name => $docs)
+      $resourceApiInfo = $apiInfo[$module.'/'.$resource];
+      foreach($resourceApiInfo as $name => $docs)
         {
         $curApi = array();
         $curApi['path'] = $docs['path'];
@@ -158,7 +220,11 @@ class ApidocsComponent extends AppComponent
         $operation['nickname'] = $module . '_' . $name;
         $operation['responseClass'] = 'void';
         $operation['parameters'] = array();
-        array_push($operation['parameters'], $useSessionParam);
+        if($resource !== 'system')
+          {
+          array_push($operation['parameters'], $useSessionParam);
+          array_push($operation['parameters'], $tokenParam);
+          }
         foreach($docs['params'] as $paramName => $paramValue)
           {
           $param = array();

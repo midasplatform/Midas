@@ -94,7 +94,7 @@ class Api_ApiComponent extends AppComponent
    */
   public function version($args)
     {
-    return array('version' => Zend_Registry::get('configDatabase')->version);
+    return $this->_callCoreApiMethod($args, 'version');
     }
 
   /**
@@ -103,7 +103,7 @@ class Api_ApiComponent extends AppComponent
    */
   public function modulesList($args)
     {
-    return array('modules' => array_keys(Zend_Registry::get('configsModules')));
+    return $this->_callCoreApiMethod($args, 'modulesList');
     }
 
   /**
@@ -149,31 +149,7 @@ class Api_ApiComponent extends AppComponent
    */
   function login($args)
     {
-    $this->_validateParams($args, array('email', 'appname', 'apikey'));
-
-    $data['token'] = '';
-    $email = $args['email'];
-    $appname = $args['appname'];
-    $apikey = $args['apikey'];
-    $Userapi = MidasLoader::loadModel('Userapi');
-    $tokenDao = $Userapi->getToken($email, $apikey, $appname);
-    if(empty($tokenDao))
-      {
-      throw new Exception('Unable to authenticate. Please check credentials.', MIDAS_INVALID_PARAMETER);
-      }
-    $userDao = $tokenDao->getUserapi()->getUser();
-    $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_API_AUTH_INTERCEPT', array(
-      'user' => $userDao,
-      'tokenDao' => $tokenDao));
-    foreach($notifications as $module => $value)
-      {
-      if($value['response'])
-        {
-        return $value['response'];
-        }
-      }
-    $data['token'] = $tokenDao->getToken();
-    return $data;
+    return $this->_callCoreApiMethod($args, 'login');
     }
 
   /**
@@ -491,10 +467,7 @@ class Api_ApiComponent extends AppComponent
    */
   function uploadGetoffset($args)
     {
-    $uploadComponent = MidasLoader::loadComponent('Httpupload');
-    $uploadComponent->setTestingMode($this->apiSetup['testing']);
-    $uploadComponent->setTmpDirectory($this->apiSetup['tmpDirectory']);
-    return $uploadComponent->getOffset($args);
+    return $this->_callCoreApiMethod($args, 'uploadGetoffset');
     }
 
   /**
@@ -1395,44 +1368,7 @@ class Api_ApiComponent extends AppComponent
    */
   function bitstreamCount($args)
     {
-    $this->_validateParams($args, array('uuid'));
-    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
-    $userDao = $this->_getUser($args);
-
-    $uuidComponent = MidasLoader::loadComponent('Uuid');
-    $resource = $uuidComponent->getByUid($args['uuid']);
-
-    if($resource == false)
-      {
-      throw new Exception('No resource for the given UUID.', MIDAS_INVALID_PARAMETER);
-      }
-
-    switch($resource->resourceType)
-      {
-      case MIDAS_RESOURCE_COMMUNITY:
-        $communityModel = MidasLoader::loadModel('Community');
-        if(!$communityModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
-          {
-          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
-          }
-        return $communityModel->countBitstreams($resource, $userDao);
-      case MIDAS_RESOURCE_FOLDER:
-        $folderModel = MidasLoader::loadModel('Folder');
-        if(!$folderModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
-          {
-          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
-          }
-        return $folderModel->countBitstreams($resource, $userDao);
-      case MIDAS_RESOURCE_ITEM:
-        $itemModel = MidasLoader::loadModel('Item');
-        if(!$itemModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ))
-          {
-          throw new Exception('Invalid policy', MIDAS_INVALID_POLICY);
-          }
-        return $itemModel->countBitstreams($resource);
-      default:
-        throw new Exception('Invalid resource type', MIDAS_INTERNAL_ERROR);
-      }
+    return $this->_callCoreApiMethod($args, 'bitstreamCount');
     }
 
   /**
@@ -1453,16 +1389,7 @@ class Api_ApiComponent extends AppComponent
    */
   function adminDatabaseCleanup($args)
     {
-    $userDao = $this->_getUser($args);
-
-    if(!$userDao || !$userDao->isAdmin())
-      {
-      throw new Exception('Only admin users may call this method', MIDAS_INVALID_POLICY);
-      }
-    foreach(array('Folder', 'Item', 'ItemRevision', 'Bitstream') as $model)
-      {
-      MidasLoader::loadModel($model)->removeOrphans();
-      }
+    return $this->_callCoreApiMethod($args, 'adminDatabaseCleanup');
     }
 
   /**
@@ -1480,8 +1407,7 @@ class Api_ApiComponent extends AppComponent
    */
   function metadataTypesList()
     {
-    $metadataModel = MidasLoader::loadModel('Metadata');
-    return $metadataModel->getMetadataTypes();
+    return $this->_callCoreApiMethod(array(), 'metadataTypesList');
     }
 
   /**
@@ -1492,29 +1418,7 @@ class Api_ApiComponent extends AppComponent
    */
   function metadataElementsList($args)
     {
-    $metadataModel = MidasLoader::loadModel('Metadata');
-    $type = $this->_checkMetadataTypeOrName($args, $metadataModel);
-    return $metadataModel->getMetadataElements($type);
-    }
-
-  /**
-   * Helper function for checking for a metadata type index or name and
-   * handling the error conditions.
-   */
-  protected function _checkMetadataTypeOrName(&$args, &$metadataModel)
-    {
-    if(array_key_exists('typename', $args))
-      {
-      return $metadataModel->mapNameToType($args['typename']);
-      }
-    else if(array_key_exists('type', $args))
-      {
-      return $args['type'];
-      }
-    else
-      {
-      throw new Exception('Parameter type is not defined', MIDAS_INVALID_PARAMETER);
-      }
+    return $this->_callCoreApiMethod($args, 'metadataElementsList');
     }
 
   /**
@@ -1527,54 +1431,7 @@ class Api_ApiComponent extends AppComponent
    */
   function metadataQualifiersList($args)
     {
-    $this->_validateParams($args, array('element'));
-    $metadataModel = MidasLoader::loadModel('Metadata');
-    $type = $this->_checkMetadataTypeOrName($args, $metadataModel);
-    $element = $args['element'];
-    return $metadataModel->getMetaDataQualifiers($type, $element);
-    }
-
-  /**
-   * helper function to validate args of methods for adding or removing
-   * users from groups.
-   * @param group_id the group to add the user to
-   * @param user_id the user to add to the group
-   * @return an array of (groupModel, groupDao, groupUserDao)
-   */
-  protected function _validateGroupUserChangeParams($args)
-    {
-    $this->_validateParams($args, array('group_id', 'user_id'));
-
-    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_MANAGE_GROUPS));
-    $userDao = $this->_getUser($args);
-    if(!$userDao)
-      {
-      throw new Exception('You must be logged in to add a user to a group', MIDAS_INVALID_POLICY);
-      }
-
-    $groupId = $args['group_id'];
-    $groupModel = MidasLoader::loadModel('Group');
-    $group = $groupModel->load($groupId);
-    if($group == false)
-      {
-      throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
-      }
-
-    $communityModel = MidasLoader::loadModel('Community');
-    if(!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
-      }
-
-    $groupUserId = $args['user_id'];
-    $userModel = MidasLoader::loadModel('User');
-    $groupUser = $userModel->load($groupUserId);
-    if($groupUser == false)
-      {
-      throw new Exception('This user does not exist', MIDAS_INVALID_PARAMETER);
-      }
-
-    return array($groupModel, $group, $groupUser);
+    return $this->_callCoreApiMethod($args, 'metadataQualifiersList');
     }
 
   /**
@@ -1586,9 +1443,8 @@ class Api_ApiComponent extends AppComponent
    */
   function groupAddUser($args)
     {
-    list($groupModel, $group, $addedUser) = $this->_validateGroupUserChangeParams($args);
-    $groupModel->addUser($group, $addedUser);
-    return array('success' => 'true');
+    $this->_renameParamKey($args, 'group_id', 'id');
+    return $this->_callCoreApiMethod($args, 'groupAddUser');
     }
 
   /**
@@ -1600,12 +1456,9 @@ class Api_ApiComponent extends AppComponent
    */
   function groupRemoveUser($args)
     {
-    list($groupModel, $group, $removedUser) = $this->_validateGroupUserChangeParams($args);
-    $groupModel->removeUser($group, $removedUser);
-    return array('success' => 'true');
+    $this->_renameParamKey($args, 'group_id', 'id');
+    return $this->_callCoreApiMethod($args, 'groupRemoveUser');
     }
-
-
 
   /**
    * add a group associated with a community, requires admin privileges on the
@@ -1616,32 +1469,7 @@ class Api_ApiComponent extends AppComponent
    */
   function groupAdd($args)
     {
-    $this->_validateParams($args, array('community_id', 'name'));
-
-    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_MANAGE_GROUPS));
-    $userDao = $this->_getUser($args);
-    if(!$userDao)
-      {
-      throw new Exception('You must be logged in to add group', MIDAS_INVALID_POLICY);
-      }
-
-    $communityModel = MidasLoader::loadModel('Community');
-    $communityId = $args['community_id'];
-    $community = $communityModel->load($communityId);
-    if($community == false)
-      {
-      throw new Exception('This community does not exist', MIDAS_INVALID_PARAMETER);
-      }
-    if(!$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
-      }
-
-    $name = $args['name'];
-    $groupModel = MidasLoader::loadModel('Group');
-    $group = $groupModel->createGroup($community, $name);
-
-    return array('group_id' => $group->getGroupId());
+    return $this->_callCoreApiMethod($args, 'groupAdd');
     }
 
   /**
@@ -1652,31 +1480,8 @@ class Api_ApiComponent extends AppComponent
    */
   function groupRemove($args)
     {
-    $this->_validateParams($args, array('group_id'));
-
-    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_MANAGE_GROUPS));
-    $userDao = $this->_getUser($args);
-    if(!$userDao)
-      {
-      throw new Exception('You must be logged in to remove a group', MIDAS_INVALID_POLICY);
-      }
-
-    $groupId = $args['group_id'];
-    $groupModel = MidasLoader::loadModel('Group');
-    $group = $groupModel->load($groupId);
-    if($group == false)
-      {
-      throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
-      }
-
-    $communityModel = MidasLoader::loadModel('Community');
-    if(!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
-      }
-
-    $groupModel->delete($group);
-    return array('success' => 'true');
+    $this->_renameParamKey($args, 'group_id', 'id');
+    return $this->_callCoreApiMethod($args, 'groupRemove');
     }
 
   /**
@@ -1688,36 +1493,8 @@ class Api_ApiComponent extends AppComponent
    */
   function groupListUsers($args)
     {
-    $this->_validateParams($args, array('group_id'));
-
-    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_MANAGE_GROUPS));
-    $userDao = $this->_getUser($args);
-    if(!$userDao)
-      {
-      throw new Exception('You must be logged in to list users in a group', MIDAS_INVALID_POLICY);
-      }
-
-    $groupId = $args['group_id'];
-    $groupModel = MidasLoader::loadModel('Group');
-    $group = $groupModel->load($groupId);
-    if($group == false)
-      {
-      throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
-      }
-
-    $communityModel = MidasLoader::loadModel('Community');
-    if(!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
-      }
-
-    $users = $group->getUsers();
-    $userIdsToEmail = array();
-    foreach($users as $user)
-      {
-      $userIdsToEmail[$user->getUserId()] = array('firstname' => $user->getFirstname(), 'lastname' => $user->getLastname());
-      }
-    return array('users' => $userIdsToEmail);
+    $this->_renameParamKey($args, 'group_id', 'id');
+    return $this->_callCoreApiMethod($args, 'groupListUsers');
     }
 
   /**
@@ -1727,35 +1504,8 @@ class Api_ApiComponent extends AppComponent
    */
   function communityListGroups($args)
     {
-    $this->_validateParams($args, array('community_id'));
-
-    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_GROUPS));
-    $userDao = $this->_getUser($args);
-    if(!$userDao)
-      {
-      throw new Exception('You must be logged in to list groups in a community', MIDAS_INVALID_POLICY);
-      }
-
-    $communityId = $args['community_id'];
-    $communityModel = MidasLoader::loadModel('Community');
-    $community = $communityModel->load($communityId);
-    if(!$community)
-      {
-      throw new Exception('Invalid community_id', MIDAS_INVALID_PARAMETER);
-      }
-    if(!$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN))
-      {
-      throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
-      }
-
-    $groups = $community->getGroups();
-    $groupIdsToName = array();
-    foreach($groups as $group)
-      {
-      $groupIdsToName[$group->getGroupId()] = $group->getName();
-      }
-    return array('groups' => $groupIdsToName);
+    $this->_renameParamKey($args, 'community_id', 'id');
+    return $this->_callCoreApiMethod($args, 'communityListGroups');
     }
-
 
   } // end class

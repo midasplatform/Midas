@@ -19,9 +19,9 @@
 =========================================================================*/
 
 /**
- *  WebApi Controller for Bitstream Resource
+ *  WebApi Controller for System Resource
  */
-class Rest_BitstreamController extends ApiController
+class Rest_SystemController extends ApiController
 {
   /**
    * The index action handles index/list requests; it should respond with a
@@ -29,18 +29,19 @@ class Rest_BitstreamController extends ApiController
    */
   public function indexAction()
     {
-    $apiFunctions['default'] = 'bitstreamCount';
-    $apiFunctions['count'] = 'bitstreamCount';
+    $apiFunctions = array(
+      'default' => 'info',
+      'info' => 'info',
+      'version' => 'version',
+      'module' => 'modulesList',
+      'resource' => 'resourcesList',
+      'login' => 'login',
+      'metadataqualifiers' => 'metadataQualifiersList',
+      'uploadeoffset' => 'uploadGetoffset',
+      'metadatatypes' => 'metadataTypesList',
+      'metadaelements' => 'metadataElementsList'
+      );
     $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions);
-    }
-
-  /**
-   * The options action handles OPTIONS requests; it should respond with
-   * the HTTP methods that the server supports for specified URL.
-   */
-  public function optionsAction()
-    {
-    $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, PUT, DELETE');
     }
 
   /**
@@ -60,29 +61,29 @@ class Rest_BitstreamController extends ApiController
    */
   public function getAction()
     {
-    $apiFunctions['default'] = 'bitstreamGet';
-    $this->_genericAction($this->_request->getParams(), 'get', $apiFunctions);
+    $this->_response->setHttpResponseCode(200); // 200 OK
     }
 
   /**
-   * The put action handles PUT requests and receives an 'id' parameter; it
-   * should update the server resource state of the resource identified by
-   * the 'id' value.
+   * The post action handles POST requests; it should accept and digest a
+   * POSTed resource representation and persist the resource state.
    */
-  public function putAction()
+  public function postAction()
     {
-    $apiFunctions['default'] = 'bitstreamEdit';
-    $this->_genericAction($this->_request->getParams(), 'put', $apiFunctions);
+    $apiFunctions = array(
+      'default' => 'adminDatabaseCleanup',
+      'databasecleanup' => 'adminDatabaseCleanup',
+      );
+    $this->_genericAction($this->_request->getParams(), 'post', $apiFunctions);
     }
 
   /**
-   * The delete action handles DELETE requests and receives an 'id'
-   * parameter; it should update the server resource state of the resource
-   * identified by the 'id' value.
+   * The options action handles OPTIONS requests; it should respond with
+   * the HTTP methods that the server supports for specified URL.
    */
-  public function deleteAction()
+  public function optionsAction()
     {
-    $apiFunctions['default'] = 'bitstreamDelete';
-    $this->_genericAction($this->_request->getParams(), 'delete', $apiFunctions);
+    $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, POST, PUT');
     }
+
 }

@@ -33,7 +33,7 @@ class Rest_ApidocsController extends AppController
     }
 
 
-  /** Index function */
+  /** Index resource */
   function indexAction()
     {
     $results = array();
@@ -44,56 +44,69 @@ class Rest_ApidocsController extends AppController
     $results['basePath'] = $baseUrl. '/apidocs';
     $results['apis'] = array();
 
-    $apiDocs = $this->Component->Apidocs->getWebApiDocs();
-    $models = array_keys($apiDocs);
-    foreach($models as $modelPath)
+    $resources = $this->Component->Apidocs->getEnabledResources();
+    foreach($resources as $resourcePath)
       {
-      if(strpos($modelPath, '/') > 0)
+      if(strpos($resourcePath, '/') > 0)
         {
-        $modelPath = '/' . $modelPath;
+        $resourcePath = '/' . $resourcePath;
         }
-      $curModel = array();
-      $curModel['path'] = $modelPath;
-      $curModel['discription'] = 'Operations about '. $modelPath;
-      array_push($results['apis'], $curModel);
+      $curResource = array();
+      $curResource['path'] = $resourcePath;
+      $curResource['discription'] = 'Operations about '. $resourcePath;
+      array_push($results['apis'], $curResource);
       }
     echo $this->Component->Json->encode($results);
     }
 
-  /** Item function */
+  /** System resource */
+  function systemAction()
+    {
+    $results = $this->Component->Apidocs->getResourceApiDocs('system');
+    echo $this->Component->Json->encode($results);
+    }
+
+  /** Item resource */
   function itemAction()
     {
-    $results = $this->Component->Apidocs->getModelApiDocs('item');
+    $results = $this->Component->Apidocs->getResourceApiDocs('item');
     echo $this->Component->Json->encode($results);
     }
 
-  /** Folder function */
+  /** Folder resource */
   function folderAction()
     {
-    $results = $this->Component->Apidocs->getModelApiDocs('folder');
+    $results = $this->Component->Apidocs->getResourceApiDocs('folder');
     echo $this->Component->Json->encode($results);
     }
 
 
-  /** Community function */
+  /** Community resource */
   function communityAction()
     {
-    $results = $this->Component->Apidocs->getModelApiDocs('community');
+    $results = $this->Component->Apidocs->getResourceApiDocs('community');
     echo $this->Component->Json->encode($results);
     }
 
 
-  /** Bitstream function */
+  /** Bitstream resource */
   function bitstreamAction()
     {
-    $results = $this->Component->Apidocs->getModelApiDocs('bitstream');
+    $results = $this->Component->Apidocs->getResourceApiDocs('bitstream');
     echo $this->Component->Json->encode($results);
     }
 
-  /** User function */
+  /** User resource */
   function userAction()
     {
-    $results = $this->Component->Apidocs->getModelApiDocs('user');
+    $results = $this->Component->Apidocs->getResourceApiDocs('user');
+    echo $this->Component->Json->encode($results);
+    }
+
+  /** Group resource */
+  function groupAction()
+    {
+    $results = $this->Component->Apidocs->getResourceApiDocs('group');
     echo $this->Component->Json->encode($results);
     }
 

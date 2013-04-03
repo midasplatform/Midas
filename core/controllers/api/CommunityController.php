@@ -53,7 +53,8 @@ class Rest_CommunityController extends ApiController
     {
     $apiFunctions = array(
       'default' => 'communityGet',
-      'children' => 'communityChildren'
+      'children' => 'communityChildren',
+      'group' => 'communityListGroups'
       );
     $this->_genericAction($this->_request->getParams(), 'get', $apiFunctions);
     }
@@ -85,7 +86,7 @@ class Rest_CommunityController extends ApiController
    */
   public function optionsAction()
     {
-    $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, PUT, DELETE');
+    $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, POST, DELETE');
     }
 
 }
