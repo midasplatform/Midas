@@ -26,15 +26,14 @@ $this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/handleb
 $this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/underscore-min.js');
 $this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/backbone-min.js');
 $this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/swagger.midas.js');
-$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/swagger-ui.min.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/swagger-ui.midas.js');
 $this->headScript()->appendFile($this->coreWebroot . '/public/js/rest/rest.index.js');
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/library/SwaggerUI/css/screen.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/rest/rest.index.css" />
 
 <div class="viewMain">
-  Base URL:
-  <pre><?php echo $this->serverURL.$this->webroot?>/rest</pre>
+  <pre>Base URL: <?php echo $this->serverURL.$this->webroot?>/rest</pre>
   <br/>
     To authenticate requests you can provide a parameter of <b>token</b> with an
     authentication token value or to authenticate using the current Midas session you can pass a parameter key of <b>useSession</b>.
