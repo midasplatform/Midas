@@ -57,7 +57,8 @@ class Rest_ItemController extends ApiController
     $apiFunctions = array(
       'default' => 'itemGet',
       'metadata'=> 'itemGetmetadata',
-      'permission' => 'itemListPermissions'
+      'permission' => 'itemListPermissions',
+      'download' => 'itemDownload'
       );
     $this->_genericAction($this->_request->getParams(), 'get', $apiFunctions);
     }

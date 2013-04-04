@@ -24,6 +24,7 @@ require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 class Api_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'api';
+  public $_components = array('Authentication');
   public $_moduleComponents = array('Api');
   public $_models = array('User');
 
@@ -85,7 +86,7 @@ class Api_Notification extends ApiEnabled_Notification
   public function tokenAuth($params)
     {
     $token = $params['authToken'];
-    return $this->ModuleComponent->Authentication->getUser(array('token' => $token), null);
+    return $this->Component->Authentication->getUser(array('token' => $token), null);
     }
   } //end class
 ?>

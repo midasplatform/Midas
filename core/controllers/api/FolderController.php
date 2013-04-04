@@ -53,7 +53,8 @@ class Rest_FolderController extends ApiController
     $apiFunctions = array(
       'default' => 'folderGet',
       'children' => 'folderChildren',
-      'permission' => 'folderListPermissions'
+      'permission' => 'folderListPermissions',
+      'download' => 'folderDownload'
       );
     $this->_genericAction($this->_request->getParams(), 'get', $apiFunctions);
     }

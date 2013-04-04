@@ -246,30 +246,6 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   *  helper function to set the privacy code on a passed in item.
-   */
-  protected function _setItemPrivacy($item, $privacyCode)
-    {
-    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
-    $groupModel = MidasLoader::loadModel('Group');
-    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-    $itempolicygroupDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
-    if($privacyCode == MIDAS_PRIVACY_PRIVATE && $itempolicygroupDao !== false)
-      {
-      $itempolicygroupModel->delete($itempolicygroupDao);
-      }
-    else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $itempolicygroupDao == false)
-      {
-      $itempolicygroupDao = $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
-      }
-    else
-      {
-      // ensure the cached privacy status value is up to date
-      $itempolicygroupModel->computePolicyStatus($item);
-      }
-    }
-
-  /**
    * Generate a unique upload token.  Either <b>itemid</b> or <b>folderid</b> is required,
      but both are not allowed.
    * @param token Authentication token.
@@ -304,119 +280,7 @@ class Api_ApiComponent extends AppComponent
    */
   function uploadGeneratetoken($args)
     {
-    $this->_validateParams($args, array('filename'));
-    if(!array_key_exists('itemid', $args) && !array_key_exists('folderid', $args))
-      {
-      throw new Exception('Parameter itemid or folderid must be defined', MIDAS_INVALID_PARAMETER);
-      }
-    if(array_key_exists('itemid', $args) && array_key_exists('folderid', $args))
-      {
-      throw new Exception('Parameter itemid or folderid must be defined, but not both', MIDAS_INVALID_PARAMETER);
-      }
-
-    $userDao = $this->_getUser($args);
-    if(!$userDao)
-      {
-      throw new Exception('Anonymous users may not upload', MIDAS_INVALID_POLICY);
-      }
-
-    $itemModel = MidasLoader::loadModel('Item');
-    if(array_key_exists('itemid', $args))
-      {
-      $item = $itemModel->load($args['itemid']);
-      if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception('Invalid policy or itemid', MIDAS_INVALID_POLICY);
-        }
-      }
-    else if(array_key_exists('folderid', $args))
-      {
-      $folderModel = MidasLoader::loadModel('Folder');
-      $folder = $folderModel->load($args['folderid']);
-      if($folder == false)
-        {
-        throw new Exception('Parent folder corresponding to folderid doesn\'t exist', MIDAS_INVALID_PARAMETER);
-        }
-      if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
-        {
-        throw new Exception('Invalid policy or folderid', MIDAS_INVALID_POLICY);
-        }
-      // create a new item in this folder
-      $itemname = isset($args['itemname']) ? $args['itemname'] : $args['filename'];
-      $description = isset($args['itemdescription']) ? $args['itemdescription'] : '';
-      $item = $itemModel->createItem($itemname, $description, $folder);
-      if($item === false)
-        {
-        throw new Exception('Create new item failed', MIDAS_INTERNAL_ERROR);
-        }
-      $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
-      $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
-
-      if(isset($args['itemprivacy']))
-        {
-        $privacyCode = $this->_getValidPrivacyCode($args['itemprivacy']);
-        }
-      else
-        {
-        // Public by default
-        $privacyCode = MIDAS_PRIVACY_PUBLIC;
-        }
-      $this->_setItemPrivacy($item, $privacyCode);
-      }
-
-    if(array_key_exists('checksum', $args))
-      {
-      // If we already have a bitstream with this checksum, create a reference and return blank token
-      $bitstreamModel = MidasLoader::loadModel('Bitstream');
-      $existingBitstream = $bitstreamModel->getByChecksum($args['checksum']);
-      if($existingBitstream)
-        {
-        // User must have read access to the existing bitstream if they are circumventing the upload.
-        // Otherwise an attacker could spoof the checksum and read a private bitstream with a known checksum.
-        if($itemModel->policyCheck($existingBitstream->getItemrevision()->getItem(), $userDao, MIDAS_POLICY_READ))
-          {
-          $revision = $itemModel->getLastRevision($item);
-
-          if($revision == false)
-            {
-            // Create new revision if none exists yet
-            Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
-            $revision = new ItemRevisionDao();
-            $revision->setChanges('Initial revision');
-            $revision->setUser_id($userDao->getKey());
-            $revision->setDate(date('c'));
-            $revision->setLicenseId(null);
-            $itemModel->addRevision($item, $revision);
-            }
-
-          $siblings = $revision->getBitstreams();
-          foreach($siblings as $sibling)
-            {
-            if($sibling->getName() == $args['filename'])
-              {
-              // already have a file with this name. don't add new record.
-              return array('token' => '');
-              }
-            }
-          Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
-          $bitstream = new BitstreamDao();
-          $bitstream->setChecksum($args['checksum']);
-          $bitstream->setName($args['filename']);
-          $bitstream->setSizebytes($existingBitstream->getSizebytes());
-          $bitstream->setPath($existingBitstream->getPath());
-          $bitstream->setAssetstoreId($existingBitstream->getAssetstoreId());
-          $bitstream->setMimetype($existingBitstream->getMimetype());
-          $revisionModel = MidasLoader::loadModel('ItemRevision');
-          $revisionModel->addBitstream($revision, $bitstream);
-          return array('token' => '');
-          }
-        }
-      }
-    //we don't already have this content, so create the token
-    $uploadComponent = MidasLoader::loadComponent('Httpupload');
-    $uploadComponent->setTestingMode($this->apiSetup['testing']);
-    $uploadComponent->setTmpDirectory($this->apiSetup['tmpDirectory']);
-    return $uploadComponent->generateToken($args, $userDao->getKey().'/'.$item->getKey());
+    return $this->_callCoreApiMethod($args, 'uploadGeneratetoken');
     }
 
   /**
@@ -445,132 +309,11 @@ class Api_ApiComponent extends AppComponent
    * @param changes (Optional)
             The changes field on the affected item revision,
             e.g. for recording what has changed since the previous revision.
-   * @param return The item information of the item created or changed.
+   * @return The item information of the item created or changed.
    */
   function uploadPerform($args)
     {
-    $this->_validateParams($args, array('uploadtoken', 'filename', 'length'));
-    if(!$this->controller->getRequest()->isPost() && !$this->controller->getRequest()->isPut())
-      {
-      throw new Exception('POST or PUT method required', MIDAS_HTTP_ERROR);
-      }
-
-    list($userid, $itemid, ) = explode('/', $args['uploadtoken']);
-
-    $itemModel = MidasLoader::loadModel('Item');
-    $userModel = MidasLoader::loadModel('User');
-
-    $userDao = $userModel->load($userid);
-    if(!$userDao)
-      {
-      throw new Exception('Invalid user id from upload token', MIDAS_INVALID_PARAMETER);
-      }
-    $item = $itemModel->load($itemid);
-
-    if($item == false)
-      {
-      throw new Exception('Unable to find item', MIDAS_INVALID_PARAMETER);
-      }
-    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception('Permission error', MIDAS_INVALID_POLICY);
-      }
-
-    if(array_key_exists('revision', $args))
-      {
-      if(strtolower($args['revision']) == 'head')
-        {
-        $revision = $itemModel->getLastRevision($item);
-        // if no revision exists, it will be created later
-        }
-      else
-        {
-        $revision = $itemModel->getRevision($item, $args['revision']);
-        if($revision == false)
-          {
-          throw new Exception('Unable to find revision', MIDAS_INVALID_PARAMETER);
-          }
-        }
-      }
-
-    $mode = array_key_exists('mode', $args) ? $args['mode'] : 'stream';
-
-    $httpUploadComponent = MidasLoader::loadComponent('Httpupload');
-    $httpUploadComponent->setTestingMode($this->apiSetup['testing']);
-    $httpUploadComponent->setTmpDirectory($this->apiSetup['tmpDirectory']);
-
-    if(array_key_exists('testingmode', $args))
-      {
-      $httpUploadComponent->setTestingMode(true);
-      $args['localinput'] = $this->apiSetup['tmpDirectory'].'/'.$args['filename'];
-      }
-
-    // Use the Httpupload component to handle the actual file upload
-    if($mode == 'stream')
-      {
-      $result = $httpUploadComponent->process($args);
-
-      $filename = $result['filename'];
-      $filepath = $result['path'];
-      $filesize = $result['size'];
-      $filemd5 = $result['md5'];
-      }
-    else if($mode == 'multipart')
-      {
-      if(!array_key_exists('file', $args) || !array_key_exists('file', $_FILES))
-        {
-        throw new Exception('Parameter file is not defined', MIDAS_INVALID_PARAMETER);
-        }
-      $file = $_FILES['file'];
-
-      $filename = $file['name'];
-      $filepath = $file['tmp_name'];
-      $filesize = $file['size'];
-      $filemd5 = '';
-      }
-    else
-      {
-      throw new Exception('Invalid upload mode', MIDAS_INVALID_PARAMETER);
-      }
-
-    // get the parent folder of this item and notify the callback
-    // this is made more difficult by the fact the items can have many parents,
-    // just use the first in the list.
-    $parentFolders = $item->getFolders();
-    if(!isset($parentFolders) || !$parentFolders || sizeof($parentFolders) === 0)
-      {
-      // this shouldn't happen with any self-respecting item
-      throw new Exception('Item does not have a parent folder', MIDAS_INVALID_PARAMETER);
-      }
-    $firstParent = $parentFolders[0];
-    $validations = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_VALIDATE_UPLOAD',
-                                                            array('filename' => $filename,
-                                                                  'size' => $filesize,
-                                                                  'path' => $filepath,
-                                                                  'folderId' => $firstParent->getFolderId()));
-    foreach($validations as $validation)
-      {
-      if(!$validation['status'])
-        {
-        unlink($filepath);
-        throw new Exception($validation['message'], MIDAS_INVALID_POLICY);
-        }
-      }
-    $uploadComponent = MidasLoader::loadComponent('Upload');
-    $license = null;
-    $changes = array_key_exists('changes', $args) ? $args['changes'] : '';
-    $revisionNumber = null;
-    if(isset($revision) && $revision !== false)
-      {
-      $revisionNumber = $revision->getRevision();
-      }
-    $item = $uploadComponent->createNewRevision($userDao, $filename, $filepath, $changes, $item->getKey(), $revisionNumber, $license, $filemd5);
-
-    if(!$item)
-      {
-      throw new Exception('Upload failed', MIDAS_INTERNAL_ERROR);
-      }
-    return $item->toArray();
+    return $this->_callCoreApiMethod($args, 'uploadPerform');
     }
 
   /**
@@ -690,24 +433,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderDownload($args)
     {
-    $this->_validateParams($args, array('id'));
-    $userDao = $this->_getUser($args);
-
-    $id = $args['id'];
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folder = $folderModel->load($id);
-
-    if($folder === false || !$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_READ))
-      {
-      throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    $redirUrl = '/download/?folders='.$folder->getKey();
-    if($userDao && array_key_exists('token', $args))
-      {
-      $redirUrl .= '&authToken='.$args['token'];
-      }
-    $this->controller->redirect($redirUrl);
+    return $this->_callCoreApiMethod($args, 'folderDownload');
     }
 
   /**
@@ -819,30 +545,6 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * helper method to validate passed in privacy status params and
-   * map them to valid privacy codes.
-   * @param string $privacyStatus, should be 'Private' or 'Public'
-   * @return valid privacy code
-   */
-  private function _getValidPrivacyCode($privacyStatus)
-    {
-    if($privacyStatus !== 'Public' && $privacyStatus !== 'Private')
-      {
-      throw new Exception('privacy should be one of [Public|Private]', MIDAS_INVALID_PARAMETER);
-      }
-    if($privacyStatus === 'Public')
-      {
-      $privacyCode = MIDAS_PRIVACY_PUBLIC;
-      }
-    else
-      {
-      $privacyCode = MIDAS_PRIVACY_PRIVATE;
-      }
-    return $privacyCode;
-    }
-
-
-  /**
    * Check whether an item with the given name exists in the given folder
    * @param parentid The id of the parent folder
    * @param name The name of the item
@@ -894,28 +596,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDownload($args)
     {
-    $this->_validateParams($args, array('id'));
-    $userDao = $this->_getUser($args);
-
-    $id = $args['id'];
-    $itemModel = MidasLoader::loadModel('Item');
-    $item = $itemModel->load($id);
-
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
-      {
-      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
-
-    $redirUrl = '/download/?items='.$item->getKey();
-    if(isset($args['revision']))
-      {
-      $redirUrl .= ','.$args['revision'];
-      }
-    if($userDao && array_key_exists('token', $args))
-      {
-      $redirUrl .= '&authToken='.$args['token'];
-      }
-    $this->controller->redirect($redirUrl);
+    return $this->_callCoreApiMethod($args, 'itemDownload');
     }
 
   /**
@@ -1158,61 +839,7 @@ class Api_ApiComponent extends AppComponent
    */
   function userApikeyDefault($args)
     {
-    $this->_validateParams($args, array('email', 'password'));
-    if(!$this->controller->getRequest()->isPost())
-      {
-      throw new Exception('POST method required', MIDAS_HTTP_ERROR);
-      }
-    $email = $args['email'];
-    $password = $args['password'];
-
-    try
-      {
-      $notifications = array();
-      $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTHENTICATION', array(
-        'email' => $email,
-        'password' => $password));
-      }
-    catch(Zend_Exception $exc)
-      {
-      throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
-      }
-    $authModule = false;
-    foreach($notifications as $module => $user)
-      {
-      if($user)
-        {
-        $userDao = $user;
-        $authModule = true;
-        break;
-        }
-      }
-
-    $userModel = MidasLoader::loadModel('User');
-    $userApiModel = MidasLoader::loadModel('Userapi');
-    if(!$authModule)
-      {
-      $userDao = $userModel->getByEmail($email);
-      if(!$userDao)
-        {
-        throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
-        }
-      }
-
-    $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
-    if($authModule || $userModel->hashExists(hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$password)))
-      {
-      if($userDao->getSalt() == '')
-        {
-        $passwordHash = $userModel->convertLegacyPasswordHash($userDao, $password);
-        }
-      $defaultApiKey = $userApiModel->getByAppAndEmail('Default', $email)->getApikey();
-      return array('apikey' => $defaultApiKey);
-      }
-    else
-      {
-      throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
-      }
+    return $this->_callCoreApiMethod($args, 'userApikeyDefault');
     }
 
   /**
@@ -1261,59 +888,7 @@ class Api_ApiComponent extends AppComponent
    */
   function bitstreamDownload($args)
     {
-    if(!array_key_exists('id', $args) && !array_key_exists('checksum', $args))
-      {
-      throw new Exception('Either an id or checksum parameter is required', MIDAS_INVALID_PARAMETER);
-      }
-    $userDao = $this->_getUser($args);
-
-    $bitstreamModel = MidasLoader::loadModel('Bitstream');
-    $itemModel = MidasLoader::loadModel('Item');
-
-    if(array_key_exists('id', $args))
-      {
-      $bitstream = $bitstreamModel->load($args['id']);
-      }
-    else
-      {
-      $bitstreams = $bitstreamModel->getByChecksum($args['checksum'], true);
-      $bitstream = null;
-      foreach($bitstreams as $candidate)
-        {
-        $rev = $candidate->getItemrevision();
-        if(!$rev)
-          {
-          continue;
-          }
-        $item = $rev->getItem();
-        if($itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
-          {
-          $bitstream = $candidate;
-          break;
-          }
-        }
-      }
-
-    if(!$bitstream)
-      {
-      throw new Exception('The bitstream does not exist or you do not have the permissions', MIDAS_INVALID_PARAMETER);
-      }
-
-    $revision = $bitstream->getItemrevision();
-    if(!$revision)
-      {
-      throw new Exception('Bitstream does not belong to a revision', MIDAS_INTERNAL_ERROR);
-      }
-
-    $name = array_key_exists('name', $args) ? $args['name'] : $bitstream->getName();
-    $offset = array_key_exists('offset', $args) ? $args['offset'] : '0';
-
-    $redirUrl = '/download/?bitstream='.$bitstream->getKey().'&offset='.$offset.'&name='.$name;
-    if($userDao && array_key_exists('token', $args))
-      {
-      $redirUrl .= '&authToken='.$args['token'];
-      }
-    $this->controller->redirect($redirUrl);
+    return $this->_callCoreApiMethod($args, 'bitstreamDownload');
     }
 
   /**
@@ -1463,6 +1038,5 @@ class Api_ApiComponent extends AppComponent
     $this->_renameParamKey($args, 'community_id', 'id');
     return $this->_callCoreApiMethod($args, 'communityListGroups');
     }
-
 
   } // end class

@@ -39,7 +39,8 @@ class Rest_SystemController extends ApiController
       'metadataqualifiers' => 'metadataQualifiersList',
       'uploadeoffset' => 'uploadGetoffset',
       'metadatatypes' => 'metadataTypesList',
-      'metadaelements' => 'metadataElementsList'
+      'metadaelements' => 'metadataElementsList',
+      'uploadtoken' => 'uploadGeneratetoken'
       );
     $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions);
     }
@@ -73,6 +74,8 @@ class Rest_SystemController extends ApiController
     $apiFunctions = array(
       'default' => 'adminDatabaseCleanup',
       'databasecleanup' => 'adminDatabaseCleanup',
+      'defaultapikey' => 'userApikeyDefault',
+      'upload' => 'uploadPerform'
       );
     $this->_genericAction($this->_request->getParams(), 'post', $apiFunctions);
     }
