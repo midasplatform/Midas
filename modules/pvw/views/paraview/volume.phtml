@@ -1,0 +1,195 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/paraview/paraview.volume.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/colorpicker.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.spinbox.css" />
+
+<?php
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/get_modules.js');
+$this->headScript()->appendFile('/PWService/js/ParaViewWeb.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.spinbox.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasTextRenderer.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasAxisLabelRenderer.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.cursor.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.highlighter.min.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.volume.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/colorpicker.js');
+$this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/common.ajaxapi.js');
+
+/** Dynamic js library imports */
+foreach($this->jsImports as $jsImport)
+  {
+  $this->headScript()->appendFile($jsImport);
+  }
+?>
+
+<div class="viewMain">
+  <img class="visuLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+  <span id="loadingStatus"></span>
+
+  <div id='renderercontainer' style="">
+    <div id='rendererOverlay'>
+      <div class="cameraPresetButtons">
+        <button qtip="Set view direction to +X" class="cameraPreset plusX"></button>
+        <button qtip="Set view direction to -X" class="cameraPreset minusX"></button>
+        <button qtip="Set view direction to +Y" class="cameraPreset plusY"></button>
+        <button qtip="Set view direction to -Y" class="cameraPreset minusY"></button>
+        <button qtip="Set view direction to +Z" class="cameraPreset plusZ"></button>
+        <button qtip="Set view direction to -Z" class="cameraPreset minusZ"></button>
+      </div>
+    </div>
+    <!-- The renderer will be inserted here -->
+  </div>
+</div>
+
+<div class="viewSideBar">
+  <div class="sideElementFirst viewAction">
+    <h1>Display</h1>
+    <ul>
+      <li>
+        <a href="javascript:;" id="objectListAction">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/bricks.png"/>
+        Object List
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;" id="sofEditAction">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/contrast.png"/>
+        Scalar Opacity Mapping
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;" id="scmEditAction">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/color_wheel.png"/>
+        Scalar Color Mapping
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sideElementActions viewAction">
+    <h1>Filters</h1>
+    <ul>
+      <li>
+        <a href="javascript:;" id="extractSubgridAction">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/shape_handles.png"/>
+        Extract Subgrid
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="sideElement">
+    <h1>Info</h1>
+    Bounds (x): <span id="boundsXInfo" class="infoValue"></span><br/>
+    Bounds (y): <span id="boundsYInfo" class="infoValue"></span><br/>
+    Bounds (z): <span id="boundsZInfo" class="infoValue"></span><br/>
+    Scalar Range: <span id="scalarRangeInfo" class="infoValue"></span><br/>
+  </div>
+</div>
+
+<!-- TEMPLATE: extract subgrid dialog -->
+<div id="extractSubgridDialogTemplate" style="display: none;">
+  <table class="extractSubgridTable">
+    <tr>
+      <td>X:</td>
+      <td><input type="text" class="sb extractSubgridMinX" /></td>
+      <td><div class="sliderX"></div>
+      <td><input type="text" class="sb extractSubgridMaxX" /></td>
+    </tr>
+    <tr>
+      <td>Y:</td>
+      <td><input type="text" class="sb extractSubgridMinY" /></td>
+      <td><div class="sliderY"></div>
+      <td><input type="text" class="sb extractSubgridMaxY" /></td>
+    </tr>
+    <tr>
+      <td>Z:</td>
+      <td><input type="text" class="sb extractSubgridMinZ" /></td>
+      <td><div class="sliderZ"></div>
+      <td><input type="text" class="sb extractSubgridMaxZ" /></td>
+    </tr>
+  </table>
+  <div style="float: left;">
+    <img class="extractInProgress" style="display: none;"
+    alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+  </div>
+  <div style="float: right;">
+    <button class="extractSubgridApply">Apply</button>
+    <button class="extractSubgridClose">Close</button>
+  </div>
+</div>
+
+<!-- TEMPLATE: scalar opacity function dialog -->
+<div id="sofDialogTemplate" style="display: none;">
+  <div class="sofPlot" style="height:140px; width:460px;"></div>
+  <div class="sofPointEdit">
+    S:<input type="text" class="scalarValueEdit" />
+    O:<input type="text" class="opacityValueEdit" />
+    <button class="pointUpdate">Update</button>
+    <button class="pointDelete">Delete point</button>
+  </div>
+  <div class="sofBottomButtons">
+    <button class="sofReset">Restore default</button>
+    <button class="sofApply">Apply</button>
+    <button class="sofClose">Close</button>
+  </div>
+</div>
+
+<!-- TEMPLATE: scalar color mapping dialog -->
+<div id="scmDialogTemplate" style="display: none;">
+  <div class="rgbPointList"></div>
+  <div class="pointListControls">
+    <button class="scmAddPoint">Add point</button>
+  </div>
+  <div class="scmDivider"></div>
+  <div class="scmBottomButtons">
+    <button class="scmReset">Restore default</button>
+    <button class="scmApply">Apply</button>
+    <button class="scmClose">Close</button>
+  </div>
+</div>
+
+<!-- TEMPLATE: scalar color mapping point tool -->
+<div id="scmPointMapTemplate" class="rgbPointContainer" style="display: none;">
+  Scalar value: <input type="text" class="scmScalarValue" />
+  <span>Color:</span><div class="scmColorPicker"></div>
+  <button style="display: none;" class="scmDeletePoint">Delete</button>
+</div>
+
+<!-- TEMPLATE: object list dialog -->
+<div id="objectListTemplate" class="objectListContainer" style="display: none;">
+  <table class="objectList">
+    <thead>
+      <tr>
+        <th class="visibility">
+          <img alt="" src="<?php echo $this->moduleWebroot?>/public/images/pqEyeball16.png" />
+        </th>
+        <th>Type</th>
+        <th>Object</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <div class="objectListBottomButtons">
+    <button class="objectListApply">Apply</button>
+    <button class="objectListClose">Close</button>
+  </div>
+</div>
+
+<!-- TEMPLATE: object entry -->
+<div id="objectEntryTemplate" class="objectEntryContainer" style="display: none;">
+  <
+</div>
+
