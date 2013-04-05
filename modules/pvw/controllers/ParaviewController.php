@@ -18,11 +18,57 @@
  limitations under the License.
 =========================================================================*/
 
-/** Paraview Controller*/
-class Visualize_ParaviewController extends Visualize_AppController
+/** Paraview Controller */
+class Pvw_ParaviewController extends Pvw_AppController
 {
-  public $_models = array('Item', 'ItemRevision', 'Bitstream');
-  public $_moduleComponents = array('Main');
+  public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Setting');
+  public $_moduleComponent = array('Paraview');
+  public $_moduleModels = array('Instance');
+
+  /**
+   * This action should be invoked via XMLHttpRequest
+   * to start a paraview web instance. Relevant info will
+   * be returned to the client.
+   * @param [appname] The name of the application to start, defaults to midas.
+                      All available apps live in the 'apps' directory of this module.
+   * @param itemId The id of the item to be rendered. Item data will be symlinked into the
+                   location expected by pvpython
+   * @return The info needed by the client to connect to the session
+   */
+  public function startsessionAction()
+    {
+    $this->disableView();
+    $this->disableLayout();
+
+    $appname = $this->_getParam('appname');
+    if(!isset($appname))
+      {
+      $appname = 'midas';
+      }
+    $itemId = $this->_getParam('itemId');
+    if(!isset($itemId))
+      {
+      throw new Zend_Exception('Must pass an itemId', 400);
+      }
+    $item = $this->Item->load($itemId);
+    if(!$item)
+      {
+      throw new Zend_Exception('Invalid itemId', 404);
+      }
+    if(!$this->Item->policyCheck($item, $this->userSession->Dao))
+      {
+      throw new Zend_Exception('Read access required on item', 403);
+      }
+
+    $instance = $this->ModuleComponent->Paraview->createAndStartInstance($item, $appname);
+
+    // TODO we should store the apache SID, pvpython process ID
+    // and the port in some table for resource monitoring
+    echo JsonComponent::encode(array(
+      'status' => 'ok',
+      'instanceId' => $instance->getKey()
+      ));
+    }
 
   /**
    * Surface (mesh) model viewer action
@@ -45,63 +91,7 @@ class Visualize_ParaviewController extends Visualize_AppController
     $header .= ' Surface view: <a href="'.$this->view->webroot.'/item/'.$itemid.'">'.$item->getName().'</a>';
     $this->view->header = $header;
 
-    $modulesConfig = Zend_Registry::get('configsModules');
-    $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
-    $customtmp = $modulesConfig['visualize']->customtmp;
-    $useparaview = $modulesConfig['visualize']->useparaview;
-    $userwebgl = $modulesConfig['visualize']->userwebgl;
-    $usesymlinks = $modulesConfig['visualize']->usesymlinks;
-    $pwapp = $modulesConfig['visualize']->pwapp;
-    if(!isset($useparaview) || !$useparaview)
-      {
-      throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
-      }
-
-    if(!isset($paraviewworkdir) || empty($paraviewworkdir))
-      {
-      throw new Zend_Exception('Please set the ParaView work directory');
-      }
-
-    $pathArray = $this->ModuleComponent->Main->createParaviewPath();
-    $path = $pathArray['path'];
-    $tmpFolderName = $pathArray['foderName'];
-
-    $revision = $this->Item->getLastRevision($item);
-    $bitstreams = $revision->getBitstreams();
-    foreach($bitstreams as $bitstream)
-      {
-      if($usesymlinks)
-        {
-        symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
-        }
-      else
-        {
-        copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
-        }
-
-      $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
-      if($ext != 'pvsm')
-        {
-        $filePath = $paraviewworkdir.'/'.$tmpFolderName.'/'.$bitstream->getName();
-        }
-      }
-
-    if(!$userwebgl || $item->getSizebytes() > 1 * 1024 * 1024)
-      {
-      $this->view->renderer = 'js';
-      }
-    else
-      {
-      $this->view->renderer = 'webgl';
-      }
-    $this->view->json['visualize']['url'] = $filePath;
-    $this->view->json['visualize']['item'] = $item;
-    $this->view->json['visualize']['hostname'] = $this->_getHostName();
-    $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwapp);
-    $this->view->fileLocation = $filePath;
-    $this->view->jsImports = array(); //todo
-    $this->view->usewebgl = $userwebgl;
-    $this->view->itemDao = $item;
+    
     }
 
   /**
@@ -215,7 +205,7 @@ class Visualize_ParaviewController extends Visualize_AppController
 
   /**
    * Display a volume rendering of the selected item
-   * @param itemId The id of the MetaImage item to visualize
+   * @param instanceId The id of the pvw_instance that was created with startsessionAction()
    * @param jsImports (Optional) List of javascript files to import. These should contain handler
    *                             functions for imported operations. Separated by ;
    */
@@ -230,149 +220,53 @@ class Visualize_ParaviewController extends Visualize_AppController
       {
       $this->view->jsImports = array();
       }
+    $this->view->instance = $this->_getPvwInstance();
+    $this->_setStaticRoot($this->view->instance->getPort());
 
-    $meshes = $this->_getParam('meshes');
-    if(isset($meshes))
+    $item = $this->view->instance->getItem();
+
+    $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/volume.png" />';
+    $header .= ' Volume rendering: <a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
+    $this->view->header = $header;
+    }
+
+  /**
+   * Helper function to set the static content root for pvw content in the view
+   */
+  private function _setStaticRoot($port)
+    {
+    $staticContent = $this->Setting->getValueByName('staticcontent', $this->moduleName);
+    if($staticContent && is_dir($staticContent))
       {
-      $meshes = explode(';', $meshes);
+      $this->view->staticRoot = 'http://'.$this->_getHostName().':'.$port;
       }
     else
       {
-      $meshes = array();
+      $this->view->staticRoot = $this->view->moduleWebroot.'/public/pvw';
       }
-
-    $itemid = $this->_getParam('itemId');
-    $item = $this->Item->load($itemid);
-    if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
-      {
-      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
-      }
-    $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/volume.png" />';
-    $header .= ' Volume rendering: <a href="'.$this->view->webroot.'/item/'.$itemid.'">'.$item->getName().'</a>';
-    $this->view->header = $header;
-
-    $modulesConfig = Zend_Registry::get('configsModules');
-    $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
-    $useparaview = $modulesConfig['visualize']->useparaview;
-    $usesymlinks = $modulesConfig['visualize']->usesymlinks;
-    $pwapp = $modulesConfig['visualize']->pwapp;
-    if(!isset($useparaview) || !$useparaview)
-      {
-      throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
-      }
-
-    if(!isset($paraviewworkdir) || empty($paraviewworkdir))
-      {
-      throw new Zend_Exception('Please set the ParaView work directory');
-      }
-
-    $pathArray = $this->ModuleComponent->Main->createParaviewPath();
-    $path = $pathArray['path'];
-    $tmpFolderName = $pathArray['foderName'];
-
-    $revision = $this->Item->getLastRevision($item);
-    $bitstreams = $revision->getBitstreams();
-    foreach($bitstreams as $bitstream)
-      {
-      if($usesymlinks)
-        {
-        symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
-        }
-      else
-        {
-        copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
-        }
-
-      $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
-      switch($ext)
-        {
-        case 'mha':
-          $colorArrayName = 'MetaImage';
-          break;
-        case 'nrrd':
-          $colorArrayName = 'ImageFile';
-          break;
-        default:
-          break;
-        }
-      if($ext != 'pvsm')
-        {
-        $filePath = $paraviewworkdir.'/'.$tmpFolderName.'/'.$bitstream->getName();
-        }
-      }
-
-    // Load in other mesh sources
-    $meshObj = array();
-    foreach($meshes as $meshId)
-      {
-      $otherItem = $this->Item->load($meshId);
-      if($otherItem === false || !$this->Item->policyCheck($otherItem, $this->userSession->Dao, MIDAS_POLICY_READ))
-        {
-        throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
-        }
-      $revision = $this->Item->getLastRevision($otherItem);
-      $bitstreams = $revision->getBitstreams();
-      foreach($bitstreams as $bitstream)
-        {
-        $otherFile = $path.'/'.$bitstream->getName();
-        if($usesymlinks)
-          {
-          symlink($bitstream->getFullPath(), $otherFile);
-          }
-        else
-          {
-          copy($bitstream->getFullPath(), $otherFile);
-          }
-        // Use metadata values for mesh color and orientation if they exist
-        $metadata = $this->ItemRevision->getMetadata($revision);
-        $diffuseColor = array(1.0, 0.0, 0.0); //default to red mesh
-        $orientation = array(0.0, 0.0, 0.0); //default to no orientation transform
-        foreach($metadata as $metadatum)
-          {
-          if(strtolower($metadatum->getElement()) == 'visualize')
-            {
-            if(strtolower($metadatum->getQualifier()) == 'diffusecolor')
-              {
-              try //must be json encoded, otherwise we ignore it and use the default
-                {
-                $diffuseColor = json_decode($metadatum->getValue());
-                }
-              catch(Exception $e)
-                {
-                $this->getLogger()->warn('Invalid diffuseColor metadata value (id='.$meshId.')');
-                }
-              }
-            if(strtolower($metadatum->getQualifier()) == 'orientation')
-              {
-              try //must be json encoded, otherwise we ignore it and use the default
-                {
-                $orientation = json_decode($metadatum->getValue());
-                }
-              catch(Exception $e)
-                {
-                $this->getLogger()->warn('Invalid orientation metadata value (id='.$meshId.')');
-                }
-              }
-            }
-          }
-
-        $meshObj[] = array('path' => $otherFile, 'item' => $otherItem, 'visible' => true,
-                           'diffuseColor' => $diffuseColor,
-                           'orientation' => $orientation);
-        }
-      }
-
-    $this->view->json['visualize']['url'] = $filePath;
-    $this->view->json['visualize']['meshes'] = $meshObj;
-    $this->view->json['visualize']['item'] = $item;
-    $this->view->json['visualize']['visible'] = true;
-    $this->view->json['visualize']['colorArrayName'] = $colorArrayName;
-    $this->view->json['visualize']['hostname'] = $this->_getHostName();
-    $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwapp);
-    $this->view->fileLocation = $filePath;
-    $this->view->itemDao = $item;
     }
 
+  /**
+   * Helper method to get the pvw instance from the params
+   */
+  private function _getPvwInstance()
+    {
+    $instanceId = $this->_getParam('instanceId');
+    if(!isset($instanceId))
+      {
+      throw new Zend_Exception('Must pass instanceId param', 400);
+      }
+    $instance = $this->Pvw_Instance->load($instanceId);
+    if(!$instance)
+      {
+      throw new Zend_Exception('This ParaView instance no longer exists', 404);
+      }
+    if(!$this->ModuleComponent->Paraview->isRunning($instance))
+      {
+      throw new Zend_Exception('This ParaView instance has been closed.', 400);
+      }
+    return $instance;
+    }
   /**
    * Use the axial slice view mode for MetaImage volume data
    * @param itemId The id of the MetaImage item to visualize
@@ -556,20 +450,5 @@ class Visualize_ParaviewController extends Visualize_AppController
       }
     }
 
-  /**
-   * Helper function to extract the port Tomcat is listening on
-   */
-  protected function _getTomcatPort($pwapp)
-    {
-    if(preg_match('/:([0-9]+)\//', $pwapp, $matches))
-      {
-      return $matches[1];
-      }
-    else
-      {
-      return '80';
-      }
-    }
 } // end class
 ?>
-

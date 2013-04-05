@@ -17,26 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-
-/** config form*/
-class Pvw_ConfigForm extends AppForm
-{
-  /** create form */
-  public function createConfigForm()
-    {
-    $form = new Zend_Form;
-
-    $form->setAction($this->webroot.'/pvw/config/submit')
-         ->setMethod('post');
-
-    $pvpython = new Zend_Form_Element_Text('pvpython');
-    $staticcontent = new Zend_Form_Element_Text('staticcontent');
-
-    $submit = new Zend_Form_Element_Submit('submitConfig');
-    $submit->setLabel('Save configuration');
-
-    $form->addElements(array($pvpython, $staticcontent, $submit));
-    return $form;
-    }
-} // end class
-
+/** Dao for pvw instance */
+class Pvw_InstanceDao extends Pvw_AppDao
+  {
+  public $_model = 'Instance';
+  public $_module = 'pvw';
+  }
+?>

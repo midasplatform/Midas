@@ -26,6 +26,8 @@ foreach($this->jsImports as $jsImport)
   }
 ?>
 
+<?php echo $this->staticRoot; exit(); ?>
+
 <div class="viewMain">
   <img class="visuLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <span id="loadingStatus"></span>
