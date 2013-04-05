@@ -19,32 +19,26 @@
 =========================================================================*/
 
 /**
- *  WebApi controller for User Resource (in sizequota module)
+ *  WebApi controller for Item Resource (in thumbnailcreator module)
  */
 
-class Apisizequota_UserController extends ApiController
+class Apithumbnailcreator_ItemController extends ApiController
 {
-
   /**
-   * The head action handles HEAD requests; it should respond with an
-   * identical response to the one that would correspond to a GET request,
-   * but without the response body.
+   * The put action handles PUT requests and receives an 'id' parameter; it
+   * should update the server resource state of the resource identified by
+   * the 'id' value.
    */
-  public function headAction()
+  public function putAction()
     {
-    $this->_response->setHttpResponseCode(200); // 200 OK
+    $apiFunctions = array(
+      'default' => 'createBigThumbnail',
+      'bigthumbnail' => 'createBigThumbnail',
+      'smallthumbnail' => 'createSmallThumbnail'
+      );
+    $this->_genericAction($this->_request->getParams(), 'put', $apiFunctions, 'thumbnailcreator');
     }
 
-  /**
-   * The get action handles GET requests and receives an 'id' parameter; it
-   * should respond with the server resource state of the resource identified
-   * by the 'id' value.
-   */
-  public function getAction()
-    {
-    $apiFunctions['default'] = 'userGet';
-    $this->_genericAction($this->_request->getParams(), 'get', $apiFunctions, 'sizequota');
-    }
 
   /**
    * The options action handles OPTIONS requests; it should respond with
@@ -52,7 +46,7 @@ class Apisizequota_UserController extends ApiController
    */
   public function optionsAction()
     {
-    $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET');
+    $this->_response->setHeader('Allow', 'OPTIONS, PUT');
     }
 
 }

@@ -19,25 +19,30 @@
 =========================================================================*/
 
 /**
- * Apidocs Controller for Sizequota WebApi
- **/
-class Apisizequota_ApidocsController extends AppController
+ *  WebApi controller for Item Resource (in dicomextractor module)
+ */
+
+class Apidicomextractor_ItemController extends ApiController
 {
-  public $_components = array('Apidocs', 'Json');
-
-
-  /** init api actions*/
-  public function init()
+  /**
+   * The put action handles PUT requests and receives an 'id' parameter; it
+   * should update the server resource state of the resource identified by
+   * the 'id' value.
+   */
+  public function putAction()
     {
-    $this->disableLayout();
-    $this->disableView();
+    $apiFunctions['default'] = 'extract';
+    $this->_genericAction($this->_request->getParams(), 'put', $apiFunctions, 'dicomextractor');
     }
 
-  /** Quota resource */
-  function quotaAction()
+
+  /**
+   * The options action handles OPTIONS requests; it should respond with
+   * the HTTP methods that the server supports for specified URL.
+   */
+  public function optionsAction()
     {
-    $results = $this->Component->Apidocs->getResourceApiDocs('quota', 'sizequota');
-    echo $this->Component->Json->encode($results);
+    $this->_response->setHeader('Allow', 'OPTIONS, PUT');
     }
 
 }

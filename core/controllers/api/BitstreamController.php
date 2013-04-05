@@ -29,8 +29,11 @@ class Rest_BitstreamController extends ApiController
    */
   public function indexAction()
     {
-    $apiFunctions['default'] = 'bitstreamCount';
-    $apiFunctions['count'] = 'bitstreamCount';
+    $apiFunctions = array(
+      'default' => 'bitstreamCount',
+      'exists'  => 'bitstreamCount',
+      'download'  => 'bitstreamDownloadByChecksum'
+      );
     $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions);
     }
 
@@ -60,7 +63,10 @@ class Rest_BitstreamController extends ApiController
    */
   public function getAction()
     {
-    $apiFunctions['default'] = 'bitstreamGet';
+     $apiFunctions = array(
+      'default' => 'bitstreamGet',
+      'download'  => 'bitstreamDownloadById'
+      );
     $this->_genericAction($this->_request->getParams(), 'get', $apiFunctions);
     }
 

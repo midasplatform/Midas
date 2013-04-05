@@ -661,4 +661,20 @@ class UtilityComponent extends AppComponent
       }
     return $salt;
     }
+
+  /**
+   * Update a request parameter's name if it exists in the given argument array.
+   * This is to provide backward compatibility for existing RPC WebAPIs.
+   * @param $args Array of arguments
+   * @param $oldKey Current name of the parameter
+   * @param $newKey New name of the parameter
+   */
+  public static function renameParamKey(&$args, $oldKey, $newKey)
+    {
+    if(isset($args[$oldKey]))
+      {
+      $args[$newKey] = $args[$oldKey];
+      unset($args[$oldKey]);
+      }
+    }
 } // end class

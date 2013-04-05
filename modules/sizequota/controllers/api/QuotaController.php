@@ -19,18 +19,24 @@
 =========================================================================*/
 
 /**
- *  WebApi Controller for Folder Resource
+ *  WebApi controller for Quota Resource (in sizequota module)
  */
-class Rest_FolderController extends ApiController
+
+class Apisizequota_QuotaController extends ApiController
 {
+
   /**
    * The index action handles index/list requests; it should respond with a
    * list of the requested resources.
    */
   public function indexAction()
     {
-    $apiFunctions['default'] = 'userFolders';
-    $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions);
+    $apiFunctions = array(
+      'default' => 'userGet',
+      'user' => 'userGet',
+      'community'  => 'communityGet'
+    );
+    $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions, 'sizequota');
     }
 
   /**
@@ -50,13 +56,7 @@ class Rest_FolderController extends ApiController
    */
   public function getAction()
     {
-    $apiFunctions = array(
-      'default' => 'folderGet',
-      'children' => 'folderChildren',
-      'permission' => 'folderListPermissions',
-      'download' => 'folderDownload'
-      );
-    $this->_genericAction($this->_request->getParams(), 'get', $apiFunctions);
+    $this->_response->setHttpResponseCode(200); // 200 OK
     }
 
   /**
@@ -65,39 +65,10 @@ class Rest_FolderController extends ApiController
    */
   public function postAction()
     {
-    $apiFunctions['default'] = 'folderCreate';
-    $this->_genericAction($this->_request->getParams(), 'post', $apiFunctions);
+    $apiFunctions['default'] = 'set';
+    $this->_genericAction($this->_request->getParams(), 'post', $apiFunctions, 'sizequota');
     }
 
-  /**
-   * The put action handles PUT requests and receives an 'id' parameter; it
-   * should update the server resource state of the resource identified by
-   * the 'id' value.
-   */
-  public function putAction()
-    {
-    $apiFunctions = array(
-      'default' => 'folderMove',
-      'move' => 'folderMove',
-      'addpolicygroup'=> 'folderAddPolicygroup',
-      'removepolicygroup' => 'folderRemovePolicygroup',
-      'addpolicyuser' => 'folderAddPolicyuser',
-      'removepolicyuser' => 'folderRemovePolicyuser',
-      'setprivacyrecursive' => 'folderSetPrivacyRecursive'
-      );
-    $this->_genericAction($this->_request->getParams(), 'put', $apiFunctions);
-    }
-
-  /**
-   * The delete action handles DELETE requests and receives an 'id'
-   * parameter; it should update the server resource state of the resource
-   * identified by the 'id' value.
-   */
-  public function deleteAction()
-    {
-    $apiFunctions['default'] = 'folderDelete';
-    $this->_genericAction($this->_request->getParams(), 'delete', $apiFunctions);
-    }
 
   /**
    * The options action handles OPTIONS requests; it should respond with
@@ -105,7 +76,7 @@ class Rest_FolderController extends ApiController
    */
   public function optionsAction()
     {
-    $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, POST, PUT, DELETE');
+    $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, POST');
     }
 
 }

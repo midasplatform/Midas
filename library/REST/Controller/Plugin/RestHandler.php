@@ -128,9 +128,14 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
           $request->setParam('id', NULL);
           }
         // forward to index action if id is not provided
-        if(empty($tokens) && $request->getActionName() == "get")
+        $action = $request->getActionName();
+        if(empty($tokens) && $action == "get")
           {
           $request->setActionName("index");
+          }
+        else if(empty($tokens) && ($action == "post" || $action == "put"))
+          {
+          $request->setActionName("post");
           }
         else if(!empty($tokens) && is_numeric($tokens[0]))
           {
@@ -138,7 +143,8 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
           }
         else
           {
-          throw new Exception('The Webapi ' . $request->getPathInfo() . ' is not supported.', -100);
+          $this->_response->setHttpResponseCode(400); //400 Bad Request
+          throw new Exception('The Webapi ' . $request->getPathInfo() . ' is not supported.', 400);
           }
         }
       }
