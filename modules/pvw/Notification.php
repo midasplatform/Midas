@@ -57,11 +57,31 @@ class Pvw_Notification extends MIDAS_Notification
       }
     }
 
-  /** generate Dasboard information */
+  /** generate Dashboard information */
   public function getDashboard()
     {
-    // TODO 1 check that pvpython is present and is executable
-    //      2 Test write permission into necessary dirs
+    $settingModel = MidasLoader::loadModel('Setting');
+    $pvpython = $settingModel->getValueByName('pvpython', 'pvw');
+    $staticDir = $settingModel->getValueByName('staticcontent', 'pvw');
+
+    // Validate pvpython setting
+    if(!$pvpython)
+      {
+      $pvpDb = array(false, 'Must set pvpython path in module config page');
+      }
+    else
+      {
+      $pvpDb = array(is_executable($pvpython), $pvpython);
+      }
+
+    // Validate static content directory setting
+    if(!$staticDir)
+      {
+      $staticDir = BASE_PATH.'/modules/pvw/public/pvw';
+      }
+    $staticDb = array(is_dir($staticDir), $staticDir);
+
+    return array('pvpython is executable' => $pvpDb, 'Static content directory' => $staticDb);
     }
   } //end class
 

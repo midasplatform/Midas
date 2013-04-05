@@ -18,25 +18,27 @@
  limitations under the License.
 =========================================================================*/
 
-/** config form*/
-class Pvw_ConfigForm extends AppForm
+/** Base class for instance model */
+abstract class Pvw_InstanceModelBase extends Pvw_AppModel
 {
-  /** create form */
-  public function createConfigForm()
+  /** constructor */
+  public function __construct()
     {
-    $form = new Zend_Form;
+    parent::__construct();
+    $this->_name = 'pvw_instance';
+    $this->_daoName = 'InstanceDao';
+    $this->_key = 'instance_id';
 
-    $form->setAction($this->webroot.'/pvw/config/submit')
-         ->setMethod('post');
-
-    $pvpython = new Zend_Form_Element_Text('pvpython');
-    $staticcontent = new Zend_Form_Element_Text('staticcontent');
-
-    $submit = new Zend_Form_Element_Submit('submitConfig');
-    $submit->setLabel('Save configuration');
-
-    $form->addElements(array($pvpython, $staticcontent, $submit));
-    return $form;
+    $this->_mainData = array(
+      'instance_id' => array('type' => MIDAS_DATA),
+      'item_id' => array('type' => MIDAS_DATA),
+      'pid' => array('type' => MIDAS_DATA),
+      'sid' => array('type' => MIDAS_DATA),
+      'port' => array('type' => MIDAS_DATA),
+      'creation_date' => array('type' => MIDAS_DATA),
+      'item' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Item', 'parent_column' => 'item_id', 'child_column' => 'item_id')
+      );
+    $this->initialize();
     }
-} // end class
-
+}
+?>
