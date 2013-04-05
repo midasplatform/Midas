@@ -108,6 +108,7 @@ class ApidocsComponent extends AppComponent
         $http = '';
         $path = '';
         $resource = '';
+        $idParam = 'id';
         $params = array();
         foreach($docAttributes as $docEntry)
           {
@@ -134,6 +135,10 @@ class ApidocsComponent extends AppComponent
             {
             $http = trim(substr($doc, 5));
             }
+          elseif(strpos($doc, 'idparam') === 0)
+            {
+            $idParam = trim(substr($doc, 8));
+            }
           else
             {
             $description = $doc;
@@ -157,6 +162,11 @@ class ApidocsComponent extends AppComponent
           continue;
           }
         $docs = array();
+        if($idParam !== 'id')
+          {
+          $params['id'] = $params[$idParam];
+          unset($params[$idParam]);
+          }
         $docs['params'] = $params;
         $docs['return'] = $return;
         $docs['http'] = $http;

@@ -25,7 +25,6 @@ define('MIDAS_SIZEQUOTA_INVALID_PARAMETER', -150);
 /** Component for api methods */
 class Sizequota_ApiComponent extends AppComponent
 {
-  public $userSession;
 
   /**
    * Helper function for verifying keys in an input array
@@ -45,41 +44,26 @@ class Sizequota_ApiComponent extends AppComponent
   private function _getUser($args)
     {
     $authComponent = MidasLoader::loadComponent('Authentication');
-    $default = $this->userSession ? $this->userSession->Dao : null;
-    return $authComponent->getUser($args, $default);
-    }
-
-  /**
-   * Rename a request parameter's key to provide backward compatibility for existing WebAPIs .
-   */
-  private function _renameParamKey(&$args, $oldKey, $newKey)
-    {
-    if(isset($args[$oldKey]))
-      {
-      $args[$newKey] = $args[$oldKey];
-      unset($args[$oldKey]);
-      }
+    return $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
     }
 
   /**
    * Get the size quota for a user.
-   * @path /sizequota/user/{id}
+   * @path /sizequota/quota/user
    * @http GET
-   * @param token (Optional) Authentication token
-   * @param id Id of the user to check
+   * @param user Id of the user to check
    * @return array('quota' => The size quota in bytes for the user, or empty string if unlimited,
                    'used' => Size in bytes currently used)
    */
   public function userGet($args)
     {
-    $this->_renameParamKey($args, 'user', 'id');
-    $this->_checkKeys(array('token', 'id'), $args);
+    $this->_checkKeys(array('user'), $args);
     $requestUser = $this->_getUser($args);
 
     $folderModel = MidasLoader::loadModel('Folder');
     $userModel = MidasLoader::loadModel('User');
 
-    $user = $userModel->load($args['id']);
+    $user = $userModel->load($args['user']);
     if(!$user)
       {
       throw new Exception('Invalid user id', MIDAS_SIZEQUOTA_INVALID_PARAMETER);
@@ -97,14 +81,15 @@ class Sizequota_ApiComponent extends AppComponent
 
   /**
    * Get the size quota for a community.
-   * @param token Authentication token
+   * @path /sizequota/quota/community
+   * @http GET
    * @param community Id of the community to check
    * @return array('quota' => The size quota in bytes for the community, or empty string if unlimited,
                    'used' => Size in bytes currently used)
    */
   public function communityGet($args)
     {
-    $this->_checkKeys(array('token', 'community'), $args);
+    $this->_checkKeys(array('community'), $args);
     $requestUser = $this->_getUser($args);
 
     $folderModel = MidasLoader::loadModel('Folder');
@@ -128,14 +113,15 @@ class Sizequota_ApiComponent extends AppComponent
 
   /**
    * Set a quota for a folder. For MIDAS admin use only.
-   * @param token Authentication token
+   * @path /sizequota/quota
+   * @http POST
    * @param folder The folder id
-   * @param quota (optional) The quota. Pass a number of bytes or the empty string for unlimited.
+   * @param quota (Optional) The quota. Pass a number of bytes or the empty string for unlimited.
      If this parameter isn't specified, deletes the current quota entry if one exists.
    */
   public function set($args)
     {
-    $this->_checkKeys(array('token', 'folder'), $args);
+    $this->_checkKeys(array('folder'), $args);
     $user = $this->_getUser($args);
 
     if(!$user || !$user->isAdmin())
@@ -143,7 +129,7 @@ class Sizequota_ApiComponent extends AppComponent
       throw new Exception('Must be super-admin', MIDAS_SIZEQUOTA_INVALID_POLICY);
       }
     $folderModel = MidasLoader::loadModel('Folder');
-    $folder = MidasLoader::load($args['folder']);
+    $folder = $folderModel->load($args['folder']);
     if(!$folder)
       {
       throw new Exception('Invalid folder id', MIDAS_SIZEQUOTA_INVALID_PARAMETER);

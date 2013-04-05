@@ -623,6 +623,7 @@ class ApiComponent extends AppComponent
       throw new Exception('Parameter itemid or folderid must be defined, but not both', MIDAS_INVALID_PARAMETER);
       }
 
+    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
     $userDao = $this->_getUser($args);
     if(!$userDao)
       {
@@ -1803,6 +1804,7 @@ class ApiComponent extends AppComponent
   function itemDownload($args)
     {
     $this->_validateParams($args, array('id'));
+    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
     $userDao = $this->_getUser($args);
 
     $id = $args['id'];
@@ -2716,6 +2718,7 @@ class ApiComponent extends AppComponent
   function folderDownload($args)
     {
     $this->_validateParams($args, array('id'));
+    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
     $userDao = $this->_getUser($args);
 
     $id = $args['id'];
@@ -2980,6 +2983,7 @@ class ApiComponent extends AppComponent
       {
       throw new Exception('Either an id or checksum parameter is required', MIDAS_INVALID_PARAMETER);
       }
+    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
     $userDao = $this->_getUser($args);
 
     $bitstreamModel = MidasLoader::loadModel('Bitstream');

@@ -31,6 +31,8 @@ class Dicomserver_ApiComponent extends AppComponent
 
   /**
    * Start DICOM server
+   * @path /dicomserver/server/start
+   * @http POST
    * @param email (Optional) The user email to login
    * @param apikey (Optional) The user apikey to login
    * @param dcm2xml_cmd (Optional) The command to run dcm2xml
@@ -197,6 +199,8 @@ class Dicomserver_ApiComponent extends AppComponent
 
   /**
    * Check DICOM server status
+   * @path /dicomserver/server/status
+   * @http GET
    * @param storescp_cmd (Optional) The command to run storescp
    * @param dcmqrscp_cmd (Optional) The command to run dcmqrscp
    * @return array('status' => string)
@@ -268,6 +272,8 @@ class Dicomserver_ApiComponent extends AppComponent
 
  /**
    * Stop DICOM server
+   * @path /dicomserver/server/stop
+   * @http POST
    * @param storescp_cmd (Optional) The command to run storescp
    * @param dcmqrscp_cmd (Optional) The command to run dcmqrscp
    * @param incoming_dir (Optional) The incoming directory to receive and process DICOM files

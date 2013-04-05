@@ -30,6 +30,9 @@ class Thumbnailcreator_ApiComponent extends AppComponent
 
   /**
    * Create a big thumbnail for the given bitstream with the given width. It is used as the main image of the given item and shown in the item view page.
+   * @path /thumbnailcreator/item/bigthumbnail/{id}
+   * @http PUT
+   * @idparam itemId
    * @param bitstreamId The bitstream to create the thumbnail from
    * @param itemId The item to set the thumbnail on
    * @param width (Optional) The width in pixels to resize to (aspect ratio will be preserved). Defaults to 575
@@ -37,14 +40,16 @@ class Thumbnailcreator_ApiComponent extends AppComponent
    */
   public function createBigThumbnail($args)
     {
-    $this->_checkKeys(array('itemId', 'bitstreamId'), $args);
+    $utilityComponent = MidasLoader::loadComponent('Utility');
+    $utilityComponent->renameParamKey($args, 'itemId', 'id');
+    $this->_checkKeys(array('id', 'bitstreamId'), $args);
 
     $imComponent = MidasLoader::loadComponent('Imagemagick', 'thumbnailcreator');
     $authComponent = MidasLoader::loadComponent('Authentication');
     $userDao = $authComponent->getUser($args,
                                        Zend_Registry::get('userSession')->Dao);
 
-    $itemId = $args['itemId'];
+    $itemId = $args['id'];
     $bitstreamId = $args['bitstreamId'];
     $width = '575';
     if(isset($args['width']))
@@ -99,14 +104,19 @@ class Thumbnailcreator_ApiComponent extends AppComponent
 
 /**
    * Create a 100x100 small thumbnail for the given item. It is used for preview purpose and displayed in the 'preview' and 'thumbnails' sidebar sections.
+   * @path /thumbnailcreator/item/smallthumbnail/{id}
+   * @http PUT
+   * @idparam itemId
    * @param itemId The item to set the thumbnail on
    * @return The Item obejct (with the new thumbnail_id) and the path where the newly created thumbnail is stored
    */
 
   public function createSmallThumbnail($args)
     {
-    $this->_checkKeys(array('itemId'), $args);
-    $itemId = $args['itemId'];
+    $utilityComponent = MidasLoader::loadComponent('Utility');
+    $utilityComponent->renameParamKey($args, 'itemId', 'id');
+    $this->_checkKeys(array('id'), $args);
+    $itemId = $args['id'];
 
     $imComponent = MidasLoader::loadComponent('Imagemagick', 'thumbnailcreator');
     $authComponent = MidasLoader::loadComponent('Authentication');

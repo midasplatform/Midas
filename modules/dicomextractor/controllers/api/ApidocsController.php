@@ -19,9 +19,9 @@
 =========================================================================*/
 
 /**
- * Apidocs Controller for Sizequota WebApi
+ * Apidocs Controller for Dicomextractor WebApi
  **/
-class Apisizequota_ApidocsController extends AppController
+class Apidicomextractor_ApidocsController extends AppController
 {
   public $_components = array('Apidocs', 'Json');
 
@@ -33,10 +33,10 @@ class Apisizequota_ApidocsController extends AppController
     $this->disableView();
     }
 
-  /** Quota resource */
-  function quotaAction()
+  /** Item resource */
+  function itemAction()
     {
-    $results = $this->Component->Apidocs->getResourceApiDocs('quota', 'sizequota');
+    $results = $this->Component->Apidocs->getResourceApiDocs('item', 'dicomextractor');
     echo $this->Component->Json->encode($results);
     }
 
