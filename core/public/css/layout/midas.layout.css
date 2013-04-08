@@ -159,6 +159,11 @@ div.viewAction hr, div.genericAction hr{
 .uploadqtip{
   min-width: 600px!important;
   border: 1px solid grey!important;
+  background-color: white !important;
+}
+
+.qtip-titlebar{
+  background-color: #d7d7d7 !important;
 }
 
 /*-------------------------------------------------
