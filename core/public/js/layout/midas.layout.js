@@ -13,7 +13,8 @@ if (typeof console != "object") {
 $(function() {
 
   // Parse json content
-  json = jQuery.parseJSON($('div.jsonContent').html());
+  // jQuery 1.8 has weird bugs when using .html() here, use the old-style innerHTML here
+  json = jQuery.parseJSON($('div.jsonContent')[0].innerHTML);
 
   // Preload login page
   if(!json.global.logged)
@@ -220,9 +221,9 @@ midas.resetUploadButton = function () {
         button.qtip({
             content: {
                 // Set the text to an image HTML string with the correct src URL to the loading image you want to use
-                text: '<img  src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />',
+                text: '<img src="'+json.global.webroot+'/core/public/images/icons/loading.gif" alt="Loading..." />',
                 ajax: {
-                    url: $('div.HeaderAction li.uploadFile').attr('rel') // Use the rel attribute of each element for the url to load
+                    url: $('div.HeaderAction li.uploadFile').attr('rel')
                 },
                 title: {
                     text: 'Upload', // Give the tooltip a title using each elements text
