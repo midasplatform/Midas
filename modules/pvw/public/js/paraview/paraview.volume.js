@@ -648,16 +648,99 @@ midas.visualize.setupOverlay = function () {
     });
 };
 
+// ==== Global variables ===========================================
+
+            
+
+            // ==== Helper method ==============================================
+
+            function fetchServerData(method, dataKey) {
+                fetchDataQueueSize++;
+                pv.connection.session.call(method).then(function(obj) {
+                    pv[dataKey] = obj;
+                    fetchDataQueueSize--;
+                    onFetchDataDone();
+                });
+            }
+
+            // ==== Start a new ParaView Session ===============================
+
+            
+
+            // ==== Connect to the started ParaView session ====================
+
+            function connect() {
+                if(location.protocol == "http:") {
+                    pv.connection.sessionURL = pv.connection.sessionURL.replace("wss:","ws:");
+                }
+
+                paraview.connect(pv.connection, function(connectionData) {
+                    // Create pipeline browser
+                    pv.connection = connectionData;
+
+                    // Fetch server state
+                    fetchServerData('pv:getPipeline', 'pipeline');
+                    fetchServerData('pv:listFilters', 'sources');
+                    fetchServerData('pv:listFiles', 'files');
+
+                    // onFetchDataDone() will be called automatically
+                }, function(code,reason){
+                    $(".loading").hide();
+                    console.log(reason);
+                });
+            }
+
+
+            // ==== onParaViewReady ============================================
+
+            function onFetchDataDone() {
+                if(fetchDataQueueSize != 0) {
+                    return; // Not ready yet
+                }
+
+                // Update UI
+
+                // - pipeline browser
+                $('.control-panel').pipelineBrowser({
+                    session: pv.connection.session,
+                    pipeline: pv.pipeline,
+                    sources: pv.sources,
+                    files: pv.files
+                }).bind('dataChanged', updateView);
+
+                // - viewport
+                pv.viewport = paraview.createViewport(pv.connection.session);
+                console.log('viewport');
+                console.log(pv.viewport);
+                pv.viewport.bind(".viewport-container");
+                console.log('container');
+                console.log($(".viewport-container"));
+            };
+
+
 $(window).load(function () {
     if(typeof midas.visualize.preInitCallback == 'function') {
         midas.visualize.preInitCallback();
     }
+    pv = {};
+    pv.connection = {
+        sessionURL: 'ws://silmaril:9021/ws'
+    };
+    paraview.connect(pv.connection, function(conn) {
+        pv.connection = conn;
+        pv.viewport = paraview.createViewport(pv.connection.session);
+        pv.viewport.bind('#renderercontainer');
+        $('#renderercontainer').show();
+        $('img.visuLoading').hide();
+    }, function(msg) {
+        alert(msg);
+    });
 
     json = jQuery.parseJSON($('div.jsonContent').html());
-    midas.visualize.start(); // warning: asynchronous. To add post logic, see initCallback
+    //midas.visualize.start(); // warning: asynchronous. To add post logic, see initCallback
 });
 
 $(window).unload(function () {
-    paraview.disconnect();
+    //paraview.disconnect();
 });
 
