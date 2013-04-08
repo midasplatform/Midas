@@ -148,25 +148,14 @@ div.viewAction hr, div.genericAction hr{
 }
 
 .jgrowl{
-  min-width: 300px!important;
-  min-height: 70px!important;
-  z-index: 15102!important;
+  min-width: 300px !important;
+  z-index: 15102 !important;
+  font-size: 13px !important;
+  font-weight: bold !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
 }
 
-.jgrowl div{
-  background-color: #578DBB!important;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#578DBB), to(#325372))!important;
-  background-image: -moz-linear-gradient(center top, #578DBB 0%, #325372 100% )!important;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#578DBB', endColorstr='#325372')!important;
-
-  border: 2px solid grey!important;
-  font-size: 13px!important;
-  font-weight: bold!important;
-  box-shadow: 0 0 5px #57BB7D!important;
-  -webkit-box-shadow: 0 0 5px #57BB7D!important;
-  -moz-box-shadow: 0 0 5px #57BB7D!important;
-  margin-right:40px;
-}
 .uploadqtip{
   min-width: 600px!important;
   border: 1px solid grey!important;

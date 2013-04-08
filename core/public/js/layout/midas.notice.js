@@ -43,7 +43,8 @@ midas.createGrowl = function (persistent, text, delay, extraClasses) {
             at: (target.length ? 'bottom' : 'top') + ' right', // If target is window use 'top right' instead of 'bottom right'
             target: target.length ? target : $(document.body), // Use our target declared above
             adjust: { // show at the top of the visible page, or just below header
-                y: Math.max($(window).scrollTop() + 10, $('div.Wrapper').position().top)
+                y: Math.max($(window).scrollTop() + 10, $('div.Wrapper').position().top),
+                x: -25 // 25px from the right of the screen
             }
         },
         show: {
