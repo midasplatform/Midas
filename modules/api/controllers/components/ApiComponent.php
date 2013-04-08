@@ -863,7 +863,14 @@ class Api_ApiComponent extends AppComponent
   function userGet($args)
     {
     $this->_renameParamKey($args, 'user_id', 'id', false);
-    return $this->_callCoreApiMethod($args, 'userGet');
+    if(array_key_exists('id', $args))
+      {
+      return $this->_callCoreApiMethod($args, 'userGet');
+      }
+    else
+      {
+      return $this->_callCoreApiMethod($args, 'userSearch');
+      }
     }
 
   /**

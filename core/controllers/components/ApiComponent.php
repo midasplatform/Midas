@@ -2775,14 +2775,11 @@ class ApiComponent extends AppComponent
     }
 
   /**
-   * Returns a user either by id or by email or by first name and last name.
+   * Returns a user either by id.
    * @path /user/{id}
    * @http GET
    * @param id The id of the user desired (ignores firstname and lastname)
-   * @param email The email of the user desired
-   * @param firstname The first name of the desired user (use with lastname)
-   * @param lastname The last name of the desired user (use with firstname)
-   * @return The user corresponding to the user_id or first and lastname
+   * @return The user corresponding to the user_id
    */
   function userGet($args)
     {
@@ -2791,7 +2788,25 @@ class ApiComponent extends AppComponent
       {
       return $userModel->getByUser_id($args['id']);
       }
-    else if(array_key_exists('email', $args))
+    else
+      {
+      throw new Exception('Please provide a user id', MIDAS_INVALID_PARAMETER);
+      }
+    }
+
+  /**
+   * Returns a user by email or by first name and last name.
+   * @path /user/search
+   * @http GET
+   * @param email (Optional) The email of the user desired
+   * @param firstname (Optional) The first name of the desired user (use with lastname)
+   * @param lastname (Optional) The last name of the desired user (use with firstname)
+   * @return The user corresponding to the email or first and lastname
+   */
+  function userSearch($args)
+    {
+    $userModel = MidasLoader::loadModel('User');
+    if(array_key_exists('email', $args))
       {
       return $userModel->getByEmail($args['email']);
       }
@@ -2802,7 +2817,7 @@ class ApiComponent extends AppComponent
       }
     else
       {
-      throw new Exception('Please provide a user id or both first and last name', MIDAS_INVALID_PARAMETER);
+      throw new Exception('Please provide a user email or both first and last name', MIDAS_INVALID_PARAMETER);
       }
     }
 

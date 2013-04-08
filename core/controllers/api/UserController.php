@@ -31,7 +31,7 @@ class Rest_UserController extends ApiController
     {
     $apiFunctions = array(
       'default' => 'userList',
-      'search' => 'userGet',
+      'search' => 'userSearch',
       'folders' => 'userFolders'
       );
     $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions);

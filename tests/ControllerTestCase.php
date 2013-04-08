@@ -167,16 +167,35 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
 
     // routes modules
     $listeModule = array();
+    $apiModules = array();
     foreach($modules as $key => $module)
       {
       if($module == 1 &&  file_exists(BASE_PATH.'/modules/'.$key))
         {
         $listeModule[] = $key;
+        // get WebApi controller directories and WebApi module names for enabled modules
+        if(file_exists(BASE_PATH . "/modules/".$key."/controllers/api"))
+          {
+          $frontController->addControllerDirectory(BASE_PATH . "/modules/".$key."/controllers/api", "api".$key);
+          $apiModules[] = $key;
+          }
         }
       }
 
     require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
     $utilityComponent = new UtilityComponent();
+    // get WebApi controller directory for core Apis
+    require_once BASE_PATH . "/core/ApiController.php";
+    $frontController->addControllerDirectory(BASE_PATH . '/core/controllers/api', 'rest');
+    // add restful route for WebApis
+    $restRoute = new Zend_Rest_Route($frontController, array(), array('rest'));
+    // add regular route for apikey configuration page
+    $router->addRoute("rest-apikey",
+          new Zend_Controller_Router_Route("/apikey/:action/",
+              array(
+                  'module' => 'rest',
+                  'controller' => 'apikey')));
+    $router->addRoute('api-core', $restRoute);
     foreach($listeModule as $m)
       {
       $route = $m;
@@ -211,6 +230,24 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         }
       }
     Zend_Registry::set('modulesEnable', $listeModule);
+    Zend_Registry::set('modulesHaveApi', $apiModules);
+    }
+
+  /** register plugins and helpers for REST_Controller*/
+  protected function _initREST()
+    {
+    $frontController = Zend_Controller_Front::getInstance();
+
+    // register the RestHandler plugin
+    $frontController->registerPlugin(new REST_Controller_Plugin_RestHandler($frontController));
+
+    // add REST contextSwitch helper
+    $contextSwitch = new REST_Controller_Action_Helper_ContextSwitch();
+    Zend_Controller_Action_HelperBroker::addHelper($contextSwitch);
+
+    // add restContexts helper
+    $restContexts = new REST_Controller_Action_Helper_RestContexts();
+    Zend_Controller_Action_HelperBroker::addHelper($restContexts);
     }
 
   /**
@@ -289,6 +326,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     $this->params = array();
     $this->frontController->setControllerDirectory(BASE_PATH . '/core/controllers', 'default');
     $this->_initModule();
+    $this->_initREST();
     }
 
   /** init midas*/
@@ -297,6 +335,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     $this->application = new Zend_Application(APPLICATION_ENV, CORE_CONFIG);
     $this->frontController->setControllerDirectory(BASE_PATH . '/core/controllers', 'default');
     $this->_initModule();
+    $this->_initREST();
     $this->application->bootstrap();
     }
 
