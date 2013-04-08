@@ -31,15 +31,16 @@ class Pvw_ParaviewComponent extends AppComponent
    */
   public function createAndStartInstance($item, $appname)
     {
-    $pvpython = $this->Setting->getValueByName('pvpython', $this->moduleName);
-    $staticContent = $this->Setting->getValueByName('staticcontent', $this->moduleName);
+    $settingModel = MidasLoader::loadModel('Setting');
+    $pvpython = $settingModel->getValueByName('pvpython', 'pvw');
+    $staticContent = $settingModel->getValueByName('staticcontent', 'pvw');
     $application = BASE_PATH.'/modules/pvw/apps/'.$appname.'.py';
     if(!is_file($application))
       {
       throw new Zend_Exception('No such application: '.$appname, 400);
       }
 
-    $dataPath = ''; //TODO symlink the item data somewhere.
+    $dataPath = '/Data'; //TODO symlink the item data somewhere.
     $port = 9021; // TODO dynamically select port from a resource pool
     $cmdArray = array($pvpython, $application, '--port', $port, '--data', $dataPath);
 

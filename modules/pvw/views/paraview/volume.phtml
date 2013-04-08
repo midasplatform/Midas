@@ -16,8 +16,10 @@ PURPOSE.  See the above copyright notices for more information.
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.spinbox.css" />
 
 <?php
-$this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/get_modules.js');
-$this->headScript()->appendFile('/PWService/js/ParaViewWeb.js');
+
+$this->headScript()->appendFile($this->staticRoot.'/ext/js-core/autobahn.min.js');
+$this->headScript()->appendFile($this->staticRoot.'/lib/js/paraview-all.js');
+
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.spinbox.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasTextRenderer.js');
@@ -39,7 +41,7 @@ foreach($this->jsImports as $jsImport)
   <img class="visuLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   <span id="loadingStatus"></span>
 
-  <div id='renderercontainer' style="">
+  <div id='renderercontainer' class="viewport-container">
     <div id='rendererOverlay'>
       <div class="cameraPresetButtons">
         <button qtip="Set view direction to +X" class="cameraPreset plusX"></button>
