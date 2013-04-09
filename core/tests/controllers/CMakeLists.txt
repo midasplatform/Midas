@@ -13,6 +13,7 @@ add_midas_test( UserController UserControllerTest.php )
 add_midas_test( ImportController ImportControllerTest.php )
 
 add_subdirectory( components )
+add_subdirectory( api )
 
 # Style tests
 add_midas_style_test( StyleCoreControllerComponents ${CMAKE_SOURCE_DIR}/core/controllers/components )
