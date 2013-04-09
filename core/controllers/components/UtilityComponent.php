@@ -93,6 +93,38 @@ class UtilityComponent extends AppComponent
     return $modules;
     }
 
+  /**
+   * Helper method to extract tokens from request URI's in path form,
+   * e.g. download/folder/123/folder_name, starting after the action name.
+   * Returns the token as a list.
+   */
+  public static function extractPathParams()
+    {
+    $request = Zend_Controller_Front::getInstance()->getRequest();
+    $allTokens = preg_split('@/@', $request->getPathInfo(), NULL, PREG_SPLIT_NO_EMPTY);
+
+    $tokens = array();
+    $i = 0;
+    if($request->getModuleName() != 'default')
+      {
+      $i++;
+      }
+    if($request->getControllerName() != 'index')
+      {
+      $i++;
+      }
+    if($request->getActionName() != 'index')
+      {
+      $i++;
+      }
+    $max = count($allTokens);
+    for(; $i < $max; $i++)
+      {
+      $tokens[] = $allTokens[$i];
+      }
+    return $tokens;
+    }
+
   /** find modules configuration in a folder */
   private function _initModulesConfig($dir)
     {
