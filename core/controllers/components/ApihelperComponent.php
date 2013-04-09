@@ -23,7 +23,8 @@
 /** These are the implementations of the core web api methods */
 class ApihelperComponent extends AppComponent
   {
-/**
+
+  /**
    * This should be called before _getUser to define what policy scopes (see module.php constants)
    * are required for the current API endpoint. If this is not called and _getUser is called,
    * the default behavior is to require PERMISSION_SCOPE_ALL.
@@ -56,7 +57,10 @@ class ApihelperComponent extends AppComponent
       }
     }
 
-    public function getApiSetup()
+  /**
+   * Get the global configuration in order to set up the api.
+   */
+  public function getApiSetup()
     {
     $apiSetup = array();
     $apiSetup['testing'] = Zend_Registry::get('configGlobal')->environment == 'testing';

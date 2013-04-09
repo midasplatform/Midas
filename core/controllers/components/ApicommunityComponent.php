@@ -23,7 +23,8 @@
 /** These are the implementations of the core web api methods */
 class ApicommunityComponent extends AppComponent
   {
- /**
+
+  /**
    * Create a new community or update an existing one using the uuid
    * @path /community
    * @http POST
