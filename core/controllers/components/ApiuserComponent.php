@@ -53,6 +53,7 @@ class ApiuserComponent extends AppComponent
    */
   function userList($args)
     {
+    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
     $apihelperComponent->validateParams($args, array('limit'));
 
     $userModel = MidasLoader::loadModel('User');
