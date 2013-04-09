@@ -33,12 +33,13 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/rest/rest.index
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/rest/rest.index.css" />
 
 <div class="viewMain">
-  <pre>Web API URL = Base URL (<?php echo $this->serverURL.$this->webroot?>/rest) + individual API URL listed below</pre>
+  <pre>Web API URL = Base URL (<?php echo $this->serverURL.$this->webroot?>/rest) + API method URL<br/><br/>e.g. <?php echo $this->serverURL.$this->webroot?>/rest/system/login</pre>
   <br/>
     To authenticate requests, you can provide a parameter of <b>token</b> with an authentication token value obtained by calling <b>/system/login</b> api,
     or to authenticate using the current Midas session you can pass a parameter key of <b>useSession</b>.
   <br/>
   <br/>
+    Explore the RESTful API endpoints below, grouped by system resource.
 
   <div id="swagger-ui-container" class="swagger-ui-wrap">
   </div>
