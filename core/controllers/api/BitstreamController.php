@@ -34,7 +34,7 @@ class Rest_BitstreamController extends ApiController
       'exists'  => 'bitstreamCount',
       'download'  => 'bitstreamDownloadByChecksum'
       );
-    $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions);
     }
 
   /**
@@ -67,7 +67,7 @@ class Rest_BitstreamController extends ApiController
       'default' => 'bitstreamGet',
       'download'  => 'bitstreamDownloadById'
       );
-    $this->_genericAction($this->_request->getParams(), 'get', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'get', $apiFunctions);
     }
 
   /**
@@ -78,7 +78,7 @@ class Rest_BitstreamController extends ApiController
   public function putAction()
     {
     $apiFunctions['default'] = 'bitstreamEdit';
-    $this->_genericAction($this->_request->getParams(), 'put', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'put', $apiFunctions);
     }
 
   /**
@@ -89,6 +89,6 @@ class Rest_BitstreamController extends ApiController
   public function deleteAction()
     {
     $apiFunctions['default'] = 'bitstreamDelete';
-    $this->_genericAction($this->_request->getParams(), 'delete', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'delete', $apiFunctions);
     }
 }

@@ -102,9 +102,9 @@ class ApiController extends REST_Controller
    *   'itemDuplicate' in ApiComponent (in core module) to do the api;
    */
 
-  protected function _genericAction($args, $restAction, $apiFunctions, $moduleName = null)
+  protected function _genericAction($args, $resource, $restAction, $apiFunctions, $moduleName = null)
     {
-      $ApiComponent = MidasLoader::loadComponent('Api', $moduleName);
+      $ApiComponent = MidasLoader::loadComponent('Api'.$resource, $moduleName);
       $httpCode = $this->httpSuccessCode[strtolower($restAction)];
       $calledFunction = $apiFunctions['default'];
       $apiResults = array();

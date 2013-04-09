@@ -34,7 +34,7 @@ class Rest_UserController extends ApiController
       'search' => 'userSearch',
       'folders' => 'userFolders'
       );
-    $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions);
     }
 
   /**
@@ -55,7 +55,7 @@ class Rest_UserController extends ApiController
   public function getAction()
     {
     $apiFunctions['default'] = 'userGet';
-    $this->_genericAction($this->_request->getParams(), 'get', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'get', $apiFunctions);
     }
 
   /**

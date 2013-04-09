@@ -18,8 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
-/** Component for api methods */
-class Sizequota_ApiComponent extends AppComponent
+// Web API error codes
+define('MIDAS_SIZEQUOTA_INVALID_POLICY', -151);
+define('MIDAS_SIZEQUOTA_INVALID_PARAMETER', -150);
+
+/** Sizequot Component for api methods */
+class Sizequota_ApiquotaComponent extends AppComponent
 {
 
   /**

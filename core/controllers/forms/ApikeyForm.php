@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/** Api form */
-class ApiForm extends AppForm
+/** Apikey form */
+class ApikeyForm extends AppForm
 {
   /** create form */
   public function createKeyForm()

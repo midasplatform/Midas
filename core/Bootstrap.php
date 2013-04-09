@@ -227,12 +227,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $frontController->addControllerDirectory(BASE_PATH . '/core/controllers/api', 'rest');
     // add restful route for WebApis
     $restRoute = new Zend_Rest_Route($frontController, array(), array('rest'));
-    // add regular route for apikey configuration page
-    $router->addRoute("rest-apikey",
-          new Zend_Controller_Router_Route("/apikey/:action/",
-              array(
-                  'module' => 'rest',
-                  'controller' => 'apikey')));
     $router->addRoute('api-core', $restRoute);
     // loading modules elements
     foreach($listeModule as $m)

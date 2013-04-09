@@ -42,7 +42,7 @@ class Rest_SystemController extends ApiController
       'metadaelements' => 'metadataElementsList',
       'uploadtoken' => 'uploadGeneratetoken'
       );
-    $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions);
     }
 
   /**
@@ -77,7 +77,7 @@ class Rest_SystemController extends ApiController
       'defaultapikey' => 'userApikeyDefault',
       'upload' => 'uploadPerform'
       );
-    $this->_genericAction($this->_request->getParams(), 'post', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'post', $apiFunctions);
     }
 
   /**

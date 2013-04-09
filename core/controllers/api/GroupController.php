@@ -51,7 +51,7 @@ class Rest_GroupController extends ApiController
     {
     $apiFunctions['default'] = 'groupListUsers';
     $apiFunctions['users'] = 'groupListUsers';
-    $this->_genericAction($this->_request->getParams(), 'get', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'get', $apiFunctions);
     }
 
  /**
@@ -66,7 +66,7 @@ class Rest_GroupController extends ApiController
       'adduser'=> 'groupAddUser',
       'removeuser' => 'groupRemoveUser',
       );
-    $this->_genericAction($this->_request->getParams(), 'put', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'put', $apiFunctions);
     }
 
    /**
@@ -76,7 +76,7 @@ class Rest_GroupController extends ApiController
   public function postAction()
     {
     $apiFunctions['default'] = 'groupAdd';
-    $this->_genericAction($this->_request->getParams(), 'post', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'post', $apiFunctions);
     }
 
   /**
@@ -87,7 +87,7 @@ class Rest_GroupController extends ApiController
   public function deleteAction()
     {
     $apiFunctions['default'] = 'groupRemove';
-    $this->_genericAction($this->_request->getParams(), 'delete', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'delete', $apiFunctions);
     }
 
   /**

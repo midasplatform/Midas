@@ -30,7 +30,7 @@ class Rest_FolderController extends ApiController
   public function indexAction()
     {
     $apiFunctions['default'] = 'userFolders';
-    $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions);
     }
 
   /**
@@ -56,7 +56,7 @@ class Rest_FolderController extends ApiController
       'permission' => 'folderListPermissions',
       'download' => 'folderDownload'
       );
-    $this->_genericAction($this->_request->getParams(), 'get', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'get', $apiFunctions);
     }
 
   /**
@@ -66,7 +66,7 @@ class Rest_FolderController extends ApiController
   public function postAction()
     {
     $apiFunctions['default'] = 'folderCreate';
-    $this->_genericAction($this->_request->getParams(), 'post', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'post', $apiFunctions);
     }
 
   /**
@@ -85,7 +85,7 @@ class Rest_FolderController extends ApiController
       'removepolicyuser' => 'folderRemovePolicyuser',
       'setprivacyrecursive' => 'folderSetPrivacyRecursive'
       );
-    $this->_genericAction($this->_request->getParams(), 'put', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'put', $apiFunctions);
     }
 
   /**
@@ -96,7 +96,7 @@ class Rest_FolderController extends ApiController
   public function deleteAction()
     {
     $apiFunctions['default'] = 'folderDelete';
-    $this->_genericAction($this->_request->getParams(), 'delete', $apiFunctions);
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'delete', $apiFunctions);
     }
 
   /**
