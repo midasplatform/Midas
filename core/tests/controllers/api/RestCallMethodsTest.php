@@ -40,7 +40,7 @@ class RestCallMethodsTest extends ControllerTestCase
     $responseStatus = $this->_response->getHttpResponseCode();
     $body = $this->getBody();
     $responseBody = json_decode($this->getBody());
-    $rtn = array('status'=> $responseStatus, 'body' => $responseBody);
+    $rtn = array('status' => $responseStatus, 'body' => $responseBody);
     return $rtn;
     }
 
