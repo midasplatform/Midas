@@ -123,10 +123,13 @@ class ApiController extends REST_Controller
             throw new Exception('Server error. Operation ' . $args['method']  . ' is not supported.', -100);
             }
         }
-        $resulstArray = $ApiComponent->$calledFunction($args, $userDao);
-        if (isset($resulstArray))
+        if(method_exists($ApiComponent, $calledFunction . 'Wrapper')) {
+          $calledFunction = $calledFunction . 'Wrapper';
+        }
+        $resultsArray = $ApiComponent->$calledFunction($args, $userDao);
+        if (isset($resultsArray))
           {
-          $apiResults['data'] = $resulstArray;
+          $apiResults['data'] = $resultsArray;
           }
         else // if the api function doesn't provide an return value
           {

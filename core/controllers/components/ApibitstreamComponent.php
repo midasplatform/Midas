@@ -64,13 +64,34 @@ class ApibitstreamComponent extends AppComponent
       throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
     $bitstreamArray = array();
+    $bitstreamArray['id'] = $bitstream->getBitstreamId();
     $bitstreamArray['name'] = $bitstream->getName();
     $bitstreamArray['size'] = $bitstream->getSizebytes();
     $bitstreamArray['mimetype'] = $bitstream->getMimetype();
     $bitstreamArray['checksum'] = $bitstream->getChecksum();
     $bitstreamArray['itemrevision_id'] = $bitstream->getItemrevisionId();
     $bitstreamArray['item_id'] = $revision->getItemId();
+    $bitstreamArray['date'] = $bitstream->getDate();
     return $bitstreamArray;
+    }
+
+  /**
+   * Wrapper function to make our bitstream get sane
+   */
+  function bitstreamGetWrapper($args)
+    {
+    $in = $this->bitstreamGet($args);
+    $out = array();
+    $out['id'] = $in['id'];
+    $out['item_id'] = $in['item_id'];
+    $out['itemrevision_id'] = $in['itemrevision_id'];
+    $out['name'] = $in['name'];
+    $out['mimetype'] = $in['mimetype'];
+    $out['size'] = $in['size'];
+    $out['md5'] = $in['checksum'];
+    $out['date_created'] = $in['date'];
+    $out['date_updated'] = $in['date'];
+    return $out;
     }
 
 
