@@ -167,7 +167,7 @@ class ApihelperComponent extends AppComponent
   /**
    *  helper function to set the privacy code on a passed in item.
    */
-  protected function _setItemPrivacy($item, $privacyCode)
+  public function setItemPrivacy($item, $privacyCode)
     {
     $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
     $groupModel = MidasLoader::loadModel('Group');
@@ -276,7 +276,7 @@ class ApihelperComponent extends AppComponent
   /**
    *  helper function to set the privacy code on a passed in folder.
    */
-  protected function _setFolderPrivacy($folder, $privacyCode)
+  public function setFolderPrivacy($folder, $privacyCode)
     {
     $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
     $groupModel = MidasLoader::loadModel('Group');
@@ -322,7 +322,7 @@ class ApihelperComponent extends AppComponent
      (user_id, policy, email); group will be a list of (group_id, policy, name).
      policy for user and group will be a policy string [Admin|Write|Read].
    */
-  protected function _listResourcePermissions($policyStatus, $userPolicies, $groupPolicies)
+  public function listResourcePermissions($policyStatus, $userPolicies, $groupPolicies)
     {
     $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
     $privilegeStrings = array(MIDAS_POLICY_ADMIN => "Admin", MIDAS_POLICY_WRITE => "Write", MIDAS_POLICY_READ => "Read");
@@ -355,7 +355,7 @@ class ApihelperComponent extends AppComponent
    * @param user_id the user to add to the group
    * @return an array of (groupModel, groupDao, groupUserDao)
    */
-  protected function _validateGroupUserChangeParams($args)
+  public function validateGroupUserChangeParams($args)
     {
     $this->validateParams($args, array('id', 'user_id'));
 
@@ -394,7 +394,7 @@ class ApihelperComponent extends AppComponent
    * Helper function for checking for a metadata type index or name and
    * handling the error conditions.
    */
-  protected function _checkMetadataTypeOrName(&$args, &$metadataModel)
+  public function checkMetadataTypeOrName(&$args, &$metadataModel)
     {
     if(array_key_exists('typename', $args))
       {
@@ -455,5 +455,22 @@ class ApihelperComponent extends AppComponent
       }
     return $canjoinCode;
     }
+
+  /**
+   * Rename a request parameter's key to provide backward compatibility for existing WebAPIs .
+   */
+  public function renameParamKey(&$args, $oldKey, $newKey, $oldKeyRequired = true)
+    {
+    if($oldKeyRequired)
+      {
+      $this->validateParams($args, array($oldKey));
+      }
+    if(isset($args[$oldKey]))
+      {
+      $args[$newKey] = $args[$oldKey];
+      unset($args[$oldKey]);
+      }
+    }
+
 
   } // end class

@@ -129,7 +129,7 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
           }
         // forward to index action if id is not provided
         $action = $request->getActionName();
-        if(empty($tokens) && $action == "get")
+        if(empty($tokens) && ($action == "get" || $action == "index"))
           {
           $request->setActionName("index");
           }

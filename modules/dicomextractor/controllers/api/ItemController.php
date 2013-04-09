@@ -32,7 +32,7 @@ class Apidicomextractor_ItemController extends ApiController
   public function putAction()
     {
     $apiFunctions['default'] = 'extract';
-    $this->_genericAction($this->_request->getParams(), 'put', $apiFunctions, 'dicomextractor');
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'put', $apiFunctions, 'dicomextractor');
     }
 
 
