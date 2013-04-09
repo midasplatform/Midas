@@ -962,7 +962,7 @@ class ApiComponent extends AppComponent
 
   /**
    * Get the item's metadata
-   * @path /item/{id}
+   * @path /item/getmetadata/{id}
    * @http GET
    * @param id The id of the item
    * @param revision (Optional) Revision of the item. Defaults to latest revision

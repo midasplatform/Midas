@@ -15,12 +15,19 @@ PURPOSE.  See the above copyright notices for more information.
 $this->headScript()->appendFile($this->moduleWebroot . '/public/js/index/index.index.js');
 ?>
 <div class="viewMain">
-  <h2>MIDAS Web API</h2>
+  <h2>Deprecated MIDAS Web API</h2>
+  
+  <div><img style="position: relative; top: 3px;" src="<?php echo $this->coreWebroot ?>/public/images/icons/warning.png"> This RPC style API is now deprecated, instead use the 
+  <a href="<?php echo $this->serverURL.$this->webroot?>/rest">RESTful API.</a></div>
+  <br/>
+  <br/>
+  <br/>
+  
 
-  The api will send you a REST response at the following URL:<br/>
+  The api will send you an XML RPC response at the following URL:<br/>
   <pre><?php echo $this->serverURL.$this->webroot?>/api/rest?method=METHOD_NAME</pre>
   <br/>
-    The api will send you a JSON response at the following URL:<br/>
+    The api will send you a JSON RPC response at the following URL:<br/>
   <pre><?php echo $this->serverURL.$this->webroot?>/api/json?method=METHOD_NAME</pre>
   <br/>
     To authenticate requests you can provide a parameter of <b>token</b> with an
