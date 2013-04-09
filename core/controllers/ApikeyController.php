@@ -18,11 +18,11 @@
  limitations under the License.
 =========================================================================*/
 
-/** Apikey controller */
-class Rest_ApikeyController extends AppController
+/** Apikey controller for Web Api */
+class ApikeyController extends AppController
 {
   public $_models = array('User', 'Userapi');
-  public $_forms = array('Api');
+  public $_forms = array('Apikey');
   public $_components = array('Date');
 
   /**
@@ -47,7 +47,7 @@ class Rest_ApikeyController extends AppController
 
     $this->view->Date = $this->Component->Date;
 
-    $form = $this->Form->Api->createKeyForm();
+    $form = $this->Form->Apikey->createKeyForm();
     $formArray = $this->getFormAsArray($form);
     $formArray['expiration']->setValue('100');
     $this->view->form = $formArray;
