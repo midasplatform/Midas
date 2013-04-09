@@ -628,4 +628,24 @@ class UtilityComponent extends AppComponent
       }
     return $salt;
     }
+
+  /**
+   * Test whether the specified port is listening on the specified host.
+   * Return true if the connection is accepted, false otherwise.
+   * @param port The port to test (integer)
+   * @param [host] The hostname; default is localhost
+   */
+  public static function isPortListening($port, $host = 'localhost')
+    {
+    UtilityComponent::beginIgnoreWarnings();
+    $conn = @fsockopen($host, $port);
+    UtilityComponent::endIgnoreWarnings();
+
+    if(is_resource($conn))
+      {
+      fclose($conn);
+      return true;
+      }
+    return false;
+    }
 } // end class

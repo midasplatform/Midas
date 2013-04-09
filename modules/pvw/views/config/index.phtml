@@ -31,6 +31,11 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
       <label for='staticcontent'>ParaViewWeb static content root</label>
       <?php echo $this->configForm['staticcontent']?>
     </div>
+    <div qtip="Comma separated list or range of ports (e.g. '9000, 9001' or '9000-9005') to use for ParaView instances.
+               This setting also defines how many instances can be active at a time.">
+      <label for='ports'>Ports</label>
+      <?php echo $this->configForm['ports']?>
+    </div>
     <div class="submitContainer">
       <?php echo $this->configForm['submitConfig']?>
     </div>

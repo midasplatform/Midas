@@ -1,9 +1,11 @@
 var paraview;
 var midas = midas || {};
 midas.visualize = midas.visualize || {};
+midas.pvw = midas.pvw || {};
 
 midas.visualize.renderers = {};
 midas.visualize.DISTANCE_FACTOR = 1.6; // factor to zoom the camera out by
+midas.pvw.IDLE_TIMEOUT = 10 * 60 * 1000; // 10 minute idle timeout
 
 midas.visualize.start = function () {
     // Create a paraview proxy
@@ -710,13 +712,19 @@ midas.visualize.setupOverlay = function () {
 
                 // - viewport
                 pv.viewport = paraview.createViewport(pv.connection.session);
-                console.log('viewport');
-                console.log(pv.viewport);
                 pv.viewport.bind(".viewport-container");
-                console.log('container');
-                console.log($(".viewport-container"));
             };
 
+/**
+ * Call this with setInterval to regularly test if the
+ * user has been idle for too long, and if so, kill the pvw session
+ */
+midas.pvw.testIdle = function () {
+    var curr = new Date().getTime();
+    if(curr - midas.pvw.lastAction > midas.pvw.IDLE_TIMEOUT) {
+        midas.pvw.stopSession();
+    }
+};
 
 $(window).load(function () {
     if(typeof midas.visualize.preInitCallback == 'function') {
@@ -724,7 +732,9 @@ $(window).load(function () {
     }
     pv = {};
     pv.connection = {
-        sessionURL: 'ws://silmaril:9021/ws'
+        sessionURL: 'ws://silmaril:9021/ws',
+        id: json.pvw.instance.instance_id,
+        sessionManagerURL: json.global.webroot + '/pvw/paraview/instance'
     };
     paraview.connect(pv.connection, function(conn) {
         pv.connection = conn;
@@ -736,11 +746,35 @@ $(window).load(function () {
         alert(msg);
     });
 
-    json = jQuery.parseJSON($('div.jsonContent').html());
+    // Add some logic to check for idle and close the pvw session after IDLE_TIMEOUT expires
+    midas.pvw.lastAction = new Date().getTime();
+    midas.pvw.idleInterval = setInterval(midas.pvw.testIdle, 15000); // every 15 seconds, check idle status
+    $('body').mousemove(function () {
+        midas.pvw.lastAction = new Date().getTime();
+    });
+
     //midas.visualize.start(); // warning: asynchronous. To add post logic, see initCallback
 });
 
+/**
+ * Call this to kill the pvw session and print a helpful message about it
+ * to the view.
+ */
+midas.pvw.stopSession = function () {
+    if(pv.connection) {
+        paraview.stop(pv.connection);
+    }
+    if(midas.pvw.idleInterval) {
+        clearInterval(midas.pvw.idleInterval);
+    }
+    var html = 'Your ParaViewWeb session was ended, either due to an error or because you went idle '
+             + 'for more than ' + (midas.pvw.IDLE_TIMEOUT / 60000) + ' minutes.';
+    $('#loadingStatus').html(html).show();
+    $('#renderercontainer').hide();
+    
+};
+
 $(window).unload(function () {
-    //paraview.disconnect();
+    midas.pvw.stopSession();
 });
 

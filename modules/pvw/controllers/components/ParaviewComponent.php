@@ -29,8 +29,16 @@ class Pvw_ParaviewComponent extends AppComponent
    * @param item The item dao to visualize
    * @return The pvw_instance dao
    */
-  public function createAndStartInstance($item, $appname)
+  public function createAndStartInstance($item, $appname, $progressDao = null)
     {
+    $progressModel = MidasLoader::loadModel('Progress');
+    if($progressDao)
+      {
+      $step = 1;
+      $progressDao->setMaximum(4);
+      $progressModel->save($progressDao);
+      $progressModel->updateProgress($progressDao, $step, 'Checking available ports...');
+      }
     $settingModel = MidasLoader::loadModel('Setting');
     $pvpython = $settingModel->getValueByName('pvpython', 'pvw');
     $staticContent = $settingModel->getValueByName('staticcontent', 'pvw');
@@ -39,9 +47,24 @@ class Pvw_ParaviewComponent extends AppComponent
       {
       throw new Zend_Exception('No such application: '.$appname, 400);
       }
-
+    if($progressDao)
+      {
+      $step++;
+      $progressModel->updateProgress($progressDao, $step, 'Checking available ports...');
+      }
     $dataPath = '/Data'; //TODO symlink the item data somewhere.
-    $port = 9021; // TODO dynamically select port from a resource pool
+    // TODO critical section of code between getting the open port and listening on it
+    // practical solution: add db setting for 'nextPortToTry'.
+    $port = $this->_getNextOpenPort();
+    if($port === false)
+      {
+      throw new Zend_Exception('Maximum number of running instances exceeded, try again soon', 503);
+      }
+    if($progressDao)
+      {
+      $step++;
+      $progressModel->updateProgress($progressDao, $step, 'Starting ParaView instance...');
+      }
     $cmdArray = array($pvpython, $application, '--port', $port, '--data', $dataPath);
 
     // Set static content root if necessary
@@ -58,6 +81,27 @@ class Pvw_ParaviewComponent extends AppComponent
     if(!is_numeric($pid))
       {
       throw new Zend_Exception('Expected pid output, got: '.$pid, 500);
+      }
+    if($progressDao)
+      {
+      $step++;
+      $progressModel->updateProgress($progressDao, $step, 'Waiting for port binding...');
+      }
+    // After we start the process, wait some number of seconds for the port to open up.
+    // If it doesn't, something went wrong.
+    $portOpen = false;
+    for($i = 0; $i < MIDAS_PVW_STARTUP_TIMEOUT; $i++)
+      {
+      sleep(1);
+      if(UtilityComponent::isPortListening($port))
+        {
+        $portOpen = true;
+        break;
+        }
+      }
+    if(!$portOpen)
+      {
+      throw new Zend_Exception('Instance did not bind to port within '.MIDAS_PVW_STARTUP_TIMEOUT.' seconds', 500);
       }
 
     $instance = MidasLoader::newDao('InstanceDao', 'pvw');
@@ -80,5 +124,30 @@ class Pvw_ParaviewComponent extends AppComponent
     {
     exec('ps '.$instance->getPid(), $output);
     return count($output) >= 2;
+    }
+
+  /**
+   * Uses the admin-configured port settings and allocates the next
+   * available port that isn't currently in use. If none are available, returns false.
+   */
+  private function _getNextOpenPort()
+    {
+    $setting = MidasLoader::loadModel('Setting');
+    $ports = $settingModel->getValueByName('ports', 'pvw');
+    if(!$ports)
+      {
+      $ports = '9000,9001'; // some reasonable default
+      }
+    $ports = explode(',', $ports);
+    foreach($ports as $portEntry)
+      {
+      // TODO accomodate port ranges, e.g. 9000-9005
+      $portEntry = trim($portEntry);
+      if(!UtilityComponent::isPortListening($portEntry))
+        {
+        return $portEntry;
+        }
+      }
+    return false;
     }
 } // end class

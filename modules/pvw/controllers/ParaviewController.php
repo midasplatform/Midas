@@ -35,7 +35,7 @@ class Pvw_ParaviewController extends Pvw_AppController
                    location expected by pvpython
    * @return The info needed by the client to connect to the session
    */
-  public function startsessionAction()
+  public function startinstanceAction()
     {
     $this->disableView();
     $this->disableLayout();
@@ -60,14 +60,23 @@ class Pvw_ParaviewController extends Pvw_AppController
       throw new Zend_Exception('Read access required on item', 403);
       }
 
-    $instance = $this->ModuleComponent->Paraview->createAndStartInstance($item, $appname);
+    $instance = $this->ModuleComponent->Paraview->createAndStartInstance($item, $appname, $this->progressDao);
 
-    // TODO we should store the apache SID, pvpython process ID
-    // and the port in some table for resource monitoring
     echo JsonComponent::encode(array(
       'status' => 'ok',
       'instanceId' => $instance->getKey()
       ));
+    }
+
+  /**
+   * This should become a restful controller for instances
+   */
+  public function instanceAction()
+    {
+    // TODO just plug this into the restful stuff
+    $this->disableLayout();
+    $this->disableView();
+    echo JsonComponent::encode(array());
     }
 
   /**
@@ -228,6 +237,7 @@ class Pvw_ParaviewController extends Pvw_AppController
     $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/volume.png" />';
     $header .= ' Volume rendering: <a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
     $this->view->header = $header;
+    $this->view->json['pvw']['instance'] = $this->view->instance;
     }
 
   /**
