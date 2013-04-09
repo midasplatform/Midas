@@ -21,9 +21,9 @@
 /**
  * Apidocs Controller for WebApi
  **/
-class Rest_ApidocsController extends AppController
+class ApidocsController extends AppController
 {
-  public $_components = array('Apidocs', 'Json');
+  public $_components = array('Apidocs');
 
   /** init api actions*/
   public function init()
@@ -39,8 +39,7 @@ class Rest_ApidocsController extends AppController
     $results = array();
     $results['apiVersion'] = '1.0';
     $results['swaggerVersion'] = '1.1';
-    $request = Zend_Controller_Front::getInstance()->getRequest();
-    $baseUrl = $request->getScheme().'://'.$request->getHttpHost().$this->view->webroot;
+    $baseUrl = $this->getRequest()->getScheme().'://'.$this->getRequest()->getHttpHost().$this->view->webroot;
     $results['basePath'] = $baseUrl. '/apidocs';
     $results['apis'] = array();
 
@@ -56,58 +55,29 @@ class Rest_ApidocsController extends AppController
       $curResource['discription'] = 'Operations about '. $resourcePath;
       array_push($results['apis'], $curResource);
       }
-    echo $this->Component->Json->encode($results);
+    echo JsonComponent::encode($results);
     }
 
-  /** System resource */
-  function systemAction()
+  /**
+   * We override __call to intercept the path and transform
+   * it into a resource and module name, and pass that into the ApidocsComponent.
+   */
+  public function __call($name, $args)
     {
-    $results = $this->Component->Apidocs->getResourceApiDocs('system');
-    echo $this->Component->Json->encode($results);
-    }
+    $pathParams = UtilityComponent::extractPathParams();
+    $module = '';
+    $resource = $this->getRequest()->getActionName();
+    if(count($pathParams))
+      {
+      if(in_array($this->getRequest()->getActionName(), Zend_Registry::get('modulesEnable')))
+        {
+        $module = $this->getRequest()->getActionName();
+        $resource = $pathParams[0];
+        }
+      }
 
-  /** Item resource */
-  function itemAction()
-    {
-    $results = $this->Component->Apidocs->getResourceApiDocs('item');
-    echo $this->Component->Json->encode($results);
-    }
-
-  /** Folder resource */
-  function folderAction()
-    {
-    $results = $this->Component->Apidocs->getResourceApiDocs('folder');
-    echo $this->Component->Json->encode($results);
-    }
-
-
-  /** Community resource */
-  function communityAction()
-    {
-    $results = $this->Component->Apidocs->getResourceApiDocs('community');
-    echo $this->Component->Json->encode($results);
-    }
-
-
-  /** Bitstream resource */
-  function bitstreamAction()
-    {
-    $results = $this->Component->Apidocs->getResourceApiDocs('bitstream');
-    echo $this->Component->Json->encode($results);
-    }
-
-  /** User resource */
-  function userAction()
-    {
-    $results = $this->Component->Apidocs->getResourceApiDocs('user');
-    echo $this->Component->Json->encode($results);
-    }
-
-  /** Group resource */
-  function groupAction()
-    {
-    $results = $this->Component->Apidocs->getResourceApiDocs('group');
-    echo $this->Component->Json->encode($results);
+    $results = $this->Component->Apidocs->getResourceApiDocs($resource, $module);
+    echo JsonComponent::encode($results);
     }
 
 }
