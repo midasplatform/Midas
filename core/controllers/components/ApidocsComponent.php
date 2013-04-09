@@ -28,56 +28,28 @@ class ApidocsComponent extends AppComponent
    */
   public function getEnabledResources()
     {
+    $apiResources = array();
+
+    foreach(glob(BASE_PATH.'/core/controllers/components/Api*.php') as $filename)
+      {
+      $resoucename = preg_replace('/Component\.php/', '', substr(basename($filename), 3));
+      if (!in_array($resoucename, array('helper','docs')))
+        {
+        $apiResources[] = '/'. $resoucename;
+        }
+      }
+
     $modulesHaveApi = Zend_Registry::get('modulesHaveApi');
     $modulesEnabled = Zend_Registry::get('modulesEnable');
-
     $apiModules = array_intersect($modulesHaveApi, $modulesEnabled);
-    array_unshift($apiModules, ''); // added core module
-
-    $apiResources = array();
     foreach($apiModules as $module)
       {
-      $apiComponent = MidasLoader::loadComponent('Api', $module);
-      $r = new ReflectionClass($apiComponent);
-      $meths = $r->getMethods(ReflectionMethod::IS_PUBLIC);
-      foreach($meths as $m)
+      foreach(glob(BASE_PATH.'/modules/'.$module.'/controllers/components/Api*.php') as $filename)
         {
-        if(strpos($m->getDeclaringClass()->getName(), 'ApiComponent') !== false)
+        $resoucename = preg_replace('/Component\.php/', '', substr(basename($filename), 3));
+        if (!in_array($resoucename, array('')))
           {
-          $docString = $m->getDocComment();
-          $docString = trim($docString, '/');
-          $docAttributes = explode('@', $docString);
-          $path = '';
-          $resource = '';
-          foreach($docAttributes as $docEntry)
-            {
-            $explodedDoc = explode('*', $docEntry);
-            array_walk($explodedDoc,
-                       create_function('&$val', '$val = trim($val);'));
-            $doc = implode('', $explodedDoc);
-            if(strpos($doc, 'path') === 0)
-              {
-              $path = trim(substr($doc, 5));
-              }
-            }
-          if(!empty($path))
-            {
-            $tokens = preg_split('@/@', $path, NULL, PREG_SPLIT_NO_EMPTY);
-            $count = count($tokens);
-            if(empty($module) & !empty($tokens)) // core
-              {
-              $resource = $module. '/' . $tokens[0];
-              }
-            else if(!empty($module) & count($tokens) > 1) // other modules
-              {
-              $resource = $module. '/' . $tokens[1];
-              }
-            }
-          if(empty($resource) || in_array($resource, $apiResources))
-            {
-            continue;
-            }
-          $apiResources[] = $resource;
+          $apiResources[] = $module . '/'. $resoucename;
           }
         }
       }
@@ -89,16 +61,14 @@ class ApidocsComponent extends AppComponent
    * This function is for getting the webapi methods defined in the API
    * component (in given module) of the implementing class.
    */
-  public function getWebApiDocs($module = '')
+  public function getWebApiDocs($resource, $module = '')
     {
     $apiInfo = array();
-    $apiComponent = MidasLoader::loadComponent('Api', $module);
+    $apiComponent = MidasLoader::loadComponent('Api'.$resource, $module);
     $r = new ReflectionClass($apiComponent);
     $meths = $r->getMethods(ReflectionMethod::IS_PUBLIC);
     foreach($meths as $m)
       {
-      if(strpos($m->getDeclaringClass()->getName(), 'ApiComponent') !== false)
-        {
         $name = $m->getName();
         $docString = $m->getDocComment();
         $docString = trim($docString, '/');
@@ -173,7 +143,6 @@ class ApidocsComponent extends AppComponent
         $docs['path'] = $path;
         $docs['description'] = $description;
         $apiInfo[$resource][$name] = $docs;
-        }
       }
 
     return $apiInfo;
@@ -184,7 +153,7 @@ class ApidocsComponent extends AppComponent
    */
   public function getResourceApiDocs($resource, $module = '')
     {
-    $apiInfo = $this->getWebApiDocs($module);
+    $apiInfo = $this->getWebApiDocs($resource, $module);
     $swaggerDoc = array();
     $swaggerDoc['apiVersion'] = '1.0';
     $swaggerDoc['swaggerVersion'] = '1.1';

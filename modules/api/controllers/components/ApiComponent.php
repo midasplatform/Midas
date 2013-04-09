@@ -67,9 +67,9 @@ class Api_ApiComponent extends AppComponent
     }
 
   /** Return the user dao */
-  private function _callCoreApiMethod($args, $coreApiMethod, $hasReturn = true)
+  private function _callCoreApiMethod($args, $coreApiMethod, $component = null,  $hasReturn = true)
     {
-    $ApiComponent = MidasLoader::loadComponent('Api');
+    $ApiComponent = MidasLoader::loadComponent($component);
     $rtn = $ApiComponent->$coreApiMethod($args);
     if($hasReturn)
       {
@@ -881,7 +881,7 @@ class Api_ApiComponent extends AppComponent
    */
   function bitstreamGet($args)
     {
-    return $this->_callCoreApiMethod($args, 'bitstreamGet');
+    return $this->_callCoreApiMethod($args, 'apibitstream', 'bitstreamGet');
     }
 
   /**

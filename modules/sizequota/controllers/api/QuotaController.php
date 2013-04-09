@@ -36,7 +36,7 @@ class Apisizequota_QuotaController extends ApiController
       'user' => 'userGet',
       'community'  => 'communityGet'
     );
-    $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions, 'sizequota');
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions, 'sizequota');
     }
 
   /**
@@ -66,7 +66,7 @@ class Apisizequota_QuotaController extends ApiController
   public function postAction()
     {
     $apiFunctions['default'] = 'set';
-    $this->_genericAction($this->_request->getParams(), 'post', $apiFunctions, 'sizequota');
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'post', $apiFunctions, 'sizequota');
     }
 
 
