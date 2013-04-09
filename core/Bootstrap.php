@@ -234,33 +234,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                   'module' => 'rest',
                   'controller' => 'apikey')));
     $router->addRoute('api-core', $restRoute);
-    // add regular routes for Core WebApi docs
-    $router->addRoute("apidocs-core-1",
-          new Zend_Controller_Router_Route("/apidocs/:action/",
-              array(
-                  'module' => 'rest',
-                  'controller' => 'apidocs')));
-    $router->addRoute("apidocs-core-2",
-          new Zend_Controller_Router_Route("/apidocs/",
-              array(
-                  'module' => 'rest',
-                  'controller' => 'apidocs',
-                  'action' => 'index')));
-    // add regular routes for module WebApi docs
-    foreach($apiModules as $am)
-      {
-      if(!in_array($am, $listeModule))
-        {
-        continue;
-        }
-      $route = $am;
-      $nameModule = $am;
-      $router->addRoute("apidocs-".$nameModule,
-          new Zend_Controller_Router_Route("apidocs/".$route."/:action",
-              array(
-                  'module' => 'api'.$nameModule,
-                  'controller' => 'apidocs')));
-      }
     // loading modules elements
     foreach($listeModule as $m)
       {
