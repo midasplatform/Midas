@@ -25,7 +25,7 @@ class ApiitemComponent extends AppComponent
   {
 /**
    * Get the item's metadata
-   * @path /item/{id}
+   * @path /item/metadata/{id}
    * @http GET
    * @param id The id of the item
    * @param revision (Optional) Revision of the item. Defaults to latest revision
@@ -370,6 +370,33 @@ class ApiitemComponent extends AppComponent
     $itemArray['extraFields'] = $apihelperComponent->getItemExtraFields($item);
 
     return $itemArray;
+    }
+
+  /**
+   * Wrapper for the item get that helps make our new API consistent.
+   */
+  function itemGetWrapper($args)
+    {
+    $in = $this->itemGet($args);
+    $out = array();
+    $out['id'] = $in['item_id'];
+    $out['name'] = $in['name'];
+    $out['description'] = $in['description'];
+    $out['size'] = $in['sizebytes'];
+    $out['date_created'] = $in['date_creation'];
+    $out['date_updated'] = $in['date_update'];
+    $out['uuid'] = $in['uuid'];
+    $out['views'] = $in['view'];
+    $out['downloads'] = $in['download'];
+    $out['public'] = $in['privacy_status'] == 0;
+    $out['revisions'] = array_map(
+      function($val) { return $val['itemrevision_id']; },
+      $in['revisions']);
+    $head_revision = end($in['revisions']);
+    $out['bitstreams'] = array_map(
+      function($val) { return $val['bitstream_id']; },
+      $head_revision['bitstreams']);
+    return $out;
     }
 
   /**
