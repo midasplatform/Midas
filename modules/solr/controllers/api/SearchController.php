@@ -19,9 +19,10 @@
 =========================================================================*/
 
 /**
- *  WebApi Controller for Community Resource
+ *  WebApi controller for Search Resource (in solr module)
  */
-class Rest_CommunityController extends ApiController
+
+class Apisolr_SearchController extends ApiController
 {
 
   /**
@@ -30,12 +31,13 @@ class Rest_CommunityController extends ApiController
    */
   public function indexAction()
     {
-    $apiFunctions['default'] = 'communityList';
-    $apiFunctions['search'] = 'communitySearch';
-    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions);
+    $apiFunctions = array(
+      'default' => 'searchAdvanced'
+    );
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions, 'solr');
     }
 
- /**
+  /**
    * The head action handles HEAD requests; it should respond with an
    * identical response to the one that would correspond to a GET request,
    * but without the response body.
@@ -52,34 +54,9 @@ class Rest_CommunityController extends ApiController
    */
   public function getAction()
     {
-    $apiFunctions = array(
-      'default' => 'communityGet',
-      'children' => 'communityChildren',
-      'group' => 'communityListGroups'
-      );
-    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'get', $apiFunctions);
+    $this->_response->setHttpResponseCode(200); // 200 OK
     }
 
-  /**
-   * The post action handles POST requests; it should accept and digest a
-   * POSTed resource representation and persist the resource state.
-   */
-  public function postAction()
-    {
-    $apiFunctions['default'] = 'communityCreate';
-    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'post', $apiFunctions);
-    }
-
-  /**
-   * The delete action handles DELETE requests and receives an 'id'
-   * parameter; it should update the server resource state of the resource
-   * identified by the 'id' value.
-   */
-  public function deleteAction()
-    {
-    $apiFunctions['default'] = 'communityDelete';
-    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'delete', $apiFunctions);
-    }
 
   /**
    * The options action handles OPTIONS requests; it should respond with
@@ -87,7 +64,7 @@ class Rest_CommunityController extends ApiController
    */
   public function optionsAction()
     {
-    $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, POST, DELETE');
+    $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET');
     }
 
 }

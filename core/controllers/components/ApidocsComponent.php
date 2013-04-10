@@ -21,7 +21,6 @@
 /** These are the implementations to generate the web api documents */
 class ApidocsComponent extends AppComponent
   {
-
   /**
    * This function is for getting the webapi methods information defined in
    * all the API component of the implementing class.

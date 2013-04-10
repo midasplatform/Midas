@@ -18,12 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-
-
-/** These are the implementations of the core web api methods */
+/** These are the implementations of the web api methods for folder */
 class ApifolderComponent extends AppComponent
   {
-/**
+  /**
    * Create a folder or update an existing one if one exists by the uuid passed.
    * If a folder is requested to be created with the same parentid and name as
    * an existing folder, an exception will be thrown and no new folder will
