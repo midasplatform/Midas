@@ -81,6 +81,38 @@ class ApiuserComponent extends AppComponent
     }
 
   /**
+   * Wrapper for correcting types on user get
+   */
+  function userGetWrapper($args)
+    {
+    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $in = $this->userGet($args);
+    $in = $in->toArray();
+    $out = array();
+    $out['id'] = $in['user_id'];
+    $out['firstname'] = $in['firstname'];
+    $out['lastname'] = $in['lastname'];
+    if($apihelperComponent->isCallerAdmin($args))
+      {
+      $out['email'] = $in['email'];
+      }
+    $out['thumbnail'] = $in['thumbnail'];
+    $out['company'] = $in['company'];
+    $out['date_created'] = $in['creation'];
+    $out['date_updated'] = $in['creation']; // Fix this later
+    $out['root_folder_id'] = $in['folder_id'];
+    $out['admin'] = $in['admin'] == 1;
+    $out['public'] = $in['privacy'] == 0;
+    $out['views'] = $in['view'];
+    $out['uuid'] = $in['uuid'];
+    $out['city'] = $in['city'];
+    $out['country'] = $in['country'];
+    $out['website'] = $in['website'];
+    $out['biography'] = $in['biography'];
+    return $out;
+    }
+
+  /**
    * Returns a user by email or by first name and last name.
    * @path /user/search
    * @http GET

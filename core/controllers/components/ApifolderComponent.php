@@ -218,6 +218,25 @@ class ApifolderComponent extends AppComponent
     }
 
   /**
+   * Wrapper function for cleaning output of folderGet
+   */
+  function folderGetWrapper($args)
+    {
+    $in = $this->folderGet($args);
+    $out = array();
+    $out['id'] = $in['folder_id'];
+    $out['parent_folder_id'] = $in['parent_id'];
+    $out['name'] = $in['name'];
+    $out['description'] = $in['description'];
+    $out['date_created'] = $in['date_creation'];
+    $out['date_updated'] = $in['date_update'];
+    $out['views'] = $in['view'];
+    $out['public'] = $in['privacy_status'] == 0;
+    $out['uuid'] = $in['uuid'];
+    return $out;
+    }
+
+  /**
    * List the permissions on a folder, requires Admin access to the folder.
    * @path /folder/permission/{id}
    * @http GET

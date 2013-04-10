@@ -90,7 +90,7 @@ class ApibitstreamComponent extends AppComponent
     $out['size'] = $in['size'];
     $out['md5'] = $in['checksum'];
     $out['date_created'] = $in['date'];
-    $out['date_updated'] = $in['date'];
+    $out['date_updated'] = $in['date']; // Fix this later
     return $out;
     }
 

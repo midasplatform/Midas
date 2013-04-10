@@ -160,6 +160,29 @@ class ApicommunityComponent extends AppComponent
     }
 
   /**
+   * Wrapper for the community get to correct the return values.
+   */
+  function communityGetWrapper($args)
+    {
+    $in = $this->communityGet($args);
+    $out = array();
+    $out['id'] = $in['community_id'];
+    $out['name'] = $in['name'];
+    $out['description'] = $in['description'];
+    $out['date_created'] = $in['creation'];
+    $out['date_updated'] = $in['creation']; // Fix this later
+    $out['public'] = $in['privacy'] == 0;
+    $out['root_folder_id'] = $in['folder_id'];
+    $out['admin_group_id'] = $in['admingroup_id'];
+    $out['moderator_group_id'] = $in['moderatorgroup_id'];
+    $out['member_group_id'] = $in['membergroup_id'];
+    $out['open_membership'] = $in['can_join'] == 1;
+    $out['views'] = $in['view'];
+    $out['uuid'] = $in['uuid'];
+    return $out;
+    }
+
+  /**
    * Get the immediate children of a community (non-recursive)
    * @path /community/children/{id}
    * @http GET

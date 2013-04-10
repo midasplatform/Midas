@@ -472,5 +472,22 @@ class ApihelperComponent extends AppComponent
       }
     }
 
+  /**
+   * Check if the caller is an administrator based on the api call arguments.
+   */
+  public function isCallerAdmin($args)
+    {
+    $userDao = $this->getUser($args);
+
+    if(!$userDao || !$userDao->isAdmin())
+      {
+      return false;
+      }
+    else
+      {
+      return true;
+      }
+    }
+
 
   } // end class
