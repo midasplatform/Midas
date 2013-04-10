@@ -57,8 +57,9 @@ class Sizequota_ApiquotaComponent extends AppComponent
    */
   public function userGet($args)
     {
-    $this->_checkKeys(array('user'), $args);
-    $requestUser = $this->_getUser($args);
+    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $apihelperComponent->validateParams($args, array('user'));
+    $requestUser = $apihelperComponent->getUser($args);
 
     $folderModel = MidasLoader::loadModel('Folder');
     $userModel = MidasLoader::loadModel('User');
@@ -89,8 +90,9 @@ class Sizequota_ApiquotaComponent extends AppComponent
    */
   public function communityGet($args)
     {
-    $this->_checkKeys(array('community'), $args);
-    $requestUser = $this->_getUser($args);
+    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $apihelperComponent->validateParams($args, array('community'));
+    $requestUser = $apihelperComponent->getUser($args);
 
     $folderModel = MidasLoader::loadModel('Folder');
     $commModel = MidasLoader::loadModel('Community');
@@ -121,8 +123,9 @@ class Sizequota_ApiquotaComponent extends AppComponent
    */
   public function set($args)
     {
-    $this->_checkKeys(array('folder'), $args);
-    $user = $this->_getUser($args);
+    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $apihelperComponent->validateParams($args, array('folder'));
+    $user = $apihelperComponent->getUser($args);
 
     if(!$user || !$user->isAdmin())
       {
