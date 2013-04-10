@@ -35,7 +35,7 @@ class Pvw_ParaviewComponent extends AppComponent
     if($progressDao)
       {
       $step = 1;
-      $progressDao->setMaximum(4);
+      $progressDao->setMaximum(5);
       $progressModel->save($progressDao);
       $progressModel->updateProgress($progressDao, $step, 'Checking available ports...');
       }
@@ -52,7 +52,7 @@ class Pvw_ParaviewComponent extends AppComponent
       $step++;
       $progressModel->updateProgress($progressDao, $step, 'Checking available ports...');
       }
-    $dataPath = '/Data'; //TODO symlink the item data somewhere.
+
     // TODO critical section of code between getting the open port and listening on it
     // practical solution: add db setting for 'nextPortToTry'.
     $port = $this->_getNextOpenPort();
@@ -65,6 +65,18 @@ class Pvw_ParaviewComponent extends AppComponent
       $step++;
       $progressModel->updateProgress($progressDao, $step, 'Starting ParaView instance...');
       }
+
+    $instance = MidasLoader::newDao('InstanceDao', 'pvw');
+    $instance->setItemId($item->getKey());
+    $instance->setPort($port);
+    $instance->setSid(''); // todo?
+    $instance->setCreationDate(date('c'));
+
+    $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
+    $instanceModel->save($instance);
+
+    $dataPath = $this->_createDataDir($item, $instance);
+
     $cmdArray = array($pvpython, $application, '--port', $port, '--data', $dataPath);
 
     // Set static content root if necessary
@@ -90,9 +102,9 @@ class Pvw_ParaviewComponent extends AppComponent
     // After we start the process, wait some number of seconds for the port to open up.
     // If it doesn't, something went wrong.
     $portOpen = false;
-    for($i = 0; $i < MIDAS_PVW_STARTUP_TIMEOUT; $i++)
+    for($i = 0; $i < 2 * MIDAS_PVW_STARTUP_TIMEOUT; $i++)
       {
-      sleep(1);
+      usleep(500000); // sleep for half a second
       if(UtilityComponent::isPortListening($port))
         {
         $portOpen = true;
@@ -104,16 +116,23 @@ class Pvw_ParaviewComponent extends AppComponent
       throw new Zend_Exception('Instance did not bind to port within '.MIDAS_PVW_STARTUP_TIMEOUT.' seconds', 500);
       }
 
-    $instance = MidasLoader::newDao('InstanceDao', 'pvw');
-    $instance->setItemId($item->getKey());
     $instance->setPid($pid);
-    $instance->setPort($port);
-    $instance->setSid(''); // todo?
-    $instance->setCreationDate(date('c'));
-
-    $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
     $instanceModel->save($instance);
     return $instance;
+    }
+
+  /**
+   * Kills the pvpython process and deletes the instance record from the database
+   * @param instance The instance dao to kill
+   */
+  public function killInstance($instance)
+    {
+    exec('kill -9 '.$instance->getPid());
+
+    UtilityComponent::rrmdir(BASE_PATH.'/tmp/pvw-data/'.$instance->getKey());
+
+    $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
+    $instanceModel->delete($instance);
     }
 
   /**
@@ -132,7 +151,7 @@ class Pvw_ParaviewComponent extends AppComponent
    */
   private function _getNextOpenPort()
     {
-    $setting = MidasLoader::loadModel('Setting');
+    $settingModel = MidasLoader::loadModel('Setting');
     $ports = $settingModel->getValueByName('ports', 'pvw');
     if(!$ports)
       {
@@ -149,5 +168,27 @@ class Pvw_ParaviewComponent extends AppComponent
         }
       }
     return false;
+    }
+
+  /**
+   * Symlink the item into a directory
+   */
+  private function _createDataDir($itemDao, $instanceDao)
+    {
+    if(!is_dir(BASE_PATH.'/tmp/pvw-data'))
+      {
+      mkdir(BASE_PATH.'/tmp/pvw-data');
+      }
+    $path = BASE_PATH.'/tmp/pvw-data/'.$instanceDao->getKey();
+    mkdir($path);
+    mkdir($path.'/main');
+
+    $itemModel = MidasLoader::loadModel('Item');
+    $rev = $itemModel->getLastRevision($itemDao);
+    $bitstreams = $rev->getBitstreams();
+    $src = $bitstreams[0]->getFullpath();
+
+    symlink($src, $path.'/main/'.$bitstreams[0]->getName());
+    return $path;
     }
 } // end class
