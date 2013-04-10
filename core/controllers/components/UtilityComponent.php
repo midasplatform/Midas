@@ -662,39 +662,4 @@ class UtilityComponent extends AppComponent
     return $salt;
     }
 
-  /**
-   * Update a request parameter's name if it exists in the given argument array.
-   * This is to provide backward compatibility for existing RPC WebAPIs.
-   * @param $args Array of arguments
-   * @param $oldKey Current name of the parameter
-   * @param $newKey New name of the parameter
-   */
-  public static function renameParamKey(&$args, $oldKey, $newKey)
-    {
-    if(isset($args[$oldKey]))
-      {
-      $args[$newKey] = $args[$oldKey];
-      unset($args[$oldKey]);
-      }
-    }
-
-  /**
-   * Test whether the specified port is listening on the specified host.
-   * Return true if the connection is accepted, false otherwise.
-   * @param port The port to test (integer)
-   * @param [host] The hostname; default is localhost
-   */
-  public static function isPortListening($port, $host = 'localhost')
-    {
-    UtilityComponent::beginIgnoreWarnings();
-    $conn = fsockopen($host, $port);
-    UtilityComponent::endIgnoreWarnings();
-
-    if(is_resource($conn))
-      {
-      fclose($conn);
-      return true;
-      }
-    return false;
-    }
 } // end class

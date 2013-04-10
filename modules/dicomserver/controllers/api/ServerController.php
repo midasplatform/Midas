@@ -34,7 +34,7 @@ class Apidicomserver_ServerController extends ApiController
       'default' => 'status',
       'status' => 'status'
       );
-    $this->_genericAction($this->_request->getParams(), 'index', $apiFunctions, 'dicomserver');
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions, 'dicomserver');
     }
 
   /**
@@ -68,7 +68,7 @@ class Apidicomserver_ServerController extends ApiController
       'start' => 'start',
       'stop' => 'stop'
       );
-    $this->_genericAction($this->_request->getParams(), 'post', $apiFunctions, 'dicomserver');
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'post', $apiFunctions, 'dicomserver');
     }
 
 

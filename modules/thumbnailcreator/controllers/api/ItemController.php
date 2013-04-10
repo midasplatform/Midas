@@ -36,7 +36,7 @@ class Apithumbnailcreator_ItemController extends ApiController
       'bigthumbnail' => 'createBigThumbnail',
       'smallthumbnail' => 'createSmallThumbnail'
       );
-    $this->_genericAction($this->_request->getParams(), 'put', $apiFunctions, 'thumbnailcreator');
+    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'put', $apiFunctions, 'thumbnailcreator');
     }
 
 

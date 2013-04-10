@@ -78,9 +78,9 @@ class Api_ApiComponent extends AppComponent
     }
 
   /** Return the user dao */
-  private function _callCoreApiMethod($args, $coreApiMethod, $component = null,  $hasReturn = true)
+  private function _callCoreApiMethod($args, $coreApiMethod, $resource = null,  $hasReturn = true)
     {
-    $ApiComponent = MidasLoader::loadComponent($component);
+    $ApiComponent = MidasLoader::loadComponent('Api'.$resource);
     $rtn = $ApiComponent->$coreApiMethod($args);
     if($hasReturn)
       {
@@ -149,7 +149,7 @@ class Api_ApiComponent extends AppComponent
    */
   function login($args)
     {
-    return $this->_callCoreApiMethod($args, 'login');
+    return $this->_callCoreApiMethod($args, 'login', 'system');
     }
 
   /**
@@ -320,7 +320,7 @@ class Api_ApiComponent extends AppComponent
    */
   function uploadGeneratetoken($args)
     {
-    return $this->_callCoreApiMethod($args, 'uploadGeneratetoken');
+    return $this->_callCoreApiMethod($args, 'uploadGeneratetoken', 'system');
     }
 
   /**
@@ -330,7 +330,7 @@ class Api_ApiComponent extends AppComponent
    */
   function uploadGetoffset($args)
     {
-    return $this->_callCoreApiMethod($args, 'uploadGetoffset');
+    return $this->_callCoreApiMethod($args, 'uploadGetoffset', 'system');
     }
 
   /**
@@ -353,7 +353,7 @@ class Api_ApiComponent extends AppComponent
    */
   function uploadPerform($args)
     {
-    return $this->_callCoreApiMethod($args, 'uploadPerform');
+    return $this->_callCoreApiMethod($args, 'uploadPerform', 'system');
     }
 
   /**
@@ -368,7 +368,7 @@ class Api_ApiComponent extends AppComponent
    */
   function communityCreate($args)
     {
-    return $this->_callCoreApiMethod($args, 'communityCreate');
+    return $this->_callCoreApiMethod($args, 'communityCreate', 'community');
     }
 
   /**
@@ -380,7 +380,7 @@ class Api_ApiComponent extends AppComponent
    */
   function communityGet($args)
     {
-    return $this->_callCoreApiMethod($args, 'communityGet');
+    return $this->_callCoreApiMethod($args, 'communityGet', 'community');
     }
 
   /**
@@ -391,7 +391,7 @@ class Api_ApiComponent extends AppComponent
    */
   function communityChildren($args)
     {
-    return $this->_callCoreApiMethod($args, 'communityChildren');
+    return $this->_callCoreApiMethod($args, 'communityChildren', 'community');
     }
 
   /**
@@ -401,7 +401,7 @@ class Api_ApiComponent extends AppComponent
    */
   function communityList($args)
     {
-    return $this->_callCoreApiMethod($args, 'communityList');
+    return $this->_callCoreApiMethod($args, 'communityList', 'community');
     }
 
   /**
@@ -411,7 +411,7 @@ class Api_ApiComponent extends AppComponent
    */
   function communityDelete($args)
     {
-    $this->_callCoreApiMethod($args, 'communityDelete', false);
+    $this->_callCoreApiMethod($args, 'communityDelete', 'community', false);
     }
 
   /**
@@ -430,7 +430,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderCreate($args)
     {
-    return $this->_callCoreApiMethod($args, 'folderCreate');
+    return $this->_callCoreApiMethod($args, 'folderCreate', 'folder');
     }
 
   /**
@@ -441,7 +441,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderGet($args)
     {
-    return $this->_callCoreApiMethod($args, 'folderGet');
+    return $this->_callCoreApiMethod($args, 'folderGet', 'folder');
     }
 
   /**
@@ -452,7 +452,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderChildren($args)
     {
-    return $this->_callCoreApiMethod($args, 'folderChildren');
+    return $this->_callCoreApiMethod($args, 'folderChildren', 'folder');
     }
 
   /**
@@ -462,7 +462,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderDelete($args)
     {
-    $this->_callCoreApiMethod($args, 'folderDelete', false);
+    $this->_callCoreApiMethod($args, 'folderDelete', 'folder', false);
     }
 
   /**
@@ -473,7 +473,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderDownload($args)
     {
-    return $this->_callCoreApiMethod($args, 'folderDownload');
+    return $this->_callCoreApiMethod($args, 'folderDownload', 'folder');
     }
 
   /**
@@ -485,7 +485,7 @@ class Api_ApiComponent extends AppComponent
    */
   function folderMove($args)
     {
-    return $this->_callCoreApiMethod($args, 'folderMove');
+    return $this->_callCoreApiMethod($args, 'folderMove', 'folder');
     }
 
   /**
@@ -498,8 +498,9 @@ class Api_ApiComponent extends AppComponent
    */
   public function folderListPermissions($args)
     {
-    $this->_renameParamKey($args, 'folder_id', 'id');
-    return $this->_callCoreApiMethod($args, 'folderListPermissions');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'folder_id', 'id');
+    return $this->_callCoreApiMethod($args, 'folderListPermissions', 'folder');
     }
 
   /**
@@ -512,8 +513,9 @@ class Api_ApiComponent extends AppComponent
    */
   function folderSetPrivacyRecursive($args)
     {
-    $this->_renameParamKey($args, 'folder_id', 'id');
-    return $this->_callCoreApiMethod($args, 'folderSetPrivacyRecursive');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'folder_id', 'id');
+    return $this->_callCoreApiMethod($args, 'folderSetPrivacyRecursive', 'folder');
     }
 
   /**
@@ -530,8 +532,9 @@ class Api_ApiComponent extends AppComponent
    */
   function folderAddPolicygroup($args)
     {
-    $this->_renameParamKey($args, 'folder_id', 'id');
-    return $this->_callCoreApiMethod($args, 'folderAddPolicygroup');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'folder_id', 'id');
+    return $this->_callCoreApiMethod($args, 'folderAddPolicygroup', 'folder');
     }
 
   /**
@@ -546,8 +549,9 @@ class Api_ApiComponent extends AppComponent
    */
   function folderRemovePolicygroup($args)
     {
-    $this->_renameParamKey($args, 'folder_id', 'id');
-    return $this->_callCoreApiMethod($args, 'folderRemovePolicygroup');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'folder_id', 'id');
+    return $this->_callCoreApiMethod($args, 'folderRemovePolicygroup', 'folder');
     }
 
   /**
@@ -564,8 +568,9 @@ class Api_ApiComponent extends AppComponent
    */
   function folderAddPolicyuser($args)
     {
-    $this->_renameParamKey($args, 'folder_id', 'id');
-    return $this->_callCoreApiMethod($args, 'folderAddPolicyuser');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'folder_id', 'id');
+    return $this->_callCoreApiMethod($args, 'folderAddPolicyuser', 'folder');
     }
 
   /**
@@ -580,8 +585,9 @@ class Api_ApiComponent extends AppComponent
    */
   function folderRemovePolicyuser($args)
     {
-    $this->_renameParamKey($args, 'folder_id', 'id');
-    return $this->_callCoreApiMethod($args, 'folderRemovePolicyuser');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'folder_id', 'id');
+    return $this->_callCoreApiMethod($args, 'folderRemovePolicyuser', 'folder');
     }
 
   /**
@@ -592,7 +598,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemExists($args)
     {
-    return $this->_callCoreApiMethod($args, 'itemExists');
+    return $this->_callCoreApiMethod($args, 'itemExists', 'item');
     }
 
   /**
@@ -612,7 +618,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemCreate($args)
     {
-    return $this->_callCoreApiMethod($args, 'itemCreate');
+    return $this->_callCoreApiMethod($args, 'itemCreate', 'item');
     }
 
   /**
@@ -624,7 +630,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemGet($args)
     {
-    return $this->_callCoreApiMethod($args, 'itemGet', 'Apiitem');
+    return $this->_callCoreApiMethod($args, 'itemGet', 'item');
     }
 
   /**
@@ -636,7 +642,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDownload($args)
     {
-    return $this->_callCoreApiMethod($args, 'itemDownload');
+    return $this->_callCoreApiMethod($args, 'itemDownload', 'item');
     }
 
   /**
@@ -646,7 +652,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDelete($args)
     {
-    $this->_callCoreApiMethod($args, 'itemDelete', false);
+    $this->_callCoreApiMethod($args, 'itemDelete', 'item', false);
     }
 
   /**
@@ -659,7 +665,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemGetmetadata($args)
     {
-    return $this->_callCoreApiMethod($args, 'itemGetmetadata');
+    return $this->_callCoreApiMethod($args, 'itemGetmetadata', 'item');
     }
 
   /**
@@ -676,8 +682,9 @@ class Api_ApiComponent extends AppComponent
    */
   function itemSetmetadata($args)
     {
-    $this->_renameParamKey($args, 'itemId', 'id');
-    return $this->_callCoreApiMethod($args, 'itemSetmetadata');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'itemId', 'id');
+    return $this->_callCoreApiMethod($args, 'itemSetmetadata', 'item');
     }
 
   /**
@@ -701,8 +708,9 @@ class Api_ApiComponent extends AppComponent
    */
   function itemSetmultiplemetadata($args)
     {
-    $this->_renameParamKey($args, 'itemid', 'id');
-    return $this->_callCoreApiMethod($args, 'itemSetmultiplemetadata');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'itemid', 'id');
+    return $this->_callCoreApiMethod($args, 'itemSetmultiplemetadata', 'item');
     }
 
   /**
@@ -721,8 +729,9 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDeletemetadata($args)
     {
-    $this->_renameParamKey($args, 'itemid', 'id');
-    return $this->_callCoreApiMethod($args, 'itemDeletemetadata');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'itemid', 'id');
+    return $this->_callCoreApiMethod($args, 'itemDeletemetadata', 'item');
     }
 
   /**
@@ -738,8 +747,9 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDeletemetadataAll($args)
     {
-    $this->_renameParamKey($args, 'itemid', 'id');
-    return $this->_callCoreApiMethod($args, 'itemDeletemetadataAll');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'itemid', 'id');
+    return $this->_callCoreApiMethod($args, 'itemDeletemetadataAll', 'item');
     }
 
   /**
@@ -751,7 +761,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemDuplicate($args)
     {
-    return $this->_callCoreApiMethod($args, 'itemDuplicate');
+    return $this->_callCoreApiMethod($args, 'itemDuplicate', 'item');
     }
 
   /**
@@ -763,7 +773,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemShare($args)
     {
-    return $this->_callCoreApiMethod($args, 'itemShare');
+    return $this->_callCoreApiMethod($args, 'itemShare', 'item');
     }
 
   /**
@@ -776,8 +786,9 @@ class Api_ApiComponent extends AppComponent
    */
   public function itemListPermissions($args)
     {
-    $this->_renameParamKey($args, 'item_id', 'id');
-    return $this->_callCoreApiMethod($args, 'itemListPermissions');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'item_id', 'id');
+    return $this->_callCoreApiMethod($args, 'itemListPermissions', 'item');
     }
 
   /**
@@ -790,7 +801,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemMove($args)
     {
-    return $this->_callCoreApiMethod($args, 'itemMove');
+    return $this->_callCoreApiMethod($args, 'itemMove', 'item');
     }
 
   /**
@@ -801,7 +812,7 @@ class Api_ApiComponent extends AppComponent
    */
   function itemSearchbyname($args)
     {
-    return $this->_callCoreApiMethod($args, 'itemSearchbyname');
+    return $this->_callCoreApiMethod($args, 'itemSearchbyname', 'item');
     }
 
   /**
@@ -815,8 +826,9 @@ class Api_ApiComponent extends AppComponent
    */
   function itemAddPolicygroup($args)
     {
-    $this->_renameParamKey($args, 'item_id', 'id');
-    return $this->_callCoreApiMethod($args, 'itemAddPolicygroup');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'item_id', 'id');
+    return $this->_callCoreApiMethod($args, 'itemAddPolicygroup', 'item');
     }
 
   /**
@@ -828,8 +840,9 @@ class Api_ApiComponent extends AppComponent
    */
   function itemRemovePolicygroup($args)
     {
-    $this->_renameParamKey($args, 'item_id', 'id');
-    return $this->_callCoreApiMethod($args, 'itemRemovePolicygroup');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'item_id', 'id');
+    return $this->_callCoreApiMethod($args, 'itemRemovePolicygroup', 'item');
     }
 
   /**
@@ -843,8 +856,9 @@ class Api_ApiComponent extends AppComponent
    */
   function itemAddPolicyuser($args)
     {
-    $this->_renameParamKey($args, 'item_id', 'id');
-    return $this->_callCoreApiMethod($args, 'itemAddPolicyuser');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'item_id', 'id');
+    return $this->_callCoreApiMethod($args, 'itemAddPolicyuser', 'item');
     }
 
   /**
@@ -856,8 +870,9 @@ class Api_ApiComponent extends AppComponent
    */
   function itemRemovePolicyuser($args)
     {
-    $this->_renameParamKey($args, 'item_id', 'id');
-    return $this->_callCoreApiMethod($args, 'itemRemovePolicyuser');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'item_id', 'id');
+    return $this->_callCoreApiMethod($args, 'itemRemovePolicyuser', 'item');
     }
 
   /**
@@ -867,7 +882,7 @@ class Api_ApiComponent extends AppComponent
    */
   function userFolders($args)
     {
-    return $this->_callCoreApiMethod($args, 'userFolders');
+    return $this->_callCoreApiMethod($args, 'userFolders', 'user');
     }
 
   /**
@@ -879,7 +894,7 @@ class Api_ApiComponent extends AppComponent
    */
   function userApikeyDefault($args)
     {
-    return $this->_callCoreApiMethod($args, 'userApikeyDefault');
+    return $this->_callCoreApiMethod($args, 'userApikeyDefault', 'system');
     }
 
   /**
@@ -889,7 +904,7 @@ class Api_ApiComponent extends AppComponent
    */
   function userList($args)
     {
-    return $this->_callCoreApiMethod($args, 'userList');
+    return $this->_callCoreApiMethod($args, 'userList', 'user');
     }
 
   /**
@@ -902,14 +917,15 @@ class Api_ApiComponent extends AppComponent
    */
   function userGet($args)
     {
-    $this->_renameParamKey($args, 'user_id', 'id', false);
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'user_id', 'id', false);
     if(array_key_exists('id', $args))
       {
-      return $this->_callCoreApiMethod($args, 'userGet');
+      return $this->_callCoreApiMethod($args, 'userGet', 'user');
       }
     else
       {
-      return $this->_callCoreApiMethod($args, 'userSearch');
+      return $this->_callCoreApiMethod($args, 'userSearch', 'user');
       }
     }
 
@@ -921,7 +937,7 @@ class Api_ApiComponent extends AppComponent
    */
   function bitstreamGet($args)
     {
-    return $this->_callCoreApiMethod($args, 'apibitstream', 'bitstreamGet');
+    return $this->_callCoreApiMethod($args, 'apibitstream', 'bitstreamGet', 'bitstream');
     }
 
   /**
@@ -935,7 +951,7 @@ class Api_ApiComponent extends AppComponent
    */
   function bitstreamDownload($args)
     {
-    return $this->_callCoreApiMethod($args, 'bitstreamDownload');
+    return $this->_callCoreApiMethod($args, 'bitstreamDownload', 'bitstream');
     }
 
   /**
@@ -946,7 +962,7 @@ class Api_ApiComponent extends AppComponent
    */
   function bitstreamCount($args)
     {
-    return $this->_callCoreApiMethod($args, 'bitstreamCount');
+    return $this->_callCoreApiMethod($args, 'bitstreamCount', 'bitstream');
     }
 
   /**
@@ -959,7 +975,7 @@ class Api_ApiComponent extends AppComponent
    */
   function bitstreamEdit($args)
     {
-    return $this->_callCoreApiMethod($args, 'bitstreamEdit');
+    return $this->_callCoreApiMethod($args, 'bitstreamEdit', 'bitstream');
     }
 
   /**
@@ -967,7 +983,7 @@ class Api_ApiComponent extends AppComponent
    */
   function adminDatabaseCleanup($args)
     {
-    return $this->_callCoreApiMethod($args, 'adminDatabaseCleanup');
+    return $this->_callCoreApiMethod($args, 'adminDatabaseCleanup', 'system');
     }
 
   /**
@@ -977,7 +993,7 @@ class Api_ApiComponent extends AppComponent
    */
   function bitstreamDelete($args)
     {
-    $this->_callCoreApiMethod($args, 'bitstreamDelete', false);
+    $this->_callCoreApiMethod($args, 'bitstreamDelete', 'bitstream', false);
     }
 
   /**
@@ -985,7 +1001,7 @@ class Api_ApiComponent extends AppComponent
    */
   function metadataTypesList()
     {
-    return $this->_callCoreApiMethod(array(), 'metadataTypesList');
+    return $this->_callCoreApiMethod(array(), 'metadataTypesList', 'system');
     }
 
   /**
@@ -996,7 +1012,7 @@ class Api_ApiComponent extends AppComponent
    */
   function metadataElementsList($args)
     {
-    return $this->_callCoreApiMethod($args, 'metadataElementsList');
+    return $this->_callCoreApiMethod($args, 'metadataElementsList', 'system');
     }
 
   /**
@@ -1009,7 +1025,7 @@ class Api_ApiComponent extends AppComponent
    */
   function metadataQualifiersList($args)
     {
-    return $this->_callCoreApiMethod($args, 'metadataQualifiersList');
+    return $this->_callCoreApiMethod($args, 'metadataQualifiersList', 'system');
     }
 
   /**
@@ -1021,8 +1037,9 @@ class Api_ApiComponent extends AppComponent
    */
   function groupAddUser($args)
     {
-    $this->_renameParamKey($args, 'group_id', 'id');
-    return $this->_callCoreApiMethod($args, 'groupAddUser');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'group_id', 'id');
+    return $this->_callCoreApiMethod($args, 'groupAddUser', 'group');
     }
 
   /**
@@ -1034,8 +1051,9 @@ class Api_ApiComponent extends AppComponent
    */
   function groupRemoveUser($args)
     {
-    $this->_renameParamKey($args, 'group_id', 'id');
-    return $this->_callCoreApiMethod($args, 'groupRemoveUser');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'group_id', 'id');
+    return $this->_callCoreApiMethod($args, 'groupRemoveUser', 'group');
     }
 
   /**
@@ -1047,7 +1065,7 @@ class Api_ApiComponent extends AppComponent
    */
   function groupAdd($args)
     {
-    return $this->_callCoreApiMethod($args, 'groupAdd');
+    return $this->_callCoreApiMethod($args, 'groupAdd', 'group');
     }
 
   /**
@@ -1058,8 +1076,9 @@ class Api_ApiComponent extends AppComponent
    */
   function groupRemove($args)
     {
-    $this->_renameParamKey($args, 'group_id', 'id');
-    return $this->_callCoreApiMethod($args, 'groupRemove');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'group_id', 'id');
+    return $this->_callCoreApiMethod($args, 'groupRemove', 'group');
     }
 
   /**
@@ -1071,8 +1090,9 @@ class Api_ApiComponent extends AppComponent
    */
   function groupListUsers($args)
     {
-    $this->_renameParamKey($args, 'group_id', 'id');
-    return $this->_callCoreApiMethod($args, 'groupListUsers');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'group_id', 'id');
+    return $this->_callCoreApiMethod($args, 'groupListUsers', 'group');
     }
 
   /**
@@ -1082,8 +1102,9 @@ class Api_ApiComponent extends AppComponent
    */
   function communityListGroups($args)
     {
-    $this->_renameParamKey($args, 'community_id', 'id');
-    return $this->_callCoreApiMethod($args, 'communityListGroups');
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $ApihelperComponent->renameParamKey($args, 'community_id', 'id');
+    return $this->_callCoreApiMethod($args, 'communityListGroups', 'community');
     }
 
   } // end class
