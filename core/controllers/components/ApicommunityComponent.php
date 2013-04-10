@@ -18,12 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
-
-
-/** These are the implementations of the core web api methods */
+/** These are the implementations of the web api methods for community*/
 class ApicommunityComponent extends AppComponent
   {
-
   /**
    * Create a new community or update an existing one using the uuid
    * @path /community
@@ -121,11 +118,10 @@ class ApicommunityComponent extends AppComponent
     }
 
   /**
-   * Get a community's information based on the id OR name
+   * Get a community's information based on id
    * @path /community/{id}
    * @http GET
    * @param id The id of the community
-   * @param name the name of the community
    * @return The community information
    */
   function communityGet($args)
@@ -180,6 +176,18 @@ class ApicommunityComponent extends AppComponent
     $out['views'] = $in['view'];
     $out['uuid'] = $in['uuid'];
     return $out;
+    }
+
+  /**
+   * Get a community's information based on name
+   * @path /community/search
+   * @http GET
+   * @param name the name of the community
+   * @return The community information
+   */
+  function communitySearch($args)
+    {
+    return $this->communityGet($args);
     }
 
   /**
@@ -322,5 +330,4 @@ class ApicommunityComponent extends AppComponent
       }
     return array('groups' => $groupIdsToName);
     }
-
   } // end class

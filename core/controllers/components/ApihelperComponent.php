@@ -18,12 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
-
-
-/** These are the implementations of the core web api methods */
+/** These are the implementations of helper functions for the core web apis */
 class ApihelperComponent extends AppComponent
   {
-
   /**
    * This should be called before _getUser to define what policy scopes (see module.php constants)
    * are required for the current API endpoint. If this is not called and _getUser is called,
@@ -488,6 +485,5 @@ class ApihelperComponent extends AppComponent
       return true;
       }
     }
-
 
   } // end class

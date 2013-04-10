@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-
-
-/** These are the implementations of the core web api methods */
+/** These are the implementations of the web api methods for bitstream */
 class ApibitstreamComponent extends AppComponent
   {
   /**
@@ -292,7 +290,6 @@ class ApibitstreamComponent extends AppComponent
     {
     $this->bitstreamDownload($args);
     }
-
 
   /**
    * Download a bitstream by a checksum.

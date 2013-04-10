@@ -31,6 +31,7 @@ class Rest_CommunityController extends ApiController
   public function indexAction()
     {
     $apiFunctions['default'] = 'communityList';
+    $apiFunctions['search'] = 'communitySearch';
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions);
     }
 

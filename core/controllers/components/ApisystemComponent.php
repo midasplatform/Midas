@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-
-
-/** These are the implementations of the core web api methods */
+/** These are the implementations of the web api methods for system*/
 class ApisystemComponent extends AppComponent
   {
   /**
