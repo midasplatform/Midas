@@ -76,6 +76,17 @@ class Pvw_ParaviewController extends Pvw_AppController
     // TODO just plug this into the restful stuff
     $this->disableLayout();
     $this->disableView();
+    $pathParams = UtilityComponent::extractPathParams();
+    if(empty($pathParams))
+      {
+      throw new Zend_Exception('Must pass instance id as first path parameter', 400);
+      }
+    $instanceDao = $this->Pvw_Instance->load($pathParams[0]);
+    if(!$instanceDao)
+      {
+      throw new Zend_Exception('Invalid instance id: '.$pathParams[0], 400);
+      }
+    $this->ModuleComponent->Paraview->killInstance($instanceDao);
     echo JsonComponent::encode(array());
     }
 

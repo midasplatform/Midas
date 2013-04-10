@@ -732,7 +732,7 @@ $(window).load(function () {
     }
     pv = {};
     pv.connection = {
-        sessionURL: 'ws://silmaril:9021/ws',
+        sessionURL: 'ws://'+location.hostname+':'+json.pvw.instance.port+'/ws',
         id: json.pvw.instance.instance_id,
         sessionManagerURL: json.global.webroot + '/pvw/paraview/instance'
     };
@@ -743,7 +743,7 @@ $(window).load(function () {
         $('#renderercontainer').show();
         $('img.visuLoading').hide();
     }, function(msg) {
-        alert(msg);
+        midas.createNotice(msg, 3000, 'error');
     });
 
     // Add some logic to check for idle and close the pvw session after IDLE_TIMEOUT expires
@@ -756,16 +756,27 @@ $(window).load(function () {
     //midas.visualize.start(); // warning: asynchronous. To add post logic, see initCallback
 });
 
+window.onunload = function () {
+    // Sadly we have to do this synchronously so the browser fulfills the request before leaving
+    $.ajax({
+        url: json.global.webroot + '/pvw/paraview/instance/' + json.pvw.instance.instance_id,
+        async: false,
+        type: 'DELETE'
+    });
+};
+
 /**
  * Call this to kill the pvw session and print a helpful message about it
  * to the view.
  */
 midas.pvw.stopSession = function () {
     if(pv.connection) {
-        paraview.stop(pv.connection);
+        paraview.stop(pv.connection); // TODO must call this synchronously!!!
+        pv.connection = null;
     }
     if(midas.pvw.idleInterval) {
         clearInterval(midas.pvw.idleInterval);
+        midas.pvw.idleInterval = null;
     }
     var html = 'Your ParaViewWeb session was ended, either due to an error or because you went idle '
              + 'for more than ' + (midas.pvw.IDLE_TIMEOUT / 60000) + ' minutes.';
@@ -774,7 +785,5 @@ midas.pvw.stopSession = function () {
     
 };
 
-$(window).unload(function () {
-    midas.pvw.stopSession();
-});
+
 
