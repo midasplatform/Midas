@@ -3,37 +3,7 @@ var midas = midas || {};
 midas.visualize = midas.visualize || {};
 midas.pvw = midas.pvw || {};
 
-midas.visualize.renderers = {};
-midas.visualize.DISTANCE_FACTOR = 1.6; // factor to zoom the camera out by
 midas.pvw.IDLE_TIMEOUT = 10 * 60 * 1000; // 10 minute idle timeout
-
-midas.visualize.start = function () {
-    // Create a paraview proxy
-    if(typeof Paraview != 'function') {
-        alert('Paraview javascript was not fetched correctly from server.');
-        return;
-    }
-
-    $('#loadingStatus').html('Creating ParaView session on the server and loading plugins...');
-    paraview = new Paraview("/PWService");
-    paraview.errorListener = {
-        manageError: function(error) {
-            if(error) {
-                midas.createNotice('A ParaViewWeb error occurred; check the console for information', 4000, 'error');
-                console.log(error);
-                return false;
-            }
-        }
-    };
-
-    paraview.createSessionAsync('midas', 'volume render', 'default', function () {
-        $('#loadingStatus').html('Reading image data from files...');
-        paraview.callPluginMethod('midascommon', 'OpenData', {
-            filename: json.visualize.url,
-            otherMeshes: json.visualize.meshes
-        }, midas.visualize._dataOpened);
-    });
-};
 
 /**
  * Helper callback for after the data file has been opened
