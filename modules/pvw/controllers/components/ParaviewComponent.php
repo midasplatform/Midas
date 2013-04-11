@@ -88,7 +88,7 @@ class Pvw_ParaviewComponent extends AppComponent
 
     // Now start the instance
     $cmd = join(' ', $cmdArray);
-    exec(sprintf("%s > %s 2>&1 & echo $!", $cmd, '/dev/null'), $output);
+    exec(sprintf("%s > %s 2>&1 & echo $!", $cmd, $dataPath.'/pvw.log'), $output);
     $pid = trim(join('', $output));
     if(!is_numeric($pid))
       {

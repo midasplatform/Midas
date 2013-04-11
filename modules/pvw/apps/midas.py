@@ -22,212 +22,207 @@ timekeeper = servermanager.ProxyManager().GetProxy("timekeeper", "TimeKeeper")
 pipeline = web_helper.Pipeline('Kitware')
 lutManager = web_helper.LookupTableManager()
 view = None
-fileList = []
-filterList = [{
-        'name': 'Cone',
-        'icon': 'dataset',
-        'category': 'source'
-    },{
-        'name': 'Sphere',
-        'icon': 'dataset',
-        'category': 'source'
-    },{
-        'name': 'Wavelet',
-        'icon': 'dataset',
-        'category': 'source'
-    },{
-        'name': 'Clip',
-        'icon': 'clip',
-        'category': 'filter'
-    },{
-        'name': 'Slice',
-        'icon': 'slice',
-        'category': 'filter'
-    },{
-        'name': 'Contour',
-        'icon': 'contour',
-        'category': 'filter'
-    },{
-        'name': 'Threshold',
-        'icon': 'threshold',
-        'category': 'filter'
-    },{
-        'name': 'Stream Tracer',
-        'icon': 'stream',
-        'category': 'filter'
-    },{
-        'name': 'Warp',
-        'icon': 'filter',
-        'category': 'filter'
-    }]
+dataPath = None
+rep = None
+imageData = None
+center = [0, 0, 0]
+bounds = None
+scalarRange = None
+srcObj = None
 
-def initializePipeline():
-    global view, lutManager
-    view = simple.GetRenderView()
+# Initialize the render window
+def initView(width, height):
+  global view, lutManager
+
+  view = simple.GetRenderView()
+  simple.Render()
+  view.ViewSize = [width, height]
+  lutManager.setView(view)
+  print 'View created successfully (%dx%d)' % (width, height)
+
+# This class defines the exposed RPC methods for the midas application
+class MidasApp(web.ParaViewServerProtocol):
+  @exportRpc("loadData")
+  def loadData(self, properties):
+    global dataPath, srcObj, rep
+    mainpath = os.path.join(dataPath, "main")
+
+    if os.path.isdir(mainpath):
+      files = os.listdir(mainpath)
+      for file in files:
+        fullpath = os.path.join(mainpath, file)
+        if os.path.isfile(fullpath):
+          srcObj = simple.OpenDataFile(fullpath)
+          simple.SetActiveSource(srcObj)
+          rep = simple.Show()
+
+          print 'Loaded %s into scene' % fullpath
+    else:
+      print 'Error: '+mainpath+' does not exist\n'
+      raise Exception("The main directory does not exist")
+    simple.ResetCamera()
     simple.Render()
-    view.ViewSize = [800,800]
-    lutManager.setView(view)
+    return srcObj
 
-# Define ParaView Protocol
-class PipelineManager(web.ParaViewServerProtocol):
+  @exportRpc("volumeRender")
+  def volumeRender(self):
+      global srcObj, center, scalarRange, bounds, rep
+      if(srcObj.GetPointDataInformation().GetNumberOfArrays() == 0):
+        print 'Error: no data information arrays'
+        raise Exception('No data information arrays')
 
-    @exportRpc("getPipeline")
-    def getPipeline(self):
-        return pipeline.getRootNode(lutManager)
+      imageData = srcObj.GetPointDataInformation().GetArray(0)
+      scalarRange = imageData.GetRange()
 
-    @exportRpc("addSource")
-    def addSource(self, algo_name, parent):
-        global pipeline, lutManager
-        pid = str(parent)
-        parentProxy = web_helper.idToProxy(parent)
-        if parentProxy:
-            simple.SetActiveSource(parentProxy)
-        else:
-            pid = '0'
+      bounds = srcObj.GetDataInformation().DataInformation.GetBounds()
+      center = [(bounds[1] - bounds[0]) / 2.0,
+                (bounds[3] - bounds[2]) / 2.0,
+                (bounds[5] - bounds[4]) / 2.0]
+      # Adjust camera properties appropriately
+      view.CameraFocalPoint = center
+      view.CenterOfRotation = center
+      # TODO set camera position
+      #view.CameraViewUp = [0, 0, 1]
+  
+      # Create RGB transfer function
+      lookupTable = simple.GetLookupTableForArray(imageData.Name, 1)
+      lookupTable.RGBPoints = [scalarRange[0], 0, 0, 0, scalarRange[1], 1, 1, 1]
+      lookupTable.ScalarRangeInitialized = 1.0
+      lookupTable.ColorSpace = 0  # 0 corresponds to RGB
+  
+      # Create opacity transfer function
+      sof = simple.CreatePiecewiseFunction()
+      sof.Points = [scalarRange[0], 0, 0.5, 0,
+                    scalarRange[1], 1, 0.5, 0]
+  
+      rep.ColorArrayName = imageData.Name
+      rep.Representation = 'Volume'
+      rep.VolumeRenderingMode = 'Texture Mapping Only'
+      rep.ScalarOpacityFunction = sof
+      rep.LookupTable = lookupTable
+      simple.Render()
 
-        # Create new source/filter
-        cmdLine = 'simple.' + algo_name + '()'
-        newProxy = eval(cmdLine)
+  @exportRpc("addSource")
+  def addSource(self, algo_name, parent):
+      global lutManager
+      pid = str(parent)
+      parentProxy = web_helper.idToProxy(parent)
+      if parentProxy:
+          simple.SetActiveSource(parentProxy)
+      else:
+          pid = '0'
 
-        # Create its representation and render
-        simple.Show()
-        simple.Render()
-        simple.ResetCamera()
+      # Create new source/filter
+      cmdLine = 'simple.' + algo_name + '()'
+      newProxy = eval(cmdLine)
 
-        # Add node to pipeline
-        pipeline.addNode(pid, newProxy.GetGlobalIDAsString())
+      # Create its representation and render
+      simple.Show()
+      simple.Render()
+      simple.ResetCamera()
 
-        # Create LUT if need be
-        if pid == '0':
-            lutManager.registerFieldData(newProxy.GetPointDataInformation())
-            lutManager.registerFieldData(newProxy.GetCellDataInformation())
+      # Create LUT if need be
+      if pid == '0':
+          lutManager.registerFieldData(newProxy.GetPointDataInformation())
+          lutManager.registerFieldData(newProxy.GetCellDataInformation())
 
-        # Return the newly created proxy pipeline node
-        return web_helper.getProxyAsPipelineNode(newProxy.GetGlobalIDAsString(), lutManager)
+      # Return the newly created proxy pipeline node
+      return newProxy
 
-    @exportRpc("deleteSource")
-    def deleteSource(self, proxy_id):
-        pipeline.removeNode(proxy_id)
-        proxy = web_helper.idToProxy(proxy_id)
-        simple.Delete(proxy)
-        simple.Render()
+  @exportRpc("deleteSource")
+  def deleteSource(self, proxy_id):
+      proxy = web_helper.idToProxy(proxy_id)
+      simple.Delete(proxy)
+      simple.Render()
 
-    @exportRpc("updateDisplayProperty")
-    def updateDisplayProperty(self, options):
-        global lutManager;
-        proxy = web_helper.idToProxy(options['proxy_id']);
-        rep = simple.GetDisplayProperties(proxy)
-        web_helper.updateProxyProperties(rep, options)
+  @exportRpc("updateDisplayProperty")
+  def updateDisplayProperty(self, options):
+      global lutManager;
+      proxy = web_helper.idToProxy(options['proxy_id']);
+      rep = simple.GetDisplayProperties(proxy)
+      web_helper.updateProxyProperties(rep, options)
 
-        # Try to bind the proper lookup table if need be
-        if options.has_key('ColorArrayName') and len(options['ColorArrayName']) > 0:
-            name = options['ColorArrayName']
-            type = options['ColorAttributeType']
-            nbComp = 1
+      # Try to bind the proper lookup table if need be
+      if options.has_key('ColorArrayName') and len(options['ColorArrayName']) > 0:
+          name = options['ColorArrayName']
+          type = options['ColorAttributeType']
+          nbComp = 1
 
-            if type == 'POINT_DATA':
-                data = proxy.GetPointDataInformation()
-                for i in range(data.GetNumberOfArrays()):
-                    array = data.GetArray(i)
-                    if array.Name == name:
-                        nbComp = array.GetNumberOfComponents()
-            elif type == 'CELL_DATA':
-                data = proxy.GetPointDataInformation()
-                for i in range(data.GetNumberOfArrays()):
-                    array = data.GetArray(i)
-                    if array.Name == name:
-                        nbComp = array.GetNumberOfComponents()
-            lut = lutManager.getLookupTable(name, nbComp)
-            rep.LookupTable = lut
+          if type == 'POINT_DATA':
+              data = proxy.GetPointDataInformation()
+              for i in range(data.GetNumberOfArrays()):
+                  array = data.GetArray(i)
+                  if array.Name == name:
+                      nbComp = array.GetNumberOfComponents()
+          elif type == 'CELL_DATA':
+              data = proxy.GetPointDataInformation()
+              for i in range(data.GetNumberOfArrays()):
+                  array = data.GetArray(i)
+                  if array.Name == name:
+                      nbComp = array.GetNumberOfComponents()
+          lut = lutManager.getLookupTable(name, nbComp)
+          rep.LookupTable = lut
 
-        simple.Render()
+      simple.Render()
 
-    @exportRpc("pushState")
-    def pushState(self, state):
-        for proxy_id in state:
-            if proxy_id == 'proxy':
-                continue
-            proxy = web_helper.idToProxy(proxy_id);
-            web_helper.updateProxyProperties(proxy, state[proxy_id])
-            simple.Render()
-        return web_helper.getProxyAsPipelineNode(state['proxy'], lutManager)
+  @exportRpc("pushState")
+  def pushState(self, state):
+      for proxy_id in state:
+          if proxy_id == 'proxy':
+              continue
+          proxy = web_helper.idToProxy(proxy_id);
+          web_helper.updateProxyProperties(proxy, state[proxy_id])
+          simple.Render()
+      return web_helper.getProxyAsPipelineNode(state['proxy'], lutManager)
 
-    @exportRpc("openFile")
-    def openFile(self, path):
-        global timesteps;
-        reader = simple.OpenDataFile(path)
-        simple.RenameSource( path.split("/")[-1], reader)
-        simple.Show()
-        simple.Render()
-        simple.ResetCamera()
+  @exportRpc("openFile")
+  def openFile(self, path):
+      global timesteps;
+      reader = simple.OpenDataFile(path)
+      simple.RenameSource( path.split("/")[-1], reader)
+      simple.Show()
+      simple.Render()
+      simple.ResetCamera()
 
-        # Add node to pipeline
-        pipeline.addNode('0', reader.GetGlobalIDAsString())
+      # Add node to pipeline
+      pipeline.addNode('0', reader.GetGlobalIDAsString())
 
-        # Create LUT if need be
-        lutManager.registerFieldData(reader.GetPointDataInformation())
-        lutManager.registerFieldData(reader.GetCellDataInformation())
+      # Create LUT if need be
+      lutManager.registerFieldData(reader.GetPointDataInformation())
+      lutManager.registerFieldData(reader.GetCellDataInformation())
 
-        try:
-            if len(timesteps) == 0:
-                timesteps = reader.TimestepValues
-        except:
-            pass
+      try:
+          if len(timesteps) == 0:
+              timesteps = reader.TimestepValues
+      except:
+          pass
 
-        return web_helper.getProxyAsPipelineNode(reader.GetGlobalIDAsString(), lutManager)
+      return web_helper.getProxyAsPipelineNode(reader.GetGlobalIDAsString(), lutManager)
 
-    @exportRpc("listFiles")
-    def listFiles(self):
-        return fileList
+  @exportRpc("updateScalarbarVisibility")
+  def updateScalarbarVisibility(self, options):
+      global lutManager;
+      # Remove unicode
+      if options:
+          for lut in options.values():
+              if type(lut['name']) == unicode:
+                  lut['name'] = str(lut['name'])
+              lutManager.enableScalarBar(lut['name'], lut['size'], lut['enabled'])
+      return lutManager.getScalarbarVisibility()
 
-    @exportRpc("listFilters")
-    def listFilters(self):
-        return filterList
-
-    @exportRpc("updateScalarbarVisibility")
-    def updateScalarbarVisibility(self, options):
-        global lutManager;
-        # Remove unicode
-        if options:
-            for lut in options.values():
-                if type(lut['name']) == unicode:
-                    lut['name'] = str(lut['name'])
-                lutManager.enableScalarBar(lut['name'], lut['size'], lut['enabled'])
-        return lutManager.getScalarbarVisibility()
-
-    @exportRpc("vcr")
-    def updateTime(self,action):
-        global currentTimeIndex, timekeeper, timesteps, reader
-        if len(timesteps) == 0:
-            print 'No time information for ', action
-            return 'No time information'
-        updateTime = False
-        if action == "next":
-            currentTimeIndex = (currentTimeIndex + 1) % len(timesteps)
-            updateTime = True
-        if action == "prev":
-            currentTimeIndex = (currentTimeIndex - 1 + len(timesteps)) % len(timesteps)
-            updateTime = True
-        if action == "first":
-            currentTimeIndex = 0
-            updateTime = True
-        if action == "last":
-            currentTimeIndex = len(timesteps) - 1
-            updateTime = True
-        if updateTime:
-            timekeeper.Time = timesteps[currentTimeIndex]
-            print "UpdateTime: ", str(timesteps[currentTimeIndex])
-
-        return action
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="ParaView/Web Pipeline Manager web-application")
+        description="Midas+ParaViewWeb application")
     web.add_arguments(parser)
     parser.add_argument("--data-dir", default=os.getcwd(),
-        help="path to data directory to list", dest="path")
+        help="path to data directory", dest="path")
+    parser.add_argument("--width", default=575,
+        help="width of the render window", dest="width")
+    parser.add_argument("--height", default=575,
+        help="height of the render window", dest="height")
     args = parser.parse_args()
 
-    fileList = web_helper.listFiles(args.path)
-    initializePipeline()
-    web.start_webserver(options=args, protocol=PipelineManager)
+    dataPath = args.path
+    initView(width=args.width, height=args.height)
+    web.start_webserver(options=args, protocol=MidasApp)

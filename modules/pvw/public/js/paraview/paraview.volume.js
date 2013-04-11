@@ -738,12 +738,19 @@ $(window).load(function () {
     };
     paraview.connect(pv.connection, function(conn) {
         pv.connection = conn;
-        pv.viewport = paraview.createViewport(pv.connection.session);
+        window.session = pv.connection.session;
+        pv.viewport = paraview.createViewport(pv.connection);
         pv.viewport.bind('#renderercontainer');
+
         $('#renderercontainer').show();
         $('img.visuLoading').hide();
+
+        midas.pvw.waitingDialog('Loading data into scene...');
+        pv.connection.session.call('pv:loadData', json.pvw.properties)
+                             .then(midas.pvw.dataLoaded)
+                             .otherwise(midas.pvw.rpcFailure);
     }, function(msg) {
-        midas.createNotice(msg, 3000, 'error');
+        midas.createNotice('Error: ' + msg, 3000, 'error');
     });
 
     // Add some logic to check for idle and close the pvw session after IDLE_TIMEOUT expires
@@ -752,17 +759,38 @@ $(window).load(function () {
     $('body').mousemove(function () {
         midas.pvw.lastAction = new Date().getTime();
     });
-
-    //midas.visualize.start(); // warning: asynchronous. To add post logic, see initCallback
 });
 
 window.onunload = function () {
-    // Sadly we have to do this synchronously so the browser fulfills the request before leaving
-    $.ajax({
-        url: json.global.webroot + '/pvw/paraview/instance/' + json.pvw.instance.instance_id,
-        async: false,
-        type: 'DELETE'
-    });
+    if(pv.connection) {
+        // Sadly we have to do this synchronously so the browser fulfills the request before leaving
+        $.ajax({
+            url: json.global.webroot + '/pvw/paraview/instance/' + json.pvw.instance.instance_id,
+            async: false,
+            type: 'DELETE'
+        });
+    }
+};
+
+midas.pvw.rpcFailure = function (err) {
+    $('div.MainDialog').dialog('close');
+    console.log(err);
+    midas.createNotice('A ParaViewWeb exception occurred, check your browser console', 4000, 'error');
+};
+
+/** Callback for once the loadData RPC has returned */
+midas.pvw.dataLoaded = function (resp) {
+    midas.pvw.mainProxy = resp;
+    pv.viewport.render();
+    midas.pvw.waitingDialog('Starting volume rendering...');
+    pv.connection.session.call('pv:volumeRender')
+                         .then(midas.pvw.vrStarted)
+                         .otherwise(midas.pvw.rpcFailure);
+};
+
+midas.pvw.vrStarted = function (resp) {
+    pv.viewport.render();
+    $('div.MainDialog').dialog('close');
 };
 
 /**
@@ -782,8 +810,11 @@ midas.pvw.stopSession = function () {
              + 'for more than ' + (midas.pvw.IDLE_TIMEOUT / 60000) + ' minutes.';
     $('#loadingStatus').html(html).show();
     $('#renderercontainer').hide();
-    
 };
 
+/** Show an indeterminate loading dialog with a message */
+midas.pvw.waitingDialog = function(text) {
+    var html = '<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" /> ' + text;
 
-
+    midas.showDialogWithContent('Please wait', html);
+};

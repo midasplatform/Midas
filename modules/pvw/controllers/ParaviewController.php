@@ -249,6 +249,7 @@ class Pvw_ParaviewController extends Pvw_AppController
     $header .= ' Volume rendering: <a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
     $this->view->header = $header;
     $this->view->json['pvw']['instance'] = $this->view->instance;
+    $this->view->json['pvw']['properties'] = array('Representation' => 'Volume');
     }
 
   /**
