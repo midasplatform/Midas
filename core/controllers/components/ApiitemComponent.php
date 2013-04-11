@@ -371,6 +371,22 @@ class ApiitemComponent extends AppComponent
     }
 
   /**
+   * Function for grabbing revision id (used in itemGetWrapper)
+   */
+  function getRevisionId($revision)
+    {
+    return $revision['itemrevision_id'];
+    }
+
+  /**
+   * Function for grabbing bitstream id (used in itemGetWrapper)
+   */
+  function getBitstreamId($bitstream)
+    {
+    return $bitstream['bitstream_id'];
+    }
+
+  /**
    * Wrapper for the item get that helps make our new API consistent.
    */
   function itemGetWrapper($args)
@@ -387,12 +403,10 @@ class ApiitemComponent extends AppComponent
     $out['views'] = $in['view'];
     $out['downloads'] = $in['download'];
     $out['public'] = $in['privacy_status'] == 0;
-    $out['revisions'] = array_map(
-      function($val) { return $val['itemrevision_id']; },
+    $out['revisions'] = array_map(array($this, 'getRevisionId'),
       $in['revisions']);
     $head_revision = end($in['revisions']);
-    $out['bitstreams'] = array_map(
-      function($val) { return $val['bitstream_id']; },
+    $out['bitstreams'] = array_map(array($this, 'getBitstreamId'),
       $head_revision['bitstreams']);
     return $out;
     }
