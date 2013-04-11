@@ -100,6 +100,53 @@ class ApigroupComponent extends AppComponent
     }
 
   /**
+   * getIdFromUser for use in array_map in groupGet
+   */
+  function getIdFromUser($user)
+    {
+    return $user->getUserId();
+    }
+
+  /**
+   * Get information about the group
+   * @path /group/{id}
+   * @http GET
+   * @param id the group id
+   * @return the group object
+   */
+  function groupGet($args)
+    {
+    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $apihelperComponent->validateParams($args, array('id'));
+
+    $apihelperComponent->requirePolicyScopes(
+      array(MIDAS_API_PERMISSION_SCOPE_MANAGE_GROUPS));
+
+    $userDao = $apihelperComponent->getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('You must be logged in to list users in a group',
+        MIDAS_INVALID_POLICY);
+      }
+
+    $groupId = $args['id'];
+    $groupModel = MidasLoader::loadModel('Group');
+    $group = $groupModel->load($groupId);
+    if($group === false)
+      {
+      throw new Exception('This group does not exist.', MIDAS_NOT_FOUND);
+      }
+    $in = $group->toArray();
+    $out = array();
+    $out['id'] = $in['group_id'];
+    $out['community_id'] = $in['community_id'];
+    $out['name'] = $in['name'];
+    $out['users'] = array_map(array($this, 'getIdFromUser'),
+      $group->getUsers());
+    return $out;
+    }
+
+  /**
    * add a group associated with a community, requires admin privileges on the
    * community.
    * @path /group
