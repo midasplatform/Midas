@@ -67,6 +67,9 @@ class ApiController extends REST_Controller
       case MIDAS_INVALID_UPLOAD_TOKEN:
         $httpCode = 401; // 401 Unauthorized
         break;
+      case MIDAS_NOT_FOUND:
+        $httpCode = 404;
+        break;
       default:
         $httpCode = 400; // 400 Bad Request
       }

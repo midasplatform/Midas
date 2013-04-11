@@ -28,6 +28,7 @@ define('MIDAS_OUTPUT_OPEN_FAILED', -143);
 define('MIDAS_INVALID_PARAMETER', -150);
 define('MIDAS_INVALID_POLICY', -151);
 define('MIDAS_HTTP_ERROR', -153);
+define('MIDAS_NOT_FOUND', -154);
 
 // List of permission scopes
 define('MIDAS_API_PERMISSION_SCOPE_ALL', 0);

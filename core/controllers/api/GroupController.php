@@ -49,7 +49,7 @@ class Rest_GroupController extends ApiController
    */
   public function getAction()
     {
-    $apiFunctions['default'] = 'groupListUsers';
+    $apiFunctions['default'] = 'groupGet';
     $apiFunctions['users'] = 'groupListUsers';
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'get', $apiFunctions);
     }
