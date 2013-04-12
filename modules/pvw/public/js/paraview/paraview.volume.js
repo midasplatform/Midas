@@ -6,51 +6,6 @@ midas.pvw = midas.pvw || {};
 midas.pvw.IDLE_TIMEOUT = 10 * 60 * 1000; // 10 minute idle timeout
 
 /**
- * Helper callback for after the data file has been opened
- */
-midas.visualize._dataOpened = function (view, retVal) {
-    midas.visualize.input = retVal.input;
-    midas.visualize.bounds = retVal.imageData.Bounds;
-    midas.visualize.meshes = retVal.meshes;
-    midas.visualize.maxDim = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
-                                      midas.visualize.bounds[3] - midas.visualize.bounds[2],
-                                      midas.visualize.bounds[5] - midas.visualize.bounds[4]);
-    midas.visualize.minVal = retVal.imageData.PointData.Arrays[0].Ranges[0][0];
-    midas.visualize.maxVal = retVal.imageData.PointData.Arrays[0].Ranges[0][1];
-    midas.visualize.imageWindow = [midas.visualize.minVal, midas.visualize.maxVal];
-
-    midas.visualize.midI = (midas.visualize.bounds[0] + midas.visualize.bounds[1]) / 2.0;
-    midas.visualize.midJ = (midas.visualize.bounds[2] + midas.visualize.bounds[3]) / 2.0;
-    midas.visualize.midK = Math.floor((midas.visualize.bounds[4] + midas.visualize.bounds[5]) / 2.0);
-
-    if(midas.visualize.bounds.length != 6) {
-        console.log('Invalid image bounds:');
-        console.log(midas.visualize.bounds);
-        return;
-    }
-
-    midas.visualize.defaultColorMap = [
-       midas.visualize.minVal, 0.0, 0.0, 0.0,
-       midas.visualize.maxVal, 1.0, 1.0, 1.0];
-    midas.visualize.colorMap = midas.visualize.defaultColorMap;
-
-    var rw = $('#renderercontainer');
-    var params = {
-        viewSize: [rw.width(), rw.height()],
-        cameraFocalPoint: [midas.visualize.midI, midas.visualize.midJ, midas.visualize.midK],
-        cameraPosition: [midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
-                         midas.visualize.midJ,
-                         midas.visualize.midK],
-        colorMap: midas.visualize.defaultColorMap,
-        sofPoints: [midas.visualize.minVal, 0.0, 0.5, 0.0,
-                    midas.visualize.maxVal, 1.0, 0.5, 0.0],
-        colorArrayName: json.visualize.colorArrayName
-    };
-    $('#loadingStatus').html('Initializing view state and renderer...');
-    paraview.callPluginMethod('midasvr', 'InitViewState', params, midas.visualize.initCallback);
-};
-
-/**
  * Async callback from the plugin's Initialize function.
  * Sets the return variables in the javascript global scope
  * for use in other functions, and starts the render window
@@ -551,140 +506,6 @@ midas.visualize.setupExtractSubgrid = function () {
     });
 };
 
-midas.visualize.setupOverlay = function () {
-    $('button.plusX').click(function () {
-        paraview.callPluginMethod('midascommon', 'SetCamera', {
-            cameraPosition: [
-              midas.visualize.midI - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
-              midas.visualize.midJ,
-              midas.visualize.midK],
-            cameraViewUp: [0.0, 0.0, 1.0]
-        }, function () {
-            midas.visualize.forceRefreshView();
-        });
-    });
-    $('button.minusX').click(function () {
-        paraview.callPluginMethod('midascommon', 'SetCamera', {
-            cameraPosition: [
-              midas.visualize.midI + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
-              midas.visualize.midJ,
-              midas.visualize.midK],
-            cameraViewUp: [0.0, 0.0, 1.0]
-        }, function () {
-            midas.visualize.forceRefreshView();
-        });
-    });
-    $('button.plusY').click(function () {
-        paraview.callPluginMethod('midascommon', 'SetCamera', {
-            cameraPosition: [
-              midas.visualize.midI,
-              midas.visualize.midJ - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
-              midas.visualize.midK],
-            cameraViewUp: [0.0, 0.0, 1.0]
-        }, function () {
-            midas.visualize.forceRefreshView();
-        });
-    });
-    $('button.minusY').click(function () {
-        paraview.callPluginMethod('midascommon', 'SetCamera', {
-            cameraPosition: [
-              midas.visualize.midI,
-              midas.visualize.midJ + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim,
-              midas.visualize.midK],
-            cameraViewUp: [0.0, 0.0, 1.0]
-        }, function () {
-            midas.visualize.forceRefreshView();
-        });
-    });
-    $('button.plusZ').click(function () {
-        paraview.callPluginMethod('midascommon', 'SetCamera', {
-            cameraPosition: [
-              midas.visualize.midI,
-              midas.visualize.midJ,
-              midas.visualize.midK - midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim],
-            cameraViewUp: [0.0, 1.0, 0.0]
-        }, function () {
-            midas.visualize.forceRefreshView();
-        });
-    });
-    $('button.minusZ').click(function () {
-        paraview.callPluginMethod('midascommon', 'SetCamera', {
-            cameraPosition: [
-              midas.visualize.midI,
-              midas.visualize.midJ,
-              midas.visualize.midK + midas.visualize.DISTANCE_FACTOR*midas.visualize.maxDim],
-            cameraViewUp: [0.0, 1.0, 0.0]
-        }, function () {
-            midas.visualize.forceRefreshView();
-        });
-    });
-};
-
-// ==== Global variables ===========================================
-
-            
-
-            // ==== Helper method ==============================================
-
-            function fetchServerData(method, dataKey) {
-                fetchDataQueueSize++;
-                pv.connection.session.call(method).then(function(obj) {
-                    pv[dataKey] = obj;
-                    fetchDataQueueSize--;
-                    onFetchDataDone();
-                });
-            }
-
-            // ==== Start a new ParaView Session ===============================
-
-            
-
-            // ==== Connect to the started ParaView session ====================
-
-            function connect() {
-                if(location.protocol == "http:") {
-                    pv.connection.sessionURL = pv.connection.sessionURL.replace("wss:","ws:");
-                }
-
-                paraview.connect(pv.connection, function(connectionData) {
-                    // Create pipeline browser
-                    pv.connection = connectionData;
-
-                    // Fetch server state
-                    fetchServerData('pv:getPipeline', 'pipeline');
-                    fetchServerData('pv:listFilters', 'sources');
-                    fetchServerData('pv:listFiles', 'files');
-
-                    // onFetchDataDone() will be called automatically
-                }, function(code,reason){
-                    $(".loading").hide();
-                    console.log(reason);
-                });
-            }
-
-
-            // ==== onParaViewReady ============================================
-
-            function onFetchDataDone() {
-                if(fetchDataQueueSize != 0) {
-                    return; // Not ready yet
-                }
-
-                // Update UI
-
-                // - pipeline browser
-                $('.control-panel').pipelineBrowser({
-                    session: pv.connection.session,
-                    pipeline: pv.pipeline,
-                    sources: pv.sources,
-                    files: pv.files
-                }).bind('dataChanged', updateView);
-
-                // - viewport
-                pv.viewport = paraview.createViewport(pv.connection.session);
-                pv.viewport.bind(".viewport-container");
-            };
-
 /**
  * Call this with setInterval to regularly test if the
  * user has been idle for too long, and if so, kill the pvw session
@@ -758,9 +579,20 @@ midas.pvw.dataLoaded = function (resp) {
                          .otherwise(midas.pvw.rpcFailure);
 };
 
+/** After volume rendering has started successfully, this gets called */
 midas.pvw.vrStarted = function (resp) {
     pv.viewport.render();
     $('div.MainDialog').dialog('close');
+    midas.pvw.setupOverlay();
+};
+
+/** Bind the renderer overlay buttons */
+midas.pvw.setupOverlay = function () {
+    $('button.cameraPreset').click(function () {
+        pv.connection.session.call('pv:cameraPreset', $(this).attr('type'))
+                             .then(pv.viewport.render())
+                             .otherwise(midas.pvw.rpcFailure);
+    });
 };
 
 /**
@@ -784,7 +616,8 @@ midas.pvw.stopSession = function () {
 
 /** Show an indeterminate loading dialog with a message */
 midas.pvw.waitingDialog = function(text) {
-    var html = '<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" /> ' + text;
+    var html = '<img alt="" style="margin-right: 9px;" '+
+               'src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" /> ' + text;
 
     midas.showDialogWithContent('Please wait', html);
 };

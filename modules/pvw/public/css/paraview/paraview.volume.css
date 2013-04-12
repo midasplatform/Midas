@@ -18,7 +18,7 @@ img.visuLoading {
   position: absolute;
   top: 15px;
   right: 15px;
-  z-index: 5;
+  z-index: 1005; /* must be over 1000 */
 }
 
 span.infoValue {
