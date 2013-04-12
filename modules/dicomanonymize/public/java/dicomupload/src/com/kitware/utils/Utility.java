@@ -33,8 +33,7 @@ public class Utility
     {
     try
       {
-      return new URL(url.replaceAll(" ", "%20")
-                        .replaceAll("#", "%23")); 
+      return new URL(url.replaceAll(" ", "%20")); 
       }
     catch (MalformedURLException e)
       {

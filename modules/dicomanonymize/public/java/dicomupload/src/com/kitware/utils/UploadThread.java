@@ -8,8 +8,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -101,7 +103,7 @@ public class UploadThread extends Thread
       uploader.setFileNameLabel("Finished!");
       uploader.redirectToItem(itemId);
       }
-    catch (JavaUploaderException e)
+    catch (Exception e)
       {
       JOptionPane.showMessageDialog(this.uploader, e.getMessage(),
           "Upload failed", JOptionPane.ERROR_MESSAGE);
@@ -219,7 +221,7 @@ public class UploadThread extends Thread
       }
     }
 
-  private void uploadFile(int i, File file) throws JavaUploaderException
+  private void uploadFile(int i, File file) throws JavaUploaderException, UnsupportedEncodingException
     {
     if(file == null)
       {
@@ -227,13 +229,13 @@ public class UploadThread extends Thread
       return;
       }
     long length = file.length();
-    String filename = file.getName().replace(" ", "_");
+    String filename = file.getName();
     String actualFilename = filename.replace(".temp_anon", "");
     uploader.setFileNameLabel("Uploading "+actualFilename);
     uploader.setFileSizeLabel(length);
     
     String getUploadUniqueIdentifierURL = this.getUploadUniqueIdentifierBaseURL
-        + "?filename=" + actualFilename;
+        + "?filename=" + URLEncoder.encode(actualFilename, "ISO-8859-1");
 
     // retrieve uploadUniqueIdentifier
     if (this.uploader.getUploadUniqueIdentifier() == null)
@@ -293,7 +295,7 @@ public class UploadThread extends Thread
           + "'");
       }
 
-    this.uploadFileURL = this.uploadFileBaseURL + "&filename=" + actualFilename
+    this.uploadFileURL = this.uploadFileBaseURL + "&filename=" + URLEncoder.encode(actualFilename, "ISO-8859-1")
       + "&uploadUniqueIdentifier=" + this.uploader.getUploadUniqueIdentifier() + "&length=" +length
       + "&newRevision=0";
     URL uploadFileURLObj = Utility.buildURL("UploadFile", this.uploadFileURL);
