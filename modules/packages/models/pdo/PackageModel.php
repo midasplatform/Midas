@@ -104,7 +104,7 @@ class Packages_PackageModel extends Packages_PackageModelBase
                 ->where('os = ?', $os)
                 ->where('arch = ?', $arch)
                 ->where('packagetype = ?', $type)
-                ->order('checkoutdate', 'DESC')
+                ->order('checkoutdate DESC')
                 ->limit(1);
       if($submissiontype)
         {
