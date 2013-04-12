@@ -1,6 +1,9 @@
 var midas = midas || {};
 midas.tracker = midas.tracker || {};
 
+midas.tracker.OFFICIAL_COLOR_KEY = null;
+midas.tracker.UNOFFICIAL_COLOR_KEY = 'red';
+
 /**
  * In modern browsers that support window.history.replaceState,
  * this updates the currently displayed URL in the browser to make
@@ -29,12 +32,13 @@ midas.tracker.updateUrlBar = function () {
  * Extract the jqplot curve data from the scalar daos passed to us
  */
 midas.tracker.extractCurveData = function (curves) {
-    var allPoints = [], minVal, maxVal;
+    var allPoints = [], allColors = [], minVal, maxVal;
     $.each(curves, function(idx, scalars) {
         if(!scalars) {
             return;
         }
         var points = [];
+        var colors = [];
         $.each(scalars, function(idx, scalar) {
             var value = parseFloat(scalar.value);
             points.push([scalar.submit_time, value]);
@@ -44,11 +48,19 @@ midas.tracker.extractCurveData = function (curves) {
             if(typeof maxVal == 'undefined' || value > maxVal) {
                 maxVal = value;
             }
+            if(scalar.official == 1) {
+                colors.push(midas.tracker.OFFICIAL_COLOR_KEY);
+            }
+            else {
+                colors.push(midas.tracker.UNOFFICIAL_COLOR_KEY);
+            }
         });
         allPoints.push(points);
+        allColors.push(colors);
     });
     return {
         points: allPoints,
+        colors: allColors,
         minVal: minVal,
         maxVal: maxVal
     };
@@ -68,15 +80,18 @@ midas.tracker.populateInfo = function (curveData) {
 };
 
 midas.tracker.bindPlotEvents = function () {
-    $('#chartDiv').unbind('jqplotDataClick').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
+    $('#chartDiv').unbind('jqplotDataClick').bind('jqplotClick', function (ev, gridpos, datapos, dataPoint, plot) {
+        if(dataPoint == null || typeof dataPoint.seriesIndex == 'undefined') {
+            return;
+        }
         var scalarId;
-        if(!json.tracker.rightTrend || seriesIndex == 0) {
-            scalarId = json.tracker.scalars[seriesIndex][pointIndex].scalar_id;
+        if(!json.tracker.rightTrend || dataPoint.seriesIndex == 0) {
+            scalarId = json.tracker.scalars[dataPoint.seriesIndex][dataPoint.pointIndex].scalar_id;
         } else {
-            scalarId = json.tracker.rightScalars[pointIndex].scalar_id;
+            scalarId = json.tracker.rightScalars[dataPoint.pointIndex].scalar_id;
         }
         midas.loadDialog('scalarPoint'+scalarId, '/tracker/scalar/details?scalarId='+scalarId);
-        midas.showDialog('Scalar details', false);
+        midas.showDialog('Scalar details', false, {width: 500});
     });
 };
 
@@ -118,8 +133,20 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 show: true,
                 zoom: true,
                 showTooltip: false
-            }
+            },
+            series: []
         };
+        // Now assign official/unofficial color to each marker
+        $.each(curveData.colors, function(idx, trendColors) {
+            opts.series[idx] = {
+                renderer: $.jqplot.DifferentColorMarkerLineRenderer,
+                rendererOptions: {
+                    markerColors: curveData.colors[idx],
+                    shapeRenderer: $.jqplot.ShapeRenderer,
+                    shadowRenderer: $.jqplot.ShadowRenderer
+                }
+            };
+        });
         if(json.tracker.rightTrend) {
             opts.legend = {
                 show: true,
@@ -137,7 +164,8 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 },
                 showLabel: true
             };
-            opts.series = [{yaxis: 'yaxis'}, {yaxis: 'y2axis'}];
+            opts.series[0].yaxis = 'yaxis';
+            opts.series[1].yaxis = 'y2axis';
 
             if(typeof json.tracker.y2Min != 'undefined' && typeof json.tracker.y2Max != 'undefined') {
                 opts.axes.y2axis.min = parseFloat(json.tracker.y2Min);
@@ -273,4 +301,26 @@ $(window).load(function () {
             container.dialog('close');
         });
     });
+    $('a.deleteTrend').click(function () {
+        midas.showDialogWithContent('Confirm Delete Trend', $('#deleteTrendTemplate').html(), false, {width: 420});
+        var container = $('div.MainDialog');
+        container.find('input.deleteYes').unbind('click').click(function () {
+            $(this).attr('disabled', 'disabled');
+            container.find('input.deleteNo').attr('disabled', 'disabled');
+
+            midas.ajaxWithProgress(container.find('div.deleteProgressBar'),
+                container.find('div.deleteProgressMessage'),
+                json.global.webroot+'/tracker/trend/delete',
+                {trendId: json.tracker.trendIds},
+                midas.tracker.trendDeleted
+            );
+        });
+        container.find('input.deleteNo').unbind('click').click(function () {
+            $('div.MainDialog').dialog('close');
+        });
+    });
 });
+
+midas.tracker.trendDeleted = function (resp) {
+    window.location = json.global.webroot+'/tracker/producer/view?producerId='+json.tracker.producerId;
+};

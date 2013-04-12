@@ -62,6 +62,8 @@ class Tracker_TrendController extends Tracker_AppController
     $startDate = date('Y-m-d H:i:s', $startDate);
     $endDate = date('Y-m-d H:i:s', $endDate);
 
+    $userId = $this->userSession->Dao ? $this->userSession->Dao->getKey() : null;
+
     $trendIds = explode(' ', trim(str_replace(',', ' ', $trendId)));
     $this->view->trends = array();
     foreach($trendIds as $trendId)
@@ -72,8 +74,12 @@ class Tracker_TrendController extends Tracker_AppController
         {
         throw new Zend_Exception('Read permission required on the community', 403);
         }
-      $this->view->json['tracker']['scalars'][] = $this->Tracker_Trend->getScalars($trend, $startDate, $endDate);
+      $this->view->json['tracker']['scalars'][] = $this->Tracker_Trend->getScalars($trend, $startDate, $endDate, $userId);
       $this->view->json['tracker']['trends'][] = $trend;
+      if(!isset($this->view->json['tracker']['producerId']))
+        {
+        $this->view->json['tracker']['producerId'] = $trend->getProducerId();
+        }
       $this->view->trends[] = $trend;
       }
     if(isset($rightTrendId))
@@ -117,7 +123,7 @@ class Tracker_TrendController extends Tracker_AppController
     if(isset($rightTrend))
       {
       $this->view->json['tracker']['rightTrend'] = $rightTrend;
-      $this->view->json['tracker']['rightScalars'] = $this->Tracker_Trend->getScalars($rightTrend, $startDate, $endDate);
+      $this->view->json['tracker']['rightScalars'] = $this->Tracker_Trend->getScalars($rightTrend, $startDate, $endDate, $userId);
       }
     $this->view->json['tracker']['initialStartDate'] = date('n/j/Y', strtotime($startDate));
     $this->view->json['tracker']['initialEndDate'] = date('n/j/Y', strtotime($endDate));
@@ -149,6 +155,9 @@ class Tracker_TrendController extends Tracker_AppController
     $rightTrendId = $this->_getParam('rightTrendId');
     $startDate = $this->_getParam('startDate');
     $endDate = $this->_getParam('endDate');
+
+    $userId = $this->userSession->Dao ? $this->userSession->Dao->getKey() : null;
+
     if(!isset($trendId))
       {
       throw new Zend_Exception('Must pass trendId parameter');
@@ -166,7 +175,7 @@ class Tracker_TrendController extends Tracker_AppController
         {
         throw new Zend_Exception('Read permission required on the community', 403);
         }
-      $scalars[] = $this->Tracker_Trend->getScalars($trend, $startDate, $endDate);
+      $scalars[] = $this->Tracker_Trend->getScalars($trend, $startDate, $endDate, $userId);
       }
     $retVal = array('status' => 'ok', 'scalars' => $scalars);
 
@@ -188,7 +197,22 @@ class Tracker_TrendController extends Tracker_AppController
    */
   public function deleteAction()
     {
-    // TODO (include progress reporting)
+    $this->disableLayout();
+    $this->disableView();
+
+    $trendId = $this->_getParam('trendId');
+
+    if(!isset($trendId))
+      {
+      throw new Zend_Exception('Must pass trendId parameter');
+      }
+    $trend = $this->Tracker_Trend->load($trendId);
+    $comm = $trend->getProducer()->getCommunity();
+    if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception('Admin permission required on the community', 403);
+      }
+    $this->Tracker_Trend->delete($trend, $this->progressDao);
     }
 
   /**

@@ -58,7 +58,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
 
   public abstract function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
   public abstract function getAllByParams($params);
-  public abstract function getScalars($trend, $startDate = null, $endDate = null);
+  public abstract function getScalars($trend, $startDate = null, $endDate = null, $userId = null);
   public abstract function getTrendsGroupByDatasets($producerDao);
 
   /** 
@@ -104,15 +104,35 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
   /**
    * Delete the trend (deletes all child scalars as well)
    */
-  public function delete($trend)
+  public function delete($trend, $progressDao = null)
     {
     $scalarModel = MidasLoader::loadModel('Scalar', $this->moduleName);
+    $notificationModel = MidasLoader::loadModel('ThresholdNotification', $this->moduleName);
+    if($progressDao)
+      {
+      $progressModel = MidasLoader::loadModel('Progress');
+      $progressDao->setMessage('Counting scalar points...');
+      $progressModel->save($progressDao);
+      }
     $scalars = $trend->getScalars();
+    if($progressDao)
+      {
+      $progressDao->setMaximum(count($scalars));
+      $progressModel->save($progressDao);
+      $i = 0;
+      }
+
     foreach($scalars as $scalar)
       {
+      if($progressDao)
+        {
+        $i++;
+        $message = 'Deleting scalars: '.$i.' of '.$progressDao->getMaximum();
+        $progressModel->updateProgress($progressDao, $i, $message);
+        }
       $scalarModel->delete($scalar);
       }
-    // TODO delete all email notification thresholds for this trend
+    $notificationModel->deleteByTrend($trend);
     parent::delete($trend);
     }
 }
