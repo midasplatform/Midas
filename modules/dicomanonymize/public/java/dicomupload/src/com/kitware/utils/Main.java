@@ -41,7 +41,7 @@ public class Main extends JApplet
   JTable table;
   JButton chooseDirButton, resumeButton, stopButton;
   TableColumn sizeColumn;
-  JProgressBar progressBar;
+  public JProgressBar progressBar;
   JLabel fileCountLabel, fileNameLabel, fileSizeLabel, bytesTransferredLabel,
       totalSizeLabel, totalTransferredLabel;
   JCheckBox anonymizeCheckbox;
@@ -106,7 +106,6 @@ public class Main extends JApplet
       Utility.log(Utility.LOG_LEVEL.WARNING, "[CLIENT] Failed to set applet L&F", e);
       }
     progressBar = new JProgressBar();
-    progressBar.setStringPainted(true);
 
     // info labels
     fileNameLabel = new JLabel(FILENAME_LABEL_TITLE);

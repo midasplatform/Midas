@@ -462,7 +462,7 @@ class UploadController extends AppController
         }
       }
 
-    if(!empty($data['path']) && file_exists($data['path']) && $data['size'] > 0)
+    if(!empty($data['path']) && file_exists($data['path']) && $data['size'] == $params['length'])
       {
       if(isset($params['parentId']))
         {
@@ -497,10 +497,14 @@ class UploadController extends AppController
           {
           unlink($data['path']);
           }
-        echo "[ERROR] ".$e->getMessage();
+        echo '[ERROR] '.$e->getMessage();
         throw $e;
         }
       echo '[OK]'.$item->getKey();
+      }
+    else
+      {
+      echo '[ERROR] Data path ('.$data['path'].') was empty or file not created. Sizes='.$params['length'].'/'.$data['size']; 
       }
     } //end processjavaupload
 

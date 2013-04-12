@@ -2,8 +2,6 @@ package com.kitware.utils;
 
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -26,6 +24,10 @@ import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.TableColumn;
 
+import com.kitware.utils.DownloadThread;
+import com.kitware.utils.UploadThread;
+import com.kitware.utils.UploaderFileFilter;
+import com.kitware.utils.Utility;
 import com.kitware.utils.exception.JavaUploaderException;
 
 public class Main extends JApplet
@@ -54,7 +56,6 @@ public class Main extends JApplet
   private long[] fileLengths;
   private int index = 0;
   private long lastTopLevelDownloadOffset = 0;
-  private long currentSize = 0;
   private long transferredBytes = 0;
   private long totalSize = 0;
   private long totalTransferred = 0;
@@ -126,7 +127,6 @@ public class Main extends JApplet
         "[CLIENT] Failed to set applet 'look&feel'", e);
       }
     progressBar = new JProgressBar();
-    progressBar.setStringPainted(true);
 
     // info labels
     fileNameLabel = new JLabel(FILENAME_LABEL_TITLE);
@@ -583,13 +583,12 @@ public class Main extends JApplet
       this.fileSizeLabel.setText(FILESIZE_LABEL_TITLE + Utility.bytesToString(size));
       this.bytesTransferredLabel.setText(BYTE_TRANSFERRED_LABEL_TITLE + "0 bytes");
       }
-    this.currentSize = size;
     this.transferredBytes = 0;
     }
 
   public void setProgressIndeterminate(boolean value)
     {
-    this.progressBar.setIndeterminate(value);
+    //this.progressBar.setIndeterminate(value);
     }
 
   public void onSuccessfulUpload()

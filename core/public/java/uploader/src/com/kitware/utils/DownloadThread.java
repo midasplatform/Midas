@@ -2,32 +2,27 @@ package com.kitware.utils;
 
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.FileNotFoundException;
-
-import java.net.URL;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URL;
 
 import javax.swing.JOptionPane;
 
+import com.kitware.utils.Main;
+import com.kitware.utils.Utility;
 import com.kitware.utils.exception.JavaUploaderException;
 
 public class DownloadThread extends Thread
   {
   private HttpURLConnection conn = null;
   private Main parentUI;
-  private long uploadOffset = 0;
-  private int startIndex = 0;
   private int currItem = 0;
   private int currFolder = 0;
   private String baseURL;
   private String[] itemIds, folderIds;
-  private File dest, currentDir;
+  private File dest;
   private boolean paused, first;
   private FileOutputStream fileStream = null;
 

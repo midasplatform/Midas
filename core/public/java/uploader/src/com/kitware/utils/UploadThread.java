@@ -1,24 +1,26 @@
 package com.kitware.utils;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
 import javax.swing.JOptionPane;
 
-import com.kitware.utils.exception.JavaUploaderException;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.kitware.utils.Main;
+import com.kitware.utils.Utility;
+import com.kitware.utils.exception.JavaUploaderException;
 
 public class UploadThread extends Thread
   {
@@ -114,9 +116,15 @@ public class UploadThread extends Thread
           "Upload failed", JOptionPane.ERROR_MESSAGE);
       Utility.log(Utility.LOG_LEVEL.ERROR, "[CLIENT] UploadThread failed", e);
       }
+    catch(UnsupportedEncodingException e)
+      {
+      JOptionPane.showMessageDialog(this.uploader, e.getMessage(),
+          "Unsupported URL encoding scheme ISO-8859-1", JOptionPane.ERROR_MESSAGE);
+          Utility.log(Utility.LOG_LEVEL.ERROR, "[CLIENT] UploadThread failed", e);
+      }
     }
 
-  private void uploadFolder(File dir, String parentId) throws JavaUploaderException
+  private void uploadFolder(File dir, String parentId) throws JavaUploaderException, UnsupportedEncodingException
     {
     File[] localChildren = dir.listFiles();
     if(localChildren == null)
@@ -147,14 +155,13 @@ public class UploadThread extends Thread
       }
     }
 
-  private void uploadItem(File file, String parentId) throws JavaUploaderException
+  private void uploadItem(File file, String parentId) throws JavaUploaderException, UnsupportedEncodingException
     {
     String getUploadUniqueIdentifierURL = this.getUploadUniqueIdentifierBaseURL
-        + "?filename=" + file.getName()+ "&parentFolderId="+parentId;
+        + "?filename=" + URLEncoder.encode(file.getName(), "ISO-8859-1")+ "&parentFolderId="+parentId;
     this.uploader.setUploadUniqueIdentifier(Utility.queryHttpServer(getUploadUniqueIdentifierURL));
 
     FileInputStream fileStream = null;
-    int finalByteSize = 0;
     long fileSize = file.length();
     try
       {
@@ -164,13 +171,9 @@ public class UploadThread extends Thread
       {
       throw new JavaUploaderException("File '" + file.getPath() + "' doesn't exist");
       }
-    catch (IOException e)
-      {
-      throw new JavaUploaderException("Failed to read file '" + file.getPath() + "'");
-      }
 
     this.uploadFileURL =
-      this.uploadFileBaseURL + "&filename=" + file.getName() + "&uploadUniqueIdentifier=" +
+      this.uploadFileBaseURL + "&filename=" + URLEncoder.encode(file.getName(), "ISO-8859-1") + "&uploadUniqueIdentifier=" +
       this.uploader.getUploadUniqueIdentifier() + "&length=" + fileSize;
     this.uploadFileURL += uploader.revOnCollision() ? "&newRevision=1" : "&newRevision=0";
     this.uploadFileURL += "&parentId=" + parentId;
@@ -306,39 +309,6 @@ public class UploadThread extends Thread
       }
     }
 
-  private JSONObject getFolderChildren(String folderId) throws JavaUploaderException
-    {
-    String url = this.apiURL + "?method=midas.folder.children&useSession&id=" + folderId;
-    try
-      {
-      URL urlObj = Utility.buildURL("GetDestinationFolder", url);
-      conn = (HttpURLConnection) urlObj.openConnection();
-      conn.setUseCaches(false);
-      conn.setRequestMethod("GET");
-      conn.setRequestProperty("Connection", "close");
-      conn.setRequestProperty("Host", urlObj.getHost());
-
-      if (conn.getResponseCode() != 200)
-        {
-        throw new JavaUploaderException("Exception occurred on server when requesting destination folder id");
-        }
-
-      String resp = this.getResponseText().trim();
-      conn.disconnect();
-      JSONObject json = new JSONObject(resp);
-      return json.getJSONObject("data");
-      }
-    catch (IOException e)
-      {
-      conn.disconnect();
-      throw new JavaUploaderException(e);
-      }
-    catch (JSONException e)
-      {
-      throw new JavaUploaderException("Invalid JSON response for folder children (id="+folderId+"):" + e.getMessage());
-      }
-    }
-
   private String getDestFolder() throws JavaUploaderException
     {
     String url = this.baseURL + "javadestinationfolder";
@@ -385,12 +355,12 @@ public class UploadThread extends Thread
     return resp;
     }
 
-  private void uploadFile(int i, File file) throws JavaUploaderException
+  private void uploadFile(int i, File file) throws JavaUploaderException, UnsupportedEncodingException
     {
     // generate URLs
-    String filename = file.getName().replace(" ", "_");
+    String filename = file.getName();
     String getUploadUniqueIdentifierURL = this.getUploadUniqueIdentifierBaseURL
-        + "?filename=" + filename;
+        + "?filename=" + URLEncoder.encode(filename, "ISO-8859-1");
     if(uploader.isRevisionUpload())
       {
       getUploadUniqueIdentifierURL += "&revision=true&itemId=" + uploader.getParentItem();
@@ -430,7 +400,7 @@ public class UploadThread extends Thread
           + "'");
       }
 
-    this.uploadFileURL = this.uploadFileBaseURL + "&filename=" + filename
+    this.uploadFileURL = this.uploadFileBaseURL + "&filename=" + URLEncoder.encode(filename, "ISO-8859-1")
       + "&uploadUniqueIdentifier=" + this.uploader.getUploadUniqueIdentifier() + "&length="
       + uploader.getFileLength(i);
     if(uploader.isRevisionUpload())

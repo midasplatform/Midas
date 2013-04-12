@@ -28,8 +28,7 @@ public class Utility
     {
     try
       {
-      return new URL(url.replaceAll(" ", "%20")
-                        .replaceAll("#", "%23")); 
+      return new URL(url.replaceAll(" ", "%20")); 
       }
     catch (MalformedURLException e)
       {
@@ -154,14 +153,14 @@ public class Utility
         }
       if (isWrongAnswer && !isMultilineCorrectAnswer)
         {
-        Utility.log(Utility.LOG_LEVEL.ERROR, "Malformed answer:"+output); 
-        throw new JavaUploaderNetworkException("Malformed answer:"+output);
+        Utility.log(Utility.LOG_LEVEL.ERROR, "Malformed answer: "+output); 
+        throw new JavaUploaderNetworkException("Malformed answer: "+output);
         }
       return output; 
       }
     catch (IOException e)
       {
-      throw new JavaUploaderNetworkException("Failed to read data from server:"+msg, e);
+      throw new JavaUploaderNetworkException("Failed to read data from server: "+msg, e);
       }
     }
   
