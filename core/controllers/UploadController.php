@@ -330,6 +330,13 @@ class UploadController extends AppController
     {
     $this->disableView();
     $this->disableLayout();
+    if(Zend_Registry::get('configGlobal')->environment != 'testing')
+      {
+      // give a week-long session cookie in case the download lasts a long time
+      session_start();
+      $this->userSession->setExpirationSeconds(60 * 60 * 24 * 7);
+      session_write_close();
+      }
     echo $this->userSession->JavaUpload->parent;
     }
 

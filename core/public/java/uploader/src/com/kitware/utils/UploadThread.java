@@ -80,18 +80,26 @@ public class UploadThread extends Thread
       {
       Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] "
           + this.getClass().getName() + " started");
+      String parentId;
+        if(uploader.isRevisionUpload())
+          {
+          parentId = uploader.getParentItem();
+          }
+        else
+          {
+          parentId = this.getDestFolder();
+          }
       File[] files = this.uploader.getFiles();
       for (int i = this.startIndex; i < files.length; i++)
         {
         if(files[i].isDirectory())
           {
-          String folderId = this.getDestFolder();
           this.uploader.setFileSizeLabel(-1);
           Long[] totalSize = Utility.directorySize(files[i]);
           this.uploader.setFileSizeLabel(totalSize[1].longValue());
           this.uploader.setTotalSize(totalSize[1].longValue());
           this.totalFiles = totalSize[0].intValue();
-          this.uploadFolder(files[i], folderId);
+          this.uploadFolder(files[i], parentId);
           this.uploader.onSuccessfulUpload();
           }
         else
@@ -100,7 +108,7 @@ public class UploadThread extends Thread
           uploader.setFileCountLabel(i + 1, files.length);
           uploader.setFileSizeLabel(this.uploader.getFileLength(i));
           uploader.setFileNameLabel(files[i].getName());
-          uploadFile(i, files[i]);
+          uploadFile(i, files[i], parentId);
           this.uploadOffset = 0;
           if(this.paused)
             {
@@ -355,7 +363,7 @@ public class UploadThread extends Thread
     return resp;
     }
 
-  private void uploadFile(int i, File file) throws JavaUploaderException, UnsupportedEncodingException
+  private void uploadFile(int i, File file, String parentId) throws JavaUploaderException, UnsupportedEncodingException
     {
     // generate URLs
     String filename = file.getName();
@@ -363,7 +371,11 @@ public class UploadThread extends Thread
         + "?filename=" + URLEncoder.encode(filename, "ISO-8859-1");
     if(uploader.isRevisionUpload())
       {
-      getUploadUniqueIdentifierURL += "&revision=true&itemId=" + uploader.getParentItem();
+      getUploadUniqueIdentifierURL += "&revision=true&itemId=" + parentId;
+      }
+    else
+      {
+      getUploadUniqueIdentifierURL += "&parentId=" + parentId;
       }
 
     // retrieve uploadUniqueIdentifier
@@ -405,11 +417,12 @@ public class UploadThread extends Thread
       + uploader.getFileLength(i);
     if(uploader.isRevisionUpload())
       {
-      this.uploadFileURL += "&itemId=" + uploader.getParentItem();
+      this.uploadFileURL += "&itemId=" + parentId;
       }
     else
       {
       this.uploadFileURL += uploader.revOnCollision() ? "&newRevision=1" : "&newRevision=0";
+      this.uploadFileURL += "&parentId=" + parentId;
       }
     URL uploadFileURLObj = Utility.buildURL("UploadFile", this.uploadFileURL);
 
