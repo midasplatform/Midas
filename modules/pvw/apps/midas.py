@@ -42,6 +42,7 @@ def initView(width, height):
 
 # This class defines the exposed RPC methods for the midas application
 class MidasApp(web.ParaViewServerProtocol):
+  DISTANCE_FACTOR = 1.6
   @exportRpc("loadData")
   def loadData(self, properties):
     global dataPath, srcObj, rep
@@ -64,151 +65,91 @@ class MidasApp(web.ParaViewServerProtocol):
     simple.Render()
     return srcObj
 
+  @exportRpc("sliceRender")
+  def sliceRender(self):
+    global srcObj, center, scalarRange, bounds, rep
+    if(srcObj.GetPointDataInformation().GetNumberOfArrays() == 0):
+      print 'Error: no data information arrays'
+      raise Exception('No data information arrays')
+
+
+  @exportRpc("cameraPreset")
+  def cameraPreset(self, direction):
+    global bounds, view, center
+    (midx, midy, midz) = (center[0], center[1], center[2])
+    (lenx, leny, lenz) = (bounds[1] - bounds[0],
+                          bounds[3] - bounds[2],
+                          bounds[5] - bounds[4])
+    maxDim = max(lenx, leny, lenz)
+
+    view.CameraFocalPoint = center
+    view.CenterOfRotation = center
+    view.CameraViewUp = [0, 0, 1]
+
+    if(direction == '+x'):
+      view.CameraPosition = [midx - self.DISTANCE_FACTOR * maxDim, midy, midz]
+    elif(direction == '-x'):
+      view.CameraPosition = [midx + self.DISTANCE_FACTOR * maxDim, midy, midz]
+    elif(direction == '+y'):
+      view.CameraPosition = [midx, midy - self.DISTANCE_FACTOR * maxDim, midz]
+    elif(direction == '-y'):
+      view.CameraPosition = [midx, midy + self.DISTANCE_FACTOR * maxDim, midz]
+    elif(direction == '+z'):
+      view.CameraPosition = [midx, midy, midz - self.DISTANCE_FACTOR * maxDim]
+      view.CameraViewUp = [0, 1, 0]
+    elif(direction == '-z'):
+      view.CameraPosition = [midx, midy, midz + self.DISTANCE_FACTOR * maxDim]
+      view.CameraViewUp = [0, 1, 0]
+    else:
+      print "Invalid preset direction: %s" % direction
+
+    simple.Render()
+
+
   @exportRpc("volumeRender")
   def volumeRender(self):
-      global srcObj, center, scalarRange, bounds, rep
-      if(srcObj.GetPointDataInformation().GetNumberOfArrays() == 0):
-        print 'Error: no data information arrays'
-        raise Exception('No data information arrays')
+    global srcObj, center, scalarRange, bounds, rep
+    if(srcObj.GetPointDataInformation().GetNumberOfArrays() == 0):
+      print 'Error: no data information arrays'
+      raise Exception('No data information arrays')
 
-      imageData = srcObj.GetPointDataInformation().GetArray(0)
-      scalarRange = imageData.GetRange()
+    imageData = srcObj.GetPointDataInformation().GetArray(0)
+    scalarRange = imageData.GetRange()
 
-      bounds = srcObj.GetDataInformation().DataInformation.GetBounds()
-      center = [(bounds[1] - bounds[0]) / 2.0,
-                (bounds[3] - bounds[2]) / 2.0,
-                (bounds[5] - bounds[4]) / 2.0]
-      # Adjust camera properties appropriately
-      view.CameraFocalPoint = center
-      view.CenterOfRotation = center
-      # TODO set camera position
-      #view.CameraViewUp = [0, 0, 1]
-  
-      # Create RGB transfer function
-      lookupTable = simple.GetLookupTableForArray(imageData.Name, 1)
-      lookupTable.RGBPoints = [scalarRange[0], 0, 0, 0, scalarRange[1], 1, 1, 1]
-      lookupTable.ScalarRangeInitialized = 1.0
-      lookupTable.ColorSpace = 0  # 0 corresponds to RGB
-  
-      # Create opacity transfer function
-      sof = simple.CreatePiecewiseFunction()
-      sof.Points = [scalarRange[0], 0, 0.5, 0,
-                    scalarRange[1], 1, 0.5, 0]
-  
-      rep.ColorArrayName = imageData.Name
-      rep.Representation = 'Volume'
-      rep.VolumeRenderingMode = 'Texture Mapping Only'
-      rep.ScalarOpacityFunction = sof
-      rep.LookupTable = lookupTable
-      simple.Render()
+    bounds = srcObj.GetDataInformation().DataInformation.GetBounds()
+    (midx, midy, midz) = ((bounds[1] + bounds[0]) / 2.0,
+                          (bounds[3] + bounds[2]) / 2.0,
+                          (bounds[5] + bounds[4]) / 2.0)
+    (lenx, leny, lenz) = (bounds[1] - bounds[0],
+                          bounds[3] - bounds[2],
+                          bounds[5] - bounds[4])
+    maxDim = max(lenx, leny, lenz)
+    center = [midx, midy, midz]
+    # Adjust camera properties appropriately
+    view.CameraFocalPoint = center
+    view.CenterOfRotation = center
+    view.CameraPosition = [midx - self.DISTANCE_FACTOR * maxDim, midy, midz]
+    view.CameraViewUp = [0, 0, 1]
 
-  @exportRpc("addSource")
-  def addSource(self, algo_name, parent):
-      global lutManager
-      pid = str(parent)
-      parentProxy = web_helper.idToProxy(parent)
-      if parentProxy:
-          simple.SetActiveSource(parentProxy)
-      else:
-          pid = '0'
+    # Create RGB transfer function
+    lookupTable = simple.GetLookupTableForArray(imageData.Name, 1)
+    lookupTable.RGBPoints = [scalarRange[0], 0, 0, 0, scalarRange[1], 1, 1, 1]
+    lookupTable.ScalarRangeInitialized = 1.0
+    lookupTable.ColorSpace = 0  # 0 corresponds to RGB
 
-      # Create new source/filter
-      cmdLine = 'simple.' + algo_name + '()'
-      newProxy = eval(cmdLine)
+    # Create opacity transfer function
+    sof = simple.CreatePiecewiseFunction()
+    sof.Points = [scalarRange[0], 0, 0.5, 0,
+                  scalarRange[1], 1, 0.5, 0]
 
-      # Create its representation and render
-      simple.Show()
-      simple.Render()
-      simple.ResetCamera()
-
-      # Create LUT if need be
-      if pid == '0':
-          lutManager.registerFieldData(newProxy.GetPointDataInformation())
-          lutManager.registerFieldData(newProxy.GetCellDataInformation())
-
-      # Return the newly created proxy pipeline node
-      return newProxy
-
-  @exportRpc("deleteSource")
-  def deleteSource(self, proxy_id):
-      proxy = web_helper.idToProxy(proxy_id)
-      simple.Delete(proxy)
-      simple.Render()
-
-  @exportRpc("updateDisplayProperty")
-  def updateDisplayProperty(self, options):
-      global lutManager;
-      proxy = web_helper.idToProxy(options['proxy_id']);
-      rep = simple.GetDisplayProperties(proxy)
-      web_helper.updateProxyProperties(rep, options)
-
-      # Try to bind the proper lookup table if need be
-      if options.has_key('ColorArrayName') and len(options['ColorArrayName']) > 0:
-          name = options['ColorArrayName']
-          type = options['ColorAttributeType']
-          nbComp = 1
-
-          if type == 'POINT_DATA':
-              data = proxy.GetPointDataInformation()
-              for i in range(data.GetNumberOfArrays()):
-                  array = data.GetArray(i)
-                  if array.Name == name:
-                      nbComp = array.GetNumberOfComponents()
-          elif type == 'CELL_DATA':
-              data = proxy.GetPointDataInformation()
-              for i in range(data.GetNumberOfArrays()):
-                  array = data.GetArray(i)
-                  if array.Name == name:
-                      nbComp = array.GetNumberOfComponents()
-          lut = lutManager.getLookupTable(name, nbComp)
-          rep.LookupTable = lut
-
-      simple.Render()
-
-  @exportRpc("pushState")
-  def pushState(self, state):
-      for proxy_id in state:
-          if proxy_id == 'proxy':
-              continue
-          proxy = web_helper.idToProxy(proxy_id);
-          web_helper.updateProxyProperties(proxy, state[proxy_id])
-          simple.Render()
-      return web_helper.getProxyAsPipelineNode(state['proxy'], lutManager)
-
-  @exportRpc("openFile")
-  def openFile(self, path):
-      global timesteps;
-      reader = simple.OpenDataFile(path)
-      simple.RenameSource( path.split("/")[-1], reader)
-      simple.Show()
-      simple.Render()
-      simple.ResetCamera()
-
-      # Add node to pipeline
-      pipeline.addNode('0', reader.GetGlobalIDAsString())
-
-      # Create LUT if need be
-      lutManager.registerFieldData(reader.GetPointDataInformation())
-      lutManager.registerFieldData(reader.GetCellDataInformation())
-
-      try:
-          if len(timesteps) == 0:
-              timesteps = reader.TimestepValues
-      except:
-          pass
-
-      return web_helper.getProxyAsPipelineNode(reader.GetGlobalIDAsString(), lutManager)
-
-  @exportRpc("updateScalarbarVisibility")
-  def updateScalarbarVisibility(self, options):
-      global lutManager;
-      # Remove unicode
-      if options:
-          for lut in options.values():
-              if type(lut['name']) == unicode:
-                  lut['name'] = str(lut['name'])
-              lutManager.enableScalarBar(lut['name'], lut['size'], lut['enabled'])
-      return lutManager.getScalarbarVisibility()
+    rep.ColorArrayName = imageData.Name
+    rep.Representation = 'Volume'
+    # TODO don't use texture mapping only unless we have GPU issues...
+    rep.VolumeRenderingMode = 'Texture Mapping Only'
+    rep.ScalarOpacityFunction = sof
+    rep.LookupTable = lookupTable
+    simple.Render()
+    return (scalarRange, bounds)
 
 
 if __name__ == "__main__":
