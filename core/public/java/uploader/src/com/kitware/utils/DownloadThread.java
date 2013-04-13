@@ -297,14 +297,17 @@ public class DownloadThread extends Thread
         return;
         }
 
-      long size = conn.getContentLengthLong();
-      if (size == -1)
+      // Do not use conn.getContentLengthLong since it does
+      // not exist in Java 6.  Hack our own version here.
+      String lengthHeader = conn.getHeaderField("Content-Length");
+      if (lengthHeader == null)
         {
         // If this item is being ZipStreamed, we cannot resume, and must redownload it all (happens if head revision has > 1 bitstream)
         append = false;
         }
       else
         {
+    	long size = Long.parseLong(lengthHeader);
         this.parentUI.resetCurrentDownload(size);
         this.parentUI.increaseOverallProgress(offset);
         }

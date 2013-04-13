@@ -81,14 +81,22 @@ public class UploadThread extends Thread
       Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] "
           + this.getClass().getName() + " started");
       String parentId;
-        if(uploader.isRevisionUpload())
-          {
-          parentId = uploader.getParentItem();
-          }
-        else
-          {
-          parentId = this.getDestFolder();
-          }
+      if(uploader.isRevisionUpload())
+        {
+        parentId = uploader.getParentItem();
+        }
+      else
+        {
+        parentId = this.getDestFolder();
+        }
+      if(parentId == null || parentId.equals(""))
+        {
+        this.uploader.setEnableResumeButton(false);
+        this.uploader.setEnableUploadButton(true);
+        this.uploader.setEnableStopButton(false);
+        throw new JavaUploaderException("Please choose your destination "+
+          "folder above, then try again.");
+        }
       File[] files = this.uploader.getFiles();
       for (int i = this.startIndex; i < files.length; i++)
         {
@@ -182,7 +190,7 @@ public class UploadThread extends Thread
 
     this.uploadFileURL =
       this.uploadFileBaseURL + "&filename=" + URLEncoder.encode(file.getName(), "ISO-8859-1") + "&uploadUniqueIdentifier=" +
-      this.uploader.getUploadUniqueIdentifier() + "&length=" + fileSize;
+          URLEncoder.encode(this.uploader.getUploadUniqueIdentifier(), "ISO-8859-1") + "&length=" + fileSize;
     this.uploadFileURL += uploader.revOnCollision() ? "&newRevision=1" : "&newRevision=0";
     this.uploadFileURL += "&parentId=" + parentId;
     URL uploadFileURLObj = Utility.buildURL("UploadFile", this.uploadFileURL);
@@ -277,10 +285,10 @@ public class UploadThread extends Thread
    * @param reuseExisting If a folder with the same name exists in this location, should we use the existing one
    * @return The id of the newly created folder (or an existing one in the case of reuseExisting = true)
    */
-  private String createServerFolder(String parentId, String name, boolean reuseExisting) throws JavaUploaderException
+  private String createServerFolder(String parentId, String name, boolean reuseExisting) throws JavaUploaderException, UnsupportedEncodingException
     {
     String url = this.apiURL + "?method=midas.folder.create&useSession";
-    url += "&name="+name+"&parentid="+parentId;
+    url += "&name="+URLEncoder.encode(name, "ISO-8859-1") +"&parentid="+parentId;
     
     if(reuseExisting)
       {
@@ -413,8 +421,8 @@ public class UploadThread extends Thread
       }
 
     this.uploadFileURL = this.uploadFileBaseURL + "&filename=" + URLEncoder.encode(filename, "ISO-8859-1")
-      + "&uploadUniqueIdentifier=" + this.uploader.getUploadUniqueIdentifier() + "&length="
-      + uploader.getFileLength(i);
+      + "&uploadUniqueIdentifier=" + URLEncoder.encode(this.uploader.getUploadUniqueIdentifier(), "ISO-8859-1")
+      + "&length=" + uploader.getFileLength(i);
     if(uploader.isRevisionUpload())
       {
       this.uploadFileURL += "&itemId=" + parentId;

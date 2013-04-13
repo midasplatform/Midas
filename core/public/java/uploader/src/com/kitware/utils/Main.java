@@ -71,6 +71,7 @@ public class Main extends JApplet
   private URL onSuccessRedirectURLObj;
   boolean onSuccessfulUploadRedirectEnable = true;
   boolean download = false;
+  boolean directory = false;
 
   private String[] fileExtensions;
 
@@ -244,28 +245,31 @@ public class Main extends JApplet
     
     // upload button
     uploadDownloadButton = new JButton("Upload Files");
-    uploadDownloadButton.addActionListener(new java.awt.event.ActionListener()
+    if(!this.directory)
       {
-      public void actionPerformed(ActionEvent evt)
+      uploadDownloadButton.addActionListener(new java.awt.event.ActionListener()
         {
-        uploadFileButtonActionPerformed(evt);
-        }
-      });
+        public void actionPerformed(ActionEvent evt)
+          {
+          uploadFileButtonActionPerformed(evt);
+          }
+        });
+      buttonPanel.add(uploadDownloadButton);
+      }
 
     uploadDirButton = new JButton("Upload Folder");
-    uploadDirButton.addActionListener(new java.awt.event.ActionListener()
+    if(this.directory)
       {
-      public void actionPerformed(ActionEvent evt)
+      uploadDirButton.addActionListener(new java.awt.event.ActionListener()
         {
-        uploadFolderButtonActionPerformed(evt);
-        }
-      });
-
-    buttonPanel.add(uploadDownloadButton);
-    if(!this.isRevisionUpload())
-      {
+        public void actionPerformed(ActionEvent evt)
+          {
+          uploadFolderButtonActionPerformed(evt);
+          }
+        });
       buttonPanel.add(uploadDirButton);
       }
+
     buttonPanel.add(Box.createHorizontalGlue());
 
     // resume button
@@ -340,6 +344,14 @@ public class Main extends JApplet
     if (downloadMode != null)
       {
       this.download = true;
+      }
+    else
+      {
+      String directoryMode = getParameter("directoryMode");
+      if(directoryMode != null)
+        {
+        this.directory = true;
+        }
       }
     Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] DOWNLOAD MODE ON");
 
@@ -500,6 +512,10 @@ public class Main extends JApplet
   public void setEnableUploadButton(boolean value)
     {
     this.uploadDownloadButton.setEnabled(value);
+    if(this.uploadDirButton != null)
+      {
+      this.uploadDirButton.setEnabled(value);
+      }
     }
 
   public void setByteUploadedLabel(long uploadedByte, long fileSize)
@@ -630,6 +646,10 @@ public class Main extends JApplet
 
         // button setup
         this.uploadDownloadButton.setEnabled(false);
+        if(this.uploadDirButton != null)
+          {
+          this.uploadDirButton.setEnabled(false);
+          }
         this.stopButton.setEnabled(true);
         this.resumeButton.setEnabled(false);
 
