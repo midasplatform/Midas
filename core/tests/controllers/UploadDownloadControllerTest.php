@@ -125,6 +125,13 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $this->resetAll();
     $page .= '&parentId=1002';
     $this->dispatchUrI($page, $userDao);
+    $this->assertTrue(strpos($this->getBody(), '[ERROR]') === 0);
+
+    $this->resetAll();
+    $params = 'testingmode=1&filename=search.png&localinput='.$file.'&length='.(filesize($file) + 1).'&uploadUniqueIdentifier='.$subdir.'/httpupload.png';
+    $page = 'upload/processjavaupload/?'.$params.'&parentId=1002';
+    $this->dispatchUrI($page, $userDao);
+    $this->assertTrue(strpos($this->getBody(), '[OK]') === 0);
 
     $search = $this->Item->getItemsFromSearch('search.png', $userDao);
     if(empty($search))

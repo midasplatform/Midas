@@ -511,7 +511,7 @@ class UploadController extends AppController
       }
     else
       {
-      echo '[ERROR] Data path ('.$data['path'].') was empty or file not created. Sizes='.$params['length'].'/'.$data['size']; 
+      echo '[ERROR] Data path ('.$data['path'].') was empty or file not created. Sizes='.$params['length'].'/'.$data['size'];
       }
     } //end processjavaupload
 
