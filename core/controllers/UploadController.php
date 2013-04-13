@@ -118,7 +118,10 @@ class UploadController extends AppController
       throw new Zend_Exception('You have to be logged in to do that');
       }
     $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
+
+    $mode = $this->_getParam('mode');
+    $this->view->directoryMode = isset($mode) && $mode == 'folder';
 
     session_start();
 
