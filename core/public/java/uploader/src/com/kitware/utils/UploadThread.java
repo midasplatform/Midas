@@ -107,7 +107,8 @@ public class UploadThread extends Thread
           this.uploader.setFileSizeLabel(totalSize[1].longValue());
           this.uploader.setTotalSize(totalSize[1].longValue());
           this.totalFiles = totalSize[0].intValue();
-          this.uploadFolder(files[i], parentId);
+          String topId = this.createServerFolder(parentId, files[i].getName().trim(), true);
+          this.uploadFolder(files[i], topId);
           this.uploader.onSuccessfulUpload();
           }
         else
