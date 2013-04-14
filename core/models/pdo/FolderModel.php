@@ -1114,7 +1114,7 @@ class FolderModel extends FolderModelBase
    * @param overrideOutputFunction A PHP callable object to call that will override
                                    the default behavior of writing out the bitstream's contents
    */
-  public function zipStream(&$zip, $path, $folder, &$userDao, $overrideOutputFunction = null)
+  public function zipStream(&$zip, $path, $folder, &$userDao, &$overrideOutputFunction = null)
     {
     $folderIds = array($folder->getKey());
     $this->Item = MidasLoader::loadModel('Item');

@@ -182,7 +182,8 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
         $this->getLogger()->warn('Keyfiles: Permission failure, skipping folder '.$folder->getKey());
         continue;
         }
-      $this->Folder->zipStream($zip, $folder->getName(), $folder, $this->userSession->Dao, array($this, 'outputCallback'));
+      $callable = array($this, 'outputCallback');
+      $this->Folder->zipStream($zip, $folder->getName(), $folder, $this->userSession->Dao, $callable);
       }
     $zip->finish();
     exit();
