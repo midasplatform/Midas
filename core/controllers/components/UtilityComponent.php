@@ -661,4 +661,12 @@ class UtilityComponent extends AppComponent
       }
     return $salt;
     }
+
+  /**
+   * Allows the current PHP process to use unlimited memory
+   */
+  public static function disableMemoryLimit()
+    {
+    ini_set('memory_limit', '-1');
+    }
 } // end class
