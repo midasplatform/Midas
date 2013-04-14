@@ -1107,8 +1107,14 @@ class FolderModel extends FolderModelBase
 
   /**
    * This will zip stream the filtered contents of the fold
+   * @param zip ZipStream object to write to (pass-by-reference, should already be started)
+   * @param path The current path in the zip archive
+   * @param folder The folder to recurse through
+   * @param userDao The session user dao (pass-by-reference)
+   * @param overrideOutputFunction A PHP callable object to call that will override
+                                   the default behavior of writing out the bitstream's contents
    */
-  public function zipStream(&$zip, $path, $folder, &$userDao)
+  public function zipStream(&$zip, $path, $folder, &$userDao, $overrideOutputFunction = null)
     {
     $folderIds = array($folder->getKey());
     $this->Item = MidasLoader::loadModel('Item');
@@ -1123,15 +1129,23 @@ class FolderModel extends FolderModelBase
 
       foreach($bitstreams as $bitstream)
         {
-        if($count > 1 || $bitstream->getName() != $item->getName())
+        if($overrideOutputFunction && is_callable($overrideOutputFunction))
           {
-          $currPath = $path.'/'.$item->getName().'/'.$bitstream->getName();
+          // caller has chosen to override output behavior
+          call_user_func_array($overrideOutputFunction, array($zip, $path, $item, $bitstream, $count));
           }
-        else
+        else //default behavior, just write out the file
           {
-          $currPath = $path.'/'.$bitstream->getName();
+          if($count > 1 || $bitstream->getName() != $item->getName())
+            {
+            $currPath = $path.'/'.$item->getName().'/'.$bitstream->getName();
+            }
+          else
+            {
+            $currPath = $path.'/'.$bitstream->getName();
+            }
+          $zip->add_file_from_path($currPath, $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
           }
-        $zip->add_file_from_path($currPath, $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
         }
       $this->Item->incrementDownloadCount($item);
       unset($bitstreams);
@@ -1145,7 +1159,7 @@ class FolderModel extends FolderModelBase
     foreach($rows as $row)
       {
       $subfolder = $this->initDao('Folder', $row);
-      $this->zipStream($zip, $path.'/'.$subfolder->getName(), $subfolder, $userDao);
+      $this->zipStream($zip, $path.'/'.$subfolder->getName(), $subfolder, $userDao, $overrideOutputFunction);
       unset($subfolder);
       }
     }

@@ -70,7 +70,7 @@ abstract class FolderModelBase extends AppModel
   abstract function getByName($name);
   abstract function getRecursiveChildCount($folder);
   abstract function getMaxPolicy($folderId, $user);
-  abstract function zipStream(&$zip, $path, $folder, &$userDao);
+  abstract function zipStream(&$zip, $path, $folder, &$userDao, $overrideOutputFunction = null);
 
   /** copy  folder policies*/
   function copyFolderPolicies($folderdao, $referenceFolderdao)
