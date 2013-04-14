@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** 
+/**
  * This component is used to create and manages
  * paraview (pvpython) instances.
  */
@@ -41,7 +41,6 @@ class Pvw_ParaviewComponent extends AppComponent
       }
     $settingModel = MidasLoader::loadModel('Setting');
     $pvpython = $settingModel->getValueByName('pvpython', 'pvw');
-    $staticContent = $settingModel->getValueByName('staticcontent', 'pvw');
     $application = BASE_PATH.'/modules/pvw/apps/'.$appname.'.py';
     if(!is_file($application))
       {
@@ -79,13 +78,6 @@ class Pvw_ParaviewComponent extends AppComponent
 
     $cmdArray = array($pvpython, $application, '--port', $port, '--data', $dataPath);
 
-    // Set static content root if necessary
-    if($staticContent && is_dir($staticContent))
-      {
-      $cmdArray[] = '--content'; // If we want pvw to serve its own static content, pass this arg
-      $cmdArray[] = $staticContent;
-      }
-
     // Now start the instance
     $cmd = join(' ', $cmdArray);
     exec(sprintf("%s > %s 2>&1 & echo $!", $cmd, $dataPath.'/pvw.log'), $output);
@@ -97,7 +89,7 @@ class Pvw_ParaviewComponent extends AppComponent
     if($progressDao)
       {
       $step++;
-      $progressModel->updateProgress($progressDao, $step, 'Waiting for port binding...');
+      $progressModel->updateProgress($progressDao, $step, 'Waiting for binding on port '.$port.'...');
       }
     // After we start the process, wait some number of seconds for the port to open up.
     // If it doesn't, something went wrong.
