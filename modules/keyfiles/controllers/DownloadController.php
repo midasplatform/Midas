@@ -115,6 +115,7 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
    */
   public function batchAction()
     {
+    UtilityComponent::disableMemoryLimit();
     $itemIds = $this->_getParam('items');
     $folderIds = $this->_getParam('folders');
     if(!isset($itemIds) && !isset($folderIds))

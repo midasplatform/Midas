@@ -235,6 +235,7 @@ class DownloadController extends AppController
         }
       ob_start();
       $zip = new ZipStream($name.'.zip');
+      UtilityComponent::disableMemoryLimit();
       foreach($revisions as $revision)
         {
         $item = $revision->getItem();
@@ -548,4 +549,3 @@ class DownloadController extends AppController
     exit();
     }
 } // end class
-

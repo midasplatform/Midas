@@ -306,6 +306,7 @@ class FolderController extends AppController
       $this->progressDao->setMessage('Preparing to delete folder...');
       $this->Progress->save($this->progressDao);
       }
+    UtilityComponent::disableMemoryLimit();
     $this->Folder->delete($folder, $this->progressDao);
     $folderInfo = $folder->toArray();
     echo JsonComponent::encode(array(true, $this->t('Changes saved'), $folderInfo));
