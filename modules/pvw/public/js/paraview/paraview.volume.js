@@ -6,36 +6,6 @@ midas.pvw = midas.pvw || {};
 midas.pvw.IDLE_TIMEOUT = 10 * 60 * 1000; // 10 minute idle timeout
 
 /**
- * Async callback from the plugin's Initialize function.
- * Sets the return variables in the javascript global scope
- * for use in other functions, and starts the render window
- */
-midas.visualize.initCallback = function (view, retVal) {
-    midas.visualize.sof = retVal.sof;
-    midas.visualize.lookupTable = retVal.lookupTable;
-    midas.visualize.activeView = retVal.activeView;
-
-    midas.visualize.switchRenderer(true); // render in the div
-    $('img.visuLoading').hide();
-    $('#loadingStatus').html('').hide();
-    $('#renderercontainer').show();
-
-    midas.visualize.populateInfo();
-    midas.visualize.setupExtractSubgrid();
-    midas.visualize.setupScalarOpacity();
-    midas.visualize.setupColorMapping();
-    midas.visualize.setupOverlay();
-    midas.visualize.setupObjectList();
-
-    if(typeof midas.visualize.postInitCallback == 'function') {
-        midas.visualize.postInitCallback();
-    }
-
-    midas.visualize.renderers.current.updateServerSizeIfNeeded(); //force a view refresh
-    midas.visualize.forceRefreshView();
-}
-
-/**
  * Display the subset of the volume defined by the bounds list
  * of the form [xMin, xMax, yMin, yMax, zMin, zMax]
  */
@@ -101,13 +71,6 @@ midas.visualize.setupObjectList = function () {
     });
 };
 
-/**
- * Force the renderer image to refresh from the server
- */
-midas.visualize.forceRefreshView = function () {
-    midas.visualize.renderers.js.forceRefresh();
-};
-
 midas.visualize.toggleObjectVisibility = function(checkbox) {
     var type = checkbox.attr('vis');
     var itemId = checkbox.attr('element');
@@ -141,7 +104,7 @@ midas.visualize.toggleObjectVisibility = function(checkbox) {
 /**
  * Setup the color mapping controls
  */
-midas.visualize.setupColorMapping = function () {
+midas.pvw.setupColorMapping = function () {
     var dialog = $('#scmDialogTemplate').clone();
     dialog.removeAttr('id');
     $('#scmEditAction').click(function () {
@@ -178,12 +141,12 @@ midas.visualize.setupColorMapping = function () {
                 }).css('background-color', 'rgb('+r+','+g+','+b+')');
             }
         };
-        renderPointList(midas.visualize.colorMap);
+        renderPointList(midas.pvw.colorMap);
 
         container.find('button.scmAddPoint').unbind('click').click(function () {
             var rgbPoint = $('#scmPointMapTemplate').clone();
             rgbPoint.removeAttr('id').appendTo(pointListDiv).show();
-            rgbPoint.find('input.scmScalarValue').val(midas.visualize.defaultColorMap[0]);
+            rgbPoint.find('input.scmScalarValue').val(midas.pvw.defaultColorMap[0]);
             rgbPoint.removeAttr('id').appendTo(pointListDiv).show();
             rgbPoint.find('button.scmDeletePoint').show().click(function () {
                 rgbPoint.remove();
@@ -205,7 +168,7 @@ midas.visualize.setupColorMapping = function () {
         });
         container.find('button.scmReset').unbind('click').click(function () {
             pointListDiv.html('');
-            renderPointList(midas.visualize.defaultColorMap);
+            renderPointList(midas.pvw.defaultColorMap);
         });
         container.find('button.scmApply').unbind('click').click(function () {
             var colorMap = [];
@@ -216,13 +179,12 @@ midas.visualize.setupColorMapping = function () {
                 colorMap.push(scalar, parseFloat(tokens[1]) / 255.0, parseFloat(tokens[2]) / 255.0,
                   parseFloat(tokens[3]) / 255.0);
             });
-            midas.visualize.colorMap = colorMap;
-            paraview.callPluginMethod('midascommon', 'UpdateColorMap', {
-                colorArrayName: json.visualize.colorArrayName,
-                colorMap: colorMap
-            } , function() {
-                midas.visualize.forceRefreshView();
-            });
+            midas.pvw.colorMap = colorMap;
+            pv.connection.session.call('pv:updateColorMap', colorMap)
+                                  .then(function () {
+                                      pv.viewport.render();
+                                  })
+                                  .otherwise(midas.pvw.rpcFailure);
         });
     });
 };
@@ -318,7 +280,7 @@ midas.pvw.applySofCurve = function () {
     }
 
     midas.pvw.sof = points;
-    pv.connection.session.call('pv:changeSof', points)
+    pv.connection.session.call('pv:updateSof', points)
                          .then(function () {
                               pv.viewport.render();
                           })
@@ -547,7 +509,8 @@ midas.pvw.vrStarted = function (resp) {
     midas.pvw.subgridBounds = resp.bounds;
     midas.pvw.scalarRange = resp.scalarRange;
     midas.pvw.sof = resp.sofPoints;
-    midas.pvw.rgbPoints = resp.rgbPoints;
+    midas.pvw.colorMap = resp.rgbPoints;
+    midas.pvw.defaultColorMap = resp.rgbPoints;
 
     pv.viewport.render();
     $('div.MainDialog').dialog('close');
@@ -555,6 +518,7 @@ midas.pvw.vrStarted = function (resp) {
     midas.pvw.setupOverlay();
     midas.pvw.setupExtractSubgrid();
     midas.pvw.setupScalarOpacity();
+    midas.pvw.setupColorMapping();
 };
 
 /** Bind the renderer overlay buttons */
