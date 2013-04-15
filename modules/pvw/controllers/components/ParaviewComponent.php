@@ -57,7 +57,7 @@ class Pvw_ParaviewComponent extends AppComponent
     $port = $this->_getNextOpenPort();
     if($port === false)
       {
-      throw new Zend_Exception('Maximum number of running instances exceeded, try again soon', 503);
+      throw new Zend_Exception('Maximum number of running instances reached, try again soon', 503);
       }
     if($progressDao)
       {

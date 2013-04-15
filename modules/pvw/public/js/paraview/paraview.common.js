@@ -19,8 +19,7 @@ midas.pvw._commonStart = function (text) {
         midas.pvw.start();
     }
     else {
-        // TODO put this somewhere on the page besides in the notice
-        midas.createNotice('Instance creation failed: ' + resp.message, 4000, resp.status);
+        midas.pvw.showStatus('Instance creation failed: ' + resp.message);
     }
 };
 
