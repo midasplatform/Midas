@@ -23,12 +23,6 @@ pipeline = web_helper.Pipeline('Kitware')
 lutManager = web_helper.LookupTableManager()
 view = None
 dataPath = None
-rep = None
-imageData = None
-center = [0, 0, 0]
-bounds = None
-scalarRange = None
-srcObj = None
 
 # Initialize the render window
 def initView(width, height):
@@ -43,9 +37,20 @@ def initView(width, height):
 # This class defines the exposed RPC methods for the midas application
 class MidasApp(web.ParaViewServerProtocol):
   DISTANCE_FACTOR = 1.6
+  colorArrayName = None
+  sof = None
+  lookupTable = None
+  srcObj = None
+  bounds = None
+  center = None
+  rep = None
+  scalarRange = None
+  imageData = None
+  subgrid = None
+
   @exportRpc("loadData")
-  def loadData(self, properties):
-    global dataPath, srcObj, rep
+  def loadData(self):
+    global dataPath
     mainpath = os.path.join(dataPath, "main")
 
     if os.path.isdir(mainpath):
@@ -53,9 +58,10 @@ class MidasApp(web.ParaViewServerProtocol):
       for file in files:
         fullpath = os.path.join(mainpath, file)
         if os.path.isfile(fullpath):
-          srcObj = simple.OpenDataFile(fullpath)
-          simple.SetActiveSource(srcObj)
-          rep = simple.Show()
+          self.srcObj = simple.OpenDataFile(fullpath)
+          simple.SetActiveSource(self.srcObj)
+          self.rep = simple.Show() # TODO find a way to get representation without Show()
+          simple.Hide()
 
           print 'Loaded %s into scene' % fullpath
     else:
@@ -63,27 +69,20 @@ class MidasApp(web.ParaViewServerProtocol):
       raise Exception("The main directory does not exist")
     simple.ResetCamera()
     simple.Render()
-    return srcObj
-
-  @exportRpc("sliceRender")
-  def sliceRender(self):
-    global srcObj, center, scalarRange, bounds, rep
-    if(srcObj.GetPointDataInformation().GetNumberOfArrays() == 0):
-      print 'Error: no data information arrays'
-      raise Exception('No data information arrays')
+    return self.srcObj
 
 
   @exportRpc("cameraPreset")
   def cameraPreset(self, direction):
-    global bounds, view, center
-    (midx, midy, midz) = (center[0], center[1], center[2])
-    (lenx, leny, lenz) = (bounds[1] - bounds[0],
-                          bounds[3] - bounds[2],
-                          bounds[5] - bounds[4])
+    global view
+    (midx, midy, midz) = (self.center[0], self.center[1], self.center[2])
+    (lenx, leny, lenz) = (self.bounds[1] - self.bounds[0],
+                          self.bounds[3] - self.bounds[2],
+                          self.bounds[5] - self.bounds[4])
     maxDim = max(lenx, leny, lenz)
 
-    view.CameraFocalPoint = center
-    view.CenterOfRotation = center
+    view.CameraFocalPoint = self.center
+    view.CenterOfRotation = self.center
     view.CameraViewUp = [0, 0, 1]
 
     if(direction == '+x'):
@@ -108,48 +107,77 @@ class MidasApp(web.ParaViewServerProtocol):
 
   @exportRpc("volumeRender")
   def volumeRender(self):
-    global srcObj, center, scalarRange, bounds, rep
-    if(srcObj.GetPointDataInformation().GetNumberOfArrays() == 0):
+    global view
+    if(self.srcObj.GetPointDataInformation().GetNumberOfArrays() == 0):
       print 'Error: no data information arrays'
       raise Exception('No data information arrays')
 
-    imageData = srcObj.GetPointDataInformation().GetArray(0)
-    scalarRange = imageData.GetRange()
+    self.imageData = self.srcObj.GetPointDataInformation().GetArray(0)
+    self.scalarRange = self.imageData.GetRange()
 
-    bounds = srcObj.GetDataInformation().DataInformation.GetBounds()
-    (midx, midy, midz) = ((bounds[1] + bounds[0]) / 2.0,
-                          (bounds[3] + bounds[2]) / 2.0,
-                          (bounds[5] + bounds[4]) / 2.0)
-    (lenx, leny, lenz) = (bounds[1] - bounds[0],
-                          bounds[3] - bounds[2],
-                          bounds[5] - bounds[4])
+    self.bounds = self.srcObj.GetDataInformation().DataInformation.GetBounds()
+    (midx, midy, midz) = ((self.bounds[1] + self.bounds[0]) / 2.0,
+                          (self.bounds[3] + self.bounds[2]) / 2.0,
+                          (self.bounds[5] + self.bounds[4]) / 2.0)
+    (lenx, leny, lenz) = (self.bounds[1] - self.bounds[0],
+                          self.bounds[3] - self.bounds[2],
+                          self.bounds[5] - self.bounds[4])
     maxDim = max(lenx, leny, lenz)
-    center = [midx, midy, midz]
+    self.center = [midx, midy, midz]
     # Adjust camera properties appropriately
-    view.CameraFocalPoint = center
-    view.CenterOfRotation = center
+    view.CameraFocalPoint = self.center
+    view.CenterOfRotation = self.center
     view.CameraPosition = [midx - self.DISTANCE_FACTOR * maxDim, midy, midz]
     view.CameraViewUp = [0, 0, 1]
 
     # Create RGB transfer function
-    lookupTable = simple.GetLookupTableForArray(imageData.Name, 1)
-    lookupTable.RGBPoints = [scalarRange[0], 0, 0, 0, scalarRange[1], 1, 1, 1]
-    lookupTable.ScalarRangeInitialized = 1.0
-    lookupTable.ColorSpace = 0  # 0 corresponds to RGB
+    rgbPoints = [self.scalarRange[0], 0, 0, 0, self.scalarRange[1], 1, 1, 1]
+    self.colorArrayName = self.imageData.Name
+    self.lookupTable = simple.GetLookupTableForArray(self.colorArrayName, 1)
+    self.lookupTable.RGBPoints = rgbPoints
+    self.lookupTable.ScalarRangeInitialized = 1.0
+    self.lookupTable.ColorSpace = 0  # 0 corresponds to RGB
 
     # Create opacity transfer function
-    sof = simple.CreatePiecewiseFunction()
-    sof.Points = [scalarRange[0], 0, 0.5, 0,
-                  scalarRange[1], 1, 0.5, 0]
+    sofPoints = [self.scalarRange[0], 0, 0.5, 0,
+                 self.scalarRange[1], 1, 0.5, 0]
+    self.sof = simple.CreatePiecewiseFunction()
+    self.sof.Points = sofPoints
 
-    rep.ColorArrayName = imageData.Name
-    rep.Representation = 'Volume'
+    self.rep.ColorArrayName = self.imageData.Name
+    self.rep.Representation = 'Volume'
     # TODO don't use texture mapping only unless we have GPU issues...
-    rep.VolumeRenderingMode = 'Texture Mapping Only'
-    rep.ScalarOpacityFunction = sof
-    rep.LookupTable = lookupTable
+    self.rep.VolumeRenderingMode = 'Texture Mapping Only'
+    self.rep.ScalarOpacityFunction = self.sof
+    self.rep.LookupTable = self.lookupTable
+    simple.Show()
     simple.Render()
-    return (scalarRange, bounds)
+    return {'scalarRange': self.scalarRange,
+            'bounds': self.bounds,
+            'sofPoints': sofPoints,
+            'rgbPoints': rgbPoints}
+
+
+  @exportRpc("extractSubgrid")
+  def extractSubgrid(self, bounds):
+    if(self.subgrid is not None):
+      simple.Delete(self.subgrid)
+    simple.SetActiveSource(self.srcObj)
+    self.subgrid = simple.ExtractSubset()
+    self.subgrid.VOI = bounds
+    simple.SetActiveSource(self.subgrid)
+
+    dataRep = simple.Show()
+    dataRep.ScalarOpacityFunction = self.sof
+    dataRep.ColorArrayName = self.colorArrayName
+    dataRep.Representation = 'Volume'
+    dataRep.VolumeRenderingMode = 'Texture Mapping Only'
+    dataRep.SelectionPointFieldDataArrayName = self.colorArrayName
+    dataRep.LookupTable = self.lookupTable
+
+    simple.Hide(self.srcObj)
+    simple.SetActiveSource(self.subgrid)
+    simple.Render()
 
 
 if __name__ == "__main__":
