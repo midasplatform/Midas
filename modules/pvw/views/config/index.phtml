@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -21,15 +21,12 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
   <p>For this module to work, you will need to build ParaView with python enabled.</p>
   <p>Instructions are <a href="http://paraview.org/Wiki/ParaView:Build_And_Install#Build_ParaView">here</a>.</p>
   <p><b>Note:</b> You can turn off building with Qt when building ParaView.</p>
+  <p><b>Important:</b> Make sure to symlink the <b>www</b> directory of your ParaView build
+    directory as <b>modules/pvw/public/import</b>.</p>
   <form class='genericForm' id='configForm' method="<?php echo $this->configForm['method']?>" action="<?php echo $this->configForm['action']?>">
     <div qtip="Location of the pvpython executable on the filesystem">
       <label for='pvpython'>Location of pvpython</label>
       <?php echo $this->configForm['pvpython']?>
-    </div>
-    <div qtip="Directory containing all the static content served by ParaViewWeb.
-               Leave this field blank if you want Midas to serve the content out of <b>modules/pvw/public/pvw</b>.">
-      <label for='staticcontent'>ParaViewWeb static content root</label>
-      <?php echo $this->configForm['staticcontent']?>
     </div>
     <div qtip="Comma separated list or range of ports (e.g. '9000, 9001' or '9000-9005') to use for ParaView instances.
                This setting also defines how many instances can be active at a time.">
@@ -42,9 +39,3 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
   </form>
 
 </div>
-
-
-
-
-
-

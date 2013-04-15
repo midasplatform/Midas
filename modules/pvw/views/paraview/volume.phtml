@@ -10,15 +10,15 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 ?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/paraview/paraview.common.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/paraview/paraview.volume.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/colorpicker.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.spinbox.css" />
 
 <?php
-
-$this->headScript()->appendFile($this->staticRoot.'/ext/js-core/autobahn.min.js');
-$this->headScript()->appendFile($this->staticRoot.'/lib/js/paraview-all.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/import/ext/js-core/autobahn.min.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/import/lib/js/paraview-all.js');
 
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.spinbox.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.jqplot.min.js');
@@ -26,6 +26,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasAxisLabelRenderer.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.cursor.min.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.highlighter.min.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/layout/midas.progress.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.common.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.volume.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/colorpicker.js');
 $this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/common.ajaxapi.js');
@@ -38,9 +40,6 @@ foreach($this->jsImports as $jsImport)
 ?>
 
 <div class="viewMain">
-  <img class="visuLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-  <span id="loadingStatus"></span>
-
   <div id='renderercontainer' class="viewport-container">
     <div id='rendererOverlay'>
       <div class="cameraPresetButtons">
@@ -88,6 +87,17 @@ foreach($this->jsImports as $jsImport)
         <a href="javascript:;" id="extractSubgridAction">
         <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/shape_handles.png"/>
         Extract Subgrid
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="sideElementActions viewAction">
+    <h1>Other</h1>
+    <ul>
+      <li>
+        <a href="javascript:;" id="shareSessionLink">
+        <img alt="" src="<?php echo $this->coreWebroot;?>/public/images/icons/link.png"/>
+        Share Session
         </a>
       </li>
     </ul>
@@ -194,4 +204,3 @@ foreach($this->jsImports as $jsImport)
 <div id="objectEntryTemplate" class="objectEntryContainer" style="display: none;">
   <
 </div>
-

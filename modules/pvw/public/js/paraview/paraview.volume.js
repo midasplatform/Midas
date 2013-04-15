@@ -1,4 +1,4 @@
-var paraview;
+var paraview, pv;
 var midas = midas || {};
 midas.visualize = midas.visualize || {};
 midas.pvw = midas.pvw || {};
@@ -517,14 +517,14 @@ midas.pvw.testIdle = function () {
     }
 };
 
-$(window).load(function () {
+midas.pvw.start = function () {
     if(typeof midas.visualize.preInitCallback == 'function') {
         midas.visualize.preInitCallback();
     }
     pv = {};
     pv.connection = {
-        sessionURL: 'ws://'+location.hostname+':'+json.pvw.instance.port+'/ws',
-        id: json.pvw.instance.instance_id,
+        sessionURL: 'ws://'+location.hostname+':'+midas.pvw.instance.port+'/ws',
+        id: midas.pvw.instance.instance_id,
         sessionManagerURL: json.global.webroot + '/pvw/paraview/instance'
     };
     paraview.connect(pv.connection, function(conn) {
@@ -550,17 +550,6 @@ $(window).load(function () {
     $('body').mousemove(function () {
         midas.pvw.lastAction = new Date().getTime();
     });
-});
-
-window.onunload = function () {
-    if(pv.connection) {
-        // Sadly we have to do this synchronously so the browser fulfills the request before leaving
-        $.ajax({
-            url: json.global.webroot + '/pvw/paraview/instance/' + json.pvw.instance.instance_id,
-            async: false,
-            type: 'DELETE'
-        });
-    }
 };
 
 midas.pvw.rpcFailure = function (err) {

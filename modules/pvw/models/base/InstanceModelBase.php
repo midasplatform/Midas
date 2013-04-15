@@ -34,6 +34,7 @@ abstract class Pvw_InstanceModelBase extends Pvw_AppModel
       'item_id' => array('type' => MIDAS_DATA),
       'pid' => array('type' => MIDAS_DATA),
       'sid' => array('type' => MIDAS_DATA),
+      'secret' => array('type' => MIDAS_DATA),
       'port' => array('type' => MIDAS_DATA),
       'creation_date' => array('type' => MIDAS_DATA),
       'item' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Item', 'parent_column' => 'item_id', 'child_column' => 'item_id')

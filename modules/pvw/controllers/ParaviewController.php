@@ -40,32 +40,42 @@ class Pvw_ParaviewController extends Pvw_AppController
     $this->disableView();
     $this->disableLayout();
 
-    $appname = $this->_getParam('appname');
-    if(!isset($appname))
+    try
       {
-      $appname = 'midas';
-      }
-    $itemId = $this->_getParam('itemId');
-    if(!isset($itemId))
-      {
-      throw new Zend_Exception('Must pass an itemId', 400);
-      }
-    $item = $this->Item->load($itemId);
-    if(!$item)
-      {
-      throw new Zend_Exception('Invalid itemId', 404);
-      }
-    if(!$this->Item->policyCheck($item, $this->userSession->Dao))
-      {
-      throw new Zend_Exception('Read access required on item', 403);
-      }
+      $appname = $this->_getParam('appname');
+      if(!isset($appname))
+        {
+        $appname = 'midas';
+        }
+      $itemId = $this->_getParam('itemId');
+      if(!isset($itemId))
+        {
+        throw new Zend_Exception('Must pass an itemId', 400);
+        }
+      $item = $this->Item->load($itemId);
+      if(!$item)
+        {
+        throw new Zend_Exception('Invalid itemId', 404);
+        }
+      if(!$this->Item->policyCheck($item, $this->userSession->Dao))
+        {
+        throw new Zend_Exception('Read access required on item', 403);
+        }
 
-    $instance = $this->ModuleComponent->Paraview->createAndStartInstance($item, $appname, $this->progressDao);
+      $instance = $this->ModuleComponent->Paraview->createAndStartInstance($item, $appname, $this->progressDao);
 
-    echo JsonComponent::encode(array(
-      'status' => 'ok',
-      'instanceId' => $instance->getKey()
-      ));
+      echo JsonComponent::encode(array(
+        'status' => 'ok',
+        'instance' => $instance->toArray()
+        ));
+      }
+    catch(Exception $e)
+      {
+      echo JsonComponent::encode(array(
+        'status' => 'error',
+        'message' => $e->getMessage()
+        ));
+      }
     }
 
   /**
@@ -111,7 +121,7 @@ class Pvw_ParaviewController extends Pvw_AppController
     $header .= ' Surface view: <a href="'.$this->view->webroot.'/item/'.$itemid.'">'.$item->getName().'</a>';
     $this->view->header = $header;
 
-    
+
     }
 
   /**
@@ -225,7 +235,7 @@ class Pvw_ParaviewController extends Pvw_AppController
 
   /**
    * Display a volume rendering of the selected item
-   * @param instanceId The id of the pvw_instance that was created with startsessionAction()
+   * @param itemId The id of the item to visualize
    * @param jsImports (Optional) List of javascript files to import. These should contain handler
    *                             functions for imported operations. Separated by ;
    */
@@ -240,55 +250,28 @@ class Pvw_ParaviewController extends Pvw_AppController
       {
       $this->view->jsImports = array();
       }
-    $this->view->instance = $this->_getPvwInstance();
-    $this->_setStaticRoot($this->view->instance->getPort());
-
-    $item = $this->view->instance->getItem();
+    $itemId = $this->_getParam('itemId');
+    if(!isset($itemId))
+      {
+      throw new Zend_Exception('Must pass itemId param', 400);
+      }
+    $item = $this->Item->load($itemId);
+    if(!$item)
+      {
+      throw new Zend_Exception('Invalid itemId', 404);
+      }
+    if(!$this->Item->policyCheck($item, $this->userSession->Dao))
+      {
+      throw new Zend_Exception('Read permission required', 403);
+      }
 
     $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/volume.png" />';
     $header .= ' Volume rendering: <a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
     $this->view->header = $header;
-    $this->view->json['pvw']['instance'] = $this->view->instance;
+    $this->view->json['pvw']['item'] = $item;
     $this->view->json['pvw']['properties'] = array('Representation' => 'Volume');
     }
 
-  /**
-   * Helper function to set the static content root for pvw content in the view
-   */
-  private function _setStaticRoot($port)
-    {
-    $staticContent = $this->Setting->getValueByName('staticcontent', $this->moduleName);
-    if($staticContent && is_dir($staticContent))
-      {
-      $this->view->staticRoot = 'http://'.$this->_getHostName().':'.$port;
-      }
-    else
-      {
-      $this->view->staticRoot = $this->view->moduleWebroot.'/public/pvw';
-      }
-    }
-
-  /**
-   * Helper method to get the pvw instance from the params
-   */
-  private function _getPvwInstance()
-    {
-    $instanceId = $this->_getParam('instanceId');
-    if(!isset($instanceId))
-      {
-      throw new Zend_Exception('Must pass instanceId param', 400);
-      }
-    $instance = $this->Pvw_Instance->load($instanceId);
-    if(!$instance)
-      {
-      throw new Zend_Exception('This ParaView instance no longer exists', 404);
-      }
-    if(!$this->ModuleComponent->Paraview->isRunning($instance))
-      {
-      throw new Zend_Exception('This ParaView instance has been closed.', 400);
-      }
-    return $instance;
-    }
   /**
    * Use the axial slice view mode for MetaImage volume data
    * @param itemId The id of the MetaImage item to visualize
