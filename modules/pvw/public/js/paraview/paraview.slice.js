@@ -33,7 +33,6 @@ midas.pvw.sliceRenderStarted = function (resp) {
     midas.pvw.slice = resp.sliceInfo.slice;
     midas.pvw.maxSlices = resp.sliceInfo.maxSlices;
     midas.pvw.scalarRange = resp.scalarRange;
-    midas.pvw.rgbPoints = resp.rgbPoints;
 
     pv.viewport.render();
 
@@ -93,14 +92,11 @@ midas.pvw.updateWindowInfo = function (values) {
 
 /** Make the actual request to PVWeb to set the window */
 midas.pvw.changeWindow = function (values) {
-    paraview.callPluginMethod('midasslice', 'ChangeWindow',
-      [[values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0],
-      json.pvw.colorArrayName],
-      function (view, retVal) {
-          midas.pvw.lookupTable = retVal.lookupTable;
-          midas.pvw.forceRefreshView();
-    });
-    midas.pvw.imageWindow = values;
+    pv.connection.session.call('pv:changeWindow', [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0])
+                        .then(function () {
+                            pv.viewport.render();
+                        })
+                        .otherwise(midas.pvw.rpcFailure);
 };
 
 /** Change the slice and run appropriate slice filter on any meshes in the scene */
@@ -108,21 +104,11 @@ midas.pvw.changeSlice = function (slice) {
     slice = parseInt(slice);
     midas.pvw.currentSlice = slice;
 
-    var params = {
-        volume: midas.pvw.input,
-        slice: slice,
-        sliceMode: midas.pvw.sliceMode,
-        meshes: midas.pvw.meshes,
-        lineWidth: midas.pvw.maxDim / 100.0
-    };
-
-    paraview.callPluginMethod('midasslice', 'ChangeSlice', params, function(view, retVal) {
-        midas.pvw.meshSlices = retVal.meshSlices;
-        if(typeof midas.pvw.changeSliceCallback == 'function') {
-            midas.pvw.changeSliceCallback(slice);
-        }
-        midas.pvw.forceRefreshView();
-    });
+    pv.connection.session.call('pv:changeSlice', slice)
+                        .then(function (resp) {
+                            pv.viewport.render();
+                        })
+                        .otherwise(midas.pvw.rpcFailure)
 };
 
 /**

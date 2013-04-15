@@ -158,8 +158,21 @@ class MidasApp(web.ParaViewServerProtocol):
     self.rep.SliceMode = sliceMode
 
     self.sliceMode = sliceMode
+    simple.Render()
     return {'slice': sliceNum,
             'maxSlices': maxSlices}
+
+
+  @exportRpc("changeSlice")
+  def changeSlice(self, sliceNum):
+    self.rep.Slice = sliceNum
+    simple.Render()
+
+
+  @exportRpc("changeWindow")
+  def changeWindow(self, points):
+    self.lookupTable.RGBPoints = points
+    simple.Render()
 
 
   @exportRpc("sliceRender")
@@ -195,7 +208,6 @@ class MidasApp(web.ParaViewServerProtocol):
     simple.Render()
     return {'scalarRange': self.scalarRange,
             'bounds': self.bounds,
-            'rgbPoints': rgbPoints,
             'sliceInfo': sliceInfo}
 
 
