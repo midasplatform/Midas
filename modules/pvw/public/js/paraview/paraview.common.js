@@ -24,6 +24,28 @@ midas.pvw._commonStart = function (text) {
 };
 
 /**
+ * Once you have set up pv.connection, you can call this to load your data.
+ * When done, it will call midas.pvw.dataLoaded.
+ * This function also sets up the
+ */
+midas.pvw.loadData = function () {
+    paraview.connect(pv.connection, function(conn) {
+        pv.connection = conn;
+        pv.viewport = paraview.createViewport(pv.connection);
+        pv.viewport.bind('#renderercontainer');
+
+        $('#renderercontainer').show();
+
+        midas.pvw.waitingDialog('Loading data into scene...');
+        pv.connection.session.call('pv:loadData')
+                             .then(midas.pvw.dataLoaded)
+                             .otherwise(midas.pvw.rpcFailure);
+    }, function(msg) {
+        midas.createNotice('Error: ' + msg, 3000, 'error');
+    });
+};
+
+/**
  * Display a status message on the screen
  */
 midas.pvw.showStatus = function (statusText) {
@@ -38,8 +60,32 @@ midas.pvw.hideStatus = function () {
     $('.midas-pvw-status').remove();
 };
 
+/**
+ * If an rpc failure occurs, this handles the error
+ */
+midas.pvw.rpcFailure = function (err) {
+    $('div.MainDialog').dialog('close');
+    console.log(err);
+    midas.createNotice('A ParaViewWeb exception occurred, check your browser console', 4000, 'error');
+};
+
+/** Show an indeterminate loading dialog with a message */
+midas.pvw.waitingDialog = function(text) {
+    var html = '<img alt="" style="margin-right: 9px;" '+
+               'src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" /> ' + text;
+
+    midas.showDialogWithContent('Please wait', html);
+};
+
 $(window).load(function () {
     if(paraview) {
+        // Add some logic to check for idle and close the pvw session after IDLE_TIMEOUT expires
+        midas.pvw.lastAction = new Date().getTime();
+        midas.pvw.idleInterval = setInterval(midas.pvw.testIdle, 15000); // every 15 seconds, check idle status
+        $('body').mousemove(function () {
+            midas.pvw.lastAction = new Date().getTime();
+        });
+
         var html = '<div id="pvwProgressBar"></div>';
         html += '<div id="pvwProgressMessage"></div>';
         midas.showDialogWithContent('Starting ParaViewWeb instance', html);

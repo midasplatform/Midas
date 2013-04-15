@@ -1,6 +1,5 @@
 var paraview, pv;
 var midas = midas || {};
-midas.visualize = midas.visualize || {};
 midas.pvw = midas.pvw || {};
 
 midas.pvw.IDLE_TIMEOUT = 10 * 60 * 1000; // 10 minute idle timeout
@@ -37,6 +36,7 @@ midas.pvw.populateInfo = function () {
 /**
  * Setup the object list widget
  */
+/*
 midas.visualize.setupObjectList = function () {
     var dialog = $('#objectListTemplate').clone();
     dialog.removeAttr('id');
@@ -99,7 +99,7 @@ midas.visualize.toggleObjectVisibility = function(checkbox) {
         paraview.Hide({proxy: proxy});
     }
     midas.visualize.forceRefreshView();
-};
+};*/
 
 /**
  * Setup the color mapping controls
@@ -453,44 +453,17 @@ midas.pvw.testIdle = function () {
 };
 
 midas.pvw.start = function () {
-    if(typeof midas.visualize.preInitCallback == 'function') {
-        midas.visualize.preInitCallback();
+    if(typeof midas.pvw.preInitCallback == 'function') {
+        midas.pvw.preInitCallback();
     }
     pv = {};
     pv.connection = {
         sessionURL: 'ws://'+location.hostname+':'+midas.pvw.instance.port+'/ws',
         id: midas.pvw.instance.instance_id,
-        sessionManagerURL: json.global.webroot + '/pvw/paraview/instance'
+        sessionManagerURL: json.global.webroot + '/pvw/paraview/instance',
+        interactiveQuality: 50
     };
-    paraview.connect(pv.connection, function(conn) {
-        pv.connection = conn;
-        window.session = pv.connection.session;
-        pv.viewport = paraview.createViewport(pv.connection);
-        pv.viewport.bind('#renderercontainer');
-
-        $('#renderercontainer').show();
-        $('img.visuLoading').hide();
-
-        midas.pvw.waitingDialog('Loading data into scene...');
-        pv.connection.session.call('pv:loadData')
-                             .then(midas.pvw.dataLoaded)
-                             .otherwise(midas.pvw.rpcFailure);
-    }, function(msg) {
-        midas.createNotice('Error: ' + msg, 3000, 'error');
-    });
-
-    // Add some logic to check for idle and close the pvw session after IDLE_TIMEOUT expires
-    midas.pvw.lastAction = new Date().getTime();
-    midas.pvw.idleInterval = setInterval(midas.pvw.testIdle, 15000); // every 15 seconds, check idle status
-    $('body').mousemove(function () {
-        midas.pvw.lastAction = new Date().getTime();
-    });
-};
-
-midas.pvw.rpcFailure = function (err) {
-    $('div.MainDialog').dialog('close');
-    console.log(err);
-    midas.createNotice('A ParaViewWeb exception occurred, check your browser console', 4000, 'error');
+    midas.pvw.loadData();
 };
 
 /** Callback for once the loadData RPC has returned */
@@ -536,7 +509,7 @@ midas.pvw.setupOverlay = function () {
  */
 midas.pvw.stopSession = function () {
     if(pv.connection) {
-        paraview.stop(pv.connection); // TODO must call this synchronously!!!
+        paraview.stop(pv.connection);
         pv.connection = null;
     }
     if(midas.pvw.idleInterval) {
@@ -547,12 +520,4 @@ midas.pvw.stopSession = function () {
              + 'for more than ' + (midas.pvw.IDLE_TIMEOUT / 60000) + ' minutes.';
     $('#loadingStatus').html(html).show();
     $('#renderercontainer').hide();
-};
-
-/** Show an indeterminate loading dialog with a message */
-midas.pvw.waitingDialog = function(text) {
-    var html = '<img alt="" style="margin-right: 9px;" '+
-               'src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" /> ' + text;
-
-    midas.showDialogWithContent('Please wait', html);
 };
