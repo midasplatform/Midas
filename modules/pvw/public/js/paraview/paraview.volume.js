@@ -36,56 +36,32 @@ midas.visualize.initCallback = function (view, retVal) {
 }
 
 /**
- * Initialize or re-initialize the renderer within the DOM
- */
-midas.visualize.switchRenderer = function (first) {
-    if(midas.visualize.renderers.js == undefined) {
-        midas.visualize.renderers.js = new JavaScriptRenderer("jsRenderer", "/PWService");
-        midas.visualize.renderers.js.enableWebSocket(paraview, 'ws://'+json.visualize.hostname
-          +':'+json.visualize.wsport+'/PWService/Websocket');
-        midas.visualize.renderers.js.init(paraview.sessionId, midas.visualize.activeView.__selfid__);
-        $('img.toolButton').show();
-    }
-
-    if(!first) {
-        midas.visualize.renderers.current.unbindToElementId('renderercontainer');
-    }
-    midas.visualize.renderers.current = midas.visualize.renderers.js;
-    midas.visualize.renderers.current.bindToElementId('renderercontainer');
-    var el = $('#renderercontainer');
-    midas.visualize.renderers.current.setSize(el.width(), el.height());
-    midas.visualize.renderers.current.start();
-};
-
-/**
  * Display the subset of the volume defined by the bounds list
  * of the form [xMin, xMax, yMin, yMax, zMin, zMax]
  */
-midas.visualize.renderSubgrid = function (bounds) {
-    var toHide = midas.visualize.subgrid ? midas.visualize.subgrid : null;
-
+midas.pvw.renderSubgrid = function (bounds) {
+    midas.pvw.subgridBounds = bounds;
     var container = $('div.MainDialog');
     container.find('img.extractInProgress').show();
     container.find('button.extractSubgridApply').attr('disabled', 'disabled');
-    paraview.callPluginMethod('midasvr', 'ExtractSubgrid', [
-        midas.visualize.input, bounds, midas.visualize.lookupTable,
-        midas.visualize.sof, json.visualize.colorArrayName, toHide
-    ], function(view, subgrid) {
-        midas.visualize.subgrid = subgrid;
-        container.find('img.extractInProgress').hide();
-        container.find('button.extractSubgridApply').removeAttr('disabled');
-        midas.visualize.forceRefreshView();
-    });
+    pv.connection.session.call('pv:extractSubgrid', bounds)
+                               .then(function (resp) {
+                                    pv.viewport.render();
+                                    container.find('img.extractInProgress').hide();
+                                    container.find('button.extractSubgridApply').removeAttr('disabled');
+                                    $('div.MainDialog').dialog('close');
+                                })
+                               .otherwise(midas.pvw.rpcFailure);
 };
 
 /**
  * Display information about the volume
  */
-midas.visualize.populateInfo = function () {
-    $('#boundsXInfo').html(midas.visualize.bounds[0]+' .. '+midas.visualize.bounds[1]);
-    $('#boundsYInfo').html(midas.visualize.bounds[2]+' .. '+midas.visualize.bounds[3]);
-    $('#boundsZInfo').html(midas.visualize.bounds[4]+' .. '+midas.visualize.bounds[5]);
-    $('#scalarRangeInfo').html(midas.visualize.minVal+' .. '+midas.visualize.maxVal);
+midas.pvw.populateInfo = function () {
+    $('#boundsXInfo').html(midas.pvw.bounds[0]+' .. '+midas.pvw.bounds[1]);
+    $('#boundsYInfo').html(midas.pvw.bounds[2]+' .. '+midas.pvw.bounds[3]);
+    $('#boundsZInfo').html(midas.pvw.bounds[4]+' .. '+midas.pvw.bounds[5]);
+    $('#scalarRangeInfo').html(midas.pvw.scalarRange[0]+' .. '+midas.pvw.scalarRange[1]);
 };
 
 /**
@@ -407,7 +383,7 @@ midas.visualize.setupSofPlotBindings = function () {
 /**
  * Setup the extract subgrid controls
  */
-midas.visualize.setupExtractSubgrid = function () {
+midas.pvw.setupExtractSubgrid = function () {
     var dialog = $('#extractSubgridDialogTemplate').clone();
     dialog.removeAttr('id');
     $('#extractSubgridAction').click(function () {
@@ -416,9 +392,9 @@ midas.visualize.setupExtractSubgrid = function () {
         var container = $('div.MainDialog');
         container.find('.sliderX').slider({
             range: true,
-            min: midas.visualize.bounds[0],
-            max: midas.visualize.bounds[1],
-            values: [midas.visualize.bounds[0], midas.visualize.bounds[1]],
+            min: midas.pvw.bounds[0],
+            max: midas.pvw.bounds[1],
+            values: [midas.pvw.bounds[0], midas.pvw.bounds[1]],
             slide: function (event, ui) {
                 container.find('.extractSubgridMinX').val(ui.values[0]);
                 container.find('.extractSubgridMaxX').val(ui.values[1]);
@@ -426,9 +402,9 @@ midas.visualize.setupExtractSubgrid = function () {
         });
         container.find('.sliderY').slider({
             range: true,
-            min: midas.visualize.bounds[2],
-            max: midas.visualize.bounds[3],
-            values: [midas.visualize.bounds[2], midas.visualize.bounds[3]],
+            min: midas.pvw.bounds[2],
+            max: midas.pvw.bounds[3],
+            values: [midas.pvw.bounds[2], midas.pvw.bounds[3]],
             slide: function (event, ui) {
                 container.find('.extractSubgridMinY').val(ui.values[0]);
                 container.find('.extractSubgridMaxY').val(ui.values[1]);
@@ -436,9 +412,9 @@ midas.visualize.setupExtractSubgrid = function () {
         });
         container.find('.sliderZ').slider({
             range: true,
-            min: midas.visualize.bounds[4],
-            max: midas.visualize.bounds[5],
-            values: [midas.visualize.bounds[4], midas.visualize.bounds[5]],
+            min: midas.pvw.bounds[4],
+            max: midas.pvw.bounds[5],
+            values: [midas.pvw.bounds[4], midas.pvw.bounds[5]],
             slide: function (event, ui) {
                 container.find('.extractSubgridMinZ').val(ui.values[0]);
                 container.find('.extractSubgridMaxZ').val(ui.values[1]);
@@ -447,51 +423,51 @@ midas.visualize.setupExtractSubgrid = function () {
 
         // setup spinboxes with feedback into the range sliders
         container.find('.extractSubgridMinX').spinbox({
-            min: midas.visualize.bounds[0],
-            max: midas.visualize.bounds[1]
+            min: midas.pvw.bounds[0],
+            max: midas.pvw.bounds[1]
         }).change(function () {
             container.find('.sliderX').slider('option', 'values',
               [$(this).val(), container.find('.extractSubgridMaxX').val()]);
-        }).val(midas.visualize.bounds[0]);
+        }).val(midas.pvw.bounds[0]);
         container.find('.extractSubgridMaxX').spinbox({
-            min: midas.visualize.bounds[0],
-            max: midas.visualize.bounds[1]
+            min: midas.pvw.bounds[0],
+            max: midas.pvw.bounds[1]
         }).change(function () {
             container.find('.sliderX').slider('option', 'values',
               [container.find('.extractSubgridMinX').val(), $(this).val()]);
-        }).val(midas.visualize.bounds[1]);
+        }).val(midas.pvw.bounds[1]);
         container.find('.extractSubgridMinY').spinbox({
-            min: midas.visualize.bounds[2],
-            max: midas.visualize.bounds[3]
+            min: midas.pvw.bounds[2],
+            max: midas.pvw.bounds[3]
         }).change(function () {
             container.find('.sliderY').slider('option', 'values',
               [$(this).val(), container.find('.extractSubgridMaxY').val()]);
-        }).val(midas.visualize.bounds[2]);
+        }).val(midas.pvw.bounds[2]);
         container.find('.extractSubgridMaxY').spinbox({
-            min: midas.visualize.bounds[2],
-            max: midas.visualize.bounds[3]
+            min: midas.pvw.bounds[2],
+            max: midas.pvw.bounds[3]
         }).change(function () {
             container.find('.sliderY').slider('option', 'values',
               [container.find('.extractSubgridMinY').val(), $(this).val()]);
-        }).val(midas.visualize.bounds[3]);
+        }).val(midas.pvw.bounds[3]);
         container.find('.extractSubgridMinZ').spinbox({
-            min: midas.visualize.bounds[4],
-            max: midas.visualize.bounds[5]
+            min: midas.pvw.bounds[4],
+            max: midas.pvw.bounds[5]
         }).change(function () {
             container.find('.sliderZ').slider('option', 'values',
               [$(this).val(), container.find('.extractSubgridMaxZ').val()]);
-        }).val(midas.visualize.bounds[4]);
+        }).val(midas.pvw.bounds[4]);
         container.find('.extractSubgridMaxZ').spinbox({
-            min: midas.visualize.bounds[4],
-            max: midas.visualize.bounds[5]
+            min: midas.pvw.bounds[4],
+            max: midas.pvw.bounds[5]
         }).change(function () {
             container.find('.sliderZ').slider('option', 'values',
               [container.find('.extractSubgridMinZ').val(), $(this).val()]);
-        }).val(midas.visualize.bounds[5]);
+        }).val(midas.pvw.bounds[5]);
 
         // setup button actions
         container.find('button.extractSubgridApply').click(function () {
-            midas.visualize.renderSubgrid([
+            midas.pvw.renderSubgrid([
               parseInt(container.find('.extractSubgridMinX').val()),
               parseInt(container.find('.extractSubgridMaxX').val()),
               parseInt(container.find('.extractSubgridMinY').val()),
@@ -537,7 +513,7 @@ midas.pvw.start = function () {
         $('img.visuLoading').hide();
 
         midas.pvw.waitingDialog('Loading data into scene...');
-        pv.connection.session.call('pv:loadData', json.pvw.properties)
+        pv.connection.session.call('pv:loadData')
                              .then(midas.pvw.dataLoaded)
                              .otherwise(midas.pvw.rpcFailure);
     }, function(msg) {
@@ -570,9 +546,17 @@ midas.pvw.dataLoaded = function (resp) {
 
 /** After volume rendering has started successfully, this gets called */
 midas.pvw.vrStarted = function (resp) {
+    midas.pvw.bounds = resp.bounds;
+    midas.pvw.subgridBounds = resp.bounds;
+    midas.pvw.scalarRange = resp.scalarRange;
+    midas.pvw.sof = resp.sofPoints;
+    midas.pvw.rgbPoints = resp.rgbPoints;
+
     pv.viewport.render();
     $('div.MainDialog').dialog('close');
+    midas.pvw.populateInfo();
     midas.pvw.setupOverlay();
+    midas.pvw.setupExtractSubgrid();
 };
 
 /** Bind the renderer overlay buttons */
