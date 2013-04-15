@@ -157,6 +157,19 @@ class MidasApp(web.ParaViewServerProtocol):
             'sofPoints': sofPoints,
             'rgbPoints': rgbPoints}
 
+  @exportRpc("updateSof")
+  def updateSof(self, sofPoints):
+    self.sof = simple.CreatePiecewiseFunction()
+    self.sof.Points = sofPoints
+    self.rep.ScalarOpacityFunction = self.sof
+    simple.Render()
+
+  @exportRpc("updateColorMap")
+  def updateColorMap(self, rgbPoints):
+    self.lookupTable = simple.GetLookupTableForArray(self.colorArrayName, 1)
+    self.lookupTable.RGBPoints = rgbPoints
+
+    self.rep.LookupTable = self.lookupTable
 
   @exportRpc("extractSubgrid")
   def extractSubgrid(self, bounds):
@@ -167,13 +180,13 @@ class MidasApp(web.ParaViewServerProtocol):
     self.subgrid.VOI = bounds
     simple.SetActiveSource(self.subgrid)
 
-    dataRep = simple.Show()
-    dataRep.ScalarOpacityFunction = self.sof
-    dataRep.ColorArrayName = self.colorArrayName
-    dataRep.Representation = 'Volume'
-    dataRep.VolumeRenderingMode = 'Texture Mapping Only'
-    dataRep.SelectionPointFieldDataArrayName = self.colorArrayName
-    dataRep.LookupTable = self.lookupTable
+    self.rep = simple.Show()
+    self.rep.ScalarOpacityFunction = self.sof
+    self.rep.ColorArrayName = self.colorArrayName
+    self.rep.Representation = 'Volume'
+    self.rep.VolumeRenderingMode = 'Texture Mapping Only'
+    self.rep.SelectionPointFieldDataArrayName = self.colorArrayName
+    self.rep.LookupTable = self.lookupTable
 
     simple.Hide(self.srcObj)
     simple.SetActiveSource(self.subgrid)
