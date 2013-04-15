@@ -65,18 +65,6 @@ midas.pvw.populateInfo = function () {
 };
 
 /**
- * Get the plot data from the scalar opacity function
- */
-midas.visualize.getSofCurve = function () {
-    var points = paraview.GetProperty(midas.visualize.sof, 'Points');
-    var curve = [];
-    for(var i = 0; i < points.length; i++) {
-        curve[i] = [points[4*i], points[4*i+1]];
-    }
-    return curve;
-};
-
-/**
  * Setup the object list widget
  */
 midas.visualize.setupObjectList = function () {
@@ -242,7 +230,7 @@ midas.visualize.setupColorMapping = function () {
 /**
  * Setup the scalar opacity function controls
  */
-midas.visualize.setupScalarOpacity = function () {
+midas.pvw.setupScalarOpacity = function () {
     var dialog = $('#sofDialogTemplate').clone();
     dialog.removeAttr('id');
     $('#sofEditAction').click(function () {
@@ -251,12 +239,12 @@ midas.visualize.setupScalarOpacity = function () {
         var container = $('div.MainDialog');
         container.find('div.sofPlot').attr('id', 'sofChartDiv');
 
-        midas.visualize.sofPlot = $.jqplot('sofChartDiv', [midas.visualize.getSofCurve()], {
-            series:[{showMarker:true}],
+        midas.pvw.sofPlot = $.jqplot('sofChartDiv', [midas.pvw.getSofCurve(midas.pvw.sof)], {
+            series: [{showMarker:true}],
             axes: {
                 xaxis: {
-                    min: midas.visualize.minVal,
-                    max: midas.visualize.maxVal,
+                    min: midas.pvw.scalarRange[0],
+                    max: midas.pvw.scalarRange[1],
                     label: 'Scalar value',
                     labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
                     labelOptions: {
@@ -292,46 +280,55 @@ midas.visualize.setupScalarOpacity = function () {
             $('div.MainDialog').dialog('close');
         });
         container.find('button.sofApply').click(function () {
-            midas.visualize.applySofCurve();
+            midas.pvw.applySofCurve();
         });
         container.find('button.sofReset').click(function () {
-            midas.visualize.sofPlot.series[0].data = [
-              [midas.visualize.minVal, 0],
-              [midas.visualize.maxVal, 1]];
-            midas.visualize.sofPlot.replot();
-            midas.visualize.setupSofPlotBindings();
+            midas.pvw.sofPlot.series[0].data = [
+              [midas.pvw.scalarRange[0], 0],
+              [midas.pvw.scalarRange[1], 1]];
+            midas.pvw.sofPlot.replot();
+            midas.pvw.setupSofPlotBindings();
             container.find('div.sofPointEdit').hide();
         });
-        midas.visualize.setupSofPlotBindings();
+        midas.pvw.setupSofPlotBindings();
     });
+};
+
+/**
+ * Get the plot data from the scalar opacity function
+ */
+midas.pvw.getSofCurve = function (points) {
+    var curve = [];
+    for(var i = 0; i < points.length; i++) {
+        curve[i] = [points[4*i], points[4*i+1]];
+    }
+    return curve;
 };
 
 /**
  * Called when the "apply" button on the sof dialog is clicked;
  * updates the sof in paraview based on the jqplot curve
  */
-midas.visualize.applySofCurve = function () {
+midas.pvw.applySofCurve = function () {
     // Create the scalar opacity transfer function
     var points = [];
-    var curve = midas.visualize.sofPlot.series[0].data;
+    var curve = midas.pvw.sofPlot.series[0].data;
     for(var idx in curve) {
         points.push(curve[idx][0], curve[idx][1], 0.5, 0.0);
     }
 
-    midas.visualize.sof = paraview.CreatePiecewiseFunction({
-        Points: points
-    });
-
-    paraview.SetDisplayProperties({
-        ScalarOpacityFunction: midas.visualize.sof
-    });
-    midas.visualize.forceRefreshView();
+    midas.pvw.sof = points;
+    pv.connection.session.call('pv:changeSof', points)
+                         .then(function () {
+                              pv.viewport.render();
+                          })
+                         .otherwise(midas.pvw.rpcFailure)
 };
 
 /**
  * Must call this anytime a redraw or replot is called on the sof plot
  */
-midas.visualize.setupSofPlotBindings = function () {
+midas.pvw.setupSofPlotBindings = function () {
 
     // Clicking an existing point should let you change its values
     $('#sofChartDiv').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
@@ -343,14 +340,14 @@ midas.visualize.setupSofPlotBindings = function () {
         container.find('button.pointUpdate').unbind('click').click(function () {
             var s = parseFloat(container.find('input.scalarValueEdit').val());
             var o = parseFloat(container.find('input.opacityValueEdit').val());
-            midas.visualize.sofPlot.series[0].data[pointIndex] = [s, o];
-            midas.visualize.sofPlot.replot();
-            midas.visualize.setupSofPlotBindings();
+            midas.pvw.sofPlot.series[0].data[pointIndex] = [s, o];
+            midas.pvw.sofPlot.replot();
+            midas.pvw.setupSofPlotBindings();
         });
         container.find('button.pointDelete').unbind('click').click(function () {
-            midas.visualize.sofPlot.series[0].data.splice(pointIndex, 1);
-            midas.visualize.sofPlot.replot();
-            midas.visualize.setupSofPlotBindings();
+            midas.pvw.sofPlot.series[0].data.splice(pointIndex, 1);
+            midas.pvw.sofPlot.replot();
+            midas.pvw.setupSofPlotBindings();
         });
     });
 
@@ -362,21 +359,21 @@ midas.visualize.setupSofPlotBindings = function () {
         $('div.MainDialog').find('div.sofPointEdit').hide();
         // insert new data point in between closest x-axis values
         var inserted = false;
-        var newData = [midas.visualize.sofPlot.series[0].data[0]];
+        var newData = [midas.pvw.sofPlot.series[0].data[0]];
 
-        for(var i = 1; i < midas.visualize.sofPlot.series[0].data.length; i++) {
-            if(!inserted && pointIndex.xaxis < midas.visualize.sofPlot.series[0].data[i][0]) {
+        for(var i = 1; i < midas.pvw.sofPlot.series[0].data.length; i++) {
+            if(!inserted && pointIndex.xaxis < midas.pvw.sofPlot.series[0].data[i][0]) {
                 inserted = true;
                 newData.push([pointIndex.xaxis, pointIndex.yaxis]);
             }
-            newData.push(midas.visualize.sofPlot.series[0].data[i]);
+            newData.push(midas.pvw.sofPlot.series[0].data[i]);
         }
         if(!inserted) {
             newData.push([pointIndex.xaxis, pointIndex.yaxis]);
         }
-        midas.visualize.sofPlot.series[0].data = newData;
-        midas.visualize.sofPlot.replot();
-        midas.visualize.setupSofPlotBindings();
+        midas.pvw.sofPlot.series[0].data = newData;
+        midas.pvw.sofPlot.replot();
+        midas.pvw.setupSofPlotBindings();
     });
 };
 
@@ -557,6 +554,7 @@ midas.pvw.vrStarted = function (resp) {
     midas.pvw.populateInfo();
     midas.pvw.setupOverlay();
     midas.pvw.setupExtractSubgrid();
+    midas.pvw.setupScalarOpacity();
 };
 
 /** Bind the renderer overlay buttons */
