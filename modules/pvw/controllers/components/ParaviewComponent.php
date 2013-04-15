@@ -70,13 +70,14 @@ class Pvw_ParaviewComponent extends AppComponent
     $instance->setPort($port);
     $instance->setSid(''); // todo?
     $instance->setCreationDate(date('c'));
+    $instance->setSecret(UtilityComponent::generateRandomString(64, '0123456789abcdef'));
 
     $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
     $instanceModel->save($instance);
 
     $dataPath = $this->_createDataDir($item, $instance);
 
-    $cmdArray = array($pvpython, $application, '--port', $port, '--data', $dataPath);
+    $cmdArray = array($pvpython, $application, '--port', $port, '--data', $dataPath, '--timeout', '900');
 
     // Now start the instance
     $cmd = join(' ', $cmdArray);
@@ -94,9 +95,9 @@ class Pvw_ParaviewComponent extends AppComponent
     // After we start the process, wait some number of seconds for the port to open up.
     // If it doesn't, something went wrong.
     $portOpen = false;
-    for($i = 0; $i < 2 * MIDAS_PVW_STARTUP_TIMEOUT; $i++)
+    for($i = 0; $i < 4 * MIDAS_PVW_STARTUP_TIMEOUT; $i++)
       {
-      usleep(500000); // sleep for half a second
+      usleep(250000); // sleep for 1/4 sec
       if(UtilityComponent::isPortListening($port))
         {
         $portOpen = true;
@@ -152,9 +153,25 @@ class Pvw_ParaviewComponent extends AppComponent
     $ports = explode(',', $ports);
     foreach($ports as $portEntry)
       {
-      // TODO accomodate port ranges, e.g. 9000-9005
       $portEntry = trim($portEntry);
-      if(!UtilityComponent::isPortListening($portEntry))
+      if(strpos($portEntry, '-') !== false) //port range check
+        {
+        list($start, $end) = explode('-', $portEntry);
+        $start = (int)trim($start);
+        $end = (int)trim($end);
+        if($start <= 0 || $end <= 0 || $start >= $end)
+          {
+          throw new Zend_Exception('Port range invalid: '.$portEntry, 500);
+          }
+        for($port = $start; $port <= $end; $port++)
+          {
+          if(!UtilityComponent::isPortListening($port))
+            {
+            return $port;
+            }
+          }
+        }
+      else if(!UtilityComponent::isPortListening($portEntry)) //single port check
         {
         return $portEntry;
         }

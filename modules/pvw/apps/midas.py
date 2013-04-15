@@ -1,6 +1,7 @@
 # import to process args
 import sys
 import os
+import math
 
 try:
     import argparse
@@ -47,6 +48,20 @@ class MidasApp(web.ParaViewServerProtocol):
   scalarRange = None
   imageData = None
   subgrid = None
+  sliceMode = None
+
+  def __extractVolumeImageData(self):
+    if(self.srcObj.GetPointDataInformation().GetNumberOfArrays() == 0):
+      print 'Error: no data information arrays'
+      raise Exception('No data information arrays')
+
+    self.imageData = self.srcObj.GetPointDataInformation().GetArray(0)
+    self.colorArrayName = self.imageData.Name
+    self.scalarRange = self.imageData.GetRange()
+    self.bounds = self.srcObj.GetDataInformation().DataInformation.GetBounds()
+    self.center = [(self.bounds[1] + self.bounds[0]) / 2.0,
+                   (self.bounds[3] + self.bounds[2]) / 2.0,
+                   (self.bounds[5] + self.bounds[4]) / 2.0]
 
   @exportRpc("loadData")
   def loadData(self):
@@ -60,7 +75,7 @@ class MidasApp(web.ParaViewServerProtocol):
         if os.path.isfile(fullpath):
           self.srcObj = simple.OpenDataFile(fullpath)
           simple.SetActiveSource(self.srcObj)
-          self.rep = simple.Show() # TODO find a way to get representation without Show()
+          self.rep = simple.GetDisplayProperties()
           simple.Hide()
 
           print 'Loaded %s into scene' % fullpath
@@ -104,26 +119,107 @@ class MidasApp(web.ParaViewServerProtocol):
 
     simple.Render()
 
-
-  @exportRpc("volumeRender")
-  def volumeRender(self):
+  @exportRpc("setSliceMode")
+  def setSliceMode(self, sliceMode):
     global view
-    if(self.srcObj.GetPointDataInformation().GetNumberOfArrays() == 0):
-      print 'Error: no data information arrays'
-      raise Exception('No data information arrays')
+    if type(sliceMode) is unicode:
+      sliceMode = sliceMode.encode('ascii', 'ignore')
 
-    self.imageData = self.srcObj.GetPointDataInformation().GetArray(0)
-    self.scalarRange = self.imageData.GetRange()
+    if(sliceMode == 'XY Plane'):
+      sliceNum = int(math.floor(self.center[2]))
+      cameraParallelScale = max(self.bounds[1] - self.bounds[0],
+                                self.bounds[3] - self.bounds[2]) / 2.0
+      cameraPosition = [self.center[0], self.center[1], self.bounds[4] - 10]
+      maxSlices = self.bounds[5] - self.bounds[4]
+      cameraViewUp = [0, -1, 0]
+    elif(sliceMode == 'XZ Plane'):
+      sliceNum = int(math.floor(self.center[1]))
+      cameraParallelScale = max(self.bounds[1] - self.bounds[0],
+                                self.bounds[5] - self.bounds[4]) / 2.0
+      maxSlices = self.bounds[3] - self.bounds[2]
+      cameraPosition = [self.center[0], self.bounds[3] + 10, self.center[2]]
+      cameraViewUp = [0, 0, 1]
+    elif(sliceMode == 'YZ Plane'):
+      sliceNum = int(math.floor(self.center[0]))
+      cameraParallelScale = max(self.bounds[3] - self.bounds[2],
+                                self.bounds[5] - self.bounds[4]) / 2.0
+      maxSlices = self.bounds[1] - self.bounds[0]
+      cameraPosition = [self.bounds[1] + 10, self.center[1], self.center[2]]
+      cameraViewUp = [0, 0, 1]
+    else:
+      print 'Error: invalid slice mode %s' % sliceMode
+      raise Exception('Error: invalid slice mode %s' % sliceMode)
 
-    self.bounds = self.srcObj.GetDataInformation().DataInformation.GetBounds()
-    (midx, midy, midz) = ((self.bounds[1] + self.bounds[0]) / 2.0,
-                          (self.bounds[3] + self.bounds[2]) / 2.0,
-                          (self.bounds[5] + self.bounds[4]) / 2.0)
+    view.CameraParallelScale = cameraParallelScale
+    view.CameraViewUp = cameraViewUp
+    view.CameraPosition = cameraPosition
+
+    self.rep.Slice = sliceNum
+    self.rep.SliceMode = sliceMode
+
+    self.sliceMode = sliceMode
+    simple.Render()
+    return {'slice': sliceNum,
+            'maxSlices': maxSlices}
+
+
+  @exportRpc("changeSlice")
+  def changeSlice(self, sliceNum):
+    self.rep.Slice = sliceNum
+    simple.Render()
+
+
+  @exportRpc("changeWindow")
+  def changeWindow(self, points):
+    self.lookupTable.RGBPoints = points
+    simple.Render()
+
+
+  @exportRpc("sliceRender")
+  def sliceRender(self, sliceMode):
+    global view
+    self.__extractVolumeImageData()
+    (midx, midy, midz) = (self.center[0], self.center[1], self.center[2])
     (lenx, leny, lenz) = (self.bounds[1] - self.bounds[0],
                           self.bounds[3] - self.bounds[2],
                           self.bounds[5] - self.bounds[4])
     maxDim = max(lenx, leny, lenz)
-    self.center = [midx, midy, midz]
+    # Adjust camera properties appropriately
+    view.CameraFocalPoint = self.center
+    view.CenterOfRotation = self.center
+    view.CenterAxesVisibility = False
+    view.OrientationAxesVisibility = False
+    view.CameraParallelProjection = True
+
+    # Configure data representation
+    rgbPoints = [self.scalarRange[0], 0, 0, 0, self.scalarRange[1], 1, 1, 1]
+    self.lookupTable = simple.GetLookupTableForArray(self.colorArrayName, 1)
+    self.lookupTable.RGBPoints = rgbPoints
+    self.lookupTable.ScalarRangeInitialized = 1.0
+    self.lookupTable.ColorSpace = 0  # 0 corresponds to RGB
+
+    self.rep.ColorArrayName = self.colorArrayName
+    self.rep.Representation = 'Slice'
+    self.rep.LookupTable = self.lookupTable
+
+    sliceInfo = self.setSliceMode(sliceMode)
+
+    simple.Show()
+    simple.Render()
+    return {'scalarRange': self.scalarRange,
+            'bounds': self.bounds,
+            'sliceInfo': sliceInfo}
+
+
+  @exportRpc("volumeRender")
+  def volumeRender(self):
+    global view
+    self.__extractVolumeImageData()
+    (lenx, leny, lenz) = (self.bounds[1] - self.bounds[0],
+                          self.bounds[3] - self.bounds[2],
+                          self.bounds[5] - self.bounds[4])
+    (midx, midy, midz) = (self.center[0], self.center[1], self.center[2])
+    maxDim = max(lenx, leny, lenz)
     # Adjust camera properties appropriately
     view.CameraFocalPoint = self.center
     view.CenterOfRotation = self.center
@@ -132,7 +228,6 @@ class MidasApp(web.ParaViewServerProtocol):
 
     # Create RGB transfer function
     rgbPoints = [self.scalarRange[0], 0, 0, 0, self.scalarRange[1], 1, 1, 1]
-    self.colorArrayName = self.imageData.Name
     self.lookupTable = simple.GetLookupTableForArray(self.colorArrayName, 1)
     self.lookupTable.RGBPoints = rgbPoints
     self.lookupTable.ScalarRangeInitialized = 1.0
@@ -144,7 +239,7 @@ class MidasApp(web.ParaViewServerProtocol):
     self.sof = simple.CreatePiecewiseFunction()
     self.sof.Points = sofPoints
 
-    self.rep.ColorArrayName = self.imageData.Name
+    self.rep.ColorArrayName = self.colorArrayName
     self.rep.Representation = 'Volume'
     # TODO don't use texture mapping only unless we have GPU issues...
     self.rep.VolumeRenderingMode = 'Texture Mapping Only'

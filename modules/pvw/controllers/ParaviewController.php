@@ -269,24 +269,17 @@ class Pvw_ParaviewController extends Pvw_AppController
     $header .= ' Volume rendering: <a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
     $this->view->header = $header;
     $this->view->json['pvw']['item'] = $item;
+    $this->view->item = $item;
     }
 
   /**
    * Use the axial slice view mode for MetaImage volume data
    * @param itemId The id of the MetaImage item to visualize
-   * @param operations (Optional) Actions to allow from the slice view, separated by ;
    * @param jsImports (Optional) List of javascript files to import. These should contain handler
    *                             functions for imported operations. Separated by ;
-   * @param meshes (Optional) List of item ids to also load into the scene as meshes
    */
   public function sliceAction()
     {
-    $operations = $this->_getParam('operations');
-    if(!isset($operations))
-      {
-      $operations = '';
-      }
-
     $jsImports = $this->_getParam('jsImports');
     if(isset($jsImports))
       {
@@ -296,147 +289,26 @@ class Pvw_ParaviewController extends Pvw_AppController
       {
       $this->view->jsImports = array();
       }
+    $itemId = $this->_getParam('itemId');
+    if(!isset($itemId))
+      {
+      throw new Zend_Exception('Must pass itemId param', 400);
+      }
+    $item = $this->Item->load($itemId);
+    if(!$item)
+      {
+      throw new Zend_Exception('Invalid itemId', 404);
+      }
+    if(!$this->Item->policyCheck($item, $this->userSession->Dao))
+      {
+      throw new Zend_Exception('Read permission required', 403);
+      }
 
-    $meshes = $this->_getParam('meshes');
-    if(isset($meshes))
-      {
-      $meshes = explode(';', $meshes);
-      }
-    else
-      {
-      $meshes = array();
-      }
-
-    $itemid = $this->_getParam('itemId');
-    $item = $this->Item->load($itemid);
-    if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
-      {
-      throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
-      }
     $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/sliceView.png" />';
-    $header .= ' Slice view: <a href="'.$this->view->webroot.'/item/'.$itemid.'">'.$item->getName().'</a>';
+    $header .= ' Slice view: <a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
     $this->view->header = $header;
-
-    $modulesConfig = Zend_Registry::get('configsModules');
-    $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
-    $useparaview = $modulesConfig['visualize']->useparaview;
-    $usesymlinks = $modulesConfig['visualize']->usesymlinks;
-    $pwapp = $modulesConfig['visualize']->pwapp;
-    if(!isset($useparaview) || !$useparaview)
-      {
-      throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
-      }
-
-    if(!isset($paraviewworkdir) || empty($paraviewworkdir))
-      {
-      throw new Zend_Exception('Please set the ParaView work directory');
-      }
-
-    $pathArray = $this->ModuleComponent->Main->createParaviewPath();
-    $path = $pathArray['path'];
-    $tmpFolderName = $pathArray['foderName'];
-
-    $revision = $this->Item->getLastRevision($item);
-    $bitstreams = $revision->getBitstreams();
-    foreach($bitstreams as $bitstream)
-      {
-      if($usesymlinks)
-        {
-        symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
-        }
-      else
-        {
-        copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
-        }
-
-      $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
-      switch($ext)
-        {
-        case 'mha':
-          $colorArrayName = 'MetaImage';
-          break;
-        case 'nrrd':
-          $colorArrayName = 'ImageFile';
-          break;
-        default:
-          break;
-        }
-      if($ext != 'pvsm')
-        {
-        $filePath = $paraviewworkdir.'/'.$tmpFolderName.'/'.$bitstream->getName();
-        }
-      }
-
-    // Load in other mesh sources
-    $meshObj = array();
-    foreach($meshes as $meshId)
-      {
-      $otherItem = $this->Item->load($meshId);
-      if($otherItem === false || !$this->Item->policyCheck($otherItem, $this->userSession->Dao, MIDAS_POLICY_READ))
-        {
-        throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
-        }
-      $revision = $this->Item->getLastRevision($otherItem);
-      $bitstreams = $revision->getBitstreams();
-      foreach($bitstreams as $bitstream)
-        {
-        $otherFile = $path.'/'.$bitstream->getName();
-        if($usesymlinks)
-          {
-          symlink($bitstream->getFullPath(), $otherFile);
-          }
-        else
-          {
-          copy($bitstream->getFullPath(), $otherFile);
-          }
-        }
-      // Use metadata values for mesh color and orientation if they exist
-      $metadata = $this->ItemRevision->getMetadata($revision);
-      $diffuseColor = array(1.0, 0.0, 0.0); //default to red mesh
-      $orientation = array(0.0, 0.0, 0.0); //default to no orientation transform
-      foreach($metadata as $metadatum)
-        {
-        if(strtolower($metadatum->getElement()) == 'visualize')
-          {
-          if(strtolower($metadatum->getQualifier()) == 'diffusecolor')
-            {
-            try //must be json encoded, otherwise we ignore it and use the default
-              {
-              $diffuseColor = json_decode($metadatum->getValue());
-              }
-            catch(Exception $e)
-              {
-              $this->getLogger()->warn('Invalid diffuseColor metadata value (id='.$meshId.')');
-              }
-            }
-          if(strtolower($metadatum->getQualifier()) == 'orientation')
-            {
-            try //must be json encoded, otherwise we ignore it and use the default
-              {
-              $orientation = json_decode($metadatum->getValue());
-              }
-            catch(Exception $e)
-              {
-              $this->getLogger()->warn('Invalid orientation metadata value (id='.$meshId.')');
-              }
-            }
-          }
-        }
-      $meshObj[] = array('path' => $otherFile, 'item' => $otherItem, 'visible' => true,
-                         'diffuseColor' => $diffuseColor,
-                         'orientation' => $orientation);
-      }
-
-    $this->view->json['visualize']['url'] = $filePath;
-    $this->view->json['visualize']['operations'] = $operations;
-    $this->view->json['visualize']['meshes'] = $meshObj;
-    $this->view->json['visualize']['colorArrayName'] = $colorArrayName;
-    $this->view->json['visualize']['item'] = $item;
-    $this->view->json['visualize']['hostname'] = $this->_getHostName();
-    $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwapp);
-    $this->view->operations = $operations;
-    $this->view->fileLocation = $filePath;
-    $this->view->itemDao = $item;
+    $this->view->json['pvw']['item'] = $item;
+    $this->view->item = $item;
     }
 
   /**
