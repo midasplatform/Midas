@@ -461,7 +461,7 @@ midas.pvw.start = function () {
         sessionURL: 'ws://'+location.hostname+':'+midas.pvw.instance.port+'/ws',
         id: midas.pvw.instance.instance_id,
         sessionManagerURL: json.global.webroot + '/pvw/paraview/instance',
-        interactiveQuality: 50
+        interactiveQuality: 60
     };
     midas.pvw.loadData();
 };

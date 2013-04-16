@@ -14,23 +14,16 @@ PURPOSE.  See the above copyright notices for more information.
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.css" />
 
 <?php
-$this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/get_modules.js');
-$this->headScript()->appendFile('/PWService/js/ParaViewWeb.js');
-$this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.surface.js');
-$this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/common.ajaxapi.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/import/ext/js-core/autobahn.min.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/import/lib/js/paraview-all.js');
 
-/** Dynamic js library imports for action handlers */
-foreach($this->jsImports as $jsImport)
-  {
-  $this->headScript()->appendFile($jsImport);
-  }
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.common.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.surface.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/layout/midas.progress.js');
+$this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/common.ajaxapi.js');
 ?>
 
-<?php echo $this->staticRoot; exit(); ?>
-
 <div class="viewMain">
-  <img class="visuLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-  <span id="loadingStatus"></span>
 
   <div id='renderercontainer' style="">
     <div id='rendererOverlay'></div>
@@ -43,25 +36,18 @@ foreach($this->jsImports as $jsImport)
   <h1>Display</h1>
     <ul>
       <li>
-        <a onclick="midas.visualize.resetCamera();">
+        <a onclick="midas.pvw.resetCamera();">
         <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/camera_go.png"/>
         Reset Camera
         </a>
       </li>
       <li>
-        <a onclick="midas.visualize.toggleEdges();">
+        <a onclick="midas.pvw.toggleEdges();">
         <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/pqUnstructuredGrid16.png"/>
         Show Edges
         </a>
       </li>
     </ul>
-  </div>
-  <div class="sideElement">
-    <h1>Renderer</h1>
-    <select disabled="disabled" id="rendererSelect">
-      <option selected="selected" value="js">Server side</option>
-      <option value="webgl">WebGL</option>
-    </select>
   </div>
   <div class="sideElement">
     <h1>Info</h1>
@@ -75,4 +61,3 @@ foreach($this->jsImports as $jsImport)
 
 <!-- UI Action widget templates -->
 <button id="actionButtonTemplate" style="display: none;" class="actionButton actionInactive"></button>
-
