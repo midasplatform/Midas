@@ -37,7 +37,7 @@ def initView(width, height):
 
 # This class defines the exposed RPC methods for the midas application
 class MidasApp(web.ParaViewServerProtocol):
-  DISTANCE_FACTOR = 1.6
+  DISTANCE_FACTOR = 2
   colorArrayName = None
   sof = None
   lookupTable = None
@@ -172,6 +172,35 @@ class MidasApp(web.ParaViewServerProtocol):
   @exportRpc("changeWindow")
   def changeWindow(self, points):
     self.lookupTable.RGBPoints = points
+    simple.Render()
+
+
+  @exportRpc("surfaceRender")
+  def surfaceRender(self):
+    self.bounds = self.srcObj.GetDataInformation().DataInformation.GetBounds()
+    self.center = [(self.bounds[1] + self.bounds[0]) / 2.0,
+                   (self.bounds[3] + self.bounds[2]) / 2.0,
+                   (self.bounds[5] + self.bounds[4]) / 2.0]
+
+    self.cameraPreset('+x')
+    self.rep.Representation = 'Surface'
+    nbPoints = self.srcObj.GetDataInformation().GetNumberOfPoints()
+    nbCells = self.srcObj.GetDataInformation().GetNumberOfCells()
+
+    simple.Show()
+    simple.Render()
+    return {'bounds': self.bounds,
+            'nbPoints': nbPoints,
+            'nbCells': nbCells}
+
+
+  @exportRpc("toggleEdges")
+  def toggleEdges(self):
+    if self.rep.Representation == 'Surface':
+      self.rep.Representation = 'Surface With Edges'
+    else:
+      self.rep.Representation = 'Surface'
+
     simple.Render()
 
 
