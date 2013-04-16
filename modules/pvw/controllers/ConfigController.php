@@ -23,6 +23,8 @@ class Pvw_ConfigController extends Pvw_AppController
 {
   public $_moduleForms = array('Config');
   public $_models = array('Setting');
+  public $_moduleModels = array('Instance');
+  public $_moduleComponents = array('Paraview');
 
   /**
    * Renders the module configuration page
@@ -51,6 +53,7 @@ class Pvw_ConfigController extends Pvw_AppController
    */
   function submitAction()
     {
+    $this->requireAdminPrivileges();
     $this->disableLayout();
     $this->disableView();
 
@@ -59,6 +62,24 @@ class Pvw_ConfigController extends Pvw_AppController
     $this->Setting->setConfig('pvpython', $pvpython, $this->moduleName);
     $this->Setting->setConfig('ports', $ports, $this->moduleName);
     echo JsonComponent::encode(array(true, 'Changes saved'));
+    }
+
+  /**
+   * Render the admin status tab
+   */
+  function statusAction()
+    {
+    $this->requireAdminPrivileges();
+    $this->disableLayout();
+
+    $instances = $this->Pvw_Instance->getAll();
+    $this->view->instances = array();
+    foreach($instances as $instance)
+      {
+      $this->view->instances[] = array(
+        'dao' => $instance,
+        'status' => $this->ModuleComponent->Paraview->isRunning($instance));
+      }
     }
 
 }//end class

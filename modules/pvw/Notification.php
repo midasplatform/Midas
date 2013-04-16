@@ -27,6 +27,7 @@ class Pvw_Notification extends MIDAS_Notification
   public function init()
     {
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
+    $this->addCallBack('CALLBACK_CORE_ADMIN_TABS', 'getAdminTab');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemViewLink');
     }//end init
 
@@ -81,5 +82,14 @@ class Pvw_Notification extends MIDAS_Notification
     $staticDb = array(is_dir($staticDir), $staticDir);
 
     return array('pvpython is executable' => $pvpDb, 'Static content directory' => $staticDb);
+    }
+
+  /**
+   * Return the ParaViewWeb admin tab link
+   */
+  public function getAdminTab()
+    {
+    $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
+    return array('ParaViewWeb' => $webroot.'/'.$this->moduleName.'/config/status');
     }
   } //end class

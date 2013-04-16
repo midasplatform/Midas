@@ -1,0 +1,47 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/config/config.status.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.status.css" />
+
+<div class="viewMain">
+  <h3>ParaViewWeb instance list</h3>
+  <?php if(count($this->instances) == 0)
+    {
+    echo 'There are no instances in the database at this time';
+    }
+  else
+    { ?>
+    <table class="instances">
+      <thead>
+        <tr><th>Id</th><th>Port</th><th>PID</th><th>Created</th><th>Status</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <?php
+        foreach($this->instances as $row)
+          {
+          $instance = $row['dao'];
+          $status = $row['status'];
+          echo '<tr key="'.$instance->getKey().'"><td>'.$instance->getKey().'</td><td>'.$instance->getPort().
+               '</td><td>'.$instance->getPid().'</td><td>'.$instance->getCreationDate().
+               '</td><td>'.($status ? '<span class="running">Running</span>' :
+                                      '<span class="dead">Dead</span>');
+
+          echo '</td><td><img qtip="Kill instance" alt="" class="killInstance" key="'.$instance->getKey().
+               '" src="'.$this->coreWebroot.'/public/images/icons/close.png"/></td></tr>';
+          }
+        ?>
+      </tbody>
+    </table>
+  <?php
+    } ?>
+</div>
