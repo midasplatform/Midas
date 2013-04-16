@@ -120,7 +120,10 @@ class Pvw_ParaviewComponent extends AppComponent
    */
   public function killInstance($instance)
     {
-    exec('kill -9 '.$instance->getPid());
+    if($instance->getPid())
+      {
+      exec('kill -9 '.$instance->getPid());
+      }
 
     UtilityComponent::rrmdir(BASE_PATH.'/tmp/pvw-data/'.$instance->getKey());
 

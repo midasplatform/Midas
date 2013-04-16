@@ -29,6 +29,15 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
     <li><a href="<?php echo $this->webroot?>/admin/upgrade">Upgrade</a></li>
     <li><a href="<?php echo $this->webroot?>/admin/dashboard">Dashboard</a></li>
     <li><a href="<?php echo $this->webroot?>/admin/showlog">Logs</a></li>
+    <?php
+    foreach($this->extraTabs as $module => $tabs)
+      {
+      foreach($tabs as $name => $link)
+        {
+        echo '<li><a href="'.$link.'">'.$name.'</a></li>';
+        }
+      }
+    ?>
   </ul>
     <div id="tabs-configuration">
      <?php
@@ -263,9 +272,3 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
 
 
 </div>
-
-
-
-
-
-

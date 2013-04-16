@@ -37,6 +37,7 @@ class Pvw_ParaviewController extends Pvw_AppController
    */
   public function startinstanceAction()
     {
+    set_time_limit(30);
     $this->disableView();
     $this->disableLayout();
 
@@ -83,6 +84,7 @@ class Pvw_ParaviewController extends Pvw_AppController
    */
   public function instanceAction()
     {
+    set_time_limit(30); //in case an exec call hangs for some odd reason
     // TODO just plug this into the restful stuff
     $this->disableLayout();
     $this->disableView();
@@ -97,7 +99,7 @@ class Pvw_ParaviewController extends Pvw_AppController
       throw new Zend_Exception('Invalid instance id: '.$pathParams[0], 400);
       }
     $this->ModuleComponent->Paraview->killInstance($instanceDao);
-    echo JsonComponent::encode(array());
+    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Instance destroyed'));
     }
 
   /**

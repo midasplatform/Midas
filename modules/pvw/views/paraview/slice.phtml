@@ -75,6 +75,23 @@ foreach($this->jsImports as $jsImport)
       </li>
     </ul>
   </div>
+  <div class="sideElementActions viewAction">
+    <h1>Other</h1>
+    <ul>
+      <li>
+        <a href="javascript:;" id="shareSessionLink">
+        <img alt="" src="<?php echo $this->coreWebroot;?>/public/images/icons/link.png"/>
+        Share Session
+        </a>
+      </li>
+      <li>
+        <a href="<?php echo $this->webroot?>/pvw/paraview/volume?itemId=<?php echo $this->item->getKey()?>">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/volume.png"/>
+        Switch to Volume Rendering
+        </a>
+      </li>
+    </ul>
+  </div>
   <div class="sideElement">
     <h1>Info</h1>
     Bounds (x): <span id="boundsXInfo" class="infoValue"></span><br/>
