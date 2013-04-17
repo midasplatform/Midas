@@ -1,6 +1,11 @@
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
 
+midas.pvw.instructionsContent = '<h4>Camera Interaction</h4>' +
+  '<p><b>Left-click and drag</b> to rotate.</p>' +
+  '<p><b>Right-click and drag</b> to zoom.</p>' +
+  '<p><b>Alt+click and drag</b> to pan.</p>';
+
 /**
  * When startinstance returns, this is called.
  * It sets the instance in global scope and calls midas.pvw.start()
@@ -100,6 +105,9 @@ $(window).load(function () {
           + 'Make sure you symlink to the <b>www</b> directory in your ParaView build directory '
           + 'as <b>modules/pvw/public/import</b>.');
     }
+    $('a.pvwInstructions').click(function () {
+        midas.showDialogWithContent('Instructions', midas.pvw.instructionsContent, false);
+    });
 });
 
 window.onunload = function () {
