@@ -62,7 +62,6 @@ class Pvw_Notification extends MIDAS_Notification
     {
     $settingModel = MidasLoader::loadModel('Setting');
     $pvpython = $settingModel->getValueByName('pvpython', 'pvw');
-    $staticDir = $settingModel->getValueByName('staticcontent', 'pvw');
 
     // Validate pvpython setting
     if(!$pvpython)
@@ -75,10 +74,7 @@ class Pvw_Notification extends MIDAS_Notification
       }
 
     // Validate static content directory setting
-    if(!$staticDir)
-      {
-      $staticDir = BASE_PATH.'/modules/pvw/public/pvw';
-      }
+    $staticDir = BASE_PATH.'/modules/pvw/public/import';
     $staticDb = array(is_dir($staticDir), $staticDir);
 
     return array('pvpython is executable' => $pvpDb, 'Static content directory' => $staticDb);
