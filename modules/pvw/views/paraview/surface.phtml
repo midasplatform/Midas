@@ -15,6 +15,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 <?php
 $this->headScript()->appendFile($this->moduleWebroot.'/public/import/ext/js-core/autobahn.min.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/import/ext/js-core/gl-matrix-min.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/import/lib/js/paraview-all.js');
 
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.common.js');
@@ -48,6 +49,13 @@ $this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/co
         </a>
       </li>
     </ul>
+  </div>
+  <div class="sideElement">
+    <h1>Renderer</h1>
+    <select disabled="disabled" id="rendererSelect">
+      <option selected="selected" value="image">Server side</option>
+      <option value="webgl">WebGL</option>
+    </select>
   </div>
   <div class="sideElement">
     <h1>Info</h1>
