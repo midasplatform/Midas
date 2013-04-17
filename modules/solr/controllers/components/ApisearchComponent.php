@@ -62,7 +62,48 @@ class Solr_ApisearchComponent extends AppComponent
       $item = $itemModel->load($itemId);
       if($item && $itemModel->policyCheck($item, $userDao))
         {
-        $items[] = array('name' => $item->getName(), 'id' => $item->getKey());
+        $itemArray = $item->toArray();
+        $itemInfo = array();
+        $itemInfo['id'] = $itemArray['item_id'];
+        $itemInfo['name'] = $itemArray['name'];
+        $itemInfo['description'] = $itemArray['description'];
+        $itemInfo['size'] = $itemArray['sizebytes'];
+        $itemInfo['date_created'] = $itemArray['date_creation'];
+        $itemInfo['date_updated'] = $itemArray['date_update'];
+        $itemInfo['uuid'] = $itemArray['uuid'];
+        $itemInfo['views'] = $itemArray['view'];
+        $itemInfo['downloads'] = $itemArray['download'];
+        $itemInfo['public'] = $itemArray['privacy_status'] == 0;
+        $owningFolders = $item->getFolders();
+        if(count($owningFolders) > 0)
+          {
+          $itemInfo['folder_id'] = $owningFolders[0]->getKey();
+          }
+
+        $revisionsArray = array();
+        $revisions = $item->getRevisions();
+        foreach($revisions as $revision)
+          {
+          if(!$revision)
+            {
+            continue;
+            }
+          $tmp = $revision->toArray();
+          $revisionsArray[] = $tmp['itemrevision_id'];
+         }
+        $itemInfo['revisions'] = $revisionsArray;
+        // get bitstreams only from last revision
+        $bitstreamArray = array();
+        $headRevision = $itemModel->getLastRevision($item);
+        $bitstreams = $headRevision->getBitstreams();
+        foreach($bitstreams as $b)
+          {
+          $btmp = $b->toArray();
+          $bitstreamArray[] = $btmp['bitstream_id'];
+          }
+        $itemInfo['bitstreams'] = $bitstreamArray;
+
+        $items[] = $itemInfo;
         $count++;
         if($count >= $limit)
           {
