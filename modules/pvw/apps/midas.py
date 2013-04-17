@@ -270,8 +270,6 @@ class MidasApp(web.ParaViewServerProtocol):
 
     self.rep.ColorArrayName = self.colorArrayName
     self.rep.Representation = 'Volume'
-    # TODO don't use texture mapping only unless we have GPU issues...
-    self.rep.VolumeRenderingMode = 'Texture Mapping Only'
     self.rep.ScalarOpacityFunction = self.sof
     self.rep.LookupTable = self.lookupTable
     simple.Show()
@@ -308,7 +306,6 @@ class MidasApp(web.ParaViewServerProtocol):
     self.rep.ScalarOpacityFunction = self.sof
     self.rep.ColorArrayName = self.colorArrayName
     self.rep.Representation = 'Volume'
-    self.rep.VolumeRenderingMode = 'Texture Mapping Only'
     self.rep.SelectionPointFieldDataArrayName = self.colorArrayName
     self.rep.LookupTable = self.lookupTable
 
