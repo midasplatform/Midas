@@ -31,11 +31,12 @@ class Pvw_ConfigForm extends AppForm
 
     $pvpython = new Zend_Form_Element_Text('pvpython');
     $ports = new Zend_Form_Element_Text('ports');
+    $displayEnv = new Zend_Form_Element_text('displayEnv');
 
     $submit = new Zend_Form_Element_Submit('submitConfig');
     $submit->setLabel('Save configuration');
 
-    $form->addElements(array($pvpython, $ports, $submit));
+    $form->addElements(array($pvpython, $ports, $displayEnv, $submit));
     return $form;
     }
 } // end class

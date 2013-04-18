@@ -33,6 +33,11 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
       <label for='ports'>Ports</label>
       <?php echo $this->configForm['ports']?>
     </div>
+    <div qtip="If the DISPLAY env var should be set when running ParaViewWeb, set its contents here.
+               You may need to run <b>xhost +www-data@localhost</b> to allow Midas to connect to the X server.">
+      <label for='displayEnv'>DISPLAY env var</label>
+      <?php echo $this->configForm['displayEnv']?>
+    </div>
     <div class="submitContainer">
       <?php echo $this->configForm['submitConfig']?>
     </div>
