@@ -6,14 +6,7 @@ midas.pvw.start = function () {
         midas.pvw.preInitCallback();
     }
     midas.pvw.renderer = $('#rendererSelect').val();
-    pv = {};
-    pv.connection = {
-        sessionURL: 'ws://'+location.hostname+':'+midas.pvw.instance.port+'/ws',
-        id: midas.pvw.instance.instance_id,
-        sessionManagerURL: json.global.webroot + '/pvw/paraview/instance',
-        interactiveQuality: 60,
-        renderer: midas.pvw.renderer
-    };
+    pv.connection.renderer = midas.pvw.renderer;
     midas.pvw.loadData();
 };
 

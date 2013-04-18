@@ -70,14 +70,18 @@ class Pvw_ParaviewComponent extends AppComponent
     $instance->setPort($port);
     $instance->setSid(''); // todo?
     $instance->setCreationDate(date('c'));
-    $instance->setSecret(UtilityComponent::generateRandomString(64, '0123456789abcdef'));
+    $instance->setSecret(UtilityComponent::generateRandomString(32, '0123456789abcdef'));
 
     $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
     $instanceModel->save($instance);
 
     $dataPath = $this->_createDataDir($item, $instance);
 
-    $cmdArray = array($pvpython, $application, '--port', $port, '--data', $dataPath, '--timeout', '900');
+    $cmdArray = array($pvpython, $application,
+                      '--port', $port,
+                      '--data', $dataPath,
+                      '--authkey', $instance->getSecret(),
+                      '--timeout', '900');
 
     // Now start the instance
     $displayEnv = $settingModel->getValueByName('displayEnv', 'pvw');
