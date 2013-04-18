@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** 
+/**
  * This component conatins method for testing
  * whether a Midas item can be visualized using
  * various paraviewweb apps
@@ -35,7 +35,7 @@ class Pvw_ValidationComponent extends AppComponent
   /** Test whether we can visualize with surface model viewer */
   public function canVisualizeWithSurfaceView($itemDao)
     {
-    return $this->_testItem($itemDao, array('vtk', 'vtp', 'ply'));
+    return $this->_testItem($itemDao, array('vtk', 'vtp', 'ply', 'obj'));
     }
 
   /** Helper function to test if an item matches a list of extensions */

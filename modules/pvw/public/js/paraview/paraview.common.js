@@ -21,6 +21,14 @@ midas.pvw._commonStart = function (text) {
     }
     if(resp && resp.status == 'ok' && resp.instance) {
         midas.pvw.instance = resp.instance;
+        pv = {};
+        pv.connection = {
+            sessionURL: 'ws://'+location.hostname+':'+midas.pvw.instance.port+'/ws',
+            id: midas.pvw.instance.instance_id,
+            sessionManagerURL: json.global.webroot + '/pvw/paraview/instance',
+            authKey: midas.pvw.instance.secret,
+            interactiveQuality: 60,
+        };
         midas.pvw.start();
     }
     else {
