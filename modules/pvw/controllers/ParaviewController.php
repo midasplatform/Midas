@@ -74,7 +74,7 @@ class Pvw_ParaviewController extends Pvw_AppController
       {
       echo JsonComponent::encode(array(
         'status' => 'error',
-        'message' => $e->getMessage()
+        'message' => nl2br($e->getMessage())
         ));
       }
     }

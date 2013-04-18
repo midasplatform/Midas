@@ -38,12 +38,14 @@ class Pvw_ConfigController extends Pvw_AppController
 
     $pvpython = $this->Setting->getValueByName('pvpython', $this->moduleName);
     $ports = $this->Setting->getValueByName('ports', $this->moduleName);
+    $displayEnv = $this->Setting->getValueByName('displayEnv', $this->moduleName);
     if(!$ports)
       {
       $ports = '9000,9001';
       }
     $formArray['pvpython']->setValue($pvpython);
     $formArray['ports']->setValue($ports);
+    $formArray['displayEnv']->setValue($displayEnv);
 
     $this->view->configForm = $formArray;
     }
@@ -59,8 +61,10 @@ class Pvw_ConfigController extends Pvw_AppController
 
     $pvpython = $this->_getParam('pvpython');
     $ports = $this->_getParam('ports');
+    $displayEnv = $this->_getParam('displayEnv');
     $this->Setting->setConfig('pvpython', $pvpython, $this->moduleName);
     $this->Setting->setConfig('ports', $ports, $this->moduleName);
+    $this->Setting->setConfig('displayEnv', $displayEnv, $this->moduleName);
     echo JsonComponent::encode(array(true, 'Changes saved'));
     }
 

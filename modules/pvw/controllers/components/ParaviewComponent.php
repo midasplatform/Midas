@@ -80,13 +80,21 @@ class Pvw_ParaviewComponent extends AppComponent
     $cmdArray = array($pvpython, $application, '--port', $port, '--data', $dataPath, '--timeout', '900');
 
     // Now start the instance
+    $displayEnv = $settingModel->getValueByName('displayEnv', 'pvw');
+    if(!empty($displayEnv))
+      {
+      putenv('DISPLAY='.$displayEnv);
+      }
     $cmd = join(' ', $cmdArray);
     exec(sprintf("%s > %s 2>&1 & echo $!", $cmd, $dataPath.'/pvw.log'), $output);
     $pid = trim(join('', $output));
-    if(!is_numeric($pid))
+    if(!is_numeric($pid) || $pid == 0)
       {
       throw new Zend_Exception('Expected pid output, got: '.$pid, 500);
       }
+    $instance->setPid($pid);
+    $instanceModel->save($instance);
+
     if($progressDao)
       {
       $step++;
@@ -106,7 +114,11 @@ class Pvw_ParaviewComponent extends AppComponent
       }
     if(!$portOpen)
       {
-      throw new Zend_Exception('Instance did not bind to port within '.MIDAS_PVW_STARTUP_TIMEOUT.' seconds', 500);
+      $log = file_get_contents($dataPath.'/pvw.log');
+      $errMsg = 'Instance did not bind to port within '.MIDAS_PVW_STARTUP_TIMEOUT.' seconds.';
+      $errMsg .= "\n\n<b>Log content:</b> ".$log;
+      $this->killInstance($instance);
+      throw new Zend_Exception($errMsg, 500);
       }
 
     $instance->setPid($pid);
