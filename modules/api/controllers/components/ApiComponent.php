@@ -135,9 +135,7 @@ class Api_ApiComponent extends AppComponent
    */
   public function info($args)
     {
-    return array_merge($this->version($args),
-                       $this->modulesList($args),
-                       $this->methodsList($args));
+    return $this->_callCoreApiMethod($args, 'info', 'system');
     }
 
   /**
