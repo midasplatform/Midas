@@ -661,4 +661,5 @@ class UtilityComponent extends AppComponent
       }
     return $salt;
     }
+
 } // end class

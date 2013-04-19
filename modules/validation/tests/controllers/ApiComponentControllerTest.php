@@ -18,7 +18,6 @@ class ApiControllerTest extends ControllerTestCase
   public function setUp()
     {
     $this->setupDatabase(array('default')); //core dataset
-    $this->setupDatabase(array('default'), 'api'); // module dataset
     $this->setupDatabase(array('default'), 'validation'); // module dataset
     $this->enabledModules = array('api', 'validation');
     $this->_models = array('User', 'Folder');
@@ -57,7 +56,7 @@ class ApiControllerTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
 
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi');
     $userApiModel->createDefaultApiKey($userDao);
     $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
 
@@ -85,7 +84,7 @@ class ApiControllerTest extends ControllerTestCase
     $userDao->setAdmin(1);
     $this->User->save($userDao);
 
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi');
     $userApiModel->createDefaultApiKey($userDao);
     $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
 

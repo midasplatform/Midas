@@ -24,8 +24,7 @@ class ApiKeyControllerTest extends ControllerTestCase
   /** set up tests */
   public function setUp()
     {
-    $this->setupDatabase(array('default')); //core dataset
-    $this->setupDatabase(array('default'), 'api'); // module dataset
+    $this->setupDatabase(array('default', 'userapi')); //core dataset
     $this->enabledModules = array('api');
     $this->_models = array('User');
     $this->_daos = array('User');
@@ -41,7 +40,7 @@ class ApiKeyControllerTest extends ControllerTestCase
     $this->User->changePassword($userDao, 'test');
     $this->User->save($userDao);
 
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi');
     $userApiModel->createDefaultApiKey($userDao);
     $preKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
     $this->assertEquals(strlen($preKey), 32);
@@ -74,27 +73,9 @@ class ApiKeyControllerTest extends ControllerTestCase
     $this->dispatchUrI($page);
 
     // Check that their default api key was created
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi');
     $key = $userApiModel->getByAppAndEmail('Default', 'some.user@server.com')->getApikey();
     $this->assertNotEmpty($key);
     }
 
-  /**
-   * Make sure that existing users get a default api key
-   * created for them when the web api module is installed
-   */
-  public function testExistingUsersGetDefaultKeysOnInstall()
-    {
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
-    $userApiDao = $userApiModel->getByAppAndEmail('Default', 'user1@user1.com');
-
-    $this->assertTrue($userApiDao == false, 'Key should not exist before install');
-    $utilityComponent = MidasLoader::loadComponent('Utility');
-    $utilityComponent->installModule('api');
-
-    $userApiDao = $userApiModel->getByAppAndEmail('Default', 'user1@user1.com');
-
-    $this->assertTrue($userApiDao != false, 'Api key was not created for existing user');
-    $this->assertNotEmpty($userApiDao->getApikey());
-    }
   }

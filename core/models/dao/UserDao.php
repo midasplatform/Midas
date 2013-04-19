@@ -46,8 +46,9 @@ class UserDao extends AppDao
   public function toArray()
     {
     $return = parent::toArray();
-    unset($return['email']);
     unset($return['password']);
+    unset($return['hash_alg']);
+    unset($return['salt']);
     return $return;
     }
   }

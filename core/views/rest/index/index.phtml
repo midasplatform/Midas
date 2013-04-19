@@ -1,0 +1,46 @@
+<?php
+/*=========================================================================
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+=========================================================================*/
+
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/jquery.slideto.min.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/jquery.wiggle.min.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/jquery.ba-bbq.min.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/highlight.7.3.pack.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/handlebars-1.0.rc.1.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/underscore-min.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/backbone-min.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/swagger.midas.js');
+$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/swagger-ui.midas.js');
+$this->headScript()->appendFile($this->coreWebroot . '/public/js/rest/rest.index.js');
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/library/SwaggerUI/css/screen.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/rest/rest.index.css" />
+
+<div class="viewMain">
+  <pre>Web API URL = Base URL (<?php echo $this->serverURL.$this->webroot?>/rest) + API method URL<br/><br/>e.g. <?php echo $this->serverURL.$this->webroot?>/rest/system/login</pre>
+  <br/>
+    To authenticate requests, you can provide a parameter of <b>token</b> with an authentication token value obtained by calling <b>/system/login</b> api,
+    or to authenticate using the current Midas session you can pass a parameter key of <b>useSession</b>.
+  <br/>
+  <br/>
+    Explore the RESTful API endpoints below, grouped by system resource.
+
+  <div id="swagger-ui-container" class="swagger-ui-wrap">
+  </div>
+</div>

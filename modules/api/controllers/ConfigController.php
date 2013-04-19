@@ -21,78 +21,8 @@
 /** api config controller */
 class Api_ConfigController extends Api_AppController
 {
-  public $_models = array('User');
   public $_moduleForms = array('Config');
-  public $_components = array('Utility', 'Date');
-  public $_moduleModels = array('Userapi');
-
-  /**
-   * Configuration action for a user's api keys
-   * @param userId The id of the user to display
-   */
-  function usertabAction()
-    {
-    $this->disableLayout();
-    if(!$this->logged)
-      {
-      throw new Zend_Exception('Please Log in');
-      }
-
-    $userId = $this->_getParam('userId');
-    if($this->userSession->Dao->getKey() != $userId &&
-       !$this->userSession->Dao->isAdmin())
-      {
-      throw new Zend_Exception('Only admins can view other user api keys');
-      }
-    $user = $this->User->load($userId);
-
-    $this->view->Date = $this->Component->Date;
-
-    $form = $this->ModuleForm->Config->createKeyForm();
-    $formArray = $this->getFormAsArray($form);
-    $formArray['expiration']->setValue('100');
-    $this->view->form = $formArray;
-    // Create a new API key
-    $createAPIKey = $this->_getParam('createAPIKey');
-    $deleteAPIKey = $this->_getParam('deleteAPIKey');
-    if(isset($createAPIKey))
-      {
-      $this->disableView();
-      $applicationName      = $this->_getParam('appplication_name');
-      $tokenExperiationTime = $this->_getParam('expiration');
-      $userapiDao = $this->Api_Userapi->createKey($user, $applicationName, $tokenExperiationTime);
-      if($userapiDao != false)
-        {
-        echo JsonComponent::encode(array(true, $this->t('Changes saved')));
-        }
-      else
-        {
-        echo JsonComponent::encode(array(false, $this->t('Error')));
-        }
-      }
-    else if(isset($deleteAPIKey))
-      {
-      $this->disableView();
-      $element = $this->_getParam('element');
-      $userapiDao = $this->Api_Userapi->load($element);
-      // Make sure the key belongs to the user
-      if($userapiDao != false && ($userapiDao->getUserId() == $userId || $this->userSession->Dao->isAdmin()))
-        {
-        $this->Api_Userapi->delete($userapiDao);
-        echo JsonComponent::encode(array(true, $this->t('Changes saved')));
-        }
-      else
-        {
-        echo JsonComponent::encode(array(false, $this->t('Error')));
-        }
-      }
-
-    // List the previously generated API keys
-    $apikeys = array();
-    $userapiDaos = $this->Api_Userapi->getByUser($user);
-    $this->view->userapiDaos = $userapiDaos;
-    $this->view->user = $user;
-    }
+  public $_components = array('Utility');
 
   /** index action*/
   function indexAction()
