@@ -83,7 +83,7 @@ class Api_ApiComponent extends AppComponent
    */
   public function version($args)
     {
-    return $this->_callCoreApiMethod($args, 'version', 'Apisystem');
+    return $this->_callCoreApiMethod($args, 'version', 'system');
     }
 
   /**
@@ -92,7 +92,7 @@ class Api_ApiComponent extends AppComponent
    */
   public function modulesList($args)
     {
-    return $this->_callCoreApiMethod($args, 'modulesList');
+    return $this->_callCoreApiMethod($args, 'modulesList', 'system');
     }
 
   /**
