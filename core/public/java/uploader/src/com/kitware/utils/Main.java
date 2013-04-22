@@ -2,8 +2,6 @@ package com.kitware.utils;
 
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -26,6 +24,10 @@ import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.TableColumn;
 
+import com.kitware.utils.DownloadThread;
+import com.kitware.utils.UploadThread;
+import com.kitware.utils.UploaderFileFilter;
+import com.kitware.utils.Utility;
 import com.kitware.utils.exception.JavaUploaderException;
 
 public class Main extends JApplet
@@ -54,7 +56,6 @@ public class Main extends JApplet
   private long[] fileLengths;
   private int index = 0;
   private long lastTopLevelDownloadOffset = 0;
-  private long currentSize = 0;
   private long transferredBytes = 0;
   private long totalSize = 0;
   private long totalTransferred = 0;
@@ -70,6 +71,7 @@ public class Main extends JApplet
   private URL onSuccessRedirectURLObj;
   boolean onSuccessfulUploadRedirectEnable = true;
   boolean download = false;
+  boolean directory = false;
 
   private String[] fileExtensions;
 
@@ -126,7 +128,6 @@ public class Main extends JApplet
         "[CLIENT] Failed to set applet 'look&feel'", e);
       }
     progressBar = new JProgressBar();
-    progressBar.setStringPainted(true);
 
     // info labels
     fileNameLabel = new JLabel(FILENAME_LABEL_TITLE);
@@ -244,28 +245,31 @@ public class Main extends JApplet
     
     // upload button
     uploadDownloadButton = new JButton("Upload Files");
-    uploadDownloadButton.addActionListener(new java.awt.event.ActionListener()
+    if(!this.directory)
       {
-      public void actionPerformed(ActionEvent evt)
+      uploadDownloadButton.addActionListener(new java.awt.event.ActionListener()
         {
-        uploadFileButtonActionPerformed(evt);
-        }
-      });
+        public void actionPerformed(ActionEvent evt)
+          {
+          uploadFileButtonActionPerformed(evt);
+          }
+        });
+      buttonPanel.add(uploadDownloadButton);
+      }
 
     uploadDirButton = new JButton("Upload Folder");
-    uploadDirButton.addActionListener(new java.awt.event.ActionListener()
+    if(this.directory)
       {
-      public void actionPerformed(ActionEvent evt)
+      uploadDirButton.addActionListener(new java.awt.event.ActionListener()
         {
-        uploadFolderButtonActionPerformed(evt);
-        }
-      });
-
-    buttonPanel.add(uploadDownloadButton);
-    if(!this.isRevisionUpload())
-      {
+        public void actionPerformed(ActionEvent evt)
+          {
+          uploadFolderButtonActionPerformed(evt);
+          }
+        });
       buttonPanel.add(uploadDirButton);
       }
+
     buttonPanel.add(Box.createHorizontalGlue());
 
     // resume button
@@ -340,6 +344,14 @@ public class Main extends JApplet
     if (downloadMode != null)
       {
       this.download = true;
+      }
+    else
+      {
+      String directoryMode = getParameter("directoryMode");
+      if(directoryMode != null)
+        {
+        this.directory = true;
+        }
       }
     Utility.log(Utility.LOG_LEVEL.DEBUG, "[CLIENT] DOWNLOAD MODE ON");
 
@@ -500,6 +512,10 @@ public class Main extends JApplet
   public void setEnableUploadButton(boolean value)
     {
     this.uploadDownloadButton.setEnabled(value);
+    if(this.uploadDirButton != null)
+      {
+      this.uploadDirButton.setEnabled(value);
+      }
     }
 
   public void setByteUploadedLabel(long uploadedByte, long fileSize)
@@ -583,13 +599,12 @@ public class Main extends JApplet
       this.fileSizeLabel.setText(FILESIZE_LABEL_TITLE + Utility.bytesToString(size));
       this.bytesTransferredLabel.setText(BYTE_TRANSFERRED_LABEL_TITLE + "0 bytes");
       }
-    this.currentSize = size;
     this.transferredBytes = 0;
     }
 
   public void setProgressIndeterminate(boolean value)
     {
-    this.progressBar.setIndeterminate(value);
+    //this.progressBar.setIndeterminate(value);
     }
 
   public void onSuccessfulUpload()
@@ -631,6 +646,10 @@ public class Main extends JApplet
 
         // button setup
         this.uploadDownloadButton.setEnabled(false);
+        if(this.uploadDirButton != null)
+          {
+          this.uploadDirButton.setEnabled(false);
+          }
         this.stopButton.setEnabled(true);
         this.resumeButton.setEnabled(false);
 

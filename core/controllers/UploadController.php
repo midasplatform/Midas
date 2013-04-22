@@ -118,7 +118,10 @@ class UploadController extends AppController
       throw new Zend_Exception('You have to be logged in to do that');
       }
     $this->requireAjaxRequest();
-    $this->_helper->layout->disableLayout();
+    $this->disableLayout();
+
+    $mode = $this->_getParam('mode');
+    $this->view->directoryMode = isset($mode) && $mode == 'folder';
 
     session_start();
 
@@ -330,6 +333,13 @@ class UploadController extends AppController
     {
     $this->disableView();
     $this->disableLayout();
+    if(Zend_Registry::get('configGlobal')->environment != 'testing')
+      {
+      // give a week-long session cookie in case the download lasts a long time
+      session_start();
+      $this->userSession->setExpirationSeconds(60 * 60 * 24 * 7);
+      session_write_close();
+      }
     echo $this->userSession->JavaUpload->parent;
     }
 
@@ -462,7 +472,7 @@ class UploadController extends AppController
         }
       }
 
-    if(!empty($data['path']) && file_exists($data['path']) && $data['size'] > 0)
+    if(!empty($data['path']) && file_exists($data['path']) && $data['size'] == $params['length'])
       {
       if(isset($params['parentId']))
         {
@@ -497,10 +507,14 @@ class UploadController extends AppController
           {
           unlink($data['path']);
           }
-        echo "[ERROR] ".$e->getMessage();
+        echo '[ERROR] '.$e->getMessage();
         throw $e;
         }
       echo '[OK]'.$item->getKey();
+      }
+    else
+      {
+      echo '[ERROR] Data path ('.$data['path'].') was empty or file not created. Sizes='.$params['length'].'/'.$data['size'];
       }
     } //end processjavaupload
 
