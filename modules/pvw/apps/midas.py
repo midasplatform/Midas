@@ -32,6 +32,8 @@ def initView(width, height):
   view = simple.GetRenderView()
   simple.Render()
   view.ViewSize = [width, height]
+  view.Background = [1, 1, 1]
+  view.OrientationAxesLabelColor = [0, 0, 0]
   lutManager.setView(view)
   print 'View created successfully (%dx%d)' % (width, height)
 
@@ -174,6 +176,16 @@ class MidasApp(web.ParaViewServerProtocol):
     self.lookupTable.RGBPoints = points
     simple.Render()
 
+  @exportRpc("changeBgColor")
+  def changeBgColor(self, rgb):
+    global view
+    view.Background = rgb
+    
+    if (sum(rgb) / 3.0) > 0.5:
+      view.OrientationAxesLabelColor = [0, 0, 0]
+    else:
+      view.OrientationAxesLabelColor = [1, 1, 1]
+    simple.Render()
 
   @exportRpc("surfaceRender")
   def surfaceRender(self):

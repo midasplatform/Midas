@@ -1,16 +1,42 @@
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
 
+midas.pvw.bgColor = {r: 255, g: 255, b: 255};
+
 midas.pvw.instructionsContent = '<h4>Camera Interaction</h4>' +
   '<p><b>Left-click and drag</b> to rotate.</p>' +
   '<p><b>Right-click and drag</b> to zoom.</p>' +
   '<p><b>Alt+click and drag</b> to pan.</p>';
 
 /**
+ * Binds the action of selecting a background color
+ */
+midas.pvw.setupBgColor = function () {
+    $('#bgColor').click(function () {
+        var html = '<div class="bgColorPicker"></div>';
+        midas.showDialogWithContent('Change background color',
+          html, false, {modal: false, width: 380});
+        var container = $('div.MainDialog');
+        container.find('div.bgColorPicker').ColorPicker({
+            flat: true,
+            color: midas.pvw.bgColor,
+            onSubmit: function(hsb, hex, rgb, el) {
+                midas.pvw.bgColor = rgb;
+                container.dialog('close');
+                pv.connection.session.call('pv:changeBgColor', [rgb.r / 255.0, rgb.g / 255.0, rgb.b / 255.0])
+                                     .then(pv.viewport.render);
+            }
+        });
+    });
+};
+
+/**
  * When startinstance returns, this is called.
  * It sets the instance in global scope and calls midas.pvw.start()
  */
 midas.pvw._commonStart = function (text) {
+    midas.pvw.setupBgColor();
+
     $('div.MainDialog').dialog('close');
     try {
         var resp = $.parseJSON(text);
