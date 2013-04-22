@@ -12,6 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/paraview/paraview.surface.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/colorpicker.css" />
 
 <?php
 $this->headScript()->appendFile($this->moduleWebroot.'/public/import/ext/js-core/autobahn.min.js');
@@ -20,6 +21,7 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/import/lib/js/para
 
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.common.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paraview.surface.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/colorpicker.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/layout/midas.progress.js');
 $this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/common.ajaxapi.js');
 ?>
@@ -36,6 +38,12 @@ $this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/co
   <div class="sideElementFirst viewAction">
   <h1>Display</h1>
     <ul>
+      <li>
+        <a href="javascript:;" id="bgColor">
+        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/color_swatch.png"/>
+        Background Color
+        </a>
+      </li>
       <li>
         <a onclick="midas.pvw.resetCamera();">
         <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/camera_go.png"/>

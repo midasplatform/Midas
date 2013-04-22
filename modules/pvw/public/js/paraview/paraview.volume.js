@@ -137,6 +137,7 @@ midas.pvw.setupColorMapping = function () {
                     },
                     onSubmit: function(hsb, hex, rgb, el) {
                         $(el).css('background-color', 'rgb('+rgb.r+','+rgb.g+','+rgb.b+')');
+                        $(el).ColorPickerHide();
                     }
                 }).css('background-color', 'rgb('+r+','+g+','+b+')');
             }
