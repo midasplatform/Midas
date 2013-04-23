@@ -160,6 +160,7 @@ midas.pvw.setupColorMapping = function () {
                 },
                 onSubmit: function(hsb, hex, rgb, el) {
                     $(el).css('background-color', 'rgb('+rgb.r+','+rgb.g+','+rgb.b+')');
+                    $(el).ColorPickerHide();
                 }
             }).css('background-color', 'rgb(0, 0, 0)');
         });
@@ -486,6 +487,8 @@ midas.pvw.vrStarted = function (resp) {
     midas.pvw.setupExtractSubgrid();
     midas.pvw.setupScalarOpacity();
     midas.pvw.setupColorMapping();
+
+    $('a.switchToSliceView').attr('href', json.global.webroot + '/pvw/paraview/slice' + window.location.search);
 };
 
 /** Bind the renderer overlay buttons */

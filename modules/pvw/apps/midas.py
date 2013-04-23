@@ -2,6 +2,7 @@
 import sys
 import os
 import math
+import json
 
 try:
     import argparse
@@ -51,6 +52,7 @@ class MidasApp(web.ParaViewServerProtocol):
   imageData = None
   subgrid = None
   sliceMode = None
+  surfaces = []
 
   def __extractVolumeImageData(self):
     if(self.srcObj.GetPointDataInformation().GetNumberOfArrays() == 0):
@@ -64,6 +66,28 @@ class MidasApp(web.ParaViewServerProtocol):
     self.center = [(self.bounds[1] + self.bounds[0]) / 2.0,
                    (self.bounds[3] + self.bounds[2]) / 2.0,
                    (self.bounds[5] + self.bounds[4]) / 2.0]
+
+  def __loadSurfaceWithProperties(self, fullpath):
+    if not fullpath.endswith('.properties'):
+      surfaceObj = simple.OpenDataFile(fullpath)
+      self.surfaces.append(surfaceObj)
+      rep = simple.Show()
+      rep.Representation = 'Surface'
+
+      # If a corresponding properties file exists, load it in
+      # and apply the properties to the surface
+      if os.path.isfile(fullpath+'.properties'):
+        with open(fullpath+'.properties') as f:
+          lines = f.readlines()
+          for line in lines:
+            (property, value) = line.split(' ', 1)
+            if hasattr(rep, property):
+              value = json.loads(value.strip())
+              setattr(rep, property, value)
+            else:
+              print 'Skipping invalid property %s' % property
+
+      print 'Loaded surface %s into scene' % fullpath
 
   @exportRpc("loadData")
   def loadData(self):
@@ -84,10 +108,18 @@ class MidasApp(web.ParaViewServerProtocol):
     else:
       print 'Error: '+mainpath+' does not exist\n'
       raise Exception("The main directory does not exist")
+
+    surfacespath = os.path.join(dataPath, "surfaces")
+    files = os.listdir(surfacespath)
+    for file in files:
+      fullpath = os.path.join(surfacespath, file)
+      if os.path.isfile(fullpath):
+        self.__loadSurfaceWithProperties(fullpath)
+
+    simple.SetActiveSource(self.srcObj)
     simple.ResetCamera()
     simple.Render()
     return self.srcObj
-
 
   @exportRpc("cameraPreset")
   def cameraPreset(self, direction):
@@ -226,6 +258,7 @@ class MidasApp(web.ParaViewServerProtocol):
                           self.bounds[5] - self.bounds[4])
     maxDim = max(lenx, leny, lenz)
     # Adjust camera properties appropriately
+    view.Background = [0, 0, 0]
     view.CameraFocalPoint = self.center
     view.CenterOfRotation = self.center
     view.CenterAxesVisibility = False

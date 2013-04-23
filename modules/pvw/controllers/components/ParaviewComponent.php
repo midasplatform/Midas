@@ -29,7 +29,7 @@ class Pvw_ParaviewComponent extends AppComponent
    * @param item The item dao to visualize
    * @return The pvw_instance dao
    */
-  public function createAndStartInstance($item, $appname, $progressDao = null)
+  public function createAndStartInstance($item, $meshItems, $appname, $progressDao = null)
     {
     $progressModel = MidasLoader::loadModel('Progress');
     if($progressDao)
@@ -75,7 +75,7 @@ class Pvw_ParaviewComponent extends AppComponent
     $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
     $instanceModel->save($instance);
 
-    $dataPath = $this->_createDataDir($item, $instance);
+    $dataPath = $this->_createDataDir($item, $meshItems, $instance);
 
     $cmdArray = array($pvpython, $application,
                       '--port', $port,
@@ -201,7 +201,7 @@ class Pvw_ParaviewComponent extends AppComponent
   /**
    * Symlink the item into a directory
    */
-  private function _createDataDir($itemDao, $instanceDao)
+  private function _createDataDir($itemDao, $meshItems, $instanceDao)
     {
     if(!is_dir(BASE_PATH.'/tmp/pvw-data'))
       {
@@ -210,13 +210,37 @@ class Pvw_ParaviewComponent extends AppComponent
     $path = BASE_PATH.'/tmp/pvw-data/'.$instanceDao->getKey();
     mkdir($path);
     mkdir($path.'/main');
+    mkdir($path.'/surfaces');
 
+    // Symlink main item into the main subdir
     $itemModel = MidasLoader::loadModel('Item');
+    $revisionModel = MidasLoader::loadModel('ItemRevision');
     $rev = $itemModel->getLastRevision($itemDao);
     $bitstreams = $rev->getBitstreams();
     $src = $bitstreams[0]->getFullpath();
-
     symlink($src, $path.'/main/'.$bitstreams[0]->getName());
+
+    // Symlink all the surfaces into the surfaces subdir
+    foreach($meshItems as $meshItem)
+      {
+      $rev = $itemModel->getLastRevision($meshItem);
+      $bitstreams = $rev->getBitstreams();
+      $src = $bitstreams[0]->getFullpath();
+      $linkPath = $path.'/surfaces/'.$meshItem->getKey().'_'.$bitstreams[0]->getName();
+      symlink($src, $linkPath);
+
+      // Write out any metadata properties in the ParaView namespace
+      $fh = fopen($linkPath.'.properties', 'w');
+      $metadata = $revisionModel->getMetadata($rev);
+      foreach($metadata as $field)
+        {
+        if(strtolower($field->getElement()) == 'paraview')
+          {
+          fwrite($fh, $field->getQualifier().' '.$field->getValue()."\n");
+          }
+        }
+      fclose($fh);
+      }
     return $path;
     }
 } // end class

@@ -118,6 +118,9 @@ midas.pvw.waitingDialog = function(text) {
 
 $(window).load(function () {
     if(paraview) {
+        if(!json.pvw.meshIds) {
+            json.pvw.meshIds = [];
+        }
         // Add some logic to check for idle and close the pvw session after IDLE_TIMEOUT expires
         midas.pvw.lastAction = new Date().getTime();
         midas.pvw.idleInterval = setInterval(midas.pvw.testIdle, 15000); // every 15 seconds, check idle status
@@ -131,7 +134,10 @@ $(window).load(function () {
         midas.ajaxWithProgress($('#pvwProgressBar'),
                                $('#pvwProgressMessage'),
         json.global.webroot+'/pvw/paraview/startinstance',
-        {itemId: json.pvw.item.item_id},
+        {
+            itemId: json.pvw.item.item_id,
+            meshes: json.pvw.meshIds.join(';')
+        },
         midas.pvw._commonStart);
     }
     else {

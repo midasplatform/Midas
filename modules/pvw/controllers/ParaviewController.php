@@ -33,6 +33,7 @@ class Pvw_ParaviewController extends Pvw_AppController
                       All available apps live in the 'apps' directory of this module.
    * @param itemId The id of the item to be rendered. Item data will be symlinked into the
                    location expected by pvpython
+   * @param [meshes] List of item id's representing meshes to display in the scene, separated by ;
    * @return The info needed by the client to connect to the session
    */
   public function startinstanceAction()
@@ -63,7 +64,31 @@ class Pvw_ParaviewController extends Pvw_AppController
         throw new Zend_Exception('Read access required on item', 403);
         }
 
-      $instance = $this->ModuleComponent->Paraview->createAndStartInstance($item, $appname, $this->progressDao);
+      $meshes = $this->_getParam('meshes');
+      if(isset($meshes))
+        {
+        $meshes = explode(';', $meshes);
+        }
+      else
+        {
+        $meshes = array();
+        }
+      $meshItems = array();
+      foreach($meshes as $meshId)
+        {
+        if(!$meshId)
+          {
+          continue;
+          }
+        $meshItem = $this->Item->load($meshId);
+        if(!$this->Item->policyCheck($meshItem, $this->userSession->Dao))
+          {
+          throw new Zend_Exception('Read access required on mesh item '.$meshId, 403);
+          }
+        $meshItems[] = $meshItem;
+        }
+
+      $instance = $this->ModuleComponent->Paraview->createAndStartInstance($item, $meshItems, $appname, $this->progressDao);
 
       echo JsonComponent::encode(array(
         'status' => 'ok',
@@ -127,6 +152,7 @@ class Pvw_ParaviewController extends Pvw_AppController
     $header .= ' Surface view: <a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
     $this->view->header = $header;
     $this->view->json['pvw']['item'] = $item;
+    $this->view->json['pvw']['viewMode'] = 'surface';
     $this->view->item = $item;
     }
 
@@ -135,6 +161,7 @@ class Pvw_ParaviewController extends Pvw_AppController
    * @param itemId The id of the item to visualize
    * @param jsImports (Optional) List of javascript files to import. These should contain handler
    *                             functions for imported operations. Separated by ;
+   * @param meshes (Optional) List of item id's corresponding to surface meshes to visualize in the scene
    */
   public function volumeAction()
     {
@@ -147,6 +174,16 @@ class Pvw_ParaviewController extends Pvw_AppController
       {
       $this->view->jsImports = array();
       }
+    $meshes = $this->_getParam('meshes');
+    if(isset($meshes))
+      {
+      $meshes = explode(';', $meshes);
+      }
+    else
+      {
+      $meshes = array();
+      }
+
     $itemId = $this->_getParam('itemId');
     if(!isset($itemId))
       {
@@ -166,6 +203,8 @@ class Pvw_ParaviewController extends Pvw_AppController
     $header .= ' Volume rendering: <a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
     $this->view->header = $header;
     $this->view->json['pvw']['item'] = $item;
+    $this->view->json['pvw']['meshIds'] = $meshes;
+    $this->view->json['pvw']['viewMode'] = 'volume';
     $this->view->item = $item;
     }
 
@@ -174,6 +213,7 @@ class Pvw_ParaviewController extends Pvw_AppController
    * @param itemId The id of the MetaImage item to visualize
    * @param jsImports (Optional) List of javascript files to import. These should contain handler
    *                             functions for imported operations. Separated by ;
+   * @param meshes (Optional) List of item id's corresponding to surface meshes to visualize in the scene
    */
   public function sliceAction()
     {
@@ -201,10 +241,22 @@ class Pvw_ParaviewController extends Pvw_AppController
       throw new Zend_Exception('Read permission required', 403);
       }
 
+    $meshes = $this->_getParam('meshes');
+    if(isset($meshes))
+      {
+      $meshes = explode(';', $meshes);
+      }
+    else
+      {
+      $meshes = array();
+      }
+
     $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/sliceView.png" />';
     $header .= ' Slice view: <a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
     $this->view->header = $header;
     $this->view->json['pvw']['item'] = $item;
+    $this->view->json['pvw']['meshIds'] = $meshes;
+    $this->view->json['pvw']['viewMode'] = 'slice';
     $this->view->item = $item;
     }
 
