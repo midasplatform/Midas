@@ -2,6 +2,32 @@ var paraview;
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
 midas.pvw.sliceMode = 'XY Plane'; //Initial slice plane
+midas.pvw.updateLock = false; // Lock for RPC calls to make sure we just do one at a time
+midas.pvw.UPDATE_TIMEOUT_SECONDS = 5; // Max time the update lock can be held in seconds
+
+/**
+ * Attempts to acquire the upate lock. If it cannot, this returns false
+ * and your operation should not run.  If it can, returns true.
+ */
+midas.pvw.acquireUpdateLock = function () {
+    if(midas.pvw.updateLock) {
+        return false;
+    }
+    else {
+        midas.pvw.updateLock = true;
+        midas.pvw.lockExpireTimeout = window.setTimeout(function () {
+            midas.pvw.updateLock = false;
+        }, 1000 * midas.pvw.UPDATE_TIMEOUT_SECONDS);
+        return true;
+    }
+};
+
+midas.pvw.releaseUpdateLock = function () {
+    if(midas.pvw.lockExpireTimeout) {
+        window.clearTimeout(midas.pvw.lockExpireTimeout);
+    }
+    midas.pvw.updateLock = false;
+};
 
 midas.pvw.start = function () {
     if(typeof midas.pvw.preInitCallback == 'function') {
@@ -47,10 +73,10 @@ midas.pvw.setupSliders = function () {
         min: 0,
         max: midas.pvw.maxSlices,
         value: midas.pvw.slice,
-        change: function(event, ui) {
-            midas.pvw.changeSlice(ui.value);
-        },
         slide: function(event, ui) {
+            if(midas.pvw.acquireUpdateLock()) {
+                midas.pvw.changeSlice(ui.value);
+            }
             midas.pvw.updateSliceInfo(ui.value);
         }
     });
@@ -59,10 +85,10 @@ midas.pvw.setupSliders = function () {
         min: midas.pvw.scalarRange[0],
         max: midas.pvw.scalarRange[1],
         values: [midas.pvw.scalarRange[0], midas.pvw.scalarRange[1]],
-        change: function(event, ui) {
-            midas.pvw.changeWindow(ui.values);
-        },
         slide: function(event, ui) {
+            if(midas.pvw.acquireUpdateLock()) {
+                midas.pvw.changeWindow(ui.values);
+            }
             midas.pvw.updateWindowInfo(ui.values);
         }
     });
@@ -91,6 +117,7 @@ midas.pvw.changeWindow = function (values) {
     pv.connection.session.call('pv:changeWindow', [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0])
                         .then(function () {
                             pv.viewport.render();
+                            midas.pvw.releaseUpdateLock();
                         })
                         .otherwise(midas.pvw.rpcFailure);
 };
@@ -103,6 +130,7 @@ midas.pvw.changeSlice = function (slice) {
     pv.connection.session.call('pv:changeSlice', slice)
                         .then(function (resp) {
                             pv.viewport.render();
+                            midas.pvw.releaseUpdateLock();
                         })
                         .otherwise(midas.pvw.rpcFailure)
 };
