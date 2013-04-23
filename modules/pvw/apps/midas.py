@@ -40,7 +40,9 @@ def initView(width, height):
 
 # This class defines the exposed RPC methods for the midas application
 class MidasApp(web.ParaViewServerProtocol):
-  DISTANCE_FACTOR = 2
+  DISTANCE_FACTOR = 2.0
+  CONTOUR_LINE_WIDTH = 2.0
+
   colorArrayName = None
   sof = None
   lookupTable = None
@@ -52,9 +54,10 @@ class MidasApp(web.ParaViewServerProtocol):
   imageData = None
   subgrid = None
   sliceMode = None
+  meshSlice = None
   surfaces = []
 
-  def __extractVolumeImageData(self):
+  def _extractVolumeImageData(self):
     if(self.srcObj.GetPointDataInformation().GetNumberOfArrays() == 0):
       print 'Error: no data information arrays'
       raise Exception('No data information arrays')
@@ -67,7 +70,7 @@ class MidasApp(web.ParaViewServerProtocol):
                    (self.bounds[3] + self.bounds[2]) / 2.0,
                    (self.bounds[5] + self.bounds[4]) / 2.0]
 
-  def __loadSurfaceWithProperties(self, fullpath):
+  def _loadSurfaceWithProperties(self, fullpath):
     if not fullpath.endswith('.properties'):
       surfaceObj = simple.OpenDataFile(fullpath)
       self.surfaces.append(surfaceObj)
@@ -88,6 +91,42 @@ class MidasApp(web.ParaViewServerProtocol):
               print 'Skipping invalid property %s' % property
 
       print 'Loaded surface %s into scene' % fullpath
+
+  def _sliceSurfaces(self, slice):
+    if self.meshSlice is not None:
+      simple.Delete(self.meshSlice)
+      self.meshSlice = None
+
+    for surface in self.surfaces:
+      rep = simple.Show(surface)
+
+      if self.sliceMode == 'XY Plane':
+        origin = [0.0, 0.0, math.cos(math.radians(rep.Orientation[2]))*slice]
+        normal = [0.0, 0.0, 1.0]
+      elif self.sliceMode == 'XZ Plane':
+        origin = [0.0, math.cos(math.radians(rep.Orientation[1]))*slice, 0.0]
+        normal = [0.0, 1.0, 0.0]
+      else:
+        origin = [math.cos(math.radians(rep.Orientation[0]))*slice, 0.0, 0.0]
+        normal = [1.0, 0.0, 0.0]
+
+      simple.Hide(surface)
+      self.meshSlice = simple.Slice(Input=surface, SliceType='Plane')
+      simple.SetActiveSource(self.srcObj)
+
+      self.meshSlice.SliceOffsetValues = [0.0]
+      self.meshSlice.SliceType = 'Plane'
+      self.meshSlice.SliceType.Origin = origin
+      self.meshSlice.SliceType.Normal = normal
+      meshDataRep = simple.Show(self.meshSlice)
+
+      meshDataRep.Representation = 'Points'
+      meshDataRep.LineWidth = self.CONTOUR_LINE_WIDTH
+      meshDataRep.PointSize = self.CONTOUR_LINE_WIDTH
+      meshDataRep.AmbientColor = rep.DiffuseColor
+      meshDataRep.Orientation = rep.Orientation
+
+    simple.SetActiveSource(self.srcObj)
 
   @exportRpc("loadData")
   def loadData(self):
@@ -114,7 +153,7 @@ class MidasApp(web.ParaViewServerProtocol):
     for file in files:
       fullpath = os.path.join(surfacespath, file)
       if os.path.isfile(fullpath):
-        self.__loadSurfaceWithProperties(fullpath)
+        self._loadSurfaceWithProperties(fullpath)
 
     simple.SetActiveSource(self.srcObj)
     simple.ResetCamera()
@@ -192,6 +231,7 @@ class MidasApp(web.ParaViewServerProtocol):
     self.rep.SliceMode = sliceMode
 
     self.sliceMode = sliceMode
+    self._sliceSurfaces(sliceNum)
     simple.Render()
     return {'slice': sliceNum,
             'maxSlices': maxSlices}
@@ -200,6 +240,7 @@ class MidasApp(web.ParaViewServerProtocol):
   @exportRpc("changeSlice")
   def changeSlice(self, sliceNum):
     self.rep.Slice = sliceNum
+    self._sliceSurfaces(sliceNum)
     simple.Render()
 
 
@@ -212,7 +253,7 @@ class MidasApp(web.ParaViewServerProtocol):
   def changeBgColor(self, rgb):
     global view
     view.Background = rgb
-    
+
     if (sum(rgb) / 3.0) > 0.5:
       view.OrientationAxesLabelColor = [0, 0, 0]
     else:
@@ -251,7 +292,7 @@ class MidasApp(web.ParaViewServerProtocol):
   @exportRpc("sliceRender")
   def sliceRender(self, sliceMode):
     global view
-    self.__extractVolumeImageData()
+    self._extractVolumeImageData()
     (midx, midy, midz) = (self.center[0], self.center[1], self.center[2])
     (lenx, leny, lenz) = (self.bounds[1] - self.bounds[0],
                           self.bounds[3] - self.bounds[2],
@@ -288,7 +329,7 @@ class MidasApp(web.ParaViewServerProtocol):
   @exportRpc("volumeRender")
   def volumeRender(self):
     global view
-    self.__extractVolumeImageData()
+    self._extractVolumeImageData()
     (lenx, leny, lenz) = (self.bounds[1] - self.bounds[0],
                           self.bounds[3] - self.bounds[2],
                           self.bounds[5] - self.bounds[4])
