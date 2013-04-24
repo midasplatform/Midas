@@ -146,3 +146,16 @@ div.objectListBottomButtons {
 #loadingStatus {
   margin-left: 10px;
 }
+
+div.presetSelectionContainer {
+  border-bottom: 1px solid #d7d7d7;
+  padding-top: 8px;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+select.scmPresets {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}

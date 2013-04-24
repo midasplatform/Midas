@@ -300,10 +300,10 @@ midas.pvw.sliceModeChanged = function (resp) {
         min: 0,
         max: midas.pvw.maxSlices,
         value: resp.slice,
-        change: function(event, ui) {
-            midas.pvw.changeSlice(ui.value);
-        },
         slide: function(event, ui) {
+            if(midas.pvw.acquireUpdateLock()) {
+                midas.pvw.changeSlice(ui.value);
+            }
             midas.pvw.updateSliceInfo(ui.value);
         }
     });

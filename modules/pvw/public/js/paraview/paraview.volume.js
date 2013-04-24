@@ -3,6 +3,47 @@ var midas = midas || {};
 midas.pvw = midas.pvw || {};
 
 midas.pvw.IDLE_TIMEOUT = 10 * 60 * 1000; // 10 minute idle timeout
+midas.pvw.PRESET_TRANSFER_RGBPOINTS = {
+    "Grayscale": [0.0, 0, 0, 0,
+                  1.0, 1, 1, 1],
+    "X-Ray": [0.0, 1, 1, 1,
+              1.0, 0, 0, 0],
+    "Rainbow": [0.0, 1.0, 0.0, 0.0,
+                0.166667, 1.0, 0.0, 1.0,
+                0.333333, 0.0, 0.0, 1.0,
+                0.5, 0.0, 1.0, 1.0,
+                0.666667, 0.0, 1.0, 0.0,
+                0.833333, 1.0, 1.0, 0.0,
+                1.0, 1.0, 0.0, 0.0],
+    "Rainbow (Desaturated)": [0.0, 0.2784313725490196, 0.2784313725490196, 0.8588235294117647,
+                              0.1428, 0.0, 0.0, 0.3607843137254902,
+                              0.2857, 0.0, 1.0, 1.0,
+                              0.4286, 0.0, 0.5019607843137255, 0.0,
+                              0.5714, 1.0, 1.0, 0.0,
+                              0.7143, 1.0, 0.3803921568627451, 0.0,
+                              0.8571, 0.4196078431372549, 0.0, 0.0,
+                              1.0, 0.8784313725490196, 0.30196078431372547, 0.30196078431372547],
+    "Yellow-Orange-Brown": [0, 1.0, 1.0, 0.8313725490196079,
+                            0.33333, 0.996078431372549, 0.8509803921568627, 0.5568627450980392,
+                            0.66667, 0.996078431372549, 0.6, 0.1607843137254902,
+                            1.0, 0.8, 0.2980392156862745, 0.00784313725490196],
+    "Qualitative Accent 1": [0, 0.4980392156862745, 0.788235294117647, 0.4980392156862745,
+                             0.1428, 0.7450980392156863, 0.6823529411764706, 0.8313725490196079,
+                             0.2857, 0.9921568627450981, 0.7529411764705882, 0.5254901960784314,
+                             0.4286, 1.0, 1.0, 0.6,
+                             0.5714, 0.2196078431372549, 0.4235294117647059, 0.6901960784313725,
+                             0.7143, 0.9411764705882353, 0.00784313725490196, 0.4980392156862745,
+                             0.8571, 0.7490196078431373, 0.3568627450980392, 0.09019607843137255,
+                             1.0, 0.4, 0.4, 0.4],
+    "Qualitative Accent 2": [0, 0.4, 0.7607843137254902, 0.6470588235294118,
+                             0.1428, 0.9882352941176471, 0.5529411764705883, 0.3843137254901961,
+                             0.2857, 0.5529411764705883, 0.6274509803921569, 0.796078431372549,
+                             0.4286, 0.9058823529411765, 0.5411764705882353, 0.7647058823529411,
+                             0.5714, 0.6509803921568628, 0.8470588235294118, 0.32941176470588235,
+                             0.7143, 1.0, 0.8509803921568627, 0.1843137254901961,
+                             0.8571, 0.8980392156862745, 0.7686274509803922, 0.5803921568627451,
+                             1.0, 0.7019607843137254, 0.7019607843137254, 0.7019607843137254]
+};
 
 /**
  * Display the subset of the volume defined by the bounds list
@@ -101,6 +142,37 @@ midas.visualize.toggleObjectVisibility = function(checkbox) {
     midas.visualize.forceRefreshView();
 };*/
 
+midas.pvw._setupColorPresets = function (container) {
+    var presetSelect = container.find('select.scmPresets');
+    var html = '<option value="">Use preset...</option>';
+    $.each(midas.pvw.PRESET_TRANSFER_RGBPOINTS, function(name, points) {
+        html += '<option value="'+name+'">'+name+'</option>';
+    });
+    presetSelect.html(html);
+    presetSelect.change(function () {
+        midas.pvw.changeColorPreset(container, $(this));
+    });
+};
+
+midas.pvw.changeColorPreset = function (container, select) {
+    var name = select.val();
+    if(name == '') {
+        return;
+    }
+    var colorList = midas.pvw.PRESET_TRANSFER_RGBPOINTS[name];
+    if((colorList.length % 4) != 0) {
+        alert('Invalid color list length: ' + name);
+    }
+    // Map points into the actual scalar range
+    var modifiedColorList = [];
+    var range = midas.pvw.scalarRange[1] - midas.pvw.scalarRange[0];
+    for(var i = 0; i < colorList.length; i += 4) {
+        var interpScalar = midas.pvw.scalarRange[0] + colorList[i] * range;
+        modifiedColorList.push(interpScalar, colorList[i+1], colorList[i+2], colorList[i+3]);
+    }
+    midas.pvw.renderPointList(modifiedColorList);
+};
+
 /**
  * Setup the color mapping controls
  */
@@ -112,8 +184,10 @@ midas.pvw.setupColorMapping = function () {
           dialog.html(), false, {modal: false, width: 360});
         var container = $('div.MainDialog');
         var pointListDiv = container.find('div.rgbPointList');
+        midas.pvw._setupColorPresets(container);
 
-        function renderPointList (colorMap) {
+        midas.pvw.renderPointList = function (colorMap) {
+            pointListDiv.html(''); // clear any existing points out
             for(var i = 0; i < colorMap.length; i += 4) {
                 var rgbPoint = $('#scmPointMapTemplate').clone();
                 var r = Math.round(255*colorMap[i+1]);
@@ -121,14 +195,9 @@ midas.pvw.setupColorMapping = function () {
                 var b = Math.round(255*colorMap[i+3])
                 rgbPoint.removeAttr('id').appendTo(pointListDiv).show();
                 rgbPoint.find('input.scmScalarValue').val(colorMap[i]);
-                if(i < 8) { // first two values must be present (min and max)
-                    rgbPoint.find('input.scmScalarValue').attr('disabled', 'disabled');
-                }
-                else {
-                    rgbPoint.find('button.scmDeletePoint').show().click(function () {
-                        $(this).parents('div.rgbPointContainer').remove();
-                    });
-                }
+                rgbPoint.find('button.scmDeletePoint').show().click(function () {
+                    $(this).parents('div.rgbPointContainer').remove();
+                });
                 rgbPoint.find('.scmColorPicker').ColorPicker({
                     color: {
                         r: r,
@@ -142,7 +211,7 @@ midas.pvw.setupColorMapping = function () {
                 }).css('background-color', 'rgb('+r+','+g+','+b+')');
             }
         };
-        renderPointList(midas.pvw.colorMap);
+        midas.pvw.renderPointList(midas.pvw.colorMap);
 
         container.find('button.scmAddPoint').unbind('click').click(function () {
             var rgbPoint = $('#scmPointMapTemplate').clone();
@@ -170,7 +239,7 @@ midas.pvw.setupColorMapping = function () {
         });
         container.find('button.scmReset').unbind('click').click(function () {
             pointListDiv.html('');
-            renderPointList(midas.pvw.defaultColorMap);
+            midas.pvw.renderPointList(midas.pvw.defaultColorMap);
         });
         container.find('button.scmApply').unbind('click').click(function () {
             var colorMap = [];
