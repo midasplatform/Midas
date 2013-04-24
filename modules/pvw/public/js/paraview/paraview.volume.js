@@ -424,7 +424,7 @@ midas.pvw.setupExtractSubgrid = function () {
             range: true,
             min: midas.pvw.bounds[0],
             max: midas.pvw.bounds[1],
-            values: [midas.pvw.bounds[0], midas.pvw.bounds[1]],
+            values: [midas.pvw.subgridBounds[0], midas.pvw.subgridBounds[1]],
             slide: function (event, ui) {
                 container.find('.extractSubgridMinX').val(ui.values[0]);
                 container.find('.extractSubgridMaxX').val(ui.values[1]);
@@ -434,7 +434,7 @@ midas.pvw.setupExtractSubgrid = function () {
             range: true,
             min: midas.pvw.bounds[2],
             max: midas.pvw.bounds[3],
-            values: [midas.pvw.bounds[2], midas.pvw.bounds[3]],
+            values: [midas.pvw.subgridBounds[2], midas.pvw.subgridBounds[3]],
             slide: function (event, ui) {
                 container.find('.extractSubgridMinY').val(ui.values[0]);
                 container.find('.extractSubgridMaxY').val(ui.values[1]);
@@ -444,7 +444,7 @@ midas.pvw.setupExtractSubgrid = function () {
             range: true,
             min: midas.pvw.bounds[4],
             max: midas.pvw.bounds[5],
-            values: [midas.pvw.bounds[4], midas.pvw.bounds[5]],
+            values: [midas.pvw.subgridBounds[4], midas.pvw.subgridBounds[5]],
             slide: function (event, ui) {
                 container.find('.extractSubgridMinZ').val(ui.values[0]);
                 container.find('.extractSubgridMaxZ').val(ui.values[1]);
@@ -458,42 +458,42 @@ midas.pvw.setupExtractSubgrid = function () {
         }).change(function () {
             container.find('.sliderX').slider('option', 'values',
               [$(this).val(), container.find('.extractSubgridMaxX').val()]);
-        }).val(midas.pvw.bounds[0]);
+        }).val(midas.pvw.subgridBounds[0]);
         container.find('.extractSubgridMaxX').spinbox({
             min: midas.pvw.bounds[0],
             max: midas.pvw.bounds[1]
         }).change(function () {
             container.find('.sliderX').slider('option', 'values',
               [container.find('.extractSubgridMinX').val(), $(this).val()]);
-        }).val(midas.pvw.bounds[1]);
+        }).val(midas.pvw.subgridBounds[1]);
         container.find('.extractSubgridMinY').spinbox({
             min: midas.pvw.bounds[2],
             max: midas.pvw.bounds[3]
         }).change(function () {
             container.find('.sliderY').slider('option', 'values',
               [$(this).val(), container.find('.extractSubgridMaxY').val()]);
-        }).val(midas.pvw.bounds[2]);
+        }).val(midas.pvw.subgridBounds[2]);
         container.find('.extractSubgridMaxY').spinbox({
             min: midas.pvw.bounds[2],
             max: midas.pvw.bounds[3]
         }).change(function () {
             container.find('.sliderY').slider('option', 'values',
               [container.find('.extractSubgridMinY').val(), $(this).val()]);
-        }).val(midas.pvw.bounds[3]);
+        }).val(midas.pvw.subgridBounds[3]);
         container.find('.extractSubgridMinZ').spinbox({
             min: midas.pvw.bounds[4],
             max: midas.pvw.bounds[5]
         }).change(function () {
             container.find('.sliderZ').slider('option', 'values',
               [$(this).val(), container.find('.extractSubgridMaxZ').val()]);
-        }).val(midas.pvw.bounds[4]);
+        }).val(midas.pvw.subgridBounds[4]);
         container.find('.extractSubgridMaxZ').spinbox({
             min: midas.pvw.bounds[4],
             max: midas.pvw.bounds[5]
         }).change(function () {
             container.find('.sliderZ').slider('option', 'values',
               [container.find('.extractSubgridMinZ').val(), $(this).val()]);
-        }).val(midas.pvw.bounds[5]);
+        }).val(midas.pvw.subgridBounds[5]);
 
         // setup button actions
         container.find('button.extractSubgridApply').click(function () {
