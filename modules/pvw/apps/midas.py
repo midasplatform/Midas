@@ -48,7 +48,9 @@ class MidasApp(web.ParaViewServerProtocol):
   lookupTable = None
   srcObj = None
   bounds = None
+  extent = None
   center = None
+  centerExtent = None
   rep = None
   scalarRange = None
   imageData = None
@@ -66,9 +68,13 @@ class MidasApp(web.ParaViewServerProtocol):
     self.colorArrayName = self.imageData.Name
     self.scalarRange = self.imageData.GetRange()
     self.bounds = self.srcObj.GetDataInformation().DataInformation.GetBounds()
+    self.extent = self.srcObj.GetDataInformation().DataInformation.GetExtent()
     self.center = [(self.bounds[1] + self.bounds[0]) / 2.0,
                    (self.bounds[3] + self.bounds[2]) / 2.0,
                    (self.bounds[5] + self.bounds[4]) / 2.0]
+    self.centerExtent = [(self.extent[1] + self.extent[0]) / 2.0,
+                         (self.extent[3] + self.extent[2]) / 2.0,
+                         (self.extent[5] + self.extent[4]) / 2.0]
 
   def _loadSurfaceWithProperties(self, fullpath):
     if not fullpath.endswith('.properties'):
@@ -199,24 +205,24 @@ class MidasApp(web.ParaViewServerProtocol):
       sliceMode = sliceMode.encode('ascii', 'ignore')
 
     if(sliceMode == 'XY Plane'):
-      sliceNum = int(math.floor(self.center[2]))
+      sliceNum = int(math.floor(self.centerExtent[2]))
       cameraParallelScale = max(self.bounds[1] - self.bounds[0],
                                 self.bounds[3] - self.bounds[2]) / 2.0
       cameraPosition = [self.center[0], self.center[1], self.bounds[4] - 10]
-      maxSlices = self.bounds[5] - self.bounds[4]
+      maxSlices = self.extent[5] - self.extent[4]
       cameraViewUp = [0, -1, 0]
     elif(sliceMode == 'XZ Plane'):
-      sliceNum = int(math.floor(self.center[1]))
+      sliceNum = int(math.floor(self.centerExtent[1]))
       cameraParallelScale = max(self.bounds[1] - self.bounds[0],
                                 self.bounds[5] - self.bounds[4]) / 2.0
-      maxSlices = self.bounds[3] - self.bounds[2]
+      maxSlices = self.extent[3] - self.extent[2]
       cameraPosition = [self.center[0], self.bounds[3] + 10, self.center[2]]
       cameraViewUp = [0, 0, 1]
     elif(sliceMode == 'YZ Plane'):
-      sliceNum = int(math.floor(self.center[0]))
+      sliceNum = int(math.floor(self.centerExtent[0]))
       cameraParallelScale = max(self.bounds[3] - self.bounds[2],
                                 self.bounds[5] - self.bounds[4]) / 2.0
-      maxSlices = self.bounds[1] - self.bounds[0]
+      maxSlices = self.extent[1] - self.extent[0]
       cameraPosition = [self.bounds[1] + 10, self.center[1], self.center[2]]
       cameraViewUp = [0, 0, 1]
     else:
@@ -231,6 +237,7 @@ class MidasApp(web.ParaViewServerProtocol):
     self.rep.SliceMode = sliceMode
 
     self.sliceMode = sliceMode
+    # TODO calculate slice plane origin for surfaces!!!
     self._sliceSurfaces(sliceNum)
     simple.Render()
     return {'slice': sliceNum,
@@ -323,6 +330,7 @@ class MidasApp(web.ParaViewServerProtocol):
     simple.Render()
     return {'scalarRange': self.scalarRange,
             'bounds': self.bounds,
+            'extent': self.extent,
             'sliceInfo': sliceInfo}
 
 
@@ -362,6 +370,7 @@ class MidasApp(web.ParaViewServerProtocol):
     simple.Render()
     return {'scalarRange': self.scalarRange,
             'bounds': self.bounds,
+            'extent': self.extent,
             'sofPoints': sofPoints,
             'rgbPoints': rgbPoints}
 
