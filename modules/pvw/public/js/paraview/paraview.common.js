@@ -53,7 +53,7 @@ midas.pvw._commonStart = function (text) {
             id: midas.pvw.instance.instance_id,
             sessionManagerURL: json.global.webroot + '/pvw/paraview/instance',
             authKey: midas.pvw.instance.secret,
-            interactiveQuality: 60,
+            interactiveQuality: 50
         };
         midas.pvw.start();
     }
