@@ -50,6 +50,7 @@ midas.pvw.dataLoaded = function (resp) {
 /** Callback from sliceRender rpc success */
 midas.pvw.sliceRenderStarted = function (resp) {
     midas.pvw.bounds = resp.bounds;
+    midas.pvw.extent = resp.extent;
     midas.pvw.slice = resp.sliceInfo.slice;
     midas.pvw.maxSlices = resp.sliceInfo.maxSlices;
     midas.pvw.scalarRange = resp.scalarRange;
@@ -75,9 +76,13 @@ midas.pvw.setupSliders = function () {
         value: midas.pvw.slice,
         slide: function(event, ui) {
             if(midas.pvw.acquireUpdateLock()) {
+                // TODO degrade quality for intermediate updates
                 midas.pvw.changeSlice(ui.value);
             }
             midas.pvw.updateSliceInfo(ui.value);
+        },
+        change: function(event, ui) {
+            midas.pvw.changeSlice(ui.value);
         }
     });
     $('#windowLevelSlider').slider({
@@ -87,9 +92,13 @@ midas.pvw.setupSliders = function () {
         values: [midas.pvw.scalarRange[0], midas.pvw.scalarRange[1]],
         slide: function(event, ui) {
             if(midas.pvw.acquireUpdateLock()) {
+                // TODO degrade quality for intermediate updates
                 midas.pvw.changeWindow(ui.values);
             }
             midas.pvw.updateWindowInfo(ui.values);
+        },
+        change: function(event, ui) {
+            midas.pvw.changeWindow(ui.values);
         }
     });
 };
@@ -302,9 +311,13 @@ midas.pvw.sliceModeChanged = function (resp) {
         value: resp.slice,
         slide: function(event, ui) {
             if(midas.pvw.acquireUpdateLock()) {
+                // TODO degrade quality for intermediate updates
                 midas.pvw.changeSlice(ui.value);
             }
             midas.pvw.updateSliceInfo(ui.value);
+        },
+        change: function(event, ui) {
+            midas.pvw.changeSlice(ui.value);
         }
     });
 };

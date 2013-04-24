@@ -422,8 +422,8 @@ midas.pvw.setupExtractSubgrid = function () {
         var container = $('div.MainDialog');
         container.find('.sliderX').slider({
             range: true,
-            min: midas.pvw.bounds[0],
-            max: midas.pvw.bounds[1],
+            min: midas.pvw.extent[0],
+            max: midas.pvw.extent[1],
             values: [midas.pvw.subgridBounds[0], midas.pvw.subgridBounds[1]],
             slide: function (event, ui) {
                 container.find('.extractSubgridMinX').val(ui.values[0]);
@@ -432,8 +432,8 @@ midas.pvw.setupExtractSubgrid = function () {
         });
         container.find('.sliderY').slider({
             range: true,
-            min: midas.pvw.bounds[2],
-            max: midas.pvw.bounds[3],
+            min: midas.pvw.extent[2],
+            max: midas.pvw.extent[3],
             values: [midas.pvw.subgridBounds[2], midas.pvw.subgridBounds[3]],
             slide: function (event, ui) {
                 container.find('.extractSubgridMinY').val(ui.values[0]);
@@ -442,8 +442,8 @@ midas.pvw.setupExtractSubgrid = function () {
         });
         container.find('.sliderZ').slider({
             range: true,
-            min: midas.pvw.bounds[4],
-            max: midas.pvw.bounds[5],
+            min: midas.pvw.extent[4],
+            max: midas.pvw.extent[5],
             values: [midas.pvw.subgridBounds[4], midas.pvw.subgridBounds[5]],
             slide: function (event, ui) {
                 container.find('.extractSubgridMinZ').val(ui.values[0]);
@@ -453,43 +453,43 @@ midas.pvw.setupExtractSubgrid = function () {
 
         // setup spinboxes with feedback into the range sliders
         container.find('.extractSubgridMinX').spinbox({
-            min: midas.pvw.bounds[0],
-            max: midas.pvw.bounds[1]
+            min: midas.pvw.extent[0],
+            max: midas.pvw.extent[1]
         }).change(function () {
             container.find('.sliderX').slider('option', 'values',
               [$(this).val(), container.find('.extractSubgridMaxX').val()]);
         }).val(midas.pvw.subgridBounds[0]);
         container.find('.extractSubgridMaxX').spinbox({
-            min: midas.pvw.bounds[0],
-            max: midas.pvw.bounds[1]
+            min: midas.pvw.extent[0],
+            max: midas.pvw.extent[1]
         }).change(function () {
             container.find('.sliderX').slider('option', 'values',
               [container.find('.extractSubgridMinX').val(), $(this).val()]);
         }).val(midas.pvw.subgridBounds[1]);
         container.find('.extractSubgridMinY').spinbox({
-            min: midas.pvw.bounds[2],
-            max: midas.pvw.bounds[3]
+            min: midas.pvw.extent[2],
+            max: midas.pvw.extent[3]
         }).change(function () {
             container.find('.sliderY').slider('option', 'values',
               [$(this).val(), container.find('.extractSubgridMaxY').val()]);
         }).val(midas.pvw.subgridBounds[2]);
         container.find('.extractSubgridMaxY').spinbox({
-            min: midas.pvw.bounds[2],
-            max: midas.pvw.bounds[3]
+            min: midas.pvw.extent[2],
+            max: midas.pvw.extent[3]
         }).change(function () {
             container.find('.sliderY').slider('option', 'values',
               [container.find('.extractSubgridMinY').val(), $(this).val()]);
         }).val(midas.pvw.subgridBounds[3]);
         container.find('.extractSubgridMinZ').spinbox({
-            min: midas.pvw.bounds[4],
-            max: midas.pvw.bounds[5]
+            min: midas.pvw.extent[4],
+            max: midas.pvw.extent[5]
         }).change(function () {
             container.find('.sliderZ').slider('option', 'values',
               [$(this).val(), container.find('.extractSubgridMaxZ').val()]);
         }).val(midas.pvw.subgridBounds[4]);
         container.find('.extractSubgridMaxZ').spinbox({
-            min: midas.pvw.bounds[4],
-            max: midas.pvw.bounds[5]
+            min: midas.pvw.extent[4],
+            max: midas.pvw.extent[5]
         }).change(function () {
             container.find('.sliderZ').slider('option', 'values',
               [container.find('.extractSubgridMinZ').val(), $(this).val()]);
@@ -543,7 +543,8 @@ midas.pvw.dataLoaded = function (resp) {
 /** After volume rendering has started successfully, this gets called */
 midas.pvw.vrStarted = function (resp) {
     midas.pvw.bounds = resp.bounds;
-    midas.pvw.subgridBounds = resp.bounds;
+    midas.pvw.extent = resp.extent;
+    midas.pvw.subgridBounds = resp.extent;
     midas.pvw.scalarRange = resp.scalarRange;
     midas.pvw.sof = resp.sofPoints;
     midas.pvw.colorMap = resp.rgbPoints;
