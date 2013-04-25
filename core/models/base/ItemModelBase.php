@@ -432,7 +432,7 @@ abstract class ItemModelBase extends AppModel
       $parent = $this->load($parentId);
       }
     $item = MidasLoader::newDao('ItemDao');
-    $item->setName($this->updateItemName($name, $parent));
+    $item->setName($name);
     $item->setDescription($description);
     $item->setType(0);
     $item->setUuid($uuid);
