@@ -599,7 +599,6 @@ class KwWebApiJsonMessage extends KwWebApiMessage
     $outputJson['message'] = '';
     $outputJson['data'] = $result_data;
 
-    $JsonComponent = MidasLoader::LoadComponent("Json");
     KwWebApiJsonCore::output( JsonComponent::encode($outputJson) );
     }
 }
