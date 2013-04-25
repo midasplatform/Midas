@@ -110,7 +110,7 @@ class Batchmake_ExecuteComponent extends AppComponent
     $email = $userDao->getEmail();
     // get an api key for this user
     $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi', 'api');
+    $userApiModel = $modelLoad->loadModel('Userapi');
     $userApiDao = $userApiModel->getByAppAndUser('Default', $userDao);
     if(!$userApiDao)
       {

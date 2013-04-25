@@ -24,8 +24,7 @@ class ApiCallMethodsTest extends ControllerTestCase
   /** set up tests */
   public function setUp()
     {
-    $this->setupDatabase(array('default')); //core dataset
-    $this->setupDatabase(array('default'), 'api'); // module dataset
+    $this->setupDatabase(array('default', 'userapi')); //core dataset
     $this->enabledModules = array('api');
     $this->_models = array('User', 'Folder', 'Item', 'ItemRevision', 'Assetstore', 'Bitstream', 'Itempolicyuser');
     $this->_daos = array();
@@ -66,7 +65,7 @@ class ApiCallMethodsTest extends ControllerTestCase
   /** helper function to login as the passed in user. */
   protected function _loginAsUser($userDao)
     {
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
+    $userApiModel = MidasLoader::loadModel('Userapi');
     $userApiModel->createDefaultApiKey($userDao);
     $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
 

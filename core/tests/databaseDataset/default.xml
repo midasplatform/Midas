@@ -178,9 +178,10 @@
 
   <itempolicyuser item_id="1006" user_id="4" policy='0' />
   <itempolicyuser item_id="1006" user_id="5" policy='1' />
-  
+
 
   <newuserinvitation newuserinvitation_id="1001" email="dummy@dummy.com" auth_key="12345" inviter_id="4" community_id="2001" group_id="3003" date_creation="2011-01-27 12:11:02" />
   <pendinguser pendinguser_id="1001" email="dummy@dummy.com" auth_key="12345" firstname="Dummy" lastname="Dummy" date_creation="2011-01-27 12:11:02" />
   <password hash="dummy_hash" />
+
 </dataset>

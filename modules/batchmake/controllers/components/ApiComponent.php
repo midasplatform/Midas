@@ -43,7 +43,7 @@ class Batchmake_ApiComponent extends AppComponent
   /** Return the user dao */
   private function _getUser($args)
     {
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     return $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
     }
 

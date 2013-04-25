@@ -14,17 +14,14 @@ PURPOSE.  See the above copyright notices for more information.
 class Thumbnailcreator_ApiComponent extends AppComponent
 {
 
-  /**
-   * Helper function for verifying keys in an input array
-   */
-  private function _checkKeys($keys, $values)
+  /** Return the user dao */
+  private function _callModuleApiMethod($args, $coreApiMethod, $resource = null,  $hasReturn = true)
     {
-    foreach($keys as $key)
+    $ApiComponent = MidasLoader::loadComponent('Api'.$resource, 'thumbnailcreator');
+    $rtn = $ApiComponent->$coreApiMethod($args);
+    if($hasReturn)
       {
-      if(!array_key_exists($key, $values))
-        {
-        throw new Exception('Parameter '.$key.' must be set', MIDAS_INVALID_PARAMETER);
-        }
+      return $rtn;
       }
     }
 
@@ -37,63 +34,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
    */
   public function createBigThumbnail($args)
     {
-    $this->_checkKeys(array('itemId', 'bitstreamId'), $args);
-
-    $imComponent = MidasLoader::loadComponent('Imagemagick', 'thumbnailcreator');
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
-    $userDao = $authComponent->getUser($args,
-                                       Zend_Registry::get('userSession')->Dao);
-
-    $itemId = $args['itemId'];
-    $bitstreamId = $args['bitstreamId'];
-    $width = '575';
-    if(isset($args['width']))
-      {
-      $width = $args['width'];
-      }
-
-    $bitstreamModel = MidasLoader::loadModel('Bitstream');
-    $itemModel = MidasLoader::loadModel('Item');
-    $itemthumbnailModel = MidasLoader::loadModel('Itemthumbnail', 'thumbnailcreator');
-
-    $bitstream = $bitstreamModel->load($bitstreamId);
-    $item = $itemModel->load($itemId);
-
-    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception('You didn\'t log in or you don\'t have the write permission for the given item.', MIDAS_INVALID_POLICY);
-      }
-
-    $itemThumbnail = $itemthumbnailModel->getByItemId($item->getKey());
-    if(!$itemThumbnail)
-      {
-      $itemThumbnail = MidasLoader::newDao('ItemthumbnailDao', 'thumbnailcreator');
-      $itemThumbnail->setItemId($item->getKey());
-      }
-    else
-      {
-      $oldThumb = $bitstreamModel->load($itemThumbnail->getThumbnailId());
-      $bitstreamModel->delete($oldThumb);
-      }
-
-    try
-      {
-      $thumbnail = $imComponent->createThumbnailFromPath($bitstream->getName(), $bitstream->getFullPath(), (int)$width, 0, false);
-      if(!file_exists($thumbnail))
-        {
-        throw new Exception('Could not create thumbnail from the bitstream', MIDAS_INTERNAL_ERROR);
-        }
-
-      $assetstoreModel = MidasLoader::loadModel('Assetstore');
-      $thumb = $bitstreamModel->createThumbnail($assetstoreModel->getDefault(), $thumbnail);
-      $itemThumbnail->setThumbnailId($thumb->getKey());
-      $itemthumbnailModel->save($itemThumbnail);
-      return $itemThumbnail->toArray();
-      }
-    catch(Exception $e)
-      {
-      throw new Exception($e->getMessage(), MIDAS_INTERNAL_ERROR);
-      }
+    return $this->_callModuleApiMethod($args, 'createBigThumbnail', 'item');
     }
 
 
@@ -105,47 +46,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
 
   public function createSmallThumbnail($args)
     {
-    $this->_checkKeys(array('itemId'), $args);
-    $itemId = $args['itemId'];
-
-    $imComponent = MidasLoader::loadComponent('Imagemagick', 'thumbnailcreator');
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
-    $userDao = $authComponent->getUser($args,
-                                       Zend_Registry::get('userSession')->Dao);
-
-    $itemModel = MidasLoader::loadModel('Item');
-    $item = $itemModel->load($itemId);
-    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception('You didn\'t log in or you don\'t have the write permission for the given item.', MIDAS_INVALID_POLICY);
-      }
-    $revision = $itemModel->getLastRevision($item);
-    $bitstreams = $revision->getBitstreams();
-    if(count($bitstreams) < 1)
-      {
-      throw new Exception('The head revision of the item does not contain any bitstream', MIDAS_INVALID_PARAMETER);
-      }
-    $bitstream = $bitstreams[0];
-    $name = $bitstream->getName();
-    $fullPath = $bitstream->getFullPath();
-
-    try
-      {
-      $pathThumbnail = $imComponent->createThumbnailFromPath($name, $fullPath, 100, 100, true);
-      }
-    catch(Exception $e)
-      {
-      throw new Exception($e->getMessage(), MIDAS_INTERNAL_ERROR);
-      }
-
-    if(file_exists($pathThumbnail))
-      {
-      $itemModel->replaceThumbnail($item, $pathThumbnail);
-      }
-
-    $return = $item->toArray();
-    $return['pathToCreatedThumbnail'] = $pathThumbnail;
-    return $return;
+    return $this->_callModuleApiMethod($args, 'createSmallThumbnail', 'item');
     }
 
 } // end class

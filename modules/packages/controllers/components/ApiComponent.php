@@ -33,7 +33,7 @@ class Packages_ApiComponent extends AppComponent
    */
   private function _getUser($args)
     {
-    $authComponent = MidasLoader::loadComponent('Authentication', 'api');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     return $authComponent->getUser($args, null);
     }
 

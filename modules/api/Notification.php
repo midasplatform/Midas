@@ -24,68 +24,13 @@ require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 class Api_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'api';
-  public $_moduleComponents = array('Api', 'Authentication');
-  public $_models = array('User');
+  public $_moduleComponents = array('Api');
 
   /** init notification process*/
   public function init()
     {
-    $this->addCallBack('CALLBACK_CORE_GET_CONFIG_TABS', 'getConfigTabs');
-    $this->addCallBack('CALLBACK_CORE_PASSWORD_CHANGED', 'setDefaultWebApiKey');
-    $this->addCallBack('CALLBACK_CORE_NEW_USER_ADDED', 'setDefaultWebApiKey');
-    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
-    $this->addCallBack('CALLBACK_CORE_PARAMETER_AUTHENTICATION', 'tokenAuth');
-
     $this->enableWebAPI('api');
     }//end init
 
-  /** get Config Tabs */
-  public function getConfigTabs($params)
-    {
-    $user = $params['user'];
-    $fc = Zend_Controller_Front::getInstance();
-    $moduleWebroot = $fc->getBaseUrl().'/api';
-    return array('Api' => $moduleWebroot.'/config/usertab?userId='.$user->getKey());
-    }
-
-  /** Reset the user's default web API key */
-  public function setDefaultWebApiKey($params)
-    {
-    if(!isset($params['userDao']))
-      {
-      throw new Zend_Exception('Error: userDao parameter required');
-      }
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
-    $userApiModel->createDefaultApiKey($params['userDao']);
-    }
-
-  /**
-   * If a user is deleted, we should delete their api keys
-   * @param userDao the user dao that is about to be deleted
-   */
-  public function handleUserDeleted($params)
-    {
-    if(!isset($params['userDao']))
-      {
-      throw new Zend_Exception('Error: userDao parameter required');
-      }
-    $userApiModel = MidasLoader::loadModel('Userapi', 'api');
-    $apiKeys = $userApiModel->getByUser($params['userDao']);
-
-    foreach($apiKeys as $apiKey)
-      {
-      $userApiModel->delete($apiKey);
-      }
-    }
-
-  /**
-   * When we redirect from the web api for downloads, we add the user's token as a parameter,
-   * and the controller makes a callback to this module to get the user.
-   */
-  public function tokenAuth($params)
-    {
-    $token = $params['authToken'];
-    return $this->ModuleComponent->Authentication->getUser(array('token' => $token), null);
-    }
   } //end class
 ?>
