@@ -940,6 +940,7 @@ class FolderModel extends FolderModelBase
     if($update)
       {
       $item->setName($itemModel->updateItemName($item->getName(), $folder));
+      $itemModel->save($item);
       }
     $this->database->link('items', $folder, $item);
     } // end function addItem
