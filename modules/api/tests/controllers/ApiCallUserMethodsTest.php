@@ -48,7 +48,6 @@ class ApiCallUserMethodsTest extends ApiCallMethodsTest
     // value not intended to be exposed by the web api
     foreach($resp->data as $folder)
       {
-      $this->assertEquals($folder->_model, 'Folder');
       $this->assertEquals($folder->parent_id, 1000);
       }
     $this->assertEquals($resp->data[0]->name, 'User 1 name Folder 2');
@@ -99,7 +98,6 @@ class ApiCallUserMethodsTest extends ApiCallMethodsTest
 
     foreach($resp->data as $folder)
       {
-      $this->assertEquals($folder->_model, 'Folder');
       $this->assertEquals($folder->parent_id, 1000);
       }
     $this->assertEquals($resp->data[0]->name, 'User 1 name Folder 2');
@@ -125,7 +123,6 @@ class ApiCallUserMethodsTest extends ApiCallMethodsTest
     $this->params['email'] = 'user1@user1.com';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
-    $this->assertEquals($resp->data->email, 'user1@user1.com');
 
     // Test getting a user by first name and last name
     $this->resetAll();

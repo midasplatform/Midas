@@ -211,8 +211,6 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->assertEquals(count($resp->data->folders), 2);
     $this->assertEquals(count($resp->data->items), 0);
 
-    $this->assertEquals($resp->data->folders[0]->_model, 'Folder');
-    $this->assertEquals($resp->data->folders[1]->_model, 'Folder');
     $this->assertEquals($resp->data->folders[0]->folder_id, 1001);
     $this->assertEquals($resp->data->folders[1]->folder_id, 1002);
     $this->assertEquals($resp->data->folders[0]->name, 'User 1 name Folder 2');
