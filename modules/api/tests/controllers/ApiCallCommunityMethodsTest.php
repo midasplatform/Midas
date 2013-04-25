@@ -246,7 +246,6 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
     $this->_assertStatusOk($resp);
 
     $this->assertEquals(count($resp->data), 2);
-    $this->assertEquals($resp->data[0]->_model, 'Community');
     $this->assertEquals($resp->data[1]->community_id, 2000);
     $this->assertEquals($resp->data[1]->folder_id, 1003);
     $this->assertEquals($resp->data[1]->name, 'Community test User 1');

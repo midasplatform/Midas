@@ -80,7 +80,7 @@ class HttpuploadComponent extends AppComponent
         }
       }
     // create a unique temporary file in the dirname directory
-    $unique_identifier = basename(tempnam($dir, $args['filename']));
+    $unique_identifier = basename(tempnam($dir, 'midas'));
     if($dirname != '')
       {
       $unique_identifier = $dirname.'/'.$unique_identifier;
@@ -125,7 +125,7 @@ class HttpuploadComponent extends AppComponent
     $pathTemporaryFilename = $this->tmpDirectory.'/'.$uploadToken;
     if(!file_exists($pathTemporaryFilename))
       {
-      throw new Exception('Invalid upload token', MIDAS_HTTPUPLOAD_INVALID_UPLOAD_TOKEN);
+      throw new Exception('Invalid upload token '. $pathTemporaryFilename, MIDAS_HTTPUPLOAD_INVALID_UPLOAD_TOKEN);
       }
     else
       {

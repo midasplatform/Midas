@@ -279,8 +279,8 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // verify the upload token
     $token = $resp->data->token;
     $this->assertTrue(
-      preg_match('/^'.$usersFile[0]->getKey().'\/'.$itemsFile[1]->getKey().'\/.+\..+$/', $token) > 0,
-      'Upload token ('.$token.') is not of the form <userid>/<itemid>/*.*');
+      preg_match('/^'.$usersFile[0]->getKey().'\/'.$itemsFile[1]->getKey().'\/.+/', $token) > 0,
+      'Upload token ('.$token.') is not of the form <userid>/<itemid>/*');
     $this->assertTrue(file_exists($this->getTempDirectory().'/'.$token),
       'Token placeholder file '.$token.' was not created in the temp dir');
 
@@ -502,7 +502,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
 
     // verify the token
     $this->assertTrue(
-      preg_match('/^'.$usersFile[0]->getKey().'\/'.$generatedItemId.'\/.+\..+$/', $token) > 0,
+      preg_match('/^'.$usersFile[0]->getKey().'\/'.$generatedItemId.'\/.+/', $token) > 0,
       'Upload token ('.$token.') is not of the form <userid>/<itemid>/*.*');
     $this->assertTrue(file_exists($this->getTempDirectory().'/'.$token),
       'Token placeholder file '.$token.' was not created in the temp dir');
@@ -602,7 +602,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $token = $resp->data->token;
     // don't know the itemid as it is generated, but can get it from the token
     $this->assertTrue(
-      preg_match('/^'.$usersFile[0]->getKey().'\/(\d+)\/.+\..+$/', $token, $matches) > 0,
+      preg_match('/^'.$usersFile[0]->getKey().'\/(\d+)\/.+/', $token, $matches) > 0,
       'Upload token ('.$token.') is not of the form <userid>/<itemid>/*.*');
     $generatedItemId = $matches[1];
     $this->assertTrue(file_exists($this->getTempDirectory().'/'.$token),
@@ -637,7 +637,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $token = $resp->data->token;
     // don't know the itemid as it is generated, but can get it from the token
     $this->assertTrue(
-      preg_match('/^'.$usersFile[0]->getKey().'\/(\d+)\/.+\..+$/', $token, $matches) > 0,
+      preg_match('/^'.$usersFile[0]->getKey().'\/(\d+)\/.+/', $token, $matches) > 0,
       'Upload token ('.$token.') is not of the form <userid>/<itemid>/*.*');
     $generatedItemId = $matches[1];
     $this->assertTrue(file_exists($this->getTempDirectory().'/'.$token),
@@ -1646,7 +1646,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
 
     // try to delete a non-existent metadata row, should return false
     $resp = $this->_callDeletemetadata($generatedItemId, "some_new_element");
-    $this->assertFalse($resp->data, "Deleting a non-existent metadata row should return false.");
+    $this->assertTrue($resp->data == "", "Deleting a non-existent metadata row should return false.");
 
     // delete all metadata from revision 5 of this item
     $this->_callDeletemetadataAll($generatedItemId, "5");
