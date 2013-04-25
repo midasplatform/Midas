@@ -137,7 +137,7 @@ abstract class KwWebApiCore
     {
     if ( !$this->hasMethod( $methodname ) )
       {
-      $this->apiError(-101, 'Server error. Requested method '.$methodname.' does not exist.');
+      throw new Exception('Server error. Requested method '.$methodname.' does not exist.', -101);
       }
     $method = $this->apicallbacks[$methodname];
 
@@ -147,7 +147,7 @@ abstract class KwWebApiCore
       // It's a class method - check it exists
       $method = substr($method, 5);
       if (!method_exists($this, $method)) {
-          $this->apiError(-102, 'Server error. Requested class method "'.$method.'" does not exist.');
+          throw new Exception('Server error. Requested class method "'.$method.'" does not exist.', -102);
       }
       // Call the method
       $result = $this->$method( $args );
@@ -156,7 +156,7 @@ abstract class KwWebApiCore
       {
       if ( !is_callable($method) )
         {
-        $this->apiError(-103, 'Server error. Requested function "' . var_export($method, true) . '" does not exist.');
+        throw new Exception('Server error. Requested function "' . var_export($method, true) . '" does not exist.', -103);
         }
 
       // Call the function/method
@@ -754,7 +754,7 @@ class KwWebApiJsonError extends KwWebApiError
     $result['message'] = $this->message;
     $result['code'] = $this->code;
 
-    KwWebApiJsonCore::output( json_encode($result) );
+    KwWebApiJsonCore::output( JsonComponent::encode($result) );
     }
 }
 
