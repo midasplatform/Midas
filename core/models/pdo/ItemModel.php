@@ -659,5 +659,71 @@ class ItemModel extends ItemModelBase
       $this->delete($item);
       }
     }
+
+  /**
+   * Update Item name to avoid two or more items have same name within their
+   * parent folder.
+   *
+   * Check if an item with the same name already exists in the parent folder. If
+   * it exists, add appendix to the original file name.
+   * The following naming convention is used:
+   * Assumption: if an item's name is like "aaa.txt (1)", the name should not be this item's real name, but its modified name in Midas when it is created.
+   * This item's real name should be 'aaa.txt' which doesn't have / \(d+\)/ like appendix .
+   * So when an item named "aaa.txt (1)" is duplicated, the newly created item will be called "aaa.txt (2)" instead of "aaa.txt (1) (1)"
+   *
+   * @method updateItemName()
+   * @param string $name name of the item
+   * @param FolderDao $parent parent folder of the item
+   * @return string $updatedName new unique(within its parent folder) name assigned to the item
+   */
+  function updateItemName($name, $parent)
+    {
+    if(!$parent instanceof FolderDao && !is_numeric($parent))
+      {
+      throw new Zend_Exception('Parent should be a folder.');
+      }
+
+    if(empty($name) && $name !== '0')
+      {
+      throw new Zend_Exception('Name cannot be empty.');
+      }
+
+    if($parent instanceof FolderDao)
+      {
+      $parentId = $parent->getFolderId();
+      }
+    else
+      {
+      $parentId = $parent;
+      }
+
+    $curName = $name;
+
+    $curRow = null;
+    $count = 0;
+    while(true)
+      {
+      $sql = $this->database->select()->setIntegrityCheck(false)
+                ->from(array('i' => 'item'))
+                ->join(array('i2f' => 'item2folder'),
+                       'i.item_id = i2f.item_id AND '.
+                       $this->database->getDB()->quoteInto('i2f.folder_id = ?', $parentId),
+                       array())
+                ->where('i.name = ?', $curName)
+                ->limit(1);
+      $curRow = $this->database->fetchRow($sql);
+      if($curRow == null)
+        {
+        break;
+        }
+      else
+        {
+        $count++;
+        $curName = $name . ' (' . $count . ')';
+        }
+      }
+
+    return $curName;
+    }
+
 }  // end class
-?>
