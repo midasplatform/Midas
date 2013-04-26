@@ -145,7 +145,7 @@ class UploadComponent extends AppComponent
 
     Zend_Loader::loadClass('ItemDao', BASE_PATH.'/core/models/dao');
     $item = new ItemDao;
-    $item->setName($item);
+    $item->setName($name);
     $item->setDescription('');
     $item->setType(0);
     $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE); // Must set this flag private initially
