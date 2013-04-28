@@ -39,7 +39,7 @@ foreach($this->otherCSSs as $uris)
     {
     foreach($this->userCommunities as $community)
       {
-      ?>  
+      ?>
       <div class="communityBlock">
       <a class="communityTitle" href="<?php echo $this->webroot.'/community/'.$community->getKey();?>">
       <?php echo $community->getName()?></a>
@@ -60,10 +60,10 @@ foreach($this->otherCSSs as $uris)
     }
   ?>
   </div>
-  
-    <?php 
+
+    <?php
   if(empty($this->userCommunities))
-    {    
+    {
     echo "<h4>{$this->t("No community available")}. <a class='createCommunity' >{$this->t("Create your own community")}!</a> </h4>";
     }
     ?>
@@ -103,13 +103,9 @@ foreach($this->otherCSSs as $uris)
   <?php
     } ?>
   <div class="sideElementLast viewInfo">
-    <h1>Info</h1>    
+    <h1>Info</h1>
     <?php
     echo count($this->userCommunities).' '.(count($this->userCommunities)>1?$this->t('Communities'):$this->t('Community'));
     ?>
   </div>
 </div>
-
-
-
-
