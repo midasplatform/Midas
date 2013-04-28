@@ -93,8 +93,18 @@ class Solr_ApisearchComponent extends AppComponent
          }
         $itemInfo['revisions'] = $revisionsArray;
         // get bitstreams only from last revision
-        $bitstreamArray = array();
+
         $headRevision = $itemModel->getLastRevision($item);
+        $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+        $metadata = $itemRevisionModel->getMetadata($headRevision);
+        $metadataArray = array();
+        foreach($metadata as $m)
+          {
+          $raw_met = $m->toArray();
+          $metadataArray[$raw_met['element'] . '.' . $raw_met['qualifier']] = $raw_met['value'];
+          }
+
+        $bitstreamArray = array();
         $bitstreams = $headRevision->getBitstreams();
         foreach($bitstreams as $b)
           {
@@ -102,6 +112,7 @@ class Solr_ApisearchComponent extends AppComponent
           $bitstreamArray[] = $btmp['bitstream_id'];
           }
         $itemInfo['bitstreams'] = $bitstreamArray;
+        $itemInfo['metadata'] = $metadataArray;
 
         $items[] = $itemInfo;
         $count++;

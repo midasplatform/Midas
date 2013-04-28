@@ -39,7 +39,8 @@ class Rest_SystemController extends ApiController
       'metadataqualifiers' => 'metadataQualifiersList',
       'uploadeoffset' => 'uploadGetoffset',
       'metadatatypes' => 'metadataTypesList',
-      'metadaelements' => 'metadataElementsList',
+      'metadataelements' => 'metadataElementsList',
+      'metadatavalues' => 'metadataValuesList',
       'uploadtoken' => 'uploadGeneratetoken'
       );
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions);
