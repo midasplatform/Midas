@@ -78,8 +78,7 @@ class MetadataModel extends MetadataModelBase
     return $qualifiers;
     }
 
-  /** Return an item by its name
-   * @return MetadataDao*/
+  /** return metadata dao */
   function getMetadata($type, $element, $qualifier)
     {
     $row = $this->database->fetchRow($this->database->select()
@@ -88,7 +87,26 @@ class MetadataModel extends MetadataModelBase
                                           ->where('element=?', $element)
                                           ->where('qualifier=?', $qualifier));
     return $this->initDao('Metadata', $row);
-    } // end function getMetadata()
+    }
+
+  /** Return metadata values corresponding to a given type/element/qualifier */
+  function getMetadataValues($type, $element, $qualifier)
+    {
+    $rowset = $this->database->fetchAll($this->database->select()->setIntegrityCheck(false)
+      ->from(array('m' => 'metadata'))
+      ->join(array('v' => 'metadatavalue'), 'm.metadata_id = v.metadata_id')
+      ->where('metadatatype=?', $type)
+      ->where('element=?', $element)
+      ->where('qualifier=?', $qualifier)
+      ->group('value'));
+    $values = array();
+    foreach($rowset as $row)
+      {
+      $values[] = $row['value'];
+      }
+
+    return $values;
+    } // end function getMetadataValues()
 
   /** get all the metadata */
   function getAllMetadata()

@@ -365,6 +365,17 @@ class ApiitemComponent extends AppComponent
       $revisionsArray[] = $tmp;
       }
     $itemArray['revisions'] = $revisionsArray;
+
+    $headRevision = $itemModel->getLastRevision($item);
+    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+    $metadata = $itemRevisionModel->getMetadata($headRevision);
+    $metadataArray = array();
+    foreach($metadata as $m)
+      {
+      $raw_met = $m->toArray();
+      $metadataArray[$raw_met['element'] . '.' . $raw_met['qualifier']] = $raw_met['value'];
+      }
+    $itemArray['metadata'] = $metadataArray;
     $itemArray['extraFields'] = $apihelperComponent->getItemExtraFields($item);
 
     return $itemArray;

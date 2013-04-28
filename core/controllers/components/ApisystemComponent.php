@@ -538,6 +538,29 @@ class ApisystemComponent extends AppComponent
     }
 
   /**
+   * Get the metadata values stored in the system for a given type, element, and
+   * qualifier. If the typename is specified, it will be used instead of the
+   * type. Also, note that values will only be returned once.
+   * @path /system/metadatavalues
+   * @http GET
+   * @param type the metadata type index
+   * @param element the metadata element
+   * @param qualifier the metadata qualifier
+   * @param typename (Optional) the metadata type name
+   */
+  function metadataValuesList($args)
+    {
+    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $apihelperComponent->validateParams($args, array('element', 'qualifier'));
+    $metadataModel = MidasLoader::loadModel('Metadata');
+    $type = $apihelperComponent->checkMetadataTypeOrName($args, $metadataModel);
+    $element = $args['element'];
+    $qualifier = $args['qualifier'];
+    $values = $metadataModel->getMetadataValues($type, $element, $qualifier);
+    return $values;
+    }
+
+  /**
    * Get the metadata types stored in the system
    * @path /system/metadatatypes
    * @http GET
@@ -551,7 +574,7 @@ class ApisystemComponent extends AppComponent
   /**
    * Get the metadata elements stored in the system for a given metadata type.
    * If the typename is specified, it will be used instead of the index.
-   * @path /system/metadaelements
+   * @path /system/metadataelements
    * @http GET
    * @param type the metadata type index
    * @param typename (Optional) the metadata type name
