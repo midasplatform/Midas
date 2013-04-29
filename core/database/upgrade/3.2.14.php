@@ -21,6 +21,8 @@ class Upgrade_3_2_14 extends MIDASUpgrade
       CHANGE `date` `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
     $this->db->query("ALTER TABLE `bitstream`
       CHANGE `date` `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
+    $this->db->query("ALTER TABLE `feed`
+      CHANGE `date` `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
     }
 
   public function pgsql()
