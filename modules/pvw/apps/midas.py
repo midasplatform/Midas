@@ -46,6 +46,7 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
   subgrid = None
   sliceMode = None
   meshSlice = None
+  sphere = None
   surfaces = []
 
   def initialize(self):
@@ -174,6 +175,24 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     simple.Render()
     return self.srcObj
 
+  @exportRpc("showSphere")
+  def showSphere(self, params):
+    if self.sphere is not None:
+      simple.Delete(self.sphere)
+
+    maxDim = max(self.bounds[1] - self.bounds[0],
+                 self.bounds[3] - self.bounds[2],
+                 self.bounds[5] - self.bounds[4])
+
+    self.sphere = simple.Sphere()
+    self.sphere.Radius = maxDim / 100.0
+    self.sphere.Center = params['point']
+    rep = simple.Show()
+    rep.Representation = 'Surface'
+    rep.DiffuseColor = params['color']
+
+    simple.SetActiveSource(self.srcObj)
+
   @exportRpc("cameraPreset")
   def cameraPreset(self, direction):
     global view
@@ -249,7 +268,8 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     self._sliceSurfaces(sliceNum)
     simple.Render()
     return {'slice': sliceNum,
-            'maxSlices': maxSlices}
+            'maxSlices': maxSlices,
+            'cameraParallelScale': cameraParallelScale}
 
 
   @exportRpc("changeSlice")
@@ -339,6 +359,7 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     return {'scalarRange': self.scalarRange,
             'bounds': self.bounds,
             'extent': self.extent,
+            'center': self.center,
             'sliceInfo': sliceInfo}
 
 
