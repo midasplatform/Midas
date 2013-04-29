@@ -80,7 +80,7 @@ class Pvw_ParaviewComponent extends AppComponent
     $cmdArray = array($pvpython, $application,
                       '--port', $port,
                       '--data', $dataPath,
-                      //'--authkey', $instance->getSecret(),
+                      '-a', $instance->getSecret(),
                       '--timeout', '900');
 
     // Now start the instance
