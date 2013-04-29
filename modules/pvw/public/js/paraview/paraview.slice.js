@@ -53,7 +53,9 @@ midas.pvw.sliceRenderStarted = function (resp) {
     midas.pvw.extent = resp.extent;
     midas.pvw.slice = resp.sliceInfo.slice;
     midas.pvw.maxSlices = resp.sliceInfo.maxSlices;
+    midas.pvw.cameraParallelScale = resp.sliceInfo.cameraParallelScale;
     midas.pvw.scalarRange = resp.scalarRange;
+    midas.pvw.center = resp.center;
 
     pv.viewport.render();
 
@@ -62,6 +64,7 @@ midas.pvw.sliceRenderStarted = function (resp) {
     midas.pvw.updateSliceInfo(midas.pvw.slice);
     midas.pvw.populateInfo();
     midas.pvw.updateWindowInfo([midas.pvw.scalarRange[0], midas.pvw.scalarRange[1]]);
+    midas.pvw.enableActions(json.pvw.operations);
 
     $('a.switchToVolumeView').attr('href', json.global.webroot + '/pvw/paraview/volume' + window.location.search);
 }
@@ -75,10 +78,7 @@ midas.pvw.setupSliders = function () {
         max: midas.pvw.maxSlices,
         value: midas.pvw.slice,
         slide: function(event, ui) {
-            if(midas.pvw.acquireUpdateLock()) {
-                // TODO degrade quality for intermediate updates
-                midas.pvw.changeSlice(ui.value);
-            }
+            midas.pvw.changeSlice(ui.value, true);
             midas.pvw.updateSliceInfo(ui.value);
         },
         change: function(event, ui) {
@@ -132,16 +132,28 @@ midas.pvw.changeWindow = function (values) {
 };
 
 /** Change the slice and run appropriate slice filter on any meshes in the scene */
-midas.pvw.changeSlice = function (slice) {
+midas.pvw.changeSlice = function (slice, degradeQuality) {
     slice = parseInt(slice);
     midas.pvw.currentSlice = slice;
 
-    pv.connection.session.call('pv:changeSlice', slice)
-                        .then(function (resp) {
-                            pv.viewport.render();
-                            midas.pvw.releaseUpdateLock();
-                        })
-                        .otherwise(midas.pvw.rpcFailure)
+    if(midas.pvw.acquireUpdateLock()) {
+        pv.connection.session.call('pv:changeSlice', slice)
+                            .then(function (resp) {
+                                if(degradeQuality) {
+                                    pv.viewport.render(null, {quality: 50});
+                                }
+                                else {
+                                    pv.viewport.render();
+                                }
+                                midas.pvw.releaseUpdateLock();
+                            })
+                            .otherwise(midas.pvw.rpcFailure)
+    }
+    else if(!degradeQuality) {
+        // If this is a non-interactive fetch, we should poll the lock until it unlocks and then
+        // fetch a full-res frame.  This will happens after sliding stops.
+        window.setTimeout(midas.pvw.changeSlice, 20, slice);
+    }
 };
 
 /**
@@ -158,11 +170,11 @@ midas.pvw.pointSelectMode = function () {
     midas.createNotice('Click on the image to select a point', 3500);
 
     // Bind click action on the render window
-    var el = $(midas.pvw.renderers.current.view);
+    var el = $('#renderercontainer .mouse-listener');
     el.unbind('click').click(function (e) {
         var x, y, z;
         var pscale = midas.pvw.cameraParallelScale;
-        var focus = midas.pvw.cameraFocalPoint;
+        var focus = midas.pvw.center;
 
         if(midas.pvw.sliceMode == 'XY Plane') {
             var top = focus[1] - pscale;
@@ -171,7 +183,8 @@ midas.pvw.pointSelectMode = function () {
             var right = focus[0] + pscale;
             x = (e.offsetX / $(this).width()) * (right - left) + left;
             y = (e.offsetY / $(this).height()) * (bottom - top) + top;
-            z = midas.pvw.currentSlice + midas.pvw.bounds[4] - midas.pvw.extent[4];
+            var a = (midas.pvw.slice + midas.pvw.extent[4]) / (midas.pvw.extent[5] - midas.pvw.extent[4]);
+            z = a * (midas.pvw.bounds[5] - midas.pvw.bounds[4]) + midas.pvw.bounds[4];
         }
         else if(midas.pvw.sliceMode == 'XZ Plane') {
             var top = focus[2] + pscale;
@@ -179,7 +192,8 @@ midas.pvw.pointSelectMode = function () {
             var left = focus[0] + pscale;
             var right = focus[0] - pscale;
             x = (e.offsetX / $(this).width()) * (right - left) + left;
-            y = midas.pvw.currentSlice + midas.pvw.bounds[2] - midas.pvw.extent[2];
+            var a = (midas.pvw.slice + midas.pvw.extent[2]) / (midas.pvw.extent[3] - midas.pvw.extent[2]);
+            y = a * (midas.pvw.bounds[3] - midas.pvw.bounds[2]) + midas.pvw.bounds[2];
             z = (e.offsetY / $(this).height()) * (bottom - top) + top;
         }
         else if(midas.pvw.sliceMode == 'YZ Plane') {
@@ -187,13 +201,14 @@ midas.pvw.pointSelectMode = function () {
             var bottom = focus[2] - pscale;
             var left = focus[0] - pscale;
             var right = focus[0] + pscale;
-            x = midas.pvw.currentSlice + midas.pvw.bounds[0] - midas.pvw.extent[0];
+            var a = (midas.pvw.slice + midas.pvw.extent[0]) / (midas.pvw.extent[1] - midas.pvw.extent[0]);
+            x = a * (midas.pvw.bounds[1] - midas.pvw.bounds[0]) + midas.pvw.bounds[2];
             y = (e.offsetX / $(this).width()) * (right - left) + left;
             z = (e.offsetY / $(this).height()) * (bottom - top) + top;
         }
 
         var html = 'You have selected the point:<p><b>('
-                 +x.toFixed(1)+', '+y.toFixed(1)+', '+z.toFixed(1)+')</b></p>'
+                 +x.toFixed(2)+', '+y.toFixed(2)+', '+z.toFixed(2)+')</b></p>'
                  +'Click OK to proceed or Cancel to re-select a point';
         html += '<br/><br/><div style="float: right;"><button id="pointSelectOk">OK</button>';
         html += '<button style="margin-left: 15px" id="pointSelectCancel">Cancel</button></div>';
@@ -213,15 +228,11 @@ midas.pvw.pointSelectMode = function () {
 
         var params = {
             point: [x, y, z],
-            color: [1.0, 0.0, 0.0],
-            radius: midas.pvw.maxDim / 100.0, //make the sphere some small fraction of the image size
-            objectToDelete: midas.pvw.glyph ? midas.pvw.glyph : false,
-            input: midas.pvw.input
+            color: [1.0, 0.0, 0.0]
         };
-        paraview.callPluginMethod('midasslice', 'ShowSphere', params, function (view, retVal) {
-            midas.pvw.glyph = retVal.glyph;
-            midas.pvw.forceRefreshView();
-        });
+        pv.connection.session.call('pv:showSphere', params)
+                             .then(pv.viewport.render)
+                             .otherwise(midas.pvw.rpcFailure);
     });
 };
 
@@ -304,16 +315,14 @@ midas.pvw.sliceModeChanged = function (resp) {
     pv.viewport.render();
     midas.pvw.slice = resp.slice;
     midas.pvw.maxSlices = resp.maxSlices;
+    midas.pvw.cameraParallelScale = resp.cameraParallelScale;
     midas.pvw.updateSliceInfo(resp.slice);
     $('#sliceSlider').slider('destroy').slider({
         min: 0,
         max: midas.pvw.maxSlices,
         value: resp.slice,
         slide: function(event, ui) {
-            if(midas.pvw.acquireUpdateLock()) {
-                // TODO degrade quality for intermediate updates
-                midas.pvw.changeSlice(ui.value);
-            }
+            midas.pvw.changeSlice(ui.value, true);
             midas.pvw.updateSliceInfo(ui.value);
         },
         change: function(event, ui) {

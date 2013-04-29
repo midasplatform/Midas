@@ -15,31 +15,20 @@ except ImportError:
 from autobahn.wamp import exportRpc
 
 # import paraview modules.
-from paraview import simple, web, servermanager, web_helper
+from paraview import simple, web, servermanager, web_helper, paraviewweb_wamp, paraviewweb_protocols
 
 # Setup global variables
 timesteps = []
 currentTimeIndex = 0
-timekeeper = servermanager.ProxyManager().GetProxy("timekeeper", "TimeKeeper")
-pipeline = web_helper.Pipeline('Kitware')
 lutManager = web_helper.LookupTableManager()
 view = None
 dataPath = None
-
-# Initialize the render window
-def initView(width, height):
-  global view, lutManager
-
-  view = simple.GetRenderView()
-  simple.Render()
-  view.ViewSize = [width, height]
-  view.Background = [1, 1, 1]
-  view.OrientationAxesLabelColor = [0, 0, 0]
-  lutManager.setView(view)
-  print 'View created successfully (%dx%d)' % (width, height)
+authKey = None
+width = None
+height = None
 
 # This class defines the exposed RPC methods for the midas application
-class MidasApp(web.ParaViewServerProtocol):
+class MidasApp(paraviewweb_wamp.ServerProtocol):
   DISTANCE_FACTOR = 2.0
   CONTOUR_LINE_WIDTH = 2.0
 
@@ -57,7 +46,27 @@ class MidasApp(web.ParaViewServerProtocol):
   subgrid = None
   sliceMode = None
   meshSlice = None
+  sphere = None
   surfaces = []
+
+  def initialize(self):
+    global view, lutManager, authKey, width, height
+    # Bring used components
+    self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebMouseHandler())
+    self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPort())
+    self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPortImageDelivery())
+    self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPortGeometryDelivery())
+
+    view = simple.GetRenderView()
+    simple.Render()
+    view.ViewSize = [width, height]
+    view.Background = [1, 1, 1]
+    view.OrientationAxesLabelColor = [0, 0, 0]
+    lutManager.setView(view)
+    print 'View created successfully (%dx%d)' % (width, height)
+
+    # Update authentication key to use
+    self.updateSecret(authKey)
 
   def _extractVolumeImageData(self):
     if(self.srcObj.GetPointDataInformation().GetNumberOfArrays() == 0):
@@ -166,6 +175,24 @@ class MidasApp(web.ParaViewServerProtocol):
     simple.Render()
     return self.srcObj
 
+  @exportRpc("showSphere")
+  def showSphere(self, params):
+    if self.sphere is not None:
+      simple.Delete(self.sphere)
+
+    maxDim = max(self.bounds[1] - self.bounds[0],
+                 self.bounds[3] - self.bounds[2],
+                 self.bounds[5] - self.bounds[4])
+
+    self.sphere = simple.Sphere()
+    self.sphere.Radius = maxDim / 100.0
+    self.sphere.Center = params['point']
+    rep = simple.Show()
+    rep.Representation = 'Surface'
+    rep.DiffuseColor = params['color']
+
+    simple.SetActiveSource(self.srcObj)
+
   @exportRpc("cameraPreset")
   def cameraPreset(self, direction):
     global view
@@ -241,7 +268,8 @@ class MidasApp(web.ParaViewServerProtocol):
     self._sliceSurfaces(sliceNum)
     simple.Render()
     return {'slice': sliceNum,
-            'maxSlices': maxSlices}
+            'maxSlices': maxSlices,
+            'cameraParallelScale': cameraParallelScale}
 
 
   @exportRpc("changeSlice")
@@ -331,6 +359,7 @@ class MidasApp(web.ParaViewServerProtocol):
     return {'scalarRange': self.scalarRange,
             'bounds': self.bounds,
             'extent': self.extent,
+            'center': self.center,
             'sliceInfo': sliceInfo}
 
 
@@ -422,5 +451,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     dataPath = args.path
-    initView(width=args.width, height=args.height)
+    authKey = args.authKey
+    width = args.width
+    height = args.height
+
     web.start_webserver(options=args, protocol=MidasApp)

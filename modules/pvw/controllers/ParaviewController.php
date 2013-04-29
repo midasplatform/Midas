@@ -214,10 +214,12 @@ class Pvw_ParaviewController extends Pvw_AppController
    * @param jsImports (Optional) List of javascript files to import. These should contain handler
    *                             functions for imported operations. Separated by ;
    * @param meshes (Optional) List of item id's corresponding to surface meshes to visualize in the scene
+   * @param operations (Optional) List of operations separated by ; to allow
    */
   public function sliceAction()
     {
     $jsImports = $this->_getParam('jsImports');
+    $operations = $this->_getParam('operations');
     if(isset($jsImports))
       {
       $this->view->jsImports = explode(';', $jsImports);
@@ -226,6 +228,16 @@ class Pvw_ParaviewController extends Pvw_AppController
       {
       $this->view->jsImports = array();
       }
+    if(isset($operations))
+      {
+      $operations = explode(';', $operations);
+      }
+    else
+      {
+      $operations = array();
+      }
+    
+
     $itemId = $this->_getParam('itemId');
     if(!isset($itemId))
       {
@@ -257,6 +269,7 @@ class Pvw_ParaviewController extends Pvw_AppController
     $this->view->json['pvw']['item'] = $item;
     $this->view->json['pvw']['meshIds'] = $meshes;
     $this->view->json['pvw']['viewMode'] = 'slice';
+    $this->view->json['pvw']['operations'] = $operations;
     $this->view->item = $item;
     }
 
