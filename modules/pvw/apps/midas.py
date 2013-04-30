@@ -20,12 +20,20 @@ from paraview import simple, web, servermanager, web_helper, paraviewweb_wamp, p
 # Setup global variables
 timesteps = []
 currentTimeIndex = 0
-lutManager = web_helper.LookupTableManager()
 view = None
 dataPath = None
 authKey = None
-width = None
-height = None
+
+def initView(width, height):
+  global view
+  view = simple.GetRenderView()
+  simple.Render()
+  view.ViewSize = [width, height]
+  view.Background = [1, 1, 1]
+  view.OrientationAxesLabelColor = [0, 0, 0]
+
+  print 'View created successfully (%dx%d)' % (width, height)
+
 
 # This class defines the exposed RPC methods for the midas application
 class MidasApp(paraviewweb_wamp.ServerProtocol):
@@ -50,20 +58,13 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
   surfaces = []
 
   def initialize(self):
-    global view, lutManager, authKey, width, height
+    global authKey
+
     # Bring used components
     self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebMouseHandler())
     self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPort())
     self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPortImageDelivery())
     self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPortGeometryDelivery())
-
-    view = simple.GetRenderView()
-    simple.Render()
-    view.ViewSize = [width, height]
-    view.Background = [1, 1, 1]
-    view.OrientationAxesLabelColor = [0, 0, 0]
-    lutManager.setView(view)
-    print 'View created successfully (%dx%d)' % (width, height)
 
     # Update authentication key to use
     self.updateSecret(authKey)
@@ -455,4 +456,5 @@ if __name__ == "__main__":
     width = args.width
     height = args.height
 
+    initView(width, height)
     web.start_webserver(options=args, protocol=MidasApp)
