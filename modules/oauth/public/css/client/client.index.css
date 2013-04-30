@@ -1,0 +1,49 @@
+div.sectionHeader {
+  padding-top: 3px;
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: #666;
+  display: inline;
+  float: left;
+}
+
+div.sectionContainer {
+  margin-bottom: 30px;
+  padding-top: 6px;
+}
+
+.myClientsTable th,.myAuthorizationsTable th {
+  background-color: #dde4e4;
+  padding: 3px 10px 3px 5px;
+  font-weight: normal;
+}
+
+.myClientsTable td,.myAuthorizationsTable td {
+  padding: 3px;
+  background-color: #fbfbfb;
+}
+
+.myClientsTable,.myAuthorizationsTable {
+  width: 100%;
+}
+
+.noClientsMessage {
+  color: #888888;
+  font-style: italic;
+  padding-left: 5px;
+}
+
+.newClientButton {
+  margin-left: 10px;
+  float: left;
+  padding-bottom: 2px;
+}
+
+div.bottomButtons {
+  float: right;
+  margin-top: 25px;
+}
+
+div.bottomButtons input {
+  margin-left: 10px;
+}

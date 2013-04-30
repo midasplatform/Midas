@@ -40,6 +40,17 @@ class AuthenticationComponent extends AppComponent
       }
     else
       {
+      // Attempt to let modules handle alternative API authentication methods. If the module returns an array
+      // with a 'userDao' key set to either null or a valid user dao, that value is returned in lieu of token or session user.
+      $callbacks = Zend_Registry::get('notifier')->callback('CALLBACK_API_AUTH_INTERCEPT', array('args' => $args));
+      foreach($callbacks as $module => $response)
+        {
+        if(is_array($response) && array_key_exists('userDao', $response))
+          {
+          return $response['userDao'];
+          }
+        }
+
       if(!array_key_exists('token', $args))
         {
         return 0;

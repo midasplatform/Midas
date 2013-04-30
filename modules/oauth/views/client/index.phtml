@@ -1,0 +1,107 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/client/client.index.css" />
+
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/client/client.index.js"></script>
+
+<div class="sectionHeader">
+  My Clients
+</div>
+<button class="newClientButton" qtip="Register a new client">+</button>
+<div class="myClientsContainer sectionContainer">
+  <table class="myClientsTable">
+    <thead><tr><th>Name</th><th>Id</th><th>Secret Key</th><th>Actions</th></tr></thead>
+    <tbody>
+    <?php
+    foreach($this->clients as $client)
+      {
+      echo '<tr><td>'.$client->getName().
+           '</td><td>'.$client->getKey().
+           '</td><td>'.$client->getSecret().
+           '</td><td><a class="deleteClientLink" element="'.$client->getKey().'">Delete</a></td></tr>';
+      }
+    ?>
+    </tbody>
+  </table>
+  <?php
+  if(count($this->clients) === 0)
+    {
+    echo '<div class="noClientsMessage">You have no clients at this time.</div>';
+    }
+  ?>
+</div>
+
+<div class="sectionHeader">My Authorizations</div>
+<div class="myAuthorizationsContainer sectionContainer">
+  <table class="myAuthorizationsTable">
+    <thead><tr><th>Client</th><th>Grant Type</th><th>Actions</th></tr></thead>
+    <tbody>
+    <?php
+    foreach($this->codes as $code)
+      {
+      echo '<tr><td>'.$code->getClient()->getName().'</td><td>Authorization Code</td><td></td></tr>';
+      }
+    foreach($this->tokens as $token)
+      {
+      echo '<tr><td>'.$token->getClient()->getName().'</td><td>';
+      switch($token->getType())
+        {
+        case MIDAS_OAUTH_TOKEN_TYPE_ACCESS:
+          echo 'Access token';
+          break;
+        case MIDAS_OAUTH_TOKEN_TYPE_REFRESH:
+          echo 'Refresh token';
+          break;
+        default:
+          echo $token->getType();
+          break;
+        }
+      echo '</td><td><a class="deauthorizeTokenLink" type="'.$token->getType().'" element="'.$token->getKey().'">'.
+           'Deauthorize</a></td></tr>';
+      }
+    ?>
+    </tbody>
+  </table>
+  <?php
+  if(count($this->codes) + count($this->tokens) === 0)
+    {
+    echo '<div class="noClientsMessage">You have not authorized any clients.</div>';
+    }
+  ?>
+</div>
+
+<div class="createClientDialog" id="template-createClientDialog" style="display: none;">
+  Enter a name: <input type="text" class="newClientName" />
+  <div class="bottomButtons">
+    <input type="button" class="globalButton createClientButton" value="Create" />
+  </div>
+</div>
+
+<div class="deleteClientDialog" id="template-deleteClientDialog" style="display: none;">
+  Are you sure you want to delete the client?
+  <div class="bottomButtons">
+    <input type="button" class="globalButton deleteClientYes" value="Yes" />
+    <input type="button" class="globalButton deleteClientNo" value="No" />
+  </div>
+</div>
+
+<div class="deleteTokenDialog" id="template-deleteTokenDialog" style="display: none;">
+  Are you sure you want to delete the client?
+  <div class="bottomButtons">
+    <input type="button" class="globalButton deleteTokenYes" value="Yes" />
+    <input type="button" class="globalButton deleteTokenNo" value="No" />
+  </div>
+</div>
+
+<div class="userIdValue" style="display: none;"><?php echo $this->user->getKey()?></div>

@@ -29,6 +29,17 @@ class Api_ApiComponent extends AppComponent
   public $userSession;
 
   /**
+   * This should be called before _getUser to define what policy scopes (see module.php constants)
+   * are required for the current API endpoint. If this is not called and _getUser is called,
+   * the default behavior is to require PERMISSION_SCOPE_ALL.
+   * @param scopes A list of scope constants that are required for the operation
+   */
+  private function _requirePolicyScopes($scopes)
+    {
+    Zend_Registry::get('notifier')->callback('CALLBACK_API_REQUIRE_PERMISSIONS', array('scopes' => $scopes));
+    }
+
+  /**
    * Pass the args and a list of required parameters.
    * Will throw an exception if a required one is missing.
    */
@@ -224,6 +235,34 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Search items for the given words
+   * @param token (Optional) Authentication token
+   * @param search The search query
+   * @param folder Parent uuid folder
+   * @return An array of matching resources
+   */
+  function itemSearch($args)
+    {
+    $this->_validateParams($args, array('search'));
+    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
+    $userDao = $this->_getUser($args);
+
+    $order = 'view';
+    if(isset($args['order']))
+      {
+      $order = $args['order'];
+      }
+    $folder = false;
+    if(isset($args['folder']))
+      {
+      $folder = $args['folder'];
+      }
+    $componentLoader = new MIDAS_ComponentLoader();
+    $searchComponent = $componentLoader->loadComponent('Search');
+    return $searchComponent->searchItems($userDao, $args['search'], $folder, $order);
+    }
+
+  /**
    * Search resources for the given words
    * @param token (Optional) Authentication token
    * @param search The search query
@@ -232,6 +271,7 @@ class Api_ApiComponent extends AppComponent
   function resourceSearch($args)
     {
     $this->_validateParams($args, array('search'));
+    $this->_requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
     $userDao = $this->_getUser($args);
 
     $order = 'view';

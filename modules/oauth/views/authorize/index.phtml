@@ -1,0 +1,63 @@
+<?php
+/*=========================================================================
+MIDAS Server
+Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
+69328 Lyon, FRANCE.
+
+See Copyright.txt for details.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+=========================================================================*/
+?>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Midas Login</title>
+    <link rel="shortcut icon" href="<?php echo $this->coreWebroot ?>/public/images/icons/favicon.ico" />
+
+    <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/authorize/authorize.index.css" />
+    <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/bootstrap/bootstrap.min.css" />
+
+    <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/layout/jquery.js"></script>
+    <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
+    <script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/authorize/authorize.index.js"></script>
+  </head>
+  <body>
+    <div class="loginFormContainer">
+      <form class="form-login" method="POST" action="<?php echo $this->webroot?>/oauth/authorize/submit">
+        <div class="logoContainer">
+          <img alt="" src="<?php echo $this->coreWebroot?>/public/images/midas-200.png" />
+        </div>
+        <div class="authorizationText">
+          <img class="secureImage" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/lock.png" />
+          By logging in, you are authorizing <b><?php echo $this->client->getName()?></b>
+          to perform the following actions:
+          <ul class="scopeList">
+            <?php
+            foreach($this->scopeStrings as $scopeString)
+              {
+              echo '<li>'.$scopeString.'</li>';
+              }
+            ?>
+          </ul>
+        </div>
+        <div class="loginErrorMessage" style="display:none;">
+        </div>
+        <input type="text" class="input-block-level" name="login" placeholder="Login" />
+        <input type="password" class="input-block-level" name="password" placeholder="Password" />
+        <div class="buttonBar">
+          <input class="btn btn-primary loginSubmit" type="submit" name="allowOrDeny" value="Allow" />
+          <input class="btn loginDeny" type="submit" name="allowOrDeny" value="Deny" />
+        </div>
+      <input type="hidden" name="redirect_uri" value="<?php echo $this->redirectUri?>" />
+      <input type="hidden" name="state" value="<?php echo htmlspecialchars($this->state)?>" />
+      <input type="hidden" name="scope" value="<?php echo htmlspecialchars($this->scope)?>" />
+      <input type="hidden" name="client_id" value="<?php echo $this->client->getKey()?>" />
+      </form>
+    </div>
+  </body>
+</html>
