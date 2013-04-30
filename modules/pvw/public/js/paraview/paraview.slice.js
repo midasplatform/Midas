@@ -134,7 +134,7 @@ midas.pvw.changeWindow = function (values) {
 /** Change the slice and run appropriate slice filter on any meshes in the scene */
 midas.pvw.changeSlice = function (slice, degradeQuality) {
     slice = parseInt(slice);
-    midas.pvw.currentSlice = slice;
+    midas.pvw.slice = slice;
 
     if(midas.pvw.acquireUpdateLock()) {
         pv.connection.session.call('pv:changeSlice', slice)
