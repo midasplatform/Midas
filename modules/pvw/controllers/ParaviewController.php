@@ -236,7 +236,6 @@ class Pvw_ParaviewController extends Pvw_AppController
       {
       $operations = array();
       }
-    
 
     $itemId = $this->_getParam('itemId');
     if(!isset($itemId))
@@ -271,6 +270,35 @@ class Pvw_ParaviewController extends Pvw_AppController
     $this->view->json['pvw']['viewMode'] = 'slice';
     $this->view->json['pvw']['operations'] = $operations;
     $this->view->item = $item;
+    }
+
+  /**
+   * Connect to an already running PVW session
+   * @param instanceId The id of the PVW instance
+   * @param authKey The authorization key of the instance
+   */
+  public function shareAction()
+    {
+    $instanceId = $this->_getParam('instanceId');
+    $authKey = $this->_getParam('authKey');
+    if(!isset($instanceId))
+      {
+      throw new Zend_Exception('Must pass instanceId param', 400);
+      }
+    if(!isset($authKey))
+      {
+      throw new Zend_Exception('Must pass authKey param', 400);
+      }
+    $instanceDao = $this->Pvw_Instance->load($instanceId);
+    if(!$instanceDao)
+      {
+      throw new Zend_Exception('That instance no longer exists', 400);
+      }
+    if($instanceDao->getSecret() !== $authKey)
+      {
+      throw new Zend_Exception('Invalid authentication key', 403);
+      }
+    $this->view->json['pvw']['instance'] = $instanceDao;
     }
 
   /**

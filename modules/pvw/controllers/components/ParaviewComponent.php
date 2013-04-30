@@ -81,7 +81,7 @@ class Pvw_ParaviewComponent extends AppComponent
                       '--port', $port,
                       '--data', $dataPath,
                       '-a', $instance->getSecret(),
-                      '--timeout', '900');
+                      '--timeout', '900'); // TODO --inactivity-timeout
 
     // Now start the instance
     $displayEnv = $settingModel->getValueByName('displayEnv', 'pvw');

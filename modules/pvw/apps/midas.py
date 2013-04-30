@@ -393,6 +393,7 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     self.sof.Points = sofPoints
 
     self.rep.ColorArrayName = self.colorArrayName
+    self.rep.VolumeRenderingMode = 'Texture Mapping Only'
     self.rep.Representation = 'Volume'
     self.rep.ScalarOpacityFunction = self.sof
     self.rep.LookupTable = self.lookupTable
@@ -430,6 +431,7 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     self.rep = simple.Show()
     self.rep.ScalarOpacityFunction = self.sof
     self.rep.ColorArrayName = self.colorArrayName
+    self.rep.VolumeRenderingMode = 'Texture Mapping Only'
     self.rep.Representation = 'Volume'
     self.rep.SelectionPointFieldDataArrayName = self.colorArrayName
     self.rep.LookupTable = self.lookupTable
