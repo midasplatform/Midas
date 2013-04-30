@@ -34,7 +34,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
    */
   function indexAction()
     {
-    if(!$_SERVER['HTTPS'])
+    if(!array_key_exists('HTTPS', $_SERVER) || !$_SERVER['HTTPS'])
       {
       $this->_redirect('https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
       return;
