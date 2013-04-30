@@ -55,6 +55,14 @@ midas.pvw._commonStart = function (text) {
             secret: midas.pvw.instance.secret,
             interactiveQuality: 50
         };
+        $('#shareSessionLink').click(function () {
+            var html = 'Share link: <input style="width:100%;" class="shareUrl" type="text" readonly value="';
+            html += window.location.protocol + window.location.hostname + json.global.webroot;
+            html += '/pvw/paraview/share?instanceId=' + midas.pvw.instance.instance_id;
+            html += '&authKey=' + midas.pvw.instance.secret + '" />';
+            midas.showDialogWithContent('Share current session', html, false);
+            $('div.MainDialog input.shareUrl').select();
+        });
         midas.pvw.start();
     }
     else {
@@ -79,8 +87,10 @@ midas.pvw.loadData = function () {
         pv.connection.session.call('pv:loadData')
                              .then(midas.pvw.dataLoaded)
                              .otherwise(midas.pvw.rpcFailure);
-    }, function(msg) {
+    }, function(code, msg) {
+        $('#renderercontainer').hide();
         midas.createNotice('Error: ' + msg, 3000, 'error');
+        midas.pvw.showStatus('ParaView session closed: ' + msg)
     });
 };
 
