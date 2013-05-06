@@ -26,3 +26,12 @@ $('form.editProducerForm').ajaxForm({
     beforeSubmit: midas.tracker.validateEditForm,
     success: midas.tracker.editSuccess
 });
+
+midas.tracker.qtipContent = "Enter the URL that revision values in this producer will link to. " +
+  "Put <b>%revision</b> in the URL, and that will be expanded to the value of the revision." +
+  "<p><b>Example:</b> https://github.com/myuser/myproject/commit/%revision</p>";
+
+$.fn.qtip.zindex = 16000; //show qtip on top of the dialog instead of under it
+$('input[name="revisionUrl"]').qtip({
+    content: midas.tracker.qtipContent
+});

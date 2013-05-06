@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 /** Scalar controller*/
 class Tracker_ScalarController extends Tracker_AppController
 {
-  public $_models = array('Community', 'Setting');
+  public $_models = array('Community');
   public $_moduleModels = array('Scalar', 'Trend');
 
   /**
@@ -32,7 +32,8 @@ class Tracker_ScalarController extends Tracker_AppController
       {
       throw new Zend_Exception('Scalar with that id does not exist', 404);
       }
-    $comm = $scalar->getTrend()->getProducer()->getCommunity();
+    $producer = $scalar->getTrend()->getProducer();
+    $comm = $producer->getCommunity();
     if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
       throw new Zend_Exception('Permission denied', 403);
@@ -40,7 +41,7 @@ class Tracker_ScalarController extends Tracker_AppController
     $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     $this->view->scalar = $scalar;
     $rev = $scalar->getProducerRevision();
-    $repoBrowserUrl = $this->Setting->getValueByName('repoBrowserUrl', $this->moduleName);
+    $repoBrowserUrl = $producer->getRevisionUrl();
     if($repoBrowserUrl)
       {
       $repoBrowserUrl = preg_replace('/%revision/', $rev, $repoBrowserUrl);
@@ -48,7 +49,7 @@ class Tracker_ScalarController extends Tracker_AppController
       }
     else
       {
-      $this->view->revisionHtml = $rev; 
+      $this->view->revisionHtml = $rev;
       }
     $this->view->resultItems = $this->Tracker_Scalar->getAssociatedItems($scalar);
     $this->view->otherValues = $this->Tracker_Scalar->getOtherValuesFromSubmission($scalar);

@@ -25,6 +25,7 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
         'producer_id' => array('type' => MIDAS_DATA),
         'community_id' => array('type' => MIDAS_DATA),
         'repository' => array('type' => MIDAS_DATA),
+        'revision_url' => array('type' => MIDAS_DATA),
         'executable_name' => array('type' => MIDAS_DATA),
         'display_name' => array('type' => MIDAS_DATA),
         'description' => array('type' => MIDAS_DATA),
@@ -59,6 +60,7 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
       $producer->setDescription('');
       $producer->setExecutableName('');
       $producer->setRepository('');
+      $producer->setRevisionUrl('');
       $this->save($producer);
       }
     return $producer;
