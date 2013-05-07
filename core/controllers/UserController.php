@@ -469,12 +469,12 @@ class UserController extends AppController
         $currentVersion = Zend_Registry::get('configDatabase')->version;
         // We have to have this so that an admin can log in to upgrade from version < 3.2.12 to >= 3.2.12.
         // Version 3.2.12 introduced the new password hashing and storage system.
-        if(version_compare($currentVersion, '3.2.12', '>='))
+        if(!$authModule && version_compare($currentVersion, '3.2.12', '>='))
           {
           $passwordHash = hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$form->getValue('password'));
           $coreAuth = $this->User->hashExists($passwordHash);
           }
-        else
+        else if(!$authModule)
           {
           $passwordHash = md5($instanceSalt.$form->getValue('password'));
           $coreAuth = $this->User->legacyAuthenticate($userDao, $instanceSalt, $form->getValue('password'));
