@@ -265,6 +265,11 @@ class ApibitstreamComponent extends AppComponent
       {
       throw new Exception('Bitstream does not belong to a revision', MIDAS_INTERNAL_ERROR);
       }
+    $item = $revision->getItem();
+    if(!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+      {
+      throw new Exception('Read permission required', MIDAS_INVALID_POLICY);
+      }
 
     $name = array_key_exists('name', $args) ? $args['name'] : $bitstream->getName();
     $offset = array_key_exists('offset', $args) ? $args['offset'] : '0';
@@ -275,7 +280,7 @@ class ApibitstreamComponent extends AppComponent
       $redirUrl .= '&authToken='.$args['token'];
       }
     $r = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
-    $r->setGotoUrl($redirUrl);
+    $r->gotoUrl($redirUrl);
     }
 
   /**
