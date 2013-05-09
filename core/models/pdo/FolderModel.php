@@ -1125,7 +1125,14 @@ class FolderModel extends FolderModelBase
     foreach($rows as $row)
       {
       $item = $this->initDao('Item', $row);
-      $bitstreams = $this->Item->getLastRevision($item)->getBitstreams();
+      $rev = $this->Item->getLastRevision($item);
+
+      if(!$rev)
+        {
+        $zip->add_file($path.'/'.$item->getName(), ''); //add empty item
+        continue;
+        }
+      $bitstreams = $rev->getBitstreams();
       $count = count($bitstreams);
 
       foreach($bitstreams as $bitstream)
