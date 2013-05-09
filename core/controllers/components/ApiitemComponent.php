@@ -947,7 +947,7 @@ class ApiitemComponent extends AppComponent
       $redirUrl .= '&authToken='.$args['token'];
       }
     $r = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
-    $r->setGotoUrl($redirUrl);
+    $r->gotoUrl($redirUrl);
     }
 
   } // end class
