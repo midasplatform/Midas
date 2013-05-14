@@ -2,7 +2,6 @@ var paraview, pv;
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
 
-midas.pvw.IDLE_TIMEOUT = 10 * 60 * 1000; // 10 minute idle timeout
 midas.pvw.PRESET_TRANSFER_RGBPOINTS = {
     "Grayscale": [0.0, 0, 0, 0,
                   1.0, 1, 1, 1],
@@ -512,17 +511,6 @@ midas.pvw.setupExtractSubgrid = function () {
     });
 };
 
-/**
- * Call this with setInterval to regularly test if the
- * user has been idle for too long, and if so, kill the pvw session
- */
-midas.pvw.testIdle = function () {
-    var curr = new Date().getTime();
-    if(curr - midas.pvw.lastAction > midas.pvw.IDLE_TIMEOUT) {
-        midas.pvw.stopSession();
-    }
-};
-
 midas.pvw.start = function () {
     if(typeof midas.pvw.preInitCallback == 'function') {
         midas.pvw.preInitCallback();
@@ -568,23 +556,4 @@ midas.pvw.setupOverlay = function () {
                              .then(pv.viewport.render())
                              .otherwise(midas.pvw.rpcFailure);
     });
-};
-
-/**
- * Call this to kill the pvw session and print a helpful message about it
- * to the view.
- */
-midas.pvw.stopSession = function () {
-    if(pv.connection) {
-        paraview.stop(pv.connection);
-        pv.connection = null;
-    }
-    if(midas.pvw.idleInterval) {
-        clearInterval(midas.pvw.idleInterval);
-        midas.pvw.idleInterval = null;
-    }
-    var html = 'Your ParaViewWeb session was ended, either due to an error or because you went idle '
-             + 'for more than ' + (midas.pvw.IDLE_TIMEOUT / 60000) + ' minutes.';
-    $('#loadingStatus').html(html).show();
-    $('#renderercontainer').hide();
 };
