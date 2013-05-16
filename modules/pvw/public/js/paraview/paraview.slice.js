@@ -10,7 +10,7 @@ midas.pvw.UPDATE_TIMEOUT_SECONDS = 5; // Max time the update lock can be held in
  * and your operation should not run.  If it can, returns true.
  */
 midas.pvw.acquireUpdateLock = function () {
-    if(midas.pvw.updateLock) {
+    if (midas.pvw.updateLock) {
         return false;
     }
     else {
@@ -23,14 +23,14 @@ midas.pvw.acquireUpdateLock = function () {
 };
 
 midas.pvw.releaseUpdateLock = function () {
-    if(midas.pvw.lockExpireTimeout) {
+    if (midas.pvw.lockExpireTimeout) {
         window.clearTimeout(midas.pvw.lockExpireTimeout);
     }
     midas.pvw.updateLock = false;
 };
 
 midas.pvw.start = function () {
-    if(typeof midas.pvw.preInitCallback == 'function') {
+    if (typeof midas.pvw.preInitCallback === 'function') {
         midas.pvw.preInitCallback();
     }
     pv.connection.enableInteractions = false;
@@ -45,13 +45,14 @@ midas.pvw.dataLoaded = function (resp) {
     pv.connection.session.call('pv:sliceRender', midas.pvw.sliceMode)
                          .then(midas.pvw.sliceRenderStarted)
                          .otherwise(midas.pvw.rpcFailure);
-};
+  };
 
 /** Callback from sliceRender rpc success */
 midas.pvw.sliceRenderStarted = function (resp) {
     midas.pvw.bounds = resp.bounds;
     midas.pvw.extent = resp.extent;
     midas.pvw.slice = resp.sliceInfo.slice;
+    midas.pvw.labelmapOpacity = resp.sliceInfo.labelmapOpacity;
     midas.pvw.maxSlices = resp.sliceInfo.maxSlices;
     midas.pvw.cameraParallelScale = resp.sliceInfo.cameraParallelScale;
     midas.pvw.scalarRange = resp.scalarRange;
@@ -60,19 +61,23 @@ midas.pvw.sliceRenderStarted = function (resp) {
     pv.viewport.render();
 
     $('div.MainDialog').dialog('close');
-    midas.pvw.setupSliders();
+    midas.pvw.setupSliders(midas.pvw.labelmapOpacity);
     midas.pvw.updateSliceInfo(midas.pvw.slice);
     midas.pvw.populateInfo();
-    midas.pvw.updateWindowInfo([midas.pvw.scalarRange[0], midas.pvw.scalarRange[1]]);
+    if (midas.pvw.labelmapOpacity !== null) {
+        midas.pvw.updateLabelmapOpacityInfo(midas.pvw.labelmapOpacity);
+    } else {
+        midas.pvw.updateWindowInfo([midas.pvw.scalarRange[0], midas.pvw.scalarRange[1]]);
+    }
     midas.pvw.enableActions(json.pvw.operations);
 
     $('a.switchToVolumeView').attr('href', json.global.webroot + '/pvw/paraview/volume' + window.location.search);
-}
+};
 
 /**
  * Helper function to setup the slice and window/level sliders
  */
-midas.pvw.setupSliders = function () {
+midas.pvw.setupSliders = function (labelmapOpacity) {
     $('#sliceSlider').slider({
         min: 0,
         max: midas.pvw.maxSlices,
@@ -85,22 +90,40 @@ midas.pvw.setupSliders = function () {
             midas.pvw.changeSlice(ui.value);
         }
     });
-    $('#windowLevelSlider').slider({
-        range: true,
-        min: midas.pvw.scalarRange[0],
-        max: midas.pvw.scalarRange[1],
-        values: [midas.pvw.scalarRange[0], midas.pvw.scalarRange[1]],
-        slide: function(event, ui) {
-            if(midas.pvw.acquireUpdateLock()) {
-                // TODO degrade quality for intermediate updates
+    if (labelmapOpacity !== null) {
+        $('#labelmapOpacitySlider').slider({
+            min: 0,
+            max: 100,
+            value: midas.pvw.labelmapOpacity * 100,
+            slide: function(event, ui) {
+                if(midas.pvw.acquireUpdateLock()) {
+                    midas.pvw.changeLabelmapOpacity(ui.value / 100);
+                }
+                midas.pvw.updateLabelmapOpacityInfo(ui.value / 100);
+            },
+            change: function(event, ui) {
+                midas.pvw.changeLabelmapOpacity(ui.value / 100);
+            }
+        });
+
+    } else {
+        $('#windowLevelSlider').slider({
+            range: true,
+            min: midas.pvw.scalarRange[0],
+            max: midas.pvw.scalarRange[1],
+            values: [midas.pvw.scalarRange[0], midas.pvw.scalarRange[1]],
+            slide: function(event, ui) {
+                if(midas.pvw.acquireUpdateLock()) {
+                    // TODO degrade quality for intermediate updates
+                    midas.pvw.changeWindow(ui.values);
+                }
+                midas.pvw.updateWindowInfo(ui.values);
+            },
+            change: function(event, ui) {
                 midas.pvw.changeWindow(ui.values);
             }
-            midas.pvw.updateWindowInfo(ui.values);
-        },
-        change: function(event, ui) {
-            midas.pvw.changeWindow(ui.values);
-        }
-    });
+        });
+    }
 };
 
 /**
@@ -121,9 +144,27 @@ midas.pvw.updateWindowInfo = function (values) {
     $('#windowLevelInfo').html('Window: '+values[0]+' - '+values[1]);
 };
 
+/**
+ * Update the client GUI values for labelmap opacity, without
+ * actually changing them in PVWeb
+ */
+midas.pvw.updateLabelmapOpacityInfo = function (opacity) {
+    $('#labelmapOpacityInfo').html('Labelmap Opacity: '+opacity);
+};
+
 /** Make the actual request to PVWeb to set the window */
 midas.pvw.changeWindow = function (values) {
     pv.connection.session.call('pv:changeWindow', [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0])
+                        .then(function () {
+                            pv.viewport.render();
+                            midas.pvw.releaseUpdateLock();
+                        })
+                        .otherwise(midas.pvw.rpcFailure);
+};
+
+/** Make the actual request to PVWeb to set the labelmap opacity */
+midas.pvw.changeLabelmapOpacity = function (opacity) {
+    pv.connection.session.call('pv:changeLabelmapOpacity', opacity)
                         .then(function () {
                             pv.viewport.render();
                             midas.pvw.releaseUpdateLock();
@@ -236,6 +277,24 @@ midas.pvw.pointSelectMode = function () {
     });
 };
 
+
+/**
+ * Set the mode to painting within the image.
+ */
+midas.pvw.paintingMode = function () {
+    // Bind click action on the render window
+    var el = $('#renderercontainer .mouse-listener');
+    el.unbind('click').click(function (e) {
+
+        if(typeof midas.pvw.handlePainting == 'function') {
+                midas.pvw.handlePainting();
+            }
+            else {
+                midas.createNotice('No painting handler function has been loaded', 4000, 'error');
+            }
+    });
+};
+
 /**
  * Set an action as active
  * @param button The button to display as active (all others will become inactive)
@@ -266,6 +325,24 @@ midas.pvw._enablePointSelect = function () {
 };
 
 /**
+ * Enable painting action
+ */
+midas.pvw._enablePainting = function () {
+    var button = $('#actionButtonTemplate').clone();
+    button.removeAttr('id');
+    button.addClass('paintingButton');
+    button.appendTo('#rendererOverlay');
+    button.qtip({
+        content: 'Paint on the image to create label map'
+    });
+    button.show();
+
+    button.click(function () {
+        midas.pvw.setActiveAction($(this), midas.pvw.paintingMode);
+    });
+};
+
+/**
  * Enable the specified set of operations in the view
  * Options:
  *   -pointSelect: select a single point in the image
@@ -274,6 +351,9 @@ midas.pvw.enableActions = function (operations) {
     $.each(operations, function(k, operation) {
         if(operation == 'pointSelect') {
             midas.pvw._enablePointSelect();
+        }
+        else if(operation == 'painting') {
+            midas.pvw._enablePainting();
         }
         else if(operation != '') {
             alert('Unsupported operation: '+operation);
@@ -288,11 +368,16 @@ midas.pvw.toggleControlVisibility = function () {
     if($('#sliceControlContainer').is(':visible')) {
         $('#sliceControlContainer').hide();
         $('#windowLevelControlContainer').hide();
+        $('#labelmapOpacityControlContainer').hide();
         $('#rendererOverlay').hide();
     }
     else {
         $('#sliceControlContainer').show();
-        $('#windowLevelControlContainer').show();
+        if (midas.pvw.labelmapOpacity !== null) {
+            $('#labelmapOpacityControlContainer').show();
+        } else {
+            $('#windowLevelControlContainer').show();
+        }
         $('#rendererOverlay').show();
     }
 };

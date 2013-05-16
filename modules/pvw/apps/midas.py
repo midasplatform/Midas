@@ -55,7 +55,9 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
   sliceMode = None
   meshSlice = None
   sphere = None
+  labelmapOpacity = None
   surfaces = []
+  labelmaps = []
 
   def initialize(self):
     global authKey
@@ -86,6 +88,41 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
                          (self.extent[3] + self.extent[2]) / 2.0,
                          (self.extent[5] + self.extent[4]) / 2.0]
 
+  def _setLabelmapsLookupTable(self):
+    for labelmap in self.labelmaps:
+        if(labelmap.GetPointDataInformation().GetNumberOfArrays() == 0):
+            print 'Error: no data information arrays'
+            raise Exception('No data information arrays')
+        imageData = labelmap.GetPointDataInformation().GetArray(0)
+        colorArrayName = imageData.Name
+        scalarRange = imageData.GetRange()
+        # Configure data representation
+        rgbPoints = [0.0, 0.2784313725490196, 0.2784313725490196, 0.8588235294117647,
+                     0.286, 0.0, 0.0, 0.3607843137254902,
+                     0.57, 0.0, 1.0, 1.0,
+                     0.858, 0.0, 0.5019607843137255, 0.0,
+                     1.142, 1.0, 1.0, 0.0,
+                     1.428, 1.0, 0.3803921568627451, 0.0,
+                     1.714, 0.4196078431372549, 0.0, 0.0,
+                     2.0, 0.8784313725490196, 0.30196078431372547, 0.30196078431372547]
+        lookupTable = simple.GetLookupTableForArray(colorArrayName+'labels', 1)
+        lookupTable.RGBPoints = rgbPoints
+        lookupTable.ScalarRangeInitialized = 1.0
+        lookupTable.ColorSpace = 'RGB'
+        lookupTable.EnableOpacityMapping = 1
+
+        rep = simple.Show(labelmap)
+        rep.ColorArrayName = self.colorArrayName
+        sofPoints = [0.0, 0.0, 0.5, 0.0,
+                     1.0, 1.0, 0.5, 0.0,
+                     scalarRange[1], 1.0, 0.5, 0.0]
+        sof = simple.CreatePiecewiseFunction(Points=sofPoints)
+        rep.ScalarOpacityFunction = sof
+        rep.LookupTable = lookupTable
+        lookupTable.ScalarOpacityFunction = sof
+
+    simple.SetActiveSource(self.srcObj)
+
   def _loadSurfaceWithProperties(self, fullpath):
     if not fullpath.endswith('.properties'):
       surfaceObj = simple.OpenDataFile(fullpath)
@@ -107,6 +144,14 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
               print 'Skipping invalid property %s' % property
 
       print 'Loaded surface %s into scene' % fullpath
+
+  def _loadLabelmaps(self, fullpath):
+    if not fullpath.endswith('.properties'):
+        labelmapObj = simple.OpenDataFile(fullpath)
+        self.labelmaps.append(labelmapObj)
+        rep = simple.Show()
+        rep.Representation = 'Slice'
+    print 'Loaded labelmap %s into scene' % fullpath
 
   def _sliceSurfaces(self, slice):
     if self.meshSlice is not None:
@@ -144,6 +189,15 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
 
     simple.SetActiveSource(self.srcObj)
 
+  def _sliceLabelmaps(self, slice):
+    for labelmap in self.labelmaps:
+        rep = simple.Show(labelmap)
+        rep.Slice = slice
+        rep.SliceMode = self.sliceMode
+        # only support opacity slider for at most one labelmap
+        self.labelmapOpacity = rep.Opacity
+    simple.SetActiveSource(self.srcObj)
+
   @exportRpc("loadData")
   def loadData(self):
     global dataPath
@@ -170,6 +224,13 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
       fullpath = os.path.join(surfacespath, file)
       if os.path.isfile(fullpath):
         self._loadSurfaceWithProperties(fullpath)
+
+    labempaspath = os.path.join(dataPath, "labelmaps")
+    files = os.listdir(labempaspath)
+    for file in files:
+      fullpath = os.path.join(labempaspath, file)
+      if os.path.isfile(fullpath):
+        self._loadLabelmaps(fullpath)
 
     simple.SetActiveSource(self.srcObj)
     simple.ResetCamera()
@@ -265,11 +326,13 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     self.rep.SliceMode = sliceMode
 
     self.sliceMode = sliceMode
+    self._sliceLabelmaps(sliceNum)
     # TODO calculate slice plane origin for surfaces!!!
     self._sliceSurfaces(sliceNum)
     simple.Render()
     return {'slice': sliceNum,
             'maxSlices': maxSlices,
+            'labelmapOpacity': self.labelmapOpacity,
             'cameraParallelScale': cameraParallelScale}
 
 
@@ -277,7 +340,16 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
   def changeSlice(self, sliceNum):
     self.rep.Slice = sliceNum
     self._sliceSurfaces(sliceNum)
+    self._sliceLabelmaps(sliceNum)
     simple.Render()
+
+  @exportRpc("changeLabelmapOpacity")
+  def changeLabelmapOpacity(self, opacity):
+    if self.labelmaps:
+        # only support opacity slider for at most one label map
+        labelmapRep = simple.Show(self.labelmaps[-1])
+        labelmapRep.Opacity = opacity
+        simple.Render()
 
 
   @exportRpc("changeWindow")
@@ -347,11 +419,14 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     self.lookupTable = simple.GetLookupTableForArray(self.colorArrayName, 1)
     self.lookupTable.RGBPoints = rgbPoints
     self.lookupTable.ScalarRangeInitialized = 1.0
-    self.lookupTable.ColorSpace = 0  # 0 corresponds to RGB
+    self.lookupTable.ColorSpace = 'RGB'
 
     self.rep.ColorArrayName = self.colorArrayName
     self.rep.Representation = 'Slice'
     self.rep.LookupTable = self.lookupTable
+
+    # Set LookupTables for labelmaps
+    self._setLabelmapsLookupTable()
 
     sliceInfo = self.setSliceMode(sliceMode)
 
@@ -384,7 +459,7 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     self.lookupTable = simple.GetLookupTableForArray(self.colorArrayName, 1)
     self.lookupTable.RGBPoints = rgbPoints
     self.lookupTable.ScalarRangeInitialized = 1.0
-    self.lookupTable.ColorSpace = 0  # 0 corresponds to RGB
+    self.lookupTable.ColorSpace = 'RGB'
 
     # Create opacity transfer function
     sofPoints = [self.scalarRange[0], 0, 0.5, 0,

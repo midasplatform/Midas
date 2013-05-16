@@ -29,7 +29,7 @@ class Pvw_ParaviewComponent extends AppComponent
    * @param item The item dao to visualize
    * @return The pvw_instance dao
    */
-  public function createAndStartInstance($item, $meshItems, $appname, $progressDao = null)
+  public function createAndStartInstance($item, $meshItems, $labelmapItems, $appname, $progressDao = null)
     {
     $progressModel = MidasLoader::loadModel('Progress');
     if($progressDao)
@@ -75,7 +75,7 @@ class Pvw_ParaviewComponent extends AppComponent
     $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
     $instanceModel->save($instance);
 
-    $dataPath = $this->_createDataDir($item, $meshItems, $instance);
+    $dataPath = $this->_createDataDir($item, $meshItems, $labelmapItems, $instance);
 
     $cmdArray = array($pvpython, $application,
                       '--port', $port,
@@ -198,35 +198,16 @@ class Pvw_ParaviewComponent extends AppComponent
     return false;
     }
 
-  /**
-   * Symlink the item into a directory
-   */
-  private function _createDataDir($itemDao, $meshItems, $instanceDao)
+  private function _creatSymlinkFiles($items, $linkFolder)
     {
-    if(!is_dir(BASE_PATH.'/tmp/pvw-data'))
-      {
-      mkdir(BASE_PATH.'/tmp/pvw-data');
-      }
-    $path = BASE_PATH.'/tmp/pvw-data/'.$instanceDao->getKey();
-    mkdir($path);
-    mkdir($path.'/main');
-    mkdir($path.'/surfaces');
-
-    // Symlink main item into the main subdir
     $itemModel = MidasLoader::loadModel('Item');
     $revisionModel = MidasLoader::loadModel('ItemRevision');
-    $rev = $itemModel->getLastRevision($itemDao);
-    $bitstreams = $rev->getBitstreams();
-    $src = $bitstreams[0]->getFullpath();
-    symlink($src, $path.'/main/'.$bitstreams[0]->getName());
-
-    // Symlink all the surfaces into the surfaces subdir
-    foreach($meshItems as $meshItem)
+    foreach($items as $item)
       {
-      $rev = $itemModel->getLastRevision($meshItem);
+      $rev = $itemModel->getLastRevision($item);
       $bitstreams = $rev->getBitstreams();
       $src = $bitstreams[0]->getFullpath();
-      $linkPath = $path.'/surfaces/'.$meshItem->getKey().'_'.$bitstreams[0]->getName();
+      $linkPath = $linkFolder.$item->getKey().'_'.$bitstreams[0]->getName();
       symlink($src, $linkPath);
 
       // Write out any metadata properties in the ParaView namespace
@@ -241,6 +222,36 @@ class Pvw_ParaviewComponent extends AppComponent
         }
       fclose($fh);
       }
+    }
+    
+  /**
+   * Symlink the item into a directory
+   */
+  private function _createDataDir($itemDao, $meshItems, $labelmapItems, $instanceDao)
+    {
+    if(!is_dir(BASE_PATH.'/tmp/pvw-data'))
+      {
+      mkdir(BASE_PATH.'/tmp/pvw-data');
+      }
+    $path = BASE_PATH.'/tmp/pvw-data/'.$instanceDao->getKey();
+    mkdir($path);
+    mkdir($path.'/main');
+    mkdir($path.'/surfaces');
+    mkdir($path.'/labelmaps');
+
+    // Symlink main item into the main subdir
+    $itemModel = MidasLoader::loadModel('Item');
+    $revisionModel = MidasLoader::loadModel('ItemRevision');
+    $rev = $itemModel->getLastRevision($itemDao);
+    $bitstreams = $rev->getBitstreams();
+    $src = $bitstreams[0]->getFullpath();
+    symlink($src, $path.'/main/'.$bitstreams[0]->getName());
+
+    // Symlink all the surfaces into the surfaces subdir
+    $this->_creatSymlinkFiles($meshItems, $path.'/surfaces/');
+    // Symlink all the labelmaps into the labelmaps subdir
+    $this->_creatSymlinkFiles($labelmapItems, $path.'/labelmaps/');
+
     return $path;
     }
 } // end class

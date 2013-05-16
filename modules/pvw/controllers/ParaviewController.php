@@ -87,8 +87,32 @@ class Pvw_ParaviewController extends Pvw_AppController
           }
         $meshItems[] = $meshItem;
         }
+        
+      $labelmaps = $this->_getParam('labelmaps');
+      if(isset($labelmaps))
+        {
+        $labelmaps = explode(';', $labelmaps);
+        }
+      else
+        {
+        $labelmaps = array();
+        }
+      $labelmapItems = array();
+      foreach($labelmaps as $labelmapId)
+        {
+        if(!$labelmapId)
+          {
+          continue;
+          }
+        $labelmapItem = $this->Item->load($labelmapId);
+        if(!$this->Item->policyCheck($labelmapItem, $this->userSession->Dao))
+          {
+          throw new Zend_Exception('Read access required on label item '.$labelmapId, 403);
+          }
+        $labelmapItems[] = $labelmapItem;
+        }  
 
-      $instance = $this->ModuleComponent->Paraview->createAndStartInstance($item, $meshItems, $appname, $this->progressDao);
+      $instance = $this->ModuleComponent->Paraview->createAndStartInstance($item, $meshItems, $labelmapItems, $appname, $this->progressDao);
 
       echo JsonComponent::encode(array(
         'status' => 'ok',
@@ -262,11 +286,22 @@ class Pvw_ParaviewController extends Pvw_AppController
       $meshes = array();
       }
 
+    $labelmaps = $this->_getParam('labelmaps');
+    if(isset($labelmaps))
+      {
+      $labelmaps = explode(';', $labelmaps);
+      }
+    else
+      {
+      $labelmaps = array();
+      }
+      
     $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/sliceView.png" />';
     $header .= ' Slice view: <a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
     $this->view->header = $header;
     $this->view->json['pvw']['item'] = $item;
     $this->view->json['pvw']['meshIds'] = $meshes;
+    $this->view->json['pvw']['labelmapIds'] = $labelmaps;
     $this->view->json['pvw']['viewMode'] = 'slice';
     $this->view->json['pvw']['operations'] = $operations;
     $this->view->item = $item;
