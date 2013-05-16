@@ -115,6 +115,7 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
    */
   public function batchAction()
     {
+    UtilityComponent::disableMemoryLimit();
     $itemIds = $this->_getParam('items');
     $folderIds = $this->_getParam('folders');
     if(!isset($itemIds) && !isset($folderIds))
@@ -128,80 +129,79 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
 
     $itemIds = explode('-', $itemIds);
     $items = $this->Item->load($itemIds);
-    $revisions = array();
-    foreach($items as $item)
-      {
-      $tmp = $this->Item->getLastRevision($item);
-      if($tmp !== false)
-        {
-        $revisions[] = $tmp;
-        }
-      }
+
     if(headers_sent())
       {
-      return;
+      return; // can't do anything if headers sent already
       }
     $this->_emptyOutputBuffer();
-    ob_start(); //must start a new buffer for ZipStream to work
-
+    ob_start(); //must start a new output buffer for ZipStream to work
     Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
-    ob_start();
     $zip = new ZipStream('Keyfiles.zip');
-    $zip = $this->_createZipRecursive($zip, '', $folders, $revisions, $this->userSession->Dao);
-    $zip->finish();
-    exit();
-    }
-
-  /** Helper function to create and stream the hierarchy */
-  private function _createZipRecursive($zip, $path, $folders, $revisions, $sessionUser)
-    {
-    foreach($revisions as $revision)
+    // Iterate over top level items
+    foreach($items as $item)
       {
-      if(!$this->Item->policyCheck($revision->getItem(), $sessionUser))
+      if(!$this->Item->policyCheck($item, $this->userSession->Dao))
+        {
+        $this->getLogger()->warn('Keyfiles: Permission failure, skipping item '.$item->getKey());
+        continue;
+        }
+      $revision = $this->Item->getLastRevision($item);
+      if(!$revision)
         {
         continue;
         }
-      $itemName = $revision->getItem()->getName();
       $bitstreams = $revision->getBitstreams();
       $count = count($bitstreams);
 
       foreach($bitstreams as $bitstream)
         {
-        if($count > 1 || $bitstream->getName() != $itemName)
+        if($count > 1 || $bitstream->getName() != $item->getName())
           {
-          $currPath = $path.'/'.$itemName;
+          $path = $item->getName().'/';
           }
         else
           {
-          $currPath = $path;
+          $path = '';
           }
-        $filename = $currPath.'/'.$bitstream->getName().'.md5';
+        $filename = $path.$bitstream->getName().'.md5';
+        $fullpath = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
+        Zend_Registry::get('dbAdapter')->closeConnection();
         $zip->add_file($filename, $bitstream->getChecksum());
         }
+      $this->Item->incrementDownloadCount($item);
+      unset($item);
+      unset($revision);
+      unset($bitstreams);
       }
+
+    // Iterate over top level folders, stream them out recursively using FolderModel::zipStream()
     foreach($folders as $folder)
       {
-      if(!$this->Folder->policyCheck($folder, $sessionUser))
+      if(!$this->Folder->policyCheck($folder, $this->userSession->Dao))
         {
+        $this->getLogger()->warn('Keyfiles: Permission failure, skipping folder '.$folder->getKey());
         continue;
         }
-      $items = $folder->getItems();
-      $subRevisions = array();
-      foreach($items as $item)
-        {
-        $itemName = $item->getName();
-        if(!$this->Item->policyCheck($item, $sessionUser))
-          {
-          continue;
-          }
-        $tmp = $this->Item->getLastRevision($item);
-        if($tmp !== false)
-          {
-          $subRevisions[] = $tmp;
-          }
-        }
-      $zip = $this->_createZipRecursive($zip, $path.'/'.$folder->getName(), $folder->getFolders(), $subRevisions, $sessionUser);
+      $callable = array($this, 'outputCallback');
+      $this->Folder->zipStream($zip, $folder->getName(), $folder, $this->userSession->Dao, $callable);
       }
-    return $zip;
+    $zip->finish();
+    exit();
+    }
+
+  /**
+   * Output callback override function for use in FolderModel::zipStream.
+   * Overrides the default behavior of streaming the file, and instead just
+   * adds a file whose contents are the bitstream's checksum
+   */
+  public function outputCallback(&$zip, $path, $item, $bitstream, $count)
+    {
+    if($count > 1 || $bitstream->getName() != $item->getName())
+      {
+      $path .= '/'.$item->getName();
+      }
+    $path .= '/'.$bitstream->getName().'.md5';
+    $zip->add_file($path, $bitstream->getChecksum());
     }
 }//end class

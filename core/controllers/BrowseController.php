@@ -581,7 +581,7 @@ class BrowseController extends AppController
       {
       throw new Zend_Exception('You must be logged in to delete resources.');
       }
-
+    UtilityComponent::disableMemoryLimit();
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
@@ -644,4 +644,3 @@ class BrowseController extends AppController
     echo JsonComponent::encode($resp);
     }
 } // end class
-
