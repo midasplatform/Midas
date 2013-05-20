@@ -80,7 +80,7 @@ $.widget( "custom.catcomplete", $.ui.autocomplete, {
                 ul.append( '<li class="search-category">' + item.category + "</li>" );
                 currentCategory = item.category;
             }
-            self._renderItem( ul, item );
+            self._renderItemData( ul, item );
         });
     }
 });
