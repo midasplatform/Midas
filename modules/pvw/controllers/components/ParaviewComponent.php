@@ -223,7 +223,7 @@ class Pvw_ParaviewComponent extends AppComponent
       fclose($fh);
       }
     }
-    
+
   /**
    * Symlink the item into a directory
    */
@@ -238,6 +238,7 @@ class Pvw_ParaviewComponent extends AppComponent
     mkdir($path.'/main');
     mkdir($path.'/surfaces');
     mkdir($path.'/labelmaps');
+    mkdir($path.'/output');
 
     // Symlink main item into the main subdir
     $itemModel = MidasLoader::loadModel('Item');

@@ -63,8 +63,16 @@ button.pointSelectButton {
   background-image: url(../../images/pointSelect.png);
 }
 
-button.fakePaintingButton {
-  background-image: url(../../images/pointSelect.png);
+button.paintButton {
+  background-image: url(../../images/paintBrush.png);
+}
+
+button.clearButton {
+  background-image: url(../../images/cross.png);
+}
+
+button.PDFSegButton {
+  background-image: url(../../images/resultset_next.png);
 }
 
 #loadingStatus {

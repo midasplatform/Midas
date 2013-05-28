@@ -4,6 +4,7 @@ midas.pvw = midas.pvw || {};
 midas.pvw.sliceMode = 'XY Plane'; //Initial slice plane
 midas.pvw.updateLock = false; // Lock for RPC calls to make sure we just do one at a time
 midas.pvw.UPDATE_TIMEOUT_SECONDS = 5; // Max time the update lock can be held in seconds
+midas.pvw.canvas = []; // Store all the [voxelIndex, labelValue] tuples until canvas is cleared
 
 /**
  * Attempts to acquire the upate lock. If it cannot, this returns false
@@ -66,10 +67,14 @@ midas.pvw.sliceRenderStarted = function (resp) {
     midas.pvw.populateInfo();
     if (midas.pvw.labelmapOpacity !== null) {
         midas.pvw.updateLabelmapOpacityInfo(midas.pvw.labelmapOpacity);
-    } else {
+    }
+    else {
         midas.pvw.updateWindowInfo([midas.pvw.scalarRange[0], midas.pvw.scalarRange[1]]);
     }
     midas.pvw.enableActions(json.pvw.operations);
+    if (typeof midas.pvw.postInitCallback == 'function') {
+        midas.pvw.postInitCallback();
+    }
 
     $('a.switchToVolumeView').attr('href', json.global.webroot + '/pvw/paraview/volume' + window.location.search);
 };
@@ -106,7 +111,8 @@ midas.pvw.setupSliders = function (labelmapOpacity) {
             }
         });
 
-    } else {
+    }
+    else {
         $('#windowLevelSlider').slider({
             range: true,
             min: midas.pvw.scalarRange[0],
@@ -279,20 +285,81 @@ midas.pvw.pointSelectMode = function () {
 
 
 /**
- * Set the mode to painting within the image.
+ * Set the mode to paint on the image.
  */
-midas.pvw.paintingMode = function () {
-    // Bind click action on the render window
+midas.pvw.paintMode = function () {
+    midas.createNotice('Paint on the image to create a label map', 3000);
+    // Bind mousedown and mouseup actions on the render window
     var el = $('#renderercontainer .mouse-listener');
-    el.unbind('click').click(function (e) {
-
-        if(typeof midas.pvw.handlePainting == 'function') {
-                midas.pvw.handlePainting();
+    el.unbind('mousedown').mousedown(function (e) {
+        var i, j, k, idx_flat;
+        var planePoints = (midas.pvw.extent[3] - midas.pvw.extent[2] + 1) *  (midas.pvw.extent[1] - midas.pvw.extent[0] + 1);
+        var rowPoints = midas.pvw.extent[1] - midas.pvw.extent[0] + 1;
+        var last_moved;
+        // Start paiting after mousedown->mousemove
+        $(this).bind('mousemove', function (event){
+            // Convert html pixel to image data's (i,j,k) index
+            if( midas.pvw.sliceMode == 'XY Plane') {
+                i = Math.floor(event.offsetX / $(this).width() * (midas.pvw.extent[1] - midas.pvw.extent[0])) + midas.pvw.extent[0];
+                j = Math.floor(event.offsetY / $(this).height() * (midas.pvw.extent[3] - midas.pvw.extent[2])) + midas.pvw.extent[2];
+                k = midas.pvw.slice
             }
-            else {
-                midas.createNotice('No painting handler function has been loaded', 4000, 'error');
+            else if(midas.pvw.sliceMode == 'XZ Plane') {
+                i = Math.floor(event.offsetX / $(this).width() * (midas.pvw.extent[1] - midas.pvw.extent[0])) + midas.pvw.extent[0];
+                j = midas.pvw.slice
+                k = Math.floor(event.offsetY / $(this).height() * (midas.pvw.extent[5] - midas.pvw.extent[4])) + midas.pvw.extent[4];
             }
+           else if(midas.pvw.sliceMode == 'YZ Plane') {
+                i = midas.pvw.slice
+                j = Math.floor(event.offsetX / $(this).width() * (midas.pvw.extent[3] - midas.pvw.extent[2])) + midas.pvw.extent[2];
+                k = Math.floor(event.offsetY / $(this).height() * (midas.pvw.extent[5] - midas.pvw.extent[4])) + midas.pvw.extent[4];
+            }
+            // Get flat index from (i,j,k) index
+            flatIdx = (k - midas.pvw.extent[4]) * planePoints + (j - midas.pvw.extent[2]) * rowPoints + (i - midas.pvw.extent[0]);
+            // TODO: support more colors.
+            midas.pvw.canvas.push([flatIdx, 1]);
+            // Update canvas per second
+            if(!last_moved || (event.timeStamp - last_moved > 1000)) {
+                midas.pvw.changeCanvas();
+                last_moved = event.timeStamp;
+            }
+        });
     });
+    el.unbind('mouseup').mouseup(function (e) {
+        // Stop painting after mousseup
+        $(this).unbind('mousemove');
+        // Update canvas immediately
+        midas.pvw.changeCanvas();
+    });
+};
+
+/**
+ * Update painted area
+ */
+midas.pvw.changeCanvas = function (){
+    pv.connection.session.call('pv:changeCanvas', midas.pvw.canvas, midas.pvw.slice)
+                         .then(function () {
+                             pv.viewport.render();
+                             midas.pvw.releaseUpdateLock();
+                         })
+                         .otherwise(midas.pvw.rpcFailure);
+}
+
+/**
+ * Export painted area volume as a labelmap file into data output folder
+ */
+midas.pvw.exportCanvas = function (fileName, folderId){
+    pv.connection.session.call('pv:exportCanvas', fileName)
+                         .then(function () {
+                             midas.pvw.releaseUpdateLock();
+                             if(typeof midas.pvw.uploadPDFSegInput == 'function') {
+                               midas.pvw.uploadPDFSegInput(fileName, folderId);
+                             }
+                             else {
+                               midas.createNotice('No PDF segmentation input label map uploader function has been loaded', 4000, 'error');
+                             }
+                         })
+                         .otherwise(midas.pvw.rpcFailure);
 };
 
 /**
@@ -325,20 +392,81 @@ midas.pvw._enablePointSelect = function () {
 };
 
 /**
- * Enable painting action
+ * Enable paint action
  */
-midas.pvw._enablePainting = function () {
-    var button = $('#actionButtonTemplate').clone();
-    button.removeAttr('id');
-    button.addClass('paintingButton');
-    button.appendTo('#rendererOverlay');
-    button.qtip({
+midas.pvw._enablePaint = function () {
+    // Button to enable painting
+    var paintButton = $('#actionButtonTemplate').clone();
+    paintButton.removeAttr('id');
+    paintButton.addClass('paintButton');
+    paintButton.appendTo('#rendererOverlay');
+    paintButton.qtip({
         content: 'Paint on the image to create label map'
     });
-    button.show();
+    paintButton.show();
+    paintButton.click(function () {
+        midas.pvw.setActiveAction($(this), midas.pvw.paintMode);
+    });
+    // Button to clear painted area
+    var clearButton = $('#actionButtonTemplate').clone();
+    clearButton.removeAttr('id');
+    clearButton.addClass('clearButton');
+    clearButton.appendTo('#rendererOverlay');
+    clearButton.qtip({
+        content: 'Clear label map'
+    });
+    clearButton.show();
+    clearButton.unbind('click').click(function () {
+        $('div.MainDialog').dialog('close');
+        html = '<div style="float: right;">';
+        html += '<button class="globalButton clearLabelmapYes">Yes</button>';
+        html += '<button style="margin-left: 15px;" class="globalButton clearLabelmapNo">No</button>';
+        html += '</div>';
+        midas.showDialogWithContent('Do you really want to clear the labelmap (painted area in all slices)?', html, false);
+        $('button.clearLabelmapYes').unbind('click').click(function () {
+            midas.pvw.canvas = [];
+            midas.pvw.changeCanvas();
+            $('div.MainDialog').dialog('close');
+        });
+        $('button.clearLabelmapNo').unbind('click').click(function () {
+            $('div.MainDialog').dialog('close');
+        });
+    });
+    // Button to start PDFs Segmentation
+    var pipelineButton = $('#actionButtonTemplate').clone();
+    pipelineButton.removeAttr('id');
+    pipelineButton.addClass('PDFSegButton');
+    pipelineButton.appendTo('#rendererOverlay');
+    pipelineButton.qtip({
+        content: 'Click to start the PDFs Segmentation'
 
-    button.click(function () {
-        midas.pvw.setActiveAction($(this), midas.pvw.paintingMode);
+    });
+    pipelineButton.show();
+    pipelineButton.click(function () {
+        $('div.MainDialog').dialog('close');
+        html= '<div><input style="width: 400px;" type="text" id="inputLabelmapName" value="'
+             +json.pvw.item.name+'_pdfseg_input-label" /></div><br/><br/>';
+        html+= '<img src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" '
+             +'id="processingPleaseWait" style="display: none;" />';
+        html+= '<div style="float: right;">';
+        html+= '<button class="globalButton saveInputLabelmapYes">Save</button>';
+        html+= '<button style="margin-left: 15px;" class="globalButton saveInputLabelmapNo">Cancel</button>';
+        html+= '</div>';
+        midas.showDialogWithContent('Choose name for input label map item', html, false);
+        $('#inputLabelmapName').focus();
+        $('#inputLabelmapName').select();
+        $('button.saveInputLabelmapYes').unbind('click').click(function () {
+            var outputItemName = $('#inputLabelmapName').val() + '.mhd';
+            $('#processingPleaseWait').show();
+            // For testing only
+            var outputFolderId = 52;
+            midas.pvw.exportCanvas(outputItemName, outputFolderId);
+        });
+
+        $('button.saveInputLabelmapNo').unbind('click').click(function () {
+            $('div.MainDialog').dialog('close');
+        });
+
     });
 };
 
@@ -352,8 +480,8 @@ midas.pvw.enableActions = function (operations) {
         if(operation == 'pointSelect') {
             midas.pvw._enablePointSelect();
         }
-        else if(operation == 'painting') {
-            midas.pvw._enablePainting();
+        else if(operation == 'paint') {
+            midas.pvw._enablePaint();
         }
         else if(operation != '') {
             alert('Unsupported operation: '+operation);
