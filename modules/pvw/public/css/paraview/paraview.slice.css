@@ -1,10 +1,10 @@
 
-#sliceSlider, #windowLevelSlider {
+#sliceSlider, #windowLevelSlider, #labelmapOpacitySlider{
   margin: 8px 14px 8px 10px;
   width: 551px;
 }
 
-#sliceInfo, #windowLevelInfo {
+#sliceInfo, #windowLevelInfo, #labelmapOpacityInfo {
   margin-left: 10px;
   color: white;
   z-index: 3;
@@ -38,7 +38,7 @@ img.visuLoading {
   z-index: 1005;
 }
 
-#windowLevelControlContainer {
+#windowLevelControlContainer, #labelmapOpacityControlContainer {
   position: absolute;
   bottom: 5px;
   z-index: 1005;
@@ -61,6 +61,18 @@ button.actionInactive {
 
 button.pointSelectButton {
   background-image: url(../../images/pointSelect.png);
+}
+
+button.paintButton {
+  background-image: url(../../images/paintBrush.png);
+}
+
+button.clearButton {
+  background-image: url(../../images/cross.png);
+}
+
+button.PDFSegButton {
+  background-image: url(../../images/resultset_next.png);
 }
 
 #loadingStatus {
