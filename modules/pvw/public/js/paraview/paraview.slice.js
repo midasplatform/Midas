@@ -288,7 +288,7 @@ midas.pvw.pointSelectMode = function () {
  * Set the mode to paint on the image.
  */
 midas.pvw.paintMode = function () {
-    midas.createNotice('Paint on the image to create a label map', 3000);
+    midas.createNotice('Paint on the image to create an initial label map', 3000);
     // Bind mousedown and mouseup actions on the render window
     var el = $('#renderercontainer .mouse-listener');
     el.unbind('mousedown').mousedown(function (e) {
@@ -334,7 +334,7 @@ midas.pvw.paintMode = function () {
 };
 
 /**
- * Update painted area
+ * Update painting volume
  */
 midas.pvw.changeCanvas = function (){
     pv.connection.session.call('pv:changeCanvas', midas.pvw.canvas, midas.pvw.slice)
@@ -346,20 +346,44 @@ midas.pvw.changeCanvas = function (){
 }
 
 /**
- * Export painted area volume as a labelmap file into data output folder
+ * Export painting volume to local disk and then upload it into the same 
+ * direcotry as the input item on Midas server using Pydas.
  */
-midas.pvw.exportCanvas = function (fileName, folderId){
-    pv.connection.session.call('pv:exportCanvas', fileName)
-                         .then(function () {
-                             midas.pvw.releaseUpdateLock();
-                             if(typeof midas.pvw.uploadPDFSegInput == 'function') {
-                               midas.pvw.uploadPDFSegInput(fileName, folderId);
-                             }
-                             else {
-                               midas.createNotice('No PDF segmentation input label map uploader function has been loaded', 4000, 'error');
-                             }
-                         })
-                         .otherwise(midas.pvw.rpcFailure);
+midas.pvw.exportCanvas = function (fileName){
+    ajaxWebApi.ajax({
+        // Get destination folder
+        method: 'midas.item.get',
+        args: 'id='+json.pvw.item.item_id,
+            success: function(itemInfo) {
+                ajaxWebApi.ajax({
+                    // Get Pydas required parameters
+                    method: 'midas.pyslicer.get.pydas.params',
+                    success: function(pydasParams) {
+                        pv.connection.session.call('pv:exportCanvas', pydasParams.data.email, pydasParams.data.apikey, pydasParams.data.url, fileName, itemInfo.data.folder_id)
+                          .then(midas.pvw.startPDFSegmentation)
+                          .otherwise(midas.pvw.rpcFailure);
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        midas.createNotice(XMLHttpRequest.message, '4000', 'error');
+                    }
+                });
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                midas.createNotice(XMLHttpRequest.message, '4000', 'error');
+            }
+    });
+};
+
+/**
+ * Callback from rpc exportCanvas
+ */
+midas.pvw.startPDFSegmentation = function (resp) {
+    if(typeof midas.pvw.handlePDFSegmentation == 'function') {
+        midas.pvw.handlePDFSegmentation(resp.labelmap_item_id);
+    }
+    else {
+       midas.createNotice('No TubeTK PDF segmentation handler function has been loaded', 4000, 'error');
+    }
 };
 
 /**
@@ -407,7 +431,7 @@ midas.pvw._enablePaint = function () {
     paintButton.click(function () {
         midas.pvw.setActiveAction($(this), midas.pvw.paintMode);
     });
-    // Button to clear painted area
+    // Button to clear existing painting
     var clearButton = $('#actionButtonTemplate').clone();
     clearButton.removeAttr('id');
     clearButton.addClass('clearButton');
@@ -422,7 +446,7 @@ midas.pvw._enablePaint = function () {
         html += '<button class="globalButton clearLabelmapYes">Yes</button>';
         html += '<button style="margin-left: 15px;" class="globalButton clearLabelmapNo">No</button>';
         html += '</div>';
-        midas.showDialogWithContent('Do you really want to clear the labelmap (painted area in all slices)?', html, false);
+        midas.showDialogWithContent('Do you really want to clear all paint on all slices)?', html, false);
         $('button.clearLabelmapYes').unbind('click').click(function () {
             midas.pvw.canvas = [];
             midas.pvw.changeCanvas();
@@ -432,7 +456,7 @@ midas.pvw._enablePaint = function () {
             $('div.MainDialog').dialog('close');
         });
     });
-    // Button to start PDFs Segmentation
+    // Button to start TubeTK PDF Segmentation
     var pipelineButton = $('#actionButtonTemplate').clone();
     pipelineButton.removeAttr('id');
     pipelineButton.addClass('PDFSegButton');
@@ -445,22 +469,23 @@ midas.pvw._enablePaint = function () {
     pipelineButton.click(function () {
         $('div.MainDialog').dialog('close');
         html= '<div><input style="width: 400px;" type="text" id="inputLabelmapName" value="'
-             +json.pvw.item.name+'_pdfseg_input-label" /></div><br/><br/>';
-        html+= '<img src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" '
-             +'id="processingPleaseWait" style="display: none;" />';
+             +json.pvw.item.name+'_pdfseg_input" /></div><br/><br/>';
+        html+= '<div id="savingPleaseWait" style="display: none;">';
+        html+= '<span>Saving current painting as the intial label map</span>';
+        html+= '<img src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>';  
+        html+='</div>';
         html+= '<div style="float: right;">';
         html+= '<button class="globalButton saveInputLabelmapYes">Save</button>';
         html+= '<button style="margin-left: 15px;" class="globalButton saveInputLabelmapNo">Cancel</button>';
         html+= '</div>';
-        midas.showDialogWithContent('Choose name for input label map item', html, false);
+        midas.showDialogWithContent('Choose name for initial label map item', html, false);
         $('#inputLabelmapName').focus();
         $('#inputLabelmapName').select();
         $('button.saveInputLabelmapYes').unbind('click').click(function () {
-            var outputItemName = $('#inputLabelmapName').val() + '.mhd';
-            $('#processingPleaseWait').show();
-            // For testing only
-            var outputFolderId = 52;
-            midas.pvw.exportCanvas(outputItemName, outputFolderId);
+            // Paraview can only save MetaImage file in .mhd format
+            var outputItemName = $('#inputLabelmapName').val() + '-label.mhd';
+            $('#savingPleaseWait').show();
+            midas.pvw.exportCanvas(outputItemName);
         });
 
         $('button.saveInputLabelmapNo').unbind('click').click(function () {
@@ -474,6 +499,7 @@ midas.pvw._enablePaint = function () {
  * Enable the specified set of operations in the view
  * Options:
  *   -pointSelect: select a single point in the image
+ *   -paint: paint on the image
  */
 midas.pvw.enableActions = function (operations) {
     $.each(operations, function(k, operation) {

@@ -81,7 +81,7 @@ class Pvw_ParaviewComponent extends AppComponent
                       '--port', $port,
                       '--data', $dataPath,
                       '-a', $instance->getSecret(),
-                      '--timeout', '900'); // TODO --inactivity-timeout
+                      '--timeout', '900');  // TODO --inactivity-timeout
 
     // Now start the instance
     $displayEnv = $settingModel->getValueByName('displayEnv', 'pvw');
@@ -198,7 +198,7 @@ class Pvw_ParaviewComponent extends AppComponent
     return false;
     }
 
-  private function _creatSymlinkFiles($items, $linkFolder)
+  private function _createSymlinkFiles($items, $linkFolder)
     {
     $itemModel = MidasLoader::loadModel('Item');
     $revisionModel = MidasLoader::loadModel('ItemRevision');
@@ -249,9 +249,9 @@ class Pvw_ParaviewComponent extends AppComponent
     symlink($src, $path.'/main/'.$bitstreams[0]->getName());
 
     // Symlink all the surfaces into the surfaces subdir
-    $this->_creatSymlinkFiles($meshItems, $path.'/surfaces/');
+    $this->_createSymlinkFiles($meshItems, $path.'/surfaces/');
     // Symlink all the labelmaps into the labelmaps subdir
-    $this->_creatSymlinkFiles($labelmapItems, $path.'/labelmaps/');
+    $this->_createSymlinkFiles($labelmapItems, $path.'/labelmaps/');
 
     return $path;
     }
