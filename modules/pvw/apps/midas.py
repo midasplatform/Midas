@@ -17,6 +17,9 @@ from autobahn.wamp import exportRpc
 # import paraview modules.
 from paraview import simple, web, servermanager, web_helper, paraviewweb_wamp, paraviewweb_protocols
 
+# import utility methods
+import pvw_utils
+
 # Setup global variables
 timesteps = []
 currentTimeIndex = 0
@@ -58,7 +61,7 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
   labelmapOpacity = None
   surfaces = []
   labelmaps = []
-  canvasObj = None # painted area volume
+  canvasObj = None # painting volume
   canvasRep = None # representation for self.canvasObj
 
   def initialize(self):
@@ -97,14 +100,13 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
       lookupTable = servermanager.ProxyManager().GetProxy("lookup_tables", proxyName)
       if lookupTable:
           return lookupTable
-      rgbPoints = [0.0, 0.2784313725490196, 0.2784313725490196, 0.8588235294117647,
-                   0.286, 0.0, 0.0, 0.3607843137254902,
-                   0.57, 0.0, 1.0, 1.0,
-                   0.858, 0.0, 0.5019607843137255, 0.0,
-                   1.142, 1.0, 1.0, 0.0,
-                   1.428, 1.0, 0.3803921568627451, 0.0,
-                   1.714, 0.4196078431372549, 0.0, 0.0,
-                   2.0, 0.8784313725490196, 0.30196078431372547, 0.30196078431372547]
+      rgbPoints = [0.0, 0.0, 0.0, 0.0,
+                   1.0, 0.0, 1.0, 0.0,
+                   2.0, 1.0, 0.0, 0.0,
+                   3.0, 1.0, 0.8, 0.0,
+                   4.0, 0.2, 0.4, 1.0,
+                   5.0, 1.0, 0.0, 1.0,
+                   6.0, 0.0, 0.8, 1.0]
       lookupTable = servermanager.rendering.PVLookupTable(
             ColorSpace="RGB", RGBPoints=rgbPoints)
       servermanager.Register(lookupTable, registrationName=proxyName)
@@ -118,7 +120,11 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
        """Fixed Opacity Transfer Function for all labelmaps"""
        sofPoints = [0.0, 0.0, 0.5, 0.0,
                     1.0, 1.0, 0.5, 0.0,
-                    2.0, 1.0, 0.5, 0.0]
+                    2.0, 1.0, 0.5, 0.0,
+                    3.0, 1.0, 0.5, 0.0,
+                    4.0, 1.0, 0.5, 0.0,
+                    5.0, 1.0, 0.5, 1.0,
+                    6.0, 1.0, 0.5, 0.0]
        return simple.CreatePiecewiseFunction(Points=sofPoints)
 
   def _setLabelmapsLookupTable(self):
@@ -209,12 +215,12 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
         rep = simple.Show(labelmap)
         rep.Slice = slice
         rep.SliceMode = self.sliceMode
-        # Opacity slider only supports one labelmap
+        # Opacity slider only supports one label map
         self.labelmapOpacity = rep.Opacity
     simple.SetActiveSource(self.srcObj)
 
   def _sliceCanvas(self, slice):
-    "Display Painted area"
+    "Display painting volume in slice mode"
     if self.canvasRep is not None:
         self.canvasRep.Visibility = 1
         self.canvasRep.Slice = slice
@@ -262,14 +268,30 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     return self.srcObj
 
   @exportRpc("exportCanvas")
-  def exportCanvas(self, filename):
-      """Export painted area out of Paraview and save it into output directory"""
+  def exportCanvas(self, user_email, api_key, midas_url, file_name, output_folder_id):
+      """Export painting out of Paraview to local disk and then upload it
+      into the Midas server using Pydas"""
       global dataPath
+      pydasParams = (user_email, api_key, midas_url)
       if self.canvasObj is not None:
-          outputfilepath = os.path.join(dataPath, "output", filename)
-          writer = simple.CreateWriter(outputfilepath, self.canvasObj)
+          output_dir = os.path.join(dataPath, "output")
+          output_file_path = os.path.join(output_dir, file_name)
+          # Export painting to local disk
+          writer = simple.CreateWriter(output_file_path, self.canvasObj)
           writer.UpdatePipeline()
           del writer
+          # ParaView can only save MetaImage in .mhd format
+          # Call utility function to convert it to .mha format
+          if file_name.endswith('.mhd'):
+              pvw_utils.mhdToMha(output_file_path)
+              file_name = file_name[:-4] + '.mha'
+          pvw_instance_id = os.path.basename(dataPath)
+          # Upload file to the Midas server using Pydas
+          labelmap_item_id = pvw_utils.uploadItem(pydasParams, file_name, output_folder_id, output_dir, out_file=file_name)
+          return {'labelmap_item_id': labelmap_item_id}
+      else:
+          print 'Error: No canvas object is running'
+          raise Exception('Error: No canvas object is running')
 
   @exportRpc("showSphere")
   def showSphere(self, params):
@@ -404,7 +426,7 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
 
   @exportRpc("changeCanvas")
   def changeCanvas(self, labelmap, sliceNum):
-    """Update painted area volume"""
+    """Update painting volume"""
     # Use python programmable filter
     if self.canvasObj is None:
         self.canvasObj = simple.ProgrammableFilter(self.srcObj)

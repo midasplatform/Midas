@@ -82,3 +82,32 @@ button.PDFSegButton {
 span.infoValue {
   color: #7a7a7a;
 }
+
+button.simpleColorPicker-picker {
+  width: 25px;
+  height: 25px;
+  background-repeat: no-repeat;
+  background-position: 2px 1px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+}
+
+div.simpleColorPicker-palette {
+  width: 110px;
+  position: absolute;
+  border: 1px solid #598FEF;
+  background-color: #EFEFEF;
+  padding: 2px;
+  z-index: 9999;
+}
+
+div.simpleColorPicker-swatch {
+  height: 12px;
+  width: 12px;
+  border: 1px solid #000;
+  margin: 2px;
+  float: left;
+  cursor: pointer;
+  line-height: 12px;
+}
