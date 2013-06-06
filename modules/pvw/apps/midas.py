@@ -100,14 +100,13 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
       lookupTable = servermanager.ProxyManager().GetProxy("lookup_tables", proxyName)
       if lookupTable:
           return lookupTable
-      rgbPoints = [0.0, 0.2784313725490196, 0.2784313725490196, 0.8588235294117647,
-                   0.286, 0.0, 0.0, 0.3607843137254902,
-                   0.57, 0.0, 1.0, 1.0,
-                   0.858, 0.0, 0.5019607843137255, 0.0,
-                   1.142, 1.0, 1.0, 0.0,
-                   1.428, 1.0, 0.3803921568627451, 0.0,
-                   1.714, 0.4196078431372549, 0.0, 0.0,
-                   2.0, 0.8784313725490196, 0.30196078431372547, 0.30196078431372547]
+      rgbPoints = [0.0, 0.0, 0.0, 0.0,
+                   1.0, 0.0, 1.0, 0.0,
+                   2.0, 1.0, 0.0, 0.0,
+                   3.0, 1.0, 0.8, 0.0,
+                   4.0, 0.2, 0.4, 1.0,
+                   5.0, 1.0, 0.0, 1.0,
+                   6.0, 0.0, 0.8, 1.0]
       lookupTable = servermanager.rendering.PVLookupTable(
             ColorSpace="RGB", RGBPoints=rgbPoints)
       servermanager.Register(lookupTable, registrationName=proxyName)
@@ -121,7 +120,11 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
        """Fixed Opacity Transfer Function for all labelmaps"""
        sofPoints = [0.0, 0.0, 0.5, 0.0,
                     1.0, 1.0, 0.5, 0.0,
-                    2.0, 1.0, 0.5, 0.0]
+                    2.0, 1.0, 0.5, 0.0,
+                    3.0, 1.0, 0.5, 0.0,
+                    4.0, 1.0, 0.5, 0.0,
+                    5.0, 1.0, 0.5, 1.0,
+                    6.0, 1.0, 0.5, 0.0]
        return simple.CreatePiecewiseFunction(Points=sofPoints)
 
   def _setLabelmapsLookupTable(self):

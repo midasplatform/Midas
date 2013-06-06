@@ -5,6 +5,9 @@ midas.pvw.sliceMode = 'XY Plane'; //Initial slice plane
 midas.pvw.updateLock = false; // Lock for RPC calls to make sure we just do one at a time
 midas.pvw.UPDATE_TIMEOUT_SECONDS = 5; // Max time the update lock can be held in seconds
 midas.pvw.canvas = []; // Store all the [voxelIndex, labelValue] tuples until canvas is cleared
+midas.pvw.colorLabelMapping = { // simpleColorPicker's colors to paint labels mapping table
+  '#00FF00': 1, '#FF0000': 2, '#FFCC00': 3, '#3366FF': 4, '#FF00FF': 5, '#00CCFF': 6};
+midas.pvw.paintLabel = 1; // default label value
 
 /**
  * Attempts to acquire the upate lock. If it cannot, this returns false
@@ -316,8 +319,7 @@ midas.pvw.paintMode = function () {
             }
             // Get flat index from (i,j,k) index
             flatIdx = (k - midas.pvw.extent[4]) * planePoints + (j - midas.pvw.extent[2]) * rowPoints + (i - midas.pvw.extent[0]);
-            // TODO: support more colors.
-            midas.pvw.canvas.push([flatIdx, 1]);
+            midas.pvw.canvas.push([flatIdx, midas.pvw.paintLabel]);
             // Update canvas per second
             if(!last_moved || (event.timeStamp - last_moved > 1000)) {
                 midas.pvw.changeCanvas();
@@ -430,6 +432,25 @@ midas.pvw._enablePaint = function () {
     paintButton.show();
     paintButton.click(function () {
         midas.pvw.setActiveAction($(this), midas.pvw.paintMode);
+    });
+    // simpleColorPicker settings
+    $.fn.simpleColorPicker.defaults.showHexField = false;
+    $.fn.simpleColorPicker.defaults.colors = ['00FF00', 'FF0000', 'FFCC00', '3366FF', 'FF00FF', '00CCFF'];
+    // Wrapper button required by simpleColorPicker
+    var nonDisplayWrapperButton = $('#actionButtonTemplate').clone();
+    nonDisplayWrapperButton.attr('id','labelColors')
+    nonDisplayWrapperButton.attr('value', '#00FF00') // default label color
+    nonDisplayWrapperButton.appendTo('#rendererOverlay');
+    // Update label value when color is changed
+    $('#labelColors').simpleColorPicker({
+      onColorChange : function(id, newValue) {
+        midas.pvw.paintLabel = midas.pvw.colorLabelMapping[newValue.toUpperCase()];
+        } 
+      });
+    // Button to change paint color (created by simpleColorPicker)
+    var colorButton = $('.simpleColorPicker-picker')
+    colorButton.qtip({
+        content: 'Change paint color'
     });
     // Button to clear existing painting
     var clearButton = $('#actionButtonTemplate').clone();
