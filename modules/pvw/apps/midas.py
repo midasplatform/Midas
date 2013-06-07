@@ -380,6 +380,8 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
 
     self.rep.Slice = sliceNum
     self.rep.SliceMode = sliceMode
+    if self.canvasRep is not None:
+        self.canvasRep.SliceMode = sliceMode
 
     self.sliceMode = sliceMode
     self._sliceLabelmaps(sliceNum)
@@ -448,6 +450,7 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
         self.canvasRep = simple.Show(self.canvasObj)
         self.canvasRep.SelectionPointFieldDataArrayName = self.colorArrayName
         self.canvasRep.Representation = 'Slice'
+        self.canvasRep.SliceMode = self.sliceMode
         self.canvasRep.ColorArrayName = self.colorArrayName
         self.canvasRep.LookupTable = self._getLabelmapLookupTable()
         self.canvasRep.ScalarOpacityFunction = self.canvasRep.LookupTable.ScalarOpacityFunction
