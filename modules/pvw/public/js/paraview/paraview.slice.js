@@ -225,14 +225,17 @@ midas.pvw.pointSelectMode = function () {
         var x, y, z;
         var pscale = midas.pvw.cameraParallelScale;
         var focus = midas.pvw.center;
-
+        // offsetX and offsetY undefined in Firefox 4
+        var offX = typeof e.offsetX === "undefined" ?  e.pageX - $(e.target).offset().left : e.offsetX;
+        var offY = typeof e.offsetY === "undefined" ?  e.pageY - $(e.target).offset().top : e.offsetY;
+            
         if(midas.pvw.sliceMode == 'XY Plane') {
             var top = focus[1] - pscale;
             var bottom = focus[1] + pscale;
             var left = focus[0] - pscale;
             var right = focus[0] + pscale;
-            x = (e.offsetX / $(this).width()) * (right - left) + left;
-            y = (e.offsetY / $(this).height()) * (bottom - top) + top;
+            x = (offX / $(this).width()) * (right - left) + left;
+            y = (offY / $(this).height()) * (bottom - top) + top;
             var a = (midas.pvw.slice + midas.pvw.extent[4]) / (midas.pvw.extent[5] - midas.pvw.extent[4]);
             z = a * (midas.pvw.bounds[5] - midas.pvw.bounds[4]) + midas.pvw.bounds[4];
         }
@@ -241,10 +244,10 @@ midas.pvw.pointSelectMode = function () {
             var bottom = focus[2] - pscale;
             var left = focus[0] + pscale;
             var right = focus[0] - pscale;
-            x = (e.offsetX / $(this).width()) * (right - left) + left;
+            x = (offX / $(this).width()) * (right - left) + left;
             var a = (midas.pvw.slice + midas.pvw.extent[2]) / (midas.pvw.extent[3] - midas.pvw.extent[2]);
             y = a * (midas.pvw.bounds[3] - midas.pvw.bounds[2]) + midas.pvw.bounds[2];
-            z = (e.offsetY / $(this).height()) * (bottom - top) + top;
+            z = (offY / $(this).height()) * (bottom - top) + top;
         }
         else if(midas.pvw.sliceMode == 'YZ Plane') {
             var top = focus[2] + pscale;
@@ -253,8 +256,8 @@ midas.pvw.pointSelectMode = function () {
             var right = focus[0] + pscale;
             var a = (midas.pvw.slice + midas.pvw.extent[0]) / (midas.pvw.extent[1] - midas.pvw.extent[0]);
             x = a * (midas.pvw.bounds[1] - midas.pvw.bounds[0]) + midas.pvw.bounds[2];
-            y = (e.offsetX / $(this).width()) * (right - left) + left;
-            z = (e.offsetY / $(this).height()) * (bottom - top) + top;
+            y = (offX / $(this).width()) * (right - left) + left;
+            z = (offY / $(this).height()) * (bottom - top) + top;
         }
 
         var html = 'You have selected the point:<p><b>('
@@ -295,32 +298,81 @@ midas.pvw.paintMode = function () {
     // Bind mousedown and mouseup actions on the render window
     var el = $('#renderercontainer .mouse-listener');
     el.unbind('mousedown').mousedown(function (e) {
+        // Chrome sets cursor to text while dragging, and we don't like this default setting
+        e.originalEvent.preventDefault();
+        var xPadding, yPadding, realOffsetX, realOffsetY
         var i, j, k, idx_flat;
+        var pscale = midas.pvw.cameraParallelScale;
         var planePoints = (midas.pvw.extent[3] - midas.pvw.extent[2] + 1) *  (midas.pvw.extent[1] - midas.pvw.extent[0] + 1);
         var rowPoints = midas.pvw.extent[1] - midas.pvw.extent[0] + 1;
         var last_moved;
         // Start paiting after mousedown->mousemove
         $(this).bind('mousemove', function (event){
+            // offsetX and offsetY undefined in Firefox 4
+            var offX = typeof event.offsetX === "undefined" ?  event.pageX - $(event.target).offset().left : event.offsetX;
+            var offY = typeof event.offsetY === "undefined" ?  event.pageY - $(event.target).offset().top : event.offsetY;
             // Convert html pixel to image data's (i,j,k) index
             if( midas.pvw.sliceMode == 'XY Plane') {
-                i = Math.floor(event.offsetX / $(this).width() * (midas.pvw.extent[1] - midas.pvw.extent[0])) + midas.pvw.extent[0];
-                j = Math.floor(event.offsetY / $(this).height() * (midas.pvw.extent[3] - midas.pvw.extent[2])) + midas.pvw.extent[2];
-                k = midas.pvw.slice
+                xPadding = (1 - (midas.pvw.bounds[1] - midas.pvw.bounds[0]) / (2 * pscale)) / 2 * $(this).width();
+                yPadding = (1 - (midas.pvw.bounds[3] - midas.pvw.bounds[2]) / (2 * pscale)) / 2 * $(this).height();
+                realOffsetX = offX - xPadding;
+                realOffsetY = offY - yPadding;
+                // The image is displayed in a square in html canvas, but the bounds in x-axis and y-axis may not be same.
+                // The real bounds of the image in x-axis is [xPadding, $(this).width - xPadding]
+                // The real bounds of the image in y-axis is [yPadding, $(this).width - yPadding]
+                if ( realOffsetX < 0 || offX > ($(this).width() - xPadding) ||
+                     realOffsetY < 0 || offY > ($(this).height() - yPadding)) {
+                     return; // ouf of image boundary
+                     }
+                // CameraViewUp = [0, -1, 0] 
+                i = Math.floor(realOffsetX / ($(this).width() - 2 * xPadding) * (midas.pvw.extent[1] - midas.pvw.extent[0])) + midas.pvw.extent[0];
+                j = Math.floor(realOffsetY / ($(this).height() - 2 * yPadding) * (midas.pvw.extent[3] - midas.pvw.extent[2])) + midas.pvw.extent[2];
+                k = midas.pvw.slice;
             }
             else if(midas.pvw.sliceMode == 'XZ Plane') {
-                i = Math.floor(event.offsetX / $(this).width() * (midas.pvw.extent[1] - midas.pvw.extent[0])) + midas.pvw.extent[0];
-                j = midas.pvw.slice
-                k = Math.floor(event.offsetY / $(this).height() * (midas.pvw.extent[5] - midas.pvw.extent[4])) + midas.pvw.extent[4];
+                xPadding = (1 - (midas.pvw.bounds[1] - midas.pvw.bounds[0]) / (2 * pscale)) / 2 * $(this).width();
+                yPadding = (1 - (midas.pvw.bounds[5] - midas.pvw.bounds[4]) / (2 * pscale)) / 2 * $(this).height();
+                realOffsetX = offX - xPadding;
+                realOffsetY = offY - yPadding;
+                if ( realOffsetX < 0 || offX > ($(this).width() - xPadding) ||
+                     realOffsetY < 0 || offY > ($(this).height() - yPadding)) {
+                     return; // ouf of image boundary
+                     }
+                // CameraViewUp = [0, 0, 1]     
+                i = Math.floor( (1 - realOffsetX / ($(this).width() - 2 * xPadding)) * (midas.pvw.extent[1] - midas.pvw.extent[0])) + midas.pvw.extent[0];
+                j = midas.pvw.slice;
+                k = Math.floor( (1 - realOffsetY / ($(this).height() - 2 * yPadding)) * (midas.pvw.extent[5] - midas.pvw.extent[4])) + midas.pvw.extent[4];
             }
-           else if(midas.pvw.sliceMode == 'YZ Plane') {
-                i = midas.pvw.slice
-                j = Math.floor(event.offsetX / $(this).width() * (midas.pvw.extent[3] - midas.pvw.extent[2])) + midas.pvw.extent[2];
-                k = Math.floor(event.offsetY / $(this).height() * (midas.pvw.extent[5] - midas.pvw.extent[4])) + midas.pvw.extent[4];
+            else if(midas.pvw.sliceMode == 'YZ Plane') {
+                xPadding = (1 - (midas.pvw.bounds[3] - midas.pvw.bounds[2]) / (2 * pscale)) / 2 * $(this).width();
+                yPadding = (1 - (midas.pvw.bounds[5] - midas.pvw.bounds[4]) / (2 * pscale)) / 2 * $(this).height();
+                realOffsetX = offX - xPadding;
+                realOffsetY = offY - yPadding;
+                if ( realOffsetX < 0 || offX > ($(this).width() - xPadding) ||
+                     realOffsetY < 0 || offY > ($(this).height() - yPadding)) {
+                     return; // ouf of image boundary
+                     }
+                // CameraViewUp = [0, 0, 1]     
+                i = midas.pvw.slice;
+                j = Math.floor( realOffsetX / ($(this).width() - 2 * xPadding) * (midas.pvw.extent[3] - midas.pvw.extent[2])) + midas.pvw.extent[2];
+                k = Math.floor( (1 - realOffsetY / ($(this).height() - 2 * yPadding)) * (midas.pvw.extent[5] - midas.pvw.extent[4])) + midas.pvw.extent[4];
             }
             // Get flat index from (i,j,k) index
             flatIdx = (k - midas.pvw.extent[4]) * planePoints + (j - midas.pvw.extent[2]) * rowPoints + (i - midas.pvw.extent[0]);
             midas.pvw.canvas.push([flatIdx, midas.pvw.paintLabel]);
-            // Update canvas per second
+            // Show cursor trail to compensate for the delay from PVW rpc call
+            $('<img>').attr({'src': json.global.moduleWebroot+'/public/images/paintBrushSmall.png'})
+                      .css({
+                          'position':'absolute',
+                          // paintBrushSmall.png is 8x8, and brush head is on bottom left corner
+                          'top': offY - 8,
+                          'left': offX
+                      })
+                      .appendTo($('#renderercontainer'))
+                      .fadeOut(3000, 'linear', function (){
+                          $(this).remove();
+                      });
+            // Send one update canvas request per second to avoid overwhelming PVW with rpc calls
             if(!last_moved || (event.timeStamp - last_moved > 1000)) {
                 midas.pvw.changeCanvas();
                 last_moved = event.timeStamp;

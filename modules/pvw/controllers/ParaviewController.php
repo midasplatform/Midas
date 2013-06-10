@@ -299,6 +299,7 @@ class Pvw_ParaviewController extends Pvw_AppController
     $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/sliceView.png" />';
     $header .= ' Slice view: <a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
     $this->view->header = $header;
+    $this->view->json['global']['moduleWebroot'] = $this->view->moduleWebroot;
     $this->view->json['pvw']['item'] = $item;
     $this->view->json['pvw']['meshIds'] = $meshes;
     $this->view->json['pvw']['labelmapIds'] = $labelmaps;
