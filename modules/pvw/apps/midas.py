@@ -100,13 +100,20 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
       lookupTable = servermanager.ProxyManager().GetProxy("lookup_tables", proxyName)
       if lookupTable:
           return lookupTable
+      # Use Slicer's 'GenericAnatomyColors' preset colors
       rgbPoints = [0.0, 0.0, 0.0, 0.0,
-                   1.0, 0.0, 1.0, 0.0,
-                   2.0, 1.0, 0.0, 0.0,
-                   3.0, 1.0, 0.8, 0.0,
-                   4.0, 0.2, 0.4, 1.0,
-                   5.0, 1.0, 0.0, 1.0,
-                   6.0, 0.0, 0.8, 1.0]
+                   1.0, 0.501960784, 0.682352941, 0.501960784,
+                   2.0, 0.945098039, 0.839215686, 0.568627451,
+                   3.0, 0.694117647, 0.478431373, 0.396078431,
+                   4.0, 0.435294118, 0.721568627, 0.82120566221,
+                   5.0, 0.847058824, 0.396078431, 0.309803922,
+                   6.0, 0.866666667, 0.509803922, 0.396078431,
+                   7.0, 0.564705882, 0.933333333, 0.564705882,
+                   8.0, 0.752941176, 0.407843137, 0.345098039,
+                   9.0, 0.862745098, 0.960784314, 0.078431373,
+                   10.0, 0.305882353, 0.247058824, 0.0,
+                   11.0, 1.0, 0.980392157, 0.862745098,
+                   12.0, 0.901960784, 0.862745098, 0.274509804]
       lookupTable = servermanager.rendering.PVLookupTable(
             ColorSpace="RGB", RGBPoints=rgbPoints)
       servermanager.Register(lookupTable, registrationName=proxyName)
@@ -124,7 +131,13 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
                     3.0, 1.0, 0.5, 0.0,
                     4.0, 1.0, 0.5, 0.0,
                     5.0, 1.0, 0.5, 1.0,
-                    6.0, 1.0, 0.5, 0.0]
+                    6.0, 1.0, 0.5, 0.0,
+                    7.0, 1.0, 0.5, 0.0,
+                    8.0, 1.0, 0.5, 0.0,
+                    9.0, 1.0, 0.5, 0.0,
+                    10.0, 1.0, 0.5, 0.0,
+                    11.0, 1.0, 0.5, 0.0,
+                    12.0, 1.0, 0.5, 0.0]
        return simple.CreatePiecewiseFunction(Points=sofPoints)
 
   def _setLabelmapsLookupTable(self):

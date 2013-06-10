@@ -6,7 +6,9 @@ midas.pvw.updateLock = false; // Lock for RPC calls to make sure we just do one 
 midas.pvw.UPDATE_TIMEOUT_SECONDS = 5; // Max time the update lock can be held in seconds
 midas.pvw.canvas = []; // Store all the [voxelIndex, labelValue] tuples until canvas is cleared
 midas.pvw.colorLabelMapping = { // simpleColorPicker's colors to paint labels mapping table
-  '#00FF00': 1, '#FF0000': 2, '#FFCC00': 3, '#3366FF': 4, '#FF00FF': 5, '#00CCFF': 6};
+  // use Slicer's 'GenericAnotamyColors' preset colors
+  '#80AE80': 1, '#F1D691': 2, '#B17A65': 3, '#6FB8D2': 4, '#D8654F': 5, '#DD8265': 6,
+  '#90EE90': 7, '#C06858': 8, '#DCF514': 9, '#4E3F00': 10, '#FFFADC': 11, '#E6DC46': 12};
 midas.pvw.paintLabel = 1; // default label value
 
 /**
@@ -487,11 +489,15 @@ midas.pvw._enablePaint = function () {
     });
     // simpleColorPicker settings
     $.fn.simpleColorPicker.defaults.showHexField = false;
-    $.fn.simpleColorPicker.defaults.colors = ['00FF00', 'FF0000', 'FFCC00', '3366FF', 'FF00FF', '00CCFF'];
+    var colorPickertColors = new Array();
+    for (var key in midas.pvw.colorLabelMapping) {
+        colorPickertColors.push(key);
+    }
+    $.fn.simpleColorPicker.defaults.colors = colorPickertColors;
     // Wrapper button required by simpleColorPicker
     var nonDisplayWrapperButton = $('#actionButtonTemplate').clone();
     nonDisplayWrapperButton.attr('id','labelColors')
-    nonDisplayWrapperButton.attr('value', '#00FF00') // default label color
+    nonDisplayWrapperButton.attr('value', colorPickertColors[0]) // default label color
     nonDisplayWrapperButton.appendTo('#rendererOverlay');
     // Update label value when color is changed
     $('#labelColors').simpleColorPicker({
