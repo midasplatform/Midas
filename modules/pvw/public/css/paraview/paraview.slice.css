@@ -111,3 +111,22 @@ div.simpleColorPicker-swatch {
   cursor: pointer;
   line-height: 12px;
 }
+
+div.pdfsegInputLabls {
+  text-align: right;
+}
+
+div.pdfsegInputLabls button.simpleColorPicker-picker {
+  width: 15px;
+  height: 15px;
+  background-repeat: no-repeat;
+  background-position: 1px 1px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+}
+
+div.pdfsegInputLabls label {
+  color: rgb(255, 255, 255);
+  font-size: 11px;
+}

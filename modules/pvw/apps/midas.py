@@ -93,7 +93,6 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
                          (self.extent[3] + self.extent[2]) / 2.0,
                          (self.extent[5] + self.extent[4]) / 2.0]
 
-  # TODO: support more colors
   def _getLabelmapLookupTable(self):
       """Fixed LookupTable for all labelmaps"""
       proxyName = "%d.%s.PVLookupTable" % (1, 'LabelMap')
@@ -122,7 +121,6 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
       lookupTable.ScalarOpacityFunction = self._getScalarOpacityFunction()
       return lookupTable
 
-  # TODO: support more colors
   def _getScalarOpacityFunction(self):
        """Fixed Opacity Transfer Function for all labelmaps"""
        sofPoints = [0.0, 0.0, 0.5, 0.0,
