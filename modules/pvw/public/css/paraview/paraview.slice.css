@@ -71,7 +71,7 @@ button.clearButton {
   background-image: url(../../images/cross.png);
 }
 
-button.PDFSegButton {
+button.segmenterButton {
   background-image: url(../../images/resultset_next.png);
 }
 
@@ -83,15 +83,6 @@ span.infoValue {
   color: #7a7a7a;
 }
 
-button.simpleColorPicker-picker {
-  width: 25px;
-  height: 25px;
-  background-repeat: no-repeat;
-  background-position: 2px 1px;
-  box-sizing: border-box;
-  cursor: pointer;
-  display: inline-block;
-}
 
 div.simpleColorPicker-palette {
   width: 110px;
@@ -112,21 +103,19 @@ div.simpleColorPicker-swatch {
   line-height: 12px;
 }
 
-div.pdfsegInputLabls {
+div.pdfsegInput {
   text-align: right;
 }
 
-div.pdfsegInputLabls button.simpleColorPicker-picker {
-  width: 15px;
-  height: 15px;
+div.pdfsegInput button{
+  width: 20px;
+  height: 20px;
   background-repeat: no-repeat;
-  background-position: 1px 1px;
   box-sizing: border-box;
   cursor: pointer;
   display: inline-block;
 }
 
-div.pdfsegInputLabls label {
+div.pdfsegInput label {
   color: rgb(255, 255, 255);
-  font-size: 11px;
 }

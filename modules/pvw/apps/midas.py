@@ -448,6 +448,7 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     script += 'output = self.GetOutputDataObject(0)\n'
     script += 'numPoints = input.GetNumberOfPoints()\n'
     script += 'output.ShallowCopy(input)\n'
+    # TODO change scalar array type based on input data type
     script += 'labelScalars = vtk.vtkUnsignedShortArray()\n'
     script += 'labelScalars.SetName("%s")\n' % self.colorArrayName
     script += 'labelScalars.SetNumberOfTuples(numPoints)\n'

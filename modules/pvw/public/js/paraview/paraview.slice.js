@@ -299,7 +299,7 @@ midas.pvw.pointSelectMode = function () {
  * Set the mode to paint on the image.
  */
 midas.pvw.paintMode = function () {
-    midas.createNotice('Paint on the image to create an initial label map', 3000);
+    midas.createNotice('Hold down left mouse button and move mouse to paint on the image.', 4000);
     // Bind mousedown and mouseup actions on the render window
     var el = $('#renderercontainer .mouse-listener');
     el.unbind('mousedown').mousedown(function (e) {
@@ -479,21 +479,6 @@ midas.pvw._enablePointSelect = function () {
  * Enable paint action
  */
 midas.pvw._enablePaint = function () {
-    // Button to enable painting
-    var paintButton = $('#actionButtonTemplate').clone();
-    paintButton.removeAttr('id');
-    paintButton.addClass('paintButton');
-    paintButton.appendTo('#rendererOverlay');
-    paintButton.qtip({
-        content: 'Paint on the image to create an initial label map.<br/>Hold down left mouse button and move mouse to paint.',
-        position: {
-            at: 'bottomMiddle'
-        }
-    });
-    paintButton.show();
-    paintButton.click(function () {
-        midas.pvw.setActiveAction($(this), midas.pvw.paintMode);
-    });
     // simpleColorPicker settings
     $.fn.simpleColorPicker.defaults.showHexField = false;
     var colorPickertColors = new Array();
@@ -501,34 +486,72 @@ midas.pvw._enablePaint = function () {
         colorPickertColors.push(key);
     }
     $.fn.simpleColorPicker.defaults.colors = colorPickertColors;
-    // Wrapper button required by simpleColorPicker
-    var nonDisplayWrapperButton = $('#actionButtonTemplate').clone();
-    nonDisplayWrapperButton.attr('id','labelColors')
-    nonDisplayWrapperButton.attr('value', colorPickertColors[0]) // default paint color
-    nonDisplayWrapperButton.appendTo('#rendererOverlay');
-    // Update label value when color is changed
-    $('#labelColors').simpleColorPicker({
-      onColorChange : function(id, newValue) {
-        midas.pvw.paintLabel = midas.pvw.colorLabelMapping[newValue.toUpperCase()];
-        } 
-      });
-    // Button to change paint color (created by simpleColorPicker)
-    var colorButton = $('.simpleColorPicker-picker')
-    colorButton.qtip({
-        content: 'Change paint color for different labels',
-        position: {
-            at: 'bottomMiddle'
+
+    // Buttons to select PDF segmentation input labels
+    $('div#rendererOverlay').append(
+        '<div class="pdfsegInput" id="foregroundLabelDiv"><label>Foreground Label</label> <button id="foregroundLabel" value=' + colorPickertColors[0] + '/></div>')
+    $('#foregroundLabel').simpleColorPicker({
+        onColorChange : function(id, newValue) {
+            midas.pvw.pdfsegForegroundLabel = midas.pvw.colorLabelMapping[newValue.toUpperCase()];
+            midas.pvw.paintLabel = midas.pvw.pdfsegForegroundLabel;
         }
     });
+    $('div#foregroundLabelDiv .simpleColorPicker-picker').click(function() {
+        midas.pvw.paintLabel = midas.pvw.pdfsegForegroundLabel; 
+        })
+        .qtip({
+            content: 'Click to set foreground label color and use it as the paint color.',
+            position: {
+                my: 'left center',
+                at: 'right center'
+            }
+        });
+    $('div#rendererOverlay').append(
+        '<div class="pdfsegInput" id="backgroundLabelDiv"><label>Background Label</label> <button id="backgroundLabel" value=' + colorPickertColors[1] + '/></div>')
+    $('#backgroundLabel').simpleColorPicker({
+        onColorChange : function(id, newValue) {
+            midas.pvw.pdfsegBackgroundLabel = midas.pvw.colorLabelMapping[newValue.toUpperCase()];
+            midas.pvw.paintLabel = midas.pvw.pdfsegBackgroundLabel;
+        }
+    });
+    $('div#backgroundLabelDiv .simpleColorPicker-picker').click(function() {
+        midas.pvw.paintLabel = midas.pvw.pdfsegBackgroundLabel; 
+        })
+        .qtip({
+            content: 'Click to set background label color and use it as the paint color.',
+            position: {
+                my: 'left center',
+                at: 'right center'
+            }
+        });
+    $('div#rendererOverlay').append(
+        '<div class="pdfsegInput" id="barrierLabelDiv"><label>Barrier Label</label> <button id="barrierLabel" value=' + colorPickertColors[2] + '/></div>')
+    $('#barrierLabel').simpleColorPicker({
+        onColorChange : function(id, newValue) {
+            midas.pvw.pdfsegBarrierLabel = midas.pvw.colorLabelMapping[newValue.toUpperCase()];
+            midas.pvw.paintLabel = midas.pvw.pdfsegBarrierLabel;
+        }
+    });
+    $('div#barrierLabelDiv .simpleColorPicker-picker').click(function() {
+        midas.pvw.paintLabel = midas.pvw.pdfsegBarrierLabel; 
+        })
+        .qtip({
+            content: 'Click to set barrier label color and use it as the paint color.',
+            position: {
+                my: 'left center',
+                at: 'right center'
+            }
+        });
+
     // Button to clear existing painting
-    var clearButton = $('#actionButtonTemplate').clone();
-    clearButton.removeAttr('id');
-    clearButton.addClass('clearButton');
-    clearButton.appendTo('#rendererOverlay');
+    $('div#rendererOverlay').append('<br/><div class="pdfsegInput" id="clearButtonDiv"/>')
+    var clearButton = $('<button class="clearButton"/>');
+    clearButton.appendTo('#clearButtonDiv');
     clearButton.qtip({
         content: 'Clear label map',
         position: {
-            at: 'bottomMiddle'
+            my: 'left center',
+            at: 'right center'
         }
     });
     clearButton.show();
@@ -548,15 +571,16 @@ midas.pvw._enablePaint = function () {
             $('div.MainDialog').dialog('close');
         });
     });
+
     // Button to start TubeTK PDF Segmentation
-    var pipelineButton = $('#actionButtonTemplate').clone();
-    pipelineButton.removeAttr('id');
-    pipelineButton.addClass('PDFSegButton');
-    pipelineButton.appendTo('#rendererOverlay');
+    $('div#rendererOverlay').append('<br/><div class="pdfsegInput" id="segmenterButtonDiv"/>')
+    var pipelineButton = $('<button class="segmenterButton"/>');
+    pipelineButton.appendTo('#segmenterButtonDiv');
     pipelineButton.qtip({
         content: 'Click to start the PDF Segmentation',
         position: {
-            at: 'bottomMiddle'
+            my: 'left center',
+            at: 'right center'
         }
     });
     pipelineButton.show();
@@ -585,30 +609,6 @@ midas.pvw._enablePaint = function () {
         $('button.saveInputLabelmapNo').unbind('click').click(function () {
             $('div.MainDialog').dialog('close');
         });
-
-    });
-  
-    // Buttons to select PDF segmentation input labels
-    $('div#rendererOverlay').append(
-        '<div class="pdfsegInputLabls"><label>Foreground Label</label> <button id="foregroundLabel" value=' + colorPickertColors[0] + '/></div>')
-    $('#foregroundLabel').simpleColorPicker({
-        onColorChange : function(id, newValue) {
-            midas.pvw.pdfsegForegroundLabel = midas.pvw.colorLabelMapping[newValue.toUpperCase()];
-        } 
-    });
-    $('div#rendererOverlay').append(
-        '<div class="pdfsegInputLabls"><label>Background Label</label> <button id="backgroundLabel" value=' + colorPickertColors[1] + '/></div>')
-    $('#backgroundLabel').simpleColorPicker({
-        onColorChange : function(id, newValue) {
-            midas.pvw.pdfsegBackgroundLabel = midas.pvw.colorLabelMapping[newValue.toUpperCase()];
-        } 
-    });
-    $('div#rendererOverlay').append(
-        '<div class="pdfsegInputLabls"><label>Barrier Label</label> <button id="barrierLabel" value=' + colorPickertColors[2] + '/></div>')
-    $('#barrierLabel').simpleColorPicker({
-        onColorChange : function(id, newValue) {
-            midas.pvw.pdfsegBarrierLabel = midas.pvw.colorLabelMapping[newValue.toUpperCase()];
-        } 
     });
 };
 
