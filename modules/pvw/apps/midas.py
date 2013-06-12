@@ -443,6 +443,8 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     # Use python programmable filter
     if self.canvasObj is None:
         self.canvasObj = simple.ProgrammableFilter(self.srcObj)
+    if labelmap is None:
+        labelmap = []
     script = 'labelmap = %s\n' % labelmap
     script += 'input = self.GetInputDataObject(0, 0)\n'
     script += 'output = self.GetOutputDataObject(0)\n'

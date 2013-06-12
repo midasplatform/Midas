@@ -4,7 +4,10 @@ midas.pvw = midas.pvw || {};
 midas.pvw.sliceMode = 'XY Plane'; //Initial slice plane
 midas.pvw.updateLock = false; // Lock for RPC calls to make sure we just do one at a time
 midas.pvw.UPDATE_TIMEOUT_SECONDS = 5; // Max time the update lock can be held in seconds
-midas.pvw.canvas = []; // Store all the [voxelIndex, labelValue] tuples until canvas is cleared
+
+midas.pvw.currentCanvas = []; // Store all the [voxelIndex, labelValue] tuples until canvas is cleared
+midas.pvw.canvasStack = []; // Array to store canvas history (used for undo/redo)
+midas.pvw.canvasStackIndex = -1; // Current canvas's index (0-based) in canvasStack (used for undo/redo)
 midas.pvw.colorLabelMapping = { // simpleColorPicker's colors to paint labels mapping table
   // use Slicer's 'GenericAnotamyColors' preset colors
   '#80AE80': 1, '#F1D691': 2, '#B17A65': 3, '#6FB8D2': 4, '#D8654F': 5, '#DD8265': 6,
@@ -302,17 +305,20 @@ midas.pvw.paintMode = function () {
     midas.createNotice('Hold down left mouse button and move mouse to paint on the image.', 4000);
     // Bind mousedown and mouseup actions on the render window
     var el = $('#renderercontainer .mouse-listener');
+    var moved = false;
     el.unbind('mousedown').mousedown(function (e) {
         // Chrome sets cursor to text while dragging, and we don't like this default setting
         e.originalEvent.preventDefault();
+        moved = false;
         var xPadding, yPadding, realOffsetX, realOffsetY
         var i, j, k, idx_flat;
         var pscale = midas.pvw.cameraParallelScale;
         var planePoints = (midas.pvw.extent[3] - midas.pvw.extent[2] + 1) *  (midas.pvw.extent[1] - midas.pvw.extent[0] + 1);
         var rowPoints = midas.pvw.extent[1] - midas.pvw.extent[0] + 1;
-        var last_moved;
+        var lastMoveTimestamp;
         // Start paiting after mousedown->mousemove
         $(this).bind('mousemove', function (event){
+            moved = true;
             // offsetX and offsetY undefined in Firefox 4
             var offX = typeof event.offsetX === "undefined" ?  event.pageX - $(event.target).offset().left : event.offsetX;
             var offY = typeof event.offsetY === "undefined" ?  event.pageY - $(event.target).offset().top : event.offsetY;
@@ -364,7 +370,7 @@ midas.pvw.paintMode = function () {
             }
             // Get flat index from (i,j,k) index
             flatIdx = (k - midas.pvw.extent[4]) * planePoints + (j - midas.pvw.extent[2]) * rowPoints + (i - midas.pvw.extent[0]);
-            midas.pvw.canvas.push([flatIdx, midas.pvw.paintLabel]);
+            midas.pvw.currentCanvas.push([flatIdx, midas.pvw.paintLabel]);
             // Show cursor trail to compensate for the delay from PVW rpc call
             $('<img>').attr({'src': json.global.moduleWebroot+'/public/images/paintBrushSmall.png'})
                       .css({
@@ -378,16 +384,31 @@ midas.pvw.paintMode = function () {
                           $(this).remove();
                       });
             // Send one update canvas request per second to avoid overwhelming PVW with rpc calls
-            if(!last_moved || (event.timeStamp - last_moved > 1000)) {
+            if(!lastMoveTimestamp || (event.timeStamp - lastMoveTimestamp > 1000)) {
                 midas.pvw.changeCanvas();
-                last_moved = event.timeStamp;
+                lastMoveTimestamp = event.timeStamp;
             }
         });
     });
     el.unbind('mouseup').mouseup(function (e) {
-        // Stop painting after mousseup
+        // Stop painting after mouseup
         $(this).unbind('mousemove');
-        // Update canvas immediately
+        if(!moved) {
+            return; // ignore it if it only has a mouse click but has no mouse move
+        }
+        // When user undo paint and re-paint, withdraw previously stored canvas after canvasStackIndex
+        if (midas.pvw.canvasStackIndex < (midas.pvw.canvasStack.length - 1)) {
+            midas.pvw.canvasStack.splice(midas.pvw.canvasStackIndex + 1);
+            if ($('.redoButton').hasClass('actionActive')) {
+                $('.redoButton').removeClass('actionActive').addClass('actionInactive');
+            }
+        }
+        // Save current canvas to canvas stack
+        midas.pvw.canvasStack[++midas.pvw.canvasStackIndex] = midas.pvw.currentCanvas.slice(0);
+        if ($('.undoButton').hasClass('actionInactive')) {
+            $('.undoButton').removeClass('actionInactive').addClass('actionActive');
+        }
+        // Update canvas after each mousemove->mouseup
         midas.pvw.changeCanvas();
     });
 };
@@ -396,7 +417,7 @@ midas.pvw.paintMode = function () {
  * Update painting volume
  */
 midas.pvw.changeCanvas = function (){
-    pv.connection.session.call('pv:changeCanvas', midas.pvw.canvas, midas.pvw.slice)
+    pv.connection.session.call('pv:changeCanvas', midas.pvw.currentCanvas, midas.pvw.slice)
                          .then(function () {
                              pv.viewport.render();
                              midas.pvw.releaseUpdateLock();
@@ -543,8 +564,57 @@ midas.pvw._enablePaint = function () {
             }
         });
 
+    // Button to undo painting
+    $('div#rendererOverlay').append('<br/><div class="pdfsegInput" id="undoButtonDiv"/>')
+    var undoButton = $('<button class="undoButton actionInactive"/>');
+    undoButton.appendTo('#undoButtonDiv');
+    undoButton.qtip({
+        content: 'Undo',
+        position: {
+            my: 'left center',
+            at: 'right center'
+        }
+    });
+    undoButton.show();
+    undoButton.unbind('click').click(function () {
+        if (midas.pvw.canvasStackIndex >= 0) {
+            var temp = midas.pvw.canvasStack[--midas.pvw.canvasStackIndex];
+            midas.pvw.currentCanvas = typeof temp === "undefined" ? [] : temp.slice(0);
+            midas.pvw.changeCanvas();
+            if ($('.redoButton').hasClass('actionInactive')) {
+                $('.redoButton').removeClass('actionInactive').addClass('actionActive');
+            }
+        }
+        if (midas.pvw.canvasStackIndex < 0 && $(this).hasClass('actionActive')) {
+            $(this).removeClass('actionActive').addClass('actionInactive');
+        }
+    });
+    // Button to redo painting
+    $('div#rendererOverlay').append('<div class="pdfsegInput" id="redoButtonDiv"/>')
+    var redoButton = $('<button class="redoButton actionInactive"/>');
+    redoButton.appendTo('#redoButtonDiv');
+    redoButton.qtip({
+        content: 'Redo',
+        position: {
+            my: 'left center',
+            at: 'right center'
+        }
+    });
+    redoButton.show();
+    redoButton.unbind('click').click(function () {
+        if (midas.pvw.canvasStackIndex < (midas.pvw.canvasStack.length - 1)) {  
+            midas.pvw.currentCanvas = midas.pvw.canvasStack[++midas.pvw.canvasStackIndex].slice(0);
+            midas.pvw.changeCanvas();
+            if ($('.undoButton').hasClass('actionInactive')) {
+                $('.undoButton').removeClass('actionInactive').addClass('actionActive');
+            }
+        }
+        if (midas.pvw.canvasStackIndex >= (midas.pvw.canvasStack.length - 1) && $(this).hasClass('actionActive')) {
+            $(this).removeClass('actionActive').addClass('actionInactive');
+        }
+    });
     // Button to clear existing painting
-    $('div#rendererOverlay').append('<br/><div class="pdfsegInput" id="clearButtonDiv"/>')
+    $('div#rendererOverlay').append('<div class="pdfsegInput" id="clearButtonDiv"/>')
     var clearButton = $('<button class="clearButton"/>');
     clearButton.appendTo('#clearButtonDiv');
     clearButton.qtip({
@@ -563,7 +633,11 @@ midas.pvw._enablePaint = function () {
         html += '</div>';
         midas.showDialogWithContent('Do you really want to clear all labels on all slices?', html, false);
         $('button.clearLabelmapYes').unbind('click').click(function () {
-            midas.pvw.canvas = [];
+            midas.pvw.currentCanvas = [];
+            midas.pvw.canvasStack = [];
+            midas.pvw.canvasStackIndex = -1;
+            $('.undoButton').removeClass('actionActive').addClass('actionInactive');
+            $('.redoButton').removeClass('actionActive').addClass('actionInactive');
             midas.pvw.changeCanvas();
             $('div.MainDialog').dialog('close');
         });

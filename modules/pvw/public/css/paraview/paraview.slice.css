@@ -67,6 +67,14 @@ button.paintButton {
   background-image: url(../../images/paintBrush.png);
 }
 
+button.undoButton {
+  background-image: url(../../images/arrow_left.png);
+}
+
+button.redoButton {
+  background-image: url(../../images/arrow_right.png);
+}
+
 button.clearButton {
   background-image: url(../../images/cross.png);
 }
