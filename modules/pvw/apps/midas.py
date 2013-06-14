@@ -443,11 +443,14 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     # Use python programmable filter
     if self.canvasObj is None:
         self.canvasObj = simple.ProgrammableFilter(self.srcObj)
+    if labelmap is None:
+        labelmap = []
     script = 'labelmap = %s\n' % labelmap
     script += 'input = self.GetInputDataObject(0, 0)\n'
     script += 'output = self.GetOutputDataObject(0)\n'
     script += 'numPoints = input.GetNumberOfPoints()\n'
     script += 'output.ShallowCopy(input)\n'
+    # TODO change scalar array type based on input data type
     script += 'labelScalars = vtk.vtkUnsignedShortArray()\n'
     script += 'labelScalars.SetName("%s")\n' % self.colorArrayName
     script += 'labelScalars.SetNumberOfTuples(numPoints)\n'
