@@ -426,33 +426,49 @@ midas.pvw.changeCanvas = function (){
 }
 
 /**
- * Export painting volume to local disk and then upload it into the same 
- * direcotry as the input item on Midas server using Pydas.
+ * Export painting volume to local disk and then upload it into the given directory
+ * on Midas Server or to the same direcotry as the input item on Midas server using Pydas.
  */
-midas.pvw.exportCanvas = function (fileName){
-    ajaxWebApi.ajax({
-        // Get destination folder
-        method: 'midas.item.get',
-        args: 'id='+json.pvw.item.item_id,
-            success: function(itemInfo) {
-                ajaxWebApi.ajax({
-                    // Get Pydas required parameters
-                    method: 'midas.pyslicer.get.pydas.params',
-                    success: function(pydasParams) {
-                        pv.connection.session.call('pv:exportCanvas', pydasParams.data.email, pydasParams.data.apikey, pydasParams.data.url, fileName, itemInfo.data.folder_id)
-                          .then(midas.pvw.startPDFSegmentation)
-                          .otherwise(midas.pvw.rpcFailure);
-                    },
-                    error: function(XMLHttpRequest, textStatus, errorThrown) {
-                        midas.createNotice(XMLHttpRequest.message, '4000', 'error');
-                    }
-                });
+midas.pvw.exportCanvas = function (fileName, outputFolderId){
+    if (outputFolderId){ // outputFolderId is provided
+       ajaxWebApi.ajax({
+            // Get Pydas required parameters
+            method: 'midas.pyslicer.get.pydas.params',
+            success: function(pydasParams) {
+                pv.connection.session.call('pv:exportCanvas', pydasParams.data.email, pydasParams.data.apikey, pydasParams.data.url, fileName, outputFolderId)
+                  .then(midas.pvw.startPDFSegmentation)
+                  .otherwise(midas.pvw.rpcFailure);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 midas.createNotice(XMLHttpRequest.message, '4000', 'error');
             }
-    });
-};
+       });
+    }
+    else { // otherwise use input item's parent folder as outputFolder
+        ajaxWebApi.ajax({
+            // Get destination folder
+            method: 'midas.item.get',
+            args: 'id='+json.pvw.item.item_id,
+                success: function(itemInfo) {
+                    ajaxWebApi.ajax({
+                        // Get Pydas required parameters
+                        method: 'midas.pyslicer.get.pydas.params',
+                        success: function(pydasParams) {
+                            pv.connection.session.call('pv:exportCanvas', pydasParams.data.email, pydasParams.data.apikey, pydasParams.data.url, fileName, itemInfo.data.folder_id)
+                              .then(midas.pvw.startPDFSegmentation)
+                              .otherwise(midas.pvw.rpcFailure);
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            midas.createNotice(XMLHttpRequest.message, '4000', 'error');
+                        }
+                    });
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    midas.createNotice(XMLHttpRequest.message, '4000', 'error');
+                }
+        });
+    }
+}
 
 /**
  * Callback from rpc exportCanvas
@@ -658,31 +674,14 @@ midas.pvw._enablePaint = function () {
         }
     });
     pipelineButton.show();
+    midas.pvw.pdfSegmenterOutputFolderId = typeof(json.pvw.pdfSegmenterOutputFolderId) === 'undefined' ? '' : json.pvw.pdfSegmenterOutputFolderId;
     pipelineButton.click(function () {
         $('div.MainDialog').dialog('close');
-        html= '<div><input style="width: 400px;" type="text" id="inputLabelmapName" value="'
-             +json.pvw.item.name+'_pdfseg_input" /></div><br/><br/>';
-        html+= '<div id="savingPleaseWait" style="display: none;">';
-        html+= '<span>Saving current painting as the intial label map</span>';
+        html= '<div id="savingPleaseWait">';
         html+= '<img src="'+json.global.coreWebroot+'/public/images/icons/loading.gif"/>';  
         html+='</div>';
-        html+= '<div style="float: right;">';
-        html+= '<button class="globalButton saveInputLabelmapYes">Save</button>';
-        html+= '<button style="margin-left: 15px;" class="globalButton saveInputLabelmapNo">Cancel</button>';
-        html+= '</div>';
-        midas.showDialogWithContent('Choose name for initial label map item', html, false);
-        $('#inputLabelmapName').focus();
-        $('#inputLabelmapName').select();
-        $('button.saveInputLabelmapYes').unbind('click').click(function () {
-            // Paraview can only save MetaImage file in .mhd format
-            var outputItemName = $('#inputLabelmapName').val() + '-label.mhd';
-            $('#savingPleaseWait').show();
-            midas.pvw.exportCanvas(outputItemName);
-        });
-
-        $('button.saveInputLabelmapNo').unbind('click').click(function () {
-            $('div.MainDialog').dialog('close');
-        });
+        midas.showDialogWithContent('Saving current painting as the intial label map', html, false);
+        midas.pvw.exportCanvas(json.pvw.item.name+'_pdfseg_input-label.mhd', midas.pvw.pdfSegmenterOutputFolderId);
     });
 };
 
