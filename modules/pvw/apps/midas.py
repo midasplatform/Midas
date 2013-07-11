@@ -128,7 +128,7 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
                     2.0, 1.0, 0.5, 0.0,
                     3.0, 1.0, 0.5, 0.0,
                     4.0, 1.0, 0.5, 0.0,
-                    5.0, 1.0, 0.5, 1.0,
+                    5.0, 1.0, 0.5, 0.0,
                     6.0, 1.0, 0.5, 0.0,
                     7.0, 1.0, 0.5, 0.0,
                     8.0, 1.0, 0.5, 0.0,
@@ -450,7 +450,7 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     script += 'output = self.GetOutputDataObject(0)\n'
     script += 'numPoints = input.GetNumberOfPoints()\n'
     script += 'output.ShallowCopy(input)\n'
-    # TODO change scalar array type based on input data type
+    # Label map can use vtkUnsignedShortArray no matter the input array type
     script += 'labelScalars = vtk.vtkUnsignedShortArray()\n'
     script += 'labelScalars.SetName("%s")\n' % self.colorArrayName
     script += 'labelScalars.SetNumberOfTuples(numPoints)\n'

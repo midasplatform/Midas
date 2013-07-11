@@ -87,7 +87,7 @@ class Pvw_ParaviewController extends Pvw_AppController
           }
         $meshItems[] = $meshItem;
         }
-        
+
       $labelmaps = $this->_getParam('labelmaps');
       if(isset($labelmaps))
         {
@@ -110,7 +110,7 @@ class Pvw_ParaviewController extends Pvw_AppController
           throw new Zend_Exception('Read access required on label item '.$labelmapId, 403);
           }
         $labelmapItems[] = $labelmapItem;
-        }  
+        }
 
       $instance = $this->ModuleComponent->Paraview->createAndStartInstance($item, $meshItems, $labelmapItems, $appname, $this->progressDao);
 
@@ -295,7 +295,7 @@ class Pvw_ParaviewController extends Pvw_AppController
       {
       $labelmaps = array();
       }
-      
+
     $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->moduleWebroot.'/public/images/sliceView.png" />';
     $header .= ' Slice view: <a href="'.$this->view->webroot.'/item/'.$item->getKey().'">'.$item->getName().'</a>';
     $this->view->header = $header;
@@ -306,6 +306,26 @@ class Pvw_ParaviewController extends Pvw_AppController
     $this->view->json['pvw']['viewMode'] = 'slice';
     $this->view->json['pvw']['operations'] = $operations;
     $this->view->item = $item;
+    $pdfSegmenterRootFolderId = $this->_getParam('pdfSegmenterRootFolderId');
+    $pdfSegmenterDataFolderId = $this->_getParam('pdfSegmenterDataFolderId');
+    $pdfSegmenterPresetFolderId = $this->_getParam('pdfSegmenterPresetFolderId');
+    $pdfSegmenterOutputFolderId = $this->_getParam('pdfSegmenterOutputFolderId');
+    if(isset($pdfSegmenterRootFolderId))
+      {
+      $this->view->json['pvw']['pdfSegmenterRootFolderId'] = $pdfSegmenterRootFolderId;
+      }
+    if(isset($pdfSegmenterDataFolderId))
+      {
+      $this->view->json['pvw']['pdfSegmenterDataFolderId'] = $pdfSegmenterDataFolderId;
+      }
+    if(isset($pdfSegmenterPresetFolderId))
+      {
+      $this->view->json['pvw']['pdfSegmenterPresetFolderId'] = $pdfSegmenterPresetFolderId;
+      }
+    if(isset($pdfSegmenterOutputFolderId))
+      {
+      $this->view->json['pvw']['pdfSegmenterOutputFolderId'] = $pdfSegmenterOutputFolderId;
+      }
     }
 
   /**
