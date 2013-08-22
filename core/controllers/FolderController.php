@@ -384,6 +384,7 @@ class FolderController extends AppController
       if(isset($createFolder))
         {
         $name = $this->_getParam('name');
+        $description = $this->_getParam('description') ? $this->_getParam('description') : '';
         if(!isset($name))
           {
           echo JsonComponent::encode(array(false, $this->t('Error: name parameter required')));
@@ -396,7 +397,7 @@ class FolderController extends AppController
             echo JsonComponent::encode(array(false, $this->t('This name is already used')));
             return;
             }
-          $new_folder = $this->Folder->createFolder($name, '', $folder);
+          $new_folder = $this->Folder->createFolder($name, $description, $folder);
 
           if($new_folder == false)
             {
