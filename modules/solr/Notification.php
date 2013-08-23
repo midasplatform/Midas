@@ -33,6 +33,10 @@ class Solr_Notification extends ApiEnabled_Notification
     $this->moduleWebroot = $baseUrl.'/'.$this->moduleName;
     $this->webroot = $baseUrl;
 
+    $this->addCallBack('CALLBACK_CORE_FOLDER_SAVED', 'indexFolder');
+    $this->addCallBack('CALLBACK_CORE_FOLDER_DELETED', 'folderDeleted');
+    $this->addCallBack('CALLBACK_CORE_FOLDER_SEARCH_DEFAULT_BEHAVIOR_OVERRIDE', 'folderSearch');
+
     $this->addCallBack('CALLBACK_CORE_ITEM_SAVED', 'indexItem');
     $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'itemDeleted');
     $this->addCallBack('CALLBACK_CORE_ITEM_SEARCH_DEFAULT_BEHAVIOR_OVERRIDE', 'itemSearch');
@@ -40,12 +44,12 @@ class Solr_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getAdminDashboard');
     $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLinks');
 
-    $this->addTask('TASK_CORE_RESET_ITEM_INDEXES', 'resetItemIndexes', 'Recompute lucene indexes');
+    $this->addTask('TASK_CORE_RESET_ITEM_INDEXES', 'resetItemFolderIndexes', 'Recompute lucene indexes');
 
     $this->enableWebAPI('solr');
     }
 
-  /** Add a tab to the manage community page for size quota */
+  /** Build the solr lucene index for items*/
   public function indexItem($args)
     {
     if(!$args['metadataChanged'])
@@ -196,11 +200,125 @@ class Solr_Notification extends ApiEnabled_Notification
     }
 
   /** Rebuild the solr lucene index */
-  public function resetItemIndexes($params)
+  public function resetItemFolderIndexes($params)
     {
     $progressDao = array_key_exists('progressDao', $params) ? $params['progressDao'] : null;
     $this->ModuleComponent->Solr->rebuildIndex($progressDao);
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Index rebuild complete'));
+    }
+
+  /** Build the solr lucene index for folders*/
+  public function indexFolder($args)
+    {
+    $folder = $args['folder'];
+    try
+      {
+      $index = $this->ModuleComponent->Solr->getSolrIndex();
+      }
+    catch(Exception $e)
+      {
+      $this->getLogger()->warn($e->getMessage.' - Could not index folder ('.$folder->getKey().')');
+      return;
+      }
+
+    $progress = array_key_exists('progress', $args) ? $args['progress'] : null;
+    if($progress)
+      {
+      $message = 'Indexing folder '.($progress->getCurrent() + 1).' / '.$progress->getMaximum();
+      $this->Progress->updateProgress($progress, $progress->getCurrent() + 1, $message);
+      }
+
+    try
+      {
+      $response = $index->search('id: folder_'.$folder->getKey(), 0, 99999);
+      foreach($response->response->docs as $doc)
+        {
+        $index->deleteById($doc->id);
+        }
+      if($response->response->numFound > 0)
+        {
+        $index->commit();
+        }
+      $doc = new Apache_Solr_Document();
+      $doc->addField('id', 'folder_'.$folder->getKey());
+      $doc->addField('key', $folder->getKey());
+      $doc->addField('name', $folder->getName(), 3.0); //boost factor of 3 for name
+      $doc->addField('description', $folder->getDescription(), 2.0); //boost factor of 2 for description
+      $index->addDocument($doc);
+      $index->commit();
+      }
+    catch(Exception $e)
+      {
+      $this->getLogger()->warn('Error saving folder ('.$folder->getKey().') to Solr index: '.$e->getMessage());
+      }
+    }
+
+
+  /**
+   * Override the default folder search behavior
+   */
+  public function folderSearch($args)
+    {
+    $query = $args['query'];
+    $limit = $args['limit'];
+    $user = $args['user'];
+
+    $solrQuery = 'name: '.$query.
+                 ' OR description: '.$query;
+
+    $folders = array();
+    try
+      {
+      $index = $this->ModuleComponent->Solr->getSolrIndex();
+
+      UtilityComponent::beginIgnoreWarnings(); //must not print and log warnings
+      $response = $index->search($solrQuery, 0, ((int)$limit) * 3, array('fl' => '*,score')); //multiply limit by 3 to allow some room for policy filtering
+      UtilityComponent::endIgnoreWarnings();
+
+      foreach($response->response->docs as $doc)
+        {
+        $folders[] = array('id' => $doc->key, 'score' => $doc->score);
+        }
+      }
+    catch(Exception $e)
+      {
+      // Probably shouldn't log this error, otherwise logs will get flooded from live search
+      }
+    return $folders;
+    }
+
+  /**
+   * When a folder is deleted, we should remove its
+   */
+  public function folderDeleted($args)
+    {
+    $folder = $args['folder'];
+    try
+      {
+      $index = $this->ModuleComponent->Solr->getSolrIndex();
+      }
+    catch(Exception $e)
+      {
+      $this->getLogger()->warn($e->getMessage.' - Could not delete folder from index ('.$folder->getKey().')');
+      return;
+      }
+
+    try
+      {
+      $response = $index->search('id: folder_'.$folder->getKey(), 0, 99999);
+      foreach($response->response->docs as $doc)
+        {
+        $index->deleteById($doc->id);
+        }
+      if($response->response->numFound > 0)
+        {
+        $index->commit();
+        }
+      }
+    catch(Exception $e)
+      {
+      $this->getLogger()->warn('Error deleting folder refs ('.$folder->getKey().') from Solr index: '.$e->getMessage());
+      }
     }
 
   /** Add a dashboard entry on the admin dashboard for showing solr status */

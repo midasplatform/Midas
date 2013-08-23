@@ -34,17 +34,23 @@ class Solr_SolrComponent extends AppComponent
     }
 
   /**
-   * Rebuilds the search index by iterating over all items and indexing each of them
+   * Rebuilds the search index by iterating over all items and folders and indexing each of them
    */
   public function rebuildIndex($progressDao = null)
     {
+    $folderModel = MidasLoader::loadModel('Folder');
     $itemModel = MidasLoader::loadModel('Item');
     $progressModel = MidasLoader::loadModel('Progress');
     if($progressDao)
       {
-      $progressDao->setMaximum($itemModel->getTotalCount());
+      $progressDao->setMaximum($folderModel->getTotalCount() + $itemModel->getTotalCount());
       $progressModel->save($progressDao);
       }
+
+    $folderModel->iterateWithCallback('CALLBACK_CORE_FOLDER_SAVED', 'folder', array(
+      'metadataChanged' => true,
+      'progress' => $progressDao));
+
     $itemModel->iterateWithCallback('CALLBACK_CORE_ITEM_SAVED', 'item', array(
       'metadataChanged' => true,
       'progress' => $progressDao));
