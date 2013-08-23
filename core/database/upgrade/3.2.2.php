@@ -133,8 +133,8 @@ class Upgrade_3_2_2 extends MIDASUpgrade
     // Create the license table
     $this->db->query("CREATE TABLE `license` (
       `license_id` bigint(20) NOT NULL AUTO_INCREMENT,
-      `name` TEXT NOT NULL DEFAULT '',
-      `fulltext` TEXT NOT NULL DEFAULT '',
+      `name` TEXT NOT NULL,
+      `fulltext` TEXT NOT NULL,
       PRIMARY KEY (`license_id`)
       )");
 

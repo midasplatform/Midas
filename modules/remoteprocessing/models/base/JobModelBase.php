@@ -61,9 +61,9 @@ class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
       }
     if(!isset($dao->start_date) || empty($dao->start_date))
       {
-      $dao->setStartDate(date('c'));
+      $dao->setStartDate(date("Y-m-d H:i:s"));
       }
-    $dao->setCreationDate(date('c'));
+    $dao->setCreationDate(date("Y-m-d H:i:s"));
     parent::save($dao);
     }
 } // end class AssetstoreModelBase

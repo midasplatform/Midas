@@ -52,7 +52,7 @@ abstract class Mfa_ApitokenModelBase extends Mfa_AppModel
     $newToken = new Mfa_ApitokenDao();
     $newToken->setUserId($user->getKey());
     $newToken->setTokenId($tokenDao->getKey());
-    $newToken->setCreationDate(date('c'));
+    $newToken->setCreationDate(date("Y-m-d H:i:s"));
     $this->save($newToken);
 
     return $newToken;

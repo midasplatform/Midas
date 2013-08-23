@@ -68,7 +68,7 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
     {
     if($expiration_date == false)
       {
-      $expiration_date = date('c');
+      $expiration_date = date("Y-m-d H:i:s");
       }
     $sql = $this->database->select()
           ->setIntegrityCheck(false)

@@ -48,7 +48,7 @@ class StatisticsDownloadModelTest extends DatabaseTestCase
       $dao->setDate(date('Y-m-d 01:'.str_pad($i, 2, '0', STR_PAD_LEFT).':00', strtotime('-2 day')));
       $downloadModel->save($dao);
       }
-    $arrayDownload = $downloadModel->getDailyCounts(array(7), date('c', strtotime('-20 day'.date('Y-m-d G:i:s'))), date('c'));
+    $arrayDownload = $downloadModel->getDailyCounts(array(7), date("Y-m-d H:i:s", strtotime('-20 day'.date('Y-m-d G:i:s'))), date("Y-m-d H:i:s"));
     $this->assertEquals(count($arrayDownload), 2);
     $this->assertEquals($arrayDownload[date('Y-m-d', strtotime('-3 day'))], 50);
     $this->assertEquals($arrayDownload[date('Y-m-d', strtotime('-2 day'))], 20);

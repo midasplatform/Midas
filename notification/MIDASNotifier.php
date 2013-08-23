@@ -187,7 +187,7 @@ class MIDAS_Notifier
       }
     if(isset($this->modules['scheduler']))
       {
-      $params = array('task' => $name, 'priority' => $priority, 'params' => $params, 'run_only_once' => true, 'fire_time' => date('c'));
+      $params = array('task' => $name, 'priority' => $priority, 'params' => $params, 'run_only_once' => true, 'fire_time' => date("Y-m-d H:i:s"));
       call_user_func(array($this->modules['scheduler'], $this->tasks['TASK_SCHEDULER_SCHEDULE_TASK']['method']), $params);
       }
     else

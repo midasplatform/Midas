@@ -525,7 +525,7 @@ class Zend_Service_WindowsAzure_Storage
 	        $timestamp = time();
 	    }
 	        
-	    $returnValue = str_replace('+00:00', '.0000000Z', @date('c', $timestamp));
+	    $returnValue = str_replace('+00:00', '.0000000Z', @date("Y-m-d H:i:s", $timestamp));
 	    @date_default_timezone_set($tz);
 	    return $returnValue;
 	}

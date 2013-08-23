@@ -405,7 +405,7 @@ class Zend_View_Helper_Navigation_Sitemap
 
                 // prevent 1970-01-01...
                 if ($lastmod !== false) {
-                    $lastmod = date('c', $lastmod);
+                    $lastmod = date("Y-m-d H:i:s", $lastmod);
                 }
 
                 if (!$this->getUseSitemapValidators() ||
