@@ -154,11 +154,11 @@ class SearchController extends AppController
       }
     else
       {
-      // Search for the items
-      $ItemsDao = $this->Item->getItemsFromSearch($search, $this->userSession->Dao);
-
       // Search for the folders
       $FoldersDao = $this->Folder->getFoldersFromSearch($search, $this->userSession->Dao);
+
+      // Search for the items
+      $ItemsDao = $this->Item->getItemsFromSearch($search, $this->userSession->Dao);
 
       // Search for the communities
       $CommunitiesDao = $this->Community->getCommunitiesFromSearch($search, $this->userSession->Dao);
@@ -204,7 +204,34 @@ class SearchController extends AppController
     $results = array();
     $id = 1;
     $n = 0;
+    // Folders
+    foreach($FoldersDao as $folderDao)
+      {
+      if($n == $nfolders)
+        {
+        break;
+        }
+      $label = $this->Component->Utility->sliceName($folderDao->getName(), 55);
+      if(isset($folderDao->count) && $folderDao->count > 1)
+        {
+        $label .= ' ('.$folderDao->count.')';
+        }
+      $result = array('id' => $id,
+                      'label' => $label,
+                      'value' => $folderDao->getName(),
+                      'category' => $this->t('Folders'));
+
+      if(!isset($folderDao->count) || $folderDao->count == 1)
+        {
+        $result['folderid'] = $folderDao->getFolderId();
+        }
+      $id++;
+      $n++;
+      $results[] = $result;
+      }
+
     // Items
+    $n = 0;
     foreach($ItemsDao as $itemDao)
       {
       if($n == $nitems)
@@ -245,33 +272,6 @@ class SearchController extends AppController
                          'category' => $this->t('Groups'));
       $id++;
       $n++;
-      }
-
-    // Folder
-    $n = 0;
-    foreach($FoldersDao as $folderDao)
-      {
-      if($n == $nfolders)
-        {
-        break;
-        }
-      $label = $this->Component->Utility->sliceName($folderDao->getName(), 55);
-      if(isset($folderDao->count) && $folderDao->count > 1)
-        {
-        $label .= ' ('.$folderDao->count.')';
-        }
-      $result = array('id' => $id,
-                      'label' => $label,
-                      'value' => $folderDao->getName(),
-                      'category' => $this->t('Folders'));
-
-      if(!isset($folderDao->count) || $folderDao->count == 1)
-        {
-        $result['folderid'] = $folderDao->getFolderId();
-        }
-      $id++;
-      $n++;
-      $results[] = $result;
       }
 
     // Community

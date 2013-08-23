@@ -99,6 +99,13 @@ class FolderModel extends FolderModelBase
     return $results;
     }
 
+  /** Get the total number of folders in the database */
+  function getTotalCount()
+    {
+    $row = $this->database->fetchRow($this->database->select()->from('folder', array('count' => 'count(*)')));
+    return $row['count'];
+    }
+
   /** get by uuid*/
   function getByUuid($uuid)
     {
@@ -113,6 +120,22 @@ class FolderModel extends FolderModelBase
     $row = $this->database->fetchRow($this->database->select()->where('name = ?', $name));
     $dao = $this->initDao(ucfirst($this->_name), $row);
     return $dao;
+    }
+
+  /**
+   * Call a callback function on every folder in the database
+   * @param callback Name of the Midas callback to call
+   * @param paramName what parameter name the folder should be passed as to the callback (default is 'folder')
+   */
+  function iterateWithCallback($callback, $paramName = 'folder', $otherParams = array())
+    {
+    $rowset = $this->database->fetchAll();
+    foreach($rowset as $row)
+      {
+      $folder = $this->initDao('Folder', $row);
+      $params = array_merge($otherParams, array($paramName => $folder));
+      Zend_Registry::get('notifier')->callback($callback, $params);
+      }
     }
 
   /** check ifthe policy is valid*/
@@ -532,6 +555,7 @@ class FolderModel extends FolderModelBase
     $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('right_indice - 2')),
                           array('right_indice >= ?' => $leftIndice));
 
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_FOLDER_DELETED', array('folder' => $folder));
     parent::delete($folder);
     unset($folder->folder_id);
     $folder->saved = false;
@@ -672,6 +696,9 @@ class FolderModel extends FolderModelBase
       unset($data['right_indice']);
       $data['date_update'] = date("Y-m-d H:i:s");
       $this->database->update($data, array('folder_id = ?' => $key));
+
+      Zend_Registry::get('notifier')->callback('CALLBACK_CORE_FOLDER_SAVED', array(
+        'folder' => $folder));
       return $key;
       }
     else
@@ -695,6 +722,8 @@ class FolderModel extends FolderModelBase
       $folder->folder_id = $insertedid;
       $folder->saved = true;
 
+      Zend_Registry::get('notifier')->callback('CALLBACK_CORE_FOLDER_SAVED', array(
+      'folder' => $folder));
       return true;
       }
     } // end method save
@@ -1008,22 +1037,39 @@ class FolderModel extends FolderModelBase
         }
       }
 
-    $sql = $this->database->select();
-    if($group)
+    // If a module wishes to override the default (slow) SQL-based item searching, it should register to this callback.
+    // This overrides *all* queries, not just specific ones, so at most one module per instance should be handling this callback.
+    $overrideSearch = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_FOLDER_SEARCH_DEFAULT_BEHAVIOR_OVERRIDE', array(
+                                                               'query' => $search,
+                                                               'user' => $userDao,
+                                                               'limit' => $limit));
+    $override = false;
+    foreach($overrideSearch as $module => $results)
       {
-      $sql->from(array('f' => 'folder'), array('folder_id', 'name', 'count(*)'))->distinct();
-      }
-    else
-      {
-      $sql->from(array('f' => 'folder'))->distinct();
+      $override = true;
+      $queryResults = $results;
+      break;
       }
 
-    if(!$isAdmin)
+    if(!$override)
       {
-      $sql->joinLeft(array('fpu' => 'folderpolicyuser'), '
+      // If no special search modules are enabled, we fall back to a naive/slow SQL search
+      $sql = $this->database->select();
+      if($group)
+        {
+        $sql->from(array('f' => 'folder'), array('folder_id', 'name', 'count(*)'))->distinct();
+        }
+      else
+        {
+        $sql->from(array('f' => 'folder'))->distinct();
+        }
+
+      if(!$isAdmin)
+        {
+        $sql->joinLeft(array('fpu' => 'folderpolicyuser'), '
                     f.folder_id = fpu.folder_id AND '.$this->database->getDB()->quoteInto('fpu.policy >= ?', MIDAS_POLICY_READ).'
                        AND '.$this->database->getDB()->quoteInto('fpu.user_id = ? ', $userId).' ', array())
-          ->joinLeft(array('fpg' => 'folderpolicygroup'), '
+            ->joinLeft(array('fpg' => 'folderpolicygroup'), '
                          f.folder_id = fpg.folder_id AND '.$this->database->getDB()->quoteInto('fpg.policy >= ?', MIDAS_POLICY_READ).'
                              AND ( '.$this->database->getDB()->quoteInto('fpg.group_id = ? ', MIDAS_GROUP_ANONYMOUS_KEY).' OR
                                   fpg.group_id IN (' .new Zend_Db_Expr(
@@ -1033,49 +1079,65 @@ class FolderModel extends FolderModelBase
                                               array('group_id'))
                                        ->where('u2g.user_id = ?', $userId)
                                        ) .'))', array())
-          ->where(
-           '(
-            fpu.folder_id is not null or
-            fpg.folder_id is not null)'
-            );
-      }
-    $sql->setIntegrityCheck(false)
+            ->where(
+             '(
+              fpu.folder_id is not null or
+              fpg.folder_id is not null)'
+              );
+        }
+      $sql->setIntegrityCheck(false)
           ->where($this->database->getDB()->quoteInto('name LIKE ?', '%'.$search.'%'))
           ->where('name != ?', "Public")
           ->where('name != ?', "Private")
           ->limit($limit);
 
-    if($group)
-      {
-      $sql->group('f.name');
+      if($group)
+        {
+        $sql->group('f.name');
+        }
+
+      switch($order)
+        {
+        case 'name':
+          $sql->order(array('f.name ASC'));
+          break;
+        case 'date':
+          $sql->order(array('f.date_update ASC'));
+          break;
+        case 'view':
+        default:
+          $sql->order(array('f.view DESC'));
+          break;
+        }
+      $rowset = $this->database->fetchAll($sql);
+      $queryResults = array();
+      foreach($rowset as $row)
+        {
+        $count = isset($row['count(*)']) ? $row['count(*)'] : 1;
+        $queryResults[] = array('id' => $row['folder_id'], 'count' => $count, 'score' => 0); //no boosting/scoring from sql search
+        }
       }
 
-    switch($order)
+    $i = 0;
+    $results = array();
+    foreach($queryResults as $result)
       {
-      case 'name':
-        $sql->order(array('f.name ASC'));
-        break;
-      case 'date':
-        $sql->order(array('f.date_update ASC'));
-        break;
-      case 'view':
-      default:
-        $sql->order(array('f.view DESC'));
-        break;
-      }
-    $rowset = $this->database->fetchAll($sql);
-    $return = array();
-    foreach($rowset as $row)
-      {
-      $tmpDao = $this->initDao('Folder', $row);
-      if(isset($row['count(*)']))
+      $folder = $this->load($result['id']);
+      if($folder && $this->policyCheck($folder, $userDao))
         {
-        $tmpDao->count = $row['count(*)'];
+        $folder->count = isset($result['count']) ? $result['count'] : 1;
+        $folder->score = $result['score'];
+        $results[] = $folder;
+        unset($folder);
+        $i++;
+        if($i >= $limit)
+          {
+          break;
+          }
         }
-      $return[] = $tmpDao;
-      unset($tmpDao);
       }
-    return $return;
+
+    return $results;
     } // end getFolderFromSearch()
 
   /**

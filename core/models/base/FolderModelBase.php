@@ -68,6 +68,7 @@ abstract class FolderModelBase extends AppModel
   abstract function isDeleteable($folder);
   abstract function getSize($folder);
   abstract function getByName($name);
+  abstract function iterateWithCallback($callback, $paramName = 'folder', $otherParams = array());
   abstract function getRecursiveChildCount($folder);
   abstract function getMaxPolicy($folderId, $user);
   abstract function zipStream(&$zip, $path, $folder, &$userDao, &$overrideOutputFunction = null);
