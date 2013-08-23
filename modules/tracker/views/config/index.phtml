@@ -23,10 +23,6 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
     <p>Leave this field blank if you do not want the revision numbers to link to anything.</p>
   </div>
   <form id="configForm" class="genericForm" method="POST" action="<?php echo $this->webroot;?>/tracker/config/submit">
-    <div>
-      <label for="repoBrowserUrl">Repository Browser URL</label>
-      <input type="text" name="repoBrowserUrl" value="<?php echo $this->repoBrowserUrl;?>" />
-    </div>
     <div class="explanation">
       <p>Set this field to the number of hours that unofficial submissions should be kept before being deleted automatically
          by the scheduler.  The default value is 24 hours.</p>

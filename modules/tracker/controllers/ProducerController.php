@@ -136,6 +136,7 @@ class Tracker_ProducerController extends Tracker_AppController
     $displayName = $this->_getParam('displayName');
     $description = $this->_getParam('description');
     $repository = $this->_getParam('repository');
+    $revisionUrl = $this->_getParam('revisionUrl');
     $executableName = $this->_getParam('executableName');
 
     if(isset($displayName))
@@ -153,6 +154,10 @@ class Tracker_ProducerController extends Tracker_AppController
     if(isset($executableName))
       {
       $producer->setExecutableName($executableName);
+      }
+    if(isset($revisionUrl))
+      {
+      $producer->setRevisionUrl($revisionUrl);
       }
     $this->Tracker_Producer->save($producer);
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved', 'producer' => $producer));

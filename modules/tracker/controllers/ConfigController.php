@@ -29,7 +29,6 @@ class Tracker_ConfigController extends Tracker_AppController
   function indexAction()
     {
     $this->requireAdminPrivileges();
-    $this->view->repoBrowserUrl = $this->Setting->getValueByName('repoBrowserUrl', $this->moduleName);
     $this->view->tempScalarTtl = $this->Setting->getValueByName('tempScalarTtl', $this->moduleName);
     if(!$this->view->tempScalarTtl)
       {
@@ -53,9 +52,8 @@ class Tracker_ConfigController extends Tracker_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $repoBrowserUrl = $this->_getParam('repoBrowserUrl');
     $tempScalarTtl = $this->_getParam('tempScalarTtl');
-    $this->Setting->setConfig('repoBrowserUrl', $repoBrowserUrl, $this->moduleName);
+
     $this->Setting->setConfig('tempScalarTtl', $tempScalarTtl, $this->moduleName);
 
     echo JsonComponent::encode(array('message' => 'Changes saved', 'status' => 'ok'));
