@@ -609,7 +609,7 @@ class FolderModel extends FolderModelBase
       unset($data['folder_id']);
       unset($data['left_indice']);
       unset($data['right_indice']);
-      $data['date_update'] = date('c');
+      $data['date_update'] = date("Y-m-d H:i:s");
       $this->database->update($data, array('folder_id = ?' => $key));
       return $key;
       }
@@ -617,9 +617,9 @@ class FolderModel extends FolderModelBase
       {
       if(!isset($data['date_creation']) || empty($data['date_creation']))
         {
-        $data['date_creation'] = date('c');
+        $data['date_creation'] = date("Y-m-d H:i:s");
         }
-      $data['date_update'] = date('c');
+      $data['date_update'] = date("Y-m-d H:i:s");
 
       $this->database->getDB()->update('folder', array('right_indice' => new Zend_Db_Expr('2 + right_indice')),
                           array('right_indice >= ?' => $rightParent));

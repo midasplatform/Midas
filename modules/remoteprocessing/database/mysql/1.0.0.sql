@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS `remoteprocessing_job` (
   `job_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `os` varchar(512) NOT NULL,
-  `condition` varchar(512) NOT NULL,
+  `condition` varchar(512) NOT NULL DEFAULT '',
   `script`  text,
   `params`  text,
   `status` tinyint(4) NOT NULL DEFAULT 0,

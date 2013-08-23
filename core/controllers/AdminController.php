@@ -361,19 +361,19 @@ class AdminController extends AppController
     $offset = $this->_getParam('offset');
     if(!isset($start) || empty($start))
       {
-      $start = date('c', strtotime('-24 hour'));
+      $start = date("Y-m-d H:i:s", strtotime('-24 hour'));
       }
     else
       {
-      $start = date('c', strtotime($start));
+      $start = date("Y-m-d H:i:s", strtotime($start));
       }
     if(!isset($end) || empty($end))
       {
-      $end = date('c');
+      $end = date("Y-m-d H:i:s");
       }
     else
       {
-      $end = date('c', strtotime($end));
+      $end = date("Y-m-d H:i:s", strtotime($end));
       }
     if(!isset($module) || empty($module))
       {

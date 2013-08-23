@@ -81,7 +81,7 @@ abstract class FeedModelBase extends AppModel
     $feed = MidasLoader::newDao('FeedDao');
     $feed->setUserId($userDao->getKey());
     $feed->setType($type);
-    $feed->setDate(date('c'));
+    $feed->setDate(date("Y-m-d H:i:s"));
     switch($type)
       {
       case MIDAS_FEED_CREATE_COMMUNITY:

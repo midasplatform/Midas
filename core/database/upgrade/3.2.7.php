@@ -14,7 +14,7 @@ class Upgrade_3_2_7 extends MIDASUpgrade
     {
     $this->db->query("CREATE TABLE `progress` (
       `progress_id` bigint(20) NOT NULL AUTO_INCREMENT,
-      `message` TEXT NOT NULL DEFAULT '',
+      `message` TEXT NOT NULL,
       `current` bigint(20) NOT NULL,
       `maximum` bigint(20) NOT NULL,
       `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -27,7 +27,7 @@ class Upgrade_3_2_7 extends MIDASUpgrade
     {
     $this->db->query("CREATE TABLE progress (
       progress_id serial PRIMARY KEY,
-      message TEXT NOT NULL DEFAULT '',
+      message TEXT NOT NULL,
       current bigint NOT NULL,
       maximum bigint NOT NULL,
       date_creation timestamp without time zone NOT NULL DEFAULT now(),

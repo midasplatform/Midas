@@ -502,7 +502,7 @@ class Zend_Service_Amazon_SimpleDb extends Zend_Service_Amazon_Abstract
     {
         $parameters['AWSAccessKeyId']   = $this->_getAccessKey();
         $parameters['SignatureVersion'] = $this->_signatureVersion;
-        $parameters['Timestamp']        = gmdate('c');
+        $parameters['Timestamp']        = gmdate("Y-m-d H:i:s");
         $parameters['Version']          = $this->_sdbApiVersion;
         $parameters['SignatureMethod']  = $this->_signatureMethod;
         $parameters['Signature']        = $this->_signParameters($parameters);

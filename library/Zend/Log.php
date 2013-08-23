@@ -92,7 +92,7 @@ class Zend_Log
      *
      * @var string
      */
-    protected $_timestampFormat        = 'c';
+    protected $_timestampFormat        = 'Y-m-d H:i:s';
 
     /**
      * Class constructor.  Create a new logger

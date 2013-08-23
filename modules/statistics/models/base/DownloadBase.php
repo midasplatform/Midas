@@ -75,7 +75,7 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
     $download = MidasLoader::newDao('DownloadDao', 'statistics');
     $download->setItemId($item->getKey());
     $download->setIpLocationId($ipLocation->getKey());
-    $download->setDate(date('c'));
+    $download->setDate(date("Y-m-d H:i:s"));
     $download->setUserAgent($userAgent);
     if($user instanceof UserDao)
       {

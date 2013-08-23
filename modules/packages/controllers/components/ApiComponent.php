@@ -427,7 +427,7 @@ class Packages_ApiComponent extends AppComponent
       }
     else
       {
-      $packageDao->setCheckoutdate(date('c'));
+      $packageDao->setCheckoutdate(date("Y-m-d H:i:s"));
       }
     $packageModel->save($packageDao);
 

@@ -239,7 +239,7 @@ abstract class UserModelBase extends AppModel
     $userDao->setFirstname(ucfirst($firstname));
     $userDao->setLastname(ucfirst($lastname));
     $userDao->setEmail(strtolower($email));
-    $userDao->setCreation(date('c'));
+    $userDao->setCreation(date("Y-m-d H:i:s"));
     $userDao->setHashAlg('sha256');
     $userDao->setAdmin($admin);
     if($password)

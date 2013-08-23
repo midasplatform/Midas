@@ -86,7 +86,7 @@ class UserapiModel extends UserapiModelBase
       {
       return false;
       }
-    $now = date("c");
+    $now = date("Y-m-d H:i:s");
 
     $sql = $this->database->select()
                       ->setIntegrityCheck(false)
@@ -142,7 +142,7 @@ class UserapiModel extends UserapiModelBase
     $tokenDao = MidasLoader::newDao('TokenDao');
     $tokenDao->setUserapiId($userapiDao->getKey());
     $tokenDao->setToken($token);
-    $tokenDao->setExpirationDate(date("c", time() + $userapiDao->getTokenExpirationTime() * 60));
+    $tokenDao->setExpirationDate(date("Y-m-d H:i:s", time() + $userapiDao->getTokenExpirationTime() * 60));
 
     $tokenModel = MidasLoader::loadModel('Token');
     $tokenModel->save($tokenDao);
@@ -161,7 +161,7 @@ class UserapiModel extends UserapiModelBase
       {
       throw new Zend_Exception("Error in parameter when getting Userapi from token.");
       }
-    $now = date("c");
+    $now = date("Y-m-d H:i:s");
 
     $sql = $this->database->select()
                   ->setIntegrityCheck(false)
