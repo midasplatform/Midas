@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `folder` (
   `teaser` varchar(250) DEFAULT '',
   `privacy_status` int(11) DEFAULT '0',
   `uuid` varchar(255) DEFAULT '',
-  `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_creation` timestamp,
   PRIMARY KEY (`folder_id`),
   KEY `parent_id` (`parent_id`)
 )   DEFAULT CHARSET=utf8 COMMENT='Describes a directory';
