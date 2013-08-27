@@ -26,7 +26,7 @@ class TokenModel extends TokenModelBase
   /** Remove all expired api tokens */
   function cleanExpired()
     {
-    $sql = $this->database->select()->where('expiration_date < ?', date("c"));
+    $sql = $this->database->select()->where('expiration_date < ?', date("Y-m-d H:i:s"));
     $rowset = $this->database->fetchAll($sql);
     foreach($rowset as $row)
       {

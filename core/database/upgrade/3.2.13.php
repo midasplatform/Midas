@@ -19,7 +19,7 @@ class Upgrade_3_2_13 extends MIDASUpgrade
        `apikey` varchar(40) NOT NULL,
        `application_name` varchar(256) NOT NULL,
        `token_expiration_time` int(11) NOT NULL,
-       `creation_date` timestamp NULL DEFAULT NULL,
+       `creation_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
        PRIMARY KEY (`userapi_id`)
        )");
      $this->db->query("RENAME TABLE `api_userapi` to `userapi`");
@@ -28,7 +28,7 @@ class Upgrade_3_2_13 extends MIDASUpgrade
        `token_id` bigint(20) NOT NULL AUTO_INCREMENT,
        `userapi_id` bigint(20) NOT NULL,
        `token` varchar(40) NOT NULL,
-       `expiration_date` timestamp NULL DEFAULT NULL,
+       `expiration_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
        PRIMARY KEY (`token_id`)
        )");
      $this->db->query("RENAME TABLE `api_token` to `token`");
@@ -52,7 +52,7 @@ class Upgrade_3_2_13 extends MIDASUpgrade
       token_id serial PRIMARY KEY,
       userapi_id bigint NOT NULL,
       token character varying(40) NOT NULL,
-      expiration_date timestamp without time zone
+      expiration_date timestamp without time zone DEFAULT CURRENT_TIMESTAMP
       )");
     $this->db->query("ALTER TABLE api_token_token_id_seq RENAME TO token_token_id_seq");
     $this->db->query("ALTER TABLE api_token RENAME TO token");

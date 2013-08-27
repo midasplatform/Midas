@@ -188,7 +188,7 @@ class Tracker_ApiComponent extends AppComponent
       {
       throw new Exception('Invalid submitTime value: '.$args['submitTime'], -1);
       }
-    $submitTime = date('c', $submitTime);
+    $submitTime = date("Y-m-d H:i:s", $submitTime);
 
     $value = (float)$args['value'];
 
@@ -346,11 +346,11 @@ class Tracker_ApiComponent extends AppComponent
         {
         throw new Exception('Invalid submitTime value: '.$args['submitTime'], -1);
         }
-      $submitTime = date('c', $submitTime);
+      $submitTime = date("Y-m-d H:i:s", $submitTime);
       }
     else
       {
-      $submitTime = date('c'); // Use current time if no submit time is explicitly set
+      $submitTime = date("Y-m-d H:i:s"); // Use current time if no submit time is explicitly set
       }
 
     $producerRevision = trim($args['producerRevision']);

@@ -49,7 +49,7 @@ class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
   /** save */
   public function save($dao)
     {
-    $dao->setCreationDate(date('c'));
+    $dao->setCreationDate(date("Y-m-d H:i:s"));
     parent::save($dao);
     }
 

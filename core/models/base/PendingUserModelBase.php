@@ -63,7 +63,7 @@ abstract class PendingUserModelBase extends AppModel
     $pendingUser->setFirstname($firstName);
     $pendingUser->setLastname($lastName);
     $pendingUser->setSalt($userSalt);
-    $pendingUser->setDateCreation(date('c'));
+    $pendingUser->setDateCreation(date("Y-m-d H:i:s"));
 
     $userModel = MidasLoader::loadModel('User');
     $existingUser = $userModel->getByEmail($email);

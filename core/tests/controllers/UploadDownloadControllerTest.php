@@ -302,8 +302,8 @@ class UploadDownloadControllerTest extends ControllerTestCase
     // Test that an old/orphaned lock is replaced without a problem
     $oldLock = new ActivedownloadDao();
     $oldLock->setIp($_SERVER['REMOTE_ADDR']);
-    $oldLock->setDateCreation(date('c', strtotime('-1 day')));
-    $oldLock->setLastUpdate(date('c', strtotime('-10 minutes')));
+    $oldLock->setDateCreation(date("Y-m-d H:i:s", strtotime('-1 day')));
+    $oldLock->setLastUpdate(date("Y-m-d H:i:s", strtotime('-10 minutes')));
     $this->Activedownload->save($oldLock);
 
     $lock = $this->Activedownload->acquireLock();

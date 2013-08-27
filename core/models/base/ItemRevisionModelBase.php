@@ -61,12 +61,12 @@ abstract class ItemRevisionModelBase extends AppModel
     $bitstreamDao->setItemrevisionId($itemRevisionDao->getItemrevisionId());
 
     // Save the bistream
-    $bitstreamDao->setDate(date('c'));
+    $bitstreamDao->setDate(date("Y-m-d H:i:s"));
     $BitstreamModel->save($bitstreamDao);
 
     $item = $itemRevisionDao->getItem($bitstreamDao);
     $item->setSizebytes($this->getSize($itemRevisionDao));
-    $item->setDateUpdate(date('c'));
+    $item->setDateUpdate(date("Y-m-d H:i:s"));
 
     Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_CREATE_THUMBNAIL', array($item));
     $notifications = Zend_Registry::get('notifier')->getNotifications();
@@ -173,7 +173,7 @@ abstract class ItemRevisionModelBase extends AppModel
       }
     if(!isset($dao->date) || empty($dao->date))
       {
-      $dao->setDate(date('c'));
+      $dao->setDate(date("Y-m-d H:i:s"));
       }
     parent::save($dao);
     }

@@ -71,8 +71,8 @@ abstract class ActivedownloadModelBase extends AppModel
       }
 
     $activeDownload = MidasLoader::newDao('ActivedownloadDao');
-    $activeDownload->setDateCreation(date('c'));
-    $activeDownload->setLastUpdate(date('c'));
+    $activeDownload->setDateCreation(date("Y-m-d H:i:s"));
+    $activeDownload->setLastUpdate(date("Y-m-d H:i:s"));
     $activeDownload->setIp($ip);
     $this->save($activeDownload);
 
@@ -86,7 +86,7 @@ abstract class ActivedownloadModelBase extends AppModel
    */
   public function updateLock($lockDao)
     {
-    $lockDao->setLastUpdate(date('c'));
+    $lockDao->setLastUpdate(date("Y-m-d H:i:s"));
     $this->save($lockDao);
     }
 

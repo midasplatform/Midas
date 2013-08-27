@@ -60,7 +60,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
         {
         echo  "<td class='elementStatus'>Done</td>";
         }
-      elseif(strtotime($job->getExpirationDate()) < strtotime(date('c')))
+      elseif(strtotime($job->getExpirationDate()) < strtotime(date("Y-m-d H:i:s")))
         {
         echo  "<td class='elementStatus'>Expired</td>";
         }

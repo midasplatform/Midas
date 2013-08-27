@@ -35,7 +35,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
       {
       $jobStatus =  "Done";
       }
-    elseif(strtotime($this->job->getExpirationDate()) < strtotime(date('c')))
+    elseif(strtotime($this->job->getExpirationDate()) < strtotime(date("Y-m-d H:i:s")))
       {
       $jobStatus = "Expired";
       }

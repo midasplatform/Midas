@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `community` (
   `privatefolder_id` bigint(20) DEFAULT NULL,
   `admingroup_id` bigint(20) DEFAULT NULL,
   `moderatorgroup_id` bigint(20) DEFAULT NULL,
-  `membergroup_id` bigint(20) NOT NULL,
+  `membergroup_id` bigint(20) NOT NULL DEFAULT 0,
   `view` bigint(20) NOT NULL DEFAULT '0',
   `can_join` int(11) DEFAULT '0',
   `uuid` varchar(255) DEFAULT '',
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `errorlog` (
   `priority` tinyint(4) NOT NULL,
   `module` varchar(255) NOT NULL,
   `message` text NOT NULL,
-  `datetime` timestamp NULL DEFAULT NULL,
+  `datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`errorlog_id`)
 )   DEFAULT CHARSET=utf8;
 
@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `folder` (
   `teaser` varchar(250) DEFAULT '',
   `privacy_status` int(11) DEFAULT '0',
   `uuid` varchar(255) DEFAULT '',
-  `date_creation` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_creation` timestamp,
   PRIMARY KEY (`folder_id`),
   KEY `parent_id` (`parent_id`)
 )   DEFAULT CHARSET=utf8 COMMENT='Describes a directory';
@@ -339,8 +339,7 @@ CREATE TABLE IF NOT EXISTS `metadatadocumentvalue` (
   `metadatavalue_id` bigint(20) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`metadatavalue_id`),
   KEY `metadata_id` (`metadata_id`),
-  KEY `itemrevision_id` (`itemrevision_id`),
-  KEY `value` (`value`(1000))
+  KEY `itemrevision_id` (`itemrevision_id`)
 )  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -355,8 +354,7 @@ CREATE TABLE IF NOT EXISTS `metadatavalue` (
   `value` varchar(1024) NOT NULL,
   `metadatavalue_id` bigint(20) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`metadatavalue_id`),
-  KEY `metadata_id` (`metadata_id`,`itemrevision_id`),
-  KEY `value` (`value`(1000))
+  KEY `metadata_id` (`metadata_id`,`itemrevision_id`)
 )  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

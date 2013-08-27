@@ -300,7 +300,8 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       {
       $date = new Zend_Date();
       $date->add('5', Zend_Date::HOUR);
-      $job->setExpirationDate($date->toString('c'));
+
+      $job->setExpirationDate($date->toString("Y-M-d H:m:s"));
       }
 
     if(isset($params['params']['creator_id']))

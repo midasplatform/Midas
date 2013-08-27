@@ -60,7 +60,7 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
     $clientDao->setName($name);
     $clientDao->setOwnerId($userDao->getKey());
     $clientDao->setSecret(UtilityComponent::generateRandomString(40));
-    $clientDao->setCreationDate(date('c'));
+    $clientDao->setCreationDate(date("Y-m-d H:i:s"));
     $this->save($clientDao);
 
     return $clientDao;

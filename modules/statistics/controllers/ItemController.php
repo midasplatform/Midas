@@ -71,7 +71,7 @@ class Statistics_ItemController extends Statistics_AppController
       }
     $header .= '<span class="headerSmall">['.$totaldownload.' downloads, '.$totalview.' views]</span>';
     $this->view->header = $header;
-    $arrayDownload = $this->Statistics_Download->getDailyCounts($idArray, date('c', strtotime('-20 day'.date('Y-m-j G:i:s'))), date('c'));
+    $arrayDownload = $this->Statistics_Download->getDailyCounts($idArray, date("Y-m-d H:i:s", strtotime('-20 day'.date('Y-m-j G:i:s'))), date("Y-m-d H:i:s"));
     for($i = 20; $i >= 0; $i--)
       {
       $dateKey = date('Y-m-j', strtotime('-'.$i.' day'));
