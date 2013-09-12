@@ -101,8 +101,9 @@ class Mfa_ConfigController extends Mfa_AppController
       }
     $this->view->user = $user;
     $this->view->algList = array(
-      MIDAS_MFA_PAM => 'PAM');
-    } 
+      MIDAS_MFA_PAM => 'PAM',
+      MIDAS_MFA_RADIUS => 'RADIUS');
+    }
 
   /**
    * The form for user OTP device configuration submits to this action.

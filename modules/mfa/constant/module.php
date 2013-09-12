@@ -21,4 +21,5 @@
 define('MIDAS_MFA_PAM', 'pam');
 define('MIDAS_MFA_OATH_HOTP', 'oath_hotp');
 define('MIDAS_MFA_RSA_SECURID', 'rsa_securid');
+define('MIDAS_MFA_RADIUS', 'radiusauth');
 ?>
