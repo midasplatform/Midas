@@ -33,12 +33,31 @@ class Mfa_ConfigController extends Mfa_AppController
   function indexAction()
     {
     $userOtpSetting = $this->Setting->GetValueByName('userOtpControl', 'mfa');
+    $this->view->radiusServer =
+      $this->Setting->GetValueByName('radiusServer', 'mfa');
+    $this->view->radiusPort =
+      $this->Setting->GetValueByName('radiusPort', 'mfa');
+    $this->view->radiusPassword =
+      $this->Setting->GetValueByName('radiusPassword', 'mfa');
+    $this->view->radiusTimeout =
+      $this->Setting->GetValueByName('radiusTimeout', 'mfa');
+    $this->view->radiusMaxTries =
+      $this->Setting->GetValueByName('radiusMaxTries', 'mfa');
+
     $this->view->userOtpControl = $userOtpSetting === 'true';
     }
 
   /**
    * Form submission handler for admin config page
-   * @param userOtpControl (checkbox value) non empty string will make this true
+   * @param userOtpControl (checkbox value) non empty string will make this
+   *                       true
+   * @param radiusServer the ip or address of the RADIUS server
+   * @param radiusPort the port of the RADIUS server
+   * @param radiusPassword the password to connect to the RADIUS server
+   * @param radiusTimeout the connection timeout when connecting to the RADIUS
+   *                      server
+   * @param radiusMaxTries the maximum number of tries when connecting to the
+   *                       RADIUS server
    */
   function submitAction()
     {
@@ -46,8 +65,20 @@ class Mfa_ConfigController extends Mfa_AppController
     $this->disableView();
 
     $userOtpControl = $this->_getParam('userOtpControl');
-    $value = $userOtpControl ? 'true' : 'false';
-    $this->Setting->setConfig('userOtpControl', $value, 'mfa');
+    $userOtpValue = $userOtpControl ? 'true' : 'false';
+
+    $radiusServer = $this->_getParam('radiusServer');
+    $radiusPort = $this->_getParam('radiusPort');
+    $radiusPassword = $this->_getParam('radiusPassword');
+    $radiusTimeout = $this->_getParam('radiusTimeout');
+    $radiusMaxTries = $this->_getParam('radiusMaxTries');
+
+    $this->Setting->setConfig('userOtpControl', $userOtpValue, 'mfa');
+    $this->Setting->setConfig('radiusServer', $radiusServer, 'mfa');
+    $this->Setting->setConfig('radiusPort', $radiusPort, 'mfa');
+    $this->Setting->setConfig('radiusPassword', $radiusPassword, 'mfa');
+    $this->Setting->setConfig('radiusTimeout', $radiusTimeout, 'mfa');
+    $this->Setting->setConfig('radiusMaxTries', $radiusMaxTries, 'mfa');
 
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved'));
     }

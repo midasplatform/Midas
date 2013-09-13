@@ -90,14 +90,14 @@ class Mfa_OtpComponent extends AppComponent
    */
   protected function _radiusauth($otpDevice, $token)
     {
+    $modelLoader = new MIDAS_ModelLoader();
+    $settingModel = $modelLoader->loadModel('Setting');
 
-    $modulesConfig = Zend_Registry::get('configsModules');
-
-    $radiusserver = "x.y.z.t";
-    $radiusport = "1234";
-    $radiuspw = "mysecretpassword";
-    $radiusTimeout = 5;
-    $radiusMaxTries = 3;
+    $radiusserver = $settingModel->GetValueByName('radiusServer', 'mfa');
+    $radiusport = $settingModel->GetValueByName('radiusPort', 'mfa');
+    $radiuspw = $settingModel->GetValueByName('radiusPassword', 'mfa');
+    $radiusTimeout = $settingModel->GetValueByName('radiusTimeout', 'mfa');
+    $radiusMaxTries = $settingModel->GetValueByName('radiusMaxTries', 'mfa');
 
     if(!function_exists('radius_auth_open'))
       {
