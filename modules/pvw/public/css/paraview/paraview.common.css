@@ -1,0 +1,22 @@
+div.midas-pvw-status{
+  font-size: 14px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#renderercontainer {
+  z-index: 2;
+  overflow: hidden;
+  width: 575px;
+  height: 575px;
+  display: none;
+  position: relative;
+}
+
+
+#rendererOverlay {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 1005; /* must be over 1000 */
+}

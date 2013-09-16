@@ -142,6 +142,7 @@ class AdminController extends AppController
     $this->view->configForm = $formArray;
 
     $allModules = $this->Component->Utility->getAllModules();
+    $this->view->extraTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ADMIN_TABS');
 
     if($this->_request->isPost())
       {

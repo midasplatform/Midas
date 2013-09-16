@@ -79,7 +79,7 @@ div.viewNoticeWrapper{
 }
 
 div.viewSideBar div.sideElement{
-  border-bottom: 1px solid white;  
+  border-bottom: 1px solid white;
   padding-bottom: 10px;
   border-top: 1px solid #DAD8D4;
 }
@@ -92,7 +92,7 @@ div.viewSideBar div.sideElementFirst{
 
 div.viewSideBar div.sideElementActions{
   border-top:1px solid #DAD8D4;
-  border-bottom: 1px solid white;  
+  border-bottom: 1px solid white;
   padding-top: 5px;
 }
 
@@ -226,4 +226,14 @@ img.progressIndeterminate {
   display: block;
   margin-top: 13px;
   margin-bottom: 13px;
+}
+
+div.MainDialog h4 {
+  border-bottom: 1px solid #d7d7d7;
+  margin-top: 0;
+  margin-bottom: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-size: 14px;
+  color: #555;
 }
