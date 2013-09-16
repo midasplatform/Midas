@@ -287,7 +287,7 @@ class ApicommunityComponent extends AppComponent
       {
       throw new Exception("This community doesn't exist  or you don't have the permissions.", MIDAS_INVALID_POLICY);
       }
-
+    Zend_Registry::get('notifier')->callback('CALLBACK_CORE_COMMUNITY_DELETED', array('community' => $community));
     $communityModel->delete($community);
     }
 
