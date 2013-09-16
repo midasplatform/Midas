@@ -1,3 +1,6 @@
+var midas = midas || {};
+midas.fixedSidebar = false;
+
 /**
  * !!! IMPORTANT !!!
  * Only place layout-independent javascript code in this file.
@@ -29,12 +32,18 @@ $(window).scroll(function () {
     var sidebar = $('div.viewSideBar');
     var viewMain = $('div.viewMain');
     var topOffset = viewMain.length > 0 ? viewMain.offset().top : 0;
+    var fixed = $(window).scrollTop() - topOffset > 0;
 
-    if(sidebar.height() + 10 < $(window).height()) {
-        var padding = 5 + Math.max(0, $(window).scrollTop() - topOffset);
-        sidebar.css('padding-top', padding+'px');
-    } else {
-        sidebar.css('padding-top', '5px');
+    if(fixed && !midas.fixedSidebar && sidebar.height() + 45 < $(window).height()) {
+        var left = sidebar.offset().left;
+        sidebar.css('position', 'fixed')
+               .css('top', '0px')
+               .css('left', left+'px');
+        midas.fixedSidebar = true;
+    }
+    else if(!fixed && midas.fixedSidebar) {
+        sidebar.css('position', 'static');
+        midas.fixedSidebar = false;
     }
 });
 
