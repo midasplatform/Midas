@@ -32,6 +32,8 @@ class CommunityModelTest extends DatabaseTestCase
   /** test create community */
   public function testCreateCommunity()
     {
+    Zend_Registry::set('modulesEnable', array());
+    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $prevCount = count($this->Community->getAll());
     $usersFile = $this->loadData('User', 'default');
     $user = $this->User->load($usersFile[0]->getKey());
