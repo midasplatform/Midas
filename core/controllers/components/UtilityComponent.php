@@ -640,13 +640,13 @@ class UtilityComponent extends AppComponent
   /**
    * Generate a string of random characters. Seeds RNG within the function using microtime.
    * @param $length The length of the random string
-   * @param $alphabet (Optional) The alphabet string; if none provided, uses base64
+   * @param $alphabet (Optional) The alphabet string; if none provided, uses [a-zA-z0-9]
    */
   public static function generateRandomString($length, $alphabet = null)
     {
     if(!is_string($alphabet) || empty($alphabet))
       {
-      $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/';
+      $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       }
 
     // Seed RNG with microtime (for lack of something more difficult to guess)
