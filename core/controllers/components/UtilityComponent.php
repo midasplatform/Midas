@@ -689,4 +689,5 @@ class UtilityComponent extends AppComponent
       }
     return false;
     }
+
 } // end class
