@@ -19,7 +19,7 @@ midas.genericCallbackSelect = function (node) {
         midas.ajaxSelectRequest.abort();
     }
     $('div.viewAction').show();
- 
+
     midas.createAction(node);
     midas.ajaxSelectRequest = $.ajax({
         type: "POST",
@@ -680,7 +680,7 @@ midas.createInfo = function (jsonContent) {
             html+='  </tr>';
             html+='  </tr>';
             html+='    <td>Size</td>';
-            html+='    <td>'+arrayElement['sizebytes']+' B</td>';
+            html+='    <td>'+arrayElement['size']+'</td>';
             html+='  </tr>';
         }
     }
@@ -692,7 +692,7 @@ midas.createInfo = function (jsonContent) {
         html+='  </tr>';
         html+='  <tr>';
         html+='    <td>Size</td>';
-        html+='    <td>'+arrayElement['sizebytes']+' B</td>';
+        html+='    <td>'+arrayElement['size']+'</td>';
         html+='  </tr>';
     }
     html+='</table>';

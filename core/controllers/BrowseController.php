@@ -482,6 +482,7 @@ class BrowseController extends AppController
         $jsonContent['updated'] = $this->Component->Date->formatDate(strtotime($jsonContent['date_update']));
         $sizeList = $this->Folder->getSizeFiltered($folder, $this->userSession->Dao, MIDAS_POLICY_READ);
         $jsonContent['sizebytes'] = $sizeList[0]->size;
+        $jsonContent['size'] = $this->Component->Utility->formatSize($jsonContent['sizebytes']);
         if(!isset($this->userSession->recentFolders))
           {
           $this->userSession->recentFolders = array();
@@ -513,6 +514,7 @@ class BrowseController extends AppController
           $jsonContent['norevisions'] = true;
           }
         $jsonContent['type'] = 'item';
+        $jsonContent['size'] = $this->Component->Utility->formatSize($jsonContent['sizebytes']);
         break;
       default:
         throw new Zend_Exception("Please select the right type of element.");
