@@ -51,19 +51,251 @@ class MIDAS2MigrationComponent extends AppComponent
   /** Private variables */
   var $userId;
 
+  /** Function to create an item */
+  private function _createItem($folderDao, $item_id, $name, $bitstreams)
+    {
+    $Item = MidasLoader::loadModel("Item");
+    $ItemRevision = MidasLoader::loadModel("ItemRevision");
+    $Itempolicygroup = MidasLoader::loadModel("Itempolicygroup");
+    $Itempolicyuser = MidasLoader::loadModel("Itempolicyuser");
+    $Folder = MidasLoader::loadModel("Folder");
+    $Bitstream = MidasLoader::loadModel("Bitstream");
+    $Group = MidasLoader::loadModel("Group");
+    $Assetstore = MidasLoader::loadModel("Assetstore");
+    
+    $itemdao = new ItemDao;
+    $itemdao->setName($name);
+    $itemdao->setDescription("");
+
+    // Get the number of downloads and set it
+    @$itemstatsquery = pg_query("SELECT downloads from midas_resourcelog WHERE
+                                      resource_id_type=" . MIDAS2_RESOURCE_ITEM . " AND resource_id=" . $item_id);
+    if ($itemstatsquery)
+      {
+      $itemstats_array = pg_fetch_array($itemstatsquery);
+      if ($itemstats_array)
+        {
+        $itemdao->setView($itemstats_array['downloads']);
+        $itemdao->setDownload($itemstats_array['downloads']);
+        }
+      }
+    else
+      {
+      $itemstatsquery = pg_query("SELECT count(*) AS c from midas_statistics WHERE
+                                    type=" . MIDAS2_RESOURCE_ITEM . " AND id=" . $item_id);
+      $itemstats_array = pg_fetch_array($itemstatsquery);
+      if ($itemstats_array)
+        {
+        $itemdao->setView($itemstats_array['c']);
+        $itemdao->setDownload($itemstats_array['c']);
+        }
+      }
+
+    $Item->save($itemdao);
+
+    // Just check if the group anonymous can access the item
+    $policyquery = pg_query("SELECT policy_id FROM resourcepolicy WHERE resource_type_id=" . MIDAS2_RESOURCE_ITEM .
+            " AND resource_id=" . $item_id . " AND epersongroup_id=0");
+    $privacy = MIDAS_COMMUNITY_PRIVATE;
+    if (pg_num_rows($policyquery) > 0)
+      {
+      $anonymousGroup = $Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
+      $Itempolicygroup->createPolicy($anonymousGroup, $itemdao, MIDAS_POLICY_READ);
+      }
+
+    // Add specific MIDAS policies for users
+    $policyquery = pg_query("SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
+                              FROM resourcepolicy
+                              LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
+                              WHERE epersongroup_id IS NULL AND resource_type_id=" . MIDAS2_RESOURCE_ITEM .
+            " AND resource_id=" . $item_id . " GROUP BY eperson.eperson_id, email");
+
+    while ($policyquery_array = pg_fetch_array($policyquery))
+      {
+      $actionid = $policyquery_array['actionid'];
+      $email = $policyquery_array['email'];
+      if ($actionid > 1)
+        {
+        $policyValue = MIDAS_POLICY_ADMIN;
+        }
+      else if ($actionid == 1)
+        {
+        $policyValue = MIDAS_POLICY_WRITE;
+        }
+      else
+        {
+        $policyValue = MIDAS_POLICY_READ;
+        }
+      $userDao = $User->getByEmail($email);
+      // Set the policy of the item
+      $Itempolicyuser->createPolicy($userDao, $itemdao, $policyValue);
+      }
+
+    // Add the item to the current directory
+    $Folder->addItem($folderDao, $itemdao);
+
+    // Create a revision for the item
+    $itemRevisionDao = new ItemRevisionDao;
+    $itemRevisionDao->setChanges('Initial revision');
+    $itemRevisionDao->setUser_id($this->userId);
+    $Item->addRevision($itemdao, $itemRevisionDao);
+
+    // Add the metadata
+    $MetadataModel = MidasLoader::loadModel("Metadata");
+
+    //
+    $metadataquery = pg_query("SELECT metadata_field_id, text_value FROM metadatavalue WHERE item_id=" . $item_id);
+    while ($metadata_array = pg_fetch_array($metadataquery))
+      {
+      $text_value = $metadata_array['text_value'];
+      $metadata_field_id = $metadata_array['metadata_field_id'];
+      $element = "";
+      $qualifier = "";
+
+      // Do not check 64 and 27 because they are stored as field and not metadata
+      // in MIDAS3
+      switch ($metadata_field_id)
+        {
+        case 3: $element = 'contributor';
+          $qualifier = 'author';
+          break;
+        case 11: $element = 'date';
+          $qualifier = 'uploaded';
+          break;
+        case 14: $element = 'date';
+          $qualifier = 'created';
+          break;
+        case 15: $element = 'date';
+          $qualifier = 'issued';
+          break;
+        case 18: $element = 'identifier';
+          $qualifier = 'citation';
+          break;
+        case 25: $element = 'identifier';
+          $qualifier = 'uri';
+          break;
+        case 26: $element = 'description';
+          $qualifier = 'general';
+          break;
+        case 28: $element = 'description';
+          $qualifier = 'provenance';
+          break;
+        case 29: $element = 'description';
+          $qualifier = 'sponsorship';
+          break;
+        case 39: $element = 'description';
+          $qualifier = 'publisher';
+          break;
+        case 57: $element = 'subject';
+          $qualifier = 'keyword';
+          break;
+        case 68: $element = 'subject';
+          $qualifier = 'ocis';
+          break;
+        case 75: $element = 'identifier';
+          $qualifier = 'pubmed';
+          break;
+        case 74: $element = 'identifier';
+          $qualifier = 'doi';
+          break;
+        default: $element = "";
+          $qualifier = "";
+        }
+
+      if ($element != "")
+        {
+        $MetadataModel->addMetadataValue($itemRevisionDao, MIDAS_METADATA_TEXT, $element, $qualifier, $text_value);
+        }
+      }
+
+    foreach($bitstreams as $bitstream)
+      {
+      // Add bitstreams to the revision
+      $bitstreamDao = new BitstreamDao;
+      $bitstreamDao->setName($bitstream['name']);
+
+      // Compute the path from the internalid
+      // We are assuming only one assetstore
+      $internal_id = $bitstream['internal_id'];
+      $filepath = $this->midas2Assetstore . '/';
+      $filepath .= substr($internal_id, 0, 2) . '/';
+      $filepath .= substr($internal_id, 2, 2) . '/';
+      $filepath .= substr($internal_id, 4, 2) . '/';
+      $filepath .= $internal_id;
+
+      // Check that the file exists
+      if (file_exists($filepath))
+        {
+        // Upload the bitstream
+        $assetstoreDao = $Assetstore->load($this->assetstoreId);
+        $bitstreamDao->setPath($filepath);
+        $bitstreamDao->fillPropertiesFromPath();
+        $bitstreamDao->setAssetstoreId($this->assetstoreId);
+
+        $UploadComponent = new UploadComponent();
+        $UploadComponent->uploadBitstream($bitstreamDao, $assetstoreDao);
+
+        // Upload the bitstream ifnecessary (based on the assetstore type)
+        $ItemRevision->addBitstream($itemRevisionDao, $bitstreamDao);
+        unset($UploadComponent);
+        }
+      } // end foreach bistream
+    }
+
+  /** Function to create the item for the MDE ressources */
+  private function _createItemForRessources($folderDao,$item_id)
+    {
+    // Create the item from the bitstreams
+    $resourcequery = pg_query("SELECT r.mde_resource_id,r.name FROM mde_resource AS r,bitstream2resource AS b2r, item2bitstream AS i2b
+                          WHERE r.mde_resource_id=b2r.resourceid AND i2b.bitstream_id = b2r.bitstreamid AND i2b.item_id=".$item_id."
+                          GROUP BY r.mde_resource_id,r.name ORDER BY r.mde_resource_id ");
+    while($resourcequery_array = pg_fetch_array($resourcequery))
+      {
+      $name = $resourcequery_array['name'];
+      $mde_resource_id = $resourcequery_array['mde_resource_id'];
+      $bitstreams = array();
+
+      // Find all the bitstreams for that resource
+      $bitreamquery = pg_query("SELECT b.bitstream_id, b.name, b.internal_id FROM bitstream AS b, bitstream2resource AS b2r
+                                WHERE b.bitstream_id=b2r.bitstreamid AND b2r.resourceid=".$mde_resource_id);
+      while($bitreamquery_array = pg_fetch_array($bitreamquery))
+        {
+        $bitstream = array();
+        $bitstream['name'] = $bitreamquery_array['name'];
+        $bitstream['internal_id'] = $bitreamquery_array['internal_id'];
+        $bitstreams[] = $bitstream;
+        }
+
+      $this->_createItem($folderDao, $itemid, $name, $bitstreams);
+      }
+    }
+
+  /** Function to create the item for the bitstream (not in ressources) */
+  private function _createItemForBitstreams($folderDao,$item_id)
+    {
+    // Create the item from the bitstreams
+    $bitquery = pg_query("SELECT b.bitstream_id, b.name, b.description, b.internal_id FROM bitstream AS b, item2bitstream AS i2b ".
+                         "WHERE b.bitstream_id NOT IN(SELECT bitstreamid FROM bitstream2resource) AND i2b.bitstream_id = b.bitstream_id AND i2b.item_id=".$item_id);
+    while($bitquery_array = pg_fetch_array($bitquery))
+      {
+      $filename = $bitquery_array['name'];
+
+      $bitstream = array();
+      $bitstream['name'] = $filename;
+      $bitstream['internal_id'] = $bitquery_array['internal_id'];
+
+      $bitstreams = array();
+      $bitstreams[] = $bitstream;
+      $this->_createItem($folderDao, $itemid, $filename, $bitstreams);
+      }
+    }
+
   /** function to create the items */
   private function _createFolderForItem($collectionId, $parentFolderid)
     {
     $Folder = MidasLoader::loadModel("Folder");
-    $Bitstream = MidasLoader::loadModel("Bitstream");
-    $Item = MidasLoader::loadModel("Item");
-    $ItemRevision = MidasLoader::loadModel("ItemRevision");
-    $Group = MidasLoader::loadModel("Group");
-    $Assetstore = MidasLoader::loadModel("Assetstore");
     $Folderpolicygroup = MidasLoader::loadModel("Folderpolicygroup");
     $Folderpolicyuser = MidasLoader::loadModel("Folderpolicyuser");
-    $Itempolicygroup = MidasLoader::loadModel("Itempolicygroup");
-    $Itempolicyuser = MidasLoader::loadModel("Itempolicyuser");
     $User = MidasLoader::loadModel("User");
 
     $colquery = pg_query("SELECT i.item_id, mtitle.text_value AS title, mabstract.text_value AS abstract ".
@@ -142,146 +374,9 @@ class MIDAS2MigrationComponent extends AppComponent
 
       if($folderDao)
         {
-        // Create the item from the bitstreams
-        $bitquery = pg_query("SELECT   b.bitstream_id, b.name, b.description, b.internal_id FROM bitstream AS b, item2bitstream AS i2b ".
-                             "WHERE i2b.bitstream_id = b.bitstream_id AND i2b.item_id=".$item_id);
-        while($bitquery_array = pg_fetch_array($bitquery))
-          {
-          $filename = $bitquery_array['name'];
-
-          $itemdao = new ItemDao;
-          $itemdao->setName($filename);
-
-          // Get the number of downloads and set it
-          $itemstatsquery = pg_query("SELECT downloads from midas_resourcelog WHERE
-                                      resource_id_type=".MIDAS2_RESOURCE_ITEM." AND resource_id=".$item_id);
-          $itemstats_array = pg_fetch_array($itemstatsquery);
-          if($itemstats_array)
-            {
-            $itemdao->setView($itemstats_array['downloads']);
-            $itemdao->setDownload($itemstats_array['downloads']);
-            }
-
-          $Item->save($itemdao);
-
-          // Just check if the group anonymous can access the item
-          $policyquery = pg_query("SELECT policy_id FROM resourcepolicy WHERE resource_type_id=".MIDAS2_RESOURCE_ITEM.
-                                " AND resource_id=".$item_id." AND epersongroup_id=0");
-          $privacy = MIDAS_COMMUNITY_PRIVATE;
-          if(pg_num_rows($policyquery) > 0)
-            {
-            $anonymousGroup = $Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
-            $Itempolicygroup->createPolicy($anonymousGroup, $itemdao, MIDAS_POLICY_READ);
-            }
-
-          // Add specific MIDAS policies for users
-          $policyquery = pg_query("SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
-                                  FROM resourcepolicy
-                                  LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
-                                   WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_ITEM.
-                                   " AND resource_id=".$item_id." GROUP BY eperson.eperson_id, email");
-
-          while($policyquery_array = pg_fetch_array($policyquery))
-            {
-            $actionid = $policyquery_array['actionid'];
-            $email = $policyquery_array['email'];
-            if($actionid > 1)
-              {
-              $policyValue = MIDAS_POLICY_ADMIN;
-              }
-            else if($actionid == 1)
-              {
-              $policyValue = MIDAS_POLICY_WRITE;
-              }
-            else
-              {
-              $policyValue = MIDAS_POLICY_READ;
-              }
-            $userDao = $User->getByEmail($email);
-            // Set the policy of the item
-            $Itempolicyuser->createPolicy($userDao, $itemdao, $policyValue);
-            }
-
-          // Add the item to the current directory
-          $Folder->addItem($folderDao, $itemdao);
-
-          // Create a revision for the item
-          $itemRevisionDao = new ItemRevisionDao;
-          $itemRevisionDao->setChanges('Initial revision');
-          $itemRevisionDao->setUser_id($this->userId);
-          $Item->addRevision($itemdao, $itemRevisionDao);
-
-          // Add the metadata
-          $MetadataModel = MidasLoader::loadModel("Metadata");
-
-          //
-          $metadataquery = pg_query("SELECT metadata_field_id, text_value FROM metadatavalue WHERE item_id=".$item_id);
-          while($metadata_array = pg_fetch_array($metadataquery))
-            {
-            $text_value = $metadata_array['text_value'];
-            $metadata_field_id = $metadata_array['metadata_field_id'];
-
-            $element = "";
-            $qualifier = "";
-
-            // Do not check 64 and 27 because they are stored as field and not metadata
-            // in MIDAS3
-            switch($metadata_field_id)
-              {
-              case 3:  $element = 'contributor'; $qualifier = 'author'; break;
-              case 11:  $element = 'date'; $qualifier = 'uploaded'; break;
-              case 14:  $element = 'date'; $qualifier = 'created'; break;
-              case 15:  $element = 'date'; $qualifier = 'issued'; break;
-              case 18:  $element = 'identifier'; $qualifier = 'citation'; break;
-              case 25:  $element = 'identifier'; $qualifier = 'uri'; break;
-              case 26:  $element = 'description'; $qualifier = 'general'; break;
-              case 28:  $element = 'description'; $qualifier = 'provenance'; break;
-              case 29:  $element = 'description'; $qualifier = 'sponsorship'; break;
-              case 39:  $element = 'description'; $qualifier = 'publisher'; break;
-              case 57:  $element = 'subject'; $qualifier = 'keyword'; break;
-              case 68:  $element = 'subject'; $qualifier = 'ocis'; break;
-              case 75:  $element = 'identifier'; $qualifier = 'pubmed'; break;
-              case 74:  $element = 'identifier'; $qualifier = 'doi'; break;
-              default: $element = ""; $qualidfier = "";
-              }
-
-            if($element != "")
-              {
-              $MetadataModel->addMetadataValue($itemRevisionDao, MIDAS_METADATA_TEXT,
-                                               $element, $qualifier, $text_value);
-              }
-            }
-
-          // Add bitstreams to the revision
-          $bitstreamDao = new BitstreamDao;
-          $bitstreamDao->setName($filename);
-
-          // Compute the path from the internalid
-          // We are assuming only one assetstore
-          $internal_id = $bitquery_array['internal_id'];
-          $filepath = $this->midas2Assetstore.'/';
-          $filepath .= substr($internal_id, 0, 2).'/';
-          $filepath .= substr($internal_id, 2, 2).'/';
-          $filepath .= substr($internal_id, 4, 2).'/';
-          $filepath .= $internal_id;
-
-          // Check that the file exists
-          if(file_exists($filepath))
-            {
-            // Upload the bitstream
-            $assetstoreDao = $Assetstore->load($this->assetstoreId);
-            $bitstreamDao->setPath($filepath);
-            $bitstreamDao->fillPropertiesFromPath();
-            $bitstreamDao->setAssetstoreId($this->assetstoreId);
-
-            $UploadComponent = new UploadComponent();
-            $UploadComponent->uploadBitstream($bitstreamDao, $assetstoreDao);
-
-            // Upload the bitstream ifnecessary (based on the assetstore type)
-            $ItemRevision->addBitstream($itemRevisionDao, $bitstreamDao);
-            unset($UploadComponent);
-            }
-          }
+        // Create the item from the mde_ressources
+        $this->_createItemForRessources($folderDao,$item_id);
+        $this->_createItemForBitstreams($folderDao,$item_id);
         }
       else
         {
