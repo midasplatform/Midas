@@ -62,6 +62,7 @@ class MIDAS2MigrationComponent extends AppComponent
     $Bitstream = MidasLoader::loadModel("Bitstream");
     $Group = MidasLoader::loadModel("Group");
     $Assetstore = MidasLoader::loadModel("Assetstore");
+    $User = MidasLoader::loadModel("User");
 
     $itemdao = new ItemDao;
     $itemdao->setName($name);
