@@ -62,7 +62,7 @@ class MIDAS2MigrationComponent extends AppComponent
     $Bitstream = MidasLoader::loadModel("Bitstream");
     $Group = MidasLoader::loadModel("Group");
     $Assetstore = MidasLoader::loadModel("Assetstore");
-    
+
     $itemdao = new ItemDao;
     $itemdao->setName($name);
     $itemdao->setDescription("");
@@ -562,8 +562,9 @@ class MIDAS2MigrationComponent extends AppComponent
   /** */
   function migrate($userid)
     {
+    set_time_limit(0);
+    
     $this->userId = $userid;
-
 
     // Check that we are in development mode
     if(Zend_Registry::get('configGlobal')->environment != 'development')
