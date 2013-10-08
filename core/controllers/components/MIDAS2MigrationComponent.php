@@ -266,7 +266,7 @@ class MIDAS2MigrationComponent extends AppComponent
         $bitstreams[] = $bitstream;
         }
 
-      $this->_createItem($folderDao, $itemid, $name, $bitstreams);
+      $this->_createItem($folderDao, $item_id, $name, $bitstreams);
       }
     }
 
@@ -286,7 +286,7 @@ class MIDAS2MigrationComponent extends AppComponent
 
       $bitstreams = array();
       $bitstreams[] = $bitstream;
-      $this->_createItem($folderDao, $itemid, $filename, $bitstreams);
+      $this->_createItem($folderDao, $item_id, $filename, $bitstreams);
       }
     }
 
@@ -563,7 +563,7 @@ class MIDAS2MigrationComponent extends AppComponent
   function migrate($userid)
     {
     set_time_limit(0);
-    
+
     $this->userId = $userid;
 
     // Check that we are in development mode
