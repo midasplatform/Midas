@@ -64,6 +64,12 @@ class MIDAS2MigrationComponent extends AppComponent
     $Assetstore = MidasLoader::loadModel("Assetstore");
     $User = MidasLoader::loadModel("User");
 
+    // If the folder already exists we just load it
+    if($Item->existsInFolder($name,$folderDao) !== false)
+      {
+      return;
+      }
+
     $itemdao = new ItemDao;
     $itemdao->setName($name);
     $itemdao->setDescription("");
@@ -303,7 +309,7 @@ class MIDAS2MigrationComponent extends AppComponent
                          "FROM item AS i ".
                          "LEFT JOIN metadatavalue AS mtitle ON (i.item_id = mtitle.item_id AND mtitle.metadata_field_id = 64) ".
                          "LEFT JOIN metadatavalue AS mabstract ON (i.item_id = mabstract.item_id AND mabstract.metadata_field_id = 27) ".
-                         "WHERE i.owning_collection=".$collectionId);
+                         "WHERE i.owning_collection=".$collectionId." ORDER BY title");
     while($colquery_array = pg_fetch_array($colquery))
       {
       $item_id = $colquery_array['item_id'];
@@ -316,61 +322,68 @@ class MIDAS2MigrationComponent extends AppComponent
         }
 
       $abstract = $colquery_array['abstract'];
-      $folderDao = false;
-      try
+
+      $parentFolder = MidasLoader::loadModel("Folder")->load($parentFolderid);
+      $folderDao = $Folder->getFolderExists($title,$parentFolder); //;
+
+      // If the folder already exists we just load it
+      if($folderDao === false)
         {
-        // Create the folder for the item
-        $folderDao = $Folder->createFolder($title, $abstract, $parentFolderid);
-
-        // Assign the policies to the folder as the same as the parent folder
-        $folder = $Folder->load($parentFolderid);
-        $policyGroup = $folder->getFolderpolicygroup();
-        $policyUser = $folder->getFolderpolicyuser();
-        foreach($policyGroup as $policy)
+        try
           {
-          $group = $policy->getGroup();
-          $policyValue = $policy->getPolicy();
-          $Folderpolicygroup->createPolicy($group, $folderDao, $policyValue);
-          }
-        foreach($policyUser as $policy)
-          {
-          $user = $policy->getUser();
-          $policyValue = $policy->getPolicy();
-          $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);
-          }
+          // Create the folder for the item
+          $folderDao = $Folder->createFolder($title, $abstract, $parentFolderid);
 
-        // Add specific MIDAS policies for users (not dealing with groups)
-        $policyquery = pg_query("SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
-                                FROM resourcepolicy
-                                LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
-                                 WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_ITEM.
-                                 " AND resource_id=".$item_id." GROUP BY eperson.eperson_id, email");
+          // Assign the policies to the folder as the same as the parent folder
+          $folder = $Folder->load($parentFolderid);
+          $policyGroup = $folder->getFolderpolicygroup();
+          $policyUser = $folder->getFolderpolicyuser();
+          foreach($policyGroup as $policy)
+            {
+            $group = $policy->getGroup();
+            $policyValue = $policy->getPolicy();
+            $Folderpolicygroup->createPolicy($group, $folderDao, $policyValue);
+            }
+          foreach($policyUser as $policy)
+            {
+            $user = $policy->getUser();
+            $policyValue = $policy->getPolicy();
+            $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);
+            }
 
-        while($policyquery_array = pg_fetch_array($policyquery))
-          {
-          $actionid = $policyquery_array['actionid'];
-          $email = $policyquery_array['email'];
-          if($actionid > 1)
+          // Add specific MIDAS policies for users (not dealing with groups)
+          $policyquery = pg_query("SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
+                                  FROM resourcepolicy
+                                  LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
+                                  WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_ITEM.
+                                  " AND resource_id=".$item_id." GROUP BY eperson.eperson_id, email");
+
+          while($policyquery_array = pg_fetch_array($policyquery))
             {
-            $policyValue = MIDAS_POLICY_ADMIN;
+            $actionid = $policyquery_array['actionid'];
+            $email = $policyquery_array['email'];
+            if($actionid > 1)
+              {
+              $policyValue = MIDAS_POLICY_ADMIN;
+              }
+            else if($actionid == 1)
+              {
+              $policyValue = MIDAS_POLICY_WRITE;
+              }
+            else
+              {
+              $policyValue = MIDAS_POLICY_READ;
+              }
+            $userDao = $User->getByEmail($email);
+            $Folderpolicyuser->createPolicy($userDao, $folderDao, $policyValue);
             }
-          else if($actionid == 1)
-            {
-            $policyValue = MIDAS_POLICY_WRITE;
-            }
-          else
-            {
-            $policyValue = MIDAS_POLICY_READ;
-            }
-          $userDao = $User->getByEmail($email);
-          $Folderpolicyuser->createPolicy($userDao, $folderDao, $policyValue);
           }
-        }
-      catch(Zend_Exception $e)
-        {
-        $this->getLogger()->info($e->getMessage());
-        Zend_Debug::dump($e);
-        //we continue
+        catch(Zend_Exception $e)
+          {
+          $this->getLogger()->info($e->getMessage());
+          Zend_Debug::dump($e);
+          //we continue
+          }
         }
 
       if($folderDao)
@@ -394,68 +407,74 @@ class MIDAS2MigrationComponent extends AppComponent
     $Folderpolicygroup = MidasLoader::loadModel("Folderpolicygroup");
     $Folderpolicyuser = MidasLoader::loadModel("Folderpolicyuser");
 
-    $colquery = pg_query("SELECT collection_id, name, short_description, introductory_text FROM collection WHERE owning_community=".$communityId);
+    $colquery = pg_query("SELECT collection_id, name, short_description, introductory_text FROM collection WHERE owning_community=".$communityId." ORDER BY name");
     while($colquery_array = pg_fetch_array($colquery))
       {
       $collection_id = $colquery_array['collection_id'];
       $name = $colquery_array['name'];
       $short_description = $colquery_array['short_description'];
-      $introductory_text = $colquery_array['introductory_text'];
-      $folderDao = false;
-      try
+
+      $parentFolder = MidasLoader::loadModel("Folder")->load($parentFolderid);
+      $folderDao = $Folder->getFolderExists($name,$parentFolder); //;
+
+      // If the folder already exists we just load it
+      if($folderDao === false)
         {
-        // Create the folder for the community
-        $folderDao = $Folder->createFolder($name, $short_description, $parentFolderid);
-
-        // Assign the policies to the folder as the same as the parent folder
-        $folder = $Folder->load($parentFolderid);
-        $policyGroup = $folder->getFolderpolicygroup();
-        $policyUser = $folder->getFolderpolicyuser();
-        foreach($policyGroup as $policy)
+        try
           {
-          $group = $policy->getGroup();
-          $policyValue = $policy->getPolicy();
-          $Folderpolicygroup->createPolicy($group, $folderDao, $policyValue);
-          }
-        foreach($policyUser as $policy)
-          {
-          $user = $policy->getUser();
-          $policyValue = $policy->getPolicy();
-          $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);
-          }
+          // Create the folder for the community
+          $folderDao = $Folder->createFolder($name, $short_description, $parentFolderid);
 
-        // Add specific MIDAS policies for users (not dealing with groups)
-        $policyquery = pg_query("SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
-                                FROM resourcepolicy
-                                LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
-                                 WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_COLLECTION.
-                                 " AND resource_id=".$collection_id." GROUP BY eperson.eperson_id, email");
+          // Assign the policies to the folder as the same as the parent folder
+          $folder = $Folder->load($parentFolderid);
+          $policyGroup = $folder->getFolderpolicygroup();
+          $policyUser = $folder->getFolderpolicyuser();
+          foreach($policyGroup as $policy)
+            {
+            $group = $policy->getGroup();
+            $policyValue = $policy->getPolicy();
+            $Folderpolicygroup->createPolicy($group, $folderDao, $policyValue);
+            }
+          foreach($policyUser as $policy)
+            {
+            $user = $policy->getUser();
+            $policyValue = $policy->getPolicy();
+            $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);
+            }
 
-        while($policyquery_array = pg_fetch_array($policyquery))
-          {
-          $actionid = $policyquery_array['actionid'];
-          $email = $policyquery_array['email'];
-          if($actionid > 1)
+          // Add specific MIDAS policies for users (not dealing with groups)
+          $policyquery = pg_query("SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
+                                  FROM resourcepolicy
+                                  LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
+                                  WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_COLLECTION.
+                                  " AND resource_id=".$collection_id." GROUP BY eperson.eperson_id, email");
+
+          while($policyquery_array = pg_fetch_array($policyquery))
             {
-            $policyValue = MIDAS_POLICY_ADMIN;
+            $actionid = $policyquery_array['actionid'];
+            $email = $policyquery_array['email'];
+            if($actionid > 1)
+              {
+              $policyValue = MIDAS_POLICY_ADMIN;
+              }
+            else if($actionid == 1)
+              {
+              $policyValue = MIDAS_POLICY_WRITE;
+              }
+            else
+              {
+              $policyValue = MIDAS_POLICY_READ;
+              }
+            $userDao = $User->getByEmail($email);
+            $Folderpolicyuser->createPolicy($userDao, $folderDao, $policyValue);
             }
-          else if($actionid == 1)
-            {
-            $policyValue = MIDAS_POLICY_WRITE;
-            }
-          else
-            {
-            $policyValue = MIDAS_POLICY_READ;
-            }
-          $userDao = $User->getByEmail($email);
-          $Folderpolicyuser->createPolicy($userDao, $folderDao, $policyValue);
           }
-        }
-      catch(Zend_Exception $e)
-        {
-        $this->getLogger()->info($e->getMessage());
-        //Zend_Debug::dump($e);
-        //we continue
+        catch(Zend_Exception $e)
+          {
+          $this->getLogger()->info($e->getMessage());
+          //Zend_Debug::dump($e);
+          //we continue
+          }
         }
 
       if($folderDao)
@@ -468,6 +487,7 @@ class MIDAS2MigrationComponent extends AppComponent
         echo "Cannot create Folder for collection: ".$name."<br>";
         }
       }
+
     } // end _createFolderForCollection()
 
 
@@ -483,70 +503,76 @@ class MIDAS2MigrationComponent extends AppComponent
     $this->_createFolderForCollection($communityidMIDAS2, $parentFolderid);
 
     // Find the subcommunities
-    $comquery = pg_query("SELECT community_id, name, short_description, introductory_text FROM community WHERE owning_community=".$communityidMIDAS2);
+    $comquery = pg_query("SELECT community_id, name, short_description, introductory_text FROM community WHERE owning_community=".$communityidMIDAS2." ORDER BY name");
     while($comquery_array = pg_fetch_array($comquery))
       {
       $community_id = $comquery_array['community_id'];
       $name = $comquery_array['name'];
       $short_description = $comquery_array['short_description'];
-      $introductory_text = $comquery_array['introductory_text'];
-      $folderDao = false;
-      try
+
+      $parentFolder = MidasLoader::loadModel("Folder")->load($parentFolderid);
+      $folderDao = $Folder->getFolderExists($name,$parentFolder); //;
+
+      // If the folder already exists we just load it
+      if($folderDao === false)
         {
-        // Create the folder for the community
-        $folderDao = $Folder->createFolder($name, $short_description, $parentFolderid);
-
-        // Assign the policies to the folder as the same as the parent folder
-        $folder = $Folder->load($parentFolderid);
-        $policyGroup = $folder->getFolderpolicygroup();
-        $policyUser = $folder->getFolderpolicyuser();
-        foreach($policyGroup as $policy)
+        try
           {
-          $group = $policy->getGroup();
-          $policyValue = $policy->getPolicy();
-          $Folderpolicygroup->createPolicy($group, $folderDao, $policyValue);
+          // Create the folder for the community
+          $folderDao = $Folder->createFolder($name, $short_description, $parentFolderid);
+
+          // Assign the policies to the folder as the same as the parent folder
+          $folder = $Folder->load($parentFolderid);
+          $policyGroup = $folder->getFolderpolicygroup();
+          $policyUser = $folder->getFolderpolicyuser();
+          foreach($policyGroup as $policy)
+            {
+            $group = $policy->getGroup();
+            $policyValue = $policy->getPolicy();
+            $Folderpolicygroup->createPolicy($group, $folderDao, $policyValue);
+            }
+          foreach($policyUser as $policy)
+            {
+            $user = $policy->getUser();
+            $policyValue = $policy->getPolicy();
+            $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);
+            }
+
+          // Add specific MIDAS policies for users (not dealing with groups)
+          $policyquery = pg_query("SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
+                                  FROM resourcepolicy
+                                  LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
+                                  WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_COMMUNITY.
+                                  " AND resource_id=".$community_id." GROUP BY eperson.eperson_id, email");
+
+          while($policyquery_array = pg_fetch_array($policyquery))
+            {
+            $actionid = $policyquery_array['actionid'];
+            $email = $policyquery_array['email'];
+            if($actionid > 1)
+              {
+              $policyValue = MIDAS_POLICY_ADMIN;
+              }
+            else if($actionid == 1)
+              {
+              $policyValue = MIDAS_POLICY_WRITE;
+              }
+            else
+              {
+              $policyValue = MIDAS_POLICY_READ;
+              }
+            $userDao = $User->getByEmail($email);
+
+            $Folderpolicyuser->createPolicy($userDao, $folderDao, $policyValue);
+            }
           }
-        foreach($policyUser as $policy)
+        catch(Zend_Exception $e)
           {
-          $user = $policy->getUser();
-          $policyValue = $policy->getPolicy();
-          $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);
+          $this->getLogger()->info($e->getMessage());
+          //Zend_Debug::dump($e);
+          //we continue
           }
-
-        // Add specific MIDAS policies for users (not dealing with groups)
-        $policyquery = pg_query("SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
-                                FROM resourcepolicy
-                                LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
-                                 WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_COMMUNITY.
-                                 " AND resource_id=".$community_id." GROUP BY eperson.eperson_id, email");
-
-        while($policyquery_array = pg_fetch_array($policyquery))
-          {
-          $actionid = $policyquery_array['actionid'];
-          $email = $policyquery_array['email'];
-          if($actionid > 1)
-            {
-            $policyValue = MIDAS_POLICY_ADMIN;
-            }
-          else if($actionid == 1)
-            {
-            $policyValue = MIDAS_POLICY_WRITE;
-            }
-          else
-            {
-            $policyValue = MIDAS_POLICY_READ;
-            }
-          $userDao = $User->getByEmail($email);
-
-          $Folderpolicyuser->createPolicy($userDao, $folderDao, $policyValue);
-          }
-        }
-      catch(Zend_Exception $e)
-        {
-        $this->getLogger()->info($e->getMessage());
-        //Zend_Debug::dump($e);
-        //we continue
-        }
+        } // end folderdao exists
 
       if($folderDao)  // The folder has been created for the community
         {
@@ -596,80 +622,87 @@ class MIDAS2MigrationComponent extends AppComponent
     while($query_array = pg_fetch_array($query))
       {
       $email = $query_array['email'];
-      $password = $query_array['password'];
-      $firstname = $query_array['firstname'];
-      $lastname = $query_array['lastname'];
-      try
+
+      if($User->getByEmail($email) === false)
         {
-        $userDao = $User->createUser($email, $password, $firstname, $lastname);
-        $User->save($userDao);
-        }
-      catch(Zend_Exception $e)
-        {
-        $this->getLogger()->info($e->getMessage());
-        //Zend_Debug::dump($e);
-        //we continue
+        $password = $query_array['password'];
+        $firstname = $query_array['firstname'];
+        $lastname = $query_array['lastname'];
+        try
+          {
+          $userDao = $User->createUser($email, $password, $firstname, $lastname);
+          $User->save($userDao);
+          }
+        catch(Zend_Exception $e)
+          {
+          $this->getLogger()->info($e->getMessage());
+          //Zend_Debug::dump($e);
+          //we continue
+          }
         }
       }
 
     // STEP 2: Import the communities. The MIDAS2 TopLevel communities are communities in MIDAS3
     $Community = MidasLoader::loadModel("Community");
-    $query = pg_query("SELECT community_id, name, short_description, introductory_text FROM community WHERE owning_community = 0");
+    $query = pg_query("SELECT community_id, name, short_description, introductory_text FROM community WHERE owning_community = 0 ORDER BY name");
     while($query_array = pg_fetch_array($query))
       {
       $community_id = $query_array['community_id'];
       $name = $query_array['name'];
       $short_description = $query_array['short_description'];
-      $introductory_text = $query_array['introductory_text'];
       $communityDao = false;
-      try
+
+      if($Community->getByName($name) === false)
         {
-        // Check the policies for the community
-        // If anonymous can access then we set it public
-        $policyquery = pg_query("SELECT policy_id FROM resourcepolicy WHERE resource_type_id=".MIDAS2_RESOURCE_COMMUNITY.
-                                " AND resource_id=".$community_id." AND epersongroup_id=0");
-        $privacy = MIDAS_COMMUNITY_PRIVATE;
-        if(pg_num_rows($policyquery) > 0)
+        try
           {
-          $privacy = MIDAS_COMMUNITY_PUBLIC;
+          // Check the policies for the community
+          // If anonymous can access then we set it public
+          $policyquery = pg_query("SELECT policy_id FROM resourcepolicy WHERE resource_type_id=".MIDAS2_RESOURCE_COMMUNITY.
+                                  " AND resource_id=".$community_id." AND epersongroup_id=0");
+          $privacy = MIDAS_COMMUNITY_PRIVATE;
+          if(pg_num_rows($policyquery) > 0)
+            {
+            $privacy = MIDAS_COMMUNITY_PUBLIC;
+            }
+          $communityDao = $Community->createCommunity($name, $short_description, $privacy, NULL); // no user
+
+          // Add the users to the community
+          // MIDAS2 was not using the group heavily so we ignore them. This would have to be a manual step
+          $policyquery = pg_query("SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
+                                  FROM resourcepolicy
+                                  LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
+                                  WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_COMMUNITY.
+                                  " AND resource_id=".$community_id." GROUP BY eperson.eperson_id, email");
+
+          while($policyquery_array = pg_fetch_array($policyquery))
+            {
+            $actionid = $policyquery_array['actionid'];
+            $email = $policyquery_array['email'];
+            if($actionid > 1)
+              {
+              $memberGroupDao = $communityDao->getAdminGroup();
+              }
+            else if($actionid == 1)
+              {
+              $memberGroupDao = $communityDao->getModeratorGroup();
+              }
+            else
+              {
+              $memberGroupDao = $communityDao->getMemberGroup();
+              }
+            $userDao = $User->getByEmail($email);
+            $Group->addUser($memberGroupDao, $userDao);
+            }
+
           }
-        $communityDao = $Community->createCommunity($name, $short_description, $privacy, NULL); // no user
-
-        // Add the users to the community
-        // MIDAS2 was not using the group heavily so we ignore them. This would have to be a manual step
-        $policyquery = pg_query("SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
-                                FROM resourcepolicy
-                                LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
-                                 WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_COMMUNITY.
-                                 " AND resource_id=".$community_id." GROUP BY eperson.eperson_id, email");
-
-        while($policyquery_array = pg_fetch_array($policyquery))
+        catch(Zend_Exception $e)
           {
-          $actionid = $policyquery_array['actionid'];
-          $email = $policyquery_array['email'];
-          if($actionid > 1)
-            {
-            $memberGroupDao = $communityDao->getAdminGroup();
-            }
-          else if($actionid == 1)
-            {
-            $memberGroupDao = $communityDao->getModeratorGroup();
-            }
-          else
-            {
-            $memberGroupDao = $communityDao->getMemberGroup();
-            }
-          $userDao = $User->getByEmail($email);
-          $Group->addUser($memberGroupDao, $userDao);
+          $this->getLogger()->info($e->getMessage());
+          //Zend_Debug::dump($e);
+          //we continue
           }
-
-        }
-      catch(Zend_Exception $e)
-        {
-        $this->getLogger()->info($e->getMessage());
-        //Zend_Debug::dump($e);
-        //we continue
-        }
+        } // only create if doesn't exist
 
       if(!$communityDao)
         {
@@ -685,6 +718,7 @@ class MIDAS2MigrationComponent extends AppComponent
         {
         echo "Cannot create community: ".$name."<br>";
         }
+
       } // end while loop
 
     // Close the database connection
