@@ -32,6 +32,9 @@ class Mfa_OtpdeviceModel extends Mfa_OtpdeviceModelBase
    */
   function getByUser($userDao)
     {
+    if($userDao == null) {
+      return null;
+    }
     $row = $this->database->fetchRow($this->database->select()->where('user_id = ?', $userDao->getKey()));
     return $this->initDao('Otpdevice', $row, 'mfa');
     }
