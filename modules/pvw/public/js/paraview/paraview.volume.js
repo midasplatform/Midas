@@ -1,4 +1,4 @@
-var paraview, pv;
+var pv;
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
 
@@ -53,7 +53,7 @@ midas.pvw.renderSubgrid = function (bounds) {
     var container = $('div.MainDialog');
     container.find('img.extractInProgress').show();
     container.find('button.extractSubgridApply').attr('disabled', 'disabled');
-    pv.connection.session.call('pv:extractSubgrid', bounds)
+    pv.connection.session.call('vtk:extractSubgrid', bounds)
                                .then(function (resp) {
                                     pv.viewport.render();
                                     container.find('img.extractInProgress').hide();
@@ -250,7 +250,7 @@ midas.pvw.setupColorMapping = function () {
                   parseFloat(tokens[3]) / 255.0);
             });
             midas.pvw.colorMap = colorMap;
-            pv.connection.session.call('pv:updateColorMap', colorMap)
+            pv.connection.session.call('vtk:updateColorMap', colorMap)
                                   .then(function () {
                                       pv.viewport.render();
                                   })
@@ -350,7 +350,7 @@ midas.pvw.applySofCurve = function () {
     }
 
     midas.pvw.sof = points;
-    pv.connection.session.call('pv:updateSof', points)
+    pv.connection.session.call('vtk:updateSof', points)
                          .then(function () {
                               pv.viewport.render();
                           })
@@ -523,7 +523,7 @@ midas.pvw.dataLoaded = function (resp) {
     midas.pvw.mainProxy = resp;
     pv.viewport.render();
     midas.pvw.waitingDialog('Starting volume rendering...');
-    pv.connection.session.call('pv:volumeRender')
+    pv.connection.session.call('vtk:volumeRender')
                          .then(midas.pvw.vrStarted)
                          .otherwise(midas.pvw.rpcFailure);
 };
@@ -552,7 +552,7 @@ midas.pvw.vrStarted = function (resp) {
 /** Bind the renderer overlay buttons */
 midas.pvw.setupOverlay = function () {
     $('button.cameraPreset').click(function () {
-        pv.connection.session.call('pv:cameraPreset', $(this).attr('type'))
+        pv.connection.session.call('vtk:cameraPreset', $(this).attr('type'))
                              .then(pv.viewport.render())
                              .otherwise(midas.pvw.rpcFailure);
     });

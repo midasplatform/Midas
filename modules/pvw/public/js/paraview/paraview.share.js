@@ -19,9 +19,9 @@ $(window).load(function () {
         secret: json.pvw.instance.secret
     };
 
-    paraview.connect(pv.connection, function(conn) {
+    vtkWeb.connect(pv.connection, function(conn) {
         pv.connection = conn;
-        pv.viewport = paraview.createViewport(pv.connection);
+        pv.viewport = vtkWeb.createViewport(pv.connection);
         pv.viewport.bind('#renderercontainer');
 
         $('#renderercontainer').show();
