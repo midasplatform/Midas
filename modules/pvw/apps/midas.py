@@ -15,7 +15,9 @@ except ImportError:
 from autobahn.wamp import exportRpc
 
 # import paraview modules.
-from paraview import simple, web, servermanager, web_helper, paraviewweb_wamp, paraviewweb_protocols
+from paraview import simple, servermanager
+from paraview.web import paraviewweb_protocols, paraviewweb_wamp
+from vtk.web import server
 
 # import utility methods
 import pvw_utils
@@ -39,7 +41,7 @@ def initView(width, height):
 
 
 # This class defines the exposed RPC methods for the midas application
-class MidasApp(paraviewweb_wamp.ServerProtocol):
+class MidasApp(paraviewweb_wamp.PVServerProtocol):
   DISTANCE_FACTOR = 2.0
   CONTOUR_LINE_WIDTH = 2.0
 
@@ -68,10 +70,10 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     global authKey
 
     # Bring used components
-    self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebMouseHandler())
-    self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPort())
-    self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPortImageDelivery())
-    self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPortGeometryDelivery())
+    self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebMouseHandler())
+    self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPort())
+    self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPortImageDelivery())
+    self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPortGeometryDelivery())
 
     # Update authentication key to use
     self.updateSecret(authKey)
@@ -276,7 +278,6 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
     simple.SetActiveSource(self.srcObj)
     simple.ResetCamera()
     simple.Render()
-    return self.srcObj
 
   @exportRpc("exportCanvas")
   def exportCanvas(self, user_email, api_key, midas_url, file_name, output_folder_id):
@@ -621,7 +622,7 @@ class MidasApp(paraviewweb_wamp.ServerProtocol):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Midas+ParaViewWeb application")
-    web.add_arguments(parser)
+    server.add_arguments(parser)
     parser.add_argument("--data-dir", default=os.getcwd(),
         help="path to data directory", dest="path")
     parser.add_argument("--width", default=575,
@@ -636,4 +637,4 @@ if __name__ == "__main__":
     height = args.height
 
     initView(width, height)
-    web.start_webserver(options=args, protocol=MidasApp)
+    server.start_webserver(options=args, protocol=MidasApp)

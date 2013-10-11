@@ -1,4 +1,3 @@
-var paraview;
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
 midas.pvw.sliceMode = 'XY Plane'; //Initial slice plane
@@ -54,7 +53,7 @@ midas.pvw.dataLoaded = function (resp) {
     midas.pvw.mainProxy = resp;
     pv.viewport.render();
     midas.pvw.waitingDialog('Starting slice rendering...');
-    pv.connection.session.call('pv:sliceRender', midas.pvw.sliceMode)
+    pv.connection.session.call('vtk:sliceRender', midas.pvw.sliceMode)
                          .then(midas.pvw.sliceRenderStarted)
                          .otherwise(midas.pvw.rpcFailure);
   };
@@ -171,7 +170,7 @@ midas.pvw.updateLabelmapOpacityInfo = function (opacity) {
 
 /** Make the actual request to PVWeb to set the window */
 midas.pvw.changeWindow = function (values) {
-    pv.connection.session.call('pv:changeWindow', [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0])
+    pv.connection.session.call('vtk:changeWindow', [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0])
                         .then(function () {
                             pv.viewport.render();
                             midas.pvw.releaseUpdateLock();
@@ -195,7 +194,7 @@ midas.pvw.changeSlice = function (slice, degradeQuality) {
     midas.pvw.slice = slice;
 
     if(midas.pvw.acquireUpdateLock()) {
-        pv.connection.session.call('pv:changeSlice', slice)
+        pv.connection.session.call('vtk:changeSlice', slice)
                             .then(function (resp) {
                                 if(degradeQuality) {
                                     pv.viewport.render(null, {quality: 50});
@@ -291,7 +290,7 @@ midas.pvw.pointSelectMode = function () {
             point: [x, y, z],
             color: [1.0, 0.0, 0.0]
         };
-        pv.connection.session.call('pv:showSphere', params)
+        pv.connection.session.call('vtk:showSphere', params)
                              .then(pv.viewport.render)
                              .otherwise(midas.pvw.rpcFailure);
     });
@@ -734,7 +733,7 @@ midas.pvw.setSliceMode = function (sliceMode) {
         return; //nothing to do, already in this mode
     }
     midas.pvw.sliceMode = sliceMode;
-    pv.connection.session.call('pv:setSliceMode', midas.pvw.sliceMode)
+    pv.connection.session.call('vtk:setSliceMode', midas.pvw.sliceMode)
                          .then(midas.pvw.sliceModeChanged)
                          .otherwise(midas.pvw.rpcFailure);
 };

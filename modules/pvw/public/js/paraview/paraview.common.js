@@ -24,7 +24,7 @@ midas.pvw.setupBgColor = function () {
             onSubmit: function(hsb, hex, rgb, el) {
                 midas.pvw.bgColor = rgb;
                 container.dialog('close');
-                pv.connection.session.call('pv:changeBgColor', [rgb.r / 255.0, rgb.g / 255.0, rgb.b / 255.0])
+                pv.connection.session.call('vtk:changeBgColor', [rgb.r / 255.0, rgb.g / 255.0, rgb.b / 255.0])
                                      .then(pv.viewport.render);
             }
         });
@@ -77,15 +77,15 @@ midas.pvw._commonStart = function (text) {
  * This function also sets up the
  */
 midas.pvw.loadData = function () {
-    paraview.connect(pv.connection, function(conn) {
+    vtkWeb.connect(pv.connection, function(conn) {
         pv.connection = conn;
-        pv.viewport = paraview.createViewport(pv.connection);
+        pv.viewport = vtkWeb.createViewport(pv.connection);
         pv.viewport.bind('#renderercontainer');
 
         $('#renderercontainer').show();
 
         midas.pvw.waitingDialog('Loading data into scene...');
-        pv.connection.session.call('pv:loadData')
+        pv.connection.session.call('vtk:loadData')
                              .then(midas.pvw.dataLoaded)
                              .otherwise(midas.pvw.rpcFailure);
     }, function(code, msg) {
@@ -112,7 +112,7 @@ midas.pvw.testIdle = function () {
  */
 midas.pvw.stopSession = function () {
     if(pv.connection) {
-        paraview.stop(pv.connection);
+        vtkWeb.stop(pv.connection);
         pv.connection = null;
     }
     if(midas.pvw.idleInterval) {
@@ -158,7 +158,7 @@ midas.pvw.waitingDialog = function(text) {
 };
 
 $(window).load(function () {
-    if(paraview) {
+    if(vtkWeb) {
         if(!json.pvw.meshIds) {
             json.pvw.meshIds = [];
         }
