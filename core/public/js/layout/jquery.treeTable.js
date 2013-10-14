@@ -711,6 +711,6 @@
 
     $.fn.ttRenderElementsSize = function () {
         // For performance reasons, don't fetch folder sizes anymore.
-        $(this).find('img.folderLoading').remove();
+        $(this).find('img.folderLoading').replaceWith('--');
     }
 })(jQuery);
