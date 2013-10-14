@@ -16,7 +16,7 @@ from autobahn.wamp import exportRpc
 
 # import paraview modules.
 from paraview import simple, servermanager
-from paraview.web import paraviewweb_protocols, paraviewweb_wamp
+from paraview.web import protocols, wamp
 from vtk.web import server
 
 # import utility methods
@@ -41,7 +41,7 @@ def initView(width, height):
 
 
 # This class defines the exposed RPC methods for the midas application
-class MidasApp(paraviewweb_wamp.PVServerProtocol):
+class MidasApp(wamp.PVServerProtocol):
   DISTANCE_FACTOR = 2.0
   CONTOUR_LINE_WIDTH = 2.0
 
@@ -70,10 +70,10 @@ class MidasApp(paraviewweb_wamp.PVServerProtocol):
     global authKey
 
     # Bring used components
-    self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebMouseHandler())
-    self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPort())
-    self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPortImageDelivery())
-    self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPortGeometryDelivery())
+    self.registerVtkWebProtocol(protocols.ParaViewWebMouseHandler())
+    self.registerVtkWebProtocol(protocols.ParaViewWebViewPort())
+    self.registerVtkWebProtocol(protocols.ParaViewWebViewPortImageDelivery())
+    self.registerVtkWebProtocol(protocols.ParaViewWebViewPortGeometryDelivery())
 
     # Update authentication key to use
     self.updateSecret(authKey)
