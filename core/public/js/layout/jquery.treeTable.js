@@ -710,34 +710,7 @@
     }
 
     $.fn.ttRenderElementsSize = function () {
-        var table = $(this);
-        var options = table.ttOptions();
-        if(options.disableElementSize) {
-            return;
-        }
-        var elements = '';
-        var i = 0;
-        table.find('img.folderLoading').each(function () {
-            i++;
-            if(i > 10) {
-                return;
-            }
-            if($(this).attr('process') == undefined) {
-                elements += $(this).attr('element') + '-';
-                $(this).attr('process', 'true');
-            }
-        });
-        if(elements != '') {
-            $.post(json.global.webroot+'/browse/getfolderssize', {folders: elements} , function(data) {
-                var arrayElement = jQuery.parseJSON(data);
-                $.each(arrayElement, function(index, value) {
-                    var img = table.find('img.folderLoading[element='+value.id+']');
-                    img.after('<span class="elementSize">'+value.size+'</span>');
-                    img.parents('tr').find('td:first span:last').after('<span style="padding-left:0px;" class="elementCount">'+' ('+value.count+')'+'</span>');
-                    img.remove();
-                });
-                table.ttRenderElementsSize();
-            });
-        }
+        // For performance reasons, don't fetch folder sizes anymore.
+        $(this).find('img.folderLoading').replaceWith('--');
     }
 })(jQuery);
