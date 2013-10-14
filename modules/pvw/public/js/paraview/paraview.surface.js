@@ -12,10 +12,9 @@ midas.pvw.start = function () {
 
 /** Callback for once the loadData RPC has returned */
 midas.pvw.dataLoaded = function (resp) {
-    midas.pvw.mainProxy = resp;
     pv.viewport.render();
     midas.pvw.waitingDialog('Starting surface rendering...');
-    pv.connection.session.call('pv:surfaceRender')
+    pv.connection.session.call('vtk:surfaceRender')
                          .then(midas.pvw.surfaceRenderStarted)
                          .otherwise(midas.pvw.rpcFailure);
 };
@@ -31,7 +30,7 @@ midas.pvw.surfaceRenderStarted = function (resp) {
             midas.pvw.renderer = $(this).val();
             pv.connection.renderer = midas.pvw.renderer;
             pv.viewport.unbind();
-            pv.viewport = paraview.createViewport(pv.connection);
+            pv.viewport = vtkWeb.createViewport(pv.connection);
             pv.viewport.bind('#renderercontainer');
             pv.viewport.render();
         }
@@ -48,7 +47,7 @@ midas.pvw.populateInfo = function () {
 };
 
 midas.pvw.resetCamera = function () {
-    pv.connection.session.call('pv:cameraPreset', '+x')
+    pv.connection.session.call('vtk:cameraPreset', '+x')
                         .then(function () {
                             if(midas.pvw.renderer == 'webgl') {
                                 pv.viewport.invalidateScene();
@@ -59,7 +58,7 @@ midas.pvw.resetCamera = function () {
 };
 
 midas.pvw.toggleEdges = function () {
-    pv.connection.session.call('pv:toggleEdges')
+    pv.connection.session.call('vtk:toggleEdges')
                         .then(function () {
                             if(midas.pvw.renderer == 'webgl') {
                                 pv.viewport.invalidateScene();

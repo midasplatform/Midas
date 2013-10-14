@@ -69,7 +69,8 @@ class Pvw_ParaviewComponent extends AppComponent
     $instance->setItemId($item->getKey());
     $instance->setPort($port);
     $instance->setSid(''); // todo?
-    $instance->setCreationDate(date('c'));
+    $instance->setPid(0);
+    $instance->setCreationDate(date('Y-m-d H:i:s'));
     $instance->setSecret(UtilityComponent::generateRandomString(32, '0123456789abcdef'));
 
     $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
