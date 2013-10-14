@@ -69,6 +69,7 @@ class Pvw_ParaviewComponent extends AppComponent
     $instance->setItemId($item->getKey());
     $instance->setPort($port);
     $instance->setSid(''); // todo?
+    $instance->setPid(0);
     $instance->setCreationDate(date('c'));
     $instance->setSecret(UtilityComponent::generateRandomString(32, '0123456789abcdef'));
 
