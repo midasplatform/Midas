@@ -936,17 +936,29 @@ class FolderModel extends FolderModelBase
 
   /** Return an item by its name
    * @return ItemDao*/
-  function getItemByName($folder, $itemname)
+  function getItemByName($folder, $itemname, $caseSensitive = true)
     {
     if(!$folder instanceof FolderDao)
       {
       throw new Zend_Exception("Should be a folder.");
       }
-    $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
-                                          ->from('item')
-                                          ->join('item2folder', 'item2folder.item_id = item.item_id')
-                                          ->where('item2folder.folder_id=?', $folder->getFolderId())
-                                          ->where('item.name=?', $itemname));
+
+    if($caseSensitive)
+      {
+      $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
+        ->from('item')
+        ->join('item2folder', 'item2folder.item_id = item.item_id')
+        ->where('item2folder.folder_id=?', $folder->getFolderId())
+        ->where('item.name=?', $itemname));
+      }
+    else
+      {
+      $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
+        ->from('item')
+        ->join('item2folder', 'item2folder.item_id = item.item_id')
+        ->where('item2folder.folder_id=?', $folder->getFolderId())
+        ->where('lower(item.name)=?', $itemname));
+      }
     return $this->initDao('Item', $row);
     } // end function getChildIdFromName
 
