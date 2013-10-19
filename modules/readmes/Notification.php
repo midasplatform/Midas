@@ -35,6 +35,8 @@ class Readmes_Notification extends MIDAS_Notification
   public function init()
     {
     $this->addCallBack('CALLBACK_CORE_FOLDER_VIEW_JS', 'getFolderViewJs');
+    $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_VIEW_JSS',
+                       'getCommunityViewJs');
     }//end init
 
   /**
@@ -47,6 +49,13 @@ class Readmes_Notification extends MIDAS_Notification
     $fc = Zend_Controller_Front::getInstance();
     $moduleUriroot = $fc->getBaseUrl().'/modules/readmes';
     return array($moduleUriroot.'/public/js/readmes.folder.js');
+    }
+
+  public function getCommunityViewJs()
+    {
+    $fc = Zend_Controller_Front::getInstance();
+    $moduleUriroot = $fc->getBaseUrl().'/modules/readmes';
+    return array($moduleUriroot.'/public/js/readmes.community.js');
     }
 
   } //end class

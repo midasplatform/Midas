@@ -9,9 +9,9 @@ midas.readmes = midas.readmes || {};
 (function() {
     'use strict';
 
-    midas.readmes.getForFolder = function (id) {
+    midas.readmes.getForCommunity = function (id) {
         $.ajax({
-            url: json.global.webroot + '/rest/readmes/folder/' + id,
+            url: json.global.webroot + '/rest/readmes/community/' + id,
             success: function (retVal) {
                 $('.viewMain').append('<hr />' + retVal.data.text);
             },
@@ -25,7 +25,7 @@ midas.readmes = midas.readmes || {};
     };
 
     $(document).ready(function () {
-        midas.readmes.getForFolder(json.folder.folder_id);
+        midas.readmes.getForCommunity(json.community.community_id);
     });
 
 })();

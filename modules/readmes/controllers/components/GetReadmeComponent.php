@@ -9,7 +9,6 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-include_once BASE_PATH . '/library/KWUtils.php';
 
 /** Exract readme text according to the folder or community*/
 class Readmes_GetReadmeComponent extends AppComponent
@@ -21,7 +20,22 @@ class Readmes_GetReadmeComponent extends AppComponent
     {
       $folderModel = MidasLoader::loadModel('Folder');
       $itemModel = MidasLoader::loadModel('Item');
-      $readmeItem = $folderModel->getItemByName($folder, 'readme.md', false);
+      $readmeItem = null;
+      $candidates = array('readme.md', 'readme.txt', 'readme');
+      foreach ($candidates as $candidate)
+      {
+        $readmeItem = $folderModel->getItemByName($folder, $candidate, false);
+        if($readmeItem != null)
+        {
+          break;
+        }
+      }
+
+      if($readmeItem == null)
+      {
+        return array('text' => '');
+      }
+
       $revisionDao = $itemModel->getLastRevision($readmeItem);
       $bitstreams = $revisionDao->getBitstreams();
       $bitstream = $bitstreams[0];
@@ -35,6 +49,10 @@ class Readmes_GetReadmeComponent extends AppComponent
      */
     public function fromCommunity($community)
     {
+      if($community == null)
+      {
+        throw new Zend_Exception('Invalid Community');
+      }
       $folderModel = MidasLoader::loadModel('Folder');
       $rootFolder = $community->getFolder();
       $publicFolder = $folderModel->getFolderByName($rootFolder, 'Public');
