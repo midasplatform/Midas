@@ -21,7 +21,7 @@ class Readmes_ApicommunityComponent extends AppComponent
    * @return the text of the readme
    */
   function get($args)
-  {
+    {
     $apihelperComponent = MidasLoader::loadComponent('Apihelper');
     $readmeComponent = MidasLoader::loadComponent('GetReadme', 'readmes');
     $apihelperComponent->validateParams($args, array('id'));
@@ -32,6 +32,6 @@ class Readmes_ApicommunityComponent extends AppComponent
     $readme = $readmeComponent->fromCommunity($communityDao);
 
     return $readme;
-  }
+    }
 
 }
