@@ -14,6 +14,25 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.f
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.checkboxrange.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/folder/folder.view.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
+
+$cssArray = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_FOLDER_VIEW_CSS', array('folder' => $this->mainFolder));
+$jsArray = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_FOLDER_VIEW_JS', array('folder' => $this->mainFolder));
+
+foreach($jsArray as $module => $list)
+  {
+  foreach($list as $script)
+    {
+    $this->headScript()->appendFile($script);
+    }
+  }
+foreach($cssArray as $module => $list)
+  {
+  foreach($list as $stylesheet)
+    {
+    echo '<link type="text/css" rel="stylesheet" href="'.$stylesheet.'" />';
+    }
+  }
+
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />

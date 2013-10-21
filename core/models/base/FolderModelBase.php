@@ -55,6 +55,7 @@ abstract class FolderModelBase extends AppModel
   /** Abstract functions */
   abstract function getChildrenFoldersFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc', $limit = 0, $offset = 0);
   abstract function getItemsFiltered($folder, $userDao = null, $policy = 0, $sortfield = 'name', $sortdir = 'asc', $limit = 0, $offset = 0);
+  abstract function getItemByName($folder, $itemname, $caseSensitive = true);
   abstract function getSizeFiltered($folders, $userDao = null, $policy = 0);
   abstract function getCommunity($folder);
   abstract function getUser($folder);
