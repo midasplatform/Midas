@@ -93,8 +93,19 @@ class Mfa_Notification extends ApiEnabled_Notification
    */
   public function authInterceptApi($params)
     {
-    $user = $params['user'];
-    $tokenDao = $params['tokenDao'];
+
+    $user = null;
+    $tokenDao = null;
+    if(isset($params['user']))
+      {
+      $user = $params['user'];
+      }
+
+    if(isset($params['tokenDao']))
+      {
+      $tokenDao = $params['tokenDao'];
+      }
+
     $modelLoader = new MIDAS_ModelLoader();
     $otpDeviceModel = $modelLoader->loadModel('Otpdevice', $this->moduleName);
     $otpDevice = $otpDeviceModel->getByUser($user);
