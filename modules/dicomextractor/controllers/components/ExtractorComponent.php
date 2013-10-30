@@ -30,6 +30,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
       {
       $preparedCommand .= ' --version';
       }
+    $this->prependDataDict($preparedCommand);
     exec($preparedCommand, $output, $return_var);
     if(empty($output))
       {
@@ -68,6 +69,19 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     }
 
   /**
+   * Prepend data dictionary environment variable if necessary.
+   */
+  private function prependDataDict(&$command)
+    {
+    $modulesConfig = Zend_Registry::get('configsModules');
+    $dictPath = $modulesConfig['dicomextractor']->dcmdictpath;
+    if($dictPath != "")
+      {
+      $command = 'DCMDICTPATH="'.$dictPath.'" '.$command;
+      }
+    }
+
+  /**
    * Verify that DCMTK is setup properly
    */
   public function isDCMTKWorking()
@@ -86,6 +100,43 @@ class Dicomextractor_ExtractorComponent extends AppComponent
                                                    false);
     $ret['dcmj2pnm'] = $this->getApplicationStatus($dcmj2pnmCommand,
                                                    'dcmj2pnm');
+    if($modulesConfig['dicomextractor']->dcmdictpath == "")
+      {
+      if(is_readable('/usr/local/share/dcmtk/dicom.dic') ||  // default on osx
+        is_readable('/usr/share/dcmtk/dicom.dic'))  // default on ubuntu
+        {
+        $ret['dcmdatadict'] = array(true, 'DICOM Data Dictionary found at '.
+          'default location.');
+        }
+      else
+        {
+        $ret['dcmdatadict'] = array(false, 'No DICOM Data dictionary set or '.
+          'found. Please set the DCMDATADICT config variable.');
+        }
+      }
+    else
+      {
+      $dataDictVar = $modulesConfig['dicomextractor']->dcmdictpath;
+      $dictPaths = explode(":", $dataDictVar);
+      $errorInDictVar = false;
+      foreach ($dictPaths as $path)
+        {
+        if(!is_readable($path))
+          {
+          $ret['dcmdatadict'] = array(false, 'Unable to find DICOM Data ' .
+            'dictionary specified through the environment variable');
+          $errorInDictVar = true;
+          break;
+          }
+        }
+
+      if(!$errorInDictVar)
+        {
+        $ret['dcmdatadict'] = array(true, 'DICOM Data Dictionary found as ' .
+          'specified in the DCMDATADICT variable.');
+        }
+      }
+
     return $ret;
     }
 
@@ -104,7 +155,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
       }
 
     $thumbnailComponent = MidasLoader::loadComponent('Imagemagick',
-                                                          'thumbnailcreator');
+                                                     'thumbnailcreator');
     $utilityComponent = MidasLoader::loadComponent('Utility');
     $bitstream = $bitstreams[$numBitstreams/2];
 
@@ -115,6 +166,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     $command = $modulesConfig['dicomextractor']->dcmj2pnm;
     $preparedCommand = str_replace("'", '"',$command);
     $preparedCommand .= ' "'.$bitstream->getFullPath().'" "'.$tmpSlice.'"';
+    $this->prependDataDict($preparedCommand);
     exec($preparedCommand, $output);
 
     // We have to spoof an item array for the thumbnail component. This
@@ -142,6 +194,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     $command = $modulesConfig['dicomextractor']->dcm2xml;
     $preparedCommand = str_replace("'", '"',$command);
     $preparedCommand .= ' "'.$bitstream->getFullPath().'"';
+    $this->prependDataDict($preparedCommand);
     exec($preparedCommand, $output);
     $xml = new XMLReader();
     $xml->xml(implode($output)); // implode our output
@@ -190,9 +243,9 @@ class Dicomextractor_ExtractorComponent extends AppComponent
         if(!$metadataDao)
           {
           $metadataDao = $MetadataModel->addMetadata(MIDAS_METADATA_TEXT,
-                                      'DICOM',
-                                      $row['name'],
-                                      $row['name']);
+                                                     'DICOM',
+                                                     $row['name'],
+                                                     $row['name']);
           }
         $metadataDao->setItemrevisionId($revision->getKey());
         $metadataDao->setValue($row['value']);
