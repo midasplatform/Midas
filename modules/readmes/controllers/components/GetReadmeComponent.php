@@ -40,7 +40,9 @@ class Readmes_GetReadmeComponent extends AppComponent
     $bitstream = $bitstreams[0];
     $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
     $contents = file_get_contents($path);
-    return array('text' => $contents);
+    $utilityComponent = MidasLoader::loadComponent('Utility');
+    $parsedContents = $utilityComponent->markDown($contents);
+    return array('text' => $parsedContents);
     }
 
   /**

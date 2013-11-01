@@ -68,7 +68,7 @@ class ReadmesApiTest extends RestCallMethodsTest
 
     $resp = $this->_callRestApi('GET', '/readmes/folder/'.$publicFolder->getKey());
     $this->_assertStatusOk($resp);
-    $this->assertEquals($resp["body"]->data->text, "This is a readme\n");
+    $this->assertEquals($resp["body"]->data->text, "<p>This is a readme</p>\n");
     }
 
   /** test readme on community */
@@ -107,7 +107,7 @@ class ReadmesApiTest extends RestCallMethodsTest
 
     $resp = $this->_callRestApi('GET', '/readmes/community/'.$comm->getKey());
     $this->_assertStatusOk($resp);
-    $this->assertEquals($resp["body"]->data->text, "This is a readme\n");
+    $this->assertEquals($resp["body"]->data->text, "<p>This is a readme</p>\n");
     }
 
 }
