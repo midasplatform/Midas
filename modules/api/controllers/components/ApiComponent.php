@@ -935,7 +935,7 @@ class Api_ApiComponent extends AppComponent
    */
   function bitstreamGet($args)
     {
-    return $this->_callCoreApiMethod($args, 'apibitstream', 'bitstreamGet', 'bitstream');
+    return $this->_callCoreApiMethod($args, 'bitstreamGet', 'bitstream');
     }
 
   /**
