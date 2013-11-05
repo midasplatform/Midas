@@ -51,7 +51,8 @@ class MidasLoader
           }
         else
           {
-          throw new Zend_Exception("Component file doesn't exist");
+          throw new Zend_Exception("A component named ".$component." doesn't ".
+            "exist.");
           }
         $name = ucfirst($module).'_'.$component.'Component';
         }
