@@ -177,19 +177,11 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     unlink($tmpSlice);
     }
 
-  /** extract metadata
-   *  HACK TODO FIXME Right now we only extract the metadata from the 0th
-   *  bistream of the item. We should really do some sort of validation on
-   *  the n bitstreams to make sure their tags match.
+  /**
+   * Get DICOM Metadata from Bitstream
    */
-  public function extract($revision)
+  public function extractFromBitstream($bitstream)
     {
-    $bitstreams = $revision->getBitstreams();
-    if(count($bitstreams) < 1)
-      {
-      return;
-      }
-    $bitstream = $bitstreams[0];
     $modulesConfig = Zend_Registry::get('configsModules');
     $command = $modulesConfig['dicomextractor']->dcm2xml;
     $preparedCommand = str_replace("'", '"',$command);
@@ -232,6 +224,23 @@ class Dicomextractor_ExtractorComponent extends AppComponent
           break;
         }
       }
+      return $tagArray;
+    }
+
+  /** extract metadata
+   *  HACK TODO FIXME Right now we only extract the metadata from the 0th
+   *  bistream of the item. We should really do some sort of validation on
+   *  the n bitstreams to make sure their tags match.
+   */
+  public function extract($revision)
+    {
+    $bitstreams = $revision->getBitstreams();
+    if(count($bitstreams) < 1)
+      {
+      return;
+      }
+    $bitstream = $bitstreams[0];
+    $tagArray = $this->extractFromBitstream($bitstream);
     $MetadataModel = MidasLoader::loadModel("Metadata");
     foreach($tagArray as $row)
       {
@@ -262,6 +271,72 @@ class Dicomextractor_ExtractorComponent extends AppComponent
         echo $exc->getMessage();
         }
       }
+    }
+
+  /**
+   * Get DICOM Metadata from Item and return
+   */
+  public function extractFromItem($item, $transform = false)
+    {
+    $itemModel = MidasLoader::loadModel("Item");
+    $revision = $itemModel->getLastRevision($item);
+    $bitstreams = $revision->getBitstreams();
+    if(count($bitstreams) < 1)
+      {
+      return array();
+      }
+    $bitstream = $bitstreams[0];
+    $tagArray = $this->extractFromBitstream($bitstream);
+    if($transform)
+      {
+      $ret = array();
+      foreach($tagArray as $tag)
+        {
+        $ret[$tag['name']] = $tag['value'];
+        }
+      return $ret;
+      }
+    else
+      {
+      return $tagArray;
+      }
+    }
+
+  /**
+   * Extract dicom information from the items in a folder and use it to
+   * selectively merge those items.
+   */
+  public function extractAndMergeFromFolder($folder, $userDao, $progress=null)
+    {
+    $folderModel = MidasLoader::loadModel('Folder');
+    $itemModel = MidasLoader::loadModel('Item');
+    $items = $folderModel->getItemsFiltered($folder, $userDao,
+      MIDAS_POLICY_ADMIN);
+    $seriesMap = array();
+    foreach ($items as $item)
+      {
+      $dicomData = $this->extractFromItem($item, true);
+      $seriesId = $dicomData['SeriesInstanceUID'];
+      if(!array_key_exists($seriesId, $seriesMap))
+        {
+        $seriesMap[$seriesId] = array();
+        }
+      $seriesMap[$seriesId][] = $item->getKey();
+      }
+
+    $count = 0;
+    foreach ($seriesMap as $seriesId => $itemIds)
+      {
+      $mainItem = $itemModel->mergeItems($itemIds, $seriesId, $userDao,
+                                         $progress);
+      $revisionDao = $itemModel->getLastRevision($mainItem);
+
+      $this->extract($revisionDao);
+      $this->thumbnail($mainItem);
+      $count += 1;
+      }
+
+    return $count;
     }
 
 } // end class

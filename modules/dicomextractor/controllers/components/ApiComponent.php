@@ -37,6 +37,15 @@ class Dicomextractor_ApiComponent extends AppComponent
     return $this->_callModuleApiMethod($args, 'extract', 'item');
   }
 
-}
+  /**
+   * Extract the dicom metadata from a folder and merge items
+   * @param item the id of the folder to be extracted and merged
+   * @return the count of the items merged
+   */
+  function folderExtract($args)
+    {
+    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+    return $this->_callModuleApiMethod($args, 'extract', 'folder');
+    }
 
-?>
+}
