@@ -167,14 +167,21 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     $preparedCommand = str_replace("'", '"',$command);
     $preparedCommand .= ' "'.$bitstream->getFullPath().'" "'.$tmpSlice.'"';
     $this->prependDataDict($preparedCommand);
-    exec($preparedCommand, $output);
+    exec($preparedCommand, $output, $return_var);
 
     // We have to spoof an item array for the thumbnail component. This
     // should certainly be fixed one day. It's a hack, but not my hack.
-    $spoofedItem = array();
-    $spoofedItem['item_id'] = $item->getKey();
-    $thumbnailComponent->createThumbnail($spoofedItem,$tmpSlice);
-    unlink($tmpSlice);
+    if($return_var == 0)
+      {
+      $spoofedItem = array();
+      $spoofedItem['item_id'] = $item->getKey();
+      $thumbnailComponent->createThumbnail($spoofedItem,$tmpSlice);
+      unlink($tmpSlice);
+      }
+    else
+      {
+      throw new Zend_Exception('This is not a valid DICOM Series.');
+      }
     }
 
   /**
@@ -187,8 +194,14 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     $preparedCommand = str_replace("'", '"',$command);
     $preparedCommand .= ' "'.$bitstream->getFullPath().'"';
     $this->prependDataDict($preparedCommand);
-    exec($preparedCommand, $output);
+    exec($preparedCommand, $output,$return_var);
     $xml = new XMLReader();
+    if(empty($output) || $return_var != 0)
+      {
+      $this->getLogger()->info(__METHOD__ . " Attempting to parse invalid ".
+        "dcm2xml output.");
+      return array();
+      }
     $xml->xml(implode($output)); // implode our output
     $tagArray = array();
     $tagField = array();
