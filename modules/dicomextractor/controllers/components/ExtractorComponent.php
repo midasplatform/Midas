@@ -180,7 +180,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
       }
     else
       {
-      throw new Zend_Exception('This is not a valid DICOM Series.');
+      $this->getLogger()->info(__METHOD__ . " Unable to thumbnail this series.");
       }
     }
 
