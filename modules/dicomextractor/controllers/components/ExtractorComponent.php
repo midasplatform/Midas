@@ -205,7 +205,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     $xml->xml(implode($output)); // implode our output
     $tagArray = array();
     $tagField = array();
-    while($xml->read())
+    while(@$xml->read())
       {
       switch($xml->nodeType)
         {
