@@ -49,7 +49,8 @@ class Dicomserver_ServerComponent extends AppComponent
       $ret['Peer AE List Not Empty'] = array(false, "Please input your peer AEs!");
       }
     $apiComponent = MidasLoader::loadComponent('Api', 'dicomserver');
-    $status_args['storescp_cmd']= 'storescp';
+    $status_args['storescp_cmd']= $storescpCommand;
+    $status_args['dcmqrscp_cmd']= $dcmqrscpCommand;
     $status_results = $apiComponent->status($status_args);
     if ($status_results['status'] == MIDAS_DICOM_STORESCP_IS_RUNNING + MIDAS_DICOM_DCMQRSCP_IS_RUNNING)
       {
