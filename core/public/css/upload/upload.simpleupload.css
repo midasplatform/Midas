@@ -6,19 +6,9 @@
   width:94%!important;
 }
 
-div.file_upload {
-  padding-right: 15px;
-}
-
-#swfuploadContent{
-
-}
-#jqueryFileUploadContent{
-
-}
-
-div.uploadValidationError{
-  display:none;
+div.uploadValidationError {
+  display: none;
+  margin: 5px 0;
 }
 
 div.uploadValidationError img{
@@ -26,18 +16,74 @@ div.uploadValidationError img{
   top: 3px;
 }
 
-div.tooBigUpload{
-  display:none;
+.hide {
+  display: none;
 }
 
-div.tooBigUpload img{
-  position: relative;
-  top: 3px;
+.progress-current {
+  margin-bottom: 13px;
 }
 
-div.uploadedFilesWrapper{
-  max-height: 250px;
-  overflow: auto;
+.drop-zone {
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  border: 1px solid #4cae4c;
+  border-radius: 5px;
+  display: inline-block;
+  margin-bottom: 8px;
+  background-color: #5cb85c;
+}
+
+.drop-zone:hover {
+  cursor: pointer;
+  border: 1px solid #484;
+  background-color: #4ca84c;
+  background-image: linear-gradient(to bottom, #4ca84c 0%, #5cb85c 100%);
+}
+
+.start-upload {
+  cursor: pointer;
+  padding: 5px 10px;
+  margin 0;
+  font-size: 13px;
+  color: white;
+  border: 1px solid #4c4cae;
+  border-radius: 3px;
+  display: inline-block;
+  margin-bottom: 8px;
+  background-color: #5c5cb8;
+}
+
+#startUploadLink:hover {
+  border: 1px solid #448;
+  background-color: #4c4ca8;
+  background-image: linear-gradient(to bottom, #4c4ca8 0%, #5c5cb8 100%);
+}
+
+.disabled {
+  color: #aaa;
+  background-color: #dedede !important;
+  cursor: default;
+  border: 1px solid #d0d0d0 !important;
+  background-image: none !important;
+}
+
+.upload-header {
+  font-weight: bold;
+  color: #444;
+  margin: 6px 0;
+}
+
+.upload-status-container {
+  background-color: #fafafa;
+  border-radius: 4px;
+  box-shadow: inset 0 0 3px 2px rgba(0,0,0,0.02);
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #f0f0f0;
+  margin-right: 10px;
 }
 
 /* -- Form Styles ------------------------------- */
@@ -197,21 +243,6 @@ div.uploadedFilesWrapper{
 	white-space: nowrap;
   display:inline;
   margin-left: 5px;
-}
-
-a.progressCancel {
-	font-size: 0;
-	display: block;
-	height: 14px;
-	width: 14px;
-	background-image: url(../../images/icons/cancelbutton.gif);
-	background-repeat: no-repeat;
-	background-position: -14px 0px;
-	float: right;
-}
-
-a.progressCancel:hover {
-	background-position: 0px 0px;
 }
 
 

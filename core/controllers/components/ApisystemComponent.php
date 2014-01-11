@@ -503,7 +503,7 @@ class ApisystemComponent extends AppComponent
 
   /**
    * Get the size of a partially completed upload
-   * @path /system/uploadeoffset
+   * @path /system/uploadoffset
    * @http GET
    * @param uploadtoken The upload token for the file
    * @return [offset] The size of the file currently on the server
