@@ -111,6 +111,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         }).success(function (resp) {
             if (file.size > 0) {
                 startByte = 0;
+                lastProgress = 0;
                 _streamFileContents(resp.data.token);
             }
             else {
