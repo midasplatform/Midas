@@ -33,7 +33,7 @@ PURPOSE.  See the above copyright notices for more information.
 <div class="tabs uploadTabs" id='uploadTabs'>
   <ul>
     <li><a href="#uploadTabs-1">Simple</a></li>
-    <li><a href="<?php echo $this->webroot?>/upload/javaupload"><?php echo $this->t('Files over 2 GB');?></a></li>
+    <li><a href="<?php echo $this->webroot?>/upload/javaupload"><?php echo $this->t('Java Uploader');?></a></li>
     <li><a href="<?php echo $this->webroot?>/upload/javaupload?mode=folder"><?php echo $this->t('Folders');?></a></li>
     <li><a href="#uploadTabs-3"><?php echo $this->t('Links');?></a></li>
     <?php
@@ -47,8 +47,7 @@ PURPOSE.  See the above copyright notices for more information.
     ?>
   </ul>
   <div id="uploadTabs-1">
-      <b><?php echo $this->t('Step 1: Select files to upload')?></b>
-      <br/>
+      <div class="upload-header"><?php echo $this->t('Step 1: Select files to upload')?></div>
       <div id="swfuploadContent" style="display: none;">
         <span id="spanButtonPlaceHolder"></span>
         <div>
@@ -56,73 +55,37 @@ PURPOSE.  See the above copyright notices for more information.
         </div>
       </div>
       <div id="jqueryFileUploadContent" style="display: none;">
-        <div class="file_upload">
-            <form action="<?php echo $this->webroot?>/upload/saveuploaded" method="POST" enctype="multipart/form-data">
-                <input class="fileUploaderInput" type="file" name="file[]" multiple>
-                <button type="submit">Upload</button>
-                <div class="file_upload_label"><?php echo $this->t('Browse or drop files')?></div>
-                <div class="file_upload_label_folder"><?php echo $this->t('Browse')?></div>
-            </form>
-
-            <div class="uploadedFilesWrapper">
-              <table class="files">
-                  <tr class="file_upload_template" style="display:none;">
-                      <td class="file_name"></td>
-                      <td class="file_size"></td>
-                      <td class="file_upload_progress"><div></div></td>
-                      <td class="file_upload_start" style='display:none;'><button>Start</button></td>
-                      <td class="file_upload_cancel"><button></button></td>
-                  </tr>
-                  <tr class="file_download_template" style="display:none;">
-                      <td class="file_name"><a></a></td>
-                      <td class="file_size"></td>
-                  </tr>
-                  <div class="file_upload_buttons" style='display:none;'>
-                    <button class="file_upload_start">Start All</button>
-                    <button class="file_upload_cancel">Cancel All</button>
-                    <button class="file_download_delete">Delete All</button>
-                  </div>
-              </table>
-            </div>
-            <div class="file_upload_overall_progress" style='display:none;'><div style="display:none;"></div></div>
+        <form><input id="upload-files" type="file" style="display: none;" multiple></form>
+        <div class="drop-zone">
+            <?php echo $this->t('Browse or drop files')?>
         </div>
-        <div class="uploadValidationError"><img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/><b></b><hr></div>
-        <div class="tooBigUpload">
-          <img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/> <b><?php echo $this->t('Please use the large file tool, the following files are too big:')?></b>
-          <ul>
-          </ul>
+
+        <div class="upload-status-container">
+          <div class="current-progress-message"></div>
+          <div class="progress-current hide"></div>
+          <div class="overall-progress-message">No files selected</div>
+          <div class="progress-overall hide"></div>
+          <div class="uploadValidationError">
+            <img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/><b></b>
+          </div>
         </div>
 
       </div>
-      <b><?php echo $this->t('Step 2: Select a target location')?></b>
+      <div class="upload-header"><?php echo $this->t('Step 2: Select a target location')?></div>
       <div>
-        <br/>
-        <b><?php echo $this->t('Destination:')?></b>
-        <span id="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
-        <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>
-        <div class="belowDestinationUpload" style="display: none;"></div>
-        <br/>
+        <div class="upload-status-container">
+          <b><?php echo $this->t('Destination:')?></b>
+          <span id="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
+          <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>
+          <div class="belowDestinationUpload" style="display: none;"></div>
+        </div>
         <input style="margin-left:0px;" class="browseMIDASLink globalButton" type="button" value="Choose location" />
-        <br/><br/>
-        <input type="checkbox" id="newRevisionCheckbox">Upload new revision if item name already exists</input>
-        <br/><br/>
-      </div>
-      <b><?php echo $this->t('Step 3: Select a license')?></b>
-      <div>
-        <?php
-        echo $this->element('license')?>
       </div>
       <br/>
-      <b><?php echo $this->t('Step 4: Start the upload')?></b>
-      <br/>
-      <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="midas.upload.simpleupload.swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
+      <div class="upload-header"><?php echo $this->t('Step 3: Start the upload')?></div>
 
-      <span id="btnStartUpload" >
-        <input style="margin-left:0px;" id='startUploadLink' disabled="disabled" class="globalButton" type="button" qtip="<?php echo $this->t("Don't forget to start the upload.")?>" value="<?php echo $this->t('Start Upload')?>" />
-      </span>
-      <div>
-        <?php echo $this->t('Number of uploaded files');?> <span class="globalUploadedCount">0</span>
-      </div>
+      <input class="start-upload disabled" id='startUploadLink' type="button" value="<?php echo $this->t('Start Upload')?>" />
+
   </div>
     <div id="uploadTabs-3">
       <form id="linkForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
