@@ -210,10 +210,12 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         var retVal = midas.doCallback('CALLBACK_CORE_VALIDATE_UPLOAD', {
             files: files
         });
+        var ok = true;
         $.each(retVal, function(module, resp) {
             if(resp.status === false) {
                 $('div.uploadValidationError b').html(resp.message);
                 $('div.uploadValidationError').show();
+                ok = false;
             }
         });
 
@@ -230,7 +232,12 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
             });
             $('.overall-progress-message').html(' Selected ' + files.length +
                 ' files (' + midas.formatBytes(totalSize) + ') -- Press start.');
-            $('#startUploadLink').removeClass('disabled');
+            if (ok) {
+                $('#startUploadLink').removeClass('disabled');
+            }
+            else {
+                $('#startUploadLink').addClass('disabled');
+            }
             $('.progress-overall,.progress-current').addClass('hide');
             $('.current-progress-message').empty();
             $('.upload-error-message').empty();
@@ -336,11 +343,11 @@ $('.browseMIDASLink').click(function () {
 });
 
 if($('#destinationId').val()) {
-    $('#startUploadLink').removeAttr('disabled');
+    $('#startUploadLink').removeClass('disabled');
 }
 
 midas.registerCallback('CALLBACK_CORE_UPLOAD_FOLDER_CHANGED', 'core', function () {
-    $('#startUploadLink').removeAttr('disabled');
+    $('#startUploadLink').removeClass('disabled');
 });
 
 midas.doCallback('CALLBACK_CORE_SIMPLEUPLOAD_LOADED');
