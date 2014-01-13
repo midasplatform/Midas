@@ -159,11 +159,10 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
      * Upload errors will call this function to enable resume mode.
      */
     var _enableResumeMode = function () {
-        $('.upload-error-message').html(
-            '<i class="icon-exclamation-sign"></i> ' +
-            'The upload was interrupted. Click the ' +
-            '<b>Resume Upload</b> button to continue.');
-        $('.resume-upload').removeClass('disabled');
+        $('div.uploadValidationError b').html('The connection to the server was ' +
+            'interrupted, press the Resume Upload button to resume.');
+        $('div.uploadValidationError').show();
+        $('#startUploadLink').val('Resume Upload').removeClass('disabled');
     };
 
     /**
@@ -207,17 +206,20 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
      * Called when the file selection changes.
      */
     var filesChanged = function () {
+        $('div.uploadValidationError').hide();
         var retVal = midas.doCallback('CALLBACK_CORE_VALIDATE_UPLOAD', {
             files: files
         });
+        var ok = true;
         $.each(retVal, function(module, resp) {
             if(resp.status === false) {
                 $('div.uploadValidationError b').html(resp.message);
                 $('div.uploadValidationError').show();
+                ok = false;
             }
         });
 
-        $('.resume-upload').addClass('disabled');
+        $('#startUploadLink').val('Start Upload');
 
         if (files.length === 0) {
             $('.upload-progress-message').text('No files selected');
@@ -230,10 +232,14 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
             });
             $('.overall-progress-message').html(' Selected ' + files.length +
                 ' files (' + midas.formatBytes(totalSize) + ') -- Press start.');
-            $('#startUploadLink').removeClass('disabled');
+            if (ok) {
+                $('#startUploadLink').removeClass('disabled');
+            }
+            else {
+                $('#startUploadLink').addClass('disabled');
+            }
             $('.progress-overall,.progress-current').addClass('hide');
             $('.current-progress-message').empty();
-            $('.upload-error-message').empty();
         }
     };
 
@@ -255,17 +261,23 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
     });
 
     $('#startUploadLink').click(function (e) {
-        if($(this).hasClass('disabled')) {
+        if ($(this).hasClass('disabled')) {
             return;
         }
+
         if($('#destinationId').val() == undefined || $('#destinationId').val().length == 0) {
             midas.createNotice("Please select where you want to upload your files.", 4000, 'warning');
             return false;
         }
+
         $(this).addClass('disabled');
         $('.drop-zone').hide();
+
+        if (resumeUploadId !== null) {
+            return _resumeUpload();
+        }
+
         $('.progress-overall,.progress-current').removeClass('hide');
-        $('.upload-error-message').empty();
 
         currentIndex = 0;
         overallProgress = 0;
@@ -274,29 +286,25 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         _uploadNextFile();
     });
 
-    $('.resume-upload').click(function (e) {
-        if($(this).hasClass('disabled')) {
-            return;
-        }
-        $(this).addClass('disabled');
-        $('.upload-error-message').empty();
+    var _resumeUpload = function () {
+        $('div.uploadValidationError').hide();
 
         // Get the offset from the server
         $.ajax({
             dataType: 'json',
             type: 'GET',
-            url: Routing.generate('upload_offset', {
-                uploadToken: resumeUploadId
-            }, true)
+            url: json.global.webroot + '/rest/system/uploadoffset?uploadtoken=' + resumeUploadId
         }).success(function (resp) {
-            startByte = resp.offset;
+            startByte = resp.data.offset;
             overallProgress += startByte;
             _streamFileContents(resumeUploadId);
         }).error(function (resp) {
-            midas.createNotice("An error occurred when getting the upload offset.", 4000, 'error');
+            $('div.uploadValidationError b').text('Could not connect to the server to resume upload.');
+            $('div.uploadValidationError').show();
+            $('#startUploadLink').removeClass('disabled');
             console.log(resp);
         });
-    });
+    };
 };
 
 $('.uploadTabs').tabs({
@@ -336,11 +344,11 @@ $('.browseMIDASLink').click(function () {
 });
 
 if($('#destinationId').val()) {
-    $('#startUploadLink').removeAttr('disabled');
+    $('#startUploadLink').removeClass('disabled');
 }
 
 midas.registerCallback('CALLBACK_CORE_UPLOAD_FOLDER_CHANGED', 'core', function () {
-    $('#startUploadLink').removeAttr('disabled');
+    $('#startUploadLink').removeClass('disabled');
 });
 
 midas.doCallback('CALLBACK_CORE_SIMPLEUPLOAD_LOADED');
