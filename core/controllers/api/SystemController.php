@@ -37,7 +37,7 @@ class Rest_SystemController extends ApiController
       'resource' => 'resourcesList',
       'login' => 'login',
       'metadataqualifiers' => 'metadataQualifiersList',
-      'uploadeoffset' => 'uploadGetoffset',
+      'uploadoffset' => 'uploadGetoffset',
       'metadatatypes' => 'metadataTypesList',
       'metadaelements' => 'metadataElementsList',
       'uploadtoken' => 'uploadGeneratetoken'

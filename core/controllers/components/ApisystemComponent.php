@@ -511,6 +511,7 @@ class ApisystemComponent extends AppComponent
   function uploadGetoffset($args)
     {
     $uploadComponent = MidasLoader::loadComponent('Httpupload');
+    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
     $apiSetup = $apihelperComponent->getApiSetup();
     $uploadComponent->setTestingMode($apiSetup['testing']);
     $uploadComponent->setTmpDirectory($apiSetup['tmpDirectory']);
