@@ -47,6 +47,21 @@ $(window).scroll(function () {
     }
 });
 
+/**
+ * Format a number of bytes to a human readable string.
+ */
+midas.formatBytes = function (sizeBytes) {
+
+    // If it's > 1GB, report to two decimal places, otherwise just one.
+    var precision = sizeBytes > 1073741824 ? 2 : 1;
+    for (var i = 0; sizeBytes > 1024; i += 1) {
+        sizeBytes /= 1024;
+    }
+
+    return sizeBytes.toFixed(precision) + ' ' +
+        ['B', 'KB', 'MB', 'GB', 'TB'][i];
+};
+
 // trim name by the number of character
 function sliceFileName (name, nchar) {
     if(name.length>nchar) {
