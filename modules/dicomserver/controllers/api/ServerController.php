@@ -32,7 +32,8 @@ class Apidicomserver_ServerController extends ApiController
     {
     $apiFunctions = array(
       'default' => 'status',
-      'status' => 'status'
+      'status' => 'status',
+      'registrationstatus' => 'registrationstatus'  
       );
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions, 'dicomserver');
     }
@@ -66,7 +67,8 @@ class Apidicomserver_ServerController extends ApiController
     $apiFunctions = array(
       'default' => 'stop',
       'start' => 'start',
-      'stop' => 'stop'
+      'stop' => 'stop',
+      'register' => 'register'
       );
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'post', $apiFunctions, 'dicomserver');
     }
