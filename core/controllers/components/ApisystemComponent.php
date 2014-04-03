@@ -211,9 +211,6 @@ class ApisystemComponent extends AppComponent
             is supplied.
    * @param filename The filename of the file you will upload, will be used as the
             bitstream's name and the item's name (unless <b>itemname</b> is supplied).
-   * @param itemprivacy (Optional)
-            When passing the <b>folderid</b> param, the privacy status of the newly
-            created item, Default 'Public', possible values [Public|Private].
    * @param itemdescription (Optional)
             When passing the <b>folderid</b> param, the description of the item,
             if not supplied the item's description will be blank.
@@ -281,19 +278,9 @@ class ApisystemComponent extends AppComponent
         {
         throw new Exception('Create new item failed', MIDAS_INTERNAL_ERROR);
         }
+      $itemModel->copyParentPolicies($item, $folder);
       $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
       $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
-
-      if(isset($args['itemprivacy']))
-        {
-        $privacyCode = $apihelperComponent->getValidPrivacyCode($args['itemprivacy']);
-        }
-      else
-        {
-        // Public by default
-        $privacyCode = MIDAS_PRIVACY_PUBLIC;
-        }
-      $apihelperComponent->setItemPrivacy($item, $privacyCode);
       }
 
     if(array_key_exists('checksum', $args))
