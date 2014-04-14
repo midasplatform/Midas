@@ -14,5 +14,6 @@ if (typeof console != "object") {
 
 $(function () {
     // Parse json content
-    json = jQuery.parseJSON($('div.jsonContent').html());
+    // jQuery 1.8 has weird bugs when using .html() here, use the old-style innerHTML here
+   json = jQuery.parseJSON($('div.jsonContent')[0].innerHTML);
 });
