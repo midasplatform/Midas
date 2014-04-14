@@ -217,7 +217,7 @@ class Solr_Notification extends ApiEnabled_Notification
       }
     catch(Exception $e)
       {
-      $this->getLogger()->warn($e->getMessage.' - Could not index folder ('.$folder->getKey().')');
+      $this->getLogger()->warn($e->getMessage().' - Could not index folder ('.$folder->getKey().')');
       return;
       }
 
