@@ -26,6 +26,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
         'trend_id' => array('type' => MIDAS_DATA),
         'user_id' => array('type' => MIDAS_DATA),
         'official' => array('type' => MIDAS_DATA),
+        'build_results_url' => array('type' => MIDAS_DATA),
         'submit_time' => array('type' => MIDAS_DATA),
         'value' => array('type' => MIDAS_DATA),
         'producer_revision' => array('type' => MIDAS_DATA),
@@ -51,7 +52,8 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
    * Add a new scalar point to the trend.  If overwrite is true, and a scalar
    * already exists on the trend with the same submit time and user, this will replace that scalar value.
    */
-  public function addToTrend($trend, $submitTime, $producerRevision, $value, $user, $overwrite = true, $official = true)
+  public function addToTrend($trend, $submitTime, $producerRevision, $value,
+                             $user, $overwrite = true, $official = true, $buildResultsUrl = '')
     {
     if($overwrite)
       {
@@ -61,7 +63,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
         $this->delete($dao);
         }
       }
-    
+
     $scalar = MidasLoader::newDao('ScalarDao', $this->moduleName);
     $scalar->setTrendId($trend->getKey());
     $scalar->setSubmitTime($submitTime);
@@ -69,6 +71,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     $scalar->setValue($value);
     $scalar->setUserId($user instanceof UserDao ? $user->getKey() : -1);
     $scalar->setOfficial($official ? 1 : 0);
+    $scalar->setBuildResultsUrl($buildResultsUrl);
 
     $this->save($scalar);
     return $scalar;
