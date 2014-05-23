@@ -84,7 +84,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         throw new Zend_Exception('It appears PDO is not setup to support MySQL. '.
                                  'Please check your PDO configuration.');
         }
-      $pdoParams = array(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true);
+      if(isset($configDatabase->database->params->driver_options))
+        {
+        $pdoParams = $configDatabase->database->params->driver_options->toArray();
+        }
+      else
+        {
+        $pdoParams = array();
+        }
+      $pdoParams[PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = true;
       $params = array(
         'host' => $configDatabase->database->params->host,
         'username' => $configDatabase->database->params->username,
