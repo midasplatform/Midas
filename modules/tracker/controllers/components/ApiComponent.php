@@ -240,7 +240,7 @@ class Tracker_ApiComponent extends AppComponent
    * @param producerDisplayName The display name of the producer
    * @param producerRevision The repository revision of the producer that produced this value
    * @param submitTime (Optional) The submit timestamp. Must be parseable with PHP strtotime(). If not set, uses current time.
-   *
+   * @param buildResultsUrl (Optional) The URL where build results can be viewed.
    * @param configItemId (Optional) If this value pertains to a specific configuration item, pass its id here
    * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
    * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
@@ -283,6 +283,7 @@ class Tracker_ApiComponent extends AppComponent
 
     $producerModel = MidasLoader::loadModel('Producer', 'tracker');
     $producer = $producerModel->createIfNeeded($community->getKey(), $producerDisplayName);
+    $buildResultsUrl = isset($args['buildResultsUrl']) ? $args['buildResultsUrl'] : '';
 
     list($configItemId, $testDatasetId, $truthDatasetId) = array(null, null, null);
     if(isset($args['configItemId']))
@@ -390,7 +391,8 @@ class Tracker_ApiComponent extends AppComponent
             continue;
             }
           $trend = $trendModel->createIfNeeded($producer->getKey(), $metricName, $configItemId, $testDatasetId, $truthDatasetId);
-          $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision, $value, $user, true, $official);
+          $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision,
+              $value, $user, true, $official, $buildResultsUrl);
           $scalars[] = $scalar;
 
           if(!isset($args['silent']))
