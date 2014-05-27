@@ -30,7 +30,13 @@ $(document).ready(function() {
  */
 $(window).scroll(function () {
     var sidebar = $('div.viewSideBar');
+    if(sidebar.length === 0) {
+      return;
+    }
     var viewMain = $('div.viewMain');
+    if (viewMain.length === 0) {
+      return;
+    }
     var topOffset = viewMain.length > 0 ? viewMain.offset().top : 0;
     var fixed = $(window).scrollTop() - topOffset > 0;
 
