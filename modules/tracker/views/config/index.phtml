@@ -14,14 +14,6 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
 ?>
 
 <div class="viewMain">
-  <div class="explanation">
-    <p>Optionally set the Repository Browser URL to point to your repository browser. If set, users will be able
-       to click revision links for uploaded scalar values and go to the corresponding repository browser page for
-       that revision. In the field below, use the special placeholder string <b>%revision</b> where the revision
-       should go in the URL.</p>
-    <p><b>Example:</b> https://github.com/myuser/myproject/commit/%revision</p>
-    <p>Leave this field blank if you do not want the revision numbers to link to anything.</p>
-  </div>
   <form id="configForm" class="genericForm" method="POST" action="<?php echo $this->webroot;?>/tracker/config/submit">
     <div class="explanation">
       <p>Set this field to the number of hours that unofficial submissions should be kept before being deleted automatically

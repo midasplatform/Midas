@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `tracker_trend` (
 CREATE TABLE IF NOT EXISTS `tracker_scalar` (
   `scalar_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `trend_id` bigint(20) NOT NULL,
-  `value` double precision,
+  `value` double,
   `producer_revision` varchar(255),
   `submit_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`scalar_id`),
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `tracker_scalar2item` (
 CREATE TABLE IF NOT EXISTS `tracker_threshold_notification` (
   `threshold_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `trend_id` bigint(20) NOT NULL,
-  `value` double precision,
+  `value` double,
   `comparison` varchar(2),
   `action` varchar(80) NOT NULL,
   `recipient_id` bigint(20) NOT NULL,
