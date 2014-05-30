@@ -3,6 +3,7 @@ midas.tracker = midas.tracker || {};
 
 midas.tracker.OFFICIAL_COLOR_KEY = null;
 midas.tracker.UNOFFICIAL_COLOR_KEY = 'red';
+midas.tracker.unofficialVisible = true;
 
 /**
  * In modern browsers that support window.history.replaceState,
@@ -40,6 +41,9 @@ midas.tracker.extractCurveData = function (curves) {
         var points = [];
         var colors = [];
         $.each(scalars, function(idx, scalar) {
+            if (!midas.tracker.unofficialVisible && scalar.official == 0) {
+                return;
+            }
             var value = parseFloat(scalar.value);
             points.push([scalar.submit_time, value]);
             if(typeof minVal == 'undefined' || value < minVal) {
@@ -318,6 +322,20 @@ $(window).load(function () {
         container.find('input.deleteNo').unbind('click').click(function () {
             $('div.MainDialog').dialog('close');
         });
+    });
+
+    $('a.toggleUnofficialVisibility').click(function () {
+        if (midas.tracker.unofficialVisible) {
+            $(this).find('.linkText').text('Show unofficial submissions');
+            $(this).find('.toggleUnofficialIcon').removeClass('toHide').addClass('toShow');
+        }
+        else {
+            $(this).find('.linkText').text('Hide unofficial submissions');
+            $(this).find('.toggleUnofficialIcon').removeClass('toShow').addClass('toHide');
+        }
+        midas.tracker.unofficialVisible = !midas.tracker.unofficialVisible;
+        var curveData = midas.tracker.extractCurveData(inputCurves);
+        midas.tracker.renderChartArea(curveData, true);
     });
 });
 

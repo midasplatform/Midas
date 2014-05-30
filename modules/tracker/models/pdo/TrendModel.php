@@ -73,14 +73,6 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
       {
       $sql->where('submit_time <= ?', $endDate);
       }
-    if($userId)
-      {
-      $sql->where('official = 1 OR user_id = ?', $userId);
-      }
-    else
-      {
-      $sql->where('official = 1');
-      }
     $scalars = array();
     $rowset = $this->database->fetchAll($sql);
     foreach($rowset as $row)
