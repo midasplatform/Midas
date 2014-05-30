@@ -73,3 +73,21 @@ span.redText {
   font-weight: bold;
   color: red;
 }
+
+div.toggleUnofficialIcon {
+  position: relative;
+  top: 2px;
+  display: inline-block;
+  box-sizing: border-box;
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+}
+
+div.toggleUnofficialIcon.toHide {
+  border: 1px dashed #f22;
+}
+
+div.toggleUnofficialIcon.toShow {
+  background-color: #f22;
+}

@@ -91,7 +91,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
   <div class="sideElementFirst viewAction">
     <h1>Actions</h1>
     <ul>
-    <?php 
+    <?php
     if($this->isAdmin && count($this->trends) == 1)
       {
     ?>
@@ -119,6 +119,12 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
       </li>
       <li>
         <a class="axesControl"><img alt="" src="<?php echo $this->moduleWebroot?>/public/images/axes.png" /> Axes</a>
+      </li>
+      <li>
+        <a class="toggleUnofficialVisibility">
+          <div class="toggleUnofficialIcon toHide"></div>
+          <span class="linkText">Hide unofficial submissions</a>
+        </a>
       </li>
     </ul>
   </div>
