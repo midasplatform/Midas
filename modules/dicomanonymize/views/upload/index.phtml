@@ -41,7 +41,7 @@ Click the "Choose Folder" button to select a local directory that contains a DIC
     and then uploaded.  The temporary anonymized files will be deleted afterward.</span>
 </div>
 
-<object name="Midas DICOM Uploader"
+<applet name="Midas DICOM Uploader"
         class="uploadApplet"
         archive="<?php echo $this->moduleWebroot?>/public/java/dicomupload/dist/DicomUploader.jar?ts=<?php echo time()?>,
                  <?php echo $this->moduleWebroot?>/public/java/dicomupload/lib/CTP.jar,
@@ -65,4 +65,4 @@ Click the "Choose Folder" button to select a local directory that contains a DIC
   <param name = "uploadFileBaseURL" value="processjavaupload/?sid="/>
   <param name = "codebase_lookup" value="false"> <!-- must set this parameter so the applet won't look for files on the server -->
   You must install and enable Java on your system in order to use the large file uploader.
-</object>
+</applet>
