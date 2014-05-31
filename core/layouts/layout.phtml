@@ -242,7 +242,8 @@ echo $this->doctype()
        </div>
         <div class="HeaderAction">
           <ul>
-            <li class="uploadFile" title="Upload" rel="<?php echo $this->webroot?>/upload/simpleupload">
+
+            <li class="uploadFile" title="Upload" rel="<?php echo $this->webroot; ?>/upload/simpleupload<?php if( isset($this->mainFolder) ) echo '/?parent='.$this->mainFolder->folder_id; ?>">
               <a href="#"><img id="uploadAFile" src="<?= $this->coreWebroot ?>/public/images/icons/addfile.png" alt="Upload a file"/>
               <img id="uploadAFileLoading" style="margin-top:5px;display:none;" src="<?= $this->coreWebroot ?>/public/images/icons/loading.gif" alt="Upload a file"/>
                 Upload
