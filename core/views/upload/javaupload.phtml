@@ -21,7 +21,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
 <br/>
 <b><?php echo $this->t('Step 3: Select files to upload')?></b>
 <br/><br/>
-<object name="MidasUploader"
+<applet name="MidasUploader"
         class="uploadApplet"
         archive="<?php echo $this->coreWebroot?>/public/java/uploader/dist/MidasUploader.jar?rev=3&<?php echo time()?>"
         width="480" height="175" mayscript="true"
@@ -45,7 +45,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/u
     }
   ?>
   You must install and enable Java on your system in order to use the large file uploader.
-</object>
+</applet>
 <?php
 foreach($this->extraHtml as $module => $extra)
   {
