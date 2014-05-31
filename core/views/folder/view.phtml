@@ -44,7 +44,7 @@ foreach($cssArray as $module => $list)
       <li><a href="#tabs-1"><?php echo $this->t('Data')?></a></li>
       <li><a href="#tabs-2"><?php echo $this->t('Info');?></a></li>
     </ul>
-  <div class="genericBigButton genericWrapperTopRight">
+  <div class="genericBigButton genericWrapperTopRight downloadObject">
     <?php
     echo "<a href='javascript:;' class='downloadFolderLink' element='{$this->mainFolder->getKey()}'>";
     echo $this->t('Download');
@@ -132,7 +132,7 @@ foreach($cssArray as $module => $list)
   <div class="sideElementActions sideElementFirst viewAction">
     <ul>
       <h1>Folder Actions</h1>
-      <li>
+      <li class="downloadObject">
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/download.png"/>
         <a href="javascript:;" class="downloadFolderLink" element="'.$this->mainFolder->getKey().'">Download</a>
       </li>

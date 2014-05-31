@@ -39,7 +39,7 @@ foreach($cssArray as $module => $list)
 
   <div class ="genericWrapperTopRight">
       <div style="float:right;">
-        <button class="topDownloadButton">
+        <button class="topDownloadButton downloadObject">
         <?php
         if($this->itemIsLink)
           {
@@ -136,7 +136,7 @@ foreach($cssArray as $module => $list)
         echo '  <span>Uploaded '.$revision->getDate().' by '.$this->linkuser($revision->getUser()).'</span>';
 
         echo '<div style="float: right;">';
-        echo '  <div class="genericBigButton">';
+        echo '  <div class="genericBigButton downloadObject">';
         echo '    <a href="'.$this->webroot.'/download/?items='.$this->itemDao->getKey().','.$revision->getRevision().'">';
         echo '    <img alt="" src="'.$this->coreWebroot.'/public/images/icons/download.png" />';
         echo '    Download </a>';

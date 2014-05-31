@@ -410,7 +410,7 @@ midas.createAction = function (node) {
     }
     if(type=='folder') {
         html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/folder/'+element+'">'+json.browse.view+'</a></li>';
-        html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a element="'+element+'" class="downloadFolderLink">'+json.browse.download+'</a></li>';
+        html+='<li class="downloadObject"><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a element="'+element+'" class="downloadFolderLink">'+json.browse.download+'</a></li>';
         html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/link.png"/> <a type="folder" element="'+element+'" href="javascript:;" class="getResourceLinks">Share</a></li>';
         if(policy>=1) {
             html+='<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/folder_add.png"/> <a onclick="midas.createNewFolder('+element+');">'+json.browse.createFolder+'</a></li>';
@@ -432,7 +432,7 @@ midas.createAction = function (node) {
             var fromFolder = json.folder.folder_id;
         }
         html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/view.png"/> <a href="'+json.global.webroot+'/item/'+element+'">'+json.browse.view+'</a></li>';
-        html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a element="'+element+'" class="downloadItemLink">'+json.browse.download+'</a></li>';
+        html += '<li class="downloadObject"><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/download.png"/> <a element="'+element+'" class="downloadItemLink">'+json.browse.download+'</a></li>';
         html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/link.png"/> <a type="item" element="'+element+'" href="javascript:;" class="getResourceLinks">Share</a></li>';
         if(json.global.logged) {
             html += '<li><img alt="" src="'+json.global.coreWebroot+'/public/images/icons/copy.png"/> <a onclick="midas.duplicateItem(\''+element+'\');">Copy</a></li>';
