@@ -25,17 +25,20 @@ PURPOSE.  See the above copyright notices for more information.
   <input style="margin-left:0px;" class="browseMIDASLink globalButton" type="button" value="Choose location" />
   <br/><br/>
 </div>
+<div class="licenseSelectMessage">
   <b><?php echo $this->t('Step 2: Select a license')?></b>
-<div>
+  <div>
   <?php
   echo $this->element('license')?>
+  </div>
 </div>
 <br/>
 <b><?php echo $this->t('Step 3: Select files to upload')?></b>
 
 <div class="chooseFolderMessage">
-Click the "Choose Folder" button to select a local directory that contains a DICOM series. By default, all files in the
-directory will be anonymized and then uploaded.  The temporary anonymized files will be deleted afterward.
+Click the "Choose Folder" button to select a local directory that contains a DICOM series.
+<span class="additionalMessage">By default, all files in the directory will be anonymized
+    and then uploaded.  The temporary anonymized files will be deleted afterward.</span>
 </div>
 
 <object name="Midas DICOM Uploader"
