@@ -75,6 +75,7 @@ class Rest_SystemController extends ApiController
       'default' => 'adminDatabaseCleanup',
       'databasecleanup' => 'adminDatabaseCleanup',
       'defaultapikey' => 'userApikeyDefault',
+      'createlink' => 'linkCreate',
       'upload' => 'uploadPerform'
       );
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'post', $apiFunctions);
