@@ -211,6 +211,13 @@ foreach($cssArray as $module => $list)
                   $bitstreams = $revision->getBitstreams();
                   foreach($bitstreams as $bitstream)
                     {
+                    $linkDestination = $this->webroot.'/download/bitstream/'.
+                        $bitstream->getKey().'/'.urlencode($bitstream->getName());
+                    if(preg_match('/^https?:\/\//', $bitstream->getPath()))
+                      {
+                          $linkDestination = $bitstream->getPath();
+                      }
+
                     echo '<tr class="bitstreamRow">';
                     echo '<td>';
                     echo '  <div style="display: none;">';
@@ -220,7 +227,7 @@ foreach($cssArray as $module => $list)
                     echo '    <span name="sizeBytes">'.$bitstream->getSizebytes().'</span>';
                     echo '    <span name="mimeType">'.$bitstream->getMimetype().'</span>';
                     echo '  </div>';
-                    echo '<a href="'.$this->webroot.'/download/bitstream/'.$bitstream->getKey().'/'.urlencode($bitstream->getName()).'">';
+                    echo '<a href="'.$linkDestination.'">';
                     echo $this->slicename($bitstream->getName(), 50);
                     echo '</a>';
                     if($this->isModerator)

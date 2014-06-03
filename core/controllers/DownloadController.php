@@ -162,7 +162,7 @@ class DownloadController extends AppController
         }
       elseif(count($bitstreams) == 1)
         {
-        if(strpos($bitstreams[0]->getPath(), 'http://') !== false)
+        if(preg_match('/^https?:\/\//', $bitstreams[0]->getPath()))
           {
           $this->_redirect($bitstreams[0]->getPath());
           return;
