@@ -212,6 +212,10 @@ class ApisystemComponent extends AppComponent
    * @param itemname (Optional)
             The name of the newly created item, if not supplied, the item will
             have the same name as <b>url</b>.
+   * @param length (Optional)
+            The length in bytes of the file to which the link points.
+   * @param checksum (Optional)
+            The md5 checksum of the file to which the link points.
    * @return The item information of the item created.
    */
   function linkCreate($args)
@@ -244,8 +248,14 @@ class ApisystemComponent extends AppComponent
       throw new Exception('Invalid URL', MIDAS_INVALID_PARAMETER);
       }
     $itemname = isset($args['itemname']) ? $args['itemname'] : $args['url'];
+    if(isset($args['length']) && !filter_var($args['length'], FILTER_VALIDATE_INT, array('options' => array('min_range' => 0))))
+      {
+      throw new Exception('Invalid length', MIDAS_INVALID_PARAMETER);
+      }
+    $length = isset($args['length']) ? $args['length'] : 0;
+    $checksum = isset($args['checksum']) ? $args['checksum'] : ' ';
     $uploadComponent = MidasLoader::loadComponent('Upload');
-    $item = $uploadComponent->createLinkItem($userDao, $itemname, $args['url'], $folder);
+    $item = $uploadComponent->createLinkItem($userDao, $itemname, $args['url'], $folder, $length, $checksum);
     if(!$item)
       {
       throw new Exception('Link creation failed', MIDAS_INTERNAL_ERROR);
