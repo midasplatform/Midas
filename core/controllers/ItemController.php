@@ -219,7 +219,7 @@ class ItemController extends AppController
       if(count($bitstreams) == 1)
         {
         $bitstream = $bitstreams[0];
-        if(preg_match('/^(http|https):\/\/.*/', $bitstream->getPath()))
+        if(preg_match('/^https?:\/\//', $bitstream->getPath()))
           {
           $this->view->itemIsLink = true;
           }

@@ -213,7 +213,7 @@ foreach($cssArray as $module => $list)
                     {
                     $linkDestination = $this->webroot.'/download/bitstream/'.
                         $bitstream->getKey().'/'.urlencode($bitstream->getName());
-                    if(preg_match('/^(http|https):\/\/.*/', $bitstream->getPath()))
+                    if(preg_match('/^https?:\/\//', $bitstream->getPath()))
                       {
                           $linkDestination = $bitstream->getPath();
                       }
