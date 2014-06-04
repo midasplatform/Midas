@@ -116,7 +116,7 @@ class UploadComponent extends AppComponent
     } // end uploadBitstream()
 
   /** save upload item in the DB */
-  public function createLinkItem($userDao, $name, $url, $parent = null)
+  public function createLinkItem($userDao, $name, $url, $parent = null, $sizebytes = 0, $checksum = ' ')
     {
     $itemModel = MidasLoader::loadModel('Item');
     $feedModel = MidasLoader::loadModel('Feed');
@@ -147,6 +147,7 @@ class UploadComponent extends AppComponent
     $item = new ItemDao;
     $item->setName($name);
     $item->setDescription('');
+    $item->setSizebytes($sizebytes);
     $item->setType(0);
     $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE); // Must set this flag private initially
     $itemModel->save($item, false);
@@ -173,8 +174,8 @@ class UploadComponent extends AppComponent
     $bitstreamDao->setName($url);
     $bitstreamDao->setPath($url);
     $bitstreamDao->setMimetype('url');
-    $bitstreamDao->setSizebytes(0);
-    $bitstreamDao->setChecksum(' ');
+    $bitstreamDao->setSizebytes($sizebytes);
+    $bitstreamDao->setChecksum($checksum);
 
     $assetstoreDao = $assetstoreModel->getDefault();
     $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());

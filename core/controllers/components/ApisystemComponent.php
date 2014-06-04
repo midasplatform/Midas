@@ -197,6 +197,73 @@ class ApisystemComponent extends AppComponent
     }
 
   /**
+   * Create a link bitstream. POST is required.
+   * @path /system/createlink
+   * @http POST
+   * @param useSession (Optional) Authenticate using the current Midas session
+   * @param token (Optional) Authentication token
+   * @param folderid
+            The id of the folder in which to create a new item that will
+            contain the link. The new item will have the same name as
+            <b>url</b> unless <b>itemname</b> is supplied.
+   * @param url The URL of the link you will create, will be used as the name
+            of the bitstream and of the item (unless <b>itemname</b> is
+            supplied).
+   * @param itemname (Optional)
+            The name of the newly created item, if not supplied, the item will
+            have the same name as <b>url</b>.
+   * @param length (Optional)
+            The length in bytes of the file to which the link points.
+   * @param checksum (Optional)
+            The md5 checksum of the file to which the link points.
+   * @return The item information of the item created.
+   */
+  function linkCreate($args)
+    {
+    $request = Zend_Controller_Front::getInstance()->getRequest();
+    if(!$request->isPost())
+      {
+      throw new Exception('POST method required', MIDAS_HTTP_ERROR);
+      }
+    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+    $apihelperComponent->validateParams($args, array('folderid', 'url'));
+    $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
+    $userDao = $apihelperComponent->getUser($args);
+    if(!$userDao)
+      {
+      throw new Exception('Anonymous users may not create a link', MIDAS_INVALID_POLICY);
+      }
+    $folderModel = MidasLoader::loadModel('Folder');
+    $folder = $folderModel->load($args['folderid']);
+    if($folder === false)
+      {
+      throw new Exception('Folder corresponding to folderid does not exist', MIDAS_INVALID_PARAMETER);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
+      {
+      throw new Exception('Invalid policy or folderid', MIDAS_INVALID_POLICY);
+      }
+    if(!filter_var($args['url'], FILTER_VALIDATE_URL))
+      {
+      throw new Exception('Invalid URL', MIDAS_INVALID_PARAMETER);
+      }
+    $itemname = isset($args['itemname']) ? $args['itemname'] : $args['url'];
+    if(isset($args['length']) && !filter_var($args['length'], FILTER_VALIDATE_INT, array('options' => array('min_range' => 0))))
+      {
+      throw new Exception('Invalid length', MIDAS_INVALID_PARAMETER);
+      }
+    $length = isset($args['length']) ? $args['length'] : 0;
+    $checksum = isset($args['checksum']) ? $args['checksum'] : ' ';
+    $uploadComponent = MidasLoader::loadComponent('Upload');
+    $item = $uploadComponent->createLinkItem($userDao, $itemname, $args['url'], $folder, $length, $checksum);
+    if(!$item)
+      {
+      throw new Exception('Link creation failed', MIDAS_INTERNAL_ERROR);
+      }
+    return $item->toArray();
+    }
+
+  /**
    * Generate a unique upload token.  Either <b>itemid</b> or <b>folderid</b> is required,
      but both are not allowed.
    * @path /system/uploadtoken
