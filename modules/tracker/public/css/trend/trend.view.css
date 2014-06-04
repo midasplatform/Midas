@@ -12,11 +12,20 @@ div.dateControlContainer {
 input.dateSelect {
   background: white url(../../../../statistics/public/images/calendar.png) no-repeat scroll 2px 1px;
   border: 1px solid grey;
+  box-sizing: border-box;
+  height: 20px;
   padding-left: 20px;
   width: 120px;
 }
 
-#filterButton {
+#branchfilter {
+  box-sizing: border-box;
+  border: 1px solid grey;
+  height: 20px;
+  width: 120px;
+}
+
+#filterButton, #branchFilterButton {
   margin-left: 2px !important;
 }
 
@@ -36,6 +45,8 @@ span.itemLinkNone {
 
 span.noPoints {
   color: #909090;
+  display: inline-block;
+  margin-top: 10px;
 }
 
 .yMin,.yMax,.y2Min,.y2Max {
