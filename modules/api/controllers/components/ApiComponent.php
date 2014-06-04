@@ -284,6 +284,30 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Create a link bitstream.
+   * @param token Authentication token.
+   * @param folderid
+            The id of the folder in which to create a new item that will
+            contain the link. The new item will have the same name as
+            <b>url</b> unless <b>itemname</b> is supplied.
+   * @param url The URL of the link you will create, will be used as the name
+            of the bitstream and of the item (unless <b>itemname</b> is
+            supplied).
+   * @param itemname (Optional)
+            The name of the newly created item, if not supplied, the item will
+            have the same name as <b>url</b>.
+   * @param length (Optional)
+            The length in bytes of the file to which the link points.
+   * @param checksum (Optional)
+            The md5 checksum of the file to which the link points.
+   * @return The item information of the item created.
+   */
+  function linkCreate($args)
+    {
+    return $this->_callCoreApiMethod($args, 'linkCreate', 'system');
+    }
+
+  /**
    * Generate a unique upload token.  Either <b>itemid</b> or <b>folderid</b> is required,
      but both are not allowed.
    * @param token Authentication token.
