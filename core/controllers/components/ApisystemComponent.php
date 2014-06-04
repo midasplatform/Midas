@@ -198,7 +198,7 @@ class ApisystemComponent extends AppComponent
 
   /**
    * Create a link bitstream. POST is required.
-   * @path /system/createlink
+   * @path /system/link
    * @http POST
    * @param useSession (Optional) Authenticate using the current Midas session
    * @param token (Optional) Authentication token
