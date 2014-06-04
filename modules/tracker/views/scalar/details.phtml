@@ -40,6 +40,14 @@ PURPOSE.  See the above copyright notices for more information.
       <td><span id="thisProducerRev"><?php echo $this->revisionHtml; ?></span></td>
     </tr>
     <?php
+    if($this->scalar->getBranch())
+      { ?>
+      <tr>
+        <th>Branch:</th>
+        <td><?php echo $this->scalar->getBranch();?></td>
+      </tr>
+    <?php
+      }
     if($this->scalar->getBuildResultsUrl())
       { ?>
       <tr>
