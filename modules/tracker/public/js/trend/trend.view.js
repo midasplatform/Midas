@@ -45,7 +45,10 @@ midas.tracker.extractCurveData = function (curves) {
                 return;
             }
             var value = parseFloat(scalar.value);
-            points.push([scalar.submit_time, value]);
+            if (!midas.tracker.branchFilter || midas.tracker.branchFilter === scalar.branch) {
+                points.push([scalar.submit_time, value]);
+            }
+
             if(typeof minVal == 'undefined' || value < minVal) {
                 minVal = value;
             }
@@ -280,6 +283,11 @@ $(window).load(function () {
         });
     });
 
+    $('#branchFilterButton').click(function () {
+        midas.tracker.branchFilter = $('#branchfilter').val();
+        midas.tracker.renderChartArea(midas.tracker.extractCurveData(json.tracker.scalars), false);
+    });
+
     midas.tracker.renderChartArea(curveData, true);
 
     $('a.thresholdAction').click(function () {
@@ -335,7 +343,7 @@ $(window).load(function () {
         }
         midas.tracker.unofficialVisible = !midas.tracker.unofficialVisible;
         var curveData = midas.tracker.extractCurveData(inputCurves);
-        midas.tracker.renderChartArea(curveData, true);
+        midas.tracker.renderChartArea(curveData, false);
     });
 });
 
