@@ -86,6 +86,7 @@ class Tracker_ApiComponent extends AppComponent
    * @param submitTime The submit timestamp. Must be parseable with PHP strtotime().
    * @param value The value of the scalar
    * @param buildResultsUrl (Optional) The URL where build results can be viewed.
+   * @param branch (Optional) The branch name within the source repository
    * @param configItemId (Optional) If this value pertains to a specific configuration item, pass its id here
    * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
    * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
@@ -182,6 +183,7 @@ class Tracker_ApiComponent extends AppComponent
       }
 
     $buildResultsUrl = isset($args['buildResultsUrl']) ? $args['buildResultsUrl'] : '';
+    $branch = isset($args['branch']) ? $args['branch'] : '';
 
     $trendModel = MidasLoader::loadModel('Trend', 'tracker');
     $trend = $trendModel->createIfNeeded($producer->getKey(), $metricName, $configItemId, $testDatasetId, $truthDatasetId);
@@ -199,7 +201,7 @@ class Tracker_ApiComponent extends AppComponent
 
     $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
     $scalar = $scalarModel->addToTrend(
-      $trend, $submitTime, $producerRevision, $value, $user, true, $official, $buildResultsUrl);
+      $trend, $submitTime, $producerRevision, $value, $user, true, $official, $buildResultsUrl, $branch);
 
     if(!isset($args['silent']))
       {
@@ -241,6 +243,7 @@ class Tracker_ApiComponent extends AppComponent
    * @param producerRevision The repository revision of the producer that produced this value
    * @param submitTime (Optional) The submit timestamp. Must be parseable with PHP strtotime(). If not set, uses current time.
    * @param buildResultsUrl (Optional) The URL where build results can be viewed.
+   * @param branch (Optional) The branch name within the source repository
    * @param configItemId (Optional) If this value pertains to a specific configuration item, pass its id here
    * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
    * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
@@ -284,6 +287,7 @@ class Tracker_ApiComponent extends AppComponent
     $producerModel = MidasLoader::loadModel('Producer', 'tracker');
     $producer = $producerModel->createIfNeeded($community->getKey(), $producerDisplayName);
     $buildResultsUrl = isset($args['buildResultsUrl']) ? $args['buildResultsUrl'] : '';
+    $branch = isset($args['branch']) ? $args['branch'] : '';
 
     list($configItemId, $testDatasetId, $truthDatasetId) = array(null, null, null);
     if(isset($args['configItemId']))
@@ -392,7 +396,7 @@ class Tracker_ApiComponent extends AppComponent
             }
           $trend = $trendModel->createIfNeeded($producer->getKey(), $metricName, $configItemId, $testDatasetId, $truthDatasetId);
           $scalar = $scalarModel->addToTrend($trend, $submitTime, $producerRevision,
-              $value, $user, true, $official, $buildResultsUrl);
+              $value, $user, true, $official, $buildResultsUrl, $branch);
           $scalars[] = $scalar;
 
           if(!isset($args['silent']))
