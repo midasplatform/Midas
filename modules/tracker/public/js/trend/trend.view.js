@@ -97,6 +97,7 @@ midas.tracker.bindPlotEvents = function () {
         } else {
             scalarId = json.tracker.rightScalars[dataPoint.pointIndex].scalar_id;
         }
+        $('.webroot').val(json.global.webroot);
         midas.loadDialog('scalarPoint'+scalarId, '/tracker/scalar/details?scalarId='+scalarId);
         midas.showDialog('Scalar details', false, {width: 500});
     });
