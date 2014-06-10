@@ -133,7 +133,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         'message' => 'message',
         'datetime' => 'timestamp',
         'module'   => 'module');
-      $writerDb = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
       if($configGlobal->environment == 'production')
         {
         $formatter = new Zend_Log_Formatter_Simple();
@@ -162,6 +161,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       if($configDatabase->database->adapter == 'PDO_MYSQL'
          && $configDatabase->database->params->password != 'set_your_password')
         {
+        $writerDb = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
         $logger->addWriter($writerDb);
         $logger->setEventItem('datetime', date('Y-m-d H:i:s'));
         $logger->setEventItem('module', 'unknown');
