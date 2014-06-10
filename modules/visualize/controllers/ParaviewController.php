@@ -571,5 +571,3 @@ class Visualize_ParaviewController extends Visualize_AppController
       }
     }
 } // end class
-?>
-

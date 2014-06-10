@@ -28,4 +28,3 @@ class CommunityInvitationModel extends CommunityInvitationModelBase
 {
 
 } // end class
-?>

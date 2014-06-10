@@ -23,4 +23,3 @@ class Ldap_AppModel extends MIDASModel
 {
   public $moduleName = 'ldap';
 }
-?>

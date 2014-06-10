@@ -15,4 +15,3 @@ class Ratings_AppModel extends MIDASModel
 {
   public $moduleName = 'ratings';
 }
-?>

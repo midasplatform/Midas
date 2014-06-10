@@ -23,4 +23,3 @@ class Oauth_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'oauth';
   } //end class
-?>

@@ -95,4 +95,3 @@ abstract class Statistics_IpLocationModelBase extends Statistics_AppModel
     }
 
 } // end class
-?>

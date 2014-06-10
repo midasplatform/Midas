@@ -18,4 +18,3 @@ class SettingDao extends AppDao
   {
   public $_model = 'Setting';
   }
-?>

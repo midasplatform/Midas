@@ -14,4 +14,3 @@ class Dicomserver_AppController extends MIDAS_GlobalModule
   {
   public $moduleName='dicomserver';
   } //end class
-?>

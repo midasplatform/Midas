@@ -86,4 +86,3 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
     }
 
 } // end class
-?>

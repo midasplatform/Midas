@@ -23,4 +23,3 @@ class Thumbnailcreator_AppController extends MIDAS_GlobalModule
   {
     public $moduleName='thumbnailcreator';
   } //end class
-?>

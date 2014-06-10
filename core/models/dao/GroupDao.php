@@ -26,4 +26,3 @@ class GroupDao extends AppDao
   {
   public $_model = 'Group';
   } // end class
-?>

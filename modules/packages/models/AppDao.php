@@ -17,5 +17,3 @@ class Packages_AppDao extends MIDAS_GlobalDao
 {
   public $moduleName = 'packages';
 } //end class
-
-?>

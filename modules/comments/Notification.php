@@ -73,4 +73,3 @@ class Comments_Notification extends MIDAS_Notification
     $itemCommentModel->deleteByItem($params['item']);
     }
   }
-?>

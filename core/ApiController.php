@@ -217,4 +217,3 @@ class ApiController extends REST_Controller
     }
 
   } //end class
-?>

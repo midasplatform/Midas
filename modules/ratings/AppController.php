@@ -15,4 +15,3 @@ class Ratings_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'ratings';
   } //end class
-?>

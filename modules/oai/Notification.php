@@ -28,4 +28,3 @@ class Oai_Notification extends MIDAS_Notification
     }//end init
     
   } //end class
-?>

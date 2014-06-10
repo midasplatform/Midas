@@ -44,4 +44,3 @@ class Scheduler_EzcComponent extends AppComponent
     }
     
 } // end class
-?>

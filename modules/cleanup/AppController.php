@@ -15,4 +15,3 @@ class Cleanup_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'cleanup';
   } //end class
-?>

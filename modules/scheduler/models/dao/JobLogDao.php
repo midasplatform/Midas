@@ -25,4 +25,3 @@ class Scheduler_JobLogDao extends Scheduler_AppDao
     
 
   }
-?>

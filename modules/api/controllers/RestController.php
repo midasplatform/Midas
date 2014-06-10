@@ -29,4 +29,3 @@ class Api_RestController extends Api_AppController
     parent::preDispatch();
     }
   } // end class
-?>

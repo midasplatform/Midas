@@ -23,4 +23,3 @@ class Sizequota_AppModel extends MIDASModel
 {
   public $moduleName = 'sizequota';
 }
-?>

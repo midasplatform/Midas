@@ -23,5 +23,3 @@ class Ldap_AppDao extends MIDAS_GlobalDao
   {
   public $moduleName = 'ldap';
   } //end class
-
-?>

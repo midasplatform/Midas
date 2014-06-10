@@ -53,4 +53,3 @@ class Batchmake_ConfigForm extends AppForm
     return $form;
     }
 } // end class
-?>

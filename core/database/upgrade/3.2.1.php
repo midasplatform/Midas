@@ -23,4 +23,3 @@ class Upgrade_3_2_1 extends MIDASUpgrade
     $settingModel->setConfig('adminuser', $id);
     }
 }
-?>

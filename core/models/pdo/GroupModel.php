@@ -120,4 +120,3 @@ class GroupModel extends GroupModelBase
     return $return;
     } // end getCommunitiesFromSearch()
 }// end class
-?>

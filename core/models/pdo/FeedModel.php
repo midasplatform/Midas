@@ -276,4 +276,3 @@ class FeedModel extends FeedModelBase
     } // end delete
 
 } // end class
-?>

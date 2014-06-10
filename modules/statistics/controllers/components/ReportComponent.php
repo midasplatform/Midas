@@ -99,4 +99,3 @@ class Statistics_ReportComponent extends AppComponent
     }//end send
 
 } // end class
-?>

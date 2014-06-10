@@ -24,4 +24,3 @@ define("MIDAS_POLICY_ADMIN", 2);
 
 define("MIDAS_PRIVACY_PUBLIC", 0);
 define("MIDAS_PRIVACY_PRIVATE", 2);
-?>

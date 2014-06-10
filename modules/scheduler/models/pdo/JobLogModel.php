@@ -25,4 +25,3 @@ class Scheduler_JobLogModel extends Scheduler_JobLogModelBase
 {
 
 }  // end class
-?>

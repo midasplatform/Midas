@@ -71,4 +71,3 @@ class AssetstoreForm extends AppForm
     return $form;
     }
 } // end class
-?>

@@ -52,4 +52,3 @@ class UserDao extends AppDao
     return $return;
     }
   }
-?>

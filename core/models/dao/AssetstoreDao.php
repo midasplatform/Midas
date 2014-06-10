@@ -26,4 +26,3 @@ class AssetstoreDao extends AppDao
 {
   public $_model = 'Assetstore';
 } // end class
-?>

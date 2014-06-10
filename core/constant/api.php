@@ -49,4 +49,3 @@ Zend_Registry::set('permissionScopeMap', array(
   MIDAS_API_PERMISSION_SCOPE_READ_GROUPS => 'List group membership for communities you own',
   MIDAS_API_PERMISSION_SCOPE_MANAGE_GROUPS => 'Manage groups for communities you own'
 ));
-?>

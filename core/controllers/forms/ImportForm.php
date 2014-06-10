@@ -130,4 +130,3 @@ class ImportForm extends AppForm
     return $form;
     }
 } // end class
-?>

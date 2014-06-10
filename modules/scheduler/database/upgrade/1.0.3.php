@@ -36,4 +36,3 @@ class Scheduler_Upgrade_1_0_3 extends MIDASUpgrade
     {
     }
 }
-?>

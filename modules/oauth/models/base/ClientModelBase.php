@@ -92,4 +92,3 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
     parent::delete($clientDao);
     }
 }
-?>

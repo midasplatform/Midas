@@ -17,5 +17,3 @@ class Tracker_AppDao extends MIDAS_GlobalDao
 {
   public $moduleName = 'tracker';
 } //end class
-
-?>

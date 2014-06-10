@@ -24,5 +24,3 @@ class Batchmake_ItemmetricDao extends AppDao {
   public $_module = 'batchmake';
 
 }
-
-?>

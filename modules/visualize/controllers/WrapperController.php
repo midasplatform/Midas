@@ -117,4 +117,3 @@ class Visualize_WrapperController extends Visualize_AppController
     $this->view->json['viewMode'] = $viewMode;
     }//end index
   } // end class
-?>

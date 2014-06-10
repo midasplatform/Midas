@@ -39,4 +39,3 @@ class Api_ConfigForm extends AppForm
     }
 
 } // end class
-?>

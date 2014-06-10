@@ -251,4 +251,3 @@ class Oai_IndexController extends Oai_AppController
     }
 
   } // end class
-?>

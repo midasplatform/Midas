@@ -25,4 +25,3 @@ class PendingUserDao extends AppDao
 {
   public $_model = 'PendingUser';
 }
-?>

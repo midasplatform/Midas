@@ -26,4 +26,3 @@ class FolderpolicyuserDao extends AppDao
   {
   public $_model = 'Folderpolicyuser';
   }
-?>

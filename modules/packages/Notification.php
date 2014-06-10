@@ -173,4 +173,3 @@ class Packages_Notification extends ApiEnabled_Notification
            '/public/images/package_go.png" /> '.$this->t('Manage '.$type).'</a></li>';
     }
   } //end class
-?>

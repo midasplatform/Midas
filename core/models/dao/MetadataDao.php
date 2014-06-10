@@ -27,4 +27,3 @@ class MetadataDao extends AppDao
   public $_model = 'Metadata';
 
 } // end class
-?>

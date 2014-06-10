@@ -79,4 +79,3 @@ abstract class Oauth_CodeModelBase extends Oauth_AppModel
     return $codeDao;
     }
 }
-?>

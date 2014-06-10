@@ -104,4 +104,3 @@ class Oauth_Notification extends MIDAS_Notification
     return array('OAuth' => $moduleWebroot.'/client?userId='.$user->getKey());
     }
   } //end class
-?>

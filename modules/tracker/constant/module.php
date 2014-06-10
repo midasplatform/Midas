@@ -13,4 +13,3 @@ PURPOSE.  See the above copyright notices for more information.
 //define("MIDAS_EXAMPLE", 0);
 define('MIDAS_TRACKER_EMAIL_USER', 'emailuser');
 define('MIDAS_TRACKER_EMAIL_GROUP', 'emailgroup');
-?>

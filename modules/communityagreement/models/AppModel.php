@@ -28,4 +28,3 @@ class Communityagreement_AppModel extends MIDASModel
 {
   public $moduleName='communityagreement';
 }
-?>

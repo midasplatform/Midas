@@ -28,4 +28,3 @@ class CommunityInvitationDao extends AppDao
 
 
 } // end class
-?>

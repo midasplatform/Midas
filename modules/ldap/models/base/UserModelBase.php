@@ -67,4 +67,4 @@ abstract class Ldap_UserModelBase extends Ldap_AppModel
     return $ldapUserDao;
     }
 }
-?>
+

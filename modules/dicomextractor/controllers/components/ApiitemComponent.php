@@ -47,5 +47,3 @@ class Dicomextractor_ApiitemComponent extends AppComponent
   }
 
 }
-
-?>

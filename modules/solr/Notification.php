@@ -347,4 +347,3 @@ class Solr_Notification extends ApiEnabled_Notification
       $this->webroot.'/core/public/images/icons/magnifier.png'));
     }
   } //end class
-?>

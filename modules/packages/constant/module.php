@@ -11,4 +11,3 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 //define("MIDAS_EXAMPLE", 0);
-?>

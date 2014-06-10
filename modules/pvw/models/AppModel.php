@@ -22,4 +22,3 @@ class Pvw_AppModel extends MIDASModel
 {
   public $moduleName = 'pvw';   
 }
-?>

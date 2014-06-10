@@ -160,4 +160,3 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
     return $results;
     }
 }  // end class
-?>

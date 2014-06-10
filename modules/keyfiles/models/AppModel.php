@@ -15,4 +15,3 @@ class Keyfiles_AppModel extends MIDASModel
 {
   public $moduleName = 'keyfiles';
 }
-?>

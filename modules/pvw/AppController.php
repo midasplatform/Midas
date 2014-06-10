@@ -24,5 +24,3 @@ class Pvw_AppController extends MIDAS_GlobalModule
     public $moduleName='pvw';
     
   } //end class
-?>
-

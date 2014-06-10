@@ -23,4 +23,3 @@ class Solr_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'solr';
   } //end class
-?>

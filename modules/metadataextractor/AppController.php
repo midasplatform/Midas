@@ -33,4 +33,3 @@ class Metadataextractor_AppController extends MIDAS_GlobalModule
   {
   public $moduleName='metadataextractor';
   } //end class
-?>

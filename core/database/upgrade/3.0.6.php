@@ -47,5 +47,3 @@ class Upgrade_3_0_6 extends MIDASUpgrade
     
     }
 }
-?>
-

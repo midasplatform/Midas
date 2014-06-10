@@ -50,4 +50,3 @@ class Scheduler_JobLogModelBase extends Scheduler_AppModel
     $this->save($joblog);
     }
 } // end class JobLogModelBase
-?>

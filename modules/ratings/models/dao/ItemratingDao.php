@@ -23,4 +23,3 @@ class Ratings_ItemratingDao extends Ratings_AppDao
   public $_model = 'Itemrating';
   public $_module = 'ratings';
   }
-?>

@@ -115,4 +115,4 @@ class Ratings_ItemratingModel extends Ratings_ItemratingModelBase
     Zend_Registry::get('dbAdapter')->delete($this->_name, 'item_id = '.$item->getKey());
     }
 }
-?>
+

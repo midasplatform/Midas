@@ -33,4 +33,3 @@ class Api_Notification extends ApiEnabled_Notification
     }//end init
 
   } //end class
-?>

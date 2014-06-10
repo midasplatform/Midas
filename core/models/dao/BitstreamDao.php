@@ -59,4 +59,3 @@ class BitstreamDao extends AppDao
 
 
 } // end class
-?>

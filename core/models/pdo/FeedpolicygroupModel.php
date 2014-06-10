@@ -58,4 +58,3 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
     }
 
 } // end class
-?>

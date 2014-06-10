@@ -22,5 +22,3 @@
 class Oauth_AppDao extends MIDAS_GlobalDao
   {
   } //end class
-
-?>

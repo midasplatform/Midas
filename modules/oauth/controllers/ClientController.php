@@ -129,4 +129,3 @@ class Oauth_ClientController extends Oauth_AppController
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Client deleted'));
     }
   } // end class
-?>

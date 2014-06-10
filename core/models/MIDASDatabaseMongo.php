@@ -339,4 +339,3 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
     } // end getMongo()
 
 } // end class MIDASDatabaseMongo
-?>

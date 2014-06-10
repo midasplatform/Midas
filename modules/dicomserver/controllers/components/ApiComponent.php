@@ -88,5 +88,3 @@ class Dicomserver_ApiComponent extends AppComponent
     return $this->_callModuleApiMethod($args, 'registrationStatus', 'server');
     }
 }
-
-?>

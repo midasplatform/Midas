@@ -407,4 +407,3 @@ class UploadComponent extends AppComponent
     return $item;
     }//end
 } // end class UploadComponent
-?>

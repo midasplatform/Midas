@@ -15,4 +15,3 @@ class Comments_AppModel extends MIDASModel
 {
   public $moduleName = 'comments';
 }
-?>

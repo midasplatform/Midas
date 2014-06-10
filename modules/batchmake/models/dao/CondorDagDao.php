@@ -16,5 +16,3 @@ class Batchmake_CondorDagDao extends AppDao {
   public $_module = 'batchmake';
 
 }
-
-?>

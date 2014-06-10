@@ -116,4 +116,3 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
       }
     }
 }
-?>

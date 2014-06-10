@@ -23,4 +23,3 @@ class Oauth_ClientDao extends AppDao
   public $_model = 'Client';
   public $_module = 'oauth';
   }
-?>

@@ -38,4 +38,3 @@ class Metadataextractor_ConfigForm extends AppForm
     }
    
 } // end class
-?>

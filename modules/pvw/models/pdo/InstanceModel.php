@@ -36,4 +36,3 @@ class Pvw_InstanceModel extends Pvw_InstanceModelBase
     return $daos;
     }
 }
-?>

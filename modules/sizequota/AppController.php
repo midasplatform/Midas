@@ -26,4 +26,3 @@ class Sizequota_AppController extends MIDAS_GlobalModule
   /** folder quota model */
   var $Sizequota_Folderquota;
   } //end class
-?>

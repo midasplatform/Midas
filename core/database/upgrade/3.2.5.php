@@ -28,4 +28,3 @@ class Upgrade_3_2_5 extends MIDASUpgrade
     {
     }
 }
-?>

@@ -49,4 +49,3 @@ abstract class Ratings_ItemratingModelBase extends Ratings_AppModel
   /** Delete all comments on a given item. Called when item is about to be deleted. */
   abstract public function deleteByItem($item);
 }
-?>

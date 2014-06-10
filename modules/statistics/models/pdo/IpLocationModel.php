@@ -50,4 +50,3 @@ class Statistics_IpLocationModel extends Statistics_IpLocationModelBase
     return $result;
     }
 }  // end class
-?>

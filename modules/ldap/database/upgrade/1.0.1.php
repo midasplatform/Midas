@@ -36,4 +36,3 @@ class Ldap_Upgrade_1_0_1 extends MIDASUpgrade
     {
     }
 }
-?>

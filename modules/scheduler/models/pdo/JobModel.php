@@ -161,4 +161,3 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
     }
 
 }  // end class
-?>

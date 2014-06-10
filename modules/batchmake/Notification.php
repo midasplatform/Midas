@@ -63,6 +63,3 @@ class Batchmake_Notification extends ApiEnabled_Notification
     }
 
   } //end class
-
-
-?>

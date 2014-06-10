@@ -79,4 +79,3 @@ class ItempolicygroupModel extends ItempolicygroupModelBase
     }
 
 } // end class
-?>

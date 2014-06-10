@@ -33,4 +33,3 @@ class Statistics_AppController extends MIDAS_GlobalModule
   {
   public $moduleName='statistics';
   } //end class
-?>

@@ -15,4 +15,3 @@ class Validation_AppController extends MIDAS_GlobalModule
   {
     public $moduleName='validation';
   } //end class
-?>

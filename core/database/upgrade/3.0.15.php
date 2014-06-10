@@ -41,6 +41,3 @@ class Upgrade_3_0_15 extends MIDASUpgrade
     $this->addTableField('user', 'biography', 'varchar(255)', ' character varying(255)', null);
     }
 }
-?>
-
-

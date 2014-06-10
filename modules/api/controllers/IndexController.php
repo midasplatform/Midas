@@ -190,4 +190,3 @@ class Api_IndexController extends Api_AppController
     $this->_redirect($url);
     }
   } // end class
-?>

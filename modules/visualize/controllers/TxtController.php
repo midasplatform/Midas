@@ -50,4 +50,3 @@ class Visualize_TxtController extends Visualize_AppController
     echo "</pre>";
     }
 } // end class
-?>

@@ -15,4 +15,3 @@ class Cleanup_AppModel extends MIDASModel
 {
   public $moduleName = 'cleanup';
 }
-?>

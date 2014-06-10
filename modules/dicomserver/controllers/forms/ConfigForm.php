@@ -46,4 +46,3 @@ class Dicomserver_ConfigForm extends AppForm
     }
 
 } // end class
-?>

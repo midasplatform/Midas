@@ -37,6 +37,3 @@ class Upgrade_3_1_2 extends MIDASUpgrade
     $this->addTableField('user', 'dynamichelp', 'tinyint(4)', ' integer', 1);
     }
 }
-?>
-
-

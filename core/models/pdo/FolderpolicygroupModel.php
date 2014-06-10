@@ -77,4 +77,3 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
     Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
     }
 }
-?>

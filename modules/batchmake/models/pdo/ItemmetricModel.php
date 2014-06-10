@@ -33,5 +33,3 @@ class Batchmake_ItemmetricModel extends Batchmake_ItemmetricModelBase {
 
 
 }
-
-?>

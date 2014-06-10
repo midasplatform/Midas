@@ -25,5 +25,3 @@ class Validation_Notification extends ApiEnabled_Notification
     }//end init
 
   } //end class
-  
-?>

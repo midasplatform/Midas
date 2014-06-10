@@ -42,4 +42,3 @@ class Statistics_ConfigForm extends AppForm
     }
 
 } // end class
-?>

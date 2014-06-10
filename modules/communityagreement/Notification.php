@@ -79,4 +79,3 @@ class Communityagreement_Notification extends MIDAS_Notification
     }
 
   } //end class
-?>

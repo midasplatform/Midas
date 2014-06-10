@@ -104,4 +104,3 @@ class Scheduler_Notification extends MIDAS_Notification
     $jobModel->removeUserReferences($user->getKey());
     }
   } //end class
-?>

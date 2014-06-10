@@ -65,4 +65,3 @@ class Thumbnailcreator_ConfigForm extends AppForm
     }
 
 } // end class
-?>

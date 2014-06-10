@@ -23,4 +23,3 @@ class Example_AppController extends MIDAS_GlobalModule
   {
   public $moduleName='example';
   } //end class
-?>

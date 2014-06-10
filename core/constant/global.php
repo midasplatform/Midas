@@ -44,4 +44,3 @@ else
   {
   define('DATABASE_CONFIG', BASE_PATH . '/core/configs/database.ini');
   }
-?>

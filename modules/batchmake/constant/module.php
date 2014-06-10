@@ -115,6 +115,3 @@ define("MIDAS_BATCHMAKE_TYPE_KEY",'type');
 // properties for the batchmake execution view
 define("MIDAS_BATCHMAKE_AVAILABLE_SCRIPTS",'Batchmake Scripts');
 define("MIDAS_BATCHMAKE_EDIT_CONFIG",'edit Batchmake configuration');
-
-    
-?>

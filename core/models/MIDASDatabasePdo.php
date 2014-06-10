@@ -404,4 +404,3 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     }//end getCountAll
 
 } //end class MIDASDatabasePdo
-?>

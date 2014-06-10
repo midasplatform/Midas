@@ -26,4 +26,3 @@ class ItempolicyuserDao extends AppDao
   {
   public $_model = 'Itempolicyuser';
   }
-?>

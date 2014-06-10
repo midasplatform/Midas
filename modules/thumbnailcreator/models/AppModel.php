@@ -23,4 +23,3 @@ class Thumbnailcreator_AppModel extends MIDASModel
 
     
 }
-?>

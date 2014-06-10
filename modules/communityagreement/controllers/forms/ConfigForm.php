@@ -49,4 +49,3 @@ class Communityagreement_ConfigForm extends AppForm
     }
 
 } // end class
-?>

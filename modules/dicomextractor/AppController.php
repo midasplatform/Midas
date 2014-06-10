@@ -14,4 +14,3 @@ class Dicomextractor_AppController extends MIDAS_GlobalModule
   {
   public $moduleName='dicomextractor';
   } //end class
-?>

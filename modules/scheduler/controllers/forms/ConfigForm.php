@@ -38,4 +38,3 @@ class Scheduler_ConfigForm extends AppForm
     }
    
 } // end class
-?>

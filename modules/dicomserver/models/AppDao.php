@@ -22,5 +22,3 @@ class Dicomserver_AppDao extends MIDAS_GlobalDao
   {
     public $moduleName='dicomserver';
   } //end class
-
-?>

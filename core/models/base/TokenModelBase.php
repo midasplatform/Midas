@@ -39,4 +39,3 @@ abstract class TokenModelBase extends AppModel
   abstract function cleanExpired();
 
 } // end class AssetstoreModelBase
-?>

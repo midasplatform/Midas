@@ -100,4 +100,3 @@ class ErrorlogModel extends ErrorlogModelBase
     return 0;
     }
 } // end class
-?>

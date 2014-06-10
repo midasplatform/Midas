@@ -23,4 +23,3 @@ class Solr_AppModel extends MIDASModel
 {
   public $moduleName = 'solr';
 }
-?>

@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 define("MIDAS_REMOTEPROCESSING_OS_WINDOWS", 'windows');
 define("MIDAS_REMOTEPROCESSING_OS_LINUX", 'linux');
 
@@ -28,4 +29,3 @@ define("MIDAS_REMOTEPROCESSING_RELATION_TYPE_EXECUTABLE", 0);
 define("MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT", 1);
 define("MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT", 2);
 define("MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS", 3);
-?>

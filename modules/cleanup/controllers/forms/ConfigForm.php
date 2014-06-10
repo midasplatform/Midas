@@ -21,4 +21,3 @@ class Cleanup_ConfigForm extends AppForm
     }
 
 } // end class
-?>

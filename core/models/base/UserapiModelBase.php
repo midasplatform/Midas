@@ -109,4 +109,3 @@ abstract class UserapiModelBase extends AppModel
     }
 
 }
-?>

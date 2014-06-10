@@ -16,4 +16,3 @@ class Statistics_IpLocationDao extends Statistics_AppDao
   public $_model = 'IpLocation';
   public $_module = 'statistics';
 }
-?>

@@ -125,5 +125,3 @@ class Statistics_Notification extends MIDAS_Notification
     $downloadModel->removeUserReferences($user->getKey());
     }
   } //end class
-?>
-

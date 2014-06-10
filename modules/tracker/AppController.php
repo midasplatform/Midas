@@ -15,4 +15,3 @@ class Tracker_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'tracker';
   }
-?>

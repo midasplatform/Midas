@@ -37,4 +37,3 @@ class Metadataextractor_Notification extends MIDAS_Notification
     return;
     }
   } //end class
-?>

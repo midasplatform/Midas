@@ -111,4 +111,3 @@ class Tracker_Notification extends ApiEnabled_Notification
     UtilityComponent::sendEmail($user->getEmail(), 'Tracker Threshold Notification', $text);
     }
   } //end class
-?>

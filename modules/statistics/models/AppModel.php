@@ -23,4 +23,3 @@ class Statistics_AppModel extends MIDASModel
 {
   public $moduleName = 'statistics';
 }
-?>

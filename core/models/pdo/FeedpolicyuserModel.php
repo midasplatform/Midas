@@ -43,4 +43,3 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
     }  // end getPolicy
 
 } // end class
-?>

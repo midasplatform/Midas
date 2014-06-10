@@ -377,4 +377,3 @@ class MIDASUpgrade
     }
 
 } //end class MIDASUpgrade
-?>

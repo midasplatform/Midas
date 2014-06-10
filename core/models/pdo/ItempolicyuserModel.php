@@ -43,4 +43,3 @@ class ItempolicyuserModel  extends ItempolicyuserModelBase
     return $this->initDao('Itempolicyuser', $this->database->fetchRow($this->database->select()->where('item_id = ?', $item->getKey())->where('user_id = ?', $user->getKey())));
     }
 }
-?>

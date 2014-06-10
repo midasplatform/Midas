@@ -279,4 +279,3 @@ class MIDAS_GlobalDao
     }
 
 }// end class
-?>

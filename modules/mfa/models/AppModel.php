@@ -23,4 +23,3 @@ class Mfa_AppModel extends MIDASModel
 {
   public $moduleName = 'mfa';
 }
-?>

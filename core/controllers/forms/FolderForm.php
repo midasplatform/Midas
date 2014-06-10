@@ -47,4 +47,3 @@ class FolderForm extends AppForm
     }
 
 } // end class
-?>

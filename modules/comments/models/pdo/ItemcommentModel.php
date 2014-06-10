@@ -70,4 +70,3 @@ class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
     return $row['count'];
     }
 }
-?>

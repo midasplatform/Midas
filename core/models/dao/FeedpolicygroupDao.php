@@ -26,4 +26,3 @@ class FeedpolicygroupDao extends AppDao
   {
   public $_model = 'Feedpolicygroup';
   }
-?>

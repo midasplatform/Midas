@@ -389,4 +389,3 @@ class Ldap_Notification extends MIDAS_Notification
     return true;
     }
   } //end class
-?>

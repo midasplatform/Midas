@@ -88,4 +88,4 @@ class NewUserInvitationModel extends NewUserInvitationModelBase
     Zend_Registry::get('dbAdapter')->delete($this->_name, 'community_id = '.$community->getKey());
     }
 }
-?>
+

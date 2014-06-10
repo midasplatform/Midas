@@ -132,4 +132,3 @@ class CommunityForm extends AppForm
     }
 
 } // end class
-?>

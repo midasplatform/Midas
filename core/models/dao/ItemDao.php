@@ -26,4 +26,3 @@ class ItemDao extends AppDao
   {
   public $_model = 'Item';
   }
-?>

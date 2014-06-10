@@ -317,4 +317,3 @@ class Pvw_ParaviewController extends Pvw_AppController
     }
 
 } // end class
-?>

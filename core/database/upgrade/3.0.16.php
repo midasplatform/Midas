@@ -41,6 +41,3 @@ class Upgrade_3_0_16 extends MIDASUpgrade
     $this->addTableField('folder', 'date_creation', 'timestamp', 'timestamp without time zone', false);
     }
 }
-?>
-
-

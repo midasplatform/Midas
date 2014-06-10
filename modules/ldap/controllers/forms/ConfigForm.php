@@ -93,4 +93,3 @@ class Ldap_ConfigForm extends AppForm
     return $form;
     }
 } // end class
-?>

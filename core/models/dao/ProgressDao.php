@@ -26,4 +26,3 @@ class ProgressDao extends AppDao
 {
   public $_model = 'Progress';
 }
-?>

@@ -39,4 +39,3 @@ class Oauth_ClientModel extends Oauth_ClientModelBase
     return $daos;
     }
 }
-?>

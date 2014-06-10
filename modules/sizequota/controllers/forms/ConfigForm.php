@@ -69,4 +69,3 @@ class Sizequota_ConfigForm extends AppForm
     }
 
 } // end class
-?>

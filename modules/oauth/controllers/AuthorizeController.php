@@ -181,4 +181,3 @@ class Oauth_AuthorizeController extends Oauth_AppController
       }
     }
   } // end class
-?>

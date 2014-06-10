@@ -15,4 +15,3 @@ class Dicomanonymize_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'dicomanonymize';
   } //end class
-?>

@@ -45,4 +45,3 @@ class FolderpolicyuserModel extends FolderpolicyuserModelBase
           ));
     }
 }  // end class FolderpolicyuserModel
-?>

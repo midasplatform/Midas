@@ -81,4 +81,3 @@ abstract class Scheduler_JobModelBase extends Scheduler_AppModel
     return array();
   }
 } // end class AssetstoreModelBase
-?>

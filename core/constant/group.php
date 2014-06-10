@@ -20,4 +20,3 @@
 
 define("MIDAS_GROUP_ANONYMOUS_KEY", 0);
 define("MIDAS_GROUP_SERVER_KEY", -1);
-?>

@@ -49,5 +49,3 @@ class Keyfiles_Notification extends MIDAS_Notification
     return '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/'.$this->moduleName.'.notify.js"></script>';
     }
   } //end class
-?>
-

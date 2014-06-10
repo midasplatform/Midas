@@ -66,4 +66,3 @@ class Oauth_CodeModel extends Oauth_CodeModelBase
       }
     }
 }
-?>

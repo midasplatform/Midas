@@ -40,4 +40,3 @@ class Solr_ConfigForm extends AppForm
     }
 
 } // end class
-?>

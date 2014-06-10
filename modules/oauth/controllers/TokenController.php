@@ -235,4 +235,3 @@ class Oauth_TokenController extends Oauth_AppController
     echo JsonComponent::encode($array);
     }
   } // end class
-?>

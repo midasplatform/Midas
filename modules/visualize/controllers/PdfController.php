@@ -48,4 +48,3 @@ class Visualize_PdfController extends Visualize_AppController
     echo "</html>";
     }
 } // end class
-?>

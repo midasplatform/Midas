@@ -410,5 +410,3 @@ class Dicomserver_ApiserverComponent extends AppComponent
       }
   }
 }
-
-?>

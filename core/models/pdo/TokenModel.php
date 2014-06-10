@@ -35,4 +35,3 @@ class TokenModel extends TokenModelBase
       }
     }
 }
-?>

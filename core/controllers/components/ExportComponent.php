@@ -191,4 +191,3 @@ class ExportComponent extends AppComponent
     } // end function exportBitstreams
 
 } // end class ExportComponent
-?>

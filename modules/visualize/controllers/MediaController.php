@@ -58,4 +58,3 @@ class Visualize_MediaController extends Visualize_AppController
     $this->view->json['itemId'] = $item->getKey();
     }
 } // end class
-?>

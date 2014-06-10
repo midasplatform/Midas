@@ -62,4 +62,3 @@ class PendingUserModel extends PendingUserModelBase
     return $daos;
     }
 }
-?>

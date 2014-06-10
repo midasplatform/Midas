@@ -15,4 +15,3 @@ class Keyfiles_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'keyfiles';
   } //end class
-?>

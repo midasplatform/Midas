@@ -63,4 +63,3 @@ class FeedDao extends AppDao
       }
     }
 } // end class
-?>

@@ -33,4 +33,3 @@ class Remoteprocessing_AppController extends MIDAS_GlobalModule
   {
   public $moduleName='remoteprocessing';
   } //end class
-?>

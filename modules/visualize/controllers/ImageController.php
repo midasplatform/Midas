@@ -45,4 +45,3 @@ class Visualize_ImageController extends Visualize_AppController
     $this->view->imageUrl = $this->view->webroot."/download?items=".$item->getKey();
     }
 } // end class
-?>
