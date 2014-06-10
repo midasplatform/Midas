@@ -108,7 +108,6 @@ class Packages_ApiComponent extends AppComponent
                          'repository_url' => $dao->getRepositoryUrl(),
                          'submissiontype' => $dao->getSubmissiontype(),
                          'package' => $dao->getPackagetype(),
-                         'name' => $dao->getItem()->getName(),
                          'productname' => $dao->getProductname(),
                          'category' => $dao->getCategory(),
                          'description' => $dao->getDescription(),
