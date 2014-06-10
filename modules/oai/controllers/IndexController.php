@@ -161,12 +161,12 @@ class Oai_IndexController extends Oai_AppController
       {
       if(in_array('gzip', $compression) && ini_get('output_buffering'))
         {
-        //$compress = TRUE;
-        $compress = FALSE;
+        //$compress = true;
+        $compress = false;
         }
       else
         {
-        $compress = FALSE;
+        $compress = false;
         }
       }
 

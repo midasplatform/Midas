@@ -536,7 +536,7 @@ class MIDAS2MigrationComponent extends AppComponent
           {
           $privacy = MIDAS_COMMUNITY_PUBLIC;
           }
-        $communityDao = $Community->createCommunity($name, $short_description, $privacy, NULL); // no user
+        $communityDao = $Community->createCommunity($name, $short_description, $privacy, null); // no user
 
         // Add the users to the community
         // MIDAS2 was not using the group heavily so we ignore them. This would have to be a manual step

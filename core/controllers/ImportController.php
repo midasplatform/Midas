@@ -251,7 +251,7 @@ class ImportController extends AppController
           // Upload the bitstream
           $assetstoreDao = $this->Assetstore->load($this->assetstoreid);
           $this->Component->Upload->uploadBitstream($bitstreamDao,
-                                                    $assetstoreDao, TRUE);
+                                                    $assetstoreDao, true);
 
           $this->ItemRevision->addBitstream($itemRevisionDao, $bitstreamDao);
           } // end new revision

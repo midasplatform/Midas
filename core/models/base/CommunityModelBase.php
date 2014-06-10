@@ -163,7 +163,7 @@ abstract class CommunityModelBase extends AppModel
     $communityDao->setMembergroupId($memberGroup->getKey());
     $this->save($communityDao);
 
-    if($user != NULL)
+    if($user != null)
       {
       $groupModel->addUser($adminGroup, $user);
       $groupModel->addUser($memberGroup, $user);
@@ -190,7 +190,7 @@ abstract class CommunityModelBase extends AppModel
       $folderpolicygroupModel->createPolicy($moderatorsGroup, $folderPublic, MIDAS_POLICY_WRITE);
       $folderpolicygroupModel->createPolicy($memberGroup, $folderPublic, MIDAS_POLICY_READ);
       $folderpolicygroupModel->createPolicy($anonymousGroup, $folderPublic, MIDAS_POLICY_READ);
-      if($user != NULL)
+      if($user != null)
         {
         $feedpolicygroupModel->createPolicy($anonymousGroup, $feed, MIDAS_POLICY_READ);
         }

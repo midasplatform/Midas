@@ -40,7 +40,7 @@ class Dicomserver_ServerComponent extends AppComponent
       }
     $ret['Reception Directory Writable'] = array(is_writable($receptionDir));
     $peer_aes = $modulesConfig['dicomserver']->peer_aes;
-    if (!empty($peer_aes) && strpos($peer_aes, '(') !== FALSE && strpos($peer_aes, ')') !== FALSE)
+    if (!empty($peer_aes) && strpos($peer_aes, '(') !== false && strpos($peer_aes, ')') !== false)
       {
       $ret['Peer AE List Not Empty'] = array(true, "At least one peer AE is given");
       }

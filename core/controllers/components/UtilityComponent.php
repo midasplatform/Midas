@@ -101,7 +101,7 @@ class UtilityComponent extends AppComponent
   public static function extractPathParams()
     {
     $request = Zend_Controller_Front::getInstance()->getRequest();
-    $allTokens = preg_split('@/@', $request->getPathInfo(), NULL, PREG_SPLIT_NO_EMPTY);
+    $allTokens = preg_split('@/@', $request->getPathInfo(), null, PREG_SPLIT_NO_EMPTY);
 
     $tokens = array();
     $i = 0;

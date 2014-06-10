@@ -115,7 +115,7 @@ class ApidocsComponent extends AppComponent
         }
       if(!empty($path))
         {
-        $tokens = preg_split('@/@', $path, NULL, PREG_SPLIT_NO_EMPTY);
+        $tokens = preg_split('@/@', $path, null, PREG_SPLIT_NO_EMPTY);
         $count = count($tokens);
         if(empty($module) & !empty($tokens)) // core
           {
