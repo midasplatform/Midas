@@ -136,7 +136,6 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       case 'avi':
       case 'mov':
       case 'flv':
-      case 'mp4':
       case 'rm':
         // If this is a video, we have to have the file extension, so symlink it
         if(function_exists('symlink') && symlink($fullPath, $fullPath.'.'.$ext))
