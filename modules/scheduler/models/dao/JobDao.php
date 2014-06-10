@@ -22,6 +22,6 @@ class Scheduler_JobDao extends Scheduler_AppDao
   {
     public $_model='Job';
     public $_module='scheduler';
-    
+
 
   }

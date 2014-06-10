@@ -19,11 +19,11 @@
 =========================================================================*/
 
 class Upgrade_3_0_9 extends MIDASUpgrade
-  { 
+  {
   public function preUpgrade()
     {
     }
-    
+
   public function mysql()
     {
     $sql = "
@@ -37,7 +37,7 @@ class Upgrade_3_0_9 extends MIDASUpgrade
     $this->db->query($sql);
     }
 
-    
+
   public function pgsql()
     {
     $sql = "
@@ -45,12 +45,12 @@ class Upgrade_3_0_9 extends MIDASUpgrade
         uniqueidentifier_id character varying(512)  PRIMARY KEY,
         resource_type  integer,
         resource_id bigint
-      )  
+      )
       ; ";
     $this->db->query($sql);
     }
-    
+
   public function postUpgrade()
-    {  
+    {
     }
   }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -18,33 +18,33 @@ PURPOSE.  See the above copyright notices for more information.
          <?php
           echo '<div style="margin-right:2px;" class="genericBigButton ">';
             echo "<a  href='{$this->webroot}/admin#tabs-assetstore'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-            echo $this->t('Back');  
+            echo $this->t('Back');
             echo "</a>";
           echo '</div>';
-          
+
         ?>
     </div>
 <br/>
-<?php 
+<?php
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/import/import.index.js');
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
   $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.cluetip.js');
-  
+
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.css');
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/import/import.index.css');
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/assetstore.add.css');
-  
+
   echo $this->importForm;
 ?>
 
 <div id="progress" style="display:none"></div>
 <div id="progress_status"></div>
 
-<?php echo $this->element('serversidefilechooser', 
+<?php echo $this->element('serversidefilechooser',
                      array('id'=>'inputdirectorybutton',
                            'fileFilterErrorMsg' => 'Select the local XML directory on the server',
                            'destSelector' => '#inputdirectory',
-                     )) 
+                     ))
                     ?>
 
 

@@ -28,7 +28,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/feed/feed.index.j
             </div>";
     }
     ?>
-  <?php 
+  <?php
   if(!empty($this->itemThumbnails))
     {
     echo '<div class="sideElementFirst feedThumbnail">';
@@ -36,7 +36,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/feed/feed.index.j
     foreach($this->itemThumbnails as $item)
       {
       echo "<a href='{$this->webroot}/item/{$item->getKey()}'>";
-      echo "<img qtip='".$item->getName()."' src='{$this->webroot}/item/thumbnail?itemId={$item->getKey()}' alt=''/>"; 
+      echo "<img qtip='".$item->getName()."' src='{$this->webroot}/item/thumbnail?itemId={$item->getKey()}' alt=''/>";
       echo "</a>";
       }
     echo '</div>';

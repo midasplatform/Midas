@@ -23,12 +23,12 @@ class Metadataextractor_ConfigController extends Metadataextractor_AppController
    public $_moduleForms=array('Config');
    public $_components=array('Utility', 'Date');
 
-   
+
    /** index action*/
    function indexAction()
     {
     $this->requireAdminPrivileges();
-      
+
     if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
       {
       $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", true);
@@ -38,12 +38,12 @@ class Metadataextractor_ConfigController extends Metadataextractor_AppController
       $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
       }
     $configForm = $this->ModuleForm->Config->createConfigForm();
-    
-    $formArray = $this->getFormAsArray($configForm);    
+
+    $formArray = $this->getFormAsArray($configForm);
     $formArray['hachoir']->setValue($applicationConfig['global']['hachoir']);
-    
+
     $this->view->configForm = $formArray;
-    
+
     if($this->_request->isPost())
       {
       $this->_helper->layout->disableLayout();
@@ -64,6 +64,6 @@ class Metadataextractor_ConfigController extends Metadataextractor_AppController
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }
-    } 
-    
+    }
+
   } // end class

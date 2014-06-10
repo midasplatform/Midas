@@ -20,7 +20,7 @@
 
 /**
  * TaskController
- * 
+ *
  */
 class Scheduler_WorkflowController extends Scheduler_AppController
   {
@@ -32,7 +32,7 @@ class Scheduler_WorkflowController extends Scheduler_AppController
    *  Index Action (first action when we access the application)
    */
   function init()
-    {      
+    {
 
     } // end method indexAction
 
@@ -41,7 +41,7 @@ class Scheduler_WorkflowController extends Scheduler_AppController
     {
     $definition = $this->ModuleComponent->Ezc->initWorkflowDefinitionStorage();
     // Load latest version of workflow named "Test".
-    
+
     $workflow = new ezcWorkflow( 'Test' );
     $input = new ezcWorkflowNodeInput(
       array( 'item1' => new ezcWorkflowConditionIsObject, 'item2' => new ezcWorkflowConditionIsObject )
@@ -58,20 +58,20 @@ class Scheduler_WorkflowController extends Scheduler_AppController
     $disc = new ezcWorkflowNodeDiscriminator();
     $disc->addInNode( $nodeExec1 );
     $disc->addInNode( $nodeExec2 );
-    
-    
+
+
     $processB = new ezcWorkflowNodeAction( 'Process B' );
     $disc->addOutNode($processB );
-    
+
     $processB->addOutNode( $workflow->endNode);
 
-    
+
     $this->_createGraph($workflow);
 
     // Save workflow definition to database.
    // $definition->save( $workflow );
-    } 
-    
+    }
+
   /** create graph */
   private function _createGraph($workflow)
     {
@@ -90,7 +90,7 @@ class Scheduler_WorkflowController extends Scheduler_AppController
       unlink($image);
       }
     file_put_contents($dotFile, (string) $visitor);
-    
+
     exec('"'.$command.'" -Tpng -o "'.$image.'" "'.$dotFile.'"');
     if(file_exists($dotFile))
       {
@@ -102,5 +102,5 @@ class Scheduler_WorkflowController extends Scheduler_AppController
       }
     return $image;
     }
-    
+
   } // end class

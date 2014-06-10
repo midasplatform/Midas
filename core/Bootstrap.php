@@ -333,6 +333,4 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $restContexts = new REST_Controller_Action_Helper_RestContexts();
     Zend_Controller_Action_HelperBroker::addHelper($restContexts);
     }
-
   }
-

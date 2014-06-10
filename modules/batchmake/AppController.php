@@ -21,5 +21,5 @@
 class Batchmake_AppController extends MIDAS_GlobalModule
   {
     public $moduleName='batchmake';
-    
+
   } // end class

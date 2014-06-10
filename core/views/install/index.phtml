@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 ?>
 <link href="<?php echo $this->coreWebroot?>/public/css/install/install.css" rel="stylesheet" type="text/css" />
 
-<div class="viewMain"> 
+<div class="viewMain">
 
   <h2>Welcome to MIDAS!</h2>
     <p>MIDAS is a collection of server, client, and stand-alone tools for data archiving, analysis, and access.</p>
@@ -25,7 +25,7 @@ PURPOSE.  See the above copyright notices for more information.
       </ul>
       <div class="separator"></div>
       <h3>Installation</h3>
-      This script will guide you during the installation of MIDAS. 
+      This script will guide you during the installation of MIDAS.
       MIDAS will store the datasets and related information in these directories.
       Make sure they are fitting your installation or modify your config.php file.
       <br/><br/>For more information go to: <a href="http://www.kitware.com/midaswiki/index.php/MIDAS3-Installation">http://www.kitware.com/midaswiki/index.php/MIDAS3-Installation</a>
@@ -40,18 +40,18 @@ PURPOSE.  See the above copyright notices for more information.
         echo "<li><span style=\"color:#d48304\"> $missing </span> </li>";
         }
       }
-      
+
     if($this->writable==false)
       {
       echo "<li><span style=\"color:red\"> Unable to right in the application folder: {$this->basePath}. Please check you apache server permissions</span> </li>";
       }
-      
+
     if($this->writable&&empty($this->phpextension_missing))
       {
       echo "<li><span style=\"color:green\"> Your system is OK</span> </li>";
       }
     echo "</ul>";
-    
+
     if($this->writable!=false)
       {
       echo "<form method='post' action=''>";

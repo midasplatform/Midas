@@ -63,9 +63,9 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/i
         <input id="midas_item_metadata_value" name ="value" value ="<?php echo (!$this->metadata)?'':$this->metadata->getValue()?>"/>
       </div>
       <?php
-      if($this->metadata) 
+      if($this->metadata)
         {
-        echo 
+        echo
           '<div>
             <input type="submit" value="'.$this->t("Save").'"/>
           </div>';

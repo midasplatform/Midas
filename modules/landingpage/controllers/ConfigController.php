@@ -43,7 +43,7 @@ class Landingpage_ConfigController extends Landingpage_AppController
       }
     $text = $textDao->getText();
     $configForm = $this->ModuleForm->Config->createForm();
-    
+
     $formArray = $this->getFormAsArray($configForm);
     $formArray['text']->setValue($text);
 

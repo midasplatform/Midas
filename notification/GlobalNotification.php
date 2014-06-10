@@ -23,7 +23,6 @@
  */
 class MIDAS_Notification
   {
-
   private $_task = array();
   private $_notification = array();
 
@@ -250,4 +249,4 @@ class MIDAS_Notification
         }
       }
     }
-} // end class
+  } // end class

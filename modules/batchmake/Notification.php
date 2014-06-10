@@ -39,7 +39,7 @@ class Batchmake_Notification extends ApiEnabled_Notification
   /**
    *@method getDashboard
    *will generate information about this module to display on the Dashboard
-   *@return array with key being the module name, the value being an array 
+   *@return array with key being the module name, the value being an array
     of configuration correctness values (0 or 1).
    */
   public function getDashboard()

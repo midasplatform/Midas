@@ -203,13 +203,13 @@ $strippedDescription = strip_tags($description);
       echo "<li><a onclick='midas.createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t('Create a top level Folder')}</a></li>
           ";
       foreach($this->customManageActions as $actions)
-        { 
+        {
         foreach($actions as $name => $propertyNimage)
           {
-          echo ' 
+          echo '
           <li><a '.$propertyNimage["property"].'><img alt="" src="'.$propertyNimage["image"].'"/> '.$this->t("$name").'</a></li>' ;
           }
-        }   
+        }
       }
     if($this->isMember&&!$this->isAdmin)
       {

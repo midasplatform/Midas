@@ -54,7 +54,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
   <div class="tabs" id='tabsGeneric'>
     <ul>
       <li><a href="#tabs-Info"><?php echo $this->t("Info")?></a></li>
-      <?php 
+      <?php
       if($this->isAdmin)
         {
         // permissions/groups/user management is only for community admins
@@ -89,7 +89,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
           <div>Tip: You can use <a target="_blank" href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> in the description.</div>
         </div>
 
-        <?php   
+        <?php
           $extraForm = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_COMMUNITY_MANAGE_FORM', array('community' => $this->communityDao));
           foreach($extraForm as $module => $value)
             {

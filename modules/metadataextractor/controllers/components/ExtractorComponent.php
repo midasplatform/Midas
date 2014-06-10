@@ -19,11 +19,11 @@
 =========================================================================*/
 
 class Metadataextractor_ExtractorComponent extends AppComponent
-  { 
+  {
   /** extract metadata */
   public function extract($revision)
     {
-    $itemRevisionModel = MidasLoader::loadModel("ItemRevision");  
+    $itemRevisionModel = MidasLoader::loadModel("ItemRevision");
     $revision = $itemRevisionModel->load($revision['itemrevision_id']);
     if(!$revision)
       {
@@ -36,8 +36,8 @@ class Metadataextractor_ExtractorComponent extends AppComponent
       }
     $bitstream = $bitstreams[0];
     $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
-    
-    $MetadataModel = MidasLoader::loadModel("Metadata");  
+
+    $MetadataModel = MidasLoader::loadModel("Metadata");
     if($ext == 'pdf')
       {
       $pdf = Zend_Pdf::load($bitstream->getFullPath());
@@ -46,12 +46,12 @@ class Metadataextractor_ExtractorComponent extends AppComponent
         $name = strtolower($name);
         try
           {
-          $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'misc', $name); 
+          $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'misc', $name);
           if(!$metadataDao)
             {
             $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'misc', $name, '');
             }
-          $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 
+          $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT,
                        'misc', $name, $property);
           }
         catch (Zend_Exception $exc)
@@ -79,12 +79,12 @@ class Metadataextractor_ExtractorComponent extends AppComponent
         $value = substr($out, $pos + 2);
         try
           {
-          $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'misc', $name); 
+          $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'misc', $name);
           if(!$metadataDao)
             {
             $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'misc', $name, '');
             }
-          $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 
+          $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT,
                'misc', $name, $value);
           }
         catch (Zend_Exception $exc)
@@ -95,5 +95,5 @@ class Metadataextractor_ExtractorComponent extends AppComponent
       }
     return;
     }
-    
+
   } // end class

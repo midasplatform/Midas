@@ -38,10 +38,10 @@ define("MIDAS_BATCHMAKE_EXE", "BatchMake");
 define("MIDAS_BATCHMAKE_SSP_DIR", "SSP");
 
 
-// Extension automatically appended to dagman 
+// Extension automatically appended to dagman
 // description file when 'condor_dag_submit' generates it
 define("MIDAS_BATCHMAKE_CONDOR_DAGMAN_EXT", ".condor.sub");
-  
+
 // default extension for a dagjob
 define("MIDAS_BATCHMAKE_CONDOR_SCRIPT_EXT", ".dagjob");
 // extension for a batchmake script
@@ -57,7 +57,7 @@ define("MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY", "condor_bin_dir");
 
 // key for global config
 define("MIDAS_BATCHMAKE_GLOBAL_CONFIG_NAME", "global");
- 
+
 // status types
 define("MIDAS_BATCHMAKE_STATUS_TYPE_INFO", "info");
 define("MIDAS_BATCHMAKE_STATUS_TYPE_WARNING", "warning");

@@ -11,7 +11,7 @@
  *                      http://www.regular-expressions.info/javascriptexample.html
  * @param $fileFilterErrorMsg : Message to display when regular expression is false
  * @param $destSelector : jquery selector to insert the filename when user click on 'OK'
- * 
+ *
 **/
 ?>
 <?php
@@ -38,25 +38,25 @@
 <style>
 .fp-container {
       }
-    
+
 /* The fp-XXX-pannel is the div that gets lighted */
 #fp-<?php echo $this->id?>-panel {
-        display:none;  
+        display:none;
         position:fixed;
-        top:100px;  
-        left:50%;  
-        margin-left:-200px;  
-        width:<?php echo $this->width?>px;  
-        background:#FFFFFF;  
-        padding:10px 15px 10px 15px;  
-        border:2px solid #CCCCCC;  
+        top:100px;
+        left:50%;
+        margin-left:-200px;
+        width:<?php echo $this->width?>px;
+        background:#FFFFFF;
+        padding:10px 15px 10px 15px;
+        border:2px solid #CCCCCC;
         z-index:101;
         }
-        
-/* The fp-XXX-pannel is the div that covers the rest of the page */ 
-#fp-<?php echo $this->id?>-background {  
+
+/* The fp-XXX-pannel is the div that covers the rest of the page */
+#fp-<?php echo $this->id?>-background {
          display:none;
-         background:#000000;  
+         background:#000000;
          opacity:0.5;
          filter:alpha(opacity=90);  
          position:absolute;  
@@ -79,12 +79,12 @@
         padding: 5px;
         text-align: left;
       }
-      
+
 .fp-inputFile {
         position: relative;
         width: <?php echo $this->width+5?>px;
       }
-      
+
 .fp-inputButton {
         position: relative;
         float: left;
@@ -92,16 +92,16 @@
         width: 100px;
         margin: 3px 40px;
       }
-      
+
 .fp-open {
-      }      
+      }
 </style>
-<?php 
+<?php
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.filetree.js');
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/element/serversidefilechooser.js');
 ?>
 
-<!--  <input type="submit" id="fp-<?php echo $this->id?>-open" class="fp-open" value="Choose"></input>  --> 
+<!--  <input type="submit" id="fp-<?php echo $this->id?>-open" class="fp-open" value="Choose"></input>  -->
 <div id="fp-<?php echo $this->id?>-container" class="fp-container">
   <div id="fp-<?php echo $this->id?>-panel">
     <div id="fp-<?php echo $this->id?>-fileTree" class="fp-fileTree"></div>

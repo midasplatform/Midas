@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -20,13 +20,13 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
          <?php
           echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
             echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-            echo $this->t('Back');  
+            echo $this->t('Back');
             echo "</a>";
           echo '</div>';
-          
+
         ?>
     </div>
-  
+
     This module requires image magick.<br/>
     To install it: <a href="http://www.imagemagick.org" target='_blank'>http://www.imagemagick.org</a><br/>
     To create a pdf thumbnail, you will need <a href="http://pages.cs.wisc.edu/~ghost/" target='_blank'>http://pages.cs.wisc.edu/~ghost/</a><br/>
@@ -38,7 +38,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
             <div >
               <h4><label for='imagemagick'>Image magick location (path)</label></h4>
               {$this->configForm['imagemagick']}
-            </div> 
+            </div>
           <div>
             {$this->configForm['submitConfig']}
           </div>
@@ -50,7 +50,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
     Thumbnailer can be downloaded for many platforms <a href="http://midas3.kitware.com/midas/folder/5750" target='_blank'>here</a>.<br/><br/>
     Enabling this will allow the server to create thumbnails for .nrrd and .mha 2D or 3D image files.  If you wish to use it,
     please download the executable for your platform and specify the location of the Thumbnailer executable here.<br>
-    
+
      <?php
       echo "
       <form class='genericForm' id='thumbnailerForm' method='{$this->thumbnailerForm['method']}'  action='{$this->thumbnailerForm['action']}'>

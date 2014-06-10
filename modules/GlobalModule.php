@@ -50,7 +50,7 @@ class MIDAS_GlobalModule extends AppController
       {
       throw new Zend_Exception('Unable to find configuration file');
       }
-    
+
     $this->view->moduleFullName = $config->fullname;
     $this->view->moduleDescription = $config->description;
 

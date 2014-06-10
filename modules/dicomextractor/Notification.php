@@ -17,7 +17,7 @@ class Dicomextractor_Notification extends ApiEnabled_Notification
   {
   public $_moduleComponents = array('Api', 'Extractor');
   public $moduleName = 'dicomextractor';
-  
+
   /** init notification process*/
   public function init()
     {

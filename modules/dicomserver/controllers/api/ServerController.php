@@ -32,7 +32,7 @@ class Apidicomserver_ServerController extends ApiController
     $apiFunctions = array(
       'default' => 'status',
       'status' => 'status',
-      'registrationstatus' => 'registrationstatus'  
+      'registrationstatus' => 'registrationstatus'
       );
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions, 'dicomserver');
     }

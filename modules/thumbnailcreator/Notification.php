@@ -24,7 +24,7 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'thumbnailcreator';
   public $_moduleComponents = array('Api', 'Imagemagick');
-  
+
   /** init notification process*/
   public function init()
     {
@@ -43,7 +43,7 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JSON', 'getJson');
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
     }//end init
-    
+
   /** createThumbnail */
   public function createThumbnail($params)
     {

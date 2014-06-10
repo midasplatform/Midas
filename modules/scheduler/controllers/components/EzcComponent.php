@@ -20,14 +20,14 @@
 
 // load ezc autoloader
 set_include_path( BASE_PATH."/modules/scheduler/library/ezcomponents" . PATH_SEPARATOR .  get_include_path());
-require_once "Base/src/base.php"; 
+require_once "Base/src/base.php";
 function __autoload( $className )
   {
   ezcBase::autoload( $className );
   }
 
 class Scheduler_EzcComponent extends AppComponent
-  { 
+  {
   public function initWorkflowDefinitionStorage()
     {
     $autoloader = Zend_Loader_Autoloader::getInstance();
@@ -42,5 +42,5 @@ class Scheduler_EzcComponent extends AppComponent
     $options->__set('prefix', 'scheduler_');
     return $definition;
     }
-    
+
   } // end class

@@ -29,7 +29,7 @@ class Scheduler_Notification extends MIDAS_Notification
   public function init()
     {
     $this->addTask('TASK_SCHEDULER_SCHEDULE_TASK', 'scheduleTask', "Schedule a task. Parameters: task, priority, params");
-    
+
     $this->addCallBack('CALLBACK_SCHEDULER_SCHEDULE_TASK', 'scheduleTask');
     $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
     }//end init

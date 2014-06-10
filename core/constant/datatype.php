@@ -22,7 +22,7 @@ define("MIDAS_ASSETSTORE_LOCAL", 0);
 define("MIDAS_ASSETSTORE_REMOTE", 1);
 define("MIDAS_ASSETSTORE_AMAZON", 2);
 
-/* 
+/*
  * Define Model Data type
  */
 define("MIDAS_DATA", 1001);

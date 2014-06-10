@@ -35,14 +35,14 @@ class Mfa_LoginController extends Mfa_AppController
     Zend_Session::start();
     $mfaSession = new Zend_Session_Namespace('Mfa_Temp_User');
     $user = $mfaSession->Dao;
-    
+
     $otpDevice = $this->Mfa_Otpdevice->getByUser($user);
     if(!$otpDevice)
       {
       throw new Zend_Exception('User '.$user->getKey().' is not an OTP device user');
       }
     $this->view->user = $user;
-    } 
+    }
 
   /**
    * When the user actually submits their otp, this authenticates it
