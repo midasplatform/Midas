@@ -19,7 +19,7 @@
 =========================================================================*/
 
 abstract class Scheduler_JobModelBase extends Scheduler_AppModel
-{
+  {
   public function __construct()
     {
     parent::__construct();
@@ -79,5 +79,5 @@ abstract class Scheduler_JobModelBase extends Scheduler_AppModel
       }
     $this->load = array();
     return array();
-  }
-} // end class AssetstoreModelBase
+    }
+  } // end class

@@ -1,7 +1,7 @@
 <?php
 /** Cleanup module configuration form */
 class Cleanup_ConfigForm extends AppForm
-{
+  {
 
   /** create  form */
   public function createConfigForm()
@@ -20,4 +20,4 @@ class Cleanup_ConfigForm extends AppForm
     return $form;
     }
 
-} // end class
+  } // end class

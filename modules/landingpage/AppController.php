@@ -21,4 +21,4 @@
 class Landingpage_AppController extends MIDAS_GlobalModule
   {
     public $moduleName='landingpage';
-  } //end class
+  } // end class

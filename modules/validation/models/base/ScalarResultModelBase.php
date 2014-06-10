@@ -15,7 +15,7 @@ PURPOSE.  See the above copyright notices for more information.
  * scalar is related to the result by its associated folder and item.
  */
 abstract class Validation_ScalarResultModelBase extends Validation_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -85,4 +85,4 @@ abstract class Validation_ScalarResultModelBase extends Validation_AppModel
     $scalarResult->setItemId($item->getKey());
     parent::save($scalarResult);
     }
-}
+  }

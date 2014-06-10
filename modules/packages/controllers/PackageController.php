@@ -11,7 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 /** package controller*/
 class Packages_PackageController extends Packages_AppController
-{
+  {
   public $_models = array('Community', 'Item');
   public $_moduleModels = array('Application', 'Package', 'Project');
 
@@ -117,4 +117,4 @@ class Packages_PackageController extends Packages_AppController
       }
     echo JsonComponent::encode($filtered);
     }
-}//end class
+  } // end class

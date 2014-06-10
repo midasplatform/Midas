@@ -13,7 +13,7 @@ require_once BASE_PATH.'/core/models/dao/SettingDao.php';
 
 /** Setting Model Base*/
 abstract class SettingModelBase extends AppModel
-{
+  {
   /** Constructor*/
   public function __construct()
     {
@@ -83,5 +83,4 @@ abstract class SettingModelBase extends AppModel
       }
     return $dao;
     }
-
-}
+  }

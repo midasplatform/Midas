@@ -20,8 +20,7 @@
 
 /** Utility componenet */
 class UtilityComponent extends AppComponent
-{
-
+  {
   /**
    * The main function for converting to an XML document.
    * Pass in a multi dimensional array and this recrusively loops through and builds up an XML document.
@@ -689,5 +688,4 @@ class UtilityComponent extends AppComponent
       }
     return false;
     }
-
-} // end class
+  } // end class

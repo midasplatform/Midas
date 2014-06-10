@@ -11,7 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 /** packages application controller*/
 class Packages_ApplicationController extends Packages_AppController
-{
+  {
   public $_components = array('Breadcrumb');
   public $_models = array('Community');
   public $_moduleDaos = array('Application');
@@ -264,4 +264,4 @@ class Packages_ApplicationController extends Packages_AppController
         'release' => $this->_getParam('release')));
     echo JsonComponent::encode($releasePackages);
     }
-}//end class
+  } // end class

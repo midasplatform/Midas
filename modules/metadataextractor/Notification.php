@@ -36,4 +36,4 @@ class Metadataextractor_Notification extends MIDAS_Notification
     $this->ModuleComponent->Extractor->extract($params[1]);
     return;
     }
-  } //end class
+  } // end class

@@ -32,4 +32,4 @@ PURPOSE.  See the above copyright notices for more information.
 class Statistics_AppController extends MIDAS_GlobalModule
   {
   public $moduleName='statistics';
-  } //end class
+  } // end class

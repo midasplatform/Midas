@@ -814,4 +814,4 @@ class CommunityController extends AppController
         }
       }
     }
-  }//end class
+  } // end class

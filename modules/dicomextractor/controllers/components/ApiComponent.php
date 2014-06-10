@@ -12,8 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Component for api methods */
 class Dicomextractor_ApiComponent extends AppComponent
-{
-
+  {
   /** Return the user dao */
   private function _callModuleApiMethod($args, $coreApiMethod, $resource = null,  $hasReturn = true)
     {
@@ -31,10 +30,9 @@ class Dicomextractor_ApiComponent extends AppComponent
    * @return the id of the revision
    */
   function extract($args)
-  {
+    {
     $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
     $ApihelperComponent->renameParamKey($args, 'item', 'id');
     return $this->_callModuleApiMethod($args, 'extract', 'item');
+    }
   }
-
-}

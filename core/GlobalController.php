@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /**
@@ -25,7 +26,6 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
  */
 class MIDAS_GlobalController extends Zend_Controller_Action
   {
-
   protected $Models = array();
 
   /** contructor*/
@@ -345,4 +345,4 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       }
     return $array;
     }
-} // end class
+  } // end class

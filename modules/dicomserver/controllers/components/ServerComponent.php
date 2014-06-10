@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 include_once BASE_PATH . '/library/KWUtils.php';
 /** Uploade dicom files */
 class Dicomserver_ServerComponent extends AppComponent
-{
+  {
 
   /**
    * Verify that DICOM server is setup properly
@@ -171,4 +171,4 @@ class Dicomserver_ServerComponent extends AppComponent
       }
     }
 
-} // end class
+  } // end class

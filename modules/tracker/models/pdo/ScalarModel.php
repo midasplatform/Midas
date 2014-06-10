@@ -9,13 +9,14 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/tracker/models/base/ScalarModelBase.php';
 
 /**
  * Scalar PDO Model
  */
 class Tracker_ScalarModel extends Tracker_ScalarModelBase
-{
+  {
   /**
    * Associate an item with a particular scalar
    * @param scalar The scalar dao
@@ -96,4 +97,4 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
       }
     return $this->initDao('Scalar', $this->database->fetchRow($sql), $this->moduleName);
     }
-}
+  }

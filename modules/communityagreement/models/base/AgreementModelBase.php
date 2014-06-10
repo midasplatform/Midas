@@ -26,7 +26,7 @@
  * @package    communityagreement
  */
 class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -58,4 +58,4 @@ class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
     return $agreementDao;
     }
 
-} // end class AgreementModelBase
+  } // end class AgreementModelBase

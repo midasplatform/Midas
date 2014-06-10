@@ -20,7 +20,7 @@
 
 /** Import forms*/
 class ImportForm extends AppForm
-{
+  {
   /** Main form*/
   public function createImportForm($assetstores)
     {
@@ -129,4 +129,4 @@ class ImportForm extends AppForm
 
     return $form;
     }
-} // end class
+  } // end class

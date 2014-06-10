@@ -4,7 +4,7 @@
  * Adds user agent to the download record
  */
 class Statistics_Upgrade_1_0_2 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
     }
@@ -19,4 +19,4 @@ class Statistics_Upgrade_1_0_2 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
+  }

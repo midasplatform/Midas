@@ -14,7 +14,7 @@ PURPOSE.  See the above copyright notices for more information.
  * Threshold Notification Model Base
  */
 abstract class Tracker_ThresholdNotificationModelBase extends Tracker_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -62,4 +62,4 @@ abstract class Tracker_ThresholdNotificationModelBase extends Tracker_AppModel
         return false;
       }
     }
-}
+  }

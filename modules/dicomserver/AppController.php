@@ -13,4 +13,4 @@ PURPOSE.  See the above copyright notices for more information.
 class Dicomserver_AppController extends MIDAS_GlobalModule
   {
   public $moduleName='dicomserver';
-  } //end class
+  } // end class

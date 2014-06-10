@@ -4,8 +4,7 @@
  * Upgrade 3.2.13 move userapi and token to core
  */
 class Upgrade_3_2_13 extends MIDASUpgrade
-{
-
+  {
   public function preUpgrade()
     {
 
@@ -80,5 +79,4 @@ class Upgrade_3_2_13 extends MIDASUpgrade
         $userapiModel->createDefaultApiKey($user);
       }
     }
-
-}
+  }

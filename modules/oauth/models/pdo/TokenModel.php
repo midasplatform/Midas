@@ -22,7 +22,7 @@ require_once BASE_PATH.'/modules/oauth/models/base/TokenModelBase.php';
 
 /** pdo model implementation */
 class Oauth_TokenModel extends Oauth_TokenModelBase
-{
+  {
   /**
    * Retrieve a token dao based on the token value. Checking if it has expired
    * is left up to the caller.
@@ -80,4 +80,4 @@ class Oauth_TokenModel extends Oauth_TokenModelBase
       $tmpDao = null; //mark for memory reclamation
       }
     }
-}
+  }

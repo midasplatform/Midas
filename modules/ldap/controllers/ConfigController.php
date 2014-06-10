@@ -19,7 +19,7 @@
 =========================================================================*/
 
 class Ldap_ConfigController extends Ldap_AppController
-{
+  {
    public $_moduleForms = array('Config');
    public $_components = array('Utility');
 
@@ -95,4 +95,4 @@ class Ldap_ConfigController extends Ldap_AppController
       }
     } 
     
-}//end class
+  } // end class

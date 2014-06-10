@@ -9,13 +9,14 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/packages/models/base/PackageModelBase.php';
 
 /**
  * Package PDO Model
  */
 class Packages_PackageModel extends Packages_PackageModelBase
-{
+  {
   /**
    * Return all the record in the table
    * @param params Optional associative array specifying an 'os', 'arch', 'submissiontype' and 'packagetype'.
@@ -115,5 +116,4 @@ class Packages_PackageModel extends Packages_PackageModelBase
       }
     return $latestPackages;
     }
-
-}  // end class
+  } // end class

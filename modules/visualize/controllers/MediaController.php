@@ -20,7 +20,7 @@
 
 /** Media Controller*/
 class Visualize_MediaController extends Visualize_AppController
-{
+  {
   public $_models = array('Item', 'ItemRevision', 'Bitstream');
   /** index */
   public function indexAction()
@@ -57,4 +57,4 @@ class Visualize_MediaController extends Visualize_AppController
       }
     $this->view->json['itemId'] = $item->getKey();
     }
-} // end class
+  } // end class

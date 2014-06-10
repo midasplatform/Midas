@@ -4,8 +4,7 @@
  * Upgrade 3.2.7 adds the progress table
  */
 class Upgrade_3_2_7 extends MIDASUpgrade
-{
-
+  {
   public function preUpgrade()
     {
     }
@@ -38,5 +37,4 @@ class Upgrade_3_2_7 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-
-}
+  }

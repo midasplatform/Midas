@@ -22,7 +22,7 @@
  *  Search controller
  */
 class SearchController extends AppController
-{
+  {
   public $_models = array('Item', 'Folder', 'User', 'Community', 'Group');
   public $_daos = array('Item', 'Folder', 'User', 'Community');
   public $_components = array('Sortdao', 'Date', 'Utility', 'Search');
@@ -336,6 +336,5 @@ class SearchController extends AppController
 
     echo JsonComponent::encode($results);
     }
-
-} // end class
+  } // end class
 

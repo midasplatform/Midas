@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Component for api methods */
 class Thumbnailcreator_ApiComponent extends AppComponent
-{
+  {
 
   /** Return the user dao */
   private function _callModuleApiMethod($args, $coreApiMethod, $resource = null,  $hasReturn = true)
@@ -49,4 +49,4 @@ class Thumbnailcreator_ApiComponent extends AppComponent
     return $this->_callModuleApiMethod($args, 'createSmallThumbnail', 'item');
     }
 
-} // end class
+  } // end class

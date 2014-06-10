@@ -103,4 +103,4 @@ class Oauth_Notification extends MIDAS_Notification
     $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
     return array('OAuth' => $moduleWebroot.'/client?userId='.$user->getKey());
     }
-  } //end class
+  } // end class

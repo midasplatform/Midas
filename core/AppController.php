@@ -668,4 +668,4 @@ class AppController extends MIDAS_GlobalController
   var $Setting;
 
   /**end completion eclipse */
-  }//end class
+  } // end class

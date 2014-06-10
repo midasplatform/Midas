@@ -24,7 +24,7 @@
  * @package    communityagreement
  */
 class Communityagreement_ConfigController extends Communityagreement_AppController
-{
+  {
   public $_models = array('Community');
   public $_moduleModels = array('Agreement');
   public $_moduleForms = array('Config');
@@ -139,4 +139,4 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
     $this->view->agreementDao = $agreementDao;
     }
 
-}//end class
+  } // end class

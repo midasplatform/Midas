@@ -20,7 +20,7 @@
 
 /** Main controller for the web api module */
 class Archive_ExtractController extends Archive_AppController
-{
+  {
   public $_models = array('Item', 'Progress');
   public $_moduleComponents = array('Extract');
 

@@ -35,4 +35,4 @@ class AppForm
     Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
     return InternationalizationComponent::translate($text);
     }//en method t
-  }//end class
+  } // end class

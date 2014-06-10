@@ -20,7 +20,7 @@
 
 /** Community Model Base*/
 abstract class CommunityModelBase extends AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -409,5 +409,4 @@ abstract class CommunityModelBase extends AppModel
     $communityDao->setPrivacy($privacyCode);
     $this->save($communityDao);
     }
-
-} // end class CommunityModelBase
+  } // end class

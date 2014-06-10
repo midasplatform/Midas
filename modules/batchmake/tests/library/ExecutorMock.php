@@ -72,7 +72,7 @@ class Batchmake_ExecutorMock
       KWUtils::exec($command, $output, $chdir, $return_val);
       }
     }
-} // end class
+  } // end class
 
 
 

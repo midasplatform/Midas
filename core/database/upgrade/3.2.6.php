@@ -5,7 +5,7 @@
  * as bitstreams.
  */
 class Upgrade_3_2_6 extends MIDASUpgrade
-{
+  {
   var $assetstore;
 
   public function preUpgrade()
@@ -75,6 +75,4 @@ class Upgrade_3_2_6 extends MIDASUpgrade
     $bitstreamDao = $bitstreamModel->createThumbnail($this->assetstore, $oldpath);
     return $bitstreamDao;
     }
-
-
-}
+  }

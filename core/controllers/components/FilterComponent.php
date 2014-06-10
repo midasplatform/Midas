@@ -20,7 +20,7 @@
 
 /** Sort Daos*/
 class FilterComponent extends AppComponent
-{
+  {
   /** get a filter*/
   public function getFilter($filter)
     {
@@ -31,4 +31,4 @@ class FilterComponent extends AppComponent
       }
     return new $filter();
     }
-} // end class
+  } // end class

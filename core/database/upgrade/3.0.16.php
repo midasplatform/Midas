@@ -19,7 +19,7 @@
 =========================================================================*/
 
 class Upgrade_3_0_16 extends MIDASUpgrade
-{ 
+  { 
   public function preUpgrade()
     {             
     }
@@ -40,4 +40,4 @@ class Upgrade_3_0_16 extends MIDASUpgrade
     $this->renameTableField('folder', 'date', 'date_update', 'timestamp', 'timestamp without time zone', false);
     $this->addTableField('folder', 'date_creation', 'timestamp', 'timestamp without time zone', false);
     }
-}
+  }

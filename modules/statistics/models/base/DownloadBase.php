@@ -20,7 +20,7 @@
 
 /** Download model base */
 abstract class Statistics_DownloadModelBase extends Statistics_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -84,5 +84,4 @@ abstract class Statistics_DownloadModelBase extends Statistics_AppModel
 
     $this->save($download);
     }
-
-} // end class
+  } // end class

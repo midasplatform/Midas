@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Component for api methods */
 class Solr_ApisearchComponent extends AppComponent
-{
+  {
   /**
    * Search using Lucene search text queries
    * @path /solr/search
@@ -113,4 +113,4 @@ class Solr_ApisearchComponent extends AppComponent
       }
     return $items;
     }
-} // end class
+  } // end class

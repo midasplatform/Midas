@@ -20,7 +20,7 @@
 
 /** Api controller for /json */
 class Api_JsonController extends Api_AppController
-{
+  {
 
   /** Before filter */
   function preDispatch()

@@ -20,7 +20,7 @@
 
 /** UserModelBase */
 abstract class UserModelBase extends AppModel
-{
+  {
   /** Constructor */
   public function __construct()
     {
@@ -343,4 +343,4 @@ abstract class UserModelBase extends AppModel
       }
     return $url;
     }
-} // end class UserModelBase
+  } // end class

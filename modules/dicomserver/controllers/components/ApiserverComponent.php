@@ -11,10 +11,10 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 include_once BASE_PATH . '/library/KWUtils.php';
+
 /** Component for api methods */
 class Dicomserver_ApiserverComponent extends AppComponent
-{
-
+  {
   /**
    * Start DICOM server
    * @path /dicomserver/server/start
@@ -408,5 +408,5 @@ class Dicomserver_ApiserverComponent extends AppComponent
       {
       return array('status' => true);
       }
+    }
   }
-}

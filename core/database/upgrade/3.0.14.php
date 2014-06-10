@@ -19,7 +19,7 @@
 =========================================================================*/
 
 class Upgrade_3_0_14 extends MIDASUpgrade
-{ 
+  { 
   public function preUpgrade()
     {             
     // Insert common metadata
@@ -51,4 +51,4 @@ class Upgrade_3_0_14 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
+  }

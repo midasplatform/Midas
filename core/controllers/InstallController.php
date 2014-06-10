@@ -22,7 +22,7 @@
  *  InstallController
  */
 class InstallController extends AppController
-{
+  {
   public $_models = array('User', 'Assetstore');
   public $_daos = array('Assetstore');
   public $_components = array('Utility');
@@ -353,6 +353,4 @@ class InstallController extends AppController
       }
     echo JsonComponent::encode($return);
     }//end getElementInfo
-
-} // end class
-
+  } // end class

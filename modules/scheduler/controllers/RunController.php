@@ -23,7 +23,7 @@
  *
  */
 class Scheduler_RunController extends Scheduler_AppController
-{
+  {
   public $_models = array('Setting');
   public $_moduleModels = array('Job', 'JobLog');
   public $_components = array('Json');
@@ -124,4 +124,4 @@ class Scheduler_RunController extends Scheduler_AppController
       }
     }
 
-}//end class
+  } // end class

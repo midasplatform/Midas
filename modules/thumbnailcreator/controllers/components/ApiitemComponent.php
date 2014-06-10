@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Apiitem Component for api methods */
 class Thumbnailcreator_ApiitemComponent extends AppComponent
-{
+  {
   /**
    * Create a big thumbnail for the given bitstream with the given width. It is used as the main image of the given item and shown in the item view page.
    * @path /thumbnailcreator/item/bigthumbnail/{id}
@@ -141,4 +141,4 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
     return $return;
     }
 
-} // end class
+  } // end class

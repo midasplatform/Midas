@@ -22,7 +22,7 @@
  * Thumbnailcreator module configuration
  */
 class Thumbnailcreator_ConfigController extends Thumbnailcreator_AppController
-{
+  {
   public $_moduleForms = array('Config');
   public $_components = array('Utility', 'Date');
 
@@ -82,4 +82,4 @@ class Thumbnailcreator_ConfigController extends Thumbnailcreator_AppController
       }
     }
 
-}//end class
+  } // end class

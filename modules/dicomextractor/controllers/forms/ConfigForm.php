@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Configuration form for the dicom extractor */
 class Dicomextractor_ConfigForm extends AppForm
-{
+  {
 
   /** create  form */
   public function createConfigForm()
@@ -35,4 +35,4 @@ class Dicomextractor_ConfigForm extends AppForm
     return $form;
     }
 
-} // end class
+  } // end class

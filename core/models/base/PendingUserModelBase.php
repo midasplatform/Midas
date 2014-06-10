@@ -24,7 +24,7 @@
  * but has yet to verify their email address.
  */
 abstract class PendingUserModelBase extends AppModel
-{
+  {
   /** Contructor */
   public function __construct()
     {
@@ -81,4 +81,4 @@ abstract class PendingUserModelBase extends AppModel
     $this->save($pendingUser);
     return $pendingUser;
     }
-}
+  }

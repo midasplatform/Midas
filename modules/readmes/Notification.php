@@ -58,4 +58,4 @@ class Readmes_Notification extends MIDAS_Notification
     return array($moduleUriroot.'/public/js/readmes.community.js');
     }
 
-  } //end class
+  } // end class

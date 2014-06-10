@@ -24,7 +24,6 @@
  */
 class AssetstoreController extends AppController
   {
-
   public $_models = array('Assetstore', 'Bitstream', 'Progress', 'Setting');
   public $_daos = array('Assetstore');
   public $_components = array('Utility');
@@ -262,5 +261,4 @@ class AssetstoreController extends AppController
 
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Bitstreams moved'));
     }
-} // end class
-
+  } // end class

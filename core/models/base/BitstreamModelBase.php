@@ -20,7 +20,7 @@
 
 /** Bitstream Base Model*/
 abstract class BitstreamModelBase extends AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -135,4 +135,4 @@ abstract class BitstreamModelBase extends AppModel
       chmod($directorypath, 0777);
       }
     }
-} // end class BitstreamModelBase
+  } // end class

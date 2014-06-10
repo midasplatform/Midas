@@ -22,7 +22,7 @@ require_once BASE_PATH.'/modules/oauth/models/base/ClientModelBase.php';
 
 /** pdo model implementation */
 class Oauth_ClientModel extends Oauth_ClientModelBase
-{
+  {
   /**
    * Return all client records owned by the given user
    */
@@ -38,4 +38,4 @@ class Oauth_ClientModel extends Oauth_ClientModelBase
       }
     return $daos;
     }
-}
+  }

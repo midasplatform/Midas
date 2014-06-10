@@ -20,7 +20,7 @@
 
 /** Upload forms*/
 class UploadForm extends AppForm
-{
+  {
   /** create upload link form */
   public function createUploadLinkForm()
     {
@@ -47,5 +47,4 @@ class UploadForm extends AppForm
     $form->addElements(array($name, $url, $submit));
     return $form;
     }
-
-} // end class
+  } // end class

@@ -14,4 +14,4 @@ PURPOSE.  See the above copyright notices for more information.
 class Cleanup_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'cleanup';
-  } //end class
+  } // end class

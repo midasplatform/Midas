@@ -79,4 +79,4 @@ class InternationalizationComponent extends AppComponent
       return false;
       }
     }
-} // end class
+  } // end class

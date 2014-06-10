@@ -22,6 +22,6 @@
  * \class NewUserInvitationDao
  */
 class NewUserInvitationDao extends AppDao
-{
+  {
   public $_model = 'NewUserInvitation';
-}
+  }

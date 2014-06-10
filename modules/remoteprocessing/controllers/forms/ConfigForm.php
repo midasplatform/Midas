@@ -19,7 +19,7 @@
 =========================================================================*/
 /** form*/
 class Remoteprocessing_ConfigForm extends AppForm
-{
+  {
 
   /** create  form */
   public function createConfigForm()
@@ -39,5 +39,5 @@ class Remoteprocessing_ConfigForm extends AppForm
     return $form;
     }
 
-} // end class
+  } // end class
 

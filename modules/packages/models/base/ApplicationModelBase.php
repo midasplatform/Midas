@@ -14,7 +14,7 @@ PURPOSE.  See the above copyright notices for more information.
  * Application Model Base
  */
 abstract class Packages_ApplicationModelBase extends Packages_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -48,4 +48,4 @@ abstract class Packages_ApplicationModelBase extends Packages_AppModel
     $application->setDescription(UtilityComponent::filterHtmlTags($application->getDescription()));
     parent::save($application);
     }
-}
+  }

@@ -22,7 +22,7 @@
  * Admin Controller
  */
 class AdminController extends AppController
-{
+  {
   public $_models = array('Assetstore', 'Bitstream', 'Errorlog', 'Item', 'ItemRevision', 'Folder', 'License');
   public $_daos = array();
   public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration', 'Demo');
@@ -715,5 +715,4 @@ class AdminController extends AppController
 
     // Display the form
     }
-
-} // end class
+  } // end class

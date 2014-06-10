@@ -14,4 +14,4 @@ PURPOSE.  See the above copyright notices for more information.
 class Validation_AppController extends MIDAS_GlobalModule
   {
     public $moduleName='validation';
-  } //end class
+  } // end class

@@ -24,7 +24,7 @@ require_once BASE_PATH.'/core/models/base/ActivedownloadModelBase.php';
  * \class ActivedownloadModel
  */
 class ActivedownloadModel extends ActivedownloadModelBase
-{
+  {
   /** Check whether an active download exists for the given ip */
   public function getByIp($ip)
     {
@@ -39,5 +39,4 @@ class ActivedownloadModel extends ActivedownloadModelBase
       }
     return false;
     }
-
-}  // end class
+  } // end class

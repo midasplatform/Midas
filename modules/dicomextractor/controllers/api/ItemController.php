@@ -21,9 +21,8 @@
 /**
  *  WebApi controller for Item Resource (in dicomextractor module)
  */
-
 class Apidicomextractor_ItemController extends ApiController
-{
+  {
   /**
    * The put action handles PUT requests and receives an 'id' parameter; it
    * should update the server resource state of the resource identified by
@@ -44,5 +43,4 @@ class Apidicomextractor_ItemController extends ApiController
     {
     $this->_response->setHeader('Allow', 'OPTIONS, PUT');
     }
-
-}
+  }

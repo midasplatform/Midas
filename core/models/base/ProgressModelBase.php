@@ -31,7 +31,7 @@
  * progress is indeterminate.
  */
 abstract class ProgressModelBase extends AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -93,4 +93,4 @@ abstract class ProgressModelBase extends AppModel
     session_write_close();
     parent::save($dao);
     }
-}
+  }

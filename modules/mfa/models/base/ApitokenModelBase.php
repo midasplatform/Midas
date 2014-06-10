@@ -23,7 +23,7 @@
  * real api token, which they will have access to once they enter their OTP correctly.
  */
 abstract class Mfa_ApitokenModelBase extends Mfa_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -57,4 +57,4 @@ abstract class Mfa_ApitokenModelBase extends Mfa_AppModel
 
     return $newToken;
     }
-}
+  }

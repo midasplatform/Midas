@@ -9,13 +9,12 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+
 include_once BASE_PATH . '/modules/batchmake/constant/module.php';
+
 /** CondorJob Base class */
-class Batchmake_CondorJobModelBase extends Batchmake_AppModel {
-
-
-
-
+class Batchmake_CondorJobModelBase extends Batchmake_AppModel
+  {
   /** constructor */
   public function __construct()
     {
@@ -34,8 +33,4 @@ class Batchmake_CondorJobModelBase extends Batchmake_AppModel {
       'post_filename' => array('type' => MIDAS_DATA));
     $this->initialize(); // required
     }
-
-
-
-
-}  // end class Batchmake_CondorJobModelBase
+  } // end class

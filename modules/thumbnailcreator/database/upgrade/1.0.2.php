@@ -1,11 +1,10 @@
 <?php
-
 /**
  * Moves all of our large item thumbnails into the default assetstore
  * as bitstreams.
  */
 class Thumbnailcreator_Upgrade_1_0_2 extends MIDASUpgrade
-{
+  {
   var $assetstore;
 
   public function preUpgrade()
@@ -69,6 +68,5 @@ class Thumbnailcreator_Upgrade_1_0_2 extends MIDASUpgrade
     $bitstreamDao = $bitstreamModel->createThumbnail($this->assetstore, $oldpath);
     return $bitstreamDao;
     }
-
-}
+  }
 

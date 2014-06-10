@@ -20,7 +20,7 @@
 
 /** License Model Base*/
 abstract class LicenseModelBase extends AppModel
-{
+  {
   /** Constructor*/
   public function __construct()
     {
@@ -38,5 +38,4 @@ abstract class LicenseModelBase extends AppModel
 
   /** Return all available licenses */
   abstract function getAll();
-
-} // end class AssetstoreModelBase
+  } // end class

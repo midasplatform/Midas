@@ -13,4 +13,4 @@ PURPOSE.  See the above copyright notices for more information.
 class Dicomextractor_AppController extends MIDAS_GlobalModule
   {
   public $moduleName='dicomextractor';
-  } //end class
+  } // end class

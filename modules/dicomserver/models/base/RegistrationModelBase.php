@@ -9,10 +9,12 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-include_once BASE_PATH . '/modules/dicomserver/constant/module.php';
-/** RegistrationModel Base class */
-abstract class Dicomserver_RegistrationModelBase extends Dicomserver_AppModel {
 
+include_once BASE_PATH . '/modules/dicomserver/constant/module.php';
+
+/** RegistrationModel Base class */
+abstract class Dicomserver_RegistrationModelBase extends Dicomserver_AppModel
+  {
   /**
    * constructor
    */
@@ -47,6 +49,4 @@ abstract class Dicomserver_RegistrationModelBase extends Dicomserver_AppModel {
     $this->save($registrationDao);
     return $registrationDao;
     }
-
-
-}  // end class Dicomserver_RegistrationModelBase
+  } // end class

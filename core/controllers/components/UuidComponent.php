@@ -20,8 +20,7 @@
 
 /** UuidComponent componenet */
 class UuidComponent extends AppComponent
-{
-
+  {
   /** Get using id*/
   public function getByUid($uuid)
     {
@@ -66,4 +65,4 @@ class UuidComponent extends AppComponent
       }
     return false;
     }
-} // end class
+  } // end class

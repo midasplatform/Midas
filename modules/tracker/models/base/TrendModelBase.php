@@ -14,7 +14,7 @@ PURPOSE.  See the above copyright notices for more information.
  * Trend Model Base
  */
 abstract class Tracker_TrendModelBase extends Tracker_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -135,4 +135,4 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     $notificationModel->deleteByTrend($trend);
     parent::delete($trend);
     }
-}
+  }

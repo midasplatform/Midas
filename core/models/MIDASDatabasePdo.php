@@ -23,7 +23,7 @@
  *  Global model methods
  */
 class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseInterface
-{
+  {
 
   protected $_name;
   protected $_mainData;
@@ -403,4 +403,4 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     return $count['COUNT'];
     }//end getCountAll
 
-} //end class MIDASDatabasePdo
+  } // end class

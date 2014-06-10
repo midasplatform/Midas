@@ -22,7 +22,7 @@ require_once BASE_PATH.'/modules/oauth/models/base/CodeModelBase.php';
 
 /** pdo model implementation */
 class Oauth_CodeModel extends Oauth_CodeModelBase
-{
+  {
   /**
    * Return all auth code records for the given user
    */
@@ -65,4 +65,4 @@ class Oauth_CodeModel extends Oauth_CodeModelBase
       $tmpDao = null; //mark for memory reclamation
       }
     }
-}
+  }

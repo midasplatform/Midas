@@ -20,7 +20,7 @@
 
 /** ItemRevisionModelBase*/
 abstract class ItemRevisionModelBase extends AppModel
-{
+  {
   /** Constructor */
   public function __construct()
     {
@@ -177,6 +177,4 @@ abstract class ItemRevisionModelBase extends AppModel
       }
     parent::save($dao);
     }
-
-
-} // end class ItemRevisionModelBase
+  } // end class

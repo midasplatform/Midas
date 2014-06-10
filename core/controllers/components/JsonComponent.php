@@ -134,4 +134,4 @@ class JsonComponent extends AppComponent
       $array = utf8_decode($array);
       }
     }
-}
+  }

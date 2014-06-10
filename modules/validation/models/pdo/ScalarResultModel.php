@@ -9,13 +9,14 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/validation/models/base/ScalarResultModelBase.php';
 
 /**
  * ScalarResult PDO Model
  */
 class Validation_ScalarResultModel extends Validation_ScalarResultModelBase
-{
+  {
   /**
    * Return all the record in the table
    * @return array of ScalarResultDao
@@ -32,4 +33,4 @@ class Validation_ScalarResultModel extends Validation_ScalarResultModelBase
       }
     return $rowsetAnalysed;
     }
-}
+  }

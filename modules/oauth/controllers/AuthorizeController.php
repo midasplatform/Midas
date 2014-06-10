@@ -20,7 +20,7 @@
 
 /** Handles grant authorization requests from the user agent */
 class Oauth_AuthorizeController extends Oauth_AppController
-{
+  {
   public $_models = array('User');
   public $_moduleModels = array('Client', 'Code');
 

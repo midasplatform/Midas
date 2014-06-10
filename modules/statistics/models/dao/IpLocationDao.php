@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** dao for the statistics_ip_location model */
 class Statistics_IpLocationDao extends Statistics_AppDao
-{
+  {
   public $_model = 'IpLocation';
   public $_module = 'statistics';
-}
+  }

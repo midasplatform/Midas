@@ -17,11 +17,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/ratings/models/base/ItemratingModelBase.php';
 
 /** Item rating model implementation */
 class Ratings_ItemratingModel extends Ratings_ItemratingModelBase
-{
+  {
   /**
    * Set the rating on an item for a user (overwrites if already exists)
    * If a 0 rating is passed, any existing rating will be removed
@@ -114,5 +115,4 @@ class Ratings_ItemratingModel extends Ratings_ItemratingModelBase
     {
     Zend_Registry::get('dbAdapter')->delete($this->_name, 'item_id = '.$item->getKey());
     }
-}
-
+  }

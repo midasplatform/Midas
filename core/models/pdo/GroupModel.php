@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/GroupModelBase.php';
  *  Pdo Model
  */
 class GroupModel extends GroupModelBase
-{
+  {
 
   /** Get a groups by Community */
   function findByCommunity($communityDao)
@@ -119,4 +119,4 @@ class GroupModel extends GroupModelBase
       }
     return $return;
     } // end getCommunitiesFromSearch()
-}// end class
+  } // end class

@@ -31,7 +31,7 @@
  *     - change ajax callst o be through web api, and standard ajax
  */
 class Batchmake_ConfigController extends Batchmake_AppController
-{
+  {
 
 
 
@@ -153,4 +153,4 @@ class Batchmake_ConfigController extends Batchmake_AppController
 
 
 
-}//end class
+  } // end class

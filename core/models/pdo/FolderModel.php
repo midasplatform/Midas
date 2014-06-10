@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/FolderModelBase.php';
  * \brief Pdo Model
  */
 class FolderModel extends FolderModelBase
-{
+  {
   /** get All*/
   function getAll()
     {
@@ -1335,4 +1335,4 @@ class FolderModel extends FolderModelBase
       $this->_recomputeSubtree($child, $count, $max, $progressDao);
       }
     }
-} // end class
+  } // end class

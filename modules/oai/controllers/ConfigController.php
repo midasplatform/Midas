@@ -20,7 +20,7 @@
 
 /** Config controller*/
 class Oai_ConfigController extends Oai_AppController
-{
+  {
   public $_moduleForms = array('Config');
   public $_components = array('Utility', 'Date');
   public $_moduleModels = array();
@@ -72,4 +72,4 @@ class Oai_ConfigController extends Oai_AppController
     }
 
 
-}//end class
+  } // end class

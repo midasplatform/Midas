@@ -23,7 +23,7 @@
  * for all of the supported OTP technologies.
  */
 class Mfa_OtpComponent extends AppComponent
-{
+  {
   /** Constructor */
   function __construct()
     {
@@ -115,10 +115,11 @@ class Mfa_OtpComponent extends AppComponent
           radius_strerror($rh));
       }
 
-    if(!radius_create_request($rh, RADIUS_ACCESS_REQUEST)) {
+    if(!radius_create_request($rh, RADIUS_ACCESS_REQUEST))
+      {
       throw new Zend_Exception('Cannot process requests to RADIUS server: ' .
         radius_strerror($rh));
-    }
+      }
 
 
     /* this is the key parameter */
@@ -149,5 +150,4 @@ class Mfa_OtpComponent extends AppComponent
           radius_strerror($rh));
       }
     }
-
-}
+  }

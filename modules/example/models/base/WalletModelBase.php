@@ -54,4 +54,4 @@ class Example_WalletModelBase extends Example_AppModel
     return $wallet;
     } // end createWallet()
 
-  }  // end class Example_WalletModelBase
+  } // end class

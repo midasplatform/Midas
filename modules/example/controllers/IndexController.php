@@ -21,7 +21,7 @@ require_once BASE_PATH . '/modules/example/AppController.php';
 
 /** example index controller*/
 class Example_IndexController extends Example_AppController
-{
+  {
 
   /** init method */
   function init()
@@ -37,4 +37,4 @@ class Example_IndexController extends Example_AppController
 
 
 
-}//end class
+  } // end class

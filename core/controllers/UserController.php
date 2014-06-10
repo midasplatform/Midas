@@ -1284,4 +1284,4 @@ class UserController extends AppController
     $this->getLogger()->info('User '.$name.' successfully deleted');
     echo JsonComponent::encode(array(true, 'User '.$name.' successfully deleted'));
     }
-  }//end class
+  } // end class

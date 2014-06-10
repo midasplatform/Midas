@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** test cleanup module behavior */
 class CleanupPerformTest extends ControllerTestCase
-{
+  {
   /** set up tests*/
   public function setUp()
     {
@@ -117,4 +117,4 @@ class CleanupPerformTest extends ControllerTestCase
 
     echo 'Log from task: '.$logs[0]->getLog();
     }
-}
+  }

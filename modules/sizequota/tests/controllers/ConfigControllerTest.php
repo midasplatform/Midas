@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Test management of the size quotas behavior */
 class PerformTest extends ControllerTestCase
-{
+  {
   /** set up tests*/
   public function setUp()
     {
@@ -218,4 +218,4 @@ class PerformTest extends ControllerTestCase
     $this->assertEquals($resp['freeSpace'], '10000');
     $this->assertEquals($resp['hFreeSpace'], '9.8 KB');
     }
-}
+  }

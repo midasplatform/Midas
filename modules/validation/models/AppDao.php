@@ -14,6 +14,6 @@ PURPOSE.  See the above copyright notices for more information.
  * AppDao for the validation module.
  */
 class Validation_AppDao extends MIDAS_GlobalDao
-{
+  {
   public $moduleName = 'validation';
-} //end class
+  } // end class

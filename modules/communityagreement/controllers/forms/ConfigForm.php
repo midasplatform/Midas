@@ -27,7 +27,7 @@
  */
 
 class Communityagreement_ConfigForm extends AppForm
-{
+  {
   /**
    * Create create_agreement form
    *
@@ -48,4 +48,4 @@ class Communityagreement_ConfigForm extends AppForm
     return $form;
     }
 
-} // end class
+  } // end class

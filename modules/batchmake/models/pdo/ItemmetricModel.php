@@ -17,11 +17,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH . '/modules/batchmake/models/base/ItemmetricModelBase.php';
 
 /** Batchmake_ItemmetricModel */
-class Batchmake_ItemmetricModel extends Batchmake_ItemmetricModelBase {
-
+class Batchmake_ItemmetricModel extends Batchmake_ItemmetricModelBase
+  {
   /**
    * @return all rows stored.
    */
@@ -30,6 +31,4 @@ class Batchmake_ItemmetricModel extends Batchmake_ItemmetricModelBase {
     $rowsetDAOs = $this->database->getAll('Itemmetric', 'batchmake');
     return $rowsetDAOs;
     }
-
-
-}
+  }

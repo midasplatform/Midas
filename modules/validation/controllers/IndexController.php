@@ -11,7 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 /** demo controller*/
 class Validation_IndexController extends Validation_AppController
-{
+  {
 
   public $_models = array('User', 'Item', 'Folder');
   public $_moduleModels = array('Dashboard');
@@ -44,4 +44,4 @@ class Validation_IndexController extends Validation_AppController
     $this->view->nDashboards = count($dashboards);
     }
 
-}//end class
+  } // end class

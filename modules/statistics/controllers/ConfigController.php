@@ -20,7 +20,7 @@
 
 /** Statistics module configure controller */
 class Statistics_ConfigController extends Statistics_AppController
-{
+  {
   public $_moduleForms = array('Config');
   public $_components = array('Utility', 'Date');
 
@@ -128,4 +128,4 @@ class Statistics_ConfigController extends Statistics_AppController
       }
     }
 
-}//end class
+  } // end class

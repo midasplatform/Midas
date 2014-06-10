@@ -172,4 +172,4 @@ class Packages_Notification extends ApiEnabled_Notification
            '"><img alt="" src="'.$baseUrl.'/modules/'.$this->moduleName.
            '/public/images/package_go.png" /> '.$this->t('Manage '.$type).'</a></li>';
     }
-  } //end class
+  } // end class

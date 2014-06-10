@@ -17,10 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** Batchmake_ItemmetricDao */
-class Batchmake_ItemmetricDao extends AppDao {
 
+/** Batchmake_ItemmetricDao */
+class Batchmake_ItemmetricDao extends AppDao
+  {
   public $_model = 'Itemmetric';
   public $_module = 'batchmake';
-
-}
+  }

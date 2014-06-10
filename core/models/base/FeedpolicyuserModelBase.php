@@ -20,7 +20,7 @@
 
 /** FeedpolicyuserModelBase*/
 abstract class FeedpolicyuserModelBase extends AppModel
-{
+  {
   /** Contructor*/
   public function __construct()
     {
@@ -71,5 +71,4 @@ abstract class FeedpolicyuserModelBase extends AppModel
     $this->save($policyUser);
     return $policyUser;
     } // end createPolicy
-
-} // end class FeedpolicyuserModelBase
+  } // end class

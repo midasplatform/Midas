@@ -103,4 +103,4 @@ class Scheduler_Notification extends MIDAS_Notification
     $jobModel = MidasLoader::loadModel('Job', $this->moduleName);
     $jobModel->removeUserReferences($user->getKey());
     }
-  } //end class
+  } // end class

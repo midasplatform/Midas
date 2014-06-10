@@ -20,8 +20,7 @@
 
 /** Web API Authentication Component */
 class Remoteprocessing_JobComponent extends AppComponent
-{
-
+  {
   /** Constructor */
   function __construct()
     {
@@ -211,5 +210,4 @@ class Remoteprocessing_JobComponent extends AppComponent
       }
     return $return;
     }
-
-}
+  }

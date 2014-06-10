@@ -14,7 +14,7 @@ PURPOSE.  See the above copyright notices for more information.
  * Scalar Model Base
  */
 abstract class Tracker_ScalarModelBase extends Tracker_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -78,4 +78,4 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     $this->save($scalar);
     return $scalar;
     }
-}
+  }

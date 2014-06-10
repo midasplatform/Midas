@@ -1,7 +1,7 @@
 <?php
 
 class Upgrade_3_2_1 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
     }
@@ -22,4 +22,4 @@ class Upgrade_3_2_1 extends MIDASUpgrade
     $settingModel = MidasLoader::loadModel('Setting');
     $settingModel->setConfig('adminuser', $id);
     }
-}
+  }

@@ -2,7 +2,7 @@
 
 /** Configure controller for cleanup module */
 class Cleanup_ConfigController extends Cleanup_AppController
-{
+  {
   public $_moduleForms = array('Config');
   public $_components = array('Utility', 'Date');
 
@@ -77,4 +77,4 @@ class Cleanup_ConfigController extends Cleanup_AppController
       }
     }
 
-}//end class
+  } // end class

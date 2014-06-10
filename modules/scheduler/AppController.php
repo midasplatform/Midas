@@ -32,4 +32,4 @@ PURPOSE.  See the above copyright notices for more information.
 class Scheduler_AppController extends MIDAS_GlobalModule
   {
   public $moduleName='scheduler';
-  } //end class
+  } // end class

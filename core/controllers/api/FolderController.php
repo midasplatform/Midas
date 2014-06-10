@@ -22,7 +22,7 @@
  *  WebApi Controller for Folder Resource
  */
 class Rest_FolderController extends ApiController
-{
+  {
   /**
    * The index action handles index/list requests; it should respond with a
    * list of the requested resources.
@@ -107,5 +107,4 @@ class Rest_FolderController extends ApiController
     {
     $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, POST, PUT, DELETE');
     }
-
-}
+  }

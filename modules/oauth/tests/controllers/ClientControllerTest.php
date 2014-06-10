@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** test oauth client controller */
 class OauthClientControllerTest extends ControllerTestCase
-{
+  {
   /** set up tests*/
   public function setUp()
     {
@@ -30,4 +30,4 @@ class OauthClientControllerTest extends ControllerTestCase
   public function testStub()
     {
     }
-}
+  }

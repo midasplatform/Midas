@@ -9,13 +9,14 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/tracker/models/base/TrendModelBase.php';
 
 /**
  * Trend PDO Model
  */
 class Tracker_TrendModel extends Tracker_TrendModelBase
-{
+  {
   /**
    * Return the matching trend dao if it exists
    */
@@ -144,4 +145,4 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
       }
     return $trends;
     }
-}
+  }

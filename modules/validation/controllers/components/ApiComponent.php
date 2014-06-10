@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Component for api methods */
 class Validation_ApiComponent extends AppComponent
-{
+  {
 
   /**
    * Helper function for verifying keys in an input array
@@ -505,4 +505,4 @@ class Validation_ApiComponent extends AppComponent
                  'scores' => $scores);
     }
 
-} // end class
+  } // end class

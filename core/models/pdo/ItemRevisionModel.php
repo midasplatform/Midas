@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/ItemRevisionModelBase.php';
  * \brief Pdo Model
  */
 class ItemRevisionModel extends ItemRevisionModelBase
-{
+  {
   /** get by uuid*/
   function getByUuid($uuid)
     {
@@ -224,4 +224,4 @@ class ItemRevisionModel extends ItemRevisionModelBase
       $this->delete($revision);
       }
     }
-} // end class
+  } // end class

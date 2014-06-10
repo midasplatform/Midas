@@ -25,6 +25,6 @@ require_once BASE_PATH.'/core/models/base/CommunityInvitationModelBase.php';
  * \brief Pdo Model
  */
 class CommunityInvitationModel extends CommunityInvitationModelBase
-{
+  {
 
-} // end class
+  } // end class

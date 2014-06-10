@@ -14,7 +14,7 @@ require_once BASE_PATH.'/modules/statistics/models/base/IpLocationModelBase.php'
 
 /** statistics Ip Location model */
 class Statistics_IpLocationModel extends Statistics_IpLocationModelBase
-{
+  {
   /**
    * Return the record for the given ip
    */
@@ -49,4 +49,4 @@ class Statistics_IpLocationModel extends Statistics_IpLocationModelBase
       }
     return $result;
     }
-}  // end class
+  } // end class

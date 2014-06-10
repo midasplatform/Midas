@@ -22,7 +22,7 @@
  * Apidocs Controller for WebApi
  **/
 class ApidocsController extends AppController
-{
+  {
   public $_components = array('Apidocs');
 
   /** init api actions*/
@@ -79,5 +79,4 @@ class ApidocsController extends AppController
     $results = $this->Component->Apidocs->getResourceApiDocs($resource, $module);
     echo JsonComponent::encode($results);
     }
-
-}
+  }

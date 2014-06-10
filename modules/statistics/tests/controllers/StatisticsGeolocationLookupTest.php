@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** test statistics geolocation behavior */
 class StatisticsGeolocationLookupTest extends ControllerTestCase
-{
+  {
   /** set up tests*/
   public function setUp()
     {
@@ -82,4 +82,4 @@ class StatisticsGeolocationLookupTest extends ControllerTestCase
 
     print "Log = ".$logs[0]->getLog();
     }
-}
+  }

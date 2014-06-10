@@ -20,7 +20,7 @@
 
 /** config form*/
 class Pvw_ConfigForm extends AppForm
-{
+  {
   /** create form */
   public function createConfigForm()
     {
@@ -39,4 +39,4 @@ class Pvw_ConfigForm extends AppForm
     $form->addElements(array($pvpython, $ports, $displayEnv, $submit));
     return $form;
     }
-} // end class
+  } // end class

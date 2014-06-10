@@ -11,7 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 class Dicomserver_ConfigController extends Dicomserver_AppController
-{
+  {
    public $_moduleComponents = array('Server');
    public $_moduleForms=array('Config');
    public $_components=array('Utility', 'Date');
@@ -107,4 +107,4 @@ class Dicomserver_ConfigController extends Dicomserver_AppController
     $this->view->dashboard = $dashboard_array;
     }
 
-}//end class
+  } // end class

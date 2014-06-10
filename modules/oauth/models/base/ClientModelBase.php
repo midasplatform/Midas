@@ -17,8 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 abstract class Oauth_ClientModelBase extends Oauth_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -91,4 +92,4 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
 
     parent::delete($clientDao);
     }
-}
+  }

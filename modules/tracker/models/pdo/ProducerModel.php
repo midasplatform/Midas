@@ -9,13 +9,14 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/tracker/models/base/ProducerModelBase.php';
 
 /**
  * Producer PDO Model
  */
 class Tracker_ProducerModel extends Tracker_ProducerModelBase
-{
+  {
   /**
    * Return all producers for the given community
    */
@@ -44,4 +45,4 @@ class Tracker_ProducerModel extends Tracker_ProducerModelBase
                           ->where('display_name = ?', $displayName);
     return $this->initDao('Producer', $this->database->fetchRow($sql), $this->moduleName);
     }
-}
+  }

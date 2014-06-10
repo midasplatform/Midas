@@ -20,7 +20,7 @@
 
 /** FolderpolicyuserModelBase */
 abstract class FolderpolicyuserModelBase extends AppModel
-{
+  {
   /** Constructor*/
   public function __construct()
     {
@@ -79,5 +79,4 @@ abstract class FolderpolicyuserModelBase extends AppModel
 
     return $policyUser;
     }
-
-} // end class FolderpolicyuserModelBase
+  } // end class

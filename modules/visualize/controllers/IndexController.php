@@ -20,7 +20,7 @@
 
 /** Index controller*/
 class Visualize_IndexController extends Visualize_AppController
-{
+  {
   public $_moduleComponents = array('Main');
   public $_models = array('Item');
 

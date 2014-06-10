@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 include_once BASE_PATH . '/library/KWUtils.php';
 /** Exract dicom metadata */
 class Dicomextractor_ExtractorComponent extends AppComponent
-{
+  {
 
   /**
    * Check whether a given application is configured properly.
@@ -264,4 +264,4 @@ class Dicomextractor_ExtractorComponent extends AppComponent
       }
     }
 
-} // end class
+  } // end class

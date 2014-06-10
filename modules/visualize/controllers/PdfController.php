@@ -20,7 +20,7 @@
 
 /** Pdf controller*/
 class Visualize_PdfController extends Visualize_AppController
-{
+  {
   public $_models = array('Item', 'ItemRevision', 'Bitstream');
   /** index */
   public function indexAction()
@@ -47,4 +47,4 @@ class Visualize_PdfController extends Visualize_AppController
 
     echo "</html>";
     }
-} // end class
+  } // end class

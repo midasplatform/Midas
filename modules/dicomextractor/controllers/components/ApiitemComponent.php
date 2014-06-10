@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Apiitem Component for api methods */
 class Dicomextractor_ApiitemComponent extends AppComponent
-{
+  {
   /**
    * Extract the dicom metadata from a revision
    * @path /dicomextractor/item/{id}
@@ -21,7 +21,7 @@ class Dicomextractor_ApiitemComponent extends AppComponent
    * @return the id of the revision
    */
   function extract($args)
-  {
+    {
     $apihelperComponent = MidasLoader::loadComponent('Apihelper');
     $apihelperComponent->validateParams($args, array('id'));
 
@@ -44,6 +44,5 @@ class Dicomextractor_ApiitemComponent extends AppComponent
     $dicomComponent->extract($revisionDao);
     $dicomComponent->thumbnail($itemDao);
     return json_encode($revisionDao);
+    }
   }
-
-}

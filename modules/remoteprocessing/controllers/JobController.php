@@ -19,7 +19,7 @@
 =========================================================================*/
 /** job controller*/
 class Remoteprocessing_JobController extends Remoteprocessing_AppController
-{
+  {
   public $_models = array('Item', 'Bitstream', 'ItemRevision', 'Assetstore', 'Folder');
   public $_components = array('Upload');
   public $_moduleComponents = array('Executable', 'Job');
@@ -383,4 +383,4 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       }
     } //end valid entry
 
-}//end class
+  } // end class

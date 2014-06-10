@@ -20,8 +20,7 @@
 
 /** Component for api methods */
 class Sizequota_ApiComponent extends AppComponent
-{
-
+  {
   /** Return the user dao */
   private function _callModuleApiMethod($args, $coreApiMethod, $resource = null,  $hasReturn = true)
     {
@@ -65,5 +64,4 @@ class Sizequota_ApiComponent extends AppComponent
     {
     return $this->_callModuleApiMethod($args, 'set', 'quota');
     }
-
-}
+  }

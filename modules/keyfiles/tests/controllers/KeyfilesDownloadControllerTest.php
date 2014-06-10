@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** test keyfiles download controller */
 class KeyfilesDownloadControllerTest extends ControllerTestCase
-{
+  {
   /** set up tests*/
   public function setUp()
     {
@@ -61,4 +61,4 @@ class KeyfilesDownloadControllerTest extends ControllerTestCase
     $this->assertController('download');
     $this->assertAction('batch');
     }
-}
+  }

@@ -19,7 +19,7 @@
 =========================================================================*/
 /** Index */
 class Oai_IndexController extends Oai_AppController
-{
+  {
   public $_moduleModels = array();
   public $_models = array();
   public $_components = array();

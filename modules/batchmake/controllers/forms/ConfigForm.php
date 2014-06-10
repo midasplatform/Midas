@@ -22,7 +22,7 @@
  * Batchmake_ConfigForm
  */
 class Batchmake_ConfigForm extends AppForm
-{
+  {
 
   /**
    * @method createConfigForm
@@ -52,4 +52,4 @@ class Batchmake_ConfigForm extends AppForm
     $form->addElements($formElements);
     return $form;
     }
-} // end class
+  } // end class

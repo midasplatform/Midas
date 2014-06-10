@@ -1,10 +1,9 @@
 <?php
-
 /**
  * Adds revision URL as a configuration parameter on producers
  */
 class Tracker_Upgrade_1_0_2 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
     }
@@ -22,4 +21,4 @@ class Tracker_Upgrade_1_0_2 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
+  }

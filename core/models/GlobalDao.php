@@ -23,7 +23,7 @@
  *  Global dao methods
  */
 class MIDAS_GlobalDao
-{
+  {
   protected $key;
 
   /**
@@ -278,4 +278,4 @@ class MIDAS_GlobalDao
     return $return;
     }
 
-}// end class
+  } // end class

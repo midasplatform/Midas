@@ -19,7 +19,7 @@
 =========================================================================*/
 
 class Scheduler_ConfigController extends Scheduler_AppController
-{
+  {
    public $_moduleForms=array('Config');
    public $_components=array('Utility', 'Date');
    public $_moduleModels=array('Job', 'JobLog');
@@ -33,4 +33,4 @@ class Scheduler_ConfigController extends Scheduler_AppController
     $this->view->jobsErrors = $this->Scheduler_Job->getLastErrors();
     }
 
-}//end class
+  } // end class

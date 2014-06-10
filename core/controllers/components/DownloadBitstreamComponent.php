@@ -167,7 +167,7 @@ class DownloadBitstreamComponent extends AppComponent
       exit();
       }
     }
-  } //end class
+  } // end class
 
 /**
  * Gets an environment variable from available sources, and provides emulation

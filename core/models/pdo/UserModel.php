@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/UserModelBase.php';
  *  Pdo Model
  */
 class UserModel extends UserModelBase
-{
+  {
   /** get by uuid*/
   function getByUuid($uuid)
     {
@@ -334,4 +334,4 @@ class UserModel extends UserModelBase
       }
     return $pw === $hash;
     }
-}// end class
+  } // end class

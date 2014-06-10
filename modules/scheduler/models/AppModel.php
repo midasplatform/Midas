@@ -19,7 +19,6 @@
 =========================================================================*/
 
 class Scheduler_AppModel extends MIDASModel
-{
+  {
   public $moduleName = 'scheduler';
-
-}
+  }

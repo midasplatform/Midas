@@ -22,7 +22,7 @@
  * This class is used to create thumbnails
  */
 class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppController
-{
+  {
   public $_models = array('Assetstore', 'Bitstream', 'Item');
   public $_moduleModels = array('Itemthumbnail');
   public $_moduleDaos = array('Itemthumbnail');
@@ -127,4 +127,4 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
       $downloadBitstreamComponent->download($bitstream);
       }
     }
-}//end class
+  } // end class

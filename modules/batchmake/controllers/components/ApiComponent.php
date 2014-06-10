@@ -24,7 +24,7 @@ define('MIDAS_BATCHMAKE_INVALID_PARAMETER', -150);
 
 /** Component for api methods */
 class Batchmake_ApiComponent extends AppComponent
-{
+  {
 
 
   /**
@@ -196,7 +196,7 @@ class Batchmake_ApiComponent extends AppComponent
 
 
 
-} // end class
+  } // end class
 
 
 

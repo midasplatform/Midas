@@ -9,13 +9,14 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/packages/models/base/ProjectModelBase.php';
 
 /**
  * Package PDO Model
  */
 class Packages_ProjectModel extends Packages_ProjectModelBase
-{
+  {
   /**
    * Get all enabled project communities
    */
@@ -50,5 +51,4 @@ class Packages_ProjectModel extends Packages_ProjectModelBase
     $dao = $this->initDao('Project', $row, 'packages');
     return $dao;
     }
-
-}
+  }

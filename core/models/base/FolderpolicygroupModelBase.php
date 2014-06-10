@@ -20,7 +20,7 @@
 
 /** FolderpolicygroupModelBase */
 abstract class FolderpolicygroupModelBase extends AppModel
-{
+  {
   /** Constructor */
   public function __construct()
     {
@@ -90,6 +90,4 @@ abstract class FolderpolicygroupModelBase extends AppModel
       }
     return $policyGroupDao;
     }
-
-
-} // end class FolderpolicygroupModelBase
+  } // end class

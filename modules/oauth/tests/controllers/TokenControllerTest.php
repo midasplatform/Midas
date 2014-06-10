@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** test oauth token controller */
 class OauthTokenControllerTest extends ControllerTestCase
-{
+  {
   /** set up tests*/
   public function setUp()
     {
@@ -274,4 +274,4 @@ class OauthTokenControllerTest extends ControllerTestCase
     $this->dispatchUri('/oauth/token/delete?tokenId='.$refreshToken->getKey(), $adminUser);
     $this->resetAll();
     }
-}
+  }

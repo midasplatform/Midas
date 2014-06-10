@@ -22,7 +22,7 @@ require_once BASE_PATH.'/core/models/base/UserapiModelBase.php';
 
 /** User api key model implementation */
 class UserapiModel extends UserapiModelBase
-{
+  {
   /**
    * Get UserapiDao by
    * @param string $appname Application Name
@@ -190,4 +190,4 @@ class UserapiModel extends UserapiModelBase
       }
     return $return;
     }
-}
+  }

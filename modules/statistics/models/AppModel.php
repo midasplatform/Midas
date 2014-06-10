@@ -20,6 +20,6 @@
 
 /** Base class for models in the statistics module */
 class Statistics_AppModel extends MIDASModel
-{
+  {
   public $moduleName = 'statistics';
-}
+  }

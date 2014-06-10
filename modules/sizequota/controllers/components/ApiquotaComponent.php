@@ -24,8 +24,7 @@ define('MIDAS_SIZEQUOTA_INVALID_PARAMETER', -150);
 
 /** Sizequot Component for api methods */
 class Sizequota_ApiquotaComponent extends AppComponent
-{
-
+  {
   /**
    * Helper function for verifying keys in an input array
    */
@@ -149,5 +148,4 @@ class Sizequota_ApiquotaComponent extends AppComponent
     $quotaModel = MidasLoader::loadModel('FolderQuota', 'sizequota');
     return $quotaModel->setQuota($folder, $quota);
     }
-
-}
+  }

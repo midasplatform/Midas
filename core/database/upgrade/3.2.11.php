@@ -5,8 +5,7 @@
  * from community and user tables
  */
 class Upgrade_3_2_11 extends MIDASUpgrade
-{
-
+  {
   public function preUpgrade()
     {
     }
@@ -30,5 +29,4 @@ class Upgrade_3_2_11 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-
-}
+  }

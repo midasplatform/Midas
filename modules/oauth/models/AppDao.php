@@ -21,4 +21,4 @@
 /** Module App Dao */
 class Oauth_AppDao extends MIDAS_GlobalDao
   {
-  } //end class
+  } // end class

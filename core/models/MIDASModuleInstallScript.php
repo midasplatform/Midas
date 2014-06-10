@@ -35,7 +35,7 @@
  * Subclasses may implement two callbacks, preInstall() and postInstall()
  */
 class MIDASModuleInstallScript
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -51,4 +51,4 @@ class MIDASModuleInstallScript
     {
     }
 
-} //end class MIDASModuleInstallScript
+  } // end class

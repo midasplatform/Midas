@@ -17,11 +17,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/pvw/models/base/InstanceModelBase.php';
 
 /** Instance model implementation */
 class Pvw_InstanceModel extends Pvw_InstanceModelBase
-{
+  {
   /**
    * Return all daos of this type
    */
@@ -35,4 +36,4 @@ class Pvw_InstanceModel extends Pvw_InstanceModelBase
       }
     return $daos;
     }
-}
+  }

@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** test slicerpackages notifier behavior */
 class NotificationTest extends ControllerTestCase
-{
+  {
   /** set up tests*/
   public function setUp()
     {
@@ -48,4 +48,4 @@ class NotificationTest extends ControllerTestCase
     $this->Item->delete($itemDao);
     $this->assertEquals(0, count($packageModel->getAll()));
     }
-}
+  }

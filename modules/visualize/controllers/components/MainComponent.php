@@ -21,7 +21,7 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /** main  component */
 class Visualize_MainComponent extends AppComponent
-{
+  {
   /** convert to threejs */
   public function convertToThreejs($revision)
     {
@@ -582,4 +582,4 @@ class Visualize_MainComponent extends AppComponent
     reset($objects);
     rmdir($dir);
     }
-} // end class
+  } // end class

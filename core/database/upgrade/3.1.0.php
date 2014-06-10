@@ -19,7 +19,7 @@
 =========================================================================*/
 
 class Upgrade_3_1_0 extends MIDASUpgrade
-{ 
+  { 
   public function preUpgrade()
     {             
     }
@@ -37,4 +37,4 @@ class Upgrade_3_1_0 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
+  }

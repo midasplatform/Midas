@@ -24,7 +24,7 @@ require_once BASE_PATH.'/core/models/base/LicenseModelBase.php';
  * License model
  */
 class LicenseModel extends LicenseModelBase
-{
+  {
   /** get all licenses */
   function getAll()
     {
@@ -55,4 +55,4 @@ class LicenseModel extends LicenseModelBase
     $license->saved = false;
     return true;
     }
-}  // end class
+  } // end class

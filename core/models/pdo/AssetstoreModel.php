@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/AssetstoreModelBase.php';
  * \brief Pdo Model
  */
 class AssetstoreModel extends AssetstoreModelBase
-{
+  {
   /** get All */
   function getAll()
     {
@@ -101,4 +101,4 @@ class AssetstoreModel extends AssetstoreModelBase
       $bitstreamModel->save($bitstream);
       }
     }
-}  // end class
+  } // end class

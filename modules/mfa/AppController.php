@@ -19,6 +19,6 @@
 =========================================================================*/
 
 class Mfa_AppController extends MIDAS_GlobalModule
-{
+  {
   public $moduleName = 'mfa';
-} //end class
+  } // end class

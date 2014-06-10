@@ -23,7 +23,7 @@
  * 
  */
 class Scheduler_WorkflowController extends Scheduler_AppController
-{
+  {
   public $_moduleModels=array();
   public $_moduleComponents=array('Ezc');
 
@@ -103,4 +103,4 @@ class Scheduler_WorkflowController extends Scheduler_AppController
     return $image;
     }
     
-}//end class
+  } // end class

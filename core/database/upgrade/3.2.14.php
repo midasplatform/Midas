@@ -4,8 +4,7 @@
  * Upgrade 3.2.14 fixes bug #1001: folder modified time changed incorrectly
  */
 class Upgrade_3_2_14 extends MIDASUpgrade
-{
-
+  {
   public function preUpgrade()
     {
     }
@@ -33,4 +32,4 @@ class Upgrade_3_2_14 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
+  }

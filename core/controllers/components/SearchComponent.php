@@ -20,7 +20,7 @@
 
 /** Search component */
 class SearchComponent extends AppComponent
-{
+  {
   /** search all the results */
   public function searchAll($userDao, $search, $order)
     {
@@ -143,5 +143,5 @@ class SearchComponent extends AppComponent
       $resultsArray[] = $tmp;
       }
     return $resultsArray;
-    }//formatResults
-}
+    } //formatResults
+  }

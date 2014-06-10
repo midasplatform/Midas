@@ -1,10 +1,9 @@
 <?php
-
 /**
  * Add the ldap_user table for storing ldap users
  */
 class Ldap_Upgrade_1_0_1 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
     }
@@ -35,4 +34,4 @@ class Ldap_Upgrade_1_0_1 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
+  }

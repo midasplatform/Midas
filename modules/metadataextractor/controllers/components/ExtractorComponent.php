@@ -19,7 +19,7 @@
 =========================================================================*/
 
 class Metadataextractor_ExtractorComponent extends AppComponent
-{ 
+  { 
   /** extract metadata */
   public function extract($revision)
     {
@@ -96,4 +96,4 @@ class Metadataextractor_ExtractorComponent extends AppComponent
     return;
     }
     
-} // end class
+  } // end class

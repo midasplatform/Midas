@@ -9,10 +9,10 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+
 require_once BASE_PATH . '/modules/batchmake/models/base/CondorJobModelBase.php';
 
 /** CondorJob class */
-class Batchmake_CondorJobModel extends Batchmake_CondorJobModelBase {
-
-
-}
+class Batchmake_CondorJobModel extends Batchmake_CondorJobModelBase
+  {
+  }

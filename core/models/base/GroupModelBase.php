@@ -20,7 +20,7 @@
 
 /** GroupModelBase*/
 abstract class GroupModelBase extends AppModel
-{
+  {
   /** Constructor*/
   public function __construct()
     {
@@ -140,5 +140,4 @@ abstract class GroupModelBase extends AppModel
       }
     return false;
     }
-
-} // end class GroupModelBase
+  } // end class

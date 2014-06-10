@@ -19,10 +19,9 @@
 =========================================================================*/
 
 class Remoteprocessing_Upgrade_1_0_2 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
-
     }
 
   public function mysql()
@@ -33,10 +32,9 @@ class Remoteprocessing_Upgrade_1_0_2 extends MIDASUpgrade
 
   public function pgsql()
     {
-
     }
 
   public function postUpgrade()
     {
     }
-}
+  }

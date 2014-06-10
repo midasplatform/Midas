@@ -20,7 +20,7 @@
 
 /** Community forms*/
 class CommunityForm extends AppForm
-{
+  {
   /** create create community form */
   public function createCreateForm()
     {
@@ -130,5 +130,4 @@ class CommunityForm extends AppForm
     $form->addElements(array($name, $submit));
     return $form;
     }
-
-} // end class
+  } // end class

@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** DICOM Anonymized upload controller */
 class Dicomanonymize_UploadController extends Dicomanonymize_AppController
-{
+  {
   public $_models = array('License');
 
   /**
@@ -75,4 +75,4 @@ class Dicomanonymize_UploadController extends Dicomanonymize_AppController
                                                                       array('folder' => $folder));
     }
 
-}//end class
+  } // end class

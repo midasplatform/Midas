@@ -9,13 +9,14 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/tracker/models/base/ThresholdNotificationModelBase.php';
 
 /**
  * ThresholdNotification PDO Model
  */
 class Tracker_ThresholdNotificationModel extends Tracker_ThresholdNotificationModelBase
-{
+  {
   /**
    * Called when a scalar is submitted. Returns a list of notifications whose conditions were met.
    */
@@ -65,4 +66,4 @@ class Tracker_ThresholdNotificationModel extends Tracker_ThresholdNotificationMo
       $this->delete($threshold);
       }
     }
-}
+  }

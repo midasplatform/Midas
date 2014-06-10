@@ -17,11 +17,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/comments/models/base/ItemcommentModelBase.php';
 
 /** Item comment model implementation */
 class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
-{
+  {
   /**
    * Get (paginated) comments on an item
    */
@@ -69,4 +70,4 @@ class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
     $row = $this->database->fetchRow($sql);
     return $row['count'];
     }
-}
+  }

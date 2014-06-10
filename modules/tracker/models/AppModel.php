@@ -14,6 +14,6 @@ PURPOSE.  See the above copyright notices for more information.
  * Base model class for the module
  */
 class Tracker_AppModel extends MIDASModel
-{
+  {
   public $moduleName = 'tracker';
-}
+  }

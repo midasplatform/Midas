@@ -11,7 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 /** Trend controller*/
 class Tracker_TrendController extends Tracker_AppController
-{
+  {
   public $_components = array('Breadcrumb');
   public $_models = array('Community');
   public $_moduleModels = array('Producer', 'ThresholdNotification', 'Trend');
@@ -404,4 +404,4 @@ class Tracker_TrendController extends Tracker_AppController
       }
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved'));
     }
-}//end class
+  } // end class

@@ -788,4 +788,4 @@ class UploadController extends AppController
       $this->_redirect('/community/');
       }
     }
-}//end class
+  } // end class

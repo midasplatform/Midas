@@ -21,4 +21,4 @@
 class Landingpage_AppDao extends MIDAS_GlobalDao
   {
     public $moduleName='landingpage';
-  } //end class
+  } // end class

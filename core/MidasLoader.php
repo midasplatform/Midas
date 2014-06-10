@@ -23,7 +23,7 @@
  * It handles importing the required file and instantiating the object of the desired type.
  */
 class MidasLoader
-{
+  {
   /**
    * Load a component
    * @param component The name of the component to load
@@ -187,4 +187,4 @@ class MidasLoader
       return new $classname;
       }
     }
-} // end class
+  } // end class

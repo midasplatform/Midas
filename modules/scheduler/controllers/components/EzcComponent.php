@@ -27,7 +27,7 @@ function __autoload( $className )
   }
 
 class Scheduler_EzcComponent extends AppComponent
-{ 
+  { 
   public function initWorkflowDefinitionStorage()
     {
     $autoloader = Zend_Loader_Autoloader::getInstance();
@@ -43,4 +43,4 @@ class Scheduler_EzcComponent extends AppComponent
     return $definition;
     }
     
-} // end class
+  } // end class

@@ -2,7 +2,7 @@
 
 /** Controller for downloading key files */
 class Keyfiles_DownloadController extends Keyfiles_AppController
-{
+  {
   var $_models = array('Bitstream', 'Folder', 'Item');
 
   /**
@@ -204,4 +204,4 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
     $path .= '/'.$bitstream->getName().'.md5';
     $zip->add_file($path, $bitstream->getChecksum());
     }
-}//end class
+  } // end class

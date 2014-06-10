@@ -334,4 +334,4 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     return;
     }
 
-  } //end class
+  } // end class

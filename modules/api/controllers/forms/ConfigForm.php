@@ -20,7 +20,7 @@
 
 /** api config form */
 class Api_ConfigForm extends AppForm
-{
+  {
   /** create  form */
   public function createConfigForm()
     {
@@ -38,4 +38,4 @@ class Api_ConfigForm extends AppForm
     return $form;
     }
 
-} // end class
+  } // end class

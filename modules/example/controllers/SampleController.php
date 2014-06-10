@@ -54,4 +54,4 @@ class Example_SampleController extends Example_AppController
     }
 
 
-  }//end class
+  } // end class

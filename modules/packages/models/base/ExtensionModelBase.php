@@ -14,7 +14,7 @@ PURPOSE.  See the above copyright notices for more information.
  * Packages Extension Model Base
  */
 abstract class Packages_ExtensionModelBase extends Packages_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -88,5 +88,4 @@ abstract class Packages_ExtensionModelBase extends Packages_AppModel
       return $results['extensions'][0];
       }
     }
-
-}
+  }

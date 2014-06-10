@@ -22,7 +22,7 @@
  * Module configuration controller
  */
 class Solr_ConfigController extends Solr_AppController
-{
+  {
   public $_models = array('Setting');
   public $_moduleForms = array('Config');
 
@@ -90,4 +90,4 @@ class Solr_ConfigController extends Solr_AppController
     echo JsonComponent::encode(array(true, 'Changes saved'));
     }
 
-}//end class
+  } // end class

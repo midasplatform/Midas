@@ -11,7 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 /** test slicerpackages_package model*/
 class PackageModelTest extends DatabaseTestCase
-{
+  {
   /** set up tests*/
   public function setUp()
     {
@@ -30,4 +30,4 @@ class PackageModelTest extends DatabaseTestCase
     $daos = $packageModel->getAll();
     $this->assertEquals(1, count($daos));
     }
-}
+  }

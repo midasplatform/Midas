@@ -23,6 +23,6 @@
  * \brief Dao for Progress object
  */
 class ProgressDao extends AppDao
-{
+  {
   public $_model = 'Progress';
-}
+  }

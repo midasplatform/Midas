@@ -22,6 +22,6 @@
  * \class PendingUserDao
  */
 class PendingUserDao extends AppDao
-{
+  {
   public $_model = 'PendingUser';
-}
+  }

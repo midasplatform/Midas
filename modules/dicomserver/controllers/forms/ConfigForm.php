@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Configuration form for the dicom server */
 class Dicomserver_ConfigForm extends AppForm
-{
+  {
 
   /** create createConfigform */
   public function createConfigForm()
@@ -45,4 +45,4 @@ class Dicomserver_ConfigForm extends AppForm
     return $form;
     }
 
-} // end class
+  } // end class

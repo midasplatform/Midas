@@ -19,7 +19,6 @@
 =========================================================================*/
 
 class Dicomserver_AppModel extends MIDASModel
-{
+  {
   public $moduleName = 'dicomserver';
-
-}
+  }

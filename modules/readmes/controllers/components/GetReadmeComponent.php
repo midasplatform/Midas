@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Exract readme text according to the folder or community*/
 class Readmes_GetReadmeComponent extends AppComponent
-{
+  {
   /**
    * Get the readme text from the specified folder
    */
@@ -59,4 +59,4 @@ class Readmes_GetReadmeComponent extends AppComponent
     $publicFolder = $folderModel->getFolderByName($rootFolder, 'Public');
     return $this->fromFolder($publicFolder);
     }
-}
+  }

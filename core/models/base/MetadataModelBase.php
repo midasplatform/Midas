@@ -20,7 +20,7 @@
 
 /** Metadata Model Base */
 abstract class MetadataModelBase extends AppModel
-{
+  {
   /** Constructor*/
   public function __construct()
     {
@@ -160,4 +160,4 @@ abstract class MetadataModelBase extends AppModel
         throw new Zend_Exception('Invalid metadata type string passed');
       }
     }
-} // end class MetadataModelBase
+  } // end class

@@ -20,7 +20,7 @@
 
 /** Active Download Model Base*/
 abstract class ActivedownloadModelBase extends AppModel
-{
+  {
   /** Constructor*/
   public function __construct()
     {
@@ -89,5 +89,4 @@ abstract class ActivedownloadModelBase extends AppModel
     $lockDao->setLastUpdate(date("Y-m-d H:i:s"));
     $this->save($lockDao);
     }
-
-}
+  }

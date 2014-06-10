@@ -5,7 +5,7 @@
  * so that a single ip cannot flood the server with downloads.
  */
 class Upgrade_3_2_4 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
     }
@@ -36,4 +36,4 @@ class Upgrade_3_2_4 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
+  }

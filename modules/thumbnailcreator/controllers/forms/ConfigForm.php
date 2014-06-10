@@ -22,7 +22,7 @@
  * Thumbnailcreator_ConfigForm
  */
 class Thumbnailcreator_ConfigForm extends AppForm
-{
+  {
 
   /** create  form */
   public function createConfigForm()
@@ -64,4 +64,4 @@ class Thumbnailcreator_ConfigForm extends AppForm
     return $form;
     }
 
-} // end class
+  } // end class

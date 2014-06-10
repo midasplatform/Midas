@@ -4,8 +4,7 @@
  * Upgrade 3.2.10 adds newuserinvite table
  */
 class Upgrade_3_2_10 extends MIDASUpgrade
-{
-
+  {
   public function preUpgrade()
     {
     }
@@ -61,5 +60,4 @@ class Upgrade_3_2_10 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-
-}
+  }

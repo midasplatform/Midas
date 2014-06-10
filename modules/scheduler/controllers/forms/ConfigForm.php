@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 class Scheduler_ConfigForm extends AppForm
-{
+  {
  
   /** create  form */
   public function createConfigForm()
@@ -37,4 +37,4 @@ class Scheduler_ConfigForm extends AppForm
     return $form;
     }
    
-} // end class
+  } // end class

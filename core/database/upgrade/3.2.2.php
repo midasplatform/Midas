@@ -13,7 +13,7 @@ define("LICENSE_CC_NONCOMMERCIAL_SHARELIKE", 8);
 define("LICENSE_CC_NONCOMMERCIAL_NODERIVS", 9);
 
 class Upgrade_3_2_2 extends MIDASUpgrade
-{
+  {
   var $existingLicenses;
 
   public function preUpgrade()
@@ -188,4 +188,4 @@ class Upgrade_3_2_2 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
+  }

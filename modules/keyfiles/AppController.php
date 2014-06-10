@@ -14,4 +14,4 @@ PURPOSE.  See the above copyright notices for more information.
 class Keyfiles_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'keyfiles';
-  } //end class
+  } // end class

@@ -22,7 +22,7 @@
  *  WebApi Controller for Group Resource
  */
 class Rest_GroupController extends ApiController
-{
+  {
   /**
    * The index action handles index/list requests; it should respond with a
    * list of the requested resources.
@@ -98,5 +98,4 @@ class Rest_GroupController extends ApiController
     {
     $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, PUT, POST, DELETE');
     }
-
-}
+  }

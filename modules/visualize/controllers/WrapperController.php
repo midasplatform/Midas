@@ -20,7 +20,7 @@
 
 /** Wrapper controller*/
 class Visualize_WrapperController extends Visualize_AppController
-{
+  {
   public $_moduleComponents = array('Main');
   public $_models = array('Item', 'Folder');
   public $_components = array('Date', 'Utility', 'Sortdao');

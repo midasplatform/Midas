@@ -61,4 +61,4 @@ class Dicomextractor_Notification extends ApiEnabled_Notification
     return $return;
     }//end _getDasboard
 
-} //end class
+  } // end class

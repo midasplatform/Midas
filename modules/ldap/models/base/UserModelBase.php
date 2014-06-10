@@ -20,7 +20,7 @@
 
 /** Base class for the ldap user model */
 abstract class Ldap_UserModelBase extends Ldap_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -66,5 +66,4 @@ abstract class Ldap_UserModelBase extends Ldap_AppModel
 
     return $ldapUserDao;
     }
-}
-
+  }

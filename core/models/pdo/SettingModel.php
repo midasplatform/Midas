@@ -17,7 +17,7 @@ require_once BASE_PATH.'/core/models/base/SettingModelBase.php';
  *  Pdo Model
  */
 class SettingModel extends SettingModelBase
-{
+  {
   /** get by name*/
   function  getDaoByName($name, $module = 'core')
     {
@@ -29,4 +29,4 @@ class SettingModel extends SettingModelBase
     $dao = $this->initDao(ucfirst($this->_name), $row);
     return $dao;
     }
-}// end class
+  } // end class

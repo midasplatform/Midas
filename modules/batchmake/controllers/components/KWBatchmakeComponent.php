@@ -25,7 +25,7 @@ include_once BASE_PATH . '/library/KWUtils.php';
  *  provides utility methods needed to interact with Batchmake via Midas3.
  */
 class Batchmake_KWBatchmakeComponent extends AppComponent
-{
+  {
 
   protected static $configPropertiesRequirements = array(MIDAS_BATCHMAKE_TMP_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_CHMODABLE_RW,
   MIDAS_BATCHMAKE_BIN_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_READABLE,
@@ -705,5 +705,5 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
 
 
-} // end class
+  } // end class
 ?>

@@ -22,7 +22,7 @@ require_once BASE_PATH.'/modules/remoteprocessing/models/base/JobModelBase.php';
 
 /** job model */
 class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
-{
+  {
   /** get jobs */
   function getBy($os, $condition, $expiration_date = false, $status = MIDAS_REMOTEPROCESSING_STATUS_WAIT)
     {
@@ -156,4 +156,4 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
       }
     return $return;
     }
-}  // end class
+  } // end class

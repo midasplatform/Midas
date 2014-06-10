@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** test ScalarResultModel */
 class ScalarResultModelTest extends DatabaseTestCase
-{
+  {
   /** set up tests*/
   public function setUp()
     {
@@ -62,4 +62,4 @@ class ScalarResultModelTest extends DatabaseTestCase
     $sr = $daos[0];
     $this->assertEquals(90.009, $sr->getValue());
     }
-}
+  }

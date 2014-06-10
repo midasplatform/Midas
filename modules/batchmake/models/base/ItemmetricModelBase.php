@@ -17,8 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-abstract class Batchmake_ItemmetricModelBase extends Batchmake_AppModel {
 
+abstract class Batchmake_ItemmetricModelBase extends Batchmake_AppModel
+  {
   /**
    * constructor
    */
@@ -63,9 +64,4 @@ abstract class Batchmake_ItemmetricModelBase extends Batchmake_AppModel {
    * getAll returns all rows
    */
   public abstract function getAll();
-
-
-
-
-
-}  // end class Batchmake_ItemmetricModelBase
+  } // end class

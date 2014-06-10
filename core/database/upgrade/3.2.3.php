@@ -5,7 +5,7 @@
  * multiple assetstores
  */
 class Upgrade_3_2_3 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
     }
@@ -23,4 +23,4 @@ class Upgrade_3_2_3 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
+  }

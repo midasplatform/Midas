@@ -19,7 +19,7 @@
 =========================================================================*/
 
 class Upgrade_3_0_13 extends MIDASUpgrade
-{ 
+  { 
   public function preUpgrade()
     {
     $this->addTableField('metadatadocumentvalue', 'metadatavalue_id', 'bigint(20)', 'serial',false);
@@ -44,4 +44,4 @@ class Upgrade_3_0_13 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
+  }

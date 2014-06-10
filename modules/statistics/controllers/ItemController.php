@@ -20,7 +20,7 @@
 
 /** Controller for statistics about an item */
 class Statistics_ItemController extends Statistics_AppController
-{
+  {
   public $_moduleModels = array('Download');
   public $_models = array('Item');
   public $_components = array('Utility');
@@ -190,4 +190,4 @@ class Statistics_ItemController extends Statistics_AppController
     echo JsonComponent::encode(array('downloads' => $markers, 'count' => $totalCount));
     }
 
-}//end class
+  } // end class

@@ -54,4 +54,4 @@ class ProductionDbProfiler extends Zend_Db_Profiler
   
     return parent::getLastQueryProfile();  
     }  
-}  
+  }  

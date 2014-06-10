@@ -11,9 +11,10 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 include_once BASE_PATH . '/library/KWUtils.php';
+
 /** Component for api methods */
 class Dicomserver_ApiComponent extends AppComponent
-{
+  {
   /** Return the user dao */
   private function _callModuleApiMethod($args, $coreApiMethod, $resource = null,  $hasReturn = true)
     {
@@ -87,4 +88,4 @@ class Dicomserver_ApiComponent extends AppComponent
     {
     return $this->_callModuleApiMethod($args, 'registrationStatus', 'server');
     }
-}
+  }

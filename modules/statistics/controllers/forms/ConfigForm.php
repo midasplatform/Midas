@@ -19,7 +19,7 @@
 =========================================================================*/
 /** Form for configuring the statistics module */
 class Statistics_ConfigForm extends AppForm
-{
+  {
   /** create  form */
   public function createConfigForm()
     {
@@ -41,4 +41,4 @@ class Statistics_ConfigForm extends AppForm
     return $form;
     }
 
-} // end class
+  } // end class

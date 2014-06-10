@@ -22,7 +22,7 @@
  * Mock object simulating condor_submit_dag executable.
  */
 class Batchmake_CondorSubmitDagMock
-{
+  {
 
   // Problematic to throw exceptions as many test cases expect exceptions
   // The way around this is to have application code throw exceptions with
@@ -85,4 +85,4 @@ class Batchmake_CondorSubmitDagMock
     }
 
 
-} // end class
+  } // end class

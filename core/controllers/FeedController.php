@@ -22,7 +22,7 @@
  *  AJAX request for the admin Controller
  */
 class FeedController extends AppController
-{
+  {
   public $_models = array('Feed', 'Item', 'User', 'Community');
   public $_daos = array();
   public $_components = array();
@@ -87,7 +87,5 @@ class FeedController extends AppController
       return;
       }
     $this->Feed->delete($feed);
-    }//end deleteajaxAction
-
-} // end class
-
+    } //end deleteajaxAction
+  } // end class

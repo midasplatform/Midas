@@ -17,11 +17,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 class Upgrade_3_0_7 extends MIDASUpgrade
-{ 
+  { 
   public function preUpgrade()
     {
-    
     }
     
   public function mysql()
@@ -39,6 +39,5 @@ class Upgrade_3_0_7 extends MIDASUpgrade
     
   public function postUpgrade()
     {
-    
     }
-}
+  }

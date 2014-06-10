@@ -23,7 +23,7 @@
  *  Global model methods
  */
 class MIDASDatabaseMongo implements MIDASDatabaseInterface
-{
+  {
   protected $_name;
   protected $_mainData;
   protected $_key;
@@ -338,4 +338,4 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
       }
     } // end getMongo()
 
-} // end class MIDASDatabaseMongo
+  } // end class

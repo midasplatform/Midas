@@ -20,7 +20,7 @@
 
 /** User forms*/
 class UserForm extends AppForm
-{
+  {
   /** create login form */
   public function createLoginForm()
     {
@@ -206,4 +206,4 @@ class UserForm extends AppForm
 
     return $form;
     }
-} // end class
+  } // end class

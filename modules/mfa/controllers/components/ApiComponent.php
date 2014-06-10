@@ -20,7 +20,7 @@
 
 /** Component for api methods */
 class Mfa_ApiComponent extends AppComponent
-{
+  {
   /**
    * Helper function for verifying keys in an input array
    */
@@ -82,4 +82,4 @@ class Mfa_ApiComponent extends AppComponent
     return array('token' => $token);
     }
 
-} // end class
+  } // end class

@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Module configuration controller (for admin use) */
 class Dicomanonymize_ConfigController extends Dicomanonymize_AppController
-{
+  {
   public $_components = array('Breadcrumb');
 
   /**
@@ -46,4 +46,4 @@ class Dicomanonymize_ConfigController extends Dicomanonymize_AppController
     echo JsonComponent::encode(array('message' => 'Changes saved', 'status' => 'ok'));
     }
 
-}//end class
+  } // end class

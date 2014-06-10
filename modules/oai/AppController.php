@@ -21,4 +21,4 @@
 class Oai_AppController extends MIDAS_GlobalModule
   {
     public $moduleName='oai';
-  } //end class
+  } // end class

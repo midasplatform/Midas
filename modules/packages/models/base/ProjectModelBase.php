@@ -14,7 +14,7 @@ PURPOSE.  See the above copyright notices for more information.
  * Project Model Base
  */
 abstract class Packages_ProjectModelBase extends Packages_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -71,4 +71,4 @@ abstract class Packages_ProjectModelBase extends Packages_AppModel
       }
     parent::delete($project);
     }
-}
+  }

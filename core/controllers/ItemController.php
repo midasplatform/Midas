@@ -722,4 +722,4 @@ class ItemController extends AppController
       $downloadBitstreamComponent->download($bitstream);
       }
     }
-  }//end class
+  } // end class

@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** test oauth authorize controller */
 class OauthAuthorizeControllerTest extends ControllerTestCase
-{
+  {
   /** set up tests*/
   public function setUp()
     {
@@ -126,4 +126,4 @@ class OauthAuthorizeControllerTest extends ControllerTestCase
     $this->assertEquals($json['status'], 'ok');
     $this->assertEquals($json['redirect'], $params['redirect_uri'].'?code='.$codeDao->getCode().'&state='.$this->params['state']);
     }
-}
+  }

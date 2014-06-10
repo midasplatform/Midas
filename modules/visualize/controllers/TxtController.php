@@ -19,7 +19,7 @@
 =========================================================================*/
 /** Txt controller*/
 class Visualize_TxtController extends Visualize_AppController
-{
+  {
   public $_models = array('Item', 'ItemRevision', 'Bitstream');
   /** index */
   public function indexAction()
@@ -49,4 +49,4 @@ class Visualize_TxtController extends Visualize_AppController
     echo file_get_contents($this->bistream->getFullPath());
     echo "</pre>";
     }
-} // end class
+  } // end class

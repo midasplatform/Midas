@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Component for api methods */
 class Tracker_ApiComponent extends AppComponent
-{
+  {
   /**
    * Helper function for verifying keys in an input array
    */
@@ -466,4 +466,4 @@ class Tracker_ApiComponent extends AppComponent
       return $items[0];
       }
     }
-} // end class
+  } // end class

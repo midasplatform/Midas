@@ -12,6 +12,6 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Base model class for the ratings module */
 class Ratings_AppModel extends MIDASModel
-{
+  {
   public $moduleName = 'ratings';
-}
+  }

@@ -19,10 +19,9 @@
 =========================================================================*/
 
 class Scheduler_Upgrade_1_0_3 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
-
     }
 
   public function mysql()
@@ -31,8 +30,7 @@ class Scheduler_Upgrade_1_0_3 extends MIDASUpgrade
     $this->db->query($sql);
     }
 
-
   public function postUpgrade()
     {
     }
-}
+  }

@@ -21,9 +21,8 @@
 /**
  *  WebApi controller for the Community Resource (in readmes module)
  */
-
 class Apireadmes_CommunityController extends ApiController
-{
+  {
   /**
    * The put action handles GET requests and receives an 'id' parameter; it
    * should update the server resource state of the resource identified by
@@ -44,5 +43,4 @@ class Apireadmes_CommunityController extends ApiController
     {
     $this->_response->setHeader('Allow', 'OPTIONS, GET');
     }
-
-}
+  }

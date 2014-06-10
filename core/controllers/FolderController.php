@@ -420,4 +420,4 @@ class FolderController extends AppController
       }
     }// end createfolderAction
 
-  }//end class
+  } // end class

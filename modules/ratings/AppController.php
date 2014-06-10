@@ -14,4 +14,4 @@ PURPOSE.  See the above copyright notices for more information.
 class Ratings_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'ratings';
-  } //end class
+  } // end class

@@ -20,7 +20,7 @@
 
 /** Base class for the job log model */
 class Scheduler_JobLogModelBase extends Scheduler_AppModel
-{
+  {
   public function __construct()
     {
     parent::__construct();
@@ -49,4 +49,4 @@ class Scheduler_JobLogModelBase extends Scheduler_AppModel
 
     $this->save($joblog);
     }
-} // end class JobLogModelBase
+  } // end class

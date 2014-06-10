@@ -20,6 +20,6 @@
 
 /** Base model class for MFA module */
 class Mfa_AppModel extends MIDASModel
-{
+  {
   public $moduleName = 'mfa';
-}
+  }

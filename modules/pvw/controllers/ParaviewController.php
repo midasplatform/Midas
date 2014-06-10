@@ -20,7 +20,7 @@
 
 /** Paraview Controller */
 class Pvw_ParaviewController extends Pvw_AppController
-{
+  {
   public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Setting');
   public $_moduleComponents = array('Paraview');
   public $_moduleModels = array('Instance');
@@ -316,4 +316,4 @@ class Pvw_ParaviewController extends Pvw_AppController
       }
     }
 
-} // end class
+  } // end class

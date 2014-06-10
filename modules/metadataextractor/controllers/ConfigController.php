@@ -19,7 +19,7 @@
 =========================================================================*/
 
 class Metadataextractor_ConfigController extends Metadataextractor_AppController
-{
+  {
    public $_moduleForms=array('Config');
    public $_components=array('Utility', 'Date');
 
@@ -66,4 +66,4 @@ class Metadataextractor_ConfigController extends Metadataextractor_AppController
       }
     } 
     
-}//end class
+  } // end class

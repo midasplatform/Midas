@@ -4,8 +4,7 @@
  * Upgrade 3.2.12 improves the password salting and hashing system
  */
 class Upgrade_3_2_12 extends MIDASUpgrade
-{
-
+  {
   public function preUpgrade()
     {
     }
@@ -74,6 +73,5 @@ class Upgrade_3_2_12 extends MIDASUpgrade
       {
       $this->db->insert('password', array('hash' => $row['password']));
       }
-
     }
-}
+  }

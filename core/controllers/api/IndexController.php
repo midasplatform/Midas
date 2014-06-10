@@ -22,7 +22,7 @@
  * Index Controller for WebApi
  **/
 class Rest_IndexController extends AppController
-{
+  {
   public function preDispatch()
     {
     parent::preDispatch();
@@ -38,4 +38,4 @@ class Rest_IndexController extends AppController
     $this->view->header = $header;
     $this->view->serverURL = $this->getServerURL();
     }
-}
+  }

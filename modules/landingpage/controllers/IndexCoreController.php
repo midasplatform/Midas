@@ -19,7 +19,7 @@
 =========================================================================*/
 /** demo overwrite component */
 class Landingpage_IndexCoreController extends Landingpage_AppController
-{
+  {
 
   public $_moduleModels = array('Text');
   public $_components = array('Utility');
@@ -47,4 +47,4 @@ class Landingpage_IndexCoreController extends Landingpage_AppController
       }
     }
 
-}//end class
+  } // end class

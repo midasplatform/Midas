@@ -22,7 +22,7 @@
  *  MIDASUpgrade
  */
 class MIDASUpgrade
-{
+  {
   protected $db;
   protected $dbtype;
 
@@ -376,4 +376,4 @@ class MIDASUpgrade
       }
     }
 
-} //end class MIDASUpgrade
+  } // end class

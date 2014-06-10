@@ -24,7 +24,7 @@ require_once BASE_PATH.'/modules/sizequota/models/base/FolderQuotaModelBase.php'
  * Folder quota pdo model
  */
 class Sizequota_FolderQuotaModel extends Sizequota_FolderQuotaModelBase
-{
+  {
   /** Returns the quota dao corresponding to the given folder, or false if none is set */
   public function getQuota($folder)
     {
@@ -36,5 +36,4 @@ class Sizequota_FolderQuotaModel extends Sizequota_FolderQuotaModelBase
     $row = $this->database->fetchRow($sql);
     return $this->initDao('FolderQuota', $row, 'sizequota');
     }
-
-}
+  }

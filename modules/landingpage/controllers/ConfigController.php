@@ -19,7 +19,7 @@
 =========================================================================*/
 /** demo config controller*/
 class Landingpage_ConfigController extends Landingpage_AppController
-{
+  {
    public $_moduleForms=array('Config');
    public $_components=array('Utility');
    public $_moduleModels = array('Text');
@@ -63,4 +63,4 @@ class Landingpage_ConfigController extends Landingpage_AppController
         }
       }
     }
-} // end class
+  } // end class

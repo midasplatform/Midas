@@ -22,7 +22,7 @@ require_once BASE_PATH.'/modules/statistics/models/base/DownloadBase.php';
 
 /** statistics_download model */
 class Statistics_DownloadModel extends Statistics_DownloadModelBase
-{
+  {
   /**
    * Return a list of downloads
    * @param ids Array of item ids to aggregate statistics for
@@ -159,4 +159,4 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
       }
     return $results;
     }
-}  // end class
+  } // end class

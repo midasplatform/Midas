@@ -20,7 +20,7 @@
 
 /** Config controller for MFA module */
 class Mfa_ConfigController extends Mfa_AppController
-{
+  {
   public $_models = array('Setting', 'User');
   public $_moduleModels = array('Otpdevice');
   public $_moduleDaos = array('Otpdevice');
@@ -200,5 +200,5 @@ class Mfa_ConfigController extends Mfa_AppController
       echo JsonComponent::encode(array('status' => 'ok', 'message' => 'OTP Authentication enabled'));
       }
     }
-}//end class
+  } // end class
 

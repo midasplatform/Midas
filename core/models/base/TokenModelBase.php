@@ -17,8 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 abstract class TokenModelBase extends AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -37,5 +38,4 @@ abstract class TokenModelBase extends AppModel
     } // end __construct()
 
   abstract function cleanExpired();
-
-} // end class AssetstoreModelBase
+  } // end class

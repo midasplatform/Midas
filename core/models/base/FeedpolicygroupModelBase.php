@@ -20,7 +20,7 @@
 
 /** Feed policy model base */
 abstract class FeedpolicygroupModelBase extends AppModel
-{
+  {
   /** Constructor */
   public function __construct()
     {
@@ -75,4 +75,4 @@ abstract class FeedpolicygroupModelBase extends AppModel
     return $policyGroupDao;
     } // end createPolicy
 
-} // end class FeedpolicygroupModelBase
+  } // end class

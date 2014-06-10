@@ -419,4 +419,4 @@ class ImportController extends AppController
     return false;
     } // end stopAction
 
-} // end class
+  } // end class

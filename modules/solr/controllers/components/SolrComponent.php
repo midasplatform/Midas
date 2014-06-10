@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Component for accessing the solr server */
 class Solr_SolrComponent extends AppComponent
-{
+  {
   /**
    * Returns the Apache_Solr_Service object.
    */
@@ -63,4 +63,4 @@ class Solr_SolrComponent extends AppComponent
     $index = $this->getSolrIndex();
     $index->optimize();
     }
-} // end class
+  } // end class

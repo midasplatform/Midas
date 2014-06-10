@@ -72,4 +72,4 @@ class Dicomserver_Notification extends ApiEnabled_Notification
             </div>';
     }
 
-} //end class
+  } // end class

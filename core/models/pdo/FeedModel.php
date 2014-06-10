@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/FeedModelBase.php';
  * \brief Pdo Model
  */
 class FeedModel extends FeedModelBase
-{
+  {
 
   /** get feed by resource*/
   function getFeedByResourceAndType($typeArray, $dao)
@@ -275,4 +275,4 @@ class FeedModel extends FeedModelBase
     return parent::delete($feedDao);
     } // end delete
 
-} // end class
+  } // end class

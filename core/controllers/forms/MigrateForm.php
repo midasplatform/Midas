@@ -20,7 +20,7 @@
 
 /** Migrate form */
 class MigrateForm extends AppForm
-{
+  {
   /** Main form*/
   public function createMigrateForm($assetstores)
     {
@@ -101,4 +101,4 @@ class MigrateForm extends AppForm
 
     return $form;
     }
-} // end class
+  } // end class

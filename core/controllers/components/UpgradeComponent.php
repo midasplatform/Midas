@@ -21,7 +21,6 @@
 /** Upgrade MIDAS*/
 class UpgradeComponent extends AppComponent
   {
-
   public $dir;
   protected $module;
   protected $db;
@@ -269,4 +268,4 @@ class UpgradeComponent extends AppComponent
     $class->$dbtypeShort();
     $class->postUpgrade();
     }
-} // end class
+  } // end class

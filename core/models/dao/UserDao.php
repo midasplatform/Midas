@@ -40,7 +40,7 @@ class UserDao extends AppDao
   public function getFullName()
     {
     return $this->getFirstname()." ".$this->getLastname();
-    }//end class
+    } // end class
 
   /** toArray */
   public function toArray()

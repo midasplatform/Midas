@@ -20,7 +20,7 @@
 
 /** Client management */
 class Oauth_ClientController extends Oauth_AppController
-{
+  {
   public $_models = array('User');
   public $_moduleModels = array('Client', 'Code', 'Token');
 

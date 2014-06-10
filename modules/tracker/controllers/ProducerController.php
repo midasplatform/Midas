@@ -11,7 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 /** Producer controller*/
 class Tracker_ProducerController extends Tracker_AppController
-{
+  {
   public $_components = array('Breadcrumb');
   public $_models = array('Community');
   public $_moduleModels = array('Producer', 'Trend');
@@ -163,4 +163,4 @@ class Tracker_ProducerController extends Tracker_AppController
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved', 'producer' => $producer));
     }
 
-}//end class
+  } // end class

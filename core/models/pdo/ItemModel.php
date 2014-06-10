@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/ItemModelBase.php';
  * \brief Pdo Model
  */
 class ItemModel extends ItemModelBase
-{
+  {
   /** Get the keyword from the search.
    * @return Array of ItemDao */
   function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view')
@@ -725,5 +725,4 @@ class ItemModel extends ItemModelBase
 
     return $curName;
     }
-
-}  // end class
+  } // end class

@@ -20,8 +20,7 @@
 
 /** This class handles the upload of files into the different assetstores */
 class UploadComponent extends AppComponent
-{
-
+  {
   /** Helper function to create the two-level hierarchy */
   private function _createAssetstoreDirectory($directorypath)
     {
@@ -406,4 +405,4 @@ class UploadComponent extends AppComponent
 
     return $item;
     }//end
-} // end class UploadComponent
+  } // end class

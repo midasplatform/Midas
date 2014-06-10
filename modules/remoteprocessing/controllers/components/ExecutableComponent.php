@@ -20,8 +20,7 @@
 
 /** Web API Authentication Component */
 class Remoteprocessing_ExecutableComponent extends AppComponent
-{
-
+  {
   /** Constructor */
   function __construct()
     {
@@ -360,5 +359,4 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     $xml = $xml->asXML();
     return $xml;
     }
-
-}
+  }

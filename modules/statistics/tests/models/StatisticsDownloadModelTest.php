@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Test the behavior of the statistics download model */
 class StatisticsDownloadModelTest extends DatabaseTestCase
-{
+  {
   /** set up tests*/
   public function setUp()
     {
@@ -53,4 +53,4 @@ class StatisticsDownloadModelTest extends DatabaseTestCase
     $this->assertEquals($arrayDownload[date('Y-m-d', strtotime('-3 day'))], 50);
     $this->assertEquals($arrayDownload[date('Y-m-d', strtotime('-2 day'))], 20);
     }
-}
+  }

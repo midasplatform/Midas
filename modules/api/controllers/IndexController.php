@@ -22,7 +22,7 @@ require_once BASE_PATH.'/modules/api/library/KwWebApiCore.php';
 
 /** Main controller for the web api module */
 class Api_IndexController extends Api_AppController
-{
+  {
   public $_moduleComponents = array('Api');
 
   var $kwWebApiCore = null;

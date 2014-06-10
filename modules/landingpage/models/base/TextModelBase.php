@@ -17,10 +17,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH . '/modules/landingpage/models/AppModel.php';
+
 /** demo base model*/
 abstract class Landingpage_TextModelBase extends Landingpage_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -36,5 +38,4 @@ abstract class Landingpage_TextModelBase extends Landingpage_AppModel
     } // end __construct()
 
   abstract function getAll();
-
-} // end class Helloworld_HelloModelBase
+  } // end class

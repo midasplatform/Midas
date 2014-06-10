@@ -23,7 +23,7 @@
  * one-time-password device.
  */
 abstract class Mfa_OtpdeviceModelBase extends Mfa_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -44,4 +44,4 @@ abstract class Mfa_OtpdeviceModelBase extends Mfa_AppModel
     }
 
   abstract function getByUser($userDao);
-}
+  }

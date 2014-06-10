@@ -21,7 +21,7 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /** global midas model library*/
 class MIDASModel
-{
+  {
   protected $database;
   protected $_name = ''; // I don't like this (should be protected)
   protected $_key = '';
@@ -494,4 +494,4 @@ class MIDASModel
     return true;
     } //end method compareDao
 
-} // end class GlobalModel
+  } // end class

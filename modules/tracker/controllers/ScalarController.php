@@ -11,7 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 /** Scalar controller*/
 class Tracker_ScalarController extends Tracker_AppController
-{
+  {
   public $_models = array('Community');
   public $_moduleModels = array('Scalar', 'Trend');
 
@@ -90,4 +90,4 @@ class Tracker_ScalarController extends Tracker_AppController
     $this->Tracker_Scalar->delete($scalar);
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Scalar deleted'));
     }
-}//end class
+  } // end class

@@ -4,8 +4,7 @@
  * Upgrade 3.2.9 adds pgsql indicies on policy tables
  */
 class Upgrade_3_2_9 extends MIDASUpgrade
-{
-
+  {
   public function preUpgrade()
     {
     }
@@ -25,5 +24,4 @@ class Upgrade_3_2_9 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-
-}
+  }

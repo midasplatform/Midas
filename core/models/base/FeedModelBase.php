@@ -20,7 +20,7 @@
 
 /** Feed Model Base */
 abstract class FeedModelBase extends AppModel
-{
+  {
   /** Constructor*/
   public function __construct()
     {
@@ -151,4 +151,4 @@ abstract class FeedModelBase extends AppModel
     return $feed;
     } // end createFeed()
 
-} // end class FeedModelBase
+  } // end class

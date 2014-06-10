@@ -19,7 +19,6 @@
 =========================================================================*/
 
 class Remoteprocessing_AppModel extends MIDASModel
-{
+  {
   public $moduleName='remoteprocessing';
-
-}
+  }

@@ -17,8 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 abstract class Oauth_CodeModelBase extends Oauth_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -78,4 +79,4 @@ abstract class Oauth_CodeModelBase extends Oauth_AppModel
 
     return $codeDao;
     }
-}
+  }

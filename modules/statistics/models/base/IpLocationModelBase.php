@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** statistics Ip location model base */
 abstract class Statistics_IpLocationModelBase extends Statistics_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -93,5 +93,4 @@ abstract class Statistics_IpLocationModelBase extends Statistics_AppModel
       }
     return $log;
     }
-
-} // end class
+  } // end class

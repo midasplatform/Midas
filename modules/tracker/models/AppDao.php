@@ -14,6 +14,6 @@ PURPOSE.  See the above copyright notices for more information.
  * AppDao for the module.
  */
 class Tracker_AppDao extends MIDAS_GlobalDao
-{
+  {
   public $moduleName = 'tracker';
-} //end class
+  } // end class

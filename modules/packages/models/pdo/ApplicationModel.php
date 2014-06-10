@@ -9,13 +9,14 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/packages/models/base/ApplicationModelBase.php';
 
 /**
  * Application PDO Model
  */
 class Packages_ApplicationModel extends Packages_ApplicationModelBase
-{
+  {
   /**
    * Get all applications under a given project
    */
@@ -92,4 +93,4 @@ class Packages_ApplicationModel extends Packages_ApplicationModelBase
     $this->database->getDB()->delete('packages_extension', 'application_id = '.$application->getKey());
     parent::delete($application);
     }
-}
+  }

@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/ItempolicygroupModelBase.php';
  * \brief Pdo Model
  */
 class ItempolicygroupModel extends ItempolicygroupModelBase
-{
+  {
 
   /** compute policy status*/
   public function computePolicyStatus($item)
@@ -78,4 +78,4 @@ class ItempolicygroupModel extends ItempolicygroupModelBase
     Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
     }
 
-} // end class
+  } // end class

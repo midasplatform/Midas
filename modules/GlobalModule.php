@@ -239,4 +239,4 @@ class MIDAS_GlobalModule extends AppController
       return false;
       }
     }
-} // end class
+  } // end class

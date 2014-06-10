@@ -12,6 +12,6 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Base model class for the key files module */
 class Keyfiles_AppModel extends MIDASModel
-{
+  {
   public $moduleName = 'keyfiles';
-}
+  }

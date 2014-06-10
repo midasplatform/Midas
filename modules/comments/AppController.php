@@ -14,4 +14,4 @@ PURPOSE.  See the above copyright notices for more information.
 class Comments_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'comments';
-  } //end class
+  } // end class

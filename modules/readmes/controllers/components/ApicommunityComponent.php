@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Apicommunity Component for api methods */
 class Readmes_ApicommunityComponent extends AppComponent
-{
+  {
   /**
    * Get the readme text for a community
    * @path /readmes/community/{id}
@@ -33,5 +33,4 @@ class Readmes_ApicommunityComponent extends AppComponent
 
     return $readme;
     }
-
-}
+  }

@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Apifolder Component for api methods */
 class Readmes_ApifolderComponent extends AppComponent
-{
+  {
   /**
    * Get the readme text for a folder
    * @path /readmes/folder/{id}
@@ -33,5 +33,4 @@ class Readmes_ApifolderComponent extends AppComponent
 
     return $readme;
     }
-
-}
+  }

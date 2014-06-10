@@ -1,7 +1,7 @@
 <?php
 
 class Upgrade_3_1_4 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
     }
@@ -33,4 +33,4 @@ class Upgrade_3_1_4 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
+  }

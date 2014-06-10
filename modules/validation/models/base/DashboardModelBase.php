@@ -19,7 +19,7 @@ PURPOSE.  See the above copyright notices for more information.
  * he or a site administrator may modify the dashboard in any way.
  */
 abstract class Validation_DashboardModelBase extends Validation_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -234,5 +234,4 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
    *         scores
    */
   abstract function getAllScores($dashboard);
-
-} // end class Validation_DashboardModelBase
+  } // end class

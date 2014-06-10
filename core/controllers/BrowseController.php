@@ -22,7 +22,7 @@
  *  AJAX request for the admin Controller
  */
 class BrowseController extends AppController
-{
+  {
   public $_models = array('User', 'Community', 'Folder', 'Item', 'ItemRevision');
   public $_daos = array('User', 'Community', 'Folder', 'Item');
   public $_components = array('Date', 'Utility', 'Sortdao');
@@ -645,4 +645,4 @@ class BrowseController extends AppController
       }
     echo JsonComponent::encode($resp);
     }
-} // end class
+  } // end class

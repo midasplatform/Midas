@@ -9,13 +9,14 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/validation/models/base/DashboardModelBase.php';
 
 /**
  * Dashboard PDO Model
  */
 class Validation_DashboardModel extends Validation_DashboardModelBase
-{
+  {
   /**
    * Return all the record in the table
    * @return Array of ValidationDao
@@ -246,5 +247,4 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
       }
     return $results;
     }
-
-}  // end class
+  } // end class

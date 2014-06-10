@@ -17,8 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** Base model class for PVW module */
 class Pvw_AppModel extends MIDASModel
-{
+  {
   public $moduleName = 'pvw';   
-}
+  }

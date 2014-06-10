@@ -20,7 +20,7 @@
 
 /** Assetstore forms*/
 class AssetstoreForm extends AppForm
-{
+  {
   /** Create assetstore form*/
   public function createAssetstoreForm()
     {
@@ -70,4 +70,4 @@ class AssetstoreForm extends AppForm
 
     return $form;
     }
-} // end class
+  } // end class

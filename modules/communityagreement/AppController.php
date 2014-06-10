@@ -33,4 +33,4 @@ class Communityagreement_AppController extends MIDAS_GlobalModule
    * @var Communityagreement_AgreementModelBase
    */
   var $Communityagreement_Agreement;
-  } //end class
+  } // end class

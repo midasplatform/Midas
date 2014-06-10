@@ -14,7 +14,7 @@ PURPOSE.  See the above copyright notices for more information.
  * Producer Model Base
  */
 abstract class Tracker_ProducerModelBase extends Tracker_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -79,4 +79,4 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
       }
     parent::delete($producer);
     }
-}
+  }

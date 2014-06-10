@@ -24,7 +24,7 @@
  * and has been invited by an existing user into a community group
  */
 abstract class NewUserInvitationModelBase extends AppModel
-{
+  {
   /** Contructor */
   public function __construct()
     {
@@ -88,4 +88,4 @@ abstract class NewUserInvitationModelBase extends AppModel
     $this->save($newUserInvitation);
     return $newUserInvitation;
     }
-}
+  }

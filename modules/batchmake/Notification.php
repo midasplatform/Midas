@@ -62,4 +62,4 @@ class Batchmake_Notification extends ApiEnabled_Notification
     return array(ucfirst(MIDAS_BATCHMAKE_MODULE) => array($moduleWebroot . '/index',  $baseURL . '/modules/batchmake/public/images/cmake.png'));
     }
 
-  } //end class
+  } // end class

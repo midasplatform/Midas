@@ -16,5 +16,5 @@ PURPOSE.  See the above copyright notices for more information.
 class Example_AppDao extends MIDAS_GlobalDao
   {
   public $moduleName = 'example';
-  } //end class
+  } // end class
 

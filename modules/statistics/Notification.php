@@ -124,4 +124,4 @@ class Statistics_Notification extends MIDAS_Notification
     $downloadModel = MidasLoader::loadModel('Download', $this->moduleName);
     $downloadModel->removeUserReferences($user->getKey());
     }
-  } //end class
+  } // end class

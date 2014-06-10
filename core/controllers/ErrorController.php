@@ -20,7 +20,7 @@
 
 /** Error Controller*/
 class ErrorController extends AppController
-{
+  {
   public $_models = array();
   public $_daos = array();
   public $_components = array('NotifyError', 'Utility');
@@ -154,4 +154,4 @@ class ErrorController extends AppController
         $this->view->message = nl2br($fullMessage);
       }
     }
-}
+  }

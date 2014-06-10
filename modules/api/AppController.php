@@ -22,4 +22,4 @@
 class Api_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'api';
-  } //end class
+  } // end class

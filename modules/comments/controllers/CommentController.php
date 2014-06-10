@@ -2,7 +2,7 @@
 
 /** Controller for adding and removing comments */
 class Comments_CommentController extends Comments_AppController
-{
+  {
   public $_models = array('Item');
   public $_moduleModels = array('Itemcomment');
 
@@ -104,4 +104,4 @@ class Comments_CommentController extends Comments_AppController
       }
     echo JsonComponent::encode($retVal);
     }
-}//end class
+  } // end class

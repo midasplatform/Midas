@@ -23,7 +23,7 @@
  * paraview (pvpython) instances.
  */
 class Pvw_ParaviewComponent extends AppComponent
-{
+  {
   /**
    * Creates a new pvpython instance and a corresponding database record for it.
    * @param item The item dao to visualize
@@ -244,4 +244,4 @@ class Pvw_ParaviewComponent extends AppComponent
       }
     return $path;
     }
-} // end class
+  } // end class

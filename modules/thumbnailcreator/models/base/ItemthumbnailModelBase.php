@@ -14,7 +14,7 @@ PURPOSE.  See the above copyright notices for more information.
  * Item thumbnail model base
  */
 abstract class Thumbnailcreator_ItemthumbnailModelBase extends Thumbnailcreator_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -35,4 +35,4 @@ abstract class Thumbnailcreator_ItemthumbnailModelBase extends Thumbnailcreator_
 
   public abstract function getByItemId($itemId);
   public abstract function deleteByItem($item);
-}
+  }

@@ -2,7 +2,7 @@
 
 /** Controller for setting and getting ratings */
 class Ratings_RatingController extends Ratings_AppController
-{
+  {
   public $_models = array('Item');
 
   /**
@@ -44,4 +44,4 @@ class Ratings_RatingController extends Ratings_AppController
     echo JsonComponent::encode(array_merge(array('status' => 'ok', 'message' => $message), $info));
     }
 
-}//end class
+  } // end class

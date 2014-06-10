@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Component for performing threshold notifications */
 class Tracker_ThresholdNotificationComponent extends AppComponent
-{
+  {
   /**
    * Add scheduled tasks for emailing users that the threshold was crossed
    */
@@ -34,4 +34,4 @@ class Tracker_ThresholdNotificationComponent extends AppComponent
       $jobModel->save($job);
       }
     }
-} // end class
+  } // end class

@@ -22,4 +22,4 @@
 class Sizequota_AppDao extends MIDAS_GlobalDao
   {
 
-  } //end class
+  } // end class

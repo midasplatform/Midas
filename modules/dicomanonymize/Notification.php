@@ -31,4 +31,4 @@ class Dicomanonymize_Notification extends MIDAS_Notification
     {
     return array('DICOM' => $this->webroot.'/'.$this->moduleName.'/upload');
     }
-} //end class
+  } // end class

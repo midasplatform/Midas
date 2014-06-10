@@ -20,7 +20,7 @@
 
 /** Base class for the job log model */
 abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -115,4 +115,4 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
       return false;
       }
     }
-}
+  }

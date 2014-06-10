@@ -20,7 +20,7 @@
 
 /** Login controller for MFA module */
 class Mfa_LoginController extends Mfa_AppController
-{
+  {
   public $_models = array('User');
   public $_moduleModels = array('Otpdevice');
   public $_moduleComponents = array('Otp');
@@ -96,4 +96,4 @@ class Mfa_LoginController extends Mfa_AppController
       }
     }
 
-}//end class
+  } // end class

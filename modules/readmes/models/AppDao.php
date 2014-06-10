@@ -14,4 +14,4 @@ PURPOSE.  See the above copyright notices for more information.
 class Readmes_AppDao extends MIDAS_GlobalDao
   {
   public $_module = 'readmes';
-  } //end class
+  } // end class

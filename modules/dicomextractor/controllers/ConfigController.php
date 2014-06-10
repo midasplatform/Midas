@@ -11,7 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 class Dicomextractor_ConfigController extends Dicomextractor_AppController
-{
+  {
    public $_moduleForms = array('Config');
    public $_components = array('Utility', 'Date');
 
@@ -72,4 +72,4 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
       }
     }
 
-}//end class
+  } // end class

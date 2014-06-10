@@ -19,10 +19,9 @@
 =========================================================================*/
 
 class Upgrade_3_0_10 extends MIDASUpgrade
-{ 
+  { 
   public function preUpgrade()
     {
-    
     }
     
   public function mysql()
@@ -40,6 +39,5 @@ class Upgrade_3_0_10 extends MIDASUpgrade
     
   public function postUpgrade()
     {
-    
     }
-}
+  }

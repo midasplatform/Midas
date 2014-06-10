@@ -17,9 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** Batchmake_AppModel */
-class Batchmake_AppModel extends MIDASModel {
-
+class Batchmake_AppModel extends MIDASModel
+  {
   public $moduleName = 'batchmake';
-
-}
+  }

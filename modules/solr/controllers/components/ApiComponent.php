@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Component for api methods */
 class Solr_ApiComponent extends AppComponent
-{
+  {
  /** Return the user dao */
   private function _callModuleApiMethod($args, $coreApiMethod, $resource = null,  $hasReturn = true)
     {
@@ -35,4 +35,4 @@ class Solr_ApiComponent extends AppComponent
     {
     return $this->_callModuleApiMethod($args, 'searchAdvanced', 'search');
     }
-} // end class
+  } // end class

@@ -11,7 +11,7 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 /** packages view controller*/
 class Packages_ViewController extends Packages_AppController
-{
+  {
   public $_models = array('Community');
   public $_moduleModels = array('Application', 'Project');
 
@@ -35,4 +35,4 @@ class Packages_ViewController extends Packages_AppController
       $this->view->community, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     $this->view->json['projectId'] = $projectId;
     }
-}//end class
+  } // end class

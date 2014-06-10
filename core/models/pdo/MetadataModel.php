@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/MetadataModelBase.php';
  * \brief Pdo Model
  */
 class MetadataModel extends MetadataModelBase
-{
+  {
 
   /**
    * Get all metadata types currently stored in the database.
@@ -175,4 +175,4 @@ class MetadataModel extends MetadataModelBase
     } // end function saveMetadataValue()
 
 
-} // end class
+  } // end class

@@ -24,5 +24,5 @@ require_once BASE_PATH.'/core/models/base/ProgressModelBase.php';
  * \class ProgressModel
  */
 class ProgressModel extends ProgressModelBase
-{
-}
+  {
+  }

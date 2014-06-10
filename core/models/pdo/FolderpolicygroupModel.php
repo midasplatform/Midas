@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/FolderpolicygroupModelBase.php';
  * \brief Pdo Model
  */
 class FolderpolicygroupModel extends FolderpolicygroupModelBase
-{
+  {
   /** getPolicy
    * @return FolderpolicygroupDao
    */
@@ -76,4 +76,4 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
     $clause = 'group_id = '.$group->getKey();
     Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
     }
-}
+  }

@@ -20,7 +20,7 @@
 
 /** Install forms*/
 class InstallForm extends AppForm
-{
+  {
   /** create  form */
   public function createDBForm($type)
     {
@@ -137,4 +137,4 @@ class InstallForm extends AppForm
     $form->addElements(array($keywords, $description, $process, $timezone, $environment, $lang, $name, $smartoptimizer, $submit));
     return $form;
     }
-} // end class
+  } // end class

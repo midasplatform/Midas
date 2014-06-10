@@ -20,7 +20,7 @@
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 /** Component for api methods */
 class Remoteprocessing_ApiComponent extends AppComponent
-{
+  {
   /**
    * Register a server
    * @param email (Optional)
@@ -316,7 +316,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
     rmdir($dir);
     }
 
-} // end class
+  } // end class
 
 
 

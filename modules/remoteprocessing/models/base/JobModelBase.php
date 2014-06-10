@@ -19,7 +19,7 @@
 =========================================================================*/
 /** Job Model*/
 class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
-{
+  {
   /** construct */
   public function __construct()
     {
@@ -53,4 +53,4 @@ class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
     parent::save($dao);
     }
 
-} // end class AssetstoreModelBase
+  } // end class

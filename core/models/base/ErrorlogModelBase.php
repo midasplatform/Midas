@@ -20,7 +20,7 @@
 
 /** Error log Model Base*/
 abstract class ErrorlogModelBase extends AppModel
-{
+  {
   /** Contructor*/
   public function __construct()
     {
@@ -41,4 +41,4 @@ abstract class ErrorlogModelBase extends AppModel
   abstract function getLog($startDate, $endDate, $module = 'all', $priority = MIDAS_PRIORITY_WARNING, $limit = 99999, $offset = 0, $operator = '<=');
   /** Count log entries since a certain date */
   abstract function countSince($startDate, $priorities = null);
-} // end class FeedModelBase
+  } // end class

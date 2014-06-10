@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /** Component for api methods */
 class Packages_ApiComponent extends AppComponent
-{
+  {
 
   /**
    * Helper function for verifying keys in an input array
@@ -455,4 +455,4 @@ class Packages_ApiComponent extends AppComponent
     echo file_get_contents($file);
     exit();
     }
-} // end class
+  } // end class
