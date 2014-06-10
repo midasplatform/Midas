@@ -83,4 +83,3 @@ class Visualize_IndexController extends Visualize_AppController
       }
     }
   } // end class
-

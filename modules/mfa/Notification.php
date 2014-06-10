@@ -123,4 +123,3 @@ class Mfa_Notification extends ApiEnabled_Notification
       }
     }
   } // end class
-

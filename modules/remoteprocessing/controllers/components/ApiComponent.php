@@ -317,7 +317,3 @@ class Remoteprocessing_ApiComponent extends AppComponent
     }
 
   } // end class
-
-
-
-

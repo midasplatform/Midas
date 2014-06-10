@@ -379,4 +379,3 @@ class ShareController extends AppController
     $this->view->downloadUrl = $baseUrl.'/download/'.$type.'/'.$id.'/'.urlencode($name);
     }
   } // end class
-

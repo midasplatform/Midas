@@ -17,4 +17,3 @@ class Example_AppDao extends MIDAS_GlobalDao
   {
   public $moduleName = 'example';
   } // end class
-

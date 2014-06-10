@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /**
  * Communityagreement_AgreementModelBase
  *
@@ -58,4 +59,4 @@ class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
     return $agreementDao;
     }
 
-  } // end class AgreementModelBase
+  } // end class

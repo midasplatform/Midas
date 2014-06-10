@@ -116,4 +116,3 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
       }
     }
   } // end class
-

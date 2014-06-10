@@ -40,4 +40,3 @@ class Remoteprocessing_ConfigForm extends AppForm
     }
 
   } // end class
-

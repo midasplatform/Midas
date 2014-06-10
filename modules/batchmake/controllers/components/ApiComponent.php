@@ -197,7 +197,3 @@ class Batchmake_ApiComponent extends AppComponent
 
 
   } // end class
-
-
-
-

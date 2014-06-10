@@ -201,4 +201,3 @@ class Mfa_ConfigController extends Mfa_AppController
       }
     }
   } // end class
-

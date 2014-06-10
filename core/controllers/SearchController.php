@@ -337,4 +337,3 @@ class SearchController extends AppController
     echo JsonComponent::encode($results);
     }
   } // end class
-
