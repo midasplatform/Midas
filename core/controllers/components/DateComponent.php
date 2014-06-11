@@ -22,7 +22,7 @@
 class DateComponent extends AppComponent
   {
   /** format date (ex: 01/14/2011 or 14/01/2011 (fr or en) */
-  static public function formatDate($timestamp)
+  public static function formatDate($timestamp)
     {
     if(!is_numeric($timestamp))
       {
@@ -43,7 +43,7 @@ class DateComponent extends AppComponent
     }
 
   /** format the date (ex: 5 days ago) */
-  static public function ago($timestamp, $only_time = false)
+  public static function ago($timestamp, $only_time = false)
     {
     if(!is_numeric($timestamp))
       {
@@ -94,7 +94,7 @@ class DateComponent extends AppComponent
     }
 
   /** format the date (ex: 5 days ago) */
-  static public function duration($timestamp)
+  public static function duration($timestamp)
     {
     if(!is_numeric($timestamp))
       {

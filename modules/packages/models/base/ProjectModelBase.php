@@ -38,8 +38,8 @@ abstract class Packages_ProjectModelBase extends Packages_AppModel
     $this->initialize();
     }
 
-  public abstract function getAllEnabled();
-  public abstract function getByCommunityId($communityId);
+  abstract public function getAllEnabled();
+  abstract public function getByCommunityId($communityId);
 
   /**
    * Enable or disable the community as a package-hosting project

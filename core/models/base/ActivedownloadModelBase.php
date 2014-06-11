@@ -38,7 +38,7 @@ abstract class ActivedownloadModelBase extends AppModel
     }
 
   /** Check for an active download by ip address */
-  public abstract function getByIp($ip);
+  abstract public function getByIp($ip);
 
   /**
    * Call this function to acquire the download lock.

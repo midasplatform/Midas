@@ -42,5 +42,5 @@ abstract class Pvw_InstanceModelBase extends Pvw_AppModel
     $this->initialize();
     }
 
-  public abstract function getAll();
+  abstract public function getAll();
   }

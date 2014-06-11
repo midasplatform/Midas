@@ -40,7 +40,7 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
     $this->initialize(); // required
     } // end __construct()
 
-  public abstract function getByUser($userDao);
+  abstract public function getByUser($userDao);
 
   /**
    * Create and return a new oauth client owned by the given user.

@@ -43,9 +43,9 @@ abstract class Oauth_CodeModelBase extends Oauth_AppModel
     $this->initialize(); // required
     } // end __construct()
 
-  public abstract function getByUser($userDao);
-  public abstract function getByCode($code);
-  public abstract function cleanExpired();
+  abstract public function getByUser($userDao);
+  abstract public function getByCode($code);
+  abstract public function cleanExpired();
 
   /**
    * Create and return a new oauth authorization code for the given client and user. Expires after 10 minutes

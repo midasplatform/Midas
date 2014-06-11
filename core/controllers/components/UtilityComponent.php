@@ -192,7 +192,7 @@ class UtilityComponent extends AppComponent
     }
 
   /** format long names*/
-  static public function sliceName($name, $nchar)
+  public static function sliceName($name, $nchar)
     {
     if(strlen($name) > $nchar)
       {
@@ -208,7 +208,7 @@ class UtilityComponent extends AppComponent
     }
 
   /** create init file*/
-  static public function createInitFile($path, $data)
+  public static function createInitFile($path, $data)
     {
     if(!is_writable(dirname($path)))
       {
@@ -247,7 +247,7 @@ class UtilityComponent extends AppComponent
     return $text;
     }
   /** PHP md5_file is very slow on large file. If md5 sum is on the system we use it. */
-  static public function md5file($filename)
+  public static function md5file($filename)
     {
     // If we have md5 sum
     if(Zend_Registry::get('configGlobal')->md5sum->path)
@@ -296,7 +296,7 @@ class UtilityComponent extends AppComponent
    * which is not supported by PHP's filesize()
    * @param path Path of the file to check
    */
-  static public function fileSize($path)
+  public static function fileSize($path)
     {
     if(strpos(strtolower(PHP_OS), 'win') === 0)
       {
@@ -314,7 +314,7 @@ class UtilityComponent extends AppComponent
    * Format file size. Rounds to 1 decimal place and makes sure
    * to use 3 or less digits before the decimal place.
    */
-  static public function formatSize($sizeInBytes, $separator = ',')
+  public static function formatSize($sizeInBytes, $separator = ',')
     {
     $suffix = 'B';
     if(Zend_Registry::get('configGlobal')->application->lang == 'fr')
@@ -344,7 +344,7 @@ class UtilityComponent extends AppComponent
     }
 
   /** Safe delete function. Checks ifthe file can be deleted. */
-  static public function safedelete($filename)
+  public static function safedelete($filename)
     {
     if(!file_exists($filename))
       {

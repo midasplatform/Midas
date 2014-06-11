@@ -42,8 +42,8 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
     $this->initialize();
     }
 
-  public abstract function getByCommunityId($communityId);
-  public abstract function getByCommunityIdAndName($communityId, $displayName);
+  abstract public function getByCommunityId($communityId);
+  abstract public function getByCommunityIdAndName($communityId, $displayName);
 
   /**
    * If the producer with the given displayName and communityId exists, returns it.

@@ -58,10 +58,10 @@ abstract class Packages_ExtensionModelBase extends Packages_AppModel
     $this->initialize(); // required
     } // end __construct()
 
-  public abstract function getAll();
-  public abstract function getByItemId($itemId);
-  public abstract function getAllCategories($applicationId);
-  public abstract function getAllReleases($applicationId);
+  abstract public function getAll();
+  abstract public function getByItemId($itemId);
+  abstract public function getAllCategories($applicationId);
+  abstract public function getAllReleases($applicationId);
 
   /**
    * If an extension already exists that matches the given

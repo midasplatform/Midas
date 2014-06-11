@@ -47,7 +47,7 @@ abstract class Packages_PackageModelBase extends Packages_AppModel
     $this->initialize(); // required
     } // end __construct()
 
-  public abstract function getAll();
-  public abstract function getByItemId($itemId);
-  public abstract function getLatestOfEachPackageType($application, $os, $arch, $submissiontype = null);
+  abstract public function getAll();
+  abstract public function getByItemId($itemId);
+  abstract public function getLatestOfEachPackageType($application, $os, $arch, $submissiontype = null);
   }

@@ -45,8 +45,8 @@ abstract class PendingUserModelBase extends AppModel
     } // end __construct()
 
   /** abstract functions */
-  public abstract function getByParams($params);
-  public abstract function getAllByParams($params);
+  abstract public function getByParams($params);
+  abstract public function getAllByParams($params);
 
   /**
    * Create the database record for a user who has registered but not had their email verified yet

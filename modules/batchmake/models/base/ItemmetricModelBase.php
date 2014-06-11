@@ -62,5 +62,5 @@ abstract class Batchmake_ItemmetricModelBase extends Batchmake_AppModel
   /**
    * getAll returns all rows
    */
-  public abstract function getAll();
+  abstract public function getAll();
   } // end class

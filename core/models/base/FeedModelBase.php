@@ -43,9 +43,9 @@ abstract class FeedModelBase extends AppModel
     } // end __construct()
 
   /** get Feeds*/
-  protected abstract function getFeeds($loggedUserDao, $userDao = null, $communityDao = null, $policy = 0, $limit = 20);
+  abstract protected function getFeeds($loggedUserDao, $userDao = null, $communityDao = null, $policy = 0, $limit = 20);
   /** add a community*/
-  protected abstract function addCommunity($feed, $community);
+  abstract protected function addCommunity($feed, $community);
   abstract function policyCheck($feedDao, $userDao = null, $policy = 0);
 
   /** get feeds (filtered by policies)

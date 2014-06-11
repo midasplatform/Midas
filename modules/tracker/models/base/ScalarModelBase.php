@@ -44,10 +44,10 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     $this->initialize();
     }
 
-  public abstract function associateItem($scalar, $item, $label);
-  public abstract function getAssociatedItems($scalar);
-  public abstract function getOtherValuesFromSubmission($scalar);
-  public abstract function getByTrendAndTimestamp($trendId, $timestamp, $user = null);
+  abstract public function associateItem($scalar, $item, $label);
+  abstract public function getAssociatedItems($scalar);
+  abstract public function getOtherValuesFromSubmission($scalar);
+  abstract public function getByTrendAndTimestamp($trendId, $timestamp, $user = null);
 
   /**
    * Add a new scalar point to the trend.  If overwrite is true, and a scalar

@@ -35,9 +35,9 @@ abstract class Packages_ApplicationModelBase extends Packages_AppModel
     $this->initialize();
     }
 
-  public abstract function getAllByProjectId($projectId);
-  public abstract function getAllReleases($application);
-  public abstract function getDistinctPlatforms($application);
+  abstract public function getAllByProjectId($projectId);
+  abstract public function getAllReleases($application);
+  abstract public function getDistinctPlatforms($application);
 
   /**
    * Override the save function

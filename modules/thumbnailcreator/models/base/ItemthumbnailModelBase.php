@@ -33,6 +33,6 @@ abstract class Thumbnailcreator_ItemthumbnailModelBase extends Thumbnailcreator_
     $this->initialize();
     }
 
-  public abstract function getByItemId($itemId);
-  public abstract function deleteByItem($item);
+  abstract public function getByItemId($itemId);
+  abstract public function deleteByItem($item);
   }
