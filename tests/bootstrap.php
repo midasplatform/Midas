@@ -22,24 +22,24 @@ error_reporting(E_ALL | E_STRICT);
 ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 
-define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
+define('APPLICATION_PATH', realpath(dirname(__FILE__).'/../application'));
 define('APPLICATION_ENV', 'testing');
-define('LIBRARY_PATH', realpath(dirname(__FILE__) . '/../library'));
+define('LIBRARY_PATH', realpath(dirname(__FILE__).'/../library'));
 define('TESTS_PATH', realpath(dirname(__FILE__)));
-define('BASE_PATH', realpath(dirname(__FILE__)) . "/../");
-
+define('BASE_PATH', realpath(dirname(__FILE__)).'/../');
 
 $includePaths = array(LIBRARY_PATH, get_include_path());
 set_include_path(implode(PATH_SEPARATOR, $includePaths));
 
-require_once dirname(__FILE__)."/../library/Zend/Loader/Autoloader.php";
-#Zend_Loader::registerAutoload();
+require_once dirname(__FILE__).'/../library/Zend/Loader/Autoloader.php';
+
+# Zend_Loader::registerAutoload();
 $loader = Zend_Loader_Autoloader::getInstance();
 $loader->setFallbackAutoloader(true);
 $loader->suppressNotFoundWarnings(false);
 
-require_once(BASE_PATH . "/core/include.php");
-define('START_TIME',microtime(true));
+require_once(BASE_PATH.'/core/include.php');
+define('START_TIME', microtime(true));
 
 Zend_Session::$_unitTestEnabled = true;
 Zend_Session::start();
@@ -47,9 +47,7 @@ Zend_Session::start();
 require_once 'ControllerTestCase.php';
 require_once 'DatabaseTestCase.php';
 
-
 Zend_Registry::set('logger', null);
-
 
 $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
 $configGlobal->environment = 'testing';
@@ -57,22 +55,23 @@ Zend_Registry::set('configGlobal', $configGlobal);
 
 $config = new Zend_Config_Ini(APPLICATION_CONFIG, 'testing');
 Zend_Registry::set('config', $config);
-// InitDatabase
 
+// InitDatabase
 if(file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini'))
   {
   $configDatabase = new Zend_Config_Ini(BASE_PATH.'/tests/configs/lock.mysql.ini', 'testing');
   }
-elseif(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
+else if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
   {
   $configDatabase = new Zend_Config_Ini(BASE_PATH.'/tests/configs/lock.pgsql.ini', 'testing');
   }
 else
   {
-  echo "Error";exit;
+  echo 'Error';
+  exit;
   }
 
-if ($configDatabase->database->type == 'pdo')
+if($configDatabase->database->type == 'pdo')
   {
   $db = Zend_Db::factory($configDatabase->database->adapter, array(
     'host' => $configDatabase->database->params->host,
@@ -82,7 +81,7 @@ if ($configDatabase->database->type == 'pdo')
     'port' =>$configDatabase->database->params->port,
   )
   );
-  if ($configDatabase->database->profiler == '1')
+  if($configDatabase->database->profiler == '1')
     {
     $db->getProfiler()->setEnabled(true);
     }
@@ -91,7 +90,7 @@ if ($configDatabase->database->type == 'pdo')
   }
 else
   {
-  throw new Zend_Exception("Database type Error. Please check the environment config file.");
+  throw new Zend_Exception('Database type Error. Please check the environment config file.');
   }
 
 Zend_Registry::set('configDatabase', $configDatabase);
@@ -105,7 +104,7 @@ $upgradeComponent->initUpgrade('core', $db, $dbtype);
 $version = Zend_Registry::get('configDatabase')->version;
 if(!isset($version))
   {
-  if(Zend_Registry::get('configDatabase')->database->adapter=='PDO_MYSQL')
+  if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL')
     {
     $type='mysql';
     }
@@ -116,16 +115,15 @@ if(!isset($version))
   $MyDirectory = opendir(BASE_PATH."/core/database/{$type}");
   while($Entry = @readdir($MyDirectory))
     {
-    if(strpos($Entry, ".sql")!=false)
+    if(strpos($Entry, '.sql') != false)
       {
       $sqlFile=BASE_PATH."/core/database/{$type}/".$Entry;
       }
     }
 
-
   $version=str_replace('.sql', '', basename($sqlFile));
   }
-$upgradeComponent->upgrade($version,true);
+$upgradeComponent->upgrade($version, true);
 
 $logger = Zend_Log::factory(array(
   array(
@@ -151,10 +149,9 @@ Zend_Registry::set('logger', $logger);
 
 if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
   {
-  rename(  BASE_PATH.'/tests/configs/lock.pgsql.ini',BASE_PATH.'/tests/configs/pgsql.ini');
+  rename(BASE_PATH.'/tests/configs/lock.pgsql.ini', BASE_PATH.'/tests/configs/pgsql.ini');
   }
 if(file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini'))
   {
-  rename(  BASE_PATH.'/tests/configs/lock.mysql.ini',BASE_PATH.'/tests/configs/mysql.ini');
+  rename(BASE_PATH.'/tests/configs/lock.mysql.ini', BASE_PATH.'/tests/configs/mysql.ini');
   }
-

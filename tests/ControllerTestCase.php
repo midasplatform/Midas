@@ -97,10 +97,10 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
   */
   protected function getDataSet($name = 'default', $module = null)
     {
-    $path = BASE_PATH.'/core/tests/databaseDataset/'.$name.".xml";
+    $path = BASE_PATH.'/core/tests/databaseDataset/'.$name.'.xml';
     if(isset($module) && !empty($module))
       {
-      $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$name.".xml";
+      $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$name.'.xml';
       }
     return new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
     }
@@ -131,7 +131,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     $router = Zend_Controller_Front::getInstance()->getRouter();
     //Init Modules
     $frontController = Zend_Controller_Front::getInstance();
-    $frontController->addControllerDirectory(BASE_PATH . '/core/controllers');
+    $frontController->addControllerDirectory(BASE_PATH.'/core/controllers');
     if(isset($this->enabledModules) || (isset($_POST['enabledModules']) || isset($_GET['enabledModules'])))
       {
       if(isset($this->enabledModules))
@@ -150,13 +150,13 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       foreach($paramsTestingModules as $p)
         {
         $modules[$p] = 1;
-        if(file_exists(BASE_PATH . "/modules/".$p."/constant/module.php"))
+        if(file_exists(BASE_PATH.'/modules/'.$p.'/constant/module.php'))
           {
-          require_once BASE_PATH . "/modules/".$p."/constant/module.php";
+          require_once BASE_PATH.'/modules/'.$p.'/constant/module.php';
           }
-        if(file_exists(BASE_PATH . "/privateModules/".$p."/constant/module.php"))
+        if(file_exists(BASE_PATH.'/privateModules/'.$p.'/constant/module.php'))
           {
-          require_once BASE_PATH . "/privateModules/".$p."/constant/module.php";
+          require_once BASE_PATH.'/privateModules/'.$p.'/constant/module.php';
           }
         }
       }
@@ -174,9 +174,9 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         {
         $listeModule[] = $key;
         // get WebApi controller directories and WebApi module names for enabled modules
-        if(file_exists(BASE_PATH . "/modules/".$key."/controllers/api"))
+        if(file_exists(BASE_PATH.'/modules/'.$key.'/controllers/api'))
           {
-          $frontController->addControllerDirectory(BASE_PATH . "/modules/".$key."/controllers/api", "api".$key);
+          $frontController->addControllerDirectory(BASE_PATH.'/modules/'.$key.'/controllers/api', 'api'.$key);
           $apiModules[] = $key;
           }
         }
@@ -185,13 +185,13 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
     $utilityComponent = new UtilityComponent();
     // get WebApi controller directory for core Apis
-    require_once BASE_PATH . "/core/ApiController.php";
-    $frontController->addControllerDirectory(BASE_PATH . '/core/controllers/api', 'rest');
+    require_once BASE_PATH.'/core/ApiController.php';
+    $frontController->addControllerDirectory(BASE_PATH.'/core/controllers/api', 'rest');
     // add restful route for WebApis
     $restRoute = new Zend_Rest_Route($frontController, array(), array('rest'));
     // add regular route for apikey configuration page
-    $router->addRoute("rest-apikey",
-          new Zend_Controller_Router_Route("/apikey/:action/",
+    $router->addRoute('rest-apikey',
+          new Zend_Controller_Router_Route('/apikey/:action/',
               array(
                   'module' => 'rest',
                   'controller' => 'apikey')));
@@ -200,33 +200,33 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       {
       $route = $m;
       $nameModule = $m;
-      $router->addRoute($nameModule."-1",
-          new Zend_Controller_Router_Route("".$route."/:controller/:action/*",
+      $router->addRoute($nameModule.'-1',
+          new Zend_Controller_Router_Route(''.$route.'/:controller/:action/*',
               array(
                   'module' => $nameModule)));
-      $router->addRoute($nameModule."-2",
-          new Zend_Controller_Router_Route("".$route."/:controller/",
+      $router->addRoute($nameModule.'-2',
+          new Zend_Controller_Router_Route(''.$route.'/:controller/',
               array(
                   'module' => $nameModule,
                   'action' => 'index')));
-      $router->addRoute($nameModule."-3",
-          new Zend_Controller_Router_Route("".$route."/",
+      $router->addRoute($nameModule.'-3',
+          new Zend_Controller_Router_Route(''.$route.'/',
               array(
                   'module' => $nameModule,
                   'controller' => 'index',
                   'action' => 'index')));
-      $frontController->addControllerDirectory(BASE_PATH . "/modules/".$route."/controllers", $nameModule);
-      if(file_exists(BASE_PATH . "/modules/".$route."/AppController.php"))
+      $frontController->addControllerDirectory(BASE_PATH.'/modules/'.$route.'/controllers', $nameModule);
+      if(file_exists(BASE_PATH.'/modules/'.$route.'/AppController.php'))
         {
-        require_once BASE_PATH . "/modules/".$route."/AppController.php";
+        require_once BASE_PATH.'/modules/'.$route.'/AppController.php';
         }
-      if(file_exists(BASE_PATH . "/modules/".$route."/models/AppDao.php"))
+      if(file_exists(BASE_PATH.'/modules/'.$route.'/models/AppDao.php'))
         {
-        require_once BASE_PATH . "/modules/".$route."/models/AppDao.php";
+        require_once BASE_PATH.'/modules/'.$route.'/models/AppDao.php';
         }
-      if(file_exists(BASE_PATH . "/modules/".$route."/models/AppModel.php"))
+      if(file_exists(BASE_PATH.'/modules/'.$route.'/models/AppModel.php'))
         {
-        require_once BASE_PATH . "/modules/".$route."/models/AppModel.php";
+        require_once BASE_PATH.'/modules/'.$route.'/models/AppModel.php';
         }
       }
     Zend_Registry::set('modulesEnable', $listeModule);
@@ -267,7 +267,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
 
     if(isset($this->enabledModules) && !empty($this->enabledModules))
       {
-      $this->params['enabledModules'] = join(";", $this->enabledModules);
+      $this->params['enabledModules'] = join(';', $this->enabledModules);
       }
     else
       {
@@ -287,14 +287,14 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       {
       $this->assertNotResponseCode('404');
       }
-    if($this->request->getControllerName() == "error")
+    if($this->request->getControllerName() == 'error')
       {
       if($withException)
         {
         return;
         }
       $error = $this->request->getParam('error_handler');
-      Zend_Loader::loadClass("NotifyErrorComponent", BASE_PATH . '/core/controllers/components');
+      Zend_Loader::loadClass('NotifyErrorComponent', BASE_PATH.'/core/controllers/components');
       $errorComponent = new NotifyErrorComponent();
       $mailer = new Zend_Mail();
       $session = new Zend_Session_Namespace('Auth_User');
@@ -324,7 +324,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     {
     $this->reset();
     $this->params = array();
-    $this->frontController->setControllerDirectory(BASE_PATH . '/core/controllers', 'default');
+    $this->frontController->setControllerDirectory(BASE_PATH.'/core/controllers', 'default');
     $this->_initModule();
     $this->_initREST();
     }
@@ -333,7 +333,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
   public function appBootstrap()
     {
     $this->application = new Zend_Application(APPLICATION_ENV, CORE_CONFIG);
-    $this->frontController->setControllerDirectory(BASE_PATH . '/core/controllers', 'default');
+    $this->frontController->setControllerDirectory(BASE_PATH.'/core/controllers', 'default');
     $this->_initModule();
     $this->_initREST();
     $this->application->bootstrap();
@@ -343,17 +343,17 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
   public function setupDatabase($files, $module = null)
     {
     $db = Zend_Registry::get('dbAdapter');
-    $configDatabase = Zend_Registry::get('configDatabase' );
+    $configDatabase = Zend_Registry::get('configDatabase');
     $connection = new Zend_Test_PHPUnit_Db_Connection($db, $configDatabase->database->params->dbname);
     $databaseTester = new Zend_Test_PHPUnit_Db_SimpleTester($connection);
     if(is_array($files))
       {
       foreach($files as $f)
         {
-        $path = BASE_PATH.'/core/tests/databaseDataset/'.$f.".xml";
+        $path = BASE_PATH.'/core/tests/databaseDataset/'.$f.'.xml';
         if(isset($module))
           {
-          $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$f.".xml";
+          $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$f.'.xml';
           }
         $databaseFixture =  new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
         $databaseTester->setupDatabase($databaseFixture);
@@ -361,10 +361,10 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       }
     else
       {
-      $path = BASE_PATH.'/core/tests/databaseDataset/'.$files.".xml";
+      $path = BASE_PATH.'/core/tests/databaseDataset/'.$files.'.xml';
       if(isset($module))
         {
-        $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$files.".xml";
+        $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$files.'.xml';
         }
       $databaseFixture =  new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
       $databaseTester->setupDatabase($databaseFixture);
@@ -401,7 +401,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       {
       foreach($this->_daos as $dao)
         {
-        Zend_Loader::loadClass($dao . "Dao", BASE_PATH.'/core/models/dao');
+        Zend_Loader::loadClass($dao.'Dao', BASE_PATH.'/core/models/dao');
         }
       }
 
@@ -410,8 +410,8 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       {
       foreach($this->_components as $component)
         {
-        $nameComponent = $component . "Component";
-        Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
+        $nameComponent = $component.'Component';
+        Zend_Loader::loadClass($nameComponent, BASE_PATH.'/core/controllers/components');
         @$this->Component->$component = new $nameComponent();
         }
       }
@@ -421,11 +421,11 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       {
       foreach($this->_forms as $forms)
         {
-        $nameForm = $forms . "Form";
+        $nameForm = $forms.'Form';
 
-        Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
+        Zend_Loader::loadClass($nameForm, BASE_PATH.'/core/controllers/forms');
         @$this->Form->$forms = new $nameForm();
         }
       }
     }
-  }//end class
+  }

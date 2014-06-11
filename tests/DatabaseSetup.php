@@ -18,8 +18,6 @@
  limitations under the License.
 =========================================================================*/
 
-
-
 function getSqlDbTypes($testConfigDir)
   {
   // setup testing for whichever db config testing files exist
@@ -40,13 +38,11 @@ function getSqlDbTypes($testConfigDir)
   return $dbTypes;
   }
 
-
 function loadDbAdapter($testConfigDir, $dbType)
   {
-
   // create the lockfile for this dbType
-  $dbConfigFile = $testConfigDir . '/' . $dbType . '.ini';
-  $lockFile = $testConfigDir . '/lock.' . $dbType . '.ini';
+  $dbConfigFile = $testConfigDir.'/'.$dbType.'.ini';
+  $lockFile = $testConfigDir.'/lock.'.$dbType.'.ini';
   copy($dbConfigFile, $lockFile);
 
   // load the lockfile as the test dbConfig
@@ -56,11 +52,11 @@ function loadDbAdapter($testConfigDir, $dbType)
     }
   else
     {
-    throw new Zend_Exception("Error, cannot load lockfile: ".$lockFile);
+    throw new Zend_Exception('Error, cannot load lockfile: '.$lockFile);
     }
 
   // currently only support pdo
-  if ($configDatabase->database->type == 'pdo')
+  if($configDatabase->database->type == 'pdo')
     {
     $db = Zend_Db::factory($configDatabase->database->adapter, array(
       'host' => $configDatabase->database->params->host,
@@ -79,10 +75,9 @@ function loadDbAdapter($testConfigDir, $dbType)
     }
   else
     {
-    throw new Zend_Exception("Database type Error. Expecting pdo but have ".$configDatabase->database->type);
+    throw new Zend_Exception('Database type Error. Expecting pdo but have '.$configDatabase->database->type);
     }
   }
-
 
 function dropTables($db, $dbType)
   {
@@ -101,20 +96,19 @@ function dropTables($db, $dbType)
     }
   }
 
-
 function installCore($db, $dbType, $utilityComponent)
   {
   require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
   $upgradeComponent=new UpgradeComponent();
-  $upgradeComponent->dir = BASE_PATH."/core/database/".$dbType;
+  $upgradeComponent->dir = BASE_PATH.'/core/database/'.$dbType;
   $upgradeComponent->init = true;
 
   $newestVersion = $upgradeComponent->getNewestVersion(true);
 
-  $sqlFile = BASE_PATH."/core/database/{$dbType}/" . $newestVersion . ".sql";
+  $sqlFile = BASE_PATH.'/core/database/{$dbType}/'.$newestVersion.'.sql';
   if(!isset($sqlFile) || !file_exists($sqlFile))
     {
-    throw new Zend_Exception("Unable to find sql file: ".$sqlFile);
+    throw new Zend_Exception('Unable to find sql file: '.$sqlFile);
     }
 
   $databaseConfig = $db->getConfig();
@@ -122,21 +116,20 @@ function installCore($db, $dbType, $utilityComponent)
     {
     case 'mysql':
       $utilityComponent->run_mysql_from_file($sqlFile, $databaseConfig['host'], $databaseConfig['username'], $databaseConfig['password'], $databaseConfig['dbname'], $databaseConfig['port']);
-      $upgradeDbType = "PDO_MYSQL";
+      $upgradeDbType = 'PDO_MYSQL';
       break;
     case 'pgsql':
       $utilityComponent->run_pgsql_from_file($sqlFile, $databaseConfig['host'], $databaseConfig['username'], $databaseConfig['password'], $databaseConfig['dbname'], $databaseConfig['port']);
-      $upgradeDbType = "PDO_PGSQL";
+      $upgradeDbType = 'PDO_PGSQL';
       break;
     default:
-      throw new Zend_Exception("Unknown db type: ".$dbType);
+      throw new Zend_Exception('Unknown db type: '.$dbType);
       break;
     }
 
   $upgradeComponent->initUpgrade('core', $db, $upgradeDbType);
   $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)), true /* true for testing */);
   }
-
 
 // want to create a default assetstore that is separate from application's
 function createDefaultAssetstore()
@@ -155,13 +148,13 @@ function createDefaultAssetstore()
     {
     mkdir($testAssetstoreBase);
     }
-  $testAssetstore = $testAssetstoreBase . '/assetstore';
+  $testAssetstore = $testAssetstoreBase.'/assetstore';
   if(!is_dir($testAssetstore))
     {
     mkdir($testAssetstore);
     }
 
-  //create default assetstore in db
+  // create default assetstore in db
   require_once BASE_PATH.'/core/models/dao/AssetstoreDao.php';
   $assetstoreDao = new AssetstoreDao();
   $assetstoreDao->setName('Default');
@@ -178,7 +171,7 @@ function createDefaultAssetstore()
 // as there are already module files there, and we may not want
 // all the module files
 // we could copy the existing ones somewhere, then copy them back at the end
-// but i don't like that idea
+// but I don't like that idea
 // for now do nothing
 function installModules($utilityComponent)
   {
@@ -194,34 +187,31 @@ function releaseLock($dbType)
   {
   if(file_exists(BASE_PATH.'/tests/configs/lock.'.$dbType.'.ini'))
     {
-    rename(  BASE_PATH.'/tests/configs/lock.'.$dbType.'.ini',BASE_PATH.'/tests/configs/'.$dbType.'.ini');
+    rename(BASE_PATH.'/tests/configs/lock.'.$dbType.'.ini', BASE_PATH.'/tests/configs/'.$dbType.'.ini');
     }
   }
 
-
 // general setup
-
 error_reporting(E_ALL | E_STRICT);
 ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 
-define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
+define('APPLICATION_PATH', realpath(dirname(__FILE__).'/../application'));
 define('APPLICATION_ENV', 'testing');
-define('LIBRARY_PATH', realpath(dirname(__FILE__) . '/../library'));
+define('LIBRARY_PATH', realpath(dirname(__FILE__).'/../library'));
 define('TESTS_PATH', realpath(dirname(__FILE__)));
-define('BASE_PATH', realpath(dirname(__FILE__)) . "/../");
-
+define('BASE_PATH', realpath(dirname(__FILE__)).'/../');
 
 $includePaths = array(LIBRARY_PATH, get_include_path());
 set_include_path(implode(PATH_SEPARATOR, $includePaths));
 
-require_once dirname(__FILE__)."/../library/Zend/Loader/Autoloader.php";
+require_once dirname(__FILE__).'/../library/Zend/Loader/Autoloader.php';
 $loader = Zend_Loader_Autoloader::getInstance();
 $loader->setFallbackAutoloader(true);
 $loader->suppressNotFoundWarnings(false);
 
-require_once(BASE_PATH . "/core/include.php");
-define('START_TIME',microtime(true));
+require_once(BASE_PATH.'/core/include.php');
+define('START_TIME', microtime(true));
 
 Zend_Session::$_unitTestEnabled = true;
 Zend_Session::start();
@@ -248,12 +238,7 @@ $logger = Zend_Log::factory(array(
 
 Zend_Registry::set('logger', $logger);
 
-
-
-
-
 // get the config properties
-
 $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
 $configGlobal->environment = 'testing';
 Zend_Registry::set('configGlobal', $configGlobal);
@@ -261,17 +246,9 @@ Zend_Registry::set('configGlobal', $configGlobal);
 $config = new Zend_Config_Ini(APPLICATION_CONFIG, 'testing');
 Zend_Registry::set('config', $config);
 
-
-
-
-
-
-
-
 // get DB type
 // for now only supporting pgsql and mysql
 // get the DB type from the existing config files
-
 $testConfigDir = BASE_PATH.'/tests/configs/';
 $dbTypes = getSqlDbTypes($testConfigDir);
 

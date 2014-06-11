@@ -1,11 +1,29 @@
-<?php 
+<?php
+/*=========================================================================
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+=========================================================================*/
+
 /** tools for detecting non utf8 files and tranforming non utf8 files to utf8. */
 class Utf8tools
   {
-  protected $excludedDirs = array("data", "library", "tmp", ".git", "log", "bin");
-  protected $excludedExts = array("ini", "jpg", "png", "gif", "swf", "jar", "ico", "psd", "swc", "keystore");
-  protected $excludedFiles = array(".htaccess");
-
+  protected $excludedDirs = array('data', 'library', 'tmp', '.git', 'log', 'bin');
+  protected $excludedExts = array('ini', 'jpg', 'png', 'gif', 'swf', 'jar', 'ico', 'psd', 'swc', 'keystore');
+  protected $excludedFiles = array('.htaccess');
 
   /**
    * return true if the string is UTF8 encoded.
@@ -16,26 +34,46 @@ class Utf8tools
     for($i = 0; $i < $len; $i++)
       { 
       $c = ord($str[$i]); 
-      if ($c > 128)
+      if($c > 128)
         { 
-        if (($c > 247)) return false; 
-        elseif ($c > 239) $bytes = 4; 
-        elseif ($c > 223) $bytes = 3; 
-        elseif ($c > 191) $bytes = 2; 
-        else return false; 
-        if (($i + $bytes) > $len) return false; 
-        while ($bytes > 1)
+        if(($c > 247))
+          {
+          return false;
+          }
+        else if($c > 239)
+          {
+          $bytes = 4;
+          }
+        else if($c > 223)
+          {
+          $bytes = 3;
+          }
+        else if($c > 191)
+          {
+          $bytes = 2;
+          }
+        else
+          {
+          return false;
+          }
+        if(($i + $bytes) > $len)
+          {
+          return false;
+          }
+        while($bytes > 1)
           { 
           $i++; 
           $b = ord($str[$i]); 
-          if ($b < 128 || $b > 191) return false; 
+          if($b < 128 || $b > 191)
+            {
+            return false;
+            }
           $bytes--; 
           } 
         } 
       } 
       return true; 
     } // end of check_utf8 
-
 
   /**
    * gets a list of all files rooted at the src, excluding
@@ -109,16 +147,13 @@ class Utf8tools
         echo "ERROR: non-utf8 characters found in $file \n";
         if($createUtf8Version)
           {
-          $utf8Version = mb_convert_encoding($filecontents, "UTF-8");
-          $outfilepath = $file . '.utf8';
+          $utf8Version = mb_convert_encoding($filecontents, 'UTF-8');
+          $outfilepath = $file.'.utf8';
           file_put_contents($outfilepath, $utf8Version);
           }
         }
       }
     }
-
-
-
   }
 
 // don't create utf8 versions by default
@@ -136,6 +171,5 @@ if(sizeof($argv) > 3 || sizeof($argv) < 2)
     }
   }
 $srcDir = $argv[2];
-$utf8 = new  Utf8tools();
+$utf8 = new Utf8tools();
 $utf8->listNonUtf8Files($srcDir, $create);
-?>
