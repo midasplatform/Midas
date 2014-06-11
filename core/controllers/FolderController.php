@@ -106,11 +106,11 @@ class FolderController extends AppController
       {
       throw new Zend_Exception("Please set the folderId.");
       }
-    elseif($folder === false)
+    else if($folder === false)
       {
       throw new Zend_Exception("The folder doesn t exist.");
       }
-    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+    else if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
       throw new Zend_Exception("Permissions error.");
       }
@@ -164,11 +164,11 @@ class FolderController extends AppController
       {
       throw new Zend_Exception('Please set the folderId.');
       }
-    elseif($folder === false)
+    else if($folder === false)
       {
       throw new Zend_Exception("The folder doesn't exist.", 404);
       }
-    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
+    else if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
       throw new Zend_Exception('Invalid policy: no read access', 403);
       }
@@ -189,7 +189,7 @@ class FolderController extends AppController
           {
           $breadcrumbs[] = array('type' => 'community', 'object' => $this->Folder->getCommunity($parent));
           }
-        elseif(strpos($parent->getName(), 'user') !== false && $this->Folder->getUser($parent) !== false)
+        else if(strpos($parent->getName(), 'user') !== false && $this->Folder->getUser($parent) !== false)
           {
           $breadcrumbs[] = array('type' => 'user', 'object' => $this->Folder->getUser($parent));
           }
@@ -245,7 +245,7 @@ class FolderController extends AppController
       {
       throw new Zend_Exception('Invalid folderId', 404);
       }
-    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+    else if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
       throw new Zend_Exception('Admin permission required', 403);
       }
@@ -265,11 +265,11 @@ class FolderController extends AppController
       {
       throw new Zend_Exception("Please set the folderId.");
       }
-    elseif($folder === false)
+    else if($folder === false)
       {
       throw new Zend_Exception("The folder doesn't exist.");
       }
-    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+    else if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
       throw new Zend_Exception("Permissions error.");
       }
@@ -316,19 +316,19 @@ class FolderController extends AppController
       {
       throw new Zend_Exception("Please set the folderId.");
       }
-    elseif($folder === false)
+    else if($folder === false)
       {
       throw new Zend_Exception("The folder doesn't exist.");
       }
-    elseif($item === false)
+    else if($item === false)
       {
       throw new Zend_Exception("The item doesn't exist.");
       }
-    elseif(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+    else if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
       throw new Zend_Exception('Write permission on folder required');
       }
-    elseif(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+    else if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
       {
       throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED);
       }
@@ -352,7 +352,7 @@ class FolderController extends AppController
       {
       throw new Zend_Exception("Please set the folderId.");
       }
-    elseif($folder === false)
+    else if($folder === false)
       {
       throw new Zend_Exception("The folder doesn't exist.");
       }

@@ -146,7 +146,7 @@ class MIDAS_GlobalDao
       $name = 'get' . ucfirst($var);
       return $this->$name($var);
       }
-    elseif(isset($this->$var))
+    else if(isset($this->$var))
       {
       return $this->$var;
       }

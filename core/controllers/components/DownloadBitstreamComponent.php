@@ -202,11 +202,11 @@ function env($key)
     {
     $val = $_SERVER[$key];
     }
-  elseif(isset($_ENV[$key]))
+  else if(isset($_ENV[$key]))
     {
     $val = $_ENV[$key];
     }
-  elseif(getenv($key) !== false)
+  else if(getenv($key) !== false)
     {
     $val = getenv($key);
     }

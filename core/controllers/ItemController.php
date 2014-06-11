@@ -260,7 +260,7 @@ class ItemController extends AppController
       {
       $currentFolder = $parents[0];
       }
-    elseif(isset($this->userSession->recentFolders))
+    else if(isset($this->userSession->recentFolders))
       {
       foreach($this->userSession->recentFolders as $recent)
         {
@@ -292,7 +292,7 @@ class ItemController extends AppController
         {
         $breadcrumbs[] = array('type' => 'community', 'object' => $this->Folder->getCommunity($parent));
         }
-      elseif(strpos($parent->getName(), 'user') !== false && $this->Folder->getUser($parent) !== false)
+      else if(strpos($parent->getName(), 'user') !== false && $this->Folder->getUser($parent) !== false)
         {
         $breadcrumbs[] = array('type' => 'user', 'object' => $this->Folder->getUser($parent));
         }
@@ -343,11 +343,11 @@ class ItemController extends AppController
       {
       throw new Zend_Exception("Please set the itemId.");
       }
-    elseif($item === false)
+    else if($item === false)
       {
       throw new Zend_Exception("The item doesn t exist.");
       }
-    elseif(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_WRITE))
+    else if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
       throw new Zend_Exception("Permissions error.");
       }

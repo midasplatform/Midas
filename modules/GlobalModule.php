@@ -42,7 +42,7 @@ class MIDAS_GlobalModule extends AppController
       {
       $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', true);
       }
-    elseif(file_exists(BASE_PATH.'/privateModules/'.$this->moduleName.'/configs/module.ini'))
+    else if(file_exists(BASE_PATH.'/privateModules/'.$this->moduleName.'/configs/module.ini'))
       {
       $config = new Zend_Config_Ini(BASE_PATH.'/privateModules/'.$this->moduleName.'/configs/module.ini', 'global', true);
       }
@@ -75,7 +75,7 @@ class MIDAS_GlobalModule extends AppController
       {
       $this->view->setScriptPath(BASE_PATH.'/modules/'.$this->moduleName.'/views');
       }
-    elseif(file_exists(BASE_PATH.'/privateModules/'.$this->moduleName.'/views'))
+    else if(file_exists(BASE_PATH.'/privateModules/'.$this->moduleName.'/views'))
       {
       $this->view->setScriptPath(BASE_PATH.'/privateModules/'.$this->moduleName.'/views');
       }
@@ -138,7 +138,7 @@ class MIDAS_GlobalModule extends AppController
           {
           include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
           }
-        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
+        else if(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
           {
           include_once (BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php");
           }
@@ -158,7 +158,7 @@ class MIDAS_GlobalModule extends AppController
           {
           include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
           }
-        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"))
+        else if(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"))
           {
           include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php");
           }
@@ -188,7 +188,7 @@ class MIDAS_GlobalModule extends AppController
           {
           include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
           }
-        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
+        else if(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
           {
           include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
           }

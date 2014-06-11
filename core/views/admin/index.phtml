@@ -241,7 +241,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                       Not available with your database type
                     </td>";
                       }
-                    elseif(!$module->dependenciesExist)
+                    else if(!$module->dependenciesExist)
                       {
                     echo "
                     <td style='width:300px;'>

@@ -35,15 +35,15 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
       {
       $jobStatus =  "Done";
       }
-    elseif(strtotime($this->job->getExpirationDate()) < strtotime(date("Y-m-d H:i:s")))
+    else if(strtotime($this->job->getExpirationDate()) < strtotime(date("Y-m-d H:i:s")))
       {
       $jobStatus = "Expired";
       }
-    elseif($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_WAIT)
+    else if($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_WAIT)
       {
       $jobStatus =  "Waiting";
       }
-    elseif($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_STARTED)
+    else if($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_STARTED)
       {
       $jobStatus =  "Started";
       }
@@ -101,7 +101,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
             {
             echo "<td><a href='".$this->webroot."/item/".$this->inputs[trim($result['parameters'][$key])]->getKey()."' elementItem='".$this->inputs[trim($result['parameters'][$key])]->getKey()."'>".$this->slicename($result['parameters'][$key], 15)."</a></td>";
             }
-          elseif(isset($result['parameters'][$key]))
+          else if(isset($result['parameters'][$key]))
             {
             echo "<td>".$this->slicename($result['parameters'][$key], 15)."</td>";
             }
@@ -176,7 +176,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
             {
             echo "<td><a href='".$this->webroot."/item/".$this->inputs[trim($metadata[$parameter])]->getKey()."' elementItem='".$this->inputs[trim($metadata[$parameter])]->getKey()."'>".$metadata[$parameter]."</a></td>";
             }
-          elseif(isset($metadata[$parameter]))
+          else if(isset($metadata[$parameter]))
             {
             echo "<td>".$metadata[$parameter]."</td>";
             }

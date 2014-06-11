@@ -216,7 +216,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
                 {
                 $tagField['tag'] = $xml->value;
                 }
-              elseif($xml->name == 'name')
+              else if($xml->name == 'name')
                 {
                 $tagField['name'] = $xml->value;
                 }

@@ -70,7 +70,7 @@ class Zend_View_Helper_Element extends Zend_View_Helper_Abstract
       $viewsDir = dirname($moduleDir) . '/views';
       $view->addBasePath($viewsDir);
       }
-    elseif ((null == $model) && (null !== $module)
+    else if ((null == $model) && (null !== $module)
     && (is_array($module) || is_object($module)))
       {
       $model = $module;
@@ -82,13 +82,13 @@ class Zend_View_Helper_Element extends Zend_View_Helper_Abstract
         {
         $view->assign($model);
         }
-      elseif (is_object($model))
+      else if (is_object($model))
         {
         if (null !== ($objectKey = $this->getObjectKey()))
           {
           $view->assign($objectKey, $model);
           }
-        elseif (method_exists($model, 'toArray'))
+        else if (method_exists($model, 'toArray'))
           {
           $view->assign($model->toArray());
           }

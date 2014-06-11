@@ -160,7 +160,7 @@ class DownloadController extends AppController
         $this->Item->incrementDownloadCount($revision->getItem());
         $this->_downloadEmptyItem($revision->getItem());
         }
-      elseif(count($bitstreams) == 1)
+      else if(count($bitstreams) == 1)
         {
         if(preg_match('/^https?:\/\//', $bitstreams[0]->getPath()))
           {

@@ -125,7 +125,7 @@ class Oai_IndexController extends Oai_AppController
       {
       $args = $_GET;
       }
-    elseif($_SERVER['REQUEST_METHOD'] == 'POST')
+    else if($_SERVER['REQUEST_METHOD'] == 'POST')
       {
       $args = $_POST;
       }

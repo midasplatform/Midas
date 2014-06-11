@@ -325,7 +325,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
           {
           $this->Remoteprocessing_Job->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT);
           }
-        elseif($item != false)
+        else if($item != false)
           {
           $this->Remoteprocessing_Job->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_EXECUTABLE);
           }

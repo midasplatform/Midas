@@ -33,7 +33,7 @@ class MIDAS_ModelLoader
       {
       $this->loadModel($models, $module);
       }
-    elseif(is_array($models))
+    else if(is_array($models))
       {
       foreach($models as $model)
         {
@@ -68,7 +68,7 @@ class MIDAS_ModelLoader
           {
           include_once BASE_PATH.'/modules/'.$module.'/models/base/'.$model.'ModelBase.php';
           }
-        elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php'))
+        else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php'))
           {
           include_once BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php';
           }
@@ -77,7 +77,7 @@ class MIDAS_ModelLoader
           {
           include_once BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
           }
-        elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
+        else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
           {
           include_once BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
           }

@@ -991,7 +991,7 @@ class UserController extends AppController
       $this->_helper->viewRenderer->setNoRender();
       return false;
       }
-    elseif(!isset($user_id))
+    else if(!isset($user_id))
       {
       $userDao = $this->userSession->Dao;
       $this->view->activemenu = 'myprofile'; // set the active menu
@@ -1079,7 +1079,7 @@ class UserController extends AppController
       $this->_helper->viewRenderer->setNoRender();
       return false;
       }
-    elseif(!isset($userId))
+    else if(!isset($userId))
       {
       $userDao = $this->userSession->Dao;
       $this->view->activemenu = 'user'; // set the active menu

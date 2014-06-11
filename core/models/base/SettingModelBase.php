@@ -68,7 +68,7 @@ abstract class SettingModelBase extends AppModel
       {
       $this->delete($previousDao);
       }
-    elseif($dao != false)
+    else if($dao != false)
       {
       $dao->setValue($value);
       $this->save($dao);

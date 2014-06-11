@@ -92,19 +92,19 @@ class ApidocsComponent extends AppComponent
           $paramValue = trim(implode(' ', array_slice($splitParam, 2)));
           $params[$paramName] = $paramValue;
           }
-        elseif(strpos($doc, 'return') === 0)
+        else if(strpos($doc, 'return') === 0)
           {
           $return = trim(substr($doc, 6));
           }
-        elseif(strpos($doc, 'path') === 0)
+        else if(strpos($doc, 'path') === 0)
           {
           $path = trim(substr($doc, 5));
           }
-        elseif(strpos($doc, 'http') === 0)
+        else if(strpos($doc, 'http') === 0)
           {
           $http = trim(substr($doc, 5));
           }
-        elseif(strpos($doc, 'idparam') === 0)
+        else if(strpos($doc, 'idparam') === 0)
           {
           $idParam = trim(substr($doc, 8));
           }

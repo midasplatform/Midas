@@ -119,7 +119,7 @@ class SearchController extends AppController
       // Search for the users
       $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao);
       }
-    elseif(isset($userSearch))
+    else if(isset($userSearch))
       {
       $ItemsDao = array();
       $FoldersDao = array();
@@ -140,7 +140,7 @@ class SearchController extends AppController
           }
         }
       }
-    elseif(isset($itemSearch))
+    else if(isset($itemSearch))
       {
       $ItemsDao = $this->Item->getItemsFromSearch($search, $this->userSession->Dao, 15, false);
       $FoldersDao = array();

@@ -90,7 +90,7 @@ class MIDASUpgrade
           {
           include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
           }
-        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
+        else if(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
           {
           include_once (BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php");
           }
@@ -110,7 +110,7 @@ class MIDASUpgrade
           {
           include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
           }
-        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"))
+        else if(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"))
           {
           include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php");
           }
@@ -136,7 +136,7 @@ class MIDASUpgrade
           {
           include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
           }
-        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
+        else if(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
           {
           include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
           }

@@ -80,7 +80,7 @@ class Visualize_WrapperController extends Visualize_AppController
       {
       $currentFolder = $parents[0];
       }
-    elseif(isset($this->userSession->recentFolders))
+    else if(isset($this->userSession->recentFolders))
       {
       foreach($parents as $p)
         {

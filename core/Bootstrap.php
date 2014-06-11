@@ -109,7 +109,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       Zend_Db_Table::setDefaultAdapter($db);
       Zend_Registry::set('dbAdapter', $db);
       }
-    elseif($configDatabase->database->type == 'mongo')
+    else if($configDatabase->database->type == 'mongo')
       {
       // The mongo driver should be a php extension
       $db = new Mongo($configDatabase->database->params->host.":".
@@ -217,7 +217,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
           $apiModules[] = $key;
           }
         }
-      elseif($module == 1 &&  file_exists(BASE_PATH.'/privateModules/'.$key) && file_exists(BASE_PATH . "/privateModules/".$key."/AppController.php"))
+      else if($module == 1 &&  file_exists(BASE_PATH.'/privateModules/'.$key) && file_exists(BASE_PATH . "/privateModules/".$key."/AppController.php"))
         {
         $listeModule[] = $key;
         // get WebApi controller directories and WebApi module names for enabled modules

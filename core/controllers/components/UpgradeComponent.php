@@ -35,7 +35,7 @@ class UpgradeComponent extends AppComponent
       {
       $this->dir = BASE_PATH.'/core/database/upgrade';
       }
-    elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/database/upgrade'))
+    else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/database/upgrade'))
       {
       $this->dir = BASE_PATH.'/privateModules/'.$module.'/database/upgrade';
       }

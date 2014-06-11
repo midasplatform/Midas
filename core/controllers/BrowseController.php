@@ -137,7 +137,7 @@ class BrowseController extends AppController
             $this->Item->addReadonlyPolicy($item, $destinationFolder);
             }
           }
-        elseif(isset($duplicateSubmit))
+        else if(isset($duplicateSubmit))
           {
           if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
             {
@@ -228,7 +228,7 @@ class BrowseController extends AppController
         {
         $this->view->shareEnabled = true;
         }
-      elseif(isset($duplicate))
+      else if(isset($duplicate))
         {
         $this->view->duplicateEnabled = true;
         }

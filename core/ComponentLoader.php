@@ -33,7 +33,7 @@ class MIDAS_ComponentLoader
       {
       $this->loadComponent($components, $module);
       }
-    elseif(is_array($components))
+    else if(is_array($components))
       {
       foreach($components as $component)
         {
@@ -62,7 +62,7 @@ class MIDAS_ComponentLoader
           {
           include_once BASE_PATH.'/modules/'.$module.'/controllers/components/'.$component.'Component.php';
           }
-        elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/controllers/components/'.$component.'Component.php'))
+        else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/controllers/components/'.$component.'Component.php'))
           {
           include_once BASE_PATH.'/privateModules/'.$module.'/controllers/components/'.$component.'Component.php';
           }

@@ -62,7 +62,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         {
         $translaters[$module] = new Zend_Translate('csv', BASE_PATH.'/modules/'.$module.'/translation/fr-main.csv', 'en');
         }
-      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv'))
+      else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv'))
         {
         $translaters[$module] = new Zend_Translate('csv', BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv', 'en');
         }
@@ -71,7 +71,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         {
         $configs[$module] = new Zend_Config_Ini(BASE_PATH.'/core/configs/'.$module.'.local.ini', 'global');
         }
-      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/configs/module.ini'))
+      else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/configs/module.ini'))
         {
         $configs[$module] = new Zend_Config_Ini(BASE_PATH.'/privateModules/'.$module.'/configs/module.ini', 'global');
         }
@@ -101,7 +101,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
             $this->_forward($request->getActionName(), $request->getControllerName().'Core', $key, array('forwardModule' => true));
             }
           }
-        elseif(file_exists(BASE_PATH.'/privateModules/'.$key.'/controllers/'.  ucfirst($request->getControllerName()).'CoreController.php'))
+        else if(file_exists(BASE_PATH.'/privateModules/'.$key.'/controllers/'.  ucfirst($request->getControllerName()).'CoreController.php'))
           {
           include_once BASE_PATH.'/privateModules/'.$key.'/controllers/'.  ucfirst($request->getControllerName()).'CoreController.php';
           $name = ucfirst($key).'_'.ucfirst($request->getControllerName()).'CoreController';

@@ -57,23 +57,23 @@ class Visualize_IndexController extends Visualize_AppController
         $this->_redirect('/visualize/paraview/?itemId='.$itemId.'&height='.$height.'&width='.$width);
         }
       }
-    elseif($this->ModuleComponent->Main->canVisualizeMedia($itemDao))
+    else if($this->ModuleComponent->Main->canVisualizeMedia($itemDao))
       {
       $this->_redirect('/visualize/media/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
-    elseif($this->ModuleComponent->Main->canVisualizeTxt($itemDao))
+    else if($this->ModuleComponent->Main->canVisualizeTxt($itemDao))
       {
       $this->_redirect('/visualize/txt/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
-    elseif($this->ModuleComponent->Main->canVisualizeImage($itemDao))
+    else if($this->ModuleComponent->Main->canVisualizeImage($itemDao))
       {
       $this->_redirect('/visualize/image/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
-    elseif($this->ModuleComponent->Main->canVisualizePdf($itemDao))
+    else if($this->ModuleComponent->Main->canVisualizePdf($itemDao))
       {
       $this->_redirect('/visualize/pdf/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
-    elseif($this->ModuleComponent->Main->canVisualizeWebgl($itemDao))
+    else if($this->ModuleComponent->Main->canVisualizeWebgl($itemDao))
       {
       $this->_redirect('/visualize/webgl/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }

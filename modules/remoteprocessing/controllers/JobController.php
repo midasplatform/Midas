@@ -144,7 +144,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
             {
             $cmdOptions[$i]['values'] = explode(';', $result);
             }
-          elseif(strpos($result, '-') !== false && strpos($result, '-') !== 0)
+          else if(strpos($result, '-') !== false && strpos($result, '-') !== 0)
             {
             $tmpArray = explode('(', $result);
             if(count($tmpArray) == 1)
@@ -267,11 +267,11 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
         {
         $executable = $item;
         }
-      elseif($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT)
+      else if($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT)
         {
         $inputs[$item->getName()] = $item;
         }
-      elseif($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT)
+      else if($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT)
         {
         $reviesion = $this->Item->getLastRevision($item);
         $metadata = $this->ItemRevision->getMetadata($reviesion);
@@ -288,7 +288,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 
         $outputs[] = $item;
         }
-      elseif($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS)
+      else if($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS)
         {
         $reviesion = $this->Item->getLastRevision($item);
         $metadata = $this->ItemRevision->getMetadata($reviesion);

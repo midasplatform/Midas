@@ -182,7 +182,7 @@ class ShareController extends AppController
           {
           $newPolicy = $this->Community->load($newPolicyId)->getMemberGroup();
           }
-        elseif($newPolicyType == 'group')
+        else if($newPolicyType == 'group')
           {
           $newPolicy = $this->Group->load($newPolicyId);
           }
@@ -197,7 +197,7 @@ class ShareController extends AppController
             {
             $this->Folderpolicygroup->createPolicy($newPolicy, $element, MIDAS_POLICY_READ);
             }
-          elseif($newPolicy instanceof UserDao)
+          else if($newPolicy instanceof UserDao)
             {
             $this->Folderpolicyuser->createPolicy($newPolicy, $element, MIDAS_POLICY_READ);
             }
@@ -213,7 +213,7 @@ class ShareController extends AppController
             {
             $this->Itempolicygroup->createPolicy($newPolicy, $element, MIDAS_POLICY_READ);
             }
-          elseif($newPolicy instanceof UserDao)
+          else if($newPolicy instanceof UserDao)
             {
             $this->Itempolicyuser->createPolicy($newPolicy, $element, MIDAS_POLICY_READ);
             }

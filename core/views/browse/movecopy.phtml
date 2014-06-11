@@ -75,19 +75,19 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
       <input type="submit" disabled  name='moveElement' id='moveElement'  value="<?php echo $this->t('Move')?>"/>
     <?php
       }
-    elseif($this->selectEnabled)
+    else if($this->selectEnabled)
       {
       ?>
       <input type="submit" disabled  name='selectElement' id='selectElement'  value="<?php echo $this->t('Select')?>"/>
       <?php
       }
-    elseif($this->shareEnabled)
+    else if($this->shareEnabled)
       {
       ?>
       <input type="submit" disabled  name='shareElement' id='shareElement'  value="<?php echo $this->t('Share')?>"/>
       <?php
       }
-    elseif($this->duplicateEnabled)
+    else if($this->duplicateEnabled)
       {
       ?>
       <input type="submit" disabled name='duplicateElement' id='duplicateElement'  value="<?php echo $this->t('Copy')?>"/>

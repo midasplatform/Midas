@@ -123,7 +123,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         $params['params']['ouputFolders'][] = $option['folderId'];
         $ouputArray[] = $option['fileName'];
         }
-      elseif($option['type'] == 'input')
+      else if($option['type'] == 'input')
         {
         if(isset($option['folder']))
           {
@@ -255,7 +255,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
           $multipleElement = $multipleElement * count($values);
           }
         }
-      elseif($cmdOption['type'] == 'output')
+      else if($cmdOption['type'] == 'output')
         {
         $ext = end(explode('.', $cmdOption['fileName']));
         $value .= '"'.  str_replace('.'.$ext, '{{key}}.'.$ext, $cmdOption['fileName']).'" ';
@@ -264,7 +264,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
           $matrix[$i][$key] = $value;
           }
         }
-      elseif($cmdOption['type'] == 'param')
+      else if($cmdOption['type'] == 'param')
         {
         $values = $cmdOption['values'];
         $j = 0;

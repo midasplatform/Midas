@@ -193,12 +193,12 @@ class AdminController extends AppController
           copy($moduleConfigFile, $moduleConfigLocalFile);
           $this->Component->Utility->installModule($moduleName);
           }
-        elseif(!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigPrivateFile))
+        else if(!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigPrivateFile))
           {
           copy($moduleConfigPrivateFile, $moduleConfigLocalFile);
           $this->Component->Utility->installModule($moduleName);
           }
-        elseif(!file_exists($moduleConfigLocalFile))
+        else if(!file_exists($moduleConfigLocalFile))
           {
           throw new Zend_Exception("Unable to find config file");
           }
@@ -264,7 +264,7 @@ class AdminController extends AppController
         {
         $allModules[$key]->configPage = true;
         }
-      elseif(file_exists(BASE_PATH."/privateModules/".$key."/controllers/ConfigController.php"))
+      else if(file_exists(BASE_PATH."/privateModules/".$key."/controllers/ConfigController.php"))
         {
         $allModules[$key]->configPage = true;
         }
@@ -414,7 +414,7 @@ class AdminController extends AppController
         {
         $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), '[message]') + 13, 60);
         }
-      elseif(substr($log->getMessage(), 0, 6) == 'Server')
+      else if(substr($log->getMessage(), 0, 6) == 'Server')
         {
         $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), 'Message:') + 9, 60);
         }

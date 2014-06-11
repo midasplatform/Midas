@@ -191,7 +191,7 @@ class MIDASModel
         {
         require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
         }
-      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+      else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
         {
         require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php';
         }
@@ -234,7 +234,7 @@ class MIDASModel
       {
       throw new Zend_Exception(__CLASS__ . " " . $this->_name . ": ".$method." has been deprecated. Please fix.");
       }
-    elseif(substr($method, 0, 6) == 'findBy')
+    else if(substr($method, 0, 6) == 'findBy')
       {
       if(isset($this->_mainData[strtolower(substr($method, 6))]))
         {
@@ -327,7 +327,7 @@ class MIDASModel
         {
         require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
         }
-      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+      else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
         {
         require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php';
         }
@@ -335,7 +335,7 @@ class MIDASModel
         {
         require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. '.php';
         }
-      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. '.php'))
+      else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. '.php'))
         {
         require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. '.php';
         }
@@ -372,7 +372,7 @@ class MIDASModel
       $this->loadDaoClass($name, $this->moduleName);
       $name = ucfirst($this->moduleName).'_'.$name;
       }
-    elseif(isset($this->moduleName))
+    else if(isset($this->moduleName))
       {
       $this->loadDaoClass(ucfirst(substr($name, strpos($name, '_') + 1)), $this->moduleName);
       }

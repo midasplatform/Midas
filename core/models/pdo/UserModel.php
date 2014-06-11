@@ -110,7 +110,7 @@ class UserModel extends UserModelBase
       {
       $sql->limit($limit);
       }
-    elseif(!is_numeric($offset))
+    else if(!is_numeric($offset))
       {
       $sql->where('lastname LIKE ?', $offset.'%');
       $sql->limit($limit);
